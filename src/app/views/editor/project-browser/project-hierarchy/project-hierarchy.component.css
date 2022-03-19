@@ -1,0 +1,19 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.example-tree-invisible {
+    display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+    padding-inline-start: 5px !important;
+}
+
+.mat-icon-button {
+    margin-right: 15px !important;
+}

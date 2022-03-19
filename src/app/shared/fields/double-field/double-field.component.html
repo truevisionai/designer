@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<!-- <mat-form-field style="width: 100%;"> -->
+
+<!-- <input *ngIf="isParameter" matInput placeholder="$" [(ngModel)]="value"> -->
+
+<!-- <input type="number" matInput [placeholder]="label" [(ngModel)]="fieldValue" (ngModelChange)="onFieldValueChanged($event)"> -->
+
+<!-- </mat-form-field> -->
+
+<div class="tv-field" align="left">
+
+    <label class="tv-field-label">{{ label }}</label>
+
+    <div class="tv-field-text-input">
+
+        <input [disabled]="disabled" type="text" (focus)="onFocus()" (blur)="onBlur()" (wheel)="onWheel($event)" [value]="value" [placeholder]="label" [(ngModel)]="value" (ngModelChange)="onModelChanged($event)" />
+
+    </div>
+
+</div>

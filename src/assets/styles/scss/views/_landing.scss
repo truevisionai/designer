@@ -1,0 +1,144 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/*
+  Only Required if you want to use Angular Landing
+  (https://themeforest.net/item/angular-landing-material-design-angular-app-landing-page/21198258)
+*/
+
+body.landing {
+  .h1, 
+  .h2, 
+  .h3, 
+  .h4, 
+  .h5, 
+  .h6, 
+  h1, 
+  h2, 
+  h3, 
+  h4, 
+  h5, 
+  h6 {
+      margin-bottom: .5rem;
+      font-weight: 400;
+      line-height: 1.1;
+      color: inherit;
+  }
+  .h1,
+  h1 {
+      font-size: 2rem;
+  }
+  .h2, 
+  h2 {
+      font-size: 1.75rem;
+  }
+  .h3, 
+  h3 {
+      font-size: 1.5rem;
+  }
+  .h4, 
+  h4 {
+      font-size: 1.25rem;
+  }
+  .h5, 
+  h5 {
+      font-size: 1rem;
+  }
+  .h6, 
+  h6 {
+      font-size: .875rem;
+  }
+  .container {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  .section-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+}
+@-webkit-keyframes slideDown {
+  0% { top: -60px }
+  100% { top: 0px }
+}
+@keyframes slideDown {
+  0% { top: -60px }
+  100% { top: 0px }
+}
+.section-padding {
+  padding: 80px 0;
+}
+
+.home-section {
+  padding: 80px 0;
+}
+.home-section mat-card:hover {
+  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
+}
+
+.section-header {
+  margin: 0 0 2rem;
+}
+
+.section-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+.section-header p {
+  font-size: 16px;
+  max-width: 36rem;
+  margin: 0;
+}
+
+.home-section-action {
+  padding: 2.5rem 0 0;
+}
+
+[mat-card-icon] {
+  font-size: 64px !important;
+  height: 64px !important;
+  width: 64px !important;
+  transition: all .3s ease;
+}
+.home-fancy-card {
+  border-top: 2px solid #212121;
+  transition: all .3s ease;
+}
+
+.home-fancy-card:hover {
+  border-top: 2px solid #3f51b5;
+}
+.home-fancy-card:hover [mat-card-icon] {
+  color: #3f51b5;
+}
+.home-fancy-card .description {
+  font-size: 15px;
+  color: #616161;
+}
+
+/*------ Carousel -------*/
+.ngucarousel {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.ngucarousel-inner {
+  padding: 8px 0 18px;
+}
+.ngucarousel .carousel-left,
+.ngucarousel .carousel-right {
+  position: absolute;
+  top: calc(50% - 28px);
+  background: #ffffff !important;
+  color: rgba(0, 0, 0, .87);
+}
+.ngucarousel .carousel-left {
+  left: -20px;
+}
+.ngucarousel .carousel-right {
+  right: -20px;
+}

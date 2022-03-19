@@ -1,0 +1,34 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/*
+* REQUIRED STYLES 
+*/
+@import "mixins";
+@import "colors";
+@import "palette";
+@import "utilities";
+
+@import "animations";
+@import "main/scaffolding";
+@import "main/typography";
+@import "main/layout";
+@import "main/header";
+@import "main/sidenav"; 
+@import "components";
+
+
+/*
+* ALTERNATIVE STYLES
+*/
+@import "main/breadcrumb"; // REQUIRED ONLY FOR BREADCRUMBS
+@import "main/notifications"; // REQUIRED ONLY FOR NOTIFICATIONS
+
+@import "main/sidebar"; // REQUIRED ONLY FOR SIDE NAVIGATION LAYOUT
+@import "main/header-side"; // REQUIRED ONLY FOR SIDE NAVIGATION LAYOUT
+
+@import "main/topnav"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
+@import "main/header-top"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
+
+

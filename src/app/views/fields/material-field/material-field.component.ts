@@ -1,0 +1,100 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
+import { AssetDatabase } from 'app/services/asset-database';
+import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+
+@Component( {
+    selector: 'app-material-field',
+    templateUrl: './material-field.component.html',
+    styleUrls: [ './material-field.component.css' ]
+} )
+export class MaterialFieldComponent implements OnInit {
+
+    @Output() changed = new EventEmitter<string>();
+
+    @Input() guid: string;
+
+    @Input() label: string;
+
+    public get preview () { return this.metadata ? this.metadata.preview : null; }
+
+    public get metadata () { return AssetDatabase.getMetadata( this.guid ); }
+
+    public get material () { return AssetDatabase.getInstance<TvMaterial>( this.guid ); }
+
+    public get filename () { return AssetDatabase.getAssetNameByGuid( this.guid ); }
+
+    constructor ( private previewService: PreviewService ) { }
+
+    ngOnInit () {
+
+        if ( this.metadata && !this.preview ) this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+
+    }
+
+    @HostListener( 'click', [ '$event' ] )
+    onClick ( $event ) {
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+    }
+
+    @HostListener( 'dblclick', [ '$event' ] )
+    onDoubleClick ( $event ) {
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+    }
+
+    @HostListener( 'dragover', [ '$event' ] )
+    onDragOver ( $event ) {
+
+        // console.log( "dragover", $event )
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+    }
+
+    @HostListener( 'dragleave', [ '$event' ] )
+    onDragLeave ( $event ) {
+
+        // console.log( "dragleave", $event )
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+    }
+
+    @HostListener( 'drop', [ '$event' ] )
+    onDrop ( $event: DragEvent ) {
+
+        // console.log( "drop", $event )
+        // console.log( "guid", $event.dataTransfer.getData( "guid" ) );
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        const guid = $event.dataTransfer.getData( "guid" );
+
+        if ( guid ) {
+
+            const metadata = AssetDatabase.getMetadata( guid );
+
+            if ( metadata && metadata.importer === "MaterialImporter" ) {
+
+                this.changed.emit( guid );
+
+                // update preview
+                // metadata.preview = this.previewService.getMaterialPreview( AssetDatabase.getInstance( guid ) );
+            }
+        }
+    }
+
+}

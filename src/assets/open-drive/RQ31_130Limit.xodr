@@ -1,0 +1,116 @@
+<?xml version="1.0" standalone="yes"?>
+<OpenDRIVE>
+    <header revMajor="1" revMinor="2" name="" version="1.00" date="Thu Aug 13 16:36:23 2015" north="0.0000000000000000e+00" south="0.0000000000000000e+00" east="0.0000000000000000e+00" west="0.0000000000000000e+00" originLat="0.0000000000000000e+00" originLong="0.0000000000000000e+00" originHdg="0.0000000000000000e+00" >
+    </header>
+    <road name="" length="5.0000000000000000e+03" id="3" junction="-1">
+        <link>
+        </link>
+        <planView>
+            <geometry s="0.0000000000000000e+00" x="0.0000000000000000e+00" y="-2.5000000000000000e+03" hdg="1.5707963267948966e+00" length="5.0000000000000000e+03">
+                <line/>
+            </geometry>
+        </planView>
+        <elevationProfile>
+            <elevation s="0.0000000000000000e+00" a="0.0000000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+        </elevationProfile>
+        <lateralProfile>
+        </lateralProfile>
+        <lanes>
+            <laneSection s="0.0000000000000000e+00">
+                <left>
+                    <lane id="6" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="6.0000000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                    </lane>
+                    <lane id="5" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="1.5000000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                    </lane>
+                    <lane id="4" type="stop" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.6000000000000001e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                    </lane>
+                    <lane id="3" type="driving" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.8999999999999999e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="solid" weight="standard" color="white" width="2.9999999999999999e-01" laneChange="none"/>
+                        <speed sOffset="5.0000000000000000e+03" max="3.6111111111111107e+01"/>
+                    </lane>
+                    <lane id="2" type="driving" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.8999999999999999e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="broken" weight="standard" color="white" width="1.4999999999999999e-01" laneChange="none"/>
+                        <speed sOffset="5.0000000000000000e+03" max="3.6111111111111107e+01"/>
+                    </lane>
+                    <lane id="1" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="2.6000000000000001e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="solid" weight="standard" color="white" width="2.9999999999999999e-01" laneChange="none"/>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="driving" level= "false">
+                        <link>
+                        </link>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="2.6000000000000001e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="solid" weight="standard" color="white" width="2.9999999999999999e-01" laneChange="none"/>
+                    </lane>
+                    <lane id="-2" type="driving" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.8999999999999999e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="broken" weight="standard" color="white" width="1.4999999999999999e-01" laneChange="none"/>
+                        <speed sOffset="0.0000000000000000e+00" max="3.6111111111111107e+01"/>
+                    </lane>
+                    <lane id="-3" type="driving" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.8999999999999999e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <roadMark sOffset="0.0000000000000000e+00" type="solid" weight="standard" color="white" width="2.9999999999999999e-01" laneChange="none"/>
+                        <speed sOffset="0.0000000000000000e+00" max="3.6111111111111107e+01"/>
+                    </lane>
+                    <lane id="-4" type="stop" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="3.6000000000000001e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                    </lane>
+                    <lane id="-5" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="1.5000000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                        <speed sOffset="0.0000000000000000e+00" max="3.6111111111111107e+01"/>
+                    </lane>
+                    <lane id="-6" type="border" level= "false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0000000000000000e+00" a="6.0000000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+        <objects>
+        </objects>
+        <signals>
+            <signal s="0.0000000000000000e+00" t="-1.5000000000000000e+01" id="1" name="" dynamic="no" orientation="+" zOffset="1.7200000047683717e+00" type="274" country="OpenDRIVE" subtype="63" value="3.6111111111111107e+01">
+                <userData code="2" value="0.0000000000000000e+00"/>
+            </signal>
+            <signal s="5.0000000000000000e+03" t="1.5000000000000000e+01" id="3" name="" dynamic="no" orientation="-" zOffset="1.7200000047683717e+00" type="274" country="OpenDRIVE" subtype="63" value="3.6111111111111107e+01">
+                <userData code="2" value="3.1415926535897931e+00"/>
+            </signal>
+        </signals>
+        <surface>
+        </surface>
+    </road>
+</OpenDRIVE>

@@ -1,0 +1,93 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/*---- Inbox -----*/
+.inbox-sidenav {
+  width: 15rem;
+  padding: .333rem;
+  background: transparent !important;
+}
+.inbox-sidenav .inbox-nav-list .mat-list-item-content > a > span {
+  font-size: .875rem;
+}
+
+.inbox-sidenav .mat-list-item-content .mat-icon {
+  margin-right: 8px; 
+}
+
+
+.inbox-toolbar {
+  height: 56px !important;
+}
+.inbox-toolbar .mat-toolbar-row {
+  height: 56px !important;
+}
+
+
+.show-on-open {
+  display: none !important;
+}
+
+.mat-expanded {
+  .show-on-open {
+    display: inherit !important;
+  }
+  .hide-on-open {
+    display: none !important;
+  }
+  .mat-expansion-panel-header {
+    margin-bottom: 1rem;
+  }
+}
+
+.messages-wrap {
+  padding: .333rem;
+  min-height: 800px;
+  .mat-expansion-panel-header-title {
+    align-items: center;
+  }
+  .mat-expansion-panel-header-description {
+    align-items: center;
+  }
+
+  .mail-checkbox.mat-checkbox {
+    position: relative;
+    width: 20px;
+    height: 22px;
+    overflow: hidden;
+    margin-right: 8px;
+    .mat-checkbox-layout {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .inbox-face {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+  }
+}
+
+[dir=rtl] {
+  .inbox-sidenav .mat-list-item-content .mat-icon {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+  .messages-wrap {
+    .mail-checkbox {
+      margin-right: 0;
+      margin-left: .5rem; 
+      .mat-checkbox-inner-container {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 959px) {
+  .inbox-sidenav {
+      background: inherit !important;
+  }
+}

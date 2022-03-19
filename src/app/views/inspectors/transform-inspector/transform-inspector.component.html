@@ -1,0 +1,45 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div *ngIf="data" class="inspector-form-container">
+
+    <div *ngIf="showPosition">
+        <span>Position</span><br />
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="positionChanged()" [(ngModel)]="position.x" matInput placeholder="X" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="positionChanged()" [(ngModel)]="position.y" matInput placeholder="Y" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="positionChanged()" [(ngModel)]="position.z" matInput placeholder="Z" type="number">
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="showRotation">
+        <span>Rotation</span><br />
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="rotationChanged()" [(ngModel)]="rotation.x" matInput placeholder="X" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="rotationChanged()" [(ngModel)]="rotation.y" matInput placeholder="Y" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="rotationChanged()" [(ngModel)]="rotation.z" matInput placeholder="Z" type="number">
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="showScale">
+        <span>Scale</span><br />
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="scaleChanged()" [(ngModel)]="scale.x" matInput placeholder="X" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="scaleChanged()" [(ngModel)]="scale.y" matInput placeholder="Y" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 33%;">
+            <input (ngModelChange)="scaleChanged()" [(ngModel)]="scale.z" matInput placeholder="Z" type="number">
+        </mat-form-field>
+    </div>
+</div>

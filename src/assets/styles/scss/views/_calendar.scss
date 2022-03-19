@@ -1,0 +1,34 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/*---- Calendar -----*/
+.card-title-text.calendar-title {
+  padding: .5rem 1.5rem !important;
+}
+.cal-top-col {
+  width: 33.3333%;
+  float: left;
+}
+.cal-event-action .material-icons {
+  vertical-align: sub;
+  margin: 6px;
+}
+.cal-open-day-events {
+  box-shadow: none !important;
+}
+
+.calendar-form-dialog {
+  .mat-dialog-container {
+    padding: 0;
+  }
+}
+.color-picker-input.mat-input-element {
+  padding: 4px 0 !important;
+}
+
+@media (max-width: 767px) {
+  .cal-top-col {
+      width: 100%;
+  }
+}

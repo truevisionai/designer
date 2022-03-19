@@ -1,0 +1,81 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<OpenDRIVE>
+  <header revMajor="1" revMinor="2" name="" version="1" date="Thu Sep  2 20:31:10 2010" north="0" south="0" east="0" west="0"/>
+  <road name="" length="150" id="1" junction="-1">
+    <link>
+      <predecessor elementType="junction" elementId="46"/>
+    </link>
+    <planView>
+      <geometry s="0" x="0" y="0" hdg="0" length="150">
+        <line/>
+      </geometry>      
+    </planView>
+    <elevationProfile>
+      <elevation s="0" a="0" b="0" c="0" d="0"/>
+    </elevationProfile>
+    <lanes>
+      <laneSection s="0">
+        <center>
+          <lane id="0" type="driving" level="false">
+            <link/>
+          </lane>
+        </center>
+        <right>
+          <lane id="-1" type="driving" level="false">
+            <link>
+              <predecessor id="-2"/>
+              <successor id="1"/>
+            </link>
+            <width sOffset="0" a="3.75" b="0" c="0" d="0"/>
+            <width sOffset="25" a="7.5" b="0" c="0" d="0"/>
+            <roadMark sOffset="0" type="broken" weight="standard" color="standard" width="0.13" laneChange="none"/>
+            <roadMark sOffset="25" type="solid" weight="standard" color="yellow" width="0.13" laneChange="none"/>
+          </lane>
+        </right>
+      </laneSection>
+      <laneSection s="50">
+        <center>
+          <lane id="0" type="driving" level="false">
+            <link/>
+          </lane>
+        </center>
+        <right>
+          <lane id="-1" type="driving" level="false">
+            <link>
+              <predecessor id="-2"/>
+              <successor id="1"/>
+            </link>
+            <width sOffset="0" a="3.75" b="0" c="0" d="0"/>
+            <width sOffset="25" a="7.5" b="0" c="0" d="0"/>
+            <roadMark sOffset="0" type="broken" weight="standard" color="standard" width="0.13" laneChange="none"/>
+            <roadMark sOffset="25" type="solid" weight="standard" color="yellow" width="0.13" laneChange="none"/>
+          </lane>
+        </right>
+      </laneSection>          
+      <laneSection s="100">
+        <center>
+          <lane id="0" type="driving" level="false">
+            <link/>
+          </lane>
+        </center>
+        <right>
+          <lane id="-1" type="driving" level="false">
+            <link>
+              <predecessor id="-2"/>
+              <successor id="1"/>
+            </link>
+            <width sOffset="0" a="3.75" b="0" c="0" d="0"/>
+            <width sOffset="25" a="7.5" b="0" c="0" d="0"/>
+            <roadMark sOffset="0" type="broken" weight="standard" color="standard" width="0.13" laneChange="none"/>
+            <roadMark sOffset="25" type="solid" weight="standard" color="yellow" width="0.13" laneChange="none"/>
+          </lane>
+        </right>
+      </laneSection>
+    </lanes>
+    <objects/>
+    <signals/>
+  </road> 
+</OpenDRIVE>

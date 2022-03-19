@@ -1,0 +1,28 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.tv-field-dropdown {
+    width: 100%;
+    background: transparent;
+    color: inherit;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.tv-field-option {
+    background: #424243;
+    outline: none;
+    box-shadow: none;
+}
+
+select, option {
+    outline: none;
+    box-shadow: none;
+}
+
+select:focus, option:focus, .tv-field-dropddown:focus, .tv-field-option:focus {
+    outline: none;
+    box-shadow: none;
+}

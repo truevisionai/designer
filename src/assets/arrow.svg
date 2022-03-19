@@ -1,0 +1,12 @@
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+	<title>144-1442847_exit-to-app-button-vector-entry-exit-i</title>
+	<defs>
+		<image  width="294" height="224" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAADgBAMAAABcLNb0AAAAAXNSR0IB2cksfwAAABJQTFRFw8PDw8PDw8PDw8PDw8PDw8PDUtqDWwAAAAZ0Uk5TACuA1f9AW1TkhgAAAnpJREFUeJzt3VtOwzAUhOGULXQDR1XYASuwsv810Usudmwno0p0Rmj+Z0Cjj1LS+CHD8Fdd4s9+9NtdE3tB1eVnCvaGfddpUoO6M01qUHcmNagnkxjUk0kLamaSgpqZlKBWJiGolUkHKmOSgcqYVKAKJhGogkkDasckAbVjUoCqmASgKiY+VIOJDtVgYkM1mchQTSYuVIeJCtVhYkJ1mYhQXSYe1AETDeqAiQV1yESCOmQiQZ1sokCd/O4MtWQoMEOBGQrMUGCGAjMUmKHADAVmKDBDgRkKzFBghgIzFJihwAwFZigwQ4EZCsxQYIYCMxSYocAMBWYoMEOB/QOoky/+UElwUwnFHjOXBDcVUOwtS0lwUw7FnrKWBDdlUOwlW0lw0wbFHpKVBDetUOwdeUlw0wLFnlGUBDfNUOwVZUlw0wuKPWJXEtz0hGJv2JcENz2g2BOqkuCmOxR7QVX61tsk+HpS/LsTfH9SfB8X/H+neF0geP2keJ0peD2u+LlF8POd4udgwfsFivdVBO8/Kd6nC71Nivd9Q29TcY5w+0wnh2WME7yzszLCAd7ZmaKZnpkJykxQZoIyE5SZoMwEZSYoM0GZCcpMUGaCMhOUmaDMBGUmKDNBmQnKTFBmgjITlJmgzARlJigzQZkJykxQZsL60mMahlGO6QwqKJsOoVgPSDiCCtKmAyjeAzf6UEHb1IViPsClBxXETR0o7gOB2lBB3dSEYj9gqgUV5E0NKDZTCyrYk2ooPlMNFexBj0Y5pj1UsOe8GuWYSqhgj1ka5ZhyqGBP2RrlmDaoYA/JG+WYFqhgzygb5ZheUMEesW+UY3pABXtC3e3db/wFaSOBa5iSSKAAAAAASUVORK5CYII="/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #ffffff } 
+	</style>
+	<path id="Layer 2" class="shp0" d="M239.5 461.49C117.56 461.49 19 362.37 19 239.75C19 117.12 117.56 18 239.5 18C361.44 18 460 117.12 460 239.75C460 362.37 361.44 461.49 239.5 461.49Z" />
+	<use id="Layer 1" href="#img1" x="92" y="128" />
+</svg>

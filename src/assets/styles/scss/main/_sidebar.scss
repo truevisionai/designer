@@ -1,0 +1,137 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.sidebar-compact-switch {
+  position: fixed;
+  top: 26px;
+  left: 12rem;
+  width: 24px;
+  height: 12px;
+  border-radius: 10px;
+  border: 1px solid #666;
+  cursor: pointer;
+  z-index: 999999;
+  opacity: 1;
+  transition: left 0.3s, opacity 0.1s;
+  span {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #666;
+    transition: all $sidebarTrnTime $transitionTiming;
+  }
+  &.active {
+    background: #444;
+    span {
+      left: 13px;
+      background: #ffffff;
+    }
+  }
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  padding: 0 16px;
+  width: $sidebar-width;
+  height: 64px;
+  line-height: 64px;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  color: #444;
+  background: #ffffff;
+  transition: all $sidebarTrnTime $transitionTiming;
+  overflow: hidden;
+  .app-logo {
+    width: auto;
+    height: 22px;
+    margin-right: 8px;
+    margin-bottom: 2px;
+  }
+  .app-logo-text {
+    width: auto;
+    font-size: 20px;
+    font-weight: 400;
+  }
+}
+
+.app-user {
+  text-align: center;
+  width: 100%;
+  padding: 1rem 0;
+  .app-user-photo {
+    width: 72px;
+    margin: 0 auto 8px;
+    height: 72px;
+    box-sizing: border-box;
+    padding: 4px;
+    border-radius: 50%;
+  }
+  .app-user-controls {
+    .mat-icon-button {
+      margin: 0 2px;
+    }
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  .app-user-name {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: rgba(0, 0, 0, 0.96);
+    margin-left: -2px;
+  }
+}
+
+.app-admin-container.sidebar-compact {
+  .sidebar-compact-switch {
+    opacity: 0;
+    left: -2rem;
+  }
+  .branding {
+    width: $compact-sidebar-width;
+    padding: 0;
+    .app-logo {
+      margin: auto;
+    }
+  }
+  .app-user {
+      padding: .5rem 0;
+    .app-user-photo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 0;
+    }
+  }
+  .app-user-name,
+  .app-user-controls,
+  .app-logo-text {
+    display: none !important;
+  }
+}
+
+[dir="rtl"] {
+  .sidebar-compact-switch {
+    left: auto;
+    right: 12rem;
+  }
+  .branding {
+    top: 0;
+    left: auto !important;
+    right: 0;
+    .app-logo {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+  }
+}

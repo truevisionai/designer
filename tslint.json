@@ -1,0 +1,65 @@
+{
+	"extends": "tslint:recommended",
+	"rulesDirectory": ["codelyzer"],
+	"rules": {
+		"no-unused-vars": "warn",
+		"array-type": false,
+		"arrow-parens": false,
+		"prefer-for-of": false,
+		"curly": false,
+		"deprecation": {
+			"severity": "warn"
+		},
+		"import-blacklist": [true, "rxjs/Rx"],
+		"interface-name": false,
+		"max-classes-per-file": false,
+		"max-line-length": [true, 140],
+		"member-access": false,
+		"member-ordering": [
+			true,
+			{
+				"order": [
+					"static-field",
+					"public-instance-field",
+					"protected-instance-field",
+					"private-instance-field",
+					"constructor",
+					"static-method",
+					"public-instance-method",
+					"protected-instance-method",
+					"private-instance-method"
+				]
+			}
+		],
+		"no-consecutive-blank-lines": false,
+		"no-console": true,
+		"no-empty": false,
+		"no-inferrable-types": [false, "ignore-params"],
+		"no-non-null-assertion": true,
+		"no-redundant-jsdoc": true,
+		"no-switch-case-fall-through": true,
+		"no-use-before-declare": true,
+		"no-var-requires": false,
+		"object-literal-key-quotes": [true, "as-needed"],
+		"object-literal-sort-keys": false,
+		"ordered-imports": false,
+		"quotemark": [false, "single"],
+		"trailing-comma": false,
+		"no-output-on-prefix": true,
+		"use-input-property-decorator": true,
+		"use-output-property-decorator": true,
+		"use-host-property-decorator": true,
+		"no-input-rename": true,
+		"no-output-rename": true,
+		"use-life-cycle-interface": true,
+		"use-pipe-transform-interface": true,
+		"component-class-suffix": true,
+		"directive-class-suffix": true,
+		"space-before-function-paren": true,
+		"new-parens": false,
+        "newline-before-return": true,
+        "one-variable-per-declaration": false,
+        "one-line": false,
+        "semicolon": false
+	}
+}

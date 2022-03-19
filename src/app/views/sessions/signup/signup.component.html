@@ -1,0 +1,81 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="page-wrap height-100">
+    <div class="session-form-hold">
+        <mat-progress-bar mode="determinate" class="session-progress"></mat-progress-bar>
+        <mat-card>
+            <mat-card-content>
+                <div class="text-center pb-1">
+                    <img src="assets/images/logo-full.png" alt="" class="mb-05">
+                    <p class="text-muted m-0">Sign up to use our service</p>
+                </div>
+                <form [formGroup]="signupForm" (ngSubmit)="signup()">
+                    <div class="">
+                        <mat-form-field class="full-width">
+                            <input matInput type="name" name="name" [formControl]="signupForm.controls['name']"
+                                placeholder="Your Name" value="">
+                        </mat-form-field>
+                        <small
+                            *ngIf="signupForm.controls['name'].hasError('required') && signupForm.controls['name'].touched"
+                            class="form-error-msg"> Name is required </small>
+                    </div>
+
+                    <div class="">
+                        <mat-form-field class="full-width">
+                            <input matInput type="email" name="email" [formControl]="signupForm.controls['email']"
+                                placeholder="Your Email" value="">
+                        </mat-form-field>
+                        <small
+                            *ngIf="signupForm.controls['email'].hasError('required') && signupForm.controls['email'].touched"
+                            class="form-error-msg"> Email is required </small>
+
+                        <small
+                            *ngIf="signupForm.controls['email'].hasError('email') && signupForm.controls['email'].touched"
+                            class="form-error-msg"> Invaild email address </small>
+                    </div>
+
+                    <div class="">
+                        <mat-form-field class="full-width">
+                            <input type="password" name="password" matInput
+                                [formControl]="signupForm.controls['password']" placeholder="Password" value="">
+                        </mat-form-field>
+                        <small
+                            *ngIf="signupForm.controls['password'].hasError('required') && signupForm.controls['password'].touched"
+                            class="form-error-msg"> Password is required </small>
+                    </div>
+
+                    <div class="">
+                        <mat-form-field class="full-width">
+                            <input type="password" name="confirmPassword" matInput
+                                [formControl]="signupForm.controls['confirmPassword']" placeholder="Confirm Password"
+                                value="">
+                        </mat-form-field>
+                        <small
+                            *ngIf="signupForm.controls['confirmPassword'].hasError('required') && signupForm.controls['confirmPassword'].touched"
+                            class="form-error-msg">Confirm password is required.</small>
+                        <small *ngIf="signupForm.controls['confirmPassword'].hasError('equalTo')"
+                            class="form-error-msg">Passwords do not math.</small>
+                    </div>
+
+                    <div class="pb-1">
+                        <mat-checkbox name="agreed" [formControl]="signupForm.controls['agreed']" class="pb-1">I have
+                            read and agree to the terms of service.</mat-checkbox>
+
+                        <small
+                            *ngIf="signupForm.controls['agreed'].hasError('agreed') && signupForm.controls['agreed'].touched"
+                            class="form-error-msg"> You must agree to the terms and conditions </small>
+                    </div>
+
+                    <button mat-raised-button class="mat-primary full-width mb-1" [disabled]="signupForm.invalid">Sign
+                        up</button>
+                    <div class="text-center">
+                        <a [routerLink]="'/sessions/signin'" class="mat-primary text-center full-width">Sign in to
+                            existing account</a>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

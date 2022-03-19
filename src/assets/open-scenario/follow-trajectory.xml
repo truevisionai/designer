@@ -1,0 +1,138 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<OpenSCENARIO>
+    <FileHeader revMajor="1" revMinor="6" date="" description="" author=""/>
+    <ParameterDeclaration/>
+    <Catalogs/>
+    <RoadNetwork>
+        <Logics filepath="../open-drive/straight-road.xml"/>
+        <SceneGraph/>
+    </RoadNetwork>
+    <Entities>
+        <Object name="vehicle_1">
+            <CatalogReference catalogName="VehicleCatalog" entryName="vehicle_1"/>
+            <Controller>
+                <CatalogReference catalogName="DriverCatalog" entryName="DefaultDriver"/>
+            </Controller>
+        </Object>
+    </Entities>
+    <Storyboard>
+        <Init>
+            <Actions>
+                <Private object="vehicle_1">
+                    <Action>
+                        <Position>
+                            <Lane roadId="1" laneId="-3" s="100" offset="0"/>
+                        </Position>
+                    </Action>
+                    <Action>
+                        <Longitudinal>
+                            <Speed>
+                                <Dynamics shape="step"/>
+                                <Target>
+                                    <Absolute value="20"/>
+                                </Target>
+                            </Speed>
+                        </Longitudinal>
+                    </Action>
+                </Private>
+            </Actions>
+        </Init>
+        <Story name="NewStory" owner="vehicle_1">
+            <Act name="NewAct">
+                <Sequence name="NewSequence" numberOfExecutions="1">
+                    <Actors>
+                        <Entity name="vehicle_1"/>
+                    </Actors>
+                    <Maneuver name="NewManeuever">
+                        <Event name="NewEvent" priority="100">
+                            <Action name="NewAction">
+                                <Private>
+                                    <Routing>
+                                        <FollowTrajectory>
+                                            <Lateral purpose="steering"/>
+                                            <Longitudinal>
+                                                <None/>
+                                            </Longitudinal>
+                                            <Trajectory name="NewTrajectory" domain="distance" closed="false">
+                                                <Vertex reference="0">
+                                                    <Position>
+                                                        <World x="8.285601538628915" y="0.4859129374647768"
+                                                               z="3.552713678800501e-15" h="0" p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                                <Vertex reference="1">
+                                                    <Position>
+                                                        <World x="8.484526917817378" y="25.953141231152564" z="0" h="0"
+                                                               p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                                <Vertex reference="2">
+                                                    <Position>
+                                                        <World x="8.424817898410845" y="33.93385747123412" z="0" h="0"
+                                                               p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                                <Vertex reference="3">
+                                                    <Position>
+                                                        <World x="9.06737763255063" y="48.99476768860859" z="0" h="0"
+                                                               p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                                <Vertex reference="4">
+                                                    <Position>
+                                                        <World x="8.929121441124007" y="61.26894435219063" z="0" h="0"
+                                                               p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                                <Vertex reference="5">
+                                                    <Position>
+                                                        <World x="8.582452395312485" y="137.88736248504344" z="0" h="0"
+                                                               p="0" r="0"/>
+                                                    </Position>
+                                                    <Shape>
+                                                        <Polyline/>
+                                                    </Shape>
+                                                </Vertex>
+                                            </Trajectory>
+                                        </FollowTrajectory>
+                                    </Routing>
+                                </Private>
+                            </Action>
+                            <StartConditions/>
+                        </Event>
+                    </Maneuver>
+                </Sequence>
+                <Conditions>
+                    <Start>
+                        <ConditionGroup>
+                            <Condition name="" delay="0" edge="any">
+                                <ByValue>
+                                    <SimulationTime value="0" rule="equal_to"/>
+                                </ByValue>
+                            </Condition>
+                        </ConditionGroup>
+                    </Start>
+                </Conditions>
+            </Act>
+        </Story>
+        <EndConditions/>
+    </Storyboard>
+</OpenSCENARIO>

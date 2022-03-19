@@ -1,0 +1,23 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+// Remove imports which are not needed for your project
+@import "views/sessions";
+@import "views/inbox";
+@import "views/calendar";
+@import "views/chats";
+@import "views/gallery";
+@import "views/pricings";
+@import "views/users";
+@import "views/profile";
+@import "views/shop";
+@import "views/home";
+
+/* 
+  Only Required if you want to use Angular Landing
+  (https://themeforest.net/item/angular-landing-material-design-angular-app-landing-page/21198258)
+*/
+// @import "views/landing";
+
+@import "views/popover";

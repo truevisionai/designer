@@ -1,0 +1,205 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.app-admin-container {
+  max-width: 100%;
+  height: 100vh;
+
+  .rightside-content-hold {
+    padding: 0.333333rem;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 450px;
+  }
+}
+
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  z-index: 10001;
+  width: $sidebar-width;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -webkit-transition: all $sidebarTrnTime $transitionTiming;
+  transition: all $sidebarTrnTime $transitionTiming;
+  overflow: hidden;
+  .sidebar-hold {
+    width: $sidebar-width;
+  }
+  .navigation-hold {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin-top: 64px;
+    background: rgba(255, 255, 255, 0.95);
+    left: 0;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.main-content-wrap {
+  position: relative;
+  float: right;
+  height: 100vh;
+  transition: width $sidebarTrnTime $transitionTiming;
+  &.ps > .ps__rail-y {
+    z-index: 9999;
+  }
+}
+
+.sidebar-backdrop {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  display: block;
+  z-index: 10000;
+  visibility: hidden;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: all $sidebarTrnTime $transitionTiming;
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+// --------
+.app-admin-container.sidebar-full:not(.navigation-top, .compact-toggle-active) {
+  .main-content-wrap {
+    width: calc(100% - #{$sidebar-width});
+  }
+  .sidebar-panel {
+    width: $sidebar-width;
+    overflow: hidden;
+  }
+}
+.app-admin-container.compact-toggle-active {
+  .main-content-wrap {
+    width: calc(100% - #{$compact-sidebar-width});
+  }
+}
+
+.app-admin-container.sidebar-compact {
+  .sidebar-panel,
+  .sidebar-hold {
+    width: $compact-sidebar-width;
+  }
+}
+
+.app-admin-container.sidebar-compact-big {
+  .main-content-wrap {
+    width: calc(100% - #{$compact-big-sidebar-width});
+  }
+  .sidebar-panel {
+    width: $compact-big-sidebar-width;
+    .branding {
+      width: $compact-big-sidebar-width;
+      .app-logo {
+        margin: auto;
+      }
+    }
+    .navigation-hold {
+      overflow: visible !important;
+    }
+  }
+}
+
+.app-admin-container.sidebar-closed {
+  .sidebar-panel {
+    overflow: hidden;
+    left: -$sidebar-width;
+    .branding {
+      left: -$sidebar-width;
+      .app-logo-text {
+        // display: none;
+      }
+    }
+  }
+  .main-content-wrap {
+    width: 100%;
+  }
+}
+
+.fixed-topbar {
+  .rightside-content-hold {
+    overflow: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 64px;
+  }
+}
+
+.layout-intransition {
+  .branding {
+    display: none !important;
+  }
+
+  .app-user-controls,
+  .app-user-name {
+    opacity: 0 !important;
+  }
+}
+
+[dir="rtl"] {
+  &.app-admin-container.sidebar-closed {
+    .sidebar-panel {
+      right: -$sidebar-width;
+    }
+    .branding {
+      left: auto !important;
+      right: -$sidebar-width;
+    }
+  }
+  .main-content-wrap {
+    float: left;
+  }
+  .sidebar-panel {
+    right: 0;
+    left: auto !important;
+  }
+}
+
+.app-admin-container.sidebar-full.navigation-top {
+  .sidebar-panel {
+    left: 0;
+  }
+}
+.app-admin-container.navigation-top {
+  .main-content-wrap {
+    float: none;
+    height: calc(100vh - 48px);
+    width: 100%;
+  }
+  .rightside-content-hold {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .sidebar-panel {
+    overflow: hidden;
+    left: -$sidebar-width;
+    .navigation-hold {
+      margin-top: 48px;
+    }
+  }
+}
+
+@media (max-width: 959px) {
+  .app-admin-container.sidebar-full {
+    .main-content-wrap {
+      width: 100% !important;
+    }
+  }
+}

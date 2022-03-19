@@ -1,0 +1,14 @@
+{
+  "version": 0.1,
+  "uuid": "3F5A41C8-AF34-4A26-A0E6-55DE6E6077CF",
+  "type": "MeshStandardMaterial",
+  "name": "Sidewalk-01",
+  "color": 16777215,
+  "roughness": 1,
+  "metalness": 0.3,
+  "emissive": 0,
+  "mapGuid": "D6871CAD-6304-4584-BDF2-CD1780B4F6D3",
+  "depthFunc": 3,
+  "depthTest": true,
+  "depthWrite": true
+}

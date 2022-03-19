@@ -1,0 +1,11 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container" *ngIf="data && data.node">
+
+    <app-double-field label="Distance" [value]="data.node.laneOffset.s" min="0" (changed)="onDistanceChanged($event)"></app-double-field>
+
+    <app-double-field label="Offset" [value]="data.node.laneOffset.a" min="0.1" max="50" (changed)="onOffsetChanged($event)"></app-double-field>
+
+</div>

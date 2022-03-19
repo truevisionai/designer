@@ -1,0 +1,76 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Electron-File",
+            "type": "chrome",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
+            "runtimeArgs": [
+                "${workspaceRoot}/main.js",
+                "--remote-debugging-port=9222",
+                "--open-dev-tools",
+                "--disable-splash",
+            ],
+            "webRoot": "${workspaceRoot}"
+        },
+        {
+            "name": "Electron-Localhost",
+            "type": "chrome",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
+            "runtimeArgs": [
+                "${workspaceRoot}/main.js",
+                "--remote-debugging-port=9222",
+                "--open-dev-tools",
+                "--disable-splash",
+                "--locahost"
+            ],
+            "webRoot": "${workspaceRoot}/src"
+        },
+        {
+            "name": "Attach",
+            "type": "node",
+            "request": "attach",
+            "port": 9222,
+        },
+        {
+            "name": "Karma-Test-Debug",
+            "type": "chrome",
+            "request": "attach",
+            "address": "127.0.0.1",
+            "port": 9333,
+            "webRoot": "${workspaceRoot}",
+            "pathMapping": {
+                "/": "${workspaceRoot}/",
+                "/base/": "${workspaceRoot}/"
+            }
+        },
+        {
+            "name": "Debug Main Process",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            },
+            "args" : [
+                ".",                 
+                "--open-dev-tools",
+                "--disable-splash",
+                "--localhost"
+            ],
+            "outputCapture": "std"
+        }
+    ]
+}

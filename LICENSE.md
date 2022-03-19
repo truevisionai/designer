@@ -1,0 +1,1 @@
+Use of the Truevision Designer is governed by the terms of the Truevision Designer End User License Agreement, which can be found at https://www.truevision.ai/eula

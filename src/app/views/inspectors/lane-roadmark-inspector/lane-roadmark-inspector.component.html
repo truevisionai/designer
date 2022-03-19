@@ -1,0 +1,43 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container" *ngIf="roadMark">
+
+    <mat-form-field>
+        <input [(ngModel)]="roadMark.sOffset" disabled matInput placeholder="S" type="number">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <mat-label>Type</mat-label>
+        <mat-select (selectionChange)="onTypeChanged($event, roadMark)" [ngModel]="roadMark.type">
+            <mat-option [value]="types.NONE">None</mat-option>
+            <mat-option [value]="types.SOLID">Solid</mat-option>
+            <mat-option [value]="types.BROKEN">Broken</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <mat-label>Weight</mat-label>
+        <mat-select (selectionChange)="onWeightChanged($event, roadMark)" [ngModel]="roadMark.weight">
+            <mat-option value="standard">Standard</mat-option>
+            <mat-option value="bold">Bold</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <mat-label>Color</mat-label>
+        <mat-select (selectionChange)="onColorChanged($event, roadMark)" [ngModel]="roadMark.color">
+            <mat-option value="standard">Standard (White)</mat-option>
+            <mat-option value="white">White</mat-option>
+            <mat-option value="yellow">Yellow</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input (ngModelChange)="onWidthChanged($event, roadMark)" [ngModel]="roadMark.width" matInput
+               placeholder="Width"
+               type="number">
+    </mat-form-field>
+
+</div>

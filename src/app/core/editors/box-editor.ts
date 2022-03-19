@@ -1,0 +1,158 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { AbstractShapeEditor } from './abstract-shape-editor';
+import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import * as THREE from 'three';
+import { Line, BoxBufferGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { SceneService } from '../services/scene.service';
+import { KeyboardInput } from 'app/core/input';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { AppService } from '../services/app.service';
+import { EventEmitter } from '@angular/core';
+
+export interface BoxCreatedEvent {
+    mesh?: Mesh;
+    geometry?: BoxBufferGeometry;
+    height?: number;
+    width?: number;
+    length?: number;
+}
+
+export class BoxEditor extends AbstractShapeEditor {
+
+    boxGeometry = new BoxBufferGeometry();
+    boxMaterial = new MeshBasicMaterial( { color: 'red' } );
+    boxMesh: Mesh;
+
+    height: number;
+    width: number;
+    length: number = 1;
+
+    boxCreated = new EventEmitter<BoxCreatedEvent>();
+
+    boxes: Mesh[] = [];
+
+    creating = false;
+
+    constructor ( public keepAspectRatio: boolean = false ) {
+
+        super();
+
+    }
+
+    disable () {
+
+        super.disable();
+
+        AppService.three.enableControls();
+
+    }
+
+    draw () {
+
+        this.boxGeometry = new BoxBufferGeometry( this.height, this.width, this.length );
+
+        if ( this.boxMesh ) SceneService.remove( this.boxMesh );
+
+        this.boxMesh = new Mesh( this.boxGeometry, this.boxMaterial );
+
+        this.boxMesh.position.copy( this.pointerDownAt );
+
+        SceneService.add( this.boxMesh );
+    }
+
+    onPointerDown ( e: PointerEventData ) {
+
+        AppService.three.disableControls();
+
+        if ( e.button !== MouseButton.LEFT && !KeyboardInput.isShiftKeyDown ) return;
+
+        this.pointerIsDown = true;
+        this.pointerDownAt = e.point;
+
+    }
+
+    onPointerUp ( e: PointerEventData ) {
+
+        AppService.three.enableControls();
+
+        if ( e.button !== MouseButton.LEFT || !this.creating ) return;
+
+        this.creating = false;
+
+        this.pointerIsDown = false;
+
+        if ( this.boxMesh ) SceneService.remove( this.boxMesh );
+
+        const cp = this.addControlPoint( this.boxMesh.position );
+
+        const box = new Mesh( this.boxGeometry, this.boxMaterial );
+
+        box.position.copy( this.boxMesh.position );
+
+        this.boxes.push( box );
+
+        this.boxCreated.emit( {
+            mesh: box,
+            geometry: this.boxGeometry,
+            height: this.length,
+            width: this.height,
+            length: this.width,
+        } );
+
+        cp.updated.subscribe( e => {
+
+            box.position.copy( e.position );
+
+        } );
+
+        this.controlPointSelected.subscribe( e => {
+
+
+        } );
+
+    }
+
+    onPointerMoved ( e: PointerMoveData ) {
+
+        if ( this.pointerIsDown && KeyboardInput.isShiftKeyDown ) {
+
+            this.creating = true;
+
+            // this.height = this.pointerDownAt.distanceTo( e.point );
+            // this.width = this.pointerDownAt.distanceTo( e.point );
+            // this.depth = this.pointerDownAt.distanceTo( e.point );
+
+            const startPoint = this.pointerDownAt;
+            const endPoint = e.point;
+
+            // const tmpPoint = startPoint.clone();
+
+            // tmpPoint.x = Math.min( startPoint.x, endPoint.x );
+            // tmpPoint.y = Math.max( startPoint.y, endPoint.y );
+            // endPoint.x = Math.max( startPoint.x, endPoint.x );
+            // endPoint.y = Math.min( startPoint.y, endPoint.y );
+
+
+            this.width = Math.abs( startPoint.y - endPoint.y ) * 2;
+            this.height = Math.abs( startPoint.x - endPoint.x ) * 2;
+
+            this.draw();
+        }
+
+        if ( this.pointerIsDown && this.currentPoint != null ) {
+
+            e.point.z = 0;
+
+            this.currentPoint.copyPosition( e.point );
+
+            this.controlPointMoved.emit( this.currentPoint );
+
+
+        }
+
+    }
+
+}

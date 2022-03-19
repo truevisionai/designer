@@ -1,0 +1,79 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.breadcrumb {
+  display: block;
+  margin: 0;
+  padding: 0;
+  li {
+    list-style: none;
+    float: left;
+    &:not(:first-child):before {
+      content: "/\A0";
+      padding: 0 8px;
+    }
+  }
+}
+
+.breadcrumb-bar {
+  position: relative;
+  width: 100%;
+  .breadcrumb {
+    padding: 0 .333rem;
+    overflow: hidden;
+    li {
+      line-height: 40px;
+      &:not(:first-child):before {
+        padding: 0 8px;
+      }
+      a {
+        font-weight: 400;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+.breadcrumb-title {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem .333rem;
+  line-height: 40px;
+  .bc-title {
+    font-size: $font-size-h5;
+    margin: 0;
+    line-height: 40px;
+  }
+  .breadcrumb {
+    position: relative;
+    margin-left: 24px;
+    &::before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 2px;
+      background: #6a6a6a;
+      left: -12px;
+      top: 8px;
+    }
+  }
+}
+
+[dir=rtl] {
+  .breadcrumb-bar, 
+  .breadcrumb-title {
+    .breadcrumb li {
+      float: right;
+    }
+  }
+  .breadcrumb-title {
+    .breadcrumb {
+      margin-left: 0;
+      margin-right: 24px;
+      &::before {
+        left: auto;
+        right: -12px;
+      }
+    }
+  }
+}

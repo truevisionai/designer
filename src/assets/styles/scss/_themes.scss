@@ -1,0 +1,15 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Keep atleast one file
+//@import "themes/egret-navy";
+//@import "themes/egret-blue";
+//@import "themes/egret-dark-purple";
+@import "themes/egret-dark-pink";
+
+$background: map-get($egret-theme, background);
+$foreground: map-get($egret-theme, foreground);

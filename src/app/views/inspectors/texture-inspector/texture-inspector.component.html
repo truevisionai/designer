@@ -1,0 +1,37 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container" *ngIf="texture">
+
+    <mat-form-field>
+        <input matInput type="string" disabled placeholder="Texture" disabled [(ngModel)]="texture.name">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput type="number" disabled (change)="onChange($event)" placeholder="wrapS" [(ngModel)]="texture.wrapS">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput type="number" disabled (change)="onChange($event)" placeholder="wrapS" [(ngModel)]="texture.wrapT">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput type="number" disabled (change)="onChange($event)" placeholder="anisotropy" [(ngModel)]="texture.anisotropy">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput type="number" disabled (change)="onChange($event)" placeholder="Offset X" [(ngModel)]="texture.offset.x">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput type="number" disabled (change)="onChange($event)" placeholder="Offset Y" [(ngModel)]="texture.offset.y">
+    </mat-form-field>
+
+</div>
+
+<div class="inspector-form-container" *ngIf="texture">
+
+    <img src="{{metadata.path}}" />
+
+</div>

@@ -1,0 +1,39 @@
+{
+  "guid": "ED2FD2A5-4784-444D-A355-6979065397B7",
+  "version": 4.5,
+  "type": "Texture",
+  "importer": "TextureImporter",
+  "data": {
+    "metadata": null,
+    "uuid": "37C49ED2-D1E3-4A8C-99D7-DFD38BFD289A",
+    "name": "",
+    "mapping": 300,
+    "repeat": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "center": [
+      0,
+      0
+    ],
+    "rotation": 0,
+    "wrap": [
+      1000,
+      1000
+    ],
+    "format": 1023,
+    "type": 1009,
+    "encoding": 3000,
+    "minFilter": 1008,
+    "magFilter": 1006,
+    "anisotropy": 1,
+    "flipY": true,
+    "premultiplyAlpha": false,
+    "unpackAlignment": 4
+  },
+  "path": "STOP.svg"
+}

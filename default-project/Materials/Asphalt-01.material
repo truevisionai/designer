@@ -1,0 +1,14 @@
+{
+  "version": 0.1,
+  "uuid": "3C52858A-B32B-4927-87CF-814E8E5FFFAE",
+  "type": "MeshStandardMaterial",
+  "name": "Asphalt-01",
+  "color": 16777215,
+  "roughness": 1,
+  "metalness": 0.3,
+  "emissive": 0,
+  "mapGuid": "AAC88E06-1805-4B33-9D03-D6BA62031E38",
+  "depthFunc": 3,
+  "depthTest": true,
+  "depthWrite": true
+}

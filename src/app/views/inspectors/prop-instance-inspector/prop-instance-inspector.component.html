@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container">
+
+    <mat-card class="example-card">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image" (click)="onPropModelClicked()">
+                <img class="file-card-image" src="{{ previewImage }}">
+            </div>
+        </mat-card-header>
+    </mat-card>
+
+    <app-string-field [value]="data.object.id" label="ID" disabled="true"></app-string-field>
+
+    <app-string-field [value]="data.object.name" label="Name" disabled="true"></app-string-field>
+
+</div>
+
+<app-transform-inspector [data]="data.object"></app-transform-inspector>

@@ -1,0 +1,20 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div fxLayout="row" fxFlexFill>
+
+    <div fxFlex="20">
+        <perfect-scrollbar fxFlexFill class="project-heirarchy-container">
+            <app-project-hierarchy [dataSource]="dataSource" [treeControl]="treeControl" (folderChanged)="onFolderChanged($event)">
+            </app-project-hierarchy>
+        </perfect-scrollbar>
+    </div>
+
+    <div fxFlex="80">
+        <perfect-scrollbar fxFlexFill class="folder-file-container">
+            <app-folder-files fxFlexFill [files]="files" [folder]="selectedFolder" (folderChanged)="onFolderChanged($event)"></app-folder-files>
+        </perfect-scrollbar>
+    </div>
+
+</div>

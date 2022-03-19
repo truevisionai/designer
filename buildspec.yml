@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # install dependencies
+      - echo installng source NPM dependencies...
+      - npm install npm@latest -g
+      - npm install -g @angular/cli
+
+  pre_build:
+    commands:
+      - echo prebuild steps
+      - npm install
+      - ng test --progress=false --browsers=ChromeHeadless --watch=false
+
+  build:
+    commands:
+      # build angular app
+      - ng build --prod
+
+
+  post_build:
+    commands:
+      # clear S3 bucket
+      # - aws s3 rm s3://${S3_BUCKET} --recursive
+      # - echo S3 bucket cleared
+      # copy files from dist folder into S3 bucket
+      # - aws s3 cp dist s3://${S3_BUCKET} --recursive
+      - echo Build completed on `date`

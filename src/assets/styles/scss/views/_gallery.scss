@@ -1,0 +1,39 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/*---- Gallery -----*/
+.app-gallery .mat-figure .gallery-control-wrap {
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, .35);
+  opacity: 0;
+  transition: opacity .3s ease-in;
+  -webkit-transition: opacity .3s ease-in;
+}
+.app-gallery img {
+  max-width: 100%;
+}
+.app-gallery .mat-figure:hover .gallery-control-wrap {
+  opacity: 1;
+}
+.app-gallery .mat-figure .gallery-control-wrap .gallery-control {
+  padding: 0 0 0 1rem;
+}
+.app-gallery .mat-figure .gallery-control-wrap .gallery-control .photo-detail {
+  margin: 0;
+  color: #FEFEFE;
+  line-height: 40px;
+}
+.app-gallery .mat-figure .gallery-control-wrap .gallery-control .mat-icon {
+  color: #fff;
+}
+
+[dir=rtl] {
+  .app-gallery .mat-figure .gallery-control-wrap .gallery-control .photo-detail {
+    margin-right: 1rem;
+  }
+}

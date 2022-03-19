@@ -1,0 +1,15 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div #viewport fxLayout="column" fxFlexFill style="background:red;" id="canvas" (click)="onMouseClick($event)"
+    (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)" (mouseenter)="onMouseEnter($event)"
+    (mouseexit)="onMouseExit($event)" (mouseout)="onMouseOut($event)" (mouseleave)="onMouseLeave($event)"
+    (mousemove)="onMouseMove($event)" (contextmenu)="onContextMenu($event)" style="position:absolute;">
+
+    <ng-content></ng-content>
+
+    <div class="app-viewport-stats">
+        <span>{{ fps }} FPS</span>
+    </div>
+</div>

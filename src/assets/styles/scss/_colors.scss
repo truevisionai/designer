@@ -1,0 +1,101 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+$solid-colors: (
+  white: (
+    color: #fff,
+    alt: #eee,
+    foreground: rgba(0, 0, 0, 0.76)
+  ),
+  black: (
+    color: #1e2129,
+    alt: #2d323d,
+    foreground: #ffffff
+  ),
+  gray: (
+    color: #9E9E9E,
+    alt: #9E9E9E,
+    foreground: #ffffff
+  ),
+  dark-gray: (
+    color: #424242,
+    alt: #303030,
+    foreground: #ffffff
+  ),
+  slate-gray: (
+    color: #607D8B,
+    alt: #37474F,
+    foreground: #ffffff
+  ),
+  dark-purple: (
+    color: #322740,
+    alt: #322740,
+    foreground: #ffffff
+  ),
+  
+  dark-blue: (
+    color: #10174c,
+    alt: #151c4e,
+    foreground: #ffffff
+  ),
+  blue: (
+    color: #03A9F4,
+    alt: #039BE5,
+    foreground: #ffffff
+  ),
+  indigo: (
+    color: #3F51B5,
+    alt: #5C6BC0,
+    foreground: #ffffff
+  ),
+  yellow: (
+    color: #fcc02e,
+    alt: #f9c23b,
+    foreground: rgba(0, 0, 0, 0.87)
+  ),
+  green: (
+    color: #4CAF50,
+    alt: #66BB6A,
+    foreground: rgba(0, 0, 0, 0.87)
+  ),
+  red: (
+    color: #F44336,
+    alt: #FF5252,
+    foreground: #ffffff
+  ),
+  orange: (
+    color: #FF5722,
+    alt: #FF6E40,
+    foreground: #ffffff
+  ),
+  pink: (
+    color: #e91f63,
+    alt: #e82c6c,
+    foreground: #ffffff
+  ),
+);
+
+// Gradient colors
+$gradient-colors: (
+  gradient-purple-indigo: (
+    "start-color": #663399,
+    "end-color": #33214b,
+    "foreground": #ffffff
+  ),
+  gradient-black-blue: (
+    "start-color": #004e92,
+    "end-color": #000428,
+    "foreground": #ffffff
+  ),
+  gradient-black-gray: (
+    "start-color": #404040,
+    "end-color": #000000,
+    "foreground": #ffffff
+  ),
+  gradient-steel-gray: (
+    "start-color": #616d86,
+    "end-color": #1f1c2c,
+    "foreground": #ffffff
+  )
+);

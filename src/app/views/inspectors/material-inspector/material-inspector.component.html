@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container" *ngIf="material">
+
+    <mat-card class="mat-card material-preview">
+        <img src="{{ thumbnail }}" />
+    </mat-card>
+
+    <app-string-field label="Name" [value]="material.name" (changed)="onNameChanged($event)"></app-string-field>
+
+    <app-double-field label="Roughness" [value]="material.roughness" min="0" max="1" (changed)="onRoughnessChanged($event)"></app-double-field>
+
+    <app-double-field label="Metalness" [value]="material.metalness" min="0" max="1" (changed)="onMetalnessChanged($event)"></app-double-field>
+
+    <app-color-field label="Color" [value]="material.color" (changed)="onColorChanged($event)"></app-color-field>
+
+    <!-- <app-color-field label="Emissive" [value]="material.emissive" (changed)="onEmissiveColorChanged($event)"></app-color-field> -->
+
+    <app-texture-field [guid]="material.mapGuid" label="Map" (changed)="onMapChanged($event, 'map')"> </app-texture-field>
+
+    <app-texture-field [guid]="material.roughnessMapGuid" label="Roughness Map" (changed)="onMapChanged($event, 'roughnessMap')"></app-texture-field>
+
+    <app-texture-field [guid]="material.normalMapGuid" label="NormalMap" (changed)="onMapChanged($event, 'normalMap')"></app-texture-field>
+
+    <!-- <app-texture-field [guid]="material.aoMapGuid" label="Occlusion Map" (changed)="onMapChanged($event, 'aoMap')">
+    </app-texture-field> -->
+
+    <!-- <app-texture-field [guid]="material.displacementMapGuid" label="Displacement Map"
+        (changed)="onMapChanged($event, 'displacementMap')"></app-texture-field> -->
+
+</div>

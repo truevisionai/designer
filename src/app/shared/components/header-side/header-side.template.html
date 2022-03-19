@@ -1,0 +1,80 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<mat-toolbar class="topbar">
+  <!-- Sidenav toggle button -->
+  <button
+    *ngIf="layoutConf.sidebarStyle !== 'compact'"
+    mat-icon-button
+    id="sidenavToggle"
+    (click)="toggleSidenav()"
+    matTooltip="Toggle Hide/Open"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  
+  <!-- Search form -->
+  <!-- <div fxFlex fxHide.lt-sm="true" class="search-bar">
+    <form class="top-search-form">
+      <mat-icon role="img">search</mat-icon>
+      <input autofocus="true" placeholder="Search" type="text" />
+    </form>
+  </div> -->
+
+  <span fxFlex></span>
+  <!-- Language Switcher -->
+  <button mat-button [matMenuTriggerFor]="menu">
+    <span class="flag-icon {{currentLang.flag}} mr-05"></span>
+    <span>{{currentLang.name}}</span>
+  </button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item *ngFor="let lang of availableLangs" (click)="setLang(lang)">
+        <span class="flag-icon mr-05 {{lang.flag}}"></span>
+        <span>{{lang.name}}</span>
+  </button>
+</mat-menu>
+  
+  <egret-search-input-over placeholder="Country (e.g. US)" resultPage="/search">
+  </egret-search-input-over>
+  <!-- Open "views/search-view/result-page.component" to understand how to subscribe to input field value -->
+
+  <!-- Notification toggle button -->
+  <button
+    mat-icon-button
+    matTooltip="Notifications"
+    (click)="toggleNotific()"
+    [style.overflow]="'visible'"
+    class="topbar-button-right"
+  >
+    <mat-icon>notifications</mat-icon>
+    <span class="notification-number mat-bg-warn">3</span>
+  </button>
+  <!-- Top left user menu -->
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="accountMenu"
+    class="topbar-button-right img-button"
+  >
+    <img src="assets/images/face-7.jpg" alt="" />
+  </button>
+
+  <mat-menu #accountMenu="matMenu">
+    <button mat-menu-item [routerLink]="['/profile/overview']">
+      <mat-icon>account_box</mat-icon>
+      <span>Profile</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/profile/settings']">
+      <mat-icon>settings</mat-icon>
+      <span>Account Settings</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Disable alerts</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/sessions/signin']">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Sign out</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

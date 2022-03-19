@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="tv-field" align="left">
+
+    <label class="tv-field-label">{{ label }}</label>
+
+    <div class="tv-field-text-input">
+
+        <select class="tv-field-dropdown">
+            <option class="tv-field-option" [value]="option" *ngFor="let option of options">{{option}}</option>
+        </select>
+
+    </div>
+
+</div>

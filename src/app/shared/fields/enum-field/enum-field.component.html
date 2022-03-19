@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="tv-field" align="left">
+
+    <label class="tv-field-label">{{ label }}</label>
+
+    <div class="tv-field-text-input">
+
+        <select class="tv-field-dropdown" [(ngModel)]="value" (change)="onChanged($event)">
+
+            <option class="tv-field-option" [value]="option.value" *ngFor="let option of options" [selected]="option.value===value">
+
+                {{ option.label}}
+
+            </option>
+
+        </select>
+
+    </div>
+
+</div>

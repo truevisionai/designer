@@ -1,0 +1,25 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<app-transform-inspector [data]="data.mesh"></app-transform-inspector>
+
+<!-- <app-material-inspector [data]="data.mesh.material"></app-material-inspector> -->
+
+<div class="inspector-form-container">
+
+    <mat-form-field>
+        <input matInput placeholder="ID" disabled [(ngModel)]="data.attr_id">
+    </mat-form-field>
+
+    <!-- <mat-form-field> -->
+        <!-- <input matInput placeholder="Road-ID" disabled [(ngModel)]="data.road_id"> -->
+    <!-- </mat-form-field> -->
+
+    <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="data.attr_name">
+    </mat-form-field>
+
+    <button mat-button (click)="onDelete()">Delete!</button>
+
+</div>

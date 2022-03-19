@@ -1,0 +1,112 @@
+{
+  "DASHBOARD": "Dashboard",
+  "APPS": "Apps",
+  "INBOX": "Inbox",
+  "CHAT": "Chat",
+  "CALENDAR": "Calendar",
+  "DIALOGS": "Dialogs",
+  "CONFIRM": "Confirm",
+  "LOADER": "Loader",
+
+  "MATERIAL": "Material",
+  "BUTTONS": "Buttons",
+  "CARDS": "Cards",
+  "SELECT": "Select",
+  "AUTOCOMPLETE": "Autocomplete",
+  "INPUT": "Input",
+  "CHECKBOX": "Checkbox",
+  "DATEPICKER": "Datepicker",
+  "RADIO": "Radio",
+  "TOOLBAR": "Toolbar",    
+  "LISTS": "Lists",
+  "GRIDS": "Grids",
+  "PROGRESS": "Progress",
+  "TABS": "Tabs",
+  "SWITCH": "Switch",
+  "TOOLTIP": "Tooltip",
+  "MENU": "Menu",
+  "MEMBER": "Member",
+  "SAVE": "Save",
+  "SLIDER": "Slider",
+  "SNACKBAR": "Snackbar",
+
+  "FORMS": "Forms",
+  "EDITOR": "Editor",
+  "BASIC": "Basic",
+  "UPLOAD": "Upload",
+  "WIZARD": "Wizard",
+
+  "TABLES": "Tables",
+  "TOUR": "Tour",
+  "FULLSCREEN": "Fullscreen",
+  "PAGING": "Paging",
+  "FILTER": "Filter",
+
+  "MAP": "Map",
+  "CHARTS": "Charts",
+  "DND": "Drag and Drop",
+
+  "PAGES": "Pages",
+  "SESSIONS": "Sessions",
+  "SIGNIN": "Signin",
+  "SIGNUP": "Signup",
+  "FORGOT": "Forgot",
+  "LOCKSCREEN": "Lockscreen",
+
+  "OTHERS": "Others",
+  "GALLERY": "Gallery",
+  "PRICINGS": "Pricings",
+  "USERS": "Users",
+  "PROFILE": "Profile",
+  "BLANK": "Blank",
+  "MATICONS": "Material Icons",
+  "ADD": "Add",
+  "ITEM": "Item",
+  "SUBITEM": "Subitem",
+  "DOC": "Documentation",
+  "NOTFOUND": "Not Found",
+  "ERROR": "Error",
+  "OVERVIEW": "Overview",
+  "SETTINGS": "Settings",
+  
+  "ECOMMERCE": "Ecommerce",
+  "SHOP": "Shop",
+  "PRODUCTS": "Products",
+  "PRODUCT DETAILS": "Product Details",
+  "CART": "Cart",
+  "CHECKOUT": "Checkout",
+
+  "ROAD-GEOMETRY-TITLE": "Road Tool",
+  "ROAD-GEOMETRY-DESCRIPTION": "Tool to create road geometries. <br />  Use SHIFT + LEFT CLICK to create control points. <br/>  LEFT CLICK control points to drag and reshape road. <br/> LEFT CLICK to select node (Red Highlights at start/end of road). <br/> Roads can be linked/joined by selecting 2 nodes <br/>",
+
+  "LANE-WIDTH-TOOL-TITLE": "Lane Width Tool",
+  "LANE-WIDTH-TOOL-DESCRIPTION": "Tool to edit width of lane. <br />  Use SHIFT + LEFT CLICK to insert a new node. <br/> Use LEFT CLICK to select a node and edit. <br/> Drag selected node to change distance value <br/>  Change node properties from the inspector. <br/>",
+
+  "ADD-LANE-TOOL-TITLE": "Add Lane Tool",
+  "ADD-LANE-TOOL-DESCRIPTION": "Add new duplicate lane. <br />  Use SHIFT + LEFT CLICK to select the lane you want to duplicate. <br/>  New lane will be added next to the selected lane. <br/>",
+
+  "LANE-TYPE-TOOL-TITLE": "Lane Type Tool",
+  "LANE-TYPE-TOOL-DESCRIPTION": "Change the type of lane. <br />  Use SHIFT + LEFT CLICK to select the lane. <br/>  Change the lane type from the inspector. <br/>",
+  "LANE-TOOL-TITLE": "Lane Tool",
+  "LANE-TOOL-DESCRIPTION": "Change the type, material & other properties of lane. <br />  Use SHIFT + LEFT CLICK to select the lane. <br/>  Change the lane type from the inspector. <br/>",
+
+  "LANE-MARKING-TOOL-TITLE": "Lane Marking Tool",
+  "LANE-MARKING-TOOL-DESCRIPTION": "Tool to edit lane markings. <br /> Use LEFT CLICK to select road, lane, marking via node or lines. <br/>  Use SHIFT + LEFT CLICK to insert new node. <br/> Use LEFT CLICK to select node & drag it to change distance value. <br/> Change node and marking properties from inspector <br/>",
+
+  "LANE-DIRECTION-TOOL-TITLE": "Lane Direction Tool",
+  "LANE-DIRECTION-TOOL-DESCRIPTION": "Adjust Lane Direction for traffic. <br />  Use SHIFT + LEFT CLICK to select the lane <br/>  Change values from the inspector. <br/>",
+
+  "ROAD-SIGNAL-TOOL-TITLE": "Road Signal Tool",
+  "ROAD-SIGNAL-TOOL-DESCRIPTION": "Add Traffic Signals. <br />  Use SHIFT + LEFT CLICK to add a signal in the environment. <br/>  Drag the control point to move the signal. <br/> Change values from the inspector.",
+
+  "ROAD-OBJECT-TOOL-TITLE": "Road Object Tool",
+  "ROAD-OBJECT-TOOL-DESCRIPTION": "Add objects & props in the environment. <br />  Use SHIFT + LEFT CLICK to add an object in the environment. <br/>  Drag the control point to move the object. <br/> Change values from the inspector.",
+
+  "ROAD-SIGN-TOOL-TITLE": "Road Sign Tool",
+  "ROAD-SIGN-TOOL-DESCRIPTION": "Add Road Sign. <br />  Use SHIFT + LEFT CLICK to add a sign in the environment. <br/>  Drag the control point to move the sign. <br/> Change values from the inspector.",
+  "VEHICLE-TOOL-TITLE": "Vehicle Tool",
+  "VEHICLE-TOOL-DESCRIPTION": "Add Vehicle actors. <br />  Use SHIFT + LEFT CLICK to add drop an actor in scene. <br/>  Drag the control point to move the actor. <br/> Change values from the inspector.",
+
+  "EXTRA": "EXTRA"
+
+}

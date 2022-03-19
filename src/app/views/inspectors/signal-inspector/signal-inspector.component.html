@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container">
+
+    <img [src]="'assets/signs/' + model + '.png'" alt="{{model}}" mat-card-image style="width:30%;">
+
+</div>
+
+<app-transform-inspector [data]="data.gameObject"></app-transform-inspector>
+
+<!-- <app-material-inspector [data]="signMaterial"></app-material-inspector> -->
+
+<div class="inspector-form-container">
+
+    <mat-form-field>
+        <input [(ngModel)]="data.id" disabled matInput placeholder="ID">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input [(ngModel)]="data.roadId" disabled matInput placeholder="Road-ID">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input [(ngModel)]="data.name" matInput placeholder="Name">
+    </mat-form-field>
+
+    <button mat-button (click)="onDelete()">Delete!</button>
+
+</div>

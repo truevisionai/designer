@@ -1,0 +1,75 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.handle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 99;
+}
+#app-customizer {
+  position: fixed;
+  bottom: 0px;
+  top: 0;
+  right: 0;
+  min-width: 180px;
+  max-width: 280px;
+  z-index: 999;
+  .title {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0 0 1rem;
+  }
+  .mat-card {
+    margin: 0;
+    border-radius: 0;
+  }
+  .mat-card-content  {
+        padding: 1rem 1.5rem 2rem;
+        max-height: calc(100vh - 80px);
+    }
+}
+.pos-rel {
+  position: relative;
+  z-index: 99;
+  .olay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 100;
+  }
+}
+
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  .color {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 8px;
+    text-align: center;
+    box-shadow: 0 4px 20px 1px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.03);
+    cursor: pointer;
+    .active-icon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      top: 6px;
+    }
+  }
+}
+
+// [dir="rtl"] {
+//   .handle {}
+//   #app-customizer {
+//     right: auto;
+//     left: 0;
+//   }
+// }

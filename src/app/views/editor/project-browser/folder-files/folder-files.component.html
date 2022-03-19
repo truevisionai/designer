@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div #content class="content" (contextmenu)="onContextMenu($event)" fxFlexFill>
+
+    <div fxLayout="row wrap" fxLayoutGap="8px grid" fxFlexFill>
+
+        <div [fxFlex]="widthInPercent" *ngFor="let file of sortedFiles">
+
+            <app-file *ngIf="!file.isDeleted" [file]="file" (deleted)="onFileDeleted($event)" (renamed)="onFileRenamed($event)"></app-file>
+
+        </div>
+
+    </div>
+
+</div>

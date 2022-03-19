@@ -1,0 +1,19 @@
+/*!
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+.notification-list {
+  min-width: 240px;
+}
+.notification-list .notific-item a {
+  outline: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.notification-list .notific-item .message {
+  font-size: .875rem !important;
+}
+.notification-list .notific-item .time {
+  font-size: .75rem !important;
+}

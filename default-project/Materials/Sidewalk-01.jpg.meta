@@ -1,0 +1,40 @@
+{
+  "guid": "D6871CAD-6304-4584-BDF2-CD1780B4F6D3",
+  "version": 4.5,
+  "type": "Texture",
+  "importer": "TextureImporter",
+  "data": {
+    "metadata": null,
+    "uuid": "71A9E97C-C4E1-444D-B334-5D087E52AE7A",
+    "name": "",
+    "mapping": 300,
+    "repeat": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "center": [
+      0,
+      0
+    ],
+    "rotation": 0,
+    "wrap": [
+      1000,
+      1000
+    ],
+    "format": 1023,
+    "type": 1009,
+    "encoding": 3000,
+    "minFilter": 1008,
+    "magFilter": 1006,
+    "anisotropy": 1,
+    "flipY": true,
+    "premultiplyAlpha": false,
+    "unpackAlignment": 4
+  },
+  "path": "/home/himanshu/Documents/Truevision/Materials/Sidewalk-01.jpg",
+  "preview": null
+}

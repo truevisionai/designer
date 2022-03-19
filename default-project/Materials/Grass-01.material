@@ -1,0 +1,14 @@
+{
+  "version": 0.1,
+  "uuid": "EC4297BB-7C10-4E49-BCEF-F90C54D68F6F",
+  "type": "MeshStandardMaterial",
+  "name": "Grass-01",
+  "color": 16777215,
+  "roughness": 1,
+  "metalness": 0.2,
+  "emissive": 0,
+  "mapGuid": "DB932B7B-8B5E-4BB0-B092-25D31FD7DFF3",
+  "depthFunc": 3,
+  "depthTest": true,
+  "depthWrite": true
+}

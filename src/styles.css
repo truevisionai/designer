@@ -1,0 +1,147 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-grid-tile .mat-figure {
+    align-items: normal !important;
+    justify-content: normal !important;
+}
+
+mat-list-item.mat-list-item.mat-3-line:hover {
+    background: rgb(214, 214, 214);
+}
+
+.mat-grid-tile .mat-figure .right-side-bar-container {
+    align-items: normal !important;
+    justify-content: normal !important;
+    padding: 10px 30px !important;
+}
+
+.mat-expansion-panel-body {
+    padding: 16px 24px 16px 24px !important;
+}
+
+.disable-select {
+    user-select: none;
+    /* supported by Chrome and Opera */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+}
+
+.green-snackbar {
+    background: green !important;
+    color: white !important;
+}
+
+.red-snackbar {
+    background: red !important;
+    color: white !important;
+}
+
+.mat-tv-dialog-actions {
+    padding: 16px 16px !important;
+    margin: 0px !important;
+}
+
+.mat-tv-dialog-content {
+    margin: 0px !important;
+    padding: 16px 16px !important;
+}
+
+.mat-tv-dialog-title {
+    margin: 0 !important;
+    padding: 4px 16px !important;
+    background: white;
+    color: #545454;
+    font-size: 1em;
+}
+
+.mat-dialog-container {
+    padding: 0px 0px 0px 0px !important;
+    border-radius: 1px !important;
+}
+
+.mat-tv-dialog-actions button {
+    margin-left: 10px;
+}
+
+.tv-field {
+    margin-bottom: 8px;
+    display: flex;
+    margin: 4px 0px;
+    min-height: 24px;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    position: relative;
+    min-width: 0;
+    border: 0 solid #232e30;
+}
+
+.tv-field-label {
+    color: #b1b8ba;
+    width: 30%;
+    margin: 0;
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: middle;
+    transition: opacity 100ms;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    border: 0 solid #232e30;
+    font-size: 0.850em;
+}
+
+.tv-field-text-input {
+    color: #b1b8ba;
+    max-width: 70%;
+    flex: 1;
+    margin: 0 0 0 6px;
+    display: inline-block;
+    border: 1px solid #293538;
+    border-radius: 2px;
+    box-sizing: border-box;
+    min-height: 24px;
+    height: 24px;
+    background-color: #333333;
+    vertical-align: top;
+    transition: color 100ms, background-color 100ms, box-shadow 100ms;
+    position: relative;
+}
+
+.tv-field-text-input>input {
+    width: 100%;
+    padding: 0 6px;
+    line-height: 1;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-size: 0.850em;
+}
+
+.mat-tab-body-content {
+    height: 100% !important;
+    overflow: hidden !important;
+}

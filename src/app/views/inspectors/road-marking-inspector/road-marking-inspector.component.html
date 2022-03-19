@@ -1,0 +1,13 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div class="inspector-form-container" *ngIf="data.roadMarking">
+
+    <mat-card class="mat-card material-preview">
+        <img src="{{ thumbnail }}" />
+    </mat-card>
+
+    <app-texture-field [guid]="data.roadMarking.textureGuid" label="Map" (changed)="onTextureChanged($event)"> </app-texture-field>
+
+</div>
