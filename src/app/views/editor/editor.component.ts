@@ -9,6 +9,7 @@ import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-di
 import { KeyboardInput } from '../../core/input';
 import { CommandHistory } from '../../services/command-history';
 import { MainFileService } from 'app/services/main-file.service';
+import { TvConsole } from 'app/core/utils/console';
 
 @Component( {
     selector: 'app-editor',
@@ -25,6 +26,12 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
     }
 
+    get consoleLabel () {
+
+        if ( TvConsole.logs.length > 0 ) return `Console (${ TvConsole.logs.length })`;
+
+        return 'Console';
+    }
 
     ngOnInit () {
 

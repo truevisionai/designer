@@ -11,7 +11,7 @@ import { EditorComponent } from './editor.component';
 import { FlexModule, FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule, MatToolbarModule, MatTooltipModule, MatTreeModule, MatGridListModule, MatCardModule, MatListModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatTableModule, MatTabsModule } from '@angular/material';
+import { MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule, MatToolbarModule, MatTooltipModule, MatTreeModule, MatGridListModule, MatCardModule, MatListModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatTableModule, MatTabsModule, MatBadgeModule, MatChipsModule } from '@angular/material';
 import { ThreeJsModule } from '../../modules/three-js/three-js.module';
 import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { ExportGlbDialog } from './dialogs/export-glb-dialog/export-glb-dialog.c
 import { ExportOpenDriveDialog } from './dialogs/export-opendrive-dialog/export-opendrive-dialog.component';
 import { FileComponent } from './project-browser/file/file.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConsoleComponent } from './console/console.component';
 
 @NgModule( {
     declarations: [
@@ -40,6 +41,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         FileComponent,
         ExportGlbDialog,
         ExportOpenDriveDialog,
+        ConsoleComponent,
     ],
     imports: [
         CommonModule,
@@ -67,6 +69,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatFormFieldModule,
         MatInputModule,
         MatTabsModule,
+        MatBadgeModule,
+        MatChipsModule,
     ],
     entryComponents: [
         ExportGlbDialog

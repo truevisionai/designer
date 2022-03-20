@@ -1,0 +1,32 @@
+<mat-toolbar>
+    <mat-toolbar-row class="console-toolbar-row">
+        <button mat-button (click)="clear()">Clear</button>
+        <span class="console-toolbar-spacer"></span>
+        <!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar heart icon">favorite</mat-icon> -->
+        <!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar delete icon">delete</mat-icon> -->
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-list role="list" fxFill class="console-container">
+
+    <perfect-scrollbar fxFlexFill>
+
+        <mat-list-item role="listitem" *ngFor="let log of logs">
+
+            <mat-icon mat-list-icon class="console-message-icon">{{log.icon}}</mat-icon>
+
+            <div mat-line>{{log.message}}</div>
+
+            <div mat-line>
+                [{{log.time | date: 'hh:mm:ss' }}]
+            </div>
+
+            <div class="counter" *ngIf="log.counter > 0">
+                <mat-chip>{{log.counter}} </mat-chip>
+            </div>
+
+        </mat-list-item>
+
+    </perfect-scrollbar>
+
+</mat-list>
