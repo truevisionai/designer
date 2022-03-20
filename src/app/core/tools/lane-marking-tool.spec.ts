@@ -14,7 +14,7 @@ import { EventSystem } from 'app/events/event-system.service';
 import { InputService } from '../services/input.service';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { AppInspector } from '../inspector';
 
 
@@ -28,7 +28,7 @@ fdescribe( 'LaneMarkingTool Test', () => {
 
         tool = new LaneMarkingTool();
 
-        map = TvMapSourceFile.openDrive = new TvMap();
+        map = TvMapInstance.map = new TvMap();
 
         road = map.addDefaultRoad();
 

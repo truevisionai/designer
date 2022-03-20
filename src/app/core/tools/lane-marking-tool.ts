@@ -75,7 +75,7 @@ export class LaneMarkingTool extends BaseTool {
 
         if ( this.laneHelper ) this.laneHelper.clear();
 
-        this.openDrive.roads.forEach( road => this.hideNodes( road ) );
+        this.map.roads.forEach( road => this.hideNodes( road ) );
     }
 
     public onPointerDown ( e: PointerEventData ) {
@@ -330,7 +330,7 @@ export class LaneMarkingTool extends BaseTool {
 
         // TODO may only road->lane need to be built
 
-        const road = this.openDrive.getRoadById( roadId );
+        const road = this.map.getRoadById( roadId );
 
         this.roadMarkBuilder.buildRoad( road );
     }

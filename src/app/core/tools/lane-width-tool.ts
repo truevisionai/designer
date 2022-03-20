@@ -85,7 +85,7 @@ export class LaneWidthTool extends BaseTool {
 
         if ( this.widthChangeSub ) this.widthChangeSub.unsubscribe();
 
-        this.openDrive.roads.forEach( road => LaneWidthTool.hideNodes( road ) );
+        this.map.roads.forEach( road => LaneWidthTool.hideNodes( road ) );
     }
 
     public onPointerDown ( e: PointerEventData ) {
@@ -293,7 +293,7 @@ export class LaneWidthTool extends BaseTool {
 
         if ( !this.lane ) return;
 
-        const road = this.openDrive.getRoadById( this.lane.roadId );
+        const road = this.map.getRoadById( this.lane.roadId );
 
         const laneWidthNode = NodeFactoryService.createLaneWidthNodeByPosition( road, this.lane, position );
 

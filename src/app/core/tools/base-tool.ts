@@ -6,7 +6,7 @@ import { IComponent } from 'app/core/game-object';
 import { MonoBehaviour } from '../components/mono-behaviour';
 import { AppInspector } from 'app/core/inspector';
 import { Type } from '@angular/core';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { IEditorState } from './i-editor-state';
 import { Color, Intersection, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
@@ -28,9 +28,9 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
     }
 
-    get openDrive () {
+    get map () {
 
-        return TvMapSourceFile.openDrive;
+        return TvMapInstance.map;
 
     }
 

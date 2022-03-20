@@ -71,7 +71,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
         SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         this.laneHelper.drawRoad( road, LineType.DASHED, true );
     }

@@ -7,7 +7,7 @@ import { MonoBehaviour } from 'app/core/components/mono-behaviour';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { TvMapSourceFile } from '../../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
@@ -61,8 +61,8 @@ export class StatusBarComponent extends MonoBehaviour implements OnInit {
         return this.cursor.point.z;
     }
 
-    get openDrive () {
-        return TvMapSourceFile.openDrive;
+    get map () {
+        return TvMapInstance.map;
     }
 
     get s () {
@@ -119,7 +119,7 @@ export class StatusBarComponent extends MonoBehaviour implements OnInit {
 
     fetchRoadCoordinates ( point: Vector3 ) {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             // road.getGeometryCoords()
 

@@ -6,7 +6,7 @@ import { Shape } from 'three';
 import { ExplicitSpline } from './explicit-spline';
 import { ExplicitSplinePath } from './cubic-spline-curve';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { Maths } from 'app/utils/maths';
 
@@ -18,7 +18,7 @@ describe( 'ExplicitSpline Test', () => {
 
     beforeEach( () => {
 
-        road = TvMapSourceFile.openDrive.addDefaultRoad();
+        road = TvMapInstance.map.addDefaultRoad();
 
         spline = road.spline = new ExplicitSpline();
 

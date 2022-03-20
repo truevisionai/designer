@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { Euler, Vector3 } from 'three';

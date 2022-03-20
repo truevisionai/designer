@@ -120,17 +120,17 @@ export class MarkingLineTool extends BaseMarkingTool {
 
         const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
 
-        this.openDrive.gameObject.add( mesh );
+        this.map.gameObject.add( mesh );
 
     }
 
     onGeometryChanged ( line: THREE.LineCurve3 ) {
 
-        if ( this.mesh ) this.openDrive.gameObject.remove( this.mesh );
+        if ( this.mesh ) this.map.gameObject.remove( this.mesh );
 
         const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
 
-        this.openDrive.gameObject.add( mesh );
+        this.map.gameObject.add( mesh );
     }
 
 

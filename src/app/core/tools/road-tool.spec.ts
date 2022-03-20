@@ -7,20 +7,20 @@ import { NodeFactoryService } from '../factories/node-factory.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { RoadTool } from './road-tool';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { RoadFactory } from '../factories/road-factory.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 
 describe( 'RoadTool', () => {
 
-    let openDrive: TvMap;
+    let map: TvMap;
 
     let roadTool: RoadTool;
 
     beforeEach( () => {
 
-        openDrive = TvMapSourceFile.openDrive = new TvMap();
+        map = TvMapInstance.map = new TvMap();
 
         roadTool = new RoadTool();
 
@@ -70,7 +70,7 @@ describe( 'RoadTool', () => {
 
     function createRoads () {
 
-        const roadA = openDrive.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
 
         roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 0, 0, 0 ) ) );
         roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 50, 5, 0 ) ) );
@@ -80,7 +80,7 @@ describe( 'RoadTool', () => {
 
         NodeFactoryService.updateRoadNodes( roadA );
 
-        const roadB = openDrive.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
 
         roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 0, 50, 0 ) ) );
         roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 55, 50, 0 ) ) );
@@ -96,7 +96,7 @@ describe( 'RoadTool', () => {
     }
 
     function suc_pre () {
-        const road1 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
         road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
@@ -106,7 +106,7 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road1 );
 
-        const road2 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
         road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
@@ -121,7 +121,7 @@ describe( 'RoadTool', () => {
     }
 
     function suc_suc () {
-        const road1 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
         road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
@@ -131,7 +131,7 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road1 );
 
-        const road2 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
         road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
@@ -146,7 +146,7 @@ describe( 'RoadTool', () => {
     }
 
     function pre_pre () {
-        const road1 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
         road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
@@ -156,7 +156,7 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road1 );
 
-        const road2 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
         road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
@@ -171,7 +171,7 @@ describe( 'RoadTool', () => {
     }
 
     function pre_suc () {
-        const road1 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
         road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
@@ -181,7 +181,7 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road1 );
 
-        const road2 = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
         road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
         road2.addControlPointAt( new Vector3( 160, 50, 0 ) );

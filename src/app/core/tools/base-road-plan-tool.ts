@@ -6,7 +6,7 @@ import { BaseTool } from './base-tool';
 import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from '../../modules/tv-map/models/tv-common';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
 import { AppInspector } from '../inspector';
 import { PointEditor } from '../editors/point-editor';
@@ -63,9 +63,9 @@ export class BaseRoadPlanTool extends BaseTool {
 
                 this.unselectRoad( this.road );
 
-                this.road.remove( TvMapSourceFile.openDrive.gameObject );
+                this.road.remove( TvMapInstance.map.gameObject );
 
-                TvMapSourceFile.openDrive.deleteRoad( this.road.id );
+                TvMapInstance.map.deleteRoad( this.road.id );
 
                 this.road = null;
 
@@ -386,8 +386,8 @@ export class BaseRoadPlanTool extends BaseTool {
 
     protected createRoad () {
 
-        const roadId = this.openDrive.getRoadCount() + 1;
-        const road = this.openDrive.addRoad( '', 0, roadId, -1 );
+        const roadId = this.map.getRoadCount() + 1;
+        const road = this.map.addRoad( '', 0, roadId, -1 );
 
         road.addPlanView();
 
@@ -400,6 +400,6 @@ export class BaseRoadPlanTool extends BaseTool {
 
         road.planView.addGeometry( geometry );
 
-        TvMapSourceFile.roadNetworkChanged.emit( TvMapSourceFile.openDrive );
+        TvMapInstance.mapChanged.emit( TvMapInstance.map );
     }
 }

@@ -59,7 +59,7 @@ export class AddConnectionCommand extends BaseCommand {
 
     undo (): void {
 
-        this.openDrive.removeRoad( this.connectingRoad );
+        this.map.removeRoad( this.connectingRoad );
 
         this.junction.removeConnection( this.connection, this.entry.road, this.exit.road );
 
@@ -73,7 +73,7 @@ export class AddConnectionCommand extends BaseCommand {
 
     redo (): void {
 
-        this.openDrive.addRoadInstance( this.connectingRoad );
+        this.map.addRoadInstance( this.connectingRoad );
 
         this.junction.addConnection( this.connection );
 

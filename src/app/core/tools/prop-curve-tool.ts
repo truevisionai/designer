@@ -38,7 +38,7 @@ export class PropCurveTool extends BaseTool {
     private curve: PropCurve;
     private point: AnyControlPoint;
 
-    private get curves () { return this.openDrive.propCurves; }
+    private get curves () { return this.map.propCurves; }
 
     private get spline () { return this.curve ? this.curve.spline : null; }
 

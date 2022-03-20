@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 
 export abstract class OdBaseCommand extends BaseCommand {
@@ -15,7 +15,7 @@ export abstract class OdBaseCommand extends BaseCommand {
     abstract redo (): void;
 
     protected getRoad ( roadId: number ): TvRoad {
-        return TvMapSourceFile.openDrive.getRoadById( roadId );
+        return TvMapInstance.map.getRoadById( roadId );
     }
 
 }

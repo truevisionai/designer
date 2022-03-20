@@ -11,7 +11,7 @@ import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/t
 import { TvArcGeometry } from '../../modules/tv-map/models/geometries/tv-arc-geometry';
 import { Maths } from '../../utils/maths';
 import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { SceneService } from '../services/scene.service';
 import { TvSide } from '../../modules/tv-map/models/tv-common';
 import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
@@ -30,10 +30,10 @@ export class RoadPlanHelper {
 
     }
 
-    createRoadControlPoints ( openDrive: TvMap ): void {
+    createRoadControlPoints ( map: TvMap ): void {
 
         // create control points for all geometries
-        openDrive.roads.forEach( road => {
+        map.roads.forEach( road => {
 
             road.geometries.forEach( geometry => {
 
@@ -86,8 +86,6 @@ export class RoadPlanHelper {
         this.setControlPointUserData( controlPoint1, road.id, geometry, 0 );
         this.setControlPointUserData( controlPoint2, road.id, geometry, 1 );
 
-        // OdBuilder.makeRoad( OdSourceFile.openDrive.gameObject, road );
-
         return geometry;
     }
 
@@ -104,8 +102,6 @@ export class RoadPlanHelper {
 
         this.setControlPointUserData( controlPoint1, road.id, geometry, 0 );
         this.setControlPointUserData( controlPoint2, road.id, geometry, 1 );
-
-        // OdBuilder.makeRoad( OdSourceFile.openDrive.gameObject, road );
 
         return geometry;
     }
@@ -140,7 +136,7 @@ export class RoadPlanHelper {
         geometry.cp2 = cp2;
         geometry.cp3 = cp3;
 
-        TvMapBuilder.buildRoad( TvMapSourceFile.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, road );
     }
 
     // TODO: move this in MathUtils
@@ -228,6 +224,6 @@ export class RoadPlanHelper {
 
     private removeOldAndCreateNew ( road: TvRoad ) {
         SceneService.removeWithChildren( road.gameObject, true );
-        TvMapBuilder.buildRoad( TvMapSourceFile.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, road );
     }
 }

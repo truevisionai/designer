@@ -18,7 +18,7 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { IFile } from 'app/core/models/file';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { ModelImporterService } from './model-importer.service';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
@@ -50,9 +50,9 @@ export class SceneImporterService extends AbstractReader {
         super();
     }
 
-    get openDrive (): TvMap { return TvMapSourceFile.openDrive; }
+    get map (): TvMap { return TvMapInstance.map; }
 
-    set openDrive ( value ) { TvMapSourceFile.openDrive = value; }
+    set map ( value ) { TvMapInstance.map = value; }
 
     importFromPath ( path: string ) {
 
@@ -78,7 +78,7 @@ export class SceneImporterService extends AbstractReader {
 
             if ( this.importFromString( file.contents ) ) {
 
-                TvMapSourceFile.currentFile = file;
+                TvMapInstance.currentFile = file;
 
             }
 
@@ -128,9 +128,9 @@ export class SceneImporterService extends AbstractReader {
 
         CommandHistory.clear();
 
-        this.openDrive.destroy();
+        this.map.destroy();
 
-        this.openDrive = new TvMap();
+        this.map = new TvMap();
 
     }
 
@@ -138,13 +138,13 @@ export class SceneImporterService extends AbstractReader {
 
         this.readAsOptionalArray( xml.road, xml => {
 
-            this.openDrive.addRoadInstance( this.importRoad( xml ) );
+            this.map.addRoadInstance( this.importRoad( xml ) );
 
         } );
 
-        this.openDrive.roads.forEach( road => road.updateGeometryFromSpline() );
+        this.map.roads.forEach( road => road.updateGeometryFromSpline() );
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             if ( road.isJunction ) {
 
@@ -176,19 +176,19 @@ export class SceneImporterService extends AbstractReader {
 
         this.readAsOptionalArray( xml.propCurve, xml => {
 
-            this.openDrive.propCurves.push( this.importPropCurve( xml ) );
+            this.map.propCurves.push( this.importPropCurve( xml ) );
 
         } );
 
         this.readAsOptionalArray( xml.propPolygon, xml => {
 
-            this.openDrive.propPolygons.push( this.importPropPolygon( xml ) );
+            this.map.propPolygons.push( this.importPropPolygon( xml ) );
 
         } );
 
         this.readAsOptionalArray( xml.surface, xml => {
 
-            this.openDrive.surfaces.push( this.importSurface( xml ) );
+            this.map.surfaces.push( this.importSurface( xml ) );
 
         } );
 
@@ -205,18 +205,18 @@ export class SceneImporterService extends AbstractReader {
                 );
             }
 
-            this.openDrive.addJunctionInstance( junction );
+            this.map.addJunctionInstance( junction );
 
         } );
 
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
-            TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+            TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         } )
 
-        SceneService.add( this.openDrive.gameObject );
+        SceneService.add( this.map.gameObject );
 
     }
 
@@ -254,9 +254,9 @@ export class SceneImporterService extends AbstractReader {
 
         prop.scale.copy( scale );
 
-        this.openDrive.gameObject.add( prop );
+        this.map.gameObject.add( prop );
 
-        this.openDrive.props.push( new PropInstance( xml.attr_guid, prop ) );
+        this.map.props.push( new PropInstance( xml.attr_guid, prop ) );
 
     }
 

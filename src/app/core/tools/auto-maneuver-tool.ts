@@ -10,7 +10,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { PointEditor } from '../editors/point-editor';
 import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Maths } from 'app/utils/maths';
 import { TvDirection, TvLaneType, TvSide } from 'app/modules/tv-map/models/tv-common';
 import { SceneService } from '../services/scene.service';
@@ -123,7 +123,7 @@ export class AutoManeuverTool extends BaseTool {
 
         this.loadJunctions();
 
-        const intersections = this.findIntersectionsSlow( [ ...this.openDrive.roads.values() ] );
+        const intersections = this.findIntersectionsSlow( [ ...this.map.roads.values() ] );
 
         intersections.forEach( intersection => {
 
@@ -422,12 +422,12 @@ export class AutoManeuverTool extends BaseTool {
 
     hideLinks () {
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             junction.connections.forEach( connection => {
 
-                const incomingRoad = this.openDrive.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.openDrive.getRoadById( connection.connectingRoad );
+                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
                 connection.laneLink.forEach( link => {
 
@@ -442,12 +442,12 @@ export class AutoManeuverTool extends BaseTool {
 
     loadJunctions (): void {
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             junction.connections.forEach( connection => {
 
-                const incomingRoad = this.openDrive.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.openDrive.getRoadById( connection.connectingRoad );
+                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
                 connection.laneLink.forEach( link => {
 
@@ -966,8 +966,8 @@ export class AutoManeuverTool extends BaseTool {
 
         const coords: TvRoadCoord[] = [];
 
-        const roadA = this.openDrive.getRoadById( coordA.roadId );
-        const roadB = this.openDrive.getRoadById( coordB.roadId );
+        const roadA = this.map.getRoadById( coordA.roadId );
+        const roadB = this.map.getRoadById( coordB.roadId );
 
         const roadALeftWidth = roadA.getLeftSideWidth( coordA.s );
         const roadARightWidth = roadA.getRightsideWidth( coordA.s );
@@ -1152,8 +1152,8 @@ export class AutoManeuverTool extends BaseTool {
 
             const position = new Vector3( intersection.x, intersection.y, 0 );
 
-            const road_1 = TvMapSourceFile.openDrive.getRoadById( intersection.road1 );
-            const road_2 = TvMapSourceFile.openDrive.getRoadById( intersection.road2 );
+            const road_1 = TvMapInstance.map.getRoadById( intersection.road1 );
+            const road_2 = TvMapInstance.map.getRoadById( intersection.road2 );
 
             const road1_s = intersection.s1;
             const road2_s = intersection.s2;
@@ -1373,7 +1373,7 @@ export class AutoManeuverTool extends BaseTool {
      */
     createStraightJunctionRoad ( junctionId: number, connection: IJunctionConnection ) {
 
-        const incomingRoad = this.openDrive.getRoadById( connection.entry.roadId );
+        const incomingRoad = this.map.getRoadById( connection.entry.roadId );
         const incomingLane = connection.entry.laneId;
 
         const originalLenth = incomingRoad.length;
@@ -1395,7 +1395,7 @@ export class AutoManeuverTool extends BaseTool {
 
         const connectingRoadLength = connection.exit.s - connection.entry.s;
 
-        const connectingRoad = new TvRoad( 'Connecting', connectingRoadLength, this.openDrive.roads.size, -1 );
+        const connectingRoad = new TvRoad( 'Connecting', connectingRoadLength, this.map.roads.size, -1 );
 
         connection.spline.exportGeometries().forEach( g => connectingRoad.addGeometry( g ) );
 
@@ -1404,7 +1404,7 @@ export class AutoManeuverTool extends BaseTool {
 
         const outgoingRoadLength = originalLenth - connection.exit.s;
 
-        const outgoingRoad = new TvRoad( 'Outgoing', outgoingRoadLength, this.openDrive.roads.size, -1 );
+        const outgoingRoad = new TvRoad( 'Outgoing', outgoingRoadLength, this.map.roads.size, -1 );
 
 
         // update incoming finally

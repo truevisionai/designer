@@ -5,7 +5,7 @@
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { NodeFactoryService } from './node-factory.service';
 import { AppInspector } from '../inspector';
@@ -20,13 +20,13 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 
 export class RoadFactory {
 
-    static get openDrive () {
-        return TvMapSourceFile.openDrive;
+    static get map () {
+        return TvMapInstance.map;
     }
 
     static createRoad ( position: Vector3 ) {
 
-        const road = this.openDrive.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
+        const road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
 
         const point = this.addControlPoint( road, position );
 
@@ -35,7 +35,7 @@ export class RoadFactory {
 
     static removeRoad ( road: TvRoad ) {
 
-        this.openDrive.removeRoad( road );
+        this.map.removeRoad( road );
 
     }
 
@@ -54,9 +54,9 @@ export class RoadFactory {
 
     static rebuildRoad ( road: TvRoad ) {
 
-        this.openDrive.gameObject.remove( road.gameObject );
+        this.map.gameObject.remove( road.gameObject );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         if ( !road.isJunction ) NodeFactoryService.updateRoadNodes( road );
 
@@ -111,7 +111,7 @@ export class RoadFactory {
 
         if ( road.spline.controlPoints.length < 1 ) {
 
-            this.openDrive.gameObject.remove( road.gameObject );
+            this.map.gameObject.remove( road.gameObject );
 
             // nothing to update, will throw error
             // road.spline.update();
@@ -121,7 +121,7 @@ export class RoadFactory {
 
         } else if ( road.spline.controlPoints.length === 1 ) {
 
-            this.openDrive.gameObject.remove( road.gameObject );
+            this.map.gameObject.remove( road.gameObject );
 
             road.spline.update();
 
@@ -197,7 +197,7 @@ export class RoadFactory {
         }
 
         // Make control points required for road geometry
-        const joiningRoad = this.openDrive.addDefaultRoad();
+        const joiningRoad = this.map.addDefaultRoad();
 
         if ( firstRoad.hasType ) {
 
@@ -294,7 +294,7 @@ export class RoadFactory {
         /////////////////////////////////////////////////////////////////////////////////
 
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, joiningRoad );
+        TvMapBuilder.buildRoad( this.map.gameObject, joiningRoad );
 
         return joiningRoad;
     }

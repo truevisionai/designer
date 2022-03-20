@@ -66,7 +66,7 @@ export class LaneTool extends BaseTool {
 
         this.laneDirectionHelper.clear();
 
-        const road = this.openDrive.getRoadById( lane.roadId );
+        const road = this.map.getRoadById( lane.roadId );
 
         this.laneDirectionHelper.drawSingleLane( road, lane );
     }

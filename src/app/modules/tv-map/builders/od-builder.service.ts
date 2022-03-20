@@ -16,7 +16,7 @@ import { Maths } from 'app/utils/maths';
 import { TvLane } from '../models/tv-lane';
 import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
 import { OdBuilderConfig } from './od-builder-config';
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { SceneService } from '../../../core/services/scene.service';
 import { TvSignalHelper } from '../services/tv-signal-helper';
 import { OdRoadMarkBuilder } from './od-road-mark-builder';
@@ -33,28 +33,28 @@ export class TvMapBuilder {
 
     private static JUNCTION_ELEVATION_SHIFT = 0.005;
 
-    constructor ( public openDrive?: TvMap ) {
+    constructor ( public map?: TvMap ) {
 
     }
 
-    public static buildMap ( openDrive?: TvMap ): GameObject {
+    public static buildMap ( map?: TvMap ): GameObject {
 
-        TvMapSourceFile.clearOpenDrive();
+        TvMapInstance.clearOpenDrive();
 
-        SceneService.remove( openDrive.gameObject );
+        SceneService.remove( map.gameObject );
 
-        openDrive.gameObject = null;
-        openDrive.gameObject = new GameObject( 'OpenDrive' );
+        map.gameObject = null;
+        map.gameObject = new GameObject( 'OpenDrive' );
 
-        openDrive.roads.forEach( road => {
+        map.roads.forEach( road => {
 
-            this.buildRoad( openDrive.gameObject, road );
+            this.buildRoad( map.gameObject, road );
 
         } );
 
-        SceneService.add( openDrive.gameObject );
+        SceneService.add( map.gameObject );
 
-        return openDrive.gameObject;
+        return map.gameObject;
 
     }
 

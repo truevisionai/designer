@@ -5,7 +5,7 @@
 import { BaseCommand } from './base-command';
 import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 
 export class RemoveLaneCommand extends BaseCommand {
 
@@ -19,7 +19,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
         this.laneSection.removeLaneById( this.lane.id );
 
-        TvMapSourceFile.roadNetworkChanged.emit( this.openDrive );
+        TvMapInstance.mapChanged.emit( this.map );
 
     }
 
@@ -27,7 +27,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
         this.laneSection.addLaneInstance( this.lane, true );
 
-        TvMapSourceFile.roadNetworkChanged.emit( this.openDrive );
+        TvMapInstance.mapChanged.emit( this.map );
 
     }
 

@@ -5,7 +5,7 @@
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLane } from './tv-lane';
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvMap } from './tv-map.model';
 
 describe( 'OpenDrive LaneSection', () => {
@@ -121,9 +121,9 @@ describe( 'OpenDrive LaneSection', () => {
 
     it( 'should give correct length for laneSection', () => {
 
-        TvMapSourceFile.openDrive = new TvMap();
+        TvMapInstance.map = new TvMap();
 
-        const road = TvMapSourceFile.openDrive.addRoad( "", 100, 1, -1 );
+        const road = TvMapInstance.map.addRoad( "", 100, 1, -1 );
 
         const section1 = road.addGetLaneSection( 0, false );
         const section2 = road.addGetLaneSection( 40, false );

@@ -6,7 +6,7 @@ import { GameObject } from '../../../core/game-object';
 import { BoxGeometry, CylinderBufferGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, TextureLoader, Vector3 } from 'three';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 import { COLOR } from '../../../shared/utils/colors.service';
@@ -50,7 +50,7 @@ export class OdSignalBuilder {
         roll: number = null
     ): TvRoadSignal {
 
-        const road = TvMapSourceFile.openDrive.getRoadById( roadId );
+        const road = TvMapInstance.map.getRoadById( roadId );
 
         const id = road.getRoadSignalCount() + 1;
 

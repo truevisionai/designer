@@ -3,7 +3,7 @@
  */
 
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { ManeuverTool } from './maneuver-tool';
@@ -12,7 +12,7 @@ import { ManeuverTool } from './maneuver-tool';
 describe( 'ManeuverTool Test', () => {
 
     let tool: ManeuverTool;
-    let openDrive: TvMap;
+    let map: TvMap;
 
     beforeEach( () => {
 
@@ -20,7 +20,7 @@ describe( 'ManeuverTool Test', () => {
 
         tool.init();
 
-        openDrive = TvMapSourceFile.openDrive = new TvMap();
+        map = TvMapInstance.map = new TvMap();
 
     } );
 
@@ -30,10 +30,10 @@ describe( 'ManeuverTool Test', () => {
         //  1L <---     <----  1L
         // -1R --->     ----> -1R
 
-        const roadA = openDrive.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
         roadA.addGeometryLine( 0, 0, 0, 0, 10 );
 
-        const roadB = openDrive.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
         roadB.addGeometryLine( 0, 15, 0, 0, 10 );
 
         const positionA = roadA.endPosition().toVector3();
@@ -77,13 +77,13 @@ describe( 'ManeuverTool Test', () => {
 
     it( 'should return true for existing connection ', () => {
 
-        const roadA = openDrive.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
         roadA.addGeometryLine( 0, 0, 0, 0, 10 );
 
-        const roadB = openDrive.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
         roadB.addGeometryLine( 0, 15, 0, 0, 10 );
 
-        const roadC = openDrive.addDefaultRoad();
+        const roadC = map.addDefaultRoad();
         roadC.addGeometryLine( 0, 15, 10, 0, 10 );
 
         const positionA = roadA.endPosition().toVector3();
@@ -131,7 +131,7 @@ describe( 'ManeuverTool Test', () => {
 
         expect( result.connectionFound ).toBe( false );
 
-        expect( openDrive.roads.size ).toBe( 4 );
+        expect( map.roads.size ).toBe( 4 );
 
         expect( junction.connections.size ).toBe( 1 );
 
@@ -165,10 +165,10 @@ describe( 'ManeuverTool Test', () => {
         //  1L <---     <----  1L
         // -1R --->     ----> -1R
 
-        const roadA = openDrive.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
         roadA.addGeometryLine( 0, 0, 0, 0, 10 );
 
-        const roadB = openDrive.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
         roadB.addGeometryLine( 0, 15, 0, 0, 10 );
 
         const positionA = roadA.endPosition().toVector3();
@@ -207,8 +207,8 @@ describe( 'ManeuverTool Test', () => {
         ////////////////////////////////////////////////////////////////////////
         // connecting road successor/predecssor tests
 
-        const roadC = openDrive.roads.get( 3 );
-        const roadD = openDrive.roads.get( 4 );
+        const roadC = map.roads.get( 3 );
+        const roadD = map.roads.get( 4 );
 
         expect( !roadC ).toBe( false );
         expect( !roadD ).toBe( false );
@@ -232,9 +232,9 @@ describe( 'ManeuverTool Test', () => {
         ////////////////////////////////////////////////////////////////////////
         // incoming/outgoing road successor/predecessor relation
 
-        expect( openDrive.junctions.size ).toBe( 1 );
+        expect( map.junctions.size ).toBe( 1 );
 
-        const junction = openDrive.junctions.get( 1 );
+        const junction = map.junctions.get( 1 );
 
         expect( junction.connections.size ).toBe( 2 );
 
@@ -291,10 +291,10 @@ describe( 'ManeuverTool Test', () => {
         //  1L <---     <----  1L
         // -1R --->     ----> -1R
 
-        const roadA = openDrive.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
         roadA.addGeometryLine( 0, 0, 0, 0, 10 );
 
-        const roadB = openDrive.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
         roadB.addGeometryLine( 0, 15, 0, 0, 10 );
 
         const positionA = roadA.endPosition().toVector3();
@@ -333,8 +333,8 @@ describe( 'ManeuverTool Test', () => {
         ////////////////////////////////////////////////////////////////////////
         // connecting road successor/predecssor tests
 
-        const roadC = openDrive.roads.get( 3 );
-        const roadD = openDrive.roads.get( 4 );
+        const roadC = map.roads.get( 3 );
+        const roadD = map.roads.get( 4 );
 
         expect( roadC.successor.elementType ).toBe( "road" );
         expect( roadC.successor.elementId ).toBe( roadA.id );
@@ -355,9 +355,9 @@ describe( 'ManeuverTool Test', () => {
         ////////////////////////////////////////////////////////////////////////
         // incoming/outgoing road successor/predecessor relation
 
-        expect( openDrive.junctions.size ).toBe( 1 );
+        expect( map.junctions.size ).toBe( 1 );
 
-        const junction = openDrive.junctions.get( 1 );
+        const junction = map.junctions.get( 1 );
 
         expect( junction.connections.size ).toBe( 2 );
 

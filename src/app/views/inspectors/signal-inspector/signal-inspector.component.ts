@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { TvRoadSignal } from '../../../modules/tv-map/models/tv-road-signal.model';
 import { RemoveSignalCommand } from '../../../core/commands/remove-signal-command';
-import { TvMapSourceFile } from '../../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from '../../../services/command-history';
 
 @Component( {
@@ -34,7 +34,7 @@ export class OdSignalInspectorComponent implements OnInit, IComponent {
 
     updatePosition ( $event: number ) {
 
-        const road = TvMapSourceFile.openDrive.getRoadById( this.data.roadId );
+        const road = TvMapInstance.map.getRoadById( this.data.roadId );
 
         const pose = road.getPositionAt( this.data.s, this.data.t );
 

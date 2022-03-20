@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
@@ -17,12 +17,12 @@ import { TvMap } from '../models/tv-map.model';
 
 export abstract class TvBaseQueries {
 
-    static get openDrive () {
-        return TvMapSourceFile.openDrive;
+    static get map () {
+        return TvMapInstance.map;
     }
 
     static get roads () {
-        return this.openDrive.roads;
+        return this.map.roads;
     }
 
 }
@@ -52,7 +52,7 @@ export class TvMapQueries extends TvBaseQueries {
 
     static findRoadById ( id: number ): TvRoad {
 
-        return this.openDrive.roads.get( id );
+        return this.map.roads.get( id );
 
     }
 
@@ -426,9 +426,9 @@ export class TvMapQueries extends TvBaseQueries {
 
     static getLaneSpeed () { }
 
-    static getRandomRoad ( openDrive: TvMap ): TvRoad {
+    static getRandomRoad ( map: TvMap ): TvRoad {
 
-        return TvUtils.getRandomArrayItem( [ ...openDrive.roads.values() ] ) as TvRoad;
+        return TvUtils.getRandomArrayItem( [ ...map.roads.values() ] ) as TvRoad;
 
     }
 

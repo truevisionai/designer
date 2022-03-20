@@ -25,7 +25,7 @@ export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
         NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.newPosition );
 
-        this.roadMarkbuilder.buildRoad( this.openDrive.getRoadById( this.node.lane.roadId ) );
+        this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
 
     }
 
@@ -33,7 +33,7 @@ export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
         NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.oldPosition );
 
-        this.roadMarkbuilder.buildRoad( this.openDrive.getRoadById( this.node.lane.roadId ) );
+        this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
 
     }
 

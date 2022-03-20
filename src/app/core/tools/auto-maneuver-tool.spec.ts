@@ -4,7 +4,7 @@
 
 import { AutoManeuverTool } from './auto-maneuver-tool';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Maths } from 'app/utils/maths';
 import { TvDirection } from 'app/modules/tv-map/models/tv-common';
 
@@ -12,7 +12,7 @@ import { TvDirection } from 'app/modules/tv-map/models/tv-common';
 describe( 'AutoManeuverTool Test', () => {
 
     let tool: AutoManeuverTool;
-    let openDrive: TvMap;
+    let map: TvMap;
 
     beforeEach( () => {
 
@@ -20,7 +20,7 @@ describe( 'AutoManeuverTool Test', () => {
 
         tool.init();
 
-        openDrive = TvMapSourceFile.openDrive = new TvMap();
+        map = TvMapInstance.map = new TvMap();
 
         AutoManeuverTool.DOTCOUNT = 0;
 
@@ -58,8 +58,8 @@ describe( 'AutoManeuverTool Test', () => {
 
     it( 'should find angled road (45 degree) intersection in same direction', () => {
 
-        const road1 = openDrive.addDefaultRoad();
-        const road2 = openDrive.addDefaultRoad();
+        const road1 = map.addDefaultRoad();
+        const road2 = map.addDefaultRoad();
 
         // left to right with angle
         road1.addGeometryLine( 0, -35.35, -35.35, Maths.Deg2Rad * 45, 100 );
@@ -82,8 +82,8 @@ describe( 'AutoManeuverTool Test', () => {
 
     it( 'should find angled road (45 degree) intersection in opposite direction', () => {
 
-        const road1 = openDrive.addDefaultRoad();
-        const road2 = openDrive.addDefaultRoad();
+        const road1 = map.addDefaultRoad();
+        const road2 = map.addDefaultRoad();
 
         // left to right with angle
         road1.addGeometryLine( 0, -35.35, -35.35, Maths.Deg2Rad * 45, 100 );
@@ -177,8 +177,8 @@ describe( 'AutoManeuverTool Test', () => {
 
     function createStraightRoadsSameDirection () {
 
-        const road1 = openDrive.addDefaultRoad();
-        const road2 = openDrive.addDefaultRoad();
+        const road1 = map.addDefaultRoad();
+        const road2 = map.addDefaultRoad();
 
         // left to right
         road1.addGeometryLine( 0, -50, 0, 0, 100 );
@@ -191,8 +191,8 @@ describe( 'AutoManeuverTool Test', () => {
 
     function createStraightRoadsOppositeDirection () {
 
-        const road1 = openDrive.addDefaultRoad();
-        const road2 = openDrive.addDefaultRoad();
+        const road1 = map.addDefaultRoad();
+        const road2 = map.addDefaultRoad();
 
         // left to right
         road1.addGeometryLine( 0, -50, 0, 0, 100 );

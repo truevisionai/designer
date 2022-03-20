@@ -22,13 +22,13 @@ export class ShowLaneMarkingCommand extends BaseCommand {
 
         if ( lane ) {
 
-            this.road = this.openDrive.getRoadById( this.lane.roadId );
+            this.road = this.map.getRoadById( this.lane.roadId );
 
         }
 
         if ( oldLane ) {
 
-            this.oldRoad = this.openDrive.getRoadById( this.oldLane.roadId );
+            this.oldRoad = this.map.getRoadById( this.oldLane.roadId );
 
         }
     }

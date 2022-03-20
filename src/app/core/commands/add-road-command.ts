@@ -31,7 +31,7 @@ export class AddRoadCommand extends OdBaseCommand {
 
         this.road.spline.hide();
 
-        this.openDrive.removeRoad( this.road );
+        this.map.removeRoad( this.road );
 
         AppInspector.clear();
     }
@@ -44,7 +44,7 @@ export class AddRoadCommand extends OdBaseCommand {
 
         this.road.spline.show();
 
-        this.openDrive.addRoadInstance( this.road );
+        this.map.addRoadInstance( this.road );
 
         AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
     }

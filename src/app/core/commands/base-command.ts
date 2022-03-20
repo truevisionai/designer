@@ -3,7 +3,7 @@
  */
 
 import { ICommand, ICommandCallback } from './i-command';
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 
 
 export abstract class BaseCommand implements ICommand {
@@ -16,8 +16,8 @@ export abstract class BaseCommand implements ICommand {
 
     abstract redo (): void;
 
-    get openDrive () {
-        return TvMapSourceFile.openDrive;
+    get map () {
+        return TvMapInstance.map;
     }
 
 }

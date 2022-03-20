@@ -46,7 +46,7 @@ export class AddRoadObjectTool extends BaseTool {
 
     populate () {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             const objects = road.getRoadObjects();
 
@@ -125,7 +125,7 @@ export class AddRoadObjectTool extends BaseTool {
         this.roadObjects.push( obj );
 
         // tslint:disable-next-line:max-line-length
-        // const roadObject = this.openDrive.getRoad( 0 ).addRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, OdOrientations.NONE, null, null, null, null, null, null, null );
+        // const roadObject = this.ma.getRoad( 0 ).addRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, OdOrientations.NONE, null, null, null, null, null, null, null );
 
         const roadObject = new TvRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, TvOrientation.NONE );
 

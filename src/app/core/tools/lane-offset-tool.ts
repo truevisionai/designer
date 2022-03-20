@@ -94,7 +94,7 @@ export class LaneOffsetTool extends BaseTool {
 
         this.distanceSub.unsubscribe();
 
-        this.openDrive.roads.forEach( road => this.hideNodes( road ) );
+        this.map.roads.forEach( road => this.hideNodes( road ) );
     }
 
     public onPointerDown ( e: PointerEventData ) {
@@ -237,7 +237,7 @@ export class LaneOffsetTool extends BaseTool {
 
             const node = controlPoint.parent as LaneOffsetNode;
 
-            const road = this.openDrive.getRoadById( node.roadId );
+            const road = this.map.getRoadById( node.roadId );
 
             CommandHistory.executeMany(
 
@@ -341,7 +341,7 @@ export class LaneOffsetTool extends BaseTool {
 
         if ( newLane ) {
 
-            const road = this.openDrive.getRoadById( newLane.roadId );
+            const road = this.map.getRoadById( newLane.roadId );
 
             CommandHistory.executeMany(
 
@@ -429,7 +429,7 @@ export class LaneOffsetTool extends BaseTool {
 
         if ( !this.lane ) return;
 
-        const road = this.openDrive.getRoadById( this.lane.roadId );
+        const road = this.map.getRoadById( this.lane.roadId );
 
         const posTheta = new TvPosTheta();
 
@@ -535,7 +535,7 @@ export class LaneOffsetTool extends BaseTool {
 
         SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         this.laneHelper.redraw( LineType.SOLID );
     }

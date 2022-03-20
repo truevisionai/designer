@@ -64,7 +64,7 @@ export class AddWidthNodeCommand extends BaseCommand {
 
         SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         // not sure which is better
         // this.laneHelper.redraw();

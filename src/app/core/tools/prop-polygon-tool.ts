@@ -49,7 +49,7 @@ export class PropPolygonTool extends BaseTool {
 
         super.enable();
 
-        this.openDrive.propPolygons.forEach( polygon => {
+        this.map.propPolygons.forEach( polygon => {
 
             polygon.showControlPoints();
 
@@ -88,7 +88,7 @@ export class PropPolygonTool extends BaseTool {
 
         super.disable();
 
-        this.openDrive.propPolygons.forEach( polygon => {
+        this.map.propPolygons.forEach( polygon => {
 
             polygon.hideCurve();
             polygon.hideControlPoints();
@@ -155,7 +155,7 @@ export class PropPolygonTool extends BaseTool {
 
             this.polygon = new PropPolygon( prop.guid );
 
-            this.openDrive.propPolygons.push( this.polygon );
+            this.map.propPolygons.push( this.polygon );
 
         }
 
@@ -191,11 +191,11 @@ export class PropPolygonTool extends BaseTool {
 
             this.polygon.delete();
 
-            const index = this.openDrive.surfaces.findIndex( s => s.id === this.polygon.id );
+            const index = this.map.surfaces.findIndex( s => s.id === this.polygon.id );
 
             if ( index > -1 ) {
 
-                this.openDrive.surfaces.splice( index, 1 );
+                this.map.surfaces.splice( index, 1 );
 
             }
 

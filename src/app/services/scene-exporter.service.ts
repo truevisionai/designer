@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { Euler, Vector3 } from 'three';
@@ -43,7 +43,7 @@ export class SceneExporterService {
 
     private readonly extension = 'scene';
 
-    private openDrive: TvMap;
+    private map: TvMap;
 
     constructor (
         private openDriveWriter: OdWriter,
@@ -51,11 +51,11 @@ export class SceneExporterService {
         private electron: ElectronService
     ) { }
 
-    get currentFile (): IFile { return TvMapSourceFile.currentFile; }
+    get currentFile (): IFile { return TvMapInstance.currentFile; }
 
-    set currentFile ( value: IFile ) { TvMapSourceFile.currentFile = value; }
+    set currentFile ( value: IFile ) { TvMapInstance.currentFile = value; }
 
-    export ( openDrive?: TvMap ): string {
+    export ( map?: TvMap ): string {
 
         const defaultOptions = {
             attributeNamePrefix: 'attr_',
@@ -68,9 +68,9 @@ export class SceneExporterService {
 
         const parser = new Parser( defaultOptions );
 
-        this.openDrive = openDrive || TvMapSourceFile.openDrive;
+        this.map = map || TvMapInstance.map;
 
-        const scene = this.exportMap( this.openDrive );
+        const scene = this.exportMap( this.map );
 
         const xmlDocument = parser.parse( scene );
 
@@ -100,16 +100,16 @@ export class SceneExporterService {
 
     }
 
-    exportMap ( openDrive: TvMap ) {
+    exportMap ( map: TvMap ) {
 
         return {
             version: 0.1,
-            road: this.exportRoads( [ ...this.openDrive.roads.values() ] ),
-            prop: this.exportProps( openDrive.props ),
-            propCurve: this.exportPropCurves( openDrive.propCurves ),
-            propPolygon: this.exportPropPolygons( openDrive.propPolygons ),
-            surface: this.exportSurfaces( openDrive.surfaces ),
-            junction: this.exportJunctions( [ ...openDrive.junctions.values() ] ),
+            road: this.exportRoads( [ ...this.map.roads.values() ] ),
+            prop: this.exportProps( map.props ),
+            propCurve: this.exportPropCurves( map.propCurves ),
+            propPolygon: this.exportPropPolygons( map.propPolygons ),
+            surface: this.exportSurfaces( map.surfaces ),
+            junction: this.exportJunctions( [ ...map.junctions.values() ] ),
         };
 
     }

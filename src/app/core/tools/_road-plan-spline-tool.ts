@@ -34,7 +34,7 @@
 //         // this.shapeEditor = new CubicBezierCurveEditor();
 //         // this.shapeEditor = new PolygonEditor();
 
-//         this.helper.createRoadControlPoints( this.openDrive );
+//         this.helper.createRoadControlPoints( this.map );
 
 //         this.builder = new OdRoadReferenceLineBuilder( null );
 //         this.laneBuilder = new OdLaneReferenceLineBuilder( null );
@@ -45,7 +45,7 @@
 
 //         // try {
 
-//         //     const road = this.openDrive.getRoadById( e.userData.roadId );
+//         //     const road = this.map.getRoadById( e.userData.roadId );
 
 //         //     if ( road == null ) return;
 
@@ -95,7 +95,7 @@
 
 //         // try {
 
-//         //     const road = this.openDrive.getRoadById( e.userData.roadId );
+//         //     const road = this.map.getRoadById( e.userData.roadId );
 
 //         //     if ( road == null ) return;
 
@@ -119,7 +119,7 @@
 
 //         if ( this.cps.length != 3 ) return;
 
-//         const road = this.openDrive.getRoadById( 1 );
+//         const road = this.map.getRoadById( 1 );
 
 //         // remove previous geometries
 //         road.geometries.splice( 0, road.geometries.length );
@@ -197,8 +197,8 @@
 
 //         // geometry.curvature = curvature;
 
-//         this.builder.clear( this.openDrive.getRoadById( 1 ) );
-//         this.builder.buildRoad( this.openDrive.getRoadById( 1 ) );
+//         this.builder.clear( this.map.getRoadById( 1 ) );
+//         this.builder.buildRoad( this.map.getRoadById( 1 ) );
 //     }
 
 //     private createArcGeometryRight (

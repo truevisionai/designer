@@ -45,7 +45,7 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
     private rebuild () {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             this.roadMarkBuilder.buildRoad( road );
 

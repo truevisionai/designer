@@ -45,7 +45,7 @@ export class SurfaceTool extends BaseTool {
 
         super.enable();
 
-        this.openDrive.surfaces.forEach( surface => {
+        this.map.surfaces.forEach( surface => {
 
             surface.update();
 
@@ -86,7 +86,7 @@ export class SurfaceTool extends BaseTool {
 
         super.disable();
 
-        this.openDrive.surfaces.forEach( surface => {
+        this.map.surfaces.forEach( surface => {
 
             surface.hideCurve();
             surface.hideControlPoints();
@@ -140,7 +140,7 @@ export class SurfaceTool extends BaseTool {
 
             this.surface = new TvSurface( 'grass', new CatmullRomSpline() )
 
-            this.openDrive.surfaces.push( this.surface );
+            this.map.surfaces.push( this.surface );
 
         }
 
@@ -172,11 +172,11 @@ export class SurfaceTool extends BaseTool {
 
             this.surface.delete();
 
-            const index = this.openDrive.surfaces.findIndex( s => s.id == this.surface.id );
+            const index = this.map.surfaces.findIndex( s => s.id == this.surface.id );
 
             if ( index > -1 ) {
 
-                this.openDrive.surfaces.splice( index, 1 );
+                this.map.surfaces.splice( index, 1 );
 
             }
 

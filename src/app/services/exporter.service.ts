@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 
 import * as THREE from 'three';
 import { saveAs } from 'file-saver';
@@ -51,7 +51,7 @@ export class ExporterService {
 
         const exporter = new THREE.GLTFExporter();
 
-        exporter.parse( TvMapSourceFile.openDrive.gameObject, ( buffer: any ) => {
+        exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
 
             const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
 
@@ -71,7 +71,7 @@ export class ExporterService {
 
         const exporter = new THREE.GLTFExporter();
 
-        exporter.parse( TvMapSourceFile.openDrive.gameObject, ( result ) => {
+        exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
 
             const text = JSON.stringify( result, null, 2 );
 
@@ -89,7 +89,7 @@ export class ExporterService {
 
         const exporter = new TvCarlaExporter();
 
-        const contents = exporter.getOutput( this.odService.openDrive );
+        const contents = exporter.getOutput( this.odService.map );
 
         if ( this.electron.isElectronApp ) {
 

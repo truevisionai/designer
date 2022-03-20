@@ -17,7 +17,7 @@ export class AddRoadGeometryCommand extends OdBaseCommand {
 
         this.road.addGeometry( this.geometry );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, this.road );
+        TvMapBuilder.buildRoad( this.map.gameObject, this.road );
 
     }
 
@@ -25,7 +25,7 @@ export class AddRoadGeometryCommand extends OdBaseCommand {
 
         this.road.removeGeometryByUUID( this.geometry.uuid );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, this.road );
+        TvMapBuilder.buildRoad( this.map.gameObject, this.road );
     }
 
     redo (): void {

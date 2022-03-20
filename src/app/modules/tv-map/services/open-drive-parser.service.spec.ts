@@ -33,7 +33,7 @@ describe( 'OpenDrive Parsing', () => {
 
         parser.readHeader( headerXml );
 
-        const header = parser.OpenDrive.header;
+        const header = parser.openDrive.header;
 
         expect( header.attr_revMajor ).toBe( 1 );
         expect( header.attr_revMinor ).toBe( 4 );

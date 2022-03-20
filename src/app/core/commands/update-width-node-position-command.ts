@@ -30,7 +30,7 @@ export class UpdateWidthNodePositionCommand extends BaseCommand {
 
         this.node.updateLaneWidthValues();
 
-        this.rebuild( this.openDrive.getRoadById( this.node.roadId ) );
+        this.rebuild( this.map.getRoadById( this.node.roadId ) );
     }
 
     undo (): void {
@@ -39,7 +39,7 @@ export class UpdateWidthNodePositionCommand extends BaseCommand {
 
         this.node.updateLaneWidthValues();
 
-        this.rebuild( this.openDrive.getRoadById( this.node.roadId ) );
+        this.rebuild( this.map.getRoadById( this.node.roadId ) );
 
     }
 
@@ -53,7 +53,7 @@ export class UpdateWidthNodePositionCommand extends BaseCommand {
 
         SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         this.laneHelper.drawRoad( road, LineType.DASHED, true );
 

@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { Mesh, Shape, ShapeBufferGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { SceneService } from 'app/core/services/scene.service';
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { GameObject } from 'app/core/game-object';
 
 export class TvSurface {
@@ -44,7 +44,7 @@ export class TvSurface {
         // TODO: we can probably avoid doing this here
         // add the surface mesh to opendrive object to make it available
         // for exporting in 3d format easily
-        TvMapSourceFile.openDrive.gameObject.add( this.mesh );
+        TvMapInstance.map.gameObject.add( this.mesh );
 
         // add the spline mesh direcly to scene and not opendrive
         // this helps avoid exporting it in the 3d file

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapSourceFile } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { HostListener } from '@angular/core';
 
 enum KEY_CODE {
@@ -11,8 +11,8 @@ enum KEY_CODE {
 
 export abstract class BaseInspector {
 
-    get openDrive () {
-        return TvMapSourceFile.openDrive;
+    get map () {
+        return TvMapInstance.map;
     }
 
     @HostListener( 'window:keydown', [ '$event' ] )

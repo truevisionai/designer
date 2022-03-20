@@ -30,15 +30,15 @@ import { TvJunctionConnection } from '../models/tv-junction-connection';
 export class OdWriter {
 
     public xmlDocument: Object;
-    public openDrive: TvMap;
+    public map: TvMap;
 
     public constructor () {
 
     }
 
-    public getOutput ( openDrive: TvMap ): string {
+    public getOutput ( map: TvMap ): string {
 
-        this.openDrive = openDrive;
+        this.map = map;
 
         const defaultOptions = {
             attributeNamePrefix: 'attr_',
@@ -105,7 +105,7 @@ export class OdWriter {
 
         this.writeHeader( rootNode.header );
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             this.writeRoad( rootNode, road );
 
@@ -113,7 +113,7 @@ export class OdWriter {
 
         this.writeControllers( rootNode );
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             this.writeJunction( rootNode, junction );
 
@@ -127,7 +127,7 @@ export class OdWriter {
      */
     public writeHeader ( xmlNode ) {
 
-        const header = this.openDrive.getHeader();
+        const header = this.map.getHeader();
 
         // Add all attributes
         xmlNode.attr_revMajor = header.revMajor;
@@ -874,7 +874,7 @@ export class OdWriter {
 
         xmlNode.controller = [];
 
-        this.openDrive.controllers.forEach( controller => {
+        this.map.controllers.forEach( controller => {
 
             const nodeController = {
                 attr_id: controller.id,

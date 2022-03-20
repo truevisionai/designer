@@ -48,7 +48,7 @@ export class SetRoadmarkValueCommand extends BaseCommand {
 
     private rebuild () {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             this.roadMarkBuilder.buildRoad( road );
 

@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { SnackBar } from './snack-bar.service';
-import { TvMapSourceFile } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { SceneExporterService } from './scene-exporter.service';
 import { IFile } from 'app/core/models/file';
 import { FileService } from './file.service';
@@ -29,13 +29,13 @@ export class MainFileService {
         public threeService: ThreeService
     ) { }
 
-    get currentFile () { return TvMapSourceFile.currentFile; }
+    get currentFile () { return TvMapInstance.currentFile; }
 
-    set currentFile ( value ) { TvMapSourceFile.currentFile = value; }
+    set currentFile ( value ) { TvMapInstance.currentFile = value; }
 
-    get openDrive () { return TvMapSourceFile.openDrive; }
+    get map () { return TvMapInstance.map; }
 
-    set openDrive ( value ) { TvMapSourceFile.openDrive = value; }
+    set map ( value ) { TvMapInstance.map = value; }
 
 
     importViaContent ( content: string ) {
@@ -52,13 +52,13 @@ export class MainFileService {
 
         CommandHistory.clear();
 
-        if ( this.openDrive ) this.openDrive.destroy();
+        if ( this.map ) this.map.destroy();
 
         this.currentFile = new IFile( 'untitled.xml' );
 
-        this.openDrive = new TvMap();
+        this.map = new TvMap();
 
-        TvMapBuilder.buildMap( this.openDrive );
+        TvMapBuilder.buildMap( this.map );
     }
 
     showOpenWindow ( path?: string ) {
@@ -99,7 +99,7 @@ export class MainFileService {
 
         if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
 
-        this.currentFile.contents = this.sceneExporter.export( this.openDrive );
+        this.currentFile.contents = this.sceneExporter.export( this.map );
 
         this.saveLocally( this.currentFile );
 

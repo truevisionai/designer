@@ -210,7 +210,7 @@ export class RoadSignTool extends BaseTool {
 
     private onControlPointMoved ( point: Points ) {
 
-        for ( const road of this.openDrive.roads ) {
+        for ( const road of this.map.roads ) {
 
             for ( const map of road[ 1 ].signals ) {
 
@@ -232,7 +232,7 @@ export class RoadSignTool extends BaseTool {
 
     private forEachControlPoint ( callback: ( controlPoint: AnyControlPoint ) => void ) {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             road.signals.forEach( signal => {
 

@@ -17,7 +17,7 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
         super();
 
-        this.road = this.openDrive.getRoadById( this.lane.roadId );
+        this.road = this.map.getRoadById( this.lane.roadId );
 
     }
 

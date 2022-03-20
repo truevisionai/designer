@@ -52,7 +52,7 @@ export class RoadTool extends BaseTool {
 
         super.enable();
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             if ( !road.isJunction ) {
 
@@ -70,7 +70,7 @@ export class RoadTool extends BaseTool {
 
         super.disable();
 
-        this.openDrive.roads.forEach( road => road.hideNodes() );
+        this.map.roads.forEach( road => road.hideNodes() );
 
         if ( this.road ) this.hideRoad( this.road );
 
@@ -208,7 +208,7 @@ export class RoadTool extends BaseTool {
         if ( road.successor && road.successor.elementType !== "junction"
             && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
-            const successor = this.openDrive.getRoadById( road.successor.elementId );
+            const successor = this.map.getRoadById( road.successor.elementId );
 
             if ( !successor ) return;
 
@@ -273,7 +273,7 @@ export class RoadTool extends BaseTool {
         if ( road.predecessor && road.predecessor.elementType !== "junction"
             && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
-            const predecessor = this.openDrive.getRoadById( road.predecessor.elementId );
+            const predecessor = this.map.getRoadById( road.predecessor.elementId );
 
             if ( !predecessor ) return;
 
@@ -397,7 +397,7 @@ export class RoadTool extends BaseTool {
 
                     const lane = intersection.object.userData.lane as TvLane;
 
-                    const road = this.openDrive.getRoadById( lane.roadId );
+                    const road = this.map.getRoadById( lane.roadId );
 
                     if ( road.isJunction ) continue;
 
@@ -470,7 +470,7 @@ export class RoadTool extends BaseTool {
 
                     // this only selects the node
 
-                    const road = this.openDrive.getRoadById( node.roadId );
+                    const road = this.map.getRoadById( node.roadId );
 
                     CommandHistory.executeAll( [
 
@@ -506,7 +506,7 @@ export class RoadTool extends BaseTool {
 
         road.spline.update();
 
-        this.openDrive.gameObject.remove( road.gameObject );
+        this.map.gameObject.remove( road.gameObject );
 
         // remove old geometries
         road.clearGeometries();
@@ -518,7 +518,7 @@ export class RoadTool extends BaseTool {
 
         } );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         NodeFactoryService.updateRoadNodes( this.road );
     }

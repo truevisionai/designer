@@ -153,7 +153,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
             marking.mesh.position.setY( point.position.y );
 
-            this.openDrive.gameObject.add( marking.mesh );
+            this.map.gameObject.add( marking.mesh );
 
             // const roadObject = new TvRoadObject( 'marking', 'arrow-forward', id, pose.s, pose.t, 0, 0, TvOrientation.MINUS );
 

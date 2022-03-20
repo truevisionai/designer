@@ -459,7 +459,7 @@ export class ManeuverTool extends BaseTool {
         junction: TvJunction
     ) {
 
-        const connectionRoad = this.openDrive.getRoadById( connection.connectingRoad );
+        const connectionRoad = this.map.getRoadById( connection.connectingRoad );
 
         const laneSection = connectionRoad.getFirstLaneSection();
 
@@ -520,7 +520,7 @@ export class ManeuverTool extends BaseTool {
 
         const spline = this.createSpline( entry, exit, side )
 
-        const connectingRoad = this.openDrive.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
+        const connectingRoad = this.map.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
 
         connectingRoad.spline = spline;
 
@@ -719,7 +719,7 @@ export class ManeuverTool extends BaseTool {
 
                 const incomingRoad = a.road;
 
-                const connectingRoad = this.openDrive.getRoadById( item[ 1 ].connectingRoad );
+                const connectingRoad = this.map.getRoadById( item[ 1 ].connectingRoad );
 
                 const outgoingRoad = b.road;
 
@@ -814,13 +814,13 @@ export class ManeuverTool extends BaseTool {
         let nearestJunction: TvJunction = null;
         let nearestDistance = Number.MAX_VALUE;
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             if ( !junction.position && junction.connections.size > 0 ) {
 
                 const firstconnection = [ ...junction.connections.values() ][ 0 ]
 
-                const connectionRoad = this.openDrive.getRoadById( firstconnection.connectingRoad );
+                const connectionRoad = this.map.getRoadById( firstconnection.connectingRoad );
 
                 if ( firstconnection.contactPoint === TvContactPoint.START ) {
 
@@ -858,7 +858,7 @@ export class ManeuverTool extends BaseTool {
 
         } );
 
-        if ( !nearestJunction ) nearestJunction = this.openDrive.addNewJunction();
+        if ( !nearestJunction ) nearestJunction = this.map.addNewJunction();
 
         // todo make it the mid point between a and b
         nearestJunction.position = a.position;
@@ -930,7 +930,7 @@ export class ManeuverTool extends BaseTool {
 
     showJunctionEntries () {
 
-        this.openDrive.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
             if ( !road.isJunction ) {
 
@@ -984,12 +984,12 @@ export class ManeuverTool extends BaseTool {
 
     showLanePathObjects () {
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             junction.connections.forEach( connection => {
 
-                const incomingRoad = this.openDrive.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.openDrive.getRoadById( connection.connectingRoad );
+                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
                 connection.laneLink.forEach( link => {
 
@@ -1067,7 +1067,7 @@ export class ManeuverTool extends BaseTool {
 
         this.lanePathObjects.splice( 0, this.lanePathObjects.length );
 
-        this.openDrive.junctions.forEach( junction => {
+        this.map.junctions.forEach( junction => {
 
             junction.connections.forEach( connection => {
 

@@ -69,7 +69,7 @@ export class PropPointTool extends BaseTool {
 
         super.enable();
 
-        this.openDrive.props.forEach( ( prop: PropInstance ) => {
+        this.map.props.forEach( ( prop: PropInstance ) => {
 
             const cp = this.shapeEditor.addControlPoint( prop.object.position );
 
@@ -136,9 +136,9 @@ export class PropPointTool extends BaseTool {
 
         this.sync( point, prop );
 
-        this.openDrive.gameObject.add( prop.object );
+        this.map.gameObject.add( prop.object );
 
-        TvMapQueries.openDrive.props.push( prop );
+        TvMapQueries.map.props.push( prop );
 
     }
 

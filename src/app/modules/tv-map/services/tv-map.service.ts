@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { FileService } from '../../../services/file.service';
 import { OpenDriverParser } from './open-drive-parser.service';
-import { TvMapSourceFile } from './tv-map-source-file';
+import { TvMapInstance } from './tv-map-source-file';
 import { IFile } from '../../../core/models/file';
 import { TvMapBuilder } from '../builders/od-builder.service';
 import { OdWriter } from './open-drive-writer.service';
@@ -40,19 +40,19 @@ export class TvMapService {
     }
 
     public get currentFile () {
-        return TvMapSourceFile.currentFile;
+        return TvMapInstance.currentFile;
     }
 
     public set currentFile ( value ) {
-        TvMapSourceFile.currentFile = value;
+        TvMapInstance.currentFile = value;
     }
 
-    public get openDrive () {
-        return TvMapSourceFile.openDrive;
+    public get map () {
+        return TvMapInstance.map;
     }
 
-    public set openDrive ( value ) {
-        TvMapSourceFile.openDrive = value;
+    public set map ( value ) {
+        TvMapInstance.map = value;
     }
 
     /**
@@ -60,11 +60,11 @@ export class TvMapService {
      */
     newFile () {
 
-        if ( this.openDrive ) this.openDrive.destroy();
+        if ( this.map ) this.map.destroy();
 
         this.currentFile = new IFile( 'untitled.xml' );
 
-        this.openDrive = new TvMap();
+        this.map = new TvMap();
 
     }
 
@@ -79,9 +79,9 @@ export class TvMapService {
 
         const contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
-        if ( this.openDrive ) this.openDrive.destroy();
+        if ( this.map ) this.map.destroy();
 
-        this.openDrive = this.openDriveParser.parse( contents );
+        this.map = this.openDriveParser.parse( contents );
 
         ToolManager.clear();
 
@@ -92,7 +92,7 @@ export class TvMapService {
         // set to currently file pah
         this.currentFile = new IFile( 'untitled.xml' );
 
-        TvMapBuilder.buildMap( this.openDrive );
+        TvMapBuilder.buildMap( this.map );
 
     }
 
@@ -104,15 +104,15 @@ export class TvMapService {
 
         CommandHistory.clear();
 
-        if ( this.openDrive != null ) this.openDrive.destroy();
+        if ( this.map != null ) this.map.destroy();
 
         this.currentFile = file;
 
         let parser = new OpenDriverParser();
 
-        this.openDrive = parser.parse( file.contents );
+        this.map = parser.parse( file.contents );
 
-        TvMapBuilder.buildMap( this.openDrive );
+        TvMapBuilder.buildMap( this.map );
 
         if ( callbackFn != null ) callbackFn();
 
@@ -154,7 +154,7 @@ export class TvMapService {
 
         }
 
-        this.currentFile.contents = this.writer.getOutput( this.openDrive );
+        this.currentFile.contents = this.writer.getOutput( this.map );
 
         if ( this.currentFile.online ) {
 
@@ -170,7 +170,7 @@ export class TvMapService {
 
     getOutput () {
 
-        return this.writer.getOutput( this.openDrive );
+        return this.writer.getOutput( this.map );
 
     }
 
@@ -224,7 +224,7 @@ export class TvMapService {
 
     saveAs () {
 
-        const contents = this.writer.getOutput( this.openDrive );
+        const contents = this.writer.getOutput( this.map );
 
         if ( this.electron.isElectronApp ) {
 

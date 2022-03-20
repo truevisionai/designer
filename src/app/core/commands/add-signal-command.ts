@@ -15,7 +15,7 @@ export class AddSignalCommand extends OdBaseCommand {
 
     get road () {
 
-        return this.openDrive.getRoadById( this.signal.roadId );
+        return this.map.getRoadById( this.signal.roadId );
 
     }
 

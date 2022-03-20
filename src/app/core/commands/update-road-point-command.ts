@@ -40,7 +40,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
         if ( this.road.successor && this.road.successor.elementType !== "junction" ) {
 
-            const successor = this.openDrive.getRoadById( this.road.successor.elementId );
+            const successor = this.map.getRoadById( this.road.successor.elementId );
 
             successor.updateGeometryFromSpline();
 
@@ -50,7 +50,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
         if ( this.road.predecessor && this.road.predecessor.elementType !== "junction" ) {
 
-            const predecessor = this.openDrive.getRoadById( this.road.predecessor.elementId );
+            const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
 
             predecessor.updateGeometryFromSpline();
 
@@ -76,7 +76,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
         if ( this.road.successor && this.road.successor.elementType !== "junction" ) {
 
-            const successor = this.openDrive.getRoadById( this.road.successor.elementId );
+            const successor = this.map.getRoadById( this.road.successor.elementId );
 
             successor.updateGeometryFromSpline();
 
@@ -86,7 +86,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
         if ( this.road.predecessor && this.road.predecessor.elementType !== "junction" ) {
 
-            const predecessor = this.openDrive.getRoadById( this.road.predecessor.elementId );
+            const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
 
             predecessor.updateGeometryFromSpline();
 

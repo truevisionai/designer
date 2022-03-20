@@ -36,7 +36,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
         if ( this.data.connection ) {
 
-            const road = this.openDrive.getRoadById( this.data.connection.connectingRoad );
+            const road = this.map.getRoadById( this.data.connection.connectingRoad );
 
             if ( road && road.spline ) road.spline.show();
 
@@ -57,7 +57,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
         if ( this.data.connection ) {
 
-            const road = this.openDrive.getRoadById( this.data.connection.connectingRoad );
+            const road = this.map.getRoadById( this.data.connection.connectingRoad );
 
             if ( road && road.spline ) road.spline.hide();
 

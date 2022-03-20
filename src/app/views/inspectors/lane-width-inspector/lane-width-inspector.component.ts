@@ -59,7 +59,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
     get road () {
 
-        return this.openDrive.getRoadById( this.roadId );
+        return this.map.getRoadById( this.roadId );
 
     }
 

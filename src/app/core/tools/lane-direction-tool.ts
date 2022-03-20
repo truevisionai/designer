@@ -60,7 +60,7 @@ export class LaneDirectionTool extends BaseTool {
 
         let lane = (object.userData.lane as TvLane);
 
-        this.laneDirectionHelper.setRoad( this.openDrive.getRoadById( lane.roadId ) );
+        this.laneDirectionHelper.setRoad( this.map.getRoadById( lane.roadId ) );
 
         this.laneDirectionHelper.create();
 

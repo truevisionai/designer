@@ -17,7 +17,7 @@
 
 //         try {
 
-//             const road = this.openDrive.getRoadById( e.userData.roadId );
+//             const road = this.map.getRoadById( e.userData.roadId );
 
 //             if ( road == null ) return;
 
@@ -61,7 +61,7 @@
 
 //         try {
 
-//             const road = this.openDrive.getRoadById( e.userData.roadId );
+//             const road = this.map.getRoadById( e.userData.roadId );
 
 //             if ( road == null ) return;
 

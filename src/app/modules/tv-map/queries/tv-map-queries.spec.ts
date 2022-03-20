@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoad } from '../models/tv-road.model';
 import { TvMap } from '../models/tv-map.model';
 import { TvMapQueries } from './tv-map-queries';
@@ -14,9 +14,9 @@ describe( 'OpenDriveQueries', () => {
 
     beforeEach( () => {
 
-        TvMapSourceFile.openDrive = new TvMap();
+        TvMapInstance.map = new TvMap();
 
-        road = TvMapSourceFile.openDrive.addDefaultRoad();
+        road = TvMapInstance.map.addDefaultRoad();
 
         road.addGeometryLine( 0, 0, 0, 0, 10 );
 

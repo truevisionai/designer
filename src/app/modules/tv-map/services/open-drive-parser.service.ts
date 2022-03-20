@@ -28,15 +28,15 @@ import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 } )
 export class OpenDriverParser extends AbstractReader {
 
-    public openDrive: TvMap = new TvMap();
+    public map: TvMap = new TvMap();
     public xmlElement: string;
 
     constructor () {
         super();
     }
 
-    get OpenDrive () {
-        return this.openDrive;
+    get openDrive () {
+        return this.map;
     }
 
     parse ( xmlElement: string ): TvMap {
@@ -57,7 +57,7 @@ export class OpenDriverParser extends AbstractReader {
 
         this.readFile( data );
 
-        return this.openDrive;
+        return this.map;
     }
 
     /**
@@ -73,13 +73,13 @@ export class OpenDriverParser extends AbstractReader {
 
         this.readAsOptionalArray( xmlElement.controller, xml => {
 
-            this.openDrive.addControllerInstance( this.readController( xml ) );
+            this.map.addControllerInstance( this.readController( xml ) );
 
         } );
 
         this.readAsOptionalArray( xmlElement.junction, ( xml ) => {
 
-            this.openDrive.addJunctionInstance( this.readJunction( xml ) );
+            this.map.addJunctionInstance( this.readJunction( xml ) );
 
         } );
     }
@@ -101,7 +101,7 @@ export class OpenDriverParser extends AbstractReader {
         const west = parseFloat( xmlElement.attr_west );
         const vendor = xmlElement.attr_vendor;
 
-        this.openDrive.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+        this.map.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
     }
 
     readRoad ( xml: any ) {
@@ -111,7 +111,7 @@ export class OpenDriverParser extends AbstractReader {
         const id = parseInt( xml.attr_id, 10 );
         const junction = parseFloat( xml.attr_junction );
 
-        const road = this.openDrive.addRoad( name, length, id, junction );
+        const road = this.map.addRoad( name, length, id, junction );
 
         if ( xml.link != null ) {
 

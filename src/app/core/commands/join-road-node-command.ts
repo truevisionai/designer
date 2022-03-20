@@ -27,9 +27,9 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 
     }
 
-    get firstRoad () { return this.openDrive.getRoadById( this.firstNode.roadId ) }
+    get firstRoad () { return this.map.getRoadById( this.firstNode.roadId ) }
 
-    get secondRoad () { return this.openDrive.getRoadById( this.secondNode.roadId ) }
+    get secondRoad () { return this.map.getRoadById( this.secondNode.roadId ) }
 
     execute (): void {
 
@@ -45,9 +45,9 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
         // remove and clear the splines points
         // remove the entire game object 
 
-        this.openDrive.roads.delete( this.joiningRoad.id );
+        this.map.roads.delete( this.joiningRoad.id );
 
-        this.openDrive.gameObject.remove( this.joiningRoad.gameObject );
+        this.map.gameObject.remove( this.joiningRoad.gameObject );
 
         RoadFactory.removeRoadConnections( this.firstRoad, this.joiningRoad );
         RoadFactory.removeRoadConnections( this.secondRoad, this.joiningRoad );
@@ -57,9 +57,9 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 
     redo (): void {
 
-        this.openDrive.roads.set( this.joiningRoad.id, this.joiningRoad );
+        this.map.roads.set( this.joiningRoad.id, this.joiningRoad );
 
-        this.openDrive.gameObject.add( this.joiningRoad.gameObject );
+        this.map.gameObject.add( this.joiningRoad.gameObject );
 
         RoadFactory.makeRoadConnections( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode, this.joiningRoad );
 

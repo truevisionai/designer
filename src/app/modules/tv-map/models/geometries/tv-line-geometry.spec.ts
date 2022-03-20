@@ -6,19 +6,19 @@ import { TvRoad } from '../tv-road.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvMap } from '../tv-map.model';
 import { TvMapQueries } from '../../queries/tv-map-queries';
-import { TvMapSourceFile } from '../../services/tv-map-source-file';
+import { TvMapInstance } from '../../services/tv-map-source-file';
 
 describe( 'OdLineGeometry', () => {
 
-    let openDrive: TvMap;
+    let map: TvMap;
     let road: TvRoad;
     let pose = new TvPosTheta();
 
     beforeEach( () => {
 
-        openDrive = new TvMap();
+        map = new TvMap();
 
-        TvMapSourceFile.openDrive = openDrive;
+        TvMapInstance.map = map;
 
         road = new TvRoad( '', 10, 1, -1 );
 
@@ -147,9 +147,9 @@ describe( 'OdLineGeometry', () => {
         // add roads
         // 3 straight road
         // ==========|==========|==========
-        const road1 = openDrive.addRoad( '', 10, 1, -1 );
-        const road2 = openDrive.addRoad( '', 10, 2, -1 );
-        const road3 = openDrive.addRoad( '', 10, 3, -1 );
+        const road1 = map.addRoad( '', 10, 1, -1 );
+        const road2 = map.addRoad( '', 10, 2, -1 );
+        const road3 = map.addRoad( '', 10, 3, -1 );
 
         road1.addPlanView();
         road2.addPlanView();

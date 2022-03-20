@@ -6,20 +6,20 @@ import { TvMap } from '../models/tv-map.model';
 import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/models/file';
 
-export class TvMapSourceFile {
+export class TvMapInstance {
 
-    static roadNetworkChanged = new EventEmitter<TvMap>();
+    static mapChanged = new EventEmitter<TvMap>();
     static currentFile: IFile;
 
-    private static _openDrive: TvMap = new TvMap;
+    private static _map: TvMap = new TvMap;
 
-    static get openDrive (): TvMap {
-        return this._openDrive;
+    static get map (): TvMap {
+        return this._map;
     }
 
-    static set openDrive ( value: TvMap ) {
-        this._openDrive = value;
-        this.roadNetworkChanged.emit( value );
+    static set map ( value: TvMap ) {
+        this._map = value;
+        this.mapChanged.emit( value );
     }
 
     static clearOpenDrive () {
@@ -31,6 +31,6 @@ export class TvMapSourceFile {
     }
 
     static redraw () {
-        this.roadNetworkChanged.emit( this.openDrive );
+        this.mapChanged.emit( this.map );
     }
 }

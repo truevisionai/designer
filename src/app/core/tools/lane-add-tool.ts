@@ -79,7 +79,7 @@ export class LaneAddTool extends BaseTool {
 
             this.lane = newLane;
 
-            const newRoad = this.openDrive.getRoadById( newLane.roadId );
+            const newRoad = this.map.getRoadById( newLane.roadId );
 
             this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
@@ -91,7 +91,7 @@ export class LaneAddTool extends BaseTool {
 
             this.lane = newLane;
 
-            const newRoad = this.openDrive.getRoadById( newLane.roadId );
+            const newRoad = this.map.getRoadById( newLane.roadId );
 
             this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
@@ -135,7 +135,7 @@ export class LaneAddTool extends BaseTool {
 
     private cloneLane ( lane: TvLane ): void {
 
-        const road = this.openDrive.getRoadById( lane.roadId );
+        const road = this.map.getRoadById( lane.roadId );
 
         const laneSection = road.getLaneSectionById( lane.laneSectionId );
 
@@ -154,7 +154,7 @@ export class LaneAddTool extends BaseTool {
 
         SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.openDrive.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
         this.laneHelper.redraw( LineType.SOLID );
     }

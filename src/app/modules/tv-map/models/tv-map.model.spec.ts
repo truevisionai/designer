@@ -9,11 +9,11 @@ import { TvMap } from './tv-map.model';
 import { TvRoad } from './tv-road.model';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvMapSourceFile } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-source-file';
 
 describe( 'OpenDrive Model', () => {
 
-    let openDrive: TvMap;
+    let map: TvMap;
     let road: TvRoad;
     let laneSection: TvLaneSection;
 
@@ -27,11 +27,11 @@ describe( 'OpenDrive Model', () => {
 
     beforeEach( () => {
 
-        openDrive = new TvMap();
+        map = new TvMap();
 
-        TvMapSourceFile.openDrive = openDrive;
+        TvMapInstance.map = map;
 
-        road = openDrive.addRoad( '', 10, 1, -1 );
+        road = map.addRoad( '', 10, 1, -1 );
 
         road.addPlanView();
 

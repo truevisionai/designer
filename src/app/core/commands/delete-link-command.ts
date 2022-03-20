@@ -30,9 +30,9 @@ export class DeleteLinkCommand extends BaseCommand {
         if ( index === -1 ) SnackBar.error( "Link index not found" );
         if ( index === -1 ) return;
 
-        this.connectingRoad = this.openDrive.getRoadById( this.connection.connectingRoad );
+        this.connectingRoad = this.map.getRoadById( this.connection.connectingRoad );
 
-        this.openDrive.removeRoad( this.connectingRoad );
+        this.map.removeRoad( this.connectingRoad );
 
         this.link.hide();
 
@@ -40,11 +40,11 @@ export class DeleteLinkCommand extends BaseCommand {
 
         this.connection.removeLinkAtIndex( index );
 
-        const junction = this.openDrive.getJunctionById( this.connectingRoad.junction );
+        const junction = this.map.getJunctionById( this.connectingRoad.junction );
 
         if ( !junction ) SnackBar.error( "Junction not found");
 
-        const outgoingRoad = this.openDrive.getRoadById( this.connectingRoad.successor.elementId );
+        const outgoingRoad = this.map.getRoadById( this.connectingRoad.successor.elementId );
 
         junction.removeConnection( this.connection, this.lanePathObject.incomingRoad, outgoingRoad );
     }
@@ -57,11 +57,11 @@ export class DeleteLinkCommand extends BaseCommand {
 
         SceneService.add( this.link.lanePath );
 
-        this.openDrive.addRoadInstance( this.connectingRoad );
+        this.map.addRoadInstance( this.connectingRoad );
 
         this.connection.addLaneLink( this.link );
 
-        const junction = this.openDrive.getJunctionById( this.connectingRoad.junction );
+        const junction = this.map.getJunctionById( this.connectingRoad.junction );
 
         if ( !junction ) console.error( "junction not found with id ", this.connectingRoad.junction );
 
