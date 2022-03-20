@@ -4,14 +4,6 @@
 
 <div *ngIf="road" class="inspector-form-container">
 
-    <mat-form-field class="full-width">
-        <input [(ngModel)]="road.id" disabled matInput placeholder="Road ID" type="number">
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-        <input [(ngModel)]="road.length" disabled matInput placeholder="Length (Meters)" type="number">
-    </mat-form-field>
-
     <app-double-field disabled label="Length (Meters)" [value]="road.length"></app-double-field>
 
     <app-double-field label="Speed Limit (Miles/Hour)" [value]="roadSpeed" min="0" max="200" (changed)="onRoadSpeedChanged($event)"></app-double-field>
