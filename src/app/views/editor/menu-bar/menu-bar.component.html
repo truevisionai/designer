@@ -49,17 +49,11 @@
         <button (click)="onImportOpenDRIVE()" action="import-open-drive" appTrack="menu" mat-menu-item>
             OpenDRIVE
         </button>
-        <button *ngIf="oscEnabled" (click)="onImportOpenSCENARIO()" action="import-open-scenario" appTrack="menu" mat-menu-item>
-            OpenSCENARIO
-        </button>
     </mat-menu>
 
     <mat-menu #fileExportMenu="matMenu">
         <button (click)="onExportOpenDRIVE()" action="export-open-drive" appTrack="menu" mat-menu-item>
             OpenDRIVE
-        </button>
-        <button *ngIf="oscEnabled" (click)="onExportOpenSCENARIO()" action="export-open-scenario" appTrack="menu" mat-menu-item>
-            OpenSCENARIO
         </button>
         <button (click)="onExportGLTF()" action="export-gltf" appTrack="menu" mat-menu-item><span>GLTF</span></button>
         <button (click)="onExportGLB()" action="export-glb" appTrack="menu" mat-menu-item><span>GLB</span></button>
