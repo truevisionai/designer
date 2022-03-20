@@ -17,7 +17,7 @@ From this repository you can build the Truevision Designer for Windows and Linux
 
 ## Download
 
-Click here to download []
+Click here to download [https://www.truevision.ai/download/designer](https://www.truevision.ai/download/designer)
 
 ## Documentation
 
