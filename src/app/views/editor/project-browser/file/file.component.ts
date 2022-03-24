@@ -21,7 +21,7 @@ import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { ProjectBrowserService } from '../project-browser.service';
 import { ImporterService } from 'app/services/importer.service';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
 @Component( {
     selector: 'app-file',

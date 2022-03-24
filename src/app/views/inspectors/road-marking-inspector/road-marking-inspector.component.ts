@@ -4,7 +4,8 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { TvRoadMarking, TvMarkingService } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvMarkingService } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 import { Metadata } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Texture } from 'three';

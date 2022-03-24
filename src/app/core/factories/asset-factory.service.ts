@@ -13,7 +13,8 @@ import { PropModel } from '../models/prop-model.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AppService } from '../services/app.service';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoadMarking, MarkingTypes } from 'app/modules/tv-map/services/tv-marking.service';
+import { MarkingTypes } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
 @Injectable( {
     providedIn: 'root'

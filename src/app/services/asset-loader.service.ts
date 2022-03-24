@@ -30,7 +30,7 @@ import { AssetDatabase } from './asset-database';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { RoadStyle, RoadStyleService } from './road-style.service';
 import { RoadStyleImporter } from './road-style-importer';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
 @Injectable( {
     providedIn: 'root'

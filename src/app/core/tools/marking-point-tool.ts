@@ -9,15 +9,18 @@ import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvObjectType } from 'app/modules/tv-map/interfaces/i-tv-object';
-import { Mesh, MeshBasicMaterial, Object3D, PlaneBufferGeometry, TextureLoader } from 'three';
+import { Mesh, MeshBasicMaterial, Object3D, PlaneBufferGeometry, TextureLoader, Euler, ArrowHelper, Vector3, Quaternion } from 'three';
 import { OdSignalInspectorComponent } from 'app/views/inspectors/signal-inspector/signal-inspector.component';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvOrientation, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { MarkingTypes, TvMarkingService } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { Maths } from 'app/utils/maths';
+import * as THREE from 'three';
 
 export abstract class BaseMarkingTool extends BaseTool {
 
@@ -125,7 +128,11 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         pose.y = point.position.y;
 
-        const road = TvMapQueries.getRoadByCoords( pose.x, pose.y, pose );
+        const result = TvMapQueries.getLaneByCoords( pose.x, pose.y, pose );
+
+        const road = result.road;
+
+        const lane = result.lane;
 
         if ( !road ) SnackBar.error( "Marking can be added only on road mesh" );
 
@@ -135,23 +142,21 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         if ( this.marking && this.marking.type === MarkingTypes.point ) {
 
-            // const id = road.getRoadObjectCount() + 1;
-
-            // const marking = this.marking.name;
-
-            // const texture = new TextureLoader().load( `assets/markings/${ marking }.png` );
-
-            // const material = new MeshBasicMaterial( { map: texture, alphaTest: 0.1 } );
-
-            // const geometry = new PlaneBufferGeometry( 1, 1 );
-
-            // const mesh = new Mesh( geometry, material );
-
             const marking = point.mainObject = this.marking.clone();
 
             marking.mesh.position.setX( point.position.x );
 
             marking.mesh.position.setY( point.position.y );
+
+            if ( lane.side === TvLaneSide.LEFT ) {
+
+                pose.hdg += Maths.M_PI;
+
+            }
+
+            const arrowHelper = new ArrowHelper( pose.toDirectionVector().normalize(), new Vector3( 0, 0, 0 ), 1, 1, 1, 1 );
+
+            marking.mesh.setRotationFromQuaternion( arrowHelper.getWorldQuaternion( new Quaternion ) );
 
             this.map.gameObject.add( marking.mesh );
 
@@ -159,7 +164,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
             // roadObject.mesh = mesh;
 
-            this.sync( point, marking );
+            // this.sync( point, marking );
 
             // road.addRoadObjectInstance( roadObject );
 

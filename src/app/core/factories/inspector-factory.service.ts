@@ -13,7 +13,7 @@ import { TextureInspector } from 'app/views/inspectors/texture-inspector/texture
 import { RoadSignInspector } from 'app/views/inspectors/road-sign-inspector/road-sign-inspector.component';
 import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
 import { RoadMarkingInspector } from 'app/views/inspectors/road-marking-inspector/road-marking-inspector.component';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
 export enum InspectorType {
     prop_model_inspector = 'prop_model_inspector',
