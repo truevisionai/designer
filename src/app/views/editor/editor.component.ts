@@ -10,6 +10,7 @@ import { KeyboardInput } from '../../core/input';
 import { CommandHistory } from '../../services/command-history';
 import { MainFileService } from 'app/services/main-file.service';
 import { TvConsole } from 'app/core/utils/console';
+import { EditorService } from 'app/core/services/editor.service';
 
 @Component( {
     selector: 'app-editor',
@@ -21,7 +22,8 @@ export class EditorComponent implements OnInit, AfterContentInit {
     constructor (
         private dialog: MatDialog,
         private analytics: AnalyticsService,
-        private mainFileService: MainFileService
+        private mainFileService: MainFileService,
+        private editor: EditorService,
     ) {
 
     }
@@ -63,21 +65,14 @@ export class EditorComponent implements OnInit, AfterContentInit {
     @HostListener( 'document:keydown', [ '$event' ] )
     onKeyDown ( e: KeyboardEvent ) {
 
-        KeyboardInput.OnKeyDown( e );
+        this.editor.onKeyDown( e );
 
-        if ( e.keyCode === 90 && e.ctrlKey ) {
-            CommandHistory.undo();
-        }
-
-        if ( e.keyCode === 89 && e.ctrlKey ) {
-            CommandHistory.redo();
-        }
     }
 
     @HostListener( 'document:keyup', [ '$event' ] )
     onKeyUp ( e: KeyboardEvent ) {
 
-        KeyboardInput.OnKeyUp( e );
+        this.editor.onKeyUp( e );
 
     }
 
