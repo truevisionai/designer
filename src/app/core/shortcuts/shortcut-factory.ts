@@ -8,7 +8,7 @@ import { UndoShortcut } from './undo-shortcut';
 import { RedoShortcut } from './redo-shortcut';
 import { SaveAsShortcut } from './save-as-shortcut';
 
-export class TvShorcutFactory {
+export class ShorcutFactory {
 
     static shortcuts: Array<any> = [
         NewFileShortcut,
