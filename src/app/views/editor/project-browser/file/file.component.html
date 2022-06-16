@@ -56,7 +56,7 @@
 </mat-card>
 
 <mat-card draggable="true" class="file-card" *ngIf="isRoadMarking" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
+    <img src="assets/unknown-file-icon.png" />
     <p class="file-name" *ngIf="!showRenaming">{{ filename }}</p>
     <p class="file-name" *ngIf="showRenaming">
         <input #nameInput type="text" (blur)="onBlur($event)" (focus)="onFocus($event)" cdkFocusInitial [value]="filename" />

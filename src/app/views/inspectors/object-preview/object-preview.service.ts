@@ -31,7 +31,7 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { GameObject } from 'app/core/game-object';
 import { COLOR } from 'app/shared/utils/colors.service';
 import * as THREE from 'three';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 import { AssetDatabase } from 'app/services/asset-database';
 
 const WIDTH = 200;

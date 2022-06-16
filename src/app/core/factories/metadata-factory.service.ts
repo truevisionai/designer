@@ -11,7 +11,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AppService } from '../services/app.service';
 import * as THREE from 'three';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 import { RoadStyle } from 'app/services/road-style.service';
 
 @Injectable( {

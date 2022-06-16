@@ -33,6 +33,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { Vector3, Math as MathUtils } from 'three';
 import { SceneService } from 'app/core/services/scene.service';
 import { EventEmitter } from '@angular/core';
+import { TvPointMarking } from './tv-point-road-marking';
 
 export class TvRoad {
 
@@ -55,6 +56,8 @@ export class TvRoad {
     public sidewalkMaterialGuid: string;
     public borderMaterialGuid: string;
     public shoulderMaterialGuid: string;
+
+    public pointMarkings: TvPointMarking[] = [];
 
     /**
      * @deprecated use predecessor, successor directly

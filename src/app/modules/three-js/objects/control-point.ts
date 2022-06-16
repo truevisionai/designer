@@ -94,13 +94,6 @@ export abstract class BaseControlPoint extends Points {
 
 export class DistanceNode extends BaseControlPoint {
 
-    constructor ( public s: number, geometry?: Geometry | BufferGeometry, material?: Material ) {
-        super( geometry, material );
-    }
-
-}
-export class NewDistanceNode extends BaseControlPoint {
-
     constructor ( public roadId, public laneId, public s: number, public t: number, geometry?: Geometry | BufferGeometry, material?: Material ) {
         super( geometry, material );
     }
@@ -210,4 +203,46 @@ export class AnyControlPoint extends BaseControlPoint {
     }
 
 }
+
+export class SimpleControlPoint<T>  extends BaseControlPoint {
+
+    public mainObject: T;
+
+    static roadTag = 'road';
+
+    static create ( name = "", position?: Vector3 ) {
+
+        const dotGeometry = new Geometry();
+
+        dotGeometry.vertices.push( new Vector3( 0, 0, 0 ) );
+
+        const texture = OdTextures.point;
+
+        const dotMaterial = new PointsMaterial( {
+            size: 10,
+            sizeAttenuation: false,
+            map: texture,
+            alphaTest: 0.5,
+            transparent: true,
+            color: COLOR.BLUE,
+            depthTest: false
+        } );
+
+        const cp = new AnyControlPoint( dotGeometry, dotMaterial );
+
+        if ( position ) cp.copyPosition( position );
+
+        cp.userData.is_button = true;
+        cp.userData.is_control_point = true;
+        cp.userData.is_selectable = true;
+
+        cp.tag = this.roadTag;
+
+        cp.renderOrder = 3;
+
+        return cp;
+    }
+
+}
+
 
