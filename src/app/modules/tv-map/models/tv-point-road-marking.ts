@@ -4,7 +4,11 @@ import { GameObject } from 'app/core/game-object';
 import { MarkingTypes } from '../services/tv-marking.service';
 import * as THREE from 'three';
 import { TvLane } from './tv-lane';
+import { AnyControlPoint, SimpleControlPoint } from 'app/modules/three-js/objects/control-point';
 
+/**
+ * Instance of road marking object/prefab in the road/lane/map
+ */
 export class TvPointMarking {
 
     public static extension = 'roadmarking';
@@ -12,6 +16,8 @@ export class TvPointMarking {
     public static tag = 'roadmarking';
 
     public mesh: Mesh;
+
+    public controlPoint: SimpleControlPoint<TvPointMarking>;
 
     public type: MarkingTypes = MarkingTypes.point;
 
@@ -32,6 +38,16 @@ export class TvPointMarking {
         const json = JSON.parse( contents );
 
         return new TvPointMarking( json.name, json.textureGuid );
+
+    }
+
+    show (): void {
+
+
+
+    }
+
+    hide (): void {
 
     }
 

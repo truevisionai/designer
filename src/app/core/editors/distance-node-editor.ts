@@ -5,7 +5,7 @@
 import { AbstractShapeEditor } from './abstract-shape-editor';
 import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
 import { KeyboardInput } from '../input';
-import { AnyControlPoint, NewDistanceNode } from 'app/modules/three-js/objects/control-point';
+import { DistanceNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 
@@ -60,7 +60,7 @@ export class DistanceNodeEditor extends AbstractShapeEditor {
                 const roadPos = new TvPosTheta();
                 const lanePos = new TvPosTheta();
 
-                const node = ( this.currentPoint as NewDistanceNode );
+                const node = ( this.currentPoint as DistanceNode );
 
                 e.point.z = 0;
 
@@ -103,36 +103,35 @@ export class DistanceNodeEditor extends AbstractShapeEditor {
         }
     }
 
-    addControlPoint ( position: THREE.Vector3 ): AnyControlPoint {
+    /**
+     * override addControlPoint function
+     * @param position 
+     * @returns 
+     */
+    addControlPoint ( position: THREE.Vector3 ): DistanceNode {
 
-        const roadPos = new TvPosTheta();
-        const lanePos = new TvPosTheta();
+        const result = TvMapQueries.getLaneCenterPosition( position );
 
-        // this gets the road and the s and t values
-        const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
+        const finalPosition = result.position;
 
-        // cant create as road not found
-        if ( !road ) return;
-
-        // this get the lane from road, s and t values
-        // roadPos is only used to read
-        const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
-
-        // cant create as road or lane not found
-        if ( !result.road || !result.lane ) return;
-
-        // now get the exact position in middle of the lane
-        const finalPosition = TvMapQueries.getLanePosition( road.id, result.lane.id, roadPos.s, 0, lanePos );
+        const laneCoord = result.laneCoord;
 
         // create the distance node
-        const point = this.createDistanceNode( result.road.id, result.lane.id, roadPos.s, roadPos.t, position, road.gameObject );
+        const node = this.createDistanceNode( 
+            laneCoord.roadId, 
+            laneCoord.laneId, 
+            laneCoord.s, 
+            laneCoord.offset, 
+            finalPosition 
+        );
 
-        point.copyPosition( finalPosition );
+        // redundant
+        // node.copyPosition( finalPosition );
 
-        this.controlPoints.push( point );
+        this.controlPoints.push( node );
 
-        this.controlPointAdded.emit( point );
+        this.controlPointAdded.emit( node );
 
-        return point;
+        return node;
     }
 }

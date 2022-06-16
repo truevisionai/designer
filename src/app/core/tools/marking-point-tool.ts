@@ -11,7 +11,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvObjectType } from 'app/modules/tv-map/interfaces/i-tv-object';
 import { Mesh, MeshBasicMaterial, Object3D, PlaneBufferGeometry, TextureLoader, Euler, ArrowHelper, Vector3, Quaternion } from 'three';
 import { OdSignalInspectorComponent } from 'app/views/inspectors/signal-inspector/signal-inspector.component';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { AnyControlPoint, SimpleControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvOrientation, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -21,6 +21,7 @@ import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
+import { TvPointMarking } from 'app/modules/tv-map/models/tv-point-road-marking';
 
 export abstract class BaseMarkingTool extends BaseTool {
 
@@ -30,7 +31,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
     name: string = 'MarkingPointTool';
 
-    private shapeEditor: AbstractShapeEditor;
+    private shapeEditor: AbstractShapeEditor = new PointEditor();
     private hasSignal = false;
     private selectedSignal: TvRoadSignal;
     private cpSubscriptions: Subscription[] = [];
@@ -50,9 +51,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         super.init();
 
-        this.shapeEditor = new PointEditor();
-
-        this.createControlPoints();
+        this.showPointMarkings();
 
     }
 
@@ -116,9 +115,11 @@ export class MarkingPointTool extends BaseMarkingTool {
     //     this.setInspector( OdSignalInspectorComponent, this.selectedSignal );
     // }
 
-    private onControlPointAdded ( point: AnyControlPoint ) {
+    private onControlPointAdded ( point: SimpleControlPoint<TvPointMarking> ) {
 
         if ( !this.marking ) SnackBar.error( "Select a marking from project browser" );
+
+        if ( !this.marking ) this.shapeEditor.removeControlPoint( point );
 
         if ( !this.marking ) return;
 
@@ -128,7 +129,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         pose.y = point.position.y;
 
-        const result = TvMapQueries.getLaneByCoords( pose.x, pose.y, pose );
+        const result = TvMapQueries.getLaneCenterPosition( point.position );
 
         const road = result.road;
 
@@ -142,11 +143,19 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         if ( this.marking && this.marking.type === MarkingTypes.point ) {
 
-            const marking = point.mainObject = this.marking.clone();
+            // const marking = point.mainObject = this.marking.clone();
 
-            marking.mesh.position.setX( point.position.x );
+            const marking = point.mainObject = new TvPointMarking( "", this.marking.textureGuid, lane );
 
-            marking.mesh.position.setY( point.position.y );
+            marking.controlPoint = point;
+
+            // instead of point position we need to calculate the position
+            // on lane with distance value of road
+            // lane and s value
+
+            marking.mesh.position.setX( result.position.x );
+
+            marking.mesh.position.setY( result.position.y );
 
             if ( lane.side === TvLaneSide.LEFT ) {
 
@@ -154,17 +163,16 @@ export class MarkingPointTool extends BaseMarkingTool {
 
             }
 
+            // calculation to set the orientation/heading of the marking 
             const arrowHelper = new ArrowHelper( pose.toDirectionVector().normalize(), new Vector3( 0, 0, 0 ), 1, 1, 1, 1 );
 
             marking.mesh.setRotationFromQuaternion( arrowHelper.getWorldQuaternion( new Quaternion ) );
 
             this.map.gameObject.add( marking.mesh );
 
-            // const roadObject = new TvRoadObject( 'marking', 'arrow-forward', id, pose.s, pose.t, 0, 0, TvOrientation.MINUS );
+            this.sync( point, marking );
 
-            // roadObject.mesh = mesh;
-
-            // this.sync( point, marking );
+            road.pointMarkings.push( marking );
 
             // road.addRoadObjectInstance( roadObject );
 
@@ -198,28 +206,32 @@ export class MarkingPointTool extends BaseMarkingTool {
 
     }
 
-    private sync ( point: AnyControlPoint, object: TvRoadMarking ): void {
+    private sync ( point: AnyControlPoint, object: TvPointMarking ): void {
 
-        // const subscription = point.updated.subscribe( e => {
+        const subscription = point.updated.subscribe( e => {
 
-        //     object.mesh.position.setX( e.position.x );
+            object.mesh.position.setX( e.position.x );
 
-        //     object.mesh.position.setY( e.position.y );
+            object.mesh.position.setY( e.position.y );
 
-        // } );
+        } );
 
-        // this.cpSubscriptions.push( subscription );
+        this.cpSubscriptions.push( subscription );
     }
 
-    private createControlPoints () {
+    private showPointMarkings () {
 
-        // this.forEachRoadObject( object => {
+        this.map.roads.forEach( road => {
 
-        //     const cp = this.shapeEditor.addControlPoint( object.mesh.position );
+            road.pointMarkings.forEach( marking => {
 
-        //     this.sync( cp, object );
+                const cp = this.shapeEditor.addControlPoint( marking.mesh.position );
 
-        // } );
+                this.sync( cp, marking );
+
+            } );
+
+        } );
 
     }
 

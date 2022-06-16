@@ -14,7 +14,7 @@ import { SceneService } from '../services/scene.service';
 import { KeyboardInput } from 'app/core/input';
 import { Subscription } from 'rxjs';
 import { Debug } from 'app/core/utils/debug';
-import { AnyControlPoint, NewDistanceNode } from '../../modules/three-js/objects/control-point';
+import { AnyControlPoint, DistanceNode } from '../../modules/three-js/objects/control-point';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
@@ -385,7 +385,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
             depthTest: false
         } );
 
-        const object = new NewDistanceNode( roadId, laneId, s, t, dotGeometry, dotMaterial );
+        const object = new DistanceNode( roadId, laneId, s, t, dotGeometry, dotMaterial );
 
         object.setPosition( position.clone() );
 

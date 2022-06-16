@@ -4,6 +4,9 @@ import { GameObject } from 'app/core/game-object';
 import { MarkingTypes } from '../services/tv-marking.service';
 import * as THREE from 'three';
 
+/**
+ * Prefab/Asset class to hold data for editor import/export
+ */
 export class TvRoadMarking {
 
     public static extension = 'roadmarking';

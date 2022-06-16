@@ -10,7 +10,7 @@ import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
-import { TvCoord, TvLaneCoord } from '../models/tv-lane-coord';
+import { TvCoord, TvLaneCoord, TvRoadCoord } from '../models/tv-lane-coord';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvUtils } from '../models/tv-utils';
 import { TvMap } from '../models/tv-map.model';
@@ -189,6 +189,41 @@ export class TvMapQueries extends TvBaseQueries {
 
     }
 
+    static getLaneCenterPosition ( position: Vector3 ) {
+
+        const roadPos = new TvPosTheta();
+        const lanePos = new TvPosTheta();
+
+        // this gets the road and the s and t values
+        const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
+
+        // cant create as road not found
+        if ( !road ) return;
+
+        // this get the lane from road, s and t values
+        // roadPos is only used to read
+        const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
+
+        // cant create as road or lane not found
+        if ( !result.road || !result.lane ) return;
+
+        // lane offset should be zero because we are looking for the centre
+        const laneOffset = 0;
+
+        // now get the exact position in middle of the lane
+        const centerPosition = TvMapQueries.getLanePosition( road.id, result.lane.id, roadPos.s, laneOffset, lanePos );
+
+        return {
+            position: centerPosition,
+            road: road,
+            lane: result.lane,
+            laneSection: result.laneSection,
+            s: roadPos.s,
+            laneCoord: new TvLaneCoord( road.id, result.laneSection.id, result.lane.id, roadPos.s, laneOffset )
+        };
+
+    }
+
     static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
         const posTheta = new TvPosTheta();
@@ -239,9 +274,10 @@ export class TvMapQueries extends TvBaseQueries {
 
     }
 
-    static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane } {
+    static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane, laneSection: TvLaneSection } {
 
         let resultLane: TvLane = null;
+        let resultLaneSection: TvLaneSection = null;
 
         const resultRoad = TvMapQueries.getRoadByCoords( x, y, posTheta, roadIdsToIgnore );
 
@@ -255,6 +291,8 @@ export class TvMapQueries extends TvBaseQueries {
 
             // TODO: Fix this, checkInteral does not check properly
             if ( laneSection.checkInterval( s ) ) {
+
+                resultLaneSection = laneSection;
 
                 // t is positive of left
                 // left lanes are positive int
@@ -297,7 +335,8 @@ export class TvMapQueries extends TvBaseQueries {
 
         return {
             road: resultRoad,
-            lane: resultLane
+            lane: resultLane,
+            laneSection: resultLaneSection,
         };
     }
 
