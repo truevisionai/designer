@@ -13,6 +13,7 @@ import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { FileService } from 'app/services/file.service';
 import { AppInfo } from './app-info.service';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
+import { EditorService } from './editor.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -28,6 +29,7 @@ export class AppService {
     static assets: AssetLoaderService;
     static file: FileService;
     static exporter: SceneExporterService;
+    static editor: EditorService;
 
     constructor (
         private eventSystem: EventSystem,
@@ -39,6 +41,7 @@ export class AppService {
         public assets: AssetLoaderService,
         public files: FileService,
         sceneExporter: SceneExporterService,
+        public editor: EditorService,
     ) {
 
         AppService.eventSystem = eventSystem;
@@ -46,6 +49,7 @@ export class AppService {
         AppService.electron = electron;
         AppService.assets = assets;
         AppService.file = files;
+        AppService.editor = editor;
 
         AppService.exporter = sceneExporter;
 
