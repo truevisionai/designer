@@ -17,6 +17,7 @@ import { SceneExporterService } from './scene-exporter.service';
 import { CommandHistory } from './command-history';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
 
+import 'three/examples/js/exporters/GLTFExporter';
 
 @Injectable( {
     providedIn: 'root'
