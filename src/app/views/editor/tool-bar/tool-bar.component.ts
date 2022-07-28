@@ -29,6 +29,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
 import { ManeuverTool } from 'app/core/tools/maneuver-tool';
 import { PropPolygonTool } from 'app/core/tools/prop-polygon-tool';
+import { RoadCircleTool } from 'app/core/tools/road-circle-tool';
 
 @Component( {
     selector: 'app-tool-bar',
@@ -84,6 +85,12 @@ export class ToolBarComponent implements OnInit {
     showRoadTool () {
 
         this.setTool( new RoadTool() );
+
+    }
+
+    showRoadCircleTool () {
+
+        this.setTool( new RoadCircleTool() )
 
     }
 

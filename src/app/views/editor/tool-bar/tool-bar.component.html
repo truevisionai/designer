@@ -16,6 +16,18 @@
         </div>
     </sat-popover>
 
+    <!-- Road-Circle-Tool -->
+    <button (click)="showRoadCircleTool()" [ngClass]="currentToolName == 'RoadCircleTool' ? 'mat-accent' : ''" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool" appTrack="button" mat-icon-button
+            matTooltip="Road Circle Tool">
+        <mat-icon>radio_button_checked</mat-icon>        
+    </button>
+    <sat-popover #roadCircleToolPopover verticalAlign="below">
+        <div class="simple-popover">
+            <div class="title">{{ 'ROAD-CIRCLE-TITLE' | translate }}</div>
+            <div [innerHTML]="'ROAD-CIRCLE-DESCRIPTION' | translate"></div>
+        </div>
+    </sat-popover>    
+
     <!-- Lane-Width -->
     <button (click)="showLaneWidthTool()" [ngClass]="currentToolName == 'LaneWidth' ? 'mat-accent' : ''" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="1000" action="lane-width-tool" appTrack="button" mat-icon-button
             matTooltip="Lane Width Tool">
