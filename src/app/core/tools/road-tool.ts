@@ -84,7 +84,8 @@ export class RoadTool extends BaseTool {
         if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
         this.pointerDown = true;
-        this.pointerDownAt = e.point.clone();
+
+        this.pointerDownAt = e.point ? e.point.clone() : null;
 
         const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
@@ -232,9 +233,7 @@ export class RoadTool extends BaseTool {
 
                 P3.copyPosition( P2.position );
 
-                P2.hdg = P1.hdg;
-
-                P3.hdg = P2.hdg + Math.PI;
+                P2.hdg = P3.hdg = P1.hdg;
 
                 newP4 = P2.moveForward( distance );
 

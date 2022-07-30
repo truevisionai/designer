@@ -18,6 +18,7 @@
         "build-prod": "ng build --prod",
         "build-prod-live": "ng build --prod --watch",
         "test": "ng test",
+        "test-headless": "ng test --watch=false --browsers=ChromeHeadless",
         "lint": "ng lint",
         "e2e": "ng e2e",
         "pack": "electron-builder --dir",

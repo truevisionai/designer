@@ -202,7 +202,7 @@ export class TvRoad {
 
     }
 
-    setPredecessor ( elementType: string, elementId: number, contactPoint?: TvContactPoint ) {
+    setPredecessor ( elementType: "road" | "junction", elementId: number, contactPoint?: TvContactPoint ) {
 
         if ( this._predecessor == null ) {
 
