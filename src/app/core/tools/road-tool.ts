@@ -84,7 +84,8 @@ export class RoadTool extends BaseTool {
         if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
         this.pointerDown = true;
-        this.pointerDownAt = e.point.clone();
+
+        this.pointerDownAt = e.point ? e.point.clone() : null;
 
         const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
