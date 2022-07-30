@@ -7,7 +7,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Maths } from 'app/utils/maths';
 import { TvDirection } from 'app/modules/tv-map/models/tv-common';
 import { RoadCircleTool } from './road-circle-tool';
-import { Vector3 } from 'three';
+import { Vector3, Vector2 } from 'three';
 
 
 describe( 'RoadCircleTool Test', () => {
@@ -30,9 +30,11 @@ describe( 'RoadCircleTool Test', () => {
         const centre = new Vector3( 0, 0, 0 );
         const end = new Vector3( 0, 100, 0 );
 
-        tool.createCircularRoad( centre, end, 100 );
+        tool.createCircle( centre, end, 100 );
 
-        expect( true ).toBe( false );
+        tool.createRoads();
+
+        expect( map.roads.size ).toBe( 4 );
 
     } );
 

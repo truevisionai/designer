@@ -358,6 +358,22 @@ export class RoadFactory {
         }
     }
 
+    static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
+
+        firstRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.START );
+
+        firstRoad.getLastLaneSection().lanes.forEach( lane => {
+            if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+        } );
+
+        secondRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.END );
+
+        secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+            if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+        } )
+
+    }
+
     static removeRoadConnections ( firstRoad: TvRoad, secondRoad: TvRoad ) {
 
         if ( firstRoad.predecessor && firstRoad.predecessor.elementId === secondRoad.id ) {
