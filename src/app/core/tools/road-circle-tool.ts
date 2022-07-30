@@ -59,8 +59,6 @@ export class RoadCircleTool extends BaseTool {
 
         if ( e.button != MouseButton.LEFT ) return;
 
-        console.log( "down" )
-
         this.pointerDown = true;
         this.pointerDownAt = e.point;
 
@@ -88,8 +86,6 @@ export class RoadCircleTool extends BaseTool {
     onPointerMoved ( e: PointerEventData ) {
 
         if ( e.button != MouseButton.LEFT ) return;
-
-        console.log( "moved" );
 
         if ( !this.pointerDown ) return;
         if ( !this.pointerDownAt ) return;
@@ -166,8 +162,6 @@ class CircleRoad {
      */
     createRoads_1_Road_10_Points () {
 
-        console.log( "creating roads" )
-
         const p1 = new Vector2( this.centre.x, this.centre.y );
         const p2 = new Vector2( this.end.x, this.end.y );
 
@@ -235,8 +229,6 @@ class CircleRoad {
      */
     createRoads_4_Roads () {
 
-        console.log( "creating roads" )
-
         const p1 = new Vector2( this.centre.x, this.centre.y );
         const p2 = new Vector2( this.end.x, this.end.y );
 
@@ -299,8 +291,6 @@ class CircleRoad {
      * @deprecated not in use only for reference
      */
     createRoads_1_Arc () {
-
-        console.log( "creating roads" )
 
         const p1 = new Vector2( this.centre.x, this.centre.y );
         const p2 = new Vector2( this.end.x, this.end.y );
