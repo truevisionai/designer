@@ -2,50 +2,50 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { SceneService } from '../services/scene.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { OdRoadMarkBuilder } from 'app/modules/tv-map/builders/od-road-mark-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { SceneService } from '../services/scene.service';
+import { BaseCommand } from './base-command';
 
 export class AddRoadmarkNodeCommand extends BaseCommand {
 
-    private road: TvRoad;
+	private road: TvRoad;
 
-    constructor ( private lane: TvLane, private roadMark: TvLaneRoadMark, private roadMarkbuilder: OdRoadMarkBuilder ) {
+	constructor ( private lane: TvLane, private roadMark: TvLaneRoadMark, private roadMarkbuilder: OdRoadMarkBuilder ) {
 
-        super();
+		super();
 
-        this.road = this.map.getRoadById( this.lane.roadId );
+		this.road = this.map.getRoadById( this.lane.roadId );
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.lane.addRoadMarkInstance( this.roadMark );
+		this.lane.addRoadMarkInstance( this.roadMark );
 
-        SceneService.add( this.roadMark.node );
+		SceneService.add( this.roadMark.node );
 
-        this.roadMarkbuilder.buildRoad( this.road );
+		this.roadMarkbuilder.buildRoad( this.road );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        const index = this.lane.roadMark.findIndex( roadmark => roadmark.uuid === this.roadMark.uuid );
+		const index = this.lane.roadMark.findIndex( roadmark => roadmark.uuid === this.roadMark.uuid );
 
-        this.lane.roadMark.splice( index, 1 );
+		this.lane.roadMark.splice( index, 1 );
 
-        SceneService.remove( this.roadMark.node );
+		SceneService.remove( this.roadMark.node );
 
-        this.roadMarkbuilder.buildRoad( this.road );
-    }
+		this.roadMarkbuilder.buildRoad( this.road );
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }

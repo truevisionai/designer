@@ -8,18 +8,18 @@
 
 <div class="inspector-form-container">
 
-    <mat-form-field>
-        <input matInput placeholder="ID" disabled [(ngModel)]="data.attr_id">
-    </mat-form-field>
+	<mat-form-field>
+		<input [(ngModel)]="data.attr_id" disabled matInput placeholder="ID">
+	</mat-form-field>
 
-    <!-- <mat-form-field> -->
-        <!-- <input matInput placeholder="Road-ID" disabled [(ngModel)]="data.road_id"> -->
-    <!-- </mat-form-field> -->
+	<!-- <mat-form-field> -->
+	<!-- <input matInput placeholder="Road-ID" disabled [(ngModel)]="data.road_id"> -->
+	<!-- </mat-form-field> -->
 
-    <mat-form-field>
-        <input matInput placeholder="Name" [(ngModel)]="data.attr_name">
-    </mat-form-field>
+	<mat-form-field>
+		<input [(ngModel)]="data.attr_name" matInput placeholder="Name">
+	</mat-form-field>
 
-    <button mat-button (click)="onDelete()">Delete!</button>
+	<button (click)="onDelete()" mat-button>Delete!</button>
 
 </div>

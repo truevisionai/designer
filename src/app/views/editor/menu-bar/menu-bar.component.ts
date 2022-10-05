@@ -4,192 +4,195 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+
 import { Router } from '@angular/router';
+import { IFile } from 'app/core/models/file';
+import { Environment } from 'app/core/utils/environment';
+import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { ExporterService } from 'app/services/exporter.service';
+import { MainFileService } from 'app/services/main-file.service';
+import { RecentFileService } from 'app/services/recent-file.service';
+import { RoadExporterService } from 'app/services/road-style-exporter.service';
 import { ElectronService } from 'ngx-electron';
 import { AppService } from '../../../core/services/app.service';
 import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
-import { FileService } from '../../../services/file.service';
-import { Environment } from 'app/core/utils/environment';
-import { RecentFileService } from 'app/services/recent-file.service';
-import { IFile } from 'app/core/models/file';
-import { MainFileService } from 'app/services/main-file.service';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
-import { RoadStyleService } from 'app/services/road-style.service';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
-import { RoadExporterService } from 'app/services/road-style-exporter.service';
 
 
 @Component( {
-    selector: 'app-menu-bar',
-    templateUrl: './menu-bar.component.html',
+	selector: 'app-menu-bar',
+	templateUrl: './menu-bar.component.html',
 } )
 export class MenuBarComponent implements OnInit {
 
-    get oscEnabled (): boolean { return Environment.oscEnabled; }
+	constructor (
+		private appService: AppService,
+		private odService: TvMapService,
+		private electron: ElectronService,
+		private dialog: MatDialog,
+		private http: HttpClient,
+		private exporter: ExporterService,
+		private router: Router,
+		private recentFileService: RecentFileService,
+		private mainFileService: MainFileService,
+		private odExporter: OdWriter,
+		private roadStyleExporter: RoadExporterService
+	) {
+	}
 
-    constructor (
-        private appService: AppService,
-        private odService: TvMapService,
-        private electron: ElectronService,
-        private dialog: MatDialog,
-        private http: HttpClient,
-        private exporter: ExporterService,
-        private router: Router,
-        private recentFileService: RecentFileService,
-        private mainFileService: MainFileService,
-        private odExporter: OdWriter,
-        private roadStyleExporter: RoadExporterService
-    ) {
-    }
+	get oscEnabled (): boolean {
+		return Environment.oscEnabled;
+	}
 
-    get recentFiles () { return this.recentFileService.recentFiles }
+	get recentFiles () {
+		return this.recentFileService.recentFiles;
+	}
 
-    get isElectronApp () {
+	get isElectronApp () {
 
-        return this.electron.isElectronApp;
+		return this.electron.isElectronApp;
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-    }
+	}
 
-    onNewFile () {
+	onNewFile () {
 
-        this.mainFileService.newFile();
+		this.mainFileService.newFile();
 
-    }
+	}
 
-    onOpenFile () {
+	onOpenFile () {
 
-        this.mainFileService.showOpenWindow( this.mainFileService.fileService.projectFolder );
+		this.mainFileService.showOpenWindow( this.mainFileService.fileService.projectFolder );
 
-    }
+	}
 
-    showNewRoadDialog () {
+	showNewRoadDialog () {
 
-        this.dialog.open( NewRoadDialogComponent, {
-            width: '680px',
-            height: '680px',
-            data: null,
-            disableClose: true
-        } );
+		this.dialog.open( NewRoadDialogComponent, {
+			width: '680px',
+			height: '680px',
+			data: null,
+			disableClose: true
+		} );
 
-    }
+	}
 
-    onSave () {
+	onSave () {
 
-        this.mainFileService.save();
+		this.mainFileService.save();
 
-    }
+	}
 
-    onSaveAs () {
+	onSaveAs () {
 
-        this.mainFileService.saveAs();
+		this.mainFileService.saveAs();
 
-    }
+	}
 
 
-    onExit () {
+	onExit () {
 
-        this.appService.exit();
+		this.appService.exit();
 
-    }
+	}
 
-    onUndo () {
+	onUndo () {
 
-        CommandHistory.undo();
+		CommandHistory.undo();
 
-    }
+	}
 
-    onRedo () {
+	onRedo () {
 
-        CommandHistory.redo();
+		CommandHistory.redo();
 
-    }
+	}
 
-    openManual () {
+	openManual () {
 
-        window.open( AppLinks.roadEditorManualLink, '_blank' );
+		window.open( AppLinks.roadEditorManualLink, '_blank' );
 
-    }
+	}
 
-    openContactUs () {
+	openContactUs () {
 
-        window.open( AppLinks.contactUsLink, '_blank' );
+		window.open( AppLinks.contactUsLink, '_blank' );
 
-    }
+	}
 
-    openUserGuide () {
+	openUserGuide () {
 
-        window.open( AppLinks.documentationLink, '_blank' );
+		window.open( AppLinks.documentationLink, '_blank' );
 
-    }
+	}
 
-    importRecentFile ( file: IFile ) {
+	importRecentFile ( file: IFile ) {
 
-        this.mainFileService.openFromPath( file.path, null );
+		this.mainFileService.openFromPath( file.path, null );
 
-    }
+	}
 
-    onImportOpenDRIVE () {
+	onImportOpenDRIVE () {
 
-        this.odService.open();
+		this.odService.open();
 
-    }
+	}
 
-    onExportOpenDRIVE () {
+	onExportOpenDRIVE () {
 
-        this.exporter.exportOpenDrive();
+		this.exporter.exportOpenDrive();
 
-    }
+	}
 
-    onExportGLTF () {
+	onExportGLTF () {
 
-        this.exporter.exportGTLF();
+		this.exporter.exportGTLF();
 
-    }
+	}
 
-    onExportGLB () {
+	onExportGLB () {
 
-        // this.exporter.exportGLB();
+		// this.exporter.exportGLB();
 
-        this.dialog.open( ExportGlbDialog, {
-            width: '25vw',
-        } );
+		this.dialog.open( ExportGlbDialog, {
+			width: '25vw',
+		} );
 
-    }
+	}
 
-    importOdExample ( filename: string ) {
+	importOdExample ( filename: string ) {
 
-        if ( filename == null ) throw new Error( 'Invalid filename' );
+		if ( filename == null ) throw new Error( 'Invalid filename' );
 
-        const filepath = `./assets/open-drive/${ filename }`;
+		const filepath = `./assets/open-drive/${ filename }`;
 
-        this.http.get( filepath, { responseType: 'text' } ).subscribe( response => {
+		this.http.get( filepath, { responseType: 'text' } ).subscribe( response => {
 
-            this.odService.importContent( response );
+			this.odService.importContent( response );
 
-        } );
-    }
+		} );
+	}
 
-    onExportCARLA () {
+	onExportCARLA () {
 
-        this.exporter.exportCARLA();
+		this.exporter.exportCARLA();
 
-    }
+	}
 
-    logout () {
+	logout () {
 
-        this.appService.auth.logout();
+		this.appService.auth.logout();
 
-        this.router.navigateByUrl( AppService.loginUrl );
+		this.router.navigateByUrl( AppService.loginUrl );
 
-    }
+	}
 
 }

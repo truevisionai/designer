@@ -4,37 +4,37 @@
 
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 import { JwtService } from '../services/jwt.service';
-import { User } from '../models/user';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class AuthGuard implements CanActivate {
 
-    private user: User;
+	private user: User;
 
-    constructor ( public auth: AuthService, private jwt: JwtService, public router: Router ) {
+	constructor ( public auth: AuthService, private jwt: JwtService, public router: Router ) {
 
-        this.auth.currentUser.subscribe( user => this.user = user );
+		this.auth.currentUser.subscribe( user => this.user = user );
 
-    }
+	}
 
-    canActivate (): boolean {
+	canActivate (): boolean {
 
-        if ( this.jwt.hasToken() && !this.jwt.isTokenExpired() ) {
+		if ( this.jwt.hasToken() && !this.jwt.isTokenExpired() ) {
 
-            return true;
+			return true;
 
-        } else {
+		} else {
 
-            this.router.navigate( [ '/sessions/signin' ] );
+			this.router.navigate( [ '/sessions/signin' ] );
 
-            return false;
+			return false;
 
-        }
+		}
 
-    }
+	}
 
 }

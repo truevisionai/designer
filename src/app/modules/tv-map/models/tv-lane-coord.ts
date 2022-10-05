@@ -4,57 +4,57 @@
 
 export class TvCoord {
 
-    constructor ( x, y, z, h, p, r ) {
-    }
+	constructor ( x, y, z, h, p, r ) {
+	}
 
-    static getDist2d ( a: TvCoord, b: TvCoord ) {
+	static getDist2d ( a: TvCoord, b: TvCoord ) {
 
-    }
+	}
 
-    static getDist3d ( a: TvCoord, b: TvCoord ) {
+	static getDist3d ( a: TvCoord, b: TvCoord ) {
 
-    }
+	}
 }
 
 export class TvLaneCoord {
 
-    // total 4 properties
-    // road-id
-    // lane-section-id
-    // s
-    // lane-Id
-    // lane-offset
+	// total 4 properties
+	// road-id
+	// lane-section-id
+	// s
+	// lane-Id
+	// lane-offset
 
-    constructor ( public roadId: number, public sectionId: number, public laneId: number, public s: number, public offset: number ) {
+	constructor ( public roadId: number, public sectionId: number, public laneId: number, public s: number, public offset: number ) {
 
-    }
+	}
 
-    init () {
+	init () {
 
-    }
+	}
 
-    addTrackCoord ( value: TvRoadCoord ) {
+	addTrackCoord ( value: TvRoadCoord ) {
 
-    }
+	}
 
 }
 
 export class TvRoadCoord {
 
-    constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
+	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
 
-    }
+	}
 
-    init () {
+	init () {
 
-    }
+	}
 
-    add ( value: TvRoadCoord ) {
-    }
+	add ( value: TvRoadCoord ) {
+	}
 }
 
 export class TvGeoCoord {
 
-    constructor ( lat, long, z, h, p, r ) {
-    }
+	constructor ( lat, long, z, h, p, r ) {
+	}
 }

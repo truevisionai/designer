@@ -3,99 +3,100 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
-import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
-import { TvRoadMarkTypes } from '../../../modules/tv-map/models/tv-common';
-import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
-import { CommandHistory } from '../../../services/command-history';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
+
 import { RemoveRoadmarkCommand } from '../../../core/commands/remove-roadmark-command';
+import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
+import { IComponent } from '../../../core/game-object';
+import { TvRoadMarkTypes } from '../../../modules/tv-map/models/tv-common';
+import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
+import { CommandHistory } from '../../../services/command-history';
 
 @Component( {
-    selector: 'app-lane-roadmark-inspector',
-    templateUrl: './lane-roadmark-inspector.component.html',
-    styleUrls: [ './lane-roadmark-inspector.component.css' ]
+	selector: 'app-lane-roadmark-inspector',
+	templateUrl: './lane-roadmark-inspector.component.html',
+	styleUrls: [ './lane-roadmark-inspector.component.css' ]
 } )
 export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnInit, IComponent, OnDestroy {
 
-    data: TvLaneRoadMark;
+	data: TvLaneRoadMark;
 
-    constructor () {
-        super();
-    }
+	constructor () {
+		super();
+	}
 
-    get roadMark () {
-        return this.data;
-    }
+	get roadMark () {
+		return this.data;
+	}
 
-    get lane () {
-        return this.data;
-    }
+	get lane () {
+		return this.data;
+	}
 
-    get types () {
-        return TvRoadMarkTypes;
-    }
+	get types () {
+		return TvRoadMarkTypes;
+	}
 
-    // get roadmarks (): OdLaneRoadMark[] {
-    //     return this.data.getLaneRoadMarkVector();
-    // }
+	// get roadmarks (): OdLaneRoadMark[] {
+	//     return this.data.getLaneRoadMarkVector();
+	// }
 
-    ngOnInit () {
+	ngOnInit () {
 
-        if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
+		if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
 
-            this.roadMark.node.point.select();
+			this.roadMark.node.point.select();
 
-        }
+		}
 
-    }
+	}
 
-    ngOnDestroy () {
+	ngOnDestroy () {
 
-        if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
+		if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
 
-            this.roadMark.node.point.unselect();
+			this.roadMark.node.point.unselect();
 
-        }
+		}
 
-    }
+	}
 
-    onDelete () {
+	onDelete () {
 
-        CommandHistory.execute( new RemoveRoadmarkCommand( this.roadMark, this.roadMark.lane ) );
+		CommandHistory.execute( new RemoveRoadmarkCommand( this.roadMark, this.roadMark.lane ) );
 
-    }
+	}
 
-    onWidthChanged ( value: number, item: TvLaneRoadMark ) {
+	onWidthChanged ( value: number, item: TvLaneRoadMark ) {
 
-        if ( item.width == value ) return;
+		if ( item.width == value ) return;
 
-        CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'width', value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'width', value ) ) );
 
-    }
+	}
 
-    onTypeChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
+	onTypeChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
 
-        if ( item.type == $event.value ) return;
+		if ( item.type == $event.value ) return;
 
-        CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'type', $event.value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'type', $event.value ) ) );
 
-    }
+	}
 
-    onWeightChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
+	onWeightChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
 
-        if ( item.weight == $event.value ) return;
+		if ( item.weight == $event.value ) return;
 
-        CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'weight', $event.value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'weight', $event.value ) ) );
 
-    }
+	}
 
-    onColorChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
+	onColorChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
 
-        if ( item.color == $event.value ) return;
+		if ( item.color == $event.value ) return;
 
-        CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'color', $event.value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'color', $event.value ) ) );
 
-    }
+	}
 }

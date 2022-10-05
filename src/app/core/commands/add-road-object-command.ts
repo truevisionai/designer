@@ -2,41 +2,41 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
-import { OdBaseCommand } from './od-base-command';
-import { SceneService } from '../services/scene.service';
 import { Object3D } from 'three';
+import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
+import { SceneService } from '../services/scene.service';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadObjectCommand extends OdBaseCommand {
 
-    constructor ( private roadId: number, private roadObject: TvRoadObject, private objects: Object3D[] = [] ) {
-        super();
-    }
+	constructor ( private roadId: number, private roadObject: TvRoadObject, private objects: Object3D[] = [] ) {
+		super();
+	}
 
-    execute (): void {
+	execute (): void {
 
-        SceneService.add( this.roadObject.mesh, false );
+		SceneService.add( this.roadObject.mesh, false );
 
-        this.map.getRoadById( this.roadId ).addRoadObjectInstance( this.roadObject );
-    }
+		this.map.getRoadById( this.roadId ).addRoadObjectInstance( this.roadObject );
+	}
 
-    undo (): void {
+	undo (): void {
 
-        SceneService.remove( this.roadObject.mesh, false );
+		SceneService.remove( this.roadObject.mesh, false );
 
-        this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.id );
+		this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.id );
 
-        this.objects.forEach( object => SceneService.remove( object ) );
+		this.objects.forEach( object => SceneService.remove( object ) );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-        this.objects.forEach( object => SceneService.add( object ) );
+		this.objects.forEach( object => SceneService.add( object ) );
 
-    }
+	}
 
 
 }

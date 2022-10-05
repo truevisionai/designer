@@ -3,96 +3,95 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MixpanelService } from './mixpanel.service';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { Environment } from '../utils/environment';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
-import { filter, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { MixpanelService } from './mixpanel.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class AnalyticsService {
 
-    private destroyed$ = new Subject();
+	private destroyed$ = new Subject();
 
-    constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
+	constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
 
-        if ( Environment.production ) this.mixpanel.init( environment.mixpanel_id, this.auth.email );
+		if ( Environment.production ) this.mixpanel.init( environment.mixpanel_id, this.auth.email );
 
-        if ( this.email != null ) this.setEmail( this.email );
+		if ( this.email != null ) this.setEmail( this.email );
 
-        this.auth.currentUser.subscribe( e => this.onUserChanged() );
+		this.auth.currentUser.subscribe( e => this.onUserChanged() );
 
-    }
+	}
 
-    get email () {
+	get email () {
 
-        return this.auth.email;
+		return this.auth.email;
 
-    }
+	}
 
-    init () {
+	init () {
 
-        if ( Environment.production ) this.trackPageChanges();
+		if ( Environment.production ) this.trackPageChanges();
 
-    }
+	}
 
-    private trackPageChanges () {
+	onUserChanged (): void {
 
-        this.router.events
-            .pipe(
-                filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
-                takeUntil( this.destroyed$ ),
-            )
-            .subscribe( ( event: NavigationEnd ) => {
-                this.trackPageView( event.url );
-            } );
+		if ( this.email != null ) this.setEmail( this.email );
 
-    }
+	}
 
-    onUserChanged (): void {
+	send ( event: string, options: any ) {
 
-        if ( this.email != null ) this.setEmail( this.email );
+		if ( !Environment.production ) return;
 
-    }
+		this.mixpanel.track( event, options );
 
-    send ( event: string, options: any ) {
+	}
 
-        if ( !Environment.production ) return;
+	trackError ( error: Error ) {
 
-        this.mixpanel.track( event, options );
+		if ( !Environment.production ) return;
 
-    }
+		this.mixpanel.track( 'error', {
+			name: error.name,
+			message: error.message,
+			stack: error.stack
+		} );
 
-    trackError ( error: Error ) {
+	}
 
-        if ( !Environment.production ) return;
+	setEmail ( email: string ) {
 
-        this.mixpanel.track( 'error', {
-            name: error.name,
-            message: error.message,
-            stack: error.stack
-        } );
+		if ( Environment.production ) this.mixpanel.setEmail( email );
 
-    }
+	}
 
-    setEmail ( email: string ) {
+	trackPageView ( url: string ) {
 
-        if ( Environment.production ) this.mixpanel.setEmail( email );
+		if ( !Environment.production ) return;
 
-    }
+		this.mixpanel.track( 'pageview', {
+			url: url
+		} );
 
+	}
 
-    trackPageView ( url: string ) {
+	private trackPageChanges () {
 
-        if ( !Environment.production ) return;
+		this.router.events
+			.pipe(
+				filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
+				takeUntil( this.destroyed$ ),
+			)
+			.subscribe( ( event: NavigationEnd ) => {
+				this.trackPageView( event.url );
+			} );
 
-        this.mixpanel.track( 'pageview', {
-            url: url
-        } );
-
-    }
+	}
 }

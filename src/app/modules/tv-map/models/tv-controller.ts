@@ -4,78 +4,82 @@
 
 export class TvController {
 
-    private _controls: TvControllerControl[] = [];
-    private _id: number;
-    private _name: string;
-    private _sequence: number;
+	constructor ( id: number, name: string, sequence?: number ) {
+		this._id = id;
+		this._name = name;
+		this._sequence = sequence;
+	}
 
-    constructor ( id: number, name: string, sequence?: number ) {
-        this._id = id;
-        this._name = name;
-        this._sequence = sequence;
-    }
+	private _controls: TvControllerControl[] = [];
 
-    get controls (): TvControllerControl[] {
-        return this._controls;
-    }
+	get controls (): TvControllerControl[] {
+		return this._controls;
+	}
 
-    set controls ( value: TvControllerControl[] ) {
-        this._controls = value;
-    }
+	set controls ( value: TvControllerControl[] ) {
+		this._controls = value;
+	}
 
-    get id (): number {
-        return this._id;
-    }
+	private _id: number;
 
-    set id ( value: number ) {
-        this._id = value;
-    }
+	get id (): number {
+		return this._id;
+	}
 
-    get name (): string {
-        return this._name;
-    }
+	set id ( value: number ) {
+		this._id = value;
+	}
 
-    set name ( value: string ) {
-        this._name = value;
-    }
+	private _name: string;
 
-    get sequence (): number {
-        return this._sequence;
-    }
+	get name (): string {
+		return this._name;
+	}
 
-    set sequence ( value: number ) {
-        this._sequence = value;
-    }
+	set name ( value: string ) {
+		this._name = value;
+	}
 
-    addControl ( odControllerControl: TvControllerControl ) {
-        this.controls.push( odControllerControl );
-    }
+	private _sequence: number;
+
+	get sequence (): number {
+		return this._sequence;
+	}
+
+	set sequence ( value: number ) {
+		this._sequence = value;
+	}
+
+	addControl ( odControllerControl: TvControllerControl ) {
+		this.controls.push( odControllerControl );
+	}
 }
 
 export class TvControllerControl {
 
-    private _signalId: number;
-    private _type: string;
+	constructor ( signalId: number, type: string ) {
+		this._signalId = signalId;
+		this._type = type;
+	}
 
-    constructor ( signalId: number, type: string ) {
-        this._signalId = signalId;
-        this._type = type;
-    }
+	private _signalId: number;
 
-    get type (): string {
-        return this._type;
-    }
+	get signalId (): number {
+		return this._signalId;
+	}
 
-    set type ( value: string ) {
-        this._type = value;
-    }
+	set signalId ( value: number ) {
+		this._signalId = value;
+	}
 
-    get signalId (): number {
-        return this._signalId;
-    }
+	private _type: string;
 
-    set signalId ( value: number ) {
-        this._signalId = value;
-    }
+	get type (): string {
+		return this._type;
+	}
+
+	set type ( value: string ) {
+		this._type = value;
+	}
 
 }

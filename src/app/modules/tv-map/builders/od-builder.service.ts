@@ -2,317 +2,317 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from '../models/tv-map.model';
 import { GameObject } from 'app/core/game-object';
-import { TvRoad } from '../models/tv-road.model';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvRoadSignal } from '../models/tv-road-signal.model';
-import { TvRoadObject } from '../models/tv-road-object';
+import { AssetDatabase } from 'app/services/asset-database';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
-import { TvObjectType } from '../interfaces/i-tv-object';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { Maths } from 'app/utils/maths';
-import { TvLane } from '../models/tv-lane';
-import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
-import { OdBuilderConfig } from './od-builder-config';
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { SceneService } from '../../../core/services/scene.service';
-import { TvSignalHelper } from '../services/tv-signal-helper';
-import { OdRoadMarkBuilder } from './od-road-mark-builder';
+import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
+import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvMap } from '../models/tv-map.model';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoadObject } from '../models/tv-road-object';
+import { TvRoadSignal } from '../models/tv-road-signal.model';
+import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
-import { OdSignalBuilder } from './od-signal-builder';
-import { AssetDatabase } from 'app/services/asset-database';
+import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvSignalHelper } from '../services/tv-signal-helper';
+import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
+import { OdRoadMarkBuilder } from './od-road-mark-builder';
+import { OdSignalBuilder } from './od-signal-builder';
 
 export class TvMapBuilder {
 
-    private static signalFactory = new OdSignalBuilder;
-    private static roadMarkBuilder = new OdRoadMarkBuilder( null );
+	private static signalFactory = new OdSignalBuilder;
+	private static roadMarkBuilder = new OdRoadMarkBuilder( null );
 
-    private static JUNCTION_ELEVATION_SHIFT = 0.005;
+	private static JUNCTION_ELEVATION_SHIFT = 0.005;
 
-    constructor ( public map?: TvMap ) {
+	constructor ( public map?: TvMap ) {
 
-    }
+	}
 
-    public static buildMap ( map?: TvMap ): GameObject {
+	public static buildMap ( map?: TvMap ): GameObject {
 
-        TvMapInstance.clearOpenDrive();
+		TvMapInstance.clearOpenDrive();
 
-        SceneService.remove( map.gameObject );
+		SceneService.remove( map.gameObject );
 
-        map.gameObject = null;
-        map.gameObject = new GameObject( 'OpenDrive' );
+		map.gameObject = null;
+		map.gameObject = new GameObject( 'OpenDrive' );
 
-        map.roads.forEach( road => {
+		map.roads.forEach( road => {
 
-            this.buildRoad( map.gameObject, road );
+			this.buildRoad( map.gameObject, road );
 
-        } );
+		} );
 
-        SceneService.add( map.gameObject );
+		SceneService.add( map.gameObject );
 
-        return map.gameObject;
+		return map.gameObject;
 
-    }
+	}
 
-    static buildRoad ( parent: GameObject, road: TvRoad ): any {
+	static buildRoad ( parent: GameObject, road: TvRoad ): any {
 
-        road.gameObject = null;
-        road.gameObject = new GameObject( 'Road:' + road.id );
-        road.gameObject.Tag = ObjectTypes.ROAD;
-        road.gameObject.userData.road = road;
+		road.gameObject = null;
+		road.gameObject = new GameObject( 'Road:' + road.id );
+		road.gameObject.Tag = ObjectTypes.ROAD;
+		road.gameObject.userData.road = road;
 
-        road.lanes.computeLaneSectionEnd( road );
+		road.lanes.computeLaneSectionEnd( road );
 
-        // ( new OdRoadReferenceLineHelper( road ) ).create();
-        // ( new OdLaneReferenceLineHelper( road ) ).create();
+		// ( new OdRoadReferenceLineHelper( road ) ).create();
+		// ( new OdLaneReferenceLineHelper( road ) ).create();
 
-        // OdBuilder.makeRoadReferenceLine( road );
+		// OdBuilder.makeRoadReferenceLine( road );
 
-        // const offset = road.lanes.getLaneOffset();
-        const laneSections = road.lanes.getLaneSections();
+		// const offset = road.lanes.getLaneOffset();
+		const laneSections = road.lanes.getLaneSections();
 
-        for ( let i = 0; i < laneSections.length; i++ ) {
+		for ( let i = 0; i < laneSections.length; i++ ) {
 
-            TvMapBuilder.buildLaneSection( road, laneSections[ i ] );
+			TvMapBuilder.buildLaneSection( road, laneSections[ i ] );
 
-        }
+		}
 
-        this.roadMarkBuilder.buildRoad( road );
+		this.roadMarkBuilder.buildRoad( road );
 
-        ( new TvSignalHelper( road ) ).create();
+		( new TvSignalHelper( road ) ).create();
 
-        parent.add( road.gameObject );
+		parent.add( road.gameObject );
 
-    }
+	}
 
-    static buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
+	static buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
 
-        laneSection.gameObject = null;
-        laneSection.gameObject = new GameObject( 'LaneSection' );
+		laneSection.gameObject = null;
+		laneSection.gameObject = new GameObject( 'LaneSection' );
 
-        road.gameObject.add( laneSection.gameObject );
+		road.gameObject.add( laneSection.gameObject );
 
-        TvMapBuilder.buildLanes( laneSection.getLeftLanes().reverse(), road, laneSection );
+		TvMapBuilder.buildLanes( laneSection.getLeftLanes().reverse(), road, laneSection );
 
-        TvMapBuilder.createCenterLane( laneSection.getLastCenterLane(), laneSection, road );
+		TvMapBuilder.createCenterLane( laneSection.getLastCenterLane(), laneSection, road );
 
-        TvMapBuilder.buildLanes( laneSection.getRightLanes(), road, laneSection );
+		TvMapBuilder.buildLanes( laneSection.getRightLanes(), road, laneSection );
 
-        // console.timeEnd( 'lane-build-time' );
-    }
+		// console.timeEnd( 'lane-build-time' );
+	}
 
-    static createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	static createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
-        this.createLaneGameObject( lane, new BufferGeometry(), new MeshBasicMaterial(), laneSection );
+		this.createLaneGameObject( lane, new BufferGeometry(), new MeshBasicMaterial(), laneSection );
 
-    }
+	}
 
-    static buildLanes ( lanes: TvLane[], road: TvRoad, laneSection: TvLaneSection ): any {
+	static buildLanes ( lanes: TvLane[], road: TvRoad, laneSection: TvLaneSection ): any {
 
-        // console.time( 'lane-build-time' );
+		// console.time( 'lane-build-time' );
 
-        for ( let i = 0; i < lanes.length; i++ ) {
+		for ( let i = 0; i < lanes.length; i++ ) {
 
-            const lane = lanes[ i ];
+			const lane = lanes[ i ];
 
-            TvMapBuilder.buildLane( lane, laneSection, road );
+			TvMapBuilder.buildLane( lane, laneSection, road );
 
-        }
+		}
 
-    }
+	}
 
-    static buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+	static buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
-        let roadStep = OdBuilderConfig.ROAD_STEP;
-        let posTheta = new TvPosTheta;
+		let roadStep = OdBuilderConfig.ROAD_STEP;
+		let posTheta = new TvPosTheta;
 
-        let cumulativeWidth = 0;
+		let cumulativeWidth = 0;
 
-        lane.meshData = null;
-        lane.meshData = new MeshGeometryData;
+		lane.meshData = null;
+		lane.meshData = new MeshGeometryData;
 
-        lane.markMeshData = null;
-        lane.markMeshData = new MeshGeometryData;
+		lane.markMeshData = null;
+		lane.markMeshData = new MeshGeometryData;
 
-        const laneSectionLength = laneSection.lastSCoordinate - laneSection.s;
+		const laneSectionLength = laneSection.lastSCoordinate - laneSection.s;
 
-        let step = 0;
+		let step = 0;
 
-        for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.lastSCoordinate; sCoordinate += roadStep ) {
+		for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.lastSCoordinate; sCoordinate += roadStep ) {
 
-            step += roadStep;
+			step += roadStep;
 
-            cumulativeWidth = laneSection.getWidthUptoStart( lane, step );
+			cumulativeWidth = laneSection.getWidthUptoStart( lane, step );
 
-            road.getGeometryCoords( sCoordinate, posTheta );
+			road.getGeometryCoords( sCoordinate, posTheta );
 
-            this.makeLaneVertices( sCoordinate, posTheta, lane, road, cumulativeWidth, step );
+			this.makeLaneVertices( sCoordinate, posTheta, lane, road, cumulativeWidth, step );
 
-        }
+		}
 
-        // add last s geometry to close any gaps
-        let lastSCoordinate = laneSection.lastSCoordinate - Maths.Epsilon;
+		// add last s geometry to close any gaps
+		let lastSCoordinate = laneSection.lastSCoordinate - Maths.Epsilon;
 
-        cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
+		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
 
-        road.getGeometryCoords( lastSCoordinate, posTheta );
+		road.getGeometryCoords( lastSCoordinate, posTheta );
 
-        this.makeLaneVertices( lastSCoordinate, posTheta, lane, road, cumulativeWidth, laneSectionLength );
+		this.makeLaneVertices( lastSCoordinate, posTheta, lane, road, cumulativeWidth, laneSectionLength );
 
-        this.createLaneMeshFromGeometry( road, lane, laneSection );
+		this.createLaneMeshFromGeometry( road, lane, laneSection );
 
-    }
+	}
 
-    static makeLaneVertices ( sCoordinate: number, pos: TvPosTheta, lane: TvLane, road: TvRoad, cumulativeWidth: number, laneSectionS: number ) {
+	static makeLaneVertices ( sCoordinate: number, pos: TvPosTheta, lane: TvLane, road: TvRoad, cumulativeWidth: number, laneSectionS: number ) {
 
-        const width = lane.getWidthValue( laneSectionS );
-        const height = lane.getHeightValue( laneSectionS );
-        const elevation = road.getElevationValue( laneSectionS );
+		const width = lane.getWidthValue( laneSectionS );
+		const height = lane.getHeightValue( laneSectionS );
+		const elevation = road.getElevationValue( laneSectionS );
 
-        const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
-        const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
+		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
+		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
 
-        const v1 = new Vertex();
-        const p1X = cosHdgPlusPiO2 * cumulativeWidth;
-        const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-        v1.Position = new Vector3( pos.x + p1X, pos.y + p1Y, elevation );
-        v1.TexCoord = new Vector2( 0, sCoordinate );
+		const v1 = new Vertex();
+		const p1X = cosHdgPlusPiO2 * cumulativeWidth;
+		const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
+		v1.Position = new Vector3( pos.x + p1X, pos.y + p1Y, elevation );
+		v1.TexCoord = new Vector2( 0, sCoordinate );
 
-        const v2 = new Vertex();
-        const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
-        const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-        v2.Position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
-        v2.TexCoord = new Vector2( width + height.getOuter(), sCoordinate );
+		const v2 = new Vertex();
+		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
+		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
+		v2.Position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
+		v2.TexCoord = new Vector2( width + height.getOuter(), sCoordinate );
 
-        if ( lane.side == TvLaneSide.RIGHT ) {
+		if ( lane.side == TvLaneSide.RIGHT ) {
 
-            this.addVertex( lane.meshData, v1 );
-            this.addVertex( lane.meshData, v2 );
+			this.addVertex( lane.meshData, v1 );
+			this.addVertex( lane.meshData, v2 );
 
-        } else {
+		} else {
 
-            this.addVertex( lane.meshData, v2 );
-            this.addVertex( lane.meshData, v1 );
+			this.addVertex( lane.meshData, v2 );
+			this.addVertex( lane.meshData, v1 );
 
-        }
+		}
 
-    }
+	}
 
-    static addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	static addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
-        meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z );
-        meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
-        meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
-        meshData.indices.push( meshData.currentIndex++ );
+		meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z );
+		meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
+		meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
+		meshData.indices.push( meshData.currentIndex++ );
 
-    }
+	}
 
 
-    static createMeshIndices ( geom: MeshGeometryData ): void {
+	static createMeshIndices ( geom: MeshGeometryData ): void {
 
-        let index = 0;
+		let index = 0;
 
-        for ( let i = 0; i < ( geom.indices.length / 2 ) - 1; i++ ) {
+		for ( let i = 0; i < ( geom.indices.length / 2 ) - 1; i++ ) {
 
-            geom.triangles.push( index );
-            geom.triangles.push( index + 1 );
-            geom.triangles.push( index + 2 );
+			geom.triangles.push( index );
+			geom.triangles.push( index + 1 );
+			geom.triangles.push( index + 2 );
 
-            geom.triangles.push( index + 1 );
-            geom.triangles.push( index + 3 );
-            geom.triangles.push( index + 2 );
+			geom.triangles.push( index + 1 );
+			geom.triangles.push( index + 3 );
+			geom.triangles.push( index + 2 );
 
-            index += 2;
-        }
-    }
+			index += 2;
+		}
+	}
 
-    static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
+	static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
 
-        TvMapBuilder.signalFactory.createSignalGameObject( road, signal );
+		TvMapBuilder.signalFactory.createSignalGameObject( road, signal );
 
-    }
+	}
 
-    static makeObject ( road: TvRoad, object: TvRoadObject ): any {
+	static makeObject ( road: TvRoad, object: TvRoadObject ): any {
 
-        var gameObject = new GameObject( 'Object:' + object.attr_id );
+		var gameObject = new GameObject( 'Object:' + object.attr_id );
 
-        road.gameObject.add( gameObject );
+		road.gameObject.add( gameObject );
 
-    }
+	}
 
-    private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
+	public static getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
 
-        this.createMeshIndices( lane.meshData );
+		let material: Material;
+		let guid: string;
 
-        const geometry = new THREE.BufferGeometry();
-        const vertices = new Float32Array( lane.meshData.vertices );
-        const normals = new Float32Array( lane.meshData.normals );
-        const faces = new Float32Array( lane.meshData.texCoords );
+		if ( lane.type == TvLaneType.driving ) {
 
-        geometry.setIndex( lane.meshData.triangles );
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+			guid = road.drivingMaterialGuid;
 
-        geometry.computeBoundingBox();
-        geometry.computeVertexNormals();
+		} else if ( lane.type == TvLaneType.border ) {
 
-        // const material = OdMaterials.getLaneMaterial( lane );
-        const material = this.getLaneMaterial( road, lane );
+			guid = road.borderMaterialGuid;
 
-        TvMapBuilder.createLaneGameObject( lane, geometry, material, laneSection );
+		} else if ( lane.type == TvLaneType.sidewalk ) {
 
-    }
+			guid = road.sidewalkMaterialGuid;
 
-    public static getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
+		} else if ( lane.type == TvLaneType.shoulder ) {
 
-        let material: Material;
-        let guid: string;
+			guid = road.shoulderMaterialGuid;
 
-        if ( lane.type == TvLaneType.driving ) {
+		}
 
-            guid = road.drivingMaterialGuid;
+		// find by guid
+		if ( guid ) material = AssetDatabase.getInstance( guid );
 
-        } else if ( lane.type == TvLaneType.border ) {
+		// if no material found then use in built
+		if ( !material ) material = OdMaterials.getLaneMaterial( lane ) as Material;
 
-            guid = road.borderMaterialGuid;
+		return material;
+	}
 
-        } else if ( lane.type == TvLaneType.sidewalk ) {
+	private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
 
-            guid = road.sidewalkMaterialGuid;
+		this.createMeshIndices( lane.meshData );
 
-        } else if ( lane.type == TvLaneType.shoulder ) {
+		const geometry = new THREE.BufferGeometry();
+		const vertices = new Float32Array( lane.meshData.vertices );
+		const normals = new Float32Array( lane.meshData.normals );
+		const faces = new Float32Array( lane.meshData.texCoords );
 
-            guid = road.shoulderMaterialGuid;
+		geometry.setIndex( lane.meshData.triangles );
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+		geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+		geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
 
-        }
+		geometry.computeBoundingBox();
+		geometry.computeVertexNormals();
 
-        // find by guid
-        if ( guid ) material = AssetDatabase.getInstance( guid );
+		// const material = OdMaterials.getLaneMaterial( lane );
+		const material = this.getLaneMaterial( road, lane );
 
-        // if no material found then use in built
-        if ( !material ) material = OdMaterials.getLaneMaterial( lane ) as Material;
+		TvMapBuilder.createLaneGameObject( lane, geometry, material, laneSection );
 
-        return material;
-    }
+	}
 
-    private static createLaneGameObject (
-        lane: TvLane,
-        geometry: THREE.BufferGeometry,
-        material: THREE.Material | THREE.Material[],
-        laneSection: TvLaneSection
-    ) {
+	private static createLaneGameObject (
+		lane: TvLane,
+		geometry: THREE.BufferGeometry,
+		material: THREE.Material | THREE.Material[],
+		laneSection: TvLaneSection
+	) {
 
-        lane.gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
-        lane.gameObject.Tag = TvObjectType[ TvObjectType.LANE ];
-        lane.gameObject.OpenDriveType = TvObjectType.LANE;
-        lane.gameObject.userData.data = lane;
-        lane.gameObject.userData.lane = lane;
+		lane.gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
+		lane.gameObject.Tag = TvObjectType[ TvObjectType.LANE ];
+		lane.gameObject.OpenDriveType = TvObjectType.LANE;
+		lane.gameObject.userData.data = lane;
+		lane.gameObject.userData.lane = lane;
 
-        laneSection.gameObject.add( lane.gameObject );
-    }
+		laneSection.gameObject.add( lane.gameObject );
+	}
 }

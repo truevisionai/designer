@@ -2,45 +2,45 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
+import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 import { OdRoadMarkBuilder } from 'app/modules/tv-map/builders/od-road-mark-builder';
 import { Vector3 } from 'three';
-import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 import { NodeFactoryService } from '../factories/node-factory.service';
+import { BaseCommand } from './base-command';
 
 export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
-    constructor (
-        private node: LaneRoadMarkNode,
-        private newPosition: Vector3,
-        private oldPosition: Vector3,
-        private roadMarkbuilder: OdRoadMarkBuilder
-    ) {
+	constructor (
+		private node: LaneRoadMarkNode,
+		private newPosition: Vector3,
+		private oldPosition: Vector3,
+		private roadMarkbuilder: OdRoadMarkBuilder
+	) {
 
-        super();
+		super();
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.newPosition );
+		NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.newPosition );
 
-        this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
+		this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.oldPosition );
+		NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.oldPosition );
 
-        this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
+		this.roadMarkbuilder.buildRoad( this.map.getRoadById( this.node.lane.roadId ) );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }

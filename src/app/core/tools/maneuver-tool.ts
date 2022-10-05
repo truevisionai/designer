@@ -2,1083 +2,1080 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/services/command-history';
-import { LanePathFactory } from '../factories/lane-path-factory.service';
-import { KeyboardInput } from '../input';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { MultiCmdsCommand } from '../commands/multi-cmds-command';
-import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
-import { Vector3 } from 'three';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { PickingHelper } from '../services/picking-helper.service';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { TvContactPoint, TvElementType, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { SceneService } from '../services/scene.service';
+import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { OdLaneDirectionBuilder } from 'app/modules/tv-map/builders/od-lane-direction-builder';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { AutoSpline } from '../shapes/auto-spline';
-import { RoadFactory } from '../factories/road-factory.service';
+import { TvContactPoint, TvElementType, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
 import { JunctionEntryInspector } from 'app/views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
+import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
+import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
+import { Vector3 } from 'three';
 import { AddConnectionCommand } from '../commands/add-connection-command';
+import { MultiCmdsCommand } from '../commands/multi-cmds-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
+import { LanePathFactory } from '../factories/lane-path-factory.service';
+import { RoadFactory } from '../factories/road-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { AutoSpline } from '../shapes/auto-spline';
+import { BaseTool } from './base-tool';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
 export class ManeuverTool extends BaseTool {
 
-    name: string = 'ManeuverTool';
+	name: string = 'ManeuverTool';
 
-    public connectingRoad: TvRoad;
+	public connectingRoad: TvRoad;
 
-    public roadControlPoint: RoadControlPoint;
+	public roadControlPoint: RoadControlPoint;
 
-    public lanePathObject: LanePathObject;
+	public lanePathObject: LanePathObject;
 
-    private pointerDown = false;
+	private pointerDown = false;
 
-    private pointerDownAt: Vector3;
+	private pointerDownAt: Vector3;
 
-    private roadChanged = false;
+	private roadChanged = false;
 
-    private junctionEntryObjects = [];
-    private lanePathObjects = [];
+	private junctionEntryObjects = [];
+	private lanePathObjects = [];
 
-    private laneDirectionHelper = new OdLaneDirectionBuilder( null );
+	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
-    private junctionEntryObject: JunctionEntryObject;
+	private junctionEntryObject: JunctionEntryObject;
 
-    init () {
+	init () {
 
 
-    }
+	}
 
-    enable () {
+	enable () {
 
-        super.enable();
+		super.enable();
 
-        this.junctionEntryObject = null;
-        this.lanePathObject = null;
-        this.connectingRoad = null;
-        this.roadControlPoint = null;
+		this.junctionEntryObject = null;
+		this.lanePathObject = null;
+		this.connectingRoad = null;
+		this.roadControlPoint = null;
 
-        this.showJunctionEntries();
+		this.showJunctionEntries();
 
-        this.showLanePathObjects();
-    }
+		this.showLanePathObjects();
+	}
 
-    disable () {
+	disable () {
 
-        super.disable();
+		super.disable();
 
-        this.junctionEntryObject = null;
-        this.lanePathObject = null;
-        this.connectingRoad = null;
-        this.roadControlPoint = null;
+		this.junctionEntryObject = null;
+		this.lanePathObject = null;
+		this.connectingRoad = null;
+		this.roadControlPoint = null;
 
-        this.hideJunctionEntries();
+		this.hideJunctionEntries();
 
-        this.hideLanePathObjects();
+		this.hideLanePathObjects();
 
-        this.laneDirectionHelper.clear();
-    }
+		this.laneDirectionHelper.clear();
+	}
 
-    onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ) {
 
-        if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-        this.pointerDown = true;
+		this.pointerDown = true;
 
-        this.pointerDownAt = e.point.clone();
+		this.pointerDownAt = e.point.clone();
 
-        const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-        let hasInteracted = false;
+		let hasInteracted = false;
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkRoadControlPointInteraction( e );
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkRoadControlPointInteraction( e );
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkJunctionEntryInteraction( e );
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkJunctionEntryInteraction( e );
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkPathInteraction( e );
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkPathInteraction( e );
 
-        if ( !hasInteracted ) {
+		if ( !hasInteracted ) {
 
-            const commands = [];
+			const commands = [];
 
-            commands.push( new SetInspectorCommand( null, null ) );
+			commands.push( new SetInspectorCommand( null, null ) );
 
-            CommandHistory.execute( new MultiCmdsCommand( commands ) );
+			CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-            if ( this.connectingRoad ) {
+			if ( this.connectingRoad ) {
 
-                this.connectingRoad.hideNodes();
-                this.connectingRoad.spline.hide();
-            }
+				this.connectingRoad.hideNodes();
+				this.connectingRoad.spline.hide();
+			}
 
-            // if ( this.lanePathObject ) this.lanePathObject.visible = false;
-        }
-    }
+			// if ( this.lanePathObject ) this.lanePathObject.visible = false;
+		}
+	}
 
-    onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ) {
 
-        if ( this.connectingRoad && this.roadControlPoint && this.roadChanged ) {
+		if ( this.connectingRoad && this.roadControlPoint && this.roadChanged ) {
 
-            const updateRoadPointCommand = new UpdateRoadPointCommand(
-                this.connectingRoad,
-                this.roadControlPoint,
-                this.roadControlPoint.position,
-                this.pointerDownAt
-            );
+			const updateRoadPointCommand = new UpdateRoadPointCommand(
+				this.connectingRoad,
+				this.roadControlPoint,
+				this.roadControlPoint.position,
+				this.pointerDownAt
+			);
 
-            CommandHistory.execute( updateRoadPointCommand );
+			CommandHistory.execute( updateRoadPointCommand );
 
-            LanePathFactory.update( this.lanePathObject );
-        }
+			LanePathFactory.update( this.lanePathObject );
+		}
 
-        this.pointerDown = false;
+		this.pointerDown = false;
 
-        this.roadChanged = false;
+		this.roadChanged = false;
 
-        this.pointerDownAt = null;
-    }
+		this.pointerDownAt = null;
+	}
 
-    onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ) {
 
-        if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
+		if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
 
-            this.roadControlPoint.copyPosition( e.point );
+			this.roadControlPoint.copyPosition( e.point );
 
-            this.connectingRoad.spline.update();
+			this.connectingRoad.spline.update();
 
-            this.roadChanged = true;
+			this.roadChanged = true;
 
-        }
+		}
 
-    }
+	}
 
-    checkPathInteraction ( event: PointerEventData ): boolean {
+	checkPathInteraction ( event: PointerEventData ): boolean {
 
-        if ( event.button !== MouseButton.LEFT ) return;
+		if ( event.button !== MouseButton.LEFT ) return;
 
-        let hasInteracted = false;
+		let hasInteracted = false;
 
-        for ( let i = 0; i < event.intersections.length; i++ ) {
+		for ( let i = 0; i < event.intersections.length; i++ ) {
 
-            const intersection = event.intersections[ i ];
+			const intersection = event.intersections[ i ];
 
-            // tslint:disable-next-line: no-string-literal
-            if ( intersection.object[ 'tag' ] === LanePathObject.tag ) {
+			// tslint:disable-next-line: no-string-literal
+			if ( intersection.object[ 'tag' ] === LanePathObject.tag ) {
 
-                hasInteracted = true;
+				hasInteracted = true;
 
-                this.lanePathObject = intersection.object.parent as LanePathObject;
+				this.lanePathObject = intersection.object.parent as LanePathObject;
 
-                const commands = [];
+				const commands = [];
 
-                this.connectingRoad = this.lanePathObject.connectingRoad;
+				this.connectingRoad = this.lanePathObject.connectingRoad;
 
-                commands.push( new SetInspectorCommand( LaneLinkInspector, this.lanePathObject ) );
+				commands.push( new SetInspectorCommand( LaneLinkInspector, this.lanePathObject ) );
 
-                CommandHistory.execute( new MultiCmdsCommand( commands ) );
+				CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-                break;
-            }
-        }
+				break;
+			}
+		}
 
-        return hasInteracted;
-    }
+		return hasInteracted;
+	}
 
-    checkJunctionEntryInteraction ( event: PointerEventData ): boolean {
+	checkJunctionEntryInteraction ( event: PointerEventData ): boolean {
 
-        if ( event.button !== MouseButton.LEFT ) return;
+		if ( event.button !== MouseButton.LEFT ) return;
 
-        let hasInteracted = false;
+		let hasInteracted = false;
 
-        for ( let i = 0; i < event.intersections.length; i++ ) {
+		for ( let i = 0; i < event.intersections.length; i++ ) {
 
-            const intersection = event.intersections[ i ];
+			const intersection = event.intersections[ i ];
 
-            // tslint:disable-next-line: no-string-literal
-            if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
+			// tslint:disable-next-line: no-string-literal
+			if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
 
-                hasInteracted = true;
+				hasInteracted = true;
 
-                const junctionObject = intersection.object as JunctionEntryObject;
+				const junctionObject = intersection.object as JunctionEntryObject;
 
-                const tryToConnect = this.junctionEntryObject && junctionObject;
+				const tryToConnect = this.junctionEntryObject && junctionObject;
 
-                if ( tryToConnect ) {
+				if ( tryToConnect ) {
 
-                    this.connectJunctionObject( this.junctionEntryObject, junctionObject );
+					this.connectJunctionObject( this.junctionEntryObject, junctionObject );
 
-                    // const junctionEntryObject = created ? null : junctionObject;
+					// const junctionEntryObject = created ? null : junctionObject;
 
-                    // CommandHistory.executeAll( [
+					// CommandHistory.executeAll( [
 
-                    //     new SetValueCommand( this, 'junctionEntryObject', junctionEntryObject ),
+					//     new SetValueCommand( this, 'junctionEntryObject', junctionEntryObject ),
 
-                    //     new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
+					//     new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
 
-                    // ] );
+					// ] );
 
-                } else {
+				} else {
 
-                    CommandHistory.executeAll( [
+					CommandHistory.executeAll( [
 
-                        new SetValueCommand( this, 'junctionEntryObject', junctionObject ),
+						new SetValueCommand( this, 'junctionEntryObject', junctionObject ),
 
-                        new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
+						new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
 
-                    ] );
+					] );
 
-                }
+				}
 
-                break;
-            }
-        }
+				break;
+			}
+		}
 
-        if ( !hasInteracted ) {
+		if ( !hasInteracted ) {
 
-            CommandHistory.executeAll( [
+			CommandHistory.executeAll( [
 
-                new SetValueCommand( this, 'junctionEntryObject', null ),
+				new SetValueCommand( this, 'junctionEntryObject', null ),
 
-                new SetInspectorCommand( null, null )
+				new SetInspectorCommand( null, null )
 
-            ] );
+			] );
 
-        }
+		}
 
-        return hasInteracted;
-    }
+		return hasInteracted;
+	}
 
-    checkRoadControlPointInteraction ( e: PointerEventData ): boolean {
+	checkRoadControlPointInteraction ( e: PointerEventData ): boolean {
 
-        // return if no connectingRoad is selected
-        if ( !this.connectingRoad || !this.connectingRoad.spline ) return false;
+		// return if no connectingRoad is selected
+		if ( !this.connectingRoad || !this.connectingRoad.spline ) return false;
 
-        if ( !e.point ) return;
+		if ( !e.point ) return;
 
-        const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
 
-        const roadControlPoints = [];
+		const roadControlPoints = [];
 
-        this.connectingRoad.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
+		this.connectingRoad.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
 
-            roadControlPoints.push( cp );
+			roadControlPoints.push( cp );
 
-            if ( cp.frontTangent ) roadControlPoints.push( cp.frontTangent );
+			if ( cp.frontTangent ) roadControlPoints.push( cp.frontTangent );
 
-            if ( cp.backTangent ) roadControlPoints.push( cp.backTangent );
+			if ( cp.backTangent ) roadControlPoints.push( cp.backTangent );
 
-        } );
+		} );
 
-        const roadControlPoint = PickingHelper.findNearest( e.point, roadControlPoints, maxDistance );
+		const roadControlPoint = PickingHelper.findNearest( e.point, roadControlPoints, maxDistance );
 
-        if ( roadControlPoint ) {
+		if ( roadControlPoint ) {
 
-            CommandHistory.executeAll( [
+			CommandHistory.executeAll( [
 
-                new SetValueCommand( this, 'roadControlPoint', roadControlPoint ),
+				new SetValueCommand( this, 'roadControlPoint', roadControlPoint ),
 
-                new SetInspectorCommand( RoadControlPointInspector, roadControlPoint ),
+				new SetInspectorCommand( RoadControlPointInspector, roadControlPoint ),
 
-            ] );
+			] );
 
-        } else {
+		} else {
 
-            CommandHistory.executeAll( [
+			CommandHistory.executeAll( [
 
-                new SetValueCommand( this, 'roadControlPoint', null ),
+				new SetValueCommand( this, 'roadControlPoint', null ),
 
-                new SetInspectorCommand( null, null ),
+				new SetInspectorCommand( null, null ),
 
-            ] );
+			] );
 
-        }
+		}
 
-        return roadControlPoint != null;
-    }
+		return roadControlPoint != null;
+	}
 
-    connectJunctionObject ( a: JunctionEntryObject, b: JunctionEntryObject ): void {
+	connectJunctionObject ( a: JunctionEntryObject, b: JunctionEntryObject ): void {
 
-        if ( a == null || b == null ) return;
+		if ( a == null || b == null ) return;
 
-        if ( a.id === b.id ) {
+		if ( a.id === b.id ) {
 
-            CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-            SnackBar.error( "Select a different entry/exit" );
+			SnackBar.error( 'Select a different entry/exit' );
 
-            return;
-        }
+			return;
+		}
 
-        const entryExitSide = this.findEntryExitSide( a, b );
+		const entryExitSide = this.findEntryExitSide( a, b );
 
-        if ( !entryExitSide ) {
+		if ( !entryExitSide ) {
 
-            CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-            SnackBar.error( "Cannot connect" );
+			SnackBar.error( 'Cannot connect' );
 
-            return;
-        }
+			return;
+		}
 
-        const entry = entryExitSide.entry;
-        const exit = entryExitSide.exit;
+		const entry = entryExitSide.entry;
+		const exit = entryExitSide.exit;
 
-        // if ( this.connectingRoad ) {
+		// if ( this.connectingRoad ) {
 
-        //     this.connectingRoad.hideNodes();
-        //     this.connectingRoad.spline.hide();
-        // }
+		//     this.connectingRoad.hideNodes();
+		//     this.connectingRoad.spline.hide();
+		// }
 
-        try {
+		try {
 
-            const junction = this.findJunction( a, b );
+			const junction = this.findJunction( a, b );
 
-            const result = this.hasConnection( junction, entry, exit );
+			const result = this.hasConnection( junction, entry, exit );
 
-            if ( result.connectionFound && result.laneLinkFound ) {
+			if ( result.connectionFound && result.laneLinkFound ) {
 
-                CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+				CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-                SnackBar.error( "Connection already exists" );
+				SnackBar.error( 'Connection already exists' );
 
-            } else if ( result.connectionFound && !result.laneLinkFound ) {
+			} else if ( result.connectionFound && !result.laneLinkFound ) {
 
-                CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+				CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-                // this.createLink( result.connection, entry, exit, side, laneWidth, junction );
+				// this.createLink( result.connection, entry, exit, side, laneWidth, junction );
 
-                // SnackBar.success( "Connection created" );
+				// SnackBar.success( "Connection created" );
 
-            } else if ( !result.connectionFound && !result.laneLinkFound ) {
+			} else if ( !result.connectionFound && !result.laneLinkFound ) {
 
-                this.createNewConnection( entry, exit, junction );
+				this.createNewConnection( entry, exit, junction );
 
-                SnackBar.success( "Connection created" );
-            }
+				SnackBar.success( 'Connection created' );
+			}
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            console.log( error );
+			console.log( error );
 
-            return;
-        }
+			return;
+		}
 
-    }
+	}
 
-    createNewConnection ( entry: JunctionEntryObject, exit: JunctionEntryObject, junction: TvJunction ) {
+	createNewConnection ( entry: JunctionEntryObject, exit: JunctionEntryObject, junction: TvJunction ) {
 
-        // for connection 
-        // create road
-        // create connection and link
-        // set neighbours
-        // set lane sucessor/predessor
-        // create lane path
+		// for connection
+		// create road
+		// create connection and link
+		// set neighbours
+		// set lane sucessor/predessor
+		// create lane path
 
-        // const laneWidth = entry.lane.getWidthValue( 0 );
+		// const laneWidth = entry.lane.getWidthValue( 0 );
 
-        // const connectingRoad = this.createConnectingRoad( entry, exit, DEFAULT_SIDE, laneWidth, junction );
+		// const connectingRoad = this.createConnectingRoad( entry, exit, DEFAULT_SIDE, laneWidth, junction );
 
-        // const result = this.createConnections( junction, entry, connectingRoad, exit );
+		// const result = this.createConnections( junction, entry, connectingRoad, exit );
 
-        // if ( result == null ) return;
+		// if ( result == null ) return;
 
-        // const connection = result.connection;
+		// const connection = result.connection;
 
-        // const link = result.link;
+		// const link = result.link;
 
-        // // TODO: find the connecting lane
-        // const lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+		// // TODO: find the connecting lane
+		// const lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-        // const lanePathObject = result.link.mesh = LanePathFactory.createPathForLane(
-        //     entry.road, connectingRoad, lane, result.connection, result.link
-        // );
+		// const lanePathObject = result.link.mesh = LanePathFactory.createPathForLane(
+		//     entry.road, connectingRoad, lane, result.connection, result.link
+		// );
 
-        // this.lanePathObjects.push( this.lanePathObject );
+		// this.lanePathObjects.push( this.lanePathObject );
 
-        // SceneService.add( lanePathObject );
+		// SceneService.add( lanePathObject );
 
-        // RoadFactory.rebuildRoad( connectingRoad );
+		// RoadFactory.rebuildRoad( connectingRoad );
 
-        // this.connectingRoad = connectingRoad;
+		// this.connectingRoad = connectingRoad;
 
 
-        // set value command - connectingRoad
-        // set value command - lanePathObject 
-        // set 
+		// set value command - connectingRoad
+		// set value command - lanePathObject
+		// set
 
 
-        CommandHistory.executeAll( [
+		CommandHistory.executeAll( [
 
-            // new SetValueCommand( this, 'lanePathObject', lanePathObject ),
+			// new SetValueCommand( this, 'lanePathObject', lanePathObject ),
 
-            // new SetValueCommand( this, 'connectingRoad', connectingRoad ),
+			// new SetValueCommand( this, 'connectingRoad', connectingRoad ),
 
-            new SetValueCommand( this, 'junctionEntryObject', null ),
+			new SetValueCommand( this, 'junctionEntryObject', null ),
 
-            new SetInspectorCommand( null, null ),
+			new SetInspectorCommand( null, null ),
 
-            new AddConnectionCommand( entry, exit, junction, this ),
+			new AddConnectionCommand( entry, exit, junction, this ),
 
-        ] );
+		] );
 
 
+	}
 
+	/**
+	 *
+	 * @deprecated currently not being used
+	 * @param connection
+	 * @param entry
+	 * @param exit
+	 * @param side
+	 * @param laneWidth
+	 * @param junction
+	 */
+	createLink (
+		connection: TvJunctionConnection,
+		entry: JunctionEntryObject,
+		exit: JunctionEntryObject,
+		side: TvLaneSide,
+		laneWidth: number,
+		junction: TvJunction
+	) {
 
+		const connectionRoad = this.map.getRoadById( connection.connectingRoad );
 
-    }
+		const laneSection = connectionRoad.getFirstLaneSection();
 
-    /**
-     * 
-     * @deprecated currently not being used 
-     * @param connection 
-     * @param entry 
-     * @param exit 
-     * @param side 
-     * @param laneWidth 
-     * @param junction 
-     */
-    createLink (
-        connection: TvJunctionConnection,
-        entry: JunctionEntryObject,
-        exit: JunctionEntryObject,
-        side: TvLaneSide,
-        laneWidth: number,
-        junction: TvJunction
-    ) {
+		// -ve because its always for right side
+		const newLaneId = -1 * ( laneSection.getRightLaneCount() + 1 );
 
-        const connectionRoad = this.map.getRoadById( connection.connectingRoad );
+		const nodes = this.getSplinePositions( entry, exit, side );
 
-        const laneSection = connectionRoad.getFirstLaneSection();
+		const connectingLane = laneSection.addLane( nodes.side, newLaneId, entry.lane.type, entry.lane.level, true );
 
-        // -ve because its always for right side
-        const newLaneId = -1 * ( laneSection.getRightLaneCount() + 1 );
+		connectingLane.addWidthRecord( 0, laneWidth, 0, 0, 0 );
 
-        const nodes = this.getSplinePositions( entry, exit, side );
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        const connectingLane = laneSection.addLane( nodes.side, newLaneId, entry.lane.type, entry.lane.level, true );
+		connectionRoad.setPredecessor( 'road', entry.road.id, entry.contact );
 
-        connectingLane.addWidthRecord( 0, laneWidth, 0, 0, 0 );
+		connectionRoad.setSuccessor( 'road', exit.road.id, exit.contact );
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		connectingLane.setPredecessor( entry.lane.id );
 
-        connectionRoad.setPredecessor( "road", entry.road.id, entry.contact );
+		connectingLane.setSuccessor( exit.lane.id );
 
-        connectionRoad.setSuccessor( "road", exit.road.id, exit.contact );
+		const link = connection.addNewLink( entry.lane.id, connectingLane.id );
 
-        connectingLane.setPredecessor( entry.lane.id );
+		if ( entry.contact === TvContactPoint.START ) {
 
-        connectingLane.setSuccessor( exit.lane.id );
+			entry.road.setPredecessor( 'junction', junction.id );
 
-        const link = connection.addNewLink( entry.lane.id, connectingLane.id );
+		} else if ( entry.contact === TvContactPoint.END ) {
 
-        if ( entry.contact === TvContactPoint.START ) {
+			entry.road.setSuccessor( 'junction', junction.id );
 
-            entry.road.setPredecessor( "junction", junction.id );
+		}
 
-        } else if ( entry.contact === TvContactPoint.END ) {
+		if ( exit.contact === TvContactPoint.START ) {
 
-            entry.road.setSuccessor( "junction", junction.id );
+			exit.road.setPredecessor( 'junction', junction.id );
 
-        }
+		} else if ( exit.contact === TvContactPoint.END ) {
 
-        if ( exit.contact === TvContactPoint.START ) {
+			exit.road.setSuccessor( 'junction', junction.id );
 
-            exit.road.setPredecessor( "junction", junction.id );
+		}
 
-        } else if ( exit.contact === TvContactPoint.END ) {
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            exit.road.setSuccessor( "junction", junction.id );
+		this.lanePathObject = LanePathFactory.createPathForLane( entry.road, this.connectingRoad, connectingLane, connection, link );
 
-        }
+		this.lanePathObjects.push( this.lanePathObject );
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		SceneService.add( this.lanePathObject );
 
-        this.lanePathObject = LanePathFactory.createPathForLane( entry.road, this.connectingRoad, connectingLane, connection, link );
+		RoadFactory.rebuildRoad( this.connectingRoad );
 
-        this.lanePathObjects.push( this.lanePathObject );
+	}
 
-        SceneService.add( this.lanePathObject );
+	createConnectingRoad ( entry, exit, side, laneWidth, junction ) {
 
-        RoadFactory.rebuildRoad( this.connectingRoad );
+		const spline = this.createSpline( entry, exit, side );
 
-    }
+		const connectingRoad = this.map.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
 
-    createConnectingRoad ( entry, exit, side, laneWidth, junction ) {
+		connectingRoad.spline = spline;
 
-        const spline = this.createSpline( entry, exit, side )
+		connectingRoad.updateGeometryFromSpline();
 
-        const connectingRoad = this.map.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
+		connectingRoad.spline.hide();
 
-        connectingRoad.spline = spline;
+		return connectingRoad;
+	}
 
-        connectingRoad.updateGeometryFromSpline();
+	createSpline ( entry, exit, side ) {
 
-        connectingRoad.spline.hide();
+		const nodes = this.getSplinePositions( entry, exit, side );
 
-        return connectingRoad;
-    }
+		const spline = new AutoSpline();
 
-    createSpline ( entry, exit, side ) {
+		SceneService.add( spline.addControlPointAt( nodes.start ) );
+		SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
+		SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
+		SceneService.add( spline.addControlPointAt( nodes.end ) );
 
-        const nodes = this.getSplinePositions( entry, exit, side );
+		spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
 
-        const spline = new AutoSpline();
+		return spline;
+	}
 
-        SceneService.add( spline.addControlPointAt( nodes.start ) );
-        SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
-        SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
-        SceneService.add( spline.addControlPointAt( nodes.end ) );
+	findEntryExitSide ( a: JunctionEntryObject, b: JunctionEntryObject ) {
 
-        spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
+		const isAEntry =
+			( a.lane.direction === 'forward' && a.contact === TvContactPoint.END ) ||
+			( a.lane.direction === 'backward' && a.contact === TvContactPoint.START );
 
-        return spline;
-    }
+		const isBEntry =
+			( b.lane.direction === 'forward' && b.contact === TvContactPoint.END ) ||
+			( b.lane.direction === 'backward' && b.contact === TvContactPoint.START );
 
-    findEntryExitSide ( a: JunctionEntryObject, b: JunctionEntryObject ) {
+		const isAExit =
+			( a.lane.direction === 'forward' && a.contact === TvContactPoint.START ) ||
+			( a.lane.direction === 'backward' && a.contact === TvContactPoint.END );
 
-        const isAEntry =
-            ( a.lane.direction === "forward" && a.contact === TvContactPoint.END ) ||
-            ( a.lane.direction === "backward" && a.contact === TvContactPoint.START );
+		const isBExit =
+			( b.lane.direction === 'forward' && b.contact === TvContactPoint.START ) ||
+			( b.lane.direction === 'backward' && b.contact === TvContactPoint.END );
 
-        const isBEntry =
-            ( b.lane.direction === "forward" && b.contact === TvContactPoint.END ) ||
-            ( b.lane.direction === "backward" && b.contact === TvContactPoint.START );
 
-        const isAExit =
-            ( a.lane.direction === "forward" && a.contact === TvContactPoint.START ) ||
-            ( a.lane.direction === "backward" && a.contact === TvContactPoint.END );
+		if ( isAEntry && isBExit ) {
 
-        const isBExit =
-            ( b.lane.direction === "forward" && b.contact === TvContactPoint.START ) ||
-            ( b.lane.direction === "backward" && b.contact === TvContactPoint.END );
+			return {
+				entry: a,
+				exit: b,
+				side: TvLaneSide.RIGHT
+			};
 
+			// return [ a, b, LaneSide.LEFT ];
 
-        if ( isAEntry && isBExit ) {
+		} else if ( isAExit && isBEntry ) {
 
-            return {
-                entry: a,
-                exit: b,
-                side: TvLaneSide.RIGHT
-            }
+			return {
+				entry: b,
+				exit: a,
+				side: TvLaneSide.RIGHT
+			};
 
-            // return [ a, b, LaneSide.LEFT ];
+			// return [ b, a, LaneSide.RIGHT ];
 
-        } else if ( isAExit && isBEntry ) {
+		} else {
 
-            return {
-                entry: b,
-                exit: a,
-                side: TvLaneSide.RIGHT
-            }
+			a.unselect();
 
-            // return [ b, a, LaneSide.RIGHT ];
+			b.unselect();
 
-        } else {
+			return;
+		}
+	}
 
-            a.unselect();
+	// hasConnection ( junction: OdJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
 
-            b.unselect();
+	//     let connectionFound = false;
+	//     let connection: OdJunctionConnection = null;
+	//     let laneLinkFound = false;
+	//     let laneLink: OdJunctionLaneLink = null;
 
-            return;
-        }
-    }
+	//     this.openDrive.roads.forEach( road => {
 
-    // hasConnection ( junction: OdJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
+	//         if ( road.isJunction ) {
 
-    //     let connectionFound = false;
-    //     let connection: OdJunctionConnection = null;
-    //     let laneLinkFound = false;
-    //     let laneLink: OdJunctionLaneLink = null;
+	//             const connectionFound =
+	//                 road.predecessor.elementId === a.road.id &&
+	//                 road.successor.elementId === b.road.id;
 
-    //     this.openDrive.roads.forEach( road => {
+	//             const connectingLane = road.getFirstLaneSection().getLaneVector()
+	//                 .find( lane => lane.predecessor === a.lane.id && lane.succcessor === b.lane.id );
 
-    //         if ( road.isJunction ) {
+	//             // const connection = [ ...junction.connections.values() ]
+	//             //     .find( i => i.incomingRoad === a.road.id && i.connectingRoad === road.id );
 
-    //             const connectionFound =
-    //                 road.predecessor.elementId === a.road.id &&
-    //                 road.successor.elementId === b.road.id;
+	//             // const linkSide = link.from > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
+	//             // const aSide = a.lane.id > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
+	//             // const laneSideMatches = linkSide === aSide;
 
-    //             const connectingLane = road.getFirstLaneSection().getLaneVector()
-    //                 .find( lane => lane.predecessor === a.lane.id && lane.succcessor === b.lane.id );
+	//             if ( connectionFound && connectingLane != null ) {
 
-    //             // const connection = [ ...junction.connections.values() ]
-    //             //     .find( i => i.incomingRoad === a.road.id && i.connectingRoad === road.id );
+	//                 // connection and lane both found
 
-    //             // const linkSide = link.from > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
-    //             // const aSide = a.lane.id > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
-    //             // const laneSideMatches = linkSide === aSide;
 
-    //             if ( connectionFound && connectingLane != null ) {
+	//             } else if ( connectionFound && connectingLane == null ) {
 
-    //                 // connection and lane both found
+	//                 // create lane-link
 
+	//             } else if ( !connectionFound && connectingLane == null ) {
 
-    //             } else if ( connectionFound && connectingLane == null ) {
+	//                 // create connection and lane-link
 
-    //                 // create lane-link
+	//             }
 
-    //             } else if ( !connectionFound && connectingLane == null ) {
+	//         }
 
-    //                 // create connection and lane-link
+	//     } );
 
-    //             }
+	//     return { connectionFound, connection, laneLinkFound, laneLink };
+	// }
 
-    //         }
+	// hasConnection ( junction: OdJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
 
-    //     } );
+	//     let connectionFound = false;
+	//     let connection: OdJunctionConnection = null;
+	//     let laneLinkFound = false;
+	//     let laneLink: OdJunctionLaneLink = null;
 
-    //     return { connectionFound, connection, laneLinkFound, laneLink };
-    // }
+	//     for ( const item of junction.connections ) {
 
-    // hasConnection ( junction: OdJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
+	//         if ( item[ 1 ].incomingRoad === a.road.id ) {
 
-    //     let connectionFound = false;
-    //     let connection: OdJunctionConnection = null;
-    //     let laneLinkFound = false;
-    //     let laneLink: OdJunctionLaneLink = null;
+	//             const incomingRoad = a.road;
 
-    //     for ( const item of junction.connections ) {
+	//             const connectingRoad = this.openDrive.getRoadById( item[ 1 ].connectingRoad );
 
-    //         if ( item[ 1 ].incomingRoad === a.road.id ) {
+	//             const outgoingRoad = b.road;
 
-    //             const incomingRoad = a.road;
+	//             const outgoingRoadMatches =
+	//                 connectingRoad.successor.elementId === outgoingRoad.id ||
+	//                 connectingRoad.predecessor.elementId === outgoingRoad.id;
 
-    //             const connectingRoad = this.openDrive.getRoadById( item[ 1 ].connectingRoad );
+	//             if ( outgoingRoadMatches ) {
 
-    //             const outgoingRoad = b.road;
+	//                 for ( const link of item[ 1 ].laneLink ) {
 
-    //             const outgoingRoadMatches =
-    //                 connectingRoad.successor.elementId === outgoingRoad.id ||
-    //                 connectingRoad.predecessor.elementId === outgoingRoad.id;
+	//                     const linkSide = link.from > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
 
-    //             if ( outgoingRoadMatches ) {
+	//                     const aSide = a.lane.id > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
 
-    //                 for ( const link of item[ 1 ].laneLink ) {
+	//                     const laneSideMatches = linkSide === aSide;
 
-    //                     const linkSide = link.from > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
+	//                     if ( laneSideMatches ) {
 
-    //                     const aSide = a.lane.id > 0 ? LaneSide.LEFT : LaneSide.RIGHT;
+	//                         connectionFound = true;
 
-    //                     const laneSideMatches = linkSide === aSide;
+	//                         connection = result = item[ 1 ];
 
-    //                     if ( laneSideMatches ) {
+	//                         const sameLaneId = Math.abs( a.lane.id ) === Math.abs( b.lane.id );
 
-    //                         connectionFound = true;
+	//                         // const connectingLane = connectingRoad.getFirstLaneSection().getLaneById( link.to );
 
-    //                         connection = result = item[ 1 ];
+	//                         const connectingLane = connectingRoad
+	//                             .getFirstLaneSection()
+	//                             .getLaneVector()
+	//                             .find( i => i.predecessor === a.lane.id && i.succcessor === b.lane.id );
 
-    //                         const sameLaneId = Math.abs( a.lane.id ) === Math.abs( b.lane.id );
+	//                         laneLinkFound = link.from === a.lane.id && connectingLane != null;
 
-    //                         // const connectingLane = connectingRoad.getFirstLaneSection().getLaneById( link.to );
+	//                         laneLink = link;
 
-    //                         const connectingLane = connectingRoad
-    //                             .getFirstLaneSection()
-    //                             .getLaneVector()
-    //                             .find( i => i.predecessor === a.lane.id && i.succcessor === b.lane.id );
+	//                         // we dont want to break the loop unless we have found the right link
+	//                         if ( laneLinkFound ) break;
+	//                     }
+	//                 }
+	//             }
 
-    //                         laneLinkFound = link.from === a.lane.id && connectingLane != null;
+	//             if ( connectionFound ) break;
+	//         }
+	//     }
 
-    //                         laneLink = link;
+	//     return { connectionFound, connection, laneLinkFound, laneLink };
+	// }
 
-    //                         // we dont want to break the loop unless we have found the right link
-    //                         if ( laneLinkFound ) break;
-    //                     }
-    //                 }
-    //             }
+	hasConnection ( junction: TvJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
 
-    //             if ( connectionFound ) break;
-    //         }
-    //     }
+		let connectionFound = false;
+		let connection: TvJunctionConnection = null;
+		let laneLinkFound = false;
+		let laneLink: TvJunctionLaneLink = null;
 
-    //     return { connectionFound, connection, laneLinkFound, laneLink };
-    // }
+		for ( const item of junction.connections ) {
 
-    hasConnection ( junction: TvJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
+			if ( item[ 1 ].incomingRoad === a.road.id ) {
 
-        let connectionFound = false;
-        let connection: TvJunctionConnection = null;
-        let laneLinkFound = false;
-        let laneLink: TvJunctionLaneLink = null;
+				const incomingRoad = a.road;
 
-        for ( const item of junction.connections ) {
+				const connectingRoad = this.map.getRoadById( item[ 1 ].connectingRoad );
 
-            if ( item[ 1 ].incomingRoad === a.road.id ) {
+				const outgoingRoad = b.road;
 
-                const incomingRoad = a.road;
+				const outgoingRoadMatches =
+					connectingRoad.successor.elementId === outgoingRoad.id ||
+					connectingRoad.predecessor.elementId === outgoingRoad.id;
 
-                const connectingRoad = this.map.getRoadById( item[ 1 ].connectingRoad );
+				if ( outgoingRoadMatches ) {
 
-                const outgoingRoad = b.road;
+					for ( const link of item[ 1 ].laneLink ) {
 
-                const outgoingRoadMatches =
-                    connectingRoad.successor.elementId === outgoingRoad.id ||
-                    connectingRoad.predecessor.elementId === outgoingRoad.id;
+						connection = result = item[ 1 ];
 
-                if ( outgoingRoadMatches ) {
+						const connectingLane = connectingRoad
+							.getFirstLaneSection()
+							.getLaneVector()
+							.find( i => i.predecessor === a.lane.id && i.succcessor === b.lane.id );
 
-                    for ( const link of item[ 1 ].laneLink ) {
+						// basically if the same lane link is found only then it will
+						// return as connection found
+						// for now we will create a new connection for every lane
+						// TODO: fix this to combine lane links in 1 connection
+						connectionFound = laneLinkFound = link.from === a.lane.id && connectingLane != null;
 
-                        connection = result = item[ 1 ];
+						laneLink = link;
 
-                        const connectingLane = connectingRoad
-                            .getFirstLaneSection()
-                            .getLaneVector()
-                            .find( i => i.predecessor === a.lane.id && i.succcessor === b.lane.id );
+						// we dont want to break the loop unless we have found the right link
+						if ( laneLinkFound ) break;
+					}
+				}
 
-                        // basically if the same lane link is found only then it will
-                        // return as connection found
-                        // for now we will create a new connection for every lane
-                        // TODO: fix this to combine lane links in 1 connection
-                        connectionFound = laneLinkFound = link.from === a.lane.id && connectingLane != null;
+				if ( connectionFound ) break;
+			}
+		}
 
-                        laneLink = link;
+		return { connectionFound, connection, laneLinkFound, laneLink };
+	}
 
-                        // we dont want to break the loop unless we have found the right link
-                        if ( laneLinkFound ) break;
-                    }
-                }
+	// start position is always at the entry
+	// end position is always at the exit
+	getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
 
-                if ( connectionFound ) break;
-            }
-        }
+		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
+		const aPosTheta = new TvPosTheta();
+		const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
 
-        return { connectionFound, connection, laneLinkFound, laneLink };
-    }
+		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
+		const bPosTheta = new TvPosTheta();
+		const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
 
-    // start position is always at the entry
-    // end position is always at the exit
-    getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
+		let a2: TvPosTheta;
+		let b2: TvPosTheta;
 
-        const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
-        const aPosTheta = new TvPosTheta();
-        const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
+		const distance = aPosition.distanceTo( bPosition ) * 0.3;
 
-        const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
-        const bPosTheta = new TvPosTheta();
-        const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
+		if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
 
-        let a2: TvPosTheta;
-        let b2: TvPosTheta;
+			a2 = aPosTheta.moveForward( -distance );
+			b2 = bPosTheta.moveForward( -distance );
 
-        const distance = aPosition.distanceTo( bPosition ) * 0.3;
+		} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
 
-        if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
+			a2 = aPosTheta.moveForward( -distance );
+			b2 = bPosTheta.moveForward( +distance );
 
-            a2 = aPosTheta.moveForward( -distance );
-            b2 = bPosTheta.moveForward( -distance );
+		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
 
-        } else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
+			a2 = aPosTheta.moveForward( +distance );
+			b2 = bPosTheta.moveForward( +distance );
 
-            a2 = aPosTheta.moveForward( -distance );
-            b2 = bPosTheta.moveForward( +distance );
+		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
 
-        } else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
+			a2 = aPosTheta.moveForward( +distance );
+			b2 = bPosTheta.moveForward( -distance );
 
-            a2 = aPosTheta.moveForward( +distance );
-            b2 = bPosTheta.moveForward( +distance );
+		}
 
-        } else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
+		return {
+			side: laneSide,
+			start: aPosition,
+			startPos: aPosTheta,
+			end: bPosition,
+			endPos: bPosTheta,
+			a2: a2,
+			b2: b2,
+		};
+	}
 
-            a2 = aPosTheta.moveForward( +distance );
-            b2 = bPosTheta.moveForward( -distance );
+	findJunction ( a: JunctionEntryObject, b: JunctionEntryObject ) {
 
-        }
+		// the nearest junction
+		let nearestJunction: TvJunction = null;
+		let nearestDistance = Number.MAX_VALUE;
 
-        return {
-            side: laneSide,
-            start: aPosition,
-            startPos: aPosTheta,
-            end: bPosition,
-            endPos: bPosTheta,
-            a2: a2,
-            b2: b2,
-        }
-    }
+		this.map.junctions.forEach( junction => {
 
-    findJunction ( a: JunctionEntryObject, b: JunctionEntryObject ) {
+			if ( !junction.position && junction.connections.size > 0 ) {
 
-        // the nearest junction
-        let nearestJunction: TvJunction = null;
-        let nearestDistance = Number.MAX_VALUE;
+				const firstconnection = [ ...junction.connections.values() ][ 0 ];
 
-        this.map.junctions.forEach( junction => {
+				const connectionRoad = this.map.getRoadById( firstconnection.connectingRoad );
 
-            if ( !junction.position && junction.connections.size > 0 ) {
+				if ( firstconnection.contactPoint === TvContactPoint.START ) {
 
-                const firstconnection = [ ...junction.connections.values() ][ 0 ]
+					junction.position = connectionRoad.startPosition().toVector3();
 
-                const connectionRoad = this.map.getRoadById( firstconnection.connectingRoad );
+				} else {
 
-                if ( firstconnection.contactPoint === TvContactPoint.START ) {
+					junction.position = connectionRoad.endPosition().toVector3();
 
-                    junction.position = connectionRoad.startPosition().toVector3();
+				}
 
-                } else {
+			}
 
-                    junction.position = connectionRoad.endPosition().toVector3();
+			if ( junction.position ) {
 
-                }
+				const aDistance = junction.position.distanceTo( a.position );
+				const bDistance = junction.position.distanceTo( b.position );
 
-            }
+				if ( aDistance < nearestDistance ) {
 
-            if ( junction.position ) {
+					nearestDistance = aDistance;
 
-                const aDistance = junction.position.distanceTo( a.position );
-                const bDistance = junction.position.distanceTo( b.position );
+					nearestJunction = junction;
 
-                if ( aDistance < nearestDistance ) {
+				}
 
-                    nearestDistance = aDistance;
+				if ( bDistance < nearestDistance ) {
 
-                    nearestJunction = junction;
+					nearestDistance = bDistance;
 
-                }
+					nearestJunction = junction;
+				}
 
-                if ( bDistance < nearestDistance ) {
+			}
 
-                    nearestDistance = bDistance;
+		} );
 
-                    nearestJunction = junction;
-                }
+		if ( !nearestJunction ) nearestJunction = this.map.addNewJunction();
 
-            }
+		// todo make it the mid point between a and b
+		nearestJunction.position = a.position;
 
-        } );
+		return nearestJunction;
+	}
 
-        if ( !nearestJunction ) nearestJunction = this.map.addNewJunction();
+	createConnections (
+		junction: TvJunction, incoming: JunctionEntryObject, connectingRoad: TvRoad, outgoing: JunctionEntryObject
+	) {
 
-        // todo make it the mid point between a and b
-        nearestJunction.position = a.position;
+		this.updateNeighbors( junction, incoming, connectingRoad, outgoing );
 
-        return nearestJunction;
-    }
+		let connection = [ ...junction.connections.values() ]
+			.find( i => i.connectingRoad === connectingRoad.id && i.incomingRoad === incoming.road.id );
 
-    createConnections (
-        junction: TvJunction, incoming: JunctionEntryObject, connectingRoad: TvRoad, outgoing: JunctionEntryObject
-    ) {
+		if ( !connection ) {
+			connection = junction.addNewConnection( incoming.road.id, connectingRoad.id, TvContactPoint.START, outgoing.road.id );
+		}
 
-        this.updateNeighbors( junction, incoming, connectingRoad, outgoing );
+		let connectingLane = connectingRoad.getFirstLaneSection().getLaneById( -Math.abs( incoming.lane.id ) );
 
-        let connection = [ ...junction.connections.values() ]
-            .find( i => i.connectingRoad === connectingRoad.id && i.incomingRoad === incoming.road.id );
+		if ( !connectingLane ) connectingLane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-        if ( !connection ) {
-            connection = junction.addNewConnection( incoming.road.id, connectingRoad.id, TvContactPoint.START, outgoing.road.id );
-        }
+		if ( !connectingLane ) throw new Error( 'connection lane not found' );
 
-        let connectingLane = connectingRoad.getFirstLaneSection().getLaneById( -Math.abs( incoming.lane.id ) );
+		if ( !connectingLane ) return;
 
-        if ( !connectingLane ) connectingLane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+		const link = connection.addNewLink( incoming.lane.id, connectingLane.id );
 
-        if ( !connectingLane ) throw new Error( "connection lane not found" );
+		connectingLane.setPredecessor( incoming.lane.id );
 
-        if ( !connectingLane ) return;
+		connectingLane.setSuccessor( outgoing.lane.id );
 
-        const link = connection.addNewLink( incoming.lane.id, connectingLane.id );
+		return { connection, link };
+	}
 
-        connectingLane.setPredecessor( incoming.lane.id );
+	updateNeighbors (
+		junction: TvJunction,
+		incoming: JunctionEntryObject,
+		connectingRoad: TvRoad,
+		outgoing: JunctionEntryObject
+	): void {
 
-        connectingLane.setSuccessor( outgoing.lane.id );
+		connectingRoad.setPredecessor( 'road', incoming.road.id, incoming.contact );
 
-        return { connection, link };
-    }
+		connectingRoad.setSuccessor( 'road', outgoing.road.id, outgoing.contact );
 
-    updateNeighbors (
-        junction: TvJunction,
-        incoming: JunctionEntryObject,
-        connectingRoad: TvRoad,
-        outgoing: JunctionEntryObject
-    ): void {
+		if ( incoming.contact === TvContactPoint.START ) {
 
-        connectingRoad.setPredecessor( "road", incoming.road.id, incoming.contact );
+			incoming.road.setPredecessor( 'junction', junction.id );
 
-        connectingRoad.setSuccessor( "road", outgoing.road.id, outgoing.contact );
+		} else if ( incoming.contact === TvContactPoint.END ) {
 
-        if ( incoming.contact === TvContactPoint.START ) {
+			incoming.road.setSuccessor( 'junction', junction.id );
 
-            incoming.road.setPredecessor( "junction", junction.id );
+		}
 
-        } else if ( incoming.contact === TvContactPoint.END ) {
+		if ( outgoing.contact === TvContactPoint.START ) {
 
-            incoming.road.setSuccessor( "junction", junction.id );
+			outgoing.road.setPredecessor( 'junction', junction.id );
 
-        }
+		} else if ( outgoing.contact === TvContactPoint.END ) {
 
-        if ( outgoing.contact === TvContactPoint.START ) {
+			outgoing.road.setSuccessor( 'junction', junction.id );
 
-            outgoing.road.setPredecessor( "junction", junction.id );
+		}
+	}
 
-        } else if ( outgoing.contact === TvContactPoint.END ) {
+	showJunctionEntries () {
 
-            outgoing.road.setSuccessor( "junction", junction.id );
+		this.map.roads.forEach( road => {
 
-        }
-    }
+			if ( !road.isJunction ) {
 
-    showJunctionEntries () {
+				if ( !road.predecessor || road.predecessor.elementType === TvElementType.junction ) {
 
-        this.map.roads.forEach( road => {
+					this.showStartEntries( road );
 
-            if ( !road.isJunction ) {
+				}
 
-                if ( !road.predecessor || road.predecessor.elementType === TvElementType.junction ) {
+				if ( !road.successor || road.successor.elementType === TvElementType.junction ) {
 
-                    this.showStartEntries( road );
+					this.showEndEntries( road );
 
-                }
+				}
+			}
 
-                if ( !road.successor || road.successor.elementType === TvElementType.junction ) {
+		} );
 
-                    this.showEndEntries( road );
+	}
 
-                }
-            }
+	// showLanePathObjects () {
 
-        } );
+	//     this.openDrive.roads.forEach( road => {
 
-    }
+	//         if ( road.isJunction ) {
 
-    // showLanePathObjects () {
+	//             road.laneSections.forEach( section => {
 
-    //     this.openDrive.roads.forEach( road => {
+	//                 section.getLaneVector().forEach( lane => {
 
-    //         if ( road.isJunction ) {
+	//                     if ( lane.id !== 0 && lane.type === OdLaneType.driving ) {
 
-    //             road.laneSections.forEach( section => {
+	//                         // TODO: pass connection and lane link as well
+	//                         const lanePathObject = LanePathFactory.createPathForLane( null, road, lane, null, null );
 
-    //                 section.getLaneVector().forEach( lane => {
+	//                         this.lanePathObjects.push( lanePathObject );
 
-    //                     if ( lane.id !== 0 && lane.type === OdLaneType.driving ) {
+	//                         SceneService.add( lanePathObject );
 
-    //                         // TODO: pass connection and lane link as well
-    //                         const lanePathObject = LanePathFactory.createPathForLane( null, road, lane, null, null );
+	//                     }
 
-    //                         this.lanePathObjects.push( lanePathObject );
+	//                 } )
 
-    //                         SceneService.add( lanePathObject );
+	//             } );
 
-    //                     }
+	//         }
 
-    //                 } )
+	//     } );
 
-    //             } );
+	// }
 
-    //         }
+	showLanePathObjects () {
 
-    //     } );
+		this.map.junctions.forEach( junction => {
 
-    // }
+			junction.connections.forEach( connection => {
 
-    showLanePathObjects () {
+				const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+				const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
-        this.map.junctions.forEach( junction => {
+				connection.laneLink.forEach( link => {
 
-            junction.connections.forEach( connection => {
+					const connectingLane = connectingRoad.getFirstLaneSection().getLaneById( link.to );
 
-                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
+					link.lanePath = LanePathFactory.createPathForLane( incomingRoad, connectingRoad, connectingLane, connection, link );
 
-                connection.laneLink.forEach( link => {
+					SceneService.add( link.lanePath );
 
-                    const connectingLane = connectingRoad.getFirstLaneSection().getLaneById( link.to );
+				} );
 
-                    link.lanePath = LanePathFactory.createPathForLane( incomingRoad, connectingRoad, connectingLane, connection, link );
+			} );
 
-                    SceneService.add( link.lanePath );
+		} );
 
-                } );
+	}
 
-            } );
+	showStartEntries ( road: TvRoad ) {
 
-        } );
+		road.getFirstLaneSection().getLaneVector().forEach( lane => {
 
-    }
+			if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
 
-    showStartEntries ( road: TvRoad ) {
+				this.laneDirectionHelper.drawSingleLane( road, lane );
 
-        road.getFirstLaneSection().getLaneVector().forEach( lane => {
+				const position = TvMapQueries.getLanePosition( road.id, lane.id, 0 );
 
-            if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
+				const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.START }`;
 
-                this.laneDirectionHelper.drawSingleLane( road, lane );
+				const obj = new JunctionEntryObject( name, position, TvContactPoint.START, road, lane );
 
-                const position = TvMapQueries.getLanePosition( road.id, lane.id, 0 );
+				this.junctionEntryObjects.push( obj );
 
-                const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.START }`;
+				SceneService.add( obj );
 
-                const obj = new JunctionEntryObject( name, position, TvContactPoint.START, road, lane );
+			}
 
-                this.junctionEntryObjects.push( obj );
+		} );
+	}
 
-                SceneService.add( obj );
+	showEndEntries ( road: TvRoad ) {
 
-            }
+		road.getLastLaneSection().getLaneVector().forEach( lane => {
 
-        } );
-    }
+			if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
 
-    showEndEntries ( road: TvRoad ) {
+				this.laneDirectionHelper.drawSingleLane( road, lane );
 
-        road.getLastLaneSection().getLaneVector().forEach( lane => {
+				const position = TvMapQueries.getLanePosition( road.id, lane.id, road.length );
 
-            if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
+				const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.END }`;
 
-                this.laneDirectionHelper.drawSingleLane( road, lane );
+				const obj = new JunctionEntryObject( name, position, TvContactPoint.END, road, lane );
 
-                const position = TvMapQueries.getLanePosition( road.id, lane.id, road.length );
+				this.junctionEntryObjects.push( obj );
 
-                const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.END }`;
+				SceneService.add( obj );
 
-                const obj = new JunctionEntryObject( name, position, TvContactPoint.END, road, lane );
+			}
 
-                this.junctionEntryObjects.push( obj );
+		} );
+	}
 
-                SceneService.add( obj );
+	hideJunctionEntries () {
 
-            }
+		this.junctionEntryObjects.forEach( obj => SceneService.remove( obj ) );
 
-        } );
-    }
+		this.junctionEntryObjects.splice( 0, this.junctionEntryObjects.length );
 
-    hideJunctionEntries () {
+	}
 
-        this.junctionEntryObjects.forEach( obj => SceneService.remove( obj ) );
+	hideLanePathObjects () {
 
-        this.junctionEntryObjects.splice( 0, this.junctionEntryObjects.length );
+		this.lanePathObjects.forEach( obj => SceneService.remove( obj ) );
 
-    }
+		this.lanePathObjects.splice( 0, this.lanePathObjects.length );
 
-    hideLanePathObjects () {
+		this.map.junctions.forEach( junction => {
 
-        this.lanePathObjects.forEach( obj => SceneService.remove( obj ) );
+			junction.connections.forEach( connection => {
 
-        this.lanePathObjects.splice( 0, this.lanePathObjects.length );
+				connection.laneLink.forEach( link => {
 
-        this.map.junctions.forEach( junction => {
+					if ( link.lanePath ) SceneService.remove( link.lanePath );
 
-            junction.connections.forEach( connection => {
+				} );
 
-                connection.laneLink.forEach( link => {
+			} );
 
-                    if ( link.lanePath ) SceneService.remove( link.lanePath );
-
-                } );
-
-            } );
-
-        } );
-    }
+		} );
+	}
 }

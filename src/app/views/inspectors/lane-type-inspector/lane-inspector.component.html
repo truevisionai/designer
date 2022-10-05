@@ -4,27 +4,27 @@
 
 <div *ngIf="lane" class="inspector-form-container">
 
-    <mat-form-field>
-        <input matInput type="number" placeholder="Lane Id" disabled [(ngModel)]="lane.id">
-    </mat-form-field>
+	<mat-form-field>
+		<input [(ngModel)]="lane.id" disabled matInput placeholder="Lane Id" type="number">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="string" placeholder="Side" disabled [(ngModel)]="lane.sideAsString">
-    </mat-form-field>
+	<mat-form-field>
+		<input [(ngModel)]="lane.sideAsString" disabled matInput placeholder="Side" type="string">
+	</mat-form-field>
 
-    <mat-form-field class="full-width">
-        <mat-label>Type</mat-label>
-        <mat-select (selectionChange)="onTypeChanged($event)" [ngModel]="lane.type">
-            <mat-option [value]="types.driving">Driving</mat-option>
-            <mat-option [value]="types.border">Border</mat-option>
-            <mat-option [value]="types.shoulder">Shoulder</mat-option>
-            <mat-option [value]="types.sidewalk">Sidewalk</mat-option>
-            <mat-option [value]="types.stop">Stop</mat-option>
-        </mat-select>
-    </mat-form-field>
+	<mat-form-field class="full-width">
+		<mat-label>Type</mat-label>
+		<mat-select (selectionChange)="onTypeChanged($event)" [ngModel]="lane.type">
+			<mat-option [value]="types.driving">Driving</mat-option>
+			<mat-option [value]="types.border">Border</mat-option>
+			<mat-option [value]="types.shoulder">Shoulder</mat-option>
+			<mat-option [value]="types.sidewalk">Sidewalk</mat-option>
+			<mat-option [value]="types.stop">Stop</mat-option>
+		</mat-select>
+	</mat-form-field>
 
-    <!-- <button mat-raised-button color="primary" (click)="onDelete()">Delete!</button> -->
-    <!-- <button mat-stroked-button (click)="onDelete()">Delete!</button> -->
+	<!-- <button mat-raised-button color="primary" (click)="onDelete()">Delete!</button> -->
+	<!-- <button mat-stroked-button (click)="onDelete()">Delete!</button> -->
 
 </div>
 

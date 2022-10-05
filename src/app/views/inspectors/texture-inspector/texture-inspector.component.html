@@ -2,36 +2,41 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="inspector-form-container" *ngIf="texture">
+<div *ngIf="texture" class="inspector-form-container">
 
-    <mat-form-field>
-        <input matInput type="string" disabled placeholder="Texture" disabled [(ngModel)]="texture.name">
-    </mat-form-field>
+	<mat-form-field>
+		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="number" disabled (change)="onChange($event)" placeholder="wrapS" [(ngModel)]="texture.wrapS">
-    </mat-form-field>
+	<mat-form-field>
+		<input (change)="onChange($event)" [(ngModel)]="texture.wrapS" disabled matInput placeholder="wrapS"
+			   type="number">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="number" disabled (change)="onChange($event)" placeholder="wrapS" [(ngModel)]="texture.wrapT">
-    </mat-form-field>
+	<mat-form-field>
+		<input (change)="onChange($event)" [(ngModel)]="texture.wrapT" disabled matInput placeholder="wrapS"
+			   type="number">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="number" disabled (change)="onChange($event)" placeholder="anisotropy" [(ngModel)]="texture.anisotropy">
-    </mat-form-field>
+	<mat-form-field>
+		<input (change)="onChange($event)" [(ngModel)]="texture.anisotropy" disabled matInput placeholder="anisotropy"
+			   type="number">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="number" disabled (change)="onChange($event)" placeholder="Offset X" [(ngModel)]="texture.offset.x">
-    </mat-form-field>
+	<mat-form-field>
+		<input (change)="onChange($event)" [(ngModel)]="texture.offset.x" disabled matInput placeholder="Offset X"
+			   type="number">
+	</mat-form-field>
 
-    <mat-form-field>
-        <input matInput type="number" disabled (change)="onChange($event)" placeholder="Offset Y" [(ngModel)]="texture.offset.y">
-    </mat-form-field>
+	<mat-form-field>
+		<input (change)="onChange($event)" [(ngModel)]="texture.offset.y" disabled matInput placeholder="Offset Y"
+			   type="number">
+	</mat-form-field>
 
 </div>
 
-<div class="inspector-form-container" *ngIf="texture">
+<div *ngIf="texture" class="inspector-form-container">
 
-    <img src="{{metadata.path}}" />
+	<img src="{{metadata.path}}"/>
 
 </div>

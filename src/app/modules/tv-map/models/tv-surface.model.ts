@@ -2,150 +2,150 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { GameObject } from 'app/core/game-object';
+import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import * as THREE from 'three';
-import { Mesh, Shape, ShapeBufferGeometry, Vector2 } from 'three';
+import { Mesh, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
-import { SceneService } from 'app/core/services/scene.service';
 import { TvMapInstance } from '../services/tv-map-source-file';
-import { GameObject } from 'app/core/game-object';
 
 export class TvSurface {
 
-    public static readonly tag = 'surface';
+	public static readonly tag = 'surface';
 
-    public static index = 0;
+	public static index = 0;
 
-    public mesh: Mesh;
+	public mesh: Mesh;
 
-    public id: number;
+	public id: number;
 
-    public textureDensity = 100;
+	public textureDensity = 100;
 
-    constructor (
-        public materialGuid: string,
-        public spline: CatmullRomSpline,
-        public offset: Vector2 = new Vector2( 0, 0 ),
-        public scale: Vector2 = new Vector2( 1, 1 ),
-        public rotation: number = 0.0,
-        public height: number = 0.0
-    ) {
+	constructor (
+		public materialGuid: string,
+		public spline: CatmullRomSpline,
+		public offset: Vector2 = new Vector2( 0, 0 ),
+		public scale: Vector2 = new Vector2( 1, 1 ),
+		public rotation: number = 0.0,
+		public height: number = 0.0
+	) {
 
-        this.init();
-    }
+		this.init();
+	}
 
-    init (): void {
+	init (): void {
 
-        this.id = TvSurface.index++;
+		this.id = TvSurface.index++;
 
-        // make a blank shape to avoid any errors 
-        this.mesh = this.makeMesh( new Shape() );
+		// make a blank shape to avoid any errors
+		this.mesh = this.makeMesh( new Shape() );
 
-        // TODO: we can probably avoid doing this here
-        // add the surface mesh to opendrive object to make it available
-        // for exporting in 3d format easily
-        TvMapInstance.map.gameObject.add( this.mesh );
+		// TODO: we can probably avoid doing this here
+		// add the surface mesh to opendrive object to make it available
+		// for exporting in 3d format easily
+		TvMapInstance.map.gameObject.add( this.mesh );
 
-        // add the spline mesh direcly to scene and not opendrive
-        // this helps avoid exporting it in the 3d file
-        SceneService.add( this.spline.mesh );
+		// add the spline mesh direcly to scene and not opendrive
+		// this helps avoid exporting it in the 3d file
+		SceneService.add( this.spline.mesh );
 
-        // update the surface if >=3 points are present
-        if ( this.spline.controlPoints.length > 2 ) this.update();
+		// update the surface if >=3 points are present
+		if ( this.spline.controlPoints.length > 2 ) this.update();
 
-    }
+	}
 
-    update (): void {
+	update (): void {
 
-        this.spline.update();
+		this.spline.update();
 
-        if ( this.spline.controlPoints.length < 3 ) return;
+		if ( this.spline.controlPoints.length < 3 ) return;
 
-        const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
-            p => new Vector2( p.x, p.y )
-        );
+		const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
+			p => new Vector2( p.x, p.y )
+		);
 
-        const shape = new Shape();
+		const shape = new Shape();
 
-        const first = points.shift();
+		const first = points.shift();
 
-        shape.moveTo( first.x, first.y );
+		shape.moveTo( first.x, first.y );
 
-        shape.splineThru( points );
+		shape.splineThru( points );
 
-        this.mesh.geometry.dispose();
+		this.mesh.geometry.dispose();
 
-        this.mesh.geometry = new ShapeBufferGeometry( shape );
+		this.mesh.geometry = new ShapeGeometry( shape );
 
-        const uvAttribute = this.mesh.geometry.attributes.uv;
+		const uvAttribute = this.mesh.geometry.attributes.uv;
 
-        for ( let i = 0; i < uvAttribute.count; i++ ) {
+		for ( let i = 0; i < uvAttribute.count; i++ ) {
 
-            const u = uvAttribute.getX( i );
-            const v = uvAttribute.getY( i );
+			const u = uvAttribute.getX( i );
+			const v = uvAttribute.getY( i );
 
-            uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
+			uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
 
-        }
-    }
+		}
+	}
 
-    makeMesh ( shape: Shape ): Mesh {
+	makeMesh ( shape: Shape ): Mesh {
 
-        const geometry = new ShapeBufferGeometry( shape );
+		const geometry = new ShapeGeometry( shape );
 
-        const texture = OdTextures.terrain.clone();
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 0.008, 0.008 );
-        texture.anisotropy = 16;
-        texture.encoding = THREE.sRGBEncoding;
+		const texture = OdTextures.terrain.clone();
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set( 0.008, 0.008 );
+		texture.anisotropy = 16;
+		texture.encoding = THREE.sRGBEncoding;
 
-        const groundMaterial = new THREE.MeshLambertMaterial( { map: texture } );
+		const groundMaterial = new THREE.MeshLambertMaterial( { map: texture } );
 
-        const mesh = new GameObject( "Surface", geometry, groundMaterial );
+		const mesh = new GameObject( 'Surface', geometry, groundMaterial );
 
-        mesh.position.set( 0, 0, -0.1 );
+		mesh.position.set( 0, 0, -0.1 );
 
-        mesh.Tag = TvSurface.tag;
+		mesh.Tag = TvSurface.tag;
 
-        mesh.userData.surface = this;
+		mesh.userData.surface = this;
 
-        groundMaterial.map.needsUpdate = true;
+		groundMaterial.map.needsUpdate = true;
 
-        return mesh;
-    }
+		return mesh;
+	}
 
-    showCurve (): void {
+	showCurve (): void {
 
-        this.spline.show();
+		this.spline.show();
 
-    }
+	}
 
-    hideCurve (): void {
+	hideCurve (): void {
 
-        this.spline.hide();
+		this.spline.hide();
 
-    }
+	}
 
-    showControlPoints (): void {
+	showControlPoints (): void {
 
-        this.spline.showcontrolPoints();
+		this.spline.showcontrolPoints();
 
-    }
+	}
 
-    hideControlPoints (): void {
+	hideControlPoints (): void {
 
-        this.spline.hidecontrolPoints();
+		this.spline.hidecontrolPoints();
 
-    }
+	}
 
-    delete (): void {
+	delete (): void {
 
-        this.hideControlPoints();
+		this.hideControlPoints();
 
-        this.hideCurve();
+		this.hideCurve();
 
-        this.mesh.visible = false;
+		this.mesh.visible = false;
 
-    }
+	}
 
 }

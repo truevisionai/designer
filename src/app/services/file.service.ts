@@ -6,474 +6,476 @@ import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { IFile } from '../core/models/file';
 import { FileUtils } from './file-utils';
-import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class FileService {
 
-    static electron: ElectronService;
+	static electron: ElectronService;
 
-    public fileImported = new EventEmitter<IFile>();
-    public fileSaved = new EventEmitter<IFile>();
+	public fileImported = new EventEmitter<IFile>();
+	public fileSaved = new EventEmitter<IFile>();
 
-    public fs: any;
-    private path: any;
-    private util: any;
+	public fs: any;
+	private path: any;
+	private util: any;
 
-    constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
+	constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
 
-        FileService.electron = electronService;
+		FileService.electron = electronService;
 
-        if ( this.electronService.isElectronApp ) {
+		if ( this.electronService.isElectronApp ) {
 
-            this.fs = this.electronService.remote.require( 'fs' );
-            this.path = this.electronService.remote.require( 'path' );
-            this.util = this.electronService.remote.require( 'util' );
+			this.fs = this.electronService.remote.require( 'fs' );
+			this.path = this.electronService.remote.require( 'path' );
+			this.util = this.electronService.remote.require( 'util' );
 
-        }
+		}
 
-    }
+	}
 
-    get userDocumentFolder () { return this.electronService.remote.app.getPath( 'documents' ); }
+	get userDocumentFolder () {
+		return this.electronService.remote.app.getPath( 'documents' );
+	}
 
-    get currentDirectory () { return this.electronService.ipcRenderer.sendSync( "current-directory" ); }
+	get currentDirectory () {
+		return this.electronService.ipcRenderer.sendSync( 'current-directory' );
+	}
 
-    get projectFolder () {
+	get projectFolder () {
 
-        if ( this.electronService.isWindows ) {
+		if ( this.electronService.isWindows ) {
 
-            return this.userDocumentFolder + "\\Truevision"
+			return this.userDocumentFolder + '\\Truevision';
 
-        } else if ( this.electronService.isLinux ) {
+		} else if ( this.electronService.isLinux ) {
 
-            return this.userDocumentFolder + "/Truevision"
+			return this.userDocumentFolder + '/Truevision';
 
-        } else {
+		} else {
 
-            throw new Error( "Unsupported platform. Please contact support for more details." );
+			throw new Error( 'Unsupported platform. Please contact support for more details.' );
 
-        }
-    }
+		}
+	}
 
-    static openFile ( onImported: ( files: any ) => void = null, onRead: ( content: string ) => void = null ) {
+	static openFile ( onImported: ( files: any ) => void = null, onRead: ( content: string ) => void = null ) {
 
-        // TODO : Test one time creation
-        const form = document.createElement( 'form' );
-        const input = document.createElement( 'input' );
+		// TODO : Test one time creation
+		const form = document.createElement( 'form' );
+		const input = document.createElement( 'input' );
 
-        input.type = 'file';
+		input.type = 'file';
 
-        form.appendChild( input );
+		form.appendChild( input );
 
-        input.addEventListener( 'change', ( event: any ) => {
+		input.addEventListener( 'change', ( event: any ) => {
 
-            onImported( event.target.files );
+			onImported( event.target.files );
 
-            const reader = new FileReader();
+			const reader = new FileReader();
 
-            reader.addEventListener( 'load', ( event: any ) => {
+			reader.addEventListener( 'load', ( event: any ) => {
 
-                onRead( event.target.result );
+				onRead( event.target.result );
 
-            }, false );
+			}, false );
 
-            reader.readAsText( event.target.files[ 0 ] );
+			reader.readAsText( event.target.files[ 0 ] );
 
-        } );
+		} );
 
-        input.click();
+		input.click();
 
-    }
+	}
 
-    static getExtension ( filename: string ): string {
+	static getExtension ( filename: string ): string {
 
-        if ( this.electron.isWindows ) {
+		if ( this.electron.isWindows ) {
 
-            const array = filename.split( '.' );
+			const array = filename.split( '.' );
 
-            return array[ array.length - 1 ];
-        }
+			return array[ array.length - 1 ];
+		}
 
-        const regEx = /(?:\.([^.]+))?$/;
+		const regEx = /(?:\.([^.]+))?$/;
 
-        const extension = regEx.exec( filename )[ 1 ];
+		const extension = regEx.exec( filename )[ 1 ];
 
-        return extension;
-    }
+		return extension;
+	}
 
-    async showAsyncDialog (): Promise<string[]> {
+	static getFilenameFromPath ( path: string ): string {
 
-        const options = {
-            title: 'Select file',
-            buttonLabel: 'Import',
-            filters: [
-                {
-                    name: null,
-                }
-            ],
-            message: 'Select file'
-        };
+		return FileUtils.getFilenameFromPath( path );
 
-        return Promise.resolve( this.electronService.remote.dialog.showOpenDialog( null, {} ) );
-    }
+	}
 
-    async readAsync ( path ) {
+	async showAsyncDialog (): Promise<string[]> {
 
-        return Promise.resolve( this.fs.readFileSync( path, 'utf-8' ) );
+		const options = {
+			title: 'Select file',
+			buttonLabel: 'Import',
+			filters: [
+				{
+					name: null,
+				}
+			],
+			message: 'Select file'
+		};
 
-    }
+		return Promise.resolve( this.electronService.remote.dialog.showOpenDialog( null, {} ) );
+	}
 
-    import ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
+	async readAsync ( path ) {
 
-        if ( !this.electronService.isElectronApp ) throw new Error( 'Error: cannot import' );
+		return Promise.resolve( this.fs.readFileSync( path, 'utf-8' ) );
 
-        const options = {
-            title: 'Select file',
-            buttonLabel: 'Import',
-            defaultPath: path || this.projectFolder,
-            filters: [
-                {
-                    name: null,
-                    extensions
-                }
-            ],
-            message: 'Select file'
-        };
+	}
 
-        this.electronService.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
+	import ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
 
-            if ( filepaths != null ) this.readFile( filepaths[ 0 ], type, callbackFn );
+		if ( !this.electronService.isElectronApp ) throw new Error( 'Error: cannot import' );
 
-        } );
-    }
+		const options = {
+			title: 'Select file',
+			buttonLabel: 'Import',
+			defaultPath: path || this.projectFolder,
+			filters: [
+				{
+					name: null,
+					extensions
+				}
+			],
+			message: 'Select file'
+		};
 
-    /**
-     *
-     * @deprecated use import
-     */
-    importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
+		this.electronService.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
 
-        this.import( path, type, extensions, null );
+			if ( filepaths != null ) this.readFile( filepaths[ 0 ], type, callbackFn );
 
-    }
+		} );
+	}
 
-    readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
+	/**
+	 *
+	 * @deprecated use import
+	 */
+	importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
 
-        this.fs.readFile( path, 'utf-8', ( err, data ) => {
+		this.import( path, type, extensions, null );
 
-            if ( err ) {
-                alert( 'An error ocurred reading the file :' + err.message );
-                return;
-            }
+	}
 
-            const file = new IFile();
+	readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
 
-            file.path = path;
-            file.contents = data;
-            file.type = type;
-            file.updatedAt = new Date()
+		this.fs.readFile( path, 'utf-8', ( err, data ) => {
 
-            // if ( callbackFn != null ) callbackFn( file );
+			if ( err ) {
+				alert( 'An error ocurred reading the file :' + err.message );
+				return;
+			}
 
-            // Need to call the callback function from ngZone to trigger change detection in Angular
-            if ( callbackFn != null ) this.ngZone.run( () => callbackFn( file ) );
+			const file = new IFile();
 
-            this.fileImported.emit( file );
+			file.path = path;
+			file.contents = data;
+			file.type = type;
+			file.updatedAt = new Date();
 
-        } );
+			// if ( callbackFn != null ) callbackFn( file );
 
-    }
+			// Need to call the callback function from ngZone to trigger change detection in Angular
+			if ( callbackFn != null ) this.ngZone.run( () => callbackFn( file ) );
 
-    saveFile ( defaultPath: string, contents: string, callbackFn: any = null ): any {
+			this.fileImported.emit( file );
 
-        this.writeFile( defaultPath, contents, callbackFn );
+		} );
 
-    }
+	}
 
-    saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
+	saveFile ( defaultPath: string, contents: string, callbackFn: any = null ): any {
 
-        if ( directory == null ) directory = this.projectFolder;
+		this.writeFile( defaultPath, contents, callbackFn );
 
-        const options = {
-            defaultPath: directory
-        };
+	}
 
-        this.electronService.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
+	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
 
-            if ( fullPath != null ) {
+		if ( directory == null ) directory = this.projectFolder;
 
-                // append the extension if not present in the path
-                if ( !fullPath.includes( `.${ extension }` ) ) {
+		const options = {
+			defaultPath: directory
+		};
 
-                    fullPath = fullPath + "." + extension;
+		this.electronService.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
 
-                }
+			if ( fullPath != null ) {
 
-                this.writeFile( fullPath, contents, callbackFn );
+				// append the extension if not present in the path
+				if ( !fullPath.includes( `.${ extension }` ) ) {
 
-            } else {
+					fullPath = fullPath + '.' + extension;
 
-                console.error( "Could not save file" );
+				}
 
-            }
+				this.writeFile( fullPath, contents, callbackFn );
 
-        } );
+			} else {
 
-    }
+				console.error( 'Could not save file' );
 
-    saveAsFile ( directory: string = null, contents: string, callbackFn: any = null ): any {
+			}
 
-        if ( directory == null ) directory = this.projectFolder;
+		} );
 
-        const options = {
-            defaultPath: directory
-        };
+	}
 
-        this.electronService.remote.dialog.showSaveDialog( null, options, ( path ) => {
+	saveAsFile ( directory: string = null, contents: string, callbackFn: any = null ): any {
 
-            if ( path != null ) {
+		if ( directory == null ) directory = this.projectFolder;
 
-                this.writeFile( path, contents, callbackFn );
+		const options = {
+			defaultPath: directory
+		};
 
+		this.electronService.remote.dialog.showSaveDialog( null, options, ( path ) => {
 
-            } else {
+			if ( path != null ) {
 
-                // alert( "you didnt save file" );
+				this.writeFile( path, contents, callbackFn );
 
-            }
 
-        } );
+			} else {
 
-    }
+				// alert( "you didnt save file" );
 
-    writeFile ( filepath, content, callbackFn: any = null ) {
+			}
 
-        this.fs.writeFile( filepath, content, ( err, data ) => {
+		} );
 
-            if ( err ) {
+	}
 
-                console.error( 'An error ocurred creating the file ' + err.message );
+	writeFile ( filepath, content, callbackFn: any = null ) {
 
-                return;
+		this.fs.writeFile( filepath, content, ( err, data ) => {
 
-            } else {
+			if ( err ) {
 
-                const file = new IFile( null, filepath, content, null, null, new Date() );
+				console.error( 'An error ocurred creating the file ' + err.message );
 
-                this.fileSaved.emit( file );
+				return;
 
-                if ( callbackFn != null ) callbackFn( file );
+			} else {
 
-            }
+				const file = new IFile( null, filepath, content, null, null, new Date() );
 
-        } );
+				this.fileSaved.emit( file );
 
-    }
+				if ( callbackFn != null ) callbackFn( file );
 
-    listFiles ( path, callback ) {
+			}
 
-        this.fs.readdir( path, ( err, files ) => {
+		} );
 
-            if ( err ) {
+	}
 
-                console.log( 'Error getting directory information.' );
+	listFiles ( path, callback ) {
 
-            } else {
+		this.fs.readdir( path, ( err, files ) => {
 
-                callback( files );
+			if ( err ) {
 
-            }
+				console.log( 'Error getting directory information.' );
 
-        } );
+			} else {
 
-    }
+				callback( files );
 
-    deleteFolderSync ( path: string ) {
+			}
 
-        if ( this.fs.existsSync( path ) ) {
+		} );
 
-            this.fs.rmdirSync( path, { recursive: true } );
+	}
 
-        } else {
+	deleteFolderSync ( path: string ) {
 
-            console.error( "folder does not exists" );
+		if ( this.fs.existsSync( path ) ) {
 
-        }
+			this.fs.rmdirSync( path, { recursive: true } );
 
-    }
+		} else {
 
-    deleteFileSync ( path: string ) {
+			console.error( 'folder does not exists' );
 
-        this.fs.unlinkSync( path );
+		}
 
-    }
+	}
 
-    createFolder ( path: string, name: string = 'New Folder' ) {
+	deleteFileSync ( path: string ) {
 
-        try {
+		this.fs.unlinkSync( path );
 
-            let folderName = name;
+	}
 
-            let folderPath = this.join( path, folderName );
+	createFolder ( path: string, name: string = 'New Folder' ) {
 
-            let count = 1;
+		try {
 
-            while ( this.fs.existsSync( folderPath ) && count <= 20 ) {
+			let folderName = name;
 
-                folderName = `${ name } (${ count++ })`;
+			let folderPath = this.join( path, folderName );
 
-                folderPath = this.join( path, folderName );
+			let count = 1;
 
-            }
+			while ( this.fs.existsSync( folderPath ) && count <= 20 ) {
 
-            this.fs.mkdirSync( folderPath );
+				folderName = `${ name } (${ count++ })`;
 
-            return {
-                name: folderName,
-                path: folderPath
-            }
+				folderPath = this.join( path, folderName );
 
-        } catch ( error ) {
+			}
 
-            // throw new Error( `Error in creating project at ${ path }` );
+			this.fs.mkdirSync( folderPath );
 
-        }
+			return {
+				name: folderName,
+				path: folderPath
+			};
 
-    }
+		} catch ( error ) {
 
-    createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
+			// throw new Error( `Error in creating project at ${ path }` );
 
-        let slash = null;
+		}
 
-        if ( this.electronService.isWindows ) slash = "\\";
+	}
 
-        if ( this.electronService.isLinux ) slash = "/";
+	createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
 
-        let filePath = `${ path }${ slash }${ name }.${ extension }`;
-        let fileName = name;
+		let slash = null;
 
-        if ( this.fs.existsSync( filePath ) ) {
+		if ( this.electronService.isWindows ) slash = '\\';
 
-            let count = 1;
+		if ( this.electronService.isLinux ) slash = '/';
 
-            fileName = `${ name }(${ count })`;
-            filePath = `${ path }${ slash }${ fileName }.${ extension }`;
+		let filePath = `${ path }${ slash }${ name }.${ extension }`;
+		let fileName = name;
 
-            while ( this.fs.existsSync( filePath ) ) {
+		if ( this.fs.existsSync( filePath ) ) {
 
-                fileName = `${ name }(${ count++ })`;
-                filePath = `${ path }${ slash }${ fileName }.${ extension }`;
+			let count = 1;
 
-            }
+			fileName = `${ name }(${ count })`;
+			filePath = `${ path }${ slash }${ fileName }.${ extension }`;
 
-        }
+			while ( this.fs.existsSync( filePath ) ) {
 
-        this.fs.writeFileSync( filePath, contents );
+				fileName = `${ name }(${ count++ })`;
+				filePath = `${ path }${ slash }${ fileName }.${ extension }`;
 
-        return { fileName, filePath };
-    }
+			}
 
+		}
 
-    readPathContents ( dirpath ) {
-        return new Promise( resolve => {
-            this.fs.readdir( dirpath, this.handled( files => {
-                Promise.all( files.map( file => {
-                    const itemPath = this.path.join( dirpath, file );
-                    return this.getItemProperties( itemPath );
-                } ) ).then( resolve );
-            } ) );
-        } );
-    }
+		this.fs.writeFileSync( filePath, contents );
 
-    readPathContentsSync ( dirpath ) {
+		return { fileName, filePath };
+	}
 
-        const files = this.fs.readdirSync( dirpath );
+	readPathContents ( dirpath ) {
+		return new Promise( resolve => {
+			this.fs.readdir( dirpath, this.handled( files => {
+				Promise.all( files.map( file => {
+					const itemPath = this.path.join( dirpath, file );
+					return this.getItemProperties( itemPath );
+				} ) ).then( resolve );
+			} ) );
+		} );
+	}
 
-        const items = [];
+	readPathContentsSync ( dirpath ) {
 
-        files.forEach( file => {
+		const files = this.fs.readdirSync( dirpath );
 
-            const itemPath = this.path.join( dirpath, file );
+		const items = [];
 
-            items.push( this.getItemProperties( itemPath ) );
+		files.forEach( file => {
 
-        } );
+			const itemPath = this.path.join( dirpath, file );
 
-        return items;
-    }
+			items.push( this.getItemProperties( itemPath ) );
 
-    getItemProperties ( itemPath ) {
+		} );
 
-        const stats = this.fs.statSync( itemPath );
+		return items;
+	}
 
-        const name = FileService.getFilenameFromPath( itemPath );
+	getItemProperties ( itemPath ) {
 
-        return {
-            name: name,
-            type: this.getItemType( stats ),
-            path: itemPath,
-            size: stats.size,
-            mtime: stats.mtime
-        };
+		const stats = this.fs.statSync( itemPath );
 
-        return new Promise( resolve => {
-            this.fs.stat( itemPath, this.handled( stats => resolve( {
-                name: itemPath.split( '/' ).pop(),
-                type: this.getItemType( stats ),
-                path: itemPath,
-                size: stats.size,
-                mtime: stats.mtime
-            } ) ) );
-        } );
-    }
+		const name = FileService.getFilenameFromPath( itemPath );
 
-    static getFilenameFromPath ( path: string ): string {
+		return {
+			name: name,
+			type: this.getItemType( stats ),
+			path: itemPath,
+			size: stats.size,
+			mtime: stats.mtime
+		};
 
-        return FileUtils.getFilenameFromPath( path );
+		return new Promise( resolve => {
+			this.fs.stat( itemPath, this.handled( stats => resolve( {
+				name: itemPath.split( '/' ).pop(),
+				type: this.getItemType( stats ),
+				path: itemPath,
+				size: stats.size,
+				mtime: stats.mtime
+			} ) ) );
+		} );
+	}
 
-    }
+	getItemType ( item ) {
+		if ( item.isFile() ) {
+			return 'file';
+		} else if ( item.isDirectory() ) {
+			return 'directory';
+		} else if ( item.isBlockDevice() ) {
+			return 'blockdevice';
+		} else if ( item.isCharacterDevice() ) {
+			return 'characterdevice';
+		} else if ( item.isSymbolicLink() ) {
+			return 'symlink';
+		} else if ( item.isFIFO() ) {
+			return 'fifo';
+		} else if ( item.isSocket() ) {
+			return 'socket';
+		}
+		return '';
+	}
 
-    getItemType ( item ) {
-        if ( item.isFile() ) {
-            return 'file';
-        } else if ( item.isDirectory() ) {
-            return 'directory';
-        } else if ( item.isBlockDevice() ) {
-            return 'blockdevice';
-        } else if ( item.isCharacterDevice() ) {
-            return 'characterdevice';
-        } else if ( item.isSymbolicLink() ) {
-            return 'symlink';
-        } else if ( item.isFIFO() ) {
-            return 'fifo';
-        } else if ( item.isSocket() ) {
-            return 'socket';
-        }
-        return '';
-    }
+	handled ( callback ) {
+		return function handledCallback ( err, ...args ) {
+			if ( err ) {
+				throw err;
+			}
+			callback( ...args );
+		};
+	}
 
-    handled ( callback ) {
-        return function handledCallback ( err, ...args ) {
-            if ( err ) {
-                throw err;
-            }
-            callback( ...args );
-        };
-    }
+	resolve ( relativePath: string, filename: string ): string {
 
-    resolve ( relativePath: string, filename: string ): string {
+		const dirname = this.path.dirname( relativePath );
 
-        const dirname = this.path.dirname( relativePath );
+		return this.path.resolve( dirname, filename );
 
-        return this.path.resolve( dirname, filename );
+	}
 
-    }
+	join ( path, filename ): string {
 
-    join ( path, filename ): string {
+		return this.path.join( path, filename );
 
-        return this.path.join( path, filename );
-
-    }
+	}
 }

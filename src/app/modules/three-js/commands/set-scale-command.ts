@@ -2,54 +2,54 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from '../../../core/commands/base-command';
 import { Object3D, Vector3 } from 'three';
+import { BaseCommand } from '../../../core/commands/base-command';
 
 export class SetScaleCommand extends BaseCommand {
 
-    private readonly oldScale: Vector3;
+	private readonly oldScale: Vector3;
 
-    constructor (
-        private object: Object3D,
-        private newScale: Vector3,
-        private optionalOldScale: Vector3 = null
-    ) {
+	constructor (
+		private object: Object3D,
+		private newScale: Vector3,
+		private optionalOldScale: Vector3 = null
+	) {
 
-        super();
+		super();
 
-        if ( object !== null && newScale !== null ) {
+		if ( object !== null && newScale !== null ) {
 
-            this.oldScale = object.scale.clone();
-            this.newScale = newScale.clone();
+			this.oldScale = object.scale.clone();
+			this.newScale = newScale.clone();
 
-        }
+		}
 
-        if ( optionalOldScale !== null ) {
+		if ( optionalOldScale !== null ) {
 
-            this.oldScale = optionalOldScale.clone();
+			this.oldScale = optionalOldScale.clone();
 
-        }
+		}
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.object.scale.copy( this.newScale );
-        this.object.updateMatrixWorld( true );
+		this.object.scale.copy( this.newScale );
+		this.object.updateMatrixWorld( true );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.object.scale.copy( this.oldScale );
-        this.object.updateMatrixWorld( true );
+		this.object.scale.copy( this.oldScale );
+		this.object.updateMatrixWorld( true );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }

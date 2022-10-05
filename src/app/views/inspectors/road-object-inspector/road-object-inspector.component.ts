@@ -7,38 +7,38 @@ import { IComponent } from 'app/core/game-object';
 import { TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
 
 @Component( {
-    selector: 'app-road-object-inspector',
-    templateUrl: './road-object-inspector.component.html',
+	selector: 'app-road-object-inspector',
+	templateUrl: './road-object-inspector.component.html',
 } )
 export class RoadObjectInspectorComponent implements OnInit, IComponent {
 
-    data: TvRoadObject;
+	data: TvRoadObject;
 
-    constructor () {
-    }
+	constructor () {
+	}
 
-    // TODO: Get this properly
-    get signMaterial () {
-        return this.data.mesh.material;
-    }
+	// TODO: Get this properly
+	get signMaterial () {
+		return this.data.mesh.material;
+	}
 
-    ngOnInit () {
-    }
+	ngOnInit () {
+	}
 
-    updatePosition ( $event: number ) {
+	updatePosition ( $event: number ) {
 
-        // const road = OdSourceFile.openDrive.getRoadById( this.data.road_id );
+		// const road = OdSourceFile.openDrive.getRoadById( this.data.road_id );
 
-        // const pose = road.getPositionAt( this.data.attr_s, this.data.attr_t );
+		// const pose = road.getPositionAt( this.data.attr_s, this.data.attr_t );
 
-        // this.data.GameObject.position.set( pose.x, pose.y, 0 );
+		// this.data.GameObject.position.set( pose.x, pose.y, 0 );
 
-    }
+	}
 
-    onDelete () {
+	onDelete () {
 
-        // CommandHistory.execute( new RemoveSignalCommand( this.data ) );
+		// CommandHistory.execute( new RemoveSignalCommand( this.data ) );
 
-    }
+	}
 
 }

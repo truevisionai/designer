@@ -3,197 +3,208 @@
  */
 
 import { Injectable } from '@angular/core';
+import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { PropPointTool } from 'app/core/tools/prop-point-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileService } from './file.service';
-import { SnackBar } from './snack-bar.service';
-// import { SceneImporterService } from './scene-importer.service';
-import 'three/examples/js/loaders/GLTFLoader.js';
-import 'three/examples/js/loaders/OBJLoader.js';
-import 'three/examples/js/controls/OrbitControls';
 
 import { Vector3 } from 'three';
-import { ModelImporterService } from './model-importer.service';
 import { AssetLoaderService } from './asset-loader.service';
-import { SceneImporterService } from './scene-importer.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { PropPointTool } from 'app/core/tools/prop-point-tool';
+import { FileService } from './file.service';
+import { ModelImporterService } from './model-importer.service';
 import { PropService } from './prop-service';
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { AssetDatabase } from './asset-database';
+import { SceneImporterService } from './scene-importer.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class ImporterService {
 
-    /**
-     * This class is responsible for importing all supported files
-     * 
-     * @param od 
-     * @param osc 
-     * @param three 
-     * @param assetImporter 
-     * @param sceneImporter 
-     * @param assetService 
-     */
-    constructor (
-        private od: TvMapService,
-        private sceneImporter: SceneImporterService,
-        private modelImporter: ModelImporterService,
-        private assetService: AssetLoaderService,
-        private fileService: FileService
-    ) { }
+	/**
+	 * This class is responsible for importing all supported files
+	 *
+	 * @param od
+	 * @param osc
+	 * @param three
+	 * @param assetImporter
+	 * @param sceneImporter
+	 * @param assetService
+	 */
+	constructor (
+		private od: TvMapService,
+		private sceneImporter: SceneImporterService,
+		private modelImporter: ModelImporterService,
+		private assetService: AssetLoaderService,
+		private fileService: FileService
+	) {
+	}
 
-    importViaPath ( path: string, filename?: string, position?: Vector3 ) {
+	importViaPath ( path: string, filename?: string, position?: Vector3 ) {
 
-        const extension = FileService.getExtension( path );
+		const extension = FileService.getExtension( path );
 
-        const metadata = this.assetService.fetchMetaFile( path );
+		const metadata = this.assetService.fetchMetaFile( path );
 
-        switch ( extension ) {
+		switch ( extension ) {
 
-            case 'xodr':
-                this.importOpenDrive( path );
-                break;
+			case 'xodr':
+				this.importOpenDrive( path );
+				break;
 
-            case 'gltf':
-                this.modelImporter.import( path, filename, extension, position, metadata );
-                break;
+			case 'gltf':
+				this.modelImporter.import( path, filename, extension, position, metadata );
+				break;
 
-            case 'glb':
+			case 'glb':
 
-                PropService.setProp( metadata );
+				PropService.setProp( metadata );
 
-                if ( ToolManager.currentTool instanceof PropPointTool ) {
+				if ( ToolManager.currentTool instanceof PropPointTool ) {
 
-                    ToolManager.currentTool.shapeEditor.addControlPoint( position );
+					ToolManager.currentTool.shapeEditor.addControlPoint( position );
 
-                } else {
+				} else {
 
-                    ToolManager.currentTool = new PropPointTool();
+					ToolManager.currentTool = new PropPointTool();
 
-                    ( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
+					( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
 
-                }
+				}
 
-                // this.modelImporter.import( path, filename, extension, position, metadata );
+				// this.modelImporter.import( path, filename, extension, position, metadata );
 
-                break;
+				break;
 
-            case 'obj':
-                this.modelImporter.import( path, filename, extension, position, metadata );
-                break;
+			case 'obj':
+				this.modelImporter.import( path, filename, extension, position, metadata );
+				break;
 
-            case 'fbx':
-                this.modelImporter.import( path, filename, extension, position, metadata );
-                break;
+			case 'fbx':
+				this.modelImporter.import( path, filename, extension, position, metadata );
+				break;
 
-            case 'prop':
-                // alert( 'import prop ' + path );
-                break;
+			case 'prop':
+				// alert( 'import prop ' + path );
+				break;
 
-            case 'scene':
-                this.importScene( path );
-                break;
+			case 'scene':
+				this.importScene( path );
+				break;
 
-            case 'roadstyle':
-                console.error( "method not implemented" );
-                break;
+			case 'roadstyle':
+				console.error( 'method not implemented' );
+				break;
 
-            default:
-                console.error( `unknown file type: ${ extension }` );
-                SnackBar.error( 'Unknown file! Not able to import' );
-                break;
-        }
+			default:
+				console.error( `unknown file type: ${ extension }` );
+				SnackBar.error( 'Unknown file! Not able to import' );
+				break;
+		}
 
-    }
+	}
 
-    onFileDropped ( file: File, folderPath: string ): any {
+	onFileDropped ( file: File, folderPath: string ): any {
 
-        if ( !file ) SnackBar.error( "Incorrect file. Cannot import" );
-        if ( !file ) return;
+		if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
+		if ( !file ) return;
 
-        const extension = FileService.getExtension( file.name );
+		const extension = FileService.getExtension( file.name );
 
-        const destinationPath = this.fileService.join( folderPath, file.name );
+		const destinationPath = this.fileService.join( folderPath, file.name );
 
-        let copied = false;
+		let copied = false;
 
-        switch ( extension ) {
+		switch ( extension ) {
 
-            case 'gltf': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'gltf':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            case 'glb': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'glb':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            case 'obj': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'obj':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            // case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			// case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
 
-            case 'jpg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'jpg':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            case 'jpeg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'jpeg':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            case 'png': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'png':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            case 'svg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case 'svg':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
 
-            default: SnackBar.error( `${ extension } file cannot be imported` ); break;
-        }
+			default:
+				SnackBar.error( `${ extension } file cannot be imported` );
+				break;
+		}
 
-        if ( copied ) {
+		if ( copied ) {
 
-            MetadataFactory.createMetadata( file.name, extension, destinationPath );
+			MetadataFactory.createMetadata( file.name, extension, destinationPath );
 
-        }
-    }
+		}
+	}
 
-    copyFileInFolder ( sourcePath: string, destinationPath: string, ext?: string ): boolean {
+	copyFileInFolder ( sourcePath: string, destinationPath: string, ext?: string ): boolean {
 
-        if ( !destinationPath ) SnackBar.error( "folderPath incorrect" );
-        if ( !destinationPath ) return;
+		if ( !destinationPath ) SnackBar.error( 'folderPath incorrect' );
+		if ( !destinationPath ) return;
 
-        try {
+		try {
 
-            // console.log( 'import as texture in ', this.selectedFolder );
-            // const extension = ext || FileService.getExtension( file.name );
+			// console.log( 'import as texture in ', this.selectedFolder );
+			// const extension = ext || FileService.getExtension( file.name );
 
-            // const source = sourcePath.path;
-            // const destination = destinationPath + '\\' + sourcePath.name;
+			// const source = sourcePath.path;
+			// const destination = destinationPath + '\\' + sourcePath.name;
 
-            // const newFilePath = this.fileService.join( destinationPath, sourcePath.name );
+			// const newFilePath = this.fileService.join( destinationPath, sourcePath.name );
 
-            this.fileService.fs.copyFileSync( sourcePath, destinationPath );
+			this.fileService.fs.copyFileSync( sourcePath, destinationPath );
 
-            // this.fileService.fs.copyFile( source, destination, ( err ) => {
+			// this.fileService.fs.copyFile( source, destination, ( err ) => {
 
-            //     if ( err ) SnackBar.error( err );
+			//     if ( err ) SnackBar.error( err );
 
-            //     this.reimport( { path: destination, name: file.name }, extension );
+			//     this.reimport( { path: destination, name: file.name }, extension );
 
-            // } );
+			// } );
 
-            return true;
+			return true;
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
-    }
+		}
+	}
 
 
-    importScene ( path: string ) {
+	importScene ( path: string ) {
 
-        this.sceneImporter.importFromPath( path );
+		this.sceneImporter.importFromPath( path );
 
-    }
+	}
 
-    importOpenDrive ( filepath: string ) {
+	importOpenDrive ( filepath: string ) {
 
-        this.od.importFromPath( filepath );
+		this.od.importFromPath( filepath );
 
-    }
+	}
 
 
 }

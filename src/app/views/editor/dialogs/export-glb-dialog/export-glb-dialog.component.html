@@ -2,16 +2,16 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<h1 mat-dialog-title class="mat-tv-dialog-title">Export GLB</h1>
-<div mat-dialog-content class="mat-tv-dialog-content">
-    <mat-form-field style="width: 100%;">
-        <mat-label>Filename</mat-label>
-        <input matInput [(ngModel)]="filename">
-    </mat-form-field>
-    <br/>
-    <!-- <mat-checkbox [(ngModel)]="forcePowerOfTwoTextures" disabled>Force Power Of Two Textures</mat-checkbox> -->
+<h1 class="mat-tv-dialog-title" mat-dialog-title>Export GLB</h1>
+<div class="mat-tv-dialog-content" mat-dialog-content>
+	<mat-form-field style="width: 100%;">
+		<mat-label>Filename</mat-label>
+		<input [(ngModel)]="filename" matInput>
+	</mat-form-field>
+	<br/>
+	<!-- <mat-checkbox [(ngModel)]="forcePowerOfTwoTextures" disabled>Force Power Of Two Textures</mat-checkbox> -->
 </div>
-<div mat-dialog-actions class="mat-tv-dialog-actions" align="end">
-    <button mat-stroked-button mat-dialog-close>Close</button>
-    <button mat-stroked-button cdkFocusInitial (click)="export()">Export</button>
+<div align="end" class="mat-tv-dialog-actions" mat-dialog-actions>
+	<button mat-dialog-close mat-stroked-button>Close</button>
+	<button (click)="export()" cdkFocusInitial mat-stroked-button>Export</button>
 </div>

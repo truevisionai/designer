@@ -2,10 +2,11 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<button mat-raised-button [color]="color" class="button-loading {{btnClass}}" [type]="type" [disabled]="loading" [ngClass]="{loading: loading}">
-    <div class="btn-spinner" *ngIf="loading"></div>
-    <span *ngIf="!loading">
+<button [color]="color" [disabled]="loading" [ngClass]="{loading: loading}" [type]="type" class="button-loading {{btnClass}}"
+		mat-raised-button>
+	<div *ngIf="loading" class="btn-spinner"></div>
+	<span *ngIf="!loading">
         <ng-content></ng-content>
     </span>
-    <span *ngIf="loading">{{loadingText}}</span>
+	<span *ngIf="loading">{{loadingText}}</span>
 </button>

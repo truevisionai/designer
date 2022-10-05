@@ -2,16 +2,16 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="tv-field" align="left">
+<div align="left" class="tv-field">
 
-    <label class="tv-field-label">{{ label }}</label>
+	<label class="tv-field-label">{{ label }}</label>
 
-    <div class="tv-field-text-input">
+	<div class="tv-field-text-input">
 
-        <select class="tv-field-dropdown">
-            <option class="tv-field-option" [value]="option" *ngFor="let option of options">{{option}}</option>
-        </select>
+		<select class="tv-field-dropdown">
+			<option *ngFor="let option of options" [value]="option" class="tv-field-option">{{option}}</option>
+		</select>
 
-    </div>
+	</div>
 
 </div>

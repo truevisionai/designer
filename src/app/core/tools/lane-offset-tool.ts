@@ -2,541 +2,530 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { Object3D, Vector3 } from 'three';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AnyControlPoint, LaneOffsetNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { SceneService } from '../services/scene.service';
-import { Subscription } from 'rxjs';
-import { KeyboardInput } from '../input';
-import { NodeFactoryService } from '../factories/node-factory.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { AppInspector } from '../inspector';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { PickingHelper } from '../services/picking-helper.service';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneOffsetInspector, LaneOffsetInspectorData } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
+import { Subscription } from 'rxjs';
+import { Object3D, Vector3 } from 'three';
+import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
-import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
-import { CommandHistory } from 'app/services/command-history';
-import { UpdateLaneOffsetValueCommand } from '../commands/update-lane-offset-value-command';
 import { AddLaneOffsetCommand } from '../commands/add-lane-offset-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
+import { UpdateLaneOffsetValueCommand } from '../commands/update-lane-offset-value-command';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { BaseTool } from './base-tool';
 
 export class LaneOffsetTool extends BaseTool {
 
-    public name: string = 'LaneOffset';
+	public name: string = 'LaneOffset';
 
-    private distanceSub: Subscription;
-    private offsetSub: Subscription;
+	private distanceSub: Subscription;
+	private offsetSub: Subscription;
 
-    private laneWidthChanged: boolean = false;
-    private pointerDown: boolean = false;
-    private pointerObject: Object3D;
+	private laneWidthChanged: boolean = false;
+	private pointerDown: boolean = false;
+	private pointerObject: Object3D;
 
-    private lane: TvLane;
-    private controlPoint: AnyControlPoint;
-    private node: LaneOffsetNode;
+	private lane: TvLane;
+	private controlPoint: AnyControlPoint;
+	private node: LaneOffsetNode;
 
-    private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
-    init () {
+	init () {
 
 
-    }
+	}
 
-    enable () {
+	enable () {
 
-        super.enable();
+		super.enable();
 
-        // this.distanceSub = LaneOffsetInspector.distanceChanged.subscribe( distance => {
+		// this.distanceSub = LaneOffsetInspector.distanceChanged.subscribe( distance => {
 
-        // const road = this.openDrive.getRoadById( data.node.roadId );
+		// const road = this.openDrive.getRoadById( data.node.roadId );
 
-        // road.updateLaneOffsetValues();
+		// road.updateLaneOffsetValues();
 
-        // NodeFactoryService.updateLaneOffsetNode( data.node );
+		// NodeFactoryService.updateLaneOffsetNode( data.node );
 
-        // this.rebuild( road );
+		// this.rebuild( road );
 
-        // } );
+		// } );
 
-        this.distanceSub = LaneOffsetInspector.distanceChanged.subscribe( distance => {
+		this.distanceSub = LaneOffsetInspector.distanceChanged.subscribe( distance => {
 
-            CommandHistory.execute( new UpdateLaneOffsetDistanceCommand( this.node, distance, null, this.laneHelper ) );
+			CommandHistory.execute( new UpdateLaneOffsetDistanceCommand( this.node, distance, null, this.laneHelper ) );
 
-        } );
+		} );
 
 
-        this.offsetSub = LaneOffsetInspector.offsetChanged.subscribe( offset => {
+		this.offsetSub = LaneOffsetInspector.offsetChanged.subscribe( offset => {
 
-            CommandHistory.execute( new UpdateLaneOffsetValueCommand( this.node, offset, null, this.laneHelper ) );
+			CommandHistory.execute( new UpdateLaneOffsetValueCommand( this.node, offset, null, this.laneHelper ) );
 
-        } );
+		} );
 
-    }
+	}
 
-    disable () {
+	disable () {
 
-        super.disable();
+		super.disable();
 
-        if ( this.laneHelper ) this.laneHelper.clear();
+		if ( this.laneHelper ) this.laneHelper.clear();
 
-        this.distanceSub.unsubscribe();
+		this.distanceSub.unsubscribe();
 
-        this.map.roads.forEach( road => this.hideNodes( road ) );
-    }
+		this.map.roads.forEach( road => this.hideNodes( road ) );
+	}
 
-    public onPointerDown ( e: PointerEventData ) {
+	public onPointerDown ( e: PointerEventData ) {
 
-        if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-        this.pointerDown = true;
+		this.pointerDown = true;
 
-        const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-        let hasInteracted = false;
+		let hasInteracted = false;
 
-        // check for control point interactions first
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkNodePointInteraction( e );
+		// check for control point interactions first
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkNodePointInteraction( e );
 
-        // // check for line segment interactions
-        // if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkNodeLineInteraction( e );
+		// // check for line segment interactions
+		// if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkNodeLineInteraction( e );
 
-        // check for lane game object interactions
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
+		// check for lane game object interactions
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
 
-        // if ( !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
+		// if ( !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
 
-        // if ( hasInteracted ) {
+		// if ( hasInteracted ) {
 
-        //     if ( this.controlPoint ) {
+		//     if ( this.controlPoint ) {
 
-        //         AppInspector.setInspector( LaneWidthInspectorComponent, {
+		//         AppInspector.setInspector( LaneWidthInspectorComponent, {
 
-        //             node: this.controlPoint.parent as LaneWidthNode
+		//             node: this.controlPoint.parent as LaneWidthNode
 
-        //         } );
+		//         } );
 
-        //     }
+		//     }
 
-        // } else {
+		// } else {
 
-        //     // no interaction with line, lane, points etc
-        //     if ( this.lane ) {
+		//     // no interaction with line, lane, points etc
+		//     if ( this.lane ) {
 
-        //         this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
+		//         this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
 
-        //         this.laneHelper.clear();
+		//         this.laneHelper.clear();
 
-        //         this.lane = null;
+		//         this.lane = null;
 
-        //     }
+		//     }
 
-        // }
+		// }
 
-    }
+	}
 
-    public onPointerClicked ( e: PointerEventData ) {
+	public onPointerClicked ( e: PointerEventData ) {
 
-        if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-            this.addNode( e.point );
+			this.addNode( e.point );
 
-        }
-    }
+		}
+	}
 
-    public onPointerUp () {
+	public onPointerUp () {
 
-        // if ( this.laneWidthChanged && this.lane ) {
+		// if ( this.laneWidthChanged && this.lane ) {
 
-        //     const newPosition = new TvPosTheta();
+		//     const newPosition = new TvPosTheta();
 
-        //     const road = TvMapQueries.getRoadByCoords( this.node.point.position.x, this.node.point.position.y, newPosition );
+		//     const road = TvMapQueries.getRoadByCoords( this.node.point.position.x, this.node.point.position.y, newPosition );
 
-        //     // new road should be same
-        //     if ( road.id === this.node.road.id ) {
+		//     // new road should be same
+		//     if ( road.id === this.node.road.id ) {
 
-        //         const command = new UpdateLaneOffsetDistanceCommand( this.node, newPosition.s, null, this.laneHelper );
+		//         const command = new UpdateLaneOffsetDistanceCommand( this.node, newPosition.s, null, this.laneHelper );
 
-        //         CommandHistory.execute( command );
+		//         CommandHistory.execute( command );
 
-        //     }
+		//     }
 
-        // }
+		// }
 
-        this.pointerDown = false;
+		this.pointerDown = false;
 
-        this.pointerObject = null;
+		this.pointerObject = null;
 
-        this.laneWidthChanged = false;
-    }
+		this.laneWidthChanged = false;
+	}
 
-    public onPointerMoved ( e: PointerEventData ) {
+	public onPointerMoved ( e: PointerEventData ) {
 
-        if ( this.pointerDown && this.node ) {
+		if ( this.pointerDown && this.node ) {
 
-            this.laneWidthChanged = true;
+			this.laneWidthChanged = true;
 
-            const newPosition = new TvPosTheta();
+			const newPosition = new TvPosTheta();
 
-            const road = TvMapQueries.getRoadByCoords( e.point.x, e.point.y, newPosition );
+			const road = TvMapQueries.getRoadByCoords( e.point.x, e.point.y, newPosition );
 
-            // new road should be same
-            if ( road.id === this.node.road.id ) {
+			// new road should be same
+			if ( road.id === this.node.road.id ) {
 
-                const command = ( new UpdateLaneOffsetDistanceCommand( this.node, newPosition.s, null, this.laneHelper ) );
+				const command = ( new UpdateLaneOffsetDistanceCommand( this.node, newPosition.s, null, this.laneHelper ) );
 
-                command.execute();
+				command.execute();
 
-            }
+			}
 
-        }
+		}
 
 
-        // if ( this.pointerDown && this.pointerObject && this.pointerObject[ 'tag' ] == LaneWidthNode.pointTag ) {
+		// if ( this.pointerDown && this.pointerObject && this.pointerObject[ 'tag' ] == LaneWidthNode.pointTag ) {
 
-        //     this.laneWidthChanged = true;
+		//     this.laneWidthChanged = true;
 
-        //     NodeFactoryService.updateLaneWidthNode( this.pointerObject.parent as LaneWidthNode, e.point );
+		//     NodeFactoryService.updateLaneWidthNode( this.pointerObject.parent as LaneWidthNode, e.point );
 
-        //     this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
+		//     this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
 
-        //     if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
+		//     if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
 
-        // } else if ( this.pointerDown && this.pointerObject && this.pointerObject[ 'tag' ] == LaneWidthNode.lineTag ) {
+		// } else if ( this.pointerDown && this.pointerObject && this.pointerObject[ 'tag' ] == LaneWidthNode.lineTag ) {
 
-        //     this.laneWidthChanged = true;
+		//     this.laneWidthChanged = true;
 
-        //     NodeFactoryService.updateLaneWidthNode( this.pointerObject.parent as LaneWidthNode, e.point );
+		//     NodeFactoryService.updateLaneWidthNode( this.pointerObject.parent as LaneWidthNode, e.point );
 
-        //     this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
+		//     this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
 
-        //     if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
+		//     if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
 
-        // }
-    }
+		// }
+	}
 
-    private checkNodePointInteraction ( e: PointerEventData ): boolean {
+	private checkNodePointInteraction ( e: PointerEventData ): boolean {
 
-        // // first chceck for control point interactions
-        // // doing in 2 loop to prioritise control points
-        const controlPoint = PickingHelper.checkControlPointInteraction( e, LaneOffsetNode.pointTag, 1.0 );
+		// // first chceck for control point interactions
+		// // doing in 2 loop to prioritise control points
+		const controlPoint = PickingHelper.checkControlPointInteraction( e, LaneOffsetNode.pointTag, 1.0 );
 
-        if ( controlPoint ) {
+		if ( controlPoint ) {
 
-            const node = controlPoint.parent as LaneOffsetNode;
+			const node = controlPoint.parent as LaneOffsetNode;
 
-            const road = this.map.getRoadById( node.roadId );
+			const road = this.map.getRoadById( node.roadId );
 
-            CommandHistory.executeMany(
+			CommandHistory.executeMany(
+				new SetValueCommand( this, 'controlPoint', controlPoint ),
 
-                new SetValueCommand( this, 'controlPoint', controlPoint ),
+				new SetValueCommand( this, 'node', node ),
 
-                new SetValueCommand( this, 'node', node ),
+				new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
+			);
 
-                new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
+		} else if ( this.controlPoint ) {
 
-            );
+			CommandHistory.executeMany(
+				new SetValueCommand( this, 'controlPoint', null ),
 
-        } else if ( this.controlPoint ) {
+				new SetValueCommand( this, 'node', null ),
 
-            CommandHistory.executeMany(
+				new SetInspectorCommand( null, null ),
+			);
 
-                new SetValueCommand( this, 'controlPoint', null ),
+		}
 
-                new SetValueCommand( this, 'node', null ),
+		// 4 scenarios
+		// old and new both present then check is new or not
+		// old and new is null
+		// old is null and new
+		// old is null and new is null
 
-                new SetInspectorCommand( null, null ),
+		// if ( this.controlPoint && controlPoint && this.controlPoint.id != controlPoint.id ) {
 
-            );
+		//     this.controlPoint.unselect();
 
-        }
+		//     this.controlPoint = controlPoint;
 
-        // 4 scenarios
-        // old and new both present then check is new or not 
-        // old and new is null
-        // old is null and new 
-        // old is null and new is null
+		//     this.controlPoint.select();
 
-        // if ( this.controlPoint && controlPoint && this.controlPoint.id != controlPoint.id ) {
+		//     AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( this.controlPoint.parent as LaneOffsetNode ) );
 
-        //     this.controlPoint.unselect();
+		// } else if ( this.controlPoint && !controlPoint ) {
 
-        //     this.controlPoint = controlPoint;
+		//     this.controlPoint.unselect();
 
-        //     this.controlPoint.select();
+		//     this.controlPoint = null;
 
-        //     AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( this.controlPoint.parent as LaneOffsetNode ) );
+		//     AppInspector.clear();
 
-        // } else if ( this.controlPoint && !controlPoint ) {
+		// } else if ( !this.controlPoint && controlPoint ) {
 
-        //     this.controlPoint.unselect();
+		//     this.controlPoint = controlPoint;
 
-        //     this.controlPoint = null;
+		//     this.controlPoint.select();
 
-        //     AppInspector.clear();
+		//     AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( this.controlPoint.parent as LaneOffsetNode ) );
 
-        // } else if ( !this.controlPoint && controlPoint ) {
+		// } else if ( !this.controlPoint && !controlPoint ) {
 
-        //     this.controlPoint = controlPoint;
+		//     AppInspector.clear();
 
-        //     this.controlPoint.select();
+		// }
 
-        //     AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( this.controlPoint.parent as LaneOffsetNode ) );
+		return controlPoint != null;
+	}
 
-        // } else if ( !this.controlPoint && !controlPoint ) {
+	private checkNodeLineInteraction ( e: PointerEventData ) {
 
-        //     AppInspector.clear();
+		// let hasInteracted = false;
 
-        // }
+		// // check for line segment interactions
+		// for ( let i = 0; i < e.intersections.length; i++ ) {
 
-        return controlPoint != null;
-    }
+		//     const intersection = e.intersections[ i ];
 
-    private checkNodeLineInteraction ( e: PointerEventData ) {
+		//     if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == 'width-line' ) {
 
-        // let hasInteracted = false;
+		//         hasInteracted = true;
 
-        // // check for line segment interactions
-        // for ( let i = 0; i < e.intersections.length; i++ ) {
+		//         // const road = intersection.object.userData.road;
 
-        //     const intersection = e.intersections[ i ];
+		//         // // check if old or a new road is selected
+		//         // if ( !this.road || this.road.id != road.id ) {
 
-        //     if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == 'width-line' ) {
+		//         //     this.road = road;
 
-        //         hasInteracted = true;
+		//         //     this.road.spline.show();
 
-        //         // const road = intersection.object.userData.road;
+		//         // }
 
-        //         // // check if old or a new road is selected
-        //         // if ( !this.road || this.road.id != road.id ) {
+		//         break;
+		//     }
+		// }
 
-        //         //     this.road = road;
+		// return hasInteracted;
+	}
 
-        //         //     this.road.spline.show();
+	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
 
-        //         // }
+		const newLane = PickingHelper.checkLaneObjectInteraction( e );
 
-        //         break;
-        //     }
-        // }
+		if ( newLane ) {
 
-        // return hasInteracted;
-    }
+			const road = this.map.getRoadById( newLane.roadId );
 
-    private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+			CommandHistory.executeMany(
+				new SetValueCommand( this, 'lane', newLane ),
 
-        const newLane = PickingHelper.checkLaneObjectInteraction( e );
+				new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( null, road ) )
+			);
 
-        if ( newLane ) {
+		} else if ( this.lane ) {
 
-            const road = this.map.getRoadById( newLane.roadId );
+			CommandHistory.executeMany(
+				new SetValueCommand( this, 'lane', null ),
 
-            CommandHistory.executeMany(
+				new SetInspectorCommand( null, null ),
+			);
 
-                new SetValueCommand( this, 'lane', newLane ),
+		}
 
-                new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( null, road ) )
+		// lane exists new not found -> 1 clear
+		// lane exists new found    -> 2 change
+		// lane does not exist new found     -> set new
+		// lane does not exist and new not found => nothing
 
-            );
+		// if ( this.lane && newLane == null ) {
 
-        } else if ( this.lane ) {
+		//     this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
 
-            CommandHistory.executeMany(
+		//     this.laneHelper.clear();
 
-                new SetValueCommand( this, 'lane', null ),
+		//     this.lane = null;
 
-                new SetInspectorCommand( null, null ),
+		// } else if ( this.lane && newLane && this.lane.roadId != newLane.roadId ) {
 
-            );
+		//     this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
 
-        }
+		//     this.laneHelper.clear();
 
-        // lane exists new not found -> 1 clear
-        // lane exists new found    -> 2 change
-        // lane does not exist new found     -> set new
-        // lane does not exist and new not found => nothing
+		//     this.lane = newLane;
 
-        // if ( this.lane && newLane == null ) {
+		//     const newRoad = this.openDrive.getRoadById( newLane.roadId );
 
-        //     this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
+		//     this.showNodes( newRoad );
 
-        //     this.laneHelper.clear();
+		//     this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
-        //     this.lane = null;
+		// } else if ( !this.lane && newLane ) {
 
-        // } else if ( this.lane && newLane && this.lane.roadId != newLane.roadId ) {
+		//     this.lane = newLane;
 
-        //     this.hideNodes( this.openDrive.getRoadById( this.lane.roadId ) );
+		//     const newRoad = this.openDrive.getRoadById( newLane.roadId );
 
-        //     this.laneHelper.clear();
+		//     this.showNodes( newRoad );
 
-        //     this.lane = newLane;
+		//     this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
-        //     const newRoad = this.openDrive.getRoadById( newLane.roadId );
 
-        //     this.showNodes( newRoad );
+		// } else if ( !this.lane && newLane == null ) {
 
-        //     this.laneHelper.drawRoad( newRoad, LineType.SOLID );
+		//     // do nothing
 
-        // } else if ( !this.lane && newLane ) {
+		// }
 
-        //     this.lane = newLane;
+		return newLane != null;
+	}
 
-        //     const newRoad = this.openDrive.getRoadById( newLane.roadId );
+	private checkReferenceLineInteraction ( e: PointerEventData ) {
 
-        //     this.showNodes( newRoad );
+		// let hasInteracted = false;
 
-        //     this.laneHelper.drawRoad( newRoad, LineType.SOLID );
+		// this.checkIntersection( this.laneHelper.tag, e.intersections, ( obj ) => {
 
+		//     hasInteracted = true;
 
-        // } else if ( !this.lane && newLane == null ) {
+		//     this.laneHelper.onLineSelected( obj as Line );
 
-        //     // do nothing
+		// } );
 
-        // }
+		// return hasInteracted;
+	}
 
-        return newLane != null;
-    }
+	private addNode ( position: Vector3 ): void {
 
-    private checkReferenceLineInteraction ( e: PointerEventData ) {
+		if ( !this.lane ) return;
 
-        // let hasInteracted = false;
+		const road = this.map.getRoadById( this.lane.roadId );
 
-        // this.checkIntersection( this.laneHelper.tag, e.intersections, ( obj ) => {
+		const posTheta = new TvPosTheta();
 
-        //     hasInteracted = true;
+		// getting position on track in s/t coordinates
+		TvMapQueries.getRoadByCoords(
+			position.x,
+			position.y,
+			posTheta
+		);
 
-        //     this.laneHelper.onLineSelected( obj as Line );
+		const laneOffset = road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
 
-        // } );
+		const node = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
 
-        // return hasInteracted;
-    }
+		CommandHistory.executeMany(
+			new AddLaneOffsetCommand( node ),
 
-    private addNode ( position: Vector3 ): void {
+			new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
+		);
 
-        if ( !this.lane ) return;
+		// // getting position on track in s/t coordinates
+		// TvMapQueries.getRoadByCoords(
+		//     position.x,
+		//     position.y,
+		//     posTheta
+		// );
 
-        const road = this.map.getRoadById( this.lane.roadId );
+		// // // get the exisiting lane Offset at s
+		// // // and clone the lane Offset
+		// const newLaneOffset = road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
 
-        const posTheta = new TvPosTheta();
+		// // // add the with back to lane to
+		// // this.lane.addOffsetRecordInstance( newLaneOffset );
+		// road.addLaneOffsetInstance( newLaneOffset );
 
-        // getting position on track in s/t coordinates
-        TvMapQueries.getRoadByCoords(
-            position.x,
-            position.y,
-            posTheta
-        );
+		// // // make mesh for the lane Offset node
+		// // const laneOffsetNode = newLaneOffset.mesh = NodeFactoryService.createLaneOffsetNode(
+		// //     this.lane.roadId, this.lane.id, newLaneOffset.s, newLaneOffset
+		// // );
+		// const node = newLaneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, newLaneOffset );
 
-        const laneOffset = road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
+		// // // add it to scene to enable rendering
+		// // SceneService.add( newLaneOffset.mesh );
+		// SceneService.add( node );
 
-        const node = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
+		// // set the node in inpsector
+		// AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) );
 
-        CommandHistory.executeMany(
+		// this.rebuild( road );
 
-            new AddLaneOffsetCommand( node ),
+	}
 
-            new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
+	private updateLaneWidth ( node: LaneWidthNode ) {
 
-        );
+		// if ( !node ) return;
 
-        // // getting position on track in s/t coordinates
-        // TvMapQueries.getRoadByCoords(
-        //     position.x,
-        //     position.y,
-        //     posTheta
-        // );
+		// if ( !this.lane ) return;
 
-        // // // get the exisiting lane Offset at s
-        // // // and clone the lane Offset 
-        // const newLaneOffset = road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
+		// const road = this.openDrive.getRoadById( node.roadId );
 
-        // // // add the with back to lane to 
-        // // this.lane.addOffsetRecordInstance( newLaneOffset );
-        // road.addLaneOffsetInstance( newLaneOffset );
+		// road.getLaneSectionAt( node.s ).updateLaneWidthValues( this.lane );
+	}
 
-        // // // make mesh for the lane Offset node
-        // // const laneOffsetNode = newLaneOffset.mesh = NodeFactoryService.createLaneOffsetNode(
-        // //     this.lane.roadId, this.lane.id, newLaneOffset.s, newLaneOffset
-        // // );
-        // const node = newLaneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, newLaneOffset );
+	private hideNodes ( road: TvRoad ): void {
 
-        // // // add it to scene to enable rendering
-        // // SceneService.add( newLaneOffset.mesh );
-        // SceneService.add( node );
+		road.getLaneOffsets().forEach( laneOffset => {
 
-        // // set the node in inpsector
-        // AppInspector.setInspector( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) );
+			if ( laneOffset.mesh ) {
 
-        // this.rebuild( road );
+				laneOffset.mesh.visible = false;
 
-    }
+			}
 
-    private updateLaneWidth ( node: LaneWidthNode ) {
+		} );
 
-        // if ( !node ) return;
+	}
 
-        // if ( !this.lane ) return;
+	private showNodes ( road: TvRoad ) {
 
-        // const road = this.openDrive.getRoadById( node.roadId );
+		road.getLaneOffsets().forEach( laneOffset => {
 
-        // road.getLaneSectionAt( node.s ).updateLaneWidthValues( this.lane );
-    }
+			if ( laneOffset.mesh ) {
 
-    private hideNodes ( road: TvRoad ): void {
+				laneOffset.mesh.visible = true;
 
-        road.getLaneOffsets().forEach( laneOffset => {
+			} else {
 
-            if ( laneOffset.mesh ) {
+				laneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
 
-                laneOffset.mesh.visible = false;
+				SceneService.add( laneOffset.mesh );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    private showNodes ( road: TvRoad ) {
+	private rebuild ( road: TvRoad ): void {
 
-        road.getLaneOffsets().forEach( laneOffset => {
+		if ( !this.lane ) return;
 
-            if ( laneOffset.mesh ) {
+		SceneService.removeWithChildren( road.gameObject, true );
 
-                laneOffset.mesh.visible = true;
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-            } else {
-
-                laneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
-
-                SceneService.add( laneOffset.mesh );
-
-            }
-
-        } );
-
-    }
-
-    private rebuild ( road: TvRoad ): void {
-
-        if ( !this.lane ) return;
-
-        SceneService.removeWithChildren( road.gameObject, true );
-
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
-
-        this.laneHelper.redraw( LineType.SOLID );
-    }
+		this.laneHelper.redraw( LineType.SOLID );
+	}
 }

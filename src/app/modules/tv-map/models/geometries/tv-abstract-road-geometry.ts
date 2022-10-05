@@ -2,253 +2,255 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Curve, Vector2, Vector3 } from 'three';
+import { MathUtils } from 'three';
+import { Maths } from '../../../../utils/maths';
 import { TvGeometryType, TvSide } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
-import { Curve, Vector2, Vector3 } from 'three';
-import { Maths } from '../../../../utils/maths';
-import { _Math } from 'three/src/math/Math';
 
 export abstract class TvAbstractRoadGeometry {
 
-    public readonly uuid: string;
+	public readonly uuid: string;
 
-    public attr_S;
-    public attr_x;
-    public attr_y;
-    public attr_hdg;
-    public attr_length;
-    protected _s2;
-    protected _geometryType: TvGeometryType;
+	public attr_S;
+	public attr_x;
+	public attr_y;
+	public attr_hdg;
+	public attr_length;
 
-    constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
+	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
-        this.attr_S = s;
-        this.attr_x = x;
-        this.attr_y = y;
-        this.attr_hdg = hdg;
-        this.attr_length = length;
+		this.attr_S = s;
+		this.attr_x = x;
+		this.attr_y = y;
+		this.attr_hdg = hdg;
+		this.attr_length = length;
 
-        this._s2 = s + length;
+		this._s2 = s + length;
 
-        this.uuid = _Math.generateUUID();
-    }
+		this.uuid = MathUtils.generateUUID();
+	}
 
-    get s2 () {
+	protected _s2;
 
-        return this._s2;
+	get s2 () {
 
-    }
+		return this._s2;
 
-    get startV3 (): Vector3 {
+	}
 
-        return new Vector3( this.x, this.y, 0 );
+	protected _geometryType: TvGeometryType;
 
-    }
+	get geometryType (): TvGeometryType {
+		return this._geometryType;
+	}
 
-    get geometryType (): TvGeometryType {
-        return this._geometryType;
-    }
+	set geometryType ( type: TvGeometryType ) {
+		this._geometryType = type;
+	}
 
-    set geometryType ( type: TvGeometryType ) {
-        this._geometryType = type;
-    }
+	get startV3 (): Vector3 {
 
-    get s () {
+		return new Vector3( this.x, this.y, 0 );
 
-        return this.attr_S;
+	}
 
-    }
+	get s () {
 
-    set s ( value: number ) {
+		return this.attr_S;
 
-        this.attr_S = value;
+	}
 
-        this._s2 = this.attr_S + this.attr_length;
-    }
+	set s ( value: number ) {
 
-    get x () {
+		this.attr_S = value;
 
-        return this.attr_x;
+		this._s2 = this.attr_S + this.attr_length;
+	}
 
-    }
+	get x () {
 
-    set x ( value: number ) {
+		return this.attr_x;
 
-        this.attr_x = value;
+	}
 
-    }
+	set x ( value: number ) {
 
-    get y () {
+		this.attr_x = value;
 
-        return this.attr_y;
+	}
 
-    }
+	get y () {
 
-    set y ( value: number ) {
+		return this.attr_y;
 
-        this.attr_y = value;
+	}
 
-    }
+	set y ( value: number ) {
 
-    get hdg () {
+		this.attr_y = value;
 
-        return this.attr_hdg;
+	}
 
-    }
+	get hdg () {
 
-    set hdg ( value: number ) {
+		return this.attr_hdg;
 
-        this.attr_hdg = value;
+	}
 
-        this.computeVars();
-    }
+	set hdg ( value: number ) {
 
-    get length () {
+		this.attr_hdg = value;
 
-        return this.attr_length;
+		this.computeVars();
+	}
 
-    }
+	get length () {
 
-    set length ( value: number ) {
+		return this.attr_length;
 
-        this.attr_length = value;
+	}
 
-        this.computeVars();
-    }
+	set length ( value: number ) {
 
-    static getTypeAsString ( geometryType: TvGeometryType ): string {
+		this.attr_length = value;
 
-        if ( geometryType === TvGeometryType.LINE ) {
+		this.computeVars();
+	}
 
-            return 'line';
+	static getTypeAsString ( geometryType: TvGeometryType ): string {
 
-        } else if ( geometryType === TvGeometryType.ARC ) {
+		if ( geometryType === TvGeometryType.LINE ) {
 
-            return 'arc';
+			return 'line';
 
-        } else if ( geometryType === TvGeometryType.SPIRAL ) {
+		} else if ( geometryType === TvGeometryType.ARC ) {
 
-            return 'spiral';
+			return 'arc';
 
-        } else if ( geometryType === TvGeometryType.POLY3 ) {
+		} else if ( geometryType === TvGeometryType.SPIRAL ) {
 
-            return 'poly3';
+			return 'spiral';
 
-        } else if ( geometryType === TvGeometryType.PARAMPOLY3 ) {
+		} else if ( geometryType === TvGeometryType.POLY3 ) {
 
-            return 'paramPoly3';
+			return 'poly3';
 
-        }
+		} else if ( geometryType === TvGeometryType.PARAMPOLY3 ) {
 
-    }
+			return 'paramPoly3';
 
-    setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
+		}
 
-        this.attr_S = s;
-        this.attr_x = x;
-        this.attr_y = y;
-        this.attr_hdg = hdg;
-        this.attr_length = length;
+	}
 
-        this._s2 = s + length;
+	setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
 
-        if ( recalculate ) {
-            this.computeVars();
-        }
-    }
+		this.attr_S = s;
+		this.attr_x = x;
+		this.attr_y = y;
+		this.attr_hdg = hdg;
+		this.attr_length = length;
 
-    checkInterval ( sCheck: number ): boolean {
+		this._s2 = s + length;
 
-        if ( ( sCheck >= this.attr_S ) && ( sCheck <= this.s2 ) ) {
+		if ( recalculate ) {
+			this.computeVars();
+		}
+	}
 
-            return true;
+	checkInterval ( sCheck: number ): boolean {
 
-        }
+		if ( ( sCheck >= this.attr_S ) && ( sCheck <= this.s2 ) ) {
 
-        return false;
-    }
+			return true;
 
-    abstract getCoords ( sCheck, posTheta: TvPosTheta );
+		}
 
-    abstract computeVars ();
+		return false;
+	}
 
-    abstract getCurve (): Curve<Vector2>;
+	abstract getCoords ( sCheck, posTheta: TvPosTheta );
 
-    public updateControlPoints () {
+	abstract computeVars ();
 
-    }
+	abstract getCurve (): Curve<Vector2>;
 
-    public getNearestPointFrom ( x: number, y: number, posTheta?: TvPosTheta ): Vector2 {
+	public updateControlPoints () {
 
-        return this.loopToGetNearestPoint( x, y, posTheta );
+	}
 
-    }
+	public getNearestPointFrom ( x: number, y: number, posTheta?: TvPosTheta ): Vector2 {
 
-    protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
+		return this.loopToGetNearestPoint( x, y, posTheta );
 
-        let nearestPoint: Vector2 = null;
+	}
 
-        const point = new Vector2( x, y );
+	polyeval ( t: number, v: Vector3 ): number {
 
-        // const curve = this.getCurve();
+		return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
+	}
 
-        const tmpPosTheta = new TvPosTheta();
+	protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
 
-        let minDistance = Number.MAX_SAFE_INTEGER;
+		let nearestPoint: Vector2 = null;
 
-        // const curveLength = curve.getLength();
+		const point = new Vector2( x, y );
 
-        for ( let s = this.s; s <= this.s2; s++ ) {
+		// const curve = this.getCurve();
 
-            this.getCoords( s, tmpPosTheta );
+		const tmpPosTheta = new TvPosTheta();
 
-            const distance = tmpPosTheta.toVector2().distanceTo( point );
+		let minDistance = Number.MAX_SAFE_INTEGER;
 
-            if ( distance < minDistance ) {
+		// const curveLength = curve.getLength();
 
-                minDistance = distance;
-                nearestPoint = tmpPosTheta.toVector2();
+		for ( let s = this.s; s <= this.s2; s++ ) {
 
-                if ( refPosTheta ) {
+			this.getCoords( s, tmpPosTheta );
 
-                    refPosTheta.x = x;
-                    refPosTheta.y = y;
-                    refPosTheta.s = s;
-                    refPosTheta.t = distance;
-                    refPosTheta.hdg = tmpPosTheta.hdg;
-                }
-            }
-        }
+			const distance = tmpPosTheta.toVector2().distanceTo( point );
 
-        if ( nearestPoint == null ) {
+			if ( distance < minDistance ) {
 
-            throw new Error( 'could not find the nearest point' );
+				minDistance = distance;
+				nearestPoint = tmpPosTheta.toVector2();
 
-        } else {
+				if ( refPosTheta ) {
 
-            if ( refPosTheta ) {
+					refPosTheta.x = x;
+					refPosTheta.y = y;
+					refPosTheta.s = s;
+					refPosTheta.t = distance;
+					refPosTheta.hdg = tmpPosTheta.hdg;
+				}
+			}
+		}
 
-                // calculating the lane side for correct value of t
+		if ( nearestPoint == null ) {
 
-                const tmp1 = new TvPosTheta();
-                const tmp2 = new TvPosTheta();
+			throw new Error( 'could not find the nearest point' );
 
-                this.getCoords( refPosTheta.s, tmp1 );
-                this.getCoords( refPosTheta.s + 1, tmp2 );
+		} else {
 
-                const side = Maths.direction( tmp1.toVector3(), tmp2.toVector3(), refPosTheta.toVector3() );
+			if ( refPosTheta ) {
 
-                if ( side == TvSide.RIGHT ) refPosTheta.t *= -1;
+				// calculating the lane side for correct value of t
 
-            }
+				const tmp1 = new TvPosTheta();
+				const tmp2 = new TvPosTheta();
 
-        }
+				this.getCoords( refPosTheta.s, tmp1 );
+				this.getCoords( refPosTheta.s + 1, tmp2 );
 
-        return nearestPoint;
-    }
+				const side = Maths.direction( tmp1.toVector3(), tmp2.toVector3(), refPosTheta.toVector3() );
 
-    polyeval ( t: number, v: Vector3 ): number {
+				if ( side == TvSide.RIGHT ) refPosTheta.t *= -1;
 
-        return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
-    }
+			}
+
+		}
+
+		return nearestPoint;
+	}
 }

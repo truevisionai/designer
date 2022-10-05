@@ -3,85 +3,85 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { LanePathObject } from '../../../modules/tv-map/models/tv-junction-lane-link';
-import { CommandHistory } from 'app/services/command-history';
 import { DeleteLinkCommand } from 'app/core/commands/delete-link-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
+import { IComponent } from 'app/core/game-object';
+import { CommandHistory } from 'app/services/command-history';
+import { LanePathObject } from '../../../modules/tv-map/models/tv-junction-lane-link';
 
 @Component( {
-    selector: 'app-lane-link-inspector',
-    templateUrl: './lane-link-inspector.component.html',
-    styleUrls: [ './lane-link-inspector.component.css' ]
+	selector: 'app-lane-link-inspector',
+	templateUrl: './lane-link-inspector.component.html',
+	styleUrls: [ './lane-link-inspector.component.css' ]
 } )
 export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-    data: LanePathObject;
+	data: LanePathObject;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        if ( this.data.link && this.data.link.lanePath ) {
+		if ( this.data.link && this.data.link.lanePath ) {
 
-            this.data.link.show();
+			this.data.link.show();
 
-        }
+		}
 
-        if ( this.data.connection ) {
+		if ( this.data.connection ) {
 
-            const road = this.map.getRoadById( this.data.connection.connectingRoad );
+			const road = this.map.getRoadById( this.data.connection.connectingRoad );
 
-            if ( road && road.spline ) road.spline.show();
+			if ( road && road.spline ) road.spline.show();
 
-        }
+		}
 
-        if ( this.data.connectingRoad ) {
+		if ( this.data.connectingRoad ) {
 
-            this.data.connectingRoad.showNodes();
+			this.data.connectingRoad.showNodes();
 
-            this.data.connectingRoad.spline.show();
+			this.data.connectingRoad.spline.show();
 
-        }
-    }
+		}
+	}
 
-    ngOnDestroy (): void {
+	ngOnDestroy (): void {
 
-        if ( this.data.link && this.data.link.lanePath ) this.data.link.lanePath.unselect();
+		if ( this.data.link && this.data.link.lanePath ) this.data.link.lanePath.unselect();
 
-        if ( this.data.connection ) {
+		if ( this.data.connection ) {
 
-            const road = this.map.getRoadById( this.data.connection.connectingRoad );
+			const road = this.map.getRoadById( this.data.connection.connectingRoad );
 
-            if ( road && road.spline ) road.spline.hide();
+			if ( road && road.spline ) road.spline.hide();
 
-        }
+		}
 
-        if ( this.data.connectingRoad ) {
+		if ( this.data.connectingRoad ) {
 
-            this.data.connectingRoad.hideNodes();
+			this.data.connectingRoad.hideNodes();
 
-            this.data.connectingRoad.spline.hide();
+			this.data.connectingRoad.spline.hide();
 
-        }
-    }
+		}
+	}
 
-    onDelete () {
+	onDelete () {
 
-        if ( !this.data.link ) return;
+		if ( !this.data.link ) return;
 
-        const commands = [];
+		const commands = [];
 
-        commands.push( new DeleteLinkCommand( this.data.connection, this.data.link, this.data ) );
+		commands.push( new DeleteLinkCommand( this.data.connection, this.data.link, this.data ) );
 
-        commands.push( new SetInspectorCommand( null, null ) );
+		commands.push( new SetInspectorCommand( null, null ) );
 
-        CommandHistory.execute( new MultiCmdsCommand( commands ) );
-    }
+		CommandHistory.execute( new MultiCmdsCommand( commands ) );
+	}
 }

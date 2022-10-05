@@ -4,228 +4,226 @@
 
 import { Injectable } from '@angular/core';
 import { ThreeService } from 'app/modules/three-js/three.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 import * as THREE from 'three';
 import { Vector2 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class DrawingService {
 
-    ORANGE_COLOR = 0xFF4500;
+	ORANGE_COLOR = 0xFF4500;
 
-    DEFAULT_BOX_COLOR = 0xff0000;
-    HIGHTLIGHT_BOX_COLOR = 0x00ff00;
-    CROSSHAIR_COLOR = 0x00ff00;
-    DASHED_LINE_COLOR = 0xff00ff;
+	DEFAULT_BOX_COLOR = 0xff0000;
+	HIGHTLIGHT_BOX_COLOR = 0x00ff00;
+	CROSSHAIR_COLOR = 0x00ff00;
+	DASHED_LINE_COLOR = 0xff00ff;
 
-    lastBoundingBox: THREE.Object3D;
-    lastSolidBox: THREE.Mesh;
-    boxMaterial = new THREE.MeshBasicMaterial( { color: this.ORANGE_COLOR, opacity: 0.2, transparent: true } );
-    lineDashedMaterial = new THREE.LineDashedMaterial( { color: this.DASHED_LINE_COLOR, linewidth: 10, dashSize: 3, gapSize: 3 } );
+	lastBoundingBox: THREE.Object3D;
+	lastSolidBox: THREE.Mesh;
+	boxMaterial = new THREE.MeshBasicMaterial( { color: this.ORANGE_COLOR, opacity: 0.2, transparent: true } );
+	lineDashedMaterial = new THREE.LineDashedMaterial( { color: this.DASHED_LINE_COLOR, linewidth: 10, dashSize: 3, gapSize: 3 } );
 
-    boxes: Map<number, THREE.Mesh> = new Map<number, THREE.Mesh>();
+	boxes: Map<number, THREE.Mesh> = new Map<number, THREE.Mesh>();
 
-    lastLine: THREE.Line;
+	lastLine: THREE.Line;
+	private lastButtonSprite: THREE.Sprite;
+	private diskSprite = new THREE.TextureLoader().load( 'assets/disc.png' );
 
-    constructor ( private engineService: ThreeService ) {
+	constructor ( private engineService: ThreeService ) {
 
-        // this.editor.undoAddedAnnotation.subscribe( e => this.engineService.remove( this.lastBoundingBox, true ) );
+		// this.editor.undoAddedAnnotation.subscribe( e => this.engineService.remove( this.lastBoundingBox, true ) );
 
-    }
+	}
 
-    getLastSolidBox (): THREE.Mesh {
-        return this.lastSolidBox;
-    }
+	getLastSolidBox (): THREE.Mesh {
+		return this.lastSolidBox;
+	}
 
-    getLastBoundingBox (): THREE.Object3D {
-        return this.lastBoundingBox;
-    }
+	getLastBoundingBox (): THREE.Object3D {
+		return this.lastBoundingBox;
+	}
 
-    public drawSolidBox ( start: THREE.Vector3, end: THREE.Vector3, color: string = null ): THREE.Object3D {
+	public drawSolidBox ( start: THREE.Vector3, end: THREE.Vector3, color: string = null ): THREE.Object3D {
 
-        this.engineService.remove( this.lastBoundingBox, true );
+		this.engineService.remove( this.lastBoundingBox, true );
 
-        var box = this.getDimensions( start, end );
+		var box = this.getDimensions( start, end );
 
-        var boxGeometry = new THREE.PlaneBufferGeometry();
+		var boxGeometry = new THREE.PlaneGeometry();
 
-        var boxMaterial = (new THREE.MeshBasicMaterial()).copy( this.boxMaterial );
+		var boxMaterial = ( new THREE.MeshBasicMaterial() ).copy( this.boxMaterial );
 
-        boxMaterial.color.set( color ? color : '#000000' );
+		boxMaterial.color.set( color ? color : '#000000' );
 
-        this.lastSolidBox = new THREE.Mesh( boxGeometry, boxMaterial );
+		this.lastSolidBox = new THREE.Mesh( boxGeometry, boxMaterial );
 
-        this.lastSolidBox.geometry.scale( box.width, box.height, 1 );
+		this.lastSolidBox.geometry.scale( box.width, box.height, 1 );
 
-        if ( end.y < start.y ) box.height *= -1;
-        if ( end.x < start.x ) box.width *= -1;
+		if ( end.y < start.y ) box.height *= -1;
+		if ( end.x < start.x ) box.width *= -1;
 
-        this.lastSolidBox.position.set( start.x + (box.width / 2), start.y + (box.height / 2), 0.1 );
+		this.lastSolidBox.position.set( start.x + ( box.width / 2 ), start.y + ( box.height / 2 ), 0.1 );
 
-        this.engineService.add( this.lastSolidBox, true );
+		this.engineService.add( this.lastSolidBox, true );
 
-        this.addBoxInfo( this.lastSolidBox, start, end, box );
+		this.addBoxInfo( this.lastSolidBox, start, end, box );
 
-        // this.updateControlPoints( start, end, this.lastBox );
+		// this.updateControlPoints( start, end, this.lastBox );
 
-        this.drawBoundingBox( start, end );
+		this.drawBoundingBox( start, end );
 
-        this.drawDeletButton( start.x, start.y, this.lastSolidBox );
+		this.drawDeletButton( start.x, start.y, this.lastSolidBox );
 
-        return this.lastSolidBox;
-    }
+		return this.lastSolidBox;
+	}
 
-    public drawBoundingBox ( start: THREE.Vector3, end: THREE.Vector3, color: string = null ): THREE.Object3D {
+	public drawBoundingBox ( start: THREE.Vector3, end: THREE.Vector3, color: string = null ): THREE.Object3D {
 
-        var box = this.getDimensions( start, end );
+		var box = this.getDimensions( start, end );
 
-        var geometry = new THREE.PlaneBufferGeometry( box.width, box.height );
-        var edges = new THREE.EdgesGeometry( geometry );
-        var material = new THREE.LineBasicMaterial( { color: color ? color : 0xff00ff } );
+		var geometry = new THREE.PlaneGeometry( box.width, box.height );
+		var edges = new THREE.EdgesGeometry( geometry );
+		var material = new THREE.LineBasicMaterial( { color: color ? color : 0xff00ff } );
 
-        this.lastBoundingBox = new THREE.LineSegments( edges, material );
+		this.lastBoundingBox = new THREE.LineSegments( edges, material );
 
-        // this.lastBoundingBox.computeLineDistances();
+		// this.lastBoundingBox.computeLineDistances();
 
-        geometry.scale( box.width, box.height, 1 );
+		geometry.scale( box.width, box.height, 1 );
 
-        if ( end.y < start.y ) box.height *= -1;
-        if ( end.x < start.x ) box.width *= -1;
+		if ( end.y < start.y ) box.height *= -1;
+		if ( end.x < start.x ) box.width *= -1;
 
-        // this.lastBoundingBox.position.set( start.x + ( box.width / 2 ), start.y + ( box.height / 2 ), 0.1 );
+		// this.lastBoundingBox.position.set( start.x + ( box.width / 2 ), start.y + ( box.height / 2 ), 0.1 );
 
-        this.lastSolidBox.add( this.lastBoundingBox );
+		this.lastSolidBox.add( this.lastBoundingBox );
 
-        // this.engineService.add( this.lastBoundingBox, true );
+		// this.engineService.add( this.lastBoundingBox, true );
 
-        this.addBoxInfo( this.lastBoundingBox, start, end, box );
+		this.addBoxInfo( this.lastBoundingBox, start, end, box );
 
-        return this.lastBoundingBox;
-    }
+		return this.lastBoundingBox;
+	}
 
-    private addBoxInfo ( object: THREE.Object3D, start: THREE.Vector3, end: THREE.Vector3, box: any ): any {
+	public drawLine ( vertices: Vector2[] ) {
 
-        object.userData.is_annotation = true;
-        object.userData.type = 'box';
+		this.engineService.remove( this.lastLine, true );
 
-        object.userData.width = box.width;
-        object.userData.height = box.height;
+		let material = new THREE.LineBasicMaterial( { color: 0xFF0000 } );
 
-        object.userData.startX = start.x;
-        object.userData.startY = start.y;
+		var geometry = new THREE.Geometry();
 
-        object.userData.endX = end.x;
-        object.userData.endY = end.y;
-    }
+		for ( let i = 0; i < vertices.length; i++ ) {
 
-    public drawLine ( vertices: Vector2[] ) {
+			const item = vertices[ i ];
 
-        this.engineService.remove( this.lastLine, true );
+			const position = new THREE.Vector3( item.x, item.y, 0.2 );
 
-        let material = new THREE.LineBasicMaterial( { color: 0xFF0000 } );
+			geometry.vertices.push( position );
+		}
 
-        var geometry = new THREE.Geometry();
+		this.lastLine = new THREE.Line( geometry, material );
 
-        for ( let i = 0; i < vertices.length; i++ ) {
+		for ( let i = 0; i < vertices.length; i++ ) {
 
-            const item = vertices[i];
+			const item = vertices[ i ];
 
-            const position = new THREE.Vector3( item.x, item.y, 0.2 );
+			const position = new THREE.Vector3( item.x, item.y, 0.2 );
 
-            geometry.vertices.push( position );
-        }
+			this.drawSpritePoint( position, this.lastLine );
+		}
 
-        this.lastLine = new THREE.Line( geometry, material );
+		this.engineService.add( this.lastLine, true );
+	}
 
-        for ( let i = 0; i < vertices.length; i++ ) {
+	public drawDeletButton ( x, y, parent ) {
 
-            const item = vertices[i];
+		// this.engineService.remove( this.lastButtonSprite, true );
 
-            const position = new THREE.Vector3( item.x, item.y, 0.2 );
+		// var button = new DeleteButton( x, y, parent );
 
-            this.drawSpritePoint( position, this.lastLine );
-        }
+		// this.engineService.add( button.object, true );
 
-        this.engineService.add( this.lastLine, true );
-    }
+		// this.lastButtonSprite = button.object;
+	}
 
-    private lastButtonSprite: THREE.Sprite;
+	drawSpritePoint ( position: any, parent: any ) {
 
-    public drawDeletButton ( x, y, parent ) {
+		var dotGeometry = new THREE.Geometry();
+		dotGeometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
 
-        // this.engineService.remove( this.lastButtonSprite, true );
+		var dotMaterial = new THREE.PointsMaterial( {
+			size: 15,
+			sizeAttenuation: true,
+			map: this.diskSprite,
+			alphaTest: 0.5,
+			transparent: true,
+			color: COLOR.MAGENTA
+		} );
 
-        // var button = new DeleteButton( x, y, parent );
+		// dotMaterial.color.setHSL( 1.0, 0.3, 0.7 );
 
-        // this.engineService.add( button.object, true );
+		var object = new THREE.Points( dotGeometry, dotMaterial );
 
-        // this.lastButtonSprite = button.object;
-    }
+		object.position.set( position.x, position.y, position.z );
 
-    drawSpritePoint ( position: any, parent: any ) {
+		// this.engineService.add( object );
+		this.lastLine.add( object );
 
-        var dotGeometry = new THREE.Geometry();
-        dotGeometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+		// extra data
+		object.userData.is_button = true;
+		object.userData.is_control_point = true;
 
-        var dotMaterial = new THREE.PointsMaterial( {
-            size: 15,
-            sizeAttenuation: true,
-            map: this.diskSprite,
-            alphaTest: 0.5,
-            transparent: true,
-            color: COLOR.MAGENTA
-        } );
+		return object;
 
-        // dotMaterial.color.setHSL( 1.0, 0.3, 0.7 );
+	}
 
-        var object = new THREE.Points( dotGeometry, dotMaterial );
+	drawPoint ( position: any, parent: any ): any {
 
-        object.position.set( position.x, position.y, position.z );
+		var geometry = new THREE.CircleBufferGeometry( 5, 32 );
+		var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) );
 
-        // this.engineService.add( object );
-        this.lastLine.add( object );
+		object.position.set( position.x, position.y, position.z + 0.2 );
 
-        // extra data
-        object.userData.is_button = true;
-        object.userData.is_control_point = true;
+		// this.engineService.add( object );
+		this.lastLine.add( object );
 
-        return object;
+		// extra data
+		object.userData.is_button = true;
+		object.userData.is_control_point = true;
 
-    }
+		return object;
+	}
 
-    drawPoint ( position: any, parent: any ): any {
+	private addBoxInfo ( object: THREE.Object3D, start: THREE.Vector3, end: THREE.Vector3, box: any ): any {
 
-        var geometry = new THREE.CircleBufferGeometry( 5, 32 );
-        var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) );
+		object.userData.is_annotation = true;
+		object.userData.type = 'box';
 
-        object.position.set( position.x, position.y, position.z + 0.2 );
+		object.userData.width = box.width;
+		object.userData.height = box.height;
 
-        // this.engineService.add( object );
-        this.lastLine.add( object );
+		object.userData.startX = start.x;
+		object.userData.startY = start.y;
 
-        // extra data
-        object.userData.is_button = true;
-        object.userData.is_control_point = true;
+		object.userData.endX = end.x;
+		object.userData.endY = end.y;
+	}
 
-        return object;
-    }
+	private getDimensions ( p1, p2 ): any {
 
-    private diskSprite = new THREE.TextureLoader().load( 'assets/disc.png' );
+		let width = Math.abs( p1.x - p2.x );
+		let height = Math.abs( p1.y - p2.y );
 
-    private getDimensions ( p1, p2 ): any {
+		width = Math.max( width, 10 );
+		height = Math.max( height, 10 );
 
-        let width = Math.abs( p1.x - p2.x );
-        let height = Math.abs( p1.y - p2.y );
-
-        width = Math.max( width, 10 );
-        height = Math.max( height, 10 );
-
-        return {
-            width: width,
-            height: height
-        };
-    }
+		return {
+			width: width,
+			height: height
+		};
+	}
 
 }

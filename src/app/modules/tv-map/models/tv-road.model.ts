@@ -2,1198 +2,1211 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSection } from './tv-lane-section';
-import { TvRoadLanes } from './tv-road-lanes';
-import { TvPlaneView } from './tv-plane-view';
-import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
-import { TvPosTheta } from './tv-pos-theta';
-import { TvObjectContainer, TvRoadObject } from './tv-road-object';
-import { TvRoadSignal } from './tv-road-signal.model';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { EventEmitter } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
-import { TvRoadLinkChild } from './tv-road-link-child';
-import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
-import { TvRoadLink } from './tv-road.link';
-import { TvElevation } from './tv-elevation';
-import { TvElevationProfile } from './tv-elevation-profile';
-import { TvLateralProfile } from './tv-lateral.profile';
-import { TvLane } from './tv-lane';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvArcGeometry } from './geometries/tv-arc-geometry';
-import { TvUtils } from './tv-utils';
-import { TvRoadTypeClass } from './tv-road-type.class';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { TvRoadLaneOffset } from './tv-road-lane-offset';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { Maths } from 'app/utils/maths';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { Vector3, Math as MathUtils } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
-import { EventEmitter } from '@angular/core';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { Maths } from 'app/utils/maths';
+import { MathUtils, Vector3 } from 'three';
+import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from './geometries/tv-arc-geometry';
+import { TvLineGeometry } from './geometries/tv-line-geometry';
+import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { TvElevation } from './tv-elevation';
+import { TvElevationProfile } from './tv-elevation-profile';
+import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
+import { TvLaneSection } from './tv-lane-section';
+import { TvLateralProfile } from './tv-lateral.profile';
+import { TvPlaneView } from './tv-plane-view';
+import { TvPosTheta } from './tv-pos-theta';
+import { TvRoadLaneOffset } from './tv-road-lane-offset';
+import { TvRoadLanes } from './tv-road-lanes';
+import { TvRoadLinkChild } from './tv-road-link-child';
+import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
+import { TvObjectContainer, TvRoadObject } from './tv-road-object';
+import { TvRoadSignal } from './tv-road-signal.model';
+import { TvRoadTypeClass } from './tv-road-type.class';
+import { TvRoadLink } from './tv-road.link';
+import { TvUtils } from './tv-utils';
 
 export class TvRoad {
 
-    public readonly uuid: string;
-
-    public updated = new EventEmitter<TvRoad>();
-
-    // auto will be the default spline for now
-    public spline: AbstractSpline;
-
-    public startNode: RoadNode;
-    public endNode: RoadNode;
-
-    public type: TvRoadTypeClass[] = [];
-    public elevationProfile: TvElevationProfile = new TvElevationProfile;
-    public lateralProfile: TvLateralProfile;
-    public lanes = new TvRoadLanes();
-
-    public drivingMaterialGuid: string;
-    public sidewalkMaterialGuid: string;
-    public borderMaterialGuid: string;
-    public shoulderMaterialGuid: string;
-
-    /**
-     * @deprecated use predecessor, successor directly
-     */
-    private link: TvRoadLink;
-
-    private _objects: TvObjectContainer = new TvObjectContainer();
-    private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
-    private _planView = new TvPlaneView;
-    private _predecessor: TvRoadLinkChild;
-    private _successor: TvRoadLinkChild;
-    private _neighbors: TvRoadLinkNeighbor[] = [];
-    private _name: string;
-    private _length: number;
-    private _id: number;
-    private _junction: number;
-    private _gameObject: GameObject;
-    private lastAddedLaneSectionIndex: number;
-    private lastAddedRoadObjectIndex: number;
-    private lastAddedRoadSignalIndex: number;
-
-    constructor ( name: string, length: number, id: number, junction: number ) {
-
-        this.uuid = MathUtils.generateUUID();
-        this._name = name;
-        this._length = length;
-        this._id = id;
-        this._junction = junction;
-
-        this.spline = new AutoSpline( this );
-
-    }
-
-    get signals (): Map<number, TvRoadSignal> {
-        return this._signals;
-    }
-
-    set signals ( value: Map<number, TvRoadSignal> ) {
-        this._signals = value;
-    }
+	public readonly uuid: string;
 
-    get objects (): TvObjectContainer {
-        return this._objects;
-    }
+	public updated = new EventEmitter<TvRoad>();
 
-    set objects ( value: TvObjectContainer ) {
-        this._objects = value;
-    }
+	// auto will be the default spline for now
+	public spline: AbstractSpline;
 
-    get planView (): TvPlaneView {
-        return this._planView;
-    }
+	public startNode: RoadNode;
+	public endNode: RoadNode;
 
-    set planView ( value: TvPlaneView ) {
-        this._planView = value;
-    }
+	public type: TvRoadTypeClass[] = [];
+	public elevationProfile: TvElevationProfile = new TvElevationProfile;
+	public lateralProfile: TvLateralProfile;
+	public lanes = new TvRoadLanes();
 
-    get neighbors (): TvRoadLinkNeighbor[] {
-        return this._neighbors;
-    }
+	public drivingMaterialGuid: string;
+	public sidewalkMaterialGuid: string;
+	public borderMaterialGuid: string;
+	public shoulderMaterialGuid: string;
 
-    set neighbors ( value: TvRoadLinkNeighbor[] ) {
-        this._neighbors = value;
-    }
+	/**
+	 * @deprecated use predecessor, successor directly
+	 */
+	private link: TvRoadLink;
+	private lastAddedLaneSectionIndex: number;
+	private lastAddedRoadObjectIndex: number;
+	private lastAddedRoadSignalIndex: number;
 
-    get successor (): TvRoadLinkChild {
-        return this._successor;
-    }
+	constructor ( name: string, length: number, id: number, junction: number ) {
 
-    set successor ( value: TvRoadLinkChild ) {
-        this._successor = value;
-    }
+		this.uuid = MathUtils.generateUUID();
+		this._name = name;
+		this._length = length;
+		this._id = id;
+		this._junction = junction;
 
-    get predecessor (): TvRoadLinkChild {
-        return this._predecessor;
-    }
+		this.spline = new AutoSpline( this );
 
-    set predecessor ( value: TvRoadLinkChild ) {
-        this._predecessor = value;
-    }
+	}
 
-    get junction (): number {
-        return this._junction;
-    }
+	private _objects: TvObjectContainer = new TvObjectContainer();
 
-    set junction ( value: number ) {
-        this._junction = value;
-    }
+	get objects (): TvObjectContainer {
+		return this._objects;
+	}
 
-    get id (): number {
-        return this._id;
-    }
+	set objects ( value: TvObjectContainer ) {
+		this._objects = value;
+	}
 
-    set id ( value: number ) {
-        this._id = value;
-    }
+	private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
 
-    get length (): number {
-        return this._length;
-    }
+	get signals (): Map<number, TvRoadSignal> {
+		return this._signals;
+	}
 
-    set length ( value: number ) {
-        this._length = value;
-    }
+	set signals ( value: Map<number, TvRoadSignal> ) {
+		this._signals = value;
+	}
 
-    get name (): string {
-        return this._name;
-    }
+	private _planView = new TvPlaneView;
 
-    set name ( value: string ) {
-        this._name = value;
-    }
+	get planView (): TvPlaneView {
+		return this._planView;
+	}
 
-    get gameObject () {
-        return this._gameObject;
-    }
+	set planView ( value: TvPlaneView ) {
+		this._planView = value;
+	}
 
-    set gameObject ( value ) {
-        this._gameObject = value;
-    }
+	private _predecessor: TvRoadLinkChild;
 
-    get isJunction (): boolean {
-        return this._junction !== -1;
-    }
+	get predecessor (): TvRoadLinkChild {
+		return this._predecessor;
+	}
 
-    get geometries () {
-        return this._planView.geometries;
-    }
+	set predecessor ( value: TvRoadLinkChild ) {
+		this._predecessor = value;
+	}
 
-    get laneSections () {
-        return this.lanes.laneSections;
-    }
+	private _successor: TvRoadLinkChild;
 
-    get hasType (): boolean { return this.type.length > 0 }
+	get successor (): TvRoadLinkChild {
+		return this._successor;
+	}
 
-    onSuccessorUpdated ( successor: TvRoad ) {
+	set successor ( value: TvRoadLinkChild ) {
+		this._successor = value;
+	}
 
-        console.log( "successor of", this.id, "updated" );
+	private _neighbors: TvRoadLinkNeighbor[] = [];
 
-    }
+	get neighbors (): TvRoadLinkNeighbor[] {
+		return this._neighbors;
+	}
 
-    onPredecessorUpdated ( predecessor: TvRoad ) {
+	set neighbors ( value: TvRoadLinkNeighbor[] ) {
+		this._neighbors = value;
+	}
 
-        console.log( "predecssor of", this.id, "updated" );
+	private _name: string;
 
-    }
+	get name (): string {
+		return this._name;
+	}
 
-    setPredecessor ( elementType: "road" | "junction", elementId: number, contactPoint?: TvContactPoint ) {
+	set name ( value: string ) {
+		this._name = value;
+	}
 
-        if ( this._predecessor == null ) {
+	private _length: number;
 
-            this._predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+	get length (): number {
+		return this._length;
+	}
 
-        }
-    }
+	set length ( value: number ) {
+		this._length = value;
+	}
 
-    getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
+	private _id: number;
 
-        const pose = new TvPosTheta;
+	get id (): number {
+		return this._id;
+	}
 
-        this.getGeometryCoordsAt( s, t, pose );
+	set id ( value: number ) {
+		this._id = value;
+	}
 
-        return pose;
-    }
+	private _junction: number;
 
-    getRoadPosition ( s: number ) {
+	get junction (): number {
+		return this._junction;
+	}
 
-        return this.getPositionAt( s, 0 );
+	set junction ( value: number ) {
+		this._junction = value;
+	}
 
-    }
+	private _gameObject: GameObject;
 
-    endPosition () {
+	get gameObject () {
+		return this._gameObject;
+	}
 
-        return this.getRoadPosition( this.length - Maths.Epsilon );
+	set gameObject ( value ) {
+		this._gameObject = value;
+	}
 
-    }
+	get isJunction (): boolean {
+		return this._junction !== -1;
+	}
 
-    endCoord () {
+	get geometries () {
+		return this._planView.geometries;
+	}
 
-        return this.getPositionAt( this.length - Maths.Epsilon, 0 );
+	get laneSections () {
+		return this.lanes.laneSections;
+	}
 
-    }
+	get hasType (): boolean {
+		return this.type.length > 0;
+	}
 
-    startPosition () {
+	onSuccessorUpdated ( successor: TvRoad ) {
 
-        return this.getRoadPosition( 0 );
+		console.log( 'successor of', this.id, 'updated' );
 
-    }
+	}
 
-    setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
+	onPredecessorUpdated ( predecessor: TvRoad ) {
 
-        this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
+		console.log( 'predecssor of', this.id, 'updated' );
 
-    }
+	}
 
-    setSuccessor ( elementType: string, elementId: number, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: 'road' | 'junction', elementId: number, contactPoint?: TvContactPoint ) {
 
-        if ( this._successor == null ) {
+		if ( this._predecessor == null ) {
 
-            this._successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this._predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
-        }
-    }
+		}
+	}
 
-    setNeighbor ( side: string, elementId: string, direction: string ) {
+	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
 
-        console.error( "neighbor not supported" );
+		const pose = new TvPosTheta;
 
-        // const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
-        //
-        // this.link.neighbor.push( neighbor );
-        //
-        // if ( this.neighbor1 === null ) {
-        //
-        //     this.neighbor1 = neighbor;
-        //
-        // }
-    }
+		this.getGeometryCoordsAt( s, t, pose );
 
-    getPlanView (): TvPlaneView {
+		return pose;
+	}
 
-        return this._planView;
+	getRoadPosition ( s: number ) {
 
-    }
+		return this.getPositionAt( s, 0 );
 
-    addPlanView () {
+	}
 
-        if ( this._planView == null ) {
+	endPosition () {
 
-            this._planView = new TvPlaneView();
+		return this.getRoadPosition( this.length - Maths.Epsilon );
 
-        }
-    }
+	}
 
-    addElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	endCoord () {
 
-        const index = this.checkElevationInterval( s ) + 1;
+		return this.getPositionAt( this.length - Maths.Epsilon, 0 );
 
-        if ( index > this.getElevationCount() ) {
+	}
 
-            this.elevationProfile.elevation.push( new TvElevation( s, a, b, c, d ) );
+	startPosition () {
 
-        } else {
+		return this.getRoadPosition( 0 );
 
-            this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
+	}
 
-        }
-    }
+	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
 
-    checkElevationInterval ( s: number ): number {
+		this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
 
-        let res = -1;
+	}
 
-        // Go through all the road type records
-        for ( let i = 0; i < this.elevationProfile.elevation.length; i++ ) {
+	setSuccessor ( elementType: string, elementId: number, contactPoint?: TvContactPoint ) {
 
-            if ( this.elevationProfile.elevation[ i ].checkInterval( s ) ) {
+		if ( this._successor == null ) {
 
-                res = i;
+			this._successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
-            } else {
+		}
+	}
 
-                break;
+	setNeighbor ( side: string, elementId: string, direction: string ) {
 
-            }
-        }
+		console.error( 'neighbor not supported' );
 
-        // return the result: 0 to MaxInt as the index to the
-        // record containing s_check or -1 if nothing found
-        return res;
-    }
+		// const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
+		//
+		// this.link.neighbor.push( neighbor );
+		//
+		// if ( this.neighbor1 === null ) {
+		//
+		//     this.neighbor1 = neighbor;
+		//
+		// }
+	}
 
-    getElevationCount () {
+	getPlanView (): TvPlaneView {
 
-        return this.elevationProfile.elevation.length;
+		return this._planView;
 
-    }
+	}
 
-    getElevationValue ( s: number ) {
+	addPlanView () {
 
-        const elevation = this.getElevationAt( s );
+		if ( this._planView == null ) {
 
-        if ( elevation == null ) return 0;
+			this._planView = new TvPlaneView();
 
-        // console.log( value );
+		}
+	}
 
-        return elevation.getValue( s );
-    }
+	addElevation ( s: number, a: number, b: number, c: number, d: number ) {
 
-    checkSuperElevationInterval ( s: number ) {
-        // TODO
-    }
+		const index = this.checkElevationInterval( s ) + 1;
 
-    checkCrossfallInterval ( s: number ) {
-        // TODO
-    }
+		if ( index > this.getElevationCount() ) {
 
-    addElevationProfile () {
+			this.elevationProfile.elevation.push( new TvElevation( s, a, b, c, d ) );
 
-        if ( this.elevationProfile == null ) {
+		} else {
 
-            this.elevationProfile = new TvElevationProfile();
+			this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
 
-        }
-    }
+		}
+	}
 
-    /**
-     * 
-     * @param s 
-     * @param singleSide 
-     * @deprecated use addGetLaneSection
-     */
-    addLaneSection ( s: number, singleSide: boolean ) {
+	checkElevationInterval ( s: number ): number {
 
-        // TODO: Check for interval
+		let res = -1;
 
-        // this.lanes = new OdRoadLanes();
+		// Go through all the road type records
+		for ( let i = 0; i < this.elevationProfile.elevation.length; i++ ) {
 
-        const laneSectionId = this.lanes.laneSections.length + 1;
+			if ( this.elevationProfile.elevation[ i ].checkInterval( s ) ) {
 
-        this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this.id ) );
+				res = i;
 
-        this.updateLaneSections();
+			} else {
 
-        this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
+				break;
 
-        return this.lastAddedLaneSectionIndex;
-    }
+			}
+		}
 
-    addLaneSectionInstance ( laneSection: TvLaneSection ) {
+		// return the result: 0 to MaxInt as the index to the
+		// record containing s_check or -1 if nothing found
+		return res;
+	}
 
-        laneSection.roadId = this.id;
+	getElevationCount () {
 
-        laneSection.lanes.forEach( lane => {
+		return this.elevationProfile.elevation.length;
 
-            lane.roadId = this.id;
+	}
 
-            lane.laneSectionId = laneSection.id;
+	getElevationValue ( s: number ) {
 
-        } );
+		const elevation = this.getElevationAt( s );
 
-        this.laneSections.push( laneSection );
+		if ( elevation == null ) return 0;
 
-    }
+		// console.log( value );
 
-    clearLaneSections () {
+		return elevation.getValue( s );
+	}
 
-        this.laneSections.splice( 0, this.laneSections.length );
+	checkSuperElevationInterval ( s: number ) {
+		// TODO
+	}
 
-    }
+	checkCrossfallInterval ( s: number ) {
+		// TODO
+	}
 
-    addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
+	addElevationProfile () {
 
-        const laneSectionId = this.lanes.laneSections.length + 1;
+		if ( this.elevationProfile == null ) {
 
-        const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.id );
+			this.elevationProfile = new TvElevationProfile();
 
-        this.lanes.laneSections.push( laneSection );
+		}
+	}
 
-        this.updateLaneSections();
+	/**
+	 *
+	 * @param s
+	 * @param singleSide
+	 * @deprecated use addGetLaneSection
+	 */
+	addLaneSection ( s: number, singleSide: boolean ) {
 
-        this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
+		// TODO: Check for interval
 
-        return laneSection;
-    }
+		// this.lanes = new OdRoadLanes();
 
-    getLaneSectionCount () {
+		const laneSectionId = this.lanes.laneSections.length + 1;
 
-        return this.lanes.laneSections.length;
+		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this.id ) );
 
-    }
+		this.updateLaneSections();
 
-    getFirstLaneSection () {
+		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
 
-        return this.laneSections[ 0 ];
+		return this.lastAddedLaneSectionIndex;
+	}
 
-    }
+	addLaneSectionInstance ( laneSection: TvLaneSection ) {
 
-    getLastLaneSection () {
+		laneSection.roadId = this.id;
 
-        return this.laneSections[ this.laneSections.length - 1 ];
+		laneSection.lanes.forEach( lane => {
 
-    }
+			lane.roadId = this.id;
 
-    getLaneSection ( i: number ) {
+			lane.laneSectionId = laneSection.id;
 
-        return this.lanes.laneSections[ i ];
+		} );
 
-    }
+		this.laneSections.push( laneSection );
 
-    getLaneSectionLength ( section: TvLaneSection ) {
+	}
 
-        // find next section higher than requested section
-        const next = this.laneSections.find( s => s.s > section.s );
+	clearLaneSections () {
 
-        return next ?
-            next.s - section.s :
-            this.length - section.s;
-    }
+		this.laneSections.splice( 0, this.laneSections.length );
 
-    getLastAddedLaneSection () {
+	}
 
-        return this.lanes.laneSections[ this.lastAddedLaneSectionIndex ];
+	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
-    }
+		const laneSectionId = this.lanes.laneSections.length + 1;
 
-    getTypes (): TvRoadTypeClass[] {
+		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.id );
 
-        return this.type;
+		this.lanes.laneSections.push( laneSection );
 
-    }
+		this.updateLaneSections();
 
-    addSignal ( signal: TvRoadSignal ): void {
+		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
 
-        this._signals.set( signal.id, signal );
+		return laneSection;
+	}
 
-    }
+	getLaneSectionCount () {
 
-    removeSignal ( signal: TvRoadSignal ): any {
+		return this.lanes.laneSections.length;
 
-        this.removeSignalById( signal.id );
+	}
 
-    }
+	getFirstLaneSection () {
 
-    removeSignalById ( signalId: number ): boolean {
+		return this.laneSections[ 0 ];
 
-        return this.signals.delete( signalId );
+	}
 
-    }
+	getLastLaneSection () {
 
-    getRoadSignalCount (): number {
+		return this.laneSections[ this.laneSections.length - 1 ];
 
-        return this._signals.size;
+	}
 
-    }
+	getLaneSection ( i: number ) {
 
-    getRoadSignal ( id: number ) {
+		return this.lanes.laneSections[ i ];
 
-        return this._signals.get( id );
+	}
 
-    }
+	getLaneSectionLength ( section: TvLaneSection ) {
 
-    getRoadSignalById ( id: number ): TvRoadSignal {
+		// find next section higher than requested section
+		const next = this.laneSections.find( s => s.s > section.s );
 
-        return this._signals.get( id );
+		return next ?
+			next.s - section.s :
+			this.length - section.s;
+	}
 
-    }
+	getLastAddedLaneSection () {
 
-    getRoadObjects (): TvRoadObject[] {
+		return this.lanes.laneSections[ this.lastAddedLaneSectionIndex ];
 
-        return this._objects.object;
+	}
 
-    }
+	getTypes (): TvRoadTypeClass[] {
 
-    getRoadObject ( i: number ): TvRoadObject {
+		return this.type;
 
-        return this._objects.object[ i ];
+	}
 
-    }
+	addSignal ( signal: TvRoadSignal ): void {
 
-    getRoadObjectCount (): number {
+		this._signals.set( signal.id, signal );
 
-        return this._objects.object.length;
+	}
 
-    }
+	removeSignal ( signal: TvRoadSignal ): any {
 
-    getElevationProfile (): TvElevationProfile {
+		this.removeSignalById( signal.id );
 
-        return this.elevationProfile;
+	}
 
-    }
+	removeSignalById ( signalId: number ): boolean {
 
-    getLaneSections (): TvLaneSection[] {
+		return this.signals.delete( signalId );
 
-        return this.lanes.laneSections;
+	}
 
-    }
+	getRoadSignalCount (): number {
 
-    getLanes (): TvRoadLanes {
+		return this._signals.size;
 
-        return this.lanes;
+	}
 
-    }
+	getRoadSignal ( id: number ) {
 
-    recalculateGeometry () {
+		return this._signals.get( id );
 
-        // Goes through geometry blocks and recalculates their coordinates and
-        // headings starting with the second record
-        // so the second geometry will start at the coordinates where the first one ended
+	}
 
-        let length = 0;
-        const lGeometryVectorSize = this._planView.geometries.length;
+	getRoadSignalById ( id: number ): TvRoadSignal {
 
-        if ( lGeometryVectorSize > 0 ) {
+		return this._signals.get( id );
 
-            const s = 0;
-            const posTheta = new TvPosTheta( 0, 0, 0 );
+	}
 
-            const abstractRoadGeometry = this._planView.geometries[ 0 ];
+	getRoadObjects (): TvRoadObject[] {
 
-            length += this._planView.getBlockLength();
+		return this._objects.object;
 
-            abstractRoadGeometry.getCoords( s, posTheta );
-        }
-    }
+	}
 
-    getGeometryCoords ( s: number, odPosTheta: TvPosTheta ): number {
+	getRoadObject ( i: number ): TvRoadObject {
 
-        if ( s == null || s == undefined ) console.error( 's is undefined' );
+		return this._objects.object[ i ];
 
-        if ( s > this.length || s < 0 ) console.warn( 's is greater than road length or less than 0' );
+	}
 
-        const geometry = this.getGeometryAt( s );
+	getRoadObjectCount (): number {
 
-        if ( geometry == null )
-            throw new Error( `geometry not found at s = ${ s }` );
+		return this._objects.object.length;
 
-        const geometryType = geometry.getCoords( s, odPosTheta );
+	}
 
-        if ( !geometryType ) console.error( "geometry type not found" );
+	getElevationProfile (): TvElevationProfile {
 
-        const laneOffset = this.getLaneOffsetValue( s );
+		return this.elevationProfile;
 
-        odPosTheta.addLateralOffset( laneOffset );
+	}
 
-        return geometryType;
+	getLaneSections (): TvLaneSection[] {
 
-        // const index = this.checkGeometryInterval( sCheck );
-        //
-        // if ( index === -999 ) {
-        //     throw new Error( 'geometry index not found ' );
-        // }
-        //
-        // // Check the block and get coords.
-        // const res = this.planView.geometries[ index ].getCoords( sCheck, odPosTheta );
-        //
-        // const laneOffset = this.lanes.getLaneOffsetValue( sCheck );
-        //
-        // odPosTheta.addLateralOffset( laneOffset );
-        //
-        // // If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
-        // // then the result has been found and parameters filled, so, return the value
-        // if ( res > 0 ) {
-        //     return res;
-        // }
-        //
-        // // if s_check does not belong to the road, return -999
-        // return -999;
-    }
+		return this.lanes.laneSections;
 
-    getGeometryCoordsAt ( sCheck, t, odPosTheta: TvPosTheta ): number {
+	}
 
-        const res = this.getGeometryCoords( sCheck, odPosTheta );
+	getLanes (): TvRoadLanes {
 
-        odPosTheta.addLateralOffset( t );
+		return this.lanes;
 
-        // If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
-        // then the result has been found and parameters filled, so, return the value
-        if ( res > 0 ) {
-            return res;
-        }
+	}
 
-        // if s_check does not belong to the road, return -999
-        return -999;
-    }
+	recalculateGeometry () {
 
-    getGeometryBlockCount (): number {
+		// Goes through geometry blocks and recalculates their coordinates and
+		// headings starting with the second record
+		// so the second geometry will start at the coordinates where the first one ended
 
-        return this._planView.geometries.length;
+		let length = 0;
+		const lGeometryVectorSize = this._planView.geometries.length;
 
-    }
+		if ( lGeometryVectorSize > 0 ) {
 
-    getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
+			const s = 0;
+			const posTheta = new TvPosTheta( 0, 0, 0 );
 
-        return this._planView.geometries[ i ];
+			const abstractRoadGeometry = this._planView.geometries[ 0 ];
 
-    }
+			length += this._planView.getBlockLength();
 
-    getRoadLength () {
+			abstractRoadGeometry.getCoords( s, posTheta );
+		}
+	}
 
-        return this._length;
+	getGeometryCoords ( s: number, odPosTheta: TvPosTheta ): number {
 
-    }
+		if ( s == null || s == undefined ) console.error( 's is undefined' );
 
-    // TODO: Fix this
-    getSuperElevationValue ( s: number ): number {
+		if ( s > this.length || s < 0 ) console.warn( 's is greater than road length or less than 0' );
 
-        return null;
+		const geometry = this.getGeometryAt( s );
 
-    }
+		if ( geometry == null ) {
+			throw new Error( `geometry not found at s = ${ s }` );
+		}
 
-    // TODO: Fix this
-    getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
+		const geometryType = geometry.getCoords( s, odPosTheta );
 
-        return null;
+		if ( !geometryType ) console.error( 'geometry type not found' );
 
-    }
+		const laneOffset = this.getLaneOffsetValue( s );
 
-    // fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
-    //
-    //     const index = this.checkLaneSectionInterval( s );
-    //
-    //     if ( index >= 0 ) {
-    //
-    //         this.lanes.laneSection[ index ].fillLaneSectionSample( s, laneSectionSample );
-    //
-    //     }
-    // }
+		odPosTheta.addLateralOffset( laneOffset );
 
-    addRoadSignal (
-        s: number,
-        t: number,
-        id: number,
-        name: string,
-        dynamic: TvDynamicTypes,
-        orientation: TvOrientation,
-        zOffset: number,
-        country: string,
-        type: string,
-        subtype: string,
-        value: number,
-        unit: TvUnit,
-        height: number,
-        width: number,
-        text: string,
-        hOffset: number,
-        pitch: number,
-        roll: number
-    ) {
+		return geometryType;
 
-        const signal = new TvRoadSignal(
-            s, t, id, name,
-            dynamic, orientation, zOffset,
-            country, type, subtype,
-            value, unit,
-            height, width, text,
-            hOffset, pitch, roll
-        );
+		// const index = this.checkGeometryInterval( sCheck );
+		//
+		// if ( index === -999 ) {
+		//     throw new Error( 'geometry index not found ' );
+		// }
+		//
+		// // Check the block and get coords.
+		// const res = this.planView.geometries[ index ].getCoords( sCheck, odPosTheta );
+		//
+		// const laneOffset = this.lanes.getLaneOffsetValue( sCheck );
+		//
+		// odPosTheta.addLateralOffset( laneOffset );
+		//
+		// // If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
+		// // then the result has been found and parameters filled, so, return the value
+		// if ( res > 0 ) {
+		//     return res;
+		// }
+		//
+		// // if s_check does not belong to the road, return -999
+		// return -999;
+	}
 
-        signal.roadId = this.id;
+	getGeometryCoordsAt ( sCheck, t, odPosTheta: TvPosTheta ): number {
 
-        this._signals.set( id, signal );
+		const res = this.getGeometryCoords( sCheck, odPosTheta );
 
-        return signal;
-    }
+		odPosTheta.addLateralOffset( t );
 
-    getLastAddedRoadObject (): TvRoadObject {
-        return this._objects.object[ this.lastAddedRoadObjectIndex ];
-    }
+		// If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
+		// then the result has been found and parameters filled, so, return the value
+		if ( res > 0 ) {
+			return res;
+		}
 
-    addRoadObject (
-        type: string,
-        name: string,
-        id: number,
-        s: number,
-        t: number,
-        zOffset: number,
-        validLength: number,
-        orientation: TvOrientation,
-        length: number,
-        width: number,
-        radius: number,
-        height: number,
-        hdg: number,
-        pitch: number,
-        roll: number
-    ): TvRoadObject {
+		// if s_check does not belong to the road, return -999
+		return -999;
+	}
 
-        const obj = new TvRoadObject(
-            type,
-            name,
-            id,
-            s,
-            t,
-            zOffset,
-            validLength,
-            orientation,
-            length,
-            width,
-            radius,
-            height,
-            hdg,
-            pitch,
-            roll
-        );
+	getGeometryBlockCount (): number {
 
-        this.addRoadObjectInstance( obj );
+		return this._planView.geometries.length;
 
-        return obj;
-    }
+	}
 
-    addRoadObjectInstance ( roadObject: TvRoadObject ) {
+	getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
 
-        this._objects.object.push( roadObject );
+		return this._planView.geometries[ i ];
 
-        this.lastAddedRoadObjectIndex = this._objects.object.length - 1;
-    }
+	}
 
-    removeRoadObjectById ( id: number ) {
+	getRoadLength () {
 
-        for ( let i = 0; i < this._objects.object.length; i++ ) {
+		return this._length;
 
-            const element = this._objects.object[ i ];
+	}
 
-            if ( element.attr_id == id ) {
+	// TODO: Fix this
+	getSuperElevationValue ( s: number ): number {
 
-                this._objects.object.splice( i, 1 );
-                break;
+		return null;
 
-            }
-        }
-    }
+	}
 
-    getLaneWidth ( sCoordinate: number, laneId: number ): number {
+	// TODO: Fix this
+	getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
 
-        // TODO: Fix lanesection finding
-        const laneSection = this.lanes.getLaneSectionAt( sCoordinate );
+		return null;
 
-        const lane = laneSection.getLaneById( laneId );
+	}
 
-        return lane.getWidthValue( sCoordinate );
-    }
+	// fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
+	//
+	//     const index = this.checkLaneSectionInterval( s );
+	//
+	//     if ( index >= 0 ) {
+	//
+	//         this.lanes.laneSection[ index ].fillLaneSectionSample( s, laneSectionSample );
+	//
+	//     }
+	// }
 
-    getLaneSectionAt ( s: number ): TvLaneSection {
+	addRoadSignal (
+		s: number,
+		t: number,
+		id: number,
+		name: string,
+		dynamic: TvDynamicTypes,
+		orientation: TvOrientation,
+		zOffset: number,
+		country: string,
+		type: string,
+		subtype: string,
+		value: number,
+		unit: TvUnit,
+		height: number,
+		width: number,
+		text: string,
+		hOffset: number,
+		pitch: number,
+		roll: number
+	) {
 
-        return this.lanes.getLaneSectionAt( s );
+		const signal = new TvRoadSignal(
+			s, t, id, name,
+			dynamic, orientation, zOffset,
+			country, type, subtype,
+			value, unit,
+			height, width, text,
+			hOffset, pitch, roll
+		);
 
-    }
+		signal.roadId = this.id;
 
-    // todo move this lanes
-    updateLaneOffsetValues (): void {
+		this._signals.set( id, signal );
 
-        this.lanes.updateLaneOffsetValues( this.length );
+		return signal;
+	}
 
-    }
+	getLastAddedRoadObject (): TvRoadObject {
+		return this._objects.object[ this.lastAddedRoadObjectIndex ];
+	}
 
-    addLaneOffset ( s: number, a: number, b: number, c: number, d: number ) {
+	addRoadObject (
+		type: string,
+		name: string,
+		id: number,
+		s: number,
+		t: number,
+		zOffset: number,
+		validLength: number,
+		orientation: TvOrientation,
+		length: number,
+		width: number,
+		radius: number,
+		height: number,
+		hdg: number,
+		pitch: number,
+		roll: number
+	): TvRoadObject {
 
-        this.lanes.addLaneOffsetRecord( s, a, b, c, d );
+		const obj = new TvRoadObject(
+			type,
+			name,
+			id,
+			s,
+			t,
+			zOffset,
+			validLength,
+			orientation,
+			length,
+			width,
+			radius,
+			height,
+			hdg,
+			pitch,
+			roll
+		);
 
-    }
+		this.addRoadObjectInstance( obj );
 
-    addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
+		return obj;
+	}
 
-        this.lanes.addLaneOffsetInstance( laneOffset );
+	addRoadObjectInstance ( roadObject: TvRoadObject ) {
 
-        this.lanes.updateLaneOffsetValues( this.length );
+		this._objects.object.push( roadObject );
 
-    }
+		this.lastAddedRoadObjectIndex = this._objects.object.length - 1;
+	}
 
-    removeLaneOffset ( laneOffset: TvRoadLaneOffset ): void {
+	removeRoadObjectById ( id: number ) {
 
-        const index = this.lanes.getLaneOffsets().findIndex( i => i.uuid === laneOffset.uuid );
+		for ( let i = 0; i < this._objects.object.length; i++ ) {
 
-        if ( index !== -1 ) {
+			const element = this._objects.object[ i ];
 
-            this.lanes.getLaneOffsets().splice( index, 1 );
+			if ( element.attr_id == id ) {
 
-        }
+				this._objects.object.splice( i, 1 );
+				break;
 
-        this.lanes.updateLaneOffsetValues( this.length );
-    }
+			}
+		}
+	}
 
+	getLaneWidth ( sCoordinate: number, laneId: number ): number {
 
-    getLaneOffsetAt ( s: number ) {
+		// TODO: Fix lanesection finding
+		const laneSection = this.lanes.getLaneSectionAt( sCoordinate );
 
-        return this.lanes.getLaneOffsetEntryAt( s );
+		const lane = laneSection.getLaneById( laneId );
 
-    }
+		return lane.getWidthValue( sCoordinate );
+	}
 
-    getLaneOffsets () {
+	getLaneSectionAt ( s: number ): TvLaneSection {
 
-        return this.lanes.getLaneOffsets();
+		return this.lanes.getLaneSectionAt( s );
 
-    }
+	}
 
-    getLaneOffsetValue ( s: number ): number {
+	// todo move this lanes
+	updateLaneOffsetValues (): void {
 
-        return this.lanes.getLaneOffsetValue( s );
+		this.lanes.updateLaneOffsetValues( this.length );
 
-    }
+	}
 
-    getLaneSectionById ( id: number ) {
+	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ) {
 
-        return this.lanes.laneSections.find( laneSection => {
+		this.lanes.addLaneOffsetRecord( s, a, b, c, d );
 
-            return laneSection.id === id;
+	}
 
-        } );
+	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
 
-    }
+		this.lanes.addLaneOffsetInstance( laneOffset );
 
-    getWidthUptoStart ( s: number, lane: TvLane ) {
+		this.lanes.updateLaneOffsetValues( this.length );
 
-        const laneSection = this.getLaneSectionAt( s );
+	}
 
-        return laneSection.getWidthUptoStart( lane, s );
+	removeLaneOffset ( laneOffset: TvRoadLaneOffset ): void {
 
-    }
+		const index = this.lanes.getLaneOffsets().findIndex( i => i.uuid === laneOffset.uuid );
 
-    getWidthUptoCenter ( s: number, lane: TvLane ) {
+		if ( index !== -1 ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+			this.lanes.getLaneOffsets().splice( index, 1 );
 
-        return laneSection.getWidthUptoCenter( lane, s );
+		}
 
-    }
+		this.lanes.updateLaneOffsetValues( this.length );
+	}
 
-    getWidthUptoEnd ( s: number, lane: TvLane ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+	getLaneOffsetAt ( s: number ) {
 
-        return laneSection.getWidthUptoEnd( lane, s );
+		return this.lanes.getLaneOffsetEntryAt( s );
 
-    }
+	}
 
-    getSuccessorRoad ( connection: TvJunctionConnection ) {
+	getLaneOffsets () {
 
-        if ( this._successor.elementType == 'road' ) {
+		return this.lanes.getLaneOffsets();
 
-        } else if ( this._successor.elementType == 'junction' ) {
+	}
 
-        } else {
+	getLaneOffsetValue ( s: number ): number {
 
-        }
+		return this.lanes.getLaneOffsetValue( s );
 
-    }
+	}
 
-    addGeometry ( geometry: TvAbstractRoadGeometry ) {
+	getLaneSectionById ( id: number ) {
 
-        if ( !this.planView ) this.addPlanView();
+		return this.lanes.laneSections.find( laneSection => {
 
-        this.geometries.push( geometry );
+			return laneSection.id === id;
 
-        this.length += geometry.length;
+		} );
 
-        this.updateLaneSections();
-    }
+	}
 
-    addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
+	getWidthUptoStart ( s: number, lane: TvLane ) {
 
-        this.length += length;
+		const laneSection = this.getLaneSectionAt( s );
 
-        this.updateLaneSections();
+		return laneSection.getWidthUptoStart( lane, s );
 
-        return this._planView.addGeometryLine( s, x, y, hdg, length );
+	}
 
-    }
+	getWidthUptoCenter ( s: number, lane: TvLane ) {
 
-    addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
+		const laneSection = this.getLaneSectionAt( s );
 
-        this.length += length;
+		return laneSection.getWidthUptoCenter( lane, s );
 
-        this.updateLaneSections();
+	}
 
-        return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
+	getWidthUptoEnd ( s: number, lane: TvLane ) {
 
-    }
+		const laneSection = this.getLaneSectionAt( s );
 
-    addGeometryParamPoly (
-        s: number, x: number, y: number, hdg: number, length: number,
-        aU: number, bU: number, cU: number, dU: number,
-        aV: number, bV: number, cV: number, dV: number
-    ) {
+		return laneSection.getWidthUptoEnd( lane, s );
 
-        this.length += length;
+	}
 
-        this.updateLaneSections();
+	getSuccessorRoad ( connection: TvJunctionConnection ) {
 
-        return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
+		if ( this._successor.elementType == 'road' ) {
 
-    }
+		} else if ( this._successor.elementType == 'junction' ) {
 
-    addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+		} else {
 
-        this.length += length;
+		}
 
-        this.updateLaneSections();
+	}
 
-        return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
+	addGeometry ( geometry: TvAbstractRoadGeometry ) {
 
-    }
+		if ( !this.planView ) this.addPlanView();
 
-    clearGeometries () {
+		this.geometries.push( geometry );
 
-        this.geometries.splice( 0, this.geometries.length );
+		this.length += geometry.length;
 
-        this.length = 0;
+		this.updateLaneSections();
+	}
 
-        this.updateLaneSections();
+	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
-    }
+		this.length += length;
 
-    public removeGeometryByUUID ( uuid: string ) {
+		this.updateLaneSections();
 
-        this.length += length;
+		return this._planView.addGeometryLine( s, x, y, hdg, length );
 
-        // find the index of geometry and remove it from the road
-        this.geometries.splice( this.geometries.findIndex( geom => geom.uuid === uuid ), 1 );
+	}
 
-    }
+	addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
 
-    public getRoadTypeAt ( s: number ): TvRoadTypeClass {
+		this.length += length;
 
-        if ( !this.hasType ) return;
+		this.updateLaneSections();
 
-        return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
-    }
+		return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
 
-    public findMaxSpeedAt ( s: number, laneId?: number ) {
+	}
 
-        let maxSpeed = null;
+	addGeometryParamPoly (
+		s: number, x: number, y: number, hdg: number, length: number,
+		aU: number, bU: number, cU: number, dU: number,
+		aV: number, bV: number, cV: number, dV: number
+	) {
 
-        // get max-speed as per road
-        const type = TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
+		this.length += length;
 
-        const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
+		this.updateLaneSections();
 
-        // check if lane-speed record exists
-        if ( laneId ) {
+		return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
-            // const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
-            const laneSpeedRecord = Number.MAX_VALUE;
+	}
 
-            maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
+	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
 
-        } else {
+		this.length += length;
 
-            maxSpeed = maxSpeedAsPerRoad;
+		this.updateLaneSections();
 
-        }
+		return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
 
-        return maxSpeed;
-    }
+	}
 
-    // private checkGeometryInterval ( sCheck: any ) {
-    //
-    //     let index = -999;
-    //
-    //     for ( let i = 0; i < this._planView.geometries.length; i++ ) {
-    //
-    //         const odGeometry = this._planView.geometries[ i ];
-    //
-    //         if ( odGeometry.s <= sCheck ) {
-    //             index = i;
-    //         }
-    //
-    //         // if ( ( sCheck >= odGeometry.s ) && ( sCheck <= odGeometry.s2 ) ) {
-    //         //     return i;
-    //         // }
-    //     }
-    //
-    //     return index;
-    // }
+	clearGeometries () {
 
-    // private checkLaneSectionInterval ( s: number ) {
-    //
-    //     let res = -1;
-    //
-    //     for ( let i = 0; i < this.lanes.laneSection.length; i++ ) {
-    //
-    //         // check if the s belongs to the current record
-    //         if ( this.lanes.laneSection[ i ].checkInterval( s ) ) {
-    //
-    //             res = i;
-    //
-    //         } else {
-    //
-    //             break;
-    //
-    //         }
-    //
-    //     }
-    //
-    //     return res;
-    //
-    // }
+		this.geometries.splice( 0, this.geometries.length );
 
-    public getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+		this.length = 0;
 
-        return TvUtils.checkIntervalArray( this.geometries, s );
+		this.updateLaneSections();
 
-    }
+	}
 
-    /**
-     * Remove any existing road model from the scene and its children
-     */
-    public remove ( parent: GameObject ) {
+	public removeGeometryByUUID ( uuid: string ) {
 
-        if ( this.spline ) this.spline.hide();
+		this.length += length;
 
-        parent.remove( this.gameObject );
+		// find the index of geometry and remove it from the road
+		this.geometries.splice( this.geometries.findIndex( geom => geom.uuid === uuid ), 1 );
 
-        this.laneSections.forEach( laneSection => {
+	}
 
-            if ( this.gameObject ) this.gameObject.remove( laneSection.gameObject );
+	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
-            if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
+		if ( !this.hasType ) return;
 
-        } );
-    }
+		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
+	}
 
-    /**
-     * @deprecated currently not working need to fix
-     * @param s s-coordinate
-     */
-    public split ( s: number ) {
+	public findMaxSpeedAt ( s: number, laneId?: number ) {
 
-        // TODO: not working, fix and complete
+		let maxSpeed = null;
 
-        const newRoad: TvRoad = new TvRoad( "New", 0, 0, -1 );
+		// get max-speed as per road
+		const type = TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 
-        // divide geometry and clone other sections
+		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
 
-        const geometry = this.getGeometryAt( s );
+		// check if lane-speed record exists
+		if ( laneId ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+			// const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
+			const laneSpeedRecord = Number.MAX_VALUE;
 
-        const newLength = this.length - s;
+			maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
 
-        const posTheta = new TvPosTheta();
+		} else {
 
-        geometry.getCoords( s, posTheta );
+			maxSpeed = maxSpeedAsPerRoad;
 
-        if ( geometry instanceof TvLineGeometry ) {
+		}
 
-            const newG = new TvLineGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength );
+		return maxSpeed;
+	}
 
-        } else if ( geometry instanceof TvArcGeometry ) {
+	// private checkGeometryInterval ( sCheck: any ) {
+	//
+	//     let index = -999;
+	//
+	//     for ( let i = 0; i < this._planView.geometries.length; i++ ) {
+	//
+	//         const odGeometry = this._planView.geometries[ i ];
+	//
+	//         if ( odGeometry.s <= sCheck ) {
+	//             index = i;
+	//         }
+	//
+	//         // if ( ( sCheck >= odGeometry.s ) && ( sCheck <= odGeometry.s2 ) ) {
+	//         //     return i;
+	//         // }
+	//     }
+	//
+	//     return index;
+	// }
 
-            const newG = new TvArcGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength, geometry.curvature );
+	// private checkLaneSectionInterval ( s: number ) {
+	//
+	//     let res = -1;
+	//
+	//     for ( let i = 0; i < this.lanes.laneSection.length; i++ ) {
+	//
+	//         // check if the s belongs to the current record
+	//         if ( this.lanes.laneSection[ i ].checkInterval( s ) ) {
+	//
+	//             res = i;
+	//
+	//         } else {
+	//
+	//             break;
+	//
+	//         }
+	//
+	//     }
+	//
+	//     return res;
+	//
+	// }
 
-        } else {
+	public getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
-            SnackBar.error( 'Cannot split this geometry' );
+		return TvUtils.checkIntervalArray( this.geometries, s );
 
-        }
+	}
 
-        // divide laneSection 
+	/**
+	 * Remove any existing road model from the scene and its children
+	 */
+	public remove ( parent: GameObject ) {
 
-        const newLaneSection = newRoad.addLaneSection( 0, false );
+		if ( this.spline ) this.spline.hide();
 
-        // const laneSectionsAfterS = 
+		parent.remove( this.gameObject );
 
-    }
+		this.laneSections.forEach( laneSection => {
 
-    showNodes (): any {
+			if ( this.gameObject ) this.gameObject.remove( laneSection.gameObject );
 
-        if ( this.startNode ) this.startNode.visible = true;
-        if ( this.endNode ) this.endNode.visible = true;
+			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
-    }
+		} );
+	}
 
-    hideNodes (): void {
+	/**
+	 * @deprecated currently not working need to fix
+	 * @param s s-coordinate
+	 */
+	public split ( s: number ) {
 
-        if ( this.startNode ) this.startNode.visible = false;
-        if ( this.endNode ) this.endNode.visible = false;
+		// TODO: not working, fix and complete
 
-    }
+		const newRoad: TvRoad = new TvRoad( 'New', 0, 0, -1 );
 
-    addControlPoint ( point: RoadControlPoint ) {
+		// divide geometry and clone other sections
 
-        this.spline.addControlPoint( point );
+		const geometry = this.getGeometryAt( s );
 
-        SceneService.add( point );
-    }
+		const laneSection = this.getLaneSectionAt( s );
 
-    addControlPointAt ( position: Vector3 ) {
+		const newLength = this.length - s;
 
-        this.addControlPoint( new RoadControlPoint( this, position, 'cp', 0, 0 ) );
+		const posTheta = new TvPosTheta();
 
-    }
+		geometry.getCoords( s, posTheta );
 
-    updateGeometryFromSpline () {
+		if ( geometry instanceof TvLineGeometry ) {
 
-        // make length 0 because geometry will update road length again
-        this.length = 0;
+			const newG = new TvLineGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength );
 
-        this.spline.update();
+		} else if ( geometry instanceof TvArcGeometry ) {
 
-        this.clearGeometries();
+			const newG = new TvArcGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength, geometry.curvature );
 
-        this.spline.exportGeometries().forEach( geometry => {
+		} else {
 
-            this.addGeometry( geometry );
+			SnackBar.error( 'Cannot split this geometry' );
 
-        } );
+		}
 
-        this.updated.emit( this );
-    }
+		// divide laneSection
 
-    getLeftSideWidth ( s: number ) {
+		const newLaneSection = newRoad.addLaneSection( 0, false );
 
-        let width = 0;
+		// const laneSectionsAfterS =
 
-        this.getLaneSectionAt( s ).getLeftLanes().forEach( lane => {
-            width += lane.getWidthValue( s );
-        } );
+	}
 
-        return width;
-    }
+	showNodes (): any {
 
-    getRightsideWidth ( s: number ) {
+		if ( this.startNode ) this.startNode.visible = true;
+		if ( this.endNode ) this.endNode.visible = true;
 
-        let width = 0;
+	}
 
-        this.getLaneSectionAt( s ).getRightLanes().forEach( lane => {
-            width += lane.getWidthValue( s );
-        } );
+	hideNodes (): void {
 
-        return width;
+		if ( this.startNode ) this.startNode.visible = false;
+		if ( this.endNode ) this.endNode.visible = false;
 
-    }
+	}
 
-    private updateLaneSections () {
+	addControlPoint ( point: RoadControlPoint ) {
 
-        const sections = this.getLaneSections();
+		this.spline.addControlPoint( point );
 
-        if ( sections.length == 0 ) return;
+		SceneService.add( point );
+	}
 
-        // update first, not required
-        // if ( sections.length == 1 ) sections[ 0 ].length = this.length;
+	addControlPointAt ( position: Vector3 ) {
 
-        for ( let i = 1; i < sections.length; i++ ) {
+		this.addControlPoint( new RoadControlPoint( this, position, 'cp', 0, 0 ) );
 
-            const current = sections[ i ];
-            const previous = sections[ i - 1 ];
+	}
 
-            previous.length = current.s - previous.s;
-        }
+	updateGeometryFromSpline () {
 
-        // update last
-        sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s
-    }
+		// make length 0 because geometry will update road length again
+		this.length = 0;
 
-    private getElevationAt ( s: number ): TvElevation {
+		this.spline.update();
 
-        return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
+		this.clearGeometries();
 
-    }
+		this.spline.exportGeometries().forEach( geometry => {
+
+			this.addGeometry( geometry );
+
+		} );
+
+		this.updated.emit( this );
+	}
+
+	getLeftSideWidth ( s: number ) {
+
+		let width = 0;
+
+		this.getLaneSectionAt( s ).getLeftLanes().forEach( lane => {
+			width += lane.getWidthValue( s );
+		} );
+
+		return width;
+	}
+
+	getRightsideWidth ( s: number ) {
+
+		let width = 0;
+
+		this.getLaneSectionAt( s ).getRightLanes().forEach( lane => {
+			width += lane.getWidthValue( s );
+		} );
+
+		return width;
+
+	}
+
+	private updateLaneSections () {
+
+		const sections = this.getLaneSections();
+
+		if ( sections.length == 0 ) return;
+
+		// update first, not required
+		// if ( sections.length == 1 ) sections[ 0 ].length = this.length;
+
+		for ( let i = 1; i < sections.length; i++ ) {
+
+			const current = sections[ i ];
+			const previous = sections[ i - 1 ];
+
+			previous.length = current.s - previous.s;
+		}
+
+		// update last
+		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
+	}
+
+	private getElevationAt ( s: number ): TvElevation {
+
+		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
+
+	}
 
 }

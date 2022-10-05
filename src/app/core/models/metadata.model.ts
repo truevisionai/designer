@@ -3,17 +3,17 @@
  */
 
 export interface Metadata {
-    guid: string;
-    path: string;
-    isFolder?: boolean;
-    importer: string;
-    data: any;
-    preview?: any;
+	guid: string;
+	path: string;
+	isFolder?: boolean;
+	importer: string;
+	data: any;
+	preview?: any;
 }
 
 export interface DynamicMeta<T> {
-    guid: string;
-    path: string;
-    importer: string;
-    data: T;
+	guid: string;
+	path: string;
+	importer: string;
+	data: T;
 }

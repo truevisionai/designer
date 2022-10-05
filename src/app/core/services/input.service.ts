@@ -2,20 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class InputService {
 
-    public isShiftKeyDown: boolean;
+	public isShiftKeyDown: boolean;
 
-    @Output() shiftKeyDown = new EventEmitter<boolean>();
+	@Output() shiftKeyDown = new EventEmitter<boolean>();
 
-    constructor () {
+	constructor () {
 
-        this.shiftKeyDown.subscribe( value => this.isShiftKeyDown = value );
+		this.shiftKeyDown.subscribe( value => this.isShiftKeyDown = value );
 
-    }
+	}
 }

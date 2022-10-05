@@ -3,19 +3,19 @@
   -->
 
 <div class="page-wrap height-100 default-bg">
-    <div class="app-error">
-        <div class="fix">
-            <mat-icon class="error-icon" color="warn">error</mat-icon>
-            <div class="error-text">
-                <h1 class="error-title">404</h1>
-                <div class="error-subtitle">Page Not Found!</div>
-            </div>
-        </div>
+	<div class="app-error">
+		<div class="fix">
+			<mat-icon class="error-icon" color="warn">error</mat-icon>
+			<div class="error-text">
+				<h1 class="error-title">404</h1>
+				<div class="error-subtitle">Page Not Found!</div>
+			</div>
+		</div>
 
-        <div class="error-actions">
-            <button mat-raised-button color="primary" class="mb-1 mr-05" [routerLink]="['/']">Back to Dashboard</button>
+		<div class="error-actions">
+			<button [routerLink]="['/']" class="mb-1 mr-05" color="primary" mat-raised-button>Back to Dashboard</button>
 
-            <button mat-raised-button color="warn">Report this Problem</button>
-        </div>
-    </div>
+			<button color="warn" mat-raised-button>Report this Problem</button>
+		</div>
+	</div>
 </div>

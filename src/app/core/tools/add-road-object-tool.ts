@@ -2,136 +2,136 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Object3D, TextureLoader } from 'three';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { Subscription } from 'rxjs';
-import { PointEditor } from '../editors/point-editor';
-import { AddRoadObjectCommand } from '../commands/add-road-object-command';
+import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Object3D, TextureLoader } from 'three';
+import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { TvOrientation } from '../../modules/tv-map/models/tv-common';
 import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
-import { CommandHistory } from '../../services/command-history';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { CommandHistory } from '../../services/command-history';
+import { AddRoadObjectCommand } from '../commands/add-road-object-command';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { PointEditor } from '../editors/point-editor';
+import { BaseTool } from './base-tool';
 
 export class AddRoadObjectTool extends BaseTool {
 
-    name: string = 'RoadObject';
+	name: string = 'RoadObject';
 
-    private roadObjects: Object3D[] = [];
-    private shapeEditor: AbstractShapeEditor;
-    private treeTexture = new TextureLoader().load( 'assets/top-down-tree.png' );
-    private subsribers: Subscription[] = [];
+	private roadObjects: Object3D[] = [];
+	private shapeEditor: AbstractShapeEditor;
+	private treeTexture = new TextureLoader().load( 'assets/top-down-tree.png' );
+	private subsribers: Subscription[] = [];
 
-    constructor ( private propSprite: string = 'assets/top-down-tree.png' ) {
+	constructor ( private propSprite: string = 'assets/top-down-tree.png' ) {
 
-        super();
+		super();
 
-        this.shapeEditor = new PointEditor();
+		this.shapeEditor = new PointEditor();
 
-    }
+	}
 
-    init () {
+	init () {
 
-        super.init();
+		super.init();
 
-        this.populate();
+		this.populate();
 
-        const s1 = this.shapeEditor.controlPointAdded.subscribe( e => this.onPointAdded( e ) );
-        const s2 = this.shapeEditor.controlPointMoved.subscribe( e => this.onPointMoved( e ) );
+		const s1 = this.shapeEditor.controlPointAdded.subscribe( e => this.onPointAdded( e ) );
+		const s2 = this.shapeEditor.controlPointMoved.subscribe( e => this.onPointMoved( e ) );
 
-        this.subsribers.push( s1 );
-        this.subsribers.push( s2 );
-    }
+		this.subsribers.push( s1 );
+		this.subsribers.push( s2 );
+	}
 
-    populate () {
+	populate () {
 
-        this.map.roads.forEach( road => {
+		this.map.roads.forEach( road => {
 
-            const objects = road.getRoadObjects();
+			const objects = road.getRoadObjects();
 
-            for ( let i = 0; i < objects.length; i++ ) {
+			for ( let i = 0; i < objects.length; i++ ) {
 
-                this.roadObjects.push( objects[ i ].mesh );
+				this.roadObjects.push( objects[ i ].mesh );
 
-                const point = this.shapeEditor.addControlPoint( objects[ i ].mesh.position );
+				const point = this.shapeEditor.addControlPoint( objects[ i ].mesh.position );
 
-                objects[ i ].mesh.userData.controlPointId = point.id;
-            }
+				objects[ i ].mesh.userData.controlPointId = point.id;
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    disable (): void {
+	disable (): void {
 
-        super.disable();
+		super.disable();
 
-        this.shapeEditor.destroy();
+		this.shapeEditor.destroy();
 
-        this.subsribers.forEach( item => {
-            item.unsubscribe();
-        } );
-    }
+		this.subsribers.forEach( item => {
+			item.unsubscribe();
+		} );
+	}
 
-    private onPointAdded ( e: AnyControlPoint ) {
+	private onPointAdded ( e: AnyControlPoint ) {
 
-        this.addProp( e );
+		this.addProp( e );
 
-    }
+	}
 
-    private onPointMoved ( e: AnyControlPoint ) {
+	private onPointMoved ( e: AnyControlPoint ) {
 
-        for ( const prop of this.roadObjects ) {
+		for ( const prop of this.roadObjects ) {
 
-            if ( prop.userData.controlPointId === e.id ) {
+			if ( prop.userData.controlPointId === e.id ) {
 
-                prop.position.set( e.position.x, e.position.y, prop.position.z );
+				prop.position.set( e.position.x, e.position.y, prop.position.z );
 
-                break;
+				break;
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
-    private getMaterial () {
+	private getMaterial () {
 
-        return new MeshBasicMaterial( {
-            map: this.treeTexture,
-            transparent: true,
-            opacity: 0.9
-        } );
+		return new MeshBasicMaterial( {
+			map: this.treeTexture,
+			transparent: true,
+			opacity: 0.9
+		} );
 
-    }
+	}
 
-    private addProp ( point: Object3D ) {
+	private addProp ( point: Object3D ) {
 
-        const road = TvMapQueries.getRoadByCoords( point.position.x, point.position.y );
+		const road = TvMapQueries.getRoadByCoords( point.position.x, point.position.y );
 
-        if ( !road ) throw new Error( 'Need road to place objects' );
+		if ( !road ) throw new Error( 'Need road to place objects' );
 
-        const material = this.getMaterial();
+		const material = this.getMaterial();
 
-        const geometry = new BoxBufferGeometry( 1, 1, 1 );
+		const geometry = new BoxBufferGeometry( 1, 1, 1 );
 
-        const obj = new Mesh( geometry, material );
+		const obj = new Mesh( geometry, material );
 
-        obj.position.copy( point.position );
+		obj.position.copy( point.position );
 
-        obj.userData.controlPointId = point.id;
+		obj.userData.controlPointId = point.id;
 
-        this.roadObjects.push( obj );
+		this.roadObjects.push( obj );
 
-        // tslint:disable-next-line:max-line-length
-        // const roadObject = this.ma.getRoad( 0 ).addRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, OdOrientations.NONE, null, null, null, null, null, null, null );
+		// tslint:disable-next-line:max-line-length
+		// const roadObject = this.ma.getRoad( 0 ).addRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, OdOrientations.NONE, null, null, null, null, null, null, null );
 
-        const roadObject = new TvRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, TvOrientation.NONE );
+		const roadObject = new TvRoadObject( 'tree', 'tree', point.id, 0, 0, 0, 0, TvOrientation.NONE );
 
-        roadObject.mesh = obj;
+		roadObject.mesh = obj;
 
-        CommandHistory.execute( new AddRoadObjectCommand( road.id, roadObject, [ point ] ) );
-    }
+		CommandHistory.execute( new AddRoadObjectCommand( road.id, roadObject, [ point ] ) );
+	}
 
 }

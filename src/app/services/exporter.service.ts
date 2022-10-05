@@ -3,115 +3,120 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-
-import * as THREE from 'three';
-import { saveAs } from 'file-saver';
+import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { IFile } from 'app/core/models/file';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { IFile } from 'app/core/models/file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileService } from './file.service';
+import { saveAs } from 'file-saver';
 import { ElectronService } from 'ngx-electron';
-import { SceneExporterService } from './scene-exporter.service';
-import { CommandHistory } from './command-history';
-import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
-import 'three/examples/js/exporters/GLTFExporter';
+import { CommandHistory } from './command-history';
+import { FileService } from './file.service';
+import { SceneExporterService } from './scene-exporter.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class ExporterService {
 
-    constructor (
-        private odService: TvMapService,
-        private fileService: FileService,
-        private electron: ElectronService,
-        private sceneExporter: SceneExporterService
-    ) { }
+	constructor (
+		private odService: TvMapService,
+		private fileService: FileService,
+		private electron: ElectronService,
+		private sceneExporter: SceneExporterService
+	) {
+	}
 
-    exportScene () {
+	exportScene () {
 
-        this.clearTool();
+		this.clearTool();
 
-        this.sceneExporter.saveAs();
+		this.sceneExporter.saveAs();
 
-    }
+	}
 
-    exportOpenDrive () {
+	exportOpenDrive () {
 
-        this.clearTool();
+		this.clearTool();
 
-        this.odService.saveAs();
-    }
+		this.odService.saveAs();
+	}
 
-    exportGLB ( filename = 'road.glb' ) {
+	exportGLB ( filename = 'road.glb' ) {
 
-        this.clearTool();
+		this.clearTool();
 
-        const exporter = new THREE.GLTFExporter();
+		const exporter = new GLTFExporter();
 
-        exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
+		exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
 
-            const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
+			const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
 
-            saveAs( blob, filename );
+			saveAs( blob, filename );
 
-            // forceIndices: true, forcePowerOfTwoTextures: true
-            // to allow compatibility with facebook
-        }, { binary: true, forceIndices: true, forcePowerOfTwoTextures: true } );
+			// forceIndices: true, forcePowerOfTwoTextures: true
+			// to allow compatibility with facebook
+		}, ( error ) => {
 
-    }
+		}, { binary: true, forceIndices: true } );
 
-    exportGTLF () {
+	}
 
-        this.clearTool();
+	exportGTLF () {
 
-        const options = {};
+		this.clearTool();
 
-        const exporter = new THREE.GLTFExporter();
+		const options = {};
 
-        exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
+		const exporter = new GLTFExporter();
 
-            const text = JSON.stringify( result, null, 2 );
+		exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
 
-            const filename = 'road.gltf';
+			const text = JSON.stringify( result, null, 2 );
 
-            saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
+			const filename = 'road.gltf';
 
-        }, options );
+			saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
 
-    }
+		}, ( error ) => {
 
-    exportCARLA () {
+			console.error( error );
 
-        this.clearTool();
+		}, options );
 
-        const exporter = new TvCarlaExporter();
+	}
 
-        const contents = exporter.getOutput( this.odService.map );
+	exportCARLA () {
 
-        if ( this.electron.isElectronApp ) {
+		this.clearTool();
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+		const exporter = new TvCarlaExporter();
 
-                this.odService.currentFile.path = file.path;
-                this.odService.currentFile.name = file.name;
+		const contents = exporter.getOutput( this.odService.map );
 
-            } );
+		if ( this.electron.isElectronApp ) {
 
-        } else {
+			this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
 
-            saveAs( new Blob( [ contents ] ), 'road.xodr' );
+				this.odService.currentFile.path = file.path;
+				this.odService.currentFile.name = file.name;
 
-        }
+			} );
 
-    }
+		} else {
 
-    private clearTool () {
+			saveAs( new Blob( [ contents ] ), 'road.xodr' );
 
-        CommandHistory.execute( new SetToolCommand( null ) );
+		}
 
-    }
+	}
+
+	private clearTool () {
+
+		CommandHistory.execute( new SetToolCommand( null ) );
+
+	}
 }

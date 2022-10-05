@@ -2,145 +2,144 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvLaneSection } from './tv-lane-section';
+import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
-import { isNullOrUndefined } from 'util';
 
 export class TvRoadLanes {
 
-    public laneSections: TvLaneSection[] = [];
+	public laneSections: TvLaneSection[] = [];
 
-    private laneOffsets: TvRoadLaneOffset[] = [];
+	private laneOffsets: TvRoadLaneOffset[] = [];
 
-    getLaneSections (): TvLaneSection[] {
-        return this.laneSections;
-    }
+	getLaneSections (): TvLaneSection[] {
+		return this.laneSections;
+	}
 
-    getLaneOffsets (): TvRoadLaneOffset[] {
-        return this.laneOffsets;
-    }
+	getLaneOffsets (): TvRoadLaneOffset[] {
+		return this.laneOffsets;
+	}
 
-    addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): any {
+	addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): any {
 
-        this.laneOffsets.push( new TvRoadLaneOffset( s, a, b, c, d ) );
+		this.laneOffsets.push( new TvRoadLaneOffset( s, a, b, c, d ) );
 
-        this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
-    }
+	}
 
-    addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
+	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
 
-        this.laneOffsets.push( laneOffset );
+		this.laneOffsets.push( laneOffset );
 
-        this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-    }
+		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+	}
 
-    updateLaneOffsetValues ( roadLength: number ) {
+	updateLaneOffsetValues ( roadLength: number ) {
 
-        for ( let i = 0; i < this.laneOffsets.length && this.laneOffsets.length > 1; i++ ) {
+		for ( let i = 0; i < this.laneOffsets.length && this.laneOffsets.length > 1; i++ ) {
 
-            const current = this.laneOffsets[ i ];
+			const current = this.laneOffsets[ i ];
 
-            let pp0, pp1, pd0, pd1, length;
+			let pp0, pp1, pd0, pd1, length;
 
-            if ( ( i + 1 ) < this.laneOffsets.length ) {
+			if ( ( i + 1 ) < this.laneOffsets.length ) {
 
-                const next = this.laneOffsets[ i + 1 ];
+				const next = this.laneOffsets[ i + 1 ];
 
-                // next s cannot be less than current so we need to clamp it
-                if ( next.s <= current.s ) {
+				// next s cannot be less than current so we need to clamp it
+				if ( next.s <= current.s ) {
 
-                    next.s = current.s + 0.1;
+					next.s = current.s + 0.1;
 
-                }
+				}
 
-                length = next.s - current.s;
+				length = next.s - current.s;
 
-                pp0 = current.a;          // offset at start
-                pp1 = next.a;             // offset at end
-                pd0 = current.b;          // tangent at start
-                pd1 = next.b;             // tangent at end
+				pp0 = current.a;          // offset at start
+				pp1 = next.a;             // offset at end
+				pd0 = current.b;          // tangent at start
+				pd1 = next.b;             // tangent at end
 
-            } else {
+			} else {
 
-                // take lane section length
-                length = roadLength;
+				// take lane section length
+				length = roadLength;
 
-                pp0 = current.a;          // offset at start
-                pp1 = current.a;          // offset at end
-                pd0 = current.b;          // tangent at start
-                pd1 = current.b;          // tangent at end
+				pp0 = current.a;          // offset at start
+				pp1 = current.a;          // offset at end
+				pd0 = current.b;          // tangent at start
+				pd1 = current.b;          // tangent at end
 
-            }
+			}
 
-            let a = pp0;
-            let b = pd0;
-            let c = ( -3 * pp0 ) + ( 3 * pp1 ) + ( -2 * pd0 ) + ( -1 * pd1 );
-            let d = ( 2 * pp0 ) + ( -2 * pp1 ) + ( 1 * pd0 ) + ( 1 * pd1 );
+			let a = pp0;
+			let b = pd0;
+			let c = ( -3 * pp0 ) + ( 3 * pp1 ) + ( -2 * pd0 ) + ( -1 * pd1 );
+			let d = ( 2 * pp0 ) + ( -2 * pp1 ) + ( 1 * pd0 ) + ( 1 * pd1 );
 
-            b /= length;
-            c /= length * length;
-            d /= length * length * length;
+			b /= length;
+			c /= length * length;
+			d /= length * length * length;
 
-            current.a = a;
-            current.b = b;
-            current.c = c;
-            current.d = d;
+			current.a = a;
+			current.b = b;
+			current.c = c;
+			current.d = d;
 
-        }
+		}
 
-    }
+	}
 
-    computeLaneSectionEnd ( road: TvRoad ) {
+	computeLaneSectionEnd ( road: TvRoad ) {
 
-        // Compute lastSCoordinate for all laneSections
-        for ( let i = 0; i < this.laneSections.length; i++ ) {
+		// Compute lastSCoordinate for all laneSections
+		for ( let i = 0; i < this.laneSections.length; i++ ) {
 
-            const currentLaneSection = this.laneSections[ i ];
+			const currentLaneSection = this.laneSections[ i ];
 
-            // by default it is equal to road lenght
-            let lastSCoordinate = 0;
+			// by default it is equal to road lenght
+			let lastSCoordinate = 0;
 
-            // if next laneSection exists lets use its sCoordinate
-            if ( i + 1 < this.laneSections.length ) {
+			// if next laneSection exists lets use its sCoordinate
+			if ( i + 1 < this.laneSections.length ) {
 
-                const nextLaneSection = this.laneSections[ i + 1 ];
-                lastSCoordinate = nextLaneSection.attr_s;
+				const nextLaneSection = this.laneSections[ i + 1 ];
+				lastSCoordinate = nextLaneSection.attr_s;
 
-            } else {
+			} else {
 
 
-                lastSCoordinate = road.length;
-            }
+				lastSCoordinate = road.length;
+			}
 
-            currentLaneSection.lastSCoordinate = lastSCoordinate;
-        }
-    }
+			currentLaneSection.lastSCoordinate = lastSCoordinate;
+		}
+	}
 
-    getLaneOffsetValue ( s: number ): number {
+	getLaneOffsetValue ( s: number ): number {
 
-        if ( isNullOrUndefined( s ) ) console.error( "s is undefined" );
+		if ( s == null ) console.error( 's is undefined' );
 
-        let offset = 0;
+		let offset = 0;
 
-        const hasEntry = this.getLaneOffsetEntryAt( s );
+		const hasEntry = this.getLaneOffsetEntryAt( s );
 
-        if ( hasEntry ) offset = hasEntry.getValue( s );
+		if ( hasEntry ) offset = hasEntry.getValue( s );
 
-        return offset;
-    }
+		return offset;
+	}
 
-    getLaneOffsetEntryAt ( s: number ): TvRoadLaneOffset {
+	getLaneOffsetEntryAt ( s: number ): TvRoadLaneOffset {
 
-        return TvUtils.checkIntervalArray( this.laneOffsets, s );
+		return TvUtils.checkIntervalArray( this.laneOffsets, s );
 
-    }
+	}
 
-    getLaneSectionAt ( s: number ): TvLaneSection {
+	getLaneSectionAt ( s: number ): TvLaneSection {
 
-        return TvUtils.checkIntervalArray( this.laneSections, s );
+		return TvUtils.checkIntervalArray( this.laneSections, s );
 
-    }
+	}
 }

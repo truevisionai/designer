@@ -2,22 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ICommand, ICommandCallback } from './i-command';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
+import { ICommand, ICommandCallback } from './i-command';
 
 
 export abstract class BaseCommand implements ICommand {
 
-    callbacks?: ICommandCallback;
+	callbacks?: ICommandCallback;
 
-    abstract execute (): void;
+	get map () {
+		return TvMapInstance.map;
+	}
 
-    abstract undo (): void;
+	abstract execute (): void;
 
-    abstract redo (): void;
+	abstract undo (): void;
 
-    get map () {
-        return TvMapInstance.map;
-    }
+	abstract redo (): void;
 
 }

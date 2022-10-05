@@ -2,74 +2,74 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import * as THREE from 'three';
-import { Mesh, PointsMaterial, Vector3 } from 'three';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { PointEditor } from '../editors/point-editor';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { Maths } from 'app/utils/maths';
-import { TvDirection, TvLaneType, TvSide } from 'app/modules/tv-map/models/tv-common';
-import { SceneService } from '../services/scene.service';
-import { CatmullRomPath, HermiteSplineCurve } from '../shapes/cubic-spline-curve';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
+import { TvDirection, TvLaneType, TvSide } from 'app/modules/tv-map/models/tv-common';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { CommandHistory } from 'app/services/command-history';
+import { Maths } from 'app/utils/maths';
+import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
+import * as THREE from 'three';
+import { Mesh, PointsMaterial, Vector3 } from 'three';
+import { MultiCmdsCommand } from '../commands/multi-cmds-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { PointEditor } from '../editors/point-editor';
+import { LanePathFactory } from '../factories/lane-path-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
 // import { JunctionDot } from "app/modules/three-js/objects/junction-dot";
 import { AbstractSpline } from '../shapes/abstract-spline';
 import { AutoSpline } from '../shapes/auto-spline';
-import { LanePathFactory } from '../factories/lane-path-factory.service';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { KeyboardInput } from '../input';
-import { CommandHistory } from 'app/services/command-history';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { MultiCmdsCommand } from '../commands/multi-cmds-command';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { PickingHelper } from '../services/picking-helper.service';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { CatmullRomPath, HermiteSplineCurve } from '../shapes/cubic-spline-curve';
+import { BaseTool } from './base-tool';
 
 export interface JunctionDot {
-    id: number,
-    s: number,
-    roadId: number,
-    laneId: number,
-    type: 'start' | 'end',
-    direction: 'forward' | 'backward',
-    position: Vector3,
-    hdg: number,
-    sDirection?: 'same' | 'opposite',
-    color: number
+	id: number,
+	s: number,
+	roadId: number,
+	laneId: number,
+	type: 'start' | 'end',
+	direction: 'forward' | 'backward',
+	position: Vector3,
+	hdg: number,
+	sDirection?: 'same' | 'opposite',
+	color: number
 }
 
 export interface IJunctionConnection {
-    type?: 'straight' | 'left-turn' | 'right-turn',
-    incomingRoad?: number,
-    outgoingRoad?: number,
-    fromLane?: number,
-    toLane?: number,
-    point?: 'start' | 'end',
-    entry?: JunctionDot,
-    exit?: JunctionDot,
-    spline?: AbstractSpline,
-    mesh?: Mesh
+	type?: 'straight' | 'left-turn' | 'right-turn',
+	incomingRoad?: number,
+	outgoingRoad?: number,
+	fromLane?: number,
+	toLane?: number,
+	point?: 'start' | 'end',
+	entry?: JunctionDot,
+	exit?: JunctionDot,
+	spline?: AbstractSpline,
+	mesh?: Mesh
 }
 
 export interface TempIntersection {
-    x: number,
-    y: number,
-    s1: number,
-    s2: number,
-    road1: number,
-    road2: number,
-    coordA?: TvRoadCoord,
-    coordB?: TvRoadCoord,
+	x: number,
+	y: number,
+	s1: number,
+	s2: number,
+	road1: number,
+	road2: number,
+	coordA?: TvRoadCoord,
+	coordB?: TvRoadCoord,
 }
 
 /**
@@ -93,1331 +93,1331 @@ export interface TempIntersection {
  */
 export class AutoManeuverTool extends BaseTool {
 
-    public static DOTCOUNT = 0;
+	public static DOTCOUNT = 0;
+
+	name: string = 'ManeuverTool';
 
-    name: string = 'ManeuverTool';
+	pointEditor: AbstractShapeEditor;
 
-    pointEditor: AbstractShapeEditor;
+	private connections: IJunctionConnection[] = [];
 
-    private connections: IJunctionConnection[] = [];
+	private pointerDown = false;
 
-    private pointerDown = false;
+	private pointerDownAt: Vector3;
 
-    private pointerDownAt: Vector3;
+	private roadChanged = false;
 
-    private roadChanged = false;
+	private connectingRoad: TvRoad;
 
-    private connectingRoad: TvRoad;
+	private roadControlPoint: RoadControlPoint;
 
-    private roadControlPoint: RoadControlPoint;
+	private lanePathObject: LanePathObject;
+	private curve: THREE.Mesh;
 
-    private lanePathObject: LanePathObject;
+	static createDots ( road: TvRoad, point: Vector3, sCoord?: number, startSCoord?: number, endSCoord?: number ) {
 
-    init () {
+		const dots: JunctionDot[] = [];
 
-        this.pointEditor = new PointEditor();
+		const laneSection = road.getLaneSectionAt( sCoord );
 
-    }
+		laneSection.getLeftLanes().filter( l => l.type == TvLaneType.driving ).forEach( lane => {
 
-    enable () {
+			const startRef = new TvPosTheta();
+			const startPosition = TvMapQueries.getLanePosition( road.id, lane.id, startSCoord, 0, startRef );
 
-        this.loadJunctions();
+			// start dot
+			dots.push( {
+				id: this.DOTCOUNT++,
+				color: 0x69F0AE,
+				s: startSCoord,
+				roadId: road.id,
+				laneId: lane.id,
+				type: 'start',
+				direction: 'forward',
+				position: startPosition,
+				hdg: startRef.hdg
+			} );
 
-        const intersections = this.findIntersectionsSlow( [ ...this.map.roads.values() ] );
+			const endRef = new TvPosTheta();
+			const endPosition = TvMapQueries.getLanePosition( road.id, lane.id, endSCoord, 0, endRef );
 
-        intersections.forEach( intersection => {
+			// end dot
+			dots.push( {
+				id: this.DOTCOUNT++,
+				color: 0xFF5252,
+				s: endSCoord,
+				roadId: road.id,
+				laneId: lane.id,
+				type: 'end',
+				direction: 'forward',
+				position: endPosition,
+				hdg: endRef.hdg,
+			} );
 
-            const results = this.calculateJunctionDistances( intersection.coordA, intersection.coordB );
+		} );
 
-            results.forEach( result => {
+		laneSection.getRightLanes().filter( l => l.type == TvLaneType.driving ).forEach( lane => {
 
-                this.divideRoad( result );
+			const startRef = new TvPosTheta();
+			const startPosition = TvMapQueries.getLanePosition( road.id, lane.id, endSCoord, 0, startRef );
 
-            } );
+			// start dot
+			dots.push( {
+				id: this.DOTCOUNT++,
+				color: 0x69F0AE,
+				s: endSCoord,
+				roadId: road.id,
+				laneId: lane.id,
+				type: 'start',
+				direction: 'backward',
+				position: startPosition,
+				hdg: startRef.hdg + Math.PI,    // add 180 degree
+			} );
 
-        } );
+			const endRef = new TvPosTheta();
+			const endPosition = TvMapQueries.getLanePosition( road.id, lane.id, startSCoord, 0, endRef );
 
-        // const junctions = this.createJunctionAreas( intersections );
+			// end dot
+			dots.push( {
+				id: this.DOTCOUNT++,
+				color: 0xFF5252,
+				s: startSCoord,
+				roadId: road.id,
+				laneId: lane.id,
+				type: 'end',
+				direction: 'backward',
+				position: endPosition,
+				hdg: endRef.hdg + Math.PI,      // add 180 degree
+			} );
 
-        // this.connections = this.prepareJunctionConnections( junctions );
+		} );
 
-        // this.connections.forEach( connection => {
-        //     this.makePath( connection );
-        // } )
-    }
+		return dots;
+	}
 
-    divideRoad ( result ) {
+	static createTurnConnectionPaths ( entry: JunctionDot, exit: JunctionDot ): AbstractSpline {
 
-        // const startSCoord = result.start.s;
-        // const startRoad = this.openDrive.getRoadById( result.start.roadId );
-        // const startPosition = startRoad.getRoadPosition( result.start.s );
-        // const p1 = new RoadControlPoint( startRoad, startPosition.toVector3() );
+		const autoSpline = new AutoSpline();
 
-        // // start position become the limit/length for the road
-        // startRoad.length = startSCoord;
+		autoSpline.addControlPointAt( entry.position );
 
-        // const geometry = startRoad.getGeometryAt( startSCoord );
+		if ( entry.direction == 'forward' && exit.direction == 'forward' ) {
 
-        // geometry.length = startSCoord - geometry.s;
+			const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s + 2.5, 0 );
+			autoSpline.addControlPointAt( entry2 );
 
+			const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s - 2.5, 0 );
+			autoSpline.addControlPointAt( entry3 );
 
-        // const endRoad = this.openDrive.getRoadById( result.end.roadId );
-        // const endPosition = endRoad.getRoadPosition( result.end.s );
-        // const p2 = new RoadControlPoint( endRoad, endPosition.toVector3() );
+		} else if ( entry.direction == 'backward' && exit.direction == 'backward' ) {
 
+			const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s - 2.5, 0 );
+			autoSpline.addControlPointAt( entry2 );
 
-        // SceneService.add( p1 );
-        // SceneService.add( p2 );
-    }
+			const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s + 2.5, 0 );
+			autoSpline.addControlPointAt( entry3 );
 
-    disable () {
+		} else if ( entry.direction == 'forward' && exit.direction == 'backward' ) {
 
-        this.pointEditor.removeAllControlPoints();
+			const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s + 2.5, 0 );
+			autoSpline.addControlPointAt( entry2 );
 
-        this.connections.forEach( connection => {
+			const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s + 2.5, 0 );
+			autoSpline.addControlPointAt( entry3 );
 
-            if ( connection.spline ) {
+		} else if ( entry.direction == 'backward' && exit.direction == 'forward' ) {
 
-                connection.spline.hide();
+			const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s - 2.5, 0 );
+			autoSpline.addControlPointAt( entry2 );
 
-            }
+			const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s - 2.5, 0 );
+			autoSpline.addControlPointAt( entry3 );
 
-            if ( connection.mesh ) {
+		}
 
-                connection.mesh.visible = false;
-            }
+		autoSpline.addControlPointAt( exit.position );
 
-        } );
+		autoSpline.update();
 
-        this.hideLinks();
-    }
+		// console.log( entry, exit, autoSpline.exportGeometries() );
 
-    onPointerDown ( e: PointerEventData ) {
+		return autoSpline;
+	}
 
-        if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+	static createStraightConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
 
-        this.pointerDown = true;
+		const connections: IJunctionConnection[] = [];
 
-        this.pointerDownAt = e.point.clone();
+		const entries = dots.filter( d => d.roadId == road.id ).filter( d => d.type == 'start' );
 
-        const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		entries.forEach( entry => {
 
-        let hasInteracted = false;
+			const exits = dots.filter( d => d.roadId == road.id ).filter( d => d.laneId == entry.laneId ).filter( d => d.type == 'end' );
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkRoadControlPointInteraction( e );
+			if ( exits.length > 0 ) {
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkJunctionEntryInteraction( e );
+				const exit = exits[ 0 ];
 
-        if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkPathInteraction( e );
+				const spline = this.createStraightConnectionPath( entry, exit );
 
-        if ( !hasInteracted ) {
+				connections.push( {
+					type: 'straight',
+					incomingRoad: entry.roadId,
+					outgoingRoad: exit.roadId,
+					fromLane: entry.laneId,
+					toLane: exit.laneId,
+					point: 'start',
+					entry: entry,
+					exit: exit,
+					spline: spline
+				} );
+			}
 
-            const commands = [];
+		} );
 
-            commands.push( new SetInspectorCommand( null, null ) );
+		return connections;
+	}
 
-            CommandHistory.execute( new MultiCmdsCommand( commands ) );
-        }
-    }
+	static createLeftTurnConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
 
-    onPointerUp ( e: PointerEventData ) {
+		const connections: IJunctionConnection[] = [];
 
-        if ( this.connectingRoad && this.roadControlPoint && this.roadChanged ) {
+		const directions = [ 'forward', 'backward' ];
 
-            const updateRoadPointCommand = new UpdateRoadPointCommand(
-                this.connectingRoad,
-                this.roadControlPoint,
-                this.roadControlPoint.position,
-                this.pointerDownAt
-            );
+		directions.forEach( direction => {
 
-            CommandHistory.execute( updateRoadPointCommand );
+			let entry: JunctionDot = null;
 
-            LanePathFactory.update( this.lanePathObject );
-        }
+			let entries = dots.filter( d => d.roadId == road.id )
+				.filter( d => d.direction == direction )
+				.filter( d => d.type == 'start' );
 
-        this.pointerDown = false;
+			if ( entries.length > 0 && direction == 'forward' ) {
 
-        this.roadChanged = false;
+				// find left most lane
+				entry = entries.reduce( ( x, y ) => {
+					return x.laneId > y.laneId ? x : y;
+				} );
 
-        this.pointerDownAt = null;
-    }
+			} else if ( entries.length > 0 && direction == 'backward' ) {
 
-    onPointerMoved ( e: PointerEventData ) {
+				// find left most lane
+				entry = entries.reduce( ( x, y ) => {
+					return x.laneId < y.laneId ? x : y;
+				} );
 
-        if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
+			}
 
-            this.roadControlPoint.copyPosition( e.point );
+			if ( entry ) {
 
-            this.connectingRoad.spline.update();
+				const exits = dots.filter( d => d.roadId != road.id )
+					.filter( d => d.type == 'end' )
+					.filter( d => Maths.findSide( d.position, entry.position, entry.hdg ) == TvSide.LEFT );
 
-            this.roadChanged = true;
+				if ( exits.length > 0 ) {
 
-        }
+					const exit = exits.reduce( ( a, b ) => {
+						return a.position.distanceTo( entry.position ) < b.position.distanceTo( entry.position ) ? a : b;
+					} );
 
-    }
+					const spline = this.createTurnConnectionPaths( entry, exit );
 
-    checkPathInteraction ( event: PointerEventData ): boolean {
+					connections.push( {
+						type: 'left-turn',
+						incomingRoad: entry.roadId,
+						outgoingRoad: exit.roadId,
+						fromLane: entry.laneId,
+						toLane: exit.laneId,
+						point: 'start',
+						entry: entry,
+						exit: exit,
+						spline: spline
+					} );
+				}
+			}
 
-        if ( event.button !== MouseButton.LEFT ) return;
+		} );
 
-        let hasInteracted = false;
+		return connections;
+	}
 
-        for ( let i = 0; i < event.intersections.length; i++ ) {
+	static createConnections ( roads: TvRoad[], dots: JunctionDot[] ): IJunctionConnection[] {
 
-            const intersection = event.intersections[ i ];
+		const connections: IJunctionConnection[] = [];
 
-            if ( intersection.object[ 'tag' ] === LanePathObject.tag ) {
+		roads.forEach( road => {
 
-                hasInteracted = true;
+			this.createStraightConnections( road, dots )
+				.forEach( connection => connections.push( connection ) );
 
-                this.lanePathObject = intersection.object.parent as LanePathObject;
+			this.createLeftTurnConnections( road, dots )
+				.forEach( connection => connections.push( connection ) );
 
-                const commands = [];
+			this.createRightTurnConnections( road, dots )
+				.forEach( connection => connections.push( connection ) );
 
-                this.connectingRoad = this.lanePathObject.connectingRoad;
+		} );
 
-                commands.push( new SetInspectorCommand( LaneLinkInspector, {
-                    link: this.lanePathObject.link,
-                    connection: this.lanePathObject.connection
-                } ) );
+		return connections;
+	}
 
-                CommandHistory.execute( new MultiCmdsCommand( commands ) );
+	static createRightTurnConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
 
-                break;
-            }
-        }
+		const connections: IJunctionConnection[] = [];
 
-        return hasInteracted;
-    }
+		const directions = [ 'forward', 'backward', ];
 
-    static createDots ( road: TvRoad, point: Vector3, sCoord?: number, startSCoord?: number, endSCoord?: number ) {
+		directions.forEach( direction => {
 
-        const dots: JunctionDot[] = [];
+			let entry = null;
 
-        const laneSection = road.getLaneSectionAt( sCoord );
+			let entries = dots.filter( d => d.roadId == road.id )
+				.filter( d => d.direction == direction )
+				.filter( d => d.type == 'start' );
 
-        laneSection.getLeftLanes().filter( l => l.type == TvLaneType.driving ).forEach( lane => {
+			if ( entries.length > 0 && direction == 'forward' ) {
 
-            const startRef = new TvPosTheta();
-            const startPosition = TvMapQueries.getLanePosition( road.id, lane.id, startSCoord, 0, startRef );
+				// find right most lane
+				entry = entries.reduce( ( x, y ) => {
+					return x.laneId < y.laneId ? x : y;
+				} );
 
-            // start dot
-            dots.push( {
-                id: this.DOTCOUNT++,
-                color: 0x69F0AE,
-                s: startSCoord,
-                roadId: road.id,
-                laneId: lane.id,
-                type: 'start',
-                direction: 'forward',
-                position: startPosition,
-                hdg: startRef.hdg
-            } );
+			} else if ( entries.length > 0 && direction == 'backward' ) {
 
-            const endRef = new TvPosTheta();
-            const endPosition = TvMapQueries.getLanePosition( road.id, lane.id, endSCoord, 0, endRef );
+				// find right most lane
+				entry = entries.reduce( ( x, y ) => {
+					return x.laneId > y.laneId ? x : y;
+				} );
 
-            // end dot
-            dots.push( {
-                id: this.DOTCOUNT++,
-                color: 0xFF5252,
-                s: endSCoord,
-                roadId: road.id,
-                laneId: lane.id,
-                type: 'end',
-                direction: 'forward',
-                position: endPosition,
-                hdg: endRef.hdg,
-            } );
+			}
 
-        } );
+			if ( entry ) {
 
-        laneSection.getRightLanes().filter( l => l.type == TvLaneType.driving ).forEach( lane => {
+				const exits = dots
+					.filter( d => d.roadId != road.id )
+					.filter( d => d.type == 'end' )
+					.filter( d => Maths.findSide( d.position, entry.position, entry.hdg ) == TvSide.RIGHT );
 
-            const startRef = new TvPosTheta();
-            const startPosition = TvMapQueries.getLanePosition( road.id, lane.id, endSCoord, 0, startRef );
+				if ( exits.length > 0 ) {
 
-            // start dot
-            dots.push( {
-                id: this.DOTCOUNT++,
-                color: 0x69F0AE,
-                s: endSCoord,
-                roadId: road.id,
-                laneId: lane.id,
-                type: 'start',
-                direction: 'backward',
-                position: startPosition,
-                hdg: startRef.hdg + Math.PI,    // add 180 degree
-            } );
+					// get the nearest exit by lowest distance from entry
+					const exit = exits.reduce( ( a, b ) => {
+						return a.position.distanceTo( entry.position ) < b.position.distanceTo( entry.position ) ? a : b;
+					} );
 
-            const endRef = new TvPosTheta();
-            const endPosition = TvMapQueries.getLanePosition( road.id, lane.id, startSCoord, 0, endRef );
+					const spline = this.createTurnConnectionPaths( entry, exit );
 
-            // end dot
-            dots.push( {
-                id: this.DOTCOUNT++,
-                color: 0xFF5252,
-                s: startSCoord,
-                roadId: road.id,
-                laneId: lane.id,
-                type: 'end',
-                direction: 'backward',
-                position: endPosition,
-                hdg: endRef.hdg + Math.PI,      // add 180 degree
-            } );
+					connections.push( {
+						type: 'right-turn',
+						incomingRoad: entry.roadId,
+						outgoingRoad: exit.roadId,
+						fromLane: entry.laneId,
+						toLane: exit.laneId,
+						point: 'start',
+						entry: entry,
+						exit: exit,
+						spline: spline
+					} );
+				}
+			}
 
-        } );
+		} );
 
-        return dots;
-    }
+		return connections;
+	}
 
-    checkRoadControlPointInteraction ( e: PointerEventData ): boolean {
+	static createStraightConnectionPath ( entry: JunctionDot, exit: JunctionDot ): AbstractSpline {
 
-        if ( !this.connectingRoad || !this.connectingRoad.spline ) return;
+		const spline = new AutoSpline();
 
-        if ( !e.point ) return;
+		spline.addControlPointAt( entry.position );
+		spline.addControlPointAt( exit.position );
 
-        const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		spline.update();
 
-        const roadControlPoints = [];
+		return spline;
+	}
 
-        this.connectingRoad.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
+	init () {
 
-            roadControlPoints.push( cp );
+		this.pointEditor = new PointEditor();
 
-            if ( cp.frontTangent ) roadControlPoints.push( cp.frontTangent );
+	}
 
-            if ( cp.backTangent ) roadControlPoints.push( cp.backTangent );
+	enable () {
 
-        } );
+		this.loadJunctions();
 
-        const roadControlPoint = PickingHelper.findNearest( e.point, roadControlPoints, maxDistance );
+		const intersections = this.findIntersectionsSlow( [ ...this.map.roads.values() ] );
 
-        if ( roadControlPoint ) {
+		intersections.forEach( intersection => {
 
-            const commands = [];
+			const results = this.calculateJunctionDistances( intersection.coordA, intersection.coordB );
 
-            // commands.push( new SetInspectorCommand( RoadInspector, {
-            //     road: this.connectingRoad,
-            //     controlPoint: roadControlPoint
-            // } ) );
+			results.forEach( result => {
 
-            commands.push( new SetValueCommand( this, 'roadControlPoint', roadControlPoint ) );
+				this.divideRoad( result );
 
-            // if ( this.node ) commands.push( new SetValueCommand( this, 'node', null ) );
+			} );
 
-            CommandHistory.execute( new MultiCmdsCommand( commands ) );
+		} );
 
-        } else if ( !this.roadControlPoint && this.roadControlPoint ) {
+		// const junctions = this.createJunctionAreas( intersections );
 
-            this.roadControlPoint.unselect();
+		// this.connections = this.prepareJunctionConnections( junctions );
 
-            this.roadControlPoint = null;
+		// this.connections.forEach( connection => {
+		//     this.makePath( connection );
+		// } )
+	}
 
-        }
+	divideRoad ( result ) {
 
-        return roadControlPoint != null;
-    }
+		// const startSCoord = result.start.s;
+		// const startRoad = this.openDrive.getRoadById( result.start.roadId );
+		// const startPosition = startRoad.getRoadPosition( result.start.s );
+		// const p1 = new RoadControlPoint( startRoad, startPosition.toVector3() );
 
-    hideLinks () {
+		// // start position become the limit/length for the road
+		// startRoad.length = startSCoord;
 
-        this.map.junctions.forEach( junction => {
+		// const geometry = startRoad.getGeometryAt( startSCoord );
 
-            junction.connections.forEach( connection => {
+		// geometry.length = startSCoord - geometry.s;
 
-                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
-                connection.laneLink.forEach( link => {
+		// const endRoad = this.openDrive.getRoadById( result.end.roadId );
+		// const endPosition = endRoad.getRoadPosition( result.end.s );
+		// const p2 = new RoadControlPoint( endRoad, endPosition.toVector3() );
 
-                    link.hide();
 
-                } );
+		// SceneService.add( p1 );
+		// SceneService.add( p2 );
+	}
 
-            } );
+	disable () {
 
-        } );
-    }
+		this.pointEditor.removeAllControlPoints();
 
-    loadJunctions (): void {
+		this.connections.forEach( connection => {
 
-        this.map.junctions.forEach( junction => {
+			if ( connection.spline ) {
 
-            junction.connections.forEach( connection => {
+				connection.spline.hide();
 
-                const incomingRoad = this.map.getRoadById( connection.incomingRoad );
-                const connectingRoad = this.map.getRoadById( connection.connectingRoad );
+			}
 
-                connection.laneLink.forEach( link => {
+			if ( connection.mesh ) {
 
-                    this.makeJunctionConnectionPath( incomingRoad, connectingRoad, connection, link );
+				connection.mesh.visible = false;
+			}
 
-                } );
+		} );
 
-            } );
+		this.hideLinks();
+	}
 
-        } );
+	onPointerDown ( e: PointerEventData ) {
 
-    }
+		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-    static createTurnConnectionPaths ( entry: JunctionDot, exit: JunctionDot ): AbstractSpline {
+		this.pointerDown = true;
 
-        const autoSpline = new AutoSpline();
+		this.pointerDownAt = e.point.clone();
 
-        autoSpline.addControlPointAt( entry.position );
+		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-        if ( entry.direction == 'forward' && exit.direction == 'forward' ) {
+		let hasInteracted = false;
 
-            const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s + 2.5, 0 );
-            autoSpline.addControlPointAt( entry2 );
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkRoadControlPointInteraction( e );
 
-            const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s - 2.5, 0 );
-            autoSpline.addControlPointAt( entry3 );
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkJunctionEntryInteraction( e );
 
-        } else if ( entry.direction == 'backward' && exit.direction == 'backward' ) {
+		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkPathInteraction( e );
 
-            const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s - 2.5, 0 );
-            autoSpline.addControlPointAt( entry2 );
+		if ( !hasInteracted ) {
 
-            const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s + 2.5, 0 );
-            autoSpline.addControlPointAt( entry3 );
+			const commands = [];
 
-        } else if ( entry.direction == 'forward' && exit.direction == 'backward' ) {
+			commands.push( new SetInspectorCommand( null, null ) );
 
-            const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s + 2.5, 0 );
-            autoSpline.addControlPointAt( entry2 );
+			CommandHistory.execute( new MultiCmdsCommand( commands ) );
+		}
+	}
 
-            const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s + 2.5, 0 );
-            autoSpline.addControlPointAt( entry3 );
+	onPointerUp ( e: PointerEventData ) {
 
-        } else if ( entry.direction == 'backward' && exit.direction == 'forward' ) {
+		if ( this.connectingRoad && this.roadControlPoint && this.roadChanged ) {
 
-            const entry2 = TvMapQueries.getLanePosition( entry.roadId, entry.laneId, entry.s - 2.5, 0 );
-            autoSpline.addControlPointAt( entry2 );
+			const updateRoadPointCommand = new UpdateRoadPointCommand(
+				this.connectingRoad,
+				this.roadControlPoint,
+				this.roadControlPoint.position,
+				this.pointerDownAt
+			);
 
-            const entry3 = TvMapQueries.getLanePosition( exit.roadId, exit.laneId, exit.s - 2.5, 0 );
-            autoSpline.addControlPointAt( entry3 );
+			CommandHistory.execute( updateRoadPointCommand );
 
-        }
+			LanePathFactory.update( this.lanePathObject );
+		}
 
-        autoSpline.addControlPointAt( exit.position );
+		this.pointerDown = false;
 
-        autoSpline.update();
+		this.roadChanged = false;
 
-        // console.log( entry, exit, autoSpline.exportGeometries() );
+		this.pointerDownAt = null;
+	}
 
-        return autoSpline;
-    }
+	onPointerMoved ( e: PointerEventData ) {
 
-    makePath ( connection: IJunctionConnection ) {
+		if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
 
-        const spline = connection.spline;
+			this.roadControlPoint.copyPosition( e.point );
 
-        const shape = new THREE.Shape();
-        shape.moveTo( 0, -0.25 );
-        shape.lineTo( 0, 0.25 );
+			this.connectingRoad.spline.update();
 
-        // const arcLine = new LineArcSplineCurve( spline.controlPoints );
+			this.roadChanged = true;
 
-        const path = new CatmullRomPath( spline.controlPointPositions );
+		}
 
-        // const randomPoints = [];
-        // for ( let i = 0; i < 10; i++ ) {
-        //     randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.Math.randFloat( - 50, 50 ), 0 ) );
-        // }
-        // const path = new THREE.CatmullRomSpline( randomPoints );
+	}
 
-        const extrudeSettings = {
-            steps: path.getLength() * 2,
-            bevelEnabled: false,
-            extrudePath: path
-        };
+	checkPathInteraction ( event: PointerEventData ): boolean {
 
-        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-        const material = new THREE.MeshBasicMaterial( {
-            color: 0x00ff00,
-            wireframe: false,
-            opacity: 0.5,
-            transparent: true,
-            depthTest: false,
-            map: OdTextures.asphalt
-        } );
+		if ( event.button !== MouseButton.LEFT ) return;
 
-        connection.mesh = new THREE.Mesh( geometry, material );
+		let hasInteracted = false;
 
-        connection.mesh.renderOrder = 3;
+		for ( let i = 0; i < event.intersections.length; i++ ) {
 
-        SceneService.add( connection.mesh );
+			const intersection = event.intersections[ i ];
 
-    }
+			if ( intersection.object[ 'tag' ] === LanePathObject.tag ) {
 
-    private curve: THREE.Mesh;
+				hasInteracted = true;
 
-    updateCurve () {
+				this.lanePathObject = intersection.object.parent as LanePathObject;
 
-        const shape = new THREE.Shape();
-        shape.moveTo( 0, 0 );
-        shape.lineTo( 0, 12 );
+				const commands = [];
 
-        const p0 = this.pointEditor.controlPointPositions[ 0 ];
-        const p1 = this.pointEditor.controlPointPositions[ 1 ];
-        const p2 = this.pointEditor.controlPointPositions[ 2 ];
-        const p3 = this.pointEditor.controlPointPositions[ 3 ];
+				this.connectingRoad = this.lanePathObject.connectingRoad;
 
-        const a = 0;
-        const b = 0;
-        const c = 0;
-        const d = 0;
+				commands.push( new SetInspectorCommand( LaneLinkInspector, {
+					link: this.lanePathObject.link,
+					connection: this.lanePathObject.connection
+				} ) );
 
+				CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-        const bezier = new THREE.CubicBezierCurve3( p0, p1, p2, p3 );
-        const hermite = new HermiteSplineCurve( p0, p1, p2, p3 );
+				break;
+			}
+		}
 
-        const extrudeSettings = {
-            steps: 200,
-            bevelEnabled: false,
-            extrudePath: hermite
-        };
+		return hasInteracted;
+	}
 
-        this.curve.geometry.dispose();
+	checkRoadControlPointInteraction ( e: PointerEventData ): boolean {
 
-        this.curve.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-    }
+		if ( !this.connectingRoad || !this.connectingRoad.spline ) return;
 
-    makeSampleCurve () {
+		if ( !e.point ) return;
 
-        const shape = new THREE.Shape();
-        shape.moveTo( 0, 0 );
-        shape.lineTo( 0, 12 );
+		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
 
-        const p0 = new Vector3( 0, 0, 0 );
-        const p1 = new Vector3( 100, 0, 0 );
-        const p2 = new Vector3( 150, 50, 0 );
-        const p3 = new Vector3( 150, 100, 0 );
+		const roadControlPoints = [];
 
-        this.pointEditor.addControlPoint( p0 );
-        this.pointEditor.addControlPoint( p1 );
-        this.pointEditor.addControlPoint( p2 );
-        this.pointEditor.addControlPoint( p3 );
+		this.connectingRoad.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
 
-        // const m = new Matrix4().set(
-        //     0, 0, -3, 3,
-        //     -3, 3, 0, 0,
-        //     0, 0, 0, 1,
-        //     1, 0, 0, 0
-        // );
+			roadControlPoints.push( cp );
 
-        // const m = new Matrix4().set(
-        //     1, 0, 0, 0,
-        //     0, 0, 0, 1,
-        //     -3, 3, 0, 0,
-        //     0, 0, -3, 3,
-        // );
+			if ( cp.frontTangent ) roadControlPoints.push( cp.frontTangent );
 
-        // // console.log( 'm', m );
+			if ( cp.backTangent ) roadControlPoints.push( cp.backTangent );
 
-        // const m_inv = new Matrix4().getInverse( m );
+		} );
 
-        // console.log( 'm-inv', m_inv );
+		const roadControlPoint = PickingHelper.findNearest( e.point, roadControlPoints, maxDistance );
 
-        // const g = new Matrix4().set(
-        //     0, 0, 0, 0,
-        //     100, 0, 0, 0,
-        //     150, 0, 0, 0,
-        //     150, 0, 0, 0
-        // );
+		if ( roadControlPoint ) {
 
-        const bezier = new THREE.CubicBezierCurve3( p0, p1, p2, p3 );
-        const hermite = new HermiteSplineCurve( p0, p1, p2, p3 );
+			const commands = [];
 
-        // console.log( m_inv.multiply( g ), bezier.getLength() );
+			// commands.push( new SetInspectorCommand( RoadInspector, {
+			//     road: this.connectingRoad,
+			//     controlPoint: roadControlPoint
+			// } ) );
 
-        const extrudeSettings = {
-            steps: 200,
-            bevelEnabled: false,
-            extrudePath: hermite
-        };
+			commands.push( new SetValueCommand( this, 'roadControlPoint', roadControlPoint ) );
 
-        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
-        const mesh = this.curve = new THREE.Mesh( geometry, material );
+			// if ( this.node ) commands.push( new SetValueCommand( this, 'node', null ) );
 
-        SceneService.add( mesh );
+			CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-    }
+		} else if ( !this.roadControlPoint && this.roadControlPoint ) {
 
-    static createStraightConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
+			this.roadControlPoint.unselect();
 
-        const connections: IJunctionConnection[] = [];
+			this.roadControlPoint = null;
 
-        const entries = dots.filter( d => d.roadId == road.id ).filter( d => d.type == 'start' );
+		}
 
-        entries.forEach( entry => {
+		return roadControlPoint != null;
+	}
 
-            const exits = dots.filter( d => d.roadId == road.id ).filter( d => d.laneId == entry.laneId ).filter( d => d.type == 'end' );
+	hideLinks () {
 
-            if ( exits.length > 0 ) {
+		this.map.junctions.forEach( junction => {
 
-                const exit = exits[ 0 ];
+			junction.connections.forEach( connection => {
 
-                const spline = this.createStraightConnectionPath( entry, exit );
+				const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+				const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
-                connections.push( {
-                    type: 'straight',
-                    incomingRoad: entry.roadId,
-                    outgoingRoad: exit.roadId,
-                    fromLane: entry.laneId,
-                    toLane: exit.laneId,
-                    point: 'start',
-                    entry: entry,
-                    exit: exit,
-                    spline: spline
-                } );
-            }
+				connection.laneLink.forEach( link => {
 
-        } );
+					link.hide();
 
-        return connections;
-    }
+				} );
 
-    static createLeftTurnConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
+			} );
 
-        const connections: IJunctionConnection[] = [];
+		} );
+	}
 
-        const directions = [ 'forward', 'backward' ];
+	loadJunctions (): void {
 
-        directions.forEach( direction => {
+		this.map.junctions.forEach( junction => {
 
-            let entry: JunctionDot = null;
+			junction.connections.forEach( connection => {
 
-            let entries = dots.filter( d => d.roadId == road.id )
-                .filter( d => d.direction == direction )
-                .filter( d => d.type == 'start' );
+				const incomingRoad = this.map.getRoadById( connection.incomingRoad );
+				const connectingRoad = this.map.getRoadById( connection.connectingRoad );
 
-            if ( entries.length > 0 && direction == 'forward' ) {
+				connection.laneLink.forEach( link => {
 
-                // find left most lane
-                entry = entries.reduce( ( x, y ) => {
-                    return x.laneId > y.laneId ? x : y;
-                } );
+					this.makeJunctionConnectionPath( incomingRoad, connectingRoad, connection, link );
 
-            } else if ( entries.length > 0 && direction == 'backward' ) {
+				} );
 
-                // find left most lane
-                entry = entries.reduce( ( x, y ) => {
-                    return x.laneId < y.laneId ? x : y;
-                } );
+			} );
 
-            }
+		} );
 
-            if ( entry ) {
+	}
 
-                const exits = dots.filter( d => d.roadId != road.id )
-                    .filter( d => d.type == 'end' )
-                    .filter( d => Maths.findSide( d.position, entry.position, entry.hdg ) == TvSide.LEFT );
+	makePath ( connection: IJunctionConnection ) {
 
-                if ( exits.length > 0 ) {
+		const spline = connection.spline;
 
-                    const exit = exits.reduce( ( a, b ) => {
-                        return a.position.distanceTo( entry.position ) < b.position.distanceTo( entry.position ) ? a : b;
-                    } );
+		const shape = new THREE.Shape();
+		shape.moveTo( 0, -0.25 );
+		shape.lineTo( 0, 0.25 );
 
-                    const spline = this.createTurnConnectionPaths( entry, exit );
+		// const arcLine = new LineArcSplineCurve( spline.controlPoints );
 
-                    connections.push( {
-                        type: 'left-turn',
-                        incomingRoad: entry.roadId,
-                        outgoingRoad: exit.roadId,
-                        fromLane: entry.laneId,
-                        toLane: exit.laneId,
-                        point: 'start',
-                        entry: entry,
-                        exit: exit,
-                        spline: spline
-                    } );
-                }
-            }
+		const path = new CatmullRomPath( spline.controlPointPositions );
 
-        } );
+		// const randomPoints = [];
+		// for ( let i = 0; i < 10; i++ ) {
+		//     randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.MathUtils.randFloat( - 50, 50 ), 0 ) );
+		// }
+		// const path = new THREE.CatmullRomSpline( randomPoints );
 
-        return connections;
-    }
+		const extrudeSettings = {
+			steps: path.getLength() * 2,
+			bevelEnabled: false,
+			extrudePath: path
+		};
 
-    findIntersectionsSlow ( roads: TvRoad[] ): TempIntersection[] {
+		const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+		const material = new THREE.MeshBasicMaterial( {
+			color: 0x00ff00,
+			wireframe: false,
+			opacity: 0.5,
+			transparent: true,
+			depthTest: false,
+			map: OdTextures.asphalt
+		} );
 
-        const step = 1;
+		connection.mesh = new THREE.Mesh( geometry, material );
 
-        const pointCache: any[] = [];
+		connection.mesh.renderOrder = 3;
 
-        // const t1 = performance.now();
+		SceneService.add( connection.mesh );
 
-        for ( let i = 0; i < roads.length; i++ ) {
+	}
 
-            const road = roads[ i ];
+	updateCurve () {
 
-            const positions: any[] = [];
+		const shape = new THREE.Shape();
+		shape.moveTo( 0, 0 );
+		shape.lineTo( 0, 12 );
 
-            const geom = {
-                road: road.id,
-                positions: positions,
-            };
+		const p0 = this.pointEditor.controlPointPositions[ 0 ];
+		const p1 = this.pointEditor.controlPointPositions[ 1 ];
+		const p2 = this.pointEditor.controlPointPositions[ 2 ];
+		const p3 = this.pointEditor.controlPointPositions[ 3 ];
 
-            const geometries = road.geometries;
+		const a = 0;
+		const b = 0;
+		const c = 0;
+		const d = 0;
 
-            for ( let g = 0; g < geometries.length; g++ ) {
 
-                const geometry = geometries[ g ];
+		const bezier = new THREE.CubicBezierCurve3( p0, p1, p2, p3 );
+		const hermite = new HermiteSplineCurve( p0, p1, p2, p3 );
 
-                const posTheta = new TvPosTheta();
+		const extrudeSettings = {
+			steps: 200,
+			bevelEnabled: false,
+			extrudePath: hermite
+		};
 
-                for ( let s = geometry.s; s <= geometry.s2; s += step ) {
+		this.curve.geometry.dispose();
 
-                    geometry.getCoords( s, posTheta );
+		this.curve.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+	}
 
-                    positions.push( { x: posTheta.x, y: posTheta.y, z: 0, s: s } );
+	makeSampleCurve () {
 
-                }
-            }
+		const shape = new THREE.Shape();
+		shape.moveTo( 0, 0 );
+		shape.lineTo( 0, 12 );
 
-            pointCache.push( geom );
-        }
+		const p0 = new Vector3( 0, 0, 0 );
+		const p1 = new Vector3( 100, 0, 0 );
+		const p2 = new Vector3( 150, 50, 0 );
+		const p3 = new Vector3( 150, 100, 0 );
 
-        // const t2 = performance.now();
+		this.pointEditor.addControlPoint( p0 );
+		this.pointEditor.addControlPoint( p1 );
+		this.pointEditor.addControlPoint( p2 );
+		this.pointEditor.addControlPoint( p3 );
 
-        // const timeToMakeGeometries = t2 - t1; console.log( "step-1", timeToMakeGeometries );
+		// const m = new Matrix4().set(
+		//     0, 0, -3, 3,
+		//     -3, 3, 0, 0,
+		//     0, 0, 0, 1,
+		//     1, 0, 0, 0
+		// );
 
-        const intersections: TempIntersection[] = [];
+		// const m = new Matrix4().set(
+		//     1, 0, 0, 0,
+		//     0, 0, 0, 1,
+		//     -3, 3, 0, 0,
+		//     0, 0, -3, 3,
+		// );
 
-        for ( let i = 0; i < pointCache.length; i++ ) {
+		// // console.log( 'm', m );
 
-            const points = pointCache[ i ].positions;
+		// const m_inv = new Matrix4().getInverse( m );
 
-            for ( let j = i + 1; j < pointCache.length; j++ ) {
+		// console.log( 'm-inv', m_inv );
 
-                const otherPoints = pointCache[ j ].positions;
+		// const g = new Matrix4().set(
+		//     0, 0, 0, 0,
+		//     100, 0, 0, 0,
+		//     150, 0, 0, 0,
+		//     150, 0, 0, 0
+		// );
 
-                for ( let k = 0; k < otherPoints.length; k++ ) {
+		const bezier = new THREE.CubicBezierCurve3( p0, p1, p2, p3 );
+		const hermite = new HermiteSplineCurve( p0, p1, p2, p3 );
 
-                    const otherPoint = otherPoints[ k ];
+		// console.log( m_inv.multiply( g ), bezier.getLength() );
 
-                    for ( let l = 0; l < points.length; l++ ) {
+		const extrudeSettings = {
+			steps: 200,
+			bevelEnabled: false,
+			extrudePath: hermite
+		};
 
-                        const point = points[ l ];
+		const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+		const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+		const mesh = this.curve = new THREE.Mesh( geometry, material );
 
-                        // const distance = position.distanceTo( otherPosition );
+		SceneService.add( mesh );
 
-                        const distance = Math.sqrt(
-                            ( point.x - otherPoint.x ) * ( point.x - otherPoint.x ) +
-                            ( point.y - otherPoint.y ) * ( point.y - otherPoint.y )
-                        );
+	}
 
-                        if ( distance < ( step * 0.9 ) ) {
+	findIntersectionsSlow ( roads: TvRoad[] ): TempIntersection[] {
 
-                            intersections.push( {
-                                x: point.x,
-                                y: point.y,
-                                s1: point.s,
-                                s2: otherPoint.s,
-                                road1: pointCache[ i ].road,
-                                road2: pointCache[ j ].road,
-                                coordA: new TvRoadCoord( pointCache[ i ].road, point.s ),
-                                coordB: new TvRoadCoord( pointCache[ j ].road, otherPoint.s ),
-                            } );
+		const step = 1;
 
-                            // skip a few steps
-                            l += step * 2;
-                            k += step * 2;
-                        }
-                    }
-                }
-            }
-        }
+		const pointCache: any[] = [];
 
-        // const t3 = performance.now();
+		// const t1 = performance.now();
 
-        // const timeToFindIntersections = t3 - t2; console.log( "step2", timeToFindIntersections );
+		for ( let i = 0; i < roads.length; i++ ) {
 
-        return intersections;
-    }
+			const road = roads[ i ];
 
-    calculateDistance ( roadAHdg: number, roadBHdg: number ) {
+			const positions: any[] = [];
 
-        // const roadA = this.openDrive.getRoadById( coordA.roadId );
-        // const roadB = this.openDrive.getRoadById( coordB.roadId );
+			const geom = {
+				road: road.id,
+				positions: positions,
+			};
 
-        // const roadAHdg = roadA.getRoadPosition( coordA.s ).hdg;
-        // const roadBHdg = roadB.getRoadPosition( coordB.s ).hdg;
+			const geometries = road.geometries;
 
-        let hdgDifference: number;
+			for ( let g = 0; g < geometries.length; g++ ) {
 
-        if ( roadAHdg > roadBHdg )
-            hdgDifference = roadAHdg - roadBHdg;
-        else
-            hdgDifference = roadBHdg - roadAHdg;
+				const geometry = geometries[ g ];
 
-        const absDifference = Math.abs( hdgDifference );
+				const posTheta = new TvPosTheta();
 
-        // const absDifference = Maths.clamp( Math.abs( hdgDifference ), 0, Maths.M_PI_2 );
+				for ( let s = geometry.s; s <= geometry.s2; s += step ) {
 
-        // const sDirection = this.calculateSDirection( roadAHdg, roadBHdg );
+					geometry.getCoords( s, posTheta );
 
-        const distanceFromJunction = Math.abs( Maths.M_PI - absDifference ) * 1.5;
+					positions.push( { x: posTheta.x, y: posTheta.y, z: 0, s: s } );
 
-        return distanceFromJunction;
-    }
+				}
+			}
 
-    calculateSDirection ( hdgA, hdgB ): TvDirection {
+			pointCache.push( geom );
+		}
 
-        let difference;
+		// const t2 = performance.now();
 
-        if ( hdgA > hdgB ) {
+		// const timeToMakeGeometries = t2 - t1; console.log( "step-1", timeToMakeGeometries );
 
-            difference = hdgB - hdgA;
+		const intersections: TempIntersection[] = [];
 
-        } else {
+		for ( let i = 0; i < pointCache.length; i++ ) {
 
-            difference = hdgA - hdgB;
+			const points = pointCache[ i ].positions;
 
-        }
+			for ( let j = i + 1; j < pointCache.length; j++ ) {
 
-        return Math.abs( difference ) > Maths.M_PI_2 ?
-            TvDirection.OPPOSITE :
-            TvDirection.SAME;
-    }
+				const otherPoints = pointCache[ j ].positions;
 
-    toPositiveAngle ( angle: number ) {
+				for ( let k = 0; k < otherPoints.length; k++ ) {
 
-        angle = angle % ( Math.PI * 2 );
+					const otherPoint = otherPoints[ k ];
 
-        while ( angle < 0 ) {
+					for ( let l = 0; l < points.length; l++ ) {
 
-            angle += Math.PI * 2;
+						const point = points[ l ];
 
-        }
+						// const distance = position.distanceTo( otherPosition );
 
-        return angle;
-    }
+						const distance = Math.sqrt(
+							( point.x - otherPoint.x ) * ( point.x - otherPoint.x ) +
+							( point.y - otherPoint.y ) * ( point.y - otherPoint.y )
+						);
 
-    prepareJunctionConnections ( junctions: any[] ): IJunctionConnection[] {
+						if ( distance < ( step * 0.9 ) ) {
 
-        const connections: IJunctionConnection[] = [];
+							intersections.push( {
+								x: point.x,
+								y: point.y,
+								s1: point.s,
+								s2: otherPoint.s,
+								road1: pointCache[ i ].road,
+								road2: pointCache[ j ].road,
+								coordA: new TvRoadCoord( pointCache[ i ].road, point.s ),
+								coordB: new TvRoadCoord( pointCache[ j ].road, otherPoint.s ),
+							} );
 
-        for ( let i = 0; i < junctions.length; i++ ) {
+							// skip a few steps
+							l += step * 2;
+							k += step * 2;
+						}
+					}
+				}
+			}
+		}
 
-            const junction = junctions[ i ];
+		// const t3 = performance.now();
 
-            // point of intersection
-            this.pointEditor.addControlPoint( junction.position );
+		// const timeToFindIntersections = t3 - t2; console.log( "step2", timeToFindIntersections );
 
-            const dots = this.createDotsForJunction( junction );
+		return intersections;
+	}
 
-            // ManeuverTool.createConnections( [ junction.road1, junction.road2 ], dots ).forEach( connection => {
+	calculateDistance ( roadAHdg: number, roadBHdg: number ) {
 
-            //     connections.push( connection );
+		// const roadA = this.openDrive.getRoadById( coordA.roadId );
+		// const roadB = this.openDrive.getRoadById( coordB.roadId );
 
-            // } );
+		// const roadAHdg = roadA.getRoadPosition( coordA.s ).hdg;
+		// const roadBHdg = roadB.getRoadPosition( coordB.s ).hdg;
 
-        }
+		let hdgDifference: number;
 
-        return connections;
-    }
+		if ( roadAHdg > roadBHdg ) {
+			hdgDifference = roadAHdg - roadBHdg;
+		} else {
+			hdgDifference = roadBHdg - roadAHdg;
+		}
 
-    createDotsForJunction ( junction ) {
+		const absDifference = Math.abs( hdgDifference );
 
-        const dots: JunctionDot[] = [];
+		// const absDifference = Maths.clamp( Math.abs( hdgDifference ), 0, Maths.M_PI_2 );
 
-        const road1_dots = AutoManeuverTool.createDots(
-            junction.road1,
-            junction.position,
-            junction.road1_s,
-            junction.road1_StartS,
-            junction.road1_EndS
-        );
+		// const sDirection = this.calculateSDirection( roadAHdg, roadBHdg );
 
-        const road2_dots = AutoManeuverTool.createDots(
-            junction.road2,
-            junction.position,
-            junction.road2_s,
-            junction.road2_StartS,
-            junction.road2_EndS
-        );
+		const distanceFromJunction = Math.abs( Maths.M_PI - absDifference ) * 1.5;
 
-        road1_dots.forEach( dot => dots.push( dot ) );
+		return distanceFromJunction;
+	}
 
-        road2_dots.forEach( dot => dots.push( dot ) );
+	calculateSDirection ( hdgA, hdgB ): TvDirection {
 
-        dots.forEach( dot => {
+		let difference;
 
-            dot.sDirection = junction.sDirection;
+		if ( hdgA > hdgB ) {
 
-            const cp = this.pointEditor.addControlPoint( dot.position, null, 20 );
+			difference = hdgB - hdgA;
 
-            ( cp.material as PointsMaterial ).color.set( dot.color );
+		} else {
 
-        } );
+			difference = hdgA - hdgB;
 
-        return dots;
-    }
+		}
 
-    calculateJunctionDistances ( coordA: TvRoadCoord, coordB: TvRoadCoord ) {
+		return Math.abs( difference ) > Maths.M_PI_2 ?
+			TvDirection.OPPOSITE :
+			TvDirection.SAME;
+	}
 
-        const result: { start: TvRoadCoord, end: TvRoadCoord }[] = [];
+	toPositiveAngle ( angle: number ) {
 
-        const coords: TvRoadCoord[] = [];
+		angle = angle % ( Math.PI * 2 );
 
-        const roadA = this.map.getRoadById( coordA.roadId );
-        const roadB = this.map.getRoadById( coordB.roadId );
+		while ( angle < 0 ) {
 
-        const roadALeftWidth = roadA.getLeftSideWidth( coordA.s );
-        const roadARightWidth = roadA.getRightsideWidth( coordA.s );
+			angle += Math.PI * 2;
 
-        const roadBLeftWidth = roadB.getLeftSideWidth( coordB.s );
-        const roadBRightWidth = roadB.getRightsideWidth( coordB.s );
+		}
 
-        const roadAHdg = roadA.getRoadPosition( coordA.s ).hdg;
-        const roadBHdg = roadB.getRoadPosition( coordB.s ).hdg;
+		return angle;
+	}
 
-        let roadAStart, roadAEnd, roadBStart, roadBEnd;
+	prepareJunctionConnections ( junctions: any[] ): IJunctionConnection[] {
 
-        const distanceFromJunction = this.calculateDistance( roadAHdg, roadBHdg );
+		const connections: IJunctionConnection[] = [];
 
-        const sDirection = this.calculateSDirection( roadAHdg, roadBHdg );
+		for ( let i = 0; i < junctions.length; i++ ) {
 
-        if ( sDirection === TvDirection.SAME ) {
+			const junction = junctions[ i ];
 
-            roadAStart = coordA.s - roadBLeftWidth - distanceFromJunction;
-            roadAEnd = coordA.s + roadBRightWidth + distanceFromJunction;
+			// point of intersection
+			this.pointEditor.addControlPoint( junction.position );
 
-            roadBStart = coordB.s - roadALeftWidth - distanceFromJunction;
-            roadBEnd = coordB.s + roadARightWidth + distanceFromJunction;
+			const dots = this.createDotsForJunction( junction );
 
-        } else {
+			// ManeuverTool.createConnections( [ junction.road1, junction.road2 ], dots ).forEach( connection => {
 
-            roadAStart = coordA.s - roadBLeftWidth - distanceFromJunction;
-            roadAEnd = coordA.s + roadBRightWidth + distanceFromJunction;
+			//     connections.push( connection );
 
-            roadBStart = coordB.s - roadALeftWidth - distanceFromJunction;
-            roadBEnd = coordB.s + roadARightWidth + distanceFromJunction;
+			// } );
 
-        }
+		}
 
-        result.push( {
-            start: new TvRoadCoord( coordA.roadId, roadAStart ),
-            end: new TvRoadCoord( coordA.roadId, roadAEnd ),
-        } );
+		return connections;
+	}
 
-        coords.push( new TvRoadCoord( coordA.roadId, roadAStart ) );
-        coords.push( new TvRoadCoord( coordA.roadId, roadAEnd ) );
+	createDotsForJunction ( junction ) {
 
-        result.push( {
-            start: new TvRoadCoord( coordB.roadId, roadBStart ),
-            end: new TvRoadCoord( coordB.roadId, roadBEnd ),
-        } );
+		const dots: JunctionDot[] = [];
 
-        coords.push( new TvRoadCoord( coordB.roadId, roadBStart ) );
-        coords.push( new TvRoadCoord( coordB.roadId, roadBEnd ) );
+		const road1_dots = AutoManeuverTool.createDots(
+			junction.road1,
+			junction.position,
+			junction.road1_s,
+			junction.road1_StartS,
+			junction.road1_EndS
+		);
 
-        return result;
-    }
+		const road2_dots = AutoManeuverTool.createDots(
+			junction.road2,
+			junction.position,
+			junction.road2_s,
+			junction.road2_StartS,
+			junction.road2_EndS
+		);
 
-    static createConnections ( roads: TvRoad[], dots: JunctionDot[] ): IJunctionConnection[] {
+		road1_dots.forEach( dot => dots.push( dot ) );
 
-        const connections: IJunctionConnection[] = [];
+		road2_dots.forEach( dot => dots.push( dot ) );
 
-        roads.forEach( road => {
+		dots.forEach( dot => {
 
-            this.createStraightConnections( road, dots )
-                .forEach( connection => connections.push( connection ) );
+			dot.sDirection = junction.sDirection;
 
-            this.createLeftTurnConnections( road, dots )
-                .forEach( connection => connections.push( connection ) );
+			const cp = this.pointEditor.addControlPoint( dot.position, null, 20 );
 
-            this.createRightTurnConnections( road, dots )
-                .forEach( connection => connections.push( connection ) );
+			( cp.material as PointsMaterial ).color.set( dot.color );
 
-        } );
+		} );
 
-        return connections;
-    }
+		return dots;
+	}
 
-    static createRightTurnConnections ( road: TvRoad, dots: JunctionDot[] = [] ) {
+	calculateJunctionDistances ( coordA: TvRoadCoord, coordB: TvRoadCoord ) {
 
-        const connections: IJunctionConnection[] = [];
+		const result: { start: TvRoadCoord, end: TvRoadCoord }[] = [];
 
-        const directions = [ 'forward', 'backward', ];
+		const coords: TvRoadCoord[] = [];
 
-        directions.forEach( direction => {
+		const roadA = this.map.getRoadById( coordA.roadId );
+		const roadB = this.map.getRoadById( coordB.roadId );
 
-            let entry = null;
+		const roadALeftWidth = roadA.getLeftSideWidth( coordA.s );
+		const roadARightWidth = roadA.getRightsideWidth( coordA.s );
 
-            let entries = dots.filter( d => d.roadId == road.id )
-                .filter( d => d.direction == direction )
-                .filter( d => d.type == 'start' );
+		const roadBLeftWidth = roadB.getLeftSideWidth( coordB.s );
+		const roadBRightWidth = roadB.getRightsideWidth( coordB.s );
 
-            if ( entries.length > 0 && direction == 'forward' ) {
+		const roadAHdg = roadA.getRoadPosition( coordA.s ).hdg;
+		const roadBHdg = roadB.getRoadPosition( coordB.s ).hdg;
 
-                // find right most lane
-                entry = entries.reduce( ( x, y ) => {
-                    return x.laneId < y.laneId ? x : y;
-                } );
+		let roadAStart, roadAEnd, roadBStart, roadBEnd;
 
-            } else if ( entries.length > 0 && direction == 'backward' ) {
+		const distanceFromJunction = this.calculateDistance( roadAHdg, roadBHdg );
 
-                // find right most lane
-                entry = entries.reduce( ( x, y ) => {
-                    return x.laneId > y.laneId ? x : y;
-                } );
+		const sDirection = this.calculateSDirection( roadAHdg, roadBHdg );
 
-            }
+		if ( sDirection === TvDirection.SAME ) {
 
-            if ( entry ) {
+			roadAStart = coordA.s - roadBLeftWidth - distanceFromJunction;
+			roadAEnd = coordA.s + roadBRightWidth + distanceFromJunction;
 
-                const exits = dots
-                    .filter( d => d.roadId != road.id )
-                    .filter( d => d.type == 'end' )
-                    .filter( d => Maths.findSide( d.position, entry.position, entry.hdg ) == TvSide.RIGHT );
+			roadBStart = coordB.s - roadALeftWidth - distanceFromJunction;
+			roadBEnd = coordB.s + roadARightWidth + distanceFromJunction;
 
-                if ( exits.length > 0 ) {
+		} else {
 
-                    // get the nearest exit by lowest distance from entry
-                    const exit = exits.reduce( ( a, b ) => {
-                        return a.position.distanceTo( entry.position ) < b.position.distanceTo( entry.position ) ? a : b;
-                    } );
+			roadAStart = coordA.s - roadBLeftWidth - distanceFromJunction;
+			roadAEnd = coordA.s + roadBRightWidth + distanceFromJunction;
 
-                    const spline = this.createTurnConnectionPaths( entry, exit );
+			roadBStart = coordB.s - roadALeftWidth - distanceFromJunction;
+			roadBEnd = coordB.s + roadARightWidth + distanceFromJunction;
 
-                    connections.push( {
-                        type: 'right-turn',
-                        incomingRoad: entry.roadId,
-                        outgoingRoad: exit.roadId,
-                        fromLane: entry.laneId,
-                        toLane: exit.laneId,
-                        point: 'start',
-                        entry: entry,
-                        exit: exit,
-                        spline: spline
-                    } );
-                }
-            }
+		}
 
-        } );
+		result.push( {
+			start: new TvRoadCoord( coordA.roadId, roadAStart ),
+			end: new TvRoadCoord( coordA.roadId, roadAEnd ),
+		} );
 
-        return connections;
-    }
+		coords.push( new TvRoadCoord( coordA.roadId, roadAStart ) );
+		coords.push( new TvRoadCoord( coordA.roadId, roadAEnd ) );
 
-    checkJunctionEntryInteraction ( event: PointerEventData ): boolean {
+		result.push( {
+			start: new TvRoadCoord( coordB.roadId, roadBStart ),
+			end: new TvRoadCoord( coordB.roadId, roadBEnd ),
+		} );
 
-        if ( event.button !== MouseButton.LEFT ) return;
+		coords.push( new TvRoadCoord( coordB.roadId, roadBStart ) );
+		coords.push( new TvRoadCoord( coordB.roadId, roadBEnd ) );
 
-        let hasInteracted = false;
+		return result;
+	}
 
-        for ( let i = 0; i < event.intersections.length; i++ ) {
+	checkJunctionEntryInteraction ( event: PointerEventData ): boolean {
 
-            const intersection = event.intersections[ i ];
+		if ( event.button !== MouseButton.LEFT ) return;
 
-            if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
+		let hasInteracted = false;
 
-                hasInteracted = true;
+		for ( let i = 0; i < event.intersections.length; i++ ) {
 
-                console.log( 'junction-entry' );
+			const intersection = event.intersections[ i ];
 
-                break;
-            }
-        }
+			if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
 
-        return hasInteracted;
-    }
+				hasInteracted = true;
 
-    createJunctionAreas ( intersections: any[] ) {
+				console.log( 'junction-entry' );
 
-        const junctions: {
-            position,
-            sDirection,
-            road1,
-            road1_s,
-            road1_hdg,
-            road1_StartS,
-            road1_EndS,
-            road2,
-            road2_s,
-            road2_hdg,
-            road2_StartS,
-            road2_EndS
-        }[] = [];
+				break;
+			}
+		}
 
-        for ( let i = 0; i < intersections.length; i++ ) {
+		return hasInteracted;
+	}
 
-            const intersection = intersections[ i ];
+	createJunctionAreas ( intersections: any[] ) {
 
-            const position = new Vector3( intersection.x, intersection.y, 0 );
+		const junctions: {
+			position,
+			sDirection,
+			road1,
+			road1_s,
+			road1_hdg,
+			road1_StartS,
+			road1_EndS,
+			road2,
+			road2_s,
+			road2_hdg,
+			road2_StartS,
+			road2_EndS
+		}[] = [];
 
-            const road_1 = TvMapInstance.map.getRoadById( intersection.road1 );
-            const road_2 = TvMapInstance.map.getRoadById( intersection.road2 );
+		for ( let i = 0; i < intersections.length; i++ ) {
 
-            const road1_s = intersection.s1;
-            const road2_s = intersection.s2;
+			const intersection = intersections[ i ];
 
-            let road1_LeftWidth = 0;
-            let road1_RightWidth = 0;
+			const position = new Vector3( intersection.x, intersection.y, 0 );
 
-            road_1.getLaneSectionAt( road1_s ).getLeftLanes().forEach( lane => {
-                road1_LeftWidth += lane.getWidthValue( road1_s );
-            } );
-            road_1.getLaneSectionAt( road1_s ).getRightLanes().forEach( lane => {
-                road1_RightWidth += lane.getWidthValue( road1_s );
-            } );
+			const road_1 = TvMapInstance.map.getRoadById( intersection.road1 );
+			const road_2 = TvMapInstance.map.getRoadById( intersection.road2 );
 
-            let road2_LeftWidth = 0;
-            let road2_RightWidth = 0;
+			const road1_s = intersection.s1;
+			const road2_s = intersection.s2;
 
-            road_2.getLaneSectionAt( road2_s ).getLeftLanes().forEach( lane => {
-                road2_LeftWidth += lane.getWidthValue( road2_s );
-            } );
-            road_2.getLaneSectionAt( road2_s ).getRightLanes().forEach( lane => {
-                road2_RightWidth += lane.getWidthValue( road2_s );
-            } );
+			let road1_LeftWidth = 0;
+			let road1_RightWidth = 0;
 
-            let hdg1 = road_1.getPositionAt( road1_s, 0 ).hdg * Maths.Rad2Deg;
-            let hdg2 = road_2.getPositionAt( road2_s, 0 ).hdg * Maths.Rad2Deg;
+			road_1.getLaneSectionAt( road1_s ).getLeftLanes().forEach( lane => {
+				road1_LeftWidth += lane.getWidthValue( road1_s );
+			} );
+			road_1.getLaneSectionAt( road1_s ).getRightLanes().forEach( lane => {
+				road1_RightWidth += lane.getWidthValue( road1_s );
+			} );
 
-            let difference = ( hdg2 - hdg1 ) % 360;
+			let road2_LeftWidth = 0;
+			let road2_RightWidth = 0;
 
-            let road1_StartS, road1_EndS, road2_StartS, road2_EndS;
+			road_2.getLaneSectionAt( road2_s ).getLeftLanes().forEach( lane => {
+				road2_LeftWidth += lane.getWidthValue( road2_s );
+			} );
+			road_2.getLaneSectionAt( road2_s ).getRightLanes().forEach( lane => {
+				road2_RightWidth += lane.getWidthValue( road2_s );
+			} );
 
-            let sDirection;
+			let hdg1 = road_1.getPositionAt( road1_s, 0 ).hdg * Maths.Rad2Deg;
+			let hdg2 = road_2.getPositionAt( road2_s, 0 ).hdg * Maths.Rad2Deg;
 
-            // same
-            if ( difference > 0 && difference < 180 ) {
+			let difference = ( hdg2 - hdg1 ) % 360;
 
-                sDirection = 'same';
+			let road1_StartS, road1_EndS, road2_StartS, road2_EndS;
 
-                let distanceFromJunction = Math.abs( 90 - difference ) * 0.2 + 2.5;
+			let sDirection;
 
-                road1_StartS = road1_s - road2_LeftWidth - distanceFromJunction;
-                road1_EndS = road1_s + road2_RightWidth + distanceFromJunction;
+			// same
+			if ( difference > 0 && difference < 180 ) {
 
-                road2_StartS = road2_s - road1_LeftWidth - distanceFromJunction;
-                road2_EndS = road2_s + road1_RightWidth + distanceFromJunction;
+				sDirection = 'same';
 
-            } else {
+				let distanceFromJunction = Math.abs( 90 - difference ) * 0.2 + 2.5;
 
-                sDirection = 'opposite';
+				road1_StartS = road1_s - road2_LeftWidth - distanceFromJunction;
+				road1_EndS = road1_s + road2_RightWidth + distanceFromJunction;
 
-                let distanceFromJunction = Math.abs( 90 - Math.abs( difference ) ) * 0.2 + 2.5;
+				road2_StartS = road2_s - road1_LeftWidth - distanceFromJunction;
+				road2_EndS = road2_s + road1_RightWidth + distanceFromJunction;
 
-                road1_StartS = road1_s - road2_LeftWidth - distanceFromJunction;
-                road1_EndS = road1_s + road2_RightWidth + distanceFromJunction;
+			} else {
 
-                road2_StartS = road2_s - road1_LeftWidth - distanceFromJunction;
-                road2_EndS = road2_s + road1_RightWidth + distanceFromJunction;
+				sDirection = 'opposite';
 
-            }
+				let distanceFromJunction = Math.abs( 90 - Math.abs( difference ) ) * 0.2 + 2.5;
 
-            junctions.push( {
-                position,
-                sDirection,
-                road1: road_1,
-                road1_s,
-                road1_hdg: hdg1,
-                road1_StartS,
-                road1_EndS,
-                road2: road_2,
-                road2_s,
-                road2_hdg: hdg2,
-                road2_StartS,
-                road2_EndS
-            } );
-        }
+				road1_StartS = road1_s - road2_LeftWidth - distanceFromJunction;
+				road1_EndS = road1_s + road2_RightWidth + distanceFromJunction;
 
-        return junctions;
-    }
+				road2_StartS = road2_s - road1_LeftWidth - distanceFromJunction;
+				road2_EndS = road2_s + road1_RightWidth + distanceFromJunction;
 
-    static createStraightConnectionPath ( entry: JunctionDot, exit: JunctionDot ): AbstractSpline {
+			}
 
-        const spline = new AutoSpline();
+			junctions.push( {
+				position,
+				sDirection,
+				road1: road_1,
+				road1_s,
+				road1_hdg: hdg1,
+				road1_StartS,
+				road1_EndS,
+				road2: road_2,
+				road2_s,
+				road2_hdg: hdg2,
+				road2_StartS,
+				road2_EndS
+			} );
+		}
 
-        spline.addControlPointAt( entry.position );
-        spline.addControlPointAt( exit.position );
+		return junctions;
+	}
 
-        spline.update();
+	makeJunctionConnectionPath (
+		incomingRoad: TvRoad,
+		connectingRoad: TvRoad,
+		connection: TvJunctionConnection,
+		link: TvJunctionLaneLink
+	) {
 
-        return spline;
-    }
+		// 1. find connection positions which are basically dots
+		// 2. find whether this connection is straight,left,right based on start->end position relation
 
-    makeJunctionConnectionPath (
-        incomingRoad: TvRoad,
-        connectingRoad: TvRoad,
-        connection: TvJunctionConnection,
-        link: TvJunctionLaneLink
-    ) {
+		let start: Vector3, end: Vector3;
 
-        // 1. find connection positions which are basically dots
-        // 2. find whether this connection is straight,left,right based on start->end position relation
+		if ( connection.contactPoint === 'start' ) {
 
-        let start: Vector3, end: Vector3;
+			start = TvMapQueries.getLanePosition(
+				connectingRoad.id,
+				link.to,
+				0,
+			);
 
-        if ( connection.contactPoint === 'start' ) {
+			end = TvMapQueries.getLanePosition(
+				connectingRoad.id,
+				link.to,
+				connectingRoad.length,
+			);
 
-            start = TvMapQueries.getLanePosition(
-                connectingRoad.id,
-                link.to,
-                0,
-            );
 
-            end = TvMapQueries.getLanePosition(
-                connectingRoad.id,
-                link.to,
-                connectingRoad.length,
-            );
+		} else {
 
+			start = TvMapQueries.getLanePosition(
+				connectingRoad.id,
+				link.to,
+				connectingRoad.length,
+			);
 
-        } else {
+			end = TvMapQueries.getLanePosition(
+				connectingRoad.id,
+				link.to,
+				0,
+			);
 
-            start = TvMapQueries.getLanePosition(
-                connectingRoad.id,
-                link.to,
-                connectingRoad.length,
-            );
+		}
 
-            end = TvMapQueries.getLanePosition(
-                connectingRoad.id,
-                link.to,
-                0,
-            );
+		// SceneService.add( new JunctionEntryObject( "start-dot", start, OdContactPoints.START, incomingRoad, link.from ) );
+		// SceneService.add( new JunctionEntryObject( "start-dot", end, OdContactPoints.END, incomingRoad, link.from ) );
 
-        }
+		if ( !link.lanePath ) {
 
-        // SceneService.add( new JunctionEntryObject( "start-dot", start, OdContactPoints.START, incomingRoad, link.from ) );
-        // SceneService.add( new JunctionEntryObject( "start-dot", end, OdContactPoints.END, incomingRoad, link.from ) );
+			link.lanePath = LanePathFactory.create( incomingRoad, connectingRoad, connection, link );
 
-        if ( !link.lanePath ) {
+			SceneService.add( link.lanePath );
 
-            link.lanePath = LanePathFactory.create( incomingRoad, connectingRoad, connection, link );
+		} else {
 
-            SceneService.add( link.lanePath );
+			link.lanePath.visible = true;
 
-        } else {
+		}
 
-            link.lanePath.visible = true;
 
-        }
+		// //////////////////////////////////////////////////////////////
 
+		// const spline = connectingRoad.spline;
 
-        // //////////////////////////////////////////////////////////////
+		// const shape = new THREE.Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
 
-        // const spline = connectingRoad.spline;
+		// if ( spline.controlPointPositions.length < 2 ) return;
 
-        // const shape = new THREE.Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
+		// let offset = targetLaneWidth;
 
-        // if ( spline.controlPointPositions.length < 2 ) return;
+		// if ( targetLane.id < 0 ) offset *= -1;
 
-        // let offset = targetLaneWidth;
+		// const path = new ExplicitSplinePath( spline as ExplicitSpline, offset );
 
-        // if ( targetLane.id < 0 ) offset *= -1;
+		// // const extrudeSettings = {
+		// //     steps: path.getLength() * 2,
+		// //     bevelEnabled: false,
+		// //     extrudePath: path
+		// // };
 
-        // const path = new ExplicitSplinePath( spline as ExplicitSpline, offset );
+		// // const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+		// // const material = new THREE.MeshBasicMaterial( {
+		// //     color: 0x00ff00,
+		// //     wireframe: false,
+		// //     opacity: 0.5,
+		// //     transparent: true,
+		// //     map: OdTextures.asphalt
+		// // } );
 
-        // // const extrudeSettings = {
-        // //     steps: path.getLength() * 2,
-        // //     bevelEnabled: false,
-        // //     extrudePath: path
-        // // };
+		// // link.mesh = new THREE.Mesh( geometry, material );
 
-        // // const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-        // // const material = new THREE.MeshBasicMaterial( {
-        // //     color: 0x00ff00,
-        // //     wireframe: false,
-        // //     opacity: 0.5,
-        // //     transparent: true,
-        // //     map: OdTextures.asphalt
-        // // } );
+		// // link.mesh.renderOrder = 3;
 
-        // // link.mesh = new THREE.Mesh( geometry, material );
+		// // SceneService.add( link.mesh );
 
-        // // link.mesh.renderOrder = 3;
+		// const lineMaterial = new LineBasicMaterial( {
+		//     color: 0x00ff00,
+		//     linewidth: 100,
+		//     opacity: 0.5,
+		//     transparent: true,
+		// } );
 
-        // // SceneService.add( link.mesh );
+		// const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-        // const lineMaterial = new LineBasicMaterial( {
-        //     color: 0x00ff00,
-        //     linewidth: 100,
-        //     opacity: 0.5,
-        //     transparent: true,
-        // } );
+		// link.mesh = new Line( lineGeometry, lineMaterial );
 
-        // const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+		// link.mesh.castShadow = true;
 
-        // link.mesh = new Line( lineGeometry, lineMaterial );
+		// link.mesh.renderOrder = 3;
 
-        // link.mesh.castShadow = true;
+		// link.mesh.frustumCulled = false;
 
-        // link.mesh.renderOrder = 3;
+		// SceneService.add( link.mesh );
+	}
 
-        // link.mesh.frustumCulled = false;
+	// create multiple roads
+	createStraightIntersectionRoad ( incomingRoad: TvRoad, sStart, sIntersection, sEnd, spline: AbstractSpline ) {
 
-        // SceneService.add( link.mesh );
-    }
 
-    // create multiple roads
-    createStraightIntersectionRoad ( incomingRoad: TvRoad, sStart, sIntersection, sEnd, spline: AbstractSpline ) {
+	}
 
+	/**
+	 *
+	 * @param junctionId
+	 * @param connection
+	 * @deprecated not working
+	 */
+	createStraightJunctionRoad ( junctionId: number, connection: IJunctionConnection ) {
 
-    }
+		const incomingRoad = this.map.getRoadById( connection.entry.roadId );
+		const incomingLane = connection.entry.laneId;
 
-    /**
-     *
-     * @param junctionId
-     * @param connection
-     * @deprecated not working
-     */
-    createStraightJunctionRoad ( junctionId: number, connection: IJunctionConnection ) {
+		const originalLenth = incomingRoad.length;
 
-        const incomingRoad = this.map.getRoadById( connection.entry.roadId );
-        const incomingLane = connection.entry.laneId;
+		// change geometry of road 1
+		const startPos = new TvPosTheta();
+		const endPos = new TvPosTheta();
 
-        const originalLenth = incomingRoad.length;
+		incomingRoad.getGeometryCoordsAt( connection.entry.s, 0, startPos );
+		incomingRoad.getGeometryCoordsAt( connection.exit.s, 0, endPos );
 
-        // change geometry of road 1
-        const startPos = new TvPosTheta();
-        const endPos = new TvPosTheta();
+		const laneSection = incomingRoad.getLaneSectionAt( connection.entry.s );
+		const geometry = incomingRoad.getGeometryAt( connection.entry.s );
 
-        incomingRoad.getGeometryCoordsAt( connection.entry.s, 0, startPos );
-        incomingRoad.getGeometryCoordsAt( connection.exit.s, 0, endPos );
+		// split
+		incomingRoad.split( connection.exit.s );
 
-        const laneSection = incomingRoad.getLaneSectionAt( connection.entry.s );
-        const geometry = incomingRoad.getGeometryAt( connection.entry.s );
+		// connecting road
 
-        // split 
-        incomingRoad.split( connection.exit.s );
+		const connectingRoadLength = connection.exit.s - connection.entry.s;
 
-        // connecting road
+		const connectingRoad = new TvRoad( 'Connecting', connectingRoadLength, this.map.roads.size, -1 );
 
-        const connectingRoadLength = connection.exit.s - connection.entry.s;
+		connection.spline.exportGeometries().forEach( g => connectingRoad.addGeometry( g ) );
 
-        const connectingRoad = new TvRoad( 'Connecting', connectingRoadLength, this.map.roads.size, -1 );
 
-        connection.spline.exportGeometries().forEach( g => connectingRoad.addGeometry( g ) );
+		// outgoing road
 
+		const outgoingRoadLength = originalLenth - connection.exit.s;
 
-        // outgoing road
+		const outgoingRoad = new TvRoad( 'Outgoing', outgoingRoadLength, this.map.roads.size, -1 );
 
-        const outgoingRoadLength = originalLenth - connection.exit.s;
 
-        const outgoingRoad = new TvRoad( 'Outgoing', outgoingRoadLength, this.map.roads.size, -1 );
+		// update incoming finally
 
+		incomingRoad.length = connection.entry.s;
 
-        // update incoming finally
+		geometry.length = geometry.length - outgoingRoadLength - connectingRoadLength;
 
-        incomingRoad.length = connection.entry.s;
+		return {
+			incoming: incomingRoad,
+			connecting: connectingRoad,
+			outgoing: outgoingRoad
+		};
 
-        geometry.length = geometry.length - outgoingRoadLength - connectingRoadLength;
-
-        return {
-            incoming: incomingRoad,
-            connecting: connectingRoad,
-            outgoing: outgoingRoad
-        };
-
-    }
+	}
 }

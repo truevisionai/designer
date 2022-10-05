@@ -2,71 +2,75 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+@Component( {
+	selector: 'app-abstract-field-inspector',
+	template: '',
+} )
 export abstract class AbstractFieldComponent {
 
-    @Input() disabled: boolean = false;
+	@Input() disabled: boolean = false;
 
-    @Input() abstract value: any;
+	@Input() abstract value: any;
 
-    @Input() label: string = '';
+	@Input() label: string = '';
 
-    /**
-     * @deprecated use changed event instead
-     */
-    @Output() valueChanged = new EventEmitter<any>();
+	/**
+	 * @deprecated use changed event instead
+	 */
+	@Output() valueChanged = new EventEmitter<any>();
 
-    @Output() changed = new EventEmitter<any>();
+	@Output() changed = new EventEmitter<any>();
 
-    onModelChanged ( $event: any ) {
+	get isParameter (): boolean {
 
-        this.value = $event;
+		return typeof this.value === 'string' && this.value.indexOf( '$' ) !== -1;
 
-        this.valueChanged.emit( this.value );
+	}
 
-        this.changed.emit( this.value );
+	get fieldValue () {
 
-    }
+		if ( this.isParameter ) {
 
-    get isParameter (): boolean {
+			// return OscSourceFile.scenario.findParameter( this.value ).value;
 
-        return typeof this.value === 'string' && this.value.indexOf( '$' ) !== -1;
+		}
 
-    }
+		return this.value;
+	}
 
-    get fieldValue () {
+	set fieldValue ( value ) {
 
-        if ( this.isParameter ) {
+		if ( this.isParameter ) {
 
-            // return OscSourceFile.scenario.findParameter( this.value ).value;
+			// OscSourceFile.scenario.findParameter( this.value ).value = value;
 
-        }
+		} else {
 
-        return this.value;
-    }
+			this.value = value;
 
-    set fieldValue ( value ) {
+		}
 
-        if ( this.isParameter ) {
+	}
 
-            // OscSourceFile.scenario.findParameter( this.value ).value = value;
+	onModelChanged ( $event: any ) {
 
-        } else {
+		this.value = $event;
 
-            this.value = value;
+		this.valueChanged.emit( this.value );
 
-        }
+		this.changed.emit( this.value );
 
-    }
+	}
 
-    onFieldValueChanged ( $event: any ) {
+	onFieldValueChanged ( $event: any ) {
 
-        this.fieldValue = $event;
+		this.fieldValue = $event;
 
-        if ( !this.isParameter ) this.valueChanged.emit( this.fieldValue );
+		if ( !this.isParameter ) this.valueChanged.emit( this.fieldValue );
 
-        if ( !this.isParameter ) this.changed.emit( this.fieldValue );
+		if ( !this.isParameter ) this.changed.emit( this.fieldValue );
 
-    }
+	}
 }

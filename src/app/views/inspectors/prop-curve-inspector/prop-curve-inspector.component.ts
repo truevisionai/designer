@@ -2,56 +2,59 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropCurve } from "../../../modules/tv-map/models/prop-curve";
 import { PropService } from 'app/services/prop-service';
+import { PropCurve } from '../../../modules/tv-map/models/prop-curve';
 
 export class PropCurveInspectorData {
 
-    constructor (
-        public controlPoint: AnyControlPoint,
-        public propCurve: PropCurve
-    ) {
-    }
+	constructor (
+		public controlPoint: AnyControlPoint,
+		public propCurve: PropCurve
+	) {
+	}
 }
 
 @Component( {
-    selector: 'app-prop-curve-inspector',
-    templateUrl: './prop-curve-inspector.component.html'
+	selector: 'app-prop-curve-inspector',
+	templateUrl: './prop-curve-inspector.component.html'
 } )
 export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-    data: PropCurveInspectorData;
+	data: PropCurveInspectorData;
 
-    constructor () { }
+	constructor () {
+	}
 
-    ngOnInit (): void { }
+	ngOnInit (): void {
+	}
 
-    ngOnDestroy (): void { }
+	ngOnDestroy (): void {
+	}
 
-    onSpacingChanged ( $event: string ) {
+	onSpacingChanged ( $event: any ) {
 
-        this.data.propCurve.spacing = parseFloat( $event );
+		this.data.propCurve.spacing = parseFloat( $event );
 
-        PropService.updateCurveProps( this.data.propCurve );
+		PropService.updateCurveProps( this.data.propCurve );
 
-    }
+	}
 
-    onRotationChanged ( $event: string ) {
+	onRotationChanged ( $event: any ) {
 
-        this.data.propCurve.rotation = parseFloat( $event );
+		this.data.propCurve.rotation = parseFloat( $event );
 
-        PropService.updateCurveProps( this.data.propCurve );
+		PropService.updateCurveProps( this.data.propCurve );
 
-    }
+	}
 
-    onPositionVarianceChanged ( $event: string ) {
+	onPositionVarianceChanged ( $event: any ) {
 
-        this.data.propCurve.positionVariance = parseFloat( $event );
+		this.data.propCurve.positionVariance = parseFloat( $event );
 
-        PropService.updateCurveProps( this.data.propCurve );
+		PropService.updateCurveProps( this.data.propCurve );
 
-    }
+	}
 }

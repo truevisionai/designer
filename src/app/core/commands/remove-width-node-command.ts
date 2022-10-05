@@ -2,78 +2,78 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { SetInspectorCommand } from './set-inspector-command';
 import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { SceneService } from '../services/scene.service';
+import { BaseCommand } from './base-command';
+import { SetInspectorCommand } from './set-inspector-command';
 
 export class RemoveWidthNodeCommand extends BaseCommand {
 
-    constructor (
-        private node: LaneWidthNode,
-        private laneHelper?: OdLaneReferenceLineBuilder
-    ) {
+	constructor (
+		private node: LaneWidthNode,
+		private laneHelper?: OdLaneReferenceLineBuilder
+	) {
 
-        super();
+		super();
 
-        if ( !laneHelper ) {
+		if ( !laneHelper ) {
 
-            this.laneHelper = new OdLaneReferenceLineBuilder();
+			this.laneHelper = new OdLaneReferenceLineBuilder();
 
-        }
+		}
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        const index = this.node.lane.width.findIndex( laneWidth => laneWidth.uuid === this.node.laneWidth.uuid );
+		const index = this.node.lane.width.findIndex( laneWidth => laneWidth.uuid === this.node.laneWidth.uuid );
 
-        if ( index === -1 ) SnackBar.error( "Unexpected error. Not able to find this node" );
-        if ( index === -1 ) return;
+		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+		if ( index === -1 ) return;
 
-        this.node.lane.width.splice( index, 1 );
+		this.node.lane.width.splice( index, 1 );
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        SceneService.remove( this.node );
+		SceneService.remove( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
-        ( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane } ) ).execute();
-    }
+		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane } ) ).execute();
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.node.lane.addWidthRecordInstance( this.node.laneWidth );
+		this.node.lane.addWidthRecordInstance( this.node.laneWidth );
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        SceneService.add( this.node );
+		SceneService.add( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
-        ( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane, node: this.node } ) ).execute();
+		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane, node: this.node } ) ).execute();
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
-    rebuild ( road: TvRoad ): void {
+	rebuild ( road: TvRoad ): void {
 
-        SceneService.removeWithChildren( road.gameObject, true );
+		SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        this.laneHelper.drawRoad( road, LineType.DASHED, true );
-    }
+		this.laneHelper.drawRoad( road, LineType.DASHED, true );
+	}
 
 }

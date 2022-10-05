@@ -3,59 +3,59 @@
  */
 
 import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
-import { ComponentContainerDirective } from '../../directives/component-container.directive';
 import { ComponentItem, IComponent } from '../../../core/game-object';
 import { AppInspector } from '../../../core/inspector';
+import { ComponentContainerDirective } from '../../directives/component-container.directive';
 
 @Component( {
-    selector: 'app-object-inspector',
-    templateUrl: './object-inspector.component.html',
-    styleUrls: [ './object-inspector.component.css' ]
+	selector: 'app-object-inspector',
+	templateUrl: './object-inspector.component.html',
+	styleUrls: [ './object-inspector.component.css' ]
 } )
 export class ObjectInspectorComponent implements OnInit {
 
-    @ViewChild( ComponentContainerDirective ) componentContainer: ComponentContainerDirective;
+	@ViewChild( ComponentContainerDirective ) componentContainer: ComponentContainerDirective;
 
-    constructor (
-        private componentFactoryResolver: ComponentFactoryResolver,
-    ) {
+	constructor (
+		private componentFactoryResolver: ComponentFactoryResolver,
+	) {
 
-        AppInspector.inspectorChanged.subscribe( ( e: ComponentItem ) => {
-            this.loadInspector( e );
-        } );
+		AppInspector.inspectorChanged.subscribe( ( e: ComponentItem ) => {
+			this.loadInspector( e );
+		} );
 
-        AppInspector.inspectorCleared.subscribe( () => {
-            this.clearInspector();
-        } )
-    }
+		AppInspector.inspectorCleared.subscribe( () => {
+			this.clearInspector();
+		} );
+	}
 
-    loadInspector ( component: ComponentItem ) {
+	loadInspector ( component: ComponentItem ) {
 
-        const componentFactory = this.componentFactoryResolver.resolveComponentFactory( component.component );
+		const componentFactory = this.componentFactoryResolver.resolveComponentFactory( component.component );
 
-        const viewContainerRef = this.componentContainer.viewContainerRef;
+		const viewContainerRef = this.componentContainer.viewContainerRef;
 
-        viewContainerRef.clear();
+		viewContainerRef.clear();
 
-        const componentRef = viewContainerRef.createComponent( componentFactory );
+		const componentRef = viewContainerRef.createComponent( componentFactory );
 
-        const componentInstance = componentRef.instance as IComponent;
+		const componentInstance = componentRef.instance as IComponent;
 
-        componentInstance.data = component.data;
+		componentInstance.data = component.data;
 
-        AppInspector.inspectorCreated.emit( componentInstance );
-    }
+		AppInspector.inspectorCreated.emit( componentInstance );
+	}
 
-    clearInspector () {
+	clearInspector () {
 
-        this.componentContainer.viewContainerRef.clear();
+		this.componentContainer.viewContainerRef.clear();
 
-    }
-
-
-    ngOnInit () {
+	}
 
 
-    }
+	ngOnInit () {
+
+
+	}
 
 }

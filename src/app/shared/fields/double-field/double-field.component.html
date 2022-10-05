@@ -10,14 +10,15 @@
 
 <!-- </mat-form-field> -->
 
-<div class="tv-field" align="left">
+<div align="left" class="tv-field">
 
-    <label class="tv-field-label">{{ label }}</label>
+	<label class="tv-field-label">{{ label }}</label>
 
-    <div class="tv-field-text-input">
+	<div class="tv-field-text-input">
 
-        <input [disabled]="disabled" type="text" (focus)="onFocus()" (blur)="onBlur()" (wheel)="onWheel($event)" [value]="value" [placeholder]="label" [(ngModel)]="value" (ngModelChange)="onModelChanged($event)" />
+		<input (blur)="onBlur()" (focus)="onFocus()" (ngModelChange)="onModelChanged($event)" (wheel)="onWheel($event)" [(ngModel)]="value"
+			   [disabled]="disabled" [placeholder]="label" [value]="value" type="text"/>
 
-    </div>
+	</div>
 
 </div>

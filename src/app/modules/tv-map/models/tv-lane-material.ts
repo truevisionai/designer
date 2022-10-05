@@ -4,52 +4,55 @@
 
 export class TvLaneMaterial {
 
-    private _sOffset: number;
-    private _surface: string;
-    private _friction: number;
-    private _roughness: number;
+	constructor ( sOffset: number, surface: string, friction: number, roughness: number ) {
+		this._sOffset = sOffset;
+		this._surface = surface;
+		this._friction = friction;
+		this._roughness = roughness;
+	}
 
-    constructor ( sOffset: number, surface: string, friction: number, roughness: number ) {
-        this._sOffset = sOffset;
-        this._surface = surface;
-        this._friction = friction;
-        this._roughness = roughness;
-    }
+	private _sOffset: number;
 
-    get s () {
-        return this.sOffset;
-    }
+	get sOffset () {
+		return this._sOffset;
+	}
 
-    get sOffset () {
-        return this._sOffset;
-    }
+	set sOffset ( value ) {
+		this._sOffset = value;
+	}
 
-    set sOffset ( value ) {
-        this._sOffset = value;
-    }
+	private _surface: string;
 
-    get surface () {
-        return this._surface;
-    }
+	get surface () {
+		return this._surface;
+	}
 
-    set surface ( value ) {
-        this._surface = value;
-    }
+	set surface ( value ) {
+		this._surface = value;
+	}
 
-    get friction () {
-        return this._friction;
-    }
+	private _friction: number;
 
-    set friction ( value ) {
-        this._friction = value;
-    }
+	get friction () {
+		return this._friction;
+	}
 
-    get roughness () {
-        return this._roughness;
-    }
+	set friction ( value ) {
+		this._friction = value;
+	}
 
-    set roughness ( value ) {
-        this._roughness = value;
-    }
+	private _roughness: number;
+
+	get roughness () {
+		return this._roughness;
+	}
+
+	set roughness ( value ) {
+		this._roughness = value;
+	}
+
+	get s () {
+		return this.sOffset;
+	}
 
 }

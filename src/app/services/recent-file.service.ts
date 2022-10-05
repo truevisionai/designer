@@ -3,144 +3,144 @@
  */
 
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { FileService } from './file.service';
 import { IFile } from '../core/models/file';
+import { FileService } from './file.service';
+import { StorageService } from './storage.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class RecentFileService {
 
-    private readonly LAST_OPENED_FILE = 'current_file';
-    private readonly RECENT_FILES = 'recent_files';
+	private readonly LAST_OPENED_FILE = 'current_file';
+	private readonly RECENT_FILES = 'recent_files';
 
-    private mRecentFiles: IFile[] = [];
-    private mLastFile: IFile;
+	private mRecentFiles: IFile[] = [];
+	private mLastFile: IFile;
 
-    constructor (
-        private storage: StorageService,
-        private files: FileService
-    ) {
+	constructor (
+		private storage: StorageService,
+		private files: FileService
+	) {
 
-        this.loadStorageData();
+		this.loadStorageData();
 
-        this.files.fileImported.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
+		this.files.fileImported.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
 
-        this.files.fileSaved.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
+		this.files.fileSaved.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
 
-    }
+	}
 
-    get lastOpenedFile (): IFile {
+	get lastOpenedFile (): IFile {
 
-        return this.mLastFile;
+		return this.mLastFile;
 
-    }
+	}
 
-    get currentFile (): IFile {
+	get currentFile (): IFile {
 
-        return this.mLastFile;
+		return this.mLastFile;
 
-    }
+	}
 
-    set currentFile ( file: IFile ) {
+	set currentFile ( file: IFile ) {
 
-        this.mLastFile = file;
+		this.mLastFile = file;
 
-        this.saveLastOpenedFile();
+		this.saveLastOpenedFile();
 
-    }
+	}
 
-    get recentFiles (): IFile[] {
+	get recentFiles (): IFile[] {
 
-        return this.mRecentFiles.reverse();
+		return this.mRecentFiles.reverse();
 
-    }
+	}
 
-    addToRecentFiles ( file: IFile ): void {
+	addToRecentFiles ( file: IFile ): void {
 
-        this.currentFile = file;
+		this.currentFile = file;
 
-        if ( !this.fileExists( file ) ) this.mRecentFiles.push( file );
+		if ( !this.fileExists( file ) ) this.mRecentFiles.push( file );
 
-        this.saveRecentFiles();
+		this.saveRecentFiles();
 
-    }
+	}
 
-    addPathToRecentFiles ( path: string ) {
+	addPathToRecentFiles ( path: string ) {
 
-        this.mRecentFiles.push( new IFile( null, path ) );
+		this.mRecentFiles.push( new IFile( null, path ) );
 
-        this.saveRecentFiles();
-    }
+		this.saveRecentFiles();
+	}
 
-    private saveLastOpenedFile (): void {
+	private saveLastOpenedFile (): void {
 
-        this.storage.store( this.LAST_OPENED_FILE, JSON.stringify( this.currentFile ) );
+		this.storage.store( this.LAST_OPENED_FILE, JSON.stringify( this.currentFile ) );
 
-    }
+	}
 
-    private loadStorageData (): void {
+	private loadStorageData (): void {
 
-        this.loadLastFileFromStorage();
-        this.loadRecentFilesFromStorage();
+		this.loadLastFileFromStorage();
+		this.loadRecentFilesFromStorage();
 
-    }
+	}
 
-    private loadLastFileFromStorage (): void {
+	private loadLastFileFromStorage (): void {
 
-        var jsonString = this.storage.get( this.LAST_OPENED_FILE );
+		var jsonString = this.storage.get( this.LAST_OPENED_FILE );
 
-        if ( jsonString != null ) {
+		if ( jsonString != null ) {
 
-            this.mLastFile = JSON.parse( jsonString );
-        }
-    }
+			this.mLastFile = JSON.parse( jsonString );
+		}
+	}
 
-    private loadRecentFilesFromStorage (): void {
+	private loadRecentFilesFromStorage (): void {
 
-        var jsonString = this.storage.get( this.RECENT_FILES );
+		var jsonString = this.storage.get( this.RECENT_FILES );
 
-        if ( jsonString != null ) {
+		if ( jsonString != null ) {
 
-            try {
+			try {
 
-                const files = JSON.parse( jsonString );
+				const files = JSON.parse( jsonString );
 
-                files.forEach( file => {
-                    this.mRecentFiles.push( new IFile( file.name, file.path, file.contents, file.type, file.online, file.updatedAt ) );
-                } );
+				files.forEach( file => {
+					this.mRecentFiles.push( new IFile( file.name, file.path, file.contents, file.type, file.online, file.updatedAt ) );
+				} );
 
-            } catch ( error ) {
+			} catch ( error ) {
 
-                console.error( error );
+				console.error( error );
 
-            }
+			}
 
-        } else {
+		} else {
 
-            this.saveRecentFiles();
-        }
+			this.saveRecentFiles();
+		}
 
-    }
+	}
 
-    private saveRecentFiles (): void {
+	private saveRecentFiles (): void {
 
-        this.storage.store( this.RECENT_FILES, JSON.stringify( this.mRecentFiles ) );
+		this.storage.store( this.RECENT_FILES, JSON.stringify( this.mRecentFiles ) );
 
-    }
+	}
 
-    private fileExists ( find: IFile ): boolean {
+	private fileExists ( find: IFile ): boolean {
 
-        if ( this.recentFiles.findIndex( file => file.path === find.path ) == -1 ) {
+		if ( this.recentFiles.findIndex( file => file.path === find.path ) == -1 ) {
 
-            return false;
+			return false;
 
-        } else {
+		} else {
 
-            return true;
+			return true;
 
-        }
+		}
 
-    }
+	}
 }

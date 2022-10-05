@@ -2,217 +2,211 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseMarkingTool } from './marking-point-tool';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { Subscription } from 'rxjs';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { LineEditor } from '../editors/line-editor';
+import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import {
-    CurvePath,
-    ExtrudeBufferGeometry,
-    ExtrudeGeometryOptions,
-    Mesh,
-    MeshBasicMaterial,
-    Shape,
-    TextureLoader,
-    Vector2,
-    Vector3
+	CurvePath,
+	ExtrudeGeometry,
+	ExtrudeGeometryOptions,
+	Mesh,
+	MeshBasicMaterial,
+	Shape,
+	TextureLoader,
+	Vector2,
+	Vector3
 } from 'three';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { LineEditor } from '../editors/line-editor';
+import { BaseMarkingTool } from './marking-point-tool';
 
 export class MarkingLineTool extends BaseMarkingTool {
 
-    name: string = 'MarkingLineTool';
+	static texture = new TextureLoader().load( `assets/markings/crosswalk-marking.png` );
+	name: string = 'MarkingLineTool';
+	private shapeEditor: AbstractShapeEditor;
+	private controlPointAddedSubscriber: Subscription;
+	private hasSignal = false;
+	private selectedSignal: TvRoadSignal;
+	private cpSubscriptions: Subscription[] = [];
+	private mesh: Mesh;
 
-    private shapeEditor: AbstractShapeEditor;
+	constructor () {
 
-    private controlPointAddedSubscriber: Subscription;
+		super();
 
-    private hasSignal = false;
-    private selectedSignal: TvRoadSignal;
+	}
 
-    private cpSubscriptions: Subscription[] = [];
+	init () {
 
-    private mesh: Mesh;
+		super.init();
 
-    static texture = new TextureLoader().load( `assets/markings/crosswalk-marking.png` );
+		this.shapeEditor = new LineEditor();
 
-    constructor () {
+		// this.createControlPoints();
 
-        super();
-
-    }
-
-    init () {
-
-        super.init();
-
-        this.shapeEditor = new LineEditor();
-
-        // this.createControlPoints();
-
-        MarkingLineTool.texture.wrapS = THREE.RepeatWrapping;
-        MarkingLineTool.texture.wrapT = THREE.RepeatWrapping;
-        MarkingLineTool.texture.mapping = THREE.UVMapping;
-        MarkingLineTool.texture.repeat.set( 1, 1 );
-        MarkingLineTool.texture.anisotropy = 5;
+		MarkingLineTool.texture.wrapS = THREE.RepeatWrapping;
+		MarkingLineTool.texture.wrapT = THREE.RepeatWrapping;
+		MarkingLineTool.texture.mapping = THREE.UVMapping;
+		MarkingLineTool.texture.repeat.set( 1, 1 );
+		MarkingLineTool.texture.anisotropy = 5;
 
 
-    }
+	}
 
-    enable () {
+	enable () {
 
-        super.enable();
+		super.enable();
 
-        // this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe( e => this.onControlPointAdded( e ) );
+		// this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe( e => this.onControlPointAdded( e ) );
 
-        this.shapeEditor.curveGeometryAdded.subscribe( e => this.onGeometryAdded( e ) );
-        this.shapeEditor.curveGeometryChanged.subscribe( e => this.onGeometryChanged( e ) );
+		this.shapeEditor.curveGeometryAdded.subscribe( e => this.onGeometryAdded( e ) );
+		this.shapeEditor.curveGeometryChanged.subscribe( e => this.onGeometryChanged( e ) );
 
-    }
+	}
 
-    disable (): void {
+	disable (): void {
 
-        super.disable();
+		super.disable();
 
-        // this.controlPointAddedSubscriber.unsubscribe();
+		// this.controlPointAddedSubscriber.unsubscribe();
 
-        this.shapeEditor.destroy();
+		this.shapeEditor.destroy();
 
-        // this.unsubscribeFromControlPoints();
+		// this.unsubscribeFromControlPoints();
 
-    }
+	}
 
-    getShape (): Shape {
+	getShape (): Shape {
 
-        const shape = new Shape();
+		const shape = new Shape();
 
-        shape.moveTo( 0, -2.5 );
+		shape.moveTo( 0, -2.5 );
 
-        shape.lineTo( 0, 2.5 );
+		shape.lineTo( 0, 2.5 );
 
-        return shape;
+		return shape;
 
-    }
+	}
 
-    getGeometry ( line: THREE.LineCurve3 ) {
+	getGeometry ( line: THREE.LineCurve3 ) {
 
-        const shape = this.getShape();
+		const shape = this.getShape();
 
-        const path = new CurvePath<Vector3>();
+		const path = new CurvePath<Vector3>();
 
-        path.add( line );
+		path.add( line );
 
-        const generator = new CustomUvGenerator();
+		const generator = new CustomUvGenerator();
 
-        const geometry = new ExtrudeBufferGeometry( shape, {
-            depth: 16,
-            extrudePath: path,
-            UVGenerator: generator
-        } );
+		const geometry = new ExtrudeGeometry( shape, {
+			depth: 16,
+			extrudePath: path,
+			UVGenerator: generator
+		} );
 
-        geometry.attributes.faces;
+		geometry.attributes.faces;
 
-        return geometry;
-    }
+		return geometry;
+	}
 
-    onGeometryAdded ( line: THREE.LineCurve3 ) {
+	onGeometryAdded ( line: any ) {
 
-        const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
+		const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
 
-        this.map.gameObject.add( mesh );
+		this.map.gameObject.add( mesh );
 
-    }
+	}
 
-    onGeometryChanged ( line: THREE.LineCurve3 ) {
+	onGeometryChanged ( line: any ) {
 
-        if ( this.mesh ) this.map.gameObject.remove( this.mesh );
+		if ( this.mesh ) this.map.gameObject.remove( this.mesh );
 
-        const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
+		const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
 
-        this.map.gameObject.add( mesh );
-    }
+		this.map.gameObject.add( mesh );
+	}
 
 
-    getMaterial () {
+	getMaterial () {
 
-        return new MeshBasicMaterial( {
-            map: MarkingLineTool.texture,
-            transparent: true,
-            alphaTest: 0.1,
-            wireframe: false
-        } );
+		return new MeshBasicMaterial( {
+			map: MarkingLineTool.texture,
+			transparent: true,
+			alphaTest: 0.1,
+			wireframe: false
+		} );
 
-    }
+	}
 
 }
 
 export class CustomUvGenerator implements THREE.UVGenerator {
 
-    generateTopUV ( geometry, vertices, indexA, indexB, indexC ) {
+	generateTopUV ( geometry, vertices, indexA, indexB, indexC ) {
 
-        const a_x = vertices[ indexA * 3 ];
-        const a_y = vertices[ indexA * 3 + 1 ];
-        const b_x = vertices[ indexB * 3 ];
-        const b_y = vertices[ indexB * 3 + 1 ];
-        const c_x = vertices[ indexC * 3 ];
-        const c_y = vertices[ indexC * 3 + 1 ];
+		const a_x = vertices[ indexA * 3 ];
+		const a_y = vertices[ indexA * 3 + 1 ];
+		const b_x = vertices[ indexB * 3 ];
+		const b_y = vertices[ indexB * 3 + 1 ];
+		const c_x = vertices[ indexC * 3 ];
+		const c_y = vertices[ indexC * 3 + 1 ];
 
-        const res = [
-            new Vector2( a_x, a_y ),
-            new Vector2( b_x, b_y ),
-            new Vector2( c_x, c_y )
-        ];
+		const res = [
+			new Vector2( a_x, a_y ),
+			new Vector2( b_x, b_y ),
+			new Vector2( c_x, c_y )
+		];
 
-        return res;
-    }
+		return res;
+	}
 
-    generateSideWallUV ( geometry, vertices, indexA, indexB, indexC, indexD ) {
+	generateSideWallUV ( geometry, vertices, indexA, indexB, indexC, indexD ) {
 
-        const a_x = vertices[ indexA * 3 ];
-        const a_y = vertices[ indexA * 3 + 1 ];
-        const a_z = vertices[ indexA * 3 + 2 ];
-        const b_x = vertices[ indexB * 3 ];
-        const b_y = vertices[ indexB * 3 + 1 ];
-        const b_z = vertices[ indexB * 3 + 2 ];
-        const c_x = vertices[ indexC * 3 ];
-        const c_y = vertices[ indexC * 3 + 1 ];
-        const c_z = vertices[ indexC * 3 + 2 ];
-        const d_x = vertices[ indexD * 3 ];
-        const d_y = vertices[ indexD * 3 + 1 ];
-        const d_z = vertices[ indexD * 3 + 2 ];
+		const a_x = vertices[ indexA * 3 ];
+		const a_y = vertices[ indexA * 3 + 1 ];
+		const a_z = vertices[ indexA * 3 + 2 ];
+		const b_x = vertices[ indexB * 3 ];
+		const b_y = vertices[ indexB * 3 + 1 ];
+		const b_z = vertices[ indexB * 3 + 2 ];
+		const c_x = vertices[ indexC * 3 ];
+		const c_y = vertices[ indexC * 3 + 1 ];
+		const c_z = vertices[ indexC * 3 + 2 ];
+		const d_x = vertices[ indexD * 3 ];
+		const d_y = vertices[ indexD * 3 + 1 ];
+		const d_z = vertices[ indexD * 3 + 2 ];
 
-        if ( Math.abs( a_y - b_y ) < 0.01 ) {
+		if ( Math.abs( a_y - b_y ) < 0.01 ) {
 
-            return [
-                new Vector2( a_x, 1 - a_z ),
-                new Vector2( b_x, 1 - b_z ),
-                new Vector2( c_x, 1 - c_z ),
-                new Vector2( d_x, 1 - d_z )
-            ];
+			return [
+				new Vector2( a_x, 1 - a_z ),
+				new Vector2( b_x, 1 - b_z ),
+				new Vector2( c_x, 1 - c_z ),
+				new Vector2( d_x, 1 - d_z )
+			];
 
-        } else {
+		} else {
 
-            return [
-                new Vector2( a_y, 1 - a_z ),
-                new Vector2( b_y, 1 - b_z ),
-                new Vector2( c_y, 1 - c_z ),
-                new Vector2( d_y, 1 - d_z )
-            ];
+			return [
+				new Vector2( a_y, 1 - a_z ),
+				new Vector2( b_y, 1 - b_z ),
+				new Vector2( c_y, 1 - c_z ),
+				new Vector2( d_y, 1 - d_z )
+			];
 
-        }
+		}
 
-    }
+	}
 
 }
 
 
 export class ExtrudePlaneGeometry {
 
-    constructor ( private shapes: Shape | Shape[], private options?: ExtrudeGeometryOptions ) {
+	constructor ( private shapes: Shape | Shape[], private options?: ExtrudeGeometryOptions ) {
 
-        // const path = options ? options.extrudePath : ;
+		// const path = options ? options.extrudePath : ;
 
-    }
+	}
 
 }

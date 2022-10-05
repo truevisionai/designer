@@ -2,42 +2,42 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
-import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
 import { ObjectSelection } from 'app/core/selection';
+import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
 import { AppInspector } from '../inspector';
+import { OdBaseCommand } from './od-base-command';
 
 export class RemoveSignalCommand extends OdBaseCommand {
 
-    constructor ( public signal: TvRoadSignal ) {
-        super();
-    }
+	constructor ( public signal: TvRoadSignal ) {
+		super();
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.signal.gameObject.parent.remove( this.signal.gameObject );
+		this.signal.gameObject.parent.remove( this.signal.gameObject );
 
-        this.getRoad( this.signal.roadId ).removeSignal( this.signal );
+		this.getRoad( this.signal.roadId ).removeSignal( this.signal );
 
-        ObjectSelection.removeActive();
+		ObjectSelection.removeActive();
 
-        AppInspector.clear();
-    }
+		AppInspector.clear();
+	}
 
-    undo (): void {
+	undo (): void {
 
-        TvMapBuilder.makeRoadSignal( this.getRoad( this.signal.roadId ), this.signal );
+		TvMapBuilder.makeRoadSignal( this.getRoad( this.signal.roadId ), this.signal );
 
-        this.getRoad( this.signal.roadId ).addSignal( this.signal );
+		this.getRoad( this.signal.roadId ).addSignal( this.signal );
 
-        ObjectSelection.ActiveGameObject = this.signal.gameObject;
+		ObjectSelection.ActiveGameObject = this.signal.gameObject;
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 }

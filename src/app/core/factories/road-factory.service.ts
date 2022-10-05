@@ -2,403 +2,404 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { NodeFactoryService } from './node-factory.service';
-import { AppInspector } from '../inspector';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { Maths } from 'app/utils/maths';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { ExplicitSpline } from '../shapes/explicit-spline';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { Maths } from 'app/utils/maths';
+import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
+import { Vector3 } from 'three';
+import { AppInspector } from '../inspector';
+import { SceneService } from '../services/scene.service';
+import { ExplicitSpline } from '../shapes/explicit-spline';
+import { NodeFactoryService } from './node-factory.service';
 
 export class RoadFactory {
 
-    static get map () {
-        return TvMapInstance.map;
-    }
+	static get map () {
+		return TvMapInstance.map;
+	}
 
-    static createRoad ( position: Vector3 ) {
+	static createRoad ( position: Vector3 ) {
 
-        const road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
+		const road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
 
-        const point = this.addControlPoint( road, position );
+		const point = this.addControlPoint( road, position );
 
-        return { road, point };
-    }
+		return { road, point };
+	}
 
-    static removeRoad ( road: TvRoad ) {
+	static removeRoad ( road: TvRoad ) {
 
-        this.map.removeRoad( road );
+		this.map.removeRoad( road );
 
-    }
+	}
 
-    static updateGeometryAndRebuild ( road: TvRoad ): void {
+	static updateGeometryAndRebuild ( road: TvRoad ): void {
 
-        this.updateGeometry( road );
+		this.updateGeometry( road );
 
-        this.rebuildRoad( road );
-    }
+		this.rebuildRoad( road );
+	}
 
-    static updateGeometry ( road: TvRoad ) {
+	static updateGeometry ( road: TvRoad ) {
 
-        road.updateGeometryFromSpline();
+		road.updateGeometryFromSpline();
 
-    }
+	}
 
-    static rebuildRoad ( road: TvRoad ) {
+	static rebuildRoad ( road: TvRoad ) {
 
-        this.map.gameObject.remove( road.gameObject );
+		this.map.gameObject.remove( road.gameObject );
 
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        if ( !road.isJunction ) NodeFactoryService.updateRoadNodes( road );
+		if ( !road.isJunction ) NodeFactoryService.updateRoadNodes( road );
 
-    }
+	}
 
-    static addControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
+	static addControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
 
-        let point: RoadControlPoint;
+		let point: RoadControlPoint;
 
-        // TODO: Fix addControlPointAtNew
+		// TODO: Fix addControlPointAtNew
 
-        if ( road.spline instanceof ExplicitSpline ) {
+		if ( road.spline instanceof ExplicitSpline ) {
 
-            point = road.spline.addControlPointAtNew( position );
+			point = road.spline.addControlPointAtNew( position );
 
-        } else {
+		} else {
 
-            point = new RoadControlPoint( road, position, "cp", 0, 0 );
+			point = new RoadControlPoint( road, position, 'cp', 0, 0 );
 
-            point.mainObject = point.userData.road = road;
+			point.mainObject = point.userData.road = road;
 
-            this.addControlPointNew( road, point );
+			this.addControlPointNew( road, point );
 
-        }
+		}
 
-        return point;
-    }
+		return point;
+	}
 
-    static addControlPointNew ( road: TvRoad, point: RoadControlPoint ) {
+	static addControlPointNew ( road: TvRoad, point: RoadControlPoint ) {
 
-        // TODO: spline should take this responsibility
-        SceneService.add( point );
+		// TODO: spline should take this responsibility
+		SceneService.add( point );
 
-        road.addControlPoint( point );
+		road.addControlPoint( point );
 
-        AppInspector.setInspector( RoadInspector, {
-            road: road,
-            controlPoint: point
-        } );
+		AppInspector.setInspector( RoadInspector, {
+			road: road,
+			controlPoint: point
+		} );
 
-        if ( road.spline.controlPoints.length > 1 ) {
-            this.updateGeometryAndRebuild( road );
-        };
+		if ( road.spline.controlPoints.length > 1 ) {
+			this.updateGeometryAndRebuild( road );
+		}
 
-    }
 
-    static removeControlPoint ( road: TvRoad, cp: RoadControlPoint ) {
+	}
 
-        road.spline.removeControlPoint( cp );
+	static removeControlPoint ( road: TvRoad, cp: RoadControlPoint ) {
 
-        SceneService.remove( cp );
+		road.spline.removeControlPoint( cp );
 
-        if ( road.spline.controlPoints.length < 1 ) {
+		SceneService.remove( cp );
 
-            this.map.gameObject.remove( road.gameObject );
+		if ( road.spline.controlPoints.length < 1 ) {
 
-            // nothing to update, will throw error
-            // road.spline.update();
+			this.map.gameObject.remove( road.gameObject );
 
-            road.clearGeometries();
+			// nothing to update, will throw error
+			// road.spline.update();
 
+			road.clearGeometries();
 
-        } else if ( road.spline.controlPoints.length === 1 ) {
 
-            this.map.gameObject.remove( road.gameObject );
+		} else if ( road.spline.controlPoints.length === 1 ) {
 
-            road.spline.update();
+			this.map.gameObject.remove( road.gameObject );
 
-            road.clearGeometries();
+			road.spline.update();
 
-            this.clearNodes( road );
+			road.clearGeometries();
 
-        } else if ( road.spline.controlPoints.length > 1 ) {
+			this.clearNodes( road );
 
-            this.updateGeometryAndRebuild( road );
+		} else if ( road.spline.controlPoints.length > 1 ) {
 
-        }
-    }
+			this.updateGeometryAndRebuild( road );
 
-    static clearNodes ( road: TvRoad ) {
+		}
+	}
 
-        if ( road.startNode ) {
+	static clearNodes ( road: TvRoad ) {
 
-            SceneService.remove( road.startNode );
+		if ( road.startNode ) {
 
-            road.startNode = null;
+			SceneService.remove( road.startNode );
 
-        }
+			road.startNode = null;
 
-        if ( road.endNode ) {
+		}
 
-            SceneService.remove( road.endNode );
+		if ( road.endNode ) {
 
-            road.endNode = null;
-        }
-    }
+			SceneService.remove( road.endNode );
 
-    static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
+			road.endNode = null;
+		}
+	}
 
-        const distance = 20;
+	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
 
-        let laneSection: TvLaneSection, firstRoadS: number;
+		const distance = 20;
 
-        let firstPoint: RoadControlPoint, lastPoint: RoadControlPoint;
+		let laneSection: TvLaneSection, firstRoadS: number;
 
-        let secondPosition: TvPosTheta, thirdPosition: TvPosTheta, fourPosition: TvPosTheta, fivePosition: TvPosTheta;
+		let firstPoint: RoadControlPoint, lastPoint: RoadControlPoint;
 
-        if ( firstNode.distance === "start" ) {
+		let secondPosition: TvPosTheta, thirdPosition: TvPosTheta, fourPosition: TvPosTheta, fivePosition: TvPosTheta;
 
-            firstRoadS = 0;
+		if ( firstNode.distance === 'start' ) {
 
-            laneSection = firstRoad.getLaneSectionAt( 0 ).cloneAtS( 0, firstRoadS );
+			firstRoadS = 0;
 
-            secondPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
-            thirdPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
+			laneSection = firstRoad.getLaneSectionAt( 0 ).cloneAtS( 0, firstRoadS );
 
-        } else {
+			secondPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
+			thirdPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
 
-            firstRoadS = firstRoad.length - Maths.Epsilon
+		} else {
 
-            laneSection = firstRoad.getLaneSectionAt( firstRoadS ).cloneAtS( 0, firstRoadS );
+			firstRoadS = firstRoad.length - Maths.Epsilon;
 
-            secondPosition = firstRoad.endPosition().clone().moveForward( distance );
-            thirdPosition = firstRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
+			laneSection = firstRoad.getLaneSectionAt( firstRoadS ).cloneAtS( 0, firstRoadS );
 
-        }
+			secondPosition = firstRoad.endPosition().clone().moveForward( distance );
+			thirdPosition = firstRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
 
-        if ( secondNode.distance === "start" ) {
+		}
 
-            fourPosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
-            fivePosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance )
+		if ( secondNode.distance === 'start' ) {
 
-        } else {
+			fourPosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
+			fivePosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
 
-            fourPosition = secondRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
-            fivePosition = secondRoad.endPosition().clone().moveForward( distance );
+		} else {
 
-        }
+			fourPosition = secondRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
+			fivePosition = secondRoad.endPosition().clone().moveForward( distance );
 
-        // Make control points required for road geometry
-        const joiningRoad = this.map.addDefaultRoad();
+		}
 
-        if ( firstRoad.hasType ) {
+		// Make control points required for road geometry
+		const joiningRoad = this.map.addDefaultRoad();
 
-            const roadType = firstRoad.getRoadTypeAt( firstRoadS );
+		if ( firstRoad.hasType ) {
 
-            joiningRoad.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
+			const roadType = firstRoad.getRoadTypeAt( firstRoadS );
 
-        } else {
+			joiningRoad.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
 
-            joiningRoad.setType( TvRoadType.TOWN, 40 );
+		} else {
 
-        }
+			joiningRoad.setType( TvRoadType.TOWN, 40 );
 
+		}
 
-        // remove lane section as will create copy of first road
-        joiningRoad.clearLaneSections();
 
-        joiningRoad.addLaneSectionInstance( laneSection );
+		// remove lane section as will create copy of first road
+		joiningRoad.clearLaneSections();
 
-        if ( firstNode.distance === "start" ) {
+		joiningRoad.addLaneSectionInstance( laneSection );
 
-            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getFirstPoint().position.clone(), "cp", 0, 0 )
+		if ( firstNode.distance === 'start' ) {
 
-        } else {
+			firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
 
-            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getLastPoint().position.clone(), "cp", 0, 0 )
+		} else {
 
-        }
+			firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
 
-        if ( secondNode.distance === "start" ) {
+		}
 
-            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getFirstPoint().position.clone(), "cp", 0, 0 );
+		if ( secondNode.distance === 'start' ) {
 
-        } else {
+			lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
 
-            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getLastPoint().position.clone(), "cp", 0, 0 );
+		} else {
 
-        }
+			lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
 
-        const secondPoint = new RoadControlPoint( joiningRoad, secondPosition.toVector3(), "cp", 0, 0 );
-        const thirdPoint = new RoadControlPoint( joiningRoad, thirdPosition.toVector3(), "cp", 0, 0 );
-        const fourthPoint = new RoadControlPoint( joiningRoad, fourPosition.toVector3(), "cp", 0, 0 );
-        const fifthPoint = new RoadControlPoint( joiningRoad, fivePosition.toVector3(), "cp", 0, 0 );
+		}
 
-        SceneService.add( firstPoint );
-        SceneService.add( secondPoint );
-        SceneService.add( thirdPoint );
-        SceneService.add( fifthPoint );
-        SceneService.add( fourthPoint );
-        SceneService.add( lastPoint );
+		const secondPoint = new RoadControlPoint( joiningRoad, secondPosition.toVector3(), 'cp', 0, 0 );
+		const thirdPoint = new RoadControlPoint( joiningRoad, thirdPosition.toVector3(), 'cp', 0, 0 );
+		const fourthPoint = new RoadControlPoint( joiningRoad, fourPosition.toVector3(), 'cp', 0, 0 );
+		const fifthPoint = new RoadControlPoint( joiningRoad, fivePosition.toVector3(), 'cp', 0, 0 );
 
-        joiningRoad.spline.addControlPoint( firstPoint );
-        joiningRoad.spline.addControlPoint( secondPoint );
-        joiningRoad.spline.addControlPoint( thirdPoint );
-        joiningRoad.spline.addControlPoint( fourthPoint );
-        joiningRoad.spline.addControlPoint( fifthPoint );
-        joiningRoad.spline.addControlPoint( lastPoint );
+		SceneService.add( firstPoint );
+		SceneService.add( secondPoint );
+		SceneService.add( thirdPoint );
+		SceneService.add( fifthPoint );
+		SceneService.add( fourthPoint );
+		SceneService.add( lastPoint );
 
+		joiningRoad.spline.addControlPoint( firstPoint );
+		joiningRoad.spline.addControlPoint( secondPoint );
+		joiningRoad.spline.addControlPoint( thirdPoint );
+		joiningRoad.spline.addControlPoint( fourthPoint );
+		joiningRoad.spline.addControlPoint( fifthPoint );
+		joiningRoad.spline.addControlPoint( lastPoint );
 
-        joiningRoad.updateGeometryFromSpline();
 
-        /////////////////////////////////////////////////////////////////////////////////
+		joiningRoad.updateGeometryFromSpline();
 
+		/////////////////////////////////////////////////////////////////////////////////
 
-        // TODO: add more logic to smoothen the geometry
 
-        // for ( let i = 0; i < roadC.geometries.length; i++ ) {
+		// TODO: add more logic to smoothen the geometry
 
-        //     const geometry = roadC.geometries[ i ];
+		// for ( let i = 0; i < roadC.geometries.length; i++ ) {
 
-        //     if ( geometry.geometryType === OdGeometryType.ARC ) {
+		//     const geometry = roadC.geometries[ i ];
 
-        //         const arcGeometry = geometry as OdArcGeometry;
+		//     if ( geometry.geometryType === OdGeometryType.ARC ) {
 
-        //         if ( arcGeometry.attr_curvature < 0.01 ) {
+		//         const arcGeometry = geometry as OdArcGeometry;
 
-        //             // first geometry so update second point
-        //             if ( i < 1 ) {
+		//         if ( arcGeometry.attr_curvature < 0.01 ) {
 
-        //             }
+		//             // first geometry so update second point
+		//             if ( i < 1 ) {
 
-        //         }
-        //     }
+		//             }
 
-        // }
+		//         }
+		//     }
 
-        /////////////////////////////////////////////////////////////////////////////////
-        //
-        // Update the road connections
+		// }
 
+		/////////////////////////////////////////////////////////////////////////////////
+		//
+		// Update the road connections
 
-        this.makeRoadConnections( firstRoad, firstNode, secondRoad, secondNode, joiningRoad );
 
-        /////////////////////////////////////////////////////////////////////////////////
+		this.makeRoadConnections( firstRoad, firstNode, secondRoad, secondNode, joiningRoad );
 
+		/////////////////////////////////////////////////////////////////////////////////
 
-        TvMapBuilder.buildRoad( this.map.gameObject, joiningRoad );
 
-        return joiningRoad;
-    }
+		TvMapBuilder.buildRoad( this.map.gameObject, joiningRoad );
 
-    static makeRoadConnections ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode, joiningRoad: TvRoad ) {
+		return joiningRoad;
+	}
 
-        if ( firstNode.distance === "start" ) {
+	static makeRoadConnections ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
-            // link will be negative as joining roaad will in opposite direction
+		if ( firstNode.distance === 'start' ) {
 
-            firstRoad.setPredecessor( "road", joiningRoad.id, TvContactPoint.START );
-            firstRoad.getFirstLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
-            } );
+			// link will be negative as joining roaad will in opposite direction
 
-            joiningRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.START );
-            joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
-            } )
+			firstRoad.setPredecessor( 'road', joiningRoad.id, TvContactPoint.START );
+			firstRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+			} );
 
-        } else {
+			joiningRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.START );
+			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+			} );
 
-            // links will be in same direction
+		} else {
 
-            firstRoad.setSuccessor( "road", joiningRoad.id, TvContactPoint.START );
-            firstRoad.getLastLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
-            } );
+			// links will be in same direction
 
-            joiningRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.END );
-            joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-            } )
+			firstRoad.setSuccessor( 'road', joiningRoad.id, TvContactPoint.START );
+			firstRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+			} );
 
-        }
+			joiningRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.END );
+			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+			} );
 
-        if ( secondNode.distance === "start" ) {
+		}
 
-            secondRoad.setPredecessor( "road", joiningRoad.id, TvContactPoint.END );
-            secondRoad.getFirstLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-            } )
+		if ( secondNode.distance === 'start' ) {
 
-            joiningRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.START );
-            joiningRoad.getLastLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
-            } )
+			secondRoad.setPredecessor( 'road', joiningRoad.id, TvContactPoint.END );
+			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+			} );
 
-        } else {
+			joiningRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.START );
+			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+			} );
 
-            secondRoad.setSuccessor( "road", joiningRoad.id, TvContactPoint.END );
-            secondRoad.getLastLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
-            } )
+		} else {
 
-            joiningRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.END );
-            joiningRoad.getLastLaneSection().lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
-            } )
+			secondRoad.setSuccessor( 'road', joiningRoad.id, TvContactPoint.END );
+			secondRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+			} );
 
-        }
-    }
+			joiningRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.END );
+			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+			} );
 
-    static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
+		}
+	}
 
-        firstRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.START );
+	static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
 
-        firstRoad.getLastLaneSection().lanes.forEach( lane => {
-            if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
-        } );
+		firstRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.START );
 
-        secondRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.END );
+		firstRoad.getLastLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+		} );
 
-        secondRoad.getFirstLaneSection().lanes.forEach( lane => {
-            if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-        } )
+		secondRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.END );
 
-    }
+		secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+		} );
 
-    static removeRoadConnections ( firstRoad: TvRoad, secondRoad: TvRoad ) {
+	}
 
-        if ( firstRoad.predecessor && firstRoad.predecessor.elementId === secondRoad.id ) {
+	static removeRoadConnections ( firstRoad: TvRoad, secondRoad: TvRoad ) {
 
-            firstRoad.predecessor = null;
+		if ( firstRoad.predecessor && firstRoad.predecessor.elementId === secondRoad.id ) {
 
-        }
+			firstRoad.predecessor = null;
 
-        if ( firstRoad.successor && firstRoad.successor.elementId === secondRoad.id ) {
+		}
 
-            firstRoad.successor = null;
+		if ( firstRoad.successor && firstRoad.successor.elementId === secondRoad.id ) {
 
-        }
+			firstRoad.successor = null;
 
-        if ( secondRoad.predecessor && secondRoad.predecessor.elementId === firstRoad.id ) {
+		}
 
-            secondRoad.predecessor = null;
+		if ( secondRoad.predecessor && secondRoad.predecessor.elementId === firstRoad.id ) {
 
-        }
+			secondRoad.predecessor = null;
 
-        if ( secondRoad.successor && secondRoad.successor.elementId === firstRoad.id ) {
+		}
 
-            secondRoad.successor = null;
+		if ( secondRoad.successor && secondRoad.successor.elementId === firstRoad.id ) {
 
-        }
+			secondRoad.successor = null;
 
-    }
+		}
+
+	}
 }

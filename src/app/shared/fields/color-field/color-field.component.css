@@ -3,26 +3,26 @@
  */
 
 .tv-field-color-input {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    width: 44px;
-    height: 20px;
-    margin: 6px 0px 6px 6px;
-    vertical-align: top;
-    cursor: pointer;
-    transition: opacity 100ms;
-    background-color: #fff;
-    background-image: linear-gradient( 45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000 100%), linear-gradient( 45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000 100%);
-    background-size: 17.6px 17.6px;
-    background-position: 0 0, 8.8px 8.8px;
+	position: relative;
+	display: inline-block;
+	box-sizing: border-box;
+	width: 44px;
+	height: 20px;
+	margin: 6px 0px 6px 6px;
+	vertical-align: top;
+	cursor: pointer;
+	transition: opacity 100ms;
+	background-color: #fff;
+	background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000 100%), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000 100%);
+	background-size: 17.6px 17.6px;
+	background-position: 0 0, 8.8px 8.8px;
 }
 
-.tv-field-color-input>div {
-    background: rgb(0, 0, 0);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.tv-field-color-input > div {
+	background: rgb(0, 0, 0);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }

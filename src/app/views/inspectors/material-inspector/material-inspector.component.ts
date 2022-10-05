@@ -3,108 +3,122 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
-import { PreviewService } from '../object-preview/object-preview.service';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Color } from 'three';
+import { PreviewService } from '../object-preview/object-preview.service';
 
 @Component( {
-    selector: 'app-material-inspector',
-    templateUrl: './material-inspector.component.html',
-    styleUrls: [ './material-inspector.component.css' ]
+	selector: 'app-material-inspector',
+	templateUrl: './material-inspector.component.html',
+	styleUrls: [ './material-inspector.component.css' ]
 } )
 export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
-    public data: {
-        material: TvMaterial,
-        guid: string
-    };
+	public data: {
+		material: TvMaterial,
+		guid: string
+	};
 
-    public metadata: Metadata;
+	public metadata: Metadata;
 
-    get thumbnail () { return this.metadata.preview; }
+	constructor (
+		private previewService: PreviewService,
+	) {
+	}
 
-    get material () { return this.data.material; }
+	get thumbnail () {
+		return this.metadata.preview;
+	}
 
-    get color (): any { return '#' + this.material.color.getHexString(); }
+	get material () {
+		return this.data.material;
+	}
 
-    set color ( value: any ) { this.material.color.setStyle( value ); this.updatePreviewCache(); }
+	get color (): any {
+		return '#' + this.material.color.getHexString();
+	}
 
-    get emissive () { return '#' + this.material.emissive.getHexString(); }
+	set color ( value: any ) {
+		this.material.color.setStyle( value );
+		this.updatePreviewCache();
+	}
 
-    set emissive ( value ) { this.material.emissive.setStyle( value ); this.updatePreviewCache(); }
+	get emissive () {
+		return '#' + this.material.emissive.getHexString();
+	}
 
-    constructor (
-        private previewService: PreviewService,
-    ) {
-    }
+	set emissive ( value ) {
+		this.material.emissive.setStyle( value );
+		this.updatePreviewCache();
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.metadata = AssetDatabase.getMetadata( this.data.guid );
+		this.metadata = AssetDatabase.getMetadata( this.data.guid );
 
-    }
+	}
 
-    onNameChanged ( $name ) {
+	onNameChanged ( $name ) {
 
-        this.material.name = $name;
+		this.material.name = $name;
 
-    }
+	}
 
-    onColorChanged ( $value: Color ) {
+	onColorChanged ( $value ) {
 
-        this.material.color = $value;
+		this.material.color = $value;
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
-    // not being used
-    onEmissiveColorChanged ( $value: Color ) {
+	// not being used
+	onEmissiveColorChanged ( $value ) {
 
-        this.material.emissive = $value;
+		this.material.emissive = $value;
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
-    onRoughnessChanged ( $value ) {
+	onRoughnessChanged ( $value ) {
 
-        this.material.roughness = $value;
+		this.material.roughness = $value;
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
-    onMetalnessChanged ( $value ) {
+	onMetalnessChanged ( $value ) {
 
-        this.material.metalness = $value;
+		this.material.metalness = $value;
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
-    onMapChanged ( $guid: string, map: string ) {
+	onMapChanged ( $guid: string, map: string ) {
 
-        this.material[ `${ map }Guid` ] = $guid;
-        this.material[ map ] = AssetDatabase.getInstance( $guid );
-        this.material[ map ].needsUpdate = true;
+		this.material[ `${ map }Guid` ] = $guid;
+		this.material[ map ] = AssetDatabase.getInstance( $guid );
+		this.material[ map ].needsUpdate = true;
 
-        this.material.needsUpdate = true;
+		this.material.needsUpdate = true;
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
 
-    ngOnDestroy () {
+	ngOnDestroy () {
 
-        AssetFactory.updateMaterial( this.metadata.path, this.material );
+		AssetFactory.updateMaterial( this.metadata.path, this.material );
 
-        this.updatePreviewCache();
-    }
+		this.updatePreviewCache();
+	}
 
-    updatePreviewCache () {
+	updatePreviewCache () {
 
-        this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+		this.metadata.preview = this.previewService.getMaterialPreview( this.material );
 
-    }
+	}
 }

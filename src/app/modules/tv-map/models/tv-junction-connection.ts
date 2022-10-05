@@ -2,130 +2,130 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MathUtils } from 'three';
 import { TvContactPoint } from './tv-common';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvRoad } from './tv-road.model';
-import { Math } from 'three';
 
 export class TvJunctionConnection {
 
-    public readonly uuid: string;
+	public readonly uuid: string;
 
-    public laneLink: TvJunctionLaneLink[] = [];
+	public laneLink: TvJunctionLaneLink[] = [];
 
-    private lastAddedJunctionLaneLinkIndex: number;
+	private lastAddedJunctionLaneLinkIndex: number;
 
-    constructor (
-        public id: number,
-        public incomingRoad: number,
-        public connectingRoad: number,
-        public contactPoint: TvContactPoint,
-        public outgoingRoad?: number
-    ) {
-        this.uuid = Math.generateUUID();
-    }
+	constructor (
+		public id: number,
+		public incomingRoad: number,
+		public connectingRoad: number,
+		public contactPoint: TvContactPoint,
+		public outgoingRoad?: number
+	) {
+		this.uuid = MathUtils.generateUUID();
+	}
 
-    /**
-     * Add a lane link record
-     *
-     * @param {number} from
-     * @param {number} to
-     * @returns {number}
-     */
-    public addJunctionLaneLink ( from: number, to: number ) {
+	/**
+	 * Add a lane link record
+	 *
+	 * @param {number} from
+	 * @param {number} to
+	 * @returns {number}
+	 */
+	public addJunctionLaneLink ( from: number, to: number ) {
 
-        const instance = new TvJunctionLaneLink( from, to );
+		const instance = new TvJunctionLaneLink( from, to );
 
-        this.addLaneLink( instance );
+		this.addLaneLink( instance );
 
-        this.lastAddedJunctionLaneLinkIndex = this.laneLink.length - 1;
+		this.lastAddedJunctionLaneLinkIndex = this.laneLink.length - 1;
 
-        return this.lastAddedJunctionLaneLinkIndex;
+		return this.lastAddedJunctionLaneLinkIndex;
 
-    }
+	}
 
-    addNewLink ( from: number, to: number ) {
+	addNewLink ( from: number, to: number ) {
 
-        const link = new TvJunctionLaneLink( from, to );
+		const link = new TvJunctionLaneLink( from, to );
 
-        this.addLaneLink( link );
+		this.addLaneLink( link );
 
-        return link;
-    }
+		return link;
+	}
 
-    getJunctionLaneLinkCount (): number {
+	getJunctionLaneLinkCount (): number {
 
-        return this.laneLink.length;
+		return this.laneLink.length;
 
-    }
+	}
 
-    getJunctionLaneLink ( index: number ): TvJunctionLaneLink {
+	getJunctionLaneLink ( index: number ): TvJunctionLaneLink {
 
-        return this.laneLink[ index ];
+		return this.laneLink[ index ];
 
-    }
+	}
 
-    public cloneJunctionLaneLink ( index ) {
+	public cloneJunctionLaneLink ( index ) {
 
-        // TODO
+		// TODO
 
-    }
+	}
 
-    public deleteJunctionLaneLink ( index ) {
+	public deleteJunctionLaneLink ( index ) {
 
-        this.laneLink.splice( index, 1 );
+		this.laneLink.splice( index, 1 );
 
-    }
+	}
 
-    public getLastAddedJunctionLaneLink (): TvJunctionLaneLink {
+	public getLastAddedJunctionLaneLink (): TvJunctionLaneLink {
 
-        return this.laneLink[ this.lastAddedJunctionLaneLinkIndex ];
+		return this.laneLink[ this.lastAddedJunctionLaneLinkIndex ];
 
-    }
+	}
 
-    public addLaneLink ( laneLink: TvJunctionLaneLink ) {
+	public addLaneLink ( laneLink: TvJunctionLaneLink ) {
 
-        this.laneLink.push( laneLink );
+		this.laneLink.push( laneLink );
 
-    }
+	}
 
-    getConnectingRoad (): TvRoad {
-        return undefined;
-    }
+	getConnectingRoad (): TvRoad {
+		return undefined;
+	}
 
-    getToLaneId ( laneId: number ): number {
+	getToLaneId ( laneId: number ): number {
 
-        for ( const link of this.laneLink ) {
+		for ( const link of this.laneLink ) {
 
-            if ( link.from == laneId ) {
+			if ( link.from == laneId ) {
 
-                return link.to;
+				return link.to;
 
-            }
+			}
 
-        }
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    getFromLaneId ( laneId: number ): number {
+	getFromLaneId ( laneId: number ): number {
 
-        for ( const link of this.laneLink ) {
+		for ( const link of this.laneLink ) {
 
-            if ( link.to == laneId ) {
+			if ( link.to == laneId ) {
 
-                return link.from;
+				return link.from;
 
-            }
+			}
 
-        }
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    removeLinkAtIndex ( index: number ) {
+	removeLinkAtIndex ( index: number ) {
 
-        this.laneLink.splice( index, 1 );
+		this.laneLink.splice( index, 1 );
 
-    }
+	}
 }

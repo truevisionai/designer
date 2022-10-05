@@ -4,12 +4,14 @@
 
 <div *ngIf="data" class="inspector-form-container">
 
-    <app-string-field *ngIf="data.incomingRoad" label="Incomging Road" [value]="data.incomingRoad.id"></app-string-field>
+	<app-string-field *ngIf="data.incomingRoad" [value]="data.incomingRoad.id"
+					  label="Incomging Road"></app-string-field>
 
-    <app-string-field *ngIf="data.connectingRoad" label="Connecting Road" [value]="data.connectingRoad.id"></app-string-field>
-    
-    <!-- <app-double-field disabled label="Length (Meters)" [value]="road.length"></app-double-field> -->
+	<app-string-field *ngIf="data.connectingRoad" [value]="data.connectingRoad.id"
+					  label="Connecting Road"></app-string-field>
 
-    <button mat-stroked-button (click)="onDelete()">Delete Connection!</button>
+	<!-- <app-double-field disabled label="Length (Meters)" [value]="road.length"></app-double-field> -->
+
+	<button (click)="onDelete()" mat-stroked-button>Delete Connection!</button>
 
 </div>

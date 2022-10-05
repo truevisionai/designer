@@ -2,39 +2,42 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FileNode } from "../file-node.model";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FileNode } from '../file-node.model';
 
 @Component( {
-    selector: 'app-project-hierarchy',
-    templateUrl: './project-hierarchy.component.html',
-    styleUrls: [ './project-hierarchy.component.css' ]
+	selector: 'app-project-hierarchy',
+	templateUrl: './project-hierarchy.component.html',
+	styleUrls: [ './project-hierarchy.component.css' ]
 } )
 export class ProjectHierarchyComponent implements OnInit {
 
-    @Output() folderChanged = new EventEmitter<FileNode>();
+	@Output() folderChanged = new EventEmitter<FileNode>();
 
-    @Input() treeControl;
-    @Input() dataSource;
+	@Input() treeControl;
+	@Input() dataSource;
 
-    selectedFolder;
+	selectedFolder;
 
-    getLevel = ( node: FileNode ) => node.level;
-    isExpandable = ( node: FileNode ) => node.expandable;
-    hasChild = ( _: number, node: FileNode ) => true;
+	constructor () {
+	}
 
-    constructor () { }
+	getLevel = ( node: FileNode ) => node.level;
 
-    ngOnInit () {
-    }
+	isExpandable = ( node: FileNode ) => node.expandable;
 
-    onClick ( node: FileNode ) {
+	hasChild = ( _: number, node: FileNode ) => true;
 
-        // console.log( 'folder-selected-in-hierarchy', node.name );
+	ngOnInit () {
+	}
 
-        this.selectedFolder = node;
+	onClick ( node: FileNode ) {
 
-        this.folderChanged.emit( node );
+		// console.log( 'folder-selected-in-hierarchy', node.name );
 
-    }
+		this.selectedFolder = node;
+
+		this.folderChanged.emit( node );
+
+	}
 }

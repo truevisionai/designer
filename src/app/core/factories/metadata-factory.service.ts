@@ -2,235 +2,263 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable, Type } from '@angular/core';
-import { Metadata } from '../models/metadata.model';
-import { Vector3, Texture, MeshStandardMaterial, RepeatWrapping, UVMapping, ImageLoader, TextureLoader } from 'three';
-import { FileService } from 'app/services/file.service';
-import { FileNode } from 'app/views/editor/project-browser/file-node.model';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { AssetDatabase } from 'app/services/asset-database';
-import { AppService } from '../services/app.service';
-import * as THREE from 'three';
+import { Injectable } from '@angular/core';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
+import { FileService } from 'app/services/file.service';
 import { RoadStyle } from 'app/services/road-style.service';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import * as THREE from 'three';
+import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
+import { Metadata } from '../models/metadata.model';
+import { AppService } from '../services/app.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class MetadataFactory {
 
-    private static get fileService (): FileService {
+	private static get fileService (): FileService {
 
-        return AppService.file;
+		return AppService.file;
 
-    }
+	}
 
-    static saveMetadataFile ( file: FileNode | string, metadata: Metadata ): void {
+	static saveMetadataFile ( file: FileNode | string, metadata: Metadata ): void {
 
-        try {
+		try {
 
-            let path = null;
+			let path = null;
 
-            if ( typeof ( file ) === 'string' ) path = file;
+			if ( typeof ( file ) === 'string' ) path = file;
 
-            if ( typeof ( file ) === 'object' ) path = file.path;
+			if ( typeof ( file ) === 'object' ) path = file.path;
 
-            if ( !path.includes( '.meta' ) ) path = path + '.meta';
+			if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-            this.fileService.fs.writeFileSync( path, JSON.stringify( metadata, null, 2 ) );
+			this.fileService.fs.writeFileSync( path, JSON.stringify( metadata, null, 2 ) );
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            console.error( error );
+			console.error( error );
 
-            SnackBar.error( "Error in writing .meta file. Please Reimport the asset.", "", 5000 );
-        }
+			SnackBar.error( 'Error in writing .meta file. Please Reimport the asset.', '', 5000 );
+		}
 
-    }
+	}
 
-    static createMetadata ( fileName: string, ext: string, path: string ): Metadata {
+	static createMetadata ( fileName: string, ext: string, path: string ): Metadata {
 
-        const extension = ext || FileService.getExtension( path );
+		const extension = ext || FileService.getExtension( path );
 
-        const guid = THREE.Math.generateUUID();
+		const guid = THREE.MathUtils.generateUUID();
 
-        let metadata: Metadata;
+		let metadata: Metadata;
 
-        switch ( extension ) {
+		switch ( extension ) {
 
-            case 'scene': metadata = this.createSceneMetadata( fileName, guid, path ); break;
+			case 'scene':
+				metadata = this.createSceneMetadata( fileName, guid, path );
+				break;
 
-            case 'obj': metadata = this.createModelMetadata( fileName, guid, path ); break;
+			case 'obj':
+				metadata = this.createModelMetadata( fileName, guid, path );
+				break;
 
-            case 'fbx': metadata = this.createModelMetadata( fileName, guid, path ); break;
+			case 'fbx':
+				metadata = this.createModelMetadata( fileName, guid, path );
+				break;
 
-            case 'gltf': metadata = this.createModelMetadata( fileName, guid, path ); break;
+			case 'gltf':
+				metadata = this.createModelMetadata( fileName, guid, path );
+				break;
 
-            case 'glb': metadata = this.createModelMetadata( fileName, guid, path ); break;
+			case 'glb':
+				metadata = this.createModelMetadata( fileName, guid, path );
+				break;
 
-            case 'xodr': metadata = this.createOpenDriveMetadata( fileName, guid, path ); break;
+			case 'xodr':
+				metadata = this.createOpenDriveMetadata( fileName, guid, path );
+				break;
 
-            case 'png': metadata = this.createTextureMetaInternal( guid, path ); break;
-            case 'jpg': metadata = this.createTextureMetaInternal( guid, path ); break;
-            case 'jpeg': metadata = this.createTextureMetaInternal( guid, path ); break;
-            case 'svg': metadata = this.createTextureMetaInternal( guid, path ); break;
+			case 'png':
+				metadata = this.createTextureMetaInternal( guid, path );
+				break;
+			case 'jpg':
+				metadata = this.createTextureMetaInternal( guid, path );
+				break;
+			case 'jpeg':
+				metadata = this.createTextureMetaInternal( guid, path );
+				break;
+			case 'svg':
+				metadata = this.createTextureMetaInternal( guid, path );
+				break;
 
-            case 'material': metadata = this.createMaterialMetadata( fileName, guid, path ); break;
+			case 'material':
+				metadata = this.createMaterialMetadata( fileName, guid, path );
+				break;
 
-            case 'sign': metadata = this.createSignMetadata( fileName, guid, path ); break;
+			case 'sign':
+				metadata = this.createSignMetadata( fileName, guid, path );
+				break;
 
-            case TvRoadMarking.extension: metadata = this.createRoadMarkingMetadata( fileName, guid, path ); break;
+			case TvRoadMarking.extension:
+				metadata = this.createRoadMarkingMetadata( fileName, guid, path );
+				break;
 
-            case RoadStyle.extension: metadata = this.createRoadStyleMetadata( fileName, guid, path ); break;
+			case RoadStyle.extension:
+				metadata = this.createRoadStyleMetadata( fileName, guid, path );
+				break;
 
-        }
+		}
 
-        if ( metadata ) this.saveMetadataFile( path, metadata );
+		if ( metadata ) this.saveMetadataFile( path, metadata );
 
-        if ( metadata ) AssetDatabase.setMetadata( guid, metadata );
+		if ( metadata ) AssetDatabase.setMetadata( guid, metadata );
 
-        return metadata;
-    }
+		return metadata;
+	}
 
-    static createRoadMarkingMetadata ( name: string, guid: string, path: string ): Metadata {
+	static createRoadMarkingMetadata ( name: string, guid: string, path: string ): Metadata {
 
-        return {
-            guid: guid,
-            importer: "RoadMarkingImporter",
-            data: {},
-            path: path,
-        };
+		return {
+			guid: guid,
+			importer: 'RoadMarkingImporter',
+			data: {},
+			path: path,
+		};
 
-    }
+	}
 
-    static createRoadStyleMetadata ( name: string, guid: string, path: string ): Metadata {
+	static createRoadStyleMetadata ( name: string, guid: string, path: string ): Metadata {
 
-        return {
-            guid: guid,
-            importer: RoadStyle.importer,
-            data: {},
-            path: path,
-        };
+		return {
+			guid: guid,
+			importer: RoadStyle.importer,
+			data: {},
+			path: path,
+		};
 
-    }
+	}
 
-    private static createTextureMetaInternal ( guid: string, path: string ): Metadata {
+	static createFolderMetadata ( name: string, path: string ): Metadata {
 
-        const texture = this.loadTexture( path );
+		const guid = THREE.MathUtils.generateUUID();
 
-        const metadata = this.createTextureMetadata( guid, path, texture );
+		const metadata = { guid: guid, isFolder: true, path: path, importer: null, data: null };
 
-        AssetDatabase.setInstance( metadata.guid, texture );
+		this.saveMetadataFile( path, metadata );
 
-        return metadata;
-    }
+		AssetDatabase.setMetadata( guid, metadata );
 
-    static createFolderMetadata ( name: string, path: string ): Metadata {
+		return metadata;
+	}
 
-        const guid = THREE.Math.generateUUID();
+	static createSceneMetadata ( name: string, guid: string, path: string ) {
 
-        const metadata = { guid: guid, isFolder: true, path: path, importer: null, data: null };
+		return {
+			guid: guid,
+			importer: 'SceneImporter',
+			data: {},
+			path: path
+		};
 
-        this.saveMetadataFile( path, metadata );
+	}
 
-        AssetDatabase.setMetadata( guid, metadata );
+	static createModelMetadata ( name: string, guid: string, path: string ) {
 
-        return metadata;
-    }
+		return {
+			guid: guid,
+			importer: 'ModelImporter',
+			data: { name: name, rotationVariance: new Vector3( 0, 0, 0 ), scaleVariance: new Vector3( 0, 0, 0 ) },
+			path: path
+		};
 
-    static createSceneMetadata ( name: string, guid: string, path: string ) {
+	}
 
-        return {
-            guid: guid,
-            importer: 'SceneImporter',
-            data: {},
-            path: path
-        };
+	static createOpenDriveMetadata ( name: string, guid: string, path: string ) {
 
-    }
+		return {
+			guid: guid,
+			importer: 'OpenDriveImporter',
+			data: {},
+			path: path
+		};
 
-    static createModelMetadata ( name: string, guid: string, path: string ) {
+	}
 
-        return {
-            guid: guid,
-            importer: 'ModelImporter',
-            data: { name: name, rotationVariance: new Vector3( 0, 0, 0 ), scaleVariance: new Vector3( 0, 0, 0 ) },
-            path: path
-        };
+	static createTextureMetadata ( guid: string, path: string, texture: Texture ) {
 
-    }
+		const data = texture.toJSON( undefined );
 
-    static createOpenDriveMetadata ( name: string, guid: string, path: string ) {
+		const version = data.metadata.version || 4.5;
 
-        return {
-            guid: guid,
-            importer: "OpenDriveImporter",
-            data: {},
-            path: path
-        };
+		data.metadata = null;
 
-    }
+		return {
+			guid: guid,
+			version: version,
+			type: 'Texture',
+			importer: 'TextureImporter',
+			data: data,
+			path: path
+		};
 
-    static createTextureMetadata ( guid: string, path: string, texture: Texture ) {
+	}
 
-        const data = texture.toJSON( undefined );
+	static createMaterialMetadata ( name: string, guid: string, path: string ) {
 
-        const version = data.metadata.version || 4.5;
+		return {
+			guid: guid,
+			importer: 'MaterialImporter',
+			data: {},
+			path: path,
+		};
 
-        data.metadata = null;
+	}
 
-        return {
-            guid: guid,
-            version: version,
-            type: "Texture",
-            importer: "TextureImporter",
-            data: data,
-            path: path
-        };
+	static createSignMetadata ( name: string, guid: string, path: string ) {
 
-    }
+		return {
+			guid: guid,
+			importer: 'SignImporter',
+			data: {},
+			path: path,
+		};
 
-    static createMaterialMetadata ( name: string, guid: string, path: string ) {
+	}
 
-        return {
-            guid: guid,
-            importer: "MaterialImporter",
-            data: {},
-            path: path,
-        };
+	static loadTexture ( path: string ): Texture {
 
-    }
+		try {
 
-    static createSignMetadata ( name: string, guid: string, path: string ) {
+			const texture = new TextureLoader().load( path );
 
-        return {
-            guid: guid,
-            importer: "SignImporter",
-            data: {},
-            path: path,
-        };
+			texture.wrapS = RepeatWrapping;
+			texture.wrapT = RepeatWrapping;
+			texture.mapping = UVMapping;
+			texture.repeat.set( 1, 1 );
 
-    }
+			return texture;
 
-    static loadTexture ( path: string ): Texture {
+		} catch ( error ) {
 
-        try {
+			SnackBar.error( error );
 
-            const texture = new TextureLoader().load( path );
+			return null;
 
-            texture.wrapS = RepeatWrapping;
-            texture.wrapT = RepeatWrapping;
-            texture.mapping = UVMapping;
-            texture.repeat.set( 1, 1 );
+		}
+	}
 
-            return texture;
+	private static createTextureMetaInternal ( guid: string, path: string ): Metadata {
 
-        } catch ( error ) {
+		const texture = this.loadTexture( path );
 
-            SnackBar.error( error );
+		const metadata = this.createTextureMetadata( guid, path, texture );
 
-            return null;
+		AssetDatabase.setInstance( metadata.guid, texture );
 
-        }
-    }
+		return metadata;
+	}
 }

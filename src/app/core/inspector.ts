@@ -7,49 +7,47 @@ import { ComponentItem, IComponent } from './game-object';
 
 export class AppInspector {
 
-    public static inspectorChanged = new EventEmitter<ComponentItem>();
-    public static inspectorCleared = new EventEmitter<ComponentItem>();
+	public static inspectorChanged = new EventEmitter<ComponentItem>();
+	public static inspectorCleared = new EventEmitter<ComponentItem>();
 
-    /**
-     * fired when new instance of inspector is created 
-     */
-    public static inspectorCreated = new EventEmitter<IComponent>();
+	/**
+	 * fired when new instance of inspector is created
+	 */
+	public static inspectorCreated = new EventEmitter<IComponent>();
+	public static currentInspector: Type<IComponent>;
+	public static currentInspectorData: any;
+	private static componentItem: ComponentItem;
 
-    private static componentItem: ComponentItem;
+	public static setInspector ( component: Type<IComponent>, data: any ) {
 
-    public static currentInspector: Type<IComponent>;
-    public static currentInspectorData: any;
+		if ( !component ) this.clear();
 
-    public static setInspector ( component: Type<IComponent>, data: any ) {
+		if ( !component ) return;
 
-        if ( !component ) this.clear();
+		this.currentInspector = component;
 
-        if ( !component ) return;
+		this.currentInspectorData = data;
 
-        this.currentInspector = component;
+		this.componentItem = new ComponentItem( component, data );
 
-        this.currentInspectorData = data;
+		this.inspectorChanged.emit( this.componentItem );
 
-        this.componentItem = new ComponentItem( component, data );
+	}
 
-        this.inspectorChanged.emit( this.componentItem );
+	public static getInspector (): ComponentItem {
 
-    }
+		return this.componentItem;
 
-    public static getInspector (): ComponentItem {
+	}
 
-        return this.componentItem;
+	static clear () {
 
-    }
+		this.currentInspector = null;
 
-    static clear () {
+		this.currentInspectorData = null;
 
-        this.currentInspector = null;
+		this.inspectorCleared.emit( null );
 
-        this.currentInspectorData = null;
-
-        this.inspectorCleared.emit( null );
-
-    }
+	}
 
 }

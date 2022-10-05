@@ -2,107 +2,107 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3, BufferGeometry, BufferAttribute, LineSegments, LineBasicMaterial } from 'three';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { MAX_CTRL_POINTS, CURVE_Y } from "./spline-config";
+import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import { CURVE_Y, MAX_CTRL_POINTS } from './spline-config';
 
 export class TangentLine {
 
-    public radiuses: any[];
+	public radiuses: any[];
 
-    public mesh: LineSegments;
+	public mesh: LineSegments;
 
-    private hdgs: any[] = [];
+	private hdgs: any[] = [];
 
-    private geometry: BufferGeometry;
+	private geometry: BufferGeometry;
 
-    private curveType: string = 'tangent';
+	private curveType: string = 'tangent';
 
-    constructor ( public points: Vector3[] ) {
+	constructor ( public points: Vector3[] ) {
 
-        this.geometry = new BufferGeometry();
+		this.geometry = new BufferGeometry();
 
-        this.geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
+		this.geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
 
-        this.mesh = new LineSegments( this.geometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
+		this.mesh = new LineSegments( this.geometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
 
-        this.mesh.castShadow = true;
+		this.mesh.castShadow = true;
 
-        this.mesh.renderOrder = 3;
+		this.mesh.renderOrder = 3;
 
-        this.mesh.frustumCulled = false;
+		this.mesh.frustumCulled = false;
 
-    }
+	}
 
-    update ( hdgs: any[], points?: any[] ) {
+	update ( hdgs: any[], points?: any[] ) {
 
-        this.hdgs = hdgs;
+		this.hdgs = hdgs;
 
-        const position = this.geometry.attributes.position as BufferAttribute;
+		const position = this.geometry.attributes.position as BufferAttribute;
 
-        const pos = new Vector3();
+		const pos = new Vector3();
 
-        for ( let i = 0; i < points.length; i++ ) {
+		for ( let i = 0; i < points.length; i++ ) {
 
-            pos.set( Math.cos( this.hdgs[ i ][ 0 ] ), Math.sin( this.hdgs[ i ][ 0 ] ), CURVE_Y )
+			pos.set( Math.cos( this.hdgs[ i ][ 0 ] ), Math.sin( this.hdgs[ i ][ 0 ] ), CURVE_Y )
 
-                .multiplyScalar( this.hdgs[ i ][ 1 ] )
+				.multiplyScalar( this.hdgs[ i ][ 1 ] )
 
-                .add( points[ i ] );
+				.add( points[ i ] );
 
-            position.setXYZ( i * 2 + 0, pos.x, pos.y, pos.z );
+			position.setXYZ( i * 2 + 0, pos.x, pos.y, pos.z );
 
-            pos.set( Math.cos( this.hdgs[ i ][ 0 ] ), Math.sin( this.hdgs[ i ][ 0 ] ), CURVE_Y )
+			pos.set( Math.cos( this.hdgs[ i ][ 0 ] ), Math.sin( this.hdgs[ i ][ 0 ] ), CURVE_Y )
 
-                .multiplyScalar( -this.hdgs[ i ][ 2 ] )
+				.multiplyScalar( -this.hdgs[ i ][ 2 ] )
 
-                .add( points[ i ] );
+				.add( points[ i ] );
 
-            position.setXYZ( i * 2 + 1, pos.x, pos.y, pos.z );
+			position.setXYZ( i * 2 + 1, pos.x, pos.y, pos.z );
 
-        }
+		}
 
-        for ( let i = points.length; i < MAX_CTRL_POINTS; i++ ) {
+		for ( let i = points.length; i < MAX_CTRL_POINTS; i++ ) {
 
-            position.setXYZ( i * 2 + 0, pos.x, pos.y, pos.z );
+			position.setXYZ( i * 2 + 0, pos.x, pos.y, pos.z );
 
-            position.setXYZ( i * 2 + 1, pos.x, pos.y, pos.z );
+			position.setXYZ( i * 2 + 1, pos.x, pos.y, pos.z );
 
-        }
+		}
 
-        position.needsUpdate = true;
+		position.needsUpdate = true;
 
-    }
+	}
 
-    updateOneSegment ( idx, point ) {
+	updateOneSegment ( idx, point ) {
 
-        const position = this.geometry.attributes.position as BufferAttribute;
+		const position = this.geometry.attributes.position as BufferAttribute;
 
-        const pos1 = new Vector3();
+		const pos1 = new Vector3();
 
-        const pos2 = new Vector3();
+		const pos2 = new Vector3();
 
-        pos1.set( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ), CURVE_Y )
+		pos1.set( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ), CURVE_Y )
 
-            .multiplyScalar( this.hdgs[ idx ][ 1 ] )
+			.multiplyScalar( this.hdgs[ idx ][ 1 ] )
 
-            .add( point );
+			.add( point );
 
-        position.setXYZ( idx * 2 + 0, pos1.x, pos1.y, pos1.z );
+		position.setXYZ( idx * 2 + 0, pos1.x, pos1.y, pos1.z );
 
-        pos2.set( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ), CURVE_Y )
+		pos2.set( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ), CURVE_Y )
 
-            .multiplyScalar( -this.hdgs[ idx ][ 2 ] )
+			.multiplyScalar( -this.hdgs[ idx ][ 2 ] )
 
-            .add( point );
+			.add( point );
 
-        position.setXYZ( idx * 2 + 1, pos2.x, pos2.y, pos2.z );
+		position.setXYZ( idx * 2 + 1, pos2.x, pos2.y, pos2.z );
 
-        position.needsUpdate = true;
+		position.needsUpdate = true;
 
-        return [ pos1, pos2 ];
+		return [ pos1, pos2 ];
 
-    }
+	}
 
 }
 

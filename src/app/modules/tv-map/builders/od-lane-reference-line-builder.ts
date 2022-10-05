@@ -2,19 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../models/tv-road.model';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Color, Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from 'three';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvLane } from '../models/tv-lane';
 import { TvLaneSide } from '../models/tv-common';
-import { Maths } from 'app/utils/maths';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
 
 export enum LineType {
-    SOLID = 'solid',
-    DASHED = 'dashed',
-    BOTH = 'both',
+	SOLID = 'solid',
+	DASHED = 'dashed',
+	BOTH = 'both',
 }
 
 const DEFAULT_LINE_COLOR = new Color( 0, 0, 1 );
@@ -30,317 +30,316 @@ const HIGHLIGHT_DASHED_WIDTH = 3;
 
 export class OdLaneReferenceLineBuilder {
 
-    public lines: Object3D[] = [];
+	public lines: Object3D[] = [];
 
-    public readonly tag: string = 'lane-reference-line';
+	public readonly tag: string = 'lane-reference-line';
 
-    private basicMaterial = new THREE.LineBasicMaterial( {
-        color: DEFAULT_LINE_COLOR,
-        linewidth: DEFAULT_SOLID_WIDTH
-    } );
+	private basicMaterial = new THREE.LineBasicMaterial( {
+		color: DEFAULT_LINE_COLOR,
+		linewidth: DEFAULT_SOLID_WIDTH
+	} );
 
-    private dashedMaterial = new LineDashedMaterial( {
-        color: DEFAULT_LINE_COLOR,
-        opacity: 0.35,
-        linewidth: DEFAULT_DASHED_WIDTH,
-        scale: 1,
-        dashSize: 0.2,
-        gapSize: 0.1,
-    } );
+	private dashedMaterial = new LineDashedMaterial( {
+		color: DEFAULT_LINE_COLOR,
+		opacity: 0.35,
+		linewidth: DEFAULT_DASHED_WIDTH,
+		scale: 1,
+		dashSize: 0.2,
+		gapSize: 0.1,
+	} );
 
-    private mouseOverLine: Line;
+	private mouseOverLine: Line;
 
-    private selectedLine: Line;
+	private selectedLine: Line;
 
-    constructor ( private road?: TvRoad, private lineType: LineType = LineType.SOLID, private color?: number ) {
+	constructor ( private road?: TvRoad, private lineType: LineType = LineType.SOLID, private color?: number ) {
 
-    }
+	}
 
-    public setType ( lineType: LineType ) {
+	public setType ( lineType: LineType ) {
 
-        this.lineType = lineType;
+		this.lineType = lineType;
 
-    }
+	}
 
-    public create () {
+	public create () {
 
-        const container = this.road.getLanes();
+		const container = this.road.getLanes();
 
-        container.computeLaneSectionEnd( this.road );
+		container.computeLaneSectionEnd( this.road );
 
-        this.drawRoad( this.road );
-    }
+		this.drawRoad( this.road );
+	}
 
-    public redraw ( type: LineType = LineType.SOLID ): void {
+	public redraw ( type: LineType = LineType.SOLID ): void {
 
-        const road = this.road;
+		const road = this.road;
 
-        this.clear();
+		this.clear();
 
-        this.drawRoad( road, type );
-    }
+		this.drawRoad( road, type );
+	}
 
 
-    public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw = false ) {
+	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw = false ) {
 
-        if ( road == null ) return;
+		if ( road == null ) return;
 
-        // TODO: remove this logic as the responsibility should not be here
-        // simply return if the road is already selected
-        if ( !redraw && this.road && this.road.id === road.id ) return;
+		// TODO: remove this logic as the responsibility should not be here
+		// simply return if the road is already selected
+		if ( !redraw && this.road && this.road.id === road.id ) return;
 
-        this.clear();
+		this.clear();
 
-        this.road = road;
+		this.road = road;
 
-        for ( let i = 0; i < road.lanes.laneSections.length; i++ ) {
+		for ( let i = 0; i < road.lanes.laneSections.length; i++ ) {
 
-            const laneSection = road.lanes.laneSections[ i ];
+			const laneSection = road.lanes.laneSections[ i ];
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                const points: TvPosTheta[] = [];
+				const points: TvPosTheta[] = [];
 
-                this.makeLanePoints( laneSection, lane, points );
+				this.makeLanePoints( laneSection, lane, points );
 
-                this.drawLine( lane, this.convertToVector3List( points ), type );
+				this.drawLine( lane, this.convertToVector3List( points ), type );
 
-            } )
+			} );
 
-        }
-    }
+		}
+	}
 
-    public clear () {
+	public clear () {
 
-        if ( this.road && this.road.gameObject ) {
+		if ( this.road && this.road.gameObject ) {
 
-            this.lines.forEach( line => {
+			this.lines.forEach( line => {
 
-                this.road.gameObject.remove( line );
+				this.road.gameObject.remove( line );
 
-            } );
+			} );
 
-            this.road = null;
-        }
+			this.road = null;
+		}
 
-    }
+	}
 
-    onMouseOverLine ( line: Line ) {
+	onMouseOverLine ( line: Line ) {
 
-        if ( this.selectedLine && line.id === this.selectedLine.id ) return;
+		if ( this.selectedLine && line.id === this.selectedLine.id ) return;
 
-        // // not reqquired it seems
-        // // dont higlight if this line is already selected
-        // if ( this.mouseOverLine && this.selectedLine && line.id === this.selectedLine.id ) return;
+		// // not reqquired it seems
+		// // dont higlight if this line is already selected
+		// if ( this.mouseOverLine && this.selectedLine && line.id === this.selectedLine.id ) return;
 
-        // if same line is being asked to highlight then simple return and do nothing
-        if ( this.mouseOverLine && this.mouseOverLine.id == line.id ) return;
+		// if same line is being asked to highlight then simple return and do nothing
+		if ( this.mouseOverLine && this.mouseOverLine.id == line.id ) return;
 
-        // // not reqquired it seems
-        // simpley return if mouse is over the selected line
-        // if ( this.mouseOverLine && this.selectedLine && this.selectedLine.id == this.mouseOverLine.id ) return;
+		// // not reqquired it seems
+		// simpley return if mouse is over the selected line
+		// if ( this.mouseOverLine && this.selectedLine && this.selectedLine.id == this.mouseOverLine.id ) return;
 
-        // else remove the previously highlighted line if present
-        this.onMouseOutLine();
+		// else remove the previously highlighted line if present
+		this.onMouseOutLine();
 
-        // make this the new highlighted line
-        this.mouseOverLine = line;
+		// make this the new highlighted line
+		this.mouseOverLine = line;
 
-        // set the current material property to highlighted color
-        ( line.computeLineDistances() );
+		// set the current material property to highlighted color
+		( line.computeLineDistances() );
 
-        ( line.material as LineBasicMaterial ).color.set( HIGHLIGHT_LINE_COLOR );
+		( line.material as LineBasicMaterial ).color.set( HIGHLIGHT_LINE_COLOR );
 
-        if ( this.lineType == LineType.SOLID ) {
+		if ( this.lineType == LineType.SOLID ) {
 
-            ( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_SOLID_WIDTH;
+			( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_SOLID_WIDTH;
 
-        } else {
+		} else {
 
-            ( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_DASHED_WIDTH;
-        }
+			( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_DASHED_WIDTH;
+		}
 
-        ( line.material as LineBasicMaterial ).needsUpdate = true;
-    }
+		( line.material as LineBasicMaterial ).needsUpdate = true;
+	}
 
-    onMouseOutLine () {
+	onMouseOutLine () {
 
-        if ( !this.mouseOverLine ) return;
+		if ( !this.mouseOverLine ) return;
 
-        // simpley return if mouse was over the selected line
-        if ( this.mouseOverLine && this.selectedLine && this.mouseOverLine.id == this.selectedLine.id ) return;
+		// simpley return if mouse was over the selected line
+		if ( this.mouseOverLine && this.selectedLine && this.mouseOverLine.id == this.selectedLine.id ) return;
 
-        // set the current material property to highlighted color
-        ( this.mouseOverLine.computeLineDistances() );
+		// set the current material property to highlighted color
+		( this.mouseOverLine.computeLineDistances() );
 
-        ( this.mouseOverLine.material as LineBasicMaterial ).color.set( DEFAULT_LINE_COLOR );
+		( this.mouseOverLine.material as LineBasicMaterial ).color.set( DEFAULT_LINE_COLOR );
 
-        if ( this.lineType == LineType.SOLID ) {
+		if ( this.lineType == LineType.SOLID ) {
 
-            ( this.mouseOverLine.material as LineBasicMaterial ).linewidth = DEFAULT_SOLID_WIDTH;
+			( this.mouseOverLine.material as LineBasicMaterial ).linewidth = DEFAULT_SOLID_WIDTH;
 
-        } else {
+		} else {
 
-            ( this.mouseOverLine.material as LineBasicMaterial ).linewidth = DEFAULT_DASHED_WIDTH;
-        }
+			( this.mouseOverLine.material as LineBasicMaterial ).linewidth = DEFAULT_DASHED_WIDTH;
+		}
 
-        ( this.mouseOverLine.material as LineBasicMaterial ).needsUpdate = true;
+		( this.mouseOverLine.material as LineBasicMaterial ).needsUpdate = true;
 
-        this.mouseOverLine = null;
-    }
+		this.mouseOverLine = null;
+	}
 
-    onLineSelected ( line: Line ) {
+	onLineSelected ( line: Line ) {
 
-        if ( this.selectedLine && this.selectedLine.id == line.id ) return;
+		if ( this.selectedLine && this.selectedLine.id == line.id ) return;
 
-        this.onLineUnselected();
+		this.onLineUnselected();
 
-        this.selectedLine = line;
+		this.selectedLine = line;
 
-        ( line.computeLineDistances() );
+		( line.computeLineDistances() );
 
-        ( line.material as LineBasicMaterial ).color.set( SELECTED_LINE_COLOR );
+		( line.material as LineBasicMaterial ).color.set( SELECTED_LINE_COLOR );
 
-        if ( this.lineType == LineType.SOLID ) {
+		if ( this.lineType == LineType.SOLID ) {
 
-            ( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_SOLID_WIDTH;
+			( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_SOLID_WIDTH;
 
-        } else {
+		} else {
 
-            ( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_DASHED_WIDTH;
-        }
+			( line.material as LineBasicMaterial ).linewidth = HIGHLIGHT_DASHED_WIDTH;
+		}
 
-        ( line.material as LineBasicMaterial ).needsUpdate = true;
+		( line.material as LineBasicMaterial ).needsUpdate = true;
 
-    }
+	}
 
-    onLineUnselected () {
+	onLineUnselected () {
 
-        if ( !this.selectedLine ) return;
+		if ( !this.selectedLine ) return;
 
-        ( this.selectedLine.computeLineDistances() );
+		( this.selectedLine.computeLineDistances() );
 
-        ( this.selectedLine.material as LineBasicMaterial ).color.set( DEFAULT_LINE_COLOR );
+		( this.selectedLine.material as LineBasicMaterial ).color.set( DEFAULT_LINE_COLOR );
 
-        if ( this.lineType == LineType.SOLID ) {
+		if ( this.lineType == LineType.SOLID ) {
 
-            ( this.selectedLine.material as LineBasicMaterial ).linewidth = DEFAULT_SOLID_WIDTH;
+			( this.selectedLine.material as LineBasicMaterial ).linewidth = DEFAULT_SOLID_WIDTH;
 
-        } else {
+		} else {
 
-            ( this.selectedLine.material as LineBasicMaterial ).linewidth = DEFAULT_DASHED_WIDTH;
-        }
+			( this.selectedLine.material as LineBasicMaterial ).linewidth = DEFAULT_DASHED_WIDTH;
+		}
 
-        ( this.selectedLine.material as LineBasicMaterial ).needsUpdate = true;
+		( this.selectedLine.material as LineBasicMaterial ).needsUpdate = true;
 
-        this.selectedLine = null;
+		this.selectedLine = null;
 
-    }
+	}
 
-    private drawLine ( lane: TvLane, points: Vector3[], type: LineType = LineType.SOLID ) {
+	private drawLine ( lane: TvLane, points: Vector3[], type: LineType = LineType.SOLID ) {
 
-        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+		const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-        const material = this.getLineMaterial( type );
+		const material = this.getLineMaterial( type );
 
-        if ( this.color ) material.color.set( this.color );
+		if ( this.color ) material.color.set( this.color );
 
-        const line = new THREE.Line( geometry, material );
+		const line = new THREE.Line( geometry, material );
 
-        ( line.material as Material ).depthTest = false;
+		( line.material as Material ).depthTest = false;
 
-        line.computeLineDistances();
+		line.computeLineDistances();
 
-        line.name = 'LaneWidthLine';
+		line.name = 'LaneWidthLine';
 
-        line.userData.is_selectable = true;
+		line.userData.is_selectable = true;
 
-        line.userData.lane = lane;
+		line.userData.lane = lane;
 
-        line.renderOrder = 5;
+		line.renderOrder = 5;
 
-        line[ 'tag' ] = this.tag;
+		line[ 'tag' ] = this.tag;
 
-        this.lines.push( line );
+		this.lines.push( line );
 
-        this.road.gameObject.add( line );
-    }
+		this.road.gameObject.add( line );
+	}
 
-    private getLineMaterial ( type: LineType ) {
+	private getLineMaterial ( type: LineType ) {
 
-        if ( type == LineType.SOLID ) {
+		if ( type == LineType.SOLID ) {
 
-            return new LineBasicMaterial().copy( this.basicMaterial );
+			return new LineBasicMaterial().copy( this.basicMaterial );
 
-        } else if ( type == LineType.DASHED ) {
+		} else if ( type == LineType.DASHED ) {
 
-            return new LineDashedMaterial().copy( this.dashedMaterial );
+			return new LineDashedMaterial().copy( this.dashedMaterial );
 
-        } else if ( type == LineType.BOTH ) {
+		} else if ( type == LineType.BOTH ) {
 
-            return new LineDashedMaterial().copy( this.dashedMaterial );
+			return new LineDashedMaterial().copy( this.dashedMaterial );
 
-        } else {
+		} else {
 
-            console.warn( "unknown line type" );
+			console.warn( 'unknown line type' );
 
-            return new LineBasicMaterial().copy( this.basicMaterial );
+			return new LineBasicMaterial().copy( this.basicMaterial );
 
-        }
-    }
+		}
+	}
 
-    private convertToVector3List ( poses: TvPosTheta[] ): Vector3[] {
+	private convertToVector3List ( poses: TvPosTheta[] ): Vector3[] {
 
-        const tmp: Vector3[] = [];
+		const tmp: Vector3[] = [];
 
-        poses.forEach( pose => {
+		poses.forEach( pose => {
 
-            tmp.push( new Vector3( pose.x, pose.y, 0 ) );
+			tmp.push( new Vector3( pose.x, pose.y, 0 ) );
 
-        } );
+		} );
 
-        return tmp;
-    }
+		return tmp;
+	}
 
-    private makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
-        let s = laneSection.s;
+		let s = laneSection.s;
 
-        while ( s <= laneSection.lastSCoordinate ) {
+		while ( s <= laneSection.lastSCoordinate ) {
 
-            this.makeLanePointsLoop( s, laneSection, lane, points );
+			this.makeLanePointsLoop( s, laneSection, lane, points );
 
-            s++;
-        }
+			s++;
+		}
 
-        s = laneSection.lastSCoordinate - Maths.Epsilon;
+		s = laneSection.lastSCoordinate - Maths.Epsilon;
 
-        this.makeLanePointsLoop( s, laneSection, lane, points );
-    }
+		this.makeLanePointsLoop( s, laneSection, lane, points );
+	}
 
-    private makeLanePointsLoop ( s, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private makeLanePointsLoop ( s, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
-        const posTheta = new TvPosTheta();
+		const posTheta = new TvPosTheta();
 
-        // const laneOffset = this.road.lanes.getLaneOffsetValue( s );
+		// const laneOffset = this.road.lanes.getLaneOffsetValue( s );
 
-        let width = laneSection.getWidthUptoEnd( lane, s );
+		let width = laneSection.getWidthUptoEnd( lane, s );
 
-        this.road.getGeometryCoords( s, posTheta );
+		this.road.getGeometryCoords( s, posTheta );
 
-        // posTheta.addLateralOffset( laneOffset );
+		// posTheta.addLateralOffset( laneOffset );
 
-        // If right side lane then make the offset negative
-        if ( lane.side === TvLaneSide.RIGHT ) {
-            width *= -1;
-        }
+		// If right side lane then make the offset negative
+		if ( lane.side === TvLaneSide.RIGHT ) {
+			width *= -1;
+		}
 
-        posTheta.addLateralOffset( width );
+		posTheta.addLateralOffset( width );
 
-        points.push( posTheta );
+		points.push( posTheta );
 
-    }
-
+	}
 
 
 }

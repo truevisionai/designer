@@ -3,204 +3,222 @@
  */
 
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer, Object3D, DirectionalLight, AmbientLight, Box3, Vector3 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
-import { OrbitControls } from 'app/modules/three-js/objects/orbit-controls';
-import { PreviewService } from './object-preview.service';
+import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
 import { AssetDatabase } from 'app/services/asset-database';
 import { RoadStyle } from 'app/services/road-style.service';
+import { COLOR } from 'app/shared/utils/colors.service';
+import {
+	AmbientLight,
+	BoxGeometry,
+	Color,
+	DirectionalLight,
+	Mesh,
+	MeshBasicMaterial,
+	Object3D,
+	PerspectiveCamera,
+	Scene,
+	WebGLRenderer
+} from 'three';
+import { PreviewService } from './object-preview.service';
 
 @Component( {
-    selector: 'app-object-preview',
-    templateUrl: './object-preview.component.html',
-    styleUrls: [ './object-preview.component.css' ]
+	selector: 'app-object-preview',
+	templateUrl: './object-preview.component.html',
+	styleUrls: [ './object-preview.component.css' ]
 } )
 export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @Input() path: string
+	@Input() path: string;
 
-    @Input() guid: string;
+	@Input() guid: string;
 
-    @Input() object: Object3D;
+	@Input() object: Object3D;
 
-    @Input() objectType: 'default' | 'model' | 'material' | 'roadstyle' = 'default';
+	@Input() objectType: 'default' | 'model' | 'material' | 'roadstyle' = 'default';
 
-    @ViewChild( 'viewport' ) viewportRef: ElementRef;
+	@ViewChild( 'viewport' ) viewportRef: ElementRef;
 
-    public renderer: WebGLRenderer;
-    public frameId: number;
+	public renderer: WebGLRenderer;
+	public frameId: number;
 
-    public scene: Scene = new Scene;
-    public camera: PerspectiveCamera;
-    public controls: OrbitControls;
+	public scene: Scene = new Scene;
+	public camera: PerspectiveCamera;
+	public controls: TvOrbitControls;
 
-    cube: Mesh;
+	cube: Mesh;
 
-    get canvas (): HTMLCanvasElement {
-        return <HTMLCanvasElement> this.viewportRef.nativeElement;
-    }
+	constructor ( private previewService: PreviewService ) {
 
-    get width (): number {
-        return this.canvas.width;
-    }
+		this.render = this.render.bind( this );
 
-    get height () {
-        return this.canvas.height;
-    }
+	}
 
-    constructor ( private previewService: PreviewService ) {
+	get canvas (): HTMLCanvasElement {
+		return <HTMLCanvasElement> this.viewportRef.nativeElement;
+	}
 
-        this.render = this.render.bind( this );
+	get width (): number {
+		return this.canvas.width;
+	}
 
-    }
+	get height () {
+		return this.canvas.height;
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
 
-    }
+	}
 
-    ngAfterViewInit (): void {
+	ngAfterViewInit (): void {
 
-        this.renderer = new WebGLRenderer( { alpha: false, antialias: true, precision: 'highp', stencil: false } );
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setClearColor( 0xffffff, 1 );
-        this.renderer.autoClear = true;
+		this.renderer = new WebGLRenderer( { alpha: false, antialias: true, precision: 'highp', stencil: false } );
+		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.renderer.setClearColor( 0xffffff, 1 );
+		this.renderer.autoClear = true;
 
-        // setting this after loading
-        // this.renderer.setSize( this.width, 100 );
+		// setting this after loading
+		// this.renderer.setSize( this.width, 100 );
 
-        this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
+		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
 
-        this.controls = OrbitControls.getNew( this.camera, this.canvas );
+		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
-        this.addDirectionLight();
+		this.addDirectionLight();
 
-        this.canvas.appendChild( this.renderer.domElement );
+		this.canvas.appendChild( this.renderer.domElement );
 
-        switch ( this.objectType ) {
+		switch ( this.objectType ) {
 
-            case 'model': this.modelPreviewSetup(); break;
+			case 'model':
+				this.modelPreviewSetup();
+				break;
 
-            case 'material': this.materialPreviewSetup(); break;
+			case 'material':
+				this.materialPreviewSetup();
+				break;
 
-            case 'roadstyle': this.roadStylePreviewSetup(); break;
+			case 'roadstyle':
+				this.roadStylePreviewSetup();
+				break;
 
-            default: this.defaultObjectSetup(); break;
-        }
+			default:
+				this.defaultObjectSetup();
+				break;
+		}
 
-        setTimeout( () => {
+		setTimeout( () => {
 
-            this.setCanvasSize();
+			this.setCanvasSize();
 
-        }, 300 );
+		}, 300 );
 
-        this.render();
-    }
+		this.render();
+	}
 
-    ngOnDestroy (): void {
+	ngOnDestroy (): void {
 
-        if ( this.frameId ) cancelAnimationFrame( this.frameId );
+		if ( this.frameId ) cancelAnimationFrame( this.frameId );
 
-        if ( this.renderer ) this.renderer.dispose();
+		if ( this.renderer ) this.renderer.dispose();
 
-    }
+	}
 
-    modelPreviewSetup () {
+	modelPreviewSetup () {
 
-        this.previewService.modelPreviewSetup( this.scene, this.camera, this.object );
+		this.previewService.modelPreviewSetup( this.scene, this.camera, this.object );
 
-        this.scene.add( this.previewService.ground );
+		this.scene.add( this.previewService.ground );
 
-        this.controls.setRotateEnabled( true );
-    }
+		this.controls.setRotateEnabled( true );
+	}
 
-    materialPreviewSetup () {
+	materialPreviewSetup () {
 
-    }
+	}
 
-    roadStylePreviewSetup () {
+	roadStylePreviewSetup () {
 
-        if ( !this.guid ) return;
+		if ( !this.guid ) return;
 
-        const roadStyle = AssetDatabase.getInstance<RoadStyle>( this.guid );
+		const roadStyle = AssetDatabase.getInstance<RoadStyle>( this.guid );
 
-        // this.camera.position.z = roadStyle.
+		// this.camera.position.z = roadStyle.
 
-    }
+	}
 
-    defaultObjectSetup () {
+	defaultObjectSetup () {
 
-        this.scene.background = new Color( COLOR.BLACK )
+		this.scene.background = new Color( COLOR.BLACK );
 
-        const geometry = new BoxGeometry( 1, 1, 1 );
-        const material = new MeshBasicMaterial( { color: 0x00ff00 } );
-        const cube = this.cube = new Mesh( geometry, material );
+		const geometry = new BoxGeometry( 1, 1, 1 );
+		const material = new MeshBasicMaterial( { color: 0x00ff00 } );
+		const cube = this.cube = new Mesh( geometry, material );
 
-        if ( this.object ) {
+		if ( this.object ) {
 
-            this.scene.add( this.object );
+			this.scene.add( this.object );
 
-        } else {
+		} else {
 
-            this.scene.add( cube );
+			this.scene.add( cube );
 
-        }
+		}
 
-        this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
-        this.camera.position.z = 5;
+		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
+		this.camera.position.z = 5;
 
-        // this.controls = new EditorControls( this.camera, this.renderer.domElement );
-        this.controls = OrbitControls.getNew( this.camera, this.canvas );
+		// this.controls = new EditorControls( this.camera, this.renderer.domElement );
+		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
-        // console.log( this.width, this.height, this.canvas.clientWidth, this.canvas.clientHeight );
-    }
+		// console.log( this.width, this.height, this.canvas.clientWidth, this.canvas.clientHeight );
+	}
 
 
-    render () {
+	render () {
 
-        // this seems a faster want to call render function
-        this.frameId = requestAnimationFrame( this.render );
+		// this seems a faster want to call render function
+		this.frameId = requestAnimationFrame( this.render );
 
-        // this.frameId = requestAnimationFrame( () => {
-        //     this.render();
-        // } );
+		// this.frameId = requestAnimationFrame( () => {
+		//     this.render();
+		// } );
 
-        this.renderer.render( this.scene, this.camera );
+		this.renderer.render( this.scene, this.camera );
 
-        this.controls.update();
-    }
+		this.controls.update();
+	}
 
-    setCanvasSize () {
+	setCanvasSize () {
 
-        const container = this.renderer.domElement.parentElement.parentElement;
+		const container = this.renderer.domElement.parentElement.parentElement;
 
-        const box = container.getBoundingClientRect();
+		const box = container.getBoundingClientRect();
 
-        const width = container.clientWidth || 300;
-        const height = 300; // container.clientHeight;
+		const width = container.clientWidth || 300;
+		const height = 300; // container.clientHeight;
 
-        this.renderer.setViewport( -box.left, -box.top, width, height );
-        this.renderer.setSize( width, height );
+		this.renderer.setViewport( -box.left, -box.top, width, height );
+		this.renderer.setSize( width, height );
 
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
+		this.camera.aspect = width / height;
+		this.camera.updateProjectionMatrix();
 
-    }
+	}
 
-    addDirectionLight () {
+	addDirectionLight () {
 
-        const directionaLight = new DirectionalLight( '0xffffff', 1 );
+		const directionaLight = new DirectionalLight( '0xffffff', 1 );
 
-        directionaLight.position.set( 5, 10, 7.5 );
+		directionaLight.position.set( 5, 10, 7.5 );
 
-        this.scene.add( directionaLight );
+		this.scene.add( directionaLight );
 
-        this.scene.add( directionaLight.target );
+		this.scene.add( directionaLight.target );
 
-        const ambientLight = new AmbientLight( 0x404040, 1 );
+		const ambientLight = new AmbientLight( 0x404040, 1 );
 
-        this.scene.add( ambientLight );
+		this.scene.add( ambientLight );
 
-    }
+	}
 }

@@ -3,24 +3,24 @@
  */
 
 import { MeshBasicMaterial } from 'three';
+import { COLOR } from '../../../shared/utils/colors.service';
 import { TvLane } from '../models/tv-lane';
 import { OdTextures } from './od.textures';
-import { COLOR } from '../../../shared/utils/colors.service';
 
 export class OdMaterials {
 
-    static getLaneMaterial ( lane: TvLane, forceNew = false ) {
+	static getLaneMaterial ( lane: TvLane, forceNew = false ) {
 
-        if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
+		if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
 
-            return lane.gameObject.material;
+			return lane.gameObject.material;
 
-        }
+		}
 
-        return new MeshBasicMaterial( {
-            map: OdTextures.getLaneTexture( lane ),
-            color: COLOR.WHITE,
-            wireframe: false,
-        } );
-    }
+		return new MeshBasicMaterial( {
+			map: OdTextures.getLaneTexture( lane ),
+			color: COLOR.WHITE,
+			wireframe: false,
+		} );
+	}
 }

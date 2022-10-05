@@ -8,195 +8,195 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 
 export class TvLaneSectionSample {
 
-    private mLeftTypeVector: string[] = [];
-    private mLeftWidthVector: number[] = [];
-    private mLeftHeightVector: TvLaneHeight[] = [];
-    private mLeftRoadMarkVector: TvLaneRoadMark[] = [];
-    private mLeftLevelVector: boolean[] = [];
+	private mLeftTypeVector: string[] = [];
+	private mLeftWidthVector: number[] = [];
+	private mLeftHeightVector: TvLaneHeight[] = [];
+	private mLeftRoadMarkVector: TvLaneRoadMark[] = [];
+	private mLeftLevelVector: boolean[] = [];
 
-    private mRightTypeVector: string[] = [];
-    private mRightWidthVector: number[] = [];
-    private mRightHeightVector: TvLaneHeight[] = [];
-    private mRightRoadMarkVector: TvLaneRoadMark[] = [];
-    private mRightLevelVector: boolean[] = [];
-
-
-    /**
-     * Lane Section Sample. Holds all the lane information at a certain S value including lane widths, levels,
-     * heights, etc
-     *
-     *
-     *
-     *
-     */
-    constructor () {
-
-    }
+	private mRightTypeVector: string[] = [];
+	private mRightWidthVector: number[] = [];
+	private mRightHeightVector: TvLaneHeight[] = [];
+	private mRightRoadMarkVector: TvLaneRoadMark[] = [];
+	private mRightLevelVector: boolean[] = [];
 
 
-    addLeftType ( type: string ): void {
-        this.mLeftTypeVector.push( type );
-    }
+	/**
+	 * Lane Section Sample. Holds all the lane information at a certain S value including lane widths, levels,
+	 * heights, etc
+	 *
+	 *
+	 *
+	 *
+	 */
+	constructor () {
 
-    addLeftWidth ( width: number ): void {
-        this.mLeftWidthVector.push( width );
-    }
-
-    addLeftHeight ( height: TvLaneHeight ): void {
-        this.mLeftHeightVector.push( height );
-    }
-
-    addLeftRoadMark ( roadMark: TvLaneRoadMark ): void {
-        this.mLeftRoadMarkVector.push( roadMark );
-    }
-
-    addLeftLevel ( level: boolean ): void {
-        this.mLeftLevelVector.push( level );
-    }
+	}
 
 
-    addRightType ( type: string ): void {
-        this.mRightTypeVector.push( type );
-    }
+	addLeftType ( type: string ): void {
+		this.mLeftTypeVector.push( type );
+	}
 
-    addRightWidth ( width: number ): void {
-        this.mRightWidthVector.push( width );
-    }
+	addLeftWidth ( width: number ): void {
+		this.mLeftWidthVector.push( width );
+	}
 
-    addRightHeight ( height: TvLaneHeight ): void {
-        this.mRightHeightVector.push( height );
-    }
+	addLeftHeight ( height: TvLaneHeight ): void {
+		this.mLeftHeightVector.push( height );
+	}
 
-    addRightRoadMark ( roadMark: TvLaneRoadMark ): void {
-        this.mRightRoadMarkVector.push( roadMark );
-    }
+	addLeftRoadMark ( roadMark: TvLaneRoadMark ): void {
+		this.mLeftRoadMarkVector.push( roadMark );
+	}
 
-    addRightLevel ( level: boolean ): void {
-        this.mRightLevelVector.push( level );
-    }
+	addLeftLevel ( level: boolean ): void {
+		this.mLeftLevelVector.push( level );
+	}
 
-    addLeftRecord ( type: string, width: number, height: TvLaneHeight, roadMark: TvLaneRoadMark, level: boolean ): void {
-        this.addLeftType( type );
-        this.addLeftWidth( width );
-        this.addLeftHeight( height );
-        this.addLeftRoadMark( roadMark );
-        this.addLeftLevel( level );
-    }
 
-    addRightRecord ( type: string, width: number, height: TvLaneHeight, roadMark: TvLaneRoadMark, level: boolean ): void {
-        this.addRightType( type );
-        this.addRightWidth( width );
-        this.addRightHeight( height );
-        this.addRightRoadMark( roadMark );
-        this.addRightLevel( level );
-    }
+	addRightType ( type: string ): void {
+		this.mRightTypeVector.push( type );
+	}
 
-    // LEFT
+	addRightWidth ( width: number ): void {
+		this.mRightWidthVector.push( width );
+	}
 
-    getLeftType ( i: number ): string {
-        return this.mLeftTypeVector[ i ];
-    }
+	addRightHeight ( height: TvLaneHeight ): void {
+		this.mRightHeightVector.push( height );
+	}
 
-    getLeftWidth ( i: number ): number {
-        return this.mLeftWidthVector[ i ];
-    }
+	addRightRoadMark ( roadMark: TvLaneRoadMark ): void {
+		this.mRightRoadMarkVector.push( roadMark );
+	}
 
-    getLeftHeight ( i: number ): TvLaneHeight {
-        return this.mLeftHeightVector[ i ];
-    }
+	addRightLevel ( level: boolean ): void {
+		this.mRightLevelVector.push( level );
+	}
 
-    getLeftRoadMark ( i: number ): TvLaneRoadMark {
-        return this.mLeftRoadMarkVector[ i ];
-    }
+	addLeftRecord ( type: string, width: number, height: TvLaneHeight, roadMark: TvLaneRoadMark, level: boolean ): void {
+		this.addLeftType( type );
+		this.addLeftWidth( width );
+		this.addLeftHeight( height );
+		this.addLeftRoadMark( roadMark );
+		this.addLeftLevel( level );
+	}
 
-    getLeftLevel ( i: number ): boolean {
-        return this.mLeftLevelVector[ i ];
-    }
+	addRightRecord ( type: string, width: number, height: TvLaneHeight, roadMark: TvLaneRoadMark, level: boolean ): void {
+		this.addRightType( type );
+		this.addRightWidth( width );
+		this.addRightHeight( height );
+		this.addRightRoadMark( roadMark );
+		this.addRightLevel( level );
+	}
 
-    // RIGHT
+	// LEFT
 
-    getRightType ( i: number ): string {
-        return this.mRightTypeVector[ i ];
-    }
+	getLeftType ( i: number ): string {
+		return this.mLeftTypeVector[ i ];
+	}
 
-    getRightWidth ( i: number ): number {
-        return this.mRightWidthVector[ i ];
-    }
+	getLeftWidth ( i: number ): number {
+		return this.mLeftWidthVector[ i ];
+	}
 
-    getRightHeight ( i: number ): TvLaneHeight {
-        return this.mRightHeightVector[ i ];
-    }
+	getLeftHeight ( i: number ): TvLaneHeight {
+		return this.mLeftHeightVector[ i ];
+	}
 
-    getRightRoadMark ( i: number ): TvLaneRoadMark {
-        return this.mRightRoadMarkVector[ i ];
-    }
+	getLeftRoadMark ( i: number ): TvLaneRoadMark {
+		return this.mLeftRoadMarkVector[ i ];
+	}
 
-    getRightLevel ( i: number ): boolean {
-        return this.mRightLevelVector[ i ];
-    }
+	getLeftLevel ( i: number ): boolean {
+		return this.mLeftLevelVector[ i ];
+	}
 
-    getLeftVectorsSize (): number {
-        return this.mLeftWidthVector.length;
-    }
+	// RIGHT
 
-    getRightVectorsSize (): number {
-        return this.mRightWidthVector.length;
-    }
+	getRightType ( i: number ): string {
+		return this.mRightTypeVector[ i ];
+	}
 
-    getLeftTypeVector (): string[] {
-        return this.mLeftTypeVector;
-    }
+	getRightWidth ( i: number ): number {
+		return this.mRightWidthVector[ i ];
+	}
 
-    getLeftWidthVector (): number[] {
-        return this.mLeftWidthVector;
-    }
+	getRightHeight ( i: number ): TvLaneHeight {
+		return this.mRightHeightVector[ i ];
+	}
 
-    getLeftHeigthVector (): TvLaneHeight[] {
-        return this.mLeftHeightVector;
-    }
+	getRightRoadMark ( i: number ): TvLaneRoadMark {
+		return this.mRightRoadMarkVector[ i ];
+	}
 
-    getLeftRoadMarkVector (): TvLaneRoadMark[] {
-        return this.mLeftRoadMarkVector;
-    }
+	getRightLevel ( i: number ): boolean {
+		return this.mRightLevelVector[ i ];
+	}
 
-    getLeftLevelVector (): boolean[] {
-        return this.mLeftLevelVector;
-    }
+	getLeftVectorsSize (): number {
+		return this.mLeftWidthVector.length;
+	}
 
-    getRightTypeVector (): string[] {
-        return this.mRightTypeVector;
-    }
+	getRightVectorsSize (): number {
+		return this.mRightWidthVector.length;
+	}
 
-    getRightWidthVector (): number[] {
-        return this.mRightWidthVector;
-    }
+	getLeftTypeVector (): string[] {
+		return this.mLeftTypeVector;
+	}
 
-    getRightHeigthVector (): TvLaneHeight[] {
-        return this.mRightHeightVector;
-    }
+	getLeftWidthVector (): number[] {
+		return this.mLeftWidthVector;
+	}
 
-    getRightRoadMarkVector (): TvLaneRoadMark[] {
-        return this.mRightRoadMarkVector;
-    }
+	getLeftHeigthVector (): TvLaneHeight[] {
+		return this.mLeftHeightVector;
+	}
 
-    getRightLevelVector (): boolean[] {
-        return this.mRightLevelVector;
-    }
+	getLeftRoadMarkVector (): TvLaneRoadMark[] {
+		return this.mLeftRoadMarkVector;
+	}
 
-    clearVectors (): void {
+	getLeftLevelVector (): boolean[] {
+		return this.mLeftLevelVector;
+	}
 
-        this.mLeftTypeVector.splice( 0, this.mLeftTypeVector.length );
-        this.mLeftWidthVector.splice( 0, this.mLeftWidthVector.length );
-        this.mLeftHeightVector.splice( 0, this.mLeftHeightVector.length );
-        this.mLeftRoadMarkVector.splice( 0, this.mLeftRoadMarkVector.length );
-        this.mLeftLevelVector.splice( 0, this.mLeftLevelVector.length );
+	getRightTypeVector (): string[] {
+		return this.mRightTypeVector;
+	}
 
-        this.mRightTypeVector.splice( 0, this.mRightTypeVector.length );
-        this.mRightWidthVector.splice( 0, this.mRightWidthVector.length );
-        this.mRightHeightVector.splice( 0, this.mRightHeightVector.length );
-        this.mRightRoadMarkVector.splice( 0, this.mRightRoadMarkVector.length );
-        this.mRightLevelVector.splice( 0, this.mRightLevelVector.length );
+	getRightWidthVector (): number[] {
+		return this.mRightWidthVector;
+	}
 
-    }
+	getRightHeigthVector (): TvLaneHeight[] {
+		return this.mRightHeightVector;
+	}
+
+	getRightRoadMarkVector (): TvLaneRoadMark[] {
+		return this.mRightRoadMarkVector;
+	}
+
+	getRightLevelVector (): boolean[] {
+		return this.mRightLevelVector;
+	}
+
+	clearVectors (): void {
+
+		this.mLeftTypeVector.splice( 0, this.mLeftTypeVector.length );
+		this.mLeftWidthVector.splice( 0, this.mLeftWidthVector.length );
+		this.mLeftHeightVector.splice( 0, this.mLeftHeightVector.length );
+		this.mLeftRoadMarkVector.splice( 0, this.mLeftRoadMarkVector.length );
+		this.mLeftLevelVector.splice( 0, this.mLeftLevelVector.length );
+
+		this.mRightTypeVector.splice( 0, this.mRightTypeVector.length );
+		this.mRightWidthVector.splice( 0, this.mRightWidthVector.length );
+		this.mRightHeightVector.splice( 0, this.mRightHeightVector.length );
+		this.mRightRoadMarkVector.splice( 0, this.mRightRoadMarkVector.length );
+		this.mRightLevelVector.splice( 0, this.mRightLevelVector.length );
+
+	}
 
 }

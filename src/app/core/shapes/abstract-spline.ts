@@ -2,181 +2,184 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { EventEmitter } from '@angular/core';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+
+import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
 
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { EventEmitter } from '@angular/core';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-
 export abstract class AbstractSpline {
 
-    abstract type: string;
+	abstract type: string;
+	public controlPoints: BaseControlPoint[] = [];
+	// tcboxgeometry = new THREE.BoxBufferGeometry( 0.7, 0.3, 0.7 );
+	protected controlPointAdded = new EventEmitter<BaseControlPoint>();
+	protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
+	protected meshAddedInScene: boolean;
 
-    abstract init (): void;
+	constructor ( public closed = true, public tension = 0.5 ) {
 
-    abstract hide (): void;
+		this.init();
 
-    abstract show (): void;
+	}
 
-    abstract update (): void;
+	get scene () {
+		return SceneService.scene;
+	}
 
-    abstract exportGeometries (): TvAbstractRoadGeometry[];
+	get controlPointPositions (): Vector3[] {
+		return this.controlPoints.map( point => point.position );
+	}
 
-    // tcboxgeometry = new THREE.BoxBufferGeometry( 0.7, 0.3, 0.7 );
-    protected controlPointAdded = new EventEmitter<BaseControlPoint>();
-    protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
+	abstract init (): void;
 
-    public controlPoints: BaseControlPoint[] = [];
+	abstract hide (): void;
 
-    protected meshAddedInScene: boolean;
+	abstract show (): void;
 
-    constructor ( public closed = true, public tension = 0.5 ) {
+	abstract update (): void;
 
-        this.init();
+	abstract exportGeometries (): TvAbstractRoadGeometry[];
 
-    }
+	clear () {
 
-    get scene () { return SceneService.scene; }
+		throw new Error( 'Method not implemented.' );
 
-    get controlPointPositions (): Vector3[] {
-        return this.controlPoints.map( point => point.position );
-    }
+	}
 
-    clear () {
+	addControlPoint ( cp: BaseControlPoint ) {
 
-        throw new Error( "Method not implemented." );
+		this.controlPoints.push( cp );
 
-    }
+	}
 
-    addControlPoint ( cp: BaseControlPoint ) {
+	addControlPointAtNew ( position: Vector3 ): RoadControlPoint {
 
-        this.controlPoints.push( cp );
+		throw new Error( 'method not implemented' );
 
-    }
+	}
 
-    addControlPointAtNew ( position: Vector3 ): RoadControlPoint {
+	getFirstPoint () {
 
-        throw new Error( "method not implemented" );
+		return this.controlPoints[ 0 ];
 
-    }
+	}
 
-    getFirstPoint () {
+	getSecondPoint () {
 
-        return this.controlPoints[ 0 ];
+		try {
 
-    }
+			return this.controlPoints[ 1 ];
 
-    getSecondPoint () {
+		} catch ( error ) {
 
-        try {
+		}
 
-            return this.controlPoints[ 1 ];
+	}
 
-        } catch ( error ) {
+	getLastPoint () {
 
-        }
+		return this.controlPoints[ this.controlPoints.length - 1 ];
 
-    }
+	}
 
-    getLastPoint () {
+	getSecondLastPoint () {
 
-        return this.controlPoints[ this.controlPoints.length - 1 ];
+		try {
 
-    }
+			return this.controlPoints[ this.controlPoints.length - 2 ];
 
-    getSecondLastPoint () {
+		} catch ( error ) {
 
-        try {
+		}
 
-            return this.controlPoints[ this.controlPoints.length - 2 ];
+	}
 
-        } catch ( error ) {
+	removeControlPoint ( cp: BaseControlPoint ) {
 
-        }
+		const index = this.controlPoints.findIndex( p => p.id === cp.id );
 
-    }
+		this.controlPoints.splice( index, 1 );
+	}
 
-    removeControlPoint ( cp: BaseControlPoint ) {
+	getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
-        const index = this.controlPoints.findIndex( p => p.id === cp.id );
+		const distance = p1.distanceTo( p2 );
 
-        this.controlPoints.splice( index, 1 );
-    }
+		const normalisedDotProduct = new THREE.Vector2()
+			.copy( dir1 )
+			.normalize()
+			.dot( new THREE.Vector2().copy( dir2 ).normalize() );
 
-    getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
+		const alpha = Math.acos( normalisedDotProduct );
 
-        const distance = p1.distanceTo( p2 );
+		const r = distance / 2 / Math.sin( alpha / 2 );
 
-        const normalisedDotProduct = new THREE.Vector2()
-            .copy( dir1 )
-            .normalize()
-            .dot( new THREE.Vector2().copy( dir2 ).normalize() );
+		const length = r * alpha;
 
-        const alpha = Math.acos( normalisedDotProduct );
+		const ma = dir1.x, mb = dir1.y, mc = -mb, md = ma;
 
-        const r = distance / 2 / Math.sin( alpha / 2 );
+		const det = 1 / ( ma * md - mb * mc );
 
-        const length = r * alpha;
+		const mia = det * md, mib = -mb * det, mic = -mc * det, mid = ma * det;
 
-        const ma = dir1.x, mb = dir1.y, mc = -mb, md = ma;
+		const p2proj = new THREE.Vector2().subVectors( p2, p1 );
 
-        const det = 1 / ( ma * md - mb * mc );
+		p2proj.set( p2proj.x * mia + p2proj.y * mic, p2proj.x * mib + p2proj.y * mid );
 
-        const mia = det * md, mib = -mb * det, mic = -mc * det, mid = ma * det;
+		return [ r, alpha, length, Math.sign( p2proj.y ) ];
+	}
 
-        const p2proj = new THREE.Vector2().subVectors( p2, p1 );
+	updateControlPoint ( cp: BaseControlPoint, id: number, cpobjidx?: any ) {
 
-        p2proj.set( p2proj.x * mia + p2proj.y * mic, p2proj.x * mib + p2proj.y * mid );
+		cp[ 'tag' ] = 'cp';
+		cp[ 'tagindex' ] = id;
 
-        return [ r, alpha, length, Math.sign( p2proj.y ) ];
-    }
+		cp.userData.is_button = true;
+		cp.userData.is_control_point = true;
+		cp.userData.is_selectable = true;
 
-    updateControlPoint ( cp: BaseControlPoint, id: number, cpobjidx?: any ) {
+		if ( cpobjidx == undefined ) {
+			this.controlPoints.push( cp );
+		} else {
+			this.controlPoints.splice( cpobjidx, 0, cp );
+		}
+	}
 
-        cp[ 'tag' ] = "cp"; cp[ 'tagindex' ] = id;
+	/**
+	 *
+	 * @deprecated dont use this make another internal for any sub class
+	 * @param tag
+	 * @param id
+	 * @param cpobjidx
+	 */
+	createControlPoint ( tag: 'cp' | 'tpf' | 'tpb', id: number, cpobjidx?: any ): BaseControlPoint {
 
-        cp.userData.is_button = true;
-        cp.userData.is_control_point = true;
-        cp.userData.is_selectable = true;
+		// let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+		let controlPointObject = new RoadControlPoint( null, new Vector3(), tag, id, cpobjidx );
 
-        if ( cpobjidx == undefined )
-            this.controlPoints.push( cp );
-        else
-            this.controlPoints.splice( cpobjidx, 0, cp );
-    }
+		controlPointObject[ 'tag' ] = tag;
+		controlPointObject[ 'tagindex' ] = id;
 
-    /**
-     * 
-     * @deprecated dont use this make another internal for any sub class
-     * @param tag 
-     * @param id 
-     * @param cpobjidx 
-     */
-    createControlPoint ( tag: "cp" | "tpf" | "tpb", id: number, cpobjidx?: any ): BaseControlPoint {
+		controlPointObject.userData.is_button = true;
+		controlPointObject.userData.is_control_point = true;
+		controlPointObject.userData.is_selectable = true;
 
-        // let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-        let controlPointObject = new RoadControlPoint( null, new Vector3(), tag, id, cpobjidx );
+		this.scene.add( controlPointObject );
 
-        controlPointObject[ 'tag' ] = tag; controlPointObject[ 'tagindex' ] = id;
+		if ( cpobjidx == undefined ) {
+			this.controlPoints.push( controlPointObject );
+		} else {
+			this.controlPoints.splice( cpobjidx, 0, controlPointObject );
+		}
 
-        controlPointObject.userData.is_button = true;
-        controlPointObject.userData.is_control_point = true;
-        controlPointObject.userData.is_selectable = true;
+		this.controlPointAdded.emit( controlPointObject );
 
-        this.scene.add( controlPointObject );
-
-        if ( cpobjidx == undefined )
-            this.controlPoints.push( controlPointObject );
-        else
-            this.controlPoints.splice( cpobjidx, 0, controlPointObject );
-
-        this.controlPointAdded.emit( controlPointObject );
-
-        return controlPointObject;
-    }
+		return controlPointObject;
+	}
 
 }
 

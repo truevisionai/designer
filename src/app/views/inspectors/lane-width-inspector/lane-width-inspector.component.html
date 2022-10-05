@@ -2,10 +2,12 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="inspector-form-container" *ngIf="data && data.node">
+<div *ngIf="data && data.node" class="inspector-form-container">
 
-    <app-double-field disabled="true" label="Distance" [value]="width.s" min="0" (changed)="onDistanceChanged($event)"></app-double-field>
+	<app-double-field (changed)="onDistanceChanged($event)" [value]="width.s" disabled="true" label="Distance"
+					  min="0"></app-double-field>
 
-    <app-double-field label="Width" [value]="width.a" min="0.1" max="50" (changed)="onWidthChanged($event)"></app-double-field>
+	<app-double-field (changed)="onWidthChanged($event)" [value]="width.a" label="Width" max="50"
+					  min="0.1"></app-double-field>
 
 </div>

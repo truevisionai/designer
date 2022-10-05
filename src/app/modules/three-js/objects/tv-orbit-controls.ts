@@ -4,27 +4,33 @@
 
 import * as THREE from 'three';
 import { Camera, Vector3 } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { IViewportController } from './i-viewport-controller';
 
-export class EditorControls extends THREE.EditorControls implements IViewportController {
+export class TvOrbitControls extends OrbitControls implements IViewportController {
 
+	static getNew ( camera, canvas ): TvOrbitControls {
 
-	static getNew ( camera: Camera, canvas: HTMLCanvasElement ) {
+		const controls = new TvOrbitControls( camera, canvas );
 
-		return new EditorControls( camera, canvas );
+		controls.screenSpacePanning = true;
+		controls.enableRotate = false;
+		// controls.enableKeys = false;
+
+		return controls;
 	}
 
 	setTarget ( position: Vector3 ): void {
-		this.center = position;
+		this.target = position;
 	}
 
 	getTarget (): Vector3 {
-		return undefined;
+		return this.target;
 	}
 
 	setCamera ( camera: Camera ): void {
-		this[ 'object' ] = camera;
+		this.object = camera;
 	}
 
 	setEnabled ( enabled: boolean ): void {
@@ -32,20 +38,18 @@ export class EditorControls extends THREE.EditorControls implements IViewportCon
 	}
 
 	setPanEnabled ( enabled: boolean ): void {
+		this.enablePan = enabled;
 	}
 
 	setZoomEnabled ( enabled: boolean ): void {
+		this.enableZoom = enabled;
 	}
 
 	setRotateEnabled ( enabled: boolean ): void {
+		this.enableRotate = enabled;
 	}
 
 	setScreenSpaceEnabled ( enabled: boolean ): void {
-	}
-
-	update (): void {
-	}
-
-	reset (): void {
+		this.screenSpacePanning = enabled;
 	}
 }

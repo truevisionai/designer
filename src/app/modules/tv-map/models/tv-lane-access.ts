@@ -4,27 +4,27 @@
 
 export class TvLaneAccess {
 
-    public attr_sOffset;
-    public attr_restriction;
+	public attr_sOffset;
+	public attr_restriction;
 
-    constructor ( sOffset: number, restriction: string ) {
-        this.attr_sOffset = sOffset;
-        this.attr_restriction = restriction;
-    }
+	constructor ( sOffset: number, restriction: string ) {
+		this.attr_sOffset = sOffset;
+		this.attr_restriction = restriction;
+	}
 
-    get sOffset () {
-        return this.attr_sOffset;
-    }
+	get sOffset () {
+		return this.attr_sOffset;
+	}
 
-    set sOffset ( value ) {
-        this.attr_sOffset = value;
-    }
+	set sOffset ( value ) {
+		this.attr_sOffset = value;
+	}
 
-    get restriction () {
-        return this.attr_restriction;
-    }
+	get restriction () {
+		return this.attr_restriction;
+	}
 
-    set restriction ( value ) {
-        this.attr_restriction = value;
-    }
+	set restriction ( value ) {
+		this.attr_restriction = value;
+	}
 }

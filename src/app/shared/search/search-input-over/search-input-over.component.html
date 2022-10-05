@@ -2,12 +2,12 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="search-bar-wide " [ngClass]="{ open: isOpen }">
-  <button mat-icon-button class="search-icon-btn ml-05 mr-05" (click)="open()">
-    <mat-icon>search</mat-icon>
-  </button>
-  <div>
-    <input [formControl]="searchCtrl" class="default-bg" type="text" [placeholder]="placeholder" />
-  </div>
-  <mat-icon class="search-close text-muted" (click)="close()">close</mat-icon>
+<div [ngClass]="{ open: isOpen }" class="search-bar-wide ">
+	<button (click)="open()" class="search-icon-btn ml-05 mr-05" mat-icon-button>
+		<mat-icon>search</mat-icon>
+	</button>
+	<div>
+		<input [formControl]="searchCtrl" [placeholder]="placeholder" class="default-bg" type="text"/>
+	</div>
+	<mat-icon (click)="close()" class="search-close text-muted">close</mat-icon>
 </div>

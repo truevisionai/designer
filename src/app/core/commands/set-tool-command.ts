@@ -2,38 +2,38 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { BaseTool } from 'app/core/tools/base-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { BaseCommand } from './base-command';
 
 export class SetToolCommand extends BaseCommand {
 
-    private oldTool: BaseTool;
+	private oldTool: BaseTool;
 
-    constructor ( private newTool: BaseTool ) {
+	constructor ( private newTool: BaseTool ) {
 
-        super();
+		super();
 
-        this.oldTool = ToolManager.currentTool;
+		this.oldTool = ToolManager.currentTool;
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        ToolManager.currentTool = this.newTool;
+		ToolManager.currentTool = this.newTool;
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        ToolManager.currentTool = this.oldTool;
+		ToolManager.currentTool = this.oldTool;
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        ToolManager.currentTool = this.newTool;
+		ToolManager.currentTool = this.newTool;
 
-    }
+	}
 
 }
