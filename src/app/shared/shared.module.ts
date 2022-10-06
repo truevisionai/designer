@@ -35,6 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TrackDirective } from 'app/core/analytics/track.directive';
 import { SearchPipe } from 'app/core/pipes/search.pipe';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorChromeModule } from 'ngx-color/chrome';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 import { StatusBarComponent } from '../views/editor/status-bar/status-bar.component';
@@ -176,7 +177,8 @@ const classesToInclude = [
 		MatTableModule,
 		MatListModule,
 		MatDialogModule,
-		ColorPickerModule,
+        ColorPickerModule,
+        ColorChromeModule,
 	],
 	entryComponents: [
 		AppComfirmComponent,
