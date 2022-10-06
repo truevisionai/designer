@@ -42,11 +42,11 @@ export class RoadControlPoint extends BaseControlPoint {
 		cpobjidx?: number,
 	) {
 
-		super( null, null );
+		super( new BufferGeometry(), new PointsMaterial() );
 
 		this.geometry = new BufferGeometry();
 
-		this.geometry.attributes.vertices.setXYZ(0,0,0,0);
+		this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const texture = OdTextures.point;
 

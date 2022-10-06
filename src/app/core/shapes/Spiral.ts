@@ -11,7 +11,7 @@ class Spiral {
 
 	constructor ( private points ) {
 		const geometry = new BufferGeometry();
-		geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
 		this.curveType = 'spiral';
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: 0x00ff00, opacity: 0.35 } ) );
 		this.mesh.castShadow = true;

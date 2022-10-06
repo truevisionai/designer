@@ -11,7 +11,7 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
-import { BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
 import { AnyControlPoint, NewDistanceNode } from '../../modules/three-js/objects/control-point';
 import { SceneService } from '../services/scene.service';
@@ -342,7 +342,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		const dotGeometry = new BufferGeometry();
 
-		dotGeometry.attributes.vertices.setXYZ(0,0,0,0);
+		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const dotMaterial = new PointsMaterial( {
 			size: 10,
@@ -386,7 +386,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		const dotGeometry = new BufferGeometry()
 
-		dotGeometry.attributes.vertices.setXYZ(0,0,0,0);
+		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const dotMaterial = new PointsMaterial( {
 			size: size || 10,

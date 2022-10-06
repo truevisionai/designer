@@ -11,7 +11,7 @@ class ParametricPolynomial {
 
 	constructor ( private points ) {
 		const geometry = new BufferGeometry();
-		geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
 		this.curveType = 'cubic';
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: 0x0000ff, opacity: 0.85 } ) );
 		this.mesh.castShadow = true;

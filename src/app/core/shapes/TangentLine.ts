@@ -22,7 +22,7 @@ export class TangentLine {
 
 		this.geometry = new BufferGeometry();
 
-		this.geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
+		this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
 
 		this.mesh = new LineSegments( this.geometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
 

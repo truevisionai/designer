@@ -19,7 +19,7 @@ export class RoundLine {
 
 		const geometry = new BufferGeometry();
 
-		geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * ARC_TESSEL * 3 ), 3 ) );
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * ARC_TESSEL * 3 ), 3 ) );
 
 		this.curveType = 'roundline';
 

@@ -7,7 +7,7 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
 import { RoadControlPoint } from './road-control-point';
 
@@ -31,7 +31,7 @@ export class RoadTangentPoint extends BaseControlPoint {
 
 		this.geometry = new BufferGeometry();
 
-		this.geometry.attributes.vertices.setXYZ( 0, 0, 0, 0 );
+		this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const texture = OdTextures.point;
 

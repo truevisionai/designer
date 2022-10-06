@@ -371,10 +371,10 @@ export class OdRoadMarkBuilder {
 
 		geometry.setIndex( mesh.triangles );
 
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-		geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-		geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-		geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+		geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+		geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+		geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
 
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();

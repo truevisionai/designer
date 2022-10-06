@@ -9,7 +9,7 @@ import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
 
 export abstract class BaseControlPoint extends Points {
@@ -185,7 +185,7 @@ export class AnyControlPoint extends BaseControlPoint {
 
 		const dotGeometry = new BufferGeometry();
 
-		dotGeometry.attributes.vertices.setXYZ(0,0,0,0);
+		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const texture = OdTextures.point;
 

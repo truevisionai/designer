@@ -6,7 +6,7 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { BaseControlPoint } from './control-point';
 
@@ -24,7 +24,7 @@ export class JunctionEntryObject extends BaseControlPoint {
 
 		const geometry = new BufferGeometry();
 
-		geometry.attributes.vertices.setXYZ(0,0,0,0);
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
 		const texture = OdTextures.point;
 
