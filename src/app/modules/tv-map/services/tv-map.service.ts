@@ -226,7 +226,7 @@ export class TvMapService {
 
 		const contents = this.writer.getOutput( this.map );
 
-		if ( this.electron.isElectronApp ) {
+		if ( this.electron.isElectronApp && !this.electron.isMacOS ) {
 
 			this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
 

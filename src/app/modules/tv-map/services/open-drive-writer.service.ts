@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { XMLBuilder } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
@@ -23,6 +24,8 @@ import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
 import { TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
+
+declare const fxp;
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,12 +52,11 @@ export class OdWriter {
 			trimValues: true,
 		};
 
-		const Parser = require( 'fast-xml-parser' ).j2xParser;
-		const parser = new Parser( defaultOptions );
+		const builder = new XMLBuilder( defaultOptions );
 
 		this.writeFile( '' );
 
-		const data = parser.parse( this.xmlDocument );
+		const data = builder.build( this.xmlDocument );
 
 		// if ( Environment.production ) {
 

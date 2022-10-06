@@ -13,8 +13,6 @@ import { Euler, Vector3 } from 'three';
 import { FileService } from './file.service';
 import { RoadStyle } from './road-style.service';
 
-const Parser = require( 'fast-xml-parser' ).j2xParser;
-
 export interface Scene {
 
 	road: { guid: string },

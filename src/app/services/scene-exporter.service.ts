@@ -18,14 +18,13 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { XMLBuilder } from 'fast-xml-parser';
 
 import { saveAs } from 'file-saver';
 import { ElectronService } from 'ngx-electron';
 import { Euler, Vector3 } from 'three';
 import { FileService } from './file.service';
 import { SnackBar } from './snack-bar.service';
-
-const Parser = require( 'fast-xml-parser' ).j2xParser;
 
 export interface Scene {
 
@@ -71,13 +70,13 @@ export class SceneExporterService {
 			trimValues: true,
 		};
 
-		const parser = new Parser( defaultOptions );
+		const builder = new XMLBuilder( defaultOptions );
 
 		this.map = map || TvMapInstance.map;
 
 		const scene = this.exportMap( this.map );
 
-		const xmlDocument = parser.parse( scene );
+		const xmlDocument = builder.build( scene );
 
 		return xmlDocument;
 	}

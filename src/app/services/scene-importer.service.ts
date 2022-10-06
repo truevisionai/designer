@@ -24,6 +24,7 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
 import { AssetDatabase } from './asset-database';
 import { AssetLoaderService } from './asset-loader.service';
@@ -31,8 +32,6 @@ import { CommandHistory } from './command-history';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
-
-const Parser = require( 'fast-xml-parser' );
 
 @Injectable( {
 	providedIn: 'root'
@@ -107,7 +106,9 @@ export class SceneImporterService extends AbstractReader {
 			format: true,
 		};
 
-		const scene: any = Parser.parse( contents, defaultOptions );
+		const parser = new XMLParser( defaultOptions );
+
+		const scene: any = parser.parse( contents );
 
 		// check for main elements first before parsing
 		const version = scene.version;

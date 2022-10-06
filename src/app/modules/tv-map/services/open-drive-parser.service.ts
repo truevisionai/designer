@@ -4,6 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { EnumHelper, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
@@ -22,6 +23,8 @@ import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
+
+declare const fxp;
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,8 +55,9 @@ export class OpenDriverParser extends AbstractReader {
 			format: true,
 		};
 
-		const Parser = require( 'fast-xml-parser' );
-		const data: any = Parser.parse( this.xmlElement, defaultOptions );
+		const parser = new XMLParser( defaultOptions );
+
+		const data: any = parser.parse( this.xmlElement );
 
 		this.readFile( data );
 
