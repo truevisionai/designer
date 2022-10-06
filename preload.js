@@ -28,11 +28,13 @@ contextBridge.exposeInMainWorld( 'process', remote.process )
 
 contextBridge.exposeInMainWorld( 'require', remote.require )
 
+// not in use for testing
+contextBridge.exposeInMainWorld( 'dialog', {
+    showSaveDialog: (options) => remote.dialog.showSaveDialog(options)
+} )
+
 contextBridge.exposeInMainWorld( 'fxp', {
 	XMLParser: () => require('fast-xml-parser').XMLParser,
 	XMLBuilder: () => require('fast-xml-parser').XMLBuilder,
 	XMLValidator: () => require('fast-xml-parser').XMLValidator,
 } )
-
-require('fast-xml-parser').XMLParser
-

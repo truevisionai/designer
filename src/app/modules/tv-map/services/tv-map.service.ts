@@ -73,7 +73,11 @@ export class TvMapService {
 	 */
 	async open () {
 
-		const filepaths = await this.fileService.showAsyncDialog();
+        const res = await this.fileService.showAsyncDialog();
+
+        if ( res.canceled ) return;
+
+        const filepaths = res.filePaths;
 
 		if ( filepaths == null || filepaths.length == 0 ) return;
 
