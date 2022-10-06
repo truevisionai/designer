@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { FileService } from 'app/services/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { ElectronService } from 'ngx-electron';
 import * as THREE from 'three';
@@ -22,13 +23,13 @@ export class AssetImporterService {
 	// private successCallback;
 	// private errorCallback;
 
-	constructor ( private electronService: ElectronService ) {
+	constructor ( private electronService: ElectronService, private fileService: FileService ) {
 	}
 
 	public import ( filepath: string, successCallback: Function, errorCallback: Function ) {
 
-		this.fs = this.electronService.remote.require( 'fs' );
-		this.path = this.electronService.remote.require( 'path' );
+		this.fs = this.fileService.fs;
+		this.path = this.fileService.path;
 
 		const fileExtension = this.path.extname( filepath );
 

@@ -21,6 +21,10 @@ export class FileUtils {
 			return path.split( '/' ).slice( 0, -1 ).join( '/' );
 		}
 
+		if (AppInfo.electron.isMacOS) {
+			return path.split( '/' ).slice( 0, -1 ).join( '/' );
+		}
+
 		console.error( 'unknown platform' );
 
 	}
@@ -36,6 +40,10 @@ export class FileUtils {
 
 		// if linux, split by slash and return the last item
 		if ( AppInfo.electron.isLinux ) {
+			return path.split( '/' ).pop();
+		}
+
+		if ( AppInfo.electron.isMacOS ) {
 			return path.split( '/' ).pop();
 		}
 

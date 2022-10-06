@@ -133,9 +133,9 @@ export class AssetLoaderService {
 
 			let path = null;
 
-			if ( this.fileService.electronService.remote.app.isPackaged ) {
+			if ( this.fileService.remote.app.isPackaged ) {
 
-				const appPath = this.fileService.electronService.remote.app.getAppPath();
+				const appPath = this.fileService.remote.app.getAppPath();
 
 				path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
 

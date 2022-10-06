@@ -7,6 +7,8 @@ import { ElectronService } from 'ngx-electron';
 import { IFile } from '../core/models/file';
 import { FileUtils } from './file-utils';
 
+declare const versions;
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -18,7 +20,7 @@ export class FileService {
 	public fileSaved = new EventEmitter<IFile>();
 
 	public fs: any;
-	private path: any;
+	public path: any;
 	private util: any;
 
 	constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
@@ -27,16 +29,18 @@ export class FileService {
 
 		if ( this.electronService.isElectronApp ) {
 
-			this.fs = this.electronService.remote.require( 'fs' );
-			this.path = this.electronService.remote.require( 'path' );
-			this.util = this.electronService.remote.require( 'util' );
+			this.fs = this.remote.require( 'fs' );
+			this.path = this.remote.require( 'path' );
+			this.util = this.remote.require( 'util' );
 
 		}
 
 	}
 
+	get remote () { return versions.remote(); }
+
 	get userDocumentFolder () {
-		return this.electronService.remote.app.getPath( 'documents' );
+		return this.remote.app.getPath( 'documents' );
 	}
 
 	get currentDirectory () {
@@ -50,6 +54,10 @@ export class FileService {
 			return this.userDocumentFolder + '\\Truevision';
 
 		} else if ( this.electronService.isLinux ) {
+
+			return this.userDocumentFolder + '/Truevision';
+
+		} else if ( this.electronService.isMacOS ) {
 
 			return this.userDocumentFolder + '/Truevision';
 
@@ -125,7 +133,7 @@ export class FileService {
 			message: 'Select file'
 		};
 
-		return Promise.resolve( this.electronService.remote.dialog.showOpenDialog( null, {} ) );
+		return Promise.resolve( this.remote.dialog.showOpenDialog( null, {} ) );
 	}
 
 	async readAsync ( path ) {
@@ -151,7 +159,7 @@ export class FileService {
 			message: 'Select file'
 		};
 
-		this.electronService.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
+		this.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
 
 			if ( filepaths != null ) this.readFile( filepaths[ 0 ], type, callbackFn );
 
@@ -209,7 +217,7 @@ export class FileService {
 			defaultPath: directory
 		};
 
-		this.electronService.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
+		this.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
 
 			if ( fullPath != null ) {
 
@@ -240,7 +248,9 @@ export class FileService {
 			defaultPath: directory
 		};
 
-		this.electronService.remote.dialog.showSaveDialog( null, options, ( path ) => {
+		this.remote.dialog.showSaveDialog( null, options, ( path ) => {
+
+			console.log('path', path);
 
 			if ( path != null ) {
 
@@ -405,7 +415,9 @@ export class FileService {
 
 			const itemPath = this.path.join( dirpath, file );
 
-			items.push( this.getItemProperties( itemPath ) );
+			const itemWithProperites = this.getItemProperties( itemPath );
+
+			items.push( itemWithProperites );
 
 		} );
 
@@ -420,24 +432,34 @@ export class FileService {
 
 		return {
 			name: name,
-			type: this.getItemType( stats ),
+			type: this.getItemType( stats, itemPath ),
 			path: itemPath,
 			size: stats.size,
 			mtime: stats.mtime
 		};
-
-		return new Promise( resolve => {
-			this.fs.stat( itemPath, this.handled( stats => resolve( {
-				name: itemPath.split( '/' ).pop(),
-				type: this.getItemType( stats ),
-				path: itemPath,
-				size: stats.size,
-				mtime: stats.mtime
-			} ) ) );
-		} );
 	}
 
-	getItemType ( item ) {
+	getItemType ( item, path ) {
+
+		if (this.electronService.isMacOS) {
+			if ( versions.stat.isFile(path) ) {
+				return 'file';
+			} else if ( versions.stat.isDirectory(path) ) {
+				return 'directory';
+			} else if ( versions.stat.isBlockDevice(path) ) {
+				return 'blockdevice';
+			} else if ( versions.stat.isCharacterDevice(path) ) {
+				return 'characterdevice';
+			} else if ( versions.stat.isSymbolicLink(path) ) {
+				return 'symlink';
+			} else if ( versions.stat.isFIFO(path) ) {
+				return 'fifo';
+			} else if ( versions.stat.isSocket(path) ) {
+				return 'socket';
+			}
+			return '';
+		}
+
 		if ( item.isFile() ) {
 			return 'file';
 		} else if ( item.isDirectory() ) {
