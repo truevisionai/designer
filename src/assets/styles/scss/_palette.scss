@@ -7,7 +7,7 @@
     $color: map-get($scolor, color);
     $foreground: map-get($scolor, foreground);
 
-    .sidebar-#{$color_name} {
+    .sidebar-#{"" + $color-name} {
         .navigation-hold {
             background: $color !important;
             
@@ -41,14 +41,14 @@
             }
         }
     }
-    .topbar-#{$color_name} {
+    .topbar-#{"" + $color-name} {
         .topbar.mat-toolbar {
             background: $color !important;
             color: $foreground !important;
         }
     }
 
-    .ngx-datatable.header-#{$color_name} {
+    .ngx-datatable.header-#{"" + $color-name} {
       .datatable-header {
         background: $color;
         .datatable-header-cell {
@@ -57,7 +57,7 @@
       }
     }
 
-    .#{$color_name} {
+    .#{"" + $color-name} {
         background: $color !important;
         color: $foreground !important;
         .mat-table {
@@ -75,7 +75,7 @@
         }
         
     }
-    .text-#{$color_name} {
+    .text-#{"" + $color-name} {
         color: $color;
     }
-  }
+}
