@@ -15,7 +15,6 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { IEngine } from '../../core/services/IEngine';
 import { SceneService } from '../../core/services/scene.service';
 import { SetPositionCommand } from './commands/set-position-command';
-import './EnableThreeExamples';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
 
