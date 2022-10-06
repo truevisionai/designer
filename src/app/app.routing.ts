@@ -16,63 +16,63 @@ import { SigninComponent } from './views/sessions/signin/signin.component';
 import { SignupComponent } from './views/sessions/signup/signup.component';
 
 const appRoutes: Routes = [
-	{
-		path: '',
-		redirectTo: '/editor',
-		pathMatch: 'full'
-	},
-	{
-		path: 'splash',
-		component: SplashComponent,
-	},
-	{
-		path: 'editor',
-		canActivate: [ AuthGuard ],
-		component: EditorLayoutComponent,
-		children: [
-			{
-				path: '', component: EditorComponent,
-				data: {
-					title: 'Editor',
-					breadcrumb: ''
-				}
-			},
-		]
-	},
-	{
-		path: 'sessions',
-		children: [ {
-			path: 'signup',
-			component: SignupComponent,
-			data: { title: 'Signup' }
-		}, {
-			path: 'signin',
-			component: SigninComponent,
-			data: { title: 'Signin' }
-		}, {
-			path: 'forgot-password',
-			component: ForgotPasswordComponent,
-			data: { title: 'Forgot password' }
-		}, {
-			path: 'lockscreen',
-			component: LockscreenComponent,
-			data: { title: 'Lockscreen' }
-		}, {
-			path: '404',
-			component: NotFoundComponent,
-			data: { title: 'Not Found' }
-		}, {
-			path: 'error',
-			component: ErrorComponent,
-			data: { title: 'Error' }
-		} ]
-	},
+    {
+        path: '',
+        redirectTo: '/editor',
+        pathMatch: 'full'
+    },
+    {
+        path: 'splash',
+        component: SplashComponent,
+    },
+    {
+        path: 'editor',
+        canActivate: [ AuthGuard ],
+        component: EditorLayoutComponent,
+        children: [
+            {
+                path: '', component: EditorComponent,
+                data: {
+                    title: 'Editor',
+                    breadcrumb: ''
+                }
+            },
+        ]
+    },
+    {
+        path: 'sessions',
+        children: [ {
+            path: 'signup',
+            component: SignupComponent,
+            data: { title: 'Signup' }
+        }, {
+            path: 'signin',
+            component: SigninComponent,
+            data: { title: 'Signin' }
+        }, {
+            path: 'forgot-password',
+            component: ForgotPasswordComponent,
+            data: { title: 'Forgot password' }
+        }, {
+            path: 'lockscreen',
+            component: LockscreenComponent,
+            data: { title: 'Lockscreen' }
+        }, {
+            path: '404',
+            component: NotFoundComponent,
+            data: { title: 'Not Found' }
+        }, {
+            path: 'error',
+            component: ErrorComponent,
+            data: { title: 'Error' }
+        } ]
+    },
 
 ];
 
 @NgModule( {
-	imports: [ RouterModule.forRoot( appRoutes, { enableTracing: false, useHash: false } ) ],
-	exports: [ RouterModule ]
+    imports: [ RouterModule.forRoot( appRoutes, { enableTracing: false, useHash: false } ) ],
+    exports: [ RouterModule ]
 } )
 export class AppRoutingModule {
 

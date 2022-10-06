@@ -6,16 +6,16 @@ import { Maths } from './maths';
 
 describe( 'Maths', () => {
 
-	it( 'should give correct number for randomNumberBetweenExcept', () => {
+    it( 'should give correct number for randomNumberBetweenExcept', () => {
 
-		const numbers = [ 1, 2, 3, 4, 5 ];
+        const numbers = [ 1, 2, 3, 4, 5 ];
 
-		const result = Maths.randomNumberBetweenExcept( 0, 10, numbers );
+        const result = Maths.randomNumberBetweenExcept( 0, 10, numbers );
 
-		const includes = numbers.includes( result, 0 );
+        const includes = numbers.includes( result, 0 );
 
-		expect( includes ).toBe( false );
+        expect( includes ).toBe( false );
 
-	} );
+    } );
 
 } );

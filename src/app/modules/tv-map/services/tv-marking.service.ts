@@ -9,98 +9,98 @@ import * as THREE from 'three';
 import { Mesh, PlaneGeometry, Shape, Texture } from 'three';
 
 export enum MarkingTypes {
-	point = 'point',
-	curve = 'curve',
+    point = 'point',
+    curve = 'curve',
 }
 
 export class TvRoadMarking {
 
-	public static extension = 'roadmarking';
+    public static extension = 'roadmarking';
 
-	public static tag = 'roadmarking';
+    public static tag = 'roadmarking';
 
-	public mesh: Mesh;
+    public mesh: Mesh;
 
-	constructor ( public name: string, public type: MarkingTypes, public textureGuid: string ) {
+    constructor ( public name: string, public type: MarkingTypes, public textureGuid: string ) {
 
-		this.mesh = this.makeMesh( new Shape() );
+        this.mesh = this.makeMesh( new Shape() );
 
-	}
+    }
 
-	static new (): TvRoadMarking {
+    static new (): TvRoadMarking {
 
-		return new TvRoadMarking( 'NewRoadMarking', MarkingTypes.point, null );
+        return new TvRoadMarking( 'NewRoadMarking', MarkingTypes.point, null );
 
-	}
+    }
 
-	static importFromString ( contents: string ): TvRoadMarking {
+    static importFromString ( contents: string ): TvRoadMarking {
 
-		const json = JSON.parse( contents );
+        const json = JSON.parse( contents );
 
-		return new TvRoadMarking( json.name, json.type, json.textureGuid );
+        return new TvRoadMarking( json.name, json.type, json.textureGuid );
 
-	}
+    }
 
-	makeMesh ( shape: Shape ): Mesh {
+    makeMesh ( shape: Shape ): Mesh {
 
-		const geometry = new PlaneGeometry();
+        const geometry = new PlaneGeometry();
 
-		const texture = AssetDatabase.getInstance<Texture>( this.textureGuid );
+        const texture = AssetDatabase.getInstance<Texture>( this.textureGuid );
 
-		// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		// texture.repeat.set( 0.008, 0.008 );
-		// texture.anisotropy = 16;
-		// texture.encoding = THREE.sRGBEncoding;>
+        // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.set( 0.008, 0.008 );
+        // texture.anisotropy = 16;
+        // texture.encoding = THREE.sRGBEncoding;>
 
-		const material = new THREE.MeshLambertMaterial( { map: texture, transparent: true, alphaTest: 0.1 } );
+        const material = new THREE.MeshLambertMaterial( { map: texture, transparent: true, alphaTest: 0.1 } );
 
-		const mesh = new GameObject( this.name, geometry, material );
+        const mesh = new GameObject( this.name, geometry, material );
 
-		mesh.position.set( 0, 0, 0.01 );
+        mesh.position.set( 0, 0, 0.01 );
 
-		mesh.Tag = TvRoadMarking.tag;
+        mesh.Tag = TvRoadMarking.tag;
 
-		mesh.userData.roadmarking = this;
+        mesh.userData.roadmarking = this;
 
-		return mesh;
-	}
+        return mesh;
+    }
 
 
-	toJSONString (): any {
+    toJSONString (): any {
 
-		return JSON.stringify( {
-			name: this.name,
-			type: this.type,
-			textureGuid: this.textureGuid,
-		}, null, 2 );
-	}
+        return JSON.stringify( {
+            name: this.name,
+            type: this.type,
+            textureGuid: this.textureGuid,
+        }, null, 2 );
+    }
 
-	clone () {
+    clone () {
 
-		return new TvRoadMarking( this.name, this.type, this.textureGuid );
+        return new TvRoadMarking( this.name, this.type, this.textureGuid );
 
-	}
+    }
 
 }
 
 
 export class TvMarkingService {
 
-	public static markingChanged = new EventEmitter<TvRoadMarking>();
+    public static markingChanged = new EventEmitter<TvRoadMarking>();
 
-	private static selectedMarking: TvRoadMarking;
+    private static selectedMarking: TvRoadMarking;
 
-	static get currentMarking () {
+    static get currentMarking () {
 
-		return this.selectedMarking;
+        return this.selectedMarking;
 
-	}
+    }
 
-	static set currentMarking ( value ) {
+    static set currentMarking ( value ) {
 
-		this.selectedMarking = value;
+        this.selectedMarking = value;
 
-		this.markingChanged.emit( value );
+        this.markingChanged.emit( value );
 
-	}
+    }
 }

@@ -10,74 +10,74 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
-	public attr_curvStart;
-	public attr_curvEnd;
+    public attr_curvStart;
+    public attr_curvEnd;
 
-	private sqrtPiO2 = Math.sqrt( Maths.M_PI_2 );
-	private mA;
-	private mCurvature;
-	private mDenormalizeFactor;
-	private endX;
-	private endY;
-	private normalDirection;
+    private sqrtPiO2 = Math.sqrt( Maths.M_PI_2 );
+    private mA;
+    private mCurvature;
+    private mDenormalizeFactor;
+    private endX;
+    private endY;
+    private normalDirection;
 
-	private differenceAngle;
-	private mRotCos;
-	private mRotSin;
+    private differenceAngle;
+    private mRotCos;
+    private mRotSin;
 
-	constructor ( s: number, x: number, y: number, hdg: number, length: number, curvStart: number, curvEnd: number ) {
+    constructor ( s: number, x: number, y: number, hdg: number, length: number, curvStart: number, curvEnd: number ) {
 
-		super( s, x, y, hdg, length );
+        super( s, x, y, hdg, length );
 
-		this.attr_curvStart = curvStart;
-		this.attr_curvEnd = curvEnd;
+        this.attr_curvStart = curvStart;
+        this.attr_curvEnd = curvEnd;
 
-		this._geometryType = TvGeometryType.SPIRAL;
+        this._geometryType = TvGeometryType.SPIRAL;
 
-	}
+    }
 
-	computeVars () {
-	}
+    computeVars () {
+    }
 
 	/**
 	 * Gets the coordinates at the sample S offset
 	 * @param sCheck
 	 * @param odPosTheta
 	 */
-	getCoords ( sCheck, odPosTheta: TvPosTheta ) {
+    getCoords ( sCheck, odPosTheta: TvPosTheta ) {
 
-		const dist = Maths.clamp( sCheck - this.s, 0.0, this.length );
+        const dist = Maths.clamp( sCheck - this.s, 0.0, this.length );
 
-		const curveEnd = this.attr_curvEnd;
-		const curveStart = this.attr_curvStart;
-		const curveDot = ( curveEnd - curveStart ) / this.length;
-		const s_o = curveStart / curveDot;
-		const s = s_o + dist;
+        const curveEnd = this.attr_curvEnd;
+        const curveStart = this.attr_curvStart;
+        const curveDot = ( curveEnd - curveStart ) / this.length;
+        const s_o = curveStart / curveDot;
+        const s = s_o + dist;
 
-		const xyt = SpiralUtils.odrSpiral( s, curveDot, 0, 0, 0 );
+        const xyt = SpiralUtils.odrSpiral( s, curveDot, 0, 0, 0 );
 
-		const xyt_o = SpiralUtils.odrSpiral( s_o, curveDot, 0, 0, 0 );
+        const xyt_o = SpiralUtils.odrSpiral( s_o, curveDot, 0, 0, 0 );
 
-		const x = xyt.x - xyt_o.x;
-		const y = xyt.y - xyt_o.y;
-		const t = xyt.t - xyt_o.t;
+        const x = xyt.x - xyt_o.x;
+        const y = xyt.y - xyt_o.y;
+        const t = xyt.t - xyt_o.t;
 
-		const angle = this.hdg - xyt_o.t;
+        const angle = this.hdg - xyt_o.t;
 
-		// Translate the curve to the required position & rotate it
-		const retX = this.x + x * Math.cos( angle ) - y * Math.sin( angle );
-		const retY = this.y + y * Math.cos( angle ) + x * Math.sin( angle );
+        // Translate the curve to the required position & rotate it
+        const retX = this.x + x * Math.cos( angle ) - y * Math.sin( angle );
+        const retY = this.y + y * Math.cos( angle ) + x * Math.sin( angle );
 
-		odPosTheta.x = retX;
-		odPosTheta.y = retY;
-		odPosTheta.hdg = this.hdg + t;
+        odPosTheta.x = retX;
+        odPosTheta.y = retY;
+        odPosTheta.hdg = this.hdg + t;
 
-		return this.geometryType;
-	}
+        return this.geometryType;
+    }
 
-	getCurve (): import( 'three' ).Curve<import( 'three' ).Vector2> {
-		throw new Error( 'Method not implemented.' );
-	}
+    getCurve (): import( 'three' ).Curve<import( 'three' ).Vector2> {
+        throw new Error( 'Method not implemented.' );
+    }
 
 }
 

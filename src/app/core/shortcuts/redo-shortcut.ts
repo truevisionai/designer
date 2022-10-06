@@ -7,16 +7,16 @@ import { BaseShortcut } from './base-shortcut';
 
 export class RedoShortcut extends BaseShortcut {
 
-	check ( e: KeyboardEvent ): boolean {
+    check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey && e.shiftKey && e.key === 'z';
+        return e.ctrlKey && e.shiftKey && e.key === 'z';
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		CommandHistory.redo();
+        CommandHistory.redo();
 
-	}
+    }
 
 }

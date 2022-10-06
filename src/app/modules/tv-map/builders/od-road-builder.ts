@@ -6,9 +6,9 @@ import { TvRoad } from '../models/tv-road.model';
 
 export class OdRoadBuilder {
 
-	static build ( road: TvRoad ) {
+    static build ( road: TvRoad ) {
 
 
-	}
+    }
 
 }

@@ -10,86 +10,86 @@ import { AbstractShapeEditor } from './abstract-shape-editor';
 export class PointEditor extends AbstractShapeEditor {
 
 
-	constructor ( private maxControlPoints: number = 1000 ) {
+    constructor ( private maxControlPoints: number = 1000 ) {
 
-		super();
+        super();
 
-	}
+    }
 
-	draw () {
+    draw () {
 
-		this.curveGeometryAdded.emit( null );
+        this.curveGeometryAdded.emit( null );
 
-	}
+    }
 
-	onPointerDown ( e: PointerEventData ) {
+    onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT ) return;
+        if ( e.button == MouseButton.RIGHT ) return;
 
-		this.pointerIsDown = true;
+        this.pointerIsDown = true;
 
-		this.pointerDownAt = e.point;
+        this.pointerDownAt = e.point;
 
-		if ( this.controlPoints.length >= this.maxControlPoints ) return;
+        if ( this.controlPoints.length >= this.maxControlPoints ) return;
 
-		this.currentPoint = this.getNearestControlPoint( e );
+        this.currentPoint = this.getNearestControlPoint( e );
 
-		if ( this.currentPoint ) {
+        if ( this.currentPoint ) {
 
-			this.currentPoint.select();
+            this.currentPoint.select();
 
-			this.controlPointSelected.emit( this.currentPoint );
+            this.controlPointSelected.emit( this.currentPoint );
 
-		}
+        }
 
-		if ( e.object != null && e.object.userData.is_selectable === true ) return;
+        if ( e.object != null && e.object.userData.is_selectable === true ) return;
 
-		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+        if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-			e.point.z = 0;
+            e.point.z = 0;
 
-			this.addControlPoint( e.point );
+            this.addControlPoint( e.point );
 
-			this.draw();
-		}
-	}
+            this.draw();
+        }
+    }
 
-	onPointerMoved ( e: PointerEventData ): void {
+    onPointerMoved ( e: PointerEventData ): void {
 
-		this.controlPoints.forEach( cp => cp.onMouseOut() );
+        this.controlPoints.forEach( cp => cp.onMouseOut() );
 
-		if ( e.point != null && this.pointerIsDown && this.controlPoints.length > 0 ) {
+        if ( e.point != null && this.pointerIsDown && this.controlPoints.length > 0 ) {
 
-			this.isDragging = true;
+            this.isDragging = true;
 
-			if ( this.currentPoint != null ) {
+            if ( this.currentPoint != null ) {
 
-				e.point.z = 0;
+                e.point.z = 0;
 
-				this.currentPoint.copyPosition( e.point );
+                this.currentPoint.copyPosition( e.point );
 
-				this.controlPointMoved.emit( this.currentPoint );
+                this.controlPointMoved.emit( this.currentPoint );
 
-			}
+            }
 
-		} else if ( e.point != null && !this.pointerIsDown && this.controlPoints.length > 0 ) {
+        } else if ( e.point != null && !this.pointerIsDown && this.controlPoints.length > 0 ) {
 
-			const controlPoint = this.getNearestControlPoint( e );
+            const controlPoint = this.getNearestControlPoint( e );
 
-			if ( controlPoint ) {
+            if ( controlPoint ) {
 
-				controlPoint.onMouseOver();
+                controlPoint.onMouseOver();
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
-	getNearestControlPoint ( e: PointerEventData ) {
+    getNearestControlPoint ( e: PointerEventData ) {
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+        const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
 
-		return PickingHelper.findNearest( e.point, this.controlPoints, maxDistance );
-	}
+        return PickingHelper.findNearest( e.point, this.controlPoints, maxDistance );
+    }
 }

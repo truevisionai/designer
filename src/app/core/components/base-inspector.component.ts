@@ -6,32 +6,32 @@ import { Component, HostListener } from '@angular/core';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 
 enum KEY_CODE {
-	DELETE = 46
+    DELETE = 46
 }
 
 @Component( {
-	selector: 'app-base-inspector',
-	template: '',
+    selector: 'app-base-inspector',
+    template: '',
 } )
 export abstract class BaseInspector {
 
-	get map () {
-		return TvMapInstance.map;
-	}
+    get map () {
+        return TvMapInstance.map;
+    }
 
-	@HostListener( 'window:keydown', [ '$event' ] )
-	baseOnKeyDown ( event: KeyboardEvent ) {
+    @HostListener( 'window:keydown', [ '$event' ] )
+    baseOnKeyDown ( event: KeyboardEvent ) {
 
-		if ( event.keyCode === KEY_CODE.DELETE ) {
+        if ( event.keyCode === KEY_CODE.DELETE ) {
 
-			this.onDelete();
+            this.onDelete();
 
-		}
+        }
 
-	}
+    }
 
 
-	onDelete () {
+    onDelete () {
 
-	}
+    }
 }

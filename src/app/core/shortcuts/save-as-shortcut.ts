@@ -7,16 +7,16 @@ import { BaseShortcut } from './base-shortcut';
 
 export class SaveAsShortcut extends BaseShortcut {
 
-	check ( e: KeyboardEvent ): boolean {
+    check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey && e.shiftKey && e.key == 's';
+        return e.ctrlKey && e.shiftKey && e.key == 's';
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		AppService.editor.saveAs();
+        AppService.editor.saveAs();
 
-	}
+    }
 
 }

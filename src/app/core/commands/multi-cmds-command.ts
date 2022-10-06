@@ -7,26 +7,26 @@ import { ICommand } from './i-command';
 
 export class MultiCmdsCommand extends BaseCommand {
 
-	constructor ( private commands: ICommand[] ) {
-		super();
-	}
+    constructor ( private commands: ICommand[] ) {
+        super();
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.commands.forEach( command => command.execute() );
+        this.commands.forEach( command => command.execute() );
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.commands.forEach( command => command.undo() );
+        this.commands.forEach( command => command.undo() );
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.commands.forEach( command => command.redo() );
+        this.commands.forEach( command => command.redo() );
 
-	}
+    }
 
 }

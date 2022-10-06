@@ -14,186 +14,186 @@ import { RoadTool } from './road-tool';
 
 describe( 'RoadTool', () => {
 
-	let map: TvMap;
+    let map: TvMap;
 
-	let roadTool: RoadTool;
+    let roadTool: RoadTool;
 
-	beforeEach( () => {
+    beforeEach( () => {
 
-		map = TvMapInstance.map = new TvMap();
+        map = TvMapInstance.map = new TvMap();
 
-		roadTool = new RoadTool();
+        roadTool = new RoadTool();
 
-	} );
+    } );
 
-	it( 'should maintain hdg for connected roads', () => {
+    it( 'should maintain hdg for connected roads', () => {
 
-		// c is th joining road
-		let roadA: TvRoad, roadB: TvRoad, roadC: TvRoad;
+        // c is th joining road
+        let roadA: TvRoad, roadB: TvRoad, roadC: TvRoad;
 
-		let roadAHdg, roadBHdg, roadCHdg;
+        let roadAHdg, roadBHdg, roadCHdg;
 
-		[ roadA, roadC, roadB ] = createRoads();
+        [ roadA, roadC, roadB ] = createRoads();
 
-		roadAHdg = roadA.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
-		roadBHdg = roadB.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
-		roadCHdg = roadC.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadAHdg = roadA.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadBHdg = roadB.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadCHdg = roadC.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
 
-		roadA.spline.getLastPoint().copyPosition( new Vector3( 120, 0, 0 ) );
+        roadA.spline.getLastPoint().copyPosition( new Vector3( 120, 0, 0 ) );
 
-		roadA.updateGeometryFromSpline();
+        roadA.updateGeometryFromSpline();
 
-		roadAHdg = roadA.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
-		roadBHdg = roadB.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
-		roadCHdg = roadC.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadAHdg = roadA.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadBHdg = roadB.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
+        roadCHdg = roadC.spline.controlPoints.map( ( p: RoadControlPoint ) => p.hdg );
 
-		// nothing happening in this test for now
-		expect( true ).toBe( true );
+        // nothing happening in this test for now
+        expect( true ).toBe( true );
 
-	} );
+    } );
 
-	it( 'should join 2 road nodes correctly', () => {
+    it( 'should join 2 road nodes correctly', () => {
 
-		// start |---------------->
+        // start |---------------->
 
-		// start |---------------->
+        // start |---------------->
 
-		let roadA, roadB, joiningRoad;
+        let roadA, roadB, joiningRoad;
 
-		[ roadA, roadB, joiningRoad ] = createRoads();
+        [ roadA, roadB, joiningRoad ] = createRoads();
 
-		expect( !joiningRoad ).toBe( false );
+        expect( !joiningRoad ).toBe( false );
 
-		expect( joiningRoad.spline.controlPoints.length ).toBe( 6 );
+        expect( joiningRoad.spline.controlPoints.length ).toBe( 6 );
 
-	} );
+    } );
 
-	function createRoads () {
+    function createRoads () {
 
-		const roadA = map.addDefaultRoad();
+        const roadA = map.addDefaultRoad();
 
-		roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 0, 0, 0 ) ) );
-		roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 50, 5, 0 ) ) );
-		roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 100, 0, 0 ) ) );
+        roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 0, 0, 0 ) ) );
+        roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 50, 5, 0 ) ) );
+        roadA.spline.addControlPoint( new RoadControlPoint( roadA, new Vector3( 100, 0, 0 ) ) );
 
-		roadA.updateGeometryFromSpline();
+        roadA.updateGeometryFromSpline();
 
-		NodeFactoryService.updateRoadNodes( roadA );
+        NodeFactoryService.updateRoadNodes( roadA );
 
-		const roadB = map.addDefaultRoad();
+        const roadB = map.addDefaultRoad();
 
-		roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 0, 50, 0 ) ) );
-		roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 55, 50, 0 ) ) );
-		roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 100, 50, 0 ) ) );
+        roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 0, 50, 0 ) ) );
+        roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 55, 50, 0 ) ) );
+        roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 100, 50, 0 ) ) );
 
-		roadB.updateGeometryFromSpline();
+        roadB.updateGeometryFromSpline();
 
-		NodeFactoryService.updateRoadNodes( roadB );
+        NodeFactoryService.updateRoadNodes( roadB );
 
-		const joiningRoad = RoadFactory.joinRoadNodes( roadA, roadA.endNode, roadB, roadB.endNode );
+        const joiningRoad = RoadFactory.joinRoadNodes( roadA, roadA.endNode, roadB, roadB.endNode );
 
-		return [ roadA, roadB, joiningRoad ];
-	}
+        return [ roadA, roadB, joiningRoad ];
+    }
 
-	function suc_pre () {
-		const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+    function suc_pre () {
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
 
-		road1.updateGeometryFromSpline();
+        road1.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road1 );
+        RoadFactory.rebuildRoad( road1 );
 
-		const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
+        road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
 
-		road2.updateGeometryFromSpline();
+        road2.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road2 );
+        RoadFactory.rebuildRoad( road2 );
 
-		road1.setSuccessor( 'road', road2.id, TvContactPoint.START );
-		road2.setPredecessor( 'road', road1.id, TvContactPoint.END );
-	}
+        road1.setSuccessor( 'road', road2.id, TvContactPoint.START );
+        road2.setPredecessor( 'road', road1.id, TvContactPoint.END );
+    }
 
-	function suc_suc () {
-		const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+    function suc_suc () {
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
 
-		road1.updateGeometryFromSpline();
+        road1.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road1 );
+        RoadFactory.rebuildRoad( road1 );
 
-		const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
 
-		road2.updateGeometryFromSpline();
+        road2.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road2 );
+        RoadFactory.rebuildRoad( road2 );
 
-		road1.setSuccessor( 'road', road2.id, TvContactPoint.END );
-		road2.setSuccessor( 'road', road1.id, TvContactPoint.END );
-	}
+        road1.setSuccessor( 'road', road2.id, TvContactPoint.END );
+        road2.setSuccessor( 'road', road1.id, TvContactPoint.END );
+    }
 
-	function pre_pre () {
-		const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+    function pre_pre () {
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
+        road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
 
-		road1.updateGeometryFromSpline();
+        road1.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road1 );
+        RoadFactory.rebuildRoad( road1 );
 
-		const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
+        road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
 
-		road2.updateGeometryFromSpline();
+        road2.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road2 );
+        RoadFactory.rebuildRoad( road2 );
 
-		road1.setPredecessor( 'road', road2.id, TvContactPoint.START );
-		road2.setPredecessor( 'road', road1.id, TvContactPoint.START );
-	}
+        road1.setPredecessor( 'road', road2.id, TvContactPoint.START );
+        road2.setPredecessor( 'road', road1.id, TvContactPoint.START );
+    }
 
-	function pre_suc () {
-		const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+    function pre_suc () {
+        const road1 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
-		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
+        road1.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 50, 0 ) );
+        road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
 
-		road1.updateGeometryFromSpline();
+        road1.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road1 );
+        RoadFactory.rebuildRoad( road1 );
 
-		const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
+        const road2 = this.map.addDefaultRoadWithType( TvRoadType.TOWN );
 
-		road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
-		road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
-		road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 0, 0 ) );
+        road2.addControlPointAt( new Vector3( 160, 50, 0 ) );
+        road2.addControlPointAt( new Vector3( 80, 50, 0 ) );
 
-		road2.updateGeometryFromSpline();
+        road2.updateGeometryFromSpline();
 
-		RoadFactory.rebuildRoad( road2 );
+        RoadFactory.rebuildRoad( road2 );
 
-		road1.setPredecessor( 'road', road2.id, TvContactPoint.END );
-		road2.setSuccessor( 'road', road1.id, TvContactPoint.START );
-	}
+        road1.setPredecessor( 'road', road2.id, TvContactPoint.END );
+        road2.setSuccessor( 'road', road1.id, TvContactPoint.START );
+    }
 
 
 } );

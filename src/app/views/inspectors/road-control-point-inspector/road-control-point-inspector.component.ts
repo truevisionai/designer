@@ -9,40 +9,40 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 
 @Component( {
-	selector: 'app-road-control-point-inspector',
-	templateUrl: './road-control-point-inspector.component.html',
-	styleUrls: [ './road-control-point-inspector.component.css' ]
+    selector: 'app-road-control-point-inspector',
+    templateUrl: './road-control-point-inspector.component.html',
+    styleUrls: [ './road-control-point-inspector.component.css' ]
 } )
 export class RoadControlPointInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	@Input() data: RoadControlPoint;
+    @Input() data: RoadControlPoint;
 
-	constructor () {
-		super();
-	}
+    constructor () {
+        super();
+    }
 
-	get controlPoint (): RoadControlPoint {
-		return this.data;
-	}
+    get controlPoint (): RoadControlPoint {
+        return this.data;
+    }
 
-	get road (): TvRoad {
-		return this.data.road;
-	}
+    get road (): TvRoad {
+        return this.data.road;
+    }
 
-	ngOnInit (): void {
+    ngOnInit (): void {
 
-		if ( this.data ) this.data.select();
+        if ( this.data ) this.data.select();
 
-		if ( this.road && this.road.spline ) this.road.spline.show();
+        if ( this.road && this.road.spline ) this.road.spline.show();
 
-	}
+    }
 
-	ngOnDestroy (): void {
+    ngOnDestroy (): void {
 
-		if ( this.data ) this.data.unselect();
+        if ( this.data ) this.data.unselect();
 
-		if ( this.road && this.road.spline ) this.road.spline.hide();
+        if ( this.road && this.road.spline ) this.road.spline.hide();
 
-	}
+    }
 
 }

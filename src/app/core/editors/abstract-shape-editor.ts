@@ -19,417 +19,417 @@ import { IShapeEditor } from './i-shape-editor';
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
 
-	public controlPointSelected = new EventEmitter<AnyControlPoint>();
-	public controlPointUnselected = new EventEmitter<AnyControlPoint>();
-	public controlPointHovered = new EventEmitter<AnyControlPoint>();
+    public controlPointSelected = new EventEmitter<AnyControlPoint>();
+    public controlPointUnselected = new EventEmitter<AnyControlPoint>();
+    public controlPointHovered = new EventEmitter<AnyControlPoint>();
 
 	/**
 	 * Fire when control point is added
 	 */
-	public controlPointAdded = new EventEmitter<AnyControlPoint>();
+    public controlPointAdded = new EventEmitter<AnyControlPoint>();
 
 	/**
 	 * Fired everytime mouse is moving the control point
 	 */
-	public controlPointMoved = new EventEmitter<AnyControlPoint>();
+    public controlPointMoved = new EventEmitter<AnyControlPoint>();
 
 	/**
 	 * Fired after mouse is up and control point position is updated
 	 */
-	public controlPointUpdated = new EventEmitter<AnyControlPoint>();
+    public controlPointUpdated = new EventEmitter<AnyControlPoint>();
 
 	/**
 	 * Fire when control point is removed
 	 */
-	public controlPointRemoved = new EventEmitter<AnyControlPoint>();
+    public controlPointRemoved = new EventEmitter<AnyControlPoint>();
 
-	public curveGeometryChanged = new EventEmitter<THREE.Curve<any>>();
-	public curveGeometryAdded = new EventEmitter<THREE.Curve<any>>();
+    public curveGeometryChanged = new EventEmitter<THREE.Curve<any>>();
+    public curveGeometryAdded = new EventEmitter<THREE.Curve<any>>();
 
-	public pickingEnabled: boolean = true;
+    public pickingEnabled: boolean = true;
 
-	public currentPoint: AnyControlPoint;
+    public currentPoint: AnyControlPoint;
 
-	protected pointerDownAt: THREE.Vector3;
-	protected isDragging: boolean;
+    protected pointerDownAt: THREE.Vector3;
+    protected isDragging: boolean;
 
-	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
-	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
-	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
+    protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
+    protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
+    protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
-	protected DEFAULT_LINE_COLOR = COLOR.RED;
-	protected HIGHLIGHT_LINE_COLOR = COLOR.BLUE;
+    protected DEFAULT_LINE_COLOR = COLOR.RED;
+    protected HIGHLIGHT_LINE_COLOR = COLOR.BLUE;
 
-	protected object: Object3D;
-	protected material = new THREE.LineBasicMaterial( { color: this.DEFAULT_LINE_COLOR, depthTest: false } );
-	protected pointerIsDown: boolean;
+    protected object: Object3D;
+    protected material = new THREE.LineBasicMaterial( { color: this.DEFAULT_LINE_COLOR, depthTest: false } );
+    protected pointerIsDown: boolean;
 
-	// subscribers
-	private pointerMovedSubscriber: Subscription;
-	private pointerClickedSubscriber: Subscription;
-	private pointerUpSubscriber: Subscription;
-	private pointerDownSubscriber: Subscription;
-	private selectSubscriber: Subscription;
-	private deSelectSubscriber: Subscription;
-	private pointerEnterSubscriber: Subscription;
-	private pointerExitSubscriber: Subscription;
-	private controlPointSelectedSubscriber: Subscription;
-	private controlPointUnselectedSubcriber: Subscription;
-	private controlPointHoveredSubcriber: Subscription;
-	private isEnabled: boolean = false;
+    // subscribers
+    private pointerMovedSubscriber: Subscription;
+    private pointerClickedSubscriber: Subscription;
+    private pointerUpSubscriber: Subscription;
+    private pointerDownSubscriber: Subscription;
+    private selectSubscriber: Subscription;
+    private deSelectSubscriber: Subscription;
+    private pointerEnterSubscriber: Subscription;
+    private pointerExitSubscriber: Subscription;
+    private controlPointSelectedSubscriber: Subscription;
+    private controlPointUnselectedSubcriber: Subscription;
+    private controlPointHoveredSubcriber: Subscription;
+    private isEnabled: boolean = false;
 
-	constructor () {
+    constructor () {
 
-		this.enable();
+        this.enable();
 
-	}
+    }
 
-	private _controlPoints: AnyControlPoint[] = [];
+    private _controlPoints: AnyControlPoint[] = [];
 
-	get controlPoints (): AnyControlPoint[] {
-		return this._controlPoints;
-	}
+    get controlPoints (): AnyControlPoint[] {
+        return this._controlPoints;
+    }
 
-	set controlPoints ( value: AnyControlPoint[] ) {
-		this._controlPoints = value;
-	}
+    set controlPoints ( value: AnyControlPoint[] ) {
+        this._controlPoints = value;
+    }
 
-	public get controlPointCount (): number {
+    public get controlPointCount (): number {
 
-		return this._controlPoints.length;
+        return this._controlPoints.length;
 
-	}
+    }
 
-	public get controlPointPositions (): Vector3[] {
+    public get controlPointPositions (): Vector3[] {
 
-		const positions: Vector3[] = [];
+        const positions: Vector3[] = [];
 
-		this._controlPoints.forEach( ( point ) => {
-			positions.push( point.position );
-		} );
+        this._controlPoints.forEach( ( point ) => {
+            positions.push( point.position );
+        } );
 
-		return positions;
-	}
+        return positions;
+    }
 
-	public get vector2ControlPoints (): Vector2[] {
+    public get vector2ControlPoints (): Vector2[] {
 
-		const positions: Vector2[] = [];
+        const positions: Vector2[] = [];
 
-		this._controlPoints.forEach( ( point ) => {
-			positions.push( new Vector2( point.position.x, point.position.y ) );
-		} );
+        this._controlPoints.forEach( ( point ) => {
+            positions.push( new Vector2( point.position.x, point.position.y ) );
+        } );
 
-		return positions;
-	}
+        return positions;
+    }
 
-	protected get lastControlPoint () {
-		return this._controlPoints[ this._controlPoints.length - 1 ];
-	};
+    protected get lastControlPoint () {
+        return this._controlPoints[ this._controlPoints.length - 1 ];
+    };
 
-	public abstract draw ();
+    public abstract draw ();
 
-	destroy () {
+    destroy () {
 
-		this.controlPoints.forEach( cp => this.unSelectControlPoint( cp ) );
+        this.controlPoints.forEach( cp => this.unSelectControlPoint( cp ) );
 
-		this.removeAllControlPoints();
+        this.removeAllControlPoints();
 
-		this.disable();
+        this.disable();
 
-		SceneService.remove( this.object );
+        SceneService.remove( this.object );
 
-	}
+    }
 
-	highlight () {
+    highlight () {
 
-		this.material.color = new Color( this.HIGHLIGHT_LINE_COLOR );
-		this.material.needsUpdate = true;
+        this.material.color = new Color( this.HIGHLIGHT_LINE_COLOR );
+        this.material.needsUpdate = true;
 
-	}
+    }
 
-	removeHighlight () {
+    removeHighlight () {
 
-		this.material.color = new Color( this.DEFAULT_LINE_COLOR );
-		this.material.needsUpdate = true;
-	}
+        this.material.color = new Color( this.DEFAULT_LINE_COLOR );
+        this.material.needsUpdate = true;
+    }
 
-	enable () {
+    enable () {
 
-		if ( this.isEnabled ) return;
+        if ( this.isEnabled ) return;
 
-		const events = AppService.eventSystem;
+        const events = AppService.eventSystem;
 
-		if ( events ) {
+        if ( events ) {
 
-			this.pointerMovedSubscriber = events.pointerMoved.subscribe( e => this.onPointerMoved( e ) );
-			this.pointerClickedSubscriber = events.pointerClicked.subscribe( e => this.onPointerClicked( e ) );
-			this.pointerUpSubscriber = events.pointerUp.subscribe( e => this.onPointerUp( e ) );
-			this.pointerDownSubscriber = events.pointerDown.subscribe( e => this.onPointerDown( e ) );
-			this.selectSubscriber = events.select.subscribe( e => this.onSelect( e ) );
-			this.deSelectSubscriber = events.deSelect.subscribe( e => this.onDeSelect( e ) );
-			this.pointerEnterSubscriber = events.pointerEnter.subscribe( e => this.onPointerEnter( e ) );
-			this.pointerExitSubscriber = events.pointerExit.subscribe( e => this.onPointerExit( e ) );
+            this.pointerMovedSubscriber = events.pointerMoved.subscribe( e => this.onPointerMoved( e ) );
+            this.pointerClickedSubscriber = events.pointerClicked.subscribe( e => this.onPointerClicked( e ) );
+            this.pointerUpSubscriber = events.pointerUp.subscribe( e => this.onPointerUp( e ) );
+            this.pointerDownSubscriber = events.pointerDown.subscribe( e => this.onPointerDown( e ) );
+            this.selectSubscriber = events.select.subscribe( e => this.onSelect( e ) );
+            this.deSelectSubscriber = events.deSelect.subscribe( e => this.onDeSelect( e ) );
+            this.pointerEnterSubscriber = events.pointerEnter.subscribe( e => this.onPointerEnter( e ) );
+            this.pointerExitSubscriber = events.pointerExit.subscribe( e => this.onPointerExit( e ) );
 
-		}
+        }
 
 
-		this.controlPointSelectedSubscriber = this.controlPointSelected.subscribe( e => this.onControlPointSelected( e ) );
-		this.controlPointUnselectedSubcriber = this.controlPointUnselected.subscribe( e => this.onControlPointUnselected( e ) );
-		this.controlPointHoveredSubcriber = this.controlPointHovered.subscribe( e => this.onControlPointHovered( e ) );
+        this.controlPointSelectedSubscriber = this.controlPointSelected.subscribe( e => this.onControlPointSelected( e ) );
+        this.controlPointUnselectedSubcriber = this.controlPointUnselected.subscribe( e => this.onControlPointUnselected( e ) );
+        this.controlPointHoveredSubcriber = this.controlPointHovered.subscribe( e => this.onControlPointHovered( e ) );
 
-		this.isEnabled = true;
-	}
+        this.isEnabled = true;
+    }
 
-	disable () {
+    disable () {
 
-		Debug.log( 'eventd disabled' );
+        Debug.log( 'eventd disabled' );
 
-		this.pointerMovedSubscriber.unsubscribe();
-		this.pointerClickedSubscriber.unsubscribe();
-		this.pointerUpSubscriber.unsubscribe();
-		this.pointerDownSubscriber.unsubscribe();
-		this.selectSubscriber.unsubscribe();
-		this.deSelectSubscriber.unsubscribe();
-		this.pointerEnterSubscriber.unsubscribe();
-		this.pointerExitSubscriber.unsubscribe();
+        this.pointerMovedSubscriber.unsubscribe();
+        this.pointerClickedSubscriber.unsubscribe();
+        this.pointerUpSubscriber.unsubscribe();
+        this.pointerDownSubscriber.unsubscribe();
+        this.selectSubscriber.unsubscribe();
+        this.deSelectSubscriber.unsubscribe();
+        this.pointerEnterSubscriber.unsubscribe();
+        this.pointerExitSubscriber.unsubscribe();
 
-		this.controlPointSelectedSubscriber.unsubscribe();
-		this.controlPointUnselectedSubcriber.unsubscribe();
+        this.controlPointSelectedSubscriber.unsubscribe();
+        this.controlPointUnselectedSubcriber.unsubscribe();
 
-		this.isEnabled = false;
-	}
+        this.isEnabled = false;
+    }
 
-	onPointerClicked ( e: PointerEventData ): void {
+    onPointerClicked ( e: PointerEventData ): void {
 
-		if ( this.isDragging ) return;
+        if ( this.isDragging ) return;
 
-	}
+    }
 
-	onSelect ( e: BaseEventData ) {
+    onSelect ( e: BaseEventData ) {
 
-		if ( !this.pickingEnabled ) return;
+        if ( !this.pickingEnabled ) return;
 
-		this.pickControlPoint( e );
+        this.pickControlPoint( e );
 
-	}
+    }
 
-	pickControlPoint ( e: BaseEventData ) {
+    pickControlPoint ( e: BaseEventData ) {
 
-		if ( e.object != null && e.object.type == 'Points' ) {
+        if ( e.object != null && e.object.type == 'Points' ) {
 
-			this.unSelectControlPoint( this.currentPoint );
+            this.unSelectControlPoint( this.currentPoint );
 
-			this.selectControlPoint( e.object as AnyControlPoint );
+            this.selectControlPoint( e.object as AnyControlPoint );
 
-		} else {
+        } else {
 
-			this.unSelectControlPoint( this.currentPoint );
-		}
+            this.unSelectControlPoint( this.currentPoint );
+        }
 
-	}
+    }
 
-	selectControlPoint ( point: AnyControlPoint ) {
+    selectControlPoint ( point: AnyControlPoint ) {
 
-		if ( point != null ) {
+        if ( point != null ) {
 
-			this.currentPoint = point;
+            this.currentPoint = point;
 
-			this.controlPointSelected.emit( this.currentPoint );
+            this.controlPointSelected.emit( this.currentPoint );
 
-		}
-	}
+        }
+    }
 
-	unSelectControlPoint ( point: AnyControlPoint ) {
+    unSelectControlPoint ( point: AnyControlPoint ) {
 
-		if ( point != null ) {
+        if ( point != null ) {
 
-			this.controlPointUnselected.emit( point );
+            this.controlPointUnselected.emit( point );
 
-			this.currentPoint = null;
+            this.currentPoint = null;
 
-		}
+        }
 
-	}
+    }
 
-	onPointerUp ( e: PointerEventData ) {
+    onPointerUp ( e: PointerEventData ) {
 
-		this.pointerIsDown = false;
+        this.pointerIsDown = false;
 
-		this.isDragging = false;
+        this.isDragging = false;
 
-		if ( this.currentPoint != null ) this.controlPointUpdated.emit( this.currentPoint );
-	}
+        if ( this.currentPoint != null ) this.controlPointUpdated.emit( this.currentPoint );
+    }
 
-	onPointerMoved ( e: PointerEventData ): void {
+    onPointerMoved ( e: PointerEventData ): void {
 
-		if ( e.point != null && this.pointerIsDown && this._controlPoints.length > 1 ) {
+        if ( e.point != null && this.pointerIsDown && this._controlPoints.length > 1 ) {
 
-			this.isDragging = true;
+            this.isDragging = true;
 
-			if ( this.currentPoint != null ) this.currentPoint.copyPosition( e.point );
+            if ( this.currentPoint != null ) this.currentPoint.copyPosition( e.point );
 
-			if ( this._controlPoints.length > 1 ) this.draw();
+            if ( this._controlPoints.length > 1 ) this.draw();
 
-			this.controlPointMoved.emit( this.currentPoint );
-		}
+            this.controlPointMoved.emit( this.currentPoint );
+        }
 
-	}
+    }
 
-	onPointerExit ( e: any ): any {
+    onPointerExit ( e: any ): any {
 
-	}
+    }
 
-	onPointerEnter ( e: any ): any {
+    onPointerEnter ( e: any ): any {
 
-	}
+    }
 
-	onPointerDown ( e: PointerEventData ): any {
+    onPointerDown ( e: PointerEventData ): any {
 
-		if ( e.button == MouseButton.RIGHT ) return;
+        if ( e.button == MouseButton.RIGHT ) return;
 
-		this.pointerIsDown = true;
+        this.pointerIsDown = true;
 
-		this.pointerDownAt = e.point;
+        this.pointerDownAt = e.point;
 
-		// if ( e.object != null && e.object.userData.is_selectable == true ) return;
+        // if ( e.object != null && e.object.userData.is_selectable == true ) return;
 
-		if ( e.button == MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+        if ( e.button == MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-			this.addControlPoint( e.point );
+            this.addControlPoint( e.point );
 
-			if ( this._controlPoints.length > 1 ) this.draw();
-		}
+            if ( this._controlPoints.length > 1 ) this.draw();
+        }
 
-	}
+    }
 
-	addControlPoint ( position: THREE.Vector3, parent?: Object3D, size?: number ): AnyControlPoint {
+    addControlPoint ( position: THREE.Vector3, parent?: Object3D, size?: number ): AnyControlPoint {
 
-		const point = this.createControlPoint( position, parent, size );
+        const point = this.createControlPoint( position, parent, size );
 
-		this._controlPoints.push( point );
+        this._controlPoints.push( point );
 
-		this.controlPointAdded.emit( point );
+        this.controlPointAdded.emit( point );
 
-		return point;
-	}
+        return point;
+    }
 
-	removeControlPoint ( point: AnyControlPoint ) {
+    removeControlPoint ( point: AnyControlPoint ) {
 
-		const index = this._controlPoints.indexOf( point );
+        const index = this._controlPoints.indexOf( point );
 
-		this._controlPoints.splice( index, 1 );
+        this._controlPoints.splice( index, 1 );
 
-		this.controlPointRemoved.emit( point );
+        this.controlPointRemoved.emit( point );
 
-		SceneService.remove( point );
-	}
+        SceneService.remove( point );
+    }
 
-	removeAllControlPoints () {
+    removeAllControlPoints () {
 
-		this._controlPoints.forEach( object => {
+        this._controlPoints.forEach( object => {
 
-			object.visible = false;
+            object.visible = false;
 
-			// SceneService.remove( object );
+            // SceneService.remove( object );
 
-		} );
+        } );
 
-		this._controlPoints.splice( 0, this._controlPoints.length );
+        this._controlPoints.splice( 0, this._controlPoints.length );
 
-	}
+    }
 
-	public createDistanceNode ( roadId: number, laneId: number, s: number, t, position: Vector3, parent?: Object3D ) {
+    public createDistanceNode ( roadId: number, laneId: number, s: number, t, position: Vector3, parent?: Object3D ) {
 
-		const dotGeometry = new BufferGeometry();
+        const dotGeometry = new BufferGeometry();
 
-		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
+        dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
-		const dotMaterial = new PointsMaterial( {
-			size: 10,
-			sizeAttenuation: false,
-			map: OdTextures.point,
-			alphaTest: 0.5,
-			transparent: true,
-			color: this.DEFAULT_CONTROL_POINT_COLOR,
-			depthTest: false
-		} );
+        const dotMaterial = new PointsMaterial( {
+            size: 10,
+            sizeAttenuation: false,
+            map: OdTextures.point,
+            alphaTest: 0.5,
+            transparent: true,
+            color: this.DEFAULT_CONTROL_POINT_COLOR,
+            depthTest: false
+        } );
 
-		const object = new NewDistanceNode( roadId, laneId, s, t, dotGeometry, dotMaterial );
+        const object = new NewDistanceNode( roadId, laneId, s, t, dotGeometry, dotMaterial );
 
-		object.setPosition( position.clone() );
+        object.setPosition( position.clone() );
 
-		object.userData.is_button = true;
-		object.userData.is_control_point = true;
-		object.userData.is_selectable = true;
+        object.userData.is_button = true;
+        object.userData.is_control_point = true;
+        object.userData.is_selectable = true;
 
-		object.renderOrder = 3;
+        object.renderOrder = 3;
 
-		SceneService.add( object );
+        SceneService.add( object );
 
-		return object;
+        return object;
 
-	}
+    }
 
-	onControlPointHovered ( e: AnyControlPoint ) {
+    onControlPointHovered ( e: AnyControlPoint ) {
 
-		e.onMouseOver();
+        e.onMouseOver();
 
-	}
+    }
 
-	onControlPointUnhovered ( e: AnyControlPoint ) {
+    onControlPointUnhovered ( e: AnyControlPoint ) {
 
-		e.onMouseOut();
+        e.onMouseOut();
 
-	}
+    }
 
-	protected createControlPoint ( position: Vector3, parent?: Object3D, size?: number ) {
+    protected createControlPoint ( position: Vector3, parent?: Object3D, size?: number ) {
 
-		const dotGeometry = new BufferGeometry()
+        const dotGeometry = new BufferGeometry()
 
-		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
+        dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
-		const dotMaterial = new PointsMaterial( {
-			size: size || 10,
-			sizeAttenuation: false,
-			map: OdTextures.point,
-			alphaTest: 0.5,
-			transparent: true,
-			color: this.DEFAULT_CONTROL_POINT_COLOR,
-			depthTest: false
-		} );
+        const dotMaterial = new PointsMaterial( {
+            size: size || 10,
+            sizeAttenuation: false,
+            map: OdTextures.point,
+            alphaTest: 0.5,
+            transparent: true,
+            color: this.DEFAULT_CONTROL_POINT_COLOR,
+            depthTest: false
+        } );
 
-		const object = new AnyControlPoint( dotGeometry, dotMaterial );
+        const object = new AnyControlPoint( dotGeometry, dotMaterial );
 
-		object.setPosition( position.clone() );
+        object.setPosition( position.clone() );
 
-		object.userData.is_button = true;
-		object.userData.is_control_point = true;
-		object.userData.is_selectable = true;
+        object.userData.is_button = true;
+        object.userData.is_control_point = true;
+        object.userData.is_selectable = true;
 
-		object.renderOrder = 3;
+        object.renderOrder = 3;
 
-		SceneService.add( object );
+        SceneService.add( object );
 
-		return object;
+        return object;
 
-	}
+    }
 
-	private onDeSelect ( e: any ) {
+    private onDeSelect ( e: any ) {
 
-	}
+    }
 
-	private onControlPointSelected ( e: AnyControlPoint ) {
+    private onControlPointSelected ( e: AnyControlPoint ) {
 
-		e.select();
+        e.select();
 
-		AppService.three.disableControls();
-	}
+        AppService.three.disableControls();
+    }
 
-	private onControlPointUnselected ( e: AnyControlPoint ) {
+    private onControlPointUnselected ( e: AnyControlPoint ) {
 
-		e.unselect();
+        e.unselect();
 
-		AppService.three.enableControls();
-	}
+        AppService.three.enableControls();
+    }
 
 }

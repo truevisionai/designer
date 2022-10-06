@@ -6,70 +6,70 @@ import { Component } from '@angular/core';
 import { PlayerService } from '../../../core/player.service';
 
 @Component( {
-	selector: 'app-player-bar',
-	templateUrl: './player-bar.component.html',
-	styleUrls: [ './player-bar.component.css' ]
+    selector: 'app-player-bar',
+    templateUrl: './player-bar.component.html',
+    styleUrls: [ './player-bar.component.css' ]
 } )
 export class PlayerBarComponent {
 
-	public isPlaying: boolean;
-	public hasStarted: boolean;
+    public isPlaying: boolean;
+    public hasStarted: boolean;
 
-	// reference to handle
-	private handle: any;
+    // reference to handle
+    private handle: any;
 
-	constructor ( private playerService: PlayerService ) {
-	}
+    constructor ( private playerService: PlayerService ) {
+    }
 
-	playSimulation () {
+    playSimulation () {
 
-		if ( this.isPlaying ) return;
+        if ( this.isPlaying ) return;
 
-		this.isPlaying = true;
+        this.isPlaying = true;
 
-		this.playerService.play();
+        this.playerService.play();
 
-		this.hasStarted = true;
-	}
+        this.hasStarted = true;
+    }
 
-	pauseSimulation () {
+    pauseSimulation () {
 
-		if ( !this.isPlaying ) return;
+        if ( !this.isPlaying ) return;
 
-		this.isPlaying = false;
+        this.isPlaying = false;
 
-		this.playerService.pause();
+        this.playerService.pause();
 
-	}
+    }
 
-	stopSimulation () {
+    stopSimulation () {
 
-		if ( !this.hasStarted ) return;
+        if ( !this.hasStarted ) return;
 
-		this.isPlaying = false;
+        this.isPlaying = false;
 
-		this.playerService.stop();
+        this.playerService.stop();
 
-		this.hasStarted = false;
-	}
+        this.hasStarted = false;
+    }
 
-	playSingleSimulationStep () {
+    playSingleSimulationStep () {
 
-		this.playSimulation();
+        this.playSimulation();
 
-		this.pauseSimulation();
+        this.pauseSimulation();
 
-	}
+    }
 
-	onMouseDown () {
+    onMouseDown () {
 
-		this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
+        this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
 
-	}
+    }
 
-	onMouseUp () {
+    onMouseUp () {
 
-		clearInterval( this.handle );
+        clearInterval( this.handle );
 
-	}
+    }
 }

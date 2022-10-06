@@ -6,53 +6,53 @@ import { BaseCommand } from 'app/core/commands/base-command';
 
 export class SetPositionCommand extends BaseCommand {
 
-	private oldPosition: THREE.Vector3;
+    private oldPosition: THREE.Vector3;
 
-	constructor (
-		private object: THREE.Object3D,
-		private newPosition: THREE.Vector3,
-		private optionalOldPosition: THREE.Vector3 = null
-	) {
+    constructor (
+        private object: THREE.Object3D,
+        private newPosition: THREE.Vector3,
+        private optionalOldPosition: THREE.Vector3 = null
+    ) {
 
-		super();
+        super();
 
-		if ( object !== null && newPosition !== null ) {
+        if ( object !== null && newPosition !== null ) {
 
-			this.oldPosition = object.position.clone();
-			this.newPosition = newPosition.clone();
+            this.oldPosition = object.position.clone();
+            this.newPosition = newPosition.clone();
 
-		}
+        }
 
-		if ( optionalOldPosition !== null ) {
+        if ( optionalOldPosition !== null ) {
 
-			this.oldPosition = optionalOldPosition.clone();
+            this.oldPosition = optionalOldPosition.clone();
 
-		}
+        }
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.object.position.copy( this.newPosition );
-		this.object.updateMatrixWorld( true );
+        this.object.position.copy( this.newPosition );
+        this.object.updateMatrixWorld( true );
 
-		// this.editor.signals.objectChanged.dispatch( this.object );
+        // this.editor.signals.objectChanged.dispatch( this.object );
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.object.position.copy( this.oldPosition );
-		this.object.updateMatrixWorld( true );
+        this.object.position.copy( this.oldPosition );
+        this.object.updateMatrixWorld( true );
 
-		// this.editor.signals.objectChanged.dispatch( this.object );
+        // this.editor.signals.objectChanged.dispatch( this.object );
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.object.position.copy( this.newPosition );
-		this.object.updateMatrixWorld( true );
+        this.object.position.copy( this.newPosition );
+        this.object.updateMatrixWorld( true );
 
-	}
+    }
 }

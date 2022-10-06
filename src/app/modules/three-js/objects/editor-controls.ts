@@ -10,42 +10,42 @@ import { IViewportController } from './i-viewport-controller';
 export class EditorControls extends THREE.EditorControls implements IViewportController {
 
 
-	static getNew ( camera: Camera, canvas: HTMLCanvasElement ) {
+    static getNew ( camera: Camera, canvas: HTMLCanvasElement ) {
 
-		return new EditorControls( camera, canvas );
-	}
+        return new EditorControls( camera, canvas );
+    }
 
-	setTarget ( position: Vector3 ): void {
-		this.center = position;
-	}
+    setTarget ( position: Vector3 ): void {
+        this.center = position;
+    }
 
-	getTarget (): Vector3 {
-		return undefined;
-	}
+    getTarget (): Vector3 {
+        return undefined;
+    }
 
-	setCamera ( camera: Camera ): void {
-		this[ 'object' ] = camera;
-	}
+    setCamera ( camera: Camera ): void {
+        this[ 'object' ] = camera;
+    }
 
-	setEnabled ( enabled: boolean ): void {
-		this.enabled = enabled;
-	}
+    setEnabled ( enabled: boolean ): void {
+        this.enabled = enabled;
+    }
 
-	setPanEnabled ( enabled: boolean ): void {
-	}
+    setPanEnabled ( enabled: boolean ): void {
+    }
 
-	setZoomEnabled ( enabled: boolean ): void {
-	}
+    setZoomEnabled ( enabled: boolean ): void {
+    }
 
-	setRotateEnabled ( enabled: boolean ): void {
-	}
+    setRotateEnabled ( enabled: boolean ): void {
+    }
 
-	setScreenSpaceEnabled ( enabled: boolean ): void {
-	}
+    setScreenSpaceEnabled ( enabled: boolean ): void {
+    }
 
-	update (): void {
-	}
+    update (): void {
+    }
 
-	reset (): void {
-	}
+    reset (): void {
+    }
 }

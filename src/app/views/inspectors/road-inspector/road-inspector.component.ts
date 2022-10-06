@@ -13,10 +13,10 @@ import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 
 @Component( {
-	selector: 'app-road-inspector',
-	templateUrl: './road-inspector.component.html',
-	styles: [
-		`
+    selector: 'app-road-inspector',
+    templateUrl: './road-inspector.component.html',
+    styles: [
+        `
 			.example-card {
 				max-width: 400px;
 			}
@@ -26,136 +26,136 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 				background-size: cover;
 			}
 		`
-	]
+    ]
 } )
 export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
-	data: {
-		road: TvRoad,
-		controlPoint: RoadControlPoint,
-		node: RoadNode,
-	};
+    data: {
+        road: TvRoad,
+        controlPoint: RoadControlPoint,
+        node: RoadNode,
+    };
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	get road (): TvRoad {
-		return this.data.road;
-	}
+    get road (): TvRoad {
+        return this.data.road;
+    }
 
-	get controlPoint (): RoadControlPoint {
-		return this.data.controlPoint;
-	}
+    get controlPoint (): RoadControlPoint {
+        return this.data.controlPoint;
+    }
 
-	get node (): RoadNode {
-		return this.data.node;
-	}
+    get node (): RoadNode {
+        return this.data.node;
+    }
 
-	get roadSpeed () {
-		return this.roadType ? this.roadType.speed.max : null;
-	}
+    get roadSpeed () {
+        return this.roadType ? this.roadType.speed.max : null;
+    }
 
-	get roadTypesEnum () {
-		return TvRoadType;
-	}
+    get roadTypesEnum () {
+        return TvRoadType;
+    }
 
-	get type () {
-		return this.roadType ? this.roadType.type : null;
-	}
+    get type () {
+        return this.roadType ? this.roadType.type : null;
+    }
 
-	get roadType () {
-		return this.road ? this.road.getRoadTypeAt( 0 ) : null;
-	}
+    get roadType () {
+        return this.road ? this.road.getRoadTypeAt( 0 ) : null;
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		if ( this.road ) this.road.spline.show();
+        if ( this.road ) this.road.spline.show();
 
-		if ( this.controlPoint ) this.controlPoint.select();
+        if ( this.controlPoint ) this.controlPoint.select();
 
-		if ( this.data.node ) this.node.selected();
-	}
+        if ( this.data.node ) this.node.selected();
+    }
 
-	ngOnDestroy () {
+    ngOnDestroy () {
 
-		if ( this.road ) this.road.spline.hide();
+        if ( this.road ) this.road.spline.hide();
 
-		if ( this.controlPoint ) this.controlPoint.unselect();
+        if ( this.controlPoint ) this.controlPoint.unselect();
 
-		if ( this.data.node ) this.data.node.unselected();
+        if ( this.data.node ) this.data.node.unselected();
 
-	}
+    }
 
-	onRoadSpeedChanged ( $value ) {
+    onRoadSpeedChanged ( $value ) {
 
-		CommandHistory.execute( new SetValueCommand( this.roadType.speed, 'max', $value ) );
+        CommandHistory.execute( new SetValueCommand( this.roadType.speed, 'max', $value ) );
 
-	}
+    }
 
-	onRoadTypeChanged ( $value: any ) {
+    onRoadTypeChanged ( $value: any ) {
 
-		CommandHistory.execute( new SetValueCommand( this.roadType, 'type', $value ) );
+        CommandHistory.execute( new SetValueCommand( this.roadType, 'type', $value ) );
 
-	}
+    }
 
-	onDrivingMaterialChanged ( $guid: string ) {
+    onDrivingMaterialChanged ( $guid: string ) {
 
-		this.road.drivingMaterialGuid = $guid;
+        this.road.drivingMaterialGuid = $guid;
 
-		this.road.laneSections.forEach( section => {
+        this.road.laneSections.forEach( section => {
 
-			section.lanes.forEach( lane => {
+            section.lanes.forEach( lane => {
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
+                lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-			} );
+            } );
 
-		} );
+        } );
 
-	}
+    }
 
-	onSidewalkMaterialChanged ( $guid: string ) {
+    onSidewalkMaterialChanged ( $guid: string ) {
 
-		this.road.sidewalkMaterialGuid = $guid;
+        this.road.sidewalkMaterialGuid = $guid;
 
-		this.road.laneSections.forEach( section => {
+        this.road.laneSections.forEach( section => {
 
-			section.lanes.forEach( lane => {
+            section.lanes.forEach( lane => {
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
+                lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-			} );
+            } );
 
-		} );
-	}
+        } );
+    }
 
-	onBorderMaterialChanged ( $guid: string ) {
+    onBorderMaterialChanged ( $guid: string ) {
 
-		this.road.borderMaterialGuid = $guid;
+        this.road.borderMaterialGuid = $guid;
 
-		this.road.laneSections.forEach( section => {
+        this.road.laneSections.forEach( section => {
 
-			section.lanes.forEach( lane => {
+            section.lanes.forEach( lane => {
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
+                lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-			} );
+            } );
 
-		} );
-	}
+        } );
+    }
 
-	onShoulderMaterialChanged ( $guid: string ) {
+    onShoulderMaterialChanged ( $guid: string ) {
 
-		this.road.shoulderMaterialGuid = $guid;
+        this.road.shoulderMaterialGuid = $guid;
 
-		this.road.laneSections.forEach( section => {
+        this.road.laneSections.forEach( section => {
 
-			section.lanes.forEach( lane => {
+            section.lanes.forEach( lane => {
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
+                lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-			} );
+            } );
 
-		} );
-	}
+        } );
+    }
 }

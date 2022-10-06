@@ -9,14 +9,14 @@ import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import {
-	LinearEncoding,
-	LinearFilter,
-	LinearMipMapLinearFilter,
-	MeshStandardMaterial,
-	Object3D,
-	RGBAFormat,
-	TextureLoader,
-	UnsignedByteType
+    LinearEncoding,
+    LinearFilter,
+    LinearMipMapLinearFilter,
+    MeshStandardMaterial,
+    Object3D,
+    RGBAFormat,
+    TextureLoader,
+    UnsignedByteType
 } from 'three';
 import { Metadata } from '../core/models/metadata.model';
 import { AssetDatabase } from './asset-database';
@@ -25,518 +25,518 @@ import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class AssetLoaderService {
 
-	// public previewCache: Map<string, string> = new Map<string, string>();
+    // public previewCache: Map<string, string> = new Map<string, string>();
 
-	// public assetInstances: Map<string, any> = new Map<string, any>();
+    // public assetInstances: Map<string, any> = new Map<string, any>();
 
 	/**
 	 * This class is responsible to loading, caching, importing, reading .meta files.
 	 *
 	 * @param fileService FileService
 	 */
-	constructor ( private fileService: FileService, public modelImporterService: ModelImporterService ) {
-	}
+    constructor ( private fileService: FileService, public modelImporterService: ModelImporterService ) {
+    }
 
-	private get projectDir () {
-		return this.fileService.projectFolder;
-	}
+    private get projectDir () {
+        return this.fileService.projectFolder;
+    }
 
-	init () {
+    init () {
 
-		this.createProjectFolder();
+        this.createProjectFolder();
 
-		this.loadDefaultAssets();
+        this.loadDefaultAssets();
 
-		this.loadDirectory( this.fileService.readPathContentsSync( this.projectDir ) );
+        this.loadDirectory( this.fileService.readPathContentsSync( this.projectDir ) );
 
-		this.loadTextures();
+        this.loadTextures();
 
-		this.loadMaterials();
+        this.loadMaterials();
 
-		this.loadModels();
+        this.loadModels();
 
-		this.loadRoadStyles();
+        this.loadRoadStyles();
 
-		this.loadRoadMarkings();
-	}
+        this.loadRoadMarkings();
+    }
 
-	createProjectFolder () {
+    createProjectFolder () {
 
-		try {
+        try {
 
-			// create Truevision Folder in user documents if it does not exist
-			if ( !this.fileService.fs.existsSync( this.projectDir ) ) {
+            // create Truevision Folder in user documents if it does not exist
+            if ( !this.fileService.fs.existsSync( this.projectDir ) ) {
 
-				this.fileService.createFolder( this.fileService.userDocumentFolder, 'Truevision' );
+                this.fileService.createFolder( this.fileService.userDocumentFolder, 'Truevision' );
 
-				AssetFactory.createNewFolder( this.projectDir, 'Materials' );
-				AssetFactory.createNewFolder( this.projectDir, 'Props' );
-				AssetFactory.createNewFolder( this.projectDir, 'Roads' );
-				AssetFactory.createNewFolder( this.projectDir, 'RoadStyles' );
-				AssetFactory.createNewFolder( this.projectDir, 'RoadMarkings' );
-				AssetFactory.createNewFolder( this.projectDir, 'Signs' );
-				AssetFactory.createNewFolder( this.projectDir, 'Scenes' );
-				AssetFactory.createNewFolder( this.projectDir, 'Textures' );
+                AssetFactory.createNewFolder( this.projectDir, 'Materials' );
+                AssetFactory.createNewFolder( this.projectDir, 'Props' );
+                AssetFactory.createNewFolder( this.projectDir, 'Roads' );
+                AssetFactory.createNewFolder( this.projectDir, 'RoadStyles' );
+                AssetFactory.createNewFolder( this.projectDir, 'RoadMarkings' );
+                AssetFactory.createNewFolder( this.projectDir, 'Signs' );
+                AssetFactory.createNewFolder( this.projectDir, 'Scenes' );
+                AssetFactory.createNewFolder( this.projectDir, 'Textures' );
 
-				this.createDefaultAssets();
+                this.createDefaultAssets();
 
 
-			}
+            }
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			console.log( error );
+            console.log( error );
 
-			throw new Error( 'Error in setting up default project folder' );
+            throw new Error( 'Error in setting up default project folder' );
 
-		}
+        }
 
-	}
+    }
 
-	createDefaultAssets () {
+    createDefaultAssets () {
 
-		this.createRoadStyleAssets();
+        this.createRoadStyleAssets();
 
-		this.createPropAssets();
+        this.createPropAssets();
 
-		this.createRoadMarkingAssets();
+        this.createRoadMarkingAssets();
 
-		this.createBaseAssets( 'Materials' );
+        this.createBaseAssets( 'Materials' );
 
-	}
+    }
 
-	createRoadMarkingAssets () {
+    createRoadMarkingAssets () {
 
-		this.createBaseAssets( 'RoadMarkings' );
+        this.createBaseAssets( 'RoadMarkings' );
 
-	}
+    }
 
-	createPropAssets () {
+    createPropAssets () {
 
-		this.createBaseAssets( 'Props' );
+        this.createBaseAssets( 'Props' );
 
-	}
+    }
 
-	createRoadStyleAssets () {
+    createRoadStyleAssets () {
 
-		this.createBaseAssets( 'RoadStyles' );
+        this.createBaseAssets( 'RoadStyles' );
 
-	}
+    }
 
-	createBaseAssets ( folder: string ) {
+    createBaseAssets ( folder: string ) {
 
-		try {
+        try {
 
-			let path = null;
+            let path = null;
 
-			if ( this.fileService.remote.app.isPackaged ) {
+            if ( this.fileService.remote.app.isPackaged ) {
 
-				const appPath = this.fileService.remote.app.getAppPath();
+                const appPath = this.fileService.remote.app.getAppPath();
 
-				path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
+                path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
 
-			} else {
+            } else {
 
-				path = this.fileService.join( this.fileService.currentDirectory, `/default-project/${ folder }` );
+                path = this.fileService.join( this.fileService.currentDirectory, `/default-project/${ folder }` );
 
-			}
+            }
 
-			this.fileService.readPathContentsSync( path ).forEach( file => {
+            this.fileService.readPathContentsSync( path ).forEach( file => {
 
-				const destinationFolder = this.fileService.join( this.projectDir, `/${ folder }/` );
+                const destinationFolder = this.fileService.join( this.projectDir, `/${ folder }/` );
 
-				const destinationPath = this.fileService.join( destinationFolder, file.name );
+                const destinationPath = this.fileService.join( destinationFolder, file.name );
 
-				if ( file.name.includes( '.meta' ) ) {
+                if ( file.name.includes( '.meta' ) ) {
 
-					const metadata = this.fetchMetaFile( file );
+                    const metadata = this.fetchMetaFile( file );
 
-					metadata.path = destinationPath.replace( '.meta', '' );
+                    metadata.path = destinationPath.replace( '.meta', '' );
 
-					MetadataFactory.saveMetadataFile( destinationPath, metadata );
+                    MetadataFactory.saveMetadataFile( destinationPath, metadata );
 
-				} else {
+                } else {
 
-					this.fileService.fs.copyFileSync( file.path, destinationPath );
+                    this.fileService.fs.copyFileSync( file.path, destinationPath );
 
-				}
+                }
 
-			} );
+            } );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			console.error( error );
+            console.error( error );
 
-			throw new Error( 'Error in creating assets' );
+            throw new Error( 'Error in creating assets' );
 
-		}
+        }
 
-	}
+    }
 
-	loadTextures () {
+    loadTextures () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+        AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer === 'TextureImporter' ) {
+            if ( meta.importer === 'TextureImporter' ) {
 
-				const data = meta.data;
+                const data = meta.data;
 
-				const texture = new TextureLoader().load( meta.path );
+                const texture = new TextureLoader().load( meta.path );
 
-				texture.uuid = data.uuid;
-				texture.name = data.name;
-				texture.mapping = data.mapping || 300;
+                texture.uuid = data.uuid;
+                texture.name = data.name;
+                texture.mapping = data.mapping || 300;
 
-				if ( data.repeat ) texture.repeat.set( data.repeat[ 0 ], data.repeat[ 1 ] );
-				if ( data.offset ) texture.offset.set( data.offset[ 0 ], data.offset[ 1 ] );
-				if ( data.center ) texture.center.set( data.center[ 0 ], data.center[ 1 ] );
+                if ( data.repeat ) texture.repeat.set( data.repeat[ 0 ], data.repeat[ 1 ] );
+                if ( data.offset ) texture.offset.set( data.offset[ 0 ], data.offset[ 1 ] );
+                if ( data.center ) texture.center.set( data.center[ 0 ], data.center[ 1 ] );
 
-				if ( data.wrap ) {
-					texture.wrapS = data[ 'wrap' ][ 0 ];
-					texture.wrapT = data[ 'wrap' ][ 1 ];
-				}
+                if ( data.wrap ) {
+                    texture.wrapS = data[ 'wrap' ][ 0 ];
+                    texture.wrapT = data[ 'wrap' ][ 1 ];
+                }
 
-				texture.rotation = data.rotation || 0;
-				texture.encoding = data.encoding || LinearEncoding;
-				texture.minFilter = data.minFilter || LinearMipMapLinearFilter;
-				texture.magFilter = data.magFilter || LinearFilter;
-				texture.anisotropy = data.anisotropy || 1;
-				texture.flipY = data.flipY || true;
-				texture.premultiplyAlpha = data.premultiplyAlpha || false;
-				texture.unpackAlignment = data.unpackAlignment || 4;
-				texture.format = data.format || RGBAFormat;
-				texture.type = data.type || UnsignedByteType;
+                texture.rotation = data.rotation || 0;
+                texture.encoding = data.encoding || LinearEncoding;
+                texture.minFilter = data.minFilter || LinearMipMapLinearFilter;
+                texture.magFilter = data.magFilter || LinearFilter;
+                texture.anisotropy = data.anisotropy || 1;
+                texture.flipY = data.flipY || true;
+                texture.premultiplyAlpha = data.premultiplyAlpha || false;
+                texture.unpackAlignment = data.unpackAlignment || 4;
+                texture.format = data.format || RGBAFormat;
+                texture.type = data.type || UnsignedByteType;
 
-				AssetDatabase.setInstance( meta.guid, texture );
-			}
+                AssetDatabase.setInstance( meta.guid, texture );
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	loadMaterials () {
+    loadMaterials () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+        AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'MaterialImporter' && meta.guid != 'defaultMaterial' ) {
+            if ( meta.importer == 'MaterialImporter' && meta.guid != 'defaultMaterial' ) {
 
-				const material = TvMaterial.parseString( this.fileService.fs.readFileSync( meta.path, 'utf-8' ) );
+                const material = TvMaterial.parseString( this.fileService.fs.readFileSync( meta.path, 'utf-8' ) );
 
-				AssetDatabase.setInstance( meta.guid, material );
+                AssetDatabase.setInstance( meta.guid, material );
 
-			}
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	loadModels () {
+    loadModels () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+        AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'ModelImporter' ) {
+            if ( meta.importer == 'ModelImporter' ) {
 
-				// TODO: Async can also be an option
-				this.modelImporterService.load( meta.path, ( obj ) => {
+                // TODO: Async can also be an option
+                this.modelImporterService.load( meta.path, ( obj ) => {
 
-					AssetDatabase.setInstance( meta.guid, obj );
+                    AssetDatabase.setInstance( meta.guid, obj );
 
-				}, meta );
+                }, meta );
 
-			}
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	loadDefaultAssets () {
+    loadDefaultAssets () {
 
-		const defaultMaterial = new MeshStandardMaterial( { name: 'DefaultMaterial' } );
+        const defaultMaterial = new MeshStandardMaterial( { name: 'DefaultMaterial' } );
 
-		const meta = MetadataFactory.createMaterialMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
+        const meta = MetadataFactory.createMaterialMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
 
-		AssetDatabase.setMetadata( meta.guid, meta );
+        AssetDatabase.setMetadata( meta.guid, meta );
 
-		AssetDatabase.setInstance( meta.guid, defaultMaterial );
+        AssetDatabase.setInstance( meta.guid, defaultMaterial );
 
-	}
+    }
 
-	loadRoadStyles () {
+    loadRoadStyles () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+        AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'RoadStyleImporter' ) {
+            if ( meta.importer == 'RoadStyleImporter' ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+                this.fileService.readAsync( meta.path ).then( contents => {
 
-					const roadStyle = RoadStyleImporter.importFromString( contents );
+                    const roadStyle = RoadStyleImporter.importFromString( contents );
 
-					AssetDatabase.setInstance( meta.guid, roadStyle );
+                    AssetDatabase.setInstance( meta.guid, roadStyle );
 
-				} );
-			}
+                } );
+            }
 
-		} );
-	}
+        } );
+    }
 
-	loadRoadMarkings () {
+    loadRoadMarkings () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+        AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer === 'RoadMarkingImporter' ) {
+            if ( meta.importer === 'RoadMarkingImporter' ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+                this.fileService.readAsync( meta.path ).then( contents => {
 
-					const marking = TvRoadMarking.importFromString( contents );
+                    const marking = TvRoadMarking.importFromString( contents );
 
-					AssetDatabase.setInstance( meta.guid, marking );
+                    AssetDatabase.setInstance( meta.guid, marking );
 
-				} );
-			}
+                } );
+            }
 
-		} );
+        } );
 
-	}
+    }
 
 	/**
 	 *
 	 * @param guid
 	 * @deprecated use AssetCache instead
 	 */
-	find ( guid: string ): Metadata {
+    find ( guid: string ): Metadata {
 
-		return AssetDatabase.getMetadata( guid );
+        return AssetDatabase.getMetadata( guid );
 
-	}
+    }
 
-	// updateAsset ( guid: string, data: any ) {
+    // updateAsset ( guid: string, data: any ) {
 
-	//     try {
+    //     try {
 
-	//         const metadata = this.find( guid );
+    //         const metadata = this.find( guid );
 
-	//         this.writeMetafile( metadata.path, metadata );
+    //         this.writeMetafile( metadata.path, metadata );
 
-	//     } catch ( error ) {
+    //     } catch ( error ) {
 
-	//         SnackBar.error( "Error in updating asset" );
+    //         SnackBar.error( "Error in updating asset" );
 
-	//     }
+    //     }
 
-	// }
+    // }
 
 
-	// reimportProject () {
+    // reimportProject () {
 
-	//     this.reimportFiles( this.fileService.readPathContentsSync( this.projectDir ) );
+    //     this.reimportFiles( this.fileService.readPathContentsSync( this.projectDir ) );
 
-	// }
+    // }
 
-	// reimportFiles ( files: any[] ) {
+    // reimportFiles ( files: any[] ) {
 
-	//     files.forEach( file => {
+    //     files.forEach( file => {
 
-	//         const extension = FileService.getExtension( file.name );
+    //         const extension = FileService.getExtension( file.name );
 
-	//         if ( file.type === 'file' && extension != 'meta' ) {
+    //         if ( file.type === 'file' && extension != 'meta' ) {
 
-	//             this.reimport( file );
+    //             this.reimport( file );
 
-	//         }
+    //         }
 
-	//         if ( file.type === 'directory' ) {
+    //         if ( file.type === 'directory' ) {
 
-	//             const guid = Math.random().toString( 36 ).substring( 7 );
+    //             const guid = Math.random().toString( 36 ).substring( 7 );
 
-	//             const metadata = { guid: guid, isFolder: true, path: file.path, importer: null, data: null };
+    //             const metadata = { guid: guid, isFolder: true, path: file.path, importer: null, data: null };
 
-	//             this.writeMetafile( file, metadata );
+    //             this.writeMetafile( file, metadata );
 
-	//             this.addMetafileInCache( guid, metadata );
+    //             this.addMetafileInCache( guid, metadata );
 
-	//             this.reimportFiles( this.fileService.readPathContentsSync( file.path ) );
+    //             this.reimportFiles( this.fileService.readPathContentsSync( file.path ) );
 
-	//         }
+    //         }
 
-	//     } );
-	// }
+    //     } );
+    // }
 
-	// reimport ( file: { path: string, name: string }, extension?: string ) {
+    // reimport ( file: { path: string, name: string }, extension?: string ) {
 
-	//     const metadata = MetadataFactory.createMetadata( file.name, extension, file.path );
+    //     const metadata = MetadataFactory.createMetadata( file.name, extension, file.path );
 
-	//     if ( metadata ) {
+    //     if ( metadata ) {
 
-	//         // this.writeMetafile( file.path, metadata );
+    //         // this.writeMetafile( file.path, metadata );
 
-	//         this.addMetafileInCache( metadata.guid, metadata );
+    //         this.addMetafileInCache( metadata.guid, metadata );
 
-	//     }
-	// }
+    //     }
+    // }
 
-	// writeMetafile ( file: FileNode | string, metadata: Metadata ) {
+    // writeMetafile ( file: FileNode | string, metadata: Metadata ) {
 
-	//     try {
+    //     try {
 
-	//         let path = null;
+    //         let path = null;
 
-	//         if ( typeof ( file ) === 'string' ) path = file;
+    //         if ( typeof ( file ) === 'string' ) path = file;
 
-	//         if ( typeof ( file ) === 'object' ) path = file.path;
+    //         if ( typeof ( file ) === 'object' ) path = file.path;
 
-	//         if ( !path.includes( '.meta' ) ) path = path + '.meta';
+    //         if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-	//         this.fileService.fs.writeFileSync( path, JSON.stringify( metadata ) );
+    //         this.fileService.fs.writeFileSync( path, JSON.stringify( metadata ) );
 
-	//     } catch ( error ) {
+    //     } catch ( error ) {
 
-	//         console.error( error );
+    //         console.error( error );
 
-	//         SnackBar.error( "Error in writing .meta file. Please Reimport the asset.", "", 5000 );
-	//     }
+    //         SnackBar.error( "Error in writing .meta file. Please Reimport the asset.", "", 5000 );
+    //     }
 
-	// }
+    // }
 
-	loadDirectory ( files: any[] ) {
+    loadDirectory ( files: any[] ) {
 
-		files.forEach( file => {
+        files.forEach( file => {
 
-			if ( file.type === 'file' && FileService.getExtension( file.name ) === 'meta' ) this.loadMetadata( file );
+            if ( file.type === 'file' && FileService.getExtension( file.name ) === 'meta' ) this.loadMetadata( file );
 
-			if ( file.type === 'directory' ) {
-				this.loadDirectory( this.fileService.readPathContentsSync( file.path ) );
-			}
+            if ( file.type === 'directory' ) {
+                this.loadDirectory( this.fileService.readPathContentsSync( file.path ) );
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	loadMetadata ( file ): void {
+    loadMetadata ( file ): void {
 
-		// TODO: improve import pipeline
-		// import texture
-		// import materials
-		// import models
-		// import props, signs etc
+        // TODO: improve import pipeline
+        // import texture
+        // import materials
+        // import models
+        // import props, signs etc
 
-		try {
+        try {
 
-			const metadata = this.fetchMetaFile( file );
+            const metadata = this.fetchMetaFile( file );
 
-			AssetDatabase.setMetadata( metadata.guid, metadata );
+            AssetDatabase.setMetadata( metadata.guid, metadata );
 
-			// this.loadInstance( metadata.importer, metadata.guid, metadata.path );
+            // this.loadInstance( metadata.importer, metadata.guid, metadata.path );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			console.error( error, file );
+            console.error( error, file );
 
-		}
+        }
 
-	}
+    }
 
-	loadModelFile ( guid: string, callback: ( object: Object3D ) => void ): void {
+    loadModelFile ( guid: string, callback: ( object: Object3D ) => void ): void {
 
-		try {
+        try {
 
-			const metadata = this.find( guid );
+            const metadata = this.find( guid );
 
-			this.modelImporterService.load( metadata.path, ( obj ) => {
+            this.modelImporterService.load( metadata.path, ( obj ) => {
 
-				callback( obj );
+                callback( obj );
 
-			}, metadata );
+            }, metadata );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			console.error( error );
+            console.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	// loadInstance ( importer: string, guid: string, path: string ): any {
+    // loadInstance ( importer: string, guid: string, path: string ): any {
 
-	//     let instance = null;
+    //     let instance = null;
 
-	//     try {
+    //     try {
 
-	//         switch ( importer ) {
+    //         switch ( importer ) {
 
-	//             case 'TextureImporter': instance = new TextureLoader().load( path ); break;
+    //             case 'TextureImporter': instance = new TextureLoader().load( path ); break;
 
-	//             case 'MaterialImporter':
-	//                 {
-	//                     instance = TvMaterial.parseString( this.fileService.fs.readFileSync( path, 'utf-8' ) );
-	//                 }
-	//                 break;
+    //             case 'MaterialImporter':
+    //                 {
+    //                     instance = TvMaterial.parseString( this.fileService.fs.readFileSync( path, 'utf-8' ) );
+    //                 }
+    //                 break;
 
-	//             default: break;
-	//         }
+    //             default: break;
+    //         }
 
-	//     } catch ( error ) {
+    //     } catch ( error ) {
 
-	//         console.error( error );
+    //         console.error( error );
 
-	//     }
+    //     }
 
-	//     if ( instance ) AssetCache.setInstance( guid, instance );
+    //     if ( instance ) AssetCache.setInstance( guid, instance );
 
-	//     return instance;
-	// }
+    //     return instance;
+    // }
 
-	fetchMetaFile ( file: FileNode | string ): Metadata {
+    fetchMetaFile ( file: FileNode | string ): Metadata {
 
-		try {
+        try {
 
-			let path = null;
+            let path = null;
 
-			if ( typeof ( file ) === 'string' ) path = file;
+            if ( typeof ( file ) === 'string' ) path = file;
 
-			if ( typeof ( file ) === 'object' ) path = file.path;
+            if ( typeof ( file ) === 'object' ) path = file.path;
 
-			if ( !path.includes( '.meta' ) ) path = path + '.meta';
+            if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-			return JSON.parse( this.fileService.fs.readFileSync( path, 'utf-8' ) );
+            return JSON.parse( this.fileService.fs.readFileSync( path, 'utf-8' ) );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			console.error( error );
+            console.error( error );
 
-			// SnackBar.error( "Error in reading .meta file. Please Reimport the asset.", "", 5000 );
-		}
+            // SnackBar.error( "Error in reading .meta file. Please Reimport the asset.", "", 5000 );
+        }
 
-	}
+    }
 
-	hasMetaFile ( file: FileNode | string ): boolean {
+    hasMetaFile ( file: FileNode | string ): boolean {
 
-		try {
+        try {
 
-			let path = null;
+            let path = null;
 
-			if ( typeof ( file ) === 'string' ) path = file;
+            if ( typeof ( file ) === 'string' ) path = file;
 
-			if ( typeof ( file ) === 'object' ) path = file.path;
+            if ( typeof ( file ) === 'object' ) path = file.path;
 
-			if ( !path.includes( '.meta' ) ) path = path + '.meta';
+            if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-			return this.fileService.fs.existsSync( path );
+            return this.fileService.fs.existsSync( path );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			return false;
+            return false;
 
-		}
-	}
+        }
+    }
 
-	getInstance ( guid: string ): any {
+    getInstance ( guid: string ): any {
 
-		return AssetDatabase.getInstance( guid );
+        return AssetDatabase.getInstance( guid );
 
-	}
+    }
 
 }

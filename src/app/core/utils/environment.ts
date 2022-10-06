@@ -6,22 +6,22 @@ import { environment } from '../../../environments/environment';
 
 export class Environment {
 
-	static get production (): boolean {
+    static get production (): boolean {
 
-		return environment.production;
+        return environment.production;
 
-	}
+    }
 
-	static get oscEnabled (): boolean {
+    static get oscEnabled (): boolean {
 
-		return environment.osc_enabled;
+        return environment.osc_enabled;
 
-	}
+    }
 
-	static get websiteUrl (): string {
+    static get websiteUrl (): string {
 
-		return environment.web_url;
+        return environment.web_url;
 
-	}
+    }
 
 }

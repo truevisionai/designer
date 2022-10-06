@@ -7,16 +7,16 @@ import { BaseShortcut } from './base-shortcut';
 
 export class NewFileShortcut extends BaseShortcut {
 
-	check ( e: KeyboardEvent ): boolean {
+    check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey == true && e.key === 'n';
+        return e.ctrlKey == true && e.key === 'n';
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		AppService.editor.newFile();
+        AppService.editor.newFile();
 
-	}
+    }
 
 }

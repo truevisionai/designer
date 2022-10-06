@@ -6,38 +6,38 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileNode } from '../file-node.model';
 
 @Component( {
-	selector: 'app-project-hierarchy',
-	templateUrl: './project-hierarchy.component.html',
-	styleUrls: [ './project-hierarchy.component.css' ]
+    selector: 'app-project-hierarchy',
+    templateUrl: './project-hierarchy.component.html',
+    styleUrls: [ './project-hierarchy.component.css' ]
 } )
 export class ProjectHierarchyComponent implements OnInit {
 
-	@Output() folderChanged = new EventEmitter<FileNode>();
+    @Output() folderChanged = new EventEmitter<FileNode>();
 
-	@Input() treeControl;
-	@Input() dataSource;
+    @Input() treeControl;
+    @Input() dataSource;
 
-	selectedFolder;
+    selectedFolder;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	getLevel = ( node: FileNode ) => node.level;
+    getLevel = ( node: FileNode ) => node.level;
 
-	isExpandable = ( node: FileNode ) => node.expandable;
+    isExpandable = ( node: FileNode ) => node.expandable;
 
-	hasChild = ( _: number, node: FileNode ) => true;
+    hasChild = ( _: number, node: FileNode ) => true;
 
-	ngOnInit () {
-	}
+    ngOnInit () {
+    }
 
-	onClick ( node: FileNode ) {
+    onClick ( node: FileNode ) {
 
-		// console.log( 'folder-selected-in-hierarchy', node.name );
+        // console.log( 'folder-selected-in-hierarchy', node.name );
 
-		this.selectedFolder = node;
+        this.selectedFolder = node;
 
-		this.folderChanged.emit( node );
+        this.folderChanged.emit( node );
 
-	}
+    }
 }

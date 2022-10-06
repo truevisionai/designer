@@ -14,60 +14,60 @@ import { PropService } from 'app/services/prop-service';
 import { Object3D, Vector3 } from 'three';
 
 @Component( {
-	selector: 'app-prop-model-inspector',
-	templateUrl: './prop-model-inspector.component.html'
+    selector: 'app-prop-model-inspector',
+    templateUrl: './prop-model-inspector.component.html'
 } )
 export class PropModelInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-	public data: DynamicMeta<PropModel>;
+    public data: DynamicMeta<PropModel>;
 
-	public rotationVariance: Vector3;
+    public rotationVariance: Vector3;
 
-	public scaleVariance: Vector3;
+    public scaleVariance: Vector3;
 
-	public object: Object3D;
+    public object: Object3D;
 
-	constructor ( private assetService: AssetLoaderService ) {
-	}
+    constructor ( private assetService: AssetLoaderService ) {
+    }
 
-	get prop () {
-		return this.data.data as PropModel;
-	}
+    get prop () {
+        return this.data.data as PropModel;
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		// this.rotationVariance = new Vector3( this.prop.rotationVariance.x, this.prop.rotationVariance.y, this.prop.rotationVariance.z );
+        // this.rotationVariance = new Vector3( this.prop.rotationVariance.x, this.prop.rotationVariance.y, this.prop.rotationVariance.z );
 
-		// this.scaleVariance = new Vector3( this.prop.scaleVariance.x, this.prop.scaleVariance.y, this.prop.scaleVariance.z );
+        // this.scaleVariance = new Vector3( this.prop.scaleVariance.x, this.prop.scaleVariance.y, this.prop.scaleVariance.z );
 
-		this.object = AssetDatabase.getInstance( this.data.guid ) as Object3D;
+        this.object = AssetDatabase.getInstance( this.data.guid ) as Object3D;
 
-		PropService.setProp( this.data );
-	}
+        PropService.setProp( this.data );
+    }
 
-	ngOnDestroy () {
+    ngOnDestroy () {
 
-		this.updateAssetFile();
+        this.updateAssetFile();
 
-	}
+    }
 
-	updateAssetFile () {
+    updateAssetFile () {
 
-		// AssetFactory.updatePropModelByGuid( this.data.guid, this.prop );
+        // AssetFactory.updatePropModelByGuid( this.data.guid, this.prop );
 
-	}
+    }
 
-	rotationChanged () {
+    rotationChanged () {
 
-		this.updateAssetFile();
+        this.updateAssetFile();
 
-		CommandHistory.execute( new SetValueCommand( this.prop, 'rotationVariance', this.rotationVariance ) );
-	}
+        CommandHistory.execute( new SetValueCommand( this.prop, 'rotationVariance', this.rotationVariance ) );
+    }
 
-	scaleChanged () {
+    scaleChanged () {
 
-		this.updateAssetFile();
+        this.updateAssetFile();
 
-		CommandHistory.execute( new SetValueCommand( this.prop, 'scaleVariance', this.scaleVariance ) );
-	}
+        CommandHistory.execute( new SetValueCommand( this.prop, 'scaleVariance', this.scaleVariance ) );
+    }
 }

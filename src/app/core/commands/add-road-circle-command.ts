@@ -15,137 +15,137 @@ import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
-	private roads: TvRoad[] = [];
-	private points: RoadControlPoint[] = [];
+    private roads: TvRoad[] = [];
+    private points: RoadControlPoint[] = [];
 
-	constructor ( private centre: Vector3, private end: Vector3, private radius: number ) {
+    constructor ( private centre: Vector3, private end: Vector3, private radius: number ) {
 
-		super();
+        super();
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.makePoints();
+        this.makePoints();
 
-		TvMapBuilder.buildMap( this.map );
+        TvMapBuilder.buildMap( this.map );
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.roads.forEach( road => {
+        this.roads.forEach( road => {
 
-			road.hideNodes();
+            road.hideNodes();
 
-			road.spline.hide();
+            road.spline.hide();
 
-			this.map.removeRoad( road );
+            this.map.removeRoad( road );
 
-		} );
+        } );
 
-		this.points.forEach( point => {
+        this.points.forEach( point => {
 
-			SceneService.remove( point );
+            SceneService.remove( point );
 
-		} );
+        } );
 
-		this.roads.splice( 0, this.roads.length );
+        this.roads.splice( 0, this.roads.length );
 
-		this.points.splice( 0, this.points.length );
-	}
+        this.points.splice( 0, this.points.length );
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 
-	makePoints () {
+    makePoints () {
 
-		const p1 = new Vector2( this.centre.x, this.centre.y );
-		const p2 = new Vector2( this.end.x, this.end.y );
+        const p1 = new Vector2( this.centre.x, this.centre.y );
+        const p2 = new Vector2( this.end.x, this.end.y );
 
-		let start = this.end;
+        let start = this.end;
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+        let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
 
-		const circumference = 2 * Math.PI * this.radius;
+        const circumference = 2 * Math.PI * this.radius;
 
-		const arcLength = circumference * 0.25;
+        const arcLength = circumference * 0.25;
 
-		const curvature = 1 / this.radius;
+        const curvature = 1 / this.radius;
 
-		for ( let i = 0; i < 4; i++ ) {
+        for ( let i = 0; i < 4; i++ ) {
 
-			const road = this.roads[ i ] = this.map.addDefaultRoad();
+            const road = this.roads[ i ] = this.map.addDefaultRoad();
 
-			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+            const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
-			const startPosTheta = new TvPosTheta();
-			const endPosTheta = new TvPosTheta();
+            const startPosTheta = new TvPosTheta();
+            const endPosTheta = new TvPosTheta();
 
-			arc.getCoords( 0, startPosTheta );
-			arc.getCoords( arcLength, endPosTheta );
+            arc.getCoords( 0, startPosTheta );
+            arc.getCoords( arcLength, endPosTheta );
 
-			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+            const distance = start.distanceTo( arc.endV3 ) * 0.3;
 
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
+            let a2 = startPosTheta.moveForward( +distance );
+            let b2 = endPosTheta.moveForward( -distance );
 
-			if ( i == 0 ) this.points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, arc.endV3, 'cp', 0, 0 ) );
+            if ( i == 0 ) this.points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, arc.endV3, 'cp', 0, 0 ) );
 
-			start = arc.endV3;
+            start = arc.endV3;
 
-			hdg += Maths.M_PI_2;
+            hdg += Maths.M_PI_2;
 
-		}
+        }
 
-		this.makeRoadsFromPoints( this.roads, this.points );
+        this.makeRoadsFromPoints( this.roads, this.points );
 
-	}
+    }
 
-	makeRoadsFromPoints ( roads: TvRoad[], points: RoadControlPoint[] ) {
+    makeRoadsFromPoints ( roads: TvRoad[], points: RoadControlPoint[] ) {
 
-		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
+        if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
 
-		if ( points.length != 13 ) throw new Error( 'Point count for circular road is incorrect' );
+        if ( points.length != 13 ) throw new Error( 'Point count for circular road is incorrect' );
 
-		points.forEach( p => SceneService.add( p ) );
+        points.forEach( p => SceneService.add( p ) );
 
-		for ( let i = 0; i < 4; i++ ) {
+        for ( let i = 0; i < 4; i++ ) {
 
-			const road = roads[ i ];
+            const road = roads[ i ];
 
-			const spline = new AutoSpline( road );
+            const spline = new AutoSpline( road );
 
-			spline.addControlPoint( points[ i * 3 + 0 ] );
-			spline.addControlPoint( points[ i * 3 + 1 ] );
-			spline.addControlPoint( points[ i * 3 + 2 ] );
-			spline.addControlPoint( points[ i * 3 + 3 ] );
+            spline.addControlPoint( points[ i * 3 + 0 ] );
+            spline.addControlPoint( points[ i * 3 + 1 ] );
+            spline.addControlPoint( points[ i * 3 + 2 ] );
+            spline.addControlPoint( points[ i * 3 + 3 ] );
 
-			road.spline = spline;
+            road.spline = spline;
 
-			road.spline.hide();
+            road.spline.hide();
 
-			road.updateGeometryFromSpline();
+            road.updateGeometryFromSpline();
 
-			if ( ( i + 1 ) < roads.length ) {
+            if ( ( i + 1 ) < roads.length ) {
 
-				RoadFactory.makeSuccessorConnection( roads[ i ], roads[ i + 1 ] );
+                RoadFactory.makeSuccessorConnection( roads[ i ], roads[ i + 1 ] );
 
-			} else {
+            } else {
 
-				// its last road, so make connection with the first one
-				RoadFactory.makeSuccessorConnection( roads[ i ], roads[ 0 ] );
+                // its last road, so make connection with the first one
+                RoadFactory.makeSuccessorConnection( roads[ i ], roads[ 0 ] );
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 
 
 }

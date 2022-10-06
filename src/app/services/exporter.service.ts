@@ -18,105 +18,105 @@ import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class ExporterService {
 
-	constructor (
-		private odService: TvMapService,
-		private fileService: FileService,
-		private electron: ElectronService,
-		private sceneExporter: SceneExporterService
-	) {
-	}
+    constructor (
+        private odService: TvMapService,
+        private fileService: FileService,
+        private electron: ElectronService,
+        private sceneExporter: SceneExporterService
+    ) {
+    }
 
-	exportScene () {
+    exportScene () {
 
-		this.clearTool();
+        this.clearTool();
 
-		this.sceneExporter.saveAs();
+        this.sceneExporter.saveAs();
 
-	}
+    }
 
-	exportOpenDrive () {
+    exportOpenDrive () {
 
-		this.clearTool();
+        this.clearTool();
 
-		this.odService.saveAs();
-	}
+        this.odService.saveAs();
+    }
 
-	exportGLB ( filename = 'road.glb' ) {
+    exportGLB ( filename = 'road.glb' ) {
 
-		this.clearTool();
+        this.clearTool();
 
-		const exporter = new GLTFExporter();
+        const exporter = new GLTFExporter();
 
-		exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
+        exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
 
-			const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
+            const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
 
-			saveAs( blob, filename );
+            saveAs( blob, filename );
 
-			// forceIndices: true, forcePowerOfTwoTextures: true
-			// to allow compatibility with facebook
-		}, ( error ) => {
+            // forceIndices: true, forcePowerOfTwoTextures: true
+            // to allow compatibility with facebook
+        }, ( error ) => {
 
-		}, { binary: true, forceIndices: true } );
+        }, { binary: true, forceIndices: true } );
 
-	}
+    }
 
-	exportGTLF () {
+    exportGTLF () {
 
-		this.clearTool();
+        this.clearTool();
 
-		const options = {};
+        const options = {};
 
-		const exporter = new GLTFExporter();
+        const exporter = new GLTFExporter();
 
-		exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
+        exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
 
-			const text = JSON.stringify( result, null, 2 );
+            const text = JSON.stringify( result, null, 2 );
 
-			const filename = 'road.gltf';
+            const filename = 'road.gltf';
 
-			saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
+            saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
 
-		}, ( error ) => {
+        }, ( error ) => {
 
-			console.error( error );
+            console.error( error );
 
-		}, options );
+        }, options );
 
-	}
+    }
 
-	exportCARLA () {
+    exportCARLA () {
 
-		this.clearTool();
+        this.clearTool();
 
-		const exporter = new TvCarlaExporter();
+        const exporter = new TvCarlaExporter();
 
-		const contents = exporter.getOutput( this.odService.map );
+        const contents = exporter.getOutput( this.odService.map );
 
-		if ( this.electron.isElectronApp ) {
+        if ( this.electron.isElectronApp ) {
 
-			this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
 
-				this.odService.currentFile.path = file.path;
-				this.odService.currentFile.name = file.name;
+                this.odService.currentFile.path = file.path;
+                this.odService.currentFile.name = file.name;
 
-			} );
+            } );
 
-		} else {
+        } else {
 
-			saveAs( new Blob( [ contents ] ), 'road.xodr' );
+            saveAs( new Blob( [ contents ] ), 'road.xodr' );
 
-		}
+        }
 
-	}
+    }
 
-	private clearTool () {
+    private clearTool () {
 
-		CommandHistory.execute( new SetToolCommand( null ) );
+        CommandHistory.execute( new SetToolCommand( null ) );
 
-	}
+    }
 }

@@ -7,15 +7,15 @@ import { AbstractKeyboardShortcut } from './shortcuts';
 
 export abstract class BaseShortcut extends AbstractKeyboardShortcut {
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	abstract check ( e: KeyboardEvent ): boolean;
+    abstract check ( e: KeyboardEvent ): boolean;
 
-	abstract execute (): void;
+    abstract execute (): void;
 
 }
 

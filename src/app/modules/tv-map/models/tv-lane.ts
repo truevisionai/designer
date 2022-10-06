@@ -19,1203 +19,1203 @@ import { TvUtils } from './tv-utils';
 
 export class TvLane {
 
-	public readonly uuid: string;
-
-	public gameObject: GameObject;
-	public meshData: MeshGeometryData;
-	public markMeshData: MeshGeometryData;
-	public attr_id: number;
-	public attr_type: TvLaneType;
-	public attr_level;
-	public link: TvRoadLaneSectionLaneLink;
-	public width: TvLaneWidth[] = [];
-	public border: TvLaneBorder[] = [];
-	public roadMark: TvLaneRoadMark[] = [];
-	public material: TvLaneMaterial[] = [];
-	public visibility: TvLaneVisibility[] = [];
-	public speed: TvLaneSpeed[] = [];
-	public access: TvLaneAccess[] = [];
-	public height: TvLaneHeight[] = [];
-	private _sectionId: number;
-	private _successor: number;
-	private lastAddedLaneWidth: number;
-	private lastAddedLaneRoadMark: number;
-	private lastAddedLaneMaterial: number;
-	private lastAddedLaneVisibility: number;
-	private lastAddedLaneSpeed: number;
-	private lastAddedLaneAccess: number;
-	private lastAddedLaneHeight: number;
+    public readonly uuid: string;
+
+    public gameObject: GameObject;
+    public meshData: MeshGeometryData;
+    public markMeshData: MeshGeometryData;
+    public attr_id: number;
+    public attr_type: TvLaneType;
+    public attr_level;
+    public link: TvRoadLaneSectionLaneLink;
+    public width: TvLaneWidth[] = [];
+    public border: TvLaneBorder[] = [];
+    public roadMark: TvLaneRoadMark[] = [];
+    public material: TvLaneMaterial[] = [];
+    public visibility: TvLaneVisibility[] = [];
+    public speed: TvLaneSpeed[] = [];
+    public access: TvLaneAccess[] = [];
+    public height: TvLaneHeight[] = [];
+    private _sectionId: number;
+    private _successor: number;
+    private lastAddedLaneWidth: number;
+    private lastAddedLaneRoadMark: number;
+    private lastAddedLaneMaterial: number;
+    private lastAddedLaneVisibility: number;
+    private lastAddedLaneSpeed: number;
+    private lastAddedLaneAccess: number;
+    private lastAddedLaneHeight: number;
 
-	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, sectionId?: number ) {
+    constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, sectionId?: number ) {
 
-		this._side = laneSide;
+        this._side = laneSide;
 
-		this.uuid = MathUtils.generateUUID();
-		this.attr_id = id;
-		this.attr_type = type;
-		this.attr_level = level;
-		this.roadId = roadId;
-		this._sectionId = sectionId;
-	}
+        this.uuid = MathUtils.generateUUID();
+        this.attr_id = id;
+        this.attr_type = type;
+        this.attr_level = level;
+        this.roadId = roadId;
+        this._sectionId = sectionId;
+    }
 
-	private _roadId: number;
+    private _roadId: number;
 
-	get roadId () {
-		return this._roadId;
-	}
+    get roadId () {
+        return this._roadId;
+    }
 
-	set roadId ( value ) {
-		this._roadId = value;
-	}
+    set roadId ( value ) {
+        this._roadId = value;
+    }
 
-	private _side: TvLaneSide;
+    private _side: TvLaneSide;
 
-	get side (): TvLaneSide {
-		return this._side;
-	}
+    get side (): TvLaneSide {
+        return this._side;
+    }
 
-	set side ( value ) {
+    set side ( value ) {
 
-		const som = '' + value;
-		const val = parseFloat( som );
+        const som = '' + value;
+        const val = parseFloat( som );
 
-		if ( val === 0 ) {
-			this._side = TvLaneSide.LEFT;
-		} else if ( val === 1 ) {
-			this._side = TvLaneSide.CENTER;
-		} else if ( val === 2 ) {
-			this._side = TvLaneSide.RIGHT;
-		}
-	}
+        if ( val === 0 ) {
+            this._side = TvLaneSide.LEFT;
+        } else if ( val === 1 ) {
+            this._side = TvLaneSide.CENTER;
+        } else if ( val === 2 ) {
+            this._side = TvLaneSide.RIGHT;
+        }
+    }
 
-	private _predecessorExists: boolean;
+    private _predecessorExists: boolean;
 
-	get predecessorExists (): boolean {
-		return this._predecessorExists;
-	}
+    get predecessorExists (): boolean {
+        return this._predecessorExists;
+    }
 
-	set predecessorExists ( value: boolean ) {
-		this._predecessorExists = value;
-	}
+    set predecessorExists ( value: boolean ) {
+        this._predecessorExists = value;
+    }
 
-	private _successorExists: boolean;
+    private _successorExists: boolean;
 
-	// updateMeshGeometry (): any {
+    // updateMeshGeometry (): any {
 
-	//   let posTheta = new OdPosTheta;
-	//   let road = OdEditorComponent.openDrive.getRoadById( this.roadId );
-	//   let laneSection = road.getLaneSection( 0 );
-	//   let cumulativeWidth = 0;
+    //   let posTheta = new OdPosTheta;
+    //   let road = OdEditorComponent.openDrive.getRoadById( this.roadId );
+    //   let laneSection = road.getLaneSection( 0 );
+    //   let cumulativeWidth = 0;
 
-	//   this.meshData = null;
-	//   this.meshData = new MeshGeometryData;
+    //   this.meshData = null;
+    //   this.meshData = new MeshGeometryData;
 
-	//   for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.lastSCoordinate; sCoordinate += OdBuilderConfig.ROAD_STEP ) {
+    //   for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.lastSCoordinate; sCoordinate += OdBuilderConfig.ROAD_STEP ) {
 
-	//     cumulativeWidth = laneSection.getCumulativeWidth( this, sCoordinate );
+    //     cumulativeWidth = laneSection.getCumulativeWidth( this, sCoordinate );
 
-	//     road.getGeometryCoords( sCoordinate, posTheta );
+    //     road.getGeometryCoords( sCoordinate, posTheta );
 
-	//     this.makeLaneVertices( sCoordinate, posTheta, lane, road, cumulativeWidth );
+    //     this.makeLaneVertices( sCoordinate, posTheta, lane, road, cumulativeWidth );
 
-	//   }
+    //   }
 
-	//   cumulativeWidth = laneSection.getCumulativeWidth( lane, laneSection.lastSCoordinate );
+    //   cumulativeWidth = laneSection.getCumulativeWidth( lane, laneSection.lastSCoordinate );
 
-	//   this.makeLaneVertices( laneSection.lastSCoordinate - Maths.Epsilon, posTheta, lane, road, 0 );
+    //   this.makeLaneVertices( laneSection.lastSCoordinate - Maths.Epsilon, posTheta, lane, road, 0 );
 
-	//   var geometry = new BufferGeometry();
+    //   var geometry = new BufferGeometry();
 
-	//   const vertices = new Float32Array( this.meshData.vertices );
-	//   const colors = new Float32Array( this.meshData.colors );
+    //   const vertices = new Float32Array( this.meshData.vertices );
+    //   const colors = new Float32Array( this.meshData.colors );
 
-	//   this.createMeshIndices( this.meshData );
+    //   this.createMeshIndices( this.meshData );
 
-	//   geometry.setIndex( this.meshData.triangles );
+    //   geometry.setIndex( this.meshData.triangles );
 
-	//   geometry.addAttribute( 'position', new BufferAttribute( vertices, 3 ) );
-	//   geometry.addAttribute( 'color', new BufferAttribute( colors, 3 ) );
+    //   geometry.addAttribute( 'position', new BufferAttribute( vertices, 3 ) );
+    //   geometry.addAttribute( 'color', new BufferAttribute( colors, 3 ) );
 
-	//   var material = new MeshBasicMaterial( { color: OdColorFactory.getLaneColor( lane ), transparent: true, opacity: 1 } );
+    //   var material = new MeshBasicMaterial( { color: OdColorFactory.getLaneColor( lane ), transparent: true, opacity: 1 } );
 
-	//   this.gameObject = new GameObject( "Lane:" + this.id, geometry, material );
-	//   this.gameObject.Tag = OpenDriveObjectType[OpenDriveObjectType.LANE];
-	//   this.gameObject.OpenDriveType = OpenDriveObjectType.LANE;
-	//   this.gameObject.userData.data = lane;
+    //   this.gameObject = new GameObject( "Lane:" + this.id, geometry, material );
+    //   this.gameObject.Tag = OpenDriveObjectType[OpenDriveObjectType.LANE];
+    //   this.gameObject.OpenDriveType = OpenDriveObjectType.LANE;
+    //   this.gameObject.userData.data = lane;
 
-	//   laneSection.gameObject.add( this.gameObject );
+    //   laneSection.gameObject.add( this.gameObject );
 
-	// }
+    // }
 
-	// private mwidth; mheight; elevation; cosHdgPlusPiO2; sinHdgPlusPiO2;
+    // private mwidth; mheight; elevation; cosHdgPlusPiO2; sinHdgPlusPiO2;
 
-	// private makeLaneVertices ( sCoordinate: number, pos: OdPosTheta, lane: OdLane, road: OdRoad, cumulativeWidth: number ) {
+    // private makeLaneVertices ( sCoordinate: number, pos: OdPosTheta, lane: OdLane, road: OdRoad, cumulativeWidth: number ) {
 
-	//   this.mwidth = lane.getWidthValue( sCoordinate );
-	//   this.mheight = lane.getHeightValue( sCoordinate );
-	//   this.elevation = road.getElevationValue( sCoordinate );
+    //   this.mwidth = lane.getWidthValue( sCoordinate );
+    //   this.mheight = lane.getHeightValue( sCoordinate );
+    //   this.elevation = road.getElevationValue( sCoordinate );
 
-	//   this.cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
-	//   this.sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
+    //   this.cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
+    //   this.sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
 
-	//   var v1 = new Vertex();
-	//   var p1X = this.cosHdgPlusPiO2 * cumulativeWidth;
-	//   var p1Y = this.sinHdgPlusPiO2 * cumulativeWidth;
-	//   v1.Position = new Vector3( pos.x + p1X, pos.y + p1Y, this.elevation );
-	//   v1.TexCoord = new Vector2( 0, sCoordinate );
+    //   var v1 = new Vertex();
+    //   var p1X = this.cosHdgPlusPiO2 * cumulativeWidth;
+    //   var p1Y = this.sinHdgPlusPiO2 * cumulativeWidth;
+    //   v1.Position = new Vector3( pos.x + p1X, pos.y + p1Y, this.elevation );
+    //   v1.TexCoord = new Vector2( 0, sCoordinate );
 
-	//   var v2 = new Vertex();
-	//   var p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
-	//   var p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-	//   v2.Position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
-	//   v2.TexCoord = new Vector2( width + height.getOuter(), sCoordinate )
+    //   var v2 = new Vertex();
+    //   var p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
+    //   var p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
+    //   v2.Position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
+    //   v2.TexCoord = new Vector2( width + height.getOuter(), sCoordinate )
 
-	//   if ( lane.side == LaneSide.RIGHT ) {
-	//     this.addVertex( lane.meshData, v1 );
-	//     this.addVertex( lane.meshData, v2 );
-	//   } else {
-	//     this.addVertex( lane.meshData, v2 );
-	//     this.addVertex( lane.meshData, v1 );
-	//   }
+    //   if ( lane.side == LaneSide.RIGHT ) {
+    //     this.addVertex( lane.meshData, v1 );
+    //     this.addVertex( lane.meshData, v2 );
+    //   } else {
+    //     this.addVertex( lane.meshData, v2 );
+    //     this.addVertex( lane.meshData, v1 );
+    //   }
 
-	//   // Debug.log( v1.Position, v2.Position );
-	// }
+    //   // Debug.log( v1.Position, v2.Position );
+    // }
 
-	// addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+    // addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
-	//   meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z );
-	//   meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
-	//   meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
-	//   meshData.colors.push( 0, 1, 0 );
-	//   meshData.indices.push( meshData.currentIndex++ );
+    //   meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z );
+    //   meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
+    //   meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
+    //   meshData.colors.push( 0, 1, 0 );
+    //   meshData.indices.push( meshData.currentIndex++ );
 
-	// }
+    // }
 
-	get successorExists (): boolean {
-		return this._successorExists;
-	}
+    get successorExists (): boolean {
+        return this._successorExists;
+    }
 
-	set successorExists ( value: boolean ) {
-		this._successorExists = value;
-	}
+    set successorExists ( value: boolean ) {
+        this._successorExists = value;
+    }
 
-	private _predecessor: number;
+    private _predecessor: number;
 
-	get predecessor () {
-		return this._predecessor;
-	}
+    get predecessor () {
+        return this._predecessor;
+    }
 
-	set predecessor ( laneId: number ) {
-		this.setPredecessor( laneId );
-	}
+    set predecessor ( laneId: number ) {
+        this.setPredecessor( laneId );
+    }
 
-	get laneSectionId () {
-		return this._sectionId;
-	}
+    get laneSectionId () {
+        return this._sectionId;
+    }
 
-	set laneSectionId ( value ) {
-		this._sectionId = value;
-	}
+    set laneSectionId ( value ) {
+        this._sectionId = value;
+    }
 
-	get direction () {
+    get direction () {
 
-		if ( this.side === TvLaneSide.LEFT ) {
+        if ( this.side === TvLaneSide.LEFT ) {
 
-			return TravelDirection.backward;
+            return TravelDirection.backward;
 
-		} else if ( this.side === TvLaneSide.RIGHT ) {
+        } else if ( this.side === TvLaneSide.RIGHT ) {
 
-			return TravelDirection.forward;
+            return TravelDirection.forward;
 
-		} else if ( this.side === TvLaneSide.CENTER ) {
+        } else if ( this.side === TvLaneSide.CENTER ) {
 
-			return TravelDirection.undirected;
+            return TravelDirection.undirected;
 
-		} else {
+        } else {
 
-			return TravelDirection.undirected;
+            return TravelDirection.undirected;
 
-		}
+        }
 
-	}
+    }
 
-	get sideAsString (): string {
+    get sideAsString (): string {
 
-		switch ( this.side ) {
+        switch ( this.side ) {
 
-			case TvLaneSide.LEFT:
-				return 'left';
-				break;
+            case TvLaneSide.LEFT:
+                return 'left';
+                break;
 
-			case TvLaneSide.CENTER:
-				return 'center';
-				break;
+            case TvLaneSide.CENTER:
+                return 'center';
+                break;
 
-			case TvLaneSide.RIGHT:
-				return 'right';
-				break;
+            case TvLaneSide.RIGHT:
+                return 'right';
+                break;
 
-			default:
-				break;
-		}
-	}
+            default:
+                break;
+        }
+    }
 
-	get id (): number {
-		return Number( this.attr_id );
-	}
+    get id (): number {
+        return Number( this.attr_id );
+    }
 
-	get type (): TvLaneType {
-		return this.attr_type;
-	}
+    get type (): TvLaneType {
+        return this.attr_type;
+    }
 
-	set type ( value: TvLaneType ) {
-		this.attr_type = value;
-	}
+    set type ( value: TvLaneType ) {
+        this.attr_type = value;
+    }
 
-	get level (): boolean {
-		return this.attr_level;
-	}
+    get level (): boolean {
+        return this.attr_level;
+    }
 
 
-	//
-	// Methods used to add child records to the respective lane records
-	//
+    //
+    // Methods used to add child records to the respective lane records
+    //
 
-	get succcessor () {
-		return this._successor;
-	}
+    get succcessor () {
+        return this._successor;
+    }
 
-	set succcessor ( laneId: number ) {
-		this.setPredecessor( laneId );
-	}
+    set succcessor ( laneId: number ) {
+        this.setPredecessor( laneId );
+    }
 
-	setSide ( side: TvLaneSide ) {
-		this._side = side;
-	}
+    setSide ( side: TvLaneSide ) {
+        this._side = side;
+    }
 
-	setId ( id: number ) {
-		this.attr_id = id;
-	}
+    setId ( id: number ) {
+        this.attr_id = id;
+    }
 
-	setType ( type: TvLaneType ) {
-		this.attr_type = type;
-	}
+    setType ( type: TvLaneType ) {
+        this.attr_type = type;
+    }
 
-	setLevel ( level: boolean ) {
-		this.attr_level = level;
-	}
+    setLevel ( level: boolean ) {
+        this.attr_level = level;
+    }
 
-	setPredecessor ( laneId: number ) {
+    setPredecessor ( laneId: number ) {
 
-		this._predecessor = laneId;
-		this._predecessorExists = true;
+        this._predecessor = laneId;
+        this._predecessorExists = true;
 
-	}
+    }
 
-	//
-	// CLONE METHODS
-	//
+    //
+    // CLONE METHODS
+    //
 
-	setSuccessor ( laneId: number ) {
+    setSuccessor ( laneId: number ) {
 
-		this._successor = laneId;
-		this._successorExists = true;
+        this._successor = laneId;
+        this._successorExists = true;
 
-	}
+    }
 
-	removePredecessor () {
+    removePredecessor () {
 
-		this._predecessor = null;
-		this._predecessorExists = false;
+        this._predecessor = null;
+        this._predecessorExists = false;
 
-	}
+    }
 
-	removeSuccessor () {
+    removeSuccessor () {
 
-		this._successor = null;
-		this._successorExists = false;
+        this._successor = null;
+        this._successorExists = false;
 
-	}
+    }
 
-	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
+    addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this.id, this._roadId ) );
+        return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this.id, this._roadId ) );
 
-	}
+    }
 
-	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: string, height: number ) {
+    addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: string, height: number ) {
 
-		return this.addRoadMarkInstance( new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this ) );
+        return this.addRoadMarkInstance( new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this ) );
 
-	}
+    }
 
-	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ) {
+    addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ) {
 
-		const index = this.checkLaneMaterialInterval( sOffset ) + 1;
+        const index = this.checkLaneMaterialInterval( sOffset ) + 1;
 
-		if ( index > this.getLaneMaterialCount() ) {
+        if ( index > this.getLaneMaterialCount() ) {
 
-			this.material.push( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
+            this.material.push( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
 
-		} else {
+        } else {
 
-			this.material[ index ] = ( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
+            this.material[ index ] = ( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
 
-		}
+        }
 
-		this.lastAddedLaneMaterial = index;
+        this.lastAddedLaneMaterial = index;
 
-		return index;
-	}
+        return index;
+    }
 
-	addVisibilityRecord ( sOffset: number, forward: number, back: number, left: number, right: number ) {
+    addVisibilityRecord ( sOffset: number, forward: number, back: number, left: number, right: number ) {
 
-		const index = this.checkLaneVisibilityInterval( sOffset ) + 1;
+        const index = this.checkLaneVisibilityInterval( sOffset ) + 1;
 
-		if ( index > this.getLaneVisibilityCount() ) {
+        if ( index > this.getLaneVisibilityCount() ) {
 
-			this.visibility.push( new TvLaneVisibility( sOffset, forward, back, left, right ) );
+            this.visibility.push( new TvLaneVisibility( sOffset, forward, back, left, right ) );
 
-		} else {
+        } else {
 
-			this.visibility[ index ] = new TvLaneVisibility( sOffset, forward, back, left, right );
+            this.visibility[ index ] = new TvLaneVisibility( sOffset, forward, back, left, right );
 
-		}
+        }
 
-		this.lastAddedLaneVisibility = index;
+        this.lastAddedLaneVisibility = index;
 
-		return index;
+        return index;
 
-	}
+    }
 
-	//
-	// DELETE METHODS
-	//
+    //
+    // DELETE METHODS
+    //
 
-	addSpeedRecord ( sOffset: number, max: number, unit: string ) {
+    addSpeedRecord ( sOffset: number, max: number, unit: string ) {
 
-		const index = this.checkLaneSpeedInterval( sOffset ) + 1;
+        const index = this.checkLaneSpeedInterval( sOffset ) + 1;
 
-		if ( index > this.getLaneSpeedCount() ) {
+        if ( index > this.getLaneSpeedCount() ) {
 
-			this.speed.push( new TvLaneSpeed( sOffset, max, unit ) );
+            this.speed.push( new TvLaneSpeed( sOffset, max, unit ) );
 
-		} else {
+        } else {
 
-			this.speed[ index ] = new TvLaneSpeed( sOffset, max, unit );
+            this.speed[ index ] = new TvLaneSpeed( sOffset, max, unit );
 
-		}
+        }
 
-		this.lastAddedLaneSpeed = index;
+        this.lastAddedLaneSpeed = index;
 
-		return index;
-	}
+        return index;
+    }
 
-	addAccessRecord ( sOffset: number, restriction: string ) {
+    addAccessRecord ( sOffset: number, restriction: string ) {
 
-		const index = this.checkLaneAccessInterval( sOffset ) + 1;
+        const index = this.checkLaneAccessInterval( sOffset ) + 1;
 
-		if ( index > this.getLaneAccessCount() ) {
+        if ( index > this.getLaneAccessCount() ) {
 
-			this.access.push( new TvLaneAccess( sOffset, restriction ) );
+            this.access.push( new TvLaneAccess( sOffset, restriction ) );
 
-		} else {
+        } else {
 
-			this.access[ index ] = new TvLaneAccess( sOffset, restriction );
+            this.access[ index ] = new TvLaneAccess( sOffset, restriction );
 
-		}
+        }
 
-		this.lastAddedLaneAccess = index;
+        this.lastAddedLaneAccess = index;
 
-		return index;
-	}
+        return index;
+    }
 
-	addHeightRecord ( sOffset: number, inner: number, outer: number ) {
+    addHeightRecord ( sOffset: number, inner: number, outer: number ) {
 
-		const index = this.checkLaneHeightInterval( sOffset ) + 1;
+        const index = this.checkLaneHeightInterval( sOffset ) + 1;
 
-		if ( index > this.getLaneHeightCount() ) {
+        if ( index > this.getLaneHeightCount() ) {
 
-			this.height.push( new TvLaneHeight( sOffset, inner, outer ) );
+            this.height.push( new TvLaneHeight( sOffset, inner, outer ) );
 
-		} else {
+        } else {
 
-			this.height[ index ] = new TvLaneHeight( sOffset, inner, outer );
+            this.height[ index ] = new TvLaneHeight( sOffset, inner, outer );
 
-		}
+        }
 
-		this.lastAddedLaneHeight = index;
+        this.lastAddedLaneHeight = index;
 
-		return index;
-	}
+        return index;
+    }
 
-	cloneLaneWidth ( index: number ) {
+    cloneLaneWidth ( index: number ) {
 
-		if ( index < this.width.length - 1 ) {
+        if ( index < this.width.length - 1 ) {
 
-			this.width[ index + 1 ] = this.width[ index ];
+            this.width[ index + 1 ] = this.width[ index ];
 
-		} else if ( index === this.width.length - 1 ) {
+        } else if ( index === this.width.length - 1 ) {
 
-			this.width.push( this.width[ index ] );
+            this.width.push( this.width[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneWidth = index + 1;
+        this.lastAddedLaneWidth = index + 1;
 
-		return this.lastAddedLaneWidth;
-	}
+        return this.lastAddedLaneWidth;
+    }
 
-	cloneLaneRoadMark ( index: number ) {
+    cloneLaneRoadMark ( index: number ) {
 
-		if ( index < this.roadMark.length - 1 ) {
+        if ( index < this.roadMark.length - 1 ) {
 
-			this.roadMark[ index + 1 ] = ( this.roadMark[ index ] );
+            this.roadMark[ index + 1 ] = ( this.roadMark[ index ] );
 
-		} else if ( index === this.roadMark.length - 1 ) {
+        } else if ( index === this.roadMark.length - 1 ) {
 
-			this.roadMark.push( this.roadMark[ index ] );
+            this.roadMark.push( this.roadMark[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneRoadMark = index + 1;
+        this.lastAddedLaneRoadMark = index + 1;
 
-		return this.lastAddedLaneRoadMark;
-	}
+        return this.lastAddedLaneRoadMark;
+    }
 
-	cloneLaneMaterial ( index: number ) {
+    cloneLaneMaterial ( index: number ) {
 
-		if ( index < this.material.length - 1 ) {
+        if ( index < this.material.length - 1 ) {
 
-			this.material[ index + 1 ] = ( this.material[ index ] );
+            this.material[ index + 1 ] = ( this.material[ index ] );
 
-		} else if ( index === this.material.length - 1 ) {
+        } else if ( index === this.material.length - 1 ) {
 
-			this.material.push( this.material[ index ] );
+            this.material.push( this.material[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneMaterial = index + 1;
+        this.lastAddedLaneMaterial = index + 1;
 
-		return this.lastAddedLaneMaterial;
-	}
+        return this.lastAddedLaneMaterial;
+    }
 
-	cloneLaneVisibility ( index: number ) {
+    cloneLaneVisibility ( index: number ) {
 
-		if ( index < this.visibility.length - 1 ) {
+        if ( index < this.visibility.length - 1 ) {
 
-			this.visibility[ index + 1 ] = ( this.visibility[ index ] );
+            this.visibility[ index + 1 ] = ( this.visibility[ index ] );
 
-		} else if ( index === this.visibility.length - 1 ) {
+        } else if ( index === this.visibility.length - 1 ) {
 
-			this.visibility.push( this.visibility[ index ] );
+            this.visibility.push( this.visibility[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneVisibility = index + 1;
+        this.lastAddedLaneVisibility = index + 1;
 
-		return this.lastAddedLaneVisibility;
-	}
+        return this.lastAddedLaneVisibility;
+    }
 
-	cloneLaneSpeed ( index: number ) {
+    cloneLaneSpeed ( index: number ) {
 
-		if ( index < this.speed.length - 1 ) {
+        if ( index < this.speed.length - 1 ) {
 
-			this.speed[ index + 1 ] = ( this.speed[ index ] );
+            this.speed[ index + 1 ] = ( this.speed[ index ] );
 
-		} else if ( index === this.speed.length - 1 ) {
+        } else if ( index === this.speed.length - 1 ) {
 
-			this.speed.push( this.speed[ index ] );
+            this.speed.push( this.speed[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneSpeed = index + 1;
+        this.lastAddedLaneSpeed = index + 1;
 
-		return this.lastAddedLaneSpeed;
-	}
+        return this.lastAddedLaneSpeed;
+    }
 
-	cloneLaneAccess ( index: number ) {
+    cloneLaneAccess ( index: number ) {
 
-		if ( index < this.access.length - 1 ) {
+        if ( index < this.access.length - 1 ) {
 
-			this.access[ index + 1 ] = ( this.access[ index ] );
+            this.access[ index + 1 ] = ( this.access[ index ] );
 
-		} else if ( index === this.access.length - 1 ) {
+        } else if ( index === this.access.length - 1 ) {
 
-			this.access.push( this.access[ index ] );
+            this.access.push( this.access[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneAccess = index + 1;
+        this.lastAddedLaneAccess = index + 1;
 
-		return this.lastAddedLaneAccess;
-	}
+        return this.lastAddedLaneAccess;
+    }
 
-	cloneLaneHeight ( index: number ) {
+    cloneLaneHeight ( index: number ) {
 
-		if ( index < this.height.length - 1 ) {
+        if ( index < this.height.length - 1 ) {
 
-			this.height[ index + 1 ] = ( this.height[ index ] );
+            this.height[ index + 1 ] = ( this.height[ index ] );
 
-		} else if ( index === this.height.length - 1 ) {
+        } else if ( index === this.height.length - 1 ) {
 
-			this.height.push( this.height[ index ] );
+            this.height.push( this.height[ index ] );
 
-		}
+        }
 
-		this.lastAddedLaneHeight = index + 1;
+        this.lastAddedLaneHeight = index + 1;
 
-		return this.lastAddedLaneHeight;
-	}
+        return this.lastAddedLaneHeight;
+    }
 
-	deleteLaneWidth ( index: number ) {
-		this.width.splice( index, 1 );
-	}
+    deleteLaneWidth ( index: number ) {
+        this.width.splice( index, 1 );
+    }
 
-	deleteLaneRoadMark ( index: number ) {
-		this.roadMark.splice( index, 1 );
-	}
+    deleteLaneRoadMark ( index: number ) {
+        this.roadMark.splice( index, 1 );
+    }
 
-	deleteLaneMaterial ( index: number ) {
-		this.material.splice( index, 1 );
-	}
+    deleteLaneMaterial ( index: number ) {
+        this.material.splice( index, 1 );
+    }
 
-	deleteLaneVisibility ( index: number ) {
-		this.visibility.splice( index, 1 );
-	}
+    deleteLaneVisibility ( index: number ) {
+        this.visibility.splice( index, 1 );
+    }
 
-	deleteLaneSpeed ( index: number ) {
-		this.speed.splice( index, 1 );
-	}
+    deleteLaneSpeed ( index: number ) {
+        this.speed.splice( index, 1 );
+    }
 
-	deleteLaneAccess ( index: number ) {
-		this.access.splice( index, 1 );
-	}
+    deleteLaneAccess ( index: number ) {
+        this.access.splice( index, 1 );
+    }
 
-	deleteLaneHeight ( index: number ) {
-		this.height.splice( index, 1 );
-	}
+    deleteLaneHeight ( index: number ) {
+        this.height.splice( index, 1 );
+    }
 
-	getSide (): TvLaneSide {
-		return this._side;
-	}
+    getSide (): TvLaneSide {
+        return this._side;
+    }
 
-	getId (): number {
-		return Number( this.attr_id );
-	}
+    getId (): number {
+        return Number( this.attr_id );
+    }
 
-	getType (): string {
-		return this.attr_type;
-	}
+    getType (): string {
+        return this.attr_type;
+    }
 
-	getLevel (): boolean {
-		return this.attr_level;
-	}
+    getLevel (): boolean {
+        return this.attr_level;
+    }
 
-	isPredecessorSet () {
-		return this._predecessorExists;
-	}
+    isPredecessorSet () {
+        return this._predecessorExists;
+    }
 
-	getPredecessor () {
-		return this._predecessor;
-	}
+    getPredecessor () {
+        return this._predecessor;
+    }
 
-	isSuccessorSet () {
-		return this._successorExists;
-	}
+    isSuccessorSet () {
+        return this._successorExists;
+    }
 
-	getSuccessor () {
-		return this._successor;
-	}
+    getSuccessor () {
+        return this._successor;
+    }
 
-	//
-	// GET POINTER TO RECORDS
+    //
+    // GET POINTER TO RECORDS
 
-	//
-	getLaneWidthVector (): TvLaneWidth[] {
-		return this.width;
-	}
+    //
+    getLaneWidthVector (): TvLaneWidth[] {
+        return this.width;
+    }
 
-	getLaneRoadMarkVector (): TvLaneRoadMark[] {
-		return this.roadMark;
-	}
+    getLaneRoadMarkVector (): TvLaneRoadMark[] {
+        return this.roadMark;
+    }
 
-	getLaneMaterialVector (): TvLaneMaterial[] {
-		return this.material;
-	}
+    getLaneMaterialVector (): TvLaneMaterial[] {
+        return this.material;
+    }
 
-	getLaneVisibilityVector (): TvLaneVisibility[] {
-		return this.visibility;
-	}
+    getLaneVisibilityVector (): TvLaneVisibility[] {
+        return this.visibility;
+    }
 
-	getLaneSpeedVector (): TvLaneSpeed[] {
-		return this.speed;
-	}
+    getLaneSpeedVector (): TvLaneSpeed[] {
+        return this.speed;
+    }
 
-	getLaneAccessVector (): TvLaneAccess[] {
-		return this.access;
-	}
+    getLaneAccessVector (): TvLaneAccess[] {
+        return this.access;
+    }
 
-	getLaneHeightVector (): TvLaneHeight[] {
-		return this.height;
-	}
+    getLaneHeightVector (): TvLaneHeight[] {
+        return this.height;
+    }
 
 
-	//
-	// GET ELEMENT AT INDEX
-	//
+    //
+    // GET ELEMENT AT INDEX
+    //
 
-	getLaneWidth ( index ): TvLaneWidth {
+    getLaneWidth ( index ): TvLaneWidth {
 
-		if ( this.width.length > 0 && index < this.width.length ) {
-			return this.width[ index ];
-		}
+        if ( this.width.length > 0 && index < this.width.length ) {
+            return this.width[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneRoadMark ( index ): TvLaneRoadMark {
+    getLaneRoadMark ( index ): TvLaneRoadMark {
 
-		if ( this.roadMark.length > 0 && index < this.roadMark.length ) {
-			return this.roadMark[ index ];
-		}
+        if ( this.roadMark.length > 0 && index < this.roadMark.length ) {
+            return this.roadMark[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneMaterial ( index ): TvLaneMaterial {
+    getLaneMaterial ( index ): TvLaneMaterial {
 
-		if ( this.material.length > 0 && index < this.material.length ) {
-			return this.material[ index ];
-		}
+        if ( this.material.length > 0 && index < this.material.length ) {
+            return this.material[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneVisibility ( index ): TvLaneVisibility {
+    getLaneVisibility ( index ): TvLaneVisibility {
 
-		if ( this.visibility.length > 0 && index < this.visibility.length ) {
-			return this.visibility[ index ];
-		}
+        if ( this.visibility.length > 0 && index < this.visibility.length ) {
+            return this.visibility[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneSpeed ( index ): TvLaneSpeed {
+    getLaneSpeed ( index ): TvLaneSpeed {
 
-		if ( this.speed.length > 0 && index < this.speed.length ) {
-			return this.speed[ index ];
-		}
+        if ( this.speed.length > 0 && index < this.speed.length ) {
+            return this.speed[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneAccess ( index ): TvLaneAccess {
+    getLaneAccess ( index ): TvLaneAccess {
 
-		if ( this.access.length > 0 && index < this.access.length ) {
-			return this.access[ index ];
-		}
+        if ( this.access.length > 0 && index < this.access.length ) {
+            return this.access[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLaneHeight ( index ): TvLaneHeight {
+    getLaneHeight ( index ): TvLaneHeight {
 
-		if ( this.height.length > 0 && index < this.height.length ) {
-			return this.height[ index ];
-		}
+        if ( this.height.length > 0 && index < this.height.length ) {
+            return this.height[ index ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	//
-	// GET COUNT OF ELEMENTS
-	//
+    //
+    // GET COUNT OF ELEMENTS
+    //
 
-	getLaneWidthCount (): number {
-		return this.width.length;
-	}
+    getLaneWidthCount (): number {
+        return this.width.length;
+    }
 
-	getLaneRoadMarkCount (): number {
-		return this.roadMark.length;
-	}
+    getLaneRoadMarkCount (): number {
+        return this.roadMark.length;
+    }
 
-	getLaneMaterialCount (): number {
-		return this.material.length;
-	}
+    getLaneMaterialCount (): number {
+        return this.material.length;
+    }
 
-	getLaneVisibilityCount (): number {
-		return this.visibility.length;
-	}
+    getLaneVisibilityCount (): number {
+        return this.visibility.length;
+    }
 
-	getLaneSpeedCount (): number {
-		return this.speed.length;
-	}
+    getLaneSpeedCount (): number {
+        return this.speed.length;
+    }
 
-	getLaneAccessCount (): number {
-		return this.access.length;
-	}
+    getLaneAccessCount (): number {
+        return this.access.length;
+    }
 
-	getLaneHeightCount (): number {
-		return this.height.length;
-	}
+    getLaneHeightCount (): number {
+        return this.height.length;
+    }
 
-	//
-	// GET LAST ELEMENT
-	//
+    //
+    // GET LAST ELEMENT
+    //
 
-	getLastLaneWidth () {
+    getLastLaneWidth () {
 
-		if ( this.width.length > 0 ) {
-			return this.width[ this.width.length - 1 ];
-		}
+        if ( this.width.length > 0 ) {
+            return this.width[ this.width.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneRoadMark () {
+    getLastLaneRoadMark () {
 
-		if ( this.roadMark.length > 0 ) {
-			return this.roadMark[ this.roadMark.length - 1 ];
-		}
+        if ( this.roadMark.length > 0 ) {
+            return this.roadMark[ this.roadMark.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneMaterial () {
+    getLastLaneMaterial () {
 
-		if ( this.material.length > 0 ) {
-			return this.material[ this.material.length - 1 ];
-		}
+        if ( this.material.length > 0 ) {
+            return this.material[ this.material.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneVisibility () {
+    getLastLaneVisibility () {
 
-		if ( this.visibility.length > 0 ) {
-			return this.visibility[ this.visibility.length - 1 ];
-		}
+        if ( this.visibility.length > 0 ) {
+            return this.visibility[ this.visibility.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneSpeed () {
+    getLastLaneSpeed () {
 
-		if ( this.speed.length > 0 ) {
-			return this.speed[ this.speed.length - 1 ];
-		}
+        if ( this.speed.length > 0 ) {
+            return this.speed[ this.speed.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneAccess () {
+    getLastLaneAccess () {
 
-		if ( this.access.length > 0 ) {
-			return this.access[ this.access.length - 1 ];
-		}
+        if ( this.access.length > 0 ) {
+            return this.access[ this.access.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	getLastLaneHeight () {
+    getLastLaneHeight () {
 
-		if ( this.height.length > 0 ) {
-			return this.height[ this.height.length - 1 ];
-		}
+        if ( this.height.length > 0 ) {
+            return this.height[ this.height.length - 1 ];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 	/**
 	 *  Get the last added elements of a certain vectors
 	 * (their position might not be at the end of the vector)
 	 */
 
-	getLastAddedLaneWidth () {
-		if ( this.lastAddedLaneWidth < this.width.length ) {
-			return this.width[ this.lastAddedLaneWidth ];
-		}
-		return null;
-	}
+    getLastAddedLaneWidth () {
+        if ( this.lastAddedLaneWidth < this.width.length ) {
+            return this.width[ this.lastAddedLaneWidth ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneRoadMark () {
-		if ( this.lastAddedLaneRoadMark < this.roadMark.length ) {
-			return this.roadMark[ this.lastAddedLaneRoadMark ];
-		}
-		return null;
-	}
+    getLastAddedLaneRoadMark () {
+        if ( this.lastAddedLaneRoadMark < this.roadMark.length ) {
+            return this.roadMark[ this.lastAddedLaneRoadMark ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneMaterial () {
-		if ( this.lastAddedLaneMaterial < this.material.length ) {
-			return this.material[ this.lastAddedLaneMaterial ];
-		}
-		return null;
-	}
+    getLastAddedLaneMaterial () {
+        if ( this.lastAddedLaneMaterial < this.material.length ) {
+            return this.material[ this.lastAddedLaneMaterial ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneVisibility () {
-		if ( this.lastAddedLaneVisibility < this.visibility.length ) {
-			return this.visibility[ this.lastAddedLaneVisibility ];
-		}
-		return null;
-	}
+    getLastAddedLaneVisibility () {
+        if ( this.lastAddedLaneVisibility < this.visibility.length ) {
+            return this.visibility[ this.lastAddedLaneVisibility ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneSpeed () {
-		if ( this.lastAddedLaneSpeed < this.speed.length ) {
-			return this.speed[ this.lastAddedLaneSpeed ];
-		}
-		return null;
-	}
+    getLastAddedLaneSpeed () {
+        if ( this.lastAddedLaneSpeed < this.speed.length ) {
+            return this.speed[ this.lastAddedLaneSpeed ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneAccess () {
-		if ( this.lastAddedLaneAccess < this.access.length ) {
-			return this.access[ this.lastAddedLaneAccess ];
-		}
-		return null;
-	}
+    getLastAddedLaneAccess () {
+        if ( this.lastAddedLaneAccess < this.access.length ) {
+            return this.access[ this.lastAddedLaneAccess ];
+        }
+        return null;
+    }
 
-	getLastAddedLaneHeight () {
-		if ( this.lastAddedLaneHeight < this.height.length ) {
-			return this.height[ this.lastAddedLaneHeight ];
-		}
-		return null;
-	}
+    getLastAddedLaneHeight () {
+        if ( this.lastAddedLaneHeight < this.height.length ) {
+            return this.height[ this.lastAddedLaneHeight ];
+        }
+        return null;
+    }
 
 	/**
 	 *  Check the intervals and return the index of the records that applies to the provided s-offset
 	 */
 
-	getLaneWidthIndex ( sCheck: number ): number {
+    getLaneWidthIndex ( sCheck: number ): number {
 
-		let result = null;
+        let result = null;
 
-		for ( let i = 0; i < this.width.length; i++ ) {
+        for ( let i = 0; i < this.width.length; i++ ) {
 
-			if ( sCheck >= this.width[ i ].s ) result = i;
+            if ( sCheck >= this.width[ i ].s ) result = i;
 
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	checkLaneRoadMarkInterval ( sCheck: number ): number {
+    checkLaneRoadMarkInterval ( sCheck: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.roadMark.length; i++ ) {
+        for ( let i = 0; i < this.roadMark.length; i++ ) {
 
-			if ( sCheck >= this.roadMark[ i ].sOffset ) {
+            if ( sCheck >= this.roadMark[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	checkLaneMaterialInterval ( sCheck: number ): number {
+    checkLaneMaterialInterval ( sCheck: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.material.length; i++ ) {
+        for ( let i = 0; i < this.material.length; i++ ) {
 
-			if ( sCheck >= this.material[ i ].sOffset ) {
+            if ( sCheck >= this.material[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	checkLaneVisibilityInterval ( sCheck: number ): number {
+    checkLaneVisibilityInterval ( sCheck: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.visibility.length; i++ ) {
+        for ( let i = 0; i < this.visibility.length; i++ ) {
 
-			if ( sCheck >= this.visibility[ i ].sOffset ) {
+            if ( sCheck >= this.visibility[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	checkLaneSpeedInterval ( sCheck: number ): number {
+    checkLaneSpeedInterval ( sCheck: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.speed.length; i++ ) {
+        for ( let i = 0; i < this.speed.length; i++ ) {
 
-			if ( sCheck >= this.speed[ i ].sOffset ) {
+            if ( sCheck >= this.speed[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	checkLaneAccessInterval ( sCheck: number ): number {
+    checkLaneAccessInterval ( sCheck: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.access.length; i++ ) {
+        for ( let i = 0; i < this.access.length; i++ ) {
 
-			if ( sCheck >= this.access[ i ].sOffset ) {
+            if ( sCheck >= this.access[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	checkLaneHeightInterval ( s_value: number ): number {
+    checkLaneHeightInterval ( s_value: number ): number {
 
-		let res = -1;
+        let res = -1;
 
-		for ( let i = 0; i < this.height.length; i++ ) {
+        for ( let i = 0; i < this.height.length; i++ ) {
 
-			if ( s_value >= this.height[ i ].sOffset ) {
+            if ( s_value >= this.height[ i ].sOffset ) {
 
-				res = i;
+                res = i;
 
-			} else {
+            } else {
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-		return res;
-	}
+        return res;
+    }
 
 	/**
 	 * Evaluate the record and the return the width value
 	 * @param sCheck
 	 */
-	getWidthValue ( sCheck ): number {
+    getWidthValue ( sCheck ): number {
 
-		const widthEntry = this.getLaneWidthAt( sCheck );
+        const widthEntry = this.getLaneWidthAt( sCheck );
 
-		if ( widthEntry == null ) return 0;
+        if ( widthEntry == null ) return 0;
 
-		return widthEntry.getValue( sCheck );
-	}
+        return widthEntry.getValue( sCheck );
+    }
 
 	/**
 	 * Evaluate the record and return the height object
 	 * @param sCheck
 	 */
-	getHeightValue ( sCheck ): TvLaneHeight {
+    getHeightValue ( sCheck ): TvLaneHeight {
 
-		const laneHeight = new TvLaneHeight( 0, 0, 0 );
+        const laneHeight = new TvLaneHeight( 0, 0, 0 );
 
-		const index = this.checkLaneHeightInterval( sCheck );
+        const index = this.checkLaneHeightInterval( sCheck );
 
-		if ( index >= 0 ) {
+        if ( index >= 0 ) {
 
-			const currentHeight = this.getLaneHeight( index );
+            const currentHeight = this.getLaneHeight( index );
 
-			laneHeight.setInner( currentHeight.getInner() );
-			laneHeight.setOuter( currentHeight.getOuter() );
+            laneHeight.setInner( currentHeight.getInner() );
+            laneHeight.setOuter( currentHeight.getOuter() );
 
-		}
+        }
 
-		return laneHeight;
-	}
+        return laneHeight;
+    }
 
 	/**
 	 * Evaluate the road marks records and return the road
 	 * mark object corresponding to the provided s-offset
 	 * @param sCheck
 	 */
-	getRoadMark ( sCheck ): TvLaneRoadMark {
+    getRoadMark ( sCheck ): TvLaneRoadMark {
 
-		let result = TvUtils.checkIntervalArray( this.roadMark, sCheck );
+        let result = TvUtils.checkIntervalArray( this.roadMark, sCheck );
 
-		if ( result == null ) {
+        if ( result == null ) {
 
-			console.warn( 'roadmark not found using default' );
+            console.warn( 'roadmark not found using default' );
 
-			result = new TvLaneRoadMark( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, '', 0, this );
+            result = new TvLaneRoadMark( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, '', 0, this );
 
-		}
+        }
 
-		return result;
+        return result;
 
-		// const laneRoadMark = new OdLaneRoadMark( 0, OdRoadMarkTypes.SOLID, OdRoadMarkWeights.STANDARD, OdColors.WHITE, 0, '', 0 );
-		//
-		// const index = this.checkLaneRoadMarkInterval( sCheck );
-		//
-		// if ( index >= 0 ) {
-		//
-		//     const currentRoadMark = this.roadMark[ index ];
-		//
-		//     laneRoadMark.setType( currentRoadMark.getType() );
-		//     laneRoadMark.setWeight( currentRoadMark.getWeight() );
-		//     laneRoadMark.setMaterial( currentRoadMark.getMaterial() );
-		//     laneRoadMark.setWidth( currentRoadMark.getWidth() );
-		//     laneRoadMark.setHeight( currentRoadMark.getHeight() );
-		//     laneRoadMark.setLaneChange( currentRoadMark.getLaneChange() );
-		//
-		// }
-		//
-		// return laneRoadMark;
-	}
+        // const laneRoadMark = new OdLaneRoadMark( 0, OdRoadMarkTypes.SOLID, OdRoadMarkWeights.STANDARD, OdColors.WHITE, 0, '', 0 );
+        //
+        // const index = this.checkLaneRoadMarkInterval( sCheck );
+        //
+        // if ( index >= 0 ) {
+        //
+        //     const currentRoadMark = this.roadMark[ index ];
+        //
+        //     laneRoadMark.setType( currentRoadMark.getType() );
+        //     laneRoadMark.setWeight( currentRoadMark.getWeight() );
+        //     laneRoadMark.setMaterial( currentRoadMark.getMaterial() );
+        //     laneRoadMark.setWidth( currentRoadMark.getWidth() );
+        //     laneRoadMark.setHeight( currentRoadMark.getHeight() );
+        //     laneRoadMark.setLaneChange( currentRoadMark.getLaneChange() );
+        //
+        // }
+        //
+        // return laneRoadMark;
+    }
 
 	/**
 	 * Returns the color for mesh of the lane
 	 * @returns {string}
 	 */
-	getColor (): string {
+    getColor (): string {
 
-		if ( this.attr_type === 'driving' ) {
+        if ( this.attr_type === 'driving' ) {
 
-			return '#aeaeae';
+            return '#aeaeae';
 
-		} else if ( this.attr_type === 'border' ) {
+        } else if ( this.attr_type === 'border' ) {
 
-			return '#118400';
+            return '#118400';
 
-		} else if ( this.attr_type === 'stop' ) {
+        } else if ( this.attr_type === 'stop' ) {
 
-			return '#848484';
-		}
+            return '#848484';
+        }
 
-		return '#ff00ab';
-	}
+        return '#ff00ab';
+    }
 
-	// clones the entire lane
-	clone ( id?: number ): TvLane {
+    // clones the entire lane
+    clone ( id?: number ): TvLane {
 
-		const laneId = id || this.id;
+        const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
+        const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
 
-		this.getLaneWidthVector().forEach( width => {
-			newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
-		} );
+        this.getLaneWidthVector().forEach( width => {
+            newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
+        } );
 
-		this.getLaneRoadMarkVector().forEach( roadMark => {
-			newLane.addRoadMarkRecord( roadMark.sOffset, roadMark.type, roadMark.weight, roadMark.color, roadMark.width, roadMark.laneChange, roadMark.height );
-		} );
+        this.getLaneRoadMarkVector().forEach( roadMark => {
+            newLane.addRoadMarkRecord( roadMark.sOffset, roadMark.type, roadMark.weight, roadMark.color, roadMark.width, roadMark.laneChange, roadMark.height );
+        } );
 
-		return newLane;
-	}
+        return newLane;
+    }
 
-	// clones only the lane at s and avoid multiple entries for width, height etc
-	cloneAtS ( id?: number, s?: number ): TvLane {
+    // clones only the lane at s and avoid multiple entries for width, height etc
+    cloneAtS ( id?: number, s?: number ): TvLane {
 
-		const laneId = id || this.id;
+        const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
+        const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
 
-		const width = this.getLaneWidthAt( s || 0 );
+        const width = this.getLaneWidthAt( s || 0 );
 
-		if ( width ) {
+        if ( width ) {
 
-			newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
+            newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
 
-		}
+        }
 
-		const roadMark = this.getRoadMark( s || 0 );
+        const roadMark = this.getRoadMark( s || 0 );
 
-		if ( roadMark ) {
+        if ( roadMark ) {
 
-			newLane.addRoadMarkRecord(
-				roadMark.sOffset,
-				roadMark.type,
-				roadMark.weight,
-				roadMark.color,
-				roadMark.width,
-				roadMark.laneChange,
-				roadMark.height
-			);
+            newLane.addRoadMarkRecord(
+                roadMark.sOffset,
+                roadMark.type,
+                roadMark.weight,
+                roadMark.color,
+                roadMark.width,
+                roadMark.laneChange,
+                roadMark.height
+            );
 
-		}
+        }
 
-		return newLane;
+        return newLane;
 
-	}
+    }
 
-	public getLaneWidthAt ( s: number ): TvLaneWidth {
+    public getLaneWidthAt ( s: number ): TvLaneWidth {
 
-		return TvUtils.checkIntervalArray( this.width, s );
+        return TvUtils.checkIntervalArray( this.width, s );
 
-	}
+    }
 
-	public getRoadMarkAt ( s: number ): TvLaneRoadMark {
+    public getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		return TvUtils.checkIntervalArray( this.roadMark, s );
+        return TvUtils.checkIntervalArray( this.roadMark, s );
 
-	}
+    }
 
-	getRoadMarks () {
+    getRoadMarks () {
 
-		return this.roadMark;
+        return this.roadMark;
 
-	}
+    }
 
-	addDefaultRoadMark () {
+    addDefaultRoadMark () {
 
-		this.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, 'none', 0 );
+        this.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, 'none', 0 );
 
-	}
+    }
 
-	addRoadMarkInstance ( roadmark: TvLaneRoadMark ) {
+    addRoadMarkInstance ( roadmark: TvLaneRoadMark ) {
 
-		this.roadMark.push( roadmark );
+        this.roadMark.push( roadmark );
 
-		this.roadMark.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
+        this.roadMark.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
 
-		// console.log( this.roadMark );
+        // console.log( this.roadMark );
 
-		// this.lastAddedLaneRoadMark = index;
-		//
-		// return index;
-	}
+        // this.lastAddedLaneRoadMark = index;
+        //
+        // return index;
+    }
 
-	addWidthRecordInstance ( laneWidth: TvLaneWidth ) {
+    addWidthRecordInstance ( laneWidth: TvLaneWidth ) {
 
-		this.width.push( laneWidth );
+        this.width.push( laneWidth );
 
-		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+        this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
-	}
+    }
 }
 

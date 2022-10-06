@@ -5,15 +5,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component( {
-	selector: 'app-layout',
-	templateUrl: './editor-layout.component.html',
+    selector: 'app-layout',
+    templateUrl: './editor-layout.component.html',
 } )
 export class EditorLayoutComponent implements OnInit {
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	ngOnInit () {
-	}
+    ngOnInit () {
+    }
 
 }

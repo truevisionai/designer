@@ -6,25 +6,25 @@ import { Camera, Vector3 } from 'three';
 
 export interface IViewportController {
 
-	enabled: boolean;
+    enabled: boolean;
 
-	setTarget ( position: Vector3 ): void;
+    setTarget ( position: Vector3 ): void;
 
-	getTarget (): Vector3;
+    getTarget (): Vector3;
 
-	setCamera ( camera: Camera ): void;
+    setCamera ( camera: Camera ): void;
 
-	setEnabled ( enabled: boolean ): void;
+    setEnabled ( enabled: boolean ): void;
 
-	setPanEnabled ( enabled: boolean ): void;
+    setPanEnabled ( enabled: boolean ): void;
 
-	setZoomEnabled ( enabled: boolean ): void;
+    setZoomEnabled ( enabled: boolean ): void;
 
-	setRotateEnabled ( enabled: boolean ): void;
+    setRotateEnabled ( enabled: boolean ): void;
 
-	setScreenSpaceEnabled ( enabled: boolean ): void;
+    setScreenSpaceEnabled ( enabled: boolean ): void;
 
-	update (): void;
+    update (): void;
 
-	reset (): void;
+    reset (): void;
 }

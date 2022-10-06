@@ -8,49 +8,49 @@ import { KeyboardInput } from '../input';
 import { ShortcutService } from './shortcut.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class EditorService {
 
-	constructor (
-		private shortcutService: ShortcutService,
-		private mainFileService: MainFileService
-	) {
-	}
+    constructor (
+        private shortcutService: ShortcutService,
+        private mainFileService: MainFileService
+    ) {
+    }
 
-	newFile () {
+    newFile () {
 
-		this.mainFileService.newFile();
+        this.mainFileService.newFile();
 
-	}
+    }
 
-	save () {
+    save () {
 
-		this.mainFileService.save();
+        this.mainFileService.save();
 
-	}
+    }
 
-	saveAs () {
+    saveAs () {
 
-		this.mainFileService.saveAs();
+        this.mainFileService.saveAs();
 
-	}
+    }
 
-	onKeyDown ( e: KeyboardEvent ) {
+    onKeyDown ( e: KeyboardEvent ) {
 
-		// fire the event for the whole application
-		KeyboardInput.OnKeyDown( e );
+        // fire the event for the whole application
+        KeyboardInput.OnKeyDown( e );
 
-		// handle shortcuts
-		ShortcutService.handleKeyDown( e );
+        // handle shortcuts
+        ShortcutService.handleKeyDown( e );
 
-	}
+    }
 
-	onKeyUp ( e: KeyboardEvent ) {
+    onKeyUp ( e: KeyboardEvent ) {
 
-		// fire the event for the whole application
-		KeyboardInput.OnKeyUp( e );
+        // fire the event for the whole application
+        KeyboardInput.OnKeyUp( e );
 
-	}
+    }
 
 }

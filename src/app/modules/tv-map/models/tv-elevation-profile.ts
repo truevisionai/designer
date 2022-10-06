@@ -6,21 +6,21 @@ import { TvElevation } from './tv-elevation';
 
 export class TvElevationProfile {
 
-	public elevation: TvElevation[] = [];
+    public elevation: TvElevation[] = [];
 
-	constructor () {
+    constructor () {
 
-	}
+    }
 
-	getElevations (): TvElevation[] {
-		return this.elevation;
-	}
+    getElevations (): TvElevation[] {
+        return this.elevation;
+    }
 
-	getElevation ( i: number ): any {
-		return this.elevation[ i ];
-	}
+    getElevation ( i: number ): any {
+        return this.elevation[ i ];
+    }
 
-	getElevationCount (): number {
-		return this.elevation.length;
-	}
+    getElevationCount (): number {
+        return this.elevation.length;
+    }
 }

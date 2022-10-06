@@ -8,16 +8,16 @@ import { ICommand, ICommandCallback } from './i-command';
 
 export abstract class BaseCommand implements ICommand {
 
-	callbacks?: ICommandCallback;
+    callbacks?: ICommandCallback;
 
-	get map () {
-		return TvMapInstance.map;
-	}
+    get map () {
+        return TvMapInstance.map;
+    }
 
-	abstract execute (): void;
+    abstract execute (): void;
 
-	abstract undo (): void;
+    abstract undo (): void;
 
-	abstract redo (): void;
+    abstract redo (): void;
 
 }

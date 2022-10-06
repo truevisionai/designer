@@ -10,46 +10,46 @@ import { AuthService } from 'app/core/services/auth.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 
 @Component( {
-	selector: 'app-forgot-password',
-	templateUrl: './forgot-password.component.html',
-	styleUrls: [ './forgot-password.component.css' ]
+    selector: 'app-forgot-password',
+    templateUrl: './forgot-password.component.html',
+    styleUrls: [ './forgot-password.component.css' ]
 } )
 export class ForgotPasswordComponent implements OnInit {
 
-	userEmail;
+    userEmail;
 
-	@ViewChild( MatProgressBar ) progressBar: MatProgressBar;
+    @ViewChild( MatProgressBar ) progressBar: MatProgressBar;
 
-	@ViewChild( MatButton ) submitButton: MatButton;
+    @ViewChild( MatButton ) submitButton: MatButton;
 
-	constructor ( private authService: AuthService ) {
-	}
+    constructor ( private authService: AuthService ) {
+    }
 
-	ngOnInit () {
-	}
+    ngOnInit () {
+    }
 
-	submitEmail () {
+    submitEmail () {
 
-		this.submitButton.disabled = true;
+        this.submitButton.disabled = true;
 
-		this.progressBar.mode = 'indeterminate';
+        this.progressBar.mode = 'indeterminate';
 
-		this.authService.forgotPassword( this.userEmail ).subscribe( response => {
+        this.authService.forgotPassword( this.userEmail ).subscribe( response => {
 
-			this.submitButton.disabled = false;
+            this.submitButton.disabled = false;
 
-			this.progressBar.mode = 'determinate';
+            this.progressBar.mode = 'determinate';
 
-			SnackBar.show( 'Please check your email inbox to reset the password' );
+            SnackBar.show( 'Please check your email inbox to reset the password' );
 
-		}, error => {
+        }, error => {
 
-			this.submitButton.disabled = false;
+            this.submitButton.disabled = false;
 
-			this.progressBar.mode = 'determinate';
+            this.progressBar.mode = 'determinate';
 
-			SnackBar.error( 'Error occured in resseting password' );
+            SnackBar.error( 'Error occured in resseting password' );
 
-		} );
-	}
+        } );
+    }
 }

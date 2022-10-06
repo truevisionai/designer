@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class SearchService {
 
-	public searchTerm: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
-	public searchTerm$: Observable<string> = this.searchTerm.asObservable();
+    public searchTerm: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
+    public searchTerm$: Observable<string> = this.searchTerm.asObservable();
 
-	constructor () {
-	}
+    constructor () {
+    }
 }

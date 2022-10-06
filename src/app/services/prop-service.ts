@@ -15,140 +15,140 @@ import { AssetDatabase } from './asset-database';
 
 export class PropService {
 
-	private static prop?: DynamicMeta<PropModel>;
+    private static prop?: DynamicMeta<PropModel>;
 
-	static setProp ( prop: DynamicMeta<PropModel> ) {
+    static setProp ( prop: DynamicMeta<PropModel> ) {
 
-		this.prop = prop;
+        this.prop = prop;
 
-	}
+    }
 
-	static getProp (): DynamicMeta<PropModel> {
+    static getProp (): DynamicMeta<PropModel> {
 
-		return this.prop;
+        return this.prop;
 
-	}
+    }
 
-	static updateCurveProps ( curve: PropCurve ) {
+    static updateCurveProps ( curve: PropCurve ) {
 
-		if ( !curve ) return;
+        if ( !curve ) return;
 
-		if ( curve.spline.controlPoints.length < 2 ) return;
+        if ( curve.spline.controlPoints.length < 2 ) return;
 
-		const length = ( curve.spline as CatmullRomSpline ).getLength();
+        const length = ( curve.spline as CatmullRomSpline ).getLength();
 
-		if ( length <= 0 ) return;
+        if ( length <= 0 ) return;
 
-		curve.props.forEach( prop => SceneService.remove( prop ) );
+        curve.props.forEach( prop => SceneService.remove( prop ) );
 
-		curve.props.splice( 0, curve.props.length );
+        curve.props.splice( 0, curve.props.length );
 
-		const spline = curve.spline as CatmullRomSpline;
+        const spline = curve.spline as CatmullRomSpline;
 
-		const instance = AssetDatabase.getInstance( curve.propGuid ) as Object3D;
+        const instance = AssetDatabase.getInstance( curve.propGuid ) as Object3D;
 
-		for ( let i = 0; i < length; i += curve.spacing ) {
+        for ( let i = 0; i < length; i += curve.spacing ) {
 
-			const t = spline.curve.getUtoTmapping( 0, i );
+            const t = spline.curve.getUtoTmapping( 0, i );
 
-			const position = spline.curve.getPoint( t );
+            const position = spline.curve.getPoint( t );
 
-			const prop = instance.clone();
+            const prop = instance.clone();
 
-			// apply random position variance
-			position.setX( position.x + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
-			position.setY( position.y + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
+            // apply random position variance
+            position.setX( position.x + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
+            position.setY( position.y + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
 
-			// apply random rotation variance
-			prop.rotateX( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
-			prop.rotateY( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
-			prop.rotateZ( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
+            // apply random rotation variance
+            prop.rotateX( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
+            prop.rotateY( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
+            prop.rotateZ( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
 
-			prop.position.copy( position );
+            prop.position.copy( position );
 
-			curve.props.push( prop );
+            curve.props.push( prop );
 
-			SceneService.add( prop );
+            SceneService.add( prop );
 
-		}
-	}
+        }
+    }
 
-	static updateCurvePolygonProps ( polygon: PropPolygon ) {
+    static updateCurvePolygonProps ( polygon: PropPolygon ) {
 
-		polygon.props.forEach( p => SceneService.remove( p ) );
+        polygon.props.forEach( p => SceneService.remove( p ) );
 
-		polygon.props.splice( 0, polygon.props.length );
+        polygon.props.splice( 0, polygon.props.length );
 
-		const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
-
-
-		instance.up.set( 0, 0, 1 );
-
-		instance.updateMatrixWorld( true );
+        const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
 
 
-		const vertices = [];
+        instance.up.set( 0, 0, 1 );
 
-		polygon.spline.controlPointPositions.forEach( p => {
-			vertices.push( p.x );
-			vertices.push( p.y );
-		} );
-
-		// triangulating a polygon with 2d coords0
-		const triangles = earcut( vertices );
-
-		const faces = [];
-
-		for ( let i = 0; i < triangles.length; i += 3 ) {
-
-			faces.push( triangles.slice( i, i + 3 ) );
-
-		}
-
-		function randomInTriangle ( v1, v2, v3 ) {
-
-			const r1 = Math.random();
-
-			const r2 = Math.sqrt( Math.random() );
-
-			const a = 1 - r2;
-
-			const b = r2 * ( 1 - r1 );
-
-			const c = r1 * r2;
-
-			return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-		}
+        instance.updateMatrixWorld( true );
 
 
-		faces.forEach( face => {
+        const vertices = [];
 
-			const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
-			const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
-			const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
+        polygon.spline.controlPointPositions.forEach( p => {
+            vertices.push( p.x );
+            vertices.push( p.y );
+        } );
 
-			const t = new Triangle( v0, v1, v2 );
+        // triangulating a polygon with 2d coords0
+        const triangles = earcut( vertices );
 
-			const area = t.getArea();
+        const faces = [];
 
-			let count = area * polygon.density * polygon.density * polygon.density * 0.5;
+        for ( let i = 0; i < triangles.length; i += 3 ) {
 
-			count = Maths.clamp( count, 0, 1000 );
+            faces.push( triangles.slice( i, i + 3 ) );
 
-			for ( let i = 0; i < count; i++ ) {
+        }
 
-				const position = randomInTriangle( v0, v1, v2 );
+        function randomInTriangle ( v1, v2, v3 ) {
 
-				const prop = instance.clone();
+            const r1 = Math.random();
 
-				prop.position.copy( position );
+            const r2 = Math.sqrt( Math.random() );
 
-				polygon.props.push( prop );
+            const a = 1 - r2;
 
-				SceneService.add( prop );
+            const b = r2 * ( 1 - r1 );
 
-			}
+            const c = r1 * r2;
 
-		} );
-	}
+            return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
+        }
+
+
+        faces.forEach( face => {
+
+            const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
+            const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
+            const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
+
+            const t = new Triangle( v0, v1, v2 );
+
+            const area = t.getArea();
+
+            let count = area * polygon.density * polygon.density * polygon.density * 0.5;
+
+            count = Maths.clamp( count, 0, 1000 );
+
+            for ( let i = 0; i < count; i++ ) {
+
+                const position = randomInTriangle( v0, v1, v2 );
+
+                const prop = instance.clone();
+
+                prop.position.copy( position );
+
+                polygon.props.push( prop );
+
+                SceneService.add( prop );
+
+            }
+
+        } );
+    }
 }

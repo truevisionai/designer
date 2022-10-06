@@ -10,10 +10,10 @@ import { AssetDatabase } from 'app/services/asset-database';
 // import { ProjectBrowserService } from 'app/views/editor/project-browser/project-browser.service';
 
 @Component( {
-	selector: 'app-prop-instance-inspector',
-	templateUrl: './prop-instance-inspector.component.html',
-	styles: [
-		`.example-card {
+    selector: 'app-prop-instance-inspector',
+    templateUrl: './prop-instance-inspector.component.html',
+    styles: [
+        `.example-card {
 			max-width: 400px;
 		}
 
@@ -27,42 +27,42 @@ import { AssetDatabase } from 'app/services/asset-database';
 		}
 
 		`
-	]
+    ]
 
 } )
 export class PropInstanceInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-	data: PropInstance;
+    data: PropInstance;
 
-	// TODO: Fix Editing, Position, Rotation, Scale
+    // TODO: Fix Editing, Position, Rotation, Scale
 
-	previewImage: string;
+    previewImage: string;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	get metadata () {
-		return AssetDatabase.getMetadata( this.data.guid );
-	}
+    get metadata () {
+        return AssetDatabase.getMetadata( this.data.guid );
+    }
 
-	ngOnInit (): void {
+    ngOnInit (): void {
 
-		if ( this.data ) {
+        if ( this.data ) {
 
-			this.previewImage = this.metadata.preview;
+            this.previewImage = this.metadata.preview;
 
-		}
+        }
 
-	}
+    }
 
-	ngOnDestroy (): void {
-	}
+    ngOnDestroy (): void {
+    }
 
-	onPropModelClicked () {
+    onPropModelClicked () {
 
-		console.error( 'method not implemented' );
-		// this.projectBrowser.showFileByGuid( this.data.guid );
+        console.error( 'method not implemented' );
+        // this.projectBrowser.showFileByGuid( this.data.guid );
 
-	}
+    }
 
 }

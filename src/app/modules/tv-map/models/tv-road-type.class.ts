@@ -7,70 +7,70 @@ import { TvRoadType, TvUnit } from './tv-common';
 
 export class TvRoadTypeClass {
 
-	public readonly speed: TvRoadSpeed;
+    public readonly speed: TvRoadSpeed;
 
-	constructor (
-		public s: number,
-		public type: TvRoadType,
-		maxSpeed: number = 40,
-		speedUnit: TvUnit = TvUnit.MILES_PER_HOUR
-	) {
-		this.speed = new TvRoadSpeed( maxSpeed, speedUnit );
-	}
+    constructor (
+        public s: number,
+        public type: TvRoadType,
+        maxSpeed: number = 40,
+        speedUnit: TvUnit = TvUnit.MILES_PER_HOUR
+    ) {
+        this.speed = new TvRoadSpeed( maxSpeed, speedUnit );
+    }
 
-	static stringToTypes ( value ): TvRoadType {
+    static stringToTypes ( value ): TvRoadType {
 
-		if ( value === 'unknown' ) {
+        if ( value === 'unknown' ) {
 
-			return TvRoadType.UNKNOWN;
+            return TvRoadType.UNKNOWN;
 
-		} else if ( value === 'rural' ) {
+        } else if ( value === 'rural' ) {
 
-			return TvRoadType.RURAL;
+            return TvRoadType.RURAL;
 
-		} else if ( value === 'motorway' ) {
+        } else if ( value === 'motorway' ) {
 
-			return TvRoadType.MOTORWAY;
+            return TvRoadType.MOTORWAY;
 
-		} else if ( value === 'town' ) {
+        } else if ( value === 'town' ) {
 
-			return TvRoadType.TOWN;
+            return TvRoadType.TOWN;
 
-		} else if ( value === 'lowSpeed' ) {
+        } else if ( value === 'lowSpeed' ) {
 
-			return TvRoadType.LOW_SPEED;
+            return TvRoadType.LOW_SPEED;
 
-		} else if ( value === 'pedestrian' ) {
+        } else if ( value === 'pedestrian' ) {
 
-			return TvRoadType.PEDESTRIAN;
+            return TvRoadType.PEDESTRIAN;
 
-		} else if ( value === 'bicycle' ) {
+        } else if ( value === 'bicycle' ) {
 
-			return TvRoadType.BICYCLE;
+            return TvRoadType.BICYCLE;
 
-		} else {
+        } else {
 
-			// console.error( "Unknown value for road type" );
+            // console.error( "Unknown value for road type" );
 
-			return TvRoadType.UNKNOWN;
-		}
+            return TvRoadType.UNKNOWN;
+        }
 
-	}
+    }
 }
 
 export class TvRoadSpeed {
 
-	constructor (
-		public max: number,
-		public unit: TvUnit
-	) {
-	}
+    constructor (
+        public max: number,
+        public unit: TvUnit
+    ) {
+    }
 
-	inkmph (): number {
+    inkmph (): number {
 
-		console.error( 'converionf from mph to kmph not happening' );
+        console.error( 'converionf from mph to kmph not happening' );
 
-		return this.max;
+        return this.max;
 
-	}
+    }
 }

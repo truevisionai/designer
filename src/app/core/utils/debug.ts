@@ -8,34 +8,34 @@ import { SceneService } from '../services/scene.service';
 
 export class Debug {
 
-	private static sphereAdded: boolean;
-	private static sphere: Mesh;
+    private static sphereAdded: boolean;
+    private static sphere: Mesh;
 
-	static log ( message?: any, ...optionalParams: any[] ) {
+    static log ( message?: any, ...optionalParams: any[] ) {
 
-		if ( !environment.production ) {
+        if ( !environment.production ) {
 
-			console.log( message, optionalParams );
+            console.log( message, optionalParams );
 
-		}
-	}
+        }
+    }
 
-	static drawSphere ( position: Vector3 | Vector2 ) {
+    static drawSphere ( position: Vector3 | Vector2 ) {
 
-		if ( !this.sphereAdded ) {
+        if ( !this.sphereAdded ) {
 
-			const geometry = new SphereGeometry();
-			const material = new MeshBasicMaterial();
+            const geometry = new SphereGeometry();
+            const material = new MeshBasicMaterial();
 
-			this.sphere = new Mesh( geometry, material );
+            this.sphere = new Mesh( geometry, material );
 
-			SceneService.add( this.sphere );
+            SceneService.add( this.sphere );
 
-			this.sphereAdded = true;
-		}
+            this.sphereAdded = true;
+        }
 
-		this.sphere.position.setX( position.x );
-		this.sphere.position.setY( position.y );
+        this.sphere.position.setX( position.x );
+        this.sphere.position.setY( position.y );
 
-	}
+    }
 }

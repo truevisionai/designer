@@ -9,34 +9,34 @@ import { SetInspectorCommand } from './set-inspector-command';
 
 export class AddLaneOffsetCommand extends BaseCommand {
 
-	private command: SetInspectorCommand;
+    private command: SetInspectorCommand;
 
-	constructor ( private node: LaneOffsetNode ) {
+    constructor ( private node: LaneOffsetNode ) {
 
-		super();
+        super();
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.node.road.addLaneOffsetInstance( this.node.laneOffset );
+        this.node.road.addLaneOffsetInstance( this.node.laneOffset );
 
-		SceneService.add( this.node );
+        SceneService.add( this.node );
 
-		// ( new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( this.node, this.node.road ) ) ).execute();
-	}
+        // ( new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( this.node, this.node.road ) ) ).execute();
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.node.road.removeLaneOffset( this.node.laneOffset );
+        this.node.road.removeLaneOffset( this.node.laneOffset );
 
-		SceneService.remove( this.node );
-	}
+        SceneService.remove( this.node );
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 
 }

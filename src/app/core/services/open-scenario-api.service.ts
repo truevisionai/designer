@@ -8,22 +8,22 @@ import { IFile } from '../models/file';
 import { FileApiService } from './file-api.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class OpenScenarioApiService {
 
-	constructor ( private files: FileApiService ) {
-	}
+    constructor ( private files: FileApiService ) {
+    }
 
-	getOpenScenario ( name: string ): Observable<IFile> {
+    getOpenScenario ( name: string ): Observable<IFile> {
 
-		return this.files.getFile( name, 'open-scenario' );
+        return this.files.getFile( name, 'open-scenario' );
 
-	}
+    }
 
-	saveOpenScenario ( file: IFile ): Observable<IFile> {
+    saveOpenScenario ( file: IFile ): Observable<IFile> {
 
-		return this.files.save( file );
+        return this.files.save( file );
 
-	}
+    }
 }

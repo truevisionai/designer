@@ -7,32 +7,32 @@ import { BaseCommand } from './base-command';
 
 export class SetLanePropertyCommand extends BaseCommand {
 
-	private readonly oldValue: any;
+    private readonly oldValue: any;
 
-	constructor ( private lane: TvLane, private attribute: any, private newValue: any ) {
+    constructor ( private lane: TvLane, private attribute: any, private newValue: any ) {
 
-		super();
+        super();
 
-		this.oldValue = lane[ attribute ];
-	}
+        this.oldValue = lane[ attribute ];
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.lane[ this.attribute ] = this.newValue;
+        this.lane[ this.attribute ] = this.newValue;
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.lane[ this.attribute ] = this.oldValue;
+        this.lane[ this.attribute ] = this.oldValue;
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 
 
 }

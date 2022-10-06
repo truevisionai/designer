@@ -12,184 +12,184 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class AssetImporterService {
 
-	private fs;
-	private path;
+    private fs;
+    private path;
 
-	// causing bugs need to remove these
-	// private successCallback;
-	// private errorCallback;
+    // causing bugs need to remove these
+    // private successCallback;
+    // private errorCallback;
 
-	constructor ( private electronService: ElectronService, private fileService: FileService ) {
-	}
+    constructor ( private electronService: ElectronService, private fileService: FileService ) {
+    }
 
-	public import ( filepath: string, successCallback: Function, errorCallback: Function ) {
+    public import ( filepath: string, successCallback: Function, errorCallback: Function ) {
 
-		this.fs = this.fileService.fs;
-		this.path = this.fileService.path;
+        this.fs = this.fileService.fs;
+        this.path = this.fileService.path;
 
-		const fileExtension = this.path.extname( filepath );
+        const fileExtension = this.path.extname( filepath );
 
-		switch ( fileExtension ) {
-			case '.obj':
-				this.importOBJ( filepath, successCallback, errorCallback );
-				break;
+        switch ( fileExtension ) {
+            case '.obj':
+                this.importOBJ( filepath, successCallback, errorCallback );
+                break;
 
-			case '.dae':
-				this.importCollada( filepath, successCallback, errorCallback );
-				break;
+            case '.dae':
+                this.importCollada( filepath, successCallback, errorCallback );
+                break;
 
-			case '.gltf':
-				this.importGLTF( filepath, successCallback, errorCallback );
-				break;
+            case '.gltf':
+                this.importGLTF( filepath, successCallback, errorCallback );
+                break;
 
-			case '.glb':
-				this.importGLTF( filepath, successCallback, errorCallback );
-				break;
+            case '.glb':
+                this.importGLTF( filepath, successCallback, errorCallback );
+                break;
 
-			case '.fbx':
-				this.importFBX( filepath, successCallback, errorCallback );
-				break;
+            case '.fbx':
+                this.importFBX( filepath, successCallback, errorCallback );
+                break;
 
-			default:
-				SnackBar.error( 'unknown 3d format. Please use any of obj, dae, fbx formats' );
-				break;
-		}
+            default:
+                SnackBar.error( 'unknown 3d format. Please use any of obj, dae, fbx formats' );
+                break;
+        }
 
-	}
+    }
 
-	importOBJ ( filepath: string, success: Function, error: Function ) {
+    importOBJ ( filepath: string, success: Function, error: Function ) {
 
-		var loader = new OBJLoader();
+        var loader = new OBJLoader();
 
-		this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
+        this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
 
-			if ( err ) {
-				error( 'An error ocurred reading the file :' + err.message );
-				return;
-			}
+            if ( err ) {
+                error( 'An error ocurred reading the file :' + err.message );
+                return;
+            }
 
-			const group = loader.parse( data );
+            const group = loader.parse( data );
 
-			success( group );
+            success( group );
 
-		} );
+        } );
 
-	}
+    }
 
-	importGLTF ( filepath: string, success: Function, error: Function ) {
+    importGLTF ( filepath: string, success: Function, error: Function ) {
 
-		const loader = new GLTFLoader();
+        const loader = new GLTFLoader();
 
-		const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + '/';
+        const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + '/';
 
-		loader.load( `file:///${ filepath }`, ( gltf ) => {
+        loader.load( `file:///${ filepath }`, ( gltf ) => {
 
-			success( gltf.scene );
+            success( gltf.scene );
 
-		}, () => {
+        }, () => {
 
-			// on progress
+            // on progress
 
-		}, ( err ) => {
+        }, ( err ) => {
 
-			console.error( err );
+            console.error( err );
 
-			error( err );
+            error( err );
 
-		} );
+        } );
 
-		// this.fs.readFile( filepath, 'ascii', ( err, data ) => {
+        // this.fs.readFile( filepath, 'ascii', ( err, data ) => {
 
-		//     if ( err ) {
-		//         error( 'An error ocurred reading the file :' + err.message );
-		//         return;
-		//     }
+        //     if ( err ) {
+        //         error( 'An error ocurred reading the file :' + err.message );
+        //         return;
+        //     }
 
-		//     const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + "/";
+        //     const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + "/";
 
-		//     loader.parse( data, `file:///${ dir }`, ( gltf ) => {
+        //     loader.parse( data, `file:///${ dir }`, ( gltf ) => {
 
-		//         success( gltf.scene );
+        //         success( gltf.scene );
 
-		//     }, ( err ) => {
+        //     }, ( err ) => {
 
-		//         error( err )
+        //         error( err )
 
-		//     } );
+        //     } );
 
-		// } )
+        // } )
 
-	}
+    }
 
-	importCollada ( filepath: string, success: Function, error: Function ) {
+    importCollada ( filepath: string, success: Function, error: Function ) {
 
-		var loader = new ColladaLoader();
+        var loader = new ColladaLoader();
 
-		this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
+        this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
 
-			if ( err ) {
-				error( 'An error ocurred reading the file :' + err.message );
-				return;
-			}
+            if ( err ) {
+                error( 'An error ocurred reading the file :' + err.message );
+                return;
+            }
 
-			const group = loader.parse( data, filepath );
+            const group = loader.parse( data, filepath );
 
-			success( group.scene );
+            success( group.scene );
 
-		} );
+        } );
 
-	}
+    }
 
-	importFBX ( filepath: string, success: Function, error: Function ) {
+    importFBX ( filepath: string, success: Function, error: Function ) {
 
-		SnackBar.error( 'FBX files are not supported' );
+        SnackBar.error( 'FBX files are not supported' );
 
-		// var loader = new THREE.FBXLoader();
+        // var loader = new THREE.FBXLoader();
 
-		// loader.load( 'assets/TrafficCone01.fbx', function ( object ) {
-		//     // loader.load( 'assets/Box.fbx', function ( object ) {
+        // loader.load( 'assets/TrafficCone01.fbx', function ( object ) {
+        //     // loader.load( 'assets/Box.fbx', function ( object ) {
 
-		//     object.traverse( ( child: any ) => {
+        //     object.traverse( ( child: any ) => {
 
-		//         if ( child.isMesh ) {
+        //         if ( child.isMesh ) {
 
-		//             child.castShadow = true;
-		//             child.receiveShadow = true;
+        //             child.castShadow = true;
+        //             child.receiveShadow = true;
 
-		//         }
+        //         }
 
-		//     } );
+        //     } );
 
-		//     SceneService.add( object );
+        //     SceneService.add( object );
 
-		// }, ( e ) => console.debug( e ), ( e ) => console.error( e ) );
+        // }, ( e ) => console.debug( e ), ( e ) => console.error( e ) );
 
-		// this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
+        // this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
 
-		//     if ( err ) {
-		//         error( 'An error ocurred reading the file :' + err.message );
-		//         return;
-		//     }
+        //     if ( err ) {
+        //         error( 'An error ocurred reading the file :' + err.message );
+        //         return;
+        //     }
 
-		//     try {
+        //     try {
 
-		//         success( loader.parse( data, filepath ) );
+        //         success( loader.parse( data, filepath ) );
 
-		//     } catch ( error ) {
+        //     } catch ( error ) {
 
-		//         console.error( error );
+        //         console.error( error );
 
-		//         error( 'Could not import file, ' + error.message );
+        //         error( 'Could not import file, ' + error.message );
 
-		//     }
+        //     }
 
 
-		// } );
+        // } );
 
-	}
+    }
 
 }

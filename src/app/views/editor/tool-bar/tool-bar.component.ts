@@ -31,183 +31,183 @@ import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service'
 import { FileService } from '../../../services/file.service';
 
 @Component( {
-	selector: 'app-tool-bar',
-	templateUrl: './tool-bar.component.html',
+    selector: 'app-tool-bar',
+    templateUrl: './tool-bar.component.html',
 } )
 export class ToolBarComponent implements OnInit {
 
-	currentTool: BaseTool;
-	currentToolName: string;
+    currentTool: BaseTool;
+    currentToolName: string;
 
-	constructor (
-		private electronService: ElectronService,
-		private odService: TvMapService,
-		private signService: TvSignService,
-		private threeService: ThreeService,
-		private fileService: FileService,
-		private modelImporter: ModelImporterService
-	) {
-	}
+    constructor (
+        private electronService: ElectronService,
+        private odService: TvMapService,
+        private signService: TvSignService,
+        private threeService: ThreeService,
+        private fileService: FileService,
+        private modelImporter: ModelImporterService
+    ) {
+    }
 
-	get oscEnabled (): boolean {
-		return Environment.oscEnabled;
-	}
+    get oscEnabled (): boolean {
+        return Environment.oscEnabled;
+    }
 
-	get showImportButton () {
+    get showImportButton () {
 
-		return this.electronService.isElectronApp && !Environment.production;
+        return this.electronService.isElectronApp && !Environment.production;
 
-	}
+    }
 
-	get isPropToolSelected () {
+    get isPropToolSelected () {
 
-		return this.currentTool instanceof PropPointTool ||
-			this.currentTool instanceof PropCurveTool ||
-			this.currentTool instanceof PropPolygonTool;
+        return this.currentTool instanceof PropPointTool ||
+            this.currentTool instanceof PropCurveTool ||
+            this.currentTool instanceof PropPolygonTool;
 
-	}
+    }
 
-	get isMarkingToolSelected () {
+    get isMarkingToolSelected () {
 
-		return this.currentTool instanceof MarkingLineTool ||
-			this.currentTool instanceof MarkingPointTool;
+        return this.currentTool instanceof MarkingLineTool ||
+            this.currentTool instanceof MarkingPointTool;
 
-	}
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
-			this.currentTool = tool;
-			this.currentToolName = tool ? tool.name : null;
-		} );
+        ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
+            this.currentTool = tool;
+            this.currentToolName = tool ? tool.name : null;
+        } );
 
-	}
+    }
 
-	showRoadTool () {
+    showRoadTool () {
 
-		this.setTool( new RoadTool() );
+        this.setTool( new RoadTool() );
 
-	}
+    }
 
-	showRoadCircleTool () {
+    showRoadCircleTool () {
 
-		this.setTool( new RoadCircleTool() );
+        this.setTool( new RoadCircleTool() );
 
-	}
+    }
 
-	showManeueverTool () {
+    showManeueverTool () {
 
-		this.setTool( new ManeuverTool() );
+        this.setTool( new ManeuverTool() );
 
-	}
+    }
 
-	showLaneWidthTool () {
+    showLaneWidthTool () {
 
-		this.setTool( new LaneWidthTool() );
+        this.setTool( new LaneWidthTool() );
 
-	}
+    }
 
-	showLaneOffsetTool () {
+    showLaneOffsetTool () {
 
-		this.setTool( new LaneOffsetTool() );
+        this.setTool( new LaneOffsetTool() );
 
-	}
+    }
 
-	showRoadSignTool () {
+    showRoadSignTool () {
 
-		this.setTool( new PropPointTool() );
+        this.setTool( new PropPointTool() );
 
-	}
+    }
 
-	showPropPointTool () {
+    showPropPointTool () {
 
-		this.setTool( new PropPointTool() );
+        this.setTool( new PropPointTool() );
 
-	}
+    }
 
-	showPropCurveTool () {
+    showPropCurveTool () {
 
-		this.setTool( new PropCurveTool() );
+        this.setTool( new PropCurveTool() );
 
-	}
+    }
 
-	showPropPolygonTool () {
+    showPropPolygonTool () {
 
-		this.setTool( new PropPolygonTool() );
+        this.setTool( new PropPolygonTool() );
 
-	}
+    }
 
-	showSurfaceTool () {
+    showSurfaceTool () {
 
-		this.setTool( new SurfaceTool() );
+        this.setTool( new SurfaceTool() );
 
-	}
+    }
 
-	showLaneMarkingTool () {
+    showLaneMarkingTool () {
 
-		this.setTool( new LaneMarkingTool() );
+        this.setTool( new LaneMarkingTool() );
 
-	}
+    }
 
-	// importOpenDrive () {
+    // importOpenDrive () {
 
-	//     new OpenScenarioExporter( this.oscService, this.odService, this.fileService, this.simulation ).exportAndPlay();
+    //     new OpenScenarioExporter( this.oscService, this.odService, this.fileService, this.simulation ).exportAndPlay();
 
-	// }
+    // }
 
-	showAddLaneTool () {
+    showAddLaneTool () {
 
-		this.setTool( new LaneAddTool() );
+        this.setTool( new LaneAddTool() );
 
-	}
+    }
 
-	showLaneTool () {
+    showLaneTool () {
 
-		this.setTool( new LaneTool() );
+        this.setTool( new LaneTool() );
 
-	}
+    }
 
-	changeCamera () {
+    changeCamera () {
 
-		this.threeService.changeCamera();
+        this.threeService.changeCamera();
 
-	}
+    }
 
-	setMarkingPointTool () {
+    setMarkingPointTool () {
 
-		this.setTool( new MarkingPointTool() );
+        this.setTool( new MarkingPointTool() );
 
-	}
+    }
 
-	setMarkingLineTool () {
+    setMarkingLineTool () {
 
-		this.setTool( new MarkingLineTool() );
+        this.setTool( new MarkingLineTool() );
 
-	}
+    }
 
-	setParkingBoxTool () {
+    setParkingBoxTool () {
 
-		this.setTool( new ParkingBoxTool() );
+        this.setTool( new ParkingBoxTool() );
 
-	}
+    }
 
-	setParkingPolygonTool () {
+    setParkingPolygonTool () {
 
-		this.setTool( new ParkingBoxTool() );
+        this.setTool( new ParkingBoxTool() );
 
-	}
+    }
 
-	setMiscShape () {
+    setMiscShape () {
 
-		// this.setTool( new MiscShapeTool() );
+        // this.setTool( new MiscShapeTool() );
 
-		// AppInspector.setInspector( OscParamatersInspectorComponent, OscSourceFile.scenario.parameterDeclaration );
+        // AppInspector.setInspector( OscParamatersInspectorComponent, OscSourceFile.scenario.parameterDeclaration );
 
-	}
+    }
 
-	private setTool ( tool: BaseTool ) {
+    private setTool ( tool: BaseTool ) {
 
-		CommandHistory.execute( new SetToolCommand( tool ) );
+        CommandHistory.execute( new SetToolCommand( tool ) );
 
-	}
+    }
 }

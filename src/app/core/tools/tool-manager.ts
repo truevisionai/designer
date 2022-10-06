@@ -7,64 +7,64 @@ import { BaseTool } from './base-tool';
 
 export class ToolManager {
 
-	public static toolChanged = new EventEmitter<BaseTool>();
+    public static toolChanged = new EventEmitter<BaseTool>();
 
-	private static tool: BaseTool;
+    private static tool: BaseTool;
 
-	static get currentTool (): BaseTool {
+    static get currentTool (): BaseTool {
 
-		return this.tool;
+        return this.tool;
 
-	}
+    }
 
-	static set currentTool ( value: BaseTool ) {
+    static set currentTool ( value: BaseTool ) {
 
-		if ( !value ) {
+        if ( !value ) {
 
-			this.clear();
+            this.clear();
 
-		} else {
+        } else {
 
-			// dont do anything if the same tool is already being used
-			if ( this.tool && this.tool.name === value.name ) return;
+            // dont do anything if the same tool is already being used
+            if ( this.tool && this.tool.name === value.name ) return;
 
-			this.destroyPreviousState();
+            this.destroyPreviousState();
 
-			this.tool = value;
+            this.tool = value;
 
-			this.tool.init();
+            this.tool.init();
 
-			this.tool.enable();
+            this.tool.enable();
 
-			this.toolChanged.emit( value );
+            this.toolChanged.emit( value );
 
-		}
+        }
 
-	}
+    }
 
-	static clear () {
+    static clear () {
 
-		this.destroyPreviousState();
+        this.destroyPreviousState();
 
-		this.toolChanged.emit( null );
-	}
+        this.toolChanged.emit( null );
+    }
 
-	static disable () {
+    static disable () {
 
-		if ( this.tool != null ) this.tool.disable();
+        if ( this.tool != null ) this.tool.disable();
 
-	}
+    }
 
-	static enable () {
+    static enable () {
 
-		if ( this.tool != null ) this.tool.enable();
+        if ( this.tool != null ) this.tool.enable();
 
-	}
+    }
 
-	private static destroyPreviousState () {
+    private static destroyPreviousState () {
 
-		this.disable();
+        this.disable();
 
-		delete this.tool;
-	}
+        delete this.tool;
+    }
 }

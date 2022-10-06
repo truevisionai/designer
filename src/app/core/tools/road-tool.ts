@@ -27,589 +27,589 @@ import { BaseTool } from './base-tool';
 
 export class RoadTool extends BaseTool {
 
-	public name: string = 'RoadTool';
+    public name: string = 'RoadTool';
 
-	private road: TvRoad;
-	private controlPoint: RoadControlPoint;
-	private node: RoadNode;
+    private road: TvRoad;
+    private controlPoint: RoadControlPoint;
+    private node: RoadNode;
 
-	private roadChanged: boolean = false;
-	private pointerDown: boolean = false;
-	private pointerDownAt: Vector3;
+    private roadChanged: boolean = false;
+    private pointerDown: boolean = false;
+    private pointerDownAt: Vector3;
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	init () {
+    init () {
 
 
-	}
+    }
 
-	enable () {
+    enable () {
 
-		super.enable();
+        super.enable();
 
-		this.map.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
-			if ( !road.isJunction ) {
+            if ( !road.isJunction ) {
 
-				NodeFactoryService.updateRoadNodes( road );
+                NodeFactoryService.updateRoadNodes( road );
 
-				road.showNodes();
+                road.showNodes();
 
-			}
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	disable () {
+    disable () {
 
-		super.disable();
+        super.disable();
 
-		this.map.roads.forEach( road => road.hideNodes() );
+        this.map.roads.forEach( road => road.hideNodes() );
 
-		if ( this.road ) this.hideRoad( this.road );
+        if ( this.road ) this.hideRoad( this.road );
 
-		if ( this.controlPoint ) this.controlPoint.unselect();
+        if ( this.controlPoint ) this.controlPoint.unselect();
 
-		if ( this.node ) this.node.unselected();
-	}
+        if ( this.node ) this.node.unselected();
+    }
 
-	onPointerDown ( e: PointerEventData ) {
+    onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+        if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
+        this.pointerDown = true;
 
-		this.pointerDownAt = e.point ? e.point.clone() : null;
+        this.pointerDownAt = e.point ? e.point.clone() : null;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+        const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		if ( !hasInteracted ) hasInteracted = this.checkControlPointInteraction( e );
+        if ( !hasInteracted ) hasInteracted = this.checkControlPointInteraction( e );
 
-		if ( !hasInteracted ) hasInteracted = this.checkRoadNodeInteraction( e );
+        if ( !hasInteracted ) hasInteracted = this.checkRoadNodeInteraction( e );
 
-		if ( !hasInteracted && !shiftKeyDown ) hasInteracted = this.checkLaneObjectInteraction( e );
+        if ( !hasInteracted && !shiftKeyDown ) hasInteracted = this.checkLaneObjectInteraction( e );
 
-		if ( !hasInteracted ) {
+        if ( !hasInteracted ) {
 
-			if ( e.button === MouseButton.LEFT && shiftKeyDown && e.point != null ) {
+            if ( e.button === MouseButton.LEFT && shiftKeyDown && e.point != null ) {
 
-				this.addControlPoint( e.point );
+                this.addControlPoint( e.point );
 
-			} else {
+            } else {
 
-				if ( this.road || this.controlPoint || this.node ) {
+                if ( this.road || this.controlPoint || this.node ) {
 
-					const setInspectorCommand = new SetInspectorCommand( null, null );
+                    const setInspectorCommand = new SetInspectorCommand( null, null );
 
-					const setRoadCommand = new SetValueCommand( this, 'road', null );
+                    const setRoadCommand = new SetValueCommand( this, 'road', null );
 
-					const setPointCommand = new SetValueCommand( this, 'controlPoint', null );
+                    const setPointCommand = new SetValueCommand( this, 'controlPoint', null );
 
-					const setNodeCommand = new SetValueCommand( this, 'node', null );
+                    const setNodeCommand = new SetValueCommand( this, 'node', null );
 
-					CommandHistory.execute( new MultiCmdsCommand( [
-						setInspectorCommand,
-						setRoadCommand,
-						setPointCommand,
-						setNodeCommand
-					] ) );
+                    CommandHistory.execute( new MultiCmdsCommand( [
+                        setInspectorCommand,
+                        setRoadCommand,
+                        setPointCommand,
+                        setNodeCommand
+                    ] ) );
 
-				}
+                }
 
-			}
+            }
 
-			// // no interaction with line, lane, points etc
-			// if ( this.road && !this.controlPoint && !shiftKeyDown ) {
+            // // no interaction with line, lane, points etc
+            // if ( this.road && !this.controlPoint && !shiftKeyDown ) {
 
-			//     AppInspector.clear();
+            //     AppInspector.clear();
 
-			//     this.hideRoad( this.road );
+            //     this.hideRoad( this.road );
 
-			//     this.road = null;
-			// }
+            //     this.road = null;
+            // }
 
-			// if ( this.controlPoint && !shiftKeyDown ) {
+            // if ( this.controlPoint && !shiftKeyDown ) {
 
-			//     this.controlPoint.unselect();
+            //     this.controlPoint.unselect();
 
-			//     this.controlPoint = null;
+            //     this.controlPoint = null;
 
-			// }
+            // }
 
-		}
+        }
 
-		// AppInspector.setInspector( RoadInspector, {
-		//     road: this.road,
-		//     controlPoint: this.controlPoint
-		// } );
-	}
+        // AppInspector.setInspector( RoadInspector, {
+        //     road: this.road,
+        //     controlPoint: this.controlPoint
+        // } );
+    }
 
-	onPointerClicked ( e: PointerEventData ) {
+    onPointerClicked ( e: PointerEventData ) {
 
-		// no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
+        // no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
 
-		// if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+        // if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-		//     this.checkRoadNodeInteraction( e );
+        //     this.checkRoadNodeInteraction( e );
 
-		//     this.addControlPoint( e.point );
+        //     this.addControlPoint( e.point );
 
-		// }
-	}
+        // }
+    }
 
-	onPointerUp ( e: PointerEventData ) {
+    onPointerUp ( e: PointerEventData ) {
 
-		if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
+        if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
 
-			const updateRoadPointCommand = new UpdateRoadPointCommand(
-				this.road, this.controlPoint, this.controlPoint.position, this.pointerDownAt
-			);
+            const updateRoadPointCommand = new UpdateRoadPointCommand(
+                this.road, this.controlPoint, this.controlPoint.position, this.pointerDownAt
+            );
 
-			CommandHistory.execute( updateRoadPointCommand );
+            CommandHistory.execute( updateRoadPointCommand );
 
-		}
+        }
 
-		this.pointerDown = false;
+        this.pointerDown = false;
 
-		this.pointerDownAt = null;
+        this.pointerDownAt = null;
 
-		this.roadChanged = false;
-	}
+        this.roadChanged = false;
+    }
 
-	onPointerMoved ( e: PointerEventData ) {
+    onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
+        if ( this.pointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
 
-			this.controlPoint.copyPosition( e.point );
+            this.controlPoint.copyPosition( e.point );
 
-			this.road.spline.update();
+            this.road.spline.update();
 
-			this.roadChanged = true;
+            this.roadChanged = true;
 
-			this.updateSuccessor( this.road, this.controlPoint );
+            this.updateSuccessor( this.road, this.controlPoint );
 
-			this.updatePredecessor( this.road, this.controlPoint );
-		}
+            this.updatePredecessor( this.road, this.controlPoint );
+        }
 
-	}
+    }
 
-	private updateSuccessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
+    private updateSuccessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
 
-		const P1 = road.spline.getSecondLastPoint() as RoadControlPoint;
-		const P2 = road.spline.getLastPoint() as RoadControlPoint;
+        const P1 = road.spline.getSecondLastPoint() as RoadControlPoint;
+        const P2 = road.spline.getLastPoint() as RoadControlPoint;
 
-		if ( road.successor && road.successor.elementType !== 'junction'
-			&& ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
+        if ( road.successor && road.successor.elementType !== 'junction'
+            && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
-			const successor = this.map.getRoadById( road.successor.elementId );
+            const successor = this.map.getRoadById( road.successor.elementId );
 
-			if ( !successor ) return;
+            if ( !successor ) return;
 
-			successor.spline.show();
+            successor.spline.show();
 
-			let P3: RoadControlPoint;
+            let P3: RoadControlPoint;
 
-			let P4: RoadControlPoint;
+            let P4: RoadControlPoint;
 
-			let newP4: RoadControlPoint;
+            let newP4: RoadControlPoint;
 
-			let distance: number;
+            let distance: number;
 
-			if ( road.successor.contactPoint === TvContactPoint.START ) {
+            if ( road.successor.contactPoint === TvContactPoint.START ) {
 
-				P3 = successor.spline.controlPoints[ 0 ] as RoadControlPoint;
+                P3 = successor.spline.controlPoints[ 0 ] as RoadControlPoint;
 
-				P4 = successor.spline.controlPoints[ 1 ] as RoadControlPoint;
+                P4 = successor.spline.controlPoints[ 1 ] as RoadControlPoint;
 
-				distance = P3.position.distanceTo( P4.position );
+                distance = P3.position.distanceTo( P4.position );
 
-				P3.copyPosition( P2.position );
+                P3.copyPosition( P2.position );
 
-				P2.hdg = P3.hdg = P1.hdg;
+                P2.hdg = P3.hdg = P1.hdg;
 
-				newP4 = P2.moveForward( distance );
+                newP4 = P2.moveForward( distance );
 
-				P4.copyPosition( newP4.position );
+                P4.copyPosition( newP4.position );
 
-				successor.spline.update();
+                successor.spline.update();
 
-			} else {
+            } else {
 
-				P3 = successor.spline.getLastPoint() as RoadControlPoint;
+                P3 = successor.spline.getLastPoint() as RoadControlPoint;
 
-				P4 = successor.spline.getSecondLastPoint() as RoadControlPoint;
+                P4 = successor.spline.getSecondLastPoint() as RoadControlPoint;
 
-				distance = P3.position.distanceTo( P4.position );
+                distance = P3.position.distanceTo( P4.position );
 
-				P3.copyPosition( P2.position );
+                P3.copyPosition( P2.position );
 
-				P2.hdg = P1.hdg;
+                P2.hdg = P1.hdg;
 
-				P3.hdg = P2.hdg + Math.PI;
+                P3.hdg = P2.hdg + Math.PI;
 
-				newP4 = P2.moveForward( distance );
+                newP4 = P2.moveForward( distance );
 
-				P4.copyPosition( newP4.position );
+                P4.copyPosition( newP4.position );
 
-				successor.spline.update();
-			}
-		}
-	}
+                successor.spline.update();
+            }
+        }
+    }
 
-	private updatePredecessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
+    private updatePredecessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
 
-		const P1 = road.spline.controlPoints[ 1 ] as RoadControlPoint;
-		const P2 = road.spline.controlPoints[ 0 ] as RoadControlPoint;
+        const P1 = road.spline.controlPoints[ 1 ] as RoadControlPoint;
+        const P2 = road.spline.controlPoints[ 0 ] as RoadControlPoint;
 
-		if ( road.predecessor && road.predecessor.elementType !== 'junction'
-			&& ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
+        if ( road.predecessor && road.predecessor.elementType !== 'junction'
+            && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
-			const predecessor = this.map.getRoadById( road.predecessor.elementId );
+            const predecessor = this.map.getRoadById( road.predecessor.elementId );
 
-			if ( !predecessor ) return;
+            if ( !predecessor ) return;
 
-			predecessor.spline.show();
+            predecessor.spline.show();
 
-			let P3: RoadControlPoint;
+            let P3: RoadControlPoint;
 
-			let P4: RoadControlPoint;
+            let P4: RoadControlPoint;
 
-			let newP4: RoadControlPoint;
+            let newP4: RoadControlPoint;
 
-			let distance: number;
+            let distance: number;
 
-			if ( road.predecessor.contactPoint === TvContactPoint.START ) {
+            if ( road.predecessor.contactPoint === TvContactPoint.START ) {
 
-				P3 = predecessor.spline.controlPoints[ 0 ] as RoadControlPoint;
+                P3 = predecessor.spline.controlPoints[ 0 ] as RoadControlPoint;
 
-				P4 = predecessor.spline.controlPoints[ 1 ] as RoadControlPoint;
+                P4 = predecessor.spline.controlPoints[ 1 ] as RoadControlPoint;
 
-				distance = P3.position.distanceTo( P4.position );
+                distance = P3.position.distanceTo( P4.position );
 
-				P3.copyPosition( P2.position );
+                P3.copyPosition( P2.position );
 
-				P3.hdg = P4.hdg = P2.hdg + Math.PI;
+                P3.hdg = P4.hdg = P2.hdg + Math.PI;
 
-				newP4 = P3.moveForward( distance );
+                newP4 = P3.moveForward( distance );
 
-				P4.copyPosition( newP4.position );
+                P4.copyPosition( newP4.position );
 
-				predecessor.spline.update();
+                predecessor.spline.update();
 
-			} else {
+            } else {
 
-				P3 = predecessor.spline.getLastPoint() as RoadControlPoint;
+                P3 = predecessor.spline.getLastPoint() as RoadControlPoint;
 
-				P4 = predecessor.spline.getSecondLastPoint() as RoadControlPoint;
+                P4 = predecessor.spline.getSecondLastPoint() as RoadControlPoint;
 
-				distance = P3.position.distanceTo( P4.position );
+                distance = P3.position.distanceTo( P4.position );
 
-				P3.copyPosition( P2.position );
+                P3.copyPosition( P2.position );
 
-				P3.hdg = P4.hdg = P2.hdg + Math.PI;
+                P3.hdg = P4.hdg = P2.hdg + Math.PI;
 
-				newP4 = P3.moveForward( distance );
+                newP4 = P3.moveForward( distance );
 
-				P4.copyPosition( newP4.position );
+                P4.copyPosition( newP4.position );
 
-				predecessor.spline.update();
+                predecessor.spline.update();
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private checkControlPointInteraction ( e: PointerEventData ): boolean {
+    private checkControlPointInteraction ( e: PointerEventData ): boolean {
 
-		if ( !this.road || !this.road.spline ) return;
+        if ( !this.road || !this.road.spline ) return;
 
-		if ( !e.point ) return;
+        if ( !e.point ) return;
 
-		// // first chceck for control point interactions
-		// // doing in 2 loop to prioritise control points
-		// let controlPoint = PickingHelper.checkControlPointInteraction( e, ControlPoint.roadTag, 1 );
+        // // first chceck for control point interactions
+        // // doing in 2 loop to prioritise control points
+        // let controlPoint = PickingHelper.checkControlPointInteraction( e, ControlPoint.roadTag, 1 );
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+        const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
 
-		const controlPoints = [];
+        const controlPoints = [];
 
-		this.road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
+        this.road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
 
-			controlPoints.push( cp );
+            controlPoints.push( cp );
 
-			if ( cp.frontTangent ) controlPoints.push( cp.frontTangent );
+            if ( cp.frontTangent ) controlPoints.push( cp.frontTangent );
 
-			if ( cp.backTangent ) controlPoints.push( cp.backTangent );
+            if ( cp.backTangent ) controlPoints.push( cp.backTangent );
 
-		} );
+        } );
 
-		const controlPoint = PickingHelper.findNearest( e.point, controlPoints, maxDistance );
+        const controlPoint = PickingHelper.findNearest( e.point, controlPoints, maxDistance );
 
-		if ( controlPoint ) {
+        if ( controlPoint ) {
 
-			CommandHistory.executeAll( [
+            CommandHistory.executeAll( [
 
-				new SetInspectorCommand( RoadInspector, { road: this.road, controlPoint } ),
+                new SetInspectorCommand( RoadInspector, { road: this.road, controlPoint } ),
 
-				new SetValueCommand( this, 'controlPoint', controlPoint ),
+                new SetValueCommand( this, 'controlPoint', controlPoint ),
 
-				new SetValueCommand( this, 'node', null )
+                new SetValueCommand( this, 'node', null )
 
-			] );
+            ] );
 
-		} else if ( this.controlPoint ) {
+        } else if ( this.controlPoint ) {
 
-			CommandHistory.executeAll( [
+            CommandHistory.executeAll( [
 
-				new SetValueCommand( this, 'controlPoint', null ),
+                new SetValueCommand( this, 'controlPoint', null ),
 
-				new SetInspectorCommand( null, null ),
+                new SetInspectorCommand( null, null ),
 
-			] );
+            ] );
 
-		}
+        }
 
-		return controlPoint != null;
-	}
+        return controlPoint != null;
+    }
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+    private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+        for ( let i = 0; i < e.intersections.length; i++ ) {
 
-			const intersection = e.intersections[ i ];
+            const intersection = e.intersections[ i ];
 
-			// tslint:disable-next-line: no-string-literal
-			if ( intersection.object && intersection.object[ 'tag' ] === ObjectTypes.LANE ) {
+            // tslint:disable-next-line: no-string-literal
+            if ( intersection.object && intersection.object[ 'tag' ] === ObjectTypes.LANE ) {
 
-				hasInteracted = true;
+                hasInteracted = true;
 
-				if ( intersection.object.userData.lane ) {
+                if ( intersection.object.userData.lane ) {
 
-					const lane = intersection.object.userData.lane as TvLane;
+                    const lane = intersection.object.userData.lane as TvLane;
 
-					const road = this.map.getRoadById( lane.roadId );
+                    const road = this.map.getRoadById( lane.roadId );
 
-					if ( road.isJunction ) continue;
+                    if ( road.isJunction ) continue;
 
-					// check if old or a new lane is selected
-					if ( !this.road || this.road.id !== road.id ) {
+                    // check if old or a new lane is selected
+                    if ( !this.road || this.road.id !== road.id ) {
 
-						const commands = [];
+                        const commands = [];
 
-						commands.push( new SetInspectorCommand( RoadInspector, { road } ) );
+                        commands.push( new SetInspectorCommand( RoadInspector, { road } ) );
 
-						commands.push( new SetValueCommand( this, 'road', road ) );
+                        commands.push( new SetValueCommand( this, 'road', road ) );
 
-						commands.push( new SetValueCommand( this, 'controlPoint', null ) );
+                        commands.push( new SetValueCommand( this, 'controlPoint', null ) );
 
-						commands.push( new SetValueCommand( this, 'node', null ) );
+                        commands.push( new SetValueCommand( this, 'node', null ) );
 
-						CommandHistory.execute( new MultiCmdsCommand( commands ) );
-					}
-				}
+                        CommandHistory.execute( new MultiCmdsCommand( commands ) );
+                    }
+                }
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		return hasInteracted;
-	}
+        return hasInteracted;
+    }
 
-	private checkRoadNodeInteraction ( e: PointerEventData ): boolean {
+    private checkRoadNodeInteraction ( e: PointerEventData ): boolean {
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		// for now ignore the shift key
-		const shiftKeyDown = true; //KeyboardInput.isShiftKeyDown;
+        // for now ignore the shift key
+        const shiftKeyDown = true; //KeyboardInput.isShiftKeyDown;
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+        for ( let i = 0; i < e.intersections.length; i++ ) {
 
-			const intersection = e.intersections[ i ];
+            const intersection = e.intersections[ i ];
 
-			if ( intersection.object && intersection.object[ 'tag' ] === RoadNode.lineTag ) {
+            if ( intersection.object && intersection.object[ 'tag' ] === RoadNode.lineTag ) {
 
-				hasInteracted = true;
+                hasInteracted = true;
 
-				const node = intersection.object.parent as RoadNode;
+                const node = intersection.object.parent as RoadNode;
 
-				if ( shiftKeyDown && this.node && this.node.roadId !== node.roadId ) {
+                if ( shiftKeyDown && this.node && this.node.roadId !== node.roadId ) {
 
-					// node with node then
+                    // node with node then
 
-					// two roads need to joined
-					// we take both nodes and use them as start and end points
-					// for a new road
-					// new road will have 4 more points, so total 6 points
+                    // two roads need to joined
+                    // we take both nodes and use them as start and end points
+                    // for a new road
+                    // new road will have 4 more points, so total 6 points
 
-					this.joinNodeWithNode( this.node, node );
+                    this.joinNodeWithNode( this.node, node );
 
-				} else if ( shiftKeyDown && this.controlPoint ) {
+                } else if ( shiftKeyDown && this.controlPoint ) {
 
-					// control point with node
-					// modify the control point road and join it the the node road
-					// console.log( "only join roads", this.road.id, node.roadId );
+                    // control point with node
+                    // modify the control point road and join it the the node road
+                    // console.log( "only join roads", this.road.id, node.roadId );
 
 
-					// another scenario of first node selected then controlpoint
-					// in this
-					// create new road and normally but with node as the first point
-					// and second point will be forward distance of x distance
-					// then 3rd point will be created wherever the point was selected
+                    // another scenario of first node selected then controlpoint
+                    // in this
+                    // create new road and normally but with node as the first point
+                    // and second point will be forward distance of x distance
+                    // then 3rd point will be created wherever the point was selected
 
-				} else {
+                } else {
 
-					// this only selects the node
+                    // this only selects the node
 
-					const road = this.map.getRoadById( node.roadId );
+                    const road = this.map.getRoadById( node.roadId );
 
-					CommandHistory.executeAll( [
+                    CommandHistory.executeAll( [
 
-						new SetInspectorCommand( RoadInspector, { road, node } ),
+                        new SetInspectorCommand( RoadInspector, { road, node } ),
 
-						new SetValueCommand( this, 'node', node ),
+                        new SetValueCommand( this, 'node', node ),
 
-						new SetValueCommand( this, 'road', road ),
+                        new SetValueCommand( this, 'road', road ),
 
-						new SetValueCommand( this, 'conrolPoint', null ),
+                        new SetValueCommand( this, 'conrolPoint', null ),
 
-					] );
+                    ] );
 
-				}
+                }
 
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		if ( !hasInteracted && this.node ) {
+        if ( !hasInteracted && this.node ) {
 
-			this.node.unselected();
+            this.node.unselected();
 
-			this.node = null;
+            this.node = null;
 
-		}
+        }
 
-		return hasInteracted;
-	}
+        return hasInteracted;
+    }
 
-	private updateRoadGeometry ( road: TvRoad ): void {
+    private updateRoadGeometry ( road: TvRoad ): void {
 
-		road.spline.update();
+        road.spline.update();
 
-		this.map.gameObject.remove( road.gameObject );
+        this.map.gameObject.remove( road.gameObject );
 
-		// remove old geometries
-		road.clearGeometries();
+        // remove old geometries
+        road.clearGeometries();
 
-		// TODO: can be improved
-		road.spline.exportGeometries().forEach( geometry => {
+        // TODO: can be improved
+        road.spline.exportGeometries().forEach( geometry => {
 
-			road.addGeometry( geometry );
+            road.addGeometry( geometry );
 
-		} );
+        } );
 
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		NodeFactoryService.updateRoadNodes( this.road );
-	}
+        NodeFactoryService.updateRoadNodes( this.road );
+    }
 
-	private hideRoad ( road: TvRoad ): void {
+    private hideRoad ( road: TvRoad ): void {
 
-		road.spline.hide();
+        road.spline.hide();
 
-	}
+    }
 
-	private showRoad ( road: TvRoad ): void {
+    private showRoad ( road: TvRoad ): void {
 
-		road.spline.show();
+        road.spline.show();
 
-	}
+    }
 
-	private addControlPoint ( position: Vector3 ) {
+    private addControlPoint ( position: Vector3 ) {
 
-		// // unselect old if exists
-		// if ( this.controlPoint ) this.controlPoint.unselect();
+        // // unselect old if exists
+        // if ( this.controlPoint ) this.controlPoint.unselect();
 
-		if ( !this.road ) {
+        if ( !this.road ) {
 
-			const result = RoadFactory.createRoad( position );
+            const result = RoadFactory.createRoad( position );
 
-			const addRoadCommand = new AddRoadCommand( result.road, result.point );
+            const addRoadCommand = new AddRoadCommand( result.road, result.point );
 
-			const setRoadCommand = new SetValueCommand( this, 'road', result.road );
+            const setRoadCommand = new SetValueCommand( this, 'road', result.road );
 
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', result.point );
+            const setPointCommand = new SetValueCommand( this, 'controlPoint', result.point );
 
-			CommandHistory.execute( new MultiCmdsCommand( [ addRoadCommand, setRoadCommand, setPointCommand ] ) );
+            CommandHistory.execute( new MultiCmdsCommand( [ addRoadCommand, setRoadCommand, setPointCommand ] ) );
 
-		} else {
+        } else {
 
-			const controlPoint = RoadFactory.addControlPoint( this.road, position );
+            const controlPoint = RoadFactory.addControlPoint( this.road, position );
 
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', controlPoint );
+            const setPointCommand = new SetValueCommand( this, 'controlPoint', controlPoint );
 
-			const addPointCommand = new AddRoadPointCommand( this.road, controlPoint, this.controlPoint );
+            const addPointCommand = new AddRoadPointCommand( this.road, controlPoint, this.controlPoint );
 
-			CommandHistory.execute( new MultiCmdsCommand( [ addPointCommand, setPointCommand ] ) );
-		}
+            CommandHistory.execute( new MultiCmdsCommand( [ addPointCommand, setPointCommand ] ) );
+        }
 
-		// if ( !this.road ) this.road = this.openDrive.addDefaultRoad();
+        // if ( !this.road ) this.road = this.openDrive.addDefaultRoad();
 
 
-		// // set new
-		// this.controlPoint = ControlPoint.create( "", position );
+        // // set new
+        // this.controlPoint = ControlPoint.create( "", position );
 
-		// // TODO: spline should take this responsibility
-		// SceneService.add( this.controlPoint );
+        // // TODO: spline should take this responsibility
+        // SceneService.add( this.controlPoint );
 
-		// this.controlPoint.mainObject = this.controlPoint.userData.road = this.road;
+        // this.controlPoint.mainObject = this.controlPoint.userData.road = this.road;
 
-		// this.road.spline.addControlPoint( this.controlPoint );
+        // this.road.spline.addControlPoint( this.controlPoint );
 
-		// this.controlPoint.onSelected();
+        // this.controlPoint.onSelected();
 
-		// if ( this.road.spline.controlPoints.length < 2 ) return;
+        // if ( this.road.spline.controlPoints.length < 2 ) return;
 
-		// this.updateRoadGeometry( this.road );
+        // this.updateRoadGeometry( this.road );
 
-		// AppInspector.setInspector( RoadInspector, {
-		//     road: this.road,
-		//     controlPoint: this.controlPoint
-		// } );
-	}
+        // AppInspector.setInspector( RoadInspector, {
+        //     road: this.road,
+        //     controlPoint: this.controlPoint
+        // } );
+    }
 
-	private joinNodeWithNode ( firstNode: RoadNode, secondNode: RoadNode ) {
+    private joinNodeWithNode ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		// console.log( "crate new road to join ", firstNode.roadId, secondNode.roadId );
+        // console.log( "crate new road to join ", firstNode.roadId, secondNode.roadId );
 
-		const commands = [];
+        const commands = [];
 
-		commands.push( new SetValueCommand( this, 'node', null ) );
+        commands.push( new SetValueCommand( this, 'node', null ) );
 
-		commands.push( new SetValueCommand( this, 'road', null ) );
+        commands.push( new SetValueCommand( this, 'road', null ) );
 
-		commands.push( new SetValueCommand( this, 'conrolPoint', null ) );
+        commands.push( new SetValueCommand( this, 'conrolPoint', null ) );
 
-		commands.push( new JoinRoadNodeCommand( firstNode, secondNode ) );
+        commands.push( new JoinRoadNodeCommand( firstNode, secondNode ) );
 
-		CommandHistory.execute( new MultiCmdsCommand( commands ) );
+        CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-	}
+    }
 
-	private joinPointWithNode () {
+    private joinPointWithNode () {
 
-	}
+    }
 
-	private joinNodeWithPoint () {
+    private joinNodeWithPoint () {
 
-	}
+    }
 }

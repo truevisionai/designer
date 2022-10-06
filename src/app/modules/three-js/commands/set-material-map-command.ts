@@ -7,34 +7,34 @@ import { Material, Texture } from 'three';
 
 export class SetMaterialMapCommand extends BaseCommand {
 
-	private oldMap: Texture | null;
+    private oldMap: Texture | null;
 
-	constructor ( private material: Material, private mapName, private newMap: Texture, private materialSlot ) {
+    constructor ( private material: Material, private mapName, private newMap: Texture, private materialSlot ) {
 
-		super();
+        super();
 
-		this.oldMap = this.material[ mapName ];
-	}
+        this.oldMap = this.material[ mapName ];
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.material[ this.mapName ] = this.newMap;
-		this.material[ 'needsUpdate' ] = true;
+        this.material[ this.mapName ] = this.newMap;
+        this.material[ 'needsUpdate' ] = true;
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.material[ this.mapName ] = this.oldMap;
-		this.material[ 'needsUpdate' ] = true;
+        this.material[ this.mapName ] = this.oldMap;
+        this.material[ 'needsUpdate' ] = true;
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 
 
 }

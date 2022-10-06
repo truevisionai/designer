@@ -6,31 +6,31 @@ import { BaseCommand } from 'app/core/commands/base-command';
 
 export class SetValueCommand extends BaseCommand {
 
-	private oldValue: any;
+    private oldValue: any;
 
-	constructor ( private object: Object, private attributeName, private newValue: any ) {
+    constructor ( private object: Object, private attributeName, private newValue: any ) {
 
-		super();
+        super();
 
-		// store the old value
-		this.oldValue = ( object !== undefined ) ? object[ attributeName ] : undefined;
-	}
+        // store the old value
+        this.oldValue = ( object !== undefined ) ? object[ attributeName ] : undefined;
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.object[ this.attributeName ] = this.newValue;
+        this.object[ this.attributeName ] = this.newValue;
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.object[ this.attributeName ] = this.oldValue;
+        this.object[ this.attributeName ] = this.oldValue;
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 }

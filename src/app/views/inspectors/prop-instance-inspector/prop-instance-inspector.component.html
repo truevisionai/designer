@@ -4,17 +4,17 @@
 
 <div class="inspector-form-container">
 
-	<mat-card class="example-card">
-		<mat-card-header>
-			<div (click)="onPropModelClicked()" class="example-header-image" mat-card-avatar>
-				<img class="file-card-image" src="{{ previewImage }}">
-			</div>
-		</mat-card-header>
-	</mat-card>
+    <mat-card class="example-card">
+        <mat-card-header>
+            <div (click)="onPropModelClicked()" class="example-header-image" mat-card-avatar>
+                <img class="file-card-image" src="{{ previewImage }}">
+            </div>
+        </mat-card-header>
+    </mat-card>
 
-	<app-string-field [value]="data.object.id" disabled="true" label="ID"></app-string-field>
+    <app-string-field [value]="data.object.id" disabled="true" label="ID"></app-string-field>
 
-	<app-string-field [value]="data.object.name" disabled="true" label="Name"></app-string-field>
+    <app-string-field [value]="data.object.name" disabled="true" label="Name"></app-string-field>
 
 </div>
 

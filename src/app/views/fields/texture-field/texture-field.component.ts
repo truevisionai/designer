@@ -7,93 +7,93 @@ import { AssetDatabase } from 'app/services/asset-database';
 import { Texture } from 'three';
 
 @Component( {
-	selector: 'app-texture-field',
-	templateUrl: './texture-field.component.html',
-	styleUrls: [ './texture-field.component.css' ]
+    selector: 'app-texture-field',
+    templateUrl: './texture-field.component.html',
+    styleUrls: [ './texture-field.component.css' ]
 } )
 export class TextureFieldComponent implements OnInit {
 
-	@Output() changed = new EventEmitter<string>();
+    @Output() changed = new EventEmitter<string>();
 
-	@Input() guid: string;
+    @Input() guid: string;
 
-	@Input() label: string = 'Map';
+    @Input() label: string = 'Map';
 
-	public texture: Texture;
+    public texture: Texture;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	get thumbnail () {
-		return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
-	}
+    get thumbnail () {
+        return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
+    }
 
-	get filename () {
-		return AssetDatabase.getAssetNameByGuid( this.guid );
-	}
+    get filename () {
+        return AssetDatabase.getAssetNameByGuid( this.guid );
+    }
 
-	get metadata () {
-		return AssetDatabase.getMetadata( this.guid );
-	}
+    get metadata () {
+        return AssetDatabase.getMetadata( this.guid );
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		if ( this.guid ) this.texture = AssetDatabase.getInstance( this.guid );
+        if ( this.guid ) this.texture = AssetDatabase.getInstance( this.guid );
 
-	}
+    }
 
-	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ) {
+    @HostListener( 'click', [ '$event' ] )
+    onClick ( $event ) {
 
-		$event.preventDefault();
-		$event.stopPropagation();
+        $event.preventDefault();
+        $event.stopPropagation();
 
-	}
+    }
 
-	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ) {
+    @HostListener( 'dblclick', [ '$event' ] )
+    onDoubleClick ( $event ) {
 
-		$event.preventDefault();
-		$event.stopPropagation();
+        $event.preventDefault();
+        $event.stopPropagation();
 
-	}
+    }
 
-	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ) {
+    @HostListener( 'dragover', [ '$event' ] )
+    onDragOver ( $event ) {
 
-		$event.preventDefault();
-		$event.stopPropagation();
+        $event.preventDefault();
+        $event.stopPropagation();
 
-	}
+    }
 
-	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ) {
+    @HostListener( 'dragleave', [ '$event' ] )
+    onDragLeave ( $event ) {
 
-		$event.preventDefault();
-		$event.stopPropagation();
+        $event.preventDefault();
+        $event.stopPropagation();
 
-	}
+    }
 
 
-	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
+    @HostListener( 'drop', [ '$event' ] )
+    onDrop ( $event: DragEvent ) {
 
-		$event.preventDefault();
-		$event.stopPropagation();
+        $event.preventDefault();
+        $event.stopPropagation();
 
-		const guid = $event.dataTransfer.getData( 'guid' );
+        const guid = $event.dataTransfer.getData( 'guid' );
 
-		if ( guid ) {
+        if ( guid ) {
 
-			const metadata = AssetDatabase.getMetadata( guid );
+            const metadata = AssetDatabase.getMetadata( guid );
 
-			if ( metadata.importer === 'TextureImporter' ) {
+            if ( metadata.importer === 'TextureImporter' ) {
 
-				this.texture = AssetDatabase.getInstance( guid );
+                this.texture = AssetDatabase.getInstance( guid );
 
-				this.changed.emit( guid );
+                this.changed.emit( guid );
 
-			}
-		}
-	}
+            }
+        }
+    }
 }

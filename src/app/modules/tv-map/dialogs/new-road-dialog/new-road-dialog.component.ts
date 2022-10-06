@@ -11,86 +11,86 @@ import { RecentFileService } from 'app/services/recent-file.service';
 import { ElectronService } from 'ngx-electron';
 
 @Component( {
-	selector: 'app-new-road-dialog',
-	templateUrl: './new-road-dialog.component.html',
-	styleUrls: [ './new-road-dialog.component.css' ]
+    selector: 'app-new-road-dialog',
+    templateUrl: './new-road-dialog.component.html',
+    styleUrls: [ './new-road-dialog.component.css' ]
 } )
 export class NewRoadDialogComponent implements OnInit {
 
-	constructor (
-		private dialogRef: MatDialogRef<NewRoadDialogComponent>,
-		private electron: ElectronService,
-		private recentFileService: RecentFileService,
-		private mainFileService: MainFileService
-	) {
-	}
+    constructor (
+        private dialogRef: MatDialogRef<NewRoadDialogComponent>,
+        private electron: ElectronService,
+        private recentFileService: RecentFileService,
+        private mainFileService: MainFileService
+    ) {
+    }
 
-	get recentFiles () {
+    get recentFiles () {
 
-		return this.recentFileService.recentFiles;
+        return this.recentFileService.recentFiles;
 
-	}
+    }
 
-	get isElectronApp () {
+    get isElectronApp () {
 
-		return this.electron.isElectronApp;
+        return this.electron.isElectronApp;
 
-	}
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		// console.log( this.recentFileService.recentFiles );
+        // console.log( this.recentFileService.recentFiles );
 
-	}
+    }
 
-	createNew () {
+    createNew () {
 
-		this.mainFileService.newFile();
+        this.mainFileService.newFile();
 
-		// this.oscService.newFile();
+        // this.oscService.newFile();
 
-		this.dialogRef.close();
+        this.dialogRef.close();
 
-	}
+    }
 
-	openFromComputer () {
+    openFromComputer () {
 
-		this.mainFileService.showOpenWindow();
+        this.mainFileService.showOpenWindow();
 
-		this.dialogRef.close();
+        this.dialogRef.close();
 
-	}
+    }
 
-	openFile ( file: IFile ) {
+    openFile ( file: IFile ) {
 
-		this.mainFileService.openFromPath( file.path, () => {
+        this.mainFileService.openFromPath( file.path, () => {
 
-			this.dialogRef.close();
+            this.dialogRef.close();
 
-		} );
+        } );
 
-	}
+    }
 
-	public fileChange ( event ) {
+    public fileChange ( event ) {
 
-		const self = this;
+        const self = this;
 
-		const reader = new FileReader();
+        const reader = new FileReader();
 
-		if ( event.target.files && event.target.files.length > 0 ) {
+        if ( event.target.files && event.target.files.length > 0 ) {
 
-			const file = event.target.files[ 0 ];
+            const file = event.target.files[ 0 ];
 
-			reader.readAsText( file );
+            reader.readAsText( file );
 
-			reader.onload = ( data ) => {
+            reader.onload = ( data ) => {
 
-				self.mainFileService.importViaContent( reader.result as string );
+                self.mainFileService.importViaContent( reader.result as string );
 
-				self.dialogRef.close();
+                self.dialogRef.close();
 
-			};
-		}
+            };
+        }
 
-	}
+    }
 }

@@ -4,33 +4,27 @@
 
 <div *ngIf="road" class="inspector-form-container">
 
-	<app-double-field [value]="road.length" disabled label="Length (Meters)"></app-double-field>
+    <app-double-field [value]="road.length" disabled label="Length (Meters)"></app-double-field>
 
-	<app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit (Miles/Hour)" max="200"
-					  min="0"></app-double-field>
+    <app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit (Miles/Hour)" max="200" min="0"></app-double-field>
 
-	<app-enum-field (changed)="onRoadTypeChanged($event)" [enum]="roadTypesEnum" [value]="type"
-					label="Road Type"></app-enum-field>
+    <app-enum-field (changed)="onRoadTypeChanged($event)" [enum]="roadTypesEnum" [value]="type" label="Road Type"></app-enum-field>
 
-	<app-material-field (changed)="onDrivingMaterialChanged($event)" [guid]="road.drivingMaterialGuid"
-						label="Driving Material"></app-material-field>
+    <app-material-field (changed)="onDrivingMaterialChanged($event)" [guid]="road.drivingMaterialGuid" label="Driving Material"></app-material-field>
 
-	<app-material-field (changed)="onSidewalkMaterialChanged($event)" [guid]="road.sidewalkMaterialGuid"
-						label="Sidewalk Material"></app-material-field>
+    <app-material-field (changed)="onSidewalkMaterialChanged($event)" [guid]="road.sidewalkMaterialGuid" label="Sidewalk Material"></app-material-field>
 
-	<app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.borderMaterialGuid"
-						label="Border Material"></app-material-field>
+    <app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.borderMaterialGuid" label="Border Material"></app-material-field>
 
-	<app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid"
-						label="Shoulder Material"></app-material-field>
+    <app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
 
-	<div *ngIf="controlPoint">
-		<span>Road Control Point</span><br/>
-		<mat-form-field style="width: 50%;">
-			<input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
-		</mat-form-field>
-		<mat-form-field style="width: 50%;">
-			<input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
-		</mat-form-field>
-	</div>
+    <div *ngIf="controlPoint">
+        <span>Road Control Point</span><br />
+        <mat-form-field style="width: 50%;">
+            <input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
+        </mat-form-field>
+        <mat-form-field style="width: 50%;">
+            <input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
+        </mat-form-field>
+    </div>
 </div>

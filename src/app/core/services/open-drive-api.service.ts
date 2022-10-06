@@ -8,18 +8,18 @@ import { IFile } from '../models/file';
 import { FileApiService } from './file-api.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class OpenDriveApiService {
 
-	constructor ( private files: FileApiService ) {
-	}
+    constructor ( private files: FileApiService ) {
+    }
 
-	getOpenDrive ( name: string ): Observable<IFile> {
-		return this.files.getFile( name, 'tv-map' );
-	}
+    getOpenDrive ( name: string ): Observable<IFile> {
+        return this.files.getFile( name, 'tv-map' );
+    }
 
-	getAll (): Observable<IFile[]> {
-		return this.files.getFileList( 'tv-map' );
-	}
+    getAll (): Observable<IFile[]> {
+        return this.files.getFileList( 'tv-map' );
+    }
 }

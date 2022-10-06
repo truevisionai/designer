@@ -6,9 +6,9 @@ import { LineEditor } from './line-editor';
 
 export class ShapeEditorFactory {
 
-	static createLineEditor (): LineEditor {
-		return new LineEditor();
-	}
+    static createLineEditor (): LineEditor {
+        return new LineEditor();
+    }
 
 
 }

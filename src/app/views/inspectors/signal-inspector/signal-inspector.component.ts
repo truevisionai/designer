@@ -10,42 +10,42 @@ import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-fi
 import { CommandHistory } from '../../../services/command-history';
 
 @Component( {
-	selector: 'app-signal-inspector',
-	templateUrl: './signal-inspector.component.html',
+    selector: 'app-signal-inspector',
+    templateUrl: './signal-inspector.component.html',
 } )
 export class OdSignalInspectorComponent implements OnInit, IComponent {
 
-	data: TvRoadSignal;
+    data: TvRoadSignal;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	// TODO: Get this properly
-	get signMaterial () {
-		return this.data.gameObject.children[ 0 ].children[ 0 ][ 'material' ];
-	}
+    // TODO: Get this properly
+    get signMaterial () {
+        return this.data.gameObject.children[ 0 ].children[ 0 ][ 'material' ];
+    }
 
-	get model () {
-		return this.data.assetName.attr_value;
-	}
+    get model () {
+        return this.data.assetName.attr_value;
+    }
 
-	ngOnInit () {
-	}
+    ngOnInit () {
+    }
 
-	updatePosition ( $event: number ) {
+    updatePosition ( $event: number ) {
 
-		const road = TvMapInstance.map.getRoadById( this.data.roadId );
+        const road = TvMapInstance.map.getRoadById( this.data.roadId );
 
-		const pose = road.getPositionAt( this.data.s, this.data.t );
+        const pose = road.getPositionAt( this.data.s, this.data.t );
 
-		this.data.gameObject.position.set( pose.x, pose.y, 0 );
+        this.data.gameObject.position.set( pose.x, pose.y, 0 );
 
-	}
+    }
 
-	onDelete () {
+    onDelete () {
 
-		CommandHistory.execute( new RemoveSignalCommand( this.data ) );
+        CommandHistory.execute( new RemoveSignalCommand( this.data ) );
 
-	}
+    }
 
 }

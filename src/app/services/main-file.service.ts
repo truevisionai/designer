@@ -18,127 +18,127 @@ import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class MainFileService {
 
-	constructor (
-		public sceneExporter: SceneExporterService,
-		public sceneImporter: SceneImporterService,
-		public fileService: FileService,
-		public threeService: ThreeService
-	) {
-	}
+    constructor (
+        public sceneExporter: SceneExporterService,
+        public sceneImporter: SceneImporterService,
+        public fileService: FileService,
+        public threeService: ThreeService
+    ) {
+    }
 
-	get currentFile () {
-		return TvMapInstance.currentFile;
-	}
+    get currentFile () {
+        return TvMapInstance.currentFile;
+    }
 
-	set currentFile ( value ) {
-		TvMapInstance.currentFile = value;
-	}
+    set currentFile ( value ) {
+        TvMapInstance.currentFile = value;
+    }
 
-	get map () {
-		return TvMapInstance.map;
-	}
+    get map () {
+        return TvMapInstance.map;
+    }
 
-	set map ( value ) {
-		TvMapInstance.map = value;
-	}
+    set map ( value ) {
+        TvMapInstance.map = value;
+    }
 
 
-	importViaContent ( content: string ) {
+    importViaContent ( content: string ) {
 
-		this.sceneImporter.importFromString( content );
+        this.sceneImporter.importFromString( content );
 
-	}
+    }
 
-	newFile () {
+    newFile () {
 
-		ToolManager.clear();
+        ToolManager.clear();
 
-		AppInspector.clear();
+        AppInspector.clear();
 
-		CommandHistory.clear();
+        CommandHistory.clear();
 
-		if ( this.map ) this.map.destroy();
+        if ( this.map ) this.map.destroy();
 
-		this.currentFile = new IFile( 'untitled.xml' );
+        this.currentFile = new IFile( 'untitled.xml' );
 
-		this.map = new TvMap();
+        this.map = new TvMap();
 
-		TvMapBuilder.buildMap( this.map );
-	}
+        TvMapBuilder.buildMap( this.map );
+    }
 
-	showOpenWindow ( path?: string ) {
+    showOpenWindow ( path?: string ) {
 
-		if ( AppService.isElectronApp ) {
+        if ( AppService.isElectronApp ) {
 
-			this.fileService.import( path, 'tv-map', [ 'xml', 'xosc' ], ( file: IFile ) => {
+            this.fileService.import( path, 'tv-map', [ 'xml', 'xosc' ], ( file: IFile ) => {
 
-				this.sceneImporter.importFromFile( file );
+                this.sceneImporter.importFromFile( file );
 
-			} );
+            } );
 
-		} else {
+        } else {
 
-			throw new Error( 'not implemented' );
+            throw new Error( 'not implemented' );
 
-		}
+        }
 
-	}
+    }
 
-	openFromPath ( path: string, callback?: Function ) {
+    openFromPath ( path: string, callback?: Function ) {
 
-		if ( AppService.isElectronApp ) {
+        if ( AppService.isElectronApp ) {
 
-			this.fileService.readFile( path, 'xml', ( file: IFile ) => {
+            this.fileService.readFile( path, 'xml', ( file: IFile ) => {
 
-				this.sceneImporter.importFromString( file.contents );
+                this.sceneImporter.importFromString( file.contents );
 
-				if ( callback ) callback();
+                if ( callback ) callback();
 
-			} );
+            } );
 
-		}
+        }
 
-	}
+    }
 
-	save () {
+    save () {
 
-		if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
+        if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
 
-		this.currentFile.contents = this.sceneExporter.export( this.map );
+        this.currentFile.contents = this.sceneExporter.export( this.map );
 
-		this.saveLocally( this.currentFile );
+        this.saveLocally( this.currentFile );
 
-	}
+    }
 
-	saveAs () {
+    saveAs () {
 
-		this.sceneExporter.saveAs();
+        this.sceneExporter.saveAs();
 
-	}
+    }
 
-	saveLocally ( file: IFile ) {
+    saveLocally ( file: IFile ) {
 
-		// path exists means it was imported locally
-		if ( this.currentFile.path != null ) {
+        // path exists means it was imported locally
+        if ( this.currentFile.path != null ) {
 
-			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
+            this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
+                this.currentFile.path = file.path;
+                this.currentFile.name = file.name;
 
-				SnackBar.success( 'File Saved!' );
+                SnackBar.success( 'File Saved!' );
 
-			} );
+            } );
 
-		} else {
+        } else {
 
-			this.saveAs();
+            this.saveAs();
 
-		}
-	}
+        }
+    }
 
 }

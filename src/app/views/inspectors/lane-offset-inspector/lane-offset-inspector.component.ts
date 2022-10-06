@@ -13,100 +13,100 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 
 export class LaneOffsetInspectorData {
-	constructor ( public node: LaneOffsetNode, public road: TvRoad ) {
-	}
+    constructor ( public node: LaneOffsetNode, public road: TvRoad ) {
+    }
 }
 
 @Component( {
-	selector: 'app-lane-offset-inspector',
-	templateUrl: './lane-offset-inspector.component.html'
+    selector: 'app-lane-offset-inspector',
+    templateUrl: './lane-offset-inspector.component.html'
 } )
 export class LaneOffsetInspector extends BaseInspector implements OnInit, IComponent, OnDestroy {
 
-	public static valueChanged = new EventEmitter<LaneOffsetInspectorData>();
+    public static valueChanged = new EventEmitter<LaneOffsetInspectorData>();
 
-	public static offsetChanged = new EventEmitter<number>();
-	public static distanceChanged = new EventEmitter<number>();
+    public static offsetChanged = new EventEmitter<number>();
+    public static distanceChanged = new EventEmitter<number>();
 
-	public data: LaneOffsetInspectorData;
+    public data: LaneOffsetInspectorData;
 
-	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+    public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	get laneOffset () {
-		return this.data.node.laneOffset;
-	}
+    get laneOffset () {
+        return this.data.node.laneOffset;
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		if ( this.data.node ) {
+        if ( this.data.node ) {
 
-			this.data.node.point.select();
+            this.data.node.point.select();
 
-		}
+        }
 
-		if ( this.data.road ) this.showNodes( this.data.road );
-	}
+        if ( this.data.road ) this.showNodes( this.data.road );
+    }
 
-	ngOnDestroy () {
+    ngOnDestroy () {
 
-		if ( this.data.node ) {
+        if ( this.data.node ) {
 
-			this.data.node.point.unselect();
+            this.data.node.point.unselect();
 
-		}
+        }
 
-		if ( this.data.road ) this.hideNodes( this.data.road );
-	}
+        if ( this.data.road ) this.hideNodes( this.data.road );
+    }
 
-	onDistanceChanged ( $value: number ) {
+    onDistanceChanged ( $value: number ) {
 
-		LaneOffsetInspector.distanceChanged.emit( $value );
+        LaneOffsetInspector.distanceChanged.emit( $value );
 
-	}
+    }
 
-	onOffsetChanged ( $value ) {
+    onOffsetChanged ( $value ) {
 
-		LaneOffsetInspector.offsetChanged.emit( $value );
+        LaneOffsetInspector.offsetChanged.emit( $value );
 
-	}
+    }
 
-	private hideNodes ( road: TvRoad ): void {
+    private hideNodes ( road: TvRoad ): void {
 
-		road.getLaneOffsets().forEach( laneOffset => {
+        road.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.mesh ) {
+            if ( laneOffset.mesh ) {
 
-				laneOffset.mesh.visible = false;
+                laneOffset.mesh.visible = false;
 
-			}
+            }
 
-		} );
+        } );
 
-	}
+    }
 
-	private showNodes ( road: TvRoad ) {
+    private showNodes ( road: TvRoad ) {
 
-		road.getLaneOffsets().forEach( laneOffset => {
+        road.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.mesh ) {
+            if ( laneOffset.mesh ) {
 
-				laneOffset.mesh.visible = true;
+                laneOffset.mesh.visible = true;
 
-			} else {
+            } else {
 
-				laneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
+                laneOffset.mesh = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
 
-				SceneService.add( laneOffset.mesh );
+                SceneService.add( laneOffset.mesh );
 
-			}
+            }
 
-		} );
+        } );
 
-	}
+    }
 }

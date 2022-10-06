@@ -9,82 +9,82 @@ import { IComponent } from '../../../core/game-object';
 import { SceneService } from '../../../core/services/scene.service';
 
 @Component( {
-	selector: 'app-shape-inspector',
-	templateUrl: './shape-inspector.component.html',
-	styleUrls: [ './shape-inspector.component.css' ]
+    selector: 'app-shape-inspector',
+    templateUrl: './shape-inspector.component.html',
+    styleUrls: [ './shape-inspector.component.css' ]
 } )
 export class ShapeInspectorComponent implements OnInit, IComponent {
 
-	data: Shape;
+    data: Shape;
 
-	mesh: Mesh;
+    mesh: Mesh;
 
-	_spline: any;
+    _spline: any;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	get shape () {
-		return this.data;
-	}
+    get shape () {
+        return this.data;
+    }
 
-	get randomSpline () {
-		if ( this._spline ) return this._spline;
-		var randomPoints = [];
-		for ( var i = 0; i < 10; i++ ) {
-			randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.MathUtils.randFloat( -50, 50 ), THREE.MathUtils.randFloat( -50, 50 ) ) );
-		}
-		var randomSpline = this._spline = new THREE.CatmullRomCurve3( randomPoints );
-		return randomSpline;
-	}
+    get randomSpline () {
+        if ( this._spline ) return this._spline;
+        var randomPoints = [];
+        for ( var i = 0; i < 10; i++ ) {
+            randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.MathUtils.randFloat( -50, 50 ), THREE.MathUtils.randFloat( -50, 50 ) ) );
+        }
+        var randomSpline = this._spline = new THREE.CatmullRomCurve3( randomPoints );
+        return randomSpline;
+    }
 
-	get geometry () {
+    get geometry () {
 
-		var curePath = new CurvePath<Vector3>();
+        var curePath = new CurvePath<Vector3>();
 
-		curePath.add( this.randomSpline );
+        curePath.add( this.randomSpline );
 
-		var extrudeSettings = {
-			steps: 200,
-			bevelEnabled: false,
-			extrudePath: curePath
-		};
+        var extrudeSettings = {
+            steps: 200,
+            bevelEnabled: false,
+            extrudePath: curePath
+        };
 
-		var geometry = new THREE.ExtrudeGeometry( this.shape, extrudeSettings );
+        var geometry = new THREE.ExtrudeGeometry( this.shape, extrudeSettings );
 
-		return geometry;
-	}
+        return geometry;
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		var length = 12, width = 8;
+        var length = 12, width = 8;
 
-		var shape = new THREE.Shape();
-		shape.moveTo( 0, 0 );
-		shape.lineTo( 0, width );
-		shape.lineTo( length, width );
-		shape.lineTo( length, 0 );
-		shape.lineTo( 0, 0 );
+        var shape = new THREE.Shape();
+        shape.moveTo( 0, 0 );
+        shape.lineTo( 0, width );
+        shape.lineTo( length, width );
+        shape.lineTo( length, 0 );
+        shape.lineTo( 0, 0 );
 
-		this.data = shape;
+        this.data = shape;
 
-		var material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
 
-		this.mesh = new THREE.Mesh( this.geometry, material );
+        this.mesh = new THREE.Mesh( this.geometry, material );
 
-		SceneService.add( this.mesh );
-	}
+        SceneService.add( this.mesh );
+    }
 
-	updateGroupGeometry () {
+    updateGroupGeometry () {
 
-		this.mesh.geometry.dispose();
+        this.mesh.geometry.dispose();
 
-		this.mesh.geometry = this.geometry;
-	}
+        this.mesh.geometry = this.geometry;
+    }
 
-	onChange () {
+    onChange () {
 
-		this.updateGroupGeometry();
+        this.updateGroupGeometry();
 
-	}
+    }
 }

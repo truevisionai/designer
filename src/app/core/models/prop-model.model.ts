@@ -9,7 +9,7 @@ import { Vector3 } from 'three';
  */
 export class PropModel {
 
-	constructor ( public guid: string, public rotationVariance: Vector3, public scaleVariance: Vector3 ) {
+    constructor ( public guid: string, public rotationVariance: Vector3, public scaleVariance: Vector3 ) {
 
-	}
+    }
 }

@@ -18,75 +18,75 @@ import { CommandHistory } from '../../../services/command-history';
 import { COLOR } from '../../../shared/utils/colors.service';
 
 @Component( {
-	selector: 'app-lane-type-inspector',
-	templateUrl: './lane-inspector.component.html',
+    selector: 'app-lane-type-inspector',
+    templateUrl: './lane-inspector.component.html',
 } )
 export class LaneInspectorComponent extends BaseInspector implements IComponent, ICommandCallback {
 
-	data: TvLane;
+    data: TvLane;
 
-	get types () {
-		return TvLaneType;
-	}
+    get types () {
+        return TvLaneType;
+    }
 
-	get lane (): TvLane {
-		return this.data;
-	}
+    get lane (): TvLane {
+        return this.data;
+    }
 
-	onChange ( $event: MatSelectChange ) {
+    onChange ( $event: MatSelectChange ) {
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	onDelete () {
+    onDelete () {
 
-		const road = this.map.getRoadById( this.lane.roadId );
+        const road = this.map.getRoadById( this.lane.roadId );
 
-		const laneSection = road.getLaneSectionById( this.lane.laneSectionId );
+        const laneSection = road.getLaneSectionById( this.lane.laneSectionId );
 
-		CommandHistory.execute( new RemoveLaneCommand( laneSection, this.lane ) );
+        CommandHistory.execute( new RemoveLaneCommand( laneSection, this.lane ) );
 
-	}
+    }
 
-	onTypeChanged ( $event: MatSelectChange ) {
+    onTypeChanged ( $event: MatSelectChange ) {
 
-		const cmd = new SetLanePropertyCommand( this.lane, 'type', $event.value );
+        const cmd = new SetLanePropertyCommand( this.lane, 'type', $event.value );
 
-		cmd.callbacks = this;
+        cmd.callbacks = this;
 
-		CommandHistory.execute( cmd );
+        CommandHistory.execute( cmd );
 
-	}
+    }
 
-	onExecute (): void {
+    onExecute (): void {
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	onUndo (): void {
+    onUndo (): void {
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	onRedo (): void {
+    onRedo (): void {
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	rebuild () {
+    rebuild () {
 
-		const material = new MeshBasicMaterial( {
-			map: OdTextures.getLaneTexture( this.lane ),
-			color: COLOR.WHITE,
-			wireframe: false,
-			side: FrontSide
-		} );
+        const material = new MeshBasicMaterial( {
+            map: OdTextures.getLaneTexture( this.lane ),
+            color: COLOR.WHITE,
+            wireframe: false,
+            side: FrontSide
+        } );
 
-		this.lane.gameObject.material = null;
-		this.lane.gameObject.material = material;
-	}
+        this.lane.gameObject.material = null;
+        this.lane.gameObject.material = material;
+    }
 }

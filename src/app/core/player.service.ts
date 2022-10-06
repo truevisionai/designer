@@ -7,100 +7,100 @@ import { Time } from './time';
 import { ToolManager } from './tools/tool-manager';
 
 export interface PlayerUpdateData {
-	time: number;
-	delta: number;
+    time: number;
+    delta: number;
 }
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class PlayerService {
 
-	playerStarted = new EventEmitter<any>();
-	playerResumed = new EventEmitter<any>();
-	playerTick = new EventEmitter<PlayerUpdateData>();
-	playerPaused = new EventEmitter<any>();
-	playerStopped = new EventEmitter<any>();
+    playerStarted = new EventEmitter<any>();
+    playerResumed = new EventEmitter<any>();
+    playerTick = new EventEmitter<PlayerUpdateData>();
+    playerPaused = new EventEmitter<any>();
+    playerStopped = new EventEmitter<any>();
 
-	private prevTime: number;
-	private handle: number;
-	private paused: boolean;
+    private prevTime: number;
+    private handle: number;
+    private paused: boolean;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	play () {
+    play () {
 
-		ToolManager.disable();
+        ToolManager.disable();
 
-		this.prevTime = performance.now();
+        this.prevTime = performance.now();
 
-		if ( this.paused ) {
+        if ( this.paused ) {
 
-			this.playerResumed.emit();
+            this.playerResumed.emit();
 
-		} else {
+        } else {
 
-			this.playerStarted.emit();
+            this.playerStarted.emit();
 
-		}
+        }
 
-		this.paused = false;
+        this.paused = false;
 
-		const self = this;
+        const self = this;
 
-		( function tick () {
+        ( function tick () {
 
-			self.handle = requestAnimationFrame( tick );
+            self.handle = requestAnimationFrame( tick );
 
-			self.tick();
+            self.tick();
 
-		}() );
-	}
+        }() );
+    }
 
-	pause () {
+    pause () {
 
-		this.playerPaused.emit();
+        this.playerPaused.emit();
 
-		this.paused = true;
+        this.paused = true;
 
-		cancelAnimationFrame( this.handle );
-	}
+        cancelAnimationFrame( this.handle );
+    }
 
-	stop () {
+    stop () {
 
-		cancelAnimationFrame( this.handle );
+        cancelAnimationFrame( this.handle );
 
-		this.playerStopped.emit();
+        this.playerStopped.emit();
 
-		this.paused = false;
+        this.paused = false;
 
-		Time.reset();
+        Time.reset();
 
-		ToolManager.enable();
-	}
+        ToolManager.enable();
+    }
 
-	tick () {
+    tick () {
 
-		const time = performance.now();
+        const time = performance.now();
 
-		try {
+        try {
 
-			Time.deltaTime = Time.fixedDeltaTime / 1000;
-			Time.deltaTimeInMs = Time.fixedDeltaTime;
-			Time.time += Time.fixedDeltaTime;
-			Time.frameCount++;
-			Time.realTimeSinceStart = time;
+            Time.deltaTime = Time.fixedDeltaTime / 1000;
+            Time.deltaTimeInMs = Time.fixedDeltaTime;
+            Time.time += Time.fixedDeltaTime;
+            Time.frameCount++;
+            Time.realTimeSinceStart = time;
 
-			this.playerTick.emit( { time: time, delta: Time.fixedDeltaTime } );
+            this.playerTick.emit( { time: time, delta: Time.fixedDeltaTime } );
 
-		} catch ( e ) {
+        } catch ( e ) {
 
-			console.error( ( e.message || e ), ( e.stack || '' ) );
+            console.error( ( e.message || e ), ( e.stack || '' ) );
 
-		}
+        }
 
-		this.prevTime = time;
+        this.prevTime = time;
 
-	}
+    }
 }

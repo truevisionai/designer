@@ -4,15 +4,15 @@
 
 export interface IKeyboardShortcut {
 
-	check ( e: KeyboardEvent ): boolean;
+    check ( e: KeyboardEvent ): boolean;
 
-	execute (): void;
+    execute (): void;
 }
 
 export abstract class AbstractKeyboardShortcut implements IKeyboardShortcut {
 
-	abstract check ( e: KeyboardEvent ): boolean;
+    abstract check ( e: KeyboardEvent ): boolean;
 
-	abstract execute (): void;
+    abstract execute (): void;
 
 }

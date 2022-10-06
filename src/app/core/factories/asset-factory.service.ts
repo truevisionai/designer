@@ -16,153 +16,153 @@ import { AppService } from '../services/app.service';
 import { MetadataFactory } from './metadata-factory.service';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class AssetFactory {
 
-	private static get fileService (): FileService {
+    private static get fileService (): FileService {
 
-		return AppService.file;
+        return AppService.file;
 
-	}
+    }
 
-	static getMeta ( guid: string ) {
+    static getMeta ( guid: string ) {
 
-		return AssetDatabase.getMetadata( guid );
+        return AssetDatabase.getMetadata( guid );
 
-	}
+    }
 
-	static createNewScene ( path: string, name: string = 'New Scene' ) {
+    static createNewScene ( path: string, name: string = 'New Scene' ) {
 
-		try {
+        try {
 
-			const scene = new TvMap();
+            const scene = new TvMap();
 
-			const result = this.fileService.createFile( path, name, 'scene', AppService.exporter.export( scene ) );
+            const result = this.fileService.createFile( path, name, 'scene', AppService.exporter.export( scene ) );
 
-			const meta = MetadataFactory.createMetadata( result.fileName, 'scene', result.filePath );
+            const meta = MetadataFactory.createMetadata( result.fileName, 'scene', result.filePath );
 
-			AssetDatabase.setInstance( meta.guid, scene );
+            AssetDatabase.setInstance( meta.guid, scene );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
-	}
+        }
+    }
 
-	static createNewFolder ( path: string, name: string = 'New Folder' ) {
+    static createNewFolder ( path: string, name: string = 'New Folder' ) {
 
-		try {
+        try {
 
-			const result = this.fileService.createFolder( path, name );
+            const result = this.fileService.createFolder( path, name );
 
-			const meta = MetadataFactory.createFolderMetadata( result.name, result.path );
+            const meta = MetadataFactory.createFolderMetadata( result.name, result.path );
 
-			AssetDatabase.setInstance( meta.guid, meta );
+            AssetDatabase.setInstance( meta.guid, meta );
 
-			return result;
+            return result;
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	static createNewMaterial ( path: string, name: string = 'NewMaterial' ) {
+    static createNewMaterial ( path: string, name: string = 'NewMaterial' ) {
 
-		try {
+        try {
 
-			const material = TvMaterial.new();
+            const material = TvMaterial.new();
 
-			const result = this.fileService.createFile( path, material.name, 'material', material.toJSONString() );
+            const result = this.fileService.createFile( path, material.name, 'material', material.toJSONString() );
 
-			const meta = MetadataFactory.createMetadata( result.fileName, 'material', result.filePath );
+            const meta = MetadataFactory.createMetadata( result.fileName, 'material', result.filePath );
 
-			AssetDatabase.setInstance( meta.guid, material );
+            AssetDatabase.setInstance( meta.guid, material );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	static createNewRoadMarking ( path: string, name: string = 'NewRoadMarking' ) {
+    static createNewRoadMarking ( path: string, name: string = 'NewRoadMarking' ) {
 
-		try {
+        try {
 
-			const marking = new TvRoadMarking( name, MarkingTypes.point, null );
+            const marking = new TvRoadMarking( name, MarkingTypes.point, null );
 
-			const result = this.fileService.createFile( path, marking.name, TvRoadMarking.extension, marking.toJSONString() );
+            const result = this.fileService.createFile( path, marking.name, TvRoadMarking.extension, marking.toJSONString() );
 
-			const meta = MetadataFactory.createMetadata( result.fileName, TvRoadMarking.extension, result.filePath );
+            const meta = MetadataFactory.createMetadata( result.fileName, TvRoadMarking.extension, result.filePath );
 
-			AssetDatabase.setInstance( meta.guid, marking );
+            AssetDatabase.setInstance( meta.guid, marking );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	static updateRoadMarking ( path: string, marking: TvRoadMarking ) {
+    static updateRoadMarking ( path: string, marking: TvRoadMarking ) {
 
-		try {
+        try {
 
-			this.fileService.fs.writeFileSync( path, marking.toJSONString() );
+            this.fileService.fs.writeFileSync( path, marking.toJSONString() );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	static updateMaterial ( path: string, material: TvMaterial ) {
+    static updateMaterial ( path: string, material: TvMaterial ) {
 
-		this.fileService.fs.writeFileSync( path, material.toJSONString() );
+        this.fileService.fs.writeFileSync( path, material.toJSONString() );
 
-	}
+    }
 
-	static createNewSign ( name: string = 'NewSign', path: string ) {
+    static createNewSign ( name: string = 'NewSign', path: string ) {
 
-		try {
+        try {
 
-			const sign = new TvRoadSign( name, null );
+            const sign = new TvRoadSign( name, null );
 
-			const result = this.fileService.createFile( path, sign.name, 'sign', sign.toJSONString() );
+            const result = this.fileService.createFile( path, sign.name, 'sign', sign.toJSONString() );
 
-			const meta = MetadataFactory.createMetadata( result.fileName, 'sign', result.filePath );
+            const meta = MetadataFactory.createMetadata( result.fileName, 'sign', result.filePath );
 
-			AssetDatabase.setInstance( meta.guid, sign );
+            AssetDatabase.setInstance( meta.guid, sign );
 
-		} catch ( error ) {
+        } catch ( error ) {
 
-			SnackBar.error( error );
+            SnackBar.error( error );
 
-		}
+        }
 
-	}
+    }
 
-	static updatePropModelByGuid ( guid: string, prop: PropModel ): void {
+    static updatePropModelByGuid ( guid: string, prop: PropModel ): void {
 
-		const meta = this.getMeta( guid );
+        const meta = this.getMeta( guid );
 
-		this.fileService.fs.writeFileSync( meta.path, JSON.stringify( prop ) );
-	}
+        this.fileService.fs.writeFileSync( meta.path, JSON.stringify( prop ) );
+    }
 
-	static updateTexture ( guid: string, texture: Texture ): void {
+    static updateTexture ( guid: string, texture: Texture ): void {
 
-		const meta = this.getMeta( guid );
+        const meta = this.getMeta( guid );
 
-		MetadataFactory.createTextureMetadata( meta.guid, meta.path, texture );
-	}
+        MetadataFactory.createTextureMetadata( meta.guid, meta.path, texture );
+    }
 
 }

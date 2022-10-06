@@ -14,209 +14,209 @@ import { AutoSplinePath, ExplicitSplinePath } from '../shapes/cubic-spline-curve
 import { ExplicitSpline } from '../shapes/explicit-spline';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class LanePathFactory {
 
-	static create (
-		incomingRoad: TvRoad,
-		connectingRoad: TvRoad,
-		connection: TvJunctionConnection,
-		link: TvJunctionLaneLink
-	) {
+    static create (
+        incomingRoad: TvRoad,
+        connectingRoad: TvRoad,
+        connection: TvJunctionConnection,
+        link: TvJunctionLaneLink
+    ) {
 
-		const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
+        const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
 
-		const lane = connectingRoad.getLaneSectionAt( 0 ).getLaneById( link.to );
+        const lane = connectingRoad.getLaneSectionAt( 0 ).getLaneById( link.to );
 
-		const width = connectingRoad.getLaneSectionAt( 0 ).getWidthUptoCenter( lane, 0 );
+        const width = connectingRoad.getLaneSectionAt( 0 ).getWidthUptoCenter( lane, 0 );
 
-		const spline = connectingRoad.spline;
+        const spline = connectingRoad.spline;
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+        if ( spline.controlPointPositions.length < 2 ) return;
 
-		let offset = width;
+        let offset = width;
 
-		if ( lane.id < 0 ) offset *= -1;
+        if ( lane.id < 0 ) offset *= -1;
 
-		const path = this.getPath( spline, offset );
+        const path = this.getPath( spline, offset );
 
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
+        const lineMaterial = new LineBasicMaterial( {
+            color: 0x00ffff,
+            linewidth: 100,
+            opacity: 0.5,
+            transparent: true,
+        } );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+        const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
+        pathObject.mesh = new Line( lineGeometry, lineMaterial );
 
-		pathObject.mesh.castShadow = true;
+        pathObject.mesh.castShadow = true;
 
-		pathObject.mesh.renderOrder = 3;
+        pathObject.mesh.renderOrder = 3;
 
-		pathObject.mesh.frustumCulled = false;
+        pathObject.mesh.frustumCulled = false;
 
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
+        pathObject.mesh[ 'tag' ] = LanePathObject.tag;
 
-		pathObject.add( pathObject.mesh );
+        pathObject.add( pathObject.mesh );
 
-		return pathObject;
-	}
+        return pathObject;
+    }
 
-	static createPathForLane (
-		incomingRoad: TvRoad,
-		connectingRoad: TvRoad,
-		lane: TvLane,
-		connection: TvJunctionConnection,
-		link: TvJunctionLaneLink
-	) {
+    static createPathForLane (
+        incomingRoad: TvRoad,
+        connectingRoad: TvRoad,
+        lane: TvLane,
+        connection: TvJunctionConnection,
+        link: TvJunctionLaneLink
+    ) {
 
-		// console.trace( "create-path-lane", incomingRoad.id, connectingRoad.id, lane.id );
+        // console.trace( "create-path-lane", incomingRoad.id, connectingRoad.id, lane.id );
 
-		const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
+        const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
 
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+        const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
 
-		const spline = connectingRoad.spline;
+        const spline = connectingRoad.spline;
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+        if ( spline.controlPointPositions.length < 2 ) return;
 
-		let offset = width;
+        let offset = width;
 
-		if ( lane.id < 0 ) offset *= -1;
+        if ( lane.id < 0 ) offset *= -1;
 
-		const path = this.getPath( spline, offset );
+        const path = this.getPath( spline, offset );
 
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
+        const lineMaterial = new LineBasicMaterial( {
+            color: 0x00ffff,
+            linewidth: 100,
+            opacity: 0.5,
+            transparent: true,
+        } );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+        const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
+        pathObject.mesh = new Line( lineGeometry, lineMaterial );
 
-		pathObject.mesh.castShadow = true;
+        pathObject.mesh.castShadow = true;
 
-		pathObject.mesh.renderOrder = 3;
+        pathObject.mesh.renderOrder = 3;
 
-		pathObject.mesh.frustumCulled = false;
+        pathObject.mesh.frustumCulled = false;
 
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
+        pathObject.mesh[ 'tag' ] = LanePathObject.tag;
 
-		pathObject.add( pathObject.mesh );
+        pathObject.add( pathObject.mesh );
 
-		return pathObject;
-	}
+        return pathObject;
+    }
 
 	/**
 	 *
 	 * @param connectingRoad
 	 * @deprecated dont use this
 	 */
-	static createFromConnectingRoad ( connectingRoad: TvRoad ) {
+    static createFromConnectingRoad ( connectingRoad: TvRoad ) {
 
-		const pathObject = new LanePathObject( null, connectingRoad, null, null );
+        const pathObject = new LanePathObject( null, connectingRoad, null, null );
 
-		let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
+        let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
 
-		if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+        if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+        const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
 
-		const spline = connectingRoad.spline;
+        const spline = connectingRoad.spline;
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+        if ( spline.controlPointPositions.length < 2 ) return;
 
-		let offset = width;
+        let offset = width;
 
-		if ( lane.id < 0 ) offset *= -1;
+        if ( lane.id < 0 ) offset *= -1;
 
-		const path = this.getPath( spline, offset );
+        const path = this.getPath( spline, offset );
 
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
+        const lineMaterial = new LineBasicMaterial( {
+            color: 0x00ffff,
+            linewidth: 100,
+            opacity: 0.5,
+            transparent: true,
+        } );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+        const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
+        pathObject.mesh = new Line( lineGeometry, lineMaterial );
 
-		pathObject.mesh.castShadow = true;
+        pathObject.mesh.castShadow = true;
 
-		pathObject.mesh.renderOrder = 3;
+        pathObject.mesh.renderOrder = 3;
 
-		pathObject.mesh.frustumCulled = false;
+        pathObject.mesh.frustumCulled = false;
 
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
+        pathObject.mesh[ 'tag' ] = LanePathObject.tag;
 
-		pathObject.add( pathObject.mesh );
+        pathObject.add( pathObject.mesh );
 
-		return pathObject;
-	}
+        return pathObject;
+    }
 
-	static update ( pathObject: LanePathObject ) {
+    static update ( pathObject: LanePathObject ) {
 
-		if ( !pathObject ) return;
+        if ( !pathObject ) return;
 
-		const connectingRoad = pathObject.connectingRoad;
+        const connectingRoad = pathObject.connectingRoad;
 
-		let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
+        let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
 
-		if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+        if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+        const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
 
-		const spline = connectingRoad.spline;
+        const spline = connectingRoad.spline;
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+        if ( spline.controlPointPositions.length < 2 ) return;
 
-		let offset = width;
+        let offset = width;
 
-		if ( lane.id < 0 ) offset *= -1;
+        if ( lane.id < 0 ) offset *= -1;
 
-		const path = this.getPath( spline, offset );
+        const path = this.getPath( spline, offset );
 
-		pathObject.mesh.geometry.dispose();
+        pathObject.mesh.geometry.dispose();
 
-		pathObject.mesh.geometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+        pathObject.mesh.geometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		return pathObject;
-	}
+        return pathObject;
+    }
 
-	private static getPath ( spline: AbstractSpline, offset: number ) {
+    private static getPath ( spline: AbstractSpline, offset: number ) {
 
-		if ( spline instanceof AutoSpline ) {
+        if ( spline instanceof AutoSpline ) {
 
-			return new AutoSplinePath( spline, offset );
+            return new AutoSplinePath( spline, offset );
 
-		} else if ( spline instanceof ExplicitSpline ) {
+        } else if ( spline instanceof ExplicitSpline ) {
 
-			return new ExplicitSplinePath( spline, offset );
+            return new ExplicitSplinePath( spline, offset );
 
-		}
-	}
+        }
+    }
 }

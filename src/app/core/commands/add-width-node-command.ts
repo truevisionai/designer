@@ -12,63 +12,63 @@ import { BaseCommand } from './base-command';
 
 export class AddWidthNodeCommand extends BaseCommand {
 
-	constructor (
-		private node: LaneWidthNode,
-		private laneHelper: OdLaneReferenceLineBuilder
-	) {
+    constructor (
+        private node: LaneWidthNode,
+        private laneHelper: OdLaneReferenceLineBuilder
+    ) {
 
-		super();
+        super();
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.node.updateLaneWidthValues();
+        this.node.updateLaneWidthValues();
 
-		SceneService.add( this.node );
+        SceneService.add( this.node );
 
-		this.rebuild( this.node.road );
+        this.rebuild( this.node.road );
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		const index = this.node.lane.width.findIndex( laneWidth => laneWidth.uuid === this.node.laneWidth.uuid );
+        const index = this.node.lane.width.findIndex( laneWidth => laneWidth.uuid === this.node.laneWidth.uuid );
 
-		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
-		if ( index === -1 ) return;
+        if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+        if ( index === -1 ) return;
 
-		this.node.lane.width.splice( index, 1 );
+        this.node.lane.width.splice( index, 1 );
 
-		this.node.updateLaneWidthValues();
+        this.node.updateLaneWidthValues();
 
-		SceneService.remove( this.node );
+        SceneService.remove( this.node );
 
-		this.rebuild( this.node.road );
+        this.rebuild( this.node.road );
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.node.lane.addWidthRecordInstance( this.node.laneWidth );
+        this.node.lane.addWidthRecordInstance( this.node.laneWidth );
 
-		this.node.updateLaneWidthValues();
+        this.node.updateLaneWidthValues();
 
-		SceneService.add( this.node );
+        SceneService.add( this.node );
 
-		this.rebuild( this.node.road );
+        this.rebuild( this.node.road );
 
-	}
+    }
 
-	rebuild ( road: TvRoad ): void {
+    rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
+        SceneService.removeWithChildren( road.gameObject, true );
 
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		// not sure which is better
-		// this.laneHelper.redraw();
-		this.laneHelper.drawRoad( road, LineType.DASHED );
-	}
+        // not sure which is better
+        // this.laneHelper.redraw();
+        this.laneHelper.drawRoad( road, LineType.DASHED );
+    }
 
 }

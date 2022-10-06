@@ -8,29 +8,29 @@ import { IComponent } from 'app/core/game-object';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 
 @Component( {
-	selector: 'app-junction-entry-inspector',
-	templateUrl: './junction-entry-inspector.component.html',
-	styleUrls: [ './junction-entry-inspector.component.css' ]
+    selector: 'app-junction-entry-inspector',
+    templateUrl: './junction-entry-inspector.component.html',
+    styleUrls: [ './junction-entry-inspector.component.css' ]
 } )
 export class JunctionEntryInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	data: JunctionEntryObject;
+    data: JunctionEntryObject;
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		if ( this.data ) this.data.select();
+        if ( this.data ) this.data.select();
 
-	}
+    }
 
-	ngOnDestroy (): void {
+    ngOnDestroy (): void {
 
-		if ( this.data ) this.data.unselect();
+        if ( this.data ) this.data.unselect();
 
-	}
+    }
 }

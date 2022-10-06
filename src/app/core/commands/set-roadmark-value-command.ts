@@ -8,50 +8,50 @@ import { BaseCommand } from './base-command';
 
 export class SetRoadmarkValueCommand extends BaseCommand {
 
-	private readonly oldValue: any;
+    private readonly oldValue: any;
 
-	private roadMarkBuilder = new OdRoadMarkBuilder();
+    private roadMarkBuilder = new OdRoadMarkBuilder();
 
-	constructor (
-		private roadmark: TvLaneRoadMark,
-		private attribute: any,
-		private newValue: any,
-	) {
+    constructor (
+        private roadmark: TvLaneRoadMark,
+        private attribute: any,
+        private newValue: any,
+    ) {
 
-		super();
+        super();
 
-		this.oldValue = this.roadmark[ this.attribute ];
+        this.oldValue = this.roadmark[ this.attribute ];
 
-	}
+    }
 
-	execute (): void {
+    execute (): void {
 
-		this.roadmark[ this.attribute ] = this.newValue;
+        this.roadmark[ this.attribute ] = this.newValue;
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	undo (): void {
+    undo (): void {
 
-		this.roadmark[ this.attribute ] = this.oldValue;
+        this.roadmark[ this.attribute ] = this.oldValue;
 
-		this.rebuild();
+        this.rebuild();
 
-	}
+    }
 
-	redo (): void {
+    redo (): void {
 
-		this.execute();
+        this.execute();
 
-	}
+    }
 
-	private rebuild () {
+    private rebuild () {
 
-		this.map.roads.forEach( road => {
+        this.map.roads.forEach( road => {
 
-			this.roadMarkBuilder.buildRoad( road );
+            this.roadMarkBuilder.buildRoad( road );
 
-		} );
-	}
+        } );
+    }
 }

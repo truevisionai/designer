@@ -7,109 +7,109 @@ import { Maths } from 'app/utils/maths';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
 
 @Component( {
-	selector: 'app-double-field',
-	templateUrl: './double-field.component.html',
-	styleUrls: [ './double-field.component.css' ]
+    selector: 'app-double-field',
+    templateUrl: './double-field.component.html',
+    styleUrls: [ './double-field.component.css' ]
 } )
 export class DoubleFieldComponent extends AbstractFieldComponent implements OnInit {
 
-	@Input() value: any;
+    @Input() value: any;
 
-	@Input() label: string;
+    @Input() label: string;
 
-	@Input() min: any = -Infinity;
+    @Input() min: any = -Infinity;
 
-	@Input() max: any = Infinity;
+    @Input() max: any = Infinity;
 
-	@Input() step: number = 0.1;
+    @Input() step: number = 0.1;
 
-	inFocus = false;
+    inFocus = false;
 
-	sendTimeout: any;
+    sendTimeout: any;
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	ngOnInit () {
+    ngOnInit () {
 
-		this.min = parseFloat( this.min );
-		this.max = parseFloat( this.max );
-		this.value = parseFloat( this.value );
+        this.min = parseFloat( this.min );
+        this.max = parseFloat( this.max );
+        this.value = parseFloat( this.value );
 
-	}
+    }
 
-	onBlur () {
+    onBlur () {
 
-		this.inFocus = false;
+        this.inFocus = false;
 
-	}
+    }
 
-	onFocus () {
+    onFocus () {
 
-		this.inFocus = true;
+        this.inFocus = true;
 
-	}
+    }
 
-	onWheel ( $event: WheelEvent ) {
+    onWheel ( $event: WheelEvent ) {
 
-		if ( this.disabled ) return;
+        if ( this.disabled ) return;
 
-		if ( !this.inFocus ) return;
+        if ( !this.inFocus ) return;
 
-		// presvent default action to stop scrolling
-		$event.preventDefault();
-		$event.stopPropagation();
+        // presvent default action to stop scrolling
+        $event.preventDefault();
+        $event.stopPropagation();
 
-		// console.log( $event.deltaX, $event.deltaY );
+        // console.log( $event.deltaX, $event.deltaY );
 
-		if ( $event.deltaY < 0 && this.value < this.max ) {
-			this.value += this.step;
-		} else if ( $event.deltaY < 0 && this.value >= this.max ) this.value = this.max;
+        if ( $event.deltaY < 0 && this.value < this.max ) {
+            this.value += this.step;
+        } else if ( $event.deltaY < 0 && this.value >= this.max ) this.value = this.max;
 
-		if ( $event.deltaY > 0 && this.value > this.min ) {
-			this.value -= this.step;
-		} else if ( $event.deltaY > 0 && this.value <= this.min ) this.value = this.min;
+        if ( $event.deltaY > 0 && this.value > this.min ) {
+            this.value -= this.step;
+        } else if ( $event.deltaY > 0 && this.value <= this.min ) this.value = this.min;
 
-		this.value = +this.value.toFixed( 3 );
+        this.value = +this.value.toFixed( 3 );
 
-		if ( this.value == NaN ) this.value = 0;
+        if ( this.value == NaN ) this.value = 0;
 
-		this.value = Maths.clamp( this.value, this.min, this.max );
+        this.value = Maths.clamp( this.value, this.min, this.max );
 
-		// this helps avoid sending update event in every scroll
+        // this helps avoid sending update event in every scroll
 
-		if ( this.sendTimeout ) {
+        if ( this.sendTimeout ) {
 
-			clearTimeout( this.sendTimeout );
+            clearTimeout( this.sendTimeout );
 
-		}
+        }
 
-		this.sendTimeout = setTimeout( () => {
+        this.sendTimeout = setTimeout( () => {
 
-			this.valueChanged.emit( this.value );
+            this.valueChanged.emit( this.value );
 
-			this.changed.emit( this.value );
+            this.changed.emit( this.value );
 
-		}, 300 );
-	}
+        }, 300 );
+    }
 
-	onModelChanged ( $event: any ) {
+    onModelChanged ( $event: any ) {
 
-		if ( this.disabled ) return;
+        if ( this.disabled ) return;
 
-		this.value = parseFloat( $event );
+        this.value = parseFloat( $event );
 
-		if ( this.value == NaN ) this.value = 0;
+        if ( this.value == NaN ) this.value = 0;
 
-		this.value = Maths.clamp( this.value, this.min, this.max );
+        this.value = Maths.clamp( this.value, this.min, this.max );
 
-		this.valueChanged.emit( this.value );
+        this.valueChanged.emit( this.value );
 
-		this.changed.emit( this.value );
+        this.changed.emit( this.value );
 
-	}
+    }
 
 }

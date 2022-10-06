@@ -10,35 +10,35 @@ import { PropService } from 'app/services/prop-service';
 
 export class PropPolygonInspectorData {
 
-	constructor (
-		public controlPoint: AnyControlPoint,
-		public polygon: PropPolygon
-	) {
-	}
+    constructor (
+        public controlPoint: AnyControlPoint,
+        public polygon: PropPolygon
+    ) {
+    }
 }
 
 @Component( {
-	selector: 'app-prop-polygon-inspector',
-	templateUrl: './prop-polygon-inspector.component.html'
+    selector: 'app-prop-polygon-inspector',
+    templateUrl: './prop-polygon-inspector.component.html'
 } )
 export class PropPolygonInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-	data: PropPolygonInspectorData;
+    data: PropPolygonInspectorData;
 
-	constructor () {
-	}
+    constructor () {
+    }
 
-	ngOnInit (): void {
-	}
+    ngOnInit (): void {
+    }
 
-	ngOnDestroy (): void {
-	}
+    ngOnDestroy (): void {
+    }
 
-	onDensityChanged ( $event: any ) {
+    onDensityChanged ( $event: any ) {
 
-		this.data.polygon.density = parseFloat( $event );
+        this.data.polygon.density = parseFloat( $event );
 
-		PropService.updateCurvePolygonProps( this.data.polygon );
+        PropService.updateCurvePolygonProps( this.data.polygon );
 
-	}
+    }
 }

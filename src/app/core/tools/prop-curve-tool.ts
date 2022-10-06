@@ -8,8 +8,8 @@ import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropService } from 'app/services/prop-service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import {
-	PropCurveInspectorComponent,
-	PropCurveInspectorData
+    PropCurveInspectorComponent,
+    PropCurveInspectorData
 } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 import { Subscription } from 'rxjs';
 import { PointEditor } from '../editors/point-editor';
@@ -20,264 +20,264 @@ import { BaseTool } from './base-tool';
 
 export class PropCurveTool extends BaseTool {
 
-	public name: string = 'PropCurveTool';
+    public name: string = 'PropCurveTool';
 
-	public shapeEditor: PointEditor;
+    public shapeEditor: PointEditor;
 
-	private cpSubscriptions: Subscription[] = [];
+    private cpSubscriptions: Subscription[] = [];
 
-	private cpAddedSub: Subscription;
-	private cpMovedSub: Subscription;
-	private cpUpdatedSub: Subscription;
-	private cpSelectedSub: Subscription;
-	private cpUnselectedSub: Subscription;
+    private cpAddedSub: Subscription;
+    private cpMovedSub: Subscription;
+    private cpUpdatedSub: Subscription;
+    private cpSelectedSub: Subscription;
+    private cpUnselectedSub: Subscription;
 
-	// private splines: ParmetricSpline[] = [];
-	// private selectedSpline: ParmetricSpline;
+    // private splines: ParmetricSpline[] = [];
+    // private selectedSpline: ParmetricSpline;
 
-	private curve: PropCurve;
-	private point: AnyControlPoint;
+    private curve: PropCurve;
+    private point: AnyControlPoint;
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	private get curves () {
-		return this.map.propCurves;
-	}
+    private get curves () {
+        return this.map.propCurves;
+    }
 
-	private get spline () {
-		return this.curve ? this.curve.spline : null;
-	}
+    private get spline () {
+        return this.curve ? this.curve.spline : null;
+    }
 
-	private get prop (): PropModel {
+    private get prop (): PropModel {
 
-		const prop = PropService.getProp();
+        const prop = PropService.getProp();
 
-		if ( prop ) {
+        if ( prop ) {
 
-			return new PropModel( prop.guid, prop.data.rotationVariance, prop.data.scaleVariance );
+            return new PropModel( prop.guid, prop.data.rotationVariance, prop.data.scaleVariance );
 
-		}
+        }
 
-	}
+    }
 
-	public init () {
+    public init () {
 
-		super.init();
+        super.init();
 
-		this.shapeEditor = new PointEditor( 100 );
-	}
+        this.shapeEditor = new PointEditor( 100 );
+    }
 
-	public enable () {
+    public enable () {
 
-		super.enable();
+        super.enable();
 
-		this.curves.forEach( curve => {
+        this.curves.forEach( curve => {
 
-			curve.spline.show();
+            curve.spline.show();
 
-			curve.spline.controlPoints.forEach( point => {
+            curve.spline.controlPoints.forEach( point => {
 
-				this.shapeEditor.controlPoints.push( point );
+                this.shapeEditor.controlPoints.push( point );
 
-			} );
+            } );
 
-		} );
+        } );
 
-		this.cpAddedSub = this.shapeEditor.controlPointAdded
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointAdded( cp ) );
+        this.cpAddedSub = this.shapeEditor.controlPointAdded
+            .subscribe( ( cp: AnyControlPoint ) => this.onControlPointAdded( cp ) );
 
-		this.cpMovedSub = this.shapeEditor.controlPointMoved
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointMoved( cp ) );
+        this.cpMovedSub = this.shapeEditor.controlPointMoved
+            .subscribe( ( cp: AnyControlPoint ) => this.onControlPointMoved( cp ) );
 
-		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointUpdated( cp ) );
+        this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
+            .subscribe( ( cp: AnyControlPoint ) => this.onControlPointUpdated( cp ) );
 
-		this.cpSelectedSub = this.shapeEditor.controlPointSelected
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
+        this.cpSelectedSub = this.shapeEditor.controlPointSelected
+            .subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
 
-		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointUnselected() );
+        this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
+            .subscribe( ( cp: AnyControlPoint ) => this.onControlPointUnselected() );
 
-	}
+    }
 
-	public disable (): void {
+    public disable (): void {
 
-		super.disable();
+        super.disable();
 
-		this.curves.forEach( curve => curve.spline.hide() );
+        this.curves.forEach( curve => curve.spline.hide() );
 
-		this.cpAddedSub.unsubscribe();
-		this.cpMovedSub.unsubscribe();
-		this.cpUpdatedSub.unsubscribe();
-		this.cpSelectedSub.unsubscribe();
-		this.cpUnselectedSub.unsubscribe();
+        this.cpAddedSub.unsubscribe();
+        this.cpMovedSub.unsubscribe();
+        this.cpUpdatedSub.unsubscribe();
+        this.cpSelectedSub.unsubscribe();
+        this.cpUnselectedSub.unsubscribe();
 
-		this.shapeEditor.destroy();
+        this.shapeEditor.destroy();
 
-		this.unsubscribeFromControlPoints();
-	}
+        this.unsubscribeFromControlPoints();
+    }
 
-	public onPointerClicked ( e: PointerEventData ) {
+    public onPointerClicked ( e: PointerEventData ) {
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		// first check for any point intersections
-		for ( const i of e.intersections ) {
+        // first check for any point intersections
+        for ( const i of e.intersections ) {
 
-			if ( i.object != null && i.object.type === 'Points' ) {
+            if ( i.object != null && i.object.type === 'Points' ) {
 
-				hasInteracted = true;
+                hasInteracted = true;
 
-				this.point = ( i.object as AnyControlPoint );
+                this.point = ( i.object as AnyControlPoint );
 
-				this.curve = this.point.mainObject as PropCurve;
+                this.curve = this.point.mainObject as PropCurve;
 
-				this.showInspector( this.curve, this.point );
+                this.showInspector( this.curve, this.point );
 
-				break;
-			}
+                break;
+            }
 
-		}
+        }
 
-		// if not point intersections then check for curve intersections
-		for ( const i of e.intersections ) {
+        // if not point intersections then check for curve intersections
+        for ( const i of e.intersections ) {
 
-			if ( i.object != null && i.object[ 'tag' ] === 'curve' && !hasInteracted ) {
+            if ( i.object != null && i.object[ 'tag' ] === 'curve' && !hasInteracted ) {
 
-				hasInteracted = true;
+                hasInteracted = true;
 
-				this.curve = i.object.userData.parent;
+                this.curve = i.object.userData.parent;
 
-				this.point = null;
+                this.point = null;
 
-				this.showInspector( this.curve, this.point );
+                this.showInspector( this.curve, this.point );
 
-				break;
+                break;
 
-			}
-		}
+            }
+        }
 
-		if ( hasInteracted ) return;
+        if ( hasInteracted ) return;
 
-		// Finally, If no objects were intersected then clear the inspector
-		if ( !KeyboardInput.isShiftKeyDown ) {
+        // Finally, If no objects were intersected then clear the inspector
+        if ( !KeyboardInput.isShiftKeyDown ) {
 
-			// unselect the curve in second click
-			if ( !this.point ) {
+            // unselect the curve in second click
+            if ( !this.point ) {
 
-				this.curve = null;
+                this.curve = null;
 
-				this.showInspector( this.curve, this.point );
+                this.showInspector( this.curve, this.point );
 
-			} else {
+            } else {
 
-				// in first click, remove focus from control point and hide tangent
-				this.point = null;
+                // in first click, remove focus from control point and hide tangent
+                this.point = null;
 
-				this.showInspector( this.curve, this.point );
-			}
-		}
-	}
+                this.showInspector( this.curve, this.point );
+            }
+        }
+    }
 
-	private onControlPointSelected ( cp: AnyControlPoint ) {
+    private onControlPointSelected ( cp: AnyControlPoint ) {
 
-		this.point = cp;
+        this.point = cp;
 
-		if ( cp.mainObject ) {
+        if ( cp.mainObject ) {
 
-			this.curve = cp.mainObject;
+            this.curve = cp.mainObject;
 
-			this.showInspector( this.curve, this.point );
+            this.showInspector( this.curve, this.point );
 
-		}
-	}
+        }
+    }
 
-	private onControlPointUnselected () {
+    private onControlPointUnselected () {
 
-	}
+    }
 
-	private showInspector ( curve: PropCurve, point: AnyControlPoint ) {
+    private showInspector ( curve: PropCurve, point: AnyControlPoint ) {
 
-		if ( curve == null && point == null ) {
+        if ( curve == null && point == null ) {
 
-			AppInspector.clear();
+            AppInspector.clear();
 
-		} else {
+        } else {
 
-			const data = new PropCurveInspectorData( point, curve );
+            const data = new PropCurveInspectorData( point, curve );
 
-			AppInspector.setInspector( PropCurveInspectorComponent, data );
-		}
-	}
+            AppInspector.setInspector( PropCurveInspectorComponent, data );
+        }
+    }
 
-	private onControlPointAdded ( cp: AnyControlPoint ) {
+    private onControlPointAdded ( cp: AnyControlPoint ) {
 
-		if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
+        if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
 
-		if ( !this.prop ) this.shapeEditor.removeControlPoint( cp );
+        if ( !this.prop ) this.shapeEditor.removeControlPoint( cp );
 
-		if ( !this.prop ) return;
+        if ( !this.prop ) return;
 
-		if ( !this.curve ) {
+        if ( !this.curve ) {
 
-			if ( this.spline ) this.spline.hide();
+            if ( this.spline ) this.spline.hide();
 
-			this.curve = new PropCurve( this.prop.guid );
+            this.curve = new PropCurve( this.prop.guid );
 
-			this.curves.push( this.curve );
-		}
+            this.curves.push( this.curve );
+        }
 
-		cp.mainObject = this.curve;
+        cp.mainObject = this.curve;
 
-		this.curve.addControlPoint( cp );
+        this.curve.addControlPoint( cp );
 
-		this.showInspector( this.curve, this.point );
+        this.showInspector( this.curve, this.point );
 
-		this.updateCurveProps();
-	}
+        this.updateCurveProps();
+    }
 
-	private onControlPointUpdated ( cp: AnyControlPoint ) {
+    private onControlPointUpdated ( cp: AnyControlPoint ) {
 
-		if ( cp.mainObject ) {
+        if ( cp.mainObject ) {
 
-			this.curve = cp.mainObject;
+            this.curve = cp.mainObject;
 
-			this.curve.update();
+            this.curve.update();
 
-			this.updateCurveProps();
+            this.updateCurveProps();
 
-		}
-	}
+        }
+    }
 
-	private onControlPointMoved ( cp: AnyControlPoint ) {
+    private onControlPointMoved ( cp: AnyControlPoint ) {
 
-		if ( cp.mainObject ) {
+        if ( cp.mainObject ) {
 
-			this.curve = cp.mainObject;
+            this.curve = cp.mainObject;
 
-			this.curve.update();
+            this.curve.update();
 
-		}
+        }
 
-	}
+    }
 
-	private unsubscribeFromControlPoints () {
+    private unsubscribeFromControlPoints () {
 
-		this.cpSubscriptions.forEach( sub => {
+        this.cpSubscriptions.forEach( sub => {
 
-			sub.unsubscribe();
+            sub.unsubscribe();
 
-		} );
+        } );
 
-	}
+    }
 
-	private updateCurveProps () {
+    private updateCurveProps () {
 
-		PropService.updateCurveProps( this.curve );
+        PropService.updateCurveProps( this.curve );
 
-	}
+    }
 }

@@ -18,144 +18,144 @@ import { BaseTool } from './base-tool';
 
 export class LaneAddTool extends BaseTool {
 
-	public name: string = 'AddLane';
+    public name: string = 'AddLane';
 
-	private lane: TvLane;
+    private lane: TvLane;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+    private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	enable (): void {
+    enable (): void {
 
-		super.enable();
+        super.enable();
 
-	}
+    }
 
-	disable (): void {
+    disable (): void {
 
-		super.disable();
+        super.disable();
 
-		if ( this.laneHelper ) this.laneHelper.clear();
-	}
+        if ( this.laneHelper ) this.laneHelper.clear();
+    }
 
-	public onPointerDown ( e: PointerEventData ) {
+    public onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+        if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+        const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		if ( shiftKeyDown && !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
+        if ( shiftKeyDown && !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
 
-		if ( !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
+        if ( !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
 
-	}
+    }
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+    private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
 
-		const newLane = PickingHelper.checkLaneObjectInteraction( e );
+        const newLane = PickingHelper.checkLaneObjectInteraction( e );
 
-		if ( this.lane && newLane == null ) {
+        if ( this.lane && newLane == null ) {
 
-			// clear
+            // clear
 
-			this.laneHelper.clear();
+            this.laneHelper.clear();
 
-			this.lane = null;
+            this.lane = null;
 
-			AppInspector.clear();
+            AppInspector.clear();
 
-		} else if ( this.lane && newLane && this.lane.gameObject.id != newLane.gameObject.id ) {
+        } else if ( this.lane && newLane && this.lane.gameObject.id != newLane.gameObject.id ) {
 
-			// clear and select new
+            // clear and select new
 
-			this.laneHelper.clear();
+            this.laneHelper.clear();
 
-			this.lane = newLane;
+            this.lane = newLane;
 
-			const newRoad = this.map.getRoadById( newLane.roadId );
+            const newRoad = this.map.getRoadById( newLane.roadId );
 
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
+            this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
+            AppInspector.setInspector( LaneInspectorComponent, newLane );
 
-		} else if ( !this.lane && newLane ) {
+        } else if ( !this.lane && newLane ) {
 
-			// select new
+            // select new
 
-			this.lane = newLane;
+            this.lane = newLane;
 
-			const newRoad = this.map.getRoadById( newLane.roadId );
+            const newRoad = this.map.getRoadById( newLane.roadId );
 
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
+            this.laneHelper.drawRoad( newRoad, LineType.SOLID );
 
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
+            AppInspector.setInspector( LaneInspectorComponent, newLane );
 
-		} else if ( !this.lane && newLane == null ) {
+        } else if ( !this.lane && newLane == null ) {
 
-			// clear
+            // clear
 
-			AppInspector.clear();
+            AppInspector.clear();
 
-		}
+        }
 
-		return newLane != null;
-	}
+        return newLane != null;
+    }
 
-	private checkReferenceLineInteraction ( e: PointerEventData ) {
+    private checkReferenceLineInteraction ( e: PointerEventData ) {
 
-		let hasInteracted = false;
+        let hasInteracted = false;
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+        for ( let i = 0; i < e.intersections.length; i++ ) {
 
-			const intersection = e.intersections[ i ];
+            const intersection = e.intersections[ i ];
 
-			if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == this.laneHelper.tag ) {
+            if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == this.laneHelper.tag ) {
 
-				hasInteracted = true;
+                hasInteracted = true;
 
-				if ( intersection.object.userData.lane ) {
+                if ( intersection.object.userData.lane ) {
 
-					this.cloneLane( intersection.object.userData.lane as TvLane );
+                    this.cloneLane( intersection.object.userData.lane as TvLane );
 
-				}
+                }
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		return hasInteracted;
-	}
+        return hasInteracted;
+    }
 
-	private cloneLane ( lane: TvLane ): void {
+    private cloneLane ( lane: TvLane ): void {
 
-		const road = this.map.getRoadById( lane.roadId );
+        const road = this.map.getRoadById( lane.roadId );
 
-		const laneSection = road.getLaneSectionById( lane.laneSectionId );
+        const laneSection = road.getLaneSectionById( lane.laneSectionId );
 
-		const newLaneId = lane.side === TvLaneSide.LEFT ? lane.id + 1 : lane.id - 1;
+        const newLaneId = lane.side === TvLaneSide.LEFT ? lane.id + 1 : lane.id - 1;
 
-		const newLane = lane.clone( newLaneId );
+        const newLane = lane.clone( newLaneId );
 
-		laneSection.addLaneInstance( newLane, true );
+        laneSection.addLaneInstance( newLane, true );
 
-		this.rebuild( road );
-	}
+        this.rebuild( road );
+    }
 
-	private rebuild ( road: TvRoad ): void {
+    private rebuild ( road: TvRoad ): void {
 
-		if ( !road ) return;
+        if ( !road ) return;
 
-		SceneService.removeWithChildren( road.gameObject, true );
+        SceneService.removeWithChildren( road.gameObject, true );
 
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+        TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		this.laneHelper.redraw( LineType.SOLID );
-	}
+        this.laneHelper.redraw( LineType.SOLID );
+    }
 }

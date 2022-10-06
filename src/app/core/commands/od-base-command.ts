@@ -8,14 +8,14 @@ import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file'
 
 export abstract class OdBaseCommand extends BaseCommand {
 
-	abstract execute (): void;
+    abstract execute (): void;
 
-	abstract undo (): void;
+    abstract undo (): void;
 
-	abstract redo (): void;
+    abstract redo (): void;
 
-	protected getRoad ( roadId: number ): TvRoad {
-		return TvMapInstance.map.getRoadById( roadId );
-	}
+    protected getRoad ( roadId: number ): TvRoad {
+        return TvMapInstance.map.getRoadById( roadId );
+    }
 
 }

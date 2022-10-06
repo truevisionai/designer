@@ -20,58 +20,58 @@ import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class TvMapService {
 
-	constructor (
-		private fileService: FileService,
-		private writer: OdWriter,
-		private fileApiService: FileApiService,
-		private electron: ElectronService,
-		private openDriveParser: OpenDriverParser
-	) {
+    constructor (
+        private fileService: FileService,
+        private writer: OdWriter,
+        private fileApiService: FileApiService,
+        private electron: ElectronService,
+        private openDriveParser: OpenDriverParser
+    ) {
 
-		// not reqiured now because open scenario not being used
-		// OdSourceFile.roadNetworkChanged.subscribe( ( e ) => {
-		// OdBuilder.makeOpenDrive( this.openDrive );
-		// } );
+        // not reqiured now because open scenario not being used
+        // OdSourceFile.roadNetworkChanged.subscribe( ( e ) => {
+        // OdBuilder.makeOpenDrive( this.openDrive );
+        // } );
 
-	}
+    }
 
-	public get currentFile () {
-		return TvMapInstance.currentFile;
-	}
+    public get currentFile () {
+        return TvMapInstance.currentFile;
+    }
 
-	public set currentFile ( value ) {
-		TvMapInstance.currentFile = value;
-	}
+    public set currentFile ( value ) {
+        TvMapInstance.currentFile = value;
+    }
 
-	public get map () {
-		return TvMapInstance.map;
-	}
+    public get map () {
+        return TvMapInstance.map;
+    }
 
-	public set map ( value ) {
-		TvMapInstance.map = value;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	newFile () {
-
-		if ( this.map ) this.map.destroy();
-
-		this.currentFile = new IFile( 'untitled.xml' );
-
-		this.map = new TvMap();
-
-	}
+    public set map ( value ) {
+        TvMapInstance.map = value;
+    }
 
 	/**
 	 * @deprecated
 	 */
-	async open () {
+    newFile () {
+
+        if ( this.map ) this.map.destroy();
+
+        this.currentFile = new IFile( 'untitled.xml' );
+
+        this.map = new TvMap();
+
+    }
+
+	/**
+	 * @deprecated
+	 */
+    async open () {
 
         const res = await this.fileService.showAsyncDialog();
 
@@ -79,171 +79,171 @@ export class TvMapService {
 
         const filepaths = res.filePaths;
 
-		if ( filepaths == null || filepaths.length == 0 ) return;
+        if ( filepaths == null || filepaths.length == 0 ) return;
 
-		const contents = await this.fileService.readAsync( filepaths[ 0 ] );
+        const contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
-		if ( this.map ) this.map.destroy();
+        if ( this.map ) this.map.destroy();
 
-		this.map = this.openDriveParser.parse( contents );
+        this.map = this.openDriveParser.parse( contents );
 
-		ToolManager.clear();
+        ToolManager.clear();
 
-		AppInspector.clear();
+        AppInspector.clear();
 
-		CommandHistory.clear();
+        CommandHistory.clear();
 
-		// set to currently file pah
-		this.currentFile = new IFile( 'untitled.xml' );
+        // set to currently file pah
+        this.currentFile = new IFile( 'untitled.xml' );
 
-		TvMapBuilder.buildMap( this.map );
+        TvMapBuilder.buildMap( this.map );
 
-	}
+    }
 
-	public import ( file: IFile, callbackFn = null ) {
+    public import ( file: IFile, callbackFn = null ) {
 
-		ToolManager.clear();
+        ToolManager.clear();
 
-		AppInspector.clear();
+        AppInspector.clear();
 
-		CommandHistory.clear();
+        CommandHistory.clear();
 
-		if ( this.map != null ) this.map.destroy();
+        if ( this.map != null ) this.map.destroy();
 
-		this.currentFile = file;
+        this.currentFile = file;
 
-		let parser = new OpenDriverParser();
+        let parser = new OpenDriverParser();
 
-		this.map = parser.parse( file.contents );
+        this.map = parser.parse( file.contents );
 
-		TvMapBuilder.buildMap( this.map );
+        TvMapBuilder.buildMap( this.map );
 
-		if ( callbackFn != null ) callbackFn();
+        if ( callbackFn != null ) callbackFn();
 
-		// Important! removes garbage
-		parser = undefined;
+        // Important! removes garbage
+        parser = undefined;
 
-		SnackBar.success( 'File Imported' );
-	}
+        SnackBar.success( 'File Imported' );
+    }
 
-	public importFromPath ( filepath: string, callbackFn = null ) {
+    public importFromPath ( filepath: string, callbackFn = null ) {
 
-		this.fileService.readFile( filepath, 'xml', ( file: IFile ) => {
+        this.fileService.readFile( filepath, 'xml', ( file: IFile ) => {
 
-			this.import( file, callbackFn );
+            this.import( file, callbackFn );
 
-		} );
+        } );
 
-	}
+    }
 
-	public importContent ( contents: string ) {
+    public importContent ( contents: string ) {
 
-		const file = new IFile();
+        const file = new IFile();
 
-		file.name = 'Untitled.xml';
-		file.contents = contents;
+        file.name = 'Untitled.xml';
+        file.contents = contents;
 
-		this.import( file );
+        this.import( file );
 
-	}
+    }
 
 	/**
 	 * @deprecated
 	 */
-	save () {
+    save () {
 
-		if ( this.currentFile == null ) {
+        if ( this.currentFile == null ) {
 
-			throw new Error( 'Create file before saving' );
+            throw new Error( 'Create file before saving' );
 
-		}
+        }
 
-		this.currentFile.contents = this.writer.getOutput( this.map );
+        this.currentFile.contents = this.writer.getOutput( this.map );
 
-		if ( this.currentFile.online ) {
+        if ( this.currentFile.online ) {
 
-			this.saveOnline( this.currentFile );
+            this.saveOnline( this.currentFile );
 
-		} else {
+        } else {
 
-			this.saveLocally( this.currentFile );
+            this.saveLocally( this.currentFile );
 
-		}
+        }
 
-	}
+    }
 
-	getOutput () {
+    getOutput () {
 
-		return this.writer.getOutput( this.map );
+        return this.writer.getOutput( this.map );
 
-	}
+    }
 
 	/**
 	 *
 	 * @deprecated
 	 * @param file
 	 */
-	saveLocally ( file: IFile ) {
+    saveLocally ( file: IFile ) {
 
-		// path exists means it was imported locally
-		if ( this.currentFile.path != null ) {
+        // path exists means it was imported locally
+        if ( this.currentFile.path != null ) {
 
-			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
+            this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
+                this.currentFile.path = file.path;
+                this.currentFile.name = file.name;
 
-				SnackBar.success( 'File Saved!' );
+                SnackBar.success( 'File Saved!' );
 
-			} );
+            } );
 
-		} else {
+        } else {
 
-			this.saveAs();
+            this.saveAs();
 
-		}
-	}
+        }
+    }
 
-	saveLocallyAt ( path: string ) {
+    saveLocallyAt ( path: string ) {
 
-		const contents = this.getOutput();
+        const contents = this.getOutput();
 
-		this.fileService.saveFile( path, contents, ( file: IFile ) => {
+        this.fileService.saveFile( path, contents, ( file: IFile ) => {
 
-			this.currentFile.path = file.path;
-			this.currentFile.name = file.name;
+            this.currentFile.path = file.path;
+            this.currentFile.name = file.name;
 
-		} );
-	}
+        } );
+    }
 
-	saveOnline ( file: IFile ) {
+    saveOnline ( file: IFile ) {
 
-		this.fileApiService.save( file ).subscribe( res => {
+        this.fileApiService.save( file ).subscribe( res => {
 
-			SnackBar.success( 'File Saved (Online)!' );
+            SnackBar.success( 'File Saved (Online)!' );
 
-		} );
+        } );
 
-	}
+    }
 
-	saveAs () {
+    saveAs () {
 
-		const contents = this.writer.getOutput( this.map );
+        const contents = this.writer.getOutput( this.map );
 
-		if ( this.electron.isElectronApp && !this.electron.isMacOS ) {
+        if ( this.electron.isElectronApp && !this.electron.isMacOS ) {
 
-			this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
 
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
+                this.currentFile.path = file.path;
+                this.currentFile.name = file.name;
 
-			} );
+            } );
 
-		} else {
+        } else {
 
-			saveAs( new Blob( [ contents ] ), 'road.xodr' );
+            saveAs( new Blob( [ contents ] ), 'road.xodr' );
 
-		}
+        }
 
-	}
+    }
 }

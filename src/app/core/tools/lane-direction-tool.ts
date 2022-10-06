@@ -10,61 +10,61 @@ import { BaseTool } from './base-tool';
 
 export class LaneDirectionTool extends BaseTool {
 
-	name: string = 'LaneDirection';
+    name: string = 'LaneDirection';
 
-	private laneDirectionHelper: OdLaneDirectionBuilder;
+    private laneDirectionHelper: OdLaneDirectionBuilder;
 
-	constructor () {
+    constructor () {
 
-		super();
+        super();
 
-	}
+    }
 
-	init () {
+    init () {
 
-		super.init();
+        super.init();
 
-		this.laneDirectionHelper = new OdLaneDirectionBuilder( null );
-	}
+        this.laneDirectionHelper = new OdLaneDirectionBuilder( null );
+    }
 
 
-	disable (): void {
+    disable (): void {
 
-		super.disable();
+        super.disable();
 
-		this.laneDirectionHelper.clear();
-	}
+        this.laneDirectionHelper.clear();
+    }
 
-	onPointerDown ( e: PointerEventData ) {
+    onPointerDown ( e: PointerEventData ) {
 
-		super.onPointerDown( e );
+        super.onPointerDown( e );
 
-		let laneFound = false;
+        let laneFound = false;
 
-		this.checkLaneIntersection( e.intersections, ( object: Object3D ) => {
+        this.checkLaneIntersection( e.intersections, ( object: Object3D ) => {
 
-			laneFound = true;
+            laneFound = true;
 
-			this.selectLane( object as Mesh );
+            this.selectLane( object as Mesh );
 
-		} );
+        } );
 
-		if ( !laneFound ) {
+        if ( !laneFound ) {
 
-			this.laneDirectionHelper.clear();
-			this.clearInspector();
-		}
-	}
+            this.laneDirectionHelper.clear();
+            this.clearInspector();
+        }
+    }
 
-	private selectLane ( object: Mesh ) {
+    private selectLane ( object: Mesh ) {
 
-		let lane = ( object.userData.lane as TvLane );
+        let lane = ( object.userData.lane as TvLane );
 
-		this.laneDirectionHelper.setRoad( this.map.getRoadById( lane.roadId ) );
+        this.laneDirectionHelper.setRoad( this.map.getRoadById( lane.roadId ) );
 
-		this.laneDirectionHelper.create();
+        this.laneDirectionHelper.create();
 
-		// AppInspector.setInspector( LaneTypeInspectorComponent, data );
-	}
+        // AppInspector.setInspector( LaneTypeInspectorComponent, data );
+    }
 
 }

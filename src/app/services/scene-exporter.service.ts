@@ -28,374 +28,374 @@ import { SnackBar } from './snack-bar.service';
 
 export interface Scene {
 
-	road: { guid: string },
+    road: { guid: string },
 
-	props: { guid: string, position: Vector3, rotation: Euler, scale: Vector3 }[],
+    props: { guid: string, position: Vector3, rotation: Euler, scale: Vector3 }[],
 
-	propCurves: []
+    propCurves: []
 }
 
 @Injectable( {
-	providedIn: 'root'
+    providedIn: 'root'
 } )
 export class SceneExporterService {
 
-	private readonly extension = 'scene';
+    private readonly extension = 'scene';
 
-	private map: TvMap;
+    private map: TvMap;
 
-	constructor (
-		private openDriveWriter: OdWriter,
-		private fileService: FileService,
-		private electron: ElectronService
-	) {
-	}
+    constructor (
+        private openDriveWriter: OdWriter,
+        private fileService: FileService,
+        private electron: ElectronService
+    ) {
+    }
 
-	get currentFile (): IFile {
-		return TvMapInstance.currentFile;
-	}
+    get currentFile (): IFile {
+        return TvMapInstance.currentFile;
+    }
 
-	set currentFile ( value: IFile ) {
-		TvMapInstance.currentFile = value;
-	}
+    set currentFile ( value: IFile ) {
+        TvMapInstance.currentFile = value;
+    }
 
-	export ( map?: TvMap ): string {
+    export ( map?: TvMap ): string {
 
-		const defaultOptions = {
-			attributeNamePrefix: 'attr_',
-			attrNodeName: false,
-			ignoreAttributes: false,
-			supressEmptyNode: true,
-			format: true,
-			trimValues: true,
-		};
+        const defaultOptions = {
+            attributeNamePrefix: 'attr_',
+            attrNodeName: false,
+            ignoreAttributes: false,
+            supressEmptyNode: true,
+            format: true,
+            trimValues: true,
+        };
 
-		const builder = new XMLBuilder( defaultOptions );
+        const builder = new XMLBuilder( defaultOptions );
 
-		this.map = map || TvMapInstance.map;
+        this.map = map || TvMapInstance.map;
 
-		const scene = this.exportMap( this.map );
+        const scene = this.exportMap( this.map );
 
-		const xmlDocument = builder.build( scene );
+        const xmlDocument = builder.build( scene );
 
-		return xmlDocument;
-	}
+        return xmlDocument;
+    }
 
-	saveAs () {
+    saveAs () {
 
-		const contents = this.export();
+        const contents = this.export();
 
-		if ( this.electron.isElectronApp ) {
+        if ( this.electron.isElectronApp ) {
 
-			this.fileService.saveFileWithExtension(
-				this.fileService.projectFolder, contents, this.extension, ( file: IFile ) => {
+            this.fileService.saveFileWithExtension(
+                this.fileService.projectFolder, contents, this.extension, ( file: IFile ) => {
 
-					this.currentFile.path = file.path;
-					this.currentFile.name = file.name;
+                    this.currentFile.path = file.path;
+                    this.currentFile.name = file.name;
 
-				} );
+                } );
 
-		} else {
+        } else {
 
-			saveAs( new Blob( [ contents ] ), `road.${ this.extension }` );
+            saveAs( new Blob( [ contents ] ), `road.${ this.extension }` );
 
-		}
+        }
 
-	}
+    }
 
-	exportMap ( map: TvMap ) {
+    exportMap ( map: TvMap ) {
 
-		return {
-			version: 0.1,
-			road: this.exportRoads( [ ...this.map.roads.values() ] ),
-			prop: this.exportProps( map.props ),
-			propCurve: this.exportPropCurves( map.propCurves ),
-			propPolygon: this.exportPropPolygons( map.propPolygons ),
-			surface: this.exportSurfaces( map.surfaces ),
-			junction: this.exportJunctions( [ ...map.junctions.values() ] ),
-		};
+        return {
+            version: 0.1,
+            road: this.exportRoads( [ ...this.map.roads.values() ] ),
+            prop: this.exportProps( map.props ),
+            propCurve: this.exportPropCurves( map.propCurves ),
+            propPolygon: this.exportPropPolygons( map.propPolygons ),
+            surface: this.exportSurfaces( map.surfaces ),
+            junction: this.exportJunctions( [ ...map.junctions.values() ] ),
+        };
 
-	}
+    }
 
-	exportRoads ( roads: TvRoad[] ) {
+    exportRoads ( roads: TvRoad[] ) {
 
-		return roads.map( road => this.exportRoad( road ) );
+        return roads.map( road => this.exportRoad( road ) );
 
-	}
+    }
 
-	exportRoad ( road: TvRoad ) {
+    exportRoad ( road: TvRoad ) {
 
-		const xml = {
-			attr_id: road.id,
-			attr_name: road.name,
-			attr_length: road.length,
-			attr_junction: road.junction,
-			drivingMaterialGuid: road.drivingMaterialGuid,
-			sidewalkMaterialGuid: road.sidewalkMaterialGuid,
-			borderMaterialGuid: road.borderMaterialGuid,
-			shoulderMaterialGuid: road.shoulderMaterialGuid,
-			spline: this.exportRoadSpline( road.spline ),
-		};
+        const xml = {
+            attr_id: road.id,
+            attr_name: road.name,
+            attr_length: road.length,
+            attr_junction: road.junction,
+            drivingMaterialGuid: road.drivingMaterialGuid,
+            sidewalkMaterialGuid: road.sidewalkMaterialGuid,
+            borderMaterialGuid: road.borderMaterialGuid,
+            shoulderMaterialGuid: road.shoulderMaterialGuid,
+            spline: this.exportRoadSpline( road.spline ),
+        };
 
-		this.openDriveWriter.writeRoadLinks( xml, road );
+        this.openDriveWriter.writeRoadLinks( xml, road );
 
-		this.openDriveWriter.writeRoadType( xml, road );
+        this.openDriveWriter.writeRoadType( xml, road );
 
-		// no need as geometry is being stored via spline
-		// this.openDriveWriter.writePlanView( xml, road );
+        // no need as geometry is being stored via spline
+        // this.openDriveWriter.writePlanView( xml, road );
 
-		this.openDriveWriter.writeElevationProfile( xml, road );
+        this.openDriveWriter.writeElevationProfile( xml, road );
 
-		this.openDriveWriter.writeLateralProfile( xml, road );
+        this.openDriveWriter.writeLateralProfile( xml, road );
 
-		this.openDriveWriter.writeLanes( xml, road );
+        this.openDriveWriter.writeLanes( xml, road );
 
-		// TODO: maybe not required here
-		this.openDriveWriter.writeObjects( xml, road );
+        // TODO: maybe not required here
+        this.openDriveWriter.writeObjects( xml, road );
 
-		// TODO: maybe not required here
-		this.openDriveWriter.writeSignals( xml, road );
+        // TODO: maybe not required here
+        this.openDriveWriter.writeSignals( xml, road );
 
 
-		return xml;
-	}
+        return xml;
+    }
 
-	exportRoadSpline ( spline: AbstractSpline ) {
+    exportRoadSpline ( spline: AbstractSpline ) {
 
-		if ( spline instanceof AutoSpline ) {
+        if ( spline instanceof AutoSpline ) {
 
-			return {
-				attr_type: spline.type,
-				point: spline.controlPointPositions.map( point => ( {
-					attr_x: point.x,
-					attr_y: point.y,
-					attr_z: point.z
-				} ) )
-			};
+            return {
+                attr_type: spline.type,
+                point: spline.controlPointPositions.map( point => ( {
+                    attr_x: point.x,
+                    attr_y: point.y,
+                    attr_z: point.z
+                } ) )
+            };
 
 
-		} else if ( spline instanceof ExplicitSpline ) {
+        } else if ( spline instanceof ExplicitSpline ) {
 
-			return {
-				attr_type: spline.type,
-				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
-					attr_x: point.position.x,
-					attr_y: point.position.y,
-					attr_z: point.position.z,
-					attr_hdg: point.hdg,
-					attr_type: point.segmentType,
-				} ) )
-			};
+            return {
+                attr_type: spline.type,
+                point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
+                    attr_x: point.position.x,
+                    attr_y: point.position.y,
+                    attr_z: point.position.z,
+                    attr_hdg: point.hdg,
+                    attr_type: point.segmentType,
+                } ) )
+            };
 
-		} else {
+        } else {
 
-			SnackBar.error( 'Not able to export this spline type' );
+            SnackBar.error( 'Not able to export this spline type' );
 
-		}
+        }
 
-	}
+    }
 
-	exportTypes ( types: TvRoadTypeClass[] ) {
+    exportTypes ( types: TvRoadTypeClass[] ) {
 
-		return types.map( type => {
+        return types.map( type => {
 
-			return {
-				attr_s: type.s,
-				attr_type: type.type,
-				speed: {
-					attr_max: type.speed.max,
-					attr_unit: type.speed.unit
-				},
-			};
+            return {
+                attr_s: type.s,
+                attr_type: type.type,
+                speed: {
+                    attr_max: type.speed.max,
+                    attr_unit: type.speed.unit
+                },
+            };
 
-		} );
+        } );
 
-	}
+    }
 
-	exportJunctions ( junctions: TvJunction[] ) {
+    exportJunctions ( junctions: TvJunction[] ) {
 
-		return junctions.map( junction => this.exportJunction( junction ) );
+        return junctions.map( junction => this.exportJunction( junction ) );
 
-	}
+    }
 
-	exportJunction ( junction: TvJunction ) {
+    exportJunction ( junction: TvJunction ) {
 
-		const xml = {
-			attr_id: junction.id,
-			attr_name: junction.name,
-			position: {
-				attr_x: junction.position ? junction.position.x : 0,
-				attr_y: junction.position ? junction.position.y : 0,
-				attr_z: junction.position ? junction.position.z : 0,
-			},
-			connection: [],
-			priority: [],
-			controller: []
-		};
+        const xml = {
+            attr_id: junction.id,
+            attr_name: junction.name,
+            position: {
+                attr_x: junction.position ? junction.position.x : 0,
+                attr_y: junction.position ? junction.position.y : 0,
+                attr_z: junction.position ? junction.position.z : 0,
+            },
+            connection: [],
+            priority: [],
+            controller: []
+        };
 
-		this.openDriveWriter.writeJunctionConnection( xml, junction );
+        this.openDriveWriter.writeJunctionConnection( xml, junction );
 
-		// TODO: Add controller and priority as well
+        // TODO: Add controller and priority as well
 
-		// this.openDriveWriter.writeJunctionController( xml, junction );
+        // this.openDriveWriter.writeJunctionController( xml, junction );
 
-		// this.openDriveWriter.writeJunctionPriority( xml, junction );
+        // this.openDriveWriter.writeJunctionPriority( xml, junction );
 
-		return xml;
-	}
-
-	exportProps ( props: PropInstance[] ) {
-
-		return props.map( prop => this.exportProp( prop ) );
-
-	}
-
-	exportProp ( prop: PropInstance ) {
-
-		return {
-			attr_guid: prop.guid,
-			position: {
-				attr_x: prop.object.position.x,
-				attr_y: prop.object.position.y,
-				attr_z: prop.object.position.z,
-			},
-			rotation: {
-				attr_x: prop.object.rotation.x,
-				attr_y: prop.object.rotation.y,
-				attr_z: prop.object.rotation.z,
-			},
-			scale: {
-				attr_x: prop.object.scale.x,
-				attr_y: prop.object.scale.y,
-				attr_z: prop.object.scale.z,
-			}
-		};
-
-	}
-
-	exportPropCurves ( curves: PropCurve[] ) {
-
-		return curves.map( curve => this.exportPropCurve( curve ) );
-
-	}
-
-	exportPropCurve ( curve: PropCurve ) {
-
-		return {
-			attr_rotation: curve.rotation,
-			attr_positionVariance: curve.positionVariance,
-			attr_reverse: curve.reverse,
-			attr_guid: curve.propGuid,
-			props: curve.props.map( prop => ( {
-				attr_guid: curve.propGuid,
-				position: {
-					attr_x: prop.position.x,
-					attr_y: prop.position.y,
-					attr_z: prop.position.z,
-				},
-				rotation: {
-					attr_x: prop.rotation.x,
-					attr_y: prop.rotation.y,
-					attr_z: prop.rotation.z,
-				},
-				scale: {
-					attr_x: prop.scale.x,
-					attr_y: prop.scale.y,
-					attr_z: prop.scale.z,
-				}
-			} ) ),
-			spline: {
-				attr_type: curve.spline.type,
-				attr_closed: curve.spline.closed,
-				attr_tension: curve.spline.tension,
-				point: curve.spline.controlPointPositions.map( p => ( {
-					attr_x: p.x,
-					attr_y: p.y,
-					attr_z: p.z,
-				} ) )
-			}
-		};
-
-	}
-
-	exportPropPolygons ( polygons: PropPolygon[] ) {
-
-		return polygons.map( polygon => this.exportPropPolygon( polygon ) );
-
-	}
-
-	exportPropPolygon ( polygon: PropPolygon ) {
-
-		return {
-			attr_guid: polygon.propGuid,
-			attr_density: polygon.density,
-			props: polygon.props.map( prop => ( {
-				attr_guid: polygon.propGuid,
-				position: {
-					attr_x: prop.position.x,
-					attr_y: prop.position.y,
-					attr_z: prop.position.z,
-				},
-				rotation: {
-					attr_x: prop.rotation.x,
-					attr_y: prop.rotation.y,
-					attr_z: prop.rotation.z,
-				},
-				scale: {
-					attr_x: prop.scale.x,
-					attr_y: prop.scale.y,
-					attr_z: prop.scale.z,
-				}
-			} ) ),
-			spline: {
-				attr_type: polygon.spline.type,
-				attr_closed: polygon.spline.closed,
-				attr_tension: polygon.spline.tension,
-				point: polygon.spline.controlPointPositions.map( p => ( {
-					attr_x: p.x,
-					attr_y: p.y,
-					attr_z: p.z,
-				} ) )
-			}
-		};
-
-	}
-
-	exportSurfaces ( surfaces: TvSurface[] ) {
-
-		return surfaces.map( surface => this.exportSurface( surface ) );
-
-	}
-
-	exportSurface ( surface: TvSurface ) {
-
-		return {
-			attr_height: surface.height,
-			attr_rotation: surface.rotation,
-			material: {
-				attr_guid: surface.materialGuid
-			},
-			offset: {
-				attr_x: surface.offset.x,
-				attr_y: surface.offset.y,
-			},
-			scale: {
-				attr_x: surface.scale.x,
-				attr_y: surface.scale.y,
-			},
-			spline: {
-				attr_type: surface.spline.type,
-				attr_closed: surface.spline.closed,
-				attr_tension: surface.spline.tension,
-				point: surface.spline.controlPointPositions.map( p => ( {
-					attr_x: p.x,
-					attr_y: p.y,
-					attr_z: p.z,
-				} ) )
-			}
-		};
-
-	}
+        return xml;
+    }
+
+    exportProps ( props: PropInstance[] ) {
+
+        return props.map( prop => this.exportProp( prop ) );
+
+    }
+
+    exportProp ( prop: PropInstance ) {
+
+        return {
+            attr_guid: prop.guid,
+            position: {
+                attr_x: prop.object.position.x,
+                attr_y: prop.object.position.y,
+                attr_z: prop.object.position.z,
+            },
+            rotation: {
+                attr_x: prop.object.rotation.x,
+                attr_y: prop.object.rotation.y,
+                attr_z: prop.object.rotation.z,
+            },
+            scale: {
+                attr_x: prop.object.scale.x,
+                attr_y: prop.object.scale.y,
+                attr_z: prop.object.scale.z,
+            }
+        };
+
+    }
+
+    exportPropCurves ( curves: PropCurve[] ) {
+
+        return curves.map( curve => this.exportPropCurve( curve ) );
+
+    }
+
+    exportPropCurve ( curve: PropCurve ) {
+
+        return {
+            attr_rotation: curve.rotation,
+            attr_positionVariance: curve.positionVariance,
+            attr_reverse: curve.reverse,
+            attr_guid: curve.propGuid,
+            props: curve.props.map( prop => ( {
+                attr_guid: curve.propGuid,
+                position: {
+                    attr_x: prop.position.x,
+                    attr_y: prop.position.y,
+                    attr_z: prop.position.z,
+                },
+                rotation: {
+                    attr_x: prop.rotation.x,
+                    attr_y: prop.rotation.y,
+                    attr_z: prop.rotation.z,
+                },
+                scale: {
+                    attr_x: prop.scale.x,
+                    attr_y: prop.scale.y,
+                    attr_z: prop.scale.z,
+                }
+            } ) ),
+            spline: {
+                attr_type: curve.spline.type,
+                attr_closed: curve.spline.closed,
+                attr_tension: curve.spline.tension,
+                point: curve.spline.controlPointPositions.map( p => ( {
+                    attr_x: p.x,
+                    attr_y: p.y,
+                    attr_z: p.z,
+                } ) )
+            }
+        };
+
+    }
+
+    exportPropPolygons ( polygons: PropPolygon[] ) {
+
+        return polygons.map( polygon => this.exportPropPolygon( polygon ) );
+
+    }
+
+    exportPropPolygon ( polygon: PropPolygon ) {
+
+        return {
+            attr_guid: polygon.propGuid,
+            attr_density: polygon.density,
+            props: polygon.props.map( prop => ( {
+                attr_guid: polygon.propGuid,
+                position: {
+                    attr_x: prop.position.x,
+                    attr_y: prop.position.y,
+                    attr_z: prop.position.z,
+                },
+                rotation: {
+                    attr_x: prop.rotation.x,
+                    attr_y: prop.rotation.y,
+                    attr_z: prop.rotation.z,
+                },
+                scale: {
+                    attr_x: prop.scale.x,
+                    attr_y: prop.scale.y,
+                    attr_z: prop.scale.z,
+                }
+            } ) ),
+            spline: {
+                attr_type: polygon.spline.type,
+                attr_closed: polygon.spline.closed,
+                attr_tension: polygon.spline.tension,
+                point: polygon.spline.controlPointPositions.map( p => ( {
+                    attr_x: p.x,
+                    attr_y: p.y,
+                    attr_z: p.z,
+                } ) )
+            }
+        };
+
+    }
+
+    exportSurfaces ( surfaces: TvSurface[] ) {
+
+        return surfaces.map( surface => this.exportSurface( surface ) );
+
+    }
+
+    exportSurface ( surface: TvSurface ) {
+
+        return {
+            attr_height: surface.height,
+            attr_rotation: surface.rotation,
+            material: {
+                attr_guid: surface.materialGuid
+            },
+            offset: {
+                attr_x: surface.offset.x,
+                attr_y: surface.offset.y,
+            },
+            scale: {
+                attr_x: surface.scale.x,
+                attr_y: surface.scale.y,
+            },
+            spline: {
+                attr_type: surface.spline.type,
+                attr_closed: surface.spline.closed,
+                attr_tension: surface.spline.tension,
+                point: surface.spline.controlPointPositions.map( p => ( {
+                    attr_x: p.x,
+                    attr_y: p.y,
+                    attr_z: p.z,
+                } ) )
+            }
+        };
+
+    }
 
 
 }

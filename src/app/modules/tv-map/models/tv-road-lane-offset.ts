@@ -7,12 +7,12 @@ import { ThirdOrderPolynom } from './third-order-polynom';
 
 export class TvRoadLaneOffset extends ThirdOrderPolynom {
 
-	public mesh?: Object3D;
+    public mesh?: Object3D;
 
-	clone ( s?: number ) {
+    clone ( s?: number ) {
 
-		return new TvRoadLaneOffset( s || this.s, this.a, this.b, this.c, this.d );
+        return new TvRoadLaneOffset( s || this.s, this.a, this.b, this.c, this.d );
 
-	}
+    }
 
 }
