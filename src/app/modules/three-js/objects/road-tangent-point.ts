@@ -27,7 +27,7 @@ export class RoadTangentPoint extends BaseControlPoint {
         public controlPoint: RoadControlPoint
     ) {
 
-        super( null, null );
+        super( new BufferGeometry(), new PointsMaterial() );
 
         this.geometry = new BufferGeometry();
 
