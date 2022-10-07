@@ -1,5 +1,3 @@
-console.log( 'inside preload.js' )
-
 const { contextBridge } = require( 'electron' )
 const remote = require( '@electron/remote' )
 const fs = require('fs')
