@@ -4,6 +4,7 @@
 
 import { ApplicationRef, ChangeDetectorRef, ErrorHandler, Injectable, Injector } from '@angular/core';
 import { AnalyticsService } from 'app/core/analytics/analytics.service';
+import { SentryService } from 'app/core/analytics/sentry.service';
 import { environment } from '../../../environments/environment';
 import { SnackBar } from '../../services/snack-bar.service';
 
@@ -24,6 +25,8 @@ export class ErrorHandlerService extends ErrorHandler {
 
         if ( environment.production && this.analytics ) this.analytics.trackError( error );
         if ( environment.production ) SnackBar.error( `${ error.name } :  Oops Something Went Wrong` );
+
+		SentryService.captureException( error );
 
         let increment = 5;
         let max = 50;

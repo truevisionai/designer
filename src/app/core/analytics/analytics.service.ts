@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { Environment } from '../utils/environment';
 import { MixpanelService } from './mixpanel.service';
+import { SentryService } from './sentry.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -69,6 +70,8 @@ export class AnalyticsService {
     setEmail ( email: string ) {
 
         if ( Environment.production ) this.mixpanel.setEmail( email );
+
+		SentryService.setEmail( email );
 
     }
 

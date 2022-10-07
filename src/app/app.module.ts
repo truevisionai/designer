@@ -32,49 +32,52 @@ import { SessionsModule } from './views/sessions/sessions.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
-    return new TranslateHttpLoader( httpClient, './assets/i18n/', '.json' );
+	return new TranslateHttpLoader( httpClient, './assets/i18n/', '.json' );
 }
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-    suppressScrollX: true
+	suppressScrollX: true
 };
 
 @NgModule( {
-    imports: [
-        AppRoutingModule,
-        MatTreeModule,
-        BrowserModule,
-        NoopAnimationsModule,
-        SharedModule,
-        HttpClientModule,
-        PerfectScrollbarModule,
-        FormsModule,
+	imports: [
+		AppRoutingModule,
+		MatTreeModule,
+		BrowserModule,
+		NoopAnimationsModule,
+		SharedModule,
+		HttpClientModule,
+		PerfectScrollbarModule,
+		FormsModule,
 
-        CoreModule,
-        EditorModule,
-        TvMapModule,
-        ThreeJsModule,
-        NgxElectronModule,
+		CoreModule,
+		EditorModule,
+		TvMapModule,
+		ThreeJsModule,
+		NgxElectronModule,
 
-        SessionsModule,
-        SatPopoverModule,
+		SessionsModule,
+		SatPopoverModule,
 
-        TranslateModule.forRoot( {
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [ HttpClient ]
-            }
-        } ),
-    ],
-    declarations: [ AppComponent ],
-    providers: [
-        { provide: ErrorHandler, useClass: ErrorHandlerService },
-        { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
-        { provide: LocationStrategy, useClass: HashLocationStrategy }
-    ],
-    bootstrap: [ AppComponent ],
-    exports: []
+		TranslateModule.forRoot( {
+			loader: {
+				provide: TranslateLoader,
+				useFactory: HttpLoaderFactory,
+				deps: [ HttpClient ]
+			}
+		} ),
+	],
+	declarations: [ AppComponent ],
+	providers: [
+		{
+			provide: ErrorHandler,
+			useClass: ErrorHandlerService,
+		},
+		{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
+		{ provide: LocationStrategy, useClass: HashLocationStrategy }
+	],
+	bootstrap: [ AppComponent ],
+	exports: []
 } )
 export class AppModule {
 }

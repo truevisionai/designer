@@ -6,22 +6,34 @@ import { environment } from '../../../environments/environment';
 
 export class Environment {
 
-    static get production (): boolean {
+	static get dsn (): string {
 
-        return environment.production;
+		return environment.sentry_dsn;
 
-    }
+	}
 
-    static get oscEnabled (): boolean {
+	static get environment (): string {
 
-        return environment.osc_enabled;
+		return this.production ? 'production' : 'development';
 
-    }
+	}
 
-    static get websiteUrl (): string {
+	static get production (): boolean {
 
-        return environment.web_url;
+		return environment.production;
 
-    }
+	}
+
+	static get oscEnabled (): boolean {
+
+		return environment.osc_enabled;
+
+	}
+
+	static get websiteUrl (): string {
+
+		return environment.web_url;
+
+	}
 
 }
