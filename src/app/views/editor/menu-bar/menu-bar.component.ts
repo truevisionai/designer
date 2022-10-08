@@ -142,7 +142,7 @@ export class MenuBarComponent implements OnInit {
 
     onImportOpenDRIVE () {
 
-        this.odService.open();
+        this.odService.importOpenDrive();
 
     }
 

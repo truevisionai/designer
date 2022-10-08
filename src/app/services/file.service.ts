@@ -6,6 +6,7 @@ import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { IFile } from '../core/models/file';
 import { FileUtils } from './file-utils';
+import { SnackBar } from './snack-bar.service';
 
 declare const versions;
 
@@ -130,8 +131,6 @@ export class FileService {
         };
 
         return this.remote.dialog.showOpenDialog( options );
-
-        return Promise.resolve( this.remote.dialog.showOpenDialog( null, {} ) );
     }
 
     async readAsync ( path ) {
@@ -157,12 +156,20 @@ export class FileService {
             message: 'Select file'
         };
 
-        this.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
-
-            if ( filepaths != null ) this.readFile( filepaths[ 0 ], type, callbackFn );
-
-        } );
+		this.showOpenDialog( options, type, callbackFn );
     }
+
+	showOpenDialog ( options: Electron.OpenDialogOptions, type, callbackFn: any = null ) {
+
+		this.remote.dialog.showOpenDialog( options ).then( ( res: Electron.OpenDialogReturnValue ) => {
+
+			if ( res.canceled ) SnackBar.show( 'File import cancelled' );
+
+			if ( res.filePaths != null ) this.readFile( res.filePaths[ 0 ], type, callbackFn );
+
+		} );
+
+	}
 
 	/**
 	 *
@@ -179,7 +186,7 @@ export class FileService {
         this.fs.readFile( path, 'utf-8', ( err, data ) => {
 
             if ( err ) {
-                alert( 'An error ocurred reading the file :' + err.message );
+                SnackBar.error( 'An error ocurred reading the file :' + err.message );
                 return;
             }
 
@@ -216,29 +223,27 @@ export class FileService {
         };
 
         this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
-            console.log( res );
-        } );
 
-        // this.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
+			let fullPath = res.filePath;
 
-        // 	if ( fullPath != null ) {
+			if ( fullPath != null ) {
 
-        // 		// append the extension if not present in the path
-        // 		if ( !fullPath.includes( `.${ extension }` ) ) {
+				// append the extension if not present in the path
+				if ( !fullPath.includes( `.${ extension }` ) ) {
 
-        // 			fullPath = fullPath + '.' + extension;
+					fullPath = fullPath + '.' + extension;
 
-        // 		}
+				}
 
-        // 		this.writeFile( fullPath, contents, callbackFn );
+				this.writeFile( fullPath, contents, callbackFn );
 
-        // 	} else {
+			} else {
 
-        // 		console.error( 'Could not save file' );
+				SnackBar.error( 'Could not save file' );
 
-        // 	}
+			}
 
-        // } );
+		} );
 
     }
 
@@ -254,7 +259,7 @@ export class FileService {
 
             if ( res.canceled || res.filePath == null ) {
 
-                alert( "file save cancelled" )
+				SnackBar.show( "file save cancelled" );
 
             } else {
 

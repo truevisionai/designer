@@ -71,7 +71,7 @@ export class TvMapService {
 	/**
 	 * @deprecated
 	 */
-    async open () {
+    async importOpenDrive () {
 
         const res = await this.fileService.showAsyncDialog();
 
@@ -80,6 +80,8 @@ export class TvMapService {
         const filepaths = res.filePaths;
 
         if ( filepaths == null || filepaths.length == 0 ) return;
+
+		SnackBar.show( 'Importing....' );
 
         const contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
@@ -97,6 +99,8 @@ export class TvMapService {
         this.currentFile = new IFile( 'untitled.xml' );
 
         TvMapBuilder.buildMap( this.map );
+
+		SnackBar.success( `Map imported ${filepaths[0]}` );
 
     }
 
@@ -230,12 +234,14 @@ export class TvMapService {
 
         const contents = this.writer.getOutput( this.map );
 
-        if ( this.electron.isElectronApp && !this.electron.isMacOS ) {
+        if ( this.electron.isElectronApp ) {
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveFileWithExtension( null, contents,  'xodr', ( file: IFile ) => {
 
                 this.currentFile.path = file.path;
                 this.currentFile.name = file.name;
+
+				SnackBar.success(`File saved ${file.path}`);
 
             } );
 

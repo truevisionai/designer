@@ -16,6 +16,7 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { CommandHistory } from './command-history';
 import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -99,10 +100,12 @@ export class ExporterService {
 
         if ( this.electron.isElectronApp ) {
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
                 this.odService.currentFile.path = file.path;
                 this.odService.currentFile.name = file.name;
+
+				SnackBar.success(`File saved ${file.path}`);
 
             } );
 
