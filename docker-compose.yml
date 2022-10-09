@@ -8,7 +8,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - '4200:4200'
-      - '49153:49153'
     tty: true      
     environment:
       - NODE_ENV=production
