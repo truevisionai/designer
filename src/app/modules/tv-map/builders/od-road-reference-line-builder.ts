@@ -2,20 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../models/tv-road.model';
-import { TvPosTheta } from '../models/tv-pos-theta';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, Line, Vector3 } from 'three';
-import { Maths } from 'app/utils/maths';
 import { COLOR } from '../../../shared/utils/colors.service';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
 
 export class OdRoadReferenceLineBuilder {
 
     // private points: OdPosTheta[] = [];
 
-    private material = new THREE.LineBasicMaterial( { color: COLOR.RED } );
-
     line: any;
+    private material = new THREE.LineBasicMaterial( { color: COLOR.RED } );
     private cache: Map<number, Line> = new Map<number, Line>();
 
     constructor ( private road: TvRoad ) {

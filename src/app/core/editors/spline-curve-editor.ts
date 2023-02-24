@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractShapeEditor } from './abstract-shape-editor';
 import * as THREE from 'three';
 import { Curve, Object3D } from 'three';
 import { SceneService } from '../services/scene.service';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class SplineCurveEditor extends AbstractShapeEditor {
 

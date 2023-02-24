@@ -17,11 +17,17 @@ export class JwtService {
         this.helper = new JwtHelperService();
     }
 
-    get token () { return this.getToken(); }
+    get token () {
+        return this.getToken();
+    }
 
-    get decodedToken () { return this.helper.decodeToken( this.token ); }
+    get decodedToken () {
+        return this.helper.decodeToken( this.token );
+    }
 
-    get expirationDate () { return this.helper.getTokenExpirationDate( this.token ); }
+    get expirationDate () {
+        return this.helper.getTokenExpirationDate( this.token );
+    }
 
     getToken (): string {
         return window.localStorage[ this.KEY ];

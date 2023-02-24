@@ -4,15 +4,14 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { Vector3, Object3D } from 'three';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { DynamicMeta } from 'app/core/models/metadata.model';
-import { CommandHistory } from 'app/services/command-history';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { PropModel } from 'app/core/models/prop-model.model';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AssetDatabase } from 'app/services/asset-database';
+import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { CommandHistory } from 'app/services/command-history';
 import { PropService } from 'app/services/prop-service';
+import { Object3D, Vector3 } from 'three';
 
 @Component( {
     selector: 'app-prop-model-inspector',
@@ -28,9 +27,12 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 
     public object: Object3D;
 
-    get prop () { return this.data.data as PropModel; }
+    constructor ( private assetService: AssetLoaderService ) {
+    }
 
-    constructor ( private assetService: AssetLoaderService ) { }
+    get prop () {
+        return this.data.data as PropModel;
+    }
 
     ngOnInit () {
 

@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Injectable, OnInit, HostListener, ApplicationRef } from '@angular/core';
-import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { FileService } from 'app/services/file.service';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { map } from 'rxjs/operators';
+import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
+import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { FileService } from 'app/services/file.service';
+import { ImporterService } from 'app/services/importer.service';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FileNode } from './file-node.model';
 import { ProjectBrowserService } from './project-browser.service';
-import { ImporterService } from 'app/services/importer.service';
 
 // const DOCUMENT_PATH = '/home/himanshu/Documents/Truevision/';
 
@@ -23,16 +23,17 @@ import { ImporterService } from 'app/services/importer.service';
 export class DynamicDatabase {
 
     rootLevelNodes: string[] = [ 'Fruits', 'Vegetables' ];
-
-    // private projectDir = '/home/himanshu/Documents/Truevision';
-    private get projectDir () { return this.fileService.projectFolder; }
-
     private init: FileNode[];
 
     constructor ( private fileService: FileService ) {
 
         this.init = this.getFolderInPath( this.projectDir, 0 );
 
+    }
+
+    // private projectDir = '/home/himanshu/Documents/Truevision';
+    private get projectDir () {
+        return this.fileService.projectFolder;
     }
 
     /** Initial data from database */
@@ -95,18 +96,18 @@ export class DynamicDataSource {
     constructor ( private treeControl: FlatTreeControl<FileNode>, private database: DynamicDatabase ) {
     }
 
+    get data (): FileNode[] {
+        return this.dataChange.value;
+    }
+
     set data ( value: FileNode[] ) {
         this.treeControl.dataNodes = value;
         this.dataChange.next( value );
     }
 
-    get data (): FileNode[] {
-        return this.dataChange.value;
-    }
-
     connect ( collectionViewer: CollectionViewer ): Observable<FileNode[]> {
 
-        this.treeControl.expansionModel.onChange.subscribe( change => {
+        this.treeControl.expansionModel.changed.subscribe( change => {
             if ( ( change as SelectionChange<FileNode> ).added ||
                 ( change as SelectionChange<FileNode> ).removed ) {
                 this.handleTreeControl( change as SelectionChange<FileNode> );
@@ -126,9 +127,9 @@ export class DynamicDataSource {
         }
     }
 
-    /**
-     * Toggle the node, remove from display list
-     */
+	/**
+	 * Toggle the node, remove from display list
+	 */
     toggleNode ( node: FileNode, expand: boolean ) {
         const children = this.database.getChildren( node );
         const index = this.data.indexOf( node );
@@ -167,8 +168,11 @@ export class ProjectBrowserComponent implements OnInit {
     selectedFolder: FileNode;
 
     treeControl = new NestedTreeControl<FileNode>( ( node: FileNode ) => {
-        if ( node.type === 'directory' ) return node.sub_folders( this.fileService );
-        else return [];
+        if ( node.type === 'directory' ) {
+            return node.sub_folders( this.fileService );
+        } else {
+            return [];
+        }
     } );
 
     dataSource = new MatTreeNestedDataSource<any>();

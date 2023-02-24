@@ -2,33 +2,30 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+import { Subscription } from 'rxjs';
+import { PointerEventData } from '../../events/pointer-event-data';
+import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
+import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from '../../modules/tv-map/models/tv-common';
+import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { AppInspector } from '../inspector';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
-import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { RoadPlanHelper } from '../helpers/road-plan-helper';
-import { PointerEventData } from '../../events/pointer-event-data';
-import { Subscription } from 'rxjs';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { KeyboardInput } from '../input';
+import { AppInspector } from '../inspector';
+import { BaseTool } from './base-tool';
 
 export class BaseRoadPlanTool extends BaseTool {
 
     name: string = 'RoadPlan';
-
+    onKeyDownSub: Subscription;
     protected controlPointSelectedSubscriber: Subscription;
     protected controlPointUnselectedSubscriber: Subscription;
     protected controlPointAddedSubscriber: Subscription;
     protected controlPointMovedSubscriber: Subscription;
     protected controlPointUpdatedSubscriber: Subscription;
-
-    onKeyDownSub: Subscription;
-
     protected shapeEditor: AbstractShapeEditor;
     protected road: TvRoad;
     protected roadAdded: boolean;
@@ -59,7 +56,7 @@ export class BaseRoadPlanTool extends BaseTool {
 
         this.onKeyDownSub = KeyboardInput.keyDown.subscribe( e => {
 
-            if ( e.key === "Delete" ) {
+            if ( e.key === 'Delete' ) {
 
                 this.unselectRoad( this.road );
 
@@ -71,7 +68,7 @@ export class BaseRoadPlanTool extends BaseTool {
 
             }
 
-        } )
+        } );
     }
 
     disable (): void {
@@ -118,16 +115,6 @@ export class BaseRoadPlanTool extends BaseTool {
         if ( !KeyboardInput.isShiftKeyDown ) this.clickedOutside();
     }
 
-    protected clickedOutside () {
-
-        this.road == null;
-
-        AppInspector.clear()
-
-        // this.shapeEditor.removeAllControlPoints();
-
-    }
-
     onPointerMoved ( e: PointerEventData ) {
 
         let hoveringPoint: AnyControlPoint = null;
@@ -150,8 +137,9 @@ export class BaseRoadPlanTool extends BaseTool {
 
         if ( hoveringPoint ) {
 
-            if ( !selectectPoint || selectectPoint.id != hoveringPoint.id )
+            if ( !selectectPoint || selectectPoint.id != hoveringPoint.id ) {
                 this.shapeEditor.onControlPointHovered( hoveringPoint );
+            }
 
             points = points.filter( i => i.id != hoveringPoint.id );
 
@@ -161,22 +149,71 @@ export class BaseRoadPlanTool extends BaseTool {
 
     }
 
-    protected onControlPointSelected ( e: AnyControlPoint ) { }
+    public addDefaultLanes ( road: TvRoad ) {
 
-    protected onControlPointUnselected ( e: AnyControlPoint ) { }
+        road.addLaneSection( 0, false );
 
-    protected onControlPointAdded ( e: AnyControlPoint ) { }
+        const laneSection = road.getLastAddedLaneSection();
 
-    protected onControlPointMoved ( e: AnyControlPoint ) { }
+        const leftLane3 = laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
+        const leftLane2 = laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
+        const leftLane1 = laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+        const centerLane = laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+        const rightLane1 = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+        const rightLane2 = laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
+        const rightLane3 = laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
 
-    protected onControlPointUpdated ( e: AnyControlPoint ) { }
+        leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+        centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+        rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+
+        laneSection.getLaneVector().forEach( lane => {
+
+            if ( lane.side !== TvLaneSide.CENTER ) {
+
+                if ( lane.type == TvLaneType.driving ) {
+                    lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
+                } else if ( lane.type == TvLaneType.sidewalk ) {
+                    lane.addWidthRecord( 0, 2, 0, 0, 0 );
+                } else {
+                    lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
+                }
+
+            }
+
+        } );
+
+        this.selectRoad( road );
+
+    }
+
+    protected clickedOutside () {
+
+        this.road == null;
+
+        AppInspector.clear();
+
+        // this.shapeEditor.removeAllControlPoints();
+
+    }
+
+    protected onControlPointSelected ( e: AnyControlPoint ) {
+    }
+
+    protected onControlPointUnselected ( e: AnyControlPoint ) {
+    }
+
+    protected onControlPointAdded ( e: AnyControlPoint ) {
+    }
+
+    protected onControlPointMoved ( e: AnyControlPoint ) {
+    }
+
+    protected onControlPointUpdated ( e: AnyControlPoint ) {
+    }
 
     protected getRoadIdFromControlPoint ( e: AnyControlPoint ) {
         return e.userData.roadId;
-    }
-
-    protected setRoadIdOnControlPoint ( e: AnyControlPoint, road: TvRoad ) {
-        e.userData.roadId = road.id
     }
 
     //
@@ -241,40 +278,8 @@ export class BaseRoadPlanTool extends BaseTool {
     //     OdSourceFile.roadNetworkChanged.emit( OdSourceFile.openDrive );
     // }
 
-    public addDefaultLanes ( road: TvRoad ) {
-
-        road.addLaneSection( 0, false );
-
-        const laneSection = road.getLastAddedLaneSection();
-
-        const leftLane3 = laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
-        const leftLane2 = laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-        const leftLane1 = laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-        const centerLane = laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-        const rightLane1 = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
-        const rightLane2 = laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
-        const rightLane3 = laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
-
-        leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-        centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-        rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-
-        laneSection.getLaneVector().forEach( lane => {
-
-            if ( lane.side !== TvLaneSide.CENTER ) {
-
-                if ( lane.type == TvLaneType.driving ) lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
-
-                else if ( lane.type == TvLaneType.sidewalk ) lane.addWidthRecord( 0, 2, 0, 0, 0 );
-
-                else lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
-
-            }
-
-        } );
-
-        this.selectRoad( road );
-
+    protected setRoadIdOnControlPoint ( e: AnyControlPoint, road: TvRoad ) {
+        e.userData.roadId = road.id;
     }
 
     protected selectRoad ( road: TvRoad ) {
@@ -315,11 +320,11 @@ export class BaseRoadPlanTool extends BaseTool {
 
     protected showRoadControlPoints ( road: TvRoad, type: 'auto' | 'explicit' = 'auto' ) {
 
-        road.getPlanView()
+        road.getPlanView();
 
         if ( type == 'auto' ) {
 
-            // 
+            //
 
         }
 

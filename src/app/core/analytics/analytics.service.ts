@@ -3,13 +3,14 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MixpanelService } from './mixpanel.service';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { Environment } from '../utils/environment';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
-import { filter, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { MixpanelService } from './mixpanel.service';
+import { SentryService } from './sentry.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -37,19 +38,6 @@ export class AnalyticsService {
     init () {
 
         if ( Environment.production ) this.trackPageChanges();
-
-    }
-
-    private trackPageChanges () {
-
-        this.router.events
-            .pipe(
-                filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
-                takeUntil( this.destroyed$ ),
-            )
-            .subscribe( ( event: NavigationEnd ) => {
-                this.trackPageView( event.url );
-            } );
 
     }
 
@@ -83,8 +71,9 @@ export class AnalyticsService {
 
         if ( Environment.production ) this.mixpanel.setEmail( email );
 
-    }
+		SentryService.setEmail( email );
 
+    }
 
     trackPageView ( url: string ) {
 
@@ -93,6 +82,19 @@ export class AnalyticsService {
         this.mixpanel.track( 'pageview', {
             url: url
         } );
+
+    }
+
+    private trackPageChanges () {
+
+        this.router.events
+            .pipe(
+                filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
+                takeUntil( this.destroyed$ ),
+            )
+            .subscribe( ( event: NavigationEnd ) => {
+                this.trackPageView( event.url );
+            } );
 
     }
 }

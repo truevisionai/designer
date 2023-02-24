@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
+import { Curve, Vector2 } from 'three';
 import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
-import { Curve, Vector2 } from 'three';
+import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvSplineGeometry extends TvAbstractRoadGeometry {
 
@@ -24,13 +24,13 @@ export class TvSplineGeometry extends TvAbstractRoadGeometry {
 
     computeVars () {
 
-        throw new Error( "Method not implemented." );
+        throw new Error( 'Method not implemented.' );
 
     }
 
     getCurve (): Curve<Vector2> {
 
-        throw new Error( "Method not implemented." );
+        throw new Error( 'Method not implemented.' );
 
     }
 

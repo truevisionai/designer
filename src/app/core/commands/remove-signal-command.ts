@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
-import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
 import { ObjectSelection } from 'app/core/selection';
+import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
 import { AppInspector } from '../inspector';
+import { OdBaseCommand } from './od-base-command';
 
 export class RemoveSignalCommand extends OdBaseCommand {
 

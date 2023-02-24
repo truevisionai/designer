@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector2, Vector3 } from 'three';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Vector2, Vector3 } from 'three';
+import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
-import { AbstractSpline } from './abstract-spline';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 
 export class AutoSpline extends AbstractSpline {
@@ -28,7 +28,9 @@ export class AutoSpline extends AbstractSpline {
 
     }
 
-    get hdgs () { return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg ) }
+    get hdgs () {
+        return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg );
+    }
 
     init () {
 
@@ -227,7 +229,7 @@ export class AutoSpline extends AbstractSpline {
 
                     geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
 
-                    console.warn( "radius is infinity" );
+                    console.warn( 'radius is infinity' );
 
                 }
 
@@ -243,7 +245,7 @@ export class AutoSpline extends AbstractSpline {
 
         const index = this.controlPoints.length;
 
-        const point = new RoadControlPoint( this.road, position, "cp", index, index );
+        const point = new RoadControlPoint( this.road, position, 'cp', index, index );
 
         this.controlPoints.push( point );
 

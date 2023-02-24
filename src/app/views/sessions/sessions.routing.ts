@@ -3,13 +3,13 @@
  */
 
 import { Routes } from '@angular/router';
+import { ErrorComponent } from './error/error.component';
 
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LockscreenComponent } from './lockscreen/lockscreen.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 import { SigninComponent } from './signin/signin.component';
 import { SignupComponent } from './signup/signup.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { ErrorComponent } from './error/error.component';
 
 export const SessionsRoutes: Routes = [
     {

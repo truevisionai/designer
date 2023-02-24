@@ -2,18 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { PropModel } from 'app/core/models/prop-model.model';
 import { DynamicMeta } from 'app/core/models/metadata.model';
-import { PropCurve } from "app/modules/tv-map/models/prop-curve";
+import { PropModel } from 'app/core/models/prop-model.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AssetDatabase } from './asset-database';
-import { Object3D, BufferGeometry, BufferAttribute, Vector3, Triangle } from 'three';
-import { Maths } from 'app/utils/maths';
+import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import * as THREE from 'three';
+import { Maths } from 'app/utils/maths';
 import earcut from 'earcut';
+import { Object3D, Triangle } from 'three';
+import { AssetDatabase } from './asset-database';
 
 export class PropService {
 
@@ -89,7 +87,6 @@ export class PropService {
         instance.updateMatrixWorld( true );
 
 
-
         const vertices = [];
 
         polygon.spline.controlPointPositions.forEach( p => {
@@ -152,6 +149,6 @@ export class PropService {
 
             }
 
-        } )
+        } );
     }
 }

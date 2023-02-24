@@ -2,18 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapInstance } from '../services/tv-map-source-file';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoad } from '../models/tv-road.model';
-import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
+import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
+import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvCoord, TvLaneCoord, TvRoadCoord } from '../models/tv-lane-coord';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvUtils } from '../models/tv-utils';
 import { TvMap } from '../models/tv-map.model';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
+import { TvUtils } from '../models/tv-utils';
+import { TvMapInstance } from '../services/tv-map-source-file';
 
 export abstract class TvBaseQueries {
 
@@ -47,7 +49,7 @@ export class TvMapQueries extends TvBaseQueries {
             totalWidth: leftWidth + rightWidth,
             leftSideWidth: leftWidth,
             rightSideWidth: rightWidth,
-        }
+        };
     }
 
     static findRoadById ( id: number ): TvRoad {
@@ -372,8 +374,11 @@ export class TvMapQueries extends TvBaseQueries {
 
     }
 
-    static getPitch ( road: TvRoad, trackCoord, double ) { }
-    static getPitchAndZ ( road: TvRoad, trackCoord, double ) { }
+    static getPitch ( road: TvRoad, trackCoord, double ) {
+    }
+
+    static getPitchAndZ ( road: TvRoad, trackCoord, double ) {
+    }
 
     static getPitchAndPitchDot ( road: TvRoad, trackCoord, double ) {
     }
@@ -425,22 +430,37 @@ export class TvMapQueries extends TvBaseQueries {
 
     static lane2roadMark ( laneCoord ) {
     }
-    static lane2track ( laneCoord ) { }
-    static lane2validLane ( laneCoord ) { }
-    static lane2validLane2 ( laneCoord, bool ) { }
 
-    static s2elevation ( road, s ) { }
-    static s2superelevation ( road, s ) { }
-    static s2surface ( road, s, ushort ) { }
+    static lane2track ( laneCoord ) {
+    }
 
-    static laneId2Node () { }
-    static laneSpeedFromRoadType ( laneCoord, double ) { }
+    static lane2validLane ( laneCoord ) {
+    }
+
+    static lane2validLane2 ( laneCoord, bool ) {
+    }
+
+    static s2elevation ( road, s ) {
+    }
+
+    static s2superelevation ( road, s ) {
+    }
+
+    static s2surface ( road, s, ushort ) {
+    }
+
+    static laneId2Node () {
+    }
+
+    static laneSpeedFromRoadType ( laneCoord, double ) {
+    }
 
 
     static getRoadMark ( lane: TvLane, double ) {
     }
 
-    static getRoadType ( laneCoord ) { }
+    static getRoadType ( laneCoord ) {
+    }
 
     static getFootPoint () {
     }
@@ -463,7 +483,8 @@ export class TvMapQueries extends TvBaseQueries {
     static getLaneOnPreviousRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
     }
 
-    static getLaneSpeed () { }
+    static getLaneSpeed () {
+    }
 
     static getRandomRoad ( map: TvMap ): TvRoad {
 

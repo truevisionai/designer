@@ -21,11 +21,15 @@ export class TvLaneHeight {
         this.attr_sOffset = value;
     }
 
-    getOuter () {
+    get outer () {
         return this.attr_outer;
     }
 
-    get outer () {
+    get inner () {
+        return this.attr_inner;
+    }
+
+    getOuter () {
         return this.attr_outer;
     }
 
@@ -34,10 +38,6 @@ export class TvLaneHeight {
     }
 
     getInner () {
-        return this.attr_inner;
-    }
-
-    get inner () {
         return this.attr_inner;
     }
 

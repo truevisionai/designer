@@ -7,7 +7,10 @@ import { MouseButton, PointerEventData, PointerMoveData } from '../../events/poi
 import { KeyboardInput } from '../input';
 import { DistanceNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
 import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
+import { KeyboardInput } from '../input';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class DistanceNodeEditor extends AbstractShapeEditor {
 
@@ -105,8 +108,8 @@ export class DistanceNodeEditor extends AbstractShapeEditor {
 
     /**
      * override addControlPoint function
-     * @param position 
-     * @returns 
+     * @param position
+     * @returns
      */
     addControlPoint ( position: THREE.Vector3 ): DistanceNode {
 
@@ -117,12 +120,12 @@ export class DistanceNodeEditor extends AbstractShapeEditor {
         const laneCoord = result.laneCoord;
 
         // create the distance node
-        const node = this.createDistanceNode( 
-            laneCoord.roadId, 
-            laneCoord.laneId, 
-            laneCoord.s, 
-            laneCoord.offset, 
-            finalPosition 
+        const node = this.createDistanceNode(
+            laneCoord.roadId,
+            laneCoord.laneId,
+            laneCoord.s,
+            laneCoord.offset,
+            finalPosition
         );
 
         // redundant

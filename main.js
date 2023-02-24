@@ -46,7 +46,10 @@ function openEditorWindow () {
         backgroundColor: '#ffffff',
         icon: `file://${ __dirname }/dist/assets/icon.png`,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+      		contextIsolation: true,
+			allowRunningInsecureContent: true,
+			preload: path.join(__dirname, 'preload.js')
         }
     } );
 
@@ -56,7 +59,12 @@ function openEditorWindow () {
 
     } else {
 
-        editorWindow.loadURL( `file://${ __dirname }/dist/index.html` );
+		const remoteMain = require("@electron/remote/main")
+		remoteMain.initialize()
+		remoteMain.enable(editorWindow.webContents)
+
+		editorWindow.loadFile('dist/index.html')
+        // editorWindow.loadURL( `file://${ __dirname }/dist/index.html` );
 
     }
 

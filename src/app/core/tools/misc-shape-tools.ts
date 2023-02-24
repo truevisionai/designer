@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseRoadPlanTool } from './base-road-plan-tool';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { CatmullRomCurve3, BufferGeometry, LineBasicMaterial, Line, Vector2, Vector3, CubicBezierCurve3 } from 'three';
+import { BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
-import { CubicSplineCurve } from '../shapes/cubic-spline-curve';
+import { BaseRoadPlanTool } from './base-road-plan-tool';
 
 export class MiscShapeTool extends BaseRoadPlanTool {
 
@@ -23,14 +22,14 @@ export class MiscShapeTool extends BaseRoadPlanTool {
 
     reraw () {
 
-        if (this.cps.length < 4) return; 
+        if ( this.cps.length < 4 ) return;
 
         if ( this.line != null ) SceneService.remove( this.line, false );
 
         const positions: Vector3[] = this.cps.map( value => value.position );
 
         // Create a sine-like wave
-        this.curve = new CubicBezierCurve3( positions[0], positions[1], positions[2], positions[3] );
+        this.curve = new CubicBezierCurve3( positions[ 0 ], positions[ 1 ], positions[ 2 ], positions[ 3 ] );
 
         const points = this.curve.getPoints( 50 );
 

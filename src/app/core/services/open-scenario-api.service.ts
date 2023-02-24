@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from '../models/file';
 import { Observable } from 'rxjs';
+import { IFile } from '../models/file';
 import { FileApiService } from './file-api.service';
 
 @Injectable( {

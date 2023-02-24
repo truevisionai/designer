@@ -2,30 +2,30 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { LaneRoadmarkInspectorComponent } from '../../views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
-import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
-import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
-import { KeyboardInput } from '../input';
-import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
 import { AnyControlPoint, LaneRoadMarkNode } from '../../modules/three-js/objects/control-point';
 import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
+import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
+import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
-import { PickingHelper } from '../services/picking-helper.service';
-import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
-import { SceneService } from '../services/scene.service';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { ShowLaneMarkingCommand } from '../commands/show-lane-marking-command';
-import { CommandHistory } from 'app/services/command-history';
+import { LaneRoadmarkInspectorComponent } from '../../views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
+import { AddRoadmarkNodeCommand } from '../commands/add-roadmark-node';
 import { MultiCmdsCommand } from '../commands/multi-cmds-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { AddRoadmarkNodeCommand } from '../commands/add-roadmark-node';
+import { ShowLaneMarkingCommand } from '../commands/show-lane-marking-command';
 import { UpdateRoadmarkNodeCommand } from '../commands/update-roadmark-node';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { BaseTool } from './base-tool';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -304,7 +304,7 @@ export class LaneMarkingTool extends BaseTool {
 
             new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark ),
 
-        ] )
+        ] );
 
     }
 
@@ -355,9 +355,9 @@ export class LaneMarkingTool extends BaseTool {
 
                     }
 
-                } )
+                } );
 
-            } )
+            } );
 
         } );
 

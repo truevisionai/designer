@@ -2,19 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractShapeEditor } from './abstract-shape-editor';
-import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import * as THREE from 'three';
-import { Line, BoxBufferGeometry, MeshBasicMaterial, Mesh } from 'three';
-import { SceneService } from '../services/scene.service';
-import { KeyboardInput } from 'app/core/input';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AppService } from '../services/app.service';
 import { EventEmitter } from '@angular/core';
+import { KeyboardInput } from 'app/core/input';
+import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
+import { AppService } from '../services/app.service';
+import { SceneService } from '../services/scene.service';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export interface BoxCreatedEvent {
     mesh?: Mesh;
-    geometry?: BoxBufferGeometry;
+    geometry?: BoxGeometry;
     height?: number;
     width?: number;
     length?: number;
@@ -22,7 +20,7 @@ export interface BoxCreatedEvent {
 
 export class BoxEditor extends AbstractShapeEditor {
 
-    boxGeometry = new BoxBufferGeometry();
+    boxGeometry = new BoxGeometry();
     boxMaterial = new MeshBasicMaterial( { color: 'red' } );
     boxMesh: Mesh;
 
@@ -52,7 +50,7 @@ export class BoxEditor extends AbstractShapeEditor {
 
     draw () {
 
-        this.boxGeometry = new BoxBufferGeometry( this.height, this.width, this.length );
+        this.boxGeometry = new BoxGeometry( this.height, this.width, this.length );
 
         if ( this.boxMesh ) SceneService.remove( this.boxMesh );
 

@@ -2,18 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { BoxCreatedEvent, BoxEditor } from '../editors/box-editor';
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { AddRoadObjectCommand } from 'app/core/commands/add-road-object-command';
+import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { PointerEventData } from 'app/events/pointer-event-data';
-import { Object3D } from 'three';
+import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { CommandHistory } from 'app/services/command-history';
-import { AddRoadObjectCommand } from 'app/core/commands/add-road-object-command';
-import { Subscription } from 'rxjs';
 import { RoadObjectInspectorComponent } from 'app/views/inspectors/road-object-inspector/road-object-inspector.component';
+import { Subscription } from 'rxjs';
+import { Object3D } from 'three';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { BoxCreatedEvent, BoxEditor } from '../editors/box-editor';
+import { BaseTool } from './base-tool';
 
 export abstract class BaseParkingTool extends BaseTool {
 
@@ -22,6 +22,11 @@ export abstract class BaseParkingTool extends BaseTool {
 export class ParkingBoxTool extends BaseParkingTool {
 
     name = 'ParkingBoxTool';
+    shapeEditor: BoxEditor;
+    boxCreatedSub: Subscription;
+    selectedBox: Object3D;
+    selectedObject: TvRoadObject;
+    objects: TvRoadObject[] = [];
 
     init () {
 
@@ -47,12 +52,6 @@ export class ParkingBoxTool extends BaseParkingTool {
 
         this.shapeEditor.destroy();
     }
-
-    shapeEditor: BoxEditor;
-    boxCreatedSub: Subscription;
-    selectedBox: Object3D;
-    selectedObject: TvRoadObject;
-    objects: TvRoadObject[] = [];
 
     onBoxCreated ( e: BoxCreatedEvent ) {
 

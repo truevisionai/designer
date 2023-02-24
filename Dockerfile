@@ -1,22 +1,11 @@
-# Nodejs Base image
-FROM node:12 as build
+FROM node:14.16
 
 WORKDIR /app
 
-ENV PATH /app/node_modules/.bin:$PATH
+COPY . /app
 
-# install and app dependencies
-
-COPY package.json /app/package.json
-
-RUN npm install
+RUN chown -R node /app
 
 RUN npm install -g @angular/cli
 
-# add app
-COPY . /app
-
-EXPOSE 4200 49153
-
-# start app
-CMD ng serve --host 0.0.0.0 --poll
+EXPOSE 4200

@@ -2,15 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output, ApplicationRef, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { FileNode } from "../file-node.model";
+import {
+    AfterViewInit,
+    ApplicationRef,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
+import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { ElectronService } from 'ngx-electron';
-import { MenuService, ContextMenuType } from 'app/services/menu.service';
+import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
 
 @Component( {
     selector: 'app-folder-files',
@@ -38,15 +49,16 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
         private fileService: FileService,
         private appRef: ApplicationRef,
         private projectBrowserService: ProjectBrowserService
-    ) { }
+    ) {
+    }
 
     get sortedFiles () {
 
         let sorted = [];
 
-        this.files.filter( f => f.type == 'directory' ).forEach( f => sorted.push( f ) )
+        this.files.filter( f => f.type == 'directory' ).forEach( f => sorted.push( f ) );
 
-        this.files.filter( f => f.type != 'directory' ).forEach( f => sorted.push( f ) )
+        this.files.filter( f => f.type != 'directory' ).forEach( f => sorted.push( f ) );
 
         return sorted;
     }
@@ -66,7 +78,6 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
     deleteNode ( node: FileNode ): void {
 
 
-
     }
 
     showInExplorer (): void {
@@ -81,13 +92,13 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
             } else {
 
-                this.electron.shell.openItem( this.folder.path );
+                this.electron.shell.openPath( this.folder.path );
 
             }
 
         } catch ( error ) {
 
-            SnackBar.error( "Some error occurred" );
+            SnackBar.error( 'Some error occurred' );
 
         }
 
@@ -151,7 +162,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
     reimport ( node: FileNode ) {
 
-        console.error( "method not implemented" );
+        console.error( 'method not implemented' );
 
         // if ( !node ) return;
 
@@ -161,7 +172,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
     reimportAll (): void {
 
-        console.error( "method not implemented" );
+        console.error( 'method not implemented' );
 
         // this.assets.reimportProject();
 
@@ -172,7 +183,6 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
         if ( !node ) return;
 
         if ( node.type === 'directory' ) {
-
 
 
         } else {
@@ -218,7 +228,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
         try {
 
-            AssetFactory.createNewMaterial( this.folder.path, "NewMaterial" );
+            AssetFactory.createNewMaterial( this.folder.path, 'NewMaterial' );
 
             this.refershFolder();
 
@@ -234,7 +244,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
         try {
 
-            AssetFactory.createNewSign( "NewSign", this.folder.path );
+            AssetFactory.createNewSign( 'NewSign', this.folder.path );
 
             this.refershFolder();
 
@@ -250,7 +260,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
         try {
 
-            AssetFactory.createNewRoadMarking( this.folder.path, "NewRoadMarking" );
+            AssetFactory.createNewRoadMarking( this.folder.path, 'NewRoadMarking' );
 
             this.refershFolder();
 
@@ -320,11 +330,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
     onDragStart ( $event: DragEvent, node: FileNode ) {
 
-        $event.dataTransfer.setData( "path", node.path );
+        $event.dataTransfer.setData( 'path', node.path );
 
     }
 
-    @HostListener( "window:resize" )
+    @HostListener( 'window:resize' )
     onWindowResize () {
 
         this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );

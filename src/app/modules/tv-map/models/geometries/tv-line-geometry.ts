@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvGeometryType } from '../tv-common';
+import { Maths } from 'app/utils/maths';
 import { Curve, LineCurve, Vector2, Vector3 } from 'three';
+import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
-import { Maths } from 'app/utils/maths';
 import { TvArcGeometry } from './tv-arc-geometry';
 
 export class TvLineGeometry extends TvAbstractRoadGeometry {
@@ -175,11 +175,11 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
         // return [ s1, s2, s1Valid && s2Valid, s1Valid, s2Valid ];
     }
 
-    /**
-     *
-     * @param geometry
-     * @deprecated not working currently
-     */
+	/**
+	 *
+	 * @param geometry
+	 * @deprecated not working currently
+	 */
     public getIntersections ( geometry: TvAbstractRoadGeometry ): Vector3[] {
 
         // throw new Error( "Method not implemented." );

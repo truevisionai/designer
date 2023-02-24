@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvLaneType } from './tv-common';
-import { TvLaneSection } from './tv-lane-section';
-import { TvLane } from './tv-lane';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvLaneSide, TvLaneType } from './tv-common';
+import { TvLane } from './tv-lane';
+import { TvLaneSection } from './tv-lane-section';
 import { TvMap } from './tv-map.model';
 
 describe( 'OpenDrive LaneSection', () => {
@@ -123,7 +123,7 @@ describe( 'OpenDrive LaneSection', () => {
 
         TvMapInstance.map = new TvMap();
 
-        const road = TvMapInstance.map.addRoad( "", 100, 1, -1 );
+        const road = TvMapInstance.map.addRoad( '', 100, 1, -1 );
 
         const section1 = road.addGetLaneSection( 0, false );
         const section2 = road.addGetLaneSection( 40, false );

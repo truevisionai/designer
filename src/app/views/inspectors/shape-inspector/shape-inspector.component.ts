@@ -3,10 +3,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
-import { SceneService } from '../../../core/services/scene.service';
 import * as THREE from 'three';
 import { CurvePath, Mesh, Shape, Vector3 } from 'three';
+import { IComponent } from '../../../core/game-object';
+import { SceneService } from '../../../core/services/scene.service';
 
 @Component( {
     selector: 'app-shape-inspector',
@@ -32,7 +32,7 @@ export class ShapeInspectorComponent implements OnInit, IComponent {
         if ( this._spline ) return this._spline;
         var randomPoints = [];
         for ( var i = 0; i < 10; i++ ) {
-            randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.Math.randFloat( -50, 50 ), THREE.Math.randFloat( -50, 50 ) ) );
+            randomPoints.push( new THREE.Vector3( ( i - 4.5 ) * 50, THREE.MathUtils.randFloat( -50, 50 ), THREE.MathUtils.randFloat( -50, 50 ) ) );
         }
         var randomSpline = this._spline = new THREE.CatmullRomCurve3( randomPoints );
         return randomSpline;
@@ -50,7 +50,7 @@ export class ShapeInspectorComponent implements OnInit, IComponent {
             extrudePath: curePath
         };
 
-        var geometry = new THREE.ExtrudeBufferGeometry( this.shape, extrudeSettings );
+        var geometry = new THREE.ExtrudeGeometry( this.shape, extrudeSettings );
 
         return geometry;
     }

@@ -2,13 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractShapeEditor } from './abstract-shape-editor';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import * as THREE from 'three';
-import { Line } from 'three';
-import { SceneService } from '../services/scene.service';
 import { KeyboardInput } from 'app/core/input';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import * as THREE from 'three';
+import { SceneService } from '../services/scene.service';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class LineEditor extends AbstractShapeEditor {
 

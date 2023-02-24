@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { GameObject } from 'app/core/game-object';
+import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import * as THREE from 'three';
-import { Mesh, Shape, ShapeBufferGeometry, Vector2 } from 'three';
+import { Mesh, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
-import { SceneService } from 'app/core/services/scene.service';
 import { TvMapInstance } from '../services/tv-map-source-file';
-import { GameObject } from 'app/core/game-object';
 
 export class TvSurface {
 
@@ -38,7 +38,7 @@ export class TvSurface {
 
         this.id = TvSurface.index++;
 
-        // make a blank shape to avoid any errors 
+        // make a blank shape to avoid any errors
         this.mesh = this.makeMesh( new Shape() );
 
         // TODO: we can probably avoid doing this here
@@ -75,7 +75,7 @@ export class TvSurface {
 
         this.mesh.geometry.dispose();
 
-        this.mesh.geometry = new ShapeBufferGeometry( shape );
+        this.mesh.geometry = new ShapeGeometry( shape );
 
         const uvAttribute = this.mesh.geometry.attributes.uv;
 
@@ -91,7 +91,7 @@ export class TvSurface {
 
     makeMesh ( shape: Shape ): Mesh {
 
-        const geometry = new ShapeBufferGeometry( shape );
+        const geometry = new ShapeGeometry( shape );
 
         const texture = OdTextures.terrain.clone();
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -101,7 +101,7 @@ export class TvSurface {
 
         const groundMaterial = new THREE.MeshLambertMaterial( { map: texture } );
 
-        const mesh = new GameObject( "Surface", geometry, groundMaterial );
+        const mesh = new GameObject( 'Surface', geometry, groundMaterial );
 
         mesh.position.set( 0, 0, -0.1 );
 

@@ -3,8 +3,8 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { Texture } from 'three';
 import { AssetDatabase } from 'app/services/asset-database';
+import { Texture } from 'three';
 
 @Component( {
     selector: 'app-texture-field',
@@ -21,13 +21,20 @@ export class TextureFieldComponent implements OnInit {
 
     public texture: Texture;
 
-    constructor () { }
+    constructor () {
+    }
 
-    get thumbnail () { return this.texture && this.texture.image ? this.texture.image.currentSrc : "" }
+    get thumbnail () {
+        return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
+    }
 
-    get filename () { return AssetDatabase.getAssetNameByGuid( this.guid ); }
+    get filename () {
+        return AssetDatabase.getAssetNameByGuid( this.guid );
+    }
 
-    get metadata () { return AssetDatabase.getMetadata( this.guid ); }
+    get metadata () {
+        return AssetDatabase.getMetadata( this.guid );
+    }
 
     ngOnInit () {
 
@@ -74,13 +81,13 @@ export class TextureFieldComponent implements OnInit {
         $event.preventDefault();
         $event.stopPropagation();
 
-        const guid = $event.dataTransfer.getData( "guid" );
+        const guid = $event.dataTransfer.getData( 'guid' );
 
         if ( guid ) {
 
             const metadata = AssetDatabase.getMetadata( guid );
 
-            if ( metadata.importer === "TextureImporter" ) {
+            if ( metadata.importer === 'TextureImporter' ) {
 
                 this.texture = AssetDatabase.getInstance( guid );
 

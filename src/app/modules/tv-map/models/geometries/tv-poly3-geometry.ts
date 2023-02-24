@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvGeometryType } from '../tv-common';
 import { Curve, SplineCurve, Vector2, Vector3 } from 'three';
+import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
@@ -44,7 +44,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
         const ynew = x * this.sinTheta + y * this.cosTheta;
 
         // Derivate to get heading change
-        const dCoeffs = (new Vector3( this.attr_b, this.attr_c, this.attr_d )).multiply( new Vector3( 1, 2, 3 ) );
+        const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
         const tangent = this.polyeval( sCheck, dCoeffs );
 
         posTheta.x = this.x + xnew;
@@ -85,10 +85,10 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
         const du = sCheck - this.s;
 
-        return (this.attr_a) +
-            (this.attr_b * du) +
-            (this.attr_c * du * du) +
-            (this.attr_d * du * du * du);
+        return ( this.attr_a ) +
+            ( this.attr_b * du ) +
+            ( this.attr_c * du * du ) +
+            ( this.attr_d * du * du * du );
     }
 
 }

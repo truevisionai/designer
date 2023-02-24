@@ -4,9 +4,8 @@
 
 import * as THREE from 'three';
 import { Camera, Vector3 } from 'three';
-import { IViewportController } from './i-viewport-controller';
 
-import 'three/examples/js/controls/EditorControls';
+import { IViewportController } from './i-viewport-controller';
 
 export class EditorControls extends THREE.EditorControls implements IViewportController {
 

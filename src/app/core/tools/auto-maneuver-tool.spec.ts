@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AutoManeuverTool } from './auto-maneuver-tool';
+import { TvDirection } from 'app/modules/tv-map/models/tv-common';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Maths } from 'app/utils/maths';
-import { TvDirection } from 'app/modules/tv-map/models/tv-common';
+import { AutoManeuverTool } from './auto-maneuver-tool';
 
 
 describe( 'AutoManeuverTool Test', () => {

@@ -15,8 +15,10 @@ export class RoadSignInspector implements OnInit, IComponent {
 
     public data: TvRoadSign;
 
-    constructor () { }
+    constructor () {
+    }
 
-    ngOnInit () { }
+    ngOnInit () {
+    }
 
 }

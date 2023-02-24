@@ -3,30 +3,30 @@
  */
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import * as THREE from 'three';
-import { Intersection, Object3D, WebGLRenderer, OrthographicCamera, PerspectiveCamera } from 'three';
-import { ThreeService } from 'app/modules/three-js/three.service';
 import { InputService } from 'app/core/services/input.service';
 import { EventSystem } from 'app/events/event-system.service';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { SceneService } from '../../../core/services/scene.service';
+import { ThreeService } from 'app/modules/three-js/three.service';
 import { ImporterService } from 'app/services/importer.service';
 
-import * as Stats from 'stats.js';
+// import * as Stats from 'stats.js';
+import * as THREE from 'three';
+import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from 'three';
+import { SceneService } from '../../../core/services/scene.service';
 
 @Component( {
     selector: 'app-viewport',
     templateUrl: './viewport.component.html',
     styles: [
         `.app-viewport-stats {
-            top: 12px;
-            right: 10px;
-            color: white;
-            height: 38px;
-            padding: 0px 8px !important;
-            position: absolute;
-            width: auto !important;
-        }`
+			top: 12px;
+			right: 10px;
+			color: white;
+			height: 38px;
+			padding: 0px 8px !important;
+			position: absolute;
+			width: auto !important;
+		}`
     ]
 } )
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -57,8 +57,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
     private animationId;
     private renderer: WebGLRenderer;
     private ORTHO_DRIVER = 4;
-    private stats: Stats;
-
+    // private stats: Stats;
+    private lastTime: number = Date.now();
+    private minTime: number = 100;
 
     constructor (
         private threeService: ThreeService,
@@ -91,7 +92,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit (): void {
 
         this.prevTime = ( performance || Date ).now();
-        this.beginTime = ( performance || Date ).now()
+        this.beginTime = ( performance || Date ).now();
 
         if ( this.detectWebgl() ) {
 
@@ -118,7 +119,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.renderer.autoClear = true;
 
         this.raycaster = new THREE.Raycaster();
-        this.raycaster.linePrecision = 0.25;
+        // this.raycaster.linePrecision = 0.25;
         this.raycaster.far = 10000;
 
         ////////////////////////////////////
@@ -135,9 +136,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // const self: ViewportComponent = this;
 
-        /**
-         * Commented the below as this was causing slow rendering
-         */
+		/**
+		 * Commented the below as this was causing slow rendering
+		 */
         // ( function render () {
 
         //     self.animationId = requestAnimationFrame( render );
@@ -261,12 +262,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    private lastTime: number = Date.now();
-    private minTime: number = 100;
-
     onMouseMove ( event: MouseEvent ) {
 
-        // TODO: implement GPU picking 
+        // TODO: implement GPU picking
         // https://threejs.org/examples/webgl_interactive_cubes_gpu.html
         // https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
         // https://github.com/brianxu/GPUPicker
@@ -438,7 +436,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
 
-        this.importer.importViaPath( $event.dataTransfer.getData( "path" ), "", position );
+        this.importer.importViaPath( $event.dataTransfer.getData( 'path' ), '', position );
     }
 
     @HostListener( 'window: resize', [ '$event' ] )

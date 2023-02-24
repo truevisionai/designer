@@ -3,47 +3,42 @@
  */
 
 import { Injectable } from '@angular/core';
+import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { PropPointTool } from 'app/core/tools/prop-point-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileService } from './file.service';
-import { SnackBar } from './snack-bar.service';
-// import { SceneImporterService } from './scene-importer.service';
-import 'three/examples/js/loaders/GLTFLoader.js';
-import 'three/examples/js/loaders/OBJLoader.js';
-import 'three/examples/js/controls/OrbitControls';
 
 import { Vector3 } from 'three';
-import { ModelImporterService } from './model-importer.service';
 import { AssetLoaderService } from './asset-loader.service';
-import { SceneImporterService } from './scene-importer.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { PropPointTool } from 'app/core/tools/prop-point-tool';
+import { FileService } from './file.service';
+import { ModelImporterService } from './model-importer.service';
 import { PropService } from './prop-service';
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { AssetDatabase } from './asset-database';
+import { SceneImporterService } from './scene-importer.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
 } )
 export class ImporterService {
 
-    /**
-     * This class is responsible for importing all supported files
-     * 
-     * @param od 
-     * @param osc 
-     * @param three 
-     * @param assetImporter 
-     * @param sceneImporter 
-     * @param assetService 
-     */
+	/**
+	 * This class is responsible for importing all supported files
+	 *
+	 * @param od
+	 * @param osc
+	 * @param three
+	 * @param assetImporter
+	 * @param sceneImporter
+	 * @param assetService
+	 */
     constructor (
         private od: TvMapService,
         private sceneImporter: SceneImporterService,
         private modelImporter: ModelImporterService,
         private assetService: AssetLoaderService,
         private fileService: FileService
-    ) { }
+    ) {
+    }
 
     importViaPath ( path: string, filename?: string, position?: Vector3 ) {
 
@@ -98,7 +93,7 @@ export class ImporterService {
                 break;
 
             case 'roadstyle':
-                console.error( "method not implemented" );
+                console.error( 'method not implemented' );
                 break;
 
             default:
@@ -111,7 +106,7 @@ export class ImporterService {
 
     onFileDropped ( file: File, folderPath: string ): any {
 
-        if ( !file ) SnackBar.error( "Incorrect file. Cannot import" );
+        if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
         if ( !file ) return;
 
         const extension = FileService.getExtension( file.name );
@@ -122,23 +117,39 @@ export class ImporterService {
 
         switch ( extension ) {
 
-            case 'gltf': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'gltf':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            case 'glb': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'glb':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            case 'obj': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'obj':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
             // case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
 
-            case 'jpg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'jpg':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            case 'jpeg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'jpeg':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            case 'png': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'png':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            case 'svg': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+            case 'svg':
+                copied = this.copyFileInFolder( file.path, destinationPath, extension );
+                break;
 
-            default: SnackBar.error( `${ extension } file cannot be imported` ); break;
+            default:
+                SnackBar.error( `${ extension } file cannot be imported` );
+                break;
         }
 
         if ( copied ) {
@@ -150,7 +161,7 @@ export class ImporterService {
 
     copyFileInFolder ( sourcePath: string, destinationPath: string, ext?: string ): boolean {
 
-        if ( !destinationPath ) SnackBar.error( "folderPath incorrect" );
+        if ( !destinationPath ) SnackBar.error( 'folderPath incorrect' );
         if ( !destinationPath ) return;
 
         try {

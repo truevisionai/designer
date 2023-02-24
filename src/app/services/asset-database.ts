@@ -3,8 +3,8 @@
  */
 
 import { Metadata } from 'app/core/models/metadata.model';
-import { FileUtils } from './file-utils';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import { FileUtils } from './file-utils';
 
 export class AssetDatabase {
 
@@ -30,16 +30,16 @@ export class AssetDatabase {
 
         if ( !guid ) return;
 
-        const metadata = this.getMetadata( guid )
+        const metadata = this.getMetadata( guid );
 
-        if ( metadata )
+        if ( metadata ) {
             return FileUtils.getFilenameFromPath( metadata.path );
+        }
     }
 
     static deleteFile ( file: FileNode ) {
 
         if ( file.type == 'directory' ) {
-
 
 
         } else {

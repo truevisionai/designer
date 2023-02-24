@@ -3,10 +3,10 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { Object3D, Vector3 } from 'three';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { Object3D, Vector3 } from 'three';
 
 export class PickingHelper {
 

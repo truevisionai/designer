@@ -2,19 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvLaneSide } from '../../modules/tv-map/models/tv-common';
-import { KeyboardInput } from '../input';
-import { PickingHelper } from '../services/picking-helper.service';
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { AppInspector } from '../inspector';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { TvLaneSide } from '../../modules/tv-map/models/tv-common';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { KeyboardInput } from '../input';
+import { AppInspector } from '../inspector';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { BaseTool } from './base-tool';
 
 export class LaneAddTool extends BaseTool {
 

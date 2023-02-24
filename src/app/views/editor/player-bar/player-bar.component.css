@@ -3,11 +3,11 @@
  */
 
 .app-player-bar {
-    top: 12px;
-    right: 10px;
-    background: #424242;
-    height: 38px;
-    padding: 0px 4px !important;
-    position: absolute;
-    width: auto !important;
+	top: 12px;
+	right: 10px;
+	background: #424242;
+	height: 38px;
+	padding: 0px 4px !important;
+	position: absolute;
+	width: auto !important;
 }

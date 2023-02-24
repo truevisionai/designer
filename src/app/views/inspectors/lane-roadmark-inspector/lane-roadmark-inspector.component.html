@@ -2,7 +2,7 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="inspector-form-container" *ngIf="roadMark">
+<div *ngIf="roadMark" class="inspector-form-container">
 
     <mat-form-field>
         <input [(ngModel)]="roadMark.sOffset" disabled matInput placeholder="S" type="number">
@@ -35,9 +35,7 @@
     </mat-form-field>
 
     <mat-form-field>
-        <input (ngModelChange)="onWidthChanged($event, roadMark)" [ngModel]="roadMark.width" matInput
-               placeholder="Width"
-               type="number">
+        <input (ngModelChange)="onWidthChanged($event, roadMark)" [ngModel]="roadMark.width" matInput placeholder="Width" type="number">
     </mat-form-field>
 
 </div>

@@ -3,20 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { map } from 'rxjs/operators';
-import { JwtService } from './jwt.service';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user';
+import { ApiService } from './api.service';
+import { JwtService } from './jwt.service';
 
 @Injectable( {
     providedIn: 'root'
 } )
 export class AuthService {
 
-    private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
+    private currentUserSubject: BehaviorSubject<User>;
 
     constructor ( private api: ApiService, private jwt: JwtService ) {
 

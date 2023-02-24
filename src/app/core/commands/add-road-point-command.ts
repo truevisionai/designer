@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
-import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadPointCommand extends OdBaseCommand {
 

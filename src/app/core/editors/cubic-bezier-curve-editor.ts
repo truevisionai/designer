@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { KeyboardInput } from '../input';
 import * as THREE from 'three';
 import { Curve, Object3D } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { AbstractShapeEditor } from './abstract-shape-editor';
-import { SceneService } from '../services/scene.service';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
+import { KeyboardInput } from '../input';
+import { SceneService } from '../services/scene.service';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class CubicBezierCurveEditor extends AbstractShapeEditor {
 

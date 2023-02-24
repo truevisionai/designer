@@ -3,20 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-
-import * as THREE from 'three';
-import { saveAs } from 'file-saver';
+import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { IFile } from 'app/core/models/file';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { IFile } from 'app/core/models/file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileService } from './file.service';
+import { saveAs } from 'file-saver';
 import { ElectronService } from 'ngx-electron';
-import { SceneExporterService } from './scene-exporter.service';
-import { CommandHistory } from './command-history';
-import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
+import { CommandHistory } from './command-history';
+import { FileService } from './file.service';
+import { SceneExporterService } from './scene-exporter.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -28,7 +28,8 @@ export class ExporterService {
         private fileService: FileService,
         private electron: ElectronService,
         private sceneExporter: SceneExporterService
-    ) { }
+    ) {
+    }
 
     exportScene () {
 
@@ -49,7 +50,7 @@ export class ExporterService {
 
         this.clearTool();
 
-        const exporter = new THREE.GLTFExporter();
+        const exporter = new GLTFExporter();
 
         exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
 
@@ -59,7 +60,9 @@ export class ExporterService {
 
             // forceIndices: true, forcePowerOfTwoTextures: true
             // to allow compatibility with facebook
-        }, { binary: true, forceIndices: true, forcePowerOfTwoTextures: true } );
+        }, ( error ) => {
+
+        }, { binary: true, forceIndices: true } );
 
     }
 
@@ -69,7 +72,7 @@ export class ExporterService {
 
         const options = {};
 
-        const exporter = new THREE.GLTFExporter();
+        const exporter = new GLTFExporter();
 
         exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
 
@@ -78,6 +81,10 @@ export class ExporterService {
             const filename = 'road.gltf';
 
             saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
+
+        }, ( error ) => {
+
+            console.error( error );
 
         }, options );
 
@@ -93,10 +100,12 @@ export class ExporterService {
 
         if ( this.electron.isElectronApp ) {
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
                 this.odService.currentFile.path = file.path;
                 this.odService.currentFile.name = file.name;
+
+				SnackBar.success(`File saved ${file.path}`);
 
             } );
 

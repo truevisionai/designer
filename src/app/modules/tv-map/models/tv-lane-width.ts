@@ -2,15 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Object3D } from 'three';
 import { ThirdOrderPolynom } from './third-order-polynom';
-import { Math, Object3D } from 'three';
 
 export class TvLaneWidth extends ThirdOrderPolynom {
 
     public mesh?: Object3D;
-
-    private _laneId: number;
-    private _roadId: number;
 
     constructor ( s: number, a: number, b: number, c: number, d: number, laneId?: number, roadId?: number ) {
 
@@ -21,6 +18,8 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 
     }
 
+    private _laneId: number;
+
     get laneId () {
         return this._laneId;
     }
@@ -28,6 +27,8 @@ export class TvLaneWidth extends ThirdOrderPolynom {
     set laneId ( value ) {
         this._laneId = value;
     }
+
+    private _roadId: number;
 
     get roadId () {
         return this._roadId;

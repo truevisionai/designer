@@ -7,11 +7,11 @@ import { MonoBehaviour } from 'app/core/components/mono-behaviour';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
-import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
-import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
 import { Time } from '../../../core/time';
+import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
+import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
 
 @Component( {
     selector: 'app-status-bar',

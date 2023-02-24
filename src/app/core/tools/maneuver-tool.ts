@@ -2,35 +2,35 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/services/command-history';
-import { LanePathFactory } from '../factories/lane-path-factory.service';
-import { KeyboardInput } from '../input';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { MultiCmdsCommand } from '../commands/multi-cmds-command';
-import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
-import { Vector3 } from 'three';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { PickingHelper } from '../services/picking-helper.service';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { TvContactPoint, TvElementType, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { SceneService } from '../services/scene.service';
+import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { OdLaneDirectionBuilder } from 'app/modules/tv-map/builders/od-lane-direction-builder';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { AutoSpline } from '../shapes/auto-spline';
-import { RoadFactory } from '../factories/road-factory.service';
+import { TvContactPoint, TvElementType, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
 import { JunctionEntryInspector } from 'app/views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
+import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
+import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
+import { Vector3 } from 'three';
 import { AddConnectionCommand } from '../commands/add-connection-command';
+import { MultiCmdsCommand } from '../commands/multi-cmds-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { UpdateRoadPointCommand } from '../commands/update-road-point-command';
+import { LanePathFactory } from '../factories/lane-path-factory.service';
+import { RoadFactory } from '../factories/road-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { AutoSpline } from '../shapes/auto-spline';
+import { BaseTool } from './base-tool';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
@@ -317,7 +317,7 @@ export class ManeuverTool extends BaseTool {
 
             CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-            SnackBar.error( "Select a different entry/exit" );
+            SnackBar.error( 'Select a different entry/exit' );
 
             return;
         }
@@ -328,7 +328,7 @@ export class ManeuverTool extends BaseTool {
 
             CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-            SnackBar.error( "Cannot connect" );
+            SnackBar.error( 'Cannot connect' );
 
             return;
         }
@@ -352,7 +352,7 @@ export class ManeuverTool extends BaseTool {
 
                 CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-                SnackBar.error( "Connection already exists" );
+                SnackBar.error( 'Connection already exists' );
 
             } else if ( result.connectionFound && !result.laneLinkFound ) {
 
@@ -366,7 +366,7 @@ export class ManeuverTool extends BaseTool {
 
                 this.createNewConnection( entry, exit, junction );
 
-                SnackBar.success( "Connection created" );
+                SnackBar.success( 'Connection created' );
             }
 
         } catch ( error ) {
@@ -380,7 +380,7 @@ export class ManeuverTool extends BaseTool {
 
     createNewConnection ( entry: JunctionEntryObject, exit: JunctionEntryObject, junction: TvJunction ) {
 
-        // for connection 
+        // for connection
         // create road
         // create connection and link
         // set neighbours
@@ -416,8 +416,8 @@ export class ManeuverTool extends BaseTool {
 
 
         // set value command - connectingRoad
-        // set value command - lanePathObject 
-        // set 
+        // set value command - lanePathObject
+        // set
 
 
         CommandHistory.executeAll( [
@@ -435,21 +435,18 @@ export class ManeuverTool extends BaseTool {
         ] );
 
 
-
-
-
     }
 
-    /**
-     * 
-     * @deprecated currently not being used 
-     * @param connection 
-     * @param entry 
-     * @param exit 
-     * @param side 
-     * @param laneWidth 
-     * @param junction 
-     */
+	/**
+	 *
+	 * @deprecated currently not being used
+	 * @param connection
+	 * @param entry
+	 * @param exit
+	 * @param side
+	 * @param laneWidth
+	 * @param junction
+	 */
     createLink (
         connection: TvJunctionConnection,
         entry: JunctionEntryObject,
@@ -474,9 +471,9 @@ export class ManeuverTool extends BaseTool {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        connectionRoad.setPredecessor( "road", entry.road.id, entry.contact );
+        connectionRoad.setPredecessor( 'road', entry.road.id, entry.contact );
 
-        connectionRoad.setSuccessor( "road", exit.road.id, exit.contact );
+        connectionRoad.setSuccessor( 'road', exit.road.id, exit.contact );
 
         connectingLane.setPredecessor( entry.lane.id );
 
@@ -486,21 +483,21 @@ export class ManeuverTool extends BaseTool {
 
         if ( entry.contact === TvContactPoint.START ) {
 
-            entry.road.setPredecessor( "junction", junction.id );
+            entry.road.setPredecessor( 'junction', junction.id );
 
         } else if ( entry.contact === TvContactPoint.END ) {
 
-            entry.road.setSuccessor( "junction", junction.id );
+            entry.road.setSuccessor( 'junction', junction.id );
 
         }
 
         if ( exit.contact === TvContactPoint.START ) {
 
-            exit.road.setPredecessor( "junction", junction.id );
+            exit.road.setPredecessor( 'junction', junction.id );
 
         } else if ( exit.contact === TvContactPoint.END ) {
 
-            exit.road.setSuccessor( "junction", junction.id );
+            exit.road.setSuccessor( 'junction', junction.id );
 
         }
 
@@ -518,7 +515,7 @@ export class ManeuverTool extends BaseTool {
 
     createConnectingRoad ( entry, exit, side, laneWidth, junction ) {
 
-        const spline = this.createSpline( entry, exit, side )
+        const spline = this.createSpline( entry, exit, side );
 
         const connectingRoad = this.map.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
 
@@ -550,20 +547,20 @@ export class ManeuverTool extends BaseTool {
     findEntryExitSide ( a: JunctionEntryObject, b: JunctionEntryObject ) {
 
         const isAEntry =
-            ( a.lane.direction === "forward" && a.contact === TvContactPoint.END ) ||
-            ( a.lane.direction === "backward" && a.contact === TvContactPoint.START );
+            ( a.lane.direction === 'forward' && a.contact === TvContactPoint.END ) ||
+            ( a.lane.direction === 'backward' && a.contact === TvContactPoint.START );
 
         const isBEntry =
-            ( b.lane.direction === "forward" && b.contact === TvContactPoint.END ) ||
-            ( b.lane.direction === "backward" && b.contact === TvContactPoint.START );
+            ( b.lane.direction === 'forward' && b.contact === TvContactPoint.END ) ||
+            ( b.lane.direction === 'backward' && b.contact === TvContactPoint.START );
 
         const isAExit =
-            ( a.lane.direction === "forward" && a.contact === TvContactPoint.START ) ||
-            ( a.lane.direction === "backward" && a.contact === TvContactPoint.END );
+            ( a.lane.direction === 'forward' && a.contact === TvContactPoint.START ) ||
+            ( a.lane.direction === 'backward' && a.contact === TvContactPoint.END );
 
         const isBExit =
-            ( b.lane.direction === "forward" && b.contact === TvContactPoint.START ) ||
-            ( b.lane.direction === "backward" && b.contact === TvContactPoint.END );
+            ( b.lane.direction === 'forward' && b.contact === TvContactPoint.START ) ||
+            ( b.lane.direction === 'backward' && b.contact === TvContactPoint.END );
 
 
         if ( isAEntry && isBExit ) {
@@ -572,7 +569,7 @@ export class ManeuverTool extends BaseTool {
                 entry: a,
                 exit: b,
                 side: TvLaneSide.RIGHT
-            }
+            };
 
             // return [ a, b, LaneSide.LEFT ];
 
@@ -582,7 +579,7 @@ export class ManeuverTool extends BaseTool {
                 entry: b,
                 exit: a,
                 side: TvLaneSide.RIGHT
-            }
+            };
 
             // return [ b, a, LaneSide.RIGHT ];
 
@@ -805,7 +802,7 @@ export class ManeuverTool extends BaseTool {
             endPos: bPosTheta,
             a2: a2,
             b2: b2,
-        }
+        };
     }
 
     findJunction ( a: JunctionEntryObject, b: JunctionEntryObject ) {
@@ -818,7 +815,7 @@ export class ManeuverTool extends BaseTool {
 
             if ( !junction.position && junction.connections.size > 0 ) {
 
-                const firstconnection = [ ...junction.connections.values() ][ 0 ]
+                const firstconnection = [ ...junction.connections.values() ][ 0 ];
 
                 const connectionRoad = this.map.getRoadById( firstconnection.connectingRoad );
 
@@ -883,7 +880,7 @@ export class ManeuverTool extends BaseTool {
 
         if ( !connectingLane ) connectingLane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-        if ( !connectingLane ) throw new Error( "connection lane not found" );
+        if ( !connectingLane ) throw new Error( 'connection lane not found' );
 
         if ( !connectingLane ) return;
 
@@ -903,27 +900,27 @@ export class ManeuverTool extends BaseTool {
         outgoing: JunctionEntryObject
     ): void {
 
-        connectingRoad.setPredecessor( "road", incoming.road.id, incoming.contact );
+        connectingRoad.setPredecessor( 'road', incoming.road.id, incoming.contact );
 
-        connectingRoad.setSuccessor( "road", outgoing.road.id, outgoing.contact );
+        connectingRoad.setSuccessor( 'road', outgoing.road.id, outgoing.contact );
 
         if ( incoming.contact === TvContactPoint.START ) {
 
-            incoming.road.setPredecessor( "junction", junction.id );
+            incoming.road.setPredecessor( 'junction', junction.id );
 
         } else if ( incoming.contact === TvContactPoint.END ) {
 
-            incoming.road.setSuccessor( "junction", junction.id );
+            incoming.road.setSuccessor( 'junction', junction.id );
 
         }
 
         if ( outgoing.contact === TvContactPoint.START ) {
 
-            outgoing.road.setPredecessor( "junction", junction.id );
+            outgoing.road.setPredecessor( 'junction', junction.id );
 
         } else if ( outgoing.contact === TvContactPoint.END ) {
 
-            outgoing.road.setSuccessor( "junction", junction.id );
+            outgoing.road.setSuccessor( 'junction', junction.id );
 
         }
     }

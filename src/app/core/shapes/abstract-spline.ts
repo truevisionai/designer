@@ -2,18 +2,37 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { EventEmitter } from '@angular/core';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+
+import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
 
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { EventEmitter } from '@angular/core';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-
 export abstract class AbstractSpline {
 
     abstract type: string;
+    public controlPoints: BaseControlPoint[] = [];
+    // tcboxgeometry = new THREE.BoxBufferGeometry( 0.7, 0.3, 0.7 );
+    protected controlPointAdded = new EventEmitter<BaseControlPoint>();
+    protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
+    protected meshAddedInScene: boolean;
+
+    constructor ( public closed = true, public tension = 0.5 ) {
+
+        this.init();
+
+    }
+
+    get scene () {
+        return SceneService.scene;
+    }
+
+    get controlPointPositions (): Vector3[] {
+        return this.controlPoints.map( point => point.position );
+    }
 
     abstract init (): void;
 
@@ -25,29 +44,9 @@ export abstract class AbstractSpline {
 
     abstract exportGeometries (): TvAbstractRoadGeometry[];
 
-    // tcboxgeometry = new THREE.BoxBufferGeometry( 0.7, 0.3, 0.7 );
-    protected controlPointAdded = new EventEmitter<BaseControlPoint>();
-    protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
-
-    public controlPoints: BaseControlPoint[] = [];
-
-    protected meshAddedInScene: boolean;
-
-    constructor ( public closed = true, public tension = 0.5 ) {
-
-        this.init();
-
-    }
-
-    get scene () { return SceneService.scene; }
-
-    get controlPointPositions (): Vector3[] {
-        return this.controlPoints.map( point => point.position );
-    }
-
     clear () {
 
-        throw new Error( "Method not implemented." );
+        throw new Error( 'Method not implemented.' );
 
     }
 
@@ -59,7 +58,7 @@ export abstract class AbstractSpline {
 
     addControlPointAtNew ( position: Vector3 ): RoadControlPoint {
 
-        throw new Error( "method not implemented" );
+        throw new Error( 'method not implemented' );
 
     }
 
@@ -136,31 +135,34 @@ export abstract class AbstractSpline {
 
     updateControlPoint ( cp: BaseControlPoint, id: number, cpobjidx?: any ) {
 
-        cp[ 'tag' ] = "cp"; cp[ 'tagindex' ] = id;
+        cp[ 'tag' ] = 'cp';
+        cp[ 'tagindex' ] = id;
 
         cp.userData.is_button = true;
         cp.userData.is_control_point = true;
         cp.userData.is_selectable = true;
 
-        if ( cpobjidx == undefined )
+        if ( cpobjidx == undefined ) {
             this.controlPoints.push( cp );
-        else
+        } else {
             this.controlPoints.splice( cpobjidx, 0, cp );
+        }
     }
 
-    /**
-     * 
-     * @deprecated dont use this make another internal for any sub class
-     * @param tag 
-     * @param id 
-     * @param cpobjidx 
-     */
-    createControlPoint ( tag: "cp" | "tpf" | "tpb", id: number, cpobjidx?: any ): BaseControlPoint {
+	/**
+	 *
+	 * @deprecated dont use this make another internal for any sub class
+	 * @param tag
+	 * @param id
+	 * @param cpobjidx
+	 */
+    createControlPoint ( tag: 'cp' | 'tpf' | 'tpb', id: number, cpobjidx?: any ): BaseControlPoint {
 
         // let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
         let controlPointObject = new RoadControlPoint( null, new Vector3(), tag, id, cpobjidx );
 
-        controlPointObject[ 'tag' ] = tag; controlPointObject[ 'tagindex' ] = id;
+        controlPointObject[ 'tag' ] = tag;
+        controlPointObject[ 'tagindex' ] = id;
 
         controlPointObject.userData.is_button = true;
         controlPointObject.userData.is_control_point = true;
@@ -168,10 +170,11 @@ export abstract class AbstractSpline {
 
         this.scene.add( controlPointObject );
 
-        if ( cpobjidx == undefined )
+        if ( cpobjidx == undefined ) {
             this.controlPoints.push( controlPointObject );
-        else
+        } else {
             this.controlPoints.splice( cpobjidx, 0, controlPointObject );
+        }
 
         this.controlPointAdded.emit( controlPointObject );
 

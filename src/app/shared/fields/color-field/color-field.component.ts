@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, Input, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { Color } from 'three';
 
@@ -13,9 +13,9 @@ import { Color } from 'three';
 } )
 export class ColorFieldComponent extends AbstractFieldComponent implements OnInit {
 
-    /**
-       * This is the toogle button elemenbt, look at HTML and see its defination
-       */
+	/**
+	 * This is the toogle button elemenbt, look at HTML and see its defination
+	 */
     @ViewChild( 'toggleButton' ) toggleButton: ElementRef;
     @ViewChild( 'colorPicker' ) colorPicker: ElementRef;
 
@@ -25,7 +25,9 @@ export class ColorFieldComponent extends AbstractFieldComponent implements OnIni
 
     @Input() position = 'top';
 
-    get hex () { return '#' + this.value.getHexString(); }
+    get hex () {
+        return '#' + this.value.getHexString();
+    }
 
     set hex ( value: string ) {
 
@@ -78,7 +80,7 @@ export class ColorFieldComponent extends AbstractFieldComponent implements OnIni
 
         if ( !this.colorPicker.nativeElement.contains( event.target ) ) {
 
-            // clicked outside 
+            // clicked outside
             this.isPickerOpen = false;
         }
 

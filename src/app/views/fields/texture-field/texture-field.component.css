@@ -3,12 +3,12 @@
  */
 
 .texture-card {
-    padding: 8px;
+	padding: 8px;
 }
 
 .texture-card-thumbnail {
-    float: left;
-    margin-right: 8px;
-    height: 24px !important;
-    width: 24px !important;
+	float: left;
+	margin-right: 8px;
+	height: 24px !important;
+	width: 24px !important;
 }

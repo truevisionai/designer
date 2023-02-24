@@ -2,23 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Maths } from '../../../utils/maths';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvJunctionPriority } from './tv-junction-priority';
-import { TvJunctionController } from './tv-junction-controller';
 import { Vector3 } from 'three';
+import { Maths } from '../../../utils/maths';
 import { TvContactPoint } from './tv-common';
+import { TvJunctionConnection } from './tv-junction-connection';
+import { TvJunctionController } from './tv-junction-controller';
+import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
 
 export class TvJunction {
 
     public position?: Vector3;
-
-    private _priorities: TvJunctionPriority[] = [];
-    private _controllers: TvJunctionController[] = [];
-    private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
-    private _name: string;
-    private _id: number;
     private lastAddedJunctionConnectionIndex: number;
     private lastAddedJunctionPriorityIndex: number;
     private lastAddedJunctionControllerIndex: number;
@@ -28,13 +22,7 @@ export class TvJunction {
         this._id = id;
     }
 
-    get controllers (): TvJunctionController[] {
-        return this._controllers;
-    }
-
-    set controllers ( value: TvJunctionController[] ) {
-        this._controllers = value;
-    }
+    private _priorities: TvJunctionPriority[] = [];
 
     get priorities (): TvJunctionPriority[] {
         return this._priorities;
@@ -44,6 +32,18 @@ export class TvJunction {
         this._priorities = value;
     }
 
+    private _controllers: TvJunctionController[] = [];
+
+    get controllers (): TvJunctionController[] {
+        return this._controllers;
+    }
+
+    set controllers ( value: TvJunctionController[] ) {
+        this._controllers = value;
+    }
+
+    private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
+
     get connections (): Map<number, TvJunctionConnection> {
         return this._connections;
     }
@@ -52,13 +52,7 @@ export class TvJunction {
         this._connections = value;
     }
 
-    get id (): number {
-        return this._id;
-    }
-
-    set id ( value: number ) {
-        this._id = value;
-    }
+    private _name: string;
 
     get name (): string {
         return this._name;
@@ -68,15 +62,25 @@ export class TvJunction {
         this._name = value;
     }
 
-    /**
-     * Adds a junction connection to the junction
-     *
-     * @param id ID within the junction
-     * @param incomingRoad ID of the incoming road
-     * @param connectingRoad ID of the connecting path
-     * @param contactPoint Contact point on the connecting road (start or end)
-     */
-    public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad? ): TvJunctionConnection {
+    private _id: number;
+
+    get id (): number {
+        return this._id;
+    }
+
+    set id ( value: number ) {
+        this._id = value;
+    }
+
+	/**
+	 * Adds a junction connection to the junction
+	 *
+	 * @param id ID within the junction
+	 * @param incomingRoad ID of the incoming road
+	 * @param connectingRoad ID of the connecting path
+	 * @param contactPoint Contact point on the connecting road (start or end)
+	 */
+    public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad?): TvJunctionConnection {
 
         const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
@@ -85,13 +89,13 @@ export class TvJunction {
         return connection;
     }
 
-    /**
-     * Adds a junction connection to the junction
-     *
-     * @param incomingRoad ID of the incoming road
-     * @param connectingRoad ID of the connecting path
-     * @param contactPoint Contact point on the connecting road (start or end)
-     */
+	/**
+	 * Adds a junction connection to the junction
+	 *
+	 * @param incomingRoad ID of the incoming road
+	 * @param connectingRoad ID of the connecting path
+	 * @param contactPoint Contact point on the connecting road (start or end)
+	 */
     public addNewConnection (
         incomingRoad: number,
         connectingRoad: number,
@@ -108,7 +112,7 @@ export class TvJunction {
 
     removeConnectionByUuid ( uuid: string ) {
 
-        throw new Error( "method not implemented" );
+        throw new Error( 'method not implemented' );
 
     }
 
@@ -130,13 +134,13 @@ export class TvJunction {
 
     }
 
-    /**
-     * Adds a priority parameter to the junction
-     *
-     * @param {number} high ID of the connecting road with higher priority
-     * @param {number} low ID of the connecting road with lower priority
-     * @returns {number}
-     */
+	/**
+	 * Adds a priority parameter to the junction
+	 *
+	 * @param {number} high ID of the connecting road with higher priority
+	 * @param {number} low ID of the connecting road with lower priority
+	 * @returns {number}
+	 */
     public addJunctionPriority ( high: number, low: number ): TvJunctionPriority {
 
         const priority = new TvJunctionPriority( high, low );
@@ -146,13 +150,13 @@ export class TvJunction {
         return priority;
     }
 
-    /**
-     * Adds a controller to the junction
-     *
-     * @param {number} id ID of the controller to add
-     * @param {string} type Type of control
-     * @returns {number}
-     */
+	/**
+	 * Adds a controller to the junction
+	 *
+	 * @param {number} id ID of the controller to add
+	 * @param {string} type Type of control
+	 * @returns {number}
+	 */
     public addJunctionController ( id: number, type: string ): TvJunctionController {
 
         const controller = new TvJunctionController( id, type );
@@ -348,11 +352,11 @@ export class TvJunction {
 
         if ( !hasConnections ) {
 
-            if ( road.successor && road.successor.elementType === "junction" && road.successor.elementId === this.id ) {
+            if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
 
                 road.successor = null;
 
-            } else if ( road.predecessor && road.predecessor.elementType === "junction" && road.predecessor.elementId === this.id ) {
+            } else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
 
                 road.predecessor = null;
 

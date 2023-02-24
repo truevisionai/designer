@@ -2,17 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { PointEditor } from '../editors/point-editor';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { Subscription } from 'rxjs';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { KeyboardInput } from '../input';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { PropService } from 'app/services/prop-service';
 import { SnackBar } from 'app/services/snack-bar.service';
+import {
+    PropPolygonInspectorComponent,
+    PropPolygonInspectorData
+} from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
+import { Subscription } from 'rxjs';
+import { PointEditor } from '../editors/point-editor';
+import { KeyboardInput } from '../input';
 import { AppInspector } from '../inspector';
-import { PropPolygonInspectorData, PropPolygonInspectorComponent } from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
+import { BaseTool } from './base-tool';
 
 export class PropPolygonTool extends BaseTool {
 
@@ -59,9 +62,9 @@ export class PropPolygonTool extends BaseTool {
 
                 cp.mainObject = polygon;
 
-                this.shapeEditor.controlPoints.push( cp )
+                this.shapeEditor.controlPoints.push( cp );
 
-            } )
+            } );
         } );
 
         this.keyDownSub = KeyboardInput.keyDown
@@ -145,7 +148,7 @@ export class PropPolygonTool extends BaseTool {
 
         const prop = PropService.getProp();
 
-        if ( !prop ) SnackBar.error( "Select a prop from the project browser" );
+        if ( !prop ) SnackBar.error( 'Select a prop from the project browser' );
 
         if ( !prop ) this.shapeEditor.removeControlPoint( cp );
 
@@ -179,7 +182,7 @@ export class PropPolygonTool extends BaseTool {
 
     private onControlPointMoved () {
 
-        this.polygon.spline.update()
+        this.polygon.spline.update();
 
         this.showInspector( this.polygon, this.point );
 
@@ -187,7 +190,7 @@ export class PropPolygonTool extends BaseTool {
 
     private onDeletePressed ( e: KeyboardEvent ) {
 
-        if ( e.key === "Delete" && this.polygon ) {
+        if ( e.key === 'Delete' && this.polygon ) {
 
             this.polygon.delete();
 
@@ -219,7 +222,6 @@ export class PropPolygonTool extends BaseTool {
             AppInspector.setInspector( PropPolygonInspectorComponent, data );
         }
     }
-
 
 
 }

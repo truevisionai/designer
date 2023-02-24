@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3, BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { MAX_CTRL_POINTS, ARC_TESSEL } from "./spline-config";
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
+import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
 
 export class RoundLine {
 
@@ -19,7 +19,7 @@ export class RoundLine {
 
         const geometry = new BufferGeometry();
 
-        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * ARC_TESSEL * 3 ), 3 ) );
+        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * ARC_TESSEL * 3 ), 3 ) );
 
         this.curveType = 'roundline';
 

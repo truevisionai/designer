@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../models/tv-road.model';
-import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { OdSignalBuilder } from '../builders/od-signal-builder';
+import { TvRoadSignal } from '../models/tv-road-signal.model';
+import { TvRoad } from '../models/tv-road.model';
 
 export class TvSignalHelper {
 

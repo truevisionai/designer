@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { FileService } from './file.service';
 import { IFile } from '../core/models/file';
+import { FileService } from './file.service';
+import { StorageService } from './storage.service';
 
 @Injectable( {
     providedIn: 'root'

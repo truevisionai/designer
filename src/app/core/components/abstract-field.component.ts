@@ -2,8 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+@Component( {
+    selector: 'app-abstract-field-inspector',
+    template: '',
+} )
 export abstract class AbstractFieldComponent {
 
     @Input() disabled: boolean = false;
@@ -12,22 +16,12 @@ export abstract class AbstractFieldComponent {
 
     @Input() label: string = '';
 
-    /**
-     * @deprecated use changed event instead
-     */
+	/**
+	 * @deprecated use changed event instead
+	 */
     @Output() valueChanged = new EventEmitter<any>();
 
     @Output() changed = new EventEmitter<any>();
-
-    onModelChanged ( $event: any ) {
-
-        this.value = $event;
-
-        this.valueChanged.emit( this.value );
-
-        this.changed.emit( this.value );
-
-    }
 
     get isParameter (): boolean {
 
@@ -57,6 +51,16 @@ export abstract class AbstractFieldComponent {
             this.value = value;
 
         }
+
+    }
+
+    onModelChanged ( $event: any ) {
+
+        this.value = $event;
+
+        this.valueChanged.emit( this.value );
+
+        this.changed.emit( this.value );
 
     }
 

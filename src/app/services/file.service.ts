@@ -8,6 +8,8 @@ import { IFile } from '../core/models/file';
 import { FileUtils } from './file-utils';
 import { SnackBar } from './snack-bar.service';
 
+declare const versions;
+
 @Injectable( {
     providedIn: 'root'
 } )
@@ -19,7 +21,7 @@ export class FileService {
     public fileSaved = new EventEmitter<IFile>();
 
     public fs: any;
-    private path: any;
+    public path: any;
     private util: any;
 
     constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
@@ -28,31 +30,41 @@ export class FileService {
 
         if ( this.electronService.isElectronApp ) {
 
-            this.fs = this.electronService.remote.require( 'fs' );
-            this.path = this.electronService.remote.require( 'path' );
-            this.util = this.electronService.remote.require( 'util' );
+            this.fs = this.remote.require( 'fs' );
+            this.path = this.remote.require( 'path' );
+            this.util = this.remote.require( 'util' );
 
         }
 
     }
 
-    get userDocumentFolder () { return this.electronService.remote.app.getPath( 'documents' ); }
+    get remote () { return versions.remote(); }
 
-    get currentDirectory () { return this.electronService.ipcRenderer.sendSync( "current-directory" ); }
+    get userDocumentFolder () {
+        return this.remote.app.getPath( 'documents' );
+    }
+
+    get currentDirectory () {
+        return this.electronService.ipcRenderer.sendSync( 'current-directory' );
+    }
 
     get projectFolder () {
 
         if ( this.electronService.isWindows ) {
 
-            return this.userDocumentFolder + "\\Truevision"
+            return this.userDocumentFolder + '\\Truevision';
 
         } else if ( this.electronService.isLinux ) {
 
-            return this.userDocumentFolder + "/Truevision"
+            return this.userDocumentFolder + '/Truevision';
+
+        } else if ( this.electronService.isMacOS ) {
+
+            return this.userDocumentFolder + '/Truevision';
 
         } else {
 
-            throw new Error( "Unsupported platform. Please contact support for more details." );
+            throw new Error( 'Unsupported platform. Please contact support for more details.' );
 
         }
     }
@@ -103,20 +115,22 @@ export class FileService {
         return extension;
     }
 
-    async showAsyncDialog (): Promise<string[]> {
+    static getFilenameFromPath ( path: string ): string {
+
+        return FileUtils.getFilenameFromPath( path );
+
+    }
+
+    async showAsyncDialog (): Promise<Electron.OpenDialogReturnValue> {
 
         const options = {
             title: 'Select file',
             buttonLabel: 'Import',
-            filters: [
-                {
-                    name: null,
-                }
-            ],
+            filters: [],
             message: 'Select file'
         };
 
-        return Promise.resolve( this.electronService.remote.dialog.showOpenDialog( null, {} ) );
+        return this.remote.dialog.showOpenDialog( options );
     }
 
     async readAsync ( path ) {
@@ -142,17 +156,25 @@ export class FileService {
             message: 'Select file'
         };
 
-        this.electronService.remote.dialog.showOpenDialog( null, options, ( filepaths ) => {
-
-            if ( filepaths != null ) this.readFile( filepaths[ 0 ], type, callbackFn );
-
-        } );
+		this.showOpenDialog( options, type, callbackFn );
     }
 
-    /**
-     *
-     * @deprecated use import
-     */
+	showOpenDialog ( options: Electron.OpenDialogOptions, type, callbackFn: any = null ) {
+
+		this.remote.dialog.showOpenDialog( options ).then( ( res: Electron.OpenDialogReturnValue ) => {
+
+			if ( res.canceled ) SnackBar.show( 'File import cancelled' );
+
+			if ( res.filePaths != null ) this.readFile( res.filePaths[ 0 ], type, callbackFn );
+
+		} );
+
+	}
+
+	/**
+	 *
+	 * @deprecated use import
+	 */
     importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
 
         this.import( path, type, extensions, null );
@@ -164,7 +186,7 @@ export class FileService {
         this.fs.readFile( path, 'utf-8', ( err, data ) => {
 
             if ( err ) {
-                alert( 'An error ocurred reading the file :' + err.message );
+                SnackBar.error( 'An error ocurred reading the file :' + err.message );
                 return;
             }
 
@@ -173,7 +195,7 @@ export class FileService {
             file.path = path;
             file.contents = data;
             file.type = type;
-            file.updatedAt = new Date()
+            file.updatedAt = new Date();
 
             // if ( callbackFn != null ) callbackFn( file );
 
@@ -200,26 +222,28 @@ export class FileService {
             defaultPath: directory
         };
 
-        this.electronService.remote.dialog.showSaveDialog( null, options, ( fullPath ) => {
+        this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
-            if ( fullPath != null ) {
+			let fullPath = res.filePath;
 
-                // append the extension if not present in the path
-                if ( !fullPath.includes( `.${ extension }` ) ) {
+			if ( fullPath != null ) {
 
-                    fullPath = fullPath + "." + extension;
+				// append the extension if not present in the path
+				if ( !fullPath.includes( `.${ extension }` ) ) {
 
-                }
+					fullPath = fullPath + '.' + extension;
 
-                this.writeFile( fullPath, contents, callbackFn );
+				}
 
-            } else {
+				this.writeFile( fullPath, contents, callbackFn );
 
-                console.error( "Could not save file" );
+			} else {
 
-            }
+				SnackBar.error( 'Could not save file' );
 
-        } );
+			}
+
+		} );
 
     }
 
@@ -231,16 +255,15 @@ export class FileService {
             defaultPath: directory
         };
 
-        this.electronService.remote.dialog.showSaveDialog( null, options, ( path ) => {
+        this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
-            if ( path != null ) {
+            if ( res.canceled || res.filePath == null ) {
 
-                this.writeFile( path, contents, callbackFn );
-
+				SnackBar.show( "file save cancelled" );
 
             } else {
 
-                // alert( "you didnt save file" );
+                this.writeFile( res.filePath, contents, callbackFn );
 
             }
 
@@ -298,7 +321,7 @@ export class FileService {
 
         } else {
 
-            console.error( "folder does not exists" );
+            console.error( 'folder does not exists' );
 
         }
 
@@ -333,7 +356,7 @@ export class FileService {
             return {
                 name: folderName,
                 path: folderPath
-            }
+            };
 
         } catch ( error ) {
 
@@ -347,9 +370,9 @@ export class FileService {
 
         let slash = null;
 
-        if ( this.electronService.isWindows ) slash = "\\";
+        if ( this.electronService.isWindows ) slash = '\\';
 
-        if ( this.electronService.isLinux ) slash = "/";
+        if ( this.electronService.isLinux ) slash = '/';
 
         let filePath = `${ path }${ slash }${ name }.${ extension }`;
         let fileName = name;
@@ -375,7 +398,6 @@ export class FileService {
         return { fileName, filePath };
     }
 
-
     readPathContents ( dirpath ) {
         return new Promise( resolve => {
             this.fs.readdir( dirpath, this.handled( files => {
@@ -397,7 +419,9 @@ export class FileService {
 
             const itemPath = this.path.join( dirpath, file );
 
-            items.push( this.getItemProperties( itemPath ) );
+            const itemWithProperites = this.getItemProperties( itemPath );
+
+            items.push( itemWithProperites );
 
         } );
 
@@ -412,30 +436,34 @@ export class FileService {
 
         return {
             name: name,
-            type: this.getItemType( stats ),
+            type: this.getItemType( stats, itemPath ),
             path: itemPath,
             size: stats.size,
             mtime: stats.mtime
         };
-
-        return new Promise( resolve => {
-            this.fs.stat( itemPath, this.handled( stats => resolve( {
-                name: itemPath.split( '/' ).pop(),
-                type: this.getItemType( stats ),
-                path: itemPath,
-                size: stats.size,
-                mtime: stats.mtime
-            } ) ) );
-        } );
     }
 
-    static getFilenameFromPath ( path: string ): string {
+    getItemType ( item, path ) {
 
-        return FileUtils.getFilenameFromPath( path );
+        if ( this.electronService.isMacOS || this.electronService.isLinux ) {
+            if ( versions.stat.isFile( path ) ) {
+                return 'file';
+            } else if ( versions.stat.isDirectory( path ) ) {
+                return 'directory';
+            } else if ( versions.stat.isBlockDevice( path ) ) {
+                return 'blockdevice';
+            } else if ( versions.stat.isCharacterDevice( path ) ) {
+                return 'characterdevice';
+            } else if ( versions.stat.isSymbolicLink( path ) ) {
+                return 'symlink';
+            } else if ( versions.stat.isFIFO( path ) ) {
+                return 'fifo';
+            } else if ( versions.stat.isSocket( path ) ) {
+                return 'socket';
+            }
+            return '';
+        }
 
-    }
-
-    getItemType ( item ) {
         if ( item.isFile() ) {
             return 'file';
         } else if ( item.isDirectory() ) {

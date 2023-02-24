@@ -2,11 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { EventEmitter } from '@angular/core';
+import { KeyboardInput } from 'app/core/input';
 import { AppService } from 'app/core/services/app.service';
-import * as THREE from 'three';
-import { Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
+import { Debug } from 'app/core/utils/debug';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/shared/utils/colors.service';
+import { Subscription } from 'rxjs';
+import * as THREE from 'three';
+import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
 import { EventEmitter } from '@angular/core';
 import { IShapeEditor } from './i-shape-editor';
@@ -23,24 +28,24 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
     public controlPointUnselected = new EventEmitter<AnyControlPoint>();
     public controlPointHovered = new EventEmitter<AnyControlPoint>();
 
-    /**
-     * Fire when control point is added
-     */
+	/**
+	 * Fire when control point is added
+	 */
     public controlPointAdded = new EventEmitter<AnyControlPoint>();
 
-    /**
-     * Fired everytime mouse is moving the control point
-     */
+	/**
+	 * Fired everytime mouse is moving the control point
+	 */
     public controlPointMoved = new EventEmitter<AnyControlPoint>();
 
-    /**
-     * Fired after mouse is up and control point position is updated
-     */
+	/**
+	 * Fired after mouse is up and control point position is updated
+	 */
     public controlPointUpdated = new EventEmitter<AnyControlPoint>();
 
-    /**
-     * Fire when control point is removed
-     */
+	/**
+	 * Fire when control point is removed
+	 */
     public controlPointRemoved = new EventEmitter<AnyControlPoint>();
 
     public curveGeometryChanged = new EventEmitter<THREE.Curve<any>>();
@@ -77,13 +82,14 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
     private controlPointUnselectedSubcriber: Subscription;
     private controlPointHoveredSubcriber: Subscription;
     private isEnabled: boolean = false;
-    private _controlPoints: AnyControlPoint[] = [];
 
     constructor () {
 
         this.enable();
 
     }
+
+    private _controlPoints: AnyControlPoint[] = [];
 
     get controlPoints (): AnyControlPoint[] {
         return this._controlPoints;
@@ -337,14 +343,14 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
     }
 
-    protected createControlPoint ( position: Vector3, parent?: Object3D, size?: number ) {
+    public createDistanceNode ( roadId: number, laneId: number, s: number, t, position: Vector3, parent?: Object3D ) {
 
-        const dotGeometry = new THREE.Geometry();
+        const dotGeometry = new BufferGeometry();
 
-        dotGeometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+        dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const dotMaterial = new PointsMaterial( {
-            size: size || 10,
+            size: 10,
             sizeAttenuation: false,
             map: OdTextures.point,
             alphaTest: 0.5,
@@ -353,7 +359,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
             depthTest: false
         } );
 
-        const object = new AnyControlPoint( dotGeometry, dotMaterial );
+        const object = new NewDistanceNode( roadId, laneId, s, t, dotGeometry, dotMaterial );
 
         object.setPosition( position.clone() );
 
@@ -369,14 +375,26 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
     }
 
-    public createDistanceNode ( roadId: number, laneId: number, s: number, t, position: Vector3, parent?: Object3D ) {
+    onControlPointHovered ( e: AnyControlPoint ) {
 
-        const dotGeometry = new THREE.Geometry();
+        e.onMouseOver();
 
-        dotGeometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+    }
+
+    onControlPointUnhovered ( e: AnyControlPoint ) {
+
+        e.onMouseOut();
+
+    }
+
+    protected createControlPoint ( position: Vector3, parent?: Object3D, size?: number ) {
+
+        const dotGeometry = new BufferGeometry()
+
+        dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const dotMaterial = new PointsMaterial( {
-            size: 10,
+            size: size || 10,
             sizeAttenuation: false,
             map: OdTextures.point,
             alphaTest: 0.5,
@@ -402,18 +420,6 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
     }
 
     private onDeSelect ( e: any ) {
-
-    }
-
-    onControlPointHovered ( e: AnyControlPoint ) {
-
-        e.onMouseOver();
-
-    }
-
-    onControlPointUnhovered ( e: AnyControlPoint ) {
-
-        e.onMouseOut();
 
     }
 

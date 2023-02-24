@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
 import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
+import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
+import { BaseCommand } from './base-command';
 
 export class SetRoadmarkValueCommand extends BaseCommand {
 

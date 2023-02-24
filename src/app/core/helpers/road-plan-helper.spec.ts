@@ -3,9 +3,9 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { RoadPlanHelper } from './road-plan-helper';
 import { Vector3 } from 'three';
 import { Maths } from '../../utils/maths';
+import { RoadPlanHelper } from './road-plan-helper';
 
 
 describe( 'RoadPlanHelper test', () => {

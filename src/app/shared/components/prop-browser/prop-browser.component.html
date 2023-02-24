@@ -2,20 +2,18 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div fxLayout="column" fxFlex fxFlexOffset="10px">
+<div fxFlex fxFlexOffset="10px" fxLayout="column">
 
     <mat-form-field class="example-full-width">
-        <input matInput placeholder="Search" autocomplete="false" [(ngModel)]="query"
-            (ngModelChange)="onModelChanged($event)">
+        <input (ngModelChange)="onModelChanged($event)" [(ngModel)]="query" autocomplete="false" matInput placeholder="Search">
     </mat-form-field>
 
     <perfect-scrollbar style="max-height: 600px;">
-        <mat-grid-list cols="3" rowHeight="1:1" gutterSize="10px">
+        <mat-grid-list cols="3" gutterSize="10px" rowHeight="1:1">
             <mat-grid-tile (click)="onMouseDown(model)" *ngFor="let model of signs | search : query">
 
                 <mat-card [class.active]="selectedName==model" class="example-card">
-                    <img [alt]="model" [src]="'assets/signs/' + model + '.png'" mat-card-image
-                         style="width: 100%; max-height: 80px;">
+                    <img [alt]="model" [src]="'assets/signs/' + model + '.png'" mat-card-image style="width: 100%; max-height: 80px;">
                     <mat-card-content style="position: absolute; bottom: 0em;">
                         {{ model }}
                     </mat-card-content>

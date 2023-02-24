@@ -47,6 +47,12 @@ export class MarkingPointTool extends BaseMarkingTool {
 
     }
 
+    get marking () {
+
+        return TvMarkingService.currentMarking;
+
+    }
+
     init () {
 
         super.init();
@@ -73,12 +79,6 @@ export class MarkingPointTool extends BaseMarkingTool {
         this.shapeEditor.destroy();
 
         this.unsubscribeFromControlPoints();
-
-    }
-
-    get marking () {
-
-        return TvMarkingService.currentMarking;
 
     }
 
@@ -135,7 +135,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         const lane = result.lane;
 
-        if ( !road ) SnackBar.error( "Marking can be added only on road mesh" );
+        if ( !road ) SnackBar.error( 'Marking can be added only on road mesh' );
 
         if ( !road ) this.shapeEditor.removeControlPoint( point );
 
@@ -163,7 +163,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
             }
 
-            // calculation to set the orientation/heading of the marking 
+            // calculation to set the orientation/heading of the marking
             const arrowHelper = new ArrowHelper( pose.toDirectionVector().normalize(), new Vector3( 0, 0, 0 ), 1, 1, 1, 1 );
 
             marking.mesh.setRotationFromQuaternion( arrowHelper.getWorldQuaternion( new Quaternion ) );

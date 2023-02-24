@@ -3,7 +3,9 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatProgressBar, MatButton } from '@angular/material';
+import { MatButton } from '@angular/material/button';
+import { MatProgressBar } from '@angular/material/progress-bar';
+
 import { AuthService } from 'app/core/services/auth.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 
@@ -20,9 +22,11 @@ export class ForgotPasswordComponent implements OnInit {
 
     @ViewChild( MatButton ) submitButton: MatButton;
 
-    constructor ( private authService: AuthService ) { }
+    constructor ( private authService: AuthService ) {
+    }
 
-    ngOnInit () { }
+    ngOnInit () {
+    }
 
     submitEmail () {
 
@@ -36,7 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
 
             this.progressBar.mode = 'determinate';
 
-            SnackBar.show( "Please check your email inbox to reset the password" );
+            SnackBar.show( 'Please check your email inbox to reset the password' );
 
         }, error => {
 
@@ -44,7 +48,7 @@ export class ForgotPasswordComponent implements OnInit {
 
             this.progressBar.mode = 'determinate';
 
-            SnackBar.error( "Error occured in resseting password" );
+            SnackBar.error( 'Error occured in resseting password' );
 
         } );
     }

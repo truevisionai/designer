@@ -3,18 +3,19 @@
  */
 
 import { Component } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
-import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { TvLaneType } from '../../../modules/tv-map/models/tv-common';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
+
 import { FrontSide, MeshBasicMaterial } from 'three';
-import { OdTextures } from '../../../modules/tv-map/builders/od.textures';
-import { COLOR } from '../../../shared/utils/colors.service';
-import { BaseInspector } from '../../../core/components/base-inspector.component';
-import { RemoveLaneCommand } from '../../../core/commands/remove-lane-command';
-import { CommandHistory } from '../../../services/command-history';
-import { SetLanePropertyCommand } from '../../../core/commands/set-lane-property-command';
 import { ICommandCallback } from '../../../core/commands/i-command';
+import { RemoveLaneCommand } from '../../../core/commands/remove-lane-command';
+import { SetLanePropertyCommand } from '../../../core/commands/set-lane-property-command';
+import { BaseInspector } from '../../../core/components/base-inspector.component';
+import { IComponent } from '../../../core/game-object';
+import { OdTextures } from '../../../modules/tv-map/builders/od.textures';
+import { TvLaneType } from '../../../modules/tv-map/models/tv-common';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { CommandHistory } from '../../../services/command-history';
+import { COLOR } from '../../../shared/utils/colors.service';
 
 @Component( {
     selector: 'app-lane-type-inspector',

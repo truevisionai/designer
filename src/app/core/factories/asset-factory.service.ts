@@ -3,18 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Texture } from 'three';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
+import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
 import { FileService } from 'app/services/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { MetadataFactory } from './metadata-factory.service';
+import { Texture } from 'three';
 import { PropModel } from '../models/prop-model.model';
-import { AssetDatabase } from 'app/services/asset-database';
 import { AppService } from '../services/app.service';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { MarkingTypes } from 'app/modules/tv-map/services/tv-marking.service';
 import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
+import { MetadataFactory } from './metadata-factory.service';
 
 @Injectable( {
     providedIn: 'root'

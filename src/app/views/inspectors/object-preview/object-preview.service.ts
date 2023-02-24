@@ -3,27 +3,34 @@
  */
 
 import { Injectable } from '@angular/core';
+import { GameObject } from 'app/core/game-object';
+import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
+import { RoadStyle } from 'app/services/road-style.service';
+import * as THREE from 'three';
 import {
     AmbientLight,
+    Box3,
     BoxGeometry,
+    Color,
     DirectionalLight,
     Material,
     Mesh,
     MeshBasicMaterial,
+    MeshLambertMaterial,
     Object3D,
     PerspectiveCamera,
+    PlaneGeometry,
     Scene,
     SphereGeometry,
-    WebGLRenderer,
-    Box3,
-    Color,
-    Vector3,
     Texture,
-    MeshLambertMaterial,
-    PlaneBufferGeometry,
-    TextureLoader
+    TextureLoader,
+    Vector3,
+    WebGLRenderer
 } from 'three';
-import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { RoadStyle } from 'app/services/road-style.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -131,7 +138,7 @@ export class PreviewService {
 
     //     // console.log( this.scene.children.length );
 
-    //     // this.controls.update();  
+    //     // this.controls.update();
 
     // }
 
@@ -294,10 +301,10 @@ export class PreviewService {
 
         const groundMaterial = new MeshLambertMaterial( { map: this.groundTexture } );
 
-        this.ground = new Mesh( new PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+        this.ground = new Mesh( new PlaneGeometry( 20000, 20000 ), groundMaterial );
 
         this.ground.position.y = 0;
-        this.ground.rotation.x = - Math.PI / 2;
+        this.ground.rotation.x = -Math.PI / 2;
         this.ground.receiveShadow = true;
 
         scene.add( this.ground );

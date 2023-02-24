@@ -18,7 +18,8 @@ export class PlayerBarComponent {
     // reference to handle
     private handle: any;
 
-    constructor ( private playerService: PlayerService ) { }
+    constructor ( private playerService: PlayerService ) {
+    }
 
     playSimulation () {
 

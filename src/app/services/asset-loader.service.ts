@@ -3,32 +3,25 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from './file.service';
-import { FileNode } from 'app/views/editor/project-browser/file-node.model';
-import {
-    Vector3,
-    Object3D,
-    Vector2,
-    Texture,
-    MeshStandardMaterial,
-    TextureLoader,
-    MaterialLoader,
-    RepeatWrapping,
-    LinearFilter,
-    LinearMipMapLinearFilter,
-    RGBAFormat,
-    UnsignedByteType,
-    LinearEncoding
-} from 'three';
-import { Metadata } from '../core/models/metadata.model';
-import { SnackBar } from './snack-bar.service';
-import { ImporterService } from './importer.service';
-import { ModelImporterService } from './model-importer.service';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import {
+    LinearEncoding,
+    LinearFilter,
+    LinearMipMapLinearFilter,
+    MeshStandardMaterial,
+    Object3D,
+    RGBAFormat,
+    TextureLoader,
+    UnsignedByteType
+} from 'three';
+import { Metadata } from '../core/models/metadata.model';
 import { AssetDatabase } from './asset-database';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
-import { RoadStyle, RoadStyleService } from './road-style.service';
+import { FileService } from './file.service';
+import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
 import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
@@ -41,11 +34,11 @@ export class AssetLoaderService {
 
     // public assetInstances: Map<string, any> = new Map<string, any>();
 
-    /**
-     * This class is responsible to loading, caching, importing, reading .meta files.
-     *
-     * @param fileService FileService
-     */
+	/**
+	 * This class is responsible to loading, caching, importing, reading .meta files.
+	 *
+	 * @param fileService FileService
+	 */
     constructor ( private fileService: FileService, public modelImporterService: ModelImporterService ) {
     }
 
@@ -99,7 +92,7 @@ export class AssetLoaderService {
 
             console.log( error );
 
-            throw new Error( "Error in setting up default project folder" );
+            throw new Error( 'Error in setting up default project folder' );
 
         }
 
@@ -113,7 +106,7 @@ export class AssetLoaderService {
 
         this.createRoadMarkingAssets();
 
-        this.createBaseAssets( "Materials" );
+        this.createBaseAssets( 'Materials' );
 
     }
 
@@ -134,15 +127,16 @@ export class AssetLoaderService {
         this.createBaseAssets( 'RoadStyles' );
 
     }
+
     createBaseAssets ( folder: string ) {
 
         try {
 
             let path = null;
 
-            if ( this.fileService.electronService.remote.app.isPackaged ) {
+            if ( this.fileService.remote.app.isPackaged ) {
 
-                const appPath = this.fileService.electronService.remote.app.getAppPath();
+                const appPath = this.fileService.remote.app.getAppPath();
 
                 path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
 
@@ -178,7 +172,7 @@ export class AssetLoaderService {
 
             console.error( error );
 
-            throw new Error( "Error in creating assets" );
+            throw new Error( 'Error in creating assets' );
 
         }
 
@@ -309,11 +303,11 @@ export class AssetLoaderService {
 
     }
 
-    /**
-     *
-     * @param guid
-     * @deprecated use AssetCache instead
-     */
+	/**
+	 *
+	 * @param guid
+	 * @deprecated use AssetCache instead
+	 */
     find ( guid: string ): Metadata {
 
         return AssetDatabase.getMetadata( guid );

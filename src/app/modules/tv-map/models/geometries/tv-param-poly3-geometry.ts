@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
-import { TvPosTheta } from '../tv-pos-theta';
 import { Curve, SplineCurve, Vector2, Vector3 } from 'three';
 import { TvGeometryType } from '../tv-common';
+import { TvPosTheta } from '../tv-pos-theta';
+import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
@@ -13,16 +13,33 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
     private cosTheta;
     private curve: Curve<Vector2>;
 
+    public aU: number;
+    public bU: number;
+    public cU: number;
+    public dU: number;
+    public aV: number;
+    public bV: number;
+    public cV: number;
+    public dV: number;
+
     constructor (
-        public s: number,
-        public x: number,
-        public y: number,
-        public hdg: number,
-        public length: number,
-        public aU: number, public bU: number, public cU: number, public dU: number,
-        public aV: number, public bV: number, public cV: number, public dV: number
+        s: number,
+        x: number,
+        y: number,
+        hdg: number,
+        length: number,
+        aU: number, bU: number, cU: number, dU: number,
+        aV: number, bV: number, cV: number, dV: number
     ) {
         super( s, x, y, hdg, length );
+        this.aU = aU;
+        this.bU = bU;
+        this.cU = cU;
+        this.dU = dU;
+        this.aV = aV;
+        this.bV = bV;
+        this.cV = cV;
+        this.dV = dV;
 
         this._geometryType = TvGeometryType.PARAMPOLY3;
 
@@ -67,18 +84,18 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
             ( this.dU * p * p * p );
 
         const vLocal =
-            (this.aV) +
-            (this.bV * p) +
-            (this.cV * p * p) +
-            (this.dV * p * p * p);
+            ( this.aV ) +
+            ( this.bV * p ) +
+            ( this.cV * p * p ) +
+            ( this.dV * p * p * p );
 
         // apply rotation with respect to start
         const xnew = uLocal * this.cosTheta - vLocal * this.sinTheta;
         const ynew = uLocal * this.sinTheta + vLocal * this.cosTheta;
 
         // Derivate to get heading change
-        const dCoeffsU = (new Vector3( this.bU, this.cU, this.dU )).multiply( new Vector3( 1, 2, 3 ) );
-        const dCoeffsV = (new Vector3( this.bV, this.cV, this.dV )).multiply( new Vector3( 1, 2, 3 ) );
+        const dCoeffsU = ( new Vector3( this.bU, this.cU, this.dU ) ).multiply( new Vector3( 1, 2, 3 ) );
+        const dCoeffsV = ( new Vector3( this.bV, this.cV, this.dV ) ).multiply( new Vector3( 1, 2, 3 ) );
 
         const dx = this.polyeval( p, dCoeffsU );
         const dy = this.polyeval( p, dCoeffsV );
@@ -145,16 +162,16 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
         for ( let p = 0; p <= pMax + pStep; p += pStep ) {
 
             const x =
-                (this.aU) +
-                (this.bU * p) +
-                (this.cU * p * p) +
-                (this.dU * p * p * p);
+                ( this.aU ) +
+                ( this.bU * p ) +
+                ( this.cU * p * p ) +
+                ( this.dU * p * p * p );
 
             const y =
-                (this.aV) +
-                (this.bV * p) +
-                (this.cV * p * p) +
-                (this.dV * p * p * p);
+                ( this.aV ) +
+                ( this.bV * p ) +
+                ( this.cV * p * p ) +
+                ( this.dV * p * p * p );
 
             const xnew = x * c - y * s;
             const ynew = x * s + y * c;

@@ -4,16 +4,13 @@
 
 export class TvController {
 
-    private _controls: TvControllerControl[] = [];
-    private _id: number;
-    private _name: string;
-    private _sequence: number;
-
     constructor ( id: number, name: string, sequence?: number ) {
         this._id = id;
         this._name = name;
         this._sequence = sequence;
     }
+
+    private _controls: TvControllerControl[] = [];
 
     get controls (): TvControllerControl[] {
         return this._controls;
@@ -23,6 +20,8 @@ export class TvController {
         this._controls = value;
     }
 
+    private _id: number;
+
     get id (): number {
         return this._id;
     }
@@ -31,6 +30,8 @@ export class TvController {
         this._id = value;
     }
 
+    private _name: string;
+
     get name (): string {
         return this._name;
     }
@@ -38,6 +39,8 @@ export class TvController {
     set name ( value: string ) {
         this._name = value;
     }
+
+    private _sequence: number;
 
     get sequence (): number {
         return this._sequence;
@@ -54,21 +57,12 @@ export class TvController {
 
 export class TvControllerControl {
 
-    private _signalId: number;
-    private _type: string;
-
     constructor ( signalId: number, type: string ) {
         this._signalId = signalId;
         this._type = type;
     }
 
-    get type (): string {
-        return this._type;
-    }
-
-    set type ( value: string ) {
-        this._type = value;
-    }
+    private _signalId: number;
 
     get signalId (): number {
         return this._signalId;
@@ -76,6 +70,16 @@ export class TvControllerControl {
 
     set signalId ( value: number ) {
         this._signalId = value;
+    }
+
+    private _type: string;
+
+    get type (): string {
+        return this._type;
+    }
+
+    set type ( value: string ) {
+        this._type = value;
     }
 
 }

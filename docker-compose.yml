@@ -8,14 +8,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - '4200:4200'
-      - '49153:49153'
+    tty: true      
     environment:
       - NODE_ENV=production
     working_dir: /app
     volumes:
       - ./:/app
-      - /app/node_modules
-#Volumes
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
 volumes:
   dbdata:
     driver: local

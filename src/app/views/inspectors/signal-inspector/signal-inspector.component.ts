@@ -4,8 +4,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { TvRoadSignal } from '../../../modules/tv-map/models/tv-road-signal.model';
 import { RemoveSignalCommand } from '../../../core/commands/remove-signal-command';
+import { TvRoadSignal } from '../../../modules/tv-map/models/tv-road-signal.model';
 import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from '../../../services/command-history';
 

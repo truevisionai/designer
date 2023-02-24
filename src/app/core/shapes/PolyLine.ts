@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3, BufferGeometry, BufferAttribute, Line, LineBasicMaterial } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { MAX_CTRL_POINTS } from "./spline-config";
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
+import { MAX_CTRL_POINTS } from './spline-config';
 
 export class PolyLine {
 
@@ -17,7 +17,7 @@ export class PolyLine {
 
         const geometry = new BufferGeometry();
 
-        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 3 ), 3 ) );
+        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 3 ), 3 ) )
 
         this.curveType = 'polyline';
 

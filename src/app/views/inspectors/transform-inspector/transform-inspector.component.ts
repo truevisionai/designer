@@ -3,12 +3,12 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
 import { Euler, Object3D, Vector3 } from 'three';
-import { CommandHistory } from '../../../services/command-history';
+import { IComponent } from '../../../core/game-object';
 import { SetPositionCommand } from '../../../modules/three-js/commands/set-position-command';
 import { SetRotationCommand } from '../../../modules/three-js/commands/set-rotation-command';
 import { SetScaleCommand } from '../../../modules/three-js/commands/set-scale-command';
+import { CommandHistory } from '../../../services/command-history';
 import { Maths } from '../../../utils/maths';
 
 @Component( {

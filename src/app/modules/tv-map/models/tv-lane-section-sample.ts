@@ -21,14 +21,14 @@ export class TvLaneSectionSample {
     private mRightLevelVector: boolean[] = [];
 
 
-    /**
-     * Lane Section Sample. Holds all the lane information at a certain S value including lane widths, levels,
-     * heights, etc
-     *
-     *
-     *
-     *
-     */
+	/**
+	 * Lane Section Sample. Holds all the lane information at a certain S value including lane widths, levels,
+	 * heights, etc
+	 *
+	 *
+	 *
+	 *
+	 */
     constructor () {
 
     }

@@ -4,19 +4,19 @@
 
 import * as THREE from 'three';
 import { Camera, Vector3 } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
 import { IViewportController } from './i-viewport-controller';
 
-import 'three/examples/js/controls/OrbitControls';
+export class TvOrbitControls extends OrbitControls implements IViewportController {
 
-export class OrbitControls extends THREE.OrbitControls implements IViewportController {
+    static getNew ( camera, canvas ): TvOrbitControls {
 
-    static getNew ( camera, canvas ): OrbitControls {
-
-        const controls = new OrbitControls( camera, canvas );
+        const controls = new TvOrbitControls( camera, canvas );
 
         controls.screenSpacePanning = true;
         controls.enableRotate = false;
-        controls.enableKeys = false;
+        // controls.enableKeys = false;
 
         return controls;
     }

@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Curve, CurvePath, Vector3, CatmullRomCurve3 } from 'three';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { ExplicitSpline } from './explicit-spline';
+import { CatmullRomCurve3, Curve, CurvePath, Vector3 } from 'three';
 import { AutoSpline } from './auto-spline';
+import { ExplicitSpline } from './explicit-spline';
 
 
 function CubicBezierP0 ( t, p ) {
@@ -225,7 +225,7 @@ export class LineArcSplineCurve extends CurvePath<Vector3> {
                 lengths[ i ] = currentPoint.position.distanceTo( nextPoint.position );
             }
 
-        } )
+        } );
 
         // foreach point except the first one
         for ( let i = 1; i < this.points.length - 1; i++ ) {

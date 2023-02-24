@@ -3,11 +3,12 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
-import { ElectronService } from 'ngx-electron';
-import { RecentFileService } from 'app/services/recent-file.service';
+import { MatDialogRef } from '@angular/material/dialog';
+
 import { IFile } from 'app/core/models/file';
 import { MainFileService } from 'app/services/main-file.service';
+import { RecentFileService } from 'app/services/recent-file.service';
+import { ElectronService } from 'ngx-electron';
 
 @Component( {
     selector: 'app-new-road-dialog',

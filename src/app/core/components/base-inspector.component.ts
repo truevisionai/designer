@@ -2,13 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Component, HostListener } from '@angular/core';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
-import { HostListener } from '@angular/core';
 
 enum KEY_CODE {
     DELETE = 46
 }
 
+@Component( {
+    selector: 'app-base-inspector',
+    template: '',
+} )
 export abstract class BaseInspector {
 
     get map () {

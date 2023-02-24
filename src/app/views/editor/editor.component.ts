@@ -3,14 +3,13 @@
  */
 
 import { AfterContentInit, Component, HostListener, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+
+import { EditorService } from 'app/core/services/editor.service';
+import { TvConsole } from 'app/core/utils/console';
+import { MainFileService } from 'app/services/main-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
-import { KeyboardInput } from '../../core/input';
-import { CommandHistory } from '../../services/command-history';
-import { MainFileService } from 'app/services/main-file.service';
-import { TvConsole } from 'app/core/utils/console';
-import { EditorService } from 'app/core/services/editor.service';
 
 @Component( {
     selector: 'app-editor',

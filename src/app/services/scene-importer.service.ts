@@ -3,37 +3,35 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from './file.service';
-import { SnackBar } from './snack-bar.service';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { AssetLoaderService } from './asset-loader.service';
+import { AppInspector } from 'app/core/inspector';
+import { IFile } from 'app/core/models/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractReader } from 'app/core/services/abstract-reader';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Euler, Vector2, Vector3, Object3D } from 'three';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { SceneService } from 'app/core/services/scene.service';
-import { IFile } from 'app/core/models/file';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { ModelImporterService } from './model-importer.service';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { AppInspector } from 'app/core/inspector';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { CommandHistory } from './command-history';
+import { AutoSpline } from 'app/core/shapes/auto-spline';
+import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropModel } from 'app/core/models/prop-model.model';
-import { AssetDatabase } from './asset-database';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-
-const Parser = require( 'fast-xml-parser' );
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { XMLParser } from 'fast-xml-parser';
+import { Euler, Object3D, Vector2, Vector3 } from 'three';
+import { AssetDatabase } from './asset-database';
+import { AssetLoaderService } from './asset-loader.service';
+import { CommandHistory } from './command-history';
+import { FileService } from './file.service';
+import { ModelImporterService } from './model-importer.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -50,19 +48,23 @@ export class SceneImporterService extends AbstractReader {
         super();
     }
 
-    get map (): TvMap { return TvMapInstance.map; }
+    get map (): TvMap {
+        return TvMapInstance.map;
+    }
 
-    set map ( value ) { TvMapInstance.map = value; }
+    set map ( value ) {
+        TvMapInstance.map = value;
+    }
 
     importFromPath ( path: string ) {
 
         try {
 
-            this.fileService.readFile( path, "scene", ( file ) => {
+            this.fileService.readFile( path, 'scene', ( file ) => {
 
                 this.importFromFile( file );
 
-            } )
+            } );
 
         } catch ( error ) {
 
@@ -104,13 +106,15 @@ export class SceneImporterService extends AbstractReader {
             format: true,
         };
 
-        const scene: any = Parser.parse( contents, defaultOptions );
+        const parser = new XMLParser( defaultOptions );
+
+        const scene: any = parser.parse( contents );
 
         // check for main elements first before parsing
         const version = scene.version;
         const guid = scene.guid;
 
-        if ( !version ) SnackBar.error( "Cannot read scene version. Please check scene file before importing", "OK", 5000 );
+        if ( !version ) SnackBar.error( 'Cannot read scene version. Please check scene file before importing', 'OK', 5000 );
         if ( !version ) return;
 
         this.prepareToImport();
@@ -214,7 +218,7 @@ export class SceneImporterService extends AbstractReader {
 
             TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        } )
+        } );
 
         SceneService.add( this.map.gameObject );
 
@@ -234,19 +238,19 @@ export class SceneImporterService extends AbstractReader {
             parseFloat( xml.position.attr_x ),
             parseFloat( xml.position.attr_y ),
             parseFloat( xml.position.attr_z ),
-        )
+        );
 
         const rotation = new Euler(
             parseFloat( xml.rotation.attr_x ),
             parseFloat( xml.rotation.attr_y ),
             parseFloat( xml.rotation.attr_z ),
-        )
+        );
 
         const scale = new Vector3(
             parseFloat( xml.scale.attr_x ),
             parseFloat( xml.scale.attr_y ),
             parseFloat( xml.scale.attr_z ),
-        )
+        );
 
         prop.position.copy( position );
 
@@ -262,7 +266,7 @@ export class SceneImporterService extends AbstractReader {
 
     private importRoad ( xml: any ): TvRoad {
 
-        if ( !xml.spline ) throw new Error( "Incorrect road" );
+        if ( !xml.spline ) throw new Error( 'Incorrect road' );
 
         const name = xml.attr_name || 'untitled';
         const length = parseFloat( xml.attr_length );
@@ -294,7 +298,7 @@ export class SceneImporterService extends AbstractReader {
 
         // if ( xml.surface != null && xml.surface !== '' ) this.readSurface( road, xml.surface );
 
-        return road
+        return road;
     }
 
     private importSurface ( xml: any ): TvSurface {
@@ -338,7 +342,7 @@ export class SceneImporterService extends AbstractReader {
 
         } else {
 
-            throw new Error( "unknown spline type" );
+            throw new Error( 'unknown spline type' );
 
         }
 
@@ -364,7 +368,7 @@ export class SceneImporterService extends AbstractReader {
 
             spline.addFromFile( index, position, hdg, segType );
 
-            index++
+            index++;
 
         } );
 
@@ -386,7 +390,7 @@ export class SceneImporterService extends AbstractReader {
                 parseFloat( xml.attr_x ),
                 parseFloat( xml.attr_y ),
                 parseFloat( xml.attr_z ),
-            ), "cp", index, index );
+            ), 'cp', index, index );
 
             index++;
 
@@ -406,8 +410,8 @@ export class SceneImporterService extends AbstractReader {
 
     private importCatmullSpline ( xml: any ): CatmullRomSpline {
 
-        const type = xml.attr_type || "catmullrom";
-        const closed = xml.attr_closed === "true";
+        const type = xml.attr_type || 'catmullrom';
+        const closed = xml.attr_closed === 'true';
         const tension = parseFloat( xml.attr_tension ) || 0.5;
 
         const spline = new CatmullRomSpline( closed, type, tension );
@@ -420,7 +424,7 @@ export class SceneImporterService extends AbstractReader {
                 parseFloat( xml.attr_x ),
                 parseFloat( xml.attr_y ),
                 parseFloat( xml.attr_z )
-            )
+            );
 
             spline.addControlPoint( controlPoint );
 
@@ -485,9 +489,7 @@ export class SceneImporterService extends AbstractReader {
 
     private importVector3 ( vector3: any ) {
 
-        return {
-
-        }
+        return {};
 
     }
 
@@ -521,19 +523,19 @@ export class SceneImporterService extends AbstractReader {
                 parseFloat( propXml.position.attr_x ),
                 parseFloat( propXml.position.attr_y ),
                 parseFloat( propXml.position.attr_z ),
-            )
+            );
 
             const propRotation = new Euler(
                 parseFloat( propXml.rotation.attr_x ),
                 parseFloat( propXml.rotation.attr_y ),
                 parseFloat( propXml.rotation.attr_z ),
-            )
+            );
 
             const scale = new Vector3(
                 parseFloat( propXml.scale.attr_x ),
                 parseFloat( propXml.scale.attr_y ),
                 parseFloat( propXml.scale.attr_z ),
-            )
+            );
 
             prop.position.copy( position );
 
@@ -576,19 +578,19 @@ export class SceneImporterService extends AbstractReader {
                 parseFloat( propXml.position.attr_x ),
                 parseFloat( propXml.position.attr_y ),
                 parseFloat( propXml.position.attr_z ),
-            )
+            );
 
             const propRotation = new Euler(
                 parseFloat( propXml.rotation.attr_x ),
                 parseFloat( propXml.rotation.attr_y ),
                 parseFloat( propXml.rotation.attr_z ),
-            )
+            );
 
             const scale = new Vector3(
                 parseFloat( propXml.scale.attr_x ),
                 parseFloat( propXml.scale.attr_y ),
                 parseFloat( propXml.scale.attr_z ),
-            )
+            );
 
             prop.position.copy( position );
 

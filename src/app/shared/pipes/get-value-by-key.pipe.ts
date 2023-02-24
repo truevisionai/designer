@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe( {
-    name: "getValueByKey",
+    name: 'getValueByKey',
     pure: false
 } )
 export class GetValueByKeyPipe implements PipeTransform {

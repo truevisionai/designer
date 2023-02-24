@@ -79,6 +79,9 @@
   "ROAD-GEOMETRY-TITLE": "Road Tool",
   "ROAD-GEOMETRY-DESCRIPTION": "Tool to create road geometries. <br />  Use SHIFT + LEFT CLICK to create control points. <br/>  LEFT CLICK control points to drag and reshape road. <br/> LEFT CLICK to select node (Red Highlights at start/end of road). <br/> Roads can be linked/joined by selecting 2 nodes <br/>",
 
+  "ROAD-CIRCLE-TITLE": "Road Circle Tool",
+  "ROAD-CIRCLE-DESCRIPTION": "Tool to create circular road. <br />  Use LEFT CLICK then drag to control circle size. <br/> Use Road Tool to modify shape of the circle <br/>",
+
   "LANE-WIDTH-TOOL-TITLE": "Lane Width Tool",
   "LANE-WIDTH-TOOL-DESCRIPTION": "Tool to edit width of lane. <br />  Use SHIFT + LEFT CLICK to insert a new node. <br/> Use LEFT CLICK to select a node and edit. <br/> Drag selected node to change distance value <br/>  Change node properties from the inspector. <br/>",
 

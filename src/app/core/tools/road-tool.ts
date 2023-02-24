@@ -2,28 +2,28 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
+import { AddRoadCommand } from 'app/core/commands/add-road-command';
+import { AddRoadPointCommand } from 'app/core/commands/add-road-point-command';
+import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
+import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { ObjectTypes, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { Vector3 } from 'three';
-import { KeyboardInput } from '../input';
-import { PickingHelper } from '../services/picking-helper.service';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { JoinRoadNodeCommand } from '../commands/join-road-node-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { RoadFactory } from '../factories/road-factory.service';
-import { CommandHistory } from 'app/services/command-history';
-import { AddRoadPointCommand } from 'app/core/commands/add-road-point-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
-import { AddRoadCommand } from 'app/core/commands/add-road-command';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
-import { JoinRoadNodeCommand } from '../commands/join-road-node-command';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { BaseTool } from './base-tool';
 
 export class RoadTool extends BaseTool {
 
@@ -84,7 +84,8 @@ export class RoadTool extends BaseTool {
         if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
         this.pointerDown = true;
-        this.pointerDownAt = e.point.clone();
+
+        this.pointerDownAt = e.point ? e.point.clone() : null;
 
         const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
@@ -205,7 +206,7 @@ export class RoadTool extends BaseTool {
         const P1 = road.spline.getSecondLastPoint() as RoadControlPoint;
         const P2 = road.spline.getLastPoint() as RoadControlPoint;
 
-        if ( road.successor && road.successor.elementType !== "junction"
+        if ( road.successor && road.successor.elementType !== 'junction'
             && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
             const successor = this.map.getRoadById( road.successor.elementId );
@@ -232,9 +233,7 @@ export class RoadTool extends BaseTool {
 
                 P3.copyPosition( P2.position );
 
-                P2.hdg = P1.hdg;
-
-                P3.hdg = P2.hdg + Math.PI;
+                P2.hdg = P3.hdg = P1.hdg;
 
                 newP4 = P2.moveForward( distance );
 
@@ -270,7 +269,7 @@ export class RoadTool extends BaseTool {
         const P1 = road.spline.controlPoints[ 1 ] as RoadControlPoint;
         const P2 = road.spline.controlPoints[ 0 ] as RoadControlPoint;
 
-        if ( road.predecessor && road.predecessor.elementType !== "junction"
+        if ( road.predecessor && road.predecessor.elementType !== 'junction'
             && ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
 
             const predecessor = this.map.getRoadById( road.predecessor.elementId );
@@ -429,7 +428,7 @@ export class RoadTool extends BaseTool {
 
         let hasInteracted = false;
 
-        // for now ignore the shift key 
+        // for now ignore the shift key
         const shiftKeyDown = true; //KeyboardInput.isShiftKeyDown;
 
         for ( let i = 0; i < e.intersections.length; i++ ) {
@@ -511,7 +510,7 @@ export class RoadTool extends BaseTool {
         // remove old geometries
         road.clearGeometries();
 
-        // TODO: can be improved 
+        // TODO: can be improved
         road.spline.exportGeometries().forEach( geometry => {
 
             road.addGeometry( geometry );

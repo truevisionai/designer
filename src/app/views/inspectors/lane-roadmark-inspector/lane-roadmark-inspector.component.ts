@@ -3,14 +3,15 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
-import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
-import { TvRoadMarkTypes } from '../../../modules/tv-map/models/tv-common';
-import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
-import { CommandHistory } from '../../../services/command-history';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
+
 import { RemoveRoadmarkCommand } from '../../../core/commands/remove-roadmark-command';
+import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
+import { IComponent } from '../../../core/game-object';
+import { TvRoadMarkTypes } from '../../../modules/tv-map/models/tv-common';
+import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
+import { CommandHistory } from '../../../services/command-history';
 
 @Component( {
     selector: 'app-lane-roadmark-inspector',

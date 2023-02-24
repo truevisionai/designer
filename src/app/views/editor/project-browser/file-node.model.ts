@@ -7,7 +7,8 @@ import { FileService } from 'app/services/file.service';
 /** Flat node with expandable and level information */
 export class FileNode {
 
-    constructor ( public name: string, public level = 1, public expandable = false, public isLoading = false, public path: string = '', public type: string = '', public isSelected = false, public isDeleted = false ) { }
+    constructor ( public name: string, public level = 1, public expandable = false, public isLoading = false, public path: string = '', public type: string = '', public isSelected = false, public isDeleted = false ) {
+    }
 
     sub_folders ( fileService: FileService ): FileNode[] {
 

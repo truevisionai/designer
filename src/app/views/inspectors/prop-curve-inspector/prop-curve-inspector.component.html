@@ -2,18 +2,18 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="inspector-form-container" *ngIf="data.propCurve">
+<div *ngIf="data.propCurve" class="inspector-form-container">
 
-    <app-double-field label="Distance" [value]="data.propCurve.spacing" (changed)="onSpacingChanged($event)"></app-double-field>
+    <app-double-field (changed)="onSpacingChanged($event)" [value]="data.propCurve.spacing" label="Distance"></app-double-field>
 
-    <app-double-field label="Rotation" [value]="data.propCurve.rotation" (changed)="onRotationChanged($event)"></app-double-field>
+    <app-double-field (changed)="onRotationChanged($event)" [value]="data.propCurve.rotation" label="Rotation"></app-double-field>
 
-    <app-double-field label="Position" [value]="data.propCurve.positionVariance" (changed)="onPositionVarianceChanged($event)"></app-double-field>
+    <app-double-field (changed)="onPositionVarianceChanged($event)" [value]="data.propCurve.positionVariance" label="Position"></app-double-field>
 
 </div>
 
 <div *ngIf="data.controlPoint">
     <br />
     <span>Control Point</span><br />
-    <app-transform-inspector [data]="data.controlPoint" showRotation="false" showScale="false"></app-transform-inspector>
+    <app-transform-inspector [data]="data.controlPoint" [showRotation]="false" [showScale]="false"></app-transform-inspector>
 </div>

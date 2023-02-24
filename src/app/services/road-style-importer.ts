@@ -2,19 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { SnackBar } from './snack-bar.service';
 import { AbstractReader } from 'app/core/services/abstract-reader';
-import { RoadStyle } from './road-style.service';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvLaneSide } from '../modules/tv-map/models/tv-common';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
+import { RoadStyle } from './road-style.service';
+import { SnackBar } from './snack-bar.service';
 
 export class RoadStyleImporter extends AbstractReader {
+
+    constructor () {
+        super();
+    }
 
     get map (): TvMap {
         return TvMapInstance.map;
@@ -22,10 +26,6 @@ export class RoadStyleImporter extends AbstractReader {
 
     set map ( value ) {
         TvMapInstance.map = value;
-    }
-
-    constructor () {
-        super();
     }
 
     static importFromString ( contents: string ): RoadStyle {

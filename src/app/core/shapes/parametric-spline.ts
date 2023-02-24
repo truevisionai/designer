@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { TangentLine } from './TangentLine';
+import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
+import { TangentLine } from './TangentLine';
 
 export class ParametricSpline extends AbstractSpline {
 
@@ -16,9 +16,9 @@ export class ParametricSpline extends AbstractSpline {
 
     public mesh: Group;
 
-    /**
-     * the main control points of the curve, not tangent points
-     */
+	/**
+	 * the main control points of the curve, not tangent points
+	 */
     public controlObjects: AnyControlPoint[] = [];
 
     private tangent: TangentLine;
@@ -29,9 +29,9 @@ export class ParametricSpline extends AbstractSpline {
 
     private hdgs: any[] = [];
 
-    /**
-     * Holds reference to the line segments forming the whole curve
-     */
+	/**
+	 * Holds reference to the line segments forming the whole curve
+	 */
     private segments: Line[] = [];
 
     constructor ( private parent: any ) {
@@ -133,17 +133,15 @@ export class ParametricSpline extends AbstractSpline {
 
     updateSpine ( cp: AnyControlPoint ) {
 
-        if ( cp.tag == "cp" || cp.tag == "tpf" || cp.tag == "tpb" ) {
+        if ( cp.tag == 'cp' || cp.tag == 'tpf' || cp.tag == 'tpb' ) {
 
             let ptidx = cp.tagindex;
 
-            if ( cp.tag == "cp" ) {
+            if ( cp.tag == 'cp' ) {
 
                 // do nothing for now
 
-            }
-
-            else if ( cp.tag == "tpf" ) {
+            } else if ( cp.tag == 'tpf' ) {
 
                 const delta = new Vector3().subVectors(
                     this.controlPoints[ this.controlObjects.length + ptidx * 2 ].position,
@@ -157,7 +155,7 @@ export class ParametricSpline extends AbstractSpline {
             }
 
             // tslint:disable-next-line: one-line
-            else if ( cp.tag == "tpb" ) {
+            else if ( cp.tag == 'tpb' ) {
 
                 const delta = new Vector3().subVectors(
                     this.controlPoints[ this.controlObjects.length + ptidx * 2 + 1 ].position,
@@ -207,7 +205,7 @@ export class ParametricSpline extends AbstractSpline {
 
     add ( position: AnyControlPoint, heading: number, newIndex: number ): AnyControlPoint {
 
-        const controlPointObject = this.createControlPoint( "cp", newIndex, newIndex );
+        const controlPointObject = this.createControlPoint( 'cp', newIndex, newIndex );
 
         this.controlObjects.push( controlPointObject );
 
@@ -227,11 +225,11 @@ export class ParametricSpline extends AbstractSpline {
             .multiplyScalar( -this.hdgs[ newIndex ][ 2 ] )
             .add( this.controlPointPositions[ newIndex ] );
 
-        const frontTanget = this.createControlPoint( "tpf", newIndex, newIndex + 1 + newIndex * 2 );
+        const frontTanget = this.createControlPoint( 'tpf', newIndex, newIndex + 1 + newIndex * 2 );
 
         frontTanget.position.copy( frontTangentPosition );
 
-        const backTanget = this.createControlPoint( "tpb", newIndex, newIndex + 1 + newIndex * 2 + 1 );
+        const backTanget = this.createControlPoint( 'tpb', newIndex, newIndex + 1 + newIndex * 2 + 1 );
 
         backTanget.position.copy( backTangentPosition );
 
@@ -281,7 +279,7 @@ export class ParametricSpline extends AbstractSpline {
 
         if ( !curvemesh ) {
 
-            console.error( "curve not found", idx, this.segments );
+            console.error( 'curve not found', idx, this.segments );
 
             return;
 
@@ -645,7 +643,7 @@ export class ParametricSpline extends AbstractSpline {
 
         const posfoo = new Vector3();
 
-        posfoo.copy( h1 ).add( h2 ).add( h3 ).add( h4 )
+        posfoo.copy( h1 ).add( h2 ).add( h3 ).add( h4 );
 
         return posfoo;
 
@@ -746,7 +744,8 @@ export class ParametricSpline extends AbstractSpline {
         /*flip y axis*/
         p2proj.y = -p2proj.y;
 
-        const x = p1.x; const y = p1.y;
+        const x = p1.x;
+        const y = p1.y;
 
         const hdg = hdg1[ 0 ];
 

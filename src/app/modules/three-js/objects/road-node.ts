@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Color, Group, LineSegments, LineBasicMaterial } from 'three';
 import { COLOR } from 'app/shared/utils/colors.service';
+import { Color, Group, LineBasicMaterial, LineSegments } from 'three';
 
 export class RoadNode extends Group {
 
@@ -23,7 +23,9 @@ export class RoadNode extends Group {
 
     }
 
-    get material () { return this.line.material as LineBasicMaterial; }
+    get material () {
+        return this.line.material as LineBasicMaterial;
+    }
 
     selected () {
 

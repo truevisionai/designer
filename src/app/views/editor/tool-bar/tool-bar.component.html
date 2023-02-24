@@ -16,6 +16,18 @@
         </div>
     </sat-popover>
 
+    <!-- Road-Circle-Tool -->
+    <button (click)="showRoadCircleTool()" [ngClass]="currentToolName == 'RoadCircleTool' ? 'mat-accent' : ''" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool" appTrack="button" mat-icon-button
+            matTooltip="Road Circle Tool">
+        <mat-icon>trip_origin</mat-icon>
+    </button>
+    <sat-popover #roadCircleToolPopover verticalAlign="below">
+        <div class="simple-popover">
+            <div class="title">{{ 'ROAD-CIRCLE-TITLE' | translate }}</div>
+            <div [innerHTML]="'ROAD-CIRCLE-DESCRIPTION' | translate"></div>
+        </div>
+    </sat-popover>
+
     <!-- Lane-Width -->
     <button (click)="showLaneWidthTool()" [ngClass]="currentToolName == 'LaneWidth' ? 'mat-accent' : ''" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="1000" action="lane-width-tool" appTrack="button" mat-icon-button
             matTooltip="Lane Width Tool">
@@ -33,11 +45,11 @@
         <mat-icon>vertical_align_center</mat-icon>
     </button>
     <!-- <sat-popover #LaneOffsetHelp verticalAlign="below">
-        <div class="simple-popover">
-            <div class="title">{{ 'LANE-WIDTH-TOOL-TITLE' | translate }}</div>
-            <div [innerHTML]="'LANE-WIDTH-TOOL-DESCRIPTION' | translate"></div>
-        </div>
-    </sat-popover> -->
+		<div class="simple-popover">
+			<div class="title">{{ 'LANE-WIDTH-TOOL-TITLE' | translate }}</div>
+			<div [innerHTML]="'LANE-WIDTH-TOOL-DESCRIPTION' | translate"></div>
+		</div>
+	</sat-popover> -->
 
     <!-- Add-Lane -->
     <button (click)="showAddLaneTool()" [ngClass]="currentToolName == 'AddLane' ? 'mat-accent' : ''" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="1000" action="add-lane-tool" appTrack="button" mat-icon-button
@@ -77,10 +89,10 @@
     </sat-popover>
 
     <!-- <button (click)="editSignals()" [ngClass]="currentToolName == roadSignalTool.name?' mat-accent' : ''"
-            mat-icon-button
-            matTooltip="Edit Traffic Signals">
-        <mat-icon>traffic</mat-icon>
-    </button> -->
+			mat-icon-button
+			matTooltip="Edit Traffic Signals">
+		<mat-icon>traffic</mat-icon>
+	</button> -->
 
 
     <!-- Road Objects -->
@@ -98,30 +110,30 @@
     <!-- </sat-popover> -->
 
     <!-- <button (click)="showRoadSignTool()" [ngClass]="currentToolName == 'RoadSignTool' ? 'mat-accent' : ''"
-        [satPopoverAnchor]="roadSignToolHelp" [satPopoverHover]="1000" action="road-sign-tool" appTrack="button"
-        mat-icon-button matTooltip="Road Sign Tool">
-        <mat-icon>directions</mat-icon>
-    </button>
-    <sat-popover #roadSignToolHelp verticalAlign="below">
-        <div class="simple-popover">
-            <div class="title">{{ 'ROAD-SIGN-TOOL-TITLE' | translate }}</div>
-            <div [innerHTML]="'ROAD-SIGN-TOOL-DESCRIPTION' | translate"></div>
-        </div>
-    </sat-popover> -->
+		[satPopoverAnchor]="roadSignToolHelp" [satPopoverHover]="1000" action="road-sign-tool" appTrack="button"
+		mat-icon-button matTooltip="Road Sign Tool">
+		<mat-icon>directions</mat-icon>
+	</button>
+	<sat-popover #roadSignToolHelp verticalAlign="below">
+		<div class="simple-popover">
+			<div class="title">{{ 'ROAD-SIGN-TOOL-TITLE' | translate }}</div>
+			<div [innerHTML]="'ROAD-SIGN-TOOL-DESCRIPTION' | translate"></div>
+		</div>
+	</sat-popover> -->
 
     <!-- <button *ngIf="oscEnabled" (click)="showVehicleTool()"
-        [ngClass]="currentToolName == 'VehicleTool' ? 'mat-accent' : ''" [satPopoverAnchor]="vehicleToolHelp"
-        [satPopoverHover]="1000" action="vehicle-tool" appTrack="button" mat-icon-button matTooltip="Vehicle Tool">
-        <mat-icon>directions_car</mat-icon>
-    </button>
-    <sat-popover #vehicleToolHelp verticalAlign="below">
-        <div class="simple-popover">
-            <div class="title">{{ 'VEHICLE-TOOL-TITLE' | translate }}</div>
-            <div [innerHTML]="'VEHICLE-TOOL-DESCRIPTION' | translate"></div>
-        </div>
-    </sat-popover> -->
+		[ngClass]="currentToolName == 'VehicleTool' ? 'mat-accent' : ''" [satPopoverAnchor]="vehicleToolHelp"
+		[satPopoverHover]="1000" action="vehicle-tool" appTrack="button" mat-icon-button matTooltip="Vehicle Tool">
+		<mat-icon>directions_car</mat-icon>
+	</button>
+	<sat-popover #vehicleToolHelp verticalAlign="below">
+		<div class="simple-popover">
+			<div class="title">{{ 'VEHICLE-TOOL-TITLE' | translate }}</div>
+			<div [innerHTML]="'VEHICLE-TOOL-DESCRIPTION' | translate"></div>
+		</div>
+	</sat-popover> -->
 
-    <button mat-icon-button [matMenuTriggerFor]="markingToolMenu" matTooltip="Marking Tool" [ngClass]=" isMarkingToolSelected ? 'mat-accent' : ''">
+    <button [matMenuTriggerFor]="markingToolMenu" [ngClass]=" isMarkingToolSelected ? 'mat-accent' : ''" mat-icon-button matTooltip="Marking Tool">
         <mat-icon>call_split</mat-icon>
     </button>
     <mat-menu #markingToolMenu="matMenu">
@@ -129,20 +141,20 @@
             Marking Point Tool
         </button>
         <!-- <button (click)="setMarkingLineTool()" action="marking-line-tool" appTrack="menu" mat-menu-item> -->
-            <!-- Marking Line Tool -->
+        <!-- Marking Line Tool -->
         <!-- </button> -->
     </mat-menu>
 
     <!-- <button mat-icon-button [matMenuTriggerFor]="parkingToolMenu" matTooltip="Parking Tool">
-        <mat-icon>local_parking</mat-icon>
-    </button>
-    <mat-menu #parkingToolMenu="matMenu">
-        <button (click)="setParkingBoxTool()" action="parking-box-tool" appTrack="menu" mat-menu-item>
-            Parking Box Tool
-        </button>
-    </mat-menu> -->
+		<mat-icon>local_parking</mat-icon>
+	</button>
+	<mat-menu #parkingToolMenu="matMenu">
+		<button (click)="setParkingBoxTool()" action="parking-box-tool" appTrack="menu" mat-menu-item>
+			Parking Box Tool
+		</button>
+	</mat-menu> -->
 
-    <button mat-icon-button [matMenuTriggerFor]="propTooMenu" matTooltip="Prop Tool" [ngClass]="isPropToolSelected ? 'mat-accent' : ''">
+    <button [matMenuTriggerFor]="propTooMenu" [ngClass]="isPropToolSelected ? 'mat-accent' : ''" mat-icon-button matTooltip="Prop Tool">
         <mat-icon>category</mat-icon>
     </button>
     <mat-menu #propTooMenu="matMenu">
@@ -191,80 +203,80 @@
 
 
     <!-- <button mat-icon-button matTooltip="New File">
-        <mat-icon>note_add</mat-icon>
-    </button>
+		<mat-icon>note_add</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Save">
-        <mat-icon>save</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Save">
+		<mat-icon>save</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Clear Scene" (click)="onReset()">
-        <mat-icon>delete</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Clear Scene" (click)="onReset()">
+		<mat-icon>delete</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Undo" (click)="onUndo()">
-        <mat-icon>undo</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Undo" (click)="onUndo()">
+		<mat-icon>undo</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Redo" (click)="onRedo()">
-        <mat-icon>redo</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Redo" (click)="onRedo()">
+		<mat-icon>redo</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Duplicate">
-        <mat-icon>control_point_duplicate</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Duplicate">
+		<mat-icon>control_point_duplicate</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Draw Roads" (click)="onDrawRoads()">
-        <mat-icon>show_chart</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Draw Roads" (click)="onDrawRoads()">
+		<mat-icon>show_chart</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Add Vehicle">
-        <mat-icon>directions_car</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Add Vehicle">
+		<mat-icon>directions_car</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Add Pedestrian">
-        <mat-icon>directions_walk</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Add Pedestrian">
+		<mat-icon>directions_walk</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Add Motorcycle">
-        <mat-icon>directions_bike</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Add Motorcycle">
+		<mat-icon>directions_bike</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Add Latitude/Longitude">
-        <mat-icon>my_location</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Add Latitude/Longitude">
+		<mat-icon>my_location</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Zoom-In">
-        <mat-icon>zoom_in</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Zoom-In">
+		<mat-icon>zoom_in</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Zoom-Out">
-        <mat-icon>zoom_out</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Zoom-Out">
+		<mat-icon>zoom_out</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Add Traffic-Signal" (click)="onAddSignal()">
-        <mat-icon>swap_vertical_circle</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Add Traffic-Signal" (click)="onAddSignal()">
+		<mat-icon>swap_vertical_circle</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Play" (click)="playSimulation()">
-        <mat-icon>play_arrow</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Play" (click)="playSimulation()">
+		<mat-icon>play_arrow</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Pause" (click)="pauseSimulation()">
-        <mat-icon>pause</mat-icon>
-    </button>
+	<button mat-icon-button matTooltip="Pause" (click)="pauseSimulation()">
+		<mat-icon>pause</mat-icon>
+	</button>
 
-    <button mat-icon-button matTooltip="Reload" (click)="reloadSimulation()">
-        <mat-icon>refresh</mat-icon>
-    </button> -->
+	<button mat-icon-button matTooltip="Reload" (click)="reloadSimulation()">
+		<mat-icon>refresh</mat-icon>
+	</button> -->
 
-    <button (click)="changeCamera()" mat-icon-button matTooltip="Change Camera" action="change-camera" appTrack="menu">
+    <button (click)="changeCamera()" action="change-camera" appTrack="menu" mat-icon-button matTooltip="Change Camera">
         <mat-icon>camera</mat-icon>
     </button>
 
     <!-- <button (click)="importOpenDrive()" *ngIf="showImportButton" mat-icon-button matTooltip="Import">
-        <mat-icon>play_arrow</mat-icon>
-    </button> -->
+		<mat-icon>play_arrow</mat-icon>
+	</button> -->
 
     <!-- <button (click)="setMiscShape()" mat-icon-button matTooltip="Misc Shape"> -->
     <!-- <mat-icon>timeline</mat-icon> -->

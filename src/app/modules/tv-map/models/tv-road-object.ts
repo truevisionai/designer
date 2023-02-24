@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Mesh } from 'three';
 import {
     TvBridgeTypes,
     TvColors,
@@ -12,7 +13,6 @@ import {
     TvTunnelTypes,
     TvUserData
 } from './tv-common';
-import { Mesh } from 'three';
 
 export class TvObjectContainer {
     public object: TvRoadObject[] = [];
@@ -45,10 +45,9 @@ export class TvRoadObject {
     public validity: TvLaneValidity[] = [];
     public parkingSpace: TvParkingSpace;
     public userData: TvUserData[] = [];
+    public mesh: Mesh;
     // public gameObject: Object3D;
     private lastAddedRepeatObjectIndex: number;
-
-    public mesh: Mesh;
 
     constructor (
         type: string,
@@ -284,8 +283,8 @@ export class TvObjectRepeat {
     public attr_zOffsetEnd: number;
 
     constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-                  widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-                  zOffsetStart: number, zOffsetEnd: number ) {
+        widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
+        zOffsetStart: number, zOffsetEnd: number ) {
 
         this.attr_s = s;
         this.attr_length = length;

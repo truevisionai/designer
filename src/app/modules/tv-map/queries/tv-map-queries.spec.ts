@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapInstance } from '../services/tv-map-source-file';
-import { TvRoad } from '../models/tv-road.model';
-import { TvMap } from '../models/tv-map.model';
-import { TvMapQueries } from './tv-map-queries';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
+import { TvMap } from '../models/tv-map.model';
+import { TvRoad } from '../models/tv-road.model';
+import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapQueries } from './tv-map-queries';
 
 describe( 'OpenDriveQueries', () => {
 
@@ -39,7 +39,7 @@ describe( 'OpenDriveQueries', () => {
 
         const s = 0;
 
-        // add left lane with 2 width 
+        // add left lane with 2 width
         road.getLaneSectionAt( 0 ).addLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true ).addWidthRecord( 0, 2, 0, 0, 0 );
 
         const result = TvMapQueries.getRoadWidthAt( road.id, s );

@@ -2,8 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { environment } from '../../../environments/environment';
-
 const MAX_LOG_COUNT = 500;
 
 enum ConsoleLogType {
@@ -16,7 +14,8 @@ class ConsoleLog {
 
     public time = new Date();
 
-    constructor ( public type: ConsoleLogType, public message: any, public counter = 0 ) { }
+    constructor ( public type: ConsoleLogType, public message: any, public counter = 0 ) {
+    }
 
     get icon () {
 
@@ -47,7 +46,9 @@ export class TvConsole {
 
     static logs: ConsoleLog[] = [];
 
-    static get lastLog () { return this.logs[ this.logs.length - 1 ]; }
+    static get lastLog () {
+        return this.logs[ this.logs.length - 1 ];
+    }
 
     static clear () {
 

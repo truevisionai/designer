@@ -3,15 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BufferGeometry, Line, LineBasicMaterial, Shape } from 'three';
+import { AbstractSpline } from '../shapes/abstract-spline';
+import { AutoSpline } from '../shapes/auto-spline';
 import { AutoSplinePath, ExplicitSplinePath } from '../shapes/cubic-spline-curve';
 import { ExplicitSpline } from '../shapes/explicit-spline';
-import { AutoSpline } from '../shapes/auto-spline';
-import { AbstractSpline } from '../shapes/abstract-spline';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 
 @Injectable( {
     providedIn: 'root'
@@ -33,7 +33,9 @@ export class LanePathFactory {
 
         const spline = connectingRoad.spline;
 
-        const shape = new Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
         if ( spline.controlPointPositions.length < 2 ) return;
 
@@ -83,7 +85,9 @@ export class LanePathFactory {
 
         const spline = connectingRoad.spline;
 
-        const shape = new Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
         if ( spline.controlPointPositions.length < 2 ) return;
 
@@ -117,11 +121,11 @@ export class LanePathFactory {
         return pathObject;
     }
 
-    /**
-     *
-     * @param connectingRoad
-     * @deprecated dont use this
-     */
+	/**
+	 *
+	 * @param connectingRoad
+	 * @deprecated dont use this
+	 */
     static createFromConnectingRoad ( connectingRoad: TvRoad ) {
 
         const pathObject = new LanePathObject( null, connectingRoad, null, null );
@@ -134,7 +138,9 @@ export class LanePathFactory {
 
         const spline = connectingRoad.spline;
 
-        const shape = new Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
         if ( spline.controlPointPositions.length < 2 ) return;
 
@@ -182,7 +188,9 @@ export class LanePathFactory {
 
         const spline = connectingRoad.spline;
 
-        const shape = new Shape(); shape.moveTo( 0, -0.3 ); shape.lineTo( 0, 0.3 );
+        const shape = new Shape();
+        shape.moveTo( 0, -0.3 );
+        shape.lineTo( 0, 0.3 );
 
         if ( spline.controlPointPositions.length < 2 ) return;
 

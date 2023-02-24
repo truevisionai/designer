@@ -3,8 +3,8 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 
 export abstract class OdBaseCommand extends BaseCommand {
 

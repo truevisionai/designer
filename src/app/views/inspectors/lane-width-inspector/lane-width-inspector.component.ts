@@ -3,16 +3,16 @@
  */
 
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
-import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
+import { IComponent } from 'app/core/game-object';
 import { LaneWidthTool } from 'app/core/tools/lane-width-tool';
+import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
+import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
-import { CommandHistory } from 'app/services/command-history';
-import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-command';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 
 export interface LaneWidthInspectorData {
     node: LaneWidthNode;
@@ -40,9 +40,13 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
     }
 
-    get node () { return this.data.node }
+    get node () {
+        return this.data.node;
+    }
 
-    set node ( value ) { this.data.node = value; }
+    set node ( value ) {
+        this.data.node = value;
+    }
 
     get width (): TvLaneWidth {
         return this.data.node.laneWidth;
@@ -54,7 +58,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
         if ( this.data.node ) return this.data.node.roadId;
 
-        SnackBar.error( "Road not found" );
+        SnackBar.error( 'Road not found' );
     }
 
     get road () {

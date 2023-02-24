@@ -4,72 +4,56 @@
 
 <div class="page-wrap height-100">
     <div class="session-form-hold">
-        <mat-progress-bar mode="determinate" class="session-progress"></mat-progress-bar>
+        <mat-progress-bar class="session-progress" mode="determinate"></mat-progress-bar>
         <mat-card>
             <mat-card-content>
                 <div class="text-center pb-1">
-                    <img src="assets/images/logo-full.png" alt="" class="mb-05">
+                    <img alt="" class="mb-05" src="assets/images/logo-full.png">
                     <p class="text-muted m-0">Sign up to use our service</p>
                 </div>
-                <form [formGroup]="signupForm" (ngSubmit)="signup()">
+                <form (ngSubmit)="signup()" [formGroup]="signupForm">
                     <div class="">
                         <mat-form-field class="full-width">
-                            <input matInput type="name" name="name" [formControl]="signupForm.controls['name']"
-                                placeholder="Your Name" value="">
+                            <input [formControl]="name" matInput name="name" placeholder="Your Name" type="name" value="">
                         </mat-form-field>
-                        <small
-                            *ngIf="signupForm.controls['name'].hasError('required') && signupForm.controls['name'].touched"
-                            class="form-error-msg"> Name is required </small>
+                        <small *ngIf="name.hasError('required') && name.touched" class="form-error-msg"> Name is required </small>
                     </div>
 
                     <div class="">
                         <mat-form-field class="full-width">
-                            <input matInput type="email" name="email" [formControl]="signupForm.controls['email']"
-                                placeholder="Your Email" value="">
+                            <input [formControl]="email" matInput name="email" placeholder="Your Email" type="email" value="">
                         </mat-form-field>
-                        <small
-                            *ngIf="signupForm.controls['email'].hasError('required') && signupForm.controls['email'].touched"
-                            class="form-error-msg"> Email is required </small>
+                        <small *ngIf="email.hasError('required') && email.touched" class="form-error-msg"> Email is required </small>
 
-                        <small
-                            *ngIf="signupForm.controls['email'].hasError('email') && signupForm.controls['email'].touched"
-                            class="form-error-msg"> Invaild email address </small>
+                        <small *ngIf="email.hasError('email') && email.touched" class="form-error-msg"> Invaild email address </small>
                     </div>
 
                     <div class="">
                         <mat-form-field class="full-width">
-                            <input type="password" name="password" matInput
-                                [formControl]="signupForm.controls['password']" placeholder="Password" value="">
+                            <input [formControl]="password" matInput name="password" placeholder="Password" type="password" value="">
                         </mat-form-field>
-                        <small
-                            *ngIf="signupForm.controls['password'].hasError('required') && signupForm.controls['password'].touched"
-                            class="form-error-msg"> Password is required </small>
+                        <small *ngIf="password.hasError('required') && password.touched" class="form-error-msg"> Password is required </small>
                     </div>
 
                     <div class="">
                         <mat-form-field class="full-width">
-                            <input type="password" name="confirmPassword" matInput
-                                [formControl]="signupForm.controls['confirmPassword']" placeholder="Confirm Password"
-                                value="">
+                            <input [formControl]="confirmPassword" matInput name="confirmPassword" placeholder="Confirm Password" type="password" value="">
                         </mat-form-field>
-                        <small
-                            *ngIf="signupForm.controls['confirmPassword'].hasError('required') && signupForm.controls['confirmPassword'].touched"
-                            class="form-error-msg">Confirm password is required.</small>
-                        <small *ngIf="signupForm.controls['confirmPassword'].hasError('equalTo')"
-                            class="form-error-msg">Passwords do not math.</small>
+                        <small *ngIf="confirmPassword.hasError('required') && confirmPassword.touched" class="form-error-msg">Confirm password is required.</small>
+                        <small *ngIf="confirmPassword.hasError('equalTo')" class="form-error-msg">Passwords do not math.</small>
                     </div>
 
                     <div class="pb-1">
-                        <mat-checkbox name="agreed" [formControl]="signupForm.controls['agreed']" class="pb-1">I have
-                            read and agree to the terms of service.</mat-checkbox>
+                        <mat-checkbox [formControl]="agreed" class="pb-1" name="agreed">I have
+                            read and agree to the terms of service.
+                        </mat-checkbox>
 
-                        <small
-                            *ngIf="signupForm.controls['agreed'].hasError('agreed') && signupForm.controls['agreed'].touched"
-                            class="form-error-msg"> You must agree to the terms and conditions </small>
+                        <small *ngIf="agreed.hasError('agreed') && agreed.touched" class="form-error-msg"> You must agree to the terms and conditions </small>
                     </div>
 
-                    <button mat-raised-button class="mat-primary full-width mb-1" [disabled]="signupForm.invalid">Sign
-                        up</button>
+                    <button [disabled]="signupForm.invalid" class="mat-primary full-width mb-1" mat-raised-button>Sign
+                        up
+                    </button>
                     <div class="text-center">
                         <a [routerLink]="'/sessions/signin'" class="mat-primary text-center full-width">Sign in to
                             existing account</a>

@@ -3,23 +3,18 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FileNode } from '../file-node.model';
-import { ElectronService } from 'ngx-electron';
-import { ContextMenuType, MenuService } from 'app/services/menu.service';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { AppInspector } from 'app/core/inspector';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
-import { Material } from 'three';
-import { Metadata } from 'app/core/models/metadata.model';
-import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
-import { FileService } from 'app/services/file.service';
-import { AssetDatabase } from 'app/services/asset-database';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { FileUtils } from 'app/services/file-utils';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { ProjectBrowserService } from '../project-browser.service';
+import { AppInspector } from 'app/core/inspector';
+import { Metadata } from 'app/core/models/metadata.model';
+import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
+import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { FileUtils } from 'app/services/file-utils';
+import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
+import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { TvRoadMarking } from "app/modules/tv-map/models/tv-road-marking";
 
@@ -43,27 +38,6 @@ export class FileComponent implements OnInit {
 
     public showRenaming: boolean;
 
-    // public previewImage;
-    public get previewImage () { return this.metadata && this.metadata.preview }
-
-    public get isModel (): boolean { return this.metadata && this.metadata.importer == "ModelImporter" }
-
-    public get isMaterial (): boolean { return this.metadata && this.metadata.importer == "MaterialImporter" }
-
-    public get isTexture (): boolean { return this.metadata && this.metadata.importer == "TextureImporter" }
-
-    public get isRoadStyle (): boolean { return this.metadata && this.metadata.importer == "RoadStyleImporter" }
-
-    public get isRoadMarking (): boolean { return this.metadata && this.metadata.importer == "RoadMarkingImporter" }
-
-    public get isScene (): boolean { return this.metadata && this.metadata.importer == "SceneImporter" }
-
-    public get isSign (): boolean { return this.metadata && this.metadata.importer == "SignImporter" }
-
-    public get isDirectory (): boolean { return this.metadata && this.file.type == 'directory' }
-
-    public get isUnknown (): boolean { return !this.isDirectory && ( !this.metadata || !this.extension ); }
-
     constructor (
         private electron: ElectronService,
         private menuService: MenuService,
@@ -76,7 +50,50 @@ export class FileComponent implements OnInit {
 
     }
 
-    get filename () { return this.file.name.split( '.' )[ 0 ]; }
+    // public previewImage;
+    public get previewImage () {
+        return this.metadata && this.metadata.preview;
+    }
+
+    public get isModel (): boolean {
+        return this.metadata && this.metadata.importer == 'ModelImporter';
+    }
+
+    public get isMaterial (): boolean {
+        return this.metadata && this.metadata.importer == 'MaterialImporter';
+    }
+
+    public get isTexture (): boolean {
+        return this.metadata && this.metadata.importer == 'TextureImporter';
+    }
+
+    public get isRoadStyle (): boolean {
+        return this.metadata && this.metadata.importer == 'RoadStyleImporter';
+    }
+
+    public get isRoadMarking (): boolean {
+        return this.metadata && this.metadata.importer == 'RoadMarkingImporter';
+    }
+
+    public get isScene (): boolean {
+        return this.metadata && this.metadata.importer == 'SceneImporter';
+    }
+
+    public get isSign (): boolean {
+        return this.metadata && this.metadata.importer == 'SignImporter';
+    }
+
+    public get isDirectory (): boolean {
+        return this.metadata && this.file.type == 'directory';
+    }
+
+    public get isUnknown (): boolean {
+        return !this.isDirectory && ( !this.metadata || !this.extension );
+    }
+
+    get filename () {
+        return this.file.name.split( '.' )[ 0 ];
+    }
 
     // set filename ( value ) { this.file.name = value; }
 
@@ -84,9 +101,9 @@ export class FileComponent implements OnInit {
 
     get filePath () {
 
-        if ( this.electron.isLinux ) return "file:///" + this.file.path;
+        if ( this.electron.isLinux ) return 'file:///' + this.file.path;
 
-        if ( this.electron.isWindows ) return "file:///" + this.file.path;
+        if ( this.electron.isWindows ) return 'file:///' + this.file.path;
 
     }
 
@@ -118,19 +135,19 @@ export class FileComponent implements OnInit {
 
             if ( !this.metadata.preview ) {
 
-                if ( this.metadata.importer === "MaterialImporter" ) {
+                if ( this.metadata.importer === 'MaterialImporter' ) {
 
                     const instance: Material = AssetDatabase.getInstance( this.metadata.guid );
 
                     this.metadata.preview = this.previewService.getMaterialPreview( instance );
 
-                } else if ( this.metadata.importer === "SignImporter" ) {
+                } else if ( this.metadata.importer === 'SignImporter' ) {
 
                     const instance: TvRoadSign = AssetDatabase.getInstance( this.metadata.guid );
 
                     this.metadata.preview = this.previewService.getSignPreview( instance );
 
-                } else if ( this.metadata.importer === "ModelImporter" ) {
+                } else if ( this.metadata.importer === 'ModelImporter' ) {
 
                     // const instance: Object3D = AssetCache.getInstance( this.metadata.guid );
 
@@ -142,13 +159,13 @@ export class FileComponent implements OnInit {
 
                     }, this.metadata );
 
-                } else if ( this.metadata.importer === "RoadStyleImporter" ) {
+                } else if ( this.metadata.importer === 'RoadStyleImporter' ) {
 
                     const instance: RoadStyle = AssetDatabase.getInstance( this.metadata.guid );
 
                     this.metadata.preview = this.previewService.getRoadStylePreview( instance );
 
-                } else if ( this.metadata.importer === "RoadMarkingImporter" ) {
+                } else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
 
                     const instance: TvRoadMarking = AssetDatabase.getInstance( this.metadata.guid );
 
@@ -179,21 +196,21 @@ export class FileComponent implements OnInit {
             const instance = AssetDatabase.getInstance( this.metadata.guid );
             const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
 
-            if ( this.metadata.importer === "MaterialImporter" ) {
+            if ( this.metadata.importer === 'MaterialImporter' ) {
 
                 AppInspector.setInspector( inspector, {
                     material: instance,
                     guid: this.metadata.guid
                 } );
 
-            } else if ( this.metadata.importer === "TextureImporter" ) {
+            } else if ( this.metadata.importer === 'TextureImporter' ) {
 
                 AppInspector.setInspector( inspector, {
                     texture: instance,
                     guid: this.metadata.guid
                 } );
 
-            } else if ( this.metadata.importer === "RoadStyleImporter" ) {
+            } else if ( this.metadata.importer === 'RoadStyleImporter' ) {
 
                 RoadStyleService.setCurrentStyle( instance as RoadStyle );
 
@@ -202,17 +219,17 @@ export class FileComponent implements OnInit {
                     guid: this.metadata.guid
                 } );
 
-            } else if ( this.metadata.importer === "ModelImporter" ) {
+            } else if ( this.metadata.importer === 'ModelImporter' ) {
 
                 AppInspector.setInspector( inspector, this.metadata );
 
 
-            } else if ( this.metadata.importer === "RoadMarkingImporter" ) {
+            } else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
 
                 AppInspector.setInspector( inspector, {
                     roadMarking: instance,
                     guid: this.metadata.guid
-                } )
+                } );
 
             } else {
 
@@ -271,7 +288,7 @@ export class FileComponent implements OnInit {
 
                 case 'scene':
                     this.importer.importScene( this.file.path );
-                    SnackBar.success( "Importing Scene " + this.file.name );
+                    SnackBar.success( 'Importing Scene ' + this.file.name );
                     break;
 
             }
@@ -327,7 +344,8 @@ export class FileComponent implements OnInit {
             },
             {
                 label: 'Duplicate',
-                click: () => { },
+                click: () => {
+                },
                 enabled: false,
             },
             {
@@ -356,7 +374,7 @@ export class FileComponent implements OnInit {
 
             if ( this.isDirectory ) {
 
-                // TODO: need to loop over each file in the folder to delete them 
+                // TODO: need to loop over each file in the folder to delete them
                 // from database as well
                 this.fileService.deleteFolderSync( this.file.path );
                 this.fileService.deleteFileSync( this.file.path + '.meta' );
@@ -365,7 +383,7 @@ export class FileComponent implements OnInit {
 
                 AssetDatabase.remove( this.metadata.guid );
 
-                SnackBar.success( "Folder deleted" );
+                SnackBar.success( 'Folder deleted' );
 
             } else {
 
@@ -376,7 +394,7 @@ export class FileComponent implements OnInit {
 
                 AssetDatabase.remove( this.metadata.guid );
 
-                SnackBar.success( "File deleted" );
+                SnackBar.success( 'File deleted' );
             }
 
             this.deleted.emit( this.file );
@@ -418,7 +436,7 @@ export class FileComponent implements OnInit {
 
     reimport () {
 
-        SnackBar.error( "Not able to reimport" );
+        SnackBar.error( 'Not able to reimport' );
 
         // console.error( "method not implemented" );
         // this.assetService.reimport( this.file, this.extension );
@@ -427,7 +445,7 @@ export class FileComponent implements OnInit {
 
     reimportAll () {
 
-        SnackBar.error( "Not able to reimport" );
+        SnackBar.error( 'Not able to reimport' );
 
     }
 
@@ -449,13 +467,13 @@ export class FileComponent implements OnInit {
         // $event.preventDefault();
         // $event.stopPropagation();
 
-        console.log( "dragstat", $event );
+        console.log( 'dragstat', $event );
 
-        $event.dataTransfer.setData( "path", this.file.path );
+        $event.dataTransfer.setData( 'path', this.file.path );
 
         if ( this.metadata ) {
 
-            $event.dataTransfer.setData( "guid", this.metadata.guid );
+            $event.dataTransfer.setData( 'guid', this.metadata.guid );
 
         }
     }
@@ -479,7 +497,7 @@ export class FileComponent implements OnInit {
 
         if ( $event.keyCode === 13 && this.nameInputRef ) {
 
-            this.file.name = this.nameInputRef.nativeElement.value + "." + this.extension;
+            this.file.name = this.nameInputRef.nativeElement.value + '.' + this.extension;
 
             const oldPath = this.file.path;
 
@@ -498,11 +516,11 @@ export class FileComponent implements OnInit {
 
             try {
 
-                MetadataFactory.saveMetadataFile( oldPath + ".meta", this.metadata );
+                MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
 
                 this.fileService.fs.renameSync( oldPath, newPath );
 
-                this.fileService.fs.renameSync( oldPath + ".meta", newPath + ".meta" );
+                this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
 
                 this.renamed.emit( this.file );
 

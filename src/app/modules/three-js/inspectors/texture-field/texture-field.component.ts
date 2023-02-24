@@ -29,7 +29,7 @@ export class TextureFieldComponent implements OnInit {
     }
 
     get canvasEl (): HTMLCanvasElement {
-        return <HTMLCanvasElement>this.canvas.nativeElement;
+        return <HTMLCanvasElement> this.canvas.nativeElement;
     }
 
     get texture () {

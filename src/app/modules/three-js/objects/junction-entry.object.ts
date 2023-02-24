@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Color, Geometry, PointsMaterial, Vector3 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { BaseControlPoint } from './control-point';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
+import { BaseControlPoint } from './control-point';
 
 export class JunctionEntryObject extends BaseControlPoint {
 
@@ -22,9 +22,9 @@ export class JunctionEntryObject extends BaseControlPoint {
 
     constructor ( name: string, position: Vector3, contact: TvContactPoint, road: TvRoad, lane?: TvLane ) {
 
-        const geometry = new Geometry();
+        const geometry = new BufferGeometry();
 
-        geometry.vertices.push( new Vector3( 0, 0, 0 ) );
+        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const texture = OdTextures.point;
 

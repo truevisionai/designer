@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../tv-road.model';
-import { TvPosTheta } from '../tv-pos-theta';
-import { TvMap } from '../tv-map.model';
 import { TvMapQueries } from '../../queries/tv-map-queries';
 import { TvMapInstance } from '../../services/tv-map-source-file';
+import { TvMap } from '../tv-map.model';
+import { TvPosTheta } from '../tv-pos-theta';
+import { TvRoad } from '../tv-road.model';
 
 describe( 'OdArcGeometry', () => {
 

@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvLaneSection } from './tv-lane-section';
+import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
-import { isNullOrUndefined } from 'util';
 
 export class TvRoadLanes {
 
@@ -121,7 +120,7 @@ export class TvRoadLanes {
 
     getLaneOffsetValue ( s: number ): number {
 
-        if ( isNullOrUndefined( s ) ) console.error( "s is undefined" );
+        if ( s == null ) console.error( 's is undefined' );
 
         let offset = 0;
 

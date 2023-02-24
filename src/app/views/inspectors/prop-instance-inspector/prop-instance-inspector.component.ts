@@ -14,17 +14,19 @@ import { AssetDatabase } from 'app/services/asset-database';
     templateUrl: './prop-instance-inspector.component.html',
     styles: [
         `.example-card {
-            max-width: 400px;
-          }
-          .example-header-image {
-            background-size: cover;
-            cursor: pointer;
-          }
-          .example-header-image:hover {
-              border: 1px solid blue;
-          }
+			max-width: 400px;
+		}
 
-        `
+		.example-header-image {
+			background-size: cover;
+			cursor: pointer;
+		}
+
+		.example-header-image:hover {
+			border: 1px solid blue;
+		}
+
+		`
     ]
 
 } )
@@ -36,9 +38,12 @@ export class PropInstanceInspectorComponent implements OnInit, IComponent, OnDes
 
     previewImage: string;
 
-    constructor () { }
+    constructor () {
+    }
 
-    get metadata () { return AssetDatabase.getMetadata( this.data.guid ); }
+    get metadata () {
+        return AssetDatabase.getMetadata( this.data.guid );
+    }
 
     ngOnInit (): void {
 
@@ -50,12 +55,13 @@ export class PropInstanceInspectorComponent implements OnInit, IComponent, OnDes
 
     }
 
-    ngOnDestroy (): void { }
+    ngOnDestroy (): void {
+    }
 
     onPropModelClicked () {
 
-        console.error( "method not implemented" );
-        // this.projectBrowser.showFileByGuid( this.data.guid ); 
+        console.error( 'method not implemented' );
+        // this.projectBrowser.showFileByGuid( this.data.guid );
 
     }
 

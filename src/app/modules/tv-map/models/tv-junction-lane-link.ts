@@ -3,18 +3,18 @@
  */
 
 import { Color, Line, LineBasicMaterial, Mesh, Object3D } from 'three';
-import { TvRoad } from './tv-road.model';
 import { TvJunctionConnection } from './tv-junction-connection';
+import { TvRoad } from './tv-road.model';
 
 export class TvJunctionLaneLink {
 
     public lanePath: LanePathObject;
 
-    /**
-     *
-     * @param from ID of the incoming lane
-     * @param to ID of the connecting lane
-     */
+	/**
+	 *
+	 * @param from ID of the incoming lane
+	 * @param to ID of the connecting lane
+	 */
     constructor ( public from: number, public to: number ) {
 
     }
@@ -49,7 +49,9 @@ export class LanePathObject extends Object3D {
         super();
     }
 
-    get material () { return this.mesh.material as LineBasicMaterial }
+    get material () {
+        return this.mesh.material as LineBasicMaterial;
+    }
 
     select () {
 

@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable, EventEmitter } from '@angular/core';
-import { FileNode } from './file-node.model';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { EventEmitter, Injectable } from '@angular/core';
+import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { AppInspector } from 'app/core/inspector';
 import { Metadata } from 'app/core/models/metadata.model';
-import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
+import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { FileNode } from './file-node.model';
 
 @Injectable( {
     providedIn: 'root'
@@ -18,9 +18,9 @@ export class ProjectBrowserService {
     public static lastAsset: Metadata;
     public static lastMetadata: Metadata;
 
-    /**
-     * @deprecated not in use
-     */
+	/**
+	 * @deprecated not in use
+	 */
     public fileClicked = new EventEmitter<FileNode>();
     public fileDoubleClicked = new EventEmitter<FileNode>();
 
@@ -32,11 +32,11 @@ export class ProjectBrowserService {
 
     }
 
-    /**
-     * 
-     * @param file 
-     * @deprecated not in used
-     */
+	/**
+	 *
+	 * @param file
+	 * @deprecated not in used
+	 */
     onFileClicked ( file: FileNode ) {
 
         try {

@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { PointerEventData } from '../../events/pointer-event-data';
 import { Mesh, Object3D } from 'three';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { PointerEventData } from '../../events/pointer-event-data';
 import { OdLaneDirectionBuilder } from '../../modules/tv-map/builders/od-lane-direction-builder';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { BaseTool } from './base-tool';
 
 export class LaneDirectionTool extends BaseTool {
 
@@ -58,7 +58,7 @@ export class LaneDirectionTool extends BaseTool {
 
     private selectLane ( object: Mesh ) {
 
-        let lane = (object.userData.lane as TvLane);
+        let lane = ( object.userData.lane as TvLane );
 
         this.laneDirectionHelper.setRoad( this.map.getRoadById( lane.roadId ) );
 

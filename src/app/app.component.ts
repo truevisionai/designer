@@ -5,17 +5,17 @@
 import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+
+import { filter, takeUntil } from 'rxjs/operators';
+import { environment } from '../environments/environment';
+import { AnalyticsService } from './core/analytics/analytics.service';
+import { AppService } from './core/services/app.service';
+import { LayoutService } from './shared/services/layout.service';
 
 import { RoutePartsService } from './shared/services/route-parts.service';
 import { ThemeService } from './shared/services/theme.service';
-
-import { filter, takeUntil } from 'rxjs/operators';
-import { LayoutService } from './shared/services/layout.service';
-import { AppService } from './core/services/app.service';
-import { AnalyticsService } from './core/analytics/analytics.service';
-import { environment } from '../environments/environment';
-import { Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component( {
     selector: 'app-root',
@@ -67,8 +67,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     changePageTitle () {
         this.router.events.pipe( filter( event => event instanceof NavigationEnd ) ).subscribe( ( routeChange ) => {
             var routeParts = this.routePartsService.generateRouteParts( this.activeRoute.snapshot );
-            if ( !routeParts.length )
+            if ( !routeParts.length ) {
                 return this.title.setTitle( this.appTitle );
+            }
             // Extract title from parts;
             this.pageTitle = routeParts
                 .reverse()

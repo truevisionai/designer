@@ -2,29 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from '../models/tv-map.model';
 import { GameObject } from 'app/core/game-object';
-import { TvRoad } from '../models/tv-road.model';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvRoadSignal } from '../models/tv-road-signal.model';
-import { TvRoadObject } from '../models/tv-road-object';
+import { AssetDatabase } from 'app/services/asset-database';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
-import { TvObjectType } from '../interfaces/i-tv-object';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { Maths } from 'app/utils/maths';
-import { TvLane } from '../models/tv-lane';
-import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
-import { OdBuilderConfig } from './od-builder-config';
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { SceneService } from '../../../core/services/scene.service';
-import { TvSignalHelper } from '../services/tv-signal-helper';
-import { OdRoadMarkBuilder } from './od-road-mark-builder';
+import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
+import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvMap } from '../models/tv-map.model';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoadObject } from '../models/tv-road-object';
+import { TvRoadSignal } from '../models/tv-road-signal.model';
+import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
-import { OdSignalBuilder } from './od-signal-builder';
-import { AssetDatabase } from 'app/services/asset-database';
+import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvSignalHelper } from '../services/tv-signal-helper';
+import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
+import { OdRoadMarkBuilder } from './od-road-mark-builder';
+import { OdSignalBuilder } from './od-signal-builder';
 
 export class TvMapBuilder {
 
@@ -244,30 +244,6 @@ export class TvMapBuilder {
 
     }
 
-    private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
-
-        this.createMeshIndices( lane.meshData );
-
-        const geometry = new THREE.BufferGeometry();
-        const vertices = new Float32Array( lane.meshData.vertices );
-        const normals = new Float32Array( lane.meshData.normals );
-        const faces = new Float32Array( lane.meshData.texCoords );
-
-        geometry.setIndex( lane.meshData.triangles );
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
-
-        geometry.computeBoundingBox();
-        geometry.computeVertexNormals();
-
-        // const material = OdMaterials.getLaneMaterial( lane );
-        const material = this.getLaneMaterial( road, lane );
-
-        TvMapBuilder.createLaneGameObject( lane, geometry, material, laneSection );
-
-    }
-
     public static getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
 
         let material: Material;
@@ -298,6 +274,30 @@ export class TvMapBuilder {
         if ( !material ) material = OdMaterials.getLaneMaterial( lane ) as Material;
 
         return material;
+    }
+
+    private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
+
+        this.createMeshIndices( lane.meshData );
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = new Float32Array( lane.meshData.vertices );
+        const normals = new Float32Array( lane.meshData.normals );
+        const faces = new Float32Array( lane.meshData.texCoords );
+
+        geometry.setIndex( lane.meshData.triangles );
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+
+        geometry.computeBoundingBox();
+        geometry.computeVertexNormals();
+
+        // const material = OdMaterials.getLaneMaterial( lane );
+        const material = this.getLaneMaterial( road, lane );
+
+        TvMapBuilder.createLaneGameObject( lane, geometry, material, laneSection );
+
     }
 
     private static createLaneGameObject (

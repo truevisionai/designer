@@ -3,11 +3,11 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Texture } from 'three';
+import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { Texture } from 'three';
 
 @Component( {
     selector: 'app-texture-inspector',
@@ -25,9 +25,12 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
     public metadata: Metadata;
 
-    get texture (): Texture { return this.data.texture; }
+    constructor () {
+    }
 
-    constructor () { }
+    get texture (): Texture {
+        return this.data.texture;
+    }
 
     ngOnInit () {
 

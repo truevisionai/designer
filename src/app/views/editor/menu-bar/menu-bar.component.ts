@@ -4,24 +4,23 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+
 import { Router } from '@angular/router';
+import { IFile } from 'app/core/models/file';
+import { Environment } from 'app/core/utils/environment';
+import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { ExporterService } from 'app/services/exporter.service';
+import { MainFileService } from 'app/services/main-file.service';
+import { RecentFileService } from 'app/services/recent-file.service';
+import { RoadExporterService } from 'app/services/road-style-exporter.service';
 import { ElectronService } from 'ngx-electron';
 import { AppService } from '../../../core/services/app.service';
 import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
-import { FileService } from '../../../services/file.service';
-import { Environment } from 'app/core/utils/environment';
-import { RecentFileService } from 'app/services/recent-file.service';
-import { IFile } from 'app/core/models/file';
-import { MainFileService } from 'app/services/main-file.service';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
-import { RoadStyleService } from 'app/services/road-style.service';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
-import { RoadExporterService } from 'app/services/road-style-exporter.service';
 
 
 @Component( {
@@ -29,8 +28,6 @@ import { RoadExporterService } from 'app/services/road-style-exporter.service';
     templateUrl: './menu-bar.component.html',
 } )
 export class MenuBarComponent implements OnInit {
-
-    get oscEnabled (): boolean { return Environment.oscEnabled; }
 
     constructor (
         private appService: AppService,
@@ -47,7 +44,13 @@ export class MenuBarComponent implements OnInit {
     ) {
     }
 
-    get recentFiles () { return this.recentFileService.recentFiles }
+    get oscEnabled (): boolean {
+        return Environment.oscEnabled;
+    }
+
+    get recentFiles () {
+        return this.recentFileService.recentFiles;
+    }
 
     get isElectronApp () {
 
@@ -139,7 +142,7 @@ export class MenuBarComponent implements OnInit {
 
     onImportOpenDRIVE () {
 
-        this.odService.open();
+        this.odService.importOpenDrive();
 
     }
 

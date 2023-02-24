@@ -2,15 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseMarkingTool } from './marking-point-tool';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { Subscription } from 'rxjs';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { LineEditor } from '../editors/line-editor';
+import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import {
     CurvePath,
-    ExtrudeBufferGeometry,
+    ExtrudeGeometry,
     ExtrudeGeometryOptions,
     Mesh,
     MeshBasicMaterial,
@@ -19,23 +16,20 @@ import {
     Vector2,
     Vector3
 } from 'three';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { LineEditor } from '../editors/line-editor';
+import { BaseMarkingTool } from './marking-point-tool';
 
 export class MarkingLineTool extends BaseMarkingTool {
 
+    static texture = new TextureLoader().load( `assets/markings/crosswalk-marking.png` );
     name: string = 'MarkingLineTool';
-
     private shapeEditor: AbstractShapeEditor;
-
     private controlPointAddedSubscriber: Subscription;
-
     private hasSignal = false;
     private selectedSignal: TvRoadSignal;
-
     private cpSubscriptions: Subscription[] = [];
-
     private mesh: Mesh;
-
-    static texture = new TextureLoader().load( `assets/markings/crosswalk-marking.png` );
 
     constructor () {
 
@@ -105,7 +99,7 @@ export class MarkingLineTool extends BaseMarkingTool {
 
         const generator = new CustomUvGenerator();
 
-        const geometry = new ExtrudeBufferGeometry( shape, {
+        const geometry = new ExtrudeGeometry( shape, {
             depth: 16,
             extrudePath: path,
             UVGenerator: generator
@@ -116,7 +110,7 @@ export class MarkingLineTool extends BaseMarkingTool {
         return geometry;
     }
 
-    onGeometryAdded ( line: THREE.LineCurve3 ) {
+    onGeometryAdded ( line: any ) {
 
         const mesh = this.mesh = new Mesh( this.getGeometry( line ), this.getMaterial() );
 
@@ -124,7 +118,7 @@ export class MarkingLineTool extends BaseMarkingTool {
 
     }
 
-    onGeometryChanged ( line: THREE.LineCurve3 ) {
+    onGeometryChanged ( line: any ) {
 
         if ( this.mesh ) this.map.gameObject.remove( this.mesh );
 

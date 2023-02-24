@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from '../models/tv-map.model';
 import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/models/file';
+import { TvMap } from '../models/tv-map.model';
 
 export class TvMapInstance {
 

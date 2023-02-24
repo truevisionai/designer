@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { BaseEventData, PointerEventData, PointerMoveData } from './pointer-event-data';
+import { BaseEventData, PointerEventData } from './pointer-event-data';
 
 @Injectable( {
     providedIn: 'root'

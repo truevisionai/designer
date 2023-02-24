@@ -3,31 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
-import { Euler, Vector3 } from 'three';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { FileService } from './file.service';
-import { ElectronService } from 'ngx-electron';
-
-import { saveAs } from 'file-saver';
-import { IFile } from 'app/core/models/file';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { SnackBar } from './snack-bar.service';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
-import { RoadStyle } from './road-style.service';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-
-const Parser = require( 'fast-xml-parser' ).j2xParser;
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
+import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { ElectronService } from 'ngx-electron';
+import { Euler, Vector3 } from 'three';
+import { FileService } from './file.service';
+import { RoadStyle } from './road-style.service';
 
 export interface Scene {
 
@@ -49,7 +33,8 @@ export class RoadExporterService {
         private openDriveWriter: OdWriter,
         private fileService: FileService,
         private electron: ElectronService
-    ) { }
+    ) {
+    }
 
     exportRoadStyle ( road: RoadStyle ) {
 
@@ -102,11 +87,11 @@ export class RoadExporterService {
             attr_s: laneSection.s,
         };
 
-        if ( leftLanes.lane.length > 0 ) laneSectionNode[ "left" ] = leftLanes;
+        if ( leftLanes.lane.length > 0 ) laneSectionNode[ 'left' ] = leftLanes;
 
-        if ( centerLanes.lane.length > 0 ) laneSectionNode[ "center" ] = centerLanes;
+        if ( centerLanes.lane.length > 0 ) laneSectionNode[ 'center' ] = centerLanes;
 
-        if ( rightLanes.lane.length > 0 ) laneSectionNode[ "right" ] = rightLanes;
+        if ( rightLanes.lane.length > 0 ) laneSectionNode[ 'right' ] = rightLanes;
 
         xmlNode.laneSection = laneSectionNode;
     }
@@ -186,7 +171,7 @@ export class RoadExporterService {
                     attr_max: type.speed.max,
                     attr_unit: type.speed.unit
                 },
-            }
+            };
 
         } );
 
