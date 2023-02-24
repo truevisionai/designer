@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Object3D, TextureLoader } from 'three';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { Subscription } from 'rxjs';
-import { PointEditor } from '../editors/point-editor';
-import { AddRoadObjectCommand } from '../commands/add-road-object-command';
+import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Object3D, TextureLoader } from 'three';
+import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { TvOrientation } from '../../modules/tv-map/models/tv-common';
 import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
-import { CommandHistory } from '../../services/command-history';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { CommandHistory } from '../../services/command-history';
+import { AddRoadObjectCommand } from '../commands/add-road-object-command';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { PointEditor } from '../editors/point-editor';
+import { BaseTool } from './base-tool';
 
 export class AddRoadObjectTool extends BaseTool {
 

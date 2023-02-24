@@ -3,8 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
 import { Maths } from 'app/utils/maths';
+import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
 
 @Component( {
     selector: 'app-double-field',
@@ -65,11 +65,13 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
         // console.log( $event.deltaX, $event.deltaY );
 
-        if ( $event.deltaY < 0 && this.value < this.max ) this.value += this.step;
-        else if ( $event.deltaY < 0 && this.value >= this.max ) this.value = this.max;
+        if ( $event.deltaY < 0 && this.value < this.max ) {
+            this.value += this.step;
+        } else if ( $event.deltaY < 0 && this.value >= this.max ) this.value = this.max;
 
-        if ( $event.deltaY > 0 && this.value > this.min ) this.value -= this.step;
-        else if ( $event.deltaY > 0 && this.value <= this.min ) this.value = this.min;
+        if ( $event.deltaY > 0 && this.value > this.min ) {
+            this.value -= this.step;
+        } else if ( $event.deltaY > 0 && this.value <= this.min ) this.value = this.min;
 
         this.value = +this.value.toFixed( 3 );
 
@@ -77,7 +79,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
         this.value = Maths.clamp( this.value, this.min, this.max );
 
-        // this helps avoid sending update event in every scroll 
+        // this helps avoid sending update event in every scroll
 
         if ( this.sendTimeout ) {
 

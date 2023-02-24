@@ -3,29 +3,28 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { IFile } from 'app/core/models/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
-import { Euler, Vector3 } from 'three';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { FileService } from './file.service';
-import { ElectronService } from 'ngx-electron';
-
-import { saveAs } from 'file-saver';
-import { IFile } from 'app/core/models/file';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { SnackBar } from './snack-bar.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { XMLBuilder } from 'fast-xml-parser';
 
-const Parser = require( 'fast-xml-parser' ).j2xParser;
+import { saveAs } from 'file-saver';
+import { ElectronService } from 'ngx-electron';
+import { Euler, Vector3 } from 'three';
+import { FileService } from './file.service';
+import { SnackBar } from './snack-bar.service';
 
 export interface Scene {
 
@@ -49,11 +48,16 @@ export class SceneExporterService {
         private openDriveWriter: OdWriter,
         private fileService: FileService,
         private electron: ElectronService
-    ) { }
+    ) {
+    }
 
-    get currentFile (): IFile { return TvMapInstance.currentFile; }
+    get currentFile (): IFile {
+        return TvMapInstance.currentFile;
+    }
 
-    set currentFile ( value: IFile ) { TvMapInstance.currentFile = value; }
+    set currentFile ( value: IFile ) {
+        TvMapInstance.currentFile = value;
+    }
 
     export ( map?: TvMap ): string {
 
@@ -66,13 +70,13 @@ export class SceneExporterService {
             trimValues: true,
         };
 
-        const parser = new Parser( defaultOptions );
+        const builder = new XMLBuilder( defaultOptions );
 
         this.map = map || TvMapInstance.map;
 
         const scene = this.exportMap( this.map );
 
-        const xmlDocument = parser.parse( scene );
+        const xmlDocument = builder.build( scene );
 
         return xmlDocument;
     }
@@ -84,7 +88,6 @@ export class SceneExporterService {
         if ( this.electron.isElectronApp ) {
 
             this.fileService.saveFileWithExtension(
-
                 this.fileService.projectFolder, contents, this.extension, ( file: IFile ) => {
 
                     this.currentFile.path = file.path;
@@ -132,7 +135,7 @@ export class SceneExporterService {
             borderMaterialGuid: road.borderMaterialGuid,
             shoulderMaterialGuid: road.shoulderMaterialGuid,
             spline: this.exportRoadSpline( road.spline ),
-        }
+        };
 
         this.openDriveWriter.writeRoadLinks( xml, road );
 
@@ -168,7 +171,7 @@ export class SceneExporterService {
                     attr_y: point.y,
                     attr_z: point.z
                 } ) )
-            }
+            };
 
 
         } else if ( spline instanceof ExplicitSpline ) {
@@ -182,11 +185,11 @@ export class SceneExporterService {
                     attr_hdg: point.hdg,
                     attr_type: point.segmentType,
                 } ) )
-            }
+            };
 
         } else {
 
-            SnackBar.error( "Not able to export this spline type" );
+            SnackBar.error( 'Not able to export this spline type' );
 
         }
 
@@ -203,7 +206,7 @@ export class SceneExporterService {
                     attr_max: type.speed.max,
                     attr_unit: type.speed.unit
                 },
-            }
+            };
 
         } );
 
@@ -266,7 +269,7 @@ export class SceneExporterService {
                 attr_y: prop.object.scale.y,
                 attr_z: prop.object.scale.z,
             }
-        }
+        };
 
     }
 
@@ -390,7 +393,7 @@ export class SceneExporterService {
                     attr_z: p.z,
                 } ) )
             }
-        }
+        };
 
     }
 

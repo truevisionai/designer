@@ -2,50 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
+import { Subscription } from 'rxjs';
 import { Object3D, Points } from 'three';
-import { TvObjectType } from '../../modules/tv-map/interfaces/i-tv-object';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
-import { OdSignalInspectorComponent } from '../../views/inspectors/signal-inspector/signal-inspector.component';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { PointEditor } from '../editors/point-editor';
+import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { OdSignalBuilder } from '../../modules/tv-map/builders/od-signal-builder';
+import { TvObjectType } from '../../modules/tv-map/interfaces/i-tv-object';
+import { TvDynamicTypes, TvOrientation } from '../../modules/tv-map/models/tv-common';
 import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
-import { SnackBar } from '../../services/snack-bar.service';
+import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
+import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { TvSignService } from '../../modules/tv-map/services/tv-sign.service';
 import { CommandHistory } from '../../services/command-history';
+import { SnackBar } from '../../services/snack-bar.service';
+import { OdSignalInspectorComponent } from '../../views/inspectors/signal-inspector/signal-inspector.component';
 import { AddSignalCommand } from '../commands/add-signal-command';
-import { TvDynamicTypes, TvOrientation } from '../../modules/tv-map/models/tv-common';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { PointEditor } from '../editors/point-editor';
 import { SceneService } from '../services/scene.service';
-import { Subscription } from 'rxjs';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
-import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { BaseTool } from './base-tool';
 
 export class RoadSignTool extends BaseTool {
 
     name: string = 'RoadSignTool';
-
-    init () {
-
-        super.init();
-
-        this.showControlPoints();
-
-    }
-
-    disable (): void {
-
-        super.disable();
-
-        this.controlPointAddedSubscriber.unsubscribe();
-        this.controlPointMovedSubscriber.unsubscribe();
-
-        this.shapeEditor.destroy();
-
-        this.hideControlPoints();
-    }
-
     private signFactory = new OdSignalBuilder();
     private controlPointAddedSubscriber: Subscription;
     private hasSignal = false;
@@ -65,6 +44,26 @@ export class RoadSignTool extends BaseTool {
 
     get sign () {
         return this.signService.currentSign;
+    }
+
+    init () {
+
+        super.init();
+
+        this.showControlPoints();
+
+    }
+
+    disable (): void {
+
+        super.disable();
+
+        this.controlPointAddedSubscriber.unsubscribe();
+        this.controlPointMovedSubscriber.unsubscribe();
+
+        this.shapeEditor.destroy();
+
+        this.hideControlPoints();
     }
 
     onPointerDown ( e: PointerEventData ) {

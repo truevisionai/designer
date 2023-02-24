@@ -4,47 +4,47 @@
 
 export class Time {
 
-    /**
-     * Time passed in simulation in milliseconds or ms
-     */
+	/**
+	 * Time passed in simulation in milliseconds or ms
+	 */
     static time: number = 0;
 
-    /**
-     * Fixed time-step for physics/simulation update
-     * in millisecond
-     * 20ms = 50 updates per second
-     */
+	/**
+	 * Fixed time-step for physics/simulation update
+	 * in millisecond
+	 * 20ms = 50 updates per second
+	 */
     static fixedDeltaTime: number = 20;
 
-    /**
-     * Time since last graphic update
-     */
+	/**
+	 * Time since last graphic update
+	 */
     static deltaTime: number = 0;
 
-    /**
-     * Time since last graphic update in ms
-     */
+	/**
+	 * Time since last graphic update in ms
+	 */
     static deltaTimeInMs: number = 0;
 
-    /**
-     * Graphics frames count
-     */
+	/**
+	 * Graphics frames count
+	 */
     static frameCount: number = 0;
 
     static realTimeSinceStart: number = 0;
 
-    /**
-     * Returns rounded second
-     */
+	/**
+	 * Returns rounded second
+	 */
     static get seconds () {
 
         return Math.round( Time.time * 0.001 );
 
     }
 
-    /**
-     * Returns time in seconds without rounding
-     */
+	/**
+	 * Returns time in seconds without rounding
+	 */
     static get inSeconds () {
 
         return Time.time * 0.001;

@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropCurve } from "../../../modules/tv-map/models/prop-curve";
 import { PropService } from 'app/services/prop-service';
+import { PropCurve } from '../../../modules/tv-map/models/prop-curve';
 
 export class PropCurveInspectorData {
 
@@ -25,13 +25,16 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
     data: PropCurveInspectorData;
 
-    constructor () { }
+    constructor () {
+    }
 
-    ngOnInit (): void { }
+    ngOnInit (): void {
+    }
 
-    ngOnDestroy (): void { }
+    ngOnDestroy (): void {
+    }
 
-    onSpacingChanged ( $event: string ) {
+    onSpacingChanged ( $event: any ) {
 
         this.data.propCurve.spacing = parseFloat( $event );
 
@@ -39,7 +42,7 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
     }
 
-    onRotationChanged ( $event: string ) {
+    onRotationChanged ( $event: any ) {
 
         this.data.propCurve.rotation = parseFloat( $event );
 
@@ -47,7 +50,7 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
     }
 
-    onPositionVarianceChanged ( $event: string ) {
+    onPositionVarianceChanged ( $event: any ) {
 
         this.data.propCurve.positionVariance = parseFloat( $event );
 

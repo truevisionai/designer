@@ -14,24 +14,24 @@ export class MixpanelService {
     constructor () {
     }
 
-    /**
-     * Initialize mixpanel.
-     *
-     * @param {string} userToken
-     * @memberof MixpanelService
-     */
+	/**
+	 * Initialize mixpanel.
+	 *
+	 * @param {string} userToken
+	 * @memberof MixpanelService
+	 */
     init ( userToken: string, identifier: string = null ): void {
         mixpanel.init( userToken );
         mixpanel.identify( identifier || userToken );
     }
 
-    /**
-     * Push new action to mixpanel.
-     *
-     * @param {string} id Name of the action to track.
-     * @param {*} [action={}] Actions object with custom properties.
-     * @memberof MixpanelService
-     */
+	/**
+	 * Push new action to mixpanel.
+	 *
+	 * @param {string} id Name of the action to track.
+	 * @param {*} [action={}] Actions object with custom properties.
+	 * @memberof MixpanelService
+	 */
     track ( id: string, action: any = {} ): void {
         mixpanel.track( id, action );
     }

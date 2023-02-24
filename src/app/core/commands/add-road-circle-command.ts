@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { Vector3, Vector2 } from 'three';
-import { Maths } from 'app/utils/maths';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { AutoSpline } from '../shapes/auto-spline';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { Maths } from 'app/utils/maths';
+import { Vector2, Vector3 } from 'three';
+import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { RoadFactory } from '../factories/road-factory.service';
+import { AutoSpline } from '../shapes/auto-spline';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
@@ -93,10 +93,10 @@ export class AddRoadCircleCommand extends OdBaseCommand {
             let a2 = startPosTheta.moveForward( +distance );
             let b2 = endPosTheta.moveForward( -distance );
 
-            if ( i == 0 ) this.points.push( new RoadControlPoint( road, start, "cp", 0, 0 ) );
-            this.points.push( new RoadControlPoint( road, a2.toVector3(), "cp", 0, 0 ) );
-            this.points.push( new RoadControlPoint( road, b2.toVector3(), "cp", 0, 0 ) );
-            this.points.push( new RoadControlPoint( road, arc.endV3, "cp", 0, 0 ) );
+            if ( i == 0 ) this.points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 0, 0 ) );
+            this.points.push( new RoadControlPoint( road, arc.endV3, 'cp', 0, 0 ) );
 
             start = arc.endV3;
 
@@ -110,9 +110,9 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
     makeRoadsFromPoints ( roads: TvRoad[], points: RoadControlPoint[] ) {
 
-        if ( roads.length != 4 ) throw new Error( "Road count for circular road is incorrect" )
+        if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
 
-        if ( points.length != 13 ) throw new Error( "Point count for circular road is incorrect" );
+        if ( points.length != 13 ) throw new Error( 'Point count for circular road is incorrect' );
 
         points.forEach( p => SceneService.add( p ) );
 
@@ -146,7 +146,6 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
         }
     }
-
 
 
 }

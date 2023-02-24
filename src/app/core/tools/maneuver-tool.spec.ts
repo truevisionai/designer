@@ -4,8 +4,6 @@
 
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { ManeuverTool } from './maneuver-tool';
 
 
@@ -443,7 +441,6 @@ describe( 'ManeuverTool Test', () => {
     // } );
 
     it( 'should connect right road for connection' );
-
 
 
 } );

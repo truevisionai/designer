@@ -4,9 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { ThreeService } from 'app/modules/three-js/three.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 import * as THREE from 'three';
 import { Vector2 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -28,6 +28,8 @@ export class DrawingService {
     boxes: Map<number, THREE.Mesh> = new Map<number, THREE.Mesh>();
 
     lastLine: THREE.Line;
+    private lastButtonSprite: THREE.Sprite;
+    private diskSprite = new THREE.TextureLoader().load( 'assets/disc.png' );
 
     constructor ( private engineService: ThreeService ) {
 
@@ -49,9 +51,9 @@ export class DrawingService {
 
         var box = this.getDimensions( start, end );
 
-        var boxGeometry = new THREE.PlaneBufferGeometry();
+        var boxGeometry = new THREE.PlaneGeometry();
 
-        var boxMaterial = (new THREE.MeshBasicMaterial()).copy( this.boxMaterial );
+        var boxMaterial = ( new THREE.MeshBasicMaterial() ).copy( this.boxMaterial );
 
         boxMaterial.color.set( color ? color : '#000000' );
 
@@ -62,7 +64,7 @@ export class DrawingService {
         if ( end.y < start.y ) box.height *= -1;
         if ( end.x < start.x ) box.width *= -1;
 
-        this.lastSolidBox.position.set( start.x + (box.width / 2), start.y + (box.height / 2), 0.1 );
+        this.lastSolidBox.position.set( start.x + ( box.width / 2 ), start.y + ( box.height / 2 ), 0.1 );
 
         this.engineService.add( this.lastSolidBox, true );
 
@@ -81,7 +83,7 @@ export class DrawingService {
 
         var box = this.getDimensions( start, end );
 
-        var geometry = new THREE.PlaneBufferGeometry( box.width, box.height );
+        var geometry = new THREE.PlaneGeometry( box.width, box.height );
         var edges = new THREE.EdgesGeometry( geometry );
         var material = new THREE.LineBasicMaterial( { color: color ? color : 0xff00ff } );
 
@@ -105,21 +107,6 @@ export class DrawingService {
         return this.lastBoundingBox;
     }
 
-    private addBoxInfo ( object: THREE.Object3D, start: THREE.Vector3, end: THREE.Vector3, box: any ): any {
-
-        object.userData.is_annotation = true;
-        object.userData.type = 'box';
-
-        object.userData.width = box.width;
-        object.userData.height = box.height;
-
-        object.userData.startX = start.x;
-        object.userData.startY = start.y;
-
-        object.userData.endX = end.x;
-        object.userData.endY = end.y;
-    }
-
     public drawLine ( vertices: Vector2[] ) {
 
         this.engineService.remove( this.lastLine, true );
@@ -130,7 +117,7 @@ export class DrawingService {
 
         for ( let i = 0; i < vertices.length; i++ ) {
 
-            const item = vertices[i];
+            const item = vertices[ i ];
 
             const position = new THREE.Vector3( item.x, item.y, 0.2 );
 
@@ -141,7 +128,7 @@ export class DrawingService {
 
         for ( let i = 0; i < vertices.length; i++ ) {
 
-            const item = vertices[i];
+            const item = vertices[ i ];
 
             const position = new THREE.Vector3( item.x, item.y, 0.2 );
 
@@ -150,8 +137,6 @@ export class DrawingService {
 
         this.engineService.add( this.lastLine, true );
     }
-
-    private lastButtonSprite: THREE.Sprite;
 
     public drawDeletButton ( x, y, parent ) {
 
@@ -212,7 +197,20 @@ export class DrawingService {
         return object;
     }
 
-    private diskSprite = new THREE.TextureLoader().load( 'assets/disc.png' );
+    private addBoxInfo ( object: THREE.Object3D, start: THREE.Vector3, end: THREE.Vector3, box: any ): any {
+
+        object.userData.is_annotation = true;
+        object.userData.type = 'box';
+
+        object.userData.width = box.width;
+        object.userData.height = box.height;
+
+        object.userData.startX = start.x;
+        object.userData.startY = start.y;
+
+        object.userData.endX = end.x;
+        object.userData.endY = end.y;
+    }
 
     private getDimensions ( p1, p2 ): any {
 

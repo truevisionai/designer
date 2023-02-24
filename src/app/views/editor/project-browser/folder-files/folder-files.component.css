@@ -3,44 +3,44 @@
  */
 
 .folder-item {
-    color: black !important;
+	color: black !important;
 }
 
 .folder {
-    text-align: center; 
-    width: 100%; 
-    align-self: center;
+	text-align: center;
+	width: 100%;
+	align-self: center;
 }
 
 .folder-icon {
-    font-size: 64px !important; 
-    width: 64px;
-    color: #55d2d8;
-    cursor: pointer;
+	font-size: 64px !important;
+	width: 64px;
+	color: #55d2d8;
+	cursor: pointer;
 }
 
 .folder-icon:hover, .folder-icon.selected {
-    color: #3aadb3;
+	color: #3aadb3;
 }
 
 .folder-icon.selected {
-    background: red;
+	background: red;
 }
 
 
 .folder-name {
-    margin: 4px 4px 4px 4px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.75em;
+	margin: 4px 4px 4px 4px !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 0.75em;
 }
 
 .content {
-    padding: 16px 8px 0px 0px !important;
+	padding: 16px 8px 0px 0px !important;
 }
 
 .content > mat-card {
-    margin: 0px !important;
+	margin: 0px !important;
 }
 

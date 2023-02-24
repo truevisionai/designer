@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from '../../shared/utils/colors.service';
 import * as THREE from 'three';
-import { Mesh, Object3D, PlaneBufferGeometry, Vector2, Vector3 } from 'three';
+import { Mesh, Object3D, PlaneGeometry, Vector2, Vector3 } from 'three';
 import { SceneService } from '../../core/services/scene.service';
+import { COLOR } from '../../shared/utils/colors.service';
 
 export enum PrimitiveType {
     CUBE = 1,
@@ -16,7 +16,7 @@ export class BoundingBoxObject {
 
     public width: number = 10;
     public height: number = 10;
-    public geometry = new PlaneBufferGeometry( this.width, this.height );
+    public geometry = new PlaneGeometry( this.width, this.height );
     private color = COLOR.DARKGRAY;
     private opacity = 0.4;
     private material = new THREE.MeshBasicMaterial( {
@@ -83,7 +83,7 @@ export class BoundingBoxObject {
         this.width = size.x;
         this.height = size.y;
 
-        this.geometry = new PlaneBufferGeometry( size.x, size.y, 1, 1 );
+        this.geometry = new PlaneGeometry( size.x, size.y, 1, 1 );
 
         this.mesh.geometry.dispose();
 
@@ -114,7 +114,7 @@ export class BoundingBoxObject {
         if ( end.x < start.x ) dimensions.x *= -1;
         if ( end.y < start.y ) dimensions.y *= -1;
 
-        object.position.set( start.x + (dimensions.x / 2), start.y + (dimensions.y / 2), 0.1 );
+        object.position.set( start.x + ( dimensions.x / 2 ), start.y + ( dimensions.y / 2 ), 0.1 );
     }
 
     destroy () {

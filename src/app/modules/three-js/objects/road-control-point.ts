@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from './control-point';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { BufferAttribute, BufferGeometry, Geometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { RoadTangentPoint } from './road-tangent-point';
-import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { SceneService } from 'app/core/services/scene.service';
+import { CURVE_Y } from 'app/core/shapes/spline-config';
+import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
+import { BaseControlPoint } from './control-point';
+import { RoadTangentPoint } from './road-tangent-point';
 
 export class RoadControlPoint extends BaseControlPoint {
 
@@ -32,7 +32,7 @@ export class RoadControlPoint extends BaseControlPoint {
     public allowChange: boolean = true;
 
     // tag, tagindex, cpobjidx are not used anywhere in new fixed workflow
-    // can add hdg here and 
+    // can add hdg here and
     // remove segmentType from here to spline directly
     constructor (
         public road: TvRoad,
@@ -42,11 +42,11 @@ export class RoadControlPoint extends BaseControlPoint {
         cpobjidx?: number,
     ) {
 
-        super( null, null );
+        super( new BufferGeometry(), new PointsMaterial() );
 
-        this.geometry = new Geometry();
+        this.geometry = new BufferGeometry();
 
-        this.geometry.vertices.push( new Vector3( 0, 0, 0 ) );
+        this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const texture = OdTextures.point;
 
@@ -138,7 +138,7 @@ export class RoadControlPoint extends BaseControlPoint {
 
         const frontPosition = new Vector3( Math.cos( hdg ), Math.sin( hdg ), CURVE_Y )
             .multiplyScalar( frontLength )
-            .add( this.position )
+            .add( this.position );
 
         const backPosition = new Vector3( Math.cos( hdg ), Math.sin( hdg ), CURVE_Y )
             .multiplyScalar( -backLength )
@@ -147,7 +147,7 @@ export class RoadControlPoint extends BaseControlPoint {
         this.frontTangent = new RoadTangentPoint(
             this.road,
             frontPosition,
-            "tpf",
+            'tpf',
             this.tagindex,
             this.tagindex + 1 + this.tagindex * 2,
             this,
@@ -156,7 +156,7 @@ export class RoadControlPoint extends BaseControlPoint {
         this.backTangent = new RoadTangentPoint(
             this.road,
             backPosition,
-            "tpb",
+            'tpb',
             this.tagindex,
             this.tagindex + 1 + this.tagindex * 2 + 1,
             this,

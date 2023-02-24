@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
+import { BaseCommand } from './base-command';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
 

@@ -2,20 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
-import { TvLaneRoadMark } from './tv-lane-road-mark';
-import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
-import { TvLaneWidth } from './tv-lane-width';
-import { TvLaneBorder } from './tv-lane-border';
-import { TvLaneMaterial } from './tv-lane-material';
-import { TvLaneVisibility } from './tv-lane-visibility';
-import { TvLaneSpeed } from './tv-lane-speed';
-import { TvLaneAccess } from './tv-lane-access';
-import { TvLaneHeight } from './tv-lane-height';
 import { GameObject } from 'app/core/game-object';
+import { MathUtils } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
+import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
+import { TvLaneAccess } from './tv-lane-access';
+import { TvLaneBorder } from './tv-lane-border';
+import { TvLaneHeight } from './tv-lane-height';
+import { TvLaneMaterial } from './tv-lane-material';
+import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneSpeed } from './tv-lane-speed';
+import { TvLaneVisibility } from './tv-lane-visibility';
+import { TvLaneWidth } from './tv-lane-width';
+import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
-import { Math } from 'three';
 
 export class TvLane {
 
@@ -36,16 +36,8 @@ export class TvLane {
     public speed: TvLaneSpeed[] = [];
     public access: TvLaneAccess[] = [];
     public height: TvLaneHeight[] = [];
-
-    private _roadId: number;
     private _sectionId: number;
-
-    private _side: TvLaneSide;
-    private _predecessorExists: boolean;
-    private _successorExists: boolean;
-    private _predecessor: number;
     private _successor: number;
-
     private lastAddedLaneWidth: number;
     private lastAddedLaneRoadMark: number;
     private lastAddedLaneMaterial: number;
@@ -54,18 +46,19 @@ export class TvLane {
     private lastAddedLaneAccess: number;
     private lastAddedLaneHeight: number;
 
-
     constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, sectionId?: number ) {
 
         this._side = laneSide;
 
-        this.uuid = Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
         this.attr_id = id;
         this.attr_type = type;
         this.attr_level = level;
         this.roadId = roadId;
         this._sectionId = sectionId;
     }
+
+    private _roadId: number;
 
     get roadId () {
         return this._roadId;
@@ -75,35 +68,37 @@ export class TvLane {
         this._roadId = value;
     }
 
-    get laneSectionId () {
-        return this._sectionId;
+    private _side: TvLaneSide;
+
+    get side (): TvLaneSide {
+        return this._side;
     }
 
-    set laneSectionId ( value ) {
-        this._sectionId = value;
-    }
+    set side ( value ) {
 
-    get direction () {
+        const som = '' + value;
+        const val = parseFloat( som );
 
-        if ( this.side === TvLaneSide.LEFT ) {
-
-            return TravelDirection.backward;
-
-        } else if ( this.side === TvLaneSide.RIGHT ) {
-
-            return TravelDirection.forward;
-
-        } else if ( this.side === TvLaneSide.CENTER ) {
-
-            return TravelDirection.undirected;
-
-        } else {
-
-            return TravelDirection.undirected;
-
+        if ( val === 0 ) {
+            this._side = TvLaneSide.LEFT;
+        } else if ( val === 1 ) {
+            this._side = TvLaneSide.CENTER;
+        } else if ( val === 2 ) {
+            this._side = TvLaneSide.RIGHT;
         }
-
     }
+
+    private _predecessorExists: boolean;
+
+    get predecessorExists (): boolean {
+        return this._predecessorExists;
+    }
+
+    set predecessorExists ( value: boolean ) {
+        this._predecessorExists = value;
+    }
+
+    private _successorExists: boolean;
 
     // updateMeshGeometry (): any {
 
@@ -196,14 +191,6 @@ export class TvLane {
 
     // }
 
-    get predecessorExists (): boolean {
-        return this._predecessorExists;
-    }
-
-    set predecessorExists ( value: boolean ) {
-        this._predecessorExists = value;
-    }
-
     get successorExists (): boolean {
         return this._successorExists;
     }
@@ -212,8 +199,44 @@ export class TvLane {
         this._successorExists = value;
     }
 
-    get side (): TvLaneSide {
-        return this._side;
+    private _predecessor: number;
+
+    get predecessor () {
+        return this._predecessor;
+    }
+
+    set predecessor ( laneId: number ) {
+        this.setPredecessor( laneId );
+    }
+
+    get laneSectionId () {
+        return this._sectionId;
+    }
+
+    set laneSectionId ( value ) {
+        this._sectionId = value;
+    }
+
+    get direction () {
+
+        if ( this.side === TvLaneSide.LEFT ) {
+
+            return TravelDirection.backward;
+
+        } else if ( this.side === TvLaneSide.RIGHT ) {
+
+            return TravelDirection.forward;
+
+        } else if ( this.side === TvLaneSide.CENTER ) {
+
+            return TravelDirection.undirected;
+
+        } else {
+
+            return TravelDirection.undirected;
+
+        }
+
     }
 
     get sideAsString (): string {
@@ -221,33 +244,19 @@ export class TvLane {
         switch ( this.side ) {
 
             case TvLaneSide.LEFT:
-                return 'left'
+                return 'left';
                 break;
 
             case TvLaneSide.CENTER:
-                return 'center'
+                return 'center';
                 break;
 
             case TvLaneSide.RIGHT:
-                return 'right'
+                return 'right';
                 break;
 
             default:
                 break;
-        }
-    }
-
-    set side ( value ) {
-
-        const som = '' + value;
-        const val = parseFloat( som );
-
-        if ( val === 0 ) {
-            this._side = TvLaneSide.LEFT;
-        } else if ( val === 1 ) {
-            this._side = TvLaneSide.CENTER;
-        } else if ( val === 2 ) {
-            this._side = TvLaneSide.RIGHT;
         }
     }
 
@@ -265,14 +274,6 @@ export class TvLane {
 
     get level (): boolean {
         return this.attr_level;
-    }
-
-    get predecessor () {
-        return this._predecessor;
-    }
-
-    set predecessor ( laneId: number ) {
-        this.setPredecessor( laneId );
     }
 
 
@@ -826,10 +827,10 @@ export class TvLane {
         return null;
     }
 
-    /**
-     *  Get the last added elements of a certain vectors
-     * (their position might not be at the end of the vector)
-     */
+	/**
+	 *  Get the last added elements of a certain vectors
+	 * (their position might not be at the end of the vector)
+	 */
 
     getLastAddedLaneWidth () {
         if ( this.lastAddedLaneWidth < this.width.length ) {
@@ -880,9 +881,9 @@ export class TvLane {
         return null;
     }
 
-    /**
-     *  Check the intervals and return the index of the records that applies to the provided s-offset
-     */
+	/**
+	 *  Check the intervals and return the index of the records that applies to the provided s-offset
+	 */
 
     getLaneWidthIndex ( sCheck: number ): number {
 
@@ -1023,10 +1024,10 @@ export class TvLane {
         return res;
     }
 
-    /**
-     * Evaluate the record and the return the width value
-     * @param sCheck
-     */
+	/**
+	 * Evaluate the record and the return the width value
+	 * @param sCheck
+	 */
     getWidthValue ( sCheck ): number {
 
         const widthEntry = this.getLaneWidthAt( sCheck );
@@ -1036,10 +1037,10 @@ export class TvLane {
         return widthEntry.getValue( sCheck );
     }
 
-    /**
-     * Evaluate the record and return the height object
-     * @param sCheck
-     */
+	/**
+	 * Evaluate the record and return the height object
+	 * @param sCheck
+	 */
     getHeightValue ( sCheck ): TvLaneHeight {
 
         const laneHeight = new TvLaneHeight( 0, 0, 0 );
@@ -1058,11 +1059,11 @@ export class TvLane {
         return laneHeight;
     }
 
-    /**
-     * Evaluate the road marks records and return the road
-     * mark object corresponding to the provided s-offset
-     * @param sCheck
-     */
+	/**
+	 * Evaluate the road marks records and return the road
+	 * mark object corresponding to the provided s-offset
+	 * @param sCheck
+	 */
     getRoadMark ( sCheck ): TvLaneRoadMark {
 
         let result = TvUtils.checkIntervalArray( this.roadMark, sCheck );
@@ -1097,10 +1098,10 @@ export class TvLane {
         // return laneRoadMark;
     }
 
-    /**
-     * Returns the color for mesh of the lane
-     * @returns {string}
-     */
+	/**
+	 * Returns the color for mesh of the lane
+	 * @returns {string}
+	 */
     getColor (): string {
 
         if ( this.attr_type === 'driving' ) {

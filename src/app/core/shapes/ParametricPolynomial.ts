@@ -2,20 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ARC_SEGMENTS, PARACUBICFACTOR } from "./spline-config";
-import { Vector3, BufferGeometry, BufferAttribute, Line, LineBasicMaterial } from 'three';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
+import { ARC_SEGMENTS, PARACUBICFACTOR } from './spline-config';
+
 class ParametricPolynomial {
     private curveType;
     private mesh;
+
     constructor ( private points ) {
         const geometry = new BufferGeometry();
-        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
+        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
         this.curveType = 'cubic';
         this.mesh = new Line( geometry, new LineBasicMaterial( { color: 0x0000ff, opacity: 0.85 } ) );
         this.mesh.castShadow = true;
         this.mesh.renderOrder = 1;
         this.mesh.frustumCulled = false;
     }
+
     update () {
         const position = this.mesh.geometry.attributes.position;
         const point = new Vector3();
@@ -26,6 +29,7 @@ class ParametricPolynomial {
         }
         position.needsUpdate = true;
     }
+
     getPoint ( t, rettarget ) {
         const retpoint = rettarget || new Vector3();
         const p1 = this.points[ 0 ];

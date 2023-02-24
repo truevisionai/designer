@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvLaneType } from './tv-common';
-import { TvLaneSection } from './tv-lane-section';
-import { TvLane } from './tv-lane';
-import { TvMap } from './tv-map.model';
-import { TvRoad } from './tv-road.model';
-import { TvPosTheta } from './tv-pos-theta';
 import { TvMapQueries } from '../queries/tv-map-queries';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvLaneSide, TvLaneType } from './tv-common';
+import { TvLane } from './tv-lane';
+import { TvLaneSection } from './tv-lane-section';
+import { TvMap } from './tv-map.model';
+import { TvPosTheta } from './tv-pos-theta';
+import { TvRoad } from './tv-road.model';
 
 describe( 'OpenDrive Model', () => {
 

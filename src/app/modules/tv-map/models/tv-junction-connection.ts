@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MathUtils } from 'three';
 import { TvContactPoint } from './tv-common';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvRoad } from './tv-road.model';
-import { Math } from 'three';
 
 export class TvJunctionConnection {
 
@@ -22,16 +22,16 @@ export class TvJunctionConnection {
         public contactPoint: TvContactPoint,
         public outgoingRoad?: number
     ) {
-        this.uuid = Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
     }
 
-    /**
-     * Add a lane link record
-     *
-     * @param {number} from
-     * @param {number} to
-     * @returns {number}
-     */
+	/**
+	 * Add a lane link record
+	 *
+	 * @param {number} from
+	 * @param {number} to
+	 * @returns {number}
+	 */
     public addJunctionLaneLink ( from: number, to: number ) {
 
         const instance = new TvJunctionLaneLink( from, to );

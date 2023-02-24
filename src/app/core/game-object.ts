@@ -4,7 +4,7 @@
 
 import { ElementRef, Type } from '@angular/core';
 import * as THREE from 'three';
-import { BufferGeometry, Euler, Geometry, Material, Vector3 } from 'three';
+import { BufferGeometry, Euler, Material, Vector3 } from 'three';
 import { ITvObject, TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
 
 export interface IComponent {
@@ -41,11 +41,6 @@ export class SomeNewComponent extends Component {
 export class GameObject extends THREE.Mesh implements ITvObject {
 
     OpenDriveType: TvObjectType;
-
-    getType (): TvObjectType {
-        return this.OpenDriveType;
-    }
-
     public IsGameObject = true;
     public detectRaycast = true;
     private active: boolean;
@@ -53,7 +48,7 @@ export class GameObject extends THREE.Mesh implements ITvObject {
     private transform: Transform;
     private components: Component[] = [];
 
-    constructor ( name?: string, geometry?: Geometry | BufferGeometry, material?: Material | Material[] ) {
+    constructor ( name?: string, geometry?: BufferGeometry, material?: Material | Material[] ) {
 
         super( geometry, material );
 
@@ -93,6 +88,10 @@ export class GameObject extends THREE.Mesh implements ITvObject {
         this.transform = value;
     }
 
+    getType (): TvObjectType {
+        return this.OpenDriveType;
+    }
+
     public addComponent<T extends Component> ( componentType: Type<T> ): T {
 
         const obj = new componentType;
@@ -107,7 +106,7 @@ export class GameObject extends THREE.Mesh implements ITvObject {
 
         for ( let i = 0; i < this.components.length; i++ ) {
 
-            const element: Component = this.components[i];
+            const element: Component = this.components[ i ];
 
             if ( element instanceof componentType ) {
 
@@ -125,7 +124,7 @@ export class Cube extends GameObject {
     constructor ( width: number = 1, height: number = 1, length: number = 1 ) {
         super(
             'Cube',
-            new THREE.BoxBufferGeometry( width, height, length ),
+            new THREE.BoxGeometry( width, height, length ),
             new THREE.MeshBasicMaterial( { color: 0x000000 }
             )
         );

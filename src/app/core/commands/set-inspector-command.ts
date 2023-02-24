@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { AppInspector } from '../inspector';
 import { Type } from '@angular/core';
 import { IComponent } from '../game-object';
+import { AppInspector } from '../inspector';
+import { BaseCommand } from './base-command';
 
 export class SetInspectorCommand extends BaseCommand {
 

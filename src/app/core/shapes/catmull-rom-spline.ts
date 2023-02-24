@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, CatmullRomCurve3, Line, LineBasicMaterial, Vector3, LineLoop } from 'three';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AbstractSpline } from './abstract-spline';
+import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferGeometry, CatmullRomCurve3, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
+import { AbstractSpline } from './abstract-spline';
 
 export class CatmullRomSpline extends AbstractSpline {
 

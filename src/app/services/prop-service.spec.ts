@@ -3,19 +3,17 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { Vector3, ShapeUtils, Triangle } from 'three';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { PropService } from './prop-service';
-import * as THREE from 'three';
 import earcut from 'earcut';
+import { Triangle } from 'three';
 
 
 describe( 'PropService test', () => {
 
     beforeEach( () => TestBed.configureTestingModule( {} ) );
 
-    beforeEach( () => { } );
+    beforeEach( () => {
+    } );
 
     it( 'should place props in polygon correctly', () => {
 
@@ -55,10 +53,9 @@ describe( 'PropService test', () => {
                 const p = randomInTriangle( face[ 0 ], face[ 1 ], face[ 2 ] );
 
 
-
             }
 
-        } )
+        } );
 
         // const ts = THREE.ShapeUtils.triangulate( [], false );
 

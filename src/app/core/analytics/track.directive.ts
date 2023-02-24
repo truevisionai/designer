@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Directive, Input, HostListener } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 import { AnalyticsService } from './analytics.service';
 
 @Directive( {
@@ -15,7 +15,8 @@ export class TrackDirective {
     @Input() event: string;
     @Input() action: string;
 
-    constructor ( private analytics: AnalyticsService ) { }
+    constructor ( private analytics: AnalyticsService ) {
+    }
 
     @HostListener( 'click' ) onMouseEnter () {
 

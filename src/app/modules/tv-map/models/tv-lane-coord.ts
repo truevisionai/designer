@@ -41,7 +41,7 @@ export class TvLaneCoord {
 
 export class TvRoadCoord {
 
-    constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
+    constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
 
     }
 

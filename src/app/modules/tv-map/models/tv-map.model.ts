@@ -2,20 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvJunction } from './tv-junction';
-import { TvRoad } from './tv-road.model';
-import { TvController } from './tv-controller';
 import { GameObject } from 'app/core/game-object';
-import { TvMapHeader } from './tv-map-header';
-import { TvRoadLinkChild } from './tv-road-link-child';
-import { TvJunctionConnection } from './tv-junction-connection';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { TvSurface } from './tv-surface.model';
-import { TvLaneSide, TvLaneType, TvRoadType } from './tv-common';
+import { SceneService } from 'app/core/services/scene.service';
 import { RoadStyleService } from 'app/services/road-style.service';
 import { PropCurve } from './prop-curve';
-import { SceneService } from 'app/core/services/scene.service';
 import { PropPolygon } from './prop-polygons';
+import { TvLaneSide, TvLaneType, TvRoadType } from './tv-common';
+import { TvController } from './tv-controller';
+import { TvJunction } from './tv-junction';
+import { TvJunctionConnection } from './tv-junction-connection';
+import { TvMapHeader } from './tv-map-header';
+import { TvRoadLinkChild } from './tv-road-link-child';
+import { TvRoad } from './tv-road.model';
+import { TvSurface } from './tv-surface.model';
 
 export class TvMap {
 
@@ -28,9 +28,16 @@ export class TvMap {
     public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
     private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
-    private _junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
-    private _controllers: Map<number, TvController> = new Map<number, TvController>();
 
+    get roads (): Map<number, TvRoad> {
+        return this._roads;
+    }
+
+    set roads ( value: Map<number, TvRoad> ) {
+        this._roads = value;
+    }
+
+    private _junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
 
     get junctions (): Map<number, TvJunction> {
         return this._junctions;
@@ -40,13 +47,7 @@ export class TvMap {
         this._junctions = value;
     }
 
-    get roads (): Map<number, TvRoad> {
-        return this._roads;
-    }
-
-    set roads ( value: Map<number, TvRoad> ) {
-        this._roads = value;
-    }
+    private _controllers: Map<number, TvController> = new Map<number, TvController>();
 
     get controllers (): Map<number, TvController> {
         return this._controllers;
@@ -134,11 +135,13 @@ export class TvMap {
 
         const laneSection = road.addGetLaneSection( 0 );
 
-        if ( side === TvLaneSide.LEFT )
+        if ( side === TvLaneSide.LEFT ) {
             laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+        }
 
-        if ( side === TvLaneSide.RIGHT )
+        if ( side === TvLaneSide.RIGHT ) {
             laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+        }
 
         laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
 
@@ -259,9 +262,9 @@ export class TvMap {
 
     }
 
-    /**
-     * Clears the OpenDrive structure, could be used to start a new document
-     */
+	/**
+	 * Clears the OpenDrive structure, could be used to start a new document
+	 */
     public clear () {
 
         this._roads.clear();

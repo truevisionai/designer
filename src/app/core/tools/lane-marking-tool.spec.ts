@@ -2,20 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneMarkingTool } from './lane-marking-tool';
-import { PointerEventData, MouseButton } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { OdRoadBuilder } from 'app/modules/tv-map/builders/od-road-builder';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { ViewportComponent } from 'app/modules/three-js/viewport/viewport.component';
-import { ThemeService } from 'app/shared/services/theme.service';
-import { EventSystem } from 'app/events/event-system.service';
-import { InputService } from '../services/input.service';
-import { ThreeService } from 'app/modules/three-js/three.service';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { AppInspector } from '../inspector';
+import { LaneMarkingTool } from './lane-marking-tool';
 
 
 describe( 'LaneMarkingTool Test', () => {

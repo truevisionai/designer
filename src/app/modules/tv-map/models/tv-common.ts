@@ -205,37 +205,48 @@ export class EnumHelper {
         switch ( value ) {
 
             case 'm':
-                return TvUnit.METER; break;
+                return TvUnit.METER;
+                break;
 
             case 'km':
-                return TvUnit.KM; break;
+                return TvUnit.KM;
+                break;
 
             case 'ft':
-                return TvUnit.FEET; break;
+                return TvUnit.FEET;
+                break;
 
             case 'mile':
-                return TvUnit.MILE; break;
+                return TvUnit.MILE;
+                break;
 
             case 'm/s':
-                return TvUnit.METER_PER_SECOND; break;
+                return TvUnit.METER_PER_SECOND;
+                break;
 
             case 'mph':
-                return TvUnit.MILES_PER_HOUR; break;
+                return TvUnit.MILES_PER_HOUR;
+                break;
 
             case 'km/h':
-                return TvUnit.KM_PER_HOUR; break;
+                return TvUnit.KM_PER_HOUR;
+                break;
 
             case 'kg':
-                return TvUnit.KG; break;
+                return TvUnit.KG;
+                break;
 
             case 't':
-                return TvUnit.T; break;
+                return TvUnit.T;
+                break;
 
             case '%':
-                return TvUnit.PERCENT; break;
+                return TvUnit.PERCENT;
+                break;
 
             default:
-                console.error( "unknown unit" ); break;
+                console.error( 'unknown unit' );
+                break;
         }
     }
 }

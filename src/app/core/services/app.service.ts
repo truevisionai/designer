@@ -3,17 +3,17 @@
  */
 
 import { Injectable } from '@angular/core';
+import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { FileService } from 'app/services/file.service';
+import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { ElectronService } from 'ngx-electron';
 import { EventSystem } from '../../events/event-system.service';
 import { ThreeService } from '../../modules/three-js/three.service';
 import { SnackBar } from '../../services/snack-bar.service';
-import { AuthService } from './auth.service';
-import { SceneService } from './scene.service';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { FileService } from 'app/services/file.service';
 import { AppInfo } from './app-info.service';
-import { SceneExporterService } from 'app/services/scene-exporter.service';
+import { AuthService } from './auth.service';
 import { EditorService } from './editor.service';
+import { SceneService } from './scene.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -64,7 +64,7 @@ export class AppService {
 
     public exit () {
 
-        this.electron.remote.app.exit( 0 );
+        this.files.remote.app.exit( 0 );
 
     }
 

@@ -3,19 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { SnackBar } from './snack-bar.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { SceneExporterService } from './scene-exporter.service';
-import { IFile } from 'app/core/models/file';
-import { FileService } from './file.service';
-import { AppService } from 'app/core/services/app.service';
-import { SceneImporterService } from './scene-importer.service';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { AppInspector } from 'app/core/inspector';
+import { IFile } from 'app/core/models/file';
+import { AppService } from 'app/core/services/app.service';
+import { ToolManager } from 'app/core/tools/tool-manager';
 import { ThreeService } from 'app/modules/three-js/three.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from './command-history';
+import { FileService } from './file.service';
+import { SceneExporterService } from './scene-exporter.service';
+import { SceneImporterService } from './scene-importer.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -27,15 +27,24 @@ export class MainFileService {
         public sceneImporter: SceneImporterService,
         public fileService: FileService,
         public threeService: ThreeService
-    ) { }
+    ) {
+    }
 
-    get currentFile () { return TvMapInstance.currentFile; }
+    get currentFile () {
+        return TvMapInstance.currentFile;
+    }
 
-    set currentFile ( value ) { TvMapInstance.currentFile = value; }
+    set currentFile ( value ) {
+        TvMapInstance.currentFile = value;
+    }
 
-    get map () { return TvMapInstance.map; }
+    get map () {
+        return TvMapInstance.map;
+    }
 
-    set map ( value ) { TvMapInstance.map = value; }
+    set map ( value ) {
+        TvMapInstance.map = value;
+    }
 
 
     importViaContent ( content: string ) {

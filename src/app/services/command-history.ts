@@ -2,19 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ICommand } from '../core/commands/i-command';
-import { Environment } from 'app/core/utils/environment';
 import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
+import { Environment } from 'app/core/utils/environment';
+import { ICommand } from '../core/commands/i-command';
 
 export class CommandHistory {
+
+    private static undos: ICommand[] = [];
+    private static redos: ICommand[] = [];
 
     private static get debug () {
         return true && !Environment.production;
     }
-
-    private static undos: ICommand[] = [];
-
-    private static redos: ICommand[] = [];
 
     static clear (): void {
 

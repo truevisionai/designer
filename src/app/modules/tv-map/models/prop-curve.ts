@@ -2,8 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PropModel } from 'app/core/models/prop-model.model';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Object3D } from 'three';

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MeshStandardMaterial, MeshStandardMaterialParameters, Math, Texture } from 'three';
 import { AppService } from 'app/core/services/app.service';
+import { MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {
 
@@ -15,12 +15,12 @@ export class TvMaterial extends MeshStandardMaterial {
 
 
     constructor ( public guid: string, parameters?: MeshStandardMaterialParameters ) {
-        super( parameters )
+        super( parameters );
     }
 
     static new ( name = 'NewMaterial' ) {
 
-        return new TvMaterial( Math.generateUUID(), { name: name } );
+        return new TvMaterial( MathUtils.generateUUID(), { name: name } );
 
     }
 
@@ -38,7 +38,7 @@ export class TvMaterial extends MeshStandardMaterial {
 
         }
 
-        var material = new TvMaterial( Math.generateUUID() );
+        var material = new TvMaterial( MathUtils.generateUUID() );
 
         if ( json.uuid !== undefined ) material.uuid = json.uuid;
         if ( json.name !== undefined ) material.name = json.name;
@@ -78,8 +78,8 @@ export class TvMaterial extends MeshStandardMaterial {
         if ( json.polygonOffsetFactor !== undefined ) material.polygonOffsetFactor = json.polygonOffsetFactor;
         if ( json.polygonOffsetUnits !== undefined ) material.polygonOffsetUnits = json.polygonOffsetUnits;
 
-        if ( json.skinning !== undefined ) material.skinning = json.skinning;
-        if ( json.morphTargets !== undefined ) material.morphTargets = json.morphTargets;
+        // if ( json.skinning !== undefined ) material.skinning = json.skinning;
+        // if ( json.morphTargets !== undefined ) material.morphTargets = json.morphTargets;
         if ( json.dithering !== undefined ) material.dithering = json.dithering;
 
         if ( json.visible !== undefined ) material.visible = json.visible;
@@ -95,7 +95,7 @@ export class TvMaterial extends MeshStandardMaterial {
             material.roughnessMapGuid = json.roughnessMapGuid;
             material.roughnessMap = getTexture( json.roughnessMapGuid );
         }
-        
+
         if ( json.normalMapGuid !== undefined ) {
             material.normalMapGuid = json.normalMapGuid;
             material.normalMap = getTexture( json.normalMapGuid );

@@ -3,10 +3,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import * as THREE from 'three';
-import { ThreeService } from 'app/modules/three-js/three.service';
 import { AppService } from 'app/core/services/app.service';
 import { PointerMoveData } from 'app/events/pointer-event-data';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import * as THREE from 'three';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 
 @Component( {
     selector: 'app-pointer-guides',
@@ -60,20 +61,23 @@ export class PointerGuidesComponent implements OnInit {
 
             const point = data.point;
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push( new THREE.Vector3( point.x, -10000, 1 ) );
-            geometry.vertices.push( new THREE.Vector3( point.x, 10000, 1 ) );
-            this.horizontalLine = new THREE.Line( geometry, this.lineMaterial );
-            this.horizontalLine.computeLineDistances();
+            // TODO: UPDATE FIX
+            // var geometry = new LineGeometry();
+            // geometry.vertices.push( new THREE.Vector3( point.x, -10000, 1 ) );
+            // geometry.vertices.push( new THREE.Vector3( point.x, 10000, 1 ) );
+            // this.horizontalLine = new THREE.Line( geometry, this.lineMaterial );
+            // this.horizontalLine.computeLineDistances();
+            //
+            // // TODO: UPDATE FIX
+            // var geometry = new LineGeometry();
+            // geometry.vertices.push( new THREE.Vector3( -10000, point.y, 1 ) );
+            // geometry.vertices.push( new THREE.Vector3( 10000, point.y, 1 ) );
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push( new THREE.Vector3( -10000, point.y, 1 ) );
-            geometry.vertices.push( new THREE.Vector3( 10000, point.y, 1 ) );
-            this.verticalLine = new THREE.Line( geometry, this.lineMaterial );
-            this.verticalLine.computeLineDistances();
+            // this.verticalLine = new THREE.Line( geometry, this.lineMaterial );
+            // this.verticalLine.computeLineDistances();
 
-            this.engineService.add( this.verticalLine );
-            this.engineService.add( this.horizontalLine );
+            // this.engineService.add( this.verticalLine );
+            // this.engineService.add( this.horizontalLine );
 
         }
 

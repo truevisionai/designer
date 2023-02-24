@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneValidity } from './tv-road-object';
-import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
 import { GameObject } from 'app/core/game-object';
-import { SignShapeType } from '../services/tv-sign.service';
 import { AnyControlPoint } from '../../three-js/objects/control-point';
+import { SignShapeType } from '../services/tv-sign.service';
+import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
+import { TvLaneValidity } from './tv-road-object';
 
 export class TvRoadSignal {
 
@@ -34,10 +34,6 @@ export class TvRoadSignal {
     public roadId: number;
 
     public controlPoint?: AnyControlPoint;
-
-    private _gameObject: GameObject;
-    private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
-    private _signShape: SignShapeType;
 
     constructor (
         s: number,
@@ -81,17 +77,23 @@ export class TvRoadSignal {
 
     }
 
+    private _gameObject: GameObject;
+
+    get gameObject () {
+        return this._gameObject;
+    }
+
+    set gameObject ( value ) {
+        this._gameObject = value;
+    }
+
+    private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
+
     set userData ( values: TvUserData[] ) {
         values.forEach( data => this._userData.set( data.attr_code, data ) );
     }
 
-    get userDataMap () {
-        return this._userData;
-    }
-
-    get assetName () {
-        return this._userData.get( 'asset_name' );
-    }
+    private _signShape: SignShapeType;
 
     get signShape () {
         return this._signShape;
@@ -101,12 +103,12 @@ export class TvRoadSignal {
         this._signShape = value;
     }
 
-    get gameObject () {
-        return this._gameObject;
+    get userDataMap () {
+        return this._userData;
     }
 
-    set gameObject ( value ) {
-        this._gameObject = value;
+    get assetName () {
+        return this._userData.get( 'asset_name' );
     }
 
     getUserData () {

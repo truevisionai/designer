@@ -2,22 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { Subscription } from 'rxjs';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { PointEditor } from '../editors/point-editor';
-import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvObjectType } from 'app/modules/tv-map/interfaces/i-tv-object';
-import { Mesh, MeshBasicMaterial, Object3D, PlaneBufferGeometry, TextureLoader } from 'three';
-import { OdSignalInspectorComponent } from 'app/views/inspectors/signal-inspector/signal-inspector.component';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
+import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { Subscription } from 'rxjs';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
+import { PointEditor } from '../editors/point-editor';
+import { BaseTool } from './base-tool';
 
 export abstract class BaseMarkingTool extends BaseTool {
 
@@ -40,6 +35,12 @@ export class MarkingPointTool extends BaseMarkingTool {
     constructor () {
 
         super();
+
+    }
+
+    get marking () {
+
+        return TvMarkingService.currentMarking;
 
     }
 
@@ -71,12 +72,6 @@ export class MarkingPointTool extends BaseMarkingTool {
         this.shapeEditor.destroy();
 
         this.unsubscribeFromControlPoints();
-
-    }
-
-    get marking () {
-
-        return TvMarkingService.currentMarking;
 
     }
 
@@ -115,7 +110,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
     private onControlPointAdded ( point: AnyControlPoint ) {
 
-        if ( !this.marking ) SnackBar.error( "Select a marking from project browser" );
+        if ( !this.marking ) SnackBar.error( 'Select a marking from project browser' );
 
         if ( !this.marking ) return;
 
@@ -127,7 +122,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
         const road = TvMapQueries.getRoadByCoords( pose.x, pose.y, pose );
 
-        if ( !road ) SnackBar.error( "Marking can be added only on road mesh" );
+        if ( !road ) SnackBar.error( 'Marking can be added only on road mesh' );
 
         if ( !road ) this.shapeEditor.removeControlPoint( point );
 
@@ -143,7 +138,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
             // const material = new MeshBasicMaterial( { map: texture, alphaTest: 0.1 } );
 
-            // const geometry = new PlaneBufferGeometry( 1, 1 );
+            // const geometry = new PlaneGeometry( 1, 1 );
 
             // const mesh = new Mesh( geometry, material );
 

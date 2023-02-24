@@ -6,7 +6,7 @@ import { Material } from 'three';
 
 export class TvRoadSign {
 
-    public static readonly tag = "road-sign";
+    public static readonly tag = 'road-sign';
 
     public static index = 0;
 

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from '../../../core/commands/base-command';
 import { Euler, Object3D } from 'three';
+import { BaseCommand } from '../../../core/commands/base-command';
 
 export class SetRotationCommand extends BaseCommand {
 

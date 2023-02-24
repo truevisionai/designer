@@ -13,7 +13,7 @@ describe( 'OpenDrive Parsing', () => {
     beforeEach( () => TestBed.configureTestingModule( {} ) );
 
     beforeEach( () => {
-        parser = new OpenDriverParser( );
+        parser = new OpenDriverParser();
     } );
 
     it( 'should parse header correctly', () => {

@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { ShorcutFactory } from '../shortcuts/shortcut-factory';
 import { IKeyboardShortcut } from '../shortcuts/shortcuts';
-import { EditorService } from './editor.service';
 
 @Injectable( {
     providedIn: 'root'
@@ -17,16 +16,6 @@ export class ShortcutService {
     constructor () {
 
         this.init();
-
-    }
-
-    init () {
-
-        ShorcutFactory.shortcuts.forEach( ( shortcut ) => {
-
-            ShortcutService.shortcutInstances.push( new shortcut() );
-
-        } );
 
     }
 
@@ -51,6 +40,16 @@ export class ShortcutService {
                 shortcut.execute();
 
             }
+
+        } );
+
+    }
+
+    init () {
+
+        ShorcutFactory.shortcuts.forEach( ( shortcut ) => {
+
+            ShortcutService.shortcutInstances.push( new shortcut() );
 
         } );
 

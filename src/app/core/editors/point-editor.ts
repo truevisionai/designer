@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractShapeEditor } from './abstract-shape-editor';
-import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
+import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class PointEditor extends AbstractShapeEditor {
 

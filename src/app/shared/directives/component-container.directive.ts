@@ -9,6 +9,7 @@ import { Directive, ViewContainerRef } from '@angular/core';
 } )
 export class ComponentContainerDirective {
 
-    constructor ( public viewContainerRef: ViewContainerRef ) { }
+    constructor ( public viewContainerRef: ViewContainerRef ) {
+    }
 
 }

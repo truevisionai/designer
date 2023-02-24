@@ -27,15 +27,6 @@ export class COLOR {
     static LIGHTGREEN = 0x008000;
     static WHITE = 0xFFFFFF;
 
-    private static rgbToHex ( rgb ) {
-
-        var hex = Number( rgb ).toString( 16 );
-
-        if ( hex.length < 2 ) hex = "0" + hex;
-
-        return hex;
-    }
-
     static fullColorHex ( r: number, g: number, b: number ): string {
 
         var red = this.rgbToHex( r );
@@ -43,5 +34,14 @@ export class COLOR {
         var blue = this.rgbToHex( b );
 
         return red + green + blue;
+    }
+
+    private static rgbToHex ( rgb ) {
+
+        var hex = Number( rgb ).toString( 16 );
+
+        if ( hex.length < 2 ) hex = '0' + hex;
+
+        return hex;
     }
 }

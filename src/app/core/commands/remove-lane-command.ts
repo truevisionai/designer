@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
+import { BaseCommand } from './base-command';
 
 export class RemoveLaneCommand extends BaseCommand {
 

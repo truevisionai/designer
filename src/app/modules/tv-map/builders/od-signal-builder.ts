@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { BoxGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, TextureLoader, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { BoxGeometry, CylinderBufferGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, TextureLoader, Vector3 } from 'three';
-import { TvObjectType } from '../interfaces/i-tv-object';
-import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
-import { TvMapInstance } from '../services/tv-map-source-file';
-import { TvRoadSignal } from '../models/tv-road-signal.model';
-import { TvRoad } from '../models/tv-road.model';
+import { SnackBar } from '../../../services/snack-bar.service';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { Maths } from '../../../utils/maths';
+import { TvObjectType } from '../interfaces/i-tv-object';
+import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
+import { TvRoadSignal } from '../models/tv-road-signal.model';
+import { TvRoad } from '../models/tv-road.model';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { SignShapeType } from '../services/tv-sign.service';
-import { SnackBar } from '../../../services/snack-bar.service';
 
 export class OdSignalBuilder {
 
@@ -80,7 +80,7 @@ export class OdSignalBuilder {
         const poleWidth = 0.05;
         const poleHeight = signal.height;
 
-        const geometry = new CylinderBufferGeometry( poleWidth, poleWidth, poleHeight, 32 );
+        const geometry = new CylinderGeometry( poleWidth, poleWidth, poleHeight, 32 );
         const material = new MeshBasicMaterial( { color: COLOR.DARKGRAY } );
         const pole = new GameObject( 'Signal', geometry, material );
 
@@ -222,14 +222,14 @@ export class OdSignalBuilder {
     }
 
     private getSignMaterial ( sign: string ) {
-        const signTexture = new TextureLoader().load( `assets/signs/${sign}.png` );
+        const signTexture = new TextureLoader().load( `assets/signs/${ sign }.png` );
         const signMaterial = new MeshBasicMaterial( { map: signTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
         return signMaterial;
     }
 
     // createPlaneSignal ( sign: string, signal: OdRoadSignal ): GameObject {
     //
-    //     const geometry = new PlaneBufferGeometry( 1, 1, 1 );
+    //     const geometry = new PlaneGeometry( 1, 1, 1 );
     //
     //     let boxMaterial: MeshBasicMaterial;
     //

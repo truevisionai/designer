@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { PointEditor } from '../editors/point-editor';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { Subscription } from 'rxjs';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { Subscription } from 'rxjs';
+import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
+import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
+import { BaseTool } from './base-tool';
 
 export class SurfaceTool extends BaseTool {
 
@@ -57,9 +57,9 @@ export class SurfaceTool extends BaseTool {
 
                 cp.mainObject = surface;
 
-                this.shapeEditor.controlPoints.push( cp )
+                this.shapeEditor.controlPoints.push( cp );
 
-            } )
+            } );
         } );
 
         this.keyDownSub = KeyboardInput.keyDown
@@ -138,7 +138,7 @@ export class SurfaceTool extends BaseTool {
 
         if ( !this.surface ) {
 
-            this.surface = new TvSurface( 'grass', new CatmullRomSpline() )
+            this.surface = new TvSurface( 'grass', new CatmullRomSpline() );
 
             this.map.surfaces.push( this.surface );
 
@@ -168,7 +168,7 @@ export class SurfaceTool extends BaseTool {
 
     private onDeletePressed ( e: KeyboardEvent ) {
 
-        if ( e.key === "Delete" && this.surface ) {
+        if ( e.key === 'Delete' && this.surface ) {
 
             this.surface.delete();
 

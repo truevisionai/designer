@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { TvRoadMarking, TvMarkingService } from 'app/modules/tv-map/services/tv-marking.service';
-import { Metadata } from 'app/core/models/metadata.model';
-import { AssetDatabase } from 'app/services/asset-database';
-import { Texture } from 'three';
-import { CommandHistory } from 'app/services/command-history';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { IComponent } from 'app/core/game-object';
+import { Metadata } from 'app/core/models/metadata.model';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
+import { CommandHistory } from 'app/services/command-history';
+import { Texture } from 'three';
 
 @Component( {
     selector: 'app-road-marking-inspector',
@@ -28,11 +28,14 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 
     texture: Texture;
 
-    constructor () { }
+    constructor () {
+    }
 
     // get thumbnail () { return this.metadata.preview; }
 
-    get thumbnail () { return this.texture && this.texture.image ? this.texture.image.currentSrc : "" }
+    get thumbnail () {
+        return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
+    }
 
     ngOnInit () {
 

@@ -3,26 +3,29 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMap } from '../models/tv-map.model';
-import { TvRoad } from '../models/tv-road.model';
+import { XMLBuilder } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvLane } from '../models/tv-lane';
-import { TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
-import { TvJunction } from '../models/tv-junction';
+import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
+import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
+import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
+import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
 import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
-import { TvLaneWidth } from '../models/tv-lane-width';
-import { TvLaneMaterial } from '../models/tv-lane-material';
-import { TvLaneVisibility } from '../models/tv-lane-visibility';
-import { TvLaneSpeed } from '../models/tv-lane-speed';
+import { TvJunction } from '../models/tv-junction';
+import { TvJunctionConnection } from '../models/tv-junction-connection';
+import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
 import { TvLaneHeight } from '../models/tv-lane-height';
-import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
-import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
-import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
-import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
-import { TvJunctionConnection } from '../models/tv-junction-connection';
+import { TvLaneMaterial } from '../models/tv-lane-material';
+import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvLaneSpeed } from '../models/tv-lane-speed';
+import { TvLaneVisibility } from '../models/tv-lane-visibility';
+import { TvLaneWidth } from '../models/tv-lane-width';
+import { TvMap } from '../models/tv-map.model';
+import { TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
+import { TvRoad } from '../models/tv-road.model';
+
+declare const fxp;
 
 @Injectable( {
     providedIn: 'root'
@@ -49,12 +52,11 @@ export class OdWriter {
             trimValues: true,
         };
 
-        const Parser = require( 'fast-xml-parser' ).j2xParser;
-        const parser = new Parser( defaultOptions );
+        const builder = new XMLBuilder( defaultOptions );
 
         this.writeFile( '' );
 
-        const data = parser.parse( this.xmlDocument );
+        const data = builder.build( this.xmlDocument );
 
         // if ( Environment.production ) {
 
@@ -80,17 +82,19 @@ export class OdWriter {
         // not link for center lanes
         if ( lane.side === TvLaneSide.CENTER ) return;
 
-        if ( lane.predecessorExists != null )
+        if ( lane.predecessorExists != null ) {
             laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessor };
+        }
 
-        if ( lane.successorExists != null )
+        if ( lane.successorExists != null ) {
             laneNode.link[ 'successor' ] = { attr_id: lane.succcessor };
+        }
 
     }
 
-    /**
-     * Writes the data from the OpenDrive structure to a file
-     */
+	/**
+	 * Writes the data from the OpenDrive structure to a file
+	 */
     public writeFile ( fileName: string ) {
 
         const rootNode = {
@@ -120,11 +124,11 @@ export class OdWriter {
         } );
     }
 
-    /**
-     * The following methods are used to create the XML representation of the OpenDrive structure
-     * Methods follow the same hierarchical structure and are called automatically when WriteFile
-     * is executed
-     */
+	/**
+	 * The following methods are used to create the XML representation of the OpenDrive structure
+	 * Methods follow the same hierarchical structure and are called automatically when WriteFile
+	 * is executed
+	 */
     public writeHeader ( xmlNode ) {
 
         const header = this.map.getHeader();
@@ -457,11 +461,11 @@ export class OdWriter {
             attr_s: laneSection.s,
         };
 
-        if ( leftLanes.lane.length > 0 ) laneSectionNode[ "left" ] = leftLanes;
+        if ( leftLanes.lane.length > 0 ) laneSectionNode[ 'left' ] = leftLanes;
 
-        if ( centerLanes.lane.length > 0 ) laneSectionNode[ "center" ] = centerLanes;
+        if ( centerLanes.lane.length > 0 ) laneSectionNode[ 'center' ] = centerLanes;
 
-        if ( rightLanes.lane.length > 0 ) laneSectionNode[ "right" ] = rightLanes;
+        if ( rightLanes.lane.length > 0 ) laneSectionNode[ 'right' ] = rightLanes;
 
         xmlNode.laneSection.push( laneSectionNode );
 

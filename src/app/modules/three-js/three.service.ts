@@ -3,27 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
+import { CommandHistory } from 'app/services/command-history';
+import { COLOR } from 'app/shared/utils/colors.service';
+
+import { Maths } from 'app/utils/maths';
 
 import * as THREE from 'three';
 import { Material, Object3D, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from 'three';
-import './EnableThreeExamples';
-import 'three/examples/js/controls/DragControls';
-import 'three/examples/js/controls/TransformControls';
-
-import 'three/examples/js/postprocessing/EffectComposer';
-import 'three/examples/js/postprocessing/RenderPass';
-import 'three/examples/js/postprocessing/ShaderPass';
-import 'three/examples/js/postprocessing/OutlinePass';
-import 'three/examples/js/shaders/CopyShader';
-
-import { Maths } from 'app/utils/maths';
-import { SetPositionCommand } from './commands/set-position-command';
-import { CommandHistory } from 'app/services/command-history';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { IEngine } from '../../core/services/IEngine';
 import { SceneService } from '../../core/services/scene.service';
+import { SetPositionCommand } from './commands/set-position-command';
 import { IViewportController } from './objects/i-viewport-controller';
-import { OrbitControls } from './objects/orbit-controls';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { TvOrbitControls } from './objects/tv-orbit-controls';
 
 @Injectable( {
     providedIn: 'root'
@@ -31,26 +24,23 @@ import { COLOR } from 'app/shared/utils/colors.service';
 export class ThreeService implements IEngine {
 
 
+    public static controls: IViewportController;
+    static bgForClicks: THREE.Mesh;
     public canvas: HTMLCanvasElement;
     public renderer: THREE.WebGLRenderer;
     public mouse: THREE.Vector2 = new THREE.Vector2;
     public image: THREE.Mesh;
-
-    public static controls: IViewportController;
-
     public canvasWidth: number;
     public canvasHeight: number;
     public leftOffset: number;
     public topOffset: number;
     public ORTHO_DRIVER = 4;
-
     private currentCameraIndex = 0;
     private cameras: THREE.Camera[] = [];
-    private composer: THREE.EffectComposer;
-    private transformControls: THREE.TransformControls;
+    private composer: EffectComposer;
+    private transformControls: TransformControls;
     private light: THREE.AmbientLight;
     private objectPositionOnDown: THREE.Vector3 = null;
-    static bgForClicks: THREE.Mesh;
 
     constructor () {
 
@@ -93,7 +83,7 @@ export class ThreeService implements IEngine {
 
     createControls (): void {
 
-        ThreeService.controls = OrbitControls.getNew( this.camera, this.canvas );
+        ThreeService.controls = TvOrbitControls.getNew( this.camera, this.canvas );
         // ThreeService.controls = EditorControls.getNew( this.camera, this.canvas );
 
     }
@@ -102,7 +92,7 @@ export class ThreeService implements IEngine {
 
         const self: ThreeService = this;
 
-        this.transformControls = new THREE.TransformControls( this.camera, this.canvas );
+        this.transformControls = new TransformControls( this.camera, this.canvas );
 
         this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
 
@@ -192,7 +182,7 @@ export class ThreeService implements IEngine {
 
     createBackgroundPlaneForClicks () {
 
-        ThreeService.bgForClicks = new THREE.Mesh( new THREE.PlaneBufferGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
+        ThreeService.bgForClicks = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
             color: 0xFFFFFF,
             transparent: true,
             opacity: 0
@@ -386,12 +376,12 @@ export class ThreeService implements IEngine {
     // }
 
 
-    /**
-     * 
-     * @param object 
-     * @param raycasting 
-     * @deprecated use SceneService.add instead
-     */
+	/**
+	 *
+	 * @param object
+	 * @param raycasting
+	 * @deprecated use SceneService.add instead
+	 */
     add ( object: THREE.Object3D, raycasting = false ): any {
 
         SceneService.add( object, raycasting );
@@ -425,9 +415,9 @@ export class ThreeService implements IEngine {
 
     }
 
-    /**
-     * Public methods
-     */
+	/**
+	 * Public methods
+	 */
 
     public select ( obj: Object3D ) {
 

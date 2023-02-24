@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
+import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights, TvColors } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 
 export class RoadStyle {
 
@@ -32,7 +32,7 @@ export class RoadStyle {
 
         style.laneOffset = this.laneOffset.clone();
 
-        style.laneSection = this.laneSection.cloneAtS()
+        style.laneSection = this.laneSection.cloneAtS();
 
         return style;
     }
@@ -84,11 +84,13 @@ export class RoadStyleService {
 
             if ( lane.side !== TvLaneSide.CENTER ) {
 
-                if ( lane.type == TvLaneType.driving ) lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
-
-                else if ( lane.type == TvLaneType.sidewalk ) lane.addWidthRecord( 0, 2, 0, 0, 0 );
-
-                else lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
+                if ( lane.type == TvLaneType.driving ) {
+                    lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
+                } else if ( lane.type == TvLaneType.sidewalk ) {
+                    lane.addWidthRecord( 0, 2, 0, 0, 0 );
+                } else {
+                    lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
+                }
 
             }
 

@@ -4,10 +4,8 @@
 
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { Maths } from 'app/utils/maths';
-import { TvDirection } from 'app/modules/tv-map/models/tv-common';
+import { Vector3 } from 'three';
 import { RoadCircleTool } from './road-circle-tool';
-import { Vector3, Vector2 } from 'three';
 
 
 describe( 'RoadCircleTool Test', () => {

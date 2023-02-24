@@ -2,37 +2,37 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSection } from './tv-lane-section';
-import { TvRoadLanes } from './tv-road-lanes';
-import { TvPlaneView } from './tv-plane-view';
-import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
-import { TvPosTheta } from './tv-pos-theta';
-import { TvObjectContainer, TvRoadObject } from './tv-road-object';
-import { TvRoadSignal } from './tv-road-signal.model';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { EventEmitter } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
-import { TvRoadLinkChild } from './tv-road-link-child';
-import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
-import { TvRoadLink } from './tv-road.link';
-import { TvElevation } from './tv-elevation';
-import { TvElevationProfile } from './tv-elevation-profile';
-import { TvLateralProfile } from './tv-lateral.profile';
-import { TvLane } from './tv-lane';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvArcGeometry } from './geometries/tv-arc-geometry';
-import { TvUtils } from './tv-utils';
-import { TvRoadTypeClass } from './tv-road-type.class';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { TvRoadLaneOffset } from './tv-road-lane-offset';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { Maths } from 'app/utils/maths';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { Vector3, Math as MathUtils } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
-import { EventEmitter } from '@angular/core';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { Maths } from 'app/utils/maths';
+import { MathUtils, Vector3 } from 'three';
+import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from './geometries/tv-arc-geometry';
+import { TvLineGeometry } from './geometries/tv-line-geometry';
+import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { TvElevation } from './tv-elevation';
+import { TvElevationProfile } from './tv-elevation-profile';
+import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
+import { TvLaneSection } from './tv-lane-section';
+import { TvLateralProfile } from './tv-lateral.profile';
+import { TvPlaneView } from './tv-plane-view';
+import { TvPosTheta } from './tv-pos-theta';
+import { TvRoadLaneOffset } from './tv-road-lane-offset';
+import { TvRoadLanes } from './tv-road-lanes';
+import { TvRoadLinkChild } from './tv-road-link-child';
+import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
+import { TvObjectContainer, TvRoadObject } from './tv-road-object';
+import { TvRoadSignal } from './tv-road-signal.model';
+import { TvRoadTypeClass } from './tv-road-type.class';
+import { TvRoadLink } from './tv-road.link';
+import { TvUtils } from './tv-utils';
 
 export class TvRoad {
 
@@ -56,22 +56,10 @@ export class TvRoad {
     public borderMaterialGuid: string;
     public shoulderMaterialGuid: string;
 
-    /**
-     * @deprecated use predecessor, successor directly
-     */
+	/**
+	 * @deprecated use predecessor, successor directly
+	 */
     private link: TvRoadLink;
-
-    private _objects: TvObjectContainer = new TvObjectContainer();
-    private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
-    private _planView = new TvPlaneView;
-    private _predecessor: TvRoadLinkChild;
-    private _successor: TvRoadLinkChild;
-    private _neighbors: TvRoadLinkNeighbor[] = [];
-    private _name: string;
-    private _length: number;
-    private _id: number;
-    private _junction: number;
-    private _gameObject: GameObject;
     private lastAddedLaneSectionIndex: number;
     private lastAddedRoadObjectIndex: number;
     private lastAddedRoadSignalIndex: number;
@@ -88,13 +76,7 @@ export class TvRoad {
 
     }
 
-    get signals (): Map<number, TvRoadSignal> {
-        return this._signals;
-    }
-
-    set signals ( value: Map<number, TvRoadSignal> ) {
-        this._signals = value;
-    }
+    private _objects: TvObjectContainer = new TvObjectContainer();
 
     get objects (): TvObjectContainer {
         return this._objects;
@@ -104,6 +86,18 @@ export class TvRoad {
         this._objects = value;
     }
 
+    private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
+
+    get signals (): Map<number, TvRoadSignal> {
+        return this._signals;
+    }
+
+    set signals ( value: Map<number, TvRoadSignal> ) {
+        this._signals = value;
+    }
+
+    private _planView = new TvPlaneView;
+
     get planView (): TvPlaneView {
         return this._planView;
     }
@@ -112,21 +106,7 @@ export class TvRoad {
         this._planView = value;
     }
 
-    get neighbors (): TvRoadLinkNeighbor[] {
-        return this._neighbors;
-    }
-
-    set neighbors ( value: TvRoadLinkNeighbor[] ) {
-        this._neighbors = value;
-    }
-
-    get successor (): TvRoadLinkChild {
-        return this._successor;
-    }
-
-    set successor ( value: TvRoadLinkChild ) {
-        this._successor = value;
-    }
+    private _predecessor: TvRoadLinkChild;
 
     get predecessor (): TvRoadLinkChild {
         return this._predecessor;
@@ -136,21 +116,37 @@ export class TvRoad {
         this._predecessor = value;
     }
 
-    get junction (): number {
-        return this._junction;
+    private _successor: TvRoadLinkChild;
+
+    get successor (): TvRoadLinkChild {
+        return this._successor;
     }
 
-    set junction ( value: number ) {
-        this._junction = value;
+    set successor ( value: TvRoadLinkChild ) {
+        this._successor = value;
     }
 
-    get id (): number {
-        return this._id;
+    private _neighbors: TvRoadLinkNeighbor[] = [];
+
+    get neighbors (): TvRoadLinkNeighbor[] {
+        return this._neighbors;
     }
 
-    set id ( value: number ) {
-        this._id = value;
+    set neighbors ( value: TvRoadLinkNeighbor[] ) {
+        this._neighbors = value;
     }
+
+    private _name: string;
+
+    get name (): string {
+        return this._name;
+    }
+
+    set name ( value: string ) {
+        this._name = value;
+    }
+
+    private _length: number;
 
     get length (): number {
         return this._length;
@@ -160,13 +156,27 @@ export class TvRoad {
         this._length = value;
     }
 
-    get name (): string {
-        return this._name;
+    private _id: number;
+
+    get id (): number {
+        return this._id;
     }
 
-    set name ( value: string ) {
-        this._name = value;
+    set id ( value: number ) {
+        this._id = value;
     }
+
+    private _junction: number;
+
+    get junction (): number {
+        return this._junction;
+    }
+
+    set junction ( value: number ) {
+        this._junction = value;
+    }
+
+    private _gameObject: GameObject;
 
     get gameObject () {
         return this._gameObject;
@@ -188,21 +198,23 @@ export class TvRoad {
         return this.lanes.laneSections;
     }
 
-    get hasType (): boolean { return this.type.length > 0 }
+    get hasType (): boolean {
+        return this.type.length > 0;
+    }
 
     onSuccessorUpdated ( successor: TvRoad ) {
 
-        console.log( "successor of", this.id, "updated" );
+        console.log( 'successor of', this.id, 'updated' );
 
     }
 
     onPredecessorUpdated ( predecessor: TvRoad ) {
 
-        console.log( "predecssor of", this.id, "updated" );
+        console.log( 'predecssor of', this.id, 'updated' );
 
     }
 
-    setPredecessor ( elementType: "road" | "junction", elementId: number, contactPoint?: TvContactPoint ) {
+    setPredecessor ( elementType: 'road' | 'junction', elementId: number, contactPoint?: TvContactPoint ) {
 
         if ( this._predecessor == null ) {
 
@@ -261,7 +273,7 @@ export class TvRoad {
 
     setNeighbor ( side: string, elementId: string, direction: string ) {
 
-        console.error( "neighbor not supported" );
+        console.error( 'neighbor not supported' );
 
         // const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
         //
@@ -361,12 +373,12 @@ export class TvRoad {
         }
     }
 
-    /**
-     * 
-     * @param s 
-     * @param singleSide 
-     * @deprecated use addGetLaneSection
-     */
+	/**
+	 *
+	 * @param s
+	 * @param singleSide
+	 * @deprecated use addGetLaneSection
+	 */
     addLaneSection ( s: number, singleSide: boolean ) {
 
         // TODO: Check for interval
@@ -569,12 +581,13 @@ export class TvRoad {
 
         const geometry = this.getGeometryAt( s );
 
-        if ( geometry == null )
+        if ( geometry == null ) {
             throw new Error( `geometry not found at s = ${ s }` );
+        }
 
         const geometryType = geometry.getCoords( s, odPosTheta );
 
-        if ( !geometryType ) console.error( "geometry type not found" );
+        if ( !geometryType ) console.error( 'geometry type not found' );
 
         const laneOffset = this.getLaneOffsetValue( s );
 
@@ -1039,9 +1052,9 @@ export class TvRoad {
 
     }
 
-    /**
-     * Remove any existing road model from the scene and its children
-     */
+	/**
+	 * Remove any existing road model from the scene and its children
+	 */
     public remove ( parent: GameObject ) {
 
         if ( this.spline ) this.spline.hide();
@@ -1057,15 +1070,15 @@ export class TvRoad {
         } );
     }
 
-    /**
-     * @deprecated currently not working need to fix
-     * @param s s-coordinate
-     */
+	/**
+	 * @deprecated currently not working need to fix
+	 * @param s s-coordinate
+	 */
     public split ( s: number ) {
 
         // TODO: not working, fix and complete
 
-        const newRoad: TvRoad = new TvRoad( "New", 0, 0, -1 );
+        const newRoad: TvRoad = new TvRoad( 'New', 0, 0, -1 );
 
         // divide geometry and clone other sections
 
@@ -1093,11 +1106,11 @@ export class TvRoad {
 
         }
 
-        // divide laneSection 
+        // divide laneSection
 
         const newLaneSection = newRoad.addLaneSection( 0, false );
 
-        // const laneSectionsAfterS = 
+        // const laneSectionsAfterS =
 
     }
 
@@ -1187,7 +1200,7 @@ export class TvRoad {
         }
 
         // update last
-        sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s
+        sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
     }
 
     private getElevationAt ( s: number ): TvElevation {

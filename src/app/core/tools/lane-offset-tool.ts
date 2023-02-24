@@ -2,30 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { Object3D, Vector3 } from 'three';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AnyControlPoint, LaneOffsetNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { SceneService } from '../services/scene.service';
-import { Subscription } from 'rxjs';
-import { KeyboardInput } from '../input';
-import { NodeFactoryService } from '../factories/node-factory.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { AppInspector } from '../inspector';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { PickingHelper } from '../services/picking-helper.service';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneOffsetInspector, LaneOffsetInspectorData } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
+import { Subscription } from 'rxjs';
+import { Object3D, Vector3 } from 'three';
+import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
-import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
-import { CommandHistory } from 'app/services/command-history';
-import { UpdateLaneOffsetValueCommand } from '../commands/update-lane-offset-value-command';
 import { AddLaneOffsetCommand } from '../commands/add-lane-offset-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
+import { UpdateLaneOffsetValueCommand } from '../commands/update-lane-offset-value-command';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { BaseTool } from './base-tool';
 
 export class LaneOffsetTool extends BaseTool {
 
@@ -240,33 +239,29 @@ export class LaneOffsetTool extends BaseTool {
             const road = this.map.getRoadById( node.roadId );
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'controlPoint', controlPoint ),
 
                 new SetValueCommand( this, 'node', node ),
 
                 new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
-
             );
 
         } else if ( this.controlPoint ) {
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'controlPoint', null ),
 
                 new SetValueCommand( this, 'node', null ),
 
                 new SetInspectorCommand( null, null ),
-
             );
 
         }
 
         // 4 scenarios
-        // old and new both present then check is new or not 
+        // old and new both present then check is new or not
         // old and new is null
-        // old is null and new 
+        // old is null and new
         // old is null and new is null
 
         // if ( this.controlPoint && controlPoint && this.controlPoint.id != controlPoint.id ) {
@@ -344,21 +339,17 @@ export class LaneOffsetTool extends BaseTool {
             const road = this.map.getRoadById( newLane.roadId );
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'lane', newLane ),
 
                 new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( null, road ) )
-
             );
 
         } else if ( this.lane ) {
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'lane', null ),
 
                 new SetInspectorCommand( null, null ),
-
             );
 
         }
@@ -445,11 +436,9 @@ export class LaneOffsetTool extends BaseTool {
         const node = NodeFactoryService.createLaneOffsetNode( road, laneOffset );
 
         CommandHistory.executeMany(
-
             new AddLaneOffsetCommand( node ),
 
             new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( node, road ) ),
-
         );
 
         // // getting position on track in s/t coordinates
@@ -460,10 +449,10 @@ export class LaneOffsetTool extends BaseTool {
         // );
 
         // // // get the exisiting lane Offset at s
-        // // // and clone the lane Offset 
+        // // // and clone the lane Offset
         // const newLaneOffset = road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
 
-        // // // add the with back to lane to 
+        // // // add the with back to lane to
         // // this.lane.addOffsetRecordInstance( newLaneOffset );
         // road.addLaneOffsetInstance( newLaneOffset );
 

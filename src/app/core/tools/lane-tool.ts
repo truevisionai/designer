@@ -2,17 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PointerEventData } from '../../events/pointer-event-data';
 import { Mesh, Object3D } from 'three';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { BaseTool } from './base-tool';
-import { AppInspector } from '../inspector';
-import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
+import { PointerEventData } from '../../events/pointer-event-data';
 import { OdLaneDirectionBuilder } from '../../modules/tv-map/builders/od-lane-direction-builder';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
+import { AppInspector } from '../inspector';
+import { BaseTool } from './base-tool';
 
 export class LaneTool extends BaseTool {
 
     name: string = 'LaneTool';
+    private laneDirectionHelper: OdLaneDirectionBuilder;
 
     init () {
 
@@ -27,8 +28,6 @@ export class LaneTool extends BaseTool {
 
         this.laneDirectionHelper.clear();
     }
-
-    private laneDirectionHelper: OdLaneDirectionBuilder;
 
     onPointerDown ( e: PointerEventData ) {
 

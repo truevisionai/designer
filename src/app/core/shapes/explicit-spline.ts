@@ -2,32 +2,38 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractSpline } from './abstract-spline';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
+import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-param-poly3-geometry';
+import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
+import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
+import { SceneService } from '../services/scene.service';
+import { AbstractSpline } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';
-import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
-import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-param-poly3-geometry';
-import { HermiteSpline, Length } from './SplineData';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { SceneService } from '../services/scene.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { HermiteSpline, Length } from './SplineData';
 
 export class ExplicitSpline extends AbstractSpline {
 
     type: string = 'explicit';
 
-    private segments: Line[] = []
+    private segments: Line[] = [];
 
     // no need for now
     // private tangentLines: Line[] = [];
+
+    constructor ( private road?: TvRoad ) {
+
+        super();
+
+    }
 
     get hdgs () {
 
@@ -38,12 +44,6 @@ export class ExplicitSpline extends AbstractSpline {
     get segTypes () {
 
         return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.segmentType );
-
-    }
-
-    constructor ( private road?: TvRoad ) {
-
-        super();
 
     }
 
@@ -116,7 +116,8 @@ export class ExplicitSpline extends AbstractSpline {
 
             if ( segTypes[ i ] === TvGeometryType.LINE ) {
 
-                x = p1.x; y = p1.y;
+                x = p1.x;
+                y = p1.y;
 
                 hdg = hdg1[ 0 ];
 
@@ -126,11 +127,13 @@ export class ExplicitSpline extends AbstractSpline {
 
             } else if ( segTypes[ i ] === TvGeometryType.ARC ) {
 
-                x = p1.x; y = p1.y;
+                x = p1.x;
+                y = p1.y;
 
                 hdg = hdg1[ 0 ];
 
-                let radius, alpha, sign;[ radius, alpha, length, sign ] = this.getArcParams( p1, p2, dir1, dir2 );
+                let radius, alpha, sign;
+                [ radius, alpha, length, sign ] = this.getArcParams( p1, p2, dir1, dir2 );
 
                 // world z is flipped so inverse the sign
                 // const curvature = + ( sign < 0 ? 1 : -1 ) + 1 / r;
@@ -147,7 +150,8 @@ export class ExplicitSpline extends AbstractSpline {
 
             } else if ( segTypes[ i ] === TvGeometryType.SPIRAL ) {
 
-                let k, dk, _L, iter;[ k, dk, _L, iter ] = SPIRAL.buildClothoid(
+                let k, dk, _L, iter;
+                [ k, dk, _L, iter ] = SPIRAL.buildClothoid(
                     p1.x,
                     p1.y,
                     SPIRAL.vec2Angle( dir1.x, dir1.y ),
@@ -156,7 +160,8 @@ export class ExplicitSpline extends AbstractSpline {
                     SPIRAL.vec2Angle( dir2.x, dir2.y )
                 );
 
-                x = p1.x; y = p1.y;
+                x = p1.x;
+                y = p1.y;
 
                 hdg = hdg1[ 0 ];
 
@@ -191,7 +196,8 @@ export class ExplicitSpline extends AbstractSpline {
                 /*flip y axis*/
                 p2proj.y = -p2proj.y;
 
-                x = p1.x; y = p1.y;
+                x = p1.x;
+                y = p1.y;
 
                 hdg = hdg1[ 0 ];
 
@@ -228,11 +234,11 @@ export class ExplicitSpline extends AbstractSpline {
         return geometries;
     }
 
-    /**
-     * 
-     * @param cp 
-     * @deprecated
-     */
+	/**
+	 *
+	 * @param cp
+	 * @deprecated
+	 */
     addControlPoint ( cp: AnyControlPoint ) {
 
         cp.visible = false;
@@ -382,11 +388,12 @@ export class ExplicitSpline extends AbstractSpline {
 
             // axis issue
             // let k, dk, _L, iter;[ k, dk, _L, iter ] = SPIRAL.buildClothoid( p1.x * 100, p1.z * 100, sd, p2.x * 100, p2.z * 100, ed );
-            let k, dk, _L, iter;[ k, dk, _L, iter ] = SPIRAL.buildClothoid( p1.x * 100, p1.y * 100, sd, p2.x * 100, p2.y * 100, ed );
+            let k, dk, _L, iter;
+            [ k, dk, _L, iter ] = SPIRAL.buildClothoid( p1.x * 100, p1.y * 100, sd, p2.x * 100, p2.y * 100, ed );
 
             // axis issue
             // let spiralarc = SPIRAL.clothoid_1( p1.x * 100, p1.z * 100, p1.y, sd, k, k + dk * _L, _L, p2.y, CURVE_TESSEL - 1 )
-            const spiralarc = SPIRAL.clothoid_1( p1.x * 100, p1.y * 100, p1.y, sd, k, k + dk * _L, _L, p2.y, CURVE_TESSEL - 1 )
+            const spiralarc = SPIRAL.clothoid_1( p1.x * 100, p1.y * 100, p1.y, sd, k, k + dk * _L, _L, p2.y, CURVE_TESSEL - 1 );
 
             for ( let ii = 0; ii < CURVE_TESSEL; ii++ ) {
                 // axis issue
@@ -418,10 +425,10 @@ export class ExplicitSpline extends AbstractSpline {
         }
     }
 
-    /**
-     * returns position on the curve
-     * @param t A position on the curve. Must be in the range [ 0, 1 ].
-     */
+	/**
+	 * returns position on the curve
+	 * @param t A position on the curve. Must be in the range [ 0, 1 ].
+	 */
     getPoint ( t: number, offset = 0 ): Vector3 {
 
         const geometries = this.exportGeometries();

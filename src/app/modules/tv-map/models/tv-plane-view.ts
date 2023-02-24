@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Vector2 } from 'three';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from './geometries/tv-arc-geometry';
+import { TvLineGeometry } from './geometries/tv-line-geometry';
+import { TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
+import { TvPoly3Geometry } from './geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from './geometries/tv-spiral-geometry';
 import { TvPosTheta } from './tv-pos-theta';
-import { Vector2 } from 'three';
-import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvArcGeometry } from './geometries/tv-arc-geometry';
-import { TvPoly3Geometry } from './geometries/tv-poly3-geometry';
-import { TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
 
 export class TvPlaneView {
 
@@ -66,9 +66,9 @@ export class TvPlaneView {
 
     }
 
-    /**
-     * Getter for the overall planView/ road length (sum of all geometry record lengths)
-     */
+	/**
+	 * Getter for the overall planView/ road length (sum of all geometry record lengths)
+	 */
     getBlockLength () {
 
         let total = 0;
@@ -108,11 +108,11 @@ export class TvPlaneView {
         }
     }
 
-    /**
-     * Gets the coordinates and heading at the end of the last geometry
-     * @param sCheck
-     * @param posTheta
-     */
+	/**
+	 * Gets the coordinates and heading at the end of the last geometry
+	 * @param sCheck
+	 * @param posTheta
+	 */
     getCoords ( sCheck: number, posTheta: TvPosTheta ): number {
 
         // go through all the geometries
@@ -130,11 +130,11 @@ export class TvPlaneView {
         }
     }
 
-    /**
-     * Gets the nearest point on reference line from the given co-ordinates
-     * @param x
-     * @param y
-     */
+	/**
+	 * Gets the nearest point on reference line from the given co-ordinates
+	 * @param x
+	 * @param y
+	 */
     getNearestPointFrom ( x: number, y: number ): Vector2 {
 
         let curentMinDistance = 100000000;

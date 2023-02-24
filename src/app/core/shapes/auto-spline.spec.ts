@@ -119,7 +119,7 @@
 
 //         // const m4 = new Matrix4();
 
-//         // // hermite curve 
+//         // // hermite curve
 //         // // m4.set(
 //         // //     2, -2, 1, 1,
 //         // //     -3, 3, -2, 1,
@@ -127,7 +127,7 @@
 //         // //     1, 0, 0, 0
 //         // // );
 
-//         // // // hermite curve 
+//         // // // hermite curve
 //         // // m4.set(
 //         // //     2, -2, 1, 1,
 //         // //     -3, 3, -2, 1,
@@ -370,7 +370,6 @@
 // //         const connections = getConnections( dots, roads );
 
 
-
 // //         expect( connections.length ).toBe( 10 );
 
 // //     } )
@@ -394,7 +393,7 @@
 // //             roadStartPoints.forEach( roadStartPoint => {
 
 // //                 // straight connection
-// //                 // 1 connection for same lane and road to 
+// //                 // 1 connection for same lane and road to
 // //                 const pointOnSameLaneRoad = points.find( other => {
 // //                     return other.roadId === roadStartPoint.roadId + 2 &&    // + 2 because continusing road is at + 2
 // //                         other.laneId == roadStartPoint.laneId &&
@@ -462,7 +461,7 @@
 
 // //         //     // console.log( dot, sameDot )
 
-// //         //     // if direction 
+// //         //     // if direction
 // //         //     // match start with end; ignore end
 // //         //     // start from right
 // //         //     // total dots are lanes * 2
@@ -527,13 +526,13 @@
 
 // // ===========================================================
 
-// // in auto : 
-// // max 1 left turn 
-// // and 
+// // in auto :
+// // max 1 left turn
+// // and
 // // max 1 right turn per road
 // // for outgoing traffic
 
-// // left turns 
+// // left turns
 // // ---------
 // // left most (highest id) lane of current road
 // // with left most (highest) lane of next road

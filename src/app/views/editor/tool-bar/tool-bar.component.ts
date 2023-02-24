@@ -3,33 +3,32 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { BaseTool } from '../../../core/tools/base-tool';
-import { LaneWidthTool } from '../../../core/tools/lane-width-tool';
-import { LaneTool } from '../../../core/tools/lane-tool';
-import { LaneAddTool } from '../../../core/tools/lane-add-tool';
-import { LaneMarkingTool } from '../../../core/tools/lane-marking-tool';
-import { ElectronService } from 'ngx-electron';
-import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
-import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service';
-import { ThreeService } from '../../../modules/three-js/three.service';
-import { Environment } from '../../../core/utils/environment';
-import { ToolManager } from '../../../core/tools/tool-manager';
-import { MarkingPointTool } from '../../../core/tools/marking-point-tool';
-import { TvMarkingService } from '../../../modules/tv-map/services/tv-marking.service';
+import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { LaneOffsetTool } from 'app/core/tools/lane-offset-tool';
+import { ManeuverTool } from 'app/core/tools/maneuver-tool';
 import { MarkingLineTool } from 'app/core/tools/marking-line-tool';
 import { ParkingBoxTool } from 'app/core/tools/parking-box-tool';
-import { FileService } from '../../../services/file.service';
-import { PropPointTool } from 'app/core/tools/prop-point-tool';
-import { RoadTool } from 'app/core/tools/road-tool';
-import { ModelImporterService } from 'app/services/model-importer.service';
 import { PropCurveTool } from 'app/core/tools/prop-curve-tool';
-import { SurfaceTool } from 'app/core/tools/surface-tool';
-import { LaneOffsetTool } from 'app/core/tools/lane-offset-tool';
-import { CommandHistory } from 'app/services/command-history';
-import { SetToolCommand } from 'app/core/commands/set-tool-command';
-import { ManeuverTool } from 'app/core/tools/maneuver-tool';
+import { PropPointTool } from 'app/core/tools/prop-point-tool';
 import { PropPolygonTool } from 'app/core/tools/prop-polygon-tool';
 import { RoadCircleTool } from 'app/core/tools/road-circle-tool';
+import { RoadTool } from 'app/core/tools/road-tool';
+import { SurfaceTool } from 'app/core/tools/surface-tool';
+import { CommandHistory } from 'app/services/command-history';
+import { ModelImporterService } from 'app/services/model-importer.service';
+import { ElectronService } from 'ngx-electron';
+import { BaseTool } from '../../../core/tools/base-tool';
+import { LaneAddTool } from '../../../core/tools/lane-add-tool';
+import { LaneMarkingTool } from '../../../core/tools/lane-marking-tool';
+import { LaneTool } from '../../../core/tools/lane-tool';
+import { LaneWidthTool } from '../../../core/tools/lane-width-tool';
+import { MarkingPointTool } from '../../../core/tools/marking-point-tool';
+import { ToolManager } from '../../../core/tools/tool-manager';
+import { Environment } from '../../../core/utils/environment';
+import { ThreeService } from '../../../modules/three-js/three.service';
+import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
+import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service';
+import { FileService } from '../../../services/file.service';
 
 @Component( {
     selector: 'app-tool-bar',
@@ -40,8 +39,6 @@ export class ToolBarComponent implements OnInit {
     currentTool: BaseTool;
     currentToolName: string;
 
-    get oscEnabled (): boolean { return Environment.oscEnabled; }
-
     constructor (
         private electronService: ElectronService,
         private odService: TvMapService,
@@ -50,6 +47,10 @@ export class ToolBarComponent implements OnInit {
         private fileService: FileService,
         private modelImporter: ModelImporterService
     ) {
+    }
+
+    get oscEnabled (): boolean {
+        return Environment.oscEnabled;
     }
 
     get showImportButton () {
@@ -90,7 +91,7 @@ export class ToolBarComponent implements OnInit {
 
     showRoadCircleTool () {
 
-        this.setTool( new RoadCircleTool() )
+        this.setTool( new RoadCircleTool() );
 
     }
 

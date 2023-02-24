@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { GameObject, Transform } from './game-object';
 import { EventEmitter } from '@angular/core';
+import { GameObject, Transform } from './game-object';
 
 export class ObjectSelection {
 
@@ -15,13 +15,13 @@ export class ObjectSelection {
 
     static get ActiveObject () {
 
-        return this.activeObject
+        return this.activeObject;
 
     };
 
     static set ActiveObject ( object ) {
 
-        this.activeObject = object
+        this.activeObject = object;
         this.activeTransform.position = object.position;
 
         this.selectionChange.emit( this.activeGameObject );
@@ -37,8 +37,8 @@ export class ObjectSelection {
     static set ActiveGameObject ( gameObject ) {
 
 
-        this.activeGameObject = gameObject
-        this.activeTransform = gameObject.Transform
+        this.activeGameObject = gameObject;
+        this.activeTransform = gameObject.Transform;
 
         this.selectionChange.emit( this.activeGameObject );
 
@@ -58,7 +58,6 @@ export class ObjectSelection {
 
         this.selectionChange.emit( null );
     }
-
 
 
 }

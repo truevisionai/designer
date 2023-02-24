@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../models/tv-road.model';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Color, Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from 'three';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvLane } from '../models/tv-lane';
 import { TvLaneSide } from '../models/tv-common';
-import { Maths } from 'app/utils/maths';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
 
 export enum LineType {
     SOLID = 'solid',
@@ -105,7 +105,7 @@ export class OdLaneReferenceLineBuilder {
 
                 this.drawLine( lane, this.convertToVector3List( points ), type );
 
-            } )
+            } );
 
         }
     }
@@ -282,7 +282,7 @@ export class OdLaneReferenceLineBuilder {
 
         } else {
 
-            console.warn( "unknown line type" );
+            console.warn( 'unknown line type' );
 
             return new LineBasicMaterial().copy( this.basicMaterial );
 
@@ -340,7 +340,6 @@ export class OdLaneReferenceLineBuilder {
         points.push( posTheta );
 
     }
-
 
 
 }

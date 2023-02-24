@@ -3,15 +3,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
 import { IFile } from '../models/file';
+import { ApiService } from './api.service';
 
 @Injectable( {
     providedIn: 'root'
 } )
 export class FileApiService {
 
-    constructor ( private api: ApiService ) { }
+    constructor ( private api: ApiService ) {
+    }
 
     // get file
     getFile ( name: string, type: string ) {

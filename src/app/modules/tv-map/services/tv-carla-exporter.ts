@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdWriter } from './open-drive-writer.service';
 import { TvLane } from '../models/tv-lane';
+import { OdWriter } from './open-drive-writer.service';
 
 export class TvCarlaExporter extends OdWriter {
 

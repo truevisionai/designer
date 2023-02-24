@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
-import { OdBaseCommand } from './od-base-command';
-import { SceneService } from '../services/scene.service';
 import { Object3D } from 'three';
+import { TvRoadObject } from '../../modules/tv-map/models/tv-road-object';
+import { SceneService } from '../services/scene.service';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadObjectCommand extends OdBaseCommand {
 

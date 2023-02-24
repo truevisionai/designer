@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvGeometryType } from '../tv-common';
 import { Curve, Object3D, SplineCurve, Vector2, Vector3 } from 'three';
-import { TvPosTheta } from '../tv-pos-theta';
 import { Maths } from '../../../../utils/maths';
+import { TvGeometryType } from '../tv-common';
+import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvArcGeometry extends TvAbstractRoadGeometry {

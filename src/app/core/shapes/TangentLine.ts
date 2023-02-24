@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3, BufferGeometry, BufferAttribute, LineSegments, LineBasicMaterial } from 'three';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { MAX_CTRL_POINTS, CURVE_Y } from "./spline-config";
+import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import { CURVE_Y, MAX_CTRL_POINTS } from './spline-config';
 
 export class TangentLine {
 
@@ -22,7 +22,7 @@ export class TangentLine {
 
         this.geometry = new BufferGeometry();
 
-        this.geometry.addAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
+        this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 2 * 3 ), 3 ) );
 
         this.mesh = new LineSegments( this.geometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
 

@@ -7,39 +7,39 @@ import { Vector2, Vector3 } from 'three';
 
 export class Maths {
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
     public static readonly M_PI = 3.1415926535;
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
     public static readonly M_PI_2 = 1.5707963267948966;
 
-    /**
-     * Degrees-to-radians conversion constant (Read Only).
-     */
+	/**
+	 * Degrees-to-radians conversion constant (Read Only).
+	 */
     public static readonly Deg2Rad = 0.0174532924;
 
-    /**
-     * Radians-to-degrees conversion constant (Read Only).
-     */
+	/**
+	 * Radians-to-degrees conversion constant (Read Only).
+	 */
     public static readonly Rad2Deg = 57.29578;
 
-    /**
-     * Speed to Kilometer per hour
-     */
+	/**
+	 * Speed to Kilometer per hour
+	 */
     public static readonly Speed2KPH = 0.27777777777;
 
-    /**
-     * Speed to Miles per hour
-     */
+	/**
+	 * Speed to Miles per hour
+	 */
     public static readonly Speed2MPH = 0.44702726866;
 
-    /**
-     * A very small positive value
-     */
+	/**
+	 * A very small positive value
+	 */
     public static readonly Epsilon = 0.00000000001;
 
     public static sinHdgPlusPiO2 ( laneSide: TvLaneSide, hdg: number ): number {
@@ -116,15 +116,14 @@ export class Maths {
         let cross_product = b.x * c.y - b.y * c.x;
 
         // return RIGHT if cross product is positive
-        if ( cross_product > 0 )
+        if ( cross_product > 0 ) {
             return TvSide.LEFT;
-
-        // return LEFT if cross product is negative
-        else if ( cross_product < 0 )
+        }// return LEFT if cross product is negative
+        else if ( cross_product < 0 ) {
             return TvSide.RIGHT;
-
-        else
+        } else {
             console.error( 'unknown side' );
+        }
 
         // return ZERO if cross product is zero.
         // return ZERO;
@@ -244,15 +243,15 @@ export class Maths {
 
     }
 
-    /**
-     * Check intersection between 2 line segments
-     * 
-     * @param p1 
-     * @param q1 
-     * @param p2 
-     * @param q2 
-     * @returns boolean
-     */
+	/**
+	 * Check intersection between 2 line segments
+	 *
+	 * @param p1
+	 * @param q1
+	 * @param p2
+	 * @param q2
+	 * @returns boolean
+	 */
     static doLineSegmentIntersect ( p1: Vector3, q1: Vector3, p2: Vector3, q2: Vector3 ): boolean {
 
         // Find the four orientations needed for general and
@@ -263,8 +262,9 @@ export class Maths {
         let o4 = this.orientation( p2, q2, q1 );
 
         // General case
-        if ( o1 != o2 && o3 != o4 )
+        if ( o1 != o2 && o3 != o4 ) {
             return true;
+        }
 
         // Special Cases
         // p1, q1 and p2 are colinear and p2 lies on segment p1q1
@@ -313,13 +313,13 @@ export class Maths {
         return ( val > 0 ) ? 1 : 2; // clock or counterclock wise
     }
 
-    /**
-     * Get point of intersection of two line segments AB with CD
-     * @param A 
-     * @param B 
-     * @param C 
-     * @param D 
-     */
+	/**
+	 * Get point of intersection of two line segments AB with CD
+	 * @param A
+	 * @param B
+	 * @param C
+	 * @param D
+	 */
     static lineLineIntersection ( A: Vector3, B: Vector3, C: Vector3, D: Vector3 ): Vector3 {
 
         // Line AB represented as a1x + b1y = c1
@@ -347,26 +347,26 @@ export class Maths {
         return new Vector3( x, y, 0 );
     }
 
-    /**
-     * Get points of intersection of 2 points with headings
-     * @param p1 
-     * @param p1Heading angle in radians 
-     * @param p2 
-     * @param p2Heading angle in radians
-     */
+	/**
+	 * Get points of intersection of 2 points with headings
+	 * @param p1
+	 * @param p1Heading angle in radians
+	 * @param p2
+	 * @param p2Heading angle in radians
+	 */
     static lineLineIntersection_2 ( p1: Vector3, p1Heading: number, p2: Vector3, p2Heading: number ): Vector3 {
 
         let a = new Vector3(
             p1.x + Math.cos( p1Heading ) * 100,
             p1.y + Math.sin( p1Heading ) * 100,
             0
-        )
+        );
 
         let b = new Vector3(
             p2.x + Math.cos( p2Heading ) * 100,
             p2.y + Math.sin( p2Heading ) * 100,
             0
-        )
+        );
 
         return this.lineLineIntersection( p1, a, p2, b );
     }
@@ -427,7 +427,7 @@ export class Maths {
         return Maths.approxEquals( AC, AB );
 
         //
-        // OLD LOGIC BELOW NOT WORKING  
+        // OLD LOGIC BELOW NOT WORKING
 
         // const slope = this.slope( A, B );
 
@@ -461,13 +461,13 @@ export class Maths {
         // }
     }
 
-    /**
-     * 
-     * @param A start of line
-     * @param B end of line
-     * @param C center of arc/circle
-     * @param R radius of arc/circle
-     */
+	/**
+	 *
+	 * @param A start of line
+	 * @param B end of line
+	 * @param C center of arc/circle
+	 * @param R radius of arc/circle
+	 */
     static getLineArcIntersections ( A: Vector3, B: Vector3, C: Vector3, R: number ): Vector3[] {
 
         // TODO: need fix, arc theta check is not being done
@@ -475,9 +475,9 @@ export class Maths {
         // https://revisionmaths.com/advanced-level-maths-revision/pure-maths/geometry/equation-circle
         // https://stackoverflow.com/a/1088058
         // equation of circle with center (a,b) with radius r is
-        // 
+        //
         // (x-a)^2 + (y-b)^2 = r^2
-        // 
+        //
 
         // line segment
         // const A = new Vector3( 0, 0, 0 );
@@ -500,7 +500,7 @@ export class Maths {
 
         // compute the distance between the points A and E, where
         // E is the point of AB closest the circle center (Cx, Cy)
-        const t = D.x * ( C.x - A.x ) + D.y * ( C.y - A.y )
+        const t = D.x * ( C.x - A.x ) + D.y * ( C.y - A.y );
 
         const E = new Vector3(
             t * D.x + A.y,

@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from './control-point';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Geometry, PointsMaterial, Vector3 } from 'three';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { RoadControlPoint } from './road-control-point';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
+import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { BaseControlPoint } from './control-point';
+import { RoadControlPoint } from './road-control-point';
 
 export class RoadTangentPoint extends BaseControlPoint {
 
@@ -27,11 +27,11 @@ export class RoadTangentPoint extends BaseControlPoint {
         public controlPoint: RoadControlPoint
     ) {
 
-        super( null, null );
+        super( new BufferGeometry(), new PointsMaterial() );
 
-        this.geometry = new Geometry();
+        this.geometry = new BufferGeometry();
 
-        this.geometry.vertices.push( new Vector3( 0, 0, 0 ) );
+        this.geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const texture = OdTextures.point;
 
@@ -65,7 +65,7 @@ export class RoadTangentPoint extends BaseControlPoint {
 
         this.controlPoint.segmentType = TvGeometryType.SPIRAL;
 
-        if ( this.tag === "tpf" && this.controlPoint.frontTangent ) {
+        if ( this.tag === 'tpf' && this.controlPoint.frontTangent ) {
 
             const delta = new Vector3().subVectors(
                 this.controlPoint.frontTangent.position,
@@ -76,7 +76,7 @@ export class RoadTangentPoint extends BaseControlPoint {
 
             this.length = delta.length();
 
-        } else if ( this.tag === "tpb" && this.controlPoint.backTangent ) {
+        } else if ( this.tag === 'tpb' && this.controlPoint.backTangent ) {
 
             const delta = new Vector3().subVectors(
                 this.controlPoint.backTangent.position,

@@ -2,19 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3, CircleGeometry, LineLoop, LineBasicMaterial, Vector2 } from 'three';
-import { PointerEventData, MouseButton } from 'app/events/pointer-event-data';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { Maths } from 'app/utils/maths';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { CommandHistory } from 'app/services/command-history';
+import { Maths } from 'app/utils/maths';
+import { CircleGeometry, LineBasicMaterial, LineLoop, Vector2, Vector3 } from 'three';
+import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { CommandHistory } from 'app/services/command-history';
-import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
+import { BaseTool } from './base-tool';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -122,7 +122,8 @@ class CircleRoad {
 
         let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-        circleGeometry.vertices.splice( 0, 1 );
+        // TODO: FIX UPDATE
+        // circleGeometry.vertices.splice( 0, 1 );
 
         this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: 'blue' } ) );
 
@@ -137,7 +138,8 @@ class CircleRoad {
 
         let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-        circleGeometry.vertices.splice( 0, 1 );
+        // TODO: FIX UPDATE
+        // circleGeometry.attributes.vertices.splice( 0, 1 );
 
         this.line.geometry.dispose();
 
@@ -145,10 +147,10 @@ class CircleRoad {
 
     }
 
-    /**
-     * create 4 arc roads to form a circular road with correct 
-     * successor/predecessor relation
-     */
+	/**
+	 * create 4 arc roads to form a circular road with correct
+	 * successor/predecessor relation
+	 */
     createRoads () {
 
         CommandHistory.execute( new AddRoadCircleCommand( this.centre, this.end, this.radius ) );
@@ -156,10 +158,10 @@ class CircleRoad {
     }
 
 
-    /**
-     * creates 1 road with 10 control points with auto spline
-     * @deprecated not in use only for reference
-     */
+	/**
+	 * creates 1 road with 10 control points with auto spline
+	 * @deprecated not in use only for reference
+	 */
     createRoads_1_Road_10_Points () {
 
         const p1 = new Vector2( this.centre.x, this.centre.y );
@@ -170,7 +172,8 @@ class CircleRoad {
 
         let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
 
-        let road: TvRoad = TvMapInstance.map.addDefaultRoad();;
+        let road: TvRoad = TvMapInstance.map.addDefaultRoad();
+
         let arc = null;
 
         const circumference = 2 * Math.PI * this.radius;
@@ -223,10 +226,10 @@ class CircleRoad {
         TvMapBuilder.buildMap( TvMapInstance.map );
     }
 
-    /**
-     * create 4 road which are not connected each with its own auto spline
-     * @deprecated not in use only for reference
-     */
+	/**
+	 * create 4 road which are not connected each with its own auto spline
+	 * @deprecated not in use only for reference
+	 */
     createRoads_4_Roads () {
 
         const p1 = new Vector2( this.centre.x, this.centre.y );
@@ -287,9 +290,9 @@ class CircleRoad {
         TvMapBuilder.buildMap( TvMapInstance.map );
     }
 
-    /**
-     * @deprecated not in use only for reference
-     */
+	/**
+	 * @deprecated not in use only for reference
+	 */
     createRoads_1_Arc () {
 
         const p1 = new Vector2( this.centre.x, this.centre.y );

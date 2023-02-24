@@ -2,12 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { Object3D, Mesh, Shape, ShapeBufferGeometry, MeshBasicMaterial, Vector2, ShapeUtils, BufferGeometryUtils, BufferAttribute, Vector3 } from 'three';
-import { GameObject } from 'app/core/game-object';
-import * as THREE from 'three';
 import { PropService } from 'app/services/prop-service';
+import { Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Vector2 } from 'three';
 
 export class PropPolygon {
 
@@ -37,7 +36,7 @@ export class PropPolygon {
 
     makeMesh ( shape: Shape ): Mesh {
 
-        const geometry = new ShapeBufferGeometry( shape );
+        const geometry = new ShapeGeometry( shape );
 
         const groundMaterial = new MeshBasicMaterial( {} );
 
@@ -72,7 +71,7 @@ export class PropPolygon {
 
         this.mesh.geometry.dispose();
 
-        const geometry = this.mesh.geometry = new ShapeBufferGeometry( shape );
+        const geometry = this.mesh.geometry = new ShapeGeometry( shape );
 
         geometry.computeBoundingBox();
 

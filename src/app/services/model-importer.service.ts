@@ -3,19 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Object3D, Vector3, Euler, Scene } from 'three';
-import { SnackBar } from './snack-bar.service';
 import { AssetImporterService } from 'app/core/asset-importer.service';
 import { Metadata } from 'app/core/models/metadata.model';
-import { FileService } from './file.service';
 import { SceneService } from 'app/core/services/scene.service';
+import { Object3D, Vector3 } from 'three';
+import { FileService } from './file.service';
+import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
     providedIn: 'root'
 } )
 export class ModelImporterService {
 
-    constructor ( private assetImporter: AssetImporterService ) { }
+    constructor ( private assetImporter: AssetImporterService ) {
+    }
 
     public import ( path: string, filename?: string, extension?: string, position?: Vector3, metadata?: Metadata ) {
 
@@ -27,7 +28,7 @@ export class ModelImporterService {
 
             SceneService.add( object );
 
-        }, metadata, extension )
+        }, metadata, extension );
 
     }
 
@@ -71,7 +72,7 @@ export class ModelImporterService {
 
         }, ( e ) => {
 
-            SnackBar.error( e )
+            SnackBar.error( e );
 
         } );
 
@@ -138,15 +139,15 @@ export class ModelImporterService {
 
         }, ( e ) => {
 
-            SnackBar.error( e )
+            SnackBar.error( e );
 
         } );
 
     }
 
-    /**
-     * @deprecated not working right now
-     */
+	/**
+	 * @deprecated not working right now
+	 */
     private importFBX ( path: string, filename?: string, extension?: string, position?: Vector3 ) {
 
         this.assetImporter.import( path, ( object ) => {
@@ -155,7 +156,7 @@ export class ModelImporterService {
 
         }, ( e ) => {
 
-            SnackBar.error( e )
+            SnackBar.error( e );
 
         } );
 

@@ -3,21 +3,21 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from '../../../services/file.service';
-import { OpenDriverParser } from './open-drive-parser.service';
-import { TvMapInstance } from './tv-map-source-file';
-import { IFile } from '../../../core/models/file';
-import { TvMapBuilder } from '../builders/od-builder.service';
-import { OdWriter } from './open-drive-writer.service';
+import { AppInspector } from 'app/core/inspector';
 import { FileApiService } from 'app/core/services/file-api.service';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { TvMap } from '../models/tv-map.model';
-import { ElectronService } from 'ngx-electron';
 
 import { saveAs } from 'file-saver';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { AppInspector } from 'app/core/inspector';
-import { CommandHistory } from 'app/services/command-history';
+import { ElectronService } from 'ngx-electron';
+import { IFile } from '../../../core/models/file';
+import { FileService } from '../../../services/file.service';
+import { TvMapBuilder } from '../builders/od-builder.service';
+import { TvMap } from '../models/tv-map.model';
+import { OpenDriverParser } from './open-drive-parser.service';
+import { OdWriter } from './open-drive-writer.service';
+import { TvMapInstance } from './tv-map-source-file';
 
 @Injectable( {
     providedIn: 'root'
@@ -55,9 +55,9 @@ export class TvMapService {
         TvMapInstance.map = value;
     }
 
-    /**
-     * @deprecated
-     */
+	/**
+	 * @deprecated
+	 */
     newFile () {
 
         if ( this.map ) this.map.destroy();
@@ -68,14 +68,20 @@ export class TvMapService {
 
     }
 
-    /**
-     * @deprecated
-     */
-    async open () {
+	/**
+	 * @deprecated
+	 */
+    async importOpenDrive () {
 
-        const filepaths = await this.fileService.showAsyncDialog();
+        const res = await this.fileService.showAsyncDialog();
+
+        if ( res.canceled ) return;
+
+        const filepaths = res.filePaths;
 
         if ( filepaths == null || filepaths.length == 0 ) return;
+
+		SnackBar.show( 'Importing....' );
 
         const contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
@@ -93,6 +99,8 @@ export class TvMapService {
         this.currentFile = new IFile( 'untitled.xml' );
 
         TvMapBuilder.buildMap( this.map );
+
+		SnackBar.success( `Map imported ${filepaths[0]}` );
 
     }
 
@@ -143,9 +151,9 @@ export class TvMapService {
 
     }
 
-    /**
-     * @deprecated
-     */
+	/**
+	 * @deprecated
+	 */
     save () {
 
         if ( this.currentFile == null ) {
@@ -174,11 +182,11 @@ export class TvMapService {
 
     }
 
-    /**
-     * 
-     * @deprecated
-     * @param file 
-     */
+	/**
+	 *
+	 * @deprecated
+	 * @param file
+	 */
     saveLocally ( file: IFile ) {
 
         // path exists means it was imported locally
@@ -228,10 +236,12 @@ export class TvMapService {
 
         if ( this.electron.isElectronApp ) {
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+            this.fileService.saveFileWithExtension( null, contents,  'xodr', ( file: IFile ) => {
 
                 this.currentFile.path = file.path;
                 this.currentFile.name = file.name;
+
+				SnackBar.success(`File saved ${file.path}`);
 
             } );
 

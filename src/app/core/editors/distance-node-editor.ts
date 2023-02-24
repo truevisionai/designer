@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractShapeEditor } from './abstract-shape-editor';
-import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { KeyboardInput } from '../input';
 import { AnyControlPoint, NewDistanceNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
 import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
+import { KeyboardInput } from '../input';
+import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class DistanceNodeEditor extends AbstractShapeEditor {
 

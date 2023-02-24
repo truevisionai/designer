@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLane } from '../models/tv-lane';
-import { TvLaneType } from '../models/tv-common';
 import * as THREE from 'three';
 import { Texture } from 'three';
+import { TvLaneType } from '../models/tv-common';
+import { TvLane } from '../models/tv-lane';
 
 export class OdTextures {
 

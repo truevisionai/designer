@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 
 @Component( {
@@ -16,7 +16,7 @@ export class EnumFieldComponent extends AbstractFieldComponent implements OnInit
 
     @Input() label: string;
 
-    @Input() enum: { key, value };
+    @Input() enum: any;
 
     public options = [];
 
@@ -46,9 +46,9 @@ export class EnumFieldComponent extends AbstractFieldComponent implements OnInit
             this.options.push( {
                 value: value,
                 label: label,
-            } )
+            } );
 
-        } )
+        } );
 
     }
 

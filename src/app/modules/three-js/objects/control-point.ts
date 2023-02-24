@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Color, Geometry, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
 import { EventEmitter } from '@angular/core';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
+import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
 
 export abstract class BaseControlPoint extends Points {
@@ -20,14 +20,12 @@ export abstract class BaseControlPoint extends Points {
     public tagindex: number;
 
     public updated = new EventEmitter<BaseControlPoint>();
-
+    public isSelected: boolean;
     protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
     protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
     protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
-    public isSelected: boolean;
-
-    constructor ( geometry?: Geometry | BufferGeometry, material?: Material | Material[] ) {
+    constructor ( geometry?: BufferGeometry, material?: Material | Material[] ) {
 
         super( geometry, material );
 
@@ -94,14 +92,15 @@ export abstract class BaseControlPoint extends Points {
 
 export class DistanceNode extends BaseControlPoint {
 
-    constructor ( public s: number, geometry?: Geometry | BufferGeometry, material?: Material ) {
+    constructor ( public s: number, geometry?: BufferGeometry, material?: Material ) {
         super( geometry, material );
     }
 
 }
+
 export class NewDistanceNode extends BaseControlPoint {
 
-    constructor ( public roadId, public laneId, public s: number, public t: number, geometry?: Geometry | BufferGeometry, material?: Material ) {
+    constructor ( public roadId, public laneId, public s: number, public t: number, geometry?: BufferGeometry, material?: Material ) {
         super( geometry, material );
     }
 
@@ -122,9 +121,13 @@ export class LaneWidthNode extends Group {
 
     }
 
-    get roadId () { return this.road.id }
+    get roadId () {
+        return this.road.id;
+    }
 
-    get laneId () { return this.lane.id }
+    get laneId () {
+        return this.lane.id;
+    }
 
     updateLaneWidthValues () {
 
@@ -149,7 +152,9 @@ export class LaneOffsetNode extends Group {
 
     }
 
-    get roadId () { return this.road.id }
+    get roadId () {
+        return this.road.id;
+    }
 }
 
 export class LaneRoadMarkNode extends Group {
@@ -176,11 +181,11 @@ export class AnyControlPoint extends BaseControlPoint {
 
     static roadTag = 'road';
 
-    static create ( name = "", position?: Vector3 ) {
+    static create ( name = '', position?: Vector3 ) {
 
-        const dotGeometry = new Geometry();
+        const dotGeometry = new BufferGeometry();
 
-        dotGeometry.vertices.push( new Vector3( 0, 0, 0 ) );
+        dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
         const texture = OdTextures.point;
 

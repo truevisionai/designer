@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { GameObject } from 'app/core/game-object';
+import { Debug } from 'app/core/utils/debug';
+import { MathUtils } from 'three';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
-import { TvLaneSectionSample } from './tv-lane-section-sample';
-import { GameObject } from 'app/core/game-object';
-import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneHeight } from './tv-lane-height';
-import { Debug } from 'app/core/utils/debug';
-import { Math } from 'three';
+import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneSectionSample } from './tv-lane-section-sample';
 
 export class TvLaneSection {
 
@@ -29,23 +29,15 @@ export class TvLaneSection {
     private lastAddedLaneIndex: number;
     private laneMap: Map<number, TvLane> = new Map<number, TvLane>();
 
-    private _length: number;
-
-    public get lanes () {
-        return this.laneMap;
-    }
-
     constructor ( id: number, s: number, singleSide: boolean, roadId: number ) {
-        this.uuid = Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
         this.id = id;
         this.attr_s = s;
         this.attr_singleSide = singleSide;
         this.roadId = roadId;
     }
 
-    get s () {
-        return this.attr_s;
-    }
+    private _length: number;
 
     get length () {
         return this._length;
@@ -54,6 +46,14 @@ export class TvLaneSection {
 
     set length ( value: number ) {
         this._length = value;
+    }
+
+    public get lanes () {
+        return this.laneMap;
+    }
+
+    get s () {
+        return this.attr_s;
     }
 
     // private laneVector: OdLane[] = [];
@@ -183,15 +183,15 @@ export class TvLaneSection {
 
     }
 
-    /**
-     * Add a lane to the lane section
-     *
-     * @param {TvLaneSide} laneSide side the side of the road to which the lane will be added
-     * @param {number} id of the lane
-     * @param {string} type of the lane (Section 6.5 of the OpenDRIVE specification)
-     * @param {boolean} level Level parameter of the road
-     * @param {boolean} sort Defines if the lanes should be sorted when added. True by default
-     */
+	/**
+	 * Add a lane to the lane section
+	 *
+	 * @param {TvLaneSide} laneSide side the side of the road to which the lane will be added
+	 * @param {number} id of the lane
+	 * @param {string} type of the lane (Section 6.5 of the OpenDRIVE specification)
+	 * @param {boolean} level Level parameter of the road
+	 * @param {boolean} sort Defines if the lanes should be sorted when added. True by default
+	 */
     addLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
         const newLane = new TvLane( laneSide, id, type, level, this.roadId, this.id );
@@ -267,27 +267,27 @@ export class TvLaneSection {
         // }
     }
 
-    /**
-     * Delete lane at provided index
-     *
-     * @param index
-     */
+	/**
+	 * Delete lane at provided index
+	 *
+	 * @param index
+	 */
     deleteLane ( index ) {
         this.laneVector.splice( index, 1 );
     }
 
-    /**
-     * Delete the outside left lane
-     */
+	/**
+	 * Delete the outside left lane
+	 */
     deleteLeftLane () {
 
         // Remove first element of array
         this.laneVector.shift();
     }
 
-    /**
-     * Delete the outside right lane
-     */
+	/**
+	 * Delete the outside right lane
+	 */
     deleteRightLane () {
 
         // Remove last element of array
@@ -386,9 +386,9 @@ export class TvLaneSection {
         return this.laneVector;
     }
 
-    /**
-     * Get the lane section s-offset
-     */
+	/**
+	 * Get the lane section s-offset
+	 */
     getS () {
         return this.attr_s;
     }
@@ -397,10 +397,10 @@ export class TvLaneSection {
         this.attr_s = value;
     }
 
-    /**
-     * Get the lane section final s-offset which is the
-     * s-offset of the last record of the lane section
-     */
+	/**
+	 * Get the lane section final s-offset which is the
+	 * s-offset of the last record of the lane section
+	 */
     getS2 () {
 
         let maxSValue = 0;
@@ -464,11 +464,11 @@ export class TvLaneSection {
         return this.getS() + maxSValue;
     }
 
-    /**
-     * Check if the tested s-offset is inside the lane section interval
-     * @param sCheck A double s-offset value that has to be checked
-     * @returns {boolean} Return true if the s-offset value belongs to current lane section, false otherwise
-     */
+	/**
+	 * Check if the tested s-offset is inside the lane section interval
+	 * @param sCheck A double s-offset value that has to be checked
+	 * @returns {boolean} Return true if the s-offset value belongs to current lane section, false otherwise
+	 */
     checkInterval ( sCheck ): boolean {
 
         if ( sCheck >= this.attr_s ) {
@@ -478,9 +478,9 @@ export class TvLaneSection {
         return false;
     }
 
-    /**
-     * Return the lane-0 index in the lanes vector
-     */
+	/**
+	 * Return the lane-0 index in the lanes vector
+	 */
     getZeroLaneIndex () {
 
         for ( let i = 0; i < this.getLaneCount(); i++ ) {
@@ -600,12 +600,12 @@ export class TvLaneSection {
         // return lanes;
     }
 
-    /**
-     * Fill a special structure with all the lane / lane section data that is sampled at a provided s-offset position along the road
-     * @param sCheck s-offset along the road at which to sample the lane section
-     * @param laneSectionSample The structure that has to be filled with the sampled data
-     * @return Returns true if the operation was successful.
-     */
+	/**
+	 * Fill a special structure with all the lane / lane section data that is sampled at a provided s-offset position along the road
+	 * @param sCheck s-offset along the road at which to sample the lane section
+	 * @param laneSectionSample The structure that has to be filled with the sampled data
+	 * @return Returns true if the operation was successful.
+	 */
     fillLaneSectionSample ( sCheck: number, laneSectionSample: TvLaneSectionSample ) {
 
         laneSectionSample.clearVectors();

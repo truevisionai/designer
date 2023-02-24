@@ -8,12 +8,6 @@ import { Maths } from '../../../utils/maths';
 
 export class TvPosTheta {
 
-    private _x: number;
-    private _s: number;
-    private _t: number;
-    private _y: number;
-    private _hdg: number;
-
     constructor ( x?: number, y?: number, hdg?: number, s?: number, t?: number ) {
         this._x = x;
         this._y = y;
@@ -21,6 +15,8 @@ export class TvPosTheta {
         this._s = s;
         this._t = t;
     }
+
+    private _x: number;
 
     get x () {
         return this._x;
@@ -30,6 +26,8 @@ export class TvPosTheta {
         this._x = value;
     }
 
+    private _s: number;
+
     get s () {
         return this._s;
     }
@@ -37,6 +35,8 @@ export class TvPosTheta {
     set s ( value ) {
         this._s = value;
     }
+
+    private _t: number;
 
     get t () {
         return this._t;
@@ -46,6 +46,8 @@ export class TvPosTheta {
         this._t = value;
     }
 
+    private _y: number;
+
     get y () {
         return this._y;
     }
@@ -53,6 +55,8 @@ export class TvPosTheta {
     set y ( value ) {
         this._y = value;
     }
+
+    private _hdg: number;
 
     get hdg () {
         return this._hdg;

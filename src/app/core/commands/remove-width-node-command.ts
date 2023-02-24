@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { SetInspectorCommand } from './set-inspector-command';
 import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { SceneService } from '../services/scene.service';
+import { BaseCommand } from './base-command';
+import { SetInspectorCommand } from './set-inspector-command';
 
 export class RemoveWidthNodeCommand extends BaseCommand {
 
@@ -33,7 +33,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
         const index = this.node.lane.width.findIndex( laneWidth => laneWidth.uuid === this.node.laneWidth.uuid );
 
-        if ( index === -1 ) SnackBar.error( "Unexpected error. Not able to find this node" );
+        if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
         if ( index === -1 ) return;
 
         this.node.lane.width.splice( index, 1 );

@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { KeyboardInput } from '../input';
 import { ShortcutService } from './shortcut.service';
@@ -16,7 +15,8 @@ export class EditorService {
     constructor (
         private shortcutService: ShortcutService,
         private mainFileService: MainFileService
-    ) { }
+    ) {
+    }
 
     newFile () {
 
@@ -30,7 +30,7 @@ export class EditorService {
 
     }
 
-    saveAs() {
+    saveAs () {
 
         this.mainFileService.saveAs();
 
@@ -38,7 +38,7 @@ export class EditorService {
 
     onKeyDown ( e: KeyboardEvent ) {
 
-        // fire the event for the whole application 
+        // fire the event for the whole application
         KeyboardInput.OnKeyDown( e );
 
         // handle shortcuts

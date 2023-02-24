@@ -3,16 +3,13 @@
  */
 
 import { Injectable } from '@angular/core';
+import { FileService } from 'app/services/file.service';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { ElectronService } from 'ngx-electron';
 import * as THREE from 'three';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { SceneService } from './services/scene.service';
-
-import 'three/examples/js/loaders/OBJLoader';
-import 'three/examples/js/loaders/FBXLoader';
-import 'three/examples/js/loaders/ColladaLoader';
-import { FileService } from 'app/services/file.service';
-
+import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
 @Injectable( {
     providedIn: 'root'
@@ -26,13 +23,13 @@ export class AssetImporterService {
     // private successCallback;
     // private errorCallback;
 
-    constructor ( private electronService: ElectronService ) {
+    constructor ( private electronService: ElectronService, private fileService: FileService ) {
     }
 
     public import ( filepath: string, successCallback: Function, errorCallback: Function ) {
 
-        this.fs = this.electronService.remote.require( 'fs' );
-        this.path = this.electronService.remote.require( 'path' );
+        this.fs = this.fileService.fs;
+        this.path = this.fileService.path;
 
         const fileExtension = this.path.extname( filepath );
 
@@ -66,7 +63,7 @@ export class AssetImporterService {
 
     importOBJ ( filepath: string, success: Function, error: Function ) {
 
-        var loader = new THREE.OBJLoader();
+        var loader = new OBJLoader();
 
         this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
 
@@ -79,15 +76,15 @@ export class AssetImporterService {
 
             success( group );
 
-        } )
+        } );
 
     }
 
     importGLTF ( filepath: string, success: Function, error: Function ) {
 
-        const loader = new THREE.GLTFLoader();
+        const loader = new GLTFLoader();
 
-        const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + "/";
+        const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + '/';
 
         loader.load( `file:///${ filepath }`, ( gltf ) => {
 
@@ -103,7 +100,7 @@ export class AssetImporterService {
 
             error( err );
 
-        } )
+        } );
 
         // this.fs.readFile( filepath, 'ascii', ( err, data ) => {
 
@@ -130,7 +127,7 @@ export class AssetImporterService {
 
     importCollada ( filepath: string, success: Function, error: Function ) {
 
-        var loader = new THREE.ColladaLoader();
+        var loader = new ColladaLoader();
 
         this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
 
@@ -139,7 +136,7 @@ export class AssetImporterService {
                 return;
             }
 
-            const group = loader.parse( data );
+            const group = loader.parse( data, filepath );
 
             success( group.scene );
 
@@ -149,7 +146,7 @@ export class AssetImporterService {
 
     importFBX ( filepath: string, success: Function, error: Function ) {
 
-        SnackBar.error( "FBX files are not supported" );
+        SnackBar.error( 'FBX files are not supported' );
 
         // var loader = new THREE.FBXLoader();
 

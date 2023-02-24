@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SpiralUtils } from 'app/utils/spiral-utils';
 import { Maths } from '../../../../utils/maths';
 import { TvGeometryType } from '../tv-common';
-import { SpiralUtils } from 'app/utils/spiral-utils';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
@@ -36,13 +36,14 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
     }
 
-    computeVars () { }
+    computeVars () {
+    }
 
-    /**
-     * Gets the coordinates at the sample S offset
-     * @param sCheck
-     * @param odPosTheta
-     */
+	/**
+	 * Gets the coordinates at the sample S offset
+	 * @param sCheck
+	 * @param odPosTheta
+	 */
     getCoords ( sCheck, odPosTheta: TvPosTheta ) {
 
         const dist = Maths.clamp( sCheck - this.s, 0.0, this.length );
@@ -74,8 +75,8 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
         return this.geometryType;
     }
 
-    getCurve (): import( "three" ).Curve<import( "three" ).Vector2> {
-        throw new Error( "Method not implemented." );
+    getCurve (): import( 'three' ).Curve<import( 'three' ).Vector2> {
+        throw new Error( 'Method not implemented.' );
     }
 
 }

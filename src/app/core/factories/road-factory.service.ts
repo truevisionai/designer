@@ -2,21 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { NodeFactoryService } from './node-factory.service';
-import { AppInspector } from '../inspector';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { Maths } from 'app/utils/maths';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { ExplicitSpline } from '../shapes/explicit-spline';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { Maths } from 'app/utils/maths';
+import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
+import { Vector3 } from 'three';
+import { AppInspector } from '../inspector';
+import { SceneService } from '../services/scene.service';
+import { ExplicitSpline } from '../shapes/explicit-spline';
+import { NodeFactoryService } from './node-factory.service';
 
 export class RoadFactory {
 
@@ -74,7 +74,7 @@ export class RoadFactory {
 
         } else {
 
-            point = new RoadControlPoint( road, position, "cp", 0, 0 );
+            point = new RoadControlPoint( road, position, 'cp', 0, 0 );
 
             point.mainObject = point.userData.road = road;
 
@@ -99,7 +99,8 @@ export class RoadFactory {
 
         if ( road.spline.controlPoints.length > 1 ) {
             this.updateGeometryAndRebuild( road );
-        };
+        }
+
 
     }
 
@@ -164,7 +165,7 @@ export class RoadFactory {
 
         let secondPosition: TvPosTheta, thirdPosition: TvPosTheta, fourPosition: TvPosTheta, fivePosition: TvPosTheta;
 
-        if ( firstNode.distance === "start" ) {
+        if ( firstNode.distance === 'start' ) {
 
             firstRoadS = 0;
 
@@ -175,7 +176,7 @@ export class RoadFactory {
 
         } else {
 
-            firstRoadS = firstRoad.length - Maths.Epsilon
+            firstRoadS = firstRoad.length - Maths.Epsilon;
 
             laneSection = firstRoad.getLaneSectionAt( firstRoadS ).cloneAtS( 0, firstRoadS );
 
@@ -184,10 +185,10 @@ export class RoadFactory {
 
         }
 
-        if ( secondNode.distance === "start" ) {
+        if ( secondNode.distance === 'start' ) {
 
             fourPosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
-            fivePosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance )
+            fivePosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
 
         } else {
 
@@ -217,30 +218,30 @@ export class RoadFactory {
 
         joiningRoad.addLaneSectionInstance( laneSection );
 
-        if ( firstNode.distance === "start" ) {
+        if ( firstNode.distance === 'start' ) {
 
-            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getFirstPoint().position.clone(), "cp", 0, 0 )
-
-        } else {
-
-            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getLastPoint().position.clone(), "cp", 0, 0 )
-
-        }
-
-        if ( secondNode.distance === "start" ) {
-
-            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getFirstPoint().position.clone(), "cp", 0, 0 );
+            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
 
         } else {
 
-            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getLastPoint().position.clone(), "cp", 0, 0 );
+            firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
 
         }
 
-        const secondPoint = new RoadControlPoint( joiningRoad, secondPosition.toVector3(), "cp", 0, 0 );
-        const thirdPoint = new RoadControlPoint( joiningRoad, thirdPosition.toVector3(), "cp", 0, 0 );
-        const fourthPoint = new RoadControlPoint( joiningRoad, fourPosition.toVector3(), "cp", 0, 0 );
-        const fifthPoint = new RoadControlPoint( joiningRoad, fivePosition.toVector3(), "cp", 0, 0 );
+        if ( secondNode.distance === 'start' ) {
+
+            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
+
+        } else {
+
+            lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
+
+        }
+
+        const secondPoint = new RoadControlPoint( joiningRoad, secondPosition.toVector3(), 'cp', 0, 0 );
+        const thirdPoint = new RoadControlPoint( joiningRoad, thirdPosition.toVector3(), 'cp', 0, 0 );
+        const fourthPoint = new RoadControlPoint( joiningRoad, fourPosition.toVector3(), 'cp', 0, 0 );
+        const fifthPoint = new RoadControlPoint( joiningRoad, fivePosition.toVector3(), 'cp', 0, 0 );
 
         SceneService.add( firstPoint );
         SceneService.add( secondPoint );
@@ -301,76 +302,76 @@ export class RoadFactory {
 
     static makeRoadConnections ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
-        if ( firstNode.distance === "start" ) {
+        if ( firstNode.distance === 'start' ) {
 
             // link will be negative as joining roaad will in opposite direction
 
-            firstRoad.setPredecessor( "road", joiningRoad.id, TvContactPoint.START );
+            firstRoad.setPredecessor( 'road', joiningRoad.id, TvContactPoint.START );
             firstRoad.getFirstLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
             } );
 
-            joiningRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.START );
+            joiningRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.START );
             joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
-            } )
+            } );
 
         } else {
 
             // links will be in same direction
 
-            firstRoad.setSuccessor( "road", joiningRoad.id, TvContactPoint.START );
+            firstRoad.setSuccessor( 'road', joiningRoad.id, TvContactPoint.START );
             firstRoad.getLastLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
             } );
 
-            joiningRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.END );
+            joiningRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.END );
             joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-            } )
+            } );
 
         }
 
-        if ( secondNode.distance === "start" ) {
+        if ( secondNode.distance === 'start' ) {
 
-            secondRoad.setPredecessor( "road", joiningRoad.id, TvContactPoint.END );
+            secondRoad.setPredecessor( 'road', joiningRoad.id, TvContactPoint.END );
             secondRoad.getFirstLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-            } )
+            } );
 
-            joiningRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.START );
+            joiningRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.START );
             joiningRoad.getLastLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
-            } )
+            } );
 
         } else {
 
-            secondRoad.setSuccessor( "road", joiningRoad.id, TvContactPoint.END );
+            secondRoad.setSuccessor( 'road', joiningRoad.id, TvContactPoint.END );
             secondRoad.getLastLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
-            } )
+            } );
 
-            joiningRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.END );
+            joiningRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.END );
             joiningRoad.getLastLaneSection().lanes.forEach( lane => {
                 if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
-            } )
+            } );
 
         }
     }
 
     static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
 
-        firstRoad.setSuccessor( "road", secondRoad.id, TvContactPoint.START );
+        firstRoad.setSuccessor( 'road', secondRoad.id, TvContactPoint.START );
 
         firstRoad.getLastLaneSection().lanes.forEach( lane => {
             if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
         } );
 
-        secondRoad.setPredecessor( "road", firstRoad.id, TvContactPoint.END );
+        secondRoad.setPredecessor( 'road', firstRoad.id, TvContactPoint.END );
 
         secondRoad.getFirstLaneSection().lanes.forEach( lane => {
             if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-        } )
+        } );
 
     }
 

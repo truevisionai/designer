@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Mesh, MeshBasicMaterial, SphereGeometry, Vector2, Vector3 } from 'three';
 import { environment } from '../../../environments/environment';
-import { Mesh, MeshBasicMaterial, SphereBufferGeometry, Vector2, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
 
 export class Debug {
@@ -24,7 +24,7 @@ export class Debug {
 
         if ( !this.sphereAdded ) {
 
-            const geometry = new SphereBufferGeometry();
+            const geometry = new SphereGeometry();
             const material = new MeshBasicMaterial();
 
             this.sphere = new Mesh( geometry, material );

@@ -2,23 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-import { throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class ApiService {
 
     constructor (
         private http: HttpClient
-    ) { }
-
-    private formatErrors ( error: any ) {
-        return throwError( error.error );
+    ) {
     }
 
     get<T> ( path: string, params: HttpParams = new HttpParams() ): Observable<any> {
@@ -44,5 +39,9 @@ export class ApiService {
         return this.http.delete(
             `${ environment.api_url }${ path }`
         ).pipe( catchError( this.formatErrors ) );
+    }
+
+    private formatErrors ( error: any ) {
+        return throwError( error.error );
     }
 }

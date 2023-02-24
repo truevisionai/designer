@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AppService } from '../services/app.service';
 import { BaseEventData, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { Subscription } from 'rxjs';
+import { AppService } from '../services/app.service';
 
 export class MonoBehaviour {
 

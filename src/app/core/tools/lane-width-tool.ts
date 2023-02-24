@@ -2,26 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { Vector3 } from 'three';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { AnyControlPoint, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { SceneService } from '../services/scene.service';
-import { Subscription } from 'rxjs';
-import { KeyboardInput } from '../input';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { PickingHelper } from '../services/picking-helper.service';
-import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { AnyControlPoint, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
+import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { Subscription } from 'rxjs';
+import { Vector3 } from 'three';
+import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { AddWidthNodeCommand } from '../commands/add-width-node-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { UpdateWidthNodePositionCommand } from '../commands/update-width-node-position-command';
-import { AddWidthNodeCommand } from '../commands/add-width-node-command';
 import { UpdateWidthNodeValueCommand } from '../commands/update-width-node-value-command';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { KeyboardInput } from '../input';
+import { PickingHelper } from '../services/picking-helper.service';
+import { SceneService } from '../services/scene.service';
+import { BaseTool } from './base-tool';
 
 export class LaneWidthTool extends BaseTool {
 
@@ -44,6 +44,53 @@ export class LaneWidthTool extends BaseTool {
 
         super();
 
+    }
+
+    // tslint:disable-next-line: member-ordering
+    static hideNodes ( road: TvRoad ): void {
+
+        road.laneSections.forEach( laneSection => {
+
+            laneSection.lanes.forEach( lane => {
+
+                lane.getLaneWidthVector().forEach( laneWidth => {
+
+                    if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
+
+                } );
+
+            } );
+
+        } );
+
+    }
+
+    // tslint:disable-next-line: member-ordering
+    static showNodes ( road: TvRoad ) {
+
+        road.laneSections.forEach( laneSection => {
+
+            laneSection.lanes.forEach( lane => {
+
+                lane.getLaneWidthVector().forEach( laneWidth => {
+
+                    if ( laneWidth.mesh ) {
+
+                        laneWidth.mesh.visible = true;
+
+                    } else {
+
+                        laneWidth.mesh = NodeFactoryService.createLaneWidthNode( road, lane, laneWidth.s, laneWidth );
+
+                        SceneService.add( laneWidth.mesh );
+
+                    }
+
+                } );
+
+            } );
+
+        } );
     }
 
     init () {
@@ -72,7 +119,6 @@ export class LaneWidthTool extends BaseTool {
             CommandHistory.execute( new UpdateWidthNodeValueCommand( this.widthNode, width, null, this.laneHelper ) );
 
         } );
-
 
 
     }
@@ -145,7 +191,7 @@ export class LaneWidthTool extends BaseTool {
 
             const oldPosition = this.pointerDownAt.clone();
 
-            CommandHistory.execute( new UpdateWidthNodePositionCommand( this.widthNode, newPosition, oldPosition, this.laneHelper ) )
+            CommandHistory.execute( new UpdateWidthNodePositionCommand( this.widthNode, newPosition, oldPosition, this.laneHelper ) );
 
         }
 
@@ -185,6 +231,21 @@ export class LaneWidthTool extends BaseTool {
         // }
     }
 
+    // private checkReferenceLineInteraction ( e: PointerEventData ) {
+
+    //     let hasInteracted = false;
+
+    //     this.checkIntersection( this.laneHelper.tag, e.intersections, ( obj ) => {
+
+    //         hasInteracted = true;
+
+    //         this.laneHelper.onLineSelected( obj as Line );
+
+    //     } );
+
+    //     return hasInteracted;
+    // }
+
     private checkNodePointInteraction ( e: PointerEventData ): boolean {
 
         // first chceck for control point interactions
@@ -196,30 +257,25 @@ export class LaneWidthTool extends BaseTool {
             const laneWidthNode = controlPoint.parent as LaneWidthNode;
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'controlPoint', controlPoint ),
 
                 new SetValueCommand( this, 'widthNode', laneWidthNode ),
 
                 new SetInspectorCommand( LaneWidthInspector, { node: laneWidthNode } ),
-
             );
 
         } else if ( this.controlPoint ) {
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'controlPoint', null ),
 
                 new SetInspectorCommand( LaneWidthInspector, { node: null, lane: this.lane } ),
-
             );
 
         }
 
         return controlPoint != null;
     }
-
 
     private checkLaneObjectInteraction ( e: PointerEventData ) {
 
@@ -239,16 +295,13 @@ export class LaneWidthTool extends BaseTool {
                     const newLane = intersection.object.userData.lane as TvLane;
 
 
-
                     // check if old or a new lane is selected
                     if ( !this.lane || this.lane.id !== newLane.id || this.lane.roadId !== newLane.roadId ) {
 
                         CommandHistory.executeMany(
-
                             new SetValueCommand( this, 'lane', newLane ),
 
                             new SetInspectorCommand( LaneWidthInspector, { lane: newLane } ),
-
                         );
 
                     }
@@ -261,11 +314,9 @@ export class LaneWidthTool extends BaseTool {
         if ( !hasInteracted && !this.controlPoint ) {
 
             CommandHistory.executeMany(
-
                 new SetValueCommand( this, 'lane', null ),
 
                 new SetInspectorCommand( null, null ),
-
             );
 
             this.laneHelper.clear();
@@ -273,21 +324,6 @@ export class LaneWidthTool extends BaseTool {
 
         return hasInteracted;
     }
-
-    // private checkReferenceLineInteraction ( e: PointerEventData ) {
-
-    //     let hasInteracted = false;
-
-    //     this.checkIntersection( this.laneHelper.tag, e.intersections, ( obj ) => {
-
-    //         hasInteracted = true;
-
-    //         this.laneHelper.onLineSelected( obj as Line );
-
-    //     } );
-
-    //     return hasInteracted;
-    // }
 
     private addNode ( position: Vector3 ): void {
 
@@ -298,62 +334,12 @@ export class LaneWidthTool extends BaseTool {
         const laneWidthNode = NodeFactoryService.createLaneWidthNodeByPosition( road, this.lane, position );
 
         CommandHistory.executeMany(
-
             new SetValueCommand( this, 'widthNode', laneWidthNode ),
 
             new AddWidthNodeCommand( laneWidthNode, this.laneHelper ),
 
             new SetInspectorCommand( LaneWidthInspector, { node: laneWidthNode } ),
-
         );
-    }
-
-
-    // tslint:disable-next-line: member-ordering
-    static hideNodes ( road: TvRoad ): void {
-
-        road.laneSections.forEach( laneSection => {
-
-            laneSection.lanes.forEach( lane => {
-
-                lane.getLaneWidthVector().forEach( laneWidth => {
-
-                    if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
-
-                } );
-
-            } );
-
-        } );
-
-    }
-
-    // tslint:disable-next-line: member-ordering
-    static showNodes ( road: TvRoad ) {
-
-        road.laneSections.forEach( laneSection => {
-
-            laneSection.lanes.forEach( lane => {
-
-                lane.getLaneWidthVector().forEach( laneWidth => {
-
-                    if ( laneWidth.mesh ) {
-
-                        laneWidth.mesh.visible = true;
-
-                    } else {
-
-                        laneWidth.mesh = NodeFactoryService.createLaneWidthNode( road, lane, laneWidth.s, laneWidth );
-
-                        SceneService.add( laneWidth.mesh );
-
-                    }
-
-                } )
-
-            } )
-
-        } );
     }
 
 }

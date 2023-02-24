@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Curve, Vector2, Vector3 } from 'three';
+import { MathUtils } from 'three';
+import { Maths } from '../../../../utils/maths';
 import { TvGeometryType, TvSide } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
-import { Curve, Vector2, Vector3 } from 'three';
-import { Maths } from '../../../../utils/maths';
-import { _Math } from 'three/src/math/Math';
 
 export abstract class TvAbstractRoadGeometry {
 
@@ -17,8 +17,6 @@ export abstract class TvAbstractRoadGeometry {
     public attr_y;
     public attr_hdg;
     public attr_length;
-    protected _s2;
-    protected _geometryType: TvGeometryType;
 
     constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
@@ -30,8 +28,10 @@ export abstract class TvAbstractRoadGeometry {
 
         this._s2 = s + length;
 
-        this.uuid = _Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
     }
+
+    protected _s2;
 
     get s2 () {
 
@@ -39,11 +39,7 @@ export abstract class TvAbstractRoadGeometry {
 
     }
 
-    get startV3 (): Vector3 {
-
-        return new Vector3( this.x, this.y, 0 );
-
-    }
+    protected _geometryType: TvGeometryType;
 
     get geometryType (): TvGeometryType {
         return this._geometryType;
@@ -51,6 +47,12 @@ export abstract class TvAbstractRoadGeometry {
 
     set geometryType ( type: TvGeometryType ) {
         this._geometryType = type;
+    }
+
+    get startV3 (): Vector3 {
+
+        return new Vector3( this.x, this.y, 0 );
+
     }
 
     get s () {
@@ -184,6 +186,11 @@ export abstract class TvAbstractRoadGeometry {
 
     }
 
+    polyeval ( t: number, v: Vector3 ): number {
+
+        return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
+    }
+
     protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
 
         let nearestPoint: Vector2 = null;
@@ -245,10 +252,5 @@ export abstract class TvAbstractRoadGeometry {
         }
 
         return nearestPoint;
-    }
-
-    polyeval ( t: number, v: Vector3 ): number {
-
-        return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
     }
 }

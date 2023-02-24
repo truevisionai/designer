@@ -2,21 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from './base-tool';
-import { PointEditor } from '../editors/point-editor';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { Subscription } from 'rxjs';
-import { AppInspector } from '../inspector';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { KeyboardInput } from '../input';
-import { PropCurve } from "app/modules/tv-map/models/prop-curve";
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { PropService } from 'app/services/prop-service';
+import { SnackBar } from 'app/services/snack-bar.service';
 import {
     PropCurveInspectorComponent,
     PropCurveInspectorData
 } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
-import { PropService } from 'app/services/prop-service';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { Subscription } from 'rxjs';
+import { PointEditor } from '../editors/point-editor';
+import { KeyboardInput } from '../input';
+import { AppInspector } from '../inspector';
 import { PropModel } from '../models/prop-model.model';
+import { BaseTool } from './base-tool';
 
 export class PropCurveTool extends BaseTool {
 
@@ -38,14 +38,18 @@ export class PropCurveTool extends BaseTool {
     private curve: PropCurve;
     private point: AnyControlPoint;
 
-    private get curves () { return this.map.propCurves; }
-
-    private get spline () { return this.curve ? this.curve.spline : null; }
-
     constructor () {
 
         super();
 
+    }
+
+    private get curves () {
+        return this.map.propCurves;
+    }
+
+    private get spline () {
+        return this.curve ? this.curve.spline : null;
     }
 
     private get prop (): PropModel {
@@ -212,7 +216,7 @@ export class PropCurveTool extends BaseTool {
 
     private onControlPointAdded ( cp: AnyControlPoint ) {
 
-        if ( !this.prop ) SnackBar.error( "Select a prop from the project browser" );
+        if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
 
         if ( !this.prop ) this.shapeEditor.removeControlPoint( cp );
 

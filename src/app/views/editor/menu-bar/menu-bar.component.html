@@ -40,11 +40,11 @@
     </mat-menu>
 
     <mat-menu #openRecentMenu="matMenu">
-        <button *ngFor="let file of recentFiles" (click)="importRecentFile(file)" action="import-recent-file" appTrack="menu" mat-menu-item>
+        <button (click)="importRecentFile(file)" *ngFor="let file of recentFiles" action="import-recent-file" appTrack="menu" mat-menu-item>
             {{file.filename}}
         </button>
     </mat-menu>
-    
+
     <mat-menu #fileImportMenu="matMenu">
         <button (click)="onImportOpenDRIVE()" action="import-open-drive" appTrack="menu" mat-menu-item>
             OpenDRIVE
@@ -76,28 +76,22 @@
     </mat-menu>
 
     <mat-menu #odExamplesMenu="matMenu">
-        <button (click)="importOdExample('straight-road.xml')" action="import-open-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('straight-road.xml')" action="import-open-drive" appTrack="example" mat-menu-item>
             <span>Straight Road</span>
         </button>
-        <button (click)="importOdExample('SampleDatabase_01.xodr')" action="import-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('SampleDatabase_01.xodr')" action="import-drive" appTrack="example" mat-menu-item>
             <span>Sample Database</span>
         </button>
-        <button (click)="importOdExample('crossing-8-course.xodr')" action="import-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('crossing-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
             <span>Crossing-8</span>
         </button>
-        <button (click)="importOdExample('crossing-8-complex.xodr')" action="import-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('crossing-8-complex.xodr')" action="import-drive" appTrack="example" mat-menu-item>
             <span>Crossing-8-Complex</span>
         </button>
-        <button (click)="importOdExample('roundabout-8-course.xodr')" action="import-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('roundabout-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
             <span>Roundabout-8</span>
         </button>
-        <button (click)="importOdExample('test.xml')" action="import-drive" appTrack="example"
-                mat-menu-item>
+        <button (click)="importOdExample('test.xml')" action="import-drive" appTrack="example" mat-menu-item>
             <span>Test</span>
         </button>
     </mat-menu>

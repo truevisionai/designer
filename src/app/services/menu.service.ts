@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ElectronService } from 'ngx-electron';
 import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron';
+import { ElectronService } from 'ngx-electron';
 
 export enum ContextMenuType {
     VIEWPORT = 0,
@@ -23,7 +23,7 @@ export class MenuService {
 
     }
 
-    registerContextMenu ( type: ContextMenuType, template: Array<(MenuItemConstructorOptions) | (MenuItem)> ) {
+    registerContextMenu ( type: ContextMenuType, template: Array<( MenuItemConstructorOptions ) | ( MenuItem )> ) {
 
         if ( !this.electron.isElectronApp ) return;
 

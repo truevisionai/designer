@@ -3,9 +3,9 @@
  */
 
 import { MeshBasicMaterial } from 'three';
+import { COLOR } from '../../../shared/utils/colors.service';
 import { TvLane } from '../models/tv-lane';
 import { OdTextures } from './od.textures';
-import { COLOR } from '../../../shared/utils/colors.service';
 
 export class OdMaterials {
 

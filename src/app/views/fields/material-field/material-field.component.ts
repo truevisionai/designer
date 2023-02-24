@@ -3,9 +3,9 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
-import { AssetDatabase } from 'app/services/asset-database';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { AssetDatabase } from 'app/services/asset-database';
+import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
 
 @Component( {
     selector: 'app-material-field',
@@ -20,15 +20,24 @@ export class MaterialFieldComponent implements OnInit {
 
     @Input() label: string;
 
-    public get preview () { return this.metadata ? this.metadata.preview : null; }
+    constructor ( private previewService: PreviewService ) {
+    }
 
-    public get metadata () { return AssetDatabase.getMetadata( this.guid ); }
+    public get preview () {
+        return this.metadata ? this.metadata.preview : null;
+    }
 
-    public get material () { return AssetDatabase.getInstance<TvMaterial>( this.guid ); }
+    public get metadata () {
+        return AssetDatabase.getMetadata( this.guid );
+    }
 
-    public get filename () { return AssetDatabase.getAssetNameByGuid( this.guid ); }
+    public get material () {
+        return AssetDatabase.getInstance<TvMaterial>( this.guid );
+    }
 
-    constructor ( private previewService: PreviewService ) { }
+    public get filename () {
+        return AssetDatabase.getAssetNameByGuid( this.guid );
+    }
 
     ngOnInit () {
 
@@ -81,13 +90,13 @@ export class MaterialFieldComponent implements OnInit {
         $event.preventDefault();
         $event.stopPropagation();
 
-        const guid = $event.dataTransfer.getData( "guid" );
+        const guid = $event.dataTransfer.getData( 'guid' );
 
         if ( guid ) {
 
             const metadata = AssetDatabase.getMetadata( guid );
 
-            if ( metadata && metadata.importer === "MaterialImporter" ) {
+            if ( metadata && metadata.importer === 'MaterialImporter' ) {
 
                 this.changed.emit( guid );
 

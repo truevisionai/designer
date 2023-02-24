@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { BaseTool } from 'app/core/tools/base-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { BaseCommand } from './base-command';
 
 export class SetToolCommand extends BaseCommand {
 

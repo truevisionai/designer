@@ -3,8 +3,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { SearchPipe } from '../../../core/pipes/search.pipe';
 import { TvSignService } from 'app/modules/tv-map/services/tv-sign.service';
+import { SearchPipe } from '../../../core/pipes/search.pipe';
 
 @Component( {
     selector: 'app-prop-browser',

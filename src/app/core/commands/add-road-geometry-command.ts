@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadGeometryCommand extends OdBaseCommand {
 

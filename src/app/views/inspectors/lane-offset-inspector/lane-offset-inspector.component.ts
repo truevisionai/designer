@@ -3,17 +3,18 @@
  */
 
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { NodeFactoryService } from 'app/core/factories/node-factory.service';
+import { IComponent } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
+import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { OdLaneReferenceLineBuilder, LineType } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export class LaneOffsetInspectorData {
-    constructor ( public node: LaneOffsetNode, public road: TvRoad ) { }
+    constructor ( public node: LaneOffsetNode, public road: TvRoad ) {
+    }
 }
 
 @Component( {
@@ -31,12 +32,14 @@ export class LaneOffsetInspector extends BaseInspector implements OnInit, ICompo
 
     public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
-    get laneOffset () { return this.data.node.laneOffset; }
-
     constructor () {
 
         super();
 
+    }
+
+    get laneOffset () {
+        return this.data.node.laneOffset;
     }
 
     ngOnInit () {

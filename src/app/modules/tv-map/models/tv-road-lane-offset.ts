@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ThirdOrderPolynom } from './third-order-polynom';
 import { Object3D } from 'three';
+import { ThirdOrderPolynom } from './third-order-polynom';
 
 export class TvRoadLaneOffset extends ThirdOrderPolynom {
 

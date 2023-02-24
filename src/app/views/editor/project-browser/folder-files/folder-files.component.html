@@ -2,13 +2,13 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div #content class="content" (contextmenu)="onContextMenu($event)" fxFlexFill>
+<div #content (contextmenu)="onContextMenu($event)" class="content" fxFlexFill>
 
-    <div fxLayout="row wrap" fxLayoutGap="8px grid" fxFlexFill>
+    <div fxFlexFill fxLayout="row wrap" fxLayoutGap="8px grid">
 
-        <div [fxFlex]="widthInPercent" *ngFor="let file of sortedFiles">
+        <div *ngFor="let file of sortedFiles" [fxFlex]="widthInPercent">
 
-            <app-file *ngIf="!file.isDeleted" [file]="file" (deleted)="onFileDeleted($event)" (renamed)="onFileRenamed($event)"></app-file>
+            <app-file (deleted)="onFileDeleted($event)" (renamed)="onFileRenamed($event)" *ngIf="!file.isDeleted" [file]="file"></app-file>
 
         </div>
 

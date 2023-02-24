@@ -12,11 +12,15 @@ import { TvConsole } from 'app/core/utils/console';
 } )
 export class ConsoleComponent implements OnInit {
 
-    get logs () { return TvConsole.logs; }
+    constructor () {
+    }
 
-    constructor () { }
+    get logs () {
+        return TvConsole.logs;
+    }
 
-    ngOnInit () { }
+    ngOnInit () {
+    }
 
     clear () {
 

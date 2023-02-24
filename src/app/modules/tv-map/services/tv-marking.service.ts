@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Injectable } from '@angular/core';
-import { Math, Mesh, Shape, ShapeBufferGeometry, BoxBufferGeometry, PlaneBufferGeometry, Texture } from 'three';
-import * as THREE from 'three';
-import { AssetDatabase } from 'app/services/asset-database';
+import { EventEmitter } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
+import { AssetDatabase } from 'app/services/asset-database';
+import * as THREE from 'three';
+import { Mesh, PlaneGeometry, Shape, Texture } from 'three';
 
 export enum MarkingTypes {
     point = 'point',
@@ -43,7 +43,7 @@ export class TvRoadMarking {
 
     makeMesh ( shape: Shape ): Mesh {
 
-        const geometry = new PlaneBufferGeometry();
+        const geometry = new PlaneGeometry();
 
         const texture = AssetDatabase.getInstance<Texture>( this.textureGuid );
 

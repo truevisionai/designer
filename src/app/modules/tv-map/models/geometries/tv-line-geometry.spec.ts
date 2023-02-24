@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../tv-road.model';
-import { TvPosTheta } from '../tv-pos-theta';
-import { TvMap } from '../tv-map.model';
 import { TvMapQueries } from '../../queries/tv-map-queries';
 import { TvMapInstance } from '../../services/tv-map-source-file';
+import { TvMap } from '../tv-map.model';
+import { TvPosTheta } from '../tv-pos-theta';
+import { TvRoad } from '../tv-road.model';
 
 describe( 'OdLineGeometry', () => {
 
@@ -48,7 +48,7 @@ describe( 'OdLineGeometry', () => {
 
     it( 'should give correct coordinates with 90degree hdg', () => {
 
-        const hdg = 90 * (Math.PI / 180);
+        const hdg = 90 * ( Math.PI / 180 );
 
         road.addGeometryLine( 0, 1, 0, hdg, 10 );
 
@@ -70,7 +70,7 @@ describe( 'OdLineGeometry', () => {
 
     it( 'should give correct coordinates with 180 degree hdg', () => {
 
-        const hdg = 180 * (Math.PI / 180);
+        const hdg = 180 * ( Math.PI / 180 );
 
         road.addGeometryLine( 0, 0, 0, hdg, 10 );
 
@@ -118,7 +118,7 @@ describe( 'OdLineGeometry', () => {
 
     it( 'should give correct coordinates for s and t with 90 degree hdg', () => {
 
-        const hdg = 90 * (Math.PI / 180);
+        const hdg = 90 * ( Math.PI / 180 );
         const x = 0;
         const y = 0;
         const s = 0;

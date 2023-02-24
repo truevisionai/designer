@@ -2,29 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from '../models/tv-road.model';
+import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvLane } from '../models/tv-lane';
-import { Maths } from 'app/utils/maths';
 import { GameObject } from '../../../core/game-object';
-import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
+import { SceneService } from '../../../core/services/scene.service';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
+import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
-import { SceneService } from '../../../core/services/scene.service';
 
 export class OdRoadMarkBuilder {
-
-    private _texture: any;
 
     constructor ( private road: TvRoad = null ) {
 
     }
+
+    private _texture: any;
 
     private get texture () {
 
@@ -371,10 +371,10 @@ export class OdRoadMarkBuilder {
 
         geometry.setIndex( mesh.triangles );
 
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+        geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
 
         geometry.computeBoundingBox();
         geometry.computeVertexNormals();

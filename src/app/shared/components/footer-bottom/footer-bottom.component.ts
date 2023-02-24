@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component( {
     selector: 'app-footer-bottom',
     templateUrl: './footer-bottom.component.html',
-    styleUrls: ['./footer-bottom.component.css']
+    styleUrls: [ './footer-bottom.component.css' ]
 } )
 export class FooterBottomComponent implements OnInit {
 
@@ -31,8 +31,7 @@ export class FooterBottomComponent implements OnInit {
         //   if ( e instanceof NavigationEnd ) {
         //     Debug.log( e );
         //   }
-        // } );    
-
+        // } );
 
 
     }
@@ -104,7 +103,7 @@ export class FooterBottomComponent implements OnInit {
 
     }
 
-    @HostListener( 'document:keydown', ['$event'] )
+    @HostListener( 'document:keydown', [ '$event' ] )
     onKeyDown ( event: KeyboardEvent ) {
 
         // Debug.log( 'keydown', event );

@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
-import { ComponentContainerDirective } from '../../directives/component-container.directive';
+import { AfterViewInit, Component, ComponentFactoryResolver, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ComponentItem, IComponent } from '../../../core/game-object';
 import { AppInspector } from '../../../core/inspector';
+import { ComponentContainerDirective } from '../../directives/component-container.directive';
 
 @Component( {
     selector: 'app-object-inspector',
     templateUrl: './object-inspector.component.html',
     styleUrls: [ './object-inspector.component.css' ]
 } )
-export class ObjectInspectorComponent implements OnInit {
+export class ObjectInspectorComponent implements OnInit, AfterViewInit {
 
     @ViewChild( ComponentContainerDirective ) componentContainer: ComponentContainerDirective;
 
@@ -26,7 +26,12 @@ export class ObjectInspectorComponent implements OnInit {
 
         AppInspector.inspectorCleared.subscribe( () => {
             this.clearInspector();
-        } )
+        } );
+    }
+
+    ngAfterViewInit (): void {
+
+
     }
 
     loadInspector ( component: ComponentItem ) {
@@ -48,7 +53,7 @@ export class ObjectInspectorComponent implements OnInit {
 
     clearInspector () {
 
-        this.componentContainer.viewContainerRef.clear();
+        if ( this.componentContainer ) this.componentContainer.viewContainerRef.clear();
 
     }
 

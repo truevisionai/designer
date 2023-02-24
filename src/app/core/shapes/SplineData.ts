@@ -53,7 +53,9 @@ export function HermiteSpline ( p0: Vector2, p1: Vector2, v0: Vector2, v1: Vecto
 
 }
 
-function sqr ( x ) { return x * x; }
+function sqr ( x ) {
+    return x * x;
+}
 
 function LengthEstimate ( s: SplineData ) {
 

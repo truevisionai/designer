@@ -2,28 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Math } from 'three';
+import { MathUtils } from 'three';
 
 export class ThirdOrderPolynom {
 
     public readonly uuid: string;
 
-    protected _s: number;
-    protected _a: number;
-    protected _b: number;
-    protected _c: number;
-    protected _d: number;
-
-
-    /**
-     * Constructor that initializes the polynom with base properties
-     *
-     * @param {number} s
-     * @param {number} a
-     * @param {number} b
-     * @param {number} c
-     * @param {number} d
-     */
+	/**
+	 * Constructor that initializes the polynom with base properties
+	 *
+	 * @param {number} s
+	 * @param {number} a
+	 * @param {number} b
+	 * @param {number} c
+	 * @param {number} d
+	 */
     constructor ( s: number, a: number, b: number, c: number, d: number ) {
 
         this._s = s;
@@ -32,8 +25,10 @@ export class ThirdOrderPolynom {
         this._c = c;
         this._d = d;
 
-        this.uuid = Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
     }
+
+    protected _s: number;
 
     get s (): number {
         return this._s;
@@ -43,21 +38,17 @@ export class ThirdOrderPolynom {
         this._s = value;
     }
 
-    get d (): number {
-        return this._d;
+    protected _a: number;
+
+    get a (): number {
+        return this._a;
     }
 
-    set d ( value: number ) {
-        this._d = value;
+    set a ( value: number ) {
+        this._a = value;
     }
 
-    get c (): number {
-        return this._c;
-    }
-
-    set c ( value: number ) {
-        this._c = value;
-    }
+    protected _b: number;
 
     get b (): number {
         return this._b;
@@ -67,12 +58,24 @@ export class ThirdOrderPolynom {
         this._b = value;
     }
 
-    get a (): number {
-        return this._a;
+    protected _c: number;
+
+    get c (): number {
+        return this._c;
     }
 
-    set a ( value: number ) {
-        this._a = value;
+    set c ( value: number ) {
+        this._c = value;
+    }
+
+    protected _d: number;
+
+    get d (): number {
+        return this._d;
+    }
+
+    set d ( value: number ) {
+        this._d = value;
     }
 
     setValues ( s, a, b, c, d ) {
@@ -86,27 +89,27 @@ export class ThirdOrderPolynom {
     }
 
 
-    /**
-     * Method to check if sample S is inside the record interval
-     *
-     * @param sOther
-     * @returns {boolean}
-     */
+	/**
+	 * Method to check if sample S is inside the record interval
+	 *
+	 * @param sOther
+	 * @returns {boolean}
+	 */
     checkInterval ( sOther ): boolean {
 
         return sOther >= this._s;
 
     }
 
-    /**
-     * Returns the value at sample S
-     *
-     * @param sCheck
-     * @returns {number}
-     */
+	/**
+	 * Returns the value at sample S
+	 *
+	 * @param sCheck
+	 * @returns {number}
+	 */
     getValue ( sCheck: number ): number {
 
-        if ( isNaN( sCheck ) ) console.error( "s in not a number" );
+        if ( isNaN( sCheck ) ) console.error( 's in not a number' );
 
         const ds = sCheck - this._s;
 

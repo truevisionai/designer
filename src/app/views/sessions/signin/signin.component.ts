@@ -3,13 +3,15 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatProgressBar, MatButton } from '@angular/material';
-import { Validators, FormGroup, FormControl } from '@angular/forms';
-import { AuthService } from 'app/core/services/auth.service';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatProgressBar } from '@angular/material/progress-bar';
+
 import { Router } from '@angular/router';
 import { AppService } from 'app/core/services/app.service';
+import { AuthService } from 'app/core/services/auth.service';
 import { AppLinks } from 'app/services/app-links';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { ElectronService } from 'ngx-electron';
 
 @Component( {
@@ -24,14 +26,15 @@ export class SigninComponent implements OnInit {
 
     signinForm: FormGroup;
 
-    constructor ( private authService: AuthService, private router: Router, private electron: ElectronService ) { }
+    constructor ( private authService: AuthService, private router: Router, private electron: ElectronService ) {
+    }
 
     ngOnInit () {
 
         this.authService.logout();
 
         this.signinForm = new FormGroup( {
-            email: new FormControl( '', [Validators.required, Validators.email] ),
+            email: new FormControl( '', [ Validators.required, Validators.email ] ),
             password: new FormControl( '', Validators.required ),
             rememberMe: new FormControl( false )
         } );

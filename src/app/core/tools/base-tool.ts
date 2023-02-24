@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IComponent } from 'app/core/game-object';
-import { MonoBehaviour } from '../components/mono-behaviour';
-import { AppInspector } from 'app/core/inspector';
 import { Type } from '@angular/core';
-import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
-import { IEditorState } from './i-editor-state';
+import { IComponent } from 'app/core/game-object';
+import { AppInspector } from 'app/core/inspector';
 import { Color, Intersection, Mesh, MeshBasicMaterial, Object3D } from 'three';
-import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
+import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
+import { MonoBehaviour } from '../components/mono-behaviour';
+import { IEditorState } from './i-editor-state';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 

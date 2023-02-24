@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { RoadTool } from './road-tool';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { RoadFactory } from '../factories/road-factory.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { Vector3 } from 'three';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { RoadFactory } from '../factories/road-factory.service';
+import { RoadTool } from './road-tool';
 
 describe( 'RoadTool', () => {
 
@@ -24,7 +24,7 @@ describe( 'RoadTool', () => {
 
         roadTool = new RoadTool();
 
-    } )
+    } );
 
     it( 'should maintain hdg for connected roads', () => {
 
@@ -116,8 +116,8 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road2 );
 
-        road1.setSuccessor( "road", road2.id, TvContactPoint.START );
-        road2.setPredecessor( "road", road1.id, TvContactPoint.END );
+        road1.setSuccessor( 'road', road2.id, TvContactPoint.START );
+        road2.setPredecessor( 'road', road1.id, TvContactPoint.END );
     }
 
     function suc_suc () {
@@ -141,8 +141,8 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road2 );
 
-        road1.setSuccessor( "road", road2.id, TvContactPoint.END );
-        road2.setSuccessor( "road", road1.id, TvContactPoint.END );
+        road1.setSuccessor( 'road', road2.id, TvContactPoint.END );
+        road2.setSuccessor( 'road', road1.id, TvContactPoint.END );
     }
 
     function pre_pre () {
@@ -166,8 +166,8 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road2 );
 
-        road1.setPredecessor( "road", road2.id, TvContactPoint.START );
-        road2.setPredecessor( "road", road1.id, TvContactPoint.START );
+        road1.setPredecessor( 'road', road2.id, TvContactPoint.START );
+        road2.setPredecessor( 'road', road1.id, TvContactPoint.START );
     }
 
     function pre_suc () {
@@ -191,8 +191,8 @@ describe( 'RoadTool', () => {
 
         RoadFactory.rebuildRoad( road2 );
 
-        road1.setPredecessor( "road", road2.id, TvContactPoint.END );
-        road2.setSuccessor( "road", road1.id, TvContactPoint.START );
+        road1.setPredecessor( 'road', road2.id, TvContactPoint.END );
+        road2.setSuccessor( 'road', road1.id, TvContactPoint.START );
     }
 
 

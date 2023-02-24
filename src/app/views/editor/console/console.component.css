@@ -1,28 +1,28 @@
 .console-container {
-    background-color: gray;
-    padding: 0px;
+	background-color: gray;
+	padding: 0px;
 }
 
 mat-icon .warn {
-    color: yellow;
+	color: yellow;
 }
 
 mat-icon .info {
-    color:blue;
+	color: blue;
 }
 
 .console-toolbar-icon {
-    padding: 0 14px;
+	padding: 0 14px;
 }
 
 .console-toolbar-spacer {
-    flex: 1 1 auto;
+	flex: 1 1 auto;
 }
 
 .console-toolbar-row {
-    height: 36px;
+	height: 36px;
 }
 
 .console-message-icon {
-    font-size: 36px !important;
+	font-size: 36px !important;
 }

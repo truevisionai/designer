@@ -5,18 +5,18 @@
 import { Injectable } from '@angular/core';
 import { AnyControlPoint, LaneOffsetNode, LaneRoadMarkNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Maths } from 'app/utils/maths';
-import { SceneService } from '../services/scene.service';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { Maths } from 'app/utils/maths';
+import { BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import { SceneService } from '../services/scene.service';
 
 
 @Injectable( {
@@ -86,10 +86,10 @@ export class NodeFactoryService {
 
         const index = node.lane.getLaneWidthVector().findIndex( i => i.uuid === node.laneWidth.uuid );
 
-        if ( index === -1 ) SnackBar.error( "Unexpected error. Not able to find this node" );
+        if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
         if ( index === -1 ) return;
 
-        if ( index === 0 ) SnackBar.error( "First node cannot be edited. Please add a new node." );
+        if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
         if ( index === 0 ) return;
 
         const minS = node.lane.width[ index - 1 ].s + 0.1;
@@ -151,7 +151,7 @@ export class NodeFactoryService {
         // // const road = OpenDriveQueries.getRoadByCoords( point.x, point.y, roadPos );
 
         // // this get the lane from road, s and t values
-        // // roadPos is only used to read 
+        // // roadPos is only used to read
         // // const result = OpenDriveQueries.getLaneByCoords( position.x, position.y, roadPos );
 
         // if ( node.s < 0.1 ) return;
@@ -186,10 +186,10 @@ export class NodeFactoryService {
         // }
     }
 
-    /**
-     * Updates the lane width line position
-     * @param node LaneWidthNode
-     */
+	/**
+	 * Updates the lane width line position
+	 * @param node LaneWidthNode
+	 */
     static updateLaneWidthNodeLine ( node: LaneWidthNode ) {
 
         const laneWidth = node.laneWidth;
@@ -220,7 +220,7 @@ export class NodeFactoryService {
 
         /////////////////////////////////////////
 
-        node.point = AnyControlPoint.create( "point", start.toVector3() );
+        node.point = AnyControlPoint.create( 'point', start.toVector3() );
 
         node.point.tag = LaneOffsetNode.pointTag;
 
@@ -245,10 +245,10 @@ export class NodeFactoryService {
         return node;
     }
 
-    /**
-     * Updates the position of the node
-     * @param node
-     */
+	/**
+	 * Updates the position of the node
+	 * @param node
+	 */
     static updateLaneOffsetNode ( node: LaneOffsetNode ): LaneOffsetNode {
 
         const offset = node.laneOffset.getValue( node.laneOffset.s );
@@ -281,10 +281,10 @@ export class NodeFactoryService {
 
         const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
 
-        if ( index === -1 ) SnackBar.error( "Unexpected error. Not able to find this node" );
+        if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
         if ( index === -1 ) return node;
 
-        if ( index === 0 ) SnackBar.error( "First node cannot be edited. Please add a new node." );
+        if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
         if ( index === 0 ) return node;
 
         const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
@@ -322,23 +322,25 @@ export class NodeFactoryService {
 
     static createRoadNodes ( road: TvRoad ): void {
 
-        road.startNode = this.createRoadNode( road.id, "start" );
-        road.endNode = this.createRoadNode( road.id, "end" );
+        road.startNode = this.createRoadNode( road.id, 'start' );
+        road.endNode = this.createRoadNode( road.id, 'end' );
 
     }
 
     static updateRoadNodes ( road: TvRoad ): void {
 
-        if ( !road.startNode )
-            road.startNode = this.createRoadNode( road.id, "start" );
-        else
+        if ( !road.startNode ) {
+            road.startNode = this.createRoadNode( road.id, 'start' );
+        } else {
             this.updateRoadNode( road.startNode );
+        }
 
 
-        if ( !road.endNode )
-            road.endNode = this.createRoadNode( road.id, "end" );
-        else
+        if ( !road.endNode ) {
+            road.endNode = this.createRoadNode( road.id, 'end' );
+        } else {
             this.updateRoadNode( road.endNode );
+        }
     }
 
     static createRoadNode ( roadId: number, distance: 'start' | 'end' ) {
@@ -347,9 +349,9 @@ export class NodeFactoryService {
 
         let s: number;
 
-        if ( distance == 'start' ) s = 0;
-
-        else if ( distance == 'end' ) s = road.length - Maths.Epsilon;
+        if ( distance == 'start' ) {
+            s = 0;
+        } else if ( distance == 'end' ) s = road.length - Maths.Epsilon;
 
         const node = new RoadNode( roadId, distance, s );
 
@@ -383,9 +385,9 @@ export class NodeFactoryService {
 
         let s: number;
 
-        if ( node.distance == 'start' ) s = 0;
-
-        else if ( node.distance == 'end' ) s = road.length - Maths.Epsilon;
+        if ( node.distance == 'start' ) {
+            s = 0;
+        } else if ( node.distance == 'end' ) s = road.length - Maths.Epsilon;
 
         const result = TvMapQueries.getRoadWidthAt( node.roadId, s );
 

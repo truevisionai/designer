@@ -3,29 +3,29 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from '../../../core/game-object';
-import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
-import { TvMapBuilder } from '../../../modules/tv-map/builders/od-builder.service';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { CommandHistory } from 'app/services/command-history';
+import { IComponent } from '../../../core/game-object';
+import { TvMapBuilder } from '../../../modules/tv-map/builders/od-builder.service';
+import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 
 @Component( {
     selector: 'app-road-inspector',
     templateUrl: './road-inspector.component.html',
     styles: [
         `
-        .example-card {
-            max-width: 400px;
-          }
-          
-          .example-header-image {
-            background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-            background-size: cover;
-          }
-        `
+			.example-card {
+				max-width: 400px;
+			}
+
+			.example-header-image {
+				background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+				background-size: cover;
+			}
+		`
     ]
 } )
 export class RoadInspector implements OnInit, OnDestroy, IComponent {
@@ -36,21 +36,36 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
         node: RoadNode,
     };
 
-    constructor () { }
+    constructor () {
+    }
 
-    get road (): TvRoad { return this.data.road; }
+    get road (): TvRoad {
+        return this.data.road;
+    }
 
-    get controlPoint (): RoadControlPoint { return this.data.controlPoint; }
+    get controlPoint (): RoadControlPoint {
+        return this.data.controlPoint;
+    }
 
-    get node (): RoadNode { return this.data.node; }
+    get node (): RoadNode {
+        return this.data.node;
+    }
 
-    get roadSpeed () { return this.roadType ? this.roadType.speed.max : null }
+    get roadSpeed () {
+        return this.roadType ? this.roadType.speed.max : null;
+    }
 
-    get roadTypesEnum () { return TvRoadType; }
+    get roadTypesEnum () {
+        return TvRoadType;
+    }
 
-    get type () { return this.roadType ? this.roadType.type : null }
+    get type () {
+        return this.roadType ? this.roadType.type : null;
+    }
 
-    get roadType () { return this.road ? this.road.getRoadTypeAt( 0 ) : null; }
+    get roadType () {
+        return this.road ? this.road.getRoadTypeAt( 0 ) : null;
+    }
 
     ngOnInit () {
 
@@ -71,7 +86,7 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
     }
 
-    onRoadSpeedChanged ( $value: number ) {
+    onRoadSpeedChanged ( $value ) {
 
         CommandHistory.execute( new SetValueCommand( this.roadType.speed, 'max', $value ) );
 
@@ -93,9 +108,9 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
                 lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-            } )
+            } );
 
-        } )
+        } );
 
     }
 
@@ -109,9 +124,9 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
                 lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-            } )
+            } );
 
-        } )
+        } );
     }
 
     onBorderMaterialChanged ( $guid: string ) {
@@ -124,9 +139,9 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
                 lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-            } )
+            } );
 
-        } )
+        } );
     }
 
     onShoulderMaterialChanged ( $guid: string ) {
@@ -139,8 +154,8 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
                 lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
 
-            } )
+            } );
 
-        } )
+        } );
     }
 }

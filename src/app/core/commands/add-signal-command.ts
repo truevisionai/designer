@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdBaseCommand } from './od-base-command';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
 import { ObjectSelection } from 'app/core/selection';
 import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
+import { OdBaseCommand } from './od-base-command';
 
 export class AddSignalCommand extends OdBaseCommand {
 

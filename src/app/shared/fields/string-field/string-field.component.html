@@ -6,9 +6,9 @@
 <!-- <input matInput type="string" [placeholder]="label" [(ngModel)]="value" (ngModelChange)="onModelChanged($event)"> -->
 <!-- </mat-form-field> -->
 
-<div class="tv-field" align="left">
+<div align="left" class="tv-field">
     <label class="tv-field-label">{{ label }}</label>
     <div class="tv-field-text-input">
-        <input [disabled]="disabled" type="text" [value]="value" [placeholder]="label" [(ngModel)]="value" (ngModelChange)="onModelChanged($event)" />
+        <input (ngModelChange)="onModelChanged($event)" [(ngModel)]="value" [disabled]="disabled" [placeholder]="label" [value]="value" type="text" />
     </div>
 </div>

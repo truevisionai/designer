@@ -2,15 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
+import { MathUtils } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { TvLane } from './tv-lane';
 import { LaneRoadMarkNode } from '../../three-js/objects/control-point';
-import { Math } from 'three';
+import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
+import { TvLane } from './tv-lane';
 
 export class TvLaneRoadMark {
-
-    public readonly uuid: string;
 
     // widths for the two types of weight values
     public static STD_ROADMARK_WIDTH = 0.15;
@@ -19,6 +17,7 @@ export class TvLaneRoadMark {
     public static ROADMARK_ELEVATION_SHIFT = 0.01;
     // broken mark tiling
     public static ROADMARK_BROKEN_TILING = 3.0;
+    public readonly uuid: string;
     public gameObject: GameObject;
     public attr_sOffset: number;
     public attr_type: TvRoadMarkTypes;
@@ -43,7 +42,7 @@ export class TvLaneRoadMark {
         lane: TvLane
     ) {
 
-        this.uuid = Math.generateUUID();
+        this.uuid = MathUtils.generateUUID();
 
         this.attr_sOffset = sOffset;
         this.attr_type = type;

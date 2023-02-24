@@ -3,9 +3,9 @@
  */
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 
 @Component( {
@@ -17,11 +17,17 @@ export class RoadControlPointInspector extends BaseInspector implements OnInit, 
 
     @Input() data: RoadControlPoint;
 
-    constructor () { super() }
+    constructor () {
+        super();
+    }
 
-    get controlPoint (): RoadControlPoint { return this.data; }
+    get controlPoint (): RoadControlPoint {
+        return this.data;
+    }
 
-    get road (): TvRoad { return this.data.road }
+    get road (): TvRoad {
+        return this.data.road;
+    }
 
     ngOnInit (): void {
 

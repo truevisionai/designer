@@ -3,13 +3,23 @@
  */
 
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer, Object3D, DirectionalLight, AmbientLight, Box3, Vector3 } from 'three';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
-import { OrbitControls } from 'app/modules/three-js/objects/orbit-controls';
-import { PreviewService } from './object-preview.service';
+import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
 import { AssetDatabase } from 'app/services/asset-database';
 import { RoadStyle } from 'app/services/road-style.service';
+import { COLOR } from 'app/shared/utils/colors.service';
+import {
+    AmbientLight,
+    BoxGeometry,
+    Color,
+    DirectionalLight,
+    Mesh,
+    MeshBasicMaterial,
+    Object3D,
+    PerspectiveCamera,
+    Scene,
+    WebGLRenderer
+} from 'three';
+import { PreviewService } from './object-preview.service';
 
 @Component( {
     selector: 'app-object-preview',
@@ -18,7 +28,7 @@ import { RoadStyle } from 'app/services/road-style.service';
 } )
 export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @Input() path: string
+    @Input() path: string;
 
     @Input() guid: string;
 
@@ -33,9 +43,15 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
     public scene: Scene = new Scene;
     public camera: PerspectiveCamera;
-    public controls: OrbitControls;
+    public controls: TvOrbitControls;
 
     cube: Mesh;
+
+    constructor ( private previewService: PreviewService ) {
+
+        this.render = this.render.bind( this );
+
+    }
 
     get canvas (): HTMLCanvasElement {
         return <HTMLCanvasElement> this.viewportRef.nativeElement;
@@ -47,12 +63,6 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
     get height () {
         return this.canvas.height;
-    }
-
-    constructor ( private previewService: PreviewService ) {
-
-        this.render = this.render.bind( this );
-
     }
 
     ngOnInit () {
@@ -72,7 +82,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
 
-        this.controls = OrbitControls.getNew( this.camera, this.canvas );
+        this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
         this.addDirectionLight();
 
@@ -80,13 +90,21 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
         switch ( this.objectType ) {
 
-            case 'model': this.modelPreviewSetup(); break;
+            case 'model':
+                this.modelPreviewSetup();
+                break;
 
-            case 'material': this.materialPreviewSetup(); break;
+            case 'material':
+                this.materialPreviewSetup();
+                break;
 
-            case 'roadstyle': this.roadStylePreviewSetup(); break;
+            case 'roadstyle':
+                this.roadStylePreviewSetup();
+                break;
 
-            default: this.defaultObjectSetup(); break;
+            default:
+                this.defaultObjectSetup();
+                break;
         }
 
         setTimeout( () => {
@@ -131,7 +149,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
     defaultObjectSetup () {
 
-        this.scene.background = new Color( COLOR.BLACK )
+        this.scene.background = new Color( COLOR.BLACK );
 
         const geometry = new BoxGeometry( 1, 1, 1 );
         const material = new MeshBasicMaterial( { color: 0x00ff00 } );
@@ -151,7 +169,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
         this.camera.position.z = 5;
 
         // this.controls = new EditorControls( this.camera, this.renderer.domElement );
-        this.controls = OrbitControls.getNew( this.camera, this.canvas );
+        this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
         // console.log( this.width, this.height, this.canvas.clientWidth, this.canvas.clientHeight );
     }

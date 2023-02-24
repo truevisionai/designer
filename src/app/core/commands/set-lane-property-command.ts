@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { BaseCommand } from './base-command';
 
 export class SetLanePropertyCommand extends BaseCommand {
 

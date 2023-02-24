@@ -2,26 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from '../models/tv-map.model';
-import { TvRoad } from '../models/tv-road.model';
-import { TvPlaneView } from '../models/tv-plane-view';
+import { Injectable } from '@angular/core';
+import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { XMLParser } from 'fast-xml-parser';
+import { AbstractReader } from '../../../core/services/abstract-reader';
+import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
+import { EnumHelper, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
+import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvJunction } from '../models/tv-junction';
+import { TvJunctionConnection } from '../models/tv-junction-connection';
+import { TvJunctionController } from '../models/tv-junction-controller';
+import { TvJunctionLaneLink } from '../models/tv-junction-lane-link';
+import { TvJunctionPriority } from '../models/tv-junction-priority';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvMap } from '../models/tv-map.model';
+import { TvPlaneView } from '../models/tv-plane-view';
 import { TvRoadObject } from '../models/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvLane } from '../models/tv-lane';
-import { EnumHelper, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
-import { AbstractReader } from '../../../core/services/abstract-reader';
-import { SignShapeType } from './tv-sign.service';
-import { TvJunctionLaneLink } from '../models/tv-junction-lane-link';
-import { TvJunctionConnection } from '../models/tv-junction-connection';
-import { TvJunctionPriority } from '../models/tv-junction-priority';
-import { TvJunctionController } from '../models/tv-junction-controller';
-import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
-import { Injectable } from '@angular/core';
-import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { TvRoad } from '../models/tv-road.model';
+import { SignShapeType } from './tv-sign.service';
+
+declare const fxp;
 
 @Injectable( {
     providedIn: 'root'
@@ -52,17 +55,18 @@ export class OpenDriverParser extends AbstractReader {
             format: true,
         };
 
-        const Parser = require( 'fast-xml-parser' );
-        const data: any = Parser.parse( this.xmlElement, defaultOptions );
+        const parser = new XMLParser( defaultOptions );
+
+        const data: any = parser.parse( this.xmlElement );
 
         this.readFile( data );
 
         return this.map;
     }
 
-    /**
-     * Reads the data from the OpenDrive structure to a file
-     */
+	/**
+	 * Reads the data from the OpenDrive structure to a file
+	 */
     readFile ( xmlString ) {
 
         const xmlElement = xmlString.OpenDRIVE;
@@ -84,10 +88,10 @@ export class OpenDriverParser extends AbstractReader {
         } );
     }
 
-    /**
-     * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
-     * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
-     */
+	/**
+	 * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
+	 * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
+	 */
     readHeader ( xmlElement ) {
 
         const revMajor = parseFloat( xmlElement.attr_revMajor );
@@ -164,7 +168,7 @@ export class OpenDriverParser extends AbstractReader {
         // // for last geometry
         // const lastGeometry = geometries[ geometries.length - 1 ];
 
-        const lastCoord = road.endCoord()
+        const lastCoord = road.endCoord();
 
         spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType );
 
@@ -275,7 +279,7 @@ export class OpenDriverParser extends AbstractReader {
 
     public readRoadTypes ( road: TvRoad, xmlElement: any ) {
 
-        if ( !xmlElement.type ) console.warn( "no road type tag not present" )
+        if ( !xmlElement.type ) console.warn( 'no road type tag not present' );
 
         this.readAsOptionalArray( xmlElement.type, xml => {
 

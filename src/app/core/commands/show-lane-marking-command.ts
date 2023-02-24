@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { SceneService } from '../services/scene.service';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { NodeFactoryService } from '../factories/node-factory.service';
+import { SceneService } from '../services/scene.service';
+import { BaseCommand } from './base-command';
 
 export class ShowLaneMarkingCommand extends BaseCommand {
 
@@ -71,7 +71,7 @@ export class ShowLaneMarkingCommand extends BaseCommand {
 
     private showNodes ( road: TvRoad ) {
 
-        if ( road.isJunction ) SnackBar.error( "LaneMark Editing on junction roads is currently not supported" );
+        if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
 
         if ( road.isJunction ) return;
 
@@ -93,9 +93,9 @@ export class ShowLaneMarkingCommand extends BaseCommand {
 
                     }
 
-                } )
+                } );
 
-            } )
+            } );
 
         } );
 

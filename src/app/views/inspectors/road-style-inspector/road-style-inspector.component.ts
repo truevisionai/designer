@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IComponent, GameObject } from 'app/core/game-object';
-import { RoadStyle } from 'app/services/road-style.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { GameObject, IComponent } from 'app/core/game-object';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadStyle } from 'app/services/road-style.service';
 import { Object3D } from 'three';
 
 @Component( {
@@ -17,13 +17,13 @@ import { Object3D } from 'three';
 export class RoadStyleInspector implements OnInit, IComponent, OnDestroy {
 
     object: Object3D;
-
-    constructor () { }
-
     data: {
         roadStyle: RoadStyle,
         guid: string
     };
+
+    constructor () {
+    }
 
     ngOnInit () {
 
@@ -31,7 +31,7 @@ export class RoadStyleInspector implements OnInit, IComponent, OnDestroy {
 
         const gameObject = new GameObject();
 
-        const road = new TvRoad( "", 0, 1, -1 );
+        const road = new TvRoad( '', 0, 1, -1 );
 
         road.addGeometryLine( 0, -50, 0, 0, 100 );
 
