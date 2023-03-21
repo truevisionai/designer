@@ -4,7 +4,7 @@
 
 <div *ngIf="road" class="inspector-form-container">
 
-    <app-double-field [value]="road.length" disabled label="Length (Meters)"></app-double-field>
+    <app-double-field [value]="road.length" [disabled]="true" label="Length (Meters)"></app-double-field>
 
     <app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit (Miles/Hour)" max="200" min="0"></app-double-field>
 
