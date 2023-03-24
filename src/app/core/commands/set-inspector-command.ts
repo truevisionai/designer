@@ -9,33 +9,33 @@ import { BaseCommand } from './base-command';
 
 export class SetInspectorCommand extends BaseCommand {
 
-    private oldInspector: Type<IComponent>;
-    private oldInspectorData: any;
+	private oldInspector: Type<IComponent>;
+	private oldInspectorData: any;
 
-    constructor ( public newInspector: Type<IComponent>, public newInspectorData: any ) {
+	constructor ( public newInspector: Type<IComponent>, public newInspectorData: any ) {
 
-        super();
+		super();
 
-        this.oldInspector = AppInspector.currentInspector;
+		this.oldInspector = AppInspector.currentInspector;
 
-        this.oldInspectorData = AppInspector.currentInspectorData;
-    }
+		this.oldInspectorData = AppInspector.currentInspectorData;
+	}
 
-    execute (): void {
+	execute (): void {
 
-        AppInspector.setInspector( this.newInspector, this.newInspectorData );
+		AppInspector.setInspector( this.newInspector, this.newInspectorData );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        AppInspector.setInspector( this.oldInspector, this.oldInspectorData );
+		AppInspector.setInspector( this.oldInspector, this.oldInspectorData );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 }

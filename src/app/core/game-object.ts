@@ -8,16 +8,16 @@ import { BufferGeometry, Euler, Material, Vector3 } from 'three';
 import { ITvObject, TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
 
 export interface IComponent {
-    data: any;
+	data: any;
 }
 
 export class ComponentItem {
-    constructor ( public component: Type<IComponent>, public data: any ) {
-    }
+	constructor ( public component: Type<IComponent>, public data: any ) {
+	}
 }
 
 export interface IComponentEditor {
-    componentContent: ElementRef;
+	componentContent: ElementRef;
 }
 
 export class Component {
@@ -26,108 +26,108 @@ export class Component {
 
 export class Transform extends Component {
 
-    public position: Vector3 = new Vector3;
-    public eulerAngles: Euler = new Euler;
-    public scale: Vector3 = new Vector3;
+	public position: Vector3 = new Vector3;
+	public eulerAngles: Euler = new Euler;
+	public scale: Vector3 = new Vector3;
 
 }
 
 export class SomeNewComponent extends Component {
 
-    public position: any;
+	public position: any;
 
 }
 
 export class GameObject extends THREE.Mesh implements ITvObject {
 
-    OpenDriveType: TvObjectType;
-    public IsGameObject = true;
-    public detectRaycast = true;
-    private active: boolean;
-    private tag: string;
-    private transform: Transform;
-    private components: Component[] = [];
+	OpenDriveType: TvObjectType;
+	public IsGameObject = true;
+	public detectRaycast = true;
+	private active: boolean;
+	private tag: string;
+	private transform: Transform;
+	private components: Component[] = [];
 
-    constructor ( name?: string, geometry?: BufferGeometry, material?: Material | Material[] ) {
+	constructor ( name?: string, geometry?: BufferGeometry, material?: Material | Material[] ) {
 
-        super( geometry, material );
+		super( geometry, material );
 
-        this.name = name;
-        this.transform = new Transform;
-        this.transform.position = this.position;
-        this.transform.eulerAngles = this.rotation;
-        this.transform.scale = this.scale;
+		this.name = name;
+		this.transform = new Transform;
+		this.transform.position = this.position;
+		this.transform.eulerAngles = this.rotation;
+		this.transform.scale = this.scale;
 
-        this.userData.is_selectable = true;
+		this.userData.is_selectable = true;
 
-        // AppService.engine.add( this );
+		// AppService.engine.add( this );
 
-    }
+	}
 
-    get Active () {
-        return this.active;
-    }
+	get Active () {
+		return this.active;
+	}
 
-    set Active ( value ) {
-        this.active = value;
-    }
+	set Active ( value ) {
+		this.active = value;
+	}
 
-    get Tag () {
-        return this.tag;
-    }
+	get Tag () {
+		return this.tag;
+	}
 
-    set Tag ( value ) {
-        this.tag = value;
-    }
+	set Tag ( value ) {
+		this.tag = value;
+	}
 
-    get Transform () {
-        return this.transform;
-    }
+	get Transform () {
+		return this.transform;
+	}
 
-    set Transform ( value ) {
-        this.transform = value;
-    }
+	set Transform ( value ) {
+		this.transform = value;
+	}
 
-    getType (): TvObjectType {
-        return this.OpenDriveType;
-    }
+	getType (): TvObjectType {
+		return this.OpenDriveType;
+	}
 
-    public addComponent<T extends Component> ( componentType: Type<T> ): T {
+	public addComponent<T extends Component> ( componentType: Type<T> ): T {
 
-        const obj = new componentType;
+		const obj = new componentType;
 
-        this.components.push( obj );
+		this.components.push( obj );
 
-        return obj;
+		return obj;
 
-    }
+	}
 
-    public getComponent<T extends Component> ( componentType: Type<T> ): Component {
+	public getComponent<T extends Component> ( componentType: Type<T> ): Component {
 
-        for ( let i = 0; i < this.components.length; i++ ) {
+		for ( let i = 0; i < this.components.length; i++ ) {
 
-            const element: Component = this.components[ i ];
+			const element: Component = this.components[ i ];
 
-            if ( element instanceof componentType ) {
+			if ( element instanceof componentType ) {
 
-                return element;
+				return element;
 
-            }
-        }
+			}
+		}
 
-    }
+	}
 
 }
 
 export class Cube extends GameObject {
 
-    constructor ( width: number = 1, height: number = 1, length: number = 1 ) {
-        super(
-            'Cube',
-            new THREE.BoxGeometry( width, height, length ),
-            new THREE.MeshBasicMaterial( { color: 0x000000 }
-            )
-        );
-    }
+	constructor ( width: number = 1, height: number = 1, length: number = 1 ) {
+		super(
+			'Cube',
+			new THREE.BoxGeometry( width, height, length ),
+			new THREE.MeshBasicMaterial( { color: 0x000000 }
+			)
+		);
+	}
 
 }

@@ -3,14 +3,14 @@
   -->
 
 <div *ngIf="layout.layoutConf.useBreadcrumb && layout.layoutConf.breadcrumb === 'simple'" class="breadcrumb-bar">
-    <ul class="breadcrumb">
-        <li *ngFor="let part of routeParts"><a routerLink="/{{part.url}}">{{part.breadcrumb | translate}}</a></li>
-    </ul>
+	<ul class="breadcrumb">
+		<li *ngFor="let part of routeParts"><a routerLink="/{{part.url}}">{{part.breadcrumb | translate}}</a></li>
+	</ul>
 </div>
 
 <div *ngIf="layout.layoutConf.useBreadcrumb && layout.layoutConf.breadcrumb === 'title'" class="breadcrumb-title">
-    <h1 class="bc-title">{{routeParts[routeParts.length - 1]?.breadcrumb | translate}}</h1>
-    <ul *ngIf="routeParts.length > 1" class="breadcrumb">
-        <li *ngFor="let part of routeParts"><a class="text-muted" routerLink="/{{part.url}}">{{part.breadcrumb | translate}}</a></li>
-    </ul>
+	<h1 class="bc-title">{{routeParts[routeParts.length - 1]?.breadcrumb | translate}}</h1>
+	<ul *ngIf="routeParts.length > 1" class="breadcrumb">
+		<li *ngFor="let part of routeParts"><a class="text-muted" routerLink="/{{part.url}}">{{part.breadcrumb | translate}}</a></li>
+	</ul>
 </div>

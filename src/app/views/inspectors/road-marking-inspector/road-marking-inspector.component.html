@@ -4,10 +4,10 @@
 
 <div *ngIf="data.roadMarking" class="inspector-form-container">
 
-    <mat-card class="mat-card material-preview">
-        <img src="{{ thumbnail }}" />
-    </mat-card>
+	<mat-card class="mat-card material-preview">
+		<img src="{{ thumbnail }}" />
+	</mat-card>
 
-    <app-texture-field (changed)="onTextureChanged($event)" [guid]="data.roadMarking.textureGuid" label="Map"></app-texture-field>
+	<app-texture-field (changed)="onTextureChanged($event)" [guid]="data.roadMarking.textureGuid" label="Map"></app-texture-field>
 
 </div>

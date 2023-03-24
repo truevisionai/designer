@@ -14,152 +14,152 @@ import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../modules/tv-map/services/tv-map-source-file';
 
 @Component( {
-    selector: 'app-status-bar',
-    templateUrl: './status-bar.component.html',
-    styleUrls: [ './status-bar.component.css' ]
+	selector: 'app-status-bar',
+	templateUrl: './status-bar.component.html',
+	styleUrls: [ './status-bar.component.css' ]
 } )
 export class StatusBarComponent extends MonoBehaviour implements OnInit {
 
-    private sphere: THREE.Mesh;
+	private sphere: THREE.Mesh;
 
-    private cursor: PointerEventData;
-    private road: TvRoad;
+	private cursor: PointerEventData;
+	private road: TvRoad;
 
-    private pos = new TvPosTheta;
+	private pos = new TvPosTheta;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-        const geom = new THREE.SphereGeometry( 1 );
-        // var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        // obj.gameObject = new THREE.Mesh( geometry, material );
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+		const geom = new THREE.SphereGeometry( 1 );
+		// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+		// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+		// obj.gameObject = new THREE.Mesh( geometry, material );
+		const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
-        this.sphere = new THREE.Mesh( geom, material );
+		this.sphere = new THREE.Mesh( geom, material );
 
-    }
+	}
 
-    get seconds () {
-        return Time.seconds;
-    }
+	get seconds () {
+		return Time.seconds;
+	}
 
-    get time () {
-        return Time.time * 0.001;
-    }
+	get time () {
+		return Time.time * 0.001;
+	}
 
-    get x () {
-        return this.cursor.point.x;
-    }
+	get x () {
+		return this.cursor.point.x;
+	}
 
-    get y () {
-        return this.cursor.point.y;
-    }
+	get y () {
+		return this.cursor.point.y;
+	}
 
-    get z () {
-        return this.cursor.point.z;
-    }
+	get z () {
+		return this.cursor.point.z;
+	}
 
-    get map () {
-        return TvMapInstance.map;
-    }
+	get map () {
+		return TvMapInstance.map;
+	}
 
-    get s () {
-        return this.pos.s;
-    }
+	get s () {
+		return this.pos.s;
+	}
 
-    get t () {
-        return this.pos.t;
-    }
+	get t () {
+		return this.pos.t;
+	}
 
-    get name () {
+	get name () {
 
-        if ( this.cursor && this.cursor.object ) {
+		if ( this.cursor && this.cursor.object ) {
 
-            return this.cursor.object.name;
+			return this.cursor.object.name;
 
-        }
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    get roadId () {
+	get roadId () {
 
-        if ( this.road ) return this.road.id;
+		if ( this.road ) return this.road.id;
 
-        // if ( this.cursor && this.cursor.object && this.cursor.object.userData.data ) {
-        //
-        //     // return this.cursor.object.userData.data.attr_id;
-        //     return this.cursor.object.userData.data.roadId;
-        //
-        // }
+		// if ( this.cursor && this.cursor.object && this.cursor.object.userData.data ) {
+		//
+		//     // return this.cursor.object.userData.data.attr_id;
+		//     return this.cursor.object.userData.data.roadId;
+		//
+		// }
 
-        return null;
-    }
+		return null;
+	}
 
-    get laneId () {
+	get laneId () {
 
-        if ( this.cursor && this.cursor.object && this.cursor.object.userData.data ) {
+		if ( this.cursor && this.cursor.object && this.cursor.object.userData.data ) {
 
-            return this.cursor.object.userData.data.attr_id;
+			return this.cursor.object.userData.data.attr_id;
 
-        }
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.cursor = new PointerEventData();
-        this.cursor.point = new Vector3();
-
-
-    }
-
-    fetchRoadCoordinates ( point: Vector3 ) {
-
-        this.map.roads.forEach( road => {
-
-            // road.getGeometryCoords()
-
-            road.geometries.forEach( geometry => {
-
-                const nearest = geometry.getNearestPointFrom( point.x, point.y );
-
-                // Debug.log( nearest );
-
-                this.sphere.position.set( nearest.x, nearest.y, 0 );
-
-            } );
-
-        } );
-
-    }
-
-    distanceFromRoad ( road, point ) {
+		this.cursor = new PointerEventData();
+		this.cursor.point = new Vector3();
 
 
-    }
+	}
 
-    onPointerClicked ( data: PointerEventData ) {
+	fetchRoadCoordinates ( point: Vector3 ) {
 
-        // AppService.engine.add( this.sphere );
+		this.map.roads.forEach( road => {
 
-        const road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+			// road.getGeometryCoords()
 
-    }
+			road.geometries.forEach( geometry => {
 
-    onPointerMoved ( data: PointerEventData ) {
+				const nearest = geometry.getNearestPointFrom( point.x, point.y );
 
-        this.cursor = data;
+				// Debug.log( nearest );
 
-        // this.sphere.position.copy( data.point );
+				this.sphere.position.set( nearest.x, nearest.y, 0 );
 
-        this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+			} );
 
-        // this.fetchRoadCoordinates( data.point );
+		} );
 
-    }
+	}
+
+	distanceFromRoad ( road, point ) {
+
+
+	}
+
+	onPointerClicked ( data: PointerEventData ) {
+
+		// AppService.engine.add( this.sphere );
+
+		const road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+
+	}
+
+	onPointerMoved ( data: PointerEventData ) {
+
+		this.cursor = data;
+
+		// this.sphere.position.copy( data.point );
+
+		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+
+		// this.fetchRoadCoordinates( data.point );
+
+	}
 
 }

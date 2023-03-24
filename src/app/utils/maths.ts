@@ -97,7 +97,7 @@ export class Maths {
 		const b = end.clone();
 		const c = point.clone();
 
-		console.debug(this.directionV2(a, b, c));
+		console.debug( this.directionV2( a, b, c ) );
 
 		// var dot = a.x * b.x + a.y * b.y;
 		// if ( dot > 0 )

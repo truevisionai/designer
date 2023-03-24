@@ -7,82 +7,82 @@ import { AbstractFieldComponent } from 'app/core/components/abstract-field.compo
 import { Color } from 'three';
 
 @Component( {
-    selector: 'app-color-field',
-    templateUrl: './color-field.component.html',
-    styleUrls: [ './color-field.component.css' ]
+	selector: 'app-color-field',
+	templateUrl: './color-field.component.html',
+	styleUrls: [ './color-field.component.css' ]
 } )
 export class ColorFieldComponent extends AbstractFieldComponent implements OnInit {
 
 	/**
 	 * This is the toogle button elemenbt, look at HTML and see its defination
 	 */
-    @ViewChild( 'toggleButton' ) toggleButton: ElementRef;
-    @ViewChild( 'colorPicker' ) colorPicker: ElementRef;
+	@ViewChild( 'toggleButton' ) toggleButton: ElementRef;
+	@ViewChild( 'colorPicker' ) colorPicker: ElementRef;
 
-    @Input() isPickerOpen = false;
+	@Input() isPickerOpen = false;
 
-    @Input() value: Color;
+	@Input() value: Color;
 
-    @Input() position = 'top';
+	@Input() position = 'top';
 
-    get hex () {
-        return '#' + this.value.getHexString();
-    }
+	get hex () {
+		return '#' + this.value.getHexString();
+	}
 
-    set hex ( value: string ) {
+	set hex ( value: string ) {
 
-        this.value.setStyle( value );
+		this.value.setStyle( value );
 
-        this.valueChanged.emit( this.value );
+		this.valueChanged.emit( this.value );
 
-        this.changed.emit( this.value );
+		this.changed.emit( this.value );
 
-    }
+	}
 
-    ngOnInit (): void {
+	ngOnInit (): void {
 
-        this.value = new Color( this.value ).copy( this.value );
+		this.value = new Color( this.value ).copy( this.value );
 
-    }
+	}
 
-    onChange ( $event ) {
+	onChange ( $event ) {
 
-        // do nothing
+		// do nothing
 
-    }
+	}
 
-    onChangeCompleted ( $event ) {
+	onChangeCompleted ( $event ) {
 
-        this.value.setStyle( $event.color.hex );
+		this.value.setStyle( $event.color.hex );
 
-        this.valueChanged.emit( this.value );
+		this.valueChanged.emit( this.value );
 
-        this.changed.emit( this.value );
+		this.changed.emit( this.value );
 
-    }
+	}
 
-    togglePicker () {
+	togglePicker () {
 
-        if ( !this.isPickerOpen ) {
+		if ( !this.isPickerOpen ) {
 
-            this.isPickerOpen = true;
+			this.isPickerOpen = true;
 
-        } else {
+		} else {
 
-            this.isPickerOpen = false;
+			this.isPickerOpen = false;
 
-        }
+		}
 
-    }
+	}
 
-    @HostListener( 'window:mousedown', [ '$event' ] )
-    onGlobalClick ( e ): void {
+	@HostListener( 'window:mousedown', [ '$event' ] )
+	onGlobalClick ( e ): void {
 
-        if ( !this.colorPicker.nativeElement.contains( event.target ) ) {
+		if ( !this.colorPicker.nativeElement.contains( event.target ) ) {
 
-            // clicked outside
-            this.isPickerOpen = false;
-        }
+			// clicked outside
+			this.isPickerOpen = false;
+		}
 
-    }
+	}
 }

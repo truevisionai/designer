@@ -9,86 +9,86 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
-    public attr_a: number;
-    public attr_b: number;
-    public attr_c: number;
-    public attr_d: number;
+	public attr_a: number;
+	public attr_b: number;
+	public attr_c: number;
+	public attr_d: number;
 
-    private staringPoint;
-    private sinTheta;
-    private cosTheta;
-    private curve: Curve<Vector2>;
+	private staringPoint;
+	private sinTheta;
+	private cosTheta;
+	private curve: Curve<Vector2>;
 
-    constructor ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+	constructor ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
 
-        super( s, x, y, hdg, length );
+		super( s, x, y, hdg, length );
 
-        this._geometryType = TvGeometryType.POLY3;
+		this._geometryType = TvGeometryType.POLY3;
 
-        this.attr_a = a;
-        this.attr_b = b;
-        this.attr_c = c;
-        this.attr_d = d;
+		this.attr_a = a;
+		this.attr_b = b;
+		this.attr_c = c;
+		this.attr_d = d;
 
-        this.computeVars();
-    }
+		this.computeVars();
+	}
 
-    getCoords ( sCheck: any, posTheta: TvPosTheta ) {
+	getCoords ( sCheck: any, posTheta: TvPosTheta ) {
 
-        const vLocal = this.getBezierValue( sCheck );
+		const vLocal = this.getBezierValue( sCheck );
 
-        const x = sCheck;
-        const y = vLocal;
+		const x = sCheck;
+		const y = vLocal;
 
-        const xnew = x * this.cosTheta - y * this.sinTheta;
-        const ynew = x * this.sinTheta + y * this.cosTheta;
+		const xnew = x * this.cosTheta - y * this.sinTheta;
+		const ynew = x * this.sinTheta + y * this.cosTheta;
 
-        // Derivate to get heading change
-        const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
-        const tangent = this.polyeval( sCheck, dCoeffs );
+		// Derivate to get heading change
+		const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
+		const tangent = this.polyeval( sCheck, dCoeffs );
 
-        posTheta.x = this.x + xnew;
-        posTheta.y = this.y + ynew;
+		posTheta.x = this.x + xnew;
+		posTheta.y = this.y + ynew;
 
-        posTheta.hdg = this.hdg + tangent;
+		posTheta.hdg = this.hdg + tangent;
 
-        return this.geometryType;
-    }
+		return this.geometryType;
+	}
 
-    getCurve (): Curve<Vector2> {
+	getCurve (): Curve<Vector2> {
 
-        const points: Vector2[] = [];
-        const posTheta = new TvPosTheta();
+		const points: Vector2[] = [];
+		const posTheta = new TvPosTheta();
 
-        for ( let sCoordinate = this.s; sCoordinate < this.s2; sCoordinate++ ) {
+		for ( let sCoordinate = this.s; sCoordinate < this.s2; sCoordinate++ ) {
 
-            this.getCoords( sCoordinate, posTheta );
-            points.push( posTheta.toVector2() );
+			this.getCoords( sCoordinate, posTheta );
+			points.push( posTheta.toVector2() );
 
-        }
+		}
 
-        return this.curve = new SplineCurve( points );
+		return this.curve = new SplineCurve( points );
 
-    }
+	}
 
-    computeVars () {
-
-
-        this.sinTheta = Math.sin( this.hdg );
-        this.cosTheta = Math.cos( this.hdg );
+	computeVars () {
 
 
-        // throw new Error("Method not implemented.");
-    }
+		this.sinTheta = Math.sin( this.hdg );
+		this.cosTheta = Math.cos( this.hdg );
 
-    getBezierValue ( sCheck ): number {
 
-        const du = sCheck - this.s;
+		// throw new Error("Method not implemented.");
+	}
 
-        return ( this.attr_a ) +
-            ( this.attr_b * du ) +
-            ( this.attr_c * du * du ) +
-            ( this.attr_d * du * du * du );
-    }
+	getBezierValue ( sCheck ): number {
+
+		const du = sCheck - this.s;
+
+		return ( this.attr_a ) +
+			( this.attr_b * du ) +
+			( this.attr_c * du * du ) +
+			( this.attr_d * du * du * du );
+	}
 
 }

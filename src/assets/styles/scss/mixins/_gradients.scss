@@ -3,26 +3,24 @@
  */
 
 @mixin directional-gradient($dir, $from, $to, $stop: 100%) {
-    background-color: $from !important;
-    background-image: -moz-linear-gradient($dir, $from 0%, $to $stop) !important;
-  
-    background-image: -webkit-gradient(
-      linear,
-      $dir,
-      right top,
-      color-stop(0%, $from),
-      color-stop($stop, $to)
-    ) !important;
-  
-    background-image: -webkit-linear-gradient($dir, $from 0%, $to $stop) !important;
-  
-    background-image: -o-linear-gradient($dir, $from 0%, $to $stop) !important;
-  
-    background: -ms-linear-gradient($dir, $from 0%, $to $stop) !important;
-  
-    /* Standard */
-    background: linear-gradient($dir, $from 0%, $to $stop) !important;
-  
-    /* IE6-9 */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$from', endColorstr='$to',GradientType=1 );
-  }
+	background-color: $from !important;
+	background-image: -moz-linear-gradient($dir, $from 0%, $to $stop) !important;
+
+	background-image: -webkit-gradient(linear,
+			$dir,
+			right top,
+			color-stop(0%, $from),
+			color-stop($stop, $to)) !important;
+
+	background-image: -webkit-linear-gradient($dir, $from 0%, $to $stop) !important;
+
+	background-image: -o-linear-gradient($dir, $from 0%, $to $stop) !important;
+
+	background: -ms-linear-gradient($dir, $from 0%, $to $stop) !important;
+
+	/* Standard */
+	background: linear-gradient($dir, $from 0%, $to $stop) !important;
+
+	/* IE6-9 */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$from', endColorstr='$to', GradientType=1);
+}

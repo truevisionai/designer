@@ -4,14 +4,14 @@
 
 <div #content (contextmenu)="onContextMenu($event)" class="content" fxFlexFill>
 
-    <div fxFlexFill fxLayout="row wrap" fxLayoutGap="8px grid">
+	<div fxFlexFill fxLayout="row wrap" fxLayoutGap="8px grid">
 
-        <div *ngFor="let file of sortedFiles" [fxFlex]="widthInPercent">
+		<div *ngFor="let file of sortedFiles" [fxFlex]="widthInPercent">
 
-            <app-file (deleted)="onFileDeleted($event)" (renamed)="onFileRenamed($event)" *ngIf="!file.isDeleted" [file]="file"></app-file>
+			<app-file (deleted)="onFileDeleted($event)" (renamed)="onFileRenamed($event)" *ngIf="!file.isDeleted" [file]="file"></app-file>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </div>

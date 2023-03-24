@@ -5,15 +5,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component( {
-    selector: 'app-export-opendrive-dialog',
-    templateUrl: './export-opendrive-dialog.component.html'
+	selector: 'app-export-opendrive-dialog',
+	templateUrl: './export-opendrive-dialog.component.html'
 } )
 export class ExportOpenDriveDialog implements OnInit {
 
-    constructor () {
-    }
+	constructor () {
+	}
 
-    ngOnInit () {
-    }
+	ngOnInit () {
+	}
 
 }

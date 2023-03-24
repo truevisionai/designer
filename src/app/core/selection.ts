@@ -7,57 +7,57 @@ import { GameObject, Transform } from './game-object';
 
 export class ObjectSelection {
 
-    static readonly selectionChange = new EventEmitter<GameObject>();
+	static readonly selectionChange = new EventEmitter<GameObject>();
 
-    private static activeObject: THREE.Object3D;
-    private static activeGameObject: GameObject;
-    private static activeTransform: Transform;
+	private static activeObject: THREE.Object3D;
+	private static activeGameObject: GameObject;
+	private static activeTransform: Transform;
 
-    static get ActiveObject () {
+	static get ActiveObject () {
 
-        return this.activeObject;
+		return this.activeObject;
 
-    };
+	};
 
-    static set ActiveObject ( object ) {
+	static set ActiveObject ( object ) {
 
-        this.activeObject = object;
-        this.activeTransform.position = object.position;
+		this.activeObject = object;
+		this.activeTransform.position = object.position;
 
-        this.selectionChange.emit( this.activeGameObject );
+		this.selectionChange.emit( this.activeGameObject );
 
-    };
+	};
 
-    static get ActiveGameObject () {
+	static get ActiveGameObject () {
 
-        return this.activeGameObject;
+		return this.activeGameObject;
 
-    }
+	}
 
-    static set ActiveGameObject ( gameObject ) {
+	static set ActiveGameObject ( gameObject ) {
 
 
-        this.activeGameObject = gameObject;
-        this.activeTransform = gameObject.Transform;
+		this.activeGameObject = gameObject;
+		this.activeTransform = gameObject.Transform;
 
-        this.selectionChange.emit( this.activeGameObject );
+		this.selectionChange.emit( this.activeGameObject );
 
-    }
+	}
 
-    static get ActiveTransform () {
+	static get ActiveTransform () {
 
-        return this.activeTransform;
+		return this.activeTransform;
 
-    }
+	}
 
-    static removeActive (): any {
+	static removeActive (): any {
 
-        this.activeObject = null;
-        this.activeGameObject = null;
-        this.activeTransform = null;
+		this.activeObject = null;
+		this.activeGameObject = null;
+		this.activeTransform = null;
 
-        this.selectionChange.emit( null );
-    }
+		this.selectionChange.emit( null );
+	}
 
 
 }

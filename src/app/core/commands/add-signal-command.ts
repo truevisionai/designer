@@ -9,39 +9,39 @@ import { OdBaseCommand } from './od-base-command';
 
 export class AddSignalCommand extends OdBaseCommand {
 
-    constructor ( public signal: TvRoadSignal ) {
-        super();
-    }
+	constructor ( public signal: TvRoadSignal ) {
+		super();
+	}
 
-    get road () {
+	get road () {
 
-        return this.map.getRoadById( this.signal.roadId );
+		return this.map.getRoadById( this.signal.roadId );
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        TvMapBuilder.makeRoadSignal( this.road, this.signal );
+		TvMapBuilder.makeRoadSignal( this.road, this.signal );
 
-        this.road.addSignal( this.signal );
+		this.road.addSignal( this.signal );
 
-        // ObjectSelection.ActiveGameObject = this.signal.GameObject;
+		// ObjectSelection.ActiveGameObject = this.signal.GameObject;
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.signal.gameObject.parent.remove( this.signal.gameObject );
+		this.signal.gameObject.parent.remove( this.signal.gameObject );
 
-        this.road.removeSignal( this.signal );
+		this.road.removeSignal( this.signal );
 
-        ObjectSelection.removeActive();
+		ObjectSelection.removeActive();
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 }

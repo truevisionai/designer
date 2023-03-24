@@ -162,7 +162,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 			posTheta.hdg = this.hdg;
 			posTheta.t = nearest.distanceTo( point );
 
-			console.log(Maths.direction( start, end, point ));
+			console.log( Maths.direction( start, end, point ) );
 
 		}
 

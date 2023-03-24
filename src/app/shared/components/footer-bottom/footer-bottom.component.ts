@@ -6,125 +6,125 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component( {
-    selector: 'app-footer-bottom',
-    templateUrl: './footer-bottom.component.html',
-    styleUrls: [ './footer-bottom.component.css' ]
+	selector: 'app-footer-bottom',
+	templateUrl: './footer-bottom.component.html',
+	styleUrls: [ './footer-bottom.component.css' ]
 } )
 export class FooterBottomComponent implements OnInit {
 
-    showSlider: boolean;
+	showSlider: boolean;
 
-    sliderValue: number = 1;
-    sliderMin: number = 1;
-    sliderMax: number = 1;
-    sliderStep: number = 1;
+	sliderValue: number = 1;
+	sliderMin: number = 1;
+	sliderMax: number = 1;
+	sliderStep: number = 1;
 
-    constructor (
-        private route: ActivatedRoute,
-        private router: Router,
-    ) {
-    }
+	constructor (
+		private route: ActivatedRoute,
+		private router: Router,
+	) {
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        // this.router.events.subscribe( e => {
-        //   if ( e instanceof NavigationEnd ) {
-        //     Debug.log( e );
-        //   }
-        // } );
+		// this.router.events.subscribe( e => {
+		//   if ( e instanceof NavigationEnd ) {
+		//     Debug.log( e );
+		//   }
+		// } );
 
 
-    }
+	}
 
-    selectAttachment ( frame: number ): any {
+	selectAttachment ( frame: number ): any {
 
-        // this.editorService.attachmentChanged.emit( frame );
+		// this.editorService.attachmentChanged.emit( frame );
 
-    }
+	}
 
-    resetSlider (): void {
+	resetSlider (): void {
 
-        this.showSlider = false;
-        this.sliderMin = 1;
-        this.sliderMax = 1;
+		this.showSlider = false;
+		this.sliderMin = 1;
+		this.sliderMax = 1;
 
-    }
+	}
 
-    setSliderValues ( task: any ): void {
+	setSliderValues ( task: any ): void {
 
-        this.showSlider = task.attachments.length > 1;
-        this.sliderMin = 1;
-        this.sliderMax = task.attachments.length;
+		this.showSlider = task.attachments.length > 1;
+		this.sliderMin = 1;
+		this.sliderMax = task.attachments.length;
 
-    }
+	}
 
-    ngOnDestroy () {
+	ngOnDestroy () {
 
-    }
+	}
 
-    onSliderMoved ( e ) {
+	onSliderMoved ( e ) {
 
-        // Debug.log( 'moved', this.sliderValue );
+		// Debug.log( 'moved', this.sliderValue );
 
-    }
+	}
 
-    onSliderValueChanged ( e ) {
+	onSliderValueChanged ( e ) {
 
-        this.selectAttachment( this.sliderValue );
+		this.selectAttachment( this.sliderValue );
 
-    }
+	}
 
-    onNextClick () {
+	onNextClick () {
 
-        if ( this.sliderValue >= this.sliderMax ) return;
+		if ( this.sliderValue >= this.sliderMax ) return;
 
-        this.sliderValue += 1;
+		this.sliderValue += 1;
 
-        this.selectAttachment( this.sliderValue );
+		this.selectAttachment( this.sliderValue );
 
-        // Debug.log( 'on next', this.sliderValue );
+		// Debug.log( 'on next', this.sliderValue );
 
-    }
+	}
 
-    onBackClick () {
+	onBackClick () {
 
-        if ( this.sliderValue <= this.sliderMin ) return;
+		if ( this.sliderValue <= this.sliderMin ) return;
 
-        this.sliderValue -= 1;
+		this.sliderValue -= 1;
 
-        this.selectAttachment( this.sliderValue );
+		this.selectAttachment( this.sliderValue );
 
-        // Debug.log( 'on back', this.sliderValue );
-    }
+		// Debug.log( 'on back', this.sliderValue );
+	}
 
-    onSubmit () {
+	onSubmit () {
 
-        // this.editorService.submitBtnClicked.emit();
+		// this.editorService.submitBtnClicked.emit();
 
-    }
+	}
 
-    @HostListener( 'document:keydown', [ '$event' ] )
-    onKeyDown ( event: KeyboardEvent ) {
+	@HostListener( 'document:keydown', [ '$event' ] )
+	onKeyDown ( event: KeyboardEvent ) {
 
-        // Debug.log( 'keydown', event );
+		// Debug.log( 'keydown', event );
 
-        switch ( event.code ) {
-            case 'BracketLeft':
-                this.onBackClick();
-                break;
+		switch ( event.code ) {
+			case 'BracketLeft':
+				this.onBackClick();
+				break;
 
-            case 'BracketRight':
-                this.onNextClick();
-                break;
-        }
+			case 'BracketRight':
+				this.onNextClick();
+				break;
+		}
 
-    }
+	}
 
-    // @HostListener( 'document:keypress', ['$event'] )
-    // onKeyPress ( event: KeyboardEvent ) {
+	// @HostListener( 'document:keypress', ['$event'] )
+	// onKeyPress ( event: KeyboardEvent ) {
 
-    //   Debug.log( 'keypress', event );
+	//   Debug.log( 'keypress', event );
 
-    // }
+	// }
 
 }

@@ -11,121 +11,121 @@ import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class AuthService {
 
-    public currentUser: Observable<User>;
-    private currentUserSubject: BehaviorSubject<User>;
+	public currentUser: Observable<User>;
+	private currentUserSubject: BehaviorSubject<User>;
 
-    constructor ( private api: ApiService, private jwt: JwtService ) {
+	constructor ( private api: ApiService, private jwt: JwtService ) {
 
-        this.currentUserSubject = new BehaviorSubject<User>( JSON.parse( localStorage.getItem( 'currentUser' ) ) );
-        this.currentUser = this.currentUserSubject.asObservable();
+		this.currentUserSubject = new BehaviorSubject<User>( JSON.parse( localStorage.getItem( 'currentUser' ) ) );
+		this.currentUser = this.currentUserSubject.asObservable();
 
-    }
+	}
 
-    public get email (): string {
+	public get email (): string {
 
-        if ( window.localStorage.getItem( 'email' ) ) {
-            return window.localStorage.getItem( 'email' );
-        }
+		if ( window.localStorage.getItem( 'email' ) ) {
+			return window.localStorage.getItem( 'email' );
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public refresh () {
+	public refresh () {
 
-        return this.api.post( '/auth/refresh' ).pipe( map( response => {
+		return this.api.post( '/auth/refresh' ).pipe( map( response => {
 
-            if ( response && response.token ) {
+			if ( response && response.token ) {
 
-                this.jwt.saveToken( response.token );
+				this.jwt.saveToken( response.token );
 
-                window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
+				window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
 
-                this.currentUserSubject.next( response );
+				this.currentUserSubject.next( response );
 
-            }
+			}
 
-            return response;
+			return response;
 
-        } ) );
+		} ) );
 
-    }
+	}
 
-    public logout () {
+	public logout () {
 
-        window.localStorage.clear();
+		window.localStorage.clear();
 
-        this.jwt.destroyToken();
+		this.jwt.destroyToken();
 
-    }
+	}
 
-    public login ( email: string, password: string ) {
+	public login ( email: string, password: string ) {
 
-        return this.api.post( '/auth/login', { email, password } )
+		return this.api.post( '/auth/login', { email, password } )
 
-            .pipe( map( response => {
+			.pipe( map( response => {
 
-                // login successful if there's a jwt token in the response
-                if ( response && response.token ) {
+				// login successful if there's a jwt token in the response
+				if ( response && response.token ) {
 
-                    this.jwt.saveToken( response.token );
+					this.jwt.saveToken( response.token );
 
-                    window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
-                    window.localStorage.setItem( 'email', email );
+					window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
+					window.localStorage.setItem( 'email', email );
 
-                    this.currentUserSubject.next( response );
+					this.currentUserSubject.next( response );
 
-                }
+				}
 
-                return response;
+				return response;
 
-            } ) );
+			} ) );
 
-    }
+	}
 
-    public register (
-        name: string,
-        email: string,
-        password: string,
-        confirmPassword: string,
-        agreed: boolean
-    ) {
+	public register (
+		name: string,
+		email: string,
+		password: string,
+		confirmPassword: string,
+		agreed: boolean
+	) {
 
-        return this.api.post( '/auth/register', {
-            name,
-            email,
-            password,
-            password_confirmation: confirmPassword,
-            agreed
-        } )
+		return this.api.post( '/auth/register', {
+			name,
+			email,
+			password,
+			password_confirmation: confirmPassword,
+			agreed
+		} )
 
-            .pipe( map( response => {
+			.pipe( map( response => {
 
-                // login successful if there's a jwt token in the response
-                if ( response && response.token ) {
+				// login successful if there's a jwt token in the response
+				if ( response && response.token ) {
 
-                    this.jwt.saveToken( response.token );
+					this.jwt.saveToken( response.token );
 
-                    window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
-                    window.localStorage.setItem( 'email', email );
+					window.localStorage.setItem( 'currentUser', JSON.stringify( response ) );
+					window.localStorage.setItem( 'email', email );
 
-                    this.currentUserSubject.next( response );
+					this.currentUserSubject.next( response );
 
-                }
+				}
 
-                return response;
+				return response;
 
-            } ) );
+			} ) );
 
-    }
+	}
 
-    public forgotPassword ( email: string ) {
+	public forgotPassword ( email: string ) {
 
-        return this.api.post( '/auth/forgot-password', { email } );
+		return this.api.post( '/auth/forgot-password', { email } );
 
-    }
+	}
 
 }

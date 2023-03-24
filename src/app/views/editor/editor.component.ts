@@ -12,67 +12,67 @@ import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 
 @Component( {
-    selector: 'app-editor',
-    templateUrl: './editor.component.html',
-    styleUrls: [ './editor.component.css' ],
+	selector: 'app-editor',
+	templateUrl: './editor.component.html',
+	styleUrls: [ './editor.component.css' ],
 } )
 export class EditorComponent implements OnInit, AfterContentInit {
 
-    constructor (
-        private dialog: MatDialog,
-        private analytics: AnalyticsService,
-        private mainFileService: MainFileService,
-        private editor: EditorService,
-    ) {
+	constructor (
+		private dialog: MatDialog,
+		private analytics: AnalyticsService,
+		private mainFileService: MainFileService,
+		private editor: EditorService,
+	) {
 
-    }
+	}
 
-    get consoleLabel () {
+	get consoleLabel () {
 
-        if ( TvConsole.logs.length > 0 ) return `Console (${ TvConsole.logs.length })`;
+		if ( TvConsole.logs.length > 0 ) return `Console (${ TvConsole.logs.length })`;
 
-        return 'Console';
-    }
+		return 'Console';
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.mainFileService.newFile();
+		this.mainFileService.newFile();
 
-    }
+	}
 
-    ngAfterContentInit (): void {
+	ngAfterContentInit (): void {
 
-        // setTimeout( () => {
+		// setTimeout( () => {
 
-        //     this.showNewScenarioDialog();
+		//     this.showNewScenarioDialog();
 
-        // }, 300 );
+		// }, 300 );
 
-    }
+	}
 
-    showNewScenarioDialog () {
+	showNewScenarioDialog () {
 
-        this.dialog.open( NewRoadDialogComponent, {
-            width: '680px',
-            height: '680px',
-            data: null,
-            disableClose: true
-        } );
+		this.dialog.open( NewRoadDialogComponent, {
+			width: '680px',
+			height: '680px',
+			data: null,
+			disableClose: true
+		} );
 
-    }
+	}
 
-    @HostListener( 'document:keydown', [ '$event' ] )
-    onKeyDown ( e: KeyboardEvent ) {
+	@HostListener( 'document:keydown', [ '$event' ] )
+	onKeyDown ( e: KeyboardEvent ) {
 
-        this.editor.onKeyDown( e );
+		this.editor.onKeyDown( e );
 
-    }
+	}
 
-    @HostListener( 'document:keyup', [ '$event' ] )
-    onKeyUp ( e: KeyboardEvent ) {
+	@HostListener( 'document:keyup', [ '$event' ] )
+	onKeyUp ( e: KeyboardEvent ) {
 
-        this.editor.onKeyUp( e );
+		this.editor.onKeyUp( e );
 
-    }
+	}
 
 }

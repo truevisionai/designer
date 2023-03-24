@@ -8,82 +8,82 @@ import { TvRoad } from './tv-road.model';
 
 export class TvJunctionLaneLink {
 
-    public lanePath: LanePathObject;
+	public lanePath: LanePathObject;
 
 	/**
 	 *
 	 * @param from ID of the incoming lane
 	 * @param to ID of the connecting lane
 	 */
-    constructor ( public from: number, public to: number ) {
+	constructor ( public from: number, public to: number ) {
 
-    }
+	}
 
-    show () {
+	show () {
 
-        if ( this.lanePath ) this.lanePath.hide();
+		if ( this.lanePath ) this.lanePath.hide();
 
-    }
+	}
 
-    hide () {
+	hide () {
 
-        if ( this.lanePath ) this.lanePath.show();
+		if ( this.lanePath ) this.lanePath.show();
 
-    }
+	}
 }
 
 export class LanePathObject extends Object3D {
 
-    public static tag = 'lane-path';
+	public static tag = 'lane-path';
 
-    public mesh: Mesh | Line;
+	public mesh: Mesh | Line;
 
-    public isSelected: boolean;
+	public isSelected: boolean;
 
-    constructor (
-        public incomingRoad: TvRoad,
-        public connectingRoad: TvRoad,
-        public connection: TvJunctionConnection,
-        public link: TvJunctionLaneLink
-    ) {
-        super();
-    }
+	constructor (
+		public incomingRoad: TvRoad,
+		public connectingRoad: TvRoad,
+		public connection: TvJunctionConnection,
+		public link: TvJunctionLaneLink
+	) {
+		super();
+	}
 
-    get material () {
-        return this.mesh.material as LineBasicMaterial;
-    }
+	get material () {
+		return this.mesh.material as LineBasicMaterial;
+	}
 
-    select () {
+	select () {
 
-        this.isSelected = true;
+		this.isSelected = true;
 
-        // red
-        this.material.color = new Color( 0xff0000 );
-        this.material.needsUpdate = true;
+		// red
+		this.material.color = new Color( 0xff0000 );
+		this.material.needsUpdate = true;
 
-    }
+	}
 
-    unselect () {
+	unselect () {
 
-        this.isSelected = false;
+		this.isSelected = false;
 
-        // green
-        this.material.color = new Color( 0x00ffff );
-        this.material.needsUpdate = true;
+		// green
+		this.material.color = new Color( 0x00ffff );
+		this.material.needsUpdate = true;
 
-    }
+	}
 
-    hide () {
+	hide () {
 
-        this.visible = false;
-        this.mesh.visible = false;
+		this.visible = false;
+		this.mesh.visible = false;
 
-    }
+	}
 
-    show () {
+	show () {
 
-        this.visible = true;
-        this.mesh.visible = true;
+		this.visible = true;
+		this.mesh.visible = true;
 
-    }
+	}
 }

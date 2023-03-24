@@ -15,167 +15,167 @@ import { RoadStyle } from './road-style.service';
 
 export interface Scene {
 
-    road: { guid: string },
+	road: { guid: string },
 
-    props: { guid: string, position: Vector3, rotation: Euler, scale: Vector3 }[],
+	props: { guid: string, position: Vector3, rotation: Euler, scale: Vector3 }[],
 
-    propCurves: []
+	propCurves: []
 }
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class RoadExporterService {
 
-    private readonly extension = 'roadstyle';
+	private readonly extension = 'roadstyle';
 
-    constructor (
-        private openDriveWriter: OdWriter,
-        private fileService: FileService,
-        private electron: ElectronService
-    ) {
-    }
+	constructor (
+		private openDriveWriter: OdWriter,
+		private fileService: FileService,
+		private electron: ElectronService
+	) {
+	}
 
-    exportRoadStyle ( road: RoadStyle ) {
+	exportRoadStyle ( road: RoadStyle ) {
 
-        const xmlNode = {
-            version: 1,
-            laneOffset: null,
-            laneSection: null,
-        };
+		const xmlNode = {
+			version: 1,
+			laneOffset: null,
+			laneSection: null,
+		};
 
-        this.writeLaneOffset( xmlNode, road );
+		this.writeLaneOffset( xmlNode, road );
 
-        this.writeLaneSection( xmlNode, road.laneSection );
+		this.writeLaneSection( xmlNode, road.laneSection );
 
-        return xmlNode;
-    }
+		return xmlNode;
+	}
 
-    writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
+	writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
 
-        const leftLanes = {
-            lane: []
-        };
-        const centerLanes = {
-            lane: []
-        };
-        const rightLanes = {
-            lane: []
-        };
+		const leftLanes = {
+			lane: []
+		};
+		const centerLanes = {
+			lane: []
+		};
+		const rightLanes = {
+			lane: []
+		};
 
-        for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
+		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
 
-            const lane = laneSection.getLane( i );
-            const side = lane.getSide();
+			const lane = laneSection.getLane( i );
+			const side = lane.getSide();
 
-            if ( side === TvLaneSide.LEFT ) {
+			if ( side === TvLaneSide.LEFT ) {
 
-                this.writeLane( leftLanes, lane );
+				this.writeLane( leftLanes, lane );
 
-            } else if ( side === TvLaneSide.RIGHT ) {
+			} else if ( side === TvLaneSide.RIGHT ) {
 
-                this.writeLane( rightLanes, lane );
+				this.writeLane( rightLanes, lane );
 
-            } else if ( side === TvLaneSide.CENTER ) {
+			} else if ( side === TvLaneSide.CENTER ) {
 
-                this.writeLane( centerLanes, lane );
+				this.writeLane( centerLanes, lane );
 
-            }
-        }
+			}
+		}
 
-        const laneSectionNode = {
-            attr_s: laneSection.s,
-        };
+		const laneSectionNode = {
+			attr_s: laneSection.s,
+		};
 
-        if ( leftLanes.lane.length > 0 ) laneSectionNode[ 'left' ] = leftLanes;
+		if ( leftLanes.lane.length > 0 ) laneSectionNode[ 'left' ] = leftLanes;
 
-        if ( centerLanes.lane.length > 0 ) laneSectionNode[ 'center' ] = centerLanes;
+		if ( centerLanes.lane.length > 0 ) laneSectionNode[ 'center' ] = centerLanes;
 
-        if ( rightLanes.lane.length > 0 ) laneSectionNode[ 'right' ] = rightLanes;
+		if ( rightLanes.lane.length > 0 ) laneSectionNode[ 'right' ] = rightLanes;
 
-        xmlNode.laneSection = laneSectionNode;
-    }
+		xmlNode.laneSection = laneSectionNode;
+	}
 
-    writeLane ( xmlNode, lane: TvLane ): any {
+	writeLane ( xmlNode, lane: TvLane ): any {
 
-        const laneNode = {
-            attr_id: lane.id,
-            attr_type: lane.type,
-            attr_level: lane.level,
-            // link: {},
-            width: [],
-            roadMark: [],
-            // material: [],
-            // visibility: [],
-            // speed: [],
-            // access: [],
-            // height: []
-        };
+		const laneNode = {
+			attr_id: lane.id,
+			attr_type: lane.type,
+			attr_level: lane.level,
+			// link: {},
+			width: [],
+			roadMark: [],
+			// material: [],
+			// visibility: [],
+			// speed: [],
+			// access: [],
+			// height: []
+		};
 
-        for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
-            this.openDriveWriter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
-        }
+		for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
+			this.openDriveWriter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
+		}
 
-        for ( let i = 0; i < lane.getLaneRoadMarkCount(); i++ ) {
-            this.openDriveWriter.writeLaneRoadMark( laneNode, lane.getLaneRoadMark( i ) );
-        }
+		for ( let i = 0; i < lane.getLaneRoadMarkCount(); i++ ) {
+			this.openDriveWriter.writeLaneRoadMark( laneNode, lane.getLaneRoadMark( i ) );
+		}
 
-        // NOTE: below lane properties can be added as needed
+		// NOTE: below lane properties can be added as needed
 
-        // for ( let i = 0; i < lane.getLaneMaterialCount(); i++ ) {
-        //     this.openDriveWriter.writeLaneMaterial( laneNode, lane.getLaneMaterial( i ) );
-        // }
+		// for ( let i = 0; i < lane.getLaneMaterialCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneMaterial( laneNode, lane.getLaneMaterial( i ) );
+		// }
 
-        // for ( let i = 0; i < lane.getLaneVisibilityCount(); i++ ) {
-        //     this.openDriveWriter.writeLaneVisibility( laneNode, lane.getLaneVisibility( i ) );
-        // }
+		// for ( let i = 0; i < lane.getLaneVisibilityCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneVisibility( laneNode, lane.getLaneVisibility( i ) );
+		// }
 
-        // for ( let i = 0; i < lane.getLaneSpeedCount(); i++ ) {
-        //     this.openDriveWriter.writeLaneSpeed( laneNode, lane.getLaneSpeed( i ) );
-        // }
+		// for ( let i = 0; i < lane.getLaneSpeedCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneSpeed( laneNode, lane.getLaneSpeed( i ) );
+		// }
 
-        // for ( let i = 0; i < lane.getLaneAccessCount(); i++ ) {
-        //     this.openDriveWriter.writeLaneAccess( laneNode, lane.getLaneAccess( i ) );
-        // }
+		// for ( let i = 0; i < lane.getLaneAccessCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneAccess( laneNode, lane.getLaneAccess( i ) );
+		// }
 
-        // for ( let i = 0; i < lane.getLaneHeightCount(); i++ ) {
-        //     this.openDriveWriter.writeLaneHeight( laneNode, lane.getLaneHeight( i ) );
-        // }
+		// for ( let i = 0; i < lane.getLaneHeightCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneHeight( laneNode, lane.getLaneHeight( i ) );
+		// }
 
-        xmlNode.lane.push( laneNode );
+		xmlNode.lane.push( laneNode );
 
-        return laneNode;
-    }
+		return laneNode;
+	}
 
-    writeLaneOffset ( xmlNode, road: RoadStyle ) {
+	writeLaneOffset ( xmlNode, road: RoadStyle ) {
 
-        xmlNode.laneOffset = {
-            attr_s: road.laneOffset.s,
-            attr_a: road.laneOffset.a,
-            attr_b: road.laneOffset.b,
-            attr_c: road.laneOffset.c,
-            attr_d: road.laneOffset.d,
-        };
+		xmlNode.laneOffset = {
+			attr_s: road.laneOffset.s,
+			attr_a: road.laneOffset.a,
+			attr_b: road.laneOffset.b,
+			attr_c: road.laneOffset.c,
+			attr_d: road.laneOffset.d,
+		};
 
-        return xmlNode;
-    }
+		return xmlNode;
+	}
 
-    exportTypes ( types: TvRoadTypeClass[] ) {
+	exportTypes ( types: TvRoadTypeClass[] ) {
 
-        return types.map( type => {
+		return types.map( type => {
 
-            return {
-                attr_s: type.s,
-                attr_type: type.type,
-                speed: {
-                    attr_max: type.speed.max,
-                    attr_unit: type.speed.unit
-                },
-            };
+			return {
+				attr_s: type.s,
+				attr_type: type.type,
+				speed: {
+					attr_max: type.speed.max,
+					attr_unit: type.speed.unit
+				},
+			};
 
-        } );
+		} );
 
-    }
+	}
 
 
 }

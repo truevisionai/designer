@@ -14,130 +14,130 @@ import { IEditorState } from './i-editor-state';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
-    abstract name: string;
+	abstract name: string;
 
-    // highlighting variables
-    private previousColor = new Color();
-    private previousMaterial: MeshBasicMaterial;
+	// highlighting variables
+	private previousColor = new Color();
+	private previousMaterial: MeshBasicMaterial;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-        this.clearInspector();
+		this.clearInspector();
 
-    }
+	}
 
-    get map () {
+	get map () {
 
-        return TvMapInstance.map;
+		return TvMapInstance.map;
 
-    }
+	}
 
-    init () {
+	init () {
 
-    }
+	}
 
-    enable (): void {
+	enable (): void {
 
-        this.subscribeToEvents();
+		this.subscribeToEvents();
 
-    }
+	}
 
-    disable (): void {
+	disable (): void {
 
-        this.unsubscribeToEvents();
+		this.unsubscribeToEvents();
 
-        this.removeHighlight();
+		this.removeHighlight();
 
-    }
+	}
 
-    clearInspector () {
+	clearInspector () {
 
-        AppInspector.clear();
+		AppInspector.clear();
 
-    }
+	}
 
-    setInspector ( component: Type<IComponent>, data: any ) {
+	setInspector ( component: Type<IComponent>, data: any ) {
 
-        AppInspector.setInspector( component, data );
+		AppInspector.setInspector( component, data );
 
-    }
+	}
 
-    protected checkRoadIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
+	protected checkRoadIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
 
-        this.checkIntersection( ObjectTypes.LANE, intersections, ( obj ) => {
+		this.checkIntersection( ObjectTypes.LANE, intersections, ( obj ) => {
 
-            callback( obj.parent.parent );
+			callback( obj.parent.parent );
 
-        } );
+		} );
 
-    }
+	}
 
 
-    protected checkLaneIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
+	protected checkLaneIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
 
-        this.checkIntersection( ObjectTypes.LANE, intersections, callback );
+		this.checkIntersection( ObjectTypes.LANE, intersections, callback );
 
-    }
+	}
 
-    protected checkVehicleIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
+	protected checkVehicleIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
 
-        this.checkIntersection( ObjectTypes.VEHICLE, intersections, callback );
+		this.checkIntersection( ObjectTypes.VEHICLE, intersections, callback );
 
-    }
+	}
 
-    protected checkControlPointIntersection ( intersections: Intersection[], callback: ( object: AnyControlPoint ) => void ) {
+	protected checkControlPointIntersection ( intersections: Intersection[], callback: ( object: AnyControlPoint ) => void ) {
 
-        for ( const i of intersections ) {
+		for ( const i of intersections ) {
 
-            if ( i.object != null && i.object.type == 'Points' ) {
+			if ( i.object != null && i.object.type == 'Points' ) {
 
-                callback( i.object as AnyControlPoint );
+				callback( i.object as AnyControlPoint );
 
-                break;
-            }
-        }
-    }
+				break;
+			}
+		}
+	}
 
-    protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
+	protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
 
-        for ( const i of intersections ) {
+		for ( const i of intersections ) {
 
-            if ( i.object[ 'tag' ] == tag ) {
+			if ( i.object[ 'tag' ] == tag ) {
 
-                callback( i.object );
+				callback( i.object );
 
-                break;
-            }
+				break;
+			}
 
-        }
+		}
 
-    }
+	}
 
-    protected highlight ( object: Mesh ) {
+	protected highlight ( object: Mesh ) {
 
-        const material = ( object.material as MeshBasicMaterial );
+		const material = ( object.material as MeshBasicMaterial );
 
-        // clone because we want a new instance
-        this.previousColor = material.color.clone();
+		// clone because we want a new instance
+		this.previousColor = material.color.clone();
 
-        // set the current material property to highlighted color
-        material.color.add( new Color( 0, 0, 0.2 ) );
-        // material.color.addScalar(0.1)
-        // material.opacity = 0.6;
+		// set the current material property to highlighted color
+		material.color.add( new Color( 0, 0, 0.2 ) );
+		// material.color.addScalar(0.1)
+		// material.opacity = 0.6;
 
-        // dont clone we want the same instance
-        this.previousMaterial = material;
-    }
+		// dont clone we want the same instance
+		this.previousMaterial = material;
+	}
 
-    protected removeHighlight () {
+	protected removeHighlight () {
 
-        if ( this.previousMaterial == null ) return;
+		if ( this.previousMaterial == null ) return;
 
-        this.previousMaterial.color.copy( this.previousColor );
+		this.previousMaterial.color.copy( this.previousColor );
 
-    }
+	}
 
 }
 

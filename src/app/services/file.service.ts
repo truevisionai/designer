@@ -11,153 +11,153 @@ import { SnackBar } from './snack-bar.service';
 declare const versions;
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class FileService {
 
-    static electron: ElectronService;
+	static electron: ElectronService;
 
-    public fileImported = new EventEmitter<IFile>();
-    public fileSaved = new EventEmitter<IFile>();
+	public fileImported = new EventEmitter<IFile>();
+	public fileSaved = new EventEmitter<IFile>();
 
-    public fs: any;
-    public path: any;
-    private util: any;
+	public fs: any;
+	public path: any;
+	private util: any;
 
-    constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
+	constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
 
-        FileService.electron = electronService;
+		FileService.electron = electronService;
 
-        if ( this.electronService.isElectronApp ) {
+		if ( this.electronService.isElectronApp ) {
 
-            this.fs = this.remote.require( 'fs' );
-            this.path = this.remote.require( 'path' );
-            this.util = this.remote.require( 'util' );
+			this.fs = this.remote.require( 'fs' );
+			this.path = this.remote.require( 'path' );
+			this.util = this.remote.require( 'util' );
 
-        }
+		}
 
-    }
+	}
 
-    get remote () { return versions.remote(); }
+	get remote () { return versions.remote(); }
 
-    get userDocumentFolder () {
-        return this.remote.app.getPath( 'documents' );
-    }
+	get userDocumentFolder () {
+		return this.remote.app.getPath( 'documents' );
+	}
 
-    get currentDirectory () {
-        return this.electronService.ipcRenderer.sendSync( 'current-directory' );
-    }
+	get currentDirectory () {
+		return this.electronService.ipcRenderer.sendSync( 'current-directory' );
+	}
 
-    get projectFolder () {
+	get projectFolder () {
 
-        if ( this.electronService.isWindows ) {
+		if ( this.electronService.isWindows ) {
 
-            return this.userDocumentFolder + '\\Truevision';
+			return this.userDocumentFolder + '\\Truevision';
 
-        } else if ( this.electronService.isLinux ) {
+		} else if ( this.electronService.isLinux ) {
 
-            return this.userDocumentFolder + '/Truevision';
+			return this.userDocumentFolder + '/Truevision';
 
-        } else if ( this.electronService.isMacOS ) {
+		} else if ( this.electronService.isMacOS ) {
 
-            return this.userDocumentFolder + '/Truevision';
+			return this.userDocumentFolder + '/Truevision';
 
-        } else {
+		} else {
 
-            throw new Error( 'Unsupported platform. Please contact support for more details.' );
+			throw new Error( 'Unsupported platform. Please contact support for more details.' );
 
-        }
-    }
+		}
+	}
 
-    static openFile ( onImported: ( files: any ) => void = null, onRead: ( content: string ) => void = null ) {
+	static openFile ( onImported: ( files: any ) => void = null, onRead: ( content: string ) => void = null ) {
 
-        // TODO : Test one time creation
-        const form = document.createElement( 'form' );
-        const input = document.createElement( 'input' );
+		// TODO : Test one time creation
+		const form = document.createElement( 'form' );
+		const input = document.createElement( 'input' );
 
-        input.type = 'file';
+		input.type = 'file';
 
-        form.appendChild( input );
+		form.appendChild( input );
 
-        input.addEventListener( 'change', ( event: any ) => {
+		input.addEventListener( 'change', ( event: any ) => {
 
-            onImported( event.target.files );
+			onImported( event.target.files );
 
-            const reader = new FileReader();
+			const reader = new FileReader();
 
-            reader.addEventListener( 'load', ( event: any ) => {
+			reader.addEventListener( 'load', ( event: any ) => {
 
-                onRead( event.target.result );
+				onRead( event.target.result );
 
-            }, false );
+			}, false );
 
-            reader.readAsText( event.target.files[ 0 ] );
+			reader.readAsText( event.target.files[ 0 ] );
 
-        } );
+		} );
 
-        input.click();
+		input.click();
 
-    }
+	}
 
-    static getExtension ( filename: string ): string {
+	static getExtension ( filename: string ): string {
 
-        if ( this.electron.isWindows ) {
+		if ( this.electron.isWindows ) {
 
-            const array = filename.split( '.' );
+			const array = filename.split( '.' );
 
-            return array[ array.length - 1 ];
-        }
+			return array[ array.length - 1 ];
+		}
 
-        const regEx = /(?:\.([^.]+))?$/;
+		const regEx = /(?:\.([^.]+))?$/;
 
-        const extension = regEx.exec( filename )[ 1 ];
+		const extension = regEx.exec( filename )[ 1 ];
 
-        return extension;
-    }
+		return extension;
+	}
 
-    static getFilenameFromPath ( path: string ): string {
+	static getFilenameFromPath ( path: string ): string {
 
-        return FileUtils.getFilenameFromPath( path );
+		return FileUtils.getFilenameFromPath( path );
 
-    }
+	}
 
-    async showAsyncDialog (): Promise<Electron.OpenDialogReturnValue> {
+	async showAsyncDialog (): Promise<Electron.OpenDialogReturnValue> {
 
-        const options = {
-            title: 'Select file',
-            buttonLabel: 'Import',
-            filters: [],
-            message: 'Select file'
-        };
+		const options = {
+			title: 'Select file',
+			buttonLabel: 'Import',
+			filters: [],
+			message: 'Select file'
+		};
 
-        return this.remote.dialog.showOpenDialog( options );
-    }
+		return this.remote.dialog.showOpenDialog( options );
+	}
 
-    async readAsync ( path ) {
+	async readAsync ( path ) {
 
-        return Promise.resolve( this.fs.readFileSync( path, 'utf-8' ) );
+		return Promise.resolve( this.fs.readFileSync( path, 'utf-8' ) );
 
-    }
+	}
 
-    import ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
+	import ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
 
-        if ( !this.electronService.isElectronApp ) throw new Error( 'Error: cannot import' );
+		if ( !this.electronService.isElectronApp ) throw new Error( 'Error: cannot import' );
 
-        const options = {
-            title: 'Select file',
-            buttonLabel: 'Import',
-            defaultPath: path || this.projectFolder,
-            filters: [
-                {
-                    name: null,
-                    extensions
-                }
-            ],
-            message: 'Select file'
-        };
+		const options = {
+			title: 'Select file',
+			buttonLabel: 'Import',
+			defaultPath: path || this.projectFolder,
+			filters: [
+				{
+					name: null,
+					extensions
+				}
+			],
+			message: 'Select file'
+		};
 
 		this.showOpenDialog( options, type, callbackFn );
-    }
+	}
 
 	showOpenDialog ( options: Electron.OpenDialogOptions, type, callbackFn: any = null ) {
 
@@ -175,54 +175,54 @@ export class FileService {
 	 *
 	 * @deprecated use import
 	 */
-    importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
+	importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
 
-        this.import( path, type, extensions, null );
+		this.import( path, type, extensions, null );
 
-    }
+	}
 
-    readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
+	readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
 
-        this.fs.readFile( path, 'utf-8', ( err, data ) => {
+		this.fs.readFile( path, 'utf-8', ( err, data ) => {
 
-            if ( err ) {
-                SnackBar.error( 'An error ocurred reading the file :' + err.message );
-                return;
-            }
+			if ( err ) {
+				SnackBar.error( 'An error ocurred reading the file :' + err.message );
+				return;
+			}
 
-            const file = new IFile();
+			const file = new IFile();
 
-            file.path = path;
-            file.contents = data;
-            file.type = type;
-            file.updatedAt = new Date();
+			file.path = path;
+			file.contents = data;
+			file.type = type;
+			file.updatedAt = new Date();
 
-            // if ( callbackFn != null ) callbackFn( file );
+			// if ( callbackFn != null ) callbackFn( file );
 
-            // Need to call the callback function from ngZone to trigger change detection in Angular
-            if ( callbackFn != null ) this.ngZone.run( () => callbackFn( file ) );
+			// Need to call the callback function from ngZone to trigger change detection in Angular
+			if ( callbackFn != null ) this.ngZone.run( () => callbackFn( file ) );
 
-            this.fileImported.emit( file );
+			this.fileImported.emit( file );
 
-        } );
+		} );
 
-    }
+	}
 
-    saveFile ( defaultPath: string, contents: string, callbackFn: any = null ): any {
+	saveFile ( defaultPath: string, contents: string, callbackFn: any = null ): any {
 
-        this.writeFile( defaultPath, contents, callbackFn );
+		this.writeFile( defaultPath, contents, callbackFn );
 
-    }
+	}
 
-    saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
+	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
 
-        if ( directory == null ) directory = this.projectFolder;
+		if ( directory == null ) directory = this.projectFolder;
 
-        const options = {
-            defaultPath: directory
-        };
+		const options = {
+			defaultPath: directory
+		};
 
-        this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
+		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
 			let fullPath = res.filePath;
 
@@ -245,263 +245,263 @@ export class FileService {
 
 		} );
 
-    }
+	}
 
-    saveAsFile ( directory: string = null, contents: string, callbackFn: any = null ): any {
+	saveAsFile ( directory: string = null, contents: string, callbackFn: any = null ): any {
 
-        if ( directory == null ) directory = this.projectFolder;
+		if ( directory == null ) directory = this.projectFolder;
 
-        const options = {
-            defaultPath: directory
-        };
+		const options = {
+			defaultPath: directory
+		};
 
-        this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
+		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
-            if ( res.canceled || res.filePath == null ) {
+			if ( res.canceled || res.filePath == null ) {
 
 				SnackBar.show( "file save cancelled" );
 
-            } else {
+			} else {
 
-                this.writeFile( res.filePath, contents, callbackFn );
+				this.writeFile( res.filePath, contents, callbackFn );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    writeFile ( filepath, content, callbackFn: any = null ) {
+	writeFile ( filepath, content, callbackFn: any = null ) {
 
-        this.fs.writeFile( filepath, content, ( err, data ) => {
+		this.fs.writeFile( filepath, content, ( err, data ) => {
 
-            if ( err ) {
+			if ( err ) {
 
-                console.error( 'An error ocurred creating the file ' + err.message );
+				console.error( 'An error ocurred creating the file ' + err.message );
 
-                return;
+				return;
 
-            } else {
+			} else {
 
-                const file = new IFile( null, filepath, content, null, null, new Date() );
+				const file = new IFile( null, filepath, content, null, null, new Date() );
 
-                this.fileSaved.emit( file );
+				this.fileSaved.emit( file );
 
-                if ( callbackFn != null ) callbackFn( file );
+				if ( callbackFn != null ) callbackFn( file );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    listFiles ( path, callback ) {
+	listFiles ( path, callback ) {
 
-        this.fs.readdir( path, ( err, files ) => {
+		this.fs.readdir( path, ( err, files ) => {
 
-            if ( err ) {
+			if ( err ) {
 
-                console.log( 'Error getting directory information.' );
+				console.log( 'Error getting directory information.' );
 
-            } else {
+			} else {
 
-                callback( files );
+				callback( files );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    deleteFolderSync ( path: string ) {
+	deleteFolderSync ( path: string ) {
 
-        if ( this.fs.existsSync( path ) ) {
+		if ( this.fs.existsSync( path ) ) {
 
-            this.fs.rmdirSync( path, { recursive: true } );
+			this.fs.rmdirSync( path, { recursive: true } );
 
-        } else {
+		} else {
 
-            console.error( 'folder does not exists' );
+			console.error( 'folder does not exists' );
 
-        }
+		}
 
-    }
+	}
 
-    deleteFileSync ( path: string ) {
+	deleteFileSync ( path: string ) {
 
-        this.fs.unlinkSync( path );
+		this.fs.unlinkSync( path );
 
-    }
+	}
 
-    createFolder ( path: string, name: string = 'New Folder' ) {
+	createFolder ( path: string, name: string = 'New Folder' ) {
 
-        try {
+		try {
 
-            let folderName = name;
+			let folderName = name;
 
-            let folderPath = this.join( path, folderName );
+			let folderPath = this.join( path, folderName );
 
-            let count = 1;
+			let count = 1;
 
-            while ( this.fs.existsSync( folderPath ) && count <= 20 ) {
+			while ( this.fs.existsSync( folderPath ) && count <= 20 ) {
 
-                folderName = `${ name } (${ count++ })`;
+				folderName = `${ name } (${ count++ })`;
 
-                folderPath = this.join( path, folderName );
+				folderPath = this.join( path, folderName );
 
-            }
+			}
 
-            this.fs.mkdirSync( folderPath );
+			this.fs.mkdirSync( folderPath );
 
-            return {
-                name: folderName,
-                path: folderPath
-            };
+			return {
+				name: folderName,
+				path: folderPath
+			};
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            // throw new Error( `Error in creating project at ${ path }` );
+			// throw new Error( `Error in creating project at ${ path }` );
 
-        }
+		}
 
-    }
+	}
 
-    createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
+	createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
 
-        let slash = null;
+		let slash = null;
 
-        if ( this.electronService.isWindows ) slash = '\\';
+		if ( this.electronService.isWindows ) slash = '\\';
 
-        if ( this.electronService.isLinux ) slash = '/';
+		if ( this.electronService.isLinux ) slash = '/';
 
-        let filePath = `${ path }${ slash }${ name }.${ extension }`;
-        let fileName = name;
+		let filePath = `${ path }${ slash }${ name }.${ extension }`;
+		let fileName = name;
 
-        if ( this.fs.existsSync( filePath ) ) {
+		if ( this.fs.existsSync( filePath ) ) {
 
-            let count = 1;
+			let count = 1;
 
-            fileName = `${ name }(${ count })`;
-            filePath = `${ path }${ slash }${ fileName }.${ extension }`;
+			fileName = `${ name }(${ count })`;
+			filePath = `${ path }${ slash }${ fileName }.${ extension }`;
 
-            while ( this.fs.existsSync( filePath ) ) {
+			while ( this.fs.existsSync( filePath ) ) {
 
-                fileName = `${ name }(${ count++ })`;
-                filePath = `${ path }${ slash }${ fileName }.${ extension }`;
+				fileName = `${ name }(${ count++ })`;
+				filePath = `${ path }${ slash }${ fileName }.${ extension }`;
 
-            }
+			}
 
-        }
+		}
 
-        this.fs.writeFileSync( filePath, contents );
+		this.fs.writeFileSync( filePath, contents );
 
-        return { fileName, filePath };
-    }
+		return { fileName, filePath };
+	}
 
-    readPathContents ( dirpath ) {
-        return new Promise( resolve => {
-            this.fs.readdir( dirpath, this.handled( files => {
-                Promise.all( files.map( file => {
-                    const itemPath = this.path.join( dirpath, file );
-                    return this.getItemProperties( itemPath );
-                } ) ).then( resolve );
-            } ) );
-        } );
-    }
+	readPathContents ( dirpath ) {
+		return new Promise( resolve => {
+			this.fs.readdir( dirpath, this.handled( files => {
+				Promise.all( files.map( file => {
+					const itemPath = this.path.join( dirpath, file );
+					return this.getItemProperties( itemPath );
+				} ) ).then( resolve );
+			} ) );
+		} );
+	}
 
-    readPathContentsSync ( dirpath ) {
+	readPathContentsSync ( dirpath ) {
 
-        const files = this.fs.readdirSync( dirpath );
+		const files = this.fs.readdirSync( dirpath );
 
-        const items = [];
+		const items = [];
 
-        files.forEach( file => {
+		files.forEach( file => {
 
-            const itemPath = this.path.join( dirpath, file );
+			const itemPath = this.path.join( dirpath, file );
 
-            const itemWithProperites = this.getItemProperties( itemPath );
+			const itemWithProperites = this.getItemProperties( itemPath );
 
-            items.push( itemWithProperites );
+			items.push( itemWithProperites );
 
-        } );
+		} );
 
-        return items;
-    }
+		return items;
+	}
 
-    getItemProperties ( itemPath ) {
+	getItemProperties ( itemPath ) {
 
-        const stats = this.fs.statSync( itemPath );
+		const stats = this.fs.statSync( itemPath );
 
-        const name = FileService.getFilenameFromPath( itemPath );
+		const name = FileService.getFilenameFromPath( itemPath );
 
-        return {
-            name: name,
-            type: this.getItemType( stats, itemPath ),
-            path: itemPath,
-            size: stats.size,
-            mtime: stats.mtime
-        };
-    }
+		return {
+			name: name,
+			type: this.getItemType( stats, itemPath ),
+			path: itemPath,
+			size: stats.size,
+			mtime: stats.mtime
+		};
+	}
 
-    getItemType ( item, path ) {
+	getItemType ( item, path ) {
 
-        if ( this.electronService.isMacOS || this.electronService.isLinux ) {
-            if ( versions.stat.isFile( path ) ) {
-                return 'file';
-            } else if ( versions.stat.isDirectory( path ) ) {
-                return 'directory';
-            } else if ( versions.stat.isBlockDevice( path ) ) {
-                return 'blockdevice';
-            } else if ( versions.stat.isCharacterDevice( path ) ) {
-                return 'characterdevice';
-            } else if ( versions.stat.isSymbolicLink( path ) ) {
-                return 'symlink';
-            } else if ( versions.stat.isFIFO( path ) ) {
-                return 'fifo';
-            } else if ( versions.stat.isSocket( path ) ) {
-                return 'socket';
-            }
-            return '';
-        }
+		if ( this.electronService.isMacOS || this.electronService.isLinux ) {
+			if ( versions.stat.isFile( path ) ) {
+				return 'file';
+			} else if ( versions.stat.isDirectory( path ) ) {
+				return 'directory';
+			} else if ( versions.stat.isBlockDevice( path ) ) {
+				return 'blockdevice';
+			} else if ( versions.stat.isCharacterDevice( path ) ) {
+				return 'characterdevice';
+			} else if ( versions.stat.isSymbolicLink( path ) ) {
+				return 'symlink';
+			} else if ( versions.stat.isFIFO( path ) ) {
+				return 'fifo';
+			} else if ( versions.stat.isSocket( path ) ) {
+				return 'socket';
+			}
+			return '';
+		}
 
-        if ( item.isFile() ) {
-            return 'file';
-        } else if ( item.isDirectory() ) {
-            return 'directory';
-        } else if ( item.isBlockDevice() ) {
-            return 'blockdevice';
-        } else if ( item.isCharacterDevice() ) {
-            return 'characterdevice';
-        } else if ( item.isSymbolicLink() ) {
-            return 'symlink';
-        } else if ( item.isFIFO() ) {
-            return 'fifo';
-        } else if ( item.isSocket() ) {
-            return 'socket';
-        }
-        return '';
-    }
+		if ( item.isFile() ) {
+			return 'file';
+		} else if ( item.isDirectory() ) {
+			return 'directory';
+		} else if ( item.isBlockDevice() ) {
+			return 'blockdevice';
+		} else if ( item.isCharacterDevice() ) {
+			return 'characterdevice';
+		} else if ( item.isSymbolicLink() ) {
+			return 'symlink';
+		} else if ( item.isFIFO() ) {
+			return 'fifo';
+		} else if ( item.isSocket() ) {
+			return 'socket';
+		}
+		return '';
+	}
 
-    handled ( callback ) {
-        return function handledCallback ( err, ...args ) {
-            if ( err ) {
-                throw err;
-            }
-            callback( ...args );
-        };
-    }
+	handled ( callback ) {
+		return function handledCallback ( err, ...args ) {
+			if ( err ) {
+				throw err;
+			}
+			callback( ...args );
+		};
+	}
 
-    resolve ( relativePath: string, filename: string ): string {
+	resolve ( relativePath: string, filename: string ): string {
 
-        const dirname = this.path.dirname( relativePath );
+		const dirname = this.path.dirname( relativePath );
 
-        return this.path.resolve( dirname, filename );
+		return this.path.resolve( dirname, filename );
 
-    }
+	}
 
-    join ( path, filename ): string {
+	join ( path, filename ): string {
 
-        return this.path.join( path, filename );
+		return this.path.join( path, filename );
 
-    }
+	}
 }

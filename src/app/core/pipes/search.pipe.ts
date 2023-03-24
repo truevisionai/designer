@@ -5,23 +5,23 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe( {
-    name: 'search'
+	name: 'search'
 } )
 export class SearchPipe implements PipeTransform {
 
-    transform ( items: string[], query: string ): string[] {
+	transform ( items: string[], query: string ): string[] {
 
-        if ( !items ) return [];
+		if ( !items ) return [];
 
-        if ( !query ) return items;
+		if ( !query ) return items;
 
-        query = query.toLowerCase();
+		query = query.toLowerCase();
 
-        return items.filter( it => {
+		return items.filter( it => {
 
-            return it.toLowerCase().includes( query );
+			return it.toLowerCase().includes( query );
 
-        } );
-    }
+		} );
+	}
 
 }

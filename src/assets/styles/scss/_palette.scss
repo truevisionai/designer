@@ -2,80 +2,94 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-  @each $color_name, $scolor in $solid-colors {
-    // $alt: map-get($scolor, alt);
-    $color: map-get($scolor, color);
-    $foreground: map-get($scolor, foreground);
+@each $color_name,
+$scolor in $solid-colors {
+	// $alt: map-get($scolor, alt);
+	$color: map-get($scolor, color);
+	$foreground: map-get($scolor, foreground);
 
-    .sidebar-#{"" + $color-name} {
-        .navigation-hold {
-            background: $color !important;
-            
-            a, 
-            .sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
-            .sidenav li.open > div > a > span:not(.menuitem-badge),
-            .sidenav li.open > a > span,
-            .icon-menu .mat-raised-button,
-            .app-user .app-user-name,
-            .branding .app-logo-text {
-                color: $foreground !important;
-            }
-            .app-user .app-user-photo,
-            .sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret) {
-                border-color: $foreground !important;
-            }
-            .icon-menu .mat-raised-button, .branding {
-                background: $color !important;
-            }
-            .app-user {
-                background: lighten($color, 5) !important;
-            }
-            li.open {
-              background: lighten($color, 2) !important;
-              > a {
-                background: lighten($color, 4) !important;
-              }
-            }
-            .text-muted {
-                color: desaturate($foreground, 40) !important;
-            }
-        }
-    }
-    .topbar-#{"" + $color-name} {
-        .topbar.mat-toolbar {
-            background: $color !important;
-            color: $foreground !important;
-        }
-    }
+	.sidebar-#{"" + $color-name} {
+		.navigation-hold {
+			background: $color !important;
 
-    .ngx-datatable.header-#{"" + $color-name} {
-      .datatable-header {
-        background: $color;
-        .datatable-header-cell {
-          color: $foreground;
-        }
-      }
-    }
+			a,
+			.sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
+			.sidenav li.open>div>a>span:not(.menuitem-badge),
+			.sidenav li.open>a>span,
+			.icon-menu .mat-raised-button,
+			.app-user .app-user-name,
+			.branding .app-logo-text {
+				color: $foreground !important;
+			}
 
-    .#{"" + $color-name} {
-        background: $color !important;
-        color: $foreground !important;
-        .mat-table {
-          background: transparent !important;
-        }
-        .ngx-datatable.material *, 
-        .mat-table, 
-        .mat-cell, 
-        .mat-header-cell {
-            color: $foreground !important;
-        }
-        .ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover, 
-        .ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover .datatable-row-group {
-            background: lighten($color, 5)
-        }
-        
-    }
-    .text-#{"" + $color-name} {
-        color: $color;
-    }
+			.app-user .app-user-photo,
+			.sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret) {
+				border-color: $foreground !important;
+			}
+
+			.icon-menu .mat-raised-button,
+			.branding {
+				background: $color !important;
+			}
+
+			.app-user {
+				background: lighten($color, 5) !important;
+			}
+
+			li.open {
+				background: lighten($color, 2) !important;
+
+				>a {
+					background: lighten($color, 4) !important;
+				}
+			}
+
+			.text-muted {
+				color: desaturate($foreground, 40) !important;
+			}
+		}
+	}
+
+	.topbar-#{"" + $color-name} {
+		.topbar.mat-toolbar {
+			background: $color !important;
+			color: $foreground !important;
+		}
+	}
+
+	.ngx-datatable.header-#{"" + $color-name} {
+		.datatable-header {
+			background: $color;
+
+			.datatable-header-cell {
+				color: $foreground;
+			}
+		}
+	}
+
+	.#{"" + $color-name} {
+		background: $color !important;
+		color: $foreground !important;
+
+		.mat-table {
+			background: transparent !important;
+		}
+
+		.ngx-datatable.material *,
+		.mat-table,
+		.mat-cell,
+		.mat-header-cell {
+			color: $foreground !important;
+		}
+
+		.ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover,
+		.ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover .datatable-row-group {
+			background: lighten($color, 5)
+		}
+
+	}
+
+	.text-#{"" + $color-name} {
+		color: $color;
+	}
 }
