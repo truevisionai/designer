@@ -127,7 +127,7 @@ export class StatusBarComponent extends MonoBehaviour implements OnInit {
 
 				const nearest = geometry.getNearestPointFrom( point.x, point.y );
 
-				// Debug.log( nearest );
+				// console.log( nearest );
 
 				this.sphere.position.set( nearest.x, nearest.y, 0 );
 

@@ -61,6 +61,20 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		return new Vector3( circleX, circleY, 0 );
 	}
 
+	get startAngle () {
+		return this.hdg;
+	}
+
+	get endAngle () {
+		return this.hdg + this.angle;
+	}
+
+	get angle () {
+		// both are correct
+		return this.length * this.attr_curvature;
+		return this.length / this.radius;
+	}
+
 	get startV3 (): Vector3 {
 
 		return new Vector3( this.x, this.y, 0 );

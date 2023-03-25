@@ -20,10 +20,6 @@ describe( 'OdArcGeometry', () => {
 
 		TvMapInstance.map = map;
 
-		road = new TvRoad( '', 10, 1, -1 );
-
-		road.addPlanView();
-
 	} );
 
 	it( 'should give nearest point on arc', () => {

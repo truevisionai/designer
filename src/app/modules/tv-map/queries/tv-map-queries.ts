@@ -109,13 +109,9 @@ export class TvMapQueries extends TvBaseQueries {
 
 			road = keyValue[ 1 ];
 
-			let skip = false;
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 
-			for ( const id of roadIdsToIgnore ) if ( road.id === id ) skip = true;
-
-			if ( skip ) continue;
-
-			road.geometries.forEach( geometry => {
+			for ( const geometry of road.geometries ) {
 
 				const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
 
@@ -136,9 +132,7 @@ export class TvMapQueries extends TvBaseQueries {
 						posTheta.t = tmpPosTheta.t;
 					}
 				}
-
-			} );
-
+			}
 		}
 
 		// console.timeEnd( 'get-road' );

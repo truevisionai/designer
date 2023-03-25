@@ -133,6 +133,8 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	public getNearestPointFrom ( x: number, y: number, posTheta?: TvPosTheta ): Vector2 {
 
+		return super.getNearestPointFrom( x, y, posTheta );
+
 		const point = new Vector3( x, y, 0 );
 
 		const start = this.startV3;
@@ -162,7 +164,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 			posTheta.hdg = this.hdg;
 			posTheta.t = nearest.distanceTo( point );
 
-			console.log( Maths.direction( start, end, point ) );
+			// console.log( Maths.direction( start, end, point ) );
 
 		}
 

@@ -170,7 +170,7 @@ export abstract class TvAbstractRoadGeometry {
 		return false;
 	}
 
-	abstract getCoords ( sCheck, posTheta: TvPosTheta );
+	abstract getCoords ( sCheck, posTheta: TvPosTheta ): TvGeometryType;
 
 	abstract computeVars ();
 
@@ -182,7 +182,8 @@ export abstract class TvAbstractRoadGeometry {
 
 	public getNearestPointFrom ( x: number, y: number, posTheta?: TvPosTheta ): Vector2 {
 
-		return this.loopToGetNearestPoint( x, y, posTheta );
+		return this.binarySearch_GetNearestPoint( x, y, posTheta );
+		// return this.loopToGetNearestPoint( x, y, posTheta );
 
 	}
 
@@ -249,6 +250,57 @@ export abstract class TvAbstractRoadGeometry {
 
 			}
 
+		}
+
+		return nearestPoint;
+	}
+
+	protected binarySearch_GetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
+
+		const point = new Vector2( x, y );
+
+		const tolerance = 1e-0;
+
+		let start = this.s;
+		let end = this.s2;
+
+		while ( Math.abs( start - end ) >= tolerance ) {
+
+			const s1 = ( 2 * start + end ) / 3;
+			const s2 = ( start + 2 * end ) / 3;
+
+			const pos1 = new TvPosTheta();
+			const pos2 = new TvPosTheta();
+
+			this.getCoords( s1, pos1 );
+			this.getCoords( s2, pos2 );
+
+			const distance1 = point.distanceToSquared( pos1.toVector2() );
+			const distance2 = point.distanceToSquared( pos2.toVector2() );
+
+			if ( distance1 < distance2 ) {
+				end = s2;
+			} else {
+				start = s1;
+			}
+		}
+
+		const s = ( start + end ) / 2;
+
+		const tmpPosTheta = new TvPosTheta();
+
+		this.getCoords( s, tmpPosTheta );
+
+		const nearestPoint = tmpPosTheta.toVector2();
+
+		const t = nearestPoint.distanceTo( point ) * Math.sign( point.y - nearestPoint.y );
+
+		if ( refPosTheta ) {
+			refPosTheta.x = tmpPosTheta.x;
+			refPosTheta.y = tmpPosTheta.y;
+			refPosTheta.s = s;
+			refPosTheta.t = t;
+			refPosTheta.hdg = tmpPosTheta.hdg;
 		}
 
 		return nearestPoint;
