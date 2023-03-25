@@ -20,7 +20,8 @@
 		"test": "ng test",
 		"test-headless": "ng test --watch=false --browsers=ChromeHeadless",
 		"lint": "ng lint",
-		"e2e": "ng e2e"
+		"e2e": "ng e2e",
+		"version-update": "npm version patch --no-git-tag-version"
 	},
 	"private": true,
 	"dependencies": {
