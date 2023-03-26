@@ -11,64 +11,64 @@ import { OdBaseCommand } from './od-base-command';
 
 export class JoinRoadNodeCommand extends OdBaseCommand {
 
-    private joiningRoad: TvRoad;
-    private lastInspector;
-    private lastInspectorData;
+	private joiningRoad: TvRoad;
+	private lastInspector;
+	private lastInspectorData;
 
-    constructor (
-        private firstNode: RoadNode,
-        private secondNode: RoadNode
-    ) {
+	constructor (
+		private firstNode: RoadNode,
+		private secondNode: RoadNode
+	) {
 
-        super();
+		super();
 
-        this.lastInspector = AppInspector.currentInspector;
-        this.lastInspectorData = AppInspector.currentInspectorData;
+		this.lastInspector = AppInspector.currentInspector;
+		this.lastInspectorData = AppInspector.currentInspectorData;
 
-    }
+	}
 
-    get firstRoad () {
-        return this.map.getRoadById( this.firstNode.roadId );
-    }
+	get firstRoad () {
+		return this.map.getRoadById( this.firstNode.roadId );
+	}
 
-    get secondRoad () {
-        return this.map.getRoadById( this.secondNode.roadId );
-    }
+	get secondRoad () {
+		return this.map.getRoadById( this.secondNode.roadId );
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.joiningRoad = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
+		this.joiningRoad = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
 
-        AppInspector.setInspector( RoadInspector, { road: this.joiningRoad, node: this.secondNode } );
+		AppInspector.setInspector( RoadInspector, { road: this.joiningRoad, node: this.secondNode } );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        // remove from opendrive
-        // remove and clear the splines points
-        // remove the entire game object
+		// remove from opendrive
+		// remove and clear the splines points
+		// remove the entire game object
 
-        this.map.roads.delete( this.joiningRoad.id );
+		this.map.roads.delete( this.joiningRoad.id );
 
-        this.map.gameObject.remove( this.joiningRoad.gameObject );
+		this.map.gameObject.remove( this.joiningRoad.gameObject );
 
-        RoadFactory.removeRoadConnections( this.firstRoad, this.joiningRoad );
-        RoadFactory.removeRoadConnections( this.secondRoad, this.joiningRoad );
+		RoadFactory.removeRoadConnections( this.firstRoad, this.joiningRoad );
+		RoadFactory.removeRoadConnections( this.secondRoad, this.joiningRoad );
 
-        AppInspector.setInspector( this.lastInspector, this.lastInspectorData );
-    }
+		AppInspector.setInspector( this.lastInspector, this.lastInspectorData );
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.map.roads.set( this.joiningRoad.id, this.joiningRoad );
+		this.map.roads.set( this.joiningRoad.id, this.joiningRoad );
 
-        this.map.gameObject.add( this.joiningRoad.gameObject );
+		this.map.gameObject.add( this.joiningRoad.gameObject );
 
-        RoadFactory.makeRoadConnections( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode, this.joiningRoad );
+		RoadFactory.makeRoadConnections( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode, this.joiningRoad );
 
-        AppInspector.setInspector( RoadInspector, { road: this.joiningRoad, node: this.secondNode } );
-    }
+		AppInspector.setInspector( RoadInspector, { road: this.joiningRoad, node: this.secondNode } );
+	}
 
 
 }

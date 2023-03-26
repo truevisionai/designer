@@ -7,7 +7,7 @@ import { TvLateralProfileShape } from './tv-lateral-profile-shape';
 import { TvLateralProfileSuperElevation } from './tv-lateral-profile-super-elevation';
 
 export class TvLateralProfile {
-    public superelelevation: TvLateralProfileSuperElevation[] = [];
-    public crossfall: TvLateralProfileCrossfall[] = [];
-    public shape: TvLateralProfileShape[] = [];
+	public superelelevation: TvLateralProfileSuperElevation[] = [];
+	public crossfall: TvLateralProfileCrossfall[] = [];
+	public shape: TvLateralProfileShape[] = [];
 }

@@ -3,14 +3,14 @@
   -->
 
 <div class="sidebar-panel">
-    <div [perfectScrollbar] class="navigation-hold" fxLayout="column" id="scroll-area">
-        <div class="sidebar-hold">
-            <div (click)="toggleCollapse()" *ngIf="layoutConf.sidebarStyle !== 'closed'" [ngClass]="{active: layoutConf.sidebarCompactToggle}" class="sidebar-compact-switch"><span></span></div>
-            <!-- App Logo -->
-            <div class="branding">
-                <img alt="" class="app-logo" src="assets/images/logo.png">
-                <!-- Two different logos for dark and light themes -->
-                <!-- <img
+	<div [perfectScrollbar] class="navigation-hold" fxLayout="column" id="scroll-area">
+		<div class="sidebar-hold">
+			<div (click)="toggleCollapse()" *ngIf="layoutConf.sidebarStyle !== 'closed'" [ngClass]="{active: layoutConf.sidebarCompactToggle}" class="sidebar-compact-switch"><span></span></div>
+			<!-- App Logo -->
+			<div class="branding">
+				<img alt="" class="app-logo" src="assets/images/logo.png">
+				<!-- Two different logos for dark and light themes -->
+				<!-- <img
 				src="assets/images/logo-text-white.png"
 				alt=""
 				class="app-logo-text"
@@ -20,51 +20,51 @@
 				alt=""
 				class="app-logo-text"
 				*ngIf="themeService.activatedTheme?.name?.indexOf('dark') === -1"> -->
-                <span class="app-logo-text">EGRET</span>
-            </div>
+				<span class="app-logo-text">EGRET</span>
+			</div>
 
-            <!-- Sidebar user -->
-            <div class="app-user">
-                <div class="app-user-photo">
-                    <img alt="" class="mat-elevation-z1" src="assets/images/face-7.jpg">
-                </div>
-                <span class="app-user-name mb-05">
-                    <mat-icon class="icon-xs text-muted">lock</mat-icon>
-                    Watson Joyce
-                </span>
-                <!-- Small buttons -->
-                <div class="app-user-controls">
-                    <button [matMenuTriggerFor]="appUserMenu" class="text-muted" mat-icon-button mat-xs-button>
-                        <mat-icon>settings</mat-icon>
-                    </button>
-                    <button class="text-muted" mat-icon-button mat-xs-button matTooltip="Inbox" routerLink="/inbox">
-                        <mat-icon>email</mat-icon>
-                    </button>
-                    <button class="text-muted" mat-icon-button mat-xs-button matTooltip="Sign Out" routerLink="/sessions/signin">
-                        <mat-icon>exit_to_app</mat-icon>
-                    </button>
-                    <mat-menu #appUserMenu="matMenu">
-                        <button mat-menu-item routerLink="/profile/overview">
-                            <mat-icon>account_box</mat-icon>
-                            <span>Profile</span>
-                        </button>
-                        <button mat-menu-item routerLink="/profile/settings">
-                            <mat-icon>settings</mat-icon>
-                            <span>Account Settings</span>
-                        </button>
-                        <button mat-menu-item routerLink="/calendar">
-                            <mat-icon>date_range</mat-icon>
-                            <span>Calendar</span>
-                        </button>
-                        <button mat-menu-item routerLink="/sessions/signin">
-                            <mat-icon>exit_to_app</mat-icon>
-                            <span>Sign out</span>
-                        </button>
-                    </mat-menu>
-                </div>
-            </div>
-            <!-- Navigation -->
-            <app-sidenav [hasIconMenu]="hasIconTypeMenuItem" [iconMenuTitle]="iconTypeMenuTitle" [items]="menuItems"></app-sidenav>
-        </div>
-    </div>
+			<!-- Sidebar user -->
+			<div class="app-user">
+				<div class="app-user-photo">
+					<img alt="" class="mat-elevation-z1" src="assets/images/face-7.jpg">
+				</div>
+				<span class="app-user-name mb-05">
+					<mat-icon class="icon-xs text-muted">lock</mat-icon>
+					Watson Joyce
+				</span>
+				<!-- Small buttons -->
+				<div class="app-user-controls">
+					<button [matMenuTriggerFor]="appUserMenu" class="text-muted" mat-icon-button mat-xs-button>
+						<mat-icon>settings</mat-icon>
+					</button>
+					<button class="text-muted" mat-icon-button mat-xs-button matTooltip="Inbox" routerLink="/inbox">
+						<mat-icon>email</mat-icon>
+					</button>
+					<button class="text-muted" mat-icon-button mat-xs-button matTooltip="Sign Out" routerLink="/sessions/signin">
+						<mat-icon>exit_to_app</mat-icon>
+					</button>
+					<mat-menu #appUserMenu="matMenu">
+						<button mat-menu-item routerLink="/profile/overview">
+							<mat-icon>account_box</mat-icon>
+							<span>Profile</span>
+						</button>
+						<button mat-menu-item routerLink="/profile/settings">
+							<mat-icon>settings</mat-icon>
+							<span>Account Settings</span>
+						</button>
+						<button mat-menu-item routerLink="/calendar">
+							<mat-icon>date_range</mat-icon>
+							<span>Calendar</span>
+						</button>
+						<button mat-menu-item routerLink="/sessions/signin">
+							<mat-icon>exit_to_app</mat-icon>
+							<span>Sign out</span>
+						</button>
+					</mat-menu>
+				</div>
+			</div>
+			<!-- Navigation -->
+			<app-sidenav [hasIconMenu]="hasIconTypeMenuItem" [iconMenuTitle]="iconTypeMenuTitle" [items]="menuItems"></app-sidenav>
+		</div>
+	</div>
 </div>

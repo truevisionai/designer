@@ -13,50 +13,50 @@ import { BaseCommand } from './base-command';
 
 export class UpdateWidthNodePositionCommand extends BaseCommand {
 
-    constructor (
-        private node: LaneWidthNode,
-        private newPosition: Vector3,
-        private oldPosition: Vector3,
-        private laneHelper: OdLaneReferenceLineBuilder
-    ) {
+	constructor (
+		private node: LaneWidthNode,
+		private newPosition: Vector3,
+		private oldPosition: Vector3,
+		private laneHelper: OdLaneReferenceLineBuilder
+	) {
 
-        super();
+		super();
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        NodeFactoryService.updateLaneWidthNode( this.node, this.newPosition );
+		NodeFactoryService.updateLaneWidthNode( this.node, this.newPosition );
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        this.rebuild( this.map.getRoadById( this.node.roadId ) );
-    }
+		this.rebuild( this.map.getRoadById( this.node.roadId ) );
+	}
 
-    undo (): void {
+	undo (): void {
 
-        NodeFactoryService.updateLaneWidthNode( this.node, this.oldPosition );
+		NodeFactoryService.updateLaneWidthNode( this.node, this.oldPosition );
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        this.rebuild( this.map.getRoadById( this.node.roadId ) );
+		this.rebuild( this.map.getRoadById( this.node.roadId ) );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
-    rebuild ( road: TvRoad ): void {
+	rebuild ( road: TvRoad ): void {
 
-        SceneService.removeWithChildren( road.gameObject, true );
+		SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        this.laneHelper.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper.drawRoad( road, LineType.DASHED, true );
 
-    }
+	}
 
 }

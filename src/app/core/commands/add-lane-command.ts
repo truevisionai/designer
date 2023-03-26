@@ -9,29 +9,29 @@ import { BaseCommand } from './base-command';
 
 export class AddLaneCommand extends BaseCommand {
 
-    constructor ( private laneSection: TvLaneSection, private lane: TvLane ) {
-        super();
-    }
+	constructor ( private laneSection: TvLaneSection, private lane: TvLane ) {
+		super();
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.laneSection.addLaneInstance( this.lane, true );
+		this.laneSection.addLaneInstance( this.lane, true );
 
-        TvMapInstance.mapChanged.emit( this.map );
-    }
+		TvMapInstance.mapChanged.emit( this.map );
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.laneSection.removeLaneById( this.lane.id );
+		this.laneSection.removeLaneById( this.lane.id );
 
-        TvMapInstance.mapChanged.emit( this.map );
+		TvMapInstance.mapChanged.emit( this.map );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }

@@ -55,9 +55,9 @@ export class TvMapService {
         TvMapInstance.map = value;
     }
 
-	/**
-	 * @deprecated
-	 */
+    /**
+     * @deprecated
+     */
     newFile () {
 
         if ( this.map ) this.map.destroy();
@@ -68,9 +68,9 @@ export class TvMapService {
 
     }
 
-	/**
-	 * @deprecated
-	 */
+    /**
+     * @deprecated
+     */
     async importOpenDrive () {
 
         const res = await this.fileService.showAsyncDialog();
@@ -81,7 +81,7 @@ export class TvMapService {
 
         if ( filepaths == null || filepaths.length == 0 ) return;
 
-		SnackBar.show( 'Importing....' );
+        SnackBar.show( 'Importing....' );
 
         const contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
@@ -100,7 +100,7 @@ export class TvMapService {
 
         TvMapBuilder.buildMap( this.map );
 
-		SnackBar.success( `Map imported ${filepaths[0]}` );
+        SnackBar.success( `Map imported ${ filepaths[ 0 ] }` );
 
     }
 
@@ -151,9 +151,9 @@ export class TvMapService {
 
     }
 
-	/**
-	 * @deprecated
-	 */
+    /**
+     * @deprecated
+     */
     save () {
 
         if ( this.currentFile == null ) {
@@ -182,11 +182,11 @@ export class TvMapService {
 
     }
 
-	/**
-	 *
-	 * @deprecated
-	 * @param file
-	 */
+    /**
+     *
+     * @deprecated
+     * @param file
+     */
     saveLocally ( file: IFile ) {
 
         // path exists means it was imported locally
@@ -236,12 +236,12 @@ export class TvMapService {
 
         if ( this.electron.isElectronApp ) {
 
-            this.fileService.saveFileWithExtension( null, contents,  'xodr', ( file: IFile ) => {
+            this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
                 this.currentFile.path = file.path;
                 this.currentFile.name = file.name;
 
-				SnackBar.success(`File saved ${file.path}`);
+                SnackBar.success( `File saved ${ file.path }` );
 
             } );
 

@@ -7,57 +7,57 @@ export class Time {
 	/**
 	 * Time passed in simulation in milliseconds or ms
 	 */
-    static time: number = 0;
+	static time: number = 0;
 
 	/**
 	 * Fixed time-step for physics/simulation update
 	 * in millisecond
 	 * 20ms = 50 updates per second
 	 */
-    static fixedDeltaTime: number = 20;
+	static fixedDeltaTime: number = 20;
 
 	/**
 	 * Time since last graphic update
 	 */
-    static deltaTime: number = 0;
+	static deltaTime: number = 0;
 
 	/**
 	 * Time since last graphic update in ms
 	 */
-    static deltaTimeInMs: number = 0;
+	static deltaTimeInMs: number = 0;
 
 	/**
 	 * Graphics frames count
 	 */
-    static frameCount: number = 0;
+	static frameCount: number = 0;
 
-    static realTimeSinceStart: number = 0;
+	static realTimeSinceStart: number = 0;
 
 	/**
 	 * Returns rounded second
 	 */
-    static get seconds () {
+	static get seconds () {
 
-        return Math.round( Time.time * 0.001 );
+		return Math.round( Time.time * 0.001 );
 
-    }
+	}
 
 	/**
 	 * Returns time in seconds without rounding
 	 */
-    static get inSeconds () {
+	static get inSeconds () {
 
-        return Time.time * 0.001;
+		return Time.time * 0.001;
 
-    }
+	}
 
-    static reset () {
+	static reset () {
 
-        this.deltaTime = 0;
-        this.deltaTimeInMs = 0;
-        this.time = 0;
-        this.frameCount = 0;
-        this.realTimeSinceStart = 0;
+		this.deltaTime = 0;
+		this.deltaTimeInMs = 0;
+		this.time = 0;
+		this.frameCount = 0;
+		this.realTimeSinceStart = 0;
 
-    }
+	}
 }

@@ -11,43 +11,43 @@ import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadCommand extends OdBaseCommand {
 
-    constructor ( private road: TvRoad, private point: RoadControlPoint ) {
+	constructor ( private road: TvRoad, private point: RoadControlPoint ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
+		AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.road.spline.removeControlPoint( this.point );
+		this.road.spline.removeControlPoint( this.point );
 
-        SceneService.remove( this.point );
+		SceneService.remove( this.point );
 
-        this.road.spline.hide();
+		this.road.spline.hide();
 
-        this.map.removeRoad( this.road );
+		this.map.removeRoad( this.road );
 
-        AppInspector.clear();
-    }
+		AppInspector.clear();
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.road.spline.addControlPoint( this.point );
+		this.road.spline.addControlPoint( this.point );
 
-        SceneService.add( this.point );
+		SceneService.add( this.point );
 
-        this.road.spline.show();
+		this.road.spline.show();
 
-        this.map.addRoadInstance( this.road );
+		this.map.addRoadInstance( this.road );
 
-        AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
-    }
+		AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
+	}
 
 
 }

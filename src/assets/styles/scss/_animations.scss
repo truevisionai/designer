@@ -3,10 +3,15 @@
  */
 
 @keyframes spin {
-  0% {transform: rotate(0)}
-  100% {transform: rotate(360deg)}
+	0% {
+		transform: rotate(0)
+	}
+
+	100% {
+		transform: rotate(360deg)
+	}
 }
 
 .spin {
-  animation: spin 2s infinite linear;
+	animation: spin 2s infinite linear;
 }

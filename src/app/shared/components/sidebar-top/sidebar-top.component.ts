@@ -8,40 +8,40 @@ import { Subscription } from 'rxjs';
 import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component( {
-    selector: 'app-sidebar-top',
-    templateUrl: './sidebar-top.component.html'
+	selector: 'app-sidebar-top',
+	templateUrl: './sidebar-top.component.html'
 } )
 export class SidebarTopComponent implements OnInit, OnDestroy, AfterViewInit {
-    // private sidebarPS: PerfectScrollbar;
-    public menuItems: any[];
-    private menuItemsSub: Subscription;
+	// private sidebarPS: PerfectScrollbar;
+	public menuItems: any[];
+	private menuItemsSub: Subscription;
 
-    constructor (
-        private navService: NavigationService
-    ) {
-    }
+	constructor (
+		private navService: NavigationService
+	) {
+	}
 
-    ngOnInit () {
-        this.menuItemsSub = this.navService.menuItems$.subscribe( menuItem => {
-            this.menuItems = menuItem.filter( item => item.type !== 'icon' && item.type !== 'separator' );
-        } );
-    }
+	ngOnInit () {
+		this.menuItemsSub = this.navService.menuItems$.subscribe( menuItem => {
+			this.menuItems = menuItem.filter( item => item.type !== 'icon' && item.type !== 'separator' );
+		} );
+	}
 
-    ngAfterViewInit () {
-        // setTimeout(() => {
-        //   this.sidebarPS = new PerfectScrollbar('#sidebar-top-scroll-area', {
-        //     suppressScrollX: true
-        //   })
-        // })
-    }
+	ngAfterViewInit () {
+		// setTimeout(() => {
+		//   this.sidebarPS = new PerfectScrollbar('#sidebar-top-scroll-area', {
+		//     suppressScrollX: true
+		//   })
+		// })
+	}
 
-    ngOnDestroy () {
-        // if(this.sidebarPS) {
-        //   this.sidebarPS.destroy();
-        // }
-        if ( this.menuItemsSub ) {
-            this.menuItemsSub.unsubscribe();
-        }
-    }
+	ngOnDestroy () {
+		// if(this.sidebarPS) {
+		//   this.sidebarPS.destroy();
+		// }
+		if ( this.menuItemsSub ) {
+			this.menuItemsSub.unsubscribe();
+		}
+	}
 
 }

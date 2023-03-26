@@ -4,20 +4,20 @@
 
 <mat-toolbar class="app-player-bar">
 
-    <button (click)="playSimulation()" *ngIf="!isPlaying" mat-icon-button matTooltip="Play Scenario">
-        <mat-icon>play_arrow</mat-icon>
-    </button>
+	<button (click)="playSimulation()" *ngIf="!isPlaying" mat-icon-button matTooltip="Play Scenario">
+		<mat-icon>play_arrow</mat-icon>
+	</button>
 
-    <button (click)="pauseSimulation()" *ngIf="isPlaying" mat-icon-button matTooltip="Pause Scenario">
-        <mat-icon>pause</mat-icon>
-    </button>
+	<button (click)="pauseSimulation()" *ngIf="isPlaying" mat-icon-button matTooltip="Pause Scenario">
+		<mat-icon>pause</mat-icon>
+	</button>
 
-    <button (mousedown)="onMouseDown()" (mouseup)="onMouseUp()" mat-icon-button matTooltip="Play Single Frame">
-        <mat-icon>fast_forward</mat-icon>
-    </button>
+	<button (mousedown)="onMouseDown()" (mouseup)="onMouseUp()" mat-icon-button matTooltip="Play Single Frame">
+		<mat-icon>fast_forward</mat-icon>
+	</button>
 
-    <button (click)="stopSimulation()" [disabled]="!hasStarted" mat-icon-button matTooltip="Stop & Reset Scenario">
-        <mat-icon>stop</mat-icon>
-    </button>
+	<button (click)="stopSimulation()" [disabled]="!hasStarted" mat-icon-button matTooltip="Stop & Reset Scenario">
+		<mat-icon>stop</mat-icon>
+	</button>
 
 </mat-toolbar>

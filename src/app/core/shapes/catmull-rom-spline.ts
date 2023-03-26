@@ -10,141 +10,141 @@ import { AbstractSpline } from './abstract-spline';
 
 export class CatmullRomSpline extends AbstractSpline {
 
-    public type: string = 'catmullrom';
+	public type: string = 'catmullrom';
 
-    public curveType: string = 'curve';
+	public curveType: string = 'curve';
 
-    public curve: CatmullRomCurve3;
+	public curve: CatmullRomCurve3;
 
-    public mesh: Line;
+	public mesh: Line;
 
-    constructor ( closed = true, type = 'catmullrom', tension = 0.5 ) {
+	constructor ( closed = true, type = 'catmullrom', tension = 0.5 ) {
 
-        super( closed, tension );
+		super( closed, tension );
 
-    }
+	}
 
-    init (): void {
+	init (): void {
 
-        this.curve = new CatmullRomCurve3( this.controlPointPositions, this.closed, this.type || 'catmullrom', this.tension );
+		this.curve = new CatmullRomCurve3( this.controlPointPositions, this.closed, this.type || 'catmullrom', this.tension );
 
-        const geometry = new BufferGeometry();
+		const geometry = new BufferGeometry();
 
-        // Create the final object to add to the scene
-        if ( this.closed ) {
+		// Create the final object to add to the scene
+		if ( this.closed ) {
 
-            this.mesh = new LineLoop( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
+			this.mesh = new LineLoop( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
 
-        } else {
+		} else {
 
-            this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
+			this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
 
-        }
+		}
 
-        this.mesh.castShadow = true;
+		this.mesh.castShadow = true;
 
-        this.mesh.renderOrder = 1;
+		this.mesh.renderOrder = 1;
 
-        this.mesh.frustumCulled = false;
+		this.mesh.frustumCulled = false;
 
-        this.scene.add( this.mesh );
-    }
+		this.scene.add( this.mesh );
+	}
 
 
-    hide (): void {
+	hide (): void {
 
-        this.controlPoints.forEach( i => i.visible = false );
+		this.controlPoints.forEach( i => i.visible = false );
 
-        this.mesh.visible = false;
+		this.mesh.visible = false;
 
-    }
+	}
 
-    show (): void {
+	show (): void {
 
-        this.controlPoints.forEach( i => i.visible = true );
+		this.controlPoints.forEach( i => i.visible = true );
 
-        this.mesh.visible = true;
+		this.mesh.visible = true;
 
-    }
+	}
 
-    hideAllTangents () {
+	hideAllTangents () {
 
-        this.controlPoints.forEach( ( cp: AnyControlPoint ) => {
+		this.controlPoints.forEach( ( cp: AnyControlPoint ) => {
 
-            this.hideTangenAt();
+			this.hideTangenAt();
 
-        } );
+		} );
 
-    }
+	}
 
-    showcontrolPoints () {
+	showcontrolPoints () {
 
-        this.controlPoints.forEach( co => co.visible = true );
+		this.controlPoints.forEach( co => co.visible = true );
 
-    }
+	}
 
-    hidecontrolPoints () {
+	hidecontrolPoints () {
 
-        this.controlPoints.forEach( co => co.visible = false );
+		this.controlPoints.forEach( co => co.visible = false );
 
-    }
+	}
 
-    showTangentsAt () {
+	showTangentsAt () {
 
-    }
+	}
 
-    hideTangenAt () {
+	hideTangenAt () {
 
-    }
+	}
 
-    update (): void {
+	update (): void {
 
-        if ( this.controlPoints.length < 2 ) return;
+		if ( this.controlPoints.length < 2 ) return;
 
-        // if ( !this.curve ) {
-        //     this.curve = new CatmullRomCurve3(
-        //         this.controlPointPositions,
-        //         this.closed,
-        //         this.type,
-        //         this.tension
-        //     );
-        // }
+		// if ( !this.curve ) {
+		//     this.curve = new CatmullRomCurve3(
+		//         this.controlPointPositions,
+		//         this.closed,
+		//         this.type,
+		//         this.tension
+		//     );
+		// }
 
-        this.curve.points = this.controlPointPositions;
+		this.curve.points = this.controlPointPositions;
 
-        this.curve.updateArcLengths();
+		this.curve.updateArcLengths();
 
-        this.mesh.geometry.dispose();
+		this.mesh.geometry.dispose();
 
-        this.mesh.geometry = new BufferGeometry().setFromPoints( this.curve.getPoints( 100 ) );
+		this.mesh.geometry = new BufferGeometry().setFromPoints( this.curve.getPoints( 100 ) );
 
-    }
+	}
 
-    add ( point: AnyControlPoint ) {
+	add ( point: AnyControlPoint ) {
 
-        this.controlPoints.push( point );
+		this.controlPoints.push( point );
 
-        this.curve.points.push( point.position );
+		this.curve.points.push( point.position );
 
-        this.update();
-    }
+		this.update();
+	}
 
-    exportGeometries (): TvAbstractRoadGeometry[] {
+	exportGeometries (): TvAbstractRoadGeometry[] {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    getLength () {
+	getLength () {
 
-        return this.curve.getLength();
+		return this.curve.getLength();
 
-    }
+	}
 
-    getPoints ( spacing = 10 ): Vector3[] {
+	getPoints ( spacing = 10 ): Vector3[] {
 
-        return this.curve.getPoints( spacing );
+		return this.curve.getPoints( spacing );
 
-    }
+	}
 
 }

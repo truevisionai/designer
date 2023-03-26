@@ -4,67 +4,67 @@
 
 export abstract class AbstractReader {
 
-    public static readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
+	public static readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
 
-        if ( items != null ) {
+		if ( items != null ) {
 
-            if ( Array.isArray( items ) ) {
+			if ( Array.isArray( items ) ) {
 
-                for ( const item of items ) {
+				for ( const item of items ) {
 
-                    callbackFn( item, items.length );
+					callbackFn( item, items.length );
 
-                }
+				}
 
-            } else {
+			} else {
 
-                callbackFn( items, 1 );
+				callbackFn( items, 1 );
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
-    public static readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
+	public static readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
 
-        if ( xml != null ) {
+		if ( xml != null ) {
 
-            callbackFn( xml );
+			callbackFn( xml );
 
-        }
+		}
 
-    }
+	}
 
-    public readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
+	public readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
 
-        if ( items != null ) {
+		if ( items != null ) {
 
-            if ( Array.isArray( items ) ) {
+			if ( Array.isArray( items ) ) {
 
-                for ( const item of items ) {
+				for ( const item of items ) {
 
-                    callbackFn( item, items.length );
+					callbackFn( item, items.length );
 
-                }
+				}
 
-            } else {
+			} else {
 
-                callbackFn( items, 1 );
+				callbackFn( items, 1 );
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
-    public readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
+	public readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
 
-        if ( xml != null ) {
+		if ( xml != null ) {
 
-            callbackFn( xml );
+			callbackFn( xml );
 
-        }
+		}
 
-    }
+	}
 }

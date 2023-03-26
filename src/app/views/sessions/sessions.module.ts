@@ -24,31 +24,31 @@ import { SigninComponent } from './signin/signin.component';
 import { SignupComponent } from './signup/signup.component';
 
 @NgModule( {
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatProgressBarModule,
-        MatButtonModule,
-        MatInputModule,
-        MatCardModule,
-        MatCheckboxModule,
-        MatIconModule,
-        RouterModule.forChild( SessionsRoutes ),
-        MatProgressBarModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FlexLayoutModule,
-    ],
-    declarations: [
-        ForgotPasswordComponent,
-        LockscreenComponent,
-        SigninComponent,
-        SignupComponent,
-        NotFoundComponent,
-        ErrorComponent
-    ]
+	imports: [
+		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatProgressBarModule,
+		MatButtonModule,
+		MatInputModule,
+		MatCardModule,
+		MatCheckboxModule,
+		MatIconModule,
+		RouterModule.forChild( SessionsRoutes ),
+		MatProgressBarModule,
+		MatCardModule,
+		MatFormFieldModule,
+		MatInputModule,
+		FlexLayoutModule,
+	],
+	declarations: [
+		ForgotPasswordComponent,
+		LockscreenComponent,
+		SigninComponent,
+		SignupComponent,
+		NotFoundComponent,
+		ErrorComponent
+	]
 } )
 export class SessionsModule {
 }

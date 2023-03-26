@@ -22,63 +22,63 @@ import { ProjectBrowserService } from './project-browser.service';
  */
 export class DynamicDatabase {
 
-    rootLevelNodes: string[] = [ 'Fruits', 'Vegetables' ];
-    private init: FileNode[];
+	rootLevelNodes: string[] = [ 'Fruits', 'Vegetables' ];
+	private init: FileNode[];
 
-    constructor ( private fileService: FileService ) {
+	constructor ( private fileService: FileService ) {
 
-        this.init = this.getFolderInPath( this.projectDir, 0 );
+		this.init = this.getFolderInPath( this.projectDir, 0 );
 
-    }
+	}
 
-    // private projectDir = '/home/himanshu/Documents/Truevision';
-    private get projectDir () {
-        return this.fileService.projectFolder;
-    }
+	// private projectDir = '/home/himanshu/Documents/Truevision';
+	private get projectDir () {
+		return this.fileService.projectFolder;
+	}
 
-    /** Initial data from database */
-    initialData (): FileNode[] {
+	/** Initial data from database */
+	initialData (): FileNode[] {
 
-        return this.init;
+		return this.init;
 
-        // return this.init = this.getFolderInPath( this.projectDir, 0 );
+		// return this.init = this.getFolderInPath( this.projectDir, 0 );
 
-        // return this.rootLevelNodes.map( name => new FileNode( name, 0, true ) );
-    }
+		// return this.rootLevelNodes.map( name => new FileNode( name, 0, true ) );
+	}
 
-    getChildren ( node: FileNode ): FileNode[] | undefined {
+	getChildren ( node: FileNode ): FileNode[] | undefined {
 
-        return this.getFolderInPath( node.path, node.level + 1 );
+		return this.getFolderInPath( node.path, node.level + 1 );
 
-        // return this.dataMap.get( node );
+		// return this.dataMap.get( node );
 
-    }
+	}
 
-    getFolderInPath ( path: string, level: number ) {
+	getFolderInPath ( path: string, level: number ) {
 
-        const tmp: FileNode[] = [];
+		const tmp: FileNode[] = [];
 
-        // this.fileService.readPathContents( path ).then( ( files: any[] ) => {
+		// this.fileService.readPathContents( path ).then( ( files: any[] ) => {
 
-        //     files.forEach( file => {
+		//     files.forEach( file => {
 
-        //         if ( file.type === 'directory' ) tmp.push( new FileNode( file.name, level, true, false, file.path ) );
+		//         if ( file.type === 'directory' ) tmp.push( new FileNode( file.name, level, true, false, file.path ) );
 
-        //     } );
+		//     } );
 
-        // } );
+		// } );
 
-        return tmp;
+		return tmp;
 
-    }
+	}
 
-    isExpandable ( node: FileNode ): boolean {
+	isExpandable ( node: FileNode ): boolean {
 
-        return this.getFolderInPath( node.name, node.level + 1 ).length > 0;
+		return this.getFolderInPath( node.name, node.level + 1 ).length > 0;
 
-        // return this.dataMap.has( node );
+		// return this.dataMap.has( node );
 
-    }
+	}
 }
 
 /**
@@ -91,246 +91,246 @@ export class DynamicDatabase {
 @Injectable()
 export class DynamicDataSource {
 
-    dataChange = new BehaviorSubject<FileNode[]>( [] );
+	dataChange = new BehaviorSubject<FileNode[]>( [] );
 
-    constructor ( private treeControl: FlatTreeControl<FileNode>, private database: DynamicDatabase ) {
-    }
+	constructor ( private treeControl: FlatTreeControl<FileNode>, private database: DynamicDatabase ) {
+	}
 
-    get data (): FileNode[] {
-        return this.dataChange.value;
-    }
+	get data (): FileNode[] {
+		return this.dataChange.value;
+	}
 
-    set data ( value: FileNode[] ) {
-        this.treeControl.dataNodes = value;
-        this.dataChange.next( value );
-    }
+	set data ( value: FileNode[] ) {
+		this.treeControl.dataNodes = value;
+		this.dataChange.next( value );
+	}
 
-    connect ( collectionViewer: CollectionViewer ): Observable<FileNode[]> {
+	connect ( collectionViewer: CollectionViewer ): Observable<FileNode[]> {
 
-        this.treeControl.expansionModel.changed.subscribe( change => {
-            if ( ( change as SelectionChange<FileNode> ).added ||
-                ( change as SelectionChange<FileNode> ).removed ) {
-                this.handleTreeControl( change as SelectionChange<FileNode> );
-            }
-        } );
+		this.treeControl.expansionModel.changed.subscribe( change => {
+			if ( ( change as SelectionChange<FileNode> ).added ||
+				( change as SelectionChange<FileNode> ).removed ) {
+				this.handleTreeControl( change as SelectionChange<FileNode> );
+			}
+		} );
 
-        return merge( collectionViewer.viewChange, this.dataChange ).pipe( map( () => this.data ) );
-    }
+		return merge( collectionViewer.viewChange, this.dataChange ).pipe( map( () => this.data ) );
+	}
 
-    /** Handle expand/collapse behaviors */
-    handleTreeControl ( change: SelectionChange<FileNode> ) {
-        if ( change.added ) {
-            change.added.forEach( node => this.toggleNode( node, true ) );
-        }
-        if ( change.removed ) {
-            change.removed.slice().reverse().forEach( node => this.toggleNode( node, false ) );
-        }
-    }
+	/** Handle expand/collapse behaviors */
+	handleTreeControl ( change: SelectionChange<FileNode> ) {
+		if ( change.added ) {
+			change.added.forEach( node => this.toggleNode( node, true ) );
+		}
+		if ( change.removed ) {
+			change.removed.slice().reverse().forEach( node => this.toggleNode( node, false ) );
+		}
+	}
 
 	/**
 	 * Toggle the node, remove from display list
 	 */
-    toggleNode ( node: FileNode, expand: boolean ) {
-        const children = this.database.getChildren( node );
-        const index = this.data.indexOf( node );
-        if ( !children || index < 0 ) { // If no children, or cannot find the node, no op
-            return;
-        }
+	toggleNode ( node: FileNode, expand: boolean ) {
+		const children = this.database.getChildren( node );
+		const index = this.data.indexOf( node );
+		if ( !children || index < 0 ) { // If no children, or cannot find the node, no op
+			return;
+		}
 
-        node.isLoading = true;
+		node.isLoading = true;
 
-        setTimeout( () => {
-            if ( expand ) {
-                const nodes = children.map( child =>
-                    new FileNode( child.name, node.level + 1, this.database.isExpandable( child ), false, child.path ) );
-                this.data.splice( index + 1, 0, ...nodes );
-            } else {
-                let count = 0;
-                for ( let i = index + 1; i < this.data.length && this.data[ i ].level > node.level; i++, count++ ) {
-                }
-                this.data.splice( index + 1, count );
-            }
+		setTimeout( () => {
+			if ( expand ) {
+				const nodes = children.map( child =>
+					new FileNode( child.name, node.level + 1, this.database.isExpandable( child ), false, child.path ) );
+				this.data.splice( index + 1, 0, ...nodes );
+			} else {
+				let count = 0;
+				for ( let i = index + 1; i < this.data.length && this.data[ i ].level > node.level; i++, count++ ) {
+				}
+				this.data.splice( index + 1, count );
+			}
 
-            // notify the change
-            this.dataChange.next( this.data );
-            node.isLoading = false;
-        }, 100 );
-    }
+			// notify the change
+			this.dataChange.next( this.data );
+			node.isLoading = false;
+		}, 100 );
+	}
 }
 
 @Component( {
-    selector: 'app-project-browser',
-    templateUrl: './project-browser.component.html',
-    styleUrls: [ './project-browser.component.css' ],
+	selector: 'app-project-browser',
+	templateUrl: './project-browser.component.html',
+	styleUrls: [ './project-browser.component.css' ],
 } )
 export class ProjectBrowserComponent implements OnInit {
 
-    selectedFolder: FileNode;
+	selectedFolder: FileNode;
 
-    treeControl = new NestedTreeControl<FileNode>( ( node: FileNode ) => {
-        if ( node.type === 'directory' ) {
-            return node.sub_folders( this.fileService );
-        } else {
-            return [];
-        }
-    } );
+	treeControl = new NestedTreeControl<FileNode>( ( node: FileNode ) => {
+		if ( node.type === 'directory' ) {
+			return node.sub_folders( this.fileService );
+		} else {
+			return [];
+		}
+	} );
 
-    dataSource = new MatTreeNestedDataSource<any>();
+	dataSource = new MatTreeNestedDataSource<any>();
 
-    files: FileNode[] = [];
+	files: FileNode[] = [];
 
-    constructor (
-        private fileService: FileService,
-        private assets: AssetLoaderService,
-        private projectBrowser: ProjectBrowserService,
-        private importer: ImporterService,
-        private appRef: ApplicationRef
-    ) {
+	constructor (
+		private fileService: FileService,
+		private assets: AssetLoaderService,
+		private projectBrowser: ProjectBrowserService,
+		private importer: ImporterService,
+		private appRef: ApplicationRef
+	) {
 
-        const db = new DynamicDatabase( fileService );
+		const db = new DynamicDatabase( fileService );
 
-        this.dataSource.data = [];
+		this.dataSource.data = [];
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.assets.init();
+		this.assets.init();
 
-        this.loadFilesInFolder();
+		this.loadFilesInFolder();
 
-        this.projectBrowser.folderChanged.subscribe( node => this.onFolderChanged( node ) );
+		this.projectBrowser.folderChanged.subscribe( node => this.onFolderChanged( node ) );
 
-    }
+	}
 
-    // get files () {
+	// get files () {
 
-    //     if ( !this.selectedFolder ) return [];
+	//     if ( !this.selectedFolder ) return [];
 
-    //     return this.selectedFolder.sub_files( this.fileService );
+	//     return this.selectedFolder.sub_files( this.fileService );
 
-    // }
+	// }
 
-    onFolderChanged ( node: FileNode ) {
+	onFolderChanged ( node: FileNode ) {
 
-        // console.log( 'folder-changed', e );
+		// console.log( 'folder-changed', e );
 
-        this.selectedFolder = node;
+		this.selectedFolder = node;
 
-        this.files = this.selectedFolder.sub_files( this.fileService );
+		this.files = this.selectedFolder.sub_files( this.fileService );
 
-    }
+	}
 
-    selectFolder ( e: FileNode ) {
+	selectFolder ( e: FileNode ) {
 
-        // console.log( 'select-folder', e );
+		// console.log( 'select-folder', e );
 
-    }
+	}
 
-    selectFile ( e: FileNode ) {
+	selectFile ( e: FileNode ) {
 
-        // console.log( 'select-file', e );
-    }
+		// console.log( 'select-file', e );
+	}
 
-    onClick ( node: FileNode ) {
+	onClick ( node: FileNode ) {
 
-        // console.log( node );
+		// console.log( node );
 
-        this.selectedFolder = node;
+		this.selectedFolder = node;
 
-        const result = node.sub_folders( this.fileService );
+		const result = node.sub_folders( this.fileService );
 
-        // console.log( result );
+		// console.log( result );
 
-        // result.subscribe( files => {
+		// result.subscribe( files => {
 
-        //     console.log( files );
+		//     console.log( files );
 
-        // } );
+		// } );
 
-        // this.fileService.readPathContents( DOCUMENT_PATH ).then( ( files: any[] ) => {
+		// this.fileService.readPathContents( DOCUMENT_PATH ).then( ( files: any[] ) => {
 
-        //     const tmp = [];
+		//     const tmp = [];
 
-        //     files.forEach( file => {
+		//     files.forEach( file => {
 
-        //         if ( file.type === 'directory' ) {
+		//         if ( file.type === 'directory' ) {
 
-        //             tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
+		//             tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
 
-        //         }
+		//         }
 
-        //     } );
+		//     } );
 
-        //     this.dataSource.data = tmp;
+		//     this.dataSource.data = tmp;
 
-        // } );
+		// } );
 
-        // console.log( node );
+		// console.log( node );
 
-    }
+	}
 
-    loadFilesInFolder () {
+	loadFilesInFolder () {
 
-        const files = this.fileService.readPathContentsSync( this.fileService.projectFolder );
+		const files = this.fileService.readPathContentsSync( this.fileService.projectFolder );
 
-        const tmp = [];
+		const tmp = [];
 
-        files.forEach( file => {
+		files.forEach( file => {
 
-            if ( file.type === 'directory' ) {
+			if ( file.type === 'directory' ) {
 
-                tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
+				tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
 
-            }
+			}
 
-        } );
+		} );
 
-        this.dataSource.data = tmp;
-    }
+		this.dataSource.data = tmp;
+	}
 
-    @HostListener( 'dragover', [ '$event' ] )
-    onDragOver ( evt ) {
+	@HostListener( 'dragover', [ '$event' ] )
+	onDragOver ( evt ) {
 
-        evt.preventDefault();
-        evt.stopPropagation();
-    }
+		evt.preventDefault();
+		evt.stopPropagation();
+	}
 
-    @HostListener( 'dragleave', [ '$event' ] )
-    onDragLeave ( evt ) {
+	@HostListener( 'dragleave', [ '$event' ] )
+	onDragLeave ( evt ) {
 
-        evt.preventDefault();
-        evt.stopPropagation();
+		evt.preventDefault();
+		evt.stopPropagation();
 
-    }
+	}
 
-    @HostListener( 'drop', [ '$event' ] )
-    onDrop ( $event: DragEvent ) {
+	@HostListener( 'drop', [ '$event' ] )
+	onDrop ( $event: DragEvent ) {
 
-        // console.log( $event );
-        // console.log( $event.dataTransfer.files );
+		// console.log( $event );
+		// console.log( $event.dataTransfer.files );
 
-        $event.preventDefault();
-        $event.stopPropagation();
+		$event.preventDefault();
+		$event.stopPropagation();
 
-        const folderPath = this.selectedFolder ?
-            this.selectedFolder.path :
-            this.fileService.projectFolder;
+		const folderPath = this.selectedFolder ?
+			this.selectedFolder.path :
+			this.fileService.projectFolder;
 
-        for ( let i = 0; i < $event.dataTransfer.files.length; i++ ) {
+		for ( let i = 0; i < $event.dataTransfer.files.length; i++ ) {
 
-            const file = $event.dataTransfer.files[ i ];
+			const file = $event.dataTransfer.files[ i ];
 
-            this.importer.onFileDropped( file, folderPath );
+			this.importer.onFileDropped( file, folderPath );
 
-        }
+		}
 
-        if ( this.selectedFolder ) {
+		if ( this.selectedFolder ) {
 
-            this.files = this.selectedFolder.sub_files( this.fileService );
+			this.files = this.selectedFolder.sub_files( this.fileService );
 
-            this.appRef.tick();
+			this.appRef.tick();
 
-        }
-    }
+		}
+	}
 }

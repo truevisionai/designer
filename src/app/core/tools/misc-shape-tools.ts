@@ -9,61 +9,61 @@ import { BaseRoadPlanTool } from './base-road-plan-tool';
 
 export class MiscShapeTool extends BaseRoadPlanTool {
 
-    private cps: AnyControlPoint[] = [];
+	private cps: AnyControlPoint[] = [];
 
-    private curve: any;
-    private line: any;
+	private curve: any;
+	private line: any;
 
-    init () {
+	init () {
 
-        super.init();
+		super.init();
 
-    }
+	}
 
-    reraw () {
+	reraw () {
 
-        if ( this.cps.length < 4 ) return;
+		if ( this.cps.length < 4 ) return;
 
-        if ( this.line != null ) SceneService.remove( this.line, false );
+		if ( this.line != null ) SceneService.remove( this.line, false );
 
-        const positions: Vector3[] = this.cps.map( value => value.position );
+		const positions: Vector3[] = this.cps.map( value => value.position );
 
-        // Create a sine-like wave
-        this.curve = new CubicBezierCurve3( positions[ 0 ], positions[ 1 ], positions[ 2 ], positions[ 3 ] );
+		// Create a sine-like wave
+		this.curve = new CubicBezierCurve3( positions[ 0 ], positions[ 1 ], positions[ 2 ], positions[ 3 ] );
 
-        const points = this.curve.getPoints( 50 );
+		const points = this.curve.getPoints( 50 );
 
-        const geometry = new BufferGeometry().setFromPoints( points );
+		const geometry = new BufferGeometry().setFromPoints( points );
 
-        const material = new LineBasicMaterial( { color: 0xff0000 } );
+		const material = new LineBasicMaterial( { color: 0xff0000 } );
 
-        // Create the final object to add to the scene
-        this.line = new Line( geometry, material );
+		// Create the final object to add to the scene
+		this.line = new Line( geometry, material );
 
-        this.line.renderOrder = 3;
+		this.line.renderOrder = 3;
 
-        SceneService.add( this.line, false );
+		SceneService.add( this.line, false );
 
-    }
+	}
 
-    protected onControlPointSelected ( cp: AnyControlPoint ) {
+	protected onControlPointSelected ( cp: AnyControlPoint ) {
 
-    }
+	}
 
-    protected onControlPointAdded ( cp: AnyControlPoint ) {
+	protected onControlPointAdded ( cp: AnyControlPoint ) {
 
-        this.cps.push( cp );
+		this.cps.push( cp );
 
-        // this.curve.points.push( cp.position );
+		// this.curve.points.push( cp.position );
 
-        this.reraw();
+		this.reraw();
 
-    }
+	}
 
-    protected onControlPointMoved ( e: AnyControlPoint ) {
+	protected onControlPointMoved ( e: AnyControlPoint ) {
 
-        this.reraw();
+		this.reraw();
 
-    }
+	}
 
 }

@@ -3,70 +3,70 @@
   -->
 
 <mat-card *ngIf="isDirectory" class="file-card" draggable="false" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="assets/folder-icon.png">
-    <p class="file-name">{{ file.name }}</p>
+	<img class="file-card-image" src="assets/folder-icon.png">
+	<p class="file-name">{{ file.name }}</p>
 </mat-card>
 
 <mat-card *ngIf="isMaterial" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="{{ previewImage }}">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isModel" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="{{ previewImage }}">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isSign" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="{{ previewImage }}">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isScene" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="assets/scene-icon.png">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="assets/scene-icon.png">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isTexture" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img src="{{ filePath }}" />
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img src="{{ filePath }}" />
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isRoadStyle" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="{{ previewImage }}">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isRoadMarking" class="file-card" draggable="true" matTooltip="{{file.name}}">
-    <img class="file-card-image" src="{{ previewImage }}">
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img class="file-card-image" src="{{ previewImage }}">
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>
 
 <mat-card *ngIf="isUnknown" class="file-card" draggable="false" matTooltip="{{file.name}}">
-    <img src="assets/unknown-file-icon.png" />
-    <p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming" class="file-name">
-        <input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
-    </p>
+	<img src="assets/unknown-file-icon.png" />
+	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming" class="file-name">
+		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	</p>
 </mat-card>

@@ -4,110 +4,110 @@
 
 <mat-toolbar class="app-menubar">
 
-    <button [matMenuTriggerFor]="fileMenu" mat-button> File</button>
-    <button [matMenuTriggerFor]="editMenu" mat-button> Edit</button>
-    <button [matMenuTriggerFor]="examplesMenu" mat-button> Examples</button>
-    <button [matMenuTriggerFor]="helpMenu" mat-button> Help</button>
+	<button [matMenuTriggerFor]="fileMenu" mat-button> File</button>
+	<button [matMenuTriggerFor]="editMenu" mat-button> Edit</button>
+	<button [matMenuTriggerFor]="examplesMenu" mat-button> Examples</button>
+	<button [matMenuTriggerFor]="helpMenu" mat-button> Help</button>
 
-    <mat-menu #fileMenu="matMenu">
-        <button (click)="onNewFile()" action="new-road" appTrack="menu" mat-menu-item>
-            <span>New Scene</span>
-        </button>
-        <button (click)="onOpenFile()" action="open-road" appTrack="menu" mat-menu-item>
-            <span>Open Scene</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button (click)="onSave()" action="save-road" appTrack="menu" mat-menu-item>
-            <span>Save Scene</span>
-        </button>
-        <button (click)="onSaveAs()" action="save-as-road" appTrack="menu" mat-menu-item>
-            <span>Save Scene As</span>
-        </button>
-        <mat-divider></mat-divider>
+	<mat-menu #fileMenu="matMenu">
+		<button (click)="onNewFile()" action="new-road" appTrack="menu" mat-menu-item>
+			<span>New Scene</span>
+		</button>
+		<button (click)="onOpenFile()" action="open-road" appTrack="menu" mat-menu-item>
+			<span>Open Scene</span>
+		</button>
+		<mat-divider></mat-divider>
+		<button (click)="onSave()" action="save-road" appTrack="menu" mat-menu-item>
+			<span>Save Scene</span>
+		</button>
+		<button (click)="onSaveAs()" action="save-as-road" appTrack="menu" mat-menu-item>
+			<span>Save Scene As</span>
+		</button>
+		<mat-divider></mat-divider>
 
-        <!-- <button [matMenuTriggerFor]="openRecentMenu" mat-menu-item> Open Recent</button> -->
-        <!-- <mat-divider></mat-divider> -->
+		<!-- <button [matMenuTriggerFor]="openRecentMenu" mat-menu-item> Open Recent</button> -->
+		<!-- <mat-divider></mat-divider> -->
 
-        <button [matMenuTriggerFor]="fileImportMenu" mat-menu-item> Import</button>
-        <mat-divider></mat-divider>
+		<button [matMenuTriggerFor]="fileImportMenu" mat-menu-item> Import</button>
+		<mat-divider></mat-divider>
 
-        <button [matMenuTriggerFor]="fileExportMenu" mat-menu-item> Export</button>
-        <mat-divider></mat-divider>
+		<button [matMenuTriggerFor]="fileExportMenu" mat-menu-item> Export</button>
+		<mat-divider></mat-divider>
 
-        <button (click)="onExit()" *ngIf="isElectronApp" mat-menu-item>
-            <span>Exit</span>
-        </button>
-    </mat-menu>
+		<button (click)="onExit()" *ngIf="isElectronApp" mat-menu-item>
+			<span>Exit</span>
+		</button>
+	</mat-menu>
 
-    <mat-menu #openRecentMenu="matMenu">
-        <button (click)="importRecentFile(file)" *ngFor="let file of recentFiles" action="import-recent-file" appTrack="menu" mat-menu-item>
-            {{file.filename}}
-        </button>
-    </mat-menu>
+	<mat-menu #openRecentMenu="matMenu">
+		<button (click)="importRecentFile(file)" *ngFor="let file of recentFiles" action="import-recent-file" appTrack="menu" mat-menu-item>
+			{{file.filename}}
+		</button>
+	</mat-menu>
 
-    <mat-menu #fileImportMenu="matMenu">
-        <button (click)="onImportOpenDRIVE()" action="import-open-drive" appTrack="menu" mat-menu-item>
-            OpenDRIVE
-        </button>
-    </mat-menu>
+	<mat-menu #fileImportMenu="matMenu">
+		<button (click)="onImportOpenDRIVE()" action="import-open-drive" appTrack="menu" mat-menu-item>
+			OpenDRIVE
+		</button>
+	</mat-menu>
 
-    <mat-menu #fileExportMenu="matMenu">
-        <button (click)="onExportOpenDRIVE()" action="export-open-drive" appTrack="menu" mat-menu-item>
-            OpenDRIVE
-        </button>
-        <button (click)="onExportGLTF()" action="export-gltf" appTrack="menu" mat-menu-item><span>GLTF</span></button>
-        <button (click)="onExportGLB()" action="export-glb" appTrack="menu" mat-menu-item><span>GLB</span></button>
-        <button (click)="onExportCARLA()" action="export-open-drive" appTrack="menu" mat-menu-item>
-            CARLA OpenDrive (.xodr)
-        </button>
-    </mat-menu>
+	<mat-menu #fileExportMenu="matMenu">
+		<button (click)="onExportOpenDRIVE()" action="export-open-drive" appTrack="menu" mat-menu-item>
+			OpenDRIVE
+		</button>
+		<button (click)="onExportGLTF()" action="export-gltf" appTrack="menu" mat-menu-item><span>GLTF</span></button>
+		<button (click)="onExportGLB()" action="export-glb" appTrack="menu" mat-menu-item><span>GLB</span></button>
+		<button (click)="onExportCARLA()" action="export-open-drive" appTrack="menu" mat-menu-item>
+			CARLA OpenDrive (.xodr)
+		</button>
+	</mat-menu>
 
-    <mat-menu #editMenu="matMenu">
-        <button (click)="onUndo()" action="undo" appTrack="menu" mat-menu-item>
-            <span>Undo (CTRL + Z)</span>
-        </button>
-        <button (click)="onRedo()" action="redo" appTrack="menu" mat-menu-item>
-            <span>Redo (CTRL + Y)</span>
-        </button>
-    </mat-menu>
+	<mat-menu #editMenu="matMenu">
+		<button (click)="onUndo()" action="undo" appTrack="menu" mat-menu-item>
+			<span>Undo (CTRL + Z)</span>
+		</button>
+		<button (click)="onRedo()" action="redo" appTrack="menu" mat-menu-item>
+			<span>Redo (CTRL + Y)</span>
+		</button>
+	</mat-menu>
 
-    <mat-menu #examplesMenu="matMenu">
-        <button [matMenuTriggerFor]="odExamplesMenu" mat-menu-item> OpenDRIVE</button>
-    </mat-menu>
+	<mat-menu #examplesMenu="matMenu">
+		<button [matMenuTriggerFor]="odExamplesMenu" mat-menu-item> OpenDRIVE</button>
+	</mat-menu>
 
-    <mat-menu #odExamplesMenu="matMenu">
-        <button (click)="importOdExample('straight-road.xml')" action="import-open-drive" appTrack="example" mat-menu-item>
-            <span>Straight Road</span>
-        </button>
-        <button (click)="importOdExample('SampleDatabase_01.xodr')" action="import-drive" appTrack="example" mat-menu-item>
-            <span>Sample Database</span>
-        </button>
-        <button (click)="importOdExample('crossing-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
-            <span>Crossing-8</span>
-        </button>
-        <button (click)="importOdExample('crossing-8-complex.xodr')" action="import-drive" appTrack="example" mat-menu-item>
-            <span>Crossing-8-Complex</span>
-        </button>
-        <button (click)="importOdExample('roundabout-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
-            <span>Roundabout-8</span>
-        </button>
-        <button (click)="importOdExample('test.xml')" action="import-drive" appTrack="example" mat-menu-item>
-            <span>Test</span>
-        </button>
-    </mat-menu>
+	<mat-menu #odExamplesMenu="matMenu">
+		<button (click)="importOdExample('straight-road.xml')" action="import-open-drive" appTrack="example" mat-menu-item>
+			<span>Straight Road</span>
+		</button>
+		<button (click)="importOdExample('SampleDatabase_01.xodr')" action="import-drive" appTrack="example" mat-menu-item>
+			<span>Sample Database</span>
+		</button>
+		<button (click)="importOdExample('crossing-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
+			<span>Crossing-8</span>
+		</button>
+		<button (click)="importOdExample('crossing-8-complex.xodr')" action="import-drive" appTrack="example" mat-menu-item>
+			<span>Crossing-8-Complex</span>
+		</button>
+		<button (click)="importOdExample('roundabout-8-course.xodr')" action="import-drive" appTrack="example" mat-menu-item>
+			<span>Roundabout-8</span>
+		</button>
+		<button (click)="importOdExample('test.xml')" action="import-drive" appTrack="example" mat-menu-item>
+			<span>Test</span>
+		</button>
+	</mat-menu>
 
-    <mat-menu #helpMenu="matMenu">
-        <button (click)="openUserGuide()" action="user-guide" appTrack="menu" mat-menu-item>
-            <span>User Guide</span>
-        </button>
-        <button (click)="openContactUs()" action="contact-us" appTrack="menu" mat-menu-item>
-            <span>Contact Us</span>
-        </button>
-        <button (click)="logout()" action="logout" appTrack="menu" mat-menu-item>
-            <span>Logout</span>
-        </button>
-    </mat-menu>
+	<mat-menu #helpMenu="matMenu">
+		<button (click)="openUserGuide()" action="user-guide" appTrack="menu" mat-menu-item>
+			<span>User Guide</span>
+		</button>
+		<button (click)="openContactUs()" action="contact-us" appTrack="menu" mat-menu-item>
+			<span>Contact Us</span>
+		</button>
+		<button (click)="logout()" action="logout" appTrack="menu" mat-menu-item>
+			<span>Logout</span>
+		</button>
+	</mat-menu>
 
-    <span fxFlex></span>
+	<span fxFlex></span>
 
 </mat-toolbar>

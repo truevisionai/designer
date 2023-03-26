@@ -28,134 +28,134 @@ import { BaseTool } from './base-tool';
  */
 export class PropPointTool extends BaseTool {
 
-    public name: string = 'PropPointTool';
+	public name: string = 'PropPointTool';
 
-    public shapeEditor: PointEditor;
+	public shapeEditor: PointEditor;
 
-    private cpSubscriptions: Subscription[] = [];
+	private cpSubscriptions: Subscription[] = [];
 
-    private controlPointAddedSubscriber: Subscription;
-    private controlPointSelectedSubscriber: Subscription;
-    private controlPointUnselectedSubscriber: Subscription;
+	private controlPointAddedSubscriber: Subscription;
+	private controlPointSelectedSubscriber: Subscription;
+	private controlPointUnselectedSubscriber: Subscription;
 
-    constructor ( private modelImporter?: ModelImporterService ) {
+	constructor ( private modelImporter?: ModelImporterService ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    get prop (): PropInstance {
+	get prop (): PropInstance {
 
-        const prop = PropService.getProp();
+		const prop = PropService.getProp();
 
-        if ( prop ) {
+		if ( prop ) {
 
-            return new PropInstance( prop.guid, AssetDatabase.getInstance( prop.guid ) );
+			return new PropInstance( prop.guid, AssetDatabase.getInstance( prop.guid ) );
 
-        }
+		}
 
-    }
+	}
 
-    init () {
+	init () {
 
-        super.init();
+		super.init();
 
-        this.shapeEditor = new PointEditor( 100 );
+		this.shapeEditor = new PointEditor( 100 );
 
-    }
+	}
 
-    enable () {
+	enable () {
 
-        super.enable();
+		super.enable();
 
-        this.map.props.forEach( ( prop: PropInstance ) => {
+		this.map.props.forEach( ( prop: PropInstance ) => {
 
-            const cp = this.shapeEditor.addControlPoint( prop.object.position );
+			const cp = this.shapeEditor.addControlPoint( prop.object.position );
 
-            this.sync( cp, prop );
+			this.sync( cp, prop );
 
-        } );
+		} );
 
-        this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe(
-            point => this.onControlPointAdded( point )
-        );
+		this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe(
+			point => this.onControlPointAdded( point )
+		);
 
-        this.controlPointSelectedSubscriber = this.shapeEditor.controlPointSelected.subscribe(
-            point => this.onControlPointSelected( point )
-        );
+		this.controlPointSelectedSubscriber = this.shapeEditor.controlPointSelected.subscribe(
+			point => this.onControlPointSelected( point )
+		);
 
-        this.controlPointUnselectedSubscriber = this.shapeEditor.controlPointUnselected.subscribe(
-            point => this.onControlPointUnselected( point )
-        );
+		this.controlPointUnselectedSubscriber = this.shapeEditor.controlPointUnselected.subscribe(
+			point => this.onControlPointUnselected( point )
+		);
 
-    }
+	}
 
-    disable (): void {
+	disable (): void {
 
-        super.disable();
+		super.disable();
 
-        this.controlPointAddedSubscriber.unsubscribe();
-        this.controlPointSelectedSubscriber.unsubscribe();
-        this.controlPointUnselectedSubscriber.unsubscribe();
+		this.controlPointAddedSubscriber.unsubscribe();
+		this.controlPointSelectedSubscriber.unsubscribe();
+		this.controlPointUnselectedSubscriber.unsubscribe();
 
-        this.shapeEditor.destroy();
+		this.shapeEditor.destroy();
 
-        this.unsubscribeFromControlPoints();
-    }
+		this.unsubscribeFromControlPoints();
+	}
 
-    private onControlPointSelected ( point: AnyControlPoint ) {
+	private onControlPointSelected ( point: AnyControlPoint ) {
 
-        InspectorFactoryService.setByType( InspectorType.prop_instance_inspector, point.mainObject );
+		InspectorFactoryService.setByType( InspectorType.prop_instance_inspector, point.mainObject );
 
-    }
+	}
 
-    private onControlPointUnselected ( point: AnyControlPoint ) {
+	private onControlPointUnselected ( point: AnyControlPoint ) {
 
-        AppInspector.clear();
+		AppInspector.clear();
 
-    }
+	}
 
-    private onControlPointAdded ( point: AnyControlPoint ) {
+	private onControlPointAdded ( point: AnyControlPoint ) {
 
-        if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
+		if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
 
-        if ( !this.prop ) this.shapeEditor.removeControlPoint( point );
+		if ( !this.prop ) this.shapeEditor.removeControlPoint( point );
 
-        if ( !this.prop ) return;
+		if ( !this.prop ) return;
 
-        const prop = new PropInstance( this.prop.guid, this.prop.object.clone() );
+		const prop = new PropInstance( this.prop.guid, this.prop.object.clone() );
 
-        prop.object.position.set( point.position.x, point.position.y, point.position.z );
+		prop.object.position.set( point.position.x, point.position.y, point.position.z );
 
-        this.sync( point, prop );
+		this.sync( point, prop );
 
-        this.map.gameObject.add( prop.object );
+		this.map.gameObject.add( prop.object );
 
-        TvMapQueries.map.props.push( prop );
+		TvMapQueries.map.props.push( prop );
 
-    }
+	}
 
-    private sync ( point: AnyControlPoint, prop: PropInstance ): void {
+	private sync ( point: AnyControlPoint, prop: PropInstance ): void {
 
-        const subscription = point.updated.subscribe( e => {
+		const subscription = point.updated.subscribe( e => {
 
-            prop.object.position.copy( e.position );
+			prop.object.position.copy( e.position );
 
-        } );
+		} );
 
-        point.mainObject = prop;
+		point.mainObject = prop;
 
-        this.cpSubscriptions.push( subscription );
-    }
+		this.cpSubscriptions.push( subscription );
+	}
 
-    private unsubscribeFromControlPoints () {
+	private unsubscribeFromControlPoints () {
 
-        this.cpSubscriptions.forEach( sub => {
+		this.cpSubscriptions.forEach( sub => {
 
-            sub.unsubscribe();
+			sub.unsubscribe();
 
-        } );
+		} );
 
-    }
+	}
 
 }

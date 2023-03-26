@@ -13,16 +13,16 @@ import { PointerGuidesComponent } from './pointer-guides/pointer-guides.componen
 import { ViewportComponent } from './viewport/viewport.component';
 
 @NgModule( {
-    declarations: [ ViewportComponent, PointerGuidesComponent, TextureFieldComponent ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        ColorPickerModule,
-        MatInputModule
-    ],
-    exports: [
-        ViewportComponent,
-    ]
+	declarations: [ ViewportComponent, PointerGuidesComponent, TextureFieldComponent ],
+	imports: [
+		CommonModule,
+		SharedModule,
+		ColorPickerModule,
+		MatInputModule
+	],
+	exports: [
+		ViewportComponent,
+	]
 } )
 export class ThreeJsModule {
 }

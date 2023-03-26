@@ -10,13 +10,13 @@ import { UndoShortcut } from './undo-shortcut';
 
 export class ShorcutFactory {
 
-    static shortcuts: Array<any> = [
-        NewFileShortcut,
-        SaveAsShortcut,
-        SaveShortcut,
-        RedoShortcut,
-        UndoShortcut,
-    ];
+	static shortcuts: Array<any> = [
+		NewFileShortcut,
+		SaveAsShortcut,
+		SaveShortcut,
+		RedoShortcut,
+		UndoShortcut,
+	];
 
 
 }

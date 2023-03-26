@@ -8,28 +8,28 @@ import { BaseCommand } from './base-command';
 
 export class AddObjectCommand extends BaseCommand {
 
-    constructor ( private object: Object3D ) {
+	constructor ( private object: Object3D ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        SceneService.add( this.object );
+		SceneService.add( this.object );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        SceneService.remove( this.object );
+		SceneService.remove( this.object );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }
