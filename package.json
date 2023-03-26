@@ -22,7 +22,12 @@
 		"lint": "ng lint",
 		"e2e": "ng e2e",
 		"version-update": "npm version patch --no-git-tag-version",
-		"sentry-upload": "sentry-cli releases files $npm_package_version upload-sourcemaps --ext js --ext map --rewrite --validate dist"
+		"sentry-upload": "sentry-cli releases files $npm_package_version upload-sourcemaps --ext js --ext map --rewrite --validate dist",
+		"pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "postinstall": "electron-builder install-app-deps",
+        "linux": "ng build --prod --build-optimizer && electron-builder build --linux",
+        "windows": "ng build --prod --build-optimizer && electron-builder build --windows"
 	},
 	"private": true,
 	"dependencies": {
