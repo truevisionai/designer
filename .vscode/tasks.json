@@ -1,0 +1,24 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Electron: File",
+			"type": "shell",
+			"command": "${workspaceFolder}/node_modules/.bin/electron",
+			"args": [
+				"--open-dev-tools",
+				"--disable-splash",
+				"--remote-debugging-port=9223",
+				"."
+			],
+			"windows": {
+				"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			}
+		},
+		{
+			"label": "delay",
+			"type": "shell",
+			"command": "sleep 2"
+		}
+	]
+}
