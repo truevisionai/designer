@@ -1,12 +1,12 @@
 /*!
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
- @use "sass:math";
+@use "sass:math";
 
 // General
 $transitionDuration: 300ms !default;
 $gutter: 1rem !default;
-$transitionTiming: cubic-bezier(.35,0,.25,1);
+$transitionTiming: cubic-bezier(.35, 0, .25, 1);
 $sidebarTrnTime: .3s;
 
 // Widths
@@ -29,7 +29,7 @@ $font-size-h5: 1.25rem !default;
 $font-size-h6: 1rem !default;
 
 $headings-margin-bottom: math.div(1rem, 2) !default;
-$headings-font-family:   inherit !default;
-$headings-font-weight:   400 !default;
-$headings-line-height:   1.1 !default;
-$headings-color:         inherit !default;
+$headings-font-family: inherit !default;
+$headings-font-weight: 400 !default;
+$headings-line-height: 1.1 !default;
+$headings-color: inherit !default;

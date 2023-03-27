@@ -13,156 +13,156 @@ import { TvPosTheta } from './tv-pos-theta';
 
 export class TvPlaneView {
 
-    // public geometry: ODGeometry[] = [];
+	// public geometry: ODGeometry[] = [];
 
-    public geometries: TvAbstractRoadGeometry[] = [];
+	public geometries: TvAbstractRoadGeometry[] = [];
 
 
-    constructor () {
+	constructor () {
 
-    }
+	}
 
-    addGeometry ( geometry: TvAbstractRoadGeometry ) {
+	addGeometry ( geometry: TvAbstractRoadGeometry ) {
 
-        this.geometries.push( geometry );
+		this.geometries.push( geometry );
 
-    }
+	}
 
-    addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ) {
+	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ) {
 
-        const geometry = new TvLineGeometry( s, x, y, hdg, length );
+		const geometry = new TvLineGeometry( s, x, y, hdg, length );
 
-        this.geometries.push( geometry );
+		this.geometries.push( geometry );
 
-        return geometry;
-    }
+		return geometry;
+	}
 
-    addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ) {
+	addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ) {
 
-        // const geometry = new ODGeometry();
-        // geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
+		// const geometry = new ODGeometry();
+		// geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
 
-        this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
-    }
+		this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
+	}
 
-    addGeometryArc ( s, x, y, hdg, length, curvature: number ) {
+	addGeometryArc ( s, x, y, hdg, length, curvature: number ) {
 
-        const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
+		const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
 
-        this.geometries.push( geometry );
+		this.geometries.push( geometry );
 
-        return geometry;
-    }
+		return geometry;
+	}
 
-    addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ) {
+	addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ) {
 
-        this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
+		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
-    }
+	}
 
-    addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV ) {
+	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV ) {
 
-        this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV ) );
+		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV ) );
 
-    }
+	}
 
 	/**
 	 * Getter for the overall planView/ road length (sum of all geometry record lengths)
 	 */
-    getBlockLength () {
+	getBlockLength () {
 
-        let total = 0;
+		let total = 0;
 
-        for ( let i = 0; i < this.geometries.length; i++ ) {
+		for ( let i = 0; i < this.geometries.length; i++ ) {
 
-            total += this.geometries[ i ].length;
+			total += this.geometries[ i ].length;
 
-        }
+		}
 
-        return total;
-    }
+		return total;
+	}
 
-    recalculate ( s, x, y, hdg ) {
-
-
-        for ( let i = 0; i < this.geometries.length; i++ ) {
-
-            // const element = this.geometry[i];
-
-            // TODO:
-
-        }
-    }
+	recalculate ( s, x, y, hdg ) {
 
 
-    getLastS2 () {
+		for ( let i = 0; i < this.geometries.length; i++ ) {
 
-        if ( this.geometries.length > 0 ) {
+			// const element = this.geometry[i];
 
-            return this.geometries[ this.geometries.length - 1 ].s2;
+			// TODO:
 
-        } else {
+		}
+	}
 
-            return 0;
 
-        }
-    }
+	getLastS2 () {
+
+		if ( this.geometries.length > 0 ) {
+
+			return this.geometries[ this.geometries.length - 1 ].s2;
+
+		} else {
+
+			return 0;
+
+		}
+	}
 
 	/**
 	 * Gets the coordinates and heading at the end of the last geometry
 	 * @param sCheck
 	 * @param posTheta
 	 */
-    getCoords ( sCheck: number, posTheta: TvPosTheta ): number {
+	getCoords ( sCheck: number, posTheta: TvPosTheta ): number {
 
-        // go through all the geometries
-        for ( let i = 0; i < this.geometries.length; i++ ) {
+		// go through all the geometries
+		for ( let i = 0; i < this.geometries.length; i++ ) {
 
-            const geometry = this.geometries[ i ];
+			const geometry = this.geometries[ i ];
 
-            // if the sCheck belongs to one of the geometries
-            if ( geometry.checkInterval( sCheck ) ) {
+			// if the sCheck belongs to one of the geometries
+			if ( geometry.checkInterval( sCheck ) ) {
 
-                geometry.getCoords( sCheck, posTheta );
+				geometry.getCoords( sCheck, posTheta );
 
-                return geometry.geometryType;
-            }
-        }
-    }
+				return geometry.geometryType;
+			}
+		}
+	}
 
 	/**
 	 * Gets the nearest point on reference line from the given co-ordinates
 	 * @param x
 	 * @param y
 	 */
-    getNearestPointFrom ( x: number, y: number ): Vector2 {
+	getNearestPointFrom ( x: number, y: number ): Vector2 {
 
-        let curentMinDistance = 100000000;
-        let nearestPoint: Vector2;
+		let curentMinDistance = 100000000;
+		let nearestPoint: Vector2;
 
-        // go through all the geometries
-        for ( let i = 0; i < this.geometries.length; i++ ) {
+		// go through all the geometries
+		for ( let i = 0; i < this.geometries.length; i++ ) {
 
-            const geometry = this.geometries[ i ];
+			const geometry = this.geometries[ i ];
 
-            const point = geometry.getNearestPointFrom( x, y );
-            const distance = this.distance( point, x, y );
+			const point = geometry.getNearestPointFrom( x, y );
+			const distance = this.distance( point, x, y );
 
-            // check if the distance is smaller then curent min distance
-            if ( distance < curentMinDistance ) {
+			// check if the distance is smaller then curent min distance
+			if ( distance < curentMinDistance ) {
 
-                curentMinDistance = distance;
+				curentMinDistance = distance;
 
-                nearestPoint = point;
+				nearestPoint = point;
 
-            }
-        }
+			}
+		}
 
-        return nearestPoint;
-    }
+		return nearestPoint;
+	}
 
-    distance ( pos: Vector2, x, y ): number {
-        return Math.sqrt( ( x - pos.x ) * ( x - pos.x ) + ( y - pos.y ) * ( y - pos.y ) );
-    }
+	distance ( pos: Vector2, x, y ): number {
+		return Math.sqrt( ( x - pos.x ) * ( x - pos.x ) + ( y - pos.y ) * ( y - pos.y ) );
+	}
 
 }

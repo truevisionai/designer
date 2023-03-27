@@ -161,9 +161,9 @@
 //         // https://revisionmaths.com/advanced-level-maths-revision/pure-maths/geometry/equation-circle
 //         // https://stackoverflow.com/a/1088058
 //         // equation of circle with center (a,b) with radius r is
-//         // 
+//         //
 //         // (x-a)^2 + (y-b)^2 = r^2
-//         // 
+//         //
 
 //         // line segment
 //         // const A = new Vector3( 0, 0, 0 );
@@ -751,7 +751,7 @@
 //         junction.addJunctionConnection( 0, roadA.id, roadC.id, "start" ).addJunctionLaneLink( 1, 1 );
 //         junction.addJunctionConnection( 1, roadB.id, roadD.id, "end" ).addJunctionLaneLink( -1, -1 );
 
-//         // 
+//         //
 //         tool.init();
 //         tool.enable();
 

@@ -8,38 +8,38 @@ import { Object3D } from 'three';
 
 export class PropCurve {
 
-    public reverse: boolean = false;
+	public reverse: boolean = false;
 
-    public spacing: number = 5.0;
+	public spacing: number = 5.0;
 
-    public rotation: number = 0.0;
+	public rotation: number = 0.0;
 
-    public positionVariance: number = 0.0;
+	public positionVariance: number = 0.0;
 
-    public props: Object3D[] = [];
+	public props: Object3D[] = [];
 
-    constructor ( public propGuid: string, public spline?: CatmullRomSpline, public headings: number[] = [] ) {
+	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public headings: number[] = [] ) {
 
-        if ( !this.spline ) {
+		if ( !this.spline ) {
 
-            this.spline = new CatmullRomSpline( false, 'catmullrom', 0.001 );
+			this.spline = new CatmullRomSpline( false, 'catmullrom', 0.001 );
 
-            this.spline.init();
+			this.spline.init();
 
-        }
+		}
 
-    }
+	}
 
-    update () {
+	update () {
 
-        this.spline.update();
+		this.spline.update();
 
-    }
+	}
 
-    addControlPoint ( cp: AnyControlPoint ) {
+	addControlPoint ( cp: AnyControlPoint ) {
 
-        ( this.spline as CatmullRomSpline ).add( cp );
+		( this.spline as CatmullRomSpline ).add( cp );
 
-        this.update();
-    }
+		this.update();
+	}
 }

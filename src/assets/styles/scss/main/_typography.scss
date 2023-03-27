@@ -14,91 +14,103 @@ h6,
 .h4,
 .h5,
 .h6 {
-  margin-bottom: $headings-margin-bottom;
-  font-weight: $headings-font-weight;
-  line-height: $headings-line-height;
-  color: $headings-color;
+	margin-bottom: $headings-margin-bottom;
+	font-weight: $headings-font-weight;
+	line-height: $headings-line-height;
+	color: $headings-color;
 }
 
 h1,
 .h1 {
-  font-size: $font-size-h1;
+	font-size: $font-size-h1;
 }
+
 h2,
 .h2 {
-  font-size: $font-size-h2;
+	font-size: $font-size-h2;
 }
+
 h3,
 .h3 {
-  font-size: $font-size-h3;
+	font-size: $font-size-h3;
 }
+
 h4,
 .h4 {
-  font-size: $font-size-h4;
+	font-size: $font-size-h4;
 }
+
 h5,
 .h5 {
-  font-size: $font-size-h5;
+	font-size: $font-size-h5;
 }
+
 h6,
 .h6 {
-  font-size: $font-size-h6;
+	font-size: $font-size-h6;
 }
 
 a,
 a:focus,
 a:hover {
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-  outline: 0;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	outline: 0;
 }
 
 button {
-  outline: 0;
+	outline: 0;
 }
 
 figure {
-  margin: 0;
+	margin: 0;
 }
 
 strong,
 b {
-  font-weight: 700;
+	font-weight: 700;
 }
 
 .strikethrough {
-  text-decoration: line-through;
+	text-decoration: line-through;
 }
+
 .text-uppercase {
-  text-transform: uppercase;
+	text-transform: uppercase;
 }
+
 .text-capitalize {
-  text-transform: capitalize;
+	text-transform: capitalize;
 }
 
 
 @for $i from 10 through 78 {
-  .text-#{$i} {
-    font-size: #{$i}px;
-  }
+	.text-#{$i} {
+		font-size: #{$i}px;
+	}
 }
+
 @for $i from 10 through 24 {
-  .mat-icon-#{$i} {
-    font-size: #{$i}px;
-    width: #{$i}px;
-    height: #{$i}px;
-  }
+	.mat-icon-#{$i} {
+		font-size: #{$i}px;
+		width: #{$i}px;
+		height: #{$i}px;
+	}
 }
+
 .font-weight-light {
-  font-weight: 300;
+	font-weight: 300;
 }
+
 .font-weight-normal {
-  font-weight: 400;
+	font-weight: 400;
 }
+
 .font-weight-bold {
-  font-weight: bold;
+	font-weight: bold;
 }
+
 .line-height-1 {
-  line-height: 1 !important;
+	line-height: 1 !important;
 }

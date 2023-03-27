@@ -3,11 +3,11 @@
   -->
 
 <div #viewport (click)="onMouseClick($event)" (contextmenu)="onContextMenu($event)" (mousedown)="onMouseDown($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" (mousemove)="onMouseMove($event)"
-     (mouseout)="onMouseOut($event)" (mouseup)="onMouseUp($event)" fxFlexFill fxLayout="column" id="canvas" style="background:red;" style="position:absolute;">
+	 (mouseout)="onMouseOut($event)" (mouseup)="onMouseUp($event)" fxFlexFill fxLayout="column" id="canvas" style="background:red;" style="position:absolute;">
 
-    <ng-content></ng-content>
+	<ng-content></ng-content>
 
-    <div class="app-viewport-stats">
-        <span>{{ fps }} FPS</span>
-    </div>
+	<div class="app-viewport-stats">
+		<span>{{ fps }} FPS</span>
+	</div>
 </div>

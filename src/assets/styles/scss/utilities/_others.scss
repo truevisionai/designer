@@ -3,12 +3,15 @@
  */
 
 .rounded {
-    border-radius: 8px;
-    &-circle {
-        border-radius: 50%;
-    }
-    &.mat-progress-bar, .mat-progress-bar-fill {
-        border-radius: 10px;
-        overflow: hidden;
-    }
+	border-radius: 8px;
+
+	&-circle {
+		border-radius: 50%;
+	}
+
+	&.mat-progress-bar,
+	.mat-progress-bar-fill {
+		border-radius: 10px;
+		overflow: hidden;
+	}
 }

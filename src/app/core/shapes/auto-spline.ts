@@ -16,275 +16,275 @@ import { RoundLine } from './round-line';
 
 export class AutoSpline extends AbstractSpline {
 
-    public type = 'auto';
+	public type = 'auto';
 
-    public polyline: PolyLine;
+	public polyline: PolyLine;
 
-    public roundline: RoundLine;
+	public roundline: RoundLine;
 
-    constructor ( private road?: TvRoad ) {
+	constructor ( private road?: TvRoad ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    get hdgs () {
-        return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg );
-    }
+	get hdgs () {
+		return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg );
+	}
 
-    init () {
+	init () {
 
-        this.polyline = new PolyLine( this.controlPoints );
+		this.polyline = new PolyLine( this.controlPoints );
 
-        this.roundline = new RoundLine( this.controlPoints );
+		this.roundline = new RoundLine( this.controlPoints );
 
-        if ( this.meshAddedInScene ) return;
+		if ( this.meshAddedInScene ) return;
 
-        this.scene.add( this.polyline.mesh );
+		this.scene.add( this.polyline.mesh );
 
-        this.scene.add( this.roundline.mesh );
+		this.scene.add( this.roundline.mesh );
 
-        this.meshAddedInScene = true;
+		this.meshAddedInScene = true;
 
-    }
+	}
 
-    hide (): void {
+	hide (): void {
 
-        this.controlPoints.forEach( i => i.visible = false );
+		this.controlPoints.forEach( i => i.visible = false );
 
-        this.polyline.mesh.visible = false;
+		this.polyline.mesh.visible = false;
 
-        this.roundline.mesh.visible = false;
+		this.roundline.mesh.visible = false;
 
-    }
+	}
 
-    show (): void {
+	show (): void {
 
-        this.controlPoints.forEach( i => i.visible = true );
+		this.controlPoints.forEach( i => i.visible = true );
 
-        this.polyline.mesh.visible = true;
+		this.polyline.mesh.visible = true;
 
-        this.roundline.mesh.visible = true;
+		this.roundline.mesh.visible = true;
 
-    }
+	}
 
-    addControlPoint ( cp: RoadControlPoint ) {
+	addControlPoint ( cp: RoadControlPoint ) {
 
-        // this.polyline.addPoint( cp );
+		// this.polyline.addPoint( cp );
 
-        // this.roundline.addPoint( cp );
+		// this.roundline.addPoint( cp );
 
-        super.addControlPoint( cp );
+		super.addControlPoint( cp );
 
-    }
+	}
 
-    update () {
+	update () {
 
-        this.updateHdgs();
+		this.updateHdgs();
 
-        this.polyline.update();
+		this.polyline.update();
 
-        this.roundline.update();
+		this.roundline.update();
 
 
-    }
+	}
 
-    updateHdgs () {
+	updateHdgs () {
 
-        const hdgs = [];
+		const hdgs = [];
 
-        let hdg, p1, p2, currentPoint, previousPoint;
+		let hdg, p1, p2, currentPoint, previousPoint;
 
-        for ( let i = 1; i < this.controlPoints.length; i++ ) {
+		for ( let i = 1; i < this.controlPoints.length; i++ ) {
 
-            previousPoint = this.controlPoints[ i - 1 ];
-            currentPoint = this.controlPoints[ i ];
+			previousPoint = this.controlPoints[ i - 1 ];
+			currentPoint = this.controlPoints[ i ];
 
-            p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
-            p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
+			p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
+			p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
 
-            hdg = new Vector2().subVectors( p1, p2 ).angle();
+			hdg = new Vector2().subVectors( p1, p2 ).angle();
 
-            previousPoint[ 'hdg' ] = hdg;
+			previousPoint[ 'hdg' ] = hdg;
 
-            hdgs.push( hdg );
-        }
+			hdgs.push( hdg );
+		}
 
-        // setting hdg for the last point
-        if ( hdg != null ) {
+		// setting hdg for the last point
+		if ( hdg != null ) {
 
-            currentPoint[ 'hdg' ] = hdg;
+			currentPoint[ 'hdg' ] = hdg;
 
-        }
+		}
 
-    }
+	}
 
-    clear () {
+	clear () {
 
-        this.controlPoints.splice( 0, this.controlPoints.length );
+		this.controlPoints.splice( 0, this.controlPoints.length );
 
-        this.scene.remove( this.polyline.mesh );
+		this.scene.remove( this.polyline.mesh );
 
-        this.scene.remove( this.roundline.mesh );
+		this.scene.remove( this.roundline.mesh );
 
-    }
+	}
 
-    exportGeometries (): TvAbstractRoadGeometry[] {
+	exportGeometries (): TvAbstractRoadGeometry[] {
 
-        let totalLength = 0;
+		let totalLength = 0;
 
-        const points = this.roundline.points as RoadControlPoint[];
+		const points = this.roundline.points as RoadControlPoint[];
 
-        const radiuses = this.roundline.radiuses;
+		const radiuses = this.roundline.radiuses;
 
-        const geometries: TvAbstractRoadGeometry[] = [];
+		const geometries: TvAbstractRoadGeometry[] = [];
 
-        let s = totalLength;
+		let s = totalLength;
 
-        for ( let i = 1; i < points.length; i++ ) {
+		for ( let i = 1; i < points.length; i++ ) {
 
-            let x, y, hdg, length;
+			let x, y, hdg, length;
 
-            const previous = points[ i - 1 ].position;
-            const current = points[ i ].position;
+			const previous = points[ i - 1 ].position;
+			const current = points[ i ].position;
 
-            const p1 = new Vector2( previous.x, previous.y );
+			const p1 = new Vector2( previous.x, previous.y );
 
-            const p2 = new Vector2( current.x, current.y );
+			const p2 = new Vector2( current.x, current.y );
 
-            const d = p1.distanceTo( p2 );
+			const d = p1.distanceTo( p2 );
 
-            // line between p1 and p2
-            if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
+			// line between p1 and p2
+			if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
 
-                [ x, y ] = new Vector2()
-                    .subVectors( p2, p1 )
-                    .normalize()
-                    .multiplyScalar( radiuses[ i - 1 ] )
-                    .add( p1 )
-                    .toArray();
+				[ x, y ] = new Vector2()
+					.subVectors( p2, p1 )
+					.normalize()
+					.multiplyScalar( radiuses[ i - 1 ] )
+					.add( p1 )
+					.toArray();
 
-                // hdg = new Vector2().subVectors( p2, p1 ).angle();
-                hdg = points[ i - 1 ].hdg;
+				// hdg = new Vector2().subVectors( p2, p1 ).angle();
+				hdg = points[ i - 1 ].hdg;
 
-                length = d - radiuses[ i - 1 ] - radiuses[ i ];
+				length = d - radiuses[ i - 1 ] - radiuses[ i ];
 
-                s = totalLength;
+				s = totalLength;
 
-                totalLength += length;
+				totalLength += length;
 
-                geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+				geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
 
-            }
+			}
 
-            // arc for p2
-            if ( radiuses[ i ] > 0 ) { // first and last point can't have zero radiuses
+			// arc for p2
+			if ( radiuses[ i ] > 0 ) { // first and last point can't have zero radiuses
 
-                const next = points[ i + 1 ].position;
+				const next = points[ i + 1 ].position;
 
-                const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
+				const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
 
-                const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
+				const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
 
-                const pp1 = new Vector2()
-                    .subVectors( p1, p2 )
-                    .normalize()
-                    .multiplyScalar( radiuses[ i ] )
-                    .add( p2 );
+				const pp1 = new Vector2()
+					.subVectors( p1, p2 )
+					.normalize()
+					.multiplyScalar( radiuses[ i ] )
+					.add( p2 );
 
-                const pp2 = new Vector2()
-                    .subVectors( ( new Vector2( next.x, next.y ) ), p2 )
-                    .normalize()
-                    .multiplyScalar( radiuses[ i ] )
-                    .add( p2 );
+				const pp2 = new Vector2()
+					.subVectors( ( new Vector2( next.x, next.y ) ), p2 )
+					.normalize()
+					.multiplyScalar( radiuses[ i ] )
+					.add( p2 );
 
-                x = pp1.x;
+				x = pp1.x;
 
-                y = pp1.y;
+				y = pp1.y;
 
-                hdg = dir1.angle();
+				hdg = dir1.angle();
 
-                let r, alpha, sign;
+				let r, alpha, sign;
 
-                [ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
+				[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
 
-                if ( r != Infinity ) {
+				if ( r != Infinity ) {
 
-                    s = totalLength;
+					s = totalLength;
 
-                    totalLength += length;
+					totalLength += length;
 
-                    const curvature = ( sign > 0 ? 1 : -1 ) * ( 1 / r ); // sign < for mirror image
+					const curvature = ( sign > 0 ? 1 : -1 ) * ( 1 / r ); // sign < for mirror image
 
-                    geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
+					geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
 
 
-                } else {
+				} else {
 
-                    s = totalLength;
+					s = totalLength;
 
-                    length = pp1.distanceTo( pp2 );
+					length = pp1.distanceTo( pp2 );
 
-                    totalLength += length;
+					totalLength += length;
 
-                    geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
 
-                    console.warn( 'radius is infinity' );
+					console.warn( 'radius is infinity' );
 
-                }
+				}
 
 
-            }
+			}
 
-        }
+		}
 
-        return geometries;
-    }
+		return geometries;
+	}
 
-    addControlPointAt ( position: Vector3 ): RoadControlPoint {
+	addControlPointAt ( position: Vector3 ): RoadControlPoint {
 
-        const index = this.controlPoints.length;
+		const index = this.controlPoints.length;
 
-        const point = new RoadControlPoint( this.road, position, 'cp', index, index );
+		const point = new RoadControlPoint( this.road, position, 'cp', index, index );
 
-        this.controlPoints.push( point );
+		this.controlPoints.push( point );
 
-        this.update();
+		this.update();
 
-        return point;
-    }
+		return point;
+	}
 
-    getPoint ( t: number, offset = 0 ): Vector3 {
+	getPoint ( t: number, offset = 0 ): Vector3 {
 
-        const geometries = this.exportGeometries();
+		const geometries = this.exportGeometries();
 
-        const length = geometries.map( g => g.length ).reduce( ( a, b ) => a + b );
+		const length = geometries.map( g => g.length ).reduce( ( a, b ) => a + b );
 
-        const s = length * t;
+		const s = length * t;
 
-        const geometry = geometries.find( g => s >= g.s && s <= g.s2 );
+		const geometry = geometries.find( g => s >= g.s && s <= g.s2 );
 
-        const posTheta = new TvPosTheta();
+		const posTheta = new TvPosTheta();
 
-        geometry.getCoords( s, posTheta );
+		geometry.getCoords( s, posTheta );
 
-        posTheta.addLateralOffset( offset );
+		posTheta.addLateralOffset( offset );
 
-        return posTheta.toVector3();
-    }
+		return posTheta.toVector3();
+	}
 
-    getLength () {
+	getLength () {
 
-        const geometries = this.exportGeometries();
+		const geometries = this.exportGeometries();
 
-        let length = 0;
+		let length = 0;
 
-        for ( let i = 0; i < geometries.length; i++ ) {
+		for ( let i = 0; i < geometries.length; i++ ) {
 
-            length += geometries[ i ].length;
+			length += geometries[ i ].length;
 
-        }
+		}
 
-        return length;
-    }
+		return length;
+	}
 }

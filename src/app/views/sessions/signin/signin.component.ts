@@ -15,78 +15,78 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { ElectronService } from 'ngx-electron';
 
 @Component( {
-    selector: 'app-signin',
-    templateUrl: './signin.component.html',
-    styleUrls: [ './signin.component.css' ]
+	selector: 'app-signin',
+	templateUrl: './signin.component.html',
+	styleUrls: [ './signin.component.css' ]
 } )
 export class SigninComponent implements OnInit {
 
-    @ViewChild( MatProgressBar ) progressBar: MatProgressBar;
-    @ViewChild( MatButton ) submitButton: MatButton;
+	@ViewChild( MatProgressBar ) progressBar: MatProgressBar;
+	@ViewChild( MatButton ) submitButton: MatButton;
 
-    signinForm: FormGroup;
+	signinForm: FormGroup;
 
-    constructor ( private authService: AuthService, private router: Router, private electron: ElectronService ) {
-    }
+	constructor ( private authService: AuthService, private router: Router, private electron: ElectronService ) {
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.authService.logout();
+		this.authService.logout();
 
-        this.signinForm = new FormGroup( {
-            email: new FormControl( '', [ Validators.required, Validators.email ] ),
-            password: new FormControl( '', Validators.required ),
-            rememberMe: new FormControl( false )
-        } );
+		this.signinForm = new FormGroup( {
+			email: new FormControl( '', [ Validators.required, Validators.email ] ),
+			password: new FormControl( '', Validators.required ),
+			rememberMe: new FormControl( false )
+		} );
 
-    }
+	}
 
-    signin () {
+	signin () {
 
-        const formData = this.signinForm.value;
+		const formData = this.signinForm.value;
 
-        this.submitButton.disabled = true;
+		this.submitButton.disabled = true;
 
-        this.progressBar.mode = 'indeterminate';
+		this.progressBar.mode = 'indeterminate';
 
-        this.authService
-            .login( formData.email, formData.password )
-            .subscribe( res => this.onSuccess( res ), err => this.onError( err ) );
-    }
+		this.authService
+			.login( formData.email, formData.password )
+			.subscribe( res => this.onSuccess( res ), err => this.onError( err ) );
+	}
 
-    onError ( error: any ) {
+	onError ( error: any ) {
 
-        this.submitButton.disabled = false;
-        this.progressBar.mode = 'determinate';
+		this.submitButton.disabled = false;
+		this.progressBar.mode = 'determinate';
 
-        let message = 'some error occured';
+		let message = 'some error occured';
 
-        if ( error != null && error.message != null ) message = error.message;
+		if ( error != null && error.message != null ) message = error.message;
 
-        SnackBar.error( message );
+		SnackBar.error( message );
 
-    }
+	}
 
-    onSuccess ( response: any ) {
+	onSuccess ( response: any ) {
 
-        this.submitButton.disabled = false;
-        this.progressBar.mode = 'determinate';
+		this.submitButton.disabled = false;
+		this.progressBar.mode = 'determinate';
 
-        SnackBar.show( 'Successfully signed in' );
+		SnackBar.show( 'Successfully signed in' );
 
-        this.router.navigateByUrl( AppService.homeUrl );
+		this.router.navigateByUrl( AppService.homeUrl );
 
-    }
+	}
 
-    onCreateAccount () {
+	onCreateAccount () {
 
-        this.electron.shell.openExternal( AppLinks.createAccountLink );
+		this.electron.shell.openExternal( AppLinks.createAccountLink );
 
-    }
+	}
 
-    onForgotPassword () {
+	onForgotPassword () {
 
-        this.electron.shell.openExternal( AppLinks.forgotPasswordLink );
+		this.electron.shell.openExternal( AppLinks.forgotPasswordLink );
 
-    }
+	}
 }

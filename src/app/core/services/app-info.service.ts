@@ -6,11 +6,11 @@ import { ElectronService } from 'ngx-electron';
 
 export class AppInfo {
 
-    static electron: ElectronService;
+	static electron: ElectronService;
 
-    static get isElectronApp (): boolean {
+	static get isElectronApp (): boolean {
 
-        return this.electron.isElectronApp;
+		return this.electron.isElectronApp;
 
-    }
+	}
 }

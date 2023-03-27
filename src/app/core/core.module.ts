@@ -14,17 +14,17 @@ import { ApiService } from './services/api.service';
 import { JwtService } from './services/jwt.service';
 
 @NgModule( {
-    declarations: [ MinPipe, MaxPipe ],
-    imports: [
-        CommonModule
-    ],
-    providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: TimeOutInterceptor, multi: true },
-        ApiService,
-        JwtService
-    ],
-    exports: [ MinPipe, MaxPipe ]
+	declarations: [ MinPipe, MaxPipe ],
+	imports: [
+		CommonModule
+	],
+	providers: [
+		{ provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
+		{ provide: HTTP_INTERCEPTORS, useClass: TimeOutInterceptor, multi: true },
+		ApiService,
+		JwtService
+	],
+	exports: [ MinPipe, MaxPipe ]
 } )
 export class CoreModule {
 }

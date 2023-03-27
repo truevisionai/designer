@@ -10,110 +10,110 @@ import { Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Vector2 } from
 
 export class PropPolygon {
 
-    public static index = 0;
+	public static index = 0;
 
-    public static tag: string = 'prop-polygon';
+	public static tag: string = 'prop-polygon';
 
-    public id: number;
+	public id: number;
 
-    public props: Object3D[] = [];
+	public props: Object3D[] = [];
 
-    public mesh: Mesh;
+	public mesh: Mesh;
 
-    constructor ( public propGuid: string, public spline?: CatmullRomSpline, public density = 0.5 ) {
+	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public density = 0.5 ) {
 
-        if ( !this.spline ) {
+		if ( !this.spline ) {
 
-            this.spline = new CatmullRomSpline( true, 'catmullrom', 0.001 );
+			this.spline = new CatmullRomSpline( true, 'catmullrom', 0.001 );
 
-        }
+		}
 
-        this.id = PropPolygon.index++;
+		this.id = PropPolygon.index++;
 
-        // make a blank shape to avoid any errors
-        this.mesh = this.makeMesh( new Shape() );
-    }
+		// make a blank shape to avoid any errors
+		this.mesh = this.makeMesh( new Shape() );
+	}
 
-    makeMesh ( shape: Shape ): Mesh {
+	makeMesh ( shape: Shape ): Mesh {
 
-        const geometry = new ShapeGeometry( shape );
+		const geometry = new ShapeGeometry( shape );
 
-        const groundMaterial = new MeshBasicMaterial( {} );
+		const groundMaterial = new MeshBasicMaterial( {} );
 
-        const mesh = new GameObject( PropPolygon.tag, geometry, groundMaterial );
+		const mesh = new GameObject( PropPolygon.tag, geometry, groundMaterial );
 
-        mesh.position.set( 0, 0, -0.1 );
+		mesh.position.set( 0, 0, -0.1 );
 
-        mesh.Tag = PropPolygon.tag;
+		mesh.Tag = PropPolygon.tag;
 
-        mesh.userData.polygon = this;
+		mesh.userData.polygon = this;
 
-        return mesh;
-    }
+		return mesh;
+	}
 
-    update () {
+	update () {
 
-        this.spline.update();
+		this.spline.update();
 
-        if ( this.spline.controlPoints.length < 3 ) return;
+		if ( this.spline.controlPoints.length < 3 ) return;
 
-        const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
-            p => new Vector2( p.x, p.y )
-        );
+		const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
+			p => new Vector2( p.x, p.y )
+		);
 
-        const shape = new Shape();
+		const shape = new Shape();
 
-        const first = points.shift();
+		const first = points.shift();
 
-        shape.moveTo( first.x, first.y );
+		shape.moveTo( first.x, first.y );
 
-        shape.splineThru( points );
+		shape.splineThru( points );
 
-        this.mesh.geometry.dispose();
+		this.mesh.geometry.dispose();
 
-        const geometry = this.mesh.geometry = new ShapeGeometry( shape );
+		const geometry = this.mesh.geometry = new ShapeGeometry( shape );
 
-        geometry.computeBoundingBox();
+		geometry.computeBoundingBox();
 
-        PropService.updateCurvePolygonProps( this );
-    }
+		PropService.updateCurvePolygonProps( this );
+	}
 
-    addControlPoint ( cp: AnyControlPoint ) {
+	addControlPoint ( cp: AnyControlPoint ) {
 
-        ( this.spline as CatmullRomSpline ).add( cp );
+		( this.spline as CatmullRomSpline ).add( cp );
 
-        this.update();
-    }
+		this.update();
+	}
 
-    delete () {
+	delete () {
 
-        this.hideControlPoints();
+		this.hideControlPoints();
 
-        this.hideCurve();
+		this.hideCurve();
 
-    }
+	}
 
-    hideControlPoints () {
+	hideControlPoints () {
 
-        this.spline.hidecontrolPoints();
+		this.spline.hidecontrolPoints();
 
-    }
+	}
 
-    hideCurve () {
+	hideCurve () {
 
-        this.spline.hide();
+		this.spline.hide();
 
-    }
+	}
 
-    showCurve () {
+	showCurve () {
 
-        this.spline.show();
+		this.spline.show();
 
-    }
+	}
 
-    showControlPoints () {
+	showControlPoints () {
 
-        this.spline.showcontrolPoints();
+		this.spline.showcontrolPoints();
 
-    }
+	}
 }

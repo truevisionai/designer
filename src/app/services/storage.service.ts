@@ -5,31 +5,31 @@
 import { Injectable } from '@angular/core';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class StorageService {
 
-    public store ( key: string, value: string ): void {
+	public store ( key: string, value: string ): void {
 
-        window.localStorage.setItem( key, value );
+		window.localStorage.setItem( key, value );
 
-    }
+	}
 
-    public get ( key: string ) {
+	public get ( key: string ) {
 
-        return window.localStorage.getItem( key );
+		return window.localStorage.getItem( key );
 
-    }
+	}
 
-    public delete ( key: string ) {
+	public delete ( key: string ) {
 
-        return window.localStorage.removeItem( key );
+		return window.localStorage.removeItem( key );
 
-    }
+	}
 
-    public deleteAll ( key: string ) {
+	public deleteAll ( key: string ) {
 
-        return window.localStorage.clear();
+		return window.localStorage.clear();
 
-    }
+	}
 }

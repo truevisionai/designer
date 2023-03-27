@@ -7,16 +7,16 @@ import { BaseShortcut } from './base-shortcut';
 
 export class UndoShortcut extends BaseShortcut {
 
-    check ( e: KeyboardEvent ): boolean {
+	check ( e: KeyboardEvent ): boolean {
 
-        return e.ctrlKey == true && e.key === 'z';
+		return e.ctrlKey == true && e.key === 'z';
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        CommandHistory.undo();
+		CommandHistory.undo();
 
-    }
+	}
 
 }
