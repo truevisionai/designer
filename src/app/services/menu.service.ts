@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from './tv-electron.service';
 
 export enum ContextMenuType {
     VIEWPORT = 0,
@@ -19,7 +19,7 @@ export class MenuService {
 
     private menus: Map<number, Menu> = new Map<number, Menu>();
 
-    constructor ( private electron: ElectronService ) {
+    constructor ( private electron: TvElectronService ) {
 
     }
 
@@ -27,6 +27,7 @@ export class MenuService {
 
         if ( !this.electron.isElectronApp ) return;
 
+		// TODO: fix
         const menu = this.electron.remote.Menu.buildFromTemplate( template );
 
         this.menus.set( type, menu );
@@ -38,6 +39,7 @@ export class MenuService {
 
         if ( this.menus.has( type ) ) {
 
+			// TOOD: fix
             const menu = this.menus.get( type );
 
             menu.popup( {

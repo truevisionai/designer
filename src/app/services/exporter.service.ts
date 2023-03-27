@@ -10,26 +10,28 @@ import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
-import { ElectronService } from 'ngx-electron';
+
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 import { CommandHistory } from './command-history';
 import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
+import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ExporterService {
 
-	constructor (
-		private odService: TvMapService,
-		private fileService: FileService,
-		private electron: ElectronService,
-		private sceneExporter: SceneExporterService
-	) {
-	}
+    constructor (
+        private odService: TvMapService,
+        private fileService: FileService,
+        private electron: TvElectronService,
+        private sceneExporter: SceneExporterService
+    ) {
+    }
+
 
 	exportScene () {
 

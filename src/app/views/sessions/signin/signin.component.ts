@@ -12,7 +12,8 @@ import { AppService } from 'app/core/services/app.service';
 import { AuthService } from 'app/core/services/auth.service';
 import { AppLinks } from 'app/services/app-links';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
 
 @Component( {
 	selector: 'app-signin',
@@ -26,7 +27,11 @@ export class SigninComponent implements OnInit {
 
 	signinForm: FormGroup;
 
-	constructor ( private authService: AuthService, private router: Router, private electron: ElectronService ) {
+	constructor (
+		private authService: AuthService,
+		private router: Router,
+		private electron: TvElectronService
+	) {
 	}
 
 	ngOnInit () {

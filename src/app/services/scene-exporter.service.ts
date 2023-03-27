@@ -21,10 +21,11 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { XMLBuilder } from 'fast-xml-parser';
 
 import { saveAs } from 'file-saver';
-import { ElectronService } from 'ngx-electron';
+
 import { Euler, Vector3 } from 'three';
 import { FileService } from './file.service';
 import { SnackBar } from './snack-bar.service';
+import { TvElectronService } from './tv-electron.service';
 
 export interface Scene {
 
@@ -44,12 +45,12 @@ export class SceneExporterService {
 
 	private map: TvMap;
 
-	constructor (
-		private openDriveWriter: OdWriter,
-		private fileService: FileService,
-		private electron: ElectronService
-	) {
-	}
+    constructor (
+        private openDriveWriter: OdWriter,
+        private fileService: FileService,
+        private electron: TvElectronService
+    ) {
+    }
 
 	get currentFile (): IFile {
 		return TvMapInstance.currentFile;

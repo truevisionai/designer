@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 export class AppInfo {
 
-	static electron: ElectronService;
+    static electron: TvElectronService;
 
 	static get isElectronApp (): boolean {
 

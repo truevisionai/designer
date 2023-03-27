@@ -11,8 +11,9 @@ import { Router } from '@angular/router';
 import { AppService } from 'app/core/services/app.service';
 import { AuthService } from 'app/core/services/auth.service';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 import { CustomValidators } from 'ng2-validation';
-import { ElectronService } from 'ngx-electron';
+
 
 @Component( {
 	selector: 'app-signup',
@@ -46,12 +47,12 @@ export class SignupComponent implements OnInit {
 		return this.signupForm.controls[ 'email' ] as FormControl;
 	}
 
-	constructor (
-		private authService: AuthService,
-		private router: Router,
-		private electron: ElectronService
-	) {
-	}
+    constructor (
+        private authService: AuthService,
+        private router: Router,
+        private electron: TvElectronService
+    ) {
+    }
 
 	ngOnInit () {
 

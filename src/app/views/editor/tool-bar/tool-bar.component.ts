@@ -16,7 +16,7 @@ import { RoadTool } from 'app/core/tools/road-tool';
 import { SurfaceTool } from 'app/core/tools/surface-tool';
 import { CommandHistory } from 'app/services/command-history';
 import { ModelImporterService } from 'app/services/model-importer.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
 import { BaseTool } from '../../../core/tools/base-tool';
 import { LaneAddTool } from '../../../core/tools/lane-add-tool';
 import { LaneMarkingTool } from '../../../core/tools/lane-marking-tool';
@@ -39,15 +39,16 @@ export class ToolBarComponent implements OnInit {
 	currentTool: BaseTool;
 	currentToolName: string;
 
-	constructor (
-		private electronService: ElectronService,
-		private odService: TvMapService,
-		private signService: TvSignService,
-		private threeService: ThreeService,
-		private fileService: FileService,
-		private modelImporter: ModelImporterService
-	) {
-	}
+    constructor (
+        private electronService: TvElectronService,
+        private odService: TvMapService,
+        private signService: TvSignService,
+        private threeService: ThreeService,
+        private fileService: FileService,
+        private modelImporter: ModelImporterService
+    ) {
+    }
+
 
 	get oscEnabled (): boolean {
 		return Environment.oscEnabled;

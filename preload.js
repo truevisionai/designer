@@ -14,6 +14,7 @@ const statHelper = {
 }
 
 contextBridge.exposeInMainWorld( 'versions', {
+	currentDirectory:  __dirname,
 	remote: () => remote,
 	fs: () => fs,
 	fsPromises: () => require('fs/promises'),

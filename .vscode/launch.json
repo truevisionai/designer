@@ -78,15 +78,15 @@
 		{
 			"name": "Debug Electron: File",
 			"configurations": [
-				"Electron: File",
-				"Electron: Attach"
+				"Electron: Attach",
+				"Electron: File"
 			]
 		},
 		{
 			"name": "Debug Electron: Localhost",
 			"configurations": [
-				"Electron: Localhost",
-				"Electron: Attach"
+				"Electron: Attach",
+				"Electron: Localhost"
 			]
 		}
 	]

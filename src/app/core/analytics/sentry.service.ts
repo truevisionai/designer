@@ -24,7 +24,8 @@ export class SentryService {
 
 		Sentry.init( {
 			dsn: Environment.dsn,
-			environment: Environment.environment
+			environment: Environment.environment,
+			// release: 'designer@' + require('../../../../package.json').version,
 		} );
 
 	}

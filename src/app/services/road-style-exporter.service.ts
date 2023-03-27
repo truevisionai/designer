@@ -8,10 +8,11 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
-import { ElectronService } from 'ngx-electron';
+
 import { Euler, Vector3 } from 'three';
 import { FileService } from './file.service';
 import { RoadStyle } from './road-style.service';
+import { TvElectronService } from './tv-electron.service';
 
 export interface Scene {
 
@@ -29,12 +30,12 @@ export class RoadExporterService {
 
 	private readonly extension = 'roadstyle';
 
-	constructor (
-		private openDriveWriter: OdWriter,
-		private fileService: FileService,
-		private electron: ElectronService
-	) {
-	}
+    constructor (
+        private openDriveWriter: OdWriter,
+        private fileService: FileService,
+        private electron: TvElectronService
+    ) {
+    }
 
 	exportRoadStyle ( road: RoadStyle ) {
 
