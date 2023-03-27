@@ -163,11 +163,10 @@ app.on( 'activate', function () {
     }
 } );
 
-// helpers method to read current directory in angular
-ipcMain.on( 'current-directory', ( event, arg ) => {
-
-    event.returnValue = __dirname;
-
-} );
+// this is deprecated and not used anywhere
+// // helpers method to read current directory in angular
+// ipcMain.on( 'current-directory', ( event, arg ) => {
+//     event.returnValue = __dirname;
+// } );
 
 Menu.setApplicationMenu( null );

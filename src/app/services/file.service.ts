@@ -30,7 +30,7 @@ export class FileService {
 
         if ( this.electronService.isElectronApp ) {
 
-            this.fs = this.remote.require( 'fs' );
+            this.fs = versions.fs();
             this.path = this.remote.require( 'path' );
             this.util = this.remote.require( 'util' );
 
@@ -45,7 +45,7 @@ export class FileService {
     }
 
     get currentDirectory () {
-        return this.electronService.ipcRenderer.sendSync( 'current-directory' );
+		return versions.currentDirectory;
     }
 
     get projectFolder () {
