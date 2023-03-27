@@ -43,15 +43,15 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	widthInPercent: string;
 
-    constructor (
-        private importer: ImporterService,
-        private electron: TvElectronService,
-        private menuService: MenuService,
-        private fileService: FileService,
-        private appRef: ApplicationRef,
-        private projectBrowserService: ProjectBrowserService
-    ) {
-    }
+	constructor (
+		private importer: ImporterService,
+		private electron: TvElectronService,
+		private menuService: MenuService,
+		private fileService: FileService,
+		private appRef: ApplicationRef,
+		private projectBrowserService: ProjectBrowserService
+	) {
+	}
 
 	get sortedFiles () {
 

@@ -18,13 +18,13 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 } )
 export class NewRoadDialogComponent implements OnInit {
 
-    constructor (
-        private dialogRef: MatDialogRef<NewRoadDialogComponent>,
-        private electron: TvElectronService,
-        private recentFileService: RecentFileService,
-        private mainFileService: MainFileService
-    ) {
-    }
+	constructor (
+		private dialogRef: MatDialogRef<NewRoadDialogComponent>,
+		private electron: TvElectronService,
+		private recentFileService: RecentFileService,
+		private mainFileService: MainFileService
+	) {
+	}
 
 	get recentFiles () {
 

@@ -23,8 +23,8 @@ export class AssetImporterService {
 	// private successCallback;
 	// private errorCallback;
 
-    constructor ( private electronService: TvElectronService, private fileService: FileService ) {
-    }
+	constructor ( private electronService: TvElectronService, private fileService: FileService ) {
+	}
 
 	public import ( filepath: string, successCallback: Function, errorCallback: Function ) {
 

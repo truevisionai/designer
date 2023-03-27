@@ -24,13 +24,13 @@ import { TvElectronService } from './tv-electron.service';
 } )
 export class ExporterService {
 
-    constructor (
-        private odService: TvMapService,
-        private fileService: FileService,
-        private electron: TvElectronService,
-        private sceneExporter: SceneExporterService
-    ) {
-    }
+	constructor (
+		private odService: TvMapService,
+		private fileService: FileService,
+		private electron: TvElectronService,
+		private sceneExporter: SceneExporterService
+	) {
+	}
 
 
 	exportScene () {

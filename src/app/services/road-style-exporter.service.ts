@@ -30,12 +30,12 @@ export class RoadExporterService {
 
 	private readonly extension = 'roadstyle';
 
-    constructor (
-        private openDriveWriter: OdWriter,
-        private fileService: FileService,
-        private electron: TvElectronService
-    ) {
-    }
+	constructor (
+		private openDriveWriter: OdWriter,
+		private fileService: FileService,
+		private electron: TvElectronService
+	) {
+	}
 
 	exportRoadStyle ( road: RoadStyle ) {
 

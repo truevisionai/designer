@@ -45,12 +45,12 @@ export class SceneExporterService {
 
 	private map: TvMap;
 
-    constructor (
-        private openDriveWriter: OdWriter,
-        private fileService: FileService,
-        private electron: TvElectronService
-    ) {
-    }
+	constructor (
+		private openDriveWriter: OdWriter,
+		private fileService: FileService,
+		private electron: TvElectronService
+	) {
+	}
 
 	get currentFile (): IFile {
 		return TvMapInstance.currentFile;

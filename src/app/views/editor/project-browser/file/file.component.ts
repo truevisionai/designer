@@ -43,15 +43,15 @@ export class FileComponent implements OnInit {
 
 	public showRenaming: boolean;
 
-    constructor (
-        private electron: TvElectronService,
-        private menuService: MenuService,
-        private assetService: AssetLoaderService,
-        private previewService: PreviewService,
-        private fileService: FileService,
-        private projectBrowserService: ProjectBrowserService,
-        private importer: ImporterService,
-    ) {
+	constructor (
+		private electron: TvElectronService,
+		private menuService: MenuService,
+		private assetService: AssetLoaderService,
+		private previewService: PreviewService,
+		private fileService: FileService,
+		private projectBrowserService: ProjectBrowserService,
+		private importer: ImporterService,
+	) {
 
 	}
 

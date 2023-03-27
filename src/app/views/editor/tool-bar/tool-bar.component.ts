@@ -39,15 +39,15 @@ export class ToolBarComponent implements OnInit {
 	currentTool: BaseTool;
 	currentToolName: string;
 
-    constructor (
-        private electronService: TvElectronService,
-        private odService: TvMapService,
-        private signService: TvSignService,
-        private threeService: ThreeService,
-        private fileService: FileService,
-        private modelImporter: ModelImporterService
-    ) {
-    }
+	constructor (
+		private electronService: TvElectronService,
+		private odService: TvMapService,
+		private signService: TvSignService,
+		private threeService: ThreeService,
+		private fileService: FileService,
+		private modelImporter: ModelImporterService
+	) {
+	}
 
 
 	get oscEnabled (): boolean {

@@ -16,7 +16,7 @@ declare const versions;
 } )
 export class FileService {
 
-    static electron: TvElectronService;
+	static electron: TvElectronService;
 
 	public fileImported = new EventEmitter<IFile>();
 	public fileSaved = new EventEmitter<IFile>();
@@ -25,29 +25,29 @@ export class FileService {
 	public path: any;
 	private util: any;
 
-    constructor ( public electronService: TvElectronService, private ngZone: NgZone ) {
+	constructor ( public electronService: TvElectronService, private ngZone: NgZone ) {
 
 		FileService.electron = electronService;
 
 		if ( this.electronService.isElectronApp ) {
 
-            this.fs = versions.fs();
-            this.path = this.remote.require( 'path' );
-            this.util = this.remote.require( 'util' );
+			this.fs = versions.fs();
+			this.path = this.remote.require( 'path' );
+			this.util = this.remote.require( 'util' );
 
 		}
 
 	}
 
-    get remote () { return this.electronService.remote; }
+	get remote () { return this.electronService.remote; }
 
 	get userDocumentFolder () {
 		return this.remote.app.getPath( 'documents' );
 	}
 
-    get currentDirectory () {
+	get currentDirectory () {
 		return versions.currentDirectory;
-    }
+	}
 
 	get projectFolder () {
 

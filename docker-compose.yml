@@ -1,24 +1,24 @@
 version: '2.0'
 
 services:
-  app:
-    container_name: truevision_designer
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '4200:4200'
-    tty: true      
-    environment:
-      - NODE_ENV=production
-    working_dir: /app
-    volumes:
-      - ./:/app
-    networks:
-      - app-network
+    app:
+        container_name: truevision_designer
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '4200:4200'
+        tty: true
+        environment:
+            - NODE_ENV=production
+        working_dir: /app
+        volumes:
+            - ./:/app
+        networks:
+            - app-network
 networks:
-  app-network:
-    driver: bridge
+    app-network:
+        driver: bridge
 volumes:
-  dbdata:
-    driver: local
+    dbdata:
+        driver: local

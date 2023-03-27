@@ -47,12 +47,12 @@ export class SignupComponent implements OnInit {
 		return this.signupForm.controls[ 'email' ] as FormControl;
 	}
 
-    constructor (
-        private authService: AuthService,
-        private router: Router,
-        private electron: TvElectronService
-    ) {
-    }
+	constructor (
+		private authService: AuthService,
+		private router: Router,
+		private electron: TvElectronService
+	) {
+	}
 
 	ngOnInit () {
 

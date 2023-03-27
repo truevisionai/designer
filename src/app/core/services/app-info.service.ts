@@ -6,7 +6,7 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 
 export class AppInfo {
 
-    static electron: TvElectronService;
+	static electron: TvElectronService;
 
 	static get isElectronApp (): boolean {
 

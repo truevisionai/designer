@@ -4,7 +4,7 @@
 
 <div *ngIf="road" class="inspector-form-container">
 
-    <app-double-field [value]="road.length" [disabled]="true" label="Length (Meters)"></app-double-field>
+	<app-double-field [value]="road.length" [disabled]="true" label="Length (Meters)"></app-double-field>
 
 	<app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit (Miles/Hour)" max="200" min="0"></app-double-field>
 
@@ -18,14 +18,14 @@
 
 	<app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
 
-    <div *ngIf="controlPoint">
-        <span>Road Control Point</span><br />
-        <mat-form-field style="width: 50%;">
-            <input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
-        </mat-form-field>
-        <mat-form-field style="width: 50%;">
-            <input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
-        </mat-form-field>
-    </div>
+	<div *ngIf="controlPoint">
+		<span>Road Control Point</span><br />
+		<mat-form-field style="width: 50%;">
+			<input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
+		</mat-form-field>
+		<mat-form-field style="width: 50%;">
+			<input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
+		</mat-form-field>
+	</div>
 
 </div>

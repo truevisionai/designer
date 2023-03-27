@@ -4,7 +4,7 @@
 
 <div *ngIf="data && data.node" class="inspector-form-container">
 
-    <app-double-field (changed)="onDistanceChanged($event)" [value]="width.s" [disabled]="true" label="Distance" min="0"></app-double-field>
+	<app-double-field (changed)="onDistanceChanged($event)" [value]="width.s" [disabled]="true" label="Distance" min="0"></app-double-field>
 
 	<app-double-field (changed)="onWidthChanged($event)" [value]="width.a" label="Width" max="50" min="0.1"></app-double-field>
 

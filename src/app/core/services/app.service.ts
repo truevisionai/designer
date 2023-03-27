@@ -24,26 +24,26 @@ export class AppService {
 	static homeUrl = '';
 	static loginUrl = '/sessions/signin';
 
-    static eventSystem: EventSystem;
-    static three: ThreeService;
-    static electron: TvElectronService;
-    static assets: AssetLoaderService;
-    static file: FileService;
-    static exporter: SceneExporterService;
-    static editor: EditorService;
+	static eventSystem: EventSystem;
+	static three: ThreeService;
+	static electron: TvElectronService;
+	static assets: AssetLoaderService;
+	static file: FileService;
+	static exporter: SceneExporterService;
+	static editor: EditorService;
 
-    constructor (
-        private eventSystem: EventSystem,
-        private electron: TvElectronService,
-        private scene: SceneService,
-        private snackBar: SnackBar,
-        private three: ThreeService,
-        public auth: AuthService,
-        public assets: AssetLoaderService,
-        public files: FileService,
-        sceneExporter: SceneExporterService,
-        public editor: EditorService,
-    ) {
+	constructor (
+		private eventSystem: EventSystem,
+		private electron: TvElectronService,
+		private scene: SceneService,
+		private snackBar: SnackBar,
+		private three: ThreeService,
+		public auth: AuthService,
+		public assets: AssetLoaderService,
+		public files: FileService,
+		sceneExporter: SceneExporterService,
+		public editor: EditorService,
+	) {
 
 
 		AppService.eventSystem = eventSystem;

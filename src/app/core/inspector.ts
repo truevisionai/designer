@@ -7,47 +7,47 @@ import { ComponentItem, IComponent } from './game-object';
 
 export class AppInspector {
 
-    public static inspectorChanged = new EventEmitter<ComponentItem>();
-    public static inspectorCleared = new EventEmitter<ComponentItem>();
+	public static inspectorChanged = new EventEmitter<ComponentItem>();
+	public static inspectorCleared = new EventEmitter<ComponentItem>();
 
-    /**
-     * fired when new instance of inspector is created
-     */
-    public static inspectorCreated = new EventEmitter<IComponent>();
-    public static currentInspector: Type<IComponent>;
-    public static currentInspectorData: any;
-    private static componentItem: ComponentItem;
+	/**
+	 * fired when new instance of inspector is created
+	 */
+	public static inspectorCreated = new EventEmitter<IComponent>();
+	public static currentInspector: Type<IComponent>;
+	public static currentInspectorData: any;
+	private static componentItem: ComponentItem;
 
-    public static setInspector ( component: Type<IComponent>, data: any ) {
+	public static setInspector ( component: Type<IComponent>, data: any ) {
 
-        if ( !component ) this.clear();
+		if ( !component ) this.clear();
 
-        if ( !component ) return;
+		if ( !component ) return;
 
-        this.currentInspector = component;
+		this.currentInspector = component;
 
-        this.currentInspectorData = data;
+		this.currentInspectorData = data;
 
-        this.componentItem = new ComponentItem( component, data );
+		this.componentItem = new ComponentItem( component, data );
 
-        this.inspectorChanged.emit( this.componentItem );
+		this.inspectorChanged.emit( this.componentItem );
 
-    }
+	}
 
-    public static getInspector (): ComponentItem {
+	public static getInspector (): ComponentItem {
 
-        return this.componentItem;
+		return this.componentItem;
 
-    }
+	}
 
-    static clear () {
+	static clear () {
 
-        this.currentInspector = null;
+		this.currentInspector = null;
 
-        this.currentInspectorData = null;
+		this.currentInspectorData = null;
 
-        this.inspectorCleared.emit( null );
+		this.inspectorCleared.emit( null );
 
-    }
+	}
 
 }

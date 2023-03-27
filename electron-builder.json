@@ -1,45 +1,45 @@
 {
-    "productName": "TruevisionDesigner",
-    "directories": {
-        "output": "release/",
-        "buildResources": "build/"
-    },
-    "files": [
-        "**/*",
-        "!**/*.ts",
-        "!*.code-workspace",
-        "!LICENSE.md",
-        "!buildspec.yml",
-        "!package.json",
-        "!package-lock.json",
-        "!python-client/",
-        "!scenario/",
-        "!scripts/",
-        "!samples/",
-        "!src/",
-        "!e2e/",
-        "!hooks/",
-        "!angular.json",
-        "!_config.yml",
-        "!karma.conf.js",
-        "!tsconfig.json",
-        "!tslint.json",
-        "!third-party",
-        "!docs",
-        "!.vscode",
-        "!.idea",
-        "!.protos"
-    ],
-    "extraResources": [
-        "bin",
-        "default-project"
-    ],
-    "extraFiles": [],
-    "linux": {
-        "category": "Utility",
-        "target": [
-            "deb",
-            "dir"
-        ]
-    }
+	"productName": "TruevisionDesigner",
+	"directories": {
+		"output": "release/",
+		"buildResources": "build/"
+	},
+	"files": [
+		"**/*",
+		"!**/*.ts",
+		"!*.code-workspace",
+		"!LICENSE.md",
+		"!buildspec.yml",
+		"!package.json",
+		"!package-lock.json",
+		"!python-client/",
+		"!scenario/",
+		"!scripts/",
+		"!samples/",
+		"!src/",
+		"!e2e/",
+		"!hooks/",
+		"!angular.json",
+		"!_config.yml",
+		"!karma.conf.js",
+		"!tsconfig.json",
+		"!tslint.json",
+		"!third-party",
+		"!docs",
+		"!.vscode",
+		"!.idea",
+		"!.protos"
+	],
+	"extraResources": [
+		"bin",
+		"default-project"
+	],
+	"extraFiles": [],
+	"linux": {
+		"category": "Utility",
+		"target": [
+			"deb",
+			"dir"
+		]
+	}
 }
