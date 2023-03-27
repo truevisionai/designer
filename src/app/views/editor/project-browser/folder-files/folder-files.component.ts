@@ -19,7 +19,8 @@ import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
@@ -44,7 +45,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
     constructor (
         private importer: ImporterService,
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private menuService: MenuService,
         private fileService: FileService,
         private appRef: ApplicationRef,

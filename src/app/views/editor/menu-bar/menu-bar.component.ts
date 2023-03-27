@@ -14,7 +14,8 @@ import { ExporterService } from 'app/services/exporter.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
 import { RoadExporterService } from 'app/services/road-style-exporter.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
 import { AppService } from '../../../core/services/app.service';
 import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
@@ -32,7 +33,7 @@ export class MenuBarComponent implements OnInit {
     constructor (
         private appService: AppService,
         private odService: TvMapService,
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private dialog: MatDialog,
         private http: HttpClient,
         private exporter: ExporterService,

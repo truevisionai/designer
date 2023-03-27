@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { FileService } from 'app/services/file.service';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
 import { EventSystem } from '../../events/event-system.service';
 import { ThreeService } from '../../modules/three-js/three.service';
 import { SnackBar } from '../../services/snack-bar.service';
@@ -25,7 +26,7 @@ export class AppService {
 
     static eventSystem: EventSystem;
     static three: ThreeService;
-    static electron: ElectronService;
+    static electron: TvElectronService;
     static assets: AssetLoaderService;
     static file: FileService;
     static exporter: SceneExporterService;
@@ -33,7 +34,7 @@ export class AppService {
 
     constructor (
         private eventSystem: EventSystem,
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private scene: SceneService,
         private snackBar: SnackBar,
         private three: ThreeService,

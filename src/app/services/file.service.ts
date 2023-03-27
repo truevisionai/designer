@@ -3,10 +3,11 @@
  */
 
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { ElectronService } from 'ngx-electron';
+
 import { IFile } from '../core/models/file';
 import { FileUtils } from './file-utils';
 import { SnackBar } from './snack-bar.service';
+import { TvElectronService } from './tv-electron.service';
 
 declare const versions;
 
@@ -15,7 +16,7 @@ declare const versions;
 } )
 export class FileService {
 
-    static electron: ElectronService;
+    static electron: TvElectronService;
 
     public fileImported = new EventEmitter<IFile>();
     public fileSaved = new EventEmitter<IFile>();
@@ -24,7 +25,7 @@ export class FileService {
     public path: any;
     private util: any;
 
-    constructor ( public electronService: ElectronService, private ngZone: NgZone ) {
+    constructor ( public electronService: TvElectronService, private ngZone: NgZone ) {
 
         FileService.electron = electronService;
 
@@ -38,7 +39,7 @@ export class FileService {
 
     }
 
-    get remote () { return versions.remote(); }
+    get remote () { return this.electronService.remote; }
 
     get userDocumentFolder () {
         return this.remote.app.getPath( 'documents' );

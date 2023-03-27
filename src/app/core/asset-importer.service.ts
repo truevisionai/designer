@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { FileService } from 'app/services/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
 import * as THREE from 'three';
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -23,7 +23,7 @@ export class AssetImporterService {
     // private successCallback;
     // private errorCallback;
 
-    constructor ( private electronService: ElectronService, private fileService: FileService ) {
+    constructor ( private electronService: TvElectronService, private fileService: FileService ) {
     }
 
     public import ( filepath: string, successCallback: Function, errorCallback: Function ) {

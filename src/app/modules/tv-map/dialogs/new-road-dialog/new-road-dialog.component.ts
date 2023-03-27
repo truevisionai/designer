@@ -8,7 +8,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { IFile } from 'app/core/models/file';
 import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
-import { ElectronService } from 'ngx-electron';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
 
 @Component( {
     selector: 'app-new-road-dialog',
@@ -19,7 +20,7 @@ export class NewRoadDialogComponent implements OnInit {
 
     constructor (
         private dialogRef: MatDialogRef<NewRoadDialogComponent>,
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private recentFileService: RecentFileService,
         private mainFileService: MainFileService
     ) {

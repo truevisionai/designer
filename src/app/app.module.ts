@@ -16,7 +16,6 @@ import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { NgxElectronModule } from 'ngx-electron';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
@@ -54,7 +53,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		EditorModule,
 		TvMapModule,
 		ThreeJsModule,
-		NgxElectronModule,
 
 		SessionsModule,
 		SatPopoverModule,

@@ -8,9 +8,10 @@ import { FileApiService } from 'app/core/services/file-api.service';
 import { ToolManager } from 'app/core/tools/tool-manager';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 import { saveAs } from 'file-saver';
-import { ElectronService } from 'ngx-electron';
+
 import { IFile } from '../../../core/models/file';
 import { FileService } from '../../../services/file.service';
 import { TvMapBuilder } from '../builders/od-builder.service';
@@ -28,7 +29,7 @@ export class TvMapService {
         private fileService: FileService,
         private writer: OdWriter,
         private fileApiService: FileApiService,
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private openDriveParser: OpenDriverParser
     ) {
 

@@ -17,8 +17,8 @@ import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
-import { ElectronService } from 'ngx-electron';
 import { Material } from 'three';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
@@ -44,7 +44,7 @@ export class FileComponent implements OnInit {
     public showRenaming: boolean;
 
     constructor (
-        private electron: ElectronService,
+        private electron: TvElectronService,
         private menuService: MenuService,
         private assetService: AssetLoaderService,
         private previewService: PreviewService,

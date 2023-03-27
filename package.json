@@ -57,7 +57,6 @@
 		"ng2-validation": "^4.2.0",
 		"ngx-color": "^7.3.3",
 		"ngx-color-picker": "^12.0.1",
-		"ngx-electron": "^2.2.0",
 		"ngx-perfect-scrollbar": "^10.1.1",
 		"rxjs": "^6.6.7",
 		"rxjs-compat": "^6.6.7",
