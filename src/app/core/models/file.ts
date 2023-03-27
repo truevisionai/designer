@@ -6,21 +6,21 @@ import { FileUtils } from 'app/services/file-utils';
 
 export class IFile {
 
-    constructor (
-        public name?: string,
-        public path?: string,
-        public contents?: string,
-        public type?: string,
-        public online?: boolean,
-        public updatedAt?: Date
-    ) {
-    }
+	constructor (
+		public name?: string,
+		public path?: string,
+		public contents?: string,
+		public type?: string,
+		public online?: boolean,
+		public updatedAt?: Date
+	) {
+	}
 
-    get directory () {
-        return FileUtils.getDirectoryFromPath( this.path );
-    }
+	get directory () {
+		return FileUtils.getDirectoryFromPath( this.path );
+	}
 
-    get filename () {
-        return FileUtils.getFilenameFromPath( this.path );
-    }
+	get filename () {
+		return FileUtils.getFilenameFromPath( this.path );
+	}
 }

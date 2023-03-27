@@ -12,112 +12,112 @@ import { BaseCommand } from './base-command';
 
 export class ShowLaneMarkingCommand extends BaseCommand {
 
-    private road: TvRoad;
+	private road: TvRoad;
 
-    private oldRoad: TvRoad;
+	private oldRoad: TvRoad;
 
-    constructor ( private lane: TvLane, private oldLane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
+	constructor ( private lane: TvLane, private oldLane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
 
-        super();
+		super();
 
-        if ( lane ) {
+		if ( lane ) {
 
-            this.road = this.map.getRoadById( this.lane.roadId );
+			this.road = this.map.getRoadById( this.lane.roadId );
 
-        }
+		}
 
-        if ( oldLane ) {
+		if ( oldLane ) {
 
-            this.oldRoad = this.map.getRoadById( this.oldLane.roadId );
+			this.oldRoad = this.map.getRoadById( this.oldLane.roadId );
 
-        }
-    }
+		}
+	}
 
-    execute (): void {
+	execute (): void {
 
-        if ( this.oldRoad ) {
+		if ( this.oldRoad ) {
 
-            this.hideNodes( this.oldRoad );
+			this.hideNodes( this.oldRoad );
 
-        }
+		}
 
-        if ( this.road ) {
+		if ( this.road ) {
 
-            this.showNodes( this.road );
+			this.showNodes( this.road );
 
-        }
-    }
+		}
+	}
 
-    undo (): void {
+	undo (): void {
 
-        if ( this.road ) {
+		if ( this.road ) {
 
-            this.hideNodes( this.road );
+			this.hideNodes( this.road );
 
-        }
+		}
 
-        if ( this.oldRoad ) {
+		if ( this.oldRoad ) {
 
-            this.showNodes( this.oldRoad );
+			this.showNodes( this.oldRoad );
 
-        }
-    }
+		}
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
-    private showNodes ( road: TvRoad ) {
+	private showNodes ( road: TvRoad ) {
 
-        if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
+		if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
 
-        if ( road.isJunction ) return;
+		if ( road.isJunction ) return;
 
-        road.laneSections.forEach( laneSection => {
+		road.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getRoadMarks().forEach( roadmark => {
+				lane.getRoadMarks().forEach( roadmark => {
 
-                    if ( roadmark.node ) {
+					if ( roadmark.node ) {
 
-                        roadmark.node.visible = true;
+						roadmark.node.visible = true;
 
-                    } else {
+					} else {
 
-                        roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
+						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
 
-                        SceneService.add( roadmark.node );
+						SceneService.add( roadmark.node );
 
-                    }
+					}
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
+		} );
 
-        this.laneHelper.drawRoad( road );
-    }
+		this.laneHelper.drawRoad( road );
+	}
 
-    private hideNodes ( road: TvRoad ) {
+	private hideNodes ( road: TvRoad ) {
 
-        road.laneSections.forEach( laneSection => {
+		road.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getRoadMarks().forEach( roadmark => {
+				lane.getRoadMarks().forEach( roadmark => {
 
-                    if ( roadmark.node ) roadmark.node.visible = false;
+					if ( roadmark.node ) roadmark.node.visible = false;
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
+		} );
 
-        this.laneHelper.clear();
-    }
+		this.laneHelper.clear();
+	}
 }

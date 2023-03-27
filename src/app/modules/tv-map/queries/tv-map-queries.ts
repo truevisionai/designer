@@ -17,468 +17,462 @@ import { TvMapInstance } from '../services/tv-map-source-file';
 
 export abstract class TvBaseQueries {
 
-    static get map () {
-        return TvMapInstance.map;
-    }
+	static get map () {
+		return TvMapInstance.map;
+	}
 
-    static get roads () {
-        return this.map.roads;
-    }
+	static get roads () {
+		return this.map.roads;
+	}
 
 }
 
 export class TvMapQueries extends TvBaseQueries {
 
-    static getRoadWidthAt ( roadId: number, s: number ) {
+	static getRoadWidthAt ( roadId: number, s: number ) {
 
-        let leftWidth = 0, rightWidth = 0;
+		let leftWidth = 0, rightWidth = 0;
 
-        this.findRoadById( roadId )
-            .getLaneSectionAt( s )
-            .getLeftLanes()
-            .forEach( lane => leftWidth += lane.getWidthValue( s ) );
+		this.findRoadById( roadId )
+			.getLaneSectionAt( s )
+			.getLeftLanes()
+			.forEach( lane => leftWidth += lane.getWidthValue( s ) );
 
-        this.findRoadById( roadId )
-            .getLaneSectionAt( s )
-            .getRightLanes()
-            .forEach( lane => rightWidth += lane.getWidthValue( s ) );
+		this.findRoadById( roadId )
+			.getLaneSectionAt( s )
+			.getRightLanes()
+			.forEach( lane => rightWidth += lane.getWidthValue( s ) );
 
-        return {
-            totalWidth: leftWidth + rightWidth,
-            leftSideWidth: leftWidth,
-            rightSideWidth: rightWidth,
-        };
-    }
+		return {
+			totalWidth: leftWidth + rightWidth,
+			leftSideWidth: leftWidth,
+			rightSideWidth: rightWidth,
+		};
+	}
 
-    static findRoadById ( id: number ): TvRoad {
+	static findRoadById ( id: number ): TvRoad {
 
-        return this.map.roads.get( id );
+		return this.map.roads.get( id );
 
-    }
+	}
 
-    static getSignalById ( id: number ) {
+	static getSignalById ( id: number ) {
 
-        let res = null;
+		let res = null;
 
-        for ( const road of this.roads ) {
+		for ( const road of this.roads ) {
 
-            for ( const signal of road[ 1 ].signals ) {
+			for ( const signal of road[ 1 ].signals ) {
 
-                if ( signal[ 1 ].id === id ) {
+				if ( signal[ 1 ].id === id ) {
 
-                    res = signal;
-                    break;
+					res = signal;
+					break;
 
-                }
+				}
 
-            }
+			}
 
-            if ( res ) break;
-        }
+			if ( res ) break;
+		}
 
-        return res;
-    }
+		return res;
+	}
 
-    static getRoadPosition ( roadId: number, s: number, t: number ): TvPosTheta {
+	static getRoadPosition ( roadId: number, s: number, t: number ): TvPosTheta {
 
-        return this.findRoadById( roadId ).getPositionAt( s, t );
+		return this.findRoadById( roadId ).getPositionAt( s, t );
 
-    }
+	}
 
-    static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
+	static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
 
-        // console.time( 'get-road' );
+		// console.time( 'get-road' );
 
-        const tmpPosTheta = new TvPosTheta();
+		const tmpPosTheta = new TvPosTheta();
 
-        let nearestRoad: TvRoad = null;
+		let nearestRoad: TvRoad = null;
 
-        let nearestGeometry: TvAbstractRoadGeometry = null;
+		let nearestGeometry: TvAbstractRoadGeometry = null;
 
-        let nearestPosition: Vector2 = null;
+		let nearestPosition: Vector2 = null;
 
-        let minDistance = Number.MAX_SAFE_INTEGER;
+		let minDistance = Number.MAX_SAFE_INTEGER;
 
-        const point = new Vector2( x, y );
+		const point = new Vector2( x, y );
 
-        const roadCount = this.roads.size;
+		const roadCount = this.roads.size;
 
-        let road: TvRoad;
+		let road: TvRoad;
 
-        for ( const keyValue of this.roads ) {
+		for ( const keyValue of this.roads ) {
 
-            road = keyValue[ 1 ];
+			road = keyValue[ 1 ];
 
-            let skip = false;
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 
-            for ( const id of roadIdsToIgnore ) if ( road.id === id ) skip = true;
+			for ( const geometry of road.geometries ) {
 
-            if ( skip ) continue;
+				const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
 
-            road.geometries.forEach( geometry => {
+				const distance = point.distanceTo( nearestPoint );
 
-                const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
+				if ( distance < minDistance ) {
 
-                const distance = point.distanceTo( nearestPoint );
+					minDistance = distance;
+					nearestRoad = road;
+					nearestGeometry = geometry;
+					nearestPosition = nearestPoint;
 
-                if ( distance < minDistance ) {
+					if ( posTheta ) {
+						posTheta.x = tmpPosTheta.x;
+						posTheta.y = tmpPosTheta.y;
+						posTheta.hdg = tmpPosTheta.hdg;
+						posTheta.s = tmpPosTheta.s;
+						posTheta.t = tmpPosTheta.t;
+					}
+				}
+			}
+		}
 
-                    minDistance = distance;
-                    nearestRoad = road;
-                    nearestGeometry = geometry;
-                    nearestPosition = nearestPoint;
+		// console.timeEnd( 'get-road' );
 
-                    if ( posTheta ) {
-                        posTheta.x = tmpPosTheta.x;
-                        posTheta.y = tmpPosTheta.y;
-                        posTheta.hdg = tmpPosTheta.hdg;
-                        posTheta.s = tmpPosTheta.s;
-                        posTheta.t = tmpPosTheta.t;
-                    }
-                }
+		return nearestRoad;
 
-            } );
+	}
 
-        }
+	static getLaneStartPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
-        // console.timeEnd( 'get-road' );
+		const posTheta = new TvPosTheta();
 
-        return nearestRoad;
+		const road = this.roads.get( roadId );
 
-    }
+		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-    static getLaneStartPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+		road.getGeometryCoords( sCoordinate, posTheta );
 
-        const posTheta = new TvPosTheta();
+		const laneSection = road.getLaneSectionAt( sCoordinate );
 
-        const road = this.roads.get( roadId );
+		const lane = laneSection.getLaneById( laneId );
 
-        if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
+		const tDirection = laneId > 0 ? 1 : -1;
 
-        road.getGeometryCoords( sCoordinate, posTheta );
+		const cumulativeWidth = laneSection.getWidthUptoStart( lane, sCoordinate );
 
-        const laneSection = road.getLaneSectionAt( sCoordinate );
+		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
 
-        const lane = laneSection.getLaneById( laneId );
+		posTheta.x += cosTheta * ( cumulativeWidth + offset );
+		posTheta.y += sinTheta * ( cumulativeWidth + offset );
 
-        const tDirection = laneId > 0 ? 1 : -1;
+		if ( refPos ) {
 
-        const cumulativeWidth = laneSection.getWidthUptoStart( lane, sCoordinate );
+			refPos.x = posTheta.x;
+			refPos.y = posTheta.y;
+			refPos.s = posTheta.s;
+			refPos.t = posTheta.t;
+			refPos.hdg = posTheta.hdg;
 
-        const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-        const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		}
 
-        posTheta.x += cosTheta * ( cumulativeWidth + offset );
-        posTheta.y += sinTheta * ( cumulativeWidth + offset );
+		return new Vector3(
+			posTheta.x,
+			posTheta.y,
+			0
+		);
 
-        if ( refPos ) {
+	}
 
-            refPos.x = posTheta.x;
-            refPos.y = posTheta.y;
-            refPos.s = posTheta.s;
-            refPos.t = posTheta.t;
-            refPos.hdg = posTheta.hdg;
+	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
-        }
+		const posTheta = new TvPosTheta();
 
-        return new Vector3(
-            posTheta.x,
-            posTheta.y,
-            0
-        );
+		const road = this.roads.get( roadId );
 
-    }
+		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-    static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+		road.getGeometryCoords( sCoordinate, posTheta );
 
-        const posTheta = new TvPosTheta();
+		const laneSection = road.getLaneSectionAt( sCoordinate );
 
-        const road = this.roads.get( roadId );
+		if ( !laneSection || laneSection == null ) {
+			throw new Error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
+		}
 
-        if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
+		const lane = laneSection.getLaneById( laneId );
 
-        road.getGeometryCoords( sCoordinate, posTheta );
+		if ( !lane || lane === undefined || lane == null ) {
+			throw new Error( `Lane not found for road ${ roadId } at ${ sCoordinate } with id:${ laneId }` );
+		}
 
-        const laneSection = road.getLaneSectionAt( sCoordinate );
+		const tDirection = laneId > 0 ? 1 : -1;
 
-        if ( !laneSection || laneSection == null ) {
-            throw new Error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
-        }
+		const cumulativeWidth = laneSection.getWidthUptoCenter( lane, sCoordinate );
 
-        const lane = laneSection.getLaneById( laneId );
+		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
 
-        if ( !lane || lane === undefined || lane == null ) {
-            throw new Error( `Lane not found for road ${ roadId } at ${ sCoordinate } with id:${ laneId }` );
-        }
+		posTheta.x += cosTheta * ( cumulativeWidth + offset );
+		posTheta.y += sinTheta * ( cumulativeWidth + offset );
 
-        const tDirection = laneId > 0 ? 1 : -1;
+		if ( refPos ) {
 
-        const cumulativeWidth = laneSection.getWidthUptoCenter( lane, sCoordinate );
+			refPos.x = posTheta.x;
+			refPos.y = posTheta.y;
+			refPos.s = posTheta.s;
+			refPos.t = posTheta.t;
+			refPos.hdg = posTheta.hdg;
 
-        const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-        const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		}
 
-        posTheta.x += cosTheta * ( cumulativeWidth + offset );
-        posTheta.y += sinTheta * ( cumulativeWidth + offset );
+		return new Vector3(
+			posTheta.x,
+			posTheta.y,
+			0
+		);
 
-        if ( refPos ) {
+	}
 
-            refPos.x = posTheta.x;
-            refPos.y = posTheta.y;
-            refPos.s = posTheta.s;
-            refPos.t = posTheta.t;
-            refPos.hdg = posTheta.hdg;
+	static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane } {
 
-        }
+		let resultLane: TvLane = null;
 
-        return new Vector3(
-            posTheta.x,
-            posTheta.y,
-            0
-        );
+		const resultRoad = TvMapQueries.getRoadByCoords( x, y, posTheta, roadIdsToIgnore );
 
-    }
+		const s = posTheta.s;
+		const t = posTheta.t;
 
-    static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane } {
+		// find laneSection
+		const laneSections = resultRoad.getLaneSections();
 
-        let resultLane: TvLane = null;
+		for ( const laneSection of laneSections ) {
 
-        const resultRoad = TvMapQueries.getRoadByCoords( x, y, posTheta, roadIdsToIgnore );
+			// TODO: Fix this, checkInteral does not check properly
+			if ( laneSection.checkInterval( s ) ) {
 
-        const s = posTheta.s;
-        const t = posTheta.t;
+				// t is positive of left
+				// left lanes are positive int
+				// right lanes are negative int
 
-        // find laneSection
-        const laneSections = resultRoad.getLaneSections();
+				let lanes: TvLane[] = [];
 
-        for ( const laneSection of laneSections ) {
+				// positive t means left side
+				if ( t > 0 ) {
 
-            // TODO: Fix this, checkInteral does not check properly
-            if ( laneSection.checkInterval( s ) ) {
+					lanes = laneSection.getLeftLanes().reverse();
 
-                // t is positive of left
-                // left lanes are positive int
-                // right lanes are negative int
+				} else if ( t < 0 ) {
 
-                let lanes: TvLane[] = [];
+					lanes = laneSection.getRightLanes();
 
-                // positive t means left side
-                if ( t > 0 ) {
+				}
 
-                    lanes = laneSection.getLeftLanes().reverse();
+				let cumulativeWidth = 0;
 
-                } else if ( t < 0 ) {
+				for ( const lane of lanes ) {
 
-                    lanes = laneSection.getRightLanes();
+					const width = lane.getWidthValue( s );
 
-                }
+					cumulativeWidth += width;
 
-                let cumulativeWidth = 0;
+					if ( cumulativeWidth > Math.abs( t ) ) {
 
-                for ( const lane of lanes ) {
+						resultLane = lane;
+						break;
 
-                    const width = lane.getWidthValue( s );
+					}
 
-                    cumulativeWidth += width;
+				}
 
-                    if ( cumulativeWidth > Math.abs( t ) ) {
+				break;
+			}
 
-                        resultLane = lane;
-                        break;
+		}
 
-                    }
+		return {
+			road: resultRoad,
+			lane: resultLane
+		};
+	}
 
-                }
+	static getMaxTrackPos () {
+	}
 
-                break;
-            }
+	static getCurvature () {
+	}
 
-        }
+	static getLaneCurvature ( a, b, c, d ) {
+	}
 
-        return {
-            road: resultRoad,
-            lane: resultLane
-        };
-    }
+	static getDeltaLaneDir () {
+	}
 
-    static getMaxTrackPos () {
-    }
+	static getLaneWidth ( lane: TvLane, s: number ) {
+	}
 
-    static getCurvature () {
-    }
+	// static getLaneWidth2 ( lane: OdLane, s, a, b )
 
-    static getLaneCurvature ( a, b, c, d ) {
-    }
+	static getLaneWidthAndRoadMark ( lane: TvLane, s: number ) {
 
-    static getDeltaLaneDir () {
-    }
+	}
 
-    static getLaneWidth ( lane: TvLane, s: number ) {
-    }
+	static getLaneHeight () {
+	}
 
-    // static getLaneWidth2 ( lane: OdLane, s, a, b )
+	static getNextJunction ( trackCoord, bool, juncHeader, double, roadHeader ) {
 
-    static getLaneWidthAndRoadMark ( lane: TvLane, s: number ) {
+	}
 
-    }
+	static getObjects ( trackCoord, bool, double, resultInfostruct: [] ) {
 
-    static getLaneHeight () {
-    }
+	}
 
-    static getNextJunction ( trackCoord, bool, juncHeader, double, roadHeader ) {
+	static getPitch ( road: TvRoad, trackCoord, double ) {
+	}
 
-    }
+	static getPitchAndZ ( road: TvRoad, trackCoord, double ) {
+	}
 
-    static getObjects ( trackCoord, bool, double, resultInfostruct: [] ) {
+	static getPitchAndPitchDot ( road: TvRoad, trackCoord, double ) {
+	}
 
-    }
+	static getPitchDot ( road: TvRoad, trackCoord, double ) {
+	}
 
-    static getPitch ( road: TvRoad, trackCoord, double ) {
-    }
+	static getRoll ( road: TvRoad, trackCoord, double ) {
+	}
 
-    static getPitchAndZ ( road: TvRoad, trackCoord, double ) {
-    }
+	static getRoll2 ( trackCoord, double ) {
+	}
 
-    static getPitchAndPitchDot ( road: TvRoad, trackCoord, double ) {
-    }
+	static getRollAndRollDot ( road: TvRoad, trackCoord, double ) {
+	}
 
-    static getPitchDot ( road: TvRoad, trackCoord, double ) {
-    }
+	static getRollDot ( road: TvRoad, trackCoord, double ) {
+	}
 
-    static getRoll ( road: TvRoad, trackCoord, double ) {
-    }
+	static getSignals ( trackCoord, bool, double, resultInfostruct: [] ) {
+	}
 
-    static getRoll2 ( trackCoord, double ) {
-    }
+	static getTrackAngles ( trackCoord, coord: TvCoord ) {
+	}
 
-    static getRollAndRollDot ( road: TvRoad, trackCoord, double ) {
-    }
+	static getTrackAnglesDot ( trackCoord, coord: TvCoord ) {
+	}
 
-    static getRollDot ( road: TvRoad, trackCoord, double ) {
-    }
+	static getTrackHeading ( trackCoord, double ) {
+	}
 
-    static getSignals ( trackCoord, bool, double, resultInfostruct: [] ) {
-    }
+	static getTrackWidth ( trackCoord ) {
+	}
 
-    static getTrackAngles ( trackCoord, coord: TvCoord ) {
-    }
+	static inTunnel ( laneCoord ) {
+	}
 
-    static getTrackAnglesDot ( trackCoord, coord: TvCoord ) {
-    }
+	static onBridge ( laneCoord ) {
+	}
 
-    static getTrackHeading ( trackCoord, double ) {
-    }
+	static lane2curvature ( laneCoord ) {
+	}
 
-    static getTrackWidth ( trackCoord ) {
-    }
+	static lane2laneHeight ( laneCoord ) {
+	}
 
-    static inTunnel ( laneCoord ) {
-    }
+	static lane2laneWidth ( laneCoord ) {
+	}
 
-    static onBridge ( laneCoord ) {
-    }
+	static lane2roadMark ( laneCoord ) {
+	}
 
-    static lane2curvature ( laneCoord ) {
-    }
+	static lane2track ( laneCoord ) {
+	}
 
-    static lane2laneHeight ( laneCoord ) {
-    }
+	static lane2validLane ( laneCoord ) {
+	}
 
-    static lane2laneWidth ( laneCoord ) {
-    }
+	static lane2validLane2 ( laneCoord, bool ) {
+	}
 
-    static lane2roadMark ( laneCoord ) {
-    }
+	static s2elevation ( road, s ) {
+	}
 
-    static lane2track ( laneCoord ) {
-    }
+	static s2superelevation ( road, s ) {
+	}
 
-    static lane2validLane ( laneCoord ) {
-    }
+	static s2surface ( road, s, ushort ) {
+	}
 
-    static lane2validLane2 ( laneCoord, bool ) {
-    }
+	static laneId2Node () {
+	}
 
-    static s2elevation ( road, s ) {
-    }
+	static laneSpeedFromRoadType ( laneCoord, double ) {
+	}
 
-    static s2superelevation ( road, s ) {
-    }
 
-    static s2surface ( road, s, ushort ) {
-    }
+	static getRoadMark ( lane: TvLane, double ) {
+	}
 
-    static laneId2Node () {
-    }
+	static getRoadType ( laneCoord ) {
+	}
 
-    static laneSpeedFromRoadType ( laneCoord, double ) {
-    }
+	static getFootPoint () {
+	}
 
+	static getTolerance () {
+	}
 
-    static getRoadMark ( lane: TvLane, double ) {
-    }
+	static setRoadData ( a ) {
+	}
 
-    static getRoadType ( laneCoord ) {
-    }
+	static getRoadData () {
+	}
 
-    static getFootPoint () {
-    }
+	static getLaneFromId ( laneSection: TvLaneSection, id ) {
+	}
 
-    static getTolerance () {
-    }
+	static getLaneOnNextRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
+	}
 
-    static setRoadData ( a ) {
-    }
+	static getLaneOnPreviousRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
+	}
 
-    static getRoadData () {
-    }
+	static getLaneSpeed () {
+	}
 
-    static getLaneFromId ( laneSection: TvLaneSection, id ) {
-    }
+	static getRandomRoad ( map: TvMap ): TvRoad {
 
-    static getLaneOnNextRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
-    }
+		return TvUtils.getRandomArrayItem( [ ...map.roads.values() ] ) as TvRoad;
 
-    static getLaneOnPreviousRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
-    }
+	}
 
-    static getLaneSpeed () {
-    }
+	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
 
-    static getRandomRoad ( map: TvMap ): TvRoad {
+		return TvUtils.getRandomArrayItem( road.lanes.laneSections ) as TvLaneSection;
 
-        return TvUtils.getRandomArrayItem( [ ...map.roads.values() ] ) as TvRoad;
+	}
 
-    }
+	static getRandomLane ( laneSection: TvLaneSection, laneType: TvLaneType ): TvLane {
 
-    static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
+		const lanes = [ ...laneSection.lanes.values() ];
 
-        return TvUtils.getRandomArrayItem( road.lanes.laneSections ) as TvLaneSection;
+		const filteredLanes = lanes.filter( lane => {
+			if ( lane.type === laneType && lane.side !== TvLaneSide.CENTER ) return true;
+		} );
 
-    }
+		return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
+	}
 
-    static getRandomLane ( laneSection: TvLaneSection, laneType: TvLaneType ): TvLane {
+	static getRandomLocationOnRoads ( roads: TvRoad[], laneType: TvLaneType ) {
 
-        const lanes = [ ...laneSection.lanes.values() ];
+		const road = TvUtils.getRandomArrayItem( roads ) as TvRoad;
 
-        const filteredLanes = lanes.filter( lane => {
-            if ( lane.type === laneType && lane.side !== TvLaneSide.CENTER ) return true;
-        } );
+		const laneSection = this.getRandomLaneSection( road );
 
-        return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
-    }
+		const lane = this.getRandomLane( laneSection, laneType );
 
-    static getRandomLocationOnRoads ( roads: TvRoad[], laneType: TvLaneType ) {
+		// get random s on lane-section
+		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.lastSCoordinate - 1 );
 
-        const road = TvUtils.getRandomArrayItem( roads ) as TvRoad;
-
-        const laneSection = this.getRandomLaneSection( road );
-
-        const lane = this.getRandomLane( laneSection, laneType );
-
-        // get random s on lane-section
-        const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.lastSCoordinate - 1 );
-
-        return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
-    }
+		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
+	}
 }

@@ -4,22 +4,22 @@
 
 export interface ICommand {
 
-    callbacks?: ICommandCallback;
+	callbacks?: ICommandCallback;
 
-    execute (): void;
+	execute (): void;
 
-    undo (): void;
+	undo (): void;
 
-    redo (): void;
+	redo (): void;
 
 }
 
 export interface ICommandCallback {
 
-    onExecute (): void;
+	onExecute (): void;
 
-    onUndo (): void;
+	onUndo (): void;
 
-    onRedo (): void;
+	onRedo (): void;
 
 }

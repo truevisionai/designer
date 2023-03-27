@@ -24,24 +24,24 @@ import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
 @Component( {
-    selector: 'app-file',
-    templateUrl: './file.component.html',
-    styleUrls: [ './file.component.css' ]
+	selector: 'app-file',
+	templateUrl: './file.component.html',
+	styleUrls: [ './file.component.css' ]
 } )
 export class FileComponent implements OnInit {
 
-    @ViewChild( 'nameInput' ) nameInputRef: ElementRef;
+	@ViewChild( 'nameInput' ) nameInputRef: ElementRef;
 
-    @Output() deleted = new EventEmitter<FileNode>();
-    @Output() renamed = new EventEmitter<FileNode>();
+	@Output() deleted = new EventEmitter<FileNode>();
+	@Output() renamed = new EventEmitter<FileNode>();
 
-    @Input() file: FileNode;
+	@Input() file: FileNode;
 
-    public extension: string;
+	public extension: string;
 
-    public metadata: Metadata;
+	public metadata: Metadata;
 
-    public showRenaming: boolean;
+	public showRenaming: boolean;
 
     constructor (
         private electron: TvElectronService,
@@ -53,506 +53,506 @@ export class FileComponent implements OnInit {
         private importer: ImporterService,
     ) {
 
-    }
+	}
 
-    // public previewImage;
-    public get previewImage () {
-        return this.metadata && this.metadata.preview;
-    }
+	// public previewImage;
+	public get previewImage () {
+		return this.metadata && this.metadata.preview;
+	}
 
-    public get isModel (): boolean {
-        return this.metadata && this.metadata.importer == 'ModelImporter';
-    }
+	public get isModel (): boolean {
+		return this.metadata && this.metadata.importer == 'ModelImporter';
+	}
 
-    public get isMaterial (): boolean {
-        return this.metadata && this.metadata.importer == 'MaterialImporter';
-    }
+	public get isMaterial (): boolean {
+		return this.metadata && this.metadata.importer == 'MaterialImporter';
+	}
 
-    public get isTexture (): boolean {
-        return this.metadata && this.metadata.importer == 'TextureImporter';
-    }
+	public get isTexture (): boolean {
+		return this.metadata && this.metadata.importer == 'TextureImporter';
+	}
 
-    public get isRoadStyle (): boolean {
-        return this.metadata && this.metadata.importer == 'RoadStyleImporter';
-    }
+	public get isRoadStyle (): boolean {
+		return this.metadata && this.metadata.importer == 'RoadStyleImporter';
+	}
 
-    public get isRoadMarking (): boolean {
-        return this.metadata && this.metadata.importer == 'RoadMarkingImporter';
-    }
+	public get isRoadMarking (): boolean {
+		return this.metadata && this.metadata.importer == 'RoadMarkingImporter';
+	}
 
-    public get isScene (): boolean {
-        return this.metadata && this.metadata.importer == 'SceneImporter';
-    }
+	public get isScene (): boolean {
+		return this.metadata && this.metadata.importer == 'SceneImporter';
+	}
 
-    public get isSign (): boolean {
-        return this.metadata && this.metadata.importer == 'SignImporter';
-    }
+	public get isSign (): boolean {
+		return this.metadata && this.metadata.importer == 'SignImporter';
+	}
 
-    public get isDirectory (): boolean {
-        return this.metadata && this.file.type == 'directory';
-    }
+	public get isDirectory (): boolean {
+		return this.metadata && this.file.type == 'directory';
+	}
 
-    public get isUnknown (): boolean {
-        return !this.isDirectory && ( !this.metadata || !this.extension );
-    }
+	public get isUnknown (): boolean {
+		return !this.isDirectory && ( !this.metadata || !this.extension );
+	}
 
-    get filename () {
-        return this.file.name.split( '.' )[ 0 ];
-    }
+	get filename () {
+		return this.file.name.split( '.' )[ 0 ];
+	}
 
-    // set filename ( value ) { this.file.name = value; }
+	// set filename ( value ) { this.file.name = value; }
 
-    // get extension () { return this.file.name.split( '.' )[ 1 ]; }
+	// get extension () { return this.file.name.split( '.' )[ 1 ]; }
 
-    get filePath () {
+	get filePath () {
 
-        if ( this.electron.isLinux ) return 'file:///' + this.file.path;
+		if ( this.electron.isLinux ) return 'file:///' + this.file.path;
 
-        if ( this.electron.isWindows ) return 'file:///' + this.file.path;
+		if ( this.electron.isWindows ) return 'file:///' + this.file.path;
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        try {
+		try {
 
-            this.extension = this.file.name.split( '.' )[ 1 ];
+			this.extension = this.file.name.split( '.' )[ 1 ];
 
-            if ( !this.assetService.hasMetaFile( this.file ) ) {
+			if ( !this.assetService.hasMetaFile( this.file ) ) {
 
-                MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
+				MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
 
-            }
+			}
 
-            this.metadata = this.assetService.fetchMetaFile( this.file );
+			this.metadata = this.assetService.fetchMetaFile( this.file );
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            console.error( error );
+			console.error( error );
 
-        }
+		}
 
-        if ( !this.metadata ) return;
+		if ( !this.metadata ) return;
 
-        this.metadata = this.assetService.find( this.metadata.guid );
+		this.metadata = this.assetService.find( this.metadata.guid );
 
-        try {
+		try {
 
-            if ( !this.metadata.preview ) {
+			if ( !this.metadata.preview ) {
 
-                if ( this.metadata.importer === 'MaterialImporter' ) {
+				if ( this.metadata.importer === 'MaterialImporter' ) {
 
-                    const instance: Material = AssetDatabase.getInstance( this.metadata.guid );
+					const instance: Material = AssetDatabase.getInstance( this.metadata.guid );
 
-                    this.metadata.preview = this.previewService.getMaterialPreview( instance );
+					this.metadata.preview = this.previewService.getMaterialPreview( instance );
 
-                } else if ( this.metadata.importer === 'SignImporter' ) {
+				} else if ( this.metadata.importer === 'SignImporter' ) {
 
-                    const instance: TvRoadSign = AssetDatabase.getInstance( this.metadata.guid );
+					const instance: TvRoadSign = AssetDatabase.getInstance( this.metadata.guid );
 
-                    this.metadata.preview = this.previewService.getSignPreview( instance );
+					this.metadata.preview = this.previewService.getSignPreview( instance );
 
-                } else if ( this.metadata.importer === 'ModelImporter' ) {
+				} else if ( this.metadata.importer === 'ModelImporter' ) {
 
-                    // const instance: Object3D = AssetCache.getInstance( this.metadata.guid );
+					// const instance: Object3D = AssetCache.getInstance( this.metadata.guid );
 
-                    this.assetService.modelImporterService.load( this.metadata.path, ( obj ) => {
+					this.assetService.modelImporterService.load( this.metadata.path, ( obj ) => {
 
-                        this.metadata.preview = this.previewService.getModelPreview( obj );
+						this.metadata.preview = this.previewService.getModelPreview( obj );
 
-                        AssetDatabase.setInstance( this.metadata.guid, obj );
+						AssetDatabase.setInstance( this.metadata.guid, obj );
 
-                    }, this.metadata );
+					}, this.metadata );
 
-                } else if ( this.metadata.importer === 'RoadStyleImporter' ) {
+				} else if ( this.metadata.importer === 'RoadStyleImporter' ) {
 
-                    const instance: RoadStyle = AssetDatabase.getInstance( this.metadata.guid );
+					const instance: RoadStyle = AssetDatabase.getInstance( this.metadata.guid );
 
-                    this.metadata.preview = this.previewService.getRoadStylePreview( instance );
+					this.metadata.preview = this.previewService.getRoadStylePreview( instance );
 
-                } else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
+				} else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
 
-                    const instance: TvRoadMarking = AssetDatabase.getInstance( this.metadata.guid );
+					const instance: TvRoadMarking = AssetDatabase.getInstance( this.metadata.guid );
 
-                    this.metadata.preview = this.previewService.getRoadMarkingPreview( instance );
+					this.metadata.preview = this.previewService.getRoadMarkingPreview( instance );
 
-                }
+				}
 
 
-            }
+			}
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-        }
-    }
+		}
+	}
 
-    @HostListener( 'click', [ '$event' ] )
-    onClick ( $event ) {
+	@HostListener( 'click', [ '$event' ] )
+	onClick ( $event ) {
 
-        $event.preventDefault();
-        $event.stopPropagation();
+		$event.preventDefault();
+		$event.stopPropagation();
 
-        if ( this.isDirectory ) return;
+		if ( this.isDirectory ) return;
 
-        if ( this.isScene ) return;
+		if ( this.isScene ) return;
 
-        try {
+		try {
 
-            const instance = AssetDatabase.getInstance( this.metadata.guid );
-            const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
+			const instance = AssetDatabase.getInstance( this.metadata.guid );
+			const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
 
-            if ( this.metadata.importer === 'MaterialImporter' ) {
+			if ( this.metadata.importer === 'MaterialImporter' ) {
 
-                AppInspector.setInspector( inspector, {
-                    material: instance,
-                    guid: this.metadata.guid
-                } );
+				AppInspector.setInspector( inspector, {
+					material: instance,
+					guid: this.metadata.guid
+				} );
 
-            } else if ( this.metadata.importer === 'TextureImporter' ) {
+			} else if ( this.metadata.importer === 'TextureImporter' ) {
 
-                AppInspector.setInspector( inspector, {
-                    texture: instance,
-                    guid: this.metadata.guid
-                } );
+				AppInspector.setInspector( inspector, {
+					texture: instance,
+					guid: this.metadata.guid
+				} );
 
-            } else if ( this.metadata.importer === 'RoadStyleImporter' ) {
+			} else if ( this.metadata.importer === 'RoadStyleImporter' ) {
 
-                RoadStyleService.setCurrentStyle( instance as RoadStyle );
+				RoadStyleService.setCurrentStyle( instance as RoadStyle );
 
-                AppInspector.setInspector( inspector, {
-                    roadStyle: instance,
-                    guid: this.metadata.guid
-                } );
+				AppInspector.setInspector( inspector, {
+					roadStyle: instance,
+					guid: this.metadata.guid
+				} );
 
-            } else if ( this.metadata.importer === 'ModelImporter' ) {
+			} else if ( this.metadata.importer === 'ModelImporter' ) {
 
-                AppInspector.setInspector( inspector, this.metadata );
+				AppInspector.setInspector( inspector, this.metadata );
 
 
-            } else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
+			} else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
 
-                AppInspector.setInspector( inspector, {
-                    roadMarking: instance,
-                    guid: this.metadata.guid
-                } );
+				AppInspector.setInspector( inspector, {
+					roadMarking: instance,
+					guid: this.metadata.guid
+				} );
 
-            } else {
+			} else {
 
-                AppInspector.setInspector( inspector, instance );
+				AppInspector.setInspector( inspector, instance );
 
-            }
+			}
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    // getFileInstance ( extension: string, guid: string, path: string ): any {
+	// getFileInstance ( extension: string, guid: string, path: string ): any {
 
-    //     if ( this.assetService.assetInstances.has( guid ) ) {
+	//     if ( this.assetService.assetInstances.has( guid ) ) {
 
-    //         return this.assetService.assetInstances.get( guid );
+	//         return this.assetService.assetInstances.get( guid );
 
-    //     }
+	//     }
 
-    //     let instance = null;
+	//     let instance = null;
 
-    //     switch ( extension ) {
+	//     switch ( extension ) {
 
-    //         case 'png': instance = new TextureLoader().load( path ); break;
+	//         case 'png': instance = new TextureLoader().load( path ); break;
 
-    //         case 'svg': instance = new TextureLoader().load( path ); break;
+	//         case 'svg': instance = new TextureLoader().load( path ); break;
 
-    //         case 'jpg': instance = new TextureLoader().load( path ); break;
+	//         case 'jpg': instance = new TextureLoader().load( path ); break;
 
-    //         case 'jpeg': instance = new TextureLoader().load( path ); break;
+	//         case 'jpeg': instance = new TextureLoader().load( path ); break;
 
-    //         case 'material': instance = new MaterialLoader().parse( path ); break;
+	//         case 'material': instance = new MaterialLoader().parse( path ); break;
 
-    //         default: break;
-    //     }
+	//         default: break;
+	//     }
 
-    //     if ( instance ) this.assetService.assetInstances.set( guid, instance );
+	//     if ( instance ) this.assetService.assetInstances.set( guid, instance );
 
-    //     return instance;
-    // }
+	//     return instance;
+	// }
 
-    @HostListener( 'dblclick', [ '$event' ] )
-    onDoubleClick ( $event ) {
+	@HostListener( 'dblclick', [ '$event' ] )
+	onDoubleClick ( $event ) {
 
-        if ( this.isDirectory ) {
+		if ( this.isDirectory ) {
 
-            this.projectBrowserService.folderChanged.emit( this.file );
+			this.projectBrowserService.folderChanged.emit( this.file );
 
-        } else {
+		} else {
 
-            switch ( this.extension ) {
+			switch ( this.extension ) {
 
-                case 'scene':
-                    this.importer.importScene( this.file.path );
-                    SnackBar.success( 'Importing Scene ' + this.file.name );
-                    break;
+				case 'scene':
+					this.importer.importScene( this.file.path );
+					SnackBar.success( 'Importing Scene ' + this.file.name );
+					break;
 
-            }
+			}
 
-        }
-    }
+		}
+	}
 
-    // @HostListener( 'mousedown', [ '$event' ] )
-    // onMouseDown ( $event ) {
+	// @HostListener( 'mousedown', [ '$event' ] )
+	// onMouseDown ( $event ) {
 
-    //     $event.preventDefault();
-    //     $event.stopPropagation();
+	//     $event.preventDefault();
+	//     $event.stopPropagation();
 
-    // }
+	// }
 
-    // @HostListener( 'mouseover', [ '$event' ] )
-    // onMouseOver ( $event ) {
+	// @HostListener( 'mouseover', [ '$event' ] )
+	// onMouseOver ( $event ) {
 
-    //     $event.preventDefault();
-    //     $event.stopPropagation();
+	//     $event.preventDefault();
+	//     $event.stopPropagation();
 
-    // }
+	// }
 
-    // @HostListener( 'mouseleave', [ '$event' ] )
-    // onMouseLeave ( $event ) {
+	// @HostListener( 'mouseleave', [ '$event' ] )
+	// onMouseLeave ( $event ) {
 
-    //     $event.preventDefault();
-    //     $event.stopPropagation();
+	//     $event.preventDefault();
+	//     $event.stopPropagation();
 
-    // }
+	// }
 
-    @HostListener( 'contextmenu', [ '$event' ] )
-    onContextMenu ( $event ) {
+	@HostListener( 'contextmenu', [ '$event' ] )
+	onContextMenu ( $event ) {
 
-        $event.preventDefault();
-        $event.stopPropagation();
+		$event.preventDefault();
+		$event.stopPropagation();
 
-        if ( !this.electron.isElectronApp ) return;
+		if ( !this.electron.isElectronApp ) return;
 
-        this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
-            {
-                label: 'New',
-                enabled: false,
-            },
-            {
-                label: 'Delete',
-                click: () => this.deleteNode(),
-            },
-            {
-                label: 'Rename',
-                click: () => this.renameNode(),
-                enabled: !this.isDirectory,
-            },
-            {
-                label: 'Duplicate',
-                click: () => {
-                },
-                enabled: false,
-            },
-            {
-                label: 'Show In Explorer',
-                click: () => this.showInExplorer()
-            },
-            {
-                label: 'Reimport',
-                click: () => this.reimport(),
-                enabled: false,
-            },
-            {
-                label: 'Reimport All',
-                click: () => this.reimportAll(),
-                enabled: false,
-            },
-        ] );
+		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
+			{
+				label: 'New',
+				enabled: false,
+			},
+			{
+				label: 'Delete',
+				click: () => this.deleteNode(),
+			},
+			{
+				label: 'Rename',
+				click: () => this.renameNode(),
+				enabled: !this.isDirectory,
+			},
+			{
+				label: 'Duplicate',
+				click: () => {
+				},
+				enabled: false,
+			},
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
+			{
+				label: 'Reimport',
+				click: () => this.reimport(),
+				enabled: false,
+			},
+			{
+				label: 'Reimport All',
+				click: () => this.reimportAll(),
+				enabled: false,
+			},
+		] );
 
-        this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
-    }
+		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
 
 
-    deleteNode () {
+	deleteNode () {
 
-        try {
+		try {
 
-            if ( this.isDirectory ) {
+			if ( this.isDirectory ) {
 
-                // TODO: need to loop over each file in the folder to delete them
-                // from database as well
-                this.fileService.deleteFolderSync( this.file.path );
-                this.fileService.deleteFileSync( this.file.path + '.meta' );
+				// TODO: need to loop over each file in the folder to delete them
+				// from database as well
+				this.fileService.deleteFolderSync( this.file.path );
+				this.fileService.deleteFileSync( this.file.path + '.meta' );
 
-                this.file.isDeleted = true;
+				this.file.isDeleted = true;
 
-                AssetDatabase.remove( this.metadata.guid );
+				AssetDatabase.remove( this.metadata.guid );
 
-                SnackBar.success( 'Folder deleted' );
+				SnackBar.success( 'Folder deleted' );
 
-            } else {
+			} else {
 
-                this.fileService.deleteFileSync( this.file.path );
-                this.fileService.deleteFileSync( this.file.path + '.meta' );
+				this.fileService.deleteFileSync( this.file.path );
+				this.fileService.deleteFileSync( this.file.path + '.meta' );
 
-                this.file.isDeleted = true;
+				this.file.isDeleted = true;
 
-                AssetDatabase.remove( this.metadata.guid );
+				AssetDatabase.remove( this.metadata.guid );
 
-                SnackBar.success( 'File deleted' );
-            }
+				SnackBar.success( 'File deleted' );
+			}
 
-            this.deleted.emit( this.file );
+			this.deleted.emit( this.file );
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            console.error( error );
+			console.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    renameNode () {
+	renameNode () {
 
-        this.showRenaming = true;
+		this.showRenaming = true;
 
-        setTimeout( () => {
+		setTimeout( () => {
 
-            if ( this.nameInputRef ) this.nameInputRef.nativeElement.focus();
-            if ( this.nameInputRef ) this.nameInputRef.nativeElement.select();
+			if ( this.nameInputRef ) this.nameInputRef.nativeElement.focus();
+			if ( this.nameInputRef ) this.nameInputRef.nativeElement.select();
 
-        }, 100 );
+		}, 100 );
 
-    }
+	}
 
-    showInExplorer () {
+	showInExplorer () {
 
-        try {
+		try {
 
-            this.electron.shell.showItemInFolder( this.file.path );
+			this.electron.shell.showItemInFolder( this.file.path );
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    reimport () {
+	reimport () {
 
-        SnackBar.error( 'Not able to reimport' );
+		SnackBar.error( 'Not able to reimport' );
 
-        // console.error( "method not implemented" );
-        // this.assetService.reimport( this.file, this.extension );
+		// console.error( "method not implemented" );
+		// this.assetService.reimport( this.file, this.extension );
 
-    }
+	}
 
-    reimportAll () {
+	reimportAll () {
 
-        SnackBar.error( 'Not able to reimport' );
+		SnackBar.error( 'Not able to reimport' );
 
-    }
+	}
 
-    // @HostListener( 'dragover', [ '$event' ] )
-    // onDragOver ( $event ) {
+	// @HostListener( 'dragover', [ '$event' ] )
+	// onDragOver ( $event ) {
 
-    //     $event.preventDefault();
-    //     $event.stopPropagation();
+	//     $event.preventDefault();
+	//     $event.stopPropagation();
 
-    // }
+	// }
 
-    @HostListener( 'dragstart', [ '$event' ] )
-    onDragStart ( $event ) {
+	@HostListener( 'dragstart', [ '$event' ] )
+	onDragStart ( $event ) {
 
-        // if ( this.extension == "png" || this.extension == "jpg" || this.extension == "svg" ) {
-        //     return;
-        // }
+		// if ( this.extension == "png" || this.extension == "jpg" || this.extension == "svg" ) {
+		//     return;
+		// }
 
-        // $event.preventDefault();
-        // $event.stopPropagation();
+		// $event.preventDefault();
+		// $event.stopPropagation();
 
-        console.log( 'dragstat', $event );
+		console.log( 'dragstat', $event );
 
-        $event.dataTransfer.setData( 'path', this.file.path );
+		$event.dataTransfer.setData( 'path', this.file.path );
 
-        if ( this.metadata ) {
+		if ( this.metadata ) {
 
-            $event.dataTransfer.setData( 'guid', this.metadata.guid );
+			$event.dataTransfer.setData( 'guid', this.metadata.guid );
 
-        }
-    }
+		}
+	}
 
-    onBlur ( $event ) {
+	onBlur ( $event ) {
 
-        this.showRenaming = false;
+		this.showRenaming = false;
 
-    }
+	}
 
-    onFocus ( $event ) {
+	onFocus ( $event ) {
 
-        this.showRenaming = true;
+		this.showRenaming = true;
 
-    }
+	}
 
-    @HostListener( 'window:keydown', [ '$event' ] )
-    onKeyDown ( $event: KeyboardEvent ) {
+	@HostListener( 'window:keydown', [ '$event' ] )
+	onKeyDown ( $event: KeyboardEvent ) {
 
-        if ( !this.showRenaming ) return;
+		if ( !this.showRenaming ) return;
 
-        if ( $event.keyCode === 13 && this.nameInputRef ) {
+		if ( $event.keyCode === 13 && this.nameInputRef ) {
 
-            this.file.name = this.nameInputRef.nativeElement.value + '.' + this.extension;
+			this.file.name = this.nameInputRef.nativeElement.value + '.' + this.extension;
 
-            const oldPath = this.file.path;
+			const oldPath = this.file.path;
 
-            const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
+			const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
 
-            const newPath = this.fileService.join( currentFolder, this.file.name );
+			const newPath = this.fileService.join( currentFolder, this.file.name );
 
-            if ( !this.metadata ) {
+			if ( !this.metadata ) {
 
-                this.metadata = MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
+				this.metadata = MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
 
-            }
+			}
 
-            this.metadata.path = newPath;
-            this.metadata.preview = null;
+			this.metadata.path = newPath;
+			this.metadata.preview = null;
 
-            try {
+			try {
 
-                MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
+				MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
 
-                this.fileService.fs.renameSync( oldPath, newPath );
+				this.fileService.fs.renameSync( oldPath, newPath );
 
-                this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
+				this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
 
-                this.renamed.emit( this.file );
+				this.renamed.emit( this.file );
 
-            } catch ( error ) {
+			} catch ( error ) {
 
-                console.error( error );
+				console.error( error );
 
-            }
+			}
 
-            this.showRenaming = false;
+			this.showRenaming = false;
 
-        }
+		}
 
-    }
+	}
 
-    // @HostListener( 'dragleave', [ '$event' ] )
-    // onDragLeave ( $event ) {
+	// @HostListener( 'dragleave', [ '$event' ] )
+	// onDragLeave ( $event ) {
 
-    //     $event.preventDefault();
-    //     $event.stopPropagation();
+	//     $event.preventDefault();
+	//     $event.stopPropagation();
 
-    // }
+	// }
 
-    // @HostListener( 'drop', [ '$event' ] )
-    // onDrop ( $event: DragEvent ) {
+	// @HostListener( 'drop', [ '$event' ] )
+	// onDrop ( $event: DragEvent ) {
 
-    //     //
+	//     //
 
-    // }
+	// }
 }

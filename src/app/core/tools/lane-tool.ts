@@ -12,61 +12,61 @@ import { BaseTool } from './base-tool';
 
 export class LaneTool extends BaseTool {
 
-    name: string = 'LaneTool';
-    private laneDirectionHelper: OdLaneDirectionBuilder;
+	name: string = 'LaneTool';
+	private laneDirectionHelper: OdLaneDirectionBuilder;
 
-    init () {
+	init () {
 
-        super.init();
+		super.init();
 
-        this.laneDirectionHelper = new OdLaneDirectionBuilder( null );
-    }
+		this.laneDirectionHelper = new OdLaneDirectionBuilder( null );
+	}
 
-    disable (): void {
+	disable (): void {
 
-        super.disable();
+		super.disable();
 
-        this.laneDirectionHelper.clear();
-    }
+		this.laneDirectionHelper.clear();
+	}
 
-    onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ) {
 
-        super.onPointerDown( e );
+		super.onPointerDown( e );
 
-        let laneFound = false;
+		let laneFound = false;
 
-        this.checkLaneIntersection( e.intersections, ( object: Object3D ) => {
+		this.checkLaneIntersection( e.intersections, ( object: Object3D ) => {
 
-            laneFound = true;
+			laneFound = true;
 
-            // this.removeHighlight();
+			// this.removeHighlight();
 
-            // this.highlight( object as Mesh );
+			// this.highlight( object as Mesh );
 
-            this.selectLane( object as Mesh );
+			this.selectLane( object as Mesh );
 
-        } );
+		} );
 
-        if ( !laneFound ) {
+		if ( !laneFound ) {
 
-            // this.removeHighlight();
+			// this.removeHighlight();
 
-            this.clearInspector();
-        }
-    }
+			this.clearInspector();
+		}
+	}
 
-    private selectLane ( object: Mesh ) {
+	private selectLane ( object: Mesh ) {
 
-        let lane = ( object.userData.lane as TvLane );
+		let lane = ( object.userData.lane as TvLane );
 
-        if ( lane == null ) return;
+		if ( lane == null ) return;
 
-        AppInspector.setInspector( LaneInspectorComponent, lane );
+		AppInspector.setInspector( LaneInspectorComponent, lane );
 
-        this.laneDirectionHelper.clear();
+		this.laneDirectionHelper.clear();
 
-        const road = this.map.getRoadById( lane.roadId );
+		const road = this.map.getRoadById( lane.roadId );
 
-        this.laneDirectionHelper.drawSingleLane( road, lane );
-    }
+		this.laneDirectionHelper.drawSingleLane( road, lane );
+	}
 }

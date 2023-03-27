@@ -5,11 +5,11 @@
 <div *ngIf="lane" class="inspector-form-container">
 
     <mat-form-field>
-        <input [(ngModel)]="lane.id" disabled matInput placeholder="Lane Id" type="number">
+        <input [value]="lane.id" disabled matInput placeholder="Lane Id" type="number">
     </mat-form-field>
 
     <mat-form-field>
-        <input [(ngModel)]="lane.sideAsString" disabled matInput placeholder="Side" type="string">
+        <input [value]="lane.sideAsString" disabled matInput placeholder="Side" type="string">
     </mat-form-field>
 
     <mat-form-field class="full-width">
@@ -25,6 +25,7 @@
 
     <!-- <button mat-raised-button color="primary" (click)="onDelete()">Delete!</button> -->
     <!-- <button mat-stroked-button (click)="onDelete()">Delete!</button> -->
+
 
 </div>
 

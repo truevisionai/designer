@@ -3,17 +3,17 @@
   -->
 
 <div class="tv-field" align="left">
-    <label class="tv-field-label">{{ label }}</label>
-    <div class="tv-field-color-input" (click)="togglePicker()" #toggleButton>
-        <div [style.background]="hex"></div><br />
-    </div>
+	<label class="tv-field-label">{{ label }}</label>
+	<div class="tv-field-color-input" (click)="togglePicker()" #toggleButton>
+		<div [style.background]="hex"></div><br />
+	</div>
 </div>
 
 <div #colorPicker>
 
-    <!-- <color-sketch *ngIf="isPickerOpen" [color]="value" (onChangeComplete)="onChangeCompleted($event)" (onChange)="onChange($event)"></color-sketch> -->
+	<!-- <color-sketch *ngIf="isPickerOpen" [color]="value" (onChangeComplete)="onChangeCompleted($event)" (onChange)="onChange($event)"></color-sketch> -->
 
-    <color-chrome *ngIf="isPickerOpen" [color]="value" (onChangeComplete)="onChangeCompleted($event)" (onChange)="onChange($event)"></color-chrome>
+    <color-chrome *ngIf="isPickerOpen" [color]="hex" (onChangeComplete)="onChangeCompleted($event)" (onChange)="onChange($event)"></color-chrome>
 
 
 </div>

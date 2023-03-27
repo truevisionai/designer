@@ -6,17 +6,17 @@ import { Component, Input } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 
 @Component( {
-    selector: 'app-string-field',
-    templateUrl: './string-field.component.html',
+	selector: 'app-string-field',
+	templateUrl: './string-field.component.html',
 } )
 export class StringFieldComponent extends AbstractFieldComponent {
 
-    @Input() value: any;
+	@Input() value: any;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
 }

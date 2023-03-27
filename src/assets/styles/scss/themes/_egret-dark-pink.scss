@@ -1,67 +1,65 @@
 $mat-primary: (
-        50 : #fce4ec,
-        100 : #f8bcd0,
-        200 : #f48fb1,
-        300 : #f06292,
-        400 : #ec407a,
-        500 : #2debff,
-        600 : #e61a5b,
-        700 : #e31651,
-        800 : #df1247,
-        900 : #d90a35,
-        A100 : #ffffff,
-        A200 : #ffd0d8,
-        A400 : #ff9dae,
-        A700 : #ff8498,
-        contrast: (
-                50 : #000000,
-                100 : #000000,
-                200 : #000000,
-                300 : #000000,
-                400 : #ffffff,
-                500 : #ffffff,
-                600 : #ffffff,
-                700 : #ffffff,
-                800 : #ffffff,
-                900 : #ffffff,
-                A100 : #000000,
-                A200 : #000000,
-                A400 : #000000,
-                A700 : #000000,
-        )
+	50 : #fce4ec,
+	100 : #f8bcd0,
+	200 : #f48fb1,
+	300 : #f06292,
+	400 : #ec407a,
+	500 : #2debff,
+	600 : #e61a5b,
+	700 : #e31651,
+	800 : #df1247,
+	900 : #d90a35,
+	A100 : #ffffff,
+	A200 : #ffd0d8,
+	A400 : #ff9dae,
+	A700 : #ff8498,
+	contrast: (50 : #000000,
+		100 : #000000,
+		200 : #000000,
+		300 : #000000,
+		400 : #ffffff,
+		500 : #ffffff,
+		600 : #ffffff,
+		700 : #ffffff,
+		800 : #ffffff,
+		900 : #ffffff,
+		A100 : #000000,
+		A200 : #000000,
+		A400 : #000000,
+		A700 : #000000,
+	)
 );
 
 $mat-accent: (
-        50 : #eceff1,
-        100 : #cfd8dc,
-        200 : #b0bec5,
-        300 : #90a4ae,
-        400 : #78919c,
-        500 : #607d8b,
-        600 : #587583,
-        700 : #4e6a78,
-        800 : #44606e,
-        900 : #334d5b,
-        A100 : #abe1ff,
-        A200 : #78ceff,
-        A400 : #45bcff,
-        A700 : #2bb3ff,
-        contrast: (
-                50 : #000000,
-                100 : #000000,
-                200 : #000000,
-                300 : #000000,
-                400 : #000000,
-                500 : #ffffff,
-                600 : #ffffff,
-                700 : #ffffff,
-                800 : #ffffff,
-                900 : #ffffff,
-                A100 : #000000,
-                A200 : #000000,
-                A400 : #000000,
-                A700 : #000000,
-        )
+	50 : #eceff1,
+	100 : #cfd8dc,
+	200 : #b0bec5,
+	300 : #90a4ae,
+	400 : #78919c,
+	500 : #607d8b,
+	600 : #587583,
+	700 : #4e6a78,
+	800 : #44606e,
+	900 : #334d5b,
+	A100 : #abe1ff,
+	A200 : #78ceff,
+	A400 : #45bcff,
+	A700 : #2bb3ff,
+	contrast: (50 : #000000,
+		100 : #000000,
+		200 : #000000,
+		300 : #000000,
+		400 : #000000,
+		500 : #ffffff,
+		600 : #ffffff,
+		700 : #ffffff,
+		800 : #ffffff,
+		900 : #ffffff,
+		A100 : #000000,
+		A200 : #000000,
+		A400 : #000000,
+		A700 : #000000,
+	)
 );
 
 // mandatory stuff for theming
@@ -78,356 +76,363 @@ $panel-border-color: #171717;
 
 // include the custom theme object into the angular material theme
 .egret-dark-pink {
-  @include angular-material-theme($egret-theme);
-  
+	@include angular-material-theme($egret-theme);
 
-  .example-form {
-    min-width: 60px;
-    max-width: 500px;
-    // width: 100%;
-  }
 
-  .mat-flat-button, .mat-stroked-button {
-    border-radius: 1px !important;
-  }
+	.example-form {
+		min-width: 60px;
+		max-width: 500px;
+		// width: 100%;
+	}
 
-  .example-full-width {
-    width: 100%;
-  }
+	.mat-flat-button,
+	.mat-stroked-button {
+		border-radius: 1px !important;
+	}
 
-  .example-button-row button,
-  .example-button-row a {
-    margin-right: 8px;
-  }
+	.example-full-width {
+		width: 100%;
+	}
 
-  .mat-menu-panel {
-    border-radius: 0px !important;
-    min-width: 300px;
-  }
+	.example-button-row button,
+	.example-button-row a {
+		margin-right: 8px;
+	}
 
-  .mat-icon-button {
-    height: 36px !important;
-  }
+	.mat-menu-panel {
+		border-radius: 0px !important;
+		min-width: 300px;
+	}
 
-  .mat-menu-item {
-    line-height: 36px;
-    height: 36px;
-    padding: 0 24px;
-  }
+	.mat-icon-button {
+		height: 36px !important;
+	}
 
-  .mat-divider {
-    margin: 10px 0px !important;
-  }
+	.mat-menu-item {
+		line-height: 36px;
+		height: 36px;
+		padding: 0 24px;
+	}
 
-  .material-icons {
-    font-size: 18px !important;
-    line-height: 18px !important;
-  }
+	.mat-divider {
+		margin: 10px 0px !important;
+	}
 
-  .mat-card {
-    margin: .01rem !important;
-    // overflow: scroll !important;
-    border-radius: 0px !important;
-    width: 100% !important;
-    border: 1px solid #464646 !important;
-  }
+	.material-icons {
+		font-size: 18px !important;
+		line-height: 18px !important;
+	}
 
-  .mat-card:not([class*='mat-elevation-z']) {
-    box-shadow: none !important;
-  }
+	.mat-card {
+		margin: .01rem !important;
+		// overflow: scroll !important;
+		border-radius: 0px !important;
+		width: 100% !important;
+		border: 1px solid #464646 !important;
+	}
 
-  .mat-drawer-container {
-    background-color: $app-background !important;
-  }
+	.mat-card:not([class*='mat-elevation-z']) {
+		box-shadow: none !important;
+	}
 
-  .mat-tab-label {
-    height: 36px !important;
-    background: #3c3c3c !important;
-    opacity: 1;
-    min-width: 120px !important;
-  }
+	.mat-drawer-container {
+		background-color: $app-background !important;
+	}
 
-  .mat-tab-label-active {
-    background: #424242 !important;
-  }
+	.mat-tab-label {
+		height: 36px !important;
+		background: #3c3c3c !important;
+		opacity: 1;
+		min-width: 120px !important;
+	}
 
-  .mat-card.p-0 .mat-card-content {
-    padding: 0 0rem 0rem !important;
-  }
+	.mat-tab-label-active {
+		background: #424242 !important;
+	}
 
-  .mat-grid-tile .mat-figure {
-    align-items: normal !important;
-    justify-content: left !important;
-  }
+	.mat-card.p-0 .mat-card-content {
+		padding: 0 0rem 0rem !important;
+	}
 
-  .mat-tab-header {
-    background: $app-background;
-  }
+	.mat-grid-tile .mat-figure {
+		align-items: normal !important;
+		justify-content: left !important;
+	}
 
-  .mat-tree-node {
-    min-height: 36px;
-  }
+	.mat-tab-header {
+		background: $app-background;
+	}
 
-  .mat-tab-nav-bar, .mat-tab-header {
-    // border-bottom: 0px !important;
-  }
+	.mat-tree-node {
+		min-height: 36px;
+	}
 
-  .inspector-form-container {
-    margin: 18px 12px;
-  }
+	.mat-tab-nav-bar,
+	.mat-tab-header {
+		// border-bottom: 0px !important;
+	}
 
-  .inspector-form-container > * {
-    width: 100%;
-  }
+	.inspector-form-container {
+		margin: 18px 12px;
+	}
 
-  .mat-tab-group {
-    height: 100%;
-  }
+	.inspector-form-container>* {
+		width: 100%;
+	}
 
-  .mat-tab-body-wrapper {
-    // overflow: scroll;
-  }
+	.mat-tab-group {
+		height: 100%;
+	}
 
-  .mat-tree-node:hover {
-    background: #545454;
-    cursor: pointer;
-  }
+	.mat-tab-body-wrapper {
+		// overflow: scroll;
+	}
 
-  .mat-tree-node:active {
-    background: #0090ec;
-    cursor: pointer;
-  }
+	.mat-tree-node:hover {
+		background: #545454;
+		cursor: pointer;
+	}
 
-  .mat-tree-node:focus {
-    background: #0090ec;
-    cursor: pointer;
-  }
+	.mat-tree-node:active {
+		background: #0090ec;
+		cursor: pointer;
+	}
 
-  .mat-toolbar {
-    background: $app-background;
-    border-bottom: 1px solid $panel-border-color;
-    min-height: 36px;
-  }
+	.mat-tree-node:focus {
+		background: #0090ec;
+		cursor: pointer;
+	}
 
-  .app-toolbar.mat-toolbar{
-    height: 48px;
-    padding: 0px 8px;
-  }
+	.mat-toolbar {
+		background: $app-background;
+		border-bottom: 1px solid $panel-border-color;
+		min-height: 36px;
+	}
 
-  .app-menubar.mat-toolbar {
-    padding: 0px 0px !important;
-    position: relative;
-    z-index: 999;
-    height: 44px;
-  }
+	.app-toolbar.mat-toolbar {
+		height: 48px;
+		padding: 0px 8px;
+	}
 
-  .mat-grid-tile.selected {
-    background: #2d2d2d;
-  }
+	.app-menubar.mat-toolbar {
+		padding: 0px 0px !important;
+		position: relative;
+		z-index: 999;
+		height: 44px;
+	}
 
-  .mat-card.active {
-    background: #292929 !important;
-  }
+	.mat-grid-tile.selected {
+		background: #2d2d2d;
+	}
 
-  .mat-bg-primary,
-  .topbar,
-  .chats-wrap .conversations-hold .single-conversation.me .conversation-msg,
-  .ngx-datatable .datatable-footer .datatable-pager .pager .pages.active a,
-  .fileupload-drop-zone.dz-file-over,
-  .toolbar-avatar.online > .status-dot,
-  .cal-open-day-events,
-  div.hopscotch-bubble {
-    background: map-get($mat-primary, 500) !important;
-    color: #ffffff !important;
-  }
+	.mat-card.active {
+		background: #292929 !important;
+	}
 
-  .mat-color-primary,
-  .list-item-active,
-  .sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
-  .sidenav-hold .sidenav li.open > div > a > span:not(.menuitem-badge),
-  .sidenav-hold .sidenav li.open > a > span {
-    color: map-get($mat-primary, 500) !important;
-  }
+	.mat-bg-primary,
+	.topbar,
+	.chats-wrap .conversations-hold .single-conversation.me .conversation-msg,
+	.ngx-datatable .datatable-footer .datatable-pager .pager .pages.active a,
+	.fileupload-drop-zone.dz-file-over,
+	.toolbar-avatar.online>.status-dot,
+	.cal-open-day-events,
+	div.hopscotch-bubble {
+		background: map-get($mat-primary, 500) !important;
+		color: #ffffff !important;
+	}
 
-  .sidebar-panel .sidebar-list-item.open > .mat-list-item-content > a > span,
-  .sidebar-panel .sidebar-list-item.open .sub-menu .mat-list-item.selected a {
-    font-weight: 500;
-  }
+	.mat-color-primary,
+	.list-item-active,
+	.sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
+	.sidenav-hold .sidenav li.open>div>a>span:not(.menuitem-badge),
+	.sidenav-hold .sidenav li.open>a>span {
+		color: map-get($mat-primary, 500) !important;
+	}
 
-  .topnav ul.menu > li > div.open > a,
-  .sidebar-panel .sidebar-list-item.open > .mat-list-item-content > .sub-menu,
-  .sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
-  .list-item-active {
-    border-color: map-get($mat-primary, 500) !important;
-  }
+	.sidebar-panel .sidebar-list-item.open>.mat-list-item-content>a>span,
+	.sidebar-panel .sidebar-list-item.open .sub-menu .mat-list-item.selected a {
+		font-weight: 500;
+	}
 
-  .ngx-datatable.material,
-  .messages-wrap .inbox-hold {
-    background: transparent !important;
-  }
+	.topnav ul.menu>li>div.open>a,
+	.sidebar-panel .sidebar-list-item.open>.mat-list-item-content>.sub-menu,
+	.sidenav-hold .sidenav li.open a .mat-icon:not(.menu-caret),
+	.list-item-active {
+		border-color: map-get($mat-primary, 500) !important;
+	}
 
-  // .sidebar-panel {
-  //     background: url('../../assets/images/sidebar-bg-dark.jpg') no-repeat;
-  // }
-  .header-topnav,
-  .topnav ul ul,
-  .app-user .app-user-name,
-  .sidebar-panel .sidebar-list-item mat-icon:not(.menu-caret),
-  .ngx-datatable.material *,
-  .ql-snow .ql-picker,
-  .ngx-pagination a, .ngx-pagination button {
-    color: white !important;
-  }
+	.ngx-datatable.material,
+	.messages-wrap .inbox-hold {
+		background: transparent !important;
+	}
 
-  .text-muted {
-    color: rgba(255, 255, 255, .54) !important;
-  }
+	// .sidebar-panel {
+	//     background: url('../../assets/images/sidebar-bg-dark.jpg') no-repeat;
+	// }
+	.header-topnav,
+	.topnav ul ul,
+	.app-user .app-user-name,
+	.sidebar-panel .sidebar-list-item mat-icon:not(.menu-caret),
+	.ngx-datatable.material *,
+	.ql-snow .ql-picker,
+	.ngx-pagination a,
+	.ngx-pagination button {
+		color: white !important;
+	}
 
-  .ql-snow .ql-stroke {
-    stroke: #ffffff;
-  }
+	.text-muted {
+		color: rgba(255, 255, 255, .54) !important;
+	}
 
-  .ql-snow .ql-fill {
-    fill: #ffffff;
-  }
+	.ql-snow .ql-stroke {
+		stroke: #ffffff;
+	}
 
-  .ql-toolbar.ql-snow,
-  .ql-toolbar.ql-snow + .ql-container.ql-snow {
-    border-color: rgba(255, 255, 255, 0.12) !important;
-  }
+	.ql-snow .ql-fill {
+		fill: #ffffff;
+	}
 
-  // .sidebar-panel .navigation-hold,
-  .message-item.open .message-head,
-  .ngx-datatable.material .datatable-header,
-  .bg-white,
-  .cal-month-view .cal-cell-row:hover,
-  .chats-wrap .conversations-hold .single-conversation.sender .conversation-msg,
-  .cal-day-view .cal-hour:nth-child(odd),
-  &.collapsed-menu .sidebar-panel .sidebar-list-item.open .sub-menu,
-  .ngx-pagination a:hover, .ngx-pagination button:hover,
-  .product-container .products-pagination .ngx-pagination .current {
-    background: rgba(66, 66, 66, 0.92) !important;
-  }
+	.ql-toolbar.ql-snow,
+	.ql-toolbar.ql-snow+.ql-container.ql-snow {
+		border-color: rgba(255, 255, 255, 0.12) !important;
+	}
 
-  .sidebar-compact ul.submenu,
-  .topnav ul li ul li:hover,
-  .topnav ul li ul li.open,
-  .default-bg,
-  .default-light-bg {
-    background: #424242;
-    color: #ffffff;
-  }
+	// .sidebar-panel .navigation-hold,
+	.message-item.open .message-head,
+	.ngx-datatable.material .datatable-header,
+	.bg-white,
+	.cal-month-view .cal-cell-row:hover,
+	.chats-wrap .conversations-hold .single-conversation.sender .conversation-msg,
+	.cal-day-view .cal-hour:nth-child(odd),
+	&.collapsed-menu .sidebar-panel .sidebar-list-item.open .sub-menu,
+	.ngx-pagination a:hover,
+	.ngx-pagination button:hover,
+	.product-container .products-pagination .ngx-pagination .current {
+		background: rgba(66, 66, 66, 0.92) !important;
+	}
 
-  .header-topnav,
-  .topnav ul ul,
-  .ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover,
-  .ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover .datatable-row-group,
-  .cal-month-view .cal-cell-row .cal-cell:hover,
-  .cal-month-view .cal-cell.cal-has-events.cal-open,
-  .cal-week-view .cal-day-headers .cal-header:hover,
-  .cal-week-view .cal-day-headers .cal-drag-over,
-  .cal-day-view .cal-hour-segment:hover,
-  .cal-day-view .cal-drag-over .cal-hour-segment {
-    background: #333 !important;
-  }
+	.sidebar-compact ul.submenu,
+	.topnav ul li ul li:hover,
+	.topnav ul li ul li.open,
+	.default-bg,
+	.default-light-bg {
+		background: #424242;
+		color: #ffffff;
+	}
 
-  .cal-month-view .cal-day-cell:not(:last-child),
-  .cal-month-view .cal-days,
-  .cal-week-view .cal-day-headers .cal-header:not(:last-child),
-  .cal-week-view .cal-day-headers,
-  .cal-month-view .cal-days .cal-cell-row,
-  .cal-day-view .cal-hour:not(:last-child) .cal-hour-segment,
-  .cal-day-view .cal-hour:last-child :not(:last-child) .cal-hour-segment {
-    border-color: #000 !important;
-  }
+	.header-topnav,
+	.topnav ul ul,
+	.ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover,
+	.ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover .datatable-row-group,
+	.cal-month-view .cal-cell-row .cal-cell:hover,
+	.cal-month-view .cal-cell.cal-has-events.cal-open,
+	.cal-week-view .cal-day-headers .cal-header:hover,
+	.cal-week-view .cal-day-headers .cal-drag-over,
+	.cal-day-view .cal-hour-segment:hover,
+	.cal-day-view .cal-drag-over .cal-hour-segment {
+		background: #333 !important;
+	}
 
-  /* Hopscotch Tour */
-  div.hopscotch-bubble {
-    border-color: $primary-dark;
-  }
+	.cal-month-view .cal-day-cell:not(:last-child),
+	.cal-month-view .cal-days,
+	.cal-week-view .cal-day-headers .cal-header:not(:last-child),
+	.cal-week-view .cal-day-headers,
+	.cal-month-view .cal-days .cal-cell-row,
+	.cal-day-view .cal-hour:not(:last-child) .cal-hour-segment,
+	.cal-day-view .cal-hour:last-child :not(:last-child) .cal-hour-segment {
+		border-color: #000 !important;
+	}
 
-  /* up arrow  */
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.up .hopscotch-bubble-arrow-border {
-    border-bottom: 17px solid $primary-dark;
-  }
+	/* Hopscotch Tour */
+	div.hopscotch-bubble {
+		border-color: $primary-dark;
+	}
 
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.up .hopscotch-bubble-arrow {
-    border-bottom: 17px solid map-get($mat-primary, 500);
-    top: -16px;
-  }
+	/* up arrow  */
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.up .hopscotch-bubble-arrow-border {
+		border-bottom: 17px solid $primary-dark;
+	}
 
-  /* right arrow */
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.right .hopscotch-bubble-arrow-border {
-    border-left: 17px solid $primary-dark;
-  }
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.up .hopscotch-bubble-arrow {
+		border-bottom: 17px solid map-get($mat-primary, 500);
+		top: -16px;
+	}
 
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.right .hopscotch-bubble-arrow {
-    border-left: 17px solid map-get($mat-primary, 500);
-    left: -1px;
-  }
+	/* right arrow */
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.right .hopscotch-bubble-arrow-border {
+		border-left: 17px solid $primary-dark;
+	}
 
-  /* bottom arrow */
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-arrow-border {
-    border-top: 17px solid $primary-dark;
-  }
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.right .hopscotch-bubble-arrow {
+		border-left: 17px solid map-get($mat-primary, 500);
+		left: -1px;
+	}
 
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-arrow {
-    border-top: 17px solid map-get($mat-primary, 500);
-    top: -18px;
-  }
+	/* bottom arrow */
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-arrow-border {
+		border-top: 17px solid $primary-dark;
+	}
 
-  /* Left Arrow */
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.left .hopscotch-bubble-arrow-border {
-    border-right: 17px solid $primary-dark;
-  }
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-arrow {
+		border-top: 17px solid map-get($mat-primary, 500);
+		top: -18px;
+	}
 
-  div.hopscotch-bubble .hopscotch-bubble-arrow-container.left .hopscotch-bubble-arrow {
-    left: 1px;
-    border-right: 17px solid map-get($mat-primary, 500);
-  }
+	/* Left Arrow */
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.left .hopscotch-bubble-arrow-border {
+		border-right: 17px solid $primary-dark;
+	}
 
-  .mat-bg-accent,
-  div.hopscotch-bubble .hopscotch-bubble-number,
-  div.hopscotch-bubble .hopscotch-nav-button.next:hover,
-  div.hopscotch-bubble .hopscotch-nav-button.next {
-    background-color: map-get($mat-accent, 500);
-    color: black;
-  }
+	div.hopscotch-bubble .hopscotch-bubble-arrow-container.left .hopscotch-bubble-arrow {
+		left: 1px;
+		border-right: 17px solid map-get($mat-primary, 500);
+	}
 
-  .mat-bg-warn {
-    background-color: #f44336;
-    color: white;
-  }
+	.mat-bg-accent,
+	div.hopscotch-bubble .hopscotch-bubble-number,
+	div.hopscotch-bubble .hopscotch-nav-button.next:hover,
+	div.hopscotch-bubble .hopscotch-nav-button.next {
+		background-color: map-get($mat-accent, 500);
+		color: black;
+	}
 
-  .mat-color-accent {
-    color: map-get($mat-accent, 500);
-  }
+	.mat-bg-warn {
+		background-color: #f44336;
+		color: white;
+	}
 
-  .mat-color-warn {
-    color: #f44336;
-  }
+	.mat-color-accent {
+		color: map-get($mat-accent, 500);
+	}
 
-  .mat-color-default {
-    color: #ffffff;
-  }
+	.mat-color-warn {
+		color: #f44336;
+	}
 
-  /* OVER-RIDES */
-  .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
-    color: map-get($mat-accent, 50);
-  }
+	.mat-color-default {
+		color: #ffffff;
+	}
 
-  .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
-    border-radius: 0 !important;
-  }
+	/* OVER-RIDES */
+	.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+		color: map-get($mat-accent, 50);
+	}
 
-  .app-menubar .mat-button {
-    line-height: 43px !important;
-  }
+	.mat-button,
+	.mat-flat-button,
+	.mat-icon-button,
+	.mat-stroked-button {
+		border-radius: 0 !important;
+	}
 
-  .app-toolbar .mat-button.mat-accent, 
-  .app-toolbar .mat-icon-button.mat-accent, 
-  .app-toolbar .mat-stroked-button.mat-accent {
-    color: #f1f1f1;
-    background: $panel-border-color;
-  }
+	.app-menubar .mat-button {
+		line-height: 43px !important;
+	}
+
+	.app-toolbar .mat-button.mat-accent,
+	.app-toolbar .mat-icon-button.mat-accent,
+	.app-toolbar .mat-stroked-button.mat-accent {
+		color: #f1f1f1;
+		background: $panel-border-color;
+	}
 }

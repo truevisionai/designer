@@ -6,9 +6,9 @@ import { Object3D } from 'three';
 
 export class PropInstance {
 
-    constructor ( public guid: string, public object: Object3D ) {
+	constructor ( public guid: string, public object: Object3D ) {
 
-    }
+	}
 
 
 }

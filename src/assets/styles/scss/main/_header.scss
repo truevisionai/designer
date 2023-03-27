@@ -3,52 +3,55 @@
  */
 
 .notification-number {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 20px;
-  color: #fff;
-  text-align: center;
-  border-radius: 50%;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 20px;
+	height: 20px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	color: #fff;
+	text-align: center;
+	border-radius: 50%;
 }
 
 #langToggle .mat-select-trigger {
-  width: 80px;
-  min-width: 80px;
+	width: 80px;
+	min-width: 80px;
 }
+
 .theme-list {
-  .mat-menu-item {
-    width: 48px;
-    height: 48px;
-    padding: 5px;
-    .egret-swatch {
-      height: 100%;
-      width: 100%;
-      border-radius: 50%;
-    }
-    .active-icon {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto !important;
-      color: #ffffff;
-    }
-  }
+	.mat-menu-item {
+		width: 48px;
+		height: 48px;
+		padding: 5px;
+
+		.egret-swatch {
+			height: 100%;
+			width: 100%;
+			border-radius: 50%;
+		}
+
+		.active-icon {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto !important;
+			color: #ffffff;
+		}
+	}
 }
 
 .topbar-button-right {
-  margin: 0 .5rem !important;
+	margin: 0 .5rem !important;
 }
 
 [dir=rtl] {
-//   .topbar-button-right {
-//     margin-right: 1rem;
-//     margin-left: 0 !important;
-//   }
+	//   .topbar-button-right {
+	//     margin-right: 1rem;
+	//     margin-left: 0 !important;
+	//   }
 }

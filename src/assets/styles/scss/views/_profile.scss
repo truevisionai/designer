@@ -4,82 +4,96 @@
 
 /*------- Profile ------*/
 .profile-sidebar {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
+
 .profile-sidebar .propic {
-  width: 100%;
-  margin-bottom: 6px;
+	width: 100%;
+	margin-bottom: 6px;
 }
+
 .profile-sidebar .propic img {
-  width: 50%;
-  height: auto;
-  border-radius: 50%;
+	width: 50%;
+	height: auto;
+	border-radius: 50%;
 }
+
 .profile-sidebar .profile-title .main-title {
-  font-size: 1.5rem;
+	font-size: 1.5rem;
 }
+
 .profile-sidebar .profile-nav {
-  margin-left: -24px;
-  margin-right: -24px;
+	margin-left: -24px;
+	margin-right: -24px;
 }
+
 .profile-sidebar .profile-nav .mat-list-item .mat-icon {
-  margin-right: 8px;
+	margin-right: 8px;
 }
 
 .timeline {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
+
 .timeline::before {
-  content: "";
-  position: absolute;
-  top: 40px;
-  bottom: 0;
-  left: 24px;
-  width: 1px;
-  background-color: rgba(0, 0, 0, .12);
+	content: "";
+	position: absolute;
+	top: 40px;
+	bottom: 0;
+	left: 24px;
+	width: 1px;
+	background-color: rgba(0, 0, 0, .12);
 }
+
 .timeline .timeline-item {
-  width: 100%;
-  overflow: hidden;
-  margin-bottom: 24px;
+	width: 100%;
+	overflow: hidden;
+	margin-bottom: 24px;
 }
+
 .timeline .timeline-badge {
-  float: left;
-  position: relative;
-  margin-right: 30px;
-  height: 48px;
-  width: 48px;
-  border-radius: 50%;
-  overflow: hidden;
+	float: left;
+	position: relative;
+	margin-right: 30px;
+	height: 48px;
+	width: 48px;
+	border-radius: 50%;
+	overflow: hidden;
 }
+
 .timeline .timeline-badge img {
-  max-width: 100%;
+	max-width: 100%;
 }
+
 .timeline .timeline-badge .icon-badge {
-  text-align: center;
-  width: 48px;
-  height: 48px;
-  line-height: 48px;
+	text-align: center;
+	width: 48px;
+	height: 48px;
+	line-height: 48px;
 }
+
 .timeline .timeline-body-top {
-  margin-bottom: 8px;
+	margin-bottom: 8px;
 }
+
 .timeline .timeline-body {
-  float: right;
-  width: calc(100% - 78px);
+	float: right;
+	width: calc(100% - 78px);
 }
+
 .timeline .timeline-body-content img {
-  border-radius: 4px;
-  max-width: 100%;
+	border-radius: 4px;
+	max-width: 100%;
 }
-.timeline .timeline-body-content > :last-child {
-  margin-bottom: 8px;
+
+.timeline .timeline-body-content> :last-child {
+	margin-bottom: 8px;
 }
 
 [dir=rtl] {
-  .profile-sidebar .profile-nav .mat-list-item .mat-icon {
-    margin-right: 0;
-    margin-left: 8px;
-  }
+	.profile-sidebar .profile-nav .mat-list-item .mat-icon {
+		margin-right: 0;
+		margin-left: 8px;
+	}
 }

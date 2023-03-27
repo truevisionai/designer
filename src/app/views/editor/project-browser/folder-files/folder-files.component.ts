@@ -3,16 +3,16 @@
  */
 
 import {
-    AfterViewInit,
-    ApplicationRef,
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnInit,
-    Output,
-    ViewChild
+	AfterViewInit,
+	ApplicationRef,
+	Component,
+	ElementRef,
+	EventEmitter,
+	HostListener,
+	Input,
+	OnInit,
+	Output,
+	ViewChild
 } from '@angular/core';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { FileService } from 'app/services/file.service';
@@ -25,23 +25,23 @@ import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
 @Component( {
-    selector: 'app-folder-files',
-    templateUrl: './folder-files.component.html',
-    styleUrls: [ './folder-files.component.css' ]
+	selector: 'app-folder-files',
+	templateUrl: './folder-files.component.html',
+	styleUrls: [ './folder-files.component.css' ]
 } )
 export class FolderFilesComponent implements OnInit, AfterViewInit {
 
-    @ViewChild( 'content' ) contentRef: ElementRef;
+	@ViewChild( 'content' ) contentRef: ElementRef;
 
-    @Input() folder: FileNode;
+	@Input() folder: FileNode;
 
-    @Input() files: FileNode[] = [];
+	@Input() files: FileNode[] = [];
 
-    @Output() folderChanged = new EventEmitter<FileNode>();
+	@Output() folderChanged = new EventEmitter<FileNode>();
 
-    @Input() selectedNode: FileNode;
+	@Input() selectedNode: FileNode;
 
-    widthInPercent: string;
+	widthInPercent: string;
 
     constructor (
         private importer: ImporterService,
@@ -53,325 +53,325 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    get sortedFiles () {
+	get sortedFiles () {
 
-        let sorted = [];
+		let sorted = [];
 
-        this.files.filter( f => f.type == 'directory' ).forEach( f => sorted.push( f ) );
+		this.files.filter( f => f.type == 'directory' ).forEach( f => sorted.push( f ) );
 
-        this.files.filter( f => f.type != 'directory' ).forEach( f => sorted.push( f ) );
+		this.files.filter( f => f.type != 'directory' ).forEach( f => sorted.push( f ) );
 
-        return sorted;
-    }
+		return sorted;
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        // Debug.log( 'init-folder-files' );
+		// Debug.log( 'init-folder-files' );
 
-    }
+	}
 
-    ngAfterViewInit () {
+	ngAfterViewInit () {
 
-        this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
+		this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
 
-    }
+	}
 
-    deleteNode ( node: FileNode ): void {
+	deleteNode ( node: FileNode ): void {
 
 
-    }
+	}
 
-    showInExplorer (): void {
+	showInExplorer (): void {
 
-        try {
+		try {
 
-            const selectedFile = this.files.find( file => file.isSelected === true );
+			const selectedFile = this.files.find( file => file.isSelected === true );
 
-            if ( selectedFile ) {
+			if ( selectedFile ) {
 
-                this.electron.shell.showItemInFolder( selectedFile.path );
+				this.electron.shell.showItemInFolder( selectedFile.path );
 
-            } else {
+			} else {
 
-                this.electron.shell.openPath( this.folder.path );
+				this.electron.shell.openPath( this.folder.path );
 
-            }
+			}
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( 'Some error occurred' );
+			SnackBar.error( 'Some error occurred' );
 
-        }
+		}
 
-    }
+	}
 
-    onContextMenu ( $event, selectedNode?: FileNode ) {
+	onContextMenu ( $event, selectedNode?: FileNode ) {
 
-        $event.preventDefault();
-        $event.stopPropagation();
+		$event.preventDefault();
+		$event.stopPropagation();
 
-        if ( !this.electron.isElectronApp ) return;
+		if ( !this.electron.isElectronApp ) return;
 
-        this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
-            {
-                label: 'New',
-                submenu: [
-                    { label: 'Scene', click: () => this.createNewScene() },
-                    { label: 'Folder', click: () => this.createNewFolder() },
-                    { label: 'Material', click: () => this.createNewMaterial() },
-                    { label: 'Road Marking', click: () => this.createNewRoadMarking() },
-                    // { label: 'Prop Set' },
-                    // { label: 'Extrusion Style' },
-                    // { label: 'Post Style' },
-                    // { label: 'Sign', click: () => this.createNewSign() },
-                    // { label: 'Crosswalk Marking' },
-                    // { label: 'Lane Marking' },
-                    // { label: 'Polygon Marking' },
-                ]
-            },
-            // {
-            //     label: 'Delete',
-            //     click: () => this.deleteNode( selectedNode ),
-            //     enabled: selectedNode ? true : false
-            // },
-            // {
-            //     label: 'Rename',
-            //     click: () => this.renameNode( selectedNode ),
-            //     enabled: selectedNode ? true : false
-            // },
-            // {
-            //     label: 'Duplicate',
-            //     click: () => { console.log( "add vehiclie" ) },
-            //     enabled: selectedNode ? true : false
-            // },
-            {
-                label: 'Show In Explorer',
-                click: () => this.showInExplorer()
-            },
-            // {
-            //     label: 'Reimport',
-            //     click: () => this.reimport( selectedNode )
-            // },
-            // {
-            //     label: 'Reimport All',
-            //     click: () => this.reimportAll()
-            // },
-        ] );
+		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
+			{
+				label: 'New',
+				submenu: [
+					{ label: 'Scene', click: () => this.createNewScene() },
+					{ label: 'Folder', click: () => this.createNewFolder() },
+					{ label: 'Material', click: () => this.createNewMaterial() },
+					{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
+					// { label: 'Prop Set' },
+					// { label: 'Extrusion Style' },
+					// { label: 'Post Style' },
+					// { label: 'Sign', click: () => this.createNewSign() },
+					// { label: 'Crosswalk Marking' },
+					// { label: 'Lane Marking' },
+					// { label: 'Polygon Marking' },
+				]
+			},
+			// {
+			//     label: 'Delete',
+			//     click: () => this.deleteNode( selectedNode ),
+			//     enabled: selectedNode ? true : false
+			// },
+			// {
+			//     label: 'Rename',
+			//     click: () => this.renameNode( selectedNode ),
+			//     enabled: selectedNode ? true : false
+			// },
+			// {
+			//     label: 'Duplicate',
+			//     click: () => { console.log( "add vehiclie" ) },
+			//     enabled: selectedNode ? true : false
+			// },
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
+			// {
+			//     label: 'Reimport',
+			//     click: () => this.reimport( selectedNode )
+			// },
+			// {
+			//     label: 'Reimport All',
+			//     click: () => this.reimportAll()
+			// },
+		] );
 
-        this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
-    }
+		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
 
-    reimport ( node: FileNode ) {
+	reimport ( node: FileNode ) {
 
-        console.error( 'method not implemented' );
+		console.error( 'method not implemented' );
 
-        // if ( !node ) return;
+		// if ( !node ) return;
 
-        // this.assets.reimport( node );
+		// this.assets.reimport( node );
 
-    }
+	}
 
-    reimportAll (): void {
+	reimportAll (): void {
 
-        console.error( 'method not implemented' );
+		console.error( 'method not implemented' );
 
-        // this.assets.reimportProject();
+		// this.assets.reimportProject();
 
-    }
+	}
 
-    renameNode ( node: FileNode ): void {
+	renameNode ( node: FileNode ): void {
 
-        if ( !node ) return;
+		if ( !node ) return;
 
-        if ( node.type === 'directory' ) {
+		if ( node.type === 'directory' ) {
 
 
-        } else {
+		} else {
 
 
-        }
+		}
 
-    }
+	}
 
-    createNewScene () {
+	createNewScene () {
 
-        try {
+		try {
 
-            AssetFactory.createNewScene( this.folder.path );
+			AssetFactory.createNewScene( this.folder.path );
 
-            this.refershFolder();
+			this.refershFolder();
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    createNewFolder () {
+	createNewFolder () {
 
-        try {
+		try {
 
-            AssetFactory.createNewFolder( this.folder.path );
+			AssetFactory.createNewFolder( this.folder.path );
 
-            this.refershFolder();
+			this.refershFolder();
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    createNewMaterial () {
+	createNewMaterial () {
 
-        try {
+		try {
 
-            AssetFactory.createNewMaterial( this.folder.path, 'NewMaterial' );
+			AssetFactory.createNewMaterial( this.folder.path, 'NewMaterial' );
 
-            this.refershFolder();
+			this.refershFolder();
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    createNewSign () {
+	createNewSign () {
 
-        try {
+		try {
 
-            AssetFactory.createNewSign( 'NewSign', this.folder.path );
+			AssetFactory.createNewSign( 'NewSign', this.folder.path );
 
-            this.refershFolder();
+			this.refershFolder();
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    createNewRoadMarking (): void {
+	createNewRoadMarking (): void {
 
-        try {
+		try {
 
-            AssetFactory.createNewRoadMarking( this.folder.path, 'NewRoadMarking' );
+			AssetFactory.createNewRoadMarking( this.folder.path, 'NewRoadMarking' );
 
-            this.refershFolder();
+			this.refershFolder();
 
-        } catch ( error ) {
+		} catch ( error ) {
 
-            SnackBar.error( error );
+			SnackBar.error( error );
 
-        }
+		}
 
-    }
+	}
 
-    doubleClickFolder ( node: FileNode ) {
+	doubleClickFolder ( node: FileNode ) {
 
-        if ( node.type === 'directory' ) this.folderChanged.emit( node );
+		if ( node.type === 'directory' ) this.folderChanged.emit( node );
 
-    }
+	}
 
-    selectFolder () {
+	selectFolder () {
 
-        // Debug.log( 'select-folder', node );
+		// Debug.log( 'select-folder', node );
 
-        // if ( node.type === 'directory' ) this.folderChanged.emit( node );
+		// if ( node.type === 'directory' ) this.folderChanged.emit( node );
 
-    }
+	}
 
-    onMouseDown ( node: FileNode ) {
+	onMouseDown ( node: FileNode ) {
 
-        // console.log( 'mouse-down', node.name );
+		// console.log( 'mouse-down', node.name );
 
-        this.selectedNode = node;
+		this.selectedNode = node;
 
-        // // unselected all
-        // this.files.forEach( file => file.isSelected = false );
+		// // unselected all
+		// this.files.forEach( file => file.isSelected = false );
 
-        // // select this node
-        // node.isSelected = true;
+		// // select this node
+		// node.isSelected = true;
 
-    }
+	}
 
-    onMouseOver ( node: FileNode ) {
+	onMouseOver ( node: FileNode ) {
 
-        // console.log( 'mouse-over', node.name );
+		// console.log( 'mouse-over', node.name );
 
-        this.selectedNode = node;
+		this.selectedNode = node;
 
-    }
+	}
 
-    onMouseOut () {
+	onMouseOut () {
 
-        // console.log( 'mouseout', node.name );
+		// console.log( 'mouseout', node.name );
 
-        // if ( !this.selectedNode ) return;
+		// if ( !this.selectedNode ) return;
 
-        // this.selectedNode.isSelected = false;
+		// this.selectedNode.isSelected = false;
 
-        // this.selectedNode = null;
+		// this.selectedNode = null;
 
-    }
+	}
 
-    importFile ( file: FileNode ) {
+	importFile ( file: FileNode ) {
 
-        this.projectBrowserService.fileDoubleClicked.emit( file );
+		this.projectBrowserService.fileDoubleClicked.emit( file );
 
-        this.importer.importViaPath( file.path, file.name );
+		this.importer.importViaPath( file.path, file.name );
 
-    }
+	}
 
-    onDragStart ( $event: DragEvent, node: FileNode ) {
+	onDragStart ( $event: DragEvent, node: FileNode ) {
 
-        $event.dataTransfer.setData( 'path', node.path );
+		$event.dataTransfer.setData( 'path', node.path );
 
-    }
+	}
 
-    @HostListener( 'window:resize' )
-    onWindowResize () {
+	@HostListener( 'window:resize' )
+	onWindowResize () {
 
-        this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
+		this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
 
-    }
+	}
 
-    updateThumbnailCount ( width: number ) {
+	updateThumbnailCount ( width: number ) {
 
-        // 125 is the minimum width for the item
-        const count = Math.floor( width / 100 );
+		// 125 is the minimum width for the item
+		const count = Math.floor( width / 100 );
 
-        this.widthInPercent = ( 100 / count ) + '%';
+		this.widthInPercent = ( 100 / count ) + '%';
 
-        // console.log( "show ", count, "for", width );
-    }
+		// console.log( "show ", count, "for", width );
+	}
 
-    onFileDeleted ( $node: FileNode ) {
+	onFileDeleted ( $node: FileNode ) {
 
-        if ( !$node ) return;
+		if ( !$node ) return;
 
-        this.files = this.files.filter( file => !file.isDeleted );
+		this.files = this.files.filter( file => !file.isDeleted );
 
-        this.refershFolder();
-    }
+		this.refershFolder();
+	}
 
-    onFileRenamed ( $event ) {
+	onFileRenamed ( $event ) {
 
-        this.refershFolder();
+		this.refershFolder();
 
-    }
+	}
 
-    refershFolder () {
+	refershFolder () {
 
-        this.files = this.folder.sub_files( this.fileService );
+		this.files = this.folder.sub_files( this.fileService );
 
-        this.appRef.tick();
+		this.appRef.tick();
 
-    }
+	}
 }

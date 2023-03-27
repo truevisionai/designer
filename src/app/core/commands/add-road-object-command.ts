@@ -9,34 +9,34 @@ import { OdBaseCommand } from './od-base-command';
 
 export class AddRoadObjectCommand extends OdBaseCommand {
 
-    constructor ( private roadId: number, private roadObject: TvRoadObject, private objects: Object3D[] = [] ) {
-        super();
-    }
+	constructor ( private roadId: number, private roadObject: TvRoadObject, private objects: Object3D[] = [] ) {
+		super();
+	}
 
-    execute (): void {
+	execute (): void {
 
-        SceneService.add( this.roadObject.mesh, false );
+		SceneService.add( this.roadObject.mesh, false );
 
-        this.map.getRoadById( this.roadId ).addRoadObjectInstance( this.roadObject );
-    }
+		this.map.getRoadById( this.roadId ).addRoadObjectInstance( this.roadObject );
+	}
 
-    undo (): void {
+	undo (): void {
 
-        SceneService.remove( this.roadObject.mesh, false );
+		SceneService.remove( this.roadObject.mesh, false );
 
-        this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.id );
+		this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.id );
 
-        this.objects.forEach( object => SceneService.remove( object ) );
+		this.objects.forEach( object => SceneService.remove( object ) );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-        this.objects.forEach( object => SceneService.add( object ) );
+		this.objects.forEach( object => SceneService.add( object ) );
 
-    }
+	}
 
 
 }

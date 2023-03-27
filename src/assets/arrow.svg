@@ -5,7 +5,7 @@
 	</defs>
 	<style>
 		tspan { white-space:pre }
-		.shp0 { fill: #ffffff } 
+		.shp0 { fill: #ffffff }
 	</style>
 	<path id="Layer 2" class="shp0" d="M239.5 461.49C117.56 461.49 19 362.37 19 239.75C19 117.12 117.56 18 239.5 18C361.44 18 460 117.12 460 239.75C460 362.37 361.44 461.49 239.5 461.49Z" />
 	<use id="Layer 1" href="#img1" x="92" y="128" />

@@ -31,13 +31,13 @@ import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service'
 import { FileService } from '../../../services/file.service';
 
 @Component( {
-    selector: 'app-tool-bar',
-    templateUrl: './tool-bar.component.html',
+	selector: 'app-tool-bar',
+	templateUrl: './tool-bar.component.html',
 } )
 export class ToolBarComponent implements OnInit {
 
-    currentTool: BaseTool;
-    currentToolName: string;
+	currentTool: BaseTool;
+	currentToolName: string;
 
     constructor (
         private electronService: TvElectronService,
@@ -49,165 +49,166 @@ export class ToolBarComponent implements OnInit {
     ) {
     }
 
-    get oscEnabled (): boolean {
-        return Environment.oscEnabled;
-    }
 
-    get showImportButton () {
+	get oscEnabled (): boolean {
+		return Environment.oscEnabled;
+	}
 
-        return this.electronService.isElectronApp && !Environment.production;
+	get showImportButton () {
 
-    }
+		return this.electronService.isElectronApp && !Environment.production;
 
-    get isPropToolSelected () {
+	}
 
-        return this.currentTool instanceof PropPointTool ||
-            this.currentTool instanceof PropCurveTool ||
-            this.currentTool instanceof PropPolygonTool;
+	get isPropToolSelected () {
 
-    }
+		return this.currentTool instanceof PropPointTool ||
+			this.currentTool instanceof PropCurveTool ||
+			this.currentTool instanceof PropPolygonTool;
 
-    get isMarkingToolSelected () {
+	}
 
-        return this.currentTool instanceof MarkingLineTool ||
-            this.currentTool instanceof MarkingPointTool;
+	get isMarkingToolSelected () {
 
-    }
+		return this.currentTool instanceof MarkingLineTool ||
+			this.currentTool instanceof MarkingPointTool;
 
-    ngOnInit () {
+	}
 
-        ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
-            this.currentTool = tool;
-            this.currentToolName = tool ? tool.name : null;
-        } );
+	ngOnInit () {
 
-    }
+		ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
+			this.currentTool = tool;
+			this.currentToolName = tool ? tool.name : null;
+		} );
 
-    showRoadTool () {
+	}
 
-        this.setTool( new RoadTool() );
+	showRoadTool () {
 
-    }
+		this.setTool( new RoadTool() );
 
-    showRoadCircleTool () {
+	}
 
-        this.setTool( new RoadCircleTool() );
+	showRoadCircleTool () {
 
-    }
+		this.setTool( new RoadCircleTool() );
 
-    showManeueverTool () {
+	}
 
-        this.setTool( new ManeuverTool() );
+	showManeueverTool () {
 
-    }
+		this.setTool( new ManeuverTool() );
 
-    showLaneWidthTool () {
+	}
 
-        this.setTool( new LaneWidthTool() );
+	showLaneWidthTool () {
 
-    }
+		this.setTool( new LaneWidthTool() );
 
-    showLaneOffsetTool () {
+	}
 
-        this.setTool( new LaneOffsetTool() );
+	showLaneOffsetTool () {
 
-    }
+		this.setTool( new LaneOffsetTool() );
 
-    showRoadSignTool () {
+	}
 
-        this.setTool( new PropPointTool() );
+	showRoadSignTool () {
 
-    }
+		this.setTool( new PropPointTool() );
 
-    showPropPointTool () {
+	}
 
-        this.setTool( new PropPointTool() );
+	showPropPointTool () {
 
-    }
+		this.setTool( new PropPointTool() );
 
-    showPropCurveTool () {
+	}
 
-        this.setTool( new PropCurveTool() );
+	showPropCurveTool () {
 
-    }
+		this.setTool( new PropCurveTool() );
 
-    showPropPolygonTool () {
+	}
 
-        this.setTool( new PropPolygonTool() );
+	showPropPolygonTool () {
 
-    }
+		this.setTool( new PropPolygonTool() );
 
-    showSurfaceTool () {
+	}
 
-        this.setTool( new SurfaceTool() );
+	showSurfaceTool () {
 
-    }
+		this.setTool( new SurfaceTool() );
 
-    showLaneMarkingTool () {
+	}
 
-        this.setTool( new LaneMarkingTool() );
+	showLaneMarkingTool () {
 
-    }
+		this.setTool( new LaneMarkingTool() );
 
-    // importOpenDrive () {
+	}
 
-    //     new OpenScenarioExporter( this.oscService, this.odService, this.fileService, this.simulation ).exportAndPlay();
+	// importOpenDrive () {
 
-    // }
+	//     new OpenScenarioExporter( this.oscService, this.odService, this.fileService, this.simulation ).exportAndPlay();
 
-    showAddLaneTool () {
+	// }
 
-        this.setTool( new LaneAddTool() );
+	showAddLaneTool () {
 
-    }
+		this.setTool( new LaneAddTool() );
 
-    showLaneTool () {
+	}
 
-        this.setTool( new LaneTool() );
+	showLaneTool () {
 
-    }
+		this.setTool( new LaneTool() );
 
-    changeCamera () {
+	}
 
-        this.threeService.changeCamera();
+	changeCamera () {
 
-    }
+		this.threeService.changeCamera();
 
-    setMarkingPointTool () {
+	}
 
-        this.setTool( new MarkingPointTool() );
+	setMarkingPointTool () {
 
-    }
+		this.setTool( new MarkingPointTool() );
 
-    setMarkingLineTool () {
+	}
 
-        this.setTool( new MarkingLineTool() );
+	setMarkingLineTool () {
 
-    }
+		this.setTool( new MarkingLineTool() );
 
-    setParkingBoxTool () {
+	}
 
-        this.setTool( new ParkingBoxTool() );
+	setParkingBoxTool () {
 
-    }
+		this.setTool( new ParkingBoxTool() );
 
-    setParkingPolygonTool () {
+	}
 
-        this.setTool( new ParkingBoxTool() );
+	setParkingPolygonTool () {
 
-    }
+		this.setTool( new ParkingBoxTool() );
 
-    setMiscShape () {
+	}
 
-        // this.setTool( new MiscShapeTool() );
+	setMiscShape () {
 
-        // AppInspector.setInspector( OscParamatersInspectorComponent, OscSourceFile.scenario.parameterDeclaration );
+		// this.setTool( new MiscShapeTool() );
 
-    }
+		// AppInspector.setInspector( OscParamatersInspectorComponent, OscSourceFile.scenario.parameterDeclaration );
 
-    private setTool ( tool: BaseTool ) {
+	}
 
-        CommandHistory.execute( new SetToolCommand( tool ) );
+	private setTool ( tool: BaseTool ) {
 
-    }
+		CommandHistory.execute( new SetToolCommand( tool ) );
+
+	}
 }

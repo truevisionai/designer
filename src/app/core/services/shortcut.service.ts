@@ -7,53 +7,53 @@ import { ShorcutFactory } from '../shortcuts/shortcut-factory';
 import { IKeyboardShortcut } from '../shortcuts/shortcuts';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class ShortcutService {
 
-    private static shortcutInstances: IKeyboardShortcut[] = [];
+	private static shortcutInstances: IKeyboardShortcut[] = [];
 
-    constructor () {
+	constructor () {
 
-        this.init();
+		this.init();
 
-    }
+	}
 
-    static get shortcuts (): IKeyboardShortcut[] {
+	static get shortcuts (): IKeyboardShortcut[] {
 
-        return ShortcutService.shortcutInstances;
-    }
+		return ShortcutService.shortcutInstances;
+	}
 
-    static register ( shortcut: IKeyboardShortcut ): any {
+	static register ( shortcut: IKeyboardShortcut ): any {
 
-        this.shortcutInstances.push( shortcut );
+		this.shortcutInstances.push( shortcut );
 
-    }
+	}
 
-    static handleKeyDown ( e: KeyboardEvent ): void {
+	static handleKeyDown ( e: KeyboardEvent ): void {
 
-        // todo: use simple for loop for faster iteration
-        this.shortcuts.forEach( ( shortcut ) => {
+		// todo: use simple for loop for faster iteration
+		this.shortcuts.forEach( ( shortcut ) => {
 
-            if ( shortcut.check( e ) ) {
+			if ( shortcut.check( e ) ) {
 
-                shortcut.execute();
+				shortcut.execute();
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    init () {
+	init () {
 
-        ShorcutFactory.shortcuts.forEach( ( shortcut ) => {
+		ShorcutFactory.shortcuts.forEach( ( shortcut ) => {
 
-            ShortcutService.shortcutInstances.push( new shortcut() );
+			ShortcutService.shortcutInstances.push( new shortcut() );
 
-        } );
+		} );
 
-    }
+	}
 
 
 }

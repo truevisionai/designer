@@ -13,61 +13,61 @@ import { BaseCommand } from './base-command';
 export class UpdateWidthNodeValueCommand extends BaseCommand {
 
 
-    constructor (
-        private node: LaneWidthNode,
-        private newWidth: number,
-        private oldWidth?: number,
-        private laneHelper?: OdLaneReferenceLineBuilder
-    ) {
+	constructor (
+		private node: LaneWidthNode,
+		private newWidth: number,
+		private oldWidth?: number,
+		private laneHelper?: OdLaneReferenceLineBuilder
+	) {
 
-        super();
+		super();
 
-        if ( !this.oldWidth ) {
+		if ( !this.oldWidth ) {
 
-            this.oldWidth = this.node.laneWidth.a;
+			this.oldWidth = this.node.laneWidth.a;
 
-        }
+		}
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.node.laneWidth.a = this.newWidth;
+		this.node.laneWidth.a = this.newWidth;
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        NodeFactoryService.updateLaneWidthNodeLine( this.node );
+		NodeFactoryService.updateLaneWidthNodeLine( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.node.laneWidth.a = this.oldWidth;
+		this.node.laneWidth.a = this.oldWidth;
 
-        this.node.updateLaneWidthValues();
+		this.node.updateLaneWidthValues();
 
-        NodeFactoryService.updateLaneWidthNodeLine( this.node );
+		NodeFactoryService.updateLaneWidthNodeLine( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
-    rebuild ( road: TvRoad ): void {
+	rebuild ( road: TvRoad ): void {
 
-        SceneService.removeWithChildren( road.gameObject, true );
+		SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        this.laneHelper.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper.drawRoad( road, LineType.DASHED, true );
 
-    }
+	}
 
 }

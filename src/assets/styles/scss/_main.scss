@@ -3,7 +3,7 @@
  */
 
 /*
-* REQUIRED STYLES 
+* REQUIRED STYLES
 */
 @import "mixins";
 @import "colors";
@@ -15,7 +15,7 @@
 @import "main/typography";
 @import "main/layout";
 @import "main/header";
-@import "main/sidenav"; 
+@import "main/sidenav";
 @import "components";
 
 
@@ -30,5 +30,3 @@
 
 @import "main/topnav"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
 @import "main/header-top"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
-
-

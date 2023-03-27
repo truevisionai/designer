@@ -8,9 +8,9 @@ export class AppInfo {
 
     static electron: TvElectronService;
 
-    static get isElectronApp (): boolean {
+	static get isElectronApp (): boolean {
 
-        return this.electron.isElectronApp;
+		return this.electron.isElectronApp;
 
-    }
+	}
 }

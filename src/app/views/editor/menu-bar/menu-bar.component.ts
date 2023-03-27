@@ -25,8 +25,8 @@ import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.
 
 
 @Component( {
-    selector: 'app-menu-bar',
-    templateUrl: './menu-bar.component.html',
+	selector: 'app-menu-bar',
+	templateUrl: './menu-bar.component.html',
 } )
 export class MenuBarComponent implements OnInit {
 
@@ -45,155 +45,156 @@ export class MenuBarComponent implements OnInit {
     ) {
     }
 
-    get oscEnabled (): boolean {
-        return Environment.oscEnabled;
-    }
 
-    get recentFiles () {
-        return this.recentFileService.recentFiles;
-    }
+	get oscEnabled (): boolean {
+		return Environment.oscEnabled;
+	}
 
-    get isElectronApp () {
+	get recentFiles () {
+		return this.recentFileService.recentFiles;
+	}
 
-        return this.electron.isElectronApp;
+	get isElectronApp () {
 
-    }
+		return this.electron.isElectronApp;
 
-    ngOnInit () {
+	}
 
-    }
+	ngOnInit () {
 
-    onNewFile () {
+	}
 
-        this.mainFileService.newFile();
+	onNewFile () {
 
-    }
+		this.mainFileService.newFile();
 
-    onOpenFile () {
+	}
 
-        this.mainFileService.showOpenWindow( this.mainFileService.fileService.projectFolder );
+	onOpenFile () {
 
-    }
+		this.mainFileService.showOpenWindow( this.mainFileService.fileService.projectFolder );
 
-    showNewRoadDialog () {
+	}
 
-        this.dialog.open( NewRoadDialogComponent, {
-            width: '680px',
-            height: '680px',
-            data: null,
-            disableClose: true
-        } );
+	showNewRoadDialog () {
 
-    }
+		this.dialog.open( NewRoadDialogComponent, {
+			width: '680px',
+			height: '680px',
+			data: null,
+			disableClose: true
+		} );
 
-    onSave () {
+	}
 
-        this.mainFileService.save();
+	onSave () {
 
-    }
+		this.mainFileService.save();
 
-    onSaveAs () {
+	}
 
-        this.mainFileService.saveAs();
+	onSaveAs () {
 
-    }
+		this.mainFileService.saveAs();
 
+	}
 
-    onExit () {
 
-        this.appService.exit();
+	onExit () {
 
-    }
+		this.appService.exit();
 
-    onUndo () {
+	}
 
-        CommandHistory.undo();
+	onUndo () {
 
-    }
+		CommandHistory.undo();
 
-    onRedo () {
+	}
 
-        CommandHistory.redo();
+	onRedo () {
 
-    }
+		CommandHistory.redo();
 
-    openManual () {
+	}
 
-        window.open( AppLinks.roadEditorManualLink, '_blank' );
+	openManual () {
 
-    }
+		window.open( AppLinks.roadEditorManualLink, '_blank' );
 
-    openContactUs () {
+	}
 
-        window.open( AppLinks.contactUsLink, '_blank' );
+	openContactUs () {
 
-    }
+		window.open( AppLinks.contactUsLink, '_blank' );
 
-    openUserGuide () {
+	}
 
-        window.open( AppLinks.documentationLink, '_blank' );
+	openUserGuide () {
 
-    }
+		window.open( AppLinks.documentationLink, '_blank' );
 
-    importRecentFile ( file: IFile ) {
+	}
 
-        this.mainFileService.openFromPath( file.path, null );
+	importRecentFile ( file: IFile ) {
 
-    }
+		this.mainFileService.openFromPath( file.path, null );
 
-    onImportOpenDRIVE () {
+	}
 
-        this.odService.importOpenDrive();
+	onImportOpenDRIVE () {
 
-    }
+		this.odService.importOpenDrive();
 
-    onExportOpenDRIVE () {
+	}
 
-        this.exporter.exportOpenDrive();
+	onExportOpenDRIVE () {
 
-    }
+		this.exporter.exportOpenDrive();
 
-    onExportGLTF () {
+	}
 
-        this.exporter.exportGTLF();
+	onExportGLTF () {
 
-    }
+		this.exporter.exportGTLF();
 
-    onExportGLB () {
+	}
 
-        // this.exporter.exportGLB();
+	onExportGLB () {
 
-        this.dialog.open( ExportGlbDialog, {
-            width: '25vw',
-        } );
+		// this.exporter.exportGLB();
 
-    }
+		this.dialog.open( ExportGlbDialog, {
+			width: '25vw',
+		} );
 
-    importOdExample ( filename: string ) {
+	}
 
-        if ( filename == null ) throw new Error( 'Invalid filename' );
+	importOdExample ( filename: string ) {
 
-        const filepath = `./assets/open-drive/${ filename }`;
+		if ( filename == null ) throw new Error( 'Invalid filename' );
 
-        this.http.get( filepath, { responseType: 'text' } ).subscribe( response => {
+		const filepath = `./assets/open-drive/${ filename }`;
 
-            this.odService.importContent( response );
+		this.http.get( filepath, { responseType: 'text' } ).subscribe( response => {
 
-        } );
-    }
+			this.odService.importContent( response );
 
-    onExportCARLA () {
+		} );
+	}
 
-        this.exporter.exportCARLA();
+	onExportCARLA () {
 
-    }
+		this.exporter.exportCARLA();
 
-    logout () {
+	}
 
-        this.appService.auth.logout();
+	logout () {
 
-        this.router.navigateByUrl( AppService.loginUrl );
+		this.appService.auth.logout();
 
-    }
+		this.router.navigateByUrl( AppService.loginUrl );
+
+	}
 
 }

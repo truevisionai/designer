@@ -18,12 +18,16 @@
 	box-shadow: none;
 }
 
-select, option {
+select,
+option {
 	outline: none;
 	box-shadow: none;
 }
 
-select:focus, option:focus, .tv-field-dropddown:focus, .tv-field-option:focus {
+select:focus,
+option:focus,
+.tv-field-dropddown:focus,
+.tv-field-option:focus {
 	outline: none;
 	box-shadow: none;
 }

@@ -10,146 +10,146 @@ import { TvLaneValidity } from './tv-road-object';
 
 export class TvRoadSignal {
 
-    public s: number;
-    public t: number;
-    public id: number;
-    public name: string;
-    public dynamic: TvDynamicTypes;
-    public orientations: TvOrientation;
-    public zOffset: number;
-    public country: string;
-    public type: string;
-    public subtype: string;
-    public value: number;
-    public unit: TvUnit;
-    public height: number;
-    public width: number;
-    public text: string;
-    public hOffset: number;
-    public pitch: number;
-    public roll: number;
-    public validities: TvLaneValidity[] = [];
-    public dependencies: TvSignalDependency[] = [];
-    public signalReferences: TvSignalReference[] = [];
-    public roadId: number;
+	public s: number;
+	public t: number;
+	public id: number;
+	public name: string;
+	public dynamic: TvDynamicTypes;
+	public orientations: TvOrientation;
+	public zOffset: number;
+	public country: string;
+	public type: string;
+	public subtype: string;
+	public value: number;
+	public unit: TvUnit;
+	public height: number;
+	public width: number;
+	public text: string;
+	public hOffset: number;
+	public pitch: number;
+	public roll: number;
+	public validities: TvLaneValidity[] = [];
+	public dependencies: TvSignalDependency[] = [];
+	public signalReferences: TvSignalReference[] = [];
+	public roadId: number;
 
-    public controlPoint?: AnyControlPoint;
+	public controlPoint?: AnyControlPoint;
 
-    constructor (
-        s: number,
-        t: number,
-        id: number,
-        name: string,
-        dynamic: TvDynamicTypes,
-        orientation: TvOrientation,
-        zOffset?: number,
-        country?: string,
-        type?: string,
-        subtype?: string,
-        value?: number,
-        unit?: TvUnit,
-        height?: number,
-        width?: number,
-        text?: string,
-        hOffset?: number,
-        pitch?: number,
-        roll?: number
-    ) {
+	constructor (
+		s: number,
+		t: number,
+		id: number,
+		name: string,
+		dynamic: TvDynamicTypes,
+		orientation: TvOrientation,
+		zOffset?: number,
+		country?: string,
+		type?: string,
+		subtype?: string,
+		value?: number,
+		unit?: TvUnit,
+		height?: number,
+		width?: number,
+		text?: string,
+		hOffset?: number,
+		pitch?: number,
+		roll?: number
+	) {
 
-        this.s = s;
-        this.t = t;
-        this.id = id;
-        this.name = name;
-        this.dynamic = dynamic;
-        this.orientations = orientation;
-        this.zOffset = zOffset;
-        this.country = country;
-        this.type = type;
-        this.subtype = subtype;
-        this.value = value;
-        this.unit = unit;
-        this.height = height;
-        this.width = width;
-        this.text = text;
-        this.hOffset = hOffset;
-        this.pitch = pitch;
-        this.roll = roll;
+		this.s = s;
+		this.t = t;
+		this.id = id;
+		this.name = name;
+		this.dynamic = dynamic;
+		this.orientations = orientation;
+		this.zOffset = zOffset;
+		this.country = country;
+		this.type = type;
+		this.subtype = subtype;
+		this.value = value;
+		this.unit = unit;
+		this.height = height;
+		this.width = width;
+		this.text = text;
+		this.hOffset = hOffset;
+		this.pitch = pitch;
+		this.roll = roll;
 
-    }
+	}
 
-    private _gameObject: GameObject;
+	private _gameObject: GameObject;
 
-    get gameObject () {
-        return this._gameObject;
-    }
+	get gameObject () {
+		return this._gameObject;
+	}
 
-    set gameObject ( value ) {
-        this._gameObject = value;
-    }
+	set gameObject ( value ) {
+		this._gameObject = value;
+	}
 
-    private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
+	private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
 
-    set userData ( values: TvUserData[] ) {
-        values.forEach( data => this._userData.set( data.attr_code, data ) );
-    }
+	set userData ( values: TvUserData[] ) {
+		values.forEach( data => this._userData.set( data.attr_code, data ) );
+	}
 
-    private _signShape: SignShapeType;
+	private _signShape: SignShapeType;
 
-    get signShape () {
-        return this._signShape;
-    }
+	get signShape () {
+		return this._signShape;
+	}
 
-    set signShape ( value ) {
-        this._signShape = value;
-    }
+	set signShape ( value ) {
+		this._signShape = value;
+	}
 
-    get userDataMap () {
-        return this._userData;
-    }
+	get userDataMap () {
+		return this._userData;
+	}
 
-    get assetName () {
-        return this._userData.get( 'asset_name' );
-    }
+	get assetName () {
+		return this._userData.get( 'asset_name' );
+	}
 
-    getUserData () {
-        return this._userData;
-    }
+	getUserData () {
+		return this._userData;
+	}
 
-    addValidity ( fromLane: number, toLane: number ): void {
-        this.validities.push( new TvLaneValidity( fromLane, toLane ) );
-    }
+	addValidity ( fromLane: number, toLane: number ): void {
+		this.validities.push( new TvLaneValidity( fromLane, toLane ) );
+	}
 
-    getValidity ( index: number ): TvLaneValidity {
-        return this.validities[ index ];
-    }
+	getValidity ( index: number ): TvLaneValidity {
+		return this.validities[ index ];
+	}
 
-    getValidityCount (): number {
-        return this.validities.length;
-    }
+	getValidityCount (): number {
+		return this.validities.length;
+	}
 
-    addDependency ( id: number, type: string ) {
-        this.dependencies.push( new TvSignalDependency( id, type ) );
-    }
+	addDependency ( id: number, type: string ) {
+		this.dependencies.push( new TvSignalDependency( id, type ) );
+	}
 
-    getDependency ( index: number ): TvSignalDependency {
-        return this.dependencies[ index ];
-    }
+	getDependency ( index: number ): TvSignalDependency {
+		return this.dependencies[ index ];
+	}
 
-    getDependencyCount (): number {
-        return this.dependencies.length;
-    }
+	getDependencyCount (): number {
+		return this.dependencies.length;
+	}
 
-    getSignalReference ( index: number ): TvSignalReference {
-        return this.signalReferences[ index ];
-    }
+	getSignalReference ( index: number ): TvSignalReference {
+		return this.signalReferences[ index ];
+	}
 
-    getSignalReferenceCount (): number {
-        return this.signalReferences.length;
-    }
+	getSignalReferenceCount (): number {
+		return this.signalReferences.length;
+	}
 
-    addUserData ( key: string, value: string ) {
-        this._userData.set( key, new TvUserData( key, value ) );
-    }
+	addUserData ( key: string, value: string ) {
+		this._userData.set( key, new TvUserData( key, value ) );
+	}
 }
 
 /**
@@ -159,13 +159,13 @@ export class TvRoadSignal {
  * may have multiple dependency records.
  */
 export class TvSignalDependency {
-    public id: number;
-    public type: string;
+	public id: number;
+	public type: string;
 
-    constructor ( id: number, type: string ) {
-        this.id = id;
-        this.type = type;
-    }
+	constructor ( id: number, type: string ) {
+		this.id = id;
+		this.type = type;
+	}
 
 }
 
@@ -176,17 +176,17 @@ export class TvSignalDependency {
  * signal entry once and can refer to this complete record by means of the signal reference record.
  */
 export class TvSignalReference {
-    public s: number;
-    public t: number;
-    public id: number;
-    public orientations: TvOrientation;
-    public laneValidities: TvLaneValidity[] = [];
+	public s: number;
+	public t: number;
+	public id: number;
+	public orientations: TvOrientation;
+	public laneValidities: TvLaneValidity[] = [];
 
-    getValidityCount (): number {
-        return this.laneValidities.length;
-    }
+	getValidityCount (): number {
+		return this.laneValidities.length;
+	}
 
-    getValidity ( i: number ): TvLaneValidity {
-        return this.laneValidities[ i ];
-    }
+	getValidity ( i: number ): TvLaneValidity {
+		return this.laneValidities[ i ];
+	}
 }

@@ -12,58 +12,58 @@ import { BaseCommand } from './base-command';
 
 export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
-    constructor (
-        private node: LaneOffsetNode,
-        private newDistance: number,
-        private oldDistance?: number,
-        private laneHelper?: OdLaneReferenceLineBuilder
-    ) {
+	constructor (
+		private node: LaneOffsetNode,
+		private newDistance: number,
+		private oldDistance?: number,
+		private laneHelper?: OdLaneReferenceLineBuilder
+	) {
 
-        super();
+		super();
 
-        if ( !this.oldDistance ) {
+		if ( !this.oldDistance ) {
 
-            this.oldDistance = this.node.laneOffset.s;
+			this.oldDistance = this.node.laneOffset.s;
 
-        }
+		}
 
-    }
+	}
 
-    execute (): void {
+	execute (): void {
 
-        this.node.laneOffset.s = this.newDistance;
+		this.node.laneOffset.s = this.newDistance;
 
-        NodeFactoryService.updateLaneOffsetNode( this.node );
+		NodeFactoryService.updateLaneOffsetNode( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        this.node.laneOffset.s = this.oldDistance;
+		this.node.laneOffset.s = this.oldDistance;
 
-        NodeFactoryService.updateLaneOffsetNode( this.node );
+		NodeFactoryService.updateLaneOffsetNode( this.node );
 
-        this.rebuild( this.node.road );
+		this.rebuild( this.node.road );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
-    rebuild ( road: TvRoad ): void {
+	rebuild ( road: TvRoad ): void {
 
-        SceneService.removeWithChildren( road.gameObject, true );
+		SceneService.removeWithChildren( road.gameObject, true );
 
-        TvMapBuilder.buildRoad( this.map.gameObject, road );
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-        this.laneHelper.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper.drawRoad( road, LineType.DASHED, true );
 
-    }
+	}
 
 }

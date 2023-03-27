@@ -3,62 +3,62 @@
   -->
 
 <mat-toolbar class="topbar">
-    <!-- Sidenav toggle button -->
-    <button (click)="toggleSidenav()" *ngIf="layoutConf.sidebarStyle !== 'compact'" id="sidenavToggle" mat-icon-button matTooltip="Toggle Hide/Open">
-        <mat-icon>menu</mat-icon>
-    </button>
+	<!-- Sidenav toggle button -->
+	<button (click)="toggleSidenav()" *ngIf="layoutConf.sidebarStyle !== 'compact'" id="sidenavToggle" mat-icon-button matTooltip="Toggle Hide/Open">
+		<mat-icon>menu</mat-icon>
+	</button>
 
-    <!-- Search form -->
-    <!-- <div fxFlex fxHide.lt-sm="true" class="search-bar">
+	<!-- Search form -->
+	<!-- <div fxFlex fxHide.lt-sm="true" class="search-bar">
 	  <form class="top-search-form">
 		<mat-icon role="img">search</mat-icon>
 		<input autofocus="true" placeholder="Search" type="text" />
 	  </form>
 	</div> -->
 
-    <span fxFlex></span>
-    <!-- Language Switcher -->
-    <button [matMenuTriggerFor]="menu" mat-button>
-        <span class="flag-icon {{currentLang.flag}} mr-05"></span>
-        <span>{{currentLang.name}}</span>
-    </button>
-    <mat-menu #menu="matMenu">
-        <button (click)="setLang(lang)" *ngFor="let lang of availableLangs" mat-menu-item>
-            <span class="flag-icon mr-05 {{lang.flag}}"></span>
-            <span>{{lang.name}}</span>
-        </button>
-    </mat-menu>
+	<span fxFlex></span>
+	<!-- Language Switcher -->
+	<button [matMenuTriggerFor]="menu" mat-button>
+		<span class="flag-icon {{currentLang.flag}} mr-05"></span>
+		<span>{{currentLang.name}}</span>
+	</button>
+	<mat-menu #menu="matMenu">
+		<button (click)="setLang(lang)" *ngFor="let lang of availableLangs" mat-menu-item>
+			<span class="flag-icon mr-05 {{lang.flag}}"></span>
+			<span>{{lang.name}}</span>
+		</button>
+	</mat-menu>
 
-    <egret-search-input-over placeholder="Country (e.g. US)" resultPage="/search">
-    </egret-search-input-over>
-    <!-- Open "views/search-view/result-page.component" to understand how to subscribe to input field value -->
+	<egret-search-input-over placeholder="Country (e.g. US)" resultPage="/search">
+	</egret-search-input-over>
+	<!-- Open "views/search-view/result-page.component" to understand how to subscribe to input field value -->
 
-    <!-- Notification toggle button -->
-    <button (click)="toggleNotific()" [style.overflow]="'visible'" class="topbar-button-right" mat-icon-button matTooltip="Notifications">
-        <mat-icon>notifications</mat-icon>
-        <span class="notification-number mat-bg-warn">3</span>
-    </button>
-    <!-- Top left user menu -->
-    <button [matMenuTriggerFor]="accountMenu" class="topbar-button-right img-button" mat-icon-button>
-        <img alt="" src="assets/images/face-7.jpg" />
-    </button>
+	<!-- Notification toggle button -->
+	<button (click)="toggleNotific()" [style.overflow]="'visible'" class="topbar-button-right" mat-icon-button matTooltip="Notifications">
+		<mat-icon>notifications</mat-icon>
+		<span class="notification-number mat-bg-warn">3</span>
+	</button>
+	<!-- Top left user menu -->
+	<button [matMenuTriggerFor]="accountMenu" class="topbar-button-right img-button" mat-icon-button>
+		<img alt="" src="assets/images/face-7.jpg" />
+	</button>
 
-    <mat-menu #accountMenu="matMenu">
-        <button [routerLink]="['/profile/overview']" mat-menu-item>
-            <mat-icon>account_box</mat-icon>
-            <span>Profile</span>
-        </button>
-        <button [routerLink]="['/profile/settings']" mat-menu-item>
-            <mat-icon>settings</mat-icon>
-            <span>Account Settings</span>
-        </button>
-        <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
-        </button>
-        <button [routerLink]="['/sessions/signin']" mat-menu-item>
-            <mat-icon>exit_to_app</mat-icon>
-            <span>Sign out</span>
-        </button>
-    </mat-menu>
+	<mat-menu #accountMenu="matMenu">
+		<button [routerLink]="['/profile/overview']" mat-menu-item>
+			<mat-icon>account_box</mat-icon>
+			<span>Profile</span>
+		</button>
+		<button [routerLink]="['/profile/settings']" mat-menu-item>
+			<mat-icon>settings</mat-icon>
+			<span>Account Settings</span>
+		</button>
+		<button mat-menu-item>
+			<mat-icon>notifications_off</mat-icon>
+			<span>Disable alerts</span>
+		</button>
+		<button [routerLink]="['/sessions/signin']" mat-menu-item>
+			<mat-icon>exit_to_app</mat-icon>
+			<span>Sign out</span>
+		</button>
+	</mat-menu>
 </mat-toolbar>

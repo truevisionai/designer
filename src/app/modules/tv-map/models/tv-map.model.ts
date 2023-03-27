@@ -19,340 +19,340 @@ import { TvSurface } from './tv-surface.model';
 
 export class TvMap {
 
-    public props: PropInstance[] = [];
-    public propCurves: PropCurve[] = [];
-    public propPolygons: PropPolygon[] = [];
-    public surfaces: TvSurface[] = [];
+	public props: PropInstance[] = [];
+	public propCurves: PropCurve[] = [];
+	public propPolygons: PropPolygon[] = [];
+	public surfaces: TvSurface[] = [];
 
-    public gameObject: GameObject = new GameObject( 'OpenDrive' );
-    public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
+	public gameObject: GameObject = new GameObject( 'OpenDrive' );
+	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
-    private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
+	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
 
-    get roads (): Map<number, TvRoad> {
-        return this._roads;
-    }
+	get roads (): Map<number, TvRoad> {
+		return this._roads;
+	}
 
-    set roads ( value: Map<number, TvRoad> ) {
-        this._roads = value;
-    }
+	set roads ( value: Map<number, TvRoad> ) {
+		this._roads = value;
+	}
 
-    private _junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
+	private _junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
 
-    get junctions (): Map<number, TvJunction> {
-        return this._junctions;
-    }
+	get junctions (): Map<number, TvJunction> {
+		return this._junctions;
+	}
 
-    set junctions ( value: Map<number, TvJunction> ) {
-        this._junctions = value;
-    }
+	set junctions ( value: Map<number, TvJunction> ) {
+		this._junctions = value;
+	}
 
-    private _controllers: Map<number, TvController> = new Map<number, TvController>();
+	private _controllers: Map<number, TvController> = new Map<number, TvController>();
 
-    get controllers (): Map<number, TvController> {
-        return this._controllers;
-    }
+	get controllers (): Map<number, TvController> {
+		return this._controllers;
+	}
 
-    set controllers ( value: Map<number, TvController> ) {
-        this._controllers = value;
-    }
+	set controllers ( value: Map<number, TvController> ) {
+		this._controllers = value;
+	}
 
-    update () {
+	update () {
 
 
-    }
+	}
 
-    public getHeader (): TvMapHeader {
-        return this.header;
-    }
+	public getHeader (): TvMapHeader {
+		return this.header;
+	}
 
-    public addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
+	public addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
 
-        const index = this.getRoadCount();
+		const index = this.getRoadCount();
 
-        const road = new TvRoad( name, length, id, junction );
+		const road = new TvRoad( name, length, id, junction );
 
-        this.addRoadInstance( road );
+		this.addRoadInstance( road );
 
 
-        return road;
-    }
+		return road;
+	}
 
-    addDefaultRoadWithType ( type: TvRoadType, maxSpeed = 40 ) {
+	addDefaultRoadWithType ( type: TvRoadType, maxSpeed = 40 ) {
 
-        const road = this.addDefaultRoad();
+		const road = this.addDefaultRoad();
 
-        road.setType( type, maxSpeed );
+		road.setType( type, maxSpeed );
 
-        return road;
-    }
+		return road;
+	}
 
-    addDefaultRoad (): TvRoad {
+	addDefaultRoad (): TvRoad {
 
-        const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
+		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
 
-        const roadStyle = RoadStyleService.getRoadStyle( road.id );
+		const roadStyle = RoadStyleService.getRoadStyle( road.id );
 
-        // const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
-        const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );
+		// const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
+		const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );
 
-        // const laneSection = road.addGetLaneSection( 0 );
-        const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
+		// const laneSection = road.addGetLaneSection( 0 );
+		const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
 
-        // const leftLane3 = laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
-        // const leftLane2 = laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-        // const leftLane1 = laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-        // const centerLane = laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-        // const rightLane1 = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
-        // const rightLane2 = laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
-        // const rightLane3 = laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
+		// const leftLane3 = laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
+		// const leftLane2 = laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
+		// const leftLane1 = laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+		// const centerLane = laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		// const rightLane1 = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+		// const rightLane2 = laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
+		// const rightLane3 = laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
 
-        // leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-        // centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-        // rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+		// leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+		// centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+		// rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
-        // laneSection.getLaneVector().forEach( lane => {
+		// laneSection.getLaneVector().forEach( lane => {
 
-        //     if ( lane.side !== TvLaneSide.CENTER ) {
+		//     if ( lane.side !== TvLaneSide.CENTER ) {
 
-        //         if ( lane.type == TvLaneType.driving ) lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
+		//         if ( lane.type == TvLaneType.driving ) lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
 
-        //         else if ( lane.type == TvLaneType.sidewalk ) lane.addWidthRecord( 0, 2, 0, 0, 0 );
+		//         else if ( lane.type == TvLaneType.sidewalk ) lane.addWidthRecord( 0, 2, 0, 0, 0 );
 
-        //         else lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
+		//         else lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
 
-        //     }
+		//     }
 
-        // } );
+		// } );
 
-        return road;
-    }
+		return road;
+	}
 
-    addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
+	addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
 
-        const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, junctionId );
+		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, junctionId );
 
 
-        const laneSection = road.addGetLaneSection( 0 );
+		const laneSection = road.addGetLaneSection( 0 );
 
-        if ( side === TvLaneSide.LEFT ) {
-            laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-        }
+		if ( side === TvLaneSide.LEFT ) {
+			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+		}
 
-        if ( side === TvLaneSide.RIGHT ) {
-            laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
-        }
+		if ( side === TvLaneSide.RIGHT ) {
+			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+		}
 
-        laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
 
-        laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneVector().forEach( lane => {
 
-            if ( lane.side !== TvLaneSide.CENTER ) {
+			if ( lane.side !== TvLaneSide.CENTER ) {
 
-                if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
+				if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
 
-            }
+			}
 
-        } );
+		} );
 
-        return road;
-    }
+		return road;
+	}
 
-    addConnectingRoadLane () {
+	addConnectingRoadLane () {
 
-    }
+	}
 
 
-    addRoadInstance ( road: TvRoad ) {
+	addRoadInstance ( road: TvRoad ) {
 
-        this._roads.set( road.id, road );
+		this._roads.set( road.id, road );
 
-    }
+	}
 
-    public addNewJunction ( junctionName?: string ): TvJunction {
+	public addNewJunction ( junctionName?: string ): TvJunction {
 
-        const id = this.junctions.size + 1;
+		const id = this.junctions.size + 1;
 
-        const name = junctionName || `${ id }`;
+		const name = junctionName || `${ id }`;
 
 
-        return this.junctions.get( id );
-    }
+		return this.junctions.get( id );
+	}
 
-    public addJunction ( name, id ): number {
+	public addJunction ( name, id ): number {
 
-        const index = this.getJunctionCount();
+		const index = this.getJunctionCount();
 
-        this._junctions.set( id, new TvJunction( name, id ) );
+		this._junctions.set( id, new TvJunction( name, id ) );
 
 
-        return index;
-    }
+		return index;
+	}
 
-    public addController ( id: number, name: string, sequence: number ): TvController {
+	public addController ( id: number, name: string, sequence: number ): TvController {
 
-        const controller = new TvController( id, name, sequence );
+		const controller = new TvController( id, name, sequence );
 
-        this._controllers.set( id, controller );
+		this._controllers.set( id, controller );
 
-        return controller;
-    }
+		return controller;
+	}
 
-    public getControllerCount (): number {
+	public getControllerCount (): number {
 
-        return this._controllers.size;
+		return this._controllers.size;
 
-    }
+	}
 
-    public getController ( index: number ) {
+	public getController ( index: number ) {
 
-        return this._controllers.get( index );
+		return this._controllers.get( index );
 
-    }
+	}
 
-    public removeRoad ( road: TvRoad ) {
+	public removeRoad ( road: TvRoad ) {
 
-        road.remove( this.gameObject );
+		road.remove( this.gameObject );
 
-        this.roads.delete( road.id );
-    }
+		this.roads.delete( road.id );
+	}
 
-    public deleteRoad ( id: number ): void {
+	public deleteRoad ( id: number ): void {
 
-        this.roads.delete( id );
+		this.roads.delete( id );
 
-    }
+	}
 
-    public deleteJunction ( id ): void {
+	public deleteJunction ( id ): void {
 
-        this._junctions.delete( id );
+		this._junctions.delete( id );
 
-    }
+	}
 
-    getRoadById ( roadId: number ): TvRoad {
+	getRoadById ( roadId: number ): TvRoad {
 
-        if ( this._roads.has( roadId ) ) {
+		if ( this._roads.has( roadId ) ) {
 
-            return this._roads.get( roadId );
+			return this._roads.get( roadId );
 
-        } else {
+		} else {
 
-            console.error( `${ roadId } road-id not found` );
-            // throw new Error( 'RoadID not found.' );
+			console.error( `${ roadId } road-id not found` );
+			// throw new Error( 'RoadID not found.' );
 
-        }
+		}
 
-    }
+	}
 
-    public getRoadCount (): number {
+	public getRoadCount (): number {
 
-        return this._roads.size;
+		return this._roads.size;
 
-    }
+	}
 
-    public getJunctionById ( id ): TvJunction {
+	public getJunctionById ( id ): TvJunction {
 
-        return this._junctions.get( id );
+		return this._junctions.get( id );
 
-    }
+	}
 
-    public getJunctionCount (): number {
+	public getJunctionCount (): number {
 
-        return this._junctions.size;
+		return this._junctions.size;
 
-    }
+	}
 
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document
 	 */
-    public clear () {
+	public clear () {
 
-        this._roads.clear();
+		this._roads.clear();
 
-        this._junctions.clear();
+		this._junctions.clear();
 
-        this.props.splice( 0, this.props.length );
+		this.props.splice( 0, this.props.length );
 
-        this.propCurves.splice( 0, this.propCurves.length );
+		this.propCurves.splice( 0, this.propCurves.length );
 
-        this.surfaces.splice( 0, this.surfaces.length );
-    }
+		this.surfaces.splice( 0, this.surfaces.length );
+	}
 
-    public setHeader (
-        revMajor: number,
-        revMinor: number,
-        name: string,
-        version: number,
-        date: string,
-        north: number,
-        south: number,
-        east: number,
-        west: number,
-        vendor: string
-    ) {
+	public setHeader (
+		revMajor: number,
+		revMinor: number,
+		name: string,
+		version: number,
+		date: string,
+		north: number,
+		south: number,
+		east: number,
+		west: number,
+		vendor: string
+	) {
 
-        this.header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+		this.header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 
-    }
+	}
 
-    addJunctionInstance ( junction: TvJunction ) {
+	addJunctionInstance ( junction: TvJunction ) {
 
-        this._junctions.set( junction.id, junction );
+		this._junctions.set( junction.id, junction );
 
-    }
+	}
 
-    addControllerInstance ( odController: TvController ) {
-        this.controllers.set( odController.id, odController );
-    }
+	addControllerInstance ( odController: TvController ) {
+		this.controllers.set( odController.id, odController );
+	}
 
-    destroy () {
+	destroy () {
 
-        this.roads.forEach( road => road.remove( this.gameObject ) );
+		this.roads.forEach( road => road.remove( this.gameObject ) );
 
-        this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
+		this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
 
-        this.propCurves.forEach( curve => {
+		this.propCurves.forEach( curve => {
 
-            this.gameObject.remove( curve.spline.mesh );
+			this.gameObject.remove( curve.spline.mesh );
 
-            curve.props.forEach( prop => SceneService.remove( prop ) );
+			curve.props.forEach( prop => SceneService.remove( prop ) );
 
-        } );
+		} );
 
-        this.propPolygons.forEach( polygon => {
+		this.propPolygons.forEach( polygon => {
 
-            this.gameObject.remove( polygon.spline.mesh );
+			this.gameObject.remove( polygon.spline.mesh );
 
-            polygon.props.forEach( prop => SceneService.remove( prop ) );
+			polygon.props.forEach( prop => SceneService.remove( prop ) );
 
-        } );
+		} );
 
-        this.props.forEach( prop => this.gameObject.remove( prop.object ) );
+		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
 
-        this.clear();
-    }
+		this.clear();
+	}
 
-    private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {
+	private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {
 
-        if ( child.elementType == 'road' ) {
+		if ( child.elementType == 'road' ) {
 
-            connection = null;
+			connection = null;
 
-            return this.getRoadById( child.elementId );
+			return this.getRoadById( child.elementId );
 
-        } else if ( child.elementType == 'junction' ) {
+		} else if ( child.elementType == 'junction' ) {
 
-            const junction = this.getJunctionById( child.elementId );
+			const junction = this.getJunctionById( child.elementId );
 
-            connection = junction.getRandomConnectionFor( road.id );
+			connection = junction.getRandomConnectionFor( road.id );
 
-            return this.getRoadById( connection.connectingRoad );
+			return this.getRoadById( connection.connectingRoad );
 
-        } else {
+		} else {
 
-            console.error( 'unknown successor type' );
+			console.error( 'unknown successor type' );
 
-        }
+		}
 
-    }
+	}
 }

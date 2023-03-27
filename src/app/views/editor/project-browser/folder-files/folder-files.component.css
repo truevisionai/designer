@@ -19,7 +19,8 @@
 	cursor: pointer;
 }
 
-.folder-icon:hover, .folder-icon.selected {
+.folder-icon:hover,
+.folder-icon.selected {
 	color: #3aadb3;
 }
 
@@ -40,7 +41,6 @@
 	padding: 16px 8px 0px 0px !important;
 }
 
-.content > mat-card {
+.content>mat-card {
 	margin: 0px !important;
 }
-

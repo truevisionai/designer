@@ -17,12 +17,12 @@ import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class AppService {
 
-    static homeUrl = '';
-    static loginUrl = '/sessions/signin';
+	static homeUrl = '';
+	static loginUrl = '/sessions/signin';
 
     static eventSystem: EventSystem;
     static three: ThreeService;
@@ -45,28 +45,29 @@ export class AppService {
         public editor: EditorService,
     ) {
 
-        AppService.eventSystem = eventSystem;
-        AppService.three = three;
-        AppService.electron = electron;
-        AppService.assets = assets;
-        AppService.file = files;
-        AppService.editor = editor;
 
-        AppService.exporter = sceneExporter;
+		AppService.eventSystem = eventSystem;
+		AppService.three = three;
+		AppService.electron = electron;
+		AppService.assets = assets;
+		AppService.file = files;
+		AppService.editor = editor;
 
-        AppInfo.electron = electron;
-    }
+		AppService.exporter = sceneExporter;
 
-    static get isElectronApp (): boolean {
+		AppInfo.electron = electron;
+	}
 
-        return this.electron.isElectronApp;
+	static get isElectronApp (): boolean {
 
-    }
+		return this.electron.isElectronApp;
 
-    public exit () {
+	}
 
-        this.files.remote.app.exit( 0 );
+	public exit () {
 
-    }
+		this.files.remote.app.exit( 0 );
+
+	}
 
 }

@@ -20,7 +20,7 @@ import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class ExporterService {
 
@@ -32,95 +32,96 @@ export class ExporterService {
     ) {
     }
 
-    exportScene () {
 
-        this.clearTool();
+	exportScene () {
 
-        this.sceneExporter.saveAs();
+		this.clearTool();
 
-    }
+		this.sceneExporter.saveAs();
 
-    exportOpenDrive () {
+	}
 
-        this.clearTool();
+	exportOpenDrive () {
 
-        this.odService.saveAs();
-    }
+		this.clearTool();
 
-    exportGLB ( filename = 'road.glb' ) {
+		this.odService.saveAs();
+	}
 
-        this.clearTool();
+	exportGLB ( filename = 'road.glb' ) {
 
-        const exporter = new GLTFExporter();
+		this.clearTool();
 
-        exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
+		const exporter = new GLTFExporter();
 
-            const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
+		exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
 
-            saveAs( blob, filename );
+			const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
 
-            // forceIndices: true, forcePowerOfTwoTextures: true
-            // to allow compatibility with facebook
-        }, ( error ) => {
+			saveAs( blob, filename );
 
-        }, { binary: true, forceIndices: true } );
+			// forceIndices: true, forcePowerOfTwoTextures: true
+			// to allow compatibility with facebook
+		}, ( error ) => {
 
-    }
+		}, { binary: true, forceIndices: true } );
 
-    exportGTLF () {
+	}
 
-        this.clearTool();
+	exportGTLF () {
 
-        const options = {};
+		this.clearTool();
 
-        const exporter = new GLTFExporter();
+		const options = {};
 
-        exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
+		const exporter = new GLTFExporter();
 
-            const text = JSON.stringify( result, null, 2 );
+		exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
 
-            const filename = 'road.gltf';
+			const text = JSON.stringify( result, null, 2 );
 
-            saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
+			const filename = 'road.gltf';
 
-        }, ( error ) => {
+			saveAs( new Blob( [ text ], { type: 'text/plain' } ), filename );
 
-            console.error( error );
+		}, ( error ) => {
 
-        }, options );
+			console.error( error );
 
-    }
+		}, options );
 
-    exportCARLA () {
+	}
 
-        this.clearTool();
+	exportCARLA () {
 
-        const exporter = new TvCarlaExporter();
+		this.clearTool();
 
-        const contents = exporter.getOutput( this.odService.map );
+		const exporter = new TvCarlaExporter();
 
-        if ( this.electron.isElectronApp ) {
+		const contents = exporter.getOutput( this.odService.map );
 
-            this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
+		if ( this.electron.isElectronApp ) {
 
-                this.odService.currentFile.path = file.path;
-                this.odService.currentFile.name = file.name;
+			this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
-				SnackBar.success(`File saved ${file.path}`);
+				this.odService.currentFile.path = file.path;
+				this.odService.currentFile.name = file.name;
 
-            } );
+				SnackBar.success( `File saved ${ file.path }` );
 
-        } else {
+			} );
 
-            saveAs( new Blob( [ contents ] ), 'road.xodr' );
+		} else {
 
-        }
+			saveAs( new Blob( [ contents ] ), 'road.xodr' );
 
-    }
+		}
 
-    private clearTool () {
+	}
 
-        CommandHistory.execute( new SetToolCommand( null ) );
+	private clearTool () {
 
-    }
+		CommandHistory.execute( new SetToolCommand( null ) );
+
+	}
 }

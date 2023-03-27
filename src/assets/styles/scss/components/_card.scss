@@ -3,72 +3,86 @@
  */
 
 .mat-card {
-  margin: .5rem;
-  overflow: hidden;
+	margin: .5rem;
+	overflow: hidden;
 
-  &.rounded-circle {
-    border-radius: 200px !important;
-  }
+	&.rounded-circle {
+		border-radius: 200px !important;
+	}
 }
+
 .mat-card.default {
-  padding: 0;
+	padding: 0;
 }
+
 .mat-card.default .mat-card-title {
-  padding-top: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  line-height: 1;
-  font-weight: 400;
+	padding-top: 1rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	line-height: 1;
+	font-weight: 400;
 }
+
 .mat-card.default>:first-child {
-  border-radius: 2px 2px 0 0;
+	border-radius: 2px 2px 0 0;
 }
+
 .mat-card.default .mat-card-subtitle:first-child {
-  padding-top: 1rem;
+	padding-top: 1rem;
 }
+
 .mat-card.default .mat-card-subtitle {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  line-height: 1;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	line-height: 1;
 }
+
 .mat-card.default .mat-card-content {
-  padding: 1rem;
-  margin-bottom: 0;
-  position: relative;
+	padding: 1rem;
+	margin-bottom: 0;
+	position: relative;
 }
+
 .mat-card.default .mat-card-actions,
 .mat-card.default .mat-card-actions:last-child {
-  padding: .5rem;
-  margin: 0;
-}
-.mat-card.default>:last-child {
-  border-radius: 0 0 2px 2px;
+	padding: .5rem;
+	margin: 0;
 }
 
-.mat-card .mat-card-title .mat-divider, .mat-divider.full-width {
-  margin-left: -24px;
-  margin-right: -24px;
+.mat-card.default>:last-child {
+	border-radius: 0 0 2px 2px;
+}
+
+.mat-card .mat-card-title .mat-divider,
+.mat-divider.full-width {
+	margin-left: -24px;
+	margin-right: -24px;
 }
 
 .mat-card.p-0 .mat-card-title .card-title-text {
-  padding: 1rem 1.5rem;
+	padding: 1rem 1.5rem;
 }
+
 .mat-card.p-0 .mat-card-title .card-title-text .card-control {
-  height: 24px;
-  width: 24px;
-  line-height: 24px;
+	height: 24px;
+	width: 24px;
+	line-height: 24px;
 }
+
 .mat-card.p-0 .mat-card-title .card-title-text .mat-card-subtitle {
-  margin: 0;
+	margin: 0;
 }
+
 .mat-card.p-0 .mat-card-title .mat-divider {
-  margin-left: 0;
-  margin-right: 0;
-  border-top-color: rgba(0, 0, 0, 0.04);
+	margin-left: 0;
+	margin-right: 0;
+	border-top-color: rgba(0, 0, 0, 0.04);
 }
+
 .mat-card.p-0 .mat-card-image {
-  margin: 0 0 1rem !important;
+	margin: 0 0 1rem !important;
 }
+
 .mat-card.p-0 .mat-card-content {
-  padding:  0 1.5rem 1.5rem;
+	padding: 0 1.5rem 1.5rem;
 }

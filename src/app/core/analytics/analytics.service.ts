@@ -13,88 +13,88 @@ import { MixpanelService } from './mixpanel.service';
 import { SentryService } from './sentry.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class AnalyticsService {
 
-    private destroyed$ = new Subject();
+	private destroyed$ = new Subject();
 
-    constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
+	constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
 
-        if ( Environment.production ) this.mixpanel.init( environment.mixpanel_id, this.auth.email );
+		if ( Environment.production ) this.mixpanel.init( environment.mixpanel_id, this.auth.email );
 
-        if ( this.email != null ) this.setEmail( this.email );
+		if ( this.email != null ) this.setEmail( this.email );
 
-        this.auth.currentUser.subscribe( e => this.onUserChanged() );
+		this.auth.currentUser.subscribe( e => this.onUserChanged() );
 
-    }
+	}
 
-    get email () {
+	get email () {
 
-        return this.auth.email;
+		return this.auth.email;
 
-    }
+	}
 
-    init () {
+	init () {
 
-        if ( Environment.production ) this.trackPageChanges();
+		if ( Environment.production ) this.trackPageChanges();
 
-    }
+	}
 
-    onUserChanged (): void {
+	onUserChanged (): void {
 
-        if ( this.email != null ) this.setEmail( this.email );
+		if ( this.email != null ) this.setEmail( this.email );
 
-    }
+	}
 
-    send ( event: string, options: any ) {
+	send ( event: string, options: any ) {
 
-        if ( !Environment.production ) return;
+		if ( !Environment.production ) return;
 
-        this.mixpanel.track( event, options );
+		this.mixpanel.track( event, options );
 
-    }
+	}
 
-    trackError ( error: Error ) {
+	trackError ( error: Error ) {
 
-        if ( !Environment.production ) return;
+		if ( !Environment.production ) return;
 
-        this.mixpanel.track( 'error', {
-            name: error.name,
-            message: error.message,
-            stack: error.stack
-        } );
+		this.mixpanel.track( 'error', {
+			name: error.name,
+			message: error.message,
+			stack: error.stack
+		} );
 
-    }
+	}
 
-    setEmail ( email: string ) {
+	setEmail ( email: string ) {
 
-        if ( Environment.production ) this.mixpanel.setEmail( email );
+		if ( Environment.production ) this.mixpanel.setEmail( email );
 
 		SentryService.setEmail( email );
 
-    }
+	}
 
-    trackPageView ( url: string ) {
+	trackPageView ( url: string ) {
 
-        if ( !Environment.production ) return;
+		if ( !Environment.production ) return;
 
-        this.mixpanel.track( 'pageview', {
-            url: url
-        } );
+		this.mixpanel.track( 'pageview', {
+			url: url
+		} );
 
-    }
+	}
 
-    private trackPageChanges () {
+	private trackPageChanges () {
 
-        this.router.events
-            .pipe(
-                filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
-                takeUntil( this.destroyed$ ),
-            )
-            .subscribe( ( event: NavigationEnd ) => {
-                this.trackPageView( event.url );
-            } );
+		this.router.events
+			.pipe(
+				filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),
+				takeUntil( this.destroyed$ ),
+			)
+			.subscribe( ( event: NavigationEnd ) => {
+				this.trackPageView( event.url );
+			} );
 
-    }
+	}
 }

@@ -8,27 +8,27 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 @Component( {
-    selector: 'app-lockscreen',
-    templateUrl: './lockscreen.component.html',
-    styleUrls: [ './lockscreen.component.css' ]
+	selector: 'app-lockscreen',
+	templateUrl: './lockscreen.component.html',
+	styleUrls: [ './lockscreen.component.css' ]
 } )
 export class LockscreenComponent implements OnInit {
-    @ViewChild( MatProgressBar ) progressBar: MatProgressBar;
-    @ViewChild( MatButton ) submitButton: MatButton;
+	@ViewChild( MatProgressBar ) progressBar: MatProgressBar;
+	@ViewChild( MatButton ) submitButton: MatButton;
 
-    lockscreenData = {
-        password: ''
-    };
+	lockscreenData = {
+		password: ''
+	};
 
-    constructor () {
-    }
+	constructor () {
+	}
 
-    ngOnInit () {
-    }
+	ngOnInit () {
+	}
 
-    unlock () {
+	unlock () {
 
-        this.submitButton.disabled = true;
-        this.progressBar.mode = 'indeterminate';
-    }
+		this.submitButton.disabled = true;
+		this.progressBar.mode = 'indeterminate';
+	}
 }

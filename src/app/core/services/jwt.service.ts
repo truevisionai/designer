@@ -9,48 +9,48 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable()
 export class JwtService {
 
-    private KEY = 'jwtToken';
+	private KEY = 'jwtToken';
 
-    private helper: JwtHelperService;
+	private helper: JwtHelperService;
 
-    constructor () {
-        this.helper = new JwtHelperService();
-    }
+	constructor () {
+		this.helper = new JwtHelperService();
+	}
 
-    get token () {
-        return this.getToken();
-    }
+	get token () {
+		return this.getToken();
+	}
 
-    get decodedToken () {
-        return this.helper.decodeToken( this.token );
-    }
+	get decodedToken () {
+		return this.helper.decodeToken( this.token );
+	}
 
-    get expirationDate () {
-        return this.helper.getTokenExpirationDate( this.token );
-    }
+	get expirationDate () {
+		return this.helper.getTokenExpirationDate( this.token );
+	}
 
-    getToken (): string {
-        return window.localStorage[ this.KEY ];
-    }
+	getToken (): string {
+		return window.localStorage[ this.KEY ];
+	}
 
-    saveToken ( token: string ) {
-        window.localStorage[ this.KEY ] = token;
-    }
+	saveToken ( token: string ) {
+		window.localStorage[ this.KEY ] = token;
+	}
 
-    destroyToken () {
-        window.localStorage.removeItem( 'jwtToken' );
-    }
+	destroyToken () {
+		window.localStorage.removeItem( 'jwtToken' );
+	}
 
-    hasToken () {
-        return (
-            this.token != null &&
-            this.token !== undefined &&
-            this.token !== '' &&
-            this.token !== 'null'
-        );
-    }
+	hasToken () {
+		return (
+			this.token != null &&
+			this.token !== undefined &&
+			this.token !== '' &&
+			this.token !== 'null'
+		);
+	}
 
-    isTokenExpired (): boolean {
-        return this.helper.isTokenExpired( this.token );
-    }
+	isTokenExpired (): boolean {
+		return this.helper.isTokenExpired( this.token );
+	}
 }
