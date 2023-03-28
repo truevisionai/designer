@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { CoordinateSystem } from 'app/services/exporter.service';
 import { FileService } from 'app/services/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
@@ -10,6 +11,7 @@ import * as THREE from 'three';
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { ThreeJsUtils } from './utils/threejs-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -74,6 +76,8 @@ export class AssetImporterService {
 
 			const group = loader.parse( data );
 
+			ThreeJsUtils.changeCoordinateSystem( group, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
+
 			success( group );
 
 		} );
@@ -84,9 +88,11 @@ export class AssetImporterService {
 
 		const loader = new GLTFLoader();
 
-		const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + '/';
+		// const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + '/';
 
 		loader.load( `file:///${ filepath }`, ( gltf ) => {
+
+			ThreeJsUtils.changeCoordinateSystem( gltf.scene, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
 
 			success( gltf.scene );
 
@@ -137,6 +143,8 @@ export class AssetImporterService {
 			}
 
 			const group = loader.parse( data, filepath );
+
+			ThreeJsUtils.changeCoordinateSystem( group.scene, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
 
 			success( group.scene );
 
