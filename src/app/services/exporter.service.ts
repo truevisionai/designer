@@ -23,7 +23,7 @@ import { TvElectronService } from './tv-electron.service';
 
 import { cloneDeep } from 'lodash';
 
-enum CoordinateSystem {
+export enum CoordinateSystem {
 	THREE_JS,
 	OPEN_DRIVE,
 	BLENDER,
@@ -59,7 +59,7 @@ export class ExporterService {
 		this.odService.saveAs();
 	}
 
-	exportGLB ( filename = 'road.glb' ) {
+	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF ) {
 
 		this.clearTool();
 
@@ -68,7 +68,7 @@ export class ExporterService {
 		const gameObjectToExport = cloneDeep( TvMapInstance.map.gameObject );
 
 		// Change the coordinate system of the cloned gameObject
-		this.changeCoordinateSystem( gameObjectToExport, CoordinateSystem.OPEN_DRIVE, CoordinateSystem.UNITY_GLTF );
+		this.changeCoordinateSystem( gameObjectToExport, CoordinateSystem.OPEN_DRIVE, coordinateSystem );
 
 		exporter.parse( gameObjectToExport, ( buffer: any ) => {
 
