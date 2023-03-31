@@ -36,4 +36,18 @@ export class Environment {
 
 	}
 
+	static get version (): string {
+
+		try {
+
+			return require( '../../../../package.json' ).version;
+
+		} catch ( error ) {
+
+			return 'unknown';
+
+		}
+
+	}
+
 }

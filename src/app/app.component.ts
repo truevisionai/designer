@@ -12,6 +12,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { AppService } from './core/services/app.service';
+import { Environment } from './core/utils/environment';
 import { LayoutService } from './shared/services/layout.service';
 
 import { RoutePartsService } from './shared/services/route-parts.service';
@@ -47,6 +48,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 	}
 
 	ngOnInit () {
+
+		console.log( 'App Version: ', Environment.version );
 
 		this.analytics.init();
 
