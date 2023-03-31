@@ -7,7 +7,7 @@ if [ "$platform" == "ubuntu-latest" ]; then
 elif [ "$platform" == "macOS-latest" ]; then
   npx electron-builder build --mac --publish always
 elif [ "$platform" == "windows-latest" ]; then
-  npx electron-builder build --win --publish always
+  npx electron-builder build --windows --publish always
 else
   echo "Invalid platform"
   exit 1
