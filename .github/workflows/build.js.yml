@@ -42,10 +42,13 @@ jobs:
 
     - name: Create GitHub release
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')
-      uses: softprops/action-gh-release@v1
+      uses: marvinpinto/action-automatic-releases@latest
       with:
+        repo_token: ${{ secrets.GH_TOKEN }}
+        automatic_release_tag: "nightly-${{ github.run_number }}"
+        title: "Nightly build ${{ github.run_number }}"
         files: |
-          dist/**/*.exe
-          dist/**/*.dmg
-          dist/**/*.AppImage
-        token: ${{ secrets.GH_TOKEN }}
+          release/**/*.exe
+          release/**/*.dmg
+          release/**/*.AppImage
+          release/**/*.deb
