@@ -37,7 +37,7 @@ jobs:
 
     - name: Build Electron app
       run: ./build-electron.sh ${{ matrix.os }}
-	  env:
+      env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Create GitHub release
