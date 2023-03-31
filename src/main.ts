@@ -7,9 +7,9 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { SentryService } from 'app/core/analytics/sentry.service';
 
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import { Environment } from 'app/core/utils/environment';
 
-if ( environment.production ) {
+if ( Environment.production ) {
 	enableProdMode();
 }
 
