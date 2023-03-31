@@ -26,6 +26,7 @@ jobs:
       
     - name: Create environment.ts file
       run: |
+        touch src/environments/environment.prod.ts
         touch src/environments/environment.ts
         echo '${{ secrets.ENV_PROD }}' >> src/environments/environment.ts    
 
