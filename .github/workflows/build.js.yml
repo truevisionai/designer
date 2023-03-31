@@ -48,7 +48,7 @@ jobs:
         automatic_release_tag: "nightly-${{ github.run_number }}"
         title: "Nightly build ${{ github.run_number }}"
         files: |
-          release/**/*.exe
-          release/**/*.dmg
-          release/**/*.AppImage
-          release/**/*.deb
+          release/*.exe
+          release/*.dmg
+          release/*.AppImage
+          release/*.deb
