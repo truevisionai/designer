@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { Environment } from '../utils/environment';
 import { MixpanelService } from './mixpanel.service';
@@ -21,7 +20,7 @@ export class AnalyticsService {
 
 	constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
 
-		if ( Environment.production ) this.mixpanel.init( environment.mixpanel_id, this.auth.email );
+		if ( Environment.production ) this.mixpanel.init( Environment.mixpanel_id, this.auth.email );
 
 		if ( this.email != null ) this.setEmail( this.email );
 

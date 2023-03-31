@@ -3,8 +3,8 @@
  */
 
 import { Mesh, MeshBasicMaterial, SphereGeometry, Vector2, Vector3 } from 'three';
-import { environment } from '../../../environments/environment';
 import { SceneService } from '../services/scene.service';
+import { Environment } from './environment';
 
 export class Debug {
 
@@ -13,7 +13,7 @@ export class Debug {
 
 	static log ( message?: any, ...optionalParams: any[] ) {
 
-		if ( !environment.production ) {
+		if ( !Environment.production ) {
 
 			console.log( message, optionalParams );
 

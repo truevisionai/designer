@@ -9,7 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
 import { filter, takeUntil } from 'rxjs/operators';
-import { environment } from '../environments/environment';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { AppService } from './core/services/app.service';
 import { Environment } from './core/utils/environment';
@@ -44,7 +43,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 	}
 
 	get production () {
-		return environment.production;
+		return Environment.production;
 	}
 
 	ngOnInit () {

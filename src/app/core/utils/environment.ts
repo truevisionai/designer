@@ -36,6 +36,18 @@ export class Environment {
 
 	}
 
+	static get api_url (): string {
+
+		return environment.api_url;
+
+	}
+
+	static get mixpanel_id (): string {
+
+		return environment.mixpanel_id;
+
+	}
+
 	static get version (): string {
 
 		try {

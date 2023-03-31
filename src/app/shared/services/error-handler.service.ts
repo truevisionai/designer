@@ -5,7 +5,7 @@
 import { ApplicationRef, ChangeDetectorRef, ErrorHandler, Injectable, Injector } from '@angular/core';
 import { AnalyticsService } from 'app/core/analytics/analytics.service';
 import { SentryService } from 'app/core/analytics/sentry.service';
-import { environment } from '../../../environments/environment';
+import { Environment } from 'app/core/utils/environment';
 import { SnackBar } from '../../services/snack-bar.service';
 
 @Injectable()
@@ -20,11 +20,11 @@ export class ErrorHandlerService extends ErrorHandler {
 	// https://github.com/angular/angular/issues/17010
 	handleError ( error: Error ) {
 
-		if ( !environment.production ) SnackBar.error( error.message );
-		if ( !environment.production ) console.error( error );
+		if ( !Environment.production ) SnackBar.error( error.message );
+		if ( !Environment.production ) console.error( error );
 
-		if ( environment.production && this.analytics ) this.analytics.trackError( error );
-		if ( environment.production ) SnackBar.error( `${ error.name } :  Oops Something Went Wrong` );
+		if ( Environment.production && this.analytics ) this.analytics.trackError( error );
+		if ( Environment.production ) SnackBar.error( `${ error.name } :  Oops Something Went Wrong` );
 
 		SentryService.captureException( error );
 
