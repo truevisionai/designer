@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest,macOS-latest,windows-latest]
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out repository
@@ -36,7 +36,7 @@ jobs:
       run: npm install electron electron-builder --save-dev
 
     - name: Build Electron app
-      run: ./build-electron.sh ${{ matrix.os }}
+      run: npx electron-builder build --linux --mac --windows --publish always
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
