@@ -26,8 +26,8 @@ jobs:
 
     - name: Create environment.ts file
       run: |
-        touch src/environments/environment.prod.ts && echo '${{ secrets.ENV_PROD }}' >> src/environments/environment.prod.ts
-        touch src/environments/environment.ts && echo '${{ secrets.ENV_PROD }}' >> src/environments/environment.ts
+        touch src/environments/environment.prod.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.prod.ts
+        touch src/environments/environment.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.ts
 
     - name: Build Angular app
       run: npm run build:prod
