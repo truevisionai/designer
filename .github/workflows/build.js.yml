@@ -1,0 +1,46 @@
+name: Nightly Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Angular app
+      run: npm run build:prod
+
+    - name: Install Electron dependencies
+      run: npm install electron electron-builder --save-dev
+
+    - name: Build Electron app
+      run: npx electron-builder build --${{ matrix.os }} --publish always
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    - name: Create GitHub release
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/**/*.exe
+          dist/**/*.dmg
+          dist/**/*.AppImage
+        token: ${{ secrets.GH_TOKEN }}
