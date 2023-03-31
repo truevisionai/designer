@@ -4,12 +4,14 @@
 
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { GameObject } from 'app/core/game-object';
 import { IFile } from 'app/core/models/file';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
+import { Object3D } from 'three';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
@@ -18,6 +20,16 @@ import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+
+import { cloneDeep } from 'lodash';
+import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
+
+export enum CoordinateSystem {
+	THREE_JS,
+	OPEN_DRIVE,
+	BLENDER,
+	UNITY_GLTF
+}
 
 @Injectable( {
 	providedIn: 'root'
@@ -48,20 +60,23 @@ export class ExporterService {
 		this.odService.saveAs();
 	}
 
-	exportGLB ( filename = 'road.glb' ) {
+	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF ) {
 
 		this.clearTool();
 
 		const exporter = new GLTFExporter();
 
-		exporter.parse( TvMapInstance.map.gameObject, ( buffer: any ) => {
+		const gameObjectToExport = cloneDeep( TvMapInstance.map.gameObject );
+
+		// Change the coordinate system of the cloned gameObject
+		ThreeJsUtils.changeCoordinateSystem( gameObjectToExport, CoordinateSystem.OPEN_DRIVE, coordinateSystem );
+
+		exporter.parse( gameObjectToExport, ( buffer: any ) => {
 
 			const blob = new Blob( [ buffer ], { type: 'application/octet-stream' } );
 
 			saveAs( blob, filename );
 
-			// forceIndices: true, forcePowerOfTwoTextures: true
-			// to allow compatibility with facebook
 		}, ( error ) => {
 
 		}, { binary: true, forceIndices: true } );

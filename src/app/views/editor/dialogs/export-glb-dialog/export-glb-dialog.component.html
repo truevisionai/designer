@@ -9,7 +9,15 @@
 		<input [(ngModel)]="filename" matInput>
 	</mat-form-field>
 	<br />
-	<!-- <mat-checkbox [(ngModel)]="forcePowerOfTwoTextures" disabled>Force Power Of Two Textures</mat-checkbox> -->
+	<mat-form-field style="width: 100%;">
+		<mat-label>Coordinate System</mat-label>
+		<mat-select [(ngModel)]="coordinateSystem">
+			<mat-option value="y-up">Y-up</mat-option>
+			<mat-option value="z-up">Z-up</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<mat-checkbox [(ngModel)]="includeProps">Export Props</mat-checkbox>
+	<mat-checkbox [(ngModel)]="forcePowerOfTwoTextures" disabled>Force Power Of Two Textures</mat-checkbox>
 </div>
 <div align="end" class="mat-tv-dialog-actions" mat-dialog-actions>
 	<button mat-dialog-close mat-stroked-button>Close</button>

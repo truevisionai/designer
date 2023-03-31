@@ -5,7 +5,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { ExporterService } from 'app/services/exporter.service';
+import { CoordinateSystem, ExporterService } from 'app/services/exporter.service';
 
 @Component( {
 	selector: 'app-export-glb-dialog',
@@ -19,6 +19,10 @@ export class ExportGlbDialog implements OnInit {
 	filename: string = 'road.glb';
 
 	forcePowerOfTwoTextures: boolean = true;
+
+	includeProps: boolean = true;
+
+	coordinateSystem: string = 'y-up';
 
 	constructor (
 		private dialogRef: MatDialogRef<ExportGlbDialog>,
@@ -34,7 +38,13 @@ export class ExportGlbDialog implements OnInit {
 
 	export () {
 
-		this.exporter.exportGLB( this.filename );
+		let coordinateSystem = CoordinateSystem.THREE_JS;
+
+		if ( this.coordinateSystem === 'y-up' ) {
+			coordinateSystem = CoordinateSystem.UNITY_GLTF;
+		}
+
+		this.exporter.exportGLB( this.filename, coordinateSystem );
 
 		this.dialogRef.close();
 
