@@ -37,13 +37,7 @@ jobs:
 
     - name: Build Electron app
       run: |
-	    if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          npx electron-builder build --linux --publish always
-        elif [ "${{ matrix.os }}" == "macOS-latest" ]; then
-          npx electron-builder build --mac --publish always
-        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          npx electron-builder build --win --publish always
-        fi
+	    if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then npx electron-builder build --linux --publish always elif [ "${{ matrix.os }}" == "macOS-latest" ]; then npx electron-builder build --mac --publish always elif [ "${{ matrix.os }}" == "windows-latest" ]; then npx electron-builder build --win --publish always fi
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
