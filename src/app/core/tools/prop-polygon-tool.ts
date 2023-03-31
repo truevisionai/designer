@@ -173,6 +173,7 @@ export class PropPolygonTool extends BaseTool {
 		this.showInspector( this.polygon, this.point );
 	}
 
+	// called after control point position is updated and set
 	private onControlPointUpdated () {
 
 		this.polygon.update();
@@ -180,6 +181,7 @@ export class PropPolygonTool extends BaseTool {
 		this.showInspector( this.polygon, this.point );
 	}
 
+	// called during control point is being moved/dragged
 	private onControlPointMoved () {
 
 		this.polygon.spline.update();
