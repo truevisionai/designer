@@ -283,14 +283,21 @@ export class PropService {
 	}
 
 	private static extractMeshesAndMaterials ( group: Group ) {
+
 		const meshesAndMaterials = [];
 
 		group.traverse( ( object ) => {
+
 			if ( object instanceof Mesh ) {
+
 				const worldMatrix = new Matrix4();
+
 				worldMatrix.copy( object.matrixWorld );
+
 				meshesAndMaterials.push( { mesh: object, material: object.material, worldMatrix } );
+
 			}
+
 		} );
 
 		return meshesAndMaterials;
