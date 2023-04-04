@@ -306,9 +306,18 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		const point = this.createControlPoint( position, parent, size );
 
+		this.pushControlPoint( point, true );
+
+		return point;
+	}
+
+	pushControlPoint ( point: AnyControlPoint, event = false ): AnyControlPoint {
+
 		this._controlPoints.push( point );
 
-		this.controlPointAdded.emit( point );
+		if ( event ) this.controlPointAdded.emit( point );
+
+		SceneService.add( point );
 
 		return point;
 	}
@@ -408,10 +417,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		object.renderOrder = 3;
 
-		SceneService.add( object );
-
 		return object;
-
 	}
 
 	private onDeSelect ( e: any ) {
