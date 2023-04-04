@@ -1,4 +1,7 @@
-// CreateSurfaceAndAddControlPointCommand.ts
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
