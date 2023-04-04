@@ -5,7 +5,10 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { CommandHistory } from 'app/services/command-history';
 import { Subscription } from 'rxjs';
+import { AddSurfaceControlPointCommand } from '../commands/add-surface-control-point-command';
+import { CreateSurfaceCommand } from '../commands/create-surface-command';
 import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
 import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
@@ -26,7 +29,15 @@ export class SurfaceTool extends BaseTool {
 	private cpUnselectedSub: Subscription;
 	private keyDownSub: Subscription;
 
-	private surface: TvSurface;
+	private _surface: TvSurface;
+
+	public get surface (): TvSurface {
+		return this._surface;
+	}
+
+	public set surface ( value: TvSurface ) {
+		this._surface = value;
+	}
 
 	constructor () {
 
@@ -138,17 +149,13 @@ export class SurfaceTool extends BaseTool {
 
 		if ( !this.surface ) {
 
-			this.surface = new TvSurface( 'grass', new CatmullRomSpline() );
+			CommandHistory.execute( new CreateSurfaceCommand( this, cp ) );
 
-			this.map.surfaces.push( this.surface );
+		} else {
+
+			CommandHistory.execute( new AddSurfaceControlPointCommand( this, this.surface, cp ) );
 
 		}
-
-		cp.mainObject = this.surface;
-
-		this.surface.spline.addControlPoint( cp );
-
-		this.surface.update();
 
 	}
 
