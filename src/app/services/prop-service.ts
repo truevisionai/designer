@@ -73,6 +73,11 @@ export class PropService {
 		}
 	}
 
+	/**
+	 *
+	 * @param polygon
+	 * @deprecated use polygon.updateProps() instead
+	 */
 	static updateCurvePolygonProps ( polygon: PropPolygon ) {
 
 		this.updateCurvePolygonPropsNewInstancedMesh( polygon );
