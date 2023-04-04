@@ -16,13 +16,13 @@ export class CallFunctionCommand extends BaseCommand {
 
 	execute () {
 
-		this.executeFn.apply( this.target, this.executeArgs );
+		this.executeFn?.apply( this.target, this.executeArgs );
 
 	}
 
 	undo () {
 
-		this.undoFn.apply( this.target, this.undoArgs );
+		this.undoFn?.apply( this.target, this.undoArgs );
 
 	}
 
