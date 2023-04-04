@@ -10,10 +10,8 @@ import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { Maths } from 'app/utils/maths';
 import earcut from 'earcut';
-import { Group, InstancedMesh, Matrix4, Mesh, Object3D, ShaderMaterial, Triangle, UniformsUtils } from 'three';
+import { Group, InstancedMesh, Matrix4, Mesh, Object3D, Triangle } from 'three';
 import { AssetDatabase } from './asset-database';
-
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export class PropService {
 
@@ -277,8 +275,13 @@ export class PropService {
 		} );
 
 		// Add the instancedMeshes to the scene
-		instancedMeshes.forEach( ( instancedMesh ) => {
+		instancedMeshes.forEach( instancedMesh => {
+
 			SceneService.add( instancedMesh );
+
+			// TODO: fix exporting for this
+			polygon.props.push( instancedMesh );
+
 		} );
 	}
 
