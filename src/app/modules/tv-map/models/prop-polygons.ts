@@ -7,10 +7,11 @@ import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { AssetDatabase } from 'app/services/asset-database';
-import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2 } from 'three';
+import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2, Vector3 } from 'three';
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
+import PoissonDiskSampling from 'poisson-disk-sampling';
 
 export class PropPolygon {
 
@@ -159,28 +160,30 @@ export class PropPolygon {
 
 	addInstancesToMeshes ( count: number, face: number[], instancedMeshes: InstancedMesh[], instanceCounter: number ): void {
 
-		function randomInTriangle ( v1, v2, v3 ) {
+		// function randomInTriangle ( v1, v2, v3 ) {
 
-			const r1 = Math.random();
+		// 	const r1 = Math.random();
 
-			const r2 = Math.sqrt( Math.random() );
+		// 	const r2 = Math.sqrt( Math.random() );
 
-			const a = 1 - r2;
+		// 	const a = 1 - r2;
 
-			const b = r2 * ( 1 - r1 );
+		// 	const b = r2 * ( 1 - r1 );
 
-			const c = r1 * r2;
+		// 	const c = r1 * r2;
 
-			return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-		}
+		// 	return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
+		// }
 
-		for ( let i = 0; i < count; i++ ) {
+		const v0 = this.spline.controlPointPositions[ face[ 0 ] ];
+		const v1 = this.spline.controlPointPositions[ face[ 1 ] ];
+		const v2 = this.spline.controlPointPositions[ face[ 2 ] ];
 
-			const position = randomInTriangle(
-				this.spline.controlPointPositions[ face[ 0 ] ],
-				this.spline.controlPointPositions[ face[ 1 ] ],
-				this.spline.controlPointPositions[ face[ 2 ] ]
-			);
+		const randomPoints = this.generateRandomPointsInTriangle( v0, v1, v2, this.density );
+
+		for ( let i = 0; i < randomPoints.length; i++ ) {
+
+			const position = new Vector3( randomPoints[ i ].x, randomPoints[ i ].y, 0 );
 
 			instancedMeshes.forEach( instancedMesh => {
 
@@ -317,6 +320,57 @@ export class PropPolygon {
 		} );
 
 		return meshesAndMaterials;
+	}
+
+	private generateRandomPointsInTriangle ( v0, v1, v2, density ): {
+		x: number;
+		y: number;
+	}[] {
+
+		// Calculate the bounding box
+		const minX = Math.min( v0.x, v1.x, v2.x );
+		const maxX = Math.max( v0.x, v1.x, v2.x );
+		const minY = Math.min( v0.y, v1.y, v2.y );
+		const maxY = Math.max( v0.y, v1.y, v2.y );
+
+		const pds = new PoissonDiskSampling( {
+			shape: [ maxX - minX, maxY - minY ],
+			minDistance: 2 * density,
+			maxDistance: 10 * density,
+			tries: 30,
+		} );
+
+		const points = pds.fill();
+
+		// Filter out points that are not inside the triangle
+		const pointsInsideTriangle = points.filter( ( point ) => {
+			const transformedPoint = {
+				x: point[ 0 ] + minX,
+				y: point[ 1 ] + minY,
+			};
+			return this.pointInsideTriangle( transformedPoint, v0, v1, v2 );
+		} );
+
+		// Transform points to the triangle's local coordinate system
+		const transformedPoints = pointsInsideTriangle.map( ( point ) => {
+			return {
+				x: point[ 0 ] + minX,
+				y: point[ 1 ] + minY,
+			};
+		} );
+
+		return transformedPoints;
+	}
+
+	private pointInsideTriangle ( point, v0, v1, v2 ) {
+
+		const area = ( v0.x * ( v1.y - v2.y ) + v1.x * ( v2.y - v0.y ) + v2.x * ( v0.y - v1.y ) );
+
+		const s = ( v0.y * v2.x - v0.x * v2.y + ( v2.y - v0.y ) * point.x + ( v0.x - v2.x ) * point.y ) / area;
+
+		const t = ( v0.y * v1.x - v0.x * v1.y + ( v1.y - v0.y ) * point.x + ( v0.x - v1.x ) * point.y ) / area;
+
+		return s >= 0 && t >= 0 && ( 1 - s - t ) >= 0;
 	}
 
 	addControlPoint ( cp: AnyControlPoint ) {

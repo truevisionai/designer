@@ -59,6 +59,7 @@
 		"ngx-color": "^7.3.3",
 		"ngx-color-picker": "^12.0.1",
 		"ngx-perfect-scrollbar": "^10.1.1",
+		"poisson-disk-sampling": "^2.3.1",
 		"rxjs": "^6.6.7",
 		"rxjs-compat": "^6.6.7",
 		"save": "^2.9.0",
