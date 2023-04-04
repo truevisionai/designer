@@ -81,103 +81,84 @@ export class PropService {
 
 	}
 
-	// private static updateCurvePolygonPropsNormal ( polygon: PropPolygon ) {
+	private static updateCurvePolygonPropsNormal ( polygon: PropPolygon ) {
 
-	// 	polygon.props.forEach( p => SceneService.remove( p ) );
+		polygon.props.forEach( p => SceneService.remove( p ) );
 
-	// 	polygon.props.splice( 0, polygon.props.length );
+		polygon.props.splice( 0, polygon.props.length );
 
-	// 	const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
-
-
-	// 	instance.up.set( 0, 0, 1 );
-
-	// 	instance.updateMatrixWorld( true );
+		const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
 
 
-	// 	const vertices = [];
+		instance.up.set( 0, 0, 1 );
 
-	// 	polygon.spline.controlPointPositions.forEach( p => {
-	// 		vertices.push( p.x );
-	// 		vertices.push( p.y );
-	// 	} );
-
-	// 	// triangulating a polygon with 2d coords0
-	// 	const triangles = earcut( vertices );
-
-	// 	const faces = [];
-
-	// 	for ( let i = 0; i < triangles.length; i += 3 ) {
-
-	// 		faces.push( triangles.slice( i, i + 3 ) );
-
-	// 	}
-
-	// 	function randomInTriangle ( v1, v2, v3 ) {
-
-	// 		const r1 = Math.random();
-
-	// 		const r2 = Math.sqrt( Math.random() );
-
-	// 		const a = 1 - r2;
-
-	// 		const b = r2 * ( 1 - r1 );
-
-	// 		const c = r1 * r2;
-
-	// 		return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-	// 	}
+		instance.updateMatrixWorld( true );
 
 
-	// 	faces.forEach( face => {
+		const vertices = [];
 
-	// 		const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
-	// 		const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
-	// 		const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
+		polygon.spline.controlPointPositions.forEach( p => {
+			vertices.push( p.x );
+			vertices.push( p.y );
+		} );
 
-	// 		const t = new Triangle( v0, v1, v2 );
+		// triangulating a polygon with 2d coords0
+		const triangles = earcut( vertices );
 
-	// 		const area = t.getArea();
+		const faces = [];
 
-	// 		let count = area * polygon.density * polygon.density * polygon.density * 0.5;
+		for ( let i = 0; i < triangles.length; i += 3 ) {
 
-	// 		count = Maths.clamp( count, 0, 1000 );
+			faces.push( triangles.slice( i, i + 3 ) );
 
-	// 		for ( let i = 0; i < count; i++ ) {
+		}
 
-	// 			const position = randomInTriangle( v0, v1, v2 );
+		function randomInTriangle ( v1, v2, v3 ) {
 
-	// 			const prop = instance.clone();
+			const r1 = Math.random();
 
-	// 			prop.position.copy( position );
+			const r2 = Math.sqrt( Math.random() );
 
-	// 			polygon.props.push( prop );
+			const a = 1 - r2;
 
-	// 			SceneService.add( prop );
+			const b = r2 * ( 1 - r1 );
 
-	// 		}
+			const c = r1 * r2;
 
-	// 	} );
-	// }
+			return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
+		}
 
-	// private static createPropInstance ( childMeshesAndMaterials ) {
-	// 	const container = new Object3D();
 
-	// 	childMeshesAndMaterials.forEach( ( { mesh, material } ) => {
-	// 		const instanceGeometry = mesh.geometry;
-	// 		const instanceMaterial = material;
-	// 		const maxInstances = 1;
+		faces.forEach( face => {
 
-	// 		const instancedMesh = new InstancedMesh( instanceGeometry, instanceMaterial, maxInstances );
+			const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
+			const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
+			const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
 
-	// 		instancedMesh.setMatrixAt( 0, mesh.matrix );
-	// 		instancedMesh.instanceMatrix.needsUpdate = true;
+			const t = new Triangle( v0, v1, v2 );
 
-	// 		container.add( instancedMesh );
-	// 	} );
+			const area = t.getArea();
 
-	// 	return container;
-	// }
+			let count = area * polygon.density * polygon.density * polygon.density * 0.5;
+
+			count = Maths.clamp( count, 0, 1000 );
+
+			for ( let i = 0; i < count; i++ ) {
+
+				const position = randomInTriangle( v0, v1, v2 );
+
+				const prop = instance.clone();
+
+				prop.position.copy( position );
+
+				polygon.props.push( prop );
+
+				SceneService.add( prop );
+
+			}
+
+		} );
+	}
 
 	private static updateCurvePolygonPropsNewInstancedMesh ( polygon: PropPolygon ) {
 
@@ -301,130 +282,7 @@ export class PropService {
 		} );
 	}
 
-	// private static updateCurvePolygonPropsWithInstancedMesh ( polygon: PropPolygon ) {
-
-	// 	polygon.props.forEach( p => SceneService.remove( p ) );
-
-	// 	polygon.props.splice( 0, polygon.props.length );
-
-	// 	const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
-
-	// 	let childMeshesAndMaterials;
-
-	// 	if ( instance instanceof Group ) {
-
-	// 		childMeshesAndMaterials = this.extractMeshesAndMaterials( instance );
-
-	// 	} else if ( instance instanceof Mesh ) {
-
-	// 		childMeshesAndMaterials = [ { mesh: instance, material: instance.material } ];
-
-	// 	}
-
-	// 	instance.up.set( 0, 0, 1 );
-
-	// 	instance.updateMatrixWorld( true );
-
-	// 	const vertices = [];
-
-	// 	polygon.spline.controlPointPositions.forEach( p => {
-	// 		vertices.push( p.x );
-	// 		vertices.push( p.y );
-	// 	} );
-
-	// 	// triangulating a polygon with 2d coords0
-	// 	const triangles = earcut( vertices );
-
-	// 	const faces = [];
-
-	// 	for ( let i = 0; i < triangles.length; i += 3 ) {
-
-	// 		faces.push( triangles.slice( i, i + 3 ) );
-
-	// 	}
-
-	// 	function randomInTriangle ( v1, v2, v3 ) {
-
-	// 		const r1 = Math.random();
-
-	// 		const r2 = Math.sqrt( Math.random() );
-
-	// 		const a = 1 - r2;
-
-	// 		const b = r2 * ( 1 - r1 );
-
-	// 		const c = r1 * r2;
-
-	// 		return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-	// 	}
-
-	// 	function applyWorldTransform ( geometry, mesh ) {
-
-	// 		const transformedGeometry = geometry.clone();
-
-	// 		const matrixWorld = mesh.matrixWorld;
-
-	// 		transformedGeometry.applyMatrix4( matrixWorld );
-
-	// 		return transformedGeometry;
-	// 	}
-
-	// 	childMeshesAndMaterials.forEach( ( { mesh, material } ) => {
-
-	// 		const instanceGeometry = mesh.geometry;
-	// 		// const instanceGeometry = applyWorldTransform( mesh.geometry, mesh );
-
-	// 		const instanceMaterial = material;
-
-	// 		const maxInstances = 1000; // Compute maxInstances based on your needs
-
-	// 		const instancedMesh = new InstancedMesh( instanceGeometry, instanceMaterial, maxInstances );
-
-	// 		const localTransformMatrix = mesh.matrix;
-
-	// 		faces.forEach( ( face ) => {
-
-	// 			const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
-	// 			const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
-	// 			const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
-
-	// 			const t = new Triangle( v0, v1, v2 );
-
-	// 			const area = t.getArea();
-
-	// 			let count = area * polygon.density * polygon.density * polygon.density * 0.5;
-
-	// 			count = Maths.clamp( count, 0, 1000 );
-
-	// 			for ( let i = 0; i < count; i++ ) {
-
-	// 				const position = randomInTriangle( v0, v1, v2 );
-
-	// 				// const instanceMatrix = new Matrix4();
-	// 				// instanceMatrix.setPosition( position );
-
-	// 				// instancedMesh.setMatrixAt( i, instanceMatrix );
-	// 				// instancedMesh.instanceMatrix.needsUpdate = true;
-
-	// 				const instanceMatrix = new Matrix4();
-	// 				instanceMatrix.setPosition( position );
-	// 				instanceMatrix.multiply( localTransformMatrix );
-
-	// 				instancedMesh.setMatrixAt( i, instanceMatrix );
-	// 				instancedMesh.instanceMatrix.needsUpdate = true;
-
-	// 				polygon.props.push( instancedMesh );
-	// 			}
-
-	// 		} );
-
-	// 		SceneService.add( instancedMesh );
-
-	// 	} );
-
-	// }
-
-	static extractMeshesAndMaterials ( group: Group ) {
+	private static extractMeshesAndMaterials ( group: Group ) {
 		const meshesAndMaterials = [];
 
 		group.traverse( ( object ) => {
@@ -437,171 +295,4 @@ export class PropService {
 
 		return meshesAndMaterials;
 	}
-
-	// static updateCurvePolygonProps ( polygon: PropPolygon ) {
-
-	// 	polygon.props.forEach( p => SceneService.remove( p ) );
-	// 	polygon.props.splice( 0, polygon.props.length );
-
-	// 	function extractMeshes ( object ) {
-	// 		let meshes = [];
-
-	// 		if ( object instanceof Mesh ) {
-	// 			meshes.push( object );
-	// 		} else if ( object instanceof Group ) {
-	// 			object.children.forEach( ( child ) => {
-	// 				meshes = meshes.concat( extractMeshes( child ) );
-	// 			} );
-	// 		} else if ( object instanceof Object3D ) {
-	// 			object.children.forEach( ( child ) => {
-	// 				meshes = meshes.concat( extractMeshes( child ) );
-	// 			} );
-	// 		}
-
-	// 		return meshes;
-	// 	}
-
-	// 	function vertexShader () {
-	// 		return `
-	// 		  varying vec3 vUv;
-
-	// 		  void main() {
-	// 			vUv = position;
-
-	// 			vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-	// 			gl_Position = projectionMatrix * modelViewPosition;
-	// 		  }
-	// 		`
-	// 	}
-
-	// 	function fragmentShader () {
-	// 		return `
-	// 			uniform vec3 colorA;
-	// 			uniform vec3 colorB;
-	// 			varying vec3 vUv;
-
-	// 			void main() {
-	// 			  gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
-	// 			}
-	// 		`
-	// 	}
-
-	// 	function createCustomShaderMaterial ( materials ) {
-	// 		const shaderMaterial = new ShaderMaterial( {
-	// 			uniforms: UniformsUtils.merge( materials.map( ( material ) => material.uniforms ) ),
-	// 			vertexShader: vertexShader(),
-	// 			fragmentShader: fragmentShader(),
-	// 		} );
-
-	// 		shaderMaterial.onBeforeCompile = ( shader ) => {
-	// 			materials.forEach( ( material, index ) => {
-	// 				shader.uniforms = Object.assign( shader.uniforms, material.uniforms );
-	// 				shader.vertexShader = shader.vertexShader.replace( '#include <common>', material.vertexShader );
-	// 				shader.fragmentShader = shader.fragmentShader.replace( '#include <common>', material.fragmentShader );
-	// 			} );
-	// 		};
-
-	// 		return shaderMaterial;
-	// 	}
-
-	// 	function mergeMaterials ( meshes ) {
-	// 		const mergedMaterials = [];
-	// 		meshes.forEach( ( mesh ) => {
-	// 			if ( !mergedMaterials.includes( mesh.material ) ) {
-	// 				mergedMaterials.push( mesh.material );
-	// 			}
-	// 		} );
-	// 		return mergedMaterials;
-	// 	}
-
-	// 	function mergeGroupGeometries ( group: Group ) {
-	// 		const meshes = extractMeshes( group );
-	// 		const mergedGeometry = mergeBufferGeometries( meshes.map( ( mesh ) => mesh.geometry ) );
-	// 		const materials = mergeMaterials( meshes );
-	// 		return { mergedGeometry, materials };
-	// 	}
-
-	// 	const assetInstance = AssetDatabase.getInstance( polygon.propGuid );
-
-	// 	let instanceGeometry, instanceMaterials;
-
-	// 	if ( assetInstance instanceof Group ) {
-
-	// 		const mergedData = mergeGroupGeometries( assetInstance );
-
-	// 		instanceGeometry = mergedData.mergedGeometry;
-
-	// 		instanceMaterials = mergedData.materials;
-
-	// 	} else if ( assetInstance instanceof Mesh ) {
-
-	// 		instanceGeometry = assetInstance.geometry;
-
-	// 		instanceMaterials = [ assetInstance.material ];
-
-	// 	}
-
-	// 	const instanceMaterial = instanceMaterials;
-
-	// 	const vertices = [];
-
-	// 	polygon.spline.controlPointPositions.forEach( p => {
-	// 		vertices.push( p.x );
-	// 		vertices.push( p.y );
-	// 	} );
-
-	// 	const triangles = earcut( vertices );
-	// 	const faces = [];
-
-	// 	for ( let i = 0; i < triangles.length; i += 3 ) {
-	// 		faces.push( triangles.slice( i, i + 3 ) );
-	// 	}
-
-	// 	function randomInTriangle ( v1, v2, v3 ) {
-	// 		const r1 = Math.random();
-	// 		const r2 = Math.sqrt( Math.random() );
-	// 		const a = 1 - r2;
-	// 		const b = r2 * ( 1 - r1 );
-	// 		const c = r1 * r2;
-	// 		return v1.clone().multiplyScalar( a ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-	// 	}
-
-	// 	let totalArea = 0;
-	// 	faces.forEach( face => {
-	// 		const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
-	// 		const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
-	// 		const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
-
-	// 		const t = new Triangle( v0, v1, v2 );
-	// 		const area = t.getArea();
-	// 		totalArea += area;
-	// 	} );
-
-	// 	// const maxInstances = Math.ceil( totalArea * polygon.density * polygon.density * polygon.density * 0.5 );
-	// 	const maxInstances = 1000;
-	// 	const instancedMesh = new InstancedMesh( instanceGeometry, instanceMaterial, maxInstances );
-	// 	SceneService.add( instancedMesh );
-
-	// 	let instanceCount = 0;
-	// 	faces.forEach( face => {
-	// 		const v0 = polygon.spline.controlPointPositions[ face[ 0 ] ];
-	// 		const v1 = polygon.spline.controlPointPositions[ face[ 1 ] ];
-	// 		const v2 = polygon.spline.controlPointPositions[ face[ 2 ] ];
-
-	// 		const t = new Triangle( v0, v1, v2 );
-	// 		const area = t.getArea();
-	// 		let count = area * polygon.density * polygon.density * polygon.density * 0.5;
-	// 		count = Math.min( count, maxInstances - instanceCount ); // Make sure we don't exceed maxInstances
-
-	// 		for ( let i = 0; i < count; i++ ) {
-	// 			const position = randomInTriangle( v0, v1, v2 );
-	// 			const matrix = new Matrix4();
-	// 			matrix.setPosition( position );
-	// 			instancedMesh.setMatrixAt( instanceCount, matrix );
-	// 			instancedMesh.instanceMatrix.needsUpdate = true;
-	// 			instanceCount++;
-	// 		}
-	// 	} );
-	// }
-
 }
