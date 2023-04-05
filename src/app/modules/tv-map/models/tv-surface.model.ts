@@ -60,6 +60,7 @@ export class TvSurface {
 
 		this.spline.update();
 
+		// minimum 3 points are required to create a surface
 		if ( this.spline.controlPoints.length < 3 ) return;
 
 		const shape = this.createShape();
