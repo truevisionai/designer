@@ -62,17 +62,12 @@ export class TvSurface {
 
 		if ( this.spline.controlPoints.length < 3 ) return;
 
-		const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
-			p => new Vector2( p.x, p.y )
-		);
+		const shape = this.createShape();
 
-		const shape = new Shape();
+		this.updateGeometry( shape );
+	}
 
-		const first = points.shift();
-
-		shape.moveTo( first.x, first.y );
-
-		shape.splineThru( points );
+	updateGeometry ( shape: THREE.Shape ) {
 
 		this.mesh.geometry.dispose();
 
@@ -88,6 +83,30 @@ export class TvSurface {
 			uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
 
 		}
+	}
+
+	createShape (): Shape {
+
+		const points: Vector2[] = this.createPoints();
+
+		const shape = new Shape();
+
+		const first = points.shift();
+
+		shape.moveTo( first.x, first.y );
+
+		shape.splineThru( points );
+
+		return shape;
+	}
+
+	createPoints (): THREE.Vector2[] {
+
+		return this.spline.curve.getPoints( 50 ).map(
+
+			point => new Vector2( point.x, point.y )
+
+		);
 	}
 
 	makeMesh ( shape: Shape ): Mesh {
