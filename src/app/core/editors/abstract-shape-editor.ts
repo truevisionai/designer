@@ -50,7 +50,16 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	public currentPoint: AnyControlPoint;
 
-	protected pointerDownAt: THREE.Vector3;
+	protected _pointerDownAt: THREE.Vector3;
+
+	public get pointerDownAt (): THREE.Vector3 {
+		return this._pointerDownAt;
+	}
+
+	protected set pointerDownAt ( value: THREE.Vector3 ) {
+		this._pointerDownAt = value;
+	}
+
 	protected isDragging: boolean;
 
 	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;

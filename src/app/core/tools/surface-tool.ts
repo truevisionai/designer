@@ -3,16 +3,17 @@
  */
 
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
+import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CommandHistory } from 'app/services/command-history';
 import { Subscription } from 'rxjs';
 import { AddSurfaceControlPointCommand } from '../commands/add-surface-control-point-command';
+import { CallFunctionCommand } from '../commands/call-function-command';
 import { CreateSurfaceCommand } from '../commands/create-surface-command';
 import { DeleteSurfaceCommand } from '../commands/delete-surface-command';
 import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
-import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
 import { BaseTool } from './base-tool';
 
 export class SurfaceTool extends BaseTool {
@@ -84,7 +85,7 @@ export class SurfaceTool extends BaseTool {
 			.subscribe( () => this.onControlPointMoved() );
 
 		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( () => this.onControlPointUpdated() );
+			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 
 		this.cpSelectedSub = this.shapeEditor.controlPointSelected
 			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
@@ -160,11 +161,19 @@ export class SurfaceTool extends BaseTool {
 
 	}
 
-	private onControlPointUpdated () {
+	private onControlPointUpdated ( point: BaseControlPoint ) {
 
-		this.surface.spline.update();
+		const oldPosition = this.shapeEditor.pointerDownAt;
 
-		this.surface.update();
+		const newPosition = point.position.clone();
+
+		CommandHistory.executeMany(
+
+			new SetPositionCommand( point, oldPosition, newPosition ),
+
+			new CallFunctionCommand( this.surface, this.surface.update, [], this.surface.update, [] )
+
+		);
 
 	}
 
