@@ -9,7 +9,7 @@ import { SurfaceTool } from '../tools/surface-tool';
 
 export class AddSurfaceControlPointCommand extends BaseCommand {
 
-	constructor ( private tool: SurfaceTool, private surface: TvSurface, private cp: BaseControlPoint ) {
+	constructor ( private tool: SurfaceTool, private surface: TvSurface, private point: BaseControlPoint ) {
 
 		super();
 
@@ -17,34 +17,23 @@ export class AddSurfaceControlPointCommand extends BaseCommand {
 
 	execute () {
 
-		this.cp.mainObject = this.surface;
-
-		this.surface.spline.addControlPoint( this.cp );
-
-		this.surface.update();
+		this.surface.addControlPoint( this.point );
 
 	}
 
 	undo (): void {
 
-		this.tool.shapeEditor.removeControlPoint( this.cp );
+		this.tool.shapeEditor.removeControlPoint( this.point );
 
-		this.surface.spline.removeControlPoint( this.cp );
-
-		this.surface.update();
+		this.surface.removeControlPoint( this.point );
 
 	}
 
 	redo (): void {
 
-		this.cp.mainObject = this.surface;
+		this.tool.shapeEditor.pushControlPoint( this.point );
 
-		this.tool.shapeEditor.pushControlPoint( this.cp );
-
-		this.surface.spline.addControlPoint( this.cp );
-
-		this.surface.update();
-
+		this.surface.addControlPoint( this.point );
 	}
 
 }

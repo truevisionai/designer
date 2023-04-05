@@ -5,6 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import * as THREE from 'three';
 import { Mesh, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
@@ -124,6 +125,50 @@ export class TvSurface {
 
 		this.spline.hide();
 
+	}
+
+	addControlPoint ( point: BaseControlPoint ) {
+
+		point.visible = true;
+
+		point.mainObject = this;
+
+		this.spline.addControlPoint( point );
+
+		this.update();
+
+		if ( this.spline.controlPoints.length >= 3 ) {
+
+			this.mesh.visible = true;
+
+		}
+
+		if ( this.spline.controlPoints.length >= 2 ) {
+
+			this.spline.mesh.visible = true;
+
+		}
+	}
+
+	removeControlPoint ( point: BaseControlPoint ) {
+
+		point.visible = false;
+
+		this.spline.removeControlPoint( point );
+
+		this.update();
+
+		if ( this.spline.controlPoints.length < 3 ) {
+
+			this.mesh.visible = false;
+
+		}
+
+		if ( this.spline.controlPoints.length < 2 ) {
+
+			this.spline.mesh.visible = false;
+
+		}
 	}
 
 	showControlPoints (): void {

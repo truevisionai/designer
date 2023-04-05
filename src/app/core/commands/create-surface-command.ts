@@ -12,7 +12,7 @@ export class CreateSurfaceCommand extends BaseCommand {
 
 	private surface: TvSurface;
 
-	constructor ( private tool: SurfaceTool, private cp: AnyControlPoint ) {
+	constructor ( private tool: SurfaceTool, private point: AnyControlPoint ) {
 
 		super();
 
@@ -28,11 +28,7 @@ export class CreateSurfaceCommand extends BaseCommand {
 
 		this.map.surfaces.push( this.surface );
 
-		this.cp.mainObject = this.surface;
-
-		this.surface.spline.addControlPoint( this.cp );
-
-		this.surface.update();
+		this.surface.addControlPoint( this.point );
 
 		this.tool.surface = this.surface;
 	}
@@ -41,13 +37,13 @@ export class CreateSurfaceCommand extends BaseCommand {
 
 		const index = this.map.surfaces.indexOf( this.surface );
 
-		if ( index === -1 ) {
+		if ( index !== -1 ) {
 
 			this.map.surfaces.splice( index, 1 );
 
 		}
 
-		this.surface.spline.removeControlPoint( this.cp );
+		this.surface.removeControlPoint( this.point );
 
 		this.tool.surface = null;
 	}

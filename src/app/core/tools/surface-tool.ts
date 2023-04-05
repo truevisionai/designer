@@ -9,6 +9,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { Subscription } from 'rxjs';
 import { AddSurfaceControlPointCommand } from '../commands/add-surface-control-point-command';
 import { CreateSurfaceCommand } from '../commands/create-surface-command';
+import { DeleteSurfaceCommand } from '../commands/delete-surface-command';
 import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
 import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
@@ -175,21 +176,12 @@ export class SurfaceTool extends BaseTool {
 
 	private onDeletePressed ( e: KeyboardEvent ) {
 
-		if ( e.key === 'Delete' && this.surface ) {
+		if ( !this.surface ) return;
 
-			this.surface.delete();
+		if ( e.key === 'Delete' || e.key === 'Backspace' ) {
 
-			const index = this.map.surfaces.findIndex( s => s.id == this.surface.id );
+			CommandHistory.execute( new DeleteSurfaceCommand( this, this.surface ) );
 
-			if ( index > -1 ) {
-
-				this.map.surfaces.splice( index, 1 );
-
-			}
-
-			this.surface = null;
-
-			delete this.surface;
 		}
 
 	}
