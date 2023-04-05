@@ -193,4 +193,34 @@ export class TvSurface {
 
 	}
 
+	toJson () {
+
+		return {
+			attr_height: this.height,
+			attr_rotation: this.rotation,
+			material: {
+				attr_guid: this.materialGuid
+			},
+			offset: {
+				attr_x: this.offset.x,
+				attr_y: this.offset.y,
+			},
+			scale: {
+				attr_x: this.scale.x,
+				attr_y: this.scale.y,
+			},
+			spline: {
+				attr_type: this.spline.type,
+				attr_closed: this.spline.closed,
+				attr_tension: this.spline.tension,
+				point: this.spline.controlPointPositions.map( p => ( {
+					attr_x: p.x,
+					attr_y: p.y,
+					attr_z: p.z,
+				} ) )
+			}
+		};
+
+	}
+
 }
