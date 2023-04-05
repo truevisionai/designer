@@ -50,7 +50,16 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	public currentPoint: AnyControlPoint;
 
-	protected pointerDownAt: THREE.Vector3;
+	protected _pointerDownAt: THREE.Vector3;
+
+	public get pointerDownAt (): THREE.Vector3 {
+		return this._pointerDownAt;
+	}
+
+	protected set pointerDownAt ( value: THREE.Vector3 ) {
+		this._pointerDownAt = value;
+	}
+
 	protected isDragging: boolean;
 
 	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
@@ -306,9 +315,18 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		const point = this.createControlPoint( position, parent, size );
 
+		this.pushControlPoint( point, true );
+
+		return point;
+	}
+
+	pushControlPoint ( point: AnyControlPoint, event = false ): AnyControlPoint {
+
 		this._controlPoints.push( point );
 
-		this.controlPointAdded.emit( point );
+		if ( event ) this.controlPointAdded.emit( point );
+
+		SceneService.add( point );
 
 		return point;
 	}
@@ -408,10 +426,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		object.renderOrder = 3;
 
-		SceneService.add( object );
-
 		return object;
-
 	}
 
 	private onDeSelect ( e: any ) {

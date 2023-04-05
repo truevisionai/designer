@@ -370,31 +370,7 @@ export class SceneExporterService {
 
 	exportSurface ( surface: TvSurface ) {
 
-		return {
-			attr_height: surface.height,
-			attr_rotation: surface.rotation,
-			material: {
-				attr_guid: surface.materialGuid
-			},
-			offset: {
-				attr_x: surface.offset.x,
-				attr_y: surface.offset.y,
-			},
-			scale: {
-				attr_x: surface.scale.x,
-				attr_y: surface.scale.y,
-			},
-			spline: {
-				attr_type: surface.spline.type,
-				attr_closed: surface.spline.closed,
-				attr_tension: surface.spline.tension,
-				point: surface.spline.controlPointPositions.map( p => ( {
-					attr_x: p.x,
-					attr_y: p.y,
-					attr_z: p.z,
-				} ) )
-			}
-		};
+		return surface.toJson();
 
 	}
 

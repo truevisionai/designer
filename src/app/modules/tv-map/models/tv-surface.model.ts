@@ -5,6 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import * as THREE from 'three';
 import { Mesh, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
@@ -59,19 +60,15 @@ export class TvSurface {
 
 		this.spline.update();
 
+		// minimum 3 points are required to create a surface
 		if ( this.spline.controlPoints.length < 3 ) return;
 
-		const points: Vector2[] = this.spline.curve.getPoints( 50 ).map(
-			p => new Vector2( p.x, p.y )
-		);
+		const shape = this.createShape();
 
-		const shape = new Shape();
+		this.updateGeometry( shape );
+	}
 
-		const first = points.shift();
-
-		shape.moveTo( first.x, first.y );
-
-		shape.splineThru( points );
+	updateGeometry ( shape: THREE.Shape ) {
 
 		this.mesh.geometry.dispose();
 
@@ -87,6 +84,30 @@ export class TvSurface {
 			uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
 
 		}
+	}
+
+	createShape (): Shape {
+
+		const points: Vector2[] = this.createPoints();
+
+		const shape = new Shape();
+
+		const first = points.shift();
+
+		shape.moveTo( first.x, first.y );
+
+		shape.splineThru( points );
+
+		return shape;
+	}
+
+	createPoints (): THREE.Vector2[] {
+
+		return this.spline.curve.getPoints( 50 ).map(
+
+			point => new Vector2( point.x, point.y )
+
+		);
 	}
 
 	makeMesh ( shape: Shape ): Mesh {
@@ -126,6 +147,50 @@ export class TvSurface {
 
 	}
 
+	addControlPoint ( point: BaseControlPoint ) {
+
+		point.visible = true;
+
+		point.mainObject = this;
+
+		this.spline.addControlPoint( point );
+
+		this.update();
+
+		if ( this.spline.controlPoints.length >= 3 ) {
+
+			this.mesh.visible = true;
+
+		}
+
+		if ( this.spline.controlPoints.length >= 2 ) {
+
+			this.spline.mesh.visible = true;
+
+		}
+	}
+
+	removeControlPoint ( point: BaseControlPoint ) {
+
+		point.visible = false;
+
+		this.spline.removeControlPoint( point );
+
+		this.update();
+
+		if ( this.spline.controlPoints.length < 3 ) {
+
+			this.mesh.visible = false;
+
+		}
+
+		if ( this.spline.controlPoints.length < 2 ) {
+
+			this.spline.mesh.visible = false;
+
+		}
+	}
+
 	showControlPoints (): void {
 
 		this.spline.showcontrolPoints();
@@ -145,6 +210,36 @@ export class TvSurface {
 		this.hideCurve();
 
 		this.mesh.visible = false;
+
+	}
+
+	toJson () {
+
+		return {
+			attr_height: this.height,
+			attr_rotation: this.rotation,
+			material: {
+				attr_guid: this.materialGuid
+			},
+			offset: {
+				attr_x: this.offset.x,
+				attr_y: this.offset.y,
+			},
+			scale: {
+				attr_x: this.scale.x,
+				attr_y: this.scale.y,
+			},
+			spline: {
+				attr_type: this.spline.type,
+				attr_closed: this.spline.closed,
+				attr_tension: this.spline.tension,
+				point: this.spline.controlPointPositions.map( p => ( {
+					attr_x: p.x,
+					attr_y: p.y,
+					attr_z: p.z,
+				} ) )
+			}
+		};
 
 	}
 
