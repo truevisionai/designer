@@ -44,7 +44,7 @@ export class PropPolygonInspectorComponent implements OnInit, IComponent, OnDest
 
 		this.data.polygon.density = parseFloat( $event );
 
-		PropManager.updateCurvePolygonProps( this.data.polygon );
+		this.data.polygon?.updateProps();
 
 	}
 }

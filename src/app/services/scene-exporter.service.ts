@@ -330,24 +330,7 @@ export class SceneExporterService {
 		return {
 			attr_guid: polygon.propGuid,
 			attr_density: polygon.density,
-			props: polygon.props.map( prop => ( {
-				attr_guid: polygon.propGuid,
-				position: {
-					attr_x: prop.position.x,
-					attr_y: prop.position.y,
-					attr_z: prop.position.z,
-				},
-				rotation: {
-					attr_x: prop.rotation.x,
-					attr_y: prop.rotation.y,
-					attr_z: prop.rotation.z,
-				},
-				scale: {
-					attr_x: prop.scale.x,
-					attr_y: prop.scale.y,
-					attr_z: prop.scale.z,
-				}
-			} ) ),
+			props: polygon.getExportJson(),
 			spline: {
 				attr_type: polygon.spline.type,
 				attr_closed: polygon.spline.closed,
