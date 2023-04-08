@@ -622,7 +622,8 @@ export class AutoManeuverTool extends BaseTool {
 
 		if ( !e.point ) return;
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		// const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		const maxDistance = Math.max( 0.5, Math.exp( 0.001 * e.approxCameraDistance ) );
 
 		const roadControlPoints = [];
 
@@ -636,7 +637,7 @@ export class AutoManeuverTool extends BaseTool {
 
 		} );
 
-		const roadControlPoint = PickingHelper.findNearest( e.point, roadControlPoints, maxDistance );
+		const roadControlPoint = PickingHelper.findNearestViaDistance( e.point, roadControlPoints, maxDistance );
 
 		if ( roadControlPoint ) {
 

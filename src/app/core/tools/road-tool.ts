@@ -336,7 +336,8 @@ export class RoadTool extends BaseTool {
 		// // doing in 2 loop to prioritise control points
 		// let controlPoint = PickingHelper.checkControlPointInteraction( e, ControlPoint.roadTag, 1 );
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		// const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		const maxDistance = Math.max( 0.5, Math.exp( 0.001 * e.approxCameraDistance ) );
 
 		const controlPoints = [];
 
@@ -350,7 +351,7 @@ export class RoadTool extends BaseTool {
 
 		} );
 
-		const controlPoint = PickingHelper.findNearest( e.point, controlPoints, maxDistance );
+		const controlPoint = PickingHelper.findNearestViaDistance( e.point, controlPoints, maxDistance );
 
 		if ( controlPoint ) {
 

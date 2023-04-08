@@ -5,15 +5,13 @@
 import { DynamicMeta } from 'app/core/models/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { SceneService } from 'app/core/services/scene.service';
-import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { Maths } from 'app/utils/maths';
 import earcut from 'earcut';
 import { Object3D, Triangle } from 'three';
 import { AssetDatabase } from './asset-database';
 
-export class PropService {
+export class PropManager {
 
 	private static prop?: DynamicMeta<PropModel>;
 
@@ -29,50 +27,6 @@ export class PropService {
 
 	}
 
-	static updateCurveProps ( curve: PropCurve ) {
-
-		if ( !curve ) return;
-
-		if ( curve.spline.controlPoints.length < 2 ) return;
-
-		const length = ( curve.spline as CatmullRomSpline ).getLength();
-
-		if ( length <= 0 ) return;
-
-		curve.props.forEach( prop => SceneService.remove( prop ) );
-
-		curve.props.splice( 0, curve.props.length );
-
-		const spline = curve.spline as CatmullRomSpline;
-
-		const instance = AssetDatabase.getInstance( curve.propGuid ) as Object3D;
-
-		for ( let i = 0; i < length; i += curve.spacing ) {
-
-			const t = spline.curve.getUtoTmapping( 0, i );
-
-			const position = spline.curve.getPoint( t );
-
-			const prop = instance.clone();
-
-			// apply random position variance
-			position.setX( position.x + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
-			position.setY( position.y + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ) );
-
-			// apply random rotation variance
-			prop.rotateX( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
-			prop.rotateY( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
-			prop.rotateZ( Maths.randomFloatBetween( -curve.rotation, curve.rotation ) );
-
-			prop.position.copy( position );
-
-			curve.props.push( prop );
-
-			SceneService.add( prop );
-
-		}
-	}
-
 	static updateCurvePolygonProps ( polygon: PropPolygon ) {
 
 		polygon.props.forEach( p => SceneService.remove( p ) );
@@ -81,11 +35,9 @@ export class PropService {
 
 		const instance = AssetDatabase.getInstance( polygon.propGuid ) as Object3D;
 
-
 		instance.up.set( 0, 0, 1 );
 
 		instance.updateMatrixWorld( true );
-
 
 		const vertices = [];
 
@@ -119,7 +71,6 @@ export class PropService {
 
 			return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
 		}
-
 
 		faces.forEach( face => {
 

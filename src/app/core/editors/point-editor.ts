@@ -2,15 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Raycaster } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export class PointEditor extends AbstractShapeEditor {
 
-
-	constructor ( private maxControlPoints: number = 1000 ) {
+	constructor ( private maxControlPoints: number = 1000, public precision = 0.5 ) {
 
 		super();
 
@@ -32,7 +33,7 @@ export class PointEditor extends AbstractShapeEditor {
 
 		if ( this.controlPoints.length >= this.maxControlPoints ) return;
 
-		this.currentPoint = this.getNearestControlPoint( e );
+		this.currentPoint = this.findNearestViaRaycasting( e );
 
 		if ( this.currentPoint ) {
 
@@ -74,7 +75,7 @@ export class PointEditor extends AbstractShapeEditor {
 
 		} else if ( e.point != null && !this.pointerIsDown && this.controlPoints.length > 0 ) {
 
-			const controlPoint = this.getNearestControlPoint( e );
+			const controlPoint = this.findNearestViaRaycasting( e );
 
 			if ( controlPoint ) {
 
@@ -86,10 +87,20 @@ export class PointEditor extends AbstractShapeEditor {
 
 	}
 
-	getNearestControlPoint ( e: PointerEventData ) {
+	findNearestViaDistance ( e: PointerEventData ) {
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		// Calculate the maxDistance using an exponential function based on approxCameraDistance
+		const scaleFactor = 0.001; // Adjust this value to change the sensitivity
 
-		return PickingHelper.findNearest( e.point, this.controlPoints, maxDistance );
+		const maxDistance = Math.max( this.precision, Math.exp( scaleFactor * e.approxCameraDistance ) );
+
+		return PickingHelper.findNearestViaDistance( e.point, this.controlPoints, maxDistance );
+
+	}
+
+	findNearestViaRaycasting ( e: PointerEventData ) {
+
+		return PickingHelper.findNearestViaRaycasting( e, this.controlPoints );
+
 	}
 }

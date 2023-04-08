@@ -548,11 +548,23 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.point = i.point;
 			p.uv = i.uv;
 			p.intersections = this.intersections;
+			p.camera = this.threeService.camera;
+			p.mouse = this.mouse;
 
 			if ( this.threeService.camera instanceof OrthographicCamera ) {
 
 				// approximation, not accurate
-				p.approxCameraDistance = ( 1 / this.threeService.camera.zoom ) * this.ORTHO_DRIVER * this.threeService.camera.position.z;
+				// p.approxCameraDistance = ( 1 / this.threeService.camera.zoom ) * this.ORTHO_DRIVER * this.threeService.camera.position.z;
+
+				// Calculate the camera's dimensions
+				const cameraWidth = this.threeService.camera.right - this.threeService.camera.left;
+				const cameraHeight = this.threeService.camera.top - this.threeService.camera.bottom;
+
+				// Calculate the diagonal size of the camera's visible area
+				const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
+
+				// Calculate the approximate camera distance using the zoom and the diagonal size
+				p.approxCameraDistance = ( cameraDiagonalSize / ( 2 * this.threeService.camera.zoom ) );
 
 			} else if ( this.threeService.camera instanceof PerspectiveCamera ) {
 

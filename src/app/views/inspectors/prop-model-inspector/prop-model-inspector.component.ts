@@ -10,7 +10,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { CommandHistory } from 'app/services/command-history';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { Object3D, Vector3 } from 'three';
 
 @Component( {
@@ -42,7 +42,7 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 
 		this.object = AssetDatabase.getInstance( this.data.guid ) as Object3D;
 
-		PropService.setProp( this.data );
+		PropManager.setProp( this.data );
 	}
 
 	ngOnDestroy () {

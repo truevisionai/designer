@@ -6,7 +6,7 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { Object3D, Vector3 } from 'three';
+import { Object3D, Raycaster, Vector3 } from 'three';
 
 export class PickingHelper {
 
@@ -38,7 +38,7 @@ export class PickingHelper {
 		return controlPoint;
 	}
 
-	public static findNearest<T extends Object3D> ( position: Vector3, objects: T[], maxDistance = 0.5 ): T {
+	public static findNearestViaDistance<T extends Object3D> ( position: Vector3, objects: T[], maxDistance = 0.5 ): T {
 
 		let nearestDistance = Number.MAX_VALUE;
 		let nearestObject: T = null;
@@ -60,6 +60,34 @@ export class PickingHelper {
 
 		return nearestObject;
 	}
+
+	private static raycaster = new Raycaster();
+
+	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[] ): T {
+
+		// Update the raycaster with the camera and the normalized mouse coordinates
+		this.raycaster.setFromCamera( e.mouse, e.camera );
+
+		// 0.001 is a good value for scale factor
+		const scaleFactor = 0.001; // Adjust this value to change the sensitivity
+
+		// Calculate the precision based on the approxCameraDistance
+		const precision = Math.exp( scaleFactor * e.approxCameraDistance );
+
+		this.raycaster.params.Points.threshold = precision;
+
+		// Find intersections with the control points
+		const intersects = this.raycaster.intersectObjects( objects );
+
+		// If there are intersections, return the nearest control point
+		if ( intersects.length > 0 ) {
+			return intersects[ 0 ].object as T;
+		}
+
+		// If there are no intersections, return null
+		return null;
+	}
+
 
 	public static checkLaneObjectInteraction ( event: PointerEventData, tag?: string ): TvLane {
 

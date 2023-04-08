@@ -22,8 +22,6 @@ export class SurfaceTool extends BaseTool {
 
 	public shapeEditor: PointEditor;
 
-	private cpSubscriptions: Subscription[] = [];
-
 	private cpAddedSub: Subscription;
 	private cpMovedSub: Subscription;
 	private cpUpdatedSub: Subscription;

@@ -5,7 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Vector2 } from 'three';
 
 export class PropPolygon {
@@ -75,7 +75,7 @@ export class PropPolygon {
 
 		geometry.computeBoundingBox();
 
-		PropService.updateCurvePolygonProps( this );
+		PropManager.updateCurvePolygonProps( this );
 	}
 
 	addControlPoint ( cp: AnyControlPoint ) {
