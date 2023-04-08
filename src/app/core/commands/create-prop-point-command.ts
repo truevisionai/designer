@@ -9,34 +9,36 @@ import { PropPointTool } from '../tools/prop-point-tool';
 
 export class CreatePropPointCommand extends BaseCommand {
 
-	private propCreated: PropInstance;
+	private propInstance: PropInstance;
 
 	constructor ( private tool: PropPointTool, prop: PropInstance, private point: BaseControlPoint ) {
 
 		super();
 
-		this.propCreated = new PropInstance( prop.guid, prop.object.clone() );
+		this.propInstance = new PropInstance( prop.guid, prop.object.clone() );
 
-		this.propCreated.object.position.copy( this.point.position );
+		this.propInstance.object.position.copy( this.point.position );
 
-		this.point.mainObject = this.propCreated;
+		this.propInstance.point = this.point;
+
+		this.point.mainObject = this.propInstance;
 
 	}
 
 	execute () {
 
-		this.map.gameObject.add( this.propCreated.object );
+		this.map.gameObject.add( this.propInstance.object );
 
-		this.map.props.push( this.propCreated );
+		this.map.props.push( this.propInstance );
 
 		this.tool.currentPoint = this.point;
 	}
 
 	undo () {
 
-		this.map.gameObject.remove( this.propCreated.object );
+		this.map.gameObject.remove( this.propInstance.object );
 
-		const index = this.map.props.indexOf( this.propCreated );
+		const index = this.map.props.indexOf( this.propInstance );
 
 		if ( index !== -1 ) {
 

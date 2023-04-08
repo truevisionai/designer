@@ -20,6 +20,7 @@ import { InspectorFactoryService, InspectorType } from '../factories/inspector-f
 import { AppInspector } from '../inspector';
 import { PropInstance } from '../models/prop-instance.model';
 import { BaseTool } from './base-tool';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/prop-control-point';
 
 /**
  * Prop point tool
@@ -82,9 +83,11 @@ export class PropPointTool extends BaseTool {
 
 		this.map.props.forEach( ( prop: PropInstance ) => {
 
-			const cp = this.shapeEditor.addControlPoint( prop.object.position );
+			prop.point = prop.point ? prop.point : new DynamicControlPoint( prop, prop.object.position );
 
-			cp.mainObject = prop;
+			prop.point.visible = true;
+
+			this.shapeEditor.pushControlPoint( prop.point )
 
 		} );
 
@@ -121,7 +124,7 @@ export class PropPointTool extends BaseTool {
 
 	}
 
-	private onControlPointSelected ( point: BaseControlPoint ) {
+	onControlPointSelected ( point: BaseControlPoint ) {
 
 		// console.log( 'onControlPointSelected', point );
 
@@ -139,7 +142,7 @@ export class PropPointTool extends BaseTool {
 
 	}
 
-	private onControlPointUnselected ( point: BaseControlPoint ) {
+	onControlPointUnselected ( point: BaseControlPoint ) {
 
 		// console.log( 'onControlPointUnselected', point );
 
@@ -159,7 +162,7 @@ export class PropPointTool extends BaseTool {
 
 	}
 
-	private onControlPointAdded ( point: BaseControlPoint ) {
+	onControlPointAdded ( point: BaseControlPoint ) {
 
 		if ( this.prop ) {
 
