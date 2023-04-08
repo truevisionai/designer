@@ -12,7 +12,7 @@ import { Vector3 } from 'three';
 import { AssetLoaderService } from './asset-loader.service';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
-import { PropService } from './prop-service';
+import { PropManager } from './prop-manager';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 
@@ -58,7 +58,7 @@ export class ImporterService {
 
 			case 'glb':
 
-				PropService.setProp( metadata );
+				PropManager.setProp( metadata );
 
 				if ( ToolManager.currentTool instanceof PropPointTool ) {
 

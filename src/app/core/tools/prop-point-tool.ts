@@ -2,13 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/services/asset-database';
+import { CommandHistory } from 'app/services/command-history';
 import { ModelImporterService } from 'app/services/model-importer.service';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { Subscription } from 'rxjs';
+import { CreatePropPointCommand } from '../commands/create-prop-point-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { PointEditor } from '../editors/point-editor';
 import { InspectorFactoryService, InspectorType } from '../factories/inspector-factory.service';
 import { AppInspector } from '../inspector';
@@ -32,13 +38,21 @@ export class PropPointTool extends BaseTool {
 
 	public shapeEditor: PointEditor;
 
-	private cpSubscriptions: Subscription[] = [];
+	// private cpSubscriptions: Subscription[] = [];
 
-	private controlPointAddedSubscriber: Subscription;
-	private controlPointSelectedSubscriber: Subscription;
-	private controlPointUnselectedSubscriber: Subscription;
+	private cpAddedSub: Subscription;
+	private cpSelectedSub: Subscription;
+	private cpUnselectedSub: Subscription;
+	private cpMovedSub: Subscription;
+	private cpUpdatedSub: Subscription;
 
-	constructor ( private modelImporter?: ModelImporterService ) {
+	public currentPoint: BaseControlPoint;
+
+	get currentProp (): PropInstance {
+		return this.currentPoint?.mainObject;
+	}
+
+	constructor () {
 
 		super();
 
@@ -46,7 +60,7 @@ export class PropPointTool extends BaseTool {
 
 	get prop (): PropInstance {
 
-		const prop = PropService.getProp();
+		const prop = PropManager.getProp();
 
 		if ( prop ) {
 
@@ -60,7 +74,7 @@ export class PropPointTool extends BaseTool {
 
 		super.init();
 
-		this.shapeEditor = new PointEditor( 100 );
+		this.shapeEditor = new PointEditor( 100, 1 );
 
 	}
 
@@ -72,90 +86,158 @@ export class PropPointTool extends BaseTool {
 
 			const cp = this.shapeEditor.addControlPoint( prop.object.position );
 
-			this.sync( cp, prop );
+			cp.mainObject = prop;
 
 		} );
 
-		this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe(
-			point => this.onControlPointAdded( point )
-		);
+		this.cpAddedSub = this.shapeEditor.controlPointAdded
+			.subscribe( point => this.onControlPointAdded( point ) );
 
-		this.controlPointSelectedSubscriber = this.shapeEditor.controlPointSelected.subscribe(
-			point => this.onControlPointSelected( point )
-		);
+		this.cpSelectedSub = this.shapeEditor.controlPointSelected
+			.subscribe( point => this.onControlPointSelected( point ) );
 
-		this.controlPointUnselectedSubscriber = this.shapeEditor.controlPointUnselected.subscribe(
-			point => this.onControlPointUnselected( point )
-		);
+		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
+			.subscribe( point => this.onControlPointUnselected( point ) );
+
+		this.cpMovedSub = this.shapeEditor.controlPointMoved
+			.subscribe( ( point ) => this.onControlPointMoved( point ) );
+
+		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
+			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 
 	}
+
+
 
 	disable (): void {
 
 		super.disable();
 
-		this.controlPointAddedSubscriber.unsubscribe();
-		this.controlPointSelectedSubscriber.unsubscribe();
-		this.controlPointUnselectedSubscriber.unsubscribe();
+		this.cpAddedSub.unsubscribe();
+		this.cpSelectedSub.unsubscribe();
+		this.cpUnselectedSub.unsubscribe();
+		this.cpMovedSub?.unsubscribe();
+		this.cpUpdatedSub?.unsubscribe();
 
 		this.shapeEditor.destroy();
 
-		this.unsubscribeFromControlPoints();
+		// this.unsubscribeFromControlPoints();
 	}
 
-	private onControlPointSelected ( point: AnyControlPoint ) {
+	private onControlPointSelected ( point: BaseControlPoint ) {
 
-		InspectorFactoryService.setByType( InspectorType.prop_instance_inspector, point.mainObject );
+		// console.log( 'onControlPointSelected', point );
 
-	}
+		if ( this.currentPoint == null || point == null ) return;
 
-	private onControlPointUnselected ( point: AnyControlPoint ) {
+		if ( this.currentPoint === point ) return;
 
-		AppInspector.clear();
+		CommandHistory.executeMany(
 
-	}
+			new SetValueCommand( this, 'currentPoint', point ),
 
-	private onControlPointAdded ( point: AnyControlPoint ) {
+			// new SetInspectorCommand( PropInstanceInspectorComponent, point.mainObject )
 
-		if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
-
-		if ( !this.prop ) this.shapeEditor.removeControlPoint( point );
-
-		if ( !this.prop ) return;
-
-		const prop = new PropInstance( this.prop.guid, this.prop.object.clone() );
-
-		prop.object.position.set( point.position.x, point.position.y, point.position.z );
-
-		this.sync( point, prop );
-
-		this.map.gameObject.add( prop.object );
-
-		TvMapQueries.map.props.push( prop );
+		)
 
 	}
 
-	private sync ( point: AnyControlPoint, prop: PropInstance ): void {
+	private onControlPointUnselected ( point: BaseControlPoint ) {
 
-		const subscription = point.updated.subscribe( e => {
+		// console.log( 'onControlPointUnselected', point );
 
-			prop.object.position.copy( e.position );
+		this.currentPoint = null;
 
-		} );
+		// if ( this.currentPoint == null || point == null ) return;
 
-		point.mainObject = prop;
+		// if ( this.currentPoint === point ) return;
 
-		this.cpSubscriptions.push( subscription );
-	}
+		// CommandHistory.executeMany(
 
-	private unsubscribeFromControlPoints () {
+		// 	new SetValueCommand( this, 'currentPoint', null )
 
-		this.cpSubscriptions.forEach( sub => {
+		// 	// new SetInspectorCommand( null, null ),
 
-			sub.unsubscribe();
-
-		} );
+		// );
 
 	}
+
+	private onControlPointAdded ( point: BaseControlPoint ) {
+
+		if ( this.prop ) {
+
+			CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) )
+
+		} else {
+
+			SnackBar.error( 'Select a prop from the project browser' );
+
+			point.visible = false;
+
+			setTimeout( () => {
+
+				this.shapeEditor.removeControlPoint( point );
+
+			}, 100 );
+
+		}
+
+	}
+
+	onControlPointUpdated ( point: BaseControlPoint ): void {
+
+		if ( !this.currentProp ) return;
+
+		const oldPosition = this.shapeEditor.pointerDownAt;
+
+		const newPosition = point.position;
+
+		if ( oldPosition == null || newPosition == null ) return;
+
+		if ( oldPosition.equals( newPosition ) ) return;
+
+		CommandHistory.executeMany(
+
+			new SetPositionCommand( this.currentProp.object, newPosition, oldPosition ),
+
+			new SetPositionCommand( this.currentPoint, newPosition, oldPosition )
+
+		);
+	}
+
+	onControlPointMoved ( point: BaseControlPoint ): void {
+
+		if ( point.mainObject == null ) return;
+
+		this.currentPoint = point;
+
+		// console.log( 'onControlPointMoved', this.currentProp, this.currentProp?.object );
+
+		this.currentProp?.object.position.copy( point.position );
+
+	}
+
+	// private sync ( point: BaseControlPoint, prop: PropInstance ): void {
+
+	// 	const subscription = point.updated.subscribe( e => {
+
+	// 		prop.object.position.copy( e.position );
+
+	// 	} );
+
+	// 	point.mainObject = prop;
+
+	// 	this.cpSubscriptions.push( subscription );
+	// }
+
+	// private unsubscribeFromControlPoints () {
+
+	// 	this.cpSubscriptions.forEach( sub => {
+
+	// 		sub.unsubscribe();
+
+	// 	} );
+
+	// }
 
 }

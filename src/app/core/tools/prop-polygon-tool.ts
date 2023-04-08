@@ -5,7 +5,7 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import {
 	PropPolygonInspectorComponent,
@@ -146,7 +146,7 @@ export class PropPolygonTool extends BaseTool {
 
 	private onControlPointAdded ( cp: AnyControlPoint ) {
 
-		const prop = PropService.getProp();
+		const prop = PropManager.getProp();
 
 		if ( !prop ) SnackBar.error( 'Select a prop from the project browser' );
 

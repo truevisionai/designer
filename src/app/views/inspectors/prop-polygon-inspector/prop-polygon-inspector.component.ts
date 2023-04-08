@@ -6,7 +6,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 
 export class PropPolygonInspectorData {
 
@@ -44,7 +44,7 @@ export class PropPolygonInspectorComponent implements OnInit, IComponent, OnDest
 
 		this.data.polygon.density = parseFloat( $event );
 
-		PropService.updateCurvePolygonProps( this.data.polygon );
+		PropManager.updateCurvePolygonProps( this.data.polygon );
 
 	}
 }

@@ -5,7 +5,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { PropCurve } from '../../../modules/tv-map/models/prop-curve';
 
 export class PropCurveInspectorData {
@@ -38,7 +38,7 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
 		this.data.propCurve.spacing = parseFloat( $event );
 
-		PropService.updateCurveProps( this.data.propCurve );
+		this.data.propCurve.updateProps();
 
 	}
 
@@ -46,7 +46,7 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
 		this.data.propCurve.rotation = parseFloat( $event );
 
-		PropService.updateCurveProps( this.data.propCurve );
+		this.data.propCurve.updateProps();
 
 	}
 
@@ -54,7 +54,7 @@ export class PropCurveInspectorComponent implements OnInit, IComponent, OnDestro
 
 		this.data.propCurve.positionVariance = parseFloat( $event );
 
-		PropService.updateCurveProps( this.data.propCurve );
+		this.data.propCurve.updateProps();
 
 	}
 }
