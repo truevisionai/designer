@@ -38,8 +38,6 @@ export class PropPointTool extends BaseTool {
 
 	public shapeEditor: PointEditor;
 
-	// private cpSubscriptions: Subscription[] = [];
-
 	private cpAddedSub: Subscription;
 	private cpSelectedSub: Subscription;
 	private cpUnselectedSub: Subscription;
@@ -121,7 +119,6 @@ export class PropPointTool extends BaseTool {
 
 		this.shapeEditor.destroy();
 
-		// this.unsubscribeFromControlPoints();
 	}
 
 	private onControlPointSelected ( point: BaseControlPoint ) {
@@ -211,33 +208,8 @@ export class PropPointTool extends BaseTool {
 
 		this.currentPoint = point;
 
-		// console.log( 'onControlPointMoved', this.currentProp, this.currentProp?.object );
-
 		this.currentProp?.object.position.copy( point.position );
 
 	}
-
-	// private sync ( point: BaseControlPoint, prop: PropInstance ): void {
-
-	// 	const subscription = point.updated.subscribe( e => {
-
-	// 		prop.object.position.copy( e.position );
-
-	// 	} );
-
-	// 	point.mainObject = prop;
-
-	// 	this.cpSubscriptions.push( subscription );
-	// }
-
-	// private unsubscribeFromControlPoints () {
-
-	// 	this.cpSubscriptions.forEach( sub => {
-
-	// 		sub.unsubscribe();
-
-	// 	} );
-
-	// }
 
 }
