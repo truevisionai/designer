@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Face, Intersection, Object3D, Vector2, Vector3 } from 'three';
+import { Camera, Face, Intersection, Object3D, Vector2, Vector3 } from 'three';
 
 export class BaseEventData {
 	object: Object3D;
@@ -29,5 +29,7 @@ export class PointerEventData extends BaseEventData {
 	button: MouseButton;
 	intersections?: Intersection[];
 	approxCameraDistance?: number;
+	camera?: Camera;
+	mouse?: Vector2;
 }
 
