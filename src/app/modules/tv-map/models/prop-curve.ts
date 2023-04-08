@@ -2,8 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { AssetDatabase } from 'app/services/asset-database';
+import { Maths } from 'app/utils/maths';
 import { Object3D } from 'three';
 
 export class PropCurve {
@@ -33,6 +36,51 @@ export class PropCurve {
 	update () {
 
 		this.spline.update();
+
+		this.updateProps();
+
+	}
+
+	updateProps () {
+
+		if ( this.spline.controlPoints.length < 2 ) return;
+
+		const length = ( this.spline as CatmullRomSpline ).getLength();
+
+		if ( length <= 0 ) return;
+
+		this.props.forEach( prop => SceneService.remove( prop ) );
+
+		this.props.splice( 0, this.props.length );
+
+		const spline = this.spline as CatmullRomSpline;
+
+		const instance = AssetDatabase.getInstance( this.propGuid ) as Object3D;
+
+		for ( let i = 0; i < length; i += this.spacing ) {
+
+			const t = spline.curve.getUtoTmapping( 0, i );
+
+			const position = spline.curve.getPoint( t );
+
+			const prop = instance.clone();
+
+			// apply random position variance
+			position.setX( position.x + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ) );
+			position.setY( position.y + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ) );
+
+			// apply random rotation variance
+			prop.rotateX( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
+			prop.rotateY( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
+			prop.rotateZ( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
+
+			prop.position.copy( position );
+
+			this.props.push( prop );
+
+			SceneService.add( prop );
+
+		}
 
 	}
 

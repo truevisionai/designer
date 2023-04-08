@@ -5,7 +5,7 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropService } from 'app/services/prop-service';
+import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import {
 	PropCurveInspectorComponent,
@@ -54,7 +54,7 @@ export class PropCurveTool extends BaseTool {
 
 	private get prop (): PropModel {
 
-		const prop = PropService.getProp();
+		const prop = PropManager.getProp();
 
 		if ( prop ) {
 
@@ -237,7 +237,7 @@ export class PropCurveTool extends BaseTool {
 
 		this.showInspector( this.curve, this.point );
 
-		this.updateCurveProps();
+		this.curve?.update();
 	}
 
 	private onControlPointUpdated ( cp: AnyControlPoint ) {
@@ -248,7 +248,7 @@ export class PropCurveTool extends BaseTool {
 
 			this.curve.update();
 
-			this.updateCurveProps();
+			this.curve?.update();
 
 		}
 	}
@@ -272,12 +272,6 @@ export class PropCurveTool extends BaseTool {
 			sub.unsubscribe();
 
 		} );
-
-	}
-
-	private updateCurveProps () {
-
-		PropService.updateCurveProps( this.curve );
 
 	}
 }

@@ -3,12 +3,17 @@
  */
 
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
+import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { CommandHistory } from 'app/services/command-history';
 import { Subscription } from 'rxjs';
+import { AddSurfaceControlPointCommand } from '../commands/add-surface-control-point-command';
+import { CallFunctionCommand } from '../commands/call-function-command';
+import { CreateSurfaceCommand } from '../commands/create-surface-command';
+import { DeleteSurfaceCommand } from '../commands/delete-surface-command';
 import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
-import { CatmullRomSpline } from '../shapes/catmull-rom-spline';
 import { BaseTool } from './base-tool';
 
 export class SurfaceTool extends BaseTool {
@@ -17,8 +22,6 @@ export class SurfaceTool extends BaseTool {
 
 	public shapeEditor: PointEditor;
 
-	private cpSubscriptions: Subscription[] = [];
-
 	private cpAddedSub: Subscription;
 	private cpMovedSub: Subscription;
 	private cpUpdatedSub: Subscription;
@@ -26,7 +29,15 @@ export class SurfaceTool extends BaseTool {
 	private cpUnselectedSub: Subscription;
 	private keyDownSub: Subscription;
 
-	private surface: TvSurface;
+	private _surface: TvSurface;
+
+	public get surface (): TvSurface {
+		return this._surface;
+	}
+
+	public set surface ( value: TvSurface ) {
+		this._surface = value;
+	}
 
 	constructor () {
 
@@ -72,7 +83,7 @@ export class SurfaceTool extends BaseTool {
 			.subscribe( () => this.onControlPointMoved() );
 
 		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( () => this.onControlPointUpdated() );
+			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 
 		this.cpSelectedSub = this.shapeEditor.controlPointSelected
 			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
@@ -138,25 +149,29 @@ export class SurfaceTool extends BaseTool {
 
 		if ( !this.surface ) {
 
-			this.surface = new TvSurface( 'grass', new CatmullRomSpline() );
+			CommandHistory.execute( new CreateSurfaceCommand( this, cp ) );
 
-			this.map.surfaces.push( this.surface );
+		} else {
+
+			CommandHistory.execute( new AddSurfaceControlPointCommand( this, this.surface, cp ) );
 
 		}
 
-		cp.mainObject = this.surface;
-
-		this.surface.spline.addControlPoint( cp );
-
-		this.surface.update();
-
 	}
 
-	private onControlPointUpdated () {
+	private onControlPointUpdated ( point: BaseControlPoint ) {
 
-		this.surface.spline.update();
+		const oldPosition = this.shapeEditor.pointerDownAt;
 
-		this.surface.update();
+		const newPosition = point.position.clone();
+
+		CommandHistory.executeMany(
+
+			new SetPositionCommand( point, oldPosition, newPosition ),
+
+			new CallFunctionCommand( this.surface, this.surface.update, [], this.surface.update, [] )
+
+		);
 
 	}
 
@@ -168,21 +183,12 @@ export class SurfaceTool extends BaseTool {
 
 	private onDeletePressed ( e: KeyboardEvent ) {
 
-		if ( e.key === 'Delete' && this.surface ) {
+		if ( !this.surface ) return;
 
-			this.surface.delete();
+		if ( e.key === 'Delete' || e.key === 'Backspace' ) {
 
-			const index = this.map.surfaces.findIndex( s => s.id == this.surface.id );
+			CommandHistory.execute( new DeleteSurfaceCommand( this, this.surface ) );
 
-			if ( index > -1 ) {
-
-				this.map.surfaces.splice( index, 1 );
-
-			}
-
-			this.surface = null;
-
-			delete this.surface;
 		}
 
 	}

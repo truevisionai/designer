@@ -11,6 +11,7 @@ import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
+import { PropManager } from 'app/services/prop-manager';
 
 export class PropPolygon {
 
