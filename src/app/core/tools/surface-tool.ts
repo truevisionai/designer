@@ -165,9 +165,16 @@ export class SurfaceTool extends BaseTool {
 
 		const newPosition = point.position.clone();
 
+		if ( oldPosition.equals( newPosition ) ) {
+
+			console.error( 'No change in position' );
+
+			return;
+		}
+
 		CommandHistory.executeMany(
 
-			new SetPositionCommand( point, oldPosition, newPosition ),
+			new SetPositionCommand( point, newPosition, oldPosition ),
 
 			new CallFunctionCommand( this.surface, this.surface.update, [], this.surface.update, [] )
 

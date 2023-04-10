@@ -266,7 +266,11 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.isDragging = false;
 
-		if ( this.currentPoint != null ) this.controlPointUpdated.emit( this.currentPoint );
+		if ( this.currentPoint != null ) {
+
+			this.controlPointUpdated.emit( this.currentPoint );
+
+		}
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
