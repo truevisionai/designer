@@ -1,8 +1,8 @@
 name: Nightly Build
 
 on:
-  push:
-    branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
 jobs:
   build-and-release:
     runs-on: ${{ matrix.os }}
