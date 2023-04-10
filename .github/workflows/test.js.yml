@@ -27,7 +27,7 @@ jobs:
         touch src/environments/environment.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.ts
 
     - name: Run Tests
-      run: npm run test
+      run: npm test -- --no-watch --browsers=ChromeHeadless --code-coverage
 
     - name: Build Angular app
       run: npm run build:prod
