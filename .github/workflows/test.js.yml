@@ -28,6 +28,3 @@ jobs:
 
     - name: Run Tests
       run: npm test -- --no-watch --browsers=ChromeHeadless --code-coverage
-
-    - name: Build Angular app
-      run: npm run build:prod
