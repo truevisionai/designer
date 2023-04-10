@@ -113,7 +113,9 @@ export class SurfaceTool extends BaseTool {
 		this.cpUnselectedSub.unsubscribe();
 
 		this.shapeEditor.destroy();
+		delete this.shapeEditor;
 	}
+
 
 	public onPointerClicked ( e: PointerEventData ) {
 
@@ -132,7 +134,7 @@ export class SurfaceTool extends BaseTool {
 		}
 	}
 
-	private onControlPointSelected ( cp: AnyControlPoint ) {
+	public onControlPointSelected ( cp: AnyControlPoint ) {
 
 		this.surface = cp.mainObject;
 
@@ -140,13 +142,13 @@ export class SurfaceTool extends BaseTool {
 
 	}
 
-	private onControlPointUnselected () {
+	public onControlPointUnselected () {
 
 		this.surface = null;
 
 	}
 
-	private onControlPointAdded ( cp: AnyControlPoint ) {
+	public onControlPointAdded ( cp: AnyControlPoint ) {
 
 		if ( !this.surface ) {
 
@@ -160,7 +162,7 @@ export class SurfaceTool extends BaseTool {
 
 	}
 
-	private onControlPointUpdated ( point: BaseControlPoint ) {
+	public onControlPointUpdated ( point: BaseControlPoint ) {
 
 		const oldPosition = this.shapeEditor.pointerDownAt;
 
@@ -183,13 +185,13 @@ export class SurfaceTool extends BaseTool {
 
 	}
 
-	private onControlPointMoved () {
+	public onControlPointMoved () {
 
 		this.surface.spline.update();
 
 	}
 
-	private onDeletePressed ( e: KeyboardEvent ) {
+	public onDeletePressed ( e: KeyboardEvent ) {
 
 		if ( !this.surface ) return;
 
