@@ -5,24 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Electron: Localhost",
-			"type": "chrome",
-			"request": "launch",
-			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-			"runtimeArgs": [
-				"${workspaceRoot}/main.js",
-				"--open-dev-tools",
-				"--disable-splash",
-				"--locahost",
-				"--remote-debugging-port=9223",
-			],
-			"windows": {
-				"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
-			},
-			"webRoot": "${workspaceRoot}/src"
-		},
-		{
-			"name": "Electron: File",
+			"name": "Run File",
 			"type": "node",
 			"request": "launch",
 			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
@@ -34,15 +17,17 @@
 			],
 			"windows": {
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-			}
+			},
+			"postDebugTask": "Electron: Kill Port"
 		},
 		{
-			"name": "Electron: Attach",
+			"name": "Attach",
 			"type": "chrome",
 			"request": "attach",
 			"port": 9223,
 			"webRoot": "${workspaceFolder}",
-			"timeout": 15000
+			"timeout": 15000,
+			"preLaunchTask": "delay",
 		},
 		{
 			"name": "Karma-Test-Debug",
@@ -76,18 +61,11 @@
 	],
 	"compounds": [
 		{
-			"name": "Debug Electron: File",
+			"name": "Debug Renderer",
 			"configurations": [
-				"Electron: Attach",
-				"Electron: File"
-			]
-		},
-		{
-			"name": "Debug Electron: Localhost",
-			"configurations": [
-				"Electron: Attach",
-				"Electron: Localhost"
-			]
+				"Run File",
+				"Attach"
+			],
 		}
 	]
 }

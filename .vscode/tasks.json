@@ -2,23 +2,25 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Electron: File",
-			"type": "shell",
-			"command": "${workspaceFolder}/node_modules/.bin/electron",
-			"args": [
-				"--open-dev-tools",
-				"--disable-splash",
-				"--remote-debugging-port=9223",
-				"."
-			],
-			"windows": {
-				"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-			}
-		},
-		{
 			"label": "delay",
 			"type": "shell",
 			"command": "sleep 2"
+		},
+		{
+			"label": "Electron: Kill Port",
+			"type": "shell",
+			"command": "kill -9 $(lsof -t -i:9223)",
+			"windows": {
+				"command": "taskkill /F /IM node.exe /T /FI \"PID eq $(netstat -aon | findstr :9223 | awk '{print $5}')\""
+			},
+			"presentation": {
+				"reveal": "never",
+				"panel": "shared"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
