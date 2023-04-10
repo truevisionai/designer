@@ -1,0 +1,33 @@
+name: NPM Tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Create environment.ts file
+      run: |
+        touch src/environments/environment.prod.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.prod.ts
+        touch src/environments/environment.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.ts
+
+    - name: Run Tests
+      run: npm run test
+
+    - name: Build Angular app
+      run: npm run build:prod
