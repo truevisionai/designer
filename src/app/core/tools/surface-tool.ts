@@ -66,9 +66,10 @@ export class SurfaceTool extends BaseTool {
 
 			surface.spline.controlPoints.forEach( cp => {
 
+				// TODO: this is a hack, we should not be setting the main object here
 				cp.mainObject = surface;
 
-				this.shapeEditor.controlPoints.push( cp );
+				this.shapeEditor.pushControlPoint( cp );
 
 			} );
 		} );

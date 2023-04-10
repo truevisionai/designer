@@ -51,6 +51,9 @@ export class TvSurface {
 		// this helps avoid exporting it in the 3d file
 		SceneService.add( this.spline.mesh );
 
+		// set the main object of each control point to this surface
+		this.spline.controlPoints.forEach( cp => cp.mainObject = this );
+
 		// update the surface if >=3 points are present
 		if ( this.spline.controlPoints.length > 2 ) this.update();
 

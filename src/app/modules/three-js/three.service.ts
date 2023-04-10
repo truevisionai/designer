@@ -58,7 +58,7 @@ export class ThreeService implements IEngine {
 		// const box = this.getCanvasBounds();
 		// this.CANVAS_WIDTH = box.width === 0 ? this.CANVAS_WIDTH : box.width;
 		// this.CANVAS_HEIGHT = box.height === 0 ? this.CANVAS_HEIGHT : box.height;CO
-		SceneService.scene.background = new THREE.Color( COLOR.BLACK );// new THREE.Color( 0x2e2e2e );
+		SceneService.scene.background = new THREE.Color( 0x333333 );// new THREE.Color( 0x2e2e2e );
 
 		this.createCameras();
 
@@ -151,7 +151,7 @@ export class ThreeService implements IEngine {
 		var gridHelper = new THREE.GridHelper( 1000, 100 );
 
 		( gridHelper.material as Material ).transparent = true;
-		( gridHelper.material as Material ).opacity = 0.2;
+		( gridHelper.material as Material ).opacity = 0.5;
 		( gridHelper.material as Material ).needsUpdate = false;
 
 		// to adjust with up Z
