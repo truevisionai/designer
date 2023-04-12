@@ -69,6 +69,8 @@ export class SceneExporterService {
 			supressEmptyNode: true,
 			format: true,
 			trimValues: true,
+			allowBooleanAttributes: true,
+			suppressBooleanAttributes: false,
 		};
 
 		const builder = new XMLBuilder( defaultOptions );
