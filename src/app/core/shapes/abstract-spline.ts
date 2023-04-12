@@ -56,6 +56,12 @@ export abstract class AbstractSpline {
 
 	}
 
+	addControlPoints ( points: BaseControlPoint[] ): void {
+
+		points.forEach( point => this.addControlPoint( point ) );
+
+	}
+
 	addControlPointAtNew ( position: Vector3 ): RoadControlPoint {
 
 		throw new Error( 'method not implemented' );
