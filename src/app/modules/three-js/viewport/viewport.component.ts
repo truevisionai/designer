@@ -56,14 +56,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private animationId;
 	private renderer: WebGLRenderer;
-	private ORTHO_DRIVER = 4;
-	// private stats: Stats;
+
 	private lastTime: number = Date.now();
 	private minTime: number = 100;
 
 	constructor (
 		private threeService: ThreeService,
-		private inputService: InputService,
 		private eventSystem: EventSystem,
 		private importer: ImporterService,
 	) {
@@ -76,6 +74,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngOnInit () {
 
+		this.prevTime = ( performance || Date ).now();
+		this.beginTime = ( performance || Date ).now();
 
 	}
 
@@ -91,16 +91,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngAfterViewInit (): void {
 
-		this.prevTime = ( performance || Date ).now();
-		this.beginTime = ( performance || Date ).now();
-
 		if ( this.detectWebgl() ) {
 
 			this.setupRenderer();
 
 			setTimeout( () => {
 
-				this.setCanvasSize();
+				this.resizeCanvas();
 
 			}, 300 );
 
@@ -122,58 +119,17 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		// this.raycaster.linePrecision = 0.25;
 		this.raycaster.far = 10000;
 
-		////////////////////////////////////
-
 		this.renderer.setSize( this.CANVAS_WIDTH, this.CANVAS_HEIGHT );
 
 		this.canvas.appendChild( this.renderer.domElement );
-
-		////////////////////////////////////
 
 		this.threeService.setupScene( this.canvas, this.renderer );
 
 		this.render();
 
-		// const self: ViewportComponent = this;
-
-		/**
-		 * Commented the below as this was causing slow rendering
-		 */
-		// ( function render () {
-
-		//     self.animationId = requestAnimationFrame( render );
-
-		//     self.render();
-
-		// }() );
-
-		// self.render();
-
-		this.handleEditorEvents();
-		this.handlePointerEvents();
-
-		if ( this.directionalLightEnabled ) this.threeService.addDirectionalLight();
-
-	}
-
-	handleEditorEvents (): any {
-
-		// this.editorService.onZoomIn.subscribe( e => {
-		//     if ( this.threeService.camera.zoom >= 2.0 ) return;
-		//     this.threeService.camera.zoom += 0.1;
-		//     this.threeService.camera.updateProjectionMatrix();
-		// } );
-		//
-		// this.editorService.onZoomOut.subscribe( e => {
-		//     if ( this.threeService.camera.zoom <= 0.20 ) return;
-		//     this.threeService.camera.zoom -= 0.1;
-		//     this.threeService.camera.updateProjectionMatrix();
-		// } );
-		//
-		// this.editorService.onZoomReset.subscribe( e => {
-		//     this.threeService.camera.zoom = 1;
-		//     this.threeService.camera.updateProjectionMatrix();
-		// } );
+		if ( this.directionalLightEnabled ) {
+			this.threeService.addDirectionalLight();
+		}
 
 	}
 
@@ -214,54 +170,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	findIntersections ( recursive: boolean = true ): void {
-
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
-
-		this.intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
-
-		if ( this.intersections.length > 0 ) {
-
-			// if new object then fire enter event
-			if (
-				this.lastIntersection != null &&
-				this.lastIntersection.object.id != this.intersections[ 0 ].object.id &&
-				this.intersections[ 0 ].object[ 'detectRaycast' ] == true
-			) {
-
-				this.eventSystem.pointerExit.emit( this.convertToPointerData( 0, this.lastIntersection ) );
-				this.eventSystem.pointerEnter.emit( this.convertToPointerData( 0, this.intersections[ 0 ] ) );
-
-			}
-
-			if ( this.intersections[ 0 ].object[ 'detectRaycast' ] == true ) {
-
-				this.lastIntersection = this.intersections[ 0 ];
-
-			}
-
-			// if ( this.threeIntersection.object.userData.is_annotation ) {
-			//   this.editorService.mouseOverAnnotationObject.emit( this.threeIntersection );
-			// }
-
-			// if ( this.threeIntersection.object.userData.is_button ) {
-			//   this.editorService.mouseOverButton.emit( this.threeIntersection );
-			// }
-
-
-		} else {
-
-			if ( this.lastIntersection != null ) {
-
-				this.eventSystem.pointerExit.emit( this.convertToPointerData( 0, this.lastIntersection ) );
-
-			}
-
-			this.lastIntersection = null;
-
-		}
-	}
-
 	onMouseMove ( event: MouseEvent ) {
 
 		// TODO: implement GPU picking
@@ -286,7 +194,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
 
 		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.convertToPointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
 		}
 
 		// TODO: no need to find intersections on mouse move
@@ -295,7 +203,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.findIntersections( false );
 
 		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.convertToPointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
 		} else {
 			// this.eventSystem.pointerMoved.emit( { point: new THREE.Vector3 } );
 		}
@@ -341,10 +249,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.fireSelectionEvents();
 				if ( this.intersections.length > 0 ) {
 					this.eventSystem.pointerDown.emit(
-						this.convertToPointerData( event.button, this.intersections[ 0 ] )
+						this.preparePointerData( event.button, this.intersections[ 0 ] )
 					);
 				} else {
-					this.eventSystem.pointerDown.emit( this.convertToPointerData( event.button, null ) );
+					this.eventSystem.pointerDown.emit( this.preparePointerData( event.button, null ) );
 				}
 				break;
 
@@ -355,7 +263,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			// right
 			case 2:
-				this.eventSystem.pointerDown.emit( this.convertToPointerData( event.button, null ) );
+				this.eventSystem.pointerDown.emit( this.preparePointerData( event.button, null ) );
 				break;
 
 		}
@@ -364,7 +272,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseUp ( event: MouseEvent ) {
 
-		this.eventSystem.pointerUp.emit( this.convertToPointerData( event.button, null ) );
+		this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, null ) );
 
 	}
 
@@ -417,13 +325,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.findIntersections();
 
-		this.eventSystem.drop.emit( this.convertToPointerData( 0, this.intersections[ 0 ] ) );
+		this.eventSystem.drop.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
 
 		let position = null;
 
 		if ( this.intersections.length > 0 ) {
 
-			this.eventSystem.pointerMoved.emit( this.convertToPointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
 
 			position = this.intersections[ 0 ].point;
 
@@ -436,32 +344,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	@HostListener( 'window: resize', [ '$event' ] )
 	resize () {
 
-		this.setCanvasSize();
-
-		// let width = this.CANVAS_WIDTH;
-		// let height = this.CANVAS_HEIGHT;
-		//
-		// // const box = this.threeService.getCanvasBounds();
-		//
-		// // this.CANVAS_WIDTH = width = box.width;
-		// // this.CANVAS_HEIGHT = height = box.height;
-		//
-		// this.renderingService.renderer.setSize( width, height );
-		//
-		// // this.renderer.setViewport( box.left, -box.top, width, height );
-		// this.renderingService.renderer.setViewport( 0, -64, width, height );
-		//
-		// this.threeService.oCamera.left = width / -2;
-		// this.threeService.oCamera.right = width / 2;
-		// this.threeService.oCamera.top = height / 2;
-		// this.threeService.oCamera.bottom = height / -2;
-		//
-		// this.threeService.oCamera.updateProjectionMatrix();
-
-	}
-
-	handlePointerEvents (): any {
-
+		this.resizeCanvas();
 
 	}
 
@@ -520,14 +403,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		if ( this.intersections.length > 0 ) {
 
 			this.eventSystem.pointerClicked.emit(
-				this.convertToPointerData( button, this.intersections[ 0 ] )
+				this.preparePointerData( button, this.intersections[ 0 ] )
 			);
 
 		}
 
 	}
 
-	convertToPointerData ( button: number, i: THREE.Intersection ): PointerEventData {
+	preparePointerData ( button: number, i: THREE.Intersection ): PointerEventData {
 
 		let p = new PointerEventData();
 
@@ -545,26 +428,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.camera = this.threeService.camera;
 			p.mouse = this.mouse;
 
-			if ( this.threeService.camera instanceof OrthographicCamera ) {
-
-				// approximation, not accurate
-				// p.approxCameraDistance = ( 1 / this.threeService.camera.zoom ) * this.ORTHO_DRIVER * this.threeService.camera.position.z;
-
-				// Calculate the camera's dimensions
-				const cameraWidth = this.threeService.camera.right - this.threeService.camera.left;
-				const cameraHeight = this.threeService.camera.top - this.threeService.camera.bottom;
-
-				// Calculate the diagonal size of the camera's visible area
-				const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
-
-				// Calculate the approximate camera distance using the zoom and the diagonal size
-				p.approxCameraDistance = ( cameraDiagonalSize / ( 2 * this.threeService.camera.zoom ) );
-
-			} else if ( this.threeService.camera instanceof PerspectiveCamera ) {
-
-				p.approxCameraDistance = i.distance;
-
-			}
+			p.approxCameraDistance = this.calculateCameraDistance( i );
 
 		} else {
 
@@ -582,6 +446,27 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		return p;
+	}
+
+	calculateCameraDistance ( i: Intersection ): number {
+
+		if ( this.threeService.camera instanceof OrthographicCamera ) {
+
+			// Calculate the camera's dimensions
+			const cameraWidth = this.threeService.camera.right - this.threeService.camera.left;
+			const cameraHeight = this.threeService.camera.top - this.threeService.camera.bottom;
+
+			// Calculate the diagonal size of the camera's visible area
+			const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
+
+			// Calculate the approximate camera distance using the zoom and the diagonal size
+			return ( cameraDiagonalSize / ( 2 * this.threeService.camera.zoom ) );
+
+		} else if ( this.threeService.camera instanceof PerspectiveCamera ) {
+
+			return i.distance;
+
+		}
 	}
 
 	detectWebgl () {
@@ -625,7 +510,55 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	private setCanvasSize () {
+	findIntersections ( recursive: boolean = true ): void {
+
+		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+
+		this.intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
+
+		if ( this.intersections.length > 0 ) {
+
+			// if new object then fire enter event
+			if (
+				this.lastIntersection != null &&
+				this.lastIntersection.object.id != this.intersections[ 0 ].object.id &&
+				this.intersections[ 0 ].object[ 'detectRaycast' ] == true
+			) {
+
+				this.eventSystem.pointerExit.emit( this.preparePointerData( 0, this.lastIntersection ) );
+				this.eventSystem.pointerEnter.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+
+			}
+
+			if ( this.intersections[ 0 ].object[ 'detectRaycast' ] == true ) {
+
+				this.lastIntersection = this.intersections[ 0 ];
+
+			}
+
+			// if ( this.threeIntersection.object.userData.is_annotation ) {
+			//   this.editorService.mouseOverAnnotationObject.emit( this.threeIntersection );
+			// }
+
+			// if ( this.threeIntersection.object.userData.is_button ) {
+			//   this.editorService.mouseOverButton.emit( this.threeIntersection );
+			// }
+
+
+		} else {
+
+			if ( this.lastIntersection != null ) {
+
+				this.eventSystem.pointerExit.emit( this.preparePointerData( 0, this.lastIntersection ) );
+
+			}
+
+			this.lastIntersection = null;
+
+		}
+	}
+
+	private resizeCanvas () {
 
 		const container = this.renderer.domElement.parentElement.parentElement;
 
