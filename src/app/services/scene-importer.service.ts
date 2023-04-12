@@ -412,7 +412,7 @@ export class SceneImporterService extends AbstractReader {
 	private importCatmullSpline ( xml: any ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
-		const closed = xml.attr_closed === 'true' || xml.attr_closed === '1';
+		const closed = xml.attr_closed === 'true';
 		const tension = parseFloat( xml.attr_tension ) || 0.5;
 
 		const spline = new CatmullRomSpline( closed, type, tension );
