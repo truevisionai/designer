@@ -140,9 +140,7 @@ export class FileService {
 
 	}
 
-	import ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
-
-		if ( !this.electronService.isElectronApp ) throw new Error( 'Error: cannot import' );
+	showOpenWindow ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
 
 		const options = {
 			title: 'Select file',
@@ -178,7 +176,7 @@ export class FileService {
 	 */
 	importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
 
-		this.import( path, type, extensions, null );
+		this.showOpenWindow( path, type, extensions, null );
 
 	}
 

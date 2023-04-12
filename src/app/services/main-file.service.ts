@@ -16,6 +16,7 @@ import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -72,19 +73,13 @@ export class MainFileService {
 
 	showOpenWindow ( path?: string ) {
 
-		if ( AppService.isElectronApp ) {
+		this.fileService.showOpenWindow( path, 'tv-map', [ 'xml', 'xosc' ], ( file: IFile ) => {
 
-			this.fileService.import( path, 'tv-map', [ 'xml', 'xosc' ], ( file: IFile ) => {
+			TvConsole.info( 'Opening file: ' + file.path );
 
-				this.sceneImporter.importFromFile( file );
+			this.sceneImporter.importFromFile( file );
 
-			} );
-
-		} else {
-
-			throw new Error( 'not implemented' );
-
-		}
+		} );
 
 	}
 
