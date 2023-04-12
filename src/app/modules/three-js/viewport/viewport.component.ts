@@ -269,8 +269,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		// https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
 		// https://github.com/brianxu/GPUPicker
 
-		this.mouse.x = ( ( event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
-		this.mouse.y = -( ( event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+		this.updateMousePosition( event );
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
@@ -279,10 +278,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		if ( ( Date.now() - this.lastTime ) < this.minTime ) return;
 
 		this.lastTime = Date.now();
-
-
-		// this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-		// this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
 		// this.editorService.move.emit( this.mouse );
 
@@ -418,8 +413,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		this.mouse.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
-		this.mouse.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+		this.updateMousePosition( $event );
 
 		this.findIntersections();
 
@@ -621,6 +615,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onContextMenu ( $event: MouseEvent ) {
 
+
+	}
+
+	updateMousePosition ( $event: MouseEvent ) {
+
+		this.mouse.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
+		this.mouse.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
 
 	}
 
