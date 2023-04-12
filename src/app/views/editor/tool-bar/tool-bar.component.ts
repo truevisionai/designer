@@ -84,6 +84,12 @@ export class ToolBarComponent implements OnInit {
 
 	}
 
+	getClass ( name: string ) {
+
+		return this.currentToolName == name ? 'mat-accent' : '';
+
+	}
+
 	showRoadTool () {
 
 		this.setTool( new RoadTool() );
