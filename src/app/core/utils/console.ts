@@ -4,32 +4,32 @@
 
 const MAX_LOG_COUNT = 500;
 
-enum ConsoleLogType {
+enum TvLogType {
 	info,
 	warn,
 	error,
 }
 
-class ConsoleLog {
+class TvLog {
 
 	public time = new Date();
 
-	constructor ( public type: ConsoleLogType, public message: any, public counter = 0 ) {
+	constructor ( public type: TvLogType, public message: any, public counter = 0 ) {
 	}
 
 	get icon () {
 
 		switch ( this.type ) {
 
-			case ConsoleLogType.info:
+			case TvLogType.info:
 				return 'info';
 				break;
 
-			case ConsoleLogType.warn:
+			case TvLogType.warn:
 				return 'warn';
 				break;
 
-			case ConsoleLogType.error:
+			case TvLogType.error:
 				return 'error';
 				break;
 
@@ -44,7 +44,7 @@ class ConsoleLog {
 
 export class TvConsole {
 
-	static logs: ConsoleLog[] = [];
+	static logs: TvLog[] = [];
 
 	static get lastLog () {
 		return this.logs[ this.logs.length - 1 ];
@@ -59,7 +59,7 @@ export class TvConsole {
 	static info ( message: string ) {
 
 		// if same message is being printed then just increase the counter
-		if ( this.logs.length > 0 && this.lastLog.type === ConsoleLogType.info && this.lastLog.message === message ) {
+		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.info && this.lastLog.message === message ) {
 
 			this.lastLog.counter += 1;
 
@@ -67,7 +67,7 @@ export class TvConsole {
 
 		} else {
 
-			this.logs.unshift( new ConsoleLog( ConsoleLogType.info, message ) );
+			this.logs.unshift( new TvLog( TvLogType.info, message ) );
 
 		}
 
@@ -78,7 +78,7 @@ export class TvConsole {
 	static warn ( message: string ) {
 
 		// if same message is being printed then just increase the counter
-		if ( this.logs.length > 0 && this.lastLog.type === ConsoleLogType.warn && this.lastLog.message === message ) {
+		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.warn && this.lastLog.message === message ) {
 
 			this.lastLog.counter += 1;
 
@@ -86,7 +86,7 @@ export class TvConsole {
 
 		} else {
 
-			this.logs.unshift( new ConsoleLog( ConsoleLogType.warn, message ) );
+			this.logs.unshift( new TvLog( TvLogType.warn, message ) );
 
 		}
 
@@ -98,7 +98,7 @@ export class TvConsole {
 	static error ( message: string ) {
 
 		// if same message is being printed then just increase the counter
-		if ( this.logs.length > 0 && this.lastLog.type === ConsoleLogType.error && this.lastLog.message === message ) {
+		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.error && this.lastLog.message === message ) {
 
 			this.lastLog.counter += 1;
 
@@ -106,7 +106,7 @@ export class TvConsole {
 
 		} else {
 
-			this.logs.unshift( new ConsoleLog( ConsoleLogType.error, message ) );
+			this.logs.unshift( new TvLog( TvLogType.error, message ) );
 
 		}
 
