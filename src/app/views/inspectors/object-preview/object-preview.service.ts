@@ -77,7 +77,7 @@ export class PreviewService {
 
 		this.resetCamera();
 
-		const directionaLight = new DirectionalLight( '0xffffff', 1 );
+		const directionaLight = new DirectionalLight( 0xffffff, 1 );
 		directionaLight.position.set( 45, 45, 45 );
 
 		this.scene.add( directionaLight );
@@ -166,9 +166,23 @@ export class PreviewService {
 
 		const image = this.renderer.domElement.toDataURL();
 
-		this.cube.visible = this.sphere.visible = false;
+		this.resetScene();
 
 		return image;
+	}
+
+	resetScene () {
+
+		this.cube.visible = this.sphere.visible = false;
+
+		this.ground.visible = false;
+
+		this.scene.background = null;
+
+		this.scene.fog = null;
+
+		this.resetCamera();
+
 	}
 
 	getSignPreview ( sign: TvRoadSign ): string {
@@ -193,7 +207,7 @@ export class PreviewService {
 
 		this.scene.remove( model );
 
-		this.ground.visible = false;
+		this.resetScene();
 
 		return image;
 	}
@@ -226,6 +240,8 @@ export class PreviewService {
 
 		this.scene.remove( gameObject );
 
+		this.resetScene();
+
 		return image;
 	}
 
@@ -253,7 +269,7 @@ export class PreviewService {
 
 		const image = this.renderer.domElement.toDataURL();
 
-		this.cube.visible = this.sphere.visible = false;
+		this.resetScene();
 
 		return image;
 	}

@@ -5,7 +5,7 @@
 <div *ngIf="material" class="inspector-form-container">
 
 	<mat-card class="mat-card material-preview">
-		<img src="{{ thumbnail }}" />
+		<img [src]="thumbnail" />
 	</mat-card>
 
 	<app-string-field (changed)="onNameChanged($event)" [value]="material.name" label="Name"></app-string-field>

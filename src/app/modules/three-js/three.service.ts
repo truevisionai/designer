@@ -67,7 +67,7 @@ export class ThreeService implements IEngine {
 
 	addDirectionalLight () {
 
-		const directionaLight = new THREE.DirectionalLight( '0xffffff', 1 );
+		const directionaLight = new THREE.DirectionalLight( 0xffffff, 1 );
 
 		directionaLight.position.set( 5, 10, 7.5 );
 

@@ -38,7 +38,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 	@ViewChild( 'viewport' ) viewportRef: ElementRef;
 
-	public renderer: WebGLRenderer;
+	public static renderer: WebGLRenderer;
 	public frameId: number;
 
 	public scene: Scene = new Scene;
@@ -67,26 +67,33 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 	ngOnInit () {
 
+		if ( !ObjectPreviewComponent.renderer ) {
+
+			const options = {
+				alpha: false,
+				antialias: true,
+				precision: 'highp',
+				stencil: false
+			};
+
+			ObjectPreviewComponent.renderer = new WebGLRenderer( options );
+			ObjectPreviewComponent.renderer.setPixelRatio( window.devicePixelRatio );
+			ObjectPreviewComponent.renderer.setClearColor( 0xffffff, 1 );
+			ObjectPreviewComponent.renderer.autoClear = true;
+
+		}
+
+		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
+
+		this.addDirectionLight();
 
 	}
 
 	ngAfterViewInit (): void {
 
-		this.renderer = new WebGLRenderer( { alpha: false, antialias: true, precision: 'highp', stencil: false } );
-		this.renderer.setPixelRatio( window.devicePixelRatio );
-		this.renderer.setClearColor( 0xffffff, 1 );
-		this.renderer.autoClear = true;
-
-		// setting this after loading
-		// this.renderer.setSize( this.width, 100 );
-
-		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
-
 		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
-		this.addDirectionLight();
-
-		this.canvas.appendChild( this.renderer.domElement );
+		this.canvas.appendChild( ObjectPreviewComponent.renderer.domElement );
 
 		switch ( this.objectType ) {
 
@@ -111,7 +118,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 			this.setCanvasSize();
 
-		}, 300 );
+		}, 0 );
 
 		this.render();
 	}
@@ -120,7 +127,8 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		if ( this.frameId ) cancelAnimationFrame( this.frameId );
 
-		if ( this.renderer ) this.renderer.dispose();
+		// no need to dispose if renderer is static
+		// if ( ObjectPreviewComponent.renderer ) ObjectPreviewComponent.renderer.dispose();
 
 	}
 
@@ -168,7 +176,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
 		this.camera.position.z = 5;
 
-		// this.controls = new EditorControls( this.camera, this.renderer.domElement );
+		// this.controls = new EditorControls( this.camera, ObjectPreviewComponent.renderer.domElement );
 		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
 		// console.log( this.width, this.height, this.canvas.clientWidth, this.canvas.clientHeight );
@@ -184,22 +192,22 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		//     this.render();
 		// } );
 
-		this.renderer.render( this.scene, this.camera );
+		ObjectPreviewComponent.renderer.render( this.scene, this.camera );
 
 		this.controls.update();
 	}
 
 	setCanvasSize () {
 
-		const container = this.renderer.domElement.parentElement.parentElement;
+		const container = ObjectPreviewComponent.renderer.domElement.parentElement.parentElement;
 
 		const box = container.getBoundingClientRect();
 
 		const width = container.clientWidth || 300;
 		const height = 300; // container.clientHeight;
 
-		this.renderer.setViewport( -box.left, -box.top, width, height );
-		this.renderer.setSize( width, height );
+		ObjectPreviewComponent.renderer.setViewport( -box.left, -box.top, width, height );
+		ObjectPreviewComponent.renderer.setSize( width, height );
 
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
@@ -208,7 +216,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 	addDirectionLight () {
 
-		const directionaLight = new DirectionalLight( '0xffffff', 1 );
+		const directionaLight = new DirectionalLight( 0xffffff, 1 );
 
 		directionaLight.position.set( 5, 10, 7.5 );
 
