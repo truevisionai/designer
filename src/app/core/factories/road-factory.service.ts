@@ -58,7 +58,7 @@ export class RoadFactory {
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		if ( !road.isJunction ) NodeFactoryService.updateRoadNodes( road );
+		if ( !road.isJunction ) road.updateRoadNodes();
 
 	}
 

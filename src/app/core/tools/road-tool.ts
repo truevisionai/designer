@@ -52,11 +52,11 @@ export class RoadTool extends BaseTool {
 
 		super.enable();
 
-		this.map.roads.forEach( road => {
+		this.map.getRoads().forEach( road => {
 
 			if ( !road.isJunction ) {
 
-				NodeFactoryService.updateRoadNodes( road );
+				road.updateRoadNodes();
 
 				road.showNodes();
 
@@ -70,7 +70,7 @@ export class RoadTool extends BaseTool {
 
 		super.disable();
 
-		this.map.roads.forEach( road => road.hideNodes() );
+		this.map.getRoads().forEach( road => road.hideNodes() );
 
 		if ( this.road ) this.hideRoad( this.road );
 
@@ -442,7 +442,7 @@ export class RoadTool extends BaseTool {
 
 				const node = intersection.object.parent as RoadNode;
 
-				if ( shiftKeyDown && this.node && this.node.roadId !== node.roadId ) {
+				if ( shiftKeyDown && this.node && this.node.getRoadId() !== node.getRoadId() ) {
 
 					// node with node then
 
@@ -470,7 +470,7 @@ export class RoadTool extends BaseTool {
 
 					// this only selects the node
 
-					const road = this.map.getRoadById( node.roadId );
+					const road = node.road;
 
 					CommandHistory.executeAll( [
 
@@ -520,7 +520,7 @@ export class RoadTool extends BaseTool {
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		NodeFactoryService.updateRoadNodes( this.road );
+		this.road.updateRoadNodes();
 	}
 
 	private hideRoad ( road: TvRoad ): void {

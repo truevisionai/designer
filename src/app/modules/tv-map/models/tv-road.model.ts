@@ -1182,6 +1182,51 @@ export class TvRoad {
 
 	}
 
+	updateRoadNodes (): void {
+
+		if ( !this.startNode ) {
+			this.startNode = this.createRoadNode( 'start' );
+		} else {
+			this.startNode.update();
+		}
+
+
+		if ( !this.endNode ) {
+			this.endNode = this.createRoadNode( 'end' );
+		} else {
+			this.endNode.update();
+		}
+	}
+
+
+	private createRoadNode ( distance: 'start' | 'end' ) {
+
+		const node = new RoadNode( this, distance );
+
+		SceneService.add( node );
+
+		return node;
+	}
+
+	getRoadWidthAt ( s: number ) {
+
+		let leftWidth = 0, rightWidth = 0;
+
+		this.getLaneSectionAt( s )
+			.getLeftLanes()
+			.forEach( lane => leftWidth += lane.getWidthValue( s ) );
+
+		this.getLaneSectionAt( s )
+			.getRightLanes()
+			.forEach( lane => rightWidth += lane.getWidthValue( s ) );
+
+		return {
+			totalWidth: leftWidth + rightWidth,
+			leftSideWidth: leftWidth,
+			rightSideWidth: rightWidth,
+		};
+	}
+
 	private updateLaneSections () {
 
 		const sections = this.getLaneSections();

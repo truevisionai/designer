@@ -78,7 +78,7 @@ describe( 'RoadTool', () => {
 
 		roadA.updateGeometryFromSpline();
 
-		NodeFactoryService.updateRoadNodes( roadA );
+		roadA.updateRoadNodes();
 
 		const roadB = map.addDefaultRoad();
 
@@ -88,7 +88,7 @@ describe( 'RoadTool', () => {
 
 		roadB.updateGeometryFromSpline();
 
-		NodeFactoryService.updateRoadNodes( roadB );
+		roadB.updateRoadNodes();
 
 		const joiningRoad = RoadFactory.joinRoadNodes( roadA, roadA.endNode, roadB, roadB.endNode );
 

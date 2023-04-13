@@ -29,10 +29,20 @@ export class TvMap {
 
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
 
+	/**
+	 * @deprecated use getRoads();
+	 */
 	get roads (): Map<number, TvRoad> {
 		return this._roads;
 	}
 
+	getRoads (): TvRoad[] {
+		return Array.from( this._roads.values() );
+	}
+
+	/**
+	 * @deprecated use setRoads()
+	 */
 	set roads ( value: Map<number, TvRoad> ) {
 		this._roads = value;
 	}
