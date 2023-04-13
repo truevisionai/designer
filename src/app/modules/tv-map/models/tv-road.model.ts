@@ -33,6 +33,7 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
+import { NodeFactoryService } from 'app/core/factories/node-factory.service';
 
 export class TvRoad {
 
@@ -1238,6 +1239,51 @@ export class TvRoad {
 			leftSideWidth: leftWidth,
 			rightSideWidth: rightWidth,
 		};
+	}
+
+	public hideWidthNodes () {
+
+		this.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				lane.getLaneWidthVector().forEach( laneWidth => {
+
+					if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
+
+				} );
+
+			} );
+
+		} );
+	}
+
+	public showWidthNodes () {
+
+		this.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				lane.getLaneWidthVector().forEach( laneWidth => {
+
+					if ( laneWidth.mesh ) {
+
+						laneWidth.mesh.visible = true;
+
+					} else {
+
+						laneWidth.mesh = NodeFactoryService.createLaneWidthNode( this, lane, laneWidth.s, laneWidth );
+
+						SceneService.add( laneWidth.mesh );
+
+					}
+
+				} );
+
+			} );
+
+		} );
+
 	}
 
 	private updateLaneSections () {

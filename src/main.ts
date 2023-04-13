@@ -11,9 +11,8 @@ import { Environment } from 'app/core/utils/environment';
 
 if ( Environment.production ) {
 	enableProdMode();
+	SentryService.init();
 }
-
-SentryService.init();
 
 platformBrowserDynamic().bootstrapModule( AppModule )
 	.catch( err => console.error( err ) );

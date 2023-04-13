@@ -69,7 +69,11 @@ export class OdRoadReferenceLineBuilder {
 
 		const points = this.convertToVector3( positions );
 
-		const geometry = new BufferGeometry().setFromPoints( points );
+		const geometry = new BufferGeometry();
+
+		geometry.name = "OdRoadReferenceLineGeometry";
+
+		geometry.setFromPoints( points );
 
 		const object = new Line( geometry, this.material );
 
