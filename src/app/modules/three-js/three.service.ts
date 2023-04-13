@@ -433,6 +433,10 @@ export class ThreeService implements IEngine {
 
 	public changeCamera () {
 
+		// Save the current camera's position and orientation
+		const oldPosition = this.camera.position.clone();
+		const oldQuaternion = this.camera.quaternion.clone();
+
 		if ( this.currentCameraIndex + 1 >= this.cameras.length ) {
 
 			this.currentCameraIndex = 0;
@@ -448,19 +452,27 @@ export class ThreeService implements IEngine {
 
 		ThreeService.controls.setCamera( this.camera );
 
-		if ( this.camera[ 'isOrthographicCamera' ] ) {
+		if ( this.camera instanceof THREE.OrthographicCamera ) {
+
+			// Set the position of the new orthographic camera
+			this.camera.position.copy( oldPosition );
+			this.camera.up.set( 0, 0, 1 );
+
+			ThreeService.controls.setTarget( new THREE.Vector3( oldPosition.x, oldPosition.y, 0 ) );
 
 			ThreeService.controls.setScreenSpaceEnabled( true );
 			ThreeService.controls.setRotateEnabled( false );
 
-		} else if ( this.camera[ 'isPerspectiveCamera' ] ) {
+		} else if ( this.camera instanceof THREE.PerspectiveCamera ) {
+
+			// Set the position and orientation of the new perspective camera
+			this.camera.position.copy( oldPosition );
+			this.camera.quaternion.copy( oldQuaternion );
 
 			ThreeService.controls.setScreenSpaceEnabled( false );
 			ThreeService.controls.setRotateEnabled( true );
 
 		}
-
-		ThreeService.controls.reset();
 	}
 
 	onWindowResized () {
