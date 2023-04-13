@@ -35,7 +35,7 @@ export class TvLane {
 	public visibility: TvLaneVisibility[] = [];
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
-	public height: TvLaneHeight[] = [];
+	private height: TvLaneHeight[] = [];
 	private _sectionId: number;
 	private _successor: number;
 	private lastAddedLaneWidth: number;

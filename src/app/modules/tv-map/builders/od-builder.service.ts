@@ -107,7 +107,11 @@ export class TvMapBuilder {
 
 	static createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
-		this.createLaneGameObject( lane, new BufferGeometry(), new MeshBasicMaterial(), laneSection );
+		const geometry = new BufferGeometry();
+
+		geometry.name = 'center-lane';
+
+		this.createLaneGameObject( lane, geometry, new MeshBasicMaterial(), laneSection );
 
 	}
 
@@ -280,7 +284,10 @@ export class TvMapBuilder {
 
 		this.createMeshIndices( lane.meshData );
 
-		const geometry = new THREE.BufferGeometry();
+		const geometry = new BufferGeometry();
+
+		geometry.name = "createLaneMeshFromGeometry lane-id : " + lane.id;
+
 		const vertices = new Float32Array( lane.meshData.vertices );
 		const normals = new Float32Array( lane.meshData.normals );
 		const faces = new Float32Array( lane.meshData.texCoords );
@@ -302,7 +309,7 @@ export class TvMapBuilder {
 
 	private static createLaneGameObject (
 		lane: TvLane,
-		geometry: THREE.BufferGeometry,
+		geometry: BufferGeometry,
 		material: THREE.Material | THREE.Material[],
 		laneSection: TvLaneSection
 	) {
