@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
 import { AssetDatabase } from 'app/services/asset-database';
 import { RoadStyle } from 'app/services/road-style.service';
@@ -197,14 +197,23 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		this.controls.update();
 	}
 
+	@HostListener( 'window: resize', [ '$event' ] )
+	resize () {
+
+		this.setCanvasSize();
+
+	}
+
 	setCanvasSize () {
 
-		const container = ObjectPreviewComponent.renderer.domElement.parentElement.parentElement;
+		const container = ObjectPreviewComponent.renderer.domElement.parentElement;
 
 		const box = container.getBoundingClientRect();
 
 		const width = container.clientWidth || 300;
-		const height = 300; // container.clientHeight;
+
+		// take 75% of the width to maintain 4:3 aspect ratio
+		const height = width ? width * 0.75 : 300; // container.clientHeight;
 
 		ObjectPreviewComponent.renderer.setViewport( -box.left, -box.top, width, height );
 		ObjectPreviewComponent.renderer.setSize( width, height );

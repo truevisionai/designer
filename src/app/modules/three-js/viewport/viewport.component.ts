@@ -99,7 +99,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 				this.resizeCanvas();
 
-			}, 300 );
+			}, 0 );
 
 		} else {
 
