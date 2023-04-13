@@ -267,6 +267,7 @@ export class LaneWidthTool extends BaseTool {
 		} else if ( this.controlPoint ) {
 
 			CommandHistory.executeMany(
+
 				new SetValueCommand( this, 'controlPoint', null ),
 
 				new SetInspectorCommand( LaneWidthInspector, { node: null, lane: this.lane } ),
@@ -299,6 +300,7 @@ export class LaneWidthTool extends BaseTool {
 					if ( !this.lane || this.lane.id !== newLane.id || this.lane.roadId !== newLane.roadId ) {
 
 						CommandHistory.executeMany(
+
 							new SetValueCommand( this, 'lane', newLane ),
 
 							new SetInspectorCommand( LaneWidthInspector, { lane: newLane } ),
@@ -311,9 +313,10 @@ export class LaneWidthTool extends BaseTool {
 			}
 		}
 
-		if ( !hasInteracted && !this.controlPoint ) {
+		if ( !hasInteracted && !this.controlPoint && this.lane ) {
 
 			CommandHistory.executeMany(
+
 				new SetValueCommand( this, 'lane', null ),
 
 				new SetInspectorCommand( null, null ),
