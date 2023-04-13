@@ -128,30 +128,12 @@ export class RoadFactory {
 
 			road.clearGeometries();
 
-			this.clearNodes( road );
+			road.clearNodes();
 
 		} else if ( road.spline.controlPoints.length > 1 ) {
 
 			this.updateGeometryAndRebuild( road );
 
-		}
-	}
-
-	static clearNodes ( road: TvRoad ) {
-
-		if ( road.startNode ) {
-
-			SceneService.remove( road.startNode );
-
-			road.startNode = null;
-
-		}
-
-		if ( road.endNode ) {
-
-			SceneService.remove( road.endNode );
-
-			road.endNode = null;
 		}
 	}
 

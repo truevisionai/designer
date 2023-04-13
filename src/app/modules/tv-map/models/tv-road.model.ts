@@ -1208,6 +1208,19 @@ export class TvRoad {
 		return node;
 	}
 
+	clearNodes () {
+
+		SceneService.remove( this.startNode );
+		SceneService.remove( this.endNode );
+
+		this.startNode = null;
+		this.endNode = null;
+
+		delete this.startNode;
+		delete this.endNode;
+
+	}
+
 	getRoadWidthAt ( s: number ) {
 
 		let leftWidth = 0, rightWidth = 0;
