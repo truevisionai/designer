@@ -77,7 +77,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 		if ( this.road ) {
 
-			LaneWidthTool.showNodes( this.road );
+			this.road.showWidthNodes();
 
 			this.laneHelper.drawRoad( this.road, LineType.DASHED );
 
@@ -92,11 +92,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 		}
 
-		if ( this.road ) {
-
-			LaneWidthTool.hideNodes( this.road );
-
-		}
+		if ( this.road ) this.road.hideWidthNodes();
 
 		this.laneHelper.clear();
 	}
