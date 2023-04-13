@@ -53,6 +53,18 @@ export class ExplicitSpline extends AbstractSpline {
 
 	}
 
+	hideLines () {
+
+		this.segments.forEach( segment => segment.visible = false );
+
+	}
+
+	showLines () {
+
+		this.segments.forEach( segment => segment.visible = true );
+
+	}
+
 	hide (): void {
 
 		this.controlPoints.forEach( i => i.hide() );

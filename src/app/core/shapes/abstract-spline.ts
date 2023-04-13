@@ -40,6 +40,10 @@ export abstract class AbstractSpline {
 
 	abstract show (): void;
 
+	abstract hideLines (): void;
+
+	abstract showLines (): void;
+
 	abstract update (): void;
 
 	abstract exportGeometries (): TvAbstractRoadGeometry[];

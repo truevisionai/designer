@@ -110,21 +110,26 @@ export class RoadFactory {
 
 		SceneService.remove( cp );
 
-		if ( road.spline.controlPoints.length < 1 ) {
+		if ( road.spline.controlPoints.length === 0 ) {
 
 			this.map.gameObject.remove( road.gameObject );
 
 			// nothing to update, will throw error
 			// road.spline.update();
 
+			road.spline.hideLines();
+
 			road.clearGeometries();
 
+			road.clearNodes();
 
 		} else if ( road.spline.controlPoints.length === 1 ) {
 
 			this.map.gameObject.remove( road.gameObject );
 
 			road.spline.update();
+
+			road.spline.hideLines();
 
 			road.clearGeometries();
 

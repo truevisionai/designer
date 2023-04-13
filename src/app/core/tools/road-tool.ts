@@ -25,14 +25,15 @@ import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
 import { BaseTool } from './base-tool';
 import { AppInspector } from '../inspector';
+import { CreateRoadCommand } from '../commands/create-road-command';
 
 export class RoadTool extends BaseTool {
 
 	public name: string = 'RoadTool';
 
-	private road: TvRoad;
-	private controlPoint: RoadControlPoint;
-	private node: RoadNode;
+	public road: TvRoad;
+	public controlPoint: RoadControlPoint;
+	public node: RoadNode;
 
 	private roadChanged: boolean = false;
 	private pointerDown: boolean = false;
@@ -500,25 +501,13 @@ export class RoadTool extends BaseTool {
 
 		if ( !this.road ) {
 
-			const result = RoadFactory.createRoad( position );
-
-			const addRoadCommand = new AddRoadCommand( result.road, result.point );
-
-			const setRoadCommand = new SetValueCommand( this, 'road', result.road );
-
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', result.point );
-
-			CommandHistory.execute( new MultiCmdsCommand( [ addRoadCommand, setRoadCommand, setPointCommand ] ) );
+			CommandHistory.execute( new CreateRoadCommand( this, position ) );
 
 		} else {
 
-			const controlPoint = RoadFactory.addControlPoint( this.road, position );
 
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', controlPoint );
+			CommandHistory.execute( new AddRoadPointCommand( this, this.road, position ) );
 
-			const addPointCommand = new AddRoadPointCommand( this.road, controlPoint, this.controlPoint );
-
-			CommandHistory.execute( new MultiCmdsCommand( [ addPointCommand, setPointCommand ] ) );
 		}
 	}
 
