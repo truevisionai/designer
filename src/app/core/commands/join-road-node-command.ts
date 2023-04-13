@@ -28,11 +28,11 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 	}
 
 	get firstRoad () {
-		return this.map.getRoadById( this.firstNode.roadId );
+		return this.firstNode.road
 	}
 
 	get secondRoad () {
-		return this.map.getRoadById( this.secondNode.roadId );
+		return this.secondNode.road;
 	}
 
 	execute (): void {

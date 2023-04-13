@@ -5,7 +5,11 @@
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
-import { BufferGeometry, Color, Group, LineBasicMaterial, LineSegments } from 'three';
+import { Color, Group, Vector2 } from 'three';
+
+import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 export class RoadNode extends Group {
 
@@ -14,9 +18,9 @@ export class RoadNode extends Group {
 
 	public static defaultColor = COLOR.MAGENTA;
 	public static defaultOpacity = 0.35;
-	public static defaultWidth = 5;
+	public static defaultWidth = 8;
 
-	public line: LineSegments;
+	public line: Line2;
 	public isSelected = false;
 
 	constructor ( public road: TvRoad, public distance: 'start' | 'end', public s?: number ) {
@@ -30,13 +34,19 @@ export class RoadNode extends Group {
 		const start = road.getPositionAt( sCoord, result.leftSideWidth );
 		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( [ start.toVector3(), end.toVector3() ] );
+		const lineGeometry = new LineGeometry();
+		lineGeometry.setPositions(
+			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
+		);
 
-		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( {
+		const lineMaterial = new LineMaterial( {
 			color: RoadNode.defaultColor,
 			opacity: RoadNode.defaultOpacity,
 			linewidth: RoadNode.defaultWidth,
-		} ) );
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+		} );
+
+		this.line = new Line2( lineGeometry, lineMaterial );
 
 		this.line[ 'tag' ] = RoadNode.lineTag;
 
@@ -46,8 +56,26 @@ export class RoadNode extends Group {
 
 	}
 
+	private createLineSegment () {
+
+		// const lineGeometry = new BufferGeometry().setFromPoints( [ start.toVector3(), end.toVector3() ] );
+
+		// this.line = new LineSegments( lineGeometry, new LineBasicMaterial( {
+		// 	color: RoadNode.defaultColor,
+		// 	opacity: RoadNode.defaultOpacity,
+		// 	linewidth: RoadNode.defaultWidth,
+		// } ) );
+
+		// this.line[ 'tag' ] = RoadNode.lineTag;
+
+		// this.line.renderOrder = 3;
+
+		// this.add( this.line );
+
+	}
+
 	get material () {
-		return this.line.material as LineBasicMaterial;
+		return this.line.material as LineMaterial;
 	}
 
 	get roadId (): number {
@@ -93,9 +121,15 @@ export class RoadNode extends Group {
 
 		// TODO: can be improved
 		this.line.geometry.dispose();
-		this.line.geometry = new BufferGeometry().setFromPoints( [
-			start.toVector3(),
-			end.toVector3()
-		] );
+
+		// for old version of three.js
+		// this.line.geometry = new BufferGeometry().setFromPoints( [
+		// 	start.toVector3(),
+		// 	end.toVector3()
+		// ] );
+
+		this.line.geometry.setPositions(
+			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
+		);
 	}
 }
