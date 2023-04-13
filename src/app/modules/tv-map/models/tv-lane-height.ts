@@ -3,14 +3,14 @@
  */
 
 export class TvLaneHeight {
-	public attr_sOffset;
+	public attr_sOffset = 0;
 	public attr_inner = 0;
 	public attr_outer = 0;
 
 	constructor ( sOffset: number, inner: number, outer: number ) {
-		this.attr_sOffset = sOffset;
-		this.attr_inner = inner;
-		this.attr_outer = outer;
+		this.attr_sOffset = sOffset || 0;
+		this.attr_inner = inner || 0;
+		this.attr_outer = outer || 0;
 	}
 
 	get sOffset () {
