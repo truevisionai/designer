@@ -144,52 +144,15 @@ export class RoadFactory {
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
 
-		const distance = 20;
-
-		let laneSection: TvLaneSection, firstRoadS: number;
-
-		let firstPoint: RoadControlPoint, lastPoint: RoadControlPoint;
-
-		let secondPosition: TvPosTheta, thirdPosition: TvPosTheta, fourPosition: TvPosTheta, fivePosition: TvPosTheta;
-
-		if ( firstNode.distance === 'start' ) {
-
-			firstRoadS = 0;
-
-			laneSection = firstRoad.getLaneSectionAt( 0 ).cloneAtS( 0, firstRoadS );
-
-			secondPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
-			thirdPosition = firstRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
-
-		} else {
-
-			firstRoadS = firstRoad.length - Maths.Epsilon;
-
-			laneSection = firstRoad.getLaneSectionAt( firstRoadS ).cloneAtS( 0, firstRoadS );
-
-			secondPosition = firstRoad.endPosition().clone().moveForward( distance );
-			thirdPosition = firstRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
-
-		}
-
-		if ( secondNode.distance === 'start' ) {
-
-			fourPosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance + 20 ).addLateralOffset( 5 );
-			fivePosition = secondRoad.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
-
-		} else {
-
-			fourPosition = secondRoad.endPosition().clone().moveForward( distance + 20 ).addLateralOffset( 5 );
-			fivePosition = secondRoad.endPosition().clone().moveForward( distance );
-
-		}
-
-		// Make control points required for road geometry
 		const joiningRoad = this.map.addDefaultRoad();
+
+		joiningRoad.clearLaneSections();
+
+		joiningRoad.addLaneSectionInstance( firstNode.getLaneSection() );
 
 		if ( firstRoad.hasType ) {
 
-			const roadType = firstRoad.getRoadTypeAt( firstRoadS );
+			const roadType = firstRoad.getRoadTypeAt( firstNode.sCoordinate );
 
 			joiningRoad.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
 
@@ -199,88 +162,24 @@ export class RoadFactory {
 
 		}
 
+		// control points for joining road
+		const firstPosition = firstNode.getPosition().toVector3();
+		const secondPosition = firstNode.moveAway( 20 ).toVector3();
+		const thirdPosition = firstNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
+		const fourthPosition = secondNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
+		const fifthPosition = secondNode.moveAway( 20 ).toVector3();
+		const lastPosition = secondNode.getPosition().toVector3();
 
-		// remove lane section as will create copy of first road
-		joiningRoad.clearLaneSections();
-
-		joiningRoad.addLaneSectionInstance( laneSection );
-
-		if ( firstNode.distance === 'start' ) {
-
-			firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
-
-		} else {
-
-			firstPoint = new RoadControlPoint( joiningRoad, firstRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
-
-		}
-
-		if ( secondNode.distance === 'start' ) {
-
-			lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getFirstPoint().position.clone(), 'cp', 0, 0 );
-
-		} else {
-
-			lastPoint = new RoadControlPoint( joiningRoad, secondRoad.spline.getLastPoint().position.clone(), 'cp', 0, 0 );
-
-		}
-
-		const secondPoint = new RoadControlPoint( joiningRoad, secondPosition.toVector3(), 'cp', 0, 0 );
-		const thirdPoint = new RoadControlPoint( joiningRoad, thirdPosition.toVector3(), 'cp', 0, 0 );
-		const fourthPoint = new RoadControlPoint( joiningRoad, fourPosition.toVector3(), 'cp', 0, 0 );
-		const fifthPoint = new RoadControlPoint( joiningRoad, fivePosition.toVector3(), 'cp', 0, 0 );
-
-		SceneService.add( firstPoint );
-		SceneService.add( secondPoint );
-		SceneService.add( thirdPoint );
-		SceneService.add( fifthPoint );
-		SceneService.add( fourthPoint );
-		SceneService.add( lastPoint );
-
-		joiningRoad.spline.addControlPoint( firstPoint );
-		joiningRoad.spline.addControlPoint( secondPoint );
-		joiningRoad.spline.addControlPoint( thirdPoint );
-		joiningRoad.spline.addControlPoint( fourthPoint );
-		joiningRoad.spline.addControlPoint( fifthPoint );
-		joiningRoad.spline.addControlPoint( lastPoint );
-
+		joiningRoad.addControlPointAt( firstPosition );
+		joiningRoad.addControlPointAt( secondPosition );
+		joiningRoad.addControlPointAt( thirdPosition );
+		joiningRoad.addControlPointAt( fourthPosition );
+		joiningRoad.addControlPointAt( fifthPosition );
+		joiningRoad.addControlPointAt( lastPosition );
 
 		joiningRoad.updateGeometryFromSpline();
 
-		/////////////////////////////////////////////////////////////////////////////////
-
-
-		// TODO: add more logic to smoothen the geometry
-
-		// for ( let i = 0; i < roadC.geometries.length; i++ ) {
-
-		//     const geometry = roadC.geometries[ i ];
-
-		//     if ( geometry.geometryType === OdGeometryType.ARC ) {
-
-		//         const arcGeometry = geometry as OdArcGeometry;
-
-		//         if ( arcGeometry.attr_curvature < 0.01 ) {
-
-		//             // first geometry so update second point
-		//             if ( i < 1 ) {
-
-		//             }
-
-		//         }
-		//     }
-
-		// }
-
-		/////////////////////////////////////////////////////////////////////////////////
-		//
-		// Update the road connections
-
-
 		this.makeRoadConnections( firstRoad, firstNode, secondRoad, secondNode, joiningRoad );
-
-		/////////////////////////////////////////////////////////////////////////////////
-
 
 		TvMapBuilder.buildRoad( this.map.gameObject, joiningRoad );
 

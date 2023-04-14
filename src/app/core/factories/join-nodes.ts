@@ -13,8 +13,8 @@ export class JoinNode {
 
 	constructor ( public firstNode: RoadNode, public secondNode: RoadNode ) {
 
-		this.firstPosTheta = firstNode.getPosTheta();
-		this.secondPosTheta = secondNode.getPosTheta();
+		this.firstPosTheta = firstNode.getPosition();
+		this.secondPosTheta = secondNode.getPosition();
 
 		this.firstPosition = this.firstPosTheta.toVector3();
 		this.secondPosition = this.secondPosTheta.toVector3();
@@ -26,9 +26,9 @@ export class JoinNode {
 		// first node position/direction
 		// second node position/direction
 
-		this.checkIntersection( this.firstNode.getPosTheta(), this.secondNode.getPosTheta() );
+		this.checkIntersection( this.firstNode.getPosition(), this.secondNode.getPosition() );
 
-		this.checkIntersectionInSameDirection( this.firstNode.getPosTheta(), this.secondNode.getPosTheta() );
+		this.checkIntersectionInSameDirection( this.firstNode.getPosition(), this.secondNode.getPosition() );
 
 		const slopeA = this.headingToSlope( this.firstPosTheta.hdg );
 		const slopeB = this.headingToSlope( this.secondPosTheta.hdg );
