@@ -132,4 +132,10 @@ export class RoadNode extends Group {
 			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
 		);
 	}
+
+	getPosTheta () {
+
+		return this.distance == 'start' ? this.road.startPosition() : this.road.endPosition();
+
+	}
 }

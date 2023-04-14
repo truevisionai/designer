@@ -107,6 +107,19 @@ export class TvPosTheta {
 		return this.clone( x, y, this.hdg, this.s + s, this.t );
 	}
 
+	isPointOnLine ( point: Vector2, s = 1000 ): boolean {
+
+		const startPoint = this.toVector3();
+
+		const endPoint = new Vector3(
+			this.x + Math.cos( this.hdg ) * s,
+			this.y + Math.sin( this.hdg ) * s,
+			0
+		);
+
+		return Maths.isPointOnLine( startPoint, endPoint, new Vector3( point.x, point.y, 0 ) );
+	}
+
 	// offset means t
 	addLateralOffset ( offset: number ) {
 
