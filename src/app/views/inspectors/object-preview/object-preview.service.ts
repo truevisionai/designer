@@ -166,6 +166,8 @@ export class PreviewService {
 
 		const image = this.renderer.domElement.toDataURL();
 
+		this.cube.material = this.sphere.material = null;
+
 		this.resetScene();
 
 		return image;
@@ -268,6 +270,12 @@ export class PreviewService {
 		this.renderer.render( this.scene, this.camera );
 
 		const image = this.renderer.domElement.toDataURL();
+
+		( this.cube.material as MeshBasicMaterial ).map = null;
+
+		( this.cube.material as MeshBasicMaterial ).map.needsUpdate = true;
+
+		( this.cube.material as MeshBasicMaterial ).needsUpdate = true;
 
 		this.resetScene();
 

@@ -4,6 +4,8 @@
 
 <div *ngIf="texture" class="inspector-form-container">
 
+	<img src="{{metadata.path}}" />
+
 	<mat-form-field>
 		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">
 	</mat-form-field>
@@ -27,11 +29,5 @@
 	<mat-form-field>
 		<input (change)="onChange($event)" [(ngModel)]="texture.offset.y" disabled matInput placeholder="Offset Y" type="number">
 	</mat-form-field>
-
-</div>
-
-<div *ngIf="texture" class="inspector-form-container">
-
-	<img src="{{metadata.path}}" />
 
 </div>
