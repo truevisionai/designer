@@ -106,9 +106,7 @@ export class FileComponent implements OnInit {
 
 	get filePath () {
 
-		if ( this.electron.isLinux ) return 'file:///' + this.file.path;
-
-		if ( this.electron.isWindows ) return 'file:///' + this.file.path;
+		return 'file:///' + this.file.path;
 
 	}
 
