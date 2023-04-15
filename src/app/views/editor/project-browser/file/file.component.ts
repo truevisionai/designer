@@ -229,10 +229,10 @@ export class FileComponent implements OnInit {
 
 			} else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
 
-				AppInspector.setInspector( inspector, {
-					roadMarking: instance,
-					guid: this.metadata.guid
-				} );
+				// AppInspector.setInspector( inspector, {
+				// 	roadMarking: instance,
+				// 	guid: this.metadata.guid
+				// } );
 
 			} else {
 
