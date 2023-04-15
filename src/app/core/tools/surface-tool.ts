@@ -179,7 +179,7 @@ export class SurfaceTool extends BaseTool {
 
 			new SetPositionCommand( point, newPosition, oldPosition ),
 
-			new CallFunctionCommand( this.surface, this.surface.update, [], this.surface.update, [] )
+			new CallFunctionCommand<TvSurface>( this.surface, this.surface.update, [], this.surface.update, [] )
 
 		);
 
