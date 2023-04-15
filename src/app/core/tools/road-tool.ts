@@ -16,7 +16,7 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { Vector3 } from 'three';
+import { Intersection, Vector3 } from 'three';
 import { JoinRoadNodeCommand } from '../commands/join-road-node-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { NodeFactoryService } from '../factories/node-factory.service';
@@ -24,14 +24,16 @@ import { RoadFactory } from '../factories/road-factory.service';
 import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
 import { BaseTool } from './base-tool';
+import { AppInspector } from '../inspector';
+import { CreateRoadCommand } from '../commands/create-road-command';
 
 export class RoadTool extends BaseTool {
 
 	public name: string = 'RoadTool';
 
-	private road: TvRoad;
-	private controlPoint: RoadControlPoint;
-	private node: RoadNode;
+	public road: TvRoad;
+	public controlPoint: RoadControlPoint;
+	public node: RoadNode;
 
 	private roadChanged: boolean = false;
 	private pointerDown: boolean = false;
@@ -52,17 +54,12 @@ export class RoadTool extends BaseTool {
 
 		super.enable();
 
-		this.map.getRoads().forEach( road => {
-
-			if ( !road.isJunction ) {
-
+		this.map.getRoads()
+			.filter( road => !road.isJunction )
+			.forEach( road => {
 				road.updateRoadNodes();
-
-				road.showNodes();
-
-			}
-
-		} );
+				road.showNodes()
+			} );
 
 	}
 
@@ -70,13 +67,13 @@ export class RoadTool extends BaseTool {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => road.hideNodes() );
+		this.map.getRoads().forEach( road => road.hideHelpers() );
 
-		if ( this.road ) this.hideRoad( this.road );
+		this.road?.hideHelpers();
 
-		if ( this.controlPoint ) this.controlPoint.unselect();
+		this.controlPoint?.unselect();
 
-		if ( this.node ) this.node.unselected();
+		this.node?.unselected();
 	}
 
 	onPointerDown ( e: PointerEventData ) {
@@ -89,80 +86,27 @@ export class RoadTool extends BaseTool {
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		let hasInteracted = false;
+		if ( !shiftKeyDown && this.isControlPointSelected( e ) ) return;
 
-		if ( !hasInteracted ) hasInteracted = this.checkControlPointInteraction( e );
+		if ( !shiftKeyDown && this.isRoadNodeSelected( e ) ) return;
 
-		if ( !hasInteracted ) hasInteracted = this.checkRoadNodeInteraction( e );
+		if ( !shiftKeyDown && this.isLaneSelected( e ) ) return;
 
-		if ( !hasInteracted && !shiftKeyDown ) hasInteracted = this.checkLaneObjectInteraction( e );
+		if ( shiftKeyDown && e.point != null ) {
 
-		if ( !hasInteracted ) {
+			this.addControlPoint( e.point );
 
-			if ( e.button === MouseButton.LEFT && shiftKeyDown && e.point != null ) {
+		} else {
 
-				this.addControlPoint( e.point );
-
-			} else {
-
-				if ( this.road || this.controlPoint || this.node ) {
-
-					const setInspectorCommand = new SetInspectorCommand( null, null );
-
-					const setRoadCommand = new SetValueCommand( this, 'road', null );
-
-					const setPointCommand = new SetValueCommand( this, 'controlPoint', null );
-
-					const setNodeCommand = new SetValueCommand( this, 'node', null );
-
-					CommandHistory.execute( new MultiCmdsCommand( [
-						setInspectorCommand,
-						setRoadCommand,
-						setPointCommand,
-						setNodeCommand
-					] ) );
-
-				}
-
-			}
-
-			// // no interaction with line, lane, points etc
-			// if ( this.road && !this.controlPoint && !shiftKeyDown ) {
-
-			//     AppInspector.clear();
-
-			//     this.hideRoad( this.road );
-
-			//     this.road = null;
-			// }
-
-			// if ( this.controlPoint && !shiftKeyDown ) {
-
-			//     this.controlPoint.unselect();
-
-			//     this.controlPoint = null;
-
-			// }
+			this.resetRoadControlPointAndNode();
 
 		}
-
-		// AppInspector.setInspector( RoadInspector, {
-		//     road: this.road,
-		//     controlPoint: this.controlPoint
-		// } );
 	}
 
 	onPointerClicked ( e: PointerEventData ) {
 
-		// no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
+		// NOTE: no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
 
-		// if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
-
-		//     this.checkRoadNodeInteraction( e );
-
-		//     this.addControlPoint( e.point );
-
-		// }
 	}
 
 	onPointerUp ( e: PointerEventData ) {
@@ -326,17 +270,168 @@ export class RoadTool extends BaseTool {
 		}
 	}
 
-	private checkControlPointInteraction ( e: PointerEventData ): boolean {
+	private resetRoadControlPointAndNode () {
 
-		if ( !this.road || !this.road.spline ) return;
+		const commands = [];
 
-		if ( !e.point ) return;
+		if ( this.road )
+			commands.push( new SetValueCommand( this, 'road', null ) );
 
-		// // first chceck for control point interactions
-		// // doing in 2 loop to prioritise control points
-		// let controlPoint = PickingHelper.checkControlPointInteraction( e, ControlPoint.roadTag, 1 );
+		if ( this.controlPoint )
+			commands.push( new SetValueCommand( this, 'controlPoint', null ) );
 
-		// const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		if ( this.node )
+			commands.push( new SetValueCommand( this, 'node', null ) );
+
+		if ( AppInspector.currentInspector )
+			commands.push( new SetInspectorCommand( null, null ) );
+
+		if ( commands.length > 0 )
+			CommandHistory.execute( new MultiCmdsCommand( commands ) );
+
+	}
+
+	private isControlPointSelected ( e: PointerEventData ): boolean {
+
+		if ( !this.road || !this.road.spline || !e.point ) return false;
+
+		const nearestControlPoint = this.findNearestControlPoint( e, e.point );
+
+		if ( nearestControlPoint && nearestControlPoint !== this.controlPoint ) {
+
+			this.selectControlPoint( nearestControlPoint );
+
+		} else if ( !nearestControlPoint && this.controlPoint ) {
+
+			this.deselectControlPoint();
+
+		}
+
+		return !!nearestControlPoint;
+	}
+
+	private selectControlPoint ( controlPoint: RoadControlPoint ): void {
+
+		CommandHistory.executeAll( [
+			new SetInspectorCommand( RoadInspector, { road: this.road, controlPoint } ),
+			new SetValueCommand( this, 'controlPoint', controlPoint ),
+			new SetValueCommand( this, 'node', null )
+		] );
+
+	}
+
+	private deselectControlPoint (): void {
+
+		CommandHistory.executeAll( [
+			new SetValueCommand( this, 'controlPoint', null ),
+			new SetInspectorCommand( null, null )
+		] );
+
+	}
+
+	private isLaneSelected ( e: PointerEventData ): boolean {
+
+		let hasInteracted = false;
+
+		const laneIntersection = this.findLaneIntersection( e.intersections );
+
+		if ( laneIntersection ) {
+
+			hasInteracted = true;
+
+			const lane = laneIntersection.object.userData.lane as TvLane;
+			const road = this.map.getRoadById( lane.roadId );
+
+			if ( !road.isJunction ) this.selectRoad( road );
+		}
+
+		return hasInteracted;
+	}
+
+	private findLaneIntersection ( intersections: Intersection[] ): Intersection | null {
+
+		for ( const intersection of intersections ) {
+
+			if ( intersection.object && intersection.object[ 'tag' ] === ObjectTypes.LANE ) {
+
+				return intersection;
+
+			}
+
+		}
+
+		return null;
+	}
+
+	private selectRoad ( road: TvRoad ): void {
+
+		const commands = [];
+
+		if ( !this.road || this.road.id !== road.id ) {
+			commands.push( new SetValueCommand( this, 'road', road ) );
+			commands.push( new SetInspectorCommand( RoadInspector, { road } ) );
+		}
+
+		if ( this.controlPoint ) {
+			commands.push( new SetValueCommand( this, 'controlPoint', null ) );
+		}
+
+		if ( this.node ) {
+			commands.push( new SetValueCommand( this, 'node', null ) );
+		}
+
+		if ( commands.length > 0 ) {
+			CommandHistory.executeAll( commands );
+		}
+	}
+
+	private isRoadNodeSelected ( e: PointerEventData ): boolean {
+
+		const interactedNode = this.findRoadNodeFromIntersections( e.intersections );
+
+		if ( interactedNode ) {
+
+			if ( this.node && this.node.getRoadId() !== interactedNode.getRoadId() ) {
+
+				// node with node then
+
+				// two roads need to joined
+				// we take both nodes and use them as start and end points
+				// for a new road
+				// new road will have 4 more points, so total 6 points
+
+				this.joinNodes( this.node, interactedNode );
+
+			} else if ( this.controlPoint ) {
+
+				// control point with node
+				// modify the control point road and join it the the node road
+				// console.log( "only join roads", this.road.id, node.roadId );
+
+				// another scenario of first node selected then controlpoint
+				// in this
+				// create new road and normally but with node as the first point
+				// and second point will be forward distance of x distance
+				// then 3rd point will be created wherever the point was selected
+
+			} else {
+
+				// this only selects the node
+				this.selectRoadNode( interactedNode.road, interactedNode );
+
+			}
+
+		} else if ( this.node ) {
+
+			this.deselectNode();
+
+		}
+
+		return !!interactedNode;
+	}
+
+	private findNearestControlPoint ( e: PointerEventData, point: Vector3 ): RoadControlPoint | null {
+
 		const maxDistance = Math.max( 0.5, Math.exp( 0.001 * e.approxCameraDistance ) );
 
 		const controlPoints = [];
@@ -351,246 +446,62 @@ export class RoadTool extends BaseTool {
 
 		} );
 
-		const controlPoint = PickingHelper.findNearestViaDistance( e.point, controlPoints, maxDistance );
-
-		if ( controlPoint ) {
-
-			CommandHistory.executeAll( [
-
-				new SetInspectorCommand( RoadInspector, { road: this.road, controlPoint } ),
-
-				new SetValueCommand( this, 'controlPoint', controlPoint ),
-
-				new SetValueCommand( this, 'node', null )
-
-			] );
-
-		} else if ( this.controlPoint ) {
-
-			CommandHistory.executeAll( [
-
-				new SetValueCommand( this, 'controlPoint', null ),
-
-				new SetInspectorCommand( null, null ),
-
-			] );
-
-		}
-
-		return controlPoint != null;
+		return PickingHelper.findNearestViaDistance( point, controlPoints, maxDistance );
 	}
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+	private findRoadNodeFromIntersections ( intersections: Intersection[] ): RoadNode | null {
 
-		let hasInteracted = false;
+		for ( let i = 0; i < intersections.length; i++ ) {
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
-
-			const intersection = e.intersections[ i ];
-
-			// tslint:disable-next-line: no-string-literal
-			if ( intersection.object && intersection.object[ 'tag' ] === ObjectTypes.LANE ) {
-
-				hasInteracted = true;
-
-				if ( intersection.object.userData.lane ) {
-
-					const lane = intersection.object.userData.lane as TvLane;
-
-					const road = this.map.getRoadById( lane.roadId );
-
-					if ( road.isJunction ) continue;
-
-					// check if old or a new lane is selected
-					if ( !this.road || this.road.id !== road.id ) {
-
-						const commands = [];
-
-						commands.push( new SetInspectorCommand( RoadInspector, { road } ) );
-
-						commands.push( new SetValueCommand( this, 'road', road ) );
-
-						commands.push( new SetValueCommand( this, 'controlPoint', null ) );
-
-						commands.push( new SetValueCommand( this, 'node', null ) );
-
-						CommandHistory.execute( new MultiCmdsCommand( commands ) );
-					}
-				}
-
-				break;
-			}
-		}
-
-		return hasInteracted;
-	}
-
-	private checkRoadNodeInteraction ( e: PointerEventData ): boolean {
-
-		let hasInteracted = false;
-
-		// for now ignore the shift key
-		const shiftKeyDown = true; //KeyboardInput.isShiftKeyDown;
-
-		for ( let i = 0; i < e.intersections.length; i++ ) {
-
-			const intersection = e.intersections[ i ];
+			const intersection = intersections[ i ];
 
 			if ( intersection.object && intersection.object[ 'tag' ] === RoadNode.lineTag ) {
-
-				hasInteracted = true;
-
-				const node = intersection.object.parent as RoadNode;
-
-				if ( shiftKeyDown && this.node && this.node.getRoadId() !== node.getRoadId() ) {
-
-					// node with node then
-
-					// two roads need to joined
-					// we take both nodes and use them as start and end points
-					// for a new road
-					// new road will have 4 more points, so total 6 points
-
-					this.joinNodeWithNode( this.node, node );
-
-				} else if ( shiftKeyDown && this.controlPoint ) {
-
-					// control point with node
-					// modify the control point road and join it the the node road
-					// console.log( "only join roads", this.road.id, node.roadId );
-
-
-					// another scenario of first node selected then controlpoint
-					// in this
-					// create new road and normally but with node as the first point
-					// and second point will be forward distance of x distance
-					// then 3rd point will be created wherever the point was selected
-
-				} else {
-
-					// this only selects the node
-
-					const road = node.road;
-
-					CommandHistory.executeAll( [
-
-						new SetInspectorCommand( RoadInspector, { road, node } ),
-
-						new SetValueCommand( this, 'node', node ),
-
-						new SetValueCommand( this, 'road', road ),
-
-						new SetValueCommand( this, 'conrolPoint', null ),
-
-					] );
-
-				}
-
-
-				break;
+				return intersection.object.parent as RoadNode;
 			}
 		}
 
-		if ( !hasInteracted && this.node ) {
-
-			this.node.unselected();
-
-			this.node = null;
-
-		}
-
-		return hasInteracted;
+		return null;
 	}
 
-	private updateRoadGeometry ( road: TvRoad ): void {
+	private selectRoadNode ( road: TvRoad, node: RoadNode ): void {
 
-		road.spline.update();
+		CommandHistory.executeAll( [
 
-		this.map.gameObject.remove( road.gameObject );
+			new SetInspectorCommand( RoadInspector, { road, node } ),
 
-		// remove old geometries
-		road.clearGeometries();
+			new SetValueCommand( this, 'node', node ),
 
-		// TODO: can be improved
-		road.spline.exportGeometries().forEach( geometry => {
+			new SetValueCommand( this, 'road', road ),
 
-			road.addGeometry( geometry );
+			new SetValueCommand( this, 'controlPoint', null ),
 
-		} );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
-
-		this.road.updateRoadNodes();
+		] );
 	}
 
-	private hideRoad ( road: TvRoad ): void {
+	private deselectNode (): void {
 
-		road.spline.hide();
+		this.node.unselected();
+
+		this.node = null;
 
 	}
 
-	private showRoad ( road: TvRoad ): void {
-
-		road.spline.show();
-
-	}
 
 	private addControlPoint ( position: Vector3 ) {
 
-		// // unselect old if exists
-		// if ( this.controlPoint ) this.controlPoint.unselect();
-
 		if ( !this.road ) {
 
-			const result = RoadFactory.createRoad( position );
-
-			const addRoadCommand = new AddRoadCommand( result.road, result.point );
-
-			const setRoadCommand = new SetValueCommand( this, 'road', result.road );
-
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', result.point );
-
-			CommandHistory.execute( new MultiCmdsCommand( [ addRoadCommand, setRoadCommand, setPointCommand ] ) );
+			CommandHistory.execute( new CreateRoadCommand( this, position ) );
 
 		} else {
 
-			const controlPoint = RoadFactory.addControlPoint( this.road, position );
 
-			const setPointCommand = new SetValueCommand( this, 'controlPoint', controlPoint );
+			CommandHistory.execute( new AddRoadPointCommand( this, this.road, position ) );
 
-			const addPointCommand = new AddRoadPointCommand( this.road, controlPoint, this.controlPoint );
-
-			CommandHistory.execute( new MultiCmdsCommand( [ addPointCommand, setPointCommand ] ) );
 		}
-
-		// if ( !this.road ) this.road = this.openDrive.addDefaultRoad();
-
-
-		// // set new
-		// this.controlPoint = ControlPoint.create( "", position );
-
-		// // TODO: spline should take this responsibility
-		// SceneService.add( this.controlPoint );
-
-		// this.controlPoint.mainObject = this.controlPoint.userData.road = this.road;
-
-		// this.road.spline.addControlPoint( this.controlPoint );
-
-		// this.controlPoint.onSelected();
-
-		// if ( this.road.spline.controlPoints.length < 2 ) return;
-
-		// this.updateRoadGeometry( this.road );
-
-		// AppInspector.setInspector( RoadInspector, {
-		//     road: this.road,
-		//     controlPoint: this.controlPoint
-		// } );
 	}
 
-	private joinNodeWithNode ( firstNode: RoadNode, secondNode: RoadNode ) {
-
-		// console.log( "crate new road to join ", firstNode.roadId, secondNode.roadId );
+	private joinNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 
 		const commands = [];
 
@@ -603,14 +514,6 @@ export class RoadTool extends BaseTool {
 		commands.push( new JoinRoadNodeCommand( firstNode, secondNode ) );
 
 		CommandHistory.execute( new MultiCmdsCommand( commands ) );
-
-	}
-
-	private joinPointWithNode () {
-
-	}
-
-	private joinNodeWithPoint () {
 
 	}
 }

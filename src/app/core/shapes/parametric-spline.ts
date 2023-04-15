@@ -64,6 +64,17 @@ export class ParametricSpline extends AbstractSpline {
 
 	}
 
+	hideLines (): void {
+
+		this.tangent.mesh.visible = false;
+
+	}
+
+	showLines (): void {
+
+		this.tangent.mesh.visible = true;
+
+	}
 
 	hide (): void {
 

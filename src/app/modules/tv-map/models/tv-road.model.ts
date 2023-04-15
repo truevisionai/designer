@@ -52,10 +52,10 @@ export class TvRoad {
 	public lateralProfile: TvLateralProfile;
 	public lanes = new TvRoadLanes();
 
-	public drivingMaterialGuid: string;
-	public sidewalkMaterialGuid: string;
-	public borderMaterialGuid: string;
-	public shoulderMaterialGuid: string;
+	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 	/**
 	 * @deprecated use predecessor, successor directly
@@ -1115,6 +1115,46 @@ export class TvRoad {
 
 	}
 
+	showHelpers (): void {
+
+		this.spline.show();
+
+		this.showNodes();
+
+	}
+
+	hideHelpers (): void {
+
+		this.spline.hide();
+
+		this.hideNodes();
+
+	}
+
+	showSpline (): void {
+
+		this.spline.show();
+
+	}
+
+	hideSpline (): void {
+
+		this.spline.hide();
+
+	}
+
+	showControlPoints (): void {
+
+		this.spline.controlPoints.forEach( p => p.visible = true );
+
+	}
+
+	hideControlPoints (): void {
+
+		this.spline.controlPoints.forEach( p => p.visible = false );
+
+	}
+
 	showNodes (): any {
 
 		if ( this.startNode ) this.startNode.visible = true;
@@ -1239,6 +1279,27 @@ export class TvRoad {
 			leftSideWidth: leftWidth,
 			rightSideWidth: rightWidth,
 		};
+	}
+
+	showLaneOffsetNodes () {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+
+	hideLaneOffsetNodes () {
+
+		this.getLaneOffsets().forEach( laneOffset => {
+
+			if ( laneOffset.mesh ) {
+
+				laneOffset.mesh.visible = false;
+
+			}
+
+		} );
+
 	}
 
 	public hideWidthNodes () {

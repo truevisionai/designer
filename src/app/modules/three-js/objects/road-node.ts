@@ -10,6 +10,9 @@ import { Color, Group, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { BaseControlPoint } from './control-point';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 
 export class RoadNode extends Group {
 
@@ -82,6 +85,10 @@ export class RoadNode extends Group {
 		return this.road.id;
 	}
 
+	get sCoordinate (): number {
+		return this.s || this.calculateS();
+	}
+
 	getRoadId (): number {
 		return this.road.id;
 	}
@@ -131,5 +138,39 @@ export class RoadNode extends Group {
 		this.line.geometry.setPositions(
 			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
 		);
+	}
+
+	getPosition (): TvPosTheta {
+
+		return this.distance == 'start' ? this.road.startPosition() : this.road.endPosition();
+
+	}
+
+	moveAway ( distance: number ): TvPosTheta {
+
+		if ( this.distance === 'start' ) {
+
+			return this.road.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
+
+		} else {
+
+			return this.road.endPosition().clone().moveForward( distance );
+
+		}
+
+	}
+
+	getLaneSection (): TvLaneSection {
+
+		const s = this.distance === 'start' ? 0 : this.road.length - Maths.Epsilon;
+
+		return this.road.getLaneSectionAt( s ).cloneAtS( 0, s );
+
+	}
+
+	getControlPoint (): BaseControlPoint {
+
+		return this.distance === 'start' ? this.road.spline.getFirstPoint() : this.road.spline.getLastPoint();
+
 	}
 }

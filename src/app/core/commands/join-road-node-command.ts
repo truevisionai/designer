@@ -32,7 +32,7 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 	}
 
 	get secondRoad () {
-		return this.secondNode.road;
+		return this.secondNode.road
 	}
 
 	execute (): void {

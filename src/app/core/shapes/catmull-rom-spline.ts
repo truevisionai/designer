@@ -59,6 +59,18 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	hideLines () {
+
+		this.mesh.visible = false;
+
+	}
+
+	showLines () {
+
+		this.mesh.visible = true;
+
+	}
+
 	show (): void {
 
 		this.controlPoints.forEach( i => i.visible = true );

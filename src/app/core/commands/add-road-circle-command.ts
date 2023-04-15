@@ -36,9 +36,7 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 		this.roads.forEach( road => {
 
-			road.hideNodes();
-
-			road.spline.hide();
+			road.hideHelpers();
 
 			this.map.removeRoad( road );
 
