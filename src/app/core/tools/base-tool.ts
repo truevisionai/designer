@@ -115,6 +115,19 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
+	protected findIntersection ( tag: string, intersections: Intersection[] ): Object3D | null {
+
+		for ( const i of intersections ) {
+
+			if ( i.object[ 'tag' ] == tag ) {
+
+				return i.object;
+			}
+
+		}
+
+	}
+
 	protected highlight ( object: Mesh ) {
 
 		const material = ( object.material as MeshBasicMaterial );

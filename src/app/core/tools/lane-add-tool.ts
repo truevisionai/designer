@@ -2,25 +2,25 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { TvLaneSide } from '../../modules/tv-map/models/tv-common';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { KeyboardInput } from '../input';
-import { AppInspector } from '../inspector';
 import { PickingHelper } from '../services/picking-helper.service';
-import { SceneService } from '../services/scene.service';
 import { BaseTool } from './base-tool';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CommandHistory } from 'app/services/command-history';
+import { CallFunctionCommand } from '../commands/call-function-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { AddLaneCommand } from '../commands/add-lane-command';
 
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
 
-	private lane: TvLane;
+	public lane: TvLane;
 
 	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
@@ -47,115 +47,102 @@ export class LaneAddTool extends BaseTool {
 
 		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		if ( KeyboardInput.isShiftKeyDown && this.isReferenceLineSelected( e ) ) return;
 
-		let hasInteracted = false;
-
-		if ( shiftKeyDown && !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
-
-		if ( !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
+		this.isLaneSelected( e );
 
 	}
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+	private isLaneSelected ( e: PointerEventData ): boolean {
 
 		const newLane = PickingHelper.checkLaneObjectInteraction( e );
 
-		if ( this.lane && newLane == null ) {
+		if ( this.shouldClearLane( newLane ) ) {
 
-			// clear
+			this.clearLane();
 
-			this.laneHelper.clear();
+		} else if ( this.shouldSelectNewLane( newLane ) ) {
 
-			this.lane = null;
+			this.selectNewLane( newLane );
 
-			AppInspector.clear();
+		} else if ( this.shouldClearInspector( newLane ) ) {
 
-		} else if ( this.lane && newLane && this.lane.gameObject.id != newLane.gameObject.id ) {
-
-			// clear and select new
-
-			this.laneHelper.clear();
-
-			this.lane = newLane;
-
-			const newRoad = this.map.getRoadById( newLane.roadId );
-
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
-
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
-
-		} else if ( !this.lane && newLane ) {
-
-			// select new
-
-			this.lane = newLane;
-
-			const newRoad = this.map.getRoadById( newLane.roadId );
-
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
-
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
-
-		} else if ( !this.lane && newLane == null ) {
-
-			// clear
-
-			AppInspector.clear();
+			// do nothing
+			// AppInspector.clear();
 
 		}
 
 		return newLane != null;
 	}
 
-	private checkReferenceLineInteraction ( e: PointerEventData ) {
+	private shouldClearLane ( newLane: TvLane ): boolean {
 
-		let hasInteracted = false;
+		return this.lane && newLane == null;
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+	}
 
-			const intersection = e.intersections[ i ];
+	private shouldSelectNewLane ( newLane: TvLane ): boolean {
 
-			if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == this.laneHelper.tag ) {
+		if ( !newLane ) return false;
 
-				hasInteracted = true;
+		if ( !this.lane ) return true;
 
-				if ( intersection.object.userData.lane ) {
+		return this.lane.gameObject.id !== newLane.gameObject.id;
 
-					this.cloneLane( intersection.object.userData.lane as TvLane );
+	}
 
-				}
+	private shouldClearInspector ( newLane: TvLane ): boolean {
 
-				break;
-			}
-		}
+		return !this.lane && newLane == null;
 
-		return hasInteracted;
+	}
+
+	private clearLane (): void {
+
+		CommandHistory.executeMany(
+
+			new SetValueCommand( this, 'lane', null ),
+
+			new CallFunctionCommand( this.laneHelper, this.laneHelper.clear, [], this.laneHelper.clear, [] ),
+
+			new SetInspectorCommand( null, null ),
+
+		);
+
+	}
+
+	private selectNewLane ( lane: TvLane ): void {
+
+		const road = this.map.getRoadById( lane.roadId );
+
+		CommandHistory.executeMany(
+
+			new SetValueCommand( this, 'lane', lane ),
+
+			new CallFunctionCommand( this.laneHelper, this.laneHelper.drawRoad, [ road, LineType.SOLID ], this.laneHelper.clear ),
+
+			new SetInspectorCommand( LaneInspectorComponent, lane ),
+
+		);
+
+	}
+
+	private isReferenceLineSelected ( e: PointerEventData ) {
+
+		const referenceLine = this.findIntersection( this.laneHelper.tag, e.intersections );
+
+		if ( !referenceLine ) return false;
+
+		if ( !referenceLine.userData.lane ) return false;
+
+		this.cloneLane( referenceLine.userData.lane as TvLane );
+
+		return true;
 	}
 
 	private cloneLane ( lane: TvLane ): void {
 
-		const road = this.map.getRoadById( lane.roadId );
+		CommandHistory.execute( new AddLaneCommand( lane, this.laneHelper ) );
 
-		const laneSection = road.getLaneSectionById( lane.laneSectionId );
-
-		const newLaneId = lane.side === TvLaneSide.LEFT ? lane.id + 1 : lane.id - 1;
-
-		const newLane = lane.clone( newLaneId );
-
-		laneSection.addLaneInstance( newLane, true );
-
-		this.rebuild( road );
-	}
-
-	private rebuild ( road: TvRoad ): void {
-
-		if ( !road ) return;
-
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
-
-		this.laneHelper.redraw( LineType.SOLID );
 	}
 }
