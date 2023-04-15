@@ -1281,6 +1281,27 @@ export class TvRoad {
 		};
 	}
 
+	showLaneOffsetNodes () {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+
+	hideLaneOffsetNodes () {
+
+		this.getLaneOffsets().forEach( laneOffset => {
+
+			if ( laneOffset.mesh ) {
+
+				laneOffset.mesh.visible = false;
+
+			}
+
+		} );
+
+	}
+
 	public hideWidthNodes () {
 
 		this.laneSections.forEach( laneSection => {
