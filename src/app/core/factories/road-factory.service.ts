@@ -92,15 +92,9 @@ export class RoadFactory {
 
 		road.addControlPoint( point );
 
-		AppInspector.setInspector( RoadInspector, {
-			road: road,
-			controlPoint: point
-		} );
-
 		if ( road.spline.controlPoints.length > 1 ) {
 			this.updateGeometryAndRebuild( road );
 		}
-
 
 	}
 
