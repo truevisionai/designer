@@ -4,16 +4,16 @@
 
 import { BaseCommand } from 'app/core/commands/base-command';
 
-export class SetValueCommand extends BaseCommand {
+export class SetValueCommand<T, K extends keyof T> extends BaseCommand {
 
-	private oldValue: any;
+	private oldValue: T[ K ];
 
-	constructor ( private object: Object, private attributeName, private newValue: any ) {
+	constructor ( private object: T, private attributeName: K, private newValue: T[ K ] ) {
 
 		super();
 
 		// store the old value
-		this.oldValue = ( object !== undefined ) ? object[ attributeName ] : undefined;
+		this.oldValue = object !== undefined ? object[ attributeName ] : undefined;
 	}
 
 	execute (): void {

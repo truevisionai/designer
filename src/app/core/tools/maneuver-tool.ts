@@ -55,7 +55,7 @@ export class ManeuverTool extends BaseTool {
 
 	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
-	private junctionEntryObject: JunctionEntryObject;
+	public junctionEntryObject: JunctionEntryObject;
 
 	init () {
 

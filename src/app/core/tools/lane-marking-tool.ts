@@ -39,13 +39,13 @@ export class LaneMarkingTool extends BaseTool {
 
 	public markingDistanceChanged: boolean;
 
-	private lane: TvLane;
+	public lane: TvLane;
 
-	private roadMark: TvLaneRoadMark;
+	public roadMark: TvLaneRoadMark;
 
-	private controlPoint: AnyControlPoint;
+	public controlPoint: AnyControlPoint;
 
-	private node: LaneRoadMarkNode;
+	public node: LaneRoadMarkNode;
 
 	private roadMarkBuilder = new OdRoadMarkBuilder();
 

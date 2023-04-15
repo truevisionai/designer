@@ -32,9 +32,9 @@ export class LaneWidthTool extends BaseTool {
 	private pointerDown: boolean = false;
 	private pointerDownAt: Vector3;
 
-	private lane: TvLane;
-	private controlPoint: AnyControlPoint;
-	private widthNode: LaneWidthNode;
+	public lane: TvLane;
+	public controlPoint: AnyControlPoint;
+	public widthNode: LaneWidthNode;
 
 	private laneHelper: OdLaneReferenceLineBuilder;
 

@@ -509,7 +509,7 @@ export class RoadTool extends BaseTool {
 
 		commands.push( new SetValueCommand( this, 'road', null ) );
 
-		commands.push( new SetValueCommand( this, 'conrolPoint', null ) );
+		commands.push( new SetValueCommand( this, 'controlPoint', null ) );
 
 		commands.push( new JoinRoadNodeCommand( firstNode, secondNode ) );
 
