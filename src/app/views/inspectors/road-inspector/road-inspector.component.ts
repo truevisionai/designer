@@ -69,16 +69,19 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 	ngOnInit () {
 
-		if ( this.road && this.road.spline.controlPoints.length >= 2 ) this.road.spline.show();
+		if ( this.road ) this.road.showHelpers();
 
 		if ( this.controlPoint ) this.controlPoint.select();
 
 		if ( this.data.node ) this.node.selected();
+
 	}
 
 	ngOnDestroy () {
 
-		if ( this.road ) this.road.spline.hide();
+		if ( this.road ) this.road.hideControlPoints();
+
+		if ( this.road ) this.road.hideSpline();
 
 		if ( this.controlPoint ) this.controlPoint.unselect();
 

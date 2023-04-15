@@ -1115,6 +1115,46 @@ export class TvRoad {
 
 	}
 
+	showHelpers (): void {
+
+		this.spline.show();
+
+		this.showNodes();
+
+	}
+
+	hideHelpers (): void {
+
+		this.spline.hide();
+
+		this.hideNodes();
+
+	}
+
+	showSpline (): void {
+
+		this.spline.show();
+
+	}
+
+	hideSpline (): void {
+
+		this.spline.hide();
+
+	}
+
+	showControlPoints (): void {
+
+		this.spline.controlPoints.forEach( p => p.visible = true );
+
+	}
+
+	hideControlPoints (): void {
+
+		this.spline.controlPoints.forEach( p => p.visible = false );
+
+	}
+
 	showNodes (): any {
 
 		if ( this.startNode ) this.startNode.visible = true;

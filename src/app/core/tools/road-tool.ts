@@ -54,17 +54,12 @@ export class RoadTool extends BaseTool {
 
 		super.enable();
 
-		this.map.getRoads().forEach( road => {
-
-			if ( !road.isJunction ) {
-
+		this.map.getRoads()
+			.filter( road => !road.isJunction )
+			.forEach( road => {
 				road.updateRoadNodes();
-
-				road.showNodes();
-
-			}
-
-		} );
+				road.showNodes()
+			} );
 
 	}
 
@@ -72,13 +67,13 @@ export class RoadTool extends BaseTool {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => road.hideNodes() );
+		this.map.getRoads().forEach( road => road.hideHelpers() );
 
-		if ( this.road ) this.hideRoad( this.road );
+		this.road?.hideHelpers();
 
-		if ( this.controlPoint ) this.controlPoint.unselect();
+		this.controlPoint?.unselect();
 
-		if ( this.node ) this.node.unselected();
+		this.node?.unselected();
 	}
 
 	onPointerDown ( e: PointerEventData ) {
@@ -491,11 +486,6 @@ export class RoadTool extends BaseTool {
 
 	}
 
-	private hideRoad ( road: TvRoad ): void {
-
-		road.spline.hide();
-
-	}
 
 	private addControlPoint ( position: Vector3 ) {
 

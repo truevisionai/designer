@@ -75,9 +75,7 @@ export class AutoSpline extends AbstractSpline {
 
 		this.controlPoints.forEach( i => i.visible = true );
 
-		this.polyline.mesh.visible = true;
-
-		this.roundline.mesh.visible = true;
+		this.showLines();
 
 	}
 
