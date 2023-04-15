@@ -109,32 +109,6 @@ export class TvMap {
 		// const laneSection = road.addGetLaneSection( 0 );
 		const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
 
-		// const leftLane3 = laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
-		// const leftLane2 = laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-		// const leftLane1 = laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-		// const centerLane = laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-		// const rightLane1 = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
-		// const rightLane2 = laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
-		// const rightLane3 = laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
-
-		// leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-		// centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-		// rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-
-		// laneSection.getLaneVector().forEach( lane => {
-
-		//     if ( lane.side !== TvLaneSide.CENTER ) {
-
-		//         if ( lane.type == TvLaneType.driving ) lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
-
-		//         else if ( lane.type == TvLaneType.sidewalk ) lane.addWidthRecord( 0, 2, 0, 0, 0 );
-
-		//         else lane.addWidthRecord( 0, 0.5, 0, 0, 0 );
-
-		//     }
-
-		// } );
-
 		return road;
 	}
 

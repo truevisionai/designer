@@ -52,10 +52,10 @@ export class TvRoad {
 	public lateralProfile: TvLateralProfile;
 	public lanes = new TvRoadLanes();
 
-	public drivingMaterialGuid: string;
-	public sidewalkMaterialGuid: string;
-	public borderMaterialGuid: string;
-	public shoulderMaterialGuid: string;
+	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 	/**
 	 * @deprecated use predecessor, successor directly
