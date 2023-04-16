@@ -53,7 +53,7 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	private isLaneSelected ( e: PointerEventData ): boolean {
+	public isLaneSelected ( e: PointerEventData ): boolean {
 
 		const newLane = PickingHelper.checkLaneObjectInteraction( e );
 
@@ -75,13 +75,13 @@ export class LaneAddTool extends BaseTool {
 		return newLane != null;
 	}
 
-	private shouldClearLane ( newLane: TvLane ): boolean {
+	public shouldClearLane ( newLane: TvLane ): boolean {
 
 		return this.lane && newLane == null;
 
 	}
 
-	private shouldSelectNewLane ( newLane: TvLane ): boolean {
+	public shouldSelectNewLane ( newLane: TvLane ): boolean {
 
 		if ( !newLane ) return false;
 
@@ -91,13 +91,13 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	private shouldClearInspector ( newLane: TvLane ): boolean {
+	public shouldClearInspector ( newLane: TvLane ): boolean {
 
 		return !this.lane && newLane == null;
 
 	}
 
-	private clearLane (): void {
+	public clearLane (): void {
 
 		CommandHistory.executeMany(
 
@@ -111,7 +111,7 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	private selectNewLane ( lane: TvLane ): void {
+	public selectNewLane ( lane: TvLane ): void {
 
 		const road = this.map.getRoadById( lane.roadId );
 
@@ -127,7 +127,7 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	private isReferenceLineSelected ( e: PointerEventData ) {
+	public isReferenceLineSelected ( e: PointerEventData ) {
 
 		const referenceLine = this.findIntersection( this.laneHelper.tag, e.intersections );
 
@@ -140,7 +140,7 @@ export class LaneAddTool extends BaseTool {
 		return true;
 	}
 
-	private cloneLane ( lane: TvLane ): void {
+	public cloneLane ( lane: TvLane ): void {
 
 		CommandHistory.execute( new AddLaneCommand( lane, this.laneHelper ) );
 

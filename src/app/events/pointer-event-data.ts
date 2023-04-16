@@ -19,6 +19,7 @@ export class PointerMoveData {
 }
 
 export class PointerEventData extends BaseEventData {
+
 	distance: number;
 	distanceToRay?: number;
 	point: Vector3;
@@ -31,5 +32,21 @@ export class PointerEventData extends BaseEventData {
 	approxCameraDistance?: number;
 	camera?: Camera;
 	mouse?: Vector2;
+
+	constructor ( partialData: Partial<PointerEventData> = {} ) {
+		super();
+		this.distance = partialData.distance || 0;
+		this.distanceToRay = partialData.distanceToRay;
+		this.point = partialData.point || new Vector3();
+		this.index = partialData.index;
+		this.face = partialData.face || null;
+		this.faceIndex = partialData.faceIndex;
+		this.uv = partialData.uv || new Vector2();
+		this.button = partialData.button || MouseButton.LEFT;
+		this.intersections = partialData.intersections || [];
+		this.approxCameraDistance = partialData.approxCameraDistance;
+		this.camera = partialData.camera;
+		this.mouse = partialData.mouse || new Vector2();
+	}
 }
 
