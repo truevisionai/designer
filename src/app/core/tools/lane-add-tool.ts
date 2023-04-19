@@ -15,6 +15,8 @@ import { CommandHistory } from 'app/services/command-history';
 import { CallFunctionCommand } from '../commands/call-function-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { AddLaneCommand } from '../commands/add-lane-command';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { GameObject } from '../game-object';
 
 export class LaneAddTool extends BaseTool {
 
@@ -41,6 +43,8 @@ export class LaneAddTool extends BaseTool {
 		super.disable();
 
 		if ( this.laneHelper ) this.laneHelper.clear();
+
+		this.removeHighlight();
 	}
 
 	public onPointerDown ( e: PointerEventData ) {
@@ -51,6 +55,19 @@ export class LaneAddTool extends BaseTool {
 
 		this.isLaneSelected( e );
 
+	}
+
+	public onPointerMoved ( e: PointerEventData ) {
+
+		this.removeHighlight();
+
+		if ( !this.lane ) return;
+
+		const road = this.map.getRoadById( this.lane.roadId );
+
+		const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
+
+		if ( object ) this.highlight( object as GameObject );
 	}
 
 	public isLaneSelected ( e: PointerEventData ): boolean {
