@@ -32,7 +32,7 @@ jobs:
       run: npm install electron electron-builder --save-dev
 
     - name: Build Electron app
-      run: npm run release
+      run: npm run linux
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
