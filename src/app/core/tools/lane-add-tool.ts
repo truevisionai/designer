@@ -2,25 +2,27 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { TvLaneSide } from '../../modules/tv-map/models/tv-common';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { KeyboardInput } from '../input';
-import { AppInspector } from '../inspector';
 import { PickingHelper } from '../services/picking-helper.service';
-import { SceneService } from '../services/scene.service';
 import { BaseTool } from './base-tool';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CommandHistory } from 'app/services/command-history';
+import { CallFunctionCommand } from '../commands/call-function-command';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { AddLaneCommand } from '../commands/add-lane-command';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { GameObject } from '../game-object';
 
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
 
-	private lane: TvLane;
+	public lane: TvLane;
 
 	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
 
@@ -41,121 +43,123 @@ export class LaneAddTool extends BaseTool {
 		super.disable();
 
 		if ( this.laneHelper ) this.laneHelper.clear();
+
+		this.removeHighlight();
 	}
 
 	public onPointerDown ( e: PointerEventData ) {
 
 		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		if ( KeyboardInput.isShiftKeyDown && this.isReferenceLineSelected( e ) ) return;
 
-		let hasInteracted = false;
-
-		if ( shiftKeyDown && !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
-
-		if ( !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
+		this.isLaneSelected( e );
 
 	}
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+	public onPointerMoved ( e: PointerEventData ) {
+
+		this.removeHighlight();
+
+		if ( !this.lane ) return;
+
+		const road = this.map.getRoadById( this.lane.roadId );
+
+		const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
+
+		if ( object ) this.highlight( object as GameObject );
+	}
+
+	public isLaneSelected ( e: PointerEventData ): boolean {
 
 		const newLane = PickingHelper.checkLaneObjectInteraction( e );
 
-		if ( this.lane && newLane == null ) {
+		if ( this.shouldClearLane( newLane ) ) {
 
-			// clear
+			this.clearLane();
 
-			this.laneHelper.clear();
+		} else if ( this.shouldSelectNewLane( newLane ) ) {
 
-			this.lane = null;
+			this.selectNewLane( newLane );
 
-			AppInspector.clear();
+		} else if ( this.shouldClearInspector( newLane ) ) {
 
-		} else if ( this.lane && newLane && this.lane.gameObject.id != newLane.gameObject.id ) {
-
-			// clear and select new
-
-			this.laneHelper.clear();
-
-			this.lane = newLane;
-
-			const newRoad = this.map.getRoadById( newLane.roadId );
-
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
-
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
-
-		} else if ( !this.lane && newLane ) {
-
-			// select new
-
-			this.lane = newLane;
-
-			const newRoad = this.map.getRoadById( newLane.roadId );
-
-			this.laneHelper.drawRoad( newRoad, LineType.SOLID );
-
-			AppInspector.setInspector( LaneInspectorComponent, newLane );
-
-		} else if ( !this.lane && newLane == null ) {
-
-			// clear
-
-			AppInspector.clear();
+			// do nothing
+			// AppInspector.clear();
 
 		}
 
 		return newLane != null;
 	}
 
-	private checkReferenceLineInteraction ( e: PointerEventData ) {
+	public shouldClearLane ( newLane: TvLane ): boolean {
 
-		let hasInteracted = false;
+		return this.lane && newLane == null;
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
-
-			const intersection = e.intersections[ i ];
-
-			if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == this.laneHelper.tag ) {
-
-				hasInteracted = true;
-
-				if ( intersection.object.userData.lane ) {
-
-					this.cloneLane( intersection.object.userData.lane as TvLane );
-
-				}
-
-				break;
-			}
-		}
-
-		return hasInteracted;
 	}
 
-	private cloneLane ( lane: TvLane ): void {
+	public shouldSelectNewLane ( newLane: TvLane ): boolean {
+
+		if ( !newLane ) return false;
+
+		if ( !this.lane ) return true;
+
+		return this.lane.gameObject.id !== newLane.gameObject.id;
+
+	}
+
+	public shouldClearInspector ( newLane: TvLane ): boolean {
+
+		return !this.lane && newLane == null;
+
+	}
+
+	public clearLane (): void {
+
+		CommandHistory.executeMany(
+
+			new SetValueCommand( this, 'lane', null ),
+
+			new CallFunctionCommand( this.laneHelper, this.laneHelper.clear, [], this.laneHelper.clear, [] ),
+
+			new SetInspectorCommand( null, null ),
+
+		);
+
+	}
+
+	public selectNewLane ( lane: TvLane ): void {
 
 		const road = this.map.getRoadById( lane.roadId );
 
-		const laneSection = road.getLaneSectionById( lane.laneSectionId );
+		CommandHistory.executeMany(
 
-		const newLaneId = lane.side === TvLaneSide.LEFT ? lane.id + 1 : lane.id - 1;
+			new SetValueCommand( this, 'lane', lane ),
 
-		const newLane = lane.clone( newLaneId );
+			new CallFunctionCommand( this.laneHelper, this.laneHelper.drawRoad, [ road, LineType.SOLID ], this.laneHelper.clear ),
 
-		laneSection.addLaneInstance( newLane, true );
+			new SetInspectorCommand( LaneInspectorComponent, lane ),
 
-		this.rebuild( road );
+		);
+
 	}
 
-	private rebuild ( road: TvRoad ): void {
+	public isReferenceLineSelected ( e: PointerEventData ) {
 
-		if ( !road ) return;
+		const referenceLine = this.findIntersection( this.laneHelper.tag, e.intersections );
 
-		SceneService.removeWithChildren( road.gameObject, true );
+		if ( !referenceLine ) return false;
 
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		if ( !referenceLine.userData.lane ) return false;
 
-		this.laneHelper.redraw( LineType.SOLID );
+		this.cloneLane( referenceLine.userData.lane as TvLane );
+
+		return true;
+	}
+
+	public cloneLane ( lane: TvLane ): void {
+
+		CommandHistory.execute( new AddLaneCommand( lane, this.laneHelper ) );
+
 	}
 }

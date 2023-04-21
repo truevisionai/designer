@@ -63,7 +63,21 @@ export class PickingHelper {
 
 	private static raycaster = new Raycaster();
 
-	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[] ): T {
+	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive = true ): T {
+
+		// Find intersections with the control points
+		const results = this.findViaRaycasting( e, objects, recursive );
+
+		// If there are intersections, return the nearest control point
+		if ( results.length > 0 ) {
+			return results[ 0 ] as T;
+		}
+
+		// If there are no intersections, return null
+		return null;
+	}
+
+	public static findViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive = true ): T[] {
 
 		// Update the raycaster with the camera and the normalized mouse coordinates
 		this.raycaster.setFromCamera( e.mouse, e.camera );
@@ -77,17 +91,23 @@ export class PickingHelper {
 		this.raycaster.params.Points.threshold = precision;
 
 		// Find intersections with the control points
-		const intersects = this.raycaster.intersectObjects( objects );
+		const intersects = this.raycaster.intersectObjects( objects, recursive );
 
 		// If there are intersections, return the nearest control point
 		if ( intersects.length > 0 ) {
-			return intersects[ 0 ].object as T;
+			return intersects.map( i => i.object as T );
 		}
 
 		// If there are no intersections, return null
-		return null;
+		return [];
 	}
 
+	public static findByTag<T extends Object3D> ( tag, e: PointerEventData, objects: T[], recursive = true ): T[] {
+
+		const intersections = this.findViaRaycasting( e, objects, recursive );
+
+		return intersections.filter( i => i[ 'tag' ] === tag );
+	}
 
 	public static checkLaneObjectInteraction ( event: PointerEventData, tag?: string ): TvLane {
 

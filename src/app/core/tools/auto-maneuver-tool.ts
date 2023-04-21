@@ -109,7 +109,7 @@ export class AutoManeuverTool extends BaseTool {
 
 	private connectingRoad: TvRoad;
 
-	private roadControlPoint: RoadControlPoint;
+	public roadControlPoint: RoadControlPoint;
 
 	private lanePathObject: LanePathObject;
 	private curve: THREE.Mesh;

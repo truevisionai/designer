@@ -115,29 +115,78 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
+	protected findIntersection ( tag: string, intersections: Intersection[] ): Object3D | null {
+
+		for ( const i of intersections ) {
+
+			if ( i.object[ 'tag' ] == tag ) {
+
+				return i.object;
+			}
+
+		}
+
+	}
+
+	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
+
 	protected highlight ( object: Mesh ) {
 
-		const material = ( object.material as MeshBasicMaterial );
+		const material = object.material as MeshBasicMaterial;
 
-		// clone because we want a new instance
-		this.previousColor = material.color.clone();
+		// Check if the object is already highlighted
+		if ( !this.highlightedObjects.has( object ) ) {
 
-		// set the current material property to highlighted color
-		material.color.add( new Color( 0, 0, 0.2 ) );
-		// material.color.addScalar(0.1)
-		// material.opacity = 0.6;
+			// Save the original material instance
+			this.highlightedObjects.set( object, material );
 
-		// dont clone we want the same instance
-		this.previousMaterial = material;
+			// Create a new instance of the material to avoid affecting the shared material
+			const highlightedMaterial = material.clone() as MeshBasicMaterial;
+
+			// Set the current temporary material property to highlighted color
+			highlightedMaterial.color.copy( material.color ).add( new Color( 0, 0, 0.5 ) );
+
+			// Assign the temporary material to the object
+			object.material = highlightedMaterial;
+		}
 	}
 
-	protected removeHighlight () {
+	protected removeHighlight ( object?: Mesh ) {
 
-		if ( this.previousMaterial == null ) return;
-
-		this.previousMaterial.color.copy( this.previousColor );
-
+		if ( object ) {
+			// Restore the specific object's highlight
+			this.restoreObjectHighlight( object );
+		} else {
+			// Restore all highlighted objects
+			this.restoreAllHighlights();
+		}
 	}
 
+	private restoreObjectHighlight ( object: Mesh ) {
+
+		if ( this.highlightedObjects.has( object ) ) {
+
+			// Get the original material from the map
+			const originalMaterial = this.highlightedObjects.get( object );
+
+			// Restore the original material to the object
+			object.material = originalMaterial;
+
+			// Dispose of the temporary material to free up memory
+			( object.material as MeshBasicMaterial ).dispose();
+
+			// Remove the object from the map
+			this.highlightedObjects.delete( object );
+		}
+	}
+
+	private restoreAllHighlights () {
+
+		this.highlightedObjects.forEach( ( originalMaterial, highlightedObject ) => {
+
+			this.restoreObjectHighlight( highlightedObject );
+
+		} );
+	}
 }
 
