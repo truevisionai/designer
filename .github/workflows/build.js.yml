@@ -40,7 +40,6 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Create GitHub release
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: ${{ secrets.GH_TOKEN }}
