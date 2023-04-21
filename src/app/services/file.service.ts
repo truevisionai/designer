@@ -443,39 +443,19 @@ export class FileService {
 	}
 
 	getItemType ( item, path ) {
-
-		if ( this.electronService.isMacOS || this.electronService.isLinux ) {
-			if ( versions.stat.isFile( path ) ) {
-				return 'file';
-			} else if ( versions.stat.isDirectory( path ) ) {
-				return 'directory';
-			} else if ( versions.stat.isBlockDevice( path ) ) {
-				return 'blockdevice';
-			} else if ( versions.stat.isCharacterDevice( path ) ) {
-				return 'characterdevice';
-			} else if ( versions.stat.isSymbolicLink( path ) ) {
-				return 'symlink';
-			} else if ( versions.stat.isFIFO( path ) ) {
-				return 'fifo';
-			} else if ( versions.stat.isSocket( path ) ) {
-				return 'socket';
-			}
-			return '';
-		}
-
-		if ( item.isFile() ) {
+		if ( versions.stat.isFile( path ) ) {
 			return 'file';
-		} else if ( item.isDirectory() ) {
+		} else if ( versions.stat.isDirectory( path ) ) {
 			return 'directory';
-		} else if ( item.isBlockDevice() ) {
+		} else if ( versions.stat.isBlockDevice( path ) ) {
 			return 'blockdevice';
-		} else if ( item.isCharacterDevice() ) {
+		} else if ( versions.stat.isCharacterDevice( path ) ) {
 			return 'characterdevice';
-		} else if ( item.isSymbolicLink() ) {
+		} else if ( versions.stat.isSymbolicLink( path ) ) {
 			return 'symlink';
-		} else if ( item.isFIFO() ) {
+		} else if ( versions.stat.isFIFO( path ) ) {
 			return 'fifo';
-		} else if ( item.isSocket() ) {
+		} else if ( versions.stat.isSocket( path ) ) {
 			return 'socket';
 		}
 		return '';
