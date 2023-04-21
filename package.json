@@ -29,9 +29,7 @@
 		"linux": "npm run build:prod && electron-builder build --linux",
 		"windows": "npm run build:prod && electron-builder build --windows",
 		"mac": "npm run build:prod && electron-builder build --mac",
-		"ubuntu-latest": "electron-builder build --linux",
-		"windows-latest": "electron-builder build --windows",
-		"macOS-latest": "electron-builder build --mac"
+		"release": "electron-builder build --linux --windows --mac"
 	},
 	"private": true,
 	"dependencies": {
