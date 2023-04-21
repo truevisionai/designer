@@ -2,7 +2,7 @@
 	"name": "truevision-designer",
 	"homepage": "https://www.truevision.ai",
 	"description": "Truevison designer is a tool to create environment and scenarios for training & testing autonomous vehicles",
-	"version": "2023.3.32",
+	"version": "2023.4.21",
 	"author": {
 		"name": "Truevision.ai",
 		"email": "himanshu@truevision.ai",
@@ -32,7 +32,6 @@
 		"ubuntu-latest": "electron-builder build --linux",
 		"windows-latest": "electron-builder build --windows",
 		"macOS-latest": "electron-builder build --mac"
-
 	},
 	"private": true,
 	"dependencies": {
