@@ -16,6 +16,7 @@
 		"build:dev": "npm run build --configuration development",
 		"build:dev-watch": "npm run build -- --watch",
 		"build:prod": "ng build --configuration production",
+		"build:prod-map": "ng build --configuration production --source-map",
 		"build:prod-watch": "ng build --configuration production --watch",
 		"test": "ng test",
 		"test-headless": "npm run test -- --watch=false --browsers=ChromeHeadlessNoSandbox",
