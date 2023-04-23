@@ -53,8 +53,7 @@
 			"args": [
 				".",
 				"--open-dev-tools",
-				"--disable-splash",
-				"--localhost"
+				"--disable-splash"
 			],
 			"outputCapture": "std"
 		},

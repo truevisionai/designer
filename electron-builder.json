@@ -1,5 +1,13 @@
 {
 	"productName": "TruevisionDesigner",
+	"publish": [
+		{
+			"provider": "github",
+			"owner": "truevisionai",
+			"repo": "designer",
+			"releaseType": "release"
+		}
+	],
 	"directories": {
 		"output": "release/",
 		"buildResources": "build/"
@@ -37,9 +45,6 @@
 	"extraFiles": [],
 	"linux": {
 		"category": "Utility",
-		"target": [
-			"deb",
-			"dir"
-		]
+		"target": "AppImage"
 	}
 }

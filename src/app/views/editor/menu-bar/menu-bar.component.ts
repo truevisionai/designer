@@ -189,6 +189,12 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
+	openAbout () {
+
+		alert( 'App Version ' + Environment.version );
+
+	}
+
 	logout () {
 
 		this.appService.auth.logout();

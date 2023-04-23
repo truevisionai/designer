@@ -6,6 +6,9 @@
 const { app, BrowserWindow, ipcMain, Menu } = require( 'electron' );
 const execFile = require( 'child_process' ).execFile;
 const path = require( 'path' );
+const log = require( 'electron-log' );
+
+log.info( 'App Launched' );
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -17,7 +20,6 @@ const MIN_HEIGHT = 980;
 
 let openDevTools = false;
 let showSplashScreen = true;
-let loadLocahost = false;
 
 // load opengl to fix line rendering issues
 app.commandLine.appendSwitch( "use-angle", "gl" );
@@ -28,8 +30,6 @@ process.argv.forEach( function ( arg, index, array ) {
 		openDevTools = true;
 	} else if ( arg.includes( "disable-splash" ) ) {
 		showSplashScreen = false;
-	} else if ( arg.includes( "localhost" ) ) {
-		loadLocahost = true;
 	}
 
 } );
@@ -53,20 +53,12 @@ function openEditorWindow () {
 		}
 	} );
 
-	if ( loadLocahost ) {
 
-		editorWindow.loadURL( `http://localhost:4200` );
+	const remoteMain = require( "@electron/remote/main" )
+	remoteMain.initialize()
+	remoteMain.enable( editorWindow.webContents )
 
-	} else {
-
-		const remoteMain = require( "@electron/remote/main" )
-		remoteMain.initialize()
-		remoteMain.enable( editorWindow.webContents )
-
-		editorWindow.loadFile( 'dist/index.html' )
-		// editorWindow.loadURL( `file://${ __dirname }/dist/index.html` );
-
-	}
+	editorWindow.loadFile( 'dist/index.html' )
 
 	// Open the DevTools.
 	if ( openDevTools ) editorWindow.webContents.openDevTools();
@@ -78,6 +70,54 @@ function openEditorWindow () {
 		// when you should delete the corresponding element.
 		editorWindow = null
 	} )
+
+	editorWindow.on( 'ready-to-show', () => {
+
+		log.info( 'editor window loaded' )
+
+		checkForUpdates();
+
+	} );
+}
+
+function checkForUpdates () {
+
+	const { autoUpdater } = require( 'electron-updater' );
+	autoUpdater.logger = log;
+	autoUpdater.logger.transports.file.level = 'info';
+
+	// Log "checking-for-update" event
+	autoUpdater.on( 'checking-for-update', () => {
+		console.log( '[electron-updater] Checking for update' );
+	} );
+
+	// Log "update-available" event
+	autoUpdater.on( 'update-available', ( info ) => {
+		console.log( '[electron-updater] Update available:', info );
+	} );
+
+	// Log "update-not-available" event
+	autoUpdater.on( 'update-not-available', ( info ) => {
+		console.log( '[electron-updater] Update not available:', info );
+	} );
+
+	// Log "error" event
+	autoUpdater.on( 'error', ( err ) => {
+		console.error( '[electron-updater] Update error:', err );
+	} );
+
+	// Log "download-progress" event
+	autoUpdater.on( 'download-progress', ( progressObj ) => {
+		console.log( '[electron-updater] Download progress:', progressObj );
+	} );
+
+	// Log "update-downloaded" event
+	autoUpdater.on( 'update-downloaded', ( info ) => {
+		console.log( '[electron-updater] Update downloaded:', info );
+	} );
+
+	autoUpdater.checkForUpdatesAndNotify();
+
 }
 
 function openSplashWindow () {
@@ -98,11 +138,13 @@ function openSplashWindow () {
 		frame: false,
 		icon: `file://${ __dirname }/dist/assets/icon.png`,
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			contextIsolation: true,
+			allowRunningInsecureContent: true,
 		}
 	} );
 
-	splashWindow.loadURL( `file://${ __dirname }/src/splash.html` );
+	splashWindow.loadFile( 'dist/splash.html' )
 
 	// Open the DevTools.
 	if ( openDevTools ) splashWindow.webContents.openDevTools();
