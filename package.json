@@ -30,7 +30,7 @@
 		"linux": "npm run build:prod && electron-builder build --linux",
 		"windows": "npm run build:prod && electron-builder build --windows",
 		"mac": "npm run build:prod && electron-builder build --mac",
-		"release": "electron-builder -p always"
+		"release": "electron-builder build --linux --windows -p always"
 	},
 	"private": true,
 	"dependencies": {
