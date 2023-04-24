@@ -27,10 +27,7 @@
 		"extraFiles": [],
 		"linux": {
 			"category": "Utility",
-			"target": [
-				"AppImage",
-				"snap"
-			]
+			"target": "AppImage"
 		},
 		"win": {
 			"target": "nsis"
