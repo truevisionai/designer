@@ -7,10 +7,12 @@ declare const versions: any;
 export class TvElectronService {
 
 	private _electron: typeof window.electron;
+	private _remote: any;
 
 	constructor () {
 		if ( this.isElectronApp ) {
 			this._electron = window.require( 'electron' );
+			this._remote = versions.remote();
 		}
 	}
 
@@ -83,6 +85,6 @@ export class TvElectronService {
 	}
 
 	get remote (): any {
-		return versions.remote();
+		return this._remote;
 	}
 }
