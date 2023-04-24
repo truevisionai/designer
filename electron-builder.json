@@ -1,50 +1,63 @@
-{
-	"productName": "TruevisionDesigner",
-	"publish": [
-		{
-			"provider": "github",
-			"owner": "truevisionai",
-			"repo": "designer",
-			"releaseType": "release"
+	{
+		"productName": "TruevisionDesigner",
+		"publish": [
+			{
+				"provider": "github",
+				"owner": "truevisionai",
+				"repo": "designer",
+				"releaseType": "release"
+			}
+		],
+		"directories": {
+			"output": "release/",
+			"buildResources": "build/"
+		},
+		"files": [
+			"**/*",
+			"!**/*.ts",
+			"!*.code-workspace",
+			"!LICENSE.md",
+			"!buildspec.yml",
+			"!package.json",
+			"!package-lock.json",
+			"!python-client/",
+			"!scenario/",
+			"!scripts/",
+			"!samples/",
+			"!src/",
+			"!e2e/",
+			"!hooks/",
+			"!angular.json",
+			"!_config.yml",
+			"!karma.conf.js",
+			"!tsconfig.json",
+			"!tslint.json",
+			"!third-party",
+			"!docs",
+			"!.vscode",
+			"!.idea",
+			"!.protos"
+		],
+		"extraResources": [
+			"bin",
+			"default-project"
+		],
+		"extraFiles": [],
+		"linux": {
+			"category": "Utility",
+			"target": [
+				"AppImage",
+				"snap"
+			]
+		},
+		"win": {
+			"target": "nsis"
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowElevation": true,
+			"allowToChangeInstallationDirectory": true,
+			"createDesktopShortcut": true,
+			"createStartMenuShortcut": true
 		}
-	],
-	"directories": {
-		"output": "release/",
-		"buildResources": "build/"
-	},
-	"files": [
-		"**/*",
-		"!**/*.ts",
-		"!*.code-workspace",
-		"!LICENSE.md",
-		"!buildspec.yml",
-		"!package.json",
-		"!package-lock.json",
-		"!python-client/",
-		"!scenario/",
-		"!scripts/",
-		"!samples/",
-		"!src/",
-		"!e2e/",
-		"!hooks/",
-		"!angular.json",
-		"!_config.yml",
-		"!karma.conf.js",
-		"!tsconfig.json",
-		"!tslint.json",
-		"!third-party",
-		"!docs",
-		"!.vscode",
-		"!.idea",
-		"!.protos"
-	],
-	"extraResources": [
-		"bin",
-		"default-project"
-	],
-	"extraFiles": [],
-	"linux": {
-		"category": "Utility",
-		"target": "AppImage"
 	}
-}
