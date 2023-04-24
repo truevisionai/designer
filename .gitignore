@@ -52,3 +52,4 @@ protos/csharp
 scenario
 bin
 *.pyc
+.env

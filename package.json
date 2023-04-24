@@ -2,7 +2,7 @@
 	"name": "truevision-designer",
 	"homepage": "https://www.truevision.ai",
 	"description": "Truevison designer is a tool to create environment and scenarios for training & testing autonomous vehicles",
-	"version": "2023.4.21",
+	"version": "2023.4.24",
 	"author": {
 		"name": "Truevision.ai",
 		"email": "himanshu@truevision.ai",
@@ -30,7 +30,7 @@
 		"linux": "npm run build:prod && electron-builder build --linux",
 		"windows": "npm run build:prod && electron-builder build --windows",
 		"mac": "npm run build:prod && electron-builder build --mac",
-		"release": "electron-builder build --linux --windows"
+		"release": "electron-builder build --linux --windows -p always"
 	},
 	"private": true,
 	"dependencies": {
@@ -51,8 +51,9 @@
 		"@ngx-translate/core": "^12.1.2",
 		"@ngx-translate/http-loader": "^5.0.0",
 		"@sentry/angular": "^7.14.2",
-		"@types/three": "^0.144.0",
 		"earcut": "^2.2.4",
+		"electron-log": "^5.0.0-beta.23",
+		"electron-updater": "^5.3.0",
 		"fast-xml-parser": "^4.0.11",
 		"file-saver": "^2.0.5",
 		"lodash": "^4.17.21",
@@ -75,6 +76,7 @@
 		"@types/electron": "^1.6.10",
 		"@types/jasmine": "~3.6.0",
 		"@types/node": "^12.11.1",
+		"@types/three": "^0.144.0",
 		"@types/webxr": "^0.5.0",
 		"electron": "^19.1.1",
 		"electron-builder": "^23.6.0",

@@ -25,7 +25,7 @@ export class SentryService {
 		Sentry.init( {
 			dsn: Environment.dsn,
 			environment: Environment.environment,
-			release: 'v' + Environment.version,
+			release: Environment.version,
 		} );
 
 	}
