@@ -21,7 +21,8 @@
 			"package.json"
 		],
 		"extraResources": [
-			"default-project"
+			"default-project",
+			"app-update.yml"
 		],
 		"extraFiles": [],
 		"linux": {
