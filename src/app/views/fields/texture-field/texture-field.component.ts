@@ -3,6 +3,7 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { MetaImporter } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Texture } from 'three';
 
@@ -87,7 +88,7 @@ export class TextureFieldComponent implements OnInit {
 
 			const metadata = AssetDatabase.getMetadata( guid );
 
-			if ( metadata.importer === 'TextureImporter' ) {
+			if ( metadata.importer === MetaImporter.TEXTURE ) {
 
 				this.texture = AssetDatabase.getInstance( guid );
 

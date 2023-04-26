@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MetaImporter } from 'app/core/models/metadata.model';
 import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
@@ -10,7 +11,7 @@ export class RoadStyle {
 
 	public static extension = 'roadstyle';
 
-	public static importer = 'RoadStyleImporter';
+	public static importer = MetaImporter.ROAD_STYLE;
 
 	public laneOffset: TvRoadLaneOffset;
 

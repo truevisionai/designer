@@ -5,7 +5,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { AppInspector } from 'app/core/inspector';
-import { Metadata } from 'app/core/models/metadata.model';
+import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { FileNode } from './file-node.model';
 
@@ -60,7 +60,7 @@ export class ProjectBrowserService {
 			ProjectBrowserService.lastMetadata = meta;
 
 			switch ( meta.importer ) {
-				case 'SignImporter':
+				case MetaImporter.SIGN:
 					AppInspector.setInspector(
 						InspectorFactoryService.getInpectorByFilename( file.name ),
 						data

@@ -18,7 +18,7 @@ import {
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
-import { Metadata } from '../core/models/metadata.model';
+import { Metadata, MetaImporter } from '../core/models/metadata.model';
 import { AssetDatabase } from './asset-database';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
@@ -181,7 +181,7 @@ export class AssetLoaderService {
 
 		AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer === 'TextureImporter' ) {
+			if ( meta.importer === MetaImporter.TEXTURE ) {
 
 				const data = meta.data;
 
@@ -222,7 +222,7 @@ export class AssetLoaderService {
 
 		AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'MaterialImporter' && meta.guid != 'defaultMaterial' ) {
+			if ( meta.importer == MetaImporter.MATERIAL && meta.guid != 'defaultMaterial' ) {
 
 				const material = TvMaterial.parseString( this.fileService.fs.readFileSync( meta.path, 'utf-8' ) );
 
@@ -238,7 +238,7 @@ export class AssetLoaderService {
 
 		AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'ModelImporter' ) {
+			if ( meta.importer == MetaImporter.MODEL ) {
 
 				// TODO: Async can also be an option
 				this.modelImporterService.load( meta.path, ( obj ) => {
@@ -269,7 +269,7 @@ export class AssetLoaderService {
 
 		AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == 'RoadStyleImporter' ) {
+			if ( meta.importer == MetaImporter.ROAD_STYLE ) {
 
 				this.fileService.readAsync( meta.path ).then( contents => {
 
@@ -287,7 +287,7 @@ export class AssetLoaderService {
 
 		AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer === 'RoadMarkingImporter' ) {
+			if ( meta.importer === MetaImporter.ROAD_MARKING ) {
 
 				this.fileService.readAsync( meta.path ).then( contents => {
 
@@ -467,9 +467,9 @@ export class AssetLoaderService {
 
 	//         switch ( importer ) {
 
-	//             case 'TextureImporter': instance = new TextureLoader().load( path ); break;
+	//             case MetaImporter.TEXTURE: instance = new TextureLoader().load( path ); break;
 
-	//             case 'MaterialImporter':
+	//             case MetaImporter.MATERIAL:
 	//                 {
 	//                     instance = TvMaterial.parseString( this.fileService.fs.readFileSync( path, 'utf-8' ) );
 	//                 }

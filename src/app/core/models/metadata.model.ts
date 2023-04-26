@@ -17,3 +17,14 @@ export interface DynamicMeta<T> {
 	importer: string;
 	data: T;
 }
+
+export enum MetaImporter {
+	SCENE = 'SceneImporter',
+	OPENDRIVE = 'OpenDriveImporter',
+	TEXTURE = 'TextureImporter',
+	MATERIAL = 'MaterialImporter',
+	SIGN = 'SignImporter',
+	MODEL = 'ModelImporter',
+	ROAD_STYLE = 'RoadStyleImporter',
+	ROAD_MARKING = 'RoadMarkingImporter',
+}

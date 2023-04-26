@@ -6,7 +6,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { AppInspector } from 'app/core/inspector';
-import { Metadata } from 'app/core/models/metadata.model';
+import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
@@ -61,31 +61,31 @@ export class FileComponent implements OnInit {
 	}
 
 	public get isModel (): boolean {
-		return this.metadata && this.metadata.importer == 'ModelImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.MODEL;
 	}
 
 	public get isMaterial (): boolean {
-		return this.metadata && this.metadata.importer == 'MaterialImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.MATERIAL;
 	}
 
 	public get isTexture (): boolean {
-		return this.metadata && this.metadata.importer == 'TextureImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.TEXTURE;
 	}
 
 	public get isRoadStyle (): boolean {
-		return this.metadata && this.metadata.importer == 'RoadStyleImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.ROAD_STYLE;
 	}
 
 	public get isRoadMarking (): boolean {
-		return this.metadata && this.metadata.importer == 'RoadMarkingImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.ROAD_MARKING;
 	}
 
 	public get isScene (): boolean {
-		return this.metadata && this.metadata.importer == 'SceneImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.SCENE;
 	}
 
 	public get isSign (): boolean {
-		return this.metadata && this.metadata.importer == 'SignImporter';
+		return this.metadata && this.metadata.importer == MetaImporter.SIGN;
 	}
 
 	public get isDirectory (): boolean {
@@ -138,48 +138,49 @@ export class FileComponent implements OnInit {
 
 			if ( !this.metadata.preview ) {
 
-				if ( this.metadata.importer === 'MaterialImporter' ) {
-
-					const instance: Material = AssetDatabase.getInstance( this.metadata.guid );
-
-					this.metadata.preview = this.previewService.getMaterialPreview( instance );
-
-				} else if ( this.metadata.importer === 'SignImporter' ) {
-
-					const instance: TvRoadSign = AssetDatabase.getInstance( this.metadata.guid );
-
-					this.metadata.preview = this.previewService.getSignPreview( instance );
-
-				} else if ( this.metadata.importer === 'ModelImporter' ) {
-
-					// const instance: Object3D = AssetCache.getInstance( this.metadata.guid );
-
-					this.assetService.modelImporterService.load( this.metadata.path, ( obj ) => {
-
-						this.metadata.preview = this.previewService.getModelPreview( obj );
-
-						AssetDatabase.setInstance( this.metadata.guid, obj );
-
-					}, this.metadata );
-
-				} else if ( this.metadata.importer === 'RoadStyleImporter' ) {
-
-					const instance: RoadStyle = AssetDatabase.getInstance( this.metadata.guid );
-
-					this.metadata.preview = this.previewService.getRoadStylePreview( instance );
-
-				} else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
-
-					const instance: TvRoadMarking = AssetDatabase.getInstance( this.metadata.guid );
-
-					this.metadata.preview = this.previewService.getRoadMarkingPreview( instance );
-
-				}
+				this.updatePreview( this.metadata );
 
 
 			}
 
 		} catch ( error ) {
+
+		}
+	}
+
+	private updatePreview ( metadata: Metadata ) {
+
+		const instance = AssetDatabase.getInstance( this.metadata.guid );
+
+		if ( !instance ) return;
+
+		if ( metadata.importer === MetaImporter.MATERIAL ) {
+
+			metadata.preview = this.previewService.getMaterialPreview( instance as Material );
+
+		} else if ( metadata.importer === MetaImporter.SIGN ) {
+
+			metadata.preview = this.previewService.getSignPreview( instance as TvRoadSign );
+
+		} else if ( metadata.importer === MetaImporter.MODEL ) {
+
+			// const instance: Object3D = AssetCache.getInstance( metadata.guid );
+
+			this.assetService.modelImporterService.load( metadata.path, ( obj ) => {
+
+				metadata.preview = this.previewService.getModelPreview( obj );
+
+				AssetDatabase.setInstance( metadata.guid, obj );
+
+			}, metadata );
+
+		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
+
+			metadata.preview = this.previewService.getRoadStylePreview( instance as RoadStyle );
+
+		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+
+			metadata.preview = this.previewService.getRoadMarkingPreview( instance as TvRoadMarking );
 
 		}
 	}
@@ -199,21 +200,21 @@ export class FileComponent implements OnInit {
 			const instance = AssetDatabase.getInstance( this.metadata.guid );
 			const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
 
-			if ( this.metadata.importer === 'MaterialImporter' ) {
+			if ( this.metadata.importer === MetaImporter.MATERIAL ) {
 
 				AppInspector.setInspector( inspector, {
 					material: instance,
 					guid: this.metadata.guid
 				} );
 
-			} else if ( this.metadata.importer === 'TextureImporter' ) {
+			} else if ( this.metadata.importer === MetaImporter.TEXTURE ) {
 
 				AppInspector.setInspector( inspector, {
 					texture: instance,
 					guid: this.metadata.guid
 				} );
 
-			} else if ( this.metadata.importer === 'RoadStyleImporter' ) {
+			} else if ( this.metadata.importer === MetaImporter.ROAD_STYLE ) {
 
 				RoadStyleService.setCurrentStyle( instance as RoadStyle );
 
@@ -222,12 +223,12 @@ export class FileComponent implements OnInit {
 					guid: this.metadata.guid
 				} );
 
-			} else if ( this.metadata.importer === 'ModelImporter' ) {
+			} else if ( this.metadata.importer === MetaImporter.MODEL ) {
 
 				AppInspector.setInspector( inspector, this.metadata );
 
 
-			} else if ( this.metadata.importer === 'RoadMarkingImporter' ) {
+			} else if ( this.metadata.importer === MetaImporter.ROAD_MARKING ) {
 
 				AppInspector.setInspector( inspector, {
 					roadMarking: instance,

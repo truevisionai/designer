@@ -3,6 +3,7 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { MetaImporter } from 'app/core/models/metadata.model';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
@@ -96,7 +97,7 @@ export class MaterialFieldComponent implements OnInit {
 
             const metadata = AssetDatabase.getMetadata( guid );
 
-            if ( metadata && metadata.importer === 'MaterialImporter' ) {
+            if ( metadata && metadata.importer === MetaImporter.MATERIAL ) {
 
                 this.changed.emit( guid );
 

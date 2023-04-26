@@ -11,7 +11,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
-import { Metadata } from '../models/metadata.model';
+import { Metadata, MetaImporter } from '../models/metadata.model';
 import { AppService } from '../services/app.service';
 
 @Injectable( {
@@ -124,7 +124,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'RoadMarkingImporter',
+			importer: MetaImporter.ROAD_MARKING,
 			data: {},
 			path: path,
 		};
@@ -159,7 +159,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'SceneImporter',
+			importer: MetaImporter.SCENE,
 			data: {},
 			path: path
 		};
@@ -170,7 +170,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'ModelImporter',
+			importer: MetaImporter.MODEL,
 			data: { name: name, rotationVariance: new Vector3( 0, 0, 0 ), scaleVariance: new Vector3( 0, 0, 0 ) },
 			path: path
 		};
@@ -181,7 +181,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'OpenDriveImporter',
+			importer: MetaImporter.OPENDRIVE,
 			data: {},
 			path: path
 		};
@@ -200,7 +200,7 @@ export class MetadataFactory {
 			guid: guid,
 			version: version,
 			type: 'Texture',
-			importer: 'TextureImporter',
+			importer: MetaImporter.TEXTURE,
 			data: data,
 			path: path
 		};
@@ -211,7 +211,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'MaterialImporter',
+			importer: MetaImporter.MATERIAL,
 			data: {},
 			path: path,
 		};
@@ -222,7 +222,7 @@ export class MetadataFactory {
 
 		return {
 			guid: guid,
-			importer: 'SignImporter',
+			importer: MetaImporter.SIGN,
 			data: {},
 			path: path,
 		};
