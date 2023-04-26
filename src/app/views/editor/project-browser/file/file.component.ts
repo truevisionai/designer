@@ -136,35 +136,38 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			if ( !this.metadata.preview ) {
-
-				this.updatePreview( this.metadata );
-
-
-			}
+			this.initPreview( this.metadata );
 
 		} catch ( error ) {
+
+			console.error( error );
 
 		}
 	}
 
-	private updatePreview ( metadata: Metadata ) {
+	private initPreview ( metadata: Metadata ) {
 
-		const instance = AssetDatabase.getInstance( this.metadata.guid );
+		if ( metadata.importer == MetaImporter.SCENE ) return;
 
-		if ( !instance ) return;
+		if ( metadata.preview ) return;
 
 		if ( metadata.importer === MetaImporter.MATERIAL ) {
+
+			const instance = AssetDatabase.getInstance( this.metadata.guid );
+
+			if ( !instance ) return;
 
 			metadata.preview = this.previewService.getMaterialPreview( instance as Material );
 
 		} else if ( metadata.importer === MetaImporter.SIGN ) {
 
+			const instance = AssetDatabase.getInstance( this.metadata.guid );
+
+			if ( !instance ) return;
+
 			metadata.preview = this.previewService.getSignPreview( instance as TvRoadSign );
 
 		} else if ( metadata.importer === MetaImporter.MODEL ) {
-
-			// const instance: Object3D = AssetCache.getInstance( metadata.guid );
 
 			this.assetService.modelImporterService.load( metadata.path, ( obj ) => {
 
@@ -176,9 +179,17 @@ export class FileComponent implements OnInit {
 
 		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
 
+			const instance = AssetDatabase.getInstance( this.metadata.guid );
+
+			if ( !instance ) return;
+
 			metadata.preview = this.previewService.getRoadStylePreview( instance as RoadStyle );
 
 		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+
+			const instance = AssetDatabase.getInstance( this.metadata.guid );
+
+			if ( !instance ) return;
 
 			metadata.preview = this.previewService.getRoadMarkingPreview( instance as TvRoadMarking );
 
