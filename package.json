@@ -12,6 +12,7 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "npm run build:dev-watch",
+		"update-version": "node update-version",
 		"build": "ng build",
 		"build:dev": "npm run build --configuration development",
 		"build:dev-watch": "npm run build -- --watch",
@@ -22,7 +23,6 @@
 		"test-headless": "npm run test -- --watch=false --browsers=ChromeHeadlessNoSandbox",
 		"lint": "ng lint",
 		"e2e": "ng e2e",
-		"version-update": "npm version patch --no-git-tag-version",
 		"sentry-upload": "sentry-cli releases files $npm_package_version upload-sourcemaps --ext js --ext map --rewrite --validate dist",
 		"pack": "npm run build && electron-builder --dir",
 		"dist": "npm run build && electron-builder",
