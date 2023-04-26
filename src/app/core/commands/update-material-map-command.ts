@@ -55,15 +55,21 @@ export class UpdateMaterialMapCommand extends BaseCommand {
 			this.material.mapGuid = guid;
 			this.material.map = texture || null;
 
+			// if ( this.material.map ) this.material.map.needsUpdate = true;
+
 		} else if ( this.mapName === 'roughnessMap' ) {
 
 			this.material.roughnessMapGuid = guid;
 			this.material.roughnessMap = texture || null;
 
+			// if ( this.material.roughnessMap ) this.material.roughnessMap.needsUpdate = true;
+
 		} else if ( this.mapName === 'normalMap' ) {
 
 			this.material.normalMapGuid = guid;
 			this.material.normalMap = texture || null;
+
+			// if ( this.material.normalMap ) this.material.normalMap.needsUpdate = true;
 
 		}
 

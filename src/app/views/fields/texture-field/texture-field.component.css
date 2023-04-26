@@ -9,6 +9,17 @@
 .texture-card-thumbnail {
 	float: left;
 	margin-right: 8px;
-	height: 24px !important;
-	width: 24px !important;
+	height: 18px !important;
+	width: 18px !important;
+}
+
+.texture-card .mat-card-subtitle {
+	font-size: 10px;
+}
+
+.btn-remove {
+	float: right;
+	position: absolute;
+	right: 6px;
+	top: 0;
 }

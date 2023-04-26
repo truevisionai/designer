@@ -5,6 +5,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { MetaImporter } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { Texture } from 'three';
 
 @Component( {
@@ -20,13 +21,18 @@ export class TextureFieldComponent implements OnInit {
 
 	@Input() label: string = 'Map';
 
-	public texture: Texture;
+	constructor () { }
 
-	constructor () {
+	get instance () {
+		return this.guid ? AssetDatabase.getInstance<Texture>( this.guid ) : null;
+	}
+
+	get image () {
+		return this.instance ? this.instance.image : null;
 	}
 
 	get thumbnail () {
-		return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
+		return this.image ? this.image.currentSrc : '';
 	}
 
 	get filename () {
@@ -37,9 +43,13 @@ export class TextureFieldComponent implements OnInit {
 		return AssetDatabase.getMetadata( this.guid );
 	}
 
-	ngOnInit () {
+	ngOnInit () { }
 
-		if ( this.guid ) this.texture = AssetDatabase.getInstance( this.guid );
+	onRemoveClicked () {
+
+		this.guid = null;
+
+		this.changed.emit( null );
 
 	}
 
@@ -84,17 +94,27 @@ export class TextureFieldComponent implements OnInit {
 
 		const guid = $event.dataTransfer.getData( 'guid' );
 
-		if ( guid ) {
+		if ( !guid ) return;
 
-			const metadata = AssetDatabase.getMetadata( guid );
+		const metadata = AssetDatabase.getMetadata( guid );
 
-			if ( metadata.importer === MetaImporter.TEXTURE ) {
+		if ( !metadata ) {
 
-				this.texture = AssetDatabase.getInstance( guid );
+			SnackBar.warn( 'Metadata not found' );
 
-				this.changed.emit( guid );
+			return;
+		}
 
-			}
+		if ( metadata.importer === MetaImporter.TEXTURE ) {
+
+			this.guid = guid;
+
+			this.changed.emit( guid );
+
+		} else {
+
+			SnackBar.warn( 'Not a texture' );
+
 		}
 	}
 }

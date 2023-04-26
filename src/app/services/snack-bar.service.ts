@@ -54,6 +54,17 @@ export class SnackBar {
 
 	}
 
+	static warn ( message: string = '', action: string = '', duration: number = 5000 ): MatSnackBarRef<SimpleSnackBar> {
+
+		return this.snackBar.open( message, action, {
+			duration: duration,
+			verticalPosition: this.verticalPosition,
+			horizontalPosition: 'right',
+			panelClass: [ 'yellow-snackbar' ]
+		} );
+
+	}
+
 	static error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
 		if ( this.analytics ) this.analytics.trackError( { name: message, message: message, stack: message } );
