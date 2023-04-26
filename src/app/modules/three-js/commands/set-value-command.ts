@@ -8,12 +8,12 @@ export class SetValueCommand<T, K extends keyof T> extends BaseCommand {
 
 	private oldValue: T[ K ];
 
-	constructor ( private object: T, private attributeName: K, private newValue: T[ K ] ) {
+	constructor ( private object: T, private attributeName: K, private newValue: T[ K ], oldValue?: T[ K ] ) {
 
 		super();
 
 		// store the old value
-		this.oldValue = object !== undefined ? object[ attributeName ] : undefined;
+		this.oldValue = ( oldValue !== undefined ) ? oldValue : object[ attributeName ];
 	}
 
 	execute (): void {

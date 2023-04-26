@@ -3,11 +3,15 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CallFunctionCommand } from 'app/core/commands/call-function-command';
+import { UpdateMaterialMapCommand } from 'app/core/commands/update-material-map-command';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { AssetDatabase } from 'app/services/asset-database';
+import { CommandHistory } from 'app/services/command-history';
 import { Color } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';
 
@@ -62,52 +66,6 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onNameChanged ( $name ) {
-
-		this.material.name = $name;
-
-	}
-
-	onColorChanged ( $value ) {
-
-		this.material.color = $value;
-
-		this.updatePreviewCache();
-	}
-
-	// not being used
-	onEmissiveColorChanged ( $value ) {
-
-		this.material.emissive = $value;
-
-		this.updatePreviewCache();
-	}
-
-	onRoughnessChanged ( $value ) {
-
-		this.material.roughness = $value;
-
-		this.updatePreviewCache();
-	}
-
-	onMetalnessChanged ( $value ) {
-
-		this.material.metalness = $value;
-
-		this.updatePreviewCache();
-	}
-
-	onMapChanged ( $guid: string, map: string ) {
-
-		this.material[ `${ map }Guid` ] = $guid;
-		this.material[ map ] = AssetDatabase.getInstance( $guid );
-		this.material[ map ].needsUpdate = true;
-
-		this.material.needsUpdate = true;
-
-		this.updatePreviewCache();
-	}
-
 
 	ngOnDestroy () {
 
@@ -116,9 +74,88 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 		this.updatePreviewCache();
 	}
 
-	updatePreviewCache () {
+	getFreshPreview () {
 
-		this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+		return this.previewService.getMaterialPreview( this.material );
 
+	}
+
+	onColorChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'color', $value );
+
+	}
+
+	// not being used
+	onEmissiveColorChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'emissive', $value );
+
+	}
+
+	onRoughnessChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'roughness', $value );
+
+	}
+
+	onMetalnessChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'metalness', $value );
+
+	}
+
+	onMapChanged ( $guid: string ) {
+
+		console.log('map changed', $guid)
+
+		CommandHistory.execute(
+
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'map', $guid )
+
+		)
+
+	}
+
+	onRoughnessMapChanged ( $guid: string ) {
+
+		CommandHistory.execute(
+
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'roughnessMap', $guid )
+
+		)
+
+	}
+
+	onNormalMapChanged ( $guid: string ) {
+
+		CommandHistory.execute(
+
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'normalMap', $guid )
+
+		)
+
+	}
+
+	private updatePreviewCache () {
+
+		this.metadata.preview = this.getFreshPreview();
+
+	}
+
+	private updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
+
+		const oldValue = ( typeof material[ propertyName ] === 'number' )
+			? material[ propertyName ]
+			: ( material[ propertyName ] as any ).clone();
+
+		material[ propertyName ] = newValue;
+
+		CommandHistory.executeMany(
+
+			new SetValueCommand<T, K>( material, propertyName, newValue, oldValue ),
+
+			new SetValueCommand( this.metadata, 'preview', this.getFreshPreview() )
+		);
 	}
 }
