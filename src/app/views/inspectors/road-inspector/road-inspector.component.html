@@ -16,7 +16,7 @@
 
 	<app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.borderMaterialGuid" label="Border Material"></app-material-field>
 
-	<app-material-field (changed)="onBorderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
+	<app-material-field (changed)="onShoulderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
 
 	<div *ngIf="controlPoint">
 		<span>Road Control Point</span><br />

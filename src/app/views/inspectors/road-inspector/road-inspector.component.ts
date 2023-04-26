@@ -3,6 +3,7 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CallFunctionCommand } from 'app/core/commands/call-function-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
@@ -103,62 +104,46 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 	onDrivingMaterialChanged ( $guid: string ) {
 
-		this.road.drivingMaterialGuid = $guid;
+		CommandHistory.executeMany(
 
-		this.road.laneSections.forEach( section => {
+			new SetValueCommand( this.road, 'drivingMaterialGuid', $guid ),
 
-			section.lanes.forEach( lane => {
+			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
-
-			} );
-
-		} );
+		)
 
 	}
 
 	onSidewalkMaterialChanged ( $guid: string ) {
 
-		this.road.sidewalkMaterialGuid = $guid;
+		CommandHistory.executeMany(
 
-		this.road.laneSections.forEach( section => {
+			new SetValueCommand( this.road, 'sidewalkMaterialGuid', $guid ),
 
-			section.lanes.forEach( lane => {
+			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
-
-			} );
-
-		} );
+		)
 	}
 
 	onBorderMaterialChanged ( $guid: string ) {
 
-		this.road.borderMaterialGuid = $guid;
+		CommandHistory.executeMany(
 
-		this.road.laneSections.forEach( section => {
+			new SetValueCommand( this.road, 'borderMaterialGuid', $guid ),
 
-			section.lanes.forEach( lane => {
+			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
-
-			} );
-
-		} );
+		)
 	}
 
 	onShoulderMaterialChanged ( $guid: string ) {
 
-		this.road.shoulderMaterialGuid = $guid;
+		CommandHistory.executeMany(
 
-		this.road.laneSections.forEach( section => {
+			new SetValueCommand( this.road, 'shoulderMaterialGuid', $guid ),
 
-			section.lanes.forEach( lane => {
+			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this.road, lane );
-
-			} );
-
-		} );
+		)
 	}
 }

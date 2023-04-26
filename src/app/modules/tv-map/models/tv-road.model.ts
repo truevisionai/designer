@@ -34,6 +34,7 @@ import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { NodeFactoryService } from 'app/core/factories/node-factory.service';
+import { TvMapBuilder } from '../builders/od-builder.service';
 
 export class TvRoad {
 
@@ -1297,6 +1298,20 @@ export class TvRoad {
 				laneOffset.mesh.visible = false;
 
 			}
+
+		} );
+
+	}
+
+	updateLaneMaterial () {
+
+		this.laneSections.forEach( section => {
+
+			section.lanes.forEach( lane => {
+
+				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this, lane );
+
+			} );
 
 		} );
 
