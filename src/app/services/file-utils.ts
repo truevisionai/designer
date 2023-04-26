@@ -50,4 +50,19 @@ export class FileUtils {
 		console.error( "unknown platform" );
 	}
 
+	static pathToFileURL ( path: string ): string {
+
+		if ( !path ) return;
+
+		const isWindows = AppInfo.electron.isWindows;
+
+		const prefix = isWindows ? 'file:///' : 'file://';
+
+		if ( isWindows ) {
+			path = path.replace( /\\/g, '/' );
+		}
+
+		return prefix + path;
+	}
+
 }

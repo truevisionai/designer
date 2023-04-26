@@ -119,8 +119,7 @@ export class FileComponent implements OnInit {
 
 	get filePath () {
 
-		return 'file:///' + this.file.path;
-
+		return FileUtils.pathToFileURL( this.file.path );
 	}
 
 	ngOnInit () {
