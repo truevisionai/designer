@@ -60,6 +60,19 @@ export class FileComponent implements OnInit {
 		return this.metadata && this.metadata.preview;
 	}
 
+	public get imageSource () {
+		if ( this.isDirectory ) {
+			return 'assets/folder-icon.png';
+		}
+		if ( this.isScene ) {
+			return 'assets/scene-icon.png';
+		}
+		if ( this.isUnknown ) {
+			return 'assets/unknown-file-icon.png';
+		}
+		return this.previewImage;
+	}
+
 	public get isModel (): boolean {
 		return this.metadata && this.metadata.importer == MetaImporter.MODEL;
 	}
