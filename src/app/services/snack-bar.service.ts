@@ -67,9 +67,7 @@ export class SnackBar {
 
 	static error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
-		if ( this.analytics ) this.analytics.trackError( { name: message, message: message, stack: message } );
-
-		if ( this.analytics ) SentryService.captureMessage( message, "error" );
+		SentryService.captureMessage( message, "error" );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,

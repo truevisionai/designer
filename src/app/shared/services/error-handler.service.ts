@@ -9,7 +9,7 @@ import { Environment } from 'app/core/utils/environment';
 import { SnackBar } from '../../services/snack-bar.service';
 
 @Injectable()
-export class ErrorHandlerService extends ErrorHandler {
+export class CustomErrorHandler extends ErrorHandler {
 
 	errorCount = 0;
 
@@ -20,11 +20,9 @@ export class ErrorHandlerService extends ErrorHandler {
 	// https://github.com/angular/angular/issues/17010
 	handleError ( error: Error ) {
 
-		if ( !Environment.production ) SnackBar.error( error.message );
-		if ( !Environment.production ) console.error( error );
+		SnackBar.error( error.message );
 
-		if ( Environment.production && this.analytics ) this.analytics.trackError( error );
-		if ( Environment.production ) SnackBar.error( `${ error.name } :  Oops Something Went Wrong` );
+		console.error( error );
 
 		SentryService.captureException( error );
 
