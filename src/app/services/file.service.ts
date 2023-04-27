@@ -224,11 +224,16 @@ export class FileService {
 
 		if ( directory == null ) directory = this.projectFolder;
 
-		const options = {
-			defaultPath: directory
+		// TODO:
+		const saveOptions = {
+			title: 'Save File',
+			defaultPath: 'Untitled.' + extension,
+			filters: [
+				{ name: 'All Files', extensions: [ extension ] }
+			]
 		};
 
-		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
+		this.remote.dialog.showSaveDialog( saveOptions ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
 			if ( res.canceled ) return;
 
