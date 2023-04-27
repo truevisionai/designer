@@ -8,4 +8,8 @@ npm run update-version
 
 npm run build:prod
 
+npm run sentry-inject
+
+npm run sentry-upload
+
 npm run release
