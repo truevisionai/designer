@@ -230,6 +230,8 @@ export class FileService {
 
 		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
 
+			if ( res.canceled ) return;
+
 			let fullPath = res.filePath;
 
 			if ( fullPath != null ) {
