@@ -11,7 +11,15 @@ import { Environment } from '../utils/environment';
 } )
 export class SentryService {
 
+	static get isErrorTrackingEnabled (): boolean {
+
+		return Environment.errorTrackingEnabled;
+
+	}
+
 	static setEmail ( email: string ): void {
+
+		if ( !this.isErrorTrackingEnabled ) return;
 
 		Sentry.setUser( {
 			email: email,
@@ -21,6 +29,8 @@ export class SentryService {
 	}
 
 	static init (): void {
+
+		if ( !this.isErrorTrackingEnabled ) return;
 
 		Sentry.init( {
 			dsn: Environment.dsn,
@@ -32,11 +42,15 @@ export class SentryService {
 
 	static captureException ( error: Error, context?: any ): void {
 
+		if ( !this.isErrorTrackingEnabled ) return;
+
 		Sentry.captureException( error, context );
 
 	}
 
 	static captureMessage ( message: string, context?: any ): void {
+
+		if ( !this.isErrorTrackingEnabled ) return;
 
 		Sentry.captureMessage( message, context );
 

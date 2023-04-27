@@ -5,7 +5,7 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
 
@@ -19,11 +19,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
+import { AnalyticsService } from './core/analytics/analytics.service';
 import { CoreModule } from './core/core.module';
+import { errorHandlerFactory } from './error-handler.factory';
 import { ThreeJsModule } from './modules/three-js/three-js.module';
 
 import { TvMapModule } from './modules/tv-map/tv-map.module';
-import { ErrorHandlerService } from './shared/services/error-handler.service';
 
 import { SharedModule } from './shared/shared.module';
 import { EditorModule } from './views/editor/editor.module';
@@ -67,10 +68,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 	],
 	declarations: [ AppComponent ],
 	providers: [
-		{
-			provide: ErrorHandler,
-			useClass: ErrorHandlerService,
-		},
+		{ provide: ErrorHandler, useFactory: errorHandlerFactory, deps: [ Injector, AnalyticsService ], },
 		{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
 		{ provide: LocationStrategy, useClass: HashLocationStrategy }
 	],

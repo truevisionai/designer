@@ -12,6 +12,12 @@ export class Environment {
 
 	}
 
+	static get errorTrackingEnabled (): boolean {
+
+		return this.dsn !== null;
+
+	}
+
 	static get environment (): string {
 
 		return this.production ? 'production' : 'development';
