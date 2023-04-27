@@ -36,7 +36,7 @@ export class LaneWidthTool extends BaseTool {
 	public controlPoint: AnyControlPoint;
 	public widthNode: LaneWidthNode;
 
-	private laneHelper: OdLaneReferenceLineBuilder;
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.DASHED );
 
 	constructor () {
 
@@ -53,8 +53,6 @@ export class LaneWidthTool extends BaseTool {
 
 		super.enable();
 
-		this.laneHelper = new OdLaneReferenceLineBuilder( null, LineType.DASHED );
-
 		this.widthChangeSub = LaneWidthInspector.widthChanged.subscribe( width => {
 
 			CommandHistory.execute( new UpdateWidthNodeValueCommand( this.widthNode, width, null, this.laneHelper ) );
@@ -68,9 +66,9 @@ export class LaneWidthTool extends BaseTool {
 
 		super.disable();
 
-		if ( this.laneHelper ) this.laneHelper.clear();
+		this.laneHelper.clear();
 
-		if ( this.widthChangeSub ) this.widthChangeSub.unsubscribe();
+		this.widthChangeSub?.unsubscribe();
 
 		this.map.getRoads().forEach( road => road.hideWidthNodes() );
 	}
@@ -264,6 +262,10 @@ export class LaneWidthTool extends BaseTool {
 		const road = this.map.getRoadById( this.lane.roadId );
 
 		const laneWidthNode = NodeFactoryService.createLaneWidthNodeByPosition( road, this.lane, position );
+
+		if ( !laneWidthNode ) throw new Error( "Could not create lane width node" );
+
+		if ( !this.laneHelper ) throw new Error( "Lane helper is not defined" );
 
 		CommandHistory.executeMany(
 

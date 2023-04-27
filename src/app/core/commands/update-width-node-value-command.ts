@@ -16,8 +16,8 @@ export class UpdateWidthNodeValueCommand extends BaseCommand {
 	constructor (
 		private node: LaneWidthNode,
 		private newWidth: number,
-		private oldWidth?: number,
-		private laneHelper?: OdLaneReferenceLineBuilder
+		private oldWidth: number,
+		private laneHelper: OdLaneReferenceLineBuilder
 	) {
 
 		super();

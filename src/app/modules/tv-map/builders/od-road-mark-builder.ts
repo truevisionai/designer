@@ -91,41 +91,64 @@ export class OdRoadMarkBuilder {
 
 		const roadMarks = lane.getRoadMarks();
 
-		this.clearPreviousMesh( roadMarks, lane );
+		roadMarks.forEach( mark => mark.clearMesh() );
 
-		this.updateLastCoordinate( roadMarks, laneSection, lane );
+		// this.updateLastCoordinate( roadMarks, laneSection );
 
-		for ( const mark of roadMarks ) {
+		roadMarks.forEach( ( mark, index ) => {
 
 			const mesh = new MeshGeometryData();
 
-			let sOffset = laneSection.s + mark.sOffset;
+			const start = laneSection.s + mark.s;
 
-			let relativeS = mark.sOffset;
+			// setting the next coordinate
+			// if the next road mark is not available,
+			// then the next coordinate is the end of the lane section
+			mark.lastSCoordinate = ( index < roadMarks.length - 1 )
+				? roadMarks[ index + 1 ].sOffset
+				: laneSection.length;
 
-			for ( let s = 0; s < mark.length; s += OdBuilderConfig.ROAD_STEP ) {
+			for ( let step = 0; step < mark.length; step += OdBuilderConfig.ROAD_STEP ) {
 
-				this.createVertex( sOffset + s, mark, laneSection, lane, mesh, relativeS + s );
+				this.createVertex( start + step, mark, laneSection, lane, mesh, mark.s + step );
 
 			}
 
 			// one last entry to nearest to the end
-			this.createVertex( ( sOffset + mark.length ) - Maths.Epsilon, mark, laneSection, lane, mesh, ( relativeS + mark.length ) - Maths.Epsilon );
+			if ( mark.length > 1 ) {
 
-			this.drawRoadMark( mark, mesh, lane );
+				const lastS = ( start + mark.length ) - Maths.Epsilon;
 
-		}
+				const laneSectionS = ( mark.s + mark.length ) - Maths.Epsilon;
 
-		// for ( let s = laneSection.s; s <= laneSection.lastSCoordinate; s++ ) {
-		//
-		//     this.makeLanePointsLoop( s, laneSection, lane, mesh );
-		//
-		// }
+				this.createVertex( lastS, mark, laneSection, lane, mesh, laneSectionS );
 
-		// last entry to close any issues
-		// const s = laneSection.lastSCoordinate - Maths.Epsilon;
+			}
 
-		// this.makeLanePointsLoop( s, laneSection, lane, points );
+			// atleast 1 vertex is required to create a mesh
+			if ( mesh.vertices.length > 0 ) this.drawRoadMark( mark, mesh, lane );
+
+		} )
+
+	}
+
+	private updateLastCoordinate ( roadMarks: TvLaneRoadMark[], laneSection: TvLaneSection ) {
+
+		// setting the last coordinate
+		roadMarks.forEach( ( mark, index ) => {
+
+			if ( index < roadMarks.length - 1 ) {
+
+				mark.lastSCoordinate = roadMarks[ index + 1 ].sOffset;
+
+			} else {
+
+				mark.lastSCoordinate = laneSection.length;
+
+			}
+
+		} );
+
 	}
 
 	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ) {
@@ -403,46 +426,6 @@ export class OdRoadMarkBuilder {
 		}
 
 		return width;
-	}
-
-	private clearPreviousMesh ( roadMarks: TvLaneRoadMark[], lane: TvLane ) {
-
-		roadMarks.forEach( mark => {
-
-			if ( mark.gameObject ) {
-
-				SceneService.remove( mark.gameObject );
-
-				lane.gameObject.remove( mark.gameObject );
-
-			}
-
-			mark.gameObject = null;
-
-		} );
-
-	}
-
-	private updateLastCoordinate ( roadMarks: TvLaneRoadMark[], laneSection: TvLaneSection, lane: TvLane ) {
-
-		// setting the last coordinate
-		roadMarks.forEach( ( mark, index ) => {
-
-			if ( index < roadMarks.length - 1 ) {
-
-				mark.lastSCoordinate = roadMarks[ index + 1 ].sOffset;
-
-			} else {
-
-				mark.lastSCoordinate = laneSection.length;
-
-			}
-
-			// console.log( laneSection.roadId, laneSection.id, lane.id, mark.sOffset, mark.lastSCoordinate );
-
-		} );
-
-		// console.log( roadMarks, laneSection );
 	}
 
 	private processRoadMark ( roadmark: TvLaneRoadMark, road: TvRoad, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData ) {

@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SceneService } from 'app/core/services/scene.service';
 import { MathUtils } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { LaneRoadMarkNode } from '../../three-js/objects/control-point';
@@ -169,6 +170,20 @@ export class TvLaneRoadMark {
 
 	setHeight ( value ) {
 		this.attr_height = value;
+	}
+
+	clearMesh () {
+
+		if ( this.gameObject ) {
+
+			SceneService.remove( this.gameObject );
+
+			this.lane?.gameObject.remove( this.gameObject );
+
+			this.gameObject = null;
+
+		}
+
 	}
 
 	clone ( s?: number ) {
