@@ -116,6 +116,7 @@ export class SceneImporterService extends AbstractReader {
 		const guid = scene.guid;
 
 		if ( !version ) SnackBar.error( 'Cannot read scene version. Please check scene file before importing', 'OK', 5000 );
+		if ( !version ) console.error( 'Cannot read scene version', scene );
 		if ( !version ) return;
 
 		this.prepareToImport();

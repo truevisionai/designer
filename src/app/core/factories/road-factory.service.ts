@@ -24,34 +24,6 @@ export class RoadFactory {
 		return TvMapInstance.map;
 	}
 
-	static createRoad ( position: Vector3 ) {
-
-		const road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
-
-		const point = this.addControlPoint( road, position );
-
-		return { road, point };
-	}
-
-	static removeRoad ( road: TvRoad ) {
-
-		this.map.removeRoad( road );
-
-	}
-
-	static updateGeometryAndRebuild ( road: TvRoad ): void {
-
-		this.updateGeometry( road );
-
-		this.rebuildRoad( road );
-	}
-
-	static updateGeometry ( road: TvRoad ) {
-
-		road.updateGeometryFromSpline();
-
-	}
-
 	static rebuildRoad ( road: TvRoad ) {
 
 		this.map.gameObject.remove( road.gameObject );
@@ -60,80 +32,6 @@ export class RoadFactory {
 
 		if ( !road.isJunction ) road.updateRoadNodes();
 
-	}
-
-	static addControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
-
-		let point: RoadControlPoint;
-
-		// TODO: Fix addControlPointAtNew
-
-		if ( road.spline instanceof ExplicitSpline ) {
-
-			point = road.spline.addControlPointAtNew( position );
-
-		} else {
-
-			point = new RoadControlPoint( road, position, 'cp', 0, 0 );
-
-			point.mainObject = point.userData.road = road;
-
-			this.addControlPointNew( road, point );
-
-		}
-
-		return point;
-	}
-
-	static addControlPointNew ( road: TvRoad, point: RoadControlPoint ) {
-
-		// TODO: spline should take this responsibility
-		SceneService.add( point );
-
-		road.addControlPoint( point );
-
-		if ( road.spline.controlPoints.length > 1 ) {
-			this.updateGeometryAndRebuild( road );
-		}
-
-	}
-
-	static removeControlPoint ( road: TvRoad, cp: RoadControlPoint ) {
-
-		road.spline.removeControlPoint( cp );
-
-		SceneService.remove( cp );
-
-		if ( road.spline.controlPoints.length === 0 ) {
-
-			this.map.gameObject.remove( road.gameObject );
-
-			// nothing to update, will throw error
-			// road.spline.update();
-
-			road.spline.hideLines();
-
-			road.clearGeometries();
-
-			road.clearNodes();
-
-		} else if ( road.spline.controlPoints.length === 1 ) {
-
-			this.map.gameObject.remove( road.gameObject );
-
-			road.spline.update();
-
-			road.spline.hideLines();
-
-			road.clearGeometries();
-
-			road.clearNodes();
-
-		} else if ( road.spline.controlPoints.length > 1 ) {
-
-			this.updateGeometryAndRebuild( road );
-
-		}
 	}
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {

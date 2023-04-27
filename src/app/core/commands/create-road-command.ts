@@ -29,7 +29,7 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.newRoad = this.tool.road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
 
-		this.newPoint = this.tool.controlPoint = RoadFactory.addControlPoint( this.newRoad, this.position );
+		this.newPoint = this.tool.controlPoint = this.newRoad.addControlPointAt( this.position );
 
 		AppInspector.setInspector( RoadInspector, {
 			road: this.newRoad,

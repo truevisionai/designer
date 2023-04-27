@@ -1172,14 +1172,22 @@ export class TvRoad {
 
 	addControlPoint ( point: RoadControlPoint ) {
 
+		point.mainObject = this;
+
 		this.spline.addControlPoint( point );
 
 		SceneService.add( point );
+
+		this.updateGeometryFromSpline()
 	}
 
 	addControlPointAt ( position: Vector3 ) {
 
-		this.addControlPoint( new RoadControlPoint( this, position, 'cp', 0, 0 ) );
+		const point = new RoadControlPoint( this, position, 'cp', 0, 0 );
+
+		this.addControlPoint( point );
+
+		return point;
 
 	}
 

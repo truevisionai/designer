@@ -33,7 +33,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		this.road.spline.update();
 
 		// update geometry
-		RoadFactory.updateGeometry( this.road );
+		this.road.updateGeometryFromSpline();
 
 		// build road
 		RoadFactory.rebuildRoad( this.road );
@@ -69,7 +69,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		this.road.spline.update();
 
 		// update geometry
-		RoadFactory.updateGeometry( this.road );
+		this.road.updateGeometryFromSpline();
 
 		// build road
 		RoadFactory.rebuildRoad( this.road );

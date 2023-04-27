@@ -196,6 +196,16 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	}
 
+	removeTangents () {
+
+		SceneService.remove( this.frontTangent );
+
+		SceneService.remove( this.backTangent );
+
+		SceneService.remove( this.tangentLine );
+
+	}
+
 	moveForward ( s: number ): RoadControlPoint {
 
 		const x = this.position.x + Math.cos( this.hdg ) * s;

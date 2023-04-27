@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
@@ -246,18 +246,69 @@ export class ExplicitSpline extends AbstractSpline {
 		return geometries;
 	}
 
-	/**
-	 *
-	 * @param cp
-	 * @deprecated
-	 */
-	addControlPoint ( cp: AnyControlPoint ) {
+	addControlPoint ( controlPoint: RoadControlPoint ) {
 
-		cp.visible = false;
+		const index = this.segTypes.length;
 
-		this.addControlPointAtNew( cp.position );
+		const previousPoint = this.controlPoints[ index - 1 ] as RoadControlPoint;
+
+		let hdg: number = 0;
+
+		if ( previousPoint ) {
+
+			// need to set previous point to spiral to avoid bugs
+			previousPoint.segmentType = TvGeometryType.SPIRAL;
+
+			hdg = SPIRAL.vec2Angle( previousPoint.position.x, previousPoint.position.y );
+		}
+
+		// this.segTypes.push( segType );
+
+		controlPoint.tagindex = index;
+
+		controlPoint.segmentType = TvGeometryType.SPIRAL;
+
+		this.controlPoints.push( controlPoint );
+
+		controlPoint.hdg = hdg;
+
+		controlPoint.addDefaultTangents( hdg, 1, 1 );
+
+		if ( index > 0 ) {
+
+			// add empty curve mesh
+			this.addSegment( index - 1 );
+
+			// calculate curve mesh
+			this.updateSegment( index - 1 );
+
+		}
+
+		return controlPoint;
+	}
+
+	removeControlPoint ( cp: RoadControlPoint ) {
+
+		super.removeControlPoint( cp );
+
+		cp.removeTangents();
+
+		// Remove the segment type
+		this.segTypes.splice( cp.tagindex, 1 );
+
+		// Remove the heading
+		this.hdgs.splice( cp.tagindex, 1 );
+
+		// Remove the segment
+		this.removeSegment( cp.tagindex - 1 );
+
+		// Update remaining segments
+		for ( let i = cp.tagindex; i < this.segments.length; i++ ) {
+			this.updateSegment( i );
+		}
 
 	}
+
 
 	addControlPointAtNew ( position: Vector3 ) {
 
@@ -334,6 +385,18 @@ export class ExplicitSpline extends AbstractSpline {
 		this.scene.add( line );
 
 		// this.tangentLines.push( line );
+	}
+
+	removeSegment ( index: number ) {
+
+		const line = this.segments[ index ];
+
+		this.scene.remove( line );
+
+		this.segments.splice( index, 1 );
+
+		// this.tangentLines.splice( index, 1 );
+
 	}
 
 	updateSegment ( idx: number ) {

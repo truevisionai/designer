@@ -98,7 +98,7 @@ export class ImporterService {
 
 			default:
 				console.error( `unknown file type: ${ extension }` );
-				SnackBar.error( 'Unknown file! Not able to import' );
+				SnackBar.warn( 'Unknown file! Not able to import' );
 				break;
 		}
 
