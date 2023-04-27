@@ -23,14 +23,15 @@
 		"test-headless": "npm run test -- --watch=false --browsers=ChromeHeadlessNoSandbox",
 		"lint": "ng lint",
 		"e2e": "ng e2e",
-		"sentry-upload": "sentry-cli releases files $npm_package_version upload-sourcemaps --ext js --ext map --rewrite --validate dist",
 		"pack": "npm run build && electron-builder --dir",
 		"dist": "npm run build && electron-builder",
 		"postinstall": "electron-builder install-app-deps",
 		"linux": "npm run build:prod && electron-builder build --linux",
 		"windows": "npm run build:prod && electron-builder build --windows",
 		"mac": "npm run build:prod && electron-builder build --mac",
-		"release": "electron-builder build --linux --windows -p always"
+		"release": "electron-builder build --linux --windows -p always",
+		"sentry-inject": "sentry-cli sourcemaps inject ./dist",
+		"sentry-upload": "sentry-cli sourcemaps upload --use-artifact-bundle --release=$npm_package_version --validate ./dist"
 	},
 	"private": true,
 	"dependencies": {
@@ -50,7 +51,7 @@
 		"@ncstate/sat-popover": "^8.0.1",
 		"@ngx-translate/core": "^12.1.2",
 		"@ngx-translate/http-loader": "^5.0.0",
-		"@sentry/angular": "^7.14.2",
+		"@sentry/angular": "^7.50.0",
 		"earcut": "^2.2.4",
 		"electron-log": "^5.0.0-beta.23",
 		"electron-updater": "^5.3.0",
