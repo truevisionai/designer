@@ -162,9 +162,16 @@ export class FileService {
 
 		this.remote.dialog.showOpenDialog( options ).then( ( res: Electron.OpenDialogReturnValue ) => {
 
-			if ( res.canceled ) SnackBar.show( 'File import cancelled' );
+			if ( res.canceled ) {
 
-			if ( res.filePaths != null ) this.readFile( res.filePaths[ 0 ], type, callbackFn );
+				SnackBar.show( 'File import cancelled' )
+
+			} else if ( res.filePaths.length > 0 ) {
+
+				this.readFile( res.filePaths[ 0 ], type, callbackFn );
+
+			}
+
 
 		} );
 
