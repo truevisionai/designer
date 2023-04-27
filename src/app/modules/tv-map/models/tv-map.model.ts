@@ -334,7 +334,7 @@ export class TvMap {
 
 		} else {
 
-			console.error( 'unknown successor type' );
+			console.error( 'unknown successor type', child );
 
 		}
 

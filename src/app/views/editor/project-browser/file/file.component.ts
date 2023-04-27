@@ -138,7 +138,7 @@ export class FileComponent implements OnInit {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( 'error in getting meta', error, this.file );
 
 		}
 
@@ -152,7 +152,7 @@ export class FileComponent implements OnInit {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( 'error in preview', error, this.file );
 
 		}
 	}
@@ -428,7 +428,7 @@ export class FileComponent implements OnInit {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( 'error in deleting', error, this.file );
 
 		}
 
@@ -553,7 +553,7 @@ export class FileComponent implements OnInit {
 
 			} catch ( error ) {
 
-				console.error( error );
+				console.error( 'error in renaming', error, oldPath, newPath );
 
 			}
 

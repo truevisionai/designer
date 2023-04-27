@@ -41,7 +41,7 @@ export class MetadataFactory {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( 'Error in writing .meta file', error );
 
 			SnackBar.error( 'Error in writing .meta file. Please Reimport the asset.', '', 5000 );
 		}

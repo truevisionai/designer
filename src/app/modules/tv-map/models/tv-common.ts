@@ -245,7 +245,7 @@ export class EnumHelper {
 				break;
 
 			default:
-				console.error( 'unknown unit' );
+				console.error( 'unknown unit', value );
 				break;
 		}
 	}

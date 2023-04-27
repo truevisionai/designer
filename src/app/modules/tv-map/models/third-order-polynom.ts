@@ -109,7 +109,7 @@ export class ThirdOrderPolynom {
 	 */
 	getValue ( sCheck: number ): number {
 
-		if ( isNaN( sCheck ) ) console.error( 's in not a number' );
+		if ( isNaN( sCheck ) ) throw new Error( 's in not a number' );
 
 		const ds = sCheck - this._s;
 

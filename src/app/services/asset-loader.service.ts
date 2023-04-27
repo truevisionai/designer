@@ -505,7 +505,7 @@ export class AssetLoaderService {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( error, file );
 
 			// SnackBar.error( "Error in reading .meta file. Please Reimport the asset.", "", 5000 );
 		}

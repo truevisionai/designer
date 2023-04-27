@@ -120,7 +120,7 @@ export class OdSignalBuilder {
 
 			default:
 				SnackBar.show( 'Sign shape type not specified' );
-				console.error( 'Sign shape type not specified' );
+				console.error( 'Sign shape type not specified', signShape );
 				break;
 		}
 

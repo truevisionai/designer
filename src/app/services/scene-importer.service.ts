@@ -88,7 +88,7 @@ export class SceneImporterService extends AbstractReader {
 
 			SnackBar.error( error );
 
-			console.error( error );
+			console.error( error, file );
 
 		}
 

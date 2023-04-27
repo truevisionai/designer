@@ -27,11 +27,7 @@ export class PropPolygon {
 
 	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public density = 0.5 ) {
 
-		if ( !this.spline ) {
-
-			this.spline = new CatmullRomSpline( true, 'catmullrom', 0.001 );
-
-		}
+		this.spline = spline || new CatmullRomSpline( true, 'catmullrom', 0.001 );
 
 		this.id = PropPolygon.index++;
 

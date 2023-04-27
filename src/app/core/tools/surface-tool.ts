@@ -170,7 +170,7 @@ export class SurfaceTool extends BaseTool {
 
 		if ( oldPosition.equals( newPosition ) ) {
 
-			console.error( 'No change in position' );
+			console.log( 'No change in position' );
 
 			return;
 		}

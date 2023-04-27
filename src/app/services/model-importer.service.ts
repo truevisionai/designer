@@ -57,8 +57,8 @@ export class ModelImporterService {
 				break;
 
 			default:
-				console.error( 'unknown file type' );
-				SnackBar.error( 'Not able to import' );
+				console.error( 'unknown file type', extension, path );
+				SnackBar.warn( 'Not able to import' );
 				break;
 		}
 

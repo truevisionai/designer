@@ -283,7 +283,7 @@ export class FileService {
 
 			if ( err ) {
 
-				console.error( 'An error ocurred creating the file ' + err.message );
+				console.error( 'Error in writing file ', err );
 
 				return;
 
@@ -327,7 +327,7 @@ export class FileService {
 
 		} else {
 
-			console.error( 'folder does not exists' );
+			console.error( 'folder does not exists', path );
 
 		}
 

@@ -583,13 +583,11 @@ export class TvRoad {
 
 		const geometry = this.getGeometryAt( s );
 
-		if ( geometry == null ) {
-			throw new Error( `geometry not found at s = ${ s }` );
-		}
+		if ( geometry == null ) throw new Error( `geometry not found at s = ${ s }` );
 
 		const geometryType = geometry.getCoords( s, odPosTheta );
 
-		if ( !geometryType ) console.error( 'geometry type not found' );
+		if ( !geometryType ) throw new Error( 'geometry type not found at ' + s );
 
 		const laneOffset = this.getLaneOffsetValue( s );
 

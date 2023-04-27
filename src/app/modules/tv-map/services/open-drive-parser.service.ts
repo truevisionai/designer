@@ -356,7 +356,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		} else {
 
-			console.error( 'unknown geometry type' );
+			console.error( 'unknown geometry type', xmlElement );
 
 		}
 	}
@@ -446,7 +446,7 @@ export class OpenDriverParser extends AbstractReader {
 				break;
 
 			default:
-				console.error( 'unknown type' );
+				console.error( 'unknown geometry type', geometryType );
 				break;
 
 		}

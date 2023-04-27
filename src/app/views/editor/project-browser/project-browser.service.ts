@@ -77,7 +77,7 @@ export class ProjectBrowserService {
 
 		} catch ( error ) {
 
-			console.error( error );
+			console.error( error, file );
 
 		}
 	}

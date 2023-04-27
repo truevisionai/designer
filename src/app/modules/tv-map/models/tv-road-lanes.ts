@@ -120,7 +120,7 @@ export class TvRoadLanes {
 
 	getLaneOffsetValue ( s: number ): number {
 
-		if ( s == null ) console.error( 's is undefined' );
+		if ( s == null ) throw new Error( 's is undefined' );
 
 		let offset = 0;
 
