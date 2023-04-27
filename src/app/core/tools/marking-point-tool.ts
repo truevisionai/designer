@@ -2,14 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Subscription } from 'rxjs';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
+import { CreateMarkingPointCommand } from '../commands/create-marking-point-command';
 import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
 import { BaseTool } from './base-tool';
@@ -22,15 +26,18 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 	name: string = 'MarkingPointTool';
 
-	private shapeEditor: AbstractShapeEditor;
+	public shapeEditor: AbstractShapeEditor;
 	private hasSignal = false;
 	private selectedSignal: TvRoadSignal;
 	private cpSubscriptions: Subscription[] = [];
 
-	private controlPointAddedSubscriber: Subscription;
-	private controlPointSelectedSubscriber: Subscription;
+	private cpAddedSub: Subscription;
+	private cpSelectedSub: Subscription;
+	private cpUnselectedSub: Subscription;
+	private cpMovedSub: Subscription;
+	private cpUpdatedSub: Subscription;
 
-	private currentMarking: TvRoadMarking;
+	public currentMarking: TvRoadMarking;
 
 	constructor () {
 
@@ -50,119 +57,60 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 		this.shapeEditor = new PointEditor();
 
-		this.createControlPoints();
-
 	}
 
 	enable () {
 
 		super.enable();
 
-		this.controlPointAddedSubscriber = this.shapeEditor.controlPointAdded.subscribe( e => this.onControlPointAdded( e ) );
-		this.controlPointSelectedSubscriber = this.shapeEditor.controlPointSelected.subscribe( e => this.onControlPointSelected( e ) );
+		this.cpAddedSub = this.shapeEditor.controlPointAdded
+			.subscribe( point => this.onControlPointAdded( point ) );
 
+		this.cpSelectedSub = this.shapeEditor.controlPointSelected
+			.subscribe( point => this.onControlPointSelected( point ) );
+
+		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
+			.subscribe( point => this.onControlPointUnselected( point ) );
+
+		this.cpMovedSub = this.shapeEditor.controlPointMoved
+			.subscribe( ( point ) => this.onControlPointMoved( point ) );
+
+		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
+			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 	}
+
 
 	disable (): void {
 
 		super.disable();
 
-		this.controlPointAddedSubscriber.unsubscribe();
+		this.cpAddedSub.unsubscribe();
+		this.cpSelectedSub.unsubscribe();
+		this.cpUnselectedSub.unsubscribe();
+		this.cpMovedSub?.unsubscribe();
+		this.cpUpdatedSub?.unsubscribe();
 
 		this.shapeEditor.destroy();
 
-		this.unsubscribeFromControlPoints();
-
 	}
-
-	// onPointerDown ( e: PointerEventData ) {
-
-	//     super.onPointerDown( e );
-
-	//     this.hasSignal = false;
-
-	//     for ( const i of e.intersections ) {
-
-	//         if ( i.object[ 'OpenDriveType' ] != null && i.object[ 'OpenDriveType' ] == TvObjectType.SIGNAL ) {
-
-	//             this.hasSignal = true;
-
-	//             this.inspectSignal( i.object );
-
-	//             break;
-
-	//         }
-	//     }
-
-	//     if ( !this.hasSignal ) {
-
-	//         this.clearInspector();
-
-	//     }
-	// }
-
-	// private inspectSignal ( object: Object3D ) {
-
-	//     this.selectedSignal = ( object.userData.data as TvRoadSignal );
-
-	//     this.setInspector( OdSignalInspectorComponent, this.selectedSignal );
-	// }
 
 	private onControlPointAdded ( point: AnyControlPoint ) {
 
-		if ( !this.marking ) SnackBar.error( 'Select a marking from project browser' );
-
-		if ( !this.marking ) return;
-
-		const pose = new TvPosTheta();
-
-		pose.x = point.position.x;
-
-		pose.y = point.position.y;
-
-		const road = TvMapQueries.getRoadByCoords( pose.x, pose.y, pose );
-
-		if ( !road ) SnackBar.error( 'Marking can be added only on road mesh' );
-
-		if ( !road ) this.shapeEditor.removeControlPoint( point );
-
-		if ( !road ) return;
-
 		if ( this.marking && this.marking.type === MarkingTypes.point ) {
 
-			// const id = road.getRoadObjectCount() + 1;
-
-			// const marking = this.marking.name;
-
-			// const texture = new TextureLoader().load( `assets/markings/${ marking }.png` );
-
-			// const material = new MeshBasicMaterial( { map: texture, alphaTest: 0.1 } );
-
-			// const geometry = new PlaneGeometry( 1, 1 );
-
-			// const mesh = new Mesh( geometry, material );
-
-			const marking = point.mainObject = this.marking.clone();
-
-			marking.mesh.position.setX( point.position.x );
-
-			marking.mesh.position.setY( point.position.y );
-
-			this.map.gameObject.add( marking.mesh );
-
-			// const roadObject = new TvRoadObject( 'marking', 'arrow-forward', id, pose.s, pose.t, 0, 0, TvOrientation.MINUS );
-
-			// roadObject.mesh = mesh;
-
-			this.sync( point, marking );
-
-			// road.addRoadObjectInstance( roadObject );
+			CommandHistory.execute( new CreateMarkingPointCommand( this, this.marking, point ) );
 
 		} else {
 
-			this.shapeEditor.removeControlPoint( point );
+			SnackBar.warn( 'Select a marking from project browser' );
 
-			SnackBar.show( 'Please select a sign first' );
+			point.visible = false;
+
+			setTimeout( () => {
+
+				this.shapeEditor.removeControlPoint( point );
+
+			}, 100 );
 
 		}
 
@@ -170,70 +118,53 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 	private onControlPointSelected ( point: AnyControlPoint ) {
 
-		console.log( point.mainObject );
+		if ( this.currentMarking == null || point == null ) return;
+
+		if ( this.currentMarking === point.mainObject ) return;
+
+		CommandHistory.executeMany(
+
+			new SetValueCommand( this, 'currentMarking', point.mainObject )
+
+		)
 
 	}
 
-	private onConrolPointUpdated ( point: AnyControlPoint ) {
+	private onControlPointMoved ( point: AnyControlPoint ) {
 
-		if ( point.mainObject instanceof TvRoadMarking ) {
+		if ( point.mainObject == null ) return;
 
-			this.currentMarking = point.mainObject;
+		this.currentMarking = point.mainObject;
 
-			point.mainObject.mesh.position.setX( point.position.x );
-
-			point.mainObject.mesh.position.setY( point.position.y );
-
-		}
+		this.currentMarking?.mesh.position.copy( point.position );
 
 	}
 
-	private sync ( point: AnyControlPoint, object: TvRoadMarking ): void {
+	private onControlPointUpdated ( point: AnyControlPoint ): void {
 
-		// const subscription = point.updated.subscribe( e => {
+		if ( !this.currentMarking ) return;
 
-		//     object.mesh.position.setX( e.position.x );
+		const oldPosition = this.shapeEditor.pointerDownAt;
 
-		//     object.mesh.position.setY( e.position.y );
+		const newPosition = point.position;
 
-		// } );
+		if ( oldPosition == null || newPosition == null ) return;
 
-		// this.cpSubscriptions.push( subscription );
+		if ( oldPosition.equals( newPosition ) ) return;
+
+		CommandHistory.executeMany(
+
+			new SetPositionCommand( this.currentMarking.mesh, newPosition, oldPosition ),
+
+			new SetPositionCommand( point, newPosition, oldPosition ),
+
+		);
 	}
 
-	private createControlPoints () {
+	private onControlPointUnselected ( point: AnyControlPoint ): void {
 
-		// this.forEachRoadObject( object => {
-
-		//     const cp = this.shapeEditor.addControlPoint( object.mesh.position );
-
-		//     this.sync( cp, object );
-
-		// } );
-
-	}
-
-	private unsubscribeFromControlPoints () {
-
-		this.cpSubscriptions.forEach( sub => {
-
-			sub.unsubscribe();
-
-		} );
+		this.currentMarking = null;
 
 	}
 
-	private forEachRoadObject ( callback: ( object: TvRoadObject ) => void ) {
-
-		// this.openDrive.roads.forEach( road => {
-
-		//     road.objects.object.forEach( object => {
-
-		//         if ( object.mesh ) callback( object );
-
-		//     } );
-
-		// } );
-
-	}
 }
