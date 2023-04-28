@@ -53,6 +53,11 @@ export class PreviewService {
 
 	private cube: Mesh;
 	private sphere: Mesh;
+	private plane: Mesh;
+
+	private cubeMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
+	private sphereMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
+	private planeMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
@@ -65,15 +70,9 @@ export class PreviewService {
 
 	ngOnInit () {
 
-		const geometry = new BoxGeometry( 1, 1, 1 );
-		const material = new MeshBasicMaterial( { color: 0x00ff00 } );
-		const cube = this.cube = new Mesh( geometry, material );
-
-		this.scene.add( cube );
-
-		this.sphere = new Mesh( new SphereGeometry( 1, 32, 32 ), new MeshBasicMaterial( { color: 0x00ff00 } ) );
-
-		this.scene.add( this.sphere );
+		this.createCube();
+		this.createSphere();
+		this.createPlane();
 
 		this.resetCamera();
 
@@ -82,7 +81,7 @@ export class PreviewService {
 
 		this.scene.add( directionaLight );
 
-		this.scene.add( new AmbientLight( 0x404040, 1 ) );
+		this.scene.add( new AmbientLight( 0xffffff, 0.5 ) );
 
 		this.addGreenGround( this.scene );
 
@@ -114,51 +113,46 @@ export class PreviewService {
 
 	}
 
-	// private render () {
+	createCube () {
 
-	//     // this seems a faster want to call render function
-	//     // requestAnimationFrame( this.render );
+		const geometry = new BoxGeometry( 1, 1, 1 );
 
-	//     // this.frameId = requestAnimationFrame( () => {
-	//     //     this.render();
-	//     // } );
+		this.cube = new Mesh( geometry, this.cubeMaterial );
 
-	//     this.cube.rotation.x += 0.01;
-	//     this.cube.rotation.y += 0.01;
+		this.scene.add( this.cube );
 
-	//     this.renderer.render( this.scene, this.camera );
+		this.cube.visible = false;
+	}
 
-	//     // console.log( this.scene.children.length );
+	createPlane () {
 
-	//     // this.controls.update();
+		const geometry = new PlaneGeometry( 10, 10 );
 
-	// }
+		this.plane = new Mesh( geometry, this.planeMaterial );
 
-	// setCanvasSize () {
+		this.scene.add( this.plane );
 
-	//     const container = this.renderer.domElement.parentElement.parentElement;
+		this.plane.visible = false;
+	}
 
-	//     const box = container.getBoundingClientRect();
+	createSphere () {
 
-	//     const width = container.clientWidth || 300;
-	//     const height = 300; // container.clientHeight;
+		const geometry = new SphereGeometry( 1, 32, 32 )
 
-	//     this.renderer.setViewport( -box.left, -box.top, width, height );
-	//     this.renderer.setSize( width, height );
+		this.sphere = new Mesh( geometry, this.sphereMaterial );
 
-	//     this.camera.aspect = width / height;
-	//     this.camera.updateProjectionMatrix();
+		this.scene.add( this.sphere );
 
-	// }
+		this.sphere.visible = false;
+	}
 
 	getMaterialPreview ( material: Material ): string {
 
 		if ( !material ) return;
 
-		this.cube.visible = false;
 		this.sphere.visible = true;
 
-		this.cube.material = this.sphere.material = material;
+		this.sphere.material = material;
 
 		this.renderer.setSize( WIDTH, HEIGHT );
 
@@ -166,7 +160,7 @@ export class PreviewService {
 
 		const image = this.renderer.domElement.toDataURL();
 
-		this.cube.material = this.sphere.material = null;
+		this.sphere.material = null;
 
 		this.resetScene();
 
@@ -175,7 +169,13 @@ export class PreviewService {
 
 	resetScene () {
 
-		this.cube.visible = this.sphere.visible = false;
+		this.cube.material = this.cubeMaterial;
+
+		this.sphere.material = this.sphereMaterial;
+
+		this.plane.material = this.planeMaterial;
+
+		this.cube.visible = this.sphere.visible = this.plane.visible = false;
 
 		this.ground.visible = false;
 
@@ -197,8 +197,6 @@ export class PreviewService {
 
 		if ( !model ) return;
 
-		this.cube.visible = this.sphere.visible = false;
-
 		this.modelPreviewSetup( this.scene, this.camera, model );
 
 		this.renderer.setSize( WIDTH, HEIGHT );
@@ -217,8 +215,6 @@ export class PreviewService {
 	getRoadStylePreview ( roadStyle: RoadStyle ): string {
 
 		this.camera.position.z = 20;
-
-		this.cube.visible = this.sphere.visible = false;
 
 		const gameObject = new GameObject();
 
@@ -249,39 +245,37 @@ export class PreviewService {
 
 	getRoadMarkingPreview ( marking: TvRoadMarking ): string {
 
-		this.camera.position.z = 20;
-
-		this.sphere.visible = false;
-
-		this.cube.visible = true;
+		// this.plane.visible = true;
 
 		const texture = AssetDatabase.getInstance( marking.textureGuid ) as Texture;
 
 		if ( !texture ) return;
 
-		( this.cube.material as MeshBasicMaterial ).map = texture;
+		// const material = this.planeMaterial.clone();
+		// material.map = texture;
+		// this.plane.material = material;
 
-		( this.cube.material as MeshBasicMaterial ).map.needsUpdate = true;
+		this.scene.add( marking.mesh );
 
-		( this.cube.material as MeshBasicMaterial ).needsUpdate = true;
+		const box = new Box3().setFromObject( marking.mesh );
+		const size = box.getSize( new Vector3() ).length();
+		const center = box.getCenter( new Vector3() );
+
+		this.camera.position.set( 0, 0, size );
+		this.camera.lookAt( center );
+		this.camera.updateProjectionMatrix();
 
 		this.renderer.setSize( WIDTH, HEIGHT );
-
 		this.renderer.render( this.scene, this.camera );
 
 		const image = this.renderer.domElement.toDataURL();
 
-		( this.cube.material as MeshBasicMaterial ).map = null;
-
-		( this.cube.material as MeshBasicMaterial ).map.needsUpdate = true;
-
-		( this.cube.material as MeshBasicMaterial ).needsUpdate = true;
+		this.scene.remove( marking.mesh );
 
 		this.resetScene();
 
 		return image;
 	}
-
 
 	modelPreviewSetup ( scene: Scene, camera: PerspectiveCamera, object: Object3D ) {
 
@@ -303,7 +297,7 @@ export class PreviewService {
 
 		camera.position.set( 0, 1, size * 1 );
 
-		camera.lookAt( object.position );
+		camera.lookAt( center );
 
 		camera.updateProjectionMatrix();
 	}

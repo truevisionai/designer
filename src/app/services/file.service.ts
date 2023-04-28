@@ -127,7 +127,10 @@ export class FileService {
 		const options = {
 			title: 'Select file',
 			buttonLabel: 'Import',
-			filters: [],
+			filters: [
+				{ name: 'xodr', extensions: [ 'xodr' ] },
+				{ name: 'xml', extensions: [ 'xml' ] },
+			],
 			message: 'Select file'
 		};
 
@@ -148,8 +151,7 @@ export class FileService {
 			defaultPath: path || this.projectFolder,
 			filters: [
 				{
-					name: null,
-					extensions
+					name: 'Scene', extensions: [ 'scene' ]
 				}
 			],
 			message: 'Select file'
@@ -177,15 +179,6 @@ export class FileService {
 
 	}
 
-	/**
-	 *
-	 * @deprecated use import
-	 */
-	importFile ( path?: string, type: string = 'default', extensions = [ 'xml' ] ) {
-
-		this.showOpenWindow( path, type, extensions, null );
-
-	}
 
 	readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
 
@@ -224,11 +217,18 @@ export class FileService {
 
 		if ( directory == null ) directory = this.projectFolder;
 
-		const options = {
-			defaultPath: directory
+		// TODO:
+		const saveOptions = {
+			title: 'Save File',
+			defaultPath: 'Untitled.' + extension,
+			filters: [
+				{ name: 'All Files', extensions: [ extension ] }
+			]
 		};
 
-		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
+		this.remote.dialog.showSaveDialog( saveOptions ).then( ( res: Electron.SaveDialogReturnValue ) => {
+
+			if ( res.canceled ) return;
 
 			let fullPath = res.filePath;
 
