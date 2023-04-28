@@ -3,6 +3,7 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SetRoadmarkTextureCommand } from 'app/core/commands/set-roadmark-texture-command';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
@@ -10,7 +11,8 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { Texture } from 'three';
+import { MeshBasicMaterial, Texture } from 'three';
+import { PreviewService } from '../object-preview/object-preview.service';
 
 @Component( {
 	selector: 'app-road-marking-inspector',
@@ -26,24 +28,15 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 
 	metadata: Metadata;
 
-	texture: Texture;
+	constructor ( private previewService: PreviewService ) { }
 
-	constructor () {
-	}
-
-	// get thumbnail () { return this.metadata.preview; }
-
-	get thumbnail () {
-		return this.texture && this.texture.image ? this.texture.image.currentSrc : '';
-	}
+	get thumbnail () { return this.metadata?.preview; }
 
 	ngOnInit () {
 
 		TvMarkingService.currentMarking = this.data.roadMarking;
 
 		this.metadata = AssetDatabase.getMetadata( this.data.guid );
-
-		this.texture = AssetDatabase.getInstance( this.data.roadMarking.textureGuid );
 
 	}
 
@@ -64,7 +57,7 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 
 	onTextureChanged ( $guid: string ) {
 
-		CommandHistory.execute( new SetValueCommand( this.data.roadMarking, 'textureGuid', $guid ) );
+		CommandHistory.execute( new SetRoadmarkTextureCommand( this.previewService, this.metadata, this.data.roadMarking, $guid ) );
 
 	}
 }

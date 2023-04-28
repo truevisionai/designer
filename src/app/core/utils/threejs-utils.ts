@@ -3,7 +3,7 @@
  */
 
 import { CoordinateSystem } from "app/services/exporter.service";
-import { Object3D } from "three";
+import { CanvasTexture, Object3D } from "three";
 
 export class ThreeJsUtils {
 
@@ -57,4 +57,25 @@ export class ThreeJsUtils {
 		return gameObject;
 	}
 
+	static createPinkTexture ( width, height ): CanvasTexture {
+
+		// Create a canvas
+		const canvas = document.createElement( 'canvas' );
+		canvas.width = width;
+		canvas.height = height;
+
+		// Get the canvas 2D context
+		const context = canvas.getContext( '2d' );
+
+		// Set the fill color to bright pink
+		context.fillStyle = '#FF69B4';
+
+		// Fill the canvas with the pink color
+		context.fillRect( 0, 0, width, height );
+
+		// Create a texture from the canvas
+		const pinkTexture = new CanvasTexture( canvas );
+
+		return pinkTexture;
+	}
 }

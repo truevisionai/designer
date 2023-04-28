@@ -245,16 +245,6 @@ export class PreviewService {
 
 	getRoadMarkingPreview ( marking: TvRoadMarking ): string {
 
-		// this.plane.visible = true;
-
-		const texture = AssetDatabase.getInstance( marking.textureGuid ) as Texture;
-
-		if ( !texture ) return;
-
-		// const material = this.planeMaterial.clone();
-		// material.map = texture;
-		// this.plane.material = material;
-
 		this.scene.add( marking.mesh );
 
 		const box = new Box3().setFromObject( marking.mesh );
