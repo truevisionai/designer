@@ -2,65 +2,55 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { SceneService } from '../services/scene.service';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+import { AppInspector } from '../inspector';
+import { LaneMarkingTool } from '../tools/lane-marking-tool';
 import { BaseCommand } from './base-command';
 
 export class ShowLaneMarkingCommand extends BaseCommand {
 
-	private road: TvRoad;
+	private newRoad: TvRoad;
 
 	private oldRoad: TvRoad;
+	private oldLane: TvLane;
 
-	constructor ( private lane: TvLane, private oldLane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
+	private lastInspector: any;
+	private lastInspectorData: any;
+
+	constructor ( private tool: LaneMarkingTool, private newLane: TvLane ) {
 
 		super();
 
-		if ( lane ) {
+		this.oldLane = tool.lane;
 
-			this.road = this.map.getRoadById( this.lane.roadId );
+		if ( newLane ) this.newRoad = this.map.getRoadById( this.newLane.roadId );
+		if ( this.oldLane ) this.oldRoad = this.map.getRoadById( this.oldLane.roadId );
 
-		}
+		this.lastInspector = AppInspector.currentInspector;
+		this.lastInspectorData = AppInspector.currentInspectorData;
 
-		if ( oldLane ) {
-
-			this.oldRoad = this.map.getRoadById( this.oldLane.roadId );
-
-		}
 	}
 
 	execute (): void {
 
-		if ( this.oldRoad ) {
+		if ( this.oldRoad ) this.hideNodes( this.oldRoad );
+		if ( this.newRoad ) this.showNodes( this.newRoad );
 
-			this.hideNodes( this.oldRoad );
+		this.tool.lane = this.newLane;
 
-		}
-
-		if ( this.road ) {
-
-			this.showNodes( this.road );
-
-		}
+		AppInspector.setInspector( LaneInspectorComponent, this.newLane );
 	}
 
 	undo (): void {
 
-		if ( this.road ) {
+		if ( this.newRoad ) this.hideNodes( this.newRoad );
+		if ( this.oldRoad ) this.showNodes( this.oldRoad );
 
-			this.hideNodes( this.road );
+		this.tool.lane = this.oldLane;
 
-		}
-
-		if ( this.oldRoad ) {
-
-			this.showNodes( this.oldRoad );
-
-		}
+		AppInspector.setInspector( this.lastInspector, this.lastInspectorData );
 	}
 
 	redo (): void {
@@ -71,53 +61,15 @@ export class ShowLaneMarkingCommand extends BaseCommand {
 
 	private showNodes ( road: TvRoad ) {
 
-		if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
+		road.showLaneMarkingNodes();
 
-		if ( road.isJunction ) return;
-
-		road.laneSections.forEach( laneSection => {
-
-			laneSection.lanes.forEach( lane => {
-
-				lane.getRoadMarks().forEach( roadmark => {
-
-					if ( roadmark.node ) {
-
-						roadmark.node.visible = true;
-
-					} else {
-
-						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
-
-						SceneService.add( roadmark.node );
-
-					}
-
-				} );
-
-			} );
-
-		} );
-
-		this.laneHelper.drawRoad( road );
+		this.tool.laneHelper.drawRoad( road );
 	}
 
 	private hideNodes ( road: TvRoad ) {
 
-		road.laneSections.forEach( laneSection => {
+		road.hideLaneMarkingNodes();
 
-			laneSection.lanes.forEach( lane => {
-
-				lane.getRoadMarks().forEach( roadmark => {
-
-					if ( roadmark.node ) roadmark.node.visible = false;
-
-				} );
-
-			} );
-
-		} );
-
-		this.laneHelper.clear();
+		this.tool.laneHelper.clear();
 	}
 }

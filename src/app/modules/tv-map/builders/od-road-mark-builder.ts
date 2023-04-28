@@ -68,6 +68,16 @@ export class OdRoadMarkBuilder {
 		}
 	}
 
+	public buildLane ( road: TvRoad, lane: TvLane ): void {
+
+		this.road = road;
+
+		const laneSection = road.getLaneSectionById( lane.laneSectionId );
+
+		this.processLane( laneSection, lane );
+
+	}
+
 	private createMeshIndices ( geom: MeshGeometryData ): void {
 
 		let index = 0;

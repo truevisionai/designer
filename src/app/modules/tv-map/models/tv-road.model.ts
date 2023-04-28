@@ -1323,6 +1323,51 @@ export class TvRoad {
 
 	}
 
+	public showLaneMarkingNodes () {
+
+		this.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				lane.getRoadMarks().forEach( roadmark => {
+
+					if ( roadmark.node ) {
+
+						roadmark.node.visible = true;
+
+					} else {
+
+						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
+
+						SceneService.add( roadmark.node );
+
+					}
+
+				} );
+
+			} );
+
+		} );
+	}
+
+	public hideLaneMarkingNodes () {
+
+		this.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				lane.getRoadMarks().forEach( roadmark => {
+
+					if ( roadmark.node ) roadmark.node.visible = false;
+
+				} );
+
+			} );
+
+		} );
+
+	}
+
 	public hideWidthNodes () {
 
 		this.laneSections.forEach( laneSection => {

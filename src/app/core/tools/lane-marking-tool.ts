@@ -2,13 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SetMultipleValuesCommand } from 'app/modules/three-js/commands/set-multiple-value-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+import { race } from 'rxjs-compat/operator/race';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { AnyControlPoint, LaneRoadMarkNode } from '../../modules/three-js/objects/control-point';
+import { AnyControlPoint, BaseControlPoint, LaneRoadMarkNode } from '../../modules/three-js/objects/control-point';
 import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
@@ -23,6 +26,7 @@ import { ShowLaneMarkingCommand } from '../commands/show-lane-marking-command';
 import { UpdateRoadmarkNodeCommand } from '../commands/update-roadmark-node';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { KeyboardInput } from '../input';
+import { AppInspector } from '../inspector';
 import { PickingHelper } from '../services/picking-helper.service';
 import { SceneService } from '../services/scene.service';
 import { BaseTool } from './base-tool';
@@ -49,7 +53,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	private roadMarkBuilder = new OdRoadMarkBuilder();
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null );
+	public laneHelper = new OdLaneReferenceLineBuilder( null );
 
 	constructor () {
 
@@ -75,7 +79,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( this.laneHelper ) this.laneHelper.clear();
 
-		this.map.roads.forEach( road => this.hideNodes( road ) );
+		this.map.getRoads().forEach( road => road.hideLaneMarkingNodes() );
 	}
 
 	public onPointerDown ( e: PointerEventData ) {
@@ -88,28 +92,49 @@ export class LaneMarkingTool extends BaseTool {
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		let hasInteracted = false;
+		if ( shiftKeyDown && this.isReferenceLineSelected( e ) ) return;
 
-		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkNodePointInteraction( e );
+		if ( !shiftKeyDown && this.isNodeSelected( e ) ) return;
 
-		if ( !hasInteracted ) hasInteracted = this.checkReferenceLineInteraction( e );
+		if ( !shiftKeyDown && this.isLaneSelected( e ) ) return;
 
-		if ( !hasInteracted ) hasInteracted = this.checkLaneObjectInteraction( e );
+		this.clearSelection();
+	}
 
-		if ( !hasInteracted ) {
+	private clearSelection () {
 
-			this.node = null;
+		// if everything is already null then return
+		if ( this.node == null && this.controlPoint == null && this.lane == null ) {
 
-			this.lane = null;
+			return;
+		}
 
-			this.controlPoint = null;
+		if ( this.lane ) {
+
+			const road = this.map.getRoadById( this.lane.roadId );
+
+			if ( road ) road.hideLaneMarkingNodes();
 
 		}
+
+		this.laneHelper.clear();
+
+		CommandHistory.executeMany(
+
+			new SetMultipleValuesCommand<LaneMarkingTool>( this, {
+				lane: null,
+				controlPoint: null,
+				node: null,
+			} ),
+
+			new SetInspectorCommand( null, null ),
+		);
+
 	}
 
 	public onPointerUp ( e: PointerEventData ) {
 
-		if ( this.markingDistanceChanged && this.node ) {
+		if ( this.markingDistanceChanged && this.node && this.pointerDownAt ) {
 
 			// e.point is null for some reason, so use node position
 			// const newPosition = e.point.clone();
@@ -146,145 +171,81 @@ export class LaneMarkingTool extends BaseTool {
 		}
 	}
 
-	private checkNodePointInteraction ( e: PointerEventData ): boolean {
+	private isNodeSelected ( e: PointerEventData ): boolean {
 
-		const maxDistance = Math.max( 0.5, e.approxCameraDistance * 0.01 );
+		const interactedPoint = PickingHelper.checkControlPointInteraction( e, LaneRoadMarkNode.pointTag, 1.0 );
 
-		// first chceck for control point interactions
-		// doing in 2 loop to prioritise control points
-		const controlPoint = PickingHelper.checkControlPointInteraction( e, LaneRoadMarkNode.pointTag, maxDistance );
+		if ( !interactedPoint ) return false;
 
-		if ( controlPoint ) {
+		// Select the point if no node is selected or a new node is selected
+		if ( !this.controlPoint || this.controlPoint.id !== interactedPoint.id ) {
 
-			const node = controlPoint.parent as LaneRoadMarkNode;
-
-			const roadMark = node.roadmark;
-
-			CommandHistory.executeAll( [
-
-				new SetValueCommand( this, 'controlPoint', controlPoint ),
-
-				new SetValueCommand( this, 'node', node ),
-
-				new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark )
-
-			] );
-
-		} else if ( !this.controlPoint && this.controlPoint ) {
-
-			CommandHistory.executeAll( [
-
-				new SetValueCommand( this, 'controlPoint', null ),
-
-				new SetValueCommand( this, 'node', null ),
-
-				new SetInspectorCommand( null, null )
-
-			] );
+			this.selectPoint( interactedPoint );
 
 		}
 
-		return controlPoint != null;
+		return interactedPoint != null;
+	}
+
+	private selectPoint ( point: BaseControlPoint ) {
+
+		const node = point.parent as LaneRoadMarkNode;
+
+		const roadMark = node.roadmark;
+
+		CommandHistory.executeMany(
+
+			new SetMultipleValuesCommand<LaneMarkingTool>( this, {
+				controlPoint: point, node: node,
+			} ),
+
+			new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark ),
+		);
 
 	}
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+	private isLaneSelected ( e: PointerEventData ): boolean {
 
-		const newLane = PickingHelper.checkLaneObjectInteraction( e );
+		const interactedLane = PickingHelper.checkLaneObjectInteraction( e );
 
-		if ( this.lane && newLane == null ) {
+		if ( !interactedLane ) return false;
 
-			// clear
+		if ( !this.lane || this.lane.uuid !== interactedLane.uuid ) {
 
-			const commands = [];
-
-			commands.push( new ShowLaneMarkingCommand( null, this.lane, this.laneHelper ) );
-
-			commands.push( new SetInspectorCommand( null, null ) );
-
-			commands.push( new SetValueCommand( this, 'lane', null ) );
-
-			CommandHistory.execute( new MultiCmdsCommand( commands ) );
-
-		} else if ( this.lane && newLane && this.lane.gameObject.id !== newLane.gameObject.id && this.lane.roadId != newLane.roadId ) {
-
-			// clear and select new
-
-			const commands = [];
-
-			commands.push( new ShowLaneMarkingCommand( newLane, this.lane, this.laneHelper ) );
-
-			commands.push( new SetInspectorCommand( LaneInspectorComponent, newLane ) );
-
-			commands.push( new SetValueCommand( this, 'lane', newLane ) );
-
-			CommandHistory.execute( new MultiCmdsCommand( commands ) );
-
-		} else if ( !this.lane && newLane ) {
-
-			// select new
-
-			const commands = [];
-
-			commands.push( new SetValueCommand( this, 'lane', newLane ) );
-
-			commands.push( new ShowLaneMarkingCommand( newLane, this.lane, this.laneHelper ) );
-
-			commands.push( new SetInspectorCommand( LaneInspectorComponent, newLane ) );
-
-			CommandHistory.execute( new MultiCmdsCommand( commands ) );
-
-		} else if ( !this.lane && newLane == null ) {
-
-			// clear
-
-			CommandHistory.execute( new SetInspectorCommand( null, null ) );
+			this.selectLane( interactedLane );
 
 		}
 
-		return newLane != null;
+		return interactedLane != null;
 	}
 
-	private checkReferenceLineInteraction ( e: PointerEventData ) {
+	private selectLane ( lane: TvLane ) {
 
-		const isShiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const road = this.map.getRoadById( lane.roadId );
 
-		let hasInteracted = false;
+		if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+		if ( road.isJunction ) return;
 
-			const intersection = e.intersections[ i ];
+		CommandHistory.execute( new ShowLaneMarkingCommand( this, lane ) );
+	}
 
-			if ( e.button === MouseButton.LEFT && intersection.object && intersection.object[ 'tag' ] == this.laneHelper.tag ) {
+	private isReferenceLineSelected ( e: PointerEventData ) {
 
-				hasInteracted = true;
+		const interactedLane = PickingHelper.checkReferenceLineInteraction( e, this.laneHelper.tag );
 
-				if ( intersection.object.userData.lane ) {
+		if ( !interactedLane ) return;
 
-					this.lane = intersection.object.userData.lane;
+		if ( interactedLane ) {
 
-					if ( isShiftKeyDown ) {
+			this.addRoadmarkNodeAt( interactedLane, e.point );
 
-						this.addRoadmarkNodeAt( e.point );
-
-					} else {
-
-						this.selectRoadMarkAt( e.point, this.lane );
-
-					}
-
-				}
-
-				break;
-			}
 		}
 
-		return hasInteracted;
+		return interactedLane != null;
 	}
 
-	private addRoadmarkNodeAt ( position: Vector3 ) {
-
-		if ( !this.lane ) return;
+	private addRoadmarkNodeAt ( lane: TvLane, position: Vector3 ) {
 
 		const posTheta = new TvPosTheta();
 
@@ -292,15 +253,17 @@ export class LaneMarkingTool extends BaseTool {
 		TvMapQueries.getRoadByCoords( position.x, position.y, posTheta );
 
 		// get the exisiting lane road mark at s and clone it
-		const roadMark = this.lane.getRoadMarkAt( posTheta.s ).clone( posTheta.s );
+		const roadMark = lane.getRoadMarkAt( posTheta.s ).clone( posTheta.s );
 
-		roadMark.node = NodeFactoryService.createRoadMarkNode( this.lane, roadMark );
+		roadMark.node = NodeFactoryService.createRoadMarkNode( lane, roadMark );
 
 		CommandHistory.executeAll( [
 
-			new AddRoadmarkNodeCommand( this.lane, roadMark, this.roadMarkBuilder ),
+			new AddRoadmarkNodeCommand( lane, roadMark, this.roadMarkBuilder ),
 
 			new SetValueCommand( this, 'roadMark', roadMark ),
+
+			new SetValueCommand( this, 'lane', lane ),
 
 			new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark ),
 
@@ -323,61 +286,6 @@ export class LaneMarkingTool extends BaseTool {
 			new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark ),
 
 		] );
-
-	}
-
-	private rebuild ( roadId: number ) {
-
-		// TODO may only road->lane need to be built
-
-		const road = this.map.getRoadById( roadId );
-
-		this.roadMarkBuilder.buildRoad( road );
-	}
-
-	private showNodes ( road: TvRoad ) {
-
-		road.laneSections.forEach( laneSection => {
-
-			laneSection.lanes.forEach( lane => {
-
-				lane.getRoadMarks().forEach( roadmark => {
-
-					if ( roadmark.node ) {
-
-						roadmark.node.visible = true;
-
-					} else {
-
-						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
-
-						SceneService.add( roadmark.node );
-
-					}
-
-				} );
-
-			} );
-
-		} );
-
-	}
-
-	private hideNodes ( road: TvRoad ) {
-
-		road.laneSections.forEach( laneSection => {
-
-			laneSection.lanes.forEach( lane => {
-
-				lane.getRoadMarks().forEach( roadmark => {
-
-					if ( roadmark.node ) roadmark.node.visible = false;
-
-				} );
-
-			} );
-
-		} );
 
 	}
 }

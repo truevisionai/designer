@@ -133,4 +133,26 @@ export class PickingHelper {
 		return lane;
 	}
 
+	public static checkReferenceLineInteraction ( event: PointerEventData, tag: string ): TvLane {
+
+		let line = null;
+
+		for ( let i = 0; i < event.intersections.length; i++ ) {
+
+			const intersection = event.intersections[ i ];
+
+			if ( intersection.object && intersection.object[ 'tag' ] === tag ) {
+
+				if ( intersection.object.userData.lane ) {
+
+					line = intersection.object.userData.lane as TvLane;
+
+					break;
+				}
+			}
+		}
+
+		return line;
+	}
+
 }

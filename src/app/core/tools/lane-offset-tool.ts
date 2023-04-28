@@ -163,7 +163,7 @@ export class LaneOffsetTool extends BaseTool {
 
 		if ( !interactedPoint ) return false;
 
-		if ( this.controlPoint && this.controlPoint.id == interactedPoint.id ) {
+		if ( !this.controlPoint || this.controlPoint.id !== interactedPoint.id ) {
 
 			this.selectPoint( interactedPoint );
 
