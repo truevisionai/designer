@@ -3,6 +3,7 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { AppInspector } from 'app/core/inspector';
@@ -11,6 +12,7 @@ import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { CommandHistory } from 'app/services/command-history';
 import { FileUtils } from 'app/services/file-utils';
 import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
@@ -170,49 +172,7 @@ export class FileComponent implements OnInit {
 
 		if ( metadata.preview ) return;
 
-		if ( metadata.importer === MetaImporter.MATERIAL ) {
-
-			const instance = AssetDatabase.getInstance( this.metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.previewService.getMaterialPreview( instance as Material );
-
-		} else if ( metadata.importer === MetaImporter.SIGN ) {
-
-			const instance = AssetDatabase.getInstance( this.metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.previewService.getSignPreview( instance as TvRoadSign );
-
-		} else if ( metadata.importer === MetaImporter.MODEL ) {
-
-			this.assetService.modelImporterService.load( metadata.path, ( obj ) => {
-
-				metadata.preview = this.previewService.getModelPreview( obj );
-
-				AssetDatabase.setInstance( metadata.guid, obj );
-
-			}, metadata );
-
-		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
-
-			const instance = AssetDatabase.getInstance( this.metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.previewService.getRoadStylePreview( instance as RoadStyle );
-
-		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
-
-			const instance = AssetDatabase.getInstance( this.metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.previewService.getRoadMarkingPreview( instance as TvRoadMarking );
-
-		}
+		this.previewService.updatePreview( metadata );
 	}
 
 	@HostListener( 'click', [ '$event' ] )
@@ -227,49 +187,11 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			const instance = AssetDatabase.getInstance( this.metadata.guid );
 			const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
 
-			if ( this.metadata.importer === MetaImporter.MATERIAL ) {
+			const inspectorData = InspectorFactoryService.getInspectorData( this.metadata );
 
-				AppInspector.setInspector( inspector, {
-					material: instance,
-					guid: this.metadata.guid
-				} );
-
-			} else if ( this.metadata.importer === MetaImporter.TEXTURE ) {
-
-				AppInspector.setInspector( inspector, {
-					texture: instance,
-					guid: this.metadata.guid
-				} );
-
-			} else if ( this.metadata.importer === MetaImporter.ROAD_STYLE ) {
-
-				RoadStyleService.setCurrentStyle( instance as RoadStyle );
-
-				AppInspector.setInspector( inspector, {
-					roadStyle: instance,
-					guid: this.metadata.guid
-				} );
-
-			} else if ( this.metadata.importer === MetaImporter.MODEL ) {
-
-				AppInspector.setInspector( inspector, this.metadata );
-
-
-			} else if ( this.metadata.importer === MetaImporter.ROAD_MARKING ) {
-
-				AppInspector.setInspector( inspector, {
-					roadMarking: instance,
-					guid: this.metadata.guid
-				} );
-
-			} else {
-
-				AppInspector.setInspector( inspector, instance );
-
-			}
+			CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
 
 		} catch ( error ) {
 
@@ -278,36 +200,6 @@ export class FileComponent implements OnInit {
 		}
 
 	}
-
-	// getFileInstance ( extension: string, guid: string, path: string ): any {
-
-	//     if ( this.assetService.assetInstances.has( guid ) ) {
-
-	//         return this.assetService.assetInstances.get( guid );
-
-	//     }
-
-	//     let instance = null;
-
-	//     switch ( extension ) {
-
-	//         case 'png': instance = new TextureLoader().load( path ); break;
-
-	//         case 'svg': instance = new TextureLoader().load( path ); break;
-
-	//         case 'jpg': instance = new TextureLoader().load( path ); break;
-
-	//         case 'jpeg': instance = new TextureLoader().load( path ); break;
-
-	//         case 'material': instance = new MaterialLoader().parse( path ); break;
-
-	//         default: break;
-	//     }
-
-	//     if ( instance ) this.assetService.assetInstances.set( guid, instance );
-
-	//     return instance;
-	// }
 
 	@HostListener( 'dblclick', [ '$event' ] )
 	onDoubleClick ( $event ) {
@@ -330,37 +222,11 @@ export class FileComponent implements OnInit {
 		}
 	}
 
-	// @HostListener( 'mousedown', [ '$event' ] )
-	// onMouseDown ( $event ) {
-
-	//     $event.preventDefault();
-	//     $event.stopPropagation();
-
-	// }
-
-	// @HostListener( 'mouseover', [ '$event' ] )
-	// onMouseOver ( $event ) {
-
-	//     $event.preventDefault();
-	//     $event.stopPropagation();
-
-	// }
-
-	// @HostListener( 'mouseleave', [ '$event' ] )
-	// onMouseLeave ( $event ) {
-
-	//     $event.preventDefault();
-	//     $event.stopPropagation();
-
-	// }
-
 	@HostListener( 'contextmenu', [ '$event' ] )
 	onContextMenu ( $event ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
-
-		if ( !this.electron.isElectronApp ) return;
 
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
 			{
@@ -472,9 +338,6 @@ export class FileComponent implements OnInit {
 
 		SnackBar.error( 'Not able to reimport' );
 
-		// console.error( "method not implemented" );
-		// this.assetService.reimport( this.file, this.extension );
-
 	}
 
 	reimportAll () {
@@ -483,25 +346,8 @@ export class FileComponent implements OnInit {
 
 	}
 
-	// @HostListener( 'dragover', [ '$event' ] )
-	// onDragOver ( $event ) {
-
-	//     $event.preventDefault();
-	//     $event.stopPropagation();
-
-	// }
-
 	@HostListener( 'dragstart', [ '$event' ] )
 	onDragStart ( $event ) {
-
-		// if ( this.extension == "png" || this.extension == "jpg" || this.extension == "svg" ) {
-		//     return;
-		// }
-
-		// $event.preventDefault();
-		// $event.stopPropagation();
-
-		console.log( 'dragstat', $event );
 
 		$event.dataTransfer.setData( 'path', this.file.path );
 
@@ -569,19 +415,4 @@ export class FileComponent implements OnInit {
 		}
 
 	}
-
-	// @HostListener( 'dragleave', [ '$event' ] )
-	// onDragLeave ( $event ) {
-
-	//     $event.preventDefault();
-	//     $event.stopPropagation();
-
-	// }
-
-	// @HostListener( 'drop', [ '$event' ] )
-	// onDrop ( $event: DragEvent ) {
-
-	//     //
-
-	// }
 }

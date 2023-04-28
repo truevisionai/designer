@@ -4,7 +4,9 @@
 
 import { Injectable, Type } from '@angular/core';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { AssetDatabase } from 'app/services/asset-database';
 import { FileService } from 'app/services/file.service';
+import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { PropModelInspectorComponent } from 'app/views/inspectors/prop-model-inspector/prop-model-inspector.component';
@@ -14,6 +16,7 @@ import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/ro
 import { TextureInspector } from 'app/views/inspectors/texture-inspector/texture-inspector.component';
 import { IComponent } from '../game-object';
 import { AppInspector } from '../inspector';
+import { Metadata, MetaImporter } from '../models/metadata.model';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -112,5 +115,51 @@ export class InspectorFactoryService {
 		const extension = FileService.getExtension( filename );
 
 		return this.getInspectorByExtension( extension );
+	}
+
+	static getInspectorData ( metadata: Metadata ) {
+
+		const instance = AssetDatabase.getInstance( metadata.guid );
+
+		if ( metadata.importer === MetaImporter.MATERIAL ) {
+
+			return {
+				material: instance,
+				guid: metadata.guid
+			};
+
+		} else if ( metadata.importer === MetaImporter.TEXTURE ) {
+
+			return {
+				texture: instance,
+				guid: metadata.guid
+			};
+
+		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
+
+			RoadStyleService.setCurrentStyle( instance as RoadStyle );
+
+			return {
+				roadStyle: instance,
+				guid: metadata.guid
+			};
+
+		} else if ( metadata.importer === MetaImporter.MODEL ) {
+
+			return metadata;
+
+		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+
+			return {
+				roadMarking: instance,
+				guid: metadata.guid
+			};
+
+		} else {
+
+			return instance;
+
+		}
+
 	}
 }

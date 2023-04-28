@@ -4,11 +4,13 @@
 
 import { Injectable } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
+import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
+import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { RoadStyle } from 'app/services/road-style.service';
 import * as THREE from 'three';
 import {
@@ -61,7 +63,7 @@ export class PreviewService {
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
-	constructor () {
+	constructor ( private assetService: AssetLoaderService ) {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -144,6 +146,54 @@ export class PreviewService {
 		this.scene.add( this.sphere );
 
 		this.sphere.visible = false;
+	}
+
+	updatePreview ( metadata: Metadata ) {
+
+		if ( metadata.importer === MetaImporter.MATERIAL ) {
+
+			const instance = AssetDatabase.getInstance( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getMaterialPreview( instance as Material );
+
+		} else if ( metadata.importer === MetaImporter.SIGN ) {
+
+			const instance = AssetDatabase.getInstance( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getSignPreview( instance as TvRoadSign );
+
+		} else if ( metadata.importer === MetaImporter.MODEL ) {
+
+			this.assetService.modelImporterService.load( metadata.path, ( obj ) => {
+
+				metadata.preview = this.getModelPreview( obj );
+
+				AssetDatabase.setInstance( metadata.guid, obj );
+
+			}, metadata );
+
+		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
+
+			const instance = AssetDatabase.getInstance( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getRoadStylePreview( instance as RoadStyle );
+
+		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+
+			const instance = AssetDatabase.getInstance( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
+
+		}
+
 	}
 
 	getMaterialPreview ( material: Material ): string {
