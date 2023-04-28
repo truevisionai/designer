@@ -7,7 +7,7 @@
 		<img [src]="imageSource" [class.file-card-image]="true" />
 	</ng-container>
 	<ng-container *ngIf="isTexture">
-		<img [src]="filePath" />
+		<img [src]="filePath" [class.file-card-image]="true"/>
 	</ng-container>
 	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
 	<p *ngIf="showRenaming" class="file-name">

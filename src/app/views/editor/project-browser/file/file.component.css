@@ -15,7 +15,9 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 67%;
+	width: 67px; /* fixed width */
+	height: 67px; /* fixed height */
+	object-fit: contain; /* makes sure the image aspect ratio is preserved */
 	border-top-left-radius: inherit;
 	border-top-right-radius: inherit;
 }
@@ -40,11 +42,12 @@
 
 .file-card img {
 	max-width: 100%;
-	width: 56px;
+	width: 67px; /* fixed width */
+	height: 67px; /* fixed height */
+	object-fit: contain; /* makes sure the image aspect ratio is preserved */
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 67%;
 }
