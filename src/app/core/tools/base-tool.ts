@@ -30,12 +30,12 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 		this.clearInspector();
 
-		AppService.eventSystem.pointerDown.subscribe( e => {
+		AppService.eventSystem?.pointerDown.subscribe( e => {
 			this.pointerDownAt = e.point?.clone();
 			this.isPointerDown = true;
 		} );
 
-		AppService.eventSystem.pointerUp.subscribe( e => {
+		AppService.eventSystem?.pointerUp.subscribe( e => {
 
 			this.isPointerDown = false;
 
