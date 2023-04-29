@@ -12,6 +12,7 @@ import { PropCurveTool } from 'app/core/tools/prop-curve-tool';
 import { PropPointTool } from 'app/core/tools/prop-point-tool';
 import { PropPolygonTool } from 'app/core/tools/prop-polygon-tool';
 import { RoadCircleTool } from 'app/core/tools/road-circle-tool';
+import { RoadRampTool } from 'app/core/tools/road-ramp-tool';
 import { RoadTool } from 'app/core/tools/road-tool';
 import { SurfaceTool } from 'app/core/tools/surface-tool';
 import { CommandHistory } from 'app/services/command-history';
@@ -93,6 +94,12 @@ export class ToolBarComponent implements OnInit {
 	showRoadTool () {
 
 		this.setTool( new RoadTool() );
+
+	}
+
+	showRoadRampTool () {
+
+		this.setTool( new RoadRampTool() );
 
 	}
 

@@ -29,8 +29,6 @@ export class LaneWidthTool extends BaseTool {
 	private widthChangeSub: Subscription;
 
 	private laneWidthChanged: boolean = false;
-	private pointerDown: boolean = false;
-	private pointerDownAt: Vector3;
 
 	public lane: TvLane;
 	public controlPoint: AnyControlPoint;
@@ -76,10 +74,6 @@ export class LaneWidthTool extends BaseTool {
 	public onPointerDown ( e: PointerEventData ) {
 
 		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
-
-		this.pointerDown = true;
-
-		this.pointerDownAt = e.point;
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
@@ -132,16 +126,12 @@ export class LaneWidthTool extends BaseTool {
 
 		}
 
-		this.pointerDown = false;
-
-		this.pointerDownAt = null;
-
 		this.laneWidthChanged = false;
 	}
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.widthNode ) {
+		if ( this.isPointerDown && this.widthNode ) {
 
 			this.laneWidthChanged = true;
 

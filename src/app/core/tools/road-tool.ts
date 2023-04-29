@@ -36,8 +36,6 @@ export class RoadTool extends BaseTool {
 	public node: RoadNode;
 
 	private roadChanged: boolean = false;
-	private pointerDown: boolean = false;
-	private pointerDownAt: Vector3;
 
 	constructor () {
 
@@ -80,10 +78,6 @@ export class RoadTool extends BaseTool {
 
 		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
-
-		this.pointerDownAt = e.point ? e.point.clone() : null;
-
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.isControlPointSelected( e ) ) return;
@@ -121,16 +115,12 @@ export class RoadTool extends BaseTool {
 
 		}
 
-		this.pointerDown = false;
-
-		this.pointerDownAt = null;
-
 		this.roadChanged = false;
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
+		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
 
 			this.controlPoint.copyPosition( e.point );
 

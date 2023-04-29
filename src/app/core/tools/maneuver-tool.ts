@@ -44,10 +44,6 @@ export class ManeuverTool extends BaseTool {
 
 	public lanePathObject: LanePathObject;
 
-	private pointerDown = false;
-
-	private pointerDownAt: Vector3;
-
 	private roadChanged = false;
 
 	private junctionEntryObjects = [];
@@ -96,10 +92,6 @@ export class ManeuverTool extends BaseTool {
 
 		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
-
-		this.pointerDownAt = e.point.clone();
-
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
 		let hasInteracted = false;
@@ -144,16 +136,12 @@ export class ManeuverTool extends BaseTool {
 			LanePathFactory.update( this.lanePathObject );
 		}
 
-		this.pointerDown = false;
-
 		this.roadChanged = false;
-
-		this.pointerDownAt = null;
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
+		if ( this.isPointerDown && this.roadControlPoint && this.connectingRoad ) {
 
 			this.roadControlPoint.copyPosition( e.point );
 

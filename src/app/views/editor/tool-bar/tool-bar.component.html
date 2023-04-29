@@ -16,6 +16,12 @@
 		</div>
 	</sat-popover>
 
+	<button id="showRoadTool" (click)="showRoadRampTool()" [ngClass]="getClass('RoadRampTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-ramp-tool" appTrack="button" mat-icon-button
+			matTooltip="Road Tool">
+		<mat-icon>timeline</mat-icon>
+	</button>
+
+
 	<!-- Road-Circle-Tool -->
 	<button id="showRoadCircleTool" (click)="showRoadCircleTool()" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool"
 			appTrack="button" mat-icon-button matTooltip="Road Circle Tool">

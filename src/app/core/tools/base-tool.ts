@@ -5,11 +5,12 @@
 import { Type } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
-import { Color, Intersection, Mesh, MeshBasicMaterial, Object3D } from 'three';
+import { Color, Intersection, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { MonoBehaviour } from '../components/mono-behaviour';
+import { AppService } from '../services/app.service';
 import { IEditorState } from './i-editor-state';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
@@ -20,12 +21,30 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	private previousColor = new Color();
 	private previousMaterial: MeshBasicMaterial;
 
+	protected pointerDownAt: Vector3;
+	protected isPointerDown: boolean;
+
 	constructor () {
 
 		super();
 
 		this.clearInspector();
 
+		AppService.eventSystem.pointerDown.subscribe( e => {
+			this.pointerDownAt = e.point?.clone();
+			this.isPointerDown = true;
+		} );
+
+		AppService.eventSystem.pointerUp.subscribe( e => {
+
+			this.isPointerDown = false;
+
+			// add delay in remove data to avoid child class to use this data
+			setTimeout( () => {
+				this.pointerDownAt = null;
+			}, 1000 );
+
+		} );
 	}
 
 	get map () {
