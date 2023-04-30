@@ -259,7 +259,7 @@ export abstract class TvAbstractRoadGeometry {
 
 		const point = new Vector2( x, y );
 
-		const tolerance = 1e-0;
+		const tolerance = 1e-2;
 
 		let start = this.s;
 		let end = this.s2;

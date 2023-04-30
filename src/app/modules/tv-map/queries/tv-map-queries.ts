@@ -265,6 +265,10 @@ export class TvMapQueries extends TvBaseQueries {
 
 					lanes = laneSection.getRightLanes();
 
+				} else if ( Maths.approxEquals( t, 0 ) ) {
+
+					lanes = laneSection.getCenterLanes();
+
 				}
 
 				let cumulativeWidth = 0;
@@ -275,7 +279,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 					cumulativeWidth += width;
 
-					if ( cumulativeWidth > Math.abs( t ) ) {
+					if ( cumulativeWidth >= Math.abs( t ) ) {
 
 						resultLane = lane;
 						break;
