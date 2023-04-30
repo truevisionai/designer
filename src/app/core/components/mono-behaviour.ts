@@ -5,6 +5,7 @@
 import { BaseEventData, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { Subscription } from 'rxjs';
 import { AppService } from '../services/app.service';
+import { Vector3 } from 'three';
 
 export class MonoBehaviour {
 
@@ -25,6 +26,8 @@ export class MonoBehaviour {
 	selectSubscriber: Subscription;
 	deSelectSubscriber: Subscription;
 
+	protected pointerDownAt: Vector3;
+	protected isPointerDown: boolean;
 
 	constructor () {
 
@@ -42,8 +45,16 @@ export class MonoBehaviour {
 		this.pointerMovedSubscriber = AppService.eventSystem.pointerMoved.subscribe( e => this.onPointerMoved( e ) );
 		this.pointerEnterSubscriber = AppService.eventSystem.pointerEnter.subscribe( e => this.onPointerEnter( e ) );
 		this.pointerExitSubscriber = AppService.eventSystem.pointerExit.subscribe( e => this.onPointerExit( e ) );
-		this.pointerUpSubscriber = AppService.eventSystem.pointerUp.subscribe( e => this.onPointerUp( e ) );
-		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => this.onPointerDown( e ) );
+		this.pointerUpSubscriber = AppService.eventSystem.pointerUp.subscribe( e => {
+			this.onPointerUp( e );
+			this.isPointerDown = false;
+			this.pointerDownAt = null;
+		} );
+		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => {
+			this.pointerDownAt = e.point?.clone();
+			this.isPointerDown = true;
+			this.onPointerDown( e );
+		} );
 		this.pointerLeaveSubscriber = AppService.eventSystem.pointerLeave.subscribe( e => this.onPointerLeave( e ) );
 		this.pointerOutSubscriber = AppService.eventSystem.pointerOut.subscribe( e => this.onPointerOut( e ) );
 		this.beginDragSubscriber = AppService.eventSystem.beginDrag.subscribe( e => this.onBeginDrag( e ) );

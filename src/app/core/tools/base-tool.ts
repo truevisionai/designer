@@ -21,30 +21,12 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	private previousColor = new Color();
 	private previousMaterial: MeshBasicMaterial;
 
-	protected pointerDownAt: Vector3;
-	protected isPointerDown: boolean;
-
 	constructor () {
 
 		super();
 
 		this.clearInspector();
 
-		AppService.eventSystem?.pointerDown.subscribe( e => {
-			this.pointerDownAt = e.point?.clone();
-			this.isPointerDown = true;
-		} );
-
-		AppService.eventSystem?.pointerUp.subscribe( e => {
-
-			this.isPointerDown = false;
-
-			// add delay in remove data to avoid child class to use this data
-			setTimeout( () => {
-				this.pointerDownAt = null;
-			}, 1000 );
-
-		} );
 	}
 
 	get map () {
