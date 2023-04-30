@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseEventData, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { BaseEventData, MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { Subscription } from 'rxjs';
 import { AppService } from '../services/app.service';
 import { Vector3 } from 'three';
@@ -51,8 +51,8 @@ export class MonoBehaviour {
 			this.pointerDownAt = null;
 		} );
 		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => {
-			this.pointerDownAt = e.point?.clone();
-			this.isPointerDown = true;
+			this.pointerDownAt = e.button === MouseButton.LEFT ? e.point?.clone() : null;
+			this.isPointerDown = e.button === MouseButton.LEFT;
 			this.onPointerDown( e );
 		} );
 		this.pointerLeaveSubscriber = AppService.eventSystem.pointerLeave.subscribe( e => this.onPointerLeave( e ) );
