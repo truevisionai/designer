@@ -85,28 +85,64 @@ export class RoadRampTool extends BaseTool {
 	// }
 
 	makeRampRoad(A: Vector3, B: Vector3, posTheta: TvPosTheta) {
-        const direction = posTheta.toDirectionVector();
-        const normalizedDirection = direction.clone().normalize();
+	    const direction = posTheta.toDirectionVector();
+	    const normalizedDirection = direction.clone().normalize();
 
-        const upVector = new Vector3(0, 0, 1);
-        const perpendicular = normalizedDirection.clone().cross(upVector);
+	    const upVector = new Vector3(0, 0, 1);
+	    const perpendicular = normalizedDirection.clone().cross(upVector);
 
-        const distanceAB = A.distanceTo(B);
+	    const distanceAB = A.distanceTo(B);
 
-        const v2 = A.clone().add(normalizedDirection.clone().multiplyScalar(distanceAB / 3));
-        const v3 = B.clone().add(perpendicular.clone().multiplyScalar(-distanceAB / 3));
+	    const v2 = A.clone().add(normalizedDirection.clone().multiplyScalar(distanceAB / 3));
+	    const v3 = B.clone().add(perpendicular.clone().multiplyScalar(-distanceAB / 3));
 
-        const road = this.map.addDefaultRoad();
+	    const road = this.map.addDefaultRoad();
 
-        road.addControlPointAt(A);
-        road.addControlPointAt(v2);
-        road.addControlPointAt(v3);
-        road.addControlPointAt(B);
+	    road.addControlPointAt(A);
+	    road.addControlPointAt(v2);
+	    road.addControlPointAt(v3);
+	    road.addControlPointAt(B);
 
-        console.log("road", [A, v2, v3, B]);
+	    console.log("road", [A, v2, v3, B]);
 
-        road.updateGeometryFromSpline();
-    }
+	    road.updateGeometryFromSpline();
+	}
+
+	// makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
+
+	// 	const direction = posTheta.toDirectionVector();
+	// 	const normalizedDirection = direction.clone().normalize();
+
+	// 	const upVector = new Vector3( 0, 0, 1 );
+	// 	const perpendicular = normalizedDirection.clone().cross( upVector );
+
+	// 	const distanceAB = A.distanceTo( B );
+
+	// 	function calculateBezier ( t, p0, p1, p2, p3 ) {
+	// 		const oneMinusT = 1 - t;
+	// 		return p0.clone().multiplyScalar( Math.pow( oneMinusT, 3 ) )
+	// 			.add( p1.clone().multiplyScalar( 3 * t * Math.pow( oneMinusT, 2 ) ) )
+	// 			.add( p2.clone().multiplyScalar( 3 * Math.pow( t, 2 ) * oneMinusT ) )
+	// 			.add( p3.clone().multiplyScalar( Math.pow( t, 3 ) ) );
+	// 	}
+
+	// 	const road = this.map.addDefaultRoad();
+
+	// 	const controlPoint1 = A.clone().add( normalizedDirection.clone().multiplyScalar( distanceAB / 3 ) );
+	// 	const controlPoint2 = B.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );
+
+	// 	const v2 = calculateBezier( 1 / 3, A, controlPoint1, controlPoint2, B );
+	// 	const v3 = calculateBezier( 2 / 3, A, controlPoint1, controlPoint2, B );
+
+	// 	road.addControlPointAt( A );
+	// 	road.addControlPointAt( v2 );
+	// 	road.addControlPointAt( v3 );
+	// 	road.addControlPointAt( B );
+
+	// 	console.log( "road", [ A, v2, v3, B ] );
+
+	// 	road.updateGeometryFromSpline();
+	// }
 
 
 	onPointerMoved ( e: PointerEventData ) {
