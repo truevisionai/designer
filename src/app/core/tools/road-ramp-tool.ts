@@ -84,28 +84,29 @@ export class RoadRampTool extends BaseTool {
 	//     road.updateGeometryFromSpline();
 	// }
 
-	makeRampRoad(A: Vector3, B: Vector3, posTheta: TvPosTheta) {
-	    const direction = posTheta.toDirectionVector();
-	    const normalizedDirection = direction.clone().normalize();
+	makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
 
-	    const upVector = new Vector3(0, 0, 1);
-	    const perpendicular = normalizedDirection.clone().cross(upVector);
+		const direction = posTheta.toDirectionVector();
+		const normalizedDirection = direction.clone().normalize();
 
-	    const distanceAB = A.distanceTo(B);
+		const upVector = new Vector3( 0, 0, 1 );
+		const perpendicular = normalizedDirection.clone().cross( upVector );
 
-	    const v2 = A.clone().add(normalizedDirection.clone().multiplyScalar(distanceAB / 3));
-	    const v3 = B.clone().add(perpendicular.clone().multiplyScalar(-distanceAB / 3));
+		const distanceAB = A.distanceTo( B );
 
-	    const road = this.map.addDefaultRoad();
+		const v2 = A.clone().add( normalizedDirection.clone().multiplyScalar( distanceAB / 3 ) );
+		const v3 = B.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );
 
-	    road.addControlPointAt(A);
-	    road.addControlPointAt(v2);
-	    road.addControlPointAt(v3);
-	    road.addControlPointAt(B);
+		const road = this.map.addDefaultRoad();
 
-	    console.log("road", [A, v2, v3, B]);
+		road.addControlPointAt( A );
+		road.addControlPointAt( v2 );
+		road.addControlPointAt( v3 );
+		road.addControlPointAt( B );
 
-	    road.updateGeometryFromSpline();
+		console.log( "road", [ A, v2, v3, B ] );
+
+		road.updateGeometryFromSpline();
 	}
 
 	// makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
