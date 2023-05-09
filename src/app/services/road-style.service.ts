@@ -4,6 +4,7 @@
 
 import { MetaImporter } from 'app/core/models/metadata.model';
 import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 
@@ -59,6 +60,21 @@ export class RoadStyleService {
 		}
 
 		return this.getDefaultRoadStyle( roadId );
+	}
+
+	static getRampRoadStyle ( roadId: number, lane: TvLane ): RoadStyle {
+
+		const roadStyle = new RoadStyle();
+
+		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+
+		roadStyle.laneSection = new TvLaneSection( 0, 0, true, roadId );
+
+		roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+
+		roadStyle.laneSection.addLaneInstance( lane, true );
+
+		return roadStyle;
 	}
 
 	static getDefaultRoadStyle ( roadId?: number ): RoadStyle {

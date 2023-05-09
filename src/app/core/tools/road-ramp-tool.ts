@@ -9,6 +9,7 @@ import { SceneService } from "../services/scene.service";
 import { BaseTool } from "./base-tool";
 import { AutoSpline } from "../shapes/auto-spline";
 import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
+import { TvMapBuilder } from "app/modules/tv-map/builders/od-builder.service";
 
 export class RoadRampTool extends BaseTool {
 
@@ -86,6 +87,27 @@ export class RoadRampTool extends BaseTool {
 
 	makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
 
+		let v2, v3
+
+		[ A, v2, v3, B ] = this.makeRampRoadPoints( A, B, posTheta );
+
+		const newLane = this.lane.cloneAtS( -1, posTheta.s );
+
+		const road = this.map.addRampRoad( newLane );
+
+		road.addControlPointAt( A );
+		road.addControlPointAt( v2 );
+		road.addControlPointAt( v3 );
+		road.addControlPointAt( B );
+
+		road.updateGeometryFromSpline();
+
+		TvMapBuilder.rebuildRoad( road );
+	}
+
+
+	makeRampRoadPoints ( A: Vector3, B: Vector3, posTheta: TvPosTheta ): Vector3[] {
+
 		const direction = posTheta.toDirectionVector();
 		const normalizedDirection = direction.clone().normalize();
 
@@ -97,16 +119,7 @@ export class RoadRampTool extends BaseTool {
 		const v2 = A.clone().add( normalizedDirection.clone().multiplyScalar( distanceAB / 3 ) );
 		const v3 = B.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );
 
-		const road = this.map.addDefaultRoad();
-
-		road.addControlPointAt( A );
-		road.addControlPointAt( v2 );
-		road.addControlPointAt( v3 );
-		road.addControlPointAt( B );
-
-		console.log( "road", [ A, v2, v3, B ] );
-
-		road.updateGeometryFromSpline();
+		return [ A, v2, v3, B ];
 	}
 
 	// makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
@@ -171,7 +184,9 @@ export class RoadRampTool extends BaseTool {
 			// SceneService.add( AnyControlPoint.create( '', this.start ) );
 			// SceneService.add( AnyControlPoint.create( '', this.end ) );
 
-			this.makeRampRoad( this.start, this.end, this.posTheta );
+			const start = TvMapQueries.getLaneStartPosition( this.lane.roadId, this.lane.id, this.posTheta.s, 0 );
+
+			this.makeRampRoad( start, this.end, this.posTheta );
 
 			this.start = null;
 			this.lane = null;

@@ -16,6 +16,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
+import { TvLane } from './tv-lane';
 
 export class TvMap {
 
@@ -108,6 +109,21 @@ export class TvMap {
 
 		// const laneSection = road.addGetLaneSection( 0 );
 		const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
+
+		return road;
+	}
+
+	addRampRoad ( lane: TvLane ): TvRoad {
+
+		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
+
+		road.addElevation( 0, 0.05, 0, 0, 0 );
+
+		const roadStyle = RoadStyleService.getRampRoadStyle( road.id, lane);
+
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
+
+		road.addLaneSectionInstance( roadStyle.laneSection );
 
 		return road;
 	}
