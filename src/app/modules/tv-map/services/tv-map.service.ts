@@ -56,18 +56,6 @@ export class TvMapService {
 		TvMapInstance.map = value;
 	}
 
-	/**
-	 * @deprecated
-	 */
-	newFile () {
-
-		if ( this.map ) this.map.destroy();
-
-		this.currentFile = new IFile( 'untitled.xml' );
-
-		this.map = new TvMap();
-
-	}
 
 	/**
 	 * @deprecated
@@ -96,8 +84,7 @@ export class TvMapService {
 
 		CommandHistory.clear();
 
-		// set to currently file pah
-		this.currentFile = new IFile( 'untitled.xml' );
+		this.electron.setTitle( this.currentFile.name, this.currentFile.path );
 
 		TvMapBuilder.buildMap( this.map );
 

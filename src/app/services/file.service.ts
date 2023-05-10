@@ -191,6 +191,7 @@ export class FileService {
 
 			const file = new IFile();
 
+			file.name = FileUtils.getFilenameFromPath( path );
 			file.path = path;
 			file.contents = data;
 			file.type = type;
@@ -289,7 +290,9 @@ export class FileService {
 
 			} else {
 
-				const file = new IFile( null, filepath, content, null, null, new Date() );
+				const name = FileUtils.getFilenameFromPath( filepath );
+
+				const file = new IFile( name, filepath, content, null, null, new Date() );
 
 				this.fileSaved.emit( file );
 
