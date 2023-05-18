@@ -4,6 +4,10 @@
 
 <mat-toolbar class="app-toolbar">
 
+	<button (click)="setPointerTool()" [ngClass]="getClass('PointerTool')" action="pointer-tool" appTrack="menu" mat-icon-button matTooltip="Pointer Tool">
+		<mat-icon>mouse</mat-icon>
+	</button>
+
 	<!-- Road-Geomtry -->
 	<button id="showRoadTool" (click)="showRoadTool()" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-plan-tool" appTrack="button" mat-icon-button
 			matTooltip="Road Tool">
