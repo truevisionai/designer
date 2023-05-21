@@ -5,12 +5,13 @@
 import { Type } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
-import { Color, Intersection, Mesh, MeshBasicMaterial, Object3D } from 'three';
+import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { MonoBehaviour } from '../components/mono-behaviour';
 import { IEditorState } from './i-editor-state';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -115,13 +116,13 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
-	protected findIntersection ( tag: string, intersections: Intersection[] ): Object3D | null {
+	protected findIntersection<T extends Object3D> ( tag: string, intersections: Intersection[] ): T | null {
 
 		for ( const i of intersections ) {
 
 			if ( i.object[ 'tag' ] == tag ) {
 
-				return i.object;
+				return i.object as T;
 			}
 
 		}
@@ -129,6 +130,7 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	}
 
 	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
+	private highlightedLines = new Map<Line, Material>();
 
 	protected highlight ( object: Mesh ) {
 
@@ -148,6 +150,28 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 			// Assign the temporary material to the object
 			object.material = highlightedMaterial;
+		}
+	}
+
+	protected highlightLine ( object: Line ) {
+
+		const material = object.material as LineBasicMaterial;
+
+		// Check if the object is already highlighted
+		if ( !this.highlightedLines.has( object ) ) {
+
+			// Save the original material instance
+			this.highlightedLines.set( object, material );
+
+			// Create a new instance of the material to avoid affecting the shared material
+			const highlightedMaterial = material.clone() as LineBasicMaterial;
+
+			// Set the current temporary material property to highlighted color
+			highlightedMaterial.linewidth += highlightedMaterial.linewidth;
+
+			// Assign the temporary material to the object
+			object.material = highlightedMaterial;
+
 		}
 	}
 
@@ -185,6 +209,25 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 		this.highlightedObjects.forEach( ( originalMaterial, highlightedObject ) => {
 
 			this.restoreObjectHighlight( highlightedObject );
+
+		} );
+
+		this.highlightedLines.forEach( ( originalMaterial, object ) => {
+
+			if ( this.highlightedLines.has( object ) ) {
+
+				// Get the original material from the map
+				const originalMaterial = this.highlightedLines.get( object );
+
+				// Restore the original material to the object
+				object.material = originalMaterial;
+
+				// Dispose of the temporary material to free up memory
+				( object.material as MeshBasicMaterial ).dispose();
+
+				// Remove the object from the map
+				this.highlightedLines.delete( object );
+			}
 
 		} );
 	}

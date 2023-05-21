@@ -387,7 +387,7 @@ export class OdRoadMarkBuilder {
 		return new THREE.MeshBasicMaterial( {
 			color: color,
 			map: this.texture,
-			transparent: true,
+			// transparent: true,
 			alphaTest: 0.1,
 			wireframe: false,
 			side: THREE.FrontSide

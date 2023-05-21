@@ -17,6 +17,7 @@ import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { AddLaneCommand } from '../commands/add-lane-command';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { GameObject } from '../game-object';
+import { Line } from 'three';
 
 export class LaneAddTool extends BaseTool {
 
@@ -63,11 +64,30 @@ export class LaneAddTool extends BaseTool {
 
 		if ( !this.lane ) return;
 
+		this.highlightLane( e );
+		this.highlightReferenceLine( e );
+	}
+
+	highlightLane ( e: PointerEventData ) {
+
 		const road = this.map.getRoadById( this.lane.roadId );
 
 		const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
 
 		if ( object ) this.highlight( object as GameObject );
+
+	}
+
+	highlightReferenceLine ( e: PointerEventData ) {
+
+		const road = this.map.getRoadById( this.lane.roadId );
+
+		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
+
+		if ( !results || results.length == 0 ) return;
+
+		this.highlightLine( results[ 0 ] as Line );
+
 	}
 
 	public isLaneSelected ( e: PointerEventData ): boolean {

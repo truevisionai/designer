@@ -257,7 +257,7 @@ export class OdLaneReferenceLineBuilder {
 
 		line.userData.lane = lane;
 
-		line.renderOrder = 5;
+		line.renderOrder = 999;
 
 		line[ 'tag' ] = this.tag;
 
