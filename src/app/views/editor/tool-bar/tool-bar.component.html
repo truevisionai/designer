@@ -4,13 +4,19 @@
 
 <mat-toolbar class="app-toolbar">
 
-	<button (click)="setPointerTool()" [ngClass]="getClass('PointerTool')" action="pointer-tool" appTrack="menu" mat-icon-button matTooltip="Pointer Tool">
+	<button [satPopoverAnchor]="pointerToolPopover" [satPopoverHover]="100" id="showPointerTool" (click)="setPointerTool()" [ngClass]="getClass('PointerTool')" action="pointer-tool" appTrack="menu" mat-icon-button matTooltip="Pointer Tool">
 		<mat-icon>mouse</mat-icon>
 	</button>
+	<sat-popover #pointerToolPopover verticalAlign="below">
+		<div class="simple-popover">
+			<div class="title">Pointer Tool</div>
+			<div> Pointer tool is used to view from different angles and to select the objects.
+			You can browse the scene without interacting with any object in the scene </div>
+		</div>
+	</sat-popover>
 
 	<!-- Road-Geomtry -->
-	<button id="showRoadTool" (click)="showRoadTool()" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-plan-tool" appTrack="button" mat-icon-button
-			matTooltip="Road Tool">
+	<button id="showRoadTool" (click)="showRoadTool()" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="100" action="road-plan-tool" appTrack="button" mat-icon-button matTooltip="Road Tool">
 		<mat-icon>timeline</mat-icon>
 	</button>
 	<sat-popover #roadGeometryPopover verticalAlign="below">
@@ -21,8 +27,8 @@
 	</sat-popover>
 
 	<!-- Road-Circle-Tool -->
-	<button id="showRoadCircleTool" (click)="showRoadCircleTool()" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool"
-			appTrack="button" mat-icon-button matTooltip="Road Circle Tool">
+	<button id="showRoadCircleTool" (click)="showRoadCircleTool()" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="100" action="road-circle-tool" appTrack="button" mat-icon-button
+			matTooltip="Road Circle Tool">
 		<mat-icon>trip_origin</mat-icon>
 	</button>
 	<sat-popover #roadCircleToolPopover verticalAlign="below">
@@ -33,8 +39,8 @@
 	</sat-popover>
 
 	<!-- Lane-Width -->
-	<button id="showLaneWidthTool" (click)="showLaneWidthTool()" [ngClass]="getClass('LaneWidth')" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="1000" action="lane-width-tool" appTrack="button"
-			mat-icon-button matTooltip="Lane Width Tool">
+	<button id="showLaneWidthTool" (click)="showLaneWidthTool()" [ngClass]="getClass('LaneWidth')" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="100" action="lane-width-tool" appTrack="button" mat-icon-button
+			matTooltip="Lane Width Tool">
 		<mat-icon>format_line_spacing</mat-icon>
 	</button>
 	<sat-popover #laneWidthHelp verticalAlign="below">
@@ -50,8 +56,7 @@
 	</button>
 
 	<!-- Add-Lane -->
-	<button id="showAddLaneTool" (click)="showAddLaneTool()" [ngClass]="getClass('AddLane')" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="1000" action="add-lane-tool" appTrack="button" mat-icon-button
-			matTooltip="Add Lane Tool">
+	<button id="showAddLaneTool" (click)="showAddLaneTool()" [ngClass]="getClass('AddLane')" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="100" action="add-lane-tool" appTrack="button" mat-icon-button matTooltip="Add Lane Tool">
 		<mat-icon>playlist_add</mat-icon>
 	</button>
 	<sat-popover #addLaneToolHelp verticalAlign="below">
@@ -62,8 +67,8 @@
 	</sat-popover>
 
 	<!-- Lane-Marking -->
-	<button id="showLaneMarkingTool" (click)="showLaneMarkingTool()" [ngClass]="getClass('LaneMarking')" [satPopoverAnchor]="laneMarkingToolHelp" [satPopoverHover]="1000" action="lane-marking-tool"
-			appTrack="button" mat-icon-button matTooltip="Lane Marking Tool">
+	<button id="showLaneMarkingTool" (click)="showLaneMarkingTool()" [ngClass]="getClass('LaneMarking')" [satPopoverAnchor]="laneMarkingToolHelp" [satPopoverHover]="100" action="lane-marking-tool" appTrack="button" mat-icon-button
+			matTooltip="Lane Marking Tool">
 		<!--        <mat-icon>line_style</mat-icon>-->
 		<mat-icon>format_align_center</mat-icon>
 	</button>
@@ -75,8 +80,7 @@
 	</sat-popover>
 
 	<!-- Lane-Tool -->
-	<button id="showLaneTool" (click)="showLaneTool()" [ngClass]="getClass('LaneTool')" [satPopoverAnchor]="laneToolHelp" [satPopoverHover]="1000" action="lane-direction-tool" appTrack="button" mat-icon-button
-			matTooltip="Lane Tool">
+	<button id="showLaneTool" (click)="showLaneTool()" [ngClass]="getClass('LaneTool')" [satPopoverAnchor]="laneToolHelp" [satPopoverHover]="100" action="lane-direction-tool" appTrack="button" mat-icon-button matTooltip="Lane Tool">
 		<mat-icon>swap_horiz</mat-icon>
 	</button>
 	<sat-popover #laneToolHelp verticalAlign="below">

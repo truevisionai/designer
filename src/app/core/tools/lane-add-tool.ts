@@ -25,7 +25,7 @@ export class LaneAddTool extends BaseTool {
 
 	public lane: TvLane;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.BLUE, false );
 
 	constructor () {
 
@@ -33,17 +33,11 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	enable (): void {
-
-		super.enable();
-
-	}
-
 	disable (): void {
 
 		super.disable();
 
-		if ( this.laneHelper ) this.laneHelper.clear();
+		this.laneHelper.clear();
 
 		this.removeHighlight();
 	}
@@ -64,30 +58,34 @@ export class LaneAddTool extends BaseTool {
 
 		if ( !this.lane ) return;
 
-		this.highlightLane( e );
-		this.highlightReferenceLine( e );
-	}
-
-	highlightLane ( e: PointerEventData ) {
-
-		const road = this.map.getRoadById( this.lane.roadId );
-
-		const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
-
-		if ( object ) this.highlight( object as GameObject );
+		if ( this.hasInteratedReferenceLine( e ) ) return;
 
 	}
 
-	highlightReferenceLine ( e: PointerEventData ) {
+	// hasInteractedLane ( e: PointerEventData ): boolean {
+
+	// 	const road = this.map.getRoadById( this.lane.roadId );
+
+	// 	const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
+
+	// 	if ( !object ) return false;
+
+	// 	this.highlight( object as GameObject );
+
+	// 	return true;
+	// }
+
+	hasInteratedReferenceLine ( e: PointerEventData ): boolean {
 
 		const road = this.map.getRoadById( this.lane.roadId );
 
 		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
 
-		if ( !results || results.length == 0 ) return;
+		if ( !results || results.length == 0 ) return false;
 
 		this.highlightLine( results[ 0 ] as Line );
 
+		return true;
 	}
 
 	public isLaneSelected ( e: PointerEventData ): boolean {
