@@ -29,6 +29,7 @@ import { ThreeService } from '../../../modules/three-js/three.service';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service';
 import { FileService } from '../../../services/file.service';
+import { PointerTool } from 'app/core/tools/pointer-tool';
 
 @Component( {
 	selector: 'app-tool-bar',
@@ -201,6 +202,12 @@ export class ToolBarComponent implements OnInit {
 	setParkingPolygonTool () {
 
 		this.setTool( new ParkingBoxTool() );
+
+	}
+
+	setPointerTool() {
+
+		this.setTool( new PointerTool() );
 
 	}
 
