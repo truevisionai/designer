@@ -8,6 +8,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, RingGeometry, Vector3 } from 'three';
 import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
 import { BaseTool } from './base-tool';
+import { TextObject } from 'app/modules/three-js/objects/text-object';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -55,7 +56,7 @@ export class RoadCircleTool extends BaseTool {
 		this.pointerDown = true;
 		this.pointerDownAt = e.point;
 
-		this.createCircle( this.pointerDownAt, e.point, this.radius );
+		this.initCircle( this.pointerDownAt, e.point, this.radius );
 	}
 
 	onPointerUp ( e: PointerEventData ) {
@@ -90,7 +91,7 @@ export class RoadCircleTool extends BaseTool {
 		if ( this.circleRoad ) this.updateCircle( this.pointerLastAt, this.radius );
 	}
 
-	createCircle ( centre: Vector3, end: Vector3, radius: number ) {
+	initCircle ( centre: Vector3, end: Vector3, radius: number ) {
 
 		this.circleRoad = new CircleRoad( centre, end, radius );
 
@@ -111,6 +112,8 @@ class CircleRoad {
 
 	public line: LineLoop;
 
+	private text: TextObject;
+
 	constructor ( private centre: Vector3, private end: Vector3, private radius: number ) {
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
@@ -118,6 +121,8 @@ class CircleRoad {
 		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: 'blue' } ) );
 
 		this.line.position.copy( centre );
+
+		this.text = new TextObject( 'Radius: ' + radius.toFixed( 2 ), centre );
 
 	}
 
@@ -136,6 +141,7 @@ class CircleRoad {
 
 		this.line.geometry = circleBufferGeometry;
 
+		this.text.updateText( 'Radius: ' + radius.toFixed( 2 ) );
 	}
 
 	/**
@@ -143,6 +149,8 @@ class CircleRoad {
 	 * successor/predecessor relation
 	 */
 	createRoads () {
+
+		this.text.remove();
 
 		CommandHistory.execute( new AddRoadCircleCommand( this.centre, this.end, this.radius ) );
 
