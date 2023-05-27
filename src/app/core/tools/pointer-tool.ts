@@ -12,6 +12,8 @@ export class PointerTool extends BaseTool {
 
 		super();
 
+		this.setHint('Pointer Tool is used to browse and move through the scene');
+
 	}
 
 }
