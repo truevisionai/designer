@@ -3,17 +3,10 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
-import { Maths } from 'app/utils/maths';
-import { CircleGeometry, LineBasicMaterial, LineLoop, Vector2, Vector3 } from 'three';
+import { CircleGeometry, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
-import { SceneService } from '../services/scene.service';
-import { AutoSpline } from '../shapes/auto-spline';
 import { BaseTool } from './base-tool';
 
 export class RoadCircleTool extends BaseTool {
@@ -158,203 +151,203 @@ class CircleRoad {
 	}
 
 
-	/**
-	 * creates 1 road with 10 control points with auto spline
-	 * @deprecated not in use only for reference
-	 */
-	createRoads_1_Road_10_Points () {
+	// /**
+	//  * creates 1 road with 10 control points with auto spline
+	//  * @deprecated not in use only for reference
+	//  */
+	// createRoads_1_Road_10_Points () {
 
-		const p1 = new Vector2( this.centre.x, this.centre.y );
-		const p2 = new Vector2( this.end.x, this.end.y );
+	// 	const p1 = new Vector2( this.centre.x, this.centre.y );
+	// 	const p2 = new Vector2( this.end.x, this.end.y );
 
-		let start = this.end;
+	// 	let start = this.end;
 
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+	// 	let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
 
-		let road: TvRoad = TvMapInstance.map.addDefaultRoad();
+	// 	let road: TvRoad = TvMapInstance.map.addDefaultRoad();
 
-		let arc = null;
+	// 	let arc = null;
 
-		const circumference = 2 * Math.PI * this.radius;
+	// 	const circumference = 2 * Math.PI * this.radius;
 
-		const arcLength = circumference * 0.25;
+	// 	const arcLength = circumference * 0.25;
 
-		const curvature = 1 / this.radius;
+	// 	const curvature = 1 / this.radius;
 
-		const points: Vector3[] = [];
+	// 	const points: Vector3[] = [];
 
-		for ( let i = 0; i < 4; i++ ) {
+	// 	for ( let i = 0; i < 4; i++ ) {
 
-			arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+	// 		arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
-			const startPosTheta = new TvPosTheta();
-			const endPosTheta = new TvPosTheta();
+	// 		const startPosTheta = new TvPosTheta();
+	// 		const endPosTheta = new TvPosTheta();
 
-			arc.getCoords( 0, startPosTheta );
-			arc.getCoords( arcLength, endPosTheta );
+	// 		arc.getCoords( 0, startPosTheta );
+	// 		arc.getCoords( arcLength, endPosTheta );
 
-			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+	// 		const distance = start.distanceTo( arc.endV3 ) * 0.3;
 
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
+	// 		let a2 = startPosTheta.moveForward( +distance );
+	// 		let b2 = endPosTheta.moveForward( -distance );
 
-			if ( i == 0 ) points.push( start );
-			points.push( a2.toVector3() );
-			points.push( b2.toVector3() );
-			if ( i == 3 ) points.push( arc.endV3 );
+	// 		if ( i == 0 ) points.push( start );
+	// 		points.push( a2.toVector3() );
+	// 		points.push( b2.toVector3() );
+	// 		if ( i == 3 ) points.push( arc.endV3 );
 
-			start = arc.endV3;
+	// 		start = arc.endV3;
 
-			hdg += Maths.M_PI_2;
+	// 		hdg += Maths.M_PI_2;
 
 
-		}
+	// 	}
 
-		road.clearGeometries();
+	// 	road.clearGeometries();
 
-		const spline = new AutoSpline();
+	// 	const spline = new AutoSpline();
 
-		points.forEach( p => SceneService.add( spline.addControlPointAt( p ) ) );
+	// 	points.forEach( p => SceneService.add( spline.addControlPointAt( p ) ) );
 
-		road.spline = spline;
+	// 	road.spline = spline;
 
-		road.spline.hide();
+	// 	road.spline.hide();
 
-		road.updateGeometryFromSpline();
+	// 	road.updateGeometryFromSpline();
 
-		TvMapBuilder.buildMap( TvMapInstance.map );
-	}
+	// 	TvMapBuilder.buildMap( TvMapInstance.map );
+	// }
 
-	/**
-	 * create 4 road which are not connected each with its own auto spline
-	 * @deprecated not in use only for reference
-	 */
-	createRoads_4_Roads () {
+	// /**
+	//  * create 4 road which are not connected each with its own auto spline
+	//  * @deprecated not in use only for reference
+	//  */
+	// createRoads_4_Roads () {
 
-		const p1 = new Vector2( this.centre.x, this.centre.y );
-		const p2 = new Vector2( this.end.x, this.end.y );
+	// 	const p1 = new Vector2( this.centre.x, this.centre.y );
+	// 	const p2 = new Vector2( this.end.x, this.end.y );
 
-		let start = this.end;
+	// 	let start = this.end;
 
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+	// 	let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
 
-		let road: TvRoad = null;
-		let arc = null;
+	// 	let road: TvRoad = null;
+	// 	let arc = null;
 
-		const circumference = 2 * Math.PI * this.radius;
+	// 	const circumference = 2 * Math.PI * this.radius;
 
-		const arcLength = circumference * 0.25;
+	// 	const arcLength = circumference * 0.25;
 
-		const curvature = 1 / this.radius;
+	// 	const curvature = 1 / this.radius;
 
-		for ( let i = 0; i < 4; i++ ) {
+	// 	for ( let i = 0; i < 4; i++ ) {
 
-			road = TvMapInstance.map.addDefaultRoad();
+	// 		road = TvMapInstance.map.addDefaultRoad();
 
-			arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+	// 		arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
-			const startPosTheta = new TvPosTheta();
-			const endPosTheta = new TvPosTheta();
+	// 		const startPosTheta = new TvPosTheta();
+	// 		const endPosTheta = new TvPosTheta();
 
-			arc.getCoords( 0, startPosTheta );
-			arc.getCoords( arcLength, endPosTheta );
+	// 		arc.getCoords( 0, startPosTheta );
+	// 		arc.getCoords( arcLength, endPosTheta );
 
-			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+	// 		const distance = start.distanceTo( arc.endV3 ) * 0.3;
 
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
+	// 		let a2 = startPosTheta.moveForward( +distance );
+	// 		let b2 = endPosTheta.moveForward( -distance );
 
-			const spline = new AutoSpline();
+	// 		const spline = new AutoSpline();
 
-			SceneService.add( spline.addControlPointAt( start ) );
-			SceneService.add( spline.addControlPointAt( a2.toVector3() ) );
-			SceneService.add( spline.addControlPointAt( b2.toVector3() ) );
-			SceneService.add( spline.addControlPointAt( arc.endV3 ) );
+	// 		SceneService.add( spline.addControlPointAt( start ) );
+	// 		SceneService.add( spline.addControlPointAt( a2.toVector3() ) );
+	// 		SceneService.add( spline.addControlPointAt( b2.toVector3() ) );
+	// 		SceneService.add( spline.addControlPointAt( arc.endV3 ) );
 
-			road.spline = spline;
+	// 		road.spline = spline;
 
-			road.updateGeometryFromSpline();
+	// 		road.updateGeometryFromSpline();
 
-			road.spline.hide();
+	// 		road.spline.hide();
 
-			start = arc.endV3;
+	// 		start = arc.endV3;
 
-			hdg += Maths.M_PI_2;
+	// 		hdg += Maths.M_PI_2;
 
 
-		}
+	// 	}
 
 
-		TvMapBuilder.buildMap( TvMapInstance.map );
-	}
+	// 	TvMapBuilder.buildMap( TvMapInstance.map );
+	// }
 
-	/**
-	 * @deprecated not in use only for reference
-	 */
-	createRoads_1_Arc () {
+	// /**
+	//  * @deprecated not in use only for reference
+	//  */
+	// createRoads_1_Arc () {
 
-		const p1 = new Vector2( this.centre.x, this.centre.y );
-		const p2 = new Vector2( this.end.x, this.end.y );
+	// 	const p1 = new Vector2( this.centre.x, this.centre.y );
+	// 	const p2 = new Vector2( this.end.x, this.end.y );
 
-		let start = this.end;
+	// 	let start = this.end;
 
-		let s = 0;
+	// 	let s = 0;
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+	// 	let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
 
-		let road = TvMapInstance.map.addDefaultRoad();
+	// 	let road = TvMapInstance.map.addDefaultRoad();
 
-		const circumference = 2 * Math.PI * this.radius;
+	// 	const circumference = 2 * Math.PI * this.radius;
 
-		const arcLength = circumference * 0.25;
+	// 	const arcLength = circumference * 0.25;
 
-		const curvature = 1 / this.radius;
+	// 	const curvature = 1 / this.radius;
 
-		let arc = new TvArcGeometry( s, start.x, start.y, hdg, arcLength, curvature );
+	// 	let arc = new TvArcGeometry( s, start.x, start.y, hdg, arcLength, curvature );
 
-		const startPosTheta = new TvPosTheta();
-		const endPosTheta = new TvPosTheta();
+	// 	const startPosTheta = new TvPosTheta();
+	// 	const endPosTheta = new TvPosTheta();
 
-		arc.getCoords( 0, startPosTheta );
-		arc.getCoords( arcLength, endPosTheta );
+	// 	arc.getCoords( 0, startPosTheta );
+	// 	arc.getCoords( arcLength, endPosTheta );
 
-		const distance = this.end.distanceTo( arc.endV3 ) * 0.3;
+	// 	const distance = this.end.distanceTo( arc.endV3 ) * 0.3;
 
-		let a2 = startPosTheta.moveForward( +distance );
-		let b2 = endPosTheta.moveForward( -distance );
+	// 	let a2 = startPosTheta.moveForward( +distance );
+	// 	let b2 = endPosTheta.moveForward( -distance );
 
-		const spline = new AutoSpline();
+	// 	const spline = new AutoSpline();
 
-		SceneService.add( spline.addControlPointAt( start ) );
-		SceneService.add( spline.addControlPointAt( a2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( b2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( arc.endV3 ) );
+	// 	SceneService.add( spline.addControlPointAt( start ) );
+	// 	SceneService.add( spline.addControlPointAt( a2.toVector3() ) );
+	// 	SceneService.add( spline.addControlPointAt( b2.toVector3() ) );
+	// 	SceneService.add( spline.addControlPointAt( arc.endV3 ) );
 
-		road.spline = spline;
+	// 	road.spline = spline;
 
-		road.updateGeometryFromSpline();
+	// 	road.updateGeometryFromSpline();
 
-		road.spline.hide();
+	// 	road.spline.hide();
 
-		// s += arcLength;
+	// 	// s += arcLength;
 
-		// for ( let i = 0; i < 3; i++ ) {
+	// 	// for ( let i = 0; i < 3; i++ ) {
 
-		//     // let road = TvMapInstance.map.addDefaultRoad();
+	// 	//     // let road = TvMapInstance.map.addDefaultRoad();
 
-		//     start = arc.endV3;
+	// 	//     start = arc.endV3;
 
-		//     hdg += Maths.M_PI_2;
+	// 	//     hdg += Maths.M_PI_2;
 
-		//     arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+	// 	//     arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
-		//     s += arcLength;
+	// 	//     s += arcLength;
 
-		// }
+	// 	// }
 
 
-		TvMapBuilder.buildMap( TvMapInstance.map );
-	}
+	// 	TvMapBuilder.buildMap( TvMapInstance.map );
+	// }
 }
