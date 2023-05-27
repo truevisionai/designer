@@ -79,6 +79,10 @@ export class LaneAddTool extends BaseTool {
 
 		const road = this.map.getRoadById( this.lane.roadId );
 
+		if ( !road ) throw new Error( 'Road not found');
+
+		if ( !road ) return false;
+
 		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
 
 		if ( !results || results.length == 0 ) return false;
