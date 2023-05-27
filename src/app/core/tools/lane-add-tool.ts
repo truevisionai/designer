@@ -17,6 +17,8 @@ import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { AddLaneCommand } from '../commands/add-lane-command';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { GameObject } from '../game-object';
+import { Line } from 'three';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 export class LaneAddTool extends BaseTool {
 
@@ -24,7 +26,7 @@ export class LaneAddTool extends BaseTool {
 
 	public lane: TvLane;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.BLUE, false );
 
 	constructor () {
 
@@ -32,17 +34,11 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	enable (): void {
-
-		super.enable();
-
-	}
-
 	disable (): void {
 
 		super.disable();
 
-		if ( this.laneHelper ) this.laneHelper.clear();
+		this.laneHelper.clear();
 
 		this.removeHighlight();
 	}
@@ -63,11 +59,40 @@ export class LaneAddTool extends BaseTool {
 
 		if ( !this.lane ) return;
 
+		if ( this.hasInteratedReferenceLine( e ) ) return;
+
+	}
+
+	// hasInteractedLane ( e: PointerEventData ): boolean {
+
+	// 	const road = this.map.getRoadById( this.lane.roadId );
+
+	// 	const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
+
+	// 	if ( !object ) return false;
+
+	// 	this.highlight( object as GameObject );
+
+	// 	return true;
+	// }
+
+	hasInteratedReferenceLine ( e: PointerEventData ): boolean {
+
 		const road = this.map.getRoadById( this.lane.roadId );
 
-		const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
+		if ( !road ) console.error( 'Road not found');
 
-		if ( object ) this.highlight( object as GameObject );
+		if ( !road ) return false;
+
+		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
+
+		if ( !results || results.length == 0 ) return false;
+
+		SnackBar.success( 'Use SHIFT+LEFT CLICK to duplicate lane' );
+
+		this.highlightLine( results[ 0 ] as Line );
+
+		return true;
 	}
 
 	public isLaneSelected ( e: PointerEventData ): boolean {

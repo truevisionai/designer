@@ -17,9 +17,13 @@ export class AddLaneCommand extends BaseCommand {
 
 	private laneSection: TvLaneSection;
 
-	constructor ( private lane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
+	private lane: TvLane;
+
+	constructor ( lane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
 
 		super();
+
+		this.lane = lane.clone();
 
 		this.road = this.map.getRoadById( lane.roadId );
 

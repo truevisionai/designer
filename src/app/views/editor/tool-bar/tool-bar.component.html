@@ -4,12 +4,19 @@
 
 <mat-toolbar class="app-toolbar">
 
-	<button (click)="setPointerTool()" [ngClass]="getClass('PointerTool')" action="pointer-tool" appTrack="menu" mat-icon-button matTooltip="Pointer Tool">
+	<button (click)="setToolType(ToolType.Pointer)" [satPopoverAnchor]="pointerToolPopover" [satPopoverHover]="100" id="showPointerTool" [ngClass]="getClass('PointerTool')" action="pointer-tool" appTrack="menu" mat-icon-button matTooltip="Pointer Tool">
 		<mat-icon>mouse</mat-icon>
 	</button>
+	<sat-popover #pointerToolPopover verticalAlign="below">
+		<div class="simple-popover">
+			<div class="title">Pointer Tool</div>
+			<div> Pointer tool is used to view from different angles and to select the objects.
+			You can browse the scene without interacting with any object in the scene </div>
+		</div>
+	</sat-popover>
 
 	<!-- Road-Geomtry -->
-	<button id="showRoadTool" (click)="showRoadTool()" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-plan-tool" appTrack="button" mat-icon-button
+	<button id="showRoadTool" (click)="setToolType(ToolType.Road)" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="100" action="road-plan-tool" appTrack="button" mat-icon-button
 			matTooltip="Road Tool">
 		<mat-icon>timeline</mat-icon>
 	</button>
@@ -21,8 +28,8 @@
 	</sat-popover>
 
 	<!-- Road-Circle-Tool -->
-	<button id="showRoadCircleTool" (click)="showRoadCircleTool()" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool"
-			appTrack="button" mat-icon-button matTooltip="Road Circle Tool">
+	<button id="showRoadCircleTool" (click)="setToolType(ToolType.RoadCircle)" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="100" action="road-circle-tool" appTrack="button"
+			mat-icon-button matTooltip="Road Circle Tool">
 		<mat-icon>trip_origin</mat-icon>
 	</button>
 	<sat-popover #roadCircleToolPopover verticalAlign="below">
@@ -33,8 +40,8 @@
 	</sat-popover>
 
 	<!-- Lane-Width -->
-	<button id="showLaneWidthTool" (click)="showLaneWidthTool()" [ngClass]="getClass('LaneWidth')" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="1000" action="lane-width-tool" appTrack="button"
-			mat-icon-button matTooltip="Lane Width Tool">
+	<button id="showLaneWidthTool" (click)="setToolType(ToolType.LaneWidth)" [ngClass]="getClass('LaneWidth')" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="100" action="lane-width-tool" appTrack="button" mat-icon-button
+			matTooltip="Lane Width Tool">
 		<mat-icon>format_line_spacing</mat-icon>
 	</button>
 	<sat-popover #laneWidthHelp verticalAlign="below">
@@ -45,12 +52,12 @@
 	</sat-popover>
 
 	<!-- Lane-Width -->
-	<button id="showLaneOffsetTool" (click)="showLaneOffsetTool()" [ngClass]="getClass('LaneOffset')" action="lane-offset-tool" appTrack="button" mat-icon-button matTooltip="Lane Offset Tool">
+	<button id="showLaneOffsetTool" (click)="setToolType(ToolType.LaneOffset)" [ngClass]="getClass('LaneOffset')" action="lane-offset-tool" appTrack="button" mat-icon-button matTooltip="Lane Offset Tool">
 		<mat-icon>vertical_align_center</mat-icon>
 	</button>
 
 	<!-- Add-Lane -->
-	<button id="showAddLaneTool" (click)="showAddLaneTool()" [ngClass]="getClass('AddLane')" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="1000" action="add-lane-tool" appTrack="button" mat-icon-button
+	<button id="showAddLaneTool" (click)="setToolType(ToolType.LaneAdd)" [ngClass]="getClass('AddLane')" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="100" action="add-lane-tool" appTrack="button" mat-icon-button
 			matTooltip="Add Lane Tool">
 		<mat-icon>playlist_add</mat-icon>
 	</button>
@@ -62,8 +69,8 @@
 	</sat-popover>
 
 	<!-- Lane-Marking -->
-	<button id="showLaneMarkingTool" (click)="showLaneMarkingTool()" [ngClass]="getClass('LaneMarking')" [satPopoverAnchor]="laneMarkingToolHelp" [satPopoverHover]="1000" action="lane-marking-tool"
-			appTrack="button" mat-icon-button matTooltip="Lane Marking Tool">
+	<button id="showLaneMarkingTool" (click)="setToolType(ToolType.LaneMarking)" [ngClass]="getClass('LaneMarking')" [satPopoverAnchor]="laneMarkingToolHelp" [satPopoverHover]="100" action="lane-marking-tool" appTrack="button"
+			mat-icon-button matTooltip="Lane Marking Tool">
 		<!--        <mat-icon>line_style</mat-icon>-->
 		<mat-icon>format_align_center</mat-icon>
 	</button>
@@ -75,7 +82,7 @@
 	</sat-popover>
 
 	<!-- Lane-Tool -->
-	<button id="showLaneTool" (click)="showLaneTool()" [ngClass]="getClass('LaneTool')" [satPopoverAnchor]="laneToolHelp" [satPopoverHover]="1000" action="lane-direction-tool" appTrack="button" mat-icon-button
+	<button id="showLaneTool" (click)="setToolType(ToolType.Lane)" [ngClass]="getClass('LaneTool')" [satPopoverAnchor]="laneToolHelp" [satPopoverHover]="100" action="lane-direction-tool" appTrack="button" mat-icon-button
 			matTooltip="Lane Tool">
 		<mat-icon>swap_horiz</mat-icon>
 	</button>
@@ -91,7 +98,7 @@
 		<mat-icon>call_split</mat-icon>
 	</button>
 	<mat-menu #markingToolMenu="matMenu">
-		<button (click)="setMarkingPointTool()" action="marking-point-tool" appTrack="menu" mat-menu-item>
+		<button (click)="setToolType(ToolType.MarkingPoint)" action="marking-point-tool" appTrack="menu" mat-menu-item>
 			Marking Point Tool
 		</button>
 	</mat-menu>
@@ -100,22 +107,22 @@
 		<mat-icon>category</mat-icon>
 	</button>
 	<mat-menu #propToolMenu="matMenu">
-		<button (click)="showPropPointTool()" action="prop-point-tool" appTrack="menu" mat-menu-item>
+		<button (click)="setToolType(ToolType.PropPoint)" action="prop-point-tool" appTrack="menu" mat-menu-item>
 			Prop Point Tool
 		</button>
-		<button (click)="showPropCurveTool()" action="prop-line-tool" appTrack="menu" mat-menu-item>
+		<button (click)="setToolType(ToolType.PropCurve)" action="prop-line-tool" appTrack="menu" mat-menu-item>
 			Prop Line Tool
 		</button>
-		<button (click)="showPropPolygonTool()" action="prop-polygon-tool" appTrack="menu" mat-menu-item>
+		<button (click)="setToolType(ToolType.PropPolygon)" action="prop-polygon-tool" appTrack="menu" mat-menu-item>
 			Prop Polygon Tool
 		</button>
 	</mat-menu>
 
-	<button id="showManeueverTool" (click)="showManeueverTool()" [ngClass]="getClass('ManeuverTool')" action="maneuver-tool" appTrack="button" mat-icon-button matTooltip="Maneuver Tool">
+	<button id="showManeueverTool" (click)="setToolType(ToolType.Maneuver)" [ngClass]="getClass('ManeuverTool')" action="maneuver-tool" appTrack="button" mat-icon-button matTooltip="Maneuver Tool">
 		<mat-icon>fullscreen_exit</mat-icon>
 	</button>
 
-	<button id="showSurfaceTool" (click)="showSurfaceTool()" [ngClass]="getClass('SurfaceTool')" action="surface-tool" appTrack="button" mat-icon-button matTooltip="Surface Tool">
+	<button id="showSurfaceTool" (click)="setToolType(ToolType.Surface)" [ngClass]="getClass('SurfaceTool')" action="surface-tool" appTrack="button" mat-icon-button matTooltip="Surface Tool">
 		<mat-icon>landscape</mat-icon>
 	</button>
 
