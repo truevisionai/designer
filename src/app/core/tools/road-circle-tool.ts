@@ -5,7 +5,7 @@
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
-import { CircleGeometry, LineBasicMaterial, LineLoop, Vector3 } from 'three';
+import { BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, RingGeometry, Vector3 } from 'three';
 import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
 import { BaseTool } from './base-tool';
 
@@ -115,9 +115,6 @@ class CircleRoad {
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-		// TODO: FIX UPDATE
-		// circleGeometry.vertices.splice( 0, 1 );
-
 		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: 'blue' } ) );
 
 		this.line.position.copy( centre );
@@ -129,14 +126,15 @@ class CircleRoad {
 		this.radius = radius;
 		this.end = end;
 
-		let circleGeometry = new CircleGeometry( radius, radius * 4 );
+		const circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-		// TODO: FIX UPDATE
-		// circleGeometry.attributes.vertices.splice( 0, 1 );
+		const circleBufferGeometry = new BufferGeometry()
+			.setAttribute( 'position', new Float32BufferAttribute( circleGeometry.attributes.position.array, 3 ) );
 
+		// Dispose of the old geometry and replace with the new one
 		this.line.geometry.dispose();
 
-		this.line.geometry = circleGeometry;
+		this.line.geometry = circleBufferGeometry;
 
 	}
 
