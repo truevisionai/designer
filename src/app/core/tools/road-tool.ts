@@ -47,6 +47,7 @@ export class RoadTool extends BaseTool {
 
 	init () {
 
+		this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
 
 	}
 
