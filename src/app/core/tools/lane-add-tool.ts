@@ -79,7 +79,7 @@ export class LaneAddTool extends BaseTool {
 
 		const road = this.map.getRoadById( this.lane.roadId );
 
-		if ( !road ) throw new Error( 'Road not found');
+		if ( !road ) console.error( 'Road not found');
 
 		if ( !road ) return false;
 
