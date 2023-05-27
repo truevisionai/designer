@@ -75,7 +75,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 		this.value = +this.value.toFixed( 3 );
 
-		if ( this.value == NaN ) this.value = 0;
+		if ( Number.isNaN( this.value ) ) this.value = 0;
 
 		this.value = Maths.clamp( this.value, this.min, this.max );
 
@@ -102,7 +102,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 		this.value = parseFloat( $event );
 
-		if ( this.value == NaN ) this.value = 0;
+		if ( Number.isNaN( this.value ) ) this.value = 0;
 
 		this.value = Maths.clamp( this.value, this.min, this.max );
 
