@@ -16,6 +16,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
+import { TvConsole } from 'app/core/utils/console';
 
 export class TvMap {
 
@@ -221,8 +222,9 @@ export class TvMap {
 
 		} else {
 
-			console.error( `${ roadId } road-id not found` );
-			// throw new Error( 'RoadID not found.' );
+			TvConsole.error( `${ roadId } road-id not found` );
+
+			console.error( `road not found` );
 
 		}
 

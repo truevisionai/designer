@@ -19,6 +19,7 @@ import { TvMap } from '../models/tv-map.model';
 import { OpenDriverParser } from './open-drive-parser.service';
 import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -88,7 +89,9 @@ export class TvMapService {
 
 		TvMapBuilder.buildMap( this.map );
 
-		SnackBar.success( `Map imported ${ filepaths[ 0 ] }` );
+		SnackBar.success( `OpenDrive imported ${ filepaths[ 0 ] }` );
+
+		TvConsole.info( 'OpenDrive imported ' + filepaths[ 0 ] );
 
 	}
 
