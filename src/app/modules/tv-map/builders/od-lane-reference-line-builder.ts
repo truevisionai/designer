@@ -52,7 +52,12 @@ export class OdLaneReferenceLineBuilder {
 
 	private selectedLine: Line;
 
-	constructor ( private road?: TvRoad, private lineType: LineType = LineType.SOLID, private color?: number ) {
+	constructor (
+		private road?: TvRoad,
+		private lineType: LineType = LineType.SOLID,
+		private color?: number,
+		private drawCenterLane = true,
+	) {
 
 	}
 
@@ -99,11 +104,14 @@ export class OdLaneReferenceLineBuilder {
 
 			laneSection.lanes.forEach( lane => {
 
+				if ( this.drawCenterLane === false && lane.side === TvLaneSide.CENTER ) return;
+
 				const points: TvPosTheta[] = [];
 
 				this.makeLanePoints( laneSection, lane, points );
 
 				this.drawLine( lane, this.convertToVector3List( points ), type );
+
 
 			} );
 
@@ -257,7 +265,7 @@ export class OdLaneReferenceLineBuilder {
 
 		line.userData.lane = lane;
 
-		line.renderOrder = 5;
+		line.renderOrder = 999;
 
 		line[ 'tag' ] = this.tag;
 
