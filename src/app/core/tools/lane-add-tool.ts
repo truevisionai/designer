@@ -18,6 +18,7 @@ import { AddLaneCommand } from '../commands/add-lane-command';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { GameObject } from '../game-object';
 import { Line } from 'three';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 export class LaneAddTool extends BaseTool {
 
@@ -86,6 +87,8 @@ export class LaneAddTool extends BaseTool {
 		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
 
 		if ( !results || results.length == 0 ) return false;
+
+		SnackBar.success( 'Use SHIFT+LEFT CLICK to duplicate lane' );
 
 		this.highlightLine( results[ 0 ] as Line );
 
