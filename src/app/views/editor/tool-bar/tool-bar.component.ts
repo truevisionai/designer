@@ -30,6 +30,8 @@ import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { TvSignService } from '../../../modules/tv-map/services/tv-sign.service';
 import { FileService } from '../../../services/file.service';
 import { PointerTool } from 'app/core/tools/pointer-tool';
+import { ToolType } from 'app/core/models/tool-types.enum';
+import { ToolFactory } from 'app/core/factories/tool-factory';
 
 @Component( {
 	selector: 'app-tool-bar',
@@ -39,6 +41,7 @@ export class ToolBarComponent implements OnInit {
 
 	currentTool: BaseTool;
 	currentToolName: string;
+	ToolType = ToolType;
 
 	constructor (
 		private electronService: TvElectronService,
@@ -205,7 +208,7 @@ export class ToolBarComponent implements OnInit {
 
 	}
 
-	setPointerTool() {
+	setPointerTool () {
 
 		this.setTool( new PointerTool() );
 
@@ -216,6 +219,12 @@ export class ToolBarComponent implements OnInit {
 		// this.setTool( new MiscShapeTool() );
 
 		// AppInspector.setInspector( OscParamatersInspectorComponent, OscSourceFile.scenario.parameterDeclaration );
+
+	}
+
+	setToolType ( type: ToolType ) {
+
+		this.setTool( ToolFactory.createTool( type ) );
 
 	}
 
