@@ -57,7 +57,10 @@ export class LaneAddTool extends BaseTool {
 
 		this.removeHighlight();
 
+		if ( !this.lane ) this.setHint( 'Use LEFT CLICK to select road' );
 		if ( !this.lane ) return;
+
+		this.setHint( 'Move pointer over reference line of the lane you want to duplicate' );
 
 		if ( this.hasInteratedReferenceLine( e ) ) return;
 
@@ -80,7 +83,7 @@ export class LaneAddTool extends BaseTool {
 
 		const road = this.map.getRoadById( this.lane.roadId );
 
-		if ( !road ) console.error( 'Road not found');
+		if ( !road ) console.error( 'Road not found' );
 
 		if ( !road ) return false;
 
@@ -88,7 +91,7 @@ export class LaneAddTool extends BaseTool {
 
 		if ( !results || results.length == 0 ) return false;
 
-		SnackBar.success( 'Use SHIFT+LEFT CLICK to duplicate lane' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to duplicate lane' );
 
 		this.highlightLine( results[ 0 ] as Line );
 
@@ -185,6 +188,8 @@ export class LaneAddTool extends BaseTool {
 	public cloneLane ( lane: TvLane ): void {
 
 		CommandHistory.execute( new AddLaneCommand( lane, this.laneHelper ) );
+
+		this.setHint( 'Lane Added. Use CTRL Z to undo' );
 
 	}
 }

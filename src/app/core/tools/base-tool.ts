@@ -12,6 +12,7 @@ import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file'
 import { MonoBehaviour } from '../components/mono-behaviour';
 import { IEditorState } from './i-editor-state';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { StatusBarService } from 'app/services/status-bar.service';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -46,6 +47,8 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	}
 
 	disable (): void {
+
+		StatusBarService.clearHint();
 
 		this.unsubscribeToEvents();
 
@@ -233,5 +236,18 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 		} );
 	}
+
+	setHint ( msg: string ) {
+
+		StatusBarService.setHint( msg )
+
+	}
+
+	clearHint () {
+
+		StatusBarService.clearHint();
+
+	}
+
 }
 
