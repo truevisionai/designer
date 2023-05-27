@@ -49,10 +49,6 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
 				RoadFactory.rebuildRoad( successor );
 
-			} else {
-
-				SnackBar.warn( 'successor not found' );
-
 			}
 
 		}
@@ -67,13 +63,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
 				RoadFactory.rebuildRoad( predecessor );
 
-			} else {
-
-				SnackBar.warn( 'predecessor not found' );
-
 			}
-
-
 
 		}
 

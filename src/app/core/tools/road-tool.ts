@@ -341,7 +341,10 @@ export class RoadTool extends BaseTool {
 			hasInteracted = true;
 
 			const lane = laneIntersection.object.userData.lane as TvLane;
+
 			const road = this.map.getRoadById( lane.roadId );
+
+			if ( !road ) return false;
 
 			if ( !road.isJunction ) this.selectRoad( road );
 		}
