@@ -26,8 +26,6 @@ export class LaneWidthTool extends BaseTool {
 
 	public name: string = 'LaneWidth';
 
-	private widthChangeSub: Subscription;
-
 	private laneWidthChanged: boolean = false;
 	private pointerDown: boolean = false;
 	private pointerDownAt: Vector3;
@@ -46,19 +44,13 @@ export class LaneWidthTool extends BaseTool {
 
 	init () {
 
+		this.setHint( 'Click on a road to show lane width nodes' );
 
 	}
 
 	enable () {
 
 		super.enable();
-
-		this.widthChangeSub = LaneWidthInspector.widthChanged.subscribe( width => {
-
-			CommandHistory.execute( new UpdateWidthNodeValueCommand( this.widthNode, width, null, this.laneHelper ) );
-
-		} );
-
 
 	}
 
@@ -67,8 +59,6 @@ export class LaneWidthTool extends BaseTool {
 		super.disable();
 
 		this.laneHelper.clear();
-
-		this.widthChangeSub?.unsubscribe();
 
 		this.map.getRoads().forEach( road => road.hideWidthNodes() );
 	}
@@ -238,6 +228,9 @@ export class LaneWidthTool extends BaseTool {
 
 					// Check if it's a new lane or the same lane
 					if ( !this.lane || this.lane.id !== newLane.id || this.lane.roadId !== newLane.roadId ) {
+
+						this.setHint( 'Use SHIFT + LEFT CLICK on a lane to to add a new lane width node');
+
 						CommandHistory.executeMany(
 							new SetValueCommand( this, 'lane', newLane ),
 							new SetInspectorCommand( LaneWidthInspector, { lane: newLane } ),
@@ -266,6 +259,8 @@ export class LaneWidthTool extends BaseTool {
 		if ( !laneWidthNode ) throw new Error( "Could not create lane width node" );
 
 		if ( !this.laneHelper ) throw new Error( "Lane helper is not defined" );
+
+		this.setHint( 'Click and drag on the lane width node to change its position');
 
 		CommandHistory.executeMany(
 

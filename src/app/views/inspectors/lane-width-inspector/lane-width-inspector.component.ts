@@ -13,6 +13,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
+import { UpdateWidthNodeValueCommand } from 'app/core/commands/update-width-node-value-command';
 
 export interface LaneWidthInspectorData {
 	node: LaneWidthNode;
@@ -69,15 +70,11 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 	ngOnInit () {
 
-		if ( this.data.node ) {
+		this.data.node?.point.select();
 
-			this.data.node.point.select();
-
-		}
+		this.road?.showWidthNodes();
 
 		if ( this.road ) {
-
-			this.road.showWidthNodes();
 
 			this.laneHelper.drawRoad( this.road, LineType.DASHED );
 
@@ -86,22 +83,16 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 	ngOnDestroy () {
 
-		if ( this.data.node ) {
+		this.data.node?.point.unselect();
 
-			this.data.node.point.unselect();
-
-		}
-
-		if ( this.road ) this.road.hideWidthNodes();
+		this.road?.hideWidthNodes();
 
 		this.laneHelper.clear();
 	}
 
 	onWidthChanged ( $value: number ) {
 
-		// this.width.a = $value;
-
-		LaneWidthInspector.widthChanged.emit( $value );
+		CommandHistory.execute( new UpdateWidthNodeValueCommand( this.node, $value, null, this.laneHelper ) );
 
 	}
 
