@@ -5,11 +5,12 @@
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Maths } from 'app/utils/maths';
 import { Object3D } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 
 export class PropCurve {
 
@@ -33,6 +34,24 @@ export class PropCurve {
 
 		}
 
+	}
+
+	show ( shapeEditor?: AbstractShapeEditor ): void {
+
+		this.spline.show();
+
+		if ( !shapeEditor ) return;
+
+		this.spline.controlPoints.forEach( point => {
+
+			shapeEditor?.controlPoints.push( point );
+
+		} );
+	}
+
+	hide () {
+
+		this.spline.hide();
 	}
 
 	update () {
@@ -113,9 +132,32 @@ export class PropCurve {
 
 	delete () {
 
+		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
+
 		this.props.splice( 0, this.props.length );
+
+		this.spline.controlPoints.forEach( cp => {
+
+			this.spline.removeControlPoint( cp );
+
+		} );
 
 		this.spline.hide();
 
 	}
+
+	removeControlPoint ( point: BaseControlPoint ) {
+
+		const index = this.spline.controlPoints.indexOf( point );
+
+		if ( index > -1 ) {
+
+			this.spline.removeControlPoint( point );
+
+		}
+
+		this.update();
+
+	}
+
 }

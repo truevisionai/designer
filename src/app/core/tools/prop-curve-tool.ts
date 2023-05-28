@@ -17,6 +17,9 @@ import { KeyboardInput } from '../input';
 import { AppInspector } from '../inspector';
 import { PropModel } from '../models/prop-model.model';
 import { BaseTool } from './base-tool';
+import { CommandHistory } from 'app/services/command-history';
+import { CreatePropCurveCommand } from '../commands/create-prop-curve-command';
+import { AddPropCurvePointCommand } from '../commands/add-prop-curve-point-command.ts';
 
 export class PropCurveTool extends BaseTool {
 
@@ -32,11 +35,8 @@ export class PropCurveTool extends BaseTool {
 	private cpSelectedSub: Subscription;
 	private cpUnselectedSub: Subscription;
 
-	// private splines: ParmetricSpline[] = [];
-	// private selectedSpline: ParmetricSpline;
-
-	private curve: PropCurve;
-	private point: AnyControlPoint;
+	public curve: PropCurve;
+	public point: AnyControlPoint;
 
 	constructor () {
 
@@ -46,10 +46,6 @@ export class PropCurveTool extends BaseTool {
 
 	private get curves () {
 		return this.map.propCurves;
-	}
-
-	private get spline () {
-		return this.curve ? this.curve.spline : null;
 	}
 
 	private get prop (): PropModel {
@@ -75,17 +71,7 @@ export class PropCurveTool extends BaseTool {
 
 		super.enable();
 
-		this.curves.forEach( curve => {
-
-			curve.spline.show();
-
-			curve.spline.controlPoints.forEach( point => {
-
-				this.shapeEditor.controlPoints.push( point );
-
-			} );
-
-		} );
+		this.curves.forEach( curve => curve.show( this.shapeEditor ) );
 
 		this.cpAddedSub = this.shapeEditor.controlPointAdded
 			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointAdded( cp ) );
@@ -108,7 +94,7 @@ export class PropCurveTool extends BaseTool {
 
 		super.disable();
 
-		this.curves.forEach( curve => curve.spline.hide() );
+		this.curves.forEach( curve => curve.hide() );
 
 		this.cpAddedSub.unsubscribe();
 		this.cpMovedSub.unsubscribe();
@@ -214,30 +200,34 @@ export class PropCurveTool extends BaseTool {
 		}
 	}
 
-	private onControlPointAdded ( cp: AnyControlPoint ) {
+	private onControlPointAdded ( point: AnyControlPoint ) {
 
-		if ( !this.prop ) SnackBar.error( 'Select a prop from the project browser' );
+		if ( this.prop ) {
 
-		if ( !this.prop ) this.shapeEditor.removeControlPoint( cp );
+			if ( !this.curve ) {
 
-		if ( !this.prop ) return;
+				CommandHistory.execute( new CreatePropCurveCommand( this, this.prop, point ) );
 
-		if ( !this.curve ) {
+			} else {
 
-			if ( this.spline ) this.spline.hide();
+				CommandHistory.execute( new AddPropCurvePointCommand( this, this.curve, point ) );
 
-			this.curve = new PropCurve( this.prop.guid );
+			}
 
-			this.curves.push( this.curve );
+		} else {
+
+			SnackBar.error( 'Select a prop from the project browser' );
+
+			point.visible = false;
+
+			setTimeout( () => {
+
+				this.shapeEditor.removeControlPoint( point );
+
+			}, 100 );
+
 		}
 
-		cp.mainObject = this.curve;
-
-		this.curve.addControlPoint( cp );
-
-		this.showInspector( this.curve, this.point );
-
-		this.curve?.update();
 	}
 
 	private onControlPointUpdated ( cp: AnyControlPoint ) {
