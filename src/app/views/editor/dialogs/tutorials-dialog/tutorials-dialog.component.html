@@ -1,0 +1,75 @@
+<h1 class="mat-tv-dialog-title" mat-dialog-title>Tutorials</h1>
+<div class="mat-tv-dialog-content" style="height: 550px; overflow: auto;" mat-dialog-content>
+
+	<perfect-scrollbar fxFlexFill>
+
+		<img style="cursor: pointer;" (click)="openYoutube()" matTooltip="Click to visit video tutorials" src="assets/video_tutorials.jpg">
+		<button mat-button (click)="openYoutube()" style="width: 100%;background: green;">Click Here For Video Tutorials</button>
+
+		<h2>Creating Roads</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Road Tool</code>.</li>
+			<li>Use <code>SHIFT</code> + <code>LEFT CLICK</code> to create control points. These points will shape your road.</li>
+			<li>Adjust the control points as needed to achieve the desired shape for your road.</li>
+			<li>To deselect the road, click an empty area on your workspace.</li>
+			<li>To start creating a new road, use <code>SHIFT</code> + <code>LEFT CLICK</code>.</li>
+		</ul>
+
+		<h2>Joining Roads</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Road Tool</code>.</li>
+			<li>Hover your cursor over the start or end node of the first road you want to join.</li>
+			<li>use <code>SHIFT</code> + <code>LEFT CLICK</code> to select this node.</li>
+			<li>Hover your cursor over the start or end node of the second road.</li>
+			<li>Use <code>SHIFT</code> + <code>LEFT CLICK</code> to select the other node.</li>
+			<li>A joining road will be created automatically upon selecting both nodes.</li>
+			<li>If necessary, adjust the control points of the joining road to modify its shape.</li>
+		</ul>
+
+		<h2>Adding Lanes</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Lane Add Tool</code>.</li>
+			<li>Select the road where you want to add lanes.</li>
+			<li>Move your cursor over the Lane Reference Line.</li>
+			<li>From the toolbar, use <code>SHIFT</code> + <code>LEFT CLICK</code> to add a new lane.</li>
+			<li>Modify the properties of the new lane from the inspector as needed.</li>
+		</ul>
+
+		<!-- <h2>Changing Lane Width</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Lane Width Tool</code>.</li>
+		</ul>
+
+		<h2>Adding Lane Markings</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Lane Marking Tool</code>.</li>
+		</ul> -->
+
+		<h2>Choosing Different Road Styles</h2>
+
+		<ul>
+			<li>Navigate to the <code>RoadStyles</code> folder in the Project Browser.</li>
+			<li>Select the <code>RoadStyle</code> that you want to use.</li>
+			<li>The selected <code>RoadStyle</code> will now become the default style for your roads.</li>
+		</ul>
+
+		<h2>Creating Circular Roads</h2>
+
+		<ul>
+			<li>From the toolbar, select <code>Road Circle Tool</code>.</li>
+			<li>Use <code>SHIFT</code> + <code>LEFT CLICK</code> to begin creating the circular road.</li>
+			<li>Drag your mouse to adjust the radius of the circular road as needed.</li>
+			<li>Release the <code>LEFT CLICK</code> to finalize and create the circular road.</li>
+		</ul>
+
+
+	</perfect-scrollbar>
+</div>
+<div align="end" class="mat-tv-dialog-actions" mat-dialog-actions>
+	<button mat-dialog-close mat-stroked-button>Close</button>
+</div>

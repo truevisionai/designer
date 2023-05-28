@@ -97,4 +97,11 @@ export class TvElectronService {
 		versions.setTitle( newTitle );
 	}
 
+	openLink ( link: string ) {
+
+		this.remote.shell.openExternal( link );
+
+	}
+
+
 }

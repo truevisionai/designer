@@ -8,6 +8,7 @@
 	<button [matMenuTriggerFor]="editMenu" mat-button> Edit</button>
 	<button [matMenuTriggerFor]="examplesMenu" mat-button> Examples</button>
 	<button [matMenuTriggerFor]="helpMenu" mat-button> Help</button>
+	<button (click)="openTutorials()" mat-button> Tutorials  <mat-chip class="new-chip" color="accent">New</mat-chip></button>
 
 	<mat-menu #fileMenu="matMenu">
 		<button (click)="onNewFile()" action="new-road" appTrack="menu" mat-menu-item>

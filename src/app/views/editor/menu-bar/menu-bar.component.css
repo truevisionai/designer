@@ -1,0 +1,9 @@
+.new-chip {
+	background-color: #00b300 !important;
+    font-size: 0.7em;
+    position: absolute;
+    padding: 2px 6px 2px 6px;
+    line-height: 10px;
+    top: 2px;
+    right: 0px;
+}
