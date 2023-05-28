@@ -23,6 +23,7 @@ import { TvElectronService } from './tv-electron.service';
 
 import { cloneDeep } from 'lodash';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
+import { TvConsole } from 'app/core/utils/console';
 
 export enum CoordinateSystem {
 	THREE_JS,
@@ -79,6 +80,8 @@ export class ExporterService {
 
 		}, ( error ) => {
 
+			TvConsole.error( 'Error in exporting GLB ' + error.error );
+
 		}, { binary: true, forceIndices: true } );
 
 	}
@@ -101,7 +104,7 @@ export class ExporterService {
 
 		}, ( error ) => {
 
-			console.error( error );
+			TvConsole.error( 'Error in exporting GLB ' + error.error );
 
 		}, options );
 
@@ -115,22 +118,14 @@ export class ExporterService {
 
 		const contents = exporter.getOutput( this.odService.map );
 
-		if ( this.electron.isElectronApp ) {
+		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
-			this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
+			this.odService.currentFile.path = file.path;
+			this.odService.currentFile.name = file.name;
 
-				this.odService.currentFile.path = file.path;
-				this.odService.currentFile.name = file.name;
+			SnackBar.success( `File saved ${ file.path }` );
 
-				SnackBar.success( `File saved ${ file.path }` );
-
-			} );
-
-		} else {
-
-			saveAs( new Blob( [ contents ] ), 'road.xodr' );
-
-		}
+		} );
 
 	}
 

@@ -2,12 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Maths } from 'app/utils/maths';
 import { Object3D } from 'three';
+import { TvMapInstance } from '../services/tv-map-source-file';
 
 export class PropCurve {
 
@@ -49,7 +51,7 @@ export class PropCurve {
 
 		if ( length <= 0 ) return;
 
-		this.props.forEach( prop => SceneService.remove( prop ) );
+		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
 
 		this.props.splice( 0, this.props.length );
 
@@ -78,7 +80,7 @@ export class PropCurve {
 
 			this.props.push( prop );
 
-			SceneService.add( prop );
+			TvMapInstance.map.gameObject.add( prop );
 
 		}
 
@@ -89,5 +91,31 @@ export class PropCurve {
 		( this.spline as CatmullRomSpline ).add( cp );
 
 		this.update();
+	}
+
+	bake () {
+
+		this.props.forEach( object => {
+
+			const prop = new PropInstance( this.propGuid, object );
+
+			object.position.copy( object.position );
+
+			prop.point = AnyControlPoint.create( prop.guid, object.position );
+
+			prop.point.mainObject = prop;
+
+			TvMapInstance.map.props.push( prop );
+
+		} );
+
+	}
+
+	delete () {
+
+		this.props.splice( 0, this.props.length );
+
+		this.spline.hide();
+
 	}
 }
