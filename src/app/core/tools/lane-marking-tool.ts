@@ -32,6 +32,11 @@ import { SceneService } from '../services/scene.service';
 import { BaseTool } from './base-tool';
 import { ToolType } from '../models/tool-types.enum';
 
+// TODO
+// 1. better node selection
+// 2. node moves even after road is unselected
+// 3. shift + left click does not work sometimes
+// 4. buggy experience when adding the node only adds when near line
 export class LaneMarkingTool extends BaseTool {
 
 	public name: string = 'LaneMarking';
@@ -64,6 +69,8 @@ export class LaneMarkingTool extends BaseTool {
 	}
 
 	init () {
+
+		this.setHint( 'Use LEFT CLICK to select road or lane' );
 
 		super.init();
 
@@ -229,6 +236,8 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( road.isJunction ) return;
 
+		this.setHint( 'Use LEFT CLICK to select a Lane Marking Node or use SHIFT + LEFT CLICK to add new Lane Marking Node' );
+
 		CommandHistory.execute( new ShowLaneMarkingCommand( this, lane ) );
 	}
 
@@ -258,6 +267,8 @@ export class LaneMarkingTool extends BaseTool {
 		const roadMark = lane.getRoadMarkAt( posTheta.s ).clone( posTheta.s );
 
 		roadMark.node = NodeFactoryService.createRoadMarkNode( lane, roadMark );
+
+		this.setHint( 'Modify Lane Marking Node properties from the inspector like color, width etc' );
 
 		CommandHistory.executeAll( [
 

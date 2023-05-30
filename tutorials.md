@@ -25,7 +25,12 @@
 - From the toolbar, select `Lane Width Tool`.
 
 ## Adding Lane Markings
-- From the toolbar, select `Lane Marking Tool`.
+- From the toolbar, select `Lane Marking Tool`
+- Select the road where you want to add lanes.
+- Move your cursor over the Lane Reference Line.
+- Use `SHIFT` + `LEFT CLICK` to add a new `Lane Marking Node`
+- Modify the properties of the new `Lane Marking Node` from the inspector as needed.
+- You can drag `Lane Marking Node` to adjust its position on road
 
 ## Choosing Different Road Styles
 - Navigate to the `RoadStyles` folder in the Project Browser.

@@ -125,8 +125,11 @@ export class ToolBarComponent implements OnInit {
 			toolType: ToolType.LaneMarking,
 			action: 'lane-marking-tool',
 			icon: 'format_align_center',
-			title: 'ADD-LANE-MARKING-TITLE',
-			description: 'ADD-LANE-MARKING-DESCRIPTION',
+			title: 'Lane Marking Tool',
+			description: 'Tool to add/edit Lane Markings. <br/> '
+				+ 'Select the road and move your cursor over the Lane Reference Line <br/>'
+				+ 'Use `SHIFT` + `LEFT CLICK` to add a new `Lane Marking Node` <br/>'
+				+ 'Modify the properties of the new `Lane Marking Node` from the inspector as needed.',
 			track: 'button',
 			tooltip: 'Add Lane Tool',
 			click: () => this.setToolType( ToolType.LaneMarking )
@@ -141,7 +144,7 @@ export class ToolBarComponent implements OnInit {
 			title: 'Marking Point Tool',
 			description: 'Tool to create road marking points <br/> Select a roadmarking from ProjectBrowser <br/> Then use SHIFT + LEFT CLICK on road to create a roadmarking point',
 			track: 'button',
-			tooltip: 'MarkingPoint',
+			tooltip: 'Marking Point Tool',
 			click: () => this.setToolType( ToolType.MarkingPoint )
 		},
 		{
