@@ -11,6 +11,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
 export abstract class BaseControlPoint extends Points {
 
@@ -170,7 +171,42 @@ export class LaneRoadMarkNode extends Group {
 
 		super();
 
+		this.createPoint();
+
 	}
+
+	private createPoint () {
+
+		const offset = this.lane.getWidthValue( this.roadmark.s ) * 0.5;
+
+		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, this.roadmark.s, offset );
+
+		const point = AnyControlPoint.create( 'point', position )
+
+		point.tag = LaneRoadMarkNode.pointTag;
+
+		this.add( point );
+
+	}
+
+	get isSelected () {
+
+		return this.point.isSelected;
+
+	}
+
+	select () {
+
+		this.point?.select();
+
+	}
+
+	unselect () {
+
+		this.point?.unselect()
+
+	}
+
 }
 
 

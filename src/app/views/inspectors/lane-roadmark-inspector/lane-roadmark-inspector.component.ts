@@ -44,21 +44,11 @@ export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnI
 
 	ngOnInit () {
 
-		if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
-
-			this.roadMark.node.point.select();
-
-		}
 
 	}
 
 	ngOnDestroy () {
 
-		if ( this.roadMark && this.roadMark.node && this.roadMark.node.point ) {
-
-			this.roadMark.node.point.unselect();
-
-		}
 
 	}
 

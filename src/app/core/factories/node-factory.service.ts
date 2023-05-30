@@ -262,19 +262,8 @@ export class NodeFactoryService {
 
 	static createRoadMarkNode ( lane: TvLane, roadmark: TvLaneRoadMark ): LaneRoadMarkNode {
 
-		const node = new LaneRoadMarkNode( lane, roadmark );
+		return new LaneRoadMarkNode( lane, roadmark );
 
-		const offset = lane.getWidthValue( roadmark.s ) * 0.5;
-
-		const position = TvMapQueries.getLanePosition( lane.roadId, lane.id, roadmark.s, offset );
-
-		node.point = AnyControlPoint.create( 'point', position );
-
-		node.point.tag = LaneRoadMarkNode.pointTag;
-
-		node.add( node.point );
-
-		return node;
 	}
 
 	static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
