@@ -17,6 +17,7 @@ import { CreateMarkingPointCommand } from '../commands/create-marking-point-comm
 import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export abstract class BaseMarkingTool extends BaseTool {
 
@@ -24,7 +25,8 @@ export abstract class BaseMarkingTool extends BaseTool {
 
 export class MarkingPointTool extends BaseMarkingTool {
 
-	name: string = 'MarkingPointTool';
+	public name: string = 'MarkingPointTool';
+	public toolType = ToolType.MarkingPoint;
 
 	public shapeEditor: AbstractShapeEditor;
 	private hasSignal = false;

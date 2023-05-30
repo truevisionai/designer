@@ -30,10 +30,12 @@ import { AppInspector } from '../inspector';
 import { PickingHelper } from '../services/picking-helper.service';
 import { SceneService } from '../services/scene.service';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export class LaneMarkingTool extends BaseTool {
 
 	public name: string = 'LaneMarking';
+	public toolType = ToolType.LaneMarking;
 
 	public pointerDown: boolean;
 

@@ -15,10 +15,12 @@ import { DeleteSurfaceCommand } from '../commands/delete-surface-command';
 import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export class SurfaceTool extends BaseTool {
 
 	public name: string = 'SurfaceTool';
+	public toolType = ToolType.Surface;
 
 	public shapeEditor: PointEditor;
 

@@ -9,10 +9,12 @@ import { BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMateri
 import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
 import { BaseTool } from './base-tool';
 import { TextObject } from 'app/modules/three-js/objects/text-object';
+import { ToolType } from '../models/tool-types.enum';
 
 export class RoadCircleTool extends BaseTool {
 
 	public name: string = 'RoadCircleTool';
+	public toolType = ToolType.RoadCircle;
 
 	private pointerDown: boolean = false;
 	private pointerDownAt: Vector3;

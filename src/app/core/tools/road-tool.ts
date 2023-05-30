@@ -26,10 +26,12 @@ import { PickingHelper } from '../services/picking-helper.service';
 import { BaseTool } from './base-tool';
 import { AppInspector } from '../inspector';
 import { CreateRoadCommand } from '../commands/create-road-command';
+import { ToolType } from '../models/tool-types.enum';
 
 export class RoadTool extends BaseTool {
 
 	public name: string = 'RoadTool';
+	public toolType = ToolType.Road;
 
 	public road: TvRoad;
 	public controlPoint: RoadControlPoint;

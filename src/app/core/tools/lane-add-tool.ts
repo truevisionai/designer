@@ -19,10 +19,12 @@ import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { GameObject } from '../game-object';
 import { Line } from 'three';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { ToolType } from '../models/tool-types.enum';
 
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
+	public toolType = ToolType.LaneAdd;
 
 	public lane: TvLane;
 

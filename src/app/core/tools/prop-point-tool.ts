@@ -21,6 +21,7 @@ import { AppInspector } from '../inspector';
 import { PropInstance } from '../models/prop-instance.model';
 import { BaseTool } from './base-tool';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/prop-control-point';
+import { ToolType } from '../models/tool-types.enum';
 
 /**
  * Prop point tool
@@ -36,6 +37,7 @@ import { DynamicControlPoint } from 'app/modules/three-js/objects/prop-control-p
 export class PropPointTool extends BaseTool {
 
 	public name: string = 'PropPointTool';
+	public toolType = ToolType.PropPoint;
 
 	public shapeEditor: PointEditor;
 

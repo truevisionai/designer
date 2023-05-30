@@ -21,10 +21,12 @@ import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
 import { BaseTool } from './base-tool';
 import { AppInspector } from '../inspector';
+import { ToolType } from '../models/tool-types.enum';
 
 export class LaneWidthTool extends BaseTool {
 
 	public name: string = 'LaneWidth';
+	public toolType = ToolType.LaneWidth;
 
 	private laneWidthChanged: boolean = false;
 	private pointerDown: boolean = false;

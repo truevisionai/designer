@@ -28,10 +28,12 @@ import { BaseTool } from './base-tool';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { SetMultipleValuesCommand } from 'app/modules/three-js/commands/set-multiple-value-command';
 import { CallFunctionCommand } from '../commands/call-function-command';
+import { ToolType } from '../models/tool-types.enum';
 
 export class LaneOffsetTool extends BaseTool {
 
 	public name: string = 'LaneOffset';
+	public toolType = ToolType.LaneOffset;
 
 	private distanceSub: Subscription;
 	private offsetSub: Subscription;
