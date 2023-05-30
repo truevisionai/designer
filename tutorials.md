@@ -37,3 +37,12 @@
 - Use `SHIFT` + `LEFT CLICK` to begin creating the circular road.
 - Drag your mouse to adjust the radius of the circular road as needed.
 - Release the `LEFT CLICK` to finalize and create the circular road.
+
+## Adding Road Markings
+- From the toolbar, select `Marking Point Tool`.
+- Navigate to the `RoadMarkings` folder in the Project Browser.
+- Select the `RoadMarking` that you want to use.
+- Move your cursor over the road or lane you want to edit
+- Use `SHIFT` + `LEFT CLICK` to drop a road marking at the desired point
+- Drag the marking or control point as needed to adjust road marking position
+
