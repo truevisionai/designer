@@ -4,7 +4,7 @@
 
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Vector3 } from 'three';
+import { Line, Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { AnyControlPoint, LaneRoadMarkNode } from '../../modules/three-js/objects/control-point';
 import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
@@ -61,6 +61,12 @@ export class LaneMarkingTool extends BaseTool {
 
 	}
 
+	get road () {
+
+		return this.lane ? this.map.getRoadById( this.lane.roadId ) : null;
+
+	}
+
 	init () {
 
 		this.setHint( 'Use LEFT CLICK to select road or lane' );
@@ -100,7 +106,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( !shiftKeyDown && this.isLaneSelected( e ) ) return;
 
-		this.clearSelection();
+		if ( this.lane ) this.unselectLane( this.lane );
 	}
 
 	public onPointerUp ( e: PointerEventData ) {
@@ -135,6 +141,8 @@ export class LaneMarkingTool extends BaseTool {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
+		this.highlightLaneMarkingLines( e );
+
 		if ( this.pointerDown && this.node && this.node.isSelected ) {
 
 			this.markingDistanceChanged = true;
@@ -144,22 +152,22 @@ export class LaneMarkingTool extends BaseTool {
 		}
 	}
 
-	private clearSelection () {
+	private highlightLaneMarkingLines ( e: PointerEventData ) {
 
-		// if everything is already null then return
-		if ( this.node == null && this.lane == null ) {
+		this.removeHighlight();
 
-			return;
+		if ( this.pointerDown ) return;
+
+		if ( !this.lane ) return;
+
+		const results = PickingHelper.findByTag( this.laneHelper.tag, e, this.road.gameObject.children );
+
+		if ( results.length > 0 ) {
+
+			this.highlightLine( results[ 0 ] as Line );
+
 		}
-
-		if ( this.lane ) {
-
-			CommandHistory.execute( new UnselectLaneForRoadMarkCommand( this, this.lane ) );
-
-		}
-
 	}
-
 
 	private isNodeSelected ( e: PointerEventData ): boolean {
 
@@ -227,6 +235,13 @@ export class LaneMarkingTool extends BaseTool {
 		this.setHint( 'Use LEFT CLICK to select a Lane Marking Node or use SHIFT + LEFT CLICK to add new Lane Marking Node' );
 
 		CommandHistory.execute( new SelectLaneForRoadMarkCommand( this, lane ), );
+
+	}
+
+	private unselectLane ( lane: TvLane ) {
+
+		CommandHistory.execute( new UnselectLaneForRoadMarkCommand( this, lane ) );
+
 	}
 
 	private hasCreatedNode ( e: PointerEventData ) {
