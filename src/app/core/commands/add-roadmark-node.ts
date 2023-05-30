@@ -12,9 +12,7 @@ import { Vector3 } from 'three';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { NodeFactoryService } from '../factories/node-factory.service';
-import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
-import { SetInspectorCommand } from './set-inspector-command';
-import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
+import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
 
 export class AddRoadmarkNodeCommand extends BaseCommand {
 
@@ -22,16 +20,14 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 	private roadMark: TvLaneRoadMark;
 
 	private oldLane: TvLane;
-	private oldNode: LaneRoadMarkNode;
 
-	private inspectorCommand: any;
+	private selectCommand: SelectRoadmarNodeCommand;
 
 	constructor ( private tool: LaneMarkingTool, private lane: TvLane, position: Vector3 ) {
 
 		super();
 
 		this.oldLane = this.tool.lane;
-		this.oldNode = this.tool.pointerObject;
 
 		this.road = this.map.getRoadById( this.lane.roadId );
 
@@ -45,23 +41,17 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
 		this.roadMark.node = NodeFactoryService.createRoadMarkNode( lane, this.roadMark );
 
-		this.inspectorCommand = new SetInspectorCommand( LaneRoadmarkInspectorComponent, this.roadMark )
+		this.selectCommand = new SelectRoadmarNodeCommand( this.tool, this.roadMark.node );
 
 	}
 
 	execute (): void {
 
-		this.tool.node?.unselect();
-
-		this.tool.node = this.roadMark.node;
-
-		this.tool.node?.select();
+		this.selectCommand.execute();
 
 		this.tool.lane = this.lane;
 
 		this.lane.addRoadMarkInstance( this.roadMark );
-
-		this.inspectorCommand.execute();
 
 		SceneService.add( this.roadMark.node );
 
@@ -71,11 +61,7 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.tool.node?.unselect();
-
-		this.tool.node = this.oldNode;
-
-		this.tool.node?.select();
+		this.selectCommand.undo();
 
 		this.tool.lane = this.oldLane;
 
@@ -84,8 +70,6 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 		this.lane.roadMark.splice( index, 1 );
 
 		SceneService.remove( this.roadMark.node );
-
-		this.inspectorCommand.undo();
 
 		this.tool.roadMarkBuilder.buildRoad( this.road );
 	}

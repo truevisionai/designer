@@ -181,11 +181,11 @@ export class LaneRoadMarkNode extends Group {
 
 		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, this.roadmark.s, offset );
 
-		const point = AnyControlPoint.create( 'point', position )
+		this.point = AnyControlPoint.create( 'point', position )
 
-		point.tag = LaneRoadMarkNode.pointTag;
+		this.point.tag = LaneRoadMarkNode.pointTag;
 
-		this.add( point );
+		this.add( this.point );
 
 	}
 
