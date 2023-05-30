@@ -110,37 +110,6 @@ export class LaneMarkingTool extends BaseTool {
 		this.clearSelection();
 	}
 
-	private clearSelection () {
-
-		// if everything is already null then return
-		if ( this.node == null && this.controlPoint == null && this.lane == null ) {
-
-			return;
-		}
-
-		if ( this.lane ) {
-
-			const road = this.map.getRoadById( this.lane.roadId );
-
-			if ( road ) road.hideLaneMarkingNodes();
-
-		}
-
-		this.laneHelper.clear();
-
-		CommandHistory.executeMany(
-
-			new SetMultipleValuesCommand<LaneMarkingTool>( this, {
-				lane: null,
-				controlPoint: null,
-				node: null,
-			} ),
-
-			new SetInspectorCommand( null, null ),
-		);
-
-	}
-
 	public onPointerUp ( e: PointerEventData ) {
 
 		if ( this.markingDistanceChanged && this.node && this.pointerDownAt ) {
@@ -179,6 +148,38 @@ export class LaneMarkingTool extends BaseTool {
 
 		}
 	}
+
+	private clearSelection () {
+
+		// if everything is already null then return
+		if ( this.node == null && this.controlPoint == null && this.lane == null ) {
+
+			return;
+		}
+
+		if ( this.lane ) {
+
+			const road = this.map.getRoadById( this.lane.roadId );
+
+			if ( road ) road.hideLaneMarkingNodes();
+
+		}
+
+		this.laneHelper.clear();
+
+		CommandHistory.executeMany(
+
+			new SetMultipleValuesCommand<LaneMarkingTool>( this, {
+				lane: null,
+				controlPoint: null,
+				node: null,
+			} ),
+
+			new SetInspectorCommand( null, null ),
+		);
+
+	}
+
 
 	private isNodeSelected ( e: PointerEventData ): boolean {
 
