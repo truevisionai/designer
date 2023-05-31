@@ -260,12 +260,6 @@ export class NodeFactoryService {
 		return node;
 	}
 
-	static createRoadMarkNode ( lane: TvLane, roadmark: TvLaneRoadMark ): LaneRoadMarkNode {
-
-		return new LaneRoadMarkNode( lane, roadmark );
-
-	}
-
 	static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
 
 		const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );

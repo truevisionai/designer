@@ -13,6 +13,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
+import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class AddRoadmarkNodeCommand extends BaseCommand {
 
@@ -39,7 +40,7 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 		// get the exisiting lane road mark at s and clone it
 		this.roadMark = lane.getRoadMarkAt( posTheta.s ).clone( posTheta.s );
 
-		this.roadMark.node = NodeFactoryService.createRoadMarkNode( lane, this.roadMark );
+		this.roadMark.node = new LaneRoadMarkNode( lane, this.roadMark );
 
 		this.selectCommand = new SelectRoadmarNodeCommand( this.tool, this.roadMark.node );
 
