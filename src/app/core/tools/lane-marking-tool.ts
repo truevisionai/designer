@@ -147,7 +147,8 @@ export class LaneMarkingTool extends BaseTool {
 
 			this.markingDistanceChanged = true;
 
-			NodeFactoryService.updateRoadMarkNodeByPosition( this.node, e.point );
+			// NodeFactoryService.updateRoadMarkNodeByPosition( this.node, e.point );
+			this.node.updateByPosition( e.point );
 
 		}
 	}

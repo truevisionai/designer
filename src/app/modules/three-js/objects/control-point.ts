@@ -12,6 +12,9 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { Maths } from 'app/utils/maths';
 
 export abstract class BaseControlPoint extends Points {
 
@@ -205,6 +208,48 @@ export class LaneRoadMarkNode extends Group {
 
 		this.point?.unselect()
 
+	}
+
+
+	updateByPosition ( point: Vector3 ): void {
+
+		const index = this.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === this.roadmark.uuid );
+
+		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+		if ( index === -1 ) return;
+
+		if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
+		if ( index === 0 ) return;
+
+		const minS = this.lane.roadMark[ index - 1 ].s + 0.1;
+
+		// TODO: mke this the max s value as per lane section
+		let maxS = Number.MAX_SAFE_INTEGER;
+
+		if ( index + 1 < this.lane.roadMark.length ) {
+
+			maxS = this.lane.roadMark[ index + 1 ].s - 0.1;
+
+		}
+
+		const newPosition = new TvPosTheta();
+
+		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
+
+		// we are getting another road s value to ignore
+		if ( this.lane.roadId !== road.id ) return;
+
+		// our desired s value should lie between the previous node and the next node
+		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
+
+		// update s offset as per the new position on road
+		this.roadmark.sOffset = adjustedS;
+
+		const offset = this.lane.getWidthValue( adjustedS ) * 0.5;
+
+		const finalPosition = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, adjustedS, offset );
+
+		this.point.copyPosition( finalPosition );
 	}
 
 }

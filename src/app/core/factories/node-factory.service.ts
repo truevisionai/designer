@@ -260,46 +260,46 @@ export class NodeFactoryService {
 		return node;
 	}
 
-	static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
+	// static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
 
-		const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
+	// 	const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
 
-		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
-		if ( index === -1 ) return node;
+	// 	if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+	// 	if ( index === -1 ) return node;
 
-		if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
-		if ( index === 0 ) return node;
+	// 	if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
+	// 	if ( index === 0 ) return node;
 
-		const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
+	// 	const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
 
-		// TODO: mke this the max s value as per lane section
-		let maxS = Number.MAX_SAFE_INTEGER;
+	// 	// TODO: mke this the max s value as per lane section
+	// 	let maxS = Number.MAX_SAFE_INTEGER;
 
-		if ( index + 1 < node.lane.roadMark.length ) {
+	// 	if ( index + 1 < node.lane.roadMark.length ) {
 
-			maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
+	// 		maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
 
-		}
+	// 	}
 
-		const newPosition = new TvPosTheta();
+	// 	const newPosition = new TvPosTheta();
 
-		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
+	// 	const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
 
-		// we are getting another road s value to ignore
-		if ( node.lane.roadId !== road.id ) return node;
+	// 	// we are getting another road s value to ignore
+	// 	if ( node.lane.roadId !== road.id ) return node;
 
-		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
+	// 	// our desired s value should lie between the previous node and the next node
+	// 	const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
 
-		// update s offset as per the new position on road
-		node.roadmark.sOffset = adjustedS;
+	// 	// update s offset as per the new position on road
+	// 	node.roadmark.sOffset = adjustedS;
 
-		const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
+	// 	const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
 
-		const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
+	// 	const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
 
-		node.point.copyPosition( finalPosition );
+	// 	node.point.copyPosition( finalPosition );
 
-		return node;
-	}
+	// 	return node;
+	// }
 }
