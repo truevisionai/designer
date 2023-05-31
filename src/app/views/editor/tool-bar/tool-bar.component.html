@@ -3,7 +3,7 @@
   -->
 <mat-toolbar class="app-toolbar">
 	<ng-container *ngFor="let tool of tools">
-		<button mat-button #toolButton (mouseover)="onMouseOver(tool)" [id]="tool.id" (click)="tool.click()" [ngClass]="getClass(tool)" [satPopoverAnchor]="popover" [satPopoverHover]="100" action="{{tool.action}}"
+		<button mat-button (mouseover)="onMouseOver(tool)" (mouseout)="onMouseOut(tool)" [id]="tool.id" (click)="tool.click()" [ngClass]="getClass(tool)" action="{{tool.action}}"
 				appTrack="{{tool.track}}" matTooltip="{{tool.tooltip}}">
 			<mat-icon class="tool-button-icon">{{tool.icon}}</mat-icon>
 			<span class="icon-label">{{tool.label}}</span>

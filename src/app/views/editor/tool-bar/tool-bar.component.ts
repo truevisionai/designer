@@ -82,6 +82,19 @@ export class ToolBarComponent implements OnInit {
 			click: () => this.setToolType( ToolType.RoadCircle )
 		},
 		{
+			id: 'showLaneTool',
+			label: 'Lane',
+			class: 'toolbar-button',
+			toolType: ToolType.Lane,
+			action: 'lane-tool',
+			icon: 'swap_horiz',
+			title: 'LANE-TOOL-TITLE',
+			description: 'LANE-TOOL-DESCRIPTION',
+			track: 'button',
+			tooltip: 'Lane Tool',
+			click: () => this.setToolType( ToolType.Lane )
+		},
+		{
 			id: 'showLaneWidthTool',
 			label: 'LaneWidth',
 			class: 'toolbar-button',
@@ -254,13 +267,32 @@ export class ToolBarComponent implements OnInit {
 
 			this.popover.setCustomAnchor( this.viewContainerRef, element );
 
+			// bug fix to avoid auto selection of tool and buttons
+			// which makes them appear as selected
+			this.popover.open({
+				restoreFocus: false,
+				autoFocus: false
+			});
+
 			this.selectedTool = tool;
 
 		} else {
 
+			this.popover.close();
+
 			this.selectedTool = null;
 
 		}
+
+	}
+
+	onMouseOut ( tool: any ) {
+
+		this.popover.anchor = null;
+
+		this.popover.close();
+
+		this.selectedTool = null;
 
 	}
 
