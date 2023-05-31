@@ -116,6 +116,8 @@ export class ToolBarComponent implements OnInit {
 			icon: 'vertical_align_center',
 			track: 'button',
 			tooltip: 'Lane Offset Tool',
+			title: 'Lane Offset Tool',
+			description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <img src="assets/lane-offset-tutorial-1.png"/>',
 			click: () => this.setToolType( ToolType.LaneOffset )
 		},
 		{
