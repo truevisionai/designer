@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
@@ -30,9 +29,8 @@ export class LaneWidthTool extends BaseTool {
 	private pointerDown: boolean = false;
 	private pointerDownAt: Vector3;
 
-	public lane: TvLane;
-	public controlPoint: AnyControlPoint;
-	public node: LaneWidthNode;
+	private _lane: TvLane;
+	private _node: LaneWidthNode;
 
 	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.DASHED );
 
@@ -40,6 +38,22 @@ export class LaneWidthTool extends BaseTool {
 
 		super();
 
+	}
+
+	get lane (): TvLane {
+		return this._lane;
+	}
+
+	set lane ( value: TvLane ) {
+		this._lane = value;
+	}
+
+	get node (): LaneWidthNode {
+		return this._node;
+	}
+
+	set node ( value: LaneWidthNode ) {
+		this._node = value;
 	}
 
 	init () {
@@ -87,22 +101,22 @@ export class LaneWidthTool extends BaseTool {
 			this.setHint( 'Click and drag on the lane width node to change its position' );
 
 
-		} else if ( this.lane ) {
+		} else if ( this._lane ) {
 
-			CommandHistory.execute( new UnselectLaneForLaneWidthCommand( this, this.lane ) );
+			CommandHistory.execute( new UnselectLaneForLaneWidthCommand( this, this._lane ) );
 
 		}
 	}
 
 	public onPointerUp ( e ) {
 
-		if ( this.laneWidthChanged && this.node ) {
+		if ( this.laneWidthChanged && this._node ) {
 
-			const newPosition = this.node.point.position.clone();
+			const newPosition = this._node.point.position.clone();
 
 			const oldPosition = this.pointerDownAt.clone();
 
-			CommandHistory.execute( new UpdateWidthNodePositionCommand( this.node, newPosition, oldPosition, this.laneHelper ) );
+			CommandHistory.execute( new UpdateWidthNodePositionCommand( this._node, newPosition, oldPosition, this.laneHelper ) );
 
 		}
 
@@ -115,13 +129,13 @@ export class LaneWidthTool extends BaseTool {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.node ) {
+		if ( this.pointerDown && this._node ) {
 
 			this.laneWidthChanged = true;
 
-			NodeFactoryService.updateLaneWidthNode( this.node, e.point );
+			NodeFactoryService.updateLaneWidthNode( this._node, e.point );
 
-			this.node.updateLaneWidthValues();
+			this._node.updateLaneWidthValues();
 
 			// this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
 
@@ -162,40 +176,15 @@ export class LaneWidthTool extends BaseTool {
 		// Check for control point interactions
 		const interactedPoint = PickingHelper.checkControlPointInteraction( e, LaneWidthNode.pointTag );
 
-		// If there's no control point interaction,
-		// reset controlPoint if needed and return false
-		if ( !interactedPoint ) {
-			return false;
-		}
-
-		// Ensure the controlPoint has a parent before proceeding
-		if ( !interactedPoint.parent ) {
-			return false;
-		}
+		if ( !interactedPoint || !interactedPoint.parent ) return false;
 
 		const newNode = interactedPoint.parent as LaneWidthNode;
 
-		if ( !this.node || this.node.uuid !== newNode.uuid ) {
+		if ( !this._node || this._node.uuid !== newNode.uuid ) {
 
 			CommandHistory.execute( new SelectLaneWidthNodeCommand( this, newNode ) );
 
 		}
-
-		// const commands = [];
-
-		// Check if controlPoint or widthNode are different before pushing commands
-		// if ( this.controlPoint !== interactedPoint ) {
-		// 	commands.push( new SetValueCommand( this, 'controlPoint', interactedPoint ) );
-		// }
-		//
-		// if ( this.node !== laneWidthNode ) {
-		// 	commands.push( new SetValueCommand( this, 'node', laneWidthNode ) );
-		// }
-		//
-		// if ( this.controlPoint !== interactedPoint || this.node !== laneWidthNode ) {
-		// 	commands.push( new SetInspectorCommand( LaneWidthInspector, { node: laneWidthNode } ) );
-		// }
-		// if ( commands.length > 0 ) CommandHistory.executeMany( ...commands );
 
 		return true;
 	}
@@ -206,13 +195,13 @@ export class LaneWidthTool extends BaseTool {
 
 		if ( !newLane ) return false;
 
-		if ( !this.lane || this.lane.roadId !== newLane.roadId ) {
+		if ( !this._lane || this._lane.roadId !== newLane.roadId ) {
 
 			CommandHistory.execute( new SelectLaneForLaneWidthCommand( this, newLane ) );
 
-		} else if ( this.node ) {
+		} else if ( this._node ) {
 
-			CommandHistory.execute( new UnselectLaneWidthNodeCommand( this, this.node ) );
+			CommandHistory.execute( new UnselectLaneWidthNodeCommand( this, this._node ) );
 
 		}
 
