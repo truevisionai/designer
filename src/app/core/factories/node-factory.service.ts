@@ -260,63 +260,46 @@ export class NodeFactoryService {
 		return node;
 	}
 
-	static createRoadMarkNode ( lane: TvLane, roadmark: TvLaneRoadMark ): LaneRoadMarkNode {
+	// static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
 
-		const node = new LaneRoadMarkNode( lane, roadmark );
+	// 	const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
 
-		const offset = lane.getWidthValue( roadmark.s ) * 0.5;
+	// 	if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+	// 	if ( index === -1 ) return node;
 
-		const position = TvMapQueries.getLanePosition( lane.roadId, lane.id, roadmark.s, offset );
+	// 	if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
+	// 	if ( index === 0 ) return node;
 
-		node.point = AnyControlPoint.create( 'point', position );
+	// 	const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
 
-		node.point.tag = LaneRoadMarkNode.pointTag;
+	// 	// TODO: mke this the max s value as per lane section
+	// 	let maxS = Number.MAX_SAFE_INTEGER;
 
-		node.add( node.point );
+	// 	if ( index + 1 < node.lane.roadMark.length ) {
 
-		return node;
-	}
+	// 		maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
 
-	static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
+	// 	}
 
-		const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
+	// 	const newPosition = new TvPosTheta();
 
-		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
-		if ( index === -1 ) return node;
+	// 	const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
 
-		if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
-		if ( index === 0 ) return node;
+	// 	// we are getting another road s value to ignore
+	// 	if ( node.lane.roadId !== road.id ) return node;
 
-		const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
+	// 	// our desired s value should lie between the previous node and the next node
+	// 	const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
 
-		// TODO: mke this the max s value as per lane section
-		let maxS = Number.MAX_SAFE_INTEGER;
+	// 	// update s offset as per the new position on road
+	// 	node.roadmark.sOffset = adjustedS;
 
-		if ( index + 1 < node.lane.roadMark.length ) {
+	// 	const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
 
-			maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
+	// 	const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
 
-		}
+	// 	node.point.copyPosition( finalPosition );
 
-		const newPosition = new TvPosTheta();
-
-		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
-
-		// we are getting another road s value to ignore
-		if ( node.lane.roadId !== road.id ) return node;
-
-		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
-
-		// update s offset as per the new position on road
-		node.roadmark.sOffset = adjustedS;
-
-		const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
-
-		const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
-
-		node.point.copyPosition( finalPosition );
-
-		return node;
-	}
+	// 	return node;
+	// }
 }

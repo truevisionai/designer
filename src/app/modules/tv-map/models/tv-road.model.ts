@@ -35,6 +35,7 @@ import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { NodeFactoryService } from 'app/core/factories/node-factory.service';
 import { TvMapBuilder } from '../builders/od-builder.service';
+import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class TvRoad {
 
@@ -1337,7 +1338,7 @@ export class TvRoad {
 
 					} else {
 
-						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
+						roadmark.node = new LaneRoadMarkNode( lane, roadmark );
 
 						SceneService.add( roadmark.node );
 

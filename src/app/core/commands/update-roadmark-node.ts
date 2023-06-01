@@ -23,7 +23,8 @@ export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
 	execute (): void {
 
-		NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.newPosition );
+		// NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.newPosition );
+		this.node.updateByPosition( this.newPosition );
 
 		const road = this.map.getRoadById( this.node.lane.roadId );
 
@@ -35,7 +36,8 @@ export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
 	undo (): void {
 
-		NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.oldPosition );
+		// NodeFactoryService.updateRoadMarkNodeByPosition( this.node, this.oldPosition );
+		this.node.updateByPosition( this.oldPosition );
 
 		const road = this.map.getRoadById( this.node.lane.roadId );
 
