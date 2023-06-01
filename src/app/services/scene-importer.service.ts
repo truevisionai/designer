@@ -32,6 +32,7 @@ import { CommandHistory } from './command-history';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
+import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,7 +44,8 @@ export class SceneImporterService extends AbstractReader {
 		private openDriveService: TvMapService,
 		private assets: AssetLoaderService,
 		private odParser: OpenDriverParser,
-		private modelImporter: ModelImporterService
+		private modelImporter: ModelImporterService,
+		private electronService: TvElectronService,
 	) {
 		super();
 	}
@@ -81,6 +83,8 @@ export class SceneImporterService extends AbstractReader {
 			if ( this.importFromString( file.contents ) ) {
 
 				TvMapInstance.currentFile = file;
+
+				this.electronService.setTitle( file.name, file.path );
 
 			}
 

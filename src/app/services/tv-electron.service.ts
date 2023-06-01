@@ -87,4 +87,21 @@ export class TvElectronService {
 	get remote (): any {
 		return this._remote;
 	}
+
+	setTitle ( title: string, filePath?: string ) {
+
+		let newTitle = title;
+
+		if ( filePath ) newTitle += ` - ${ filePath }`;
+
+		versions.setTitle( newTitle );
+	}
+
+	openLink ( link: string ) {
+
+		this.remote.shell.openExternal( link );
+
+	}
+
+
 }

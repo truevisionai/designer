@@ -14,12 +14,11 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { LaneOffsetInspector, LaneOffsetInspectorData } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
+import { LaneOffsetInspector } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
 
 export class AddLaneOffsetCommand extends BaseCommand {
 
 	private road: TvRoad;
-	private node: LaneOffsetNode;
 	private laneOffset: TvRoadLaneOffset;
 
 	private command: SetInspectorCommand;
@@ -35,18 +34,28 @@ export class AddLaneOffsetCommand extends BaseCommand {
 		// getting position on track in s/t coordinates
 		TvMapQueries.getRoadByCoords( this.position.x, this.position.y, posTheta );
 
-		this.laneOffset = this.road.getLaneOffsetAt( posTheta.s ).clone( posTheta.s );
+		const curentLaneOffset = this.road.getLaneOffsetAt( posTheta.s );
 
-		this.node = NodeFactoryService.createLaneOffsetNode( this.road, this.laneOffset );
+		if ( curentLaneOffset ) {
 
-		this.command = new SetInspectorCommand( LaneOffsetInspector, new LaneOffsetInspectorData( this.node, this.road ) );
+			this.laneOffset = curentLaneOffset.clone( posTheta.s );
+
+		} else {
+
+			this.laneOffset = new TvRoadLaneOffset( this.road, posTheta.s, 0, 0, 0, 0 );
+
+		}
+
+		this.laneOffset.node.updatePosition();
+
+		this.command = new SetInspectorCommand( LaneOffsetInspector, this.laneOffset );
 	}
 
 	execute (): void {
 
 		this.road.addLaneOffsetInstance( this.laneOffset );
 
-		SceneService.add( this.node );
+		SceneService.add( this.laneOffset.node );
 
 		this.command.execute();
 
@@ -54,9 +63,9 @@ export class AddLaneOffsetCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.road.removeLaneOffset( this.node.laneOffset );
+		this.road.removeLaneOffset( this.laneOffset );
 
-		SceneService.remove( this.node );
+		SceneService.remove( this.laneOffset.node );
 
 		this.command.undo();
 

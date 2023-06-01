@@ -1,128 +1,18 @@
 <!--
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
-
 <mat-toolbar class="app-toolbar">
-
-	<!-- Road-Geomtry -->
-	<button id="showRoadTool" (click)="showRoadTool()" [ngClass]="getClass('RoadTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-plan-tool" appTrack="button" mat-icon-button
-			matTooltip="Road Tool">
-		<mat-icon>timeline</mat-icon>
-	</button>
-	<sat-popover #roadGeometryPopover verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'ROAD-GEOMETRY-TITLE' | translate }}</div>
-			<div [innerHTML]="'ROAD-GEOMETRY-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-	<button id="showRoadTool" (click)="showRoadRampTool()" [ngClass]="getClass('RoadRampTool')" [satPopoverAnchor]="roadGeometryPopover" [satPopoverHover]="1000" action="road-ramp-tool" appTrack="button" mat-icon-button
-			matTooltip="Road Tool">
-		<mat-icon>timeline</mat-icon>
-	</button>
-
-
-	<!-- Road-Circle-Tool -->
-	<button id="showRoadCircleTool" (click)="showRoadCircleTool()" [ngClass]="getClass('RoadCircleTool')" [satPopoverAnchor]="roadCircleToolPopover" [satPopoverHover]="1000" action="road-circle-tool"
-			appTrack="button" mat-icon-button matTooltip="Road Circle Tool">
-		<mat-icon>trip_origin</mat-icon>
-	</button>
-	<sat-popover #roadCircleToolPopover verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'ROAD-CIRCLE-TITLE' | translate }}</div>
-			<div [innerHTML]="'ROAD-CIRCLE-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-	<!-- Lane-Width -->
-	<button id="showLaneWidthTool" (click)="showLaneWidthTool()" [ngClass]="getClass('LaneWidth')" [satPopoverAnchor]="laneWidthHelp" [satPopoverHover]="1000" action="lane-width-tool" appTrack="button"
-			mat-icon-button matTooltip="Lane Width Tool">
-		<mat-icon>format_line_spacing</mat-icon>
-	</button>
-	<sat-popover #laneWidthHelp verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'LANE-WIDTH-TOOL-TITLE' | translate }}</div>
-			<div [innerHTML]="'LANE-WIDTH-TOOL-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-	<!-- Lane-Width -->
-	<button id="showLaneOffsetTool" (click)="showLaneOffsetTool()" [ngClass]="getClass('LaneOffset')" action="lane-offset-tool" appTrack="button" mat-icon-button matTooltip="Lane Offset Tool">
-		<mat-icon>vertical_align_center</mat-icon>
-	</button>
-
-	<!-- Add-Lane -->
-	<button id="showAddLaneTool" (click)="showAddLaneTool()" [ngClass]="getClass('AddLane')" [satPopoverAnchor]="addLaneToolHelp" [satPopoverHover]="1000" action="add-lane-tool" appTrack="button" mat-icon-button
-			matTooltip="Add Lane Tool">
-		<mat-icon>playlist_add</mat-icon>
-	</button>
-	<sat-popover #addLaneToolHelp verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'ADD-LANE-TOOL-TITLE' | translate }}</div>
-			<div [innerHTML]="'ADD-LANE-TOOL-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-	<!-- Lane-Marking -->
-	<button id="showLaneMarkingTool" (click)="showLaneMarkingTool()" [ngClass]="getClass('LaneMarking')" [satPopoverAnchor]="laneMarkingToolHelp" [satPopoverHover]="1000" action="lane-marking-tool"
-			appTrack="button" mat-icon-button matTooltip="Lane Marking Tool">
-		<!--        <mat-icon>line_style</mat-icon>-->
-		<mat-icon>format_align_center</mat-icon>
-	</button>
-	<sat-popover #laneMarkingToolHelp verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'LANE-MARKING-TOOL-TITLE' | translate }}</div>
-			<div [innerHTML]="'LANE-MARKING-TOOL-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-	<!-- Lane-Tool -->
-	<button id="showLaneTool" (click)="showLaneTool()" [ngClass]="getClass('LaneTool')" [satPopoverAnchor]="laneToolHelp" [satPopoverHover]="1000" action="lane-direction-tool" appTrack="button" mat-icon-button
-			matTooltip="Lane Tool">
-		<mat-icon>swap_horiz</mat-icon>
-	</button>
-	<sat-popover #laneToolHelp verticalAlign="below">
-		<div class="simple-popover">
-			<div class="title">{{ 'LANE-TOOL-TITLE' | translate }}</div>
-			<div [innerHTML]="'LANE-TOOL-DESCRIPTION' | translate"></div>
-		</div>
-	</sat-popover>
-
-
-	<button id="markingToolMenu" [matMenuTriggerFor]="markingToolMenu" [ngClass]="isMarkingToolSelected ? 'mat-accent' : ''" mat-icon-button matTooltip="Marking Tool">
-		<mat-icon>call_split</mat-icon>
-	</button>
-	<mat-menu #markingToolMenu="matMenu">
-		<button (click)="setMarkingPointTool()" action="marking-point-tool" appTrack="menu" mat-menu-item>
-			Marking Point Tool
+	<ng-container *ngFor="let tool of tools">
+		<button mat-button (mouseover)="onMouseOver(tool)" (mouseout)="onMouseOut(tool)" [id]="tool.id" (click)="tool.click()" [ngClass]="getClass(tool)" action="{{tool.action}}"
+				appTrack="{{tool.track}}" matTooltip="{{tool.tooltip}}">
+			<mat-icon class="tool-button-icon">{{tool.icon}}</mat-icon>
+			<span class="icon-label">{{tool.label}}</span>
 		</button>
-	</mat-menu>
-
-	<button id="propToolMenu" [matMenuTriggerFor]="propToolMenu" [ngClass]="isPropToolSelected ? 'mat-accent' : ''" mat-icon-button matTooltip="Prop Tool">
-		<mat-icon>category</mat-icon>
-	</button>
-	<mat-menu #propToolMenu="matMenu">
-		<button (click)="showPropPointTool()" action="prop-point-tool" appTrack="menu" mat-menu-item>
-			Prop Point Tool
-		</button>
-		<button (click)="showPropCurveTool()" action="prop-line-tool" appTrack="menu" mat-menu-item>
-			Prop Line Tool
-		</button>
-		<button (click)="showPropPolygonTool()" action="prop-polygon-tool" appTrack="menu" mat-menu-item>
-			Prop Polygon Tool
-		</button>
-	</mat-menu>
-
-	<button id="showManeueverTool" (click)="showManeueverTool()" [ngClass]="getClass('ManeuverTool')" action="maneuver-tool" appTrack="button" mat-icon-button matTooltip="Maneuver Tool">
-		<mat-icon>fullscreen_exit</mat-icon>
-	</button>
-
-	<button id="showSurfaceTool" (click)="showSurfaceTool()" [ngClass]="getClass('SurfaceTool')" action="surface-tool" appTrack="button" mat-icon-button matTooltip="Surface Tool">
-		<mat-icon>landscape</mat-icon>
-	</button>
-
-	<button (click)="changeCamera()" action="change-camera" appTrack="menu" mat-icon-button matTooltip="Change Camera">
-		<mat-icon>camera</mat-icon>
-	</button>
-
+	</ng-container>
+	<sat-popover #popover verticalAlign="below">
+		<div class="simple-popover" *ngIf="selectedTool">
+			<div class="title" [innerHTML]="selectedTool.title | translate"></div>
+			<div [innerHTML]="selectedTool.description | translate"></div>
+		</div>
+	</sat-popover>
 </mat-toolbar>

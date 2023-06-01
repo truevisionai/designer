@@ -9,10 +9,13 @@ import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { AppInspector } from '../inspector';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export class LaneTool extends BaseTool {
 
 	name: string = 'LaneTool';
+	toolType = ToolType.Lane;
+
 	private laneDirectionHelper: OdLaneDirectionBuilder;
 
 	init () {

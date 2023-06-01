@@ -17,6 +17,7 @@ import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvConsole } from 'app/core/utils/console';
+import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,7 +28,8 @@ export class MainFileService {
 		public sceneExporter: SceneExporterService,
 		public sceneImporter: SceneImporterService,
 		public fileService: FileService,
-		public threeService: ThreeService
+		public threeService: ThreeService,
+		public electronService: TvElectronService,
 	) {
 	}
 
@@ -64,7 +66,9 @@ export class MainFileService {
 
 		if ( this.map ) this.map.destroy();
 
-		this.currentFile = new IFile( 'untitled.xml' );
+		this.currentFile = new IFile( 'Untitled.scene' );
+
+		this.electronService.setTitle( this.currentFile.name );
 
 		this.map = new TvMap();
 
@@ -124,6 +128,8 @@ export class MainFileService {
 
 				this.currentFile.path = file.path;
 				this.currentFile.name = file.name;
+
+				this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
 				SnackBar.success( 'File Saved!' );
 

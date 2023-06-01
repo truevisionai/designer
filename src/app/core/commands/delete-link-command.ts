@@ -44,9 +44,14 @@ export class DeleteLinkCommand extends BaseCommand {
 
 		if ( !junction ) SnackBar.error( 'Junction not found' );
 
-		const outgoingRoad = this.map.getRoadById( this.connectingRoad.successor.elementId );
+		if ( this.connectingRoad.successor ) {
 
-		junction.removeConnection( this.connection, this.lanePathObject.incomingRoad, outgoingRoad );
+			const outgoingRoad = this.map.getRoadById( this.connectingRoad.successor.elementId );
+
+			junction.removeConnection( this.connection, this.lanePathObject.incomingRoad, outgoingRoad );
+
+		}
+
 	}
 
 	undo (): void {

@@ -27,6 +27,7 @@ import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
 import { LanePathFactory } from '../factories/lane-path-factory.service';
 import { KeyboardInput } from '../input';
+import { ToolType } from '../models/tool-types.enum';
 import { PickingHelper } from '../services/picking-helper.service';
 import { SceneService } from '../services/scene.service';
 // import { JunctionDot } from "app/modules/three-js/objects/junction-dot";
@@ -96,6 +97,7 @@ export class AutoManeuverTool extends BaseTool {
 	public static DOTCOUNT = 0;
 
 	name: string = 'ManeuverTool';
+	toolType = ToolType.Maneuver;
 
 	pointEditor: AbstractShapeEditor;
 

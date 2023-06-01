@@ -62,4 +62,8 @@ export class AppLinks {
 		return this.base + 'docs/grading-editor';
 	}
 
+	static get tutorialsLink () {
+		return 'https://www.youtube.com/@truevisionai7439/playlists';
+	}
+
 }

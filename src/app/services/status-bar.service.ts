@@ -1,0 +1,102 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { EventEmitter, Injectable } from '@angular/core';
+import { AppService } from 'app/core/services/app.service';
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { Vector3 } from 'three';
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class StatusBarService {
+
+	private cursor: PointerEventData;
+	private road: TvRoad;
+	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
+
+	static message: string = '';
+	static messageChanged = new EventEmitter<string>();
+
+	// public message = '';
+
+	constructor () {
+		this.cursor = new PointerEventData();
+		this.cursor.point = new Vector3();
+		AppService.eventSystem.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
+	}
+
+	get x () {
+		return this.cursor.point.x;
+	}
+
+	get y () {
+		return this.cursor.point.y;
+	}
+
+	get z () {
+		return this.cursor.point.z;
+	}
+
+	get s () {
+		return this.pos.s ? this.pos.s.toFixed( 1 ) : '';
+	}
+
+	get t () {
+		return this.pos.t ? this.pos.t.toFixed( 1 ) : '';
+	}
+
+	get roadId () {
+		return this.road ? this.road.id : '';
+	}
+
+	get coordinates () {
+		const x = this.cursor.point.x.toFixed( 1 );
+		const y = this.cursor.point.y.toFixed( 1 );
+		const z = this.cursor.point.z.toFixed( 1 );
+		return `World x: ${ x }, y: ${ y }, z: ${ z }`;
+	}
+
+	get roadCoordinates () {
+		return `Road: ${ this.roadId }, S: ${ this.s }, T: ${ this.t }`;
+	}
+
+	get message () {
+		return StatusBarService.message;
+	}
+
+	onPointerMoved ( data: PointerEventData ) {
+
+		this.cursor = data;
+		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+
+	}
+
+	static setHint ( msg: string ) {
+
+		this.setMessage( 'Hint: ' + msg );
+
+	}
+
+	static setMessage ( msg: string ) {
+
+		if ( this.message === msg ) return;
+
+		this.message = msg;
+
+		this.messageChanged.emit( this.message );
+
+	}
+
+	static clearHint () {
+
+		this.message = '';
+
+	}
+
+
+}

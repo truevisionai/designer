@@ -17,6 +17,7 @@ import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
 import { TvLane } from './tv-lane';
+import { TvConsole } from 'app/core/utils/console';
 
 export class TvMap {
 
@@ -102,7 +103,7 @@ export class TvMap {
 
 		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
 
-		const roadStyle = RoadStyleService.getRoadStyle( road.id );
+		const roadStyle = RoadStyleService.getRoadStyle( road );
 
 		// const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
 		const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );
@@ -237,8 +238,9 @@ export class TvMap {
 
 		} else {
 
-			console.error( `${ roadId } road-id not found` );
-			// throw new Error( 'RoadID not found.' );
+			TvConsole.error( `${ roadId } road-id not found` );
+
+			console.error( `road not found` );
 
 		}
 

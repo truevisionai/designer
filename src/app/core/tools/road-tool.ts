@@ -26,10 +26,12 @@ import { PickingHelper } from '../services/picking-helper.service';
 import { BaseTool } from './base-tool';
 import { AppInspector } from '../inspector';
 import { CreateRoadCommand } from '../commands/create-road-command';
+import { ToolType } from '../models/tool-types.enum';
 
 export class RoadTool extends BaseTool {
 
 	public name: string = 'RoadTool';
+	public toolType = ToolType.Road;
 
 	public road: TvRoad;
 	public controlPoint: RoadControlPoint;
@@ -45,6 +47,7 @@ export class RoadTool extends BaseTool {
 
 	init () {
 
+		this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
 
 	}
 
@@ -330,7 +333,10 @@ export class RoadTool extends BaseTool {
 			hasInteracted = true;
 
 			const lane = laneIntersection.object.userData.lane as TvLane;
+
 			const road = this.map.getRoadById( lane.roadId );
+
+			if ( !road ) return false;
 
 			if ( !road.isJunction ) this.selectRoad( road );
 		}

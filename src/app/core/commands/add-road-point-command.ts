@@ -24,11 +24,11 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		this.oldPoint = this.tool.controlPoint;
 
+		this.newPoint = this.tool.controlPoint = this.addControlPoint( this.road, this.position )
+
 	}
 
 	execute (): void {
-
-		this.newPoint = this.tool.controlPoint = this.addControlPoint( this.road, this.position )
 
 		AppInspector.setInspector( RoadInspector, {
 			road: this.road,

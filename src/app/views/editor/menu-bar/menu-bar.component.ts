@@ -22,11 +22,13 @@ import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
+import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
 
 
 @Component( {
 	selector: 'app-menu-bar',
 	templateUrl: './menu-bar.component.html',
+	styleUrls: [ './menu-bar.component.css' ]
 } )
 export class MenuBarComponent implements OnInit {
 
@@ -127,6 +129,17 @@ export class MenuBarComponent implements OnInit {
 	openContactUs () {
 
 		window.open( AppLinks.contactUsLink, '_blank' );
+
+	}
+
+	openTutorials () {
+
+		this.dialog.open( TutorialsDialogComponent, {
+			width: '680px',
+			height: '680px',
+			data: null,
+			disableClose: false
+		} );
 
 	}
 

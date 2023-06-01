@@ -6,23 +6,18 @@
 		<!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar delete icon">delete</mat-icon> -->
 	</mat-toolbar-row>
 </mat-toolbar>
-
-<mat-list class="console-container" fxFill role="list">
+<mat-list class="console-container" role="list">
 
 	<perfect-scrollbar fxFlexFill>
 
-		<mat-list-item *ngFor="let log of logs" role="listitem">
+		<mat-list-item *ngFor="let log of logs" role="listitem" class="console-log-item">
 
-			<mat-icon class="console-message-icon" mat-list-icon>{{log.icon}}</mat-icon>
+			<mat-icon class="console-message-icon" mat-list-icon color="warn">{{log.icon}}</mat-icon>
 
-			<div mat-line>{{log.message}}</div>
-
-			<div mat-line>
-				[{{log.time | date: 'hh:mm:ss' }}]
-			</div>
+			<div class="console-message" mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
 
 			<div *ngIf="log.counter > 0" class="counter">
-				<mat-chip>{{log.counter}} </mat-chip>
+				<mat-chip class="counter-chip">{{log.counter}} </mat-chip>
 			</div>
 
 		</mat-list-item>

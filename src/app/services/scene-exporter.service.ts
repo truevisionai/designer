@@ -96,6 +96,8 @@ export class SceneExporterService {
 					this.currentFile.path = file.path;
 					this.currentFile.name = file.name;
 
+					this.electron.setTitle( file.name, file.path );
+
 				} );
 
 		} else {

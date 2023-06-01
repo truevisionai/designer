@@ -3,20 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AnyControlPoint, LaneOffsetNode, LaneRoadMarkNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
-import { BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { BufferGeometry, Vector3 } from 'three';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 
 
 @Injectable( {
@@ -29,56 +24,13 @@ export class NodeFactoryService {
 
 	static createLaneWidthNodeByPosition ( road: TvRoad, lane: TvLane, point: Vector3 ): LaneWidthNode {
 
-		const posTheta = new TvPosTheta();
+		const roadCoord = road.getCoordAt( point );
 
-		// getting position on track in s/t coordinates
-		TvMapQueries.getRoadByCoords( point.x, point.y, posTheta );
+		const laneWidth = lane.getLaneWidthAt( roadCoord.s ).clone( roadCoord.s );
 
-		// get the exisiting lane width at s
-		// and clone the lane width
-		const laneWidth = lane.getLaneWidthAt( posTheta.s ).clone( posTheta.s );
-
-		// add the with back to lane to
 		lane.addWidthRecordInstance( laneWidth );
 
-		// make mesh for the lane width node
-		return laneWidth.mesh = this.createLaneWidthNode( road, lane, laneWidth.s, laneWidth );
-	}
-
-	static createLaneWidthNode ( road: TvRoad, lane: TvLane, s: number, laneWidth: TvLaneWidth ): LaneWidthNode {
-
-		const node = new LaneWidthNode( road, lane, s, laneWidth );
-
-		const offset = laneWidth.getValue( s ) * 0.5;
-
-		const start = TvMapQueries.getLanePosition( road.id, lane.id, s, -offset );
-		const end = TvMapQueries.getLanePosition( road.id, lane.id, s, offset );
-
-		/////////////////////////////////////////
-
-		node.point = AnyControlPoint.create( 'point', end );
-
-		node.point.tag = LaneWidthNode.pointTag;
-
-		node.add( node.point );
-
-		/////////////////////////////////////////
-
-		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-
-		node.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
-
-		node.line[ 'tag' ] = LaneWidthNode.lineTag;
-
-		node.line.renderOrder = 3;
-
-		node.add( node.line );
-
-		//////////////////////////////////////////
-
-		// group.position.copy( center );
-
-		return node;
+		return laneWidth.node = new LaneWidthNode( laneWidth );
 	}
 
 	// update s value of lane-width as per the restriction
@@ -128,7 +80,7 @@ export class NodeFactoryService {
 
 		} else if ( direction === 'tCoordinate' ) {
 
-			sCoordinate = node.s;
+			sCoordinate = node.laneWidth.s;
 
 		}
 
@@ -142,7 +94,7 @@ export class NodeFactoryService {
 
 		node.point.position.copy( end );
 
-		node.s = node.laneWidth.s = adjustedS;
+		node.laneWidth.s = adjustedS;
 
 		// const roadPos = new OdPosTheta();
 		// const lanePos = new OdPosTheta();
@@ -194,55 +146,18 @@ export class NodeFactoryService {
 
 		const laneWidth = node.laneWidth;
 
-		if ( node.s < 0 ) node.s = 0;
+		if ( node.laneWidth.s < 0 ) node.laneWidth.s = 0;
 
-		const offset = laneWidth.getValue( node.s ) * 0.5;
+		const offset = laneWidth.getValue( node.laneWidth.s ) * 0.5;
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, offset );
+		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, -offset );
+		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, offset );
 
 		// TODO: can be improved
 		node.line.geometry.dispose();
 		node.line.geometry = new BufferGeometry().setFromPoints( [ start, end ] );
 
 		node.point.position.copy( end );
-	}
-
-	static createLaneOffsetNode ( road: TvRoad, laneOffset: TvRoadLaneOffset ): LaneOffsetNode {
-
-		const node = new LaneOffsetNode( road, laneOffset );
-
-		const offset = laneOffset.getValue( laneOffset.s );
-
-		const start = TvMapQueries.findRoadById( road.id ).getPositionAt( laneOffset.s, 0 );
-
-		// const end = OpenDriveQueries.findRoadById( roadId ).getPositionAt( s, 0 );
-
-		/////////////////////////////////////////
-
-		node.point = AnyControlPoint.create( 'point', start.toVector3() );
-
-		node.point.tag = LaneOffsetNode.pointTag;
-
-		node.add( node.point );
-
-		/////////////////////////////////////////
-
-		// const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-
-		// node.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
-
-		// node.line[ 'tag' ] = LaneOffsetNode.lineTag;
-
-		// node.line.renderOrder = 3;
-
-		// node.add( node.line );
-
-		//////////////////////////////////////////
-
-		// group.position.copy( center );
-
-		return node;
 	}
 
 	/**
@@ -260,63 +175,46 @@ export class NodeFactoryService {
 		return node;
 	}
 
-	static createRoadMarkNode ( lane: TvLane, roadmark: TvLaneRoadMark ): LaneRoadMarkNode {
+	// static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
 
-		const node = new LaneRoadMarkNode( lane, roadmark );
+	// 	const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
 
-		const offset = lane.getWidthValue( roadmark.s ) * 0.5;
+	// 	if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
+	// 	if ( index === -1 ) return node;
 
-		const position = TvMapQueries.getLanePosition( lane.roadId, lane.id, roadmark.s, offset );
+	// 	if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
+	// 	if ( index === 0 ) return node;
 
-		node.point = AnyControlPoint.create( 'point', position );
+	// 	const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
 
-		node.point.tag = LaneRoadMarkNode.pointTag;
+	// 	// TODO: mke this the max s value as per lane section
+	// 	let maxS = Number.MAX_SAFE_INTEGER;
 
-		node.add( node.point );
+	// 	if ( index + 1 < node.lane.roadMark.length ) {
 
-		return node;
-	}
+	// 		maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
 
-	static updateRoadMarkNodeByPosition ( node: LaneRoadMarkNode, point: Vector3 ) {
+	// 	}
 
-		const index = node.lane.getRoadMarks().findIndex( roadmark => roadmark.uuid === node.roadmark.uuid );
+	// 	const newPosition = new TvPosTheta();
 
-		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
-		if ( index === -1 ) return node;
+	// 	const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
 
-		if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
-		if ( index === 0 ) return node;
+	// 	// we are getting another road s value to ignore
+	// 	if ( node.lane.roadId !== road.id ) return node;
 
-		const minS = node.lane.roadMark[ index - 1 ].s + 0.1;
+	// 	// our desired s value should lie between the previous node and the next node
+	// 	const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
 
-		// TODO: mke this the max s value as per lane section
-		let maxS = Number.MAX_SAFE_INTEGER;
+	// 	// update s offset as per the new position on road
+	// 	node.roadmark.sOffset = adjustedS;
 
-		if ( index + 1 < node.lane.roadMark.length ) {
+	// 	const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
 
-			maxS = node.lane.roadMark[ index + 1 ].s - 0.1;
+	// 	const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
 
-		}
+	// 	node.point.copyPosition( finalPosition );
 
-		const newPosition = new TvPosTheta();
-
-		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
-
-		// we are getting another road s value to ignore
-		if ( node.lane.roadId !== road.id ) return node;
-
-		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
-
-		// update s offset as per the new position on road
-		node.roadmark.sOffset = adjustedS;
-
-		const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
-
-		const finalPosition = TvMapQueries.getLanePosition( node.lane.roadId, node.lane.id, adjustedS, offset );
-
-		node.point.copyPosition( finalPosition );
-
-		return node;
-	}
+	// 	return node;
+	// }
 }

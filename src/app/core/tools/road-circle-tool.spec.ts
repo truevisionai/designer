@@ -28,7 +28,7 @@ describe( 'RoadCircleTool Test', () => {
 		const centre = new Vector3( 0, 0, 0 );
 		const end = new Vector3( 0, 100, 0 );
 
-		tool.createCircle( centre, end, 100 );
+		tool.initCircle( centre, end, 100 );
 
 		tool.createRoads();
 

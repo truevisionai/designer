@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
@@ -44,7 +44,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		this.rebuild( this.node.road );
 
-		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane } ) ).execute();
+		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 	}
 
 	undo (): void {
@@ -57,7 +57,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		this.rebuild( this.node.road );
 
-		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane, node: this.node } ) ).execute();
+		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 
 	}
 

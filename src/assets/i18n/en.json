@@ -79,7 +79,7 @@
 	"LANE-TYPE-TOOL-TITLE": "Lane Type Tool",
 	"LANE-TYPE-TOOL-DESCRIPTION": "Change the type of lane. <br />  Use SHIFT + LEFT CLICK to select the lane. <br/>  Change the lane type from the inspector. <br/>",
 	"LANE-TOOL-TITLE": "Lane Tool",
-	"LANE-TOOL-DESCRIPTION": "Change the type, material & other properties of lane. <br />  Use SHIFT + LEFT CLICK to select the lane. <br/>  Change the lane type from the inspector. <br/>",
+	"LANE-TOOL-DESCRIPTION": "Tool to edit type, material & other lane properties. <br />  Use LEFT CLICK to select a lane. <br/>  Modify lane properties from Inspector. <br/>",
 	"LANE-MARKING-TOOL-TITLE": "Lane Marking Tool",
 	"LANE-MARKING-TOOL-DESCRIPTION": "Tool to edit lane markings. <br /> Use LEFT CLICK to select road, lane, marking via node or lines. <br/>  Use SHIFT + LEFT CLICK to insert new node. <br/> Use LEFT CLICK to select node & drag it to change distance value. <br/> Change node and marking properties from inspector <br/>",
 	"LANE-DIRECTION-TOOL-TITLE": "Lane Direction Tool",
