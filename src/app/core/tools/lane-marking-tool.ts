@@ -29,10 +29,6 @@ export class LaneMarkingTool extends BaseTool {
 
 	public toolType = ToolType.LaneMarking;
 
-	public pointerDown: boolean;
-
-	public pointerDownAt: Vector3;
-
 	public pointerObject: any;
 
 	public markingDistanceChanged: boolean;
@@ -135,7 +131,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.highlightLaneMarkingLines( e );
 
-		if ( this.pointerDown && this.node && this.node.isSelected ) {
+		if ( this.isPointerDown && this.node && this.node.isSelected ) {
 
 			this.markingDistanceChanged = true;
 
@@ -149,7 +145,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.removeHighlight();
 
-		if ( this.pointerDown ) return;
+		if ( this.isPointerDown ) return;
 
 		if ( !this.lane ) return;
 

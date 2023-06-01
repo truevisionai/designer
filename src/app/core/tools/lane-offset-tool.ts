@@ -101,8 +101,6 @@ export class LaneOffsetTool extends BaseTool {
 
 	public onPointerDown ( e: PointerEventData ) {
 
-		this.pointerDown = true;
-
 		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
 
 		// check for control point interactions first
@@ -121,15 +119,6 @@ export class LaneOffsetTool extends BaseTool {
 			this.clearSelection();
 
 		}
-	}
-
-	public onPointerUp () {
-
-		// this.pointerDown = false;
-
-		// this.pointerObject = null;
-
-		// this.laneWidthChanged = false;
 	}
 
 	public onPointerMoved ( e: PointerEventData ) {
