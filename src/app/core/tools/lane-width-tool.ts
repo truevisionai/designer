@@ -58,7 +58,7 @@ export class LaneWidthTool extends BaseTool {
 
 	init () {
 
-		this.setHint( 'Click on a road to show lane width nodes' );
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 
@@ -98,12 +98,14 @@ export class LaneWidthTool extends BaseTool {
 
 			CommandHistory.execute( new CreateWidthNodeCommand( this, lane, e.point ) );
 
-			this.setHint( 'Click and drag on the lane width node to change its position' );
+			this.setHint( 'Drag node to modify position. Change properties from inspector' );
 
 
 		} else if ( this._lane ) {
 
 			CommandHistory.execute( new UnselectLaneForLaneWidthCommand( this, this._lane ) );
+
+			this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 		}
 	}
@@ -137,39 +139,9 @@ export class LaneWidthTool extends BaseTool {
 
 			this._node.updateLaneWidthValues();
 
-			// this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
-
-			// if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
-
 		}
 
-		// else if ( this.pointerDown && this.pointerObject && this.pointerObject[ 'tag' ] == LaneWidthNode.lineTag ) {
-
-		//     this.laneWidthChanged = true;
-
-		//     NodeFactoryService.updateLaneWidthNode( this.pointerObject.parent as LaneWidthNode, e.point );
-
-		//     this.updateLaneWidth( this.pointerObject.parent as LaneWidthNode );
-
-		//     if ( this.lane ) this.laneHelper.redraw( LineType.DASHED );
-
-		// }
 	}
-
-	// private checkReferenceLineInteraction ( e: PointerEventData ) {
-
-	//     let hasInteracted = false;
-
-	//     this.checkIntersection( this.laneHelper.tag, e.intersections, ( obj ) => {
-
-	//         hasInteracted = true;
-
-	//         this.laneHelper.onLineSelected( obj as Line );
-
-	//     } );
-
-	//     return hasInteracted;
-	// }
 
 	private checkNodePointInteraction ( e: PointerEventData ): boolean {
 
@@ -183,6 +155,8 @@ export class LaneWidthTool extends BaseTool {
 		if ( !this._node || this._node.uuid !== newNode.uuid ) {
 
 			CommandHistory.execute( new SelectLaneWidthNodeCommand( this, newNode ) );
+
+			this.setHint( 'Drag node to modify position. Change properties from inspector' );
 
 		}
 
@@ -199,9 +173,13 @@ export class LaneWidthTool extends BaseTool {
 
 			CommandHistory.execute( new SelectLaneForLaneWidthCommand( this, newLane ) );
 
+			this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+
 		} else if ( this._node ) {
 
 			CommandHistory.execute( new UnselectLaneWidthNodeCommand( this, this._node ) );
+
+			this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
 
 		}
 

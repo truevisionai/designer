@@ -21,17 +21,13 @@ export class UpdateWidthNodeDistanceCommand extends BaseCommand {
 
 		super();
 
-		if ( !this.oldDistance ) {
-
-			this.oldDistance = this.node.laneWidth.s;
-
-		}
+		this.oldDistance = oldDistance || this.node.laneWidth.s;
 
 	}
 
 	execute (): void {
 
-		this.node.laneWidth.s = this.node.s = this.newDistance;
+		this.node.laneWidth.s = this.newDistance;
 
 		this.node.updateLaneWidthValues();
 
@@ -44,7 +40,7 @@ export class UpdateWidthNodeDistanceCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.node.laneWidth.s = this.node.s = this.oldDistance;
+		this.node.laneWidth.s = this.oldDistance;
 
 		this.node.updateLaneWidthValues();
 

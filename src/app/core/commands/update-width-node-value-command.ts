@@ -16,18 +16,13 @@ export class UpdateWidthNodeValueCommand extends BaseCommand {
 	constructor (
 		private node: LaneWidthNode,
 		private newWidth: number,
-		private oldWidth: number,
+		private readonly oldWidth: number,
 		private laneHelper: OdLaneReferenceLineBuilder
 	) {
 
 		super();
 
-		if ( !this.oldWidth ) {
-
-			this.oldWidth = this.node.laneWidth.a;
-
-		}
-
+		this.oldWidth = oldWidth || this.node.laneWidth.a;
 	}
 
 	execute (): void {

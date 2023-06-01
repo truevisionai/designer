@@ -7,7 +7,8 @@ import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-comm
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';
-import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
+import { UpdateWidthNodeDistanceCommand } from '../../../core/commands/update-width-node-distance-command';
+import { UpdateWidthNodeValueCommand } from '../../../core/commands/update-width-node-value-command';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 
@@ -44,15 +45,13 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 	onWidthChanged ( $value: number ) {
 
-		// CommandHistory.execute( new UpdateWidthNodeValueCommand( this.node, $value, null, this.laneHelper ) );
+		CommandHistory.execute( new UpdateWidthNodeValueCommand( this.data.node, $value, null, this.laneHelper ) );
 
 	}
 
 	onDistanceChanged ( $value: number ) {
 
-		// this.node.s = this.width.s = $value;
-
-		// LaneWidthInspector.distanceChanged.emit( $value );
+		CommandHistory.execute( ( new UpdateWidthNodeDistanceCommand( this.data.node, $value, null, this.laneHelper ) ) );
 
 	}
 
