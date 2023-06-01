@@ -10,6 +10,7 @@ export enum ToolType {
 	Surface,
 	LaneMarking,
 	LaneAdd,
+	LaneCreate,
 	Lane,
 	MarkingPoint,
 	MarkingLine,

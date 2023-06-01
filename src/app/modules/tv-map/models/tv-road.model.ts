@@ -413,6 +413,7 @@ export class TvRoad {
 
 		this.laneSections.push( laneSection );
 
+		this.updateLaneSections();
 	}
 
 	clearLaneSections () {

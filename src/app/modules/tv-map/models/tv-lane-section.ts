@@ -810,7 +810,7 @@ export class TvLaneSection {
 
 	cloneAtS ( id?: number, s?: number, side?: boolean, roadId?: number ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( id || 0, 0, side || this.attr_singleSide, roadId || 0 );
+		const laneSection = new TvLaneSection( id || 0, s || 0, side || this.attr_singleSide, roadId || 0 );
 
 		this.laneMap.forEach( lane => {
 

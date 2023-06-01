@@ -571,6 +571,9 @@ export class TvLane {
 	deleteLaneWidth ( index: number ) {
 		this.width.splice( index, 1 );
 	}
+	clearLaneWidth () {
+		this.width.splice( 0, this.width.length );
+	}
 
 	deleteLaneRoadMark ( index: number ) {
 		this.roadMark.splice( index, 1 );
