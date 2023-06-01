@@ -3,7 +3,7 @@
  */
 
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { AnyControlPoint, LaneOffsetNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
+import { AnyControlPoint, LaneOffsetNode} from 'app/modules/three-js/objects/control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
@@ -13,6 +13,7 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { Subscription } from 'rxjs';
 import { Object3D, Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { AddLaneOffsetCommand } from '../commands/add-lane-offset-command';

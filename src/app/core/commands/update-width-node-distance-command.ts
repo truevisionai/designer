@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
@@ -21,17 +21,13 @@ export class UpdateWidthNodeDistanceCommand extends BaseCommand {
 
 		super();
 
-		if ( !this.oldDistance ) {
-
-			this.oldDistance = this.node.laneWidth.s;
-
-		}
+		this.oldDistance = oldDistance || this.node.laneWidth.s;
 
 	}
 
 	execute (): void {
 
-		this.node.laneWidth.s = this.node.s = this.newDistance;
+		this.node.laneWidth.s = this.newDistance;
 
 		this.node.updateLaneWidthValues();
 
@@ -44,7 +40,7 @@ export class UpdateWidthNodeDistanceCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.node.laneWidth.s = this.node.s = this.oldDistance;
+		this.node.laneWidth.s = this.oldDistance;
 
 		this.node.updateLaneWidthValues();
 

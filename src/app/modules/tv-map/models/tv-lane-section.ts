@@ -10,6 +10,7 @@ import { TvLane } from './tv-lane';
 import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
+import { TvRoad } from './tv-road.model';
 
 export class TvLaneSection {
 
@@ -17,7 +18,7 @@ export class TvLaneSection {
 	public readonly uuid: string;
 
 	public gameObject: GameObject;
-	public roadId: number;
+
 	public attr_s: number;
 	public attr_singleSide: boolean;
 	// old property
@@ -28,16 +29,21 @@ export class TvLaneSection {
 	// public right: OdRoadLaneSectionContainer;
 	private lastAddedLaneIndex: number;
 	private laneMap: Map<number, TvLane> = new Map<number, TvLane>();
+	private _road: TvRoad;
 
-	constructor ( id: number, s: number, singleSide: boolean, roadId: number ) {
+	constructor ( id: number, s: number, singleSide: boolean, road?: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
 		this.id = id;
 		this.attr_s = s;
 		this.attr_singleSide = singleSide;
-		this.roadId = roadId;
+		this._road = road;
 	}
 
 	private _length: number;
+
+	get roadId () {
+		return this._road?.id;
+	}
 
 	get length () {
 		return this._length;
@@ -54,6 +60,14 @@ export class TvLaneSection {
 
 	get s () {
 		return this.attr_s;
+	}
+
+	get road (): TvRoad {
+		return this._road;
+	}
+
+	set road ( value: TvRoad ) {
+		this._road = value;
 	}
 
 	// private laneVector: OdLane[] = [];
@@ -194,7 +208,7 @@ export class TvLaneSection {
 	 */
 	addLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
-		const newLane = new TvLane( laneSide, id, type, level, this.roadId, this.id );
+		const newLane = new TvLane( laneSide, id, type, level, this.roadId, this );
 
 		this.addLaneInstance( newLane, sort );
 
@@ -808,9 +822,9 @@ export class TvLaneSection {
 
 	}
 
-	cloneAtS ( id?: number, s?: number, side?: boolean, roadId?: number ): TvLaneSection {
+	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( id || 0, 0, side || this.attr_singleSide, roadId || 0 );
+		const laneSection = new TvLaneSection( id || 0, s || this.s, side || this.attr_singleSide, road || this.road );
 
 		this.laneMap.forEach( lane => {
 

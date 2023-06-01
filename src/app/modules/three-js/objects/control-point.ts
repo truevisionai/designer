@@ -5,16 +5,15 @@
 import { EventEmitter } from '@angular/core';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
-import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
+import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
+import { TvLane } from '../../tv-map/models/tv-lane';
 
 export abstract class BaseControlPoint extends Points {
 
@@ -110,37 +109,6 @@ export class NewDistanceNode extends BaseControlPoint {
 
 }
 
-export class LaneWidthNode extends Group {
-
-	public static readonly tag = 'width-node';
-	public static readonly pointTag = 'width-point';
-	public static readonly lineTag = 'width-line';
-
-	public line: LineSegments;
-	public point: AnyControlPoint;
-
-	constructor ( public road: TvRoad, public lane: TvLane, public s: number, public laneWidth: TvLaneWidth ) {
-
-		super();
-
-	}
-
-	get roadId () {
-		return this.road.id;
-	}
-
-	get laneId () {
-		return this.lane.id;
-	}
-
-	updateLaneWidthValues () {
-
-		this.road.getLaneSectionAt( this.s ).updateLaneWidthValues( this.lane );
-
-	}
-
-}
-
 export class LaneOffsetNode extends Group {
 
 	public static readonly tag = 'offset-node';
@@ -156,7 +124,7 @@ export class LaneOffsetNode extends Group {
 
 		if ( !road ) return;
 
-		let position: Vector3
+		let position: Vector3;
 
 		if ( Maths.approxEquals( laneOffset.s, 0 ) || Maths.approxEquals( laneOffset.road.length, 0 ) ) {
 
@@ -238,7 +206,7 @@ export class LaneRoadMarkNode extends Group {
 
 		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, this.roadmark.s, offset );
 
-		this.point = AnyControlPoint.create( 'point', position )
+		this.point = AnyControlPoint.create( 'point', position );
 
 		this.point.tag = LaneRoadMarkNode.pointTag;
 
@@ -260,7 +228,7 @@ export class LaneRoadMarkNode extends Group {
 
 	unselect () {
 
-		this.point?.unselect()
+		this.point?.unselect();
 
 	}
 

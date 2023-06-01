@@ -2,28 +2,28 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
+import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { LaneWidthTool } from '../tools/lane-width-tool';
 import { BaseCommand } from './base-command';
-import { LaneMarkingTool } from '../tools/lane-marking-tool';
 import { SetInspectorCommand } from './set-inspector-command';
-import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
 
-export class SelectRoadmarNodeCommand extends BaseCommand {
+export class SelectLaneWidthNodeCommand extends BaseCommand {
 
-	private readonly oldNode: LaneRoadMarkNode;
+	private readonly oldNode: LaneWidthNode;
 
 	private inspectorCommand: any;
 
 	constructor (
-		private tool: LaneMarkingTool,
-		private newNode: LaneRoadMarkNode,
+		private tool: LaneWidthTool,
+		private newNode: LaneWidthNode,
 	) {
 
 		super();
 
 		this.oldNode = this.tool.node;
 
-		this.inspectorCommand = new SetInspectorCommand( LaneRoadmarkInspectorComponent, newNode?.roadmark )
+		this.inspectorCommand = new SetInspectorCommand( LaneWidthInspector, newNode.laneWidth );
 
 	}
 

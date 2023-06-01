@@ -1,6 +1,7 @@
 import { ToolType } from "../models/tool-types.enum";
 import { BaseTool } from "../tools/base-tool";
 import { LaneAddTool } from "../tools/lane-add-tool";
+import { LaneCreateTool } from "../tools/lane-create-tool";
 import { LaneMarkingTool } from "../tools/lane-marking-tool";
 import { LaneOffsetTool } from "../tools/lane-offset-tool";
 import { LaneTool } from "../tools/lane-tool";
@@ -44,6 +45,8 @@ export class ToolFactory {
 				return new LaneMarkingTool();
 			case ToolType.LaneAdd:
 				return new LaneAddTool();
+			case ToolType.LaneCreate:
+				return new LaneCreateTool();
 			case ToolType.Lane:
 				return new LaneTool();
 			case ToolType.MarkingPoint:

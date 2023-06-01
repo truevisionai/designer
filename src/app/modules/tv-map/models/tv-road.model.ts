@@ -7,11 +7,14 @@ import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
+import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector2, Vector3 } from 'three';
+import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
+import { TvMapBuilder } from '../builders/od-builder.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -33,9 +36,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { NodeFactoryService } from 'app/core/factories/node-factory.service';
-import { TvMapBuilder } from '../builders/od-builder.service';
-import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class TvRoad {
 
@@ -52,7 +52,7 @@ export class TvRoad {
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
-	public lanes = new TvRoadLanes(this);
+	public lanes = new TvRoadLanes( this );
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
@@ -390,7 +390,7 @@ export class TvRoad {
 
 		const laneSectionId = this.lanes.laneSections.length + 1;
 
-		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this.id ) );
+		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this ) );
 
 		this.updateLaneSections();
 
@@ -401,18 +401,19 @@ export class TvRoad {
 
 	addLaneSectionInstance ( laneSection: TvLaneSection ) {
 
-		laneSection.roadId = this.id;
+		laneSection.road = this;
 
 		laneSection.lanes.forEach( lane => {
 
 			lane.roadId = this.id;
 
-			lane.laneSectionId = laneSection.id;
+			lane.laneSection = laneSection;
 
 		} );
 
 		this.laneSections.push( laneSection );
 
+		this.updateLaneSections();
 	}
 
 	clearLaneSections () {
@@ -425,7 +426,7 @@ export class TvRoad {
 
 		const laneSectionId = this.lanes.laneSections.length + 1;
 
-		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.id );
+		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
 		this.lanes.laneSections.push( laneSection );
 
@@ -1177,7 +1178,7 @@ export class TvRoad {
 
 		SceneService.add( point );
 
-		this.updateGeometryFromSpline()
+		this.updateGeometryFromSpline();
 	}
 
 	addControlPointAt ( position: Vector3 ) {
@@ -1397,7 +1398,7 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
+					if ( laneWidth.node ) laneWidth.node.visible = false;
 
 				} );
 
@@ -1414,15 +1415,15 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) {
+					if ( laneWidth.node ) {
 
-						laneWidth.mesh.visible = true;
+						laneWidth.node.visible = true;
 
 					} else {
 
-						laneWidth.mesh = NodeFactoryService.createLaneWidthNode( this, lane, laneWidth.s, laneWidth );
+						laneWidth.node = new LaneWidthNode( laneWidth );
 
-						SceneService.add( laneWidth.mesh );
+						SceneService.add( laneWidth.node );
 
 					}
 
@@ -1461,4 +1462,26 @@ export class TvRoad {
 
 	}
 
+	getCoordAt ( point: Vector3 ): TvPosTheta {
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const coordinates = new TvPosTheta();
+
+		for ( const geometry of this.geometries ) {
+
+			const temp = new TvPosTheta();
+
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+		}
+
+		return coordinates;
+	}
 }
