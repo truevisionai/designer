@@ -31,12 +31,14 @@ import { PickingHelper } from '../services/picking-helper.service';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
 export class ManeuverTool extends BaseTool {
 
 	name: string = 'ManeuverTool';
+	toolType = ToolType.Maneuver;
 
 	public connectingRoad: TvRoad;
 

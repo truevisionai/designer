@@ -20,10 +20,12 @@ import { BaseTool } from './base-tool';
 import { CommandHistory } from 'app/services/command-history';
 import { CreatePropCurveCommand } from '../commands/create-prop-curve-command';
 import { AddPropCurvePointCommand } from '../commands/add-prop-curve-point-command.ts';
+import { ToolType } from '../models/tool-types.enum';
 
 export class PropCurveTool extends BaseTool {
 
 	public name: string = 'PropCurveTool';
+	public toolType = ToolType.PropCurve;
 
 	public shapeEditor: PointEditor;
 

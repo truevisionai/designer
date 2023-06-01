@@ -13,10 +13,12 @@ import { MonoBehaviour } from '../components/mono-behaviour';
 import { IEditorState } from './i-editor-state';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { StatusBarService } from 'app/services/status-bar.service';
+import { ToolType } from '../models/tool-types.enum';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	abstract name: string;
+	abstract toolType: ToolType;
 
 	// highlighting variables
 	private previousColor = new Color();

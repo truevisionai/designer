@@ -19,11 +19,13 @@ import {
 import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { LineEditor } from '../editors/line-editor';
 import { BaseMarkingTool } from './marking-point-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export class MarkingLineTool extends BaseMarkingTool {
 
 	static texture = new TextureLoader().load( `assets/markings/crosswalk-marking.png` );
 	name: string = 'MarkingLineTool';
+	toolType = ToolType.MarkingLine;
 	private shapeEditor: AbstractShapeEditor;
 	private controlPointAddedSubscriber: Subscription;
 	private hasSignal = false;

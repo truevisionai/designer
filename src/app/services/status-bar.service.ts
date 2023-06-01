@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { AppService } from 'app/core/services/app.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
@@ -20,6 +20,7 @@ export class StatusBarService {
 	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
 
 	static message: string = '';
+	static messageChanged = new EventEmitter<string>();
 
 	// public message = '';
 
@@ -77,17 +78,21 @@ export class StatusBarService {
 
 	static setHint ( msg: string ) {
 
-		this.message = 'Hint: '+ msg;
+		this.setMessage( 'Hint: ' + msg );
 
 	}
 
 	static setMessage ( msg: string ) {
 
+		if ( this.message === msg ) return;
+
 		this.message = msg;
+
+		this.messageChanged.emit( this.message );
 
 	}
 
-	static clearHint (  ) {
+	static clearHint () {
 
 		this.message = '';
 

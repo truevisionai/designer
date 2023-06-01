@@ -16,10 +16,12 @@ import { PointEditor } from '../editors/point-editor';
 import { KeyboardInput } from '../input';
 import { AppInspector } from '../inspector';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export class PropPolygonTool extends BaseTool {
 
 	public name: string = 'PropPolygonTool';
+	public toolType = ToolType.PropPolygon;
 
 	public shapeEditor: PointEditor;
 

@@ -2,7 +2,7 @@
 	"name": "truevision-designer",
 	"homepage": "https://www.truevision.ai",
 	"description": "Truevison designer is a tool to create environment and scenarios for training & testing autonomous vehicles",
-	"version": "2023.4.28",
+	"version": "2023.5.28",
 	"author": {
 		"name": "Truevision.ai",
 		"email": "himanshu@truevision.ai",
@@ -27,7 +27,7 @@
 		"dist": "npm run build && electron-builder",
 		"postinstall": "electron-builder install-app-deps",
 		"linux": "npm run build:prod && electron-builder build --linux",
-		"windows": "npm run build:prod && electron-builder build --windows",
+		"windows": "electron-builder build --windows",
 		"mac": "npm run build:prod && electron-builder build --mac",
 		"release": "electron-builder build --linux --windows -p always",
 		"sentry-inject": "sentry-cli sourcemaps inject ./dist",
