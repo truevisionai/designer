@@ -152,8 +152,6 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		this.map.roads.forEach( road => road.updateGeometryFromSpline() );
-
 		this.map.roads.forEach( road => {
 
 			if ( road.isJunction ) {
@@ -287,6 +285,8 @@ export class SceneImporterService extends AbstractReader {
 		road.shoulderMaterialGuid = xml.shoulderMaterialGuid;
 
 		road.spline = this.importSpline( xml.spline, road );
+
+		road.updateGeometryFromSpline();
 
 		this.odParser.readRoadTypes( road, xml );
 
