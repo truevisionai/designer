@@ -44,7 +44,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		this.rebuild( this.node.road );
 
-		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane } ) ).execute();
+		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 	}
 
 	undo (): void {
@@ -57,7 +57,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		this.rebuild( this.node.road );
 
-		( new SetInspectorCommand( LaneWidthInspector, { lane: this.node.lane, node: this.node } ) ).execute();
+		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 
 	}
 

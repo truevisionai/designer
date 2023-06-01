@@ -1398,7 +1398,7 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
+					if ( laneWidth.node ) laneWidth.node.visible = false;
 
 				} );
 
@@ -1415,15 +1415,15 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) {
+					if ( laneWidth.node ) {
 
-						laneWidth.mesh.visible = true;
+						laneWidth.node.visible = true;
 
 					} else {
 
-						laneWidth.mesh = new LaneWidthNode( this, lane, laneWidth.s, laneWidth );
+						laneWidth.node = new LaneWidthNode( laneWidth );
 
-						SceneService.add( laneWidth.mesh );
+						SceneService.add( laneWidth.node );
 
 					}
 

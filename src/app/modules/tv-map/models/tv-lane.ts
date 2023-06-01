@@ -344,7 +344,7 @@ export class TvLane {
 
 	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this.id, this._roadId ) );
+		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this, this.laneSection.road ) );
 
 	}
 

@@ -1,8 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BufferGeometry, Group, LineBasicMaterial, LineSegments } from 'three';
 import { COLOR } from '../../../shared/utils/colors.service';
-import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
-import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { AnyControlPoint } from './control-point';
 
@@ -15,7 +17,7 @@ export class LaneWidthNode extends Group {
 	public line: LineSegments;
 	public point: AnyControlPoint;
 
-	constructor ( private _road: TvRoad, private _lane: TvLane, private _s: number, public laneWidth: TvLaneWidth ) {
+	constructor ( public laneWidth: TvLaneWidth ) {
 
 		super();
 
@@ -23,11 +25,11 @@ export class LaneWidthNode extends Group {
 	}
 
 	get road () {
-		return this._road;
+		return this.laneWidth.road;
 	}
 
 	get lane () {
-		return this._lane;
+		return this.laneWidth.lane;
 	}
 
 	get roadId () {
@@ -62,5 +64,13 @@ export class LaneWidthNode extends Group {
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
 		this.line.renderOrder = 3;
 		this.add( this.line );
+	}
+
+	select () {
+		this.point?.select();
+	}
+
+	unselect () {
+		this.point?.unselect();
 	}
 }

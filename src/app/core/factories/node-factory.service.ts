@@ -30,7 +30,7 @@ export class NodeFactoryService {
 
 		lane.addWidthRecordInstance( laneWidth );
 
-		return laneWidth.mesh = new LaneWidthNode( road, lane, laneWidth.s, laneWidth );
+		return laneWidth.node = new LaneWidthNode( laneWidth );
 	}
 
 	// update s value of lane-width as per the restriction
