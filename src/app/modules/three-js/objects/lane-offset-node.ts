@@ -52,21 +52,53 @@ export class LaneOffsetNode extends Group {
 	}
 
 	select () {
+
 		this.point?.select();
+
 	}
 
 	unselect () {
+
 		this.point?.unselect();
+
 	}
 
 	updateScoordinate ( sCoord: number ) {
 
-		// const offset = this.laneOffset.getValue( newS );
+		const laneOffsets = this.road.getLaneOffsets();
 
-		this.laneOffset.s = sCoord;
+		// this also works
+		const index = laneOffsets.findIndex( i => i.uuid === this.laneOffset.uuid );
+
+		// this also works
+		// const index = laneOffsets.findIndex( i => i.s >= this.laneOffset.s );
+
+		if ( index < 1 ) return;
+
+		const min = laneOffsets[ index - 1 ].s + 0.1;
+
+		let max = this.road.length;
+
+		if ( index + 1 < laneOffsets.length ) {
+
+			max = laneOffsets[ index + 1 ].s - 0.1;
+
+		}
+
+		this.laneOffset.s = Maths.clamp( sCoord, min, max );
 
 		this.updatePosition();
 
+		this.road.updateLaneOffsetValues();
+	}
+
+	updateOffset ( value: number ) {
+
+		this.laneOffset.a = value;
+
+		this.updatePosition();
+
+		this.road.updateLaneOffsetValues();
 	}
 
 	updatePosition () {

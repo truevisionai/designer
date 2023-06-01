@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from 'app/utils/maths';
 import { TvLaneSection } from './tv-lane-section';
 import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoad } from './tv-road.model';
@@ -15,6 +16,9 @@ export class TvRoadLanes {
 
 	constructor ( private road: TvRoad ) {
 
+		// default record for all roads
+		this.addLaneOffsetRecord( 0, 0, 0, 0, 0 );
+
 	}
 
 	getLaneSections (): TvLaneSection[] {
@@ -27,22 +31,25 @@ export class TvRoadLanes {
 
 	addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
 
-		const laneOffset = new TvRoadLaneOffset( this.road, s, a, b, c, d )
+		const laneOffset = new TvRoadLaneOffset( this.road, s, a, b, c, d );
 
-		this.laneOffsets.push( laneOffset );
-
-		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.addLaneOffsetInstance( laneOffset );
 
 		return laneOffset;
 	}
 
 	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
 
+		// Check if a lane offset with the same 's' already exists.
+		const existingOffset = this.laneOffsets.find( lo => Maths.approxEquals( lo.s, laneOffset.s ) );
+
+		if ( existingOffset ) return;
+
 		this.laneOffsets.push( laneOffset );
 
 		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-	}
 
+	}
 	updateLaneOffsetValues ( roadLength: number ) {
 
 		for ( let i = 0; i < this.laneOffsets.length && this.laneOffsets.length > 1; i++ ) {

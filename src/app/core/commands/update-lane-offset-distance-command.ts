@@ -6,7 +6,6 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-import { NodeFactoryService } from '../factories/node-factory.service';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 
@@ -27,16 +26,15 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.node?.updateScoordinate( this.newDistance )
+		this.node?.updateScoordinate( this.newDistance );
 
 		this.rebuild( this.node.road );
-
 
 	}
 
 	undo (): void {
 
-		this.node?.updateScoordinate( this.oldDistance )
+		this.node?.updateScoordinate( this.oldDistance );
 
 		this.rebuild( this.node.road );
 

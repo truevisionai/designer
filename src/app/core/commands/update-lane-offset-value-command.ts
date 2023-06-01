@@ -25,9 +25,7 @@ export class UpdateLaneOffsetValueCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.node.laneOffset.a = this.newOffset;
-
-		this.node.road.updateLaneOffsetValues();
+		this.node.updateOffset( this.newOffset );
 
 		this.rebuild( this.node.road );
 
@@ -35,9 +33,7 @@ export class UpdateLaneOffsetValueCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.node.laneOffset.a = this.oldOffset;
-
-		this.node.road.updateLaneOffsetValues();
+		this.node.updateOffset( this.oldOffset );
 
 		this.rebuild( this.node.road );
 
