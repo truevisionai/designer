@@ -120,7 +120,7 @@ export class TvMap {
 
 		road.addElevation( 0, 0.05, 0, 0, 0 );
 
-		const roadStyle = RoadStyleService.getRampRoadStyle( road.id, lane);
+		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane);
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 

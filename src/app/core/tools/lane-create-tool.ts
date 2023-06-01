@@ -36,7 +36,6 @@ export class LaneCreateTool extends BaseTool {
 	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.BLUE, false );
 
 	private dragging: boolean;
-	private isPointerDown: boolean;
 	startPosTheta: TvPosTheta;
 	endPosTheta: TvPosTheta;
 
