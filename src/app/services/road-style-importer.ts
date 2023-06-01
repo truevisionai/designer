@@ -61,7 +61,7 @@ export class RoadStyleImporter extends AbstractReader {
 
 	static importLaneSection ( json: any ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( 0, 0, true, 1 );
+		const laneSection = new TvLaneSection( 0, 0, true );
 
 		this.readAsOptionalElement( json.laneSection.left, xml => {
 			this.readAsOptionalArray( xml.lane, xml => {

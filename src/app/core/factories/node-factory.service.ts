@@ -3,20 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AnyControlPoint, LaneOffsetNode, LaneRoadMarkNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { LaneOffsetNode, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
-import { BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { BufferGeometry, Vector3 } from 'three';
 
 
 @Injectable( {
@@ -47,38 +42,8 @@ export class NodeFactoryService {
 
 	static createLaneWidthNode ( road: TvRoad, lane: TvLane, s: number, laneWidth: TvLaneWidth ): LaneWidthNode {
 
-		const node = new LaneWidthNode( road, lane, s, laneWidth );
+		return new LaneWidthNode( road, lane, s, laneWidth );
 
-		const offset = laneWidth.getValue( s ) * 0.5;
-
-		const start = TvMapQueries.getLanePosition( road.id, lane.id, s, -offset );
-		const end = TvMapQueries.getLanePosition( road.id, lane.id, s, offset );
-
-		/////////////////////////////////////////
-
-		node.point = AnyControlPoint.create( 'point', end );
-
-		node.point.tag = LaneWidthNode.pointTag;
-
-		node.add( node.point );
-
-		/////////////////////////////////////////
-
-		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-
-		node.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
-
-		node.line[ 'tag' ] = LaneWidthNode.lineTag;
-
-		node.line.renderOrder = 3;
-
-		node.add( node.line );
-
-		//////////////////////////////////////////
-
-		// group.position.copy( center );
-
-		return node;
 	}
 
 	// update s value of lane-width as per the restriction
@@ -128,7 +93,7 @@ export class NodeFactoryService {
 
 		} else if ( direction === 'tCoordinate' ) {
 
-			sCoordinate = node.s;
+			sCoordinate = node.laneWidth.s;
 
 		}
 
@@ -142,7 +107,7 @@ export class NodeFactoryService {
 
 		node.point.position.copy( end );
 
-		node.s = node.laneWidth.s = adjustedS;
+		node.laneWidth.s = adjustedS;
 
 		// const roadPos = new OdPosTheta();
 		// const lanePos = new OdPosTheta();
@@ -194,12 +159,12 @@ export class NodeFactoryService {
 
 		const laneWidth = node.laneWidth;
 
-		if ( node.s < 0 ) node.s = 0;
+		if ( node.laneWidth.s < 0 ) node.laneWidth.s = 0;
 
-		const offset = laneWidth.getValue( node.s ) * 0.5;
+		const offset = laneWidth.getValue( node.laneWidth.s ) * 0.5;
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, offset );
+		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, -offset );
+		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, offset );
 
 		// TODO: can be improved
 		node.line.geometry.dispose();

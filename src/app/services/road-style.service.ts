@@ -22,9 +22,9 @@ export class RoadStyle {
 
 		this.laneOffset = new TvRoadLaneOffset( null, 0, 0, 0, 0, 0 );
 
-		this.laneSection = new TvLaneSection( 0, 0, true, road?.id );
+		this.laneSection = new TvLaneSection( 0, 0, true, road );
 
-		this.laneSection.roadId = road?.id;
+		this.laneSection.road = road;
 
 	}
 
@@ -52,7 +52,7 @@ export class RoadStyleService {
 
 	}
 
-	static getRoadStyle ( road?: TvRoad ): RoadStyle {
+	static getRoadStyle ( road: TvRoad ): RoadStyle {
 
 		if ( this.style ) {
 
@@ -62,13 +62,13 @@ export class RoadStyleService {
 		return this.getDefaultRoadStyle( road );
 	}
 
-	static getDefaultRoadStyle ( road?: TvRoad ): RoadStyle {
+	static getDefaultRoadStyle ( road: TvRoad ): RoadStyle {
 
 		const roadStyle = new RoadStyle( road );
 
 		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
 
-		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road?.id );
+		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
 		const leftLane3 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
 		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );

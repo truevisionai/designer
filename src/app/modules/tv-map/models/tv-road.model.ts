@@ -390,7 +390,7 @@ export class TvRoad {
 
 		const laneSectionId = this.lanes.laneSections.length + 1;
 
-		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this.id ) );
+		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this ) );
 
 		this.updateLaneSections();
 
@@ -401,13 +401,13 @@ export class TvRoad {
 
 	addLaneSectionInstance ( laneSection: TvLaneSection ) {
 
-		laneSection.roadId = this.id;
+		laneSection.road = this;
 
 		laneSection.lanes.forEach( lane => {
 
 			lane.roadId = this.id;
 
-			lane.laneSectionId = laneSection.id;
+			lane.laneSection = laneSection;
 
 		} );
 
@@ -426,7 +426,7 @@ export class TvRoad {
 
 		const laneSectionId = this.lanes.laneSections.length + 1;
 
-		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.id );
+		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
 		this.lanes.laneSections.push( laneSection );
 
