@@ -102,7 +102,7 @@ export class TvMap {
 
 		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
 
-		const roadStyle = RoadStyleService.getRoadStyle( road.id );
+		const roadStyle = RoadStyleService.getRoadStyle( road );
 
 		// const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
 		const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );

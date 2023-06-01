@@ -21,19 +21,13 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 		super();
 
-		if ( !this.oldDistance ) {
-
-			this.oldDistance = this.node.laneOffset.s;
-
-		}
+		this.oldDistance = oldDistance || this.node.laneOffset.s;
 
 	}
 
 	execute (): void {
 
-		this.node.laneOffset.s = this.newDistance;
-
-		NodeFactoryService.updateLaneOffsetNode( this.node );
+		this.node?.updateScoordinate( this.newDistance )
 
 		this.rebuild( this.node.road );
 
@@ -42,9 +36,7 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.node.laneOffset.s = this.oldDistance;
-
-		NodeFactoryService.updateLaneOffsetNode( this.node );
+		this.node?.updateScoordinate( this.oldDistance )
 
 		this.rebuild( this.node.road );
 
@@ -62,7 +54,7 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		this.laneHelper.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper?.drawRoad( road, LineType.DASHED, true );
 
 	}
 

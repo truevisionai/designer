@@ -6,6 +6,7 @@ import { MetaImporter } from 'app/core/models/metadata.model';
 import { TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class RoadStyle {
 
@@ -17,19 +18,19 @@ export class RoadStyle {
 
 	public laneSection: TvLaneSection;
 
-	constructor ( roadId?: number ) {
+	constructor ( road?: TvRoad ) {
 
-		this.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		this.laneOffset = new TvRoadLaneOffset( null, 0, 0, 0, 0, 0 );
 
-		this.laneSection = new TvLaneSection( 0, 0, true, roadId );
+		this.laneSection = new TvLaneSection( 0, 0, true, road?.id );
 
-		this.laneSection.roadId = roadId;
+		this.laneSection.roadId = road?.id;
 
 	}
 
-	clone ( roadId: number ): RoadStyle {
+	clone ( road: TvRoad ): RoadStyle {
 
-		const style = new RoadStyle( roadId );
+		const style = new RoadStyle( road );
 
 		style.laneOffset = this.laneOffset.clone();
 
@@ -51,23 +52,23 @@ export class RoadStyleService {
 
 	}
 
-	static getRoadStyle ( roadId?: number ): RoadStyle {
+	static getRoadStyle ( road?: TvRoad ): RoadStyle {
 
 		if ( this.style ) {
 
-			return this.style.clone( roadId );
+			return this.style.clone( road );
 		}
 
-		return this.getDefaultRoadStyle( roadId );
+		return this.getDefaultRoadStyle( road );
 	}
 
-	static getDefaultRoadStyle ( roadId?: number ): RoadStyle {
+	static getDefaultRoadStyle ( road?: TvRoad ): RoadStyle {
 
-		const roadStyle = new RoadStyle();
+		const roadStyle = new RoadStyle( road );
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
 
-		roadStyle.laneSection = new TvLaneSection( 0, 0, true, roadId );
+		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road?.id );
 
 		const leftLane3 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
 		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );

@@ -208,43 +208,6 @@ export class NodeFactoryService {
 		node.point.position.copy( end );
 	}
 
-	static createLaneOffsetNode ( road: TvRoad, laneOffset: TvRoadLaneOffset ): LaneOffsetNode {
-
-		const node = new LaneOffsetNode( road, laneOffset );
-
-		const offset = laneOffset.getValue( laneOffset.s );
-
-		const start = TvMapQueries.findRoadById( road.id ).getPositionAt( laneOffset.s, 0 );
-
-		// const end = OpenDriveQueries.findRoadById( roadId ).getPositionAt( s, 0 );
-
-		/////////////////////////////////////////
-
-		node.point = AnyControlPoint.create( 'point', start.toVector3() );
-
-		node.point.tag = LaneOffsetNode.pointTag;
-
-		node.add( node.point );
-
-		/////////////////////////////////////////
-
-		// const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-
-		// node.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
-
-		// node.line[ 'tag' ] = LaneOffsetNode.lineTag;
-
-		// node.line.renderOrder = 3;
-
-		// node.add( node.line );
-
-		//////////////////////////////////////////
-
-		// group.position.copy( center );
-
-		return node;
-	}
-
 	/**
 	 * Updates the position of the node
 	 * @param node

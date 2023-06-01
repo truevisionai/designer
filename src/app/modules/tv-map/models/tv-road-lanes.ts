@@ -13,6 +13,10 @@ export class TvRoadLanes {
 
 	private laneOffsets: TvRoadLaneOffset[] = [];
 
+	constructor ( private road: TvRoad ) {
+
+	}
+
 	getLaneSections (): TvLaneSection[] {
 		return this.laneSections;
 	}
@@ -21,12 +25,15 @@ export class TvRoadLanes {
 		return this.laneOffsets;
 	}
 
-	addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): any {
+	addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
 
-		this.laneOffsets.push( new TvRoadLaneOffset( s, a, b, c, d ) );
+		const laneOffset = new TvRoadLaneOffset( this.road, s, a, b, c, d )
+
+		this.laneOffsets.push( laneOffset );
 
 		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
+		return laneOffset;
 	}
 
 	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {

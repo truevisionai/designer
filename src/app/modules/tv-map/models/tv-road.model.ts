@@ -35,7 +35,7 @@ import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { NodeFactoryService } from 'app/core/factories/node-factory.service';
 import { TvMapBuilder } from '../builders/od-builder.service';
-import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
+import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class TvRoad {
 
@@ -52,7 +52,7 @@ export class TvRoad {
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
-	public lanes = new TvRoadLanes();
+	public lanes = new TvRoadLanes(this);
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
@@ -805,9 +805,9 @@ export class TvRoad {
 
 	}
 
-	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ) {
+	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
 
-		this.lanes.addLaneOffsetRecord( s, a, b, c, d );
+		return this.lanes.addLaneOffsetRecord( s, a, b, c, d );
 
 	}
 
@@ -1291,7 +1291,25 @@ export class TvRoad {
 
 	showLaneOffsetNodes () {
 
-		throw new Error( 'Method not implemented.' );
+		this.getLaneOffsets().forEach( laneOffset => {
+
+			if ( laneOffset.node ) {
+
+				laneOffset.node.updatePosition();
+
+				laneOffset.node.visible = true;
+
+				SceneService.add( laneOffset.node );
+
+			} else {
+
+				laneOffset.node = new LaneOffsetNode( this, laneOffset );
+
+				SceneService.add( laneOffset.node );
+
+			}
+
+		} );
 
 	}
 
@@ -1300,9 +1318,11 @@ export class TvRoad {
 
 		this.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.mesh ) {
+			if ( laneOffset.node ) {
 
-				laneOffset.mesh.visible = false;
+				laneOffset.node.visible = false;
+
+				SceneService.remove( laneOffset.node );
 
 			}
 
