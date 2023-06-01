@@ -7,9 +7,9 @@ import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-comm
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { LaneWidthTool } from 'app/core/tools/lane-width-tool';
-import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';

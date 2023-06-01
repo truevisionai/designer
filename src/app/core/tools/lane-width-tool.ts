@@ -3,7 +3,7 @@
  */
 
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { AnyControlPoint, LaneWidthNode } from 'app/modules/three-js/objects/control-point';
+import { AnyControlPoint} from 'app/modules/three-js/objects/control-point';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { CommandHistory } from 'app/services/command-history';
@@ -11,6 +11,7 @@ import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/la
 import { Subscription } from 'rxjs';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { AddWidthNodeCommand } from '../commands/add-width-node-command';
 import { SetInspectorCommand } from '../commands/set-inspector-command';
