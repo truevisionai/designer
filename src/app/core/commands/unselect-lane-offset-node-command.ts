@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneOffsetInspector } from "app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component";
-import { SetInspectorCommand } from "./set-inspector-command";
-import { BaseCommand } from "./base-command";
-import { LaneOffsetTool } from "../tools/lane-offset-tool";
-import { ICommand } from "./i-command";
-import { LaneOffsetNode } from "app/modules/three-js/objects/control-point";
+import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
+import { LaneOffsetInspector } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
+import { LaneOffsetTool } from '../tools/lane-offset-tool';
+import { BaseCommand } from './base-command';
+import { ICommand } from './i-command';
+import { SetInspectorCommand } from './set-inspector-command';
 
 
 export class UnselectLaneOffsetNodeCommand extends BaseCommand {
@@ -16,18 +16,18 @@ export class UnselectLaneOffsetNodeCommand extends BaseCommand {
 
 	constructor (
 		private tool: LaneOffsetTool,
-		private node: LaneOffsetNode,
+		private newNode: LaneOffsetNode,
 	) {
 
 		super();
 
-		this.inspectorCommand = new SetInspectorCommand( LaneOffsetInspector, null )
+		this.inspectorCommand = new SetInspectorCommand( LaneOffsetInspector, null );
 
 	}
 
 	execute (): void {
 
-		this.tool.node?.unselect();
+		this.newNode?.unselect();
 
 		this.tool.node = null;
 
@@ -39,9 +39,9 @@ export class UnselectLaneOffsetNodeCommand extends BaseCommand {
 
 		this.tool.node?.unselect();
 
-		this.tool.node = this.node;
+		this.tool.node = this.newNode;
 
-		this.tool.node?.select();
+		this.newNode?.select();
 
 		this.inspectorCommand.undo();
 
