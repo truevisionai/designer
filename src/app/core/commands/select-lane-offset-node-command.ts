@@ -31,11 +31,11 @@ export class SelectLaneOffsetNodeCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.tool.node?.unselect();
+		this.oldNode?.unselect();
 
 		this.tool.node = this.newNode;
 
-		this.tool.node?.select();
+		this.newNode?.select();
 
 		this.inspectorCommand.execute();
 
@@ -43,11 +43,11 @@ export class SelectLaneOffsetNodeCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.tool.node?.unselect();
+		this.newNode?.unselect();
 
 		this.tool.node = this.oldNode;
 
-		this.tool.node?.select();
+		this.newNode?.select();
 
 		this.inspectorCommand.undo();
 

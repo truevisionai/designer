@@ -29,11 +29,11 @@ export class SelectRoadmarNodeCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.tool.node?.unselect();
+		this.oldNode?.unselect();
 
 		this.tool.node = this.newNode;
 
-		this.tool.node?.select();
+		this.newNode?.select();
 
 		this.inspectorCommand.execute();
 
@@ -41,11 +41,11 @@ export class SelectRoadmarNodeCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.tool.node?.unselect();
+		this.newNode?.unselect();
 
 		this.tool.node = this.oldNode;
 
-		this.tool.node?.select();
+		this.oldNode?.select();
 
 		this.inspectorCommand.undo();
 
