@@ -3,9 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { LaneOffsetNode} from 'app/modules/three-js/objects/control-point';
+import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
@@ -38,13 +37,7 @@ export class NodeFactoryService {
 		lane.addWidthRecordInstance( laneWidth );
 
 		// make mesh for the lane width node
-		return laneWidth.mesh = this.createLaneWidthNode( road, lane, laneWidth.s, laneWidth );
-	}
-
-	static createLaneWidthNode ( road: TvRoad, lane: TvLane, s: number, laneWidth: TvLaneWidth ): LaneWidthNode {
-
-		return new LaneWidthNode( road, lane, s, laneWidth );
-
+		return laneWidth.mesh = new LaneWidthNode( road, lane, laneWidth.s, laneWidth );
 	}
 
 	// update s value of lane-width as per the restriction

@@ -7,11 +7,14 @@ import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
+import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector3 } from 'three';
+import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
+import { TvMapBuilder } from '../builders/od-builder.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -33,9 +36,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { NodeFactoryService } from 'app/core/factories/node-factory.service';
-import { TvMapBuilder } from '../builders/od-builder.service';
-import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class TvRoad {
 
@@ -52,7 +52,7 @@ export class TvRoad {
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
-	public lanes = new TvRoadLanes(this);
+	public lanes = new TvRoadLanes( this );
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
@@ -1178,7 +1178,7 @@ export class TvRoad {
 
 		SceneService.add( point );
 
-		this.updateGeometryFromSpline()
+		this.updateGeometryFromSpline();
 	}
 
 	addControlPointAt ( position: Vector3 ) {
@@ -1421,7 +1421,7 @@ export class TvRoad {
 
 					} else {
 
-						laneWidth.mesh = NodeFactoryService.createLaneWidthNode( this, lane, laneWidth.s, laneWidth );
+						laneWidth.mesh = new LaneWidthNode( this, lane, laneWidth.s, laneWidth );
 
 						SceneService.add( laneWidth.mesh );
 
