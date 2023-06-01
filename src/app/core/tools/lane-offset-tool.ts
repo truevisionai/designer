@@ -13,6 +13,7 @@ import { SelectLaneForLaneOffsetCommand } from '../commands/select-lane-for-lane
 import { SelectLaneOffsetNodeCommand } from '../commands/select-lane-offset-node-command';
 import { UnselectLaneForLaneOffsetCommand } from '../commands/unselect-lane-for-lane-offset-command';
 import { UnselectLaneOffsetNodeCommand } from '../commands/unselect-lane-offset-node-command';
+import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
 import { KeyboardInput } from '../input';
 import { ToolType } from '../models/tool-types.enum';
 import { PickingHelper } from '../services/picking-helper.service';
@@ -27,6 +28,8 @@ export class LaneOffsetTool extends BaseTool {
 	public node: LaneOffsetNode;
 
 	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+
+	private nodeDistanceUpdated: boolean;
 
 	init () {
 
@@ -76,35 +79,38 @@ export class LaneOffsetTool extends BaseTool {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		// if ( this.pointerDown && this.node ) {
+		this.updateNodeDistance( e );
 
-		// 	this.laneWidthChanged = true;
+	}
 
-		// 	const newPosition = new TvPosTheta();
+	public onPointerUp ( pointerEventData: PointerEventData ) {
 
-		// 	const road = TvMapQueries.getRoadByCoords( e.point.x, e.point.y, newPosition );
+		if ( this.nodeDistanceUpdated && this.node ) {
 
-		// 	// new road should be same
-		// 	if ( road.id === this.node.road.id ) {
+			const oldPosition = this.pointerDownAt.clone();					// starts position of pointer when down
+			const newPosition = this.node?.point.position;					// end position of pointer when pointer up
 
-		// 		const command = ( new UpdateLaneOffsetDistanceCommand( this.node, newPosition.s, null, this.laneHelper ) );
+			const oldCoord = this.node.road.getCoordAt( oldPosition );
+			const newCoord = this.node.road.getCoordAt( newPosition );
 
-		// 		command.execute();
+			const command = new UpdateLaneOffsetDistanceCommand(
+				this.node, newCoord.s, oldCoord.s, this.laneHelper
+			);
 
-		// 	}
+			CommandHistory.execute( command );
 
-		// }
+			this.nodeDistanceUpdated = false;
+		}
+
 	}
 
 	private isNodeSelected ( e: PointerEventData ): boolean {
 
-		// // first chceck for control point interactions
-		// // doing in 2 loop to prioritise control points
-		const interactedPoint = PickingHelper.checkControlPointInteraction( e, LaneOffsetNode.pointTag, 1.0 );
+		const point = PickingHelper.checkControlPointInteraction( e, LaneOffsetNode.pointTag, 1.0 );
 
-		if ( !interactedPoint || !interactedPoint.parent ) return false;
+		if ( !point || !point.parent ) return false;
 
-		const node = interactedPoint.parent as LaneOffsetNode;
+		const node = point.parent as LaneOffsetNode;
 
 		if ( !this.node || this.node.uuid !== node.uuid ) {
 
@@ -138,4 +144,22 @@ export class LaneOffsetTool extends BaseTool {
 		return true;
 	}
 
+	private updateNodeDistance ( e: PointerEventData ): void {
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.lane || !this.node || !e.point ) return;
+
+		const road = this.node.road;
+
+		// new road should be same otherwise return
+		if ( road.id !== this.node.road.id ) return;
+
+		const roadCoord = road.getCoordAt( e.point );
+
+		this.node?.updateScoordinate( roadCoord.s );
+
+		this.nodeDistanceUpdated = true;
+
+	}
 }
