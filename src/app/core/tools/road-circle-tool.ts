@@ -16,8 +16,6 @@ export class RoadCircleTool extends BaseTool {
 	public name: string = 'RoadCircleTool';
 	public toolType = ToolType.RoadCircle;
 
-	private pointerDown: boolean = false;
-	private pointerDownAt: Vector3;
 	private pointerLastAt: Vector3;
 	private currentRadius: number;
 
@@ -55,9 +53,6 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		this.pointerDown = true;
-		this.pointerDownAt = e.point;
-
 		this.initCircle( this.pointerDownAt, e.point, this.radius );
 	}
 
@@ -67,8 +62,6 @@ export class RoadCircleTool extends BaseTool {
 
 		this.createRoads();
 
-		this.pointerDown = false;
-		this.pointerDownAt = null;
 		this.circleRoad = null;
 		this.currentRadius = 0;
 	}
@@ -83,7 +76,7 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		if ( !this.pointerDown ) return;
+		if ( !this.isPointerDown ) return;
 		if ( !this.pointerDownAt ) return;
 
 		this.pointerLastAt = e.point;

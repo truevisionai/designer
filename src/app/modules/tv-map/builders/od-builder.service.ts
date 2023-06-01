@@ -89,6 +89,12 @@ export class TvMapBuilder {
 
 	}
 
+	static rebuildRoad ( road: TvRoad ): any {
+
+		this.buildRoad( TvMapInstance.map.gameObject, road );
+
+	}
+
 	static buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
 
 		laneSection.gameObject = null;

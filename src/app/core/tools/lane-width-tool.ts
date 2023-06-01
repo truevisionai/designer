@@ -26,8 +26,6 @@ export class LaneWidthTool extends BaseTool {
 	public toolType = ToolType.LaneWidth;
 
 	private laneWidthChanged: boolean = false;
-	private pointerDown: boolean = false;
-	private pointerDownAt: Vector3;
 
 	private _lane: TvLane;
 	private _node: LaneWidthNode;
@@ -81,9 +79,6 @@ export class LaneWidthTool extends BaseTool {
 
 		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
-		this.pointerDownAt = e.point;
-
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.checkNodePointInteraction( e ) ) return;
@@ -122,16 +117,12 @@ export class LaneWidthTool extends BaseTool {
 
 		}
 
-		this.pointerDown = false;
-
-		this.pointerDownAt = null;
-
 		this.laneWidthChanged = false;
 	}
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this._node ) {
+		if ( this.isPointerDown && this._node ) {
 
 			this.laneWidthChanged = true;
 

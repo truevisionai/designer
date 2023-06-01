@@ -94,10 +94,6 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
-
-		this.pointerDownAt = e.point ? e.point.clone() : null;
-
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.lane && this.isNodeSelected( e ) ) return;
@@ -129,10 +125,6 @@ export class LaneMarkingTool extends BaseTool {
 			CommandHistory.execute( command );
 
 		}
-
-		this.pointerDown = false;
-
-		this.pointerDownAt = null;
 
 		this.pointerObject = null;
 

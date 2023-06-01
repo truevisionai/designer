@@ -10,6 +10,7 @@ import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { MonoBehaviour } from '../components/mono-behaviour';
+import { AppService } from '../services/app.service';
 import { IEditorState } from './i-editor-state';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { StatusBarService } from 'app/services/status-bar.service';

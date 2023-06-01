@@ -570,6 +570,12 @@ export class TvLaneSection {
 		return count;
 	}
 
+	getCenterLanes () {
+
+		return this.laneVector.filter( lane => lane.getSide() === TvLaneSide.CENTER );
+
+	}
+
 	getRightLaneCount () {
 
 		const idLessThanZero = ( a, b ) => a[ 0 ] < 0;

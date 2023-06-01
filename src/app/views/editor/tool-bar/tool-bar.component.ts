@@ -252,7 +252,7 @@ export class ToolBarComponent implements OnInit {
 
 		ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
 
-			this.currentTool = tool;
+      this.currentTool = tool;
 
 		} );
 
