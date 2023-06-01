@@ -12,7 +12,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector2, Vector3 } from 'three';
 import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
 import { TvMapBuilder } from '../builders/od-builder.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
@@ -1462,4 +1462,26 @@ export class TvRoad {
 
 	}
 
+	getCoordAt ( point: Vector3 ): TvPosTheta {
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const coordinates = new TvPosTheta();
+
+		for ( const geometry of this.geometries ) {
+
+			const temp = new TvPosTheta();
+
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+		}
+
+		return coordinates;
+	}
 }

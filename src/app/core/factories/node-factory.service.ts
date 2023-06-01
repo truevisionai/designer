@@ -24,19 +24,12 @@ export class NodeFactoryService {
 
 	static createLaneWidthNodeByPosition ( road: TvRoad, lane: TvLane, point: Vector3 ): LaneWidthNode {
 
-		const posTheta = new TvPosTheta();
+		const roadCoord = road.getCoordAt( point );
 
-		// getting position on track in s/t coordinates
-		TvMapQueries.getRoadByCoords( point.x, point.y, posTheta );
+		const laneWidth = lane.getLaneWidthAt( roadCoord.s ).clone( roadCoord.s );
 
-		// get the exisiting lane width at s
-		// and clone the lane width
-		const laneWidth = lane.getLaneWidthAt( posTheta.s ).clone( posTheta.s );
-
-		// add the with back to lane to
 		lane.addWidthRecordInstance( laneWidth );
 
-		// make mesh for the lane width node
 		return laneWidth.mesh = new LaneWidthNode( road, lane, laneWidth.s, laneWidth );
 	}
 
