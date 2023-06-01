@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -11,6 +10,7 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { BufferGeometry, Vector3 } from 'three';
+import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
 import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 
 

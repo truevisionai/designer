@@ -9,12 +9,12 @@ import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { NodeFactoryService } from 'app/core/factories/node-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
-import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
+import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
 
 @Component( {
 	selector: 'app-lane-offset-inspector',

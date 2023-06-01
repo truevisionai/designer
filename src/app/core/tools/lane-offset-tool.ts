@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneOffsetNode } from 'app/modules/three-js/objects/control-point';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { CreateLaneOffsetCommand } from '../commands/create-lane-offset-command';
 import { SelectLaneForLaneOffsetCommand } from '../commands/select-lane-for-lane-offset-command';

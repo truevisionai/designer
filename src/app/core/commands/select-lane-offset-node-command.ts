@@ -2,7 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneOffsetNode, LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
+import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
+import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
 import { BaseCommand } from './base-command';
 import { LaneMarkingTool } from '../tools/lane-marking-tool';
 import { SetInspectorCommand } from './set-inspector-command';

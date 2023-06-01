@@ -5,6 +5,7 @@
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 import { LaneMarkingTool } from '../tools/lane-marking-tool';
@@ -13,7 +14,6 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { NodeFactoryService } from '../factories/node-factory.service';
 import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
-import { LaneRoadMarkNode } from 'app/modules/three-js/objects/control-point';
 
 export class AddRoadmarkNodeCommand extends BaseCommand {
 
