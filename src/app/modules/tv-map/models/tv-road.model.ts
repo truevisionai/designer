@@ -37,6 +37,8 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
+import { TvConsole } from 'app/core/utils/console';
+import { SentryService } from 'app/core/analytics/sentry.service';
 
 export class TvRoad {
 
@@ -590,17 +592,31 @@ export class TvRoad {
 
 	getGeometryCoords ( s: number, odPosTheta: TvPosTheta ): number {
 
-		if ( s == null || s == undefined ) console.error( 's is undefined' );
+		if ( s == null || s == undefined ) TvConsole.error( 's is undefined' );
 
-		if ( s > this.length || s < 0 ) console.warn( 's is greater than road length or less than 0' );
+		if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
 
 		const geometry = this.getGeometryAt( s );
 
-		if ( geometry == null ) throw new Error( `geometry not found at s = ${ s }` );
+		if ( geometry == null ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
 
 		const geometryType = geometry.getCoords( s, odPosTheta );
 
-		if ( !geometryType ) throw new Error( 'geometry type not found at ' + s );
+		if ( !geometryType ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
 
 		const laneOffset = this.getLaneOffsetValue( s );
 

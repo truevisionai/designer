@@ -252,7 +252,7 @@ export class ToolBarComponent implements OnInit {
 
 		ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
 
-      this.currentTool = tool;
+			this.currentTool = tool;
 
 		} );
 
@@ -282,10 +282,10 @@ export class ToolBarComponent implements OnInit {
 
 			// bug fix to avoid auto selection of tool and buttons
 			// which makes them appear as selected
-			this.popover.open({
+			this.popover.open( {
 				restoreFocus: false,
 				autoFocus: false
-			});
+			} );
 
 			this.selectedTool = tool;
 

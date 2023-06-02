@@ -20,6 +20,7 @@ import { OpenDriverParser } from './open-drive-parser.service';
 import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';
 import { TvConsole } from 'app/core/utils/console';
+import { SceneExporterService } from 'app/services/scene-exporter.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +32,8 @@ export class TvMapService {
 		private writer: OdWriter,
 		private fileApiService: FileApiService,
 		private electron: TvElectronService,
-		private openDriveParser: OpenDriverParser
+		private openDriveParser: OpenDriverParser,
+		private sceneExporter: SceneExporterService,
 	) {
 
 		// not reqiured now because open scenario not being used
@@ -167,9 +169,15 @@ export class TvMapService {
 
 	}
 
-	getOutput () {
+	getOpenDriveOutput () {
 
 		return this.writer.getOutput( this.map );
+
+	}
+
+	getSceneOutput () {
+
+		return this.sceneExporter.export();
 
 	}
 
@@ -201,7 +209,7 @@ export class TvMapService {
 
 	saveLocallyAt ( path: string ) {
 
-		const contents = this.getOutput();
+		const contents = this.getOpenDriveOutput();
 
 		this.fileService.saveFile( path, contents, ( file: IFile ) => {
 
