@@ -17,7 +17,7 @@ export class RoadCircleTool extends BaseTool {
 	public toolType = ToolType.RoadCircle;
 
 	private pointerLastAt: Vector3;
-	private currentRadius: number;
+	private currentRadius: number = 0;
 
 	private circleRoad: CircleRoad;
 
@@ -28,10 +28,14 @@ export class RoadCircleTool extends BaseTool {
 	}
 
 	get radius () {
-		return Math.max( 7.5, this.currentRadius );
+		return Math.max( 7.5, this.currentRadius || 0 );
 	}
 
 	init () {
+
+		// HACK: to load the font
+		const tempText = new TextObject( '', new Vector3() );
+		setTimeout( () => tempText.remove(), 2000 );
 
 		super.init();
 
