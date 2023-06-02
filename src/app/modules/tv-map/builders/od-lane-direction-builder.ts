@@ -34,9 +34,9 @@ export class OdLaneDirectionBuilder {
 
 		container.computeLaneSectionEnd( this.road );
 
-		for ( let i = 0; i < this.road.lanes.laneSections.length; i++ ) {
+		for ( let i = 0; i < this.road.getLaneSections().length; i++ ) {
 
-			const laneSection = this.road.lanes.laneSections[ i ];
+			const laneSection = this.road.getLaneSections()[ i ];
 
 			laneSection.getLeftLanes().forEach( lane => this.drawLane( lane, laneSection ) );
 
@@ -55,9 +55,9 @@ export class OdLaneDirectionBuilder {
 
 		this.road = road;
 
-		for ( let i = 0; i < this.road.lanes.laneSections.length; i++ ) {
+		for ( let i = 0; i < this.road.getLaneSections().length; i++ ) {
 
-			const laneSection = this.road.lanes.laneSections[ i ];
+			const laneSection = this.road.getLaneSections()[ i ];
 
 			this.drawLane( lane, laneSection );
 		}

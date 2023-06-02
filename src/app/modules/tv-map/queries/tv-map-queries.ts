@@ -451,7 +451,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
 
-		return TvUtils.getRandomArrayItem( road.lanes.laneSections ) as TvLaneSection;
+		return TvUtils.getRandomArrayItem( road.getLaneSections() ) as TvLaneSection;
 
 	}
 
