@@ -401,15 +401,7 @@ export class TvRoad {
 	 */
 	addLaneSection ( s: number, singleSide: boolean ) {
 
-		// TODO: Check for interval
-
-		// this.lanes = new OdRoadLanes();
-
-		const laneSectionId = this.lanes.laneSections.length + 1;
-
-		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this ) );
-
-		this.updateLaneSections();
+		this.addGetLaneSection( s, singleSide );
 
 		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
 
@@ -441,22 +433,24 @@ export class TvRoad {
 
 	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
-		const laneSectionId = this.lanes.laneSections.length + 1;
+		const laneSections = this.getLaneSections();
+
+		const laneSectionId = laneSections.length + 1;
 
 		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
-		this.lanes.laneSections.push( laneSection );
+		laneSections.push( laneSection );
 
 		this.updateLaneSections();
 
-		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
+		this.lastAddedLaneSectionIndex = laneSections.length - 1;
 
 		return laneSection;
 	}
 
 	getLaneSectionCount () {
 
-		return this.lanes.laneSections.length;
+		return this.getLaneSections().length;
 
 	}
 
@@ -871,7 +865,7 @@ export class TvRoad {
 
 	getLaneSectionById ( id: number ) {
 
-		return this.lanes.laneSections.find( laneSection => {
+		return this.laneSections.find( laneSection => {
 
 			return laneSection.id === id;
 
