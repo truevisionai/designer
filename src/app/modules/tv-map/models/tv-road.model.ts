@@ -422,7 +422,7 @@ export class TvRoad {
 
 		this.laneSections.push( laneSection );
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 	}
 
 	clearLaneSections () {
@@ -441,7 +441,7 @@ export class TvRoad {
 
 		laneSections.push( laneSection );
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		this.lastAddedLaneSectionIndex = laneSections.length - 1;
 
@@ -917,14 +917,14 @@ export class TvRoad {
 
 		this.length += geometry.length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 	}
 
 	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryLine( s, x, y, hdg, length );
 
@@ -934,7 +934,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
 
@@ -948,7 +948,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
@@ -958,7 +958,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
 
@@ -970,7 +970,7 @@ export class TvRoad {
 
 		this.length = 0;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 	}
 
@@ -1446,7 +1446,7 @@ export class TvRoad {
 
 	}
 
-	private updateLaneSections () {
+	private computeLaneSectionLength () {
 
 		const sections = this.getLaneSections();
 
@@ -1494,5 +1494,48 @@ export class TvRoad {
 		}
 
 		return coordinates;
+	}
+
+	computeLaneSectionCoordinates () {
+
+		// Compute lastSCoordinate for all laneSections
+		for ( let i = 0; i < this.laneSections.length; i++ ) {
+
+			const currentLaneSection = this.laneSections[ i ];
+
+			// lastSCoordinate by default is equal to road length
+			let lastSCoordinate = this.length;
+
+			// if next laneSection exists let's use its sCoordinate
+			if ( i + 1 < this.laneSections.length ) {
+				lastSCoordinate = this.laneSections[ i + 1 ].s;
+			}
+
+			currentLaneSection.endS = lastSCoordinate;
+		}
+
+		// // Compute lastSCoordinate for all laneSections
+		// for ( let i = 0; i < this.laneSections.length; i++ ) {
+		//
+		// 	const currentLaneSection = this.laneSections[ i ];
+		//
+		// 	// by default it is equal to road lenght
+		// 	let lastSCoordinate = 0;
+		//
+		// 	// if next laneSection exists lets use its sCoordinate
+		// 	if ( i + 1 < this.laneSections.length ) {
+		//
+		// 		const nextLaneSection = this.laneSections[ i + 1 ];
+		// 		lastSCoordinate = nextLaneSection.attr_s;
+		//
+		// 	} else {
+		//
+		//
+		// 		lastSCoordinate = this.length;
+		// 	}
+		//
+		// 	currentLaneSection.lastSCoordinate = lastSCoordinate;
+		// }
+
 	}
 }

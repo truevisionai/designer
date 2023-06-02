@@ -69,9 +69,7 @@ export class OdLaneReferenceLineBuilder {
 
 	public create () {
 
-		const container = this.road.getLanes();
-
-		container.computeLaneSectionEnd( this.road );
+		this.road.computeLaneSectionCoordinates();
 
 		this.drawRoad( this.road );
 	}
@@ -314,14 +312,14 @@ export class OdLaneReferenceLineBuilder {
 
 		let s = laneSection.s;
 
-		while ( s <= laneSection.lastSCoordinate ) {
+		while ( s <= laneSection.endS ) {
 
 			this.makeLanePointsLoop( s, laneSection, lane, points );
 
 			s++;
 		}
 
-		s = laneSection.lastSCoordinate - Maths.Epsilon;
+		s = laneSection.endS - Maths.Epsilon;
 
 		this.makeLanePointsLoop( s, laneSection, lane, points );
 	}

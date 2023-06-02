@@ -475,7 +475,7 @@ export class TvMapQueries extends TvBaseQueries {
 		const lane = this.getRandomLane( laneSection, laneType );
 
 		// get random s on lane-section
-		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.lastSCoordinate - 1 );
+		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
 
 		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
 	}

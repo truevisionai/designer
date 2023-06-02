@@ -57,32 +57,6 @@ export class TvRoadLanes {
 
 	}
 
-	computeLaneSectionEnd ( road: TvRoad ) {
-
-		// Compute lastSCoordinate for all laneSections
-		for ( let i = 0; i < this.laneSections.length; i++ ) {
-
-			const currentLaneSection = this.laneSections[ i ];
-
-			// by default it is equal to road lenght
-			let lastSCoordinate = 0;
-
-			// if next laneSection exists lets use its sCoordinate
-			if ( i + 1 < this.laneSections.length ) {
-
-				const nextLaneSection = this.laneSections[ i + 1 ];
-				lastSCoordinate = nextLaneSection.attr_s;
-
-			} else {
-
-
-				lastSCoordinate = road.length;
-			}
-
-			currentLaneSection.lastSCoordinate = lastSCoordinate;
-		}
-	}
-
 	getLaneOffsetValue ( s: number ): number {
 
 		if ( s == null ) throw new Error( 's is undefined' );

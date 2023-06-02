@@ -30,9 +30,7 @@ export class OdLaneDirectionBuilder {
 
 	create () {
 
-		const container = this.road.getLanes();
-
-		container.computeLaneSectionEnd( this.road );
+		this.road.computeLaneSectionCoordinates();
 
 		for ( let i = 0; i < this.road.getLaneSections().length; i++ ) {
 
@@ -100,7 +98,7 @@ export class OdLaneDirectionBuilder {
 
 		let width = 0;
 
-		while ( s <= laneSection.lastSCoordinate ) {
+		while ( s <= laneSection.endS ) {
 
 			laneOffset = this.road.lanes.getLaneOffsetValue( s );
 

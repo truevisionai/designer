@@ -23,7 +23,7 @@ export class TvLaneSection {
 	public attr_s: number;
 	public attr_singleSide: boolean;
 	// old property
-	public lastSCoordinate: number;
+	public endS: number;
 
 	// public left: OdRoadLaneSectionContainer;
 	// public center: OdRoadLaneSectionContainer;
