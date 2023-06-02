@@ -14,10 +14,12 @@ import { FileApiService } from '../services/file-api.service';
 export class SentryService {
 
 	private static fileApiService: FileApiService;
+	private static mapService: TvMapService;
 
-	constructor ( fileApiService: FileApiService ) {
+	constructor ( fileApiService: FileApiService, private mapService: TvMapService ) {
 
 		SentryService.fileApiService = fileApiService;
+		SentryService.mapService = mapService;
 
 	}
 
@@ -76,13 +78,11 @@ export class SentryService {
 
 		this.fileApiService.uploadMapFiles( error ).subscribe( ( links ) => {
 
-			Sentry.withScope( ( scope ) => {
-
+			Sentry.configureScope( scope => {
 				scope.setExtra( "links", links );
-
-				Sentry.captureException( error, context );
-
 			} );
+
+			Sentry.captureException( error, context );
 
 		} );
 
