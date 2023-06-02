@@ -11,6 +11,7 @@ import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
+import { TvUtils } from './tv-utils';
 
 export class TvLaneSection {
 
@@ -772,59 +773,10 @@ export class TvLaneSection {
 
 	updateLaneWidthValues ( lane: TvLane ): void {
 
-		const widthSections = lane.getLaneWidthVector();
-
-		for ( let i = 0; i < widthSections.length; i++ ) {
-
-			const current = widthSections[ i ];
-
-			let pp0, pp1, pd0, pd1, length;
-
-			if ( ( i + 1 ) < widthSections.length ) {
-
-				const next = widthSections[ i + 1 ];
-
-				// next s cannot be less than current so we need to clamp it
-				if ( next.s <= current.s ) {
-
-					next.s = current.s + 0.1;
-
-				}
-
-				length = next.s - current.s;
-
-				pp0 = current.a;          // width at start
-				pp1 = next.a;             // width at end
-				pd0 = current.b;          // tangent at start
-				pd1 = next.b;             // tangent at end
-
-			} else {
-
-				// take lane section length
-				length = this.length - current.s;
-
-				pp0 = current.a;          // width at start
-				pp1 = current.a;          // width at end
-				pd0 = current.b;          // tangent at start
-				pd1 = current.b;          // tangent at end
-
-			}
-
-			let a = pp0;
-			let b = pd0;
-			let c = ( -3 * pp0 ) + ( 3 * pp1 ) + ( -2 * pd0 ) + ( -1 * pd1 );
-			let d = ( 2 * pp0 ) + ( -2 * pp1 ) + ( 1 * pd0 ) + ( 1 * pd1 );
-
-			b /= length;
-			c /= length * length;
-			d /= length * length * length;
-
-			current.a = a;
-			current.b = b;
-			current.c = c;
-			current.d = d;
-
-		}
+		// TODO: Check if this is correct
+		// this.length = lane.s - this.s;
+		// this.length - lane.s;
+		TvUtils.computeCoefficients( lane.getLaneWidthVector(), this.length );
 
 	}
 

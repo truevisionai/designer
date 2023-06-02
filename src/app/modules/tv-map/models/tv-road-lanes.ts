@@ -50,59 +50,10 @@ export class TvRoadLanes {
 		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
 	}
+
 	updateLaneOffsetValues ( roadLength: number ) {
 
-		for ( let i = 0; i < this.laneOffsets.length && this.laneOffsets.length > 1; i++ ) {
-
-			const current = this.laneOffsets[ i ];
-
-			let pp0, pp1, pd0, pd1, length;
-
-			if ( ( i + 1 ) < this.laneOffsets.length ) {
-
-				const next = this.laneOffsets[ i + 1 ];
-
-				// next s cannot be less than current so we need to clamp it
-				if ( next.s <= current.s ) {
-
-					next.s = current.s + 0.1;
-
-				}
-
-				length = next.s - current.s;
-
-				pp0 = current.a;          // offset at start
-				pp1 = next.a;             // offset at end
-				pd0 = current.b;          // tangent at start
-				pd1 = next.b;             // tangent at end
-
-			} else {
-
-				// take lane section length
-				length = roadLength;
-
-				pp0 = current.a;          // offset at start
-				pp1 = current.a;          // offset at end
-				pd0 = current.b;          // tangent at start
-				pd1 = current.b;          // tangent at end
-
-			}
-
-			let a = pp0;
-			let b = pd0;
-			let c = ( -3 * pp0 ) + ( 3 * pp1 ) + ( -2 * pd0 ) + ( -1 * pd1 );
-			let d = ( 2 * pp0 ) + ( -2 * pp1 ) + ( 1 * pd0 ) + ( 1 * pd1 );
-
-			b /= length;
-			c /= length * length;
-			d /= length * length * length;
-
-			current.a = a;
-			current.b = b;
-			current.c = c;
-			current.d = d;
-
-		}
+		TvUtils.computeCoefficients( this.laneOffsets, roadLength );
 
 	}
 
