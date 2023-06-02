@@ -273,7 +273,7 @@ export class AutoSpline extends AbstractSpline {
 
 		const s = length * t;
 
-		const geometry = geometries.find( g => s >= g.s && s <= g.s2 );
+		const geometry = geometries.find( g => s >= g.s && s <= g.endS );
 
 		const posTheta = new TvPosTheta();
 

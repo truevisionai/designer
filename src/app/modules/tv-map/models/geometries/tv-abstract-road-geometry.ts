@@ -2,8 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Curve, Vector2, Vector3 } from 'three';
-import { MathUtils } from 'three';
+import { Curve, MathUtils, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../../utils/maths';
 import { TvGeometryType, TvSide } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
@@ -26,16 +25,16 @@ export abstract class TvAbstractRoadGeometry {
 		this.attr_hdg = hdg;
 		this.attr_length = length;
 
-		this._s2 = s + length;
+		this._endS = s + length;
 
 		this.uuid = MathUtils.generateUUID();
 	}
 
-	protected _s2;
+	protected _endS;
 
-	get s2 () {
+	get endS () {
 
-		return this._s2;
+		return this._endS;
 
 	}
 
@@ -65,7 +64,7 @@ export abstract class TvAbstractRoadGeometry {
 
 		this.attr_S = value;
 
-		this._s2 = this.attr_S + this.attr_length;
+		this._endS = this.attr_S + this.attr_length;
 	}
 
 	get x () {
@@ -115,6 +114,8 @@ export abstract class TvAbstractRoadGeometry {
 
 		this.attr_length = value;
 
+		this._endS = this.attr_S + this.attr_length;
+
 		this.computeVars();
 	}
 
@@ -152,7 +153,7 @@ export abstract class TvAbstractRoadGeometry {
 		this.attr_hdg = hdg;
 		this.attr_length = length;
 
-		this._s2 = s + length;
+		this._endS = s + length;
 
 		if ( recalculate ) {
 			this.computeVars();
@@ -161,7 +162,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	checkInterval ( sCheck: number ): boolean {
 
-		if ( ( sCheck >= this.attr_S ) && ( sCheck <= this.s2 ) ) {
+		if ( ( sCheck >= this.attr_S ) && ( sCheck <= this.endS ) ) {
 
 			return true;
 
@@ -206,7 +207,7 @@ export abstract class TvAbstractRoadGeometry {
 
 		// const curveLength = curve.getLength();
 
-		for ( let s = this.s; s <= this.s2; s++ ) {
+		for ( let s = this.s; s <= this.endS; s++ ) {
 
 			this.getCoords( s, tmpPosTheta );
 
@@ -262,7 +263,7 @@ export abstract class TvAbstractRoadGeometry {
 		const tolerance = 1e-2;
 
 		let start = this.s;
-		let end = this.s2;
+		let end = this.endS;
 
 		while ( Math.abs( start - end ) >= tolerance ) {
 
@@ -304,5 +305,15 @@ export abstract class TvAbstractRoadGeometry {
 		}
 
 		return nearestPoint;
+	}
+
+	public endCoord (): TvPosTheta {
+
+		const pos = new TvPosTheta();
+
+		this.getCoords( this.endS, pos );
+
+		return pos;
+
 	}
 }

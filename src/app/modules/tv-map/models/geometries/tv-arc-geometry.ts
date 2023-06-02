@@ -85,7 +85,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 		const pos = new TvPosTheta();
 
-		this.getCoords( this.s2 / 2, pos );
+		this.getCoords( this.endS / 2, pos );
 
 		return pos.toVector3();
 	}
@@ -94,7 +94,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 		const pos = new TvPosTheta();
 
-		this.getCoords( this.s2, pos );
+		this.getCoords( this.endS, pos );
 
 		return pos.toVector3();
 
@@ -103,8 +103,8 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 	get headingEnd (): Vector3 {
 
 		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.s2;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.s2;
+		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
+		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
 
 		return new Vector3( x, y, 0 );
 
@@ -139,7 +139,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	computeVars () {
 
-		this._s2 = this.s + this.length;
+		// this._s2 = this.s + this.length;
 
 		// this.startAngle = this.hdg;
 		//
@@ -225,14 +225,14 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		const points: Vector2[] = [];
 		const posTheta = new TvPosTheta();
 
-		for ( let sCoordinate = this.s; sCoordinate <= this.s2; sCoordinate++ ) {
+		for ( let sCoordinate = this.s; sCoordinate <= this.endS; sCoordinate++ ) {
 
 			this.getCoords( sCoordinate, posTheta );
 			points.push( posTheta.toVector2() );
 
 		}
 
-		this.getCoords( this.s2 - Maths.Epsilon, posTheta );
+		this.getCoords( this.endS - Maths.Epsilon, posTheta );
 		points.push( posTheta.toVector2() );
 
 		return this.curve = new SplineCurve( points );

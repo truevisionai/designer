@@ -858,7 +858,7 @@ export class AutoManeuverTool extends BaseTool {
 
 				const posTheta = new TvPosTheta();
 
-				for ( let s = geometry.s; s <= geometry.s2; s += step ) {
+				for ( let s = geometry.s; s <= geometry.endS; s += step ) {
 
 					geometry.getCoords( s, posTheta );
 

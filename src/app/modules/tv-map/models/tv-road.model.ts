@@ -229,6 +229,14 @@ export class TvRoad {
 
 	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
 
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
+			try {
+				throw new Error( 'zero geometries call' );
+			} catch ( e ) {
+			}
+		}
+
 		const pose = new TvPosTheta;
 
 		this.getGeometryCoordsAt( s, t, pose );
@@ -255,6 +263,14 @@ export class TvRoad {
 	}
 
 	startPosition () {
+
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
+			try {
+				throw new Error( 'zero geometries call' );
+			} catch ( e ) {
+			}
+		}
 
 		return this.getRoadPosition( 0 );
 

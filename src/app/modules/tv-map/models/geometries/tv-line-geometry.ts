@@ -33,8 +33,8 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 	get end (): Vector2 {
 
 		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.s2;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.s2;
+		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
+		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
 
 		return new Vector2( x, y );
 
@@ -43,8 +43,8 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 	get endV3 (): Vector3 {
 
 		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.s2;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.s2;
+		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
+		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
 
 		return new Vector3( x, y, 0 );
 
@@ -58,7 +58,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	computeVars () {
 
-		this._s2 = this.s + this.length;
+		// this._s2 = this.s + this.length;
 
 		this.sinTheta = Math.sin( this.hdg );
 		this.cosTheta = Math.cos( this.hdg );

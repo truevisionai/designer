@@ -165,10 +165,7 @@ export class OpenDriverParser extends AbstractReader {
 			spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType );
 		}
 
-		// // for last geometry
-		// const lastGeometry = geometries[ geometries.length - 1 ];
-
-		const lastCoord = road.endCoord();
+		const lastCoord = lastGeometry.endCoord();
 
 		spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType );
 
