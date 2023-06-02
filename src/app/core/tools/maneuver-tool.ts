@@ -343,7 +343,7 @@ export class ManeuverTool extends BaseTool {
 
 				CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-				SnackBar.error( 'Connection already exists' );
+				SnackBar.warn( 'Connection already exists' );
 
 			} else if ( result.connectionFound && !result.laneLinkFound ) {
 
@@ -981,6 +981,8 @@ export class ManeuverTool extends BaseTool {
 
 				connection.laneLink.forEach( link => {
 
+					// BUG: sometimes the connecting lane is not found
+					// https://instaveritas-m9.sentry.io/share/issue/750cf87d0f56414fb83c1f9908fd33c7/
 					const connectingLane = connectingRoad.getFirstLaneSection().getLaneById( link.to );
 
 					link.lanePath = LanePathFactory.createPathForLane( incomingRoad, connectingRoad, connectingLane, connection, link );
