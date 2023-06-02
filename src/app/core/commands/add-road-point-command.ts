@@ -2,21 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AppInspector } from 'app/core/inspector';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { OdBaseCommand } from './od-base-command';
-import { RoadTool } from '../tools/road-tool';
-import { Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { RoadTool } from '../tools/road-tool';
+import { OdBaseCommand } from './od-base-command';
+import { SetInspectorCommand } from './set-inspector-command';
 
 export class AddRoadPointCommand extends OdBaseCommand {
 
-	private newPoint: RoadControlPoint;
+	private readonly newPoint: RoadControlPoint;
+	private readonly oldPoint: RoadControlPoint;
 
-	private oldPoint: RoadControlPoint;;
+	private setInspectorCommand: SetInspectorCommand;
 
 	constructor ( private tool: RoadTool, private road: TvRoad, private position: Vector3 ) {
 
@@ -24,28 +25,30 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		this.oldPoint = this.tool.controlPoint;
 
-		this.newPoint = this.tool.controlPoint = this.addControlPoint( this.road, this.position )
+		this.newPoint = this.addControlPoint( this.road, this.position );
 
-	}
-
-	execute (): void {
-
-		AppInspector.setInspector( RoadInspector, {
-			road: this.road,
+		this.setInspectorCommand = new SetInspectorCommand( RoadInspector, {
+			road: road,
 			controlPoint: this.newPoint
 		} );
 
 	}
 
+	execute (): void {
+
+		this.tool.controlPoint = this.newPoint;
+
+		this.setInspectorCommand.execute();
+
+	}
+
 	undo (): void {
+
+		this.tool.controlPoint = this.oldPoint;
 
 		this.removeControlPoint( this.road, this.newPoint );
 
-		AppInspector.setInspector( RoadInspector, {
-			road: this.road,
-			controlPoint: this.oldPoint
-		} );
-
+		this.setInspectorCommand.undo();
 	}
 
 	redo (): void {
@@ -54,10 +57,7 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		this.rebuildRoad( this.road );
 
-		AppInspector.setInspector( RoadInspector, {
-			road: this.road,
-			controlPoint: this.newPoint
-		} );
+		this.setInspectorCommand.execute();
 	}
 
 	addControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
@@ -104,7 +104,7 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		} else if ( road.spline.controlPoints.length > 1 ) {
 
-			road.updateGeometryFromSpline()
+			road.updateGeometryFromSpline();
 
 			this.rebuildRoad( road );
 

@@ -2,43 +2,55 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AppInspector } from 'app/core/inspector';
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { OdBaseCommand } from './od-base-command';
-import { Vector3 } from 'three';
-import { RoadFactory } from '../factories/road-factory.service';
-import { TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { RoadTool } from '../tools/road-tool';
+import { OdBaseCommand } from './od-base-command';
+import { SetInspectorCommand } from './set-inspector-command';
 
 export class CreateRoadCommand extends OdBaseCommand {
 
 	private newRoad: TvRoad;
-
 	private newPoint: RoadControlPoint;
+	private setInspectorCommand: SetInspectorCommand;
 
 	constructor ( private tool: RoadTool, private position: Vector3 ) {
 
 		super();
 
+		this.newRoad = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
+
+		this.newPoint = this.newRoad.addControlPointAt( this.position );
+
+		this.setInspectorCommand = new SetInspectorCommand( RoadInspector, {
+			road: this.newRoad,
+			controlPoint: this.newPoint
+		} );
 	}
 
 	execute (): void {
 
-		this.newRoad = this.tool.road = this.map.addDefaultRoadWithType( TvRoadType.TOWN, 40 );
+		this.tool.road = this.newRoad;
+		this.tool.controlPoint = this.newPoint;
+		this.tool.node = null;
 
-		this.newPoint = this.tool.controlPoint = this.newRoad.addControlPointAt( this.position );
+		this.newPoint?.select();
 
-		AppInspector.setInspector( RoadInspector, {
-			road: this.newRoad,
-			controlPoint: this.newPoint
-		} );
+		this.setInspectorCommand.execute();
 
 	}
 
 	undo (): void {
+
+		this.tool.road = null;
+		this.tool.controlPoint = null;
+		this.tool.node = null;
+
+		this.newPoint?.unselect();
 
 		this.newRoad.spline.removeControlPoint( this.newPoint );
 
@@ -48,22 +60,24 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.map.removeRoad( this.newRoad );
 
-		AppInspector.clear();
+		this.setInspectorCommand.undo();
 
 	}
 
 	redo (): void {
 
+		this.tool.road = this.newRoad;
+		this.tool.controlPoint = this.newPoint;
+		this.tool.node = null;
+
+		this.newPoint?.select();
 		this.newPoint.visible = true;
 
 		this.newRoad.addControlPoint( this.newPoint );
 
 		this.map.addRoadInstance( this.newRoad );
 
-		AppInspector.setInspector( RoadInspector, {
-			road: this.newRoad,
-			controlPoint: this.newPoint
-		} );
+		this.setInspectorCommand.execute();
 
 	}
 

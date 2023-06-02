@@ -5,9 +5,10 @@ import { Group, LineSegments, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvRoadLaneOffset } from '../../tv-map/models/tv-road-lane-offset';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
-import { AnyControlPoint } from './control-point';
+import { AnyControlPoint} from './control-point';
+import { ISelectable } from './i-selectable';
 
-export class LaneOffsetNode extends Group {
+export class LaneOffsetNode extends Group implements ISelectable {
 
 	public static readonly tag = 'offset-node';
 	public static readonly pointTag = 'offset-point';
@@ -15,6 +16,8 @@ export class LaneOffsetNode extends Group {
 
 	public line: LineSegments;
 	public point: AnyControlPoint;
+
+	public isSelected: boolean = false;
 
 	constructor ( public road: TvRoad, public laneOffset: TvRoadLaneOffset ) {
 
@@ -53,12 +56,14 @@ export class LaneOffsetNode extends Group {
 
 	select () {
 
+		this.isSelected = true;
 		this.point?.select();
 
 	}
 
 	unselect () {
 
+		this.isSelected = false;
 		this.point?.unselect();
 
 	}

@@ -6,9 +6,10 @@ import { BufferGeometry, Group, LineBasicMaterial, LineSegments } from 'three';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { AnyControlPoint } from './control-point';
+import { AnyControlPoint} from './control-point';
+import { ISelectable } from './i-selectable';
 
-export class LaneWidthNode extends Group {
+export class LaneWidthNode extends Group implements ISelectable {
 
 	public static readonly tag = 'width-node';
 	public static readonly pointTag = 'width-point';
@@ -16,6 +17,7 @@ export class LaneWidthNode extends Group {
 
 	public line: LineSegments;
 	public point: AnyControlPoint;
+	public isSelected: boolean = false;
 
 	constructor ( public laneWidth: TvLaneWidth ) {
 
@@ -67,10 +69,12 @@ export class LaneWidthNode extends Group {
 	}
 
 	select () {
+		this.isSelected = true;
 		this.point?.select();
 	}
 
 	unselect () {
+		this.isSelected = false;
 		this.point?.unselect();
 	}
 }

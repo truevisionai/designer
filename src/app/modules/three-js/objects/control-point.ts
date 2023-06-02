@@ -6,8 +6,9 @@ import { EventEmitter } from '@angular/core';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from 'three';
+import { ISelectable } from './i-selectable';
 
-export abstract class BaseControlPoint extends Points {
+export abstract class BaseControlPoint extends Points implements ISelectable {
 
 	public mainObject: any;
 

@@ -8,9 +8,10 @@ import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { AnyControlPoint } from './control-point';
+import { AnyControlPoint} from './control-point';
+import { ISelectable } from './i-selectable';
 
-export class LaneRoadMarkNode extends Group {
+export class LaneRoadMarkNode extends Group implements ISelectable {
 
 	public static readonly tag = 'roadmark-node';
 	public static readonly pointTag = 'roadmark-point';
