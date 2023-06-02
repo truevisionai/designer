@@ -9,9 +9,13 @@ import { BaseCommand } from './base-command';
 
 export class RemoveLaneCommand extends BaseCommand {
 
-	constructor ( private laneSection: TvLaneSection, private lane: TvLane ) {
+	private laneSection: TvLaneSection;
+
+	constructor ( private lane: TvLane ) {
 
 		super();
+
+		this.laneSection = this.lane.laneSection;
 
 	}
 
@@ -19,7 +23,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
 		this.laneSection.removeLaneById( this.lane.id );
 
-		TvMapInstance.mapChanged.emit( this.map );
+		this.buildRoad( this.laneSection.road );
 
 	}
 
@@ -27,7 +31,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
 		this.laneSection.addLaneInstance( this.lane, true );
 
-		TvMapInstance.mapChanged.emit( this.map );
+		this.buildRoad( this.laneSection.road );
 
 	}
 

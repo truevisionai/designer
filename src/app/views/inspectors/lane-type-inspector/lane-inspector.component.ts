@@ -41,11 +41,9 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent,
 
 	onDelete () {
 
-		const road = this.map.getRoadById( this.lane.roadId );
+		if ( !this.lane ) return;
 
-		const laneSection = road.getLaneSectionById( this.lane.laneSectionId );
-
-		CommandHistory.execute( new RemoveLaneCommand( laneSection, this.lane ) );
+		CommandHistory.execute( new RemoveLaneCommand( this.lane ) );
 
 	}
 
