@@ -240,7 +240,7 @@ export class TvMap {
 
 			TvConsole.error( `${ roadId } road-id not found` );
 
-			console.error( `road not found` );
+			throw new Error( `RoadNotFound` );
 
 		}
 
