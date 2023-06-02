@@ -68,7 +68,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 		if ( index === -1 ) SnackBar.error( 'Unexpected error. Not able to find this node' );
 		if ( index === -1 ) return;
 
-		if ( index === 0 ) SnackBar.error( 'First node cannot be edited. Please add a new node.' );
+		if ( index === 0 ) SnackBar.warn( 'First node cannot be edited. Please add a new node.' );
 		if ( index === 0 ) return;
 
 		const minS = this.lane.roadMark[ index - 1 ].s + 0.1;

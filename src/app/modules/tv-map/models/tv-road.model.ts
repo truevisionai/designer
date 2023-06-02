@@ -233,10 +233,7 @@ export class TvRoad {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
-			try {
-				throw new Error( 'zero geometries call' );
-			} catch ( e ) {
-			}
+			throw new Error( 'NoGeometriesFound' );
 		}
 
 		const pose = new TvPosTheta;
@@ -268,10 +265,7 @@ export class TvRoad {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
-			try {
-				throw new Error( 'zero geometries call' );
-			} catch ( e ) {
-			}
+			throw new Error( 'NoGeometriesFound' );
 		}
 
 		return this.getRoadPosition( 0 );
@@ -1260,6 +1254,8 @@ export class TvRoad {
 	}
 
 	updateRoadNodes (): void {
+
+		this.updateGeometryFromSpline();
 
 		if ( !this.startNode ) {
 			this.startNode = this.createRoadNode( 'start' );

@@ -308,7 +308,7 @@ export class ManeuverTool extends BaseTool {
 
 			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-			SnackBar.error( 'Select a different entry/exit' );
+			SnackBar.warn( 'Select a different entry/exit' );
 
 			return;
 		}
@@ -319,7 +319,7 @@ export class ManeuverTool extends BaseTool {
 
 			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
 
-			SnackBar.error( 'Cannot connect' );
+			SnackBar.warn( 'Cannot connect' );
 
 			return;
 		}
