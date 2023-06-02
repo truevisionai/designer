@@ -995,7 +995,8 @@ export class TvRoad {
 
 	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
-		if ( !this.hasType ) return;
+		// add a default type if none exists
+		if ( !this.hasType ) this.setType( TvRoadType.TOWN, 40 );
 
 		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 	}
@@ -1005,7 +1006,7 @@ export class TvRoad {
 		let maxSpeed = null;
 
 		// get max-speed as per road
-		const type = TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
+		const type = this.getRoadTypeAt( s );
 
 		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
 
