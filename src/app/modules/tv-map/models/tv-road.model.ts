@@ -1448,6 +1448,8 @@ export class TvRoad {
 
 	private computeLaneSectionLength () {
 
+		this.computeLaneSectionCoordinates();
+
 		const sections = this.getLaneSections();
 
 		if ( sections.length == 0 ) return;

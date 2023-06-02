@@ -165,7 +165,7 @@ export class TvMapBuilder {
 		}
 
 		// add last s geometry to close any gaps
-		let lastSCoordinate = laneSection.endS - Maths.Epsilon;
+		let lastSCoordinate = Math.max( laneSection.endS - Maths.Epsilon, laneSection.endS );
 
 		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
 
