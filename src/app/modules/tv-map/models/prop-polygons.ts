@@ -5,14 +5,19 @@
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { AssetDatabase } from 'app/services/asset-database';
-import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2 } from 'three';
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2 } from 'three';
+
+interface IChildAndMesh {
+	mesh: Mesh;
+	material: Material;
+	worldMatrix?: Matrix4;
+}
 
 export class PropPolygon implements ISelectable {
 
@@ -22,9 +27,12 @@ export class PropPolygon implements ISelectable {
 
 	public id: number;
 
-	public props: Object3D[] = [];
+	private instanceMeshArray: InstancedMesh[] = [];
+	private propObjectArray: Object3D[] = [];
 
 	public mesh: Mesh;
+
+	public isSelected: boolean;
 
 	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public density = 0.5 ) {
 
@@ -36,18 +44,25 @@ export class PropPolygon implements ISelectable {
 		this.mesh = this.makeMesh( new Shape() );
 	}
 
-	isSelected: boolean;
 
 	select (): void {
+
 		this.isSelected = true;
+
 		this.showControlPoints();
+
 		this.showCurve();
+
 	}
 
 	unselect (): void {
+
 		this.isSelected = false;
+
 		this.hideControlPoints();
+
 		this.showCurve();
+
 	}
 
 	makeMesh ( shape: Shape ): Mesh {
@@ -62,8 +77,7 @@ export class PropPolygon implements ISelectable {
 
 		mesh.Tag = PropPolygon.tag;
 
-		mesh.userData.polygon = this;
-		mesh.userData.propPolygon = this;
+		mesh.userData.polygon = mesh.userData.propPolygon = this;
 
 		return mesh;
 	}
@@ -126,9 +140,9 @@ export class PropPolygon implements ISelectable {
 
 		this.mesh.geometry.dispose();
 
-		const geometry: ShapeGeometry = this.mesh.geometry = new ShapeGeometry( shape );
+		this.mesh.geometry = new ShapeGeometry( shape );
 
-		geometry.computeBoundingBox();
+		this.mesh.geometry.computeBoundingBox();
 	}
 
 
@@ -136,90 +150,76 @@ export class PropPolygon implements ISelectable {
 
 		this.removeAndClearProps();
 
-		const propInstance = this.getPropInstance();
+		const propObject = this.getPropInstance();
 
-		const childMeshesAndMaterials = this.getChildMeshesAndMaterials( propInstance );
+		const propChildren: IChildAndMesh[] = this.getChildMeshesAndMaterials( propObject );
 
 		const faces = this.computeFaces();
 
-		this.createInstancedMeshes( faces, childMeshesAndMaterials );
+		this.createInstancedMeshes( faces, propObject, propChildren );
 	}
 
-	createInstancedMeshes ( faces: number[][], childMeshesAndMaterials: any ): void {
+	createInstancedMeshes ( faces: number[][], propObject: Object3D, propChildren: IChildAndMesh[] ): void {
 
-		const instancedMeshes = this.createInstancedMeshArray( childMeshesAndMaterials );
+		// a unique instance is created for each child of prop
+		const instancedMeshArray = this.createInstancedMeshArray( propChildren );
 
 		let instanceCounter = 0;
 
-		faces.forEach( face => {
+		for ( let i = 0; i < faces.length; i++ ) {
 
-			const count = this.calculateInstanceCount( face );
+			const face = faces[ i ];
 
-			this.addInstancesToMeshes( count, face, instancedMeshes, instanceCounter );
+			const spawnCount = this.computeSpawnCountByArea( face );
 
-			instanceCounter += count;
+			for ( let j = 0; j < spawnCount; j++ ) {
 
-		} );
+				const position = Maths.randomPositionInTriangle(
+					this.spline.controlPointPositions[ face[ 0 ] ],
+					this.spline.controlPointPositions[ face[ 1 ] ],
+					this.spline.controlPointPositions[ face[ 2 ] ]
+				);
 
-		this.addInstancedMeshesToScene( instancedMeshes );
-	}
+				for ( let k = 0; k < instancedMeshArray.length; k++ ) {
 
-	addInstancedMeshesToScene ( instancedMeshes: InstancedMesh[] ) {
+					const instancedMesh = instancedMeshArray[ k ];
 
-		instancedMeshes.forEach( instancedMesh => {
+					const instanceMatrix = new Matrix4();
 
+					instanceMatrix.setPosition( position );
+
+					instanceMatrix.multiply( instancedMesh.userData.worldMatrix );
+
+					instancedMesh.setMatrixAt( instanceCounter, instanceMatrix );
+
+					instancedMesh.instanceMatrix.needsUpdate = true;
+
+				}
+
+				// used in exporting the object
+				const cloned = propObject.clone()
+				cloned.position.copy( position );
+				this.propObjectArray.push( cloned );
+
+				instanceCounter++;
+			}
+
+			instanceCounter += spawnCount;
+
+		}
+
+		instancedMeshArray.forEach( instancedMesh => {
+
+			// just adding the instance mesh in scene will add all 100s or 1000s of instances
 			SceneService.add( instancedMesh );
 
-			// TODO: fix exporting for this
-			this.props.push( instancedMesh );
+			// usefull for maintain
+			this.instanceMeshArray.push( instancedMesh );
 
 		} );
 	}
 
-	addInstancesToMeshes ( count: number, face: number[], instancedMeshes: InstancedMesh[], instanceCounter: number ): void {
-
-		function randomInTriangle ( v1, v2, v3 ) {
-
-			const r1 = Math.random();
-
-			const r2 = Math.sqrt( Math.random() );
-
-			const a = 1 - r2;
-
-			const b = r2 * ( 1 - r1 );
-
-			const c = r1 * r2;
-
-			return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
-		}
-
-		for ( let i = 0; i < count; i++ ) {
-
-			const position = randomInTriangle(
-				this.spline.controlPointPositions[ face[ 0 ] ],
-				this.spline.controlPointPositions[ face[ 1 ] ],
-				this.spline.controlPointPositions[ face[ 2 ] ]
-			);
-
-			instancedMeshes.forEach( instancedMesh => {
-
-				const instanceMatrix = new Matrix4();
-
-				instanceMatrix.setPosition( position );
-
-				instanceMatrix.multiply( instancedMesh.userData.worldMatrix );
-
-				instancedMesh.setMatrixAt( instanceCounter, instanceMatrix );
-
-				instancedMesh.instanceMatrix.needsUpdate = true;
-
-			} );
-
-			instanceCounter++;
-		}
-	}
-
-	private calculateInstanceCount ( face: number[] ): number {
+	private computeSpawnCountByArea ( face: number[] ): number {
 
 		const v0 = this.spline.controlPointPositions[ face[ 0 ] ];
 		const v1 = this.spline.controlPointPositions[ face[ 1 ] ];
@@ -234,17 +234,11 @@ export class PropPolygon implements ISelectable {
 	}
 
 
-	private createInstancedMeshArray ( childMeshesAndMaterials: any ): InstancedMesh[] {
+	private createInstancedMeshArray ( propChildren: IChildAndMesh[] ): InstancedMesh[] {
 
-		return childMeshesAndMaterials.map( ( { mesh, material, worldMatrix } ) => {
+		return propChildren.map( ( { mesh, material, worldMatrix } ) => {
 
-			const instanceGeometry = mesh.geometry;
-
-			const instanceMaterial = material;
-
-			const maxInstances = 1000; // Compute maxInstances based on your needs
-
-			const instancedMesh = new InstancedMesh( instanceGeometry, instanceMaterial, maxInstances );
+			const instancedMesh = new InstancedMesh( mesh.geometry, mesh.material, 1000 );
 
 			instancedMesh.userData.worldMatrix = worldMatrix;
 
@@ -256,11 +250,11 @@ export class PropPolygon implements ISelectable {
 
 	private removeAndClearProps (): void {
 
-		// Remove props from the scene
-		this.props.forEach( p => SceneService.remove( p ) );
+		this.propObjectArray.forEach( p => SceneService.remove( p ) );
+		this.propObjectArray.splice( 0, this.propObjectArray.length );
 
-		// Clear the props array
-		this.props.splice( 0, this.props.length );
+		this.instanceMeshArray.forEach( p => SceneService.remove( p ) );
+		this.instanceMeshArray.splice( 0, this.instanceMeshArray.length );
 
 	}
 
@@ -277,9 +271,9 @@ export class PropPolygon implements ISelectable {
 	}
 
 
-	private getChildMeshesAndMaterials ( propInstance: Object3D ): any {
+	private getChildMeshesAndMaterials ( propInstance: Object3D ): IChildAndMesh[] {
 
-		let childMeshesAndMaterials;
+		let childMeshesAndMaterials: IChildAndMesh[];
 
 		if ( propInstance instanceof Group ) {
 
@@ -319,7 +313,7 @@ export class PropPolygon implements ISelectable {
 
 	private extractMeshesAndMaterials ( group: Group ) {
 
-		const meshesAndMaterials = [];
+		const meshesAndMaterials: IChildAndMesh[] = [];
 
 		group.traverse( ( object ) => {
 
@@ -359,6 +353,10 @@ export class PropPolygon implements ISelectable {
 
 		this.hideCurve();
 
+		this.mesh?.parent?.remove( this.spline.mesh );
+
+		this.removeAndClearProps();
+
 	}
 
 	hideControlPoints () {
@@ -375,7 +373,7 @@ export class PropPolygon implements ISelectable {
 
 	showCurve () {
 
-		if ( this.spline.controlPoints.length < 2 ) return
+		if ( this.spline.controlPoints.length < 2 ) return;
 
 		this.spline.show();
 
@@ -389,9 +387,25 @@ export class PropPolygon implements ISelectable {
 
 	getExportJson () {
 
-		// const isInstanced = this.props.find( i => i instanceof InstancedMesh );
+		// const isInstanced = this.instanceMeshArray.find( i => i instanceof InstancedMesh );
 
-		return this.props.map( prop => ( {
+		// TODO: can be improved in futur
+		// instead of maintaing propObjectArray, we can loop over instanceMeshArray and return
+		// below code can help
+		//
+		// const position = new Vector3();
+		// const quaternion = new Quaternion();
+		// const scale = new Vector3();
+		//
+		// for ( let i = 0; i < instancedMesh.count; i++ ) {
+		// 	const matrix = new Matrix4();
+		// 	instancedMesh.getMatrixAt( i, matrix );
+		// 	matrix.decompose( position, quaternion, scale );
+		// 	const rotation = new Euler();
+		// 	rotation.setFromQuaternion( quaternion );
+		// 	// Now you can use the position, rotation (as a quaternion), and scale for this instance
+		// }
+		return this.propObjectArray.map( prop => ( {
 			attr_guid: this.propGuid,
 			position: {
 				attr_x: prop.position.x,
@@ -409,6 +423,12 @@ export class PropPolygon implements ISelectable {
 				attr_z: prop.scale.z,
 			}
 		} ) );
+
+	}
+
+	addPropObject ( propObject: Object3D ) {
+
+		this.propObjectArray.push( propObject );
 
 	}
 }

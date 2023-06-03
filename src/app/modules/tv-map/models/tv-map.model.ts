@@ -321,13 +321,7 @@ export class TvMap {
 
 		} );
 
-		this.propPolygons.forEach( polygon => {
-
-			this.gameObject.remove( polygon.spline.mesh );
-
-			polygon.props.forEach( prop => SceneService.remove( prop ) );
-
-		} );
+		this.propPolygons.forEach( polygon => polygon.delete() );
 
 		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
 

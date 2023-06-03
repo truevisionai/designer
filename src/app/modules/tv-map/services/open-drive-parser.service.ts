@@ -26,7 +26,7 @@ import { SignShapeType } from './tv-sign.service';
 
 declare const fxp;
 
-interface XmlElement {
+export interface XmlElement {
 	[ key: string ]: any;
 }
 
