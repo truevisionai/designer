@@ -5,20 +5,20 @@
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { CreateWidthNodeCommand } from '../commands/create-lane-width-command';
-import { SelectLaneForLaneWidthCommand } from '../commands/select-lane-for-lane-width-command';
-import { SelectLaneWidthNodeCommand } from '../commands/select-lane-width-node-command';
-import { UnselectLaneForLaneWidthCommand } from '../commands/unselect-lane-for-lane-width-command';
-import { UnselectLaneWidthNodeCommand } from '../commands/unselect-lane-width-node-command';
-import { UpdateWidthNodePositionCommand } from '../commands/update-width-node-position-command';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { KeyboardInput } from '../input';
-import { ToolType } from '../models/tool-types.enum';
-import { PickingHelper } from '../services/picking-helper.service';
-import { BaseTool } from './base-tool';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { CreateWidthNodeCommand } from './create-lane-width-command';
+import { SelectLaneForLaneWidthCommand } from './select-lane-for-lane-width-command';
+import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
+import { UnselectLaneForLaneWidthCommand } from './unselect-lane-for-lane-width-command';
+import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
+import { UpdateWidthNodePositionCommand } from '../../commands/update-width-node-position-command';
+import { NodeFactoryService } from '../../factories/node-factory.service';
+import { KeyboardInput } from '../../input';
+import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
 
 export class LaneWidthTool extends BaseTool {
 

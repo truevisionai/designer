@@ -5,7 +5,7 @@ import { LaneCreateTool } from "../tools/lane-create-tool";
 import { LaneMarkingTool } from "../tools/lane-marking-tool";
 import { LaneOffsetTool } from "../tools/lane-offset/lane-offset-tool";
 import { LaneTool } from "../tools/lane-tool";
-import { LaneWidthTool } from "../tools/lane-width-tool";
+import { LaneWidthTool } from "../tools/lane-width/lane-width-tool";
 import { ManeuverTool } from "../tools/maneuver-tool";
 import { MarkingLineTool } from "../tools/marking-line-tool";
 import { MarkingPointTool } from "../tools/marking-point-tool";

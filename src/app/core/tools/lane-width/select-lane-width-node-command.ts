@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
-import { LaneWidthTool } from '../tools/lane-width-tool';
-import { BaseCommand } from './base-command';
-import { SetInspectorCommand } from './set-inspector-command';
+import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
+import { LaneWidthInspector } from '../../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
+import { LaneWidthTool } from './lane-width-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
 
 export class SelectLaneWidthNodeCommand extends BaseCommand {
 

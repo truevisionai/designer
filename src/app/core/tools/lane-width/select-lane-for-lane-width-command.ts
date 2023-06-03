@@ -4,9 +4,9 @@
 
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneWidthTool } from '../tools/lane-width-tool';
-import { BaseCommand } from './base-command';
-import { ICommand } from './i-command';
+import { LaneWidthTool } from './lane-width-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { ICommand } from '../../commands/i-command';
 import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
 
 export class SelectLaneForLaneWidthCommand extends BaseCommand {
