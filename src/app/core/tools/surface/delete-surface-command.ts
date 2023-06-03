@@ -4,8 +4,8 @@
 
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { BaseCommand } from './base-command';
-import { SurfaceTool } from '../tools/surface/surface-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { SurfaceTool } from './surface-tool';
 
 export class DeleteSurfaceCommand extends BaseCommand {
 
