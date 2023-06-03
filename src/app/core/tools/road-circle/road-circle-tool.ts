@@ -6,10 +6,10 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, RingGeometry, Vector3 } from 'three';
-import { AddRoadCircleCommand } from '../commands/add-road-circle-command';
-import { BaseTool } from './base-tool';
+import { AddRoadCircleCommand } from './add-road-circle-command';
+import { BaseTool } from '../base-tool';
 import { TextObject } from 'app/modules/three-js/objects/text-object';
-import { ToolType } from '../models/tool-types.enum';
+import { ToolType } from '../../models/tool-types.enum';
 
 export class RoadCircleTool extends BaseTool {
 

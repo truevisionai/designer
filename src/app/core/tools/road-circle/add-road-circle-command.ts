@@ -8,10 +8,10 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { Maths } from 'app/utils/maths';
 import { Vector2, Vector3 } from 'three';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { RoadFactory } from '../factories/road-factory.service';
-import { AutoSpline } from '../shapes/auto-spline';
-import { OdBaseCommand } from './od-base-command';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { RoadFactory } from '../../factories/road-factory.service';
+import { AutoSpline } from '../../shapes/auto-spline';
+import { OdBaseCommand } from '../../commands/od-base-command';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
