@@ -57,6 +57,7 @@
 		"electron-updater": "^5.3.0",
 		"fast-xml-parser": "^4.0.11",
 		"file-saver": "^2.0.5",
+		"libxmljs": "^1.0.9",
 		"lodash": "^4.17.21",
 		"mixpanel-browser": "^2.45.0",
 		"ng2-validation": "^4.2.0",
