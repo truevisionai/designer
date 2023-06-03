@@ -4,10 +4,10 @@
 
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneMarkingTool } from '../tools/lane-marking-tool';
-import { BaseCommand } from './base-command';
+import { LaneMarkingTool } from './lane-marking-tool';
+import { BaseCommand } from '../../commands/base-command';
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
-import { ICommand } from './i-command';
+import { ICommand } from '../../commands/i-command';
 
 export class SelectLaneForRoadMarkCommand extends BaseCommand {
 

@@ -2,7 +2,7 @@ import { ToolType } from "../models/tool-types.enum";
 import { BaseTool } from "../tools/base-tool";
 import { LaneAddTool } from "../tools/lane-add/lane-add-tool";
 import { LaneCreateTool } from "../tools/lane-create-tool";
-import { LaneMarkingTool } from "../tools/lane-marking-tool";
+import { LaneMarkingTool } from "../tools/lane-marking/lane-marking-tool";
 import { LaneOffsetTool } from "../tools/lane-offset/lane-offset-tool";
 import { LaneTool } from "../tools/lane-tool";
 import { LaneWidthTool } from "../tools/lane-width/lane-width-tool";

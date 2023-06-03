@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { BaseCommand } from './base-command';
-import { LaneMarkingTool } from '../tools/lane-marking-tool';
-import { SetInspectorCommand } from './set-inspector-command';
+import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
+import { BaseCommand } from '../../commands/base-command';
+import { LaneMarkingTool } from './lane-marking-tool';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
 
 export class SelectRoadmarNodeCommand extends BaseCommand {
