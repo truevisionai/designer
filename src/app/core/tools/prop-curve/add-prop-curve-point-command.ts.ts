@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from '../../services/scene.service';
-import { BaseCommand } from '../../commands/base-command';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropModel } from '../../models/prop-model.model';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { BaseCommand } from '../../commands/base-command';
+import { SceneService } from '../../services/scene.service';
 import { PropCurveTool } from './prop-curve-tool';
 
 export class AddPropCurvePointCommand extends BaseCommand {

@@ -5,6 +5,7 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import {
@@ -16,11 +17,10 @@ import { PointEditor } from '../../editors/point-editor';
 import { KeyboardInput } from '../../input';
 import { AppInspector } from '../../inspector';
 import { PropModel } from '../../models/prop-model.model';
-import { BaseTool } from '../base-tool';
-import { CommandHistory } from 'app/services/command-history';
-import { CreatePropCurveCommand } from './create-prop-curve-command';
-import { AddPropCurvePointCommand } from '../commands/add-prop-curve-point-command.ts';
 import { ToolType } from '../../models/tool-types.enum';
+import { BaseTool } from '../base-tool';
+import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
+import { CreatePropCurveCommand } from './create-prop-curve-command';
 
 export class PropCurveTool extends BaseTool {
 
