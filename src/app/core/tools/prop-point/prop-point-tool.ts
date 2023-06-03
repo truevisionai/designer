@@ -13,15 +13,15 @@ import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { Subscription } from 'rxjs';
-import { CreatePropPointCommand } from '../commands/create-prop-point-command';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { PointEditor } from '../editors/point-editor';
-import { InspectorFactoryService, InspectorType } from '../factories/inspector-factory.service';
-import { AppInspector } from '../inspector';
-import { PropInstance } from '../models/prop-instance.model';
-import { BaseTool } from './base-tool';
+import { CreatePropPointCommand } from './create-prop-point-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { PointEditor } from '../../editors/point-editor';
+import { InspectorFactoryService, InspectorType } from '../../factories/inspector-factory.service';
+import { AppInspector } from '../../inspector';
+import { PropInstance } from '../../models/prop-instance.model';
+import { BaseTool } from '../base-tool';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { ToolType } from '../models/tool-types.enum';
+import { ToolType } from '../../models/tool-types.enum';
 
 /**
  * Prop point tool

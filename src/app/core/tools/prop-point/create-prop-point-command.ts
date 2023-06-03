@@ -3,9 +3,9 @@
  */
 
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { BaseCommand } from './base-command';
-import { PropInstance } from '../models/prop-instance.model';
-import { PropPointTool } from '../tools/prop-point-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { PropInstance } from '../../models/prop-instance.model';
+import { PropPointTool } from './prop-point-tool';
 
 export class CreatePropPointCommand extends BaseCommand {
 
