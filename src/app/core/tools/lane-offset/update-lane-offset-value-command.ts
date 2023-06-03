@@ -5,28 +5,27 @@
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-import { SceneService } from '../services/scene.service';
-import { BaseCommand } from './base-command';
+import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
+import { SceneService } from '../../services/scene.service';
+import { BaseCommand } from '../../commands/base-command';
 
-export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
+export class UpdateLaneOffsetValueCommand extends BaseCommand {
 
 	constructor (
 		private node: LaneOffsetNode,
-		private newDistance: number,
-		private oldDistance?: number,
+		private newOffset: number,
+		private oldOffset?: number,
 		private laneHelper?: OdLaneReferenceLineBuilder
 	) {
 
 		super();
 
-		this.oldDistance = oldDistance || this.node.laneOffset.s;
-
+		this.oldOffset = oldOffset || this.node.laneOffset.a;
 	}
 
 	execute (): void {
 
-		this.node?.updateScoordinate( this.newDistance );
+		this.node.updateOffset( this.newOffset );
 
 		this.rebuild( this.node.road );
 
@@ -34,7 +33,7 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.node?.updateScoordinate( this.oldDistance );
+		this.node.updateOffset( this.oldOffset );
 
 		this.rebuild( this.node.road );
 
@@ -52,7 +51,7 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		this.laneHelper?.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper.drawRoad( road, LineType.DASHED, true );
 
 	}
 

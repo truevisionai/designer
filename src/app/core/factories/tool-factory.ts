@@ -3,7 +3,7 @@ import { BaseTool } from "../tools/base-tool";
 import { LaneAddTool } from "../tools/lane-add-tool";
 import { LaneCreateTool } from "../tools/lane-create-tool";
 import { LaneMarkingTool } from "../tools/lane-marking-tool";
-import { LaneOffsetTool } from "../tools/lane-offset-tool";
+import { LaneOffsetTool } from "../tools/lane-offset/lane-offset-tool";
 import { LaneTool } from "../tools/lane-tool";
 import { LaneWidthTool } from "../tools/lane-width-tool";
 import { ManeuverTool } from "../tools/maneuver-tool";

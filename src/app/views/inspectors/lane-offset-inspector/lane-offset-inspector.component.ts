@@ -3,8 +3,8 @@
  */
 
 import { Component } from '@angular/core';
-import { UpdateLaneOffsetDistanceCommand } from 'app/core/commands/update-lane-offset-distance-command';
-import { UpdateLaneOffsetValueCommand } from 'app/core/commands/update-lane-offset-value-command';
+import { UpdateLaneOffsetDistanceCommand } from 'app/core/tools/lane-offset/update-lane-offset-distance-command';
+import { UpdateLaneOffsetValueCommand } from 'app/core/tools/lane-offset/update-lane-offset-value-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';

@@ -4,13 +4,10 @@
 
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneMarkingTool } from '../tools/lane-marking-tool';
-import { BaseCommand } from './base-command';
-import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
-import { ICommand } from './i-command';
-import { LaneOffsetTool } from '../tools/lane-offset-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { ICommand } from '../../commands/i-command';
+import { LaneOffsetTool } from './lane-offset-tool';
 import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
-import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 
 export class UnselectLaneForLaneOffsetCommand extends BaseCommand {
 

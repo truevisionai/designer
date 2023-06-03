@@ -5,19 +5,19 @@
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { CreateLaneOffsetCommand } from '../commands/create-lane-offset-command';
-import { SelectLaneForLaneOffsetCommand } from '../commands/select-lane-for-lane-offset-command';
-import { SelectLaneOffsetNodeCommand } from '../commands/select-lane-offset-node-command';
-import { UnselectLaneForLaneOffsetCommand } from '../commands/unselect-lane-for-lane-offset-command';
-import { UnselectLaneOffsetNodeCommand } from '../commands/unselect-lane-offset-node-command';
-import { UpdateLaneOffsetDistanceCommand } from '../commands/update-lane-offset-distance-command';
-import { KeyboardInput } from '../input';
-import { ToolType } from '../models/tool-types.enum';
-import { PickingHelper } from '../services/picking-helper.service';
-import { BaseTool } from './base-tool';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
+import { KeyboardInput } from '../../input';
+import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
+import { CreateLaneOffsetCommand } from './create-lane-offset-command';
+import { SelectLaneForLaneOffsetCommand } from './select-lane-for-lane-offset-command';
+import { SelectLaneOffsetNodeCommand } from './select-lane-offset-node-command';
+import { UnselectLaneForLaneOffsetCommand } from './unselect-lane-for-lane-offset-command';
+import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
 
 export class LaneOffsetTool extends BaseTool {
 

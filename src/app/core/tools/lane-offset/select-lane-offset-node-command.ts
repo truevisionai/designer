@@ -2,14 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { BaseCommand } from './base-command';
-import { LaneMarkingTool } from '../tools/lane-marking-tool';
-import { SetInspectorCommand } from './set-inspector-command';
-import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
-import { LaneOffsetTool } from '../tools/lane-offset-tool';
 import { LaneOffsetInspector } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
+import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
+import { BaseCommand } from '../../commands/base-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { LaneOffsetTool } from './lane-offset-tool';
 
 export class SelectLaneOffsetNodeCommand extends BaseCommand {
 
@@ -26,7 +23,7 @@ export class SelectLaneOffsetNodeCommand extends BaseCommand {
 
 		this.oldNode = this.tool.node;
 
-		this.inspectorCommand = new SetInspectorCommand( LaneOffsetInspector, newNode?.laneOffset )
+		this.inspectorCommand = new SetInspectorCommand( LaneOffsetInspector, newNode?.laneOffset );
 
 	}
 

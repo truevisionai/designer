@@ -6,12 +6,12 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { LaneOffsetInspector } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
 import { Vector3 } from 'three';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { SceneService } from '../services/scene.service';
-import { LaneOffsetTool } from '../tools/lane-offset-tool';
-import { BaseCommand } from './base-command';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { BaseCommand } from '../../commands/base-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { SceneService } from '../../services/scene.service';
+import { LaneOffsetTool } from './lane-offset-tool';
 import { SelectLaneOffsetNodeCommand } from './select-lane-offset-node-command';
-import { SetInspectorCommand } from './set-inspector-command';
 
 export class CreateLaneOffsetCommand extends BaseCommand {
 

@@ -3,12 +3,11 @@
  */
 
 import { LaneOffsetInspector } from 'app/views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
-import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-import { LaneOffsetTool } from '../tools/lane-offset-tool';
-import { BaseCommand } from './base-command';
-import { ICommand } from './i-command';
-import { SetInspectorCommand } from './set-inspector-command';
-
+import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
+import { BaseCommand } from '../../commands/base-command';
+import { ICommand } from '../../commands/i-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { LaneOffsetTool } from './lane-offset-tool';
 
 export class UnselectLaneOffsetNodeCommand extends BaseCommand {
 

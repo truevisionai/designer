@@ -4,9 +4,9 @@
 
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneOffsetTool } from '../tools/lane-offset-tool';
-import { BaseCommand } from './base-command';
-import { ICommand } from './i-command';
+import { BaseCommand } from '../../commands/base-command';
+import { ICommand } from '../../commands/i-command';
+import { LaneOffsetTool } from './lane-offset-tool';
 import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
 
 export class SelectLaneForLaneOffsetCommand extends BaseCommand {
