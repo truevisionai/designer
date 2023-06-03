@@ -5,9 +5,9 @@
 import { AppInspector } from 'app/core/inspector';
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { OdBaseCommand } from './od-base-command';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
+import { OdBaseCommand } from '../../commands/od-base-command';
 
 export class AddRoadCommand extends OdBaseCommand {
 

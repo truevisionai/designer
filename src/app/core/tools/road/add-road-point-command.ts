@@ -5,12 +5,12 @@
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { Vector3 } from 'three';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { SceneService } from '../services/scene.service';
-import { RoadTool } from '../tools/road-tool';
-import { OdBaseCommand } from './od-base-command';
-import { SetInspectorCommand } from './set-inspector-command';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
+import { SceneService } from '../../services/scene.service';
+import { RoadTool } from './road-tool';
+import { OdBaseCommand } from '../../commands/od-base-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
 
 export class AddRoadPointCommand extends OdBaseCommand {
 

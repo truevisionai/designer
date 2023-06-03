@@ -8,8 +8,8 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Vector3 } from 'three';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { RoadFactory } from '../factories/road-factory.service';
+import { NodeFactoryService } from '../../factories/node-factory.service';
+import { RoadFactory } from '../../factories/road-factory.service';
 import { RoadTool } from './road-tool';
 
 describe( 'RoadTool', () => {

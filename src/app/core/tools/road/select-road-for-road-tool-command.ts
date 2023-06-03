@@ -3,12 +3,12 @@
  */
 
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadControlPoint } from '../../modules/three-js/objects/road-control-point';
-import { RoadNode } from '../../modules/three-js/objects/road-node';
-import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { RoadTool } from '../tools/road-tool';
-import { BaseCommand } from './base-command';
-import { SetInspectorCommand } from './set-inspector-command';
+import { RoadControlPoint } from '../../../modules/three-js/objects/road-control-point';
+import { RoadNode } from '../../../modules/three-js/objects/road-node';
+import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
+import { RoadTool } from './road-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
 
 export class SelectRoadForRoadToolCommand extends BaseCommand {
 

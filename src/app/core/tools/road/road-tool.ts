@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AddRoadPointCommand } from 'app/core/commands/add-road-point-command';
+import { AddRoadPointCommand } from 'app/core/tools/road/add-road-point-command';
 import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
@@ -14,14 +14,14 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { Intersection, Vector3 } from 'three';
-import { CreateRoadCommand } from '../commands/create-road-command';
-import { JoinRoadNodeCommand } from '../commands/join-road-node-command';
-import { SelectRoadForRoadToolCommand } from '../commands/select-road-for-road-tool-command';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { KeyboardInput } from '../input';
-import { ToolType } from '../models/tool-types.enum';
-import { PickingHelper } from '../services/picking-helper.service';
-import { BaseTool } from './base-tool';
+import { CreateRoadCommand } from './create-road-command';
+import { JoinRoadNodeCommand } from './join-road-node-command';
+import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { KeyboardInput } from '../../input';
+import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
 
 /**
  *
