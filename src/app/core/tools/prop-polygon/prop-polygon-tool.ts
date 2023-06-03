@@ -2,40 +2,31 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PointerEventData } from 'app/events/pointer-event-data';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import {
-	PropPolygonInspectorComponent,
-	PropPolygonInspectorData
-} from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
-import { Subscription } from 'rxjs';
-import { PointEditor } from '../../editors/point-editor';
+import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';
+import { PropPolygon } from '../../../modules/tv-map/models/prop-polygons';
 import { KeyboardInput } from '../../input';
-import { AppInspector } from '../../inspector';
-import { BaseTool } from '../base-tool';
 import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
+import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
+import { CreatePropPolygonCommand } from './create-prop-polygon-command';
+import { SelectPropPolygonCommand } from './select-prop-polygon-command';
+import { UpdatePropPolygonPointCommand } from './update-prop-polygon-point-command';
 
-export class PropPolygonTool extends BaseTool {
+export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
 	public name: string = 'PropPolygonTool';
 	public toolType = ToolType.PropPolygon;
 
-	public shapeEditor: PointEditor;
-
-	private cpSubscriptions: Subscription[] = [];
-
-	private cpAddedSub: Subscription;
-	private cpMovedSub: Subscription;
-	private cpUpdatedSub: Subscription;
-	private cpSelectedSub: Subscription;
-	private cpUnselectedSub: Subscription;
-	private keyDownSub: Subscription;
-
-	private polygon: PropPolygon;
-	private point: AnyControlPoint;
+	public point: DynamicControlPoint<PropPolygon>;
+	public propPolygon: PropPolygon;
+	private pointUpdated: boolean;
 
 	constructor () {
 
@@ -43,11 +34,26 @@ export class PropPolygonTool extends BaseTool {
 
 	}
 
+	setMainObject ( value: ISelectable ): void {
+		this.propPolygon = value as PropPolygon;
+	}
+
+	getMainObject (): ISelectable {
+		return this.propPolygon;
+	}
+
+	setPoint ( value: ISelectable ): void {
+		this.point = value as DynamicControlPoint<PropPolygon>;
+	}
+
+	getPoint (): ISelectable {
+		return this.point;
+	}
+
 	public init () {
 
 		super.init();
 
-		this.shapeEditor = new PointEditor( 100 );
 	}
 
 	public enable () {
@@ -57,36 +63,14 @@ export class PropPolygonTool extends BaseTool {
 		this.map.propPolygons.forEach( polygon => {
 
 			polygon.showControlPoints();
-
 			polygon.showCurve();
 
 			polygon.spline.controlPoints.forEach( cp => {
 
 				cp.mainObject = polygon;
 
-				this.shapeEditor.controlPoints.push( cp );
-
 			} );
 		} );
-
-		this.keyDownSub = KeyboardInput.keyDown
-			.subscribe( e => this.onDeletePressed( e ) );
-
-		this.cpAddedSub = this.shapeEditor.controlPointAdded
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointAdded( cp ) );
-
-		this.cpMovedSub = this.shapeEditor.controlPointMoved
-			.subscribe( () => this.onControlPointMoved() );
-
-		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( () => this.onControlPointUpdated() );
-
-		this.cpSelectedSub = this.shapeEditor.controlPointSelected
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
-
-		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
-			.subscribe( () => this.onControlPointUnselected() );
-
 	}
 
 	public disable (): void {
@@ -100,132 +84,110 @@ export class PropPolygonTool extends BaseTool {
 
 		} );
 
-		this.keyDownSub.unsubscribe();
-		this.cpAddedSub.unsubscribe();
-		this.cpMovedSub.unsubscribe();
-		this.cpUpdatedSub.unsubscribe();
-		this.cpSelectedSub.unsubscribe();
-		this.cpUnselectedSub.unsubscribe();
-
-		this.shapeEditor.destroy();
 	}
 
-	public onPointerClicked ( e: PointerEventData ) {
+	public onPointerDown ( e: PointerEventData ) {
 
-		for ( let i = 0; i < e.intersections.length; i++ ) {
+		if ( !e.point || e.button != MouseButton.LEFT ) return;
 
-			const intersection = e.intersections[ i ];
+		if ( KeyboardInput.isShiftKeyDown ) {
 
-			if ( intersection.object && intersection.object[ 'tag' ] === PropPolygon.tag ) {
+			const prop = PropManager.getProp();
 
-				this.polygon = intersection.object.userData.polygon;
+			if ( !prop ) return SnackBar.warn( 'Select a prop from the project browser' );
 
-				this.polygon.showControlPoints();
+			if ( this.propPolygon ) {
 
-				this.showInspector( this.polygon );
+				CommandHistory.execute( new AddPropPolygonPointCommand( this, this.propPolygon, e.point ) );
 
-				break;
+			} else {
+
+				CommandHistory.execute( new CreatePropPolygonCommand( this, prop, e.point ) );
 			}
-		}
-	}
-
-	private onControlPointSelected ( cp: AnyControlPoint ) {
-
-		this.point = cp;
-
-		this.polygon = cp.mainObject;
-
-		this.showInspector( this.polygon, this.point );
-	}
-
-	private onControlPointUnselected () {
-
-		this.polygon = null;
-
-		this.point = null;
-
-	}
-
-	private onControlPointAdded ( cp: AnyControlPoint ) {
-
-		const prop = PropManager.getProp();
-
-		if ( !prop ) SnackBar.error( 'Select a prop from the project browser' );
-
-		if ( !prop ) this.shapeEditor.removeControlPoint( cp );
-
-		if ( !prop ) return;
-
-		if ( !this.polygon ) {
-
-			this.polygon = new PropPolygon( prop.guid );
-
-			this.map.propPolygons.push( this.polygon );
-
-		}
-
-		this.point = cp;
-
-		cp.mainObject = this.polygon;
-
-		this.polygon.spline.addControlPoint( cp );
-
-		this.polygon.update();
-
-		this.showInspector( this.polygon, this.point );
-	}
-
-	// called after control point position is updated and set
-	private onControlPointUpdated () {
-
-		this.polygon.update();
-
-		this.showInspector( this.polygon, this.point );
-	}
-
-	// called during control point is being moved/dragged
-	private onControlPointMoved () {
-
-		this.polygon.spline.update();
-
-		this.showInspector( this.polygon, this.point );
-
-	}
-
-	private onDeletePressed ( e: KeyboardEvent ) {
-
-		if ( e.key === 'Delete' && this.polygon ) {
-
-			this.polygon.delete();
-
-			const index = this.map.surfaces.findIndex( s => s.id === this.polygon.id );
-
-			if ( index > -1 ) {
-
-				this.map.surfaces.splice( index, 1 );
-
-			}
-
-			this.polygon = null;
-
-			delete this.polygon;
-		}
-
-	}
-
-	private showInspector ( polygon?: PropPolygon, point?: AnyControlPoint ) {
-
-		if ( polygon == null && point == null ) {
-
-			AppInspector.clear();
 
 		} else {
 
-			const data = new PropPolygonInspectorData( point, polygon );
+			if ( this.controlPointIsSelected( e ) ) return;
 
-			AppInspector.setInspector( PropPolygonInspectorComponent, data );
+			if ( this.propPolygonIsSelected( e ) ) return;
+
+			if ( this.propPolygon || this.point ) {
+
+				CommandHistory.executeMany(
+					new SelectMainObjectCommand( this, null ),
+					new SelectPointCommand( this, null ),
+				);
+
+			}
 		}
 	}
 
+	public onPointerMoved ( e: PointerMoveData ) {
+
+		if ( e.point && this.isPointerDown && this.point && this.point.isSelected ) {
+
+			this.point.copyPosition( e.point );
+
+			this.point.mainObject.spline.update();
+
+			this.pointUpdated = true;
+
+		}
+
+	}
+
+	public onPointerUp ( e: PointerEventData ) {
+
+		if ( this.point && this.point.isSelected && this.pointUpdated ) {
+
+			const oldPosition = this.pointerDownAt.clone();
+			const newPosition = this.point.position.clone();
+
+			CommandHistory.execute( new UpdatePropPolygonPointCommand( this.point, newPosition, oldPosition ) );
+
+		}
+
+		this.pointUpdated = false;
+
+	}
+
+
+	propPolygonIsSelected ( e: PointerEventData ) {
+
+		const polygons = this.map.propPolygons.map( s => s.mesh );
+
+		const results = PickingHelper.findAllByTag( PropPolygon.tag, e, polygons, false );
+
+		if ( results.length == 0 ) return false;
+
+		const propPolygon = results[ 0 ].userData.polygon as PropPolygon;
+
+		if ( !this.propPolygon || this.propPolygon.mesh.id !== propPolygon.mesh.id ) {
+
+			CommandHistory.execute( new SelectPropPolygonCommand( this, propPolygon ) );
+
+		}
+
+		return true;
+
+	}
+
+	controlPointIsSelected ( e: PointerEventData ) {
+
+		const points = this.map.propPolygons.reduce( ( acc, s ) => acc.concat( s.spline.controlPoints ), [] );
+
+		const point = PickingHelper.findByObjectType<DynamicControlPoint<PropPolygon>>( 'Points', e, points, true );
+
+		if ( !point ) return false;
+
+		if ( !this.point || this.point.uuid !== point.uuid ) {
+
+			CommandHistory.execute( new SelectPointCommand( this, point ) );
+
+		}
+
+		return true;
+
+	}
 
 }

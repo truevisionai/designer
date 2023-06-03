@@ -13,10 +13,11 @@ import { ParkingBoxTool } from "../tools/parking-box-tool";
 import { PointerTool } from "../tools/pointer/pointer-tool";
 import { PropCurveTool } from "../tools/prop-curve/prop-curve-tool";
 import { PropPointTool } from "../tools/prop-point/prop-point-tool";
-import { PropPolygonTool } from "../tools/prop-polygon/prop-polygon-tool";
+import { DeprecatedPropPolygonTool } from "../tools/prop-polygon/deprecated_prop_polygon_tool";
 import { RoadCircleTool } from "../tools/road-circle/road-circle-tool";
 import { RoadTool } from "../tools/road/road-tool";
 import { SurfaceTool } from "../tools/surface/surface-tool";
+import { PropPolygonTool } from "../tools/prop-polygon/prop-polygon-tool";
 
 export class ToolFactory {
 
@@ -39,6 +40,7 @@ export class ToolFactory {
 				return new PropCurveTool();
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
+				return new DeprecatedPropPolygonTool();
 			case ToolType.Surface:
 				return new SurfaceTool();
 			case ToolType.LaneMarking:

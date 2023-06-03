@@ -11,9 +11,10 @@ import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
-import { PropManager } from 'app/services/prop-manager';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
-export class PropPolygon {
+export class PropPolygon implements ISelectable {
 
 	public static index = 0;
 
@@ -35,6 +36,20 @@ export class PropPolygon {
 		this.mesh = this.makeMesh( new Shape() );
 	}
 
+	isSelected: boolean;
+
+	select (): void {
+		this.isSelected = true;
+		this.showControlPoints();
+		this.showCurve();
+	}
+
+	unselect (): void {
+		this.isSelected = false;
+		this.hideControlPoints();
+		this.showCurve();
+	}
+
 	makeMesh ( shape: Shape ): Mesh {
 
 		const geometry = new ShapeGeometry( shape );
@@ -48,6 +63,7 @@ export class PropPolygon {
 		mesh.Tag = PropPolygon.tag;
 
 		mesh.userData.polygon = this;
+		mesh.userData.propPolygon = this;
 
 		return mesh;
 	}
@@ -62,15 +78,21 @@ export class PropPolygon {
 	// Function to update the mesh geometry
 	private updateMeshGeometry (): void {
 
-		if ( this.spline.controlPoints.length < 3 ) return;
+		if ( this.spline.controlPoints.length < 3 ) {
 
-		const points: Vector2[] = this.generatePoints();
+			this.updateProps();
 
-		const shape: Shape = this.createShape( points );
+		} else {
 
-		this.updateGeometry( shape );
+			const points: Vector2[] = this.generatePoints();
 
-		this.updateProps();
+			const shape: Shape = this.createShape( points );
+
+			this.updateGeometry( shape );
+
+			this.updateProps();
+
+		}
 	}
 
 	// Function to generate points from the spline curve
@@ -316,11 +338,19 @@ export class PropPolygon {
 		return meshesAndMaterials;
 	}
 
-	addControlPoint ( cp: AnyControlPoint ) {
+	addControlPoint ( cp: DynamicControlPoint<PropPolygon> ) {
 
 		( this.spline as CatmullRomSpline ).add( cp );
 
 		this.update();
+	}
+
+	removeControlPoint ( point: DynamicControlPoint<PropPolygon> ) {
+
+		this.spline.controlPoints.splice( this.spline.controlPoints.indexOf( point ), 1 );
+
+		this.update();
+
 	}
 
 	delete () {
@@ -344,6 +374,8 @@ export class PropPolygon {
 	}
 
 	showCurve () {
+
+		if ( this.spline.controlPoints.length < 2 ) return
 
 		this.spline.show();
 

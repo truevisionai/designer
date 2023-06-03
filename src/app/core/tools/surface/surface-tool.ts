@@ -3,9 +3,11 @@
  */
 
 import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CommandHistory } from 'app/services/command-history';
 import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';
+import { IToolWithPoint } from '../../commands/select-point-command';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
@@ -17,7 +19,7 @@ import { SelectSurfacePointCommand } from './select-surface-point-command';
 import { UnselectSurfaceCommand } from './unselect-surface-command';
 import { UpdateSurfacePointCommand } from './update-surface-point-command';
 
-export class SurfaceTool extends BaseTool {
+export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'SurfaceTool';
 	public toolType = ToolType.Surface;
@@ -38,6 +40,14 @@ export class SurfaceTool extends BaseTool {
 
 		super();
 
+	}
+
+	setPoint ( value: ISelectable ): void {
+		this.point = value as any;
+	}
+
+	getPoint (): ISelectable {
+		return this.point;
 	}
 
 	public init () {
