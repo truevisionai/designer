@@ -7,8 +7,8 @@ import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-comm
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';
-import { UpdateWidthNodeDistanceCommand } from '../../../core/commands/update-width-node-distance-command';
-import { UpdateWidthNodeValueCommand } from '../../../core/commands/update-width-node-value-command';
+import { UpdateWidthNodeDistanceCommand } from '../../../core/tools/lane-width/update-width-node-distance-command';
+import { UpdateWidthNodeValueCommand } from '../../../core/tools/lane-width/update-width-node-value-command';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 

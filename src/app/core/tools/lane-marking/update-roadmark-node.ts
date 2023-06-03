@@ -4,9 +4,9 @@
 
 import { OdRoadMarkBuilder } from 'app/modules/tv-map/builders/od-road-mark-builder';
 import { Vector3 } from 'three';
-import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { BaseCommand } from './base-command';
+import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
+import { NodeFactoryService } from '../../factories/node-factory.service';
+import { BaseCommand } from '../../commands/base-command';
 
 export class UpdateRoadmarkNodeCommand extends BaseCommand {
 

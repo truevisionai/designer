@@ -14,7 +14,7 @@ import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
 import { AddRoadmarkNodeCommand } from './add-roadmark-node';
 import { SelectLaneForRoadMarkCommand } from './select-lane-for-roadmark-command';
-import { UpdateRoadmarkNodeCommand } from '../../commands/update-roadmark-node';
+import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
 import { NodeFactoryService } from '../../factories/node-factory.service';
 import { KeyboardInput } from '../../input';
 import { PickingHelper } from '../../services/picking-helper.service';

@@ -5,10 +5,10 @@
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { NodeFactoryService } from '../factories/node-factory.service';
-import { SceneService } from '../services/scene.service';
-import { BaseCommand } from './base-command';
+import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
+import { NodeFactoryService } from '../../factories/node-factory.service';
+import { SceneService } from '../../services/scene.service';
+import { BaseCommand } from '../../commands/base-command';
 
 export class UpdateWidthNodeValueCommand extends BaseCommand {
 

@@ -13,7 +13,7 @@ import { SelectLaneForLaneWidthCommand } from './select-lane-for-lane-width-comm
 import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
 import { UnselectLaneForLaneWidthCommand } from './unselect-lane-for-lane-width-command';
 import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
-import { UpdateWidthNodePositionCommand } from '../../commands/update-width-node-position-command';
+import { UpdateWidthNodePositionCommand } from './update-width-node-position-command';
 import { NodeFactoryService } from '../../factories/node-factory.service';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
