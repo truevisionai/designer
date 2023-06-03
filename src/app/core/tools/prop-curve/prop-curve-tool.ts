@@ -12,15 +12,15 @@ import {
 	PropCurveInspectorData
 } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 import { Subscription } from 'rxjs';
-import { PointEditor } from '../editors/point-editor';
-import { KeyboardInput } from '../input';
-import { AppInspector } from '../inspector';
-import { PropModel } from '../models/prop-model.model';
-import { BaseTool } from './base-tool';
+import { PointEditor } from '../../editors/point-editor';
+import { KeyboardInput } from '../../input';
+import { AppInspector } from '../../inspector';
+import { PropModel } from '../../models/prop-model.model';
+import { BaseTool } from '../base-tool';
 import { CommandHistory } from 'app/services/command-history';
-import { CreatePropCurveCommand } from '../commands/create-prop-curve-command';
+import { CreatePropCurveCommand } from './create-prop-curve-command';
 import { AddPropCurvePointCommand } from '../commands/add-prop-curve-point-command.ts';
-import { ToolType } from '../models/tool-types.enum';
+import { ToolType } from '../../models/tool-types.enum';
 
 export class PropCurveTool extends BaseTool {
 

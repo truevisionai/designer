@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from '../services/scene.service';
-import { BaseCommand } from './base-command';
+import { SceneService } from '../../services/scene.service';
+import { BaseCommand } from '../../commands/base-command';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropModel } from '../models/prop-model.model';
+import { PropModel } from '../../models/prop-model.model';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AppInspector } from '../inspector';
+import { AppInspector } from '../../inspector';
 import { PropCurveInspectorComponent, PropCurveInspectorData } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
-import { PropCurveTool } from '../tools/prop-curve-tool';
+import { PropCurveTool } from './prop-curve-tool';
 
 export class CreatePropCurveCommand extends BaseCommand {
 
