@@ -13,7 +13,7 @@ import { ParkingBoxTool } from "../tools/parking-box-tool";
 import { PointerTool } from "../tools/pointer-tool";
 import { PropCurveTool } from "../tools/prop-curve/prop-curve-tool";
 import { PropPointTool } from "../tools/prop-point/prop-point-tool";
-import { PropPolygonTool } from "../tools/prop-polygon-tool";
+import { PropPolygonTool } from "../tools/prop-polygon/prop-polygon-tool";
 import { RoadCircleTool } from "../tools/road-circle/road-circle-tool";
 import { RoadTool } from "../tools/road/road-tool";
 import { SurfaceTool } from "../tools/surface/surface-tool";

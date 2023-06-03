@@ -12,11 +12,11 @@ import {
 	PropPolygonInspectorData
 } from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
 import { Subscription } from 'rxjs';
-import { PointEditor } from '../editors/point-editor';
-import { KeyboardInput } from '../input';
-import { AppInspector } from '../inspector';
-import { BaseTool } from './base-tool';
-import { ToolType } from '../models/tool-types.enum';
+import { PointEditor } from '../../editors/point-editor';
+import { KeyboardInput } from '../../input';
+import { AppInspector } from '../../inspector';
+import { BaseTool } from '../base-tool';
+import { ToolType } from '../../models/tool-types.enum';
 
 export class PropPolygonTool extends BaseTool {
 
