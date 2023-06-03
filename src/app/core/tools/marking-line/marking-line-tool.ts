@@ -16,10 +16,10 @@ import {
 	Vector2,
 	Vector3
 } from 'three';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { LineEditor } from '../editors/line-editor';
-import { BaseMarkingTool } from './marking-point-tool';
-import { ToolType } from '../models/tool-types.enum';
+import { AbstractShapeEditor } from '../../editors/abstract-shape-editor';
+import { LineEditor } from '../../editors/line-editor';
+import { BaseMarkingTool } from '../marking-point/marking-point-tool';
+import { ToolType } from '../../models/tool-types.enum';
 
 export class MarkingLineTool extends BaseMarkingTool {
 

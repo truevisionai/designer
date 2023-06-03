@@ -12,12 +12,12 @@ import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-ma
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Subscription } from 'rxjs';
-import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
-import { CreateMarkingPointCommand } from '../commands/create-marking-point-command';
-import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
-import { PointEditor } from '../editors/point-editor';
-import { BaseTool } from './base-tool';
-import { ToolType } from '../models/tool-types.enum';
+import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
+import { CreateMarkingPointCommand } from './create-marking-point-command';
+import { AbstractShapeEditor } from '../../editors/abstract-shape-editor';
+import { PointEditor } from '../../editors/point-editor';
+import { BaseTool } from '../base-tool';
+import { ToolType } from '../../models/tool-types.enum';
 
 export abstract class BaseMarkingTool extends BaseTool {
 

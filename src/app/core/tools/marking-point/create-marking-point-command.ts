@@ -3,8 +3,8 @@
  */
 
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { BaseCommand } from './base-command';
-import { MarkingPointTool } from '../tools/marking-point-tool';
+import { BaseCommand } from '../../commands/base-command';
+import { MarkingPointTool } from './marking-point-tool';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 
 export class CreateMarkingPointCommand extends BaseCommand {
