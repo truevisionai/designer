@@ -3,13 +3,13 @@
  */
 
 import { Mesh, Object3D } from 'three';
-import { PointerEventData } from '../../events/pointer-event-data';
-import { OdLaneDirectionBuilder } from '../../modules/tv-map/builders/od-lane-direction-builder';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
-import { AppInspector } from '../inspector';
-import { BaseTool } from './base-tool';
-import { ToolType } from '../models/tool-types.enum';
+import { PointerEventData } from '../../../events/pointer-event-data';
+import { OdLaneDirectionBuilder } from '../../../modules/tv-map/builders/od-lane-direction-builder';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { LaneInspectorComponent } from '../../../views/inspectors/lane-type-inspector/lane-inspector.component';
+import { AppInspector } from '../../inspector';
+import { BaseTool } from '../base-tool';
+import { ToolType } from '../../models/tool-types.enum';
 
 export class LaneTool extends BaseTool {
 

@@ -4,13 +4,13 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { TvMapQueries } from "app/modules/tv-map/queries/tv-map-queries";
 import { Vector3 } from "three";
-import { PickingHelper } from "../services/picking-helper.service";
-import { SceneService } from "../services/scene.service";
-import { BaseTool } from "./base-tool";
-import { AutoSpline } from "../shapes/auto-spline";
+import { PickingHelper } from "../../services/picking-helper.service";
+import { SceneService } from "../../services/scene.service";
+import { BaseTool } from "../base-tool";
+import { AutoSpline } from "../../shapes/auto-spline";
 import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
 import { TvMapBuilder } from "app/modules/tv-map/builders/od-builder.service";
-import { ToolType } from "../models/tool-types.enum";
+import { ToolType } from "../../models/tool-types.enum";
 
 export class RoadRampTool extends BaseTool {
 

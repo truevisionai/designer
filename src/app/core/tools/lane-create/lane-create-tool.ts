@@ -5,25 +5,25 @@
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { KeyboardInput } from '../input';
-import { PickingHelper } from '../services/picking-helper.service';
-import { BaseTool } from './base-tool';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { KeyboardInput } from '../../input';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { CallFunctionCommand } from '../commands/call-function-command';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { AddLaneCommand } from '../commands/add-lane-command';
+import { CallFunctionCommand } from '../../commands/call-function-command';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { AddLaneCommand } from '../../commands/add-lane-command';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { GameObject } from '../game-object';
+import { GameObject } from '../../game-object';
 import { Line } from 'three';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { ToolType } from '../models/tool-types.enum';
+import { ToolType } from '../../models/tool-types.enum';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 
 export class LaneCreateTool extends BaseTool {
