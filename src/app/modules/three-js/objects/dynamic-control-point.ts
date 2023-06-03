@@ -1,7 +1,7 @@
-import { BaseControlPoint } from "./control-point";
-import { BufferAttribute, BufferGeometry, Material, PointsMaterial, Vector3 } from "three";
-import { OdTextures } from "app/modules/tv-map/builders/od.textures";
-import { COLOR } from "app/shared/utils/colors.service";
+import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { BaseControlPoint } from './control-point';
 
 export class DynamicControlPoint<T> extends BaseControlPoint {
 

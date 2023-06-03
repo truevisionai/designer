@@ -20,7 +20,7 @@ import { InspectorFactoryService, InspectorType } from '../factories/inspector-f
 import { AppInspector } from '../inspector';
 import { PropInstance } from '../models/prop-instance.model';
 import { BaseTool } from './base-tool';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/prop-control-point';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ToolType } from '../models/tool-types.enum';
 
 /**

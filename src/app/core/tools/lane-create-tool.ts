@@ -165,7 +165,7 @@ export class LaneCreateTool extends BaseTool {
 
 		if ( !road ) return false;
 
-		const results = PickingHelper.findByTag( this.laneHelper.tag, e, road.gameObject.children );
+		const results = PickingHelper.findAllByTag( this.laneHelper.tag, e, road.gameObject.children );
 
 		if ( !results || results.length == 0 ) return false;
 

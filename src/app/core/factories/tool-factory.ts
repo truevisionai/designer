@@ -16,7 +16,7 @@ import { PropPointTool } from "../tools/prop-point-tool";
 import { PropPolygonTool } from "../tools/prop-polygon-tool";
 import { RoadCircleTool } from "../tools/road-circle-tool";
 import { RoadTool } from "../tools/road-tool";
-import { SurfaceTool } from "../tools/surface-tool";
+import { SurfaceTool } from "../tools/surface/surface-tool";
 
 export class ToolFactory {
 

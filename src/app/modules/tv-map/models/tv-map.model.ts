@@ -5,6 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
+import { TvConsole } from 'app/core/utils/console';
 import { RoadStyleService } from 'app/services/road-style.service';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
@@ -12,12 +13,11 @@ import { TvLaneSide, TvLaneType, TvRoadType } from './tv-common';
 import { TvController } from './tv-controller';
 import { TvJunction } from './tv-junction';
 import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
-import { TvLane } from './tv-lane';
-import { TvConsole } from 'app/core/utils/console';
 
 export class TvMap {
 
@@ -120,7 +120,7 @@ export class TvMap {
 
 		road.addElevation( 0, 0.05, 0, 0, 0 );
 
-		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane);
+		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
@@ -356,5 +356,13 @@ export class TvMap {
 
 		}
 
+	}
+
+	showSurfaceHelpers () {
+		this.surfaces.forEach( surface => surface.showHelpers() );
+	}
+
+	hideSurfaceHelpers () {
+		this.surfaces.forEach( surface => surface.hideHelpers() );
 	}
 }

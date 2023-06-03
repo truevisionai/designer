@@ -10,10 +10,12 @@ import { BaseTool } from "./base-tool";
 import { AutoSpline } from "../shapes/auto-spline";
 import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
 import { TvMapBuilder } from "app/modules/tv-map/builders/od-builder.service";
+import { ToolType } from "../models/tool-types.enum";
 
 export class RoadRampTool extends BaseTool {
 
 	name: string = 'RoadRampTool';
+	toolType: ToolType = ToolType.RoadRampTool;
 
 	lane: TvLane;
 	start = new Vector3;

@@ -150,7 +150,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( !this.lane ) return;
 
-		const results = PickingHelper.findByTag( this.laneHelper.tag, e, this.road.gameObject.children );
+		const results = PickingHelper.findAllByTag( this.laneHelper.tag, e, this.road.gameObject.children );
 
 		if ( results.length > 0 ) {
 

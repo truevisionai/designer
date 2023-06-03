@@ -22,7 +22,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 	beforeEach( () => {
 
-		laneSection = new TvLaneSection( 1, 0, true, 1 );
+		laneSection = new TvLaneSection( 1, 0, true, null );
 
 		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, true, true );
 		leftTwo = laneSection.getLastAddedLane();

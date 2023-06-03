@@ -107,6 +107,20 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 		}
 	}
 
+	protected findControlPointFromIntersection ( intersections: Intersection[] ): AnyControlPoint | null {
+
+		for ( const i of intersections ) {
+
+			if ( i.object != null && i.object.type == 'Points' ) {
+
+				return i.object as AnyControlPoint;
+
+			}
+		}
+
+		return null;
+	}
+
 	protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
 
 		for ( const i of intersections ) {
