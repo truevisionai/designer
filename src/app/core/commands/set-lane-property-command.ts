@@ -20,11 +20,15 @@ export class SetLanePropertyCommand extends BaseCommand {
 
 		this.lane[ this.attribute ] = this.newValue;
 
+		this.buildRoad( this.lane.laneSection.road );
+
 	}
 
 	undo (): void {
 
 		this.lane[ this.attribute ] = this.oldValue;
+
+		this.buildRoad( this.lane.laneSection.road );
 
 	}
 
