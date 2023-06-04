@@ -27,7 +27,7 @@ export class LaneOffsetTool extends BaseTool {
 	public lane: TvLane;
 	public node: LaneOffsetNode;
 
-	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+	public laneHelper = new OdLaneReferenceLineBuilder();
 
 	private nodeDistanceUpdated: boolean;
 

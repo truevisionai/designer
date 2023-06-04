@@ -10,6 +10,7 @@ import { AddRoadCircleCommand } from './add-road-circle-command';
 import { BaseTool } from '../base-tool';
 import { TextObject } from 'app/modules/three-js/objects/text-object';
 import { ToolType } from '../../models/tool-types.enum';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -117,7 +118,7 @@ class CircleRoad {
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: 'blue' } ) );
+		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN } ) );
 
 		this.line.position.copy( centre );
 

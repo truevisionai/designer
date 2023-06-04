@@ -19,6 +19,7 @@ import { AbstractSpline } from './abstract-spline';
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -368,7 +369,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		geometry.attributes.position = new BufferAttribute( new Float32Array( CURVE_TESSEL * 3 ), 3 );
 
-		const line = new Line( geometry, new LineBasicMaterial( { color: 0x0000ff, opacity: 0.35, linewidth: 2 } ) );
+		const line = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
 		line[ 'tag' ] = 'curve';
 

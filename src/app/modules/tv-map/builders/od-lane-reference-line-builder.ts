@@ -10,6 +10,7 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export enum LineType {
 	SOLID = 'solid',
@@ -17,7 +18,7 @@ export enum LineType {
 	BOTH = 'both',
 }
 
-const DEFAULT_LINE_COLOR = new Color( 0, 0, 1 );
+const DEFAULT_LINE_COLOR = COLOR.CYAN;
 const HIGHLIGHT_LINE_COLOR = new Color( 0, 1, 0 );
 const SELECTED_LINE_COLOR = new Color( 1, 0, 0 );
 

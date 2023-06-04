@@ -20,7 +20,7 @@ export class LaneOffsetInspector extends BaseInspector implements IComponent {
 
 	public data: TvRoadLaneOffset;
 
-	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.MAGENTA );
+	public laneHelper = new OdLaneReferenceLineBuilder();
 
 	constructor () {
 

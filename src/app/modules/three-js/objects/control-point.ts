@@ -17,7 +17,7 @@ export abstract class BaseControlPoint extends Points implements ISelectable {
 
 	public updated = new EventEmitter<BaseControlPoint>();
 	public isSelected: boolean;
-	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
+	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.CYAN;
 	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
 	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
@@ -124,7 +124,7 @@ export class AnyControlPoint extends BaseControlPoint {
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.BLUE,
+			color: COLOR.CYAN,
 			depthTest: false
 		} );
 

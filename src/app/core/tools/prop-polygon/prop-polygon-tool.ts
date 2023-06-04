@@ -164,7 +164,16 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( !this.propPolygon || this.propPolygon.mesh.id !== propPolygon.mesh.id ) {
 
-			CommandHistory.execute( new SelectPropPolygonCommand( this, propPolygon ) );
+			CommandHistory.executeMany(
+				new SelectPropPolygonCommand( this, propPolygon ),
+				new SelectPointCommand( this, null ),
+			);
+
+		} else {
+
+			CommandHistory.executeMany(
+				new SelectPointCommand( this, null ),
+			);
 
 		}
 

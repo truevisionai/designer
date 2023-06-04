@@ -6,7 +6,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Line, Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
-import { AnyControlPoint} from '../../../modules/three-js/objects/control-point';
+import { AnyControlPoint } from '../../../modules/three-js/objects/control-point';
 import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
 import { OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { OdRoadMarkBuilder } from '../../../modules/tv-map/builders/od-road-mark-builder';
@@ -50,7 +50,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	public roadMarkBuilder = new OdRoadMarkBuilder();
 
-	public laneHelper = new OdLaneReferenceLineBuilder( null );
+	public laneHelper = new OdLaneReferenceLineBuilder();
 
 	constructor () {
 

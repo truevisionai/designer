@@ -30,7 +30,7 @@ export class LaneWidthTool extends BaseTool {
 	private _lane: TvLane;
 	private _node: LaneWidthNode;
 
-	public laneHelper = new OdLaneReferenceLineBuilder( null, LineType.DASHED );
+	public laneHelper = new OdLaneReferenceLineBuilder();
 
 	constructor () {
 

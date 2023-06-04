@@ -23,7 +23,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 	data: TvLaneWidth;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.DASHED );
+	private laneHelper = new OdLaneReferenceLineBuilder();
 
 	constructor () {
 

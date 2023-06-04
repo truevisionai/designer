@@ -33,11 +33,11 @@ export class CatmullRomSpline extends AbstractSpline {
 		// Create the final object to add to the scene
 		if ( this.closed ) {
 
-			this.mesh = new LineLoop( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
+			this.mesh = new LineLoop( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
 
 		} else {
 
-			this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
+			this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
 
 		}
 

@@ -15,6 +15,7 @@ import { IEditorState } from './i-editor-state';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { ToolType } from '../models/tool-types.enum';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -189,7 +190,9 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 			// Set the current temporary material property to highlighted color
 			highlightedMaterial.linewidth += highlightedMaterial.linewidth;
 
-			highlightedMaterial.color = new Color( 1, 0, 0 );
+			highlightedMaterial.setValues( {
+				color: COLOR.DEEP_CYAN
+			})
 
 			// Assign the temporary material to the object
 			object.material = highlightedMaterial;

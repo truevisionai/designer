@@ -62,12 +62,12 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	protected isDragging: boolean;
 
-	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
+	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.CYAN;
 	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
 	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
 	protected DEFAULT_LINE_COLOR = COLOR.RED;
-	protected HIGHLIGHT_LINE_COLOR = COLOR.BLUE;
+	protected HIGHLIGHT_LINE_COLOR = COLOR.CYAN;
 
 	protected object: Object3D;
 	protected material = new THREE.LineBasicMaterial( { color: this.DEFAULT_LINE_COLOR, depthTest: false } );

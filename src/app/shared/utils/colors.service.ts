@@ -13,6 +13,21 @@ export class COLOR {
 	static DARKBLUE = 0x00008B;
 	static ORANGE = 0xFF4500;
 	static GOLD = 0xFFD700;
+	static CYAN = 0x00FFFF;
+
+	// New additions
+	static BRIGHT_ORANGE = 0xFF7F00; // On-mouse-over color for Control Points
+	static DEEP_ORANGE = 0xFF8C00; // On-selected color for Control Points
+
+	static BRIGHT_CYAN = 0x00FFFF; // On-mouse-over color for Splines
+	static DEEP_CYAN = 0x00BFBF; // On-selected color for Splines
+
+	static MILD_GREEN = 0x3CB371; // Default color for Lane & Road Reference Lines
+	static BRIGHT_GREEN = 0x00FA9A; // On-mouse-over color for Lane & Road Reference Lines
+	static DEEP_GREEN = 0x228B22; // On-selected color for Lane & Road Reference Lines
+
+	static BRIGHT_BLUE = 0x6495ED; // On-mouse-over color for Road Node
+	static DEEP_BLUE = 0x0000CD; // On-selected color for Road Node
 
 	static DEFAULT_BOX_COLOR = 0xff0000;
 	static HIGHTLIGHT_BOX_COLOR = 0x00ff00;

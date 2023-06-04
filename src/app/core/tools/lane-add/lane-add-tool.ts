@@ -28,7 +28,7 @@ export class LaneAddTool extends BaseTool {
 
 	public lane: TvLane;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.BLUE, false );
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.CYAN, false );
 
 	constructor () {
 

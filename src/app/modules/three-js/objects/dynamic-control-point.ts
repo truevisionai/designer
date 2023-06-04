@@ -21,7 +21,7 @@ export class DynamicControlPoint<T> extends BaseControlPoint {
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.BLUE,
+			color: COLOR.CYAN,
 			depthTest: false
 		} );
 
