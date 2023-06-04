@@ -183,6 +183,15 @@ export class TvMapQueries extends TvBaseQueries {
 
 	}
 
+	/**
+	 *
+	 * @param roadId
+	 * @param laneId
+	 * @param sCoordinate s coordinate on road
+	 * @param offset
+	 * @param refPos
+	 * @returns
+	 */
 	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
 		const posTheta = new TvPosTheta();

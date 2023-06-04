@@ -1190,6 +1190,9 @@ export class TvLane {
 
 	public getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
+		if ( this.roadMark.length === 0 )
+			this.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+
 		return TvUtils.checkIntervalArray( this.roadMark, s );
 
 	}

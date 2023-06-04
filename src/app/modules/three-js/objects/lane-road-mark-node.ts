@@ -84,22 +84,19 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		}
 
-		const newPosition = new TvPosTheta();
-
-		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
-
-		// we are getting another road s value to ignore
-		if ( this.lane.roadId !== road.id ) return;
+		const road = this.lane.laneSection.road;
+		const roadCoord = road.getCoordAt( point );
+		const s = roadCoord.s - this.lane.laneSection.s;
 
 		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
+		const adjustedS = Maths.clamp(s, minS, maxS );
 
 		// update s offset as per the new position on road
 		this.roadmark.sOffset = adjustedS;
 
 		const offset = this.lane.getWidthValue( adjustedS ) * 0.5;
 
-		const finalPosition = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, adjustedS, offset );
+		const finalPosition = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
 
 		this.point.copyPosition( finalPosition );
 	}
