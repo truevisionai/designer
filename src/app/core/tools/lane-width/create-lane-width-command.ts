@@ -35,7 +35,9 @@ export class CreateWidthNodeCommand extends BaseCommand {
 
 		const roadCoord = road.getCoordAt( position );
 
-		this.laneWidth = newLane.getLaneWidthAt( roadCoord.s ).clone( roadCoord.s );
+		const s = roadCoord.s - newLane.laneSection.s;
+
+		this.laneWidth = newLane.getLaneWidthAt( s ).clone( s );
 
 		this.laneWidth.node = new LaneWidthNode( this.laneWidth );
 

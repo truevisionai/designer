@@ -55,7 +55,7 @@ export class UpdateWidthNodePositionCommand extends BaseCommand {
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		this.laneHelper.drawRoad( road, LineType.DASHED, true );
+		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 
 	}
 

@@ -27,7 +27,7 @@ export class LaneWidthNode extends Group implements ISelectable {
 	}
 
 	get road () {
-		return this.laneWidth.road;
+		return this.laneWidth.lane.laneSection.road;
 	}
 
 	get lane () {
@@ -53,16 +53,18 @@ export class LaneWidthNode extends Group implements ISelectable {
 		const road = this.road;
 		const lane = this.lane;
 
+		const s = this.lane.laneSection.s + this.laneWidth.s;
+
 		const offset = this.laneWidth.getValue( this.laneWidth.s ) * 0.5;
-		const start = TvMapQueries.getLanePosition( road.id, lane.id, this.laneWidth.s, -offset );
-		const end = TvMapQueries.getLanePosition( road.id, lane.id, this.laneWidth.s, offset );
+		const start = TvMapQueries.getLanePosition( road.id, lane.id, s, -offset );
+		const end = TvMapQueries.getLanePosition( road.id, lane.id, s, offset );
 
 		this.point = AnyControlPoint.create( 'point', end );
 		this.point.tag = LaneWidthNode.pointTag;
 		this.add( this.point );
 
 		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
+		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
 		this.line.renderOrder = 3;
 		this.add( this.line );

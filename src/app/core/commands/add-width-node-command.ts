@@ -68,7 +68,7 @@ export class AddWidthNodeCommand extends BaseCommand {
 
 		// not sure which is better
 		// this.laneHelper.redraw();
-		this.laneHelper.drawRoad( road, LineType.DASHED );
+		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 	}
 
 }

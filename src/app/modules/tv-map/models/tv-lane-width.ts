@@ -29,7 +29,7 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 	}
 
 	get roadId () {
-		return this.road.id;
+		return this.lane.laneSection.road.id;
 	}
 
 	clone ( s?: number ) {

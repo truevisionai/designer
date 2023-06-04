@@ -1439,17 +1439,11 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.node ) {
+					if ( laneWidth.node ) SceneService.remove( laneWidth.node );
 
-						laneWidth.node.visible = true;
+					laneWidth.node = new LaneWidthNode( laneWidth );
 
-					} else {
-
-						laneWidth.node = new LaneWidthNode( laneWidth );
-
-						SceneService.add( laneWidth.node );
-
-					}
+					SceneService.add( laneWidth.node );
 
 				} );
 

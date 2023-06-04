@@ -44,31 +44,26 @@ export class NodeFactoryService {
 		if ( index === 0 ) SnackBar.warn( 'First node cannot be edited. Please add a new node.' );
 		if ( index === 0 ) return;
 
-		const minS = node.lane.width[ index - 1 ].s + 0.1;
+		// const minS = node.lane.width[ index - 1 ].s + 0.1;
 
-		// TODO: mke this the max s value as per lane section
-		let maxS = Number.MAX_SAFE_INTEGER;
+		// // TODO: mke this the max s value as per lane section
+		// let maxS = Number.MAX_SAFE_INTEGER;
 
-		if ( index + 1 < node.lane.width.length ) {
+		// if ( index + 1 < node.lane.width.length ) {
 
-			maxS = node.lane.width[ index + 1 ].s - 0.1;
+		// 	maxS = node.lane.width[ index + 1 ].s - 0.1;
 
-		}
+		// }
 
-		const newPosition = new TvPosTheta();
+		const road = node.lane.laneSection.road;
+		const roadCoord = road.getCoordAt( point );
+		const adjustedS = roadCoord.s - node.lane.laneSection.s;
 
-		const road = TvMapQueries.getRoadByCoords( point.x, point.y, newPosition );
-
-		// we are getting another road s value to ignore
-		if ( node.lane.roadId !== road.id ) return;
-
-		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp( newPosition.s, minS, maxS );
+		// // our desired s value should lie between the previous node and the next node
+		// const adjustedS = Maths.clamp( roadCoord.s, minS, maxS );
 
 		// update s offset as per the new position on road
 		node.laneWidth.s = adjustedS;
-
-		// const offset = node.lane.getWidthValue( adjustedS ) * 0.5;
 
 		const offset = node.laneWidth.getValue( adjustedS ) * 0.5;
 
@@ -84,8 +79,8 @@ export class NodeFactoryService {
 
 		}
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, sCoordinate, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, sCoordinate, offset );
+		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadCoord.s, -offset );
+		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadCoord.s, offset );
 
 
 		// TODO: can be improved
@@ -95,47 +90,6 @@ export class NodeFactoryService {
 		node.point.position.copy( end );
 
 		node.laneWidth.s = adjustedS;
-
-		// const roadPos = new OdPosTheta();
-		// const lanePos = new OdPosTheta();
-
-		// // this gets the road and the s and t values
-		// // const road = OpenDriveQueries.getRoadByCoords( point.x, point.y, roadPos );
-
-		// // this get the lane from road, s and t values
-		// // roadPos is only used to read
-		// // const result = OpenDriveQueries.getLaneByCoords( position.x, position.y, roadPos );
-
-		// if ( node.s < 0.1 ) return;
-
-		// if ( road ) {
-
-		//     let finalPosition = null;
-		//     let sCoordinate = null;
-
-		//     if ( direction == 'sCoordinate' ) {
-
-		//         sCoordinate = roadPos.s;
-
-		//     } else if ( direction == 'tCoordinate' ) {
-
-		//         sCoordinate = node.s;
-
-		//     }
-
-		//     const offset = laneWidth.getValue( roadPos.s ) * 0.5;
-
-		//     const start = OpenDriveQueries.getLanePosition( node.roadId, node.laneId, sCoordinate, -offset );
-		//     const end = OpenDriveQueries.getLanePosition( node.roadId, node.laneId, sCoordinate, offset );
-
-		//     // TODO: can be improved
-		//     node.line.geometry.dispose();
-		//     node.line.geometry = new BufferGeometry().setFromPoints( [ start, end ] )
-
-		//     node.point.position.copy( end );
-
-		//     node.s = node.laneWidth.s = roadPos.s;
-		// }
 	}
 
 	/**
@@ -148,10 +102,12 @@ export class NodeFactoryService {
 
 		if ( node.laneWidth.s < 0 ) node.laneWidth.s = 0;
 
+		const s = node.lane.laneSection.s + node.laneWidth.s;
+
 		const offset = laneWidth.getValue( node.laneWidth.s ) * 0.5;
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.laneWidth.s, offset );
+		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, s, -offset );
+		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, s, offset );
 
 		// TODO: can be improved
 		node.line.geometry.dispose();

@@ -30,9 +30,11 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 	private createPoint () {
 
-		const offset = this.lane.getWidthValue( this.roadmark.s ) * 0.5;
+		const s = this.lane.laneSection.s + this.roadmark.s;
 
-		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, this.roadmark.s, offset );
+		const offset = this.lane.getWidthValue( s ) * 0.5;
+
+		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, s, offset );
 
 		this.point = AnyControlPoint.create( 'point', position );
 

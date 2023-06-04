@@ -30,15 +30,14 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
 		this.oldLane = this.tool.lane;
 
-		this.road = this.map.getRoadById( this.lane.roadId );
+		const road = this.road = lane.laneSection.road;
 
-		const posTheta = new TvPosTheta();
+		const roadCoord = road.getCoordAt( position );
 
-		// getting position on track in s/t coordinates
-		TvMapQueries.getRoadByCoords( position.x, position.y, posTheta );
+		const s = roadCoord.s - lane.laneSection.s;
 
 		// get the exisiting lane road mark at s and clone it
-		this.roadMark = lane.getRoadMarkAt( posTheta.s ).clone( posTheta.s );
+		this.roadMark = lane.getRoadMarkAt( s ).clone( s );
 
 		this.roadMark.node = new LaneRoadMarkNode( lane, this.roadMark );
 
