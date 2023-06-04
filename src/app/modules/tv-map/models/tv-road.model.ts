@@ -1126,7 +1126,7 @@ export class TvRoad {
 
 		} else {
 
-			SnackBar.error( 'Cannot split this geometry' );
+			SnackBar.warn( 'Cannot split this geometry' );
 
 		}
 

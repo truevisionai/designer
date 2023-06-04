@@ -218,7 +218,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		const road = this.map.getRoadById( lane.roadId );
 
-		if ( road.isJunction ) SnackBar.error( 'LaneMark Editing on junction roads is currently not supported' );
+		if ( road.isJunction ) SnackBar.warn( 'LaneMark Editing on junction roads is currently not supported' );
 
 		if ( road.isJunction ) return;
 

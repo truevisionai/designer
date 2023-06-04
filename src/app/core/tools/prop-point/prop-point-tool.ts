@@ -172,7 +172,7 @@ export class PropPointTool extends BaseTool {
 
 		} else {
 
-			SnackBar.error( 'Select a prop from the project browser' );
+			SnackBar.warn( 'Select a prop from the project browser' );
 
 			point.visible = false;
 
