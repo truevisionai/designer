@@ -117,7 +117,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'button',
 			tooltip: 'Lane Offset Tool',
 			title: 'Lane Offset Tool',
-			description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <img src="assets/lane-offset-tutorial-1.png"/>',
+			description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <br/><br/> <img src="assets/Lane-Offset-Tool.gif"/>',
 			click: () => this.setToolType( ToolType.LaneOffset )
 		},
 		{
@@ -151,11 +151,8 @@ export class ToolBarComponent implements OnInit {
 			toolType: ToolType.LaneMarking,
 			action: 'lane-marking-tool',
 			icon: 'format_align_center',
-			title: 'Lane Marking Tool',
-			description: 'Tool to add/edit Lane Markings. <br/> '
-				+ 'Select the road and move your cursor over the Lane Reference Line <br/>'
-				+ 'Use `SHIFT` + `LEFT CLICK` to add a new `Lane Marking Node` <br/>'
-				+ 'Modify the properties of the new `Lane Marking Node` from the inspector as needed.',
+			title: 'LANE-MARKING-TOOL-TITLE',
+			description: 'LANE-MARKING-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Add Lane Tool',
 			click: () => this.setToolType( ToolType.LaneMarking )
@@ -193,28 +190,34 @@ export class ToolBarComponent implements OnInit {
 			icon: 'category',
 			track: 'button',
 			tooltip: 'Prop Point Tool',
+			title: 'PROP-POINT-TOOL-TITLE',
+			description: 'PROP-POINT-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.PropPoint )
 		},
 		{
-			id: 'showPropPointTool',
+			id: 'showPropCurveTool',
 			label: 'PropCurve',
 			class: 'toolbar-button',
 			toolType: ToolType.PropCurve,
-			action: 'prop-point-tool',
+			action: 'prop-curve-tool',
 			icon: 'category',
 			track: 'button',
-			tooltip: 'Prop Point Tool',
+			tooltip: 'Prop Curve Tool',
+			title: 'PROP-CURVE-TOOL-TITLE',
+			description: 'PROP-CURVE-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.PropCurve )
 		},
 		{
-			id: 'showPropPointTool',
+			id: 'showPropPolygonTool',
 			label: 'PropPolygon',
 			class: 'toolbar-button border-right',
 			toolType: ToolType.PropPolygon,
-			action: 'prop-point-tool',
+			action: 'prop-polygon-tool',
 			icon: 'category',
 			track: 'button',
-			tooltip: 'Prop Point Tool',
+			tooltip: 'Prop Polygon Tool',
+			title: 'PROP-POLYGON-TOOL-TITLE',
+			description: 'PROP-POLYGON-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.PropPolygon )
 		},
 		{
@@ -227,7 +230,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'button',
 			tooltip: 'Surface Tool',
 			title: 'Surface Tool',
-			description: 'Tool to create simple surface around road networks <br/> Use `SHIFT` + `LEFT CLICK` to create control points <br/> DRAG control points to get desired shape <br/> <img src="assets/Surface-Tool.gif"/>',
+			description: 'Tool to create simple surface around road networks <br/> Use `SHIFT` + `LEFT CLICK` to create control points <br/> DRAG control points to get desired shape <br/><br/> <img src="assets/Surface-Tool.gif"/>',
 			click: () => this.setToolType( ToolType.Surface )
 		},
 		{

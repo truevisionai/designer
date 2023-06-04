@@ -3,16 +3,19 @@
  */
 
 .simple-popover {
-	padding: 16px;
+	padding: 12px 16px;
 	background: white;
 	max-width: 400px;
 	line-height: 22px;
 	font-size: 13px;
+	color: #333;
 }
 
 .simple-popover .title {
-	font-weight: bold;
+	font-weight: 700;
 	font-size: 16px;
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 	color: $headings-color;
+	text-transform: uppercase;
+
 }
