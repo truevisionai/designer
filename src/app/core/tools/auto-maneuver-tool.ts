@@ -27,6 +27,7 @@ import { AbstractShapeEditor } from '../editors/abstract-shape-editor';
 import { PointEditor } from '../editors/point-editor';
 import { LanePathFactory } from '../factories/lane-path-factory.service';
 import { KeyboardInput } from '../input';
+import { ToolType } from '../models/tool-types.enum';
 import { PickingHelper } from '../services/picking-helper.service';
 import { SceneService } from '../services/scene.service';
 // import { JunctionDot } from "app/modules/three-js/objects/junction-dot";
@@ -96,14 +97,11 @@ export class AutoManeuverTool extends BaseTool {
 	public static DOTCOUNT = 0;
 
 	name: string = 'ManeuverTool';
+	toolType = ToolType.Maneuver;
 
 	pointEditor: AbstractShapeEditor;
 
 	private connections: IJunctionConnection[] = [];
-
-	private pointerDown = false;
-
-	private pointerDownAt: Vector3;
 
 	private roadChanged = false;
 
@@ -521,10 +519,6 @@ export class AutoManeuverTool extends BaseTool {
 
 		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
 
-		this.pointerDown = true;
-
-		this.pointerDownAt = e.point.clone();
-
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
 		let hasInteracted = false;
@@ -561,16 +555,12 @@ export class AutoManeuverTool extends BaseTool {
 			LanePathFactory.update( this.lanePathObject );
 		}
 
-		this.pointerDown = false;
-
 		this.roadChanged = false;
-
-		this.pointerDownAt = null;
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.pointerDown && this.roadControlPoint && this.connectingRoad ) {
+		if ( this.isPointerDown && this.roadControlPoint && this.connectingRoad ) {
 
 			this.roadControlPoint.copyPosition( e.point );
 
@@ -868,7 +858,7 @@ export class AutoManeuverTool extends BaseTool {
 
 				const posTheta = new TvPosTheta();
 
-				for ( let s = geometry.s; s <= geometry.s2; s += step ) {
+				for ( let s = geometry.s; s <= geometry.endS; s += step ) {
 
 					geometry.getCoords( s, posTheta );
 

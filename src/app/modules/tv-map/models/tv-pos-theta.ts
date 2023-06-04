@@ -152,4 +152,12 @@ export class TvPosTheta {
 		return new TvPosTheta( x || this.x, y || this.y, hdg || this.hdg, s || this.s, t || this.t );
 
 	}
+
+	copy ( other: TvPosTheta ) {
+		this.x = other.x;
+		this.y = other.y;
+		this.hdg = other.hdg;
+		this.s = other.s;
+		this.t = other.t;
+	}
 }

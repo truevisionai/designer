@@ -21,11 +21,12 @@ import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { OpenDriverParser, XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
+import { TvConsole } from '../core/utils/console';
 import { AssetDatabase } from './asset-database';
 import { AssetLoaderService } from './asset-loader.service';
 import { CommandHistory } from './command-history';
@@ -33,6 +34,7 @@ import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+
 
 @Injectable( {
 	providedIn: 'root'
@@ -144,15 +146,13 @@ export class SceneImporterService extends AbstractReader {
 
 	}
 
-	private importScene ( xml: any ): void {
+	private importScene ( xml: XmlElement ): void {
 
 		this.readAsOptionalArray( xml.road, xml => {
 
 			this.map.addRoadInstance( this.importRoad( xml ) );
 
 		} );
-
-		this.map.roads.forEach( road => road.updateGeometryFromSpline() );
 
 		this.map.roads.forEach( road => {
 
@@ -232,45 +232,15 @@ export class SceneImporterService extends AbstractReader {
 
 	private importProp ( xml ) {
 
-		const instance = AssetDatabase.getInstance<Object3D>( xml.attr_guid );
+		const propObject = this.preparePropObject( xml );
 
-		if ( !instance ) SnackBar.error( `Object not found` );
+		this.map.gameObject.add( propObject );
 
-		if ( !instance ) return;
-
-		const prop = instance.clone();
-
-		const position = new Vector3(
-			parseFloat( xml.position.attr_x ),
-			parseFloat( xml.position.attr_y ),
-			parseFloat( xml.position.attr_z ),
-		);
-
-		const rotation = new Euler(
-			parseFloat( xml.rotation.attr_x ),
-			parseFloat( xml.rotation.attr_y ),
-			parseFloat( xml.rotation.attr_z ),
-		);
-
-		const scale = new Vector3(
-			parseFloat( xml.scale.attr_x ),
-			parseFloat( xml.scale.attr_y ),
-			parseFloat( xml.scale.attr_z ),
-		);
-
-		prop.position.copy( position );
-
-		prop.rotation.copy( rotation );
-
-		prop.scale.copy( scale );
-
-		this.map.gameObject.add( prop );
-
-		this.map.props.push( new PropInstance( xml.attr_guid, prop ) );
+		this.map.props.push( new PropInstance( xml.attr_guid, propObject ) );
 
 	}
 
-	private importRoad ( xml: any ): TvRoad {
+	private importRoad ( xml: XmlElement ): TvRoad {
 
 		if ( !xml.spline ) throw new Error( 'Incorrect road' );
 
@@ -287,6 +257,8 @@ export class SceneImporterService extends AbstractReader {
 		road.shoulderMaterialGuid = xml.shoulderMaterialGuid;
 
 		road.spline = this.importSpline( xml.spline, road );
+
+		road.updateGeometryFromSpline();
 
 		this.odParser.readRoadTypes( road, xml );
 
@@ -307,7 +279,7 @@ export class SceneImporterService extends AbstractReader {
 		return road;
 	}
 
-	private importSurface ( xml: any ): TvSurface {
+	private importSurface ( xml: XmlElement ): TvSurface {
 
 		const height = parseFloat( xml.attr_height ) || 0.0;
 
@@ -334,7 +306,7 @@ export class SceneImporterService extends AbstractReader {
 		return surface;
 	}
 
-	private importSpline ( xml: any, road: TvRoad ): AbstractSpline {
+	private importSpline ( xml: XmlElement, road: TvRoad ): AbstractSpline {
 
 		const type = xml.attr_type;
 
@@ -354,7 +326,7 @@ export class SceneImporterService extends AbstractReader {
 
 	}
 
-	private importExplicitSpline ( xml: any, road: TvRoad ): ExplicitSpline {
+	private importExplicitSpline ( xml: XmlElement, road: TvRoad ): ExplicitSpline {
 
 		const spline = new ExplicitSpline( road );
 
@@ -414,7 +386,7 @@ export class SceneImporterService extends AbstractReader {
 		return spline;
 	}
 
-	private importCatmullSpline ( xml: any ): CatmullRomSpline {
+	private importCatmullSpline ( xml: XmlElement ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
 		const closed = xml.attr_closed === 'true';
@@ -499,7 +471,7 @@ export class SceneImporterService extends AbstractReader {
 
 	}
 
-	private importPropCurve ( xml: any ): PropCurve {
+	private importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;
 
@@ -558,7 +530,7 @@ export class SceneImporterService extends AbstractReader {
 		return curve;
 	}
 
-	private importPropPolygon ( xml: any ): PropPolygon {
+	private importPropPolygon ( xml: XmlElement ): PropPolygon {
 
 		const guid = xml.attr_guid;
 
@@ -576,41 +548,51 @@ export class SceneImporterService extends AbstractReader {
 
 		this.readAsOptionalArray( xml.props, propXml => {
 
-			const instance = AssetDatabase.getInstance( propXml.attr_guid ) as Object3D;
+			const propObject = this.preparePropObject( propXml );
 
-			const prop = instance.clone();
+			polygon.addPropObject( propObject );
 
-			const position = new Vector3(
-				parseFloat( propXml.position.attr_x ),
-				parseFloat( propXml.position.attr_y ),
-				parseFloat( propXml.position.attr_z ),
-			);
-
-			const propRotation = new Euler(
-				parseFloat( propXml.rotation.attr_x ),
-				parseFloat( propXml.rotation.attr_y ),
-				parseFloat( propXml.rotation.attr_z ),
-			);
-
-			const scale = new Vector3(
-				parseFloat( propXml.scale.attr_x ),
-				parseFloat( propXml.scale.attr_y ),
-				parseFloat( propXml.scale.attr_z ),
-			);
-
-			prop.position.copy( position );
-
-			prop.rotation.copy( propRotation );
-
-			prop.scale.copy( scale );
-
-			polygon.props.push( prop );
-
-			SceneService.add( prop );
+			SceneService.add( propObject );
 
 		} );
 
 		return polygon;
 	}
 
+	private preparePropObject ( xml: any ): Object3D {
+
+		const instance = AssetDatabase.getInstance<Object3D>( xml.attr_guid );
+
+		if ( !instance ) TvConsole.error( `Object not found` );
+
+		if ( !instance ) return;
+
+		const prop = instance.clone();
+
+		const position = new Vector3(
+			parseFloat( xml.position.attr_x ),
+			parseFloat( xml.position.attr_y ),
+			parseFloat( xml.position.attr_z ),
+		);
+
+		const rotation = new Euler(
+			parseFloat( xml.rotation.attr_x ),
+			parseFloat( xml.rotation.attr_y ),
+			parseFloat( xml.rotation.attr_z ),
+		);
+
+		const scale = new Vector3(
+			parseFloat( xml.scale.attr_x ),
+			parseFloat( xml.scale.attr_y ),
+			parseFloat( xml.scale.attr_z ),
+		);
+
+		prop.position.copy( position );
+
+		prop.rotation.copy( rotation );
+
+		prop.scale.copy( scale );
+
+		return prop;
+	}
 }

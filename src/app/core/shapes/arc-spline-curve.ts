@@ -80,7 +80,7 @@ export class CustomSplineCurve {
 
 				const end = line.end;
 
-				const arc = this.createArcGeometry( line.s2, end.x, end.y, arcStartingPosition, hdg, p3, hdg2, p2 );
+				const arc = this.createArcGeometry( line.endS, end.x, end.y, arcStartingPosition, hdg, p3, hdg2, p2 );
 
 				this.mGeometries.push( line );
 				this.mGeometries.push( arc );
@@ -98,9 +98,9 @@ export class CustomSplineCurve {
 
 				const pos = new TvPosTheta();
 
-				arc.getCoords( arc.s2, pos );
+				arc.getCoords( arc.endS, pos );
 
-				const line = new TvLineGeometry( arc.s2, pos.x, pos.y, pos.hdg, lineLength );
+				const line = new TvLineGeometry( arc.endS, pos.x, pos.y, pos.hdg, lineLength );
 
 				this.mGeometries.push( arc );
 				this.mGeometries.push( line );

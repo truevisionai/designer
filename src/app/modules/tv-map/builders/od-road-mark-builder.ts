@@ -55,9 +55,9 @@ export class OdRoadMarkBuilder {
 
 		this.road = road;
 
-		for ( let i = 0; i < road.lanes.laneSections.length; i++ ) {
+		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
 
-			const laneSection = road.lanes.laneSections[ i ];
+			const laneSection = road.getLaneSections()[ i ];
 
 			laneSection.getLaneVector().forEach( lane => {
 

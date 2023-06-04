@@ -67,7 +67,7 @@ export class SnackBar {
 
 	static error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
-		SentryService.captureMessage( message, "error" );
+		SentryService.captureMessage( 'SnackBar: ' + message, "error" );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,

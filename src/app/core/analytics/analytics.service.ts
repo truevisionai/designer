@@ -18,7 +18,12 @@ export class AnalyticsService {
 
 	private destroyed$ = new Subject();
 
-	constructor ( private mixpanel: MixpanelService, private auth: AuthService, private router: Router ) {
+	constructor (
+		private mixpanel: MixpanelService,
+		private auth: AuthService,
+		private router: Router,
+		private sentry: SentryService // dont remove required for loading sentry
+	) {
 
 		if ( Environment.production ) this.mixpanel.init( Environment.mixpanel_id, this.auth.email );
 

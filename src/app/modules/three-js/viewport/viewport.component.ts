@@ -432,7 +432,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		} else {
 
-			p.intersections = [];
+			p.intersections = [];												// intersection are empty
+			p.camera = this.threeService.camera;
+			p.mouse = this.mouse;
+			p.approxCameraDistance = 100;
 
 		}
 

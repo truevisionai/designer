@@ -107,9 +107,7 @@ export class TvSurface {
 	createPoints (): THREE.Vector2[] {
 
 		return this.spline.curve.getPoints( 50 ).map(
-
 			point => new Vector2( point.x, point.y )
-
 		);
 	}
 
@@ -246,4 +244,13 @@ export class TvSurface {
 
 	}
 
+	showHelpers () {
+		this.showCurve();
+		this.showControlPoints();
+	}
+
+	hideHelpers () {
+		this.hideCurve();
+		this.hideControlPoints();
+	}
 }

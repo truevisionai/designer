@@ -35,7 +35,7 @@ describe( 'OpenDrive Model', () => {
 
 		road.addPlanView();
 
-		laneSection = new TvLaneSection( 1, 0, true, 1 );
+		laneSection = new TvLaneSection( 1, 0, true, road );
 
 		road.getLaneSections().push( laneSection );
 

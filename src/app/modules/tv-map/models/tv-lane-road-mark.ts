@@ -5,7 +5,7 @@
 import { SceneService } from 'app/core/services/scene.service';
 import { MathUtils } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { LaneRoadMarkNode } from '../../three-js/objects/control-point';
+import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
 

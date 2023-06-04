@@ -10,3 +10,22 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+@keyframes highlight {
+	0% {
+		background-color: initial;
+	}
+
+	50% {
+		background-color: orange;
+	}
+
+	100% {
+		background-color: initial;
+	}
+}
+
+.highlight {
+	animation-name: highlight;
+	animation-duration: 1s;
+}

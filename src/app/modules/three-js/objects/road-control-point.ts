@@ -22,7 +22,7 @@ export class RoadControlPoint extends BaseControlPoint {
 	public tangentLine: Line;
 	public tangentLineGeometry: BufferGeometry;
 	public tangentLineMaterial = new LineBasicMaterial( {
-		color: 0x0000ff,
+		color: COLOR.CYAN,
 		linewidth: 2
 	} );
 
@@ -56,7 +56,7 @@ export class RoadControlPoint extends BaseControlPoint {
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.BLUE,
+			color: COLOR.CYAN,
 			depthTest: false
 		} );
 

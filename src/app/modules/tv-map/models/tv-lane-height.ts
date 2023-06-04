@@ -33,7 +33,7 @@ export class TvLaneHeight {
 		return this.attr_outer;
 	}
 
-	setOuter ( value ) {
+	setOuter ( value: number ) {
 		this.attr_outer = value;
 	}
 
@@ -41,7 +41,7 @@ export class TvLaneHeight {
 		return this.attr_inner;
 	}
 
-	setInner ( value ) {
+	setInner ( value : number) {
 		this.attr_inner = value;
 	}
 

@@ -4,9 +4,10 @@
 
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
-import { FileApiService } from 'app/core/services/file-api.service';
 import { ToolManager } from 'app/core/tools/tool-manager';
+import { TvConsole } from 'app/core/utils/console';
 import { CommandHistory } from 'app/services/command-history';
+import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
@@ -15,11 +16,9 @@ import { saveAs } from 'file-saver';
 import { IFile } from '../../../core/models/file';
 import { FileService } from '../../../services/file.service';
 import { TvMapBuilder } from '../builders/od-builder.service';
-import { TvMap } from '../models/tv-map.model';
 import { OpenDriverParser } from './open-drive-parser.service';
 import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';
-import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,9 +28,9 @@ export class TvMapService {
 	constructor (
 		private fileService: FileService,
 		private writer: OdWriter,
-		private fileApiService: FileApiService,
 		private electron: TvElectronService,
-		private openDriveParser: OpenDriverParser
+		private openDriveParser: OpenDriverParser,
+		private sceneExporter: SceneExporterService,
 	) {
 
 		// not reqiured now because open scenario not being used
@@ -155,21 +154,19 @@ export class TvMapService {
 
 		this.currentFile.contents = this.writer.getOutput( this.map );
 
-		if ( this.currentFile.online ) {
-
-			this.saveOnline( this.currentFile );
-
-		} else {
-
-			this.saveLocally( this.currentFile );
-
-		}
+		this.saveLocally( this.currentFile );
 
 	}
 
-	getOutput () {
+	getOpenDriveOutput () {
 
 		return this.writer.getOutput( this.map );
+
+	}
+
+	getSceneOutput () {
+
+		return this.sceneExporter.export();
 
 	}
 
@@ -201,7 +198,7 @@ export class TvMapService {
 
 	saveLocallyAt ( path: string ) {
 
-		const contents = this.getOutput();
+		const contents = this.getOpenDriveOutput();
 
 		this.fileService.saveFile( path, contents, ( file: IFile ) => {
 
@@ -209,16 +206,6 @@ export class TvMapService {
 			this.currentFile.name = file.name;
 
 		} );
-	}
-
-	saveOnline ( file: IFile ) {
-
-		this.fileApiService.save( file ).subscribe( res => {
-
-			SnackBar.success( 'File Saved (Online)!' );
-
-		} );
-
 	}
 
 	saveAs () {

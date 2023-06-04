@@ -9,6 +9,7 @@ import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
 import { AppService } from '../services/app.service';
 import { SceneService } from '../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export interface BoxCreatedEvent {
 	mesh?: Mesh;
@@ -21,7 +22,7 @@ export interface BoxCreatedEvent {
 export class BoxEditor extends AbstractShapeEditor {
 
 	boxGeometry = new BoxGeometry();
-	boxMaterial = new MeshBasicMaterial( { color: 'red' } );
+	boxMaterial = new MeshBasicMaterial( { color: COLOR.RED } );
 	boxMesh: Mesh;
 
 	height: number;

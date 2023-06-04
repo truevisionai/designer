@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
@@ -10,11 +12,10 @@ import { Color, Group, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { BaseControlPoint } from './control-point';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { BaseControlPoint} from './control-point';
+import { ISelectable } from './i-selectable';
 
-export class RoadNode extends Group {
+export class RoadNode extends Group implements ISelectable {
 
 	public static readonly tag = 'road-node';
 	public static readonly lineTag = 'road-node-line';
@@ -99,7 +100,7 @@ export class RoadNode extends Group {
 
 	}
 
-	selected () {
+	select () {
 
 		this.isSelected = true;
 
@@ -108,7 +109,7 @@ export class RoadNode extends Group {
 		this.renderOrder = 5;
 	}
 
-	unselected () {
+	unselect () {
 
 		this.isSelected = false;
 

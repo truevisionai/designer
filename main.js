@@ -53,6 +53,7 @@ function openEditorWindow () {
 		}
 	} );
 
+	editorWindow.maximize();
 
 	const remoteMain = require( "@electron/remote/main" )
 	remoteMain.initialize()

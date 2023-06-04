@@ -265,6 +265,10 @@ export class TvMapQueries extends TvBaseQueries {
 
 					lanes = laneSection.getRightLanes();
 
+				} else if ( Maths.approxEquals( t, 0 ) ) {
+
+					lanes = laneSection.getCenterLanes();
+
 				}
 
 				let cumulativeWidth = 0;
@@ -275,7 +279,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 					cumulativeWidth += width;
 
-					if ( cumulativeWidth > Math.abs( t ) ) {
+					if ( cumulativeWidth >= Math.abs( t ) ) {
 
 						resultLane = lane;
 						break;
@@ -447,7 +451,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
 
-		return TvUtils.getRandomArrayItem( road.lanes.laneSections ) as TvLaneSection;
+		return TvUtils.getRandomArrayItem( road.getLaneSections() ) as TvLaneSection;
 
 	}
 
@@ -471,7 +475,7 @@ export class TvMapQueries extends TvBaseQueries {
 		const lane = this.getRandomLane( laneSection, laneType );
 
 		// get random s on lane-section
-		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.lastSCoordinate - 1 );
+		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
 
 		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
 	}

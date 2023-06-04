@@ -10,10 +10,11 @@ export enum ToolType {
 	Surface,
 	LaneMarking,
 	LaneAdd,
+	LaneCreate,
 	Lane,
 	MarkingPoint,
 	MarkingLine,
 	ParkingBox,
 	Pointer,
-	//... Add more tools as needed
+	RoadRampTool
 }

@@ -79,6 +79,21 @@ export class Maths {
 		return height;
 	}
 
+	static randomPositionInTriangle ( v1: Vector3, v2: Vector3, v3: Vector3 ): Vector3 {
+
+		const r1 = Math.random();
+
+		const r2 = Math.sqrt( Math.random() );
+
+		const a = 1 - r2;
+
+		const b = r2 * ( 1 - r1 );
+
+		const c = r1 * r2;
+
+		return ( v1.clone().multiplyScalar( a ) ).add( v2.clone().multiplyScalar( b ) ).add( v3.clone().multiplyScalar( c ) );
+	}
+
 	static findSide ( point: Vector3, rayOrigin: Vector3, rayHdg: number ): TvSide {
 
 		// find the end of the chord line

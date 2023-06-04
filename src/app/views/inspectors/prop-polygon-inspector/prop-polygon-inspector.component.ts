@@ -30,13 +30,13 @@ export class PropPolygonInspectorComponent implements OnInit, IComponent, OnDest
 
 	ngOnInit (): void {
 
-		this.data.polygon?.showControlPoints();
+
 
 	}
 
 	ngOnDestroy (): void {
 
-		this.data.polygon?.hideControlPoints();
+
 
 	}
 
