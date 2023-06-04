@@ -41,9 +41,9 @@ export class SelectPointCommand extends BaseCommand {
 
 export class SelectMainObjectCommand extends BaseCommand {
 
-	private readonly oldMainObject: ISelectable;
+	protected readonly oldMainObject: ISelectable;
 
-	constructor ( private tool: IToolWithMainObject, private newMainObject: ISelectable ) {
+	constructor ( protected tool: IToolWithMainObject, protected newMainObject: ISelectable ) {
 		super();
 		this.oldMainObject = this.tool.getMainObject();
 	}

@@ -259,21 +259,31 @@ export class TvMapBuilder {
 		let material: Material;
 		let guid: string;
 
-		if ( lane.type == TvLaneType.driving ) {
+		switch ( lane.type ) {
 
-			guid = road.drivingMaterialGuid;
+			case TvLaneType.driving:
+				guid = road.drivingMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.border ) {
+			case TvLaneType.border:
+				guid = road.borderMaterialGuid;
+				break;
 
-			guid = road.borderMaterialGuid;
+			case TvLaneType.sidewalk:
+				guid = road.sidewalkMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.sidewalk ) {
+			case TvLaneType.shoulder:
+				guid = road.shoulderMaterialGuid;
+				break;
 
-			guid = road.sidewalkMaterialGuid;
+			case TvLaneType.stop:
+				guid = road.shoulderMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.shoulder ) {
-
-			guid = road.shoulderMaterialGuid;
+			default:
+				guid = road.drivingMaterialGuid;
+				break;
 
 		}
 
@@ -292,7 +302,7 @@ export class TvMapBuilder {
 
 		const geometry = new BufferGeometry();
 
-		geometry.name = "createLaneMeshFromGeometry lane-id : " + lane.id;
+		geometry.name = 'createLaneMeshFromGeometry lane-id : ' + lane.id;
 
 		const vertices = new Float32Array( lane.meshData.vertices );
 		const normals = new Float32Array( lane.meshData.normals );

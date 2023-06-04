@@ -17,8 +17,9 @@ import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
-export class TvLane {
+export class TvLane implements ISelectable {
 
 	public readonly uuid: string;
 
@@ -57,6 +58,14 @@ export class TvLane {
 		this.attr_level = level;
 		this.roadId = roadId;
 		this._laneSection = laneSection;
+	}
+
+	isSelected: boolean;
+	select (): void {
+		this.isSelected = true;
+	}
+	unselect (): void {
+		this.isSelected = false;
 	}
 
 	private _roadId: number;

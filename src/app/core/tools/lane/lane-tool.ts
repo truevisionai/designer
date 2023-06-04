@@ -2,67 +2,76 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Mesh, Object3D } from 'three';
-import { PointerEventData } from '../../../events/pointer-event-data';
+import { IToolWithMainObject } from 'app/core/commands/select-point-command';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { CommandHistory } from 'app/services/command-history';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { OdLaneDirectionBuilder } from '../../../modules/tv-map/builders/od-lane-direction-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { LaneInspectorComponent } from '../../../views/inspectors/lane-type-inspector/lane-inspector.component';
-import { AppInspector } from '../../inspector';
-import { BaseTool } from '../base-tool';
 import { ToolType } from '../../models/tool-types.enum';
+import { BaseTool } from '../base-tool';
+import { SelectLaneForLaneToolCommand } from './select-lane-for-lane-tool-command';
 
-export class LaneTool extends BaseTool {
+export class LaneTool extends BaseTool implements IToolWithMainObject {
 
-	name: string = 'LaneTool';
-	toolType = ToolType.Lane;
+	public name: string = 'LaneTool';
+
+	public toolType = ToolType.Lane;
 
 	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
+
+	private lane: TvLane;
 
 	disable (): void {
 
 		super.disable();
 
 		this.laneDirectionHelper.clear();
+
+	}
+
+	setMainObject ( value: ISelectable ): void {
+
+		this.lane = value as TvLane;
+
+	}
+
+	getMainObject (): ISelectable {
+
+		return this.lane;
+
 	}
 
 	onPointerDown ( e: PointerEventData ) {
 
-		super.onPointerDown( e );
+		if ( e.point == null || e.button !== MouseButton.LEFT ) return;
 
-		let laneFound = false;
+		if ( this.isLaneSelected( e ) ) return;
 
-		this.checkLaneIntersection( e.intersections, ( object: Object3D ) => {
+		if ( this.lane ) {
 
-			laneFound = true;
+			CommandHistory.execute( new SelectLaneForLaneToolCommand( this, null, this.laneDirectionHelper ) );
 
-			// this.removeHighlight();
-
-			// this.highlight( object as Mesh );
-
-			this.selectLane( object as Mesh );
-
-		} );
-
-		if ( !laneFound ) {
-
-			// this.removeHighlight();
-
-			this.clearInspector();
 		}
 	}
 
-	private selectLane ( object: Mesh ) {
+	isLaneSelected ( e: PointerEventData ): boolean {
 
-		let lane = ( object.userData.lane as TvLane );
+		const laneObject = this.findIntersection( ObjectTypes.LANE, e.intersections );
 
-		if ( lane == null ) return;
+		if ( !laneObject ) return false;
 
-		AppInspector.setInspector( LaneInspectorComponent, lane );
+		let lane = laneObject.userData.lane as TvLane;
 
-		this.laneDirectionHelper?.clear();
+		if ( lane == null ) return false;
 
-		const road = this.map.getRoadById( lane.roadId );
+		if ( !this.lane || this.lane.uuid != lane.uuid ) {
 
-		this.laneDirectionHelper?.drawSingleLane( road, lane );
+			CommandHistory.execute( new SelectLaneForLaneToolCommand( this, lane, this.laneDirectionHelper ) );
+
+		}
+
+		return true;
 	}
 }
