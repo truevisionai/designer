@@ -3,8 +3,7 @@
  */
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu } = require( 'electron' );
-const execFile = require( 'child_process' ).execFile;
+const { app, BrowserWindow, Menu, screen  } = require( 'electron' );
 const path = require( 'path' );
 const log = require( 'electron-log' );
 
@@ -36,11 +35,13 @@ process.argv.forEach( function ( arg, index, array ) {
 
 function openEditorWindow () {
 
+	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
 	// Create the browser window.
 	editorWindow = new BrowserWindow( {
 		title: TITLE,
-		width: MIN_WIDTH,
-		height: MIN_HEIGHT,
+		width: width,
+		height: height,
 		minWidth: MIN_WIDTH,
 		minHeight: MIN_HEIGHT,
 		backgroundColor: '#ffffff',
@@ -52,8 +53,6 @@ function openEditorWindow () {
 			preload: path.join( __dirname, 'preload.js' )
 		}
 	} );
-
-	editorWindow.maximize();
 
 	const remoteMain = require( "@electron/remote/main" )
 	remoteMain.initialize()
