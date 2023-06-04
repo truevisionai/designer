@@ -133,17 +133,17 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Add Lane Tool',
 			click: () => this.setToolType( ToolType.LaneAdd )
 		},
-		{
-			id: 'showCreateLaneTool',
-			label: 'CreateLane',
-			class: 'toolbar-button',
-			toolType: ToolType.LaneCreate,
-			action: 'create-lane-tool',
-			icon: 'playlist_add',
-			track: 'button',
-			tooltip: 'Create Lane Tool',
-			click: () => this.setToolType( ToolType.LaneCreate )
-		},
+		// {
+		// 	id: 'showCreateLaneTool',
+		// 	label: 'CreateLane',
+		// 	class: 'toolbar-button',
+		// 	toolType: ToolType.LaneCreate,
+		// 	action: 'create-lane-tool',
+		// 	icon: 'playlist_add',
+		// 	track: 'button',
+		// 	tooltip: 'Create Lane Tool',
+		// 	click: () => this.setToolType( ToolType.LaneCreate )
+		// },
 		{
 			id: 'showLaneMarkingTool',
 			label: 'LaneMarking',
