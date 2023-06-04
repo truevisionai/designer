@@ -40,7 +40,7 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 	}
 
 	ngOnDestroy () {
-
+		this.laneHelper.clear();
 	}
 
 	onWidthChanged ( $value: number ) {

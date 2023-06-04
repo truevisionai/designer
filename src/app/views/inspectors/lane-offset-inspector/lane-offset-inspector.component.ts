@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { UpdateLaneOffsetDistanceCommand } from 'app/core/tools/lane-offset/update-lane-offset-distance-command';
 import { UpdateLaneOffsetValueCommand } from 'app/core/tools/lane-offset/update-lane-offset-value-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
@@ -16,7 +16,7 @@ import { COLOR } from 'app/shared/utils/colors.service';
 	selector: 'app-lane-offset-inspector',
 	templateUrl: './lane-offset-inspector.component.html'
 } )
-export class LaneOffsetInspector extends BaseInspector implements IComponent {
+export class LaneOffsetInspector extends BaseInspector implements IComponent, OnDestroy {
 
 	public data: TvRoadLaneOffset;
 
@@ -25,6 +25,12 @@ export class LaneOffsetInspector extends BaseInspector implements IComponent {
 	constructor () {
 
 		super();
+
+	}
+
+	ngOnDestroy (): void {
+
+		this.laneHelper.clear();
 
 	}
 
