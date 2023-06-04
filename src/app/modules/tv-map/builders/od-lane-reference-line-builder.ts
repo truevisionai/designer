@@ -331,7 +331,7 @@ export class OdLaneReferenceLineBuilder {
 
 		// const laneOffset = this.road.lanes.getLaneOffsetValue( s );
 
-		let width = laneSection.getWidthUptoEnd( lane, s );
+		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
 
 		this.road.getGeometryCoords( s, posTheta );
 
