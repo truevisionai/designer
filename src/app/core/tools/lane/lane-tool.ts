@@ -16,14 +16,7 @@ export class LaneTool extends BaseTool {
 	name: string = 'LaneTool';
 	toolType = ToolType.Lane;
 
-	private laneDirectionHelper: OdLaneDirectionBuilder;
-
-	init () {
-
-		super.init();
-
-		this.laneDirectionHelper = new OdLaneDirectionBuilder( null );
-	}
+	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
 	disable (): void {
 
@@ -66,10 +59,10 @@ export class LaneTool extends BaseTool {
 
 		AppInspector.setInspector( LaneInspectorComponent, lane );
 
-		this.laneDirectionHelper.clear();
+		this.laneDirectionHelper?.clear();
 
 		const road = this.map.getRoadById( lane.roadId );
 
-		this.laneDirectionHelper.drawSingleLane( road, lane );
+		this.laneDirectionHelper?.drawSingleLane( road, lane );
 	}
 }
