@@ -167,6 +167,9 @@ export class RoadTool extends BaseTool {
 
 			this.controlPoint.copyPosition( e.point );
 
+			// dont update road if there is only one point
+			if ( this.road.spline.controlPoints.length < 2 ) return;
+
 			this.road.spline.update();
 
 			this.roadChanged = true;
