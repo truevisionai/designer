@@ -226,6 +226,8 @@ export class ToolBarComponent implements OnInit {
 			icon: 'landscape',
 			track: 'button',
 			tooltip: 'Surface Tool',
+			title: 'Surface Tool',
+			description: 'Tool to create simple surface around road networks <br/> Use `SHIFT` + `LEFT CLICK` to create control points <br/> DRAG control points to get desired shape <br/> <img src="assets/Surface-Tool.gif"/>',
 			click: () => this.setToolType( ToolType.Surface )
 		},
 		{
