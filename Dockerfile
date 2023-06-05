@@ -14,4 +14,6 @@ RUN npm install -g @angular/cli
 
 # RUN npm run electron:build
 
+RUN cp third-party/sentry-cli /usr/bin/
+
 EXPOSE 4200
