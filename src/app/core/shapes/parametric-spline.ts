@@ -9,6 +9,7 @@ import { AbstractSpline } from './abstract-spline';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
 import { TangentLine } from './TangentLine';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export class ParametricSpline extends AbstractSpline {
 
@@ -268,7 +269,7 @@ export class ParametricSpline extends AbstractSpline {
 
 		buffgeo.attributes.position = new BufferAttribute( new Float32Array( CURVE_TESSEL * 3 ), 3 );
 
-		const curvemesh = new Line( buffgeo, new LineBasicMaterial( { color: 0x0000ff, opacity: 0.35, linewidth: 2 } ) );
+		const curvemesh = new Line( buffgeo, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
 		curvemesh[ 'tag' ] = 'curve';
 

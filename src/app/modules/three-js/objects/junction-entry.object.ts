@@ -8,9 +8,10 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
-import { BaseControlPoint } from './control-point';
+import { BaseControlPoint} from './control-point';
+import { ISelectable } from './i-selectable';
 
-export class JunctionEntryObject extends BaseControlPoint {
+export class JunctionEntryObject extends BaseControlPoint implements ISelectable {
 
 	public static tag = 'junction-dot';
 

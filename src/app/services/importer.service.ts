@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { PropPointTool } from 'app/core/tools/prop-point-tool';
+import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 

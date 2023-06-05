@@ -4,6 +4,7 @@
 
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvMap } from '../models/tv-map.model';
+import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvMapQueries } from './tv-map-queries';
@@ -66,6 +67,32 @@ describe( 'OpenDriveQueries', () => {
 
 		result = TvMapQueries.getRoadByCoords( 15, 0 );
 		expect( result.id ).toBe( 2 )
+
+	} );
+
+	it( 'shoudl give correct s/t coordindates from getLaneByCoords', () => {
+
+		const posTheta = new TvPosTheta();
+
+		let result = TvMapQueries.getLaneByCoords( 0, 0, posTheta );
+		expect( result.lane.id ).toBe( 0 );
+		expect( posTheta.s ).toBeCloseTo( 0 );
+		expect( posTheta.t ).toBeCloseTo( 0 );
+
+		result = TvMapQueries.getLaneByCoords( 10, 0, posTheta );
+		expect( result.lane.id ).toBe( 0 );
+		expect( posTheta.s ).toBeCloseTo( 10 );
+		expect( posTheta.t ).toBeCloseTo( 0 );
+
+		result = TvMapQueries.getLaneByCoords( 10, 1, posTheta );
+		expect( result.lane.id ).toBe( 1 );
+		expect( posTheta.s ).toBeCloseTo( 10 );
+		expect( posTheta.t ).toBeCloseTo( 1 );
+
+		result = TvMapQueries.getLaneByCoords( 10, 3.5, posTheta );
+		expect( result.lane.id ).toBe( 1 );
+		expect( posTheta.s ).toBeCloseTo( 10 );
+		expect( posTheta.t ).toBeCloseTo( 3.5 );
 
 	} );
 

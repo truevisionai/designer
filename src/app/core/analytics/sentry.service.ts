@@ -5,11 +5,23 @@
 import { Injectable } from '@angular/core';
 import * as Sentry from "@sentry/angular";
 import { Environment } from '../utils/environment';
+import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { FileApiService } from '../services/file-api.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SentryService {
+
+	private static fileApiService: FileApiService;
+	private static mapService: TvMapService;
+
+	constructor ( fileApiService: FileApiService, private mapService: TvMapService ) {
+
+		SentryService.fileApiService = fileApiService;
+		SentryService.mapService = mapService;
+
+	}
 
 	static get isErrorTrackingEnabled (): boolean {
 
@@ -44,7 +56,35 @@ export class SentryService {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 
-		Sentry.captureException( error, context );
+		try {
+
+			// we first try to get the map state and tv map state
+			// and send it with sentry error
+			// if it fails, we send the error without the map state
+			this.captureWithMapState( error, context );
+
+		} catch ( e ) {
+
+			Sentry.captureException( "Sending Via Scope Failed", context );
+			Sentry.captureException( error, context );
+
+		}
+
+	}
+
+	static captureWithMapState ( error: Error, context: any ) {
+
+		if ( !this.isErrorTrackingEnabled ) return;
+
+		this.fileApiService.uploadMapFiles( error ).subscribe( ( links ) => {
+
+			Sentry.configureScope( scope => {
+				scope.setExtra( "links", links );
+			} );
+
+			Sentry.captureException( error, context );
+
+		} );
 
 	}
 

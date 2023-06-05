@@ -65,7 +65,7 @@ export class TvMapBuilder {
 		road.gameObject.Tag = ObjectTypes.ROAD;
 		road.gameObject.userData.road = road;
 
-		road.lanes.computeLaneSectionEnd( road );
+		road.computeLaneSectionCoordinates();
 
 		// ( new OdRoadReferenceLineHelper( road ) ).create();
 		// ( new OdLaneReferenceLineHelper( road ) ).create();
@@ -86,6 +86,12 @@ export class TvMapBuilder {
 		( new TvSignalHelper( road ) ).create();
 
 		parent.add( road.gameObject );
+
+	}
+
+	static rebuildRoad ( road: TvRoad ): any {
+
+		this.buildRoad( TvMapInstance.map.gameObject, road );
 
 	}
 
@@ -142,11 +148,11 @@ export class TvMapBuilder {
 		lane.markMeshData = null;
 		lane.markMeshData = new MeshGeometryData;
 
-		const laneSectionLength = laneSection.lastSCoordinate - laneSection.s;
+		const laneSectionLength = laneSection.endS - laneSection.s;
 
 		let step = 0;
 
-		for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.lastSCoordinate; sCoordinate += roadStep ) {
+		for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.endS; sCoordinate += roadStep ) {
 
 			step += roadStep;
 
@@ -159,7 +165,7 @@ export class TvMapBuilder {
 		}
 
 		// add last s geometry to close any gaps
-		let lastSCoordinate = laneSection.lastSCoordinate - Maths.Epsilon;
+		let lastSCoordinate = Math.max( laneSection.endS - Maths.Epsilon, laneSection.endS );
 
 		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
 
@@ -253,21 +259,31 @@ export class TvMapBuilder {
 		let material: Material;
 		let guid: string;
 
-		if ( lane.type == TvLaneType.driving ) {
+		switch ( lane.type ) {
 
-			guid = road.drivingMaterialGuid;
+			case TvLaneType.driving:
+				guid = road.drivingMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.border ) {
+			case TvLaneType.border:
+				guid = road.borderMaterialGuid;
+				break;
 
-			guid = road.borderMaterialGuid;
+			case TvLaneType.sidewalk:
+				guid = road.sidewalkMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.sidewalk ) {
+			case TvLaneType.shoulder:
+				guid = road.shoulderMaterialGuid;
+				break;
 
-			guid = road.sidewalkMaterialGuid;
+			case TvLaneType.stop:
+				guid = road.shoulderMaterialGuid;
+				break;
 
-		} else if ( lane.type == TvLaneType.shoulder ) {
-
-			guid = road.shoulderMaterialGuid;
+			default:
+				guid = road.drivingMaterialGuid;
+				break;
 
 		}
 
@@ -286,7 +302,7 @@ export class TvMapBuilder {
 
 		const geometry = new BufferGeometry();
 
-		geometry.name = "createLaneMeshFromGeometry lane-id : " + lane.id;
+		geometry.name = 'createLaneMeshFromGeometry lane-id : ' + lane.id;
 
 		const vertices = new Float32Array( lane.meshData.vertices );
 		const normals = new Float32Array( lane.meshData.normals );

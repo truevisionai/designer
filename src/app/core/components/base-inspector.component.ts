@@ -22,10 +22,8 @@ export abstract class BaseInspector {
 	@HostListener( 'window:keydown', [ '$event' ] )
 	baseOnKeyDown ( event: KeyboardEvent ) {
 
-		if ( event.keyCode === KEY_CODE.DELETE ) {
-
+		if ( event.key === 'Delete' || ( event.key === 'Backspace' && event.metaKey ) ) {
 			this.onDelete();
-
 		}
 
 	}

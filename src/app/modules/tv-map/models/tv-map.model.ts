@@ -5,6 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
+import { TvConsole } from 'app/core/utils/console';
 import { RoadStyleService } from 'app/services/road-style.service';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
@@ -12,11 +13,11 @@ import { TvLaneSide, TvLaneType, TvRoadType } from './tv-common';
 import { TvController } from './tv-controller';
 import { TvJunction } from './tv-junction';
 import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
-import { TvConsole } from 'app/core/utils/console';
 
 export class TvMap {
 
@@ -102,13 +103,28 @@ export class TvMap {
 
 		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
 
-		const roadStyle = RoadStyleService.getRoadStyle( road.id );
+		const roadStyle = RoadStyleService.getRoadStyle( road );
 
 		// const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
 		const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );
 
 		// const laneSection = road.addGetLaneSection( 0 );
 		const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
+
+		return road;
+	}
+
+	addRampRoad ( lane: TvLane ): TvRoad {
+
+		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
+
+		road.addElevation( 0, 0.05, 0, 0, 0 );
+
+		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
+
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
+
+		road.addLaneSectionInstance( roadStyle.laneSection );
 
 		return road;
 	}
@@ -224,7 +240,7 @@ export class TvMap {
 
 			TvConsole.error( `${ roadId } road-id not found` );
 
-			console.error( `road not found` );
+			throw new Error( `RoadNotFound` );
 
 		}
 
@@ -305,13 +321,7 @@ export class TvMap {
 
 		} );
 
-		this.propPolygons.forEach( polygon => {
-
-			this.gameObject.remove( polygon.spline.mesh );
-
-			polygon.props.forEach( prop => SceneService.remove( prop ) );
-
-		} );
+		this.propPolygons.forEach( polygon => polygon.delete() );
 
 		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
 
@@ -340,5 +350,13 @@ export class TvMap {
 
 		}
 
+	}
+
+	showSurfaceHelpers () {
+		this.surfaces.forEach( surface => surface.showHelpers() );
+	}
+
+	hideSurfaceHelpers () {
+		this.surfaces.forEach( surface => surface.hideHelpers() );
 	}
 }

@@ -7,6 +7,7 @@ import { MatSnackBar, MatSnackBarRef, MatSnackBarVerticalPosition, SimpleSnackBa
 
 import { AnalyticsService } from 'app/core/analytics/analytics.service';
 import { SentryService } from 'app/core/analytics/sentry.service';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,16 +25,10 @@ export class SnackBar {
 
 	}
 
-	/**
-	 * @deprecated use show instead
-	 */
-	static open ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
-
-		return this.show( message, action, duration );
-
-	}
 
 	static show ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
+
+		TvConsole.info( message );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,
@@ -56,6 +51,8 @@ export class SnackBar {
 
 	static warn ( message: string = '', action: string = '', duration: number = 5000 ): MatSnackBarRef<SimpleSnackBar> {
 
+		TvConsole.warn( message );
+
 		return this.snackBar.open( message, action, {
 			duration: duration,
 			verticalPosition: this.verticalPosition,
@@ -67,7 +64,9 @@ export class SnackBar {
 
 	static error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
-		SentryService.captureMessage( message, "error" );
+		TvConsole.error( message );
+
+		SentryService.captureMessage( 'SnackBar: ' + message, "error" );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,

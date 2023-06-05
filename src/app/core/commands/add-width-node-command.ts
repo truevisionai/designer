@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from 'app/modules/three-js/objects/control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 
@@ -68,7 +68,7 @@ export class AddWidthNodeCommand extends BaseCommand {
 
 		// not sure which is better
 		// this.laneHelper.redraw();
-		this.laneHelper.drawRoad( road, LineType.DASHED );
+		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 	}
 
 }

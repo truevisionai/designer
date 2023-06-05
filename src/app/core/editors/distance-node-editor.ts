@@ -1,138 +1,138 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { AnyControlPoint, NewDistanceNode } from 'app/modules/three-js/objects/control-point';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
-import { KeyboardInput } from '../input';
-import { AbstractShapeEditor } from './abstract-shape-editor';
+// import { AnyControlPoint, NewDistanceNode } from 'app/modules/three-js/objects/control-point';
+// import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+// import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
+// import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
+// import { KeyboardInput } from '../input';
+// import { AbstractShapeEditor } from './abstract-shape-editor';
 
-export class DistanceNodeEditor extends AbstractShapeEditor {
-
-
-	constructor ( private maxControlPoints: number = 1000 ) {
-
-		super();
-
-	}
-
-	draw () {
-
-		this.curveGeometryAdded.emit( null );
-
-	}
+// export class DistanceNodeEditor extends AbstractShapeEditor {
 
 
-	onPointerDown ( e: PointerEventData ) {
+// 	constructor ( private maxControlPoints: number = 1000 ) {
 
-		if ( e.button == MouseButton.RIGHT ) return;
+// 		super();
 
-		this.pointerIsDown = true;
+// 	}
 
-		this.pointerDownAt = e.point;
+// 	draw () {
 
-		if ( this.controlPoints.length >= this.maxControlPoints ) return;
+// 		this.curveGeometryAdded.emit( null );
 
-		if ( e.object != null && e.object.userData.is_selectable === true ) return;
+// 	}
 
-		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-			e.point.z = 0;
+// 	onPointerDown ( e: PointerEventData ) {
 
-			this.addControlPoint( e.point );
+// 		if ( e.button == MouseButton.RIGHT ) return;
 
-			this.draw();
-		}
-	}
+// 		this.pointerIsDown = true;
 
-	onPointerMoved ( e: PointerMoveData ): void {
+// 		this.pointerDownAt = e.point;
 
-		const direction = 'sCoordinate';
+// 		if ( this.controlPoints.length >= this.maxControlPoints ) return;
 
-		if ( e.point != null && this.pointerIsDown && this.controlPoints.length > 0 ) {
+// 		if ( e.object != null && e.object.userData.is_selectable === true ) return;
 
-			this.isDragging = true;
+// 		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
 
-			if ( this.currentPoint != null ) {
+// 			e.point.z = 0;
 
-				const roadPos = new TvPosTheta();
-				const lanePos = new TvPosTheta();
+// 			this.addControlPoint( e.point );
 
-				const node = ( this.currentPoint as NewDistanceNode );
+// 			this.draw();
+// 		}
+// 	}
 
-				e.point.z = 0;
+// 	onPointerMoved ( e: PointerMoveData ): void {
 
-				const position = e.point;
+// 		const direction = 'sCoordinate';
 
-				// this gets the road and the s and t values
-				const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
+// 		if ( e.point != null && this.pointerIsDown && this.controlPoints.length > 0 ) {
 
-				// this get the lane from road, s and t values
-				// roadPos is only used to read
-				const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
+// 			this.isDragging = true;
 
-				if ( road ) {
+// 			if ( this.currentPoint != null ) {
 
-					let finalPosition = null;
+// 				const roadPos = new TvPosTheta();
+// 				const lanePos = new TvPosTheta();
 
-					if ( direction == 'sCoordinate' ) {
+// 				const node = ( this.currentPoint as NewDistanceNode );
 
-						// fixed t and only s-value will change
-						// finalPosition = OpenDriveQueries.getLanePosition( node.roadId, node.laneId, roadPos.s, node.t, lanePos );
-						finalPosition = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadPos.s, 0, lanePos );
+// 				e.point.z = 0;
 
-					} else if ( direction == 'tCoordinate' ) {
+// 				const position = e.point;
 
-						// fixed s and only t-value will change
-						finalPosition = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, roadPos.t, lanePos );
+// 				// this gets the road and the s and t values
+// 				const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
 
-					}
+// 				// this get the lane from road, s and t values
+// 				// roadPos is only used to read
+// 				const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
 
-					node.s = roadPos.s;
+// 				if ( road ) {
 
-					// node.t = roadPos.t;
+// 					let finalPosition = null;
 
-					this.currentPoint.copyPosition( finalPosition );
+// 					if ( direction == 'sCoordinate' ) {
 
-					this.controlPointMoved.emit( this.currentPoint );
+// 						// fixed t and only s-value will change
+// 						// finalPosition = OpenDriveQueries.getLanePosition( node.roadId, node.laneId, roadPos.s, node.t, lanePos );
+// 						finalPosition = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadPos.s, 0, lanePos );
 
-				}
-			}
-		}
-	}
+// 					} else if ( direction == 'tCoordinate' ) {
 
-	addControlPoint ( position: THREE.Vector3 ): AnyControlPoint {
+// 						// fixed s and only t-value will change
+// 						finalPosition = TvMapQueries.getLanePosition( node.roadId, node.laneId, node.s, roadPos.t, lanePos );
 
-		const roadPos = new TvPosTheta();
-		const lanePos = new TvPosTheta();
+// 					}
 
-		// this gets the road and the s and t values
-		const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
+// 					node.s = roadPos.s;
 
-		// cant create as road not found
-		if ( !road ) return;
+// 					// node.t = roadPos.t;
 
-		// this get the lane from road, s and t values
-		// roadPos is only used to read
-		const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
+// 					this.currentPoint.copyPosition( finalPosition );
 
-		// cant create as road or lane not found
-		if ( !result.road || !result.lane ) return;
+// 					this.controlPointMoved.emit( this.currentPoint );
 
-		// now get the exact position in middle of the lane
-		const finalPosition = TvMapQueries.getLanePosition( road.id, result.lane.id, roadPos.s, 0, lanePos );
+// 				}
+// 			}
+// 		}
+// 	}
 
-		// create the distance node
-		const point = this.createDistanceNode( result.road.id, result.lane.id, roadPos.s, roadPos.t, position, road.gameObject );
+// 	addControlPoint ( position: THREE.Vector3 ): AnyControlPoint {
 
-		point.copyPosition( finalPosition );
+// 		const roadPos = new TvPosTheta();
+// 		const lanePos = new TvPosTheta();
 
-		this.controlPoints.push( point );
+// 		// this gets the road and the s and t values
+// 		const road = TvMapQueries.getRoadByCoords( position.x, position.y, roadPos );
 
-		this.controlPointAdded.emit( point );
+// 		// cant create as road not found
+// 		if ( !road ) return;
 
-		return point;
-	}
-}
+// 		// this get the lane from road, s and t values
+// 		// roadPos is only used to read
+// 		const result = TvMapQueries.getLaneByCoords( position.x, position.y, roadPos );
+
+// 		// cant create as road or lane not found
+// 		if ( !result.road || !result.lane ) return;
+
+// 		// now get the exact position in middle of the lane
+// 		const finalPosition = TvMapQueries.getLanePosition( road.id, result.lane.id, roadPos.s, 0, lanePos );
+
+// 		// create the distance node
+// 		const point = this.createDistanceNode( result.road.id, result.lane.id, roadPos.s, roadPos.t, position, road.gameObject );
+
+// 		point.copyPosition( finalPosition );
+
+// 		this.controlPoints.push( point );
+
+// 		this.controlPointAdded.emit( point );
+
+// 		return point;
+// 	}
+// }

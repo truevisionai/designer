@@ -10,6 +10,7 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export enum LineType {
 	SOLID = 'solid',
@@ -17,7 +18,7 @@ export enum LineType {
 	BOTH = 'both',
 }
 
-const DEFAULT_LINE_COLOR = new Color( 0, 0, 1 );
+const DEFAULT_LINE_COLOR = COLOR.CYAN;
 const HIGHLIGHT_LINE_COLOR = new Color( 0, 1, 0 );
 const SELECTED_LINE_COLOR = new Color( 1, 0, 0 );
 
@@ -69,9 +70,7 @@ export class OdLaneReferenceLineBuilder {
 
 	public create () {
 
-		const container = this.road.getLanes();
-
-		container.computeLaneSectionEnd( this.road );
+		this.road.computeLaneSectionCoordinates();
 
 		this.drawRoad( this.road );
 	}
@@ -98,9 +97,9 @@ export class OdLaneReferenceLineBuilder {
 
 		this.road = road;
 
-		for ( let i = 0; i < road.lanes.laneSections.length; i++ ) {
+		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
 
-			const laneSection = road.lanes.laneSections[ i ];
+			const laneSection = road.getLaneSections()[ i ];
 
 			laneSection.lanes.forEach( lane => {
 
@@ -314,14 +313,14 @@ export class OdLaneReferenceLineBuilder {
 
 		let s = laneSection.s;
 
-		while ( s <= laneSection.lastSCoordinate ) {
+		while ( s <= laneSection.endS ) {
 
 			this.makeLanePointsLoop( s, laneSection, lane, points );
 
 			s++;
 		}
 
-		s = laneSection.lastSCoordinate - Maths.Epsilon;
+		s = laneSection.endS - Maths.Epsilon;
 
 		this.makeLanePointsLoop( s, laneSection, lane, points );
 	}
@@ -332,7 +331,7 @@ export class OdLaneReferenceLineBuilder {
 
 		// const laneOffset = this.road.lanes.getLaneOffsetValue( s );
 
-		let width = laneSection.getWidthUptoEnd( lane, s );
+		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
 
 		this.road.getGeometryCoords( s, posTheta );
 

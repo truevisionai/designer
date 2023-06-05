@@ -46,6 +46,7 @@ export class RoadStyleImporter extends AbstractReader {
 		const roadStyle = new RoadStyle();
 
 		roadStyle.laneOffset = new TvRoadLaneOffset(
+			null,
 			json.laneOffset.attr_s || 0,
 			json.laneOffset.attr_a || 0,
 			json.laneOffset.attr_b || 0,
@@ -60,7 +61,7 @@ export class RoadStyleImporter extends AbstractReader {
 
 	static importLaneSection ( json: any ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( 0, 0, true, 1 );
+		const laneSection = new TvLaneSection( 0, 0, true );
 
 		this.readAsOptionalElement( json.laneSection.left, xml => {
 			this.readAsOptionalArray( xml.lane, xml => {
@@ -153,7 +154,7 @@ export class RoadStyleImporter extends AbstractReader {
 		const c = parseFloat( json.attr_c );
 		const d = parseFloat( json.attr_d );
 
-		return new TvLaneWidth( sOffset, a, b, c, d );
+		return new TvLaneWidth( sOffset, a, b, c, d, lane, lane?.laneSection?.road );
 	}
 
 	static readLaneRoadMark ( lane: TvLane, json: any ) {

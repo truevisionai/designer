@@ -4,15 +4,11 @@
 
 import { EventEmitter } from '@angular/core';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, Color, Group, LineSegments, Material, Points, PointsMaterial, Vector3 } from 'three';
-import { TvLane } from '../../tv-map/models/tv-lane';
+import { BufferAttribute, BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from 'three';
+import { ISelectable } from './i-selectable';
 
-export abstract class BaseControlPoint extends Points {
+export abstract class BaseControlPoint extends Points implements ISelectable {
 
 	public mainObject: any;
 
@@ -21,7 +17,7 @@ export abstract class BaseControlPoint extends Points {
 
 	public updated = new EventEmitter<BaseControlPoint>();
 	public isSelected: boolean;
-	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.BLUE;
+	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.CYAN;
 	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
 	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
@@ -106,73 +102,6 @@ export class NewDistanceNode extends BaseControlPoint {
 
 }
 
-export class LaneWidthNode extends Group {
-
-	public static readonly tag = 'width-node';
-	public static readonly pointTag = 'width-point';
-	public static readonly lineTag = 'width-line';
-
-	public line: LineSegments;
-	public point: AnyControlPoint;
-
-	constructor ( public road: TvRoad, public lane: TvLane, public s: number, public laneWidth: TvLaneWidth ) {
-
-		super();
-
-	}
-
-	get roadId () {
-		return this.road.id;
-	}
-
-	get laneId () {
-		return this.lane.id;
-	}
-
-	updateLaneWidthValues () {
-
-		this.road.getLaneSectionAt( this.s ).updateLaneWidthValues( this.lane );
-
-	}
-
-}
-
-export class LaneOffsetNode extends Group {
-
-	public static readonly tag = 'offset-node';
-	public static readonly pointTag = 'offset-point';
-	public static readonly lineTag = 'offset-line';
-
-	public line: LineSegments;
-	public point: AnyControlPoint;
-
-	constructor ( public road: TvRoad, public laneOffset: TvRoadLaneOffset ) {
-
-		super();
-
-	}
-
-	get roadId () {
-		return this.road.id;
-	}
-}
-
-export class LaneRoadMarkNode extends Group {
-
-	public static readonly tag = 'roadmark-node';
-	public static readonly pointTag = 'roadmark-point';
-	public static readonly lineTag = 'roadmark-line';
-
-	public line: LineSegments;
-	public point: AnyControlPoint;
-
-	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
-
-		super();
-
-	}
-}
-
 
 /**
  * @deprecated avoid using this use BaseControlPoint or use an exact implementation
@@ -195,7 +124,7 @@ export class AnyControlPoint extends BaseControlPoint {
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.BLUE,
+			color: COLOR.CYAN,
 			depthTest: false
 		} );
 

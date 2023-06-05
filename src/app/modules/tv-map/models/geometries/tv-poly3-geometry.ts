@@ -60,7 +60,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		const points: Vector2[] = [];
 		const posTheta = new TvPosTheta();
 
-		for ( let sCoordinate = this.s; sCoordinate < this.s2; sCoordinate++ ) {
+		for ( let sCoordinate = this.s; sCoordinate < this.endS; sCoordinate++ ) {
 
 			this.getCoords( sCoordinate, posTheta );
 			points.push( posTheta.toVector2() );

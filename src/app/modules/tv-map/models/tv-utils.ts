@@ -74,4 +74,64 @@ export class TvUtils {
 		return items[ Math.floor( Math.random() * items.length ) ];
 
 	}
+
+	static computeCoefficients ( sections: ThirdOrderPolynom[], sectionLength: number ): void {
+
+		// need at least 2 sections to compute coefficients
+		if ( sections.length < 2 ) return;
+
+		for ( let i = 0; i < sections.length; i++ ) {
+
+			const current = sections[ i ];
+
+			let valueStart, valueEnd, derivStart, derivEnd, length;
+
+			if ( ( i + 1 ) < sections.length ) {
+
+				const next = sections[ i + 1 ];
+
+				// next s cannot be less than current so we need to clamp it
+				if ( next.s <= current.s ) {
+
+					next.s = current.s + 0.1;
+
+				}
+
+				length = next.s - current.s;
+
+				valueStart = current.a;          // value at start
+				valueEnd = next.a;               // value at end
+				derivStart = current.b;          // derivative at start
+				derivEnd = next.b;               // derivative at end
+
+			} else {
+
+				// take lane section length
+				length = sectionLength;
+
+				valueStart = current.a;          // value at start
+				valueEnd = current.a;            // value at end
+				derivStart = current.b;          // derivative at start
+				derivEnd = current.b;            // derivative at end
+
+			}
+
+			let a = valueStart;
+			let b = derivStart;
+			let c = ( -3 * valueStart ) + ( 3 * valueEnd ) + ( -2 * derivStart ) + ( -1 * derivEnd );
+			let d = ( 2 * valueStart ) + ( -2 * valueEnd ) + ( 1 * derivStart ) + ( 1 * derivEnd );
+
+			b /= length;
+			c /= length * length;
+			d /= length * length * length;
+
+			current.a = a;
+			current.b = b;
+			current.c = c;
+			current.d = d;
+
+		}
+
+	}
+
 }

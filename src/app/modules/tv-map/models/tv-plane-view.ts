@@ -99,7 +99,7 @@ export class TvPlaneView {
 
 		if ( this.geometries.length > 0 ) {
 
-			return this.geometries[ this.geometries.length - 1 ].s2;
+			return this.geometries[ this.geometries.length - 1 ].endS;
 
 		} else {
 

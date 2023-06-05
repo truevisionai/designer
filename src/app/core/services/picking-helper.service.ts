@@ -102,11 +102,33 @@ export class PickingHelper {
 		return [];
 	}
 
-	public static findByTag<T extends Object3D> ( tag, e: PointerEventData, objects: T[], recursive = true ): T[] {
+	public static findAllByTag<T extends Object3D> ( tag: string, e: PointerEventData, objects: T[], recursive = true ): T[] {
 
 		const intersections = this.findViaRaycasting( e, objects, recursive );
 
 		return intersections.filter( i => i[ 'tag' ] === tag );
+	}
+
+	public static findByTag<T extends Object3D> ( tag: string, e: PointerEventData, objects: T[], recursive = true ): T {
+
+		const results = this.findAllByTag( tag, e, objects, recursive );
+
+		return results.length ? results[ 0 ] : null;
+	}
+
+	public static findAllByObjectType<T extends Object3D> ( type, e: PointerEventData, objects: T[], recursive = true ): T[] {
+
+		const results = this.findViaRaycasting( e, objects, recursive );
+
+		return results.filter( i => i.type === type );
+	}
+
+	public static findByObjectType<T extends Object3D> ( type: any, e: PointerEventData, objects: T[], recursive = true ): T {
+
+		const results = this.findAllByObjectType<T>( type, e, objects, recursive );
+
+		return results.length ? results[ 0 ] : null;
+
 	}
 
 	public static checkLaneObjectInteraction ( event: PointerEventData, tag?: string ): TvLane {

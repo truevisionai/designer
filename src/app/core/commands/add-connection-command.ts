@@ -11,7 +11,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LanePathFactory } from '../factories/lane-path-factory.service';
 import { RoadFactory } from '../factories/road-factory.service';
 import { SceneService } from '../services/scene.service';
-import { ManeuverTool } from '../tools/maneuver-tool';
+import { ManeuverTool } from '../tools/maneuver/maneuver-tool';
 import { BaseCommand } from './base-command';
 
 export class AddConnectionCommand extends BaseCommand {

@@ -57,7 +57,7 @@ export class AssetImporterService {
 				break;
 
 			default:
-				SnackBar.error( 'unknown 3d format. Please use any of obj, dae, fbx formats' );
+				SnackBar.warn( 'unknown 3d format. Please use any of obj, dae, fbx formats' );
 				break;
 		}
 
@@ -154,7 +154,7 @@ export class AssetImporterService {
 
 	importFBX ( filepath: string, success: Function, error: Function ) {
 
-		SnackBar.error( 'FBX files are not supported' );
+		SnackBar.warn( 'FBX files are not supported' );
 
 		// var loader = new THREE.FBXLoader();
 

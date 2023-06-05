@@ -2,7 +2,7 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="status-bar" fxLayout="row">
+<div class="status-bar" fxLayout="row" [class.highlight]="highlightStatus">
 	<div fxFlex="auto">
 		{{ statusService.message }}
 	</div>

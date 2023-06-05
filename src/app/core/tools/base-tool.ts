@@ -10,13 +10,17 @@ import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { MonoBehaviour } from '../components/mono-behaviour';
+import { AppService } from '../services/app.service';
 import { IEditorState } from './i-editor-state';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { StatusBarService } from 'app/services/status-bar.service';
+import { ToolType } from '../models/tool-types.enum';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	abstract name: string;
+	abstract toolType: ToolType;
 
 	// highlighting variables
 	private previousColor = new Color();
@@ -104,6 +108,20 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 		}
 	}
 
+	protected findControlPointFromIntersection ( intersections: Intersection[] ): AnyControlPoint | null {
+
+		for ( const i of intersections ) {
+
+			if ( i.object != null && i.object.type == 'Points' ) {
+
+				return i.object as AnyControlPoint;
+
+			}
+		}
+
+		return null;
+	}
+
 	protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
 
 		for ( const i of intersections ) {
@@ -172,7 +190,9 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 			// Set the current temporary material property to highlighted color
 			highlightedMaterial.linewidth += highlightedMaterial.linewidth;
 
-			highlightedMaterial.color = new Color( 1, 0, 0 );
+			highlightedMaterial.setValues( {
+				color: COLOR.DEEP_CYAN
+			})
 
 			// Assign the temporary material to the object
 			object.material = highlightedMaterial;

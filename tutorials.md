@@ -25,7 +25,12 @@
 - From the toolbar, select `Lane Width Tool`.
 
 ## Adding Lane Markings
-- From the toolbar, select `Lane Marking Tool`.
+- From the toolbar, select `Lane Marking Tool`
+- Select the road where you want to add lanes.
+- Move your cursor over the Lane Reference Line.
+- Use `SHIFT` + `LEFT CLICK` to add a new `Lane Marking Node`
+- Modify the properties of the new `Lane Marking Node` from the inspector as needed.
+- You can drag `Lane Marking Node` to adjust its position on road
 
 ## Choosing Different Road Styles
 - Navigate to the `RoadStyles` folder in the Project Browser.
@@ -37,3 +42,12 @@
 - Use `SHIFT` + `LEFT CLICK` to begin creating the circular road.
 - Drag your mouse to adjust the radius of the circular road as needed.
 - Release the `LEFT CLICK` to finalize and create the circular road.
+
+## Adding Road Markings
+- From the toolbar, select `Marking Point Tool`.
+- Navigate to the `RoadMarkings` folder in the Project Browser.
+- Select the `RoadMarking` that you want to use.
+- Move your cursor over the road or lane you want to edit
+- Use `SHIFT` + `LEFT CLICK` to drop a road marking at the desired point
+- Drag the marking or control point as needed to adjust road marking position
+

@@ -5,13 +5,17 @@
 import { Injectable } from '@angular/core';
 import { IFile } from '../models/file';
 import { ApiService } from './api.service';
+import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class FileApiService {
 
-	constructor ( private api: ApiService ) {
+	constructor (
+		private api: ApiService,
+		private mapService: TvMapService
+	) {
 	}
 
 	// get file
@@ -37,6 +41,44 @@ export class FileApiService {
 	ping () {
 
 		return this.api.get( `/ping` );
+
+	}
+
+	uploadMapFiles ( e: Error, openDriveMap?: string, tvMap?: string ) {
+
+		try {
+
+			const openDriveState = openDriveMap || this.mapService.getOpenDriveOutput();
+
+			const tvMapState = tvMap || this.mapService.getSceneOutput();
+
+			return this.api.put( '/files/log-error', {
+				error: e.name,
+				mapStates: {
+					openDriveState: openDriveState,
+					tvMapState: tvMapState,
+				}
+			} );
+
+		} catch ( error ) {
+
+			console.error( error );
+
+		}
+
+	}
+
+	uploadCurrentMapState () {
+
+		const openDriveState = this.mapService.getOpenDriveOutput();
+		const tvMapState = this.mapService.getSceneOutput();
+
+		return this.api.put( '/files/log-error', {
+			mapStates: {
+				openDriveState: openDriveState,
+				tvMapState: tvMapState,
+			}
+		} );
 
 	}
 }

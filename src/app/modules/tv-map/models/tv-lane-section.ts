@@ -10,6 +10,8 @@ import { TvLane } from './tv-lane';
 import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
+import { TvRoad } from './tv-road.model';
+import { TvUtils } from './tv-utils';
 
 export class TvLaneSection {
 
@@ -17,27 +19,32 @@ export class TvLaneSection {
 	public readonly uuid: string;
 
 	public gameObject: GameObject;
-	public roadId: number;
+
 	public attr_s: number;
 	public attr_singleSide: boolean;
 	// old property
-	public lastSCoordinate: number;
+	public endS: number;
 
 	// public left: OdRoadLaneSectionContainer;
 	// public center: OdRoadLaneSectionContainer;
 	// public right: OdRoadLaneSectionContainer;
 	private lastAddedLaneIndex: number;
 	private laneMap: Map<number, TvLane> = new Map<number, TvLane>();
+	private _road: TvRoad;
 
-	constructor ( id: number, s: number, singleSide: boolean, roadId: number ) {
+	constructor ( id: number, s: number, singleSide: boolean, road?: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
 		this.id = id;
 		this.attr_s = s;
 		this.attr_singleSide = singleSide;
-		this.roadId = roadId;
+		this._road = road;
 	}
 
 	private _length: number;
+
+	get roadId () {
+		return this._road?.id;
+	}
 
 	get length () {
 		return this._length;
@@ -54,6 +61,14 @@ export class TvLaneSection {
 
 	get s () {
 		return this.attr_s;
+	}
+
+	get road (): TvRoad {
+		return this._road;
+	}
+
+	set road ( value: TvRoad ) {
+		this._road = value;
 	}
 
 	// private laneVector: OdLane[] = [];
@@ -194,7 +209,7 @@ export class TvLaneSection {
 	 */
 	addLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
-		const newLane = new TvLane( laneSide, id, type, level, this.roadId, this.id );
+		const newLane = new TvLane( laneSide, id, type, level, this.roadId, this );
 
 		this.addLaneInstance( newLane, sort );
 
@@ -556,6 +571,12 @@ export class TvLaneSection {
 		return count;
 	}
 
+	getCenterLanes () {
+
+		return this.laneVector.filter( lane => lane.getSide() === TvLaneSide.CENTER );
+
+	}
+
 	getRightLaneCount () {
 
 		const idLessThanZero = ( a, b ) => a[ 0 ] < 0;
@@ -752,65 +773,16 @@ export class TvLaneSection {
 
 	updateLaneWidthValues ( lane: TvLane ): void {
 
-		const widthSections = lane.getLaneWidthVector();
-
-		for ( let i = 0; i < widthSections.length; i++ ) {
-
-			const current = widthSections[ i ];
-
-			let pp0, pp1, pd0, pd1, length;
-
-			if ( ( i + 1 ) < widthSections.length ) {
-
-				const next = widthSections[ i + 1 ];
-
-				// next s cannot be less than current so we need to clamp it
-				if ( next.s <= current.s ) {
-
-					next.s = current.s + 0.1;
-
-				}
-
-				length = next.s - current.s;
-
-				pp0 = current.a;          // width at start
-				pp1 = next.a;             // width at end
-				pd0 = current.b;          // tangent at start
-				pd1 = next.b;             // tangent at end
-
-			} else {
-
-				// take lane section length
-				length = this.length - current.s;
-
-				pp0 = current.a;          // width at start
-				pp1 = current.a;          // width at end
-				pd0 = current.b;          // tangent at start
-				pd1 = current.b;          // tangent at end
-
-			}
-
-			let a = pp0;
-			let b = pd0;
-			let c = ( -3 * pp0 ) + ( 3 * pp1 ) + ( -2 * pd0 ) + ( -1 * pd1 );
-			let d = ( 2 * pp0 ) + ( -2 * pp1 ) + ( 1 * pd0 ) + ( 1 * pd1 );
-
-			b /= length;
-			c /= length * length;
-			d /= length * length * length;
-
-			current.a = a;
-			current.b = b;
-			current.c = c;
-			current.d = d;
-
-		}
+		// TODO: Check if this is correct
+		// this.length = lane.s - this.s;
+		// this.length - lane.s;
+		TvUtils.computeCoefficients( lane.getLaneWidthVector(), this.length );
 
 	}
 
-	cloneAtS ( id?: number, s?: number, side?: boolean, roadId?: number ): TvLaneSection {
+	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( id || 0, 0, side || this.attr_singleSide, roadId || 0 );
+		const laneSection = new TvLaneSection( id || 0, s || this.s, side || this.attr_singleSide, road || this.road );
 
 		this.laneMap.forEach( lane => {
 

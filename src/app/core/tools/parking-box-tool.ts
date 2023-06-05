@@ -14,6 +14,7 @@ import { Object3D } from 'three';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { BoxCreatedEvent, BoxEditor } from '../editors/box-editor';
 import { BaseTool } from './base-tool';
+import { ToolType } from '../models/tool-types.enum';
 
 export abstract class BaseParkingTool extends BaseTool {
 
@@ -21,7 +22,9 @@ export abstract class BaseParkingTool extends BaseTool {
 
 export class ParkingBoxTool extends BaseParkingTool {
 
-	name = 'ParkingBoxTool';
+	public name = 'ParkingBoxTool';
+	public toolType = ToolType.ParkingBox;
+
 	shapeEditor: BoxEditor;
 	boxCreatedSub: Subscription;
 	selectedBox: Object3D;

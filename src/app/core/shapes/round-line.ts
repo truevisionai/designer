@@ -23,7 +23,7 @@ export class RoundLine {
 
 		this.curveType = 'roundline';
 
-		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35 } ) );
+		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
 		this.mesh.castShadow = true;
 

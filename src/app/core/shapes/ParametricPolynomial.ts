@@ -4,6 +4,7 @@
 
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
 import { ARC_SEGMENTS, PARACUBICFACTOR } from './spline-config';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 class ParametricPolynomial {
 	private curveType;
@@ -13,7 +14,7 @@ class ParametricPolynomial {
 		const geometry = new BufferGeometry();
 		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( ARC_SEGMENTS * 3 ), 3 ) );
 		this.curveType = 'cubic';
-		this.mesh = new Line( geometry, new LineBasicMaterial( { color: 0x0000ff, opacity: 0.85 } ) );
+		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.85 } ) );
 		this.mesh.castShadow = true;
 		this.mesh.renderOrder = 1;
 		this.mesh.frustumCulled = false;

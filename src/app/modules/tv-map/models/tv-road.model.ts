@@ -11,7 +11,11 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector2, Vector3 } from 'three';
+import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
+import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
+import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
+import { TvMapBuilder } from '../builders/od-builder.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -33,8 +37,8 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { NodeFactoryService } from 'app/core/factories/node-factory.service';
-import { TvMapBuilder } from '../builders/od-builder.service';
+import { TvConsole } from 'app/core/utils/console';
+import { SentryService } from 'app/core/analytics/sentry.service';
 
 export class TvRoad {
 
@@ -51,7 +55,7 @@ export class TvRoad {
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
-	public lanes = new TvRoadLanes();
+	public lanes = new TvRoadLanes( this );
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
@@ -227,6 +231,11 @@ export class TvRoad {
 
 	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
 
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
+
 		const pose = new TvPosTheta;
 
 		this.getGeometryCoordsAt( s, t, pose );
@@ -253,6 +262,11 @@ export class TvRoad {
 	}
 
 	startPosition () {
+
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
 
 		return this.getRoadPosition( 0 );
 
@@ -383,15 +397,7 @@ export class TvRoad {
 	 */
 	addLaneSection ( s: number, singleSide: boolean ) {
 
-		// TODO: Check for interval
-
-		// this.lanes = new OdRoadLanes();
-
-		const laneSectionId = this.lanes.laneSections.length + 1;
-
-		this.lanes.laneSections.push( new TvLaneSection( laneSectionId, s, singleSide, this.id ) );
-
-		this.updateLaneSections();
+		this.addGetLaneSection( s, singleSide );
 
 		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
 
@@ -400,18 +406,19 @@ export class TvRoad {
 
 	addLaneSectionInstance ( laneSection: TvLaneSection ) {
 
-		laneSection.roadId = this.id;
+		laneSection.road = this;
 
 		laneSection.lanes.forEach( lane => {
 
 			lane.roadId = this.id;
 
-			lane.laneSectionId = laneSection.id;
+			lane.laneSection = laneSection;
 
 		} );
 
 		this.laneSections.push( laneSection );
 
+		this.computeLaneSectionLength();
 	}
 
 	clearLaneSections () {
@@ -422,22 +429,24 @@ export class TvRoad {
 
 	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
-		const laneSectionId = this.lanes.laneSections.length + 1;
+		const laneSections = this.getLaneSections();
 
-		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.id );
+		const laneSectionId = laneSections.length + 1;
 
-		this.lanes.laneSections.push( laneSection );
+		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
-		this.updateLaneSections();
+		laneSections.push( laneSection );
 
-		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
+		this.computeLaneSectionLength();
+
+		this.lastAddedLaneSectionIndex = laneSections.length - 1;
 
 		return laneSection;
 	}
 
 	getLaneSectionCount () {
 
-		return this.lanes.laneSections.length;
+		return this.getLaneSections().length;
 
 	}
 
@@ -577,17 +586,31 @@ export class TvRoad {
 
 	getGeometryCoords ( s: number, odPosTheta: TvPosTheta ): number {
 
-		if ( s == null || s == undefined ) console.error( 's is undefined' );
+		if ( s == null || s == undefined ) TvConsole.error( 's is undefined' );
 
-		if ( s > this.length || s < 0 ) console.warn( 's is greater than road length or less than 0' );
+		if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
 
 		const geometry = this.getGeometryAt( s );
 
-		if ( geometry == null ) throw new Error( `geometry not found at s = ${ s }` );
+		if ( geometry == null ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
 
 		const geometryType = geometry.getCoords( s, odPosTheta );
 
-		if ( !geometryType ) throw new Error( 'geometry type not found at ' + s );
+		if ( !geometryType ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
 
 		const laneOffset = this.getLaneOffsetValue( s );
 
@@ -804,9 +827,9 @@ export class TvRoad {
 
 	}
 
-	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ) {
+	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
 
-		this.lanes.addLaneOffsetRecord( s, a, b, c, d );
+		return this.lanes.addLaneOffsetRecord( s, a, b, c, d );
 
 	}
 
@@ -852,7 +875,7 @@ export class TvRoad {
 
 	getLaneSectionById ( id: number ) {
 
-		return this.lanes.laneSections.find( laneSection => {
+		return this.laneSections.find( laneSection => {
 
 			return laneSection.id === id;
 
@@ -904,14 +927,14 @@ export class TvRoad {
 
 		this.length += geometry.length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 	}
 
 	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryLine( s, x, y, hdg, length );
 
@@ -921,7 +944,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
 
@@ -935,7 +958,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
@@ -945,7 +968,7 @@ export class TvRoad {
 
 		this.length += length;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 		return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
 
@@ -957,7 +980,7 @@ export class TvRoad {
 
 		this.length = 0;
 
-		this.updateLaneSections();
+		this.computeLaneSectionLength();
 
 	}
 
@@ -972,7 +995,8 @@ export class TvRoad {
 
 	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
-		if ( !this.hasType ) return;
+		// add a default type if none exists
+		if ( !this.hasType ) this.setType( TvRoadType.TOWN, 40 );
 
 		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 	}
@@ -982,7 +1006,7 @@ export class TvRoad {
 		let maxSpeed = null;
 
 		// get max-speed as per road
-		const type = TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
+		const type = this.getRoadTypeAt( s );
 
 		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
 
@@ -1102,7 +1126,7 @@ export class TvRoad {
 
 		} else {
 
-			SnackBar.error( 'Cannot split this geometry' );
+			SnackBar.warn( 'Cannot split this geometry' );
 
 		}
 
@@ -1176,7 +1200,7 @@ export class TvRoad {
 
 		SceneService.add( point );
 
-		this.updateGeometryFromSpline()
+		this.updateGeometryFromSpline();
 	}
 
 	addControlPointAt ( position: Vector3 ) {
@@ -1231,6 +1255,8 @@ export class TvRoad {
 	}
 
 	updateRoadNodes (): void {
+
+		this.updateGeometryFromSpline();
 
 		if ( !this.startNode ) {
 			this.startNode = this.createRoadNode( 'start' );
@@ -1290,7 +1316,25 @@ export class TvRoad {
 
 	showLaneOffsetNodes () {
 
-		throw new Error( 'Method not implemented.' );
+		this.getLaneOffsets().forEach( laneOffset => {
+
+			if ( laneOffset.node ) {
+
+				laneOffset.node.updatePosition();
+
+				laneOffset.node.visible = true;
+
+				SceneService.add( laneOffset.node );
+
+			} else {
+
+				laneOffset.node = new LaneOffsetNode( this, laneOffset );
+
+				SceneService.add( laneOffset.node );
+
+			}
+
+		} );
 
 	}
 
@@ -1299,9 +1343,11 @@ export class TvRoad {
 
 		this.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.mesh ) {
+			if ( laneOffset.node ) {
 
-				laneOffset.mesh.visible = false;
+				laneOffset.node.visible = false;
+
+				SceneService.remove( laneOffset.node );
 
 			}
 
@@ -1337,7 +1383,7 @@ export class TvRoad {
 
 					} else {
 
-						roadmark.node = NodeFactoryService.createRoadMarkNode( lane, roadmark );
+						roadmark.node = new LaneRoadMarkNode( lane, roadmark );
 
 						SceneService.add( roadmark.node );
 
@@ -1376,7 +1422,7 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) laneWidth.mesh.visible = false;
+					if ( laneWidth.node ) laneWidth.node.visible = false;
 
 				} );
 
@@ -1393,17 +1439,11 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.mesh ) {
+					if ( laneWidth.node ) SceneService.remove( laneWidth.node );
 
-						laneWidth.mesh.visible = true;
+					laneWidth.node = new LaneWidthNode( laneWidth );
 
-					} else {
-
-						laneWidth.mesh = NodeFactoryService.createLaneWidthNode( this, lane, laneWidth.s, laneWidth );
-
-						SceneService.add( laneWidth.mesh );
-
-					}
+					SceneService.add( laneWidth.node );
 
 				} );
 
@@ -1413,7 +1453,9 @@ export class TvRoad {
 
 	}
 
-	private updateLaneSections () {
+	private computeLaneSectionLength () {
+
+		this.computeLaneSectionCoordinates();
 
 		const sections = this.getLaneSections();
 
@@ -1440,4 +1482,69 @@ export class TvRoad {
 
 	}
 
+	getCoordAt ( point: Vector3 ): TvPosTheta {
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const coordinates = new TvPosTheta();
+
+		for ( const geometry of this.geometries ) {
+
+			const temp = new TvPosTheta();
+
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+		}
+
+		return coordinates;
+	}
+
+	computeLaneSectionCoordinates () {
+
+		// Compute lastSCoordinate for all laneSections
+		for ( let i = 0; i < this.laneSections.length; i++ ) {
+
+			const currentLaneSection = this.laneSections[ i ];
+
+			// lastSCoordinate by default is equal to road length
+			let lastSCoordinate = this.length;
+
+			// if next laneSection exists let's use its sCoordinate
+			if ( i + 1 < this.laneSections.length ) {
+				lastSCoordinate = this.laneSections[ i + 1 ].s;
+			}
+
+			currentLaneSection.endS = lastSCoordinate;
+		}
+
+		// // Compute lastSCoordinate for all laneSections
+		// for ( let i = 0; i < this.laneSections.length; i++ ) {
+		//
+		// 	const currentLaneSection = this.laneSections[ i ];
+		//
+		// 	// by default it is equal to road lenght
+		// 	let lastSCoordinate = 0;
+		//
+		// 	// if next laneSection exists lets use its sCoordinate
+		// 	if ( i + 1 < this.laneSections.length ) {
+		//
+		// 		const nextLaneSection = this.laneSections[ i + 1 ];
+		// 		lastSCoordinate = nextLaneSection.attr_s;
+		//
+		// 	} else {
+		//
+		//
+		// 		lastSCoordinate = this.length;
+		// 	}
+		//
+		// 	currentLaneSection.lastSCoordinate = lastSCoordinate;
+		// }
+
+	}
 }

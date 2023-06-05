@@ -2,8 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { ICommand, ICommandCallback } from './i-command';
+import { SceneService } from '../services/scene.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 
 
 export abstract class BaseCommand implements ICommand {
@@ -19,5 +22,16 @@ export abstract class BaseCommand implements ICommand {
 	abstract undo (): void;
 
 	abstract redo (): void;
+
+	buildRoad ( road: TvRoad ): void {
+
+		if ( !road ) return;
+
+		SceneService.removeWithChildren( road.gameObject, true );
+
+		TvMapBuilder.buildRoad( this.map.gameObject, road );
+
+	}
+
 
 }

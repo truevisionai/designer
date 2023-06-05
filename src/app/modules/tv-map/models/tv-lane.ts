@@ -11,13 +11,15 @@ import { TvLaneBorder } from './tv-lane-border';
 import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneMaterial } from './tv-lane-material';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneSection } from './tv-lane-section';
 import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
-export class TvLane {
+export class TvLane implements ISelectable {
 
 	public readonly uuid: string;
 
@@ -36,7 +38,6 @@ export class TvLane {
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
 	private height: TvLaneHeight[] = [];
-	private _sectionId: number;
 	private _successor: number;
 	private lastAddedLaneWidth: number;
 	private lastAddedLaneRoadMark: number;
@@ -45,8 +46,9 @@ export class TvLane {
 	private lastAddedLaneSpeed: number;
 	private lastAddedLaneAccess: number;
 	private lastAddedLaneHeight: number;
+	private _laneSection: TvLaneSection;
 
-	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, sectionId?: number ) {
+	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, laneSection?: TvLaneSection ) {
 
 		this._side = laneSide;
 
@@ -55,7 +57,15 @@ export class TvLane {
 		this.attr_type = type;
 		this.attr_level = level;
 		this.roadId = roadId;
-		this._sectionId = sectionId;
+		this._laneSection = laneSection;
+	}
+
+	isSelected: boolean;
+	select (): void {
+		this.isSelected = true;
+	}
+	unselect (): void {
+		this.isSelected = false;
 	}
 
 	private _roadId: number;
@@ -66,6 +76,14 @@ export class TvLane {
 
 	set roadId ( value ) {
 		this._roadId = value;
+	}
+
+	get laneSection (): TvLaneSection {
+		return this._laneSection;
+	}
+
+	set laneSection ( value: TvLaneSection ) {
+		this._laneSection = value;
 	}
 
 	private _side: TvLaneSide;
@@ -210,11 +228,7 @@ export class TvLane {
 	}
 
 	get laneSectionId () {
-		return this._sectionId;
-	}
-
-	set laneSectionId ( value ) {
-		this._sectionId = value;
+		return this._laneSection?.id;
 	}
 
 	get direction () {
@@ -339,7 +353,7 @@ export class TvLane {
 
 	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this.id, this._roadId ) );
+		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this, this.laneSection.road ) );
 
 	}
 
@@ -570,6 +584,10 @@ export class TvLane {
 
 	deleteLaneWidth ( index: number ) {
 		this.width.splice( index, 1 );
+	}
+
+	clearLaneWidth () {
+		this.width.splice( 0, this.width.length );
 	}
 
 	deleteLaneRoadMark ( index: number ) {
@@ -1125,7 +1143,7 @@ export class TvLane {
 
 		const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
+		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
 
 		this.getLaneWidthVector().forEach( width => {
 			newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
@@ -1143,7 +1161,7 @@ export class TvLane {
 
 		const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this.laneSectionId );
+		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
 
 		const width = this.getLaneWidthAt( s || 0 );
 
@@ -1180,6 +1198,9 @@ export class TvLane {
 	}
 
 	public getRoadMarkAt ( s: number ): TvLaneRoadMark {
+
+		if ( this.roadMark.length === 0 )
+			this.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 		return TvUtils.checkIntervalArray( this.roadMark, s );
 

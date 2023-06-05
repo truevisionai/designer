@@ -37,8 +37,14 @@ module.exports = function ( config ) {
 		colors: true,
 		logLevel: config.LOG_INFO,
 		autoWatch: true,
-		browsers: [ 'Chrome' ],
+		browsers: [ 'ChromeDebugging' ],
 		singleRun: false,
+		customLaunchers: {
+			ChromeDebugging: {
+				base: 'Chrome',
+				flags: [ '--remote-debugging-port=9333' ]
+			}
+		},
 		restartOnFileChange: true
 	} );
 };

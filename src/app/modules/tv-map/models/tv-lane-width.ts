@@ -2,45 +2,39 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Object3D } from 'three';
+import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
 import { ThirdOrderPolynom } from './third-order-polynom';
+import { TvLane } from './tv-lane';
+import { TvRoad } from './tv-road.model';
 
 export class TvLaneWidth extends ThirdOrderPolynom {
 
-	public mesh?: Object3D;
+	public node?: LaneWidthNode;
 
-	constructor ( s: number, a: number, b: number, c: number, d: number, laneId?: number, roadId?: number ) {
+	public readonly lane: TvLane;
+	public readonly road: TvRoad;
+
+	constructor ( s: number, a: number, b: number, c: number, d: number, lane: TvLane, road: TvRoad ) {
 
 		super( s, a, b, c, d );
 
-		this._laneId = laneId;
-		this._roadId = roadId;
+		this.lane = lane;
+		this.road = road;
 
 	}
 
-	private _laneId: number;
 
 	get laneId () {
-		return this._laneId;
+		return this.lane.id;
 	}
-
-	set laneId ( value ) {
-		this._laneId = value;
-	}
-
-	private _roadId: number;
 
 	get roadId () {
-		return this._roadId;
-	}
-
-	set roadId ( value ) {
-		this._roadId = value;
+		return this.lane.laneSection.road.id;
 	}
 
 	clone ( s?: number ) {
 
-		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d, this._laneId, this._roadId );
+		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d, this.lane, this.road );
 
 	}
 }

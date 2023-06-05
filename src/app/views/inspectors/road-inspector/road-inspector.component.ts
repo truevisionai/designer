@@ -74,7 +74,7 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 		if ( this.controlPoint ) this.controlPoint.select();
 
-		if ( this.data.node ) this.node.selected();
+		if ( this.data.node ) this.node.select();
 
 	}
 
@@ -82,11 +82,11 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 		if ( this.road ) this.road.hideControlPoints();
 
-		if ( this.road ) this.road.hideSpline();
+		// if ( this.road ) this.road.hideSpline();
 
 		if ( this.controlPoint ) this.controlPoint.unselect();
 
-		if ( this.data.node ) this.data.node.unselected();
+		if ( this.data.node ) this.data.node.unselect();
 
 	}
 
