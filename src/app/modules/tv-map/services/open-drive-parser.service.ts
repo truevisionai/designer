@@ -136,7 +136,19 @@ export class OpenDriverParser extends AbstractReader {
 
 			road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
 
-			road.updateGeometryFromSpline();
+			road.length = 0;
+
+			road.spline.update();
+
+			road.clearGeometries();
+
+			road.spline.exportGeometries( true ).forEach( geometry => {
+
+				road.addGeometry( geometry );
+
+			} );
+
+			road.updated.emit( road );
 		}
 
 		if ( xml.elevationProfile != null ) this.readElevationProfile( road, xml.elevationProfile );
@@ -166,12 +178,12 @@ export class OpenDriverParser extends AbstractReader {
 
 			lastGeometry = geometries[ i ];
 
-			spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType );
+			spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType, lastGeometry );
 		}
 
 		const lastCoord = lastGeometry.endCoord();
 
-		spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType );
+		spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType, lastGeometry );
 
 		spline.hide();
 

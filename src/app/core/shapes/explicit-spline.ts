@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
@@ -12,6 +11,7 @@ import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
 import { AbstractSpline } from './abstract-spline';
@@ -19,7 +19,6 @@ import { AbstractSpline } from './abstract-spline';
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -86,7 +85,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		for ( let i = 0; i < this.segments.length; i++ ) {
 
-			this.updateSegment( i );
+			this.updateSplineShape( i );
 
 		}
 
@@ -100,13 +99,13 @@ export class ExplicitSpline extends AbstractSpline {
 
 	}
 
-	exportGeometries (): TvAbstractRoadGeometry[] {
+	exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[] {
 
-		return this.exportFromSpline( this.segTypes, this.hdgs, this.controlPointPositions );
+		return this.exportFromSpline( this.segTypes, this.hdgs, this.controlPointPositions, duringImport );
 
 	}
 
-	exportFromSpline ( segTypes: number[], hdgs: number[][], points: Vector3[] ): TvAbstractRoadGeometry[] {
+	exportFromSpline ( segTypes: number[], hdgs: number[][], points: Vector3[], duringImport = false ): TvAbstractRoadGeometry[] {
 
 		let totalLength = 0;
 		const geometries: TvAbstractRoadGeometry[] = [];
@@ -145,6 +144,25 @@ export class ExplicitSpline extends AbstractSpline {
 
 				hdg = hdg1[ 0 ];
 
+				// const segment = i > 0 ? this.segments[ i - 1 ] : this.segments[ i ];
+
+				// // HACK: to fix incorrect arc length calculation during import,
+				// // when we just rely on open-drive map data instead of actual calculations
+				// //
+				// // during import use values from cache of segment instead of calculating
+				// // this calcuation has led to bugs in some open-drive maps and
+				// // length usually was incorreclty calculated
+				// if ( duringImport && segment && segment.userData.geometry != null ) {
+
+				// 	length = segment.userData.geometry?.length;
+
+				// 	const curvature = segment.userData.geometry?.curvature;
+
+				// 	geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
+
+				// } else {
+
+
 				let radius, alpha, sign;
 				[ radius, alpha, length, sign ] = this.getArcParams( p1, p2, dir1, dir2 );
 
@@ -160,6 +178,8 @@ export class ExplicitSpline extends AbstractSpline {
 				if ( radius === Infinity ) length = distance;
 
 				geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
+
+				// }
 
 			} else if ( segTypes[ i ] === TvGeometryType.SPIRAL ) {
 
@@ -281,7 +301,7 @@ export class ExplicitSpline extends AbstractSpline {
 			this.addSegment( index - 1 );
 
 			// calculate curve mesh
-			this.updateSegment( index - 1 );
+			this.updateSplineShape( index - 1 );
 
 		}
 
@@ -305,7 +325,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		// Update remaining segments
 		for ( let i = cp.tagindex; i < this.segments.length; i++ ) {
-			this.updateSegment( i );
+			this.updateSplineShape( i );
 		}
 
 	}
@@ -330,7 +350,7 @@ export class ExplicitSpline extends AbstractSpline {
 		return this.addFromFile( index, position, hdg, TvGeometryType.SPIRAL );
 	}
 
-	addFromFile ( index: number, position: Vector3, hdg: number, segType: TvGeometryType ) {
+	addFromFile ( index: number, position: Vector3, hdg: number, segType: TvGeometryType, geometry?: TvAbstractRoadGeometry ) {
 
 		// this.segTypes.push( segType );
 
@@ -353,17 +373,17 @@ export class ExplicitSpline extends AbstractSpline {
 		if ( index > 0 ) {
 
 			// add empty curve mesh
-			this.addSegment( index - 1 );
+			this.addSegment( index - 1, geometry );
 
 			// calculate curve mesh
-			this.updateSegment( index - 1 );
+			this.updateSplineShape( index - 1 );
 
 		}
 
 		return controlPoint;
 	}
 
-	addSegment ( index: number ) {
+	addSegment ( index: number, abstractRoadGeometry?: TvAbstractRoadGeometry ) {
 
 		const geometry = new BufferGeometry();
 
@@ -380,6 +400,8 @@ export class ExplicitSpline extends AbstractSpline {
 		line.renderOrder = 3;
 
 		line.frustumCulled = false;
+
+		line.userData.geometry = abstractRoadGeometry;
 
 		this.segments.push( line );
 
@@ -400,7 +422,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 	}
 
-	updateSegment ( idx: number ) {
+	updateSplineShape ( idx: number ) {
 
 		const mesh = this.segments[ idx ];
 		const posattr = ( mesh.geometry as BufferGeometry ).attributes.position as BufferAttribute;

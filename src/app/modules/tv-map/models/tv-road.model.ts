@@ -1213,7 +1213,7 @@ export class TvRoad {
 
 	}
 
-	updateGeometryFromSpline () {
+	updateGeometryFromSpline ( duringImport = false ) {
 
 		// make length 0 because geometry will update road length again
 		this.length = 0;
@@ -1222,7 +1222,7 @@ export class TvRoad {
 
 		this.clearGeometries();
 
-		this.spline.exportGeometries().forEach( geometry => {
+		this.spline.exportGeometries( duringImport ).forEach( geometry => {
 
 			this.addGeometry( geometry );
 

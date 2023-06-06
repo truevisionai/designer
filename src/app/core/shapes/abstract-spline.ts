@@ -46,7 +46,7 @@ export abstract class AbstractSpline {
 
 	abstract update (): void;
 
-	abstract exportGeometries (): TvAbstractRoadGeometry[];
+	abstract exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[];
 
 	clear () {
 

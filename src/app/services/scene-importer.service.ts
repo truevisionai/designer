@@ -258,8 +258,6 @@ export class SceneImporterService extends AbstractReader {
 
 		road.spline = this.importSpline( xml.spline, road );
 
-		road.updateGeometryFromSpline();
-
 		this.odParser.readRoadTypes( road, xml );
 
 		if ( xml.link != null ) this.odParser.readRoadLinks( road, xml.link );
@@ -312,11 +310,19 @@ export class SceneImporterService extends AbstractReader {
 
 		if ( type === 'auto' ) {
 
-			return this.importAutoSpline( xml, road );
+			const spline = this.importAutoSpline( xml, road );
+
+			road.updateGeometryFromSpline( true );
+
+			return spline;
 
 		} else if ( type === 'explicit' ) {
 
-			return this.importExplicitSpline( xml, road );
+			const spline = this.importExplicitSpline( xml, road );
+
+			road.updateGeometryFromSpline( true );
+
+			return spline;
 
 		} else {
 

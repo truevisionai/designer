@@ -3,8 +3,8 @@
  */
 
 export class MeshGeometryData {
-	public vertices: any[] = [];
-	public triangles = [];
+	public vertices: number[] = [];
+	public triangles = [];n
 	public currentIndex = 0;
 	public indices: number[] = [];
 	public colors: number[] = [];
