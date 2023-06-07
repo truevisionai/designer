@@ -33,19 +33,32 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		this.computeVars();
 	}
 
-	getCoords ( sCheck: any, posTheta: TvPosTheta ) {
+	getCoords ( s: any, posTheta: TvPosTheta ) {
 
-		const vLocal = this.getBezierValue( sCheck );
+		// testing code from
+		// const t = ( s - this.s ) / this.length
 
-		const x = sCheck;
+		// const lateralOffset = this.attr_a * t ^ 3 + this.attr_b * t ^ 2 + this.attr_c * t + this.attr_d
+
+		// posTheta.x = this.x + ( s - this.s ) * Math.cos( this.hdg ) - lateralOffset * Math.sin( this.hdg )
+		// posTheta.y = this.y + ( s - this.s ) * Math.sin( this.hdg ) + lateralOffset * Math.cos( this.hdg )
+
+		// const tangent = 3 * this.attr_a * t ^ 2 + 2 * this.attr_b * t + this.attr_c;
+
+		// posTheta.hdg = this.hdg + Math.atan( tangent );
+
+
+		const vLocal = this.getBezierValue( s );
+
+		const x = s;
 		const y = vLocal;
 
 		const xnew = x * this.cosTheta - y * this.sinTheta;
 		const ynew = x * this.sinTheta + y * this.cosTheta;
 
-		// Derivate to get heading change
+		// Derivate to get heading change`
 		const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
-		const tangent = this.polyeval( sCheck, dCoeffs );
+		const tangent = this.polyeval( s, dCoeffs );
 
 		posTheta.x = this.x + xnew;
 		posTheta.y = this.y + ynew;
