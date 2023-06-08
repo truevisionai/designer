@@ -9,7 +9,6 @@ import { MouseButton, PointerEventData } from '../../../events/pointer-event-dat
 import { AnyControlPoint } from '../../../modules/three-js/objects/control-point';
 import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
 import { OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
-import { OdRoadMarkBuilder } from '../../../modules/tv-map/builders/od-road-mark-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../../modules/tv-map/models/tv-lane-road-mark';
 import { AddRoadmarkNodeCommand } from './add-roadmark-node';
@@ -23,6 +22,7 @@ import { ToolType } from '../../models/tool-types.enum';
 import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
 import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-command';
+import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -48,7 +48,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	public node: LaneRoadMarkNode;
 
-	public roadMarkBuilder = new OdRoadMarkBuilder();
+	public roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	public laneHelper = new OdLaneReferenceLineBuilder();
 

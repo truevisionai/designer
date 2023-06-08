@@ -723,7 +723,7 @@ export class ManeuverTool extends BaseTool {
 
 						const connectingLane = connectingRoad
 							.getFirstLaneSection()
-							.getLaneVector()
+							.getLaneArray()
 							.find( i => i.predecessor === a.lane.id && i.succcessor === b.lane.id );
 
 						// basically if the same lane link is found only then it will
@@ -999,7 +999,7 @@ export class ManeuverTool extends BaseTool {
 
 	showStartEntries ( road: TvRoad ) {
 
-		road.getFirstLaneSection().getLaneVector().forEach( lane => {
+		road.getFirstLaneSection().getLaneArray().forEach( lane => {
 
 			if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
 
@@ -1022,7 +1022,7 @@ export class ManeuverTool extends BaseTool {
 
 	showEndEntries ( road: TvRoad ) {
 
-		road.getLastLaneSection().getLaneVector().forEach( lane => {
+		road.getLastLaneSection().getLaneArray().forEach( lane => {
 
 			if ( lane.id !== 0 && lane.type === TvLaneType.driving ) {
 

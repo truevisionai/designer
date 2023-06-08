@@ -9,6 +9,6 @@ export class MeshGeometryData {
 	public indices: number[] = [];
 	public colors: number[] = [];
 	public normals: number[] = [];
-	public texCoords: number[] = [];
+	public uvs: number[] = [];
 	public material: any;
 }

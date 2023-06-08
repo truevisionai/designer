@@ -62,7 +62,7 @@ describe( 'OpenDrive Model', () => {
 		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, true, true );
 		rightFour = laneSection.getLastAddedLane();
 
-		laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneArray().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 

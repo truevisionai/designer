@@ -23,13 +23,15 @@ import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvSignalHelper } from '../services/tv-signal-helper';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
-import { OdRoadMarkBuilder } from './od-road-mark-builder';
+import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { OdSignalBuilder } from './od-signal-builder';
+import { TvRoadMarkBuilderV2 } from './tv-road-mark-builder-v2';
 
 export class TvMapBuilder {
 
 	private static signalFactory = new OdSignalBuilder;
-	private static roadMarkBuilder = new OdRoadMarkBuilder( null );
+	// private static roadMarkBuilder = new TvRoadMarkBuilderV2( null );
+	private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	private static JUNCTION_ELEVATION_SHIFT = 0.005;
 
@@ -152,17 +154,17 @@ export class TvMapBuilder {
 
 		let step = 0;
 
-		for ( let sCoordinate = laneSection.s; sCoordinate < laneSection.endS; sCoordinate += roadStep ) {
+		for ( let s = laneSection.s; s < laneSection.endS; s += roadStep ) {
 
 			step += roadStep;
 
 			cumulativeWidth = laneSection.getWidthUptoStart( lane, step );
 
-			sCoordinate = Maths.clamp( sCoordinate, laneSection.s, laneSection.endS )
+			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			road.getGeometryCoords( sCoordinate, posTheta );
+			road.getGeometryCoords( s, posTheta );
 
-			this.makeLaneVertices( sCoordinate, posTheta, lane, road, cumulativeWidth, step );
+			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
 
 		}
 
@@ -191,14 +193,14 @@ export class TvMapBuilder {
 		const v1 = new Vertex();
 		const p1X = cosHdgPlusPiO2 * cumulativeWidth;
 		const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-		v1.Position = new Vector3( pos.x + p1X, pos.y + p1Y, elevation );
-		v1.TexCoord = new Vector2( 0, sCoordinate );
+		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, elevation );
+		v1.uvs = new Vector2( 0, sCoordinate );
 
 		const v2 = new Vertex();
 		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
 		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-		v2.Position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
-		v2.TexCoord = new Vector2( width + height.getOuter(), sCoordinate );
+		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
+		v2.uvs = new Vector2( width + height.getOuter(), sCoordinate );
 
 		if ( lane.side == TvLaneSide.RIGHT ) {
 
@@ -216,9 +218,9 @@ export class TvMapBuilder {
 
 	static addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
-		meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z );
-		meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
-		meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
+		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z );
+		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
+		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 		meshData.indices.push( meshData.currentIndex++ );
 
 	}
@@ -308,7 +310,7 @@ export class TvMapBuilder {
 
 		const vertices = new Float32Array( lane.meshData.vertices );
 		const normals = new Float32Array( lane.meshData.normals );
-		const faces = new Float32Array( lane.meshData.texCoords );
+		const faces = new Float32Array( lane.meshData.uvs );
 
 		geometry.setIndex( lane.meshData.triangles );
 		geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );

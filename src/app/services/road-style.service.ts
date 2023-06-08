@@ -98,7 +98,7 @@ export class RoadStyleService {
 		centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 		rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
-		roadStyle.laneSection.getLaneVector().forEach( lane => {
+		roadStyle.laneSection.getLaneArray().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 

@@ -167,7 +167,7 @@ export class BaseRoadPlanTool extends BaseTool {
 		centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 		rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
-		laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneArray().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 

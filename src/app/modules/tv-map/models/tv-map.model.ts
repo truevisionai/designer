@@ -146,7 +146,7 @@ export class TvMap {
 
 		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
 
-		laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneArray().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdRoadMarkBuilder } from '../../modules/tv-map/builders/od-road-mark-builder';
+import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
 import { BaseCommand } from './base-command';
@@ -11,7 +11,7 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 	private index: number;
 
-	private roadMarkBuilder = new OdRoadMarkBuilder( null );
+	private roadMarkBuilder = new OdRoadMarkBuilderV1( );
 
 	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
 

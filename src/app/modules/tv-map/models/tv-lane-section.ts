@@ -72,7 +72,7 @@ export class TvLaneSection {
 	}
 
 	// private laneVector: OdLane[] = [];
-	private get laneVector (): TvLane[] {
+	private get laneArray (): TvLane[] {
 		return [ ...this.laneMap.values() ];
 	}
 
@@ -288,7 +288,7 @@ export class TvLaneSection {
 	 * @param index
 	 */
 	deleteLane ( index ) {
-		this.laneVector.splice( index, 1 );
+		this.laneArray.splice( index, 1 );
 	}
 
 	/**
@@ -297,7 +297,7 @@ export class TvLaneSection {
 	deleteLeftLane () {
 
 		// Remove first element of array
-		this.laneVector.shift();
+		this.laneArray.shift();
 	}
 
 	/**
@@ -306,13 +306,13 @@ export class TvLaneSection {
 	deleteRightLane () {
 
 		// Remove last element of array
-		this.laneVector.pop();
+		this.laneArray.pop();
 	}
 
 	getLastLane (): TvLane {
 
-		if ( this.laneVector.length > 0 ) {
-			return this.laneVector[ this.laneVector.length - 1 ];
+		if ( this.laneArray.length > 0 ) {
+			return this.laneArray[ this.laneArray.length - 1 ];
 		}
 
 		return null;
@@ -325,8 +325,8 @@ export class TvLaneSection {
 		}
 
 		// TODO : remove this
-		if ( this.lastAddedLaneIndex < this.laneVector.length ) {
-			return this.laneVector[ this.lastAddedLaneIndex ];
+		if ( this.lastAddedLaneIndex < this.laneArray.length ) {
+			return this.laneArray[ this.lastAddedLaneIndex ];
 		}
 
 		return null;
@@ -334,11 +334,11 @@ export class TvLaneSection {
 
 	getLastLeftLane (): TvLane {
 
-		if ( this.laneVector.length > 0 ) {
+		if ( this.laneArray.length > 0 ) {
 
-			if ( this.laneVector[ 0 ].getSide() === TvLaneSide.LEFT ) {
+			if ( this.laneArray[ 0 ].getSide() === TvLaneSide.LEFT ) {
 
-				return this.laneVector[ 0 ];
+				return this.laneArray[ 0 ];
 
 			} else {
 
@@ -351,13 +351,13 @@ export class TvLaneSection {
 
 	getLastRightLane (): TvLane {
 
-		if ( this.laneVector.length > 0 ) {
+		if ( this.laneArray.length > 0 ) {
 
-			const index = this.laneVector.length - 1;
+			const index = this.laneArray.length - 1;
 
-			if ( this.laneVector[ index ].getSide() === TvLaneSide.RIGHT ) {
+			if ( this.laneArray[ index ].getSide() === TvLaneSide.RIGHT ) {
 
-				return this.laneVector[ index ];
+				return this.laneArray[ index ];
 
 			} else {
 
@@ -374,9 +374,9 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < size; i++ ) {
 
-			if ( this.laneVector[ i ].getSide() === TvLaneSide.CENTER ) {
+			if ( this.laneArray[ i ].getSide() === TvLaneSide.CENTER ) {
 
-				return this.laneVector[ i ];
+				return this.laneArray[ i ];
 
 			}
 		}
@@ -386,19 +386,19 @@ export class TvLaneSection {
 
 	getLane ( index ): TvLane {
 
-		if ( this.laneVector.length > 0 && index < this.laneVector.length ) {
-			return this.laneVector[ index ];
+		if ( this.laneArray.length > 0 && index < this.laneArray.length ) {
+			return this.laneArray[ index ];
 		}
 
 		return null;
 	}
 
 	getLaneCount () {
-		return this.laneVector.length;
+		return this.laneArray.length;
 	}
 
-	getLaneVector () {
-		return this.laneVector;
+	getLaneArray () {
+		return this.laneArray;
 	}
 
 	/**
@@ -500,7 +500,7 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < this.getLaneCount(); i++ ) {
 
-			if ( this.laneVector[ i ].getId() === 0 ) {
+			if ( this.laneArray[ i ].getId() === 0 ) {
 
 				return i;
 
@@ -561,7 +561,7 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < this.getLaneCount(); i++ ) {
 
-			if ( this.laneVector[ i ].getSide() === TvLaneSide.CENTER ) {
+			if ( this.laneArray[ i ].getSide() === TvLaneSide.CENTER ) {
 
 				count++;
 
@@ -573,7 +573,7 @@ export class TvLaneSection {
 
 	getCenterLanes () {
 
-		return this.laneVector.filter( lane => lane.getSide() === TvLaneSide.CENTER );
+		return this.laneArray.filter( lane => lane.getSide() === TvLaneSide.CENTER );
 
 	}
 
@@ -685,11 +685,11 @@ export class TvLaneSection {
 
 		let offsetFromCenter = 0;
 
-		if ( this.laneVector.length > 0 ) {
+		if ( this.laneArray.length > 0 ) {
 
-			for ( let i = 0; i < this.laneVector.length; i++ ) {
+			for ( let i = 0; i < this.laneArray.length; i++ ) {
 
-				const element = this.laneVector[ i ];
+				const element = this.laneArray[ i ];
 
 				if ( element.getSide() === lane.getSide() ) {
 
@@ -706,11 +706,11 @@ export class TvLaneSection {
 
 		let lane = null;
 
-		if ( this.laneVector.length > 0 ) {
+		if ( this.laneArray.length > 0 ) {
 
-			for ( let i = 0; i < this.laneVector.length; i++ ) {
+			for ( let i = 0; i < this.laneArray.length; i++ ) {
 
-				const element = this.laneVector[ i ];
+				const element = this.laneArray[ i ];
 
 				if ( element.id === laneId ) {
 

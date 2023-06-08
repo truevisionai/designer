@@ -6,7 +6,6 @@ import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { SceneService } from '../../../core/services/scene.service';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
@@ -18,11 +17,7 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 
-export class OdRoadMarkBuilder {
-
-	constructor ( private road: TvRoad = null ) {
-
-	}
+export class OdRoadMarkBuilderV1 {
 
 	private _texture: any;
 
@@ -44,33 +39,25 @@ export class OdRoadMarkBuilder {
 		return this._texture;
 	}
 
-	public create (): void {
-
-		this.buildRoad( this.road );
-
-	}
-
 
 	public buildRoad ( road: TvRoad ): void {
-
-		this.road = road;
 
 		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
 
 			const laneSection = road.getLaneSections()[ i ];
 
-			laneSection.getLaneVector().forEach( lane => {
+			const lanes = laneSection.getLaneArray();
 
-				this.processLane( laneSection, lane );
+			for ( let j = 0; j < lanes.length; j++ ) {
 
-			} );
+				this.processLane( laneSection, lanes[ j ] );
+
+			}
 
 		}
 	}
 
 	public buildLane ( road: TvRoad, lane: TvLane ): void {
-
-		this.road = road;
 
 		const laneSection = road.getLaneSectionById( lane.laneSectionId );
 
@@ -138,7 +125,7 @@ export class OdRoadMarkBuilder {
 			// atleast 1 vertex is required to create a mesh
 			if ( mesh.vertices.length > 0 ) this.drawRoadMark( mark, mesh, lane );
 
-		} )
+		} );
 
 	}
 
@@ -169,14 +156,14 @@ export class OdRoadMarkBuilder {
 
 		// if ( cumulativeWidth > 100 ) console.log( laneSectionS, this.road.id, laneSection.s, lane.id, cumulativeWidth );
 
-		this.road.getGeometryCoords( s, posTheta );
+		lane.laneSection.road.getGeometryCoords( s, posTheta );
 
 		// const laneOffset = this.road.lanes.getLaneOffsetAt( s );
 		// posTheta.addLateralOffset( laneOffset );
 		// let laneWidth = laneSection.getWidthUptoEnd( lane, s );
 
 		const height = lane.getHeightValue( laneSectionS );
-		const elevation = this.road.getElevationValue( laneSectionS );
+		const elevation = lane.laneSection.road.getElevationValue( laneSectionS );
 
 		// console.log( roadMark.getHeight() );
 
@@ -286,16 +273,16 @@ export class OdRoadMarkBuilder {
 		texX = roadMarkTexModifierMin1;
 
 		const v1 = new Vertex();
-		v1.Position = new Vector3( x1, y1, elevation );
-		v1.TexCoord = new Vector2( texX, texY );
+		v1.position = new Vector3( x1, y1, elevation );
+		v1.uvs = new Vector2( texX, texY );
 
 
 		// Second vertex
 		texX = roadMarkTexModifierMax1;
 
 		const v2 = new Vertex();
-		v2.Position = new Vector3( x2, y2, elevation + height.getOuter() );
-		v2.TexCoord = new Vector2( texX, texY );
+		v2.position = new Vector3( x2, y2, elevation + height.getOuter() );
+		v2.uvs = new Vector2( texX, texY );
 
 		if ( lane.side == TvLaneSide.LEFT ) {
 			this.addVertex( mesh, v1 );
@@ -329,9 +316,9 @@ export class OdRoadMarkBuilder {
 	}
 
 	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
-		meshData.vertices.push( v1.Position.x, v1.Position.y, v1.Position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
-		meshData.normals.push( v1.Normal.x, v1.Normal.y, v1.Normal.z );
-		meshData.texCoords.push( v1.TexCoord.x, v1.TexCoord.y );
+		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
+		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
+		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 		meshData.indices.push( meshData.currentIndex++ );
 	}
 
@@ -400,7 +387,7 @@ export class OdRoadMarkBuilder {
 		const vertices = new Float32Array( mesh.vertices );
 		const colors = new Float32Array( mesh.colors );
 		const normals = new Float32Array( mesh.normals );
-		const faces = new Float32Array( mesh.texCoords );
+		const faces = new Float32Array( mesh.uvs );
 
 		geometry.setIndex( mesh.triangles );
 
