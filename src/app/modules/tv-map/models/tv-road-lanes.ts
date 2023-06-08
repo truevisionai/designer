@@ -41,13 +41,25 @@ export class TvRoadLanes {
 	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
 
 		// Check if a lane offset with the same 's' already exists.
-		const existingOffset = this.laneOffsets.find( lo => Maths.approxEquals( lo.s, laneOffset.s ) );
+		const existingOffsetAtS = this.laneOffsets.find( lo => Maths.approxEquals( lo.s, laneOffset.s ) );
 
-		if ( existingOffset ) return;
+		// If it exists, update the values, else add a new record
+		if ( existingOffsetAtS ) {
 
-		this.laneOffsets.push( laneOffset );
+			// just update the values
+			existingOffsetAtS.a = laneOffset.a;
+			existingOffsetAtS.b = laneOffset.b;
+			existingOffsetAtS.c = laneOffset.c;
+			existingOffsetAtS.d = laneOffset.d;
 
-		this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		} else {
+
+			this.laneOffsets.push( laneOffset );
+
+			this.laneOffsets.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+		}
+
 
 	}
 
