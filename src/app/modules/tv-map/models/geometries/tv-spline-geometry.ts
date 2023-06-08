@@ -9,14 +9,15 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvSplineGeometry extends TvAbstractRoadGeometry {
 
+	public geometryType: TvGeometryType = TvGeometryType.SPLINE;
+
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
 		super( s, x, y, hdg, length );
 
-		this._geometryType = TvGeometryType.SPLINE;
 	}
 
-	getCoords ( sCheck: any, posTheta: TvPosTheta ) {
+	getCoords ( sCheck: any, posTheta: TvPosTheta ): TvGeometryType {
 
 		throw new Error( 'Method not implemented.' );
 

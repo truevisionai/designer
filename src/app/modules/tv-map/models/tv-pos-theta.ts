@@ -5,6 +5,7 @@
 // Class representing a position in space plus a direction.
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
+import { TvSide } from './tv-common';
 
 export class TvPosTheta {
 
@@ -159,5 +160,11 @@ export class TvPosTheta {
 		this.hdg = other.hdg;
 		this.s = other.s;
 		this.t = other.t;
+	}
+
+	computeSide ( B: TvPosTheta ): TvSide {
+
+		return Maths.directionV3( this.toVector3(), this.hdg, B.toVector3() );
+
 	}
 }

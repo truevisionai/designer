@@ -2,25 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Maths } from 'app/utils/maths';
 import { Curve, LineCurve, Vector2, Vector3 } from 'three';
 import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
-import { TvArcGeometry } from './tv-arc-geometry';
 
 export class TvLineGeometry extends TvAbstractRoadGeometry {
 
-	private cosTheta: number;
-	private sinTheta: number;
+	public geometryType: TvGeometryType = TvGeometryType.LINE;
 
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
 		super( s, x, y, hdg, length );
-
-		this._geometryType = TvGeometryType.LINE;
-
-		this.computeVars();
 
 	}
 
@@ -32,21 +25,13 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	get end (): Vector2 {
 
-		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
-
-		return new Vector2( x, y );
+		return this.getPositionAt( this.endS ).toVector2();
 
 	}
 
 	get endV3 (): Vector3 {
 
-		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
-
-		return new Vector3( x, y, 0 );
+		return this.getPositionAt( this.endS ).toVector3();
 
 	}
 
@@ -58,38 +43,24 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	computeVars () {
 
-		// this._s2 = this.s + this.length;
-
-		this.sinTheta = Math.sin( this.hdg );
-		this.cosTheta = Math.cos( this.hdg );
+		/*nothing*/
 
 	}
 
 	clone () {
 
+		/*nothing*/
+
 	}
 
-	setAll ( s: number, x: number, y: number, hdg: number, length: number ) {
+	getCoords ( s, odPosTheta: TvPosTheta ): TvGeometryType {
 
-		this.setBase( s, x, y, hdg, length, false );
+		const ds = s - this.s;
 
-		this.computeVars();
-	}
+		odPosTheta.x = this.x + Math.cos( this.hdg ) * ds;
+		odPosTheta.y = this.y + Math.sin( this.hdg ) * ds;
 
-	getCoords ( sCheck, odPosTheta: TvPosTheta ): TvGeometryType {
-
-		const lateralOffset = 0;
-
-		const newLength = sCheck - this.attr_S;
-
-		// find the end of the chord line
-		odPosTheta.x = this.attr_x + Math.cos( this.attr_hdg ) * newLength;
-		odPosTheta.y = this.attr_y + Math.sin( this.attr_hdg ) * newLength;
-		odPosTheta.hdg = this.attr_hdg;
-
-		// odPosTheta.x = this.x + sCheck * this.cosTheta - lateralOffset * this.sinTheta;
-		// odPosTheta.y = this.y + sCheck * this.sinTheta + lateralOffset * this.cosTheta;
-		// odPosTheta.hdg = this.hdg;
+		odPosTheta.hdg = this.hdg;
 
 		return this.geometryType;
 
@@ -135,38 +106,38 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 		return super.getNearestPointFrom( x, y, posTheta );
 
-		const point = new Vector3( x, y, 0 );
-
-		const start = this.startV3;
-		const end = this.endV3;
-
-		const vector = new Vector3().subVectors( point, start );
-		const direction = new Vector3().subVectors( end, start ).normalize();
-
-		const dot = vector.dot( direction );
-		const projection = direction.multiplyScalar( dot );
-
-		let nearest: Vector3;
-
-		if ( dot < 0 ) {
-			nearest = start.clone();
-		} else if ( dot > direction.length() ) {
-			nearest = end.clone();
-		} else {
-			nearest = new Vector3().addVectors( start, projection );
-		}
-
-		if ( posTheta ) {
-
-			posTheta.x = nearest.x;
-			posTheta.y = nearest.y;
-			posTheta.s = this.s + nearest.distanceTo( start );
-			posTheta.hdg = this.hdg;
-			posTheta.t = nearest.distanceTo( point );
-
-			// console.log( Maths.direction( start, end, point ) );
-
-		}
+		// const point = new Vector3( x, y, 0 );
+		//
+		// const start = this.startV3;
+		// const end = this.endV3;
+		//
+		// const vector = new Vector3().subVectors( point, start );
+		// const direction = new Vector3().subVectors( end, start ).normalize();
+		//
+		// const dot = vector.dot( direction );
+		// const projection = direction.multiplyScalar( dot );
+		//
+		// let nearest: Vector3;
+		//
+		// if ( dot < 0 ) {
+		// 	nearest = start.clone();
+		// } else if ( dot > direction.length() ) {
+		// 	nearest = end.clone();
+		// } else {
+		// 	nearest = new Vector3().addVectors( start, projection );
+		// }
+		//
+		// if ( posTheta ) {
+		//
+		// 	posTheta.x = nearest.x;
+		// 	posTheta.y = nearest.y;
+		// 	posTheta.s = this.s + nearest.distanceTo( start );
+		// 	posTheta.hdg = this.hdg;
+		// 	posTheta.t = nearest.distanceTo( point );
+		//
+		// 	// console.log( Maths.direction( start, end, point ) );
+		//
+		// }
 
 
 		// // check if the nearest point is within the line segment
@@ -177,7 +148,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 		// console.log( nearest );
 
-		return new Vector2( nearest.x, nearest.y );
+		// return new Vector2( nearest.x, nearest.y );
 
 		// old code
 		// return this.loopToGetNearestPoint( x, y, posTheta );
@@ -227,53 +198,53 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 		// return [ s1, s2, s1Valid && s2Valid, s1Valid, s2Valid ];
 	}
 
-	/**
-	 *
-	 * @param geometry
-	 * @deprecated not working currently
-	 */
-	public getIntersections ( geometry: TvAbstractRoadGeometry ): Vector3[] {
-
-		// throw new Error( "Method not implemented." );
-
-		if ( geometry instanceof TvLineGeometry ) {
-
-			const x1 = this.x;
-			const y1 = this.y;
-			const t1 = this.hdg;
-
-			const x2 = geometry.x;
-			const y2 = geometry.y;
-			const t2 = geometry.hdg;
-
-			const sX = ( x2 - x1 ) / Math.cos( t2 ) - Math.cos( t1 );
-			const sY = ( y2 - y1 ) / Math.sin( t2 ) - Math.sin( t1 );
-
-			// const intersection = Maths.lineLineIntersection( this.startV3, this.endV3, geometry.startV3, geometry.endV3 );
-
-			// if ( intersection &&
-			//     Maths.isPointOnLine( this.startV3, this.endV3, intersection ) &&
-			//     Maths.isPointOnLine( geometry.startV3, geometry.endV3, intersection )
-			// ) {
-
-			//     return [ intersection ];
-
-			// }
-
-		} else if ( geometry instanceof TvArcGeometry ) {
-
-
-			return Maths.getLineArcIntersections( this.startV3, this.endV3, geometry.centre, geometry.radius );
-
-		} else {
-
-			// console.error( "Intersection with ", geometry.geometryType, "not implemented" );
-
-			// throw new Error( "Method not implemented." );
-
-		}
-
-		return [];
-	}
+	// /**
+	//  *
+	//  * @param geometry
+	//  * @deprecated not working currently
+	//  */
+	// public getIntersections ( geometry: TvAbstractRoadGeometry ): Vector3[] {
+	//
+	// 	// throw new Error( "Method not implemented." );
+	//
+	// 	if ( geometry instanceof TvLineGeometry ) {
+	//
+	// 		const x1 = this.x;
+	// 		const y1 = this.y;
+	// 		const t1 = this.hdg;
+	//
+	// 		const x2 = geometry.x;
+	// 		const y2 = geometry.y;
+	// 		const t2 = geometry.hdg;
+	//
+	// 		const sX = ( x2 - x1 ) / Math.cos( t2 ) - Math.cos( t1 );
+	// 		const sY = ( y2 - y1 ) / Math.sin( t2 ) - Math.sin( t1 );
+	//
+	// 		// const intersection = Maths.lineLineIntersection( this.startV3, this.endV3, geometry.startV3, geometry.endV3 );
+	//
+	// 		// if ( intersection &&
+	// 		//     Maths.isPointOnLine( this.startV3, this.endV3, intersection ) &&
+	// 		//     Maths.isPointOnLine( geometry.startV3, geometry.endV3, intersection )
+	// 		// ) {
+	//
+	// 		//     return [ intersection ];
+	//
+	// 		// }
+	//
+	// 	} else if ( geometry instanceof TvArcGeometry ) {
+	//
+	//
+	// 		return Maths.getLineArcIntersections( this.startV3, this.endV3, geometry.centre, geometry.radius );
+	//
+	// 	} else {
+	//
+	// 		// console.error( "Intersection with ", geometry.geometryType, "not implemented" );
+	//
+	// 		// throw new Error( "Method not implemented." );
+	//
+	// 	}
+	//
+	// 	return [];
+	// }
 
 }

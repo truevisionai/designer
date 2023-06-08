@@ -9,6 +9,8 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
+	public geometryType: TvGeometryType = TvGeometryType.POLY3;
+
 	public attr_a: number;
 	public attr_b: number;
 	public attr_c: number;
@@ -22,8 +24,6 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 	constructor ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
 
 		super( s, x, y, hdg, length );
-
-		this._geometryType = TvGeometryType.POLY3;
 
 		this.attr_a = a;
 		this.attr_b = b;

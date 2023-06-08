@@ -10,7 +10,9 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvArcGeometry extends TvAbstractRoadGeometry {
 
-	public attr_curvature;
+	public geometryType: TvGeometryType = TvGeometryType.ARC;
+
+	public curvature: number;
 
 	public cp1: Object3D;
 	public cp2: Object3D;
@@ -22,38 +24,18 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 		super( s, x, y, hdg, length );
 
-		this._geometryType = TvGeometryType.ARC;
-
-		if ( curvature == 0 ) {
-			this.attr_curvature = Maths.Epsilon;
-		} else {
-			this.attr_curvature = curvature;
-		}
-
-		this.computeVars();
-	}
-
-	get curvature (): number {
-		return this.attr_curvature;
-	}
-
-	set curvature ( value: number ) {
-
-		this.attr_curvature = value;
-
-		this.computeVars();
-
+		this.curvature = curvature == 0 ? Maths.Epsilon : curvature;
 	}
 
 	get radius (): number {
 
-		return 1.0 / Math.abs( this.attr_curvature );
+		return 1.0 / Math.abs( this.curvature );
 
 	}
 
 	get centre (): Vector3 {
 
-		const clockwise = this.attr_curvature < 0;
+		const clockwise = this.curvature < 0;
 
 		const circleX = this.x - this.radius * Math.cos( this.hdg - Maths.M_PI_2 ) * ( clockwise ? -1 : 1 );
 		const circleY = this.y - this.radius * Math.sin( this.hdg - Maths.M_PI_2 ) * ( clockwise ? -1 : 1 );
@@ -70,15 +52,11 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 	}
 
 	get angle () {
-		// both are correct
-		return this.length * this.attr_curvature;
-		return this.length / this.radius;
+		return this.length * this.curvature;
 	}
 
 	get startV3 (): Vector3 {
-
 		return new Vector3( this.x, this.y, 0 );
-
 	}
 
 	get middleV3 (): Vector3 {
@@ -97,16 +75,6 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		this.getCoords( this.endS, pos );
 
 		return pos.toVector3();
-
-	}
-
-	get headingEnd (): Vector3 {
-
-		// find the end of the chord line
-		const x = this.attr_x + Math.cos( this.attr_hdg ) * this.endS;
-		const y = this.attr_y + Math.sin( this.attr_hdg ) * this.endS;
-
-		return new Vector3( x, y, 0 );
 
 	}
 
@@ -139,45 +107,8 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	computeVars () {
 
-		// this._s2 = this.s + this.length;
+		// nothing
 
-		// this.startAngle = this.hdg;
-		//
-		// this.radius = 0.0;
-		//
-		// // if curvature is 0, radius is also 0, otherwise, radius is 1/curvature
-		// if ( Math.abs( this.attr_curvature ) > 1.00e-15 ) {
-		//
-		//     // radius = Math.abs( 1.0 / this.attr_curvature );
-		//
-		//     this.radius = 1.0 / Math.abs( this.attr_curvature );
-		//
-		// }
-
-		// this.clockwise = this.attr_curvature < 0;
-		//
-		// this.arcAngle = this.length * this.curvature;
-		//
-		// this.circleX = this.x - this.radius * Math.cos( this.startAngle - Maths.M_PI_2 ) * (this.clockwise ? -1 : 1);
-		// this.circleY = this.y - this.radius * Math.sin( this.startAngle - Maths.M_PI_2 ) * (this.clockwise ? -1 : 1);
-
-		// // calculate the start angle for the arc plot
-		// // if ( this.attr_curvature <= 0 ) {
-		// if ( this.attr_curvature < 0 ) {
-		//
-		//     this.startAngle = this.attr_hdg + Maths.M_PI_2;
-		//
-		// } else {
-		//
-		//     this.startAngle = this.attr_hdg - Maths.M_PI_2;
-		//
-		// }
-		//
-		// const cos = Math.cos( this.startAngle - Maths.M_PI );
-		// const sin = Math.sin( this.startAngle - Maths.M_PI );
-		//
-		// this.circleX = this.attr_x + cos * this.radius;
-		// this.circleY = this.attr_y + sin * this.radius;
 	}
 
 	findS ( x, y ) {
@@ -236,71 +167,6 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		points.push( posTheta.toVector2() );
 
 		return this.curve = new SplineCurve( points );
-	}
-
-	// getCoords ( sCheck, odPosTheta: OdPosTheta ) {
-	// // s from the beginning of the segment
-	// const currentLength = sCheck - this.attr_S;
-	// let endAngle = this.startAngle;
-	// let radius = 0.0;
-	//
-	// let retX, retY, retHdg;
-	//
-	// // if curvature is 0, radius is also 0, so don't add anything to the initial radius,
-	// // otherwise, radius is 1/curvature so the central angle can be calculated and added to the initial direction
-	// if ( Math.abs( this.attr_curvature ) > 1.00e-15 ) {
-	//
-	//     endAngle += currentLength / (1.0 / this.attr_curvature);
-	//
-	//     radius = Math.abs( 1.0 / this.attr_curvature );
-	//
-	// }
-	//
-	// const cos = Math.cos( endAngle );
-	// const sin = Math.sin( endAngle );
-	//
-	// retX = this.circleX + cos * radius;
-	// retY = this.circleY + sin * radius;
-	//
-	//
-	// // heading at the given position
-	// if ( this.attr_curvature <= 0 ) {
-	//
-	//     retHdg = endAngle - Maths.M_PI_2;
-	//
-	// } else {
-	//
-	//     retHdg = endAngle + Maths.M_PI_2;
-	//
-	// }
-	//
-	// // // tangent to arc (road direction)
-	// // const theta = this.clockwise ? this.startAngle - sCheck / this.radius : this.startAngle + sCheck / this.radius;
-	// //
-	// // // angle arc subtends at center
-	// // const arcTheta = theta - Maths.M_PI_2;11
-	// //
-	// // const cos = Math.cos( theta );
-	// // const sin = Math.sin( theta );
-	// //
-	// // // lateralOffset is perpendicular to road
-	// // // NA
-	// // const r = this.radius - 0 * (this.clockwise ? -1 : 1);
-	// //
-	// // odPosTheta.x = this.circleX + r * Math.cos( arcTheta ) * (this.clockwise ? -1 : 1);
-	// //
-	// // odPosTheta.y = this.circleY + r * Math.sin( arcTheta ) * (this.clockwise ? -1 : 1);
-	// //
-	// // odPosTheta.hdg =
-
-	setAll ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ) {
-
-		this.setBase( s, x, y, hdg, length, false );
-
-		this.attr_curvature = curvature;
-
-		this.computeVars();
-
 	}
 
 }

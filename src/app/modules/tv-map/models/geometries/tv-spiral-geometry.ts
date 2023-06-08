@@ -10,6 +10,7 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
 export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
+	public geometryType: TvGeometryType = TvGeometryType.SPIRAL;
 	public attr_curvStart;
 	public attr_curvEnd;
 
@@ -31,8 +32,6 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
 		this.attr_curvStart = curvStart;
 		this.attr_curvEnd = curvEnd;
-
-		this._geometryType = TvGeometryType.SPIRAL;
 
 	}
 

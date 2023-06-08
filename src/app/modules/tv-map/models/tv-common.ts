@@ -137,7 +137,8 @@ export enum TvRoadType {
 
 export enum TvSide {
 	LEFT = 'left',
-	RIGHT = 'right'
+	RIGHT = 'right',
+	ON_LINE = 'neither', // when points is not left/right of line but on line
 }
 
 export enum TvContactPoint {
