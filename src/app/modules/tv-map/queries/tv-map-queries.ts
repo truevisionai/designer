@@ -124,13 +124,7 @@ export class TvMapQueries extends TvBaseQueries {
 					nearestGeometry = geometry;
 					nearestPosition = nearestPoint;
 
-					if ( posTheta ) {
-						posTheta.x = tmpPosTheta.x;
-						posTheta.y = tmpPosTheta.y;
-						posTheta.hdg = tmpPosTheta.hdg;
-						posTheta.s = tmpPosTheta.s;
-						posTheta.t = tmpPosTheta.t;
-					}
+					if ( posTheta ) posTheta.copy( tmpPosTheta );
 				}
 			}
 		}
@@ -139,6 +133,95 @@ export class TvMapQueries extends TvBaseQueries {
 
 		return nearestRoad;
 
+	}
+
+	/**
+	 * this will return a road only if the x,y fall on the road
+	 * currently on approximation does not work correctly
+	 * @param x
+	 * @param y
+	 * @param posTheta
+	 * @param roadIdsToIgnore
+	 */
+	static getStrictRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
+
+		const tmpPosTheta = new TvPosTheta();
+
+		let nearestRoad: TvRoad = null;
+
+		let nearestGeometry: TvAbstractRoadGeometry = null;
+
+		let nearestPosition: Vector2 = null;
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const point = new Vector2( x, y );
+
+		let road: TvRoad;
+
+		for ( const keyValue of this.roads ) {
+
+			road = keyValue[ 1 ];
+
+			let geometry: TvAbstractRoadGeometry;
+
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
+
+			for ( let j = 0; j < road.geometries.length; j++ ) {
+
+				geometry = road.geometries[ j ];
+
+				const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
+
+				const distance = point.distanceTo( nearestPoint );
+
+				if ( distance < minDistance ) {
+
+					minDistance = distance;
+					nearestRoad = road;
+					nearestGeometry = geometry;
+					nearestPosition = nearestPoint;
+
+					if ( posTheta ) {
+						posTheta.copy( tmpPosTheta );
+					}
+				}
+			}
+		}
+
+		if ( !nearestRoad || !tmpPosTheta ) return null;
+
+		const distanceStart = point.distanceToSquared( nearestGeometry.getPositionAt( nearestGeometry.s ).toVector2() );
+		const distanceEnd = point.distanceToSquared( nearestGeometry.getPositionAt( nearestGeometry.endS ).toVector2() );
+		const distanceMin = point.distanceToSquared( nearestPosition );
+
+		if ( distanceStart < distanceMin ) {
+			nearestPosition = road.getPositionAt( nearestGeometry.s ).toVector2();
+		} else if ( distanceEnd < distanceMin ) {
+			nearestPosition = road.getPositionAt( nearestGeometry.endS ).toVector2();
+		}
+
+		if ( point.distanceTo( nearestPosition ) > 1 ) {
+
+			return nearestRoad;
+
+		} else {
+
+			return null;
+
+		}
+
+
+		// const width = nearestRoad.getRoadWidthAt( tmpPosTheta.s );
+		// const t = tmpPosTheta.t;
+		//
+		// if ( tmpPosTheta.s > 0 && t > 0 && Math.abs( t ) <= width.leftSideWidth ) {
+		// 	return nearestRoad;
+		// } else if ( tmpPosTheta.s > 0 && t < 0 && Math.abs( t ) <= width.rightSideWidth ) {
+		// 	return nearestRoad;
+		// } else {
+		// 	return null;
+		// }
 	}
 
 	static getLaneStartPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {

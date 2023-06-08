@@ -11,41 +11,29 @@ export abstract class TvAbstractRoadGeometry {
 
 	public readonly uuid: string;
 
-	public attr_S;
-	public attr_x;
-	public attr_y;
-	public attr_hdg;
-	public attr_length;
+	private _s: number;
+	private _x: number;
+	private _y: number;
+	private _hdg: number;
+	private _length: number;
+	protected _endS: number;
+	public abstract geometryType: TvGeometryType;
 
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
-		this.attr_S = s;
-		this.attr_x = x;
-		this.attr_y = y;
-		this.attr_hdg = hdg;
-		this.attr_length = length;
+		this._s = s;
+		this._x = x;
+		this._y = y;
+		this._hdg = hdg;
+		this._length = length;
 
 		this._endS = s + length;
 
 		this.uuid = MathUtils.generateUUID();
 	}
 
-	protected _endS;
-
 	get endS () {
-
 		return this._endS;
-
-	}
-
-	protected _geometryType: TvGeometryType;
-
-	get geometryType (): TvGeometryType {
-		return this._geometryType;
-	}
-
-	set geometryType ( type: TvGeometryType ) {
-		this._geometryType = type;
 	}
 
 	get startV3 (): Vector3 {
@@ -56,65 +44,65 @@ export abstract class TvAbstractRoadGeometry {
 
 	get s () {
 
-		return this.attr_S;
+		return this._s;
 
 	}
 
 	set s ( value: number ) {
 
-		this.attr_S = value;
+		this._s = value;
 
-		this._endS = this.attr_S + this.attr_length;
+		this._endS = this._s + this._length;
 	}
 
 	get x () {
 
-		return this.attr_x;
+		return this._x;
 
 	}
 
 	set x ( value: number ) {
 
-		this.attr_x = value;
+		this._x = value;
 
 	}
 
 	get y () {
 
-		return this.attr_y;
+		return this._y;
 
 	}
 
 	set y ( value: number ) {
 
-		this.attr_y = value;
+		this._y = value;
 
 	}
 
 	get hdg () {
 
-		return this.attr_hdg;
+		return this._hdg;
 
 	}
 
 	set hdg ( value: number ) {
 
-		this.attr_hdg = value;
+		this._hdg = value;
 
 		this.computeVars();
 	}
 
 	get length () {
 
-		return this.attr_length;
+		return this._length;
 
 	}
 
 	set length ( value: number ) {
 
-		this.attr_length = value;
+		this._length = value;
 
-		this._endS = this.attr_S + this.attr_length;
+		this._endS = this._s + this._length;
 
 		this.computeVars();
 	}
@@ -147,11 +135,11 @@ export abstract class TvAbstractRoadGeometry {
 
 	setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
 
-		this.attr_S = s;
-		this.attr_x = x;
-		this.attr_y = y;
-		this.attr_hdg = hdg;
-		this.attr_length = length;
+		this._s = s;
+		this._x = x;
+		this._y = y;
+		this._hdg = hdg;
+		this._length = length;
 
 		this._endS = s + length;
 
@@ -162,7 +150,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	checkInterval ( sCheck: number ): boolean {
 
-		if ( ( sCheck >= this.attr_S ) && ( sCheck <= this.endS ) ) {
+		if ( ( sCheck >= this._s ) && ( sCheck <= this.endS ) ) {
 
 			return true;
 
@@ -178,6 +166,16 @@ export abstract class TvAbstractRoadGeometry {
 	abstract getCurve (): Curve<Vector2>;
 
 	public updateControlPoints () {
+
+	}
+
+	public getPositionAt ( s ) {
+
+		const posTheta = new TvPosTheta();
+
+		this.getCoords( s, posTheta );
+
+		return posTheta;
 
 	}
 
@@ -294,7 +292,15 @@ export abstract class TvAbstractRoadGeometry {
 
 		const nearestPoint = tmpPosTheta.toVector2();
 
-		const t = nearestPoint.distanceTo( point ) * Math.sign( point.y - nearestPoint.y );
+		// old and inorrect way to calculte
+		// const t = nearestPoint.distanceTo( point ) * Math.sign( point.y - nearestPoint.y );
+
+		// new way to calculaye more accurately
+		const directionVector = new Vector2( Math.cos( tmpPosTheta.hdg ), Math.sin( tmpPosTheta.hdg ) );
+		const pointVector = new Vector2( point.x - tmpPosTheta.x, point.y - tmpPosTheta.y );
+		const crossProduct = directionVector.x * pointVector.y - directionVector.y * pointVector.x;
+
+		const t = nearestPoint.distanceTo( point ) * Math.sign( crossProduct );
 
 		if ( refPosTheta ) {
 			refPosTheta.x = tmpPosTheta.x;

@@ -146,6 +146,12 @@ export class Maths {
 		// return ZERO;
 	}
 
+	public static getDirectionVector ( hdg: number ) {
+
+		return new Vector2( Math.cos( hdg ), Math.sin( hdg ) );
+
+	}
+
 	public static directionV2 ( start: Vector3, end: Vector3, point: Vector3 ): TvSide {
 
 		// Calculate the vector from the start point of the line to the point in question
@@ -174,6 +180,32 @@ export class Maths {
 
 			console.error( 'on the line' );
 
+		}
+
+	}
+
+	public static directionV3 ( A: Vector3, hdg: number, B: Vector3 ): TvSide {
+
+		// create heading vector
+		let heading = this.getDirectionVector( hdg );
+
+		// Create vector from P to M
+		let vectorPM = new Vector3().subVectors( B, A );
+
+		// Calculate cross product
+		let crossProduct = heading.x * vectorPM.y - heading.y * vectorPM.x;
+
+		if ( crossProduct > 0 ) {
+
+			return TvSide.LEFT;
+
+		} else if ( crossProduct < 0 ) {
+
+			return TvSide.RIGHT;
+
+		} else {
+
+			return TvSide.ON_LINE;
 		}
 
 	}
