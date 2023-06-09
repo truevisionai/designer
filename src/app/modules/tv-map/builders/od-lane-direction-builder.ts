@@ -92,7 +92,7 @@ export class OdLaneDirectionBuilder {
 
 		let s = laneSection.s;
 
-		const posTheta = new TvPosTheta();
+		let posTheta = new TvPosTheta();
 
 		let laneOffset = 0;
 
@@ -104,7 +104,7 @@ export class OdLaneDirectionBuilder {
 
 			width = laneSection.getWidthUptoCenter( lane, s );
 
-			this.road.getGeometryCoords( s, posTheta );
+			posTheta = this.road.getGeometryCoords( s );
 
 			posTheta.addLateralOffset( laneOffset );
 

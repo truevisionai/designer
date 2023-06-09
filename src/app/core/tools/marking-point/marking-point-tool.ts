@@ -5,19 +5,16 @@
 import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Subscription } from 'rxjs';
-import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
-import { CreateMarkingPointCommand } from './create-marking-point-command';
 import { AbstractShapeEditor } from '../../editors/abstract-shape-editor';
 import { PointEditor } from '../../editors/point-editor';
-import { BaseTool } from '../base-tool';
 import { ToolType } from '../../models/tool-types.enum';
+import { BaseTool } from '../base-tool';
+import { CreateMarkingPointCommand } from './create-marking-point-command';
 
 export abstract class BaseMarkingTool extends BaseTool {
 
@@ -125,10 +122,8 @@ export class MarkingPointTool extends BaseMarkingTool {
 		if ( this.currentMarking === point.mainObject ) return;
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this, 'currentMarking', point.mainObject )
-
-		)
+		);
 
 	}
 
@@ -155,11 +150,9 @@ export class MarkingPointTool extends BaseMarkingTool {
 		if ( oldPosition.equals( newPosition ) ) return;
 
 		CommandHistory.executeMany(
-
 			new SetPositionCommand( this.currentMarking.mesh, newPosition, oldPosition ),
 
 			new SetPositionCommand( point, newPosition, oldPosition ),
-
 		);
 	}
 

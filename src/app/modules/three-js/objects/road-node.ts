@@ -143,7 +143,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	getPosition (): TvPosTheta {
 
-		return this.distance == 'start' ? this.road.startPosition() : this.road.endPosition();
+		return this.distance == 'start' ? this.road.getStartCoord() : this.road.getEndCoord();
 
 	}
 
@@ -151,11 +151,11 @@ export class RoadNode extends Group implements ISelectable {
 
 		if ( this.distance === 'start' ) {
 
-			return this.road.startPosition().clone().rotateDegree( 180 ).moveForward( distance );
+			return this.road.getStartCoord().clone().rotateDegree( 180 ).moveForward( distance );
 
 		} else {
 
-			return this.road.endPosition().clone().moveForward( distance );
+			return this.road.getEndCoord().clone().moveForward( distance );
 
 		}
 

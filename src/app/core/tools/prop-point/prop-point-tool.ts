@@ -5,23 +5,17 @@
 import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { AssetDatabase } from 'app/services/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { ModelImporterService } from 'app/services/model-importer.service';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { Subscription } from 'rxjs';
-import { CreatePropPointCommand } from './create-prop-point-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { PointEditor } from '../../editors/point-editor';
-import { InspectorFactoryService, InspectorType } from '../../factories/inspector-factory.service';
-import { AppInspector } from '../../inspector';
 import { PropInstance } from '../../models/prop-instance.model';
-import { BaseTool } from '../base-tool';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ToolType } from '../../models/tool-types.enum';
+import { BaseTool } from '../base-tool';
+import { CreatePropPointCommand } from './create-prop-point-command';
 
 /**
  * Prop point tool
@@ -89,7 +83,7 @@ export class PropPointTool extends BaseTool {
 
 			prop.point.visible = true;
 
-			this.shapeEditor.pushControlPoint( prop.point )
+			this.shapeEditor.pushControlPoint( prop.point );
 
 		} );
 
@@ -109,7 +103,6 @@ export class PropPointTool extends BaseTool {
 			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 
 	}
-
 
 
 	disable (): void {
@@ -135,12 +128,11 @@ export class PropPointTool extends BaseTool {
 		if ( this.currentPoint === point ) return;
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this, 'currentPoint', point ),
 
 			// new SetInspectorCommand( PropInstanceInspectorComponent, point.mainObject )
 
-		)
+		);
 
 	}
 
@@ -168,7 +160,7 @@ export class PropPointTool extends BaseTool {
 
 		if ( this.prop ) {
 
-			CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) )
+			CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) );
 
 		} else {
 
@@ -199,11 +191,9 @@ export class PropPointTool extends BaseTool {
 		if ( oldPosition.equals( newPosition ) ) return;
 
 		CommandHistory.executeMany(
-
 			new SetPositionCommand( this.currentProp.object, newPosition, oldPosition ),
 
 			new SetPositionCommand( this.currentPoint, newPosition, oldPosition )
-
 		);
 	}
 

@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { COLOR } from 'app/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Color, Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from 'three';
@@ -10,7 +11,6 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 export enum LineType {
 	SOLID = 'solid',
@@ -302,7 +302,7 @@ export class OdLaneReferenceLineBuilder {
 
 		poses.forEach( pose => {
 
-			tmp.push( new Vector3( pose.x, pose.y, 0 ) );
+			tmp.push( new Vector3( pose.x, pose.y, pose.z ) );
 
 		} );
 
@@ -327,15 +327,9 @@ export class OdLaneReferenceLineBuilder {
 
 	private makeLanePointsLoop ( s, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
-		const posTheta = new TvPosTheta();
-
-		// const laneOffset = this.road.lanes.getLaneOffsetValue( s );
+		let posTheta = this.road.getGeometryCoords( s );
 
 		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
-
-		this.road.getGeometryCoords( s, posTheta );
-
-		// posTheta.addLateralOffset( laneOffset );
 
 		// If right side lane then make the offset negative
 		if ( lane.side === TvLaneSide.RIGHT ) {

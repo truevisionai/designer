@@ -2,12 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Raycaster } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { KeyboardInput } from '../input';
 import { PickingHelper } from '../services/picking-helper.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export class PointEditor extends AbstractShapeEditor {
 

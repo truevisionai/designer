@@ -6,7 +6,6 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
@@ -275,9 +274,7 @@ export class AutoSpline extends AbstractSpline {
 
 		const geometry = geometries.find( g => s >= g.s && s <= g.endS );
 
-		const posTheta = new TvPosTheta();
-
-		geometry.getCoords( s, posTheta );
+		const posTheta = geometry.getRoadCoord( s );
 
 		posTheta.addLateralOffset( offset );
 

@@ -32,8 +32,8 @@ describe( 'ExplicitSpline Test', () => {
 		shape.moveTo( 0, -0.25 );
 		shape.lineTo( 0, 0.25 );
 
-		spline.addFromFile( 0, road.startPosition().toVector3(), 0, TvGeometryType.LINE );
-		spline.addFromFile( 1, road.endPosition().toVector3(), 0, TvGeometryType.LINE );
+		spline.addFromFile( 0, road.getStartCoord().toVector3(), 0, TvGeometryType.LINE );
+		spline.addFromFile( 1, road.getEndCoord().toVector3(), 0, TvGeometryType.LINE );
 
 		const path = new ExplicitSplinePath( spline );
 		// const path = new CatmullRomPath( [ road.startPosition().toVector3(), road.endPosition().toVector3() ] );
