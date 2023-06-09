@@ -15,7 +15,7 @@ import { MathUtils, Vector2, Vector3 } from 'three';
 import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
-import { TvMapBuilder } from '../builders/od-builder.service';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';

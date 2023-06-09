@@ -8,7 +8,7 @@ import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { BaseCommand } from './base-command';
 import { SceneService } from '../services/scene.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 
 export class AddLaneCommand extends BaseCommand {

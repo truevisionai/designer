@@ -6,7 +6,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { ICommand, ICommandCallback } from './i-command';
 import { SceneService } from '../services/scene.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 
 
 export abstract class BaseCommand implements ICommand {

@@ -4,7 +4,7 @@
 
 import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
 import { Object3D, Vector2, Vector3 } from 'three';
-import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from '../../modules/tv-map/builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from '../../modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from '../../modules/tv-map/models/geometries/tv-line-geometry';

@@ -4,7 +4,7 @@
 
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { Maths } from 'app/utils/maths';
 import { Vector2, Vector3 } from 'three';

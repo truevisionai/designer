@@ -3,7 +3,7 @@
  */
 
 import { ObjectSelection } from 'app/core/selection';
-import { TvMapBuilder } from '../../modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from '../../modules/tv-map/builders/tv-map-builder';
 import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
 import { AppInspector } from '../inspector';
 import { OdBaseCommand } from './od-base-command';
