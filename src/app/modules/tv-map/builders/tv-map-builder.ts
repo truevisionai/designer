@@ -176,7 +176,6 @@ export class TvMapBuilder {
 
 		const width = lane.getWidthValue( laneSectionS );
 		const height = lane.getHeightValue( laneSectionS );
-		const elevation = road.getElevationValue( laneSectionS );
 
 		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
 		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
@@ -184,13 +183,13 @@ export class TvMapBuilder {
 		const v1 = new Vertex();
 		const p1X = cosHdgPlusPiO2 * cumulativeWidth;
 		const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, elevation );
+		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z );
 		v1.uvs = new Vector2( 0, sCoordinate );
 
 		const v2 = new Vertex();
 		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
 		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, elevation + height.getOuter() );
+		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.getOuter() );
 		v2.uvs = new Vector2( width + height.getOuter(), sCoordinate );
 
 		if ( lane.side == TvLaneSide.RIGHT ) {
