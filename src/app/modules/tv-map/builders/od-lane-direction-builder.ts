@@ -104,7 +104,7 @@ export class OdLaneDirectionBuilder {
 
 			width = laneSection.getWidthUptoCenter( lane, s );
 
-			posTheta = this.road.getGeometryCoords( s );
+			posTheta = this.road.getRoadCoordAt( s );
 
 			posTheta.addLateralOffset( laneOffset );
 

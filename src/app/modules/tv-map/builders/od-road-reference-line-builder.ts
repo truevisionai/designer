@@ -43,18 +43,18 @@ export class OdRoadReferenceLineBuilder {
 
 		this.road = road;
 
-		const tmp = new TvPosTheta();
+		let tmp = new TvPosTheta();
 		const points: TvPosTheta[] = [];
 
 		for ( let s = 0; s <= this.road.length; s++ ) {
 
-			road.getGeometryCoords( s, tmp );
+			tmp = road.getRoadCoordAt( s );
 			points.push( new TvPosTheta( tmp.x, tmp.y, tmp.hdg ) );
 
 		}
 
 		// last entry
-		road.getGeometryCoords( this.road.length - Maths.Epsilon, tmp );
+		tmp = road.getRoadCoordAt( this.road.length - Maths.Epsilon );
 		points.push( new TvPosTheta( tmp.x, tmp.y, tmp.hdg ) );
 
 		this.drawLine( road, points );
@@ -71,7 +71,7 @@ export class OdRoadReferenceLineBuilder {
 
 		const geometry = new BufferGeometry();
 
-		geometry.name = "OdRoadReferenceLineGeometry";
+		geometry.name = 'OdRoadReferenceLineGeometry';
 
 		geometry.setFromPoints( points );
 
@@ -96,7 +96,7 @@ export class OdRoadReferenceLineBuilder {
 
 		points.forEach( point => {
 
-			tmp.push( new Vector3( point.x, point.y, 0 ) );
+			tmp.push( new Vector3( point.x, point.y, point.z ) );
 
 		} );
 

@@ -153,7 +153,7 @@ export class TvMapBuilder {
 
 			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			posTheta = road.getGeometryCoords( s, );
+			posTheta = road.getRoadCoordAt( s, );
 
 			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
 
@@ -164,7 +164,7 @@ export class TvMapBuilder {
 
 		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
 
-		posTheta = road.getGeometryCoords( lastSCoordinate );
+		posTheta = road.getRoadCoordAt( lastSCoordinate );
 
 		this.makeLaneVertices( lastSCoordinate, posTheta, lane, road, cumulativeWidth, laneSectionLength );
 

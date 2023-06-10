@@ -327,7 +327,7 @@ export class OdLaneReferenceLineBuilder {
 
 	private makeLanePointsLoop ( s, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
-		let posTheta = this.road.getGeometryCoords( s );
+		let posTheta = this.road.getRoadCoordAt( s );
 
 		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
 

@@ -226,13 +226,11 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getLaneStartPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
-		const posTheta = new TvPosTheta();
-
 		const road = this.roads.get( roadId );
 
 		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-		road.getGeometryCoords( sCoordinate, posTheta );
+		let posTheta = road.getRoadCoordAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
@@ -248,21 +246,9 @@ export class TvMapQueries extends TvBaseQueries {
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
 
-		if ( refPos ) {
+		if ( refPos ) refPos.copy( posTheta );
 
-			refPos.x = posTheta.x;
-			refPos.y = posTheta.y;
-			refPos.s = posTheta.s;
-			refPos.t = posTheta.t;
-			refPos.hdg = posTheta.hdg;
-
-		}
-
-		return new Vector3(
-			posTheta.x,
-			posTheta.y,
-			0
-		);
+		return posTheta.toVector3();
 
 	}
 
@@ -274,16 +260,15 @@ export class TvMapQueries extends TvBaseQueries {
 	 * @param offset
 	 * @param refPos
 	 * @returns
+	 * @deprecated
 	 */
 	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
-
-		const posTheta = new TvPosTheta();
 
 		const road = this.roads.get( roadId );
 
 		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-		road.getGeometryCoords( sCoordinate, posTheta );
+		const posTheta = road.getRoadCoordAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
@@ -307,24 +292,20 @@ export class TvMapQueries extends TvBaseQueries {
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
 
-		if ( refPos ) {
+		if ( refPos ) refPos.copy( posTheta );
 
-			refPos.x = posTheta.x;
-			refPos.y = posTheta.y;
-			refPos.s = posTheta.s;
-			refPos.t = posTheta.t;
-			refPos.hdg = posTheta.hdg;
-
-		}
-
-		return new Vector3(
-			posTheta.x,
-			posTheta.y,
-			0
-		);
+		return posTheta.toVector3();
 
 	}
 
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param posTheta
+	 * @param roadIdsToIgnore
+	 * @deprecated
+	 */
 	static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane } {
 
 		let resultLane: TvLane = null;
