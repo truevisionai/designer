@@ -243,6 +243,17 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Change Camera',
 			click: () => this.changeCamera()
+		},
+		{
+			id: 'vehicle',
+			label: 'Vehicle Tool',
+			class: 'toolbar-button',
+			toolType: ToolType.Vehicle,
+			action: 'vehicle-tool',
+			icon: 'directions_car',
+			track: 'menu',
+			tooltip: 'Vehicle Tool',
+			click: () => this.setToolType( ToolType.Vehicle )
 		}
 		// add more tools here...
 	];

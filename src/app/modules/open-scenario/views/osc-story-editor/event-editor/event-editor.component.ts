@@ -5,7 +5,7 @@ import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces'
 import { IComponent } from 'app/core/game-object';
 import { ChooseConditionDialogComponent } from 'app/modules/open-scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+
 import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
 import { OscDialogService } from 'app/modules/open-scenario/services/osc-dialog.service';
 

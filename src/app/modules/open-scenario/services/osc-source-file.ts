@@ -11,7 +11,7 @@ export class OscSourceFile {
     public static names: OscNameDB = new OscNameDB();
 
     private static _file: IFile;
-    private static _scenario: OpenScenario;
+    private static _scenario: OpenScenario = new OpenScenario();
     private static cleaner = new OscClearHelper();
 
     static get scenario () {

@@ -18,6 +18,7 @@ import { RoadCircleTool } from "../tools/road-circle/road-circle-tool";
 import { RoadTool } from "../tools/road/road-tool";
 import { SurfaceTool } from "../tools/surface/surface-tool";
 import { PropPolygonTool } from "../tools/prop-polygon/prop-polygon-tool";
+import { VehicleTool } from "../tools/vehicle/vehicle-tool";
 
 export class ToolFactory {
 
@@ -59,6 +60,8 @@ export class ToolFactory {
 				return new ParkingBoxTool();
 			case ToolType.Pointer:
 				return new PointerTool();
+			case ToolType.Vehicle:
+				return new VehicleTool();
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

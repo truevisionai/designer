@@ -70,7 +70,7 @@ export class OpenScenario {
 
         this.objects.set( object.name, object );
 
-        OscSourceFile.names.add_entity( object.name );
+        OscSourceFile.names.add_entity( object.name, object );
 
     }
 

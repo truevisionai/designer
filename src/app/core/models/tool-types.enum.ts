@@ -16,5 +16,6 @@ export enum ToolType {
 	MarkingLine,
 	ParkingBox,
 	Pointer,
-	RoadRampTool
+	RoadRampTool,
+	Vehicle,
 }

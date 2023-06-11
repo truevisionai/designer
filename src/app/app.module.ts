@@ -29,6 +29,7 @@ import { TvMapModule } from './modules/tv-map/tv-map.module';
 import { SharedModule } from './shared/shared.module';
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';
+import { OpenScenarioModule } from './modules/open-scenario/open-scenario.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -54,6 +55,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		EditorModule,
 		TvMapModule,
 		ThreeJsModule,
+		OpenScenarioModule,
 
 		SessionsModule,
 		SatPopoverModule,
