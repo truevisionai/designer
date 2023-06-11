@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Name" [(ngModel)]="data.actionName">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+        <mat-label>Select Category</mat-label>
+        <mat-select [(ngModel)]="category">
+            <mat-option value="private">Private Actions</mat-option>
+            <!-- <mat-option value="global">Global Actions</mat-option> -->
+            <!-- <mat-option value="user_defined">UserDefined</mat-option> -->
+        </mat-select>
+    </mat-form-field>
+
+    <div [ngSwitch]="category">
+        <div *ngSwitchCase="'private'">
+            <mat-form-field class="example-full-width">
+                <mat-label>Select Action</mat-label>
+                <mat-select [(ngModel)]="action_type">
+                    <mat-option value="lane_change">Lane Change</mat-option>
+                    <mat-option value="speed_change">Speed Change</mat-option>
+                    <!-- <mat-option value="distance">Distance</mat-option> -->
+                    <mat-option value="follow_trajectory">Follow Trajectory</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div *ngSwitchDefault></div>
+    </div>
+
+</div>
+<div mat-dialog-actions>
+    <button mat-stroked-button (click)="onCancel()">Cancel</button>
+    <button mat-stroked-button (click)="onAddAction()">Add</button>
+</div>

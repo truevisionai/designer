@@ -1,0 +1,23 @@
+<div class="inspector-form-container" *ngIf="fileHeader">
+
+    <mat-form-field>
+        <input matInput placeholder="revMajor" [(ngModel)]="fileHeader.revMajor">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="revMinor" [(ngModel)]="fileHeader.revMinor">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="date" [(ngModel)]="fileHeader.date">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="description" [(ngModel)]="fileHeader.description">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="author" [(ngModel)]="fileHeader.author">
+    </mat-form-field>
+
+</div>

@@ -1,0 +1,12 @@
+<div *ngFor="let trajectory of trajectories">
+
+    <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="trajectory.name" (click)="selectTrajectory(trajectory)">
+    </mat-form-field>
+
+    {{ isDisabled(trajectory) }}
+
+    <app-osc-trajectory-inspector [trajectory]="trajectory" [display]="false" [disableEditing]="isDisabled(trajectory)">
+    </app-osc-trajectory-inspector>
+
+</div>

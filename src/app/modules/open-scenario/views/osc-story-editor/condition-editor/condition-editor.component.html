@@ -1,0 +1,59 @@
+<mat-form-field class="example-full-width">
+    <input matInput placeholder="Name" [(ngModel)]="condition.name">
+</mat-form-field>
+
+<mat-form-field class="example-full-width">
+    <mat-label>Condition Type</mat-label>
+    <mat-select disabled [ngModel]="condition.conditionType" (ngModelChange)="onConditionTypeChanged($event)">
+        <!-- <mat-option [value]="0">ByEntity_EndOfRoad</mat-option> -->
+        <mat-option [value]="7">ByEntity_Speed</mat-option>
+        <mat-option [value]="8">ByEntity_RelativeSpeed</mat-option>
+        <mat-option [value]="9">ByEntity_TraveledDistance</mat-option>
+        <mat-option [value]="10">ByEntity_ReachPosition</mat-option>
+        <mat-option [value]="11">ByEntity_Distance</mat-option>
+        <!-- <mat-option [value]="12">ByEntity_RelativeDistance</mat-option> -->
+
+        <mat-option [value]="13">ByState_AfterTermination</mat-option>
+        <mat-option [value]="14">ByState_AtStart</mat-option>
+        <!-- <mat-option [value]="15">ByState_Command</mat-option> -->
+        <!-- <mat-option [value]="16">ByState_Signal</mat-option> -->
+        <!-- <mat-option [value]="17">ByState_Controller</mat-option> -->
+
+        <!-- <mat-option [value]="18">ByValue_Parameter</mat-option> -->
+        <!-- <mat-option [value]="19">ByValue_TimeOfDay</mat-option> -->
+        <mat-option [value]="20">ByValue_SimulationTime</mat-option>
+
+    </mat-select>
+</mat-form-field>
+
+<div [ngSwitch]="condition.conditionType">
+
+    <div *ngSwitchCase="0">
+        ByEntity_EndOfRoad
+    </div>
+
+    <div *ngSwitchCase="7">
+        <app-speed-condition-editor [condition]="condition"></app-speed-condition-editor>
+    </div>
+
+    <div *ngSwitchCase="8">
+        <app-relative-speed-condition-editor [condition]="condition"></app-relative-speed-condition-editor>
+    </div>
+
+    <div *ngSwitchCase="9">
+        <app-traveled-distance-condition-editor [condition]="condition"></app-traveled-distance-condition-editor>
+    </div>
+
+    <div *ngSwitchCase="10">
+        <app-reach-position-condition-editor [condition]="condition"></app-reach-position-condition-editor>
+    </div>
+
+    <div *ngSwitchCase="11">
+        <app-distance-condition-editor [condition]="condition"></app-distance-condition-editor>
+    </div>
+
+    <div *ngSwitchCase="20">
+        <app-simulation-time-condition-editor [condition]="condition"></app-simulation-time-condition-editor>
+    </div>
+
+</div>

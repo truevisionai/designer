@@ -1,0 +1,10 @@
+<div>
+    <app-position-editor [position]="condition.position" (positionChanged)="onPositionTypeChanged($event)"
+        (positionModified)="onPositionChanged($event)">
+    </app-position-editor>
+</div>
+
+<div>
+    <app-double-field label="Tolerance" [value]="condition.tolerance" (changed)="onToleranceChanged($event)">
+    </app-double-field>
+</div>

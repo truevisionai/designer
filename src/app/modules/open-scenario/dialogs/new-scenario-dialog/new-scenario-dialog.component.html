@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Scenario</h2>
+
+<div *ngIf="!isCreatingNew" mat-dialog-content>
+
+    <h5 (click)="createNew()">Create New</h5>
+    <h5 (click)="openFromComputer()">Open From Computer</h5>
+    <h5 (click)="openDemo()">Demo - Overtaking.xosc</h5>
+
+</div>
+
+<div *ngIf="isCreatingNew" mat-dialog-content>
+
+    <p>Need RoadNetwork (openDRIVE) for creating Scenario</p>
+
+    <h5 (click)="selectRoadNetwork()">Select RoadNetwork</h5>
+
+</div>

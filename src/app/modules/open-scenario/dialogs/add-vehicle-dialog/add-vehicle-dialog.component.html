@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Delete all</h2>
+<div>
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Search by model" autocomplete="false" [(ngModel)]="query"
+            (ngModelChange)="onModelChanged($event)">
+    </mat-form-field>
+</div>
+
+<div mat-dialog-content>
+
+
+
+    <mat-grid-list cols="4" rowHeight="1:1">
+        <mat-grid-tile *ngFor="let model of models | search : query" (click)="onModelClicked(model)">
+            <p style="position: absolute; color:#FFFFFF; font-weight: bold;margin: 10px;">{{ model }}</p>
+            <img mat-card-image src="assets/vehicle-placeholder.png">
+        </mat-grid-tile>
+    </mat-grid-list>
+
+
+</div>

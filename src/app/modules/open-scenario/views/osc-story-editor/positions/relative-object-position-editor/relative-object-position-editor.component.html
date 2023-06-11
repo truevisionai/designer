@@ -1,0 +1,18 @@
+<mat-form-field class="example-full-width">
+    <mat-label>Object</mat-label>
+    <mat-select [(ngModel)]="position.object">
+        <mat-option *ngFor="let entity of entities" [value]="entity">{{ entity }}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<div>
+    <mat-form-field style="width: 33%;">
+        <input matInput placeholder="Dx" [(ngModel)]="position.dx">
+    </mat-form-field>
+    <mat-form-field style="width: 33%;">
+        <input matInput placeholder="Dy" [(ngModel)]="position.dy">
+    </mat-form-field>
+    <mat-form-field style="width: 33%;">
+        <input matInput placeholder="Dz" [(ngModel)]="position.dz">
+    </mat-form-field>
+</div>

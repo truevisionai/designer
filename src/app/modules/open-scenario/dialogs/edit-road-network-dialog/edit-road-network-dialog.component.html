@@ -1,0 +1,30 @@
+<div mat-dialog-content>
+
+    <!-- <p>{{ roadNetwork | json }}</p> -->
+    <!-- <p>{{ logics | json }}</p> -->
+    <!-- <p>{{ sceneGraph | json }}</p> -->
+
+    <mat-form-field *ngIf="files.length > 0">
+        <mat-label>Select RoadNetwork</mat-label>
+        <mat-select [ngModel]="selectedRoadNetwork" (ngModelChange)="onRoadNetworkSelected($event)">
+            <mat-option *ngFor="let file of files" [value]="file.name">{{ file.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <p *ngIf="!logics">Choose a RoadNetwork file (Required)</p>
+    <button *ngIf="!logics" mat-stroked-button (click)="selectRoadNetwork()">Select RoadNetwork</button>
+    <button *ngIf="logics" mat-stroked-button (click)="changeRoadNetwork()">Change RoadNetwork</button>
+
+    <br />
+    <br />
+
+    <!-- <p *ngIf="!sceneGraph">Choose a SceneGraph file (Optional)</p> -->
+    <!-- <button *ngIf="!sceneGraph" mat-stroked-button (click)="selectSceneGraph()">Select SceneGraph</button> -->
+    <!-- <button *ngIf="sceneGraph" mat-stroked-button (click)="changeSceneGraph()">Change SceneGraph</button> -->
+
+
+    <br />
+    <br />
+    <button [disabled]="!file" mat-stroked-button (click)="importAndBuild(file)">Import And Build</button>
+
+</div>

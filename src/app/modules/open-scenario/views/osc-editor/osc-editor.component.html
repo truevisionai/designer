@@ -1,0 +1,22 @@
+<div fxLayout="row" fxFlexFill fxLayoutAlign="space-around" fxLayoutGap="0px">
+
+    <div fxFlex="60">
+
+        <app-viewport fxFlexFill fxLayout="column"></app-viewport>
+
+    </div>
+
+    <div fxFlex="20">
+
+        <app-osc-hierarchy *ngIf="scenario" [scenario]="scenario" fxLayout="column" fxFlexFill></app-osc-hierarchy>
+
+    </div>
+
+    <div fxFlex="20">
+
+        <app-object-inspector fxLayout="column" fxFlexFill></app-object-inspector>
+
+    </div>
+
+
+</div>

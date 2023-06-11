@@ -1,0 +1,377 @@
+import { Injectable } from '@angular/core';
+import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
+import { OscSourceFile } from './osc-source-file';
+import { OscActionBuilder } from '../builders/osc-action-builder';
+import { OscStory } from '../models/osc-story';
+import { OscAct } from '../models/osc-act';
+import { OscSequence } from '../models/osc-sequence';
+import { OscManeuver } from '../models/osc-maneuver';
+import { AbstractAction } from '../models/osc-interfaces';
+import { OscResetHelper } from '../helpers/osc-reset-helper';
+import { OscStoryElementType } from '../models/osc-enums';
+import { OscEvent } from '../models/osc-event';
+import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
+import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
+import { OscEntityObject } from '../models/osc-entities';
+import { OscUtils } from '../models/osc-utils';
+import { Debug } from '../../../core/utils/debug';
+import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
+import { OscReaderService } from './osc-reader.service';
+
+export interface StoryEvent {
+    name: string;
+    type: OscStoryElementType;
+}
+
+@Injectable( {
+    providedIn: 'root'
+} )
+export class OscPlayerService {
+
+    static traffic: Map<number, OscEntityObject[]> = new Map<number, OscEntityObject[]>();
+
+    private added: boolean;
+    private eventIndex: number = 0;
+    private logEvents: boolean = false;
+
+    constructor ( player: PlayerService, private reader: OscReaderService ) {
+
+        player.playerStarted.subscribe( e => this.onPlayerStarted() );
+        player.playerResumed.subscribe( e => this.onPlayerResumed() );
+        player.playerStopped.subscribe( e => this.onPlayerStopped() );
+        player.playerPaused.subscribe( e => this.onPlayerPaused() );
+        player.playerTick.subscribe( e => this.onPlayerTick( e ) );
+
+    }
+
+    get openDrive () {
+
+        return TvMapInstance.map;
+
+    }
+
+    get openScenario () {
+
+        return OscSourceFile.openScenario;
+
+    }
+
+    private onPlayerStarted () {
+
+        if ( this.logEvents ) Debug.log( 'scenario-started', this.openScenario );
+
+        this.performInitActions();
+
+    }
+
+    private onPlayerResumed () {
+
+        if ( this.logEvents ) Debug.log( 'scenario-resumed' );
+
+    }
+
+    private onPlayerPaused () {
+
+        if ( this.logEvents ) Debug.log( 'scenario-paused' );
+
+    }
+
+    private onPlayerStopped () {
+
+        if ( this.logEvents ) Debug.log( 'scenario-stopped' );
+
+        this.performInitActions();
+
+        this.resetOpenScenario();
+    }
+
+    private onPlayerTick ( e: PlayerUpdateData ) {
+
+        // Debug.log( Time.frameCount, Time.seconds, Time.deltaTime );
+
+        this.openDrive.update();
+
+        this.openScenario.storyboard.stories.forEach( story => {
+
+            this.runStory( story );
+
+        } );
+
+        this.openScenario.objects.forEach( obj => {
+
+            obj.update();
+
+        } );
+
+
+    }
+
+    private performInitActions () {
+
+        // // set parameters
+        // this.reader.replaceParamaterValues( this.openScenario.objects, ( object, property ) => {
+        //     console.log( 'replaced', object, property );
+        // } );
+
+        // set road traffic state
+        this.openDrive.roads.forEach( road => OscPlayerService.traffic.set( road.id, [] ) );
+
+        this.openScenario.objects.forEach( obj => {
+
+            obj.initActions.forEach( action => {
+
+                OscActionBuilder.executePrivateAction( obj, action );
+
+            } );
+
+            this.setRoadProperties( obj );
+
+        } );
+
+        // if ( this.added ) return;
+        //
+        // const story = this.openScenario.storyboard.addNewStory( 'NewStory' );
+        //
+        // const act = story.addNewAct( 'NewAct' );
+        //
+        // const group = act.addStartCondition( new OscSimulationTimeCondition( 2, OscRule.equal_to ) );
+        //
+        // this.added = true;
+    }
+
+    private runStory ( story: OscStory ) {
+
+        if ( this.logEvents ) Debug.log( 'running-story', story.name );
+
+        story.acts.forEach( act => {
+
+            if ( !act.hasStarted ) {
+
+                act.shouldStart = OscUtils.hasGroupsPassed( act.startConditionGroups );
+
+                // if ( act.startConditionGroups.length == 0 ) act.shouldStart = true;
+                //
+                // act.startConditionGroups.forEach( group => {
+                //
+                //     if ( group.conditions.length == 0 ) act.shouldStart = true;
+                //
+                //     group.conditions.filter( condition => {
+                //
+                //         act.shouldStart = condition.hasPassed();
+                //
+                //     } );
+                //
+                // } );
+
+                if ( act.shouldStart ) this.startAct( act );
+
+            } else {
+
+                this.updateAct( act );
+
+            }
+
+        } );
+    }
+
+    private startAct ( act: OscAct ) {
+
+        if ( this.logEvents ) Debug.log( 'started-act', act.name );
+
+        act.hasStarted = true;
+
+        // fire event
+
+        this.updateAct( act );
+    }
+
+    private updateAct ( act: OscAct ) {
+
+        if ( this.logEvents ) Debug.log( 'running-act', act.name );
+
+        act.sequences.forEach( sequence => {
+
+            this.updateSequence( sequence );
+
+        } );
+
+    }
+
+    private updateSequence ( sequence: OscSequence ) {
+
+        sequence.maneuvers.forEach( maneuver => {
+
+            if ( maneuver.hasStarted ) {
+
+                this.updateManeuver( maneuver, sequence );
+
+            } else {
+
+                this.startManeuver( maneuver, sequence );
+
+            }
+
+        } );
+    }
+
+    private startManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'started-manuever', maneuver.name );
+
+        // TODO: Fire event
+
+        maneuver.hasStarted = true;
+
+        this.updateManeuver( maneuver, sequence );
+    }
+
+    private updateManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'running-maneuver', maneuver.name );
+
+        if ( maneuver.isCompleted ) return;
+
+        // let event = maneuver.events[ maneuver.eventIndex ];
+
+        // if ( event.isCompleted ) maneuver.eventIndex++;
+
+        if ( maneuver.eventIndex < maneuver.events.length ) {
+
+            const event = maneuver.events[ maneuver.eventIndex ];
+
+            if ( event.hasStarted ) this.updateEvent( event, sequence );
+
+            if ( !event.hasStarted ) {
+
+                const shouldStart = event.hasPassed();
+
+                if ( shouldStart ) this.startEvent( event, sequence );
+            }
+
+        } else {
+
+            console.error( 'unknown error' );
+
+            // maneuver.isCompleted = true;
+
+            // TODO: fire event
+
+        }
+
+    }
+
+
+    private startEvent ( event: OscEvent, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'started-event', event.name );
+
+        // TODO: Fire event
+
+        event.hasStarted = true;
+
+        this.updateEvent( event, sequence );
+
+    }
+
+    private updateEvent ( event: OscEvent, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'running-event', event.name );
+
+        event.getActionMap().forEach( ( action, actionName ) => {
+
+            if ( action.isCompleted ) return;
+
+            if ( !action.hasStarted ) {
+
+                this.startAction( action, actionName, sequence );
+
+            } else {
+
+                this.updateAction( action, actionName, sequence );
+
+            }
+
+        } );
+
+        // Another to run this loop just for referenc
+        // const actions = event.getActionMap();
+
+        // for ( const i of actions ) {
+
+        //     const actionName = i[ 0 ];
+        //     const action = i[ 1 ];
+
+        //     if ( action.isCompleted ) continue;
+
+        //     if ( !action.hasStarted ) {
+
+        //         this.startAction( action, actionName, sequence );
+
+        //     } else {
+
+        //         this.updateAction( action, actionName, sequence );
+
+        //     }
+        // }
+
+    }
+
+    private startAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'started-action', actionName );
+
+        // TODO: Fire event
+
+        // action.hasStarted = true;
+
+        this.updateAction( action, actionName, sequence );
+
+    }
+
+    private updateAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
+
+        if ( this.logEvents ) Debug.log( 'running-action', actionName );
+
+        sequence.actors.forEach( actorName => {
+
+            if ( !this.openScenario.objects.has( actorName ) ) throw new Error( 'Object not found' );
+
+            const entity = this.openScenario.objects.get( actorName );
+
+            action.execute( entity );
+
+        } );
+    }
+
+    private resetOpenScenario () {
+
+        ( new OscResetHelper( this.openScenario ) ).reset();
+
+    }
+
+    private setRoadProperties ( obj: OscEntityObject ) {
+
+        const theta = new TvPosTheta();
+
+        const pos = obj.gameObject.position;
+
+        // console.log( this.openDrive );
+
+        const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, theta );
+
+        // console.log( theta, pos, res );
+
+        obj.roadId = res.road.id;
+
+        obj.laneId = res.lane.id;
+
+        obj.laneSectionId = res.road.getLaneSectionAt( theta.s ).id;
+
+        obj.direction = res.lane.id > 0 ? -1 : 1;
+
+        obj.sCoordinate = theta.s;
+
+    }
+
+
+}

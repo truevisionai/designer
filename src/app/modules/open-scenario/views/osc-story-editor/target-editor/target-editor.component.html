@@ -1,0 +1,32 @@
+<mat-form-field class="example-full-width">
+    <mat-label>Target Type</mat-label>
+    <mat-select [(ngModel)]="target.targetType">
+        <mat-option [value]="'relative'">Relative</mat-option>
+        <mat-option [value]="'absolute'">Absolute</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<div [ngSwitch]="target.targetType">
+
+    <!-- relative -->
+    <div *ngSwitchCase="'relative'">
+        <mat-form-field class="example-full-width">
+            <mat-label>Object</mat-label>
+            <mat-select [(ngModel)]="relativeTarget.object">
+                <mat-option [value]="'$owner'">$owner (Story Owner)</mat-option>
+                <mat-option *ngFor="let entity of entities" [value]="entity">{{ entity }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <app-double-field label="Target Value" [value]="relativeTarget.value"
+                (valueChanged)="onRelativeTargetChanged($event)"></app-double-field>
+        </mat-form-field>
+    </div>
+
+    <!-- absolute target -->
+    <div *ngSwitchCase="'absolute'">
+        <app-double-field label="Target Value" [value]="absoluteTarget.value"
+            (valueChanged)="onAbsoluteTargetChanged($event)"></app-double-field>
+    </div>
+
+</div>
