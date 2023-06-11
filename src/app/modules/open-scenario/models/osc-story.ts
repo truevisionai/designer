@@ -4,39 +4,39 @@ import { count } from 'rxjs/operators';
 
 export class OscStory {
 
-    private static count = 1;
+	private static count = 1;
 
-    public acts: OscAct[] = [];
-    public hasStarted: boolean;
-    public isCompleted: boolean;
+	public acts: OscAct[] = [];
+	public hasStarted: boolean;
+	public isCompleted: boolean;
 
-    constructor ( public name: string, public ownerName: string ) { OscStory.count++; }
+	constructor ( public name: string, public ownerName: string ) { OscStory.count++; }
 
-    static getNewName ( name = 'MyStory' ) {
+	static getNewName ( name = 'MyStory' ) {
 
-        return `${ name }${ this.count }`;
+		return `${ name }${ this.count }`;
 
-    }
+	}
 
-    addNewAct ( name: string ) {
+	addNewAct ( name: string ) {
 
-        const act = new OscAct( name );
+		const act = new OscAct( name );
 
-        this.addAct( act );
+		this.addAct( act );
 
-        return act;
-    }
+		return act;
+	}
 
-    addAct ( act: OscAct ) {
+	addAct ( act: OscAct ) {
 
-        const hasName = OscSourceFile.db.has_act( act.name );
+		const hasName = OscSourceFile.db.has_act( act.name );
 
-        if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
+		if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
 
-        this.acts.push( act );
+		this.acts.push( act );
 
-        OscSourceFile.db.add_act( act.name, act );
+		OscSourceFile.db.add_act( act.name, act );
 
-    }
+	}
 
 }

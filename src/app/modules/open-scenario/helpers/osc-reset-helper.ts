@@ -8,121 +8,121 @@ import { AbstractAction } from '../models/osc-interfaces';
 
 export class OscResetHelper {
 
-    constructor ( private openScenario: OpenScenario ) {
+	constructor ( private openScenario: OpenScenario ) {
 
-    }
+	}
 
-    reset () {
+	reset () {
 
-        this.openScenario.objects.forEach( entity => {
+		this.openScenario.objects.forEach( entity => {
 
-            entity.enable();
+			entity.enable();
 
-            entity.initActions.forEach( action => {
+			entity.initActions.forEach( action => {
 
-                this.resetAction( action );
+				this.resetAction( action );
 
-            } );
+			} );
 
-            entity.distanceTravelled = 0;
+			entity.distanceTravelled = 0;
 
-        } );
+		} );
 
-        this.openScenario.storyboard.stories.forEach( story => {
+		this.openScenario.storyboard.stories.forEach( story => {
 
-            this.resetStory( story );
+			this.resetStory( story );
 
-        } );
+		} );
 
-    }
+	}
 
-    private resetGroups ( groups: OscConditionGroup[] ) {
+	private resetGroups ( groups: OscConditionGroup[] ) {
 
-        groups.forEach( group => {
+		groups.forEach( group => {
 
-            this.resetGroup( group );
+			this.resetGroup( group );
 
-        } );
+		} );
 
-    }
+	}
 
-    private resetGroup ( group: OscConditionGroup ) {
+	private resetGroup ( group: OscConditionGroup ) {
 
-        group.conditions.forEach( condition => {
+		group.conditions.forEach( condition => {
 
-            condition.passed = false;
+			condition.passed = false;
 
-        } );
+		} );
 
-    }
+	}
 
-    private resetStory ( story: OscStory ) {
+	private resetStory ( story: OscStory ) {
 
-        story.hasStarted = false;
-        story.isCompleted = false;
+		story.hasStarted = false;
+		story.isCompleted = false;
 
-        story.acts.forEach( act => {
+		story.acts.forEach( act => {
 
-            this.resetAct( act );
+			this.resetAct( act );
 
-        } );
-    }
+		} );
+	}
 
-    private resetAct ( act: OscAct ) {
+	private resetAct ( act: OscAct ) {
 
-        act.hasStarted = false;
-        act.isCompleted = false;
+		act.hasStarted = false;
+		act.isCompleted = false;
 
-        this.resetGroups( act.startConditionGroups );
-        this.resetGroups( act.endConditionGroups );
-        this.resetGroups( act.cancelConditionGroups );
+		this.resetGroups( act.startConditionGroups );
+		this.resetGroups( act.endConditionGroups );
+		this.resetGroups( act.cancelConditionGroups );
 
-        act.sequences.forEach( sequence => {
+		act.sequences.forEach( sequence => {
 
-            sequence.maneuvers.forEach( maneuver => {
+			sequence.maneuvers.forEach( maneuver => {
 
-                this.resetManeuver( maneuver );
+				this.resetManeuver( maneuver );
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    private resetManeuver ( maneuver: OscManeuver ) {
+	private resetManeuver ( maneuver: OscManeuver ) {
 
-        maneuver.hasStarted = false;
-        maneuver.isCompleted = false;
-        maneuver.eventIndex = 0;
+		maneuver.hasStarted = false;
+		maneuver.isCompleted = false;
+		maneuver.eventIndex = 0;
 
-        maneuver.events.forEach( event => {
+		maneuver.events.forEach( event => {
 
-            this.resetEvent( event );
+			this.resetEvent( event );
 
-        } );
+		} );
 
-    }
+	}
 
-    private resetEvent ( event: OscEvent ) {
+	private resetEvent ( event: OscEvent ) {
 
-        event.hasStarted = false;
-        event.isCompleted = false;
+		event.hasStarted = false;
+		event.isCompleted = false;
 
-        this.resetGroups( event.startConditionGroups );
+		this.resetGroups( event.startConditionGroups );
 
-        event.getActions().forEach( action => {
+		event.getActions().forEach( action => {
 
-            this.resetAction( action );
+			this.resetAction( action );
 
-        } );
-    }
+		} );
+	}
 
-    private resetAction ( action: AbstractAction ) {
+	private resetAction ( action: AbstractAction ) {
 
-        action.hasStarted = false;
-        action.isCompleted = false;
+		action.hasStarted = false;
+		action.isCompleted = false;
 
-        action.reset();
+		action.reset();
 
-    }
+	}
 }

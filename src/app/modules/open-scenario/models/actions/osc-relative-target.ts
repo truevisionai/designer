@@ -3,24 +3,24 @@ import { AbstractTarget } from './abstract-target';
 
 export class OscRelativeTarget extends AbstractTarget {
 
-    public targetType = OscTargetType.relative;
+	public targetType = OscTargetType.relative;
 
-    constructor ( public object: string, public target: number ) {
+	constructor ( public object: string, public target: number ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    getTarget () {
+	getTarget () {
 
-        return this.target;
+		return this.target;
 
-    }
+	}
 
-    setTarget ( value ) {
+	setTarget ( value ) {
 
-        this.target = value;
+		this.target = value;
 
-    }
+	}
 
 }

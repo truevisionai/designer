@@ -5,46 +5,46 @@ import { OscSourceFile } from '../../services/osc-source-file';
 
 export class OscTraveledDistanceCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_TraveledDistance;
+	conditionType = OscConditionType.ByEntity_TraveledDistance;
 
-    constructor ( public value: number ) {
-        super();
-    }
+	constructor ( public value: number ) {
+		super();
+	}
 
-    hasPassed (): boolean {
+	hasPassed (): boolean {
 
-        if ( this.passed ) {
+		if ( this.passed ) {
 
-            return true;
+			return true;
 
-        } else {
+		} else {
 
-            for ( const entityName of this.entities ) {
+			for ( const entityName of this.entities ) {
 
-                const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
 
-                const passed = entity.distanceTravelled >= this.value;
+				const passed = entity.distanceTravelled >= this.value;
 
-                if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
+				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
 
-                    this.passed = true;
+					this.passed = true;
 
-                    break;
-                }
+					break;
+				}
 
-                if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
+				if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
 
-                    this.passed = false;
+					this.passed = false;
 
-                    break;
+					break;
 
-                }
+				}
 
-            }
+			}
 
-            return this.passed;
+			return this.passed;
 
-        }
-    }
+		}
+	}
 
 }

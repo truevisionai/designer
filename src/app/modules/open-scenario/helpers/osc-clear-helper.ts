@@ -3,30 +3,30 @@ import { SceneService } from '../../../core/services/scene.service';
 
 export class OscClearHelper {
 
-    constructor () {
+	constructor () {
 
-    }
+	}
 
-    clear ( openScenario: OpenScenario ) {
+	clear ( openScenario: OpenScenario ) {
 
-        if ( openScenario == null ) return;
+		if ( openScenario == null ) return;
 
-        openScenario.objects.forEach( entity => {
+		openScenario.objects.forEach( entity => {
 
-            SceneService.remove( entity.gameObject );
+			SceneService.remove( entity.gameObject );
 
-            entity.initActions.splice( 0, entity.initActions.length );
+			entity.initActions.splice( 0, entity.initActions.length );
 
-        } );
+		} );
 
-        openScenario.storyboard.stories.forEach( story => {
+		openScenario.storyboard.stories.forEach( story => {
 
-            story.acts.splice( 0, story.acts.length );
+			story.acts.splice( 0, story.acts.length );
 
-        } );
+		} );
 
-        openScenario.storyboard.stories.clear();
+		openScenario.storyboard.stories.clear();
 
-    }
+	}
 
 }

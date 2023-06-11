@@ -3,16 +3,16 @@ import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscAccelerationCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_Acceleration;
+	conditionType = OscConditionType.ByEntity_Acceleration;
 
-    constructor ( public value: number, public rule: OscRule ) {
+	constructor ( public value: number, public rule: OscRule ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    hasPassed (): boolean {
-        return false;
-    }
+	hasPassed (): boolean {
+		return false;
+	}
 
 }

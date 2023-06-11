@@ -7,47 +7,47 @@ import { OscEntityObject } from '../osc-entities';
 
 export class OscReachPositionCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_ReachPosition;
+	conditionType = OscConditionType.ByEntity_ReachPosition;
 
-    constructor ( public position?: AbstractPosition, public tolerance: number = 0 ) {
-        super();
-    }
+	constructor ( public position?: AbstractPosition, public tolerance: number = 0 ) {
+		super();
+	}
 
-    hasPassed (): boolean {
+	hasPassed (): boolean {
 
-        if ( this.position == null ) throw new Error( 'Position value can not be null' );
+		if ( this.position == null ) throw new Error( 'Position value can not be null' );
 
-        if ( this.passed ) return true;
+		if ( this.passed ) return true;
 
-        const targetPosition = this.position.getPosition();
+		const targetPosition = this.position.getPosition();
 
-        for ( const entityName of this.entities ) {
+		for ( const entityName of this.entities ) {
 
-            const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+			const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
 
-            const distanceFromTarget = entity.position.distanceTo( targetPosition );
+			const distanceFromTarget = entity.position.distanceTo( targetPosition );
 
-            const hasReachedTarget = distanceFromTarget <= this.tolerance;
+			const hasReachedTarget = distanceFromTarget <= this.tolerance;
 
-            // exit if any of the distance tolerance is passed
-            if ( hasReachedTarget && this.triggeringRule === OscTriggeringRule.Any ) {
+			// exit if any of the distance tolerance is passed
+			if ( hasReachedTarget && this.triggeringRule === OscTriggeringRule.Any ) {
 
-                this.passed = true;
+				this.passed = true;
 
-                break;
-            }
+				break;
+			}
 
-            // exit if any of the distance distance is not passed
-            if ( !hasReachedTarget && this.triggeringRule === OscTriggeringRule.All ) {
+			// exit if any of the distance distance is not passed
+			if ( !hasReachedTarget && this.triggeringRule === OscTriggeringRule.All ) {
 
-                this.passed = false;
+				this.passed = false;
 
-                break;
+				break;
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
 }

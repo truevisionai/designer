@@ -13,98 +13,98 @@ import { Debug } from 'app/core/utils/debug';
 import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
 
 export class ChooseActionDialogData {
-    constructor ( public actionName?: string, public action?: AbstractAction ) { }
+	constructor ( public actionName?: string, public action?: AbstractAction ) { }
 }
 
 
 @Component( {
-    selector: 'app-choose-action-dialog',
-    templateUrl: './choose-action-dialog.component.html',
-    styleUrls: [ './choose-action-dialog.component.css' ]
+	selector: 'app-choose-action-dialog',
+	templateUrl: './choose-action-dialog.component.html',
+	styleUrls: [ './choose-action-dialog.component.css' ]
 } )
 export class ChooseActionDialogComponent implements OnInit {
 
-    public category: string;
-    public action_type: string;
+	public category: string;
+	public action_type: string;
 
-    get categories () { return OscActionCategory; }
+	get categories () { return OscActionCategory; }
 
-    set action ( value ) { this.data.action = value; }
+	set action ( value ) { this.data.action = value; }
 
-    constructor (
-        public dialogRef: MatDialogRef<ChooseActionDialogComponent>,
-        @Inject( MAT_DIALOG_DATA ) public data: ChooseActionDialogData,
-        private snackBar: SnackBar
-    ) {
+	constructor (
+		public dialogRef: MatDialogRef<ChooseActionDialogComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: ChooseActionDialogData,
+		private snackBar: SnackBar
+	) {
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        Debug.log( this.data );
+		Debug.log( this.data );
 
-    }
+	}
 
-    onCancel () {
+	onCancel () {
 
-        this.dialogRef.close();
+		this.dialogRef.close();
 
-    }
+	}
 
-    onAddAction () {
+	onAddAction () {
 
-        // if ( this.data.actionName == null ) this.snackBar.show( 'Please provied a name for action' );
-        if ( this.data.actionName == null ) return;
+		// if ( this.data.actionName == null ) this.snackBar.show( 'Please provied a name for action' );
+		if ( this.data.actionName == null ) return;
 
-        switch ( this.action_type ) {
+		switch ( this.action_type ) {
 
-            case 'lane_change': this.addLaneChangeAction(); break;
+			case 'lane_change': this.addLaneChangeAction(); break;
 
-            case 'speed_change': this.addSpeedChangeAction(); break;
+			case 'speed_change': this.addSpeedChangeAction(); break;
 
-            // case 'distance': this.action = new OscDistanceAction(); break;
+			// case 'distance': this.action = new OscDistanceAction(); break;
 
-            case 'follow_trajectory': this.addFollowTrajectoryAction(); break;
+			case 'follow_trajectory': this.addFollowTrajectoryAction(); break;
 
-            default:
-                break;
-        }
+			default:
+				break;
+		}
 
-    }
+	}
 
-    addLaneChangeAction () {
+	addLaneChangeAction () {
 
-        this.close( new OscLaneChangeAction() );
+		this.close( new OscLaneChangeAction() );
 
-    }
+	}
 
-    addFollowTrajectoryAction () {
+	addFollowTrajectoryAction () {
 
-        const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Time );
+		const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Time );
 
-        const action = new OscFollowTrajectoryAction( trajectory );
+		const action = new OscFollowTrajectoryAction( trajectory );
 
-        this.close( action );
+		this.close( action );
 
-    }
+	}
 
-    addSpeedChangeAction () {
+	addSpeedChangeAction () {
 
-        const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
+		const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
 
-        const target = new OscAbsoluteTarget( 0 );
+		const target = new OscAbsoluteTarget( 0 );
 
-        const action = new OscSpeedAction( dynamics, target );
+		const action = new OscSpeedAction( dynamics, target );
 
-        this.close( action );
-    }
+		this.close( action );
+	}
 
-    close ( action: AbstractAction ) {
+	close ( action: AbstractAction ) {
 
-        const data = new ChooseActionDialogData( this.data.actionName, action );
+		const data = new ChooseActionDialogData( this.data.actionName, action );
 
-        this.dialogRef.close( data );
+		this.dialogRef.close( data );
 
-    }
+	}
 
 }

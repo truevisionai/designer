@@ -6,67 +6,67 @@ import { MeshBasicMaterial, Mesh, TorusGeometry } from 'three';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';
 
 @Component( {
-    selector: 'app-reach-position-condition-editor',
-    templateUrl: './reach-position-condition-editor.component.html',
+	selector: 'app-reach-position-condition-editor',
+	templateUrl: './reach-position-condition-editor.component.html',
 } )
 export class ReachPositionConditionEditorComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
 
-    @Input() condition: OscReachPositionCondition;
+	@Input() condition: OscReachPositionCondition;
 
-    private sphere: Mesh;
+	private sphere: Mesh;
 
-    constructor ( private threeService: ThreeService ) {
-        super();
-    }
+	constructor ( private threeService: ThreeService ) {
+		super();
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        const geometry = this.getGeometry( this.condition.tolerance );
+		const geometry = this.getGeometry( this.condition.tolerance );
 
-        const material = new MeshBasicMaterial( {} );
+		const material = new MeshBasicMaterial( {} );
 
-        this.sphere = new Mesh( geometry, material );
+		this.sphere = new Mesh( geometry, material );
 
-        this.threeService.add( this.sphere );
+		this.threeService.add( this.sphere );
 
-        this.sphere.position.copy( this.condition.position.getPosition() );
-    }
+		this.sphere.position.copy( this.condition.position.getPosition() );
+	}
 
-    getGeometry ( radius ) {
+	getGeometry ( radius ) {
 
-        const tube = 0.1;
-        const radialSegments = 3;
-        const tubularSegments = 36;
+		const tube = 0.1;
+		const radialSegments = 3;
+		const tubularSegments = 36;
 
-        return new TorusGeometry( radius, tube, radialSegments, tubularSegments );
-    }
+		return new TorusGeometry( radius, tube, radialSegments, tubularSegments );
+	}
 
-    ngOnDestroy () {
+	ngOnDestroy () {
 
-        this.threeService.remove( this.sphere );
+		this.threeService.remove( this.sphere );
 
-    }
+	}
 
-    onPositionTypeChanged ( position: AbstractPosition ) {
+	onPositionTypeChanged ( position: AbstractPosition ) {
 
-        this.sphere.position.copy( position.getPosition() );
+		this.sphere.position.copy( position.getPosition() );
 
-    }
+	}
 
-    onPositionChanged ( position: AbstractPosition ) {
+	onPositionChanged ( position: AbstractPosition ) {
 
-        this.sphere.position.copy( position.getPosition() );
+		this.sphere.position.copy( position.getPosition() );
 
-    }
+	}
 
-    onToleranceChanged ( value: number ) {
+	onToleranceChanged ( value: number ) {
 
-        this.condition.tolerance = value;
+		this.condition.tolerance = value;
 
-        const geometry = this.getGeometry( value );
+		const geometry = this.getGeometry( value );
 
-        this.sphere.geometry.dispose();
+		this.sphere.geometry.dispose();
 
-        this.sphere.geometry = geometry;
-    }
+		this.sphere.geometry = geometry;
+	}
 }

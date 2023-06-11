@@ -5,51 +5,51 @@ import { OscUtils } from '../osc-utils';
 
 export class OscSpeedCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_Speed;
+	conditionType = OscConditionType.ByEntity_Speed;
 
-    constructor ( public value: number, public rule: OscRule ) {
+	constructor ( public value: number, public rule: OscRule ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    hasPassed (): boolean {
+	hasPassed (): boolean {
 
-        if ( this.passed ) {
+		if ( this.passed ) {
 
-            return true;
+			return true;
 
-        } else {
+		} else {
 
-            for ( const entityName of this.entities ) {
+			for ( const entityName of this.entities ) {
 
-                const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
 
-                const passed = OscUtils.hasRulePassed( this.rule, entity.speed, this.value );
+				const passed = OscUtils.hasRulePassed( this.rule, entity.speed, this.value );
 
-                // exit if any of the entity distance is passed
-                if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
+				// exit if any of the entity distance is passed
+				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
 
-                    this.passed = true;
+					this.passed = true;
 
-                    break;
-                }
+					break;
+				}
 
-                // exit if any of the entity distance is not passed
-                if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
+				// exit if any of the entity distance is not passed
+				if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
 
-                    this.passed = false;
+					this.passed = false;
 
-                    break;
+					break;
 
-                }
+				}
 
-            }
+			}
 
-            return this.passed;
+			return this.passed;
 
-        }
+		}
 
-    }
+	}
 
 }

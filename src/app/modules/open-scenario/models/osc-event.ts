@@ -10,120 +10,120 @@ import { AbstractCondition } from './conditions/osc-condition';
 
 export class OscEvent {
 
-    private static count = 1;
+	private static count = 1;
 
-    public startConditionGroups: OscConditionGroup[] = [];
-    public isCompleted: boolean;
-    public hasStarted: boolean;
+	public startConditionGroups: OscConditionGroup[] = [];
+	public isCompleted: boolean;
+	public hasStarted: boolean;
 
-    public completed = new EventEmitter<StoryEvent>();
+	public completed = new EventEmitter<StoryEvent>();
 
-    // public actions: OscEventAction[] = [];
-    private actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
+	// public actions: OscEventAction[] = [];
+	private actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
 
-    constructor ( public name?: string, public priority?: string ) {
+	constructor ( public name?: string, public priority?: string ) {
 
-        OscEvent.count++;
+		OscEvent.count++;
 
-    }
+	}
 
-    static getNewName ( name = 'MyEvent' ) {
+	static getNewName ( name = 'MyEvent' ) {
 
-        return `${ name }${ this.count }`;
+		return `${ name }${ this.count }`;
 
-    }
+	}
 
-    get startConditions () {
+	get startConditions () {
 
-        let conditions = [];
+		let conditions = [];
 
-        this.startConditionGroups.forEach( group => {
-            group.conditions.forEach( condition => {
-                conditions.push( condition );
-            } );
-        } );
+		this.startConditionGroups.forEach( group => {
+			group.conditions.forEach( condition => {
+				conditions.push( condition );
+			} );
+		} );
 
-        return conditions;
-    }
+		return conditions;
+	}
 
-    addNewAction ( name: string, action: AbstractAction ) {
+	addNewAction ( name: string, action: AbstractAction ) {
 
-        const hasName = OscSourceFile.db.has_action( name );
+		const hasName = OscSourceFile.db.has_action( name );
 
-        if ( hasName ) throw new Error( `Action name '${ name }' already used` );
+		if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
-        this.actions.set( name, action );
+		this.actions.set( name, action );
 
-        OscSourceFile.db.add_action( name );
+		OscSourceFile.db.add_action( name );
 
-        action.completed.subscribe( e => {
-            this.onActionCompleted( { name: name, type: OscStoryElementType.action } );
-        } );
-    }
+		action.completed.subscribe( e => {
+			this.onActionCompleted( { name: name, type: OscStoryElementType.action } );
+		} );
+	}
 
-    addStartCondition ( condition: AbstractCondition ) {
+	addStartCondition ( condition: AbstractCondition ) {
 
-        const conditionGroup = this.createOrGetGroup();
+		const conditionGroup = this.createOrGetGroup();
 
-        conditionGroup.addCondition( condition );
+		conditionGroup.addCondition( condition );
 
-    }
+	}
 
-    createOrGetGroup () {
+	createOrGetGroup () {
 
-        if ( this.startConditionGroups.length === 0 ) {
+		if ( this.startConditionGroups.length === 0 ) {
 
-            this.startConditionGroups.push( new OscConditionGroup() );
+			this.startConditionGroups.push( new OscConditionGroup() );
 
-        }
+		}
 
-        return this.startConditionGroups[ 0 ];
-    }
+		return this.startConditionGroups[ 0 ];
+	}
 
-    hasPassed () {
+	hasPassed () {
 
-        return OscUtils.hasGroupsPassed( this.startConditionGroups );
+		return OscUtils.hasGroupsPassed( this.startConditionGroups );
 
-    }
+	}
 
-    getActions () {
-        return [ ...this.actions.values() ];
-    }
+	getActions () {
+		return [ ...this.actions.values() ];
+	}
 
-    getActionMap () {
+	getActionMap () {
 
-        return this.actions;
+		return this.actions;
 
-    }
+	}
 
-    private onActionCompleted ( e: StoryEvent ) {
+	private onActionCompleted ( e: StoryEvent ) {
 
-        if ( e.type != OscStoryElementType.action ) return;
+		if ( e.type != OscStoryElementType.action ) return;
 
-        this.actions.forEach( ( action, actionName ) => {
+		this.actions.forEach( ( action, actionName ) => {
 
-            if ( actionName === e.name ) action.isCompleted = true;
+			if ( actionName === e.name ) action.isCompleted = true;
 
-        } );
+		} );
 
-        let allCompleted = true;
+		let allCompleted = true;
 
-        this.actions.forEach( ( action ) => {
+		this.actions.forEach( ( action ) => {
 
-            if ( !action.isCompleted ) allCompleted = false;
+			if ( !action.isCompleted ) allCompleted = false;
 
-        } );
+		} );
 
-        if ( allCompleted ) {
+		if ( allCompleted ) {
 
-            this.isCompleted = true;
+			this.isCompleted = true;
 
-            this.completed.emit( {
-                name: this.name,
-                type: OscStoryElementType.event
-            } );
-        }
+			this.completed.emit( {
+				name: this.name,
+				type: OscStoryElementType.event
+			} );
+		}
 
 
-    }
+	}
 }

@@ -3,24 +3,24 @@ import { AbstractAction, AbstractPrivateAction } from 'app/modules/open-scenario
 import { OscEntityObject } from '../../../models/osc-entities';
 
 @Component( {
-    selector: 'app-action-editor',
-    templateUrl: './action-editor.component.html',
-    styleUrls: ['./action-editor.component.css']
+	selector: 'app-action-editor',
+	templateUrl: './action-editor.component.html',
+	styleUrls: [ './action-editor.component.css' ]
 } )
 export class ActionEditorComponent implements OnInit {
 
-    @Input() action: AbstractPrivateAction;
+	@Input() action: AbstractPrivateAction;
 
-    @Input() entity: OscEntityObject;
+	@Input() entity: OscEntityObject;
 
-    constructor () {
-
-
-    }
-
-    ngOnInit () {
+	constructor () {
 
 
-    }
+	}
+
+	ngOnInit () {
+
+
+	}
 
 }

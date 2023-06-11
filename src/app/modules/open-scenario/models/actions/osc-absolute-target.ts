@@ -3,28 +3,28 @@ import { AbstractTarget } from './abstract-target';
 
 export class OscAbsoluteTarget extends AbstractTarget {
 
-    public targetType = OscTargetType.absolute;
+	public targetType = OscTargetType.absolute;
 
-    private target: number;
+	private target: number;
 
-    constructor ( target: number ) {
+	constructor ( target: number ) {
 
-        super();
+		super();
 
-        this.target = target;
+		this.target = target;
 
-    }
+	}
 
-    getTarget () {
+	getTarget () {
 
-        return this.target;
+		return this.target;
 
-    }
+	}
 
-    setTarget ( value ) {
+	setTarget ( value ) {
 
-        this.target = value;
+		this.target = value;
 
-    }
+	}
 
 }

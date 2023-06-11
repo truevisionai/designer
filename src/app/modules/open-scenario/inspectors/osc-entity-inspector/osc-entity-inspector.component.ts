@@ -8,74 +8,74 @@ import { OscActionsInspectorComponent } from '../osc-actions-inspector/osc-playe
 import { AppInspector } from '../../../../core/inspector';
 
 @Component( {
-    selector: 'app-osc-player-inspector',
-    templateUrl: './osc-entity-inspector.component.html',
-    styleUrls: [ './osc-entity-inspector.component.css' ]
+	selector: 'app-osc-player-inspector',
+	templateUrl: './osc-entity-inspector.component.html',
+	styleUrls: [ './osc-entity-inspector.component.css' ]
 } )
 export class EntityInspector implements OnInit, IComponent {
 
-    data: OscEntityObject;
+	data: OscEntityObject;
 
-    // @Input() entity: OscEntityObject;
+	// @Input() entity: OscEntityObject;
 
-    get entity () { return this.data; }
+	get entity () { return this.data; }
 
-    get initActions () {
-        return this.entity.initActions;
-    }
+	get initActions () {
+		return this.entity.initActions;
+	}
 
-    get absolutePosition () {
-        return this.entity.gameObject.position;
-    };
+	get absolutePosition () {
+		return this.entity.gameObject.position;
+	};
 
-    get scenario () {
-        return OscSourceFile.openScenario;
-    }
+	get scenario () {
+		return OscSourceFile.openScenario;
+	}
 
-    constructor ( public dialog: MatDialog, private dialogService: OscDialogService ) {
-    }
+	constructor ( public dialog: MatDialog, private dialogService: OscDialogService ) {
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-    }
+	}
 
-    addInitActions () {
+	addInitActions () {
 
-        this.dialogService.openAddEntityInitActionDialog( this.entity );
+		this.dialogService.openAddEntityInitActionDialog( this.entity );
 
-    }
+	}
 
-    editPositionAction ( action ) {
+	editPositionAction ( action ) {
 
-        this.dialogService.openEditPositionDialog( action );
+		this.dialogService.openEditPositionDialog( action );
 
-    }
+	}
 
-    editStory () {
+	editStory () {
 
-        this.dialogService.openStoryEditorDialog( this.entity );
+		this.dialogService.openStoryEditorDialog( this.entity );
 
-    }
+	}
 
-    editInitActions () {
+	editInitActions () {
 
-        this.dialogService.openObjectInitEditorDialog( this.entity );
+		this.dialogService.openObjectInitEditorDialog( this.entity );
 
-    }
+	}
 
-    editActions () {
+	editActions () {
 
-        // let actions = this.scenario.getActionsByEntity( this.entity.name );
+		// let actions = this.scenario.getActionsByEntity( this.entity.name );
 
-        // Debug.log( actions );
+		// Debug.log( actions );
 
-        AppInspector.setInspector( OscActionsInspectorComponent, this.entity );
+		AppInspector.setInspector( OscActionsInspectorComponent, this.entity );
 
-    }
+	}
 
-    editAct () {
+	editAct () {
 
-        this.dialogService.openEditActDialog( this.entity );
+		this.dialogService.openEditActDialog( this.entity );
 
-    }
+	}
 }

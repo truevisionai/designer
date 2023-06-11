@@ -27,12 +27,12 @@ import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
 import { OscRelativeTarget } from '../models/actions/osc-relative-target';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import {
-    OscActionCategory,
-    OscActionType,
-    OscConditionCategory,
-    OscConditionType,
-    OscPositionType,
-    OscTargetType
+	OscActionCategory,
+	OscActionType,
+	OscConditionCategory,
+	OscConditionType,
+	OscPositionType,
+	OscTargetType
 } from '../models/osc-enums';
 import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
 import { OscLanePosition } from '../models/positions/osc-lane-position';
@@ -43,900 +43,900 @@ import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajecto
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 
 export class OscWriterService {
 
-    private xmlDocument: Object;
-    private openScenario: OpenScenario;
+	private xmlDocument: Object;
+	private openScenario: OpenScenario;
 
-    getOutputString ( openScenario: OpenScenario ) {
+	getOutputString ( openScenario: OpenScenario ) {
 
-        this.openScenario = openScenario;
+		this.openScenario = openScenario;
 
-        const defaultOptions = {
-            attributeNamePrefix: 'attr_',
-            attrNodeName: false,
-            ignoreAttributes: false,
-            supressEmptyNode: true,
-            format: true,
-            trimValues: true,
-        };
+		const defaultOptions = {
+			attributeNamePrefix: 'attr_',
+			attrNodeName: false,
+			ignoreAttributes: false,
+			supressEmptyNode: true,
+			format: true,
+			trimValues: true,
+		};
 
-        const Parser = require( 'fast-xml-parser' ).j2xParser;
-        const parser = new Parser( defaultOptions );
+		const Parser = require( 'fast-xml-parser' ).j2xParser;
+		const parser = new Parser( defaultOptions );
 
-        Debug.log( this.openScenario );
+		Debug.log( this.openScenario );
 
-        this.writeOpenScenario();
+		this.writeOpenScenario();
 
-        return parser.parse( this.xmlDocument );
-    }
+		return parser.parse( this.xmlDocument );
+	}
 
-    writeOpenScenario (): any {
+	writeOpenScenario (): any {
 
-        const rootNode = {
-            FileHeader: this.openScenario.fileHeader.exportXml(),
-            ParameterDeclaration: null,
-            Catalogs: null,
-            RoadNetwork: null,
-            Entities: null,
-            Storyboard: null
-        };
+		const rootNode = {
+			FileHeader: this.openScenario.fileHeader.exportXml(),
+			ParameterDeclaration: null,
+			Catalogs: null,
+			RoadNetwork: null,
+			Entities: null,
+			Storyboard: null
+		};
 
-        rootNode.ParameterDeclaration = this.writeParameterDeclaration( this.openScenario.parameterDeclaration );
+		rootNode.ParameterDeclaration = this.writeParameterDeclaration( this.openScenario.parameterDeclaration );
 
-        if ( this.openScenario.catalogs != null ) {
+		if ( this.openScenario.catalogs != null ) {
 
-            rootNode.Catalogs = this.writeCatalogs( rootNode, this.openScenario.catalogs );
+			rootNode.Catalogs = this.writeCatalogs( rootNode, this.openScenario.catalogs );
 
-        }
+		}
 
-        if ( this.openScenario.objects != null ) {
+		if ( this.openScenario.objects != null ) {
 
-            this.writeEntities( rootNode, this.openScenario.objects );
+			this.writeEntities( rootNode, this.openScenario.objects );
 
-        }
+		}
 
-        if ( this.openScenario.roadNetwork != null ) {
+		if ( this.openScenario.roadNetwork != null ) {
 
-            this.writeRoadNetwork( rootNode, this.openScenario.roadNetwork );
+			this.writeRoadNetwork( rootNode, this.openScenario.roadNetwork );
 
-        }
+		}
 
-        if ( this.openScenario.storyboard != null ) {
+		if ( this.openScenario.storyboard != null ) {
 
-            this.writeStoryboard( rootNode, this.openScenario.storyboard );
+			this.writeStoryboard( rootNode, this.openScenario.storyboard );
 
-        }
+		}
 
-        this.xmlDocument = {
-            'OpenSCENARIO': rootNode
-        };
+		this.xmlDocument = {
+			'OpenSCENARIO': rootNode
+		};
 
-    }
+	}
 
-    writeEntities ( rootNode: any, objects: Map<string, OscEntityObject> ) {
+	writeEntities ( rootNode: any, objects: Map<string, OscEntityObject> ) {
 
-        var entities = {
-            Object: []
-        };
+		var entities = {
+			Object: []
+		};
 
-        objects.forEach( ( item, key ) => {
+		objects.forEach( ( item, key ) => {
 
-            entities.Object.push( this.writeEntityObject( key, item ) );
+			entities.Object.push( this.writeEntityObject( key, item ) );
 
-        } );
+		} );
 
-        rootNode.Entities = entities;
-    }
+		rootNode.Entities = entities;
+	}
 
-    writeEntityObject ( key: string, object: OscEntityObject ): any {
+	writeEntityObject ( key: string, object: OscEntityObject ): any {
 
-        var xml = {
-            attr_name: object.name,
-        };
+		var xml = {
+			attr_name: object.name,
+		};
 
-        if ( object.catalogReference != null ) {
+		if ( object.catalogReference != null ) {
 
-            xml[ 'CatalogReference' ] = this.writeCatalogReference( object.catalogReference );
+			xml[ 'CatalogReference' ] = this.writeCatalogReference( object.catalogReference );
 
-        }
+		}
 
-        if ( object.controller != null ) {
+		if ( object.controller != null ) {
 
-            xml[ 'Controller' ] = this.writeController( object.controller );
+			xml[ 'Controller' ] = this.writeController( object.controller );
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeController ( controller: AbstractController ): any {
+	writeController ( controller: AbstractController ): any {
 
-        let xml = {};
+		let xml = {};
 
-        // TODO : Write test for this in production
-        if ( controller instanceof CatalogReferenceController ) {
+		// TODO : Write test for this in production
+		if ( controller instanceof CatalogReferenceController ) {
 
-            const ctrl = controller as CatalogReferenceController;
+			const ctrl = controller as CatalogReferenceController;
 
-            xml[ 'CatalogReference' ] = this.writeCatalogReference( ctrl.catalogReference );
+			xml[ 'CatalogReference' ] = this.writeCatalogReference( ctrl.catalogReference );
 
-        } else if ( controller instanceof DefaultVehicleController ) {
+		} else if ( controller instanceof DefaultVehicleController ) {
 
-            xml = {
-                CatalogReference: {
-                    attr_catalogName: 'TruevisionCatalog',
-                    attr_entryName: 'DefaultController',
-                }
-            };
+			xml = {
+				CatalogReference: {
+					attr_catalogName: 'TruevisionCatalog',
+					attr_entryName: 'DefaultController',
+				}
+			};
 
-        } else {
+		} else {
 
-            throw new Error( 'Unsupported controller entry' );
+			throw new Error( 'Unsupported controller entry' );
 
-        }
+		}
 
-        return xml;
+		return xml;
 
-    }
+	}
 
-    writeCatalogReference ( catalogReference: OscCatalogReference ): any {
+	writeCatalogReference ( catalogReference: OscCatalogReference ): any {
 
-        return {
-            attr_catalogName: catalogReference.catalogName,
-            attr_entryName: catalogReference.entryName,
-        };
+		return {
+			attr_catalogName: catalogReference.catalogName,
+			attr_entryName: catalogReference.entryName,
+		};
 
-    }
+	}
 
-    writeRoadNetwork ( xml: any, roadNetwork: OscRoadNetwork ) {
+	writeRoadNetwork ( xml: any, roadNetwork: OscRoadNetwork ) {
 
-        xml.RoadNetwork = {
-            Logics: null,
-            SceneGraph: null,
-        };
+		xml.RoadNetwork = {
+			Logics: null,
+			SceneGraph: null,
+		};
 
-        if ( roadNetwork.logics != null ) {
-            xml.RoadNetwork.Logics = this.writeOscFile( roadNetwork.logics );
-        }
+		if ( roadNetwork.logics != null ) {
+			xml.RoadNetwork.Logics = this.writeOscFile( roadNetwork.logics );
+		}
 
-        if ( roadNetwork.sceneGraph != null ) {
-            xml.RoadNetwork.SceneGraph = this.writeOscFile( roadNetwork.sceneGraph );
-        }
+		if ( roadNetwork.sceneGraph != null ) {
+			xml.RoadNetwork.SceneGraph = this.writeOscFile( roadNetwork.sceneGraph );
+		}
 
-    }
+	}
 
-    writeOscFile ( file: OscFile ) {
+	writeOscFile ( file: OscFile ) {
 
-        return {
-            attr_filepath: file.filepath
-        };
+		return {
+			attr_filepath: file.filepath
+		};
 
-    }
+	}
 
-    writeStoryboard ( xml: any, storyboard: OscStoryboard ) {
+	writeStoryboard ( xml: any, storyboard: OscStoryboard ) {
 
-        const storyXml = {
+		const storyXml = {
 
-            Init: {
-                Actions: {
-                    Private: []
-                },
-            },
+			Init: {
+				Actions: {
+					Private: []
+				},
+			},
 
-            Story: [],
+			Story: [],
 
-            EndConditions: {}
-        };
+			EndConditions: {}
+		};
 
 
-        xml.Storyboard = storyXml;
+		xml.Storyboard = storyXml;
 
-        this.writeInitActions( storyXml.Init.Actions );
+		this.writeInitActions( storyXml.Init.Actions );
 
-        storyboard.stories.forEach( story => {
+		storyboard.stories.forEach( story => {
 
-            storyXml.Story.push( this.writeStory( story ) );
+			storyXml.Story.push( this.writeStory( story ) );
 
-        } );
+		} );
 
-        storyboard.endConditionGroups.forEach( conditionGroup => {
+		storyboard.endConditionGroups.forEach( conditionGroup => {
 
-            Debug.log( this.writeConditionGroup( conditionGroup ) );
+			Debug.log( this.writeConditionGroup( conditionGroup ) );
 
-        } );
+		} );
 
-    }
+	}
 
-    writeConditionGroup ( conditionGroup: OscConditionGroup ): any {
+	writeConditionGroup ( conditionGroup: OscConditionGroup ): any {
 
-        let xml = {
-            Condition: []
-        };
+		let xml = {
+			Condition: []
+		};
 
-        conditionGroup.conditions.forEach( condition => {
+		conditionGroup.conditions.forEach( condition => {
 
-            xml.Condition.push( this.writeCondition( condition ) );
+			xml.Condition.push( this.writeCondition( condition ) );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeCondition ( condition: AbstractCondition ): any {
+	writeCondition ( condition: AbstractCondition ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: condition.name,
-            attr_delay: condition.delay,
-            attr_edge: condition.edge,
+			attr_name: condition.name,
+			attr_delay: condition.delay,
+			attr_edge: condition.edge,
 
-        };
+		};
 
-        if ( condition.category == OscConditionCategory.ByEntity ) {
+		if ( condition.category == OscConditionCategory.ByEntity ) {
 
-            xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as AbstractByEntityCondition );
+			xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as AbstractByEntityCondition );
 
-        } else if ( condition.category == OscConditionCategory.ByValue ) {
+		} else if ( condition.category == OscConditionCategory.ByValue ) {
 
-            xml[ 'ByValue' ] = this.writeByValueCondition( condition );
+			xml[ 'ByValue' ] = this.writeByValueCondition( condition );
 
-        } else if ( condition.category == OscConditionCategory.ByState ) {
+		} else if ( condition.category == OscConditionCategory.ByState ) {
 
-            xml[ 'ByState' ] = this.writeByStateCondition( condition );
+			xml[ 'ByState' ] = this.writeByStateCondition( condition );
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeByStateCondition ( abstractCondition: AbstractCondition ): any {
+	writeByStateCondition ( abstractCondition: AbstractCondition ): any {
 
-        let xml = {};
+		let xml = {};
 
-        // TODO : Write test for this in production for constructor error
-        if ( abstractCondition.conditionType === OscConditionType.ByState_AtStart ) {
+		// TODO : Write test for this in production for constructor error
+		if ( abstractCondition.conditionType === OscConditionType.ByState_AtStart ) {
 
-            xml[ 'AtStart' ] = {};
+			xml[ 'AtStart' ] = {};
 
-            let condition = abstractCondition as OscAtStartCondition;
+			let condition = abstractCondition as OscAtStartCondition;
 
-            xml[ 'AtStart' ][ 'attr_type' ] = condition.type;
-            xml[ 'AtStart' ][ 'attr_name' ] = condition.elementName;
+			xml[ 'AtStart' ][ 'attr_type' ] = condition.type;
+			xml[ 'AtStart' ][ 'attr_name' ] = condition.elementName;
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeByValueCondition ( abstractCondition: AbstractCondition ): any {
+	writeByValueCondition ( abstractCondition: AbstractCondition ): any {
 
-        let xml = {};
+		let xml = {};
 
-        // TODO : Write test for this in production for construtor error
-        if ( abstractCondition.conditionType === OscConditionType.ByValue_SimulationTime ) {
+		// TODO : Write test for this in production for construtor error
+		if ( abstractCondition.conditionType === OscConditionType.ByValue_SimulationTime ) {
 
-            xml[ 'SimulationTime' ] = {};
+			xml[ 'SimulationTime' ] = {};
 
-            let condition = abstractCondition as OscSimulationTimeCondition;
+			let condition = abstractCondition as OscSimulationTimeCondition;
 
-            xml[ 'SimulationTime' ][ 'attr_value' ] = condition.value;
-            xml[ 'SimulationTime' ][ 'attr_rule' ] = condition.rule;
+			xml[ 'SimulationTime' ][ 'attr_value' ] = condition.value;
+			xml[ 'SimulationTime' ][ 'attr_rule' ] = condition.rule;
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeByEntityCondition ( abstractCondition: AbstractByEntityCondition ): any {
+	writeByEntityCondition ( abstractCondition: AbstractByEntityCondition ): any {
 
-        let xml = {
+		let xml = {
 
-            TriggeringEntities: {
-                attr_rule: abstractCondition.triggeringRule,
-                Entity: []
-            },
+			TriggeringEntities: {
+				attr_rule: abstractCondition.triggeringRule,
+				Entity: []
+			},
 
-            EntityCondition: {}
+			EntityCondition: {}
 
-        };
+		};
 
-        abstractCondition.entities.forEach( entityName => {
+		abstractCondition.entities.forEach( entityName => {
 
-            xml.TriggeringEntities.Entity.push( {
-                attr_name: entityName
-            } );
+			xml.TriggeringEntities.Entity.push( {
+				attr_name: entityName
+			} );
 
-        } );
+		} );
 
-        // TODO : Write test for this in production for constructor
-        if ( abstractCondition.conditionType === OscConditionType.ByEntity_Distance ) {
+		// TODO : Write test for this in production for constructor
+		if ( abstractCondition.conditionType === OscConditionType.ByEntity_Distance ) {
 
-            xml.EntityCondition[ 'Distance' ] = this.writeDistanceCondition( abstractCondition as OscDistanceCondition );
+			xml.EntityCondition[ 'Distance' ] = this.writeDistanceCondition( abstractCondition as OscDistanceCondition );
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeDistanceCondition ( condition: OscDistanceCondition ): any {
+	writeDistanceCondition ( condition: OscDistanceCondition ): any {
 
-        return {
+		return {
 
-            attr_value: condition.value,
-            attr_freespace: condition.freespace,
-            attr_alongRoute: condition.alongRoute,
-            attr_rule: condition.rule,
+			attr_value: condition.value,
+			attr_freespace: condition.freespace,
+			attr_alongRoute: condition.alongRoute,
+			attr_rule: condition.rule,
 
-            Position: this.writePosition( condition.position )
+			Position: this.writePosition( condition.position )
 
-        };
+		};
 
-    }
+	}
 
-    writeStory ( story: OscStory ): any {
+	writeStory ( story: OscStory ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: story.name,
-            attr_owner: story.ownerName,
+			attr_name: story.name,
+			attr_owner: story.ownerName,
 
-            Act: [],
+			Act: [],
 
-        };
+		};
 
-        story.acts.forEach( act => {
+		story.acts.forEach( act => {
 
-            xml.Act.push( this.writeAct( act ) );
+			xml.Act.push( this.writeAct( act ) );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeAct ( act: OscAct ): any {
+	writeAct ( act: OscAct ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: act.name,
+			attr_name: act.name,
 
-            Sequence: [],
+			Sequence: [],
 
-            Conditions: {
-                Start: {
-                    ConditionGroup: []
-                }
-            }
-        };
+			Conditions: {
+				Start: {
+					ConditionGroup: []
+				}
+			}
+		};
 
-        act.sequences.forEach( sequence => {
+		act.sequences.forEach( sequence => {
 
-            xml.Sequence.push( this.writeSequence( sequence ) );
+			xml.Sequence.push( this.writeSequence( sequence ) );
 
-        } );
+		} );
 
-        act.startConditionGroups.forEach( conditionGroup => {
+		act.startConditionGroups.forEach( conditionGroup => {
 
-            xml.Conditions.Start.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
+			xml.Conditions.Start.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
 
-        } );
+		} );
 
-        // TODO: Cancel & End Conditions
+		// TODO: Cancel & End Conditions
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeSequence ( sequence: OscSequence ): any {
+	writeSequence ( sequence: OscSequence ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: sequence.name,
-            attr_numberOfExecutions: sequence.numberOfExecutions,
+			attr_name: sequence.name,
+			attr_numberOfExecutions: sequence.numberOfExecutions,
 
-            Actors: {
-                Entity: []
-            },
-            Maneuver: []
+			Actors: {
+				Entity: []
+			},
+			Maneuver: []
 
-        };
+		};
 
-        sequence.actors.forEach( name => {
+		sequence.actors.forEach( name => {
 
-            xml.Actors.Entity.push( {
-                attr_name: name
-            } );
+			xml.Actors.Entity.push( {
+				attr_name: name
+			} );
 
-        } );
+		} );
 
-        sequence.maneuvers.forEach( maneuver => {
+		sequence.maneuvers.forEach( maneuver => {
 
-            xml.Maneuver.push( this.writeManeuver( maneuver ) );
+			xml.Maneuver.push( this.writeManeuver( maneuver ) );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeManeuver ( maneuver: OscManeuver ): any {
+	writeManeuver ( maneuver: OscManeuver ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: maneuver.name,
+			attr_name: maneuver.name,
 
-            Event: []
+			Event: []
 
-        };
+		};
 
-        maneuver.events.forEach( event => {
+		maneuver.events.forEach( event => {
 
-            xml.Event.push( this.writeEvent( event ) );
+			xml.Event.push( this.writeEvent( event ) );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeEvent ( event: OscEvent ): any {
+	writeEvent ( event: OscEvent ): any {
 
-        let xml = {
+		let xml = {
 
-            attr_name: event.name,
-            attr_priority: event.priority,
+			attr_name: event.name,
+			attr_priority: event.priority,
 
-            Action: [],
+			Action: [],
 
-            StartConditions: {
-                ConditionGroup: []
-            },
-        };
+			StartConditions: {
+				ConditionGroup: []
+			},
+		};
 
-        event.getActionMap().forEach( ( action, name ) => {
+		event.getActionMap().forEach( ( action, name ) => {
 
-            let actionXml =
-            {
-                attr_name: name
-            };
+			let actionXml =
+			{
+				attr_name: name
+			};
 
-            if ( action.category == OscActionCategory.private ) {
+			if ( action.category == OscActionCategory.private ) {
 
-                actionXml[ 'Private' ] = this.writePrivateAction( action as AbstractPrivateAction );
+				actionXml[ 'Private' ] = this.writePrivateAction( action as AbstractPrivateAction );
 
-            }
+			}
 
-            xml.Action.push( actionXml );
+			xml.Action.push( actionXml );
 
-        } );
+		} );
 
-        event.startConditionGroups.forEach( conditionGroup => {
+		event.startConditionGroups.forEach( conditionGroup => {
 
-            xml.StartConditions.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
+			xml.StartConditions.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeInitActions ( xml: any ) {
+	writeInitActions ( xml: any ) {
 
-        this.openScenario.objects.forEach( object => {
+		this.openScenario.objects.forEach( object => {
 
-            const privateXml = {
+			const privateXml = {
 
-                attr_object: object.name,
+				attr_object: object.name,
 
-                Action: []
+				Action: []
 
-            };
+			};
 
-            xml.Private.push( privateXml );
+			xml.Private.push( privateXml );
 
-            object.initActions.forEach( initAction => {
+			object.initActions.forEach( initAction => {
 
-                privateXml.Action.push( this.writePrivateAction( initAction ) );
+				privateXml.Action.push( this.writePrivateAction( initAction ) );
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    writePrivateAction ( abstractAction: AbstractPrivateAction ) {
+	writePrivateAction ( abstractAction: AbstractPrivateAction ) {
 
-        let xml = null;
+		let xml = null;
 
-        switch ( abstractAction.actionType ) {
+		switch ( abstractAction.actionType ) {
 
-            case OscActionType.Private_Position:
-                xml = this.writePositionAction( abstractAction as OscPositionAction );
-                break;
+			case OscActionType.Private_Position:
+				xml = this.writePositionAction( abstractAction as OscPositionAction );
+				break;
 
-            case OscActionType.Private_Longitudinal_Speed:
-                xml = this.writeLongitudinalSpeedAction( abstractAction as OscSpeedAction );
-                break;
+			case OscActionType.Private_Longitudinal_Speed:
+				xml = this.writeLongitudinalSpeedAction( abstractAction as OscSpeedAction );
+				break;
 
-            case OscActionType.Private_Lateral:
-                xml = this.writeLaneChangeAction( abstractAction as OscLaneChangeAction );
-                break;
+			case OscActionType.Private_Lateral:
+				xml = this.writeLaneChangeAction( abstractAction as OscLaneChangeAction );
+				break;
 
-            case OscActionType.Private_Routing:
-                xml = this.writeFollowTrajectoryAction( abstractAction as OscFollowTrajectoryAction );
-                break;
+			case OscActionType.Private_Routing:
+				xml = this.writeFollowTrajectoryAction( abstractAction as OscFollowTrajectoryAction );
+				break;
 
-            default:
-                throw new Error( 'Unsupported private action' );
-                break;
-        }
+			default:
+				throw new Error( 'Unsupported private action' );
+				break;
+		}
 
-        return xml;
+		return xml;
 
-    }
+	}
 
-    writeFollowTrajectoryAction ( action: OscFollowTrajectoryAction ): any {
+	writeFollowTrajectoryAction ( action: OscFollowTrajectoryAction ): any {
 
-        let xml = {
-            Routing: {
-                FollowTrajectory: {
-                    Lateral: {
-                        attr_purpose: action.lateralPurpose
-                    },
-                    Longitudinal: {},
-                    Trajectory: {}
-                }
-            }
-        };
+		let xml = {
+			Routing: {
+				FollowTrajectory: {
+					Lateral: {
+						attr_purpose: action.lateralPurpose
+					},
+					Longitudinal: {},
+					Trajectory: {}
+				}
+			}
+		};
 
-        if ( action.longitudinalPurpose && action.longitudinalPurpose.timing != null ) {
+		if ( action.longitudinalPurpose && action.longitudinalPurpose.timing != null ) {
 
-            const timing = action.longitudinalPurpose.timing;
+			const timing = action.longitudinalPurpose.timing;
 
-            xml.Routing.FollowTrajectory.Longitudinal = {
-                Timing: {
-                    attr_domain: timing.domain,
-                    attr_scale: timing.scale,
-                    attr_offset: timing.offset
-                }
-            };
+			xml.Routing.FollowTrajectory.Longitudinal = {
+				Timing: {
+					attr_domain: timing.domain,
+					attr_scale: timing.scale,
+					attr_offset: timing.offset
+				}
+			};
 
-        } else {
+		} else {
 
-            xml.Routing.FollowTrajectory.Longitudinal = {
-                None: {}
-            };
+			xml.Routing.FollowTrajectory.Longitudinal = {
+				None: {}
+			};
 
-        }
+		}
 
-        if ( action.catalogReference != null ) {
+		if ( action.catalogReference != null ) {
 
-            throw new Error( "Unsupported action" );
+			throw new Error( "Unsupported action" );
 
-        } else {
+		} else {
 
-            const trajectory = this.writeTrajectory( action.trajectory );
+			const trajectory = this.writeTrajectory( action.trajectory );
 
-            xml.Routing.FollowTrajectory.Trajectory = trajectory.Trajectory;
+			xml.Routing.FollowTrajectory.Trajectory = trajectory.Trajectory;
 
-        }
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeLongitudinalSpeedAction ( action: OscSpeedAction ): any {
+	writeLongitudinalSpeedAction ( action: OscSpeedAction ): any {
 
-        return {
-            Longitudinal: {
-                Speed: {
-                    Dynamics: this.writeDynamics( action.dynamics ),
-                    Target: this.writeTarget( action.target )
-                }
-            }
-        };
+		return {
+			Longitudinal: {
+				Speed: {
+					Dynamics: this.writeDynamics( action.dynamics ),
+					Target: this.writeTarget( action.target )
+				}
+			}
+		};
 
-    }
+	}
 
-    writeLaneChangeAction ( action: OscLaneChangeAction ): any {
+	writeLaneChangeAction ( action: OscLaneChangeAction ): any {
 
-        return {
+		return {
 
-            Lateral: {
+			Lateral: {
 
-                LaneChange: {
+				LaneChange: {
 
-                    // TODO: dont add this when value is null
-                    attr_targetLaneOffset: action.targetLaneOffset ? action.targetLaneOffset : 0,
+					// TODO: dont add this when value is null
+					attr_targetLaneOffset: action.targetLaneOffset ? action.targetLaneOffset : 0,
 
-                    Dynamics: this.writeDynamics( action.dynamics ),
+					Dynamics: this.writeDynamics( action.dynamics ),
 
-                    Target: this.writeTarget( action.target )
-                }
-            }
+					Target: this.writeTarget( action.target )
+				}
+			}
 
-        };
+		};
 
-    }
+	}
 
-    writeTarget ( abstractTarget: AbstractTarget ) {
+	writeTarget ( abstractTarget: AbstractTarget ) {
 
-        if ( abstractTarget.targetType == OscTargetType.absolute ) {
+		if ( abstractTarget.targetType == OscTargetType.absolute ) {
 
-            let target = abstractTarget as OscAbsoluteTarget;
+			let target = abstractTarget as OscAbsoluteTarget;
 
-            return {
-                Absolute: {
-                    attr_value: target.value
-                }
-            };
+			return {
+				Absolute: {
+					attr_value: target.value
+				}
+			};
 
-        } else if ( abstractTarget.targetType == OscTargetType.relative ) {
+		} else if ( abstractTarget.targetType == OscTargetType.relative ) {
 
-            let target = abstractTarget as OscRelativeTarget;
+			let target = abstractTarget as OscRelativeTarget;
 
-            return {
-                Relative: {
-                    attr_object: target.object,
-                    attr_value: target.value
-                }
-            };
+			return {
+				Relative: {
+					attr_object: target.object,
+					attr_value: target.value
+				}
+			};
 
-        }
+		}
 
-    }
+	}
 
-    writeDynamics ( dynamics: OscLaneChangeDynamics ) {
+	writeDynamics ( dynamics: OscLaneChangeDynamics ) {
 
-        let xml = {};
+		let xml = {};
 
-        dynamics.time ? xml[ 'attr_time' ] = dynamics.time : null;
-        dynamics.distance ? xml[ 'attr_distance' ] = dynamics.distance : null;
-        dynamics.shape ? xml[ 'attr_shape' ] = dynamics.shape : null;
+		dynamics.time ? xml[ 'attr_time' ] = dynamics.time : null;
+		dynamics.distance ? xml[ 'attr_distance' ] = dynamics.distance : null;
+		dynamics.shape ? xml[ 'attr_shape' ] = dynamics.shape : null;
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writePositionAction ( action: OscPositionAction ) {
+	writePositionAction ( action: OscPositionAction ) {
 
-        return {
-            Position: this.writePosition( action.position )
-        };
+		return {
+			Position: this.writePosition( action.position )
+		};
 
-    }
+	}
 
-    writePosition ( position: AbstractPosition ): any {
+	writePosition ( position: AbstractPosition ): any {
 
-        let xml = null;
+		let xml = null;
 
-        switch ( position.type ) {
+		switch ( position.type ) {
 
-            case OscPositionType.World:
-                xml = this.writeWorldPosition( position as OscWorldPosition );
-                break;
+			case OscPositionType.World:
+				xml = this.writeWorldPosition( position as OscWorldPosition );
+				break;
 
-            case OscPositionType.RelativeObject:
-                xml = this.writeRelativeObjectPosition( position as OscRelativeObjectPosition );
-                break;
+			case OscPositionType.RelativeObject:
+				xml = this.writeRelativeObjectPosition( position as OscRelativeObjectPosition );
+				break;
 
-            case OscPositionType.RelativeLane:
-                xml = this.writeRelativeLanePosition( position as OscRelativeLanePosition );
-                break;
+			case OscPositionType.RelativeLane:
+				xml = this.writeRelativeLanePosition( position as OscRelativeLanePosition );
+				break;
 
-            case OscPositionType.Lane:
-                xml = this.writeLanePosition( position as OscLanePosition );
-                break;
+			case OscPositionType.Lane:
+				xml = this.writeLanePosition( position as OscLanePosition );
+				break;
 
-            default:
-                throw new Error( 'Unsupported position action' );
-                break;
-        }
+			default:
+				throw new Error( 'Unsupported position action' );
+				break;
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeRelativeLanePosition ( position: OscRelativeLanePosition ): any {
+	writeRelativeLanePosition ( position: OscRelativeLanePosition ): any {
 
-        let xml = {
-            RelativeLane: {
-                attr_object: position.object,
-                attr_dLane: position.dLane,
-                attr_ds: position.ds,
-                attr_offset: position.offset ? position.offset : 0,
-            }
-        };
+		let xml = {
+			RelativeLane: {
+				attr_object: position.object,
+				attr_dLane: position.dLane,
+				attr_ds: position.ds,
+				attr_offset: position.offset ? position.offset : 0,
+			}
+		};
 
-        position.orientations.forEach( orientation => {
+		position.orientations.forEach( orientation => {
 
-            xml.RelativeLane[ 'Orientation' ] = this.writeOrientation( orientation );
+			xml.RelativeLane[ 'Orientation' ] = this.writeOrientation( orientation );
 
-        } );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeOrientation ( orientation: OscOrientation ) {
+	writeOrientation ( orientation: OscOrientation ) {
 
-        return {
+		return {
 
-            attr_h: orientation.h,
-            attr_p: orientation.p ? orientation.p : 0,
-            attr_r: orientation.r ? orientation.r : 0,
+			attr_h: orientation.h,
+			attr_p: orientation.p ? orientation.p : 0,
+			attr_r: orientation.r ? orientation.r : 0,
 
-            attr_type: orientation.type
-        };
+			attr_type: orientation.type
+		};
 
-    }
+	}
 
-    writeWorldPosition ( position: OscWorldPosition ) {
+	writeWorldPosition ( position: OscWorldPosition ) {
 
-        const x = position.vector3 ? position.vector3.x : position.x;
-        const y = position.vector3 ? position.vector3.y : position.y;
-        const z = position.vector3 ? position.vector3.z : position.y;
+		const x = position.vector3 ? position.vector3.x : position.x;
+		const y = position.vector3 ? position.vector3.y : position.y;
+		const z = position.vector3 ? position.vector3.z : position.y;
 
-        return {
+		return {
 
-            World: {
+			World: {
 
-                attr_x: x,
-                attr_y: y,
-                attr_z: z,
+				attr_x: x,
+				attr_y: y,
+				attr_z: z,
 
-                attr_h: position.m_H ? position.m_H : 0,
-                attr_p: position.m_P ? position.m_P : 0,
-                attr_r: position.m_R ? position.m_R : 0,
+				attr_h: position.m_H ? position.m_H : 0,
+				attr_p: position.m_P ? position.m_P : 0,
+				attr_r: position.m_R ? position.m_R : 0,
 
-            }
-        };
+			}
+		};
 
-    }
+	}
 
-    writeRelativeObjectPosition ( position: OscRelativeObjectPosition ) {
+	writeRelativeObjectPosition ( position: OscRelativeObjectPosition ) {
 
-        let xml = {
-            RelativeObject: {
-                attr_object: position.object,
-                attr_dx: position.dx,
-                attr_dy: position.dy,
-                attr_dz: position.dz ? position.dz : 0,
-            }
-        };
+		let xml = {
+			RelativeObject: {
+				attr_object: position.object,
+				attr_dx: position.dx,
+				attr_dy: position.dy,
+				attr_dz: position.dz ? position.dz : 0,
+			}
+		};
 
-        position.orientations.forEach( orientation => {
-            xml.RelativeObject[ 'Orientation' ] = this.writeOrientation( orientation );
-        } );
+		position.orientations.forEach( orientation => {
+			xml.RelativeObject[ 'Orientation' ] = this.writeOrientation( orientation );
+		} );
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeCatalogs ( rootNode: any, catalogs: OscCatalogs ) {
+	writeCatalogs ( rootNode: any, catalogs: OscCatalogs ) {
 
-        return undefined;
+		return undefined;
 
-    }
+	}
 
-    writeParameterDeclaration ( parameterDeclaration: OscParameterDeclaration ) {
+	writeParameterDeclaration ( parameterDeclaration: OscParameterDeclaration ) {
 
-        let xml = {
-            Parameter: []
-        };
+		let xml = {
+			Parameter: []
+		};
 
-        parameterDeclaration.parameters.forEach( ( parameter: OscParameter ) => {
+		parameterDeclaration.parameters.forEach( ( parameter: OscParameter ) => {
 
-            xml.Parameter.push( {
-                attr_name: parameter.name,
-                attr_value: parameter.value,
-                attr_type: parameter.type,
-            } );
+			xml.Parameter.push( {
+				attr_name: parameter.name,
+				attr_value: parameter.value,
+				attr_type: parameter.type,
+			} );
 
-        } );
+		} );
 
-        return xml;
+		return xml;
 
-    }
+	}
 
-    writeLanePosition ( position: OscLanePosition ) {
+	writeLanePosition ( position: OscLanePosition ) {
 
 
-        let xml = {
-            Lane: {
-                attr_roadId: position.roadId,
-                attr_laneId: position.laneId,
-                attr_s: position.sCoordinate,
-                attr_offset: position.offset ? position.offset : 0,
-            }
-        };
+		let xml = {
+			Lane: {
+				attr_roadId: position.roadId,
+				attr_laneId: position.laneId,
+				attr_s: position.sCoordinate,
+				attr_offset: position.offset ? position.offset : 0,
+			}
+		};
 
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeTrajectory ( trajectory: OscTrajectory ) {
+	writeTrajectory ( trajectory: OscTrajectory ) {
 
-        const xml = {
-            Trajectory: {
-                attr_name: trajectory.name,
-                attr_domain: trajectory.domain,
-                attr_closed: trajectory.closed,
-                ParameterDeclaration: [],
-                Vertex: []
-            }
-        };
+		const xml = {
+			Trajectory: {
+				attr_name: trajectory.name,
+				attr_domain: trajectory.domain,
+				attr_closed: trajectory.closed,
+				ParameterDeclaration: [],
+				Vertex: []
+			}
+		};
 
-        trajectory.parameterDeclaration.forEach( item => {
+		trajectory.parameterDeclaration.forEach( item => {
 
-            xml.Trajectory.ParameterDeclaration.push( item );
+			xml.Trajectory.ParameterDeclaration.push( item );
 
-        } );
+		} );
 
-        trajectory.vertices.forEach( item => {
+		trajectory.vertices.forEach( item => {
 
-            xml.Trajectory.Vertex.push( this.writeVertex( item ) );
+			xml.Trajectory.Vertex.push( this.writeVertex( item ) );
 
-        } )
+		} )
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeVertex ( vertex: OscVertex ) {
+	writeVertex ( vertex: OscVertex ) {
 
-        const xml = {
-            attr_reference: vertex.reference,
-            Position: this.writePosition( vertex.position ),
-            Shape: this.writeShape( vertex.shape )
-        }
+		const xml = {
+			attr_reference: vertex.reference,
+			Position: this.writePosition( vertex.position ),
+			Shape: this.writeShape( vertex.shape )
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
-    writeShape ( shape: AbstractOscShape ) {
+	writeShape ( shape: AbstractOscShape ) {
 
 
-        // TODO : Test this against production
-        if ( shape instanceof OscPolylineShape ) {
+		// TODO : Test this against production
+		if ( shape instanceof OscPolylineShape ) {
 
-            return this.writePolyline( shape );
+			return this.writePolyline( shape );
 
-        } else if ( shape instanceof OscClothoidShape ) {
+		} else if ( shape instanceof OscClothoidShape ) {
 
-            return this.writeClothoid( shape as OscClothoidShape );
+			return this.writeClothoid( shape as OscClothoidShape );
 
-        } else if ( shape instanceof OscSplineShape ) {
+		} else if ( shape instanceof OscSplineShape ) {
 
-            return this.writeSpline( shape as OscSplineShape );
+			return this.writeSpline( shape as OscSplineShape );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unknown shape' );
+			throw new Error( 'Unknown shape' );
 
-        }
-    }
+		}
+	}
 
-    writePolyline ( shape: OscPolylineShape ) {
-        return {
-            Polyline: {}
-        }
-    }
+	writePolyline ( shape: OscPolylineShape ) {
+		return {
+			Polyline: {}
+		}
+	}
 
-    writeClothoid ( shape: OscClothoidShape ) {
-        return {
-            Clothoid: {
-                attr_curvature: shape.curvature,
-                attr_curvatureDot: shape.curvatureDot,
-                attr_length: shape.length
-            }
-        }
-    }
+	writeClothoid ( shape: OscClothoidShape ) {
+		return {
+			Clothoid: {
+				attr_curvature: shape.curvature,
+				attr_curvatureDot: shape.curvatureDot,
+				attr_length: shape.length
+			}
+		}
+	}
 
-    writeSpline ( shape: OscSplineShape ) {
-        return {
-            Spline: {
-                ControlPoint1: {
-                    attr_status: shape.controlPoint1.status
-                },
-                ControlPoint2: {
-                    attr_status: shape.controlPoint2.status
-                }
-            }
-        }
-    }
+	writeSpline ( shape: OscSplineShape ) {
+		return {
+			Spline: {
+				ControlPoint1: {
+					attr_status: shape.controlPoint1.status
+				},
+				ControlPoint2: {
+					attr_status: shape.controlPoint2.status
+				}
+			}
+		}
+	}
 
 }

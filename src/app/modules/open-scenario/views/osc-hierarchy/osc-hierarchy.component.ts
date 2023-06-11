@@ -15,189 +15,189 @@ import { ThreeService } from '../../../three-js/three.service';
  * Each node has a name and an optiona list of children.
  */
 interface ScenarioNode {
-    name: string;
-    type?: NodeType;
-    children?: ScenarioNode[];
+	name: string;
+	type?: NodeType;
+	children?: ScenarioNode[];
 }
 
 /** Flat node with expandable and level information */
 interface ExampleNode {
-    expandable: boolean;
-    name: string;
-    level: number;
-    type: NodeType;
+	expandable: boolean;
+	name: string;
+	level: number;
+	type: NodeType;
 }
 
 enum NodeType {
-    VEHICLE = 'vehicle',
-    PEDESTRIAN = 'pedestrian',
-    TRAFFIC_LIGHT = 'traffic_light',
-    HEADER = 'header',
-    ROAD_NETWORK = 'road_network'
+	VEHICLE = 'vehicle',
+	PEDESTRIAN = 'pedestrian',
+	TRAFFIC_LIGHT = 'traffic_light',
+	HEADER = 'header',
+	ROAD_NETWORK = 'road_network'
 }
 
 @Component( {
-    selector: 'app-osc-hierarchy',
-    templateUrl: './osc-hierarchy.component.html',
+	selector: 'app-osc-hierarchy',
+	templateUrl: './osc-hierarchy.component.html',
 } )
 export class OscHierarchyComponent implements OnInit {
 
 
-    @Input() scenario: OpenScenario;
-    transformer = ( node: ScenarioNode, level: number ) => {
-        return {
-            expandable: !!node.children && node.children.length > 0,
-            name: node.name,
-            level: level,
-            type: node.type,
-        };
-    };
-    treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
-    treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
-    dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
+	@Input() scenario: OpenScenario;
+	transformer = ( node: ScenarioNode, level: number ) => {
+		return {
+			expandable: !!node.children && node.children.length > 0,
+			name: node.name,
+			level: level,
+			type: node.type,
+		};
+	};
+	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
+	treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
+	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
-    constructor (
-        private dialogs: OscDialogService,
-        private menuService: MenuService,
-        private threeService: ThreeService
-    ) {
+	constructor (
+		private dialogs: OscDialogService,
+		private menuService: MenuService,
+		private threeService: ThreeService
+	) {
 
-        OscEditor.scenarioChanged.subscribe( () => {
+		OscEditor.scenarioChanged.subscribe( () => {
 
-            this.buildHierarchy();
+			this.buildHierarchy();
 
-        } );
+		} );
 
-    }
+	}
 
-    hasChild = ( _: number, node: ExampleNode ) => node.expandable;
+	hasChild = ( _: number, node: ExampleNode ) => node.expandable;
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.buildHierarchy();
+		this.buildHierarchy();
 
-        this.registerContextMenu();
+		this.registerContextMenu();
 
-    }
+	}
 
-    registerContextMenu (): any {
+	registerContextMenu (): any {
 
-        this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
-            label: 'Add Vehicle',
-            click: () => { this.dialogs.openAddVehicleDialog(); }
-        } ] );
+		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
+			label: 'Add Vehicle',
+			click: () => { this.dialogs.openAddVehicleDialog(); }
+		} ] );
 
-    }
+	}
 
-    buildHierarchy () {
+	buildHierarchy () {
 
-        var data: ScenarioNode[] = [
-            {
-                name: 'Header',
-                type: NodeType.HEADER
-            },
-            {
-                name: 'Road Network',
-                type: NodeType.ROAD_NETWORK
-            }
-        ];
+		var data: ScenarioNode[] = [
+			{
+				name: 'Header',
+				type: NodeType.HEADER
+			},
+			{
+				name: 'Road Network',
+				type: NodeType.ROAD_NETWORK
+			}
+		];
 
-        var entityNode = {
-            name: 'Entities',
-            children: []
-        };
+		var entityNode = {
+			name: 'Entities',
+			children: []
+		};
 
-        data.push( entityNode );
+		data.push( entityNode );
 
-        this.scenario.objects.forEach( element => {
+		this.scenario.objects.forEach( element => {
 
-            entityNode.children.push( {
-                name: element.name,
-                type: NodeType.VEHICLE
-            } );
+			entityNode.children.push( {
+				name: element.name,
+				type: NodeType.VEHICLE
+			} );
 
-        } );
+		} );
 
-        this.dataSource.data = data;
+		this.dataSource.data = data;
 
-    }
+	}
 
-    onClick ( node: ExampleNode ) {
+	onClick ( node: ExampleNode ) {
 
-        switch ( node.type ) {
+		switch ( node.type ) {
 
-            case NodeType.VEHICLE:
-                this.openVehicleInspector( node );
-                break;
+			case NodeType.VEHICLE:
+				this.openVehicleInspector( node );
+				break;
 
-            case NodeType.HEADER:
-                this.openHeaderInspector( node );
-                break;
+			case NodeType.HEADER:
+				this.openHeaderInspector( node );
+				break;
 
-            case NodeType.ROAD_NETWORK:
-                this.openRoadNetworkDialog( node );
-                break;
+			case NodeType.ROAD_NETWORK:
+				this.openRoadNetworkDialog( node );
+				break;
 
-            default:
-                break;
-        }
+			default:
+				break;
+		}
 
-    }
+	}
 
-    onDoubleClick ( node: ExampleNode ) {
+	onDoubleClick ( node: ExampleNode ) {
 
-        switch ( node.type ) {
+		switch ( node.type ) {
 
-            case NodeType.VEHICLE:
-                this.openVehicleInspector( node );
-                break;
+			case NodeType.VEHICLE:
+				this.openVehicleInspector( node );
+				break;
 
-            case NodeType.HEADER:
-                this.openHeaderInspector( node );
-                break;
+			case NodeType.HEADER:
+				this.openHeaderInspector( node );
+				break;
 
-            case NodeType.ROAD_NETWORK:
-                this.openRoadNetworkDialog( node );
-                break;
+			case NodeType.ROAD_NETWORK:
+				this.openRoadNetworkDialog( node );
+				break;
 
-            default:
-                break;
-        }
+			default:
+				break;
+		}
 
-    }
+	}
 
-    openRoadNetworkDialog ( node: ExampleNode ) {
+	openRoadNetworkDialog ( node: ExampleNode ) {
 
-        this.dialogs.openEditRoadNetworkDialog( null );
+		this.dialogs.openEditRoadNetworkDialog( null );
 
-    }
+	}
 
-    openHeaderInspector ( node: ExampleNode ) {
-
-
-    }
-
-    openVehicleInspector ( node: ExampleNode ) {
+	openHeaderInspector ( node: ExampleNode ) {
 
 
-        var object = OscSourceFile.openScenario.objects.get( node.name );
+	}
 
-        // SceneService.select( object.gameObject );
-        // SceneService.focus( object.gameObject );
+	openVehicleInspector ( node: ExampleNode ) {
 
-        // OscEditor.selectedEntityChanged.emit( object );
 
-        this.threeService.focus( object.gameObject );
+		var object = OscSourceFile.openScenario.objects.get( node.name );
 
-        AppInspector.setInspector( EntityInspector, object );
+		// SceneService.select( object.gameObject );
+		// SceneService.focus( object.gameObject );
 
-    }
+		// OscEditor.selectedEntityChanged.emit( object );
 
-    showContextMenu ( $event: MouseEvent ) {
+		this.threeService.focus( object.gameObject );
 
-        $event.preventDefault();
+		AppInspector.setInspector( EntityInspector, object );
 
-        this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
 
-    }
+	showContextMenu ( $event: MouseEvent ) {
+
+		$event.preventDefault();
+
+		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+
+	}
 }

@@ -3,18 +3,18 @@ import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscCollisionCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_Collision;
+	conditionType = OscConditionType.ByEntity_Collision;
 
-    // either name or type
-    public entityName: string;
-    public entityType: OscObjectType;
+	// either name or type
+	public entityName: string;
+	public entityType: OscObjectType;
 
-    constructor () {
-        super();
-    }
+	constructor () {
+		super();
+	}
 
-    hasPassed (): boolean {
-        return false;
-    }
+	hasPassed (): boolean {
+		return false;
+	}
 
 }

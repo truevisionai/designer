@@ -10,43 +10,43 @@ import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
 import { OscDialogService } from 'app/modules/open-scenario/services/osc-dialog.service';
 
 @Component( {
-    selector: 'app-event-editor',
-    templateUrl: './event-editor.component.html',
-    styleUrls: [ './event-editor.component.css' ]
+	selector: 'app-event-editor',
+	templateUrl: './event-editor.component.html',
+	styleUrls: [ './event-editor.component.css' ]
 } )
 export class EventEditorComponent implements OnInit, IComponent {
 
-    data: any;
+	data: any;
 
-    @Input() event: OscEvent;
+	@Input() event: OscEvent;
 
-    @Input() action?: AbstractAction;
+	@Input() action?: AbstractAction;
 
-    get actions () { return this.event.getActions(); }
+	get actions () { return this.event.getActions(); }
 
-    get conditions () { return this.event.startConditions; }
+	get conditions () { return this.event.startConditions; }
 
-    constructor (
-        private dialogService: OscDialogService
-    ) {
-    }
+	constructor (
+		private dialogService: OscDialogService
+	) {
+	}
 
-    ngOnInit () { this.event = this.data; }
+	ngOnInit () { this.event = this.data; }
 
-    addCondition () {
+	addCondition () {
 
-        const dialogRef = this.dialogService.dialog.open( ChooseConditionDialogComponent, {
-            width: '260px',
-            height: '400px',
-            data: null
-        } );
+		const dialogRef = this.dialogService.dialog.open( ChooseConditionDialogComponent, {
+			width: '260px',
+			height: '400px',
+			data: null
+		} );
 
-        dialogRef.afterClosed().subscribe( ( condition: AbstractCondition ) => {
+		dialogRef.afterClosed().subscribe( ( condition: AbstractCondition ) => {
 
-            if ( condition != null ) this.event.addStartCondition( condition );
+			if ( condition != null ) this.event.addStartCondition( condition );
 
-        } );
+		} );
 
-    }
+	}
 
 }

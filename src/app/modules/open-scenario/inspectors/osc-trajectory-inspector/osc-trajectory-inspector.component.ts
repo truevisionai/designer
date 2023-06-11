@@ -8,120 +8,120 @@ import { AbstractPosition } from '../../models/osc-interfaces';
 import { OscWorldPosition } from '../../models/positions/osc-world-position';
 import { Debug } from 'app/core/utils/debug';
 @Component( {
-    selector: 'app-osc-trajectory-inspector',
-    templateUrl: './osc-trajectory-inspector.component.html',
-    styleUrls: [ './osc-trajectory-inspector.component.css' ]
+	selector: 'app-osc-trajectory-inspector',
+	templateUrl: './osc-trajectory-inspector.component.html',
+	styleUrls: [ './osc-trajectory-inspector.component.css' ]
 } )
 export class OscTrajectoryInspectorComponent implements OnInit, OnDestroy, OnChanges {
 
-    @Input() trajectory: OscTrajectory;
+	@Input() trajectory: OscTrajectory;
 
-    @Input() display: boolean = true;
-    @Input() disableEditing: boolean = false;
+	@Input() display: boolean = true;
+	@Input() disableEditing: boolean = false;
 
-    private shapeEditor: AbstractShapeEditor;
+	private shapeEditor: AbstractShapeEditor;
 
-    constructor () { }
+	constructor () { }
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.shapeEditor = new PolyLineEditor;
+		this.shapeEditor = new PolyLineEditor;
 
-        this.drawTrajectory();
+		this.drawTrajectory();
 
-        this.addVertexAddedListener();
+		this.addVertexAddedListener();
 
-        this.addGeometryChangeListener();
+		this.addGeometryChangeListener();
 
-    }
+	}
 
-    ngOnChanges ( changes: SimpleChanges ): void {
+	ngOnChanges ( changes: SimpleChanges ): void {
 
-        if ( this.shapeEditor == null ) return;
+		if ( this.shapeEditor == null ) return;
 
-        if ( this.disableEditing ) {
+		if ( this.disableEditing ) {
 
-            this.shapeEditor.removeHighlight();
+			this.shapeEditor.removeHighlight();
 
-            this.shapeEditor.disable();
+			this.shapeEditor.disable();
 
-            Debug.log( 'disable', this.trajectory.name );
+			Debug.log( 'disable', this.trajectory.name );
 
-        } else {
+		} else {
 
-            this.shapeEditor.highlight();
+			this.shapeEditor.highlight();
 
-            this.shapeEditor.enable();
+			this.shapeEditor.enable();
 
-            Debug.log( 'enabld', this.trajectory.name );
+			Debug.log( 'enabld', this.trajectory.name );
 
-        }
+		}
 
-    }
+	}
 
-    addVertexAddedListener () {
+	addVertexAddedListener () {
 
-        this.shapeEditor.controlPointAdded.subscribe( ( e: Points ) => {
+		this.shapeEditor.controlPointAdded.subscribe( ( e: Points ) => {
 
-            if ( this.disableEditing ) return;
+			if ( this.disableEditing ) return;
 
-            let reference = this.trajectory.vertices.length;
+			let reference = this.trajectory.vertices.length;
 
-            let position = new OscWorldPosition( e.position.x, e.position.y, e.position.z );
+			let position = new OscWorldPosition( e.position.x, e.position.y, e.position.z );
 
-            let vertex = new OscVertex( reference, position, new OscPolylineShape );
+			let vertex = new OscVertex( reference, position, new OscPolylineShape );
 
-            this.trajectory.vertices.push( vertex );
+			this.trajectory.vertices.push( vertex );
 
-        } );
+		} );
 
-    }
+	}
 
-    ngOnDestroy (): void {
+	ngOnDestroy (): void {
 
-        this.shapeEditor.destroy();
+		this.shapeEditor.destroy();
 
-    }
+	}
 
-    drawTrajectory () {
+	drawTrajectory () {
 
-        this.trajectory.vertices.forEach( vertex => {
+		this.trajectory.vertices.forEach( vertex => {
 
-            // Important! Need to set the vector3
-            vertex.position.vector3 = vertex.position.getPosition();
+			// Important! Need to set the vector3
+			vertex.position.vector3 = vertex.position.getPosition();
 
-            this.shapeEditor.addControlPoint( vertex.position.getPosition() );
+			this.shapeEditor.addControlPoint( vertex.position.getPosition() );
 
-        } );
+		} );
 
-        this.shapeEditor.draw();
-    }
+		this.shapeEditor.draw();
+	}
 
-    addGeometryChangeListener () {
+	addGeometryChangeListener () {
 
-        this.shapeEditor.curveGeometryChanged.subscribe( ( curve: CatmullRomCurve3 ) => {
+		this.shapeEditor.curveGeometryChanged.subscribe( ( curve: CatmullRomCurve3 ) => {
 
-            if ( this.disableEditing ) return;
+			if ( this.disableEditing ) return;
 
-            curve.points.forEach( ( point, i ) => {
+			curve.points.forEach( ( point, i ) => {
 
-                this.trajectory.vertices[ i ].position.setPosition( point );
+				this.trajectory.vertices[ i ].position.setPosition( point );
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    onPositionModified ( position: AbstractPosition ) {
+	onPositionModified ( position: AbstractPosition ) {
 
-        throw new Error( 'not implemented' );
+		throw new Error( 'not implemented' );
 
-        // this.shapeEditor.removeAll();
+		// this.shapeEditor.removeAll();
 
-        // this.drawTrajectory();
+		// this.drawTrajectory();
 
-    }
+	}
 
 
 }

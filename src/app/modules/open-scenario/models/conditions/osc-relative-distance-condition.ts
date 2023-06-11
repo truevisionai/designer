@@ -3,10 +3,10 @@ import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscRelativeDistanceCondition extends AbstractByEntityCondition {
 
-    conditionType = OscConditionType.ByEntity_RelativeDistance;
+	conditionType = OscConditionType.ByEntity_RelativeDistance;
 
-    hasPassed (): boolean {
-        return false;
-    }
+	hasPassed (): boolean {
+		return false;
+	}
 
 }

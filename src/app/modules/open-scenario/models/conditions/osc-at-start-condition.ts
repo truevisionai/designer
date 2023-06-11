@@ -3,16 +3,16 @@ import { OscConditionType, OscStoryElementType } from '../osc-enums';
 
 export class OscAtStartCondition extends AbstractByStateCondition {
 
-    public readonly conditionType = OscConditionType.ByState_AtStart;
+	public readonly conditionType = OscConditionType.ByState_AtStart;
 
-    constructor ( public elementName: string, public type: OscStoryElementType ) {
+	constructor ( public elementName: string, public type: OscStoryElementType ) {
 
-        super();
+		super();
 
-    }
+	}
 
-    hasPassed (): boolean {
-        return false;
-    }
+	hasPassed (): boolean {
+		return false;
+	}
 
 }

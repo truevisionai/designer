@@ -22,116 +22,116 @@ class MockOpenDriveApiService {
 
 describe( 'OscBuilderService', () => {
 
-    let builder: OscBuilderService;
+	let builder: OscBuilderService;
 
-    let electron = new ElectronService();
-    let fileService = new FileService( electron, null );
+	let electron = new ElectronService();
+	let fileService = new FileService( electron, null );
 
-    let oscObject: OscEntityObject;
+	let oscObject: OscEntityObject;
 
-    beforeEach( () => {
+	beforeEach( () => {
 
-        const fake = ( new MockOpenDriveApiService ) as OpenDriveApiService;
+		const fake = ( new MockOpenDriveApiService ) as OpenDriveApiService;
 
-        builder = new OscBuilderService(
-            new TvMapService( fileService, new OdWriter, null, null, null ),
-            fileService,
-            new ThreeService(),
-            fake
-        );
+		builder = new OscBuilderService(
+			new TvMapService( fileService, new OdWriter, null, null, null ),
+			fileService,
+			new ThreeService(),
+			fake
+		);
 
-        oscObject = new OscEntityObject( 'test' );
-        oscObject.gameObject = new GameObject( 'go' );
-        oscObject.gameObject.name = 'go';
+		oscObject = new OscEntityObject( 'test' );
+		oscObject.gameObject = new GameObject( 'go' );
+		oscObject.gameObject.name = 'go';
 
-        TvMapInstance.map = new TvMap();
+		TvMapInstance.map = new TvMap();
 
-        const road = TvMapInstance.map.addRoad( '', 1000, 1, -1 );
+		const road = TvMapInstance.map.addRoad( '', 1000, 1, -1 );
 
-        road.addGeometryLine( 0, 0, 0, 0, 1000 );
+		road.addGeometryLine( 0, 0, 0, 0, 1000 );
 
-        road.addLaneSection( 0, false );
+		road.addLaneSection( 0, false );
 
-        let laneSection = road.getLastAddedLaneSection();
+		let laneSection = road.getLastAddedLaneSection();
 
-        laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, true, true );
-        laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-        laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-        laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
-        laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true );
 
-        laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneVector().forEach( lane => {
 
-            if ( lane.side != TvLaneSide.CENTER ) {
+			if ( lane.side != TvLaneSide.CENTER ) {
 
-                lane.addWidthRecord( 0, 2, 0, 0, 0 );
+				lane.addWidthRecord( 0, 2, 0, 0, 0 );
 
-            }
+			}
 
-        } );
+		} );
 
-    } );
+	} );
 
-    it( 'should create place entities correctly', () => {
+	it( 'should create place entities correctly', () => {
 
-        var worldPosition = new OscWorldPosition( 10, 10, 0 );
+		var worldPosition = new OscWorldPosition( 10, 10, 0 );
 
-        var positionAction = new OscPositionAction( worldPosition );
+		var positionAction = new OscPositionAction( worldPosition );
 
-        OscActionBuilder.executePositionAction( oscObject, positionAction );
+		OscActionBuilder.executePositionAction( oscObject, positionAction );
 
-        var placedPosition = worldPosition.getPosition();
+		var placedPosition = worldPosition.getPosition();
 
-        expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-        expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-        expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
 
-    } );
+	} );
 
-    it( 'should create place entities correctly with OscLanePosition', () => {
+	it( 'should create place entities correctly with OscLanePosition', () => {
 
-        var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
+		var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
 
-        var positionAction = new OscPositionAction( lanePosition );
+		var positionAction = new OscPositionAction( lanePosition );
 
-        OscActionBuilder.executePositionAction( oscObject, positionAction );
+		OscActionBuilder.executePositionAction( oscObject, positionAction );
 
-        var placedPosition = lanePosition.getPosition();
+		var placedPosition = lanePosition.getPosition();
 
-        expect( placedPosition ).not.toBeNull();
-        expect( placedPosition ).not.toBeUndefined();
+		expect( placedPosition ).not.toBeNull();
+		expect( placedPosition ).not.toBeUndefined();
 
-        expect( placedPosition.x ).not.toBe( 0 );
-        expect( placedPosition.y ).not.toBe( 0 );
+		expect( placedPosition.x ).not.toBe( 0 );
+		expect( placedPosition.y ).not.toBe( 0 );
 
-        Debug.log( oscObject.gameObject.position, placedPosition );
+		Debug.log( oscObject.gameObject.position, placedPosition );
 
-        expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-        expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-        expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
 
-    } );
+	} );
 
-    it( 'should create place entities correctly with OscRoadPosition', () => {
+	it( 'should create place entities correctly with OscRoadPosition', () => {
 
-        var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
+		var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
 
-        var positionAction = new OscPositionAction( lanePosition );
+		var positionAction = new OscPositionAction( lanePosition );
 
-        OscActionBuilder.executePositionAction( oscObject, positionAction );
+		OscActionBuilder.executePositionAction( oscObject, positionAction );
 
-        var placedPosition = lanePosition.getPosition();
+		var placedPosition = lanePosition.getPosition();
 
-        expect( placedPosition ).not.toBeNull();
-        expect( placedPosition ).not.toBeUndefined();
+		expect( placedPosition ).not.toBeNull();
+		expect( placedPosition ).not.toBeUndefined();
 
-        expect( placedPosition.x ).not.toBe( 0 );
-        expect( placedPosition.y ).not.toBe( 0 );
+		expect( placedPosition.x ).not.toBe( 0 );
+		expect( placedPosition.y ).not.toBe( 0 );
 
-        expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-        expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-        expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
 
-    } );
+	} );
 
 } );

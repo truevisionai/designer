@@ -8,79 +8,79 @@ import { Vector3 } from 'three';
 
 export class OscActionBuilder {
 
-    public static executePrivateAction ( obj: OscEntityObject, privateAction: AbstractPrivateAction ) {
+	public static executePrivateAction ( obj: OscEntityObject, privateAction: AbstractPrivateAction ) {
 
-        switch ( privateAction.actionType ) {
+		switch ( privateAction.actionType ) {
 
-            case OscActionType.Private_Position:
-                this.executePositionAction( obj, privateAction as OscPositionAction );
-                break;
+			case OscActionType.Private_Position:
+				this.executePositionAction( obj, privateAction as OscPositionAction );
+				break;
 
-            case OscActionType.Private_Longitudinal_Speed:
-                privateAction.execute( obj );
-                break;
+			case OscActionType.Private_Longitudinal_Speed:
+				privateAction.execute( obj );
+				break;
 
-            case OscActionType.Private_Longitudinal_Distance:
-                privateAction.execute( obj );
-                break;
+			case OscActionType.Private_Longitudinal_Distance:
+				privateAction.execute( obj );
+				break;
 
 
-            default:
-                throw new Error( 'Unsupported private action' );
-        }
+			default:
+				throw new Error( 'Unsupported private action' );
+		}
 
-    }
+	}
 
-    public static executePositionAction ( obj: OscEntityObject, privateAction: OscPositionAction ) {
+	public static executePositionAction ( obj: OscEntityObject, privateAction: OscPositionAction ) {
 
-        const position = privateAction.position;
+		const position = privateAction.position;
 
-        switch ( position.type ) {
+		switch ( position.type ) {
 
-            case OscPositionType.World:
+			case OscPositionType.World:
 
-                const worldPosition = position as OscWorldPosition;
+				const worldPosition = position as OscWorldPosition;
 
-                try {
+				try {
 
-                    const xyz = worldPosition.position ? worldPosition.position : new Vector3( 0, 0, 0 );
+					const xyz = worldPosition.position ? worldPosition.position : new Vector3( 0, 0, 0 );
 
-                    obj.gameObject.position.copy( xyz );
+					obj.gameObject.position.copy( xyz );
 
-                    worldPosition.vector3 = obj.gameObject.position;
+					worldPosition.vector3 = obj.gameObject.position;
 
-                } catch ( error ) {
+				} catch ( error ) {
 
-                    throw new Error( 'Error in positioning of actor from world-position' );
+					throw new Error( 'Error in positioning of actor from world-position' );
 
-                }
+				}
 
-                break;
+				break;
 
-            case OscPositionType.Lane:
+			case OscPositionType.Lane:
 
-                try {
+				try {
 
-                    const lanePosition = position as OscLanePosition;
+					const lanePosition = position as OscLanePosition;
 
-                    obj.gameObject.position.copy( lanePosition.getPosition() );
+					obj.gameObject.position.copy( lanePosition.getPosition() );
 
-                } catch ( error ) {
+				} catch ( error ) {
 
-                    throw new Error( 'Error in positioning of actor from lane-position' );
+					throw new Error( 'Error in positioning of actor from lane-position' );
 
-                }
+				}
 
-                break;
+				break;
 
-            default:
+			default:
 
-                throw new Error( 'Unsupported position type' );
+				throw new Error( 'Unsupported position type' );
 
-                break;
-        }
+				break;
+		}
 
-    }
+	}
 
 
 }

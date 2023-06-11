@@ -3,75 +3,75 @@ import { OscConditionGroup } from './conditions/osc-condition-group';
 
 export class OscUtils {
 
-    static hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
+	static hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
 
-        let hasPassed = false;
+		let hasPassed = false;
 
-        switch ( rule ) {
+		switch ( rule ) {
 
-            case OscRule.greater_than:
-                hasPassed = left > right;
-                // console.log( left, right, left > right );
-                break;
+			case OscRule.greater_than:
+				hasPassed = left > right;
+				// console.log( left, right, left > right );
+				break;
 
-            case OscRule.less_than:
-                hasPassed = left < right;
-                // console.log( left, right, left < right );
-                break;
+			case OscRule.less_than:
+				hasPassed = left < right;
+				// console.log( left, right, left < right );
+				break;
 
-            case OscRule.equal_to:
-                hasPassed = left == right;
-                // console.log( left, right, left == right );
-                break;
+			case OscRule.equal_to:
+				hasPassed = left == right;
+				// console.log( left, right, left == right );
+				break;
 
-        }
+		}
 
-        return hasPassed;
-    }
+		return hasPassed;
+	}
 
-    static hasGroupsPassed ( groups: OscConditionGroup[], rule: OscTriggeringRule = OscTriggeringRule.All ) {
+	static hasGroupsPassed ( groups: OscConditionGroup[], rule: OscTriggeringRule = OscTriggeringRule.All ) {
 
-        let allGroupsPassed = true;
+		let allGroupsPassed = true;
 
-        for ( const group of groups ) {
+		for ( const group of groups ) {
 
-            const groupPassed = this.hasGroupPassed( group, rule );
+			const groupPassed = this.hasGroupPassed( group, rule );
 
-            if ( rule === OscTriggeringRule.All && !groupPassed ) {
+			if ( rule === OscTriggeringRule.All && !groupPassed ) {
 
-                allGroupsPassed = false;
-                break;
+				allGroupsPassed = false;
+				break;
 
-            } else if ( rule === OscTriggeringRule.Any && groupPassed ) {
+			} else if ( rule === OscTriggeringRule.Any && groupPassed ) {
 
-                allGroupsPassed = true;
-                break;
-            }
-        }
+				allGroupsPassed = true;
+				break;
+			}
+		}
 
-        return allGroupsPassed;
-    }
+		return allGroupsPassed;
+	}
 
-    static hasGroupPassed ( group: OscConditionGroup, rule: OscTriggeringRule = OscTriggeringRule.All ) {
+	static hasGroupPassed ( group: OscConditionGroup, rule: OscTriggeringRule = OscTriggeringRule.All ) {
 
-        let allConditionsPassed = true;
+		let allConditionsPassed = true;
 
-        for ( const condition of group.conditions ) {
+		for ( const condition of group.conditions ) {
 
-            const conditionPassed = condition.hasPassed();
+			const conditionPassed = condition.hasPassed();
 
-            if ( rule === OscTriggeringRule.All && !conditionPassed ) {
+			if ( rule === OscTriggeringRule.All && !conditionPassed ) {
 
-                allConditionsPassed = false;
-                break;
+				allConditionsPassed = false;
+				break;
 
-            } else if ( rule === OscTriggeringRule.Any && conditionPassed ) {
+			} else if ( rule === OscTriggeringRule.Any && conditionPassed ) {
 
-                allConditionsPassed = true;
-                break;
-            }
-        }
+				allConditionsPassed = true;
+				break;
+			}
+		}
 
-        return allConditionsPassed;
-    }
+		return allConditionsPassed;
+	}
 }

@@ -8,90 +8,90 @@ import { OscStoryElementType } from './osc-enums';
 
 export class OscManeuver {
 
-    private static count = 1;
+	private static count = 1;
 
-    public parameterDeclaration: OscParameterDeclaration;
+	public parameterDeclaration: OscParameterDeclaration;
 
-    public events: OscEvent[] = [];
+	public events: OscEvent[] = [];
 
-    public hasStarted: boolean;
-    public isCompleted: boolean;
-    public eventIndex: number = 0;
+	public hasStarted: boolean;
+	public isCompleted: boolean;
+	public eventIndex: number = 0;
 
-    public completed = new EventEmitter<StoryEvent>();
+	public completed = new EventEmitter<StoryEvent>();
 
-    constructor ( public name: string ) {
+	constructor ( public name: string ) {
 
-        OscManeuver.count++;
+		OscManeuver.count++;
 
-    }
+	}
 
-    static getNewName ( name = 'MyManeuver' ) {
+	static getNewName ( name = 'MyManeuver' ) {
 
-        return `${ name }${ this.count }`;
+		return `${ name }${ this.count }`;
 
-    }
+	}
 
-    addNewEvent ( name: string, priority: string ) {
+	addNewEvent ( name: string, priority: string ) {
 
-        const hasName = OscSourceFile.db.has_event( name );
+		const hasName = OscSourceFile.db.has_event( name );
 
-        if ( hasName ) throw new Error( 'Event name already used' );
+		if ( hasName ) throw new Error( 'Event name already used' );
 
-        const event = new OscEvent( name, priority );
+		const event = new OscEvent( name, priority );
 
-        this.addEventInstance( event );
+		this.addEventInstance( event );
 
-        return event;
-    }
+		return event;
+	}
 
-    addEventInstance ( event: OscEvent ) {
+	addEventInstance ( event: OscEvent ) {
 
-        this.events.push( event );
+		this.events.push( event );
 
-        OscSourceFile.db.add_event( event.name, event );
+		OscSourceFile.db.add_event( event.name, event );
 
-        event.completed.subscribe( e => {
-            this.onEventCompleted( e );
-        } );
+		event.completed.subscribe( e => {
+			this.onEventCompleted( e );
+		} );
 
-        return event;
+		return event;
 
-    }
+	}
 
-    private onEventCompleted ( storyEvent: StoryEvent ) {
+	private onEventCompleted ( storyEvent: StoryEvent ) {
 
-        this.eventIndex++;
+		this.eventIndex++;
 
-        let allCompleted = true;
+		let allCompleted = true;
 
-        for ( const event of this.events ) {
+		for ( const event of this.events ) {
 
-            if ( !event.isCompleted ) {
+			if ( !event.isCompleted ) {
 
-                allCompleted = false;
+				allCompleted = false;
 
-                break;
+				break;
 
-            }
-        }
+			}
+		}
 
-        if ( allCompleted ) {
+		if ( allCompleted ) {
 
-            this.isCompleted = true;
+			this.isCompleted = true;
 
-            this.completed.emit( {
-                name: this.name,
-                type: OscStoryElementType.maneuver
-            } );
+			this.completed.emit( {
+				name: this.name,
+				type: OscStoryElementType.maneuver
+			} );
 
-        }
-    }
+		}
+	}
 }
 
 export class OscEventAction {
 
-    public name: string;
-    public action: AbstractAction;
+	public name: string;
+	public action: AbstractAction;
 
 }

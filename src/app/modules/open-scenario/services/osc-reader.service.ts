@@ -11,11 +11,11 @@ import { OscStory } from '../models/osc-story';
 import { OscConditionGroup } from '../models/conditions/osc-condition-group';
 import { OscAct } from '../models/osc-act';
 import {
-    AbstractAction,
-    AbstractController,
-    AbstractPosition,
-    AbstractPrivateAction,
-    CatalogReferenceController
+	AbstractAction,
+	AbstractController,
+	AbstractPosition,
+	AbstractPrivateAction,
+	CatalogReferenceController
 } from '../models/osc-interfaces';
 import { OscLaneChangeDynamics, OscSpeedDynamics } from '../models/actions/osc-private-action';
 import { OscLanePosition } from '../models/positions/osc-lane-position';
@@ -42,13 +42,13 @@ import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-d
 import { OscSpeedCondition } from '../models/conditions/osc-speed-condition';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import {
-    AbstractOscShape,
-    OscClothoidShape,
-    OscControlPoint,
-    OscPolylineShape,
-    OscSplineShape,
-    OscTrajectory,
-    OscVertex
+	AbstractOscShape,
+	OscClothoidShape,
+	OscControlPoint,
+	OscPolylineShape,
+	OscSplineShape,
+	OscTrajectory,
+	OscVertex
 } from '../models/osc-trajectory';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/osc-routing-action';
 import { OscRoute, OscWaypoint } from '../models/osc-route';
@@ -61,1352 +61,1352 @@ import { OscRelativeSpeedCondition } from '../models/conditions/osc-relative-spe
 import { OscTraveledDistanceCondition } from '../models/conditions/osc-traveled-distance-condition';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class OscReaderService extends AbstractReader {
 
-    private openScenario: OpenScenario;
-    private file: IFile;
+	private openScenario: OpenScenario;
+	private file: IFile;
 
-    constructor ( private fileService: FileService ) {
-        super();
-    }
+	constructor ( private fileService: FileService ) {
+		super();
+	}
 
-    public readFromFile ( file: IFile ): OpenScenario {
+	public readFromFile ( file: IFile ): OpenScenario {
 
-        this.file = file;
+		this.file = file;
 
-        return this.readContents( this.file.contents );
+		return this.readContents( this.file.contents );
 
-    }
+	}
 
-    public readContents ( xmlElement: string ): OpenScenario {
+	public readContents ( xmlElement: string ): OpenScenario {
 
-        this.openScenario = new OpenScenario();
+		this.openScenario = new OpenScenario();
 
-        const defaultOptions = {
-            attributeNamePrefix: 'attr_',
-            attrNodeName: false,
-            textNodeName: 'value',
-            ignoreAttributes: false,
-            supressEmptyNode: false,
-            format: true,
-        };
+		const defaultOptions = {
+			attributeNamePrefix: 'attr_',
+			attrNodeName: false,
+			textNodeName: 'value',
+			ignoreAttributes: false,
+			supressEmptyNode: false,
+			format: true,
+		};
 
-        const Parser = require( 'fast-xml-parser' );
-        const data: any = Parser.parse( xmlElement, defaultOptions );
+		const Parser = require( 'fast-xml-parser' );
+		const data: any = Parser.parse( xmlElement, defaultOptions );
 
-        Debug.log( data );
+		Debug.log( data );
 
-        this.readOpenScenario( data, this.openScenario );
+		this.readOpenScenario( data, this.openScenario );
 
-        Debug.log( this.openScenario );
+		Debug.log( this.openScenario );
 
-        return this.openScenario;
-    }
+		return this.openScenario;
+	}
 
-    readCondition ( xml: any ) {
+	readCondition ( xml: any ) {
 
-        let condition: AbstractCondition = null;
+		let condition: AbstractCondition = null;
 
-        const name = xml.attr_name;
-        const delay = xml.attr_delay ? parseFloat( xml.attr_delay ) : 0;
-        const edge = xml.attr_edge;
+		const name = xml.attr_name;
+		const delay = xml.attr_delay ? parseFloat( xml.attr_delay ) : 0;
+		const edge = xml.attr_edge;
 
-        if ( xml.ByEntity != null ) {
+		if ( xml.ByEntity != null ) {
 
-            condition = this.readByEntityCondition( xml.ByEntity );
+			condition = this.readByEntityCondition( xml.ByEntity );
 
-        } else if ( xml.ByValue != null ) {
+		} else if ( xml.ByValue != null ) {
 
-            condition = this.readConditionByValue( xml.ByValue );
+			condition = this.readConditionByValue( xml.ByValue );
 
-        } else if ( xml.ByState != null ) {
+		} else if ( xml.ByState != null ) {
 
-            condition = this.readConditionByState( xml.ByState );
+			condition = this.readConditionByState( xml.ByState );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unknown condition type' );
+			throw new Error( 'Unknown condition type' );
 
-        }
+		}
 
-        if ( condition != null ) {
+		if ( condition != null ) {
 
-            condition.name = name ? name : '';
-            condition.delay = delay ? delay : 0;
-            condition.edge = edge ? edge : OscConditionEdge.any;
+			condition.name = name ? name : '';
+			condition.delay = delay ? delay : 0;
+			condition.edge = edge ? edge : OscConditionEdge.any;
 
-        }
+		}
 
-        return condition;
+		return condition;
 
-    }
+	}
 
-    public readFileHeader ( xmlElement: any ) {
+	public readFileHeader ( xmlElement: any ) {
 
-        return new OscFileHeader(
-            parseFloat( xmlElement.attr_revMajor ),
-            parseFloat( xmlElement.attr_revMinor ),
-            xmlElement.attr_date,
-            xmlElement.attr_description,
-            xmlElement.attr_author,
-        );
+		return new OscFileHeader(
+			parseFloat( xmlElement.attr_revMajor ),
+			parseFloat( xmlElement.attr_revMinor ),
+			xmlElement.attr_date,
+			xmlElement.attr_description,
+			xmlElement.attr_author,
+		);
 
-    }
+	}
 
-    readLongitudinalPurpose ( xml: any ): LongitudinalPurpose {
+	readLongitudinalPurpose ( xml: any ): LongitudinalPurpose {
 
-        let longitudinalPurpose = new LongitudinalPurpose;
+		let longitudinalPurpose = new LongitudinalPurpose;
 
-        if ( xml.Timing != null ) {
+		if ( xml.Timing != null ) {
 
-            let domain = xml.Timing.attr_domain;
-            let scale = parseFloat( xml.Timing.attr_scale );
-            let offset = parseFloat( xml.Timing.attr_offset );
+			let domain = xml.Timing.attr_domain;
+			let scale = parseFloat( xml.Timing.attr_scale );
+			let offset = parseFloat( xml.Timing.attr_offset );
 
-            longitudinalPurpose.timing = new LongitudinalTiming( domain, scale, offset );
+			longitudinalPurpose.timing = new LongitudinalTiming( domain, scale, offset );
 
-        } else if ( xml.None != null ) {
+		} else if ( xml.None != null ) {
 
-            // do nothing
+			// do nothing
 
-        }
+		}
 
-        return longitudinalPurpose;
-    }
+		return longitudinalPurpose;
+	}
 
-    public readRoadNetwork ( xml: any ) {
+	public readRoadNetwork ( xml: any ) {
 
-        let logics, sceneGraph;
+		let logics, sceneGraph;
 
-        if ( xml.Logics != null ) {
+		if ( xml.Logics != null ) {
 
-            logics = this.readOscFile( xml.Logics );
+			logics = this.readOscFile( xml.Logics );
 
-        }
+		}
 
-        if ( xml.SceneGraph != null ) {
+		if ( xml.SceneGraph != null ) {
 
-            sceneGraph = this.readOscFile( xml.SceneGraph );
-        }
+			sceneGraph = this.readOscFile( xml.SceneGraph );
+		}
 
-        // TODO: RoadSignals
+		// TODO: RoadSignals
 
-        return new OscRoadNetwork( logics, sceneGraph );
-    }
+		return new OscRoadNetwork( logics, sceneGraph );
+	}
 
-    public readEntities ( xml: any ): OscEntityObject[] {
+	public readEntities ( xml: any ): OscEntityObject[] {
 
-        const objects: OscEntityObject[] = [];
+		const objects: OscEntityObject[] = [];
 
-        this.readAsOptionalArray( xml.Object, ( object, count ) => {
+		this.readAsOptionalArray( xml.Object, ( object, count ) => {
 
-            const oscObject = this.readEntityObject( object );
+			const oscObject = this.readEntityObject( object );
 
-            objects.push( oscObject );
+			objects.push( oscObject );
 
-        } );
+		} );
 
-        return objects;
+		return objects;
 
-    }
+	}
 
-    public readEntityObject ( xml: any ): OscEntityObject {
+	public readEntityObject ( xml: any ): OscEntityObject {
 
-        const name = xml.attr_name;
+		const name = xml.attr_name;
 
-        const oscEntityObject = new OscEntityObject( name );
+		const oscEntityObject = new OscEntityObject( name );
 
-        if ( xml.CatalogReference != null ) {
+		if ( xml.CatalogReference != null ) {
 
-            oscEntityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
+			oscEntityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
 
-        } else if ( xml.Vehicle != null ) {
+		} else if ( xml.Vehicle != null ) {
 
-        } else if ( xml.Pedestrian != null ) {
+		} else if ( xml.Pedestrian != null ) {
 
-        } else if ( xml.MiscObject != null ) {
+		} else if ( xml.MiscObject != null ) {
 
-        }
+		}
 
-        this.readAsOptionalElement( xml.Controller, ( xml ) => {
+		this.readAsOptionalElement( xml.Controller, ( xml ) => {
 
-            oscEntityObject.controller = this.readController( xml );
+			oscEntityObject.controller = this.readController( xml );
 
-        } );
+		} );
 
-        return oscEntityObject;
+		return oscEntityObject;
 
-    }
+	}
 
-    public readController ( xml: any ): AbstractController {
+	public readController ( xml: any ): AbstractController {
 
-        let response: AbstractController = null;
+		let response: AbstractController = null;
 
-        Debug.log( xml );
+		Debug.log( xml );
 
-        if ( xml.CatalogReference != null ) {
+		if ( xml.CatalogReference != null ) {
 
-            const catalogReference = OscCatalogReference.readXml( xml.CatalogReference );
+			const catalogReference = OscCatalogReference.readXml( xml.CatalogReference );
 
-            response = new CatalogReferenceController( catalogReference );
+			response = new CatalogReferenceController( catalogReference );
 
-        } else if ( xml.Driver != null ) {
+		} else if ( xml.Driver != null ) {
 
-        } else if ( xml.PedestrianController != null ) {
+		} else if ( xml.PedestrianController != null ) {
 
-        }
+		}
 
-        Debug.log( response );
+		Debug.log( response );
 
-        return response;
-    }
+		return response;
+	}
 
-    public readOscFile ( xml ) {
+	public readOscFile ( xml ) {
 
-        return new OscFile( xml.attr_filepath );
+		return new OscFile( xml.attr_filepath );
 
-    }
+	}
 
-    readConditionGroup ( xml: any ): OscConditionGroup {
+	readConditionGroup ( xml: any ): OscConditionGroup {
 
-        const conditionGroup = new OscConditionGroup;
+		const conditionGroup = new OscConditionGroup;
 
-        this.readAsOptionalArray( xml.Condition, ( xml ) => {
+		this.readAsOptionalArray( xml.Condition, ( xml ) => {
 
-            conditionGroup.addCondition( this.readCondition( xml ) );
+			conditionGroup.addCondition( this.readCondition( xml ) );
 
-        } );
+		} );
 
-        return conditionGroup;
+		return conditionGroup;
 
-    }
+	}
 
-    readWorldPosition ( xml: any ) {
+	readWorldPosition ( xml: any ) {
 
-        const worldPosition = new OscWorldPosition;
+		const worldPosition = new OscWorldPosition;
 
-        worldPosition.x = parseFloat( xml.attr_x );
-        worldPosition.y = parseFloat( xml.attr_y );
-        worldPosition.z = parseFloat( xml.attr_z );
+		worldPosition.x = parseFloat( xml.attr_x );
+		worldPosition.y = parseFloat( xml.attr_y );
+		worldPosition.z = parseFloat( xml.attr_z );
 
-        worldPosition.m_H = parseFloat( xml.attr_h );
-        worldPosition.m_P = parseFloat( xml.attr_p );
-        worldPosition.m_R = parseFloat( xml.attr_r );
+		worldPosition.m_H = parseFloat( xml.attr_h );
+		worldPosition.m_P = parseFloat( xml.attr_p );
+		worldPosition.m_R = parseFloat( xml.attr_r );
 
-        worldPosition.updateVector3();
+		worldPosition.updateVector3();
 
-        return worldPosition;
-    }
+		return worldPosition;
+	}
 
-    readByEntityCondition ( xml: any ): AbstractCondition {
+	readByEntityCondition ( xml: any ): AbstractCondition {
 
-        let condition: AbstractByEntityCondition = null;
+		let condition: AbstractByEntityCondition = null;
 
-        condition = this.readConditionByEntity( xml.EntityCondition );
+		condition = this.readConditionByEntity( xml.EntityCondition );
 
-        this.readAsOptionalElement( xml.TriggeringEntities, ( xml ) => {
+		this.readAsOptionalElement( xml.TriggeringEntities, ( xml ) => {
 
-            this.readAsOptionalArray( xml.Entity, ( xml ) => {
+			this.readAsOptionalArray( xml.Entity, ( xml ) => {
 
-                condition.entities.push( xml.attr_name );
+				condition.entities.push( xml.attr_name );
 
-            } );
+			} );
 
-            condition.triggeringRule = xml.attr_rule;
+			condition.triggeringRule = xml.attr_rule;
 
-        } );
+		} );
 
-        return condition;
-    }
+		return condition;
+	}
 
-    readConditionByEntity ( xml: any ): AbstractByEntityCondition {
+	readConditionByEntity ( xml: any ): AbstractByEntityCondition {
 
-        let condition: AbstractByEntityCondition = null;
+		let condition: AbstractByEntityCondition = null;
 
-        if ( xml.EndOfRoad != null ) {
+		if ( xml.EndOfRoad != null ) {
 
-            throw new Error( 'EndOfRoad condition not supported' );
+			throw new Error( 'EndOfRoad condition not supported' );
 
-        } else if ( xml.Collision != null ) {
+		} else if ( xml.Collision != null ) {
 
-            throw new Error( 'Collision condition not supported' );
+			throw new Error( 'Collision condition not supported' );
 
-        } else if ( xml.Offroad != null ) {
+		} else if ( xml.Offroad != null ) {
 
-            throw new Error( 'Offroad condition not supported' );
+			throw new Error( 'Offroad condition not supported' );
 
-        } else if ( xml.TimeHeadway != null ) {
+		} else if ( xml.TimeHeadway != null ) {
 
-            throw new Error( 'TimeHeadway condition not supported' );
+			throw new Error( 'TimeHeadway condition not supported' );
 
-        } else if ( xml.TimeToCollision != null ) {
+		} else if ( xml.TimeToCollision != null ) {
 
-            throw new Error( 'TimeToCollision condition not supported' );
+			throw new Error( 'TimeToCollision condition not supported' );
 
-        } else if ( xml.Acceleration != null ) {
+		} else if ( xml.Acceleration != null ) {
 
-            throw new Error( 'Acceleration condition not supported' );
+			throw new Error( 'Acceleration condition not supported' );
 
-        } else if ( xml.StandStill != null ) {
+		} else if ( xml.StandStill != null ) {
 
-            throw new Error( 'StandStill condition not supported' );
+			throw new Error( 'StandStill condition not supported' );
 
-        } else if ( xml.Speed != null ) {
+		} else if ( xml.Speed != null ) {
 
-            condition = this.readSpeedCondition( xml.Speed );
+			condition = this.readSpeedCondition( xml.Speed );
 
-        } else if ( xml.RelativeSpeed != null ) {
+		} else if ( xml.RelativeSpeed != null ) {
 
-            condition = this.readRelativeSpeedCondition( xml.RelativeSpeed );
+			condition = this.readRelativeSpeedCondition( xml.RelativeSpeed );
 
-        } else if ( xml.TraveledDistance != null ) {
+		} else if ( xml.TraveledDistance != null ) {
 
-            condition = this.readTraveledDistanceCondition( xml.TraveledDistance );
+			condition = this.readTraveledDistanceCondition( xml.TraveledDistance );
 
-        } else if ( xml.ReachPosition != null ) {
+		} else if ( xml.ReachPosition != null ) {
 
-            condition = this.readReachPositionCondition( xml.ReachPosition );
+			condition = this.readReachPositionCondition( xml.ReachPosition );
 
-        } else if ( xml.Distance != null ) {
+		} else if ( xml.Distance != null ) {
 
-            condition = this.readDistanceCondition( xml.Distance );
+			condition = this.readDistanceCondition( xml.Distance );
 
-        } else if ( xml.RelativeDistance != null ) {
+		} else if ( xml.RelativeDistance != null ) {
 
-            throw new Error( 'RelativeDistance condition not supported' );
+			throw new Error( 'RelativeDistance condition not supported' );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unknown ByEntity condition' );
+			throw new Error( 'Unknown ByEntity condition' );
 
-        }
+		}
 
-        return condition;
+		return condition;
 
-    }
+	}
 
-    readTraveledDistanceCondition ( xml: any ): OscTraveledDistanceCondition {
+	readTraveledDistanceCondition ( xml: any ): OscTraveledDistanceCondition {
 
-        const value = xml.attr_value;
+		const value = xml.attr_value;
 
-        return new OscTraveledDistanceCondition( value );
-    }
+		return new OscTraveledDistanceCondition( value );
+	}
 
-    readRelativeSpeedCondition ( xml: any ): OscRelativeSpeedCondition {
+	readRelativeSpeedCondition ( xml: any ): OscRelativeSpeedCondition {
 
-        const entity = xml.attr_entity;
-        const value = xml.attr_value;
-        const rule = this.convertStringToRule( xml.attr_rule );
+		const entity = xml.attr_entity;
+		const value = xml.attr_value;
+		const rule = this.convertStringToRule( xml.attr_rule );
 
-        return new OscRelativeSpeedCondition( entity, value, rule );
-    }
+		return new OscRelativeSpeedCondition( entity, value, rule );
+	}
 
-    readReachPositionCondition ( xml: any ): OscReachPositionCondition {
+	readReachPositionCondition ( xml: any ): OscReachPositionCondition {
 
-        const position = this.readPosition( xml.Position );
-        const tolerance = parseFloat( xml.attr_tolerance );
+		const position = this.readPosition( xml.Position );
+		const tolerance = parseFloat( xml.attr_tolerance );
 
-        return new OscReachPositionCondition( position, tolerance );
-    }
+		return new OscReachPositionCondition( position, tolerance );
+	}
 
-    readDistanceCondition ( xml: any ): OscDistanceCondition {
+	readDistanceCondition ( xml: any ): OscDistanceCondition {
 
-        const value = parseFloat( xml.attr_value );
-        const freespace = xml.attr_freespace;
-        const alongRoute = xml.attr_alongRoute;
-        const rule = this.convertStringToRule( xml.attr_rule );
-        const position = this.readPosition( xml.Position );
+		const value = parseFloat( xml.attr_value );
+		const freespace = xml.attr_freespace;
+		const alongRoute = xml.attr_alongRoute;
+		const rule = this.convertStringToRule( xml.attr_rule );
+		const position = this.readPosition( xml.Position );
 
-        return new OscDistanceCondition( position, value, freespace, alongRoute, rule );
-    }
+		return new OscDistanceCondition( position, value, freespace, alongRoute, rule );
+	}
 
-    readConditionByValue ( xml: any ): AbstractCondition {
+	readConditionByValue ( xml: any ): AbstractCondition {
 
-        let condition: AbstractCondition = null;
+		let condition: AbstractCondition = null;
 
-        if ( xml.Parameter != null ) {
-        } else if ( xml.TimeOfDay != null ) {
-        } else if ( xml.SimulationTime != null ) {
-            condition = this.readSimulationTimeCondition( xml.SimulationTime );
-        } else {
-            throw new Error( 'unknown condition '.concat( xml ) );
-        }
+		if ( xml.Parameter != null ) {
+		} else if ( xml.TimeOfDay != null ) {
+		} else if ( xml.SimulationTime != null ) {
+			condition = this.readSimulationTimeCondition( xml.SimulationTime );
+		} else {
+			throw new Error( 'unknown condition '.concat( xml ) );
+		}
 
-        return condition;
-    }
+		return condition;
+	}
 
-    readSimulationTimeCondition ( xml: any ): AbstractCondition {
+	readSimulationTimeCondition ( xml: any ): AbstractCondition {
 
-        const value = parseFloat( xml.attr_value );
-        const rule = this.convertStringToRule( xml.attr_rule );
+		const value = parseFloat( xml.attr_value );
+		const rule = this.convertStringToRule( xml.attr_rule );
 
-        return new OscSimulationTimeCondition( value, rule );
-    }
+		return new OscSimulationTimeCondition( value, rule );
+	}
 
-    convertStringToRule ( rule: string ): OscRule {
+	convertStringToRule ( rule: string ): OscRule {
 
-        let res: OscRule;
+		let res: OscRule;
 
-        switch ( rule ) {
+		switch ( rule ) {
 
-            case 'greater_than':
-                res = OscRule.greater_than;
-                break;
+			case 'greater_than':
+				res = OscRule.greater_than;
+				break;
 
-            case 'less_than':
-                res = OscRule.less_than;
-                break;
+			case 'less_than':
+				res = OscRule.less_than;
+				break;
 
-            case 'equal_to':
-                res = OscRule.equal_to;
-                break;
+			case 'equal_to':
+				res = OscRule.equal_to;
+				break;
 
-            default:
-                throw new Error( 'unknown rule given' );
-        }
+			default:
+				throw new Error( 'unknown rule given' );
+		}
 
-        return res;
+		return res;
 
-    }
+	}
 
-    readConditionByState ( xml: any ): AbstractCondition {
+	readConditionByState ( xml: any ): AbstractCondition {
 
-        let condition: AbstractCondition = null;
+		let condition: AbstractCondition = null;
 
-        if ( xml.AtStart != null ) {
-            condition = this.readAtStartCondition( xml.AtStart );
-        } else if ( xml.AfterTermination != null ) {
-        } else if ( xml.Command != null ) {
-        } else if ( xml.Signal != null ) {
-        } else if ( xml.Controller != null ) {
-        } else {
-            console.error( 'unknown condition', xml );
-        }
+		if ( xml.AtStart != null ) {
+			condition = this.readAtStartCondition( xml.AtStart );
+		} else if ( xml.AfterTermination != null ) {
+		} else if ( xml.Command != null ) {
+		} else if ( xml.Signal != null ) {
+		} else if ( xml.Controller != null ) {
+		} else {
+			console.error( 'unknown condition', xml );
+		}
 
-        return condition;
-    }
+		return condition;
+	}
 
-    readAtStartCondition ( xml: any ): AbstractCondition {
+	readAtStartCondition ( xml: any ): AbstractCondition {
 
-        let type = xml.attr_type;
-        let elementName = xml.attr_name;
+		let type = xml.attr_type;
+		let elementName = xml.attr_name;
 
-        return new OscAtStartCondition( elementName, type );
-    }
+		return new OscAtStartCondition( elementName, type );
+	}
 
-    readAfterTerminationCondition ( xml: any ): AbstractCondition {
+	readAfterTerminationCondition ( xml: any ): AbstractCondition {
 
-        let type = xml.attr_type;
-        let elementName = xml.attr_name;
-        let rule = xml.attr_rule;
+		let type = xml.attr_type;
+		let elementName = xml.attr_name;
+		let rule = xml.attr_rule;
 
 
-        return new OscAfterTerminationCondition( elementName, rule, type );
-    }
+		return new OscAfterTerminationCondition( elementName, rule, type );
+	}
 
-    public readStory ( xml: any ): OscStory {
+	public readStory ( xml: any ): OscStory {
 
-        let name = xml.attr_name;
-        let ownerName = xml.attr_owner ? xml.attr_owner : null;
+		let name = xml.attr_name;
+		let ownerName = xml.attr_owner ? xml.attr_owner : null;
 
-        const story = new OscStory( name, ownerName );
+		const story = new OscStory( name, ownerName );
 
-        this.readAsOptionalArray( xml.Act, ( xml ) => {
+		this.readAsOptionalArray( xml.Act, ( xml ) => {
 
-            story.addAct( this.readAct( xml ) );
+			story.addAct( this.readAct( xml ) );
 
-        } );
+		} );
 
-        return story;
-    }
+		return story;
+	}
 
-    readAct ( xml: any ): OscAct {
+	readAct ( xml: any ): OscAct {
 
-        const act = new OscAct;
+		const act = new OscAct;
 
-        act.name = xml.attr_name;
+		act.name = xml.attr_name;
 
-        this.readAsOptionalArray( xml.Sequence, ( xml ) => {
+		this.readAsOptionalArray( xml.Sequence, ( xml ) => {
 
-            act.addSequence( this.readSequence( xml ) );
+			act.addSequence( this.readSequence( xml ) );
 
-        } );
+		} );
 
-        if ( xml.Conditions != null ) {
+		if ( xml.Conditions != null ) {
 
-            // Start is a single element
-            this.readAsOptionalElement( xml.Conditions.Start, ( xml ) => {
-                this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-                    act.startConditionGroups.push( this.readConditionGroup( xml ) );
-                } );
-            } );
+			// Start is a single element
+			this.readAsOptionalElement( xml.Conditions.Start, ( xml ) => {
+				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+					act.startConditionGroups.push( this.readConditionGroup( xml ) );
+				} );
+			} );
 
-            // TODO: Fix End could also be an array
-            this.readAsOptionalElement( xml.Conditions.End, ( xml ) => {
-                this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-                    act.endConditionGroups.push( this.readConditionGroup( xml ) );
-                } );
-            } );
+			// TODO: Fix End could also be an array
+			this.readAsOptionalElement( xml.Conditions.End, ( xml ) => {
+				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+					act.endConditionGroups.push( this.readConditionGroup( xml ) );
+				} );
+			} );
 
-            // TODO: Fix Cancel could also be an array
-            this.readAsOptionalElement( xml.Conditions.Cancel, ( xml ) => {
-                this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-                    act.cancelConditionGroups.push( this.readConditionGroup( xml ) );
-                } );
-            } );
+			// TODO: Fix Cancel could also be an array
+			this.readAsOptionalElement( xml.Conditions.Cancel, ( xml ) => {
+				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+					act.cancelConditionGroups.push( this.readConditionGroup( xml ) );
+				} );
+			} );
 
-        }
+		}
 
-        return act;
+		return act;
 
-    }
+	}
 
-    readSequence ( xml: any ): OscSequence {
+	readSequence ( xml: any ): OscSequence {
 
-        const sequence = new OscSequence;
+		const sequence = new OscSequence;
 
-        sequence.name = xml.attr_name;
-        sequence.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
+		sequence.name = xml.attr_name;
+		sequence.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
 
-        // read actors
-        this.readAsOptionalElement( xml.Actors, ( xml ) => {
+		// read actors
+		this.readAsOptionalElement( xml.Actors, ( xml ) => {
 
-            this.readAsOptionalArray( xml.Entity, ( xml ) => {
+			this.readAsOptionalArray( xml.Entity, ( xml ) => {
 
-                sequence.actors.push( xml.attr_name );
+				sequence.actors.push( xml.attr_name );
 
-            } );
+			} );
 
-        } );
+		} );
 
-        // read catalogReference
-        // read maneuvers
+		// read catalogReference
+		// read maneuvers
 
-        this.readAsOptionalArray( xml.Maneuver, ( xml ) => {
+		this.readAsOptionalArray( xml.Maneuver, ( xml ) => {
 
-            sequence.addManeuver( this.readManeuver( xml ) );
+			sequence.addManeuver( this.readManeuver( xml ) );
 
-        } );
+		} );
 
-        return sequence;
-    }
+		return sequence;
+	}
 
-    readManeuver ( xml: any ): OscManeuver {
+	readManeuver ( xml: any ): OscManeuver {
 
-        const maneuver = new OscManeuver( xml.attr_name );
+		const maneuver = new OscManeuver( xml.attr_name );
 
-        this.readAsOptionalArray( xml.Event, ( xml ) => {
+		this.readAsOptionalArray( xml.Event, ( xml ) => {
 
-            maneuver.addEventInstance( this.readEvent( xml ) );
+			maneuver.addEventInstance( this.readEvent( xml ) );
 
-        } );
+		} );
 
-        return maneuver;
-    }
+		return maneuver;
+	}
 
-    readEvent ( xml: any ): OscEvent {
+	readEvent ( xml: any ): OscEvent {
 
-        const event = new OscEvent;
+		const event = new OscEvent;
 
-        event.name = xml.attr_name;
-        event.priority = xml.attr_priority;
+		event.name = xml.attr_name;
+		event.priority = xml.attr_priority;
 
-        this.readAsOptionalArray( xml.Action, ( xml ) => {
+		this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-            const action = this.readEventAction( xml );
+			const action = this.readEventAction( xml );
 
-            event.addNewAction( action.name, action.action );
+			event.addNewAction( action.name, action.action );
 
-        } );
+		} );
 
-        if ( xml.StartConditions != null ) {
+		if ( xml.StartConditions != null ) {
 
-            this.readAsOptionalArray( xml.StartConditions.ConditionGroup, ( xml ) => {
+			this.readAsOptionalArray( xml.StartConditions.ConditionGroup, ( xml ) => {
 
-                event.startConditionGroups.push( this.readConditionGroup( xml ) );
+				event.startConditionGroups.push( this.readConditionGroup( xml ) );
 
-            } );
+			} );
 
-        }
+		}
 
-        return event;
-    }
+		return event;
+	}
 
-    readEventAction ( xml: any ): OscEventAction {
+	readEventAction ( xml: any ): OscEventAction {
 
-        const action = new OscEventAction;
+		const action = new OscEventAction;
 
-        action.name = xml.attr_name;
+		action.name = xml.attr_name;
 
-        if ( xml.Private != null ) {
+		if ( xml.Private != null ) {
 
-            action.action = this.readPrivateAction( xml.Private );
+			action.action = this.readPrivateAction( xml.Private );
 
-        } else if ( xml.UserDefined != null ) {
+		} else if ( xml.UserDefined != null ) {
 
-            action.action = this.readUserDefinedAction( xml.UserDefined );
+			action.action = this.readUserDefinedAction( xml.UserDefined );
 
-        } else if ( xml.Global != null ) {
+		} else if ( xml.Global != null ) {
 
-            action.action = this.readGlobalAction( xml.Global );
+			action.action = this.readGlobalAction( xml.Global );
 
-        }
+		}
 
-        return action;
-    }
+		return action;
+	}
 
-    public readInitActions ( xml: any, storyboard: OscStoryboard ) {
+	public readInitActions ( xml: any, storyboard: OscStoryboard ) {
 
-        this.readAsOptionalArray( xml.Global, ( item ) => {
+		this.readAsOptionalArray( xml.Global, ( item ) => {
 
-            const globalAction = this.readGlobalAction( item );
+			const globalAction = this.readGlobalAction( item );
 
-        } );
+		} );
 
-        this.readAsOptionalArray( xml.UserDefined, ( item ) => {
+		this.readAsOptionalArray( xml.UserDefined, ( item ) => {
 
-            const userDefinedAction = this.readUserDefinedAction( item );
+			const userDefinedAction = this.readUserDefinedAction( item );
 
-        } );
+		} );
 
-        // Read the Private tag
-        if ( xml.Private != null ) {
+		// Read the Private tag
+		if ( xml.Private != null ) {
 
-            this.readAsOptionalArray( xml.Private, ( xml ) => {
+			this.readAsOptionalArray( xml.Private, ( xml ) => {
 
-                const object = xml.attr_object;
+				const object = xml.attr_object;
 
-                const entity = this.openScenario.objects.get( object );
+				const entity = this.openScenario.objects.get( object );
 
-                if ( !entity ) console.error( 'entity not found', xml );
-                if ( !entity ) return;
+				if ( !entity ) console.error( 'entity not found', xml );
+				if ( !entity ) return;
 
-                // Read the Action tag inside Private
-                this.readAsOptionalArray( xml.Action, ( xml ) => {
+				// Read the Action tag inside Private
+				this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-                    const action = this.readPrivateAction( xml );
+					const action = this.readPrivateAction( xml );
 
-                    // storyboard.addPrivateInitAction( object, action );
+					// storyboard.addPrivateInitAction( object, action );
 
-                    entity.initActions.push( action );
+					entity.initActions.push( action );
 
-                } );
+				} );
 
-            } );
-        }
+			} );
+		}
 
-    }
+	}
 
-    readUserDefinedAction ( item: any ): AbstractAction {
+	readUserDefinedAction ( item: any ): AbstractAction {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    readGlobalAction ( item: any ): AbstractAction {
+	readGlobalAction ( item: any ): AbstractAction {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    readPrivateAction ( item: any ): AbstractPrivateAction {
+	readPrivateAction ( item: any ): AbstractPrivateAction {
 
-        let action = null;
+		let action = null;
 
-        if ( item.Longitudinal != null ) {
+		if ( item.Longitudinal != null ) {
 
-            action = this.readLongitudinalAction( item.Longitudinal );
+			action = this.readLongitudinalAction( item.Longitudinal );
 
-        } else if ( item.Lateral != null ) {
+		} else if ( item.Lateral != null ) {
 
-            action = this.readLateralAction( item.Lateral );
+			action = this.readLateralAction( item.Lateral );
 
-        } else if ( item.Visibility != null ) {
+		} else if ( item.Visibility != null ) {
 
-            throw new Error( 'action not implemented' );
+			throw new Error( 'action not implemented' );
 
-        } else if ( item.Meeting != null ) {
+		} else if ( item.Meeting != null ) {
 
-            throw new Error( 'action not implemented' );
+			throw new Error( 'action not implemented' );
 
-        } else if ( item.Autonomous != null ) {
+		} else if ( item.Autonomous != null ) {
 
-            throw new Error( 'action not implemented' );
+			throw new Error( 'action not implemented' );
 
-        } else if ( item.Controller != null ) {
+		} else if ( item.Controller != null ) {
 
-            throw new Error( 'action not implemented' );
+			throw new Error( 'action not implemented' );
 
-        } else if ( item.Position != null ) {
+		} else if ( item.Position != null ) {
 
-            action = this.readPositionAction( item.Position );
+			action = this.readPositionAction( item.Position );
 
-        } else if ( item.Routing != null ) {
+		} else if ( item.Routing != null ) {
 
-            action = this.readRoutingAction( item.Routing );
+			action = this.readRoutingAction( item.Routing );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unknown private action' );
+			throw new Error( 'Unknown private action' );
 
-        }
+		}
 
-        return action;
+		return action;
 
-    }
+	}
 
-    readLateralAction ( xml: any ): AbstractAction {
+	readLateralAction ( xml: any ): AbstractAction {
 
-        let action: AbstractAction = null;
+		let action: AbstractAction = null;
 
-        if ( xml.LaneChange != null ) action = this.readLaneChangeAction( xml.LaneChange );
+		if ( xml.LaneChange != null ) action = this.readLaneChangeAction( xml.LaneChange );
 
-        else if ( xml.LaneOffset != null ) {
-        } else if ( xml.Distance != null ) {
-        } else {
-            console.error( 'unknown lateral action' );
-        }
+		else if ( xml.LaneOffset != null ) {
+		} else if ( xml.Distance != null ) {
+		} else {
+			console.error( 'unknown lateral action' );
+		}
 
-        return action;
+		return action;
 
-    }
+	}
 
-    readRoutingAction ( xml: any ): AbstractRoutingAction {
+	readRoutingAction ( xml: any ): AbstractRoutingAction {
 
-        let action: AbstractRoutingAction = null;
+		let action: AbstractRoutingAction = null;
 
-        if ( xml.FollowRoute != null ) {
+		if ( xml.FollowRoute != null ) {
 
-            action = this.readFollowRouteAction( xml.FollowRoute );
+			action = this.readFollowRouteAction( xml.FollowRoute );
 
-        } else if ( xml.FollowTrajectory != null ) {
+		} else if ( xml.FollowTrajectory != null ) {
 
-            action = this.readFollowTrajectoryAction( xml.FollowTrajectory );
+			action = this.readFollowTrajectoryAction( xml.FollowTrajectory );
 
-        } else if ( xml.AcquirePosition != null ) {
+		} else if ( xml.AcquirePosition != null ) {
 
-        } else {
+		} else {
 
-            throw new Error( 'unknown routing action' );
+			throw new Error( 'unknown routing action' );
 
-        }
+		}
 
-        return action;
-    }
+		return action;
+	}
 
-    readFollowTrajectoryAction ( xml: any ): OscFollowTrajectoryAction {
+	readFollowTrajectoryAction ( xml: any ): OscFollowTrajectoryAction {
 
-        let trajectory: OscTrajectory = null;
+		let trajectory: OscTrajectory = null;
 
-        if ( xml.Trajectory != null ) {
+		if ( xml.Trajectory != null ) {
 
-            trajectory = this.readTrajectory( xml.Trajectory );
+			trajectory = this.readTrajectory( xml.Trajectory );
 
-        } else if ( xml.CatalogReference != null ) {
+		} else if ( xml.CatalogReference != null ) {
 
-            throw new Error( 'unsupported readFollowTrajectoryAction CatalogReference' );
+			throw new Error( 'unsupported readFollowTrajectoryAction CatalogReference' );
 
-        }
+		}
 
-        let action = new OscFollowTrajectoryAction( trajectory );
+		let action = new OscFollowTrajectoryAction( trajectory );
 
-        action.lateralPurpose = xml.Lateral.attr_purpose;
-        action.longitudinalPurpose = this.readLongitudinalPurpose( xml.Longitudinal );
+		action.lateralPurpose = xml.Lateral.attr_purpose;
+		action.longitudinalPurpose = this.readLongitudinalPurpose( xml.Longitudinal );
 
-        return action;
-    }
+		return action;
+	}
 
-    readTrajectory ( xml: any ): OscTrajectory {
+	readTrajectory ( xml: any ): OscTrajectory {
 
-        let name = xml.attr_name;
-        let closed = xml.attr_closed == 'true';
-        let domain = xml.attr_domain;
+		let name = xml.attr_name;
+		let closed = xml.attr_closed == 'true';
+		let domain = xml.attr_domain;
 
-        const trajectory = new OscTrajectory( name, closed, domain );
+		const trajectory = new OscTrajectory( name, closed, domain );
 
-        this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
+		this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
 
-            trajectory.parameterDeclaration.push( this.readParameterDeclaration( xml ) );
+			trajectory.parameterDeclaration.push( this.readParameterDeclaration( xml ) );
 
-        } );
+		} );
 
-        this.readAsOptionalArray( xml.Vertex, ( xml ) => {
+		this.readAsOptionalArray( xml.Vertex, ( xml ) => {
 
-            trajectory.vertices.push( this.readVertex( xml ) );
+			trajectory.vertices.push( this.readVertex( xml ) );
 
-        } );
+		} );
 
-        return trajectory;
-    }
+		return trajectory;
+	}
 
-    readFollowRouteAction ( xml: any ): FollowRouteAction {
+	readFollowRouteAction ( xml: any ): FollowRouteAction {
 
-        let route: OscRoute = null;
+		let route: OscRoute = null;
 
-        if ( xml.Route != null ) {
+		if ( xml.Route != null ) {
 
-            route = this.readRoute( xml.Route );
+			route = this.readRoute( xml.Route );
 
-        } else if ( xml.CatalogReference != null ) {
+		} else if ( xml.CatalogReference != null ) {
 
-            throw new Error( 'unsupported follow route action CatalogReference' );
+			throw new Error( 'unsupported follow route action CatalogReference' );
 
-        }
+		}
 
-        const action = new FollowRouteAction( route );
+		const action = new FollowRouteAction( route );
 
-        return action;
-    }
+		return action;
+	}
 
-    readRoute ( xml: any ): OscRoute {
+	readRoute ( xml: any ): OscRoute {
 
-        let route = new OscRoute;
+		let route = new OscRoute;
 
-        route.name = xml.attr_name;
-        route.closed = xml.attr_closed == 'true' ? true : false;
+		route.name = xml.attr_name;
+		route.closed = xml.attr_closed == 'true' ? true : false;
 
-        this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
+		this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
 
-            route.parameterDeclaration.push( this.readParameterDeclaration( xml ) );
+			route.parameterDeclaration.push( this.readParameterDeclaration( xml ) );
 
-        } );
+		} );
 
-        this.readAsOptionalArray( xml.Waypoint, ( xml ) => {
+		this.readAsOptionalArray( xml.Waypoint, ( xml ) => {
 
-            route.waypoints.push( this.readWaypoint( xml ) );
+			route.waypoints.push( this.readWaypoint( xml ) );
 
-        } );
+		} );
 
-        return route;
-    }
+		return route;
+	}
 
-    readWaypoint ( xml: any ): OscWaypoint {
+	readWaypoint ( xml: any ): OscWaypoint {
 
-        let position = this.readPosition( xml.Position );
-        let strategy = xml.attr_strategy;
+		let position = this.readPosition( xml.Position );
+		let strategy = xml.attr_strategy;
 
-        return new OscWaypoint( position, strategy );
-    }
+		return new OscWaypoint( position, strategy );
+	}
 
-    readLaneChangeAction ( xml: any ): AbstractAction {
+	readLaneChangeAction ( xml: any ): AbstractAction {
 
-        const action = new OscLaneChangeAction();
+		const action = new OscLaneChangeAction();
 
-        action.targetLaneOffset = parseFloat( xml.attr_targetLaneOffset );
+		action.targetLaneOffset = parseFloat( xml.attr_targetLaneOffset );
 
-        action.dynamics = this.readLaneChangeDynamics( xml.Dynamics );
+		action.dynamics = this.readLaneChangeDynamics( xml.Dynamics );
 
-        action.target = this.readTarget( xml.Target );
+		action.target = this.readTarget( xml.Target );
 
-        return action;
+		return action;
 
-    }
+	}
 
-    readLaneChangeDynamics ( xml: any ): OscLaneChangeDynamics {
+	readLaneChangeDynamics ( xml: any ): OscLaneChangeDynamics {
 
-        const dynamics = new OscLaneChangeDynamics;
+		const dynamics = new OscLaneChangeDynamics;
 
-        dynamics.shape = xml.attr_shape;
+		dynamics.shape = xml.attr_shape;
 
-        dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
+		dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
 
-        dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
+		dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
 
-        dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
+		dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
 
-        return dynamics;
+		return dynamics;
 
-    }
+	}
 
-    readSpeedDynamics ( xml: any ): OscSpeedDynamics {
+	readSpeedDynamics ( xml: any ): OscSpeedDynamics {
 
-        let dynamics = new OscSpeedDynamics;
+		let dynamics = new OscSpeedDynamics;
 
-        dynamics.shape = xml.attr_shape;
+		dynamics.shape = xml.attr_shape;
 
-        dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
+		dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
 
-        dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
+		dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
 
-        dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
+		dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
 
-        return dynamics;
+		return dynamics;
 
-    }
+	}
 
-    readPositionAction ( xml: any ): AbstractPrivateAction {
+	readPositionAction ( xml: any ): AbstractPrivateAction {
 
-        let position = this.readPosition( xml );
+		let position = this.readPosition( xml );
 
-        return new OscPositionAction( position );
+		return new OscPositionAction( position );
 
-    }
+	}
 
-    readPosition ( xml: any ): AbstractPosition {
+	readPosition ( xml: any ): AbstractPosition {
 
-        let position: AbstractPosition = null;
+		let position: AbstractPosition = null;
 
-        if ( xml.World != null ) {
+		if ( xml.World != null ) {
 
-            position = this.readWorldPosition( xml.World );
+			position = this.readWorldPosition( xml.World );
 
-        } else if ( xml.RelativeObject != null ) {
+		} else if ( xml.RelativeObject != null ) {
 
-            position = this.readRelativeObjectPosition( xml.RelativeObject );
+			position = this.readRelativeObjectPosition( xml.RelativeObject );
 
-        } else if ( xml.RelativeLane != null ) {
+		} else if ( xml.RelativeLane != null ) {
 
-            position = this.readRelativeLanePosition( xml.RelativeLane );
+			position = this.readRelativeLanePosition( xml.RelativeLane );
 
-        } else if ( xml.Lane != null ) {
+		} else if ( xml.Lane != null ) {
 
-            position = this.readLanePosition( xml.Lane );
+			position = this.readLanePosition( xml.Lane );
 
-        } else {
+		} else {
 
-            throw new Error( 'unknown position' );
+			throw new Error( 'unknown position' );
 
-        }
+		}
 
-        return position;
-    }
+		return position;
+	}
 
-    readLanePosition ( xml: any ): AbstractPosition {
+	readLanePosition ( xml: any ): AbstractPosition {
 
-        let roadId = parseFloat( xml.attr_roadId );
-        let laneId = parseFloat( xml.attr_laneId );
-        let s = parseFloat( xml.attr_s );
+		let roadId = parseFloat( xml.attr_roadId );
+		let laneId = parseFloat( xml.attr_laneId );
+		let s = parseFloat( xml.attr_s );
 
-        let laneOffset = null;
+		let laneOffset = null;
 
-        if ( xml.attr_offset != null ) laneOffset = parseFloat( xml.attr_offset );
+		if ( xml.attr_offset != null ) laneOffset = parseFloat( xml.attr_offset );
 
-        return new OscLanePosition( roadId, laneId, laneOffset, s, null );
-    }
+		return new OscLanePosition( roadId, laneId, laneOffset, s, null );
+	}
 
-    readRelativeLanePosition ( xml: any ): AbstractPosition {
+	readRelativeLanePosition ( xml: any ): AbstractPosition {
 
-        const position = new OscRelativeLanePosition();
+		const position = new OscRelativeLanePosition();
 
-        position.object = xml.attr_object;
-        position.dLane = parseFloat( xml.attr_dLane );
-        position.ds = parseFloat( xml.attr_ds );
-        position.offset = parseFloat( xml.attr_offset );
+		position.object = xml.attr_object;
+		position.dLane = parseFloat( xml.attr_dLane );
+		position.ds = parseFloat( xml.attr_ds );
+		position.offset = parseFloat( xml.attr_offset );
 
-        this.readAsOptionalArray( xml.Orientation, ( xml ) => {
+		this.readAsOptionalArray( xml.Orientation, ( xml ) => {
 
-            position.orientations.push( this.readOrientation( xml ) );
+			position.orientations.push( this.readOrientation( xml ) );
 
-        } );
+		} );
 
-        return position;
-    }
+		return position;
+	}
 
-    readRelativeObjectPosition ( xml: any ): AbstractPosition {
+	readRelativeObjectPosition ( xml: any ): AbstractPosition {
 
-        const position = new OscRelativeObjectPosition();
+		const position = new OscRelativeObjectPosition();
 
-        position.object = xml.attr_object;
-        position.dx = xml.attr_dx ? parseFloat( xml.attr_dx ) : null;
-        position.dy = xml.attr_dy ? parseFloat( xml.attr_dy ) : null;
-        position.dz = xml.attr_dz ? parseFloat( xml.attr_dz ) : null;
+		position.object = xml.attr_object;
+		position.dx = xml.attr_dx ? parseFloat( xml.attr_dx ) : null;
+		position.dy = xml.attr_dy ? parseFloat( xml.attr_dy ) : null;
+		position.dz = xml.attr_dz ? parseFloat( xml.attr_dz ) : null;
 
-        this.readAsOptionalArray( xml.Orientation, ( xml ) => {
+		this.readAsOptionalArray( xml.Orientation, ( xml ) => {
 
-            position.orientations.push( this.readOrientation( xml ) );
+			position.orientations.push( this.readOrientation( xml ) );
 
-        } );
+		} );
 
-        return position;
-    }
+		return position;
+	}
 
-    readOrientation ( xml: any ): OscOrientation {
+	readOrientation ( xml: any ): OscOrientation {
 
-        const orientation = new OscOrientation;
+		const orientation = new OscOrientation;
 
-        orientation.h = xml.attr_h ? parseFloat( xml.attr_h ) : null;
-        orientation.p = xml.attr_p ? parseFloat( xml.attr_p ) : null;
-        orientation.r = xml.attr_r ? parseFloat( xml.attr_r ) : null;
+		orientation.h = xml.attr_h ? parseFloat( xml.attr_h ) : null;
+		orientation.p = xml.attr_p ? parseFloat( xml.attr_p ) : null;
+		orientation.r = xml.attr_r ? parseFloat( xml.attr_r ) : null;
 
-        orientation.type = xml.attr_type ? xml.attr_type : null;
+		orientation.type = xml.attr_type ? xml.attr_type : null;
 
-        return orientation;
-    }
+		return orientation;
+	}
 
-    readLongitudinalAction ( xml: any ): any {
+	readLongitudinalAction ( xml: any ): any {
 
-        let action = null;
+		let action = null;
 
-        if ( xml.Speed != null ) {
+		if ( xml.Speed != null ) {
 
-            let action = new OscSpeedAction();
+			let action = new OscSpeedAction();
 
-            action.dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
+			action.dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
 
-            action.setTarget( this.readTarget( xml.Speed.Target ) );
+			action.setTarget( this.readTarget( xml.Speed.Target ) );
 
-            return action;
+			return action;
 
-        } else if ( xml.Distance != null ) {
+		} else if ( xml.Distance != null ) {
 
-            action = new OscDistanceAction();
+			action = new OscDistanceAction();
 
-        }
+		}
 
-        return action;
-    }
+		return action;
+	}
 
-    readTarget ( xml: any ): AbstractTarget {
+	readTarget ( xml: any ): AbstractTarget {
 
-        let target = null;
+		let target = null;
 
-        if ( xml.Absolute != null ) {
+		if ( xml.Absolute != null ) {
 
-            const value = xml.Absolute.attr_value;
+			const value = xml.Absolute.attr_value;
 
-            target = new OscAbsoluteTarget( value );
+			target = new OscAbsoluteTarget( value );
 
-        } else if ( xml.Relative != null ) {
+		} else if ( xml.Relative != null ) {
 
-            const value = parseFloat( xml.Relative.attr_value );
+			const value = parseFloat( xml.Relative.attr_value );
 
-            const object = xml.Relative.attr_object;
+			const object = xml.Relative.attr_object;
 
-            return new OscRelativeTarget( object, value );
+			return new OscRelativeTarget( object, value );
 
-        }
+		}
 
-        return target;
-    }
+		return target;
+	}
 
-    readVertex ( xml: any ): OscVertex {
+	readVertex ( xml: any ): OscVertex {
 
-        const vertex = new OscVertex;
+		const vertex = new OscVertex;
 
-        vertex.reference = parseFloat( xml.attr_reference );
-        vertex.position = this.readPosition( xml.Position );
-        vertex.shape = this.readVertexShape( xml.Shape );
+		vertex.reference = parseFloat( xml.attr_reference );
+		vertex.position = this.readPosition( xml.Position );
+		vertex.shape = this.readVertexShape( xml.Shape );
 
-        return vertex;
-    }
+		return vertex;
+	}
 
-    readVertexShape ( xml: any ): AbstractOscShape {
+	readVertexShape ( xml: any ): AbstractOscShape {
 
-        if ( xml.Polyline != null ) {
+		if ( xml.Polyline != null ) {
 
-            return new OscPolylineShape;
+			return new OscPolylineShape;
 
-        } else if ( xml.Clothoid != null ) {
+		} else if ( xml.Clothoid != null ) {
 
-            return this.readClothoidShape( xml.Clothoid );
+			return this.readClothoidShape( xml.Clothoid );
 
-        } else if ( xml.Spline != null ) {
+		} else if ( xml.Spline != null ) {
 
-            return this.readSplineShape( xml.Spline );
+			return this.readSplineShape( xml.Spline );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unsupported or unknown vertex shape' );
+			throw new Error( 'Unsupported or unknown vertex shape' );
 
-        }
-    }
+		}
+	}
 
-    // private readInitActions ( xmlElement: any ) {
-    //
-    //     // oscStoryboard.m_InitActions = OscInitActions.readXml( Storyboard.Init.Actions );
-    //
-    //     this.readPrivateElements( xmlElement.Private, this.openScenario.storyboard.initActions );
-    //
-    // }
-    //
-    // private readStory ( xml: any ) {
-    //
-    //     // oscStoryboard.Story = OscStory.readXml( Storyboard.Story );
-    // }
-    //
-    // private readPrivateElements ( xml: any, initActions: OscInitActions ) {
-    //
-    //     let owner = xml.attr_object;
-    //
-    //     if ( Array.isArray( xml ) ) {
-    //
-    //         for ( let i = 0; i < xml.length; i++ ) {
-    //
-    //             initActions.addPrivateAction( owner, this.readPrivateElement( xml[i] ) );
-    //
-    //         }
-    //
-    //     } else {
-    //
-    //         initActions.addPrivateAction( owner, this.readPrivateElement( xml ) );
-    //
-    //     }
-    //
-    // }
-    //
-    // private readPrivateElement ( xml: any ): AbstractPrivateAction {
-    //
-    //     const privateAction = new OscPrivateAction();
-    //
-    //     if ( Array.isArray( xml.Action ) ) {
-    //
-    //         for ( let i = 0; i < xml.Action.length; i++ ) {
-    //
-    //             const action = this.readActionElement( xml.Action[i] );
-    //
-    //             privateAction.actions.push( action );
-    //
-    //         }
-    //
-    //     } else {
-    //
-    //         const action = this.readActionElement( xml.Action );
-    //
-    //         privateAction.actions.push( action );
-    //     }
-    //
-    //     return privateAction;
-    // }
-    //
-    // private readActionElement ( xml: any ) : any {
-    //
-    //     let action: any = null;
-    //
-    //     if ( xml.Position != null ) {
-    //
-    //         action = this.readPositionAction( xml.Position );
-    //
-    //     }
-    //
-    //     return action;
-    //
-    // }
-    //
-    // private readPositionAction ( xml: any ): any {
-    //
-    //     let position: OscPositionAction;
-    //
-    //     if ( xml.World != null ) {
-    //
-    //         position = this.readWorldPosition( xml.World );
-    //
-    //     }
-    //
-    //     new OscPositionAction( position );
-    // }
-    //
-    // private readWorldPosition ( xml: any ): any {
-    //
-    //     return new OscWorldPosition(
-    //         xml.attr_x,
-    //         xml.attr_y,
-    //         xml.attr_z,
-    //
-    //         xml.attr_h,
-    //         xml.attr_p,
-    //         xml.attr_r,
-    //     );
-    // }
+	// private readInitActions ( xmlElement: any ) {
+	//
+	//     // oscStoryboard.m_InitActions = OscInitActions.readXml( Storyboard.Init.Actions );
+	//
+	//     this.readPrivateElements( xmlElement.Private, this.openScenario.storyboard.initActions );
+	//
+	// }
+	//
+	// private readStory ( xml: any ) {
+	//
+	//     // oscStoryboard.Story = OscStory.readXml( Storyboard.Story );
+	// }
+	//
+	// private readPrivateElements ( xml: any, initActions: OscInitActions ) {
+	//
+	//     let owner = xml.attr_object;
+	//
+	//     if ( Array.isArray( xml ) ) {
+	//
+	//         for ( let i = 0; i < xml.length; i++ ) {
+	//
+	//             initActions.addPrivateAction( owner, this.readPrivateElement( xml[i] ) );
+	//
+	//         }
+	//
+	//     } else {
+	//
+	//         initActions.addPrivateAction( owner, this.readPrivateElement( xml ) );
+	//
+	//     }
+	//
+	// }
+	//
+	// private readPrivateElement ( xml: any ): AbstractPrivateAction {
+	//
+	//     const privateAction = new OscPrivateAction();
+	//
+	//     if ( Array.isArray( xml.Action ) ) {
+	//
+	//         for ( let i = 0; i < xml.Action.length; i++ ) {
+	//
+	//             const action = this.readActionElement( xml.Action[i] );
+	//
+	//             privateAction.actions.push( action );
+	//
+	//         }
+	//
+	//     } else {
+	//
+	//         const action = this.readActionElement( xml.Action );
+	//
+	//         privateAction.actions.push( action );
+	//     }
+	//
+	//     return privateAction;
+	// }
+	//
+	// private readActionElement ( xml: any ) : any {
+	//
+	//     let action: any = null;
+	//
+	//     if ( xml.Position != null ) {
+	//
+	//         action = this.readPositionAction( xml.Position );
+	//
+	//     }
+	//
+	//     return action;
+	//
+	// }
+	//
+	// private readPositionAction ( xml: any ): any {
+	//
+	//     let position: OscPositionAction;
+	//
+	//     if ( xml.World != null ) {
+	//
+	//         position = this.readWorldPosition( xml.World );
+	//
+	//     }
+	//
+	//     new OscPositionAction( position );
+	// }
+	//
+	// private readWorldPosition ( xml: any ): any {
+	//
+	//     return new OscWorldPosition(
+	//         xml.attr_x,
+	//         xml.attr_y,
+	//         xml.attr_z,
+	//
+	//         xml.attr_h,
+	//         xml.attr_p,
+	//         xml.attr_r,
+	//     );
+	// }
 
-    readClothoidShape ( xml: any ): OscClothoidShape {
+	readClothoidShape ( xml: any ): OscClothoidShape {
 
-        const clothoid = new OscClothoidShape;
+		const clothoid = new OscClothoidShape;
 
-        clothoid.curvature = parseFloat( xml.attr_curvature );
-        clothoid.curvatureDot = parseFloat( xml.attr_curvatureDot );
-        clothoid.length = parseFloat( xml.attr_length );
+		clothoid.curvature = parseFloat( xml.attr_curvature );
+		clothoid.curvatureDot = parseFloat( xml.attr_curvatureDot );
+		clothoid.length = parseFloat( xml.attr_length );
 
-        return clothoid;
-    }
+		return clothoid;
+	}
 
-    readSplineShape ( xml: any ): OscSplineShape {
+	readSplineShape ( xml: any ): OscSplineShape {
 
-        const spline = new OscSplineShape;
+		const spline = new OscSplineShape;
 
-        spline.controlPoint1 = this.readSplineControlPoint( xml.ControlPoint1 );
-        spline.controlPoint2 = this.readSplineControlPoint( xml.ControlPoint2 );
+		spline.controlPoint1 = this.readSplineControlPoint( xml.ControlPoint1 );
+		spline.controlPoint2 = this.readSplineControlPoint( xml.ControlPoint2 );
 
-        return spline;
-    }
+		return spline;
+	}
 
-    readSplineControlPoint ( xml: any ): OscControlPoint {
+	readSplineControlPoint ( xml: any ): OscControlPoint {
 
-        const controlPoint = new OscControlPoint;
+		const controlPoint = new OscControlPoint;
 
-        controlPoint.status = xml.attr_status;
+		controlPoint.status = xml.attr_status;
 
-        return controlPoint;
-    }
+		return controlPoint;
+	}
 
-    private readStoryboard ( xml: any ): OscStoryboard {
+	private readStoryboard ( xml: any ): OscStoryboard {
 
-        const storyboard = new OscStoryboard();
+		const storyboard = new OscStoryboard();
 
-        this.readAsOptionalElement( xml.Init.Actions, ( xml ) => {
+		this.readAsOptionalElement( xml.Init.Actions, ( xml ) => {
 
-            this.readInitActions( xml, storyboard );
+			this.readInitActions( xml, storyboard );
 
-        } );
+		} );
 
-        this.readAsOptionalArray( xml.Story, ( xml ) => {
+		this.readAsOptionalArray( xml.Story, ( xml ) => {
 
-            storyboard.addStory( this.readStory( xml ) );
+			storyboard.addStory( this.readStory( xml ) );
 
-        } );
+		} );
 
-        if ( xml.EndConditions != null ) {
+		if ( xml.EndConditions != null ) {
 
-            this.readAsOptionalArray( xml.EndConditions.ConditionGroup, ( xml ) => {
+			this.readAsOptionalArray( xml.EndConditions.ConditionGroup, ( xml ) => {
 
-                storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
+				storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
 
-            } );
+			} );
 
-        }
+		}
 
-        return storyboard;
-    }
+		return storyboard;
+	}
 
-    private readOpenScenario ( xmlElement: any, openScenario: OpenScenario ): any {
+	private readOpenScenario ( xmlElement: any, openScenario: OpenScenario ): any {
 
-        const OpenSCENARIO = xmlElement.OpenSCENARIO;
+		const OpenSCENARIO = xmlElement.OpenSCENARIO;
 
-        openScenario.fileHeader = this.readFileHeader( OpenSCENARIO.FileHeader );
+		openScenario.fileHeader = this.readFileHeader( OpenSCENARIO.FileHeader );
 
-        openScenario.parameterDeclaration = this.readParameterDeclaration( OpenSCENARIO.ParameterDeclaration );
+		openScenario.parameterDeclaration = this.readParameterDeclaration( OpenSCENARIO.ParameterDeclaration );
 
-        // NOTE: Before reading the xml document further
-        // we need to replace all paramater variables in the xml
-        // this.replaceParamaterValues( OpenSCENARIO );
+		// NOTE: Before reading the xml document further
+		// we need to replace all paramater variables in the xml
+		// this.replaceParamaterValues( OpenSCENARIO );
 
-        // TODO: Read Catalogs
-        // openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
+		// TODO: Read Catalogs
+		// openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
 
-        openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
+		openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
 
-        this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: OscEntityObject ) => {
+		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: OscEntityObject ) => {
 
-            openScenario.addObject( value );
+			openScenario.addObject( value );
 
-        } );
+		} );
 
-        openScenario.storyboard = this.readStoryboard( OpenSCENARIO.Storyboard );
-    }
+		openScenario.storyboard = this.readStoryboard( OpenSCENARIO.Storyboard );
+	}
 
-    private replaceParamaterValues ( object: any, callback?: ( object, property ) => void ) {
+	private replaceParamaterValues ( object: any, callback?: ( object, property ) => void ) {
 
-        // const properties = Object.getOwnPropertyNames( object );
+		// const properties = Object.getOwnPropertyNames( object );
 
-        // for ( let i = 0; i < properties.length; i++ ) {
+		// for ( let i = 0; i < properties.length; i++ ) {
 
-        //     const property = object[ properties[ i ] ];
+		//     const property = object[ properties[ i ] ];
 
-        //     if ( typeof property === 'object' ) {
+		//     if ( typeof property === 'object' ) {
 
-        //         const children = Object.getOwnPropertyNames( property );
+		//         const children = Object.getOwnPropertyNames( property );
 
-        //         if ( children.length > 0 ) this.replaceParamaterValues( property, callback );
+		//         if ( children.length > 0 ) this.replaceParamaterValues( property, callback );
 
-        //     } else if ( typeof property === 'string' ) {
+		//     } else if ( typeof property === 'string' ) {
 
-        //         const isVariable = property.indexOf( '$' ) !== -1;
+		//         const isVariable = property.indexOf( '$' ) !== -1;
 
-        //         if ( isVariable ) {
+		//         if ( isVariable ) {
 
-        //             const parameter = this.openScenario.findParameter( property );
+		//             const parameter = this.openScenario.findParameter( property );
 
-        //             object[ properties[ i ] ] = parameter.value;
+		//             object[ properties[ i ] ] = parameter.value;
 
-        //             if ( callback ) callback( object, property );
+		//             if ( callback ) callback( object, property );
 
-        //             // console.log( 'replaced', property, parameter.value );
+		//             // console.log( 'replaced', property, parameter.value );
 
-        //         }
-        //     }
-        // }
-    }
+		//         }
+		//     }
+		// }
+	}
 
-    private readCatalogReference ( xml: any ) {
+	private readCatalogReference ( xml: any ) {
 
-        const catalogReference = new OscCatalogReference( null, null );
+		const catalogReference = new OscCatalogReference( null, null );
 
-        catalogReference.catalogName = xml.attr_catalogName;
-        catalogReference.entryName = xml.attr_entryName;
+		catalogReference.catalogName = xml.attr_catalogName;
+		catalogReference.entryName = xml.attr_entryName;
 
 
-        return catalogReference;
-    }
+		return catalogReference;
+	}
 
-    private readParameterDeclaration ( xml: any ): OscParameterDeclaration {
+	private readParameterDeclaration ( xml: any ): OscParameterDeclaration {
 
-        const parameterDeclaration = new OscParameterDeclaration();
+		const parameterDeclaration = new OscParameterDeclaration();
 
-        this.readAsOptionalArray( xml.Parameter, ( xml ) => {
+		this.readAsOptionalArray( xml.Parameter, ( xml ) => {
 
-            parameterDeclaration.addParameter( this.readParameter( xml ) );
+			parameterDeclaration.addParameter( this.readParameter( xml ) );
 
-        } );
+		} );
 
-        return parameterDeclaration;
+		return parameterDeclaration;
 
-    }
+	}
 
-    private readParameter ( xml: any ): OscParameter {
+	private readParameter ( xml: any ): OscParameter {
 
-        const name: string = xml.attr_name;
-        const value: string = xml.attr_value;
+		const name: string = xml.attr_name;
+		const value: string = xml.attr_value;
 
-        const type = OscParameter.stringToEnum( xml.attr_type );
+		const type = OscParameter.stringToEnum( xml.attr_type );
 
-        return new OscParameter( name, type, value );
-    }
+		return new OscParameter( name, type, value );
+	}
 
-    private readSpeedCondition ( xml: any ) {
+	private readSpeedCondition ( xml: any ) {
 
-        const value = xml.attr_value;
-        const rule = xml.attr_rule;
+		const value = xml.attr_value;
+		const rule = xml.attr_rule;
 
 
-        return new OscSpeedCondition( value, rule );
-    }
+		return new OscSpeedCondition( value, rule );
+	}
 
-    private readCatalogs ( xml: any ) {
+	private readCatalogs ( xml: any ) {
 
-        const catalogs = new OscCatalogs();
+		const catalogs = new OscCatalogs();
 
-        catalogs.trajectoryCatalog = this.readTrajectoryCatalog( xml.TrajectoryCatalog );
+		catalogs.trajectoryCatalog = this.readTrajectoryCatalog( xml.TrajectoryCatalog );
 
-        return catalogs;
-    }
+		return catalogs;
+	}
 
-    private readTrajectoryCatalog ( xml: any ): TrajectoryCatalog {
+	private readTrajectoryCatalog ( xml: any ): TrajectoryCatalog {
 
-        const directory = this.readDirectory( xml.Directory );
+		const directory = this.readDirectory( xml.Directory );
 
-        const catalog = new TrajectoryCatalog( directory );
+		const catalog = new TrajectoryCatalog( directory );
 
-        if ( !this.file.online ) {
+		if ( !this.file.online ) {
 
-            // let finalPath = this.fileService.resolve( this.file.path, directory.path );
+			// let finalPath = this.fileService.resolve( this.file.path, directory.path );
 
-            let finalPath = this.fileService.resolve( this.file.path, 'Catalogs/TrajectoryCatalog.xosc' );
+			let finalPath = this.fileService.resolve( this.file.path, 'Catalogs/TrajectoryCatalog.xosc' );
 
-            this.fileService.readFile( finalPath, 'default', ( file: IFile ) => {
+			this.fileService.readFile( finalPath, 'default', ( file: IFile ) => {
 
-                Debug.log( file );
+				Debug.log( file );
 
-            } );
+			} );
 
-        }
+		}
 
-        return catalog;
-    }
+		return catalog;
+	}
 
-    private readDirectory ( xml: any ): OscDirectory {
+	private readDirectory ( xml: any ): OscDirectory {
 
-        return new OscDirectory( xml.attr_path );
+		return new OscDirectory( xml.attr_path );
 
-    }
+	}
 }

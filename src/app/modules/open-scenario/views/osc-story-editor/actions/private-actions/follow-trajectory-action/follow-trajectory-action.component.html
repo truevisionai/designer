@@ -1,11 +1,11 @@
 <div class="inspector-form-container" *ngIf="action">
 
-    <h5> Edit {{ action.actionName }}</h5>
+	<h5> Edit {{ action.actionName }}</h5>
 
-    <app-osc-trajectory-inspector [trajectory]="action.trajectory"></app-osc-trajectory-inspector>
+	<app-osc-trajectory-inspector [trajectory]="action.trajectory"></app-osc-trajectory-inspector>
 
-    <button (click)="onExit()" *ngIf="action.trajectory.vertices.length > 0" mat-stroked-button>
-        Exit
-    </button>
+	<button (click)="onExit()" *ngIf="action.trajectory.vertices.length > 0" mat-stroked-button>
+		Exit
+	</button>
 
 </div>

@@ -6,55 +6,55 @@ import { OscClearHelper } from '../helpers/osc-clear-helper';
 
 export class OscSourceFile {
 
-    public static scenarioChanged = new EventEmitter<OpenScenario>();
-    public static fileChanged = new EventEmitter<IFile>();
-    public static db: OscNameDB = new OscNameDB();
+	public static scenarioChanged = new EventEmitter<OpenScenario>();
+	public static fileChanged = new EventEmitter<IFile>();
+	public static db: OscNameDB = new OscNameDB();
 
-    private static _file: IFile;
-    private static _scenario: OpenScenario = new OpenScenario();
-    private static cleaner = new OscClearHelper();
+	private static _file: IFile;
+	private static _scenario: OpenScenario = new OpenScenario();
+	private static cleaner = new OscClearHelper();
 
-    static get scenario () {
-        return this._scenario;
-    }
+	static get scenario () {
+		return this._scenario;
+	}
 
-    static set scenario ( value ) {
+	static set scenario ( value ) {
 
-        // clean the scene first
-        this.cleaner.clear( this._scenario );
+		// clean the scene first
+		this.cleaner.clear( this._scenario );
 
-        this.db.clear();
+		this.db.clear();
 
-        this._scenario = value;
+		this._scenario = value;
 
-        this.scenarioChanged.emit( value );
+		this.scenarioChanged.emit( value );
 
-    }
+	}
 
-    static get file () {
-        return this._file;
-    }
+	static get file () {
+		return this._file;
+	}
 
-    static set file ( value ) {
-        this._file = value;
-        this.fileChanged.emit( value );
-    }
+	static set file ( value ) {
+		this._file = value;
+		this.fileChanged.emit( value );
+	}
 
-    static get openScenario () {
-        return this._scenario;
-    }
+	static get openScenario () {
+		return this._scenario;
+	}
 
-    static set openScenario ( value ) {
-        this.scenario = value;
-    }
+	static set openScenario ( value ) {
+		this.scenario = value;
+	}
 
-    static get currentFile () {
-        return this._file;
-    }
+	static get currentFile () {
+		return this._file;
+	}
 
-    static set currentFile ( value ) {
-        this._file = value;
-        this.fileChanged.emit( value );
-    }
+	static set currentFile ( value ) {
+		this._file = value;
+		this.fileChanged.emit( value );
+	}
 
 }

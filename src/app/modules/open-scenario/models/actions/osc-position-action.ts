@@ -4,29 +4,29 @@ import { OscActionType } from '../osc-enums';
 
 export class OscPositionAction extends AbstractPrivateAction {
 
-    public actionName: string = 'Position';
-    public actionType: OscActionType = OscActionType.Private_Position;
+	public actionName: string = 'Position';
+	public actionType: OscActionType = OscActionType.Private_Position;
 
 
-    public position: AbstractPosition;
+	public position: AbstractPosition;
 
-    constructor ( position: AbstractPosition ) {
+	constructor ( position: AbstractPosition ) {
 
-        super();
+		super();
 
-        this.position = position;
+		this.position = position;
 
-    }
+	}
 
-    setPosition ( position: AbstractPosition ): any {
+	setPosition ( position: AbstractPosition ): any {
 
-        this.position = position;
+		this.position = position;
 
-    }
+	}
 
-    execute ( entity: OscEntityObject ) {
+	execute ( entity: OscEntityObject ) {
 
-        entity.setPosition( this.position.getPosition() );
+		entity.setPosition( this.position.getPosition() );
 
-    }
+	}
 }

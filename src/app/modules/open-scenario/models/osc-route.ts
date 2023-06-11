@@ -4,19 +4,19 @@ import { AbstractPosition } from './osc-interfaces';
 
 export class OscWaypoint {
 
-    constructor (
-        public position: AbstractPosition,
-        public strategy: OscRouteStrategy
-    ) {
-    }
+	constructor (
+		public position: AbstractPosition,
+		public strategy: OscRouteStrategy
+	) {
+	}
 }
 
 export class OscRoute {
 
-    public name: string;
-    public closed: boolean;
+	public name: string;
+	public closed: boolean;
 
-    public parameterDeclaration: OscParameterDeclaration[] = [];
-    public waypoints: OscWaypoint[] = [];
+	public parameterDeclaration: OscParameterDeclaration[] = [];
+	public waypoints: OscWaypoint[] = [];
 
 }

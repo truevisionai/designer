@@ -11,39 +11,39 @@ const scenarioString = '<?xml version="1.0" encoding="utf-8"?><OpenSCENARIO>    
 
 describe( 'OscParameterReplacer tests', () => {
 
-    // let reader: OscReaderService;
-    // let electron = new ElectronService();
-    // let fileService = new FileService( electron, null );
+	// let reader: OscReaderService;
+	// let electron = new ElectronService();
+	// let fileService = new FileService( electron, null );
 
-    // let scenario: OpenScenario;
+	// let scenario: OpenScenario;
 
-    // beforeAll( () => {
+	// beforeAll( () => {
 
-    //     reader = new OscReaderService( fileService );
+	//     reader = new OscReaderService( fileService );
 
-    //     scenario = reader.readContents( scenarioString );
+	//     scenario = reader.readContents( scenarioString );
 
-    // } );
+	// } );
 
-    // it( 'it should replace all parameters correctly', () => {
+	// it( 'it should replace all parameters correctly', () => {
 
-    //     expect( scenario.parameters.length ).toBe( 6 );
+	//     expect( scenario.parameters.length ).toBe( 6 );
 
-    //     const EGO = scenario.findEntityOrFail( 'Ego' );
-    //     const A1 = scenario.findEntityOrFail( 'A1' );
+	//     const EGO = scenario.findEntityOrFail( 'Ego' );
+	//     const A1 = scenario.findEntityOrFail( 'A1' );
 
-    //     const egoAction = EGO.initActions[ 0 ] as OscSpeedAction;
-    //     const a1Action = A1.initActions[ 0 ] as OscSpeedAction;
+	//     const egoAction = EGO.initActions[ 0 ] as OscSpeedAction;
+	//     const a1Action = A1.initActions[ 0 ] as OscSpeedAction;
 
-    //     expect( egoAction.target.value ).toBe( 27.778 );
-    //     expect( a1Action.target.value ).toBe( 22.222 );
+	//     expect( egoAction.target.value ).toBe( 27.778 );
+	//     expect( a1Action.target.value ).toBe( 22.222 );
 
-    // } );
+	// } );
 
-    // it( 'it should replace all $owner variables correctly', () => {
+	// it( 'it should replace all $owner variables correctly', () => {
 
-    //     expect( true ).toBe( true );
+	//     expect( true ).toBe( true );
 
-    // } );
+	// } );
 
 } );

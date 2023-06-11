@@ -13,39 +13,39 @@ export class OscRoutingAction {
 
 export class FollowRouteAction extends AbstractRoutingAction {
 
-    readonly actionName: string = 'FollowRoute';
-    readonly actionType: OscActionType = OscActionType.Private_Routing;
+	readonly actionName: string = 'FollowRoute';
+	readonly actionType: OscActionType = OscActionType.Private_Routing;
 
 
-    // optional 
-    public catalogReference: OscCatalogReference;
+	// optional
+	public catalogReference: OscCatalogReference;
 
-    constructor ( public route: OscRoute ) {
-        super();
-    }
+	constructor ( public route: OscRoute ) {
+		super();
+	}
 
 }
 
 export class LongitudinalPurpose {
-    public timing: LongitudinalTiming;
+	public timing: LongitudinalTiming;
 }
 
 export class LongitudinalTiming {
-    constructor (
-        public domain: OscDomainAbsoluteRelative,
-        public scale: number,
-        public offset: number
-    ) {
-    }
+	constructor (
+		public domain: OscDomainAbsoluteRelative,
+		public scale: number,
+		public offset: number
+	) {
+	}
 }
 
 export class AcquirePositionAction extends AbstractRoutingAction {
 
-    readonly actionName: string = 'AcquirePosition';
-    readonly actionType: OscActionType = OscActionType.Private_Routing;
+	readonly actionName: string = 'AcquirePosition';
+	readonly actionType: OscActionType = OscActionType.Private_Routing;
 
-    constructor ( public position: AbstractPosition ) {
-        super();
-    }
+	constructor ( public position: AbstractPosition ) {
+		super();
+	}
 
 }

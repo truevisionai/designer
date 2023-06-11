@@ -1,20 +1,20 @@
 export class OscFile {
 
-    public filepath: string;
+	public filepath: string;
 
-    constructor ( filePath: string ) {
+	constructor ( filePath: string ) {
 
-        this.filepath = filePath;
+		this.filepath = filePath;
 
-    }
+	}
 }
 
 export class OscDirectory {
 
-    public path: string;
+	public path: string;
 
-    constructor ( path: string ) {
+	constructor ( path: string ) {
 
-        this.path = path;
-    }
+		this.path = path;
+	}
 }

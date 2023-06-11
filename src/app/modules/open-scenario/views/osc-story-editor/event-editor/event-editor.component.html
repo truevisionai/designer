@@ -1,28 +1,28 @@
 <div class="inspector-form-container" *ngIf="event">
 
-    <h5>Event: {{ event.name }}</h5>
+	<h5>Event: {{ event.name }}</h5>
 
-    <!-- <button (click)="editAction(action)" *ngFor="let action of actions" mat-stroked-button> -->
-    <!-- Edit {{ action.actionName }} -->
-    <!-- </button> -->
+	<!-- <button (click)="editAction(action)" *ngFor="let action of actions" mat-stroked-button> -->
+	<!-- Edit {{ action.actionName }} -->
+	<!-- </button> -->
 
-    <!-- <div *ngIf="actions.length == 0"> -->
-    <!-- <p>No Actions Added</p> -->
-    <!-- </div> -->
+	<!-- <div *ngIf="actions.length == 0"> -->
+	<!-- <p>No Actions Added</p> -->
+	<!-- </div> -->
 
-    <!-- <h5>Add New Actions</h5> -->
-    <!-- <button (click)="addSpeedAction()" mat-stroked-button>Change Speed</button> -->
-    <!-- <button (click)="addTrajectoryAction()" mat-stroked-button>FollowTrajectory</button> -->
-    <!--    <button (click)="addChangeLaneAction()" mat-stroked-button>ChangeLane</button>-->
+	<!-- <h5>Add New Actions</h5> -->
+	<!-- <button (click)="addSpeedAction()" mat-stroked-button>Change Speed</button> -->
+	<!-- <button (click)="addTrajectoryAction()" mat-stroked-button>FollowTrajectory</button> -->
+	<!--    <button (click)="addChangeLaneAction()" mat-stroked-button>ChangeLane</button>-->
 
 
-    <div *ngFor="let action of actions">
-        <!-- <app-action-editor [action]="action"></app-action-editor> -->
-    </div>
+	<div *ngFor="let action of actions">
+		<!-- <app-action-editor [action]="action"></app-action-editor> -->
+	</div>
 
-    <button (click)="addCondition()">Add Condition</button>
+	<button (click)="addCondition()">Add Condition</button>
 
-    <div *ngFor="let condition of conditions">
-        <app-condition-editor [condition]="condition"></app-condition-editor>
-    </div>
+	<div *ngFor="let condition of conditions">
+		<app-condition-editor [condition]="condition"></app-condition-editor>
+	</div>
 </div>

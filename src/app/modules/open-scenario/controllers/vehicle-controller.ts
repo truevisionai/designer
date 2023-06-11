@@ -13,360 +13,360 @@ import { Time } from '../../../core/time';
 
 export class DefaultVehicleController extends AbstractController {
 
-    constructor ( private openDrive: TvMap, private entity: OscEntityObject ) {
-        super();
-    }
+	constructor ( private openDrive: TvMap, private entity: OscEntityObject ) {
+		super();
+	}
 
-    private get actor () {
+	private get actor () {
 
-        return this.entity;
+		return this.entity;
 
-    }
+	}
 
-    static getSuccessorRoad ( currentRoad: TvRoad, openDrive: TvMap ) {
+	static getSuccessorRoad ( currentRoad: TvRoad, openDrive: TvMap ) {
 
-        let nextRoad: TvRoad;
+		let nextRoad: TvRoad;
 
-        const successor = currentRoad.successor;
+		const successor = currentRoad.successor;
 
-        if ( successor.elementType == 'road' ) {
+		if ( successor.elementType == 'road' ) {
 
-            nextRoad = openDrive.getRoadById( successor.elementId );
+			nextRoad = openDrive.getRoadById( successor.elementId );
 
-        } else if ( successor.elementType == 'junction' ) {
+		} else if ( successor.elementType == 'junction' ) {
 
-            const junction = openDrive.getJunctionById( successor.elementId );
-            const connection = junction.getRandomConnectionFor( currentRoad.id );
+			const junction = openDrive.getJunctionById( successor.elementId );
+			const connection = junction.getRandomConnectionFor( currentRoad.id );
 
-            nextRoad = openDrive.getRoadById( connection.connectingRoad );
-        }
+			nextRoad = openDrive.getRoadById( connection.connectingRoad );
+		}
 
-        return nextRoad;
-    }
+		return nextRoad;
+	}
 
-    public update () {
+	public update () {
 
-        const actor = this.actor;
-        const roads = this.openDrive.roads;
+		const actor = this.actor;
+		const roads = this.openDrive.roads;
 
-        const currentRoad = roads.get( actor.roadId );
-        const currentLaneSection = currentRoad.getLaneSectionById( actor.laneSectionId );
-        const currentLaneId = actor.laneId;
-        const currentLane = currentLaneSection.getLaneById( currentLaneId );
+		const currentRoad = roads.get( actor.roadId );
+		const currentLaneSection = currentRoad.getLaneSectionById( actor.laneSectionId );
+		const currentLaneId = actor.laneId;
+		const currentLane = currentLaneSection.getLaneById( currentLaneId );
 
-        let nextLaneId: number;
-        let nextLane: TvLane;
-        let nextRoad: TvRoad;
+		let nextLaneId: number;
+		let nextLane: TvLane;
+		let nextRoad: TvRoad;
 
-        this.followFrontVehicle( actor );
+		this.followFrontVehicle( actor );
 
-        if ( actor.sCoordinate > currentRoad.length ) {
+		if ( actor.sCoordinate > currentRoad.length ) {
 
-            if ( actor.direction > 0 ) {
+			if ( actor.direction > 0 ) {
 
-                const successor = currentRoad.successor;
+				const successor = currentRoad.successor;
 
-                if ( !successor ) {
+				if ( !successor ) {
 
-                    actor.disable();
+					actor.disable();
 
-                } else {
+				} else {
 
-                    const contactPoint = successor.contactPoint;
+					const contactPoint = successor.contactPoint;
 
-                    // find road
-                    if ( successor.elementType == 'road' ) {
+					// find road
+					if ( successor.elementType == 'road' ) {
 
-                        nextRoad = this.openDrive.getRoadById( successor.elementId );
-                        nextLaneId = currentLane.successorExists ? currentLane.succcessor : currentLane.id;
+						nextRoad = this.openDrive.getRoadById( successor.elementId );
+						nextLaneId = currentLane.successorExists ? currentLane.succcessor : currentLane.id;
 
-                    } else if ( successor.elementType == 'junction' ) {
+					} else if ( successor.elementType == 'junction' ) {
 
-                        const junction = this.openDrive.getJunctionById( successor.elementId );
-                        const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
+						const junction = this.openDrive.getJunctionById( successor.elementId );
+						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
-                        nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
-                        nextLaneId = connection.getToLaneId( currentLaneId );
-                    }
+						nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
+						nextLaneId = connection.getToLaneId( currentLaneId );
+					}
 
-                    // update s-coordinate
-                    if ( contactPoint === TvContactPoint.END ) {
+					// update s-coordinate
+					if ( contactPoint === TvContactPoint.END ) {
 
-                        actor.direction = -1;
-                        actor.sCoordinate = nextRoad.length - ( actor.sCoordinate - currentRoad.length );
+						actor.direction = -1;
+						actor.sCoordinate = nextRoad.length - ( actor.sCoordinate - currentRoad.length );
 
-                    } else {
+					} else {
 
-                        actor.direction = 1;
-                        actor.sCoordinate = actor.sCoordinate - currentRoad.length;
+						actor.direction = 1;
+						actor.sCoordinate = actor.sCoordinate - currentRoad.length;
 
-                    }
+					}
 
-                    // find laneSection
-                    const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
+					// find laneSection
+					const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
 
-                    // find lane
-                    nextLane = nextLaneSection.getLaneById( nextLaneId );
+					// find lane
+					nextLane = nextLaneSection.getLaneById( nextLaneId );
 
-                    // console.info( currentRoad, currentLaneSection, currentLane, actor );
-                    // console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
+					// console.info( currentRoad, currentLaneSection, currentLane, actor );
+					// console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
 
-                    actor.roadId = nextRoad.id;
-                    actor.laneSectionId = nextLaneSection.id;
-                    actor.laneId = nextLane.id;
+					actor.roadId = nextRoad.id;
+					actor.laneSectionId = nextLaneSection.id;
+					actor.laneId = nextLane.id;
 
-                }
+				}
 
-            }
+			}
 
-        } else if ( actor.sCoordinate < 0 ) {
+		} else if ( actor.sCoordinate < 0 ) {
 
-            const predecessor = currentRoad.predecessor;
+			const predecessor = currentRoad.predecessor;
 
-            if ( !predecessor ) {
+			if ( !predecessor ) {
 
-                actor.disable();
+				actor.disable();
 
-            } else {
+			} else {
 
-                const contactPoint = predecessor.contactPoint;
+				const contactPoint = predecessor.contactPoint;
 
-                // find road
-                if ( predecessor.elementType == 'road' ) {
+				// find road
+				if ( predecessor.elementType == 'road' ) {
 
-                    nextRoad = this.openDrive.getRoadById( predecessor.elementId );
-                    nextLaneId = currentLane.predecessorExists ? currentLane.predecessor : currentLane.id;
+					nextRoad = this.openDrive.getRoadById( predecessor.elementId );
+					nextLaneId = currentLane.predecessorExists ? currentLane.predecessor : currentLane.id;
 
-                } else if ( predecessor.elementType == 'junction' ) {
+				} else if ( predecessor.elementType == 'junction' ) {
 
-                    const junction = this.openDrive.getJunctionById( predecessor.elementId );
-                    const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
+					const junction = this.openDrive.getJunctionById( predecessor.elementId );
+					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
-                    nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
-                    nextLaneId = connection.getToLaneId( currentLaneId );
-                }
+					nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
+					nextLaneId = connection.getToLaneId( currentLaneId );
+				}
 
-                // update s-coordinate
-                if ( contactPoint === TvContactPoint.END ) {
+				// update s-coordinate
+				if ( contactPoint === TvContactPoint.END ) {
 
-                    actor.direction = -1;
-                    actor.sCoordinate = nextRoad.length + actor.sCoordinate;
+					actor.direction = -1;
+					actor.sCoordinate = nextRoad.length + actor.sCoordinate;
 
-                } else {
+				} else {
 
-                    actor.direction = 1;
-                    actor.sCoordinate = -1 * actor.sCoordinate;
+					actor.direction = 1;
+					actor.sCoordinate = -1 * actor.sCoordinate;
 
-                }
+				}
 
-                // find laneSection
-                const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
+				// find laneSection
+				const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
 
-                try {
+				try {
 
-                    nextLane = nextLaneSection.getLaneById( nextLaneId );
+					nextLane = nextLaneSection.getLaneById( nextLaneId );
 
-                    actor.roadId = nextRoad.id;
-                    actor.laneSectionId = nextLaneSection.id;
-                    actor.laneId = nextLane.id;
+					actor.roadId = nextRoad.id;
+					actor.laneSectionId = nextLaneSection.id;
+					actor.laneId = nextLane.id;
 
-                } catch ( e ) {
+				} catch ( e ) {
 
-                    console.error( e );
-                    console.info( currentRoad, currentLaneSection, currentLane, actor );
-                    console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
+					console.error( e );
+					console.info( currentRoad, currentLaneSection, currentLane, actor );
+					console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
 
-                }
+				}
 
-                // console.info( currentRoad, currentLaneSection, currentLane, actor );
-                // console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
-            }
+				// console.info( currentRoad, currentLaneSection, currentLane, actor );
+				// console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
+			}
 
-        } else {
+		} else {
 
-            // positive direction
-            if ( actor.direction > 0 && actor.sCoordinate > currentLaneSection.endS ) {
+			// positive direction
+			if ( actor.direction > 0 && actor.sCoordinate > currentLaneSection.endS ) {
 
-                actor.laneSectionId += 1;
-                actor.laneId = currentLane.getSuccessor();
+				actor.laneSectionId += 1;
+				actor.laneId = currentLane.getSuccessor();
 
-            } else if ( actor.direction < 0 && actor.sCoordinate < currentLaneSection.s ) {
+			} else if ( actor.direction < 0 && actor.sCoordinate < currentLaneSection.s ) {
 
-                actor.laneSectionId -= 1;
-                actor.laneId = currentLane.getPredecessor();
+				actor.laneSectionId -= 1;
+				actor.laneId = currentLane.getPredecessor();
 
-            } else {
+			} else {
 
-                // console.warn( 'uknown situation' );
+				// console.warn( 'uknown situation' );
 
-            }
+			}
 
-            const refPos = new TvPosTheta();
+			const refPos = new TvPosTheta();
 
-            const position = TvMapQueries.getLanePosition( actor.roadId, actor.laneId, actor.sCoordinate, actor.laneOffset, refPos );
+			const position = TvMapQueries.getLanePosition( actor.roadId, actor.laneId, actor.sCoordinate, actor.laneOffset, refPos );
 
-            actor.gameObject.position.copy( position );
+			actor.gameObject.position.copy( position );
 
-            // right lane move forward
-            // left lane traffic move opposite
-            // actor.direction = obj.getLaneId() > 0 ? -1 : 1;
+			// right lane move forward
+			// left lane traffic move opposite
+			// actor.direction = obj.getLaneId() > 0 ? -1 : 1;
 
-            actor.gameObject.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
+			actor.gameObject.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
 
-            actor.sCoordinate += actor.speed * actor.direction * Maths.Speed2MPH * Time.deltaTime;
-        }
+			actor.sCoordinate += actor.speed * actor.direction * Maths.Speed2MPH * Time.deltaTime;
+		}
 
-    }
+	}
 
-    private followFrontVehicle ( actor: OscEntityObject ) {
+	private followFrontVehicle ( actor: OscEntityObject ) {
 
-        // my current road s + 10
-        //
+		// my current road s + 10
+		//
 
-        // const vehiclesInFront = this.getVehiclesInFront( actor );
+		// const vehiclesInFront = this.getVehiclesInFront( actor );
 
-        const entityInFront = [ ...OscSourceFile.openScenario.objects.values() ].find( otherActor => {
-            if (
-                otherActor.roadId == actor.roadId &&
-                otherActor.laneSectionId == actor.laneSectionId &&
-                otherActor.laneId == actor.laneId &&
-                otherActor.name != actor.name
-            ) {
+		const entityInFront = [ ...OscSourceFile.openScenario.objects.values() ].find( otherActor => {
+			if (
+				otherActor.roadId == actor.roadId &&
+				otherActor.laneSectionId == actor.laneSectionId &&
+				otherActor.laneId == actor.laneId &&
+				otherActor.name != actor.name
+			) {
 
-                let distance: number = 0;
+				let distance: number = 0;
 
-                if ( actor.direction > 0 ) {
+				if ( actor.direction > 0 ) {
 
-                    distance = ( otherActor.sCoordinate - actor.sCoordinate );
+					distance = ( otherActor.sCoordinate - actor.sCoordinate );
 
 
-                } else {
+				} else {
 
-                    distance = ( actor.sCoordinate - otherActor.sCoordinate );
+					distance = ( actor.sCoordinate - otherActor.sCoordinate );
 
-                }
+				}
 
-                const inFront = distance > 0;
+				const inFront = distance > 0;
 
-                if ( inFront && distance <= 10 && otherActor.speed < actor.speed ) {
+				if ( inFront && distance <= 10 && otherActor.speed < actor.speed ) {
 
-                    actor.speed = otherActor.speed;
-                    return true;
+					actor.speed = otherActor.speed;
+					return true;
 
-                }
+				}
 
-                return false;
+				return false;
 
-            }
-        } );
+			}
+		} );
 
-        // if ( entityInFront.length > 0 ) {
-        //
-        //     // console.log( 'entity-in-front', actor, entityInFront );
-        //     if ( actor.speed != entityInFront[ 0 ].speed ) {
-        //
-        //         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-        //         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( entityInFront[ 0 ].speed ) );
-        //
-        //         action.execute( actor as OscEntityObject );
-        //
-        //     }
-        //
-        // } else {
-        //
-        //     if ( actor.speed != actor.desiredSpeed ) {
-        //
-        //         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-        //         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( actor.desiredSpeed ) );
-        //
-        //         action.execute( actor as OscEntityObject );
-        //
-        //     }
-        //
-        // }
+		// if ( entityInFront.length > 0 ) {
+		//
+		//     // console.log( 'entity-in-front', actor, entityInFront );
+		//     if ( actor.speed != entityInFront[ 0 ].speed ) {
+		//
+		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
+		//         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( entityInFront[ 0 ].speed ) );
+		//
+		//         action.execute( actor as OscEntityObject );
+		//
+		//     }
+		//
+		// } else {
+		//
+		//     if ( actor.speed != actor.desiredSpeed ) {
+		//
+		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
+		//         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( actor.desiredSpeed ) );
+		//
+		//         action.execute( actor as OscEntityObject );
+		//
+		//     }
+		//
+		// }
 
-        if ( !entityInFront ) {
+		if ( !entityInFront ) {
 
-            const road = this.openDrive.roads.get( actor.roadId );
-            const maxSpeed = road.findMaxSpeedAt( actor.sCoordinate );
+			const road = this.openDrive.roads.get( actor.roadId );
+			const maxSpeed = road.findMaxSpeedAt( actor.sCoordinate );
 
-            const desiredSpeed = Math.min( maxSpeed, actor.maxSpeed );
+			const desiredSpeed = Math.min( maxSpeed, actor.maxSpeed );
 
-            if ( desiredSpeed == 0 ) {
+			if ( desiredSpeed == 0 ) {
 
-                actor.speed = desiredSpeed;
+				actor.speed = desiredSpeed;
 
-            } else if ( actor.speed < desiredSpeed ) {
+			} else if ( actor.speed < desiredSpeed ) {
 
-                actor.speed += 0.1;
+				actor.speed += 0.1;
 
-            }
+			}
 
-        } else {
+		} else {
 
-            // console.log( 'vehicle-in-front' );
+			// console.log( 'vehicle-in-front' );
 
-        }
+		}
 
-    }
+	}
 
-    private getVehiclesInFront ( actor: OscEntityObject ) {
+	private getVehiclesInFront ( actor: OscEntityObject ) {
 
-        const currentRoad = this.openDrive.getRoadById( actor.roadId );
+		const currentRoad = this.openDrive.getRoadById( actor.roadId );
 
-        let nextRoad: TvRoad;
+		let nextRoad: TvRoad;
 
-        if ( actor.direction > 0 && currentRoad.successor ) {
+		if ( actor.direction > 0 && currentRoad.successor ) {
 
-            nextRoad = DefaultVehicleController.getSuccessorRoad( currentRoad, this.openDrive );
+			nextRoad = DefaultVehicleController.getSuccessorRoad( currentRoad, this.openDrive );
 
-        } else if ( actor.direction < 0 && currentRoad.predecessor ) {
+		} else if ( actor.direction < 0 && currentRoad.predecessor ) {
 
 
-        }
+		}
 
-        const vehicles: OscEntityObject[] = [];
+		const vehicles: OscEntityObject[] = [];
 
-        OscPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
+		OscPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
 
-        if ( nextRoad ) {
+		if ( nextRoad ) {
 
-            OscPlayerService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
+			OscPlayerService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
 
-        }
+		}
 
-        const nextVehicle = vehicles.find( otherActor => {
+		const nextVehicle = vehicles.find( otherActor => {
 
-            let distance: number = 0;
+			let distance: number = 0;
 
-            if ( actor.direction > 0 ) {
+			if ( actor.direction > 0 ) {
 
-                distance = ( otherActor.sCoordinate - actor.sCoordinate );
+				distance = ( otherActor.sCoordinate - actor.sCoordinate );
 
 
-            } else {
+			} else {
 
-                distance = ( actor.sCoordinate - otherActor.sCoordinate );
+				distance = ( actor.sCoordinate - otherActor.sCoordinate );
 
-            }
+			}
 
-            const inFront = distance > 0;
+			const inFront = distance > 0;
 
-            if ( inFront && distance <= 5 ) {
+			if ( inFront && distance <= 5 ) {
 
-                actor.speed = otherActor.speed;
-                return true;
+				actor.speed = otherActor.speed;
+				return true;
 
-            } else if ( inFront && distance <= 10 ) {
+			} else if ( inFront && distance <= 10 ) {
 
-                actor.speed = otherActor.speed;
-                return true;
+				actor.speed = otherActor.speed;
+				return true;
 
-            }
+			}
 
-            return false;
+			return false;
 
-        } );
-    }
+		} );
+	}
 }
 

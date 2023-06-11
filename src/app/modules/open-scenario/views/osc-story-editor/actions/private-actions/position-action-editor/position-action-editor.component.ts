@@ -4,38 +4,38 @@ import { OscEntityObject } from '../../../../../models/osc-entities';
 import { AbstractPosition } from '../../../../../models/osc-interfaces';
 
 @Component( {
-    selector: 'app-position-action-editor',
-    templateUrl: './position-action-editor.component.html'
+	selector: 'app-position-action-editor',
+	templateUrl: './position-action-editor.component.html'
 } )
 export class PositionActionEditorComponent implements OnInit {
 
-    @Input() action: OscPositionAction;
-    @Input() entity: OscEntityObject;
+	@Input() action: OscPositionAction;
+	@Input() entity: OscEntityObject;
 
-    constructor () {
+	constructor () {
 
-    }
+	}
 
-    ngOnInit () {
-
-
-    }
-
-    onPositionChanged ( $event: AbstractPosition ) {
-
-        this.action.position = $event;
+	ngOnInit () {
 
 
-        if ( this.entity ) this.action.execute( this.entity );
+	}
 
-    }
+	onPositionChanged ( $event: AbstractPosition ) {
 
-    onPositionModified ( $event: AbstractPosition ) {
+		this.action.position = $event;
 
-        this.action.position = $event;
 
-        if ( this.entity ) this.action.execute( this.entity );
+		if ( this.entity ) this.action.execute( this.entity );
 
-    }
+	}
+
+	onPositionModified ( $event: AbstractPosition ) {
+
+		this.action.position = $event;
+
+		if ( this.entity ) this.action.execute( this.entity );
+
+	}
 
 }

@@ -4,7 +4,7 @@ import { AbstractController } from './osc-interfaces';
 
 export class OscDriver extends AbstractController {
 
-    private m_ParameterDeclarations: OscParameterDeclaration[];
-    private m_Description: OscPersonDescription;
+	private m_ParameterDeclarations: OscParameterDeclaration[];
+	private m_Description: OscPersonDescription;
 
 }

@@ -14,129 +14,129 @@ import { ICommand } from '../../../../core/commands/i-command';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
 @Component( {
-    selector: 'app-osc-editor',
-    templateUrl: './osc-editor.component.html'
+	selector: 'app-osc-editor',
+	templateUrl: './osc-editor.component.html'
 } )
 export class OscEditorComponent implements OnInit, AfterViewInit, AfterContentInit {
 
-    private static threeService: ThreeService;
-    private isOpeningFromUrl = false;
+	private static threeService: ThreeService;
+	private isOpeningFromUrl = false;
 
-    constructor (
-        private route: ActivatedRoute,
-        private oscService: OscService,
-        private threeService: ThreeService,
-        private electron: TvElectronService,
-        private openScenarioApi: OpenScenarioApiService,
-        private dialog: MatDialog
-    ) {
-        OscEditor.threeService = threeService;
-    }
+	constructor (
+		private route: ActivatedRoute,
+		private oscService: OscService,
+		private threeService: ThreeService,
+		private electron: TvElectronService,
+		private openScenarioApi: OpenScenarioApiService,
+		private dialog: MatDialog
+	) {
+		OscEditor.threeService = threeService;
+	}
 
-    get scenario () {
-        return OscSourceFile.openScenario;
-    }
+	get scenario () {
+		return OscSourceFile.openScenario;
+	}
 
-    static execute ( command: ICommand ) {
-        CommandHistory.execute( command );
-    }
+	static execute ( command: ICommand ) {
+		CommandHistory.execute( command );
+	}
 
-    static focus ( obj: Object3D ) {
-        this.threeService.focus( obj );
-    }
+	static focus ( obj: Object3D ) {
+		this.threeService.focus( obj );
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        this.openFileFromUrl();
+		this.openFileFromUrl();
 
-    }
+	}
 
-    ngAfterViewInit (): void {
+	ngAfterViewInit (): void {
 
-        // this.showNewScenarioDialog();
+		// this.showNewScenarioDialog();
 
-    }
+	}
 
-    ngAfterContentInit (): void {
+	ngAfterContentInit (): void {
 
-        if ( this.isOpeningFromUrl ) return;
+		if ( this.isOpeningFromUrl ) return;
 
-        setTimeout( () => {
+		setTimeout( () => {
 
-            this.showNewScenarioDialog();
+			this.showNewScenarioDialog();
 
-        }, 300 );
+		}, 300 );
 
-    }
+	}
 
-    openFileFromUrl () {
+	openFileFromUrl () {
 
-        this.route.queryParamMap.subscribe( params => {
+		this.route.queryParamMap.subscribe( params => {
 
-            this.importFromUrlFilepath( params );
+			this.importFromUrlFilepath( params );
 
-            this.checkForScenarioNameInUrl( params );
+			this.checkForScenarioNameInUrl( params );
 
-        } );
-    }
+		} );
+	}
 
-    showNewScenarioDialog () {
+	showNewScenarioDialog () {
 
-        this.dialog.open( NewScenarioDialogComponent, {
-            width: '480px',
-            height: '320px',
-            data: null,
-            disableClose: true
-        } );
+		this.dialog.open( NewScenarioDialogComponent, {
+			width: '480px',
+			height: '320px',
+			data: null,
+			disableClose: true
+		} );
 
-    }
+	}
 
-    checkForScenarioNameInUrl ( params: ParamMap ): any {
+	checkForScenarioNameInUrl ( params: ParamMap ): any {
 
-        const scenarioName = params.get( 'scenario_name' );
+		const scenarioName = params.get( 'scenario_name' );
 
-        if ( scenarioName != null ) {
+		if ( scenarioName != null ) {
 
-            this.openScenarioApi.getOpenScenario( scenarioName ).subscribe( file => {
+			this.openScenarioApi.getOpenScenario( scenarioName ).subscribe( file => {
 
-                this.isOpeningFromUrl = true;
+				this.isOpeningFromUrl = true;
 
-                this.oscService.import( file );
+				this.oscService.import( file );
 
-            } );
-        }
+			} );
+		}
 
-    }
+	}
 
-    importFromUrlFilepath ( params: ParamMap ): any {
+	importFromUrlFilepath ( params: ParamMap ): any {
 
-        if ( this.electron.isElectronApp ) {
+		if ( this.electron.isElectronApp ) {
 
-            const filepath = params.get( 'filepath' );
+			const filepath = params.get( 'filepath' );
 
-            if ( filepath != null && filepath !== '' && filepath !== 'null' ) {
+			if ( filepath != null && filepath !== '' && filepath !== 'null' ) {
 
-                this.isOpeningFromUrl = true;
+				this.isOpeningFromUrl = true;
 
-                this.oscService.importFromPath( filepath );
-            }
+				this.oscService.importFromPath( filepath );
+			}
 
-        }
+		}
 
-    }
+	}
 
-    @HostListener( 'document:keydown', [ '$event' ] )
-    onKeyDown ( e: KeyboardEvent ) {
+	@HostListener( 'document:keydown', [ '$event' ] )
+	onKeyDown ( e: KeyboardEvent ) {
 
-        KeyboardInput.OnKeyDown( e );
+		KeyboardInput.OnKeyDown( e );
 
-    }
+	}
 
-    @HostListener( 'document:keyup', [ '$event' ] )
-    onKeyUp ( e: KeyboardEvent ) {
+	@HostListener( 'document:keyup', [ '$event' ] )
+	onKeyUp ( e: KeyboardEvent ) {
 
-        KeyboardInput.OnKeyUp( e );
+		KeyboardInput.OnKeyUp( e );
 
-    }
+	}
 
 }

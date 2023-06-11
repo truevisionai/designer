@@ -7,57 +7,57 @@ import { OscRelativeObjectPosition } from '../../../models/positions/osc-relativ
 import { AbstractPositionEditor } from './AbstractPositionEditor';
 
 @Component( {
-    selector: 'app-position-editor',
-    templateUrl: './position-editor.component.html'
+	selector: 'app-position-editor',
+	templateUrl: './position-editor.component.html'
 } )
 export class PositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-    get types () {
-        return OscPositionType;
-    }
+	get types () {
+		return OscPositionType;
+	}
 
-    constructor () {
-        super();
-    }
+	constructor () {
+		super();
+	}
 
-    ngOnInit () {
-
-
-    }
-
-    onChange ( e: number ) {
-
-        switch ( e ) {
-
-            case this.types.World:
-                this.position = new OscWorldPosition();
-                break;
-
-            // case this.types.Road:
-            //     this.position = new OscRoadPosition();
-            //     break;
-
-            case this.types.Lane:
-                this.position = new OscLanePosition();
-                break;
-
-            case this.types.RelativeObject:
-                this.position = new OscRelativeObjectPosition();
-                break;
-
-            default:
-                break;
-
-        }
+	ngOnInit () {
 
 
-        this.positionChanged.emit( this.position );
+	}
 
-    }
+	onChange ( e: number ) {
 
-    onPositionModified ( $event: AbstractPosition ) {
+		switch ( e ) {
 
-        this.positionModified.emit( $event );
+			case this.types.World:
+				this.position = new OscWorldPosition();
+				break;
 
-    }
+			// case this.types.Road:
+			//     this.position = new OscRoadPosition();
+			//     break;
+
+			case this.types.Lane:
+				this.position = new OscLanePosition();
+				break;
+
+			case this.types.RelativeObject:
+				this.position = new OscRelativeObjectPosition();
+				break;
+
+			default:
+				break;
+
+		}
+
+
+		this.positionChanged.emit( this.position );
+
+	}
+
+	onPositionModified ( $event: AbstractPosition ) {
+
+		this.positionModified.emit( $event );
+
+	}
 }

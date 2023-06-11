@@ -5,67 +5,67 @@ import { OscTrajectory } from './osc-trajectory';
 
 export class OscCatalogs {
 
-    public static truevisionCatalog = 'TruevisionCatalog';
-    public static truevisionDefaultController = 'DefaultController';
+	public static truevisionCatalog = 'TruevisionCatalog';
+	public static truevisionDefaultController = 'DefaultController';
 
-    public vehicleCatalog: OscCatalog;
-    public driverCatalog: OscCatalog;
-    public pedestrianCatalog: OscCatalog;
-    public pedestrianControllerCatalog: OscCatalog;
-    public miscObjectCatalog: OscCatalog;
-    public environmentCatalog: OscCatalog;
-    public maneuverCatalog: OscCatalog;
-    public trajectoryCatalog: OscCatalog;
-    public routeCatalog: OscCatalog;
+	public vehicleCatalog: OscCatalog;
+	public driverCatalog: OscCatalog;
+	public pedestrianCatalog: OscCatalog;
+	public pedestrianControllerCatalog: OscCatalog;
+	public miscObjectCatalog: OscCatalog;
+	public environmentCatalog: OscCatalog;
+	public maneuverCatalog: OscCatalog;
+	public trajectoryCatalog: OscCatalog;
+	public routeCatalog: OscCatalog;
 
-    constructor () {
+	constructor () {
 
-    }
+	}
 
 }
 
 export class OscCatalog {
 
-    private m_Directory: OscDirectory;
+	private m_Directory: OscDirectory;
 
-    constructor ( directory: OscDirectory ) {
+	constructor ( directory: OscDirectory ) {
 
-        this.m_Directory = directory;
+		this.m_Directory = directory;
 
-    }
+	}
 }
 
 export class TrajectoryCatalog extends OscCatalog {
 
-    private trajectories: OscTrajectory[] = [];
+	private trajectories: OscTrajectory[] = [];
 
-    constructor ( directory: OscDirectory ) {
+	constructor ( directory: OscDirectory ) {
 
-        super( directory );
+		super( directory );
 
-    }
+	}
 
 }
 
 export class OscCatalogReference {
 
-    private parameters: OscParameter[];
+	private parameters: OscParameter[];
 
-    constructor ( public catalogName: string, public entryName: string ) {
+	constructor ( public catalogName: string, public entryName: string ) {
 
-    }
+	}
 
-    static readXml ( CatalogReference: any ): OscCatalogReference {
+	static readXml ( CatalogReference: any ): OscCatalogReference {
 
-        const oscCatalogReference = new OscCatalogReference( null, null );
+		const oscCatalogReference = new OscCatalogReference( null, null );
 
-        oscCatalogReference.catalogName = CatalogReference.attr_catalogName;
-        oscCatalogReference.entryName = CatalogReference.attr_entryName;
+		oscCatalogReference.catalogName = CatalogReference.attr_catalogName;
+		oscCatalogReference.entryName = CatalogReference.attr_entryName;
 
 
-        return oscCatalogReference;
+		return oscCatalogReference;
 
-    }
+	}
 
 }
 

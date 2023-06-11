@@ -4,50 +4,50 @@ import { OscSourceFile } from '../services/osc-source-file';
 
 export class OscSequence {
 
-    private static count = 1;
+	private static count = 1;
 
-    // public name: string;
-    // public numberOfExecutions: number;
-    // public actors: string[] = [];
+	// public name: string;
+	// public numberOfExecutions: number;
+	// public actors: string[] = [];
 
-    // TODO: ByConditionActor
+	// TODO: ByConditionActor
 
-    public catalogReferences: OscCatalogReference[] = [];
-    public maneuvers: OscManeuver[] = [];
+	public catalogReferences: OscCatalogReference[] = [];
+	public maneuvers: OscManeuver[] = [];
 
-    constructor ( public name?: string, public numberOfExecutions?: number, public actors?: string[] ) {
+	constructor ( public name?: string, public numberOfExecutions?: number, public actors?: string[] ) {
 
-        if ( this.actors == null ) this.actors = [];
+		if ( this.actors == null ) this.actors = [];
 
-        OscSequence.count++;
+		OscSequence.count++;
 
-    }
+	}
 
-    static getNewName ( name = 'MySequence' ) {
+	static getNewName ( name = 'MySequence' ) {
 
-        return `${ name }${ this.count }`;
+		return `${ name }${ this.count }`;
 
-    }
+	}
 
-    addNewManeuver ( name: string ) {
+	addNewManeuver ( name: string ) {
 
-        const maneuver = new OscManeuver( name );
+		const maneuver = new OscManeuver( name );
 
-        this.addManeuver( maneuver );
+		this.addManeuver( maneuver );
 
-        return maneuver;
+		return maneuver;
 
-    }
+	}
 
-    addManeuver ( maneuver: OscManeuver ) {
+	addManeuver ( maneuver: OscManeuver ) {
 
-        const hasName = OscSourceFile.db.has_maneuver( maneuver.name );
+		const hasName = OscSourceFile.db.has_maneuver( maneuver.name );
 
-        if ( hasName ) throw new Error( 'Maneuver name already used' );
+		if ( hasName ) throw new Error( 'Maneuver name already used' );
 
-        this.maneuvers.push( maneuver );
+		this.maneuvers.push( maneuver );
 
-        OscSourceFile.db.add_maneuver( maneuver.name );
+		OscSourceFile.db.add_maneuver( maneuver.name );
 
-    }
+	}
 }

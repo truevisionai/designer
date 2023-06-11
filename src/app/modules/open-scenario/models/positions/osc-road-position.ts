@@ -5,36 +5,36 @@ import { Vector3 } from 'three';
 
 export class OscRoadPosition extends AbstractPosition {
 
-    public readonly type = OscPositionType.Road;
+	public readonly type = OscPositionType.Road;
 
-    private roadId: number;
-    private sValue: number;
-    private tValue: number;
-    private orientation: OscOrientation;
+	private roadId: number;
+	private sValue: number;
+	private tValue: number;
+	private orientation: OscOrientation;
 
-    constructor ( roadId = 0, sValue = 0, tValue = 0, orientation: OscOrientation = null ) {
+	constructor ( roadId = 0, sValue = 0, tValue = 0, orientation: OscOrientation = null ) {
 
-        super();
+		super();
 
-        this.roadId = roadId;
-        this.sValue = sValue;
-        this.tValue = tValue;
-        this.orientation = orientation;
+		this.roadId = roadId;
+		this.sValue = sValue;
+		this.tValue = tValue;
+		this.orientation = orientation;
 
-    }
+	}
 
-    exportXml () {
+	exportXml () {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    getPosition (): Vector3 {
+	getPosition (): Vector3 {
 
-        console.error( 'Method not implemented.' );
+		console.error( 'Method not implemented.' );
 
-        return new Vector3();
+		return new Vector3();
 
-    }
+	}
 
 }

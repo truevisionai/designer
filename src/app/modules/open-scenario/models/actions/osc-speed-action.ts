@@ -11,139 +11,139 @@ import { Time } from '../../../../core/time';
 
 export class OscSpeedAction extends AbstractPrivateAction {
 
-    actionType: OscActionType = OscActionType.Private_Longitudinal_Speed;
+	actionType: OscActionType = OscActionType.Private_Longitudinal_Speed;
 
-    execute ( entity: OscEntityObject ) {
+	execute ( entity: OscEntityObject ) {
 
-        if ( !this.hasStarted ) {
+		if ( !this.hasStarted ) {
 
-            this.start( entity );
-            this.update( entity );
+			this.start( entity );
+			this.update( entity );
 
-        } else {
+		} else {
 
-            this.update( entity );
+			this.update( entity );
 
-        }
+		}
 
-    }
+	}
 
-    public actionName: string = 'Speed';
-    public dynamics: OscSpeedDynamics;
-    private _target: AbstractTarget;
+	public actionName: string = 'Speed';
+	public dynamics: OscSpeedDynamics;
+	private _target: AbstractTarget;
 
-    private newSpeed: number;
-    private currentSpeed: number;
-    private startTime: number;
+	private newSpeed: number;
+	private currentSpeed: number;
+	private startTime: number;
 
-    constructor ( dynamics: OscSpeedDynamics = null, target: AbstractTarget = null ) {
+	constructor ( dynamics: OscSpeedDynamics = null, target: AbstractTarget = null ) {
 
-        super();
+		super();
 
-        this.dynamics = dynamics;
-        this._target = target;
+		this.dynamics = dynamics;
+		this._target = target;
 
-    }
+	}
 
-    get target () {
+	get target () {
 
-        return this._target;
+		return this._target;
 
-    }
+	}
 
-    set target ( value ) {
-        this._target = value;
-    }
+	set target ( value ) {
+		this._target = value;
+	}
 
-    setTarget ( target: AbstractTarget ) {
+	setTarget ( target: AbstractTarget ) {
 
-        this._target = target;
+		this._target = target;
 
-    }
+	}
 
-    setAbsoluteTarget ( target: number ) {
+	setAbsoluteTarget ( target: number ) {
 
-        this._target = new OscAbsoluteTarget( target );
+		this._target = new OscAbsoluteTarget( target );
 
-    }
+	}
 
-    private start ( entity: OscEntityObject ) {
+	private start ( entity: OscEntityObject ) {
 
-        this.hasStarted = true;
+		this.hasStarted = true;
 
-        this.startTime = Time.time;
+		this.startTime = Time.time;
 
-        this.currentSpeed = entity.speed;
+		this.currentSpeed = entity.speed;
 
-        this.setNewSpeedTarget( entity );
+		this.setNewSpeedTarget( entity );
 
-        // TODO : Remove this switch case and keep only 1
-        if ( this.dynamics.shape === OscDynamicsShape.step ) {
+		// TODO : Remove this switch case and keep only 1
+		if ( this.dynamics.shape === OscDynamicsShape.step ) {
 
-            entity.maxSpeed = this.newSpeed;
+			entity.maxSpeed = this.newSpeed;
 
-        }
+		}
 
-    }
+	}
 
-    private update ( entity: OscEntityObject ) {
+	private update ( entity: OscEntityObject ) {
 
-        const timePassed = ( Time.time - this.startTime ) * 0.001;
+		const timePassed = ( Time.time - this.startTime ) * 0.001;
 
-        if ( timePassed <= this.dynamics.time ) {
+		if ( timePassed <= this.dynamics.time ) {
 
-            const fraction = timePassed / this.dynamics.time;
+			const fraction = timePassed / this.dynamics.time;
 
-            switch ( this.dynamics.shape ) {
+			switch ( this.dynamics.shape ) {
 
-                case OscDynamicsShape.linear:
-                    entity.maxSpeed = Maths.linearInterpolation( this.currentSpeed, this.newSpeed, fraction );
-                    break;
+				case OscDynamicsShape.linear:
+					entity.maxSpeed = Maths.linearInterpolation( this.currentSpeed, this.newSpeed, fraction );
+					break;
 
-                case OscDynamicsShape.cubic:
-                    entity.maxSpeed = Maths.cubicInterpolation( this.currentSpeed, this.newSpeed, fraction );
-                    break;
+				case OscDynamicsShape.cubic:
+					entity.maxSpeed = Maths.cubicInterpolation( this.currentSpeed, this.newSpeed, fraction );
+					break;
 
-                case OscDynamicsShape.sinusoidal:
-                    entity.maxSpeed = Maths.sineInterpolation( this.currentSpeed, this.newSpeed, fraction );
-                    break;
+				case OscDynamicsShape.sinusoidal:
+					entity.maxSpeed = Maths.sineInterpolation( this.currentSpeed, this.newSpeed, fraction );
+					break;
 
-                case OscDynamicsShape.step:
-                    entity.maxSpeed = this.newSpeed;
-                    break;
+				case OscDynamicsShape.step:
+					entity.maxSpeed = this.newSpeed;
+					break;
 
-            }
+			}
 
-        } else {
+		} else {
 
-            this.isCompleted = true;
+			this.isCompleted = true;
 
-            this.completed.emit();
+			this.completed.emit();
 
-        }
-    }
+		}
+	}
 
 
-    private setNewSpeedTarget ( entity: OscEntityObject ) {
+	private setNewSpeedTarget ( entity: OscEntityObject ) {
 
-        switch ( this.target.targetType ) {
+		switch ( this.target.targetType ) {
 
-            case OscTargetType.absolute:
+			case OscTargetType.absolute:
 
-                this.newSpeed = this.target.value;
+				this.newSpeed = this.target.value;
 
-                break;
+				break;
 
-            case OscTargetType.relative:
+			case OscTargetType.relative:
 
-                const name = ( this.target as OscRelativeTarget ).object;
+				const name = ( this.target as OscRelativeTarget ).object;
 
-                const obj = OscSourceFile.openScenario.findEntityOrFail( name );
+				const obj = OscSourceFile.openScenario.findEntityOrFail( name );
 
-                this.newSpeed = obj.speed + this.target.value;
+				this.newSpeed = obj.speed + this.target.value;
 
-                break;
+				break;
 
-        }
-    }
+		}
+	}
 }

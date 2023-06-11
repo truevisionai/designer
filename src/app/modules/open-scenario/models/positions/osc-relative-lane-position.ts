@@ -5,28 +5,28 @@ import { Vector3 } from 'three';
 
 export class OscRelativeLanePosition extends AbstractPosition {
 
-    public readonly type = OscPositionType.RelativeLane;
+	public readonly type = OscPositionType.RelativeLane;
 
-    public object: string;
-    public dLane: number;
-    public ds: number;
-    public offset?: number;
+	public object: string;
+	public dLane: number;
+	public ds: number;
+	public offset?: number;
 
-    public orientations: OscOrientation[] = [];
+	public orientations: OscOrientation[] = [];
 
-    exportXml () {
+	exportXml () {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    getPosition (): Vector3 {
+	getPosition (): Vector3 {
 
-        console.error( 'Method not implemented.' );
+		console.error( 'Method not implemented.' );
 
-        return new Vector3();
+		return new Vector3();
 
-    }
+	}
 
 
 }

@@ -23,170 +23,170 @@ import { OscDialogService } from '../../services/osc-dialog.service';
 import { ChooseActionDialogData } from '../../dialogs/choose-action-dialog/choose-action-dialog.component';
 
 @Component( {
-    selector: 'app-osc-player-actions-inspector',
-    templateUrl: './osc-player-actions-inspector.component.html',
-    styleUrls: [ './osc-player-actions-inspector.component.css' ]
+	selector: 'app-osc-player-actions-inspector',
+	templateUrl: './osc-player-actions-inspector.component.html',
+	styleUrls: [ './osc-player-actions-inspector.component.css' ]
 } )
 export class OscActionsInspectorComponent implements OnInit, IComponent {
 
-    data: OscEntityObject;
+	data: OscEntityObject;
 
-    constructor ( private dialogService: OscDialogService ) {
-    }
+	constructor ( private dialogService: OscDialogService ) {
+	}
 
-    get entity () {
-        return this.data;
-    }
+	get entity () {
+		return this.data;
+	}
 
-    get scenario () {
-        return OscSourceFile.openScenario;
-    }
+	get scenario () {
+		return OscSourceFile.openScenario;
+	}
 
-    get actions () {
-        return this.scenario.getActionsByEntity( this.entity.name ) as AbstractPrivateAction[];
-    }
+	get actions () {
+		return this.scenario.getActionsByEntity( this.entity.name ) as AbstractPrivateAction[];
+	}
 
-    get maneuvers () {
-        return this.scenario.getManeuversForEntity( this.entity.name );
-    }
+	get maneuvers () {
+		return this.scenario.getManeuversForEntity( this.entity.name );
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-    }
+	}
 
-    addAction () {
+	addAction () {
 
-        this.dialogService.openChooseActionDialog( ( data: ChooseActionDialogData ) => {
+		this.dialogService.openChooseActionDialog( ( data: ChooseActionDialogData ) => {
 
-            const maneuver = this.getManeuver();
+			const maneuver = this.getManeuver();
 
-            const eventName = OscEvent.getNewName();
+			const eventName = OscEvent.getNewName();
 
-            const event = maneuver.addNewEvent( eventName, 'overwrite' );
+			const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
-            event.addNewAction( data.actionName, data.action );
+			event.addNewAction( data.actionName, data.action );
 
-        } );
+		} );
 
-    }
+	}
 
-    editAction ( action: AbstractPrivateAction ) {
+	editAction ( action: AbstractPrivateAction ) {
 
-        // TODO: Add support for other trajection action types
-        if ( action.actionType === OscActionType.Private_Routing ) {
+		// TODO: Add support for other trajection action types
+		if ( action.actionType === OscActionType.Private_Routing ) {
 
-            this.editFollowTrajectoryAction( action as OscFollowTrajectoryAction );
+			this.editFollowTrajectoryAction( action as OscFollowTrajectoryAction );
 
-        } else if ( action.actionType === OscActionType.Private_Longitudinal_Speed ) {
+		} else if ( action.actionType === OscActionType.Private_Longitudinal_Speed ) {
 
-            const maneuver = this.getManeuver();
+			const maneuver = this.getManeuver();
 
-            if ( maneuver.events.length === 0 ) throw new Error( 'no event exists' );
+			if ( maneuver.events.length === 0 ) throw new Error( 'no event exists' );
 
-            const event = maneuver.events[ 0 ];
+			const event = maneuver.events[ 0 ];
 
-            AppInspector.setInspector( EventEditorComponent, event );
+			AppInspector.setInspector( EventEditorComponent, event );
 
-        } else {
+		} else {
 
-            throw new Error( 'Unsupported action' );
+			throw new Error( 'Unsupported action' );
 
-        }
+		}
 
-    }
+	}
 
-    editEvent ( event: OscEvent ) {
+	editEvent ( event: OscEvent ) {
 
-        AppInspector.setInspector( EventEditorComponent, event );
+		AppInspector.setInspector( EventEditorComponent, event );
 
-    }
+	}
 
-    editFollowTrajectoryAction ( action: OscFollowTrajectoryAction ) {
+	editFollowTrajectoryAction ( action: OscFollowTrajectoryAction ) {
 
-        AppInspector.setInspector( FollowTrajectoryActionComponent, action );
+		AppInspector.setInspector( FollowTrajectoryActionComponent, action );
 
-    }
+	}
 
-    addTrajectoryAction () {
+	addTrajectoryAction () {
 
-        const maneuver = this.getManeuver();
+		const maneuver = this.getManeuver();
 
-        const event = maneuver.addNewEvent( 'FollowTrajectoryEvent', 'overwrite' );
+		const event = maneuver.addNewEvent( 'FollowTrajectoryEvent', 'overwrite' );
 
-        const trajectory = new OscTrajectory( 'Trajectory1', false, EnumTrajectoryDomain.Time );
+		const trajectory = new OscTrajectory( 'Trajectory1', false, EnumTrajectoryDomain.Time );
 
-        const action = new OscFollowTrajectoryAction( trajectory );
+		const action = new OscFollowTrajectoryAction( trajectory );
 
-        event.addNewAction( 'TrajectoryAction', action );
+		event.addNewAction( 'TrajectoryAction', action );
 
-        this.editFollowTrajectoryAction( action );
+		this.editFollowTrajectoryAction( action );
 
-    }
+	}
 
-    addChangeLaneAction () {
+	addChangeLaneAction () {
 
-        const maneuvers = this.getManeuver();
+		const maneuvers = this.getManeuver();
 
-    }
+	}
 
-    addSpeedAction () {
+	addSpeedAction () {
 
-        const maneuver = this.getManeuver();
+		const maneuver = this.getManeuver();
 
-        const eventName = OscEvent.getNewName( 'ChangeSpeed' );
+		const eventName = OscEvent.getNewName( 'ChangeSpeed' );
 
-        const event = maneuver.addNewEvent( eventName, 'overwrite' );
+		const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
-        const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
+		const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
 
-        const target = new OscAbsoluteTarget( 10 );
+		const target = new OscAbsoluteTarget( 10 );
 
-        const action = new OscSpeedAction( dynamics, target );
+		const action = new OscSpeedAction( dynamics, target );
 
-        event.addNewAction( 'SpeedChangeAction', action );
+		event.addNewAction( 'SpeedChangeAction', action );
 
-        // AppInspector.setInspector( SpeedActionComponent, action );
+		// AppInspector.setInspector( SpeedActionComponent, action );
 
-        AppInspector.setInspector( EventEditorComponent, event );
+		AppInspector.setInspector( EventEditorComponent, event );
 
-    }
+	}
 
-    private getManeuver () {
+	private getManeuver () {
 
-        if ( this.maneuvers.length > 0 ) {
+		if ( this.maneuvers.length > 0 ) {
 
-            return this.maneuvers[ 0 ];
+			return this.maneuvers[ 0 ];
 
-        } else {
+		} else {
 
-            return this.createManuever();
+			return this.createManuever();
 
-        }
+		}
 
-    }
+	}
 
-    private getEvent (): OscEvent {
+	private getEvent (): OscEvent {
 
-        const maneuver = this.getManeuver();
+		const maneuver = this.getManeuver();
 
-        const eventName = OscEvent.getNewName();
+		const eventName = OscEvent.getNewName();
 
-        return maneuver.addNewEvent( eventName, 'overwrite' );
+		return maneuver.addNewEvent( eventName, 'overwrite' );
 
-    }
+	}
 
-    private createManuever () {
+	private createManuever () {
 
-        const storyName = OscStory.getNewName();
+		const storyName = OscStory.getNewName();
 
-        const story = this.scenario.storyboard.addNewStory( storyName, this.entity.name );
+		const story = this.scenario.storyboard.addNewStory( storyName, this.entity.name );
 
-        const act = story.addNewAct( OscAct.getNewName() );
+		const act = story.addNewAct( OscAct.getNewName() );
 
-        const sequence = act.addNewSequence( OscSequence.getNewName(), 1, this.entity.name );
+		const sequence = act.addNewSequence( OscSequence.getNewName(), 1, this.entity.name );
 
-        return sequence.addNewManeuver( OscManeuver.getNewName() );
+		return sequence.addNewManeuver( OscManeuver.getNewName() );
 
-    }
+	}
 
 }

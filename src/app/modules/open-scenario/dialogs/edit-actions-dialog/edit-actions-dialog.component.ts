@@ -13,128 +13,128 @@ import { Debug } from 'app/core/utils/debug';
 import { OscEvent } from '../../models/osc-event';
 
 export class EditActionsDialogData {
-    constructor ( public object: OscEntityObject ) {
+	constructor ( public object: OscEntityObject ) {
 
-    }
+	}
 }
 
 @Component( {
-    selector: 'app-edit-actions-dialog',
-    templateUrl: './edit-actions-dialog.component.html'
+	selector: 'app-edit-actions-dialog',
+	templateUrl: './edit-actions-dialog.component.html'
 } )
 export class EditActionsDialogComponent implements OnInit {
 
-    selectedManeuver: OscManeuver;
-    selectedEvent: OscEvent;
-    selectedAction: AbstractAction;
+	selectedManeuver: OscManeuver;
+	selectedEvent: OscEvent;
+	selectedAction: AbstractAction;
 
-    conditionTypes: OscConditionType;
+	conditionTypes: OscConditionType;
 
-    maneuvers: OscManeuver[];
+	maneuvers: OscManeuver[];
 
-    get entity () {
-        return this.data.object;
-    }
+	get entity () {
+		return this.data.object;
+	}
 
-    get maneuver () {
-        return this.maneuvers[0];
-    }
+	get maneuver () {
+		return this.maneuvers[ 0 ];
+	}
 
-    get event () {
-        return this.maneuver.events[0];
-    }
+	get event () {
+		return this.maneuver.events[ 0 ];
+	}
 
-    get condition () {
-        return this.event.startConditionGroups[0].conditions[0];
-    }
+	get condition () {
+		return this.event.startConditionGroups[ 0 ].conditions[ 0 ];
+	}
 
-    constructor (
-        public dialogRef: MatDialogRef<EditActionsDialogComponent>,
-        @Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
-        public dialog: MatDialog
-    ) {
+	constructor (
+		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
+		public dialog: MatDialog
+	) {
 
-    }
+	}
 
-    get eventActions () {
-        if ( this.selectedEvent ) return this.selectedEvent.getActions();
-    }
+	get eventActions () {
+		if ( this.selectedEvent ) return this.selectedEvent.getActions();
+	}
 
-    selectManeuver ( maneuver: OscManeuver ) {
+	selectManeuver ( maneuver: OscManeuver ) {
 
-        this.selectedManeuver = maneuver;
+		this.selectedManeuver = maneuver;
 
-    }
+	}
 
-    selectEvent ( event: OscEvent ) {
+	selectEvent ( event: OscEvent ) {
 
-        this.selectedEvent = event;
+		this.selectedEvent = event;
 
-    }
+	}
 
-    selectAction ( action: AbstractAction ) {
+	selectAction ( action: AbstractAction ) {
 
-    }
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        var stories = OscSourceFile.openScenario.getStoriesByOwner( this.entity.name );
+		var stories = OscSourceFile.openScenario.getStoriesByOwner( this.entity.name );
 
-        var sequences = OscSourceFile.openScenario.getSequencesByActor( this.entity.name );
+		var sequences = OscSourceFile.openScenario.getSequencesByActor( this.entity.name );
 
-        this.maneuvers = OscSourceFile.openScenario.getManeuversForEntity( this.entity.name );
+		this.maneuvers = OscSourceFile.openScenario.getManeuversForEntity( this.entity.name );
 
-        Debug.log( stories );
+		Debug.log( stories );
 
-        Debug.log( sequences );
+		Debug.log( sequences );
 
-        Debug.log( this.maneuvers );
+		Debug.log( this.maneuvers );
 
-    }
+	}
 
-    get eventConditions () {
-        if ( this.selectedEvent ) return this.selectedEvent.startConditions;
-    }
+	get eventConditions () {
+		if ( this.selectedEvent ) return this.selectedEvent.startConditions;
+	}
 
-    onConditionChanged ( condition: AbstractCondition ) {
+	onConditionChanged ( condition: AbstractCondition ) {
 
-        const array = this.selectedEvent.startConditions;
+		const array = this.selectedEvent.startConditions;
 
-        const index = 0;
+		const index = 0;
 
-        const cmd = (new SetValueCommand( array, index, condition ));
+		const cmd = ( new SetValueCommand( array, index, condition ) );
 
-        OscEditorComponent.execute( cmd );
+		OscEditorComponent.execute( cmd );
 
-    }
+	}
 
-    onActionSelected ( action: AbstractAction ) {
+	onActionSelected ( action: AbstractAction ) {
 
-        this.selectedAction = action;
+		this.selectedAction = action;
 
-    }
+	}
 
-    addAction () {
+	addAction () {
 
-        const data = new ChooseActionDialogData();
+		const data = new ChooseActionDialogData();
 
-        const dialogRef = this.dialog.open( ChooseActionDialogComponent, {
-            width: '360px',
-            data: data
-        } );
+		const dialogRef = this.dialog.open( ChooseActionDialogComponent, {
+			width: '360px',
+			data: data
+		} );
 
-        dialogRef.afterClosed().subscribe( ( response: ChooseActionDialogData ) => {
+		dialogRef.afterClosed().subscribe( ( response: ChooseActionDialogData ) => {
 
-            Debug.log( 'dialog-closed', response );
+			Debug.log( 'dialog-closed', response );
 
-            if ( response.action != null ) {
+			if ( response.action != null ) {
 
-                this.selectedEvent.addNewAction( response.actionName, response.action );
+				this.selectedEvent.addNewAction( response.actionName, response.action );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
 }

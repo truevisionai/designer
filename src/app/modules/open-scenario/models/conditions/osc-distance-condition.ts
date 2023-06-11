@@ -6,61 +6,61 @@ import { OscUtils } from '../osc-utils';
 
 export class OscDistanceCondition extends AbstractByEntityCondition {
 
-    public readonly conditionType = OscConditionType.ByEntity_Distance;
+	public readonly conditionType = OscConditionType.ByEntity_Distance;
 
-    constructor (
-        public position?: AbstractPosition,
-        public value?: number,
-        public freespace?: boolean,
-        public alongRoute?: boolean,
-        public rule?: OscRule
-    ) {
-        super();
-    }
+	constructor (
+		public position?: AbstractPosition,
+		public value?: number,
+		public freespace?: boolean,
+		public alongRoute?: boolean,
+		public rule?: OscRule
+	) {
+		super();
+	}
 
-    hasPassed (): boolean {
+	hasPassed (): boolean {
 
-        if ( this.passed ) {
+		if ( this.passed ) {
 
-            return true;
+			return true;
 
-        } else {
+		} else {
 
-            const otherPosition = this.position.getPosition();
+			const otherPosition = this.position.getPosition();
 
-            for ( const entityName of this.entities ) {
+			for ( const entityName of this.entities ) {
 
-                const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
 
-                const distance = entity.position.distanceTo( otherPosition );
+				const distance = entity.position.distanceTo( otherPosition );
 
-                // console.log( 'distance-to-entity', distance );
+				// console.log( 'distance-to-entity', distance );
 
-                const passed = OscUtils.hasRulePassed( this.rule, distance, this.value );
+				const passed = OscUtils.hasRulePassed( this.rule, distance, this.value );
 
-                // exit if any of the entity distance is passed
-                if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
+				// exit if any of the entity distance is passed
+				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
 
-                    this.passed = true;
+					this.passed = true;
 
-                    break;
-                }
+					break;
+				}
 
-                // exit if any of the entity distance is not passed
-                if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
+				// exit if any of the entity distance is not passed
+				if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
 
-                    this.passed = false;
+					this.passed = false;
 
-                    break;
+					break;
 
-                }
+				}
 
-            }
+			}
 
-            return this.passed;
+			return this.passed;
 
-        }
+		}
 
-    }
+	}
 
 }

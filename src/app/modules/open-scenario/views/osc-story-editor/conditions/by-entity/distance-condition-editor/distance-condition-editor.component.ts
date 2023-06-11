@@ -6,28 +6,28 @@ import { OscEditorComponent } from 'app/modules/open-scenario/views/osc-editor/o
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
-    selector: 'app-distance-condition-editor',
-    templateUrl: './distance-condition-editor.component.html',
-    styleUrls: [ './distance-condition-editor.component.css' ]
+	selector: 'app-distance-condition-editor',
+	templateUrl: './distance-condition-editor.component.html',
+	styleUrls: [ './distance-condition-editor.component.css' ]
 } )
 export class DistanceConditionEditorComponent extends BaseConditionEditorComponent {
 
-    @Input() condition: OscDistanceCondition;
+	@Input() condition: OscDistanceCondition;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
-    onPositionChanged ( position: AbstractPosition ) {
+	onPositionChanged ( position: AbstractPosition ) {
 
-        // this.condition.position = position;
+		// this.condition.position = position;
 
-        const cmd = ( new SetValueCommand( this.condition, 'position', position ) );
+		const cmd = ( new SetValueCommand( this.condition, 'position', position ) );
 
-        OscEditorComponent.execute( cmd );
+		OscEditorComponent.execute( cmd );
 
-    }
+	}
 
 }

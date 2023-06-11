@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class OscDriverService {
 
-    constructor () { }
+	constructor () { }
 
-    get vehicleDrivers (): string[] {
+	get vehicleDrivers (): string[] {
 
-        return [
-            'DefaultDriver',
-        ];
+		return [
+			'DefaultDriver',
+		];
 
-    }
+	}
 
 }

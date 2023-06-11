@@ -3,36 +3,36 @@ import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions
 import { OscDynamicsShape } from 'app/modules/open-scenario/models/osc-enums';
 
 @Component( {
-    selector: 'app-dynamics-editor',
-    templateUrl: './dynamics-editor.component.html',
-    styleUrls: [ './dynamics-editor.component.css' ]
+	selector: 'app-dynamics-editor',
+	templateUrl: './dynamics-editor.component.html',
+	styleUrls: [ './dynamics-editor.component.css' ]
 } )
 export class DynamicsEditorComponent {
 
-    @Input() dynamics: OscLaneChangeDynamics | OscSpeedDynamics;
+	@Input() dynamics: OscLaneChangeDynamics | OscSpeedDynamics;
 
-    onShapeChanged ( $event: string ) {
+	onShapeChanged ( $event: string ) {
 
-        this.dynamics.shape = OscDynamicsShape[ $event ];
+		this.dynamics.shape = OscDynamicsShape[ $event ];
 
-    }
+	}
 
-    onTimeChanged ( $event ) {
+	onTimeChanged ( $event ) {
 
-        this.dynamics.time = $event;
+		this.dynamics.time = $event;
 
-    }
+	}
 
-    onDistanceChanged ( $event ) {
+	onDistanceChanged ( $event ) {
 
-        this.dynamics.distance = $event;
+		this.dynamics.distance = $event;
 
-    }
+	}
 
-    onRateChanged ( $event ) {
+	onRateChanged ( $event ) {
 
-        this.dynamics.rate = $event;
+		this.dynamics.rate = $event;
 
-    }
+	}
 
 }

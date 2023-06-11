@@ -15,118 +15,118 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { Debug } from 'app/core/utils/debug';
 
 export class AddVehicleDialogData {
-    name: string = 'Vehicle';
-    driver: string = 'DefaultDriver';
-    model: string = 'vehicle_1';
+	name: string = 'Vehicle';
+	driver: string = 'DefaultDriver';
+	model: string = 'vehicle_1';
 }
 
 @Component( {
-    selector: 'app-add-vehicle-dialog',
-    templateUrl: './add-vehicle-dialog.component.html',
-    providers: [ SearchPipe ]
+	selector: 'app-add-vehicle-dialog',
+	templateUrl: './add-vehicle-dialog.component.html',
+	providers: [ SearchPipe ]
 } )
 export class AddVehicleDialogComponent implements OnInit {
 
-    query: string;
-    public vehicle = new AddVehicleDialogData;
+	query: string;
+	public vehicle = new AddVehicleDialogData;
 
-    constructor (
-        public dialogRef: MatDialogRef<AddVehicleDialogComponent>,
-        @Inject( MAT_DIALOG_DATA ) public data: AddVehicleDialogData,
-        public modelService: OscModelsService,
-        public driverService: OscDriverService,
-        private oscBuilder: OscBuilderService,
-        private searchPipe: SearchPipe
-    ) {
-    }
+	constructor (
+		public dialogRef: MatDialogRef<AddVehicleDialogComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: AddVehicleDialogData,
+		public modelService: OscModelsService,
+		public driverService: OscDriverService,
+		private oscBuilder: OscBuilderService,
+		private searchPipe: SearchPipe
+	) {
+	}
 
-    get models () {
-        return this.modelService.vehicleModels;
-    }
+	get models () {
+		return this.modelService.vehicleModels;
+	}
 
-    get drivers () {
-        return this.driverService.vehicleDrivers;
-    }
+	get drivers () {
+		return this.driverService.vehicleDrivers;
+	}
 
-    get defaultName () {
-        return 'Vehicle';
-    }
+	get defaultName () {
+		return 'Vehicle';
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        Debug.log( 'init', this.data );
+		Debug.log( 'init', this.data );
 
-    }
+	}
 
-    onModelChanged ( $event ) {
+	onModelChanged ( $event ) {
 
-        Debug.log( $event );
+		Debug.log( $event );
 
-    }
+	}
 
-    onCancel (): void {
+	onCancel (): void {
 
-        this.dialogRef.close();
+		this.dialogRef.close();
 
-    }
+	}
 
-    onAdd (): void {
+	onAdd (): void {
 
-        this.dialogRef.close();
+		this.dialogRef.close();
 
-    }
+	}
 
-    createEntity ( name: string, model: string, driver: string ): OscEntityObject {
+	createEntity ( name: string, model: string, driver: string ): OscEntityObject {
 
-        const object = new OscEntityObject( name );
+		const object = new OscEntityObject( name );
 
-        object.catalogReference = new OscCatalogReference( 'VehicleCatalog', model );
+		object.catalogReference = new OscCatalogReference( 'VehicleCatalog', model );
 
-        object.controller = new CatalogReferenceController( new OscCatalogReference( 'DriverCatalog', driver ) );
+		object.controller = new CatalogReferenceController( new OscCatalogReference( 'DriverCatalog', driver ) );
 
-        const worldPosition = new OscWorldPosition( 0, 0, 0 );
+		const worldPosition = new OscWorldPosition( 0, 0, 0 );
 
-        const positionAction = new OscPositionAction( worldPosition );
+		const positionAction = new OscPositionAction( worldPosition );
 
-        object.initActions.push( positionAction );
+		object.initActions.push( positionAction );
 
-        return object;
-    }
+		return object;
+	}
 
-    addEntity ( entity: OscEntityObject ) {
+	addEntity ( entity: OscEntityObject ) {
 
-        CommandHistory.execute( new OscAddEntityCommand( entity ) );
+		CommandHistory.execute( new OscAddEntityCommand( entity ) );
 
-        OscBuilderService.buildVehicleEntity( entity );
+		OscBuilderService.buildVehicleEntity( entity );
 
-    }
+	}
 
-    @HostListener( 'document:keydown.enter', [ '$event' ] )
-    onKeydownHandler ( event: KeyboardEvent ) {
+	@HostListener( 'document:keydown.enter', [ '$event' ] )
+	onKeydownHandler ( event: KeyboardEvent ) {
 
-        const results = this.searchPipe.transform( this.models, this.query );
+		const results = this.searchPipe.transform( this.models, this.query );
 
-        if ( results.length > 0 ) {
+		if ( results.length > 0 ) {
 
-            const model = results[ 0 ];
+			const model = results[ 0 ];
 
-            this.onModelClicked( model );
+			this.onModelClicked( model );
 
-        } else {
+		} else {
 
-            SnackBar.show( 'No object selected' );
+			SnackBar.show( 'No object selected' );
 
-        }
+		}
 
-    }
+	}
 
-    onModelClicked ( model: string ) {
+	onModelClicked ( model: string ) {
 
-        const entity = this.createEntity( model, model, 'DefaultDriver' );
+		const entity = this.createEntity( model, model, 'DefaultDriver' );
 
-        this.addEntity( entity );
+		this.addEntity( entity );
 
-        this.dialogRef.close();
+		this.dialogRef.close();
 
-    }
+	}
 }

@@ -11,44 +11,44 @@ import { OscUtils } from '../osc-utils';
 
 export abstract class AbstractCondition {
 
-    public abstract category: OscConditionCategory;
-    public abstract conditionType: OscConditionType;
-    public name: string = '';
-    public delay: number = 0;
-    public edge: OscConditionEdge = OscConditionEdge.any;
-    public passed: boolean;
+	public abstract category: OscConditionCategory;
+	public abstract conditionType: OscConditionType;
+	public name: string = '';
+	public delay: number = 0;
+	public edge: OscConditionEdge = OscConditionEdge.any;
+	public passed: boolean;
 
-    constructor () {
-    }
+	constructor () {
+	}
 
-    abstract hasPassed (): boolean;
+	abstract hasPassed (): boolean;
 
-    hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
-        return OscUtils.hasRulePassed( rule, left, right );
-    }
+	hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
+		return OscUtils.hasRulePassed( rule, left, right );
+	}
 
 }
 
 export abstract class AbstractByEntityCondition extends AbstractCondition {
 
-    public category: OscConditionCategory = OscConditionCategory.ByEntity;
+	public category: OscConditionCategory = OscConditionCategory.ByEntity;
 
-    public triggeringRule: OscTriggeringRule = OscTriggeringRule.Any;
+	public triggeringRule: OscTriggeringRule = OscTriggeringRule.Any;
 
-    // name of all entities which can affect this condition
-    public entities: string[] = [];
+	// name of all entities which can affect this condition
+	public entities: string[] = [];
 
 }
 
 export abstract class AbstractByValueCondition extends AbstractCondition {
 
-    public category: OscConditionCategory = OscConditionCategory.ByValue;
+	public category: OscConditionCategory = OscConditionCategory.ByValue;
 
 }
 
 export abstract class AbstractByStateCondition extends AbstractCondition {
 
-    public category: OscConditionCategory = OscConditionCategory.ByState;
+	public category: OscConditionCategory = OscConditionCategory.ByState;
 
 }
 

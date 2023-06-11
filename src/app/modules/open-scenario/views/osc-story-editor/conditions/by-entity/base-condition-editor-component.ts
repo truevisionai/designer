@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
 } )
 export abstract class BaseConditionEditorComponent {
 
-    @Input() condition: AbstractCondition;
+	@Input() condition: AbstractCondition;
 
 }

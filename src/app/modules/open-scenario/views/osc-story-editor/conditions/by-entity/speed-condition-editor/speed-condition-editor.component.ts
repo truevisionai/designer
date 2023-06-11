@@ -3,28 +3,28 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 import { OscSpeedCondition } from 'app/modules/open-scenario/models/conditions/osc-speed-condition';
 
 @Component( {
-    selector: 'app-speed-condition-editor',
-    templateUrl: './speed-condition-editor.component.html',
+	selector: 'app-speed-condition-editor',
+	templateUrl: './speed-condition-editor.component.html',
 } )
 export class SpeedConditionEditorComponent extends BaseConditionEditorComponent {
 
-    @Input() condition: OscSpeedCondition;
+	@Input() condition: OscSpeedCondition;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
-    onSpeedChanged ( $value: any ) {
+	onSpeedChanged ( $value: any ) {
 
-        this.condition.value = $value;
+		this.condition.value = $value;
 
-    }
+	}
 
-    onRuleChanged ( $rule: any ) {
+	onRuleChanged ( $rule: any ) {
 
-        this.condition.rule = $rule;
+		this.condition.rule = $rule;
 
-    }
+	}
 }

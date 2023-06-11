@@ -4,23 +4,23 @@ import { OscSourceFile } from '../services/osc-source-file';
 
 export class OscModifyScenarioCommand extends BaseCommand {
 
-    private oldState: OpenScenario;
-    private newState: OpenScenario;
+	private oldState: OpenScenario;
+	private newState: OpenScenario;
 
-    constructor () {
-        super();
-    }
+	constructor () {
+		super();
+	}
 
-    execute (): void {
-        OscSourceFile.openScenario = this.newState;
-    }
+	execute (): void {
+		OscSourceFile.openScenario = this.newState;
+	}
 
-    undo (): void {
-        OscSourceFile.openScenario = this.oldState;
-    }
+	undo (): void {
+		OscSourceFile.openScenario = this.oldState;
+	}
 
-    redo (): void {
-        OscSourceFile.openScenario = this.newState;
-    }
+	redo (): void {
+		OscSourceFile.openScenario = this.newState;
+	}
 
 }

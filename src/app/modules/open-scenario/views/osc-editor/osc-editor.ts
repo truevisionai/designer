@@ -9,31 +9,31 @@ import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 
 export class OscEditor {
 
-    static scenarioChanged = new EventEmitter<any>();
-    static selectedEntityChanged = new EventEmitter<OscEntityObject>();
+	static scenarioChanged = new EventEmitter<any>();
+	static selectedEntityChanged = new EventEmitter<OscEntityObject>();
 
-    static currentFile: IFile;
-    static fileService: FileService;
-    static threeService: ThreeService;
+	static currentFile: IFile;
+	static fileService: FileService;
+	static threeService: ThreeService;
 
-    static get openDrive (): TvMap {
-        return TvMapInstance.map;
-    }
+	static get openDrive (): TvMap {
+		return TvMapInstance.map;
+	}
 
-    static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset?: number ): THREE.Vector3 {
+	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset?: number ): THREE.Vector3 {
 
-        return TvMapQueries.getLanePosition( roadId, laneId, sCoordinate, offset );
+		return TvMapQueries.getLanePosition( roadId, laneId, sCoordinate, offset );
 
-    }
+	}
 
-    static changeCamera () {
+	static changeCamera () {
 
-        throw new Error( 'Method not implemented.' );
+		throw new Error( 'Method not implemented.' );
 
-    }
+	}
 
-    static deselect () {
+	static deselect () {
 
-        throw new Error( 'Method not implemented.' );
-    }
+		throw new Error( 'Method not implemented.' );
+	}
 }

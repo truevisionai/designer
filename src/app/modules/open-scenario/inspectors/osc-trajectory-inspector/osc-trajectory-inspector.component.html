@@ -1,22 +1,21 @@
 <div class="inspector-form-container" *ngIf="display">
 
-    <mat-form-field>
-        <input matInput placeholder="Name" [(ngModel)]="trajectory.name">
-    </mat-form-field>
+	<mat-form-field>
+		<input matInput placeholder="Name" [(ngModel)]="trajectory.name">
+	</mat-form-field>
 
-    <div *ngFor="let vertex of trajectory.vertices">
+	<div *ngFor="let vertex of trajectory.vertices">
 
-        <!-- reference | int | disabled -->
-        <!-- abstract position |  -->
-        <!-- abstract shape | dropdown -->
+		<!-- reference | int | disabled -->
+		<!-- abstract position |  -->
+		<!-- abstract shape | dropdown -->
 
-        <!-- <mat-form-field> -->
-        <!-- <input matInput type="number" disabled placeholder="reference" [(ngModel)]="vertex.reference"> -->
-        <!-- </mat-form-field> -->
+		<!-- <mat-form-field> -->
+		<!-- <input matInput type="number" disabled placeholder="reference" [(ngModel)]="vertex.reference"> -->
+		<!-- </mat-form-field> -->
 
-        <app-position-editor [position]="vertex.position" [showType]="false"
-            (positionModified)="onPositionModified($event)"></app-position-editor>
+		<app-position-editor [position]="vertex.position" [showType]="false" (positionModified)="onPositionModified($event)"></app-position-editor>
 
-    </div>
+	</div>
 
 </div>

@@ -3,19 +3,19 @@ import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscTimeToCollisionCondition extends AbstractByEntityCondition {
 
-    // TODO: Implmement this
+	// TODO: Implmement this
 
-    conditionType = OscConditionType.ByEntity_TimeToCollision;
+	conditionType = OscConditionType.ByEntity_TimeToCollision;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
 
-    }
+	}
 
-    hasPassed (): boolean {
-        return false;
-    }
+	hasPassed (): boolean {
+		return false;
+	}
 
 }

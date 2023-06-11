@@ -1,49 +1,49 @@
 export class OscFileHeader {
 
-    public revMajor: number;
-    public revMinor: number;
-    public date: string;
-    public description: string;
-    public author: string;
+	public revMajor: number;
+	public revMinor: number;
+	public date: string;
+	public description: string;
+	public author: string;
 
-    constructor (
-        revMajor: number = 1,
-        revMinor: number = 6,
-        date: string = '',
-        description: string = '',
-        author: string = ''
-    ) {
+	constructor (
+		revMajor: number = 1,
+		revMinor: number = 6,
+		date: string = '',
+		description: string = '',
+		author: string = ''
+	) {
 
-        this.revMajor = revMajor;
-        this.revMinor = revMinor;
-        this.date = date;
-        this.description = description;
-        this.author = author;
+		this.revMajor = revMajor;
+		this.revMinor = revMinor;
+		this.date = date;
+		this.description = description;
+		this.author = author;
 
-    }
+	}
 
-    static readXml ( FileHeader: any ): OscFileHeader {
+	static readXml ( FileHeader: any ): OscFileHeader {
 
-        const revMajor = FileHeader.attr_revMajor;
-        const revMinor = FileHeader.attr_revMinor;
-        const date = FileHeader.attr_date;
-        const description = FileHeader.attr_description;
-        const author = FileHeader.attr_author;
+		const revMajor = FileHeader.attr_revMajor;
+		const revMinor = FileHeader.attr_revMinor;
+		const date = FileHeader.attr_date;
+		const description = FileHeader.attr_description;
+		const author = FileHeader.attr_author;
 
-        return new OscFileHeader( revMajor, revMinor, date, description, author );
-    }
+		return new OscFileHeader( revMajor, revMinor, date, description, author );
+	}
 
-    exportXml (): any {
+	exportXml (): any {
 
-        return {
-            attr_revMajor: this.revMajor,
-            attr_revMinor: this.revMinor,
-            attr_date: this.date,
-            attr_description: this.description,
-            attr_author: this.author,
-        };
+		return {
+			attr_revMajor: this.revMajor,
+			attr_revMinor: this.revMinor,
+			attr_date: this.date,
+			attr_description: this.description,
+			attr_author: this.author,
+		};
 
-    }
+	}
 
 
 }

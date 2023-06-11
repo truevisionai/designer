@@ -2,25 +2,25 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AbstractAction, AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
 
 @Component( {
-    selector: 'app-edit-action',
-    templateUrl: './edit-action.component.html'
+	selector: 'app-edit-action',
+	templateUrl: './edit-action.component.html'
 } )
 export class EditActionComponent implements OnInit {
 
-    @Input() action: AbstractPrivateAction;
+	@Input() action: AbstractPrivateAction;
 
-    @Output() actionSelected = new EventEmitter<AbstractPrivateAction>();
+	@Output() actionSelected = new EventEmitter<AbstractPrivateAction>();
 
-    constructor () { }
+	constructor () { }
 
-    ngOnInit () {
+	ngOnInit () {
 
-    }
+	}
 
-    selectAction () {
+	selectAction () {
 
-        this.actionSelected.emit( this.action );
+		this.actionSelected.emit( this.action );
 
-    }
+	}
 
 }

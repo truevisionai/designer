@@ -2,22 +2,22 @@ import { OscTargetType } from '../osc-enums';
 
 export abstract class AbstractTarget {
 
-    abstract targetType: OscTargetType;
+	abstract targetType: OscTargetType;
 
-    get value () {
+	get value () {
 
-        return this.getTarget();
+		return this.getTarget();
 
-    }
+	}
 
-    set value ( value ) {
+	set value ( value ) {
 
-        this.setTarget( value );
+		this.setTarget( value );
 
-    }
+	}
 
-    abstract getTarget (): any;
+	abstract getTarget (): any;
 
-    abstract setTarget ( value );
+	abstract setTarget ( value );
 
 }

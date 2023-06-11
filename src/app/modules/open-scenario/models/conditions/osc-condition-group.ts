@@ -2,10 +2,10 @@ import { AbstractCondition } from './osc-condition';
 
 export class OscConditionGroup {
 
-    public conditions: AbstractCondition[] = [];
+	public conditions: AbstractCondition[] = [];
 
-    addCondition ( condition: AbstractCondition ) {
-        this.conditions.push( condition );
-    }
+	addCondition ( condition: AbstractCondition ) {
+		this.conditions.push( condition );
+	}
 
 }

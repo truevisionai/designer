@@ -4,23 +4,23 @@ import { Time } from '../../../../core/time';
 
 export class OscSimulationTimeCondition extends AbstractByValueCondition {
 
-    public category: OscConditionCategory = OscConditionCategory.ByValue;
-    public readonly conditionType = OscConditionType.ByValue_SimulationTime;
+	public category: OscConditionCategory = OscConditionCategory.ByValue;
+	public readonly conditionType = OscConditionType.ByValue_SimulationTime;
 
-    constructor ( public value: number = null, public rule: OscRule = null ) {
-        super();
-    }
+	constructor ( public value: number = null, public rule: OscRule = null ) {
+		super();
+	}
 
-    hasPassed (): boolean {
+	hasPassed (): boolean {
 
-        if ( this.passed ) {
+		if ( this.passed ) {
 
-            return true;
+			return true;
 
-        } else {
+		} else {
 
-            return this.passed = this.hasRulePassed( this.rule, Time.inSeconds, this.value );
+			return this.passed = this.hasRulePassed( this.rule, Time.inSeconds, this.value );
 
-        }
-    }
+		}
+	}
 }

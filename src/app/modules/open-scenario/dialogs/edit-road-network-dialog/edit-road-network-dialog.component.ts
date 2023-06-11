@@ -9,115 +9,115 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { Debug } from 'app/core/utils/debug';
 
 @Component( {
-    selector: 'app-edit-road-network-dialog',
-    templateUrl: './edit-road-network-dialog.component.html',
-    styleUrls: [ './edit-road-network-dialog.component.css' ]
+	selector: 'app-edit-road-network-dialog',
+	templateUrl: './edit-road-network-dialog.component.html',
+	styleUrls: [ './edit-road-network-dialog.component.css' ]
 } )
 export class EditRoadNetworkDialogComponent implements OnInit {
 
-    public selectedRoadNetwork: any;
-    public files: any[] = [];
-    public file: IFile;
+	public selectedRoadNetwork: any;
+	public files: any[] = [];
+	public file: IFile;
 
-    constructor (
-        public dialogRef: MatDialogRef<any>,
-        @Inject( MAT_DIALOG_DATA ) public data: any,
-        private fileService: FileService,
-        private openDriveApi: OpenDriveApiService,
-        private openDriveService: TvMapService
-    ) {
-    }
+	constructor (
+		public dialogRef: MatDialogRef<any>,
+		@Inject( MAT_DIALOG_DATA ) public data: any,
+		private fileService: FileService,
+		private openDriveApi: OpenDriveApiService,
+		private openDriveService: TvMapService
+	) {
+	}
 
-    get openScenario () {
-        return OscSourceFile.openScenario;
-    }
+	get openScenario () {
+		return OscSourceFile.openScenario;
+	}
 
-    get roadNetwork () {
-        return OscSourceFile.openScenario.roadNetwork;
-    }
+	get roadNetwork () {
+		return OscSourceFile.openScenario.roadNetwork;
+	}
 
-    get logics () {
-        return OscSourceFile.openScenario.roadNetwork.logics;
-    }
+	get logics () {
+		return OscSourceFile.openScenario.roadNetwork.logics;
+	}
 
-    get sceneGraph () {
-        return OscSourceFile.openScenario.roadNetwork.sceneGraph;
-    }
+	get sceneGraph () {
+		return OscSourceFile.openScenario.roadNetwork.sceneGraph;
+	}
 
-    get currentFile () {
-        return OscSourceFile.currentFile;
-    }
+	get currentFile () {
+		return OscSourceFile.currentFile;
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-    }
+	}
 
-    selectRoadNetwork () {
+	selectRoadNetwork () {
 
-        this.changeRoadNetwork();
+		this.changeRoadNetwork();
 
-    }
+	}
 
-    changeRoadNetwork () {
+	changeRoadNetwork () {
 
-        if ( this.currentFile.online ) {
+		if ( this.currentFile.online ) {
 
-            this.fetchOnlinesFiles();
+			this.fetchOnlinesFiles();
 
-        } else {
+		} else {
 
-            this.openLocalFile();
+			this.openLocalFile();
 
-        }
-    }
+		}
+	}
 
-    selectSceneGraph () {
-    }
+	selectSceneGraph () {
+	}
 
-    changeSceneGraph () {
-    }
+	changeSceneGraph () {
+	}
 
-    onRoadNetworkSelected ( filename ) {
+	onRoadNetworkSelected ( filename ) {
 
-        this.setRoadNetworkFileName( filename );
+		this.setRoadNetworkFileName( filename );
 
-    }
+	}
 
-    setRoadNetworkFileName ( filename ) {
+	setRoadNetworkFileName ( filename ) {
 
-        this.roadNetwork.logics = new OscFile( filename );
+		this.roadNetwork.logics = new OscFile( filename );
 
-    }
+	}
 
-    fetchOnlinesFiles () {
+	fetchOnlinesFiles () {
 
-        this.openDriveApi.getAll().subscribe( files => {
+		this.openDriveApi.getAll().subscribe( files => {
 
-            this.files = files;
+			this.files = files;
 
-        } );
-    }
+		} );
+	}
 
-    openLocalFile () {
+	openLocalFile () {
 
-        // this.fileService.import( null, 'road-network', [ 'xml' ], ( file: IFile ) => {
+		// this.fileService.import( null, 'road-network', [ 'xml' ], ( file: IFile ) => {
 
-        //     this.file = file;
+		//     this.file = file;
 
-        //     this.setRoadNetworkFileName( file.path );
+		//     this.setRoadNetworkFileName( file.path );
 
-        // } );
-    }
+		// } );
+	}
 
-    importAndBuild ( file: IFile ) {
+	importAndBuild ( file: IFile ) {
 
-        this.openDriveService.import( file, () => {
+		this.openDriveService.import( file, () => {
 
-            Debug.log( 'road network imported' );
+			Debug.log( 'road network imported' );
 
-        } );
+		} );
 
-        this.dialogRef.close();
+		this.dialogRef.close();
 
-    }
+	}
 }

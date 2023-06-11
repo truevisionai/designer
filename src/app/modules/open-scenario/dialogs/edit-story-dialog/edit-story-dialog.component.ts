@@ -17,162 +17,162 @@ import { OscEvent } from '../../models/osc-event';
 import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
 
 export class EditStoryDialogData {
-    constructor ( public object: OscEntityObject ) {
+	constructor ( public object: OscEntityObject ) {
 
-    }
+	}
 }
 
 
 @Component( {
-    selector: 'app-edit-story-dialog',
-    templateUrl: './edit-story-dialog.component.html'
+	selector: 'app-edit-story-dialog',
+	templateUrl: './edit-story-dialog.component.html'
 } )
 export class EditStoryDialog implements OnInit {
 
-    selectedManeuver: OscManeuver;
-    selectedEvent: OscEvent;
-    selectedAction: AbstractAction;
+	selectedManeuver: OscManeuver;
+	selectedEvent: OscEvent;
+	selectedAction: AbstractAction;
 
-    conditionTypes: OscConditionType;
+	conditionTypes: OscConditionType;
 
-    maneuvers: OscManeuver[];
+	maneuvers: OscManeuver[];
 
-    constructor (
-        public dialogRef: MatDialogRef<EditActionsDialogComponent>,
-        @Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
-        public dialog: MatDialog
-    ) {
+	constructor (
+		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
+		public dialog: MatDialog
+	) {
 
-    }
+	}
 
-    get openScenario () {
-        return OscSourceFile.openScenario;
-    }
+	get openScenario () {
+		return OscSourceFile.openScenario;
+	}
 
-    get entity () {
-        return this.data.object;
-    }
+	get entity () {
+		return this.data.object;
+	}
 
-    get maneuver () {
-        return this.maneuvers[ 0 ];
-    }
+	get maneuver () {
+		return this.maneuvers[ 0 ];
+	}
 
-    get event () {
-        return this.maneuver.events[ 0 ];
-    }
+	get event () {
+		return this.maneuver.events[ 0 ];
+	}
 
-    get condition () {
-        return this.event.startConditionGroups[ 0 ].conditions[ 0 ];
-    }
+	get condition () {
+		return this.event.startConditionGroups[ 0 ].conditions[ 0 ];
+	}
 
-    get eventActions () {
-        if ( this.selectedEvent ) return this.selectedEvent.getActions();
-    }
+	get eventActions () {
+		if ( this.selectedEvent ) return this.selectedEvent.getActions();
+	}
 
-    get eventConditions () {
-        if ( this.selectedEvent ) return this.selectedEvent.startConditions;
-    }
+	get eventConditions () {
+		if ( this.selectedEvent ) return this.selectedEvent.startConditions;
+	}
 
-    ngOnInit () {
+	ngOnInit () {
 
-        var stories = this.openScenario.getStoriesByOwner( this.entity.name );
+		var stories = this.openScenario.getStoriesByOwner( this.entity.name );
 
-        var sequences = this.openScenario.getSequencesByActor( this.entity.name );
+		var sequences = this.openScenario.getSequencesByActor( this.entity.name );
 
-        this.maneuvers = this.openScenario.getManeuversForEntity( this.entity.name );
+		this.maneuvers = this.openScenario.getManeuversForEntity( this.entity.name );
 
-        Debug.log( stories );
+		Debug.log( stories );
 
-        Debug.log( sequences );
+		Debug.log( sequences );
 
-        Debug.log( this.maneuvers );
+		Debug.log( this.maneuvers );
 
-    }
+	}
 
-    selectManeuver ( maneuver: OscManeuver ) {
+	selectManeuver ( maneuver: OscManeuver ) {
 
-        this.selectedManeuver = maneuver;
+		this.selectedManeuver = maneuver;
 
-    }
+	}
 
-    selectEvent ( event: OscEvent ) {
+	selectEvent ( event: OscEvent ) {
 
-        this.selectedEvent = event;
+		this.selectedEvent = event;
 
-    }
+	}
 
-    selectAction ( action: AbstractAction ) {
+	selectAction ( action: AbstractAction ) {
 
-    }
+	}
 
-    onConditionChanged ( condition: AbstractCondition ) {
+	onConditionChanged ( condition: AbstractCondition ) {
 
-        const array = this.selectedEvent.startConditions;
+		const array = this.selectedEvent.startConditions;
 
-        const index = 0;
+		const index = 0;
 
-        const cmd = ( new SetValueCommand( array, index, condition ) );
+		const cmd = ( new SetValueCommand( array, index, condition ) );
 
-        OscEditorComponent.execute( cmd );
+		OscEditorComponent.execute( cmd );
 
-    }
+	}
 
-    onActionSelected ( action: AbstractAction ) {
+	onActionSelected ( action: AbstractAction ) {
 
-        this.selectedAction = action;
+		this.selectedAction = action;
 
-    }
+	}
 
-    addAction () {
+	addAction () {
 
-        const data = new ChooseActionDialogData();
+		const data = new ChooseActionDialogData();
 
-        const dialogRef = this.dialog.open( ChooseActionDialogComponent, {
-            width: '360px',
-            data: data
-        } );
+		const dialogRef = this.dialog.open( ChooseActionDialogComponent, {
+			width: '360px',
+			data: data
+		} );
 
-        dialogRef.afterClosed().subscribe( ( response: ChooseActionDialogData ) => {
+		dialogRef.afterClosed().subscribe( ( response: ChooseActionDialogData ) => {
 
-            Debug.log( 'dialog-closed', response );
+			Debug.log( 'dialog-closed', response );
 
-            if ( response != null && response.action != null ) {
+			if ( response != null && response.action != null ) {
 
-                this.selectedEvent.addNewAction( response.actionName, response.action );
+				this.selectedEvent.addNewAction( response.actionName, response.action );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    addManeuver () {
+	addManeuver () {
 
-        // TODO : Check before adding
+		// TODO : Check before adding
 
-        const story = this.openScenario.storyboard.addNewStory( 'NewStory', this.entity.name );
+		const story = this.openScenario.storyboard.addNewStory( 'NewStory', this.entity.name );
 
-        const act = story.addNewAct( 'NewAct' );
+		const act = story.addNewAct( 'NewAct' );
 
-        const sequence = act.addNewSequence( 'NewSequence', 1, this.entity.name );
+		const sequence = act.addNewSequence( 'NewSequence', 1, this.entity.name );
 
-        const maneuver = sequence.addNewManeuver( 'NewManeuever' );
+		const maneuver = sequence.addNewManeuver( 'NewManeuever' );
 
-        const event = maneuver.addNewEvent( 'NewEvent', '100' );
+		const event = maneuver.addNewEvent( 'NewEvent', '100' );
 
-        const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Distance );
+		const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Distance );
 
-        trajectory.vertices.push( new OscVertex( 0, new OscWorldPosition( 0, 0, 0 ), new OscPolylineShape ) );
-        trajectory.vertices.push( new OscVertex( 1, new OscWorldPosition( 1, 1, 0 ), new OscPolylineShape ) );
+		trajectory.vertices.push( new OscVertex( 0, new OscWorldPosition( 0, 0, 0 ), new OscPolylineShape ) );
+		trajectory.vertices.push( new OscVertex( 1, new OscWorldPosition( 1, 1, 0 ), new OscPolylineShape ) );
 
-        const action = event.addNewAction( 'NewAction', new OscFollowTrajectoryAction( trajectory ) );
+		const action = event.addNewAction( 'NewAction', new OscFollowTrajectoryAction( trajectory ) );
 
-        Debug.log( this.openScenario.storyboard );
+		Debug.log( this.openScenario.storyboard );
 
-        // let maneuver = new OscManeuver( 'NewManeuver' );
+		// let maneuver = new OscManeuver( 'NewManeuver' );
 
-        // this.openScenario.addManeuver( this.entity.name, maneuver );
+		// this.openScenario.addManeuver( this.entity.name, maneuver );
 
-    }
+	}
 
 }
