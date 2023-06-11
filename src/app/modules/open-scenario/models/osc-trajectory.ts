@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractPosition } from './osc-interfaces';
 import { OscParameterDeclaration } from './osc-parameter-declaration';
 

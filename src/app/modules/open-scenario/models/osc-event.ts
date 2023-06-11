@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/osc-player.service';
 import { OscSourceFile } from '../services/osc-source-file';

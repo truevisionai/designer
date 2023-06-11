@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscSourceFile } from '../services/osc-source-file';
 import { OscGlobalAction } from './actions/osc-global-action';
 import { OscUserDefinedAction } from './actions/osc-user-defined-action';

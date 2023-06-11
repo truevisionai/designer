@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
 import { OscDistanceCondition } from '../../../models/conditions/osc-distance-condition';

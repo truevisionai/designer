@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PolyLineEditor } from 'app/core/editors/polyline-editor';

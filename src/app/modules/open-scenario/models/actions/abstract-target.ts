@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscTargetType } from '../osc-enums';
 
 export abstract class AbstractTarget {

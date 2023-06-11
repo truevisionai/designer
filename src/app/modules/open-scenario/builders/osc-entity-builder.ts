@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { BoxGeometry, MeshBasicMaterial, Object3D, Sprite, SpriteMaterial, Texture, TextureLoader } from 'three';
 import { GameObject } from '../../../core/game-object';

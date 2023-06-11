@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractPosition } from '../../../models/osc-interfaces';
 

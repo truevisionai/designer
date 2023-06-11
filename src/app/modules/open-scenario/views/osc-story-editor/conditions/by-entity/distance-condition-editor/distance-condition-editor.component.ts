@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { OscDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-distance-condition';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { OscPositionAction } from '../models/actions/osc-position-action';
 import { OscEntityObject } from '../models/osc-entities';

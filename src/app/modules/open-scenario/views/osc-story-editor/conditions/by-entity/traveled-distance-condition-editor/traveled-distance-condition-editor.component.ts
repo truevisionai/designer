@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { OscTraveledDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-traveled-distance-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { OscReachPositionCondition } from 'app/modules/open-scenario/models/conditions/osc-reach-position-condition';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';

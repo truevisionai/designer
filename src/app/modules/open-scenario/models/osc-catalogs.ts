@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscDirectory } from './osc-common';
 import { OscParameter } from './osc-parameter-declaration';
 import { OscTrajectory } from './osc-trajectory';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';

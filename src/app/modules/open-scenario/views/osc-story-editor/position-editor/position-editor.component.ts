@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { OscPositionType } from 'app/modules/open-scenario/models/osc-enums';
 import { AbstractPosition } from '../../../models/osc-interfaces';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OscRoadPosition } from '../../../../models/positions/osc-road-position';
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { OscSourceFile } from '../../services/osc-source-file';
 import { OscPositionType } from '../osc-enums';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { OscDynamicsShape } from 'app/modules/open-scenario/models/osc-enums';
 import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions/osc-private-action';

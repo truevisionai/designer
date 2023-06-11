@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from '../../../core/commands/base-command';
 import { OpenScenario } from '../models/osc-scenario';
 import { OscSourceFile } from '../services/osc-source-file';

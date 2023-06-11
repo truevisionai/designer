@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscPolylineShape } from '../models/osc-trajectory';
 import { OscWorldPosition } from '../models/positions/osc-world-position';
 import { OscReaderService } from './osc-reader.service';

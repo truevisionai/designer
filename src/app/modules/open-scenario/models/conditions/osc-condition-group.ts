@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractCondition } from './osc-condition';
 
 export class OscConditionGroup {

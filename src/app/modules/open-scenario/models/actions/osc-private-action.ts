@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscActionCategory, OscDynamicsShape } from '../osc-enums';
 import { AbstractAction, AbstractPrivateAction } from '../osc-interfaces';
 

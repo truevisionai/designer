@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter } from '@angular/core';
 import { Vector3 } from 'three';
 import { StoryEvent } from '../services/osc-player.service';

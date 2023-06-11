@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscSourceFile } from '../services/osc-source-file';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscManeuver } from './osc-maneuver';

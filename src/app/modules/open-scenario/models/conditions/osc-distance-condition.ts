@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscSourceFile } from '../../services/osc-source-file';
 import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';

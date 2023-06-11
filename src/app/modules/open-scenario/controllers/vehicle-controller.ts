@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { TvContactPoint } from '../../tv-map/models/tv-common';

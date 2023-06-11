@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractCondition } from './conditions/osc-condition';
 import { OscConditionGroup } from './conditions/osc-condition-group';
 import { OscSequence } from './osc-sequence';

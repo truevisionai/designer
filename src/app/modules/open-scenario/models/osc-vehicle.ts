@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscBoundingBox } from './osc-bounding-box';
 import { OscVehicleCategory } from './osc-enums';
 import { IScenarioObject } from './osc-interfaces';

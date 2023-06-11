@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SceneService } from '../../../core/services/scene.service';
 import { OpenScenario } from '../models/osc-scenario';
 

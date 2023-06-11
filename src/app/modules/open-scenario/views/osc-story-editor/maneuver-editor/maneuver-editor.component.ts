@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OscManeuver } from 'app/modules/open-scenario/models/osc-maneuver';
 

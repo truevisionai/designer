@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OscPositionAction } from '../../../../../models/actions/osc-position-action';
 import { OscEntityObject } from '../../../../../models/osc-entities';

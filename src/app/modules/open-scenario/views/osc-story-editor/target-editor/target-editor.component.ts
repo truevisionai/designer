@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
 import { OscAbsoluteTarget } from '../../../models/actions/osc-absolute-target';

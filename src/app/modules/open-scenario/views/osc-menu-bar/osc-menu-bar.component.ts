@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { CommandHistory } from 'app/services/command-history';
 import { TvElectronService } from 'app/services/tv-electron.service';

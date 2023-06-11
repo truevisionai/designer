@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscSex } from './osc-enums';
 import { OscProperties } from './osc-properties';
 

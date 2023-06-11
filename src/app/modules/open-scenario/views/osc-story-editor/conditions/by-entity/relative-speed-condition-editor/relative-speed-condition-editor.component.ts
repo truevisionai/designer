@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component } from '@angular/core';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 

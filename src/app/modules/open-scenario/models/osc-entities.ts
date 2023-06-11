@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { OscSpeedAction } from './actions/osc-speed-action';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { OscSourceFile } from '../../../../services/osc-source-file';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscConditionType, OscObjectType } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscConditionCategory, OscConditionEdge, OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 import { OscUtils } from '../osc-utils';
 

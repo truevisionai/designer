@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { Debug } from '../../../core/utils/debug';

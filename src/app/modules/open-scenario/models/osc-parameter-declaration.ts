@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscParameterType } from './osc-enums';
 
 export class OscParameterDeclaration {

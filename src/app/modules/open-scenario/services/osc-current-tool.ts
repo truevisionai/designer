@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // import { AbstractTool } from '../tools/abstract-tool';
 // import { EventEmitter } from '@angular/core';
 //

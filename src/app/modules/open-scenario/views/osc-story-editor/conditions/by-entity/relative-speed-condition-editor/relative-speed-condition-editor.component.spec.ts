@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RelativeSpeedConditionEditorComponent } from './relative-speed-condition-editor.component';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // helper class to map all unique names in the scenario
 export class OscNameDB {
 

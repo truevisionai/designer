@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from 'app/core/commands/base-command';
 import { OscEntityObject } from '../models/osc-entities';
 import { OscSourceFile } from '../services/osc-source-file';

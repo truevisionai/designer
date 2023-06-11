@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OscSimulationTimeCondition } from 'app/modules/open-scenario/models/conditions/osc-simulation-time-condition';
 

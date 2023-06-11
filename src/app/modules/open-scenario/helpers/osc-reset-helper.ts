@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscConditionGroup } from '../models/conditions/osc-condition-group';
 import { OscAct } from '../models/osc-act';
 import { OscEvent } from '../models/osc-event';

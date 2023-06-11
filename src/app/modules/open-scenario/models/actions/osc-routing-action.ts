@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OscCatalogReference } from '../osc-catalogs';
 import { OscActionType, OscDomainAbsoluteRelative } from '../osc-enums';
 import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
