@@ -2,11 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
-import { ICommand, ICommandCallback } from './i-command';
-import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvScenarioInstance } from '../../modules/open-scenario/services/tv-scenario-instance';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
+import { SceneService } from '../services/scene.service';
+import { ICommand, ICommandCallback } from './i-command';
 
 
 export abstract class BaseCommand implements ICommand {
@@ -15,6 +16,10 @@ export abstract class BaseCommand implements ICommand {
 
 	get map () {
 		return TvMapInstance.map;
+	}
+
+	get scenario () {
+		return TvScenarioInstance.scenario;
 	}
 
 	abstract execute (): void;

@@ -29,7 +29,7 @@ export class OscLanePosition extends AbstractPosition {
 
 	}
 
-	getPosition (): Vector3 {
+	toVector3 (): Vector3 {
 
 		if ( this.roadId != 0 && this.roadId != null && this.laneId != null && this.sCoordinate != null ) {
 

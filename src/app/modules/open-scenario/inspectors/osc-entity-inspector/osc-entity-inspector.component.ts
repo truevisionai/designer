@@ -8,7 +8,7 @@ import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { OscEntityObject } from '../../models/osc-entities';
 import { OscDialogService } from '../../services/osc-dialog.service';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscActionsInspectorComponent } from '../osc-actions-inspector/osc-player-actions-inspector.component';
 
 @Component( {
@@ -38,7 +38,7 @@ export class EntityInspector implements OnInit, IComponent {
 	};
 
 	get scenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	ngOnInit () {

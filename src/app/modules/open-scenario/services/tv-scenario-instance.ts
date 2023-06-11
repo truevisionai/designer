@@ -8,7 +8,7 @@ import { OscClearHelper } from '../helpers/osc-clear-helper';
 import { OscNameDB } from '../models/osc-name-db';
 import { OpenScenario } from '../models/osc-scenario';
 
-export class OscSourceFile {
+export class TvScenarioInstance {
 
 	public static scenarioChanged = new EventEmitter<OpenScenario>();
 	public static fileChanged = new EventEmitter<IFile>();

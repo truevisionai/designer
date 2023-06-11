@@ -10,7 +10,7 @@ import { FileService } from 'app/services/file.service';
 import { IFile } from '../../../../core/models/file';
 import { OpenDriveApiService } from '../../../../core/services/open-drive-api.service';
 import { OscFile } from '../../models/osc-common';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
 @Component( {
 	selector: 'app-edit-road-network-dialog',
@@ -33,23 +33,23 @@ export class EditRoadNetworkDialogComponent implements OnInit {
 	}
 
 	get openScenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	get roadNetwork () {
-		return OscSourceFile.openScenario.roadNetwork;
+		return TvScenarioInstance.openScenario.roadNetwork;
 	}
 
 	get logics () {
-		return OscSourceFile.openScenario.roadNetwork.logics;
+		return TvScenarioInstance.openScenario.roadNetwork.logics;
 	}
 
 	get sceneGraph () {
-		return OscSourceFile.openScenario.roadNetwork.sceneGraph;
+		return TvScenarioInstance.openScenario.roadNetwork.sceneGraph;
 	}
 
 	get currentFile () {
-		return OscSourceFile.currentFile;
+		return TvScenarioInstance.currentFile;
 	}
 
 	ngOnInit () {

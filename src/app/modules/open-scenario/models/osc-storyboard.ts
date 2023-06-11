@@ -2,9 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscGlobalAction } from './actions/osc-global-action';
 import { OscUserDefinedAction } from './actions/osc-user-defined-action';
+import { AbstractCondition } from './conditions/osc-condition';
 import { OscConditionGroup } from './conditions/osc-condition-group';
 import { AbstractPrivateAction } from './osc-interfaces';
 import { OscStory } from './osc-story';
@@ -32,13 +33,13 @@ export class OscStoryboard {
 
 	addStory ( story: OscStory ) {
 
-		const hasName = OscSourceFile.db.has_story( story.name );
+		const hasName = TvScenarioInstance.db.has_story( story.name );
 
 		if ( hasName ) throw new Error( `Story name '${ story.name }' has already been used` );
 
 		this.stories.set( story.name, story );
 
-		OscSourceFile.db.add_story( story.name, story );
+		TvScenarioInstance.db.add_story( story.name, story );
 
 	}
 
@@ -57,6 +58,25 @@ export class OscStoryboard {
 		this.endConditionGroups.push( group );
 
 	}
+
+	addEndCondition ( condition: AbstractCondition ) {
+
+		if ( this.endConditionGroups.length > 0 ) {
+
+			this.endConditionGroups[ 0 ].addCondition( ( condition ) );
+
+		} else {
+
+			const group = new OscConditionGroup();
+
+			group.addCondition( condition );
+
+			this.addEndConditionGroup( group );
+
+		}
+
+	}
+
 
 	addPrivateInitAction ( owner: string, action: AbstractPrivateAction ): any {
 

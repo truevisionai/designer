@@ -3,6 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { Time } from 'app/core/time';
 import { StatusBarService } from 'app/services/status-bar.service';
 
 @Component( {
@@ -15,6 +16,10 @@ export class StatusBarComponent implements OnInit {
 	highlightStatus = false;
 
 	constructor ( public statusService: StatusBarService ) { }
+
+	get timePassed () {
+		return Time.seconds;
+	}
 
 	ngOnInit (): void {
 

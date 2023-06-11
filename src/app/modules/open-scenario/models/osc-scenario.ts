@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscAct } from './osc-act';
 import { OscCatalogs } from './osc-catalogs';
 import { OscFile } from './osc-common';
@@ -68,13 +68,13 @@ export class OpenScenario {
 
 	addObject ( object: OscEntityObject ) {
 
-		const hasName = OscSourceFile.db.has_entity( object.name );
+		const hasName = TvScenarioInstance.db.has_entity( object.name );
 
 		if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
 
 		this.objects.set( object.name, object );
 
-		OscSourceFile.db.add_entity( object.name, object );
+		TvScenarioInstance.db.add_entity( object.name, object );
 
 	}
 
@@ -101,7 +101,7 @@ export class OpenScenario {
 
 	removeObject ( object: OscEntityObject ) {
 
-		OscSourceFile.db.remove_entity( object.name );
+		TvScenarioInstance.db.remove_entity( object.name );
 
 		this.objects.delete( object.name );
 
@@ -200,5 +200,16 @@ export class OpenScenario {
 
 	destroy () {
 
+	}
+
+	createStory ( entity: OscEntityObject ): OscStory {
+
+		const storyName = `Story${ this.storyboard.stories.size + 1 }`;
+
+		const story = new OscStory( storyName, entity.name );
+
+		this.storyboard.addStory( story );
+
+		return story;
 	}
 }

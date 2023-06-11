@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscConditionType, OscTriggeringRule } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
@@ -25,7 +25,7 @@ export class OscTraveledDistanceCondition extends AbstractByEntityCondition {
 
 			for ( const entityName of this.entities ) {
 
-				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 
 				const passed = entity.distanceTravelled >= this.value;
 

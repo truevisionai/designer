@@ -15,7 +15,7 @@ import { AbstractAction } from '../../models/osc-interfaces';
 import { OscManeuver } from '../../models/osc-maneuver';
 import { EnumTrajectoryDomain, OscPolylineShape, OscTrajectory, OscVertex } from '../../models/osc-trajectory';
 import { OscWorldPosition } from '../../models/positions/osc-world-position';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
 import { EditActionsDialogComponent, EditActionsDialogData } from '../edit-actions-dialog/edit-actions-dialog.component';
@@ -50,7 +50,7 @@ export class EditStoryDialog implements OnInit {
 	}
 
 	get openScenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	get entity () {

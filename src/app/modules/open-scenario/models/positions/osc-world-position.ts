@@ -94,7 +94,7 @@ export class OscWorldPosition extends AbstractPosition {
 		return worldPosition;
 	}
 
-	getPosition (): Vector3 {
+	toVector3 (): Vector3 {
 
 		return this.position;
 

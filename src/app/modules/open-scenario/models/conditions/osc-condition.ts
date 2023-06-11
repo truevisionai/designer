@@ -3,7 +3,7 @@
  */
 
 import { OscConditionCategory, OscConditionEdge, OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
-import { OscUtils } from '../osc-utils';
+import { ConditionService } from '../condition-service';
 
 // export class DontUse_OscCondition {
 
@@ -28,7 +28,7 @@ export abstract class AbstractCondition {
 	abstract hasPassed (): boolean;
 
 	hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
-		return OscUtils.hasRulePassed( rule, left, right );
+		return ConditionService.hasRulePassed( rule, left, right );
 	}
 
 }

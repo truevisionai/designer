@@ -20,7 +20,7 @@ import { OscSequence } from '../../models/osc-sequence';
 import { OscStory } from '../../models/osc-story';
 import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
 import { OscDialogService } from '../../services/osc-dialog.service';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import {
 	FollowTrajectoryActionComponent
 } from '../../views/osc-story-editor/actions/private-actions/follow-trajectory-action/follow-trajectory-action.component';
@@ -43,7 +43,7 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 	}
 
 	get scenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	get actions () {

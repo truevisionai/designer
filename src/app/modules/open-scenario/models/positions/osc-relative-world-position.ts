@@ -23,7 +23,7 @@ export class OscRelativeWorldPosition extends AbstractPosition {
 
 	}
 
-	getPosition (): Vector3 {
+	toVector3 (): Vector3 {
 
 		console.error( 'Method not implemented.' );
 

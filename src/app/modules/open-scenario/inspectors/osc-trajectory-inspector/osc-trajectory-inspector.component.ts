@@ -93,9 +93,9 @@ export class OscTrajectoryInspectorComponent implements OnInit, OnDestroy, OnCha
 		this.trajectory.vertices.forEach( vertex => {
 
 			// Important! Need to set the vector3
-			vertex.position.vector3 = vertex.position.getPosition();
+			vertex.position.vector3 = vertex.position.toVector3();
 
-			this.shapeEditor.addControlPoint( vertex.position.getPosition() );
+			this.shapeEditor.addControlPoint( vertex.position.toVector3() );
 
 		} );
 

@@ -4,12 +4,12 @@
 
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/osc-player.service';
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { AbstractCondition } from './conditions/osc-condition';
 import { OscConditionGroup } from './conditions/osc-condition-group';
 import { OscStoryElementType } from './osc-enums';
 import { AbstractAction } from './osc-interfaces';
-import { OscUtils } from './osc-utils';
+import { ConditionService } from './condition-service';
 
 export class OscEvent {
 
@@ -51,13 +51,13 @@ export class OscEvent {
 
 	addNewAction ( name: string, action: AbstractAction ) {
 
-		const hasName = OscSourceFile.db.has_action( name );
+		const hasName = TvScenarioInstance.db.has_action( name );
 
 		if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
 		this.actions.set( name, action );
 
-		OscSourceFile.db.add_action( name );
+		TvScenarioInstance.db.add_action( name );
 
 		action.completed.subscribe( e => {
 			this.onActionCompleted( { name: name, type: OscStoryElementType.action } );
@@ -85,7 +85,7 @@ export class OscEvent {
 
 	hasPassed () {
 
-		return OscUtils.hasGroupsPassed( this.startConditionGroups );
+		return ConditionService.hasGroupsPassed( this.startConditionGroups );
 
 	}
 

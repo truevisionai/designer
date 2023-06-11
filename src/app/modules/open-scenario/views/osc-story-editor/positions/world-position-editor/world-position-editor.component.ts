@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OscWorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
 import { ThreeService } from '../../../../../three-js/three.service';
-import { OscSourceFile } from '../../../../services/osc-source-file';
+import { TvScenarioInstance } from '../../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
@@ -24,7 +24,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor impleme
 	}
 
 	get entities () {
-		return [ ...OscSourceFile.openScenario.objects.keys() ];
+		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
 	};
 
 	get vector () {

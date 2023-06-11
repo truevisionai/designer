@@ -8,8 +8,9 @@ import { Debug } from '../../../core/utils/debug';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { OscActionBuilder } from '../builders/osc-action-builder';
+import { ActionService } from '../builders/action-service';
 import { OscResetHelper } from '../helpers/osc-reset-helper';
+import { ConditionService } from '../models/condition-service';
 import { OscAct } from '../models/osc-act';
 import { OscEntityObject } from '../models/osc-entities';
 import { OscStoryElementType } from '../models/osc-enums';
@@ -18,9 +19,7 @@ import { AbstractAction } from '../models/osc-interfaces';
 import { OscManeuver } from '../models/osc-maneuver';
 import { OscSequence } from '../models/osc-sequence';
 import { OscStory } from '../models/osc-story';
-import { OscUtils } from '../models/osc-utils';
-import { OscReaderService } from './osc-reader.service';
-import { OscSourceFile } from './osc-source-file';
+import { TvScenarioInstance } from './tv-scenario-instance';
 
 export interface StoryEvent {
 	name: string;
@@ -36,9 +35,9 @@ export class OscPlayerService {
 
 	private added: boolean;
 	private eventIndex: number = 0;
-	private logEvents: boolean = false;
+	private logEvents: boolean = true;
 
-	constructor ( player: PlayerService, private reader: OscReaderService ) {
+	constructor ( private player: PlayerService ) {
 
 		player.playerStarted.subscribe( e => this.onPlayerStarted() );
 		player.playerResumed.subscribe( e => this.onPlayerResumed() );
@@ -56,7 +55,7 @@ export class OscPlayerService {
 
 	get openScenario () {
 
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 
 	}
 
@@ -91,9 +90,12 @@ export class OscPlayerService {
 
 	private onPlayerTick ( e: PlayerUpdateData ) {
 
-		// Debug.log( Time.frameCount, Time.seconds, Time.deltaTime );
+		if ( ConditionService.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
 
-		this.openDrive.update();
+			this.player.stop();
+
+			return;
+		}
 
 		this.openScenario.storyboard.stories.forEach( story => {
 
@@ -118,13 +120,13 @@ export class OscPlayerService {
 		// } );
 
 		// set road traffic state
-		this.openDrive.roads.forEach( road => OscPlayerService.traffic.set( road.id, [] ) );
+		// this.openDrive.roads.forEach( road => OscPlayerService.traffic.set( road.id, [] ) );
 
 		this.openScenario.objects.forEach( obj => {
 
 			obj.initActions.forEach( action => {
 
-				OscActionBuilder.executePrivateAction( obj, action );
+				ActionService.executePrivateAction( obj, action );
 
 			} );
 
@@ -151,7 +153,7 @@ export class OscPlayerService {
 
 			if ( !act.hasStarted ) {
 
-				act.shouldStart = OscUtils.hasGroupsPassed( act.startConditionGroups );
+				act.shouldStart = ConditionService.hasGroupsPassed( act.startConditionGroups );
 
 				// if ( act.startConditionGroups.length == 0 ) act.shouldStart = true;
 				//
@@ -355,25 +357,23 @@ export class OscPlayerService {
 
 	private setRoadProperties ( obj: OscEntityObject ) {
 
-		const theta = new TvPosTheta();
+		const roadCoord = new TvPosTheta();
 
 		const pos = obj.gameObject.position;
 
-		// console.log( this.openDrive );
+		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
 
-		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, theta );
-
-		// console.log( theta, pos, res );
+		if ( !res.road || !res.lane ) return;
 
 		obj.roadId = res.road.id;
 
 		obj.laneId = res.lane.id;
 
-		obj.laneSectionId = res.road.getLaneSectionAt( theta.s ).id;
+		obj.laneSectionId = res.road.getLaneSectionAt( roadCoord.s ).id;
 
 		obj.direction = res.lane.id > 0 ? -1 : 1;
 
-		obj.sCoordinate = theta.s;
+		obj.sCoordinate = roadCoord.s;
 
 	}
 

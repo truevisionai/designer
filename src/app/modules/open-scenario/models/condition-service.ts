@@ -5,7 +5,7 @@
 import { OscConditionGroup } from './conditions/osc-condition-group';
 import { OscRule, OscTriggeringRule } from './osc-enums';
 
-export class OscUtils {
+export class ConditionService {
 
 	static hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
 

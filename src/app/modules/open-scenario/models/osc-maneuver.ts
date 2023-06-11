@@ -4,7 +4,7 @@
 
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/osc-player.service';
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscStoryElementType } from './osc-enums';
 import { OscEvent } from './osc-event';
 import { AbstractAction } from './osc-interfaces';
@@ -38,7 +38,7 @@ export class OscManeuver {
 
 	addNewEvent ( name: string, priority: string ) {
 
-		const hasName = OscSourceFile.db.has_event( name );
+		const hasName = TvScenarioInstance.db.has_event( name );
 
 		if ( hasName ) throw new Error( 'Event name already used' );
 
@@ -53,7 +53,7 @@ export class OscManeuver {
 
 		this.events.push( event );
 
-		OscSourceFile.db.add_event( event.name, event );
+		TvScenarioInstance.db.add_event( event.name, event );
 
 		event.completed.subscribe( e => {
 			this.onEventCompleted( e );

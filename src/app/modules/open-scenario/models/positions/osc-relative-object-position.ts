@@ -3,7 +3,7 @@
  */
 
 import { Vector3 } from 'three';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscPositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
 import { OscOrientation } from '../osc-orientation';
@@ -19,10 +19,10 @@ export class OscRelativeObjectPosition extends AbstractPosition {
 	public dz: number = 0;
 	public orientations: OscOrientation[] = [];
 
-	getPosition (): Vector3 {
+	toVector3 (): Vector3 {
 
 		// TODO: Improve this and stop directly accessing oscSource
-		const position = OscSourceFile.openScenario.objects.get( this.object ).gameObject.position;
+		const position = TvScenarioInstance.openScenario.objects.get( this.object ).gameObject.position;
 
 		position.x += this.dx;
 		position.y += this.dy;

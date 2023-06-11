@@ -5,7 +5,7 @@
 import { GameObject } from 'app/core/game-object';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
-import { OscSourceFile } from 'app/modules/open-scenario/services/osc-source-file';
+import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BoxGeometry, MeshBasicMaterial } from 'three';
@@ -63,7 +63,7 @@ export class VehicleTool extends BaseTool {
 
 		}
 
-		console.log( 'Scenario', OscSourceFile.scenario );
+		console.log( 'Scenario', TvScenarioInstance.scenario );
 
 	}
 

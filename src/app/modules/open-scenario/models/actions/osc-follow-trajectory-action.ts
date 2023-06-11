@@ -94,7 +94,7 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 		// console.log( vertex );
 
-		const target = vertex.position.getPosition();
+		const target = vertex.position.toVector3();
 
 		const targetDir = target.clone().sub( entity.position );
 

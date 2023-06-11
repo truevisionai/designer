@@ -19,7 +19,7 @@ import { OscRoadNetwork } from '../models/osc-road-network';
 import { OpenScenario } from '../models/osc-scenario';
 import { OscStoryboard } from '../models/osc-storyboard';
 import { OscVehicle } from '../models/osc-vehicle';
-import { OscActionBuilder } from './osc-action-builder';
+import { ActionService } from './action-service';
 import { OscEntityBuilder } from './osc-entity-builder';
 
 @Injectable( {
@@ -95,7 +95,7 @@ export class OscBuilderService {
 
 	public static executePrivateAction ( obj: OscEntityObject, privateAction: AbstractPrivateAction ) {
 
-		OscActionBuilder.executePrivateAction( obj, privateAction );
+		ActionService.executePrivateAction( obj, privateAction );
 
 	}
 

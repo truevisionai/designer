@@ -4,7 +4,7 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscEntityObject } from '../osc-entities';
 import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
@@ -141,7 +141,7 @@ export class OscSpeedAction extends AbstractPrivateAction {
 
 				const name = ( this.target as OscRelativeTarget ).object;
 
-				const obj = OscSourceFile.openScenario.findEntityOrFail( name );
+				const obj = TvScenarioInstance.openScenario.findEntityOrFail( name );
 
 				this.newSpeed = obj.speed + this.target.value;
 

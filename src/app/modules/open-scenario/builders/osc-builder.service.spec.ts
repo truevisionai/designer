@@ -10,14 +10,13 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
-import { ElectronService } from 'ngx-electron';
 import { GameObject } from '../../../core/game-object';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { OscPositionAction } from '../models/actions/osc-position-action';
 import { OscEntityObject } from '../models/osc-entities';
 import { OscLanePosition } from '../models/positions/osc-lane-position';
 import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscActionBuilder } from './osc-action-builder';
+import { ActionService } from './action-service';
 import { OscBuilderService } from './osc-builder.service';
 
 class MockOpenDriveApiService {
@@ -82,9 +81,9 @@ describe( 'OscBuilderService', () => {
 
 		var positionAction = new OscPositionAction( worldPosition );
 
-		OscActionBuilder.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( oscObject, positionAction );
 
-		var placedPosition = worldPosition.getPosition();
+		var placedPosition = worldPosition.toVector3();
 
 		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
 		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
@@ -98,9 +97,9 @@ describe( 'OscBuilderService', () => {
 
 		var positionAction = new OscPositionAction( lanePosition );
 
-		OscActionBuilder.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( oscObject, positionAction );
 
-		var placedPosition = lanePosition.getPosition();
+		var placedPosition = lanePosition.toVector3();
 
 		expect( placedPosition ).not.toBeNull();
 		expect( placedPosition ).not.toBeUndefined();
@@ -122,9 +121,9 @@ describe( 'OscBuilderService', () => {
 
 		var positionAction = new OscPositionAction( lanePosition );
 
-		OscActionBuilder.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( oscObject, positionAction );
 
-		var placedPosition = lanePosition.getPosition();
+		var placedPosition = lanePosition.toVector3();
 
 		expect( placedPosition ).not.toBeNull();
 		expect( placedPosition ).not.toBeUndefined();

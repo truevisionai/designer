@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
-import { OscUtils } from '../osc-utils';
+import { ConditionService } from '../condition-service';
 import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscSpeedCondition extends AbstractByEntityCondition {
@@ -27,9 +27,9 @@ export class OscSpeedCondition extends AbstractByEntityCondition {
 
 			for ( const entityName of this.entities ) {
 
-				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 
-				const passed = OscUtils.hasRulePassed( this.rule, entity.speed, this.value );
+				const passed = ConditionService.hasRulePassed( this.rule, entity.speed, this.value );
 
 				// exit if any of the entity distance is passed
 				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {

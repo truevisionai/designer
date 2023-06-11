@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { OscSourceFile } from '../../../../services/osc-source-file';
+import { TvScenarioInstance } from '../../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
@@ -19,7 +19,7 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 	// @Input() position: OscRelativeObjectPosition;
 
 	get entities () {
-		return [ ...OscSourceFile.openScenario.objects.keys() ];
+		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
 	};
 
 	ngOnInit () {

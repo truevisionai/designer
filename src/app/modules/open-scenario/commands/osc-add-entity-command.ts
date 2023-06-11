@@ -4,7 +4,7 @@
 
 import { BaseCommand } from 'app/core/commands/base-command';
 import { OscEntityObject } from '../models/osc-entities';
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscEditor } from '../views/osc-editor/osc-editor';
 
 export class OscAddEntityCommand extends BaseCommand {
@@ -15,10 +15,10 @@ export class OscAddEntityCommand extends BaseCommand {
 
 	execute (): void {
 
-		OscSourceFile.openScenario.addObject( this.entity );
+		TvScenarioInstance.openScenario.addObject( this.entity );
 
 		OscEditor.scenarioChanged.emit();
-		OscSourceFile.scenarioChanged.emit();
+		TvScenarioInstance.scenarioChanged.emit();
 
 	}
 
@@ -30,10 +30,10 @@ export class OscAddEntityCommand extends BaseCommand {
 
 		parent.remove( this.entity.gameObject );
 
-		OscSourceFile.openScenario.removeObject( this.entity );
+		TvScenarioInstance.openScenario.removeObject( this.entity );
 
 		OscEditor.scenarioChanged.emit();
-		OscSourceFile.scenarioChanged.emit();
+		TvScenarioInstance.scenarioChanged.emit();
 
 	}
 

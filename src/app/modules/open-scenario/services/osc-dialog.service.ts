@@ -14,7 +14,7 @@ import { EditRoadNetworkDialogComponent } from '../dialogs/edit-road-network-dia
 import { EditStoryDialog, EditStoryDialogData } from '../dialogs/edit-story-dialog/edit-story-dialog.component';
 import { OscEntityObject } from '../models/osc-entities';
 import { OscActEditorComponent } from '../views/osc-act-editor/osc-act-editor.component';
-import { OscSourceFile } from './osc-source-file';
+import { TvScenarioInstance } from './tv-scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,7 +34,7 @@ export class OscDialogService {
 	}
 
 	get openScenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	openAddVehicleDialog (): any {

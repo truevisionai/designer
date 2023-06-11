@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
 import { OscAbsoluteTarget } from '../../../models/actions/osc-absolute-target';
 import { OscRelativeTarget } from '../../../models/actions/osc-relative-target';
-import { OscSourceFile } from '../../../services/osc-source-file';
+import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 
 @Component( {
 	selector: 'app-target-editor',
@@ -22,7 +22,7 @@ export class TargetEditorComponent {
 
 	get entities () {
 
-		return [ ...OscSourceFile.openScenario.objects.keys() ];
+		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
 
 	}
 

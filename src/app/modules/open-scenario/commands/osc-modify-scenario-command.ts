@@ -4,7 +4,7 @@
 
 import { BaseCommand } from '../../../core/commands/base-command';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class OscModifyScenarioCommand extends BaseCommand {
 
@@ -16,15 +16,15 @@ export class OscModifyScenarioCommand extends BaseCommand {
 	}
 
 	execute (): void {
-		OscSourceFile.openScenario = this.newState;
+		TvScenarioInstance.openScenario = this.newState;
 	}
 
 	undo (): void {
-		OscSourceFile.openScenario = this.oldState;
+		TvScenarioInstance.openScenario = this.oldState;
 	}
 
 	redo (): void {
-		OscSourceFile.openScenario = this.newState;
+		TvScenarioInstance.openScenario = this.newState;
 	}
 
 }

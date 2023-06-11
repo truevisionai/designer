@@ -6,7 +6,7 @@ import { MathUtils } from 'three';
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscEntityObject } from '../osc-entities';
 import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
@@ -95,7 +95,7 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 
 			case OscTargetType.relative:
 				const name = ( this.target as OscRelativeTarget ).object;
-				const obj = OscSourceFile.openScenario.objects.get( name );
+				const obj = TvScenarioInstance.openScenario.objects.get( name );
 				const otherLaneId = obj.laneId;
 				this.newLaneId = otherLaneId + this.target.value;
 				break;

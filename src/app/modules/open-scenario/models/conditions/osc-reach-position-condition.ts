@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscConditionType, OscTriggeringRule } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
 import { AbstractByEntityCondition } from './osc-condition';
@@ -21,11 +21,11 @@ export class OscReachPositionCondition extends AbstractByEntityCondition {
 
 		if ( this.passed ) return true;
 
-		const targetPosition = this.position.getPosition();
+		const targetPosition = this.position.toVector3();
 
 		for ( const entityName of this.entities ) {
 
-			const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+			const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 
 			const distanceFromTarget = entity.position.distanceTo( targetPosition );
 

@@ -3,8 +3,16 @@ import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
-import { OscSourceFile } from 'app/modules/open-scenario/services/osc-source-file';
+import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 import { Vector3 } from 'three';
+import { OscAbsoluteTarget } from '../../../modules/open-scenario/models/actions/osc-absolute-target';
+import { OscLaneChangeAction } from '../../../modules/open-scenario/models/actions/osc-lane-change-action';
+import { OscPositionAction } from '../../../modules/open-scenario/models/actions/osc-position-action';
+import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
+import { OscSpeedAction } from '../../../modules/open-scenario/models/actions/osc-speed-action';
+import { OscSimulationTimeCondition } from '../../../modules/open-scenario/models/conditions/osc-simulation-time-condition';
+import { OscDynamicsShape, OscRule } from '../../../modules/open-scenario/models/osc-enums';
+import { OscWorldPosition } from '../../../modules/open-scenario/models/positions/osc-world-position';
 
 export class AddVehicleCommand extends BaseCommand {
 
@@ -16,7 +24,12 @@ export class AddVehicleCommand extends BaseCommand {
 
 		entity.gameObject.position.copy( position.clone() );
 
-		entity.name = `Vehicle${ OscSourceFile.openScenario.objects.size + 1 }`;
+		entity.name = `Vehicle${ TvScenarioInstance.openScenario.objects.size + 1 }`;
+
+		entity.addInitAction( new OscPositionAction( new OscWorldPosition( position.x, position.y, position.z ) ) );
+		entity.addInitAction( new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.step ), new OscAbsoluteTarget( 40 ) ) );
+
+		this.addStoryActions();
 
 		this.setInspector = new SetInspectorCommand( EntityInspector, entity );
 	}
@@ -25,7 +38,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 		SceneService.add( this.entity.gameObject );
 
-		OscSourceFile.openScenario.addObject( this.entity );
+		TvScenarioInstance.openScenario.addObject( this.entity );
 
 		this.setInspector.execute();
 
@@ -35,7 +48,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 		SceneService.remove( this.entity.gameObject );
 
-		OscSourceFile.openScenario.removeObject( this.entity );
+		TvScenarioInstance.openScenario.removeObject( this.entity );
 
 		this.setInspector.undo();
 
@@ -44,6 +57,31 @@ export class AddVehicleCommand extends BaseCommand {
 	redo (): void {
 
 		this.execute();
+
+	}
+
+	private addStoryActions () {
+
+		const story = this.scenario.createStory( this.entity );
+
+		this.scenario.storyboard.addEndCondition( new OscSimulationTimeCondition( 15, OscRule.greater_than ) );
+
+		const act = story.addNewAct( 'Act' );
+
+		const sequence = act.addNewSequence( 'ActSequence', 1, this.entity.name );
+
+		act.addStartCondition( new OscSimulationTimeCondition( 5, OscRule.greater_than ) );
+
+		const maneuver = sequence.addNewManeuver( 'Maneuevr' );
+
+		const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
+
+		event.addNewAction( 'MyLaneChangeLeftAction', new OscLaneChangeAction(
+			new OscLaneChangeDynamics( 5, null, OscDynamicsShape.linear ),
+			new OscAbsoluteTarget( -3 ),
+		) );
+
+		event.addStartCondition( new OscSimulationTimeCondition( 5, OscRule.greater_than ) );
 
 	}
 }

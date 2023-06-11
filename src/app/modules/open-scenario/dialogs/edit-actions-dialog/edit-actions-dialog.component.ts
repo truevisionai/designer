@@ -12,7 +12,7 @@ import { OscConditionType } from '../../models/osc-enums';
 import { OscEvent } from '../../models/osc-event';
 import { AbstractAction } from '../../models/osc-interfaces';
 import { OscManeuver } from '../../models/osc-maneuver';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
 
@@ -86,11 +86,11 @@ export class EditActionsDialogComponent implements OnInit {
 
 	ngOnInit () {
 
-		var stories = OscSourceFile.openScenario.getStoriesByOwner( this.entity.name );
+		var stories = TvScenarioInstance.openScenario.getStoriesByOwner( this.entity.name );
 
-		var sequences = OscSourceFile.openScenario.getSequencesByActor( this.entity.name );
+		var sequences = TvScenarioInstance.openScenario.getSequencesByActor( this.entity.name );
 
-		this.maneuvers = OscSourceFile.openScenario.getManeuversForEntity( this.entity.name );
+		this.maneuvers = TvScenarioInstance.openScenario.getManeuversForEntity( this.entity.name );
 
 		Debug.log( stories );
 

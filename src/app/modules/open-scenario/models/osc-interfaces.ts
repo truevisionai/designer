@@ -60,7 +60,7 @@ export abstract class AbstractPosition {
 	abstract readonly type: OscPositionType;
 	public vector3: THREE.Vector3 = new Vector3( 0, 0, 0 );
 
-	abstract getPosition (): Vector3;
+	abstract toVector3 (): Vector3;
 
 	setPosition ( point: Vector3 ) {
 		throw new Error( 'Method not implemented.' );

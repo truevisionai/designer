@@ -13,7 +13,7 @@ import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { OscEntityObject } from '../models/osc-entities';
 import { AbstractController } from '../models/osc-interfaces';
 import { OscPlayerService } from '../services/osc-player.service';
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class DefaultVehicleController extends AbstractController {
 
@@ -229,7 +229,7 @@ export class DefaultVehicleController extends AbstractController {
 
 		// const vehiclesInFront = this.getVehiclesInFront( actor );
 
-		const entityInFront = [ ...OscSourceFile.openScenario.objects.values() ].find( otherActor => {
+		const entityInFront = [ ...TvScenarioInstance.openScenario.objects.values() ].find( otherActor => {
 			if (
 				otherActor.roadId == actor.roadId &&
 				otherActor.laneSectionId == actor.laneSectionId &&

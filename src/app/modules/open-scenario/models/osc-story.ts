@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscAct } from './osc-act';
 
 export class OscStory {
@@ -34,13 +34,13 @@ export class OscStory {
 
 	addAct ( act: OscAct ) {
 
-		const hasName = OscSourceFile.db.has_act( act.name );
+		const hasName = TvScenarioInstance.db.has_act( act.name );
 
 		if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
 
 		this.acts.push( act );
 
-		OscSourceFile.db.add_act( act.name, act );
+		TvScenarioInstance.db.add_act( act.name, act );
 
 	}
 

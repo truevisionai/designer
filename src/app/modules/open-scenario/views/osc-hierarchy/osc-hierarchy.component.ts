@@ -11,7 +11,7 @@ import { ThreeService } from '../../../three-js/three.service';
 import { EntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { OpenScenario } from '../../models/osc-scenario';
 import { OscDialogService } from '../../services/osc-dialog.service';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscEditor } from '../osc-editor/osc-editor';
 
 /**
@@ -49,13 +49,14 @@ export class OscHierarchyComponent implements OnInit {
 
 	@Input() scenario: OpenScenario;
 	treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
-	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
+	dataSource: MatTreeFlatDataSource<ScenarioNode, { expandable: boolean; name: string; level: number; type: NodeType; }, { expandable: boolean; name: string; level: number; type: NodeType; }>;
 
 	constructor (
 		private dialogs: OscDialogService,
 		private menuService: MenuService,
 		private threeService: ThreeService
 	) {
+		this.dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
 		OscEditor.scenarioChanged.subscribe( () => {
 
@@ -188,7 +189,7 @@ export class OscHierarchyComponent implements OnInit {
 	openVehicleInspector ( node: ExampleNode ) {
 
 
-		var object = OscSourceFile.openScenario.objects.get( node.name );
+		var object = TvScenarioInstance.openScenario.objects.get( node.name );
 
 		// SceneService.select( object.gameObject );
 		// SceneService.focus( object.gameObject );

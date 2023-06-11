@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscUtils } from '../osc-utils';
+import { ConditionService } from '../condition-service';
 import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscDistanceCondition extends AbstractByEntityCondition {
@@ -30,17 +30,17 @@ export class OscDistanceCondition extends AbstractByEntityCondition {
 
 		} else {
 
-			const otherPosition = this.position.getPosition();
+			const otherPosition = this.position.toVector3();
 
 			for ( const entityName of this.entities ) {
 
-				const entity = OscSourceFile.openScenario.findEntityOrFail( entityName );
+				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 
 				const distance = entity.position.distanceTo( otherPosition );
 
 				// console.log( 'distance-to-entity', distance );
 
-				const passed = OscUtils.hasRulePassed( this.rule, distance, this.value );
+				const passed = ConditionService.hasRulePassed( this.rule, distance, this.value );
 
 				// exit if any of the entity distance is passed
 				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {

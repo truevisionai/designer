@@ -4,6 +4,8 @@
 
 import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
+import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
+import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { OscSpeedAction } from './actions/osc-speed-action';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscObjectType } from './osc-enums';
@@ -34,7 +36,7 @@ export class OscEntityObject {
 
 		this.name = name;
 		this.object = object;
-		this.controller = controller;
+		this.controller = controller || new DefaultVehicleController( TvMapInstance.map, this );
 
 		OscEntityObject.count++;
 

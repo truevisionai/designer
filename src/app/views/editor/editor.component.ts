@@ -10,6 +10,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { MainFileService } from 'app/services/main-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
+import { OscPlayerService } from 'app/modules/open-scenario/services/osc-player.service';
 
 @Component( {
 	selector: 'app-editor',
@@ -23,6 +24,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		private analytics: AnalyticsService,
 		private mainFileService: MainFileService,
 		private editor: EditorService,
+		private oscPlayer: OscPlayerService
 	) {
 
 	}

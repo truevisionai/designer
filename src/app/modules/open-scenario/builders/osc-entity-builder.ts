@@ -12,7 +12,7 @@ import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { OscCatalogs } from '../models/osc-catalogs';
 import { OscEntityObject } from '../models/osc-entities';
 import { CatalogReferenceController } from '../models/osc-interfaces';
-import { OscActionBuilder } from './osc-action-builder';
+import { ActionService } from './action-service';
 
 export class OscEntityBuilder {
 
@@ -32,7 +32,7 @@ export class OscEntityBuilder {
 
 				obj.initActions.forEach( ( privateAction ) => {
 
-					OscActionBuilder.executePrivateAction( obj, privateAction );
+					ActionService.executePrivateAction( obj, privateAction );
 
 				} );
 			}

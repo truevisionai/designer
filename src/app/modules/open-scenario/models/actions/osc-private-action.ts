@@ -31,10 +31,14 @@ export class DontUse_OscPrivateAction extends AbstractPrivateAction {
 
 export class OscLaneChangeDynamics {
 
-	public time?: number;
-	public distance?: number;
-	public shape: OscDynamicsShape;
-	public rate?: number;
+
+	constructor (
+		public time?: number,
+		public distance?: number,
+		public shape?: OscDynamicsShape,
+		public rate?: number,
+	) {
+	}
 
 }
 

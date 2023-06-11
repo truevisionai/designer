@@ -38,7 +38,7 @@ export class Time {
 	 */
 	static get seconds () {
 
-		return Math.round( Time.time * 0.001 );
+		return ( Time.time * 0.001 ).toFixed( 2 );
 
 	}
 

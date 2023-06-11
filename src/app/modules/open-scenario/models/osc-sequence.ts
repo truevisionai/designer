@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSourceFile } from '../services/osc-source-file';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscManeuver } from './osc-maneuver';
 
@@ -45,13 +45,13 @@ export class OscSequence {
 
 	addManeuver ( maneuver: OscManeuver ) {
 
-		const hasName = OscSourceFile.db.has_maneuver( maneuver.name );
+		const hasName = TvScenarioInstance.db.has_maneuver( maneuver.name );
 
 		if ( hasName ) throw new Error( 'Maneuver name already used' );
 
 		this.maneuvers.push( maneuver );
 
-		OscSourceFile.db.add_maneuver( maneuver.name );
+		TvScenarioInstance.db.add_maneuver( maneuver.name );
 
 	}
 }

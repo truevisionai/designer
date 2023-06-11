@@ -30,7 +30,7 @@ export class OscPositionAction extends AbstractPrivateAction {
 
 	execute ( entity: OscEntityObject ) {
 
-		entity.setPosition( this.position.getPosition() );
+		entity.setPosition( this.position.toVector3() );
 
 	}
 }

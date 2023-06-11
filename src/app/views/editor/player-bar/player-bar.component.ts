@@ -23,6 +23,8 @@ export class PlayerBarComponent {
 
 	playSimulation () {
 
+		console.log(('pay clicked'));
+
 		if ( this.isPlaying ) return;
 
 		this.isPlaying = true;
@@ -63,13 +65,13 @@ export class PlayerBarComponent {
 
 	onMouseDown () {
 
-		this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
+		// this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
 
 	}
 
 	onMouseUp () {
 
-		clearInterval( this.handle );
+		// clearInterval( this.handle );
 
 	}
 }

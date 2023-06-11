@@ -13,7 +13,7 @@ import { Object3D } from 'three';
 import { ICommand } from '../../../../core/commands/i-command';
 import { OpenScenarioApiService } from '../../../../core/services/open-scenario-api.service';
 import { NewScenarioDialogComponent } from '../../dialogs/new-scenario-dialog/new-scenario-dialog.component';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { OscService } from '../../services/osc.service';
 import { OscEditor } from './osc-editor';
 
@@ -38,7 +38,7 @@ export class OscEditorComponent implements OnInit, AfterViewInit, AfterContentIn
 	}
 
 	get scenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	static execute ( command: ICommand ) {

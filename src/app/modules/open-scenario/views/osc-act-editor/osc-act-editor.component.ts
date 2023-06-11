@@ -8,7 +8,7 @@ import { ChooseConditionDialogComponent } from '../../dialogs/choose-condition-d
 import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { OscAct } from '../../models/osc-act';
 import { OscEntityObject } from '../../models/osc-entities';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
 @Component( {
 	selector: 'app-osc-act-editor',
@@ -33,7 +33,7 @@ export class OscActEditorComponent implements OnInit {
 	}
 
 	get scenario () {
-		return OscSourceFile.openScenario;
+		return TvScenarioInstance.openScenario;
 	}
 
 	ngOnInit () {
