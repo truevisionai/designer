@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { StoryEvent } from '../services/osc-player.service';
+import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { OscStoryElementType } from './osc-enums';
 import { OscEvent } from './osc-event';

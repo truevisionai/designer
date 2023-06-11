@@ -4,6 +4,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FlexModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 
 import { SharedModule } from 'app/shared/shared.module';
@@ -18,7 +19,8 @@ import { ViewportComponent } from './viewport/viewport.component';
 		CommonModule,
 		SharedModule,
 		ColorPickerModule,
-		MatInputModule
+		MatInputModule,
+		FlexModule
 	],
 	exports: [
 		ViewportComponent,

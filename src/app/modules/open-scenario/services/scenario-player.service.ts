@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
-import { Debug } from '../../../core/utils/debug';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
@@ -29,7 +28,7 @@ export interface StoryEvent {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscPlayerService {
+export class ScenarioPlayerService {
 
 	static traffic: Map<number, OscEntityObject[]> = new Map<number, OscEntityObject[]>();
 
@@ -61,7 +60,7 @@ export class OscPlayerService {
 
 	private onPlayerStarted () {
 
-		if ( this.logEvents ) Debug.log( 'scenario-started', this.openScenario );
+		if ( this.logEvents ) console.info( 'scenario-started', this.openScenario );
 
 		this.performInitActions();
 
@@ -69,19 +68,19 @@ export class OscPlayerService {
 
 	private onPlayerResumed () {
 
-		if ( this.logEvents ) Debug.log( 'scenario-resumed' );
+		if ( this.logEvents ) console.info( 'scenario-resumed' );
 
 	}
 
 	private onPlayerPaused () {
 
-		if ( this.logEvents ) Debug.log( 'scenario-paused' );
+		if ( this.logEvents ) console.info( 'scenario-paused' );
 
 	}
 
 	private onPlayerStopped () {
 
-		if ( this.logEvents ) Debug.log( 'scenario-stopped' );
+		if ( this.logEvents ) console.info( 'scenario-stopped' );
 
 		this.performInitActions();
 
@@ -94,21 +93,21 @@ export class OscPlayerService {
 
 			this.player.stop();
 
-			return;
+		} else {
+
+			this.openScenario.storyboard.stories.forEach( story => {
+
+				this.runStory( story );
+
+			} );
+
+			this.openScenario.objects.forEach( obj => {
+
+				obj.update();
+
+			} );
+
 		}
-
-		this.openScenario.storyboard.stories.forEach( story => {
-
-			this.runStory( story );
-
-		} );
-
-		this.openScenario.objects.forEach( obj => {
-
-			obj.update();
-
-		} );
-
 
 	}
 
@@ -147,27 +146,13 @@ export class OscPlayerService {
 
 	private runStory ( story: OscStory ) {
 
-		if ( this.logEvents ) Debug.log( 'running-story', story.name );
+		if ( this.logEvents ) console.info( 'running-story', story.name );
 
 		story.acts.forEach( act => {
 
 			if ( !act.hasStarted ) {
 
 				act.shouldStart = ConditionService.hasGroupsPassed( act.startConditionGroups );
-
-				// if ( act.startConditionGroups.length == 0 ) act.shouldStart = true;
-				//
-				// act.startConditionGroups.forEach( group => {
-				//
-				//     if ( group.conditions.length == 0 ) act.shouldStart = true;
-				//
-				//     group.conditions.filter( condition => {
-				//
-				//         act.shouldStart = condition.hasPassed();
-				//
-				//     } );
-				//
-				// } );
 
 				if ( act.shouldStart ) this.startAct( act );
 
@@ -182,7 +167,7 @@ export class OscPlayerService {
 
 	private startAct ( act: OscAct ) {
 
-		if ( this.logEvents ) Debug.log( 'started-act', act.name );
+		if ( this.logEvents ) console.info( 'started-act', act.name );
 
 		act.hasStarted = true;
 
@@ -193,7 +178,7 @@ export class OscPlayerService {
 
 	private updateAct ( act: OscAct ) {
 
-		if ( this.logEvents ) Debug.log( 'running-act', act.name );
+		if ( this.logEvents ) console.info( 'running-act', act.name );
 
 		act.sequences.forEach( sequence => {
 
@@ -222,7 +207,7 @@ export class OscPlayerService {
 
 	private startManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'started-manuever', maneuver.name );
+		if ( this.logEvents ) console.info( 'started-manuever', maneuver.name );
 
 		// TODO: Fire event
 
@@ -233,7 +218,7 @@ export class OscPlayerService {
 
 	private updateManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'running-maneuver', maneuver.name );
+		if ( this.logEvents ) console.info( 'running-maneuver', maneuver.name );
 
 		if ( maneuver.isCompleted ) return;
 
@@ -269,7 +254,7 @@ export class OscPlayerService {
 
 	private startEvent ( event: OscEvent, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'started-event', event.name );
+		if ( this.logEvents ) console.info( 'started-event', event.name );
 
 		// TODO: Fire event
 
@@ -281,7 +266,7 @@ export class OscPlayerService {
 
 	private updateEvent ( event: OscEvent, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'running-event', event.name );
+		if ( this.logEvents ) console.info( 'running-event', event.name );
 
 		event.getActionMap().forEach( ( action, actionName ) => {
 
@@ -324,7 +309,7 @@ export class OscPlayerService {
 
 	private startAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'started-action', actionName );
+		if ( this.logEvents ) console.info( 'started-action', actionName );
 
 		// TODO: Fire event
 
@@ -336,7 +321,7 @@ export class OscPlayerService {
 
 	private updateAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
 
-		if ( this.logEvents ) Debug.log( 'running-action', actionName );
+		if ( this.logEvents ) console.info( 'running-action', actionName );
 
 		sequence.actors.forEach( actorName => {
 

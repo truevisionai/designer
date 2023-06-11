@@ -4,7 +4,7 @@
 
 import { EventEmitter } from '@angular/core';
 import { Vector3 } from 'three';
-import { StoryEvent } from '../services/osc-player.service';
+import { StoryEvent } from '../services/scenario-player.service';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscEntityObject } from './osc-entities';
 import { OscActionCategory, OscActionType, OscPositionType } from './osc-enums';

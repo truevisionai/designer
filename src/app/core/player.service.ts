@@ -25,6 +25,7 @@ export class PlayerService {
 	private prevTime: number;
 	private handle: number;
 	private paused: boolean;
+	public playing: boolean;
 
 	constructor () {
 	}
@@ -45,6 +46,7 @@ export class PlayerService {
 
 		}
 
+		this.playing = true;
 		this.paused = false;
 
 		const self = this;
@@ -63,6 +65,7 @@ export class PlayerService {
 		this.playerPaused.emit();
 
 		this.paused = true;
+		this.playing = false;
 
 		cancelAnimationFrame( this.handle );
 	}
@@ -74,6 +77,7 @@ export class PlayerService {
 		this.playerStopped.emit();
 
 		this.paused = false;
+		this.playing = false;
 
 		Time.reset();
 

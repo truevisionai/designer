@@ -12,4 +12,9 @@ export class OscConditionGroup {
 		this.conditions.push( condition );
 	}
 
+	reset () {
+		for ( let i = 0; i < this.conditions.length; i++ ) {
+			this.conditions[ i ].reset();
+		}
+	}
 }

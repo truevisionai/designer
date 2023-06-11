@@ -12,7 +12,7 @@ import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { OscEntityObject } from '../models/osc-entities';
 import { AbstractController } from '../models/osc-interfaces';
-import { OscPlayerService } from '../services/osc-player.service';
+import { ScenarioPlayerService } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class DefaultVehicleController extends AbstractController {
@@ -331,11 +331,11 @@ export class DefaultVehicleController extends AbstractController {
 
 		const vehicles: OscEntityObject[] = [];
 
-		OscPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
+		ScenarioPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
 
 		if ( nextRoad ) {
 
-			OscPlayerService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
+			ScenarioPlayerService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
 
 		}
 

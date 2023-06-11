@@ -12,22 +12,23 @@ import { PlayerService } from '../../../core/player.service';
 } )
 export class PlayerBarComponent {
 
-	public isPlaying: boolean;
 	public hasStarted: boolean;
 
-	// reference to handle
-	private handle: any;
+	private handle: NodeJS.Timeout;
 
-	constructor ( private playerService: PlayerService ) {
+	public get isPlaying (): boolean {
+		return this.playerService.playing;
 	}
+
+	constructor (
+		private playerService: PlayerService,
+	) {
+	}
+
 
 	playSimulation () {
 
-		console.log(('pay clicked'));
-
 		if ( this.isPlaying ) return;
-
-		this.isPlaying = true;
 
 		this.playerService.play();
 
@@ -38,8 +39,6 @@ export class PlayerBarComponent {
 
 		if ( !this.isPlaying ) return;
 
-		this.isPlaying = false;
-
 		this.playerService.pause();
 
 	}
@@ -47,8 +46,6 @@ export class PlayerBarComponent {
 	stopSimulation () {
 
 		if ( !this.hasStarted ) return;
-
-		this.isPlaying = false;
 
 		this.playerService.stop();
 
@@ -65,13 +62,13 @@ export class PlayerBarComponent {
 
 	onMouseDown () {
 
-		// this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
+		this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
 
 	}
 
 	onMouseUp () {
 
-		// clearInterval( this.handle );
+		clearInterval( this.handle );
 
 	}
 }

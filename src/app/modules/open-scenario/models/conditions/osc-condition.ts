@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionCategory, OscConditionEdge, OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 import { ConditionService } from '../condition-service';
+import { OscConditionCategory, OscConditionEdge, OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 
 // export class DontUse_OscCondition {
 
@@ -31,6 +31,9 @@ export abstract class AbstractCondition {
 		return ConditionService.hasRulePassed( rule, left, right );
 	}
 
+	reset () {
+		this.passed = false;
+	}
 }
 
 export abstract class AbstractByEntityCondition extends AbstractCondition {

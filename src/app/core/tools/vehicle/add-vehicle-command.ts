@@ -66,13 +66,13 @@ export class AddVehicleCommand extends BaseCommand {
 
 		this.scenario.storyboard.addEndCondition( new OscSimulationTimeCondition( 15, OscRule.greater_than ) );
 
-		const act = story.addNewAct( 'Act' );
+		const act = story.addNewAct( `Story${ this.scenario.storyboard.stories.size + 1 }Act${ story.acts.length + 1 }` );
 
-		const sequence = act.addNewSequence( 'ActSequence', 1, this.entity.name );
+		const sequence = act.addNewSequence( 'ActSequence' + act.name, 1, this.entity.name );
 
 		act.addStartCondition( new OscSimulationTimeCondition( 5, OscRule.greater_than ) );
 
-		const maneuver = sequence.addNewManeuver( 'Maneuevr' );
+		const maneuver = sequence.addNewManeuver( `Maneuver${ sequence.maneuvers.length + 1 }` );
 
 		const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
 

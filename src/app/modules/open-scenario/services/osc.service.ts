@@ -13,7 +13,7 @@ import { FileService } from '../../../services/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { OscBuilderService } from '../builders/osc-builder.service';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscPlayerService } from './osc-player.service';
+import { ScenarioPlayerService } from './scenario-player.service';
 import { OscReaderService } from './osc-reader.service';
 import { TvScenarioInstance } from './tv-scenario-instance';
 import { OscWriterService } from './osc-writer.service';
@@ -30,7 +30,7 @@ export class OscService {
 		private fileService: FileService,
 		private openScenarioApi: OpenScenarioApiService,
 		private electron: TvElectronService,
-		private oscPlayer: OscPlayerService
+		private oscPlayer: ScenarioPlayerService
 	) {
 
 		TvScenarioInstance.scenarioChanged.subscribe( scenario => {

@@ -38,23 +38,19 @@ export class OscResetHelper {
 
 		} );
 
+		this.openScenario.storyboard.endConditionGroups.forEach( group => {
+
+			group.reset();
+
+		} );
+
 	}
 
 	private resetGroups ( groups: OscConditionGroup[] ) {
 
 		groups.forEach( group => {
 
-			this.resetGroup( group );
-
-		} );
-
-	}
-
-	private resetGroup ( group: OscConditionGroup ) {
-
-		group.conditions.forEach( condition => {
-
-			condition.passed = false;
+			group.reset();
 
 		} );
 
@@ -70,6 +66,7 @@ export class OscResetHelper {
 			this.resetAct( act );
 
 		} );
+
 	}
 
 	private resetAct ( act: OscAct ) {
