@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { OscLaneChangeAction } from '../../../../../models/actions/osc-lane-change-action';
 
 @Component( {
@@ -10,7 +10,8 @@ export class LaneChangeActionComponent implements OnInit {
 
 	@Input() action: OscLaneChangeAction;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 

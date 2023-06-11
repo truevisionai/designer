@@ -1,5 +1,5 @@
-import { AbstractPrivateAction } from '../osc-interfaces';
 import { OscActionType } from '../osc-enums';
+import { AbstractPrivateAction } from '../osc-interfaces';
 
 export class OscDistanceAction extends AbstractPrivateAction {
 

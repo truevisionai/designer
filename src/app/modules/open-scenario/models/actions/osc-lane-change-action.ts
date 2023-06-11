@@ -1,15 +1,15 @@
-import { AbstractPrivateAction } from '../osc-interfaces';
-import { OscLaneChangeDynamics } from './osc-private-action';
-import { OscAbsoluteTarget } from './osc-absolute-target';
-import { AbstractTarget } from './abstract-target';
-import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
-import { OscEntityObject } from '../osc-entities';
-import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
-import { OscRelativeTarget } from './osc-relative-target';
-import { OscSourceFile } from '../../services/osc-source-file';
 import { MathUtils } from 'three';
-import { Maths } from '../../../../utils/maths';
 import { Time } from '../../../../core/time';
+import { Maths } from '../../../../utils/maths';
+import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscEntityObject } from '../osc-entities';
+import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
+import { AbstractPrivateAction } from '../osc-interfaces';
+import { AbstractTarget } from './abstract-target';
+import { OscAbsoluteTarget } from './osc-absolute-target';
+import { OscLaneChangeDynamics } from './osc-private-action';
+import { OscRelativeTarget } from './osc-relative-target';
 
 export class OscLaneChangeAction extends AbstractPrivateAction {
 

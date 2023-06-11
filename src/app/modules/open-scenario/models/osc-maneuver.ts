@@ -1,10 +1,10 @@
-import { OscParameterDeclaration } from './osc-parameter-declaration';
-import { AbstractAction } from './osc-interfaces';
-import { OscSourceFile } from '../services/osc-source-file';
-import { OscEvent } from './osc-event';
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/osc-player.service';
+import { OscSourceFile } from '../services/osc-source-file';
 import { OscStoryElementType } from './osc-enums';
+import { OscEvent } from './osc-event';
+import { AbstractAction } from './osc-interfaces';
+import { OscParameterDeclaration } from './osc-parameter-declaration';
 
 export class OscManeuver {
 

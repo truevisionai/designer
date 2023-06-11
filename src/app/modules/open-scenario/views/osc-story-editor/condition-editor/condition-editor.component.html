@@ -1,10 +1,10 @@
 <mat-form-field class="example-full-width">
-	<input matInput placeholder="Name" [(ngModel)]="condition.name">
+	<input [(ngModel)]="condition.name" matInput placeholder="Name">
 </mat-form-field>
 
 <mat-form-field class="example-full-width">
 	<mat-label>Condition Type</mat-label>
-	<mat-select disabled [ngModel]="condition.conditionType" (ngModelChange)="onConditionTypeChanged($event)">
+	<mat-select (ngModelChange)="onConditionTypeChanged($event)" [ngModel]="condition.conditionType" disabled>
 		<!-- <mat-option [value]="0">ByEntity_EndOfRoad</mat-option> -->
 		<mat-option [value]="7">ByEntity_Speed</mat-option>
 		<mat-option [value]="8">ByEntity_RelativeSpeed</mat-option>

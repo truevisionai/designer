@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { BaseConditionEditorComponent } from '../base-condition-editor-component';
+import { Component, Input } from '@angular/core';
 import { OscTraveledDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-traveled-distance-condition';
+import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
 	selector: 'app-traveled-distance-condition-editor',

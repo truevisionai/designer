@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractAction, AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
+import { AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
 import { OscEntityObject } from '../../../models/osc-entities';
 
 @Component( {

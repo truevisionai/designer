@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { BaseConditionEditorComponent } from '../base-condition-editor-component';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { OscReachPositionCondition } from 'app/modules/open-scenario/models/conditions/osc-reach-position-condition';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { MeshBasicMaterial, Mesh, TorusGeometry } from 'three';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
+import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
 	selector: 'app-reach-position-condition-editor',

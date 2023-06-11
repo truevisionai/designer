@@ -1,17 +1,43 @@
-import { AbstractPrivateAction } from '../osc-interfaces';
-import { OscSpeedDynamics } from './osc-private-action';
-import { OscAbsoluteTarget } from './osc-absolute-target';
-import { AbstractTarget } from './abstract-target';
-import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
-import { OscEntityObject } from '../osc-entities';
-import { OscRelativeTarget } from './osc-relative-target';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { Maths } from '../../../../utils/maths';
 import { Time } from '../../../../core/time';
+import { Maths } from '../../../../utils/maths';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscEntityObject } from '../osc-entities';
+import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
+import { AbstractPrivateAction } from '../osc-interfaces';
+import { AbstractTarget } from './abstract-target';
+import { OscAbsoluteTarget } from './osc-absolute-target';
+import { OscSpeedDynamics } from './osc-private-action';
+import { OscRelativeTarget } from './osc-relative-target';
 
 export class OscSpeedAction extends AbstractPrivateAction {
 
 	actionType: OscActionType = OscActionType.Private_Longitudinal_Speed;
+	public actionName: string = 'Speed';
+	public dynamics: OscSpeedDynamics;
+	private newSpeed: number;
+	private currentSpeed: number;
+	private startTime: number;
+
+	constructor ( dynamics: OscSpeedDynamics = null, target: AbstractTarget = null ) {
+
+		super();
+
+		this.dynamics = dynamics;
+		this._target = target;
+
+	}
+
+	private _target: AbstractTarget;
+
+	get target () {
+
+		return this._target;
+
+	}
+
+	set target ( value ) {
+		this._target = value;
+	}
 
 	execute ( entity: OscEntityObject ) {
 
@@ -26,33 +52,6 @@ export class OscSpeedAction extends AbstractPrivateAction {
 
 		}
 
-	}
-
-	public actionName: string = 'Speed';
-	public dynamics: OscSpeedDynamics;
-	private _target: AbstractTarget;
-
-	private newSpeed: number;
-	private currentSpeed: number;
-	private startTime: number;
-
-	constructor ( dynamics: OscSpeedDynamics = null, target: AbstractTarget = null ) {
-
-		super();
-
-		this.dynamics = dynamics;
-		this._target = target;
-
-	}
-
-	get target () {
-
-		return this._target;
-
-	}
-
-	set target ( value ) {
-		this._target = value;
 	}
 
 	setTarget ( target: AbstractTarget ) {

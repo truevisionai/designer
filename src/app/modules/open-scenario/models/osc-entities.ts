@@ -1,9 +1,9 @@
-import { AbstractController, AbstractPrivateAction, IScenarioObject } from './osc-interfaces';
+import { Vector3 } from 'three';
+import { GameObject } from '../../../core/game-object';
+import { OscSpeedAction } from './actions/osc-speed-action';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscObjectType } from './osc-enums';
-import { Vector3 } from 'three';
-import { OscSpeedAction } from './actions/osc-speed-action';
-import { GameObject } from '../../../core/game-object';
+import { AbstractController, AbstractPrivateAction, IScenarioObject } from './osc-interfaces';
 
 export class OscEntityObject {
 
@@ -24,19 +24,6 @@ export class OscEntityObject {
 	public direction: number = 1;
 	// OSCPedestrianController
 	public controller: AbstractController;
-	// OSCDriver
-	private _name: string;
-	private _speed = 0;
-	private _speedAction: OscSpeedAction;
-	private _roadId: number;
-	private _laneSectionId: number;
-	// OSCCatalogReference
-	private _laneId: number;
-	private _laneOffset: number = 0;
-	private _hdg: number = 0;
-	private _maxSpeed: number;
-	private _enabled: boolean = true;
-
 	public distanceTravelled = 0;
 
 	constructor ( name: string, object: IScenarioObject = null, controller: AbstractController = null ) {
@@ -49,87 +36,38 @@ export class OscEntityObject {
 
 	}
 
-	static getNewName ( name = 'Player' ) {
+	// OSCDriver
+	private _name: string;
 
-		return `${ name }${ this.count }`;
-
+	get name (): string {
+		return this._name;
 	}
 
-	get enabled (): boolean {
-
-		return this._enabled;
-
+	set name ( value: string ) {
+		this._name = value;
 	}
 
-	set enabled ( value: boolean ) {
+	private _speed = 0;
 
-		this._enabled = value;
-
+	get speed (): number {
+		return this._speed;
 	}
 
-	// OSCCatalogReference
-
-	get maxSpeed (): number {
-
-		return this._maxSpeed;
-
-	}
-
-	set maxSpeed ( value: number ) {
-
+	set speed ( value: number ) {
 		this._speed = value;
-		this._maxSpeed = value;
-
 	}
 
-	get hdg (): number {
+	private _speedAction: OscSpeedAction;
 
-		return this._hdg;
-
+	get speedAction () {
+		return this._speedAction;
 	}
 
-	set hdg ( value: number ) {
-
-		this._hdg = value;
-
+	set speedAction ( value ) {
+		this._speedAction = value;
 	}
 
-	get laneOffset (): number {
-
-		return this._laneOffset;
-
-	}
-
-	set laneOffset ( value: number ) {
-
-		this._laneOffset = value;
-
-	}
-
-	get laneId (): number {
-
-		return this._laneId;
-
-	}
-
-	set laneId ( value: number ) {
-
-		this._laneId = value;
-
-	}
-
-	get laneSectionId (): number {
-
-		return this._laneSectionId;
-
-	}
-
-	set laneSectionId ( value: number ) {
-
-		this._laneSectionId = value;
-		// console.info( 'lane-section-changed', this.roadId, this.laneSectionId, this.laneId, this.sCoordinate );
-
-	}
+	private _roadId: number;
 
 	get roadId (): number {
 
@@ -156,19 +94,104 @@ export class OscEntityObject {
 		// console.log( OscPlayerService.traffic );
 	}
 
-	get position (): Vector3 { return this.gameObject.position; }
+	private _laneSectionId: number;
 
-	get name (): string { return this._name; }
+	// OSCCatalogReference
 
-	set name ( value: string ) { this._name = value; }
+	get laneSectionId (): number {
 
-	get speed (): number { return this._speed; }
+		return this._laneSectionId;
 
-	set speed ( value: number ) { this._speed = value; }
+	}
 
-	get speedAction () { return this._speedAction; }
+	set laneSectionId ( value: number ) {
 
-	set speedAction ( value ) { this._speedAction = value; }
+		this._laneSectionId = value;
+		// console.info( 'lane-section-changed', this.roadId, this.laneSectionId, this.laneId, this.sCoordinate );
+
+	}
+
+	// OSCCatalogReference
+	private _laneId: number;
+
+	get laneId (): number {
+
+		return this._laneId;
+
+	}
+
+	set laneId ( value: number ) {
+
+		this._laneId = value;
+
+	}
+
+	private _laneOffset: number = 0;
+
+	get laneOffset (): number {
+
+		return this._laneOffset;
+
+	}
+
+	set laneOffset ( value: number ) {
+
+		this._laneOffset = value;
+
+	}
+
+	private _hdg: number = 0;
+
+	get hdg (): number {
+
+		return this._hdg;
+
+	}
+
+	set hdg ( value: number ) {
+
+		this._hdg = value;
+
+	}
+
+	private _maxSpeed: number;
+
+	get maxSpeed (): number {
+
+		return this._maxSpeed;
+
+	}
+
+	set maxSpeed ( value: number ) {
+
+		this._speed = value;
+		this._maxSpeed = value;
+
+	}
+
+	private _enabled: boolean = true;
+
+	get enabled (): boolean {
+
+		return this._enabled;
+
+	}
+
+	set enabled ( value: boolean ) {
+
+		this._enabled = value;
+
+	}
+
+	get position (): Vector3 {
+		return this.gameObject.position;
+	}
+
+	static getNewName ( name = 'Player' ) {
+
+		return `${ name }${ this.count }`;
+
+	}
 
 	setPosition ( position: Vector3 ) {
 

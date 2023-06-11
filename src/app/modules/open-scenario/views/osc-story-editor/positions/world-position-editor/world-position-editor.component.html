@@ -28,13 +28,15 @@
 
 <div>
 	<mat-form-field style="width: 33%;">
-		<input matInput type="number" required placeholder="X" (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.x">
+		<input (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.x" matInput placeholder="X" required
+			   type="number">
 	</mat-form-field>
 	<mat-form-field style="width: 33%;">
-		<input matInput type="number" required placeholder="Y" (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.y">
+		<input (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.y" matInput placeholder="Y" required
+			   type="number">
 	</mat-form-field>
 	<mat-form-field style="width: 33%;">
-		<input matInput type="number" placeholder="Z" (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.z">
+		<input (ngModelChange)="onModelChanged($event)" [(ngModel)]="position.z" matInput placeholder="Z" type="number">
 	</mat-form-field>
 </div>
 <!-- <div>

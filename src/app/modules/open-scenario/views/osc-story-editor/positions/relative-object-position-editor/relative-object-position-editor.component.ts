@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { OscRelativeObjectPosition } from '../../../../models/positions/osc-relative-object-position';
+import { Component, OnInit } from '@angular/core';
 import { OscSourceFile } from '../../../../services/osc-source-file';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
@@ -9,15 +8,15 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 } )
 export class RelativeObjectPositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	get entities () {
-		return [ ...OscSourceFile.openScenario.objects.keys() ];
-	};
-
-	// @Input() position: OscRelativeObjectPosition;
-
 	constructor () {
 		super();
 	}
+
+	// @Input() position: OscRelativeObjectPosition;
+
+	get entities () {
+		return [ ...OscSourceFile.openScenario.objects.keys() ];
+	};
 
 	ngOnInit () {
 

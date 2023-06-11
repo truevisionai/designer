@@ -1,7 +1,7 @@
-import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
-import { OscRoute } from '../osc-route';
 import { OscCatalogReference } from '../osc-catalogs';
 import { OscActionType, OscDomainAbsoluteRelative } from '../osc-enums';
+import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
+import { OscRoute } from '../osc-route';
 
 export abstract class AbstractRoutingAction extends AbstractPrivateAction {
 

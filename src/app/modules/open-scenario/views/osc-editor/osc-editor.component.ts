@@ -1,17 +1,17 @@
 import { AfterContentInit, AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { OscService } from '../../services/osc.service';
-import { CommandHistory } from 'app/services/command-history';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { Object3D } from 'three';
-import { OscEditor } from './osc-editor';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { OpenScenarioApiService } from '../../../../core/services/open-scenario-api.service';
-import { KeyboardInput } from 'app/core/input';
 import { MatDialog } from '@angular/material/dialog';
-import { NewScenarioDialogComponent } from '../../dialogs/new-scenario-dialog/new-scenario-dialog.component';
-import { ICommand } from '../../../../core/commands/i-command';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { KeyboardInput } from 'app/core/input';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import { CommandHistory } from 'app/services/command-history';
 import { TvElectronService } from 'app/services/tv-electron.service';
+import { Object3D } from 'three';
+import { ICommand } from '../../../../core/commands/i-command';
+import { OpenScenarioApiService } from '../../../../core/services/open-scenario-api.service';
+import { NewScenarioDialogComponent } from '../../dialogs/new-scenario-dialog/new-scenario-dialog.component';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscService } from '../../services/osc.service';
+import { OscEditor } from './osc-editor';
 
 @Component( {
 	selector: 'app-osc-editor',

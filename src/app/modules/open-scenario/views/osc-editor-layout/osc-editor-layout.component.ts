@@ -1,9 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { ThemeService } from 'app/shared/services/theme.service';
 import { LayoutService } from 'app/shared/services/layout.service';
+import { ThemeService } from 'app/shared/services/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component( {
 	selector: 'app-osc-editor-layout',
@@ -12,10 +12,6 @@ import { LayoutService } from 'app/shared/services/layout.service';
 export class OscEditorLayoutComponent implements OnInit {
 
 	public isModuleLoading: Boolean = false;
-	private moduleLoaderSub: Subscription;
-	private layoutConfSub: Subscription;
-	private routerEventSub: Subscription;
-
 	public scrollConfig = {};
 	public layoutConf: any = {
 		'navigationPos': 'side',      // side, top
@@ -30,6 +26,9 @@ export class OscEditorLayoutComponent implements OnInit {
 		'breadcrumb': 'simple',       // simple, title
 		'perfectScrollbar': true
 	};
+	private moduleLoaderSub: Subscription;
+	private layoutConfSub: Subscription;
+	private routerEventSub: Subscription;
 
 	constructor (
 		private router: Router,
@@ -76,7 +75,7 @@ export class OscEditorLayoutComponent implements OnInit {
 
 	scrollToTop ( selector: string ) {
 		if ( document ) {
-			let element = <HTMLElement>document.querySelector( selector );
+			let element = <HTMLElement> document.querySelector( selector );
 			element.scrollTop = 0;
 		}
 	}

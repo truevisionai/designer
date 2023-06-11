@@ -1,9 +1,7 @@
-import { OscConditionType, OscTriggeringRule, OscObjectType } from '../osc-enums';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscConditionType, OscTriggeringRule } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
 import { AbstractByEntityCondition } from './osc-condition';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { OscUtils } from '../osc-utils';
-import { OscEntityObject } from '../osc-entities';
 
 export class OscReachPositionCondition extends AbstractByEntityCondition {
 

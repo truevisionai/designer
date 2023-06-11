@@ -1,6 +1,6 @@
+import { OscSourceFile } from '../../services/osc-source-file';
 import { OscConditionType, OscTriggeringRule } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
-import { OscSourceFile } from '../../services/osc-source-file';
 
 
 export class OscTraveledDistanceCondition extends AbstractByEntityCondition {

@@ -1,5 +1,5 @@
-import { AbstractByStateCondition } from './osc-condition';
 import { OscConditionType, OscStoryElementType } from '../osc-enums';
+import { AbstractByStateCondition } from './osc-condition';
 
 export class OscAtStartCondition extends AbstractByStateCondition {
 

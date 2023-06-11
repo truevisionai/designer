@@ -1,6 +1,6 @@
-import { OscParameterDeclaration } from './osc-parameter-declaration';
 import { OscRouteStrategy } from './osc-enums';
 import { AbstractPosition } from './osc-interfaces';
+import { OscParameterDeclaration } from './osc-parameter-declaration';
 
 export class OscWaypoint {
 

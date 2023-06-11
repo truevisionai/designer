@@ -1,6 +1,6 @@
-import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
 import { OscEntityObject } from '../osc-entities';
 import { OscActionType } from '../osc-enums';
+import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
 
 export class OscPositionAction extends AbstractPrivateAction {
 

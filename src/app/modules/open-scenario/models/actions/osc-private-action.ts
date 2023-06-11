@@ -1,8 +1,8 @@
-import { AbstractAction, AbstractPrivateAction } from '../osc-interfaces';
 import { OscActionCategory, OscDynamicsShape } from '../osc-enums';
+import { AbstractAction, AbstractPrivateAction } from '../osc-interfaces';
 
 export class DontUse_OscPrivateAction extends AbstractPrivateAction {
-	actionType: import( "../osc-enums" ).OscActionType;
+	actionType: import( '../osc-enums' ).OscActionType;
 
 	public category = OscActionCategory.private;
 

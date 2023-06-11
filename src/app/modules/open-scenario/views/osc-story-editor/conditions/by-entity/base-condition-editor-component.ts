@@ -1,5 +1,5 @@
-import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
 import { Component, Input } from '@angular/core';
+import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
 
 
 @Component( {

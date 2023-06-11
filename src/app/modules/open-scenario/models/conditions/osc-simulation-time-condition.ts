@@ -1,6 +1,6 @@
+import { Time } from '../../../../core/time';
 import { OscConditionCategory, OscConditionType, OscRule } from '../osc-enums';
 import { AbstractByValueCondition } from './osc-condition';
-import { Time } from '../../../../core/time';
 
 export class OscSimulationTimeCondition extends AbstractByValueCondition {
 

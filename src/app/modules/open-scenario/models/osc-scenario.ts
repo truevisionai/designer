@@ -1,16 +1,16 @@
-import { OscFileHeader } from './osc-file-header';
+import { OscSourceFile } from '../services/osc-source-file';
+import { OscAct } from './osc-act';
 import { OscCatalogs } from './osc-catalogs';
+import { OscFile } from './osc-common';
+import { OscEntityObject } from './osc-entities';
+import { OscFileHeader } from './osc-file-header';
+import { AbstractAction } from './osc-interfaces';
+import { OscManeuver } from './osc-maneuver';
 import { OscParameter, OscParameterDeclaration } from './osc-parameter-declaration';
 import { OscRoadNetwork } from './osc-road-network';
-import { OscEntityObject } from './osc-entities';
-import { OscStoryboard } from './osc-storyboard';
-import { OscStory } from './osc-story';
 import { OscSequence } from './osc-sequence';
-import { OscManeuver } from './osc-maneuver';
-import { AbstractAction } from './osc-interfaces';
-import { OscSourceFile } from '../services/osc-source-file';
-import { OscFile } from './osc-common';
-import { OscAct } from './osc-act';
+import { OscStory } from './osc-story';
+import { OscStoryboard } from './osc-storyboard';
 
 export class OpenScenario {
 
@@ -135,8 +135,9 @@ export class OpenScenario {
 						let actorNameMatches = name === actorName;
 						let ownerNameMatches = story.ownerName == actorName;
 
-						if ( actorNameMatches || ownerNameMatches )
+						if ( actorNameMatches || ownerNameMatches ) {
 							sequences.push( sequence );
+						}
 
 					} );
 

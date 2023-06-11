@@ -1,6 +1,6 @@
-<mat-form-field class="example-full-width" *ngIf="showType">
+<mat-form-field *ngIf="showType" class="example-full-width">
 	<mat-label>Position</mat-label>
-	<mat-select [ngModel]="position.type" (ngModelChange)="onChange($event)">
+	<mat-select (ngModelChange)="onChange($event)" [ngModel]="position.type">
 		<mat-option [value]="types.World">World Position</mat-option>
 		<!--        <mat-option [value]="types.Road">Road Position</mat-option>-->
 		<mat-option [value]="types.Lane">Lane Position</mat-option>

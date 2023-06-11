@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions/osc-private-action';
+import { Component, Input } from '@angular/core';
 import { OscDynamicsShape } from 'app/modules/open-scenario/models/osc-enums';
+import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions/osc-private-action';
 
 @Component( {
 	selector: 'app-dynamics-editor',

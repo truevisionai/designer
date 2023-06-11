@@ -18,13 +18,15 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field class="example-full-width">
-			<app-double-field label="Target Value" [value]="relativeTarget.value" (valueChanged)="onRelativeTargetChanged($event)"></app-double-field>
+			<app-double-field (valueChanged)="onRelativeTargetChanged($event)" [value]="relativeTarget.value"
+							  label="Target Value"></app-double-field>
 		</mat-form-field>
 	</div>
 
 	<!-- absolute target -->
 	<div *ngSwitchCase="'absolute'">
-		<app-double-field label="Target Value" [value]="absoluteTarget.value" (valueChanged)="onAbsoluteTargetChanged($event)"></app-double-field>
+		<app-double-field (valueChanged)="onAbsoluteTargetChanged($event)" [value]="absoluteTarget.value"
+						  label="Target Value"></app-double-field>
 	</div>
 
 </div>

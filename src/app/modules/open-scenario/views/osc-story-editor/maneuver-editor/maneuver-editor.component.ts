@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { OscManeuver } from 'app/modules/open-scenario/models/osc-maneuver';
 
 @Component( {
@@ -9,7 +9,8 @@ export class ManeuverEditorComponent implements OnInit {
 
 	@Input() maneuver: OscManeuver;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 	}

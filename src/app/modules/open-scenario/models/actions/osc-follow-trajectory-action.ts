@@ -1,16 +1,27 @@
-import { OscActionType, OscLateralPurpose, OscStoryElementType } from '../osc-enums';
-import { OscCatalogReference } from '../osc-catalogs';
-import { OscTrajectory } from '../osc-trajectory';
-import { OscEntityObject } from '../osc-entities';
-import { AbstractRoutingAction, LongitudinalPurpose } from './osc-routing-action';
-import { Maths } from '../../../../utils/maths';
 import { Vector3 } from 'three';
 import { Time } from '../../../../core/time';
+import { Maths } from '../../../../utils/maths';
+import { OscCatalogReference } from '../osc-catalogs';
+import { OscEntityObject } from '../osc-entities';
+import { OscActionType, OscLateralPurpose, OscStoryElementType } from '../osc-enums';
+import { OscTrajectory } from '../osc-trajectory';
+import { AbstractRoutingAction, LongitudinalPurpose } from './osc-routing-action';
 
 export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 	readonly actionName: string = 'FollowTrajectory';
 	readonly actionType: OscActionType = OscActionType.Private_Routing;
+	// optional
+	public catalogReference: OscCatalogReference;
+	public longitudinalPurpose: LongitudinalPurpose;
+	public lateralPurpose: OscLateralPurpose;
+	private distanceThreshold = 2;
+	private index = 0;
+	private rotationSpeed = 1;
+
+	constructor ( public trajectory: OscTrajectory ) {
+		super();
+	}
 
 	execute ( entity: OscEntityObject ) {
 
@@ -30,18 +41,6 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 		this.index = 0;
 
-	}
-
-	// optional
-	public catalogReference: OscCatalogReference;
-	public longitudinalPurpose: LongitudinalPurpose;
-	public lateralPurpose: OscLateralPurpose;
-	private distanceThreshold = 2;
-	private index = 0;
-	private rotationSpeed = 1;
-
-	constructor ( public trajectory: OscTrajectory ) {
-		super();
 	}
 
 	private start ( entity: OscEntityObject ) {

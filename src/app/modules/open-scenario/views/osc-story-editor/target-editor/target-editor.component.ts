@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
-import { OscSourceFile } from '../../../services/osc-source-file';
-import { OscRelativeTarget } from '../../../models/actions/osc-relative-target';
 import { OscAbsoluteTarget } from '../../../models/actions/osc-absolute-target';
+import { OscRelativeTarget } from '../../../models/actions/osc-relative-target';
+import { OscSourceFile } from '../../../services/osc-source-file';
 
 @Component( {
 	selector: 'app-target-editor',
@@ -13,7 +13,8 @@ export class TargetEditorComponent {
 
 	@Input() target: AbstractTarget;
 
-	constructor () { }
+	constructor () {
+	}
 
 	get entities () {
 

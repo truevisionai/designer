@@ -1,5 +1,5 @@
-import { OscRule, OscTriggeringRule } from './osc-enums';
 import { OscConditionGroup } from './conditions/osc-condition-group';
+import { OscRule, OscTriggeringRule } from './osc-enums';
 
 export class OscUtils {
 

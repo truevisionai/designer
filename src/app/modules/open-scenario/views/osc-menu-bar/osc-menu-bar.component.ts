@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { OscService } from '../../services/osc.service';
-import { OscDialogService } from '../../services/osc-dialog.service';
-import { ImportFileDialogComponent } from 'app/shared/dialogs/import-file-dialog/import-file-dialog.component';
 import { CommandHistory } from 'app/services/command-history';
 import { TvElectronService } from 'app/services/tv-electron.service';
+import { OscDialogService } from '../../services/osc-dialog.service';
+import { OscService } from '../../services/osc.service';
 
 @Component( {
 	selector: 'app-osc-menu-bar',

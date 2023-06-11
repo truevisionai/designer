@@ -1,6 +1,6 @@
+import { OscSourceFile } from '../services/osc-source-file';
 import { OscCatalogReference } from './osc-catalogs';
 import { OscManeuver } from './osc-maneuver';
-import { OscSourceFile } from '../services/osc-source-file';
 
 export class OscSequence {
 

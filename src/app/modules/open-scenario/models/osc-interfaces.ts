@@ -1,9 +1,9 @@
-import { OscActionCategory, OscActionType, OscPositionType } from './osc-enums';
-import { OscCatalogReference } from './osc-catalogs';
-import { Vector3 } from 'three';
-import { OscEntityObject } from './osc-entities';
 import { EventEmitter } from '@angular/core';
+import { Vector3 } from 'three';
 import { StoryEvent } from '../services/osc-player.service';
+import { OscCatalogReference } from './osc-catalogs';
+import { OscEntityObject } from './osc-entities';
+import { OscActionCategory, OscActionType, OscPositionType } from './osc-enums';
 
 export abstract class IScenarioObject {
 }

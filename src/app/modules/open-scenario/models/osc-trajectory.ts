@@ -8,6 +8,10 @@ export enum EnumTrajectoryDomain {
 
 export class OscTrajectory {
 
+	// min 2 vertices are mandatory
+	public vertices: OscVertex[] = [];
+	public parameterDeclaration: OscParameterDeclaration[] = [];
+
 	constructor (
 		public name: string,
 		public closed: boolean,
@@ -15,10 +19,6 @@ export class OscTrajectory {
 	) {
 
 	}
-
-	// min 2 vertices are mandatory
-	public vertices: OscVertex[] = [];
-	public parameterDeclaration: OscParameterDeclaration[] = [];
 }
 
 export class OscVertex {

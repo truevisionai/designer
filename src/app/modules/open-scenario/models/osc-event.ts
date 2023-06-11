@@ -1,12 +1,11 @@
-import { AbstractAction } from './osc-interfaces';
-import { OscConditionGroup } from './conditions/osc-condition-group';
-import { OscSourceFile } from '../services/osc-source-file';
-import { OscUtils } from './osc-utils';
-import { StoryEvent } from '../services/osc-player.service';
-import { OscStoryElementType } from './osc-enums';
 import { EventEmitter } from '@angular/core';
-import { OscSpeedCondition } from './conditions/osc-speed-condition';
+import { StoryEvent } from '../services/osc-player.service';
+import { OscSourceFile } from '../services/osc-source-file';
 import { AbstractCondition } from './conditions/osc-condition';
+import { OscConditionGroup } from './conditions/osc-condition-group';
+import { OscStoryElementType } from './osc-enums';
+import { AbstractAction } from './osc-interfaces';
+import { OscUtils } from './osc-utils';
 
 export class OscEvent {
 
@@ -27,12 +26,6 @@ export class OscEvent {
 
 	}
 
-	static getNewName ( name = 'MyEvent' ) {
-
-		return `${ name }${ this.count }`;
-
-	}
-
 	get startConditions () {
 
 		let conditions = [];
@@ -44,6 +37,12 @@ export class OscEvent {
 		} );
 
 		return conditions;
+	}
+
+	static getNewName ( name = 'MyEvent' ) {
+
+		return `${ name }${ this.count }`;
+
 	}
 
 	addNewAction ( name: string, action: AbstractAction ) {

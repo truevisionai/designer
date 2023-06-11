@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractPosition } from '../../../models/osc-interfaces';
 import { OscPositionType } from 'app/modules/open-scenario/models/osc-enums';
-import { OscWorldPosition } from '../../../models/positions/osc-world-position';
+import { AbstractPosition } from '../../../models/osc-interfaces';
 import { OscLanePosition } from '../../../models/positions/osc-lane-position';
 import { OscRelativeObjectPosition } from '../../../models/positions/osc-relative-object-position';
+import { OscWorldPosition } from '../../../models/positions/osc-world-position';
 import { AbstractPositionEditor } from './AbstractPositionEditor';
 
 @Component( {
@@ -12,12 +12,12 @@ import { AbstractPositionEditor } from './AbstractPositionEditor';
 } )
 export class PositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	get types () {
-		return OscPositionType;
-	}
-
 	constructor () {
 		super();
+	}
+
+	get types () {
+		return OscPositionType;
 	}
 
 	ngOnInit () {

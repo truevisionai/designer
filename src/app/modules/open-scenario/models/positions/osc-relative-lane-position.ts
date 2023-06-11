@@ -1,7 +1,7 @@
-import { AbstractPosition } from '../osc-interfaces';
-import { OscPositionType } from '../osc-enums';
-import { OscOrientation } from '../osc-orientation';
 import { Vector3 } from 'three';
+import { OscPositionType } from '../osc-enums';
+import { AbstractPosition } from '../osc-interfaces';
+import { OscOrientation } from '../osc-orientation';
 
 export class OscRelativeLanePosition extends AbstractPosition {
 

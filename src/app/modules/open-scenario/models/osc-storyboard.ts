@@ -1,9 +1,9 @@
+import { OscSourceFile } from '../services/osc-source-file';
 import { OscGlobalAction } from './actions/osc-global-action';
 import { OscUserDefinedAction } from './actions/osc-user-defined-action';
-import { OscStory } from './osc-story';
-import { AbstractPrivateAction } from './osc-interfaces';
 import { OscConditionGroup } from './conditions/osc-condition-group';
-import { OscSourceFile } from '../services/osc-source-file';
+import { AbstractPrivateAction } from './osc-interfaces';
+import { OscStory } from './osc-story';
 
 
 export class EntityInitAction {
@@ -15,13 +15,16 @@ export class EntityInitAction {
 
 export class OscStoryboard {
 
+	public stories: Map<string, OscStory> = new Map<string, OscStory>();
+	public endConditionGroups: OscConditionGroup[] = [];
+	public privateInitAction: EntityInitAction[] = [];
 	private m_InitActions = new OscInitActions;
 
-	public stories: Map<string, OscStory> = new Map<string, OscStory>();
+	get initActions () {
 
-	public endConditionGroups: OscConditionGroup[] = [];
+		return this.m_InitActions;
 
-	public privateInitAction: EntityInitAction[] = [];
+	}
 
 	addStory ( story: OscStory ) {
 
@@ -48,12 +51,6 @@ export class OscStoryboard {
 	addEndConditionGroup ( group: OscConditionGroup ) {
 
 		this.endConditionGroups.push( group );
-
-	}
-
-	get initActions () {
-
-		return this.m_InitActions;
 
 	}
 

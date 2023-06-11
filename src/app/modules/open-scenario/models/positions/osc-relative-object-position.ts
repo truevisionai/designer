@@ -1,8 +1,8 @@
-import { AbstractPosition } from '../osc-interfaces';
-import { OscPositionType } from '../osc-enums';
-import { OscOrientation } from '../osc-orientation';
 import { Vector3 } from 'three';
 import { OscSourceFile } from '../../services/osc-source-file';
+import { OscPositionType } from '../osc-enums';
+import { AbstractPosition } from '../osc-interfaces';
+import { OscOrientation } from '../osc-orientation';
 
 export class OscRelativeObjectPosition extends AbstractPosition {
 
@@ -13,6 +13,7 @@ export class OscRelativeObjectPosition extends AbstractPosition {
 	public object: string;
 	public dy: number = 0;
 	public dz: number = 0;
+	public orientations: OscOrientation[] = [];
 
 	getPosition (): Vector3 {
 
@@ -25,8 +26,6 @@ export class OscRelativeObjectPosition extends AbstractPosition {
 
 		return position;
 	}
-
-	public orientations: OscOrientation[] = [];
 
 
 }

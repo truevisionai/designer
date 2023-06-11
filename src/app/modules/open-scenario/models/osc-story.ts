@@ -1,6 +1,5 @@
-import { OscAct } from './osc-act';
 import { OscSourceFile } from '../services/osc-source-file';
-import { count } from 'rxjs/operators';
+import { OscAct } from './osc-act';
 
 export class OscStory {
 
@@ -10,7 +9,9 @@ export class OscStory {
 	public hasStarted: boolean;
 	public isCompleted: boolean;
 
-	constructor ( public name: string, public ownerName: string ) { OscStory.count++; }
+	constructor ( public name: string, public ownerName: string ) {
+		OscStory.count++;
+	}
 
 	static getNewName ( name = 'MyStory' ) {
 

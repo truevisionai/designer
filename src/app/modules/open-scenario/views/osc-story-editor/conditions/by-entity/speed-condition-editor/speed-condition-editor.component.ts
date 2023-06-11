@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 import { OscSpeedCondition } from 'app/modules/open-scenario/models/conditions/osc-speed-condition';
+import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
 	selector: 'app-speed-condition-editor',

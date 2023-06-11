@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {

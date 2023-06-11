@@ -1,7 +1,7 @@
-import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
-import { AbstractByEntityCondition } from './osc-condition';
 import { OscSourceFile } from '../../services/osc-source-file';
+import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
 import { OscUtils } from '../osc-utils';
+import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscRelativeSpeedCondition extends AbstractByEntityCondition {
 

@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
-import { OscSimulationTimeCondition } from '../../../models/conditions/osc-simulation-time-condition';
 import { OscDistanceCondition } from '../../../models/conditions/osc-distance-condition';
+import { OscSimulationTimeCondition } from '../../../models/conditions/osc-simulation-time-condition';
 import { OscConditionType } from '../../../models/osc-enums';
 
 @Component( {
@@ -11,13 +11,15 @@ import { OscConditionType } from '../../../models/osc-enums';
 } )
 export class ConditionEditorComponent implements OnInit {
 
-	get types () { return OscConditionType; }
-
 	@Input() condition: AbstractCondition;
-
 	@Output() conditionChanged = new EventEmitter<AbstractCondition>();
 
-	constructor () { }
+	constructor () {
+	}
+
+	get types () {
+		return OscConditionType;
+	}
 
 	ngOnInit () {
 

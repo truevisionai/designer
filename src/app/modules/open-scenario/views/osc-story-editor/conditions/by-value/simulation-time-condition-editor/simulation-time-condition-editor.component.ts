@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { OscSimulationTimeCondition } from 'app/modules/open-scenario/models/conditions/osc-simulation-time-condition';
 
 @Component( {
@@ -10,7 +10,8 @@ export class SimulationTimeConditionEditorComponent implements OnInit {
 
 	@Input() condition: OscSimulationTimeCondition;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 

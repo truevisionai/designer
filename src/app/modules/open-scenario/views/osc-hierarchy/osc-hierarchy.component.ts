@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { OpenScenario } from '../../models/osc-scenario';
-import { OscDialogService } from '../../services/osc-dialog.service';
-import { OscEditor } from '../osc-editor/osc-editor';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { EntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { AppInspector } from '../../../../core/inspector';
 import { ContextMenuType, MenuService } from '../../../../services/menu.service';
 import { ThreeService } from '../../../three-js/three.service';
+import { EntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
+import { OpenScenario } from '../../models/osc-scenario';
+import { OscDialogService } from '../../services/osc-dialog.service';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscEditor } from '../osc-editor/osc-editor';
 
 /**
  * Food data with nested structure.
@@ -44,15 +44,6 @@ export class OscHierarchyComponent implements OnInit {
 
 
 	@Input() scenario: OpenScenario;
-	transformer = ( node: ScenarioNode, level: number ) => {
-		return {
-			expandable: !!node.children && node.children.length > 0,
-			name: node.name,
-			level: level,
-			type: node.type,
-		};
-	};
-	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
 	treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
 	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
@@ -70,6 +61,17 @@ export class OscHierarchyComponent implements OnInit {
 
 	}
 
+	transformer = ( node: ScenarioNode, level: number ) => {
+		return {
+			expandable: !!node.children && node.children.length > 0,
+			name: node.name,
+			level: level,
+			type: node.type,
+		};
+	};
+
+	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
+
 	hasChild = ( _: number, node: ExampleNode ) => node.expandable;
 
 	ngOnInit () {
@@ -84,7 +86,9 @@ export class OscHierarchyComponent implements OnInit {
 
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
 			label: 'Add Vehicle',
-			click: () => { this.dialogs.openAddVehicleDialog(); }
+			click: () => {
+				this.dialogs.openAddVehicleDialog();
+			}
 		} ] );
 
 	}

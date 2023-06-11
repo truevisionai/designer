@@ -1,11 +1,11 @@
 import { EventEmitter } from '@angular/core';
-import { OscEntityObject } from '../../models/osc-entities';
-import { TvMap } from '../../../tv-map/models/tv-map.model';
+import { IFile } from '../../../../core/models/file';
 import { FileService } from '../../../../services/file.service';
 import { ThreeService } from '../../../three-js/three.service';
-import { IFile } from '../../../../core/models/file';
-import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
+import { TvMap } from '../../../tv-map/models/tv-map.model';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
+import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
+import { OscEntityObject } from '../../models/osc-entities';
 
 export class OscEditor {
 

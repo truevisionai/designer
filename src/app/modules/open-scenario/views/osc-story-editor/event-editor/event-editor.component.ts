@@ -1,12 +1,11 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { OscEvent } from 'app/modules/open-scenario/models/osc-event';
-import { OscEventAction } from 'app/modules/open-scenario/models/osc-maneuver';
-import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
+import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { ChooseConditionDialogComponent } from 'app/modules/open-scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
+import {
+	ChooseConditionDialogComponent
+} from 'app/modules/open-scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
-
-import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
+import { OscEvent } from 'app/modules/open-scenario/models/osc-event';
+import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
 import { OscDialogService } from 'app/modules/open-scenario/services/osc-dialog.service';
 
 @Component( {
@@ -22,16 +21,22 @@ export class EventEditorComponent implements OnInit, IComponent {
 
 	@Input() action?: AbstractAction;
 
-	get actions () { return this.event.getActions(); }
-
-	get conditions () { return this.event.startConditions; }
-
 	constructor (
 		private dialogService: OscDialogService
 	) {
 	}
 
-	ngOnInit () { this.event = this.data; }
+	get actions () {
+		return this.event.getActions();
+	}
+
+	get conditions () {
+		return this.event.startConditions;
+	}
+
+	ngOnInit () {
+		this.event = this.data;
+	}
 
 	addCondition () {
 

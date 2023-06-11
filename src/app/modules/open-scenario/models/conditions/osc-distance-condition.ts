@@ -1,8 +1,8 @@
-import { AbstractPosition } from '../osc-interfaces';
-import { AbstractByEntityCondition } from './osc-condition';
-import { OscConditionType, OscTriggeringRule, OscRule } from '../osc-enums';
 import { OscSourceFile } from '../../services/osc-source-file';
+import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
+import { AbstractPosition } from '../osc-interfaces';
 import { OscUtils } from '../osc-utils';
+import { AbstractByEntityCondition } from './osc-condition';
 
 export class OscDistanceCondition extends AbstractByEntityCondition {
 

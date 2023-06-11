@@ -1,8 +1,8 @@
-import { OscParameterDeclaration } from './osc-parameter-declaration';
 import { OscBoundingBox } from './osc-bounding-box';
-import { OscProperties } from './osc-properties';
 import { OscVehicleCategory } from './osc-enums';
 import { IScenarioObject } from './osc-interfaces';
+import { OscParameterDeclaration } from './osc-parameter-declaration';
+import { OscProperties } from './osc-properties';
 
 export class OscVehicle extends IScenarioObject {
 	private m_Name: string;

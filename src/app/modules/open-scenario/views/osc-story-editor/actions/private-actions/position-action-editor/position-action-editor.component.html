@@ -1,1 +1,2 @@
-<app-position-editor [position]="action.position" (positionChanged)="onPositionChanged($event)" (positionModified)="onPositionModified($event)"></app-position-editor>
+<app-position-editor (positionChanged)="onPositionChanged($event)" (positionModified)="onPositionModified($event)"
+					 [position]="action.position"></app-position-editor>

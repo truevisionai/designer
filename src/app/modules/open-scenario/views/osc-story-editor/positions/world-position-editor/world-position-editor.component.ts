@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { OscWorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AbstractPositionEditor } from "../../position-editor/AbstractPositionEditor";
+import { OscWorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
 import { ThreeService } from '../../../../../three-js/three.service';
 import { OscSourceFile } from '../../../../services/osc-source-file';
+import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
 	selector: 'app-world-position-editor',
@@ -12,17 +12,16 @@ import { OscSourceFile } from '../../../../services/osc-source-file';
 export class WorldPositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
 	@Input() position: OscWorldPosition;
-
-	get entities () {
-		return [ ...OscSourceFile.openScenario.objects.keys() ];
-	};
+	public positionGroup: FormGroup;
 
 	constructor ( private fb: FormBuilder, private threeService: ThreeService ) {
 
 		super();
 	}
 
-	public positionGroup: FormGroup;
+	get entities () {
+		return [ ...OscSourceFile.openScenario.objects.keys() ];
+	};
 
 	get vector () {
 		return this.position.vector3;

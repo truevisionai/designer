@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { OscFollowTrajectoryAction } from '../../../../../models/actions/osc-follow-trajectory-action';
-import { ToolManager } from '../../../../../../../core/tools/tool-manager';
 import { AppInspector } from '../../../../../../../core/inspector';
+import { ToolManager } from '../../../../../../../core/tools/tool-manager';
+import { OscFollowTrajectoryAction } from '../../../../../models/actions/osc-follow-trajectory-action';
 
 @Component( {
 	selector: 'app-follow-trajectory-action',

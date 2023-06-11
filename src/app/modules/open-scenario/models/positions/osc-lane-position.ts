@@ -1,8 +1,8 @@
-import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
-import { OscPositionType } from '../osc-enums';
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
+import { OscPositionType } from '../osc-enums';
+import { AbstractPosition } from '../osc-interfaces';
+import { OscOrientation } from '../osc-orientation';
 
 export class OscLanePosition extends AbstractPosition {
 
