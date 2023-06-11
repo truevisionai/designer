@@ -1,10 +1,10 @@
-import { OpenScenario } from '../models/osc-scenario';
 import { OscConditionGroup } from '../models/conditions/osc-condition-group';
-import { OscStory } from '../models/osc-story';
 import { OscAct } from '../models/osc-act';
-import { OscManeuver } from '../models/osc-maneuver';
 import { OscEvent } from '../models/osc-event';
 import { AbstractAction } from '../models/osc-interfaces';
+import { OscManeuver } from '../models/osc-maneuver';
+import { OpenScenario } from '../models/osc-scenario';
+import { OscStory } from '../models/osc-story';
 
 export class OscResetHelper {
 

@@ -1,5 +1,5 @@
-import { OscProperties } from './osc-properties';
 import { OscSex } from './osc-enums';
+import { OscProperties } from './osc-properties';
 
 export class OscPersonDescription {
 

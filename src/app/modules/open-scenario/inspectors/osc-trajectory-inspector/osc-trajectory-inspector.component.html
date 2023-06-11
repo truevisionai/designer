@@ -1,7 +1,7 @@
-<div class="inspector-form-container" *ngIf="display">
+<div *ngIf="display" class="inspector-form-container">
 
 	<mat-form-field>
-		<input matInput placeholder="Name" [(ngModel)]="trajectory.name">
+		<input [(ngModel)]="trajectory.name" matInput placeholder="Name">
 	</mat-form-field>
 
 	<div *ngFor="let vertex of trajectory.vertices">
@@ -14,7 +14,8 @@
 		<!-- <input matInput type="number" disabled placeholder="reference" [(ngModel)]="vertex.reference"> -->
 		<!-- </mat-form-field> -->
 
-		<app-position-editor [position]="vertex.position" [showType]="false" (positionModified)="onPositionModified($event)"></app-position-editor>
+		<app-position-editor (positionModified)="onPositionModified($event)" [position]="vertex.position"
+							 [showType]="false"></app-position-editor>
 
 	</div>
 

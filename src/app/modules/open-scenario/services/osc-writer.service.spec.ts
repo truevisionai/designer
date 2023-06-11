@@ -1,18 +1,27 @@
-import { OscWriterService } from "./osc-writer.service";
-import { OscTrajectory, EnumTrajectoryDomain, OscVertex, OscPolylineShape, OscClothoidShape, OscSplineShape, OscControlPoint } from '../models/osc-trajectory';
+import {
+	EnumTrajectoryDomain,
+	OscClothoidShape,
+	OscControlPoint,
+	OscPolylineShape,
+	OscSplineShape,
+	OscTrajectory,
+	OscVertex
+} from '../models/osc-trajectory';
 import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { write } from 'fs';
+import { OscWriterService } from './osc-writer.service';
 
 describe( 'OscWriterService', () => {
 
 	let writer: OscWriterService;
 
-	beforeEach( () => { writer = new OscWriterService(); } );
+	beforeEach( () => {
+		writer = new OscWriterService();
+	} );
 
 	it( 'should write trajectory correctly', () => {
 
 		const trajectory = new OscTrajectory(
-			"TrajectoryName", true, EnumTrajectoryDomain.Distance
+			'TrajectoryName', true, EnumTrajectoryDomain.Distance
 		);
 
 		const xml = writer.writeTrajectory( trajectory );
@@ -63,7 +72,6 @@ describe( 'OscWriterService', () => {
 		expect( xml.Spline.ControlPoint2.attr_status ).toBe( spline.controlPoint2.status );
 
 	} );
-
 
 
 } );

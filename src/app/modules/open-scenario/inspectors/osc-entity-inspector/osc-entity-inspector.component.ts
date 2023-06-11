@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { OscEntityObject } from '../../models/osc-entities';
 import { MatDialog } from '@angular/material/dialog';
-import { OscDialogService } from '../../services/osc-dialog.service';
 import { IComponent } from 'app/core/game-object';
+import { AppInspector } from '../../../../core/inspector';
+import { OscEntityObject } from '../../models/osc-entities';
+import { OscDialogService } from '../../services/osc-dialog.service';
 import { OscSourceFile } from '../../services/osc-source-file';
 import { OscActionsInspectorComponent } from '../osc-actions-inspector/osc-player-actions-inspector.component';
-import { AppInspector } from '../../../../core/inspector';
 
 @Component( {
 	selector: 'app-osc-player-inspector',
@@ -18,7 +18,12 @@ export class EntityInspector implements OnInit, IComponent {
 
 	// @Input() entity: OscEntityObject;
 
-	get entity () { return this.data; }
+	constructor ( public dialog: MatDialog, private dialogService: OscDialogService ) {
+	}
+
+	get entity () {
+		return this.data;
+	}
 
 	get initActions () {
 		return this.entity.initActions;
@@ -30,9 +35,6 @@ export class EntityInspector implements OnInit, IComponent {
 
 	get scenario () {
 		return OscSourceFile.openScenario;
-	}
-
-	constructor ( public dialog: MatDialog, private dialogService: OscDialogService ) {
 	}
 
 	ngOnInit () {

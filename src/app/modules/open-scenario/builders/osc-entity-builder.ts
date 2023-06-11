@@ -1,121 +1,123 @@
-import { OscEntityObject } from '../models/osc-entities';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { BoxGeometry, MeshBasicMaterial, Object3D, Sprite, SpriteMaterial, Texture, TextureLoader } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
-import { OscActionBuilder } from './osc-action-builder';
 import { GameObject } from '../../../core/game-object';
+import { SceneService } from '../../../core/services/scene.service';
 import { TvObjectType } from '../../tv-map/interfaces/i-tv-object';
 import { ObjectTypes } from '../../tv-map/models/tv-common';
-import { CatalogReferenceController } from '../models/osc-interfaces';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { OscCatalogs } from '../models/osc-catalogs';
+import { OscEntityObject } from '../models/osc-entities';
+import { CatalogReferenceController } from '../models/osc-interfaces';
+import { OscActionBuilder } from './osc-action-builder';
 
 export class OscEntityBuilder {
 
-    static build ( obj: OscEntityObject, executeAction = true ) {
+	static get openDrive () {
+		return TvMapInstance.map;
+	}
 
-        this.buildController( obj );
+	static build ( obj: OscEntityObject, executeAction = true ) {
 
-        this.loadVehicleTexture( obj, ( texture ) => {
+		this.buildController( obj );
 
-            this.createVehicleSprite( obj, texture );
+		this.loadVehicleTexture( obj, ( texture ) => {
 
-            if ( executeAction ) {
+			this.createVehicleSprite( obj, texture );
 
-                obj.initActions.forEach( ( privateAction ) => {
+			if ( executeAction ) {
 
-                    OscActionBuilder.executePrivateAction( obj, privateAction );
+				obj.initActions.forEach( ( privateAction ) => {
 
-                } );
-            }
+					OscActionBuilder.executePrivateAction( obj, privateAction );
 
-        } );
+				} );
+			}
 
-    }
+		} );
 
-    static get openDrive () { return TvMapInstance.map; }
+	}
 
-    static buildController ( obj: OscEntityObject ) {
+	static buildController ( obj: OscEntityObject ) {
 
-        if ( obj.controller instanceof CatalogReferenceController ) {
+		if ( obj.controller instanceof CatalogReferenceController ) {
 
-            const truevisionCatalog = obj.controller.catalogReference.catalogName === OscCatalogs.truevisionCatalog;
-            const defaultController = obj.controller.catalogReference.entryName === OscCatalogs.truevisionDefaultController;
+			const truevisionCatalog = obj.controller.catalogReference.catalogName === OscCatalogs.truevisionCatalog;
+			const defaultController = obj.controller.catalogReference.entryName === OscCatalogs.truevisionDefaultController;
 
-            if ( truevisionCatalog && defaultController ) {
+			if ( truevisionCatalog && defaultController ) {
 
-                obj.controller = new DefaultVehicleController( this.openDrive, obj );
+				obj.controller = new DefaultVehicleController( this.openDrive, obj );
 
-            } else {
+			} else {
 
-                console.error( 'uknown catalog reference' );
+				console.error( 'uknown catalog reference' );
 
-            }
+			}
 
-        } else if ( obj.controller instanceof DefaultVehicleController ) {
+		} else if ( obj.controller instanceof DefaultVehicleController ) {
 
-            // do nothing
+			// do nothing
 
-        } else {
+		} else {
 
-            console.error( 'unknown vehicle controller for entity' );
+			console.error( 'unknown vehicle controller for entity' );
 
-        }
-    }
+		}
+	}
 
-    static loadVehicleTexture ( obj: OscEntityObject, callback: ( texture: Texture ) => void ) {
+	static loadVehicleTexture ( obj: OscEntityObject, callback: ( texture: Texture ) => void ) {
 
-        const loader = new TextureLoader();
+		const loader = new TextureLoader();
 
-        const model = obj.catalogReference.entryName;
+		const model = obj.catalogReference.entryName;
 
-        loader.load( `assets/vehicles/${ model }.png`, ( texture ) => {
+		loader.load( `assets/vehicles/${ model }.png`, ( texture ) => {
 
-            callback( texture );
+			callback( texture );
 
-        }, () => {
+		}, () => {
 
-        }, ( event ) => {
+		}, ( event ) => {
 
-            const texture = loader.load( 'assets/vehicles/default.png' );
+			const texture = loader.load( 'assets/vehicles/default.png' );
 
-            callback( texture );
-        } );
-    }
+			callback( texture );
+		} );
+	}
 
-    public static createVehicleSprite ( obj: OscEntityObject, texture: Texture ) {
+	public static createVehicleSprite ( obj: OscEntityObject, texture: Texture ) {
 
-        // var spriteMaterial = new SpriteMaterial( { map: texture, color: 0xffffff } );
-        // obj.gameObject = new Sprite( spriteMaterial );
-        // obj.gameObject.scale.set( 2, 3, 1 );
+		// var spriteMaterial = new SpriteMaterial( { map: texture, color: 0xffffff } );
+		// obj.gameObject = new Sprite( spriteMaterial );
+		// obj.gameObject.scale.set( 2, 3, 1 );
 
-        const geometry = new BoxGeometry( 2, 3.5, 1 );
-        const material = new MeshBasicMaterial( { color: 0x70db88 } );
+		const geometry = new BoxGeometry( 2, 3.5, 1 );
+		const material = new MeshBasicMaterial( { color: 0x70db88 } );
 
-        obj.gameObject = new GameObject( obj.name, geometry, material );
+		obj.gameObject = new GameObject( obj.name, geometry, material );
 
-        obj.gameObject.Tag = ObjectTypes.VEHICLE;
-        obj.gameObject.OpenDriveType = TvObjectType.VEHICLE;
+		obj.gameObject.Tag = ObjectTypes.VEHICLE;
+		obj.gameObject.OpenDriveType = TvObjectType.VEHICLE;
 
-        obj.gameObject.userData.data = obj;
+		obj.gameObject.userData.data = obj;
 
-        this.createVehicleIconLabel( obj.gameObject, 0x70db88 );
+		this.createVehicleIconLabel( obj.gameObject, 0x70db88 );
 
-        SceneService.add( obj.gameObject );
-    }
+		SceneService.add( obj.gameObject );
+	}
 
-    public static createVehicleIconLabel ( parent: Object3D, color = 0xffffff ) {
+	public static createVehicleIconLabel ( parent: Object3D, color = 0xffffff ) {
 
-        const loader = new TextureLoader();
-        const texture = loader.load( 'assets/car-icon-circle.png' );
+		const loader = new TextureLoader();
+		const texture = loader.load( 'assets/car-icon-circle.png' );
 
-        const spriteMaterial = new SpriteMaterial( { map: texture, color: color } );
-        const sprite = new Sprite( spriteMaterial );
+		const spriteMaterial = new SpriteMaterial( { map: texture, color: color } );
+		const sprite = new Sprite( spriteMaterial );
 
-        parent.add( sprite );
+		parent.add( sprite );
 
-        // set the icon position on top of object
-        sprite.position.set( 0, 0, 2 );
-    }
+		// set the icon position on top of object
+		sprite.position.set( 0, 0, 2 );
+	}
 
 }

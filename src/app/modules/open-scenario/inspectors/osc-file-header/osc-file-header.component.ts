@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { OscFileHeader } from '../../models/osc-file-header';
 
 @Component( {
@@ -9,10 +9,10 @@ export class OscFileHeaderComponent implements OnInit {
 
 	@Input() fileHeader: OscFileHeader;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
-
 
 
 	}

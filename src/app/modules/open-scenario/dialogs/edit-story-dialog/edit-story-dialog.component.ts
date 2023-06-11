@@ -1,20 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
-import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { OscManeuver } from '../../models/osc-maneuver';
-import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
-import { EditActionsDialogComponent, EditActionsDialogData } from '../edit-actions-dialog/edit-actions-dialog.component';
-import { AbstractAction } from '../../models/osc-interfaces';
+import { Debug } from 'app/core/utils/debug';
 import { SetValueCommand } from '../../../three-js/commands/set-value-command';
-import { OscConditionType } from '../../models/osc-enums';
+import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { OscEntityObject } from '../../models/osc-entities';
-import { OscSourceFile } from '../../services/osc-source-file';
+import { OscConditionType } from '../../models/osc-enums';
+import { OscEvent } from '../../models/osc-event';
+import { AbstractAction } from '../../models/osc-interfaces';
+import { OscManeuver } from '../../models/osc-maneuver';
 import { EnumTrajectoryDomain, OscPolylineShape, OscTrajectory, OscVertex } from '../../models/osc-trajectory';
 import { OscWorldPosition } from '../../models/positions/osc-world-position';
-import { Debug } from 'app/core/utils/debug';
-import { OscEvent } from '../../models/osc-event';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { OscSourceFile } from '../../services/osc-source-file';
+import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
+import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
+import { EditActionsDialogComponent, EditActionsDialogData } from '../edit-actions-dialog/edit-actions-dialog.component';
 
 export class EditStoryDialogData {
 	constructor ( public object: OscEntityObject ) {

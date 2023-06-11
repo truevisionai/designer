@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { FileService } from '../../../services/file.service';
-import { OscReaderService } from './osc-reader.service';
-import { OscWriterService } from './osc-writer.service';
-import { OscBuilderService } from '../builders/osc-builder.service';
-import { OpenScenario } from '../models/osc-scenario';
-import { OscSourceFile } from './osc-source-file';
-import { IFile } from '../../../core/models/file';
-import { OpenScenarioApiService } from '../../../core/services/open-scenario-api.service';
-import { SnackBar } from '../../../services/snack-bar.service';
 import { Debug } from 'app/core/utils/debug';
-import { OscPlayerService } from './osc-player.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 import { saveAs } from 'file-saver';
-import { TvElectronService } from 'app/services/tv-electron.service';
+import { IFile } from '../../../core/models/file';
+import { OpenScenarioApiService } from '../../../core/services/open-scenario-api.service';
+import { FileService } from '../../../services/file.service';
+import { SnackBar } from '../../../services/snack-bar.service';
+import { OscBuilderService } from '../builders/osc-builder.service';
+import { OpenScenario } from '../models/osc-scenario';
+import { OscPlayerService } from './osc-player.service';
+import { OscReaderService } from './osc-reader.service';
+import { OscSourceFile } from './osc-source-file';
+import { OscWriterService } from './osc-writer.service';
 
 @Injectable( {
 	providedIn: 'root'

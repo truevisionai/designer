@@ -1,38 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { OscTrajectory } from '../../models/osc-trajectory';
 import { Debug } from 'app/core/utils/debug';
+import { OscTrajectory } from '../../models/osc-trajectory';
 
 @Component( {
-    selector: 'app-osc-trajectories-inspector',
-    templateUrl: './osc-trajectories-inspector.component.html',
-    styleUrls: [ './osc-trajectories-inspector.component.css' ]
+	selector: 'app-osc-trajectories-inspector',
+	templateUrl: './osc-trajectories-inspector.component.html',
+	styleUrls: [ './osc-trajectories-inspector.component.css' ]
 } )
 export class OscTrajectoriesInspectorComponent implements OnInit, IComponent {
 
-    data: OscTrajectory[] = [];
+	data: OscTrajectory[] = [];
+	selected: any;
 
-    get trajectories () { return this.data };
+	constructor () {
+	}
 
-    selected: any;
+	get trajectories () {
+		return this.data;
+	};
 
-    constructor () { }
+	ngOnInit () {
 
-    ngOnInit () {
+		Debug.log( this.data );
 
-        Debug.log( this.data );
+	}
 
-    }
+	selectTrajectory ( trajectory ) {
 
-    selectTrajectory ( trajectory ) {
+		this.selected = trajectory;
 
-        this.selected = trajectory;
+	}
 
-    }
+	isDisabled ( trajectory: OscTrajectory ) {
 
-    isDisabled ( trajectory: OscTrajectory ) {
+		return trajectory !== this.selected;
 
-        return trajectory !== this.selected;
-
-    }
+	}
 }

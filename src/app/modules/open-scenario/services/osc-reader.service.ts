@@ -1,15 +1,35 @@
 import { Injectable } from '@angular/core';
-import { OpenScenario } from '../models/osc-scenario';
-import { OscCatalogReference, OscCatalogs, TrajectoryCatalog } from '../models/osc-catalogs';
-import { OscRoadNetwork } from '../models/osc-road-network';
-import { OscEntityObject } from '../models/osc-entities';
+import { Debug } from 'app/core/utils/debug';
 import { IFile } from '../../../core/models/file';
-import { OscFileHeader } from '../models/osc-file-header';
-import { OscStoryboard } from '../models/osc-storyboard';
-import { OscDirectory, OscFile } from '../models/osc-common';
-import { OscStory } from '../models/osc-story';
+import { AbstractReader } from '../../../core/services/abstract-reader';
+import { FileService } from '../../../services/file.service';
+import { AbstractTarget } from '../models/actions/abstract-target';
+import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
+import { OscDistanceAction } from '../models/actions/osc-distance-action';
+import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
+import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
+import { OscPositionAction } from '../models/actions/osc-position-action';
+import { OscLaneChangeDynamics, OscSpeedDynamics } from '../models/actions/osc-private-action';
+import { OscRelativeTarget } from '../models/actions/osc-relative-target';
+import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/osc-routing-action';
+import { OscSpeedAction } from '../models/actions/osc-speed-action';
+import { OscAfterTerminationCondition } from '../models/conditions/osc-after-termination-condition';
+import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
+import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
 import { OscConditionGroup } from '../models/conditions/osc-condition-group';
+import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
+import { OscReachPositionCondition } from '../models/conditions/osc-reach-position-condition';
+import { OscRelativeSpeedCondition } from '../models/conditions/osc-relative-speed-condition';
+import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
+import { OscSpeedCondition } from '../models/conditions/osc-speed-condition';
+import { OscTraveledDistanceCondition } from '../models/conditions/osc-traveled-distance-condition';
 import { OscAct } from '../models/osc-act';
+import { OscCatalogReference, OscCatalogs, TrajectoryCatalog } from '../models/osc-catalogs';
+import { OscDirectory, OscFile } from '../models/osc-common';
+import { OscEntityObject } from '../models/osc-entities';
+import { OscConditionEdge, OscRule } from '../models/osc-enums';
+import { OscEvent } from '../models/osc-event';
+import { OscFileHeader } from '../models/osc-file-header';
 import {
 	AbstractAction,
 	AbstractController,
@@ -17,30 +37,15 @@ import {
 	AbstractPrivateAction,
 	CatalogReferenceController
 } from '../models/osc-interfaces';
-import { OscLaneChangeDynamics, OscSpeedDynamics } from '../models/actions/osc-private-action';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
-import { OscSequence } from '../models/osc-sequence';
-import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
-import { OscConditionEdge, OscRule } from '../models/osc-enums';
 import { OscEventAction, OscManeuver } from '../models/osc-maneuver';
 import { OscOrientation } from '../models/osc-orientation';
-import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
-import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
-import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
-import { OscAfterTerminationCondition } from '../models/conditions/osc-after-termination-condition';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
-import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscSpeedAction } from '../models/actions/osc-speed-action';
-import { OscDistanceAction } from '../models/actions/osc-distance-action';
-import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
-import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
-import { OscRelativeTarget } from '../models/actions/osc-relative-target';
-import { AbstractTarget } from '../models/actions/abstract-target';
 import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
-import { OscSpeedCondition } from '../models/conditions/osc-speed-condition';
-import { AbstractReader } from '../../../core/services/abstract-reader';
+import { OscRoadNetwork } from '../models/osc-road-network';
+import { OscRoute, OscWaypoint } from '../models/osc-route';
+import { OpenScenario } from '../models/osc-scenario';
+import { OscSequence } from '../models/osc-sequence';
+import { OscStory } from '../models/osc-story';
+import { OscStoryboard } from '../models/osc-storyboard';
 import {
 	AbstractOscShape,
 	OscClothoidShape,
@@ -50,15 +55,10 @@ import {
 	OscTrajectory,
 	OscVertex
 } from '../models/osc-trajectory';
-import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/osc-routing-action';
-import { OscRoute, OscWaypoint } from '../models/osc-route';
-import { Debug } from 'app/core/utils/debug';
-import { FileService } from '../../../services/file.service';
-import { OscEvent } from '../models/osc-event';
-import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
-import { OscReachPositionCondition } from '../models/conditions/osc-reach-position-condition';
-import { OscRelativeSpeedCondition } from '../models/conditions/osc-relative-speed-condition';
-import { OscTraveledDistanceCondition } from '../models/conditions/osc-traveled-distance-condition';
+import { OscLanePosition } from '../models/positions/osc-lane-position';
+import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
+import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
+import { OscWorldPosition } from '../models/positions/osc-world-position';
 
 @Injectable( {
 	providedIn: 'root'
@@ -761,9 +761,9 @@ export class OscReaderService extends AbstractReader {
 
 		let action: AbstractAction = null;
 
-		if ( xml.LaneChange != null ) action = this.readLaneChangeAction( xml.LaneChange );
-
-		else if ( xml.LaneOffset != null ) {
+		if ( xml.LaneChange != null ) {
+			action = this.readLaneChangeAction( xml.LaneChange );
+		} else if ( xml.LaneOffset != null ) {
 		} else if ( xml.Distance != null ) {
 		} else {
 			console.error( 'unknown lateral action' );

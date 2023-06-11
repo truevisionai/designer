@@ -2,6 +2,16 @@ import { OscFile } from './osc-common';
 
 export class OscRoadNetwork {
 
+	private Logics: OscFile;
+	private m_SceneGraph: OscFile;
+
+	constructor ( logics: OscFile, sceneGraph: OscFile ) {
+
+		this.Logics = logics;
+		this.m_SceneGraph = sceneGraph;
+
+	}
+
 	get logics (): OscFile {
 		return this.Logics;
 	}
@@ -14,20 +24,10 @@ export class OscRoadNetwork {
 		return this.m_SceneGraph;
 	}
 
-	set sceneGraph ( value: OscFile ) {
-		this.m_SceneGraph = value;
-	}
-
-	private Logics: OscFile;
-	private m_SceneGraph: OscFile;
-
 	// TODO: Add Signals
 
-	constructor ( logics: OscFile, sceneGraph: OscFile ) {
-
-		this.Logics = logics;
-		this.m_SceneGraph = sceneGraph;
-
+	set sceneGraph ( value: OscFile ) {
+		this.m_SceneGraph = value;
 	}
 
 }

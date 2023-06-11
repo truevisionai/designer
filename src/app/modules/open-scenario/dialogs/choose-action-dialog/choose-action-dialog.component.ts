@@ -1,19 +1,19 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Debug } from 'app/core/utils/debug';
 import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
-import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { OscSpeedAction } from '../../models/actions/osc-speed-action';
-import { OscDistanceAction } from '../../models/actions/osc-distance-action';
-import { OscLaneChangeAction } from '../../models/actions/osc-lane-change-action';
 import { OscAbsoluteTarget } from '../../models/actions/osc-absolute-target';
+import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { OscLaneChangeAction } from '../../models/actions/osc-lane-change-action';
+import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
+import { OscSpeedAction } from '../../models/actions/osc-speed-action';
 import { OscActionCategory, OscDynamicsShape } from '../../models/osc-enums';
 import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
-import { Debug } from 'app/core/utils/debug';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
 
 export class ChooseActionDialogData {
-	constructor ( public actionName?: string, public action?: AbstractAction ) { }
+	constructor ( public actionName?: string, public action?: AbstractAction ) {
+	}
 }
 
 
@@ -27,16 +27,20 @@ export class ChooseActionDialogComponent implements OnInit {
 	public category: string;
 	public action_type: string;
 
-	get categories () { return OscActionCategory; }
-
-	set action ( value ) { this.data.action = value; }
-
 	constructor (
 		public dialogRef: MatDialogRef<ChooseActionDialogComponent>,
 		@Inject( MAT_DIALOG_DATA ) public data: ChooseActionDialogData,
 		private snackBar: SnackBar
 	) {
 
+	}
+
+	get categories () {
+		return OscActionCategory;
+	}
+
+	set action ( value ) {
+		this.data.action = value;
 	}
 
 	ngOnInit () {
@@ -58,13 +62,19 @@ export class ChooseActionDialogComponent implements OnInit {
 
 		switch ( this.action_type ) {
 
-			case 'lane_change': this.addLaneChangeAction(); break;
+			case 'lane_change':
+				this.addLaneChangeAction();
+				break;
 
-			case 'speed_change': this.addSpeedChangeAction(); break;
+			case 'speed_change':
+				this.addSpeedChangeAction();
+				break;
 
 			// case 'distance': this.action = new OscDistanceAction(); break;
 
-			case 'follow_trajectory': this.addFollowTrajectoryAction(); break;
+			case 'follow_trajectory':
+				this.addFollowTrajectoryAction();
+				break;
 
 			default:
 				break;

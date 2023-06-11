@@ -7,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
 export class AddEntityInitDialogComponent implements OnInit {
 
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
-
 
 
 	}

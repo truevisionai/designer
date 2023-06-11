@@ -1,10 +1,10 @@
-import { OscEntityObject } from '../models/osc-entities';
-import { AbstractPrivateAction } from '../models/osc-interfaces';
-import { OscActionType, OscPositionType } from '../models/osc-enums';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
 import { Vector3 } from 'three';
+import { OscPositionAction } from '../models/actions/osc-position-action';
+import { OscEntityObject } from '../models/osc-entities';
+import { OscActionType, OscPositionType } from '../models/osc-enums';
+import { AbstractPrivateAction } from '../models/osc-interfaces';
+import { OscLanePosition } from '../models/positions/osc-lane-position';
+import { OscWorldPosition } from '../models/positions/osc-world-position';
 
 export class OscActionBuilder {
 

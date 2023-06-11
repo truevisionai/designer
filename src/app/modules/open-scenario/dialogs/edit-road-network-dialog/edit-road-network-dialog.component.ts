@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Debug } from 'app/core/utils/debug';
+import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
-import { OscFile } from '../../models/osc-common';
-import { OscSourceFile } from '../../services/osc-source-file';
 import { IFile } from '../../../../core/models/file';
 import { OpenDriveApiService } from '../../../../core/services/open-drive-api.service';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { Debug } from 'app/core/utils/debug';
+import { OscFile } from '../../models/osc-common';
+import { OscSourceFile } from '../../services/osc-source-file';
 
 @Component( {
 	selector: 'app-edit-road-network-dialog',

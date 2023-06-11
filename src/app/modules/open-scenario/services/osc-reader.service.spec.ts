@@ -1,6 +1,6 @@
-import { OscReaderService } from './osc-reader.service';
 import { OscPolylineShape } from '../models/osc-trajectory';
 import { OscWorldPosition } from '../models/positions/osc-world-position';
+import { OscReaderService } from './osc-reader.service';
 
 
 describe( 'OscReaderService', () => {
@@ -220,10 +220,10 @@ describe( 'OscReaderService', () => {
 				attr_strategy: 'fastest',
 				Position: { World: { attr_x: 1, attr_y: 2, attr_z: 3 } },
 			},
-			{
-				attr_strategy: 'fastest',
-				Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
-			}, ]
+				{
+					attr_strategy: 'fastest',
+					Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
+				}, ]
 		};
 
 		const route = parser.readRoute( xml );
@@ -234,8 +234,6 @@ describe( 'OscReaderService', () => {
 		expect( route.waypoints.length ).toBe( 2 );
 
 	} );
-
-
 
 
 } );

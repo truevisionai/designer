@@ -2,7 +2,7 @@
 
 <div mat-dialog-content>
 
-	<div fxLayout="row" fxLayout.xs="row" fxLayoutAlign="space-between" fxFlexFill>
+	<div fxFlexFill fxLayout="row" fxLayout.xs="row" fxLayoutAlign="space-between">
 		<div fxFlex="24">
 			<span>Maneuver</span>
 			<div *ngFor="let maneuver of maneuvers">
@@ -22,7 +22,7 @@
 			<div *ngFor="let action of eventActions">
 				<!-- <app-edit-action (actionSelected)="onActionSelected($event)" [action]="action"></app-edit-action> -->
 			</div>
-			<button *ngIf="selectedEvent" mat-stroked-button (click)="addAction()">Add Action</button>
+			<button (click)="addAction()" *ngIf="selectedEvent" mat-stroked-button>Add Action</button>
 		</div>
 		<div fxFlex="24">
 			<span>Action</span>
@@ -43,5 +43,5 @@
 
 <div mat-dialog-actions>
 	<button mat-stroked-button>Cancel</button>
-	<button mat-stroked-button (click)="addManeuver()">Add Maneuver</button>
+	<button (click)="addManeuver()" mat-stroked-button>Add Maneuver</button>
 </div>

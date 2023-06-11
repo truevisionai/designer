@@ -1,16 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscManeuver } from '../../models/osc-maneuver';
-import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { AbstractAction } from '../../models/osc-interfaces';
+import { Debug } from 'app/core/utils/debug';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { AbstractCondition } from '../../models/conditions/osc-condition';
+import { OscEntityObject } from '../../models/osc-entities';
+import { OscConditionType } from '../../models/osc-enums';
+import { OscEvent } from '../../models/osc-event';
+import { AbstractAction } from '../../models/osc-interfaces';
+import { OscManeuver } from '../../models/osc-maneuver';
+import { OscSourceFile } from '../../services/osc-source-file';
 import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
-import { OscConditionType } from '../../models/osc-enums';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { Debug } from 'app/core/utils/debug';
-import { OscEvent } from '../../models/osc-event';
 
 export class EditActionsDialogData {
 	constructor ( public object: OscEntityObject ) {
@@ -32,6 +32,14 @@ export class EditActionsDialogComponent implements OnInit {
 
 	maneuvers: OscManeuver[];
 
+	constructor (
+		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
+		public dialog: MatDialog
+	) {
+
+	}
+
 	get entity () {
 		return this.data.object;
 	}
@@ -48,16 +56,12 @@ export class EditActionsDialogComponent implements OnInit {
 		return this.event.startConditionGroups[ 0 ].conditions[ 0 ];
 	}
 
-	constructor (
-		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
-		@Inject( MAT_DIALOG_DATA ) public data: EditActionsDialogData,
-		public dialog: MatDialog
-	) {
-
-	}
-
 	get eventActions () {
 		if ( this.selectedEvent ) return this.selectedEvent.getActions();
+	}
+
+	get eventConditions () {
+		if ( this.selectedEvent ) return this.selectedEvent.startConditions;
 	}
 
 	selectManeuver ( maneuver: OscManeuver ) {
@@ -90,10 +94,6 @@ export class EditActionsDialogComponent implements OnInit {
 
 		Debug.log( this.maneuvers );
 
-	}
-
-	get eventConditions () {
-		if ( this.selectedEvent ) return this.selectedEvent.startConditions;
 	}
 
 	onConditionChanged ( condition: AbstractCondition ) {

@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { OscConditionCategory, OscConditionType, OscRule, OscStoryElementType } from '../../models/osc-enums';
-import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { OscSimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
-import { OscDistanceCondition } from '../../models/conditions/osc-distance-condition';
 import { OscAtStartCondition } from '../../models/conditions/osc-at-start-condition';
+import { AbstractCondition } from '../../models/conditions/osc-condition';
+import { OscDistanceCondition } from '../../models/conditions/osc-distance-condition';
 import { OscReachPositionCondition } from '../../models/conditions/osc-reach-position-condition';
+import { OscSimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
+import { OscConditionCategory, OscConditionType, OscRule, OscStoryElementType } from '../../models/osc-enums';
 
 @Component( {
 	selector: 'app-choose-condition-dialog',

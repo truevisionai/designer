@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 } )
 export class OscDriverService {
 
-	constructor () { }
+	constructor () {
+	}
 
 	get vehicleDrivers (): string[] {
 

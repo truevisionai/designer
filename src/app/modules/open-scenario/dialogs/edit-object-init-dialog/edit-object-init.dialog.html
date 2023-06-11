@@ -2,9 +2,9 @@
 
 <div mat-dialog-content>
 
-	<div class="content" fxLayout="row" fxLayout.xs="row" fxFlexFill>
+	<div class="content" fxFlexFill fxLayout="row" fxLayout.xs="row">
 
-		<div fxFlex="30" *ngFor="let action of entity.initActions;">
+		<div *ngFor="let action of entity.initActions;" fxFlex="30">
 
 			<!-- <app-action-editor [action]="action"></app-action-editor> -->
 

@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscSourceFile } from '../../services/osc-source-file';
-import { AbstractPrivateAction } from '../../models/osc-interfaces';
-import { FollowTrajectoryActionComponent } from '../../views/osc-story-editor/actions/private-actions/follow-trajectory-action/follow-trajectory-action.component';
 import { AppInspector } from '../../../../core/inspector';
-import { OscManeuver } from '../../models/osc-maneuver';
-import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
-import { OscActionType, OscDynamicsShape } from '../../models/osc-enums';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
-import { OscSpeedAction } from '../../models/actions/osc-speed-action';
-import { OscSimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
-import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
-import { OscAbsoluteTarget } from '../../models/actions/osc-absolute-target';
-import { SpeedActionComponent } from '../../views/osc-story-editor/actions/private-actions/speed-action/speed-action.component';
-import { EventEditorComponent } from '../../views/osc-story-editor/event-editor/event-editor.component';
-import { OscStory } from '../../models/osc-story';
-import { OscAct } from '../../models/osc-act';
-import { OscSequence } from '../../models/osc-sequence';
-import { OscEvent } from '../../models/osc-event';
-import { OscDialogService } from '../../services/osc-dialog.service';
 import { ChooseActionDialogData } from '../../dialogs/choose-action-dialog/choose-action-dialog.component';
+import { OscAbsoluteTarget } from '../../models/actions/osc-absolute-target';
+import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
+import { OscSpeedAction } from '../../models/actions/osc-speed-action';
+import { OscAct } from '../../models/osc-act';
+import { OscEntityObject } from '../../models/osc-entities';
+import { OscActionType, OscDynamicsShape } from '../../models/osc-enums';
+import { OscEvent } from '../../models/osc-event';
+import { AbstractPrivateAction } from '../../models/osc-interfaces';
+import { OscManeuver } from '../../models/osc-maneuver';
+import { OscSequence } from '../../models/osc-sequence';
+import { OscStory } from '../../models/osc-story';
+import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
+import { OscDialogService } from '../../services/osc-dialog.service';
+import { OscSourceFile } from '../../services/osc-source-file';
+import {
+	FollowTrajectoryActionComponent
+} from '../../views/osc-story-editor/actions/private-actions/follow-trajectory-action/follow-trajectory-action.component';
+import { EventEditorComponent } from '../../views/osc-story-editor/event-editor/event-editor.component';
 
 @Component( {
 	selector: 'app-osc-player-actions-inspector',

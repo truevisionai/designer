@@ -1,18 +1,28 @@
-import { IFile } from '../../../core/models/file';
-import { OpenScenario } from '../models/osc-scenario';
 import { EventEmitter } from '@angular/core';
-import { OscNameDB } from '../models/osc-name-db';
+import { IFile } from '../../../core/models/file';
 import { OscClearHelper } from '../helpers/osc-clear-helper';
+import { OscNameDB } from '../models/osc-name-db';
+import { OpenScenario } from '../models/osc-scenario';
 
 export class OscSourceFile {
 
 	public static scenarioChanged = new EventEmitter<OpenScenario>();
 	public static fileChanged = new EventEmitter<IFile>();
 	public static db: OscNameDB = new OscNameDB();
+	private static cleaner = new OscClearHelper();
 
 	private static _file: IFile;
+
+	static get file () {
+		return this._file;
+	}
+
+	static set file ( value ) {
+		this._file = value;
+		this.fileChanged.emit( value );
+	}
+
 	private static _scenario: OpenScenario = new OpenScenario();
-	private static cleaner = new OscClearHelper();
 
 	static get scenario () {
 		return this._scenario;
@@ -29,15 +39,6 @@ export class OscSourceFile {
 
 		this.scenarioChanged.emit( value );
 
-	}
-
-	static get file () {
-		return this._file;
-	}
-
-	static set file ( value ) {
-		this._file = value;
-		this.fileChanged.emit( value );
 	}
 
 	static get openScenario () {

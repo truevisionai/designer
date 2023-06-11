@@ -1,5 +1,5 @@
-import { OpenScenario } from '../models/osc-scenario';
 import { SceneService } from '../../../core/services/scene.service';
+import { OpenScenario } from '../models/osc-scenario';
 
 export class OscClearHelper {
 

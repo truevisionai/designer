@@ -1,18 +1,18 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { OscModelsService } from '../../services/osc-models.service';
-import { OscDriverService } from '../../services/osc-driver.service';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscPositionAction } from '../../models/actions/osc-position-action';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { SearchPipe } from 'app/core/pipes/search.pipe';
+import { Debug } from 'app/core/utils/debug';
+import { CommandHistory } from 'app/services/command-history';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { OscBuilderService } from '../../builders/osc-builder.service';
 import { OscAddEntityCommand } from '../../commands/osc-add-entity-command';
+import { OscPositionAction } from '../../models/actions/osc-position-action';
 import { OscCatalogReference } from '../../models/osc-catalogs';
+import { OscEntityObject } from '../../models/osc-entities';
 import { CatalogReferenceController } from '../../models/osc-interfaces';
-import { CommandHistory } from 'app/services/command-history';
-import { SearchPipe } from 'app/core/pipes/search.pipe';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { Debug } from 'app/core/utils/debug';
+import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { OscDriverService } from '../../services/osc-driver.service';
+import { OscModelsService } from '../../services/osc-models.service';
 
 export class AddVehicleDialogData {
 	name: string = 'Vehicle';

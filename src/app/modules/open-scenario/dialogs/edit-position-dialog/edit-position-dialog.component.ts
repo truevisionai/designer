@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { OscLanePosition } from '../../models/positions/osc-lane-position';
+import { Debug } from 'app/core/utils/debug';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { OscPositionAction } from '../../models/actions/osc-position-action';
 import { AbstractPosition } from '../../models/osc-interfaces';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { OscLanePosition } from '../../models/positions/osc-lane-position';
 import { OscRoadPosition } from '../../models/positions/osc-road-position';
-import { Debug } from 'app/core/utils/debug';
+import { OscWorldPosition } from '../../models/positions/osc-world-position';
 
 export class EditPositionDialogData {
 	public positionAction: OscPositionAction;
@@ -39,12 +39,6 @@ export class EditPositionDialogComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
-
-		Debug.log( 'init', this.data );
-
-	}
-
 	get response () {
 
 		return new OscPositionAction( this.position );
@@ -74,6 +68,12 @@ export class EditPositionDialogComponent implements OnInit {
 		}
 
 		return position;
+	}
+
+	ngOnInit () {
+
+		Debug.log( 'init', this.data );
+
 	}
 
 }

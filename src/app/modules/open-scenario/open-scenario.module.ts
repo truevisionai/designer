@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CoreModule, FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SharedModule } from '../../shared/shared.module';
@@ -14,7 +12,6 @@ import { AddVehicleDialogComponent } from './dialogs/add-vehicle-dialog/add-vehi
 import { ChooseActionDialogComponent } from './dialogs/choose-action-dialog/choose-action-dialog.component';
 import { ChooseConditionDialogComponent } from './dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { EditActionComponent } from './dialogs/edit-actions-dialog/edit-action/edit-action.component';
-import { EditActionsDialogComponent } from './dialogs/edit-actions-dialog/edit-actions-dialog.component';
 import { EditEventsComponent } from './dialogs/edit-actions-dialog/edit-events/edit-events.component';
 import { EditManeuverComponent } from './dialogs/edit-actions-dialog/edit-maneuver/edit-maneuver.component';
 import { EditObjectInitDialog } from './dialogs/edit-object-init-dialog/edit-object-init.dialog';
@@ -30,7 +27,6 @@ import { OscTrajectoriesInspectorComponent } from './inspectors/osc-trajectories
 import { OscTrajectoryInspectorComponent } from './inspectors/osc-trajectory-inspector/osc-trajectory-inspector.component';
 import { OscActEditorComponent } from './views/osc-act-editor/osc-act-editor.component';
 import { OscEditorLayoutComponent } from './views/osc-editor-layout/osc-editor-layout.component';
-import { OscEditorComponent } from './views/osc-editor/osc-editor.component';
 import { OscHierarchyComponent } from './views/osc-hierarchy/osc-hierarchy.component';
 // import { OscMenuBarComponent } from './views/osc-menu-bar/osc-menu-bar.component';
 import { ActionEditorComponent } from './views/osc-story-editor/action-editor/action-editor.component';

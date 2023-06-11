@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
-import { OscSourceFile } from './osc-source-file';
+import { Debug } from '../../../core/utils/debug';
+import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
+import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
+import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { OscActionBuilder } from '../builders/osc-action-builder';
-import { OscStory } from '../models/osc-story';
-import { OscAct } from '../models/osc-act';
-import { OscSequence } from '../models/osc-sequence';
-import { OscManeuver } from '../models/osc-maneuver';
-import { AbstractAction } from '../models/osc-interfaces';
 import { OscResetHelper } from '../helpers/osc-reset-helper';
+import { OscAct } from '../models/osc-act';
+import { OscEntityObject } from '../models/osc-entities';
 import { OscStoryElementType } from '../models/osc-enums';
 import { OscEvent } from '../models/osc-event';
-import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
-import { OscEntityObject } from '../models/osc-entities';
+import { AbstractAction } from '../models/osc-interfaces';
+import { OscManeuver } from '../models/osc-maneuver';
+import { OscSequence } from '../models/osc-sequence';
+import { OscStory } from '../models/osc-story';
 import { OscUtils } from '../models/osc-utils';
-import { Debug } from '../../../core/utils/debug';
-import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { OscReaderService } from './osc-reader.service';
+import { OscSourceFile } from './osc-source-file';
 
 export interface StoryEvent {
 	name: string;

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AddVehicleDialogComponent, AddVehicleDialogData } from '../dialogs/add-vehicle-dialog/add-vehicle-dialog.component';
-import { OscEntityObject } from '../models/osc-entities';
-import { EditPositionDialogComponent, EditPositionDialogData } from '../dialogs/edit-position-dialog/edit-position-dialog.component';
-import { AddEntityInitDialogComponent } from '../dialogs/add-entity-init-dialog/add-entity-init-dialog.component';
-import { EditRoadNetworkDialogComponent } from '../dialogs/edit-road-network-dialog/edit-road-network-dialog.component';
-import { ChooseActionDialogComponent, ChooseActionDialogData } from '../dialogs/choose-action-dialog/choose-action-dialog.component';
-import { EditStoryDialog, EditStoryDialogData } from '../dialogs/edit-story-dialog/edit-story-dialog.component';
-import { EditObjectInitDialog, EditObjectInitDialogData } from '../dialogs/edit-object-init-dialog/edit-object-init.dialog';
-import { OscSourceFile } from './osc-source-file';
 import { Debug } from 'app/core/utils/debug';
+import { AddEntityInitDialogComponent } from '../dialogs/add-entity-init-dialog/add-entity-init-dialog.component';
+import { AddVehicleDialogComponent, AddVehicleDialogData } from '../dialogs/add-vehicle-dialog/add-vehicle-dialog.component';
+import { ChooseActionDialogComponent, ChooseActionDialogData } from '../dialogs/choose-action-dialog/choose-action-dialog.component';
+import { EditObjectInitDialog, EditObjectInitDialogData } from '../dialogs/edit-object-init-dialog/edit-object-init.dialog';
+import { EditPositionDialogComponent, EditPositionDialogData } from '../dialogs/edit-position-dialog/edit-position-dialog.component';
+import { EditRoadNetworkDialogComponent } from '../dialogs/edit-road-network-dialog/edit-road-network-dialog.component';
+import { EditStoryDialog, EditStoryDialogData } from '../dialogs/edit-story-dialog/edit-story-dialog.component';
+import { OscEntityObject } from '../models/osc-entities';
 import { OscActEditorComponent } from '../views/osc-act-editor/osc-act-editor.component';
+import { OscSourceFile } from './osc-source-file';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,11 +26,11 @@ export class OscDialogService {
 	// send edit add command to openScenario
 	//
 
-	get openScenario () {
-		return OscSourceFile.openScenario;
+	constructor ( public dialog: MatDialog ) {
 	}
 
-	constructor ( public dialog: MatDialog ) {
+	get openScenario () {
+		return OscSourceFile.openScenario;
 	}
 
 	openAddVehicleDialog (): any {

@@ -1,31 +1,23 @@
 import { Injectable } from '@angular/core';
-import { OpenScenario } from '../models/osc-scenario';
-import { OscStoryboard } from '../models/osc-storyboard';
-import { AbstractController, AbstractPosition, AbstractPrivateAction, CatalogReferenceController } from '../models/osc-interfaces';
-import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
-import { OscLaneChangeDynamics } from '../models/actions/osc-private-action';
-import { OscFile } from '../models/osc-common';
-import { OscRoadNetwork } from '../models/osc-road-network';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscCatalogReference, OscCatalogs } from '../models/osc-catalogs';
-import { OscStory } from '../models/osc-story';
-import { OscAct } from '../models/osc-act';
-import { OscSequence } from '../models/osc-sequence';
-import { OscManeuver } from '../models/osc-maneuver';
-import { OscConditionGroup } from '../models/conditions/osc-condition-group';
-import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
-import { OscOrientation } from '../models/osc-orientation';
-import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
-import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
-import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscSpeedAction } from '../models/actions/osc-speed-action';
-import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
-import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
-import { OscRelativeTarget } from '../models/actions/osc-relative-target';
+import { Debug } from 'app/core/utils/debug';
+import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractTarget } from '../models/actions/abstract-target';
+import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
+import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
+import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
+import { OscPositionAction } from '../models/actions/osc-position-action';
+import { OscLaneChangeDynamics } from '../models/actions/osc-private-action';
+import { OscRelativeTarget } from '../models/actions/osc-relative-target';
+import { OscSpeedAction } from '../models/actions/osc-speed-action';
+import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
+import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
+import { OscConditionGroup } from '../models/conditions/osc-condition-group';
+import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
+import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
+import { OscAct } from '../models/osc-act';
+import { OscCatalogReference, OscCatalogs } from '../models/osc-catalogs';
+import { OscFile } from '../models/osc-common';
+import { OscEntityObject } from '../models/osc-entities';
 import {
 	OscActionCategory,
 	OscActionType,
@@ -34,13 +26,21 @@ import {
 	OscPositionType,
 	OscTargetType
 } from '../models/osc-enums';
-import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
-import { AbstractOscShape, OscClothoidShape, OscPolylineShape, OscSplineShape, OscTrajectory, OscVertex } from '../models/osc-trajectory';
-import { Debug } from 'app/core/utils/debug';
 import { OscEvent } from '../models/osc-event';
-import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
-import { DefaultVehicleController } from '../controllers/vehicle-controller';
+import { AbstractController, AbstractPosition, AbstractPrivateAction, CatalogReferenceController } from '../models/osc-interfaces';
+import { OscManeuver } from '../models/osc-maneuver';
+import { OscOrientation } from '../models/osc-orientation';
+import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
+import { OscRoadNetwork } from '../models/osc-road-network';
+import { OpenScenario } from '../models/osc-scenario';
+import { OscSequence } from '../models/osc-sequence';
+import { OscStory } from '../models/osc-story';
+import { OscStoryboard } from '../models/osc-storyboard';
+import { AbstractOscShape, OscClothoidShape, OscPolylineShape, OscSplineShape, OscTrajectory, OscVertex } from '../models/osc-trajectory';
+import { OscLanePosition } from '../models/positions/osc-lane-position';
+import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
+import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
+import { OscWorldPosition } from '../models/positions/osc-world-position';
 
 @Injectable( {
 	providedIn: 'root'
@@ -496,9 +496,9 @@ export class OscWriterService {
 		event.getActionMap().forEach( ( action, name ) => {
 
 			let actionXml =
-			{
-				attr_name: name
-			};
+				{
+					attr_name: name
+				};
 
 			if ( action.category == OscActionCategory.private ) {
 
@@ -610,7 +610,7 @@ export class OscWriterService {
 
 		if ( action.catalogReference != null ) {
 
-			throw new Error( "Unsupported action" );
+			throw new Error( 'Unsupported action' );
 
 		} else {
 
@@ -871,7 +871,7 @@ export class OscWriterService {
 
 			xml.Trajectory.Vertex.push( this.writeVertex( item ) );
 
-		} )
+		} );
 
 		return xml;
 	}
@@ -882,7 +882,7 @@ export class OscWriterService {
 			attr_reference: vertex.reference,
 			Position: this.writePosition( vertex.position ),
 			Shape: this.writeShape( vertex.shape )
-		}
+		};
 
 		return xml;
 	}
@@ -913,7 +913,7 @@ export class OscWriterService {
 	writePolyline ( shape: OscPolylineShape ) {
 		return {
 			Polyline: {}
-		}
+		};
 	}
 
 	writeClothoid ( shape: OscClothoidShape ) {
@@ -923,7 +923,7 @@ export class OscWriterService {
 				attr_curvatureDot: shape.curvatureDot,
 				attr_length: shape.length
 			}
-		}
+		};
 	}
 
 	writeSpline ( shape: OscSplineShape ) {
@@ -936,7 +936,7 @@ export class OscWriterService {
 					attr_status: shape.controlPoint2.status
 				}
 			}
-		}
+		};
 	}
 
 }

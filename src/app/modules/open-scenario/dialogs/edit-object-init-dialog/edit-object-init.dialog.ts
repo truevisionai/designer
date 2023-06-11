@@ -14,16 +14,16 @@ export class EditObjectInitDialogData {
 } )
 export class EditObjectInitDialog implements OnInit {
 
-	get entity () {
-		return this.data.object;
-	}
-
 	constructor (
 		public dialogRef: MatDialogRef<EditObjectInitDialog>,
 		@Inject( MAT_DIALOG_DATA ) public data: EditObjectInitDialogData,
 		public dialog: MatDialog
 	) {
 
+	}
+
+	get entity () {
+		return this.data.object;
 	}
 
 	ngOnInit () {

@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 } )
 export class OscModelsService {
 
-	constructor () { }
+	constructor () {
+	}
 
 	get vehicleModels (): string[] {
 

@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
-import { OscTrajectory, OscVertex, OscPolylineShape } from '../../models/osc-trajectory';
-import { PolygonEditor } from 'app/core/editors/polygon-editor';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PolyLineEditor } from 'app/core/editors/polyline-editor';
-import { CatmullRomCurve3, Vector3, Points } from 'three';
-import { AbstractPosition } from '../../models/osc-interfaces';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
 import { Debug } from 'app/core/utils/debug';
+import { CatmullRomCurve3, Points } from 'three';
+import { AbstractPosition } from '../../models/osc-interfaces';
+import { OscPolylineShape, OscTrajectory, OscVertex } from '../../models/osc-trajectory';
+import { OscWorldPosition } from '../../models/positions/osc-world-position';
+
 @Component( {
 	selector: 'app-osc-trajectory-inspector',
 	templateUrl: './osc-trajectory-inspector.component.html',
@@ -21,7 +21,8 @@ export class OscTrajectoryInspectorComponent implements OnInit, OnDestroy, OnCha
 
 	private shapeEditor: AbstractShapeEditor;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 
