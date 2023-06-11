@@ -25,13 +25,13 @@ export class OscStoryboard {
 
     addStory ( story: OscStory ) {
 
-        const hasName = OscSourceFile.names.has_story( story.name );
+        const hasName = OscSourceFile.db.has_story( story.name );
 
         if ( hasName ) throw new Error( `Story name '${ story.name }' has already been used` );
 
         this.stories.set( story.name, story );
 
-        OscSourceFile.names.add_story( story.name, story );
+        OscSourceFile.db.add_story( story.name, story );
 
     }
 

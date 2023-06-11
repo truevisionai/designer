@@ -8,7 +8,7 @@ export class OscSourceFile {
 
     public static scenarioChanged = new EventEmitter<OpenScenario>();
     public static fileChanged = new EventEmitter<IFile>();
-    public static names: OscNameDB = new OscNameDB();
+    public static db: OscNameDB = new OscNameDB();
 
     private static _file: IFile;
     private static _scenario: OpenScenario = new OpenScenario();
@@ -23,7 +23,7 @@ export class OscSourceFile {
         // clean the scene first
         this.cleaner.clear( this._scenario );
 
-        this.names.clear();
+        this.db.clear();
 
         this._scenario = value;
 

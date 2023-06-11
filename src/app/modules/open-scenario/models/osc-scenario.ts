@@ -64,13 +64,13 @@ export class OpenScenario {
 
     addObject ( object: OscEntityObject ) {
 
-        const hasName = OscSourceFile.names.has_entity( object.name );
+        const hasName = OscSourceFile.db.has_entity( object.name );
 
         if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
 
         this.objects.set( object.name, object );
 
-        OscSourceFile.names.add_entity( object.name, object );
+        OscSourceFile.db.add_entity( object.name, object );
 
     }
 
@@ -96,6 +96,8 @@ export class OpenScenario {
     }
 
     removeObject ( object: OscEntityObject ) {
+
+		OscSourceFile.db.remove_entity( object.name );
 
         this.objects.delete( object.name );
 

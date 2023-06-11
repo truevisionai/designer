@@ -1,11 +1,10 @@
-import { BaseCommand } from "app/core/commands/base-command";
-import { SetInspectorCommand } from "app/core/commands/set-inspector-command";
-import { SceneService } from "app/core/services/scene.service";
-import { OscEntityInspector } from "app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component";
-import { OscEntityObject } from "app/modules/open-scenario/models/osc-entities";
-import { OscSourceFile } from "app/modules/open-scenario/services/osc-source-file";
-import { OscEditor } from "app/modules/open-scenario/views/osc-editor/osc-editor";
-import { Vector3 } from "three";
+import { BaseCommand } from 'app/core/commands/base-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { SceneService } from 'app/core/services/scene.service';
+import { EntityInspector } from 'app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component';
+import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
+import { OscSourceFile } from 'app/modules/open-scenario/services/osc-source-file';
+import { Vector3 } from 'three';
 
 export class AddVehicleCommand extends BaseCommand {
 
@@ -19,7 +18,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 		entity.name = `Vehicle${ OscSourceFile.openScenario.objects.size + 1 }`;
 
-		this.setInspector = new SetInspectorCommand( OscEntityInspector, entity );
+		this.setInspector = new SetInspectorCommand( EntityInspector, entity );
 	}
 
 	execute (): void {

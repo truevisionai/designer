@@ -5,7 +5,7 @@ import { OpenScenario } from '../../models/osc-scenario';
 import { OscDialogService } from '../../services/osc-dialog.service';
 import { OscEditor } from '../osc-editor/osc-editor';
 import { OscSourceFile } from '../../services/osc-source-file';
-import { OscEntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
+import { EntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { AppInspector } from '../../../../core/inspector';
 import { ContextMenuType, MenuService } from '../../../../services/menu.service';
 import { ThreeService } from '../../../three-js/three.service';
@@ -189,7 +189,7 @@ export class OscHierarchyComponent implements OnInit {
 
         this.threeService.focus( object.gameObject );
 
-        AppInspector.setInspector( OscEntityInspector, object );
+        AppInspector.setInspector( EntityInspector, object );
 
     }
 

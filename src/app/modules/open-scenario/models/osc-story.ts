@@ -29,13 +29,13 @@ export class OscStory {
 
     addAct ( act: OscAct ) {
 
-        const hasName = OscSourceFile.names.has_act( act.name );
+        const hasName = OscSourceFile.db.has_act( act.name );
 
         if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
 
         this.acts.push( act );
 
-        OscSourceFile.names.add_act( act.name, act );
+        OscSourceFile.db.add_act( act.name, act );
 
     }
 

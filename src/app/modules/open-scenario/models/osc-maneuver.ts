@@ -34,7 +34,7 @@ export class OscManeuver {
 
     addNewEvent ( name: string, priority: string ) {
 
-        const hasName = OscSourceFile.names.has_event( name );
+        const hasName = OscSourceFile.db.has_event( name );
 
         if ( hasName ) throw new Error( 'Event name already used' );
 
@@ -49,7 +49,7 @@ export class OscManeuver {
 
         this.events.push( event );
 
-        OscSourceFile.names.add_event( event.name, event );
+        OscSourceFile.db.add_event( event.name, event );
 
         event.completed.subscribe( e => {
             this.onEventCompleted( e );

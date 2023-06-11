@@ -48,13 +48,13 @@ export class OscEvent {
 
     addNewAction ( name: string, action: AbstractAction ) {
 
-        const hasName = OscSourceFile.names.has_action( name );
+        const hasName = OscSourceFile.db.has_action( name );
 
         if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
         this.actions.set( name, action );
 
-        OscSourceFile.names.add_action( name );
+        OscSourceFile.db.add_action( name );
 
         action.completed.subscribe( e => {
             this.onActionCompleted( { name: name, type: OscStoryElementType.action } );

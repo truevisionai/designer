@@ -12,7 +12,7 @@ import { AppInspector } from '../../../../core/inspector';
     templateUrl: './osc-entity-inspector.component.html',
     styleUrls: [ './osc-entity-inspector.component.css' ]
 } )
-export class OscEntityInspector implements OnInit, IComponent {
+export class EntityInspector implements OnInit, IComponent {
 
     data: OscEntityObject;
 

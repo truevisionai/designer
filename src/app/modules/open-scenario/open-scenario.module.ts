@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CoreModule, FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SharedModule } from '../../shared/shared.module';
@@ -21,7 +23,7 @@ import { EditRoadNetworkDialogComponent } from './dialogs/edit-road-network-dial
 import { EditStoryDialog } from './dialogs/edit-story-dialog/edit-story-dialog.component';
 import { NewScenarioDialogComponent } from './dialogs/new-scenario-dialog/new-scenario-dialog.component';
 import { OscActionsInspectorComponent } from './inspectors/osc-actions-inspector/osc-player-actions-inspector.component';
-import { OscEntityInspector } from './inspectors/osc-entity-inspector/osc-entity-inspector.component';
+import { EntityInspector } from './inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { OscFileHeaderComponent } from './inspectors/osc-file-header/osc-file-header.component';
 import { OscParamatersInspectorComponent } from './inspectors/osc-paramaters-inspector/osc-paramaters-inspector.component';
 import { OscTrajectoriesInspectorComponent } from './inspectors/osc-trajectories-inspector/osc-trajectories-inspector.component';
@@ -79,7 +81,7 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 		OscEditorLayoutComponent,
 		// OscMenuBarComponent,
 		OscHierarchyComponent,
-		// OscEntityInspector,
+		EntityInspector,
 		OscFileHeaderComponent,
 		// AddVehicleDialogComponent,
 		// EditPositionDialogComponent,
@@ -132,10 +134,10 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 		PerfectScrollbarModule,
 		FlexLayoutModule,
 		FlexModule,
-		TvMapModule
+		TvMapModule,
 	],
 	entryComponents: [
-		OscEntityInspector,
+		EntityInspector,
 		AddVehicleDialogComponent,
 		EditPositionDialogComponent,
 		AddEntityInitDialogComponent,

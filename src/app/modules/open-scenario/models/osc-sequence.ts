@@ -41,13 +41,13 @@ export class OscSequence {
 
     addManeuver ( maneuver: OscManeuver ) {
 
-        const hasName = OscSourceFile.names.has_maneuver( maneuver.name );
+        const hasName = OscSourceFile.db.has_maneuver( maneuver.name );
 
         if ( hasName ) throw new Error( 'Maneuver name already used' );
 
         this.maneuvers.push( maneuver );
 
-        OscSourceFile.names.add_maneuver( maneuver.name );
+        OscSourceFile.db.add_maneuver( maneuver.name );
 
     }
 }
