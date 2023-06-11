@@ -16,7 +16,7 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 		super();
 	}
 
-	// @Input() position: OscRelativeObjectPosition;
+	// @Input() position: RelativeObjectPosition;
 
 	get entities () {
 		return [ ...TvScenarioInstance.openScenario.objects.keys() ];

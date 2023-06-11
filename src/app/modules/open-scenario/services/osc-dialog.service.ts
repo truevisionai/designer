@@ -12,14 +12,14 @@ import { EditObjectInitDialog, EditObjectInitDialogData } from '../dialogs/edit-
 import { EditPositionDialogComponent, EditPositionDialogData } from '../dialogs/edit-position-dialog/edit-position-dialog.component';
 import { EditRoadNetworkDialogComponent } from '../dialogs/edit-road-network-dialog/edit-road-network-dialog.component';
 import { EditStoryDialog, EditStoryDialogData } from '../dialogs/edit-story-dialog/edit-story-dialog.component';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscActEditorComponent } from '../views/osc-act-editor/osc-act-editor.component';
+import { EntityObject } from '../models/osc-entities';
+import { ActEditorComponent } from '../views/osc-act-editor/osc-act-editor.component';
 import { TvScenarioInstance } from './tv-scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscDialogService {
+export class DialogService {
 
 	// parse and show position actions
 	// open dialog and pass the position
@@ -53,13 +53,13 @@ export class OscDialogService {
 
 			Debug.log( 'add vehicle dialog was closed', result );
 
-			// new OscEntityObject( result.name );
+			// new EntityObject( result.name );
 
 		} );
 
 	}
 
-	openAddEntityInitActionDialog ( entity: OscEntityObject ) {
+	openAddEntityInitActionDialog ( entity: EntityObject ) {
 
 		const dialogRef = this.dialog.open( AddEntityInitDialogComponent, {
 			width: '250px',
@@ -89,7 +89,7 @@ export class OscDialogService {
 
 			Debug.log( 'edit position dialog was closed', result );
 
-			// this.openScenario.addEntityInitAction( 'Ego', new OscPositionAction( new OscWorldPosition() ) )
+			// this.openScenario.addEntityInitAction( 'Ego', new PositionAction( new WorldPosition() ) )
 
 		} );
 
@@ -112,7 +112,7 @@ export class OscDialogService {
 
 	}
 
-	openObjectInitEditorDialog ( entity: OscEntityObject ) {
+	openObjectInitEditorDialog ( entity: EntityObject ) {
 
 		const data = new EditObjectInitDialogData( entity );
 
@@ -130,7 +130,7 @@ export class OscDialogService {
 
 	}
 
-	openStoryEditorDialog ( entity: OscEntityObject ) {
+	openStoryEditorDialog ( entity: EntityObject ) {
 
 		const data = new EditStoryDialogData( entity );
 
@@ -166,9 +166,9 @@ export class OscDialogService {
 
 	}
 
-	openEditActDialog ( entity: OscEntityObject, callbackFn: Function = null ) {
+	openEditActDialog ( entity: EntityObject, callbackFn: Function = null ) {
 
-		const dialogRef = this.dialog.open( OscActEditorComponent, {
+		const dialogRef = this.dialog.open( ActEditorComponent, {
 			width: '860px',
 			height: '600px',
 			data: entity

@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscSex } from './osc-enums';
-import { OscProperties } from './osc-properties';
+import { Sex } from './osc-enums';
+import { Properties } from './osc-properties';
 
-export class OscPersonDescription {
+export class PersonDescription {
 
 	private weight: number;
 	private height: number;
 	private eyeDistance: number;
 	private age: number;
-	private sex: OscSex;
-	private properties: OscProperties = new OscProperties;
+	private sex: Sex;
+	private properties: Properties = new Properties;
 
 }

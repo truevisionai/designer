@@ -4,16 +4,16 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { OscParameterDeclaration } from '../../models/osc-parameter-declaration';
+import { ParameterDeclaration } from '../../models/osc-parameter-declaration';
 
 @Component( {
 	selector: 'app-osc-paramaters-inspector',
 	templateUrl: './osc-paramaters-inspector.component.html',
 	styleUrls: [ './osc-paramaters-inspector.component.css' ]
 } )
-export class OscParamatersInspectorComponent implements OnInit, IComponent {
+export class ParamatersInspectorComponent implements OnInit, IComponent {
 
-	@Input() declaration: OscParameterDeclaration;
+	@Input() declaration: ParameterDeclaration;
 
 	data: any;
 

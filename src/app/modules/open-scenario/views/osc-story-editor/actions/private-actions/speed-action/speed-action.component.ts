@@ -4,7 +4,7 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { OscSpeedAction } from '../../../../../models/actions/osc-speed-action';
+import { SpeedAction } from '../../../../../models/actions/osc-speed-action';
 
 @Component( {
 	selector: 'app-speed-action',
@@ -13,9 +13,9 @@ import { OscSpeedAction } from '../../../../../models/actions/osc-speed-action';
 } )
 export class SpeedActionComponent implements OnInit, IComponent, OnDestroy {
 
-	data: OscSpeedAction;
+	data: SpeedAction;
 
-	@Input() action: OscSpeedAction;
+	@Input() action: SpeedAction;
 
 	constructor () {
 	}

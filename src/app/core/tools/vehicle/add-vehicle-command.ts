@@ -2,23 +2,23 @@ import { BaseCommand } from 'app/core/commands/base-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component';
-import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
+import { EntityObject } from 'app/modules/open-scenario/models/osc-entities';
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 import { Vector3 } from 'three';
-import { OscAbsoluteTarget } from '../../../modules/open-scenario/models/actions/osc-absolute-target';
-import { OscLaneChangeAction } from '../../../modules/open-scenario/models/actions/osc-lane-change-action';
-import { OscPositionAction } from '../../../modules/open-scenario/models/actions/osc-position-action';
-import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
-import { OscSpeedAction } from '../../../modules/open-scenario/models/actions/osc-speed-action';
-import { OscSimulationTimeCondition } from '../../../modules/open-scenario/models/conditions/osc-simulation-time-condition';
-import { OscDynamicsShape, OscRule } from '../../../modules/open-scenario/models/osc-enums';
-import { OscWorldPosition } from '../../../modules/open-scenario/models/positions/osc-world-position';
+import { AbsoluteTarget } from '../../../modules/open-scenario/models/actions/osc-absolute-target';
+import { LaneChangeAction } from '../../../modules/open-scenario/models/actions/osc-lane-change-action';
+import { PositionAction } from '../../../modules/open-scenario/models/actions/osc-position-action';
+import { LaneChangeDynamics, SpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
+import { SpeedAction } from '../../../modules/open-scenario/models/actions/osc-speed-action';
+import { SimulationTimeCondition } from '../../../modules/open-scenario/models/conditions/osc-simulation-time-condition';
+import { DynamicsShape, Rule } from '../../../modules/open-scenario/models/osc-enums';
+import { WorldPosition } from '../../../modules/open-scenario/models/positions/osc-world-position';
 
 export class AddVehicleCommand extends BaseCommand {
 
 	private setInspector: SetInspectorCommand;
 
-	constructor ( public entity: OscEntityObject, position: Vector3 ) {
+	constructor ( public entity: EntityObject, position: Vector3 ) {
 
 		super();
 
@@ -26,8 +26,8 @@ export class AddVehicleCommand extends BaseCommand {
 
 		entity.name = `Vehicle${ TvScenarioInstance.openScenario.objects.size + 1 }`;
 
-		entity.addInitAction( new OscPositionAction( new OscWorldPosition( position.x, position.y, position.z ) ) );
-		entity.addInitAction( new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.step ), new OscAbsoluteTarget( 40 ) ) );
+		entity.addInitAction( new PositionAction( new WorldPosition( position.x, position.y, position.z ) ) );
+		entity.addInitAction( new SpeedAction( new SpeedDynamics( DynamicsShape.step ), new AbsoluteTarget( 40 ) ) );
 
 		this.addStoryActions();
 
@@ -64,24 +64,24 @@ export class AddVehicleCommand extends BaseCommand {
 
 		const story = this.scenario.createStory( this.entity );
 
-		this.scenario.storyboard.addEndCondition( new OscSimulationTimeCondition( 15, OscRule.greater_than ) );
+		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 15, Rule.greater_than ) );
 
 		const act = story.addNewAct( `Story${ this.scenario.storyboard.stories.size + 1 }Act${ story.acts.length + 1 }` );
 
 		const sequence = act.addNewSequence( 'ActSequence' + act.name, 1, this.entity.name );
 
-		act.addStartCondition( new OscSimulationTimeCondition( 5, OscRule.greater_than ) );
+		act.addStartCondition( new SimulationTimeCondition( 5, Rule.greater_than ) );
 
 		const maneuver = sequence.addNewManeuver( `Maneuver${ sequence.maneuvers.length + 1 }` );
 
 		const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
 
-		event.addNewAction( 'MyLaneChangeLeftAction', new OscLaneChangeAction(
-			new OscLaneChangeDynamics( 5, null, OscDynamicsShape.linear ),
-			new OscAbsoluteTarget( -3 ),
+		event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
+			new LaneChangeDynamics( 5, null, DynamicsShape.linear ),
+			new AbsoluteTarget( -3 ),
 		) );
 
-		event.addStartCondition( new OscSimulationTimeCondition( 5, OscRule.greater_than ) );
+		event.addStartCondition( new SimulationTimeCondition( 5, Rule.greater_than ) );
 
 	}
 }

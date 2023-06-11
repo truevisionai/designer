@@ -23,16 +23,16 @@ import { EditPositionDialogComponent } from './dialogs/edit-position-dialog/edit
 import { EditRoadNetworkDialogComponent } from './dialogs/edit-road-network-dialog/edit-road-network-dialog.component';
 import { EditStoryDialog } from './dialogs/edit-story-dialog/edit-story-dialog.component';
 import { NewScenarioDialogComponent } from './dialogs/new-scenario-dialog/new-scenario-dialog.component';
-import { OscActionsInspectorComponent } from './inspectors/osc-actions-inspector/osc-player-actions-inspector.component';
+import { ActionsInspectorComponent } from './inspectors/osc-actions-inspector/osc-player-actions-inspector.component';
 import { EntityInspector } from './inspectors/osc-entity-inspector/osc-entity-inspector.component';
-import { OscFileHeaderComponent } from './inspectors/osc-file-header/osc-file-header.component';
-import { OscParamatersInspectorComponent } from './inspectors/osc-paramaters-inspector/osc-paramaters-inspector.component';
-import { OscTrajectoriesInspectorComponent } from './inspectors/osc-trajectories-inspector/osc-trajectories-inspector.component';
-import { OscTrajectoryInspectorComponent } from './inspectors/osc-trajectory-inspector/osc-trajectory-inspector.component';
-import { OscActEditorComponent } from './views/osc-act-editor/osc-act-editor.component';
-import { OscEditorLayoutComponent } from './views/osc-editor-layout/osc-editor-layout.component';
-import { OscHierarchyComponent } from './views/osc-hierarchy/osc-hierarchy.component';
-// import { OscMenuBarComponent } from './views/osc-menu-bar/osc-menu-bar.component';
+import { FileHeaderComponent } from './inspectors/osc-file-header/osc-file-header.component';
+import { ParamatersInspectorComponent } from './inspectors/osc-paramaters-inspector/osc-paramaters-inspector.component';
+import { TrajectoriesInspectorComponent } from './inspectors/osc-trajectories-inspector/osc-trajectories-inspector.component';
+import { TrajectoryInspectorComponent } from './inspectors/osc-trajectory-inspector/osc-trajectory-inspector.component';
+import { ActEditorComponent } from './views/osc-act-editor/osc-act-editor.component';
+import { EditorLayoutComponent } from './views/osc-editor-layout/osc-editor-layout.component';
+import { HierarchyComponent } from './views/osc-hierarchy/osc-hierarchy.component';
+// import { MenuBarComponent } from './views/osc-menu-bar/osc-menu-bar.component';
 import { ActionEditorComponent } from './views/osc-story-editor/action-editor/action-editor.component';
 import {
 	FollowTrajectoryActionComponent
@@ -77,12 +77,12 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 
 @NgModule( {
 	declarations: [
-		// OscEditorComponent,
-		OscEditorLayoutComponent,
-		// OscMenuBarComponent,
-		OscHierarchyComponent,
+		// EditorComponent,
+		EditorLayoutComponent,
+		// MenuBarComponent,
+		HierarchyComponent,
 		EntityInspector,
-		OscFileHeaderComponent,
+		FileHeaderComponent,
 		// AddVehicleDialogComponent,
 		// EditPositionDialogComponent,
 		AddEntityInitDialogComponent,
@@ -109,15 +109,15 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 		PositionActionEditorComponent,
 		RoadPositionEditorComponent,
 		LanePositionEditorComponent,
-		OscTrajectoryInspectorComponent,
-		OscActionsInspectorComponent,
+		TrajectoryInspectorComponent,
+		ActionsInspectorComponent,
 		FollowTrajectoryActionComponent,
-		OscTrajectoriesInspectorComponent,
+		TrajectoriesInspectorComponent,
 		// NewScenarioDialogComponent,
 		// EditActionsDialogComponent,
-		// OscActEditorComponent,
+		// ActEditorComponent,
 		// ChooseConditionDialogComponent,
-		OscParamatersInspectorComponent,
+		ParamatersInspectorComponent,
 		ReachPositionConditionEditorComponent,
 		RelativeSpeedConditionEditorComponent,
 		SpeedConditionEditorComponent,
@@ -145,15 +145,15 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 		ChooseActionDialogComponent,
 		EditStoryDialog,
 		EditObjectInitDialog,
-		OscTrajectoryInspectorComponent,
-		OscActionsInspectorComponent,
+		TrajectoryInspectorComponent,
+		ActionsInspectorComponent,
 		FollowTrajectoryActionComponent,
-		OscTrajectoriesInspectorComponent,
+		TrajectoriesInspectorComponent,
 		NewScenarioDialogComponent,
-		OscActEditorComponent,
+		ActEditorComponent,
 		ChooseConditionDialogComponent,
 		SpeedActionComponent,
-		OscParamatersInspectorComponent,
+		ParamatersInspectorComponent,
 		EventEditorComponent
 	]
 } )

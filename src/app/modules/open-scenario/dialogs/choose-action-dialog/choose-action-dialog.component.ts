@@ -7,13 +7,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
 import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { OscAbsoluteTarget } from '../../models/actions/osc-absolute-target';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
-import { OscLaneChangeAction } from '../../models/actions/osc-lane-change-action';
-import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
-import { OscSpeedAction } from '../../models/actions/osc-speed-action';
-import { OscActionCategory, OscDynamicsShape } from '../../models/osc-enums';
-import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
+import { AbsoluteTarget } from '../../models/actions/osc-absolute-target';
+import { FollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { LaneChangeAction } from '../../models/actions/osc-lane-change-action';
+import { SpeedDynamics } from '../../models/actions/osc-private-action';
+import { SpeedAction } from '../../models/actions/osc-speed-action';
+import { ActionCategory, DynamicsShape } from '../../models/osc-enums';
+import { EnumTrajectoryDomain, Trajectory } from '../../models/osc-trajectory';
 
 export class ChooseActionDialogData {
 	constructor ( public actionName?: string, public action?: AbstractAction ) {
@@ -40,7 +40,7 @@ export class ChooseActionDialogComponent implements OnInit {
 	}
 
 	get categories () {
-		return OscActionCategory;
+		return ActionCategory;
 	}
 
 	set action ( value ) {
@@ -74,7 +74,7 @@ export class ChooseActionDialogComponent implements OnInit {
 				this.addSpeedChangeAction();
 				break;
 
-			// case 'distance': this.action = new OscDistanceAction(); break;
+			// case 'distance': this.action = new DistanceAction(); break;
 
 			case 'follow_trajectory':
 				this.addFollowTrajectoryAction();
@@ -88,15 +88,15 @@ export class ChooseActionDialogComponent implements OnInit {
 
 	addLaneChangeAction () {
 
-		this.close( new OscLaneChangeAction() );
+		this.close( new LaneChangeAction() );
 
 	}
 
 	addFollowTrajectoryAction () {
 
-		const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Time );
+		const trajectory = new Trajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Time );
 
-		const action = new OscFollowTrajectoryAction( trajectory );
+		const action = new FollowTrajectoryAction( trajectory );
 
 		this.close( action );
 
@@ -104,11 +104,11 @@ export class ChooseActionDialogComponent implements OnInit {
 
 	addSpeedChangeAction () {
 
-		const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
+		const dynamics = new SpeedDynamics( DynamicsShape.step );
 
-		const target = new OscAbsoluteTarget( 0 );
+		const target = new AbsoluteTarget( 0 );
 
-		const action = new OscSpeedAction( dynamics, target );
+		const action = new SpeedAction( dynamics, target );
 
 		this.close( action );
 	}

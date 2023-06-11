@@ -2,26 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscBoundingBox } from './osc-bounding-box';
-import { OscVehicleCategory } from './osc-enums';
+import { BoundingBox } from './osc-bounding-box';
+import { VehicleCategory } from './osc-enums';
 import { IScenarioObject } from './osc-interfaces';
-import { OscParameterDeclaration } from './osc-parameter-declaration';
-import { OscProperties } from './osc-properties';
+import { ParameterDeclaration } from './osc-parameter-declaration';
+import { Properties } from './osc-properties';
 
-export class OscVehicle extends IScenarioObject {
+export class Vehicle extends IScenarioObject {
 	private m_Name: string;
-	private m_Category: OscVehicleCategory;
-	private m_ParameterDeclarations: OscParameterDeclaration[];
-	private m_BoundingBox: OscBoundingBox;
-	private m_Properties: OscProperties;
+	private m_Category: VehicleCategory;
+	private m_ParameterDeclarations: ParameterDeclaration[];
+	private m_BoundingBox: BoundingBox;
+	private m_Properties: Properties;
 
-	private m_FrontAxle: OscAxle;
-	private m_RearAxle: OscAxle;
-	private m_AdditionalAxles: OscAxle[];
+	private m_FrontAxle: Axle;
+	private m_RearAxle: Axle;
+	private m_AdditionalAxles: Axle[];
 
 }
 
-export class OscPerformance {
+export class Performance {
 
 	private maxSpeed: number;
 	private maxDeceleration: number;
@@ -29,7 +29,7 @@ export class OscPerformance {
 
 }
 
-export class OscAxle {
+export class Axle {
 
 	private maxSteering: number;
 	private wheelDiameter: number;

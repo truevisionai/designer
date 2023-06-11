@@ -2,5 +2,5 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export class OscBoundingBox {
+export class BoundingBox {
 }

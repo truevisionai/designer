@@ -4,20 +4,20 @@
 
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
+import { Orientation } from '../osc-orientation';
 
-export class OscLanePosition extends AbstractPosition {
+export class LanePosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.Lane;
+	public readonly type = PositionType.Lane;
 	public roadId: number;
 	public laneId: number;
 	public offset: number;
 	public sCoordinate: number;
-	public orientation: OscOrientation;
+	public orientation: Orientation;
 
-	constructor ( roadId = 0, laneId = 0, offset = 0, s = 0, orientation: OscOrientation = null ) {
+	constructor ( roadId = 0, laneId = 0, offset = 0, s = 0, orientation: Orientation = null ) {
 
 		super();
 

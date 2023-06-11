@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscDriverService {
+export class DriverService {
 
 	constructor () {
 	}

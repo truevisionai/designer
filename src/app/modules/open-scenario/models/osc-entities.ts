@@ -6,23 +6,23 @@ import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
-import { OscSpeedAction } from './actions/osc-speed-action';
-import { OscCatalogReference } from './osc-catalogs';
-import { OscObjectType } from './osc-enums';
+import { SpeedAction } from './actions/osc-speed-action';
+import { CatalogReference } from './osc-catalogs';
+import { ObjectType } from './osc-enums';
 import { AbstractController, AbstractPrivateAction, IScenarioObject } from './osc-interfaces';
 
-export class OscEntityObject {
+export class EntityObject {
 
 	private static count = 1;
 
 	public gameObject: GameObject;
-	public type: OscObjectType;
+	public type: ObjectType;
 	// OSCMiscObject
 	public object: IScenarioObject;
 
 	public initActions: AbstractPrivateAction[] = [];
 	// OSCPedestrian
-	public catalogReference: OscCatalogReference;
+	public catalogReference: CatalogReference;
 	public sCoordinate: number;
 	// OSCVehicle
 	public tCoordinate: number;
@@ -38,7 +38,7 @@ export class OscEntityObject {
 		this.object = object;
 		this.controller = controller || new DefaultVehicleController( TvMapInstance.map, this );
 
-		OscEntityObject.count++;
+		EntityObject.count++;
 
 	}
 
@@ -63,7 +63,7 @@ export class OscEntityObject {
 		this._speed = value;
 	}
 
-	private _speedAction: OscSpeedAction;
+	private _speedAction: SpeedAction;
 
 	get speedAction () {
 		return this._speedAction;
@@ -83,21 +83,21 @@ export class OscEntityObject {
 
 	set roadId ( value: number ) {
 
-		// let vehiclesOnRoad = OscPlayerService.traffic.get( this.roadId );
+		// let vehiclesOnRoad = PlayerService.traffic.get( this.roadId );
 		//
 		// vehiclesOnRoad = vehiclesOnRoad.filter( entity => {
 		//     return entity.name != this.name;
 		// } );
 		//
 		// // reset traffic on that road
-		// OscPlayerService.traffic.set( this.roadId, vehiclesOnRoad );
+		// PlayerService.traffic.set( this.roadId, vehiclesOnRoad );
 
 		this._roadId = value;
 
 		// add this vehicle on new road
-		// OscPlayerService.traffic.get( this.roadId ).push( this );
+		// PlayerService.traffic.get( this.roadId ).push( this );
 
-		// console.log( OscPlayerService.traffic );
+		// console.log( PlayerService.traffic );
 	}
 
 	private _laneSectionId: number;

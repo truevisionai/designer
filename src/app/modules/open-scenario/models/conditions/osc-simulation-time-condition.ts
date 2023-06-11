@@ -3,15 +3,15 @@
  */
 
 import { Time } from '../../../../core/time';
-import { OscConditionCategory, OscConditionType, OscRule } from '../osc-enums';
+import { ConditionCategory, ConditionType, Rule } from '../osc-enums';
 import { AbstractByValueCondition } from './osc-condition';
 
-export class OscSimulationTimeCondition extends AbstractByValueCondition {
+export class SimulationTimeCondition extends AbstractByValueCondition {
 
-	public category: OscConditionCategory = OscConditionCategory.ByValue;
-	public readonly conditionType = OscConditionType.ByValue_SimulationTime;
+	public category: ConditionCategory = ConditionCategory.ByValue;
+	public readonly conditionType = ConditionType.ByValue_SimulationTime;
 
-	constructor ( public value: number = null, public rule: OscRule = null ) {
+	constructor ( public value: number = null, public rule: Rule = null ) {
 		super();
 	}
 

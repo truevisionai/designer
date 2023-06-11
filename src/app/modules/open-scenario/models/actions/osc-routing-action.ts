@@ -2,29 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscCatalogReference } from '../osc-catalogs';
-import { OscActionType, OscDomainAbsoluteRelative } from '../osc-enums';
+import { CatalogReference } from '../osc-catalogs';
+import { ActionType, DomainAbsoluteRelative } from '../osc-enums';
 import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
-import { OscRoute } from '../osc-route';
+import { Route } from '../osc-route';
 
 export abstract class AbstractRoutingAction extends AbstractPrivateAction {
 
 }
 
-export class OscRoutingAction {
+export class RoutingAction {
 
 }
 
 export class FollowRouteAction extends AbstractRoutingAction {
 
 	readonly actionName: string = 'FollowRoute';
-	readonly actionType: OscActionType = OscActionType.Private_Routing;
+	readonly actionType: ActionType = ActionType.Private_Routing;
 
 
 	// optional
-	public catalogReference: OscCatalogReference;
+	public catalogReference: CatalogReference;
 
-	constructor ( public route: OscRoute ) {
+	constructor ( public route: Route ) {
 		super();
 	}
 
@@ -36,7 +36,7 @@ export class LongitudinalPurpose {
 
 export class LongitudinalTiming {
 	constructor (
-		public domain: OscDomainAbsoluteRelative,
+		public domain: DomainAbsoluteRelative,
 		public scale: number,
 		public offset: number
 	) {
@@ -46,7 +46,7 @@ export class LongitudinalTiming {
 export class AcquirePositionAction extends AbstractRoutingAction {
 
 	readonly actionName: string = 'AcquirePosition';
-	readonly actionType: OscActionType = OscActionType.Private_Routing;
+	readonly actionType: ActionType = ActionType.Private_Routing;
 
 	constructor ( public position: AbstractPosition ) {
 		super();

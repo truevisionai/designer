@@ -6,14 +6,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { OscPositionAction } from '../../models/actions/osc-position-action';
+import { PositionAction } from '../../models/actions/osc-position-action';
 import { AbstractPosition } from '../../models/osc-interfaces';
-import { OscLanePosition } from '../../models/positions/osc-lane-position';
-import { OscRoadPosition } from '../../models/positions/osc-road-position';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { LanePosition } from '../../models/positions/osc-lane-position';
+import { RoadPosition } from '../../models/positions/osc-road-position';
+import { WorldPosition } from '../../models/positions/osc-world-position';
 
 export class EditPositionDialogData {
-	public positionAction: OscPositionAction;
+	public positionAction: PositionAction;
 }
 
 @Component( {
@@ -45,7 +45,7 @@ export class EditPositionDialogComponent implements OnInit {
 
 	get response () {
 
-		return new OscPositionAction( this.position );
+		return new PositionAction( this.position );
 
 	}
 
@@ -56,15 +56,15 @@ export class EditPositionDialogComponent implements OnInit {
 		switch ( this.selectedType ) {
 
 			case 'absolute_position':
-				position = new OscWorldPosition();
+				position = new WorldPosition();
 				break;
 
 			case 'road_position':
-				position = new OscRoadPosition( this.roadId, this.sCoordinate, this.tCoordinate );
+				position = new RoadPosition( this.roadId, this.sCoordinate, this.tCoordinate );
 				break;
 
 			case 'lane_position':
-				position = new OscLanePosition( this.roadId, this.laneId, this.sCoordinate, this.tCoordinate );
+				position = new LanePosition( this.roadId, this.laneId, this.sCoordinate, this.tCoordinate );
 				break;
 
 			default:

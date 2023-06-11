@@ -10,22 +10,22 @@ import { AppService } from '../../../core/services/app.service';
 import { OpenDriveApiService } from '../../../core/services/open-drive-api.service';
 import { FileService } from '../../../services/file.service';
 import { TvMapService } from '../../tv-map/services/tv-map.service';
-import { OscCatalogReference } from '../models/osc-catalogs';
-import { OscEntityObject } from '../models/osc-entities';
+import { CatalogReference } from '../models/osc-catalogs';
+import { EntityObject } from '../models/osc-entities';
 import { AbstractPrivateAction } from '../models/osc-interfaces';
-import { OscMiscObject } from '../models/osc-misc-object';
-import { OscPedestrian } from '../models/osc-pedestrian';
-import { OscRoadNetwork } from '../models/osc-road-network';
+import { MiscObject } from '../models/osc-misc-object';
+import { Pedestrian } from '../models/osc-pedestrian';
+import { RoadNetwork } from '../models/osc-road-network';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscStoryboard } from '../models/osc-storyboard';
-import { OscVehicle } from '../models/osc-vehicle';
+import { Storyboard } from '../models/osc-storyboard';
+import { Vehicle } from '../models/osc-vehicle';
 import { ActionService } from './action-service';
-import { OscEntityBuilder } from './osc-entity-builder';
+import { EntityBuilder } from './osc-entity-builder';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscBuilderService {
+export class BuilderService {
 
 	private scenario: OpenScenario;
 	private currentFile: IFile;
@@ -38,13 +38,13 @@ export class OscBuilderService {
 	) {
 	}
 
-	public static buildVehicleEntity ( obj: OscEntityObject, executeAction = true ) {
+	public static buildVehicleEntity ( obj: EntityObject, executeAction = true ) {
 
 		// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 		// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 		// obj.gameObject = new THREE.Mesh( geometry, material );
 
-		OscEntityBuilder.build( obj, executeAction );
+		EntityBuilder.build( obj, executeAction );
 
 	}
 
@@ -54,15 +54,15 @@ export class OscBuilderService {
 
 	//   const car = this.createCar( point );
 
-	//   const oscEntityObject = new OscEntityObject( playerName );
+	//   const oscEntityObject = new EntityObject( playerName );
 
 	//   this.openScenario.addEntity( oscEntityObject );
 
-	//   const positionAction = new OscPositionAction();
+	//   const positionAction = new PositionAction();
 
-	//   positionAction.setPosition( OscWorldPosition.createFromVector3( car.position ) );
+	//   positionAction.setPosition( WorldPosition.createFromVector3( car.position ) );
 
-	//   const speedAction = new OscSpeedAction();
+	//   const speedAction = new SpeedAction();
 
 	//   speedAction.setAbsoluteTarget( 0 );
 
@@ -71,7 +71,7 @@ export class OscBuilderService {
 	//   this.openScenario.storyboard.addPrivateInitAction( playerName, positionAction );
 	//   this.openScenario.storyboard.addPrivateInitAction( playerName, speedAction );
 
-	//   ThreeJsUtils.addComponent( car, new ComponentItem( OscPlayerPropertiesComponent, oscEntityObject ) );
+	//   ThreeJsUtils.addComponent( car, new ComponentItem( PlayerPropertiesComponent, oscEntityObject ) );
 
 	// }
 
@@ -93,7 +93,7 @@ export class OscBuilderService {
 	// }
 
 
-	public static executePrivateAction ( obj: OscEntityObject, privateAction: AbstractPrivateAction ) {
+	public static executePrivateAction ( obj: EntityObject, privateAction: AbstractPrivateAction ) {
 
 		ActionService.executePrivateAction( obj, privateAction );
 
@@ -116,27 +116,27 @@ export class OscBuilderService {
 
 	private buildEntities () {
 
-		this.scenario.objects.forEach( ( obj: OscEntityObject, index ) => {
+		this.scenario.objects.forEach( ( obj: EntityObject, index ) => {
 
 			// const type = obj.m_Object.constructor.name;
-			const type = OscCatalogReference.name;
+			const type = CatalogReference.name;
 
 			// TODO: Replace this with enums
 			switch ( type ) {
 
-				case OscCatalogReference.name:
+				case CatalogReference.name:
 					this.buildCatalogEntity( obj );
 					break;
 
-				case OscVehicle.name:
+				case Vehicle.name:
 					Debug.log( 'type vehicle' );
 					break;
 
-				case OscPedestrian.name:
+				case Pedestrian.name:
 					Debug.log( 'type pedestrian' );
 					break;
 
-				case OscMiscObject.name:
+				case MiscObject.name:
 					Debug.log( 'type misc-object' );
 					break;
 
@@ -146,15 +146,15 @@ export class OscBuilderService {
 
 	}
 
-	private buildCatalogEntity ( obj: OscEntityObject ) {
+	private buildCatalogEntity ( obj: EntityObject ) {
 
 		Debug.log( 'type catalogue' );
 
-		OscBuilderService.buildVehicleEntity( obj );
+		BuilderService.buildVehicleEntity( obj );
 
 	}
 
-	private buildRoadNetwork ( roadNetwork: OscRoadNetwork, callbackFn: any ) {
+	private buildRoadNetwork ( roadNetwork: RoadNetwork, callbackFn: any ) {
 
 		// TODO: SceneAsset
 		// TODO: Signals
@@ -185,7 +185,7 @@ export class OscBuilderService {
 		}
 	}
 
-	private buildInitActions ( storyboard: OscStoryboard ) {
+	private buildInitActions ( storyboard: Storyboard ) {
 
 		Debug.log( storyboard );
 

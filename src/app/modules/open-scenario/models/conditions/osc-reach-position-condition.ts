@@ -3,13 +3,13 @@
  */
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscConditionType, OscTriggeringRule } from '../osc-enums';
+import { ConditionType, TriggeringRule } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscReachPositionCondition extends AbstractByEntityCondition {
+export class ReachPositionCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_ReachPosition;
+	conditionType = ConditionType.ByEntity_ReachPosition;
 
 	constructor ( public position?: AbstractPosition, public tolerance: number = 0 ) {
 		super();
@@ -32,7 +32,7 @@ export class OscReachPositionCondition extends AbstractByEntityCondition {
 			const hasReachedTarget = distanceFromTarget <= this.tolerance;
 
 			// exit if any of the distance tolerance is passed
-			if ( hasReachedTarget && this.triggeringRule === OscTriggeringRule.Any ) {
+			if ( hasReachedTarget && this.triggeringRule === TriggeringRule.Any ) {
 
 				this.passed = true;
 
@@ -40,7 +40,7 @@ export class OscReachPositionCondition extends AbstractByEntityCondition {
 			}
 
 			// exit if any of the distance distance is not passed
-			if ( !hasReachedTarget && this.triggeringRule === OscTriggeringRule.All ) {
+			if ( !hasReachedTarget && this.triggeringRule === TriggeringRule.All ) {
 
 				this.passed = false;
 

@@ -5,29 +5,29 @@
 import { Vector3 } from 'three';
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { OscCatalogReference } from '../osc-catalogs';
-import { OscEntityObject } from '../osc-entities';
-import { OscActionType, OscLateralPurpose, OscStoryElementType } from '../osc-enums';
-import { OscTrajectory } from '../osc-trajectory';
+import { CatalogReference } from '../osc-catalogs';
+import { EntityObject } from '../osc-entities';
+import { ActionType, LateralPurpose, StoryElementType } from '../osc-enums';
+import { Trajectory } from '../osc-trajectory';
 import { AbstractRoutingAction, LongitudinalPurpose } from './osc-routing-action';
 
-export class OscFollowTrajectoryAction extends AbstractRoutingAction {
+export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	readonly actionName: string = 'FollowTrajectory';
-	readonly actionType: OscActionType = OscActionType.Private_Routing;
+	readonly actionType: ActionType = ActionType.Private_Routing;
 	// optional
-	public catalogReference: OscCatalogReference;
+	public catalogReference: CatalogReference;
 	public longitudinalPurpose: LongitudinalPurpose;
-	public lateralPurpose: OscLateralPurpose;
+	public lateralPurpose: LateralPurpose;
 	private distanceThreshold = 2;
 	private index = 0;
 	private rotationSpeed = 1;
 
-	constructor ( public trajectory: OscTrajectory ) {
+	constructor ( public trajectory: Trajectory ) {
 		super();
 	}
 
-	execute ( entity: OscEntityObject ) {
+	execute ( entity: EntityObject ) {
 
 		if ( !this.hasStarted ) {
 
@@ -47,7 +47,7 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private start ( entity: OscEntityObject ) {
+	private start ( entity: EntityObject ) {
 
 		this.hasStarted = true;
 
@@ -55,15 +55,15 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private update ( entity: OscEntityObject ) {
+	private update ( entity: EntityObject ) {
 
 		switch ( this.lateralPurpose ) {
 
-			case OscLateralPurpose.position:
+			case LateralPurpose.position:
 				this.steering( entity );
 				break;
 
-			case OscLateralPurpose.steering:
+			case LateralPurpose.steering:
 				this.steering( entity );
 				break;
 
@@ -74,7 +74,7 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private steering ( entity: OscEntityObject ) {
+	private steering ( entity: EntityObject ) {
 
 		// console.log( this );
 
@@ -83,7 +83,7 @@ export class OscFollowTrajectoryAction extends AbstractRoutingAction {
 			this.isCompleted = true;
 
 			this.completed.emit( {
-				type: OscStoryElementType.action,
+				type: StoryElementType.action,
 				name: this.actionName
 			} );
 

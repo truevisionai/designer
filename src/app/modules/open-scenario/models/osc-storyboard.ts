@@ -3,12 +3,12 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscGlobalAction } from './actions/osc-global-action';
-import { OscUserDefinedAction } from './actions/osc-user-defined-action';
+import { GlobalAction } from './actions/osc-global-action';
+import { UserDefinedAction } from './actions/osc-user-defined-action';
 import { AbstractCondition } from './conditions/osc-condition';
-import { OscConditionGroup } from './conditions/osc-condition-group';
+import { ConditionGroup } from './conditions/osc-condition-group';
 import { AbstractPrivateAction } from './osc-interfaces';
-import { OscStory } from './osc-story';
+import { Story } from './osc-story';
 
 
 export class EntityInitAction {
@@ -18,12 +18,12 @@ export class EntityInitAction {
 	}
 }
 
-export class OscStoryboard {
+export class Storyboard {
 
-	public stories: Map<string, OscStory> = new Map<string, OscStory>();
-	public endConditionGroups: OscConditionGroup[] = [];
+	public stories: Map<string, Story> = new Map<string, Story>();
+	public endConditionGroups: ConditionGroup[] = [];
 	public privateInitAction: EntityInitAction[] = [];
-	private m_InitActions = new OscInitActions;
+	private m_InitActions = new InitActions;
 
 	get initActions () {
 
@@ -31,7 +31,7 @@ export class OscStoryboard {
 
 	}
 
-	addStory ( story: OscStory ) {
+	addStory ( story: Story ) {
 
 		const hasName = TvScenarioInstance.db.has_story( story.name );
 
@@ -43,9 +43,9 @@ export class OscStoryboard {
 
 	}
 
-	addNewStory ( name: string, owner?: string ): OscStory {
+	addNewStory ( name: string, owner?: string ): Story {
 
-		const story = new OscStory( name, owner );
+		const story = new Story( name, owner );
 
 		this.addStory( story );
 
@@ -53,7 +53,7 @@ export class OscStoryboard {
 
 	}
 
-	addEndConditionGroup ( group: OscConditionGroup ) {
+	addEndConditionGroup ( group: ConditionGroup ) {
 
 		this.endConditionGroups.push( group );
 
@@ -67,7 +67,7 @@ export class OscStoryboard {
 
 		} else {
 
-			const group = new OscConditionGroup();
+			const group = new ConditionGroup();
 
 			group.addCondition( condition );
 
@@ -87,10 +87,10 @@ export class OscStoryboard {
 }
 
 
-export class OscInitActions {
+export class InitActions {
 
-	private globalActions: OscGlobalAction[] = [];
-	private userDefinedActions: OscUserDefinedAction[] = [];
+	private globalActions: GlobalAction[] = [];
+	private userDefinedActions: UserDefinedAction[] = [];
 	private privateActions: AbstractPrivateAction[] = [];
 
 	addPrivateAction ( owner: string, action: AbstractPrivateAction ): any {

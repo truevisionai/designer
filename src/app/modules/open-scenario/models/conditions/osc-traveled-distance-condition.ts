@@ -3,13 +3,13 @@
  */
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscConditionType, OscTriggeringRule } from '../osc-enums';
+import { ConditionType, TriggeringRule } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
 
-export class OscTraveledDistanceCondition extends AbstractByEntityCondition {
+export class TraveledDistanceCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_TraveledDistance;
+	conditionType = ConditionType.ByEntity_TraveledDistance;
 
 	constructor ( public value: number ) {
 		super();
@@ -29,14 +29,14 @@ export class OscTraveledDistanceCondition extends AbstractByEntityCondition {
 
 				const passed = entity.distanceTravelled >= this.value;
 
-				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
+				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
 
 					this.passed = true;
 
 					break;
 				}
 
-				if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
+				if ( !passed && this.triggeringRule === TriggeringRule.All ) {
 
 					this.passed = false;
 

@@ -6,27 +6,27 @@ import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { AbstractCondition } from './conditions/osc-condition';
-import { OscConditionGroup } from './conditions/osc-condition-group';
-import { OscStoryElementType } from './osc-enums';
+import { ConditionGroup } from './conditions/osc-condition-group';
+import { StoryElementType } from './osc-enums';
 import { AbstractAction } from './osc-interfaces';
 import { ConditionService } from './condition-service';
 
-export class OscEvent {
+export class Event {
 
 	private static count = 1;
 
-	public startConditionGroups: OscConditionGroup[] = [];
+	public startConditionGroups: ConditionGroup[] = [];
 	public isCompleted: boolean;
 	public hasStarted: boolean;
 
 	public completed = new EventEmitter<StoryEvent>();
 
-	// public actions: OscEventAction[] = [];
+	// public actions: EventAction[] = [];
 	private actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
 
 	constructor ( public name?: string, public priority?: string ) {
 
-		OscEvent.count++;
+		Event.count++;
 
 	}
 
@@ -60,7 +60,7 @@ export class OscEvent {
 		TvScenarioInstance.db.add_action( name );
 
 		action.completed.subscribe( e => {
-			this.onActionCompleted( { name: name, type: OscStoryElementType.action } );
+			this.onActionCompleted( { name: name, type: StoryElementType.action } );
 		} );
 	}
 
@@ -76,7 +76,7 @@ export class OscEvent {
 
 		if ( this.startConditionGroups.length === 0 ) {
 
-			this.startConditionGroups.push( new OscConditionGroup() );
+			this.startConditionGroups.push( new ConditionGroup() );
 
 		}
 
@@ -101,7 +101,7 @@ export class OscEvent {
 
 	private onActionCompleted ( e: StoryEvent ) {
 
-		if ( e.type != OscStoryElementType.action ) return;
+		if ( e.type != StoryElementType.action ) return;
 
 		this.actions.forEach( ( action, actionName ) => {
 
@@ -123,7 +123,7 @@ export class OscEvent {
 
 			this.completed.emit( {
 				name: this.name,
-				type: OscStoryElementType.event
+				type: StoryElementType.event
 			} );
 		}
 

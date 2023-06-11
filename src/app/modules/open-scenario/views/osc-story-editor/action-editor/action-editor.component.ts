@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
-import { OscEntityObject } from '../../../models/osc-entities';
+import { EntityObject } from '../../../models/osc-entities';
 
 @Component( {
 	selector: 'app-action-editor',
@@ -15,7 +15,7 @@ export class ActionEditorComponent implements OnInit {
 
 	@Input() action: AbstractPrivateAction;
 
-	@Input() entity: OscEntityObject;
+	@Input() entity: EntityObject;
 
 	constructor () {
 

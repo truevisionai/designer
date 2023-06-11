@@ -3,13 +3,13 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { OscEntityObject } from '../models/osc-entities';
+import { EntityObject } from '../models/osc-entities';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscEditor } from '../views/osc-editor/osc-editor';
+import { Editor } from '../views/osc-editor/osc-editor';
 
-export class OscAddEntityCommand extends BaseCommand {
+export class AddEntityCommand extends BaseCommand {
 
-	constructor ( public entity: OscEntityObject ) {
+	constructor ( public entity: EntityObject ) {
 		super();
 	}
 
@@ -17,14 +17,14 @@ export class OscAddEntityCommand extends BaseCommand {
 
 		TvScenarioInstance.openScenario.addObject( this.entity );
 
-		OscEditor.scenarioChanged.emit();
+		Editor.scenarioChanged.emit();
 		TvScenarioInstance.scenarioChanged.emit();
 
 	}
 
 	undo (): void {
 
-		OscEditor.deselect();
+		Editor.deselect();
 
 		var parent = this.entity.gameObject.parent;
 
@@ -32,7 +32,7 @@ export class OscAddEntityCommand extends BaseCommand {
 
 		TvScenarioInstance.openScenario.removeObject( this.entity );
 
-		OscEditor.scenarioChanged.emit();
+		Editor.scenarioChanged.emit();
 		TvScenarioInstance.scenarioChanged.emit();
 
 	}

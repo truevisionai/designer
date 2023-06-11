@@ -4,8 +4,8 @@
 
 import { Component, Input } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
-import { OscAbsoluteTarget } from '../../../models/actions/osc-absolute-target';
-import { OscRelativeTarget } from '../../../models/actions/osc-relative-target';
+import { AbsoluteTarget } from '../../../models/actions/osc-absolute-target';
+import { RelativeTarget } from '../../../models/actions/osc-relative-target';
 import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 
 @Component( {
@@ -28,13 +28,13 @@ export class TargetEditorComponent {
 
 	get relativeTarget () {
 
-		return this.target as OscRelativeTarget;
+		return this.target as RelativeTarget;
 
 	}
 
 	get absoluteTarget () {
 
-		return this.target as OscAbsoluteTarget;
+		return this.target as AbsoluteTarget;
 
 	}
 

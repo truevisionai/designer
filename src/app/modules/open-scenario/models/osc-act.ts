@@ -3,18 +3,18 @@
  */
 
 import { AbstractCondition } from './conditions/osc-condition';
-import { OscConditionGroup } from './conditions/osc-condition-group';
-import { OscSequence } from './osc-sequence';
+import { ConditionGroup } from './conditions/osc-condition-group';
+import { Sequence } from './osc-sequence';
 
-export class OscAct {
+export class Act {
 
 	private static count = 1;
 
-	public sequences: OscSequence[] = [];
+	public sequences: Sequence[] = [];
 
-	public startConditionGroups: OscConditionGroup[] = [];
-	public cancelConditionGroups: OscConditionGroup[] = [];
-	public endConditionGroups: OscConditionGroup[] = [];
+	public startConditionGroups: ConditionGroup[] = [];
+	public cancelConditionGroups: ConditionGroup[] = [];
+	public endConditionGroups: ConditionGroup[] = [];
 
 	public shouldStart: boolean;
 	public hasStarted: boolean;
@@ -22,7 +22,7 @@ export class OscAct {
 
 	constructor ( public name?: string ) {
 
-		OscAct.count++;
+		Act.count++;
 
 	}
 
@@ -34,7 +34,7 @@ export class OscAct {
 
 	addNewSequence ( name: string, numberOfExecutions: number, ...actors: string[] ) {
 
-		const sequence = new OscSequence( name, numberOfExecutions, actors );
+		const sequence = new Sequence( name, numberOfExecutions, actors );
 
 		this.sequences.push( sequence );
 
@@ -42,7 +42,7 @@ export class OscAct {
 
 	}
 
-	addSequence ( sequence: OscSequence ) {
+	addSequence ( sequence: Sequence ) {
 
 		this.sequences.push( sequence );
 
@@ -50,7 +50,7 @@ export class OscAct {
 
 	addStartCondition ( condition: AbstractCondition ) {
 		if ( this.startConditionGroups.length == 0 ) {
-			this.startConditionGroups.push( new OscConditionGroup() );
+			this.startConditionGroups.push( new ConditionGroup() );
 		}
 		this.startConditionGroups[ 0 ].addCondition( condition );
 	}

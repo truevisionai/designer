@@ -6,8 +6,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ChooseConditionDialogComponent } from '../../dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { OscAct } from '../../models/osc-act';
-import { OscEntityObject } from '../../models/osc-entities';
+import { Act } from '../../models/osc-act';
+import { EntityObject } from '../../models/osc-entities';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
 @Component( {
@@ -15,14 +15,14 @@ import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 	templateUrl: './osc-act-editor.component.html',
 	styleUrls: [ './osc-act-editor.component.css' ]
 } )
-export class OscActEditorComponent implements OnInit {
+export class ActEditorComponent implements OnInit {
 
-	acts: OscAct[] = [];
-	selectedAct: OscAct;
+	acts: Act[] = [];
+	selectedAct: Act;
 
 	constructor (
-		public dialogRef: MatDialogRef<OscActEditorComponent>,
-		@Inject( MAT_DIALOG_DATA ) public data: OscEntityObject,
+		public dialogRef: MatDialogRef<ActEditorComponent>,
+		@Inject( MAT_DIALOG_DATA ) public data: EntityObject,
 		private dialog: MatDialog
 	) {
 

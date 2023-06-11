@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { OscWorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
+import { WorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
 import { ThreeService } from '../../../../../three-js/three.service';
 import { TvScenarioInstance } from '../../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
@@ -15,7 +15,7 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 } )
 export class WorldPositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	@Input() position: OscWorldPosition;
+	@Input() position: WorldPosition;
 	public positionGroup: FormGroup;
 
 	constructor ( private fb: FormBuilder, private threeService: ThreeService ) {
@@ -42,7 +42,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor impleme
 			r: [ this.position.r ],
 		} );
 
-		this.positionGroup.valueChanges.subscribe( ( value: OscWorldPosition ) => {
+		this.positionGroup.valueChanges.subscribe( ( value: WorldPosition ) => {
 
 			this.position.x = value.x;
 			this.position.y = value.y;

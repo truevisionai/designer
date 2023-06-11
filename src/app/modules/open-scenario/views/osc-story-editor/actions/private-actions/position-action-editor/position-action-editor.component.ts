@@ -3,8 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { OscPositionAction } from '../../../../../models/actions/osc-position-action';
-import { OscEntityObject } from '../../../../../models/osc-entities';
+import { PositionAction } from '../../../../../models/actions/osc-position-action';
+import { EntityObject } from '../../../../../models/osc-entities';
 import { AbstractPosition } from '../../../../../models/osc-interfaces';
 
 @Component( {
@@ -13,8 +13,8 @@ import { AbstractPosition } from '../../../../../models/osc-interfaces';
 } )
 export class PositionActionEditorComponent implements OnInit {
 
-	@Input() action: OscPositionAction;
-	@Input() entity: OscEntityObject;
+	@Input() action: PositionAction;
+	@Input() entity: EntityObject;
 
 	constructor () {
 

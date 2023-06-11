@@ -3,10 +3,10 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscCatalogReference } from './osc-catalogs';
-import { OscManeuver } from './osc-maneuver';
+import { CatalogReference } from './osc-catalogs';
+import { Maneuver } from './osc-maneuver';
 
-export class OscSequence {
+export class Sequence {
 
 	private static count = 1;
 
@@ -16,14 +16,14 @@ export class OscSequence {
 
 	// TODO: ByConditionActor
 
-	public catalogReferences: OscCatalogReference[] = [];
-	public maneuvers: OscManeuver[] = [];
+	public catalogReferences: CatalogReference[] = [];
+	public maneuvers: Maneuver[] = [];
 
 	constructor ( public name?: string, public numberOfExecutions?: number, public actors?: string[] ) {
 
 		if ( this.actors == null ) this.actors = [];
 
-		OscSequence.count++;
+		Sequence.count++;
 
 	}
 
@@ -35,7 +35,7 @@ export class OscSequence {
 
 	addNewManeuver ( name: string ) {
 
-		const maneuver = new OscManeuver( name );
+		const maneuver = new Maneuver( name );
 
 		this.addManeuver( maneuver );
 
@@ -43,7 +43,7 @@ export class OscSequence {
 
 	}
 
-	addManeuver ( maneuver: OscManeuver ) {
+	addManeuver ( maneuver: Maneuver ) {
 
 		const hasName = TvScenarioInstance.db.has_maneuver( maneuver.name );
 

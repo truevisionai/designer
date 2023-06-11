@@ -7,21 +7,21 @@ import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscEntityObject } from '../osc-entities';
-import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
+import { EntityObject } from '../osc-entities';
+import { ActionType, DynamicsShape, TargetType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
 import { AbstractTarget } from './abstract-target';
-import { OscAbsoluteTarget } from './osc-absolute-target';
-import { OscLaneChangeDynamics } from './osc-private-action';
-import { OscRelativeTarget } from './osc-relative-target';
+import { AbsoluteTarget } from './osc-absolute-target';
+import { LaneChangeDynamics } from './osc-private-action';
+import { RelativeTarget } from './osc-relative-target';
 
-export class OscLaneChangeAction extends AbstractPrivateAction {
+export class LaneChangeAction extends AbstractPrivateAction {
 
 	public actionName = 'LaneChange';
-	public actionType: OscActionType = OscActionType.Private_Lateral;
+	public actionType: ActionType = ActionType.Private_Lateral;
 
-	// public dynamics: OscLaneChangeDynamics = new OscLaneChangeDynamics();
-	// public target: AbstractTarget = new OscAbsoluteTarget( 0 );
+	// public dynamics: LaneChangeDynamics = new LaneChangeDynamics();
+	// public target: AbstractTarget = new AbsoluteTarget( 0 );
 	// public targetLaneOffset?: number = null;
 
 	// variables for action help
@@ -34,19 +34,19 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 	private changeInTCoordinate = 0;
 
 	constructor (
-		public dynamics?: OscLaneChangeDynamics,
+		public dynamics?: LaneChangeDynamics,
 		public target?: AbstractTarget,
 		public targetLaneOffset?: number
 	) {
 
 		super();
 
-		this.dynamics = dynamics || new OscLaneChangeDynamics();
-		this.target = target || new OscAbsoluteTarget( 0 );
+		this.dynamics = dynamics || new LaneChangeDynamics();
+		this.target = target || new AbsoluteTarget( 0 );
 
 	}
 
-	execute ( entity: OscEntityObject ) {
+	execute ( entity: EntityObject ) {
 
 		if ( this.isCompleted ) return;
 
@@ -76,7 +76,7 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 
 	}
 
-	start ( entity: OscEntityObject ) {
+	start ( entity: EntityObject ) {
 
 		const openDrive = TvMapInstance.map;
 		const road = openDrive.getRoadById( entity.roadId );
@@ -89,12 +89,12 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 
 		switch ( this.target.targetType ) {
 
-			case OscTargetType.absolute:
+			case TargetType.absolute:
 				this.newLaneId = this.target.value;
 				break;
 
-			case OscTargetType.relative:
-				const name = ( this.target as OscRelativeTarget ).object;
+			case TargetType.relative:
+				const name = ( this.target as RelativeTarget ).object;
 				const obj = TvScenarioInstance.openScenario.objects.get( name );
 				const otherLaneId = obj.laneId;
 				this.newLaneId = otherLaneId + this.target.value;
@@ -114,30 +114,30 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 
 	}
 
-	private performLaneChange ( entity: OscEntityObject, timePassed: number ) {
+	private performLaneChange ( entity: EntityObject, timePassed: number ) {
 
 		switch ( this.dynamics.shape ) {
 
-			case OscDynamicsShape.linear:
+			case DynamicsShape.linear:
 				this.linearLaneChange( entity, timePassed );
 				break;
 
-			case OscDynamicsShape.cubic:
+			case DynamicsShape.cubic:
 				throw new Error( 'cubic dynamics is not currently supported' );
 				break;
 
-			case OscDynamicsShape.sinusoidal:
+			case DynamicsShape.sinusoidal:
 				throw new Error( 'sinusoidal dynamics is not currently supported' );
 				break;
 
-			case OscDynamicsShape.step:
+			case DynamicsShape.step:
 				entity.laneId = this.newLaneId;
 				break;
 
 		}
 	}
 
-	private linearLaneChange ( entity: OscEntityObject, timePassed: number ) {
+	private linearLaneChange ( entity: EntityObject, timePassed: number ) {
 
 		const fraction = timePassed / this.dynamics.time;
 
@@ -148,7 +148,7 @@ export class OscLaneChangeAction extends AbstractPrivateAction {
 		// if ( laneOffset == this.changeInTCoordinate ) this.isCompleted = true;
 	}
 
-	private sinusoidalLaneChange ( entity: OscEntityObject, timePassed: number ) {
+	private sinusoidalLaneChange ( entity: EntityObject, timePassed: number ) {
 
 		const fraction = timePassed / this.dynamics.time;
 

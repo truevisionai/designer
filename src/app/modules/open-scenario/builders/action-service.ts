@@ -3,64 +3,64 @@
  */
 
 import { Vector3 } from 'three';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscActionType, OscPositionType } from '../models/osc-enums';
+import { PositionAction } from '../models/actions/osc-position-action';
+import { EntityObject } from '../models/osc-entities';
+import { ActionType, PositionType } from '../models/osc-enums';
 import { AbstractPosition, AbstractPrivateAction } from '../models/osc-interfaces';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
+import { LanePosition } from '../models/positions/osc-lane-position';
 
 export class ActionService {
 
-	public static executePrivateAction ( obj: OscEntityObject, privateAction: AbstractPrivateAction ) {
+	public static executePrivateAction ( obj: EntityObject, privateAction: AbstractPrivateAction ) {
 
 		switch ( privateAction.actionType ) {
 
-			case OscActionType.Private_Position:
-				this.executePositionAction( obj, privateAction as OscPositionAction );
+			case ActionType.Private_Position:
+				this.executePositionAction( obj, privateAction as PositionAction );
 				break;
-			case OscActionType.Private_Routing:
+			case ActionType.Private_Routing:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.UserDefined_Command:
+			case ActionType.UserDefined_Command:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.UserDefined_Script:
+			case ActionType.UserDefined_Script:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Global_SetEnvironment:
+			case ActionType.Global_SetEnvironment:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Global_Entity:
+			case ActionType.Global_Entity:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Global_Parameter:
+			case ActionType.Global_Parameter:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Global_Infrastructure:
+			case ActionType.Global_Infrastructure:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Global_Traffic:
+			case ActionType.Global_Traffic:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Private_Longitudinal_Speed:
+			case ActionType.Private_Longitudinal_Speed:
 				privateAction.execute( obj );
 				break;
-			case OscActionType.Private_Longitudinal_Distance:
+			case ActionType.Private_Longitudinal_Distance:
 				privateAction.execute( obj );
 				break;
-			case OscActionType.Private_Lateral:
+			case ActionType.Private_Lateral:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Private_Visbility:
+			case ActionType.Private_Visbility:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Private_Meeting:
+			case ActionType.Private_Meeting:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Private_Autonomous:
+			case ActionType.Private_Autonomous:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case OscActionType.Private_Controller:
+			case ActionType.Private_Controller:
 				throw new Error( 'Unsupported private action' );
 				break;
 			default:
@@ -69,23 +69,23 @@ export class ActionService {
 
 	}
 
-	public static executePositionAction ( obj: OscEntityObject, privateAction: OscPositionAction ) {
+	public static executePositionAction ( obj: EntityObject, privateAction: PositionAction ) {
 
 		const position = privateAction.position;
 
 		switch ( position.type ) {
 
-			case OscPositionType.World:
+			case PositionType.World:
 
 				this.executeWorldPositionAction( position, obj );
 
 				break;
 
-			case OscPositionType.Lane:
+			case PositionType.Lane:
 
 				try {
 
-					const lanePosition = position as OscLanePosition;
+					const lanePosition = position as LanePosition;
 
 					obj.gameObject.position.copy( lanePosition.toVector3() );
 
@@ -107,7 +107,7 @@ export class ActionService {
 	}
 
 
-	private static executeWorldPositionAction ( position: AbstractPosition, obj: OscEntityObject ) {
+	private static executeWorldPositionAction ( position: AbstractPosition, obj: EntityObject ) {
 
 		try {
 

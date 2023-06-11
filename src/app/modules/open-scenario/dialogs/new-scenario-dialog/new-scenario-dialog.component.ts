@@ -8,7 +8,7 @@ import { IFile } from 'app/core/models/file';
 import { FileApiService } from 'app/core/services/file-api.service';
 import { FileService } from 'app/services/file.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
-import { OscService } from '../../services/osc.service';
+import { Service } from '../../services/osc.service';
 
 @Component( {
 	selector: 'app-new-scenario-dialog',
@@ -21,7 +21,7 @@ export class NewScenarioDialogComponent implements OnInit {
 
 	constructor (
 		private dialogRef: MatDialogRef<NewScenarioDialogComponent>,
-		private osc: OscService,
+		private osc: Service,
 		private fileApiService: FileApiService,
 		private electron: TvElectronService,
 		private fileService: FileService

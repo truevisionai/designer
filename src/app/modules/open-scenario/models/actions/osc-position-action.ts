@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscEntityObject } from '../osc-entities';
-import { OscActionType } from '../osc-enums';
+import { EntityObject } from '../osc-entities';
+import { ActionType } from '../osc-enums';
 import { AbstractPosition, AbstractPrivateAction } from '../osc-interfaces';
 
-export class OscPositionAction extends AbstractPrivateAction {
+export class PositionAction extends AbstractPrivateAction {
 
 	public actionName: string = 'Position';
-	public actionType: OscActionType = OscActionType.Private_Position;
+	public actionType: ActionType = ActionType.Private_Position;
 
 
 	public position: AbstractPosition;
@@ -28,7 +28,7 @@ export class OscPositionAction extends AbstractPrivateAction {
 
 	}
 
-	execute ( entity: OscEntityObject ) {
+	execute ( entity: EntityObject ) {
 
 		entity.setPosition( this.position.toVector3() );
 

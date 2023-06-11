@@ -3,11 +3,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { OscPositionType } from 'app/modules/open-scenario/models/osc-enums';
+import { PositionType } from 'app/modules/open-scenario/models/osc-enums';
 import { AbstractPosition } from '../../../models/osc-interfaces';
-import { OscLanePosition } from '../../../models/positions/osc-lane-position';
-import { OscRelativeObjectPosition } from '../../../models/positions/osc-relative-object-position';
-import { OscWorldPosition } from '../../../models/positions/osc-world-position';
+import { LanePosition } from '../../../models/positions/osc-lane-position';
+import { RelativeObjectPosition } from '../../../models/positions/osc-relative-object-position';
+import { WorldPosition } from '../../../models/positions/osc-world-position';
 import { AbstractPositionEditor } from './AbstractPositionEditor';
 
 @Component( {
@@ -21,7 +21,7 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 	}
 
 	get types () {
-		return OscPositionType;
+		return PositionType;
 	}
 
 	ngOnInit () {
@@ -34,19 +34,19 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		switch ( e ) {
 
 			case this.types.World:
-				this.position = new OscWorldPosition();
+				this.position = new WorldPosition();
 				break;
 
 			// case this.types.Road:
-			//     this.position = new OscRoadPosition();
+			//     this.position = new RoadPosition();
 			//     break;
 
 			case this.types.Lane:
-				this.position = new OscLanePosition();
+				this.position = new LanePosition();
 				break;
 
 			case this.types.RelativeObject:
-				this.position = new OscRelativeObjectPosition();
+				this.position = new RelativeObjectPosition();
 				break;
 
 			default:

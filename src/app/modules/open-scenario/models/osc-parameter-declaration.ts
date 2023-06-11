@@ -2,29 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscParameterType } from './osc-enums';
+import { ParameterType } from './osc-enums';
 
-export class OscParameterDeclaration {
+export class ParameterDeclaration {
 
-	public parameters: OscParameter[] = [];
+	public parameters: Parameter[] = [];
 
 	constructor () {
 	}
 
-	addParameter ( value: OscParameter ): void {
+	addParameter ( value: Parameter ): void {
 
 		this.parameters.push( value );
 
 	}
 }
 
-export class OscParameter {
+export class Parameter {
 
 	public name: string;
-	public type: OscParameterType;
+	public type: ParameterType;
 	public value: string;
 
-	constructor ( name: string, type: OscParameterType, value: string ) {
+	constructor ( name: string, type: ParameterType, value: string ) {
 
 		this.name = name;
 		this.type = type;
@@ -32,18 +32,18 @@ export class OscParameter {
 
 	}
 
-	static stringToEnum ( type: string ): OscParameterType {
+	static stringToEnum ( type: string ): ParameterType {
 
 		switch ( type ) {
 
 			case 'integer':
-				return OscParameterType.integer;
+				return ParameterType.integer;
 				break;
 			case 'double':
-				return OscParameterType.double;
+				return ParameterType.double;
 				break;
 			case 'string':
-				return OscParameterType.string;
+				return ParameterType.string;
 				break;
 			default:
 				throw new Error( 'unknown paramater type' );

@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { OscReachPositionCondition } from 'app/modules/open-scenario/models/conditions/osc-reach-position-condition';
+import { ReachPositionCondition } from 'app/modules/open-scenario/models/conditions/osc-reach-position-condition';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
@@ -15,7 +15,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class ReachPositionConditionEditorComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
 
-	@Input() condition: OscReachPositionCondition;
+	@Input() condition: ReachPositionCondition;
 
 	private sphere: Mesh;
 

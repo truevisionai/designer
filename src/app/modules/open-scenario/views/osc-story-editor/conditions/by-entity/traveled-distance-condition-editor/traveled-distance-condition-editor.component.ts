@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { OscTraveledDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-traveled-distance-condition';
+import { TraveledDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-traveled-distance-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -13,7 +13,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class TraveledDistanceConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: OscTraveledDistanceCondition;
+	@Input() condition: TraveledDistanceCondition;
 
 	constructor () {
 		super();

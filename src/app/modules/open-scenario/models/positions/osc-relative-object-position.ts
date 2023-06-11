@@ -4,20 +4,20 @@
 
 import { Vector3 } from 'three';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
+import { Orientation } from '../osc-orientation';
 
-export class OscRelativeObjectPosition extends AbstractPosition {
+export class RelativeObjectPosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.RelativeObject;
+	public readonly type = PositionType.RelativeObject;
 
 	public dx: number = 0;
 
 	public object: string;
 	public dy: number = 0;
 	public dz: number = 0;
-	public orientations: OscOrientation[] = [];
+	public orientations: Orientation[] = [];
 
 	toVector3 (): Vector3 {
 

@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType, OscObjectType } from '../osc-enums';
+import { ConditionType, ObjectType } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscCollisionCondition extends AbstractByEntityCondition {
+export class CollisionCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_Collision;
+	conditionType = ConditionType.ByEntity_Collision;
 
 	// either name or type
 	public entityName: string;
-	public entityType: OscObjectType;
+	public entityType: ObjectType;
 
 	constructor () {
 		super();

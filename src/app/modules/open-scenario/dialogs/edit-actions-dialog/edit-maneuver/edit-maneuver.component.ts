@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { OscManeuver } from 'app/modules/open-scenario/models/osc-maneuver';
+import { Maneuver } from 'app/modules/open-scenario/models/osc-maneuver';
 
 @Component( {
 	selector: 'app-edit-maneuver',
@@ -11,8 +11,8 @@ import { OscManeuver } from 'app/modules/open-scenario/models/osc-maneuver';
 } )
 export class EditManeuverComponent implements OnInit {
 
-	@Input() maneuver: OscManeuver;
-	@Output() maneuverSelected = new EventEmitter<OscManeuver>();
+	@Input() maneuver: Maneuver;
+	@Output() maneuverSelected = new EventEmitter<Maneuver>();
 
 	constructor () {
 	}

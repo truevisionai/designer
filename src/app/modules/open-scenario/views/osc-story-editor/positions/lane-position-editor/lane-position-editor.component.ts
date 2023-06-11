@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OscLanePosition } from '../../../../models/positions/osc-lane-position';
+import { LanePosition } from '../../../../models/positions/osc-lane-position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
@@ -13,7 +13,7 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 } )
 export class LanePositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	@Input() position: OscLanePosition;
+	@Input() position: LanePosition;
 
 	public positionForm: FormGroup;
 

@@ -3,20 +3,20 @@
  */
 
 import { Vector3 } from 'three';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
+import { Orientation } from '../osc-orientation';
 
-export class OscRoadPosition extends AbstractPosition {
+export class RoadPosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.Road;
+	public readonly type = PositionType.Road;
 
 	private roadId: number;
 	private sValue: number;
 	private tValue: number;
-	private orientation: OscOrientation;
+	private orientation: Orientation;
 
-	constructor ( roadId = 0, sValue = 0, tValue = 0, orientation: OscOrientation = null ) {
+	constructor ( roadId = 0, sValue = 0, tValue = 0, orientation: Orientation = null ) {
 
 		super();
 

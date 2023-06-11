@@ -14,27 +14,27 @@ import { ICommand } from '../../../../core/commands/i-command';
 import { OpenScenarioApiService } from '../../../../core/services/open-scenario-api.service';
 import { NewScenarioDialogComponent } from '../../dialogs/new-scenario-dialog/new-scenario-dialog.component';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscService } from '../../services/osc.service';
-import { OscEditor } from './osc-editor';
+import { Service } from '../../services/osc.service';
+import { Editor } from './osc-editor';
 
 @Component( {
 	selector: 'app-osc-editor',
 	templateUrl: './osc-editor.component.html'
 } )
-export class OscEditorComponent implements OnInit, AfterViewInit, AfterContentInit {
+export class EditorComponent implements OnInit, AfterViewInit, AfterContentInit {
 
 	private static threeService: ThreeService;
 	private isOpeningFromUrl = false;
 
 	constructor (
 		private route: ActivatedRoute,
-		private oscService: OscService,
+		private oscService: Service,
 		private threeService: ThreeService,
 		private electron: TvElectronService,
 		private openScenarioApi: OpenScenarioApiService,
 		private dialog: MatDialog
 	) {
-		OscEditor.threeService = threeService;
+		Editor.threeService = threeService;
 	}
 
 	get scenario () {

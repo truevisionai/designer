@@ -9,7 +9,7 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
 import { IFile } from '../../../../core/models/file';
 import { OpenDriveApiService } from '../../../../core/services/open-drive-api.service';
-import { OscFile } from '../../models/osc-common';
+import { File } from '../../models/osc-common';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
 @Component( {
@@ -89,7 +89,7 @@ export class EditRoadNetworkDialogComponent implements OnInit {
 
 	setRoadNetworkFileName ( filename ) {
 
-		this.roadNetwork.logics = new OscFile( filename );
+		this.roadNetwork.logics = new File( filename );
 
 	}
 

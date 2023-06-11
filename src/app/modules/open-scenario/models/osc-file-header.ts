@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export class OscFileHeader {
+export class FileHeader {
 
 	public revMajor: number;
 	public revMinor: number;
@@ -26,7 +26,7 @@ export class OscFileHeader {
 
 	}
 
-	static readXml ( FileHeader: any ): OscFileHeader {
+	static readXml ( FileHeader: any ): FileHeader {
 
 		const revMajor = FileHeader.attr_revMajor;
 		const revMinor = FileHeader.attr_revMinor;
@@ -34,7 +34,7 @@ export class OscFileHeader {
 		const description = FileHeader.attr_description;
 		const author = FileHeader.attr_author;
 
-		return new OscFileHeader( revMajor, revMinor, date, description, author );
+		return new FileHeader( revMajor, revMinor, date, description, author );
 	}
 
 	exportXml (): any {

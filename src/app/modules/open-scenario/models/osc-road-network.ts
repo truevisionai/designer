@@ -2,35 +2,35 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscFile } from './osc-common';
+import { File } from './osc-common';
 
-export class OscRoadNetwork {
+export class RoadNetwork {
 
-	private Logics: OscFile;
-	private m_SceneGraph: OscFile;
+	private Logics: File;
+	private m_SceneGraph: File;
 
-	constructor ( logics: OscFile, sceneGraph: OscFile ) {
+	constructor ( logics: File, sceneGraph: File ) {
 
 		this.Logics = logics;
 		this.m_SceneGraph = sceneGraph;
 
 	}
 
-	get logics (): OscFile {
+	get logics (): File {
 		return this.Logics;
 	}
 
-	set logics ( value: OscFile ) {
+	set logics ( value: File ) {
 		this.Logics = value;
 	}
 
-	get sceneGraph (): OscFile {
+	get sceneGraph (): File {
 		return this.m_SceneGraph;
 	}
 
 	// TODO: Add Signals
 
-	set sceneGraph ( value: OscFile ) {
+	set sceneGraph ( value: File ) {
 		this.m_SceneGraph = value;
 	}
 

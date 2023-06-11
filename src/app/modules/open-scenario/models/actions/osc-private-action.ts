@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscActionCategory, OscDynamicsShape } from '../osc-enums';
+import { ActionCategory, DynamicsShape } from '../osc-enums';
 import { AbstractAction, AbstractPrivateAction } from '../osc-interfaces';
 
-export class DontUse_OscPrivateAction extends AbstractPrivateAction {
-	actionType: import( '../osc-enums' ).OscActionType;
+export class DontUse_PrivateAction extends AbstractPrivateAction {
+	actionType: import( '../osc-enums' ).ActionType;
 
-	public category = OscActionCategory.private;
+	public category = ActionCategory.private;
 
 	public actionName: string = '';
 
@@ -29,27 +29,27 @@ export class DontUse_OscPrivateAction extends AbstractPrivateAction {
 }
 
 
-export class OscLaneChangeDynamics {
+export class LaneChangeDynamics {
 
 
 	constructor (
 		public time?: number,
 		public distance?: number,
-		public shape?: OscDynamicsShape,
+		public shape?: DynamicsShape,
 		public rate?: number,
 	) {
 	}
 
 }
 
-export class OscSpeedDynamics {
+export class SpeedDynamics {
 
-	public shape: OscDynamicsShape;
+	public shape: DynamicsShape;
 	public time?: number;
 	public distance?: number;
 	public rate?: number;
 
-	constructor ( shape: OscDynamicsShape = null, time: number = 0, distance: number = 0, rate: number = 0 ) {
+	constructor ( shape: DynamicsShape = null, time: number = 0, distance: number = 0, rate: number = 0 ) {
 		this.shape = shape;
 		this.time = time;
 		this.distance = distance;

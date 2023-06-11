@@ -8,21 +8,21 @@ import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ActionService } from '../builders/action-service';
-import { OscResetHelper } from '../helpers/osc-reset-helper';
+import { ResetHelper } from '../helpers/osc-reset-helper';
 import { ConditionService } from '../models/condition-service';
-import { OscAct } from '../models/osc-act';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscStoryElementType } from '../models/osc-enums';
-import { OscEvent } from '../models/osc-event';
+import { Act } from '../models/osc-act';
+import { EntityObject } from '../models/osc-entities';
+import { StoryElementType } from '../models/osc-enums';
+import { Event } from '../models/osc-event';
 import { AbstractAction } from '../models/osc-interfaces';
-import { OscManeuver } from '../models/osc-maneuver';
-import { OscSequence } from '../models/osc-sequence';
-import { OscStory } from '../models/osc-story';
+import { Maneuver } from '../models/osc-maneuver';
+import { Sequence } from '../models/osc-sequence';
+import { Story } from '../models/osc-story';
 import { TvScenarioInstance } from './tv-scenario-instance';
 
 export interface StoryEvent {
 	name: string;
-	type: OscStoryElementType;
+	type: StoryElementType;
 }
 
 @Injectable( {
@@ -30,7 +30,7 @@ export interface StoryEvent {
 } )
 export class ScenarioPlayerService {
 
-	static traffic: Map<number, OscEntityObject[]> = new Map<number, OscEntityObject[]>();
+	static traffic: Map<number, EntityObject[]> = new Map<number, EntityObject[]>();
 
 	private added: boolean;
 	private eventIndex: number = 0;
@@ -119,7 +119,7 @@ export class ScenarioPlayerService {
 		// } );
 
 		// set road traffic state
-		// this.openDrive.roads.forEach( road => OscPlayerService.traffic.set( road.id, [] ) );
+		// this.openDrive.roads.forEach( road => PlayerService.traffic.set( road.id, [] ) );
 
 		this.openScenario.objects.forEach( obj => {
 
@@ -139,12 +139,12 @@ export class ScenarioPlayerService {
 		//
 		// const act = story.addNewAct( 'NewAct' );
 		//
-		// const group = act.addStartCondition( new OscSimulationTimeCondition( 2, OscRule.equal_to ) );
+		// const group = act.addStartCondition( new SimulationTimeCondition( 2, Rule.equal_to ) );
 		//
 		// this.added = true;
 	}
 
-	private runStory ( story: OscStory ) {
+	private runStory ( story: Story ) {
 
 		if ( this.logEvents ) console.info( 'running-story', story.name );
 
@@ -165,7 +165,7 @@ export class ScenarioPlayerService {
 		} );
 	}
 
-	private startAct ( act: OscAct ) {
+	private startAct ( act: Act ) {
 
 		if ( this.logEvents ) console.info( 'started-act', act.name );
 
@@ -176,7 +176,7 @@ export class ScenarioPlayerService {
 		this.updateAct( act );
 	}
 
-	private updateAct ( act: OscAct ) {
+	private updateAct ( act: Act ) {
 
 		if ( this.logEvents ) console.info( 'running-act', act.name );
 
@@ -188,7 +188,7 @@ export class ScenarioPlayerService {
 
 	}
 
-	private updateSequence ( sequence: OscSequence ) {
+	private updateSequence ( sequence: Sequence ) {
 
 		sequence.maneuvers.forEach( maneuver => {
 
@@ -205,7 +205,7 @@ export class ScenarioPlayerService {
 		} );
 	}
 
-	private startManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
+	private startManeuver ( maneuver: Maneuver, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'started-manuever', maneuver.name );
 
@@ -216,7 +216,7 @@ export class ScenarioPlayerService {
 		this.updateManeuver( maneuver, sequence );
 	}
 
-	private updateManeuver ( maneuver: OscManeuver, sequence: OscSequence ) {
+	private updateManeuver ( maneuver: Maneuver, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'running-maneuver', maneuver.name );
 
@@ -252,7 +252,7 @@ export class ScenarioPlayerService {
 	}
 
 
-	private startEvent ( event: OscEvent, sequence: OscSequence ) {
+	private startEvent ( event: Event, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'started-event', event.name );
 
@@ -264,7 +264,7 @@ export class ScenarioPlayerService {
 
 	}
 
-	private updateEvent ( event: OscEvent, sequence: OscSequence ) {
+	private updateEvent ( event: Event, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'running-event', event.name );
 
@@ -307,7 +307,7 @@ export class ScenarioPlayerService {
 
 	}
 
-	private startAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
+	private startAction ( action: AbstractAction, actionName: string, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'started-action', actionName );
 
@@ -319,7 +319,7 @@ export class ScenarioPlayerService {
 
 	}
 
-	private updateAction ( action: AbstractAction, actionName: string, sequence: OscSequence ) {
+	private updateAction ( action: AbstractAction, actionName: string, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'running-action', actionName );
 
@@ -336,11 +336,11 @@ export class ScenarioPlayerService {
 
 	private resetOpenScenario () {
 
-		( new OscResetHelper( this.openScenario ) ).reset();
+		( new ResetHelper( this.openScenario ) ).reset();
 
 	}
 
-	private setRoadProperties ( obj: OscEntityObject ) {
+	private setRoadProperties ( obj: EntityObject ) {
 
 		const roadCoord = new TvPosTheta();
 

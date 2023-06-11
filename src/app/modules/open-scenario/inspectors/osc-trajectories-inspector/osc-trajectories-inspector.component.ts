@@ -5,16 +5,16 @@
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { Debug } from 'app/core/utils/debug';
-import { OscTrajectory } from '../../models/osc-trajectory';
+import { Trajectory } from '../../models/osc-trajectory';
 
 @Component( {
 	selector: 'app-osc-trajectories-inspector',
 	templateUrl: './osc-trajectories-inspector.component.html',
 	styleUrls: [ './osc-trajectories-inspector.component.css' ]
 } )
-export class OscTrajectoriesInspectorComponent implements OnInit, IComponent {
+export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 
-	data: OscTrajectory[] = [];
+	data: Trajectory[] = [];
 	selected: any;
 
 	constructor () {
@@ -36,7 +36,7 @@ export class OscTrajectoriesInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	isDisabled ( trajectory: OscTrajectory ) {
+	isDisabled ( trajectory: Trajectory ) {
 
 		return trajectory !== this.selected;
 

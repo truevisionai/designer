@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscPolylineShape } from '../models/osc-trajectory';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscReaderService } from './osc-reader.service';
+import { PolylineShape } from '../models/osc-trajectory';
+import { WorldPosition } from '../models/positions/osc-world-position';
+import { ReaderService } from './osc-reader.service';
 
 
-describe( 'OscReaderService', () => {
+describe( 'ReaderService', () => {
 
-	let parser: OscReaderService;
+	let parser: ReaderService;
 
 	beforeEach( () => {
-		parser = new OscReaderService( null );
+		parser = new ReaderService( null );
 	} );
 
 	it( 'should parse Header correctly', () => {
@@ -144,7 +144,7 @@ describe( 'OscReaderService', () => {
 
 		const polyline = parser.readVertexShape( xml );
 
-		expect( polyline ).toBeTruthy( polyline instanceof OscPolylineShape );
+		expect( polyline ).toBeTruthy( polyline instanceof PolylineShape );
 
 	} );
 
@@ -179,7 +179,7 @@ describe( 'OscReaderService', () => {
 
 		expect( waypoint.strategy ).toBe( xml.attr_strategy );
 		expect( waypoint.position ).not.toBe( null );
-		expect( waypoint.position ).toBeTruthy( waypoint.position instanceof OscWorldPosition );
+		expect( waypoint.position ).toBeTruthy( waypoint.position instanceof WorldPosition );
 
 	} );
 

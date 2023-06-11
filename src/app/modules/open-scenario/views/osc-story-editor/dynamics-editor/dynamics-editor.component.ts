@@ -3,8 +3,8 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { OscDynamicsShape } from 'app/modules/open-scenario/models/osc-enums';
-import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions/osc-private-action';
+import { DynamicsShape } from 'app/modules/open-scenario/models/osc-enums';
+import { LaneChangeDynamics, SpeedDynamics } from '../../../models/actions/osc-private-action';
 
 @Component( {
 	selector: 'app-dynamics-editor',
@@ -13,11 +13,11 @@ import { OscLaneChangeDynamics, OscSpeedDynamics } from '../../../models/actions
 } )
 export class DynamicsEditorComponent {
 
-	@Input() dynamics: OscLaneChangeDynamics | OscSpeedDynamics;
+	@Input() dynamics: LaneChangeDynamics | SpeedDynamics;
 
 	onShapeChanged ( $event: string ) {
 
-		this.dynamics.shape = OscDynamicsShape[ $event ];
+		this.dynamics.shape = DynamicsShape[ $event ];
 
 	}
 

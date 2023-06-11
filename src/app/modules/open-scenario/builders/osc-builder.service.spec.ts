@@ -12,38 +12,38 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
 import { GameObject } from '../../../core/game-object';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
+import { PositionAction } from '../models/actions/osc-position-action';
+import { EntityObject } from '../models/osc-entities';
+import { LanePosition } from '../models/positions/osc-lane-position';
+import { WorldPosition } from '../models/positions/osc-world-position';
 import { ActionService } from './action-service';
-import { OscBuilderService } from './osc-builder.service';
+import { BuilderService } from './osc-builder.service';
 
 class MockOpenDriveApiService {
 
 }
 
-describe( 'OscBuilderService', () => {
+describe( 'BuilderService', () => {
 
-	let builder: OscBuilderService;
+	let builder: BuilderService;
 
 	let electron = new ElectronService();
 	let fileService = new FileService( electron, null );
 
-	let oscObject: OscEntityObject;
+	let oscObject: EntityObject;
 
 	beforeEach( () => {
 
 		const fake = ( new MockOpenDriveApiService ) as OpenDriveApiService;
 
-		builder = new OscBuilderService(
+		builder = new BuilderService(
 			new TvMapService( fileService, new OdWriter, null, null, null ),
 			fileService,
 			new ThreeService(),
 			fake
 		);
 
-		oscObject = new OscEntityObject( 'test' );
+		oscObject = new EntityObject( 'test' );
 		oscObject.gameObject = new GameObject( 'go' );
 		oscObject.gameObject.name = 'go';
 
@@ -77,9 +77,9 @@ describe( 'OscBuilderService', () => {
 
 	it( 'should create place entities correctly', () => {
 
-		var worldPosition = new OscWorldPosition( 10, 10, 0 );
+		var worldPosition = new WorldPosition( 10, 10, 0 );
 
-		var positionAction = new OscPositionAction( worldPosition );
+		var positionAction = new PositionAction( worldPosition );
 
 		ActionService.executePositionAction( oscObject, positionAction );
 
@@ -91,11 +91,11 @@ describe( 'OscBuilderService', () => {
 
 	} );
 
-	it( 'should create place entities correctly with OscLanePosition', () => {
+	it( 'should create place entities correctly with LanePosition', () => {
 
-		var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
+		var lanePosition = new LanePosition( 1, -2, 0, 10 );
 
-		var positionAction = new OscPositionAction( lanePosition );
+		var positionAction = new PositionAction( lanePosition );
 
 		ActionService.executePositionAction( oscObject, positionAction );
 
@@ -115,11 +115,11 @@ describe( 'OscBuilderService', () => {
 
 	} );
 
-	it( 'should create place entities correctly with OscRoadPosition', () => {
+	it( 'should create place entities correctly with RoadPosition', () => {
 
-		var lanePosition = new OscLanePosition( 1, -2, 0, 10 );
+		var lanePosition = new LanePosition( 1, -2, 0, 10 );
 
-		var positionAction = new OscPositionAction( lanePosition );
+		var positionAction = new PositionAction( lanePosition );
 
 		ActionService.executePositionAction( oscObject, positionAction );
 

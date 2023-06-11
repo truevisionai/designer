@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscTargetType } from '../osc-enums';
+import { TargetType } from '../osc-enums';
 import { AbstractTarget } from './abstract-target';
 
-export class OscAbsoluteTarget extends AbstractTarget {
+export class AbsoluteTarget extends AbstractTarget {
 
-	public targetType = OscTargetType.absolute;
+	public targetType = TargetType.absolute;
 
 	private target: number;
 

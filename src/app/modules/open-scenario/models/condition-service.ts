@@ -2,28 +2,28 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionGroup } from './conditions/osc-condition-group';
-import { OscRule, OscTriggeringRule } from './osc-enums';
+import { ConditionGroup } from './conditions/osc-condition-group';
+import { Rule, TriggeringRule } from './osc-enums';
 
 export class ConditionService {
 
-	static hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
+	static hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 
 		let hasPassed = false;
 
 		switch ( rule ) {
 
-			case OscRule.greater_than:
+			case Rule.greater_than:
 				hasPassed = left > right;
 				// console.log( left, right, left > right );
 				break;
 
-			case OscRule.less_than:
+			case Rule.less_than:
 				hasPassed = left < right;
 				// console.log( left, right, left < right );
 				break;
 
-			case OscRule.equal_to:
+			case Rule.equal_to:
 				hasPassed = left == right;
 				// console.log( left, right, left == right );
 				break;
@@ -33,7 +33,7 @@ export class ConditionService {
 		return hasPassed;
 	}
 
-	static hasGroupsPassed ( groups: OscConditionGroup[], rule: OscTriggeringRule = OscTriggeringRule.All ) {
+	static hasGroupsPassed ( groups: ConditionGroup[], rule: TriggeringRule = TriggeringRule.All ) {
 
 		let allGroupsPassed = true;
 
@@ -41,12 +41,12 @@ export class ConditionService {
 
 			const groupPassed = this.hasGroupPassed( group, rule );
 
-			if ( rule === OscTriggeringRule.All && !groupPassed ) {
+			if ( rule === TriggeringRule.All && !groupPassed ) {
 
 				allGroupsPassed = false;
 				break;
 
-			} else if ( rule === OscTriggeringRule.Any && groupPassed ) {
+			} else if ( rule === TriggeringRule.Any && groupPassed ) {
 
 				allGroupsPassed = true;
 				break;
@@ -56,7 +56,7 @@ export class ConditionService {
 		return allGroupsPassed;
 	}
 
-	static hasGroupPassed ( group: OscConditionGroup, rule: OscTriggeringRule = OscTriggeringRule.All ) {
+	static hasGroupPassed ( group: ConditionGroup, rule: TriggeringRule = TriggeringRule.All ) {
 
 		let allConditionsPassed = true;
 
@@ -64,12 +64,12 @@ export class ConditionService {
 
 			const conditionPassed = condition.hasPassed();
 
-			if ( rule === OscTriggeringRule.All && !conditionPassed ) {
+			if ( rule === TriggeringRule.All && !conditionPassed ) {
 
 				allConditionsPassed = false;
 				break;
 
-			} else if ( rule === OscTriggeringRule.Any && conditionPassed ) {
+			} else if ( rule === TriggeringRule.Any && conditionPassed ) {
 
 				allConditionsPassed = true;
 				break;

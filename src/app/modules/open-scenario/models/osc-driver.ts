@@ -3,12 +3,12 @@
  */
 
 import { AbstractController } from './osc-interfaces';
-import { OscParameterDeclaration } from './osc-parameter-declaration';
-import { OscPersonDescription } from './osc-person-description';
+import { ParameterDeclaration } from './osc-parameter-declaration';
+import { PersonDescription } from './osc-person-description';
 
-export class OscDriver extends AbstractController {
+export class Driver extends AbstractController {
 
-	private m_ParameterDeclarations: OscParameterDeclaration[];
-	private m_Description: OscPersonDescription;
+	private m_ParameterDeclarations: ParameterDeclaration[];
+	private m_Description: PersonDescription;
 
 }

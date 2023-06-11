@@ -5,18 +5,18 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscStoryElementType } from './osc-enums';
-import { OscEvent } from './osc-event';
+import { StoryElementType } from './osc-enums';
+import { Event } from './osc-event';
 import { AbstractAction } from './osc-interfaces';
-import { OscParameterDeclaration } from './osc-parameter-declaration';
+import { ParameterDeclaration } from './osc-parameter-declaration';
 
-export class OscManeuver {
+export class Maneuver {
 
 	private static count = 1;
 
-	public parameterDeclaration: OscParameterDeclaration;
+	public parameterDeclaration: ParameterDeclaration;
 
-	public events: OscEvent[] = [];
+	public events: Event[] = [];
 
 	public hasStarted: boolean;
 	public isCompleted: boolean;
@@ -26,7 +26,7 @@ export class OscManeuver {
 
 	constructor ( public name: string ) {
 
-		OscManeuver.count++;
+		Maneuver.count++;
 
 	}
 
@@ -42,14 +42,14 @@ export class OscManeuver {
 
 		if ( hasName ) throw new Error( 'Event name already used' );
 
-		const event = new OscEvent( name, priority );
+		const event = new Event( name, priority );
 
 		this.addEventInstance( event );
 
 		return event;
 	}
 
-	addEventInstance ( event: OscEvent ) {
+	addEventInstance ( event: Event ) {
 
 		this.events.push( event );
 
@@ -86,14 +86,14 @@ export class OscManeuver {
 
 			this.completed.emit( {
 				name: this.name,
-				type: OscStoryElementType.maneuver
+				type: StoryElementType.maneuver
 			} );
 
 		}
 	}
 }
 
-export class OscEventAction {
+export class EventAction {
 
 	public name: string;
 	public action: AbstractAction;

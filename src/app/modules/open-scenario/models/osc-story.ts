@@ -3,18 +3,18 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscAct } from './osc-act';
+import { Act } from './osc-act';
 
-export class OscStory {
+export class Story {
 
 	private static count = 1;
 
-	public acts: OscAct[] = [];
+	public acts: Act[] = [];
 	public hasStarted: boolean;
 	public isCompleted: boolean;
 
 	constructor ( public name: string, public ownerName: string ) {
-		OscStory.count++;
+		Story.count++;
 	}
 
 	static getNewName ( name = 'MyStory' ) {
@@ -25,14 +25,14 @@ export class OscStory {
 
 	addNewAct ( name: string ) {
 
-		const act = new OscAct( name );
+		const act = new Act( name );
 
 		this.addAct( act );
 
 		return act;
 	}
 
-	addAct ( act: OscAct ) {
+	addAct ( act: Act ) {
 
 		const hasName = TvScenarioInstance.db.has_act( act.name );
 

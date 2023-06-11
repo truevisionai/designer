@@ -8,15 +8,15 @@ import { SearchPipe } from 'app/core/pipes/search.pipe';
 import { Debug } from 'app/core/utils/debug';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { OscBuilderService } from '../../builders/osc-builder.service';
-import { OscAddEntityCommand } from '../../commands/osc-add-entity-command';
-import { OscPositionAction } from '../../models/actions/osc-position-action';
-import { OscCatalogReference } from '../../models/osc-catalogs';
-import { OscEntityObject } from '../../models/osc-entities';
+import { BuilderService } from '../../builders/osc-builder.service';
+import { AddEntityCommand } from '../../commands/osc-add-entity-command';
+import { PositionAction } from '../../models/actions/osc-position-action';
+import { CatalogReference } from '../../models/osc-catalogs';
+import { EntityObject } from '../../models/osc-entities';
 import { CatalogReferenceController } from '../../models/osc-interfaces';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
-import { OscDriverService } from '../../services/osc-driver.service';
-import { OscModelsService } from '../../services/osc-models.service';
+import { WorldPosition } from '../../models/positions/osc-world-position';
+import { DriverService } from '../../services/osc-driver.service';
+import { ModelsService } from '../../services/osc-models.service';
 
 export class AddVehicleDialogData {
 	name: string = 'Vehicle';
@@ -37,9 +37,9 @@ export class AddVehicleDialogComponent implements OnInit {
 	constructor (
 		public dialogRef: MatDialogRef<AddVehicleDialogComponent>,
 		@Inject( MAT_DIALOG_DATA ) public data: AddVehicleDialogData,
-		public modelService: OscModelsService,
-		public driverService: OscDriverService,
-		private oscBuilder: OscBuilderService,
+		public modelService: ModelsService,
+		public driverService: DriverService,
+		private oscBuilder: BuilderService,
 		private searchPipe: SearchPipe
 	) {
 	}
@@ -80,28 +80,28 @@ export class AddVehicleDialogComponent implements OnInit {
 
 	}
 
-	createEntity ( name: string, model: string, driver: string ): OscEntityObject {
+	createEntity ( name: string, model: string, driver: string ): EntityObject {
 
-		const object = new OscEntityObject( name );
+		const object = new EntityObject( name );
 
-		object.catalogReference = new OscCatalogReference( 'VehicleCatalog', model );
+		object.catalogReference = new CatalogReference( 'VehicleCatalog', model );
 
-		object.controller = new CatalogReferenceController( new OscCatalogReference( 'DriverCatalog', driver ) );
+		object.controller = new CatalogReferenceController( new CatalogReference( 'DriverCatalog', driver ) );
 
-		const worldPosition = new OscWorldPosition( 0, 0, 0 );
+		const worldPosition = new WorldPosition( 0, 0, 0 );
 
-		const positionAction = new OscPositionAction( worldPosition );
+		const positionAction = new PositionAction( worldPosition );
 
 		object.initActions.push( positionAction );
 
 		return object;
 	}
 
-	addEntity ( entity: OscEntityObject ) {
+	addEntity ( entity: EntityObject ) {
 
-		CommandHistory.execute( new OscAddEntityCommand( entity ) );
+		CommandHistory.execute( new AddEntityCommand( entity ) );
 
-		OscBuilderService.buildVehicleEntity( entity );
+		BuilderService.buildVehicleEntity( entity );
 
 	}
 

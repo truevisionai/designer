@@ -10,9 +10,9 @@ import { ContextMenuType, MenuService } from '../../../../services/menu.service'
 import { ThreeService } from '../../../three-js/three.service';
 import { EntityInspector } from '../../inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { OpenScenario } from '../../models/osc-scenario';
-import { OscDialogService } from '../../services/osc-dialog.service';
+import { DialogService } from '../../services/osc-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscEditor } from '../osc-editor/osc-editor';
+import { Editor } from '../osc-editor/osc-editor';
 
 /**
  * Food data with nested structure.
@@ -44,7 +44,7 @@ enum NodeType {
 	selector: 'app-osc-hierarchy',
 	templateUrl: './osc-hierarchy.component.html',
 } )
-export class OscHierarchyComponent implements OnInit {
+export class HierarchyComponent implements OnInit {
 
 
 	@Input() scenario: OpenScenario;
@@ -52,13 +52,13 @@ export class OscHierarchyComponent implements OnInit {
 	dataSource: MatTreeFlatDataSource<ScenarioNode, { expandable: boolean; name: string; level: number; type: NodeType; }, { expandable: boolean; name: string; level: number; type: NodeType; }>;
 
 	constructor (
-		private dialogs: OscDialogService,
+		private dialogs: DialogService,
 		private menuService: MenuService,
 		private threeService: ThreeService
 	) {
 		this.dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
-		OscEditor.scenarioChanged.subscribe( () => {
+		Editor.scenarioChanged.subscribe( () => {
 
 			this.buildHierarchy();
 
@@ -194,7 +194,7 @@ export class OscHierarchyComponent implements OnInit {
 		// SceneService.select( object.gameObject );
 		// SceneService.focus( object.gameObject );
 
-		// OscEditor.selectedEntityChanged.emit( object );
+		// Editor.selectedEntityChanged.emit( object );
 
 		this.threeService.focus( object.gameObject );
 

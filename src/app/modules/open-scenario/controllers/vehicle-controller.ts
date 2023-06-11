@@ -10,14 +10,14 @@ import { TvMap } from '../../tv-map/models/tv-map.model';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { OscEntityObject } from '../models/osc-entities';
+import { EntityObject } from '../models/osc-entities';
 import { AbstractController } from '../models/osc-interfaces';
 import { ScenarioPlayerService } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class DefaultVehicleController extends AbstractController {
 
-	constructor ( private openDrive: TvMap, private entity: OscEntityObject ) {
+	constructor ( private openDrive: TvMap, private entity: EntityObject ) {
 		super();
 	}
 
@@ -222,7 +222,7 @@ export class DefaultVehicleController extends AbstractController {
 
 	}
 
-	private followFrontVehicle ( actor: OscEntityObject ) {
+	private followFrontVehicle ( actor: EntityObject ) {
 
 		// my current road s + 10
 		//
@@ -270,9 +270,9 @@ export class DefaultVehicleController extends AbstractController {
 		//     if ( actor.speed != entityInFront[ 0 ].speed ) {
 		//
 		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-		//         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( entityInFront[ 0 ].speed ) );
+		//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( entityInFront[ 0 ].speed ) );
 		//
-		//         action.execute( actor as OscEntityObject );
+		//         action.execute( actor as EntityObject );
 		//
 		//     }
 		//
@@ -281,9 +281,9 @@ export class DefaultVehicleController extends AbstractController {
 		//     if ( actor.speed != actor.desiredSpeed ) {
 		//
 		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-		//         const action = new OscSpeedAction( new OscSpeedDynamics( OscDynamicsShape.linear, 1 ), new OscAbsoluteTarget( actor.desiredSpeed ) );
+		//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( actor.desiredSpeed ) );
 		//
-		//         action.execute( actor as OscEntityObject );
+		//         action.execute( actor as EntityObject );
 		//
 		//     }
 		//
@@ -314,7 +314,7 @@ export class DefaultVehicleController extends AbstractController {
 
 	}
 
-	private getVehiclesInFront ( actor: OscEntityObject ) {
+	private getVehiclesInFront ( actor: EntityObject ) {
 
 		const currentRoad = this.openDrive.getRoadById( actor.roadId );
 
@@ -329,7 +329,7 @@ export class DefaultVehicleController extends AbstractController {
 
 		}
 
-		const vehicles: OscEntityObject[] = [];
+		const vehicles: EntityObject[] = [];
 
 		ScenarioPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
 

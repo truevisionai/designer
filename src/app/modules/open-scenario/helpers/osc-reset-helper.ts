@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionGroup } from '../models/conditions/osc-condition-group';
-import { OscAct } from '../models/osc-act';
-import { OscEvent } from '../models/osc-event';
+import { ConditionGroup } from '../models/conditions/osc-condition-group';
+import { Act } from '../models/osc-act';
+import { Event } from '../models/osc-event';
 import { AbstractAction } from '../models/osc-interfaces';
-import { OscManeuver } from '../models/osc-maneuver';
+import { Maneuver } from '../models/osc-maneuver';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscStory } from '../models/osc-story';
+import { Story } from '../models/osc-story';
 
-export class OscResetHelper {
+export class ResetHelper {
 
 	constructor ( private openScenario: OpenScenario ) {
 
@@ -46,7 +46,7 @@ export class OscResetHelper {
 
 	}
 
-	private resetGroups ( groups: OscConditionGroup[] ) {
+	private resetGroups ( groups: ConditionGroup[] ) {
 
 		groups.forEach( group => {
 
@@ -56,7 +56,7 @@ export class OscResetHelper {
 
 	}
 
-	private resetStory ( story: OscStory ) {
+	private resetStory ( story: Story ) {
 
 		story.hasStarted = false;
 		story.isCompleted = false;
@@ -69,7 +69,7 @@ export class OscResetHelper {
 
 	}
 
-	private resetAct ( act: OscAct ) {
+	private resetAct ( act: Act ) {
 
 		act.hasStarted = false;
 		act.isCompleted = false;
@@ -90,7 +90,7 @@ export class OscResetHelper {
 
 	}
 
-	private resetManeuver ( maneuver: OscManeuver ) {
+	private resetManeuver ( maneuver: Maneuver ) {
 
 		maneuver.hasStarted = false;
 		maneuver.isCompleted = false;
@@ -104,7 +104,7 @@ export class OscResetHelper {
 
 	}
 
-	private resetEvent ( event: OscEvent ) {
+	private resetEvent ( event: Event ) {
 
 		event.hasStarted = false;
 		event.isCompleted = false;

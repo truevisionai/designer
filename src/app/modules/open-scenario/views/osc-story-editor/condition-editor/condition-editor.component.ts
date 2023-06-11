@@ -4,9 +4,9 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
-import { OscDistanceCondition } from '../../../models/conditions/osc-distance-condition';
-import { OscSimulationTimeCondition } from '../../../models/conditions/osc-simulation-time-condition';
-import { OscConditionType } from '../../../models/osc-enums';
+import { DistanceCondition } from '../../../models/conditions/osc-distance-condition';
+import { SimulationTimeCondition } from '../../../models/conditions/osc-simulation-time-condition';
+import { ConditionType } from '../../../models/osc-enums';
 
 @Component( {
 	selector: 'app-condition-editor',
@@ -22,7 +22,7 @@ export class ConditionEditorComponent implements OnInit {
 	}
 
 	get types () {
-		return OscConditionType;
+		return ConditionType;
 	}
 
 	ngOnInit () {
@@ -35,11 +35,11 @@ export class ConditionEditorComponent implements OnInit {
 		switch ( e ) {
 
 			case this.types.ByEntity_Distance:
-				this.condition = new OscDistanceCondition();
+				this.condition = new DistanceCondition();
 				break;
 
 			case this.types.ByValue_SimulationTime:
-				this.condition = new OscSimulationTimeCondition();
+				this.condition = new SimulationTimeCondition();
 				break;
 
 			default:

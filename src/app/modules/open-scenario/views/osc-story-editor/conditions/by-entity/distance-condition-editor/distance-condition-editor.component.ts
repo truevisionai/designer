@@ -3,9 +3,9 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { OscDistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-distance-condition';
+import { DistanceCondition } from 'app/modules/open-scenario/models/conditions/osc-distance-condition';
 import { AbstractPosition } from 'app/modules/open-scenario/models/osc-interfaces';
-import { OscEditorComponent } from 'app/modules/open-scenario/views/osc-editor/osc-editor.component';
+import { EditorComponent } from 'app/modules/open-scenario/views/osc-editor/osc-editor.component';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
@@ -16,7 +16,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class DistanceConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: OscDistanceCondition;
+	@Input() condition: DistanceCondition;
 
 	constructor () {
 
@@ -30,7 +30,7 @@ export class DistanceConditionEditorComponent extends BaseConditionEditorCompone
 
 		const cmd = ( new SetValueCommand( this.condition, 'position', position ) );
 
-		OscEditorComponent.execute( cmd );
+		EditorComponent.execute( cmd );
 
 	}
 

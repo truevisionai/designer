@@ -3,12 +3,12 @@
  */
 
 import { Vector3 } from 'three';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
 
-export class OscWorldPosition extends AbstractPosition {
+export class WorldPosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.World;
+	public readonly type = PositionType.World;
 
 	public m_X: number = 0;
 	public m_Y: number = 0;
@@ -85,9 +85,9 @@ export class OscWorldPosition extends AbstractPosition {
 
 	}
 
-	static createFromVector3 ( point: THREE.Vector3 ): OscWorldPosition {
+	static createFromVector3 ( point: THREE.Vector3 ): WorldPosition {
 
-		const worldPosition = new OscWorldPosition();
+		const worldPosition = new WorldPosition();
 
 		worldPosition.vector3 = point;
 

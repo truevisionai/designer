@@ -4,7 +4,7 @@
 
 import { EnumOrientationType } from './osc-enums';
 
-export class OscOrientation {
+export class Orientation {
 
 	public h: number;
 	public p: number;

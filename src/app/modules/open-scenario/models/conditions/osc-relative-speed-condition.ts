@@ -3,15 +3,15 @@
  */
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
+import { ConditionType, Rule, TriggeringRule } from '../osc-enums';
 import { ConditionService } from '../condition-service';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscRelativeSpeedCondition extends AbstractByEntityCondition {
+export class RelativeSpeedCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_RelativeSpeed;
+	conditionType = ConditionType.ByEntity_RelativeSpeed;
 
-	constructor ( public entity: string, public value: number, public rule: OscRule ) {
+	constructor ( public entity: string, public value: number, public rule: Rule ) {
 
 		super();
 
@@ -36,7 +36,7 @@ export class OscRelativeSpeedCondition extends AbstractByEntityCondition {
 				const passed = ConditionService.hasRulePassed( this.rule, relativeSpeed, this.value );
 
 				// exit if any of the entity distance is passed
-				if ( passed && this.triggeringRule === OscTriggeringRule.Any ) {
+				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
 
 					this.passed = true;
 
@@ -44,7 +44,7 @@ export class OscRelativeSpeedCondition extends AbstractByEntityCondition {
 				}
 
 				// exit if any of the entity distance is not passed
-				if ( !passed && this.triggeringRule === OscTriggeringRule.All ) {
+				if ( !passed && this.triggeringRule === TriggeringRule.All ) {
 
 					this.passed = false;
 

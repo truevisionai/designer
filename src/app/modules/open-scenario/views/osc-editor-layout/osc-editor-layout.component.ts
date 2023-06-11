@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 	selector: 'app-osc-editor-layout',
 	templateUrl: './osc-editor-layout.component.html'
 } )
-export class OscEditorLayoutComponent implements OnInit {
+export class EditorLayoutComponent implements OnInit {
 
 	public isModuleLoading: Boolean = false;
 	public scrollConfig = {};

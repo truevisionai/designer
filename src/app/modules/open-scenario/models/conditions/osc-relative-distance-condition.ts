@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType } from '../osc-enums';
+import { ConditionType } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscRelativeDistanceCondition extends AbstractByEntityCondition {
+export class RelativeDistanceCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_RelativeDistance;
+	conditionType = ConditionType.ByEntity_RelativeDistance;
 
 	hasPassed (): boolean {
 		return false;

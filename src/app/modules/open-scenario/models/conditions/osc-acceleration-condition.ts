@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType, OscRule } from '../osc-enums';
+import { ConditionType, Rule } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscAccelerationCondition extends AbstractByEntityCondition {
+export class AccelerationCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_Acceleration;
+	conditionType = ConditionType.ByEntity_Acceleration;
 
-	constructor ( public value: number, public rule: OscRule ) {
+	constructor ( public value: number, public rule: Rule ) {
 
 		super();
 

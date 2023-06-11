@@ -3,18 +3,18 @@
  */
 
 import { AbstractPosition } from './osc-interfaces';
-import { OscParameterDeclaration } from './osc-parameter-declaration';
+import { ParameterDeclaration } from './osc-parameter-declaration';
 
 export enum EnumTrajectoryDomain {
 	Time = 'time',
 	Distance = 'distance'
 }
 
-export class OscTrajectory {
+export class Trajectory {
 
 	// min 2 vertices are mandatory
-	public vertices: OscVertex[] = [];
-	public parameterDeclaration: OscParameterDeclaration[] = [];
+	public vertices: Vertex[] = [];
+	public parameterDeclaration: ParameterDeclaration[] = [];
 
 	constructor (
 		public name: string,
@@ -25,37 +25,37 @@ export class OscTrajectory {
 	}
 }
 
-export class OscVertex {
+export class Vertex {
 
 	constructor (
 		public reference?: number,
 		public position?: AbstractPosition,
-		public shape?: AbstractOscShape
+		public shape?: AbstractShape
 	) {
 
 	}
 
 }
 
-export abstract class AbstractOscShape {
+export abstract class AbstractShape {
 
 }
 
-export class OscPolylineShape extends AbstractOscShape {
+export class PolylineShape extends AbstractShape {
 }
 
-export class OscClothoidShape extends AbstractOscShape {
+export class ClothoidShape extends AbstractShape {
 	public curvature: number;
 	public curvatureDot: number;
 	public length: number;
 }
 
-export class OscSplineShape extends AbstractOscShape {
-	public controlPoint1: OscControlPoint;
-	public controlPoint2: OscControlPoint;
+export class SplineShape extends AbstractShape {
+	public controlPoint1: ControlPoint;
+	public controlPoint2: ControlPoint;
 }
 
-export class OscControlPoint {
+export class ControlPoint {
 	constructor ( public status?: string ) {
 	}
 }

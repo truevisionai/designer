@@ -9,18 +9,18 @@ import { SceneService } from '../../../core/services/scene.service';
 import { TvObjectType } from '../../tv-map/interfaces/i-tv-object';
 import { ObjectTypes } from '../../tv-map/models/tv-common';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
-import { OscCatalogs } from '../models/osc-catalogs';
-import { OscEntityObject } from '../models/osc-entities';
+import { Catalogs } from '../models/osc-catalogs';
+import { EntityObject } from '../models/osc-entities';
 import { CatalogReferenceController } from '../models/osc-interfaces';
 import { ActionService } from './action-service';
 
-export class OscEntityBuilder {
+export class EntityBuilder {
 
 	static get openDrive () {
 		return TvMapInstance.map;
 	}
 
-	static build ( obj: OscEntityObject, executeAction = true ) {
+	static build ( obj: EntityObject, executeAction = true ) {
 
 		this.buildController( obj );
 
@@ -41,12 +41,12 @@ export class OscEntityBuilder {
 
 	}
 
-	static buildController ( obj: OscEntityObject ) {
+	static buildController ( obj: EntityObject ) {
 
 		if ( obj.controller instanceof CatalogReferenceController ) {
 
-			const truevisionCatalog = obj.controller.catalogReference.catalogName === OscCatalogs.truevisionCatalog;
-			const defaultController = obj.controller.catalogReference.entryName === OscCatalogs.truevisionDefaultController;
+			const truevisionCatalog = obj.controller.catalogReference.catalogName === Catalogs.truevisionCatalog;
+			const defaultController = obj.controller.catalogReference.entryName === Catalogs.truevisionDefaultController;
 
 			if ( truevisionCatalog && defaultController ) {
 
@@ -69,7 +69,7 @@ export class OscEntityBuilder {
 		}
 	}
 
-	static loadVehicleTexture ( obj: OscEntityObject, callback: ( texture: Texture ) => void ) {
+	static loadVehicleTexture ( obj: EntityObject, callback: ( texture: Texture ) => void ) {
 
 		const loader = new TextureLoader();
 
@@ -89,7 +89,7 @@ export class OscEntityBuilder {
 		} );
 	}
 
-	public static createVehicleSprite ( obj: OscEntityObject, texture: Texture ) {
+	public static createVehicleSprite ( obj: EntityObject, texture: Texture ) {
 
 		// var spriteMaterial = new SpriteMaterial( { map: texture, color: 0xffffff } );
 		// obj.gameObject = new Sprite( spriteMaterial );

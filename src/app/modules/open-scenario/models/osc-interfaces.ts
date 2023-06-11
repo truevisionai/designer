@@ -5,9 +5,9 @@
 import { EventEmitter } from '@angular/core';
 import { Vector3 } from 'three';
 import { StoryEvent } from '../services/scenario-player.service';
-import { OscCatalogReference } from './osc-catalogs';
-import { OscEntityObject } from './osc-entities';
-import { OscActionCategory, OscActionType, OscPositionType } from './osc-enums';
+import { CatalogReference } from './osc-catalogs';
+import { EntityObject } from './osc-entities';
+import { ActionCategory, ActionType, PositionType } from './osc-enums';
 
 export abstract class IScenarioObject {
 }
@@ -22,7 +22,7 @@ export abstract class AbstractController {
 
 export class CatalogReferenceController extends AbstractController {
 
-	constructor ( public catalogReference: OscCatalogReference ) {
+	constructor ( public catalogReference: CatalogReference ) {
 		super();
 	}
 
@@ -30,14 +30,14 @@ export class CatalogReferenceController extends AbstractController {
 
 export abstract class AbstractAction {
 
-	abstract category: OscActionCategory;
-	abstract actionType: OscActionType;
+	abstract category: ActionCategory;
+	abstract actionType: ActionType;
 
 	public isCompleted: boolean;
 	public hasStarted: boolean;
 	public completed = new EventEmitter<StoryEvent>();
 
-	execute ( entity: OscEntityObject ) {
+	execute ( entity: EntityObject ) {
 		console.error( this.actionType, this.category );
 		throw new Error( 'Method not implemented' );
 	}
@@ -49,7 +49,7 @@ export abstract class AbstractAction {
 
 export abstract class AbstractPrivateAction extends AbstractAction {
 
-	public category = OscActionCategory.private;
+	public category = ActionCategory.private;
 
 	abstract actionName: string;
 
@@ -57,7 +57,7 @@ export abstract class AbstractPrivateAction extends AbstractAction {
 
 export abstract class AbstractPosition {
 
-	abstract readonly type: OscPositionType;
+	abstract readonly type: PositionType;
 	public vector3: THREE.Vector3 = new Vector3( 0, 0, 0 );
 
 	abstract toVector3 (): Vector3;

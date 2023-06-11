@@ -8,32 +8,32 @@ import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
 import { AbstractTarget } from '../models/actions/abstract-target';
-import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
-import { OscDistanceAction } from '../models/actions/osc-distance-action';
-import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
-import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscLaneChangeDynamics, OscSpeedDynamics } from '../models/actions/osc-private-action';
-import { OscRelativeTarget } from '../models/actions/osc-relative-target';
+import { AbsoluteTarget } from '../models/actions/osc-absolute-target';
+import { DistanceAction } from '../models/actions/osc-distance-action';
+import { FollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
+import { LaneChangeAction } from '../models/actions/osc-lane-change-action';
+import { PositionAction } from '../models/actions/osc-position-action';
+import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/osc-private-action';
+import { RelativeTarget } from '../models/actions/osc-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/osc-routing-action';
-import { OscSpeedAction } from '../models/actions/osc-speed-action';
-import { OscAfterTerminationCondition } from '../models/conditions/osc-after-termination-condition';
-import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
+import { SpeedAction } from '../models/actions/osc-speed-action';
+import { AfterTerminationCondition } from '../models/conditions/osc-after-termination-condition';
+import { AtStartCondition } from '../models/conditions/osc-at-start-condition';
 import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
-import { OscConditionGroup } from '../models/conditions/osc-condition-group';
-import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
-import { OscReachPositionCondition } from '../models/conditions/osc-reach-position-condition';
-import { OscRelativeSpeedCondition } from '../models/conditions/osc-relative-speed-condition';
-import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
-import { OscSpeedCondition } from '../models/conditions/osc-speed-condition';
-import { OscTraveledDistanceCondition } from '../models/conditions/osc-traveled-distance-condition';
-import { OscAct } from '../models/osc-act';
-import { OscCatalogReference, OscCatalogs, TrajectoryCatalog } from '../models/osc-catalogs';
-import { OscDirectory, OscFile } from '../models/osc-common';
-import { OscEntityObject } from '../models/osc-entities';
-import { OscConditionEdge, OscRule } from '../models/osc-enums';
-import { OscEvent } from '../models/osc-event';
-import { OscFileHeader } from '../models/osc-file-header';
+import { ConditionGroup } from '../models/conditions/osc-condition-group';
+import { DistanceCondition } from '../models/conditions/osc-distance-condition';
+import { ReachPositionCondition } from '../models/conditions/osc-reach-position-condition';
+import { RelativeSpeedCondition } from '../models/conditions/osc-relative-speed-condition';
+import { SimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
+import { SpeedCondition } from '../models/conditions/osc-speed-condition';
+import { TraveledDistanceCondition } from '../models/conditions/osc-traveled-distance-condition';
+import { Act } from '../models/osc-act';
+import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/osc-catalogs';
+import { Directory, File } from '../models/osc-common';
+import { EntityObject } from '../models/osc-entities';
+import { ConditionEdge, Rule } from '../models/osc-enums';
+import { Event } from '../models/osc-event';
+import { FileHeader } from '../models/osc-file-header';
 import {
 	AbstractAction,
 	AbstractController,
@@ -41,33 +41,33 @@ import {
 	AbstractPrivateAction,
 	CatalogReferenceController
 } from '../models/osc-interfaces';
-import { OscEventAction, OscManeuver } from '../models/osc-maneuver';
-import { OscOrientation } from '../models/osc-orientation';
-import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
-import { OscRoadNetwork } from '../models/osc-road-network';
-import { OscRoute, OscWaypoint } from '../models/osc-route';
+import { EventAction, Maneuver } from '../models/osc-maneuver';
+import { Orientation } from '../models/osc-orientation';
+import { Parameter, ParameterDeclaration } from '../models/osc-parameter-declaration';
+import { RoadNetwork } from '../models/osc-road-network';
+import { Route, Waypoint } from '../models/osc-route';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscSequence } from '../models/osc-sequence';
-import { OscStory } from '../models/osc-story';
-import { OscStoryboard } from '../models/osc-storyboard';
+import { Sequence } from '../models/osc-sequence';
+import { Story } from '../models/osc-story';
+import { Storyboard } from '../models/osc-storyboard';
 import {
-	AbstractOscShape,
-	OscClothoidShape,
-	OscControlPoint,
-	OscPolylineShape,
-	OscSplineShape,
-	OscTrajectory,
-	OscVertex
+	AbstractShape,
+	ClothoidShape,
+	ControlPoint,
+	PolylineShape,
+	SplineShape,
+	Trajectory,
+	Vertex
 } from '../models/osc-trajectory';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
-import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
-import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
+import { LanePosition } from '../models/positions/osc-lane-position';
+import { RelativeLanePosition } from '../models/positions/osc-relative-lane-position';
+import { RelativeObjectPosition } from '../models/positions/osc-relative-object-position';
+import { WorldPosition } from '../models/positions/osc-world-position';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscReaderService extends AbstractReader {
+export class ReaderService extends AbstractReader {
 
 	private openScenario: OpenScenario;
 	private file: IFile;
@@ -139,7 +139,7 @@ export class OscReaderService extends AbstractReader {
 
 			condition.name = name ? name : '';
 			condition.delay = delay ? delay : 0;
-			condition.edge = edge ? edge : OscConditionEdge.any;
+			condition.edge = edge ? edge : ConditionEdge.any;
 
 		}
 
@@ -149,7 +149,7 @@ export class OscReaderService extends AbstractReader {
 
 	public readFileHeader ( xmlElement: any ) {
 
-		return new OscFileHeader(
+		return new FileHeader(
 			parseFloat( xmlElement.attr_revMajor ),
 			parseFloat( xmlElement.attr_revMinor ),
 			xmlElement.attr_date,
@@ -186,23 +186,23 @@ export class OscReaderService extends AbstractReader {
 
 		if ( xml.Logics != null ) {
 
-			logics = this.readOscFile( xml.Logics );
+			logics = this.readFile( xml.Logics );
 
 		}
 
 		if ( xml.SceneGraph != null ) {
 
-			sceneGraph = this.readOscFile( xml.SceneGraph );
+			sceneGraph = this.readFile( xml.SceneGraph );
 		}
 
 		// TODO: RoadSignals
 
-		return new OscRoadNetwork( logics, sceneGraph );
+		return new RoadNetwork( logics, sceneGraph );
 	}
 
-	public readEntities ( xml: any ): OscEntityObject[] {
+	public readEntities ( xml: any ): EntityObject[] {
 
-		const objects: OscEntityObject[] = [];
+		const objects: EntityObject[] = [];
 
 		this.readAsOptionalArray( xml.Object, ( object, count ) => {
 
@@ -216,11 +216,11 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	public readEntityObject ( xml: any ): OscEntityObject {
+	public readEntityObject ( xml: any ): EntityObject {
 
 		const name = xml.attr_name;
 
-		const oscEntityObject = new OscEntityObject( name );
+		const oscEntityObject = new EntityObject( name );
 
 		if ( xml.CatalogReference != null ) {
 
@@ -252,7 +252,7 @@ export class OscReaderService extends AbstractReader {
 
 		if ( xml.CatalogReference != null ) {
 
-			const catalogReference = OscCatalogReference.readXml( xml.CatalogReference );
+			const catalogReference = CatalogReference.readXml( xml.CatalogReference );
 
 			response = new CatalogReferenceController( catalogReference );
 
@@ -267,15 +267,15 @@ export class OscReaderService extends AbstractReader {
 		return response;
 	}
 
-	public readOscFile ( xml ) {
+	public readFile ( xml ) {
 
-		return new OscFile( xml.attr_filepath );
+		return new File( xml.attr_filepath );
 
 	}
 
-	readConditionGroup ( xml: any ): OscConditionGroup {
+	readConditionGroup ( xml: any ): ConditionGroup {
 
-		const conditionGroup = new OscConditionGroup;
+		const conditionGroup = new ConditionGroup;
 
 		this.readAsOptionalArray( xml.Condition, ( xml ) => {
 
@@ -289,7 +289,7 @@ export class OscReaderService extends AbstractReader {
 
 	readWorldPosition ( xml: any ) {
 
-		const worldPosition = new OscWorldPosition;
+		const worldPosition = new WorldPosition;
 
 		worldPosition.x = parseFloat( xml.attr_x );
 		worldPosition.y = parseFloat( xml.attr_y );
@@ -391,31 +391,31 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	readTraveledDistanceCondition ( xml: any ): OscTraveledDistanceCondition {
+	readTraveledDistanceCondition ( xml: any ): TraveledDistanceCondition {
 
 		const value = xml.attr_value;
 
-		return new OscTraveledDistanceCondition( value );
+		return new TraveledDistanceCondition( value );
 	}
 
-	readRelativeSpeedCondition ( xml: any ): OscRelativeSpeedCondition {
+	readRelativeSpeedCondition ( xml: any ): RelativeSpeedCondition {
 
 		const entity = xml.attr_entity;
 		const value = xml.attr_value;
 		const rule = this.convertStringToRule( xml.attr_rule );
 
-		return new OscRelativeSpeedCondition( entity, value, rule );
+		return new RelativeSpeedCondition( entity, value, rule );
 	}
 
-	readReachPositionCondition ( xml: any ): OscReachPositionCondition {
+	readReachPositionCondition ( xml: any ): ReachPositionCondition {
 
 		const position = this.readPosition( xml.Position );
 		const tolerance = parseFloat( xml.attr_tolerance );
 
-		return new OscReachPositionCondition( position, tolerance );
+		return new ReachPositionCondition( position, tolerance );
 	}
 
-	readDistanceCondition ( xml: any ): OscDistanceCondition {
+	readDistanceCondition ( xml: any ): DistanceCondition {
 
 		const value = parseFloat( xml.attr_value );
 		const freespace = xml.attr_freespace;
@@ -423,7 +423,7 @@ export class OscReaderService extends AbstractReader {
 		const rule = this.convertStringToRule( xml.attr_rule );
 		const position = this.readPosition( xml.Position );
 
-		return new OscDistanceCondition( position, value, freespace, alongRoute, rule );
+		return new DistanceCondition( position, value, freespace, alongRoute, rule );
 	}
 
 	readConditionByValue ( xml: any ): AbstractCondition {
@@ -446,25 +446,25 @@ export class OscReaderService extends AbstractReader {
 		const value = parseFloat( xml.attr_value );
 		const rule = this.convertStringToRule( xml.attr_rule );
 
-		return new OscSimulationTimeCondition( value, rule );
+		return new SimulationTimeCondition( value, rule );
 	}
 
-	convertStringToRule ( rule: string ): OscRule {
+	convertStringToRule ( rule: string ): Rule {
 
-		let res: OscRule;
+		let res: Rule;
 
 		switch ( rule ) {
 
 			case 'greater_than':
-				res = OscRule.greater_than;
+				res = Rule.greater_than;
 				break;
 
 			case 'less_than':
-				res = OscRule.less_than;
+				res = Rule.less_than;
 				break;
 
 			case 'equal_to':
-				res = OscRule.equal_to;
+				res = Rule.equal_to;
 				break;
 
 			default:
@@ -497,7 +497,7 @@ export class OscReaderService extends AbstractReader {
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
 
-		return new OscAtStartCondition( elementName, type );
+		return new AtStartCondition( elementName, type );
 	}
 
 	readAfterTerminationCondition ( xml: any ): AbstractCondition {
@@ -507,15 +507,15 @@ export class OscReaderService extends AbstractReader {
 		let rule = xml.attr_rule;
 
 
-		return new OscAfterTerminationCondition( elementName, rule, type );
+		return new AfterTerminationCondition( elementName, rule, type );
 	}
 
-	public readStory ( xml: any ): OscStory {
+	public readStory ( xml: any ): Story {
 
 		let name = xml.attr_name;
 		let ownerName = xml.attr_owner ? xml.attr_owner : null;
 
-		const story = new OscStory( name, ownerName );
+		const story = new Story( name, ownerName );
 
 		this.readAsOptionalArray( xml.Act, ( xml ) => {
 
@@ -526,9 +526,9 @@ export class OscReaderService extends AbstractReader {
 		return story;
 	}
 
-	readAct ( xml: any ): OscAct {
+	readAct ( xml: any ): Act {
 
-		const act = new OscAct;
+		const act = new Act;
 
 		act.name = xml.attr_name;
 
@@ -567,9 +567,9 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	readSequence ( xml: any ): OscSequence {
+	readSequence ( xml: any ): Sequence {
 
-		const sequence = new OscSequence;
+		const sequence = new Sequence;
 
 		sequence.name = xml.attr_name;
 		sequence.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
@@ -597,9 +597,9 @@ export class OscReaderService extends AbstractReader {
 		return sequence;
 	}
 
-	readManeuver ( xml: any ): OscManeuver {
+	readManeuver ( xml: any ): Maneuver {
 
-		const maneuver = new OscManeuver( xml.attr_name );
+		const maneuver = new Maneuver( xml.attr_name );
 
 		this.readAsOptionalArray( xml.Event, ( xml ) => {
 
@@ -610,9 +610,9 @@ export class OscReaderService extends AbstractReader {
 		return maneuver;
 	}
 
-	readEvent ( xml: any ): OscEvent {
+	readEvent ( xml: any ): Event {
 
-		const event = new OscEvent;
+		const event = new Event;
 
 		event.name = xml.attr_name;
 		event.priority = xml.attr_priority;
@@ -638,9 +638,9 @@ export class OscReaderService extends AbstractReader {
 		return event;
 	}
 
-	readEventAction ( xml: any ): OscEventAction {
+	readEventAction ( xml: any ): EventAction {
 
-		const action = new OscEventAction;
+		const action = new EventAction;
 
 		action.name = xml.attr_name;
 
@@ -661,7 +661,7 @@ export class OscReaderService extends AbstractReader {
 		return action;
 	}
 
-	public readInitActions ( xml: any, storyboard: OscStoryboard ) {
+	public readInitActions ( xml: any, storyboard: Storyboard ) {
 
 		this.readAsOptionalArray( xml.Global, ( item ) => {
 
@@ -800,9 +800,9 @@ export class OscReaderService extends AbstractReader {
 		return action;
 	}
 
-	readFollowTrajectoryAction ( xml: any ): OscFollowTrajectoryAction {
+	readFollowTrajectoryAction ( xml: any ): FollowTrajectoryAction {
 
-		let trajectory: OscTrajectory = null;
+		let trajectory: Trajectory = null;
 
 		if ( xml.Trajectory != null ) {
 
@@ -814,7 +814,7 @@ export class OscReaderService extends AbstractReader {
 
 		}
 
-		let action = new OscFollowTrajectoryAction( trajectory );
+		let action = new FollowTrajectoryAction( trajectory );
 
 		action.lateralPurpose = xml.Lateral.attr_purpose;
 		action.longitudinalPurpose = this.readLongitudinalPurpose( xml.Longitudinal );
@@ -822,13 +822,13 @@ export class OscReaderService extends AbstractReader {
 		return action;
 	}
 
-	readTrajectory ( xml: any ): OscTrajectory {
+	readTrajectory ( xml: any ): Trajectory {
 
 		let name = xml.attr_name;
 		let closed = xml.attr_closed == 'true';
 		let domain = xml.attr_domain;
 
-		const trajectory = new OscTrajectory( name, closed, domain );
+		const trajectory = new Trajectory( name, closed, domain );
 
 		this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
 
@@ -847,7 +847,7 @@ export class OscReaderService extends AbstractReader {
 
 	readFollowRouteAction ( xml: any ): FollowRouteAction {
 
-		let route: OscRoute = null;
+		let route: Route = null;
 
 		if ( xml.Route != null ) {
 
@@ -864,9 +864,9 @@ export class OscReaderService extends AbstractReader {
 		return action;
 	}
 
-	readRoute ( xml: any ): OscRoute {
+	readRoute ( xml: any ): Route {
 
-		let route = new OscRoute;
+		let route = new Route;
 
 		route.name = xml.attr_name;
 		route.closed = xml.attr_closed == 'true' ? true : false;
@@ -886,17 +886,17 @@ export class OscReaderService extends AbstractReader {
 		return route;
 	}
 
-	readWaypoint ( xml: any ): OscWaypoint {
+	readWaypoint ( xml: any ): Waypoint {
 
 		let position = this.readPosition( xml.Position );
 		let strategy = xml.attr_strategy;
 
-		return new OscWaypoint( position, strategy );
+		return new Waypoint( position, strategy );
 	}
 
 	readLaneChangeAction ( xml: any ): AbstractAction {
 
-		const action = new OscLaneChangeAction();
+		const action = new LaneChangeAction();
 
 		action.targetLaneOffset = parseFloat( xml.attr_targetLaneOffset );
 
@@ -908,9 +908,9 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	readLaneChangeDynamics ( xml: any ): OscLaneChangeDynamics {
+	readLaneChangeDynamics ( xml: any ): LaneChangeDynamics {
 
-		const dynamics = new OscLaneChangeDynamics;
+		const dynamics = new LaneChangeDynamics;
 
 		dynamics.shape = xml.attr_shape;
 
@@ -924,9 +924,9 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	readSpeedDynamics ( xml: any ): OscSpeedDynamics {
+	readSpeedDynamics ( xml: any ): SpeedDynamics {
 
-		let dynamics = new OscSpeedDynamics;
+		let dynamics = new SpeedDynamics;
 
 		dynamics.shape = xml.attr_shape;
 
@@ -944,7 +944,7 @@ export class OscReaderService extends AbstractReader {
 
 		let position = this.readPosition( xml );
 
-		return new OscPositionAction( position );
+		return new PositionAction( position );
 
 	}
 
@@ -987,12 +987,12 @@ export class OscReaderService extends AbstractReader {
 
 		if ( xml.attr_offset != null ) laneOffset = parseFloat( xml.attr_offset );
 
-		return new OscLanePosition( roadId, laneId, laneOffset, s, null );
+		return new LanePosition( roadId, laneId, laneOffset, s, null );
 	}
 
 	readRelativeLanePosition ( xml: any ): AbstractPosition {
 
-		const position = new OscRelativeLanePosition();
+		const position = new RelativeLanePosition();
 
 		position.object = xml.attr_object;
 		position.dLane = parseFloat( xml.attr_dLane );
@@ -1010,7 +1010,7 @@ export class OscReaderService extends AbstractReader {
 
 	readRelativeObjectPosition ( xml: any ): AbstractPosition {
 
-		const position = new OscRelativeObjectPosition();
+		const position = new RelativeObjectPosition();
 
 		position.object = xml.attr_object;
 		position.dx = xml.attr_dx ? parseFloat( xml.attr_dx ) : null;
@@ -1026,9 +1026,9 @@ export class OscReaderService extends AbstractReader {
 		return position;
 	}
 
-	readOrientation ( xml: any ): OscOrientation {
+	readOrientation ( xml: any ): Orientation {
 
-		const orientation = new OscOrientation;
+		const orientation = new Orientation;
 
 		orientation.h = xml.attr_h ? parseFloat( xml.attr_h ) : null;
 		orientation.p = xml.attr_p ? parseFloat( xml.attr_p ) : null;
@@ -1045,7 +1045,7 @@ export class OscReaderService extends AbstractReader {
 
 		if ( xml.Speed != null ) {
 
-			let action = new OscSpeedAction();
+			let action = new SpeedAction();
 
 			action.dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
 
@@ -1055,7 +1055,7 @@ export class OscReaderService extends AbstractReader {
 
 		} else if ( xml.Distance != null ) {
 
-			action = new OscDistanceAction();
+			action = new DistanceAction();
 
 		}
 
@@ -1070,7 +1070,7 @@ export class OscReaderService extends AbstractReader {
 
 			const value = xml.Absolute.attr_value;
 
-			target = new OscAbsoluteTarget( value );
+			target = new AbsoluteTarget( value );
 
 		} else if ( xml.Relative != null ) {
 
@@ -1078,16 +1078,16 @@ export class OscReaderService extends AbstractReader {
 
 			const object = xml.Relative.attr_object;
 
-			return new OscRelativeTarget( object, value );
+			return new RelativeTarget( object, value );
 
 		}
 
 		return target;
 	}
 
-	readVertex ( xml: any ): OscVertex {
+	readVertex ( xml: any ): Vertex {
 
-		const vertex = new OscVertex;
+		const vertex = new Vertex;
 
 		vertex.reference = parseFloat( xml.attr_reference );
 		vertex.position = this.readPosition( xml.Position );
@@ -1096,11 +1096,11 @@ export class OscReaderService extends AbstractReader {
 		return vertex;
 	}
 
-	readVertexShape ( xml: any ): AbstractOscShape {
+	readVertexShape ( xml: any ): AbstractShape {
 
 		if ( xml.Polyline != null ) {
 
-			return new OscPolylineShape;
+			return new PolylineShape;
 
 		} else if ( xml.Clothoid != null ) {
 
@@ -1119,7 +1119,7 @@ export class OscReaderService extends AbstractReader {
 
 	// private readInitActions ( xmlElement: any ) {
 	//
-	//     // oscStoryboard.m_InitActions = OscInitActions.readXml( Storyboard.Init.Actions );
+	//     // oscStoryboard.m_InitActions = InitActions.readXml( Storyboard.Init.Actions );
 	//
 	//     this.readPrivateElements( xmlElement.Private, this.openScenario.storyboard.initActions );
 	//
@@ -1127,10 +1127,10 @@ export class OscReaderService extends AbstractReader {
 	//
 	// private readStory ( xml: any ) {
 	//
-	//     // oscStoryboard.Story = OscStory.readXml( Storyboard.Story );
+	//     // oscStoryboard.Story = Story.readXml( Storyboard.Story );
 	// }
 	//
-	// private readPrivateElements ( xml: any, initActions: OscInitActions ) {
+	// private readPrivateElements ( xml: any, initActions: InitActions ) {
 	//
 	//     let owner = xml.attr_object;
 	//
@@ -1152,7 +1152,7 @@ export class OscReaderService extends AbstractReader {
 	//
 	// private readPrivateElement ( xml: any ): AbstractPrivateAction {
 	//
-	//     const privateAction = new OscPrivateAction();
+	//     const privateAction = new PrivateAction();
 	//
 	//     if ( Array.isArray( xml.Action ) ) {
 	//
@@ -1190,7 +1190,7 @@ export class OscReaderService extends AbstractReader {
 	//
 	// private readPositionAction ( xml: any ): any {
 	//
-	//     let position: OscPositionAction;
+	//     let position: PositionAction;
 	//
 	//     if ( xml.World != null ) {
 	//
@@ -1198,12 +1198,12 @@ export class OscReaderService extends AbstractReader {
 	//
 	//     }
 	//
-	//     new OscPositionAction( position );
+	//     new PositionAction( position );
 	// }
 	//
 	// private readWorldPosition ( xml: any ): any {
 	//
-	//     return new OscWorldPosition(
+	//     return new WorldPosition(
 	//         xml.attr_x,
 	//         xml.attr_y,
 	//         xml.attr_z,
@@ -1214,9 +1214,9 @@ export class OscReaderService extends AbstractReader {
 	//     );
 	// }
 
-	readClothoidShape ( xml: any ): OscClothoidShape {
+	readClothoidShape ( xml: any ): ClothoidShape {
 
-		const clothoid = new OscClothoidShape;
+		const clothoid = new ClothoidShape;
 
 		clothoid.curvature = parseFloat( xml.attr_curvature );
 		clothoid.curvatureDot = parseFloat( xml.attr_curvatureDot );
@@ -1225,9 +1225,9 @@ export class OscReaderService extends AbstractReader {
 		return clothoid;
 	}
 
-	readSplineShape ( xml: any ): OscSplineShape {
+	readSplineShape ( xml: any ): SplineShape {
 
-		const spline = new OscSplineShape;
+		const spline = new SplineShape;
 
 		spline.controlPoint1 = this.readSplineControlPoint( xml.ControlPoint1 );
 		spline.controlPoint2 = this.readSplineControlPoint( xml.ControlPoint2 );
@@ -1235,18 +1235,18 @@ export class OscReaderService extends AbstractReader {
 		return spline;
 	}
 
-	readSplineControlPoint ( xml: any ): OscControlPoint {
+	readSplineControlPoint ( xml: any ): ControlPoint {
 
-		const controlPoint = new OscControlPoint;
+		const controlPoint = new ControlPoint;
 
 		controlPoint.status = xml.attr_status;
 
 		return controlPoint;
 	}
 
-	private readStoryboard ( xml: any ): OscStoryboard {
+	private readStoryboard ( xml: any ): Storyboard {
 
-		const storyboard = new OscStoryboard();
+		const storyboard = new Storyboard();
 
 		this.readAsOptionalElement( xml.Init.Actions, ( xml ) => {
 
@@ -1290,7 +1290,7 @@ export class OscReaderService extends AbstractReader {
 
 		openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
 
-		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: OscEntityObject ) => {
+		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: EntityObject ) => {
 
 			openScenario.addObject( value );
 
@@ -1334,7 +1334,7 @@ export class OscReaderService extends AbstractReader {
 
 	private readCatalogReference ( xml: any ) {
 
-		const catalogReference = new OscCatalogReference( null, null );
+		const catalogReference = new CatalogReference( null, null );
 
 		catalogReference.catalogName = xml.attr_catalogName;
 		catalogReference.entryName = xml.attr_entryName;
@@ -1343,9 +1343,9 @@ export class OscReaderService extends AbstractReader {
 		return catalogReference;
 	}
 
-	private readParameterDeclaration ( xml: any ): OscParameterDeclaration {
+	private readParameterDeclaration ( xml: any ): ParameterDeclaration {
 
-		const parameterDeclaration = new OscParameterDeclaration();
+		const parameterDeclaration = new ParameterDeclaration();
 
 		this.readAsOptionalArray( xml.Parameter, ( xml ) => {
 
@@ -1357,14 +1357,14 @@ export class OscReaderService extends AbstractReader {
 
 	}
 
-	private readParameter ( xml: any ): OscParameter {
+	private readParameter ( xml: any ): Parameter {
 
 		const name: string = xml.attr_name;
 		const value: string = xml.attr_value;
 
-		const type = OscParameter.stringToEnum( xml.attr_type );
+		const type = Parameter.stringToEnum( xml.attr_type );
 
-		return new OscParameter( name, type, value );
+		return new Parameter( name, type, value );
 	}
 
 	private readSpeedCondition ( xml: any ) {
@@ -1373,12 +1373,12 @@ export class OscReaderService extends AbstractReader {
 		const rule = xml.attr_rule;
 
 
-		return new OscSpeedCondition( value, rule );
+		return new SpeedCondition( value, rule );
 	}
 
 	private readCatalogs ( xml: any ) {
 
-		const catalogs = new OscCatalogs();
+		const catalogs = new Catalogs();
 
 		catalogs.trajectoryCatalog = this.readTrajectoryCatalog( xml.TrajectoryCatalog );
 
@@ -1408,9 +1408,9 @@ export class OscReaderService extends AbstractReader {
 		return catalog;
 	}
 
-	private readDirectory ( xml: any ): OscDirectory {
+	private readDirectory ( xml: any ): Directory {
 
-		return new OscDirectory( xml.attr_path );
+		return new Directory( xml.attr_path );
 
 	}
 }

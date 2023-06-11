@@ -2,18 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export enum OscParameterType {
+export enum ParameterType {
 	integer = 'integer',
 	double = 'double',
 	string = 'string',
 }
 
-export enum OscSex {
+export enum Sex {
 	male,
 	female
 }
 
-export enum OscVehicleCategory {
+export enum VehicleCategory {
 	car,
 	van,
 	truck,
@@ -26,36 +26,36 @@ export enum OscVehicleCategory {
 	tram,
 }
 
-export enum OscByConditionActor {
+export enum ByConditionActor {
 	triggeringEntity,
 	anyEntity
 }
 
-export enum OscMiscObject_category {
+export enum MiscObject_category {
 	barrier,
 	guardRail,
 	other
 }
 
-export enum OscPedestrianCategory {
+export enum PedestrianCategory {
 	pedestrian,
 	wheelchair,
 	animal
 }
 
-export enum OscConditionEdge {
+export enum ConditionEdge {
 	rising = 'rising',
 	falling = 'falling',
 	any = 'any'
 }
 
-export enum OscObjectType {
+export enum ObjectType {
 	pedestrian,
 	vehicle,
 	miscellaneous
 }
 
-export enum OscPositionType {
+export enum PositionType {
 	World,
 	RelativeWorld,
 	RelativeObject,
@@ -66,36 +66,36 @@ export enum OscPositionType {
 	Route
 }
 
-export enum OscRule {
+export enum Rule {
 	greater_than = 'greater_than',
 	less_than = 'less_than',
 	equal_to = 'equal_to',
 }
 
-export enum OscTargetType {
+export enum TargetType {
 	absolute = 'absolute',
 	relative = 'relative'
 }
 
-export enum OscDynamicsShape {
+export enum DynamicsShape {
 	linear = 'linear',
 	cubic = 'cubic',
 	sinusoidal = 'sinusoidal',
 	step = 'step',
 }
 
-export enum OscConditionCategory {
+export enum ConditionCategory {
 	ByEntity,
 	ByState,
 	ByValue
 }
 
-export enum OscTriggeringRule {
+export enum TriggeringRule {
 	Any = 'any',
 	All = 'all'
 }
 
-export enum OscStoryElementType {
+export enum StoryElementType {
 	act = 'act',
 	scene = 'scene',
 	maneuver = 'maneuver',
@@ -103,13 +103,13 @@ export enum OscStoryElementType {
 	action = 'action',
 }
 
-export enum OscAfterTerminationRule {
+export enum AfterTerminationRule {
 	end = 'end',
 	cancel = 'cancel',
 	any = 'any'
 }
 
-export enum OscConditionType {
+export enum ConditionType {
 	ByEntity_EndOfRoad = 0,
 	ByEntity_Collision = 1,
 	ByEntity_Offroad = 2,
@@ -135,13 +135,13 @@ export enum OscConditionType {
 	ByValue_SimulationTime = 20
 }
 
-export enum OscActionCategory {
+export enum ActionCategory {
 	private = 'private',
 	global = 'global',
 	userDefined = 'user_defined'
 }
 
-export enum OscActionType {
+export enum ActionType {
 	Private_Longitudinal_Speed,
 	Private_Longitudinal_Distance,
 	Private_Lateral,
@@ -167,60 +167,60 @@ export enum EnumOrientationType {
 	absolute = 'absolute'
 }
 
-export enum OscRelativeDistanceType {
+export enum RelativeDistanceType {
 	longitudinal,
 	lateral,
 	intertial
 }
 
-export enum OscLateralPurpose {
+export enum LateralPurpose {
 	position = 'position',
 	steering = 'steering'
 }
 
-export enum OscController_domain {
+export enum Controller_domain {
 	longitudinal,
 	lateral,
 	both
 }
 
-export enum OscMeeting_Position_mode {
+export enum Meeting_Position_mode {
 	straight,
 	route
 }
 
-export enum OscSpeed_Target_valueType {
+export enum Speed_Target_valueType {
 	delta,
 	factor
 }
 
-export enum OscScript_execution {
+export enum Script_execution {
 	single,
 	continuous
 }
 
-export enum OscEventPriority {
+export enum EventPriority {
 	overwrite,
 	following,
 	skip
 }
 
-export enum OscDomainAbsoluteRelative {
+export enum DomainAbsoluteRelative {
 	absolute = 'absolute',
 	relative = 'relative'
 }
 
-export enum OscDomainTimeDistance {
+export enum DomainTimeDistance {
 	time = 'time',
 	distance = 'distance'
 }
 
-export enum OscOrientationType {
+export enum OrientationType {
 	relative = 'relative',
 	absolute = 'absolute'
 }
 
-export enum OscCloudState {
+export enum CloudState {
 	skyOff,
 	free,
 	cloudy,
@@ -228,13 +228,13 @@ export enum OscCloudState {
 	rainy,
 }
 
-export enum OscPrecipitationType {
+export enum PrecipitationType {
 	dry,
 	rain,
 	snow
 }
 
-export enum OscRouteStrategy {
+export enum RouteStrategy {
 	fastest = 'fastest',
 	shortest = 'shortest',
 	leastIntersections = 'leastIntersections',

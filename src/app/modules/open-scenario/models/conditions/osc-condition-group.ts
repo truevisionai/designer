@@ -4,7 +4,7 @@
 
 import { AbstractCondition } from './osc-condition';
 
-export class OscConditionGroup {
+export class ConditionGroup {
 
 	public conditions: AbstractCondition[] = [];
 

@@ -6,7 +6,7 @@ import { BaseCommand } from '../../../core/commands/base-command';
 import { OpenScenario } from '../models/osc-scenario';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
-export class OscModifyScenarioCommand extends BaseCommand {
+export class ModifyScenarioCommand extends BaseCommand {
 
 	private oldState: OpenScenario;
 	private newState: OpenScenario;

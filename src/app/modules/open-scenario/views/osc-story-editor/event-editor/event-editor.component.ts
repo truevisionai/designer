@@ -8,9 +8,9 @@ import {
 	ChooseConditionDialogComponent
 } from 'app/modules/open-scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/osc-condition';
-import { OscEvent } from 'app/modules/open-scenario/models/osc-event';
+import { Event } from 'app/modules/open-scenario/models/osc-event';
 import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
-import { OscDialogService } from 'app/modules/open-scenario/services/osc-dialog.service';
+import { DialogService } from 'app/modules/open-scenario/services/osc-dialog.service';
 
 @Component( {
 	selector: 'app-event-editor',
@@ -21,12 +21,12 @@ export class EventEditorComponent implements OnInit, IComponent {
 
 	data: any;
 
-	@Input() event: OscEvent;
+	@Input() event: Event;
 
 	@Input() action?: AbstractAction;
 
 	constructor (
-		private dialogService: OscDialogService
+		private dialogService: DialogService
 	) {
 	}
 

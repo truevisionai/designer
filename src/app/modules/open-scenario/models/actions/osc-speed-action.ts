@@ -5,24 +5,24 @@
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscEntityObject } from '../osc-entities';
-import { OscActionType, OscDynamicsShape, OscTargetType } from '../osc-enums';
+import { EntityObject } from '../osc-entities';
+import { ActionType, DynamicsShape, TargetType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
 import { AbstractTarget } from './abstract-target';
-import { OscAbsoluteTarget } from './osc-absolute-target';
-import { OscSpeedDynamics } from './osc-private-action';
-import { OscRelativeTarget } from './osc-relative-target';
+import { AbsoluteTarget } from './osc-absolute-target';
+import { SpeedDynamics } from './osc-private-action';
+import { RelativeTarget } from './osc-relative-target';
 
-export class OscSpeedAction extends AbstractPrivateAction {
+export class SpeedAction extends AbstractPrivateAction {
 
-	actionType: OscActionType = OscActionType.Private_Longitudinal_Speed;
+	actionType: ActionType = ActionType.Private_Longitudinal_Speed;
 	public actionName: string = 'Speed';
-	public dynamics: OscSpeedDynamics;
+	public dynamics: SpeedDynamics;
 	private newSpeed: number;
 	private currentSpeed: number;
 	private startTime: number;
 
-	constructor ( dynamics: OscSpeedDynamics = null, target: AbstractTarget = null ) {
+	constructor ( dynamics: SpeedDynamics = null, target: AbstractTarget = null ) {
 
 		super();
 
@@ -43,7 +43,7 @@ export class OscSpeedAction extends AbstractPrivateAction {
 		this._target = value;
 	}
 
-	execute ( entity: OscEntityObject ) {
+	execute ( entity: EntityObject ) {
 
 		if ( !this.hasStarted ) {
 
@@ -66,11 +66,11 @@ export class OscSpeedAction extends AbstractPrivateAction {
 
 	setAbsoluteTarget ( target: number ) {
 
-		this._target = new OscAbsoluteTarget( target );
+		this._target = new AbsoluteTarget( target );
 
 	}
 
-	private start ( entity: OscEntityObject ) {
+	private start ( entity: EntityObject ) {
 
 		this.hasStarted = true;
 
@@ -81,7 +81,7 @@ export class OscSpeedAction extends AbstractPrivateAction {
 		this.setNewSpeedTarget( entity );
 
 		// TODO : Remove this switch case and keep only 1
-		if ( this.dynamics.shape === OscDynamicsShape.step ) {
+		if ( this.dynamics.shape === DynamicsShape.step ) {
 
 			entity.maxSpeed = this.newSpeed;
 
@@ -89,7 +89,7 @@ export class OscSpeedAction extends AbstractPrivateAction {
 
 	}
 
-	private update ( entity: OscEntityObject ) {
+	private update ( entity: EntityObject ) {
 
 		const timePassed = ( Time.time - this.startTime ) * 0.001;
 
@@ -99,19 +99,19 @@ export class OscSpeedAction extends AbstractPrivateAction {
 
 			switch ( this.dynamics.shape ) {
 
-				case OscDynamicsShape.linear:
+				case DynamicsShape.linear:
 					entity.maxSpeed = Maths.linearInterpolation( this.currentSpeed, this.newSpeed, fraction );
 					break;
 
-				case OscDynamicsShape.cubic:
+				case DynamicsShape.cubic:
 					entity.maxSpeed = Maths.cubicInterpolation( this.currentSpeed, this.newSpeed, fraction );
 					break;
 
-				case OscDynamicsShape.sinusoidal:
+				case DynamicsShape.sinusoidal:
 					entity.maxSpeed = Maths.sineInterpolation( this.currentSpeed, this.newSpeed, fraction );
 					break;
 
-				case OscDynamicsShape.step:
+				case DynamicsShape.step:
 					entity.maxSpeed = this.newSpeed;
 					break;
 
@@ -127,19 +127,19 @@ export class OscSpeedAction extends AbstractPrivateAction {
 	}
 
 
-	private setNewSpeedTarget ( entity: OscEntityObject ) {
+	private setNewSpeedTarget ( entity: EntityObject ) {
 
 		switch ( this.target.targetType ) {
 
-			case OscTargetType.absolute:
+			case TargetType.absolute:
 
 				this.newSpeed = this.target.value;
 
 				break;
 
-			case OscTargetType.relative:
+			case TargetType.relative:
 
-				const name = ( this.target as OscRelativeTarget ).object;
+				const name = ( this.target as RelativeTarget ).object;
 
 				const obj = TvScenarioInstance.openScenario.findEntityOrFail( name );
 

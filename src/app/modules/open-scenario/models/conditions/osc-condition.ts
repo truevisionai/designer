@@ -3,23 +3,23 @@
  */
 
 import { ConditionService } from '../condition-service';
-import { OscConditionCategory, OscConditionEdge, OscConditionType, OscRule, OscTriggeringRule } from '../osc-enums';
+import { ConditionCategory, ConditionEdge, ConditionType, Rule, TriggeringRule } from '../osc-enums';
 
-// export class DontUse_OscCondition {
+// export class DontUse_Condition {
 
 //     private name: string;
 //     private delay: number;
-//     private edge: OscConditionEdge;
+//     private edge: ConditionEdge;
 
 // }
 
 export abstract class AbstractCondition {
 
-	public abstract category: OscConditionCategory;
-	public abstract conditionType: OscConditionType;
+	public abstract category: ConditionCategory;
+	public abstract conditionType: ConditionType;
 	public name: string = '';
 	public delay: number = 0;
-	public edge: OscConditionEdge = OscConditionEdge.any;
+	public edge: ConditionEdge = ConditionEdge.any;
 	public passed: boolean;
 
 	constructor () {
@@ -27,7 +27,7 @@ export abstract class AbstractCondition {
 
 	abstract hasPassed (): boolean;
 
-	hasRulePassed ( rule: OscRule, left: number, right: number ): boolean {
+	hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 		return ConditionService.hasRulePassed( rule, left, right );
 	}
 
@@ -38,9 +38,9 @@ export abstract class AbstractCondition {
 
 export abstract class AbstractByEntityCondition extends AbstractCondition {
 
-	public category: OscConditionCategory = OscConditionCategory.ByEntity;
+	public category: ConditionCategory = ConditionCategory.ByEntity;
 
-	public triggeringRule: OscTriggeringRule = OscTriggeringRule.Any;
+	public triggeringRule: TriggeringRule = TriggeringRule.Any;
 
 	// name of all entities which can affect this condition
 	public entities: string[] = [];
@@ -49,13 +49,13 @@ export abstract class AbstractByEntityCondition extends AbstractCondition {
 
 export abstract class AbstractByValueCondition extends AbstractCondition {
 
-	public category: OscConditionCategory = OscConditionCategory.ByValue;
+	public category: ConditionCategory = ConditionCategory.ByValue;
 
 }
 
 export abstract class AbstractByStateCondition extends AbstractCondition {
 
-	public category: OscConditionCategory = OscConditionCategory.ByState;
+	public category: ConditionCategory = ConditionCategory.ByState;
 
 }
 

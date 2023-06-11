@@ -4,12 +4,12 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { OscAtStartCondition } from '../../models/conditions/osc-at-start-condition';
+import { AtStartCondition } from '../../models/conditions/osc-at-start-condition';
 import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { OscDistanceCondition } from '../../models/conditions/osc-distance-condition';
-import { OscReachPositionCondition } from '../../models/conditions/osc-reach-position-condition';
-import { OscSimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
-import { OscConditionCategory, OscConditionType, OscRule, OscStoryElementType } from '../../models/osc-enums';
+import { DistanceCondition } from '../../models/conditions/osc-distance-condition';
+import { ReachPositionCondition } from '../../models/conditions/osc-reach-position-condition';
+import { SimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
+import { ConditionCategory, ConditionType, Rule, StoryElementType } from '../../models/osc-enums';
 
 @Component( {
 	selector: 'app-choose-condition-dialog',
@@ -18,8 +18,8 @@ import { OscConditionCategory, OscConditionType, OscRule, OscStoryElementType } 
 } )
 export class ChooseConditionDialogComponent implements OnInit {
 
-	selectedCategory: OscConditionCategory;
-	selectedType: OscConditionType;
+	selectedCategory: ConditionCategory;
+	selectedType: ConditionType;
 	selectedCondition: AbstractCondition;
 
 	constructor (
@@ -30,11 +30,11 @@ export class ChooseConditionDialogComponent implements OnInit {
 	}
 
 	get types () {
-		return OscConditionType;
+		return ConditionType;
 	}
 
 	get categories () {
-		return OscConditionCategory;
+		return ConditionCategory;
 	}
 
 	ngOnInit () {
@@ -48,13 +48,13 @@ export class ChooseConditionDialogComponent implements OnInit {
 	onAdd () {
 
 		switch ( this.selectedCategory ) {
-			case OscConditionCategory.ByEntity:
+			case ConditionCategory.ByEntity:
 				this.createByEntity();
 				break;
-			case OscConditionCategory.ByState:
+			case ConditionCategory.ByState:
 				this.createByState();
 				break;
-			case OscConditionCategory.ByValue:
+			case ConditionCategory.ByValue:
 				this.createByValue();
 				break;
 		}
@@ -65,61 +65,61 @@ export class ChooseConditionDialogComponent implements OnInit {
 
 	createByValue (): any {
 		switch ( this.selectedType ) {
-			case OscConditionType.ByValue_Parameter:
+			case ConditionType.ByValue_Parameter:
 				break;
-			case OscConditionType.ByValue_TimeOfDay:
+			case ConditionType.ByValue_TimeOfDay:
 				break;
-			case OscConditionType.ByValue_SimulationTime:
-				this.selectedCondition = new OscSimulationTimeCondition( 0, OscRule.greater_than );
+			case ConditionType.ByValue_SimulationTime:
+				this.selectedCondition = new SimulationTimeCondition( 0, Rule.greater_than );
 				break;
 		}
 	}
 
 	createByState (): any {
 		switch ( this.selectedType ) {
-			case OscConditionType.ByState_AfterTermination:
+			case ConditionType.ByState_AfterTermination:
 				break;
-			case OscConditionType.ByState_AtStart:
-				this.selectedCondition = new OscAtStartCondition( 'actName', OscStoryElementType.act );
+			case ConditionType.ByState_AtStart:
+				this.selectedCondition = new AtStartCondition( 'actName', StoryElementType.act );
 				break;
-			case OscConditionType.ByState_Command:
+			case ConditionType.ByState_Command:
 				break;
-			case OscConditionType.ByState_Signal:
+			case ConditionType.ByState_Signal:
 				break;
-			case OscConditionType.ByState_Controller:
+			case ConditionType.ByState_Controller:
 				break;
 		}
 	}
 
 	createByEntity (): any {
 		switch ( this.selectedType ) {
-			case OscConditionType.ByEntity_EndOfRoad:
+			case ConditionType.ByEntity_EndOfRoad:
 				break;
-			case OscConditionType.ByEntity_Collision:
+			case ConditionType.ByEntity_Collision:
 				break;
-			case OscConditionType.ByEntity_Offroad:
+			case ConditionType.ByEntity_Offroad:
 				break;
-			case OscConditionType.ByEntity_TimeHeadway:
+			case ConditionType.ByEntity_TimeHeadway:
 				break;
-			case OscConditionType.ByEntity_TimeToCollision:
+			case ConditionType.ByEntity_TimeToCollision:
 				break;
-			case OscConditionType.ByEntity_Acceleration:
+			case ConditionType.ByEntity_Acceleration:
 				break;
-			case OscConditionType.ByEntity_StandStill:
+			case ConditionType.ByEntity_StandStill:
 				break;
-			case OscConditionType.ByEntity_Speed:
+			case ConditionType.ByEntity_Speed:
 				break;
-			case OscConditionType.ByEntity_RelativeSpeed:
+			case ConditionType.ByEntity_RelativeSpeed:
 				break;
-			case OscConditionType.ByEntity_TraveledDistance:
+			case ConditionType.ByEntity_TraveledDistance:
 				break;
-			case OscConditionType.ByEntity_ReachPosition:
-				this.selectedCondition = new OscReachPositionCondition();
+			case ConditionType.ByEntity_ReachPosition:
+				this.selectedCondition = new ReachPositionCondition();
 				break;
-			case OscConditionType.ByEntity_Distance:
-				this.selectedCondition = new OscDistanceCondition();
+			case ConditionType.ByEntity_Distance:
+				this.selectedCondition = new DistanceCondition();
 				break;
-			case OscConditionType.ByEntity_RelativeDistance:
+			case ConditionType.ByEntity_RelativeDistance:
 				break;
 		}
 	}

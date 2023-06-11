@@ -33,7 +33,7 @@ export abstract class AbstractFieldComponent {
 
 		if ( this.isParameter ) {
 
-			// return OscSourceFile.scenario.findParameter( this.value ).value;
+			// return SourceFile.scenario.findParameter( this.value ).value;
 
 		}
 
@@ -44,7 +44,7 @@ export abstract class AbstractFieldComponent {
 
 		if ( this.isParameter ) {
 
-			// OscSourceFile.scenario.findParameter( this.value ).value = value;
+			// SourceFile.scenario.findParameter( this.value ).value = value;
 
 		} else {
 

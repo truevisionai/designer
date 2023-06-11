@@ -7,17 +7,17 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Debug } from 'app/core/utils/debug';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscConditionType } from '../../models/osc-enums';
-import { OscEvent } from '../../models/osc-event';
+import { EntityObject } from '../../models/osc-entities';
+import { ConditionType } from '../../models/osc-enums';
+import { Event } from '../../models/osc-event';
 import { AbstractAction } from '../../models/osc-interfaces';
-import { OscManeuver } from '../../models/osc-maneuver';
+import { Maneuver } from '../../models/osc-maneuver';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
+import { EditorComponent } from '../../views/osc-editor/osc-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
 
 export class EditActionsDialogData {
-	constructor ( public object: OscEntityObject ) {
+	constructor ( public object: EntityObject ) {
 
 	}
 }
@@ -28,13 +28,13 @@ export class EditActionsDialogData {
 } )
 export class EditActionsDialogComponent implements OnInit {
 
-	selectedManeuver: OscManeuver;
-	selectedEvent: OscEvent;
+	selectedManeuver: Maneuver;
+	selectedEvent: Event;
 	selectedAction: AbstractAction;
 
-	conditionTypes: OscConditionType;
+	conditionTypes: ConditionType;
 
-	maneuvers: OscManeuver[];
+	maneuvers: Maneuver[];
 
 	constructor (
 		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
@@ -68,13 +68,13 @@ export class EditActionsDialogComponent implements OnInit {
 		if ( this.selectedEvent ) return this.selectedEvent.startConditions;
 	}
 
-	selectManeuver ( maneuver: OscManeuver ) {
+	selectManeuver ( maneuver: Maneuver ) {
 
 		this.selectedManeuver = maneuver;
 
 	}
 
-	selectEvent ( event: OscEvent ) {
+	selectEvent ( event: Event ) {
 
 		this.selectedEvent = event;
 
@@ -108,7 +108,7 @@ export class EditActionsDialogComponent implements OnInit {
 
 		const cmd = ( new SetValueCommand( array, index, condition ) );
 
-		OscEditorComponent.execute( cmd );
+		EditorComponent.execute( cmd );
 
 	}
 

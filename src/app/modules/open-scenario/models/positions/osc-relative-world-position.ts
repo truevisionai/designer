@@ -3,19 +3,19 @@
  */
 
 import { Vector3 } from 'three';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
+import { Orientation } from '../osc-orientation';
 
-export class OscRelativeWorldPosition extends AbstractPosition {
+export class RelativeWorldPosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.RelativeWorld;
+	public readonly type = PositionType.RelativeWorld;
 
 	private object: string;
 	private dx: number;
 	private dy: number;
 	private dz: number;
-	private orientation: OscOrientation;
+	private orientation: Orientation;
 
 	exportXml () {
 

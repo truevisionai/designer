@@ -2,25 +2,25 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscDirectory } from './osc-common';
-import { OscParameter } from './osc-parameter-declaration';
-import { OscTrajectory } from './osc-trajectory';
+import { Directory } from './osc-common';
+import { Parameter } from './osc-parameter-declaration';
+import { Trajectory } from './osc-trajectory';
 
 
-export class OscCatalogs {
+export class Catalogs {
 
 	public static truevisionCatalog = 'TruevisionCatalog';
 	public static truevisionDefaultController = 'DefaultController';
 
-	public vehicleCatalog: OscCatalog;
-	public driverCatalog: OscCatalog;
-	public pedestrianCatalog: OscCatalog;
-	public pedestrianControllerCatalog: OscCatalog;
-	public miscObjectCatalog: OscCatalog;
-	public environmentCatalog: OscCatalog;
-	public maneuverCatalog: OscCatalog;
-	public trajectoryCatalog: OscCatalog;
-	public routeCatalog: OscCatalog;
+	public vehicleCatalog: Catalog;
+	public driverCatalog: Catalog;
+	public pedestrianCatalog: Catalog;
+	public pedestrianControllerCatalog: Catalog;
+	public miscObjectCatalog: Catalog;
+	public environmentCatalog: Catalog;
+	public maneuverCatalog: Catalog;
+	public trajectoryCatalog: Catalog;
+	public routeCatalog: Catalog;
 
 	constructor () {
 
@@ -28,22 +28,22 @@ export class OscCatalogs {
 
 }
 
-export class OscCatalog {
+export class Catalog {
 
-	private m_Directory: OscDirectory;
+	private m_Directory: Directory;
 
-	constructor ( directory: OscDirectory ) {
+	constructor ( directory: Directory ) {
 
 		this.m_Directory = directory;
 
 	}
 }
 
-export class TrajectoryCatalog extends OscCatalog {
+export class TrajectoryCatalog extends Catalog {
 
-	private trajectories: OscTrajectory[] = [];
+	private trajectories: Trajectory[] = [];
 
-	constructor ( directory: OscDirectory ) {
+	constructor ( directory: Directory ) {
 
 		super( directory );
 
@@ -51,17 +51,17 @@ export class TrajectoryCatalog extends OscCatalog {
 
 }
 
-export class OscCatalogReference {
+export class CatalogReference {
 
-	private parameters: OscParameter[];
+	private parameters: Parameter[];
 
 	constructor ( public catalogName: string, public entryName: string ) {
 
 	}
 
-	static readXml ( CatalogReference: any ): OscCatalogReference {
+	static readXml ( CatalogReference: any ): CatalogReference {
 
-		const oscCatalogReference = new OscCatalogReference( null, null );
+		const oscCatalogReference = new CatalogReference( null, null );
 
 		oscCatalogReference.catalogName = CatalogReference.attr_catalogName;
 		oscCatalogReference.entryName = CatalogReference.attr_entryName;

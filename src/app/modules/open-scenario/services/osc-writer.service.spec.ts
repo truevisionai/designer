@@ -4,27 +4,27 @@
 
 import {
 	EnumTrajectoryDomain,
-	OscClothoidShape,
-	OscControlPoint,
-	OscPolylineShape,
-	OscSplineShape,
-	OscTrajectory,
-	OscVertex
+	ClothoidShape,
+	ControlPoint,
+	PolylineShape,
+	SplineShape,
+	Trajectory,
+	Vertex
 } from '../models/osc-trajectory';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
-import { OscWriterService } from './osc-writer.service';
+import { WorldPosition } from '../models/positions/osc-world-position';
+import { WriterService } from './osc-writer.service';
 
-describe( 'OscWriterService', () => {
+describe( 'WriterService', () => {
 
-	let writer: OscWriterService;
+	let writer: WriterService;
 
 	beforeEach( () => {
-		writer = new OscWriterService();
+		writer = new WriterService();
 	} );
 
 	it( 'should write trajectory correctly', () => {
 
-		const trajectory = new OscTrajectory(
+		const trajectory = new Trajectory(
 			'TrajectoryName', true, EnumTrajectoryDomain.Distance
 		);
 
@@ -38,10 +38,10 @@ describe( 'OscWriterService', () => {
 
 	it( 'should write vertex correctly', () => {
 
-		const vertex = new OscVertex();
-		vertex.position = new OscWorldPosition( 1, 2, 3 );
+		const vertex = new Vertex();
+		vertex.position = new WorldPosition( 1, 2, 3 );
 		vertex.reference = 1;
-		vertex.shape = new OscPolylineShape;
+		vertex.shape = new PolylineShape;
 
 		const xml = writer.writeVertex( vertex );
 
@@ -51,7 +51,7 @@ describe( 'OscWriterService', () => {
 
 	it( 'should write clothoid correcty', () => {
 
-		const clothoid = new OscClothoidShape();
+		const clothoid = new ClothoidShape();
 		clothoid.curvature = 1;
 		clothoid.curvatureDot = 2;
 		clothoid.length = 3;
@@ -66,9 +66,9 @@ describe( 'OscWriterService', () => {
 
 	it( 'should write spline correctly', () => {
 
-		const spline = new OscSplineShape;
-		spline.controlPoint1 = new OscControlPoint( 'one' );
-		spline.controlPoint2 = new OscControlPoint( 'two' );
+		const spline = new SplineShape;
+		spline.controlPoint1 = new ControlPoint( 'one' );
+		spline.controlPoint2 = new ControlPoint( 'two' );
 
 		const xml = writer.writeSpline( spline );
 

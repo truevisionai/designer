@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscActionType } from '../osc-enums';
+import { ActionType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
 
-export class OscDistanceAction extends AbstractPrivateAction {
+export class DistanceAction extends AbstractPrivateAction {
 
 	public actionName: string = 'Distance';
-	public actionType: OscActionType = OscActionType.Private_Longitudinal_Distance;
+	public actionType: ActionType = ActionType.Private_Longitudinal_Distance;
 
 
 }

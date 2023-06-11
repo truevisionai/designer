@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscDialogService } from '../../services/osc-dialog.service';
+import { EntityObject } from '../../models/osc-entities';
+import { DialogService } from '../../services/osc-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscActionsInspectorComponent } from '../osc-actions-inspector/osc-player-actions-inspector.component';
+import { ActionsInspectorComponent } from '../osc-actions-inspector/osc-player-actions-inspector.component';
 
 @Component( {
 	selector: 'app-osc-player-inspector',
@@ -18,11 +18,11 @@ import { OscActionsInspectorComponent } from '../osc-actions-inspector/osc-playe
 } )
 export class EntityInspector implements OnInit, IComponent {
 
-	data: OscEntityObject;
+	data: EntityObject;
 
-	// @Input() entity: OscEntityObject;
+	// @Input() entity: EntityObject;
 
-	constructor ( public dialog: MatDialog, private dialogService: OscDialogService ) {
+	constructor ( public dialog: MatDialog, private dialogService: DialogService ) {
 	}
 
 	get entity () {
@@ -75,7 +75,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 		// Debug.log( actions );
 
-		AppInspector.setInspector( OscActionsInspectorComponent, this.entity );
+		AppInspector.setInspector( ActionsInspectorComponent, this.entity );
 
 	}
 

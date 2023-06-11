@@ -9,12 +9,12 @@ import { ThreeService } from '../../../three-js/three.service';
 import { TvMap } from '../../../tv-map/models/tv-map.model';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
-import { OscEntityObject } from '../../models/osc-entities';
+import { EntityObject } from '../../models/osc-entities';
 
-export class OscEditor {
+export class Editor {
 
 	static scenarioChanged = new EventEmitter<any>();
-	static selectedEntityChanged = new EventEmitter<OscEntityObject>();
+	static selectedEntityChanged = new EventEmitter<EntityObject>();
 
 	static currentFile: IFile;
 	static fileService: FileService;

@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { OscSpeedCondition } from 'app/modules/open-scenario/models/conditions/osc-speed-condition';
+import { SpeedCondition } from 'app/modules/open-scenario/models/conditions/osc-speed-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -12,7 +12,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class SpeedConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: OscSpeedCondition;
+	@Input() condition: SpeedCondition;
 
 	constructor () {
 

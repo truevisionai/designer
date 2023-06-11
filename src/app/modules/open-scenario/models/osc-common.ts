@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export class OscFile {
+export class File {
 
 	public filepath: string;
 
@@ -13,7 +13,7 @@ export class OscFile {
 	}
 }
 
-export class OscDirectory {
+export class Directory {
 
 	public path: string;
 

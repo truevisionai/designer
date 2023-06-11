@@ -11,22 +11,22 @@ import { IFile } from '../../../core/models/file';
 import { OpenScenarioApiService } from '../../../core/services/open-scenario-api.service';
 import { FileService } from '../../../services/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
-import { OscBuilderService } from '../builders/osc-builder.service';
+import { BuilderService } from '../builders/osc-builder.service';
 import { OpenScenario } from '../models/osc-scenario';
 import { ScenarioPlayerService } from './scenario-player.service';
-import { OscReaderService } from './osc-reader.service';
+import { ReaderService } from './osc-reader.service';
 import { TvScenarioInstance } from './tv-scenario-instance';
-import { OscWriterService } from './osc-writer.service';
+import { WriterService } from './osc-writer.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OscService {
+export class Service {
 
 	constructor (
-		private reader: OscReaderService,
-		private writer: OscWriterService,
-		private builder: OscBuilderService,
+		private reader: ReaderService,
+		private writer: WriterService,
+		private builder: BuilderService,
 		private fileService: FileService,
 		private openScenarioApi: OpenScenarioApiService,
 		private electron: TvElectronService,
@@ -36,7 +36,7 @@ export class OscService {
 		TvScenarioInstance.scenarioChanged.subscribe( scenario => {
 
 			// Debug.log( 'scenerio changed' );
-			// this.builder.build( road, OscSourceFile.file );
+			// this.builder.build( road, SourceFile.file );
 
 		} );
 

@@ -3,27 +3,27 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { OscAct } from './osc-act';
-import { OscCatalogs } from './osc-catalogs';
-import { OscFile } from './osc-common';
-import { OscEntityObject } from './osc-entities';
-import { OscFileHeader } from './osc-file-header';
+import { Act } from './osc-act';
+import { Catalogs } from './osc-catalogs';
+import { File } from './osc-common';
+import { EntityObject } from './osc-entities';
+import { FileHeader } from './osc-file-header';
 import { AbstractAction } from './osc-interfaces';
-import { OscManeuver } from './osc-maneuver';
-import { OscParameter, OscParameterDeclaration } from './osc-parameter-declaration';
-import { OscRoadNetwork } from './osc-road-network';
-import { OscSequence } from './osc-sequence';
-import { OscStory } from './osc-story';
-import { OscStoryboard } from './osc-storyboard';
+import { Maneuver } from './osc-maneuver';
+import { Parameter, ParameterDeclaration } from './osc-parameter-declaration';
+import { RoadNetwork } from './osc-road-network';
+import { Sequence } from './osc-sequence';
+import { Story } from './osc-story';
+import { Storyboard } from './osc-storyboard';
 
 export class OpenScenario {
 
-	public fileHeader = new OscFileHeader;
-	public catalogs: OscCatalogs;
-	public parameterDeclaration = new OscParameterDeclaration();
-	public roadNetwork: OscRoadNetwork;
-	public storyboard = new OscStoryboard;
-	public objects: Map<string, OscEntityObject> = new Map<string, OscEntityObject>();
+	public fileHeader = new FileHeader;
+	public catalogs: Catalogs;
+	public parameterDeclaration = new ParameterDeclaration();
+	public roadNetwork: RoadNetwork;
+	public storyboard = new Storyboard;
+	public objects: Map<string, EntityObject> = new Map<string, EntityObject>();
 
 	get parameters () {
 		return this.parameterDeclaration.parameters;
@@ -39,15 +39,15 @@ export class OpenScenario {
 	}
 
 	setRoadNetworkPath ( path: string ) {
-		this.roadNetwork = new OscRoadNetwork( new OscFile( path ), null );
+		this.roadNetwork = new RoadNetwork( new File( path ), null );
 	}
 
-	addParameter ( parameter: OscParameter ): void {
+	addParameter ( parameter: Parameter ): void {
 		this.parameterDeclaration.addParameter( parameter );
 	}
 
 	// deprecated
-	addEntity ( object: OscEntityObject ): any {
+	addEntity ( object: EntityObject ): any {
 		this.addObject( object );
 		// old code just for reference
 		// this.m_Entities.addObject( object );
@@ -66,7 +66,7 @@ export class OpenScenario {
 
 	}
 
-	addObject ( object: OscEntityObject ) {
+	addObject ( object: EntityObject ) {
 
 		const hasName = TvScenarioInstance.db.has_entity( object.name );
 
@@ -99,7 +99,7 @@ export class OpenScenario {
 		return actions;
 	}
 
-	removeObject ( object: OscEntityObject ) {
+	removeObject ( object: EntityObject ) {
 
 		TvScenarioInstance.db.remove_entity( object.name );
 
@@ -107,7 +107,7 @@ export class OpenScenario {
 
 	}
 
-	getStoriesByOwner ( owner: string ): OscStory[] {
+	getStoriesByOwner ( owner: string ): Story[] {
 
 		let stories = [];
 
@@ -124,7 +124,7 @@ export class OpenScenario {
 		return stories;
 	}
 
-	getSequencesByActor ( actorName: string ): OscSequence[] {
+	getSequencesByActor ( actorName: string ): Sequence[] {
 
 		let sequences = [];
 
@@ -154,7 +154,7 @@ export class OpenScenario {
 		return sequences;
 	}
 
-	getManeuversForEntity ( name: string ): OscManeuver[] {
+	getManeuversForEntity ( name: string ): Maneuver[] {
 
 		let maneuvers = [];
 
@@ -173,7 +173,7 @@ export class OpenScenario {
 		return maneuvers;
 	}
 
-	getActsByOwner ( name: string ): OscAct[] {
+	getActsByOwner ( name: string ): Act[] {
 
 		const stories = this.getStoriesByOwner( name );
 
@@ -202,11 +202,11 @@ export class OpenScenario {
 
 	}
 
-	createStory ( entity: OscEntityObject ): OscStory {
+	createStory ( entity: EntityObject ): Story {
 
 		const storyName = `Story${ this.storyboard.stories.size + 1 }`;
 
-		const story = new OscStory( storyName, entity.name );
+		const story = new Story( storyName, entity.name );
 
 		this.storyboard.addStory( story );
 

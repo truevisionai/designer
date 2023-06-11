@@ -2,19 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType, OscRule } from '../osc-enums';
+import { ConditionType, Rule } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscTimeHeadwayCondition extends AbstractByEntityCondition {
+export class TimeHeadwayCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_TimeHeadway;
+	conditionType = ConditionType.ByEntity_TimeHeadway;
 
 	constructor (
 		public entity: string,
 		public value: number,
 		public freespace: boolean,
 		public alongRoute: boolean,
-		public rule: OscRule
+		public rule: Rule
 	) {
 		super();
 	}

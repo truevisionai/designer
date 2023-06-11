@@ -3,20 +3,20 @@
  */
 
 import { Vector3 } from 'three';
-import { OscPositionType } from '../osc-enums';
+import { PositionType } from '../osc-enums';
 import { AbstractPosition } from '../osc-interfaces';
-import { OscOrientation } from '../osc-orientation';
+import { Orientation } from '../osc-orientation';
 
-export class OscRelativeLanePosition extends AbstractPosition {
+export class RelativeLanePosition extends AbstractPosition {
 
-	public readonly type = OscPositionType.RelativeLane;
+	public readonly type = PositionType.RelativeLane;
 
 	public object: string;
 	public dLane: number;
 	public ds: number;
 	public offset?: number;
 
-	public orientations: OscOrientation[] = [];
+	public orientations: Orientation[] = [];
 
 	exportXml () {
 

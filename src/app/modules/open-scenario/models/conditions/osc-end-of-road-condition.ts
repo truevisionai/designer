@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType } from '../osc-enums';
+import { ConditionType } from '../osc-enums';
 import { AbstractByEntityCondition } from './osc-condition';
 
-export class OscEndOfRoadCondition extends AbstractByEntityCondition {
+export class EndOfRoadCondition extends AbstractByEntityCondition {
 
-	conditionType = OscConditionType.ByEntity_EndOfRoad;
+	conditionType = ConditionType.ByEntity_EndOfRoad;
 
 	constructor ( public duration: number ) {
 		super();

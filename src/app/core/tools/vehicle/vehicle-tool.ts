@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/core/game-object';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { OscEntityObject } from 'app/modules/open-scenario/models/osc-entities';
+import { EntityObject } from 'app/modules/open-scenario/models/osc-entities';
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -19,7 +19,7 @@ export class VehicleTool extends BaseTool {
 	public name: string = 'VehicleTool';
 	public toolType = ToolType.Vehicle;
 
-	private selectedVehicle: OscEntityObject;
+	private selectedVehicle: EntityObject;
 
 	constructor () {
 
@@ -32,7 +32,7 @@ export class VehicleTool extends BaseTool {
 
 		var geometry = new BoxGeometry( 2.0, 4.2, 1.6 );
 		var material = new MeshBasicMaterial( { color: 0x00ff00 } );
-		const oscObject = new OscEntityObject( 'Vehicle' );
+		const oscObject = new EntityObject( 'Vehicle' );
 		oscObject.gameObject = new GameObject( 'Cube', geometry, material );
 		return oscObject;
 	}

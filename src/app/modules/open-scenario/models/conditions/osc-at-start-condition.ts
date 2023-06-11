@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscConditionType, OscStoryElementType } from '../osc-enums';
+import { ConditionType, StoryElementType } from '../osc-enums';
 import { AbstractByStateCondition } from './osc-condition';
 
-export class OscAtStartCondition extends AbstractByStateCondition {
+export class AtStartCondition extends AbstractByStateCondition {
 
-	public readonly conditionType = OscConditionType.ByState_AtStart;
+	public readonly conditionType = ConditionType.ByState_AtStart;
 
-	constructor ( public elementName: string, public type: OscStoryElementType ) {
+	constructor ( public elementName: string, public type: StoryElementType ) {
 
 		super();
 

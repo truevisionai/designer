@@ -6,20 +6,20 @@ import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { ChooseActionDialogData } from '../../dialogs/choose-action-dialog/choose-action-dialog.component';
-import { OscAbsoluteTarget } from '../../models/actions/osc-absolute-target';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
-import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
-import { OscSpeedAction } from '../../models/actions/osc-speed-action';
-import { OscAct } from '../../models/osc-act';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscActionType, OscDynamicsShape } from '../../models/osc-enums';
-import { OscEvent } from '../../models/osc-event';
+import { AbsoluteTarget } from '../../models/actions/osc-absolute-target';
+import { FollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { SpeedDynamics } from '../../models/actions/osc-private-action';
+import { SpeedAction } from '../../models/actions/osc-speed-action';
+import { Act } from '../../models/osc-act';
+import { EntityObject } from '../../models/osc-entities';
+import { ActionType, DynamicsShape } from '../../models/osc-enums';
+import { Event } from '../../models/osc-event';
 import { AbstractPrivateAction } from '../../models/osc-interfaces';
-import { OscManeuver } from '../../models/osc-maneuver';
-import { OscSequence } from '../../models/osc-sequence';
-import { OscStory } from '../../models/osc-story';
-import { EnumTrajectoryDomain, OscTrajectory } from '../../models/osc-trajectory';
-import { OscDialogService } from '../../services/osc-dialog.service';
+import { Maneuver } from '../../models/osc-maneuver';
+import { Sequence } from '../../models/osc-sequence';
+import { Story } from '../../models/osc-story';
+import { EnumTrajectoryDomain, Trajectory } from '../../models/osc-trajectory';
+import { DialogService } from '../../services/osc-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import {
 	FollowTrajectoryActionComponent
@@ -31,11 +31,11 @@ import { EventEditorComponent } from '../../views/osc-story-editor/event-editor/
 	templateUrl: './osc-player-actions-inspector.component.html',
 	styleUrls: [ './osc-player-actions-inspector.component.css' ]
 } )
-export class OscActionsInspectorComponent implements OnInit, IComponent {
+export class ActionsInspectorComponent implements OnInit, IComponent {
 
-	data: OscEntityObject;
+	data: EntityObject;
 
-	constructor ( private dialogService: OscDialogService ) {
+	constructor ( private dialogService: DialogService ) {
 	}
 
 	get entity () {
@@ -64,7 +64,7 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 			const maneuver = this.getManeuver();
 
-			const eventName = OscEvent.getNewName();
+			const eventName = Event.getNewName();
 
 			const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
@@ -77,11 +77,11 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 	editAction ( action: AbstractPrivateAction ) {
 
 		// TODO: Add support for other trajection action types
-		if ( action.actionType === OscActionType.Private_Routing ) {
+		if ( action.actionType === ActionType.Private_Routing ) {
 
-			this.editFollowTrajectoryAction( action as OscFollowTrajectoryAction );
+			this.editFollowTrajectoryAction( action as FollowTrajectoryAction );
 
-		} else if ( action.actionType === OscActionType.Private_Longitudinal_Speed ) {
+		} else if ( action.actionType === ActionType.Private_Longitudinal_Speed ) {
 
 			const maneuver = this.getManeuver();
 
@@ -99,13 +99,13 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	editEvent ( event: OscEvent ) {
+	editEvent ( event: Event ) {
 
 		AppInspector.setInspector( EventEditorComponent, event );
 
 	}
 
-	editFollowTrajectoryAction ( action: OscFollowTrajectoryAction ) {
+	editFollowTrajectoryAction ( action: FollowTrajectoryAction ) {
 
 		AppInspector.setInspector( FollowTrajectoryActionComponent, action );
 
@@ -117,9 +117,9 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 		const event = maneuver.addNewEvent( 'FollowTrajectoryEvent', 'overwrite' );
 
-		const trajectory = new OscTrajectory( 'Trajectory1', false, EnumTrajectoryDomain.Time );
+		const trajectory = new Trajectory( 'Trajectory1', false, EnumTrajectoryDomain.Time );
 
-		const action = new OscFollowTrajectoryAction( trajectory );
+		const action = new FollowTrajectoryAction( trajectory );
 
 		event.addNewAction( 'TrajectoryAction', action );
 
@@ -137,15 +137,15 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 		const maneuver = this.getManeuver();
 
-		const eventName = OscEvent.getNewName( 'ChangeSpeed' );
+		const eventName = Event.getNewName( 'ChangeSpeed' );
 
 		const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
-		const dynamics = new OscSpeedDynamics( OscDynamicsShape.step );
+		const dynamics = new SpeedDynamics( DynamicsShape.step );
 
-		const target = new OscAbsoluteTarget( 10 );
+		const target = new AbsoluteTarget( 10 );
 
-		const action = new OscSpeedAction( dynamics, target );
+		const action = new SpeedAction( dynamics, target );
 
 		event.addNewAction( 'SpeedChangeAction', action );
 
@@ -169,11 +169,11 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	private getEvent (): OscEvent {
+	private getEvent (): Event {
 
 		const maneuver = this.getManeuver();
 
-		const eventName = OscEvent.getNewName();
+		const eventName = Event.getNewName();
 
 		return maneuver.addNewEvent( eventName, 'overwrite' );
 
@@ -181,15 +181,15 @@ export class OscActionsInspectorComponent implements OnInit, IComponent {
 
 	private createManuever () {
 
-		const storyName = OscStory.getNewName();
+		const storyName = Story.getNewName();
 
 		const story = this.scenario.storyboard.addNewStory( storyName, this.entity.name );
 
-		const act = story.addNewAct( OscAct.getNewName() );
+		const act = story.addNewAct( Act.getNewName() );
 
-		const sequence = act.addNewSequence( OscSequence.getNewName(), 1, this.entity.name );
+		const sequence = act.addNewSequence( Sequence.getNewName(), 1, this.entity.name );
 
-		return sequence.addNewManeuver( OscManeuver.getNewName() );
+		return sequence.addNewManeuver( Maneuver.getNewName() );
 
 	}
 

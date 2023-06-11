@@ -8,17 +8,17 @@ import { PolyLineEditor } from 'app/core/editors/polyline-editor';
 import { Debug } from 'app/core/utils/debug';
 import { CatmullRomCurve3, Points } from 'three';
 import { AbstractPosition } from '../../models/osc-interfaces';
-import { OscPolylineShape, OscTrajectory, OscVertex } from '../../models/osc-trajectory';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { PolylineShape, Trajectory, Vertex } from '../../models/osc-trajectory';
+import { WorldPosition } from '../../models/positions/osc-world-position';
 
 @Component( {
 	selector: 'app-osc-trajectory-inspector',
 	templateUrl: './osc-trajectory-inspector.component.html',
 	styleUrls: [ './osc-trajectory-inspector.component.css' ]
 } )
-export class OscTrajectoryInspectorComponent implements OnInit, OnDestroy, OnChanges {
+export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChanges {
 
-	@Input() trajectory: OscTrajectory;
+	@Input() trajectory: Trajectory;
 
 	@Input() display: boolean = true;
 	@Input() disableEditing: boolean = false;
@@ -72,9 +72,9 @@ export class OscTrajectoryInspectorComponent implements OnInit, OnDestroy, OnCha
 
 			let reference = this.trajectory.vertices.length;
 
-			let position = new OscWorldPosition( e.position.x, e.position.y, e.position.z );
+			let position = new WorldPosition( e.position.x, e.position.y, e.position.z );
 
-			let vertex = new OscVertex( reference, position, new OscPolylineShape );
+			let vertex = new Vertex( reference, position, new PolylineShape );
 
 			this.trajectory.vertices.push( vertex );
 

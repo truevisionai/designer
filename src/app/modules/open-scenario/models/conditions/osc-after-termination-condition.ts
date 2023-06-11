@@ -2,17 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OscAfterTerminationRule, OscConditionType, OscStoryElementType } from '../osc-enums';
+import { AfterTerminationRule, ConditionType, StoryElementType } from '../osc-enums';
 import { AbstractByStateCondition } from './osc-condition';
 
-export class OscAfterTerminationCondition extends AbstractByStateCondition {
+export class AfterTerminationCondition extends AbstractByStateCondition {
 
-	public readonly conditionType = OscConditionType.ByState_AfterTermination;
+	public readonly conditionType = ConditionType.ByState_AfterTermination;
 
 	constructor (
 		public elementName: string,
-		public type: OscStoryElementType,
-		public rule: OscAfterTerminationRule
+		public type: StoryElementType,
+		public rule: AfterTerminationRule
 	) {
 
 		super();

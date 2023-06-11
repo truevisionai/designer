@@ -5,7 +5,7 @@
 // import { AbstractTool } from '../tools/abstract-tool';
 // import { EventEmitter } from '@angular/core';
 //
-// export class OscCurrentTool {
+// export class CurrentTool {
 //
 //     public static toolChanged = new EventEmitter<AbstractTool>();
 //

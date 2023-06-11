@@ -6,51 +6,51 @@ import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractTarget } from '../models/actions/abstract-target';
-import { OscAbsoluteTarget } from '../models/actions/osc-absolute-target';
-import { OscFollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
-import { OscLaneChangeAction } from '../models/actions/osc-lane-change-action';
-import { OscPositionAction } from '../models/actions/osc-position-action';
-import { OscLaneChangeDynamics } from '../models/actions/osc-private-action';
-import { OscRelativeTarget } from '../models/actions/osc-relative-target';
-import { OscSpeedAction } from '../models/actions/osc-speed-action';
-import { OscAtStartCondition } from '../models/conditions/osc-at-start-condition';
+import { AbsoluteTarget } from '../models/actions/osc-absolute-target';
+import { FollowTrajectoryAction } from '../models/actions/osc-follow-trajectory-action';
+import { LaneChangeAction } from '../models/actions/osc-lane-change-action';
+import { PositionAction } from '../models/actions/osc-position-action';
+import { LaneChangeDynamics } from '../models/actions/osc-private-action';
+import { RelativeTarget } from '../models/actions/osc-relative-target';
+import { SpeedAction } from '../models/actions/osc-speed-action';
+import { AtStartCondition } from '../models/conditions/osc-at-start-condition';
 import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/osc-condition';
-import { OscConditionGroup } from '../models/conditions/osc-condition-group';
-import { OscDistanceCondition } from '../models/conditions/osc-distance-condition';
-import { OscSimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
-import { OscAct } from '../models/osc-act';
-import { OscCatalogReference, OscCatalogs } from '../models/osc-catalogs';
-import { OscFile } from '../models/osc-common';
-import { OscEntityObject } from '../models/osc-entities';
+import { ConditionGroup } from '../models/conditions/osc-condition-group';
+import { DistanceCondition } from '../models/conditions/osc-distance-condition';
+import { SimulationTimeCondition } from '../models/conditions/osc-simulation-time-condition';
+import { Act } from '../models/osc-act';
+import { CatalogReference, Catalogs } from '../models/osc-catalogs';
+import { File } from '../models/osc-common';
+import { EntityObject } from '../models/osc-entities';
 import {
-	OscActionCategory,
-	OscActionType,
-	OscConditionCategory,
-	OscConditionType,
-	OscPositionType,
-	OscTargetType
+	ActionCategory,
+	ActionType,
+	ConditionCategory,
+	ConditionType,
+	PositionType,
+	TargetType
 } from '../models/osc-enums';
-import { OscEvent } from '../models/osc-event';
+import { Event } from '../models/osc-event';
 import { AbstractController, AbstractPosition, AbstractPrivateAction, CatalogReferenceController } from '../models/osc-interfaces';
-import { OscManeuver } from '../models/osc-maneuver';
-import { OscOrientation } from '../models/osc-orientation';
-import { OscParameter, OscParameterDeclaration } from '../models/osc-parameter-declaration';
-import { OscRoadNetwork } from '../models/osc-road-network';
+import { Maneuver } from '../models/osc-maneuver';
+import { Orientation } from '../models/osc-orientation';
+import { Parameter, ParameterDeclaration } from '../models/osc-parameter-declaration';
+import { RoadNetwork } from '../models/osc-road-network';
 import { OpenScenario } from '../models/osc-scenario';
-import { OscSequence } from '../models/osc-sequence';
-import { OscStory } from '../models/osc-story';
-import { OscStoryboard } from '../models/osc-storyboard';
-import { AbstractOscShape, OscClothoidShape, OscPolylineShape, OscSplineShape, OscTrajectory, OscVertex } from '../models/osc-trajectory';
-import { OscLanePosition } from '../models/positions/osc-lane-position';
-import { OscRelativeLanePosition } from '../models/positions/osc-relative-lane-position';
-import { OscRelativeObjectPosition } from '../models/positions/osc-relative-object-position';
-import { OscWorldPosition } from '../models/positions/osc-world-position';
+import { Sequence } from '../models/osc-sequence';
+import { Story } from '../models/osc-story';
+import { Storyboard } from '../models/osc-storyboard';
+import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/osc-trajectory';
+import { LanePosition } from '../models/positions/osc-lane-position';
+import { RelativeLanePosition } from '../models/positions/osc-relative-lane-position';
+import { RelativeObjectPosition } from '../models/positions/osc-relative-object-position';
+import { WorldPosition } from '../models/positions/osc-world-position';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 
-export class OscWriterService {
+export class WriterService {
 
 	private xmlDocument: Object;
 	private openScenario: OpenScenario;
@@ -121,7 +121,7 @@ export class OscWriterService {
 
 	}
 
-	writeEntities ( rootNode: any, objects: Map<string, OscEntityObject> ) {
+	writeEntities ( rootNode: any, objects: Map<string, EntityObject> ) {
 
 		var entities = {
 			Object: []
@@ -136,7 +136,7 @@ export class OscWriterService {
 		rootNode.Entities = entities;
 	}
 
-	writeEntityObject ( key: string, object: OscEntityObject ): any {
+	writeEntityObject ( key: string, object: EntityObject ): any {
 
 		var xml = {
 			attr_name: object.name,
@@ -187,7 +187,7 @@ export class OscWriterService {
 
 	}
 
-	writeCatalogReference ( catalogReference: OscCatalogReference ): any {
+	writeCatalogReference ( catalogReference: CatalogReference ): any {
 
 		return {
 			attr_catalogName: catalogReference.catalogName,
@@ -196,7 +196,7 @@ export class OscWriterService {
 
 	}
 
-	writeRoadNetwork ( xml: any, roadNetwork: OscRoadNetwork ) {
+	writeRoadNetwork ( xml: any, roadNetwork: RoadNetwork ) {
 
 		xml.RoadNetwork = {
 			Logics: null,
@@ -204,16 +204,16 @@ export class OscWriterService {
 		};
 
 		if ( roadNetwork.logics != null ) {
-			xml.RoadNetwork.Logics = this.writeOscFile( roadNetwork.logics );
+			xml.RoadNetwork.Logics = this.writeFile( roadNetwork.logics );
 		}
 
 		if ( roadNetwork.sceneGraph != null ) {
-			xml.RoadNetwork.SceneGraph = this.writeOscFile( roadNetwork.sceneGraph );
+			xml.RoadNetwork.SceneGraph = this.writeFile( roadNetwork.sceneGraph );
 		}
 
 	}
 
-	writeOscFile ( file: OscFile ) {
+	writeFile ( file: File ) {
 
 		return {
 			attr_filepath: file.filepath
@@ -221,7 +221,7 @@ export class OscWriterService {
 
 	}
 
-	writeStoryboard ( xml: any, storyboard: OscStoryboard ) {
+	writeStoryboard ( xml: any, storyboard: Storyboard ) {
 
 		const storyXml = {
 
@@ -255,7 +255,7 @@ export class OscWriterService {
 
 	}
 
-	writeConditionGroup ( conditionGroup: OscConditionGroup ): any {
+	writeConditionGroup ( conditionGroup: ConditionGroup ): any {
 
 		let xml = {
 			Condition: []
@@ -280,15 +280,15 @@ export class OscWriterService {
 
 		};
 
-		if ( condition.category == OscConditionCategory.ByEntity ) {
+		if ( condition.category == ConditionCategory.ByEntity ) {
 
 			xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as AbstractByEntityCondition );
 
-		} else if ( condition.category == OscConditionCategory.ByValue ) {
+		} else if ( condition.category == ConditionCategory.ByValue ) {
 
 			xml[ 'ByValue' ] = this.writeByValueCondition( condition );
 
-		} else if ( condition.category == OscConditionCategory.ByState ) {
+		} else if ( condition.category == ConditionCategory.ByState ) {
 
 			xml[ 'ByState' ] = this.writeByStateCondition( condition );
 
@@ -302,11 +302,11 @@ export class OscWriterService {
 		let xml = {};
 
 		// TODO : Write test for this in production for constructor error
-		if ( abstractCondition.conditionType === OscConditionType.ByState_AtStart ) {
+		if ( abstractCondition.conditionType === ConditionType.ByState_AtStart ) {
 
 			xml[ 'AtStart' ] = {};
 
-			let condition = abstractCondition as OscAtStartCondition;
+			let condition = abstractCondition as AtStartCondition;
 
 			xml[ 'AtStart' ][ 'attr_type' ] = condition.type;
 			xml[ 'AtStart' ][ 'attr_name' ] = condition.elementName;
@@ -321,11 +321,11 @@ export class OscWriterService {
 		let xml = {};
 
 		// TODO : Write test for this in production for construtor error
-		if ( abstractCondition.conditionType === OscConditionType.ByValue_SimulationTime ) {
+		if ( abstractCondition.conditionType === ConditionType.ByValue_SimulationTime ) {
 
 			xml[ 'SimulationTime' ] = {};
 
-			let condition = abstractCondition as OscSimulationTimeCondition;
+			let condition = abstractCondition as SimulationTimeCondition;
 
 			xml[ 'SimulationTime' ][ 'attr_value' ] = condition.value;
 			xml[ 'SimulationTime' ][ 'attr_rule' ] = condition.rule;
@@ -357,16 +357,16 @@ export class OscWriterService {
 		} );
 
 		// TODO : Write test for this in production for constructor
-		if ( abstractCondition.conditionType === OscConditionType.ByEntity_Distance ) {
+		if ( abstractCondition.conditionType === ConditionType.ByEntity_Distance ) {
 
-			xml.EntityCondition[ 'Distance' ] = this.writeDistanceCondition( abstractCondition as OscDistanceCondition );
+			xml.EntityCondition[ 'Distance' ] = this.writeDistanceCondition( abstractCondition as DistanceCondition );
 
 		}
 
 		return xml;
 	}
 
-	writeDistanceCondition ( condition: OscDistanceCondition ): any {
+	writeDistanceCondition ( condition: DistanceCondition ): any {
 
 		return {
 
@@ -381,7 +381,7 @@ export class OscWriterService {
 
 	}
 
-	writeStory ( story: OscStory ): any {
+	writeStory ( story: Story ): any {
 
 		let xml = {
 
@@ -401,7 +401,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeAct ( act: OscAct ): any {
+	writeAct ( act: Act ): any {
 
 		let xml = {
 
@@ -433,7 +433,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeSequence ( sequence: OscSequence ): any {
+	writeSequence ( sequence: Sequence ): any {
 
 		let xml = {
 
@@ -464,7 +464,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeManeuver ( maneuver: OscManeuver ): any {
+	writeManeuver ( maneuver: Maneuver ): any {
 
 		let xml = {
 
@@ -483,7 +483,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeEvent ( event: OscEvent ): any {
+	writeEvent ( event: Event ): any {
 
 		let xml = {
 
@@ -504,7 +504,7 @@ export class OscWriterService {
 					attr_name: name
 				};
 
-			if ( action.category == OscActionCategory.private ) {
+			if ( action.category == ActionCategory.private ) {
 
 				actionXml[ 'Private' ] = this.writePrivateAction( action as AbstractPrivateAction );
 
@@ -553,20 +553,20 @@ export class OscWriterService {
 
 		switch ( abstractAction.actionType ) {
 
-			case OscActionType.Private_Position:
-				xml = this.writePositionAction( abstractAction as OscPositionAction );
+			case ActionType.Private_Position:
+				xml = this.writePositionAction( abstractAction as PositionAction );
 				break;
 
-			case OscActionType.Private_Longitudinal_Speed:
-				xml = this.writeLongitudinalSpeedAction( abstractAction as OscSpeedAction );
+			case ActionType.Private_Longitudinal_Speed:
+				xml = this.writeLongitudinalSpeedAction( abstractAction as SpeedAction );
 				break;
 
-			case OscActionType.Private_Lateral:
-				xml = this.writeLaneChangeAction( abstractAction as OscLaneChangeAction );
+			case ActionType.Private_Lateral:
+				xml = this.writeLaneChangeAction( abstractAction as LaneChangeAction );
 				break;
 
-			case OscActionType.Private_Routing:
-				xml = this.writeFollowTrajectoryAction( abstractAction as OscFollowTrajectoryAction );
+			case ActionType.Private_Routing:
+				xml = this.writeFollowTrajectoryAction( abstractAction as FollowTrajectoryAction );
 				break;
 
 			default:
@@ -578,7 +578,7 @@ export class OscWriterService {
 
 	}
 
-	writeFollowTrajectoryAction ( action: OscFollowTrajectoryAction ): any {
+	writeFollowTrajectoryAction ( action: FollowTrajectoryAction ): any {
 
 		let xml = {
 			Routing: {
@@ -627,7 +627,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeLongitudinalSpeedAction ( action: OscSpeedAction ): any {
+	writeLongitudinalSpeedAction ( action: SpeedAction ): any {
 
 		return {
 			Longitudinal: {
@@ -640,7 +640,7 @@ export class OscWriterService {
 
 	}
 
-	writeLaneChangeAction ( action: OscLaneChangeAction ): any {
+	writeLaneChangeAction ( action: LaneChangeAction ): any {
 
 		return {
 
@@ -663,9 +663,9 @@ export class OscWriterService {
 
 	writeTarget ( abstractTarget: AbstractTarget ) {
 
-		if ( abstractTarget.targetType == OscTargetType.absolute ) {
+		if ( abstractTarget.targetType == TargetType.absolute ) {
 
-			let target = abstractTarget as OscAbsoluteTarget;
+			let target = abstractTarget as AbsoluteTarget;
 
 			return {
 				Absolute: {
@@ -673,9 +673,9 @@ export class OscWriterService {
 				}
 			};
 
-		} else if ( abstractTarget.targetType == OscTargetType.relative ) {
+		} else if ( abstractTarget.targetType == TargetType.relative ) {
 
-			let target = abstractTarget as OscRelativeTarget;
+			let target = abstractTarget as RelativeTarget;
 
 			return {
 				Relative: {
@@ -688,7 +688,7 @@ export class OscWriterService {
 
 	}
 
-	writeDynamics ( dynamics: OscLaneChangeDynamics ) {
+	writeDynamics ( dynamics: LaneChangeDynamics ) {
 
 		let xml = {};
 
@@ -699,7 +699,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writePositionAction ( action: OscPositionAction ) {
+	writePositionAction ( action: PositionAction ) {
 
 		return {
 			Position: this.writePosition( action.position )
@@ -713,20 +713,20 @@ export class OscWriterService {
 
 		switch ( position.type ) {
 
-			case OscPositionType.World:
-				xml = this.writeWorldPosition( position as OscWorldPosition );
+			case PositionType.World:
+				xml = this.writeWorldPosition( position as WorldPosition );
 				break;
 
-			case OscPositionType.RelativeObject:
-				xml = this.writeRelativeObjectPosition( position as OscRelativeObjectPosition );
+			case PositionType.RelativeObject:
+				xml = this.writeRelativeObjectPosition( position as RelativeObjectPosition );
 				break;
 
-			case OscPositionType.RelativeLane:
-				xml = this.writeRelativeLanePosition( position as OscRelativeLanePosition );
+			case PositionType.RelativeLane:
+				xml = this.writeRelativeLanePosition( position as RelativeLanePosition );
 				break;
 
-			case OscPositionType.Lane:
-				xml = this.writeLanePosition( position as OscLanePosition );
+			case PositionType.Lane:
+				xml = this.writeLanePosition( position as LanePosition );
 				break;
 
 			default:
@@ -737,7 +737,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeRelativeLanePosition ( position: OscRelativeLanePosition ): any {
+	writeRelativeLanePosition ( position: RelativeLanePosition ): any {
 
 		let xml = {
 			RelativeLane: {
@@ -757,7 +757,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeOrientation ( orientation: OscOrientation ) {
+	writeOrientation ( orientation: Orientation ) {
 
 		return {
 
@@ -770,7 +770,7 @@ export class OscWriterService {
 
 	}
 
-	writeWorldPosition ( position: OscWorldPosition ) {
+	writeWorldPosition ( position: WorldPosition ) {
 
 		const x = position.vector3 ? position.vector3.x : position.x;
 		const y = position.vector3 ? position.vector3.y : position.y;
@@ -793,7 +793,7 @@ export class OscWriterService {
 
 	}
 
-	writeRelativeObjectPosition ( position: OscRelativeObjectPosition ) {
+	writeRelativeObjectPosition ( position: RelativeObjectPosition ) {
 
 		let xml = {
 			RelativeObject: {
@@ -811,19 +811,19 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeCatalogs ( rootNode: any, catalogs: OscCatalogs ) {
+	writeCatalogs ( rootNode: any, catalogs: Catalogs ) {
 
 		return undefined;
 
 	}
 
-	writeParameterDeclaration ( parameterDeclaration: OscParameterDeclaration ) {
+	writeParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
 
 		let xml = {
 			Parameter: []
 		};
 
-		parameterDeclaration.parameters.forEach( ( parameter: OscParameter ) => {
+		parameterDeclaration.parameters.forEach( ( parameter: Parameter ) => {
 
 			xml.Parameter.push( {
 				attr_name: parameter.name,
@@ -837,7 +837,7 @@ export class OscWriterService {
 
 	}
 
-	writeLanePosition ( position: OscLanePosition ) {
+	writeLanePosition ( position: LanePosition ) {
 
 
 		let xml = {
@@ -853,7 +853,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeTrajectory ( trajectory: OscTrajectory ) {
+	writeTrajectory ( trajectory: Trajectory ) {
 
 		const xml = {
 			Trajectory: {
@@ -880,7 +880,7 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeVertex ( vertex: OscVertex ) {
+	writeVertex ( vertex: Vertex ) {
 
 		const xml = {
 			attr_reference: vertex.reference,
@@ -891,21 +891,21 @@ export class OscWriterService {
 		return xml;
 	}
 
-	writeShape ( shape: AbstractOscShape ) {
+	writeShape ( shape: AbstractShape ) {
 
 
 		// TODO : Test this against production
-		if ( shape instanceof OscPolylineShape ) {
+		if ( shape instanceof PolylineShape ) {
 
 			return this.writePolyline( shape );
 
-		} else if ( shape instanceof OscClothoidShape ) {
+		} else if ( shape instanceof ClothoidShape ) {
 
-			return this.writeClothoid( shape as OscClothoidShape );
+			return this.writeClothoid( shape as ClothoidShape );
 
-		} else if ( shape instanceof OscSplineShape ) {
+		} else if ( shape instanceof SplineShape ) {
 
-			return this.writeSpline( shape as OscSplineShape );
+			return this.writeSpline( shape as SplineShape );
 
 		} else {
 
@@ -914,13 +914,13 @@ export class OscWriterService {
 		}
 	}
 
-	writePolyline ( shape: OscPolylineShape ) {
+	writePolyline ( shape: PolylineShape ) {
 		return {
 			Polyline: {}
 		};
 	}
 
-	writeClothoid ( shape: OscClothoidShape ) {
+	writeClothoid ( shape: ClothoidShape ) {
 		return {
 			Clothoid: {
 				attr_curvature: shape.curvature,
@@ -930,7 +930,7 @@ export class OscWriterService {
 		};
 	}
 
-	writeSpline ( shape: OscSplineShape ) {
+	writeSpline ( shape: SplineShape ) {
 		return {
 			Spline: {
 				ControlPoint1: {

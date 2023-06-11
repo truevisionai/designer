@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { OscLaneChangeAction } from '../../../../../models/actions/osc-lane-change-action';
+import { LaneChangeAction } from '../../../../../models/actions/osc-lane-change-action';
 
 @Component( {
 	selector: 'app-lane-change-action',
@@ -12,7 +12,7 @@ import { OscLaneChangeAction } from '../../../../../models/actions/osc-lane-chan
 } )
 export class LaneChangeActionComponent implements OnInit {
 
-	@Input() action: OscLaneChangeAction;
+	@Input() action: LaneChangeAction;
 
 	constructor () {
 	}

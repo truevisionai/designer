@@ -6,22 +6,22 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
 import { SetValueCommand } from '../../../three-js/commands/set-value-command';
-import { OscFollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
+import { FollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
 import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { OscEntityObject } from '../../models/osc-entities';
-import { OscConditionType } from '../../models/osc-enums';
-import { OscEvent } from '../../models/osc-event';
+import { EntityObject } from '../../models/osc-entities';
+import { ConditionType } from '../../models/osc-enums';
+import { Event } from '../../models/osc-event';
 import { AbstractAction } from '../../models/osc-interfaces';
-import { OscManeuver } from '../../models/osc-maneuver';
-import { EnumTrajectoryDomain, OscPolylineShape, OscTrajectory, OscVertex } from '../../models/osc-trajectory';
-import { OscWorldPosition } from '../../models/positions/osc-world-position';
+import { Maneuver } from '../../models/osc-maneuver';
+import { EnumTrajectoryDomain, PolylineShape, Trajectory, Vertex } from '../../models/osc-trajectory';
+import { WorldPosition } from '../../models/positions/osc-world-position';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { OscEditorComponent } from '../../views/osc-editor/osc-editor.component';
+import { EditorComponent } from '../../views/osc-editor/osc-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
 import { EditActionsDialogComponent, EditActionsDialogData } from '../edit-actions-dialog/edit-actions-dialog.component';
 
 export class EditStoryDialogData {
-	constructor ( public object: OscEntityObject ) {
+	constructor ( public object: EntityObject ) {
 
 	}
 }
@@ -33,13 +33,13 @@ export class EditStoryDialogData {
 } )
 export class EditStoryDialog implements OnInit {
 
-	selectedManeuver: OscManeuver;
-	selectedEvent: OscEvent;
+	selectedManeuver: Maneuver;
+	selectedEvent: Event;
 	selectedAction: AbstractAction;
 
-	conditionTypes: OscConditionType;
+	conditionTypes: ConditionType;
 
-	maneuvers: OscManeuver[];
+	maneuvers: Maneuver[];
 
 	constructor (
 		public dialogRef: MatDialogRef<EditActionsDialogComponent>,
@@ -93,13 +93,13 @@ export class EditStoryDialog implements OnInit {
 
 	}
 
-	selectManeuver ( maneuver: OscManeuver ) {
+	selectManeuver ( maneuver: Maneuver ) {
 
 		this.selectedManeuver = maneuver;
 
 	}
 
-	selectEvent ( event: OscEvent ) {
+	selectEvent ( event: Event ) {
 
 		this.selectedEvent = event;
 
@@ -117,7 +117,7 @@ export class EditStoryDialog implements OnInit {
 
 		const cmd = ( new SetValueCommand( array, index, condition ) );
 
-		OscEditorComponent.execute( cmd );
+		EditorComponent.execute( cmd );
 
 	}
 
@@ -164,16 +164,16 @@ export class EditStoryDialog implements OnInit {
 
 		const event = maneuver.addNewEvent( 'NewEvent', '100' );
 
-		const trajectory = new OscTrajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Distance );
+		const trajectory = new Trajectory( 'NewTrajectory', false, EnumTrajectoryDomain.Distance );
 
-		trajectory.vertices.push( new OscVertex( 0, new OscWorldPosition( 0, 0, 0 ), new OscPolylineShape ) );
-		trajectory.vertices.push( new OscVertex( 1, new OscWorldPosition( 1, 1, 0 ), new OscPolylineShape ) );
+		trajectory.vertices.push( new Vertex( 0, new WorldPosition( 0, 0, 0 ), new PolylineShape ) );
+		trajectory.vertices.push( new Vertex( 1, new WorldPosition( 1, 1, 0 ), new PolylineShape ) );
 
-		const action = event.addNewAction( 'NewAction', new OscFollowTrajectoryAction( trajectory ) );
+		const action = event.addNewAction( 'NewAction', new FollowTrajectoryAction( trajectory ) );
 
 		Debug.log( this.openScenario.storyboard );
 
-		// let maneuver = new OscManeuver( 'NewManeuver' );
+		// let maneuver = new Maneuver( 'NewManeuver' );
 
 		// this.openScenario.addManeuver( this.entity.name, maneuver );
 

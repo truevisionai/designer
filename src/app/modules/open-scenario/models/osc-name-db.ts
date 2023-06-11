@@ -3,7 +3,7 @@
  */
 
 // helper class to map all unique names in the scenario
-export class OscNameDB {
+export class NameDB {
 
 	private story: Map<string, null> = new Map<string, null>();
 	private entity: Map<string, null> = new Map<string, null>();

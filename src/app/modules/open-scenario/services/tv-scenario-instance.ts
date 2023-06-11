@@ -4,16 +4,16 @@
 
 import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/models/file';
-import { OscClearHelper } from '../helpers/osc-clear-helper';
-import { OscNameDB } from '../models/osc-name-db';
+import { ClearHelper } from '../helpers/osc-clear-helper';
+import { NameDB } from '../models/osc-name-db';
 import { OpenScenario } from '../models/osc-scenario';
 
 export class TvScenarioInstance {
 
 	public static scenarioChanged = new EventEmitter<OpenScenario>();
 	public static fileChanged = new EventEmitter<IFile>();
-	public static db: OscNameDB = new OscNameDB();
-	private static cleaner = new OscClearHelper();
+	public static db: NameDB = new NameDB();
+	private static cleaner = new ClearHelper();
 
 	private static _file: IFile;
 
