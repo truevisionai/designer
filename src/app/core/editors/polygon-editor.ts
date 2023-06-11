@@ -54,12 +54,12 @@ export class PolygonEditor extends AbstractShapeEditor {
 		texture.repeat.set( 25, 25 );
 		texture.anisotropy = 16;
 
-		let geometry1 = new THREE.ShapeBufferGeometry( shape );
-		var mesh = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { map: texture } ) );
-		mesh.position.set( x, y, z - 175 );
-		mesh.rotation.set( rx, ry, rz );
-		mesh.scale.set( s, s, s );
-		this.group.add( mesh );
+		// let geometry1 = new BufferGeometry( shape );
+		// var mesh = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { map: texture } ) );
+		// mesh.position.set( x, y, z - 175 );
+		// mesh.rotation.set( rx, ry, rz );
+		// mesh.scale.set( s, s, s );
+		// this.group.add( mesh );
 
 		// // flat shape
 		// var geometry2 = new THREE.ShapeBufferGeometry( shape );

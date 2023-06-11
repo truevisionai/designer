@@ -1,5 +1,5 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OscModelsService } from '../../services/osc-models.service';
 import { OscDriverService } from '../../services/osc-driver.service';
 import { OscEntityObject } from '../../models/osc-entities';
@@ -114,7 +114,7 @@ export class AddVehicleDialogComponent implements OnInit {
 
         } else {
 
-            SnackBar.open( 'No object selected' );
+            SnackBar.show( 'No object selected' );
 
         }
 

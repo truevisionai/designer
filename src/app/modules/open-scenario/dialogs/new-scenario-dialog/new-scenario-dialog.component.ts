@@ -1,83 +1,77 @@
 import { Component, OnInit } from '@angular/core';
 import { OscService } from '../../services/osc.service';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { FileApiService } from 'app/core/services/file-api.service';
 import { IFile } from 'app/core/models/file';
-import { ElectronService } from 'ngx-electron';
 import { FileService } from 'app/services/file.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 @Component( {
-    selector: 'app-new-scenario-dialog',
-    templateUrl: './new-scenario-dialog.component.html',
-    styleUrls: ['./new-scenario-dialog.component.css']
+	selector: 'app-new-scenario-dialog',
+	templateUrl: './new-scenario-dialog.component.html',
+	styleUrls: [ './new-scenario-dialog.component.css' ]
 } )
 export class NewScenarioDialogComponent implements OnInit {
 
-    isCreatingNew = false;
+	isCreatingNew = false;
 
-    constructor (
-        private dialogRef: MatDialogRef<NewScenarioDialogComponent>,
-        private osc: OscService,
-        private fileApiService: FileApiService,
-        private electron: ElectronService,
-        private fileService: FileService
-    ) {
-    }
+	constructor (
+		private dialogRef: MatDialogRef<NewScenarioDialogComponent>,
+		private osc: OscService,
+		private fileApiService: FileApiService,
+		private electron: TvElectronService,
+		private fileService: FileService
+	) {
+	}
 
-    ngOnInit () {
-    }
+	ngOnInit () {
+	}
 
-    createNew () {
+	createNew () {
 
-        this.osc.newFile();
+		this.osc.newFile();
 
-        this.osc.saveAs();
+		this.osc.saveAs();
 
-        this.isCreatingNew = true;
-    }
+		this.isCreatingNew = true;
+	}
 
-    selectRoadNetwork () {
+	selectRoadNetwork () {
 
-        if ( this.electron.isElectronApp ) {
+		// this.fileService.import( null, 'tv-map', [ 'xml', 'xodr' ], ( file: IFile ) => {
 
-            this.fileService.import( null, 'tv-map', [ 'xml', 'xodr' ], ( file: IFile ) => {
+		// 	this.osc.scenario.setRoadNetworkPath( file.path );
 
-                this.osc.scenario.setRoadNetworkPath( file.path );
+		// 	this.osc.rebuild();
 
-                this.osc.rebuild();
+		// 	this.dialogRef.close();
 
-                this.dialogRef.close();
+		// } );
 
-            } );
 
-        } else {
 
-            throw new Error( 'Importing RoadNetwork on Web not supported yet.' );
+	}
 
-        }
+	openFromComputer () {
 
-    }
+		this.osc.openFile();
 
-    openFromComputer () {
+		this.dialogRef.close();
 
-        this.osc.openFile();
+	}
 
-        this.dialogRef.close();
+	openDemo () {
 
-    }
+		this.fileApiService.getFile( 'open-scenario.xml', 'open-scenario' )
 
-    openDemo () {
+			.subscribe( ( file: IFile ) => {
 
-        this.fileApiService.getFile( 'open-scenario.xml', 'open-scenario' )
+				this.dialogRef.close();
 
-            .subscribe( ( file: IFile ) => {
+				this.osc.import( file );
 
-                this.dialogRef.close();
+			} );
 
-                this.osc.import( file );
-
-            } );
-
-    }
+	}
 
 }

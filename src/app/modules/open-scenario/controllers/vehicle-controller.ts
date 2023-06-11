@@ -185,7 +185,7 @@ export class DefaultVehicleController extends AbstractController {
         } else {
 
             // positive direction
-            if ( actor.direction > 0 && actor.sCoordinate > currentLaneSection.lastSCoordinate ) {
+            if ( actor.direction > 0 && actor.sCoordinate > currentLaneSection.endS ) {
 
                 actor.laneSectionId += 1;
                 actor.laneId = currentLane.getSuccessor();

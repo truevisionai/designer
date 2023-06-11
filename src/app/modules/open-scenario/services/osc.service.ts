@@ -8,213 +8,207 @@ import { OscSourceFile } from './osc-source-file';
 import { IFile } from '../../../core/models/file';
 import { OpenScenarioApiService } from '../../../core/services/open-scenario-api.service';
 import { SnackBar } from '../../../services/snack-bar.service';
-import { ElectronService } from 'ngx-electron';
 import { Debug } from 'app/core/utils/debug';
 import { OscPlayerService } from './osc-player.service';
 
 import { saveAs } from 'file-saver';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class OscService {
 
-    constructor (
-        private reader: OscReaderService,
-        private writer: OscWriterService,
-        private builder: OscBuilderService,
-        private fileService: FileService,
-        private openScenarioApi: OpenScenarioApiService,
-        private electron: ElectronService,
-        private oscPlayer: OscPlayerService
-    ) {
+	constructor (
+		private reader: OscReaderService,
+		private writer: OscWriterService,
+		private builder: OscBuilderService,
+		private fileService: FileService,
+		private openScenarioApi: OpenScenarioApiService,
+		private electron: TvElectronService,
+		private oscPlayer: OscPlayerService
+	) {
 
-        OscSourceFile.scenarioChanged.subscribe( scenario => {
+		OscSourceFile.scenarioChanged.subscribe( scenario => {
 
-            // Debug.log( 'scenerio changed' );
-            // this.builder.build( road, OscSourceFile.file );
+			// Debug.log( 'scenerio changed' );
+			// this.builder.build( road, OscSourceFile.file );
 
-        } );
+		} );
 
-    }
+	}
 
-    get currentFile () {
-        return OscSourceFile.currentFile;
-    }
+	get currentFile () {
+		return OscSourceFile.currentFile;
+	}
 
-    set currentFile ( value ) {
-        OscSourceFile.currentFile = value;
-    }
+	set currentFile ( value ) {
+		OscSourceFile.currentFile = value;
+	}
 
-    get scenario () {
-        return OscSourceFile.scenario;
-    }
+	get scenario () {
+		return OscSourceFile.scenario;
+	}
 
-    set scenario ( value ) {
-        OscSourceFile.scenario = value;
-    }
+	set scenario ( value ) {
+		OscSourceFile.scenario = value;
+	}
 
-    rebuild () {
+	rebuild () {
 
-        // TODO: Clear old scene
+		// TODO: Clear old scene
 
-        this.builder.build( this.scenario, this.currentFile );
+		this.builder.build( this.scenario, this.currentFile );
 
-    }
+	}
 
-    newFile () {
+	newFile () {
 
-        this.currentFile = new IFile( 'untitled.xml' );
+		this.currentFile = new IFile( 'untitled.xml' );
 
-        this.scenario = new OpenScenario();
+		this.scenario = new OpenScenario();
 
-    }
+	}
 
-    openFile () {
+	openFile () {
 
-        if ( this.electron.isElectronApp ) {
+		// this.fileService.import( null, 'osc', [ 'xml', 'xosc' ], ( file: IFile ) => {
 
-            this.fileService.import( null, 'osc', [ 'xml', 'xosc' ], ( file: IFile ) => {
+		// 	this.import( file );
 
-                this.import( file );
+		// } );
 
-            } );
 
-        } else {
+	}
 
-            throw new Error( 'not implemented' );
+	import ( file: IFile ) {
 
-        }
-    }
+		this.currentFile = file;
 
-    import ( file: IFile ) {
+		SnackBar.show( 'Building Scenario' );
 
-        this.currentFile = file;
+		this.scenario = this.reader.readFromFile( file );
 
-        SnackBar.open( 'Building Scenario' );
+		this.builder.build( this.scenario, file );
+	}
 
-        this.scenario = this.reader.readFromFile( file );
+	importFromPath ( filepath: string ) {
 
-        this.builder.build( this.scenario, file );
-    }
+		this.fileService.readFile( filepath, 'xml', ( file: IFile ) => {
 
-    importFromPath ( filepath: string ) {
+			this.import( file );
 
-        this.fileService.readFile( filepath, 'xml', ( file: IFile ) => {
+		} );
 
-            this.import( file );
+	}
 
-        } );
+	importFromContent ( contents: string ) {
 
-    }
+		const file = new IFile();
 
-    importFromContent ( contents: string ) {
+		file.name = 'Untitled.xml';
+		file.contents = contents;
+		file.online = false;
 
-        const file = new IFile();
+		this.import( file );
+	}
 
-        file.name = 'Untitled.xml';
-        file.contents = contents;
-        file.online = false;
+	save ( callback?: ( file: IFile ) => void ) {
 
-        this.import( file );
-    }
+		const fileDoesNotExist = this.currentFile == null || this.currentFile.path == null;
 
-    save ( callback?: ( file: IFile ) => void ) {
+		if ( fileDoesNotExist ) {
 
-        const fileDoesNotExist = this.currentFile == null || this.currentFile.path == null;
+			this.saveAs( callback );
 
-        if ( fileDoesNotExist ) {
+		} else {
 
-            this.saveAs( callback );
+			SnackBar.show( 'Saving...' );
 
-        } else {
+			const content = this.writer.getOutputString( this.scenario );
 
-            SnackBar.open( 'Saving...' );
+			if ( this.currentFile.online ) {
 
-            const content = this.writer.getOutputString( this.scenario );
+				this.saveOnline( content );
 
-            if ( this.currentFile.online ) {
+			} else {
 
-                this.saveOnline( content );
+				this.saveLocally( content, callback );
 
-            } else {
+			}
+		}
+	}
 
-                this.saveLocally( content, callback );
+	saveAs ( callback?: ( file: IFile ) => void ) {
 
-            }
-        }
-    }
+		const contents = this.writer.getOutputString( OscSourceFile.scenario );
 
-    saveAs ( callback?: ( file: IFile ) => void ) {
+		Debug.log( contents );
 
-        const contents = this.writer.getOutputString( OscSourceFile.scenario );
+		if ( this.electron.isElectronApp ) {
 
-        Debug.log( contents );
+			this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
 
-        if ( this.electron.isElectronApp ) {
+				if ( this.currentFile == null ) {
 
-            this.fileService.saveAsFile( null, contents, ( file: IFile ) => {
+					this.currentFile = new IFile( file.name, file.path );
 
-                if ( this.currentFile == null ) {
+				} else {
 
-                    this.currentFile = new IFile( file.name, file.path );
+					this.currentFile.path = file.path;
+					this.currentFile.name = file.name;
 
-                } else {
+				}
 
-                    this.currentFile.path = file.path;
-                    this.currentFile.name = file.name;
+				if ( callback ) callback( file );
 
-                }
+			} );
 
-                if ( callback ) callback( file );
+		} else {
 
-            } );
+			saveAs( new Blob( [ contents ] ), 'scenario.xosc' );
 
-        } else {
+		}
 
-            saveAs( new Blob( [ contents ] ), 'scenario.xosc' );
+	}
 
-        }
+	saveLocallyAt ( path, callback?: ( file: IFile ) => void ) {
 
-    }
+		const contents = this.writer.getOutputString( OscSourceFile.scenario );
 
-    saveLocallyAt ( path, callback?: ( file: IFile ) => void ) {
+		this.fileService.saveFile( path, contents, ( file: IFile ) => {
 
-        const contents = this.writer.getOutputString( OscSourceFile.scenario );
+			if ( this.currentFile == null ) {
 
-        this.fileService.saveFile( path, contents, ( file: IFile ) => {
+				this.currentFile = new IFile( file.name, file.path );
 
-            if ( this.currentFile == null ) {
+			} else {
 
-                this.currentFile = new IFile( file.name, file.path );
+				this.currentFile.path = file.path;
+				this.currentFile.name = file.name;
 
-            } else {
+			}
 
-                this.currentFile.path = file.path;
-                this.currentFile.name = file.name;
+			if ( callback ) callback( file );
 
-            }
+		} );
+	}
 
-            if ( callback ) callback( file );
+	private saveOnline ( content: string ) {
 
-        } );
-    }
+		const tmpFile = new IFile( this.currentFile.name, this.currentFile.path, content, this.currentFile.type, true );
 
-    private saveOnline ( content: string ) {
+		this.openScenarioApi.saveOpenScenario( tmpFile ).subscribe( res => {
 
-        const tmpFile = new IFile( this.currentFile.name, this.currentFile.path, content, this.currentFile.type, true );
+			SnackBar.show( 'Successfully saved online' );
 
-        this.openScenarioApi.saveOpenScenario( tmpFile ).subscribe( res => {
+		} );
 
-            SnackBar.open( 'Successfully saved online' );
+	}
 
-        } );
+	private saveLocally ( content: string, callback?: ( file: IFile ) => void ) {
 
-    }
+		this.saveLocallyAt( OscSourceFile.currentFile.path, callback );
 
-    private saveLocally ( content: string, callback?: ( file: IFile ) => void ) {
-
-        this.saveLocallyAt( OscSourceFile.currentFile.path, callback );
-
-    }
+	}
 }

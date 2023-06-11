@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { OscWorldPosition } from 'app/modules/open-scenario/models/positions/osc-world-position';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AbstractPositionEditor } from '../../position-editor/position-editor.component';
+import { AbstractPositionEditor } from "../../position-editor/AbstractPositionEditor";
 import { ThreeService } from '../../../../../three-js/three.service';
 import { OscSourceFile } from '../../../../services/osc-source-file';
 

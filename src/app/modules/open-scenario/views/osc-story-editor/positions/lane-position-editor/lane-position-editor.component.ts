@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { OscLanePosition } from '../../../../models/positions/osc-lane-position';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractPositionEditor } from '../../position-editor/position-editor.component';
+import { AbstractPositionEditor } from "../../position-editor/AbstractPositionEditor";
 
 @Component( {
     selector: 'app-lane-position-editor',

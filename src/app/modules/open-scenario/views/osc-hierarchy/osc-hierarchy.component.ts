@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { OpenScenario } from '../../models/osc-scenario';
 import { OscDialogService } from '../../services/osc-dialog.service';
 import { OscEditor } from '../osc-editor/osc-editor';

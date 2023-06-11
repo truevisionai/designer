@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OscLanePosition } from '../../models/positions/osc-lane-position';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { OscPositionAction } from '../../models/actions/osc-position-action';

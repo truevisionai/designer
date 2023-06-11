@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileService } from 'app/services/file.service';
 import { OscFile } from '../../models/osc-common';
 import { OscSourceFile } from '../../services/osc-source-file';
@@ -100,13 +100,13 @@ export class EditRoadNetworkDialogComponent implements OnInit {
 
     openLocalFile () {
 
-        this.fileService.import( null, 'road-network', [ 'xml' ], ( file: IFile ) => {
+        // this.fileService.import( null, 'road-network', [ 'xml' ], ( file: IFile ) => {
 
-            this.file = file;
+        //     this.file = file;
 
-            this.setRoadNetworkFileName( file.path );
+        //     this.setRoadNetworkFileName( file.path );
 
-        } );
+        // } );
     }
 
     importAndBuild ( file: IFile ) {

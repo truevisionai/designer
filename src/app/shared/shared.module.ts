@@ -195,7 +195,7 @@ const classesToInclude = [
 		// LandingPageService
 	],
 	declarations: classesToInclude,
-	exports: [ classesToInclude, MatTreeModule, MatSelectModule, MatListModule, MatDialogModule ]
+	exports: [ classesToInclude, MatTreeModule, MatSelectModule, MatListModule, MatDialogModule, MatIconModule, MatTabsModule, MatSelectModule, MatGridListModule ]
 } )
 export class SharedModule {
 }

@@ -1,19 +1,19 @@
 <div mat-dialog-content>
 
-    <mat-form-field class="example-full-width">
+    <!-- <mat-form-field class="example-full-width">
         <mat-label>Position Type</mat-label>
         <mat-select [(ngModel)]="selectedType">
             <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
         </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
 
-    <div [ngSwitch]="selectedType">
+    <!-- <div [ngSwitch]="selectedType"> -->
 
         <!-- need road information -->
         <!-- need lane information -->
         <!-- should be able to visualize instantly -->
 
-        <div *ngSwitchCase="'absolute_position'">
+        <!-- <div *ngSwitchCase="'absolute_position'">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Favorite food" value="Sushi">
             </mat-form-field>
@@ -52,12 +52,12 @@
             <mat-form-field class="example-full-width">
                 <input type="number" matInput placeholder="T Coordinate" [(ngModel)]="tCoordinate">
             </mat-form-field>
-        </div>
+        </div> -->
 
-    </div>
+    <!-- </div> -->
 
 </div>
 <div mat-dialog-actions>
     <button mat-stroked-button mat-dialog-close>No Thanks</button>
-    <button mat-stroked-button [mat-dialog-close]="response" cdkFocusInitial>Ok</button>
+    <!-- <button mat-stroked-button [mat-dialog-close]="response" cdkFocusInitial>Ok</button> -->
 </div>

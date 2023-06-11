@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
 import { OscSpeedDynamics } from '../../models/actions/osc-private-action';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -53,7 +53,7 @@ export class ChooseActionDialogComponent implements OnInit {
 
     onAddAction () {
 
-        if ( this.data.actionName == null ) this.snackBar.open( 'Please provied a name for action' );
+        // if ( this.data.actionName == null ) this.snackBar.show( 'Please provied a name for action' );
         if ( this.data.actionName == null ) return;
 
         switch ( this.action_type ) {

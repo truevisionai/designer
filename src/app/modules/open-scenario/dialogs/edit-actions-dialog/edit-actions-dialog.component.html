@@ -7,36 +7,36 @@
         <div fxFlex="24">
             <span>Maneuver</span>
             <div *ngFor="let maneuver of maneuvers">
-                <app-edit-maneuver (maneuverSelected)="selectManeuver($event)" [maneuver]="maneuver">
-                </app-edit-maneuver>
+                <!-- <app-edit-maneuver (maneuverSelected)="selectManeuver($event)" [maneuver]="maneuver">
+                </app-edit-maneuver> -->
             </div>
-            <mat-form-field class="example-full-width" *ngIf="selectedManeuver">
+            <!-- <mat-form-field class="example-full-width" *ngIf="selectedManeuver">
                 <mat-label>Events</mat-label>
                 <mat-select [(ngModel)]="selectedEvent">
                     <mat-option *ngFor="let event of selectedManeuver.events" [value]="event">{{ event.name }}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
         </div>
         <div fxFlex="24">
             <span>Actions</span>
             <div *ngFor="let action of eventActions">
-                <app-edit-action (actionSelected)="onActionSelected($event)" [action]="action"></app-edit-action>
+                <!-- <app-edit-action (actionSelected)="onActionSelected($event)" [action]="action"></app-edit-action> -->
             </div>
             <button *ngIf="selectedEvent" mat-stroked-button (click)="addAction()">Add Action</button>
         </div>
         <div fxFlex="24">
             <span>Action</span>
             <div *ngIf="selectedAction">
-                <app-action-editor [action]="selectedAction"></app-action-editor>
+                <!-- <app-action-editor [action]="selectedAction"></app-action-editor> -->
             </div>
         </div>
         <div fxFlex="24">
             <span>Conditions</span>
             <div *ngFor="let condition of eventConditions">
                 <!-- <app-edit-action-conditions [condition]="condition"></app-edit-action-conditions> -->
-                <app-condition-editor [condition]="condition" (conditionChanged)="onConditionChanged($event)">
-                </app-condition-editor>
+                <!-- <app-condition-editor [condition]="condition" (conditionChanged)="onConditionChanged($event)"> -->
+                <!-- </app-condition-editor> -->
             </div>
         </div>
     </div>

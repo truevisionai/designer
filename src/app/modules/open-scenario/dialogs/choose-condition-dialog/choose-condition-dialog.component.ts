@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OscConditionCategory, OscConditionType, OscRule, OscStoryElementType } from '../../models/osc-enums';
 import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { OscSimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';

@@ -4,12 +4,12 @@
     <!-- <p>{{ logics | json }}</p> -->
     <!-- <p>{{ sceneGraph | json }}</p> -->
 
-    <mat-form-field *ngIf="files.length > 0">
+    <!-- <mat-form-field *ngIf="files.length > 0">
         <mat-label>Select RoadNetwork</mat-label>
         <mat-select [ngModel]="selectedRoadNetwork" (ngModelChange)="onRoadNetworkSelected($event)">
             <mat-option *ngFor="let file of files" [value]="file.name">{{ file.name }}</mat-option>
         </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
 
     <p *ngIf="!logics">Choose a RoadNetwork file (Required)</p>
     <button *ngIf="!logics" mat-stroked-button (click)="selectRoadNetwork()">Select RoadNetwork</button>

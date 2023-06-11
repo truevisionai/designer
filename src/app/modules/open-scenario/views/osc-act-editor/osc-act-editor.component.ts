@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {OscAct} from '../../models/osc-act';
 import {OscEntityObject} from '../../models/osc-entities';
 import {OscSourceFile} from '../../services/osc-source-file';

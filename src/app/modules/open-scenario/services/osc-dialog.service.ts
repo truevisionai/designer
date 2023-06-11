@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AddVehicleDialogComponent, AddVehicleDialogData } from '../dialogs/add-vehicle-dialog/add-vehicle-dialog.component';
 import { OscEntityObject } from '../models/osc-entities';
 import { EditPositionDialogComponent, EditPositionDialogData } from '../dialogs/edit-position-dialog/edit-position-dialog.component';
@@ -24,7 +24,7 @@ export class OscDialogService {
     // submit the dialog and save position changes
     // apply/edit changes to the openScenario
     // send edit add command to openScenario
-    // 
+    //
 
     get openScenario () {
         return OscSourceFile.openScenario;

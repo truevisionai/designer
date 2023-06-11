@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OscEntityObject } from '../../models/osc-entities';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { OscDialogService } from '../../services/osc-dialog.service';
 import { IComponent } from 'app/core/game-object';
 import { OscSourceFile } from '../../services/osc-source-file';

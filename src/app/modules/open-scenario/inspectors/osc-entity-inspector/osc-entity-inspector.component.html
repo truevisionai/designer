@@ -1,8 +1,8 @@
 <div class="inspector-form-container" *ngIf="entity">
 
-    <mat-form-field class="example-full-width">
-        <input matInput placeholder="Name" [(ngModel)]="entity.name">
-    </mat-form-field>
+    <!-- <mat-form-field class="example-full-width"> -->
+        <!-- <input matInput placeholder="Name" [(ngModel)]="entity.name"> -->
+    <!-- </mat-form-field> -->
 
     <!--    <button mat-stroked-button (click)="editAct()">Edit Act</button>-->
     <!--    <button mat-stroked-button (click)="editStory()">Edit Story</button>-->
@@ -10,7 +10,7 @@
 
     <div *ngFor="let action of initActions">
         <h5>{{ action.actionName }}</h5>
-        <app-action-editor [action]="action" [entity]="entity"></app-action-editor>
+        <!-- <app-action-editor [action]="action" [entity]="entity"></app-action-editor> -->
     </div>
 
 </div>
