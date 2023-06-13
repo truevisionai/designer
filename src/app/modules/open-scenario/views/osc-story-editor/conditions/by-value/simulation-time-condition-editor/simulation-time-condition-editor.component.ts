@@ -4,6 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { SimulationTimeCondition } from 'app/modules/open-scenario/models/conditions/osc-simulation-time-condition';
+import { AbstractCondition } from '../../../../../models/conditions/osc-condition';
 
 @Component( {
 	selector: 'app-simulation-time-condition-editor',
@@ -12,9 +13,13 @@ import { SimulationTimeCondition } from 'app/modules/open-scenario/models/condit
 } )
 export class SimulationTimeConditionEditorComponent implements OnInit {
 
-	@Input() condition: SimulationTimeCondition;
+	@Input() condition: AbstractCondition;
 
 	constructor () {
+	}
+
+	get simulationTimeCondition () {
+		return this.condition as SimulationTimeCondition;
 	}
 
 	ngOnInit () {

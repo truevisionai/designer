@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CoreModule, FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SharedModule } from '../../shared/shared.module';
@@ -123,19 +124,20 @@ import { TargetEditorComponent } from './views/osc-story-editor/target-editor/ta
 		SpeedConditionEditorComponent,
 		TraveledDistanceConditionEditorComponent,
 	],
-	imports: [
-		CommonModule,
-		SharedModule,
-		FormsModule,
-		ReactiveFormsModule,
-		RouterModule,
-		ThreeJsModule,
-		CoreModule,
-		PerfectScrollbarModule,
-		FlexLayoutModule,
-		FlexModule,
-		TvMapModule,
-	],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        ThreeJsModule,
+        CoreModule,
+        PerfectScrollbarModule,
+        FlexLayoutModule,
+        FlexModule,
+        TvMapModule,
+        MatStepperModule,
+    ],
 	entryComponents: [
 		EntityInspector,
 		AddVehicleDialogComponent,

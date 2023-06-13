@@ -6,7 +6,7 @@ import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { StoryElementType } from './osc-enums';
-import { Event } from './osc-event';
+import { TvEvent } from './osc-event';
 import { AbstractAction } from './osc-interfaces';
 import { ParameterDeclaration } from './osc-parameter-declaration';
 
@@ -16,7 +16,7 @@ export class Maneuver {
 
 	public parameterDeclaration: ParameterDeclaration;
 
-	public events: Event[] = [];
+	public events: TvEvent[] = [];
 
 	public hasStarted: boolean;
 	public isCompleted: boolean;
@@ -42,14 +42,14 @@ export class Maneuver {
 
 		if ( hasName ) throw new Error( 'Event name already used' );
 
-		const event = new Event( name, priority );
+		const event = new TvEvent( name, priority );
 
 		this.addEventInstance( event );
 
 		return event;
 	}
 
-	addEventInstance ( event: Event ) {
+	addEventInstance ( event: TvEvent ) {
 
 		this.events.push( event );
 

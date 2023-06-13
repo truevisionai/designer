@@ -4,8 +4,7 @@
 
 import { ConditionGroup } from '../models/conditions/osc-condition-group';
 import { Act } from '../models/osc-act';
-import { Event } from '../models/osc-event';
-import { AbstractAction } from '../models/osc-interfaces';
+import { TvEvent } from '../models/osc-event';
 import { Maneuver } from '../models/osc-maneuver';
 import { OpenScenario } from '../models/osc-scenario';
 import { Story } from '../models/osc-story';
@@ -22,11 +21,7 @@ export class ResetHelper {
 
 			entity.enable();
 
-			entity.initActions.forEach( action => {
-
-				this.resetAction( action );
-
-			} );
+			entity.initActions.forEach( action => action.reset() );
 
 			entity.distanceTravelled = 0;
 
@@ -104,26 +99,13 @@ export class ResetHelper {
 
 	}
 
-	private resetEvent ( event: Event ) {
+	private resetEvent ( event: TvEvent ) {
 
 		event.hasStarted = false;
 		event.isCompleted = false;
 
 		this.resetGroups( event.startConditionGroups );
 
-		event.getActions().forEach( action => {
-
-			this.resetAction( action );
-
-		} );
-	}
-
-	private resetAction ( action: AbstractAction ) {
-
-		action.hasStarted = false;
-		action.isCompleted = false;
-
-		action.reset();
-
+		event.getActions().forEach( action => action.reset() );
 	}
 }

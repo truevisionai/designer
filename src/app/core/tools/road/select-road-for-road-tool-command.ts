@@ -36,6 +36,7 @@ export class SelectRoadForRoadToolCommand extends BaseCommand {
 		this.tool.controlPoint = null;
 
 		this.newRoad?.showHelpers();
+		this.newRoad?.showControlPoints();
 		this.newRoad?.showSpline();
 
 		this.oldRoad?.hideSpline();
@@ -53,7 +54,9 @@ export class SelectRoadForRoadToolCommand extends BaseCommand {
 		this.tool.controlPoint = this.oldControlPoint;
 
 		this.newRoad?.hideSpline();
+		this.newRoad?.hideControlPoints();
 
+		this.oldRoad?.showControlPoints();
 		this.oldRoad?.showHelpers();
 		this.oldRoad?.showSpline();
 		this.oldNode?.select();

@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { CommandHistory } from 'app/services/command-history';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 import { Maths } from 'app/utils/maths';
 
@@ -41,6 +40,7 @@ export class ThreeService implements IEngine {
 	private transformControls: TransformControls;
 	private light: THREE.AmbientLight;
 	private objectPositionOnDown: THREE.Vector3 = null;
+	private target: Object3D;
 
 	constructor () {
 
@@ -515,6 +515,27 @@ export class ThreeService implements IEngine {
 
 	}
 
+
+	setFocusTarget ( target: THREE.Object3D ) {
+
+		this.target = target;
+		ThreeService.controls.setTarget( target.position );
+
+	}
+
+	getFocusTarget () {
+
+		return this.target;
+
+	}
+
+	removeFocusTarget () {
+
+		this.target = null;
+		// ThreeService.controls.setTarget( null );
+
+	}
+
 	private createCameras () {
 
 		// higher near value >= 10 reduces the z fighting that
@@ -564,6 +585,33 @@ export class ThreeService implements IEngine {
 	private addAxesHelper () {
 
 		SceneService.addHelper( new THREE.AxesHelper( 3000 ) );
+
+	}
+
+	// This will create a vector to store the offset position from the object
+	private p_offset = new THREE.Vector3( 20, 20, 20 );
+	private o_offset = new THREE.Vector3( 0, 0, 100 );
+
+	updateCameraPosition () {
+
+		const target = this.getFocusTarget();
+
+		if ( !target ) return;
+
+		if ( this.camera instanceof OrthographicCamera ) {
+
+			// This will calculate the camera position based on the offset from the object
+			this.camera.position.copy( target.position ).add( this.o_offset );
+
+
+		} else if ( this.camera instanceof PerspectiveCamera ) {
+
+			// This will calculate the camera position based on the offset from the object
+			this.camera.position.copy( target.position ).add( this.p_offset );
+
+		}
+
+		this.camera.lookAt( target.position );
 
 	}
 }

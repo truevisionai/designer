@@ -2,13 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MathUtils } from 'three';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { SimulationTimeCondition } from './conditions/osc-simulation-time-condition';
 import { Act } from './osc-act';
 import { Catalogs } from './osc-catalogs';
 import { File } from './osc-common';
 import { EntityObject } from './osc-entities';
+import { Rule } from './osc-enums';
+import { TvEvent } from './osc-event';
 import { FileHeader } from './osc-file-header';
-import { AbstractAction } from './osc-interfaces';
+import { AbstractAction, AbstractPrivateAction } from './osc-interfaces';
 import { Maneuver } from './osc-maneuver';
 import { Parameter, ParameterDeclaration } from './osc-parameter-declaration';
 import { RoadNetwork } from './osc-road-network';
@@ -211,5 +215,66 @@ export class OpenScenario {
 		this.storyboard.addStory( story );
 
 		return story;
+	}
+
+	findEntityActions ( entity: EntityObject ): AbstractPrivateAction[] {
+
+		const actions: AbstractPrivateAction[] = [];
+
+		const maneuvers = this.getManeuversForEntity( entity.name );
+
+		maneuvers.forEach( maneuver => {
+
+			maneuver.events.forEach( event => {
+
+				event.actions.forEach( action => {
+
+					actions.push( action as AbstractPrivateAction );
+
+				} );
+
+			} );
+
+		} );
+
+		return actions;
+	}
+
+	addActionEvent ( entity: EntityObject, action: AbstractPrivateAction ): void {
+
+		const maneuvers = this.getManeuversForEntity( entity.name );
+
+		if ( maneuvers.length > 0 ) {
+
+			const event = maneuvers[ 0 ].addNewEvent( `Event-${ MathUtils.generateUUID() }`, 'overwrite' );
+
+			event.addNewAction( `Action-${ MathUtils.generateUUID() }`, action );
+
+			event.addStartCondition( new SimulationTimeCondition( 0, Rule.greater_than ) );
+
+		}
+
+
+	}
+
+	findEntityEvents ( entity: EntityObject ): TvEvent[] {
+
+		const events: TvEvent[] = [];
+
+		const maneuvers = this.getManeuversForEntity( entity.name );
+
+		maneuvers.forEach( maneuver => {
+
+			maneuver.events.forEach( event => {
+
+				events.push( event );
+
+			} );
+
+		} );
+
+		return events;
+
+
 	}
 }

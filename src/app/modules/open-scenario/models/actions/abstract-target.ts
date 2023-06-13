@@ -8,6 +8,8 @@ export abstract class AbstractTarget {
 
 	abstract targetType: TargetType;
 
+	protected absoluteTarget: number;
+
 	get value () {
 
 		return this.getTarget();
@@ -24,4 +26,9 @@ export abstract class AbstractTarget {
 
 	abstract setTarget ( value );
 
+	reset () {
+
+		this.absoluteTarget = null;
+
+	}
 }

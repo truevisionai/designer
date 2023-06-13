@@ -4,13 +4,76 @@
 		<input [(ngModel)]="entity.name" matInput placeholder="Name">
 	</mat-form-field>
 
-	<button (click)="editAct()" mat-stroked-button>Edit Act</button>
-	<button (click)="editStory()" mat-stroked-button>Edit Story</button>
-	<button (click)="editActions()" mat-stroked-button>Edit Actions</button>
+	<mat-accordion>
+		<mat-expansion-panel *ngFor="let action of initActions">
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					{{action.actionType}}
+				</mat-panel-title>
+				<mat-panel-description>
+					{{action.actionName}}
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<app-action-editor [action]="action" [entity]="entity"></app-action-editor>
+		</mat-expansion-panel>
+	</mat-accordion>
 
-	<div *ngFor="let action of initActions">
-		<h5>{{ action.actionName }}</h5>
-		<app-action-editor [action]="action" [entity]="entity"></app-action-editor>
+	<br/>
+
+<!--	<mat-accordion>-->
+<!--		&lt;!&ndash; show start conditions &ndash;&gt;-->
+<!--		<mat-expansion-panel *ngFor="let action of scenarioActions">-->
+<!--			<mat-expansion-panel-header>-->
+<!--				<mat-panel-title>-->
+<!--					{{action.actionType}}-->
+<!--					&lt;!&ndash; <mat-icon>account_circle</mat-icon> &ndash;&gt;-->
+<!--				</mat-panel-title>-->
+<!--				<mat-panel-description>-->
+<!--					{{action.actionName}}-->
+<!--				</mat-panel-description>-->
+<!--			</mat-expansion-panel-header>-->
+<!--			<app-action-editor [action]="action" [entity]="entity"></app-action-editor>-->
+<!--		</mat-expansion-panel>-->
+<!--		&lt;!&ndash; show end conditions &ndash;&gt;-->
+<!--	</mat-accordion>-->
+
+	<div *ngFor="let event of scenarioEvents">
+		<mat-accordion>
+			<mat-expansion-panel *ngFor="let action of event.getActions()">
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						{{action.actionType}}
+					</mat-panel-title>
+					<mat-panel-description>
+						{{action['actionName']}}
+					</mat-panel-description>
+				</mat-expansion-panel-header>
+				<app-action-editor [action]="action" [entity]="entity"></app-action-editor>
+			</mat-expansion-panel>
+		</mat-accordion>
+		<mat-accordion>
+			<mat-expansion-panel *ngFor="let condition of event.startConditions">
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						{{condition.conditionType}} {{condition.conditionName}}
+					</mat-panel-title>
+					<mat-panel-description>
+						{{condition.conditionName}}
+					</mat-panel-description>
+				</mat-expansion-panel-header>
+				<app-condition-editor [condition]="condition"></app-condition-editor>
+			</mat-expansion-panel>
+		</mat-accordion>
 	</div>
+
+	<br/>
+
+	<mat-form-field class="example-full-width">
+		<mat-label>Add Action</mat-label>
+		<mat-select #addAction (valueChange)="onAddAction($event)">
+			<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
+			<mat-option [value]="actionType.Private_Lateral">ChangeLane</mat-option>
+		</mat-select>
+	</mat-form-field>
 
 </div>

@@ -54,12 +54,12 @@ export class VehicleTool extends BaseTool {
 
 			} else {
 
-			}
+				SnackBar.warn( 'Please select a vehicle' );
 
+			}
 
 		} else {
 
-			SnackBar.warn( 'Please select a vehicle' );
 
 		}
 

@@ -9,7 +9,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { EntityObject } from '../../models/osc-entities';
 import { ConditionType } from '../../models/osc-enums';
-import { Event } from '../../models/osc-event';
+import { TvEvent } from '../../models/osc-event';
 import { AbstractAction } from '../../models/osc-interfaces';
 import { Maneuver } from '../../models/osc-maneuver';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
@@ -29,7 +29,7 @@ export class EditActionsDialogData {
 export class EditActionsDialogComponent implements OnInit {
 
 	selectedManeuver: Maneuver;
-	selectedEvent: Event;
+	selectedEvent: TvEvent;
 	selectedAction: AbstractAction;
 
 	conditionTypes: ConditionType;
@@ -74,7 +74,7 @@ export class EditActionsDialogComponent implements OnInit {
 
 	}
 
-	selectEvent ( event: Event ) {
+	selectEvent ( event: TvEvent ) {
 
 		this.selectedEvent = event;
 

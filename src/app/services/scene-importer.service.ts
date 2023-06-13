@@ -312,13 +312,13 @@ export class SceneImporterService extends AbstractReader {
 
 			const spline = this.importAutoSpline( xml, road );
 
-			road.updateGeometryFromSpline( true );
+			road.updateGeometryFromSpline();
 
 			return spline;
 
 		} else if ( type === 'explicit' ) {
 
-			const spline = this.importExplicitSpline( xml, road );
+			const spline = road.spline = this.importExplicitSpline( xml, road );
 
 			road.updateGeometryFromSpline( true );
 
@@ -334,7 +334,7 @@ export class SceneImporterService extends AbstractReader {
 
 	private importExplicitSpline ( xml: XmlElement, road: TvRoad ): ExplicitSpline {
 
-		const spline = new ExplicitSpline( road );
+		const spline = road.spline = new ExplicitSpline( road );
 
 		let index = 0;
 
@@ -364,25 +364,13 @@ export class SceneImporterService extends AbstractReader {
 
 	private importAutoSpline ( xml, road: TvRoad ): AutoSpline {
 
-		const spline = new AutoSpline( road );
-
-		let index = 0;
+		const spline = road.spline as AutoSpline;
 
 		this.readAsOptionalArray( xml.point, xml => {
 
-			const controlPoint = new RoadControlPoint( road, new Vector3(
-				parseFloat( xml.attr_x ),
-				parseFloat( xml.attr_y ),
-				parseFloat( xml.attr_z ),
-			), 'cp', index, index );
+			const position = this.importVector3( xml );
 
-			index++;
-
-			controlPoint.mainObject = controlPoint.userData.road = road;
-
-			SceneService.add( controlPoint );
-
-			spline.addControlPoint( controlPoint );
+			spline.addControlPointAt( position );
 
 		} );
 
@@ -471,9 +459,13 @@ export class SceneImporterService extends AbstractReader {
 		return instances;
 	}
 
-	private importVector3 ( vector3: any ) {
+	private importVector3 ( xml: XmlElement ): Vector3 {
 
-		return {};
+		return new Vector3(
+			parseFloat( xml.attr_x ),
+			parseFloat( xml.attr_y ),
+			parseFloat( xml.attr_z ),
+		);
 
 	}
 

@@ -5,13 +5,13 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ConditionService } from './condition-service';
 import { AbstractCondition } from './conditions/osc-condition';
 import { ConditionGroup } from './conditions/osc-condition-group';
 import { StoryElementType } from './osc-enums';
 import { AbstractAction } from './osc-interfaces';
-import { ConditionService } from './condition-service';
 
-export class Event {
+export class TvEvent {
 
 	private static count = 1;
 
@@ -22,12 +22,20 @@ export class Event {
 	public completed = new EventEmitter<StoryEvent>();
 
 	// public actions: EventAction[] = [];
-	private actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
+	private _actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
 
 	constructor ( public name?: string, public priority?: string ) {
 
-		Event.count++;
+		TvEvent.count++;
 
+	}
+
+	get actions (): Map<string, AbstractAction> {
+		return this._actions;
+	}
+
+	set actions ( value: Map<string, AbstractAction> ) {
+		this._actions = value;
 	}
 
 	get startConditions () {
@@ -55,7 +63,7 @@ export class Event {
 
 		if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
-		this.actions.set( name, action );
+		this._actions.set( name, action );
 
 		TvScenarioInstance.db.add_action( name );
 
@@ -89,13 +97,15 @@ export class Event {
 
 	}
 
-	getActions () {
-		return [ ...this.actions.values() ];
+	getActions (): AbstractAction[] {
+
+		return [ ...this._actions.values() ];
+
 	}
 
 	getActionMap () {
 
-		return this.actions;
+		return this._actions;
 
 	}
 
@@ -103,7 +113,7 @@ export class Event {
 
 		if ( e.type != StoryElementType.action ) return;
 
-		this.actions.forEach( ( action, actionName ) => {
+		this._actions.forEach( ( action, actionName ) => {
 
 			if ( actionName === e.name ) action.isCompleted = true;
 
@@ -111,7 +121,7 @@ export class Event {
 
 		let allCompleted = true;
 
-		this.actions.forEach( ( action ) => {
+		this._actions.forEach( ( action ) => {
 
 			if ( !action.isCompleted ) allCompleted = false;
 

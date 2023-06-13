@@ -32,7 +32,7 @@ import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/osc-cat
 import { Directory, File } from '../models/osc-common';
 import { EntityObject } from '../models/osc-entities';
 import { ConditionEdge, Rule } from '../models/osc-enums';
-import { Event } from '../models/osc-event';
+import { TvEvent } from '../models/osc-event';
 import { FileHeader } from '../models/osc-file-header';
 import {
 	AbstractAction,
@@ -610,9 +610,9 @@ export class ReaderService extends AbstractReader {
 		return maneuver;
 	}
 
-	readEvent ( xml: any ): Event {
+	readEvent ( xml: any ): TvEvent {
 
-		const event = new Event;
+		const event = new TvEvent;
 
 		event.name = xml.attr_name;
 		event.priority = xml.attr_priority;

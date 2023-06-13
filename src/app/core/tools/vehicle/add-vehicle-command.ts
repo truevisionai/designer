@@ -4,11 +4,10 @@ import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component';
 import { EntityObject } from 'app/modules/open-scenario/models/osc-entities';
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
-import { Vector3 } from 'three';
+import { MathUtils, Vector3 } from 'three';
 import { AbsoluteTarget } from '../../../modules/open-scenario/models/actions/osc-absolute-target';
-import { LaneChangeAction } from '../../../modules/open-scenario/models/actions/osc-lane-change-action';
 import { PositionAction } from '../../../modules/open-scenario/models/actions/osc-position-action';
-import { LaneChangeDynamics, SpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
+import { SpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
 import { SpeedAction } from '../../../modules/open-scenario/models/actions/osc-speed-action';
 import { SimulationTimeCondition } from '../../../modules/open-scenario/models/conditions/osc-simulation-time-condition';
 import { DynamicsShape, Rule } from '../../../modules/open-scenario/models/osc-enums';
@@ -64,24 +63,30 @@ export class AddVehicleCommand extends BaseCommand {
 
 		const story = this.scenario.createStory( this.entity );
 
-		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 15, Rule.greater_than ) );
+		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10, Rule.greater_than ) );
 
-		const act = story.addNewAct( `Story${ this.scenario.storyboard.stories.size + 1 }Act${ story.acts.length + 1 }` );
+		const act = story.addNewAct( `Story-${ MathUtils.generateUUID() }` );
 
-		const sequence = act.addNewSequence( 'ActSequence' + act.name, 1, this.entity.name );
+		const sequence = act.addNewSequence( `Sequence-${ MathUtils.generateUUID() }` + act.name, 1, this.entity.name );
 
-		act.addStartCondition( new SimulationTimeCondition( 5, Rule.greater_than ) );
+		act.addStartCondition( new SimulationTimeCondition( 2, Rule.greater_than ) );
 
-		const maneuver = sequence.addNewManeuver( `Maneuver${ sequence.maneuvers.length + 1 }` );
+		const maneuver = sequence.addNewManeuver( `Maneuver-${ MathUtils.generateUUID() }` );
 
-		const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
+		// const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
 
-		event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
-			new LaneChangeDynamics( 5, null, DynamicsShape.linear ),
-			new AbsoluteTarget( -3 ),
-		) );
+		// event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
+		// 	new LaneChangeDynamics( 5, null, DynamicsShape.linear ),
+		// 	new AbsoluteTarget( -3 ),
+		// ) );
 
-		event.addStartCondition( new SimulationTimeCondition( 5, Rule.greater_than ) );
+		// event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
+		// 	new LaneChangeDynamics( 5, null, DynamicsShape.cubic ),
+		// 	new RelativeTarget( this.entity.name, 1 ),
+		// ) );
+
+
+		// event.addStartCondition( new SimulationTimeCondition( 2, Rule.greater_than ) );
 
 	}
 }

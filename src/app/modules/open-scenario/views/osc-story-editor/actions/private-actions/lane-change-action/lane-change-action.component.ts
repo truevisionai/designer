@@ -4,6 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { LaneChangeAction } from '../../../../../models/actions/osc-lane-change-action';
+import { AbstractPrivateAction } from '../../../../../models/osc-interfaces';
 
 @Component( {
 	selector: 'app-lane-change-action',
@@ -12,9 +13,21 @@ import { LaneChangeAction } from '../../../../../models/actions/osc-lane-change-
 } )
 export class LaneChangeActionComponent implements OnInit {
 
-	@Input() action: LaneChangeAction;
+	@Input() action: AbstractPrivateAction;
 
 	constructor () {
+	}
+
+	get laneChangeAction () {
+		return this.action as LaneChangeAction;
+	}
+
+	get target () {
+		return this.laneChangeAction.target;
+	}
+
+	get dynamics () {
+		return this.laneChangeAction.dynamics;
 	}
 
 	ngOnInit () {

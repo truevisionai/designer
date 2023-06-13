@@ -139,7 +139,7 @@ export class SpeedAction extends AbstractPrivateAction {
 
 			case TargetType.relative:
 
-				const name = ( this.target as RelativeTarget ).object;
+				const name = ( this.target as RelativeTarget ).entityName;
 
 				const obj = TvScenarioInstance.openScenario.findEntityOrFail( name );
 

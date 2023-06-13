@@ -5,7 +5,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PositionAction } from '../../../../../models/actions/osc-position-action';
 import { EntityObject } from '../../../../../models/osc-entities';
-import { AbstractPosition } from '../../../../../models/osc-interfaces';
+import { AbstractPosition, AbstractPrivateAction } from '../../../../../models/osc-interfaces';
 
 @Component( {
 	selector: 'app-position-action-editor',
@@ -13,12 +13,16 @@ import { AbstractPosition } from '../../../../../models/osc-interfaces';
 } )
 export class PositionActionEditorComponent implements OnInit {
 
-	@Input() action: PositionAction;
+	@Input() action: AbstractPrivateAction;
 	@Input() entity: EntityObject;
 
 	constructor () {
 
 	}
+
+	get positionAction () { return this.action as PositionAction }
+
+	get position () { return this.positionAction?.position; }
 
 	ngOnInit () {
 
@@ -27,8 +31,7 @@ export class PositionActionEditorComponent implements OnInit {
 
 	onPositionChanged ( $event: AbstractPosition ) {
 
-		this.action.position = $event;
-
+		this.positionAction?.setPosition( $event );
 
 		if ( this.entity ) this.action.execute( this.entity );
 
@@ -36,7 +39,7 @@ export class PositionActionEditorComponent implements OnInit {
 
 	onPositionModified ( $event: AbstractPosition ) {
 
-		this.action.position = $event;
+		this.positionAction?.setPosition( $event );
 
 		if ( this.entity ) this.action.execute( this.entity );
 

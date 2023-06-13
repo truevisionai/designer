@@ -2,14 +2,39 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
 import { PositionAction } from '../models/actions/osc-position-action';
 import { EntityObject } from '../models/osc-entities';
 import { ActionType, PositionType } from '../models/osc-enums';
 import { AbstractPosition, AbstractPrivateAction } from '../models/osc-interfaces';
 import { LanePosition } from '../models/positions/osc-lane-position';
+import { ActionFactory } from './action-factory';
 
+
+@Injectable( {
+	providedIn: 'root'
+} )
 export class ActionService {
+
+	public getPrivateActionTypes () {
+		return [
+			{
+				name: 'Position',
+				value: ActionType.Private_Position
+			},
+			{
+				name: 'Longitudinal Speed',
+				value: ActionType.Private_Longitudinal_Speed
+			},
+		];
+	}
+
+	public static getAction ( type: ActionType, entity: EntityObject ) {
+
+		return ActionFactory.createAction( type, entity );
+
+	}
 
 	public static executePrivateAction ( obj: EntityObject, privateAction: AbstractPrivateAction ) {
 

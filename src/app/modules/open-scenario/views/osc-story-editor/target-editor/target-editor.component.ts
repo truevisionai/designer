@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
 import { AbsoluteTarget } from '../../../models/actions/osc-absolute-target';
 import { RelativeTarget } from '../../../models/actions/osc-relative-target';
@@ -13,11 +13,18 @@ import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 	templateUrl: './target-editor.component.html',
 	styleUrls: [ './target-editor.component.css' ]
 } )
-export class TargetEditorComponent {
+export class TargetEditorComponent implements OnInit {
 
 	@Input() target: AbstractTarget;
 
 	constructor () {
+
+	}
+
+	ngOnInit (): void {
+
+
+
 	}
 
 	get entities () {
@@ -50,4 +57,9 @@ export class TargetEditorComponent {
 
 	}
 
+	onValueChanged ( $event: any ) {
+
+		this.target.setTarget( $event );
+
+	}
 }

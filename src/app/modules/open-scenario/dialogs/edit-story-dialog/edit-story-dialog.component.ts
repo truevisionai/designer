@@ -10,7 +10,7 @@ import { FollowTrajectoryAction } from '../../models/actions/osc-follow-trajecto
 import { AbstractCondition } from '../../models/conditions/osc-condition';
 import { EntityObject } from '../../models/osc-entities';
 import { ConditionType } from '../../models/osc-enums';
-import { Event } from '../../models/osc-event';
+import { TvEvent } from '../../models/osc-event';
 import { AbstractAction } from '../../models/osc-interfaces';
 import { Maneuver } from '../../models/osc-maneuver';
 import { EnumTrajectoryDomain, PolylineShape, Trajectory, Vertex } from '../../models/osc-trajectory';
@@ -34,7 +34,7 @@ export class EditStoryDialogData {
 export class EditStoryDialog implements OnInit {
 
 	selectedManeuver: Maneuver;
-	selectedEvent: Event;
+	selectedEvent: TvEvent;
 	selectedAction: AbstractAction;
 
 	conditionTypes: ConditionType;
@@ -99,7 +99,7 @@ export class EditStoryDialog implements OnInit {
 
 	}
 
-	selectEvent ( event: Event ) {
+	selectEvent ( event: TvEvent ) {
 
 		this.selectedEvent = event;
 

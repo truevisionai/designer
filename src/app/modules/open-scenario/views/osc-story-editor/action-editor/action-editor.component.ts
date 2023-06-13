@@ -3,7 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
+import { ActionType } from 'app/modules/open-scenario/models/osc-enums';
+import { AbstractAction, AbstractPrivateAction } from 'app/modules/open-scenario/models/osc-interfaces';
 import { EntityObject } from '../../../models/osc-entities';
 
 @Component( {
@@ -13,13 +14,18 @@ import { EntityObject } from '../../../models/osc-entities';
 } )
 export class ActionEditorComponent implements OnInit {
 
-	@Input() action: AbstractPrivateAction;
+	@Input() action: AbstractAction;
 
 	@Input() entity: EntityObject;
 
+	types = ActionType;
+
 	constructor () {
 
+	}
 
+	get privateAction () {
+		return this.action as AbstractPrivateAction;
 	}
 
 	ngOnInit () {

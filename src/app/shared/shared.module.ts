@@ -11,6 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -205,7 +206,8 @@ const classesToInclude = [
 		MatSelectModule,
 		MatGridListModule,
 		MatInputModule,
-		MatButtonModule
+		MatButtonModule,
+		MatExpansionModule,
 	]
 } )
 export class SharedModule {

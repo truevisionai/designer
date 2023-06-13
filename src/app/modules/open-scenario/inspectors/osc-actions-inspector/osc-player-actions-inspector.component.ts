@@ -13,7 +13,7 @@ import { SpeedAction } from '../../models/actions/osc-speed-action';
 import { Act } from '../../models/osc-act';
 import { EntityObject } from '../../models/osc-entities';
 import { ActionType, DynamicsShape } from '../../models/osc-enums';
-import { Event } from '../../models/osc-event';
+import { TvEvent } from '../../models/osc-event';
 import { AbstractPrivateAction } from '../../models/osc-interfaces';
 import { Maneuver } from '../../models/osc-maneuver';
 import { Sequence } from '../../models/osc-sequence';
@@ -64,7 +64,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 			const maneuver = this.getManeuver();
 
-			const eventName = Event.getNewName();
+			const eventName = TvEvent.getNewName();
 
 			const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
@@ -99,7 +99,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	editEvent ( event: Event ) {
+	editEvent ( event: TvEvent ) {
 
 		AppInspector.setInspector( EventEditorComponent, event );
 
@@ -137,7 +137,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 		const maneuver = this.getManeuver();
 
-		const eventName = Event.getNewName( 'ChangeSpeed' );
+		const eventName = TvEvent.getNewName( 'ChangeSpeed' );
 
 		const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
@@ -169,11 +169,11 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	private getEvent (): Event {
+	private getEvent (): TvEvent {
 
 		const maneuver = this.getManeuver();
 
-		const eventName = Event.getNewName();
+		const eventName = TvEvent.getNewName();
 
 		return maneuver.addNewEvent( eventName, 'overwrite' );
 

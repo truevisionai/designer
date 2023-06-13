@@ -3,10 +3,12 @@
  */
 
 import { EventEmitter } from '@angular/core';
+import { SentryService } from 'app/core/analytics/sentry.service';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
+import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -37,8 +39,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { TvConsole } from 'app/core/utils/console';
-import { SentryService } from 'app/core/analytics/sentry.service';
 
 export class TvRoad {
 
@@ -1192,7 +1192,7 @@ export class TvRoad {
 
 	}
 
-	addControlPoint ( point: RoadControlPoint ) {
+	addControlPoint ( point: RoadControlPoint, updateGeometry = true ) {
 
 		point.mainObject = this;
 
@@ -1200,14 +1200,14 @@ export class TvRoad {
 
 		SceneService.add( point );
 
-		this.updateGeometryFromSpline();
+		if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
 
-	addControlPointAt ( position: Vector3 ) {
+	addControlPointAt ( position: Vector3, udpateGeometry = true ) {
 
 		const point = new RoadControlPoint( this, position, 'cp', 0, 0 );
 
-		this.addControlPoint( point );
+		this.addControlPoint( point, udpateGeometry );
 
 		return point;
 

@@ -29,6 +29,8 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 
 	}
 
+	get worldPosition() { return this.position as WorldPosition }
+
 	onChange ( e: number ) {
 
 		switch ( e ) {

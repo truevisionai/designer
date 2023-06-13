@@ -44,6 +44,9 @@ export abstract class AbstractAction {
 
 	reset () {
 
+		this.hasStarted = false;
+		this.isCompleted = false;
+
 	}
 }
 

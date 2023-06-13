@@ -30,7 +30,7 @@ import {
 	PositionType,
 	TargetType
 } from '../models/osc-enums';
-import { Event } from '../models/osc-event';
+import { TvEvent } from '../models/osc-event';
 import { AbstractController, AbstractPosition, AbstractPrivateAction, CatalogReferenceController } from '../models/osc-interfaces';
 import { Maneuver } from '../models/osc-maneuver';
 import { Orientation } from '../models/osc-orientation';
@@ -483,7 +483,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeEvent ( event: Event ): any {
+	writeEvent ( event: TvEvent ): any {
 
 		let xml = {
 
@@ -679,7 +679,7 @@ export class WriterService {
 
 			return {
 				Relative: {
-					attr_object: target.object,
+					attr_object: target.entityName,
 					attr_value: target.value
 				}
 			};

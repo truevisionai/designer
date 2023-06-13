@@ -4,9 +4,9 @@
 
 import { MathUtils } from 'three';
 import { Time } from '../../../../core/time';
-import { Maths } from '../../../../utils/maths';
+import { TvLaneSide } from '../../../tv-map/models/tv-common';
+import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { EntityObject } from '../osc-entities';
 import { ActionType, DynamicsShape, TargetType } from '../osc-enums';
 import { AbstractPrivateAction } from '../osc-interfaces';
@@ -26,12 +26,14 @@ export class LaneChangeAction extends AbstractPrivateAction {
 
 	// variables for action help
 	private startTime = 0;
-	private currentLaneWidth = 0;
+	// private currentLaneWidth = 0;
 	private currentLaneId = 0;
-	private newLaneWidth = 0;
+	// private newLaneWidth = 0;
 	private newLaneId = 0;
-	private tDirection = 0;
-	private changeInTCoordinate = 0;
+	// private tDirection = 0;
+
+	// could be negative or positive
+	private tDistance = 0;
 
 	constructor (
 		public dynamics?: LaneChangeDynamics,
@@ -43,6 +45,15 @@ export class LaneChangeAction extends AbstractPrivateAction {
 
 		this.dynamics = dynamics || new LaneChangeDynamics();
 		this.target = target || new AbsoluteTarget( 0 );
+
+	}
+
+	reset () {
+
+		super.reset();
+
+		// this.dynamics?.reset();
+		this.target?.reset();
 
 	}
 
@@ -90,27 +101,44 @@ export class LaneChangeAction extends AbstractPrivateAction {
 		switch ( this.target.targetType ) {
 
 			case TargetType.absolute:
+				this.newLaneId = this.currentLaneId + this.target.value;
 				this.newLaneId = this.target.value;
 				break;
 
 			case TargetType.relative:
-				const name = ( this.target as RelativeTarget ).object;
-				const obj = TvScenarioInstance.openScenario.objects.get( name );
-				const otherLaneId = obj.laneId;
+				const otherLaneId = ( this.target as RelativeTarget ).entity.laneId;
 				this.newLaneId = otherLaneId + this.target.value;
 				break;
 
 		}
 
-		this.currentLaneWidth = road.getLaneWidth( entity.sCoordinate, this.currentLaneId );
-		this.newLaneWidth = road.getLaneWidth( entity.sCoordinate, this.newLaneId );
+		// this.currentLaneWidth = road.getLaneWidth( entity.sCoordinate, this.currentLaneId );
+		// this.newLaneWidth = road.getLaneWidth( entity.sCoordinate, this.newLaneId );
+
+		const current = TvMapQueries.getLanePosition( road.id, this.currentLaneId, entity.sCoordinate, 0 );
+		const desired = TvMapQueries.getLanePosition( road.id, this.newLaneId, entity.sCoordinate, 0 );
+		const distance = current.distanceTo( desired );
 
 		// if left lane change then negative
 		// if right lane change then positive
-		this.tDirection = this.newLaneId > this.currentLaneId ? -1 : 1;
+		const side = this.currentLaneId > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+
+		let tDirection: number;
+
+		if ( side == TvLaneSide.LEFT ) {
+
+			tDirection = this.newLaneId > this.currentLaneId ? 1 : -1;
+
+		} else if ( side == TvLaneSide.RIGHT ) {
+
+			tDirection = this.newLaneId > this.currentLaneId ? -1 : 1;
+
+		}
+
 
 		// change from center of this lane to center of new lane
-		this.changeInTCoordinate = this.tDirection * ( this.currentLaneWidth + this.newLaneWidth ) * 0.5;
+		// this.changeInTCoordinate = this.tDirection * ( this.currentLaneWidth + this.newLaneWidth ) * 0.5;
+		this.tDistance = tDirection * distance;
 
 	}
 
@@ -119,42 +147,48 @@ export class LaneChangeAction extends AbstractPrivateAction {
 		switch ( this.dynamics.shape ) {
 
 			case DynamicsShape.linear:
-				this.linearLaneChange( entity, timePassed );
+				this.linearLaneChange( entity, timePassed, this.tDistance );
 				break;
 
 			case DynamicsShape.cubic:
-				throw new Error( 'cubic dynamics is not currently supported' );
+				this.cubicLaneChange( entity, timePassed, this.tDistance );
 				break;
 
 			case DynamicsShape.sinusoidal:
-				throw new Error( 'sinusoidal dynamics is not currently supported' );
+				this.sinusoidalLaneChange( entity, timePassed, this.tDistance );
 				break;
 
 			case DynamicsShape.step:
-				entity.laneId = this.newLaneId;
+				entity.laneId = timePassed >= this.dynamics.time ? this.newLaneId : this.currentLaneId;
 				break;
 
 		}
 	}
 
-	private linearLaneChange ( entity: EntityObject, timePassed: number ) {
+	private linearLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
 
 		const fraction = timePassed / this.dynamics.time;
 
-		entity.laneOffset = MathUtils.lerp( 0, this.changeInTCoordinate, fraction );
+		entity.laneOffset = MathUtils.lerp( 0, distance, fraction );
 
-		// console.log( entity.getLaneOffset(), this.changeInTCoordinate );
-
-		// if ( laneOffset == this.changeInTCoordinate ) this.isCompleted = true;
 	}
 
-	private sinusoidalLaneChange ( entity: EntityObject, timePassed: number ) {
+	private sinusoidalLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
 
 		const fraction = timePassed / this.dynamics.time;
 
-		// TODO: Add sine interpolation
-		entity.laneOffset = Maths.cosineInterpolation( 0, this.changeInTCoordinate, fraction );
+		// Implementing a sine interpolation from 0 to 1 over the duration of the dynamics time
+		entity.laneOffset = distance * Math.sin( Math.PI * fraction / 2 );
 
-		// console.log( entity.getLaneOffset(), this.changeInTCoordinate );
 	}
+
+	private cubicLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
+
+		const fraction = timePassed / this.dynamics.time;
+
+		// Implementing a cubic interpolation from 0 to 1 over the duration of the dynamics time
+		entity.laneOffset = distance * ( Math.pow( fraction, 3 ) );
+
+	}
+
 }

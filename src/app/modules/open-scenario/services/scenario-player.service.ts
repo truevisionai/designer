@@ -3,7 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Quaternion, Vector3 } from 'three';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
+import { AppService } from '../../../core/services/app.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
@@ -13,7 +15,7 @@ import { ConditionService } from '../models/condition-service';
 import { Act } from '../models/osc-act';
 import { EntityObject } from '../models/osc-entities';
 import { StoryElementType } from '../models/osc-enums';
-import { Event } from '../models/osc-event';
+import { TvEvent } from '../models/osc-event';
 import { AbstractAction } from '../models/osc-interfaces';
 import { Maneuver } from '../models/osc-maneuver';
 import { Sequence } from '../models/osc-sequence';
@@ -35,6 +37,9 @@ export class ScenarioPlayerService {
 	private added: boolean;
 	private eventIndex: number = 0;
 	private logEvents: boolean = true;
+
+	private originalPosition = new Vector3();
+	private originalQuaternion = new Quaternion();
 
 	constructor ( private player: PlayerService ) {
 
@@ -60,7 +65,15 @@ export class ScenarioPlayerService {
 
 	private onPlayerStarted () {
 
+		// Store original position and orientation
+		this.originalPosition.copy( AppService.three.camera.position );
+		this.originalQuaternion.copy( AppService.three.camera.quaternion );
+
 		if ( this.logEvents ) console.info( 'scenario-started', this.openScenario );
+
+		const entity = [ ...this.openScenario.objects.values() ][ 0 ];
+
+		AppService.three.setFocusTarget( entity.gameObject );
 
 		this.performInitActions();
 
@@ -81,6 +94,10 @@ export class ScenarioPlayerService {
 	private onPlayerStopped () {
 
 		if ( this.logEvents ) console.info( 'scenario-stopped' );
+
+		AppService.three.removeFocusTarget();
+		AppService.three.camera.position.copy( this.originalPosition );
+		AppService.three.camera.quaternion.copy( this.originalQuaternion );
 
 		this.performInitActions();
 
@@ -222,6 +239,14 @@ export class ScenarioPlayerService {
 
 		if ( maneuver.isCompleted ) return;
 
+		if ( maneuver.events.length == 0 ) {
+
+			maneuver.isCompleted = true;
+
+			return;
+
+		}
+
 		// let event = maneuver.events[ maneuver.eventIndex ];
 
 		// if ( event.isCompleted ) maneuver.eventIndex++;
@@ -241,7 +266,7 @@ export class ScenarioPlayerService {
 
 		} else {
 
-			console.error( 'unknown error' );
+			throw new Error( 'Maneuver has no more events' );
 
 			// maneuver.isCompleted = true;
 
@@ -252,7 +277,7 @@ export class ScenarioPlayerService {
 	}
 
 
-	private startEvent ( event: Event, sequence: Sequence ) {
+	private startEvent ( event: TvEvent, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'started-event', event.name );
 
@@ -264,7 +289,7 @@ export class ScenarioPlayerService {
 
 	}
 
-	private updateEvent ( event: Event, sequence: Sequence ) {
+	private updateEvent ( event: TvEvent, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'running-event', event.name );
 

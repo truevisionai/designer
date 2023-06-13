@@ -3,7 +3,6 @@
  */
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { InputService } from 'app/core/services/input.service';
 import { EventSystem } from 'app/events/event-system.service';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/modules/three-js/three.service';
@@ -69,7 +68,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.elementRef.nativeElement;
+		return <HTMLCanvasElement> this.elementRef.nativeElement;
 	}
 
 	ngOnInit () {
@@ -139,6 +138,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		requestAnimationFrame( this.render );
 
 		this.frameBegin();
+
+		this.threeService.updateCameraPosition();
 
 		this.renderer.render( SceneService.scene, this.threeService.camera );
 
