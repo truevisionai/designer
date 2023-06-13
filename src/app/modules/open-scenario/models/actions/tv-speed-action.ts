@@ -149,4 +149,16 @@ export class SpeedAction extends AbstractPrivateAction {
 
 		}
 	}
+
+	getRate () {
+
+		return this.dynamics.rate;
+
+	}
+
+	setRate ( number: number ) {
+
+		this.dynamics.rate = number;
+
+	}
 }

@@ -242,5 +242,17 @@ export class EntityObject {
 		this.gameObject.visible = false;
 
 	}
+
+	getCurrentSpeed () {
+
+		return this.speed;
+
+	}
+
+	updateSpeed ( newSpeed: number ) {
+
+		this.speed = newSpeed;
+
+	}
 }
 

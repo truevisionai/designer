@@ -3,10 +3,10 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/tv-condition';
+import { AbstractByEntityCondition, AbstractCondition } from 'app/modules/open-scenario/models/conditions/tv-condition';
 import { DistanceCondition } from '../../../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../../../models/conditions/tv-simulation-time-condition';
-import { ConditionType } from '../../../models/tv-enums';
+import { ConditionCategory, ConditionType } from '../../../models/tv-enums';
 
 @Component( {
 	selector: 'app-condition-editor',
@@ -18,11 +18,20 @@ export class ConditionEditorComponent implements OnInit {
 	@Input() condition: AbstractCondition;
 	@Output() conditionChanged = new EventEmitter<AbstractCondition>();
 
+
 	constructor () {
 	}
 
 	get types () {
 		return ConditionType;
+	}
+
+	get categories () {
+		return ConditionCategory;
+	}
+
+	get conditionByEntity () {
+		return this.condition as AbstractByEntityCondition;
 	}
 
 	ngOnInit () {

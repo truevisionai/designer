@@ -8,8 +8,9 @@ import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { ActionService } from '../../builders/action-service';
+import { ConditionFactory } from '../../builders/condition-factory';
 import { EntityObject } from '../../models/tv-entities';
-import { ActionType } from '../../models/tv-enums';
+import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { AbstractPrivateAction } from '../../models/tv-interfaces';
 import { DialogService } from '../../services/tv-dialog.service';
@@ -27,8 +28,10 @@ export class EntityInspector implements OnInit, IComponent {
 
 	// @Input() entity: EntityObject;
 	actionType = ActionType;
+	conditionType = ConditionType;
 
 	@ViewChild( 'addAction' ) addAction: MatSelect;
+	@ViewChild( 'addCondition' ) addCondition: MatSelect;
 
 	constructor (
 		public dialog: MatDialog,
@@ -61,7 +64,7 @@ export class EntityInspector implements OnInit, IComponent {
 		return this.scenario.findEntityEvents( this.entity );
 	}
 
-	onAddAction ( $event ) {
+	onAddAction ( $event: ActionType ) {
 
 		if ( $event !== null ) {
 
@@ -76,6 +79,18 @@ export class EntityInspector implements OnInit, IComponent {
 			this.addAction.value = null;
 
 		}
+	}
+
+	onAddCondition ( $type: ConditionType, event: TvEvent ) {
+
+		if ( $type !== null ) {
+
+			event.addStartCondition( ConditionFactory.createCondition( $type ) );
+
+			this.addCondition.value = null;
+
+		}
+
 	}
 
 	ngOnInit () {

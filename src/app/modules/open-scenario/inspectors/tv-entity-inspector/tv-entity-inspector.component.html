@@ -1,8 +1,6 @@
 <div *ngIf="entity" class="inspector-form-container">
 
-	<mat-form-field class="example-full-width">
-		<input [(ngModel)]="entity.name" matInput placeholder="Name">
-	</mat-form-field>
+	<app-string-field [value]="entity.name" label="Name"></app-string-field>
 
 	<mat-accordion>
 		<mat-expansion-panel *ngFor="let action of initActions">
@@ -55,15 +53,22 @@
 			<mat-expansion-panel *ngFor="let condition of event.startConditions">
 				<mat-expansion-panel-header>
 					<mat-panel-title>
-						{{condition.conditionType}} {{condition.conditionName}}
+						Type
 					</mat-panel-title>
 					<mat-panel-description>
-						{{condition.conditionName}}
+						Condition
 					</mat-panel-description>
 				</mat-expansion-panel-header>
 				<app-condition-editor [condition]="condition"></app-condition-editor>
 			</mat-expansion-panel>
 		</mat-accordion>
+		<mat-form-field class="example-full-width">
+			<mat-label>Add Condition</mat-label>
+			<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
+				<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
+				<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
+			</mat-select>
+		</mat-form-field>
 	</div>
 
 	<br/>

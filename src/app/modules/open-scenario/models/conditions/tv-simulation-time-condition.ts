@@ -11,7 +11,7 @@ export class SimulationTimeCondition extends AbstractByValueCondition {
 	public category: ConditionCategory = ConditionCategory.ByValue;
 	public readonly conditionType = ConditionType.ByValue_SimulationTime;
 
-	constructor ( public value: number = null, public rule: Rule = null ) {
+	constructor ( public value: number = 0, public rule: Rule = Rule.greater_than ) {
 		super();
 	}
 

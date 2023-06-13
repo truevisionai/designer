@@ -1,0 +1,13 @@
+<app-enum-field [enum]="rules" [value]="condition.triggeringRule" label="Trigger"></app-enum-field>
+
+<app-dropdown-field (changed)="onEntityChanged($event)" [value]="entity" [options]="entities"
+					label="Entities"></app-dropdown-field>
+
+<div [ngSwitch]="condition.conditionType">
+
+	<div *ngSwitchCase="conditions.ByEntity_Distance">
+		<app-distance-condition-editor [condition]="condition"></app-distance-condition-editor>
+	</div>
+
+</div>
+

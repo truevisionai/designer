@@ -60,6 +60,7 @@ import {
 import {
 	SimulationTimeConditionEditorComponent
 } from './views/tv-story-editor/conditions/by-value/simulation-time-condition-editor/simulation-time-condition-editor.component';
+import { ConditionByEntityComponent } from './views/tv-story-editor/conditions/condition-by-entity/condition-by-entity.component';
 import { DynamicsEditorComponent } from './views/tv-story-editor/dynamics-editor/dynamics-editor.component';
 import { EventEditorComponent } from './views/tv-story-editor/event-editor/event-editor.component';
 import { ManeuverEditorComponent } from './views/tv-story-editor/maneuver-editor/maneuver-editor.component';
@@ -119,6 +120,7 @@ import { TargetEditorComponent } from './views/tv-story-editor/target-editor/tar
 		RelativeSpeedConditionEditorComponent,
 		SpeedConditionEditorComponent,
 		TraveledDistanceConditionEditorComponent,
+		ConditionByEntityComponent,
 	],
 	imports: [
 		CommonModule,

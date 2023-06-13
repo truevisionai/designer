@@ -1,35 +1,7 @@
-<mat-form-field class="example-full-width">
-	<mat-label>Target Type</mat-label>
-	<mat-select [(ngModel)]="target.targetType">
-		<mat-option [value]="'relative'">Relative</mat-option>
-		<mat-option [value]="'absolute'">Absolute</mat-option>
-	</mat-select>
-</mat-form-field>
+<app-enum-field (changed)="onTypeChanged($event)" [enum]="targetTypes" [value]="target.targetType" label="Type"></app-enum-field>
 
-<app-double-field (valueChanged)="onValueChanged($event)" [value]="target.value" label="Target Value">
-</app-double-field>
+<div *ngIf="target.targetType === targetTypes.relative">
+	<app-dropdown-field [options]="entities" [value]="relativeTarget.entityName" label="Object"></app-dropdown-field>
+</div>
 
-<!--<div [ngSwitch]="target.targetType">-->
-
-<!--	&lt;!&ndash; relative &ndash;&gt;-->
-<!--	<div *ngSwitchCase="'relative'">-->
-<!--		<mat-form-field class="example-full-width">-->
-<!--			<mat-label>Object</mat-label>-->
-<!--			<mat-select [(ngModel)]="relativeTarget.entityName">-->
-<!--				<mat-option [value]="'$owner'">$owner (Story Owner)</mat-option>-->
-<!--				<mat-option *ngFor="let entity of entities" [value]="entity">{{ entity }}</mat-option>-->
-<!--			</mat-select>-->
-<!--		</mat-form-field>-->
-<!--		<mat-form-field class="example-full-width">-->
-<!--			<app-double-field (valueChanged)="onRelativeTargetChanged($event)" [value]="relativeTarget.value"-->
-<!--							  label="Target Value"></app-double-field>-->
-<!--		</mat-form-field>-->
-<!--	</div>-->
-
-<!--	&lt;!&ndash; absolute target &ndash;&gt;-->
-<!--	<div *ngSwitchCase="'absolute'">-->
-<!--		<app-double-field (valueChanged)="onAbsoluteTargetChanged($event)" [value]="absoluteTarget.value"-->
-<!--						  label="Target Value"></app-double-field>-->
-<!--	</div>-->
-
-<!--</div>-->
+<app-double-field (valueChanged)="onValueChanged($event)" [value]="target.value" label="Target Value"></app-double-field>

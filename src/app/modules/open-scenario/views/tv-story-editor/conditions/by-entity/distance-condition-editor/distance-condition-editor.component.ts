@@ -5,8 +5,10 @@
 import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/modules/open-scenario/models/conditions/tv-distance-condition';
 import { AbstractPosition } from 'app/modules/open-scenario/models/tv-interfaces';
-import { EditorComponent } from 'app/modules/open-scenario/views/tv-editor/tv-editor.component';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CommandHistory } from '../../../../../../../services/command-history';
+import { AbstractByEntityCondition } from '../../../../../models/conditions/tv-condition';
+import { Rule } from '../../../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -16,7 +18,9 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class DistanceConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: DistanceCondition;
+	@Input() condition: AbstractByEntityCondition;
+
+	rules = Rule;
 
 	constructor () {
 
@@ -24,13 +28,17 @@ export class DistanceConditionEditorComponent extends BaseConditionEditorCompone
 
 	}
 
+	get distanceCondition () {
+
+		return this.condition as DistanceCondition;
+
+	}
+
 	onPositionChanged ( position: AbstractPosition ) {
 
-		// this.condition.position = position;
-
-		const cmd = ( new SetValueCommand( this.condition, 'position', position ) );
-
-		EditorComponent.execute( cmd );
+		CommandHistory.execute(
+			new SetValueCommand( this.distanceCondition, 'position', position )
+		);
 
 	}
 

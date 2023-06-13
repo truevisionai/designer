@@ -16,7 +16,7 @@ export class DropdownFieldComponent extends AbstractFieldComponent implements On
 
 	@Input() label: string;
 
-	@Input() options: [] = [];
+	@Input() options: any[] = [];
 
 	constructor () {
 
@@ -26,6 +26,12 @@ export class DropdownFieldComponent extends AbstractFieldComponent implements On
 
 	ngOnInit () {
 
+
+	}
+
+	onChanged ( $event ) {
+
+		this.changed.emit( $event.target.value );
 
 	}
 

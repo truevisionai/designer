@@ -6,6 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractTarget } from '../../../models/actions/abstract-target';
 import { AbsoluteTarget } from '../../../models/actions/tv-absolute-target';
 import { RelativeTarget } from '../../../models/actions/tv-relative-target';
+import { TargetType } from '../../../models/tv-enums';
 import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 
 @Component( {
@@ -17,12 +18,13 @@ export class TargetEditorComponent implements OnInit {
 
 	@Input() target: AbstractTarget;
 
+	targetTypes = TargetType;
+
 	constructor () {
 
 	}
 
 	ngOnInit (): void {
-
 
 
 	}
@@ -60,6 +62,12 @@ export class TargetEditorComponent implements OnInit {
 	onValueChanged ( $event: any ) {
 
 		this.target.setTarget( $event );
+
+	}
+
+	onTypeChanged ( $type ) {
+
+		this.target.targetType = $type;
 
 	}
 }

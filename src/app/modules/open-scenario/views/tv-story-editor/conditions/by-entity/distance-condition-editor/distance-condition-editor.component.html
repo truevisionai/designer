@@ -1,34 +1,10 @@
-<!-- <mat-form-field class="example-full-width">
-    <input matInput placeholder="Distance Value" [(ngModel)]="condition.value">
-</mat-form-field>
+<app-double-field [value]="distanceCondition.value" label="Distance"></app-double-field>
 
-<mat-form-field class="example-full-width">
-    <input matInput placeholder="Freespace" [(ngModel)]="condition.freespace">
-</mat-form-field>
+<app-enum-field [enum]="rules" [value]="distanceCondition.rule" label="Rule"></app-enum-field>
 
-<mat-form-field class="example-full-width">
-    <input matInput placeholder="Along route" [(ngModel)]="condition.alongRoute">
-</mat-form-field> -->
+<app-string-field [value]="distanceCondition.freespace" label="Freespace"></app-string-field>
 
-<div>
-	<mat-form-field style="width: 50%;">
-		<input [(ngModel)]="condition.value" matInput placeholder="Distance">
-	</mat-form-field>
-	<mat-form-field style="width: 50%;">
-		<input [(ngModel)]="condition.rule" matInput placeholder="Rule">
-	</mat-form-field>
-</div>
+<app-string-field [value]="distanceCondition.alongRoute" label="Along route"></app-string-field>
 
-<div>
-	<mat-form-field style="width: 50%;">
-		<input [(ngModel)]="condition.freespace" matInput placeholder="Freespace">
-	</mat-form-field>
-	<mat-form-field style="width: 50%;">
-		<input [(ngModel)]="condition.alongRoute" matInput placeholder="AlongRoute">
-	</mat-form-field>
-</div>
-
-<!-- rule from  -->
-
-<app-position-editor (positionChanged)="onPositionChanged($event)" [position]="condition.position">
+<app-position-editor (positionChanged)="onPositionChanged($event)" [position]="distanceCondition.position">
 </app-position-editor>
