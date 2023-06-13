@@ -9,7 +9,7 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
 import { IFile } from '../../../../core/models/file';
 import { OpenDriveApiService } from '../../../../core/services/open-drive-api.service';
-import { File } from '../../models/osc-common';
+import { File } from '../../models/tv-common';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
 @Component( {

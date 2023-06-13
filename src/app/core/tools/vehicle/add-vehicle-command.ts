@@ -1,17 +1,18 @@
 import { BaseCommand } from 'app/core/commands/base-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
-import { EntityInspector } from 'app/modules/open-scenario/inspectors/osc-entity-inspector/osc-entity-inspector.component';
-import { EntityObject } from 'app/modules/open-scenario/models/osc-entities';
+import { EntityInspector } from 'app/modules/open-scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
+import { AbsoluteTarget } from 'app/modules/open-scenario/models/actions/tv-absolute-target';
+import { PositionAction } from 'app/modules/open-scenario/models/actions/tv-position-action';
+import { SpeedDynamics } from 'app/modules/open-scenario/models/actions/tv-private-action';
+import { SpeedAction } from 'app/modules/open-scenario/models/actions/tv-speed-action';
+import { SimulationTimeCondition } from 'app/modules/open-scenario/models/conditions/tv-simulation-time-condition';
+import { WorldPosition } from 'app/modules/open-scenario/models/positions/tv-world-position';
+import { EntityObject } from 'app/modules/open-scenario/models/tv-entities';
+import { DynamicsShape, Rule } from 'app/modules/open-scenario/models/tv-enums';
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
-import { MathUtils, Vector3 } from 'three';
-import { AbsoluteTarget } from '../../../modules/open-scenario/models/actions/osc-absolute-target';
-import { PositionAction } from '../../../modules/open-scenario/models/actions/osc-position-action';
-import { SpeedDynamics } from '../../../modules/open-scenario/models/actions/osc-private-action';
-import { SpeedAction } from '../../../modules/open-scenario/models/actions/osc-speed-action';
-import { SimulationTimeCondition } from '../../../modules/open-scenario/models/conditions/osc-simulation-time-condition';
-import { DynamicsShape, Rule } from '../../../modules/open-scenario/models/osc-enums';
-import { WorldPosition } from '../../../modules/open-scenario/models/positions/osc-world-position';
+import { Vector3, MathUtils } from 'three';
+
 
 export class AddVehicleCommand extends BaseCommand {
 

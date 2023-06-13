@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TargetType } from '../osc-enums';
+import { TargetType } from '../tv-enums';
 
 export abstract class AbstractTarget {
 

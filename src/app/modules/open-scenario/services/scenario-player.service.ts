@@ -10,16 +10,16 @@ import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ActionService } from '../builders/action-service';
-import { ResetHelper } from '../helpers/osc-reset-helper';
+import { ResetHelper } from '../helpers/tv-reset-helper';
 import { ConditionService } from '../models/condition-service';
-import { Act } from '../models/osc-act';
-import { EntityObject } from '../models/osc-entities';
-import { StoryElementType } from '../models/osc-enums';
-import { TvEvent } from '../models/osc-event';
-import { AbstractAction } from '../models/osc-interfaces';
-import { Maneuver } from '../models/osc-maneuver';
-import { Sequence } from '../models/osc-sequence';
-import { Story } from '../models/osc-story';
+import { Act } from '../models/tv-act';
+import { EntityObject } from '../models/tv-entities';
+import { StoryElementType } from '../models/tv-enums';
+import { TvEvent } from '../models/tv-event';
+import { AbstractAction } from '../models/tv-interfaces';
+import { Maneuver } from '../models/tv-maneuver';
+import { Sequence } from '../models/tv-sequence';
+import { Story } from '../models/tv-story';
 import { TvScenarioInstance } from './tv-scenario-instance';
 
 export interface StoryEvent {

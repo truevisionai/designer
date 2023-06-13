@@ -4,12 +4,12 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AtStartCondition } from '../../models/conditions/osc-at-start-condition';
-import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { DistanceCondition } from '../../models/conditions/osc-distance-condition';
-import { ReachPositionCondition } from '../../models/conditions/osc-reach-position-condition';
-import { SimulationTimeCondition } from '../../models/conditions/osc-simulation-time-condition';
-import { ConditionCategory, ConditionType, Rule, StoryElementType } from '../../models/osc-enums';
+import { AtStartCondition } from '../../models/conditions/tv-at-start-condition';
+import { AbstractCondition } from '../../models/conditions/tv-condition';
+import { DistanceCondition } from '../../models/conditions/tv-distance-condition';
+import { ReachPositionCondition } from '../../models/conditions/tv-reach-position-condition';
+import { SimulationTimeCondition } from '../../models/conditions/tv-simulation-time-condition';
+import { ConditionCategory, ConditionType, Rule, StoryElementType } from '../../models/tv-enums';
 
 @Component( {
 	selector: 'app-choose-condition-dialog',

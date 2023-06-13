@@ -4,11 +4,11 @@
 
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
-import { PositionAction } from '../models/actions/osc-position-action';
-import { EntityObject } from '../models/osc-entities';
-import { ActionType, PositionType } from '../models/osc-enums';
-import { AbstractPosition, AbstractPrivateAction } from '../models/osc-interfaces';
-import { LanePosition } from '../models/positions/osc-lane-position';
+import { PositionAction } from '../models/actions/tv-position-action';
+import { EntityObject } from '../models/tv-entities';
+import { ActionType, PositionType } from '../models/tv-enums';
+import { AbstractPosition, AbstractPrivateAction } from '../models/tv-interfaces';
+import { LanePosition } from '../models/positions/tv-lane-position';
 import { ActionFactory } from './action-factory';
 
 

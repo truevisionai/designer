@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Maneuver } from 'app/modules/open-scenario/models/osc-maneuver';
+import { Maneuver } from 'app/modules/open-scenario/models/tv-maneuver';
 
 @Component( {
 	selector: 'app-edit-maneuver',

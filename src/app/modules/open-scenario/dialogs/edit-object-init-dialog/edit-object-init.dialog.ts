@@ -4,7 +4,7 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { EntityObject } from '../../models/osc-entities';
+import { EntityObject } from '../../models/tv-entities';
 
 export class EditObjectInitDialogData {
 	constructor ( public object: EntityObject ) {

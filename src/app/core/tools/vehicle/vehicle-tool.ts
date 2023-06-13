@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/core/game-object';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { EntityObject } from 'app/modules/open-scenario/models/osc-entities';
+
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -13,6 +13,7 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
+import { EntityObject } from 'app/modules/open-scenario/models/tv-entities';
 
 export class VehicleTool extends BaseTool {
 

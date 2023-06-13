@@ -6,14 +6,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { AbstractCondition } from '../../models/conditions/osc-condition';
-import { EntityObject } from '../../models/osc-entities';
-import { ConditionType } from '../../models/osc-enums';
-import { TvEvent } from '../../models/osc-event';
-import { AbstractAction } from '../../models/osc-interfaces';
-import { Maneuver } from '../../models/osc-maneuver';
+import { AbstractCondition } from '../../models/conditions/tv-condition';
+import { EntityObject } from '../../models/tv-entities';
+import { ConditionType } from '../../models/tv-enums';
+import { TvEvent } from '../../models/tv-event';
+import { AbstractAction } from '../../models/tv-interfaces';
+import { Maneuver } from '../../models/tv-maneuver';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { EditorComponent } from '../../views/osc-editor/osc-editor.component';
+import { EditorComponent } from '../../views/tv-editor/tv-editor.component';
 import { ChooseActionDialogComponent, ChooseActionDialogData } from '../choose-action-dialog/choose-action-dialog.component';
 
 export class EditActionsDialogData {

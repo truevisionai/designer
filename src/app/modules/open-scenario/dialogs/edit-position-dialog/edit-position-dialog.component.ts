@@ -6,11 +6,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { PositionAction } from '../../models/actions/osc-position-action';
-import { AbstractPosition } from '../../models/osc-interfaces';
-import { LanePosition } from '../../models/positions/osc-lane-position';
-import { RoadPosition } from '../../models/positions/osc-road-position';
-import { WorldPosition } from '../../models/positions/osc-world-position';
+import { PositionAction } from '../../models/actions/tv-position-action';
+import { AbstractPosition } from '../../models/tv-interfaces';
+import { LanePosition } from '../../models/positions/tv-lane-position';
+import { RoadPosition } from '../../models/positions/tv-road-position';
+import { WorldPosition } from '../../models/positions/tv-world-position';
 
 export class EditPositionDialogData {
 	public positionAction: PositionAction;

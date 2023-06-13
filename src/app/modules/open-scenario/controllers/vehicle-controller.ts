@@ -10,8 +10,8 @@ import { TvMap } from '../../tv-map/models/tv-map.model';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { EntityObject } from '../models/osc-entities';
-import { AbstractController } from '../models/osc-interfaces';
+import { EntityObject } from '../models/tv-entities';
+import { AbstractController } from '../models/tv-interfaces';
 import { ScenarioPlayerService } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 

@@ -5,15 +5,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
-import { AbstractAction } from 'app/modules/open-scenario/models/osc-interfaces';
+import { AbstractAction } from 'app/modules/open-scenario/models/tv-interfaces';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { AbsoluteTarget } from '../../models/actions/osc-absolute-target';
-import { FollowTrajectoryAction } from '../../models/actions/osc-follow-trajectory-action';
-import { LaneChangeAction } from '../../models/actions/osc-lane-change-action';
-import { SpeedDynamics } from '../../models/actions/osc-private-action';
-import { SpeedAction } from '../../models/actions/osc-speed-action';
-import { ActionCategory, DynamicsShape } from '../../models/osc-enums';
-import { EnumTrajectoryDomain, Trajectory } from '../../models/osc-trajectory';
+import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
+import { FollowTrajectoryAction } from '../../models/actions/tv-follow-trajectory-action';
+import { LaneChangeAction } from '../../models/actions/tv-lane-change-action';
+import { SpeedDynamics } from '../../models/actions/tv-private-action';
+import { SpeedAction } from '../../models/actions/tv-speed-action';
+import { ActionCategory, DynamicsShape } from '../../models/tv-enums';
+import { EnumTrajectoryDomain, Trajectory } from '../../models/tv-trajectory';
 
 export class ChooseActionDialogData {
 	constructor ( public actionName?: string, public action?: AbstractAction ) {

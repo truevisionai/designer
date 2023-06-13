@@ -4,9 +4,9 @@
 
 import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/models/file';
-import { ClearHelper } from '../helpers/osc-clear-helper';
-import { NameDB } from '../models/osc-name-db';
-import { OpenScenario } from '../models/osc-scenario';
+import { ClearHelper } from '../helpers/tv-clear-helper';
+import { NameDB } from '../models/tv-name-db';
+import { OpenScenario } from '../models/tv-scenario';
 
 export class TvScenarioInstance {
 

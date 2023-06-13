@@ -8,15 +8,15 @@ import { SearchPipe } from 'app/core/pipes/search.pipe';
 import { Debug } from 'app/core/utils/debug';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { BuilderService } from '../../builders/osc-builder.service';
-import { AddEntityCommand } from '../../commands/osc-add-entity-command';
-import { PositionAction } from '../../models/actions/osc-position-action';
-import { CatalogReference } from '../../models/osc-catalogs';
-import { EntityObject } from '../../models/osc-entities';
-import { CatalogReferenceController } from '../../models/osc-interfaces';
-import { WorldPosition } from '../../models/positions/osc-world-position';
-import { DriverService } from '../../services/osc-driver.service';
-import { ModelsService } from '../../services/osc-models.service';
+import { BuilderService } from '../../builders/tv-builder.service';
+import { AddEntityCommand } from '../../commands/tv-add-entity-command';
+import { PositionAction } from '../../models/actions/tv-position-action';
+import { CatalogReference } from '../../models/tv-catalogs';
+import { EntityObject } from '../../models/tv-entities';
+import { CatalogReferenceController } from '../../models/tv-interfaces';
+import { WorldPosition } from '../../models/positions/tv-world-position';
+import { DriverService } from '../../services/tv-driver.service';
+import { ModelsService } from '../../services/tv-models.service';
 
 export class AddVehicleDialogData {
 	name: string = 'Vehicle';

@@ -1,12 +1,12 @@
-import { AbsoluteTarget } from '../models/actions/osc-absolute-target';
-import { LaneChangeAction } from '../models/actions/osc-lane-change-action';
-import { PositionAction } from '../models/actions/osc-position-action';
-import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/osc-private-action';
-import { RelativeTarget } from '../models/actions/osc-relative-target';
-import { SpeedAction } from '../models/actions/osc-speed-action';
-import { EntityObject } from '../models/osc-entities';
-import { ActionType, DynamicsShape } from '../models/osc-enums';
-import { WorldPosition } from '../models/positions/osc-world-position';
+import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
+import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
+import { PositionAction } from '../models/actions/tv-position-action';
+import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-action';
+import { RelativeTarget } from '../models/actions/tv-relative-target';
+import { SpeedAction } from '../models/actions/tv-speed-action';
+import { EntityObject } from '../models/tv-entities';
+import { ActionType, DynamicsShape } from '../models/tv-enums';
+import { WorldPosition } from '../models/positions/tv-world-position';
 
 export class ActionFactory {
 
