@@ -21,7 +21,7 @@ import { WriterService } from './tv-writer.service';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class Service {
+export class ScenarioFileService {
 
 	constructor (
 		private reader: ReaderService,

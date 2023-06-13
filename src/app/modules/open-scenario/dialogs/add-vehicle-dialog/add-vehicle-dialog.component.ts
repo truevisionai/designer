@@ -39,7 +39,7 @@ export class AddVehicleDialogComponent implements OnInit {
 		@Inject( MAT_DIALOG_DATA ) public data: AddVehicleDialogData,
 		public modelService: ModelsService,
 		public driverService: DriverService,
-		private oscBuilder: BuilderService,
+		private builderService: BuilderService,
 		private searchPipe: SearchPipe
 	) {
 	}

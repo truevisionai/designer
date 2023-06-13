@@ -54,9 +54,9 @@ export class BuilderService {
 
 	//   const car = this.createCar( point );
 
-	//   const oscEntityObject = new EntityObject( playerName );
+	//   const entityObject = new EntityObject( playerName );
 
-	//   this.openScenario.addEntity( oscEntityObject );
+	//   this.openScenario.addEntity( entityObject );
 
 	//   const positionAction = new PositionAction();
 
@@ -66,12 +66,12 @@ export class BuilderService {
 
 	//   speedAction.setAbsoluteTarget( 0 );
 
-	//   oscEntityObject.speedAction = speedAction;
+	//   entityObject.speedAction = speedAction;
 
 	//   this.openScenario.storyboard.addPrivateInitAction( playerName, positionAction );
 	//   this.openScenario.storyboard.addPrivateInitAction( playerName, speedAction );
 
-	//   ThreeJsUtils.addComponent( car, new ComponentItem( PlayerPropertiesComponent, oscEntityObject ) );
+	//   ThreeJsUtils.addComponent( car, new ComponentItem( PlayerPropertiesComponent, entityObject ) );
 
 	// }
 

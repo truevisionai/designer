@@ -14,7 +14,7 @@ import { ICommand } from '../../../../core/commands/i-command';
 import { OpenScenarioApiService } from '../../../../core/services/open-scenario-api.service';
 import { NewScenarioDialogComponent } from '../../dialogs/new-scenario-dialog/new-scenario-dialog.component';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { Service } from '../../services/osc.service';
+import { ScenarioFileService } from '../../services/osc.service';
 import { Editor } from './tv-editor';
 
 @Component( {
@@ -28,7 +28,7 @@ export class EditorComponent implements OnInit, AfterViewInit, AfterContentInit 
 
 	constructor (
 		private route: ActivatedRoute,
-		private oscService: Service,
+		private oscService: ScenarioFileService,
 		private threeService: ThreeService,
 		private electron: TvElectronService,
 		private openScenarioApi: OpenScenarioApiService,

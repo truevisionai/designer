@@ -206,9 +206,9 @@ export class ReaderService extends AbstractReader {
 
 		this.readAsOptionalArray( xml.Object, ( object, count ) => {
 
-			const oscObject = this.readEntityObject( object );
+			const entityObject = this.readEntityObject( object );
 
-			objects.push( oscObject );
+			objects.push( entityObject );
 
 		} );
 
@@ -220,11 +220,11 @@ export class ReaderService extends AbstractReader {
 
 		const name = xml.attr_name;
 
-		const oscEntityObject = new EntityObject( name );
+		const entityObject = new EntityObject( name );
 
 		if ( xml.CatalogReference != null ) {
 
-			oscEntityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
+			entityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
 
 		} else if ( xml.Vehicle != null ) {
 
@@ -236,11 +236,11 @@ export class ReaderService extends AbstractReader {
 
 		this.readAsOptionalElement( xml.Controller, ( xml ) => {
 
-			oscEntityObject.controller = this.readController( xml );
+			entityObject.controller = this.readController( xml );
 
 		} );
 
-		return oscEntityObject;
+		return entityObject;
 
 	}
 

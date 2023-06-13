@@ -30,7 +30,7 @@ describe( 'BuilderService', () => {
 	let electron = new ElectronService();
 	let fileService = new FileService( electron, null );
 
-	let oscObject: EntityObject;
+	let entityObject: EntityObject;
 
 	beforeEach( () => {
 
@@ -43,9 +43,9 @@ describe( 'BuilderService', () => {
 			fake
 		);
 
-		oscObject = new EntityObject( 'test' );
-		oscObject.gameObject = new GameObject( 'go' );
-		oscObject.gameObject.name = 'go';
+		entityObject = new EntityObject( 'test' );
+		entityObject.gameObject = new GameObject( 'go' );
+		entityObject.gameObject.name = 'go';
 
 		TvMapInstance.map = new TvMap();
 
@@ -81,13 +81,13 @@ describe( 'BuilderService', () => {
 
 		var positionAction = new PositionAction( worldPosition );
 
-		ActionService.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( entityObject, positionAction );
 
 		var placedPosition = worldPosition.toVector3();
 
-		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( entityObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( entityObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( entityObject.gameObject.position.z ).toBe( placedPosition.z );
 
 	} );
 
@@ -97,7 +97,7 @@ describe( 'BuilderService', () => {
 
 		var positionAction = new PositionAction( lanePosition );
 
-		ActionService.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( entityObject, positionAction );
 
 		var placedPosition = lanePosition.toVector3();
 
@@ -107,11 +107,11 @@ describe( 'BuilderService', () => {
 		expect( placedPosition.x ).not.toBe( 0 );
 		expect( placedPosition.y ).not.toBe( 0 );
 
-		Debug.log( oscObject.gameObject.position, placedPosition );
+		Debug.log( entityObject.gameObject.position, placedPosition );
 
-		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( entityObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( entityObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( entityObject.gameObject.position.z ).toBe( placedPosition.z );
 
 	} );
 
@@ -121,7 +121,7 @@ describe( 'BuilderService', () => {
 
 		var positionAction = new PositionAction( lanePosition );
 
-		ActionService.executePositionAction( oscObject, positionAction );
+		ActionService.executePositionAction( entityObject, positionAction );
 
 		var placedPosition = lanePosition.toVector3();
 
@@ -131,9 +131,9 @@ describe( 'BuilderService', () => {
 		expect( placedPosition.x ).not.toBe( 0 );
 		expect( placedPosition.y ).not.toBe( 0 );
 
-		expect( oscObject.gameObject.position.x ).toBe( placedPosition.x );
-		expect( oscObject.gameObject.position.y ).toBe( placedPosition.y );
-		expect( oscObject.gameObject.position.z ).toBe( placedPosition.z );
+		expect( entityObject.gameObject.position.x ).toBe( placedPosition.x );
+		expect( entityObject.gameObject.position.y ).toBe( placedPosition.y );
+		expect( entityObject.gameObject.position.z ).toBe( placedPosition.z );
 
 	} );
 
