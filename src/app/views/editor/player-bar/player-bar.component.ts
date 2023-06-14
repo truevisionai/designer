@@ -4,7 +4,7 @@
 
 import { Component } from '@angular/core';
 import { PlayerService } from '../../../core/player.service';
-import { ScenarioViewerService } from 'app/modules/open-scenario/services/scenario-viewer.service';
+import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
 
 @Component( {
 	selector: 'app-player-bar',

@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { EditorService } from 'app/core/services/editor.service';
 import { TvConsole } from 'app/core/utils/console';
-import { ScenarioDirectorService } from 'app/modules/open-scenario/services/scenario-director.service';
+import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-director.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';

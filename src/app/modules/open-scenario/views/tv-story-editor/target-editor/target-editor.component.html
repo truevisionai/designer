@@ -1,7 +1,0 @@
-<app-enum-field (changed)="onTypeChanged($event)" [enum]="targetTypes" [value]="target.targetType" label="Type"></app-enum-field>
-
-<div *ngIf="target.targetType === targetTypes.relative">
-	<app-dropdown-field [options]="entities" [value]="relativeTarget.entityName" label="Object"></app-dropdown-field>
-</div>
-
-<app-double-field (valueChanged)="onValueChanged($event)" [value]="target.value" label="Target Value"></app-double-field>

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
-import { TvScenarioInstance } from '../../../modules/open-scenario/services/tv-scenario-instance';
+import { TvScenarioInstance } from '../../../modules/scenario/services/tv-scenario-instance';
 
 @Component( {
 	selector: 'app-select-entity-field',
