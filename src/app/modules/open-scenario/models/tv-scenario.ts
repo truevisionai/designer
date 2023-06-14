@@ -50,7 +50,10 @@ export class OpenScenario {
 		this.parameterDeclaration.addParameter( parameter );
 	}
 
-	// deprecated
+	/**
+	 *
+	 * @deprecated
+	 */
 	addEntity ( object: EntityObject ): any {
 		this.addObject( object );
 		// old code just for reference

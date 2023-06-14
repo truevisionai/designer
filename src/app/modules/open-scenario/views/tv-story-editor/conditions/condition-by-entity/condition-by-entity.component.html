@@ -17,5 +17,9 @@
 		<app-time-headway-condition-editor [condition]="condition"></app-time-headway-condition-editor>
 	</div>
 
+	<div *ngSwitchCase="conditions.ByEntity_StandStill">
+		<app-stand-still-condition-editor [condition]="condition"></app-stand-still-condition-editor>
+	</div>
+
 </div>
 
