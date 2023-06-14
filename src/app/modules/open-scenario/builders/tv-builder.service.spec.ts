@@ -18,6 +18,7 @@ import { LanePosition } from '../models/positions/tv-lane-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { ActionService } from './action-service';
 import { BuilderService } from './tv-builder.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 class MockOpenDriveApiService {
 
@@ -27,7 +28,7 @@ describe( 'BuilderService', () => {
 
 	let builder: BuilderService;
 
-	let electron = new ElectronService();
+	let electron = new TvElectronService();
 	let fileService = new FileService( electron, null );
 
 	let entityObject: EntityObject;
@@ -63,7 +64,7 @@ describe( 'BuilderService', () => {
 		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
 		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true );
 
-		laneSection.getLaneVector().forEach( lane => {
+		laneSection.getLaneArray().forEach( lane => {
 
 			if ( lane.side != TvLaneSide.CENTER ) {
 
