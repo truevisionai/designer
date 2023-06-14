@@ -35,7 +35,7 @@ export class DistanceCondition extends AbstractByEntityCondition {
 		// TODO: check and confirm this
 		// if ( this.passed ) return true;
 
-		const distanceValues = this.entities.map(
+		const distanceValues = this.triggeringEntities.map(
 			entityName => this.calculateDistance( entityName, this.position, this.freespace )
 		);
 

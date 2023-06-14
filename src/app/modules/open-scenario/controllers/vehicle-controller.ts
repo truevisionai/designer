@@ -62,7 +62,10 @@ export class DefaultVehicleController extends AbstractController {
 		let nextLane: TvLane;
 		let nextRoad: TvRoad;
 
-		this.followFrontVehicle( actor );
+		// we want dummy
+		// not smart moves
+		// for smart moved we will use another controller
+		// this.followFrontVehicle( actor );
 
 		if ( actor.sCoordinate > currentRoad.length ) {
 

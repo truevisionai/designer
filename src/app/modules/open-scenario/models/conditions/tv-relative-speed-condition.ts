@@ -27,7 +27,7 @@ export class RelativeSpeedCondition extends AbstractByEntityCondition {
 
 			const targetEntity = TvScenarioInstance.openScenario.findEntityOrFail( this.entity );
 
-			for ( const entityName of this.entities ) {
+			for ( const entityName of this.triggeringEntities ) {
 
 				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 

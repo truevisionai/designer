@@ -59,7 +59,7 @@ export class OpenScenario {
 
 	findEntityOrFail ( entityName: string ) {
 
-		if ( !this.hasEntity( entityName ) ) throw new Error( entityName.concat( ' not found' ) );
+		if ( !this.hasEntity( entityName ) ) throw new Error( `${ entityName } entity not found` );
 
 		return this.objects.get( entityName );
 	}

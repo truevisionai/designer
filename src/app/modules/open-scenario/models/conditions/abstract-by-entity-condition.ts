@@ -10,7 +10,7 @@ export abstract class AbstractByEntityCondition extends AbstractCondition {
 	public triggeringRule: TriggeringRule = TriggeringRule.Any;
 
 	// name of all entities which can affect this condition
-	public entities: string[] = [];
+	public triggeringEntities: string[] = [];
 
 	protected isTriggerRulePassing ( values: number[], rule: Rule, right: number ) {
 
@@ -30,13 +30,19 @@ export abstract class AbstractByEntityCondition extends AbstractCondition {
 
 	public addEntity ( entityName: string ) {
 
-		this.entities.push( entityName );
+		this.triggeringEntities.push( entityName );
 
 	}
 
 	protected getEntityPosition ( entityName: string ): Vector3 {
 
 		return this.scenario.getEntityVectorPosition( entityName );
+
+	}
+
+	protected getEntitySpeed ( entityName: string ): number {
+
+		return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
 
 	}
 

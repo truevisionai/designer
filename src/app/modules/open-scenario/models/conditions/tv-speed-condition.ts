@@ -25,7 +25,7 @@ export class SpeedCondition extends AbstractByEntityCondition {
 
 		} else {
 
-			for ( const entityName of this.entities ) {
+			for ( const entityName of this.triggeringEntities ) {
 
 				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
 

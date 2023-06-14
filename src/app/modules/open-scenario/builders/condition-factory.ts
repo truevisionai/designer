@@ -5,6 +5,7 @@
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { EntityObject } from '../models/tv-entities';
 import { ConditionType, Rule } from '../models/tv-enums';
@@ -23,6 +24,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_ReachPosition:
 				return this.createReachedPositionCondition( entity );
+
+			case ConditionType.ByEntity_TimeHeadway:
+				return this.createTimeHeadwayCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -59,5 +63,22 @@ export class ConditionFactory {
 		if ( entity ) condition.addEntity( entity.name );
 
 		return condition;
+	}
+
+	private static createTimeHeadwayCondition ( entity?: EntityObject ) {
+
+		const condition = new TimeHeadwayCondition(
+			null,
+			5,
+			false,
+			false,
+			Rule.greater_than
+		);
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+
+
 	}
 }

@@ -307,7 +307,7 @@ export class ReaderService extends AbstractReader {
 
 			this.readAsOptionalArray( xml.Entity, ( xml ) => {
 
-				condition.entities.push( xml.attr_name );
+				condition.triggeringEntities.push( xml.attr_name );
 
 			} );
 

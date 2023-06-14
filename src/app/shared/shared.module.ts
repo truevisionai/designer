@@ -72,6 +72,7 @@ import { ColorFieldComponent } from './fields/color-field/color-field.component'
 import { DoubleFieldComponent } from './fields/double-field/double-field.component';
 import { DropdownFieldComponent } from './fields/dropdown-field/dropdown-field.component';
 import { EnumFieldComponent } from './fields/enum-field/enum-field.component';
+import { SelectEntityFieldComponent } from './fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from './fields/string-field/string-field.component';
 import { ExcerptPipe } from './pipes/excerpt.pipe';
 import { GetValueByKeyPipe, KeysPipe } from './pipes/get-value-by-key.pipe';
@@ -134,6 +135,7 @@ const classesToInclude = [
 	EnumFieldComponent,
 	StringFieldComponent,
 	ColorFieldComponent,
+	SelectEntityFieldComponent,
 	PropBrowserComponent,
 
 	// Material

@@ -22,7 +22,7 @@ export class ReachPositionCondition extends AbstractByEntityCondition {
 
 	hasPassed (): boolean {
 
-		const isPositionReached: boolean[] = this.entities.map( entityName => {
+		const isPositionReached: boolean[] = this.triggeringEntities.map( entityName => {
 
 			const entityPosition = this.getEntityPosition( entityName );
 

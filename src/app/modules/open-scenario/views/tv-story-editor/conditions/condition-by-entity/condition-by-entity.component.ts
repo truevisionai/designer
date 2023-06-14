@@ -27,19 +27,19 @@ export class ConditionByEntityComponent implements OnInit {
 	// only selecting one entity is supported for now
 	get entity () {
 
-		return this.condition.entities[ 0 ];
+		return this.condition.triggeringEntities[ 0 ];
 
 	}
 
 	set entity ( value ) {
 
-		if ( value && this.condition.entities.length === 0 ) {
+		if ( value && this.condition.triggeringEntities.length === 0 ) {
 
-			this.condition.entities.push( value );
+			this.condition.triggeringEntities.push( value );
 
 		} else if ( value ) {
 
-			this.condition.entities[ 0 ] = value;
+			this.condition.triggeringEntities[ 0 ] = value;
 
 		}
 

@@ -349,7 +349,7 @@ export class WriterService {
 
 		};
 
-		abstractCondition.entities.forEach( entityName => {
+		abstractCondition.triggeringEntities.forEach( entityName => {
 
 			xml.TriggeringEntities.Entity.push( {
 				attr_name: entityName

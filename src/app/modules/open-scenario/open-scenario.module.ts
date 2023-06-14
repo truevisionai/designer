@@ -55,6 +55,9 @@ import {
 	SpeedConditionEditorComponent
 } from './views/tv-story-editor/conditions/by-entity/speed-condition-editor/speed-condition-editor.component';
 import {
+	TimeHeadwayConditionEditorComponent
+} from './views/tv-story-editor/conditions/by-entity/time-headway-condition-editor/time-headway-condition-editor.component';
+import {
 	TraveledDistanceConditionEditorComponent
 } from './views/tv-story-editor/conditions/by-entity/traveled-distance-condition-editor/traveled-distance-condition-editor.component';
 import {
@@ -121,6 +124,7 @@ import { TargetEditorComponent } from './views/tv-story-editor/target-editor/tar
 		SpeedConditionEditorComponent,
 		TraveledDistanceConditionEditorComponent,
 		ConditionByEntityComponent,
+		TimeHeadwayConditionEditorComponent,
 	],
 	imports: [
 		CommonModule,

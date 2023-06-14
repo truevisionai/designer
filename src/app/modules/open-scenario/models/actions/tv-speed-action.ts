@@ -47,6 +47,7 @@ export class SpeedAction extends AbstractPrivateAction {
 
 		if ( !this.hasStarted ) {
 
+			// TODO:  need to fix this causes error sometimes
 			this.start( entity );
 			this.update( entity );
 
