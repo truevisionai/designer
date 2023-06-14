@@ -12,7 +12,7 @@ import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { EntityObject } from '../models/tv-entities';
 import { AbstractController } from '../models/tv-interfaces';
-import { ScenarioPlayerService } from '../services/scenario-player.service';
+import { ScenarioDirectorService } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class DefaultVehicleController extends AbstractController {
@@ -331,11 +331,11 @@ export class DefaultVehicleController extends AbstractController {
 
 		const vehicles: EntityObject[] = [];
 
-		ScenarioPlayerService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
+		ScenarioDirectorService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
 
 		if ( nextRoad ) {
 
-			ScenarioPlayerService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
+			ScenarioDirectorService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
 
 		}
 

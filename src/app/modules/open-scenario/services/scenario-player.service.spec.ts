@@ -4,7 +4,7 @@
 
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PlayerService } from '../../../core/player.service';
-import { ScenarioPlayerService } from './scenario-player.service';
+import { ScenarioDirectorService } from './scenario-director.service';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { TvScenarioInstance } from './tv-scenario-instance';
 import { OpenScenario } from '../models/tv-scenario';
@@ -12,16 +12,16 @@ import { OpenScenario } from '../models/tv-scenario';
 
 describe( 'ScenarioPlayerService', () => {
 
-	let scenarioPlayer: ScenarioPlayerService;
+	let scenarioPlayer: ScenarioDirectorService;
 	let playerService: PlayerService;
 
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
-			providers: [ ScenarioPlayerService, PlayerService ],
+			providers: [ ScenarioDirectorService, PlayerService ],
 		} );
 
-		scenarioPlayer = TestBed.inject( ScenarioPlayerService );
+		scenarioPlayer = TestBed.inject( ScenarioDirectorService );
 		playerService = TestBed.inject( PlayerService );
 	} );
 

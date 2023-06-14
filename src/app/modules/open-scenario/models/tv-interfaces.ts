@@ -4,7 +4,7 @@
 
 import { EventEmitter } from '@angular/core';
 import { Vector3 } from 'three';
-import { StoryEvent } from '../services/scenario-player.service';
+import { StoryEvent } from '../services/scenario-director.service';
 import { CatalogReference } from './tv-catalogs';
 import { EntityObject } from './tv-entities';
 import { ActionCategory, ActionType, PositionType } from './tv-enums';

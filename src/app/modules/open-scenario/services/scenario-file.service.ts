@@ -13,7 +13,7 @@ import { FileService } from '../../../services/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { BuilderService } from '../builders/tv-builder.service';
 import { OpenScenario } from '../models/tv-scenario';
-import { ScenarioPlayerService } from './scenario-player.service';
+import { ScenarioDirectorService } from './scenario-director.service';
 import { ReaderService } from './tv-reader.service';
 import { TvScenarioInstance } from './tv-scenario-instance';
 import { WriterService } from './tv-writer.service';
@@ -30,7 +30,7 @@ export class ScenarioFileService {
 		private fileService: FileService,
 		private openScenarioApi: OpenScenarioApiService,
 		private electron: TvElectronService,
-		private oscPlayer: ScenarioPlayerService
+		private oscPlayer: ScenarioDirectorService
 	) {
 
 		TvScenarioInstance.scenarioChanged.subscribe( scenario => {

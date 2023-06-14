@@ -28,7 +28,7 @@ export interface StoryEvent {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ScenarioPlayerService {
+export class ScenarioDirectorService {
 
 	static traffic: Map<number, EntityObject[]> = new Map<number, EntityObject[]>();
 

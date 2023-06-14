@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { StoryEvent } from '../services/scenario-player.service';
+import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { ConditionService } from '../builders/condition-service';
 import { AbstractCondition } from './conditions/tv-condition';
