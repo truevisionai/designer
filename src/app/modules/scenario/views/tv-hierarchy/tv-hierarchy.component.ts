@@ -12,7 +12,6 @@ import { EntityInspector } from '../../inspectors/tv-entity-inspector/tv-entity-
 import { OpenScenario } from '../../models/tv-scenario';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { Editor } from '../tv-editor/tv-editor';
 
 /**
  * Food data with nested structure.
@@ -57,13 +56,6 @@ export class HierarchyComponent implements OnInit {
 		private threeService: ThreeService
 	) {
 		this.dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
-
-		Editor.scenarioChanged.subscribe( () => {
-
-			this.buildHierarchy();
-
-		} );
-
 	}
 
 	transformer = ( node: ScenarioNode, level: number ) => {
@@ -92,7 +84,7 @@ export class HierarchyComponent implements OnInit {
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
 			label: 'Add Vehicle',
 			click: () => {
-				this.dialogs.openAddVehicleDialog();
+				// this.dialogs.openAddVehicleDialog();
 			}
 		} ] );
 
@@ -177,7 +169,7 @@ export class HierarchyComponent implements OnInit {
 
 	openRoadNetworkDialog ( node: ExampleNode ) {
 
-		this.dialogs.openEditRoadNetworkDialog( null );
+		// this.dialogs.openEditRoadNetworkDialog( null );
 
 	}
 

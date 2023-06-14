@@ -5,7 +5,7 @@
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { Rule, TriggeringRule } from '../models/tv-enums';
 
-export class ConditionService {
+export class ConditionUtils {
 
 	static hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 

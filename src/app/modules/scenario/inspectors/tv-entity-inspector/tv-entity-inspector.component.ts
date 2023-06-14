@@ -107,25 +107,25 @@ export class EntityInspector implements OnInit, IComponent {
 
 	addInitActions () {
 
-		this.dialogService.openAddEntityInitActionDialog( this.entity );
+		// this.dialogService.openAddEntityInitActionDialog( this.entity );
 
 	}
 
 	editPositionAction ( action ) {
 
-		this.dialogService.openEditPositionDialog( action );
+		// this.dialogService.openEditPositionDialog( action );
 
 	}
 
 	editStory () {
 
-		this.dialogService.openStoryEditorDialog( this.entity );
+		// this.dialogService.openStoryEditorDialog( this.entity );
 
 	}
 
 	editInitActions () {
 
-		this.dialogService.openObjectInitEditorDialog( this.entity );
+		// this.dialogService.openObjectInitEditorDialog( this.entity );
 
 	}
 
@@ -141,7 +141,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 	editAct () {
 
-		this.dialogService.openEditActDialog( this.entity );
+		// this.dialogService.openEditActDialog( this.entity );
 
 	}
 

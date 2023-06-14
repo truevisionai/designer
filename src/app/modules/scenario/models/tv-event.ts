@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { ConditionService } from '../builders/condition-service';
+import { ConditionUtils } from '../builders/condition-utils';
 import { AbstractAction } from './abstract-action';
 import { AbstractCondition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
@@ -93,7 +93,7 @@ export class TvEvent {
 
 	hasPassed () {
 
-		return ConditionService.hasGroupsPassed( this.startConditionGroups );
+		return ConditionUtils.hasGroupsPassed( this.startConditionGroups );
 
 	}
 

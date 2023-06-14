@@ -3,7 +3,7 @@
  */
 
 import { TvConsole } from '../../../../core/utils/console';
-import { ConditionService } from '../../builders/condition-service';
+import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
@@ -42,7 +42,7 @@ export class TimeHeadwayCondition extends AbstractByEntityCondition {
 			const timeHeadway = this.computeTimeHeadway( entityName );
 
 			// Check the time headway against the desired value based on the rule
-			return ConditionService.hasRulePassed( this.rule, timeHeadway, this.value );
+			return ConditionUtils.hasRulePassed( this.rule, timeHeadway, this.value );
 
 		} );
 

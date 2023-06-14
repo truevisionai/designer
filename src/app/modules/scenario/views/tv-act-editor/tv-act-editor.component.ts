@@ -4,7 +4,6 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ChooseConditionDialogComponent } from '../../dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from '../../models/conditions/tv-condition';
 import { Act } from '../../models/tv-act';
 import { EntityObject } from '../../models/tv-entities';
@@ -45,17 +44,8 @@ export class ActEditorComponent implements OnInit {
 
 	addCondition () {
 
-		const dialogRef = this.dialog.open( ChooseConditionDialogComponent, {
-			width: '260px',
-			height: '400px',
-			data: null
-		} );
+		throw new Error( 'Not implemented' );
 
-		dialogRef.afterClosed().subscribe( ( res: AbstractCondition ) => {
-
-			if ( res != null ) this.selectedAct.addStartCondition( res );
-
-		} );
 	}
 
 }

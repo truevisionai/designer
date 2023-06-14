@@ -4,9 +4,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import {
-	ChooseConditionDialogComponent
-} from 'app/modules/scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { TvEvent } from 'app/modules/scenario/models/tv-event';
 import { DialogService } from 'app/modules/scenario/services/tv-dialog.service';
@@ -44,17 +41,7 @@ export class EventEditorComponent implements OnInit, IComponent {
 
 	addCondition () {
 
-		const dialogRef = this.dialogService.dialog.open( ChooseConditionDialogComponent, {
-			width: '260px',
-			height: '400px',
-			data: null
-		} );
-
-		dialogRef.afterClosed().subscribe( ( condition: AbstractCondition ) => {
-
-			if ( condition != null ) this.event.addStartCondition( condition );
-
-		} );
+		throw new Error( 'Not implemented' );
 
 	}
 

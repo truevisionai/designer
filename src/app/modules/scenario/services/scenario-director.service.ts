@@ -9,7 +9,7 @@ import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ActionService } from '../builders/action-service';
 import { ResetHelper } from '../helpers/tv-reset-helper';
-import { ConditionService } from '../builders/condition-service';
+import { ConditionUtils } from '../builders/condition-utils';
 import { AbstractAction } from '../models/abstract-action';
 import { Act } from '../models/tv-act';
 import { EntityObject } from '../models/tv-entities';
@@ -89,7 +89,7 @@ export class ScenarioDirectorService {
 
 	private onPlayerTick ( e: PlayerUpdateData ) {
 
-		if ( ConditionService.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
+		if ( ConditionUtils.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
 
 			this.userPlayer.stop();
 
@@ -152,7 +152,7 @@ export class ScenarioDirectorService {
 
 			if ( !act.hasStarted ) {
 
-				act.shouldStart = ConditionService.hasGroupsPassed( act.startConditionGroups );
+				act.shouldStart = ConditionUtils.hasGroupsPassed( act.startConditionGroups );
 
 				if ( act.shouldStart ) this.startAct( act );
 

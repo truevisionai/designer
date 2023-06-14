@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionService } from '../../builders/condition-service';
+import { ConditionUtils } from '../../builders/condition-utils';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
@@ -30,7 +30,7 @@ export abstract class AbstractCondition {
 
 	hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 
-		return ConditionService.hasRulePassed( rule, left, right );
+		return ConditionUtils.hasRulePassed( rule, left, right );
 
 	}
 

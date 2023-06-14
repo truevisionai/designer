@@ -5,7 +5,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
-import { ChooseActionDialogData } from '../../dialogs/choose-action-dialog/choose-action-dialog.component';
 import { AbstractPrivateAction } from '../../models/abstract-private-action';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../../models/actions/tv-follow-trajectory-action';
@@ -60,17 +59,17 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	addAction () {
 
-		this.dialogService.openChooseActionDialog( ( data: ChooseActionDialogData ) => {
+		// this.dialogService.openChooseActionDialog( ( data: ChooseActionDialogData ) => {
 
-			const maneuver = this.getManeuver();
+		// 	const maneuver = this.getManeuver();
 
-			const eventName = TvEvent.getNewName();
+		// 	const eventName = TvEvent.getNewName();
 
-			const event = maneuver.addNewEvent( eventName, 'overwrite' );
+		// 	const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
-			event.addNewAction( data.actionName, data.action );
+		// 	event.addNewAction( data.actionName, data.action );
 
-		} );
+		// } );
 
 	}
 

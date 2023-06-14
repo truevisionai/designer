@@ -4,7 +4,7 @@
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { ConditionService } from '../../builders/condition-service';
+import { ConditionUtils } from '../../builders/condition-utils';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 export class RelativeSpeedCondition extends AbstractByEntityCondition {
@@ -33,7 +33,7 @@ export class RelativeSpeedCondition extends AbstractByEntityCondition {
 
 				const relativeSpeed = targetEntity.speed - entity.speed;
 
-				const passed = ConditionService.hasRulePassed( this.rule, relativeSpeed, this.value );
+				const passed = ConditionUtils.hasRulePassed( this.rule, relativeSpeed, this.value );
 
 				// exit if any of the entity distance is passed
 				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
