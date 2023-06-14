@@ -8,9 +8,20 @@ import { AbstractPosition } from '../tv-interfaces';
 import { ConditionService } from '../condition-service';
 import { AbstractByEntityCondition } from './tv-condition';
 
+/**
+ *
+ * @param position
+ * @param value
+ * @param freespace It determines whether the entities bounding box
+ * shall be taken into consideration (freeSpace = true), or shall
+ * not be taken into consideration (freeSpace = false).
+ * @param alongRoute
+ * @param rule
+ */
 export class DistanceCondition extends AbstractByEntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
+
 
 	constructor (
 		public position?: AbstractPosition,

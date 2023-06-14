@@ -11,9 +11,14 @@
 <div [ngSwitch]="position.type">
 
 	<div *ngSwitchCase="types.World">
-        <app-world-position-editor (positionModified)="onPositionModified($event)" [position]="worldPosition">
-        </app-world-position-editor>
-    </div>
+		<app-world-position-editor (positionModified)="onPositionModified($event)" [position]="worldPosition">
+		</app-world-position-editor>
+	</div>
+
+	<div *ngSwitchCase="types.RelativeObject">
+		<app-relative-object-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		</app-relative-object-position-editor>
+	</div>
 
 	<!--    <div *ngSwitchCase="types.Road">-->
 	<!--        <app-road-position-editor (positionModified)="onPositionModified($event)" [position]="position">-->
@@ -25,9 +30,6 @@
         </app-lane-position-editor>
     </div>
 
-    <div *ngSwitchCase="types.RelativeObject">
-        <app-relative-object-position-editor (positionModified)="onPositionModified($event)" [position]="position">
-        </app-relative-object-position-editor>
-    </div> -->
+     -->
 
 </div>

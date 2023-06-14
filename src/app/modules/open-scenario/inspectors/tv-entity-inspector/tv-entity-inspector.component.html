@@ -36,19 +36,13 @@
 <!--	</mat-accordion>-->
 
 	<div *ngFor="let event of scenarioEvents">
-		<mat-accordion>
-			<mat-expansion-panel *ngFor="let action of event.getActions()">
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						{{action.actionType}}
-					</mat-panel-title>
-					<mat-panel-description>
-						{{action['actionName']}}
-					</mat-panel-description>
-				</mat-expansion-panel-header>
-				<app-action-editor [action]="action" [entity]="entity"></app-action-editor>
-			</mat-expansion-panel>
-		</mat-accordion>
+		<mat-form-field class="example-full-width">
+			<mat-label>Add Start Condition</mat-label>
+			<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
+				<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
+				<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
+			</mat-select>
+		</mat-form-field>
 		<mat-accordion>
 			<mat-expansion-panel *ngFor="let condition of event.startConditions">
 				<mat-expansion-panel-header>
@@ -59,16 +53,22 @@
 						Condition
 					</mat-panel-description>
 				</mat-expansion-panel-header>
-				<app-condition-editor [condition]="condition"></app-condition-editor>
+				<app-condition-editor (removed)="onRemoveCondition($event,event)" [condition]="condition"></app-condition-editor>
 			</mat-expansion-panel>
 		</mat-accordion>
-		<mat-form-field class="example-full-width">
-			<mat-label>Add Condition</mat-label>
-			<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
-				<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
-				<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
-			</mat-select>
-		</mat-form-field>
+		<mat-accordion>
+			<mat-expansion-panel *ngFor="let action of event.getActions()">
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						{{action.actionType}}
+					</mat-panel-title>
+					<mat-panel-description>
+						{{action['actionName']}}
+					</mat-panel-description>
+				</mat-expansion-panel-header>
+				<app-action-editor (removed)="onRemoveAction(action,event)" [action]="action" [entity]="entity"></app-action-editor>
+			</mat-expansion-panel>
+		</mat-accordion>
 	</div>
 
 	<br/>

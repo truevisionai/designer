@@ -3,6 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { RelativeObjectPosition } from '../../../../models/positions/tv-relative-object-position';
 import { TvScenarioInstance } from '../../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
@@ -21,6 +22,10 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 	get entities () {
 		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
 	};
+
+	get relativeObjectPosition () {
+		return this.position as RelativeObjectPosition;
+	}
 
 	ngOnInit () {
 

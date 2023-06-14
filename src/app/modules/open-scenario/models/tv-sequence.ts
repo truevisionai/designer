@@ -6,6 +6,11 @@ import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { CatalogReference } from './tv-catalogs';
 import { Maneuver } from './tv-maneuver';
 
+/**
+ * Using ManeuverGroup we specify the Actors that are executing the actions.
+ * Because we want Vehicle 1 to change lanes, we specify its name under Actors.
+ * This means that all the actions under this ManeuverGroup are executed by Vehicle 1.
+ */
 export class Sequence {
 
 	private static count = 1;

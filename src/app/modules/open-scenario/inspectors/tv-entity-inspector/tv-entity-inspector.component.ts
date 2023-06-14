@@ -9,10 +9,11 @@ import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { ActionService } from '../../builders/action-service';
 import { ConditionFactory } from '../../builders/condition-factory';
+import { AbstractCondition } from '../../models/conditions/tv-condition';
 import { EntityObject } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
-import { AbstractPrivateAction } from '../../models/tv-interfaces';
+import { AbstractAction, AbstractPrivateAction } from '../../models/tv-interfaces';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ActionsInspectorComponent } from '../tv-actions-inspector/tv-player-actions-inspector.component';
@@ -93,6 +94,12 @@ export class EntityInspector implements OnInit, IComponent {
 
 	}
 
+	onRemoveCondition ( $condition: AbstractCondition, event: TvEvent ) {
+
+		event.removeCondition( $condition );
+
+	}
+
 	ngOnInit () {
 
 	}
@@ -134,6 +141,12 @@ export class EntityInspector implements OnInit, IComponent {
 	editAct () {
 
 		this.dialogService.openEditActDialog( this.entity );
+
+	}
+
+	onRemoveAction ( action: AbstractAction, event: TvEvent ) {
+
+
 
 	}
 }

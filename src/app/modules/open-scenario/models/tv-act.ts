@@ -6,6 +6,11 @@ import { AbstractCondition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { Sequence } from './tv-sequence';
 
+/**
+ * An Act allows a set of multiple instances of Trigger
+ * to determine when the specific Act starts.
+ * An Act may be terminated by a stopTrigger
+ */
 export class Act {
 
 	private static count = 1;

@@ -10,6 +10,12 @@ import { TvEvent } from './tv-event';
 import { AbstractAction } from './tv-interfaces';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
+/**
+ * one Maneuver is used to group instances of Event.
+ * Two instances of Maneuver may also be used, each hosting
+ * one Event. Both alternatives yield the same simulation
+ * outcome, as long as each Event retain its startTrigger.
+ */
 export class Maneuver {
 
 	private static count = 1;

@@ -5,6 +5,11 @@
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { Act } from './tv-act';
 
+/**
+ * Instances of Story may be used to group independent parts of the scenario,
+ * to make it easier to follow. If an Act is moved from one Story to another,
+ * the scenario works in the same way, as long as there are no naming conflicts.
+ */
 export class Story {
 
 	private static count = 1;

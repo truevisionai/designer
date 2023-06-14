@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/open-scenario/models/tv-enums';
 import { AbstractAction, AbstractPrivateAction } from 'app/modules/open-scenario/models/tv-interfaces';
 import { EntityObject } from '../../../models/tv-entities';
@@ -18,6 +18,8 @@ export class ActionEditorComponent implements OnInit {
 
 	@Input() entity: EntityObject;
 
+	@Output() removed = new EventEmitter<AbstractAction>();
+
 	types = ActionType;
 
 	constructor () {
@@ -30,6 +32,12 @@ export class ActionEditorComponent implements OnInit {
 
 	ngOnInit () {
 
+
+	}
+
+	remove () {
+
+		this.removed.emit( this.action );
 
 	}
 

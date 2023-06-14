@@ -109,6 +109,37 @@ export class TvEvent {
 
 	}
 
+	removeCondition ( $condition: AbstractCondition ) {
+
+		for ( let i = 0; i < this.startConditionGroups.length; i++ ) {
+
+			const group = this.startConditionGroups[ i ];
+
+			for ( let j = 0; j < group.conditions.length; j++ ) {
+
+				const condition = group.conditions[ j ];
+
+				if ( condition === $condition ) {
+
+					group.conditions.splice( j, 1 );
+
+					// if ( group.conditions.length === 0 ) {
+
+					// 	this.startConditionGroups.splice( i, 1 );
+
+					// }
+
+					return;
+
+				}
+
+			}
+
+		}
+
+	}
+
+
 	private onActionCompleted ( e: StoryEvent ) {
 
 		if ( e.type != StoryElementType.action ) return;

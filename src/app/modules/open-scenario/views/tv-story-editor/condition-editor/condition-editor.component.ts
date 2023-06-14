@@ -16,8 +16,10 @@ import { ConditionCategory, ConditionType } from '../../../models/tv-enums';
 export class ConditionEditorComponent implements OnInit {
 
 	@Input() condition: AbstractCondition;
+
 	@Output() conditionChanged = new EventEmitter<AbstractCondition>();
 
+	@Output() removed = new EventEmitter<AbstractCondition>();
 
 	constructor () {
 	}
@@ -57,6 +59,12 @@ export class ConditionEditorComponent implements OnInit {
 		}
 
 		this.conditionChanged.emit( this.condition );
+
+	}
+
+	remove () {
+
+		this.removed.emit( this.condition );
 
 	}
 
