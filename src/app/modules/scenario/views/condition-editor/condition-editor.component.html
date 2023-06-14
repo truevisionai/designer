@@ -1,0 +1,49 @@
+<app-string-field [value]="condition.name" label="Name"></app-string-field>
+
+<div [ngSwitch]="condition.category">
+
+	<div *ngSwitchCase="categories.ByValue">
+		By Value
+	</div>
+
+	<div *ngSwitchCase="categories.ByEntity">
+		<app-condition-by-entity [condition]="conditionByEntity"></app-condition-by-entity>
+	</div>
+
+	<div *ngSwitchCase="categories.ByState">
+
+	</div>
+
+
+	<!--	<div *ngSwitchCase="0">-->
+	<!--		ByEntity_EndOfRoad-->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="7">-->
+	<!--		 <app-speed-condition-editor [condition]="condition"></app-speed-condition-editor> -->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="8">-->
+	<!--		&lt;!&ndash; <app-relative-speed-condition-editor [condition]="condition"></app-relative-speed-condition-editor> &ndash;&gt;-->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="9">-->
+	<!--		&lt;!&ndash; <app-traveled-distance-condition-editor [condition]="condition"></app-traveled-distance-condition-editor> &ndash;&gt;-->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="10">-->
+	<!--		&lt;!&ndash; <app-reach-position-condition-editor [condition]="condition"></app-reach-position-condition-editor> &ndash;&gt;-->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="11">-->
+	<!--		&lt;!&ndash; <app-distance-condition-editor [condition]="condition"></app-distance-condition-editor> &ndash;&gt;-->
+	<!--	</div>-->
+
+	<!--	<div *ngSwitchCase="20">-->
+	<!--		<app-simulation-time-condition-editor [condition]="condition"></app-simulation-time-condition-editor>-->
+	<!--	</div>-->
+
+</div>
+
+
+<button (click)="remove()">Remove Condition</button>

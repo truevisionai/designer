@@ -1,0 +1,25 @@
+<div [ngSwitch]="action.actionType">
+
+	<div *ngSwitchCase="types.Private_Lateral">
+		 <app-lane-change-action [action]="privateAction"></app-lane-change-action>
+	</div>
+
+	<div *ngSwitchCase="types.Private_Longitudinal_Speed">
+		 <app-speed-action [action]="privateAction"></app-speed-action>
+	</div>
+
+	<div *ngSwitchCase="types.Private_Longitudinal_Distance">
+		Distance Action
+	</div>
+
+	<div *ngSwitchCase="types.Private_Routing">
+		<!-- <app-follow-trajectory-action [action]="privateAction"></app-follow-trajectory-action> -->
+	</div>
+
+	<div *ngSwitchCase="types.Private_Position">
+		<app-position-action-editor [action]="privateAction" [entity]="entity"></app-position-action-editor>
+	</div>
+
+	<button (click)="remove()" mat-flat-button fxFill>Remove Action</button>
+
+</div>

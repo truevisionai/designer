@@ -1,0 +1,23 @@
+<div>
+	<h5>Edit Dynamics</h5>
+
+	<mat-form-field class="example-full-width">
+		<mat-label>Shape</mat-label>
+		<mat-select (ngModelChange)="onShapeChanged($event)" [ngModel]="dynamics.shape">
+			<mat-option value="step">Step</mat-option>
+			<mat-option value="linear">Linear</mat-option>
+			<mat-option value="sinusoidal">Sinusoidal</mat-option>
+			<mat-option value="cubic">Cubic</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<app-double-field (valueChanged)="onTimeChanged($event)" *ngIf="dynamics.shape !== 'step'" [value]="dynamics.time"
+					  label="Time"></app-double-field>
+
+	<!-- <app-double-field *ngIf="dynamics.shape !== 'step'" label="Distance" [value]="dynamics.distance"
+        (valueChanged)="onDistanceChanged($event)"></app-double-field> -->
+
+	<!-- <app-double-field *ngIf="dynamics.shape !== 'step'" label="Rate" [value]="dynamics.rate"
+        (valueChanged)="onRateChanged($event)"></app-double-field> -->
+
+</div>

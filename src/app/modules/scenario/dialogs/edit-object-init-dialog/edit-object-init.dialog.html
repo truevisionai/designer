@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Edit Story For {{ entity.name }}</h1>
+
+<div mat-dialog-content>
+
+	<div class="content" fxFlexFill fxLayout="row" fxLayout.xs="row">
+
+		<div *ngFor="let action of entity.initActions;" fxFlex="30">
+
+			<!-- <app-action-editor [action]="action"></app-action-editor> -->
+
+		</div>
+
+	</div>
+</div>
+
+<div mat-dialog-actions>
+	<button mat-stroked-button>Cancel</button>
+	<button mat-stroked-button>Add</button>
+</div>

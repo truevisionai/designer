@@ -1,0 +1,105 @@
+<h1 mat-dialog-title>Edit Story For {{ entity.name }}</h1>
+
+<div mat-dialog-content>
+
+	<div class="content" fxFlexFill fxLayout="row" fxLayout.xs="row" fxLayoutAlign="space-between">
+
+		<div fxFlex="24">
+			<span>Maneuver</span>
+			<div *ngFor="let maneuver of maneuvers">
+				<!-- <app-edit-maneuver (maneuverSelected)="selectManeuver($event)" [maneuver]="maneuver">
+                </app-edit-maneuver> -->
+			</div>
+			<!-- <mat-form-field class="example-full-width" *ngIf="selectedManeuver">
+                <mat-label>Events</mat-label>
+                <mat-select [(ngModel)]="selectedEvent">
+                    <mat-option *ngFor="let event of selectedManeuver.events" [value]="event">{{ event.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+		</div>
+		<div fxFlex="24">
+			<span>Actions</span>
+			<div *ngFor="let action of eventActions">
+				<!-- <app-edit-action (actionSelected)="onActionSelected($event)" [action]="action"></app-edit-action> -->
+			</div>
+			<button (click)="addAction()" *ngIf="selectedEvent" mat-stroked-button>Add Action</button>
+		</div>
+		<div fxFlex="24">
+			<span>Action</span>
+			<div *ngIf="selectedAction">
+				<!-- <app-action-editor [action]="selectedAction"></app-action-editor> -->
+			</div>
+		</div>
+		<div fxFlex="24">
+			<span>Conditions</span>
+			<div *ngFor="let condition of eventConditions">
+				<!-- <app-edit-action-conditions [condition]="condition"></app-edit-action-conditions> -->
+				<!-- <app-condition-editor [condition]="condition" (conditionChanged)="onConditionChanged($event)"> -->
+				<!-- </app-condition-editor> -->
+			</div>
+		</div>
+	</div>
+
+	<!-- <mat-form-field class="example-full-width">
+        <input matInput [disabled]="true" placeholder="Name" [(ngModel)]="entity.name">
+    </mat-form-field>
+
+
+    <div *ngIf="maneuver">
+
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Name" [(ngModel)]="maneuver.name">
+        </mat-form-field>
+
+    </div>
+
+    <div *ngIf="event">
+
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Name" [(ngModel)]="event.name">
+        </mat-form-field>
+
+    </div>
+
+    <div *ngIf="condition">
+
+        <h5>Trigger Condition</h5>
+
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Name" [(ngModel)]="condition.name">
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+            <mat-label>Condition Type</mat-label>
+            <mat-select [(ngModel)]="condition.conditionType">
+                <mat-option [value]="0">None</mat-option>
+                <mat-option [value]="11">Distance From Entity</mat-option>
+                <mat-option [value]="14">At Start</mat-option>
+                <mat-option [value]="20">After Termination</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div [ngSwitch]="condition.conditionType">
+
+            <div *ngSwitchCase="11">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Entity" [(ngModel)]="condition.position.object">
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Value" [(ngModel)]="condition.value">
+                </mat-form-field>
+            </div>
+
+        </div>
+
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Delay" [(ngModel)]="condition.delay">
+        </mat-form-field>
+    </div> -->
+
+</div>
+<div mat-dialog-actions>
+	<button mat-stroked-button>Cancel</button>
+	<button mat-stroked-button>Add</button>
+</div>

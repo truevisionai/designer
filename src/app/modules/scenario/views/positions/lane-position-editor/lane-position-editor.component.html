@@ -1,0 +1,19 @@
+<form [formGroup]="positionForm">
+	<div>
+		<mat-form-field style="width: 33%;">
+			<input formControlName="roadId" matInput placeholder="Road ID" required type="number">
+		</mat-form-field>
+		<mat-form-field style="width: 33%;">
+			<input formControlName="laneId" matInput placeholder="Lane ID" required type="number">
+		</mat-form-field>
+		<mat-form-field style="width: 33%;">
+			<input formControlName="sCoordinate" matInput placeholder="S Coordinate" required type="number">
+		</mat-form-field>
+	</div>
+
+	<div>
+		<mat-form-field>
+			<input formControlName="offset" matInput placeholder="Offset (Optional)" type="number">
+		</mat-form-field>
+	</div>
+</form>

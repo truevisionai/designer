@@ -49,7 +49,6 @@ testem.log
 Thumbs.db
 
 protos/csharp
-scenario
 bin
 *.pyc
 .env
