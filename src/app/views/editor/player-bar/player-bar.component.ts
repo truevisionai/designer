@@ -4,6 +4,7 @@
 
 import { Component } from '@angular/core';
 import { PlayerService } from '../../../core/player.service';
+import { ScenarioViewerService } from 'app/modules/open-scenario/services/scenario-viewer.service';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -22,6 +23,7 @@ export class PlayerBarComponent {
 
 	constructor (
 		private playerService: PlayerService,
+		private scenarioViewerService: ScenarioViewerService
 	) {
 	}
 

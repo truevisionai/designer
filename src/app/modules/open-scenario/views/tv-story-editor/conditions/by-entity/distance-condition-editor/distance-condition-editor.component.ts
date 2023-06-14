@@ -7,7 +7,7 @@ import { DistanceCondition } from 'app/modules/open-scenario/models/conditions/t
 import { AbstractPosition } from 'app/modules/open-scenario/models/tv-interfaces';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from '../../../../../../../services/command-history';
-import { AbstractByEntityCondition } from '../../../../../models/conditions/tv-condition';
+import { AbstractByEntityCondition } from '../../../../../models/conditions/abstract-by-entity-condition';
 import { Rule } from '../../../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 

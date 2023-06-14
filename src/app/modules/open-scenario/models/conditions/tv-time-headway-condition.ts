@@ -3,7 +3,7 @@
  */
 
 import { ConditionType, Rule } from '../tv-enums';
-import { AbstractByEntityCondition } from './tv-condition';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 export class TimeHeadwayCondition extends AbstractByEntityCondition {
 

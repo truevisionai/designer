@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-player.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { ConditionService } from './condition-service';
+import { ConditionService } from '../builders/condition-service';
 import { AbstractCondition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { StoryElementType } from './tv-enums';

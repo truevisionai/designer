@@ -3,7 +3,8 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractByEntityCondition, AbstractCondition } from 'app/modules/open-scenario/models/conditions/tv-condition';
+import { AbstractCondition } from 'app/modules/open-scenario/models/conditions/tv-condition';
+import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
 import { DistanceCondition } from '../../../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../../../models/conditions/tv-simulation-time-condition';
 import { ConditionCategory, ConditionType } from '../../../models/tv-enums';

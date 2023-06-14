@@ -3,7 +3,7 @@
  */
 
 import { ConditionType, ObjectType } from '../tv-enums';
-import { AbstractByEntityCondition } from './tv-condition';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 export class CollisionCondition extends AbstractByEntityCondition {
 

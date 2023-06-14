@@ -13,8 +13,8 @@ import { PositionAction } from '../models/actions/tv-position-action';
 import { LaneChangeDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { AbstractByEntityCondition } from '../models/conditions/abstract-by-entity-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
-import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
@@ -45,6 +45,7 @@ import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
+import { AbstractCondition } from '../models/conditions/tv-condition';
 
 @Injectable( {
 	providedIn: 'root'

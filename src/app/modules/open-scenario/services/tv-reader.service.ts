@@ -17,9 +17,10 @@ import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { AbstractByEntityCondition } from '../models/conditions/abstract-by-entity-condition';
 import { AfterTerminationCondition } from '../models/conditions/tv-after-termination-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
-import { AbstractByEntityCondition, AbstractCondition } from '../models/conditions/tv-condition';
+import { AbstractCondition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
@@ -27,6 +28,10 @@ import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-c
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
+import { LanePosition } from '../models/positions/tv-lane-position';
+import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
+import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
+import { WorldPosition } from '../models/positions/tv-world-position';
 import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
@@ -50,19 +55,7 @@ import { OpenScenario } from '../models/tv-scenario';
 import { Sequence } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
-import {
-	AbstractShape,
-	ClothoidShape,
-	ControlPoint,
-	PolylineShape,
-	SplineShape,
-	Trajectory,
-	Vertex
-} from '../models/tv-trajectory';
-import { LanePosition } from '../models/positions/tv-lane-position';
-import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
-import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
-import { WorldPosition } from '../models/positions/tv-world-position';
+import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
 
 @Injectable( {
 	providedIn: 'root'

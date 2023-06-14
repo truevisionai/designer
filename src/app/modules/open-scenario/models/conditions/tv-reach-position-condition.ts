@@ -2,54 +2,85 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionType, TriggeringRule } from '../tv-enums';
 import { AbstractPosition } from '../tv-interfaces';
-import { AbstractByEntityCondition } from './tv-condition';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
+/**
+ * Checks if a triggering entity/entities has reached a
+ * given position, within some user specified tolerance.
+ */
 export class ReachPositionCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_ReachPosition;
 
-	constructor ( public position?: AbstractPosition, public tolerance: number = 0 ) {
+	constructor ( public position: AbstractPosition, public tolerance: number = 0 ) {
+
 		super();
+
 	}
 
 	hasPassed (): boolean {
 
-		if ( this.position == null ) throw new Error( 'Position value can not be null' );
+		const isPositionReached: boolean[] = this.entities.map( entityName => {
 
-		if ( this.passed ) return true;
+			const entityPosition = this.getEntityPosition( entityName );
 
-		const targetPosition = this.position.toVector3();
+			const distance = entityPosition.distanceTo( this.position.toVector3() );
 
-		for ( const entityName of this.entities ) {
+			return distance <= this.tolerance;
 
-			const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+		} );
 
-			const distanceFromTarget = entity.position.distanceTo( targetPosition );
+		switch ( this.triggeringRule ) {
 
-			const hasReachedTarget = distanceFromTarget <= this.tolerance;
+			case TriggeringRule.Any:
+				return isPositionReached.some( passed => passed === true );
 
-			// exit if any of the distance tolerance is passed
-			if ( hasReachedTarget && this.triggeringRule === TriggeringRule.Any ) {
+			case TriggeringRule.All:
+				return isPositionReached.every( passed => passed === true );
 
-				this.passed = true;
-
-				break;
-			}
-
-			// exit if any of the distance distance is not passed
-			if ( !hasReachedTarget && this.triggeringRule === TriggeringRule.All ) {
-
-				this.passed = false;
-
-				break;
-
-			}
-
+			default:
+				return false;
 		}
-
 	}
+
+
+	// hasPassed (): boolean {
+	//
+	// 	if ( this.position == null ) throw new Error( 'Position value can not be null' );
+	//
+	// 	if ( this.passed ) return true;
+	//
+	// 	const targetPosition = this.position.toVector3();
+	//
+	// 	for ( const entityName of this.entities ) {
+	//
+	// 		const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+	//
+	// 		const distanceFromTarget = entity.position.distanceTo( targetPosition );
+	//
+	// 		const hasReachedTarget = distanceFromTarget <= this.tolerance;
+	//
+	// 		// exit if any of the distance tolerance is passed
+	// 		if ( hasReachedTarget && this.triggeringRule === TriggeringRule.Any ) {
+	//
+	// 			this.passed = true;
+	//
+	// 			break;
+	// 		}
+	//
+	// 		// exit if any of the distance distance is not passed
+	// 		if ( !hasReachedTarget && this.triggeringRule === TriggeringRule.All ) {
+	//
+	// 			this.passed = false;
+	//
+	// 			break;
+	//
+	// 		}
+	//
+	// 	}
+	//
+	// }
 
 }

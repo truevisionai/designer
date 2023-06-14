@@ -3,6 +3,7 @@
  */
 
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
+import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { EntityObject } from '../models/tv-entities';
@@ -19,6 +20,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_Distance:
 				return this.createDistanceCondition( entity );
+
+			case ConditionType.ByEntity_ReachPosition:
+				return this.createReachedPositionCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -44,5 +48,16 @@ export class ConditionFactory {
 
 		return new DistanceCondition( position, 10, false, false, Rule.greater_than );
 
+	}
+
+	private static createReachedPositionCondition ( entity?: EntityObject ) {
+
+		const position = new WorldPosition( 0, 0, 0 );
+
+		const condition = new ReachPositionCondition( position, 5 );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
 	}
 }

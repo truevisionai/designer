@@ -3,7 +3,7 @@
  */
 
 import { AfterTerminationRule, ConditionType, StoryElementType } from '../tv-enums';
-import { AbstractByStateCondition } from './tv-condition';
+import { AbstractByStateCondition } from './abstract-by-state-condition';
 
 export class AfterTerminationCondition extends AbstractByStateCondition {
 

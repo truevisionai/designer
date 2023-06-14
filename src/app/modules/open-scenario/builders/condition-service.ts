@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionGroup } from './conditions/tv-condition-group';
-import { Rule, TriggeringRule } from './tv-enums';
+import { ConditionGroup } from '../models/conditions/tv-condition-group';
+import { Rule, TriggeringRule } from '../models/tv-enums';
 
 export class ConditionService {
 

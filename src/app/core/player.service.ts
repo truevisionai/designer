@@ -24,8 +24,8 @@ export class PlayerService {
 
 	private prevTime: number;
 	private handle: number;
-	private paused: boolean;
-	public playing: boolean;
+	private paused: boolean = false;
+	public playing: boolean = false;
 
 	constructor () {
 	}

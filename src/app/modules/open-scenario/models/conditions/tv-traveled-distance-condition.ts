@@ -4,7 +4,7 @@
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionType, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './tv-condition';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 
 export class TraveledDistanceCondition extends AbstractByEntityCondition {

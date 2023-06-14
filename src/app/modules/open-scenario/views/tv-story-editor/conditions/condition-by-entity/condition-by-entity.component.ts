@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractByEntityCondition } from 'app/modules/open-scenario/models/conditions/tv-condition';
+import { AbstractByEntityCondition } from '../../../../models/conditions/abstract-by-entity-condition';
 import { ConditionType, TriggeringRule } from '../../../../models/tv-enums';
 import { TvScenarioInstance } from 'app/modules/open-scenario/services/tv-scenario-instance';
 

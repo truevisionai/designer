@@ -59,4 +59,13 @@ export class Act {
 		}
 		this.startConditionGroups[ 0 ].addCondition( condition );
 	}
+
+	addEndCondition ( condition: AbstractCondition ) {
+
+		if ( this.endConditionGroups.length == 0 ) {
+			this.endConditionGroups.push( new ConditionGroup() );
+		}
+
+		this.endConditionGroups[ 0 ].addCondition( condition );
+	}
 }

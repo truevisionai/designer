@@ -4,7 +4,7 @@
 
 import { Time } from '../../../../core/time';
 import { ConditionCategory, ConditionType, Rule } from '../tv-enums';
-import { AbstractByValueCondition } from './tv-condition';
+import { AbstractByValueCondition } from './abstract-by-value-condition';
 
 export class SimulationTimeCondition extends AbstractByValueCondition {
 

@@ -4,8 +4,8 @@
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { ConditionService } from '../condition-service';
-import { AbstractByEntityCondition } from './tv-condition';
+import { ConditionService } from '../../builders/condition-service';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 export class RelativeSpeedCondition extends AbstractByEntityCondition {
 

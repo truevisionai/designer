@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils } from 'three';
+import { MathUtils, Vector3 } from 'three';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { Act } from './tv-act';
@@ -275,6 +275,12 @@ export class OpenScenario {
 
 		return events;
 
+
+	}
+
+	getEntityVectorPosition ( entityName: string ): Vector3 {
+
+		return this.findEntityOrFail( entityName ).position;
 
 	}
 }

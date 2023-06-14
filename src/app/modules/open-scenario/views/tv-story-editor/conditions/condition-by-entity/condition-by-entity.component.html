@@ -9,5 +9,9 @@
 		<app-distance-condition-editor [condition]="condition"></app-distance-condition-editor>
 	</div>
 
+	<div *ngSwitchCase="conditions.ByEntity_ReachPosition">
+		<app-reach-position-condition-editor [condition]="condition"></app-reach-position-condition-editor>
+	</div>
+
 </div>
 

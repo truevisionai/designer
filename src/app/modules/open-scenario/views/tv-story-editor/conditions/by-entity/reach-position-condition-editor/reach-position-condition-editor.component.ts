@@ -7,6 +7,7 @@ import { ReachPositionCondition } from 'app/modules/open-scenario/models/conditi
 import { AbstractPosition } from 'app/modules/open-scenario/models/tv-interfaces';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
+import { AbstractByEntityCondition } from '../../../../../models/conditions/abstract-by-entity-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -15,7 +16,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class ReachPositionConditionEditorComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
 
-	@Input() condition: ReachPositionCondition;
+	@Input() condition: AbstractByEntityCondition;
 
 	private sphere: Mesh;
 
@@ -23,9 +24,15 @@ export class ReachPositionConditionEditorComponent extends BaseConditionEditorCo
 		super();
 	}
 
+	get reachedCondition () {
+
+		return this.condition as ReachPositionCondition;
+
+	}
+
 	ngOnInit () {
 
-		const geometry = this.getGeometry( this.condition.tolerance );
+		const geometry = this.getGeometry( this.reachedCondition.tolerance );
 
 		const material = new MeshBasicMaterial( {} );
 
@@ -33,7 +40,7 @@ export class ReachPositionConditionEditorComponent extends BaseConditionEditorCo
 
 		this.threeService.add( this.sphere );
 
-		this.sphere.position.copy( this.condition.position.toVector3() );
+		this.sphere.position.copy( this.reachedCondition.position.toVector3() );
 	}
 
 	getGeometry ( radius ) {
@@ -65,7 +72,7 @@ export class ReachPositionConditionEditorComponent extends BaseConditionEditorCo
 
 	onToleranceChanged ( value: number ) {
 
-		this.condition.tolerance = value;
+		this.reachedCondition.tolerance = value;
 
 		const geometry = this.getGeometry( value );
 

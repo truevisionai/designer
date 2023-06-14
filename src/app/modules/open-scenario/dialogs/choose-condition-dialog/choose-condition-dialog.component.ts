@@ -114,7 +114,7 @@ export class ChooseConditionDialogComponent implements OnInit {
 			case ConditionType.ByEntity_TraveledDistance:
 				break;
 			case ConditionType.ByEntity_ReachPosition:
-				this.selectedCondition = new ReachPositionCondition();
+				// this.selectedCondition = new ReachPositionCondition();
 				break;
 			case ConditionType.ByEntity_Distance:
 				this.selectedCondition = new DistanceCondition();

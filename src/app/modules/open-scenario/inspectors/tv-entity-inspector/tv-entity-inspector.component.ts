@@ -86,7 +86,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 		if ( $type !== null ) {
 
-			event.addStartCondition( ConditionFactory.createCondition( $type ) );
+			event.addStartCondition( ConditionFactory.createCondition( $type, this.entity ) );
 
 			this.addCondition.value = null;
 

@@ -41,6 +41,7 @@
 			<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
 				<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
 				<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
+				<mat-option [value]="conditionType.ByEntity_ReachPosition">ReachedPosition</mat-option>
 			</mat-select>
 		</mat-form-field>
 		<mat-accordion>

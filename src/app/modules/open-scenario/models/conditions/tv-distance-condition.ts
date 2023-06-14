@@ -2,11 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionType, Rule } from '../tv-enums';
 import { AbstractPosition } from '../tv-interfaces';
-import { ConditionService } from '../condition-service';
-import { AbstractByEntityCondition } from './tv-condition';
+import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 /**
  *
@@ -22,7 +20,6 @@ export class DistanceCondition extends AbstractByEntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
 
-
 	constructor (
 		public position?: AbstractPosition,
 		public value?: number,
@@ -35,47 +32,60 @@ export class DistanceCondition extends AbstractByEntityCondition {
 
 	hasPassed (): boolean {
 
-		if ( this.passed ) {
+		// TODO: check and confirm this
+		// if ( this.passed ) return true;
 
-			return true;
+		const distanceValues = this.entities.map(
+			entityName => this.calculateDistance( entityName, this.position, this.freespace )
+		);
 
-		} else {
-
-			const otherPosition = this.position.toVector3();
-
-			for ( const entityName of this.entities ) {
-
-				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
-
-				const distance = entity.position.distanceTo( otherPosition );
-
-				// console.log( 'distance-to-entity', distance );
-
-				const passed = ConditionService.hasRulePassed( this.rule, distance, this.value );
-
-				// exit if any of the entity distance is passed
-				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
-
-					this.passed = true;
-
-					break;
-				}
-
-				// exit if any of the entity distance is not passed
-				if ( !passed && this.triggeringRule === TriggeringRule.All ) {
-
-					this.passed = false;
-
-					break;
-
-				}
-
-			}
-
-			return this.passed;
-
-		}
-
+		return this.isTriggerRulePassing( distanceValues, this.rule, this.value );
 	}
+
+
+	// hasPassed (): boolean {
+	//
+	// 	if ( this.passed ) {
+	//
+	// 		return true;
+	//
+	// 	} else {
+	//
+	// 		const otherPosition = this.position.toVector3();
+	//
+	// 		for ( const entityName of this.entities ) {
+	//
+	// 			const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+	//
+	// 			const distance = entity.position.distanceTo( otherPosition );
+	//
+	// 			// console.log( 'distance-to-entity', distance );
+	//
+	// 			const passed = ConditionService.hasRulePassed( this.rule, distance, this.value );
+	//
+	// 			// exit if any of the entity distance is passed
+	// 			if ( passed && this.triggeringRule === TriggeringRule.Any ) {
+	//
+	// 				this.passed = true;
+	//
+	// 				break;
+	// 			}
+	//
+	// 			// exit if any of the entity distance is not passed
+	// 			if ( !passed && this.triggeringRule === TriggeringRule.All ) {
+	//
+	// 				this.passed = false;
+	//
+	// 				break;
+	//
+	// 			}
+	//
+	// 		}
+	//
+	// 		return this.passed;
+	//
+	// 	}
+	//
+	// }
 
 }

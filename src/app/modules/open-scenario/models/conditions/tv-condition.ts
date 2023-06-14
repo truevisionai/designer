@@ -2,8 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionService } from '../condition-service';
-import { ConditionCategory, ConditionEdge, ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionService } from '../../builders/condition-service';
+import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
 // export class DontUse_Condition {
 
@@ -28,34 +29,17 @@ export abstract class AbstractCondition {
 	abstract hasPassed (): boolean;
 
 	hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
+
 		return ConditionService.hasRulePassed( rule, left, right );
+
 	}
 
 	reset () {
 		this.passed = false;
 	}
-}
 
-export abstract class AbstractByEntityCondition extends AbstractCondition {
-
-	public category: ConditionCategory = ConditionCategory.ByEntity;
-
-	public triggeringRule: TriggeringRule = TriggeringRule.Any;
-
-	// name of all entities which can affect this condition
-	public entities: string[] = [];
-
-}
-
-export abstract class AbstractByValueCondition extends AbstractCondition {
-
-	public category: ConditionCategory = ConditionCategory.ByValue;
-
-}
-
-export abstract class AbstractByStateCondition extends AbstractCondition {
-
-	public category: ConditionCategory = ConditionCategory.ByState;
-
+	protected get scenario () {
+		return TvScenarioInstance.scenario;
+	}
 }
 

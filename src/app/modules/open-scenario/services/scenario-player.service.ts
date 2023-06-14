@@ -3,15 +3,13 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Quaternion, Vector3 } from 'three';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
-import { AppService } from '../../../core/services/app.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ActionService } from '../builders/action-service';
 import { ResetHelper } from '../helpers/tv-reset-helper';
-import { ConditionService } from '../models/condition-service';
+import { ConditionService } from '../builders/condition-service';
 import { Act } from '../models/tv-act';
 import { EntityObject } from '../models/tv-entities';
 import { StoryElementType } from '../models/tv-enums';
@@ -38,16 +36,13 @@ export class ScenarioPlayerService {
 	private eventIndex: number = 0;
 	private logEvents: boolean = true;
 
-	private originalPosition = new Vector3();
-	private originalQuaternion = new Quaternion();
+	constructor ( public userPlayer: PlayerService ) {
 
-	constructor ( private player: PlayerService ) {
-
-		player.playerStarted.subscribe( e => this.onPlayerStarted() );
-		player.playerResumed.subscribe( e => this.onPlayerResumed() );
-		player.playerStopped.subscribe( e => this.onPlayerStopped() );
-		player.playerPaused.subscribe( e => this.onPlayerPaused() );
-		player.playerTick.subscribe( e => this.onPlayerTick( e ) );
+		userPlayer.playerStarted.subscribe( e => this.onPlayerStarted() );
+		userPlayer.playerResumed.subscribe( e => this.onPlayerResumed() );
+		userPlayer.playerStopped.subscribe( e => this.onPlayerStopped() );
+		userPlayer.playerPaused.subscribe( e => this.onPlayerPaused() );
+		userPlayer.playerTick.subscribe( e => this.onPlayerTick( e ) );
 
 	}
 
@@ -65,15 +60,7 @@ export class ScenarioPlayerService {
 
 	private onPlayerStarted () {
 
-		// Store original position and orientation
-		this.originalPosition.copy( AppService.three.camera.position );
-		this.originalQuaternion.copy( AppService.three.camera.quaternion );
-
 		if ( this.logEvents ) console.info( 'scenario-started', this.openScenario );
-
-		const entity = [ ...this.openScenario.objects.values() ][ 0 ];
-
-		AppService.three.setFocusTarget( entity.gameObject );
 
 		this.performInitActions();
 
@@ -95,10 +82,6 @@ export class ScenarioPlayerService {
 
 		if ( this.logEvents ) console.info( 'scenario-stopped' );
 
-		AppService.three.removeFocusTarget();
-		AppService.three.camera.position.copy( this.originalPosition );
-		AppService.three.camera.quaternion.copy( this.originalQuaternion );
-
 		this.performInitActions();
 
 		this.resetOpenScenario();
@@ -108,7 +91,7 @@ export class ScenarioPlayerService {
 
 		if ( ConditionService.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
 
-			this.player.stop();
+			this.userPlayer.stop();
 
 		} else {
 
