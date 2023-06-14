@@ -1,7 +1,7 @@
 <div [ngSwitch]="action.actionType">
 
 	<div *ngSwitchCase="types.Private_Lateral">
-		 <app-lane-change-action [action]="privateAction"></app-lane-change-action>
+		 <app-lane-change [action]="privateAction"></app-lane-change>
 	</div>
 
 	<div *ngSwitchCase="types.Private_Longitudinal_Speed">
@@ -17,7 +17,7 @@
 	</div>
 
 	<div *ngSwitchCase="types.Private_Position">
-		<app-position-action-editor [action]="privateAction" [entity]="entity"></app-position-action-editor>
+		<app-position-action [action]="privateAction" [entity]="entity"></app-position-action>
 	</div>
 
 	<button (click)="remove()" mat-flat-button fxFill>Remove Action</button>

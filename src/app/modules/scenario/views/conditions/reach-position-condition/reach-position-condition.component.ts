@@ -11,10 +11,10 @@ import { AbstractByEntityCondition } from '../../../models/conditions/abstract-b
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
-	selector: 'app-reach-position-condition-editor',
-	templateUrl: './reach-position-condition-editor.component.html',
+	selector: 'app-reach-position-condition',
+	templateUrl: './reach-position-condition.component.html',
 } )
-export class ReachPositionConditionEditorComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
+export class ReachPositionConditionComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
 
 	@Input() condition: AbstractByEntityCondition;
 

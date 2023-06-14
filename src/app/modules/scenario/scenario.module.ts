@@ -34,20 +34,20 @@ import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.componen
 import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component';
 import { ActionComponent } from './views/action/action.component';
 import {
-	FollowTrajectoryActionComponent
-} from './views/actions/follow-trajectory-action/follow-trajectory-action.component';
-import { LaneChangeActionComponent } from './views/actions/lane-change-action/lane-change-action.component';
+	FollowTrajectoryComponent
+} from './views/actions/follow-trajectory/follow-trajectory.component';
+import { LaneChangeComponent } from './views/actions/lane-change/lane-change.component';
 import {
-	PositionActionEditorComponent
-} from './views/actions/position-action-editor/position-action-editor.component';
+	PositionActionComponent
+} from './views/actions/position-action/position-action.component';
 import { SpeedActionComponent } from './views/actions/speed-action/speed-action.component';
 import { ConditionEditorComponent } from './views/condition-editor/condition-editor.component';
 import {
-	DistanceConditionEditorComponent
-} from './views/conditions/distance-condition-editor/distance-condition-editor.component';
+	DistanceConditionComponent
+} from './views/conditions/distance-condition/distance-condition.component';
 import {
-	ReachPositionConditionEditorComponent
-} from './views/conditions/reach-position-condition-editor/reach-position-condition-editor.component';
+	ReachPositionConditionComponent
+} from './views/conditions/reach-position-condition/reach-position-condition.component';
 import {
 	RelativeSpeedConditionEditorComponent
 } from './views/conditions/relative-speed-condition-editor/relative-speed-condition-editor.component';
@@ -65,7 +65,7 @@ import {
 } from './views/conditions/traveled-distance-condition-editor/traveled-distance-condition-editor.component';
 import {
 	SimulationTimeConditionEditorComponent
-} from './views/conditions/by-value/simulation-time-condition-editor/simulation-time-condition-editor.component';
+} from './views/conditions/simulation-time-condition-editor/simulation-time-condition-editor.component';
 import { ConditionByEntityComponent } from './views/conditions/condition-by-entity/condition-by-entity.component';
 import { DynamicsEditorComponent } from './views/dynamics-editor/dynamics-editor.component';
 import { EventEditorComponent } from './views/event-editor/event-editor.component';
@@ -99,7 +99,7 @@ import { TargetEditorComponent } from './views/target-editor/target-editor.compo
         EventEditorComponent,
         ConditionEditorComponent,
         ManeuverEditorComponent,
-        DistanceConditionEditorComponent,
+        DistanceConditionComponent,
         WorldPositionEditorComponent,
         RelativeObjectPositionEditorComponent,
         SimulationTimeConditionEditorComponent,
@@ -107,22 +107,22 @@ import { TargetEditorComponent } from './views/target-editor/target-editor.compo
         SpeedActionComponent,
         TargetEditorComponent,
         DynamicsEditorComponent,
-        LaneChangeActionComponent,
+        LaneChangeComponent,
         // EditStoryDialog,
         // EditObjectInitDialog,
-        PositionActionEditorComponent,
+        PositionActionComponent,
         RoadPositionEditorComponent,
         LanePositionEditorComponent,
         TrajectoryInspectorComponent,
         ActionsInspectorComponent,
-        FollowTrajectoryActionComponent,
+        FollowTrajectoryComponent,
         TrajectoriesInspectorComponent,
         // NewScenarioDialogComponent,
         // EditActionsDialogComponent,
         // ActEditorComponent,
         // ChooseConditionDialogComponent,
         ParamatersInspectorComponent,
-        ReachPositionConditionEditorComponent,
+        ReachPositionConditionComponent,
         RelativeSpeedConditionEditorComponent,
         SpeedConditionEditorComponent,
         TraveledDistanceConditionEditorComponent,
@@ -155,7 +155,7 @@ import { TargetEditorComponent } from './views/target-editor/target-editor.compo
 		EditObjectInitDialog,
 		TrajectoryInspectorComponent,
 		ActionsInspectorComponent,
-		FollowTrajectoryActionComponent,
+		FollowTrajectoryComponent,
 		TrajectoriesInspectorComponent,
 		NewScenarioDialogComponent,
 		ActEditorComponent,

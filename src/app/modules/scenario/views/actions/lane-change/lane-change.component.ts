@@ -7,11 +7,11 @@ import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action'
 import { AbstractPrivateAction } from '../../../models/tv-interfaces';
 
 @Component( {
-	selector: 'app-lane-change-action',
-	templateUrl: './lane-change-action.component.html',
-	styleUrls: [ './lane-change-action.component.css' ]
+	selector: 'app-lane-change',
+	templateUrl: './lane-change.component.html',
+	styleUrls: [ './lane-change.component.css' ]
 } )
-export class LaneChangeActionComponent implements OnInit {
+export class LaneChangeComponent implements OnInit {
 
 	@Input() action: AbstractPrivateAction;
 

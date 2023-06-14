@@ -9,11 +9,11 @@ import { ToolManager } from '../../../../../core/tools/tool-manager';
 import { FollowTrajectoryAction } from '../../../models/actions/tv-follow-trajectory-action';
 
 @Component( {
-	selector: 'app-follow-trajectory-action',
-	templateUrl: './follow-trajectory-action.component.html',
-	styleUrls: [ './follow-trajectory-action.component.css' ]
+	selector: 'app-follow-trajectory',
+	templateUrl: './follow-trajectory.component.html',
+	styleUrls: [ './follow-trajectory.component.css' ]
 } )
-export class FollowTrajectoryActionComponent implements OnInit, IComponent, OnDestroy {
+export class FollowTrajectoryComponent implements OnInit, IComponent, OnDestroy {
 
 	data: FollowTrajectoryAction;
 

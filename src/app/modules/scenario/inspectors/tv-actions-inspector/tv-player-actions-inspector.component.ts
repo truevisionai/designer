@@ -22,8 +22,8 @@ import { EnumTrajectoryDomain, Trajectory } from '../../models/tv-trajectory';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import {
-	FollowTrajectoryActionComponent
-} from '../../views/actions/follow-trajectory-action/follow-trajectory-action.component';
+	FollowTrajectoryComponent
+} from '../../views/actions/follow-trajectory/follow-trajectory.component';
 import { EventEditorComponent } from '../../views/event-editor/event-editor.component';
 
 @Component( {
@@ -107,7 +107,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	editFollowTrajectoryAction ( action: FollowTrajectoryAction ) {
 
-		AppInspector.setInspector( FollowTrajectoryActionComponent, action );
+		AppInspector.setInspector( FollowTrajectoryComponent, action );
 
 	}
 

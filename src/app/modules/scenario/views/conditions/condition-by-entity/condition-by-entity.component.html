@@ -6,11 +6,11 @@
 <div [ngSwitch]="condition.conditionType">
 
 	<div *ngSwitchCase="conditions.ByEntity_Distance">
-		<app-distance-condition-editor [condition]="condition"></app-distance-condition-editor>
+		<app-distance-condition [condition]="condition"></app-distance-condition>
 	</div>
 
 	<div *ngSwitchCase="conditions.ByEntity_ReachPosition">
-		<app-reach-position-condition-editor [condition]="condition"></app-reach-position-condition-editor>
+		<app-reach-position-condition [condition]="condition"></app-reach-position-condition>
 	</div>
 
 	<div *ngSwitchCase="conditions.ByEntity_TimeHeadway">

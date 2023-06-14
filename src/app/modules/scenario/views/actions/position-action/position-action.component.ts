@@ -8,10 +8,10 @@ import { EntityObject } from '../../../models/tv-entities';
 import { AbstractPosition, AbstractPrivateAction } from '../../../models/tv-interfaces';
 
 @Component( {
-	selector: 'app-position-action-editor',
-	templateUrl: './position-action-editor.component.html'
+	selector: 'app-position-action',
+	templateUrl: './position-action.component.html'
 } )
-export class PositionActionEditorComponent implements OnInit {
+export class PositionActionComponent implements OnInit {
 
 	@Input() action: AbstractPrivateAction;
 	@Input() entity: EntityObject;

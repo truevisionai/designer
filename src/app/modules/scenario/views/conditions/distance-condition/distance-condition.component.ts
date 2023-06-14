@@ -12,11 +12,11 @@ import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
-	selector: 'app-distance-condition-editor',
-	templateUrl: './distance-condition-editor.component.html',
-	styleUrls: [ './distance-condition-editor.component.css' ]
+	selector: 'app-distance-condition',
+	templateUrl: './distance-condition.component.html',
+	styleUrls: [ './distance-condition.component.css' ]
 } )
-export class DistanceConditionEditorComponent extends BaseConditionEditorComponent {
+export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
 	@Input() condition: AbstractByEntityCondition;
 
