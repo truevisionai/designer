@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractAction } from '../abstract-action';
 import { ActionCategory } from '../tv-enums';
-import { AbstractAction } from '../tv-interfaces';
 
 export abstract class UserDefinedAction extends AbstractAction {
 

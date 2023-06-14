@@ -9,8 +9,8 @@ import {
 } from 'app/modules/scenario/dialogs/choose-condition-dialog/choose-condition-dialog.component';
 import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { TvEvent } from 'app/modules/scenario/models/tv-event';
-import { AbstractAction } from 'app/modules/scenario/models/tv-interfaces';
 import { DialogService } from 'app/modules/scenario/services/tv-dialog.service';
+import { AbstractAction } from '../../models/abstract-action';
 
 @Component( {
 	selector: 'app-event-editor',

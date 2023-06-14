@@ -5,9 +5,9 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { AbstractAction } from './abstract-action';
 import { StoryElementType } from './tv-enums';
 import { TvEvent } from './tv-event';
-import { AbstractAction } from './tv-interfaces';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 /**

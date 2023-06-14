@@ -4,7 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { PositionType } from 'app/modules/scenario/models/tv-enums';
-import { AbstractPosition } from '../../models/tv-interfaces';
+import { AbstractPosition } from '../../models/abstract-position';
 import { LanePosition } from '../../models/positions/tv-lane-position';
 import { RelativeObjectPosition } from '../../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../../models/positions/tv-world-position';

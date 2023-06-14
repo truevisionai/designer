@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from './tv-interfaces';
+import { AbstractPosition } from './abstract-position';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 export enum EnumTrajectoryDomain {

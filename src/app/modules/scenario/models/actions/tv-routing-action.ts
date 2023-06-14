@@ -2,9 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractPosition } from '../abstract-position';
+import { AbstractPrivateAction } from '../abstract-private-action';
 import { CatalogReference } from '../tv-catalogs';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
-import { AbstractPosition, AbstractPrivateAction } from '../tv-interfaces';
 import { Route } from '../tv-route';
 
 export abstract class AbstractRoutingAction extends AbstractPrivateAction {

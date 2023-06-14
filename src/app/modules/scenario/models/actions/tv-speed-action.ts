@@ -5,9 +5,9 @@
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { AbstractPrivateAction } from '../abstract-private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType, DynamicsShape, TargetType } from '../tv-enums';
-import { AbstractPrivateAction } from '../tv-interfaces';
 import { AbstractTarget } from './abstract-target';
 import { AbsoluteTarget } from './tv-absolute-target';
 import { SpeedDynamics } from './tv-private-action';

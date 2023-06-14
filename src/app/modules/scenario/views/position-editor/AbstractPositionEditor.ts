@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractPosition } from '../../models/tv-interfaces';
+import { AbstractPosition } from '../../models/abstract-position';
 
 @Component( {
 	selector: 'app-abstract-position-editor',

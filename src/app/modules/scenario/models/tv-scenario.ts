@@ -4,6 +4,8 @@
 
 import { MathUtils, Vector3 } from 'three';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { AbstractAction } from './abstract-action';
+import { AbstractPrivateAction } from './abstract-private-action';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { Act } from './tv-act';
 import { Catalogs } from './tv-catalogs';
@@ -12,7 +14,6 @@ import { EntityObject } from './tv-entities';
 import { Rule } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
-import { AbstractAction, AbstractPrivateAction } from './tv-interfaces';
 import { Maneuver } from './tv-maneuver';
 import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
 import { RoadNetwork } from './tv-road-network';

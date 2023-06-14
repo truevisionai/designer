@@ -4,8 +4,8 @@
 
 import { Vector3 } from 'three';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { AbstractPosition } from '../abstract-position';
 import { PositionType } from '../tv-enums';
-import { AbstractPosition } from '../tv-interfaces';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeObjectPosition extends AbstractPosition {

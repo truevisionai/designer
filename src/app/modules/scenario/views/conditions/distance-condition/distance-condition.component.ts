@@ -4,9 +4,9 @@
 
 import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/modules/scenario/models/conditions/tv-distance-condition';
-import { AbstractPosition } from 'app/modules/scenario/models/tv-interfaces';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from '../../../../../services/command-history';
+import { AbstractPosition } from '../../../models/abstract-position';
 import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';

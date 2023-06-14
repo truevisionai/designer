@@ -3,9 +3,10 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { AbstractPosition } from '../../../models/abstract-position';
+import { AbstractPrivateAction } from '../../../models/abstract-private-action';
 import { PositionAction } from '../../../models/actions/tv-position-action';
 import { EntityObject } from '../../../models/tv-entities';
-import { AbstractPosition, AbstractPrivateAction } from '../../../models/tv-interfaces';
 
 @Component( {
 	selector: 'app-position-action',

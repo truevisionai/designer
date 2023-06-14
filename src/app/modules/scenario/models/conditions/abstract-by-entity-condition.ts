@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
+import { AbstractPosition } from '../abstract-position';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractPosition } from '../tv-interfaces';
 import { AbstractCondition } from './tv-condition';
 
 export abstract class AbstractByEntityCondition extends AbstractCondition {

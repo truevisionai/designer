@@ -4,8 +4,8 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
+import { AbstractPrivateAction } from '../../../models/abstract-private-action';
 import { SpeedAction } from '../../../models/actions/tv-speed-action';
-import { AbstractPrivateAction } from '../../../models/tv-interfaces';
 
 @Component( {
 	selector: 'app-speed-action',

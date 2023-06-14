@@ -5,8 +5,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Debug } from 'app/core/utils/debug';
-import { AbstractAction } from 'app/modules/scenario/models/tv-interfaces';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { AbstractAction } from '../../models/abstract-action';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../../models/actions/tv-lane-change-action';

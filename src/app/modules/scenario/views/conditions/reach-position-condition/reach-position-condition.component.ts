@@ -4,9 +4,9 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReachPositionCondition } from 'app/modules/scenario/models/conditions/tv-reach-position-condition';
-import { AbstractPosition } from 'app/modules/scenario/models/tv-interfaces';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
+import { AbstractPosition } from '../../../models/abstract-position';
 import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 

@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractPrivateAction } from 'app/modules/scenario/models/tv-interfaces';
+import { AbstractPrivateAction } from '../../../models/abstract-private-action';
 
 @Component( {
 	selector: 'app-edit-action',

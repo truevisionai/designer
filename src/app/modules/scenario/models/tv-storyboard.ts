@@ -3,11 +3,11 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { AbstractPrivateAction } from './abstract-private-action';
 import { GlobalAction } from './actions/tv-global-action';
 import { UserDefinedAction } from './actions/tv-user-defined-action';
 import { AbstractCondition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
-import { AbstractPrivateAction } from './tv-interfaces';
 import { Story } from './tv-story';
 
 

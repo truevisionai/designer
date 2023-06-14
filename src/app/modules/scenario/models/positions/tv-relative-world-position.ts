@@ -3,8 +3,8 @@
  */
 
 import { Vector3 } from 'three';
+import { AbstractPosition } from '../abstract-position';
 import { PositionType } from '../tv-enums';
-import { AbstractPosition } from '../tv-interfaces';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeWorldPosition extends AbstractPosition {

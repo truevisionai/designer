@@ -7,6 +7,10 @@ import { Debug } from 'app/core/utils/debug';
 import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
+import { AbstractAction } from '../models/abstract-action';
+import { AbstractController } from '../models/abstract-controller';
+import { AbstractPosition } from '../models/abstract-position';
+import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { DistanceAction } from '../models/actions/tv-distance-action';
@@ -40,10 +44,6 @@ import { ConditionEdge, Rule } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
 import {
-	AbstractAction,
-	AbstractController,
-	AbstractPosition,
-	AbstractPrivateAction,
 	CatalogReferenceController
 } from '../models/tv-interfaces';
 import { EventAction, Maneuver } from '../models/tv-maneuver';

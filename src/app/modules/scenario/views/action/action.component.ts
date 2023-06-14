@@ -4,7 +4,8 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
-import { AbstractAction, AbstractPrivateAction } from 'app/modules/scenario/models/tv-interfaces';
+import { AbstractAction } from '../../models/abstract-action';
+import { AbstractPrivateAction } from '../../models/abstract-private-action';
 import { EntityObject } from '../../models/tv-entities';
 
 @Component( {

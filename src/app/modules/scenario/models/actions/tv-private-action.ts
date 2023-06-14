@@ -2,8 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractAction } from '../abstract-action';
+import { AbstractPrivateAction } from '../abstract-private-action';
 import { ActionCategory, DynamicsShape } from '../tv-enums';
-import { AbstractAction, AbstractPrivateAction } from '../tv-interfaces';
 
 export class DontUse_PrivateAction extends AbstractPrivateAction {
 	actionType: import( '../tv-enums' ).ActionType;

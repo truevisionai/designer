@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractController } from './tv-interfaces';
+import { AbstractController } from './abstract-controller';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 import { PersonDescription } from './tv-person-description';
 

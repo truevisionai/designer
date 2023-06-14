@@ -3,8 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { AbstractPrivateAction } from '../../../models/abstract-private-action';
 import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action';
-import { AbstractPrivateAction } from '../../../models/tv-interfaces';
 
 @Component( {
 	selector: 'app-lane-change',

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractPosition } from './abstract-position';
 import { RouteStrategy } from './tv-enums';
-import { AbstractPosition } from './tv-interfaces';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 export class Waypoint {

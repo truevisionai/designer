@@ -4,8 +4,8 @@
 
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
+import { AbstractPosition } from '../abstract-position';
 import { PositionType } from '../tv-enums';
-import { AbstractPosition } from '../tv-interfaces';
 import { Orientation } from '../tv-orientation';
 
 export class LanePosition extends AbstractPosition {

@@ -4,10 +4,11 @@
 
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
+import { AbstractPosition } from '../models/abstract-position';
+import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { PositionAction } from '../models/actions/tv-position-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
-import { AbstractPosition, AbstractPrivateAction } from '../models/tv-interfaces';
 import { ActionFactory } from './action-factory';
 import { LanePosition } from '../models/positions/tv-lane-position';
 

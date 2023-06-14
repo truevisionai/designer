@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractPrivateAction } from '../abstract-private-action';
 import { ActionType } from '../tv-enums';
-import { AbstractPrivateAction } from '../tv-interfaces';
 
 export class DistanceAction extends AbstractPrivateAction {
 

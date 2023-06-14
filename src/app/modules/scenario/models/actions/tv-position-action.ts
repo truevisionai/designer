@@ -2,9 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractPosition } from '../abstract-position';
+import { AbstractPrivateAction } from '../abstract-private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
-import { AbstractPosition, AbstractPrivateAction } from '../tv-interfaces';
 
 export class PositionAction extends AbstractPrivateAction {
 

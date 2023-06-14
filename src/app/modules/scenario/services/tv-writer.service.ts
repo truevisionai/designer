@@ -5,6 +5,9 @@
 import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
+import { AbstractController } from '../models/abstract-controller';
+import { AbstractPosition } from '../models/abstract-position';
+import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
@@ -31,7 +34,7 @@ import {
 	TargetType
 } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
-import { AbstractController, AbstractPosition, AbstractPrivateAction, CatalogReferenceController } from '../models/tv-interfaces';
+import { CatalogReferenceController } from '../models/tv-interfaces';
 import { Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';

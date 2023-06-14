@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractPosition } from '../abstract-position';
 import { ConditionType, Rule } from '../tv-enums';
-import { AbstractPosition } from '../tv-interfaces';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 /**

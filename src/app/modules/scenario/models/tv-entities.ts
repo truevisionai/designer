@@ -6,10 +6,12 @@ import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
+import { AbstractController } from './abstract-controller';
+import { AbstractPrivateAction } from './abstract-private-action';
 import { SpeedAction } from './actions/tv-speed-action';
 import { CatalogReference } from './tv-catalogs';
 import { ObjectType } from './tv-enums';
-import { AbstractController, AbstractPrivateAction, IScenarioObject } from './tv-interfaces';
+import { IScenarioObject } from './tv-interfaces';
 
 export class EntityObject {
 
