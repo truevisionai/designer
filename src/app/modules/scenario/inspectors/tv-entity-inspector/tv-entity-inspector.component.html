@@ -79,7 +79,7 @@
 		<mat-label>Add Action</mat-label>
 		<mat-select #addAction (valueChange)="onAddAction($event)">
 			<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
-			<mat-option [value]="actionType.Private_Lateral">ChangeLane</mat-option>
+			<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
 		</mat-select>
 	</mat-form-field>
 

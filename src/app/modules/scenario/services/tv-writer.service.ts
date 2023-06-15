@@ -565,7 +565,7 @@ export class WriterService {
 				xml = this.writeLongitudinalSpeedAction( abstractAction as SpeedAction );
 				break;
 
-			case ActionType.Private_Lateral:
+			case ActionType.Private_LaneChange:
 				xml = this.writeLaneChangeAction( abstractAction as LaneChangeAction );
 				break;
 

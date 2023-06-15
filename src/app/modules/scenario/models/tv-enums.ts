@@ -144,7 +144,8 @@ export enum ActionCategory {
 export enum ActionType {
 	Private_Longitudinal_Speed,
 	Private_Longitudinal_Distance,
-	Private_Lateral,
+	Private_LaneChange,
+	Private_LaneOffset,
 	Private_Visbility,
 	Private_Meeting,
 	Private_Autonomous,

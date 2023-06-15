@@ -256,5 +256,29 @@ export class EntityObject {
 		this.speed = newSpeed;
 
 	}
+
+	getCurrentLaneId () {
+
+		return this.laneId;
+
+	}
+
+	getCurrentPosition () {
+
+		return this.position;
+
+	}
+
+	getCurrentLaneOffset () {
+
+		return this.laneOffset;
+
+	}
+
+	setLaneOffset ( newLaneOffset ) {
+
+		this.laneOffset = newLaneOffset;
+
+	}
 }
 

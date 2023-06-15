@@ -66,11 +66,11 @@ export class EntityInspector implements OnInit, IComponent {
 		return this.scenario.findEntityEvents( this.entity );
 	}
 
-	onAddAction ( $event: ActionType ) {
+	onAddAction ( $actionType: ActionType ) {
 
-		if ( $event !== null ) {
+		if ( $actionType !== null ) {
 
-			const action = ActionService.getAction( $event, this.entity );
+			const action = ActionService.getAction( $actionType, this.entity );
 
 			if ( action === null ) {
 				return;

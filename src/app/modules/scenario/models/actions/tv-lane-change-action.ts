@@ -18,7 +18,7 @@ import { RelativeTarget } from './tv-relative-target';
 export class LaneChangeAction extends AbstractPrivateAction {
 
 	public actionName = 'LaneChange';
-	public actionType: ActionType = ActionType.Private_Lateral;
+	public actionType: ActionType = ActionType.Private_LaneChange;
 
 	// public dynamics: LaneChangeDynamics = new LaneChangeDynamics();
 	// public target: AbstractTarget = new AbsoluteTarget( 0 );

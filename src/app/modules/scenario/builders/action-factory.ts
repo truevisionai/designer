@@ -24,7 +24,7 @@ export class ActionFactory {
 			case ActionType.Private_Longitudinal_Speed:
 				return this.createSpeedAction( entity );
 
-			case ActionType.Private_Lateral:
+			case ActionType.Private_LaneChange:
 				return this.createLaneChangeAction( entity );
 
 			default:

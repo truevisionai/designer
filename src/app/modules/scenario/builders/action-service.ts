@@ -74,7 +74,7 @@ export class ActionService {
 			case ActionType.Private_Longitudinal_Distance:
 				privateAction.execute( obj );
 				break;
-			case ActionType.Private_Lateral:
+			case ActionType.Private_LaneChange:
 				throw new Error( 'Unsupported private action' );
 				break;
 			case ActionType.Private_Visbility:
