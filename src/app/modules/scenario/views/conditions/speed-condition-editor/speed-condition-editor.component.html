@@ -1,7 +1,13 @@
-<div>
+<app-double-field
+	label="Speed"
+	[value]="speedCondition.value"
+	(changed)="onSpeedChanged($event)">
+</app-double-field>
+<app-enum-field
+	label="Rule"
+	[enum]="rules"
+	[value]="speedCondition.rule"
+	(changed)="onRuleChanged($event)">
+</app-enum-field>
 
-	<app-double-field (changed)="onSpeedChanged($event)" [value]="condition.value" label="Speed"></app-double-field>
-
-	<!-- <app-tv-rule-field [value]="condition.rule" (changed)="onRuleChanged($event)"></app-tv-rule-field> -->
-
-</div>
+	 

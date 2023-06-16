@@ -5,6 +5,7 @@
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
@@ -31,6 +32,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_TraveledDistance:
 				return this.createTraveledDistanceCondition( entity );
+
+			case ConditionType.ByEntity_Speed:
+				return this.createSpeedCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -88,10 +92,20 @@ export class ConditionFactory {
 
 	private static createTraveledDistanceCondition ( entity?: EntityObject ) {
 
-		const condtion = new TraveledDistanceCondition( 100, TriggeringRule.Any );
+		const condition = new TraveledDistanceCondition( 100, TriggeringRule.Any );
 
-		if ( entity ) condtion.addEntity( entity.name );
+		if ( entity ) condition.addEntity( entity.name );
 
-		return condtion;
+		return condition;
+	}
+
+	private static createSpeedCondition ( entity?: EntityObject ) {
+
+		const condition = new SpeedCondition( 100, Rule.greater_than );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+
 	}
 }

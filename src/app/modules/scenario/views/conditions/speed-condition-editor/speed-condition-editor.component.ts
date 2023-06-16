@@ -4,6 +4,10 @@
 
 import { Component, Input } from '@angular/core';
 import { SpeedCondition } from 'app/modules/scenario/models/conditions/tv-speed-condition';
+import { CommandHistory } from '../../../../../services/command-history';
+import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
+import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -12,7 +16,15 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class SpeedConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: SpeedCondition;
+	@Input() condition: AbstractCondition;
+
+	rules = Rule;
+
+	get speedCondition (): SpeedCondition {
+
+		return this.condition as SpeedCondition;
+
+	}
 
 	constructor () {
 
@@ -20,15 +32,19 @@ export class SpeedConditionEditorComponent extends BaseConditionEditorComponent 
 
 	}
 
-	onSpeedChanged ( $value: any ) {
+	onSpeedChanged ( $value: number ) {
 
-		this.condition.value = $value;
+		CommandHistory.execute(
+			new SetValueCommand( this.speedCondition, 'value', $value )
+		);
 
 	}
 
-	onRuleChanged ( $rule: any ) {
+	onRuleChanged ( $rule: Rule ) {
 
-		this.condition.rule = $rule;
+		CommandHistory.execute(
+			new SetValueCommand( this.speedCondition, 'rule', $rule )
+		);
 
 	}
 }

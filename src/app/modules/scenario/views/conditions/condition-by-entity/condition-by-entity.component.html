@@ -25,5 +25,9 @@
 		<app-traveled-distance-condition-editor [condition]="condition"></app-traveled-distance-condition-editor>
 	</div>
 
+	<div *ngSwitchCase="conditions.ByEntity_Speed">
+		<app-speed-condition-editor [condition]="condition"></app-speed-condition-editor>
+	</div>
+
 </div>
 
