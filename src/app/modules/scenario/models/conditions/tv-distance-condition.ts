@@ -7,19 +7,24 @@ import { ConditionType, Rule } from '../tv-enums';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 /**
- *
- * @param position
- * @param value
- * @param freespace It determines whether the entities bounding box
- * shall be taken into consideration (freeSpace = true), or shall
- * not be taken into consideration (freeSpace = false).
- * @param alongRoute
- * @param rule
+ * The current distance between an entity and a reference entity is
+ * compared to a given distance (less, greater, equal). Several
+ * additional parameters like free space etc. can be defined.
  */
 export class DistanceCondition extends AbstractByEntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
 
+	/**
+	 *
+	 * @param position
+	 * @param value
+	 * @param freespace It determines whether the entities bounding box
+	 * shall be taken into consideration (freeSpace = true), or shall
+	 * not be taken into consideration (freeSpace = false).
+	 * @param alongRoute
+	 * @param rule
+	 * */
 	constructor (
 		public position?: AbstractPosition,
 		public value?: number,

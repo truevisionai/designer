@@ -6,6 +6,7 @@ import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
 import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
+import { RelativeDistanceCondition, RelativeDistanceType } from '../models/conditions/tv-relative-distance-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
@@ -43,6 +44,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_EndOfRoad:
 				return this.createEndOfRoadCondition( entity );
+
+			case ConditionType.ByEntity_RelativeDistance:
+				return this.createRelativeDistanceCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -138,4 +142,16 @@ export class ConditionFactory {
 	}
 
 
+	private static createRelativeDistanceCondition ( entity?: EntityObject ) {
+
+		const condition = new RelativeDistanceCondition(
+			entity?.name, 10, RelativeDistanceType.cartesianDistance,
+			false, Rule.less_than
+		);
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+
+	}
 }

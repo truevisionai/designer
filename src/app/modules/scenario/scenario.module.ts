@@ -27,6 +27,7 @@ import { ConditionEditorComponent } from './views/condition-editor/condition-edi
 import { ConditionByEntityComponent } from './views/conditions/condition-by-entity/condition-by-entity.component';
 import { DistanceConditionComponent } from './views/conditions/distance-condition/distance-condition.component';
 import { ReachPositionConditionComponent } from './views/conditions/reach-position-condition/reach-position-condition.component';
+import { RelativeDistanceConditionComponent } from './views/conditions/relative-distance-condition/relative-distance-condition.component';
 import {
 	RelativeSpeedConditionEditorComponent
 } from './views/conditions/relative-speed-condition-editor/relative-speed-condition-editor.component';
@@ -91,7 +92,8 @@ import { EndOfRoadConditionComponent } from './views/conditions/end-of-road-cond
 		TimeHeadwayConditionEditorComponent,
 		StandStillConditionEditorComponent,
 		OffRoadConditionEditorComponent,
-		EndOfRoadConditionComponent
+		EndOfRoadConditionComponent,
+		RelativeDistanceConditionComponent
 	],
 	imports: [
 		CommonModule,
