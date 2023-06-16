@@ -1,5 +1,6 @@
 import { Vector3 } from 'three';
 import { AbstractPosition } from '../abstract-position';
+import { EntityObject } from '../tv-entities';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
 import { AbstractCondition } from './tv-condition';
 
@@ -27,6 +28,13 @@ export abstract class AbstractByEntityCondition extends AbstractCondition {
 		}
 
 	}
+
+	protected getEntity ( entityName: string ): EntityObject {
+
+		return this.scenario.findEntityOrFail( entityName );
+
+	}
+
 
 	public addEntity ( entityName: string ) {
 

@@ -4,6 +4,7 @@
 
 import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
+import { TvLaneType } from '../../tv-map/models/tv-common';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from './abstract-controller';
@@ -279,6 +280,29 @@ export class EntityObject {
 
 		this.laneOffset = newLaneOffset;
 
+	}
+
+	isOffRoad () {
+
+		// TODO can be imrpved
+
+		const road = TvMapInstance.map.getRoadById( this.roadId );
+		const laneSection = road.getLaneSectionById( this.laneSectionId );
+		const lane = laneSection.getLaneById( this.laneId );
+
+		if (
+			lane.type == TvLaneType.driving ||
+			lane.type == TvLaneType.stop ||
+			lane.type == TvLaneType.parking
+		) {
+
+			return false;
+
+		} else {
+
+			return true;
+
+		}
 	}
 }
 

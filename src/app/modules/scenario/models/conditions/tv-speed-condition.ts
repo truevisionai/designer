@@ -7,10 +7,18 @@ import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { ConditionUtils } from '../../builders/condition-utils';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
+/**
+ * Compares a triggering entity's/entities' speed to a target speed.
+ * The logical operator for the comparison is given by the rule attribute.
+ */
 export class SpeedCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_Speed;
 
+	/**
+	 * @param value Speed value of the speed condition. Unit m/s
+	 * @param rule The operator (less, greater, equal). See {@link Rule}
+	 */
 	constructor ( public value: number, public rule: Rule ) {
 
 		super();

@@ -3,6 +3,7 @@
  */
 
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
+import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
@@ -35,6 +36,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_Speed:
 				return this.createSpeedCondition( entity );
+
+			case ConditionType.ByEntity_Offroad:
+				return this.createOffRoadCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -101,7 +105,17 @@ export class ConditionFactory {
 
 	private static createSpeedCondition ( entity?: EntityObject ) {
 
-		const condition = new SpeedCondition( 100, Rule.greater_than );
+		const condition = new SpeedCondition( 40, Rule.greater_than );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+
+	}
+
+	private static createOffRoadCondition ( entity?: EntityObject ) {
+
+		const condition = new OffRoadCondition( 5 );
 
 		if ( entity ) condition.addEntity( entity.name );
 

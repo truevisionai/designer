@@ -29,5 +29,9 @@
 		<app-speed-condition-editor [condition]="condition"></app-speed-condition-editor>
 	</div>
 
+	<div *ngSwitchCase="conditions.ByEntity_Offroad">
+		<app-off-road-condition-editor [condition]="condition"></app-off-road-condition-editor>
+	</div>
+
 </div>
 

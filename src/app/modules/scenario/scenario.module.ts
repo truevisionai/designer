@@ -54,6 +54,7 @@ import { WorldPositionEditorComponent } from './views/positions/world-position-e
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
 import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component';
+import { OffRoadConditionEditorComponent } from './views/conditions/off-road-condition-editor/off-road-condition-editor.component';
 
 @NgModule( {
 	declarations: [
@@ -88,6 +89,7 @@ import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component'
 		ConditionByEntityComponent,
 		TimeHeadwayConditionEditorComponent,
 		StandStillConditionEditorComponent,
+		OffRoadConditionEditorComponent,
 	],
 	imports: [
 		CommonModule,
