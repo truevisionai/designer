@@ -8,6 +8,7 @@ import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-conditio
 import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { RelativeDistanceCondition, RelativeDistanceType } from '../models/conditions/tv-relative-distance-condition';
+import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
@@ -51,6 +52,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_Acceleration:
 				return this.createAccelerationCondition( entity );
+
+			case ConditionType.ByEntity_RelativeSpeed:
+				return this.createRelativeSpeedCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -161,6 +165,15 @@ export class ConditionFactory {
 	private static createAccelerationCondition ( entity?: EntityObject ) {
 
 		const condition = new AccelerationCondition( 1.0, Rule.greater_than );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+	}
+
+	private static createRelativeSpeedCondition ( entity?: EntityObject ) {
+
+		const condition = new RelativeSpeedCondition( entity?.name, 10, Rule.greater_than );
 
 		if ( entity ) condition.addEntity( entity.name );
 

@@ -2,16 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { ConditionUtils } from '../../builders/condition-utils';
+import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
+/**
+ * The current relative speed of a triggering entity/entities to a reference
+ * entity is compared to a given value. The logical operator
+ * used for the evaluation is defined by the rule attribute.
+ */
 export class RelativeSpeedCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_RelativeSpeed;
 
-	constructor ( public entity: string, public value: number, public rule: Rule ) {
+	constructor ( public entity: string, public speed: number, public rule: Rule ) {
 
 		super();
 
@@ -25,15 +29,15 @@ export class RelativeSpeedCondition extends AbstractByEntityCondition {
 
 		} else {
 
-			const targetEntity = TvScenarioInstance.openScenario.findEntityOrFail( this.entity );
+			const targetEntity = this.getEntity( this.entity );
 
 			for ( const entityName of this.triggeringEntities ) {
 
-				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+				const triggerEntity = this.getEntity( entityName );
 
-				const relativeSpeed = targetEntity.speed - entity.speed;
+				const relativeSpeed = triggerEntity.getCurrentSpeed() - targetEntity.getCurrentSpeed();
 
-				const passed = ConditionUtils.hasRulePassed( this.rule, relativeSpeed, this.value );
+				const passed = ConditionUtils.hasRulePassed( this.rule, relativeSpeed, this.speed );
 
 				// exit if any of the entity distance is passed
 				if ( passed && this.triggeringRule === TriggeringRule.Any ) {

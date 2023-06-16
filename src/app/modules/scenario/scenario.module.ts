@@ -29,8 +29,8 @@ import { DistanceConditionComponent } from './views/conditions/distance-conditio
 import { ReachPositionConditionComponent } from './views/conditions/reach-position-condition/reach-position-condition.component';
 import { RelativeDistanceConditionComponent } from './views/conditions/relative-distance-condition/relative-distance-condition.component';
 import {
-	RelativeSpeedConditionEditorComponent
-} from './views/conditions/relative-speed-condition-editor/relative-speed-condition-editor.component';
+	RelativeSpeedConditionComponent
+} from './views/conditions/relative-speed-condition-editor/relative-speed-condition.component';
 import {
 	SimulationTimeConditionEditorComponent
 } from './views/conditions/simulation-time-condition-editor/simulation-time-condition-editor.component';
@@ -86,7 +86,7 @@ import { AccelerationConditionComponent } from './views/conditions/accleration-c
 		TrajectoriesInspectorComponent,
 		ParamatersInspectorComponent,
 		ReachPositionConditionComponent,
-		RelativeSpeedConditionEditorComponent,
+		RelativeSpeedConditionComponent,
 		SpeedConditionEditorComponent,
 		TraveledDistanceConditionEditorComponent,
 		ConditionByEntityComponent,
