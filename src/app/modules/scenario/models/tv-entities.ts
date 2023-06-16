@@ -12,7 +12,7 @@ import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from './abstract-controller';
 import { AbstractPrivateAction } from './abstract-private-action';
 import { CatalogReference } from './tv-catalogs';
-import { ObjectType } from './tv-enums';
+import { ScenarioObjectType } from './tv-enums';
 import { IScenarioObject } from './tv-interfaces';
 
 export class EntityObject {
@@ -20,7 +20,7 @@ export class EntityObject {
 	private static count = 1;
 
 	public gameObject: GameObject;
-	public type: ObjectType;
+	public type: ScenarioObjectType;
 	// OSCMiscObject
 	public object: IScenarioObject;
 

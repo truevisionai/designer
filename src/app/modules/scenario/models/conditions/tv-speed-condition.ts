@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { ConditionUtils } from '../../builders/condition-utils';
+import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 /**
@@ -27,41 +26,34 @@ export class SpeedCondition extends AbstractByEntityCondition {
 
 	hasPassed (): boolean {
 
-		if ( this.passed ) {
+		if ( this.passed ) return true;
 
-			return true;
+		for ( const entityName of this.triggeringEntities ) {
 
-		} else {
+			const currentSpeed = this.getEntity( entityName ).getCurrentSpeed();
 
-			for ( const entityName of this.triggeringEntities ) {
+			const passed = ConditionUtils.hasRulePassed( this.rule, currentSpeed, this.value );
 
-				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+			// exit if any of the entity distance is passed
+			if ( passed && this.triggeringRule === TriggeringRule.Any ) {
 
-				const passed = ConditionUtils.hasRulePassed( this.rule, entity.speed, this.value );
+				this.passed = true;
 
-				// exit if any of the entity distance is passed
-				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
+				break;
+			}
 
-					this.passed = true;
+			// exit if any of the entity distance is not passed
+			if ( !passed && this.triggeringRule === TriggeringRule.All ) {
 
-					break;
-				}
+				this.passed = false;
 
-				// exit if any of the entity distance is not passed
-				if ( !passed && this.triggeringRule === TriggeringRule.All ) {
-
-					this.passed = false;
-
-					break;
-
-				}
+				break;
 
 			}
 
-			return this.passed;
-
 		}
 
+		return this.passed;
 	}
 
 }

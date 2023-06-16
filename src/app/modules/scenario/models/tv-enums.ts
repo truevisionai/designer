@@ -49,7 +49,7 @@ export enum ConditionEdge {
 	any = 'any'
 }
 
-export enum ObjectType {
+export enum ScenarioObjectType {
 	pedestrian,
 	vehicle,
 	miscellaneous

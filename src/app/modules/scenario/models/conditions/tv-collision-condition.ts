@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionType, ObjectType } from '../tv-enums';
+import { ConditionType, ScenarioObjectType } from '../tv-enums';
 import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 
 export class CollisionCondition extends AbstractByEntityCondition {
@@ -11,7 +11,7 @@ export class CollisionCondition extends AbstractByEntityCondition {
 
 	// either name or type
 	public entityName: string;
-	public entityType: ObjectType;
+	public entityType: ScenarioObjectType;
 
 	constructor () {
 		super();
