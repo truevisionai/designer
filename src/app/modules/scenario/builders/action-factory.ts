@@ -5,7 +5,7 @@
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
-import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-action';
+import { DynamicsDimension, LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityObject } from '../models/tv-entities';
@@ -49,7 +49,7 @@ export class ActionFactory {
 	private static createSpeedAction ( entity?: EntityObject ) {
 
 		return new SpeedAction(
-			new SpeedDynamics( DynamicsShape.step ),
+			new SpeedDynamics( DynamicsShape.linear, 5, DynamicsDimension.time ),
 			new AbsoluteTarget( entity?.speed )
 		);
 	}

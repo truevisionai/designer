@@ -82,10 +82,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 			this.isCompleted = true;
 
-			this.completed.emit( {
-				type: StoryElementType.action,
-				name: this.actionName
-			} );
+			this.actionCompleted();
 
 			return;
 		}

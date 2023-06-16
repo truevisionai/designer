@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
 import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
@@ -47,6 +48,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_RelativeDistance:
 				return this.createRelativeDistanceCondition( entity );
+
+			case ConditionType.ByEntity_Acceleration:
+				return this.createAccelerationCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -141,7 +145,6 @@ export class ConditionFactory {
 
 	}
 
-
 	private static createRelativeDistanceCondition ( entity?: EntityObject ) {
 
 		const condition = new RelativeDistanceCondition(
@@ -153,5 +156,14 @@ export class ConditionFactory {
 
 		return condition;
 
+	}
+
+	private static createAccelerationCondition ( entity?: EntityObject ) {
+
+		const condition = new AccelerationCondition( 1.0, Rule.greater_than );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
 	}
 }

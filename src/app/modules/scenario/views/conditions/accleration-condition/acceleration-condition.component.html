@@ -1,0 +1,13 @@
+<app-double-field
+	label="Acceleration"
+	[value]="accelerationCondition.value"
+	(changed)="onAccelerationChanged($event)">
+</app-double-field>
+<app-enum-field
+	label="Rule"
+	[enum]="rules"
+	[value]="accelerationCondition.rule"
+	(changed)="onRuleChanged($event)">
+</app-enum-field>
+
+

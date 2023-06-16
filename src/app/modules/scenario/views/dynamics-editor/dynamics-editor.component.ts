@@ -13,7 +13,8 @@ import { LaneChangeDynamics, SpeedDynamics } from '../../models/actions/tv-priva
 } )
 export class DynamicsEditorComponent {
 
-	@Input() dynamics: LaneChangeDynamics | SpeedDynamics;
+	// TODO: fix or add support for speed dynamics
+	@Input() dynamics: LaneChangeDynamics;
 
 	onShapeChanged ( $event: string ) {
 

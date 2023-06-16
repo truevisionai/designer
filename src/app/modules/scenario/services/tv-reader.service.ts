@@ -919,6 +919,7 @@ export class ReaderService extends AbstractReader {
 
 	readSpeedDynamics ( xml: any ): SpeedDynamics {
 
+		// TODO: fix and add dimension
 		let dynamics = new SpeedDynamics;
 
 		dynamics.shape = xml.attr_shape;

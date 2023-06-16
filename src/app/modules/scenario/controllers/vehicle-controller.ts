@@ -225,155 +225,155 @@ export class DefaultVehicleController extends AbstractController {
 
 	}
 
-	private followFrontVehicle ( actor: EntityObject ) {
-
-		// my current road s + 10
-		//
-
-		// const vehiclesInFront = this.getVehiclesInFront( actor );
-
-		const entityInFront = [ ...TvScenarioInstance.openScenario.objects.values() ].find( otherActor => {
-			if (
-				otherActor.roadId == actor.roadId &&
-				otherActor.laneSectionId == actor.laneSectionId &&
-				otherActor.laneId == actor.laneId &&
-				otherActor.name != actor.name
-			) {
-
-				let distance: number = 0;
-
-				if ( actor.direction > 0 ) {
-
-					distance = ( otherActor.sCoordinate - actor.sCoordinate );
-
-
-				} else {
-
-					distance = ( actor.sCoordinate - otherActor.sCoordinate );
-
-				}
-
-				const inFront = distance > 0;
-
-				if ( inFront && distance <= 10 && otherActor.speed < actor.speed ) {
-
-					actor.speed = otherActor.speed;
-					return true;
-
-				}
-
-				return false;
-
-			}
-		} );
-
-		// if ( entityInFront.length > 0 ) {
-		//
-		//     // console.log( 'entity-in-front', actor, entityInFront );
-		//     if ( actor.speed != entityInFront[ 0 ].speed ) {
-		//
-		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-		//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( entityInFront[ 0 ].speed ) );
-		//
-		//         action.execute( actor as EntityObject );
-		//
-		//     }
-		//
-		// } else {
-		//
-		//     if ( actor.speed != actor.desiredSpeed ) {
-		//
-		//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
-		//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( actor.desiredSpeed ) );
-		//
-		//         action.execute( actor as EntityObject );
-		//
-		//     }
-		//
-		// }
-
-		if ( !entityInFront ) {
-
-			const road = this.openDrive.roads.get( actor.roadId );
-			const maxSpeed = road.findMaxSpeedAt( actor.sCoordinate );
-
-			const desiredSpeed = Math.min( maxSpeed, actor.maxSpeed );
-
-			if ( desiredSpeed == 0 ) {
-
-				actor.speed = desiredSpeed;
-
-			} else if ( actor.speed < desiredSpeed ) {
-
-				actor.speed += 0.1;
-
-			}
-
-		} else {
-
-			// console.log( 'vehicle-in-front' );
-
-		}
-
-	}
-
-	private getVehiclesInFront ( actor: EntityObject ) {
-
-		const currentRoad = this.openDrive.getRoadById( actor.roadId );
-
-		let nextRoad: TvRoad;
-
-		if ( actor.direction > 0 && currentRoad.successor ) {
-
-			nextRoad = DefaultVehicleController.getSuccessorRoad( currentRoad, this.openDrive );
-
-		} else if ( actor.direction < 0 && currentRoad.predecessor ) {
-
-
-		}
-
-		const vehicles: EntityObject[] = [];
-
-		ScenarioDirectorService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
-
-		if ( nextRoad ) {
-
-			ScenarioDirectorService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
-
-		}
-
-		const nextVehicle = vehicles.find( otherActor => {
-
-			let distance: number = 0;
-
-			if ( actor.direction > 0 ) {
-
-				distance = ( otherActor.sCoordinate - actor.sCoordinate );
-
-
-			} else {
-
-				distance = ( actor.sCoordinate - otherActor.sCoordinate );
-
-			}
-
-			const inFront = distance > 0;
-
-			if ( inFront && distance <= 5 ) {
-
-				actor.speed = otherActor.speed;
-				return true;
-
-			} else if ( inFront && distance <= 10 ) {
-
-				actor.speed = otherActor.speed;
-				return true;
-
-			}
-
-			return false;
-
-		} );
-	}
+	// private followFrontVehicle ( actor: EntityObject ) {
+	//
+	// 	// my current road s + 10
+	// 	//
+	//
+	// 	// const vehiclesInFront = this.getVehiclesInFront( actor );
+	//
+	// 	const entityInFront = [ ...TvScenarioInstance.openScenario.objects.values() ].find( otherActor => {
+	// 		if (
+	// 			otherActor.roadId == actor.roadId &&
+	// 			otherActor.laneSectionId == actor.laneSectionId &&
+	// 			otherActor.laneId == actor.laneId &&
+	// 			otherActor.name != actor.name
+	// 		) {
+	//
+	// 			let distance: number = 0;
+	//
+	// 			if ( actor.direction > 0 ) {
+	//
+	// 				distance = ( otherActor.sCoordinate - actor.sCoordinate );
+	//
+	//
+	// 			} else {
+	//
+	// 				distance = ( actor.sCoordinate - otherActor.sCoordinate );
+	//
+	// 			}
+	//
+	// 			const inFront = distance > 0;
+	//
+	// 			if ( inFront && distance <= 10 && otherActor.speed < actor.speed ) {
+	//
+	// 				actor.speed = otherActor.speed;
+	// 				return true;
+	//
+	// 			}
+	//
+	// 			return false;
+	//
+	// 		}
+	// 	} );
+	//
+	// 	// if ( entityInFront.length > 0 ) {
+	// 	//
+	// 	//     // console.log( 'entity-in-front', actor, entityInFront );
+	// 	//     if ( actor.speed != entityInFront[ 0 ].speed ) {
+	// 	//
+	// 	//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
+	// 	//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( entityInFront[ 0 ].speed ) );
+	// 	//
+	// 	//         action.execute( actor as EntityObject );
+	// 	//
+	// 	//     }
+	// 	//
+	// 	// } else {
+	// 	//
+	// 	//     if ( actor.speed != actor.desiredSpeed ) {
+	// 	//
+	// 	//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
+	// 	//         const action = new SpeedAction( new SpeedDynamics( DynamicsShape.linear, 1 ), new AbsoluteTarget( actor.desiredSpeed ) );
+	// 	//
+	// 	//         action.execute( actor as EntityObject );
+	// 	//
+	// 	//     }
+	// 	//
+	// 	// }
+	//
+	// 	if ( !entityInFront ) {
+	//
+	// 		const road = this.openDrive.roads.get( actor.roadId );
+	// 		const maxSpeed = road.findMaxSpeedAt( actor.sCoordinate );
+	//
+	// 		const desiredSpeed = Math.min( maxSpeed, actor.maxSpeed );
+	//
+	// 		if ( desiredSpeed == 0 ) {
+	//
+	// 			actor.speed = desiredSpeed;
+	//
+	// 		} else if ( actor.speed < desiredSpeed ) {
+	//
+	// 			actor.speed += 0.1;
+	//
+	// 		}
+	//
+	// 	} else {
+	//
+	// 		// console.log( 'vehicle-in-front' );
+	//
+	// 	}
+	//
+	// }
+	//
+	// private getVehiclesInFront ( actor: EntityObject ) {
+	//
+	// 	const currentRoad = this.openDrive.getRoadById( actor.roadId );
+	//
+	// 	let nextRoad: TvRoad;
+	//
+	// 	if ( actor.direction > 0 && currentRoad.successor ) {
+	//
+	// 		nextRoad = DefaultVehicleController.getSuccessorRoad( currentRoad, this.openDrive );
+	//
+	// 	} else if ( actor.direction < 0 && currentRoad.predecessor ) {
+	//
+	//
+	// 	}
+	//
+	// 	const vehicles: EntityObject[] = [];
+	//
+	// 	ScenarioDirectorService.traffic.get( currentRoad.id ).forEach( item => vehicles.push( item ) );
+	//
+	// 	if ( nextRoad ) {
+	//
+	// 		ScenarioDirectorService.traffic.get( nextRoad.id ).forEach( item => vehicles.push( item ) );
+	//
+	// 	}
+	//
+	// 	const nextVehicle = vehicles.find( otherActor => {
+	//
+	// 		let distance: number = 0;
+	//
+	// 		if ( actor.direction > 0 ) {
+	//
+	// 			distance = ( otherActor.sCoordinate - actor.sCoordinate );
+	//
+	//
+	// 		} else {
+	//
+	// 			distance = ( actor.sCoordinate - otherActor.sCoordinate );
+	//
+	// 		}
+	//
+	// 		const inFront = distance > 0;
+	//
+	// 		if ( inFront && distance <= 5 ) {
+	//
+	// 			actor.speed = otherActor.speed;
+	// 			return true;
+	//
+	// 		} else if ( inFront && distance <= 10 ) {
+	//
+	// 			actor.speed = otherActor.speed;
+	// 			return true;
+	//
+	// 		}
+	//
+	// 		return false;
+	//
+	// 	} );
+	// }
 }
 

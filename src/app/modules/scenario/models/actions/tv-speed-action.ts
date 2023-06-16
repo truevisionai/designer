@@ -4,162 +4,174 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { AbstractPrivateAction } from '../abstract-private-action';
 import { EntityObject } from '../tv-entities';
-import { ActionType, DynamicsShape, TargetType } from '../tv-enums';
+import { ActionType } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
 import { AbsoluteTarget } from './tv-absolute-target';
 import { SpeedDynamics } from './tv-private-action';
 import { RelativeTarget } from './tv-relative-target';
 
+/**
+ * This action describes the transition of an entity's longitudinal
+ * speed to a target longitudinal speed. SpeedActionDynamics
+ * specifies the transition with respects to time or
+ * distance combined with a shape.
+ */
 export class SpeedAction extends AbstractPrivateAction {
 
-	actionType: ActionType = ActionType.Private_Longitudinal_Speed;
-	public actionName: string = 'Speed';
-	public dynamics: SpeedDynamics;
-	private newSpeed: number;
-	private currentSpeed: number;
-	private startTime: number;
+	public debug = false;
 
-	constructor ( dynamics: SpeedDynamics = null, target: AbstractTarget = null ) {
+	public actionType: ActionType = ActionType.Private_Longitudinal_Speed;
+	public actionName: string = 'Speed';
+
+	private startTime: number;
+	private initialSpeed: number;
+	private targetSpeed: number;
+
+	constructor ( public dynamics: SpeedDynamics = null, public target: AbstractTarget = null ) {
 
 		super();
 
-		this.dynamics = dynamics;
-		this._target = target;
-
-	}
-
-	private _target: AbstractTarget;
-
-	get target () {
-
-		return this._target;
-
-	}
-
-	set target ( value ) {
-		this._target = value;
 	}
 
 	execute ( entity: EntityObject ) {
 
-		if ( !this.hasStarted ) {
+		if ( this.isCompleted ) return;
 
-			// TODO:  need to fix this causes error sometimes
-			this.start( entity );
-			this.update( entity );
+		if ( !this.startTime ) this.startTime = Time.time;
 
-		} else {
+		if ( !this.initialSpeed ) this.initialSpeed = entity.getCurrentSpeed();
 
-			this.update( entity );
+		if ( !this.targetSpeed ) {
 
-		}
+			if ( this.target instanceof RelativeTarget ) {
 
-	}
+				this.targetSpeed = this.target.value + this.initialSpeed;
 
-	setTarget ( target: AbstractTarget ) {
+			} else if ( this.target instanceof AbsoluteTarget ) {
 
-		this._target = target;
-
-	}
-
-	setAbsoluteTarget ( target: number ) {
-
-		this._target = new AbsoluteTarget( target );
-
-	}
-
-	private start ( entity: EntityObject ) {
-
-		this.hasStarted = true;
-
-		this.startTime = Time.time;
-
-		this.currentSpeed = entity.speed;
-
-		this.setNewSpeedTarget( entity );
-
-		// TODO : Remove this switch case and keep only 1
-		if ( this.dynamics.shape === DynamicsShape.step ) {
-
-			entity.maxSpeed = this.newSpeed;
-
-		}
-
-	}
-
-	private update ( entity: EntityObject ) {
-
-		const timePassed = ( Time.time - this.startTime ) * 0.001;
-
-		if ( timePassed <= this.dynamics.time ) {
-
-			const fraction = timePassed / this.dynamics.time;
-
-			switch ( this.dynamics.shape ) {
-
-				case DynamicsShape.linear:
-					entity.maxSpeed = Maths.linearInterpolation( this.currentSpeed, this.newSpeed, fraction );
-					break;
-
-				case DynamicsShape.cubic:
-					entity.maxSpeed = Maths.cubicInterpolation( this.currentSpeed, this.newSpeed, fraction );
-					break;
-
-				case DynamicsShape.sinusoidal:
-					entity.maxSpeed = Maths.sineInterpolation( this.currentSpeed, this.newSpeed, fraction );
-					break;
-
-				case DynamicsShape.step:
-					entity.maxSpeed = this.newSpeed;
-					break;
+				this.targetSpeed = this.target.value;
 
 			}
 
-		} else {
+		}
 
-			this.isCompleted = true;
+		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
-			this.completed.emit();
+		const newSpeed = this.dynamics.calculateSpeed( this.initialSpeed, this.targetSpeed, elapsedTime );
+
+		entity.maxSpeed = Maths.clamp( newSpeed, entity.getCurrentSpeed(), this.targetSpeed );
+
+		if ( entity.getCurrentSpeed() >= this.targetSpeed ) {
+
+			this.actionCompleted();
 
 		}
-	}
 
-
-	private setNewSpeedTarget ( entity: EntityObject ) {
-
-		switch ( this.target.targetType ) {
-
-			case TargetType.absolute:
-
-				this.newSpeed = this.target.value;
-
-				break;
-
-			case TargetType.relative:
-
-				const name = ( this.target as RelativeTarget ).entityName;
-
-				const obj = TvScenarioInstance.openScenario.findEntityOrFail( name );
-
-				this.newSpeed = obj.speed + this.target.value;
-
-				break;
-
-		}
-	}
-
-	getRate () {
-
-		return this.dynamics.rate;
+		if ( this.debug ) console.log( 'SpeedAction', entity.maxSpeed, this.targetSpeed, elapsedTime, this.dynamics );
 
 	}
 
-	setRate ( number: number ) {
+	reset () {
 
-		this.dynamics.rate = number;
+		super.reset();
+
+		this.targetSpeed = null;
+		this.initialSpeed = null;
+		this.startTime = null;
 
 	}
+
+	// private start ( entity: EntityObject ) {
+	//
+	// 	this.hasStarted = true;
+	//
+	// 	this.startTime = Time.time;
+	//
+	// 	this.currentSpeed = entity.speed;
+	//
+	// 	this.setNewSpeedTarget( entity );
+	//
+	// 	// TODO : Remove this switch case and keep only 1
+	// 	if ( this.dynamics.shape === DynamicsShape.step ) {
+	//
+	// 		entity.maxSpeed = this.newSpeed;
+	//
+	// 	}
+	//
+	// }
+
+	// private update ( entity: EntityObject ) {
+
+	// 	const timePassed = ( Time.time - this.startTime ) * 0.001;
+
+	// 	if ( timePassed <= this.dynamics.time ) {
+
+	// 		const fraction = timePassed / this.dynamics.time;
+
+	// 		switch ( this.dynamics.shape ) {
+
+	// 			case DynamicsShape.linear:
+	// 				entity.maxSpeed = Maths.linearInterpolation( this.currentSpeed, this.newSpeed, fraction );
+	// 				break;
+
+	// 			case DynamicsShape.cubic:
+	// 				entity.maxSpeed = Maths.cubicInterpolation( this.currentSpeed, this.newSpeed, fraction );
+	// 				break;
+
+	// 			case DynamicsShape.sinusoidal:
+	// 				entity.maxSpeed = Maths.sineInterpolation( this.currentSpeed, this.newSpeed, fraction );
+	// 				break;
+
+	// 			case DynamicsShape.step:
+	// 				entity.maxSpeed = this.newSpeed;
+	// 				break;
+
+	// 		}
+
+	// 	} else {
+
+	// 		this.isCompleted = true;
+
+	// 		this.completed.emit();
+
+	// 	}
+	// }
+
+
+	// private setNewSpeedTarget ( entity: EntityObject ) {
+	//
+	// 	switch ( this.target.targetType ) {
+	//
+	// 		case TargetType.absolute:
+	//
+	// 			this.newSpeed = this.target.value;
+	//
+	// 			break;
+	//
+	// 		case TargetType.relative:
+	//
+	// 			const name = ( this.target as RelativeTarget ).entityName;
+	//
+	// 			const obj = TvScenarioInstance.openScenario.findEntityOrFail( name );
+	//
+	// 			this.newSpeed = obj.speed + this.target.value;
+	//
+	// 			break;
+	//
+	// 	}
+	// }
+	//
+	// getRate () {
+	//
+	// 	// return this.dynamics.rate;
+	//
+	// }
+	//
+	// setRate ( number: number ) {
+	//
+	// 	// this.dynamics.rate = number;
+	//
+	// }
 }

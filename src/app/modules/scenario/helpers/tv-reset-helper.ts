@@ -23,7 +23,7 @@ export class ResetHelper {
 
 			entity.initActions.forEach( action => action.reset() );
 
-			entity.distanceTravelled = 0;
+			entity.reset();
 
 		} );
 

@@ -4,13 +4,13 @@
 
 import { Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
+import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { TvLaneType } from '../../tv-map/models/tv-common';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from './abstract-controller';
 import { AbstractPrivateAction } from './abstract-private-action';
-import { SpeedAction } from './actions/tv-speed-action';
 import { CatalogReference } from './tv-catalogs';
 import { ObjectType } from './tv-enums';
 import { IScenarioObject } from './tv-interfaces';
@@ -67,16 +67,6 @@ export class EntityObject {
 		this._speed = value;
 	}
 
-	private _speedAction: SpeedAction;
-
-	get speedAction () {
-		return this._speedAction;
-	}
-
-	set speedAction ( value ) {
-		this._speedAction = value;
-	}
-
 	private _roadId: number;
 
 	get roadId (): number {
@@ -87,21 +77,8 @@ export class EntityObject {
 
 	set roadId ( value: number ) {
 
-		// let vehiclesOnRoad = PlayerService.traffic.get( this.roadId );
-		//
-		// vehiclesOnRoad = vehiclesOnRoad.filter( entity => {
-		//     return entity.name != this.name;
-		// } );
-		//
-		// // reset traffic on that road
-		// PlayerService.traffic.set( this.roadId, vehiclesOnRoad );
-
 		this._roadId = value;
 
-		// add this vehicle on new road
-		// PlayerService.traffic.get( this.roadId ).push( this );
-
-		// console.log( PlayerService.traffic );
 	}
 
 	private _laneSectionId: number;
@@ -215,13 +192,27 @@ export class EntityObject {
 
 	}
 
+	// TODO: fix thes value sare not workifn for accel
+	private previousVelocity = 0;
+	private currentVelocity = 0;
+	private acceleration = 0;
+	private originalPosition: Vector3;
+
 	update () {
 
 		if ( !this.automove && !this.enabled ) return;
 
+		if ( !this.originalPosition ) this.originalPosition = this.position.clone();
+
 		const previousPosition = this.position.clone();
 
+		this.previousVelocity = this.speed;
+
 		this.controller.update();
+
+		this.currentVelocity = this.speed;
+
+		this.acceleration = ( this.currentVelocity - this.previousVelocity ) / Time.fixedDeltaTime;
 
 		const newPosition = this.position.clone();
 
@@ -327,5 +318,28 @@ export class EntityObject {
 
 
 	}
+
+	getCurrentAcceleration () {
+
+		return this.acceleration;
+
+	}
+
+	reset () {
+
+		this.distanceTravelled = 0;
+		this._speed = 0;
+		this.acceleration = 0;
+		this.previousVelocity = 0;
+		this.currentVelocity = 0;
+		this._maxSpeed = 0;
+
+		if ( this.originalPosition ) {
+			this.setPosition( this.originalPosition );
+			this.originalPosition = null;
+		}
+
+	}
+
 }
 
