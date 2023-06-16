@@ -6,9 +6,10 @@ import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
+import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { EntityObject } from '../models/tv-entities';
-import { ConditionType, Rule } from '../models/tv-enums';
+import { ConditionType, Rule, TriggeringRule } from '../models/tv-enums';
 
 export class ConditionFactory {
 
@@ -27,6 +28,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_TimeHeadway:
 				return this.createTimeHeadwayCondition( entity );
+
+			case ConditionType.ByEntity_TraveledDistance:
+				return this.createTraveledDistanceCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -80,5 +84,14 @@ export class ConditionFactory {
 		return condition;
 
 
+	}
+
+	private static createTraveledDistanceCondition ( entity?: EntityObject ) {
+
+		const condtion = new TraveledDistanceCondition( 100, TriggeringRule.Any );
+
+		if ( entity ) condtion.addEntity( entity.name );
+
+		return condtion;
 	}
 }

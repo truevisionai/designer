@@ -4,26 +4,28 @@
 
 import { Component, Input } from '@angular/core';
 import { TraveledDistanceCondition } from 'app/modules/scenario/models/conditions/tv-traveled-distance-condition';
-import { BaseConditionEditorComponent } from '../base-condition-editor-component';
+import { CommandHistory } from '../../../../../services/command-history';
+import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
+import { AbstractCondition } from '../../../models/conditions/tv-condition';
 
 @Component( {
 	selector: 'app-traveled-distance-condition-editor',
 	templateUrl: './traveled-distance-condition-editor.component.html',
 	styleUrls: [ './traveled-distance-condition-editor.component.css' ]
 } )
-export class TraveledDistanceConditionEditorComponent extends BaseConditionEditorComponent {
+export class TraveledDistanceConditionEditorComponent {
 
-	@Input() condition: TraveledDistanceCondition;
+	@Input() condition: AbstractCondition;
 
-	constructor () {
-		super();
+	get distanceCondition () {
+		return this.condition as TraveledDistanceCondition;
 	}
 
 	onDistanceValueChanged ( value: number ) {
 
-		// if ( typeof value !== 'number' ) console.error( 'value should only be null' );
-
-		this.condition.value = value;
+		CommandHistory.execute(
+			new SetValueCommand( this.distanceCondition, 'value', value )
+		);
 
 	}
 }

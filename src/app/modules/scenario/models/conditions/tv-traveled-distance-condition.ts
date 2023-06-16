@@ -11,44 +11,37 @@ export class TraveledDistanceCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_TraveledDistance;
 
-	constructor ( public value: number ) {
+	constructor ( public value: number, triggeringRule = TriggeringRule.Any, triggeringEntities: string[] = [] ) {
 		super();
+		this.triggeringRule = triggeringRule;
+		this.triggeringEntities = triggeringEntities;
 	}
 
 	hasPassed (): boolean {
 
-		if ( this.passed ) {
+		if ( this.passed ) return true;
 
-			return true;
+		const distances = this.triggeringEntities.map( entityName => {
 
-		} else {
+			const entity = this.scenario.findEntityOrFail( entityName );
 
-			for ( const entityName of this.triggeringEntities ) {
+			return entity.distanceTravelled >= this.value;
 
-				const entity = TvScenarioInstance.openScenario.findEntityOrFail( entityName );
+		} );
 
-				const passed = entity.distanceTravelled >= this.value;
 
-				if ( passed && this.triggeringRule === TriggeringRule.Any ) {
+		if ( this.triggeringRule === TriggeringRule.Any ) {
 
-					this.passed = true;
+			this.passed = distances.some( d => d );
 
-					break;
-				}
+		} else if ( this.triggeringRule === TriggeringRule.All ) {
 
-				if ( !passed && this.triggeringRule === TriggeringRule.All ) {
-
-					this.passed = false;
-
-					break;
-
-				}
-
-			}
-
-			return this.passed;
+			this.passed = distances.every( d => d );
 
 		}
+
+		return this.passed;
+
 	}
 
 }
