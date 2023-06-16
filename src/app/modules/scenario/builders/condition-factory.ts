@@ -3,6 +3,7 @@
  */
 
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
+import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
 import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
@@ -39,6 +40,9 @@ export class ConditionFactory {
 
 			case ConditionType.ByEntity_Offroad:
 				return this.createOffRoadCondition( entity );
+
+			case ConditionType.ByEntity_EndOfRoad:
+				return this.createEndOfRoadCondition( entity );
 
 			default:
 				throw new Error( `Unsupported condition: ${ type }` );
@@ -122,4 +126,16 @@ export class ConditionFactory {
 		return condition;
 
 	}
+
+	private static createEndOfRoadCondition ( entity?: EntityObject ) {
+
+		const condition = new EndOfRoadCondition( 5 );
+
+		if ( entity ) condition.addEntity( entity.name );
+
+		return condition;
+
+	}
+
+
 }

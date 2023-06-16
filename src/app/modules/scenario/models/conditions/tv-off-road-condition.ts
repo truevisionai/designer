@@ -41,7 +41,7 @@ export class OffRoadCondition extends AbstractByEntityCondition {
 
 				}
 
-				const newDuration = this.tmpDurations.get( entityName ) + Time.fixedDeltaTime;
+				const newDuration = this.tmpDurations.get( entityName ) + Time.fixedDeltaTime * 0.001;
 
 				this.tmpDurations.set( entityName, newDuration );
 

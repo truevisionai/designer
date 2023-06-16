@@ -55,6 +55,7 @@ import { TargetEditorComponent } from './views/target-editor/target-editor.compo
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
 import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component';
 import { OffRoadConditionEditorComponent } from './views/conditions/off-road-condition-editor/off-road-condition-editor.component';
+import { EndOfRoadConditionComponent } from './views/conditions/end-of-road-condition/end-of-road-condition.component';
 
 @NgModule( {
 	declarations: [
@@ -90,6 +91,7 @@ import { OffRoadConditionEditorComponent } from './views/conditions/off-road-con
 		TimeHeadwayConditionEditorComponent,
 		StandStillConditionEditorComponent,
 		OffRoadConditionEditorComponent,
+		EndOfRoadConditionComponent
 	],
 	imports: [
 		CommonModule,
