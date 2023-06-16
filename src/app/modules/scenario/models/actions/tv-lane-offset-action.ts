@@ -73,6 +73,15 @@ export class LaneOffsetAction extends AbstractPrivateAction {
 		// This function should return the elapsed time since the start of the action
 		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
+		function calculateLaneOffset ( entity, targetOffset, elapsedTime, maxLateralAcc ) {
+			let currentOffset = entity.getCurrentLaneOffset();
+			let L = targetOffset - currentOffset;
+			let dynamicsTime = Math.sqrt( L * Math.PI ** 2 / maxLateralAcc );
+			let fraction = elapsedTime / dynamicsTime;
+			let newLaneOffset = currentOffset + L * Math.sin( Math.PI * fraction );
+			return newLaneOffset;
+		}
+
 		switch ( this.dynamics ) {
 			case DynamicsShape.step:
 				newLaneOffset = targetOffset;
@@ -82,11 +91,18 @@ export class LaneOffsetAction extends AbstractPrivateAction {
 				break;
 			case DynamicsShape.sinusoidal:
 				// For sinusoidal dynamics, we need to calculate the value of a sinusoidal function at the point `elapsedTime`
-				newLaneOffset = entity.getCurrentLaneOffset() + this.maxLateralAcc * Math.sin( elapsedTime );
+				newLaneOffset = calculateLaneOffset( entity, targetOffset, elapsedTime, this.maxLateralAcc );
 				break;
 			case DynamicsShape.cubic:
 				// For cubic dynamics, we need to calculate the value of a cubic function at the point `elapsedTime`
-				newLaneOffset = entity.getCurrentLaneOffset() + this.maxLateralAcc * Math.pow( elapsedTime, 3 );
+				// newLaneOffset = entity.getCurrentLaneOffset() + this.maxLateralAcc * Math.pow( elapsedTime, 3 );
+				var L = targetOffset;
+				var T = Math.sqrt( ( 2 * targetOffset ) / this.maxLateralAcc );
+				var t = elapsedTime;
+				if ( t > T ) {
+					t = T;
+				}
+				newLaneOffset = entity.getCurrentLaneOffset() + 2 * ( L / Math.pow( T, 3 ) ) * Math.pow( t, 3 ) - 3 * ( L / Math.pow( T, 2 ) ) * Math.pow( t, 2 ) + L;
 				break;
 		}
 
