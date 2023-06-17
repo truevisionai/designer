@@ -2,9 +2,9 @@ import { BaseCommand } from 'app/core/commands/base-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
+import { TransitionDynamics } from 'app/modules/scenario/models/actions/transition-dynamics';
 import { AbsoluteTarget } from 'app/modules/scenario/models/actions/tv-absolute-target';
 import { PositionAction } from 'app/modules/scenario/models/actions/tv-position-action';
-import { SpeedDynamics } from 'app/modules/scenario/models/actions/tv-private-action';
 import { SpeedAction } from 'app/modules/scenario/models/actions/tv-speed-action';
 import { SimulationTimeCondition } from 'app/modules/scenario/models/conditions/tv-simulation-time-condition';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
@@ -27,7 +27,7 @@ export class AddVehicleCommand extends BaseCommand {
 		entity.name = `Vehicle${ TvScenarioInstance.openScenario.objects.size + 1 }`;
 
 		entity.addInitAction( new PositionAction( new WorldPosition( position.x, position.y, position.z ) ) );
-		entity.addInitAction( new SpeedAction( new SpeedDynamics( DynamicsShape.step ), new AbsoluteTarget( 40 ) ) );
+		entity.addInitAction( new SpeedAction( new TransitionDynamics(), new AbsoluteTarget( 40 ) ) );
 
 		this.addStoryActions();
 
