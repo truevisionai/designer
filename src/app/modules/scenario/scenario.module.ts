@@ -59,6 +59,7 @@ import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component'
 import { OffRoadConditionEditorComponent } from './views/conditions/off-road-condition-editor/off-road-condition-editor.component';
 import { EndOfRoadConditionComponent } from './views/conditions/end-of-road-condition/end-of-road-condition.component';
 import { AccelerationConditionComponent } from './views/conditions/accleration-condition/acceleration-condition.component';
+import { LongitudinalDistanceActionComponent } from './views/actions/longitudinal-distance-action/longitudinal-distance-action.component';
 
 @NgModule( {
 	declarations: [
@@ -98,6 +99,7 @@ import { AccelerationConditionComponent } from './views/conditions/accleration-c
 		RelativeDistanceConditionComponent,
 		AccelerationConditionComponent,
 		LaneOffsetActionComponent,
+		LongitudinalDistanceActionComponent,
 	],
 	imports: [
 		CommonModule,

@@ -1,7 +1,7 @@
 <div [ngSwitch]="action.actionType">
 
 	<div *ngSwitchCase="types.Private_LaneChange">
-		 <app-lane-change [action]="privateAction"></app-lane-change>
+		<app-lane-change [action]="privateAction"></app-lane-change>
 	</div>
 
 	<div *ngSwitchCase="types.Private_LaneOffset">
@@ -9,11 +9,11 @@
 	</div>
 
 	<div *ngSwitchCase="types.Private_Longitudinal_Speed">
-		 <app-speed-action [action]="privateAction"></app-speed-action>
+		<app-speed-action [action]="privateAction"></app-speed-action>
 	</div>
 
 	<div *ngSwitchCase="types.Private_Longitudinal_Distance">
-		Distance Action
+		<app-longitudinal-distance-action [action]="privateAction"></app-longitudinal-distance-action>
 	</div>
 
 	<div *ngSwitchCase="types.Private_Routing">

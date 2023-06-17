@@ -42,4 +42,15 @@ export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
 	}
 
+	onDistanceChanged ( $event: any ) {
+
+		this.distanceCondition.value = $event;
+
+	}
+
+	onRuleChanged ( $event: Rule ) {
+
+		this.distanceCondition.rule = $event;
+
+	}
 }

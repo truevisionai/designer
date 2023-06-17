@@ -3,7 +3,11 @@
 <div [ngSwitch]="condition.category">
 
 	<div *ngSwitchCase="categories.ByValue">
-		By Value
+		<div [ngSwitch]="condition.conditionType">
+			<div *ngSwitchCase="types.ByValue_SimulationTime">
+				<app-simulation-time-condition-editor [condition]="condition"></app-simulation-time-condition-editor>
+			</div>
+		</div>
 	</div>
 
 	<div *ngSwitchCase="categories.ByEntity">

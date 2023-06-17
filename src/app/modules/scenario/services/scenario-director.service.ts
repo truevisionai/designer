@@ -34,7 +34,7 @@ export class ScenarioDirectorService {
 
 	private added: boolean;
 	private eventIndex: number = 0;
-	private logEvents: boolean = true;
+	private logEvents: boolean = false;
 
 	constructor ( public userPlayer: PlayerService ) {
 

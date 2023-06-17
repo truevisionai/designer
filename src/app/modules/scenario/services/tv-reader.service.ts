@@ -14,7 +14,7 @@ import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
-import { DistanceAction } from '../models/actions/tv-distance-action';
+import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-distance-action';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
@@ -1043,7 +1043,7 @@ export class ReaderService extends AbstractReader {
 
 		} else if ( xml.Distance != null ) {
 
-			action = new DistanceAction();
+			throw new Error( 'not implemented' );
 
 		}
 

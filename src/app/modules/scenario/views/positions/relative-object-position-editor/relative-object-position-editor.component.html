@@ -1,3 +1,3 @@
 
 
-<app-dropdown-field label="Object" [options]="entities" [value]="relativeObjectPosition.object"></app-dropdown-field>
+<app-select-entity-field label="Object" [value]="relativeObjectPosition.object" (changed)="onEntityChanged($event)"></app-select-entity-field>

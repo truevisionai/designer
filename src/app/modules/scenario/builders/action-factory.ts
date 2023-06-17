@@ -2,16 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { DynamicConstraints } from '../models/dynamic-constraints';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
+import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
+import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-distance-action';
 import { PositionAction } from '../models/actions/tv-position-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { WorldPosition } from '../models/positions/tv-world-position';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
-import { WorldPosition } from '../models/positions/tv-world-position';
-import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 
 export class ActionFactory {
 
@@ -30,6 +32,9 @@ export class ActionFactory {
 
 			case ActionType.Private_LaneOffset:
 				return this.createChangeLaneOffsetAction( entity );
+
+			case ActionType.Private_Longitudinal_Distance:
+				return this.createLongitudinalDistanceAction( entity );
 
 			default:
 				throw new Error( `Unsupported private action: ${ type }` );
@@ -77,4 +82,13 @@ export class ActionFactory {
 
 		return new LaneChangeAction( dynamics, target );
 	}
+
+	static createLongitudinalDistanceAction ( entity: EntityObject ) {
+
+		const dynamics = new DynamicConstraints( 3, 6, 10 );
+
+		return new LongitudinalDistanceAction( entity?.name, 10, 'distance', false, true, dynamics );
+
+	}
+
 }

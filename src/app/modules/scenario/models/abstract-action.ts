@@ -1,8 +1,9 @@
 import { EventEmitter } from '@angular/core';
+import { MathUtils, Vector3 } from 'three';
 import { StoryEvent } from '../services/scenario-director.service';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { EntityObject } from './tv-entities';
 import { ActionCategory, ActionType } from './tv-enums';
-import { MathUtils } from 'three';
 
 export abstract class AbstractAction {
 
@@ -25,5 +26,21 @@ export abstract class AbstractAction {
 		this.hasStarted = false;
 		this.isCompleted = false;
 
+	}
+
+	protected get scenario () {
+		return TvScenarioInstance.scenario;
+	}
+
+	protected getEntity ( entityName: string ): EntityObject {
+		return this.scenario.findEntityOrFail( entityName );
+	}
+
+	protected getEntityPosition ( entityName: string ): Vector3 {
+		return this.scenario.getEntityVectorPosition( entityName );
+	}
+
+	protected getEntitySpeed ( entityName: string ): number {
+		return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
 	}
 }

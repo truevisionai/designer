@@ -2,33 +2,32 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RelativeObjectPosition } from '../../../models/positions/tv-relative-object-position';
-import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
+import { AbstractPosition } from 'app/modules/scenario/models/abstract-position';
 
 @Component( {
 	selector: 'app-relative-object-position-editor',
 	templateUrl: './relative-object-position-editor.component.html',
 } )
-export class RelativeObjectPositionEditorComponent extends AbstractPositionEditor implements OnInit {
+export class RelativeObjectPositionEditorComponent extends AbstractPositionEditor {
 
-	constructor () {
-		super();
-	}
-
-	// @Input() position: RelativeObjectPosition;
-
-	get entities () {
-		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
-	};
+	@Input() position: AbstractPosition;
 
 	get relativeObjectPosition () {
 		return this.position as RelativeObjectPosition;
 	}
 
-	ngOnInit () {
-
+	constructor () {
+		super();
 	}
 
+	onEntityChanged ( $event: any ) {
+
+		this.relativeObjectPosition.object = $event;
+
+		this.positionModified.emit( this.position );
+
+	}
 }

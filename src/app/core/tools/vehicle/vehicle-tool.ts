@@ -4,6 +4,7 @@
 
 import { GameObject } from 'app/core/game-object';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { EntityObject } from 'app/modules/scenario/models/tv-entities';
 
 import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
@@ -13,7 +14,6 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
-import { EntityObject } from 'app/modules/scenario/models/tv-entities';
 
 export class VehicleTool extends BaseTool {
 
@@ -32,7 +32,7 @@ export class VehicleTool extends BaseTool {
 	private makeVehicle () {
 
 		var geometry = new BoxGeometry( 2.0, 4.2, 1.6 );
-		var material = new MeshBasicMaterial( { color: 0x00ff00 } );
+		var material = new MeshBasicMaterial( { color: Math.random() * 0xffffff } );
 		const oscObject = new EntityObject( 'Vehicle' );
 		oscObject.gameObject = new GameObject( 'Cube', geometry, material );
 		return oscObject;
