@@ -25,14 +25,19 @@ export class ActionComponent implements OnInit {
 
 	constructor () {
 
+		// console.log( this.action );
+
 	}
 
 	get privateAction () {
+
 		return this.action as AbstractPrivateAction;
+
 	}
 
 	ngOnInit () {
 
+		// console.log( this.action );
 
 	}
 

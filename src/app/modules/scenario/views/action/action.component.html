@@ -4,6 +4,10 @@
 		 <app-lane-change [action]="privateAction"></app-lane-change>
 	</div>
 
+	<div *ngSwitchCase="types.Private_LaneOffset">
+		<app-lane-offset-action [action]="privateAction"></app-lane-offset-action>
+	</div>
+
 	<div *ngSwitchCase="types.Private_Longitudinal_Speed">
 		 <app-speed-action [action]="privateAction"></app-speed-action>
 	</div>

@@ -147,7 +147,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 	onRemoveAction ( action: AbstractAction, event: TvEvent ) {
 
-
+		event.removeAction( action as AbstractPrivateAction );
 
 	}
 }

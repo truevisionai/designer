@@ -1,0 +1,7 @@
+<app-string-field label="Continous" [value]="laneOffsetAction.continous"></app-string-field>
+
+<app-string-field (changed)="onMaxAccelChanged($event)" label="Max" [value]="laneOffsetAction.maxLateralAcc"></app-string-field>
+
+<app-target-editor [target]="laneOffsetAction.target"></app-target-editor>
+
+<app-enum-field [enum]="shapes" label="Shape" [value]="laneOffsetAction.dynamicsShape" (changed)="onShapeChanged($event)"></app-enum-field>

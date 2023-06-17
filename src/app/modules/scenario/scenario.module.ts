@@ -21,6 +21,7 @@ import { TrajectoryInspectorComponent } from './inspectors/tv-trajectory-inspect
 import { ActionComponent } from './views/action/action.component';
 import { FollowTrajectoryComponent } from './views/actions/follow-trajectory/follow-trajectory.component';
 import { LaneChangeComponent } from './views/actions/lane-change/lane-change.component';
+import { LaneOffsetActionComponent } from './views/actions/lane-offset-action/lane-offset-action.component';
 import { PositionActionComponent } from './views/actions/position-action/position-action.component';
 import { SpeedActionComponent } from './views/actions/speed-action/speed-action.component';
 import { ConditionEditorComponent } from './views/condition-editor/condition-editor.component';
@@ -96,6 +97,7 @@ import { AccelerationConditionComponent } from './views/conditions/accleration-c
 		EndOfRoadConditionComponent,
 		RelativeDistanceConditionComponent,
 		AccelerationConditionComponent,
+		LaneOffsetActionComponent,
 	],
 	imports: [
 		CommonModule,

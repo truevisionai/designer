@@ -3,10 +3,11 @@
  */
 
 import { EventEmitter } from '@angular/core';
+import { ConditionUtils } from '../builders/condition-utils';
 import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { ConditionUtils } from '../builders/condition-utils';
 import { AbstractAction } from './abstract-action';
+import { AbstractPrivateAction } from './abstract-private-action';
 import { AbstractCondition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { StoryElementType } from './tv-enums';
@@ -168,6 +169,22 @@ export class TvEvent {
 			} );
 		}
 
+
+	}
+
+	removeAction ( action: AbstractPrivateAction ) {
+
+		this.actions.forEach( ( value, key ) => {
+
+			if ( value.uuid === action.uuid ) {
+
+				this.actions.delete( key );
+
+				return;
+
+			}
+
+		} );
 
 	}
 }

@@ -27,7 +27,7 @@ import { RelativeTarget } from './tv-relative-target';
 export class LaneOffsetAction extends AbstractPrivateAction {
 
 	public actionName = 'LaneOffsetAction';
-	public actionType: ActionType = ActionType.Private_LaneChange;
+	public actionType: ActionType = ActionType.Private_LaneOffset;
 
 	private startTime: number;
 
@@ -37,15 +37,15 @@ export class LaneOffsetAction extends AbstractPrivateAction {
 	 * 					If true it does not end but has to be stopped.
 	 * @param maxLateralAcc Maximum lateral acceleration used to initially reach
 	 * 						and afterwards keep the lane offset. Unit: m/s2; Range: [0..inf[.
-	 * @param dynamics	Geometrical shape of the LaneOffsetAction's dynamics.
+	 * @param dynamicsShape	Geometrical shape of the LaneOffsetAction's dynamics.
 	 * @param target Parameters indicating if the lane offset is defined relative
 	 * 				 to another entity or absolute to the current lane's center line.
 	 */
 	constructor (
-		private continous: boolean,
-		private maxLateralAcc: number,
-		private dynamics: DynamicsShape,
-		private target: AbstractTarget
+		public continous: boolean,
+		public maxLateralAcc: number,
+		public dynamicsShape: DynamicsShape,
+		public target: AbstractTarget
 	) {
 
 		super();
@@ -82,7 +82,7 @@ export class LaneOffsetAction extends AbstractPrivateAction {
 			return newLaneOffset;
 		}
 
-		switch ( this.dynamics ) {
+		switch ( this.dynamicsShape ) {
 			case DynamicsShape.step:
 				newLaneOffset = targetOffset;
 				break;
