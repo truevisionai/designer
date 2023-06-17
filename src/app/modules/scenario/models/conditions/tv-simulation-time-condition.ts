@@ -10,6 +10,7 @@ export class SimulationTimeCondition extends AbstractByValueCondition {
 
 	public category: ConditionCategory = ConditionCategory.ByValue;
 	public readonly conditionType = ConditionType.ByValue_SimulationTime;
+	public name: string = 'SimulationTimeCondition';
 
 	constructor ( public value: number = 0, public rule: Rule = Rule.greater_than ) {
 		super();

@@ -2,3 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+.mat-expansion-panel-header {
+	height: 36px !important;
+	padding: 0 16px !important;
+	font-size: 12px !important;
+	color: #b1b8ba !important;
+}
+
+.mat-expanded .mat-expansion-panel-header {
+	margin-bottom: 0rem !important;
+}

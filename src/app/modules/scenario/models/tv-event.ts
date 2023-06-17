@@ -39,9 +39,9 @@ export class TvEvent {
 		this._actions = value;
 	}
 
-	get startConditions () {
+	get startConditions (): AbstractCondition[] {
 
-		let conditions = [];
+		let conditions: AbstractCondition[] = [];
 
 		this.startConditionGroups.forEach( group => {
 			group.conditions.forEach( condition => {

@@ -13,6 +13,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class AccelerationCondition extends AbstractByEntityCondition {
 
 	private debug = false;
+	public name: string = 'AccelerationCondition';
 
 	conditionType = ConditionType.ByEntity_Acceleration;
 

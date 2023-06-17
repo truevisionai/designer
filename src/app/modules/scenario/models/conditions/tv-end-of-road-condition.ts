@@ -13,6 +13,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class EndOfRoadCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_EndOfRoad;
+	public name: string = 'EndOfRoadCondition';
 
 	private tmpDurations: Map<string, number> = new Map();
 

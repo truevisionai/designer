@@ -10,6 +10,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class TraveledDistanceCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_TraveledDistance;
+	public name: string = 'TraveledDistanceCondition';
 
 	constructor ( public value: number, triggeringRule = TriggeringRule.Any, triggeringEntities: string[] = [] ) {
 		super();

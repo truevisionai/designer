@@ -14,6 +14,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class OffRoadCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_Offroad;
+	public name: string = 'OffRoadCondition';
 
 	private tmpDurations: Map<string, number> = new Map();
 

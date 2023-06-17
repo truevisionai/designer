@@ -14,6 +14,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class DistanceCondition extends AbstractByEntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
+	public name: string = 'DistanceCondition';
 
 	/**
 	 *

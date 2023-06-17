@@ -38,4 +38,12 @@ export class LongitudinalDistanceActionComponent {
 	onMaxSpeedChanged ( $event: any ) {
 		this.longitudinalDistanceAction.dynamicConstraints.maxSpeed = $event;
 	}
+
+	onContinousChanged ( $event: any ) {
+		this.longitudinalDistanceAction.continous = $event;
+	}
+
+	onFreespaceChanged ( $event: any ) {
+		this.longitudinalDistanceAction.freespace = $event;
+	}
 }

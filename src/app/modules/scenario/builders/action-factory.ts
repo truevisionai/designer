@@ -85,7 +85,7 @@ export class ActionFactory {
 
 	static createLongitudinalDistanceAction ( entity: EntityObject ) {
 
-		const dynamics = new DynamicConstraints( 3, 6, 10 );
+		const dynamics = new DynamicConstraints( 3, 9, 40 );
 
 		return new LongitudinalDistanceAction( entity?.name, 10, 'distance', false, true, dynamics );
 

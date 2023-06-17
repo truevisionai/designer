@@ -15,6 +15,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class StandStillCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_StandStill;
+	public name: string = 'StandStillCondition';
 
 	private standstillDurations = [];
 

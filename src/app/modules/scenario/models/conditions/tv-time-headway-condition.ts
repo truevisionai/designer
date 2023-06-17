@@ -15,6 +15,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class TimeHeadwayCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_TimeHeadway;
+	public name: string = 'TimeHeadwayCondition';
 
 	/**
 	 * @param targetEntity reference entity to which the time headway is computed

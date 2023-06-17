@@ -13,6 +13,7 @@ import { AbstractByEntityCondition } from './abstract-by-entity-condition';
 export class ReachPositionCondition extends AbstractByEntityCondition {
 
 	conditionType = ConditionType.ByEntity_ReachPosition;
+	public name: string = 'ReachPositionCondition';
 
 	constructor ( public position: AbstractPosition, public tolerance: number = 0 ) {
 

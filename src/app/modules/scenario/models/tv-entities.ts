@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { BoxGeometry, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
@@ -13,7 +13,6 @@ import { AbstractController } from './abstract-controller';
 import { AbstractPrivateAction } from './abstract-private-action';
 import { CatalogReference } from './tv-catalogs';
 import { ScenarioObjectType } from './tv-enums';
-import { IScenarioObject } from './tv-interfaces';
 
 export class EntityObject {
 
@@ -22,7 +21,6 @@ export class EntityObject {
 	public gameObject: GameObject;
 	public type: ScenarioObjectType;
 	// OSCMiscObject
-	public object: IScenarioObject;
 
 	public initActions: AbstractPrivateAction[] = [];
 	// OSCPedestrian
@@ -36,14 +34,21 @@ export class EntityObject {
 	public controller: AbstractController;
 	public distanceTravelled = 0;
 
-	constructor ( name: string, object: IScenarioObject = null, controller: AbstractController = null ) {
+	constructor ( name: string, gameObject: GameObject = null, controller: AbstractController = null ) {
 
 		this.name = name;
-		this.object = object;
+
+		if ( !gameObject ) {
+
+			const geometry = new BoxGeometry( 2.0, 4.2, 1.6 );
+			const material = new MeshBasicMaterial( { color: Math.random() * 0xffffff } );
+			this.gameObject = new GameObject( name, geometry, material );
+			this.gameObject.userData.entity = this;
+		}
+
 		this.controller = controller || new DefaultVehicleController( TvMapInstance.map, this );
 
 		EntityObject.count++;
-
 	}
 
 	// OSCDriver

@@ -2,91 +2,79 @@
 
 	<app-string-field [value]="entity.name" label="Name"></app-string-field>
 
-	<mat-accordion>
-		<mat-expansion-panel *ngFor="let action of initActions">
-			<mat-expansion-panel-header>
-				<mat-panel-title>
-					{{action.actionType}}
-				</mat-panel-title>
-				<mat-panel-description>
-					{{action.actionName}}
-				</mat-panel-description>
-			</mat-expansion-panel-header>
-			<app-action [action]="action" [entity]="entity"></app-action>
-		</mat-expansion-panel>
-	</mat-accordion>
-
-	<br/>
-
-<!--	<mat-accordion>-->
-<!--		&lt;!&ndash; show start conditions &ndash;&gt;-->
-<!--		<mat-expansion-panel *ngFor="let action of scenarioActions">-->
-<!--			<mat-expansion-panel-header>-->
-<!--				<mat-panel-title>-->
-<!--					{{action.actionType}}-->
-<!--					&lt;!&ndash; <mat-icon>account_circle</mat-icon> &ndash;&gt;-->
-<!--				</mat-panel-title>-->
-<!--				<mat-panel-description>-->
-<!--					{{action.actionName}}-->
-<!--				</mat-panel-description>-->
-<!--			</mat-expansion-panel-header>-->
-<!--			<app-action-editor [action]="action" [entity]="entity"></app-action-editor>-->
-<!--		</mat-expansion-panel>-->
-<!--		&lt;!&ndash; show end conditions &ndash;&gt;-->
-<!--	</mat-accordion>-->
-
-	<div *ngFor="let event of scenarioEvents">
-		<mat-form-field class="example-full-width">
-			<mat-label>Add Start Condition</mat-label>
-			<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
-				<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
-				<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
-				<mat-option [value]="conditionType.ByEntity_ReachPosition">ReachedPosition</mat-option>
-				<mat-option [value]="conditionType.ByEntity_TimeHeadway">TimeHeadway</mat-option>
-				<mat-option [value]="conditionType.ByEntity_TraveledDistance">TraveledDistance</mat-option>
-				<mat-option [value]="conditionType.ByEntity_Speed">Speed</mat-option>
-				<mat-option [value]="conditionType.ByEntity_Offroad">OffRoad</mat-option>
-				<mat-option [value]="conditionType.ByEntity_EndOfRoad">EndOfRoad</mat-option>
-				<mat-option [value]="conditionType.ByEntity_RelativeDistance">RelativeDistance</mat-option>
-				<mat-option [value]="conditionType.ByEntity_Acceleration">Acceleration</mat-option>
-			</mat-select>
-		</mat-form-field>
-		<mat-accordion>
-			<mat-expansion-panel *ngFor="let condition of event.startConditions">
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						Type
-					</mat-panel-title>
-					<mat-panel-description>
-						Condition
-					</mat-panel-description>
-				</mat-expansion-panel-header>
-				<app-condition-editor (removed)="onRemoveCondition($event,event)" [condition]="condition"></app-condition-editor>
-			</mat-expansion-panel>
-		</mat-accordion>
-		<mat-accordion>
-			<mat-expansion-panel *ngFor="let action of event.getActions()">
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						{{action.actionType}}
-					</mat-panel-title>
-					<mat-panel-description>
-						{{action['actionName']}}
-					</mat-panel-description>
-				</mat-expansion-panel-header>
-				<app-action (removed)="onRemoveAction(action,event)" [action]="action" [entity]="entity"></app-action>
-			</mat-expansion-panel>
-		</mat-accordion>
-	</div>
-
-	<br/>
-
-	<mat-form-field class="example-full-width">
-		<mat-label>Add Action</mat-label>
-		<mat-select #addAction (valueChange)="onAddAction($event)">
-			<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
-			<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
-		</mat-select>
-	</mat-form-field>
+	<app-double-field label="Speed" [value]="entity?.getCurrentSpeed()"></app-double-field>
+	<app-double-field label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field>
+	<app-double-field label="Distance" [value]="entity?.distanceTravelled"></app-double-field>
 
 </div>
+
+<mat-accordion>
+	<mat-expansion-panel *ngFor="let action of initActions">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				{{action.actionName}} - {{action.actionType}}
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<app-action [action]="action" [entity]="entity"></app-action>
+	</mat-expansion-panel>
+</mat-accordion>
+
+<br />
+
+<div *ngFor="let event of scenarioEvents">
+	<mat-form-field class="example-full-width">
+		<mat-label>Add Start Condition</mat-label>
+		<mat-select #addCondition (valueChange)="onAddCondition($event,event)">
+			<mat-option [value]="conditionType.ByValue_SimulationTime">SimulationTime</mat-option>
+			<mat-option [value]="conditionType.ByEntity_Distance">Distance</mat-option>
+			<mat-option [value]="conditionType.ByEntity_ReachPosition">ReachedPosition</mat-option>
+			<mat-option [value]="conditionType.ByEntity_TimeHeadway">TimeHeadway</mat-option>
+			<mat-option [value]="conditionType.ByEntity_TraveledDistance">TraveledDistance</mat-option>
+			<mat-option [value]="conditionType.ByEntity_Speed">Speed</mat-option>
+			<mat-option [value]="conditionType.ByEntity_Offroad">OffRoad</mat-option>
+			<mat-option [value]="conditionType.ByEntity_EndOfRoad">EndOfRoad</mat-option>
+			<mat-option [value]="conditionType.ByEntity_RelativeDistance">RelativeDistance</mat-option>
+			<mat-option [value]="conditionType.ByEntity_Acceleration">Acceleration</mat-option>
+			<mat-option [value]="conditionType.ByEntity_RelativeSpeed">RelativeSpeed</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<mat-accordion>
+		<mat-expansion-panel *ngFor="let condition of event.startConditions">
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					{{condition.name}}
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<app-condition-editor (removed)="onRemoveCondition($event,event)" [condition]="condition"></app-condition-editor>
+		</mat-expansion-panel>
+	</mat-accordion>
+	<mat-accordion>
+		<mat-expansion-panel *ngFor="let action of event.getActions()">
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					{{action['actionName']}}
+				</mat-panel-title>
+				<mat-panel-description>
+
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<app-action (removed)="onRemoveAction(action,event)" [action]="action" [entity]="entity"></app-action>
+		</mat-expansion-panel>
+	</mat-accordion>
+</div>
+
+<br />
+
+<mat-form-field class="example-full-width">
+	<mat-label>Add Action</mat-label>
+	<mat-select #addAction (valueChange)="onAddAction($event)">
+		<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
+		<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
+		<mat-option [value]="actionType.Private_LaneOffset">ChangeLaneOffset</mat-option>
+		<mat-option [value]="actionType.Private_Longitudinal_Distance">Longitudinal_Distance</mat-option>
+	</mat-select>
+</mat-form-field>
