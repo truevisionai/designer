@@ -6,19 +6,11 @@ import { ConditionUtils } from '../../builders/condition-utils';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
-// export class DontUse_Condition {
-
-//     private name: string;
-//     private delay: number;
-//     private edge: ConditionEdge;
-
-// }
-
 export abstract class AbstractCondition {
 
 	public abstract category: ConditionCategory;
 	public abstract conditionType: ConditionType;
-	public name: string = '';
+	public abstract name: string = 'Condition';
 	public delay: number = 0;
 	public edge: ConditionEdge = ConditionEdge.any;
 	public passed: boolean;

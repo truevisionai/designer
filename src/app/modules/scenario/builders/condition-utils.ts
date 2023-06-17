@@ -14,18 +14,15 @@ export class ConditionUtils {
 		switch ( rule ) {
 
 			case Rule.greater_than:
-				hasPassed = left > right;
-				// console.log( left, right, left > right );
+				return hasPassed = left > right;
 				break;
 
 			case Rule.less_than:
-				hasPassed = left < right;
-				// console.log( left, right, left < right );
+				return hasPassed = left < right;
 				break;
 
 			case Rule.equal_to:
-				hasPassed = left == right;
-				// console.log( left, right, left == right );
+				return hasPassed = left == right;
 				break;
 
 		}

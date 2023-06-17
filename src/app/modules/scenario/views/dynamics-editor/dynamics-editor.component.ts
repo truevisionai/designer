@@ -23,19 +23,19 @@ export class DynamicsEditorComponent {
 
 	onShapeChanged ( $event: DynamicsShape ) {
 
-		CommandHistory.execute( new SetValueCommand( this.dynamics, 'shape', $event ) );
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dynamicsShape', $event ) );
 
 	}
 
 	onDimensionChanged ( $event: DynamicsDimension ) {
 
-		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dimension', $event ) );
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dynamicsDimension', $event ) );
 
 	}
 
 	onValueChanged ( $event: number ) {
 
-		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dimensionValue', $event ) );
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'value', $event ) );
 
 	}
 

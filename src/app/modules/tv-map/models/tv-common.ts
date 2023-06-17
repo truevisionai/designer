@@ -2,6 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvConsole } from '../../../core/utils/console';
+import { DynamicsDimension, DynamicsShape } from '../../scenario/models/tv-enums';
+
 export class TvUserData {
 	constructor ( public attr_code: string, public attr_value ) {
 	}
@@ -201,6 +204,30 @@ export enum ObjectTypes {
 
 export class EnumHelper {
 
+	static stringToDynamics ( value: string ): DynamicsShape {
+
+		switch ( value ) {
+
+			case 'linear':
+				return DynamicsShape.linear;
+
+			case 'sinusoidal':
+				return DynamicsShape.sinusoidal;
+
+			case 'cubic':
+				return DynamicsShape.cubic;
+
+			case 'step':
+				return DynamicsShape.step;
+
+			default:
+				TvConsole.warn( 'unknown dynamics' + value );
+				return DynamicsShape.step;
+
+		}
+
+	}
+
 	static stringToOdUnits ( value ): TvUnit {
 
 		switch ( value ) {
@@ -249,5 +276,26 @@ export class EnumHelper {
 				console.error( 'unknown unit', value );
 				break;
 		}
+	}
+
+	static stringToDimension ( value: string ): DynamicsDimension {
+
+		switch ( value ) {
+
+			case 'time':
+				return DynamicsDimension.time;
+
+			case 'distance':
+				return DynamicsDimension.distance;
+
+			case 'rate':
+				return DynamicsDimension.rate;
+
+			default:
+				TvConsole.warn( 'unknown dimension' + value );
+				return DynamicsDimension.time;
+
+		}
+
 	}
 }

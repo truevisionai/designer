@@ -7,6 +7,8 @@ import { Debug } from 'app/core/utils/debug';
 import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
+import { EnumHelper } from '../../tv-map/models/tv-common';
+import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { AbstractAction } from '../models/abstract-action';
 import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
@@ -14,11 +16,9 @@ import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
-import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-distance-action';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
-import { LaneChangeDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
@@ -44,9 +44,7 @@ import { EntityObject } from '../models/tv-entities';
 import { ConditionEdge, DynamicsDimension, DynamicsShape, Rule } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
-import {
-	CatalogReferenceController
-} from '../models/tv-interfaces';
+import { CatalogReferenceController } from '../models/tv-interfaces';
 import { EventAction, Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
@@ -103,7 +101,7 @@ export class ReaderService extends AbstractReader {
 		return this.openScenario;
 	}
 
-	readCondition ( xml: any ) {
+	readCondition ( xml: XmlElement ) {
 
 		let condition: AbstractCondition = null;
 
@@ -153,7 +151,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readLongitudinalPurpose ( xml: any ): LongitudinalPurpose {
+	readLongitudinalPurpose ( xml: XmlElement ): LongitudinalPurpose {
 
 		let longitudinalPurpose = new LongitudinalPurpose;
 
@@ -174,7 +172,7 @@ export class ReaderService extends AbstractReader {
 		return longitudinalPurpose;
 	}
 
-	public readRoadNetwork ( xml: any ) {
+	public readRoadNetwork ( xml: XmlElement ) {
 
 		let logics, sceneGraph;
 
@@ -194,7 +192,7 @@ export class ReaderService extends AbstractReader {
 		return new RoadNetwork( logics, sceneGraph );
 	}
 
-	public readEntities ( xml: any ): EntityObject[] {
+	public readEntities ( xml: XmlElement ): EntityObject[] {
 
 		const objects: EntityObject[] = [];
 
@@ -210,7 +208,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	public readEntityObject ( xml: any ): EntityObject {
+	public readEntityObject ( xml: XmlElement ): EntityObject {
 
 		const name = xml.attr_name;
 
@@ -238,7 +236,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	public readController ( xml: any ): AbstractController {
+	public readController ( xml: XmlElement ): AbstractController {
 
 		let response: AbstractController = null;
 
@@ -267,7 +265,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readConditionGroup ( xml: any ): ConditionGroup {
+	readConditionGroup ( xml: XmlElement ): ConditionGroup {
 
 		const conditionGroup = new ConditionGroup;
 
@@ -281,7 +279,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readWorldPosition ( xml: any ) {
+	readWorldPosition ( xml: XmlElement ) {
 
 		const worldPosition = new WorldPosition;
 
@@ -298,7 +296,7 @@ export class ReaderService extends AbstractReader {
 		return worldPosition;
 	}
 
-	readByEntityCondition ( xml: any ): AbstractCondition {
+	readByEntityCondition ( xml: XmlElement ): AbstractCondition {
 
 		let condition: AbstractByEntityCondition = null;
 
@@ -319,7 +317,7 @@ export class ReaderService extends AbstractReader {
 		return condition;
 	}
 
-	readConditionByEntity ( xml: any ): AbstractByEntityCondition {
+	readConditionByEntity ( xml: XmlElement ): AbstractByEntityCondition {
 
 		let condition: AbstractByEntityCondition = null;
 
@@ -385,14 +383,14 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readTraveledDistanceCondition ( xml: any ): TraveledDistanceCondition {
+	readTraveledDistanceCondition ( xml: XmlElement ): TraveledDistanceCondition {
 
 		const value = xml.attr_value;
 
 		return new TraveledDistanceCondition( value );
 	}
 
-	readRelativeSpeedCondition ( xml: any ): RelativeSpeedCondition {
+	readRelativeSpeedCondition ( xml: XmlElement ): RelativeSpeedCondition {
 
 		const entity = xml.attr_entity;
 		const value = xml.attr_value;
@@ -401,7 +399,7 @@ export class ReaderService extends AbstractReader {
 		return new RelativeSpeedCondition( entity, value, rule );
 	}
 
-	readReachPositionCondition ( xml: any ): ReachPositionCondition {
+	readReachPositionCondition ( xml: XmlElement ): ReachPositionCondition {
 
 		const position = this.readPosition( xml.Position );
 		const tolerance = parseFloat( xml.attr_tolerance );
@@ -409,18 +407,18 @@ export class ReaderService extends AbstractReader {
 		return new ReachPositionCondition( position, tolerance );
 	}
 
-	readDistanceCondition ( xml: any ): DistanceCondition {
+	readDistanceCondition ( xml: XmlElement ): DistanceCondition {
 
 		const value = parseFloat( xml.attr_value );
-		const freespace = xml.attr_freespace;
-		const alongRoute = xml.attr_alongRoute;
+		const freespace = xml.attr_freespace == 'true';
+		const alongRoute = xml.attr_alongRoute == 'true';
 		const rule = this.convertStringToRule( xml.attr_rule );
 		const position = this.readPosition( xml.Position );
 
 		return new DistanceCondition( position, value, freespace, alongRoute, rule );
 	}
 
-	readConditionByValue ( xml: any ): AbstractCondition {
+	readConditionByValue ( xml: XmlElement ): AbstractCondition {
 
 		let condition: AbstractCondition = null;
 
@@ -429,13 +427,13 @@ export class ReaderService extends AbstractReader {
 		} else if ( xml.SimulationTime != null ) {
 			condition = this.readSimulationTimeCondition( xml.SimulationTime );
 		} else {
-			throw new Error( 'unknown condition '.concat( xml ) );
+			throw new Error( 'unknown condition' );
 		}
 
 		return condition;
 	}
 
-	readSimulationTimeCondition ( xml: any ): AbstractCondition {
+	readSimulationTimeCondition ( xml: XmlElement ): AbstractCondition {
 
 		const value = parseFloat( xml.attr_value );
 		const rule = this.convertStringToRule( xml.attr_rule );
@@ -469,7 +467,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readConditionByState ( xml: any ): AbstractCondition {
+	readConditionByState ( xml: XmlElement ): AbstractCondition {
 
 		let condition: AbstractCondition = null;
 
@@ -486,7 +484,7 @@ export class ReaderService extends AbstractReader {
 		return condition;
 	}
 
-	readAtStartCondition ( xml: any ): AbstractCondition {
+	readAtStartCondition ( xml: XmlElement ): AbstractCondition {
 
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
@@ -494,7 +492,7 @@ export class ReaderService extends AbstractReader {
 		return new AtStartCondition( elementName, type );
 	}
 
-	readAfterTerminationCondition ( xml: any ): AbstractCondition {
+	readAfterTerminationCondition ( xml: XmlElement ): AbstractCondition {
 
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
@@ -504,7 +502,7 @@ export class ReaderService extends AbstractReader {
 		return new AfterTerminationCondition( elementName, rule, type );
 	}
 
-	public readStory ( xml: any ): Story {
+	public readStory ( xml: XmlElement ): Story {
 
 		let name = xml.attr_name;
 		let ownerName = xml.attr_owner ? xml.attr_owner : null;
@@ -520,7 +518,7 @@ export class ReaderService extends AbstractReader {
 		return story;
 	}
 
-	readAct ( xml: any ): Act {
+	readAct ( xml: XmlElement ): Act {
 
 		const act = new Act;
 
@@ -561,7 +559,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readSequence ( xml: any ): Sequence {
+	readSequence ( xml: XmlElement ): Sequence {
 
 		const sequence = new Sequence;
 
@@ -591,7 +589,7 @@ export class ReaderService extends AbstractReader {
 		return sequence;
 	}
 
-	readManeuver ( xml: any ): Maneuver {
+	readManeuver ( xml: XmlElement ): Maneuver {
 
 		const maneuver = new Maneuver( xml.attr_name );
 
@@ -604,7 +602,7 @@ export class ReaderService extends AbstractReader {
 		return maneuver;
 	}
 
-	readEvent ( xml: any ): TvEvent {
+	readEvent ( xml: XmlElement ): TvEvent {
 
 		const event = new TvEvent;
 
@@ -632,7 +630,7 @@ export class ReaderService extends AbstractReader {
 		return event;
 	}
 
-	readEventAction ( xml: any ): EventAction {
+	readEventAction ( xml: XmlElement ): EventAction {
 
 		const action = new EventAction;
 
@@ -655,7 +653,7 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	public readInitActions ( xml: any, storyboard: Storyboard ) {
+	public readInitActions ( xml: XmlElement, storyboard: Storyboard ) {
 
 		this.readAsOptionalArray( xml.Global, ( item ) => {
 
@@ -755,7 +753,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readLateralAction ( xml: any ): AbstractAction {
+	readLateralAction ( xml: XmlElement ): AbstractAction {
 
 		let action: AbstractAction = null;
 
@@ -771,7 +769,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readRoutingAction ( xml: any ): AbstractRoutingAction {
+	readRoutingAction ( xml: XmlElement ): AbstractRoutingAction {
 
 		let action: AbstractRoutingAction = null;
 
@@ -794,7 +792,7 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	readFollowTrajectoryAction ( xml: any ): FollowTrajectoryAction {
+	readFollowTrajectoryAction ( xml: XmlElement ): FollowTrajectoryAction {
 
 		let trajectory: Trajectory = null;
 
@@ -816,7 +814,7 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	readTrajectory ( xml: any ): Trajectory {
+	readTrajectory ( xml: XmlElement ): Trajectory {
 
 		let name = xml.attr_name;
 		let closed = xml.attr_closed == 'true';
@@ -839,7 +837,7 @@ export class ReaderService extends AbstractReader {
 		return trajectory;
 	}
 
-	readFollowRouteAction ( xml: any ): FollowRouteAction {
+	readFollowRouteAction ( xml: XmlElement ): FollowRouteAction {
 
 		let route: Route = null;
 
@@ -858,12 +856,12 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	readRoute ( xml: any ): Route {
+	readRoute ( xml: XmlElement ): Route {
 
 		let route = new Route;
 
 		route.name = xml.attr_name;
-		route.closed = xml.attr_closed == 'true' ? true : false;
+		route.closed = xml.attr_closed == 'true';
 
 		this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
 
@@ -880,7 +878,7 @@ export class ReaderService extends AbstractReader {
 		return route;
 	}
 
-	readWaypoint ( xml: any ): Waypoint {
+	readWaypoint ( xml: XmlElement ): Waypoint {
 
 		let position = this.readPosition( xml.Position );
 		let strategy = xml.attr_strategy;
@@ -888,13 +886,13 @@ export class ReaderService extends AbstractReader {
 		return new Waypoint( position, strategy );
 	}
 
-	readLaneChangeAction ( xml: any ): AbstractAction {
+	readLaneChangeAction ( xml: XmlElement ): AbstractAction {
 
 		const action = new LaneChangeAction();
 
 		action.targetLaneOffset = parseFloat( xml.attr_targetLaneOffset );
 
-		action.dynamics = this.readLaneChangeDynamics( xml.Dynamics );
+		action.dynamics = this.readTransitionDynamics( xml.Dynamics );
 
 		action.target = this.readTarget( xml.Target );
 
@@ -902,23 +900,19 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readLaneChangeDynamics ( xml: any ): LaneChangeDynamics {
+	readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
 
-		const dynamics = new LaneChangeDynamics;
+		const shape = EnumHelper.stringToDynamics( xml.attr_shape );
 
-		dynamics.shape = xml.attr_shape;
+		const dimensionValue = xml.attr_rate ? parseFloat( xml.attr_rate ) : 0;
 
-		dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
+		const dimension = EnumHelper.stringToDimension( xml.attr_dimension );
 
-		dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
-
-		dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
-
-		return dynamics;
+		return new TransitionDynamics( shape, dimensionValue, dimension );
 
 	}
 
-	readSpeedDynamics ( xml: any ): TransitionDynamics {
+	readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		// TOOD: Fix parsing of enum
 		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape;
@@ -932,13 +926,13 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readPositionAction ( xml: any ): AbstractPrivateAction {
+	readPositionAction ( xml: XmlElement ): AbstractPrivateAction {
 
 		return new PositionAction( this.readPosition( xml ) );
 
 	}
 
-	readPosition ( xml: any ): AbstractPosition {
+	readPosition ( xml: XmlElement ): AbstractPosition {
 
 		let position: AbstractPosition = null;
 
@@ -967,7 +961,7 @@ export class ReaderService extends AbstractReader {
 		return position;
 	}
 
-	readLanePosition ( xml: any ): AbstractPosition {
+	readLanePosition ( xml: XmlElement ): AbstractPosition {
 
 		let roadId = parseFloat( xml.attr_roadId );
 		let laneId = parseFloat( xml.attr_laneId );
@@ -980,7 +974,7 @@ export class ReaderService extends AbstractReader {
 		return new LanePosition( roadId, laneId, laneOffset, s, null );
 	}
 
-	readRelativeLanePosition ( xml: any ): AbstractPosition {
+	readRelativeLanePosition ( xml: XmlElement ): AbstractPosition {
 
 		const position = new RelativeLanePosition();
 
@@ -998,7 +992,7 @@ export class ReaderService extends AbstractReader {
 		return position;
 	}
 
-	readRelativeObjectPosition ( xml: any ): AbstractPosition {
+	readRelativeObjectPosition ( xml: XmlElement ): AbstractPosition {
 
 		const position = new RelativeObjectPosition();
 
@@ -1016,7 +1010,7 @@ export class ReaderService extends AbstractReader {
 		return position;
 	}
 
-	readOrientation ( xml: any ): Orientation {
+	readOrientation ( xml: XmlElement ): Orientation {
 
 		const orientation = new Orientation;
 
@@ -1029,7 +1023,7 @@ export class ReaderService extends AbstractReader {
 		return orientation;
 	}
 
-	readLongitudinalAction ( xml: any ): any {
+	readLongitudinalAction ( xml: XmlElement ): any {
 
 		let action = null;
 
@@ -1050,7 +1044,7 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	readTarget ( xml: any ): AbstractTarget {
+	readTarget ( xml: XmlElement ): AbstractTarget {
 
 		let target = null;
 
@@ -1073,7 +1067,7 @@ export class ReaderService extends AbstractReader {
 		return target;
 	}
 
-	readVertex ( xml: any ): Vertex {
+	readVertex ( xml: XmlElement ): Vertex {
 
 		const vertex = new Vertex;
 
@@ -1084,7 +1078,7 @@ export class ReaderService extends AbstractReader {
 		return vertex;
 	}
 
-	readVertexShape ( xml: any ): AbstractShape {
+	readVertexShape ( xml: XmlElement ): AbstractShape {
 
 		if ( xml.Polyline != null ) {
 
@@ -1113,12 +1107,12 @@ export class ReaderService extends AbstractReader {
 	//
 	// }
 	//
-	// private readStory ( xml: any ) {
+	// private readStory ( xml: XmlElement ) {
 	//
 	//     // oscStoryboard.Story = Story.readXml( Storyboard.Story );
 	// }
 	//
-	// private readPrivateElements ( xml: any, initActions: InitActions ) {
+	// private readPrivateElements ( xml: XmlElement, initActions: InitActions ) {
 	//
 	//     let owner = xml.attr_object;
 	//
@@ -1138,7 +1132,7 @@ export class ReaderService extends AbstractReader {
 	//
 	// }
 	//
-	// private readPrivateElement ( xml: any ): AbstractPrivateAction {
+	// private readPrivateElement ( xml: XmlElement ): AbstractPrivateAction {
 	//
 	//     const privateAction = new PrivateAction();
 	//
@@ -1162,7 +1156,7 @@ export class ReaderService extends AbstractReader {
 	//     return privateAction;
 	// }
 	//
-	// private readActionElement ( xml: any ) : any {
+	// private readActionElement ( xml: XmlElement ) : any {
 	//
 	//     let action: any = null;
 	//
@@ -1176,7 +1170,7 @@ export class ReaderService extends AbstractReader {
 	//
 	// }
 	//
-	// private readPositionAction ( xml: any ): any {
+	// private readPositionAction ( xml: XmlElement ): any {
 	//
 	//     let position: PositionAction;
 	//
@@ -1189,7 +1183,7 @@ export class ReaderService extends AbstractReader {
 	//     new PositionAction( position );
 	// }
 	//
-	// private readWorldPosition ( xml: any ): any {
+	// private readWorldPosition ( xml: XmlElement ): any {
 	//
 	//     return new WorldPosition(
 	//         xml.attr_x,
@@ -1202,7 +1196,7 @@ export class ReaderService extends AbstractReader {
 	//     );
 	// }
 
-	readClothoidShape ( xml: any ): ClothoidShape {
+	readClothoidShape ( xml: XmlElement ): ClothoidShape {
 
 		const clothoid = new ClothoidShape;
 
@@ -1213,7 +1207,7 @@ export class ReaderService extends AbstractReader {
 		return clothoid;
 	}
 
-	readSplineShape ( xml: any ): SplineShape {
+	readSplineShape ( xml: XmlElement ): SplineShape {
 
 		const spline = new SplineShape;
 
@@ -1223,7 +1217,7 @@ export class ReaderService extends AbstractReader {
 		return spline;
 	}
 
-	readSplineControlPoint ( xml: any ): ControlPoint {
+	readSplineControlPoint ( xml: XmlElement ): ControlPoint {
 
 		const controlPoint = new ControlPoint;
 
@@ -1232,7 +1226,7 @@ export class ReaderService extends AbstractReader {
 		return controlPoint;
 	}
 
-	private readStoryboard ( xml: any ): Storyboard {
+	private readStoryboard ( xml: XmlElement ): Storyboard {
 
 		const storyboard = new Storyboard();
 
@@ -1320,7 +1314,7 @@ export class ReaderService extends AbstractReader {
 		// }
 	}
 
-	private readCatalogReference ( xml: any ) {
+	private readCatalogReference ( xml: XmlElement ) {
 
 		const catalogReference = new CatalogReference( null, null );
 
@@ -1331,7 +1325,7 @@ export class ReaderService extends AbstractReader {
 		return catalogReference;
 	}
 
-	private readParameterDeclaration ( xml: any ): ParameterDeclaration {
+	private readParameterDeclaration ( xml: XmlElement ): ParameterDeclaration {
 
 		const parameterDeclaration = new ParameterDeclaration();
 
@@ -1345,7 +1339,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	private readParameter ( xml: any ): Parameter {
+	private readParameter ( xml: XmlElement ): Parameter {
 
 		const name: string = xml.attr_name;
 		const value: string = xml.attr_value;
@@ -1355,7 +1349,7 @@ export class ReaderService extends AbstractReader {
 		return new Parameter( name, type, value );
 	}
 
-	private readSpeedCondition ( xml: any ) {
+	private readSpeedCondition ( xml: XmlElement ) {
 
 		const value = xml.attr_value;
 		const rule = xml.attr_rule;
@@ -1364,7 +1358,7 @@ export class ReaderService extends AbstractReader {
 		return new SpeedCondition( value, rule );
 	}
 
-	private readCatalogs ( xml: any ) {
+	private readCatalogs ( xml: XmlElement ) {
 
 		const catalogs = new Catalogs();
 
@@ -1373,7 +1367,7 @@ export class ReaderService extends AbstractReader {
 		return catalogs;
 	}
 
-	private readTrajectoryCatalog ( xml: any ): TrajectoryCatalog {
+	private readTrajectoryCatalog ( xml: XmlElement ): TrajectoryCatalog {
 
 		const directory = this.readDirectory( xml.Directory );
 
@@ -1396,7 +1390,7 @@ export class ReaderService extends AbstractReader {
 		return catalog;
 	}
 
-	private readDirectory ( xml: any ): Directory {
+	private readDirectory ( xml: XmlElement ): Directory {
 
 		return new Directory( xml.attr_path );
 

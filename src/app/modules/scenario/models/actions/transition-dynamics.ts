@@ -3,9 +3,9 @@ import { DynamicsDimension, DynamicsShape } from '../tv-enums';
 export class TransitionDynamics {
 
 	constructor (
-		public shape: DynamicsShape = DynamicsShape.step,
-		public dimensionValue: number = 0,
-		public dimension: DynamicsDimension = DynamicsDimension.time
+		public dynamicsShape: DynamicsShape = DynamicsShape.step,
+		public value: number = 0,
+		public dynamicsDimension: DynamicsDimension = DynamicsDimension.time
 	) {
 
 	}
@@ -16,7 +16,7 @@ export class TransitionDynamics {
 
 		// let speedChange = targetSpeed - initialSpeed;  // calculate the required change in speed
 
-		switch ( this.shape ) {
+		switch ( this.dynamicsShape ) {
 
 			case DynamicsShape.step:
 				newSpeed = this.stepCalculation( initialSpeed, targetSpeed, elapsedTime );
@@ -41,32 +41,32 @@ export class TransitionDynamics {
 
 	private stepCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
 
-		if ( this.dimension === DynamicsDimension.time ) {
+		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			return elapsedTime >= this.dimensionValue ? targetSpeed : initialSpeed;
+			return elapsedTime >= this.value ? targetSpeed : initialSpeed;
 
-		} else if ( this.dimension === DynamicsDimension.rate ) {
+		} else if ( this.dynamicsDimension === DynamicsDimension.rate ) {
 
-			return elapsedTime * this.dimensionValue >= 1 ? targetSpeed : initialSpeed;
+			return elapsedTime * this.value >= 1 ? targetSpeed : initialSpeed;
 
-		} else if ( this.dimension === DynamicsDimension.distance ) {
+		} else if ( this.dynamicsDimension === DynamicsDimension.distance ) {
 
-			return elapsedTime * initialSpeed >= this.dimensionValue ? targetSpeed : initialSpeed;
+			return elapsedTime * initialSpeed >= this.value ? targetSpeed : initialSpeed;
 		}
 
 	}
 
 	private linearCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
 
-		if ( this.dimension === DynamicsDimension.time ) {
+		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			return initialSpeed + ( targetSpeed - initialSpeed ) * elapsedTime / this.dimensionValue;
+			return initialSpeed + ( targetSpeed - initialSpeed ) * elapsedTime / this.value;
 
-		} else if ( this.dimension === DynamicsDimension.rate ) {
+		} else if ( this.dynamicsDimension === DynamicsDimension.rate ) {
 
-			return initialSpeed + ( targetSpeed - initialSpeed ) * this.dimensionValue * elapsedTime;
+			return initialSpeed + ( targetSpeed - initialSpeed ) * this.value * elapsedTime;
 
-		} else if ( this.dimension === DynamicsDimension.distance ) {
+		} else if ( this.dynamicsDimension === DynamicsDimension.distance ) {
 
 			// You might want to consider time and distance to calculate new speed
 			// For instance, if you have the total time and distance for the simulation
@@ -79,19 +79,19 @@ export class TransitionDynamics {
 
 	private sinusoidalCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
 
-		if ( this.dimension === DynamicsDimension.time ) {
+		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			let phase = Math.PI * elapsedTime / this.dimensionValue;
-
-			return initialSpeed + ( targetSpeed - initialSpeed ) * ( 1 - Math.cos( phase ) ) / 2;
-
-		} else if ( this.dimension === DynamicsDimension.rate ) {
-
-			let phase = Math.PI * this.dimensionValue * elapsedTime;
+			let phase = Math.PI * elapsedTime / this.value;
 
 			return initialSpeed + ( targetSpeed - initialSpeed ) * ( 1 - Math.cos( phase ) ) / 2;
 
-		} else if ( this.dimension === DynamicsDimension.distance ) {
+		} else if ( this.dynamicsDimension === DynamicsDimension.rate ) {
+
+			let phase = Math.PI * this.value * elapsedTime;
+
+			return initialSpeed + ( targetSpeed - initialSpeed ) * ( 1 - Math.cos( phase ) ) / 2;
+
+		} else if ( this.dynamicsDimension === DynamicsDimension.distance ) {
 
 			// This case needs to be defined based on how distance should affect speed.
 			throw new Error( 'not implemented' );
@@ -102,7 +102,7 @@ export class TransitionDynamics {
 
 		let newLaneOffset = initialOffset;
 
-		switch ( this.shape ) {
+		switch ( this.dynamicsShape ) {
 
 			case DynamicsShape.step:
 				newLaneOffset = this.stepCalculation( initialOffset, targetOffset, elapsedTime );

@@ -9,30 +9,28 @@ import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
 import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
+import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
-import { LaneChangeDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { AbstractByEntityCondition } from '../models/conditions/abstract-by-entity-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
+import { AbstractCondition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { LanePosition } from '../models/positions/tv-lane-position';
+import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
+import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
+import { WorldPosition } from '../models/positions/tv-world-position';
 import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
 import { EntityObject } from '../models/tv-entities';
-import {
-	ActionCategory,
-	ActionType,
-	ConditionCategory,
-	ConditionType,
-	PositionType,
-	TargetType
-} from '../models/tv-enums';
+import { ActionCategory, ActionType, ConditionCategory, ConditionType, PositionType, TargetType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { CatalogReferenceController } from '../models/tv-interfaces';
 import { Maneuver } from '../models/tv-maneuver';
@@ -44,11 +42,6 @@ import { Sequence } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { LanePosition } from '../models/positions/tv-lane-position';
-import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
-import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
-import { WorldPosition } from '../models/positions/tv-world-position';
-import { AbstractCondition } from '../models/conditions/tv-condition';
 
 @Injectable( {
 	providedIn: 'root'
@@ -636,7 +629,7 @@ export class WriterService {
 		return {
 			Longitudinal: {
 				Speed: {
-					Dynamics: this.writeDynamics( action.dynamics ),
+					Dynamics: this.writeTransitionDynamics( action.dynamics ),
 					Target: this.writeTarget( action.target )
 				}
 			}
@@ -655,7 +648,7 @@ export class WriterService {
 					// TODO: dont add this when value is null
 					attr_targetLaneOffset: action.targetLaneOffset ? action.targetLaneOffset : 0,
 
-					Dynamics: this.writeDynamics( action.dynamics ),
+					Dynamics: this.writeTransitionDynamics( action.dynamics ),
 
 					Target: this.writeTarget( action.target )
 				}
@@ -692,15 +685,17 @@ export class WriterService {
 
 	}
 
-	writeDynamics ( dynamics: LaneChangeDynamics ) {
+	writeTransitionDynamics ( dynamics: TransitionDynamics ) {
 
-		let xml = {};
+		return {
+			Dynamics: {
+				attr_dynamicsShape: dynamics.dynamicsShape,
+				attr_value: dynamics.value,
+				attr_dynamicsDimension: dynamics.dynamicsDimension
+			}
+		};
 
-		dynamics.time ? xml[ 'attr_time' ] = dynamics.time : null;
-		dynamics.distance ? xml[ 'attr_distance' ] = dynamics.distance : null;
-		dynamics.shape ? xml[ 'attr_shape' ] = dynamics.shape : null;
 
-		return xml;
 	}
 
 	writePositionAction ( action: PositionAction ) {
