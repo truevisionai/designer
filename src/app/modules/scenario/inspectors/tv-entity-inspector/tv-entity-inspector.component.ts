@@ -18,6 +18,7 @@ import { TvEvent } from '../../models/tv-event';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ActionsInspectorComponent } from '../tv-actions-inspector/tv-player-actions-inspector.component';
+import { ActionFactory } from '../../builders/action-factory';
 
 @Component( {
 	selector: 'app-tv-player-inspector',
@@ -70,7 +71,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 		if ( $actionType !== null ) {
 
-			const action = ActionService.getAction( $actionType, this.entity );
+			const action = ActionFactory.createAction( $actionType, this.entity );
 
 			if ( action === null ) {
 				return;

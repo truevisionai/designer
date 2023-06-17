@@ -11,6 +11,7 @@ import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
 import { WorldPosition } from '../models/positions/tv-world-position';
+import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 
 export class ActionFactory {
 
@@ -27,10 +28,24 @@ export class ActionFactory {
 			case ActionType.Private_LaneChange:
 				return this.createLaneChangeAction( entity );
 
+			case ActionType.Private_LaneOffset:
+				return this.createChangeLaneOffsetAction( entity );
+
 			default:
 				throw new Error( `Unsupported private action: ${ type }` );
 
 		}
+
+	}
+
+	static createChangeLaneOffsetAction ( entity?: EntityObject ) {
+
+		// 3.2 lane width
+		const target = entity ?
+			new RelativeTarget( entity.name, 3.2 ) :
+			new AbsoluteTarget( 3.2 );
+
+		return new LaneOffsetAction( false, 0.01, DynamicsShape.linear, target );
 
 	}
 
@@ -58,7 +73,7 @@ export class ActionFactory {
 
 		const target = entity ? new RelativeTarget( entity.name, 1 ) : new AbsoluteTarget( 1 );
 
-		const dynamics = new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time);
+		const dynamics = new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time );
 
 		return new LaneChangeAction( dynamics, target );
 	}
