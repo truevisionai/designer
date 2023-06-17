@@ -8,8 +8,8 @@ import { AbstractPrivateAction } from '../abstract-private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
+import { TransitionDynamics } from './transition-dynamics';
 import { AbsoluteTarget } from './tv-absolute-target';
-import { SpeedDynamics } from './tv-private-action';
 import { RelativeTarget } from './tv-relative-target';
 
 /**
@@ -29,7 +29,7 @@ export class SpeedAction extends AbstractPrivateAction {
 	private initialSpeed: number;
 	private targetSpeed: number;
 
-	constructor ( public dynamics: SpeedDynamics = null, public target: AbstractTarget = null ) {
+	constructor ( public dynamics: TransitionDynamics = null, public target: AbstractTarget = null ) {
 
 		super();
 

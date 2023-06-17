@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
-import { DynamicsDimension, LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityObject } from '../models/tv-entities';
-import { ActionType, DynamicsShape } from '../models/tv-enums';
+import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
 import { WorldPosition } from '../models/positions/tv-world-position';
 
 export class ActionFactory {
@@ -49,7 +49,7 @@ export class ActionFactory {
 	private static createSpeedAction ( entity?: EntityObject ) {
 
 		return new SpeedAction(
-			new SpeedDynamics( DynamicsShape.linear, 5, DynamicsDimension.time ),
+			new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time ),
 			new AbsoluteTarget( entity?.speed )
 		);
 	}
@@ -58,7 +58,7 @@ export class ActionFactory {
 
 		const target = entity ? new RelativeTarget( entity.name, 1 ) : new AbsoluteTarget( 1 );
 
-		const dynamics = new LaneChangeDynamics( 5, 0, DynamicsShape.sinusoidal, 0 );
+		const dynamics = new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time);
 
 		return new LaneChangeAction( dynamics, target );
 	}

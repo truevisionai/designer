@@ -242,3 +242,9 @@ export enum RouteStrategy {
 	random = 'random'
 
 }
+
+export enum DynamicsDimension {
+	time,	// time
+	distance, // distance
+	rate	// rate of change
+}

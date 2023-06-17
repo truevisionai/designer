@@ -333,6 +333,7 @@ export class EntityObject {
 		this.previousVelocity = 0;
 		this.currentVelocity = 0;
 		this._maxSpeed = 0;
+		this.laneOffset = 0;
 
 		if ( this.originalPosition ) {
 			this.setPosition( this.originalPosition );

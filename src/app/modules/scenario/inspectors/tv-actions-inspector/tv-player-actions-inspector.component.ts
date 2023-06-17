@@ -6,9 +6,9 @@ import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { AbstractPrivateAction } from '../../models/abstract-private-action';
+import { TransitionDynamics } from '../../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../../models/actions/tv-follow-trajectory-action';
-import { SpeedDynamics } from '../../models/actions/tv-private-action';
 import { SpeedAction } from '../../models/actions/tv-speed-action';
 import { Act } from '../../models/tv-act';
 import { EntityObject } from '../../models/tv-entities';
@@ -140,7 +140,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 		const event = maneuver.addNewEvent( eventName, 'overwrite' );
 
-		const dynamics = new SpeedDynamics( DynamicsShape.step );
+		const dynamics = new TransitionDynamics( DynamicsShape.step );
 
 		const target = new AbsoluteTarget( 10 );
 

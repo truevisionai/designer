@@ -12,12 +12,13 @@ import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
 import { AbstractPrivateAction } from '../models/abstract-private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
+import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { DistanceAction } from '../models/actions/tv-distance-action';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
-import { LaneChangeDynamics, SpeedDynamics } from '../models/actions/tv-private-action';
+import { LaneChangeDynamics } from '../models/actions/tv-private-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
@@ -40,7 +41,7 @@ import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
 import { EntityObject } from '../models/tv-entities';
-import { ConditionEdge, Rule } from '../models/tv-enums';
+import { ConditionEdge, DynamicsDimension, DynamicsShape, Rule } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
 import {
@@ -917,28 +918,23 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readSpeedDynamics ( xml: any ): SpeedDynamics {
+	readSpeedDynamics ( xml: any ): TransitionDynamics {
 
-		// TODO: fix and add dimension
-		let dynamics = new SpeedDynamics;
+		// TOOD: Fix parsing of enum
+		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape;
 
-		dynamics.shape = xml.attr_shape;
+		const value = xml.attr_value;
 
-		dynamics.rate = xml.attr_rate ? parseFloat( xml.attr_rate ) : null;
+		// TOOD: Fix parsing of enum
+		const dynamicsDimension: DynamicsDimension = xml.attr_dynamicsDimension;
 
-		dynamics.time = xml.attr_time ? parseFloat( xml.attr_time ) : null;
-
-		dynamics.distance = xml.attr_distance ? parseFloat( xml.attr_distance ) : null;
-
-		return dynamics;
+		return new TransitionDynamics( dynamicsShape, value, dynamicsDimension );
 
 	}
 
 	readPositionAction ( xml: any ): AbstractPrivateAction {
 
-		let position = this.readPosition( xml );
-
-		return new PositionAction( position );
+		return new PositionAction( this.readPosition( xml ) );
 
 	}
 
@@ -1039,13 +1035,11 @@ export class ReaderService extends AbstractReader {
 
 		if ( xml.Speed != null ) {
 
-			let action = new SpeedAction();
+			const dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
 
-			action.dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
+			const target = this.readTarget( xml.Speed.Target );
 
-			action.setTarget( this.readTarget( xml.Speed.Target ) );
-
-			return action;
+			return new SpeedAction( dynamics, target );
 
 		} else if ( xml.Distance != null ) {
 

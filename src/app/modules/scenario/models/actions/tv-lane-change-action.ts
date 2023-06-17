@@ -2,49 +2,49 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils } from 'three';
 import { Time } from '../../../../core/time';
 import { TvLaneSide } from '../../../tv-map/models/tv-common';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
 import { AbstractPrivateAction } from '../abstract-private-action';
 import { EntityObject } from '../tv-entities';
-import { ActionType, DynamicsShape, TargetType } from '../tv-enums';
+import { ActionType } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
+import { TransitionDynamics } from './transition-dynamics';
 import { AbsoluteTarget } from './tv-absolute-target';
-import { LaneChangeDynamics } from './tv-private-action';
 import { RelativeTarget } from './tv-relative-target';
 
+/**
+ * This action describes the transition between an entity's
+ * current lane and its target lane. The target lane may be
+ * given in absolute or relative terms. The dynamics of the
+ * transition may be given either by providing the time or
+ * the distance required for performing the transition. Time
+ * and distance are measured between the start position and
+ * the end position of the action.. The transition starts at
+ * the current lane position, including the current lane
+ * offset and ends at the target lane position, optionally
+ * including a targetLaneOffset.
+ */
 export class LaneChangeAction extends AbstractPrivateAction {
 
 	public actionName = 'LaneChange';
 	public actionType: ActionType = ActionType.Private_LaneChange;
 
-	// public dynamics: LaneChangeDynamics = new LaneChangeDynamics();
-	// public target: AbstractTarget = new AbsoluteTarget( 0 );
-	// public targetLaneOffset?: number = null;
-
-	// variables for action help
 	private startTime = 0;
-	// private currentLaneWidth = 0;
-	private currentLaneId = 0;
-	// private newLaneWidth = 0;
-	private newLaneId = 0;
-	// private tDirection = 0;
+	private targetLaneId = 0;
+	private lateralDistance = 0;	// could be negative or positive
+	private initialLaneOffset: number;
 
-	// could be negative or positive
-	private tDistance = 0;
+	private debug = true;
 
 	constructor (
-		public dynamics?: LaneChangeDynamics,
-		public target?: AbstractTarget,
-		public targetLaneOffset?: number
+		public dynamics: TransitionDynamics = new TransitionDynamics(),
+		public target: AbstractTarget = new AbsoluteTarget( 0 ),
+		public targetLaneOffset: number = 0
 	) {
 
 		super();
-
-		this.dynamics = dynamics || new LaneChangeDynamics();
-		this.target = target || new AbsoluteTarget( 0 );
 
 	}
 
@@ -52,8 +52,13 @@ export class LaneChangeAction extends AbstractPrivateAction {
 
 		super.reset();
 
-		// this.dynamics?.reset();
 		this.target?.reset();
+
+		this.startTime = null;
+		this.targetLaneId = null;
+		this.lateralDistance = null
+		this.initialLaneOffset = null;
+
 
 	}
 
@@ -61,134 +66,74 @@ export class LaneChangeAction extends AbstractPrivateAction {
 
 		if ( this.isCompleted ) return;
 
-		if ( !this.hasStarted ) {
+		if ( !this.startTime ) {
 
-			this.start( entity );
+			this.startTime = Time.time;
 
-		} else {
+			this.computeLateralDistance( entity );
 
-			const timePassed = ( Time.time - this.startTime ) * 0.001;
+		}
 
-			if ( timePassed <= this.dynamics.time ) {
+		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
-				this.performLaneChange( entity, timePassed );
+		const newLaneOffset = this.dynamics.calculateOffset( this.initialLaneOffset, this.lateralDistance, elapsedTime );
 
-			} else {
+		// TODO: need to double check this
+		if ( Math.abs( entity.getCurrentLaneOffset() ) >= Math.abs( this.lateralDistance ) ) {
 
-				this.isCompleted = true;
+			this.actionCompleted();
 
-				this.completed.emit();
+			// entity.laneId = this.targetLaneId;
 
-				entity.laneOffset = 0;
-				entity.laneId = this.newLaneId;
-			}
+		}
+
+		entity.setLaneOffset( newLaneOffset );
+
+		if ( this.debug ) {
+
+			console.log( 'LaneChangeAction', entity.laneId, this.lateralDistance, entity.getCurrentLaneOffset(), newLaneOffset, elapsedTime );
 
 		}
 
 	}
 
-	start ( entity: EntityObject ) {
+	private computeLateralDistance ( entity: EntityObject ) {
 
-		const openDrive = TvMapInstance.map;
-		const road = openDrive.getRoadById( entity.roadId );
-
-		this.startTime = Time.time;
-
-		this.hasStarted = true;
-
-		this.currentLaneId = entity.laneId;
-
-		switch ( this.target.targetType ) {
-
-			case TargetType.absolute:
-				this.newLaneId = this.currentLaneId + this.target.value;
-				this.newLaneId = this.target.value;
-				break;
-
-			case TargetType.relative:
-				const otherLaneId = ( this.target as RelativeTarget ).entity.laneId;
-				this.newLaneId = otherLaneId + this.target.value;
-				break;
-
-		}
-
-		// this.currentLaneWidth = road.getLaneWidth( entity.sCoordinate, this.currentLaneId );
-		// this.newLaneWidth = road.getLaneWidth( entity.sCoordinate, this.newLaneId );
-
-		const current = TvMapQueries.getLanePosition( road.id, this.currentLaneId, entity.sCoordinate, 0 );
-		const desired = TvMapQueries.getLanePosition( road.id, this.newLaneId, entity.sCoordinate, 0 );
-		const distance = current.distanceTo( desired );
+		this.initialLaneOffset = entity.getCurrentLaneOffset();
 
 		// if left lane change then negative
 		// if right lane change then positive
-		const side = this.currentLaneId > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+		const side = entity.getCurrentLaneId() > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
 
 		let tDirection: number;
 
 		if ( side == TvLaneSide.LEFT ) {
 
-			tDirection = this.newLaneId > this.currentLaneId ? 1 : -1;
+			tDirection = this.target.value > 0 ? 1 : -1;
 
 		} else if ( side == TvLaneSide.RIGHT ) {
 
-			tDirection = this.newLaneId > this.currentLaneId ? -1 : 1;
+			tDirection = this.target.value > 0 ? -1 : 1;
 
 		}
 
+		if ( this.target instanceof RelativeTarget ) {
+
+			this.targetLaneId = this.target.entity.laneId + ( this.target.value * tDirection );
+
+		} else {
+
+			this.targetLaneId = this.target.value;
+
+		}
+
+		const road = TvMapInstance.map.getRoadById( entity.roadId );
+
+		const current = TvMapQueries.getLanePosition( road.id, entity.getCurrentLaneId(), entity.sCoordinate, this.initialLaneOffset );
+		const desired = TvMapQueries.getLanePosition( road.id, this.targetLaneId, entity.sCoordinate, this.targetLaneOffset );
+		const distance = current.distanceTo( desired );
 
 		// change from center of this lane to center of new lane
-		// this.changeInTCoordinate = this.tDirection * ( this.currentLaneWidth + this.newLaneWidth ) * 0.5;
-		this.tDistance = tDirection * distance;
-
+		this.lateralDistance = tDirection * distance * -1;
 	}
-
-	private performLaneChange ( entity: EntityObject, timePassed: number ) {
-
-		switch ( this.dynamics.shape ) {
-
-			case DynamicsShape.linear:
-				this.linearLaneChange( entity, timePassed, this.tDistance );
-				break;
-
-			case DynamicsShape.cubic:
-				this.cubicLaneChange( entity, timePassed, this.tDistance );
-				break;
-
-			case DynamicsShape.sinusoidal:
-				this.sinusoidalLaneChange( entity, timePassed, this.tDistance );
-				break;
-
-			case DynamicsShape.step:
-				entity.laneId = timePassed >= this.dynamics.time ? this.newLaneId : this.currentLaneId;
-				break;
-
-		}
-	}
-
-	private linearLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
-
-		const fraction = timePassed / this.dynamics.time;
-
-		entity.laneOffset = MathUtils.lerp( 0, distance, fraction );
-
-	}
-
-	private sinusoidalLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
-
-		const fraction = timePassed / this.dynamics.time;
-
-		// Implementing a sine interpolation from 0 to 1 over the duration of the dynamics time
-		entity.laneOffset = distance * Math.sin( Math.PI * fraction / 2 );
-
-	}
-
-	private cubicLaneChange ( entity: EntityObject, timePassed: number, distance: number ) {
-
-		const fraction = timePassed / this.dynamics.time;
-
-		// Implementing a cubic interpolation from 0 to 1 over the duration of the dynamics time
-		entity.laneOffset = distance * ( Math.pow( fraction, 3 ) );
-
-	}
-
 }

@@ -3,8 +3,10 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { DynamicsShape } from 'app/modules/scenario/models/tv-enums';
-import { LaneChangeDynamics, SpeedDynamics } from '../../models/actions/tv-private-action';
+import { DynamicsDimension, DynamicsShape } from 'app/modules/scenario/models/tv-enums';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CommandHistory } from 'app/services/command-history';
+import { TransitionDynamics } from '../../models/actions/transition-dynamics';
 
 @Component( {
 	selector: 'app-dynamics-editor',
@@ -13,30 +15,27 @@ import { LaneChangeDynamics, SpeedDynamics } from '../../models/actions/tv-priva
 } )
 export class DynamicsEditorComponent {
 
-	// TODO: fix or add support for speed dynamics
-	@Input() dynamics: LaneChangeDynamics;
+	@Input() dynamics: TransitionDynamics;
 
-	onShapeChanged ( $event: string ) {
+	shapes = DynamicsShape;
 
-		this.dynamics.shape = DynamicsShape[ $event ];
+	dimensions = DynamicsDimension;
 
-	}
+	onShapeChanged ( $event: DynamicsShape ) {
 
-	onTimeChanged ( $event ) {
-
-		this.dynamics.time = $event;
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'shape', $event ) );
 
 	}
 
-	onDistanceChanged ( $event ) {
+	onDimensionChanged ( $event: DynamicsDimension ) {
 
-		this.dynamics.distance = $event;
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dimension', $event ) );
 
 	}
 
-	onRateChanged ( $event ) {
+	onValueChanged ( $event: number ) {
 
-		this.dynamics.rate = $event;
+		CommandHistory.execute( new SetValueCommand( this.dynamics, 'dimensionValue', $event ) );
 
 	}
 
