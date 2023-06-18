@@ -244,7 +244,7 @@ export enum RouteStrategy {
 }
 
 export enum DynamicsDimension {
-	time,	// time
-	distance, // distance
-	rate	// rate of change
+	time='time',	// time
+	distance='distance', // distance
+	rate='rate'	// rate of change
 }

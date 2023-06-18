@@ -78,7 +78,7 @@ export class ActionFactory {
 
 		const target = entity ? new RelativeTarget( entity.name, 1 ) : new AbsoluteTarget( 1 );
 
-		const dynamics = new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time );
+		const dynamics = new TransitionDynamics( DynamicsShape.sinusoidal, 2, DynamicsDimension.time );
 
 		return new LaneChangeAction( dynamics, target );
 	}

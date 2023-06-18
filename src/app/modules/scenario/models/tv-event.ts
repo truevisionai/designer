@@ -187,4 +187,10 @@ export class TvEvent {
 		} );
 
 	}
+
+	addAction ( action: AbstractPrivateAction ) {
+
+		this.actions.set( action.actionName, action );
+
+	}
 }

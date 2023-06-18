@@ -6,7 +6,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CoreModule, FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SharedModule } from '../../shared/shared.module';
@@ -60,6 +63,7 @@ import { OffRoadConditionEditorComponent } from './views/conditions/off-road-con
 import { EndOfRoadConditionComponent } from './views/conditions/end-of-road-condition/end-of-road-condition.component';
 import { AccelerationConditionComponent } from './views/conditions/accleration-condition/acceleration-condition.component';
 import { LongitudinalDistanceActionComponent } from './views/actions/longitudinal-distance-action/longitudinal-distance-action.component';
+import { EntityEventInspectorComponent } from './inspectors/entity-event-inspector/entity-event-inspector.component';
 
 @NgModule( {
 	declarations: [
@@ -100,6 +104,7 @@ import { LongitudinalDistanceActionComponent } from './views/actions/longitudina
 		AccelerationConditionComponent,
 		LaneOffsetActionComponent,
 		LongitudinalDistanceActionComponent,
+		EntityEventInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -114,6 +119,9 @@ import { LongitudinalDistanceActionComponent } from './views/actions/longitudina
 		FlexModule,
 		TvMapModule,
 		MatStepperModule,
+		MatTooltipModule,
+		MatMenuModule,
+		MatCardModule,
 	],
 	entryComponents: [
 		EntityInspector,

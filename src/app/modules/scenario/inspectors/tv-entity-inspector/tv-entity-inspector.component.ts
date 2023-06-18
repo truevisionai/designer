@@ -6,19 +6,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
-import { AppInspector } from '../../../../core/inspector';
+import { ActionFactory } from '../../builders/action-factory';
 import { ActionService } from '../../builders/action-service';
-import { ConditionFactory } from '../../builders/condition-factory';
 import { AbstractAction } from '../../models/abstract-action';
 import { AbstractPrivateAction } from '../../models/abstract-private-action';
-import { AbstractCondition } from '../../models/conditions/tv-condition';
 import { EntityObject } from '../../models/tv-entities';
-import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
+import { ActionType, ConditionType } from '../../models/tv-enums';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { ActionsInspectorComponent } from '../tv-actions-inspector/tv-player-actions-inspector.component';
-import { ActionFactory } from '../../builders/action-factory';
 
 @Component( {
 	selector: 'app-tv-player-inspector',
@@ -67,7 +63,7 @@ export class EntityInspector implements OnInit, IComponent {
 		return this.scenario.findEntityEvents( this.entity );
 	}
 
-	onAddAction ( $actionType: ActionType ) {
+	addEvent ( $actionType: ActionType ) {
 
 		if ( $actionType !== null ) {
 
@@ -84,71 +80,9 @@ export class EntityInspector implements OnInit, IComponent {
 		}
 	}
 
-	onAddCondition ( $type: ConditionType, event: TvEvent ) {
-
-		if ( $type !== null ) {
-
-			event.addStartCondition( ConditionFactory.createCondition( $type, this.entity ) );
-
-			this.addCondition.value = null;
-
-		}
-
-	}
-
-	onRemoveCondition ( $condition: AbstractCondition, event: TvEvent ) {
-
-		event.removeCondition( $condition );
-
-	}
 
 	ngOnInit () {
 
 	}
 
-	addInitActions () {
-
-		// this.dialogService.openAddEntityInitActionDialog( this.entity );
-
-	}
-
-	editPositionAction ( action ) {
-
-		// this.dialogService.openEditPositionDialog( action );
-
-	}
-
-	editStory () {
-
-		// this.dialogService.openStoryEditorDialog( this.entity );
-
-	}
-
-	editInitActions () {
-
-		// this.dialogService.openObjectInitEditorDialog( this.entity );
-
-	}
-
-	editActions () {
-
-		// let actions = this.scenario.getActionsByEntity( this.entity.name );
-
-		// Debug.log( actions );
-
-		AppInspector.setInspector( ActionsInspectorComponent, this.entity );
-
-	}
-
-	editAct () {
-
-		// this.dialogService.openEditActDialog( this.entity );
-
-	}
-
-	onRemoveAction ( action: AbstractAction, event: TvEvent ) {
-
-		event.removeAction( action as AbstractPrivateAction );
-
-	}
 }

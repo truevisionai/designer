@@ -3,6 +3,7 @@
 
 <app-double-field
 	label="Value"
+	[suffix]="suffix"
 	(valueChanged)="onValueChanged($event)"
 	[value]="dynamics.value">
 </app-double-field>

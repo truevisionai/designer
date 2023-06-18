@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractTarget } from '../../models/actions/abstract-target';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { RelativeTarget } from '../../models/actions/tv-relative-target';
@@ -17,6 +17,8 @@ import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 export class TargetEditorComponent implements OnInit {
 
 	@Input() target: AbstractTarget;
+
+	@Output() changed = new EventEmitter<AbstractTarget>();
 
 	targetTypes = TargetType;
 
@@ -59,15 +61,33 @@ export class TargetEditorComponent implements OnInit {
 
 	}
 
+	onEntityChanged( $entity: string ) {
+
+		this.relativeTarget.entityName = $entity;
+
+	}
+
 	onValueChanged ( $event: any ) {
 
 		this.target.setTarget( $event );
 
 	}
 
-	onTypeChanged ( $type ) {
+	onTypeChanged ( $type: TargetType ) {
 
-		this.target.targetType = $type;
+		switch ( $type ) {
+
+			case TargetType.absolute:
+				this.target = new AbsoluteTarget( this.target.value );
+				break;
+
+			case TargetType.relative:
+				this.target = new RelativeTarget( null, this.target.value );
+				break;
+
+		}
+
+		this.changed.emit( this.target );
 
 	}
 }

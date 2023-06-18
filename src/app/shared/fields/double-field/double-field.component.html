@@ -2,21 +2,19 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<!-- <mat-form-field style="width: 100%;"> -->
-
-<!-- <input *ngIf="isParameter" matInput placeholder="$" [(ngModel)]="value"> -->
-
-<!-- <input type="number" matInput [placeholder]="label" [(ngModel)]="fieldValue" (ngModelChange)="onFieldValueChanged($event)"> -->
-
-<!-- </mat-form-field> -->
-
 <div align="left" class="tv-field">
 
 	<label class="tv-field-label">{{ label }}</label>
 
-	<div class="tv-field-text-input">
+	<div class="tv-field-text-input" style="display: flex;">
 
-		<input (blur)="onBlur()" (focus)="onFocus()" (ngModelChange)="onModelChanged($event)" (wheel)="onWheel($event)" [(ngModel)]="value" [disabled]="disabled" [placeholder]="label" [value]="value" type="text" />
+		<input (blur)="onBlur()" (focus)="onFocus()" (ngModelChange)="onModelChanged($event)"
+			   (wheel)="onWheel($event)" [(ngModel)]="value" [disabled]="disabled" [placeholder]="label"
+			   [value]="value" type="number"/>
+
+		<span *ngIf="suffix" style="margin-left: 5px; margin-right: 5px">
+			{{suffix}}
+		</span>
 
 	</div>
 

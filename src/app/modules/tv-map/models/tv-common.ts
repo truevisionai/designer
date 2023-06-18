@@ -204,6 +204,26 @@ export enum ObjectTypes {
 
 export class EnumHelper {
 
+	static getSuffix ( dynamicsDimension: DynamicsDimension ): string {
+
+		switch ( dynamicsDimension ) {
+
+			case DynamicsDimension.distance:
+				return 'm';
+
+			case DynamicsDimension.time:
+				return 's';
+
+			case DynamicsDimension.rate:
+				return 'm/s';
+
+			default:
+				TvConsole.warn( 'unknown dynamics dimension' + dynamicsDimension );
+				return '';
+
+		}
+	}
+
 	static stringToDynamics ( value: string ): DynamicsShape {
 
 		switch ( value ) {

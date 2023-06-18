@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from 'app/utils/maths';
 import { Time } from '../../../../core/time';
 import { TvLaneSide } from '../../../tv-map/models/tv-common';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
@@ -36,7 +37,7 @@ export class LaneChangeAction extends AbstractPrivateAction {
 	private lateralDistance = 0;	// could be negative or positive
 	private initialLaneOffset: number;
 
-	private debug = true;
+	private debug = false;
 
 	constructor (
 		public dynamics: TransitionDynamics = new TransitionDynamics(),
@@ -45,6 +46,12 @@ export class LaneChangeAction extends AbstractPrivateAction {
 	) {
 
 		super();
+
+	}
+
+	setTarget ( target: AbstractTarget ) {
+
+		this.target = target;
 
 	}
 
@@ -79,15 +86,19 @@ export class LaneChangeAction extends AbstractPrivateAction {
 		const newLaneOffset = this.dynamics.calculateOffset( this.initialLaneOffset, this.lateralDistance, elapsedTime );
 
 		// TODO: need to double check this
-		if ( Math.abs( entity.getCurrentLaneOffset() ) >= Math.abs( this.lateralDistance ) ) {
+		if ( Maths.approxEquals( Math.abs( entity.getCurrentLaneOffset() ), Math.abs( this.lateralDistance ) ) ) {
+
+			entity.laneOffset = 0;
+
+			entity.laneId = this.targetLaneId;
 
 			this.actionCompleted();
 
-			// entity.laneId = this.targetLaneId;
+		} else {
+
+			entity.setLaneOffset( newLaneOffset );
 
 		}
-
-		entity.setLaneOffset( newLaneOffset );
 
 		if ( this.debug ) {
 
@@ -101,31 +112,21 @@ export class LaneChangeAction extends AbstractPrivateAction {
 
 		this.initialLaneOffset = entity.getCurrentLaneOffset();
 
-		// if left lane change then negative
-		// if right lane change then positive
-		const side = entity.getCurrentLaneId() > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+		// Determine the side of the lane the entity is currently in
+		const isEntityOnLeftSide = entity.getCurrentLaneId() > 0;
 
-		let tDirection: number;
+		// Placeholder for target lane ID and lane change direction
+		let offsetDirection: number;
 
-		if ( side == TvLaneSide.LEFT ) {
-
-			tDirection = this.target.value > 0 ? 1 : -1;
-
-		} else if ( side == TvLaneSide.RIGHT ) {
-
-			tDirection = this.target.value > 0 ? -1 : 1;
-
-		}
-
+		// Compute the target lane ID based on whether the target is relative or not
 		if ( this.target instanceof RelativeTarget ) {
-
-			this.targetLaneId = this.target.entity.laneId + ( this.target.value * tDirection );
-
+			this.targetLaneId = this.target.entity.laneId + ( isEntityOnLeftSide ? this.target.value : -this.target.value );
 		} else {
-
 			this.targetLaneId = this.target.value;
-
 		}
+
+		// Determine the lane change direction based on the side of the road
+		offsetDirection = Math.sign( this.targetLaneId - entity.laneId ) * ( isEntityOnLeftSide ? 1 : -1 );
 
 		const road = TvMapInstance.map.getRoadById( entity.roadId );
 
@@ -134,6 +135,50 @@ export class LaneChangeAction extends AbstractPrivateAction {
 		const distance = current.distanceTo( desired );
 
 		// change from center of this lane to center of new lane
-		this.lateralDistance = tDirection * distance * -1;
+		this.lateralDistance = offsetDirection * distance;
+	}
+
+	private computeTDirection () {
+
+		// // if left lane change then negative
+		// // if right lane change then positive
+		// const side = entity.getCurrentLaneId() > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+
+		// let tDirection;
+
+		// if ( this.target instanceof RelativeTarget ) {
+
+		// 	if ( side === TvLaneSide.RIGHT ) {
+
+		// 		this.targetLaneId = this.target.entity.laneId - this.target.value;
+
+		// 		tDirection = Math.sign( this.targetLaneId - entity.laneId ) * -1;
+
+
+		// 	} else {
+
+		// 		this.targetLaneId = this.target.entity.laneId + this.target.value;
+
+		// 		tDirection = Math.sign( this.targetLaneId - entity.laneId );
+
+		// 	}
+
+		// } else {
+
+		// 	this.targetLaneId = this.target.value;
+
+		// 	if ( side === TvLaneSide.RIGHT ) {
+
+		// 		tDirection = Math.sign( this.targetLaneId - entity.laneId ) * -1;
+
+		// 	} else {
+
+		// 		tDirection = Math.sign( this.targetLaneId - entity.laneId );
+
+
+		// 	}
+
+		// }
+
 	}
 }
