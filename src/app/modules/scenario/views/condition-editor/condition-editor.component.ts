@@ -3,8 +3,8 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
-import { AbstractByEntityCondition } from '../../models/conditions/abstract-by-entity-condition';
+import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
+import { EntityCondition } from '../../models/conditions/entity-condition';
 import { DistanceCondition } from '../../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../../models/conditions/tv-simulation-time-condition';
 import { ConditionCategory, ConditionType } from '../../models/tv-enums';
@@ -16,11 +16,11 @@ import { ConditionCategory, ConditionType } from '../../models/tv-enums';
 } )
 export class ConditionEditorComponent implements OnInit {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
-	@Output() conditionChanged = new EventEmitter<AbstractCondition>();
+	@Output() conditionChanged = new EventEmitter<Condition>();
 
-	@Output() removed = new EventEmitter<AbstractCondition>();
+	@Output() removed = new EventEmitter<Condition>();
 
 	constructor () {
 	}
@@ -34,32 +34,11 @@ export class ConditionEditorComponent implements OnInit {
 	}
 
 	get conditionByEntity () {
-		return this.condition as AbstractByEntityCondition;
+		return this.condition as EntityCondition;
 	}
 
 	ngOnInit () {
 
-
-	}
-
-	onConditionTypeChanged ( e ) {
-
-		switch ( e ) {
-
-			case this.types.ByEntity_Distance:
-				this.condition = new DistanceCondition();
-				break;
-
-			case this.types.ByValue_SimulationTime:
-				this.condition = new SimulationTimeCondition();
-				break;
-
-			default:
-				break;
-
-		}
-
-		this.conditionChanged.emit( this.condition );
 
 	}
 

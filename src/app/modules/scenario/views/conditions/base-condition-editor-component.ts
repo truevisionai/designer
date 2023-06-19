@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
+import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 
 
 @Component( {
@@ -12,6 +12,6 @@ import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-con
 } )
 export abstract class BaseConditionEditorComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 }

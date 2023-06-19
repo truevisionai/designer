@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AbstractByEntityCondition } from 'app/modules/scenario/models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from 'app/modules/scenario/models/conditions/entity-condition';
 import { TimeHeadwayCondition } from 'app/modules/scenario/models/conditions/tv-time-headway-condition';
 import { Rule } from 'app/modules/scenario/models/tv-enums';
 
@@ -10,7 +10,7 @@ import { Rule } from 'app/modules/scenario/models/tv-enums';
 } )
 export class TimeHeadwayConditionEditorComponent {
 
-	@Input() condition: AbstractByEntityCondition;
+	@Input() condition: EntityCondition;
 
 	rules = Rule;
 

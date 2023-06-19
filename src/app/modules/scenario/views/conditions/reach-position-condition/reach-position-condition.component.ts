@@ -7,7 +7,7 @@ import { ReachPositionCondition } from 'app/modules/scenario/models/conditions/t
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
 import { AbstractPosition } from '../../../models/abstract-position';
-import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {
@@ -16,7 +16,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class ReachPositionConditionComponent extends BaseConditionEditorComponent implements OnInit, OnDestroy {
 
-	@Input() condition: AbstractByEntityCondition;
+	@Input() condition: EntityCondition;
 
 	private sphere: Mesh;
 

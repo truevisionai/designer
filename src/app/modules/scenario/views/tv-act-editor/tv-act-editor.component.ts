@@ -4,7 +4,7 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AbstractCondition } from '../../models/conditions/tv-condition';
+import { Condition } from '../../models/conditions/tv-condition';
 import { Act } from '../../models/tv-act';
 import { EntityObject } from '../../models/tv-entities';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';

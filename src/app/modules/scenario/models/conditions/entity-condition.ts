@@ -2,9 +2,9 @@ import { Vector3 } from 'three';
 import { AbstractPosition } from '../abstract-position';
 import { EntityObject } from '../tv-entities';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractCondition } from './tv-condition';
+import { Condition } from './tv-condition';
 
-export abstract class AbstractByEntityCondition extends AbstractCondition {
+export abstract class EntityCondition extends Condition {
 
 	public category: ConditionCategory = ConditionCategory.ByEntity;
 

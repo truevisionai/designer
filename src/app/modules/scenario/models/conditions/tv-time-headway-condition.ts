@@ -5,14 +5,14 @@
 import { TvConsole } from '../../../../core/utils/console';
 import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Condition based on the headway time between a triggering entity/entities
  * and a reference entity. The logical operator used for comparison
  * is defined by the rule attribute.
  */
-export class TimeHeadwayCondition extends AbstractByEntityCondition {
+export class TimeHeadwayCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_TimeHeadway;
 	public name: string = 'TimeHeadwayCondition';

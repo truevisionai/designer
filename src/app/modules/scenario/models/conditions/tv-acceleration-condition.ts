@@ -3,14 +3,14 @@
  */
 
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Compares the entity's acceleration to a reference value.
  * The logical operator used for comparison is defined by
  * the rule attribute (less, greater, equal).
  */
-export class AccelerationCondition extends AbstractByEntityCondition {
+export class AccelerationCondition extends EntityCondition {
 
 	private debug = false;
 	public name: string = 'AccelerationCondition';

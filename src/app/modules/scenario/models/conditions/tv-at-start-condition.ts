@@ -3,9 +3,11 @@
  */
 
 import { ConditionType, StoryElementType } from '../tv-enums';
-import { AbstractByStateCondition } from './abstract-by-state-condition';
+import { StateCondition } from './state-condition';
 
-export class AtStartCondition extends AbstractByStateCondition {
+export class AtStartCondition extends StateCondition {
+
+	public name: string = 'AtStartCondition';
 
 	public readonly conditionType = ConditionType.ByState_AtStart;
 

@@ -4,14 +4,14 @@
 
 import { Time } from '../../../../core/time';
 import { ConditionType, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Checks if an entity is of the road.
  * The logical expression returns true after
  * the entity has been offroad for a specific duration.
  */
-export class OffRoadCondition extends AbstractByEntityCondition {
+export class OffRoadCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_Offroad;
 	public name: string = 'OffRoadCondition';

@@ -8,7 +8,7 @@ import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { AbstractAction } from './abstract-action';
 import { AbstractPrivateAction } from './abstract-private-action';
-import { AbstractCondition } from './conditions/tv-condition';
+import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { StoryElementType } from './tv-enums';
 
@@ -39,9 +39,9 @@ export class TvEvent {
 		this._actions = value;
 	}
 
-	get startConditions (): AbstractCondition[] {
+	get startConditions (): Condition[] {
 
-		let conditions: AbstractCondition[] = [];
+		let conditions: Condition[] = [];
 
 		this.startConditionGroups.forEach( group => {
 			group.conditions.forEach( condition => {
@@ -73,7 +73,7 @@ export class TvEvent {
 		} );
 	}
 
-	addStartCondition ( condition: AbstractCondition ) {
+	addStartCondition ( condition: Condition ) {
 
 		const conditionGroup = this.createOrGetGroup();
 
@@ -110,7 +110,7 @@ export class TvEvent {
 
 	}
 
-	removeCondition ( $condition: AbstractCondition ) {
+	removeCondition ( $condition: Condition ) {
 
 		for ( let i = 0; i < this.startConditionGroups.length; i++ ) {
 

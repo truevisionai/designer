@@ -5,14 +5,14 @@
 import { Maths } from 'app/utils/maths';
 import { Time } from '../../../../core/time';
 import { ConditionType, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Logical expression in condition becomes true if the
  * triggering entity/entities stands still for a
  * given amount of time.
  */
-export class StandStillCondition extends AbstractByEntityCondition {
+export class StandStillCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_StandStill;
 	public name: string = 'StandStillCondition';

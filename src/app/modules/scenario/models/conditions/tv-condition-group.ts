@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractCondition } from './tv-condition';
+import { Condition } from './tv-condition';
 
 export class ConditionGroup {
 
-	public conditions: AbstractCondition[] = [];
+	public conditions: Condition[] = [];
 
-	addCondition ( condition: AbstractCondition ) {
+	addCondition ( condition: Condition ) {
 		this.conditions.push( condition );
 	}
 

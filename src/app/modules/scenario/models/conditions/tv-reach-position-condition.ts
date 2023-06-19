@@ -4,13 +4,13 @@
 
 import { AbstractPosition } from '../abstract-position';
 import { ConditionType, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Checks if a triggering entity/entities has reached a
  * given position, within some user specified tolerance.
  */
-export class ReachPositionCondition extends AbstractByEntityCondition {
+export class ReachPositionCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_ReachPosition;
 	public name: string = 'ReachPositionCondition';

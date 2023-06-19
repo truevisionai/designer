@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { ConditionType, TriggeringRule } from '../../../models/tv-enums';
 import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
 
@@ -10,7 +10,7 @@ import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-in
 } )
 export class ConditionByEntityComponent implements OnInit {
 
-	@Input() condition: AbstractByEntityCondition;
+	@Input() condition: EntityCondition;
 
 	rules = TriggeringRule;
 

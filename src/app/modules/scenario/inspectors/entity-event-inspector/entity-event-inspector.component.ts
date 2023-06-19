@@ -5,7 +5,7 @@ import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
 import { AbstractAction } from '../../models/abstract-action';
 import { AbstractPrivateAction } from '../../models/abstract-private-action';
-import { AbstractCondition } from '../../models/conditions/tv-condition';
+import { Condition } from '../../models/conditions/tv-condition';
 import { EntityObject } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
@@ -23,7 +23,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	selectedAction: AbstractAction;
 	showAction: boolean;
-	selectedCondition: AbstractCondition;
+	selectedCondition: Condition;
 	showCondition: boolean;
 
 	actionType = ActionType;
@@ -55,7 +55,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	}
 
-	removeCondition ( $condition: AbstractCondition, event: TvEvent ) {
+	removeCondition ( $condition: Condition, event: TvEvent ) {
 
 		event.removeCondition( $condition );
 
@@ -109,7 +109,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	}
 
-	conditionClicked ( condition: AbstractCondition ) {
+	conditionClicked ( condition: Condition ) {
 
 		this.showAction = false;
 
@@ -162,7 +162,7 @@ export class EntityEventInspectorComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-	showConditionMenu ( $event, condition: AbstractCondition ) {
+	showConditionMenu ( $event, condition: Condition ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();

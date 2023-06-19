@@ -4,12 +4,12 @@
 
 import { Time } from '../../../../core/time';
 import { ConditionCategory, ConditionType, Rule } from '../tv-enums';
-import { AbstractByValueCondition } from './abstract-by-value-condition';
+import { ValueCondition } from './value-condition';
 
-export class SimulationTimeCondition extends AbstractByValueCondition {
+export class SimulationTimeCondition extends ValueCondition {
 
-	public category: ConditionCategory = ConditionCategory.ByValue;
 	public readonly conditionType = ConditionType.ByValue_SimulationTime;
+
 	public name: string = 'SimulationTimeCondition';
 
 	constructor ( public value: number = 0, public rule: Rule = Rule.greater_than ) {

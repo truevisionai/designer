@@ -3,9 +3,11 @@
  */
 
 import { AfterTerminationRule, ConditionType, StoryElementType } from '../tv-enums';
-import { AbstractByStateCondition } from './abstract-by-state-condition';
+import { StateCondition } from './state-condition';
 
-export class AfterTerminationCondition extends AbstractByStateCondition {
+export class AfterTerminationCondition extends StateCondition {
+
+	public name: string = 'AfterTerminationCondition';
 
 	public readonly conditionType = ConditionType.ByState_AfterTermination;
 

@@ -4,14 +4,14 @@
 
 import { AbstractPosition } from '../abstract-position';
 import { ConditionType, Rule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * The current distance between an entity and a reference entity is
  * compared to a given distance (less, greater, equal). Several
  * additional parameters like free space etc. can be defined.
  */
-export class DistanceCondition extends AbstractByEntityCondition {
+export class DistanceCondition extends EntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
 	public name: string = 'DistanceCondition';

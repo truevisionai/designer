@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { SimulationTimeCondition } from 'app/modules/scenario/models/conditions/tv-simulation-time-condition';
-import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Condition } from '../../../models/conditions/tv-condition';
 import { Rule } from '../../../models/tv-enums';
 
 @Component( {
@@ -14,7 +14,7 @@ import { Rule } from '../../../models/tv-enums';
 } )
 export class SimulationTimeConditionEditorComponent implements OnInit {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	rules = Rule;
 

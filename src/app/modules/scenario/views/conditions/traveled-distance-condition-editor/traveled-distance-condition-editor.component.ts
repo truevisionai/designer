@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { TraveledDistanceCondition } from 'app/modules/scenario/models/conditions/tv-traveled-distance-condition';
 import { CommandHistory } from '../../../../../services/command-history';
 import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
-import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Condition } from '../../../models/conditions/tv-condition';
 
 @Component( {
 	selector: 'app-traveled-distance-condition-editor',
@@ -15,7 +15,7 @@ import { AbstractCondition } from '../../../models/conditions/tv-condition';
 } )
 export class TraveledDistanceConditionEditorComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	get distanceCondition () {
 		return this.condition as TraveledDistanceCondition;

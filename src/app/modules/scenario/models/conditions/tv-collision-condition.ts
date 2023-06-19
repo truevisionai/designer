@@ -3,9 +3,11 @@
  */
 
 import { ConditionType, ScenarioObjectType } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
-export class CollisionCondition extends AbstractByEntityCondition {
+export class CollisionCondition extends EntityCondition {
+
+	public name: string = 'CollisionCondition';
 
 	conditionType = ConditionType.ByEntity_Collision;
 

@@ -3,9 +3,11 @@
  */
 
 import { ConditionType } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
-export class TimeToCollisionCondition extends AbstractByEntityCondition {
+export class TimeToCollisionCondition extends EntityCondition {
+
+	public name: string = 'TimeToCollisionCondition';
 
 	// TODO: Implmement this
 

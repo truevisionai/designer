@@ -4,7 +4,7 @@
 
 import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 export enum RelativeDistanceType {
 	longitudinal,
@@ -17,7 +17,7 @@ export enum RelativeDistanceType {
  * a reference entity is compared to a given value. The logical
  * operator used for comparison is defined in the rule attribute.
  */
-export class RelativeDistanceCondition extends AbstractByEntityCondition {
+export class RelativeDistanceCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_RelativeDistance;
 	public name: string = 'RelativeDistanceCondition';

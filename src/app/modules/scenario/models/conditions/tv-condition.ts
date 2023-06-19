@@ -6,7 +6,7 @@ import { ConditionUtils } from '../../builders/condition-utils';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
-export abstract class AbstractCondition {
+export abstract class Condition {
 
 	public abstract category: ConditionCategory;
 	public abstract conditionType: ConditionType;

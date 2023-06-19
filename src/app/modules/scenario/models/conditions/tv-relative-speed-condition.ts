@@ -4,14 +4,14 @@
 
 import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * The current relative speed of a triggering entity/entities to a reference
  * entity is compared to a given value. The logical operator
  * used for the evaluation is defined by the rule attribute.
  */
-export class RelativeSpeedCondition extends AbstractByEntityCondition {
+export class RelativeSpeedCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_RelativeSpeed;
 	public name: string = 'RelativeSpeedCondition';

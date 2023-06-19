@@ -16,9 +16,9 @@ import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { PositionAction } from '../models/actions/tv-position-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
-import { AbstractByEntityCondition } from '../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../models/conditions/entity-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
-import { AbstractCondition } from '../models/conditions/tv-condition';
+import { Condition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
@@ -267,7 +267,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeCondition ( condition: AbstractCondition ): any {
+	writeCondition ( condition: Condition ): any {
 
 		let xml = {
 
@@ -279,7 +279,7 @@ export class WriterService {
 
 		if ( condition.category == ConditionCategory.ByEntity ) {
 
-			xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as AbstractByEntityCondition );
+			xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as EntityCondition );
 
 		} else if ( condition.category == ConditionCategory.ByValue ) {
 
@@ -294,7 +294,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeByStateCondition ( abstractCondition: AbstractCondition ): any {
+	writeByStateCondition ( abstractCondition: Condition ): any {
 
 		let xml = {};
 
@@ -313,7 +313,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeByValueCondition ( abstractCondition: AbstractCondition ): any {
+	writeByValueCondition ( abstractCondition: Condition ): any {
 
 		let xml = {};
 
@@ -332,7 +332,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeByEntityCondition ( abstractCondition: AbstractByEntityCondition ): any {
+	writeByEntityCondition ( abstractCondition: EntityCondition ): any {
 
 		let xml = {
 

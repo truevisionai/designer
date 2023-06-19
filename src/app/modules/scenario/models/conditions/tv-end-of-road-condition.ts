@@ -4,13 +4,13 @@
 
 import { Time } from '../../../../core/time';
 import { ConditionType, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Condition becomes true after the triggering entity/entities
  * has reached the end of a road for a given amount of time.
  */
-export class EndOfRoadCondition extends AbstractByEntityCondition {
+export class EndOfRoadCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_EndOfRoad;
 	public name: string = 'EndOfRoadCondition';

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AccelerationCondition } from 'app/modules/scenario/models/conditions/tv-acceleration-condition';
-import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Condition } from '../../../models/conditions/tv-condition';
 import { Rule } from '../../../models/tv-enums';
 
 @Component( {
@@ -10,7 +10,7 @@ import { Rule } from '../../../models/tv-enums';
 } )
 export class AccelerationConditionComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	rules = Rule;
 

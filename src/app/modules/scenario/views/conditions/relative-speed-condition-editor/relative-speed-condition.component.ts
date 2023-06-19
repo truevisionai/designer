@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Condition } from '../../../models/conditions/tv-condition';
 import { RelativeSpeedCondition } from '../../../models/conditions/tv-relative-speed-condition';
 import { Rule } from '../../../models/tv-enums';
 
@@ -14,7 +14,7 @@ import { Rule } from '../../../models/tv-enums';
 } )
 export class RelativeSpeedConditionComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	rules = Rule;
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractCondition } from './conditions/tv-condition';
+import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { Sequence } from './tv-sequence';
 
@@ -53,14 +53,14 @@ export class Act {
 
 	}
 
-	addStartCondition ( condition: AbstractCondition ) {
+	addStartCondition ( condition: Condition ) {
 		if ( this.startConditionGroups.length == 0 ) {
 			this.startConditionGroups.push( new ConditionGroup() );
 		}
 		this.startConditionGroups[ 0 ].addCondition( condition );
 	}
 
-	addEndCondition ( condition: AbstractCondition ) {
+	addEndCondition ( condition: Condition ) {
 
 		if ( this.endConditionGroups.length == 0 ) {
 			this.endConditionGroups.push( new ConditionGroup() );

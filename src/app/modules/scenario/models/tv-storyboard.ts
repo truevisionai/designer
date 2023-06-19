@@ -6,7 +6,7 @@ import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { AbstractPrivateAction } from './abstract-private-action';
 import { GlobalAction } from './actions/tv-global-action';
 import { UserDefinedAction } from './actions/tv-user-defined-action';
-import { AbstractCondition } from './conditions/tv-condition';
+import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { Story } from './tv-story';
 
@@ -59,7 +59,7 @@ export class Storyboard {
 
 	}
 
-	addEndCondition ( condition: AbstractCondition ) {
+	addEndCondition ( condition: Condition ) {
 
 		if ( this.endConditionGroups.length > 0 ) {
 

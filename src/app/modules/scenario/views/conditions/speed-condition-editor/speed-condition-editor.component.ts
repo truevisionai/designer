@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { SpeedCondition } from 'app/modules/scenario/models/conditions/tv-speed-condition';
 import { CommandHistory } from '../../../../../services/command-history';
 import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
-import { AbstractCondition } from '../../../models/conditions/tv-condition';
+import { Condition } from '../../../models/conditions/tv-condition';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
@@ -16,7 +16,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class SpeedConditionEditorComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	rules = Rule;
 

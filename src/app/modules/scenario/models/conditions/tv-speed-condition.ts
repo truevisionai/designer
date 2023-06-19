@@ -4,13 +4,13 @@
 
 import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
-import { AbstractByEntityCondition } from './abstract-by-entity-condition';
+import { EntityCondition } from './entity-condition';
 
 /**
  * Compares a triggering entity's/entities' speed to a target speed.
  * The logical operator for the comparison is given by the rule attribute.
  */
-export class SpeedCondition extends AbstractByEntityCondition {
+export class SpeedCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_Speed;
 	public name: string = 'SpeedCondition';

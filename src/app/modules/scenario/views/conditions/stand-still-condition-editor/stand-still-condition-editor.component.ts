@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../../../models/conditions/entity-condition';
 
 @Component( {
 	selector: 'app-stand-still-condition-editor',
@@ -8,7 +8,7 @@ import { AbstractByEntityCondition } from '../../../models/conditions/abstract-b
 } )
 export class StandStillConditionEditorComponent implements OnInit {
 
-	@Input() condition: AbstractByEntityCondition;
+	@Input() condition: EntityCondition;
 
 	constructor () {
 	}

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
+import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { OffRoadCondition } from 'app/modules/scenario/models/conditions/tv-off-road-condition';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -11,7 +11,7 @@ import { CommandHistory } from 'app/services/command-history';
 } )
 export class OffRoadConditionEditorComponent {
 
-	@Input() condition: AbstractCondition;
+	@Input() condition: Condition;
 
 	get offRoadCondition () {
 

@@ -7,7 +7,7 @@ import { DistanceCondition } from 'app/modules/scenario/models/conditions/tv-dis
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from '../../../../../services/command-history';
 import { AbstractPosition } from '../../../models/abstract-position';
-import { AbstractByEntityCondition } from '../../../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
@@ -18,7 +18,7 @@ import { BaseConditionEditorComponent } from '../base-condition-editor-component
 } )
 export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
-	@Input() condition: AbstractByEntityCondition;
+	@Input() condition: EntityCondition;
 
 	rules = Rule;
 

@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { AbstractCondition } from 'app/modules/scenario/models/conditions/tv-condition';
+import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { TvEvent } from 'app/modules/scenario/models/tv-event';
 import { DialogService } from 'app/modules/scenario/services/tv-dialog.service';
 import { AbstractAction } from '../../models/abstract-action';

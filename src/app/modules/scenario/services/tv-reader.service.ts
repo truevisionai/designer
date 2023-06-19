@@ -22,10 +22,10 @@ import { PositionAction } from '../models/actions/tv-position-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
-import { AbstractByEntityCondition } from '../models/conditions/abstract-by-entity-condition';
+import { EntityCondition } from '../models/conditions/entity-condition';
 import { AfterTerminationCondition } from '../models/conditions/tv-after-termination-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
-import { AbstractCondition } from '../models/conditions/tv-condition';
+import { Condition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
@@ -103,7 +103,7 @@ export class ReaderService extends AbstractReader {
 
 	readCondition ( xml: XmlElement ) {
 
-		let condition: AbstractCondition = null;
+		let condition: Condition = null;
 
 		const name = xml.attr_name;
 		const delay = xml.attr_delay ? parseFloat( xml.attr_delay ) : 0;
@@ -296,9 +296,9 @@ export class ReaderService extends AbstractReader {
 		return worldPosition;
 	}
 
-	readByEntityCondition ( xml: XmlElement ): AbstractCondition {
+	readByEntityCondition ( xml: XmlElement ): Condition {
 
-		let condition: AbstractByEntityCondition = null;
+		let condition: EntityCondition = null;
 
 		condition = this.readConditionByEntity( xml.EntityCondition );
 
@@ -317,9 +317,9 @@ export class ReaderService extends AbstractReader {
 		return condition;
 	}
 
-	readConditionByEntity ( xml: XmlElement ): AbstractByEntityCondition {
+	readConditionByEntity ( xml: XmlElement ): EntityCondition {
 
-		let condition: AbstractByEntityCondition = null;
+		let condition: EntityCondition = null;
 
 		if ( xml.EndOfRoad != null ) {
 
@@ -418,9 +418,9 @@ export class ReaderService extends AbstractReader {
 		return new DistanceCondition( position, value, freespace, alongRoute, rule );
 	}
 
-	readConditionByValue ( xml: XmlElement ): AbstractCondition {
+	readConditionByValue ( xml: XmlElement ): Condition {
 
-		let condition: AbstractCondition = null;
+		let condition: Condition = null;
 
 		if ( xml.Parameter != null ) {
 		} else if ( xml.TimeOfDay != null ) {
@@ -433,7 +433,7 @@ export class ReaderService extends AbstractReader {
 		return condition;
 	}
 
-	readSimulationTimeCondition ( xml: XmlElement ): AbstractCondition {
+	readSimulationTimeCondition ( xml: XmlElement ): Condition {
 
 		const value = parseFloat( xml.attr_value );
 		const rule = this.convertStringToRule( xml.attr_rule );
@@ -467,9 +467,9 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readConditionByState ( xml: XmlElement ): AbstractCondition {
+	readConditionByState ( xml: XmlElement ): Condition {
 
-		let condition: AbstractCondition = null;
+		let condition: Condition = null;
 
 		if ( xml.AtStart != null ) {
 			condition = this.readAtStartCondition( xml.AtStart );
@@ -484,7 +484,7 @@ export class ReaderService extends AbstractReader {
 		return condition;
 	}
 
-	readAtStartCondition ( xml: XmlElement ): AbstractCondition {
+	readAtStartCondition ( xml: XmlElement ): Condition {
 
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
@@ -492,7 +492,7 @@ export class ReaderService extends AbstractReader {
 		return new AtStartCondition( elementName, type );
 	}
 
-	readAfterTerminationCondition ( xml: XmlElement ): AbstractCondition {
+	readAfterTerminationCondition ( xml: XmlElement ): Condition {
 
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
