@@ -9,10 +9,10 @@ import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
 import { EnumHelper } from '../../tv-map/models/tv-common';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { AbstractAction } from '../models/abstract-action';
+import { TvAction } from '../models/tv-action';
 import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
-import { AbstractPrivateAction } from '../models/abstract-private-action';
+import { PrivateAction } from '../models/private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -695,19 +695,19 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readUserDefinedAction ( item: any ): AbstractAction {
+	readUserDefinedAction ( item: any ): TvAction {
 
 		throw new Error( 'Method not implemented.' );
 
 	}
 
-	readGlobalAction ( item: any ): AbstractAction {
+	readGlobalAction ( item: any ): TvAction {
 
 		throw new Error( 'Method not implemented.' );
 
 	}
 
-	readPrivateAction ( item: any ): AbstractPrivateAction {
+	readPrivateAction ( item: any ): PrivateAction {
 
 		let action = null;
 
@@ -753,9 +753,9 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readLateralAction ( xml: XmlElement ): AbstractAction {
+	readLateralAction ( xml: XmlElement ): TvAction {
 
-		let action: AbstractAction = null;
+		let action: TvAction = null;
 
 		if ( xml.LaneChange != null ) {
 			action = this.readLaneChangeAction( xml.LaneChange );
@@ -886,7 +886,7 @@ export class ReaderService extends AbstractReader {
 		return new Waypoint( position, strategy );
 	}
 
-	readLaneChangeAction ( xml: XmlElement ): AbstractAction {
+	readLaneChangeAction ( xml: XmlElement ): TvAction {
 
 		const action = new LaneChangeAction();
 
@@ -926,7 +926,7 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readPositionAction ( xml: XmlElement ): AbstractPrivateAction {
+	readPositionAction ( xml: XmlElement ): PrivateAction {
 
 		return new PositionAction( this.readPosition( xml ) );
 

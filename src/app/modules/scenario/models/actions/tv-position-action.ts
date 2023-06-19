@@ -3,11 +3,11 @@
  */
 
 import { AbstractPosition } from '../abstract-position';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 
-export class PositionAction extends AbstractPrivateAction {
+export class PositionAction extends PrivateAction {
 
 	public actionName: string = 'Position';
 	public actionType: ActionType = ActionType.Private_Position;

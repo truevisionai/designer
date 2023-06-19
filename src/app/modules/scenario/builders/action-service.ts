@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
 import { AbstractPosition } from '../models/abstract-position';
-import { AbstractPrivateAction } from '../models/abstract-private-action';
+import { PrivateAction } from '../models/private-action';
 import { PositionAction } from '../models/actions/tv-position-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
@@ -37,7 +37,7 @@ export class ActionService {
 
 	}
 
-	public static executePrivateAction ( obj: EntityObject, privateAction: AbstractPrivateAction ) {
+	public static executePrivateAction ( obj: EntityObject, privateAction: PrivateAction ) {
 
 		switch ( privateAction.actionType ) {
 

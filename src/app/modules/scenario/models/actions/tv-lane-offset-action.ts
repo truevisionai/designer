@@ -3,7 +3,7 @@
  */
 
 import { Time } from '../../../../core/time';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType, DynamicsShape } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
@@ -24,7 +24,7 @@ import { RelativeTarget } from './tv-relative-target';
  * will result in smooth transitions (basically s-shaped) between start and
  * end state. A smooth transition is only given with cubic and sinusoidal shape.
  */
-export class LaneOffsetAction extends AbstractPrivateAction {
+export class LaneOffsetAction extends PrivateAction {
 
 	public actionName = 'LaneOffsetAction';
 	public actionType: ActionType = ActionType.Private_LaneOffset;

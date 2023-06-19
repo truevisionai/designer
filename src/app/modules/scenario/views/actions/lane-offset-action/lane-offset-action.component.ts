@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/modules/scenario/models/actions/tv-lane-offset-action';
 import { CommandHistory } from '../../../../../services/command-history';
 import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
-import { AbstractPrivateAction } from '../../../models/abstract-private-action';
+import { PrivateAction } from '../../../models/private-action';
 import { DynamicsShape } from '../../../models/tv-enums';
 import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
 
@@ -13,7 +13,7 @@ import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-tar
 } )
 export class LaneOffsetActionComponent {
 
-	@Input() action: AbstractPrivateAction;
+	@Input() action: PrivateAction;
 
 	shapes = DynamicsShape;
 

@@ -10,7 +10,7 @@ import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ActionService } from '../builders/action-service';
 import { ResetHelper } from '../helpers/tv-reset-helper';
 import { ConditionUtils } from '../builders/condition-utils';
-import { AbstractAction } from '../models/abstract-action';
+import { TvAction } from '../models/tv-action';
 import { Act } from '../models/tv-act';
 import { EntityObject } from '../models/tv-entities';
 import { StoryElementType } from '../models/tv-enums';
@@ -315,7 +315,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private startAction ( action: AbstractAction, actionName: string, sequence: Sequence ) {
+	private startAction ( action: TvAction, actionName: string, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'started-action', actionName );
 
@@ -327,7 +327,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateAction ( action: AbstractAction, actionName: string, sequence: Sequence ) {
+	private updateAction ( action: TvAction, actionName: string, sequence: Sequence ) {
 
 		if ( this.logEvents ) console.info( 'running-action', actionName );
 

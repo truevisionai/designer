@@ -10,7 +10,7 @@ import { TvLaneType } from '../../tv-map/models/tv-common';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from './abstract-controller';
-import { AbstractPrivateAction } from './abstract-private-action';
+import { PrivateAction } from './private-action';
 import { CatalogReference } from './tv-catalogs';
 import { ScenarioObjectType } from './tv-enums';
 
@@ -22,7 +22,7 @@ export class EntityObject {
 	public type: ScenarioObjectType;
 	// OSCMiscObject
 
-	public initActions: AbstractPrivateAction[] = [];
+	public initActions: PrivateAction[] = [];
 	// OSCPedestrian
 	public catalogReference: CatalogReference;
 	public sCoordinate: number;
@@ -191,7 +191,7 @@ export class EntityObject {
 
 	}
 
-	addInitAction ( action: AbstractPrivateAction ) {
+	addInitAction ( action: PrivateAction ) {
 
 		this.initActions.push( action );
 

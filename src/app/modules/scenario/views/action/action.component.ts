@@ -4,8 +4,8 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
-import { AbstractAction } from '../../models/abstract-action';
-import { AbstractPrivateAction } from '../../models/abstract-private-action';
+import { TvAction } from '../../models/tv-action';
+import { PrivateAction } from '../../models/private-action';
 import { EntityObject } from '../../models/tv-entities';
 
 @Component( {
@@ -15,11 +15,11 @@ import { EntityObject } from '../../models/tv-entities';
 } )
 export class ActionComponent implements OnInit {
 
-	@Input() action: AbstractAction;
+	@Input() action: TvAction;
 
 	@Input() entity: EntityObject;
 
-	@Output() removed = new EventEmitter<AbstractAction>();
+	@Output() removed = new EventEmitter<TvAction>();
 
 	types = ActionType;
 
@@ -31,7 +31,7 @@ export class ActionComponent implements OnInit {
 
 	get privateAction () {
 
-		return this.action as AbstractPrivateAction;
+		return this.action as PrivateAction;
 
 	}
 

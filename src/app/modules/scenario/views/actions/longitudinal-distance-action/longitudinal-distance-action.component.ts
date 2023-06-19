@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AbstractAction } from 'app/modules/scenario/models/abstract-action';
+import { TvAction } from 'app/modules/scenario/models/tv-action';
 import { LongitudinalDistanceAction } from 'app/modules/scenario/models/actions/tv-longitudinal-distance-action';
 
 @Component( {
@@ -9,7 +9,7 @@ import { LongitudinalDistanceAction } from 'app/modules/scenario/models/actions/
 } )
 export class LongitudinalDistanceActionComponent {
 
-	@Input() action: AbstractAction;
+	@Input() action: TvAction;
 
 	get longitudinalDistanceAction () {
 		return this.action as LongitudinalDistanceAction;

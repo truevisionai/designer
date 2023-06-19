@@ -5,7 +5,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../core/inspector';
-import { AbstractPrivateAction } from '../../models/abstract-private-action';
+import { PrivateAction } from '../../models/private-action';
 import { TransitionDynamics } from '../../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../../models/actions/tv-follow-trajectory-action';
@@ -46,7 +46,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 	}
 
 	get actions () {
-		return this.scenario.getActionsByEntity( this.entity.name ) as AbstractPrivateAction[];
+		return this.scenario.getActionsByEntity( this.entity.name ) as PrivateAction[];
 	}
 
 	get maneuvers () {
@@ -73,7 +73,7 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	editAction ( action: AbstractPrivateAction ) {
+	editAction ( action: PrivateAction ) {
 
 		// TODO: Add support for other trajection action types
 		if ( action.actionType === ActionType.Private_Routing ) {

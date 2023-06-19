@@ -10,7 +10,7 @@ import { AppService } from '../../../core/services/app.service';
 import { OpenDriveApiService } from '../../../core/services/open-drive-api.service';
 import { FileService } from '../../../services/file.service';
 import { TvMapService } from '../../tv-map/services/tv-map.service';
-import { AbstractPrivateAction } from '../models/abstract-private-action';
+import { PrivateAction } from '../models/private-action';
 import { CatalogReference } from '../models/tv-catalogs';
 import { EntityObject } from '../models/tv-entities';
 import { MiscObject } from '../models/tv-misc-object';
@@ -93,7 +93,7 @@ export class BuilderService {
 	// }
 
 
-	public static executePrivateAction ( obj: EntityObject, privateAction: AbstractPrivateAction ) {
+	public static executePrivateAction ( obj: EntityObject, privateAction: PrivateAction ) {
 
 		ActionService.executePrivateAction( obj, privateAction );
 

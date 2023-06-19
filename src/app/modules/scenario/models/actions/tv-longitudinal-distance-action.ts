@@ -4,7 +4,7 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { DynamicConstraints } from '../dynamic-constraints';
@@ -18,7 +18,7 @@ import { DynamicConstraints } from '../dynamic-constraints';
  * dynamic behavior represents a rigid time or distance connection
  * between actor and object.
  */
-export class LongitudinalDistanceAction extends AbstractPrivateAction {
+export class LongitudinalDistanceAction extends PrivateAction {
 
 	public actionName: string = 'Distance';
 	public actionType: ActionType = ActionType.Private_Longitudinal_Distance;

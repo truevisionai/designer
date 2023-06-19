@@ -3,12 +3,12 @@
  */
 
 import { AbstractPosition } from '../abstract-position';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { CatalogReference } from '../tv-catalogs';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
 import { Route } from '../tv-route';
 
-export abstract class AbstractRoutingAction extends AbstractPrivateAction {
+export abstract class AbstractRoutingAction extends PrivateAction {
 
 }
 

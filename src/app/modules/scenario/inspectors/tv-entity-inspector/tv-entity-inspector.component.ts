@@ -8,8 +8,8 @@ import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
 import { ActionFactory } from '../../builders/action-factory';
 import { ActionService } from '../../builders/action-service';
-import { AbstractAction } from '../../models/abstract-action';
-import { AbstractPrivateAction } from '../../models/abstract-private-action';
+import { TvAction } from '../../models/tv-action';
+import { PrivateAction } from '../../models/private-action';
 import { EntityObject } from '../../models/tv-entities';
 import { TvEvent } from '../../models/tv-event';
 import { ActionType, ConditionType } from '../../models/tv-enums';
@@ -55,7 +55,7 @@ export class EntityInspector implements OnInit, IComponent {
 		return TvScenarioInstance.openScenario;
 	}
 
-	get scenarioActions (): AbstractPrivateAction[] {
+	get scenarioActions (): PrivateAction[] {
 		return this.scenario.findEntityActions( this.entity );
 	}
 

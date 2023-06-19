@@ -5,7 +5,7 @@ import { TvScenarioInstance } from '../services/tv-scenario-instance';
 import { EntityObject } from './tv-entities';
 import { ActionCategory, ActionType } from './tv-enums';
 
-export abstract class AbstractAction {
+export abstract class TvAction {
 
 	abstract category: ActionCategory;
 	abstract actionType: ActionType;

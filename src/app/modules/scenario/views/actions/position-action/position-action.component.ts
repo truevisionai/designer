@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractPosition } from '../../../models/abstract-position';
-import { AbstractPrivateAction } from '../../../models/abstract-private-action';
+import { PrivateAction } from '../../../models/private-action';
 import { PositionAction } from '../../../models/actions/tv-position-action';
 import { EntityObject } from '../../../models/tv-entities';
 
@@ -14,7 +14,7 @@ import { EntityObject } from '../../../models/tv-entities';
 } )
 export class PositionActionComponent implements OnInit {
 
-	@Input() action: AbstractPrivateAction;
+	@Input() action: PrivateAction;
 	@Input() entity: EntityObject;
 
 	constructor () {

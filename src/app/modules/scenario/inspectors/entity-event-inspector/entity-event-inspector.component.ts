@@ -3,8 +3,8 @@ import { MatSelect } from '@angular/material/select';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
-import { AbstractAction } from '../../models/abstract-action';
-import { AbstractPrivateAction } from '../../models/abstract-private-action';
+import { TvAction } from '../../models/tv-action';
+import { PrivateAction } from '../../models/private-action';
 import { Condition } from '../../models/conditions/tv-condition';
 import { EntityObject } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
@@ -21,7 +21,7 @@ export class EntityEventInspectorComponent implements OnInit {
 	@Input() entity: EntityObject;
 	@Input() event: TvEvent;
 
-	selectedAction: AbstractAction;
+	selectedAction: TvAction;
 	showAction: boolean;
 	selectedCondition: Condition;
 	showCondition: boolean;
@@ -66,9 +66,9 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	}
 
-	removeAction ( action: AbstractAction, event: TvEvent ) {
+	removeAction ( action: TvAction, event: TvEvent ) {
 
-		event.removeAction( action as AbstractPrivateAction );
+		event.removeAction( action as PrivateAction );
 
 		if ( this.selectedAction === action ) {
 			this.selectedAction = null;
@@ -91,7 +91,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	}
 
-	actionClicked ( action: AbstractAction ) {
+	actionClicked ( action: TvAction ) {
 
 		this.showCondition = false;
 
@@ -147,7 +147,7 @@ export class EntityEventInspectorComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-	showActionMenu ( $event, action: AbstractAction ) {
+	showActionMenu ( $event, action: TvAction ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();

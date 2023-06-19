@@ -7,7 +7,7 @@ import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
-import { AbstractPrivateAction } from '../models/abstract-private-action';
+import { PrivateAction } from '../models/private-action';
 import { AbstractTarget } from '../models/actions/abstract-target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -503,7 +503,7 @@ export class WriterService {
 
 			if ( action.category == ActionCategory.private ) {
 
-				actionXml[ 'Private' ] = this.writePrivateAction( action as AbstractPrivateAction );
+				actionXml[ 'Private' ] = this.writePrivateAction( action as PrivateAction );
 
 			}
 
@@ -544,7 +544,7 @@ export class WriterService {
 
 	}
 
-	writePrivateAction ( abstractAction: AbstractPrivateAction ) {
+	writePrivateAction ( abstractAction: PrivateAction ) {
 
 		let xml = null;
 

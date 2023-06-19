@@ -4,8 +4,8 @@
 
 import { MathUtils, Vector3 } from 'three';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { AbstractAction } from './abstract-action';
-import { AbstractPrivateAction } from './abstract-private-action';
+import { TvAction } from './tv-action';
+import { PrivateAction } from './private-action';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { Act } from './tv-act';
 import { Catalogs } from './tv-catalogs';
@@ -88,7 +88,7 @@ export class OpenScenario {
 
 	getActionsByEntity ( name: string ) {
 
-		let actions: AbstractAction[] = [];
+		let actions: TvAction[] = [];
 
 		this.getManeuversForEntity( name ).forEach( maneuver => {
 
@@ -221,9 +221,9 @@ export class OpenScenario {
 		return story;
 	}
 
-	findEntityActions ( entity: EntityObject ): AbstractPrivateAction[] {
+	findEntityActions ( entity: EntityObject ): PrivateAction[] {
 
-		const actions: AbstractPrivateAction[] = [];
+		const actions: PrivateAction[] = [];
 
 		const maneuvers = this.getManeuversForEntity( entity.name );
 
@@ -233,7 +233,7 @@ export class OpenScenario {
 
 				event.actions.forEach( action => {
 
-					actions.push( action as AbstractPrivateAction );
+					actions.push( action as PrivateAction );
 
 				} );
 
@@ -244,7 +244,7 @@ export class OpenScenario {
 		return actions;
 	}
 
-	addActionEvent ( entity: EntityObject, action: AbstractPrivateAction ): void {
+	addActionEvent ( entity: EntityObject, action: PrivateAction ): void {
 
 		const maneuvers = this.getManeuversForEntity( entity.name );
 

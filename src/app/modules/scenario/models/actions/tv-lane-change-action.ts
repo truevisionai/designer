@@ -7,7 +7,7 @@ import { Time } from '../../../../core/time';
 import { TvLaneSide } from '../../../tv-map/models/tv-common';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
@@ -27,7 +27,7 @@ import { RelativeTarget } from './tv-relative-target';
  * offset and ends at the target lane position, optionally
  * including a targetLaneOffset.
  */
-export class LaneChangeAction extends AbstractPrivateAction {
+export class LaneChangeAction extends PrivateAction {
 
 	public actionName = 'LaneChange';
 	public actionType: ActionType = ActionType.Private_LaneChange;

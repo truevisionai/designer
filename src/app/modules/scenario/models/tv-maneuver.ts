@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { AbstractAction } from './abstract-action';
+import { TvAction } from './tv-action';
 import { StoryElementType } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { ParameterDeclaration } from './tv-parameter-declaration';
@@ -102,6 +102,6 @@ export class Maneuver {
 export class EventAction {
 
 	public name: string;
-	public action: AbstractAction;
+	public action: TvAction;
 
 }

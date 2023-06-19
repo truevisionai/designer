@@ -3,7 +3,7 @@
  */
 
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { AbstractPrivateAction } from './abstract-private-action';
+import { PrivateAction } from './private-action';
 import { GlobalAction } from './actions/tv-global-action';
 import { UserDefinedAction } from './actions/tv-user-defined-action';
 import { Condition } from './conditions/tv-condition';
@@ -13,7 +13,7 @@ import { Story } from './tv-story';
 
 export class EntityInitAction {
 
-	constructor ( public name: string, public action: AbstractPrivateAction ) {
+	constructor ( public name: string, public action: PrivateAction ) {
 
 	}
 }
@@ -78,7 +78,7 @@ export class Storyboard {
 	}
 
 
-	addPrivateInitAction ( owner: string, action: AbstractPrivateAction ): any {
+	addPrivateInitAction ( owner: string, action: PrivateAction ): any {
 
 		this.privateInitAction.push( new EntityInitAction( owner, action ) );
 
@@ -91,9 +91,9 @@ export class InitActions {
 
 	private globalActions: GlobalAction[] = [];
 	private userDefinedActions: UserDefinedAction[] = [];
-	private privateActions: AbstractPrivateAction[] = [];
+	private privateActions: PrivateAction[] = [];
 
-	addPrivateAction ( owner: string, action: AbstractPrivateAction ): any {
+	addPrivateAction ( owner: string, action: PrivateAction ): any {
 
 		this.privateActions.push( action );
 

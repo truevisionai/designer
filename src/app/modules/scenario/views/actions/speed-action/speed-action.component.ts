@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { AbstractPrivateAction } from '../../../models/abstract-private-action';
+import { PrivateAction } from '../../../models/private-action';
 import { SpeedAction } from '../../../models/actions/tv-speed-action';
 import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
 
@@ -17,7 +17,7 @@ export class SpeedActionComponent implements OnInit, IComponent {
 
 	data: SpeedAction;
 
-	@Input() action: AbstractPrivateAction;
+	@Input() action: PrivateAction;
 
 	get speedAction () {
 		return this.action as SpeedAction;

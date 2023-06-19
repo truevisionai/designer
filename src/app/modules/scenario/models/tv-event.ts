@@ -6,8 +6,8 @@ import { EventEmitter } from '@angular/core';
 import { ConditionUtils } from '../builders/condition-utils';
 import { StoryEvent } from '../services/scenario-director.service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { AbstractAction } from './abstract-action';
-import { AbstractPrivateAction } from './abstract-private-action';
+import { TvAction } from './tv-action';
+import { PrivateAction } from './private-action';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { StoryElementType } from './tv-enums';
@@ -23,7 +23,7 @@ export class TvEvent {
 	public completed = new EventEmitter<StoryEvent>();
 
 	// public actions: EventAction[] = [];
-	private _actions: Map<string, AbstractAction> = new Map<string, AbstractAction>();
+	private _actions: Map<string, TvAction> = new Map<string, TvAction>();
 
 	constructor ( public name?: string, public priority?: string ) {
 
@@ -31,11 +31,11 @@ export class TvEvent {
 
 	}
 
-	get actions (): Map<string, AbstractAction> {
+	get actions (): Map<string, TvAction> {
 		return this._actions;
 	}
 
-	set actions ( value: Map<string, AbstractAction> ) {
+	set actions ( value: Map<string, TvAction> ) {
 		this._actions = value;
 	}
 
@@ -58,7 +58,7 @@ export class TvEvent {
 
 	}
 
-	addNewAction ( name: string, action: AbstractAction ) {
+	addNewAction ( name: string, action: TvAction ) {
 
 		const hasName = TvScenarioInstance.db.has_action( name );
 
@@ -98,7 +98,7 @@ export class TvEvent {
 
 	}
 
-	getActions (): AbstractAction[] {
+	getActions (): TvAction[] {
 
 		return [ ...this._actions.values() ];
 
@@ -172,7 +172,7 @@ export class TvEvent {
 
 	}
 
-	removeAction ( action: AbstractPrivateAction ) {
+	removeAction ( action: PrivateAction ) {
 
 		this.actions.forEach( ( value, key ) => {
 
@@ -188,7 +188,7 @@ export class TvEvent {
 
 	}
 
-	addAction ( action: AbstractPrivateAction ) {
+	addAction ( action: PrivateAction ) {
 
 		this.actions.set( action.actionName, action );
 

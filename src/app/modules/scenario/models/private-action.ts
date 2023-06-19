@@ -1,7 +1,7 @@
-import { AbstractAction } from './abstract-action';
+import { TvAction } from './tv-action';
 import { ActionCategory, StoryElementType } from './tv-enums';
 
-export abstract class AbstractPrivateAction extends AbstractAction {
+export abstract class PrivateAction extends TvAction {
 
 	public category = ActionCategory.private;
 

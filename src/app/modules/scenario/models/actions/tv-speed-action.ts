@@ -4,7 +4,7 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { AbstractPrivateAction } from '../abstract-private-action';
+import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { AbstractTarget } from './abstract-target';
@@ -18,7 +18,7 @@ import { RelativeTarget } from './tv-relative-target';
  * specifies the transition with respects to time or
  * distance combined with a shape.
  */
-export class SpeedAction extends AbstractPrivateAction {
+export class SpeedAction extends PrivateAction {
 
 	public debug = false;
 

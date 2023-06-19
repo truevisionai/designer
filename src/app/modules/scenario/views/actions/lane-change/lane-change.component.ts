@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractPrivateAction } from '../../../models/abstract-private-action';
+import { PrivateAction } from '../../../models/private-action';
 import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action';
 import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
 
@@ -14,7 +14,7 @@ import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-tar
 } )
 export class LaneChangeComponent implements OnInit {
 
-	@Input() action: AbstractPrivateAction;
+	@Input() action: PrivateAction;
 
 	constructor () {
 	}
