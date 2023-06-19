@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
-import { AbstractPosition } from '../models/abstract-position';
+import { Position } from '../models/position';
 import { PrivateAction } from '../models/private-action';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
@@ -706,7 +706,7 @@ export class WriterService {
 
 	}
 
-	writePosition ( position: AbstractPosition ): any {
+	writePosition ( position: Position ): any {
 
 		let xml = null;
 

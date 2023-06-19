@@ -3,12 +3,13 @@
  */
 
 import { Vector3 } from 'three';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
-export class RelativeWorldPosition extends AbstractPosition {
+export class RelativeWorldPosition extends Position {
 
+	public readonly label: string = 'Relative World Position';
 	public readonly type = PositionType.RelativeWorld;
 
 	private object: string;

@@ -4,13 +4,15 @@
 
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
-export class LanePosition extends AbstractPosition {
+export class LanePosition extends Position {
 
+	public readonly label: string = 'Lane Position';
 	public readonly type = PositionType.Lane;
+
 	public roadId: number;
 	public laneId: number;
 	public offset: number;

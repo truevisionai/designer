@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PrivateAction } from '../private-action';
 import { CatalogReference } from '../tv-catalogs';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
@@ -49,7 +49,7 @@ export class AcquirePositionAction extends AbstractRoutingAction {
 	readonly actionName: string = 'AcquirePosition';
 	readonly actionType: ActionType = ActionType.Private_Routing;
 
-	constructor ( public position: AbstractPosition ) {
+	constructor ( public position: Position ) {
 		super();
 	}
 

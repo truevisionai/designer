@@ -6,7 +6,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReachPositionCondition } from 'app/modules/scenario/models/conditions/tv-reach-position-condition';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
-import { AbstractPosition } from '../../../models/abstract-position';
+import { Position } from '../../../models/position';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
@@ -58,13 +58,13 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 
 	}
 
-	onPositionTypeChanged ( position: AbstractPosition ) {
+	onPositionTypeChanged ( position: Position ) {
 
 		this.sphere.position.copy( position.toVector3() );
 
 	}
 
-	onPositionChanged ( position: AbstractPosition ) {
+	onPositionChanged ( position: Position ) {
 
 		this.sphere.position.copy( position.toVector3() );
 

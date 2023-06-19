@@ -3,11 +3,12 @@
  */
 
 import { Vector3 } from 'three';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 
-export class WorldPosition extends AbstractPosition {
+export class WorldPosition extends Position {
 
+	public readonly label: string = 'World Position';
 	public readonly type = PositionType.World;
 
 	public m_X: number = 0;

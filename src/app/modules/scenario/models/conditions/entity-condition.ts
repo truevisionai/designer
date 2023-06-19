@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { EntityObject } from '../tv-entities';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
 import { Condition } from './tv-condition';
@@ -60,7 +60,7 @@ export abstract class EntityCondition extends Condition {
 
 	}
 
-	protected calculateDistance ( entityName: string, position: AbstractPosition, freespace: boolean ) {
+	protected calculateDistance ( entityName: string, position: Position, freespace: boolean ) {
 
 		if ( !freespace ) {
 

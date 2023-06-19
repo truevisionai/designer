@@ -3,12 +3,13 @@
  */
 
 import { Vector3 } from 'three';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
-export class RoadPosition extends AbstractPosition {
+export class RoadPosition extends Position {
 
+	public readonly label: string = 'Road Position';
 	public readonly type = PositionType.Road;
 
 	private roadId: number;

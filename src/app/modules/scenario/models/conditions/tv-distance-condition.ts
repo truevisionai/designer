@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { ConditionType, Rule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
@@ -27,7 +27,7 @@ export class DistanceCondition extends EntityCondition {
 	 * @param rule
 	 * */
 	constructor (
-		public position?: AbstractPosition,
+		public position?: Position,
 		public value?: number,
 		public freespace?: boolean,
 		public alongRoute?: boolean,

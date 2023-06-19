@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { RelativeObjectPosition } from '../../../models/positions/tv-relative-object-position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
-import { AbstractPosition } from 'app/modules/scenario/models/abstract-position';
+import { Position } from 'app/modules/scenario/models/position';
 
 @Component( {
 	selector: 'app-relative-object-position-editor',
@@ -13,7 +13,7 @@ import { AbstractPosition } from 'app/modules/scenario/models/abstract-position'
 } )
 export class RelativeObjectPositionEditorComponent extends AbstractPositionEditor {
 
-	@Input() position: AbstractPosition;
+	@Input() position: Position;
 
 	get relativeObjectPosition () {
 		return this.position as RelativeObjectPosition;

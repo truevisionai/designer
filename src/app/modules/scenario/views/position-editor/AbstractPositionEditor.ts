@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractPosition } from '../../models/abstract-position';
+import { Position } from '../../models/position';
 
 @Component( {
 	selector: 'app-abstract-position-editor',
@@ -11,10 +11,10 @@ import { AbstractPosition } from '../../models/abstract-position';
 } )
 export abstract class AbstractPositionEditor {
 
-	@Input() position: AbstractPosition;
+	@Input() position: Position;
 	@Input() showType: boolean = true;
 	@Input() disableType: boolean = false;
-	@Output() positionChanged = new EventEmitter<AbstractPosition>();
-	@Output() positionModified = new EventEmitter<AbstractPosition>();
+	@Output() positionChanged = new EventEmitter<Position>();
+	@Output() positionModified = new EventEmitter<Position>();
 
 }

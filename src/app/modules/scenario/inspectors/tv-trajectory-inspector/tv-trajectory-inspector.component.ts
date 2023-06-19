@@ -7,7 +7,7 @@ import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PolyLineEditor } from 'app/core/editors/polyline-editor';
 import { Debug } from 'app/core/utils/debug';
 import { CatmullRomCurve3, Points } from 'three';
-import { AbstractPosition } from '../../models/abstract-position';
+import { Position } from '../../models/position';
 import { PolylineShape, Trajectory, Vertex } from '../../models/tv-trajectory';
 import { WorldPosition } from '../../models/positions/tv-world-position';
 
@@ -118,7 +118,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	}
 
-	onPositionModified ( position: AbstractPosition ) {
+	onPositionModified ( position: Position ) {
 
 		throw new Error( 'not implemented' );
 

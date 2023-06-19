@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/modules/scenario/models/conditions/tv-distance-condition';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from '../../../../../services/command-history';
-import { AbstractPosition } from '../../../models/abstract-position';
+import { Position } from '../../../models/position';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
@@ -34,7 +34,7 @@ export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
 	}
 
-	onPositionChanged ( position: AbstractPosition ) {
+	onPositionChanged ( position: Position ) {
 
 		CommandHistory.execute(
 			new SetValueCommand( this.distanceCondition, 'position', position )

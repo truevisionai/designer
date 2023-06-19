@@ -9,7 +9,7 @@ import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { AbstractController } from '../models/abstract-controller';
-import { AbstractPosition } from '../models/abstract-position';
+import { Position } from '../models/position';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -925,9 +925,9 @@ export class ReaderService extends AbstractReader {
 
 	}
 
-	readPosition ( xml: XmlElement ): AbstractPosition {
+	readPosition ( xml: XmlElement ): Position {
 
-		let position: AbstractPosition = null;
+		let position: Position = null;
 
 		if ( xml.World != null ) {
 
@@ -954,7 +954,7 @@ export class ReaderService extends AbstractReader {
 		return position;
 	}
 
-	readLanePosition ( xml: XmlElement ): AbstractPosition {
+	readLanePosition ( xml: XmlElement ): Position {
 
 		let roadId = parseFloat( xml.attr_roadId );
 		let laneId = parseFloat( xml.attr_laneId );
@@ -967,7 +967,7 @@ export class ReaderService extends AbstractReader {
 		return new LanePosition( roadId, laneId, laneOffset, s, null );
 	}
 
-	readRelativeLanePosition ( xml: XmlElement ): AbstractPosition {
+	readRelativeLanePosition ( xml: XmlElement ): Position {
 
 		const position = new RelativeLanePosition();
 
@@ -985,7 +985,7 @@ export class ReaderService extends AbstractReader {
 		return position;
 	}
 
-	readRelativeObjectPosition ( xml: XmlElement ): AbstractPosition {
+	readRelativeObjectPosition ( xml: XmlElement ): Position {
 
 		const position = new RelativeObjectPosition();
 

@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
-import { AbstractPosition } from '../models/abstract-position';
+import { Position } from '../models/position';
 import { PrivateAction } from '../models/private-action';
 import { PositionAction } from '../models/actions/tv-position-action';
 import { EntityObject } from '../models/tv-entities';
@@ -133,7 +133,7 @@ export class ActionService {
 	}
 
 
-	private static executeWorldPositionAction ( position: AbstractPosition, obj: EntityObject ) {
+	private static executeWorldPositionAction ( position: Position, obj: EntityObject ) {
 
 		try {
 

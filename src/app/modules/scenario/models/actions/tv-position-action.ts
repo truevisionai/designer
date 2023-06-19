@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
@@ -13,9 +13,9 @@ export class PositionAction extends PrivateAction {
 	public actionType: ActionType = ActionType.Private_Position;
 
 
-	public position: AbstractPosition;
+	public position: Position;
 
-	constructor ( position: AbstractPosition ) {
+	constructor ( position: Position ) {
 
 		super();
 
@@ -23,7 +23,7 @@ export class PositionAction extends PrivateAction {
 
 	}
 
-	setPosition ( position: AbstractPosition ): any {
+	setPosition ( position: Position ): any {
 
 		this.position = position;
 

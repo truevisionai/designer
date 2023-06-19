@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from './abstract-position';
+import { Position } from './position';
 import { RouteStrategy } from './tv-enums';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 export class Waypoint {
 
 	constructor (
-		public position: AbstractPosition,
+		public position: Position,
 		public strategy: RouteStrategy
 	) {
 	}

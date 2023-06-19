@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { ConditionType, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
@@ -15,7 +15,7 @@ export class ReachPositionCondition extends EntityCondition {
 	conditionType = ConditionType.ByEntity_ReachPosition;
 	public name: string = 'ReachPositionCondition';
 
-	constructor ( public position: AbstractPosition, public tolerance: number = 0 ) {
+	constructor ( public position: Position, public tolerance: number = 0 ) {
 
 		super();
 

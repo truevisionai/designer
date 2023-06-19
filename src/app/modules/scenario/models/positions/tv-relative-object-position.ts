@@ -4,12 +4,13 @@
 
 import { Vector3 } from 'three';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
-import { AbstractPosition } from '../abstract-position';
+import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
-export class RelativeObjectPosition extends AbstractPosition {
+export class RelativeObjectPosition extends Position {
 
+	public readonly label: string = 'Relative Object Position';
 	public readonly type = PositionType.RelativeObject;
 
 	public dx: number = 0;

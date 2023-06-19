@@ -4,7 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { PositionType } from 'app/modules/scenario/models/tv-enums';
-import { AbstractPosition } from '../../models/abstract-position';
+import { Position } from '../../models/position';
 import { LanePosition } from '../../models/positions/tv-lane-position';
 import { RelativeObjectPosition } from '../../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../../models/positions/tv-world-position';
@@ -61,7 +61,7 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 
 	}
 
-	onPositionModified ( $event: AbstractPosition ) {
+	onPositionModified ( $event: Position ) {
 
 		this.positionModified.emit( $event );
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractPosition } from './abstract-position';
+import { Position } from './position';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 export enum EnumTrajectoryDomain {
@@ -29,7 +29,7 @@ export class Vertex {
 
 	constructor (
 		public reference?: number,
-		public position?: AbstractPosition,
+		public position?: Position,
 		public shape?: AbstractShape
 	) {
 

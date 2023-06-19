@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractPosition } from '../../../models/abstract-position';
+import { Position } from '../../../models/position';
 import { PrivateAction } from '../../../models/private-action';
 import { PositionAction } from '../../../models/actions/tv-position-action';
 import { EntityObject } from '../../../models/tv-entities';
@@ -30,7 +30,7 @@ export class PositionActionComponent implements OnInit {
 
 	}
 
-	onPositionChanged ( $event: AbstractPosition ) {
+	onPositionChanged ( $event: Position ) {
 
 		this.positionAction?.setPosition( $event );
 
@@ -38,7 +38,7 @@ export class PositionActionComponent implements OnInit {
 
 	}
 
-	onPositionModified ( $event: AbstractPosition ) {
+	onPositionModified ( $event: Position ) {
 
 		this.positionAction?.setPosition( $event );
 
