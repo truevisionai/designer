@@ -7,12 +7,9 @@ import { Debug } from 'app/core/utils/debug';
 import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
-import { EnumHelper } from '../../tv-map/models/tv-common';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { TvAction } from '../models/tv-action';
 import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
-import { PrivateAction } from '../models/private-action';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -37,7 +34,9 @@ import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
+import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
+import { TvAction } from '../models/tv-action';
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
 import { EntityObject } from '../models/tv-entities';
@@ -902,13 +901,7 @@ export class ReaderService extends AbstractReader {
 
 	readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
 
-		const shape = EnumHelper.stringToDynamics( xml.attr_shape );
-
-		const dimensionValue = xml.attr_rate ? parseFloat( xml.attr_rate ) : 0;
-
-		const dimension = EnumHelper.stringToDimension( xml.attr_dimension );
-
-		return new TransitionDynamics( shape, dimensionValue, dimension );
+		return TransitionDynamics.fromXML( xml );
 
 	}
 

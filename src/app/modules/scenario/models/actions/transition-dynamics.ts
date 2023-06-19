@@ -1,4 +1,6 @@
 import { TvConsole } from 'app/core/utils/console';
+import { EnumHelper } from '../../../tv-map/models/tv-common';
+import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { DynamicsDimension, DynamicsShape } from '../tv-enums';
 
 export class TransitionDynamics {
@@ -169,5 +171,15 @@ export class TransitionDynamics {
 
 	}
 
+	static fromXML ( xml: XmlElement ): TransitionDynamics {
 
+		const shape = EnumHelper.stringToDynamics( xml.attr_shape ?? 'step' );
+
+		const dimensionValue = parseFloat( xml.attr_rate ?? 0 );
+
+		const dimension = EnumHelper.stringToDimension( xml.attr_dimension ?? 'time' );
+
+		return new TransitionDynamics( shape, dimensionValue, dimension );
+
+	}
 }

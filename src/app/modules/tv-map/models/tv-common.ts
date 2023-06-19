@@ -295,4 +295,29 @@ export class EnumHelper {
 		}
 
 	}
+
+	static stringToDynamics ( dynamicsString: string ) {
+
+		switch ( dynamicsString ) {
+
+			case 'step':
+				return DynamicsShape.step;
+
+			case 'linear':
+				return DynamicsShape.linear;
+
+			case 'sinusoidal':
+				return DynamicsShape.sinusoidal;
+
+			case 'cubic':
+				return DynamicsShape.cubic;
+
+			default:
+				TvConsole.warn( 'unknown dynamics shape' + dynamicsString );
+				return DynamicsShape.step;
+
+		}
+
+	}
+	
 }
