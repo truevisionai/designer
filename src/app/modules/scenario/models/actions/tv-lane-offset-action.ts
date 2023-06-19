@@ -6,7 +6,7 @@ import { Time } from '../../../../core/time';
 import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType, DynamicsShape } from '../tv-enums';
-import { AbstractTarget } from './abstract-target';
+import { Target } from './target';
 import { AbsoluteTarget } from './tv-absolute-target';
 import { RelativeTarget } from './tv-relative-target';
 
@@ -45,7 +45,7 @@ export class LaneOffsetAction extends PrivateAction {
 		public continous: boolean,
 		public maxLateralAcc: number,
 		public dynamicsShape: DynamicsShape,
-		public target: AbstractTarget
+		public target: Target
 	) {
 
 		super();

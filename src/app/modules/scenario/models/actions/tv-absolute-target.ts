@@ -3,9 +3,9 @@
  */
 
 import { TargetType } from '../tv-enums';
-import { AbstractTarget } from './abstract-target';
+import { Target } from './target';
 
-export class AbsoluteTarget extends AbstractTarget {
+export class AbsoluteTarget extends Target {
 
 	public targetType = TargetType.absolute;
 

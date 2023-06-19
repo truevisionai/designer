@@ -13,7 +13,7 @@ import { TvAction } from '../models/tv-action';
 import { AbstractController } from '../models/abstract-controller';
 import { AbstractPosition } from '../models/abstract-position';
 import { PrivateAction } from '../models/private-action';
-import { AbstractTarget } from '../models/actions/abstract-target';
+import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
@@ -1044,7 +1044,7 @@ export class ReaderService extends AbstractReader {
 		return action;
 	}
 
-	readTarget ( xml: XmlElement ): AbstractTarget {
+	readTarget ( xml: XmlElement ): Target {
 
 		let target = null;
 

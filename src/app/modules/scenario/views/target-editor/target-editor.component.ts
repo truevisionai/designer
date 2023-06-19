@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractTarget } from '../../models/actions/abstract-target';
+import { Target } from '../../models/actions/target';
 import { AbsoluteTarget } from '../../models/actions/tv-absolute-target';
 import { RelativeTarget } from '../../models/actions/tv-relative-target';
 import { TargetType } from '../../models/tv-enums';
@@ -16,9 +16,9 @@ import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 } )
 export class TargetEditorComponent implements OnInit {
 
-	@Input() target: AbstractTarget;
+	@Input() target: Target;
 
-	@Output() changed = new EventEmitter<AbstractTarget>();
+	@Output() changed = new EventEmitter<Target>();
 
 	targetTypes = TargetType;
 

@@ -5,7 +5,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PrivateAction } from '../../../models/private-action';
 import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action';
-import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
+import { Target } from 'app/modules/scenario/models/actions/target';
 
 @Component( {
 	selector: 'app-lane-change',
@@ -35,7 +35,7 @@ export class LaneChangeComponent implements OnInit {
 
 	}
 
-	onTargetChanged ( $target: AbstractTarget ) {
+	onTargetChanged ( $target: Target ) {
 
 		this.laneChangeAction.setTarget( $target );
 

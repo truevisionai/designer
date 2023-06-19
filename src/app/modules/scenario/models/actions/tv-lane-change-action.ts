@@ -10,7 +10,7 @@ import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
 import { PrivateAction } from '../private-action';
 import { EntityObject } from '../tv-entities';
 import { ActionType } from '../tv-enums';
-import { AbstractTarget } from './abstract-target';
+import { Target } from './target';
 import { TransitionDynamics } from './transition-dynamics';
 import { AbsoluteTarget } from './tv-absolute-target';
 import { RelativeTarget } from './tv-relative-target';
@@ -41,7 +41,7 @@ export class LaneChangeAction extends PrivateAction {
 
 	constructor (
 		public dynamics: TransitionDynamics = new TransitionDynamics(),
-		public target: AbstractTarget = new AbsoluteTarget( 0 ),
+		public target: Target = new AbsoluteTarget( 0 ),
 		public targetLaneOffset: number = 0
 	) {
 
@@ -49,7 +49,7 @@ export class LaneChangeAction extends PrivateAction {
 
 	}
 
-	setTarget ( target: AbstractTarget ) {
+	setTarget ( target: Target ) {
 
 		this.target = target;
 
@@ -59,13 +59,10 @@ export class LaneChangeAction extends PrivateAction {
 
 		super.reset();
 
-		this.target?.reset();
-
 		this.startTime = null;
 		this.targetLaneId = null;
 		this.lateralDistance = null
 		this.initialLaneOffset = null;
-
 
 	}
 

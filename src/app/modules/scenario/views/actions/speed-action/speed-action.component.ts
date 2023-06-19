@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { PrivateAction } from '../../../models/private-action';
 import { SpeedAction } from '../../../models/actions/tv-speed-action';
-import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
+import { Target } from 'app/modules/scenario/models/actions/target';
 
 @Component( {
 	selector: 'app-speed-action',
@@ -32,7 +32,7 @@ export class SpeedActionComponent implements OnInit, IComponent {
 		}
 	}
 
-	onTargetChanged ( value: AbstractTarget ) {
+	onTargetChanged ( value: Target ) {
 
 		this.speedAction.target = value;
 

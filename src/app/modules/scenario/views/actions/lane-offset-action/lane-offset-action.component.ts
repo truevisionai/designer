@@ -4,7 +4,7 @@ import { CommandHistory } from '../../../../../services/command-history';
 import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
 import { PrivateAction } from '../../../models/private-action';
 import { DynamicsShape } from '../../../models/tv-enums';
-import { AbstractTarget } from 'app/modules/scenario/models/actions/abstract-target';
+import { Target } from 'app/modules/scenario/models/actions/target';
 
 @Component( {
 	selector: 'app-lane-offset-action',

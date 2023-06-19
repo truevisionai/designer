@@ -4,11 +4,9 @@
 
 import { TargetType } from '../tv-enums';
 
-export abstract class AbstractTarget {
+export abstract class Target {
 
 	abstract targetType: TargetType;
-
-	protected absoluteTarget: number;
 
 	get value () {
 
@@ -28,7 +26,6 @@ export abstract class AbstractTarget {
 
 	reset () {
 
-		this.absoluteTarget = null;
 
 	}
 }

@@ -4,9 +4,9 @@
 
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { TargetType } from '../tv-enums';
-import { AbstractTarget } from './abstract-target';
+import { Target } from './target';
 
-export class RelativeTarget extends AbstractTarget {
+export class RelativeTarget extends Target {
 
 	public targetType = TargetType.relative;
 
