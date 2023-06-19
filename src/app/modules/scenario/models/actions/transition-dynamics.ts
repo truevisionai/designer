@@ -1,3 +1,4 @@
+import { TvConsole } from 'app/core/utils/console';
 import { DynamicsDimension, DynamicsShape } from '../tv-enums';
 
 export class TransitionDynamics {
@@ -125,4 +126,48 @@ export class TransitionDynamics {
 		return newLaneOffset;
 
 	}
+
+	getDimensionAsString () {
+
+		switch ( this.dynamicsDimension ) {
+
+			case DynamicsDimension.distance:
+				return 'distance';
+
+			case DynamicsDimension.time:
+				return 'time';
+
+			case DynamicsDimension.rate:
+				return 'rate';
+
+			default:
+				TvConsole.warn( 'unknown dynamics dimension' + this.dynamicsDimension );
+				return 'value';
+
+		}
+
+	}
+
+	getDimensionSuffix () {
+
+		switch ( this.dynamicsDimension ) {
+
+			case DynamicsDimension.distance:
+				return 'm';
+
+			case DynamicsDimension.time:
+				return 's';
+
+			case DynamicsDimension.rate:
+				return 'm/s';
+
+			default:
+				TvConsole.warn( 'unknown dynamics dimension' + this.dynamicsDimension );
+				return '';
+
+		}
+
+	}
+
+
 }

@@ -16,8 +16,10 @@
 	<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Acceleration, event)">Acceleration</button>
 	<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_RelativeSpeed, event)">RelativeSpeed</button>
 </mat-menu>
-<button (contextmenu)="showConditionMenu($event,condition)" (click)="conditionClicked(condition)"
-		class="btn-icon-condition" mat-stroked-button *ngFor="let condition of event.startConditions">
+<button *ngFor="let condition of event.startConditions"
+		(contextmenu)="showConditionMenu($event,condition)"
+		(click)="conditionClicked(condition)"
+		class="btn-icon-condition" mat-stroked-button>
 	<mat-icon [matTooltip]="condition.name">bolt</mat-icon>
 </button>
 <br/>
@@ -38,6 +40,14 @@
 	<mat-icon [matTooltip]="action['actionName']">directions_run</mat-icon>
 </button>
 <br/><br/>
-<app-action *ngIf="selectedAction" [hidden]="!showAction" [action]="selectedAction" [entity]="entity"></app-action>
-<app-condition-editor *ngIf="selectedCondition" [hidden]="!showCondition"
-					  [condition]="selectedCondition"></app-condition-editor>
+<app-action
+	*ngIf="selectedAction"
+	[hidden]="!showAction"
+	[action]="selectedAction"
+	[entity]="entity">
+</app-action>
+<app-condition-editor
+	*ngIf="selectedCondition"
+	[hidden]="!showCondition"
+	[condition]="selectedCondition">
+</app-condition-editor>

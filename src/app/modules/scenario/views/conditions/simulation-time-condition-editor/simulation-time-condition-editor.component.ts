@@ -30,4 +30,8 @@ export class SimulationTimeConditionEditorComponent implements OnInit {
 
 	}
 
+	onTimeChanged ( $event: number ) {
+		this.simulationTimeCondition.value = $event;
+	}
+
 }

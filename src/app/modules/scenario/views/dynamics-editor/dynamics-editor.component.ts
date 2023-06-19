@@ -4,11 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { DynamicsDimension, DynamicsShape } from 'app/modules/scenario/models/tv-enums';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
 import { TransitionDynamics } from '../../models/actions/transition-dynamics';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
-import { EnumHelper } from 'app/modules/tv-map/models/tv-common';
 
 @Component( {
 	selector: 'app-dynamics-editor',
@@ -23,9 +19,15 @@ export class DynamicsEditorComponent {
 
 	dimensions = DynamicsDimension;
 
+	get dimensionValueLabel () {
+
+		return this.dynamics.getDimensionAsString();
+
+	}
+
 	get suffix () {
 
-		return EnumHelper.getSuffix( this.dynamics.dynamicsDimension );
+		return this.dynamics.getDimensionSuffix();
 
 	}
 

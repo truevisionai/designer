@@ -2,7 +2,7 @@
 				(changed)="onShapeChanged($event)"></app-enum-field>
 
 <app-double-field
-	label="Value"
+	[label]="dimensionValueLabel"
 	[suffix]="suffix"
 	(valueChanged)="onValueChanged($event)"
 	[value]="dynamics.value">

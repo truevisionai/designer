@@ -204,50 +204,6 @@ export enum ObjectTypes {
 
 export class EnumHelper {
 
-	static getSuffix ( dynamicsDimension: DynamicsDimension ): string {
-
-		switch ( dynamicsDimension ) {
-
-			case DynamicsDimension.distance:
-				return 'm';
-
-			case DynamicsDimension.time:
-				return 's';
-
-			case DynamicsDimension.rate:
-				return 'm/s';
-
-			default:
-				TvConsole.warn( 'unknown dynamics dimension' + dynamicsDimension );
-				return '';
-
-		}
-	}
-
-	static stringToDynamics ( value: string ): DynamicsShape {
-
-		switch ( value ) {
-
-			case 'linear':
-				return DynamicsShape.linear;
-
-			case 'sinusoidal':
-				return DynamicsShape.sinusoidal;
-
-			case 'cubic':
-				return DynamicsShape.cubic;
-
-			case 'step':
-				return DynamicsShape.step;
-
-			default:
-				TvConsole.warn( 'unknown dynamics' + value );
-				return DynamicsShape.step;
-
-		}
-
-	}
-
 	static stringToOdUnits ( value ): TvUnit {
 
 		switch ( value ) {
@@ -314,6 +270,27 @@ export class EnumHelper {
 			default:
 				TvConsole.warn( 'unknown dimension' + value );
 				return DynamicsDimension.time;
+
+		}
+
+	}
+
+	static dimensionToString ( dynamicsDimension: DynamicsDimension ) {
+
+		switch ( dynamicsDimension ) {
+
+			case DynamicsDimension.distance:
+				return 'distance';
+
+			case DynamicsDimension.time:
+				return 'time';
+
+			case DynamicsDimension.rate:
+				return 'rate';
+
+			default:
+				TvConsole.warn( 'unknown dynamics dimension' + dynamicsDimension );
+				return 'value';
 
 		}
 
