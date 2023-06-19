@@ -1,6 +1,6 @@
-<app-enum-field (changed)="onTypeChanged($event)" [enum]="targetTypes" [value]="target.targetType" label="Target Type"></app-enum-field>
+<app-enum-field (changed)="onTypeChanged($event)" [enum]="target.types" [value]="target.targetType" label="Target Type"></app-enum-field>
 
-<div *ngIf="target.targetType === targetTypes.relative">
+<div *ngIf="target.targetType === target.types.relative">
 	<app-select-entity-field (changed)="onEntityChanged($event)" [value]="relativeTarget.entityName" label="Relative To"></app-select-entity-field>
 </div>
 

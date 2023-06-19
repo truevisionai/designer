@@ -8,6 +8,8 @@ export abstract class Target {
 
 	abstract targetType: TargetType;
 
+	types = TargetType;
+
 	get value () {
 
 		return this.getTarget();
