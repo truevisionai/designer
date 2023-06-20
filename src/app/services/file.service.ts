@@ -426,6 +426,11 @@ export class FileService {
 
 		files.forEach( file => {
 
+			// Ignore hidden files (starting with '.')
+			if ( file.startsWith( '.' ) ) {
+				return;
+			}
+
 			const itemPath = this.path.join( dirpath, file );
 
 			const itemWithProperites = this.getItemProperties( itemPath );
