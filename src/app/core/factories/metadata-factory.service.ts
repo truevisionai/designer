@@ -82,6 +82,10 @@ export class MetadataFactory {
 				metadata = this.createOpenDriveMetadata( fileName, guid, path );
 				break;
 
+			case 'xosc':
+				metadata = this.createOpenScenarioMetadata( fileName, guid, path );
+				break;
+
 			case 'png':
 				metadata = this.createTextureMetaInternal( guid, path );
 				break;
@@ -182,6 +186,17 @@ export class MetadataFactory {
 		return {
 			guid: guid,
 			importer: MetaImporter.OPENDRIVE,
+			data: {},
+			path: path
+		};
+
+	}
+
+	static createOpenScenarioMetadata ( name: string, guid: string, path: string ) {
+
+		return {
+			guid: guid,
+			importer: MetaImporter.OPENSCENARIO,
 			data: {},
 			path: path
 		};

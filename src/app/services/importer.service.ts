@@ -147,6 +147,14 @@ export class ImporterService {
 				copied = this.copyFileInFolder( file.path, destinationPath, extension );
 				break;
 
+			case 'xodr':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
+
+			case 'xosc':
+				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				break;
+
 			default:
 				SnackBar.error( `${ extension } file cannot be imported` );
 				break;

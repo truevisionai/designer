@@ -21,6 +21,7 @@ export interface DynamicMeta<T> {
 export enum MetaImporter {
 	SCENE = 'SceneImporter',
 	OPENDRIVE = 'OpenDriveImporter',
+	OPENSCENARIO = 'OpenScenarioImporter',
 	TEXTURE = 'TextureImporter',
 	MATERIAL = 'MaterialImporter',
 	SIGN = 'SignImporter',
