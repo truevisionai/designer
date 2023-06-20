@@ -20,6 +20,8 @@ export abstract class Condition {
 
 	abstract hasPassed (): boolean;
 
+	// abstract toXML (): any;
+
 	hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 
 		return ConditionUtils.hasRulePassed( rule, left, right );

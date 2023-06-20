@@ -1,12 +1,14 @@
 <mat-form-field *ngIf="showType" class="example-full-width">
 	<mat-label>Position</mat-label>
-	<mat-select (ngModelChange)="onChange($event)" [ngModel]="position.type">
+	<mat-select (ngModelChange)="onPositionTypeChanged($event)" [ngModel]="position.type">
 		<mat-option [value]="types.World">World Position</mat-option>
-		<!--        <mat-option [value]="types.Road">Road Position</mat-option>-->
+		<mat-option [value]="types.Road">Road Position</mat-option>
 		<mat-option [value]="types.Lane">Lane Position</mat-option>
 		<mat-option [value]="types.RelativeObject">Relative To Object</mat-option>
 	</mat-select>
 </mat-form-field>
+
+<app-dropdown-field label="Type" [options]=""></app-dropdown-field>
 
 <div [ngSwitch]="position.type">
 
@@ -20,16 +22,14 @@
 		</app-relative-object-position-editor>
 	</div>
 
-	<!--    <div *ngSwitchCase="types.Road">-->
-	<!--        <app-road-position-editor (positionModified)="onPositionModified($event)" [position]="position">-->
-	<!--        </app-road-position-editor>-->
-	<!--    </div>-->
+	<div *ngSwitchCase="types.Road">
+		<app-road-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		</app-road-position-editor>
+	</div>
 
-	<!-- <div *ngSwitchCase="types.Lane">
-        <app-lane-position-editor (positionModified)="onPositionModified($event)" [position]="position">
-        </app-lane-position-editor>
-    </div>
-
-     -->
+	<div *ngSwitchCase="types.Lane">
+		<app-lane-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		</app-lane-position-editor>
+	</div>
 
 </div>

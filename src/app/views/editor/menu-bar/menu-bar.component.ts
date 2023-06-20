@@ -216,4 +216,9 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
+	exportOpenScenario () {
+
+		// this.exporter.exportOpenScenario();
+
+	}
 }

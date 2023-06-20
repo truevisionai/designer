@@ -6,8 +6,6 @@ import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
-import { Position } from '../models/position';
-import { PrivateAction } from '../models/private-action';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -22,10 +20,12 @@ import { Condition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { Position } from '../models/position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
+import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
@@ -758,56 +758,19 @@ export class WriterService {
 
 	writeOrientation ( orientation: Orientation ) {
 
-		return {
-
-			attr_h: orientation.h,
-			attr_p: orientation.p ? orientation.p : 0,
-			attr_r: orientation.r ? orientation.r : 0,
-
-			attr_type: orientation.type
-		};
+		return orientation.toXML();
 
 	}
 
 	writeWorldPosition ( position: WorldPosition ) {
 
-		const x = position.vector3 ? position.vector3.x : position.x;
-		const y = position.vector3 ? position.vector3.y : position.y;
-		const z = position.vector3 ? position.vector3.z : position.y;
-
-		return {
-
-			World: {
-
-				attr_x: x,
-				attr_y: y,
-				attr_z: z,
-
-				attr_h: position.m_H ? position.m_H : 0,
-				attr_p: position.m_P ? position.m_P : 0,
-				attr_r: position.m_R ? position.m_R : 0,
-
-			}
-		};
+		return position.toXML();
 
 	}
 
 	writeRelativeObjectPosition ( position: RelativeObjectPosition ) {
 
-		let xml = {
-			RelativeObject: {
-				attr_object: position.object,
-				attr_dx: position.dx,
-				attr_dy: position.dy,
-				attr_dz: position.dz ? position.dz : 0,
-			}
-		};
-
-		position.orientations.forEach( orientation => {
-			xml.RelativeObject[ 'Orientation' ] = this.writeOrientation( orientation );
-		} );
-
-		return xml;
+		return position.toXML();
 	}
 
 	writeCatalogs ( rootNode: any, catalogs: Catalogs ) {
@@ -838,18 +801,8 @@ export class WriterService {
 
 	writeLanePosition ( position: LanePosition ) {
 
+		return position.toXML();
 
-		let xml = {
-			Lane: {
-				attr_roadId: position.roadId,
-				attr_laneId: position.laneId,
-				attr_s: position.sCoordinate,
-				attr_offset: position.offset ? position.offset : 0,
-			}
-		};
-
-
-		return xml;
 	}
 
 	writeTrajectory ( trajectory: Trajectory ) {
@@ -920,13 +873,7 @@ export class WriterService {
 	}
 
 	writeClothoid ( shape: ClothoidShape ) {
-		return {
-			Clothoid: {
-				attr_curvature: shape.curvature,
-				attr_curvatureDot: shape.curvatureDot,
-				attr_length: shape.length
-			}
-		};
+		return shape.toXML();
 	}
 
 	writeSpline ( shape: SplineShape ) {

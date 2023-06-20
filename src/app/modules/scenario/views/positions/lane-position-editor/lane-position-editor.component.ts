@@ -3,8 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LanePosition } from '../../../models/positions/tv-lane-position';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Position } from '../../../models/position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
@@ -13,7 +13,7 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 } )
 export class LanePositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	@Input() position: LanePosition;
+	@Input() position: Position;
 
 	public positionForm: FormGroup;
 
@@ -23,23 +23,23 @@ export class LanePositionEditorComponent extends AbstractPositionEditor implemen
 
 	ngOnInit () {
 
-		this.positionForm = this.fb.group( {
-			roadId: [ this.position.roadId, [ Validators.required ] ],
-			laneId: [ this.position.laneId, [ Validators.required ] ],
-			sCoordinate: [ this.position.sCoordinate, [ Validators.required ] ],
-			offset: [ this.position.offset, [] ],
-		} );
-
-		this.positionForm.valueChanges.subscribe( value => {
-
-			this.position.roadId = value.roadId;
-			this.position.laneId = value.laneId;
-			this.position.offset = value.offset;
-			this.position.sCoordinate = value.sCoordinate;
-
-			this.positionModified.emit( this.position );
-
-		} );
+		// this.positionForm = this.fb.group( {
+		// 	roadId: [ this.position.roadId, [ Validators.required ] ],
+		// 	laneId: [ this.position.laneId, [ Validators.required ] ],
+		// 	sCoordinate: [ this.position.sCoordinate, [ Validators.required ] ],
+		// 	offset: [ this.position.offset, [] ],
+		// } );
+		//
+		// this.positionForm.valueChanges.subscribe( value => {
+		//
+		// 	this.position.roadId = value.roadId;
+		// 	this.position.laneId = value.laneId;
+		// 	this.position.offset = value.offset;
+		// 	this.position.sCoordinate = value.sCoordinate;
+		//
+		// 	this.positionModified.emit( this.position );
+		//
+		// } );
 
 	}
 

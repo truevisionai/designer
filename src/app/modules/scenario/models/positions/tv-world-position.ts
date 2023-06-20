@@ -116,4 +116,22 @@ export class WorldPosition extends Position {
 		this.vector3.z = this.z;
 
 	}
+
+	toXML () {
+
+		const x = this.vector3 ? this.vector3.x : this.x;
+		const y = this.vector3 ? this.vector3.y : this.y;
+		const z = this.vector3 ? this.vector3.z : this.y;
+
+		return {
+			World: {
+				attr_x: x,
+				attr_y: y,
+				attr_z: z,
+				attr_h: this.m_H ? this.m_H : 0,
+				attr_p: this.m_P ? this.m_P : 0,
+				attr_r: this.m_R ? this.m_R : 0,
+			}
+		};
+	}
 }

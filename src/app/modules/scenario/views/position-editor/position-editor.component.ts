@@ -4,9 +4,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { PositionType } from 'app/modules/scenario/models/tv-enums';
+import { PositionFactory } from '../../builders/position-factory';
 import { Position } from '../../models/position';
-import { LanePosition } from '../../models/positions/tv-lane-position';
-import { RelativeObjectPosition } from '../../models/positions/tv-relative-object-position';
 import { WorldPosition } from '../../models/positions/tv-world-position';
 import { AbstractPositionEditor } from './AbstractPositionEditor';
 
@@ -29,33 +28,13 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 
 	}
 
-	get worldPosition() { return this.position as WorldPosition }
+	get worldPosition () {
+		return this.position as WorldPosition;
+	}
 
-	onChange ( e: number ) {
+	onPositionTypeChanged ( $type: number ) {
 
-		switch ( e ) {
-
-			case this.types.World:
-				this.position = new WorldPosition();
-				break;
-
-			// case this.types.Road:
-			//     this.position = new RoadPosition();
-			//     break;
-
-			case this.types.Lane:
-				this.position = new LanePosition();
-				break;
-
-			case this.types.RelativeObject:
-				this.position = new RelativeObjectPosition();
-				break;
-
-			default:
-				break;
-
-		}
-
+		this.position = PositionFactory.createPosition( $type );
 
 		this.positionChanged.emit( this.position );
 

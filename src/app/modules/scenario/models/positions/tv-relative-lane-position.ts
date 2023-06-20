@@ -3,6 +3,7 @@
  */
 
 import { Vector3 } from 'three';
+import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
@@ -31,6 +32,10 @@ export class RelativeLanePosition extends Position {
 
 		return new Vector3();
 
+	}
+
+	toXML (): XmlElement {
+		return undefined;
 	}
 
 

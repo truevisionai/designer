@@ -1,11 +1,10 @@
-import { Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { MatSelect } from '@angular/material/select';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
-import { TvAction } from '../../models/tv-action';
-import { PrivateAction } from '../../models/private-action';
 import { Condition } from '../../models/conditions/tv-condition';
+import { PrivateAction } from '../../models/private-action';
+import { TvAction } from '../../models/tv-action';
 import { EntityObject } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
@@ -17,6 +16,8 @@ import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 	styleUrls: [ './entity-event-inspector.component.scss' ]
 } )
 export class EntityEventInspectorComponent implements OnInit {
+
+	@Input() style: 'compact' | 'list' = 'list';
 
 	@Input() entity: EntityObject;
 	@Input() event: TvEvent;
@@ -93,6 +94,8 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	actionClicked ( action: TvAction ) {
 
+		if ( this.style != 'compact' ) return;
+
 		this.showCondition = false;
 
 		if ( this.selectedAction === action && this.showAction ) {
@@ -110,6 +113,8 @@ export class EntityEventInspectorComponent implements OnInit {
 	}
 
 	conditionClicked ( condition: Condition ) {
+
+		if ( this.style != 'compact' ) return;
 
 		this.showAction = false;
 

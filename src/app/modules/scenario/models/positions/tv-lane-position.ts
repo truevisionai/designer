@@ -45,4 +45,15 @@ export class LanePosition extends Position {
 		}
 
 	}
+
+	toXML () {
+		return {
+			Lane: {
+				attr_roadId: this.roadId,
+				attr_laneId: this.laneId,
+				attr_s: this.sCoordinate,
+				attr_offset: this.offset ? this.offset : 0,
+			}
+		};
+	}
 }

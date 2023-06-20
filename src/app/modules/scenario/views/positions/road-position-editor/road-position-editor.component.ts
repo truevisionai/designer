@@ -2,21 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { RoadPosition } from '../../../models/positions/tv-road-position';
+import { Component } from '@angular/core';
+import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
 	selector: 'app-road-position-editor',
 	templateUrl: './road-position-editor.component.html'
 } )
-export class RoadPositionEditorComponent implements OnInit {
+export class RoadPositionEditorComponent extends AbstractPositionEditor {
 
-	@Input() position: RoadPosition;
-
-	constructor () {
-	}
-
-	ngOnInit () {
-	}
 
 }

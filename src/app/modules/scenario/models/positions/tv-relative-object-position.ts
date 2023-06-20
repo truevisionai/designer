@@ -3,6 +3,7 @@
  */
 
 import { Vector3 } from 'three';
+import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
@@ -30,6 +31,18 @@ export class RelativeObjectPosition extends Position {
 		position.z += this.dz;
 
 		return position;
+	}
+
+	toXML (): XmlElement {
+		return {
+			RelativeObject: {
+				attr_object: this.object,
+				attr_dx: this.dx,
+				attr_dy: this.dy,
+				attr_dz: this.dz ? this.dz : 0,
+				Orientation: this.orientations.map( orientation => orientation.toXML() )
+			}
+		};
 	}
 
 

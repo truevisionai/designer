@@ -9,7 +9,6 @@ import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { AbstractController } from '../models/abstract-controller';
-import { Position } from '../models/position';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
@@ -30,6 +29,7 @@ import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-c
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
+import { Position } from '../models/position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
