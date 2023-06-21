@@ -5,7 +5,7 @@
 import { Time } from '../../../../core/time';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { EntityObject } from '../tv-entities';
-import { OpenScenario } from '../tv-scenario';
+import { TvScenario } from '../tv-scenario';
 import { StandStillCondition } from './tv-stand-still-condition';
 
 
@@ -17,7 +17,7 @@ describe( 'StandStillCondition', () => {
 
 		Time.reset();
 
-		TvScenarioInstance.scenario = new OpenScenario();
+		TvScenarioInstance.scenario = new TvScenario();
 
 		const entityObject = new EntityObject( 'ego' );
 

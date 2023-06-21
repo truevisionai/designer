@@ -16,6 +16,8 @@ import { ModelImporterService } from './model-importer.service';
 import { PropManager } from './prop-manager';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
+import { ScenarioBuilder } from 'app/modules/scenario/services/scenario-builder.service';
+import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -112,9 +114,15 @@ export class ImporterService {
 
 	importOpenScenario ( path: string ) {
 
-		this.openScenarioImporter.readFromPath( path ).then( ( openScenario ) => {
+		this.openScenarioImporter.readFromPath( path ).then( ( scenario ) => {
 
-			console.log( openScenario );
+			console.log( scenario );
+
+			ScenarioBuilder.buildScenario( scenario );
+
+			TvScenarioInstance.scenario = scenario;
+
+			console.log( scenario );
 
 		} );
 

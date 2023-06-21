@@ -4,6 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
+
+import { XMLParser } from 'fast-xml-parser';
 import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { FileService } from '../../../services/file.service';
@@ -43,33 +45,30 @@ import { EntityObject } from '../models/tv-entities';
 import { ConditionEdge, DynamicsDimension, DynamicsShape, EnumOrientationType, Rule } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
-import { CatalogReferenceController } from '../models/tv-interfaces';
 import { EventAction, Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
 import { RoadNetwork } from '../models/tv-road-network';
 import { Route, Waypoint } from '../models/tv-route';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { Sequence } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-
-import { XMLParser } from 'fast-xml-parser';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenScenarioImporter extends AbstractReader {
 
-	private openScenario: OpenScenario;
+	private openScenario: TvScenario;
 	private file: IFile;
 
 	constructor ( private fileService: FileService ) {
 		super();
 	}
 
-	public readFromFile ( file: IFile ): OpenScenario {
+	public readFromFile ( file: IFile ): TvScenario {
 
 		this.file = file;
 
@@ -77,7 +76,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	public async readFromPath ( path: string ): Promise<OpenScenario> {
+	public async readFromPath ( path: string ): Promise<TvScenario> {
 
 		const contents = await this.fileService.readAsync( path );
 
@@ -85,9 +84,9 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	public readContents ( contents: string ): OpenScenario {
+	public readContents ( contents: string ): TvScenario {
 
-		this.openScenario = new OpenScenario();
+		this.openScenario = new TvScenario();
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -100,22 +99,33 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		const parser = new XMLParser( defaultOptions );
 
-		const data: XmlElement = parser.parse( contents );
+		const xml: XmlElement = parser.parse( contents );
 
-		this.readFile( data );
+		console.log( xml );
 
-		this.readOpenScenario( data, this.openScenario );
+		this.readFile( xml );
+
+		this.readOpenScenario( xml, this.openScenario );
 
 		return this.openScenario;
 	}
 
-	private readOpenScenario ( xml: XmlElement, openScenario: OpenScenario ): any {
+	private readOpenScenario ( xml: XmlElement, openScenario: TvScenario ): any {
 
-		const OpenSCENARIO = xml.OpenSCENARIO;
+		const parentXml = xml.OpenSCENARIO;
 
-		openScenario.fileHeader = this.readFileHeader( OpenSCENARIO.FileHeader );
+		openScenario.fileHeader = this.readFileHeader( parentXml.FileHeader );
 
-		openScenario.parameterDeclaration = this.readParameterDeclaration( OpenSCENARIO.ParameterDeclaration );
+		// if ( openScenario.fileHeader.version != OpenScenarioVersion.v1_0 )
+
+		// Parsing version 0.9
+
+		if ( parentXml.ParameterDeclarations ) {
+
+			parentXml.ParameterDeclarations?.ParameterDeclaration?.map( xml => openScenario.addParameter( this.readParameter( xml ) ) );
+
+		}
+
 
 		// NOTE: Before reading the xml document further
 		// we need to replace all paramater variables in the xml
@@ -124,15 +134,15 @@ export class OpenScenarioImporter extends AbstractReader {
 		// TODO: Read Catalogs
 		// openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
 
-		openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
+		openScenario.roadNetwork = this.readRoadNetwork( parentXml.RoadNetwork );
 
-		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: EntityObject ) => {
+		this.readEntities( parentXml.Entities ).forEach( ( value: EntityObject ) => {
 
 			openScenario.addObject( value );
 
 		} );
 
-		openScenario.storyboard = this.readStoryboard( OpenSCENARIO.Storyboard );
+		openScenario.storyboard = this.readStoryboard( parentXml.Storyboard );
 	}
 
 	readCondition ( xml: XmlElement ) {
@@ -238,6 +248,14 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} );
 
+		this.readAsOptionalArray( xml.ScenarioObject, ( object, count ) => {
+
+			const entityObject = this.readEntityObject( object );
+
+			objects.push( entityObject );
+
+		} );
+
 		return objects;
 
 	}
@@ -250,7 +268,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		if ( xml.CatalogReference != null ) {
 
-			entityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
+			// entityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
 
 		} else if ( xml.Vehicle != null ) {
 
@@ -262,7 +280,9 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		this.readAsOptionalElement( xml.Controller, ( xml ) => {
 
-			entityObject.controller = this.readController( xml );
+			const controller = this.readController( xml );
+
+			if ( controller ) entityObject.controller = controller;
 
 		} );
 
@@ -274,21 +294,17 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let response: AbstractController = null;
 
-		Debug.log( xml );
-
 		if ( xml.CatalogReference != null ) {
 
-			const catalogReference = CatalogReference.readXml( xml.CatalogReference );
+			// const catalogReference = CatalogReference.readXml( xml.CatalogReference );
 
-			response = new CatalogReferenceController( catalogReference );
+			// response = new CatalogReferenceController( catalogReference );
 
 		} else if ( xml.Driver != null ) {
 
 		} else if ( xml.PedestrianController != null ) {
 
 		}
-
-		Debug.log( response );
 
 		return response;
 	}
@@ -706,7 +722,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			this.readAsOptionalArray( xml.Private, ( xml ) => {
 
-				const object = xml.attr_object;
+				const object = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
 
 				const entity = this.openScenario.objects.get( object );
 
@@ -714,13 +730,17 @@ export class OpenScenarioImporter extends AbstractReader {
 				if ( !entity ) return;
 
 				// Read the Action tag inside Private
+				// 0.9
 				this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-					const action = this.readPrivateAction( xml );
+					entity.initActions.push( this.readPrivateAction( xml ) );
 
-					// storyboard.addPrivateInitAction( object, action );
+				} );
 
-					entity.initActions.push( action );
+				// 1.0
+				this.readAsOptionalArray( xml.PrivateAction, ( xml ) => {
+
+					entity.initActions.push( this.readPrivateAction( xml ) );
 
 				} );
 
@@ -741,41 +761,45 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readPrivateAction ( item: any ): PrivateAction {
+	readPrivateAction ( xml: XmlElement ): PrivateAction {
 
 		let action = null;
 
-		if ( item.Longitudinal != null ) {
+		if ( xml.Longitudinal != null || xml.LongitudinalAction != null ) {
 
-			action = this.readLongitudinalAction( item.Longitudinal );
+			action = this.readLongitudinalAction( xml.Longitudinal || xml.LongitudinalAction );
 
-		} else if ( item.Lateral != null ) {
+		} else if ( xml.Lateral != null ) {
 
-			action = this.readLateralAction( item.Lateral );
+			action = this.readLateralAction( xml.Lateral );
 
-		} else if ( item.Visibility != null ) {
-
-			throw new Error( 'action not implemented' );
-
-		} else if ( item.Meeting != null ) {
+		} else if ( xml.Visibility != null ) {
 
 			throw new Error( 'action not implemented' );
 
-		} else if ( item.Autonomous != null ) {
+		} else if ( xml.Meeting != null ) {
 
 			throw new Error( 'action not implemented' );
 
-		} else if ( item.Controller != null ) {
+		} else if ( xml.Autonomous != null ) {
 
 			throw new Error( 'action not implemented' );
 
-		} else if ( item.Position != null ) {
+		} else if ( xml.Controller != null ) {
 
-			action = this.readPositionAction( item.Position );
+			throw new Error( 'action not implemented' );
 
-		} else if ( item.Routing != null ) {
+		} else if ( xml.Position || xml.PositionAction ) {
 
-			action = this.readRoutingAction( item.Routing );
+			action = this.readPositionAction( xml.Position || xml.PositionAction );
+
+		} else if ( xml.TeleportAction ) {
+
+			action = this.readPositionAction( xml.TeleportAction.Position );
+
+		} else if ( xml.Routing != null ) {
+
+			action = this.readRoutingAction( xml.Routing );
 
 		} else {
 
@@ -922,15 +946,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readLaneChangeAction ( xml: XmlElement ): TvAction {
 
-		const action = new LaneChangeAction();
+		const targetLaneOffset = parseFloat( xml.attr_targetLaneOffset || 0 );
 
-		action.targetLaneOffset = parseFloat( xml.attr_targetLaneOffset );
+		const dynamics = this.readTransitionDynamics( xml.Dynamics );
 
-		action.dynamics = this.readTransitionDynamics( xml.Dynamics );
+		const target = this.readTarget( xml.Target );
 
-		action.target = this.readTarget( xml.Target );
-
-		return action;
+		return new LaneChangeAction( dynamics, target, targetLaneOffset );
 
 	}
 
@@ -943,9 +965,9 @@ export class OpenScenarioImporter extends AbstractReader {
 	readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		// TOOD: Fix parsing of enum
-		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape;
+		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape || xml.attr_shape;
 
-		const value = xml.attr_value;
+		const value = parseFloat( xml.attr_value ?? 0 );
 
 		// TOOD: Fix parsing of enum
 		const dynamicsDimension: DynamicsDimension = xml.attr_dynamicsDimension;
@@ -964,21 +986,21 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let position: Position = null;
 
-		if ( xml.World != null ) {
+		if ( xml.World || xml.WorldPosition ) {
 
-			position = this.readWorldPosition( xml.World );
+			position = this.readWorldPosition( xml.World || xml.WorldPosition );
 
-		} else if ( xml.RelativeObject != null ) {
+		} else if ( xml.RelativeObject || xml.RelativeObjectPosition ) {
 
-			position = this.readRelativeObjectPosition( xml.RelativeObject );
+			position = this.readRelativeObjectPosition( xml.RelativeObject || xml.RelativeObjectPosition );
 
-		} else if ( xml.RelativeLane != null ) {
+		} else if ( xml.RelativeLane || xml.RelativeLanePosition ) {
 
-			position = this.readRelativeLanePosition( xml.RelativeLane );
+			position = this.readRelativeLanePosition( xml.RelativeLane || xml.RelativeLanePosition );
 
-		} else if ( xml.Lane != null ) {
+		} else if ( xml.Lane || xml.LanePosition ) {
 
-			position = this.readLanePosition( xml.Lane );
+			position = this.readLanePosition( xml.Lane || xml.LanePosition );
 
 		} else {
 
@@ -1022,21 +1044,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readRelativeObjectPosition ( xml: XmlElement ): Position {
 
-		const position = new RelativeObjectPosition(
-			xml.attr_object || null,
+		return new RelativeObjectPosition(
+			xml.attr_object || xml.attr_entityRef || null,
 			xml.attr_dx ? parseFloat( xml.attr_dx ) : 0,
 			xml.attr_dy ? parseFloat( xml.attr_dy ) : 0,
 			xml.attr_dz ? parseFloat( xml.attr_dz ) : 0,
 			this.readOrientation( xml )
 		);
-
-		// this.readAsOptionalArray( xml.Orientation, ( xml ) => {
-
-		// 	position.orientations.push( this.readOrientation( xml ) );
-
-		// } );
-
-		return
 	}
 
 	readOrientation ( xml: XmlElement ): Orientation {
@@ -1056,11 +1070,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let action = null;
 
-		if ( xml.Speed != null ) {
+		if ( xml.Speed || xml.SpeedAction ) {
 
-			const dynamics = this.readSpeedDynamics( xml.Speed.Dynamics );
+			const speed = xml.Speed || xml.SpeedAction;
 
-			const target = this.readTarget( xml.Speed.Target );
+			const dynamics = this.readSpeedDynamics( speed.Dynamics || speed.SpeedActionDynamics );
+
+			const target = this.readTarget( speed.Target || speed.SpeedActionTarget );
 
 			return new SpeedAction( dynamics, target );
 
@@ -1075,15 +1091,17 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readTarget ( xml: XmlElement ): Target {
 
-		let target = null;
+		if ( xml.Absolute || xml.AbsoluteTargetSpeed ) {
 
-		if ( xml.Absolute != null ) {
+			const absXml = xml.Absolute || xml.AbsoluteTargetSpeed;
 
-			const value = xml.Absolute.attr_value;
+			const value = parseFloat( absXml.attr_value );
 
-			target = new AbsoluteTarget( value );
+			return new AbsoluteTarget( value );
 
-		} else if ( xml.Relative != null ) {
+		}
+
+		if ( xml.Relative != null ) {
 
 			const value = parseFloat( xml.Relative.attr_value );
 
@@ -1092,8 +1110,6 @@ export class OpenScenarioImporter extends AbstractReader {
 			return new RelativeTarget( object, value );
 
 		}
-
-		return target;
 	}
 
 	readVertex ( xml: XmlElement ): Vertex {
@@ -1285,7 +1301,6 @@ export class OpenScenarioImporter extends AbstractReader {
 	}
 
 
-
 	private replaceParamaterValues ( object: any, callback?: ( object, property ) => void ) {
 
 		// const properties = Object.getOwnPropertyNames( object );
@@ -1332,15 +1347,15 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	private readParameterDeclaration ( xml: XmlElement ): ParameterDeclaration {
 
-		const parameterDeclaration = new ParameterDeclaration();
+		const parameters = xml?.Parameter.map( xml => this.readParameter( xml ) );
 
-		this.readAsOptionalArray( xml.Parameter, ( xml ) => {
+		// this.readAsOptionalArray( xml.Parameter, ( xml ) => {
+		//
+		// 	parameterDeclaration.addParameter( this.readParameter( xml ) );
+		//
+		// } );
 
-			parameterDeclaration.addParameter( this.readParameter( xml ) );
-
-		} );
-
-		return parameterDeclaration;
+		return new ParameterDeclaration();
 
 	}
 
@@ -1349,7 +1364,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		const name: string = xml.attr_name;
 		const value: string = xml.attr_value;
 
-		const type = Parameter.stringToEnum( xml.attr_type );
+		const type = Parameter.stringToEnum( xml.attr_type || xml.attr_parameterType );
 
 		return new Parameter( name, type, value );
 	}

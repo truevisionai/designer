@@ -34,7 +34,7 @@ export class ScenarioDirectorService {
 
 	private added: boolean;
 	private eventIndex: number = 0;
-	private logEvents: boolean = false;
+	private logEvents: boolean = true;
 
 	constructor ( public userPlayer: PlayerService ) {
 
@@ -62,8 +62,8 @@ export class ScenarioDirectorService {
 
 		if ( this.logEvents ) console.info( 'scenario-started', this.openScenario );
 
-		this.performInitActions();
-
+		this.startScenario();
+		this.updateScenario();
 	}
 
 	private onPlayerResumed () {
@@ -82,12 +82,18 @@ export class ScenarioDirectorService {
 
 		if ( this.logEvents ) console.info( 'scenario-stopped' );
 
-		this.performInitActions();
+		this.startScenario();
 
 		this.resetOpenScenario();
 	}
 
 	private onPlayerTick ( e: PlayerUpdateData ) {
+
+		this.updateScenario();
+
+	}
+
+	private updateScenario () {
 
 		if ( ConditionUtils.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
 
@@ -108,10 +114,9 @@ export class ScenarioDirectorService {
 			} );
 
 		}
-
 	}
 
-	private performInitActions () {
+	private startScenario () {
 
 		// // set parameters
 		// this.reader.replaceParamaterValues( this.openScenario.objects, ( object, property ) => {

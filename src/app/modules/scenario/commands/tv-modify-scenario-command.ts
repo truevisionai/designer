@@ -3,13 +3,13 @@
  */
 
 import { BaseCommand } from '../../../core/commands/base-command';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class ModifyScenarioCommand extends BaseCommand {
 
-	private oldState: OpenScenario;
-	private newState: OpenScenario;
+	private oldState: TvScenario;
+	private newState: TvScenario;
 
 	constructor () {
 		super();

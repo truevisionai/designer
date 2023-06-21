@@ -7,7 +7,7 @@ import { PlayerService } from '../../../core/player.service';
 import { ScenarioDirectorService } from './scenario-director.service';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { TvScenarioInstance } from './tv-scenario-instance';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 
 
 describe( 'ScenarioPlayerService', () => {
@@ -27,7 +27,7 @@ describe( 'ScenarioPlayerService', () => {
 
 	beforeEach( () => {
 
-		TvScenarioInstance.openScenario = new OpenScenario();
+		TvScenarioInstance.openScenario = new TvScenario();
 
 		TvScenarioInstance.openScenario.storyboard.addEndCondition( new SimulationTimeCondition( 10 ) );
 

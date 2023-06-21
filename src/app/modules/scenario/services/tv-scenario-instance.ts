@@ -6,11 +6,11 @@ import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/models/file';
 import { ClearHelper } from '../helpers/tv-clear-helper';
 import { NameDB } from '../models/tv-name-db';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 
 export class TvScenarioInstance {
 
-	public static scenarioChanged = new EventEmitter<OpenScenario>();
+	public static scenarioChanged = new EventEmitter<TvScenario>();
 	public static fileChanged = new EventEmitter<IFile>();
 	public static db: NameDB = new NameDB();
 	private static cleaner = new ClearHelper();
@@ -26,7 +26,7 @@ export class TvScenarioInstance {
 		this.fileChanged.emit( value );
 	}
 
-	private static _scenario: OpenScenario = new OpenScenario();
+	private static _scenario: TvScenario = new TvScenario();
 
 	static get scenario () {
 		return this._scenario;

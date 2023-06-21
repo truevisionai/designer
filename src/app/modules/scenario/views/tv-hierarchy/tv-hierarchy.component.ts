@@ -9,7 +9,7 @@ import { AppInspector } from '../../../../core/inspector';
 import { ContextMenuType, MenuService } from '../../../../services/menu.service';
 import { ThreeService } from '../../../three-js/three.service';
 import { EntityInspector } from '../../inspectors/tv-entity-inspector/tv-entity-inspector.component';
-import { OpenScenario } from '../../models/tv-scenario';
+import { TvScenario } from '../../models/tv-scenario';
 import { DialogService } from '../../services/tv-dialog.service';
 import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 
@@ -46,7 +46,7 @@ enum NodeType {
 export class HierarchyComponent implements OnInit {
 
 
-	@Input() scenario: OpenScenario;
+	@Input() scenario: TvScenario;
 	treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
 	dataSource: MatTreeFlatDataSource<ScenarioNode, { expandable: boolean; name: string; level: number; type: NodeType; }, { expandable: boolean; name: string; level: number; type: NodeType; }>;
 

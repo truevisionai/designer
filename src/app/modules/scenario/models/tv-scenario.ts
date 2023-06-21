@@ -22,7 +22,7 @@ import { Sequence } from './tv-sequence';
 import { Story } from './tv-story';
 import { Storyboard } from './tv-storyboard';
 
-export class OpenScenario {
+export class TvScenario {
 
 	public fileHeader = new FileHeader;
 	public catalogs: Catalogs;

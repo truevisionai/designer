@@ -175,7 +175,7 @@ export class TransitionDynamics {
 
 		const shape = EnumHelper.stringToDynamics( xml.attr_shape ?? 'step' );
 
-		const dimensionValue = parseFloat( xml.attr_rate ?? 0 );
+		const dimensionValue = parseFloat( xml.attr_rate || xml.attr_time || xml.attr_distance || 0 );
 
 		const dimension = EnumHelper.stringToDimension( xml.attr_dimension ?? 'time' );
 

@@ -37,7 +37,7 @@ import { Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
 import { RoadNetwork } from '../models/tv-road-network';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { Sequence } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
@@ -50,9 +50,9 @@ import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, V
 export class WriterService {
 
 	private xmlDocument: Object;
-	private openScenario: OpenScenario;
+	private openScenario: TvScenario;
 
-	getOutputString ( openScenario: OpenScenario ) {
+	getOutputString ( openScenario: TvScenario ) {
 
 		this.openScenario = openScenario;
 

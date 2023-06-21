@@ -16,7 +16,7 @@ import { EntityObject } from '../models/tv-entities';
 import { MiscObject } from '../models/tv-misc-object';
 import { Pedestrian } from '../models/tv-pedestrian';
 import { RoadNetwork } from '../models/tv-road-network';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
 import { Vehicle } from '../models/tv-vehicle';
 import { ActionService } from './action-service';
@@ -27,7 +27,7 @@ import { EntityBuilder } from './tv-entity-builder';
 } )
 export class BuilderService {
 
-	private scenario: OpenScenario;
+	private scenario: TvScenario;
 	private currentFile: IFile;
 
 	constructor (
@@ -100,7 +100,7 @@ export class BuilderService {
 	}
 
 
-	build ( scenario: OpenScenario, file: IFile ) {
+	build ( scenario: TvScenario, file: IFile ) {
 
 		this.scenario = scenario;
 		this.currentFile = file;

@@ -6,12 +6,12 @@ import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { Act } from '../models/tv-act';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { Story } from '../models/tv-story';
 
 export class ResetHelper {
 
-	constructor ( private openScenario: OpenScenario ) {
+	constructor ( private openScenario: TvScenario ) {
 
 	}
 

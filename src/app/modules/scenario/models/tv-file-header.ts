@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { OpenScenarioVersion } from "./tv-enums";
+
 export class FileHeader {
 
 	public revMajor: number;
@@ -11,8 +13,8 @@ export class FileHeader {
 	public author: string;
 
 	constructor (
-		revMajor: number = 1,
-		revMinor: number = 6,
+		revMajor: number = 0,
+		revMinor: number = 0,
 		date: string = '',
 		description: string = '',
 		author: string = ''
@@ -23,6 +25,32 @@ export class FileHeader {
 		this.date = date;
 		this.description = description;
 		this.author = author;
+
+	}
+
+	get version (): OpenScenarioVersion {
+
+		if ( this.revMajor === 0 && this.revMinor === 9 ) {
+
+			return OpenScenarioVersion.v0_9;
+
+		} else if ( this.revMajor === 1 && this.revMinor === 0 ) {
+
+			return OpenScenarioVersion.v1_0;
+
+		} else if ( this.revMajor === 1 && this.revMinor === 1 ) {
+
+			return OpenScenarioVersion.v1_1;
+
+		} else if ( this.revMajor === 1 && this.revMinor === 2 ) {
+
+			return OpenScenarioVersion.v1_2;
+
+		} else {
+
+			throw new Error( 'Invalid version' );
+
+		}
 
 	}
 

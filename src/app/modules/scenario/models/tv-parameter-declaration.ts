@@ -6,9 +6,7 @@ import { ParameterType } from './tv-enums';
 
 export class ParameterDeclaration {
 
-	public parameters: Parameter[] = [];
-
-	constructor () {
+	constructor ( public parameters: Parameter[] = [] ) {
 	}
 
 	addParameter ( value: Parameter ): void {
@@ -35,7 +33,6 @@ export class Parameter {
 	static stringToEnum ( type: string ): ParameterType {
 
 		switch ( type ) {
-
 			case 'integer':
 				return ParameterType.integer;
 				break;
@@ -44,6 +41,18 @@ export class Parameter {
 				break;
 			case 'string':
 				return ParameterType.string;
+				break;
+			case 'boolean':
+				return ParameterType.boolean;
+				break;
+			case 'unsignedInt':
+				return ParameterType.unsignedInt;
+				break;
+			case 'unsignedShort':
+				return ParameterType.unsignedShort;
+				break;
+			case 'dateTime':
+				return ParameterType.dateTime;
 				break;
 			default:
 				throw new Error( 'unknown paramater type' );

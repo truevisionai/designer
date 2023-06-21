@@ -12,7 +12,7 @@ import { OpenScenarioApiService } from '../../../core/services/open-scenario-api
 import { FileService } from '../../../services/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { BuilderService } from '../builders/tv-builder.service';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 import { ScenarioDirectorService } from './scenario-director.service';
 import { OpenScenarioImporter } from './tv-reader.service';
 import { TvScenarioInstance } from './tv-scenario-instance';
@@ -70,7 +70,7 @@ export class ScenarioFileService {
 
 		this.currentFile = new IFile( 'untitled.xml' );
 
-		this.scenario = new OpenScenario();
+		this.scenario = new TvScenario();
 
 	}
 

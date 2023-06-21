@@ -3,7 +3,7 @@
  */
 
 import { SceneService } from '../../../core/services/scene.service';
-import { OpenScenario } from '../models/tv-scenario';
+import { TvScenario } from '../models/tv-scenario';
 
 export class ClearHelper {
 
@@ -11,7 +11,7 @@ export class ClearHelper {
 
 	}
 
-	clear ( openScenario: OpenScenario ) {
+	clear ( openScenario: TvScenario ) {
 
 		if ( openScenario == null ) return;
 

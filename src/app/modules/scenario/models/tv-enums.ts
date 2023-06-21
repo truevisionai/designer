@@ -2,10 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+export enum OpenScenarioVersion {
+	v0_9,
+	v1_0,
+	v1_1,
+	v1_2,
+}
+
 export enum ParameterType {
 	integer = 'integer',
 	double = 'double',
 	string = 'string',
+	boolean = 'boolean',
+	unsignedInt = 'unsignedInt',
+	unsignedShort = 'unsignedShort',
+	dateTime = 'dateTime',
 }
 
 export enum Sex {
@@ -56,14 +67,14 @@ export enum ScenarioObjectType {
 }
 
 export enum PositionType {
-	World='World',
-	RelativeWorld='RelativeWorld',
-	RelativeObject='RelativeObject',
-	Road='Road',
-	RelativeRoad='RelativeRoad',
-	Lane='Lane',
-	RelativeLane='RelativeLane',
-	Route='Route',
+	World = 'World',
+	RelativeWorld = 'RelativeWorld',
+	RelativeObject = 'RelativeObject',
+	Road = 'Road',
+	RelativeRoad = 'RelativeRoad',
+	Lane = 'Lane',
+	RelativeLane = 'RelativeLane',
+	Route = 'Route',
 }
 
 export enum Rule {
@@ -244,7 +255,7 @@ export enum RouteStrategy {
 }
 
 export enum DynamicsDimension {
-	time='time',	// time
-	distance='distance', // distance
-	rate='rate'	// rate of change
+	time = 'time',	// time
+	distance = 'distance', // distance
+	rate = 'rate'	// rate of change
 }
