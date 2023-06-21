@@ -2,45 +2,41 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Position } from '../../../models/position';
+import { Component } from '@angular/core';
+import { LanePosition } from '../../../models/positions/tv-lane-position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
 	selector: 'app-lane-position-editor',
 	templateUrl: './lane-position-editor.component.html'
 } )
-export class LanePositionEditorComponent extends AbstractPositionEditor implements OnInit {
+export class LanePositionEditorComponent extends AbstractPositionEditor {
 
-	@Input() position: Position;
-
-	public positionForm: FormGroup;
-
-	constructor ( private fb: FormBuilder ) {
-		super();
+	get lanePosition () {
+		return this.position as LanePosition;
 	}
 
-	ngOnInit () {
-
-		// this.positionForm = this.fb.group( {
-		// 	roadId: [ this.position.roadId, [ Validators.required ] ],
-		// 	laneId: [ this.position.laneId, [ Validators.required ] ],
-		// 	sCoordinate: [ this.position.sCoordinate, [ Validators.required ] ],
-		// 	offset: [ this.position.offset, [] ],
-		// } );
-		//
-		// this.positionForm.valueChanges.subscribe( value => {
-		//
-		// 	this.position.roadId = value.roadId;
-		// 	this.position.laneId = value.laneId;
-		// 	this.position.offset = value.offset;
-		// 	this.position.sCoordinate = value.sCoordinate;
-		//
-		// 	this.positionModified.emit( this.position );
-		//
-		// } );
-
+	get laneIdOptions (): number[] {
+		return this.lanePosition.getLaneArray().map( lane => lane.id );
 	}
 
+	onRoadIdChanged ( $event: any ) {
+		this.lanePosition.roadId = parseFloat( $event );
+		this.positionModified.emit( this.position );
+	}
+
+	onSValueChanged ( $event: any ) {
+		this.lanePosition.sCoordinate = parseFloat( $event );
+		this.positionModified.emit( this.position );
+	}
+
+	onLaneIdChanged ( $event: any ) {
+		this.lanePosition.laneId = parseFloat( $event );
+		this.positionModified.emit( this.position );
+	}
+
+	onOffsetChanged ( $event: any ) {
+		this.lanePosition.offset = parseFloat( $event );
+		this.positionModified.emit( this.position );
+	}
 }

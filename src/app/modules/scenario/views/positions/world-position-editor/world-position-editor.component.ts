@@ -2,10 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input } from '@angular/core';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
-import { ThreeService } from '../../../../three-js/three.service';
+import { MathUtils, Vector3 } from 'three';
 import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
@@ -13,50 +12,29 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 	selector: 'app-world-position-editor',
 	templateUrl: './world-position-editor.component.html'
 } )
-export class WorldPositionEditorComponent extends AbstractPositionEditor implements OnInit {
+export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	@Input() position: WorldPosition;
-	public positionGroup: FormGroup;
-
-	constructor ( private fb: FormBuilder, private threeService: ThreeService ) {
-
-		super();
-	}
 
 	get entities () {
 		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
-	};
-
-	get vector () {
-		return this.position.vector3;
 	}
 
-	ngOnInit () {
+	onPositionChanged ( $event: Vector3 ) {
 
-		this.positionGroup = this.fb.group( {
-			x: [ this.position.x ],
-			y: [ this.position.y ],
-			z: [ this.position.z ],
-			h: [ this.position.h ],
-			p: [ this.position.p ],
-			r: [ this.position.r ],
-		} );
+		this.position.x = $event.x;
+		this.position.y = $event.y;
+		this.position.z = $event.z;
 
-		this.positionGroup.valueChanges.subscribe( ( value: WorldPosition ) => {
+		this.positionModified.emit( this.position );
 
-			this.position.x = value.x;
-			this.position.y = value.y;
-			this.position.z = value.z;
-			this.position.h = value.h;
-			this.position.p = value.p;
-			this.position.r = value.r;
-
-			this.positionModified.emit( this.position );
-
-		} );
 	}
 
-	onModelChanged ( $event ) {
+	onRotationChanged ( $event: Vector3 ) {
+
+		this.position.h = $event.x * MathUtils.DEG2RAD;
+		this.position.p = $event.y * MathUtils.DEG2RAD;
+		this.position.r = $event.z * MathUtils.DEG2RAD;
 
 		this.positionModified.emit( this.position );
 

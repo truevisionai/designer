@@ -2,7 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
+import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
@@ -12,34 +13,37 @@ export class RoadPosition extends Position {
 	public readonly label: string = 'Road Position';
 	public readonly type = PositionType.Road;
 
-	private roadId: number;
-	private sValue: number;
-	private tValue: number;
-	private orientation: Orientation;
-
-	constructor ( roadId = 0, sValue = 0, tValue = 0, orientation: Orientation = null ) {
+	constructor (
+		public roadId = 0,
+		public sValue = 0,
+		public tValue = 0,
+		public orientation: Orientation = null
+	) {
 
 		super();
 
-		this.roadId = roadId;
-		this.sValue = sValue;
-		this.tValue = tValue;
-		this.orientation = orientation;
+		this.orientation = orientation || new Orientation();
 
 	}
 
 	exportXml () {
-
 		throw new Error( 'Method not implemented.' );
-
 	}
 
 	toVector3 (): Vector3 {
+		return TvMapQueries.getRoadPosition( this.roadId, this.sValue, this.tValue ).toVector3();
+	}
 
-		console.error( 'Method not implemented.' );
+	toOrientation (): Orientation {
+		return this.orientation;
+	}
 
-		return new Vector3();
+	toEuler (): Euler {
+		return this.orientation.toEuler();
+	}
 
+	getRoad () {
+		return TvMapQueries.findRoadById( this.roadId );
 	}
 
 }

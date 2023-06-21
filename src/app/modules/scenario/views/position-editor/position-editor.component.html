@@ -1,14 +1,4 @@
-<mat-form-field *ngIf="showType" class="example-full-width">
-	<mat-label>Position</mat-label>
-	<mat-select (ngModelChange)="onPositionTypeChanged($event)" [ngModel]="position.type">
-		<mat-option [value]="types.World">World Position</mat-option>
-		<mat-option [value]="types.Road">Road Position</mat-option>
-		<mat-option [value]="types.Lane">Lane Position</mat-option>
-		<mat-option [value]="types.RelativeObject">Relative To Object</mat-option>
-	</mat-select>
-</mat-form-field>
-
-<app-dropdown-field label="Type" [options]=""></app-dropdown-field>
+<app-enum-field label="Type" [enum]="types" [value]="position.type" (changed)="onPositionTypeChanged($event)"></app-enum-field>
 
 <div [ngSwitch]="position.type">
 

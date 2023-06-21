@@ -1,3 +1,19 @@
-<p>
-	road-position-editor works!
-</p>
+<app-road-id-field
+	[value]="roadPosition.roadId"
+	(changed)="onRoadIdChanged($event)">
+</app-road-id-field>
+
+<app-double-field
+	label="S"
+	min="0"
+	[max]="max"
+	[value]="roadPosition.sValue"
+	(changed)="onSValueChanged($event)">
+</app-double-field>
+
+<app-double-field
+	label="T"
+	[value]="roadPosition.tValue"
+	(changed)="onTValueChanged($event)">
+</app-double-field>
+

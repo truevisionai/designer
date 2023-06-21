@@ -1,6 +1,6 @@
-import { Vector3 } from 'three';
-import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
+import { Euler, Vector3 } from 'three';
 import { PositionType } from './tv-enums';
+import { Orientation } from './tv-orientation';
 
 export abstract class Position {
 
@@ -18,4 +18,11 @@ export abstract class Position {
 		throw new Error( 'Method not implemented.' );
 	}
 
+	toEuler (): Euler {
+		return new Euler( 0, 0, 0 );
+	}
+
+	toOrientation (): Orientation {
+		return new Orientation();
+	}
 }

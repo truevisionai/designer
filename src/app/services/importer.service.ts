@@ -9,6 +9,7 @@ import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
+import { OpenScenarioImporter } from '../modules/scenario/services/tv-reader.service';
 import { AssetLoaderService } from './asset-loader.service';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
@@ -25,7 +26,7 @@ export class ImporterService {
 	 * This class is responsible for importing all supported files
 	 *
 	 * @param od
-	 * @param osc
+	 * @param os
 	 * @param three
 	 * @param assetImporter
 	 * @param sceneImporter
@@ -36,7 +37,8 @@ export class ImporterService {
 		private sceneImporter: SceneImporterService,
 		private modelImporter: ModelImporterService,
 		private assetService: AssetLoaderService,
-		private fileService: FileService
+		private fileService: FileService,
+		private openScenarioImporter: OpenScenarioImporter,
 	) {
 	}
 
@@ -104,7 +106,7 @@ export class ImporterService {
 
 	}
 
-	onFileDropped ( file: File, folderPath: string ): any {
+	async onFileDropped ( file: File, folderPath: string ): Promise<void> {
 
 		if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
 		if ( !file ) return;
@@ -148,7 +150,7 @@ export class ImporterService {
 				break;
 
 			case 'xodr':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
+				copied = await this.copyOpenScenarioInFolder( file.path, destinationPath, extension );
 				break;
 
 			case 'xosc':
@@ -165,6 +167,25 @@ export class ImporterService {
 			MetadataFactory.createMetadata( file.name, extension, destinationPath );
 
 		}
+	}
+
+	async copyOpenScenarioInFolder ( path: string, destinationPath: string, extension: string ): Promise<boolean> {
+
+		const copied = this.copyFileInFolder( path, destinationPath, extension );
+
+		if ( copied ) {
+
+			const openScenario = await this.openScenarioImporter.readFromPath( path );
+
+			if ( openScenario ) {
+
+				this.copyFileInFolder( openScenario.roadNetwork.logics.filepath, destinationPath, 'xodr' );
+
+			}
+
+		}
+
+		return copied;
 	}
 
 	copyFileInFolder ( sourcePath: string, destinationPath: string, ext?: string ): boolean {

@@ -4,15 +4,15 @@
 
 import { PolylineShape } from '../models/tv-trajectory';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { ReaderService } from './tv-reader.service';
+import { OpenScenarioImporter } from './tv-reader.service';
 
 
 describe( 'ReaderService', () => {
 
-	let parser: ReaderService;
+	let parser: OpenScenarioImporter;
 
 	beforeEach( () => {
-		parser = new ReaderService( null );
+		parser = new OpenScenarioImporter( null );
 	} );
 
 	it( 'should parse Header correctly', () => {

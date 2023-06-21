@@ -1,0 +1,18 @@
+<!--<app-double-field fxFlex="33" [value]="value.x" label="x"></app-double-field>-->
+<!--<app-double-field fxFlex="33" [value]="value.y" label="y"></app-double-field>-->
+<!--<app-double-field fxFlex="33" [value]="value.z" label="z"></app-double-field>-->
+
+<div align="left" class="tv-field">
+
+	<label class="tv-field-label">{{ label }}</label>
+
+	<div class="tv-field-text-input" style="display: flex;">
+
+		<input placeholder="X" (ngModelChange)="onXChanged($event)" [(ngModel)]="value.x"/>
+		<input placeholder="Y" (ngModelChange)="onYChanged($event)" [(ngModel)]="value.y"/>
+		<input placeholder="Z" (ngModelChange)="onZChanged($event)" [(ngModel)]="value.z"/>
+
+
+	</div>
+
+</div>

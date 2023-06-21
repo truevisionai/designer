@@ -14,7 +14,7 @@ import { SnackBar } from '../../../services/snack-bar.service';
 import { BuilderService } from '../builders/tv-builder.service';
 import { OpenScenario } from '../models/tv-scenario';
 import { ScenarioDirectorService } from './scenario-director.service';
-import { ReaderService } from './tv-reader.service';
+import { OpenScenarioImporter } from './tv-reader.service';
 import { TvScenarioInstance } from './tv-scenario-instance';
 import { WriterService } from './tv-writer.service';
 
@@ -24,7 +24,7 @@ import { WriterService } from './tv-writer.service';
 export class ScenarioFileService {
 
 	constructor (
-		private reader: ReaderService,
+		private reader: OpenScenarioImporter,
 		private writer: WriterService,
 		private builder: BuilderService,
 		private fileService: FileService,

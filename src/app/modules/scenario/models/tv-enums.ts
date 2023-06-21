@@ -56,14 +56,14 @@ export enum ScenarioObjectType {
 }
 
 export enum PositionType {
-	World,
-	RelativeWorld,
-	RelativeObject,
-	Road,
-	RelativeRoad,
-	Lane,
-	RelativeLane,
-	Route
+	World='World',
+	RelativeWorld='RelativeWorld',
+	RelativeObject='RelativeObject',
+	Road='Road',
+	RelativeRoad='RelativeRoad',
+	Lane='Lane',
+	RelativeLane='RelativeLane',
+	Route='Route',
 }
 
 export enum Rule {

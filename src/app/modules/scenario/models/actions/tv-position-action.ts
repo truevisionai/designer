@@ -32,6 +32,7 @@ export class PositionAction extends PrivateAction {
 	execute ( entity: EntityObject ) {
 
 		entity.setPosition( this.position.toVector3() );
+		entity.setEuler( this.position.toEuler() );
 
 	}
 }

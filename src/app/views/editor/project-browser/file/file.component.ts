@@ -69,7 +69,7 @@ export class FileComponent implements OnInit {
 		if ( this.isScene ) {
 			return 'assets/scene-icon.png';
 		}
-		if ( this.isOpenDrive ) {
+		if ( this.isOpenDrive || this.isOpenScenario ) {
 			return 'assets/unknown-file-icon.png';
 		}
 		if ( this.isUnknown ) {
@@ -108,6 +108,10 @@ export class FileComponent implements OnInit {
 
 	public get isOpenDrive (): boolean {
 		return this.metadata && this.metadata.importer == MetaImporter.OPENDRIVE;
+	}
+
+	public get isOpenScenario (): boolean {
+		return this.metadata && this.metadata.importer == MetaImporter.OPENSCENARIO;
 	}
 
 	public get isDirectory (): boolean {

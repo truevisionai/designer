@@ -72,6 +72,7 @@ import { ColorFieldComponent } from './fields/color-field/color-field.component'
 import { DoubleFieldComponent } from './fields/double-field/double-field.component';
 import { DropdownFieldComponent } from './fields/dropdown-field/dropdown-field.component';
 import { EnumFieldComponent } from './fields/enum-field/enum-field.component';
+import { RoadIdFieldComponent } from './fields/road-id-field/road-id-field.component';
 import { SelectEntityFieldComponent } from './fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from './fields/string-field/string-field.component';
 import { ExcerptPipe } from './pipes/excerpt.pipe';
@@ -90,6 +91,7 @@ import { RoutePartsService } from './services/route-parts.service';
 // SERVICES
 import { ThemeService } from './services/theme.service';
 import { BooleanFieldComponent } from './fields/boolean-field/boolean-field.component';
+import { Vector3FieldComponent } from './fields/vector3-field/vector3-field.component';
 
 /*
   Only Required if you want to use Angular Landing
@@ -131,6 +133,7 @@ const classesToInclude = [
 	TranslatePipe,
 
 	// Fields
+	Vector3FieldComponent,
 	BooleanFieldComponent,
 	DoubleFieldComponent,
 	DropdownFieldComponent,
@@ -139,6 +142,7 @@ const classesToInclude = [
 	ColorFieldComponent,
 	SelectEntityFieldComponent,
 	PropBrowserComponent,
+	RoadIdFieldComponent,
 
 	// Material
 
@@ -199,20 +203,23 @@ const classesToInclude = [
 		AppLoaderService
 		// LandingPageService
 	],
-	declarations: classesToInclude,
-	exports: [ classesToInclude,
-		MatTreeModule,
-		MatSelectModule,
-		MatListModule,
-		MatDialogModule,
-		MatIconModule,
-		MatTabsModule,
-		MatSelectModule,
-		MatGridListModule,
-		MatInputModule,
-		MatButtonModule,
-		MatExpansionModule,
-	]
+    declarations: [
+        classesToInclude,
+        RoadIdFieldComponent
+    ],
+    exports: [ classesToInclude,
+        MatTreeModule,
+        MatSelectModule,
+        MatListModule,
+        MatDialogModule,
+        MatIconModule,
+        MatTabsModule,
+        MatSelectModule,
+        MatGridListModule,
+        MatInputModule,
+        MatButtonModule,
+        MatExpansionModule, RoadIdFieldComponent,
+    ]
 } )
 export class SharedModule {
 }

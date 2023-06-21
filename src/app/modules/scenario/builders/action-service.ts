@@ -4,13 +4,14 @@
 
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
-import { Position } from '../models/position';
-import { PrivateAction } from '../models/private-action';
+import { TvConsole } from '../../../core/utils/console';
 import { PositionAction } from '../models/actions/tv-position-action';
+import { Position } from '../models/position';
+import { LanePosition } from '../models/positions/tv-lane-position';
+import { PrivateAction } from '../models/private-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
 import { ActionFactory } from './action-factory';
-import { LanePosition } from '../models/positions/tv-lane-position';
 
 
 @Injectable( {
@@ -115,11 +116,19 @@ export class ActionService {
 
 					obj.gameObject.position.copy( lanePosition.toVector3() );
 
+					position.vector3 = obj.gameObject.position;
+
 				} catch ( error ) {
 
 					throw new Error( 'Error in positioning of actor from lane-position' );
 
 				}
+
+				break;
+
+			case PositionType.Road:
+
+				this.executeRoadPositionAction( position, obj );
 
 				break;
 
@@ -145,8 +154,27 @@ export class ActionService {
 
 		} catch ( error ) {
 
-			throw new Error( 'Error in positioning of actor from world-position' );
+			TvConsole.error( 'Error in positioning of actor from world-position' );
 
 		}
+	}
+
+	private static executeRoadPositionAction ( position: Position, obj: EntityObject ) {
+
+		try {
+
+			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
+
+			obj.gameObject.position.copy( vector3 );
+
+			position.vector3 = obj.gameObject.position;
+
+
+		} catch ( e ) {
+
+			TvConsole.error( 'Error in positioning of actor from road-position' );
+
+		}
+
 	}
 }

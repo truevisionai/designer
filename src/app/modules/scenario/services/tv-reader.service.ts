@@ -58,7 +58,7 @@ import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape,
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ReaderService extends AbstractReader {
+export class OpenScenarioImporter extends AbstractReader {
 
 	private openScenario: OpenScenario;
 	private file: IFile;
@@ -74,6 +74,15 @@ export class ReaderService extends AbstractReader {
 		return this.readContents( this.file.contents );
 
 	}
+
+	public async readFromPath ( path: string ): Promise<OpenScenario> {
+
+		const contents = await this.fileService.readAsync( path );
+
+		return this.readContents( contents );
+
+	}
+
 
 	public readContents ( xmlElement: string ): OpenScenario {
 

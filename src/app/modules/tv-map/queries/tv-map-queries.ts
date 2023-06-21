@@ -571,4 +571,10 @@ export class TvMapQueries extends TvBaseQueries {
 
 		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
 	}
+
+	static getRoadArray (): TvRoad[] {
+
+		return [ ...this.roads.values() ];
+
+	}
 }

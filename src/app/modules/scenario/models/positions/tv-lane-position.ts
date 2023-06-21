@@ -56,4 +56,8 @@ export class LanePosition extends Position {
 			}
 		};
 	}
+
+	getLaneArray () {
+		return TvMapQueries.findRoadById( this.roadId ).getLaneSectionAt( this.sCoordinate ).getLaneArray();
+	}
 }

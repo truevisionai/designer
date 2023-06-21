@@ -1,21 +1,26 @@
-<!--<form [formGroup]="positionForm">-->
-<!--	<div>-->
-<!--		<mat-form-field style="width: 33%;">-->
-<!--			<input formControlName="roadId" matInput placeholder="Road ID" required type="number">-->
-<!--		</mat-form-field>-->
-<!--		<mat-form-field style="width: 33%;">-->
-<!--			<input formControlName="laneId" matInput placeholder="Lane ID" required type="number">-->
-<!--		</mat-form-field>-->
-<!--		<mat-form-field style="width: 33%;">-->
-<!--			<input formControlName="sCoordinate" matInput placeholder="S Coordinate" required type="number">-->
-<!--		</mat-form-field>-->
-<!--	</div>-->
+<app-road-id-field
+	[value]="lanePosition.roadId"
+	(changed)="onRoadIdChanged($event)">
+</app-road-id-field>
 
-<!--	<div>-->
-<!--		<mat-form-field>-->
-<!--			<input formControlName="offset" matInput placeholder="Offset (Optional)" type="number">-->
-<!--		</mat-form-field>-->
-<!--	</div>-->
-<!--</form>-->
+<app-dropdown-field
+	label="Lane	ID"
+	[value]="lanePosition.laneId"
+	[options]="laneIdOptions"
+	(changed)="onLaneIdChanged($event)">
+</app-dropdown-field>
 
-Lane Position Works
+<app-double-field
+	label="Offset"
+	min="0"
+	[value]="lanePosition.offset"
+	(changed)="onOffsetChanged($event)">
+</app-double-field>
+
+<app-double-field
+	label="S"
+	min="0"
+	[value]="lanePosition.sCoordinate"
+	(changed)="onSValueChanged($event)">
+</app-double-field>
+

@@ -4,6 +4,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Position } from '../../models/position';
+import { EntityObject } from '../../models/tv-entities';
 
 @Component( {
 	selector: 'app-abstract-position-editor',
@@ -12,6 +13,7 @@ import { Position } from '../../models/position';
 export abstract class AbstractPositionEditor {
 
 	@Input() position: Position;
+	@Input() entity?: EntityObject;
 	@Input() showType: boolean = true;
 	@Input() disableType: boolean = false;
 	@Output() positionChanged = new EventEmitter<Position>();

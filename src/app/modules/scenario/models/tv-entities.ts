@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, MeshBasicMaterial, Vector3 } from 'three';
+import { BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
@@ -347,5 +347,10 @@ export class EntityObject {
 
 	}
 
+	setEuler ( value: Euler ) {
+
+		this.gameObject.rotation.copy( value );
+
+	}
 }
 

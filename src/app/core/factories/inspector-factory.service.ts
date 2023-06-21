@@ -17,6 +17,8 @@ import { TextureInspector } from 'app/views/inspectors/texture-inspector/texture
 import { IComponent } from '../game-object';
 import { AppInspector } from '../inspector';
 import { Metadata, MetaImporter } from '../models/metadata.model';
+import { XodrFileInspectorComponent } from 'app/views/inspectors/xodr-file-inspector/xodr-file-inspector.component';
+import { XoscFileInspectorComponent } from 'app/views/inspectors/xosc-file-inspector/xosc-file-inspector.component';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -97,6 +99,14 @@ export class InspectorFactoryService {
 
 			case 'roadstyle':
 				inspector = RoadStyleInspector;
+				break;
+
+			case 'xodr':
+				inspector = XodrFileInspectorComponent;
+				break;
+
+			case 'xosc':
+				inspector = XoscFileInspectorComponent;
 				break;
 
 			case TvRoadMarking.extension:

@@ -2,9 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Euler, MathUtils, Vector3 } from 'three';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
+import { Orientation } from '../tv-orientation';
 
 export class WorldPosition extends Position {
 
@@ -86,6 +87,38 @@ export class WorldPosition extends Position {
 
 	}
 
+	set position ( value: Vector3 ) {
+
+		this.m_X = value.x;
+		this.m_Y = value.y;
+		this.m_Z = value.z;
+
+	}
+
+	get rotation (): Vector3 {
+
+		return new Vector3( this.m_H, this.m_P, this.m_R );
+
+	}
+
+	get rotationInDegree (): Vector3 {
+
+		return new Vector3(
+			this.m_H * MathUtils.RAD2DEG,
+			this.m_P * MathUtils.RAD2DEG,
+			this.m_R * MathUtils.RAD2DEG
+		);
+
+	}
+
+	set rotation ( value: Vector3 ) {
+
+		this.m_H = value.x;
+		this.m_P = value.y;
+		this.m_R = value.z;
+
+	}
+
 	static createFromVector3 ( point: THREE.Vector3 ): WorldPosition {
 
 		const worldPosition = new WorldPosition();
@@ -98,6 +131,18 @@ export class WorldPosition extends Position {
 	toVector3 (): Vector3 {
 
 		return this.position;
+
+	}
+
+	toEuler (): Euler {
+
+		return new Euler( this.h, this.p, this.r, 'XYZ' );
+
+	}
+
+	toOrientation (): Orientation {
+
+		return new Orientation( this.h, this.p, this.r );
 
 	}
 

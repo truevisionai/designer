@@ -32,9 +32,15 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		return this.position as WorldPosition;
 	}
 
-	onPositionTypeChanged ( $type: number ) {
+	onPositionTypeChanged ( $type: PositionType ) {
 
-		this.position = PositionFactory.createPosition( $type );
+		// the current vector can be translated to new the type if possible
+		// const currentVector3 = this.position.toVector3();
+		// const currentEuler = this.position.toEuler();
+		// for example when changing from world to road
+		// the current vector3 can be translated to road position
+
+		this.position = PositionFactory.createPosition( $type, this.position );
 
 		this.positionChanged.emit( this.position );
 

@@ -62,6 +62,10 @@ export class AssetLoaderService {
 		this.loadRoadStyles();
 
 		this.loadRoadMarkings();
+
+		this.loadOpenDriveFiles();
+
+		this.loadOpenScenarioFiles();
 	}
 
 	createProjectFolder () {
@@ -296,6 +300,42 @@ export class AssetLoaderService {
 					AssetDatabase.setInstance( meta.guid, marking );
 
 				} );
+			}
+
+		} );
+
+	}
+
+	loadOpenDriveFiles () {
+
+		AssetDatabase.getMetadataAll().forEach( meta => {
+
+			if ( meta.importer == MetaImporter.OPENDRIVE ) {
+
+				this.fileService.readAsync( meta.path ).then( contents => {
+
+					AssetDatabase.setInstance( meta.guid, contents );
+
+				} );
+
+			}
+
+		} );
+
+	}
+
+	loadOpenScenarioFiles () {
+
+		AssetDatabase.getMetadataAll().forEach( meta => {
+
+			if ( meta.importer == MetaImporter.OPENSCENARIO ) {
+
+				this.fileService.readAsync( meta.path ).then( contents => {
+
+					AssetDatabase.setInstance( meta.guid, contents );
+
+				} );
+
 			}
 
 		} );
