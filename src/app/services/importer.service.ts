@@ -54,6 +54,10 @@ export class ImporterService {
 				this.importOpenDrive( path );
 				break;
 
+			case 'xosc':
+				this.importOpenScenario( path );
+				break;
+
 			case 'gltf':
 				this.modelImporter.import( path, filename, extension, position, metadata );
 				break;
@@ -103,6 +107,16 @@ export class ImporterService {
 				SnackBar.warn( 'Unknown file! Not able to import' );
 				break;
 		}
+
+	}
+
+	importOpenScenario ( path: string ) {
+
+		this.openScenarioImporter.readFromPath( path ).then( ( openScenario ) => {
+
+			console.log( openScenario );
+
+		} );
 
 	}
 

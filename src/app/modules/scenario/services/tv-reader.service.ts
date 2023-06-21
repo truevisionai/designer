@@ -55,6 +55,8 @@ import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
 
+import { XMLParser } from 'fast-xml-parser';
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -83,8 +85,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-
-	public readContents ( xmlElement: string ): OpenScenario {
+	public readContents ( contents: string ): OpenScenario {
 
 		this.openScenario = new OpenScenario();
 
@@ -97,16 +98,41 @@ export class OpenScenarioImporter extends AbstractReader {
 			format: true,
 		};
 
-		const Parser = require( 'fast-xml-parser' );
-		const data: any = Parser.parse( xmlElement, defaultOptions );
+		const parser = new XMLParser( defaultOptions );
 
-		Debug.log( data );
+		const data: XmlElement = parser.parse( contents );
+
+		this.readFile( data );
 
 		this.readOpenScenario( data, this.openScenario );
 
-		Debug.log( this.openScenario );
-
 		return this.openScenario;
+	}
+
+	private readOpenScenario ( xml: XmlElement, openScenario: OpenScenario ): any {
+
+		const OpenSCENARIO = xml.OpenSCENARIO;
+
+		openScenario.fileHeader = this.readFileHeader( OpenSCENARIO.FileHeader );
+
+		openScenario.parameterDeclaration = this.readParameterDeclaration( OpenSCENARIO.ParameterDeclaration );
+
+		// NOTE: Before reading the xml document further
+		// we need to replace all paramater variables in the xml
+		// this.replaceParamaterValues( OpenSCENARIO );
+
+		// TODO: Read Catalogs
+		// openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
+
+		openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
+
+		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: EntityObject ) => {
+
+			openScenario.addObject( value );
+
+		} );
+
+		openScenario.storyboard = this.readStoryboard( OpenSCENARIO.Storyboard );
 	}
 
 	readCondition ( xml: XmlElement ) {
@@ -1258,31 +1284,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return storyboard;
 	}
 
-	private readOpenScenario ( xmlElement: any, openScenario: OpenScenario ): any {
 
-		const OpenSCENARIO = xmlElement.OpenSCENARIO;
-
-		openScenario.fileHeader = this.readFileHeader( OpenSCENARIO.FileHeader );
-
-		openScenario.parameterDeclaration = this.readParameterDeclaration( OpenSCENARIO.ParameterDeclaration );
-
-		// NOTE: Before reading the xml document further
-		// we need to replace all paramater variables in the xml
-		// this.replaceParamaterValues( OpenSCENARIO );
-
-		// TODO: Read Catalogs
-		// openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
-
-		openScenario.roadNetwork = this.readRoadNetwork( OpenSCENARIO.RoadNetwork );
-
-		this.readEntities( OpenSCENARIO.Entities ).forEach( ( value: EntityObject ) => {
-
-			openScenario.addObject( value );
-
-		} );
-
-		openScenario.storyboard = this.readStoryboard( OpenSCENARIO.Storyboard );
-	}
 
 	private replaceParamaterValues ( object: any, callback?: ( object, property ) => void ) {
 
