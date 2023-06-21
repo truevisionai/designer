@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { Vector3 } from 'three';
 import { RelativeObjectPosition } from '../../../models/positions/tv-relative-object-position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
-import { Position } from 'app/modules/scenario/models/position';
 
 @Component( {
 	selector: 'app-relative-object-position-editor',
@@ -13,21 +13,31 @@ import { Position } from 'app/modules/scenario/models/position';
 } )
 export class RelativeObjectPositionEditorComponent extends AbstractPositionEditor {
 
-	@Input() position: Position;
-
 	get relativeObjectPosition () {
 		return this.position as RelativeObjectPosition;
 	}
 
-	constructor () {
-		super();
+	get delta (): Vector3 {
+		return new Vector3(
+			this.relativeObjectPosition.dx,
+			this.relativeObjectPosition.dy,
+			this.relativeObjectPosition.dz,
+		);
 	}
 
-	onEntityChanged ( $event: any ) {
+	onDeltaChanged ( $delta: any ) {
 
-		this.relativeObjectPosition.object = $event;
+		this.relativeObjectPosition.dx = $delta.x;
+		this.relativeObjectPosition.dy = $delta.y;
+		this.relativeObjectPosition.dz = $delta.z;
 
 		this.positionModified.emit( this.position );
+	}
 
+	onEntityChanged ( $entityRef: string ) {
+
+		this.relativeObjectPosition.objectRef = $entityRef;
+
+		this.positionModified.emit( this.position );
 	}
 }

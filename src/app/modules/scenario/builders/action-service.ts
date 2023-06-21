@@ -11,32 +11,12 @@ import { LanePosition } from '../models/positions/tv-lane-position';
 import { PrivateAction } from '../models/private-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
-import { ActionFactory } from './action-factory';
 
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ActionService {
-
-	public getPrivateActionTypes () {
-		return [
-			{
-				name: 'Position',
-				value: ActionType.Private_Position
-			},
-			{
-				name: 'Longitudinal Speed',
-				value: ActionType.Private_Longitudinal_Speed
-			},
-		];
-	}
-
-	public static getAction ( type: ActionType, entity: EntityObject ) {
-
-		return ActionFactory.createAction( type, entity );
-
-	}
 
 	public static executePrivateAction ( obj: EntityObject, privateAction: PrivateAction ) {
 
@@ -103,9 +83,15 @@ export class ActionService {
 		switch ( position.type ) {
 
 			case PositionType.World:
-
 				this.executeWorldPositionAction( position, obj );
+				break;
 
+			case PositionType.RelativeWorld:
+				this.executeRelativeWorldPositionAction( position, obj );
+				break;
+
+			case PositionType.RelativeObject:
+				this.executeRelativeObjectPositionAction( position, obj );
 				break;
 
 			case PositionType.Lane:
@@ -160,6 +146,44 @@ export class ActionService {
 	}
 
 	private static executeRoadPositionAction ( position: Position, obj: EntityObject ) {
+
+		try {
+
+			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
+
+			obj.gameObject.position.copy( vector3 );
+
+			position.vector3 = obj.gameObject.position;
+
+
+		} catch ( e ) {
+
+			TvConsole.error( 'Error in positioning of actor from road-position' );
+
+		}
+
+	}
+
+	private static executeRelativeWorldPositionAction ( position: Position, obj: EntityObject ) {
+
+		try {
+
+			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
+
+			obj.gameObject.position.copy( vector3 );
+
+			position.vector3 = obj.gameObject.position;
+
+
+		} catch ( e ) {
+
+			TvConsole.error( 'Error in positioning of actor from road-position' );
+
+		}
+
+	}
+
+	private static executeRelativeObjectPositionAction ( position: Position, obj: EntityObject ) {
 
 		try {
 

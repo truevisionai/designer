@@ -15,7 +15,6 @@ export abstract class AbstractPositionEditor {
 	@Input() position: Position;
 	@Input() entity?: EntityObject;
 	@Input() showType: boolean = true;
-	@Input() disableType: boolean = false;
 	@Output() positionChanged = new EventEmitter<Position>();
 	@Output() positionModified = new EventEmitter<Position>();
 

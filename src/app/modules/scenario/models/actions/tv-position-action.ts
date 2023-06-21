@@ -12,7 +12,6 @@ export class PositionAction extends PrivateAction {
 	public actionName: string = 'Position';
 	public actionType: ActionType = ActionType.Private_Position;
 
-
 	public position: Position;
 
 	constructor ( position: Position ) {

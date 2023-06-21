@@ -21,22 +21,22 @@ export class PositionFactory {
 
 	public static createPosition ( type: PositionType, position?: Position ): Position {
 
-		const vector3 = position ? position.toVector3() : undefined;
-		const euler = position ? position.toEuler() : undefined;
+		const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
+		const euler = position ? position.toEuler() : new Vector3( 0, 0, 0 );
 		const orientation = position ? position.toOrientation() : undefined;
 
 		switch ( type ) {
 			case PositionType.World:
 				return new WorldPosition(
-					vector3?.x, vector3?.y, vector3?.z,
-					euler?.x, euler?.y, euler?.z,
+					vector3.x, vector3.y, vector3.z,
+					euler.x, euler.y, euler.z,
 				);
 				break;
 			case PositionType.RelativeWorld:
-				return new RelativeWorldPosition();
+				return new RelativeWorldPosition( null, vector3.x, vector3.y, vector3.z );
 				break;
 			case PositionType.RelativeObject:
-				return new RelativeObjectPosition();
+				return new RelativeObjectPosition( null, vector3.x, vector3.y, vector3.z );
 				break;
 			case PositionType.Road:
 				const posTheta = new TvPosTheta();
@@ -72,7 +72,7 @@ export class PositionFactory {
 
 		if ( results ) {
 
-			return new LanePosition( results.road.id, results.lane.id, 0, posTheta.s, orientation );
+			return new LanePosition( results.road.id, results.lane?.id || 0, 0, posTheta.s, orientation );
 
 		} else {
 

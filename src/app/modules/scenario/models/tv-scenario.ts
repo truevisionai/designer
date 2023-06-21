@@ -3,11 +3,12 @@
  */
 
 import { MathUtils, Vector3 } from 'three';
+import { ActionService } from '../builders/action-service';
 import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { TvAction } from './tv-action';
-import { PrivateAction } from './private-action';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
+import { PrivateAction } from './private-action';
 import { Act } from './tv-act';
+import { TvAction } from './tv-action';
 import { Catalogs } from './tv-catalogs';
 import { File } from './tv-common';
 import { EntityObject } from './tv-entities';
@@ -285,6 +286,23 @@ export class OpenScenario {
 	getEntityVectorPosition ( entityName: string ): Vector3 {
 
 		return this.findEntityOrFail( entityName ).position;
+
+	}
+
+	executeInitActions () {
+
+		this.objects.forEach( ( entity ) => {
+
+			entity.initActions.forEach( ( action ) => {
+
+				// this can be used to execute actions that are not in the storyboard
+				// action.execute( entity );
+
+				ActionService.executePrivateAction( entity, action );
+
+			} );
+
+		} );
 
 	}
 }

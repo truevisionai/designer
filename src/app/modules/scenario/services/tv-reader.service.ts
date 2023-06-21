@@ -40,7 +40,7 @@ import { TvAction } from '../models/tv-action';
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
 import { EntityObject } from '../models/tv-entities';
-import { ConditionEdge, DynamicsDimension, DynamicsShape, Rule } from '../models/tv-enums';
+import { ConditionEdge, DynamicsDimension, DynamicsShape, EnumOrientationType, Rule } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
 import { CatalogReferenceController } from '../models/tv-interfaces';
@@ -295,9 +295,9 @@ export class OpenScenarioImporter extends AbstractReader {
 		worldPosition.y = parseFloat( xml.attr_y );
 		worldPosition.z = parseFloat( xml.attr_z );
 
-		worldPosition.m_H = parseFloat( xml.attr_h );
-		worldPosition.m_P = parseFloat( xml.attr_p );
-		worldPosition.m_R = parseFloat( xml.attr_r );
+		worldPosition.h = parseFloat( xml.attr_h );
+		worldPosition.p = parseFloat( xml.attr_p );
+		worldPosition.r = parseFloat( xml.attr_r );
 
 		worldPosition.updateVector3();
 
@@ -996,31 +996,32 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readRelativeObjectPosition ( xml: XmlElement ): Position {
 
-		const position = new RelativeObjectPosition();
+		const position = new RelativeObjectPosition(
+			xml.attr_object || null,
+			xml.attr_dx ? parseFloat( xml.attr_dx ) : 0,
+			xml.attr_dy ? parseFloat( xml.attr_dy ) : 0,
+			xml.attr_dz ? parseFloat( xml.attr_dz ) : 0,
+			this.readOrientation( xml )
+		);
 
-		position.object = xml.attr_object;
-		position.dx = xml.attr_dx ? parseFloat( xml.attr_dx ) : null;
-		position.dy = xml.attr_dy ? parseFloat( xml.attr_dy ) : null;
-		position.dz = xml.attr_dz ? parseFloat( xml.attr_dz ) : null;
+		// this.readAsOptionalArray( xml.Orientation, ( xml ) => {
 
-		this.readAsOptionalArray( xml.Orientation, ( xml ) => {
+		// 	position.orientations.push( this.readOrientation( xml ) );
 
-			position.orientations.push( this.readOrientation( xml ) );
+		// } );
 
-		} );
-
-		return position;
+		return
 	}
 
 	readOrientation ( xml: XmlElement ): Orientation {
 
 		const orientation = new Orientation;
 
-		orientation.h = xml.attr_h ? parseFloat( xml.attr_h ) : null;
-		orientation.p = xml.attr_p ? parseFloat( xml.attr_p ) : null;
-		orientation.r = xml.attr_r ? parseFloat( xml.attr_r ) : null;
+		orientation.h = xml.attr_h ? parseFloat( xml.attr_h ) : 0;
+		orientation.p = xml.attr_p ? parseFloat( xml.attr_p ) : 0;
+		orientation.r = xml.attr_r ? parseFloat( xml.attr_r ) : 0;
 
-		orientation.type = xml.attr_type ? xml.attr_type : null;
+		orientation.type = xml.attr_type ? xml.attr_type : EnumOrientationType.absolute;
 
 		return orientation;
 	}

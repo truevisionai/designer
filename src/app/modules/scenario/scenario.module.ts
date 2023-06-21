@@ -54,6 +54,7 @@ import { LanePositionEditorComponent } from './views/positions/lane-position-edi
 import {
 	RelativeObjectPositionEditorComponent
 } from './views/positions/relative-object-position-editor/relative-object-position-editor.component';
+import { RelativeWorldComponent } from './views/positions/relative-world/relative-world.component';
 import { RoadPositionEditorComponent } from './views/positions/road-position-editor/road-position-editor.component';
 import { WorldPositionEditorComponent } from './views/positions/world-position-editor/world-position-editor.component';
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
@@ -105,6 +106,7 @@ import { EntityEventInspectorComponent } from './inspectors/entity-event-inspect
 		LaneOffsetActionComponent,
 		LongitudinalDistanceActionComponent,
 		EntityEventInspectorComponent,
+		RelativeWorldComponent,
 	],
 	imports: [
 		CommonModule,

@@ -12,112 +12,56 @@ export class WorldPosition extends Position {
 	public readonly label: string = 'World Position';
 	public readonly type = PositionType.World;
 
-	public m_X: number = 0;
-	public m_Y: number = 0;
-	public m_Z: number = 0;
-	public m_H: number = 0;
-	public m_P: number = 0;
-	public m_R: number = 0;
-
-	constructor ( x = 0, y = 0, z = 0, h = 0, p = 0, r = 0 ) {
+	constructor (
+		public x = 0,
+		public y = 0,
+		public z = 0,
+		public h = 0,
+		public p = 0,
+		public r = 0
+	) {
 
 		super();
 
-		this.m_X = x;
-		this.m_Y = y;
-		this.m_Z = z;
-
-		this.m_H = h;
-		this.m_P = p;
-		this.m_R = r;
-
-	}
-
-	get x () {
-		return this.m_X;
-	}
-
-	set x ( value ) {
-		this.m_X = value;
-	}
-
-	get y () {
-		return this.m_Y;
-	}
-
-	set y ( value ) {
-		this.m_Y = value;
-	}
-
-	get z () {
-		return this.m_Z;
-	}
-
-	set z ( value ) {
-		this.m_Z = value;
-	}
-
-	get h () {
-		return this.m_H;
-	}
-
-	set h ( value ) {
-		this.m_H = value;
-	}
-
-	get p () {
-		return this.m_P;
-	}
-
-	set p ( value ) {
-		this.m_P = value;
-	}
-
-	get r () {
-		return this.m_R;
-	}
-
-	set r ( value ) {
-		this.m_R = value;
 	}
 
 	get position (): Vector3 {
 
-		return new Vector3( this.m_X, this.m_Y, this.m_Z );
+		return new Vector3( this.x, this.y, this.z );
 
 	}
 
-	set position ( value: Vector3 ) {
+	// set position ( value: Vector3 ) {
 
-		this.m_X = value.x;
-		this.m_Y = value.y;
-		this.m_Z = value.z;
+	// 	this.x = value.x;
+	// 	this.y = value.y;
+	// 	this.z = value.z;
 
-	}
+	// }
 
 	get rotation (): Vector3 {
 
-		return new Vector3( this.m_H, this.m_P, this.m_R );
+		return new Vector3( this.h, this.p, this.r );
 
 	}
 
 	get rotationInDegree (): Vector3 {
 
 		return new Vector3(
-			this.m_H * MathUtils.RAD2DEG,
-			this.m_P * MathUtils.RAD2DEG,
-			this.m_R * MathUtils.RAD2DEG
+			this.h * MathUtils.RAD2DEG,
+			this.p * MathUtils.RAD2DEG,
+			this.r * MathUtils.RAD2DEG
 		);
 
 	}
 
-	set rotation ( value: Vector3 ) {
+	// set rotation ( value: Vector3 ) {
 
-		this.m_H = value.x;
-		this.m_P = value.y;
-		this.m_R = value.z;
+	// 	this.h = value.x;
+	// 	this.p = value.y;
+	// 	this.r = value.z;
 
-	}
+	// }
 
 	static createFromVector3 ( point: THREE.Vector3 ): WorldPosition {
 
@@ -164,18 +108,14 @@ export class WorldPosition extends Position {
 
 	toXML () {
 
-		const x = this.vector3 ? this.vector3.x : this.x;
-		const y = this.vector3 ? this.vector3.y : this.y;
-		const z = this.vector3 ? this.vector3.z : this.y;
-
 		return {
 			World: {
-				attr_x: x,
-				attr_y: y,
-				attr_z: z,
-				attr_h: this.m_H ? this.m_H : 0,
-				attr_p: this.m_P ? this.m_P : 0,
-				attr_r: this.m_R ? this.m_R : 0,
+				attr_x: this.vector3?.x ?? 0,
+				attr_y: this.vector3?.y ?? 0,
+				attr_z: this.vector3?.z ?? 0,
+				attr_h: this.h ?? 0,
+				attr_p: this.p ?? 0,
+				attr_r: this.r ?? 0,
 			}
 		};
 	}

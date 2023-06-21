@@ -76,7 +76,7 @@ export class ConditionFactory {
 
 	private static createDistanceCondition ( entity?: EntityObject ) {
 
-		const position = new WorldPosition( 0, 0, 0 );
+		const position = new WorldPosition();
 
 		return new DistanceCondition( position, 10, false, false, Rule.greater_than );
 
@@ -84,7 +84,7 @@ export class ConditionFactory {
 
 	private static createReachedPositionCondition ( entity?: EntityObject ) {
 
-		const position = new WorldPosition( 0, 0, 0 );
+		const position = new WorldPosition();
 
 		const condition = new ReachPositionCondition( position, 5 );
 

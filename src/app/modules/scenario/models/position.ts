@@ -1,4 +1,6 @@
-import { Euler, Vector3 } from 'three';
+import { Euler, MathUtils, Vector3 } from 'three';
+import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { EntityObject } from './tv-entities';
 import { PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
 
@@ -6,7 +8,7 @@ export abstract class Position {
 
 	abstract readonly type: PositionType;
 
-	abstract readonly label: string = 'Position';
+	abstract readonly label: string;
 
 	public vector3: THREE.Vector3 = new Vector3( 0, 0, 0 );
 
@@ -24,5 +26,26 @@ export abstract class Position {
 
 	toOrientation (): Orientation {
 		return new Orientation();
+	}
+
+	get position (): Vector3 {
+		return this.toVector3();
+	}
+
+	get rotation (): Vector3 {
+		const euler = this.toEuler();
+		return new Vector3(
+			euler.x,
+			euler.y,
+			euler.z
+		);
+	}
+
+	get rotationInDegree (): Vector3 {
+		return this.rotation.multiplyScalar( MathUtils.RAD2DEG );
+	}
+
+	protected getEntity ( entity: string ): EntityObject {
+		return TvScenarioInstance.openScenario.findEntityOrFail( entity );
 	}
 }

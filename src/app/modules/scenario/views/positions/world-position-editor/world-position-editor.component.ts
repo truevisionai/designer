@@ -5,7 +5,6 @@
 import { Component, Input } from '@angular/core';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { MathUtils, Vector3 } from 'three';
-import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {
@@ -15,10 +14,6 @@ import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEd
 export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	@Input() position: WorldPosition;
-
-	get entities () {
-		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
-	}
 
 	onPositionChanged ( $event: Vector3 ) {
 

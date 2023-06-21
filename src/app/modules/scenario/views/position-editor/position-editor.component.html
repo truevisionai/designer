@@ -1,24 +1,44 @@
-<app-enum-field label="Type" [enum]="types" [value]="position.type" (changed)="onPositionTypeChanged($event)"></app-enum-field>
+<app-enum-field
+	label="Type"
+	[enum]="types"
+	[value]="position.type"
+	(changed)="onPositionTypeChanged($event)">
+</app-enum-field>
 
 <div [ngSwitch]="position.type">
 
 	<div *ngSwitchCase="types.World">
-		<app-world-position-editor (positionModified)="onPositionModified($event)" [position]="worldPosition">
+		<app-world-position-editor
+			[position]="worldPosition"
+			(positionModified)="onPositionModified($event)">
 		</app-world-position-editor>
 	</div>
 
+	<div *ngSwitchCase="types.RelativeWorld">
+		<app-relative-world
+			[position]="position"
+			(positionModified)="onPositionModified($event)">
+		</app-relative-world>
+	</div>
+
 	<div *ngSwitchCase="types.RelativeObject">
-		<app-relative-object-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		<app-relative-object-position-editor
+			[position]="position"
+			(positionModified)="onPositionModified($event)">
 		</app-relative-object-position-editor>
 	</div>
 
 	<div *ngSwitchCase="types.Road">
-		<app-road-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		<app-road-position-editor
+			[position]="position"
+			(positionModified)="onPositionModified($event)">
 		</app-road-position-editor>
 	</div>
 
 	<div *ngSwitchCase="types.Lane">
-		<app-lane-position-editor (positionModified)="onPositionModified($event)" [position]="position">
+		<app-lane-position-editor
+			[position]="position"
+			(positionModified)="onPositionModified($event)">
 		</app-lane-position-editor>
 	</div>
 

@@ -4,9 +4,8 @@
 
 import { Vector3 } from 'three';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { Position } from '../position';
-import { PositionType } from '../tv-enums';
+import { EnumOrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeObjectPosition extends Position {
@@ -14,33 +13,81 @@ export class RelativeObjectPosition extends Position {
 	public readonly label: string = 'Relative Object Position';
 	public readonly type = PositionType.RelativeObject;
 
-	public dx: number = 0;
-
-	public object: string;
-	public dy: number = 0;
-	public dz: number = 0;
-	public orientations: Orientation[] = [];
+	constructor (
+		public objectRef: string,
+		public dx = 0,
+		public dy = 0,
+		public dz = 0,
+		public orientation: Orientation = new Orientation()
+	) {
+		super();
+	}
 
 	toVector3 (): Vector3 {
 
-		// TODO: Improve this and stop directly accessing oscSource
-		const position = TvScenarioInstance.openScenario.objects.get( this.object ).gameObject.position;
+		// Retrieve the position of the referenced object
+		const objectPosition = this.objectRef ? this.getEntity( this.objectRef ).getCurrentPosition() : new Vector3();
 
-		position.x += this.dx;
-		position.y += this.dy;
-		position.z += this.dz;
+		// Rotate the relative offset based on the object's orientation
+		const rotatedOffset = this.rotateOffset( this.dx, this.dy, this.dz, this.orientation );
 
-		return position;
+		// Calculate the relative position vector
+		const relativeVector = new Vector3(
+			objectPosition.x + rotatedOffset.x,
+			objectPosition.y + rotatedOffset.y,
+			objectPosition.z + rotatedOffset.z
+		);
+
+		return relativeVector;
+	}
+
+	toOrientation (): Orientation {
+
+		// Check if the orientation is relative
+		if ( this.objectRef && this.orientation.type == EnumOrientationType.relative ) {
+
+			// Retrieve the orientation of the referenced object
+			const objectOrientation = this.getEntity( this.objectRef ).getOrientation();
+
+			// Calculate the relative orientation
+			const relativeOrientation = new Orientation(
+				objectOrientation.h + this.orientation.h,
+				objectOrientation.p + this.orientation.p,
+				objectOrientation.r + this.orientation.r
+			);
+
+			return relativeOrientation;
+
+		} else {
+			// The orientation is absolute, so return it as is
+			return this.orientation;
+		}
+	}
+
+	// Helper function to rotate the offset based on the object's orientation
+	private rotateOffset ( dx: number, dy: number, dz: number, orientation: Orientation ): Vector3 {
+
+		// Convert the orientation to radians
+		const yawRad = orientation.h * Math.PI / 180;
+		const pitchRad = orientation.p * Math.PI / 180;
+		const rollRad = orientation.r * Math.PI / 180;
+
+		// Apply rotation matrix to the offset
+		const rotatedX = dx * Math.cos( yawRad ) - dy * Math.sin( yawRad );
+		const rotatedY = dx * Math.sin( yawRad ) + dy * Math.cos( yawRad );
+		const rotatedZ = dz;
+
+		return new Vector3( rotatedX, rotatedY, rotatedZ );
 	}
 
 	toXML (): XmlElement {
 		return {
 			RelativeObject: {
-				attr_object: this.object,
+				attr_object: this.objectRef,
 				attr_dx: this.dx,
 				attr_dy: this.dy,
 				attr_dz: this.dz ? this.dz : 0,
-				Orientation: this.orientations.map( orientation => orientation.toXML() )
+				Orientation: this.orientation.toXML()
 			}
 		};
 	}

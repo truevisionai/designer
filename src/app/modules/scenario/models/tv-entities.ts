@@ -13,6 +13,7 @@ import { AbstractController } from './abstract-controller';
 import { PrivateAction } from './private-action';
 import { CatalogReference } from './tv-catalogs';
 import { ScenarioObjectType } from './tv-enums';
+import { Orientation } from './tv-orientation';
 
 export class EntityObject {
 
@@ -350,6 +351,22 @@ export class EntityObject {
 	setEuler ( value: Euler ) {
 
 		this.gameObject.rotation.copy( value );
+
+	}
+
+	getEuler (): Euler {
+
+		return this.gameObject.rotation;
+
+	}
+
+	getOrientation (): Orientation {
+
+		return new Orientation(
+			this.gameObject.rotation.x,
+			this.gameObject.rotation.y,
+			this.gameObject.rotation.z,
+		);
 
 	}
 }

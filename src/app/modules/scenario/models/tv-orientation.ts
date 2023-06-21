@@ -28,5 +28,15 @@ export class Orientation {
 	toEuler (): Euler {
 		return new Euler( this.h, this.p, this.r );
 	}
+
+	getRelativeOrientation ( orientation: Orientation ): Orientation {
+
+		return new Orientation(
+			this.h + orientation.h,
+			this.p + orientation.p,
+			this.r + orientation.r,
+			EnumOrientationType.relative
+		);
+	}
 }
 
