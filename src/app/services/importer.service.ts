@@ -36,7 +36,7 @@ export class ImporterService {
 	) {
 	}
 
-	onViewPortFileDropped ( path: string, filename?: string, position?: Vector3 ) {
+	async onViewPortFileDropped ( path: string, filename?: string, position?: Vector3 ) {
 
 		const extension = FileService.getExtension( path );
 
@@ -49,7 +49,7 @@ export class ImporterService {
 				break;
 
 			case FileExtension.OPENSCENARIO:
-				this.importOpenScenario( path );
+				await this.importOpenScenario( path );
 				break;
 
 			case 'gltf':
@@ -104,9 +104,9 @@ export class ImporterService {
 
 	}
 
-	importOpenScenario ( path: string ) {
+	async importOpenScenario ( path: string ) {
 
-		ScenarioInstance.loadInstanceFromPath( path );
+		await ScenarioInstance.loadInstanceFromPath( path );
 
 	}
 

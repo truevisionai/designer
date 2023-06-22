@@ -317,7 +317,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	//Drop listener
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
+	async onDrop ( $event: DragEvent ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -339,7 +339,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 
-		this.importer.onViewPortFileDropped( $event.dataTransfer.getData( 'path' ), '', position );
+		await this.importer.onViewPortFileDropped( $event.dataTransfer.getData( 'path' ), '', position );
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )

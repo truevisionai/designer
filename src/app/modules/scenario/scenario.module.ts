@@ -64,11 +64,11 @@ import { RoadPositionEditorComponent } from './views/positions/road-position-edi
 import { WorldPositionEditorComponent } from './views/positions/world-position-editor/world-position-editor.component';
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
-import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component';
+import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.component';
 
 @NgModule( {
 	declarations: [
-		HierarchyComponent,
+		ScenarioTreeComponent,
 		EntityInspector,
 		FileHeaderComponent,
 		ActionComponent,
@@ -135,10 +135,12 @@ import { HierarchyComponent } from './views/tv-hierarchy/tv-hierarchy.component'
 		ActEditorComponent,
 		SpeedActionComponent,
 		ParamatersInspectorComponent,
-		EventEditorComponent
+		EventEditorComponent,
+		ScenarioTreeComponent
 	],
 	exports: [
-		ImportOpenScenarioDialogComponent
+		ImportOpenScenarioDialogComponent,
+		ScenarioTreeComponent,
 	],
 	providers: [
 		ScenarioInstance

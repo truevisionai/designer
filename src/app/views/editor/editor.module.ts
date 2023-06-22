@@ -26,6 +26,7 @@ import { RouterModule } from '@angular/router';
 import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateModule } from '@ngx-translate/core';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { ScenarioModule } from '../../modules/scenario/scenario.module';
 import { ThreeJsModule } from '../../modules/three-js/three-js.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ConsoleComponent } from './console/console.component';
@@ -90,6 +91,7 @@ import { TutorialsDialogComponent } from './dialogs/tutorials-dialog/tutorials-d
         MatChipsModule,
         MatIconModule,
         MatTooltipModule,
+        ScenarioModule,
     ],
     exports: [
         PlayerBarComponent

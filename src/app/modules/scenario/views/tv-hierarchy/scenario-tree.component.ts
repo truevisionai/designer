@@ -6,6 +6,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { AppInspector } from '../../../../core/inspector';
+import { MainFileService } from '../../../../services/main-file.service';
 import { ContextMenuType, MenuService } from '../../../../services/menu.service';
 import { ThreeService } from '../../../three-js/three.service';
 import { EntityInspector } from '../../inspectors/tv-entity-inspector/tv-entity-inspector.component';
@@ -39,19 +40,21 @@ enum NodeType {
 }
 
 @Component( {
-	selector: 'app-tv-hierarchy',
-	templateUrl: './tv-hierarchy.component.html',
+	selector: 'app-scenario-tree',
+	templateUrl: './scenario-tree.component.html',
 } )
-export class HierarchyComponent implements OnInit {
+export class ScenarioTreeComponent implements OnInit {
 
 
 	@Input() scenario: TvScenario;
+
 	treeControl = new FlatTreeControl<ExampleNode>( node => node.level, node => node.expandable );
 	dataSource: MatTreeFlatDataSource<ScenarioNode, { expandable: boolean; name: string; level: number; type: NodeType; }, { expandable: boolean; name: string; level: number; type: NodeType; }>;
 
 	constructor (
 		private menuService: MenuService,
-		private threeService: ThreeService
+		private threeService: ThreeService,
+		private mainFileService: MainFileService,
 	) {
 		this.dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 	}

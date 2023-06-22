@@ -36,6 +36,12 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		return 'Console';
 	}
 
+	get scenario () {
+
+		return this.mainFileService.scenario;
+
+	}
+
 	ngOnInit () {
 
 		this.mainFileService.newFile();

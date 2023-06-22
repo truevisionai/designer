@@ -35,17 +35,15 @@ export class ScenarioInstance {
 
 	}
 
-	static loadInstanceFromPath ( path: string ) {
+	static async loadInstanceFromPath ( path: string ) {
 
-		this.openScenarioImporter.readFromPath( path ).then( ( scenario ) => {
+		this.scenario?.destroy();
 
-			this.scenario?.destroy();
+		const scenario = await this.openScenarioImporter.readFromPath( path );
 
-			ScenarioBuilder.buildScenario( scenario );
+		ScenarioBuilder.buildScenario( scenario );
 
-			this.scenario = scenario;
-
-		} );
+		this.scenario = scenario;
 
 	}
 }

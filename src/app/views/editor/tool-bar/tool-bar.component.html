@@ -1,7 +1,7 @@
 <!--
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
-<mat-toolbar class="app-toolbar">
+<mat-toolbar class="app-toolbar native-border">
 	<ng-container *ngFor="let tool of tools">
 		<button mat-button (mouseover)="onMouseOver(tool)" (mouseout)="onMouseOut(tool)" [id]="tool.id" (click)="tool.click()" [ngClass]="getClass(tool)" action="{{tool.action}}"
 				appTrack="{{tool.track}}" matTooltip="{{tool.tooltip}}">

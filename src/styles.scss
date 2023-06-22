@@ -152,3 +152,8 @@ mat-list-item.mat-list-item.mat-3-line:hover {
     height: 100% !important;
     overflow: hidden !important;
 }
+
+.native-border {
+    border-bottom: 1px solid black;
+    box-shadow: inset 0px -1px 3px #616161;
+}
