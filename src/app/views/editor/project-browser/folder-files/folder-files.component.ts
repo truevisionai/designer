@@ -321,19 +321,19 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	}
 
-	importFile ( file: FileNode ) {
-
-		this.projectBrowserService.fileDoubleClicked.emit( file );
-
-		this.importer.importViaPath( file.path, file.name );
-
-	}
-
-	onDragStart ( $event: DragEvent, node: FileNode ) {
-
-		$event.dataTransfer.setData( 'path', node.path );
-
-	}
+	// importFile ( file: FileNode ) {
+	//
+	// 	this.projectBrowserService.fileDoubleClicked.emit( file );
+	//
+	// 	this.importer.onViewPortFileDropped( file.path, file.name );
+	//
+	// }
+	//
+	// onDragStart ( $event: DragEvent, node: FileNode ) {
+	//
+	// 	$event.dataTransfer.setData( 'path', node.path );
+	//
+	// }
 
 	@HostListener( 'window:resize' )
 	onWindowResize () {

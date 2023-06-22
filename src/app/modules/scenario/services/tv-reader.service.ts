@@ -16,7 +16,7 @@ import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
-import { PositionAction } from '../models/actions/tv-position-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
@@ -220,9 +220,9 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let logics, sceneGraph;
 
-		if ( xml.Logics != null ) {
+		if ( xml.Logics || xml.LogicFile ) {
 
-			logics = this.readFile( xml.Logics );
+			logics = this.readFile( xml.Logics || xml.LogicFile );
 
 		}
 
@@ -978,7 +978,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readPositionAction ( xml: XmlElement ): PrivateAction {
 
-		return new PositionAction( this.readPosition( xml ) );
+		return new TeleportAction( this.readPosition( xml ) );
 
 	}
 

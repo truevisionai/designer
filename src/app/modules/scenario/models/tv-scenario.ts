@@ -3,8 +3,8 @@
  */
 
 import { MathUtils, Vector3 } from 'three';
+import { SceneService } from '../../../core/services/scene.service';
 import { ActionService } from '../builders/action-service';
-import { ScenarioInstance } from '../services/scenario-instance';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { PrivateAction } from './private-action';
 import { Act } from './tv-act';
@@ -16,6 +16,7 @@ import { Rule } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
 import { Maneuver } from './tv-maneuver';
+import { NameDB } from './tv-name-db';
 import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
 import { RoadNetwork } from './tv-road-network';
 import { Sequence } from './tv-sequence';
@@ -30,6 +31,8 @@ export class TvScenario {
 	public roadNetwork: RoadNetwork;
 	public storyboard = new Storyboard;
 	public objects: Map<string, EntityObject> = new Map<string, EntityObject>();
+
+	public db: NameDB = new NameDB();
 
 	get parameters () {
 		return this.parameterDeclaration.parameters;
@@ -77,13 +80,13 @@ export class TvScenario {
 
 	addObject ( object: EntityObject ) {
 
-		const hasName = ScenarioInstance.db.has_entity( object.name );
+		// const hasName = ScenarioInstance.scenario.db.has_entity( object.name );
 
-		if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
+		// if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
 
 		this.objects.set( object.name, object );
 
-		ScenarioInstance.db.add_entity( object.name, object );
+		// ScenarioInstance.db.add_entity( object.name, object );
 
 	}
 
@@ -110,7 +113,7 @@ export class TvScenario {
 
 	removeObject ( object: EntityObject ) {
 
-		ScenarioInstance.db.remove_entity( object.name );
+		// ScenarioInstance.db.remove_entity( object.name );
 
 		this.objects.delete( object.name );
 
@@ -204,10 +207,29 @@ export class TvScenario {
 
 	clear () {
 
+		this.db.clear();
+
+		this.objects.forEach( entity => {
+
+			SceneService.remove( entity.gameObject );
+
+			entity.initActions.splice( 0, entity.initActions.length );
+
+		} );
+
+		this.storyboard.stories.forEach( story => {
+
+			story.acts.splice( 0, story.acts.length );
+
+		} );
+
+		this.storyboard.stories.clear();
 
 	}
 
 	destroy () {
+
+		this.clear();
 
 	}
 

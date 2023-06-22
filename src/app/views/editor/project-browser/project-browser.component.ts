@@ -7,10 +7,14 @@ import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { FileService } from 'app/services/file.service';
+import { FileExtension, FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { DialogFactory } from '../../../core/factories/dialog.factory';
+import { MetadataFactory } from '../../../core/factories/metadata-factory.service';
+import { TvConsole } from '../../../core/utils/console';
+import { SnackBar } from '../../../services/snack-bar.service';
 import { FileNode } from './file-node.model';
 import { ProjectBrowserService } from './project-browser.service';
 
@@ -184,7 +188,8 @@ export class ProjectBrowserComponent implements OnInit {
 		private assets: AssetLoaderService,
 		private projectBrowser: ProjectBrowserService,
 		private importer: ImporterService,
-		private appRef: ApplicationRef
+		private appRef: ApplicationRef,
+		private dialogFactory: DialogFactory		// dont remove, needed to load dialog components
 	) {
 
 		const db = new DynamicDatabase( fileService );
@@ -203,17 +208,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	// get files () {
-
-	//     if ( !this.selectedFolder ) return [];
-
-	//     return this.selectedFolder.sub_files( this.fileService );
-
-	// }
-
 	onFolderChanged ( node: FileNode ) {
-
-		// console.log( 'folder-changed', e );
 
 		this.selectedFolder = node;
 
@@ -234,39 +229,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	onClick ( node: FileNode ) {
 
-		// console.log( node );
-
 		this.selectedFolder = node;
-
-		const result = node.sub_folders( this.fileService );
-
-		// console.log( result );
-
-		// result.subscribe( files => {
-
-		//     console.log( files );
-
-		// } );
-
-		// this.fileService.readPathContents( DOCUMENT_PATH ).then( ( files: any[] ) => {
-
-		//     const tmp = [];
-
-		//     files.forEach( file => {
-
-		//         if ( file.type === 'directory' ) {
-
-		//             tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
-
-		//         }
-
-		//     } );
-
-		//     this.dataSource.data = tmp;
-
-		// } );
-
-		// console.log( node );
 
 	}
 
@@ -305,10 +268,7 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
-
-		// console.log( $event );
-		// console.log( $event.dataTransfer.files );
+	async onDrop ( $event: DragEvent ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -321,7 +281,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			const file = $event.dataTransfer.files[ i ];
 
-			this.importer.onFileDropped( file, folderPath );
+			await this.onFileDropped( file, folderPath );
 
 		}
 
@@ -330,6 +290,90 @@ export class ProjectBrowserComponent implements OnInit {
 			this.files = this.selectedFolder.sub_files( this.fileService );
 
 			this.appRef.tick();
+
+		}
+	}
+
+	async onFileDropped ( file: File, folderPath: string ) {
+
+		if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
+		if ( !file ) return;
+
+		const extension = FileService.getExtension( file.name );
+
+		const destinationPath = this.fileService.join( folderPath, file.name );
+
+		let copied = false;
+
+		switch ( extension ) {
+
+			case FileExtension.GLTF:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case FileExtension.GLB:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case FileExtension.OBJ:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			// case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+
+			case FileExtension.JPG:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case FileExtension.JPEG:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case 'png':
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case 'svg':
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case FileExtension.OPENSCENARIO:
+				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension );
+				break;
+
+			case FileExtension.OPENDRIVE:
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			default:
+				SnackBar.error( `${ extension } file cannot be imported` );
+				break;
+		}
+
+		if ( copied ) {
+
+			MetadataFactory.createMetadata( file.name, extension, destinationPath );
+
+		}
+
+	}
+
+	copyFile ( sourcePath: string, destinationPath: string ): boolean {
+
+		if ( !destinationPath ) TvConsole.error( 'destinationPath incorrect' );
+		if ( !destinationPath ) SnackBar.error( 'destinationPath incorrect' );
+		if ( !destinationPath ) return;
+
+		try {
+
+			this.fileService.fs.copyFileSync( sourcePath, destinationPath );
+
+			return true;
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+			SnackBar.error( error );
 
 		}
 	}

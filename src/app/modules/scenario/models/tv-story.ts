@@ -39,13 +39,13 @@ export class Story {
 
 	addAct ( act: Act ) {
 
-		const hasName = ScenarioInstance.db.has_act( act.name );
+		// const hasName = ScenarioInstance.db.has_act( act.name );
 
-		if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
+		// if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
 
 		this.acts.push( act );
 
-		ScenarioInstance.db.add_act( act.name, act );
+		// ScenarioInstance.db.add_act( act.name, act );
 
 	}
 

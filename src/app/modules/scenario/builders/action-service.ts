@@ -5,9 +5,8 @@
 import { Injectable } from '@angular/core';
 import { Vector3 } from 'three';
 import { TvConsole } from '../../../core/utils/console';
-import { PositionAction } from '../models/actions/tv-position-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { Position } from '../models/position';
-import { LanePosition } from '../models/positions/tv-lane-position';
 import { PrivateAction } from '../models/private-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
@@ -23,7 +22,7 @@ export class ActionService {
 		switch ( privateAction.actionType ) {
 
 			case ActionType.Private_Position:
-				this.executePositionAction( obj, privateAction as PositionAction );
+				this.executePositionAction( obj, privateAction as TeleportAction );
 				break;
 			case ActionType.Private_Routing:
 				throw new Error( 'Unsupported private action' );
@@ -76,7 +75,7 @@ export class ActionService {
 
 	}
 
-	public static executePositionAction ( obj: EntityObject, privateAction: PositionAction ) {
+	public static executePositionAction ( obj: EntityObject, privateAction: TeleportAction ) {
 
 		const position = privateAction.position;
 
@@ -95,33 +94,19 @@ export class ActionService {
 				break;
 
 			case PositionType.Lane:
+				this.executeLanePositionAction( position, obj );
+				break;
 
-				try {
-
-					const lanePosition = position as LanePosition;
-
-					obj.gameObject.position.copy( lanePosition.toVector3() );
-
-					position.vector3 = obj.gameObject.position;
-
-				} catch ( error ) {
-
-					throw new Error( 'Error in positioning of actor from lane-position' );
-
-				}
-
+			case PositionType.RelativeLane:
+				this.executeLanePositionAction( position, obj );
 				break;
 
 			case PositionType.Road:
-
 				this.executeRoadPositionAction( position, obj );
-
 				break;
 
 			default:
-
 				throw new Error( 'Unsupported position type' );
-
 				break;
 		}
 
@@ -143,6 +128,25 @@ export class ActionService {
 			TvConsole.error( 'Error in positioning of actor from world-position' );
 
 		}
+	}
+
+	private static executeLanePositionAction ( position: Position, obj: EntityObject ) {
+
+		try {
+
+			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
+
+			obj.gameObject.position.copy( vector3 );
+
+			position.vector3 = obj.gameObject.position;
+
+
+		} catch ( e ) {
+
+			TvConsole.error( 'Error in positioning of actor from road-position' );
+
+		}
+
 	}
 
 	private static executeRoadPositionAction ( position: Position, obj: EntityObject ) {

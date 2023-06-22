@@ -11,7 +11,7 @@ import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
-import { PositionAction } from '../models/actions/tv-position-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
@@ -551,7 +551,7 @@ export class WriterService {
 		switch ( abstractAction.actionType ) {
 
 			case ActionType.Private_Position:
-				xml = this.writePositionAction( abstractAction as PositionAction );
+				xml = this.writePositionAction( abstractAction as TeleportAction );
 				break;
 
 			case ActionType.Private_Longitudinal_Speed:
@@ -698,7 +698,7 @@ export class WriterService {
 
 	}
 
-	writePositionAction ( action: PositionAction ) {
+	writePositionAction ( action: TeleportAction ) {
 
 		return {
 			Position: this.writePosition( action.position )

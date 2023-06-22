@@ -3,21 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/core/tools/tool-manager';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
 import { OpenScenarioImporter } from '../modules/scenario/services/tv-reader.service';
 import { AssetLoaderService } from './asset-loader.service';
-import { FileService } from './file.service';
+import { FileExtension, FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { PropManager } from './prop-manager';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
-import { ScenarioBuilder } from 'app/modules/scenario/services/scenario-builder.service';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,14 +24,7 @@ export class ImporterService {
 
 	/**
 	 * This class is responsible for importing all supported files
-	 *
-	 * @param od
-	 * @param os
-	 * @param three
-	 * @param assetImporter
-	 * @param sceneImporter
-	 * @param assetService
-	 */
+	 **/
 	constructor (
 		private od: TvMapService,
 		private sceneImporter: SceneImporterService,
@@ -41,10 +32,11 @@ export class ImporterService {
 		private assetService: AssetLoaderService,
 		private fileService: FileService,
 		private openScenarioImporter: OpenScenarioImporter,
+		private scenarioInstance: ScenarioInstance,		// dont remove required for import
 	) {
 	}
 
-	importViaPath ( path: string, filename?: string, position?: Vector3 ) {
+	onViewPortFileDropped ( path: string, filename?: string, position?: Vector3 ) {
 
 		const extension = FileService.getExtension( path );
 
@@ -56,7 +48,7 @@ export class ImporterService {
 				this.importOpenDrive( path );
 				break;
 
-			case 'xosc':
+			case FileExtension.OPENSCENARIO:
 				this.importOpenScenario( path );
 				break;
 
@@ -114,134 +106,8 @@ export class ImporterService {
 
 	importOpenScenario ( path: string ) {
 
-		this.openScenarioImporter.readFromPath( path ).then( ( scenario ) => {
+		ScenarioInstance.loadInstanceFromPath( path );
 
-			console.log( scenario );
-
-			ScenarioBuilder.buildScenario( scenario );
-
-			ScenarioInstance.scenario = scenario;
-
-			console.log( scenario );
-
-		} );
-
-	}
-
-	async onFileDropped ( file: File, folderPath: string ): Promise<void> {
-
-		if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
-		if ( !file ) return;
-
-		const extension = FileService.getExtension( file.name );
-
-		const destinationPath = this.fileService.join( folderPath, file.name );
-
-		let copied = false;
-
-		switch ( extension ) {
-
-			case 'gltf':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'glb':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'obj':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			// case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
-
-			case 'jpg':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'jpeg':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'png':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'svg':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'xodr':
-				copied = await this.copyOpenScenarioInFolder( file.path, destinationPath, extension );
-				break;
-
-			case 'xosc':
-				copied = this.copyFileInFolder( file.path, destinationPath, extension );
-				break;
-
-			default:
-				SnackBar.error( `${ extension } file cannot be imported` );
-				break;
-		}
-
-		if ( copied ) {
-
-			MetadataFactory.createMetadata( file.name, extension, destinationPath );
-
-		}
-	}
-
-	async copyOpenScenarioInFolder ( path: string, destinationPath: string, extension: string ): Promise<boolean> {
-
-		const copied = this.copyFileInFolder( path, destinationPath, extension );
-
-		if ( copied ) {
-
-			const openScenario = await this.openScenarioImporter.readFromPath( path );
-
-			if ( openScenario ) {
-
-				this.copyFileInFolder( openScenario.roadNetwork.logics.filepath, destinationPath, 'xodr' );
-
-			}
-
-		}
-
-		return copied;
-	}
-
-	copyFileInFolder ( sourcePath: string, destinationPath: string, ext?: string ): boolean {
-
-		if ( !destinationPath ) SnackBar.error( 'folderPath incorrect' );
-		if ( !destinationPath ) return;
-
-		try {
-
-			// console.log( 'import as texture in ', this.selectedFolder );
-			// const extension = ext || FileService.getExtension( file.name );
-
-			// const source = sourcePath.path;
-			// const destination = destinationPath + '\\' + sourcePath.name;
-
-			// const newFilePath = this.fileService.join( destinationPath, sourcePath.name );
-
-			this.fileService.fs.copyFileSync( sourcePath, destinationPath );
-
-			// this.fileService.fs.copyFile( source, destination, ( err ) => {
-
-			//     if ( err ) SnackBar.error( err );
-
-			//     this.reimport( { path: destination, name: file.name }, extension );
-
-			// } );
-
-			return true;
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
 	}
 
 

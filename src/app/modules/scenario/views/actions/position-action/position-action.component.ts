@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { PositionAction } from '../../../models/actions/tv-position-action';
+import { TeleportAction } from '../../../models/actions/tv-teleport-action';
 import { Position } from '../../../models/position';
 import { PrivateAction } from '../../../models/private-action';
 import { EntityObject } from '../../../models/tv-entities';
@@ -19,7 +19,7 @@ export class PositionActionComponent {
 	@Input() entity: EntityObject;
 
 	get positionAction () {
-		return this.action as PositionAction;
+		return this.action as TeleportAction;
 	}
 
 	get position () {

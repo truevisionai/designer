@@ -7,16 +7,17 @@ import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/core/models/file';
 import { AppService } from 'app/core/services/app.service';
 import { ToolManager } from 'app/core/tools/tool-manager';
+import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
 import { FileService } from './file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
-import { TvConsole } from 'app/core/utils/console';
 import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
@@ -49,6 +50,13 @@ export class MainFileService {
 		TvMapInstance.map = value;
 	}
 
+	get scenario () {
+		return ScenarioInstance.scenario;
+	}
+
+	set scenario ( value ) {
+		ScenarioInstance.scenario = value;
+	}
 
 	importViaContent ( content: string ) {
 
@@ -65,6 +73,8 @@ export class MainFileService {
 		CommandHistory.clear();
 
 		if ( this.map ) this.map.destroy();
+
+		if ( this.scenario ) this.scenario.destroy();
 
 		this.currentFile = new IFile( 'Untitled.scene' );
 

@@ -7,7 +7,7 @@ import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-distance-action';
-import { PositionAction } from '../models/actions/tv-position-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { DynamicConstraints } from '../models/dynamic-constraints';
@@ -126,7 +126,7 @@ export class ActionFactory {
 
 		const position = entity.gameObject?.position;
 
-		return new PositionAction( new WorldPosition(
+		return new TeleportAction( new WorldPosition(
 			position?.x || 0,
 			position?.y || 0,
 			position?.z || 0

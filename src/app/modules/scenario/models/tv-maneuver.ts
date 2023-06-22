@@ -44,9 +44,9 @@ export class Maneuver {
 
 	addNewEvent ( name: string, priority: string ) {
 
-		const hasName = ScenarioInstance.db.has_event( name );
+		// const hasName = ScenarioInstance.db.has_event( name );
 
-		if ( hasName ) throw new Error( 'Event name already used' );
+		// if ( hasName ) throw new Error( 'Event name already used' );
 
 		const event = new TvEvent( name, priority );
 
@@ -59,7 +59,7 @@ export class Maneuver {
 
 		this.events.push( event );
 
-		ScenarioInstance.db.add_event( event.name, event );
+		// ScenarioInstance.db.add_event( event.name, event );
 
 		event.completed.subscribe( e => this.onEventCompleted( e ) );
 

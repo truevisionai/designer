@@ -33,13 +33,13 @@ export class Storyboard {
 
 	addStory ( story: Story ) {
 
-		const hasName = ScenarioInstance.db.has_story( story.name );
-
-		if ( hasName ) throw new Error( `Story name '${ story.name }' has already been used` );
+		// const hasName = ScenarioInstance.db.has_story( story.name );
+		//
+		// if ( hasName ) throw new Error( `Story name '${ story.name }' has already been used` );
 
 		this.stories.set( story.name, story );
 
-		ScenarioInstance.db.add_story( story.name, story );
+		// ScenarioInstance.db.add_story( story.name, story );
 
 	}
 

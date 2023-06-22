@@ -11,6 +11,36 @@ import { TvElectronService } from './tv-electron.service';
 
 declare const versions;
 
+export enum FileExtension {
+
+	// Map file extensions
+	OPENDRIVE = 'xodr',
+	OPENSCENARIO = 'xosc',
+	META = 'meta',
+	JSON = 'json',
+	XML = 'xml',
+	OSM = 'osm',
+
+	// Model file extensions
+	DAE = 'dae',
+	GLTF = 'gltf',
+	GLB = 'glb',
+	FBX = 'fbx',
+	OBJ = 'obj',
+
+	// Texture file extensions
+	JPG = 'jpg',
+	JPEG = 'jpg',
+	PNG = 'png',
+	SVG = 'svg',
+
+	// internal file extensions
+	PROP = 'prop',
+	SCENE = 'scene',
+	ROADSTYLE = 'roadstyle',
+
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -39,7 +69,9 @@ export class FileService {
 
 	}
 
-	get remote () { return this.electronService.remote; }
+	get remote () {
+		return this.electronService.remote;
+	}
 
 	get userDocumentFolder () {
 		return this.remote.app.getPath( 'documents' );
@@ -166,7 +198,7 @@ export class FileService {
 
 			if ( res.canceled ) {
 
-				SnackBar.show( 'File import cancelled' )
+				SnackBar.show( 'File import cancelled' );
 
 			} else if ( res.filePaths.length > 0 ) {
 
@@ -266,7 +298,7 @@ export class FileService {
 
 			if ( res.canceled || res.filePath == null ) {
 
-				SnackBar.show( "file save cancelled" );
+				SnackBar.show( 'file save cancelled' );
 
 			} else {
 
@@ -334,6 +366,29 @@ export class FileService {
 
 		}
 
+	}
+
+	deleteFolderRecursive ( folderPath ) {
+
+		if ( this.fs.existsSync( folderPath ) ) {
+
+			this.fs.readdirSync( folderPath ).forEach( ( file ) => {
+
+				const curPath = this.path.join( folderPath, file );
+
+				if ( this.fs.lstatSync( curPath ).isDirectory() ) {
+					// Recursively delete subdirectories
+					this.deleteFolderRecursive( curPath );
+				} else {
+					// Delete files
+					this.fs.unlinkSync( curPath );
+				}
+
+			} );
+
+			// Delete the empty directory
+			this.fs.rmdirSync( folderPath );
+		}
 	}
 
 	deleteFileSync ( path: string ) {

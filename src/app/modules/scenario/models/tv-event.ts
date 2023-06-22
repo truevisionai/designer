@@ -59,13 +59,13 @@ export class TvEvent {
 
 	addNewAction ( name: string, action: TvAction ) {
 
-		const hasName = ScenarioInstance.db.has_action( name );
+		// const hasName = ScenarioInstance.db.has_action( name );
 
-		if ( hasName ) throw new Error( `Action name '${ name }' already used` );
+		// if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
 		this._actions.set( name, action );
 
-		ScenarioInstance.db.add_action( name );
+		// ScenarioInstance.db.add_action( name );
 
 		action.completed.subscribe( e => {
 			this.onActionCompleted( {

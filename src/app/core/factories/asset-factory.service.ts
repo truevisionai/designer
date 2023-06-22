@@ -57,7 +57,7 @@ export class AssetFactory {
 
 			const result = this.fileService.createFolder( path, name );
 
-			const meta = MetadataFactory.createFolderMetadata( result.name, result.path );
+			const meta = MetadataFactory.createFolderMetadata( result.path );
 
 			AssetDatabase.setInstance( meta.guid, meta );
 

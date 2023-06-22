@@ -50,13 +50,13 @@ export class Sequence {
 
 	addManeuver ( maneuver: Maneuver ) {
 
-		const hasName = ScenarioInstance.db.has_maneuver( maneuver.name );
+		// const hasName = ScenarioInstance.db.has_maneuver( maneuver.name );
 
-		if ( hasName ) throw new Error( 'Maneuver name already used' );
+		// if ( hasName ) throw new Error( 'Maneuver name already used' );
 
 		this.maneuvers.push( maneuver );
 
-		ScenarioInstance.db.add_maneuver( maneuver.name );
+		// ScenarioInstance.db.add_maneuver( maneuver.name );
 
 	}
 }

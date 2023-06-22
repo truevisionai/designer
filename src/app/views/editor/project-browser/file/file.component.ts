@@ -6,10 +6,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { AppInspector } from 'app/core/inspector';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { CommandHistory } from 'app/services/command-history';
@@ -17,11 +14,10 @@ import { FileUtils } from 'app/services/file-utils';
 import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
-import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
-import { Material } from 'three';
+import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
@@ -280,7 +276,10 @@ export class FileComponent implements OnInit {
 
 				// TODO: need to loop over each file in the folder to delete them
 				// from database as well
-				this.fileService.deleteFolderSync( this.file.path );
+
+				// Delete the folder recursively
+				this.fileService.deleteFolderRecursive( this.file.path );
+
 				this.fileService.deleteFileSync( this.file.path + '.meta' );
 
 				this.file.isDeleted = true;
@@ -305,7 +304,8 @@ export class FileComponent implements OnInit {
 
 		} catch ( error ) {
 
-			console.error( 'error in deleting', error, this.file );
+			SnackBar.warn( 'Could Not Delete Item' );
+			TvConsole.error( 'Could Not Delete Item' );
 
 		}
 

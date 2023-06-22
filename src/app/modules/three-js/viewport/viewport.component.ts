@@ -339,7 +339,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 
-		this.importer.importViaPath( $event.dataTransfer.getData( 'path' ), '', position );
+		this.importer.onViewPortFileDropped( $event.dataTransfer.getData( 'path' ), '', position );
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )

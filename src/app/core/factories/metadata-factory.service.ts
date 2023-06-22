@@ -13,11 +13,13 @@ import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
 import { Metadata, MetaImporter } from '../models/metadata.model';
 import { AppService } from '../services/app.service';
+import { FileUtils } from 'app/services/file-utils';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class MetadataFactory {
+
 
 	private static get fileService (): FileService {
 
@@ -47,6 +49,17 @@ export class MetadataFactory {
 		}
 
 	}
+
+	static createMetadataFormPath ( destinationPath: string ) {
+
+		const filename = FileUtils.getFilenameFromPath( destinationPath );
+
+		const extension = FileService.getExtension( destinationPath );
+
+		return this.createMetadata( filename, extension, destinationPath );
+
+	}
+
 
 	static createMetadata ( fileName: string, ext: string, path: string ): Metadata {
 
@@ -146,7 +159,7 @@ export class MetadataFactory {
 
 	}
 
-	static createFolderMetadata ( name: string, path: string ): Metadata {
+	static createFolderMetadata ( path: string ): Metadata {
 
 		const guid = THREE.MathUtils.generateUUID();
 

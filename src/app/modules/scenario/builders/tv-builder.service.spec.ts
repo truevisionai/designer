@@ -12,7 +12,7 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileService } from 'app/services/file.service';
 import { GameObject } from '../../../core/game-object';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { PositionAction } from '../models/actions/tv-position-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { EntityObject } from '../models/tv-entities';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
@@ -80,7 +80,7 @@ describe( 'BuilderService', () => {
 
 		var worldPosition = new WorldPosition( 10, 10, 0 );
 
-		var positionAction = new PositionAction( worldPosition );
+		var positionAction = new TeleportAction( worldPosition );
 
 		ActionService.executePositionAction( entityObject, positionAction );
 
@@ -96,7 +96,7 @@ describe( 'BuilderService', () => {
 
 		var lanePosition = new LanePosition( 1, -2, 0, 10 );
 
-		var positionAction = new PositionAction( lanePosition );
+		var positionAction = new TeleportAction( lanePosition );
 
 		ActionService.executePositionAction( entityObject, positionAction );
 
@@ -120,7 +120,7 @@ describe( 'BuilderService', () => {
 
 		var lanePosition = new LanePosition( 1, -2, 0, 10 );
 
-		var positionAction = new PositionAction( lanePosition );
+		var positionAction = new TeleportAction( lanePosition );
 
 		ActionService.executePositionAction( entityObject, positionAction );
 

@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { TvContactPoint } from '../../tv-map/models/tv-common';
@@ -15,7 +16,7 @@ import { EntityObject } from '../models/tv-entities';
 
 export class DefaultVehicleController extends AbstractController {
 
-	constructor ( private openDrive: TvMap, private entity: EntityObject ) {
+	constructor ( private entity: EntityObject ) {
 		super();
 	}
 
@@ -25,7 +26,7 @@ export class DefaultVehicleController extends AbstractController {
 
 	}
 
-	static getSuccessorRoad ( currentRoad: TvRoad, openDrive: TvMap ) {
+	static getSuccessorRoad ( currentRoad: TvRoad, map: TvMap ) {
 
 		let nextRoad: TvRoad;
 
@@ -33,14 +34,14 @@ export class DefaultVehicleController extends AbstractController {
 
 		if ( successor.elementType == 'road' ) {
 
-			nextRoad = openDrive.getRoadById( successor.elementId );
+			nextRoad = map.getRoadById( successor.elementId );
 
 		} else if ( successor.elementType == 'junction' ) {
 
-			const junction = openDrive.getJunctionById( successor.elementId );
+			const junction = map.getJunctionById( successor.elementId );
 			const connection = junction.getRandomConnectionFor( currentRoad.id );
 
-			nextRoad = openDrive.getRoadById( connection.connectingRoad );
+			nextRoad = map.getRoadById( connection.connectingRoad );
 		}
 
 		return nextRoad;
@@ -49,7 +50,7 @@ export class DefaultVehicleController extends AbstractController {
 	public update () {
 
 		const actor = this.actor;
-		const roads = this.openDrive.roads;
+		const roads = this.map.roads;
 
 		const currentRoad = roads.get( actor.roadId );
 		const currentLaneSection = currentRoad.getLaneSectionById( actor.laneSectionId );
@@ -82,15 +83,15 @@ export class DefaultVehicleController extends AbstractController {
 					// find road
 					if ( successor.elementType == 'road' ) {
 
-						nextRoad = this.openDrive.getRoadById( successor.elementId );
+						nextRoad = this.map.getRoadById( successor.elementId );
 						nextLaneId = currentLane.successorExists ? currentLane.succcessor : currentLane.id;
 
 					} else if ( successor.elementType == 'junction' ) {
 
-						const junction = this.openDrive.getJunctionById( successor.elementId );
+						const junction = this.map.getJunctionById( successor.elementId );
 						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
-						nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
+						nextRoad = this.map.getRoadById( connection.connectingRoad );
 						nextLaneId = connection.getToLaneId( currentLaneId );
 					}
 
@@ -139,15 +140,15 @@ export class DefaultVehicleController extends AbstractController {
 				// find road
 				if ( predecessor.elementType == 'road' ) {
 
-					nextRoad = this.openDrive.getRoadById( predecessor.elementId );
+					nextRoad = this.map.getRoadById( predecessor.elementId );
 					nextLaneId = currentLane.predecessorExists ? currentLane.predecessor : currentLane.id;
 
 				} else if ( predecessor.elementType == 'junction' ) {
 
-					const junction = this.openDrive.getJunctionById( predecessor.elementId );
+					const junction = this.map.getJunctionById( predecessor.elementId );
 					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
-					nextRoad = this.openDrive.getRoadById( connection.connectingRoad );
+					nextRoad = this.map.getRoadById( connection.connectingRoad );
 					nextLaneId = connection.getToLaneId( currentLaneId );
 				}
 

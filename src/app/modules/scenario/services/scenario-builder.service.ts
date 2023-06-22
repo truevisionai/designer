@@ -1,19 +1,21 @@
-import { SceneService } from "app/core/services/scene.service";
-import { EntityObject } from "../models/tv-entities";
-import { TvScenario } from "../models/tv-scenario";
-import { SimulationTimeCondition } from "../models/conditions/tv-simulation-time-condition";
-import { Storyboard } from "../models/tv-storyboard";
-import { TvConsole } from "app/core/utils/console";
-import { EntityCondition } from "../models/conditions/entity-condition";
-import { PrivateAction } from "../models/private-action";
-import { LaneChangeAction } from "../models/actions/tv-lane-change-action";
-import { SpeedAction } from "../models/actions/tv-speed-action";
+import { SceneService } from 'app/core/services/scene.service';
+import { TvConsole } from 'app/core/utils/console';
+import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
+import { SpeedAction } from '../models/actions/tv-speed-action';
+import { EntityCondition } from '../models/conditions/entity-condition';
+import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { EntityObject } from '../models/tv-entities';
+import { TvScenario } from '../models/tv-scenario';
+import { Storyboard } from '../models/tv-storyboard';
 
+/**
+ * This class is responsible for building the scenario
+ */
 export class ScenarioBuilder {
 
 	public static buildScenario ( scenario: TvScenario ): void {
 
-		scenario.objects.forEach( ( value, key ) => this.buildEntityObject( value ) )
+		scenario.objects.forEach( ( value, key ) => this.buildEntityObject( value ) );
 
 		scenario.executeInitActions();
 
@@ -78,11 +80,11 @@ export class ScenarioBuilder {
 
 					} );
 
-				} )
+				} );
 
-			} )
+			} );
 
-		} )
+		} );
 	}
 
 	static replaceVariablesHelper ( obj: any, variables: Map<string, any>, depth: number = 0 ) {
@@ -116,7 +118,7 @@ export class ScenarioBuilder {
 		// if already has end conditions then return
 		if ( storyboard.endConditionGroups.length > 0 ) return;
 
-		TvConsole.warn( "Storyboard has not EndCondition. Adding SimulationTimeCondition" )
+		TvConsole.warn( 'Storyboard has not EndCondition. Adding SimulationTimeCondition' );
 
 		storyboard.addEndCondition( new SimulationTimeCondition( 60 ) );
 
@@ -132,7 +134,7 @@ export class ScenarioBuilder {
 
 		} else {
 
-			throw new Error( "create entity game object" );
+			throw new Error( 'create entity game object' );
 
 		}
 

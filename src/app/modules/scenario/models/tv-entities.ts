@@ -47,7 +47,7 @@ export class EntityObject {
 			this.gameObject.userData.entity = this;
 		}
 
-		this.controller = controller || new DefaultVehicleController( TvMapInstance.map, this );
+		this.controller = controller || new DefaultVehicleController( this );
 
 		EntityObject.count++;
 	}

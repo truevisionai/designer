@@ -2,31 +2,24 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter } from '@angular/core';
-import { IFile } from '../../../core/models/file';
-import { ClearHelper } from '../helpers/tv-clear-helper';
-import { NameDB } from '../models/tv-name-db';
+import { EventEmitter, Injectable } from '@angular/core';
 import { TvScenario } from '../models/tv-scenario';
+import { ScenarioBuilder } from './scenario-builder.service';
+import { OpenScenarioImporter } from './tv-reader.service';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class ScenarioInstance {
 
-	public static scenarioChanged = new EventEmitter<TvScenario>();
-	public static fileChanged = new EventEmitter<IFile>();
-	public static db: NameDB = new NameDB();
-	private static cleaner = new ClearHelper();
-
-	private static _file: IFile;
-
-	static get file () {
-		return this._file;
-	}
-
-	static set file ( value ) {
-		this._file = value;
-		this.fileChanged.emit( value );
-	}
+	public static changed = new EventEmitter<TvScenario>();
 
 	private static _scenario: TvScenario = new TvScenario();
+	private static openScenarioImporter: OpenScenarioImporter;
+
+	constructor ( openScenarioImporter: OpenScenarioImporter ) {
+		ScenarioInstance.openScenarioImporter = openScenarioImporter;
+	}
 
 	static get scenario () {
 		return this._scenario;
@@ -34,24 +27,25 @@ export class ScenarioInstance {
 
 	static set scenario ( value ) {
 
-		// clean the scene first
-		this.cleaner.clear( this._scenario );
-
-		this.db.clear();
+		this.scenario?.destroy();
 
 		this._scenario = value;
 
-		this.scenarioChanged.emit( value );
+		this.changed.emit( value );
 
 	}
 
-	static get currentFile () {
-		return this._file;
-	}
+	static loadInstanceFromPath ( path: string ) {
 
-	static set currentFile ( value ) {
-		this._file = value;
-		this.fileChanged.emit( value );
-	}
+		this.openScenarioImporter.readFromPath( path ).then( ( scenario ) => {
 
+			this.scenario?.destroy();
+
+			ScenarioBuilder.buildScenario( scenario );
+
+			this.scenario = scenario;
+
+		} );
+
+	}
 }
