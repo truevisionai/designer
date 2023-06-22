@@ -9,7 +9,7 @@ import { ActionType } from '../tv-enums';
 
 export class PositionAction extends PrivateAction {
 
-	public actionName: string = 'Position';
+	public label: string = 'Position';
 	public actionType: ActionType = ActionType.Private_Position;
 
 	public position: Position;

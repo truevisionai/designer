@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
-import { TvScenarioInstance } from '../../../modules/scenario/services/tv-scenario-instance';
+import { ScenarioInstance } from '../../../modules/scenario/services/scenario-instance';
 
 @Component( {
 	selector: 'app-select-entity-field',
@@ -17,7 +17,7 @@ export class SelectEntityFieldComponent extends AbstractFieldComponent implement
 	}
 
 	get entities () {
-		return [ ...TvScenarioInstance.openScenario.objects.keys() ];
+		return [ ...ScenarioInstance.scenario.objects.keys() ];
 	}
 
 	ngOnInit () {

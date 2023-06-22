@@ -3,7 +3,7 @@
  */
 
 import { Time } from '../../../../core/time';
-import { ConditionCategory, ConditionType, Rule } from '../tv-enums';
+import { ConditionType, Rule } from '../tv-enums';
 import { ValueCondition } from './value-condition';
 
 export class SimulationTimeCondition extends ValueCondition {

@@ -524,6 +524,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		if ( xml.AtStart != null ) {
 			condition = this.readAtStartCondition( xml.AtStart );
 		} else if ( xml.AfterTermination != null ) {
+			condition = this.readAfterTerminationCondition( xml.AfterTermination );
 		} else if ( xml.Command != null ) {
 		} else if ( xml.Signal != null ) {
 		} else if ( xml.Controller != null ) {
@@ -547,7 +548,6 @@ export class OpenScenarioImporter extends AbstractReader {
 		let type = xml.attr_type;
 		let elementName = xml.attr_name;
 		let rule = xml.attr_rule;
-
 
 		return new AfterTerminationCondition( elementName, rule, type );
 	}

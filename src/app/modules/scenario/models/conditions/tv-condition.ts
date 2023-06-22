@@ -3,7 +3,7 @@
  */
 
 import { ConditionUtils } from '../../builders/condition-utils';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
 export abstract class Condition {
@@ -33,7 +33,7 @@ export abstract class Condition {
 	}
 
 	protected get scenario () {
-		return TvScenarioInstance.scenario;
+		return ScenarioInstance.scenario;
 	}
 }
 

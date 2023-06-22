@@ -13,7 +13,7 @@ import { AbstractRoutingAction, LongitudinalPurpose } from './tv-routing-action'
 
 export class FollowTrajectoryAction extends AbstractRoutingAction {
 
-	readonly actionName: string = 'FollowTrajectory';
+	readonly label: string = 'FollowTrajectory';
 	readonly actionType: ActionType = ActionType.Private_Routing;
 	// optional
 	public catalogReference: CatalogReference;

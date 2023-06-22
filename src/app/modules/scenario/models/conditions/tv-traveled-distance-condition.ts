@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
 import { ConditionType, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 

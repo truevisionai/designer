@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { PrivateAction } from './private-action';
 import { GlobalAction } from './actions/tv-global-action';
 import { UserDefinedAction } from './actions/tv-user-defined-action';
@@ -33,13 +33,13 @@ export class Storyboard {
 
 	addStory ( story: Story ) {
 
-		const hasName = TvScenarioInstance.db.has_story( story.name );
+		const hasName = ScenarioInstance.db.has_story( story.name );
 
 		if ( hasName ) throw new Error( `Story name '${ story.name }' has already been used` );
 
 		this.stories.set( story.name, story );
 
-		TvScenarioInstance.db.add_story( story.name, story );
+		ScenarioInstance.db.add_story( story.name, story );
 
 	}
 

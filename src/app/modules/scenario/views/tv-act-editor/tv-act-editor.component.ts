@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Condition } from '../../models/conditions/tv-condition';
 import { Act } from '../../models/tv-act';
 import { EntityObject } from '../../models/tv-entities';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
 	selector: 'app-tv-act-editor',
@@ -32,7 +32,7 @@ export class ActEditorComponent implements OnInit {
 	}
 
 	get scenario () {
-		return TvScenarioInstance.openScenario;
+		return ScenarioInstance.scenario;
 	}
 
 	ngOnInit () {

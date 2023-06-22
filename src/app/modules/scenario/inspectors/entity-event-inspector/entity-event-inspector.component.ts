@@ -8,7 +8,7 @@ import { TvAction } from '../../models/tv-action';
 import { EntityObject } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
 	selector: 'app-entity-event-inspector',
@@ -31,7 +31,7 @@ export class EntityEventInspectorComponent implements OnInit {
 	conditionType = ConditionType;
 
 	get scenario () {
-		return TvScenarioInstance.openScenario;
+		return ScenarioInstance.scenario;
 	}
 
 	constructor (
@@ -78,11 +78,11 @@ export class EntityEventInspectorComponent implements OnInit {
 
 	}
 
-	onAddEventAction ( type: ActionType, event: TvEvent ) {
+	onAddEventAction ( $type: ActionType, event: TvEvent ) {
 
-		if ( type !== null ) {
+		if ( $type !== null ) {
 
-			const action = ActionFactory.createAction( type, this.entity );
+			const action = ActionFactory.createActionWithoutName( $type, this.entity );
 
 			event.addAction( action );
 
@@ -159,7 +159,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
 			{
-				label: 'Delete ' + action[ 'actionName' ],
+				label: 'Delete ' + action.label,
 				click: () => this.removeAction( action, this.event ),
 			},
 		] );

@@ -16,6 +16,8 @@ export class DistanceCondition extends EntityCondition {
 	public readonly conditionType = ConditionType.ByEntity_Distance;
 	public name: string = 'DistanceCondition';
 
+	private debug = false;
+
 	/**
 	 *
 	 * @param position
@@ -44,6 +46,8 @@ export class DistanceCondition extends EntityCondition {
 		const distanceValues = this.triggeringEntities.map(
 			entityName => this.calculateDistance( entityName, this.position, this.freespace )
 		);
+
+		if ( this.debug ) console.log( 'distanceValues', distanceValues, this.rule, this.value );
 
 		return this.isTriggerRulePassing( distanceValues, this.rule, this.value );
 	}

@@ -7,7 +7,7 @@ import { Quaternion, Vector3 } from 'three';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { TvConsole } from '../../../core/utils/console';
 import { ThreeService } from '../../three-js/three.service';
-import { TvScenarioInstance } from './tv-scenario-instance';
+import { ScenarioInstance } from './scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,7 +59,7 @@ export class ScenarioViewerService {
 
 	setFocus () {
 
-		const entities = [ ...TvScenarioInstance.scenario.objects.values() ];
+		const entities = [ ...ScenarioInstance.scenario.objects.values() ];
 
 		if ( entities.length === 0 ) {
 
@@ -68,7 +68,7 @@ export class ScenarioViewerService {
 			return;
 		}
 
-		const entity = [ ...TvScenarioInstance.scenario.objects.values() ][ 0 ];
+		const entity = [ ...ScenarioInstance.scenario.objects.values() ][ 0 ];
 
 		// Store original position and orientation
 		this.originalPosition.copy( this.threeService.camera.position );

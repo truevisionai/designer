@@ -16,7 +16,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { ToolType } from '../models/tool-types.enum';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -43,7 +43,7 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	get scenario () {
 
-		return TvScenarioInstance.scenario;
+		return ScenarioInstance.scenario;
 
 	}
 

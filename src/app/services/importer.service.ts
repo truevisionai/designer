@@ -17,7 +17,7 @@ import { PropManager } from './prop-manager';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { ScenarioBuilder } from 'app/modules/scenario/services/scenario-builder.service';
-import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -120,7 +120,7 @@ export class ImporterService {
 
 			ScenarioBuilder.buildScenario( scenario );
 
-			TvScenarioInstance.scenario = scenario;
+			ScenarioInstance.scenario = scenario;
 
 			console.log( scenario );
 

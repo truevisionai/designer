@@ -5,7 +5,7 @@
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityObject } from 'app/modules/scenario/models/tv-entities';
 
-import { TvScenarioInstance } from 'app/modules/scenario/services/tv-scenario-instance';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { KeyboardInput } from '../../input';
@@ -62,7 +62,7 @@ export class VehicleTool extends BaseTool {
 
 		}
 
-		console.log( 'Scenario', TvScenarioInstance.scenario );
+		console.log( 'Scenario', ScenarioInstance.scenario );
 
 	}
 

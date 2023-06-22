@@ -3,7 +3,7 @@
  */
 
 import { Time } from '../../../../core/time';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 import { EntityObject } from '../tv-entities';
 import { TvScenario } from '../tv-scenario';
 import { StandStillCondition } from './tv-stand-still-condition';
@@ -17,11 +17,11 @@ describe( 'StandStillCondition', () => {
 
 		Time.reset();
 
-		TvScenarioInstance.scenario = new TvScenario();
+		ScenarioInstance.scenario = new TvScenario();
 
 		const entityObject = new EntityObject( 'ego' );
 
-		TvScenarioInstance.scenario.addObject( entityObject );
+		ScenarioInstance.scenario.addObject( entityObject );
 
 		condition = new StandStillCondition( 1 );
 

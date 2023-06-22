@@ -12,8 +12,6 @@ import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { AbstractController } from '../models/abstract-controller';
 import { EntityObject } from '../models/tv-entities';
-import { ScenarioDirectorService } from '../services/scenario-director.service';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
 
 export class DefaultVehicleController extends AbstractController {
 

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { DynamicConstraints } from '../models/dynamic-constraints';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
@@ -11,35 +10,104 @@ import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-di
 import { PositionAction } from '../models/actions/tv-position-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { DynamicConstraints } from '../models/dynamic-constraints';
 import { WorldPosition } from '../models/positions/tv-world-position';
+import { TvAction } from '../models/tv-action';
 import { EntityObject } from '../models/tv-entities';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
 
 export class ActionFactory {
 
-	public static createAction ( type: ActionType, entity?: EntityObject ) {
+	public static createNamedAction ( name: string, type: ActionType, entity?: EntityObject ) {
+
+		const action = this.createActionWithoutName( type, entity ) as TvAction;
+
+		action.setName( name );
+
+		return action;
+
+	}
+
+	public static createActionWithoutName ( type: ActionType, entity?: EntityObject ) {
+
+		let action: any;
 
 		switch ( type ) {
 
 			case ActionType.Private_Position:
-				return this.createPositionAction( entity );
+				action = this.createPositionAction( entity );
+				break;
 
 			case ActionType.Private_Longitudinal_Speed:
-				return this.createSpeedAction( entity );
+				action = this.createSpeedAction( entity );
+				break;
 
 			case ActionType.Private_LaneChange:
-				return this.createLaneChangeAction( entity );
+				action = this.createLaneChangeAction( entity );
+				break;
 
 			case ActionType.Private_LaneOffset:
-				return this.createChangeLaneOffsetAction( entity );
+				action = this.createChangeLaneOffsetAction( entity );
+				break;
 
 			case ActionType.Private_Longitudinal_Distance:
-				return this.createLongitudinalDistanceAction( entity );
+				action = this.createLongitudinalDistanceAction( entity );
+				break;
+
+			case ActionType.Private_Visbility:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Private_Meeting:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Private_Autonomous:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Private_Controller:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Private_Routing:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.UserDefined_Command:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.UserDefined_Script:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Global_SetEnvironment:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Global_Entity:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Global_Parameter:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Global_Infrastructure:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
+
+			case ActionType.Global_Traffic:
+				throw new Error( `Unsupported private action: ${ type }` );
+				break;
 
 			default:
 				throw new Error( `Unsupported private action: ${ type }` );
 
 		}
+
+		return action;
 
 	}
 
@@ -54,14 +122,14 @@ export class ActionFactory {
 
 	}
 
-	private static createPositionAction ( entity?: EntityObject ): PositionAction {
+	private static createPositionAction ( entity?: EntityObject ): TvAction {
 
 		const position = entity.gameObject?.position;
 
 		return new PositionAction( new WorldPosition(
-			position?.x,
-			position?.y,
-			position?.z
+			position?.x || 0,
+			position?.y || 0,
+			position?.z || 0
 		) );
 
 	}
@@ -69,8 +137,8 @@ export class ActionFactory {
 	private static createSpeedAction ( entity?: EntityObject ) {
 
 		return new SpeedAction(
-			new TransitionDynamics( DynamicsShape.linear, 5, DynamicsDimension.time ),
-			new AbsoluteTarget( entity?.speed )
+			new TransitionDynamics( DynamicsShape.step, 0, DynamicsDimension.time ),
+			new AbsoluteTarget( entity?.speed || 40 )
 		);
 	}
 

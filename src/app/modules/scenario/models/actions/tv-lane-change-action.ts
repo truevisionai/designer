@@ -29,7 +29,7 @@ import { RelativeTarget } from './tv-relative-target';
  */
 export class LaneChangeAction extends PrivateAction {
 
-	public actionName = 'LaneChange';
+	public label = 'LaneChange';
 	public actionType: ActionType = ActionType.Private_LaneChange;
 
 	private startTime = 0;

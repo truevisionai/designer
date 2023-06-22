@@ -23,7 +23,7 @@ export class SpeedAction extends PrivateAction {
 	public debug = false;
 
 	public actionType: ActionType = ActionType.Private_Longitudinal_Speed;
-	public actionName: string = 'Speed';
+	public label: string = 'Speed';
 
 	private startTime: number;
 	private initialSpeed: number;

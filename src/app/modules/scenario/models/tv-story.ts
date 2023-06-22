@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { Act } from './tv-act';
 
 /**
@@ -39,13 +39,13 @@ export class Story {
 
 	addAct ( act: Act ) {
 
-		const hasName = TvScenarioInstance.db.has_act( act.name );
+		const hasName = ScenarioInstance.db.has_act( act.name );
 
 		if ( hasName ) throw new Error( `Act name '${ act.name }' has already been used` );
 
 		this.acts.push( act );
 
-		TvScenarioInstance.db.add_act( act.name, act );
+		ScenarioInstance.db.add_act( act.name, act );
 
 	}
 

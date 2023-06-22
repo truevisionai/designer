@@ -63,7 +63,7 @@ export class TransitionDynamics {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			return initialSpeed + ( targetSpeed - initialSpeed ) * elapsedTime / this.value;
+			return initialSpeed + ( targetSpeed - initialSpeed ) * elapsedTime / Math.max( this.value, 0.00001 );
 
 		} else if ( this.dynamicsDimension === DynamicsDimension.rate ) {
 
@@ -84,7 +84,7 @@ export class TransitionDynamics {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			let phase = Math.PI * elapsedTime / this.value;
+			let phase = Math.PI * elapsedTime / Math.max( this.value, 0.00001 );
 
 			return initialSpeed + ( targetSpeed - initialSpeed ) * ( 1 - Math.cos( phase ) ) / 2;
 

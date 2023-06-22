@@ -4,7 +4,7 @@
 
 import { BaseCommand } from '../../../core/commands/base-command';
 import { TvScenario } from '../models/tv-scenario';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 
 export class ModifyScenarioCommand extends BaseCommand {
 
@@ -16,15 +16,15 @@ export class ModifyScenarioCommand extends BaseCommand {
 	}
 
 	execute (): void {
-		TvScenarioInstance.openScenario = this.newState;
+		ScenarioInstance.scenario = this.newState;
 	}
 
 	undo (): void {
-		TvScenarioInstance.openScenario = this.oldState;
+		ScenarioInstance.scenario = this.oldState;
 	}
 
 	redo (): void {
-		TvScenarioInstance.openScenario = this.newState;
+		ScenarioInstance.scenario = this.newState;
 	}
 
 }

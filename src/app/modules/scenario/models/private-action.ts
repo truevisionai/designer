@@ -1,11 +1,10 @@
+import { ScenarioEvents } from '../services/scenario-events';
 import { TvAction } from './tv-action';
-import { ActionCategory, StoryElementType } from './tv-enums';
+import { ActionCategory, StoryElementState, StoryElementType } from './tv-enums';
 
 export abstract class PrivateAction extends TvAction {
 
 	public category = ActionCategory.private;
-
-	abstract actionName: string;
 
 	protected actionCompleted () {
 
@@ -13,7 +12,14 @@ export abstract class PrivateAction extends TvAction {
 
 		this.completed.emit( {
 			type: StoryElementType.action,
-			name: this.actionName
+			name: this.name,
+			state: StoryElementState.completed
+		} );
+
+		ScenarioEvents.events.emit( {
+			type: StoryElementType.action,
+			name: this.name,
+			state: StoryElementState.completed
 		} );
 
 	}

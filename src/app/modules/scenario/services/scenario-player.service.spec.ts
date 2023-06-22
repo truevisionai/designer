@@ -6,7 +6,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PlayerService } from '../../../core/player.service';
 import { ScenarioDirectorService } from './scenario-director.service';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
-import { TvScenarioInstance } from './tv-scenario-instance';
+import { ScenarioInstance } from './scenario-instance';
 import { TvScenario } from '../models/tv-scenario';
 
 
@@ -27,9 +27,9 @@ describe( 'ScenarioPlayerService', () => {
 
 	beforeEach( () => {
 
-		TvScenarioInstance.openScenario = new TvScenario();
+		ScenarioInstance.scenario = new TvScenario();
 
-		TvScenarioInstance.openScenario.storyboard.addEndCondition( new SimulationTimeCondition( 10 ) );
+		ScenarioInstance.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10 ) );
 
 
 	} );

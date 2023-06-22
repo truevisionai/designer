@@ -1,5 +1,5 @@
 import { Euler, MathUtils, Vector3 } from 'three';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { EntityObject } from './tv-entities';
 import { PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
@@ -46,6 +46,6 @@ export abstract class Position {
 	}
 
 	protected getEntity ( entity: string ): EntityObject {
-		return TvScenarioInstance.openScenario.findEntityOrFail( entity );
+		return ScenarioInstance.scenario.findEntityOrFail( entity );
 	}
 }

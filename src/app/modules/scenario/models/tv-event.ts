@@ -5,12 +5,12 @@
 import { EventEmitter } from '@angular/core';
 import { ConditionUtils } from '../builders/condition-utils';
 import { StoryEvent } from '../services/scenario-director.service';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
-import { TvAction } from './tv-action';
-import { PrivateAction } from './private-action';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
-import { StoryElementType } from './tv-enums';
+import { PrivateAction } from './private-action';
+import { TvAction } from './tv-action';
+import { StoryElementState, StoryElementType } from './tv-enums';
 
 export class TvEvent {
 
@@ -22,7 +22,6 @@ export class TvEvent {
 
 	public completed = new EventEmitter<StoryEvent>();
 
-	// public actions: EventAction[] = [];
 	private _actions: Map<string, TvAction> = new Map<string, TvAction>();
 
 	constructor ( public name?: string, public priority?: string ) {
@@ -60,16 +59,20 @@ export class TvEvent {
 
 	addNewAction ( name: string, action: TvAction ) {
 
-		const hasName = TvScenarioInstance.db.has_action( name );
+		const hasName = ScenarioInstance.db.has_action( name );
 
 		if ( hasName ) throw new Error( `Action name '${ name }' already used` );
 
 		this._actions.set( name, action );
 
-		TvScenarioInstance.db.add_action( name );
+		ScenarioInstance.db.add_action( name );
 
 		action.completed.subscribe( e => {
-			this.onActionCompleted( { name: name, type: StoryElementType.action } );
+			this.onActionCompleted( {
+				name: name,
+				type: StoryElementType.action,
+				state: StoryElementState.completed
+			} );
 		} );
 	}
 
@@ -165,7 +168,8 @@ export class TvEvent {
 
 			this.completed.emit( {
 				name: this.name,
-				type: StoryElementType.event
+				type: StoryElementType.event,
+				state: StoryElementState.completed
 			} );
 		}
 
@@ -190,7 +194,7 @@ export class TvEvent {
 
 	addAction ( action: PrivateAction ) {
 
-		this.actions.set( action.actionName, action );
+		this.actions.set( action.name, action );
 
 	}
 }

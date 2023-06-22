@@ -6,7 +6,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { TvEvent } from 'app/modules/scenario/models/tv-event';
-import { DialogService } from 'app/modules/scenario/services/tv-dialog.service';
 import { TvAction } from '../../models/tv-action';
 
 @Component( {
@@ -23,7 +22,6 @@ export class EventEditorComponent implements OnInit, IComponent {
 	@Input() action?: TvAction;
 
 	constructor (
-		private dialogService: DialogService
 	) {
 	}
 

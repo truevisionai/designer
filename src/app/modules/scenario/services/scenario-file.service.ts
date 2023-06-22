@@ -15,7 +15,7 @@ import { BuilderService } from '../builders/tv-builder.service';
 import { TvScenario } from '../models/tv-scenario';
 import { ScenarioDirectorService } from './scenario-director.service';
 import { OpenScenarioImporter } from './tv-reader.service';
-import { TvScenarioInstance } from './tv-scenario-instance';
+import { ScenarioInstance } from './scenario-instance';
 import { WriterService } from './tv-writer.service';
 
 @Injectable( {
@@ -33,7 +33,7 @@ export class ScenarioFileService {
 		private oscPlayer: ScenarioDirectorService
 	) {
 
-		TvScenarioInstance.scenarioChanged.subscribe( scenario => {
+		ScenarioInstance.scenarioChanged.subscribe( scenario => {
 
 			// Debug.log( 'scenerio changed' );
 			// this.builder.build( road, SourceFile.file );
@@ -43,19 +43,19 @@ export class ScenarioFileService {
 	}
 
 	get currentFile () {
-		return TvScenarioInstance.currentFile;
+		return ScenarioInstance.currentFile;
 	}
 
 	set currentFile ( value ) {
-		TvScenarioInstance.currentFile = value;
+		ScenarioInstance.currentFile = value;
 	}
 
 	get scenario () {
-		return TvScenarioInstance.scenario;
+		return ScenarioInstance.scenario;
 	}
 
 	set scenario ( value ) {
-		TvScenarioInstance.scenario = value;
+		ScenarioInstance.scenario = value;
 	}
 
 	rebuild () {
@@ -145,7 +145,7 @@ export class ScenarioFileService {
 
 	saveAs ( callback?: ( file: IFile ) => void ) {
 
-		const contents = this.writer.getOutputString( TvScenarioInstance.scenario );
+		const contents = this.writer.getOutputString( ScenarioInstance.scenario );
 
 		Debug.log( contents );
 
@@ -178,7 +178,7 @@ export class ScenarioFileService {
 
 	saveLocallyAt ( path, callback?: ( file: IFile ) => void ) {
 
-		const contents = this.writer.getOutputString( TvScenarioInstance.scenario );
+		const contents = this.writer.getOutputString( ScenarioInstance.scenario );
 
 		this.fileService.saveFile( path, contents, ( file: IFile ) => {
 
@@ -212,7 +212,7 @@ export class ScenarioFileService {
 
 	private saveLocally ( content: string, callback?: ( file: IFile ) => void ) {
 
-		this.saveLocallyAt( TvScenarioInstance.currentFile.path, callback );
+		this.saveLocallyAt( ScenarioInstance.currentFile.path, callback );
 
 	}
 }

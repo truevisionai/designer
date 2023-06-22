@@ -10,8 +10,7 @@ import { ContextMenuType, MenuService } from '../../../../services/menu.service'
 import { ThreeService } from '../../../three-js/three.service';
 import { EntityInspector } from '../../inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { TvScenario } from '../../models/tv-scenario';
-import { DialogService } from '../../services/tv-dialog.service';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 
 /**
  * Food data with nested structure.
@@ -51,7 +50,6 @@ export class HierarchyComponent implements OnInit {
 	dataSource: MatTreeFlatDataSource<ScenarioNode, { expandable: boolean; name: string; level: number; type: NodeType; }, { expandable: boolean; name: string; level: number; type: NodeType; }>;
 
 	constructor (
-		private dialogs: DialogService,
 		private menuService: MenuService,
 		private threeService: ThreeService
 	) {
@@ -181,7 +179,7 @@ export class HierarchyComponent implements OnInit {
 	openVehicleInspector ( node: ExampleNode ) {
 
 
-		var object = TvScenarioInstance.openScenario.objects.get( node.name );
+		var object = ScenarioInstance.scenario.objects.get( node.name );
 
 		// SceneService.select( object.gameObject );
 		// SceneService.focus( object.gameObject );

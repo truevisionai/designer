@@ -18,8 +18,7 @@ import { Maneuver } from '../../models/tv-maneuver';
 import { Sequence } from '../../models/tv-sequence';
 import { Story } from '../../models/tv-story';
 import { EnumTrajectoryDomain, Trajectory } from '../../models/tv-trajectory';
-import { DialogService } from '../../services/tv-dialog.service';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 import {
 	FollowTrajectoryComponent
 } from '../../views/actions/follow-trajectory/follow-trajectory.component';
@@ -34,15 +33,14 @@ export class ActionsInspectorComponent implements OnInit, IComponent {
 
 	data: EntityObject;
 
-	constructor ( private dialogService: DialogService ) {
-	}
+	constructor () { }
 
 	get entity () {
 		return this.data;
 	}
 
 	get scenario () {
-		return TvScenarioInstance.openScenario;
+		return ScenarioInstance.scenario;
 	}
 
 	get actions () {

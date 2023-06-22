@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 import { TargetType } from '../tv-enums';
 import { Target } from './target';
 
@@ -18,7 +18,7 @@ export class RelativeTarget extends Target {
 
 	get entity () {
 
-		return TvScenarioInstance.scenario.findEntityOrFail( this.entityName );
+		return ScenarioInstance.scenario.findEntityOrFail( this.entityName );
 
 	}
 

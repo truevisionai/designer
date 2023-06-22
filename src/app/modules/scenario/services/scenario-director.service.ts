@@ -7,22 +7,23 @@ import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { ActionService } from '../builders/action-service';
-import { ResetHelper } from '../helpers/tv-reset-helper';
 import { ConditionUtils } from '../builders/condition-utils';
-import { TvAction } from '../models/tv-action';
+import { ResetHelper } from '../helpers/tv-reset-helper';
 import { Act } from '../models/tv-act';
+import { TvAction } from '../models/tv-action';
 import { EntityObject } from '../models/tv-entities';
-import { StoryElementType } from '../models/tv-enums';
+import { StoryElementState, StoryElementType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
 import { Sequence } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
-import { TvScenarioInstance } from './tv-scenario-instance';
+import { ScenarioEvents } from './scenario-events';
+import { ScenarioInstance } from './scenario-instance';
 
 export interface StoryEvent {
 	name: string;
 	type: StoryElementType;
+	state: StoryElementState;
 }
 
 @Injectable( {
@@ -52,15 +53,15 @@ export class ScenarioDirectorService {
 
 	}
 
-	get openScenario () {
+	get scenario () {
 
-		return TvScenarioInstance.openScenario;
+		return ScenarioInstance.scenario;
 
 	}
 
 	private onPlayerStarted () {
 
-		if ( this.logEvents ) console.info( 'scenario-started', this.openScenario );
+		if ( this.logEvents ) console.info( 'scenario-started', this.scenario );
 
 		this.startScenario();
 		this.updateScenario();
@@ -84,7 +85,7 @@ export class ScenarioDirectorService {
 
 		this.startScenario();
 
-		this.resetOpenScenario();
+		this.resetScenario();
 	}
 
 	private onPlayerTick ( e: PlayerUpdateData ) {
@@ -95,19 +96,29 @@ export class ScenarioDirectorService {
 
 	private updateScenario () {
 
-		if ( ConditionUtils.hasGroupsPassed( this.openScenario.storyboard.endConditionGroups ) ) {
+		this.scenario.objects.forEach( ( entity ) => {
+
+			entity.initActions.filter( action => !action.isCompleted ).forEach( ( action ) => {
+
+				action.execute( entity );
+
+			} );
+
+		} );
+
+		if ( ConditionUtils.hasGroupsPassed( this.scenario.storyboard.endConditionGroups ) ) {
 
 			this.userPlayer.stop();
 
 		} else {
 
-			this.openScenario.storyboard.stories.forEach( story => {
+			this.scenario.storyboard.stories.forEach( story => {
 
 				this.runStory( story );
 
 			} );
 
-			this.openScenario.objects.forEach( obj => {
+			this.scenario.objects.forEach( obj => {
 
 				obj.update();
 
@@ -118,6 +129,12 @@ export class ScenarioDirectorService {
 
 	private startScenario () {
 
+		ScenarioEvents.fire( {
+			name: 'scenario-started',
+			type: StoryElementType.scenario,
+			state: StoryElementState.started
+		} );
+
 		// // set parameters
 		// this.reader.replaceParamaterValues( this.openScenario.objects, ( object, property ) => {
 		//     console.log( 'replaced', object, property );
@@ -126,17 +143,18 @@ export class ScenarioDirectorService {
 		// set road traffic state
 		// this.openDrive.roads.forEach( road => PlayerService.traffic.set( road.id, [] ) );
 
-		this.openScenario.objects.forEach( obj => {
+		this.scenario.objects.forEach( obj => {
 
 			obj.initActions.forEach( action => {
 
-				ActionService.executePrivateAction( obj, action );
+				action.execute( obj );
 
 			} );
 
 			this.setRoadProperties( obj );
 
 		} );
+
 
 		// if ( this.added ) return;
 		//
@@ -281,17 +299,17 @@ export class ScenarioDirectorService {
 
 		if ( this.logEvents ) console.info( 'running-event', event.name );
 
-		event.getActionMap().forEach( ( action, actionName ) => {
+		event.getActionMap().forEach( ( action ) => {
 
 			if ( action.isCompleted ) return;
 
 			if ( !action.hasStarted ) {
 
-				this.startAction( action, actionName, sequence );
+				this.startAction( action, action.name, sequence );
 
 			} else {
 
-				this.updateAction( action, actionName, sequence );
+				this.updateAction( action, action.name, sequence );
 
 			}
 
@@ -338,18 +356,18 @@ export class ScenarioDirectorService {
 
 		sequence.actors.forEach( actorName => {
 
-			if ( !this.openScenario.objects.has( actorName ) ) throw new Error( 'Object not found' );
+			if ( !this.scenario.objects.has( actorName ) ) throw new Error( 'Object not found' );
 
-			const entity = this.openScenario.objects.get( actorName );
+			const entity = this.scenario.objects.get( actorName );
 
 			action.execute( entity );
 
 		} );
 	}
 
-	private resetOpenScenario () {
+	private resetScenario () {
 
-		( new ResetHelper( this.openScenario ) ).reset();
+		( new ResetHelper( this.scenario ) ).reset();
 
 	}
 

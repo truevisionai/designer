@@ -4,7 +4,7 @@
 
 import { MathUtils, Vector3 } from 'three';
 import { ActionService } from '../builders/action-service';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { PrivateAction } from './private-action';
 import { Act } from './tv-act';
@@ -77,13 +77,13 @@ export class TvScenario {
 
 	addObject ( object: EntityObject ) {
 
-		const hasName = TvScenarioInstance.db.has_entity( object.name );
+		const hasName = ScenarioInstance.db.has_entity( object.name );
 
 		if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
 
 		this.objects.set( object.name, object );
 
-		TvScenarioInstance.db.add_entity( object.name, object );
+		ScenarioInstance.db.add_entity( object.name, object );
 
 	}
 
@@ -110,7 +110,7 @@ export class TvScenario {
 
 	removeObject ( object: EntityObject ) {
 
-		TvScenarioInstance.db.remove_entity( object.name );
+		ScenarioInstance.db.remove_entity( object.name );
 
 		this.objects.delete( object.name );
 

@@ -26,19 +26,22 @@ export class RelativeObjectPosition extends Position {
 	toVector3 (): Vector3 {
 
 		// Retrieve the position of the referenced object
-		const objectPosition = this.objectRef ? this.getEntity( this.objectRef ).getCurrentPosition() : new Vector3();
+		const relPos = this.objectRef ? this.getEntity( this.objectRef ).getCurrentPosition() : new Vector3();
 
-		// Rotate the relative offset based on the object's orientation
-		const rotatedOffset = this.rotateOffset( this.dx, this.dy, this.dz, this.orientation );
+		// Convert the orientation to radians
+		const yaw = this.orientation.h * Math.PI / 180;
+
+		// Apply rotation matrix to the offse
+		const rotatedX = relPos.x + this.dx * Math.cos( yaw ) - this.dy * Math.sin( yaw );
+		const rotatedY = relPos.y + this.dy * Math.cos( yaw ) + this.dx * Math.sin( yaw );
+		const rotatedZ = relPos.z + this.dz;
 
 		// Calculate the relative position vector
-		const relativeVector = new Vector3(
-			objectPosition.x + rotatedOffset.x,
-			objectPosition.y + rotatedOffset.y,
-			objectPosition.z + rotatedOffset.z
+		return new Vector3(
+			rotatedX,
+			rotatedY,
+			rotatedZ
 		);
-
-		return relativeVector;
 	}
 
 	toOrientation (): Orientation {
@@ -64,21 +67,21 @@ export class RelativeObjectPosition extends Position {
 		}
 	}
 
-	// Helper function to rotate the offset based on the object's orientation
-	private rotateOffset ( dx: number, dy: number, dz: number, orientation: Orientation ): Vector3 {
+	// // Helper function to rotate the offset based on the object's orientation
+	// private rotateOffset ( dx: number, dy: number, dz: number, orientation: Orientation ): Vector3 {
 
-		// Convert the orientation to radians
-		const yawRad = orientation.h * Math.PI / 180;
-		const pitchRad = orientation.p * Math.PI / 180;
-		const rollRad = orientation.r * Math.PI / 180;
+	// 	// Convert the orientation to radians
+	// 	const yawRad = orientation.h * Math.PI / 180;
+	// 	const pitchRad = orientation.p * Math.PI / 180;
+	// 	const rollRad = orientation.r * Math.PI / 180;
 
-		// Apply rotation matrix to the offset
-		const rotatedX = dx * Math.cos( yawRad ) - dy * Math.sin( yawRad );
-		const rotatedY = dx * Math.sin( yawRad ) + dy * Math.cos( yawRad );
-		const rotatedZ = dz;
+	// 	// Apply rotation matrix to the offset
+	// 	const rotatedX = dx * Math.cos( yawRad ) - dy * Math.sin( yawRad );
+	// 	const rotatedY = dx * Math.sin( yawRad ) + dy * Math.cos( yawRad );
+	// 	const rotatedZ = dz;
 
-		return new Vector3( rotatedX, rotatedY, rotatedZ );
-	}
+	// 	return new Vector3( rotatedX, rotatedY, rotatedZ );
+	// }
 
 	toXML (): XmlElement {
 		return {

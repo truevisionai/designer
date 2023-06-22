@@ -4,9 +4,9 @@
 
 import { EventEmitter } from '@angular/core';
 import { StoryEvent } from '../services/scenario-director.service';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { TvAction } from './tv-action';
-import { StoryElementType } from './tv-enums';
+import { StoryElementState, StoryElementType } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
@@ -44,7 +44,7 @@ export class Maneuver {
 
 	addNewEvent ( name: string, priority: string ) {
 
-		const hasName = TvScenarioInstance.db.has_event( name );
+		const hasName = ScenarioInstance.db.has_event( name );
 
 		if ( hasName ) throw new Error( 'Event name already used' );
 
@@ -59,11 +59,9 @@ export class Maneuver {
 
 		this.events.push( event );
 
-		TvScenarioInstance.db.add_event( event.name, event );
+		ScenarioInstance.db.add_event( event.name, event );
 
-		event.completed.subscribe( e => {
-			this.onEventCompleted( e );
-		} );
+		event.completed.subscribe( e => this.onEventCompleted( e ) );
 
 		return event;
 
@@ -92,7 +90,8 @@ export class Maneuver {
 
 			this.completed.emit( {
 				name: this.name,
-				type: StoryElementType.maneuver
+				type: StoryElementType.maneuver,
+				state: StoryElementState.completed
 			} );
 
 		}

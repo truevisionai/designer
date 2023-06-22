@@ -99,7 +99,7 @@
 	</mat-menu>
 	<button *ngFor="let action of event.getActions()" (contextmenu)="showActionMenu($event,action)"
 			(click)="actionClicked(action)" class="btn-icon-action" mat-stroked-button>
-		<mat-icon [matTooltip]="action['actionName']">directions_run</mat-icon>
+		<mat-icon [matTooltip]="action.label">directions_run</mat-icon>
 	</button>
 	<br/><br/>
 </div>
@@ -109,7 +109,7 @@
 		<mat-expansion-panel (contextmenu)="showActionMenu($event,action)" *ngFor="let action of event.getActions()">
 			<mat-expansion-panel-header>
 				<mat-panel-title>
-					{{ action['actionName'] }}
+					{{ action.label }}
 				</mat-panel-title>
 			</mat-expansion-panel-header>
 			<app-action [action]="action"></app-action>

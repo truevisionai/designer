@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { CatalogReference } from './tv-catalogs';
 import { Maneuver } from './tv-maneuver';
 
@@ -50,13 +50,13 @@ export class Sequence {
 
 	addManeuver ( maneuver: Maneuver ) {
 
-		const hasName = TvScenarioInstance.db.has_maneuver( maneuver.name );
+		const hasName = ScenarioInstance.db.has_maneuver( maneuver.name );
 
 		if ( hasName ) throw new Error( 'Maneuver name already used' );
 
 		this.maneuvers.push( maneuver );
 
-		TvScenarioInstance.db.add_maneuver( maneuver.name );
+		ScenarioInstance.db.add_maneuver( maneuver.name );
 
 	}
 }

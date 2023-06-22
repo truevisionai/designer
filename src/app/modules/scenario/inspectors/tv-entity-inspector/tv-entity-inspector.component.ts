@@ -13,8 +13,7 @@ import { PrivateAction } from '../../models/private-action';
 import { EntityObject } from '../../models/tv-entities';
 import { TvEvent } from '../../models/tv-event';
 import { ActionType, ConditionType } from '../../models/tv-enums';
-import { DialogService } from '../../services/tv-dialog.service';
-import { TvScenarioInstance } from '../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
 	selector: 'app-tv-player-inspector',
@@ -34,7 +33,6 @@ export class EntityInspector implements OnInit, IComponent {
 
 	constructor (
 		public dialog: MatDialog,
-		private dialogService: DialogService,
 		public actionService: ActionService,
 	) {
 	}
@@ -52,7 +50,7 @@ export class EntityInspector implements OnInit, IComponent {
 	};
 
 	get scenario () {
-		return TvScenarioInstance.openScenario;
+		return ScenarioInstance.scenario;
 	}
 
 	get scenarioActions (): PrivateAction[] {
@@ -67,7 +65,7 @@ export class EntityInspector implements OnInit, IComponent {
 
 		if ( $actionType !== null ) {
 
-			const action = ActionFactory.createAction( $actionType, this.entity );
+			const action = ActionFactory.createActionWithoutName( $actionType, this.entity );
 
 			if ( action === null ) {
 				return;

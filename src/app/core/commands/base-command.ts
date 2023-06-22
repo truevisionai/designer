@@ -4,7 +4,7 @@
 
 import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvScenarioInstance } from '../../modules/scenario/services/tv-scenario-instance';
+import { ScenarioInstance } from '../../modules/scenario/services/scenario-instance';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { SceneService } from '../services/scene.service';
 import { ICommand, ICommandCallback } from './i-command';
@@ -19,7 +19,7 @@ export abstract class BaseCommand implements ICommand {
 	}
 
 	get scenario () {
-		return TvScenarioInstance.scenario;
+		return ScenarioInstance.scenario;
 	}
 
 	abstract execute (): void;

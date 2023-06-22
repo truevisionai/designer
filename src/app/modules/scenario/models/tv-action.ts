@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
 import { StoryEvent } from '../services/scenario-director.service';
-import { TvScenarioInstance } from '../services/tv-scenario-instance';
+import { ScenarioInstance } from '../services/scenario-instance';
 import { EntityObject } from './tv-entities';
 import { ActionCategory, ActionType } from './tv-enums';
 
@@ -9,6 +9,9 @@ export abstract class TvAction {
 
 	abstract category: ActionCategory;
 	abstract actionType: ActionType;
+	abstract label: string;
+
+	abstract execute ( entity: EntityObject ): void;
 
 	public readonly uuid = MathUtils.generateUUID();
 
@@ -16,10 +19,7 @@ export abstract class TvAction {
 	public hasStarted: boolean;
 	public completed = new EventEmitter<StoryEvent>();
 
-	execute ( entity: EntityObject ) {
-		console.error( this.actionType, this.category );
-		throw new Error( 'Method not implemented' );
-	}
+	public name: string;
 
 	reset () {
 
@@ -29,7 +29,7 @@ export abstract class TvAction {
 	}
 
 	protected get scenario () {
-		return TvScenarioInstance.scenario;
+		return ScenarioInstance.scenario;
 	}
 
 	protected getEntity ( entityName: string ): EntityObject {
@@ -42,5 +42,9 @@ export abstract class TvAction {
 
 	protected getEntitySpeed ( entityName: string ): number {
 		return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
+	}
+
+	setName ( name: string ) {
+		this.name = name;
 	}
 }

@@ -112,6 +112,14 @@ export enum StoryElementType {
 	maneuver = 'maneuver',
 	event = 'event',
 	action = 'action',
+	scenario = 'scenario',
+}
+
+export enum StoryElementState {
+	started,
+	running,
+	completed,
+	canceled,
 }
 
 export enum AfterTerminationRule {

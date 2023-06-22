@@ -7,7 +7,7 @@ import { PositionAction } from '../../../models/actions/tv-position-action';
 import { Position } from '../../../models/position';
 import { PrivateAction } from '../../../models/private-action';
 import { EntityObject } from '../../../models/tv-entities';
-import { TvScenarioInstance } from '../../../services/tv-scenario-instance';
+import { ScenarioInstance } from '../../../services/scenario-instance';
 
 @Component( {
 	selector: 'app-position-action',
@@ -46,7 +46,7 @@ export class PositionActionComponent {
 
 	private updateOtherEntities () {
 
-		TvScenarioInstance.openScenario.executeInitActions();
+		ScenarioInstance.scenario.executeInitActions();
 
 	}
 }

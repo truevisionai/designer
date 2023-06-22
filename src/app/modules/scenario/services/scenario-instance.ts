@@ -8,7 +8,7 @@ import { ClearHelper } from '../helpers/tv-clear-helper';
 import { NameDB } from '../models/tv-name-db';
 import { TvScenario } from '../models/tv-scenario';
 
-export class TvScenarioInstance {
+export class ScenarioInstance {
 
 	public static scenarioChanged = new EventEmitter<TvScenario>();
 	public static fileChanged = new EventEmitter<IFile>();
@@ -43,14 +43,6 @@ export class TvScenarioInstance {
 
 		this.scenarioChanged.emit( value );
 
-	}
-
-	static get openScenario () {
-		return this._scenario;
-	}
-
-	static set openScenario ( value ) {
-		this.scenario = value;
 	}
 
 	static get currentFile () {

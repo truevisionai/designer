@@ -26,7 +26,7 @@ import { RelativeTarget } from './tv-relative-target';
  */
 export class LaneOffsetAction extends PrivateAction {
 
-	public actionName = 'LaneOffsetAction';
+	public label = 'LaneOffsetAction';
 	public actionType: ActionType = ActionType.Private_LaneOffset;
 
 	private startTime: number;

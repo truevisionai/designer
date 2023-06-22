@@ -20,7 +20,7 @@ import { DynamicConstraints } from '../dynamic-constraints';
  */
 export class LongitudinalDistanceAction extends PrivateAction {
 
-	public actionName: string = 'Distance';
+	public label: string = 'Distance';
 	public actionType: ActionType = ActionType.Private_Longitudinal_Distance;
 
 	private startTime: number;
