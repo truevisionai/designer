@@ -2,17 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
 import { ActionFactory } from '../../builders/action-factory';
 import { ActionService } from '../../builders/action-service';
-import { TvAction } from '../../models/tv-action';
 import { PrivateAction } from '../../models/private-action';
 import { EntityObject } from '../../models/tv-entities';
-import { TvEvent } from '../../models/tv-event';
 import { ActionType, ConditionType } from '../../models/tv-enums';
+import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
@@ -22,14 +21,15 @@ import { ScenarioInstance } from '../../services/scenario-instance';
 } )
 export class EntityInspector implements OnInit, IComponent {
 
-	data: EntityObject;
+	@Input() data: EntityObject;
 
-	// @Input() entity: EntityObject;
 	actionType = ActionType;
 	conditionType = ConditionType;
 
 	@ViewChild( 'addAction' ) addAction: MatSelect;
 	@ViewChild( 'addCondition' ) addCondition: MatSelect;
+
+	debug: boolean = false;
 
 	constructor (
 		public dialog: MatDialog,

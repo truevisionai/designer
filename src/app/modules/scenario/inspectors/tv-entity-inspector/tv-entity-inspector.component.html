@@ -2,24 +2,12 @@
 
 	<app-string-field [value]="entity.name" label="Name"></app-string-field>
 
-	<app-double-field label="Speed" [value]="entity?.getCurrentSpeed()"></app-double-field>
-	<!-- <app-double-field label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field> -->
-	<!-- <app-double-field label="Distance" [value]="entity?.distanceTravelled"></app-double-field> -->
+	<app-double-field *ngIf="debug" label="Speed" [value]="entity?.getCurrentSpeed()"></app-double-field>
+	<app-double-field *ngIf="debug" label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field>
+	<app-double-field *ngIf="debug" label="Distance" [value]="entity?.distanceTravelled"></app-double-field>
 
 </div>
 
-<!--<mat-accordion>-->
-<!--	<mat-expansion-panel *ngFor="let action of initActions">-->
-<!--		<mat-expansion-panel-header>-->
-<!--			<mat-panel-title>-->
-<!--				{{action.label}}-->
-<!--			</mat-panel-title>-->
-<!--			<mat-panel-description>-->
-<!--			</mat-panel-description>-->
-<!--		</mat-expansion-panel-header>-->
-<!--		<app-action [action]="action" [entity]="entity"></app-action>-->
-<!--	</mat-expansion-panel>-->
-<!--</mat-accordion>-->
 
 <div *ngFor="let action of initActions">
 	<app-action [action]="action" [entity]="entity"></app-action>
