@@ -7,7 +7,7 @@ import { StateCondition } from './state-condition';
 
 export class AtStartCondition extends StateCondition {
 
-	public name: string = 'AtStartCondition';
+	public label: string = 'AtStartCondition';
 
 	public readonly conditionType = ConditionType.ByState_AtStart;
 

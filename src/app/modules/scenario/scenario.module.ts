@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -109,23 +110,24 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 		RelativeWorldComponent,
 		ImportOpenScenarioDialogComponent,
 	],
-	imports: [
-		CommonModule,
-		SharedModule,
-		FormsModule,
-		ReactiveFormsModule,
-		RouterModule,
-		ThreeJsModule,
-		CoreModule,
-		PerfectScrollbarModule,
-		FlexLayoutModule,
-		FlexModule,
-		TvMapModule,
-		MatStepperModule,
-		MatTooltipModule,
-		MatMenuModule,
-		MatCardModule,
-	],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        ThreeJsModule,
+        CoreModule,
+        PerfectScrollbarModule,
+        FlexLayoutModule,
+        FlexModule,
+        TvMapModule,
+        MatStepperModule,
+        MatTooltipModule,
+        MatMenuModule,
+        MatCardModule,
+        MatToolbarModule,
+    ],
 	entryComponents: [
 		EntityInspector,
 		TrajectoryInspectorComponent,

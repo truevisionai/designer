@@ -14,7 +14,7 @@ import { EntityCondition } from './entity-condition';
 export class RelativeSpeedCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_RelativeSpeed;
-	public name: string = 'RelativeSpeedCondition';
+	public label: string = 'RelativeSpeedCondition';
 
 	constructor ( public entity: string, public speed: number, public rule: Rule ) {
 

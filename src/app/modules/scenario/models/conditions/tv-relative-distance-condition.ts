@@ -20,7 +20,7 @@ export enum RelativeDistanceType {
 export class RelativeDistanceCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_RelativeDistance;
-	public name: string = 'RelativeDistanceCondition';
+	public label: string = 'RelativeDistanceCondition';
 
 	/**
 	 *

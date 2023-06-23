@@ -17,7 +17,8 @@ import { ScenarioInstance } from '../../services/scenario-instance';
 } )
 export class EntityEventInspectorComponent implements OnInit {
 
-	@Input() style: 'compact' | 'list' = 'list';
+	// 'compact' | 'list' | 'tab'
+	@Input() style = 'tab';
 
 	@Input() entity: EntityObject;
 	@Input() event: TvEvent;
@@ -174,7 +175,7 @@ export class EntityEventInspectorComponent implements OnInit {
 
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
 			{
-				label: 'Delete ' + condition.name,
+				label: 'Delete ' + condition.label,
 				click: () => this.removeCondition( condition, this.event ),
 			},
 		] );
@@ -182,4 +183,14 @@ export class EntityEventInspectorComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
+	isOpen = false;
+
+	toggle ( $event: MouseEvent ) {
+
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		this.isOpen = !this.isOpen;
+
+	}
 }

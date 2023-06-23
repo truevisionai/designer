@@ -6,36 +6,37 @@
 	<!-- <app-double-field label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field> -->
 	<!-- <app-double-field label="Distance" [value]="entity?.distanceTravelled"></app-double-field> -->
 
-
-	<mat-accordion>
-		<mat-expansion-panel *ngFor="let action of initActions">
-			<mat-expansion-panel-header>
-				<mat-panel-title>
-					{{action.label}} - {{action.actionType}}
-				</mat-panel-title>
-				<mat-panel-description>
-				</mat-panel-description>
-			</mat-expansion-panel-header>
-			<app-action [action]="action" [entity]="entity"></app-action>
-		</mat-expansion-panel>
-	</mat-accordion>
-
-	<br/>
-
-	<div *ngFor="let event of scenarioEvents">
-		<app-entity-event-inspector [entity]="entity" [event]="event"></app-entity-event-inspector>
-	</div>
-
-	<br/>
-
-	<mat-form-field class="example-full-width">
-		<mat-label>Add Maneuver/Event</mat-label>
-		<mat-select #addAction (valueChange)="addEvent($event)">
-			<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
-			<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
-			<mat-option [value]="actionType.Private_LaneOffset">ChangeLaneOffset</mat-option>
-			<mat-option [value]="actionType.Private_Longitudinal_Distance">Longitudinal_Distance</mat-option>
-		</mat-select>
-	</mat-form-field>
-
 </div>
+
+<!--<mat-accordion>-->
+<!--	<mat-expansion-panel *ngFor="let action of initActions">-->
+<!--		<mat-expansion-panel-header>-->
+<!--			<mat-panel-title>-->
+<!--				{{action.label}}-->
+<!--			</mat-panel-title>-->
+<!--			<mat-panel-description>-->
+<!--			</mat-panel-description>-->
+<!--		</mat-expansion-panel-header>-->
+<!--		<app-action [action]="action" [entity]="entity"></app-action>-->
+<!--	</mat-expansion-panel>-->
+<!--</mat-accordion>-->
+
+<div *ngFor="let action of initActions">
+	<app-action [action]="action" [entity]="entity"></app-action>
+</div>
+
+<div *ngFor="let event of scenarioEvents">
+	<app-entity-event-inspector [entity]="entity" [event]="event"></app-entity-event-inspector>
+</div>
+
+<br/>
+
+<mat-form-field class="example-full-width" style="margin: 8px">
+	<mat-label>Add Maneuver/Event</mat-label>
+	<mat-select #addAction (valueChange)="addEvent($event)">
+		<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
+		<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
+		<mat-option [value]="actionType.Private_LaneOffset">ChangeLaneOffset</mat-option>
+		<mat-option [value]="actionType.Private_Longitudinal_Distance">Longitudinal_Distance</mat-option>
+	</mat-select>
+</mat-form-field>

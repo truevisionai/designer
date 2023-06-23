@@ -10,7 +10,7 @@ export class SimulationTimeCondition extends ValueCondition {
 
 	public readonly conditionType = ConditionType.ByValue_SimulationTime;
 
-	public name: string = 'SimulationTimeCondition';
+	public label: string = 'SimulationTimeCondition';
 
 	constructor ( public value: number = 0, public rule: Rule = Rule.greater_than ) {
 		super();

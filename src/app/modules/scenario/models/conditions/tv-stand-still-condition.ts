@@ -15,7 +15,7 @@ import { EntityCondition } from './entity-condition';
 export class StandStillCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_StandStill;
-	public name: string = 'StandStillCondition';
+	public label: string = 'StandStillCondition';
 
 	private standstillDurations = [];
 

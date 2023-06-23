@@ -4,9 +4,9 @@
 
 <div *ngIf="road" class="inspector-form-container">
 
-	<app-double-field [value]="road.length" [disabled]="true" label="Length (Meters)"></app-double-field>
+	<app-double-field [value]="road.length" [disabled]="true" label="Length" suffix="m"></app-double-field>
 
-	<app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit (Miles/Hour)" max="200" min="0"></app-double-field>
+	<app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit" suffix="m/s" max="200" min="0"></app-double-field>
 
 	<app-enum-field (changed)="onRoadTypeChanged($event)" [enum]="roadTypesEnum" [value]="type" label="Road Type"></app-enum-field>
 

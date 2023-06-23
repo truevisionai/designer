@@ -13,7 +13,7 @@ import { EntityCondition } from './entity-condition';
 export class SpeedCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_Speed;
-	public name: string = 'SpeedCondition';
+	public label: string = 'SpeedCondition';
 
 	/**
 	 * @param value Speed value of the speed condition. Unit m/s

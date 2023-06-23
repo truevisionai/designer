@@ -13,7 +13,7 @@ import { EntityCondition } from './entity-condition';
 export class ReachPositionCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_ReachPosition;
-	public name: string = 'ReachPositionCondition';
+	public label: string = 'ReachPositionCondition';
 
 	constructor ( public position: Position, public tolerance: number = 0 ) {
 

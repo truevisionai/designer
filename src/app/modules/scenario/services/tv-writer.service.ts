@@ -271,7 +271,7 @@ export class WriterService {
 
 		let xml = {
 
-			attr_name: condition.name,
+			attr_name: condition.label,
 			attr_delay: condition.delay,
 			attr_edge: condition.edge,
 

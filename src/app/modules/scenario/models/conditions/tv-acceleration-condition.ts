@@ -13,7 +13,7 @@ import { EntityCondition } from './entity-condition';
 export class AccelerationCondition extends EntityCondition {
 
 	private debug = false;
-	public name: string = 'AccelerationCondition';
+	public label: string = 'AccelerationCondition';
 
 	conditionType = ConditionType.ByEntity_Acceleration;
 

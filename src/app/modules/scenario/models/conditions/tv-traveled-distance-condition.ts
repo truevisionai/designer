@@ -9,7 +9,7 @@ import { EntityCondition } from './entity-condition';
 export class TraveledDistanceCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_TraveledDistance;
-	public name: string = 'TraveledDistanceCondition';
+	public label: string = 'TraveledDistanceCondition';
 
 	constructor ( public value: number, triggeringRule = TriggeringRule.Any, triggeringEntities: string[] = [] ) {
 		super();

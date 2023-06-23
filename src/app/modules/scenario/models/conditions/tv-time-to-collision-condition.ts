@@ -7,7 +7,7 @@ import { EntityCondition } from './entity-condition';
 
 export class TimeToCollisionCondition extends EntityCondition {
 
-	public name: string = 'TimeToCollisionCondition';
+	public label: string = 'TimeToCollisionCondition';
 
 	// TODO: Implmement this
 

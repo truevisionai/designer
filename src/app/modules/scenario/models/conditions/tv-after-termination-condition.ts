@@ -9,7 +9,7 @@ import { StateCondition } from './state-condition';
 
 export class AfterTerminationCondition extends StateCondition {
 
-	public name: string = 'AfterTerminationCondition';
+	public label: string = 'AfterTerminationCondition';
 
 	public readonly conditionType = ConditionType.ByState_AfterTermination;
 

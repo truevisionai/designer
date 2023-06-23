@@ -1,4 +1,15 @@
-<div [ngSwitch]="action.actionType">
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="toggle($event)" mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>{{action.label}}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+</mat-toolbar>
+<div *ngIf="isOpen" [ngSwitch]="action.actionType" style="padding: 4px 8px">
 
 	<div *ngSwitchCase="types.Private_LaneChange">
 		<app-lane-change [action]="privateAction"></app-lane-change>
@@ -23,7 +34,5 @@
 	<div *ngSwitchCase="types.Private_Position">
 		<app-position-action [action]="privateAction" [entity]="entity"></app-position-action>
 	</div>
-
-<!--	<button (click)="remove()" mat-flat-button fxFill>Remove Action</button>-->
 
 </div>

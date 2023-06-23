@@ -4,8 +4,8 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
-import { TvAction } from '../../models/tv-action';
 import { PrivateAction } from '../../models/private-action';
+import { TvAction } from '../../models/tv-action';
 import { EntityObject } from '../../models/tv-entities';
 
 @Component( {
@@ -22,6 +22,8 @@ export class ActionComponent implements OnInit {
 	@Output() removed = new EventEmitter<TvAction>();
 
 	types = ActionType;
+
+	isOpen = false;
 
 	constructor () {
 
@@ -47,4 +49,12 @@ export class ActionComponent implements OnInit {
 
 	}
 
+	toggle ( $event: MouseEvent ) {
+
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		this.isOpen = !this.isOpen;
+
+	}
 }

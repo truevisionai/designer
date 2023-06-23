@@ -13,7 +13,7 @@ import { EntityCondition } from './entity-condition';
 export class EndOfRoadCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_EndOfRoad;
-	public name: string = 'EndOfRoadCondition';
+	public label: string = 'EndOfRoadCondition';
 
 	private tmpDurations: Map<string, number> = new Map();
 

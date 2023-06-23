@@ -7,7 +7,7 @@ import { EntityCondition } from './entity-condition';
 
 export class CollisionCondition extends EntityCondition {
 
-	public name: string = 'CollisionCondition';
+	public label: string = 'CollisionCondition';
 
 	conditionType = ConditionType.ByEntity_Collision;
 

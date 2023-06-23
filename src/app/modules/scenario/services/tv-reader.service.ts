@@ -173,7 +173,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		if ( condition != null ) {
 
-			condition.name = name ? name : '';
+			condition.label = name ? name : '';
 			condition.delay = delay ? delay : 0;
 			condition.edge = edge ? edge : ConditionEdge.any;
 

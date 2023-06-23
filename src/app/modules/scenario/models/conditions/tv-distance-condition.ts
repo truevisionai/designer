@@ -14,7 +14,7 @@ import { EntityCondition } from './entity-condition';
 export class DistanceCondition extends EntityCondition {
 
 	public readonly conditionType = ConditionType.ByEntity_Distance;
-	public name: string = 'DistanceCondition';
+	public label: string = 'DistanceCondition';
 
 	private debug = false;
 

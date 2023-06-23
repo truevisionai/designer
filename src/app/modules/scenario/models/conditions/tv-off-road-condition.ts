@@ -14,7 +14,7 @@ import { EntityCondition } from './entity-condition';
 export class OffRoadCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_Offroad;
-	public name: string = 'OffRoadCondition';
+	public label: string = 'OffRoadCondition';
 
 	private tmpDurations: Map<string, number> = new Map();
 

@@ -15,7 +15,7 @@ import { EntityCondition } from './entity-condition';
 export class TimeHeadwayCondition extends EntityCondition {
 
 	conditionType = ConditionType.ByEntity_TimeHeadway;
-	public name: string = 'TimeHeadwayCondition';
+	public label: string = 'TimeHeadwayCondition';
 
 	/**
 	 * @param targetEntity reference entity to which the time headway is computed
