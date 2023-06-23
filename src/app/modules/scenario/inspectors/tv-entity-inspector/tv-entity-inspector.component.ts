@@ -78,9 +78,17 @@ export class EntityInspector implements OnInit, IComponent {
 		}
 	}
 
+	addManeuever () {
+
+	}
 
 	ngOnInit () {
 
 	}
 
+	removeInitAction ( action: PrivateAction ) {
+
+		this.entity.removeInitAction( action );
+
+	}
 }

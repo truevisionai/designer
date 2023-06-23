@@ -59,11 +59,11 @@ export class SpeedAction extends PrivateAction {
 
 		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
-		const newSpeed = this.dynamics.calculateSpeed( this.initialSpeed, this.targetSpeed, elapsedTime );
+		let newSpeed = this.dynamics.calculateSpeed( this.initialSpeed, this.targetSpeed, elapsedTime );
 
-		entity.maxSpeed = Maths.clamp( newSpeed, entity.getCurrentSpeed(), this.targetSpeed );
+		entity.updateSpeed( newSpeed );
 
-		if ( entity.getCurrentSpeed() >= this.targetSpeed ) {
+		if ( Maths.approxEquals( this.targetSpeed, entity.getCurrentSpeed() ) ) {
 
 			this.actionCompleted();
 

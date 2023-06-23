@@ -17,8 +17,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { TvMapModule } from '../tv-map/tv-map.module';
 import { ImportOpenScenarioDialogComponent } from './dialogs/tutorials-dialog/import-open-scenario-dialog.component';
-import { EntityEventInspectorComponent } from './inspectors/entity-event-inspector/entity-event-inspector.component';
-import { ActionsInspectorComponent } from './inspectors/tv-actions-inspector/tv-player-actions-inspector.component';
+import { EventEditorComponent } from './views/event-editor/event-editor.component';
 import { EntityInspector } from './inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { FileHeaderComponent } from './inspectors/tv-file-header/tv-file-header.component';
 import { ParamatersInspectorComponent } from './inspectors/tv-paramaters-inspector/tv-paramaters-inspector.component';
@@ -53,7 +52,6 @@ import {
 	TraveledDistanceConditionEditorComponent
 } from './views/conditions/traveled-distance-condition-editor/traveled-distance-condition-editor.component';
 import { DynamicsEditorComponent } from './views/dynamics-editor/dynamics-editor.component';
-import { EventEditorComponent } from './views/event-editor/event-editor.component';
 import { ManeuverEditorComponent } from './views/maneuver-editor/maneuver-editor.component';
 import { PositionEditorComponent } from './views/position-editor/position-editor.component';
 import { LanePositionEditorComponent } from './views/positions/lane-position-editor/lane-position-editor.component';
@@ -74,7 +72,6 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 		FileHeaderComponent,
 		ActionComponent,
 		PositionEditorComponent,
-		EventEditorComponent,
 		ConditionEditorComponent,
 		ManeuverEditorComponent,
 		DistanceConditionComponent,
@@ -89,7 +86,6 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 		RoadPositionEditorComponent,
 		LanePositionEditorComponent,
 		TrajectoryInspectorComponent,
-		ActionsInspectorComponent,
 		FollowTrajectoryComponent,
 		TrajectoriesInspectorComponent,
 		ParamatersInspectorComponent,
@@ -106,7 +102,7 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 		AccelerationConditionComponent,
 		LaneOffsetActionComponent,
 		LongitudinalDistanceActionComponent,
-		EntityEventInspectorComponent,
+		EventEditorComponent,
 		RelativeWorldComponent,
 		ImportOpenScenarioDialogComponent,
 	],
@@ -131,13 +127,11 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 	entryComponents: [
 		EntityInspector,
 		TrajectoryInspectorComponent,
-		ActionsInspectorComponent,
 		FollowTrajectoryComponent,
 		TrajectoriesInspectorComponent,
 		ActEditorComponent,
 		SpeedActionComponent,
 		ParamatersInspectorComponent,
-		EventEditorComponent,
 		ScenarioTreeComponent
 	],
 	exports: [

@@ -43,18 +43,18 @@ export class ActionComponent implements OnInit {
 
 	}
 
-	remove () {
-
-		this.removed.emit( this.action );
-
-	}
-
 	toggle ( $event: MouseEvent ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
 
 		this.isOpen = !this.isOpen;
+
+	}
+
+	deleteAction ( $event: MouseEvent ) {
+
+		this.removed.emit( this.action );
 
 	}
 }

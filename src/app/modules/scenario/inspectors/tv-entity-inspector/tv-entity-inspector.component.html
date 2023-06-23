@@ -9,13 +9,20 @@
 </div>
 
 
-<div *ngFor="let action of initActions">
-	<app-action [action]="action" [entity]="entity"></app-action>
-</div>
+<app-action
+	*ngFor="let action of initActions"
+	(removed)="removeInitAction(action)"
+	[action]="action"
+	[entity]="entity">
+</app-action>
 
-<div *ngFor="let event of scenarioEvents">
-	<app-entity-event-inspector [entity]="entity" [event]="event"></app-entity-event-inspector>
-</div>
+<br/>
+
+<app-event-editor
+	*ngFor="let event of scenarioEvents"
+	[entity]="entity"
+	[event]="event">
+</app-event-editor>
 
 <br/>
 

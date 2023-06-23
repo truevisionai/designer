@@ -5,9 +5,15 @@
 	</button>
 	<span>{{action.label}}</span>
 	<span class="spacer"></span>
-	<button mat-icon-button class="inspector-toolbar-icon">
+	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="menu">
 		<mat-icon>more_vert</mat-icon>
 	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item (click)="deleteAction($event)">
+			<mat-icon>delete</mat-icon>
+			<span>Delete Action</span>
+		</button>
+	</mat-menu>
 </mat-toolbar>
 <div *ngIf="isOpen" [ngSwitch]="action.actionType" style="padding: 4px 8px">
 

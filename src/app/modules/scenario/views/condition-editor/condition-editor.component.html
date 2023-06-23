@@ -6,9 +6,15 @@
 	</button>
 	<span>{{condition.label}}</span>
 	<span class="spacer"></span>
-	<button mat-icon-button class="inspector-toolbar-icon">
+	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="menu">
 		<mat-icon>more_vert</mat-icon>
 	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item (click)="remove()">
+			<mat-icon>delete</mat-icon>
+			<span>Delete</span>
+		</button>
+	</mat-menu>
 </mat-toolbar>
 <div *ngIf="isOpen" [ngSwitch]="condition.category" style="padding: 4px 8px">
 

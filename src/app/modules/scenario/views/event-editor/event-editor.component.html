@@ -1,28 +1,56 @@
-<div *ngIf="event" class="inspector-form-container">
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="toggle($event)" mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>Maneuver</span>
+	<span class="spacer"></span>
+	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="conditionMenu">
+		<mat-icon>bolt</mat-icon>
+	</button>
+	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="actionMenu">
+		<mat-icon>directions_run</mat-icon>
+	</button>
+	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item (click)="deleteManeuver($event)">
+			<mat-icon>delete</mat-icon>
+			<span>Delete Maneuver</span>
+		</button>
+	</mat-menu>
+	<mat-menu #conditionMenu="matMenu">
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Acceleration)">Acceleration</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Collision)">Collision</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Distance)">Distance</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_EndOfRoad)">EndOfRoad</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Offroad)">OffRoad</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_ReachPosition)">ReadPosition</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_RelativeDistance)">RelativeDistance</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_RelativeSpeed)">RelativeSpeed</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_Speed)">Speed</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_StandStill)">StandStill</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_TimeHeadway)">TimeHeadway</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_TimeToCollision)">TimeToCollision</button>
+		<button mat-menu-item (click)="onAddCondition(conditionType.ByEntity_TraveledDistance)">TraveledDistance</button>
+	</mat-menu>
+	<mat-menu #actionMenu="matMenu">
+		<button mat-menu-item (click)="deleteManeuver($event)">
+			<mat-icon>delete</mat-icon>
+			<span>Delete Maneuver</span>
+		</button>
+	</mat-menu>
+</mat-toolbar>
 
-	<h5>Event: {{ event.name }}</h5>
-
-	<!-- <button (click)="editAction(action)" *ngFor="let action of actions" mat-stroked-button> -->
-	<!-- Edit {{ action.actionName }} -->
-	<!-- </button> -->
-
-	<!-- <div *ngIf="actions.length == 0"> -->
-	<!-- <p>No Actions Added</p> -->
-	<!-- </div> -->
-
-	<!-- <h5>Add New Actions</h5> -->
-	<!-- <button (click)="addSpeedAction()" mat-stroked-button>Change Speed</button> -->
-	<!-- <button (click)="addTrajectoryAction()" mat-stroked-button>FollowTrajectory</button> -->
-	<!--    <button (click)="addChangeLaneAction()" mat-stroked-button>ChangeLane</button>-->
-
-
-	<div *ngFor="let action of actions">
-		<!-- <app-action-editor [action]="action"></app-action-editor> -->
+<div *ngIf="isOpen">
+	<div *ngFor="let condition of event.startConditions">
+		<app-condition-editor [condition]="condition">
+		</app-condition-editor>
 	</div>
 
-	<button (click)="addCondition()">Add Condition</button>
-
-	<div *ngFor="let condition of conditions">
-		<app-condition-editor [condition]="condition"></app-condition-editor>
+	<div *ngFor="let action of event.getActions()">
+		<app-action (removed)="removeAction($event)" [action]="action" [entity]="entity">
+		</app-action>
 	</div>
 </div>

@@ -2,6 +2,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { EnumHelper } from '../../../tv-map/models/tv-common';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { DynamicsDimension, DynamicsShape } from '../tv-enums';
+import { Maths } from 'app/utils/maths';
 
 export class TransitionDynamics {
 
@@ -63,7 +64,20 @@ export class TransitionDynamics {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
-			return initialSpeed + ( targetSpeed - initialSpeed ) * elapsedTime / Math.max( this.value, 0.00001 );
+			let speedDifference = targetSpeed - initialSpeed;
+
+			let transitionRate = speedDifference / Math.max( this.value, 0.00001 );
+
+			let newSpeed = initialSpeed + transitionRate * elapsedTime;
+
+			if ( speedDifference > 0 )
+
+				return Maths.clamp( newSpeed, initialSpeed, targetSpeed );
+
+			else {
+
+				return Maths.clamp( newSpeed, targetSpeed, initialSpeed );
+			}
 
 		} else if ( this.dynamicsDimension === DynamicsDimension.rate ) {
 
