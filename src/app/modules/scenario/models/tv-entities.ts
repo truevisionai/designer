@@ -14,6 +14,7 @@ import { PrivateAction } from './private-action';
 import { CatalogReference } from './tv-catalogs';
 import { ScenarioObjectType } from './tv-enums';
 import { Orientation } from './tv-orientation';
+import { TvEvent } from './tv-event';
 
 export class EntityObject {
 

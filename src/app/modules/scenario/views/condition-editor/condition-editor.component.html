@@ -1,6 +1,16 @@
 <!--<app-string-field [value]="condition.name" label="Name"></app-string-field>-->
-
-<div [ngSwitch]="condition.category">
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="toggle($event)" mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>{{condition.label}}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+</mat-toolbar>
+<div *ngIf="isOpen" [ngSwitch]="condition.category" style="padding: 4px 8px">
 
 	<div *ngSwitchCase="categories.ByValue">
 		<div [ngSwitch]="condition.conditionType">
@@ -15,39 +25,9 @@
 	</div>
 
 	<div *ngSwitchCase="categories.ByState">
-
+		State Condition Not Supported
 	</div>
 
 
-	<!--	<div *ngSwitchCase="0">-->
-	<!--		ByEntity_EndOfRoad-->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="7">-->
-	<!--		 <app-speed-condition-editor [condition]="condition"></app-speed-condition-editor> -->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="8">-->
-	<!--		&lt;!&ndash; <app-relative-speed-condition-editor [condition]="condition"></app-relative-speed-condition-editor> &ndash;&gt;-->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="9">-->
-	<!--		&lt;!&ndash; <app-traveled-distance-condition-editor [condition]="condition"></app-traveled-distance-condition-editor> &ndash;&gt;-->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="10">-->
-	<!--		&lt;!&ndash; <app-reach-position-condition-editor [condition]="condition"></app-reach-position-condition-editor> &ndash;&gt;-->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="11">-->
-	<!--		&lt;!&ndash; <app-distance-condition-editor [condition]="condition"></app-distance-condition-editor> &ndash;&gt;-->
-	<!--	</div>-->
-
-	<!--	<div *ngSwitchCase="20">-->
-	<!--		<app-simulation-time-condition-editor [condition]="condition"></app-simulation-time-condition-editor>-->
-	<!--	</div>-->
-
 </div>
 
-
-<!--<button (click)="remove()">Remove Condition</button>-->

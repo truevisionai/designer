@@ -277,7 +277,7 @@ export class TvScenario {
 
 			event.addNewAction( `Action-${ MathUtils.generateUUID() }`, action );
 
-			event.addStartCondition( new SimulationTimeCondition( 0, Rule.greater_than ) );
+			// event.addStartCondition( new SimulationTimeCondition( 0, Rule.greater_than ) );
 
 		}
 

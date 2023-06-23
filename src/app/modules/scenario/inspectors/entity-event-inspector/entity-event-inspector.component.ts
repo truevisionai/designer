@@ -193,4 +193,13 @@ export class EntityEventInspectorComponent implements OnInit {
 		this.isOpen = !this.isOpen;
 
 	}
+
+	deleteManeuver ( $event: MouseEvent ) {
+
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		// this.entity.removeEvent( this.event );
+
+	}
 }

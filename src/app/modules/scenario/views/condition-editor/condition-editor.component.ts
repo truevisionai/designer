@@ -22,6 +22,8 @@ export class ConditionEditorComponent implements OnInit {
 
 	@Output() removed = new EventEmitter<Condition>();
 
+	isOpen = false;
+
 	constructor () {
 	}
 
@@ -48,4 +50,12 @@ export class ConditionEditorComponent implements OnInit {
 
 	}
 
+	toggle ( $event: MouseEvent ) {
+
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		this.isOpen = !this.isOpen;
+
+	}
 }
