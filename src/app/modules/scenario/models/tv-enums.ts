@@ -57,7 +57,8 @@ export enum PedestrianCategory {
 export enum ConditionEdge {
 	rising = 'rising',
 	falling = 'falling',
-	any = 'any'
+	risingOrFalling = 'risingOrFalling',
+	none = 'none'
 }
 
 export enum ScenarioObjectType {

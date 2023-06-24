@@ -228,7 +228,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	private static readParameterCondition ( xml: XmlElement ): ParameterCondition {
 
-		const rule: Rule = OpenScenarioImporter.readRule( xml.attr_rule );
+		const rule: Rule = this.readRule( xml.attr_rule );
 
 		const name: string = xml.attr_name || xml.attr_parameterRef;
 
@@ -239,24 +239,28 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	private static readTimeOfDayCondition ( xml: XmlElement ): TimeOfDayCondition {
 
-		const rule: Rule = OpenScenarioImporter.readRule( xml.attr_rule || 'greater_than' );
+		const rule: Rule = this.readRule( xml.attr_rule );
 
 		let date = new Date();
 
 		// version 1.0 and above
-		if ( xml.attr_value ) {
+		if ( xml.attr_dateTime ) {
 
-			date = new Date( xml.attr_value );
+			date = new Date( xml.attr_dateTime );
 
-		} else {
+		} else if ( xml?.Time ) {
 
-			// // version 0.9 and below
-			// date.setHours(parseInt( xml?.Time?.attr_hour || 0 ))
-			// const minute = parseInt( xml?.Time?.attr_minute || 0 );
-			// const second = parseInt( xml?.Time?.attr_second || 0 );
-			// const day = parseInt( xml?.Date?.attr_day || 1 );
-			// const month = parseInt( xml?.Date?.attr_month || 1 );
-			// const year = parseInt( xml?.Date?.attr_year || 2000 );
+			// version 0.9 and below
+			date.setHours(
+				parseInt( xml?.Time?.attr_hour || 0 ),
+				parseInt( xml?.Time?.attr_minute || 0 ),
+				parseInt( xml?.Time?.attr_second || 0 )
+			);
+			date.setFullYear(
+				parseInt( xml?.Date?.attr_year || 2000 ),
+				parseInt( xml?.Date?.attr_month || 1 ),
+				parseInt( xml?.Date?.attr_day || 1 )
+			);
 
 		}
 
@@ -361,27 +365,28 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let condition: Condition = null;
 
-		const name = xml.attr_name;
+		const name: string = xml.attr_name;
 		const delay = xml.attr_delay ? parseFloat( xml.attr_delay ) : 0;
-		const edge = xml.attr_edge;
+		const edge: ConditionEdge = OpenScenarioImporter.readConditionEdge( xml.attr_edge || xml.attr_conditionEdge );
 
-		if ( xml.ByEntity != null ) {
+		if ( xml.ByEntity || xml.ByEntityCondition ) {
 
-			condition = this.readByEntityCondition( xml.ByEntity );
+			condition = this.readByEntityCondition( xml.ByEntity || xml.ByEntityCondition );
 
-		} else if ( xml.ByValue != null ) {
+		} else if ( xml.ByValue || xml.ByValueCondition ) {
 
-			condition = this.readConditionByValue( xml.ByValue );
+			condition = this.readConditionByValue( xml.ByValue || xml.ByValueCondition );
 
-		} else if ( xml.ByState != null ) {
+		} else if ( xml.ByState || xml.ByStateCondition ) {
 
 			// not suported after 1.0
-			// moved into ByValueCondition
-			condition = this.readConditionByState( xml.ByState );
+			// all contions moved into ByValueCondition
+			// keeping this to support old
+			condition = this.readConditionByValue( xml.ByState || xml.ByStateCondition );
 
 		} else {
 
-			throw new Error( 'Unknown condition type' );
+			TvConsole.error( 'Unknown condition type ' + xml );
 
 		}
 
@@ -389,7 +394,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			condition.label = name ? name : '';
 			condition.delay = delay ? delay : 0;
-			condition.edge = edge ? edge : ConditionEdge.any;
+			condition.edge = edge ? edge : ConditionEdge.risingOrFalling;
 
 		}
 
@@ -686,73 +691,60 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	readConditionByValue ( xml: XmlElement ): Condition {
 
-		let condition: Condition = null;
-
 		if ( xml.Parameter || xml.ParameterCondition ) {
 
-			condition = OpenScenarioImporter.readParameterCondition( xml.Parameter || xml.ParameterCondition );
+			return OpenScenarioImporter.readParameterCondition( xml.Parameter || xml.ParameterCondition );
 
 		} else if ( xml.TimeOfDay || xml.TimeOfDayCondition ) {
 
-			condition = OpenScenarioImporter.readTimeOfDayCondition( xml.TimeOfDay || xml.TimeOfDayCondition );
+			return OpenScenarioImporter.readTimeOfDayCondition( xml.TimeOfDay || xml.TimeOfDayCondition );
 
 		} else if ( xml.SimulationTime || xml.SimulationTimeCondition ) {
 
-			condition = this.readSimulationTimeCondition( xml.SimulationTime || xml.SimulationTimeCondition );
+			return OpenScenarioImporter.readSimulationTimeCondition( xml.SimulationTime || xml.SimulationTimeCondition );
 
-		} else if ( xml.UserDefinedValue || xml.UserDefinedValueCondition ) {
+		} else if ( xml.Command || xml.UserDefinedValueCondition ) {
 
-			condition = OpenScenarioImporter.readUserDefinedValueCondition( xml.UserDefinedValue || xml.UserDefinedValueCondition );
+			// 0.9 and 1.0 above
+			return OpenScenarioImporter.readUserDefinedValueCondition( xml.Command || xml.UserDefinedValueCondition );
 
-		} else if ( xml.TrafficSignal || xml.TrafficSignalCondition ) {
+		} else if ( xml.Signal || xml.TrafficSignalCondition ) {
 
-			condition = OpenScenarioImporter.readTrafficSignalCondition( xml.TrafficSignal || xml.TrafficSignalCondition );
+			// 0.9 and 1.0 above
+			return OpenScenarioImporter.readTrafficSignalCondition( xml.Signal || xml.TrafficSignalCondition );
 
-		} else if ( xml.TrafficSignalController || xml.TrafficSignalControllerCondition ) {
+		} else if ( xml.Controller || xml.TrafficSignalControllerCondition ) {
 
-			condition = OpenScenarioImporter.readTrafficSignalControllerCondition( xml.TrafficSignalController || xml.TrafficSignalControllerCondition );
+			// 0.9 and 1.0 above
+			return OpenScenarioImporter.readTrafficSignalControllerCondition( xml.Controller || xml.TrafficSignalControllerCondition );
+
+		} else if ( xml.StoryboardElementStateCondition ) {
+
+			return this.readStoryboardElementStateCondition( xml.StoryboardElementStateCondition );
+
+		} else if ( xml.AtStart || xml.AtStartCondition ) {
+
+			// 0.9 only
+			return this.readAtStartCondition( xml.AtStart || xml.AtStartCondition );
+
+		} else if ( xml.AfterTermination ) {
+
+			// 0.9 only
+			return this.readAfterTerminationCondition( xml.AfterTermination || xml.AfterTerminationCondition );
 
 		} else {
 
-			throw new Error( 'unknown condition' );
-		}
+			TvConsole.error( 'unknown condition  ' + xml );
 
-		return condition;
+		}
 	}
 
-	readSimulationTimeCondition ( xml: XmlElement ): SimulationTimeCondition {
+	private static readSimulationTimeCondition ( xml: XmlElement ): SimulationTimeCondition {
 
-		const value = parseFloat( xml.attr_value );
-		const rule = OpenScenarioImporter.readRule( xml.attr_rule );
+		const value = parseFloat( xml.attr_value || 0 );
+		const rule = this.readRule( xml.attr_rule );
 
 		return new SimulationTimeCondition( value, rule );
-	}
-
-	readConditionByState ( xml: XmlElement ): Condition {
-
-		let condition: Condition = null;
-
-		if ( xml.AtStart || xml.AtStartCondition ) {
-
-			condition = this.readAtStartCondition( xml.AtStart || xml.AtStartCondition );
-
-		} else if ( xml.AfterTermination || xml.AfterTerminationCondition ) {
-
-			condition = this.readAfterTerminationCondition( xml.AfterTermination || xml.AfterTerminationCondition );
-
-		} else if ( xml.Command != null ) {
-
-		} else if ( xml.Signal != null ) {
-
-		} else if ( xml.Controller != null ) {
-
-		} else {
-
-			console.error( 'unknown condition', xml );
-
-		}
-
-		return condition;
 	}
 
 	readAtStartCondition ( xml: XmlElement ): Condition {
@@ -1762,5 +1754,26 @@ export class OpenScenarioImporter extends AbstractReader {
 		const routingAlgorithm = OpenScenarioImporter.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
 
 		return new TimeHeadwayCondition( entity, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
+	}
+
+	private static readConditionEdge ( edge: string ): ConditionEdge {
+
+		if ( edge === 'rising' ) {
+
+			return ConditionEdge.rising;
+
+		} else if ( edge === 'falling' ) {
+
+			return ConditionEdge.falling;
+
+		} else if ( edge === 'risingOrFalling' ) {
+
+			return ConditionEdge.risingOrFalling;
+
+		} else {
+
+			return ConditionEdge.none;
+
+		}
 	}
 }
