@@ -99,36 +99,35 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	static readRule ( rule: string ): Rule {
 
-		switch ( rule ) {
+		if ( rule === 'greater_than' || 'greaterThan' ) {
 
-			case 'greater_than' || 'greaterThan':
-				return Rule.greater_than;
-				break;
+			return Rule.greater_than;
 
-			case 'less_than' || 'lessThan':
-				return Rule.less_than;
-				break;
+		} else if ( rule === 'less_than' || 'lessThan' ) {
 
-			case 'equal_to' || 'equalTo':
-				return Rule.equal_to;
-				break;
+			return Rule.less_than;
 
-			case 'greater_or_equal' || 'greaterOrEqual':
-				return Rule.greater_or_equal;
-				break;
+		} else if ( rule === 'equal_to' || 'equalTo' ) {
 
-			case 'less_or_equal' || 'lessOrEqual':
-				return Rule.less_or_equal;
-				break;
+			return Rule.equal_to;
 
-			case 'not_equal_to' || 'notEqualTo':
-				return Rule.not_equal_to;
-				break;
+		} else if ( rule === 'greater_or_equal' || 'greaterOrEqual' ) {
 
-			default:
-				TvConsole.warn( 'unknown rule ' + rule );
-				return Rule.greater_or_equal;
-				break;
+			return Rule.greater_or_equal;
+
+		} else if ( rule === 'less_or_equal' || 'lessOrEqual' ) {
+
+			return Rule.less_or_equal;
+
+		} else if ( rule === 'not_equal_to' || 'notEqualTo' ) {
+
+			return Rule.not_equal_to;
+
+		} else {
+
+			TvConsole.warn( 'unknown rule ' + rule );
+
+			return Rule.greater_or_equal;
 
 		}
 	}
