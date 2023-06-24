@@ -23,6 +23,8 @@ export class WorldPosition extends Position {
 
 		super();
 
+		this.updateVector3();
+
 	}
 
 	get position (): Vector3 {

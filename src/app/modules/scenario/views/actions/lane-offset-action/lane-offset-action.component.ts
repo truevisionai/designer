@@ -2,9 +2,9 @@ import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/modules/scenario/models/actions/tv-lane-offset-action';
 import { CommandHistory } from '../../../../../services/command-history';
 import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
+import { Target } from '../../../models/actions/target';
 import { PrivateAction } from '../../../models/private-action';
 import { DynamicsShape } from '../../../models/tv-enums';
-import { Target } from 'app/modules/scenario/models/actions/target';
 
 @Component( {
 	selector: 'app-lane-offset-action',
@@ -36,9 +36,15 @@ export class LaneOffsetActionComponent {
 
 	}
 
-	// onTargetChanged ( $target: AbstractTarget ) {
+	onContinousChanged ( $event: boolean ) {
 
-	// 	this.laneOffsetAction.target = $target;
+		this.laneOffsetAction.continous = $event;
 
-	// }
+	}
+
+	onTargetChanged ( $event: Target ) {
+
+		this.laneOffsetAction.target = $event;
+
+	}
 }

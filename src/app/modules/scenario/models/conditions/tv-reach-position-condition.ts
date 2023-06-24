@@ -9,6 +9,7 @@ import { EntityCondition } from './entity-condition';
 /**
  * Checks if a triggering entity/entities has reached a
  * given position, within some user specified tolerance.
+ * @deprecated With version 1.2. This Condition is now covered by DistanceCondition.
  */
 export class ReachPositionCondition extends EntityCondition {
 

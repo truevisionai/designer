@@ -3,7 +3,7 @@
  */
 
 import { Position } from '../position';
-import { ConditionType, Rule } from '../tv-enums';
+import { ConditionType, CoordinateSystem, RelativeDistanceType, RoutingAlgorithm, Rule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
 /**
@@ -27,13 +27,19 @@ export class DistanceCondition extends EntityCondition {
 	 * not be taken into consideration (freeSpace = false).
 	 * @param alongRoute
 	 * @param rule
+	 * @param coordinateSystem
+	 * @param relativeDistanceType
+	 * @param routingAlgorithm
 	 * */
 	constructor (
 		public position?: Position,
 		public value?: number,
 		public freespace?: boolean,
 		public alongRoute?: boolean,
-		public rule?: Rule
+		public rule?: Rule,
+		public coordinateSystem = CoordinateSystem.entity,
+		public relativeDistanceType = RelativeDistanceType.cartesianDistance,
+		public routingAlgorithm = RoutingAlgorithm.undefined
 	) {
 		super();
 	}

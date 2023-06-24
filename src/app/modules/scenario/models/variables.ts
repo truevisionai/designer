@@ -20,8 +20,8 @@ class VariableValue<T> implements Value<T> {
 	}
 }
 
-type NumberValue = Value<number>;
-type StringValue = Value<string>;
+export type NumberValue = Value<number>;
+export type StringValue = Value<string>;
 
 // class Number extends ConcreteValue<number> { }
 class NumberVariable extends VariableValue<number> { }

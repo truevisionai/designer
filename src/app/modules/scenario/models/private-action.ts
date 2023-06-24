@@ -1,6 +1,6 @@
 import { ScenarioEvents } from '../services/scenario-events';
 import { TvAction } from './tv-action';
-import { ActionCategory, StoryElementState, StoryElementType } from './tv-enums';
+import { ActionCategory, StoryboardElementState, StoryboardElementType } from './tv-enums';
 
 export abstract class PrivateAction extends TvAction {
 
@@ -11,15 +11,15 @@ export abstract class PrivateAction extends TvAction {
 		this.isCompleted = true;
 
 		this.completed.emit( {
-			type: StoryElementType.action,
+			type: StoryboardElementType.action,
 			name: this.name,
-			state: StoryElementState.completed
+			state: StoryboardElementState.endTransition
 		} );
 
 		ScenarioEvents.events.emit( {
-			type: StoryElementType.action,
+			type: StoryboardElementType.action,
 			name: this.name,
-			state: StoryElementState.completed
+			state: StoryboardElementState.endTransition
 		} );
 
 	}

@@ -81,4 +81,8 @@ export abstract class EntityCondition extends Condition {
 		}
 
 	}
+
+	setTriggeringRule ( rule: TriggeringRule ): void {
+		this.triggeringRule = rule;
+	}
 }

@@ -20,10 +20,6 @@ export class ParamatersInspectorComponent implements OnInit, IComponent {
 	constructor () {
 	}
 
-	get parameters () {
-		return this.declaration.parameters;
-	}
-
 	ngOnInit () {
 		this.declaration = this.data;
 	}

@@ -3,14 +3,8 @@
  */
 
 import { ConditionUtils } from '../../builders/condition-utils';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionType, CoordinateSystem, RelativeDistanceType, RoutingAlgorithm, Rule, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
-
-export enum RelativeDistanceType {
-	longitudinal,
-	lateral,
-	cartesianDistance,
-}
 
 /**
  * The current relative distance of a triggering entity/entities to
@@ -29,14 +23,18 @@ export class RelativeDistanceCondition extends EntityCondition {
 	 * @param distanceType Alternative ways in which to calculate the distance
 	 * @param freespace True: distance is measured between closest bounding box points.
 	 * 					False: reference point distance is used.
-	 * @param rule The operator (less, greater, equal). See {@link Rule}
+	 * @param rule The operator (less, greater, equal).
+	 * @param coordinateSystem
+	 * @param routingAlgorithm
 	 */
 	constructor (
 		public targetEntity: string,
 		public distance: number = 0,
 		public distanceType: RelativeDistanceType = RelativeDistanceType.cartesianDistance,
 		public freespace: boolean = false,
-		public rule: Rule = Rule.greater_than
+		public rule: Rule = Rule.greater_than,
+		public coordinateSystem = CoordinateSystem.entity,
+		public routingAlgorithm = RoutingAlgorithm.undefined
 	) {
 		super();
 	}

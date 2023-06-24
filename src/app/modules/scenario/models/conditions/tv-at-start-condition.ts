@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionType, StoryElementType } from '../tv-enums';
+import { ConditionType, StoryboardElementType } from '../tv-enums';
 import { StateCondition } from './state-condition';
 
 export class AtStartCondition extends StateCondition {
@@ -11,7 +11,7 @@ export class AtStartCondition extends StateCondition {
 
 	public readonly conditionType = ConditionType.ByState_AtStart;
 
-	constructor ( public elementName: string, public type: StoryElementType ) {
+	constructor ( public elementName: string, public type: StoryboardElementType ) {
 
 		super();
 

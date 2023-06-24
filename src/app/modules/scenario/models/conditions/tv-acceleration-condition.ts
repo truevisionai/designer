@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionType, DirectionDimension, Rule, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
 /**
@@ -21,8 +21,9 @@ export class AccelerationCondition extends EntityCondition {
 	 * Acceleration value. Unit: m/s^2.
 	 * @param value
 	 * @param rule
+	 * @param direction
 	 */
-	constructor ( public value: number, public rule: Rule ) {
+	constructor ( public value: number, public rule: Rule, public direction: DirectionDimension = DirectionDimension.all ) {
 
 		super();
 

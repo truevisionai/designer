@@ -5,19 +5,17 @@
 import { MathUtils, Vector3 } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { ActionService } from '../builders/action-service';
-import { SimulationTimeCondition } from './conditions/tv-simulation-time-condition';
 import { PrivateAction } from './private-action';
 import { Act } from './tv-act';
 import { TvAction } from './tv-action';
 import { Catalogs } from './tv-catalogs';
 import { File } from './tv-common';
 import { EntityObject } from './tv-entities';
-import { Rule } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
 import { Maneuver } from './tv-maneuver';
 import { NameDB } from './tv-name-db';
-import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
+import { ParameterDeclaration } from './tv-parameter-declaration';
 import { RoadNetwork } from './tv-road-network';
 import { Sequence } from './tv-sequence';
 import { Story } from './tv-story';
@@ -27,32 +25,32 @@ export class TvScenario {
 
 	public fileHeader = new FileHeader;
 	public catalogs: Catalogs;
-	public parameterDeclaration = new ParameterDeclaration();
+	public parameterDeclarations: ParameterDeclaration[] = [];
 	public roadNetwork: RoadNetwork;
 	public storyboard = new Storyboard;
 	public objects: Map<string, EntityObject> = new Map<string, EntityObject>();
 
 	public db: NameDB = new NameDB();
 
-	get parameters () {
-		return this.parameterDeclaration.parameters;
-	}
-
-	findParameter ( name: string ) {
-
-		const result = this.parameters.find( parameter => parameter.name === name );
-
-		if ( result == null || undefined ) throw new Error( 'Param with given value not found '.concat( name ) );
-
-		return result;
-	}
+	// get parameters () {
+	// 	return this.parameterDeclaration.parameters;
+	// }
+	//
+	// findParameter ( name: string ) {
+	//
+	// 	const result = this.parameters.find( parameter => parameter.name === name );
+	//
+	// 	if ( result == null || undefined ) throw new Error( 'Param with given value not found '.concat( name ) );
+	//
+	// 	return result;
+	// }
 
 	setRoadNetworkPath ( path: string ) {
 		this.roadNetwork = new RoadNetwork( new File( path ), null );
 	}
 
-	addParameter ( parameter: Parameter ): void {
-		this.parameterDeclaration.addParameter( parameter );
+	addParameterDeclaration ( declaration: ParameterDeclaration ): void {
+		this.parameterDeclarations.push( declaration );
 	}
 
 	/**

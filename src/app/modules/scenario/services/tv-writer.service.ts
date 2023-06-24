@@ -740,7 +740,7 @@ export class WriterService {
 
 		let xml = {
 			RelativeLane: {
-				attr_object: position.object,
+				attr_object: position.entityRef,
 				attr_dLane: position.dLane,
 				attr_ds: position.ds,
 				attr_offset: position.offset ? position.offset : 0,

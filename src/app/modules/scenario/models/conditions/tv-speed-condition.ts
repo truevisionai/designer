@@ -3,7 +3,7 @@
  */
 
 import { ConditionUtils } from '../../builders/condition-utils';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionType, DirectionDimension, Rule, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
 /**
@@ -12,14 +12,15 @@ import { EntityCondition } from './entity-condition';
  */
 export class SpeedCondition extends EntityCondition {
 
-	conditionType = ConditionType.ByEntity_Speed;
+	public conditionType = ConditionType.ByEntity_Speed;
 	public label: string = 'SpeedCondition';
 
 	/**
 	 * @param value Speed value of the speed condition. Unit m/s
-	 * @param rule The operator (less, greater, equal). See {@link Rule}
+	 * @param rule The operator (less, greater, equal).
+	 * @param direction
 	 */
-	constructor ( public value: number, public rule: Rule ) {
+	constructor ( public value: number, public rule: Rule, public direction: DirectionDimension = DirectionDimension.all ) {
 
 		super();
 

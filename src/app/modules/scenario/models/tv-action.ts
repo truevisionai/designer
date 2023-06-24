@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
-import { StoryEvent } from '../services/scenario-director.service';
+import { StoryboardEvent } from '../services/scenario-director.service';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { EntityObject } from './tv-entities';
 import { ActionCategory, ActionType } from './tv-enums';
@@ -17,7 +17,7 @@ export abstract class TvAction {
 
 	public isCompleted: boolean;
 	public hasStarted: boolean;
-	public completed = new EventEmitter<StoryEvent>();
+	public completed = new EventEmitter<StoryboardEvent>();
 
 	public name: string;
 

@@ -81,6 +81,9 @@ export enum Rule {
 	greater_than = 'greater_than',
 	less_than = 'less_than',
 	equal_to = 'equal_to',
+	greater_or_equal = 'greater_or_equal',
+	less_or_equal = 'less_or_equal',
+	not_equal_to = 'not_equal_to',
 }
 
 export enum TargetType {
@@ -106,20 +109,25 @@ export enum TriggeringRule {
 	All = 'all'
 }
 
-export enum StoryElementType {
+export enum StoryboardElementType {
+	story = 'story',
 	act = 'act',
 	scene = 'scene',
 	maneuver = 'maneuver',
+	maneuverGroup = 'maneuverGroup',
 	event = 'event',
 	action = 'action',
 	scenario = 'scenario',
 }
 
-export enum StoryElementState {
-	started,
-	running,
-	completed,
-	canceled,
+export enum StoryboardElementState {
+	startTransition,// Transition between the standby and running state. The moment the referenced StoryboardElement instance starts its execution.
+	runningState, // State in which the storyboard element is executing its actions.
+	endTransition, // Transition between the running state and the standby state. The moment the referenced StoryboardElement terminates its execution by completing its goal.
+	stopTransition, // Transition between the running or standby states to the complete state. Occurs when the execution of the referenced StoryboardElement instance is stopped via a stop trigger or overriding.
+	skipTransition, // Transition marking the moment an element is asked to move to the running state but is instead skipped so it remains in the standby state (Only for Event instances).
+	completeState, // State from which the Storyboard element cannot return to the running state without external interference (forced by a parent element).
+	standByState, // State in which the storyboard element could move to the running state given a start trigger.
 }
 
 export enum AfterTerminationRule {
@@ -150,8 +158,13 @@ export enum ConditionType {
 	ByState_Controller = 17,
 
 	ByValue_Parameter = 18,
-	ByValue_TimeOfDay = 19,
-	ByValue_SimulationTime = 20
+	TimeOfDay = 19,
+	ByValue_SimulationTime = 20,
+	Parameter,
+	StoryboardElementState,
+	UserDefinedValue,
+	TrafficSignal,
+	TrafficSignalController,
 }
 
 export enum ActionCategory {
@@ -182,15 +195,11 @@ export enum ActionType {
 	Global_Traffic
 }
 
-export enum EnumOrientationType {
-	relative = 'relative',
-	absolute = 'absolute'
-}
-
 export enum RelativeDistanceType {
 	longitudinal,
 	lateral,
-	intertial
+	cartesianDistance,// also called inertial
+	euclidianDistance
 }
 
 export enum LateralPurpose {
@@ -254,16 +263,31 @@ export enum PrecipitationType {
 	snow
 }
 
-export enum RouteStrategy {
+export enum RoutingAlgorithm {
 	fastest = 'fastest',
 	shortest = 'shortest',
 	leastIntersections = 'leastIntersections',
-	random = 'random'
-
+	random = 'random',
+	assignedRoute = 'assignedRoute',
+	undefined = 'undefined'
 }
 
 export enum DynamicsDimension {
 	time = 'time',	// time
 	distance = 'distance', // distance
 	rate = 'rate'	// rate of change
+}
+
+export enum CoordinateSystem {
+	entity,
+	lane,
+	road,
+	trajectory
+}
+
+export enum DirectionDimension {
+	longitudinal,
+	lateral,
+	vertical,
+	all,
 }

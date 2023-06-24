@@ -30,6 +30,7 @@ export class LaneOffsetAction extends PrivateAction {
 	public actionType: ActionType = ActionType.Private_LaneOffset;
 
 	private startTime: number;
+	private targetOffset: number;
 
 	/**
 	 *
@@ -52,20 +53,30 @@ export class LaneOffsetAction extends PrivateAction {
 
 	}
 
+	reset () {
+
+		super.reset();
+
+		this.startTime = undefined;
+		this.targetOffset = undefined;
+
+	}
+
 	execute ( entity: EntityObject ) {
 
 		if ( !this.startTime ) this.startTime = Time.time;
 
-		let targetOffset: number;
+		if ( !this.targetOffset ) {
 
-		if ( this.target instanceof RelativeTarget ) {
+			if ( this.target instanceof RelativeTarget ) {
 
-			targetOffset = this.target.value + this.target.entity.getCurrentLaneOffset();
+				this.targetOffset = this.target.value + this.target.entity.getCurrentLaneOffset();
 
-		} else if ( this.target instanceof AbsoluteTarget ) {
+			} else if ( this.target instanceof AbsoluteTarget ) {
 
-			targetOffset = this.target.value;
+				this.targetOffset = this.target.value;
 
+			}
 		}
 
 		let newLaneOffset;
@@ -84,20 +95,20 @@ export class LaneOffsetAction extends PrivateAction {
 
 		switch ( this.dynamicsShape ) {
 			case DynamicsShape.step:
-				newLaneOffset = targetOffset;
+				newLaneOffset = this.targetOffset;
 				break;
 			case DynamicsShape.linear:
 				newLaneOffset = entity.getCurrentLaneOffset() + this.maxLateralAcc;
 				break;
 			case DynamicsShape.sinusoidal:
 				// For sinusoidal dynamics, we need to calculate the value of a sinusoidal function at the point `elapsedTime`
-				newLaneOffset = calculateLaneOffset( entity, targetOffset, elapsedTime, this.maxLateralAcc );
+				newLaneOffset = calculateLaneOffset( entity, this.targetOffset, elapsedTime, this.maxLateralAcc );
 				break;
 			case DynamicsShape.cubic:
 				// For cubic dynamics, we need to calculate the value of a cubic function at the point `elapsedTime`
 				// newLaneOffset = entity.getCurrentLaneOffset() + this.maxLateralAcc * Math.pow( elapsedTime, 3 );
-				var L = targetOffset;
-				var T = Math.sqrt( ( 2 * targetOffset ) / this.maxLateralAcc );
+				var L = this.targetOffset;
+				var T = Math.sqrt( ( 2 * this.targetOffset ) / this.maxLateralAcc );
 				var t = elapsedTime;
 				if ( t > T ) {
 					t = T;
@@ -106,16 +117,16 @@ export class LaneOffsetAction extends PrivateAction {
 				break;
 		}
 
-		if ( !this.continous && newLaneOffset >= targetOffset ) {
+		entity.setLaneOffset( newLaneOffset );
 
-			// TODO: do nothing Stop action
+		// if its a continous action, we don't want to end it
+		if ( this.continous ) return;
 
-		} else {
+		if ( newLaneOffset >= this.targetOffset ) {
 
-			entity.setLaneOffset( newLaneOffset );
+			this.actionCompleted();
+
 		}
-
-
 	}
 
 }

@@ -2,17 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ParameterType } from './tv-enums';
+import { ParameterType, Rule } from './tv-enums';
+
+/**
+ * Value constraints represent a single rule to a given parameter
+ * in a parameter declaration. Note that value must match the
+ * type of the enclosing parameter declaration. A ValueConstraint
+ * for parameter declaration of type "string" must use
+ * either "equalTo" or "notEqualTo" for the rule property.
+ */
+export class ValueConstraint {
+	constructor (
+		public value: string,
+		public rule: Rule,
+	) {
+	}
+}
 
 export class ParameterDeclaration {
 
-	constructor ( public parameters: Parameter[] = [] ) {
-	}
-
-	addParameter ( value: Parameter ): void {
-
-		this.parameters.push( value );
-
+	constructor (
+		public parameter: Parameter,
+		private valueConstraints: ValueConstraint[] = []
+	) {
 	}
 }
 

@@ -4,7 +4,7 @@
 
 import { Euler } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { EnumOrientationType } from './tv-enums';
+import { OrientationType } from './tv-enums';
 
 export class Orientation {
 
@@ -12,7 +12,7 @@ export class Orientation {
 		public h: number = 0,
 		public p: number = 0,
 		public r: number = 0,
-		public type: EnumOrientationType = EnumOrientationType.absolute
+		public type: OrientationType = OrientationType.absolute
 	) {
 	}
 
@@ -25,6 +25,21 @@ export class Orientation {
 		};
 	}
 
+	static fromXML ( xml: XmlElement ): Orientation {
+
+		const h: number = parseFloat( xml.attr_h ) ?? 0;
+		const p: number = parseFloat( xml.attr_p ) ?? 0;
+		const r: number = parseFloat( xml.attr_r ) ?? 0;
+
+		let type: OrientationType = OrientationType.absolute;
+
+		if ( xml.attr_type && xml.attr_type === OrientationType.relative ) {
+			type = OrientationType.relative;
+		}
+
+		return new Orientation( h, p, r, type );
+	}
+
 	toEuler (): Euler {
 		return new Euler( this.h, this.p, this.r );
 	}
@@ -35,7 +50,7 @@ export class Orientation {
 			this.h + orientation.h,
 			this.p + orientation.p,
 			this.r + orientation.r,
-			EnumOrientationType.relative
+			OrientationType.relative
 		);
 	}
 }

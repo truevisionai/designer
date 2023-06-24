@@ -12,7 +12,7 @@ import { ResetHelper } from '../helpers/tv-reset-helper';
 import { Act } from '../models/tv-act';
 import { TvAction } from '../models/tv-action';
 import { EntityObject } from '../models/tv-entities';
-import { StoryElementState, StoryElementType } from '../models/tv-enums';
+import { StoryboardElementState, StoryboardElementType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
 import { Sequence } from '../models/tv-sequence';
@@ -20,10 +20,10 @@ import { Story } from '../models/tv-story';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioInstance } from './scenario-instance';
 
-export interface StoryEvent {
+export interface StoryboardEvent {
 	name: string;
-	type: StoryElementType;
-	state: StoryElementState;
+	type: StoryboardElementType;
+	state: StoryboardElementState;
 }
 
 @Injectable( {
@@ -131,8 +131,8 @@ export class ScenarioDirectorService {
 
 		ScenarioEvents.fire( {
 			name: 'scenario-started',
-			type: StoryElementType.scenario,
-			state: StoryElementState.started
+			type: StoryboardElementType.scenario,
+			state: StoryboardElementState.startTransition
 		} );
 
 		// // set parameters

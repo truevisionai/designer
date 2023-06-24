@@ -2,7 +2,6 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
-import { Condition } from '../../models/conditions/tv-condition';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
 import { EntityObject } from '../../models/tv-entities';
@@ -20,8 +19,10 @@ export class EventEditorComponent implements OnInit {
 	@Input() entity: EntityObject;
 	@Input() event: TvEvent;
 
-	actionType = ActionType;
-	conditionType = ConditionType;
+	ACTION = ActionType;
+	CONDITION = ConditionType;
+
+	isOpen = false;
 
 	get scenario () {
 		return ScenarioInstance.scenario;
@@ -35,51 +36,25 @@ export class EventEditorComponent implements OnInit {
 	ngOnInit () {
 	}
 
-	onAddCondition ( $type: ConditionType ) {
+	addCondition ( $type: ConditionType ) {
 
-		if ( $type !== null ) {
+		const condition = ConditionFactory.createCondition( $type, this.entity );
 
-			const condition = ConditionFactory.createCondition( $type, this.entity );
-
-			this.event.addStartCondition( condition );
-
-			this.conditionClicked( condition );
-
-		}
+		this.event.addStartCondition( condition );
 
 	}
 
-	removeCondition ( $condition: Condition ) {
+	addAction ( $type: ActionType ) {
 
-		this.event.removeCondition( $condition );
+		const action = ActionFactory.createActionWithoutName( $type, this.entity );
+
+		this.event.addAction( action );
 
 	}
 
 	removeAction ( action: TvAction ) {
 
 		this.event.removeAction( action as PrivateAction );
-
-	}
-
-	onAddEventAction ( $type: ActionType ) {
-
-		if ( $type !== null ) {
-
-			const action = ActionFactory.createActionWithoutName( $type, this.entity );
-
-			this.event.addAction( action );
-
-			this.actionClicked( action );
-
-		}
-
-	}
-
-	actionClicked ( action: TvAction ) {
-
-	}
-
-	conditionClicked ( condition: Condition ) {
 
 	}
 
@@ -102,38 +77,6 @@ export class EventEditorComponent implements OnInit {
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
-
-	showActionMenu ( $event, action: TvAction ) {
-
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
-			{
-				label: 'Delete ' + action.label,
-				click: () => this.removeAction( action ),
-			},
-		] );
-
-		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
-	}
-
-	showConditionMenu ( $event, condition: Condition ) {
-
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
-			{
-				label: 'Delete ' + condition.label,
-				click: () => this.removeCondition( condition ),
-			},
-		] );
-
-		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
-	}
-
-	isOpen = false;
 
 	toggle ( $event: MouseEvent ) {
 

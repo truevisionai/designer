@@ -4,7 +4,7 @@
 
 import { TvConsole } from '../../../../core/utils/console';
 import { ConditionUtils } from '../../builders/condition-utils';
-import { ConditionType, Rule, TriggeringRule } from '../tv-enums';
+import { ConditionType, CoordinateSystem, RelativeDistanceType, RoutingAlgorithm, Rule, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
 /**
@@ -25,13 +25,19 @@ export class TimeHeadwayCondition extends EntityCondition {
 	 * @param alongRoute True: routing is taken into account, e.g. turns will increase distance.
 	 * 					False: straight line distance is used.
 	 * @param rule The operator (less, greater, equal).
+	 * @param coordinateSystem
+	 * @param relativeDistanceType
+	 * @param routingAlgorithm
 	 */
 	constructor (
 		public targetEntity: string,
 		public value: number,
 		public freespace: boolean,
 		public alongRoute: boolean,
-		public rule: Rule
+		public rule: Rule,
+		public coordinateSystem: CoordinateSystem = null,
+		public relativeDistanceType: RelativeDistanceType = RelativeDistanceType.cartesianDistance,
+		public routingAlgorithm: RoutingAlgorithm = RoutingAlgorithm.undefined
 	) {
 		super();
 	}

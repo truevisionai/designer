@@ -3,10 +3,10 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { StoryEvent } from '../services/scenario-director.service';
+import { StoryboardEvent } from '../services/scenario-director.service';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { TvAction } from './tv-action';
-import { StoryElementState, StoryElementType } from './tv-enums';
+import { StoryboardElementState, StoryboardElementType } from './tv-enums';
 import { TvEvent } from './tv-event';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
@@ -28,7 +28,7 @@ export class Maneuver {
 	public isCompleted: boolean;
 	public eventIndex: number = 0;
 
-	public completed = new EventEmitter<StoryEvent>();
+	public completed = new EventEmitter<StoryboardEvent>();
 
 	constructor ( public name: string ) {
 
@@ -67,7 +67,7 @@ export class Maneuver {
 
 	}
 
-	private onEventCompleted ( storyEvent: StoryEvent ) {
+	private onEventCompleted ( storyEvent: StoryboardEvent ) {
 
 		this.eventIndex++;
 
@@ -90,8 +90,8 @@ export class Maneuver {
 
 			this.completed.emit( {
 				name: this.name,
-				type: StoryElementType.maneuver,
-				state: StoryElementState.completed
+				type: StoryboardElementType.maneuver,
+				state: StoryboardElementState.endTransition
 			} );
 
 		}

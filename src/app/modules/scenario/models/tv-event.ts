@@ -4,13 +4,13 @@
 
 import { EventEmitter } from '@angular/core';
 import { ConditionUtils } from '../builders/condition-utils';
-import { StoryEvent } from '../services/scenario-director.service';
+import { StoryboardEvent } from '../services/scenario-director.service';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { PrivateAction } from './private-action';
 import { TvAction } from './tv-action';
-import { StoryElementState, StoryElementType } from './tv-enums';
+import { StoryboardElementState, StoryboardElementType } from './tv-enums';
 
 export class TvEvent {
 
@@ -20,7 +20,7 @@ export class TvEvent {
 	public isCompleted: boolean;
 	public hasStarted: boolean;
 
-	public completed = new EventEmitter<StoryEvent>();
+	public completed = new EventEmitter<StoryboardEvent>();
 
 	private _actions: Map<string, TvAction> = new Map<string, TvAction>();
 
@@ -70,8 +70,8 @@ export class TvEvent {
 		action.completed.subscribe( e => {
 			this.onActionCompleted( {
 				name: name,
-				type: StoryElementType.action,
-				state: StoryElementState.completed
+				type: StoryboardElementType.action,
+				state: StoryboardElementState.endTransition
 			} );
 		} );
 	}
@@ -144,9 +144,9 @@ export class TvEvent {
 	}
 
 
-	private onActionCompleted ( e: StoryEvent ) {
+	private onActionCompleted ( e: StoryboardEvent ) {
 
-		if ( e.type != StoryElementType.action ) return;
+		if ( e.type != StoryboardElementType.action ) return;
 
 		this._actions.forEach( ( action, actionName ) => {
 
@@ -168,8 +168,8 @@ export class TvEvent {
 
 			this.completed.emit( {
 				name: this.name,
-				type: StoryElementType.event,
-				state: StoryElementState.completed
+				type: StoryboardElementType.event,
+				state: StoryboardElementState.endTransition
 			} );
 		}
 

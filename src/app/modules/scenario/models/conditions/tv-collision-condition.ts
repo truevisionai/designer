@@ -9,13 +9,10 @@ export class CollisionCondition extends EntityCondition {
 
 	public label: string = 'CollisionCondition';
 
-	conditionType = ConditionType.ByEntity_Collision;
+	public conditionType = ConditionType.ByEntity_Collision;
 
 	// either name or type
-	public entityName: string;
-	public entityType: ScenarioObjectType;
-
-	constructor () {
+	constructor ( public entityRef: string, public entityType: ScenarioObjectType ) {
 		super();
 	}
 

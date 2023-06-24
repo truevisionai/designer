@@ -1,11 +1,11 @@
 import { EventEmitter } from '@angular/core';
-import { StoryEvent } from './scenario-director.service';
+import { StoryboardEvent } from './scenario-director.service';
 
 export class ScenarioEvents {
 
-	public static events = new EventEmitter<StoryEvent>();
+	public static events = new EventEmitter<StoryboardEvent>();
 
-	static fire ( event: StoryEvent ) {
+	static fire ( event: StoryboardEvent ) {
 
 		this.events.emit( event );
 

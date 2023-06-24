@@ -4,7 +4,7 @@
 
 import { Euler, Vector3 } from 'three';
 import { Position } from '../position';
-import { EnumOrientationType, PositionType } from '../tv-enums';
+import { OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeWorldPosition extends Position {
@@ -46,7 +46,7 @@ export class RelativeWorldPosition extends Position {
 
 	toEuler (): Euler {
 
-		if ( !this.entityRef || this.orientation.type == EnumOrientationType.absolute ) {
+		if ( !this.entityRef || this.orientation.type == OrientationType.absolute ) {
 
 			return this.orientation.toEuler();
 

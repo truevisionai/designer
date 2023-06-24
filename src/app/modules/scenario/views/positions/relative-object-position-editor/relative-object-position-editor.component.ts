@@ -36,7 +36,7 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 
 	onEntityChanged ( $entityRef: string ) {
 
-		this.relativeObjectPosition.objectRef = $entityRef;
+		this.relativeObjectPosition.entityRef = $entityRef;
 
 		this.positionModified.emit( this.position );
 	}

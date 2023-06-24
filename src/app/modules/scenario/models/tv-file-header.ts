@@ -12,6 +12,7 @@ export class FileHeader {
 	public description: string;
 	public author: string;
 
+	// TODO: add license array
 	constructor (
 		revMajor: number = 0,
 		revMinor: number = 0,

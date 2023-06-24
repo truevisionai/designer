@@ -3,14 +3,14 @@
  */
 
 import { Position } from './position';
-import { RouteStrategy } from './tv-enums';
+import { RoutingAlgorithm } from './tv-enums';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 
 export class Waypoint {
 
 	constructor (
 		public position: Position,
-		public strategy: RouteStrategy
+		public strategy: RoutingAlgorithm
 	) {
 	}
 }

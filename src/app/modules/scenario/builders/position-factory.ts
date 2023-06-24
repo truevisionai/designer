@@ -9,7 +9,6 @@ import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { Position } from '../models/position';
 import { LanePosition } from '../models/positions/tv-lane-position';
-import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
 import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
 import { RoadPosition } from '../models/positions/tv-road-position';
@@ -54,7 +53,7 @@ export class PositionFactory {
 				return this.createLanePosition( vector3, orientation );
 				break;
 			case PositionType.RelativeLane:
-				return new RelativeLanePosition();
+				throw new Error( 'Route position not implemented' );
 				break;
 			case PositionType.Route:
 				throw new Error( 'Route position not implemented' );

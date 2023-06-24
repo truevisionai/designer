@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
-import { EnumOrientationType, PositionType } from '../tv-enums';
+import { OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeObjectPosition extends Position {
@@ -14,7 +14,7 @@ export class RelativeObjectPosition extends Position {
 	public readonly type = PositionType.RelativeObject;
 
 	constructor (
-		public objectRef: string,
+		public entityRef: string,
 		public dx = 0,
 		public dy = 0,
 		public dz = 0,
@@ -26,7 +26,7 @@ export class RelativeObjectPosition extends Position {
 	toVector3 (): Vector3 {
 
 		// Retrieve the position of the referenced object
-		const relPos = this.objectRef ? this.getEntity( this.objectRef ).getCurrentPosition() : new Vector3();
+		const relPos = this.entityRef ? this.getEntity( this.entityRef ).getCurrentPosition() : new Vector3();
 
 		// Convert the orientation to radians
 		const yaw = this.orientation.h * Math.PI / 180;
@@ -47,10 +47,10 @@ export class RelativeObjectPosition extends Position {
 	toOrientation (): Orientation {
 
 		// Check if the orientation is relative
-		if ( this.objectRef && this.orientation.type == EnumOrientationType.relative ) {
+		if ( this.entityRef && this.orientation.type == OrientationType.relative ) {
 
 			// Retrieve the orientation of the referenced object
-			const objectOrientation = this.getEntity( this.objectRef ).getOrientation();
+			const objectOrientation = this.getEntity( this.entityRef ).getOrientation();
 
 			// Calculate the relative orientation
 			const relativeOrientation = new Orientation(
@@ -86,7 +86,7 @@ export class RelativeObjectPosition extends Position {
 	toXML (): XmlElement {
 		return {
 			RelativeObject: {
-				attr_object: this.objectRef,
+				attr_object: this.entityRef,
 				attr_dx: this.dx,
 				attr_dy: this.dy,
 				attr_dz: this.dz ? this.dz : 0,

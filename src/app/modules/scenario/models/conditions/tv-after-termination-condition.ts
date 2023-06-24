@@ -2,10 +2,105 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { StoryEvent } from '../../services/scenario-director.service';
+import { TvConsole } from '../../../../core/utils/console';
+import { StoryboardEvent } from '../../services/scenario-director.service';
 import { ScenarioEvents } from '../../services/scenario-events';
-import { AfterTerminationRule, ConditionType, StoryElementState, StoryElementType } from '../tv-enums';
+import { AfterTerminationRule, ConditionType, StoryboardElementState, StoryboardElementType } from '../tv-enums';
 import { StateCondition } from './state-condition';
+import { ValueCondition } from './value-condition';
+
+export class StoryboardElementStateCondition extends ValueCondition {
+
+	public conditionType: ConditionType = ConditionType.StoryboardElementState;
+	public label: string = 'StoryboardElementStateCondition';
+
+	constructor (
+		public storyboardElementType: StoryboardElementType,
+		public storyboardElementRef: string,
+		public state: StoryboardElementState
+	) {
+		super();
+		ScenarioEvents.events.subscribe( ( event: StoryboardEvent ) => this.eventCallback( event ) );
+	}
+
+	hasPassed (): boolean {
+		return false;
+	}
+
+	private eventCallback ( event: StoryboardEvent ) {
+
+		if ( event.type !== this.storyboardElementType ) return;
+
+		if ( event.name !== this.storyboardElementRef ) return;
+
+		if ( event.state === this.state ) {
+
+			this.passed = true;
+
+		}
+
+	}
+
+	static stringToState ( state: string ): StoryboardElementState {
+
+		switch ( state ) {
+
+			case 'startTransition':
+				return StoryboardElementState.startTransition;
+
+			case 'endTransition':
+				return StoryboardElementState.endTransition;
+
+			case 'stopTransition':
+				return StoryboardElementState.stopTransition;
+
+			case 'runningState':
+				return StoryboardElementState.runningState;
+
+			case 'skipTransition':
+				return StoryboardElementState.skipTransition;
+
+			case 'completeState':
+				return StoryboardElementState.completeState;
+
+			case 'standByState':
+				return StoryboardElementState.standByState;
+
+			default:
+				return StoryboardElementState.startTransition;
+		}
+
+	}
+
+	static stringToStoryboardType ( type: string ): StoryboardElementType {
+
+		switch ( type ) {
+
+			case 'story':
+				return StoryboardElementType.story;
+
+			case 'maneuverGroup':
+				return StoryboardElementType.maneuverGroup;
+
+			case 'act':
+				return StoryboardElementType.act;
+
+			case 'maneuver':
+				return StoryboardElementType.maneuver;
+
+			case 'action':
+				return StoryboardElementType.action;
+
+			case 'event':
+				return StoryboardElementType.event;
+
+			default:
+				TvConsole.error( 'StoryboardElementStateCondition ' + 's tringToStoryboardType' + 'Invalid type: ' + type );
+
+		}
+
+	}
+}
 
 export class AfterTerminationCondition extends StateCondition {
 
@@ -15,17 +110,17 @@ export class AfterTerminationCondition extends StateCondition {
 
 	constructor (
 		public elementName: string,
-		public type: StoryElementType,
+		public type: StoryboardElementType,
 		public rule: AfterTerminationRule
 	) {
 
 		super();
 
-		ScenarioEvents.events.subscribe( ( event: StoryEvent ) => this.eventCallback( event ) );
+		ScenarioEvents.events.subscribe( ( event: StoryboardEvent ) => this.eventCallback( event ) );
 
 	}
 
-	eventCallback ( event: StoryEvent ): void {
+	eventCallback ( event: StoryboardEvent ): void {
 
 		if ( event.type !== this.type ) return;
 
@@ -35,11 +130,11 @@ export class AfterTerminationCondition extends StateCondition {
 
 			this.passed = true;
 
-		} else if ( this.rule === AfterTerminationRule.end && event.state === StoryElementState.completed ) {
+		} else if ( this.rule === AfterTerminationRule.end && event.state === StoryboardElementState.endTransition ) {
 
 			this.passed = true;
 
-		} else if ( this.rule === AfterTerminationRule.cancel && event.state === StoryElementState.canceled ) {
+		} else if ( this.rule === AfterTerminationRule.cancel && event.state === StoryboardElementState.stopTransition ) {
 
 			this.passed = true;
 

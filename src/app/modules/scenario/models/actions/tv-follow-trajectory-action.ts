@@ -7,7 +7,7 @@ import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { CatalogReference } from '../tv-catalogs';
 import { EntityObject } from '../tv-entities';
-import { ActionType, LateralPurpose, StoryElementType } from '../tv-enums';
+import { ActionType, LateralPurpose, StoryboardElementType } from '../tv-enums';
 import { Trajectory } from '../tv-trajectory';
 import { AbstractRoutingAction, LongitudinalPurpose } from './tv-routing-action';
 
