@@ -10,14 +10,14 @@ import { Act } from './tv-act';
 import { TvAction } from './tv-action';
 import { Catalogs } from './tv-catalogs';
 import { File } from './tv-common';
-import { EntityObject } from './tv-entities';
+import { ScenarioEntity } from './tv-entities';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
 import { Maneuver } from './tv-maneuver';
 import { NameDB } from './tv-name-db';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 import { RoadNetwork } from './tv-road-network';
-import { Sequence } from './tv-sequence';
+import { ManeuverGroup } from './tv-sequence';
 import { Story } from './tv-story';
 import { Storyboard } from './tv-storyboard';
 
@@ -28,7 +28,7 @@ export class TvScenario {
 	public parameterDeclarations: ParameterDeclaration[] = [];
 	public roadNetwork: RoadNetwork;
 	public storyboard = new Storyboard;
-	public objects: Map<string, EntityObject> = new Map<string, EntityObject>();
+	public objects: Map<string, ScenarioEntity> = new Map<string, ScenarioEntity>();
 
 	public db: NameDB = new NameDB();
 
@@ -57,7 +57,7 @@ export class TvScenario {
 	 *
 	 * @deprecated
 	 */
-	addEntity ( object: EntityObject ): any {
+	addEntity ( object: ScenarioEntity ): any {
 		this.addObject( object );
 		// old code just for reference
 		// this.m_Entities.addObject( object );
@@ -76,7 +76,7 @@ export class TvScenario {
 
 	}
 
-	addObject ( object: EntityObject ) {
+	addObject ( object: ScenarioEntity ) {
 
 		// const hasName = ScenarioInstance.scenario.db.has_entity( object.name );
 
@@ -109,7 +109,7 @@ export class TvScenario {
 		return actions;
 	}
 
-	removeObject ( object: EntityObject ) {
+	removeObject ( object: ScenarioEntity ) {
 
 		// ScenarioInstance.db.remove_entity( object.name );
 
@@ -134,7 +134,7 @@ export class TvScenario {
 		return stories;
 	}
 
-	getSequencesByActor ( actorName: string ): Sequence[] {
+	getSequencesByActor ( actorName: string ): ManeuverGroup[] {
 
 		let sequences = [];
 
@@ -209,7 +209,7 @@ export class TvScenario {
 
 		this.objects.forEach( entity => {
 
-			SceneService.remove( entity.gameObject );
+			SceneService.remove( entity );
 
 			entity.initActions.splice( 0, entity.initActions.length );
 
@@ -231,7 +231,7 @@ export class TvScenario {
 
 	}
 
-	createStory ( entity: EntityObject ): Story {
+	createStory ( entity: ScenarioEntity ): Story {
 
 		const storyName = `Story${ this.storyboard.stories.size + 1 }`;
 
@@ -242,7 +242,7 @@ export class TvScenario {
 		return story;
 	}
 
-	findEntityActions ( entity: EntityObject ): PrivateAction[] {
+	findEntityActions ( entity: ScenarioEntity ): PrivateAction[] {
 
 		const actions: PrivateAction[] = [];
 
@@ -265,7 +265,7 @@ export class TvScenario {
 		return actions;
 	}
 
-	addActionEvent ( entity: EntityObject, action: PrivateAction ): void {
+	addActionEvent ( entity: ScenarioEntity, action: PrivateAction ): void {
 
 		const maneuvers = this.getManeuversForEntity( entity.name );
 
@@ -282,7 +282,7 @@ export class TvScenario {
 
 	}
 
-	findEntityEvents ( entity: EntityObject ): TvEvent[] {
+	findEntityEvents ( entity: ScenarioEntity ): TvEvent[] {
 
 		const events: TvEvent[] = [];
 

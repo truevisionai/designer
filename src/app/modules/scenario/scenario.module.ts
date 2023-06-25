@@ -63,11 +63,11 @@ import { RoadPositionEditorComponent } from './views/positions/road-position-edi
 import { WorldPositionEditorComponent } from './views/positions/world-position-editor/world-position-editor.component';
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
-import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.component';
+// import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.component';
 
 @NgModule( {
 	declarations: [
-		ScenarioTreeComponent,
+		// ScenarioTreeComponent,
 		EntityInspector,
 		FileHeaderComponent,
 		ActionComponent,
@@ -132,11 +132,11 @@ import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.compon
 		ActEditorComponent,
 		SpeedActionComponent,
 		ParamatersInspectorComponent,
-		ScenarioTreeComponent
+		// ScenarioTreeComponent
 	],
 	exports: [
 		ImportOpenScenarioDialogComponent,
-		ScenarioTreeComponent,
+		// ScenarioTreeComponent,
 	],
 	providers: [
 		ScenarioInstance

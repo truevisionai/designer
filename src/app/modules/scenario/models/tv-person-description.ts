@@ -3,7 +3,7 @@
  */
 
 import { Sex } from './tv-enums';
-import { Properties } from './tv-properties';
+import { TvProperties } from './tv-properties';
 
 export class PersonDescription {
 
@@ -12,6 +12,6 @@ export class PersonDescription {
 	private eyeDistance: number;
 	private age: number;
 	private sex: Sex;
-	private properties: Properties = new Properties;
+	private properties: TvProperties = new TvProperties;
 
 }

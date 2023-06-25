@@ -4,7 +4,7 @@ import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/tv-entities';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
 
@@ -37,19 +37,13 @@ export class ScenarioBuilder {
 
 			story.acts.forEach( ( act ) => {
 
-				// // Initialize the variables map with the 'owner' variable
-				// const variables = new Map<string, any>();
-
-				// variables.set( 'owner', story.ownerName );
-
-				// // Replace variables in the entire scenario object
-				// this.replaceVariablesHelper( story, variables );
+				const ownerName = story.getParameterValue<string>( '$owner' );
 
 				act.sequences.forEach( ( sequence ) => {
 
 					const index = sequence.actors.findIndex( actor => actor === '$owner' );
 
-					if ( index >= 0 ) sequence.actors[ index ] = story.ownerName;
+					if ( index >= 0 ) sequence.actors[ index ] = ownerName;
 
 					sequence.maneuvers.forEach( ( maneuver ) => {
 
@@ -57,11 +51,11 @@ export class ScenarioBuilder {
 
 							event.actions.forEach( ( action ) => {
 
-								this.replaceVariablesHelper( action, new Map<string, any>( [ [ '$owner', story.ownerName ] ] ) );
+								this.replaceVariablesHelper( action, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
 
 								if ( action instanceof LaneChangeAction || action instanceof SpeedAction ) {
 
-									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ '$owner', story.ownerName ] ] ) );
+									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
 
 								}
 
@@ -71,7 +65,7 @@ export class ScenarioBuilder {
 
 								const index = condition.triggeringEntities.findIndex( entity => entity === '$owner' );
 
-								if ( index >= 0 ) condition.triggeringEntities[ index ] = story.ownerName;
+								if ( index >= 0 ) condition.triggeringEntities[ index ] = ownerName;
 
 							} );
 
@@ -124,13 +118,13 @@ export class ScenarioBuilder {
 
 	}
 
-	static buildEntityObject ( value: EntityObject ): void {
+	static buildEntityObject ( entity: ScenarioEntity ): void {
 
-		if ( value.gameObject ) {
+		if ( entity ) {
 
-			value.gameObject.visible = true;
+			entity.visible = true;
 
-			SceneService.add( value?.gameObject );
+			SceneService.add( entity );
 
 		} else {
 

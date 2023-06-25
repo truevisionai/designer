@@ -2,288 +2,52 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
+import { BoxGeometry, Euler, MathUtils, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { Time } from '../../../core/time';
+import { TvConsole } from '../../../core/utils/console';
 import { Maths } from '../../../utils/maths';
 import { TvLaneType } from '../../tv-map/models/tv-common';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from './abstract-controller';
 import { PrivateAction } from './private-action';
-import { CatalogReference } from './tv-catalogs';
-import { ScenarioObjectType } from './tv-enums';
+import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from './tv-bounding-box';
+import { ScenarioObjectType, VehicleCategory } from './tv-enums';
 import { Orientation } from './tv-orientation';
+import { ParameterDeclaration } from './tv-parameter-declaration';
+import { TvProperty } from './tv-properties';
 
-export class EntityObject {
+class OpenDriveProperties {
+	public speed: number = 0;
+	public roadId: number = 0;
+	public laneSectionId: number = 0;
+	public laneId: number = 0;
+	public s: number = 0;
+	public laneOffset: number = 0;
+	public direction: number = 0;
+	public autonomous: boolean = false;
+	public distanceTraveled: number;
 
-	private static count = 1;
+	isEndOfRoad () {
+		const road = TvMapInstance.map.getRoadById( this.roadId );
 
-	public gameObject: GameObject;
-	public type: ScenarioObjectType;
-	// OSCMiscObject
+		// either at the end of the road
+		// or at the beginning
+		if (
+			this.s >= road.length - Maths.Epsilon ||
+			this.s <= Maths.Epsilon
+		) {
 
-	public initActions: PrivateAction[] = [];
-	// OSCPedestrian
-	public catalogReference: CatalogReference;
-	public sCoordinate: number;
-	// OSCVehicle
-	public tCoordinate: number;
-	public automove: boolean = true;
-	public direction: number = 1;
-	// OSCPedestrianController
-	public controller: AbstractController;
-	public distanceTravelled = 0;
+			return true;
 
-	constructor ( name: string, gameObject: GameObject = null, controller: AbstractController = null ) {
+		} else {
 
-		this.name = name;
+			return false;
 
-		if ( !gameObject ) {
-
-			const geometry = new BoxGeometry( 2.0, 4.2, 1.6 );
-			const material = new MeshBasicMaterial( { color: Math.random() * 0xffffff } );
-			this.gameObject = new GameObject( name, geometry, material );
-			this.gameObject.userData.entity = this;
 		}
-
-		this.controller = controller || new DefaultVehicleController( this );
-
-		EntityObject.count++;
-	}
-
-	// OSCDriver
-	private _name: string;
-
-	get name (): string {
-		return this._name;
-	}
-
-	set name ( value: string ) {
-		this._name = value;
-	}
-
-	private _speed = 0;
-
-	get speed (): number {
-		return this._speed;
-	}
-
-	set speed ( value: number ) {
-		this._speed = value;
-	}
-
-	private _roadId: number;
-
-	get roadId (): number {
-
-		return this._roadId;
-
-	}
-
-	set roadId ( value: number ) {
-
-		this._roadId = value;
-
-	}
-
-	private _laneSectionId: number;
-
-	// OSCCatalogReference
-
-	get laneSectionId (): number {
-
-		return this._laneSectionId;
-
-	}
-
-	set laneSectionId ( value: number ) {
-
-		this._laneSectionId = value;
-		// console.info( 'lane-section-changed', this.roadId, this.laneSectionId, this.laneId, this.sCoordinate );
-
-	}
-
-	// OSCCatalogReference
-	private _laneId: number;
-
-	get laneId (): number {
-
-		return this._laneId;
-
-	}
-
-	set laneId ( value: number ) {
-
-		this._laneId = value;
-
-	}
-
-	private _laneOffset: number = 0;
-
-	get laneOffset (): number {
-
-		return this._laneOffset;
-
-	}
-
-	set laneOffset ( value: number ) {
-
-		this._laneOffset = value;
-
-	}
-
-	private _hdg: number = 0;
-
-	get hdg (): number {
-
-		return this._hdg;
-
-	}
-
-	set hdg ( value: number ) {
-
-		this._hdg = value;
-
-	}
-
-	private _maxSpeed: number;
-
-	get maxSpeed (): number {
-
-		return this._maxSpeed;
-
-	}
-
-	set maxSpeed ( value: number ) {
-
-		this._speed = value;
-		this._maxSpeed = value;
-
-	}
-
-	private _enabled: boolean = true;
-
-	get enabled (): boolean {
-
-		return this._enabled;
-
-	}
-
-	set enabled ( value: boolean ) {
-
-		this._enabled = value;
-
-	}
-
-	get position (): Vector3 {
-		return this.gameObject.position;
-	}
-
-	static getNewName ( name = 'Player' ) {
-
-		return `${ name }${ this.count }`;
-
-	}
-
-	setPosition ( position: Vector3 ) {
-
-		this.gameObject.position.copy( position );
-
-	}
-
-	addInitAction ( action: PrivateAction ) {
-
-		this.initActions.push( action );
-
-	}
-
-	// TODO: fix thes value sare not workifn for accel
-	private previousVelocity = 0;
-	private currentVelocity = 0;
-	private acceleration = 0;
-	private originalPosition: Vector3;
-
-	update () {
-
-		if ( !this.automove && !this.enabled ) return;
-
-		if ( !this.originalPosition ) this.originalPosition = this.position.clone();
-
-		const previousPosition = this.position.clone();
-
-		this.previousVelocity = this.speed;
-
-		this.controller.update();
-
-		this.currentVelocity = this.speed;
-
-		this.acceleration = ( this.currentVelocity - this.previousVelocity ) / Time.fixedDeltaTime;
-
-		const newPosition = this.position.clone();
-
-		const distanceTravelled = previousPosition.distanceTo( newPosition );
-
-		this.distanceTravelled += distanceTravelled;
-
-	}
-
-	enable () {
-
-		this.enabled = true;
-
-		this.gameObject.visible = true;
-
-	}
-
-	disable () {
-
-		this.enabled = false;
-
-		this.gameObject.visible = false;
-
-	}
-
-	getCurrentSpeed () {
-
-		return this.speed;
-
-	}
-
-	updateSpeed ( newSpeed: number ) {
-
-		this.speed = newSpeed;
-
-	}
-
-	getCurrentLaneId () {
-
-		return this.laneId;
-
-	}
-
-	getCurrentPosition () {
-
-		return this.position;
-
-	}
-
-	getCurrentLaneOffset () {
-
-		return this.laneOffset;
-
-	}
-
-	setLaneOffset ( newLaneOffset ) {
-
-		this.laneOffset = newLaneOffset;
-
 	}
 
 	isOffRoad () {
-
 		// TODO can be imrpved
-
 		const road = TvMapInstance.map.getRoadById( this.roadId );
 		const laneSection = road.getLaneSectionById( this.laneSectionId );
 		const lane = laneSection.getLaneById( this.laneId );
@@ -303,43 +67,106 @@ export class EntityObject {
 		}
 	}
 
-	isAtEndOfRoad () {
-
-		const road = TvMapInstance.map.getRoadById( this.roadId );
-
-		// either at the end of the road
-		// or at the beginning
-		if (
-			this.sCoordinate >= road.length - Maths.Epsilon ||
-			this.sCoordinate <= Maths.Epsilon
-		) {
-
-			return true;
-
-		} else {
-
-			return false;
-
-		}
-
-
-	}
-
-	getCurrentAcceleration () {
-
-		return this.acceleration;
-
-	}
-
 	reset () {
 
-		this.distanceTravelled = 0;
-		this._speed = 0;
-		this.acceleration = 0;
-		this.previousVelocity = 0;
-		this.currentVelocity = 0;
-		this._maxSpeed = 0;
+		this.roadId = 0;
+		this.laneSectionId = 0;
+		this.laneId = 0;
+		this.autonomous = false;
+		this.distanceTraveled = 0;
+		this.direction = 0;
+		this.s = 0;
 		this.laneOffset = 0;
+		this.speed = 0;
+
+	}
+}
+
+export abstract class ScenarioEntity extends GameObject {
+
+	public parameterDeclarations: ParameterDeclaration[] = [];
+	public controller: AbstractController;
+	public properties: TvProperty[] = [];
+	public initActions: PrivateAction[] = [];
+
+	protected openDriveProperties = new OpenDriveProperties();
+
+	private enabled: Boolean = true;
+	private originalPosition: Vector3;
+
+	protected constructor ( public name: string, public boundingBox: TvBoundingBox ) {
+		super( name, new BoxGeometry(
+			boundingBox.dimension.width,
+			boundingBox.dimension.height,
+			boundingBox.dimension.depth
+		), new MeshBasicMaterial( {
+			color: Math.random() * 0xffffff
+		} ) );
+		this.userData.entity = this;
+	}
+
+	public addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
+		this.parameterDeclarations.push( parameterDeclaration );
+	}
+
+	public setController ( controller: AbstractController ): void {
+		this.controller = controller;
+	}
+
+	public addInitAction ( action: PrivateAction ): void {
+		this.initActions.push( action );
+	}
+
+	public removeInitAction ( action: PrivateAction ): void {
+		this.initActions = this.initActions.filter( a => a !== action );
+	}
+
+	update () {
+
+		if ( !this.openDriveProperties.autonomous && !this.enabled ) return;
+
+		if ( !this.originalPosition ) this.originalPosition = this.position.clone();
+
+		const previousPosition = this.position.clone();
+
+		this.controller.update();
+
+		const newPosition = this.position.clone();
+
+		this.openDriveProperties.distanceTraveled += previousPosition.distanceTo( newPosition );
+	}
+
+	setLaneOffset ( laneOffset: number ): void {
+		this.openDriveProperties.laneOffset = laneOffset;
+	}
+
+	setLaneId ( laneId: number ): void {
+		this.openDriveProperties.laneId = laneId;
+	}
+
+	getCurrentRoadId (): number {
+		return this.openDriveProperties.roadId;
+	}
+
+	getS (): number {
+		return this.openDriveProperties.s;
+	}
+
+	setPosition ( newPosition: Vector3 ): void {
+		this.position.copy( newPosition );
+	}
+
+	setAutonomous ( value: boolean ) {
+		this.openDriveProperties.autonomous = value;
+	}
+
+	setSpeed ( newSpeed: number ) {
+		this.openDriveProperties.speed = newSpeed;
+	}
+
+	reset (): void {
+
+		this.openDriveProperties.reset();
 
 		if ( this.originalPosition ) {
 			this.setPosition( this.originalPosition );
@@ -349,31 +176,166 @@ export class EntityObject {
 	}
 
 	setEuler ( value: Euler ) {
-
-		this.gameObject.rotation.copy( value );
-
+		this.rotation.copy( value );
 	}
 
 	getEuler (): Euler {
-
-		return this.gameObject.rotation;
-
+		return this.rotation;
 	}
 
 	getOrientation (): Orientation {
-
 		return new Orientation(
-			this.gameObject.rotation.x,
-			this.gameObject.rotation.y,
-			this.gameObject.rotation.z,
+			this.rotation.x,
+			this.rotation.y,
+			this.rotation.z,
 		);
-
 	}
 
-	removeInitAction ( action: PrivateAction ) {
+	getCurrentSpeed (): number {
+		return this.openDriveProperties.speed;
+	}
 
-		this.initActions = this.initActions.filter( a => a !== action );
+	enable () {
+		this.enabled = this.visible = true;
+	}
 
+	disable () {
+		this.enabled = this.visible = false;
+	}
+
+	getCurrentLaneId (): number {
+		return this.openDriveProperties.laneId;
+	}
+
+	getCurrentLaneOffset (): number {
+		return this.openDriveProperties.laneOffset;
+	}
+
+	getCurrentAcceleration (): number {
+		TvConsole.warn( 'Acceleration not computed' );
+		return 0;
+	}
+
+	isAtEndOfRoad (): boolean {
+		return this.openDriveProperties.isEndOfRoad();
+	}
+
+	isOffRoad (): boolean {
+		return this.openDriveProperties.isOffRoad();
+	}
+
+	getDistanceTraveled (): number {
+		return this.openDriveProperties.distanceTraveled;
+	}
+
+	getCurrentPosition (): Vector3 {
+		return this.position;
+	}
+
+	setRoadId ( id: number ) {
+		this.openDriveProperties.roadId = id;
+	}
+
+	setLaneSectionId ( id: number ) {
+		this.openDriveProperties.laneSectionId = id;
+	}
+
+	getLaneSectionId () {
+		return this.openDriveProperties.laneSectionId;
+	}
+
+	setDirection ( number: number ) {
+		this.openDriveProperties.direction = number;
+	}
+
+	setSValue ( s: number ) {
+		this.openDriveProperties.s = s;
+	}
+
+	getTravelingDirection () {
+		return this.openDriveProperties.direction;
+	}
+
+	setTravelingDirection ( number: number ) {
+		this.openDriveProperties.direction = number;
+	}
+
+	set roadId ( value: number ) {
+		this.openDriveProperties.roadId = value;
+	}
+
+	get roadId () {
+		return this.openDriveProperties.roadId;
+	}
+
+	set laneId ( value: number ) {
+		this.openDriveProperties.laneId = value;
+	}
+
+	get laneId () {
+		return this.openDriveProperties.laneId;
+	}
+
+	set laneSectionId ( value: number ) {
+		this.openDriveProperties.laneSectionId = value;
+	}
+
+	get laneSectionId () {
+		return this.openDriveProperties.laneSectionId;
+	}
+
+	set laneOffset ( value: number ) {
+		this.openDriveProperties.laneOffset = value;
+	}
+
+	get laneOffset () {
+		return this.openDriveProperties.laneOffset;
+	}
+
+	set sCoordinate ( value: number ) {
+		this.openDriveProperties.s = value;
+	}
+
+	get sCoordinate () {
+		return this.openDriveProperties.s;
+	}
+
+	set direction ( value: number ) {
+		this.openDriveProperties.direction = value;
+	}
+
+	get direction () {
+		return this.openDriveProperties.direction;
+	}
+
+	set speed ( value: number ) {
+		this.openDriveProperties.speed = value;
+	}
+
+	get speed () {
+		return this.openDriveProperties.speed;
 	}
 }
 
+
+export class VehicleEntity extends ScenarioEntity {
+
+	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
+
+	constructor (
+		public name: string,
+		public vehicleCategory: VehicleCategory = VehicleCategory.car,
+		public boundingBox: TvBoundingBox = new TvBoundingBox( new Vector3( 0, 0, 0 ), new TvDimension( 2.0, 4.2, 1.6 ) ),
+		public performance: TvPerformance = new TvPerformance( 100, 4, 9 ),
+		public axles: TvAxles = null,
+		public properties: TvProperty[] = []
+	) {
+		super( name, boundingBox );
+	}
+
+	static getNewName ( name = 'Vehicle' ) {
+
+		return `${ name }${ MathUtils.generateUUID().substring( 0, 4 ) }`;
+
+	}
+}

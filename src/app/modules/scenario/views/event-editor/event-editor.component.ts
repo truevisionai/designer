@@ -4,7 +4,7 @@ import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
-import { EntityObject } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
@@ -16,7 +16,7 @@ import { ScenarioInstance } from '../../services/scenario-instance';
 } )
 export class EventEditorComponent implements OnInit {
 
-	@Input() entity: EntityObject;
+	@Input() entity: ScenarioEntity;
 	@Input() event: TvEvent;
 
 	ACTION = ActionType;

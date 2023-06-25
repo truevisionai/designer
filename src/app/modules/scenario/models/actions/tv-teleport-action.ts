@@ -4,7 +4,7 @@
 
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
-import { EntityObject } from '../tv-entities';
+import { ScenarioEntity } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 
 export class TeleportAction extends PrivateAction {
@@ -28,7 +28,7 @@ export class TeleportAction extends PrivateAction {
 
 	}
 
-	execute ( entity: EntityObject ) {
+	execute ( entity: ScenarioEntity ) {
 
 		entity.setPosition( this.position.toVector3() );
 		entity.setEuler( this.position.toEuler() );

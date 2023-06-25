@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { TeleportAction } from '../../../models/actions/tv-teleport-action';
 import { Position } from '../../../models/position';
 import { PrivateAction } from '../../../models/private-action';
-import { EntityObject } from '../../../models/tv-entities';
+import { ScenarioEntity } from '../../../models/tv-entities';
 import { ScenarioInstance } from '../../../services/scenario-instance';
 
 @Component( {
@@ -16,7 +16,7 @@ import { ScenarioInstance } from '../../../services/scenario-instance';
 export class PositionActionComponent {
 
 	@Input() action: PrivateAction;
-	@Input() entity: EntityObject;
+	@Input() entity: ScenarioEntity;
 
 	get positionAction () {
 		return this.action as TeleportAction;

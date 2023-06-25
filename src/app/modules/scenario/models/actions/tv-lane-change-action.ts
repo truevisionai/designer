@@ -4,11 +4,10 @@
 
 import { Maths } from 'app/utils/maths';
 import { Time } from '../../../../core/time';
-import { TvLaneSide } from '../../../tv-map/models/tv-common';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
 import { PrivateAction } from '../private-action';
-import { EntityObject } from '../tv-entities';
+import { ScenarioEntity } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { Target } from './target';
 import { TransitionDynamics } from './transition-dynamics';
@@ -61,12 +60,12 @@ export class LaneChangeAction extends PrivateAction {
 
 		this.startTime = null;
 		this.targetLaneId = null;
-		this.lateralDistance = null
+		this.lateralDistance = null;
 		this.initialLaneOffset = null;
 
 	}
 
-	execute ( entity: EntityObject ) {
+	execute ( entity: ScenarioEntity ) {
 
 		if ( this.isCompleted ) return;
 
@@ -85,9 +84,9 @@ export class LaneChangeAction extends PrivateAction {
 		// TODO: need to double check this
 		if ( Maths.approxEquals( Math.abs( entity.getCurrentLaneOffset() ), Math.abs( this.lateralDistance ) ) ) {
 
-			entity.laneOffset = 0;
+			entity.setLaneOffset( 0 );
 
-			entity.laneId = this.targetLaneId;
+			entity.setLaneId( this.targetLaneId );
 
 			this.actionCompleted();
 
@@ -99,13 +98,13 @@ export class LaneChangeAction extends PrivateAction {
 
 		if ( this.debug ) {
 
-			console.log( 'LaneChangeAction', entity.laneId, this.lateralDistance, entity.getCurrentLaneOffset(), newLaneOffset, elapsedTime );
+			console.log( 'LaneChangeAction', entity.getCurrentLaneId(), this.lateralDistance, entity.getCurrentLaneOffset(), newLaneOffset, elapsedTime );
 
 		}
 
 	}
 
-	private computeLateralDistance ( entity: EntityObject ) {
+	private computeLateralDistance ( entity: ScenarioEntity ) {
 
 		this.initialLaneOffset = entity.getCurrentLaneOffset();
 
@@ -117,18 +116,18 @@ export class LaneChangeAction extends PrivateAction {
 
 		// Compute the target lane ID based on whether the target is relative or not
 		if ( this.target instanceof RelativeTarget ) {
-			this.targetLaneId = this.target.entity.laneId + ( isEntityOnLeftSide ? this.target.value : -this.target.value );
+			this.targetLaneId = this.target.entity.getCurrentLaneId() + ( isEntityOnLeftSide ? this.target.value : -this.target.value );
 		} else {
 			this.targetLaneId = this.target.value;
 		}
 
 		// Determine the lane change direction based on the side of the road
-		offsetDirection = Math.sign( this.targetLaneId - entity.laneId ) * ( isEntityOnLeftSide ? 1 : -1 );
+		offsetDirection = Math.sign( this.targetLaneId - entity.getCurrentLaneId() ) * ( isEntityOnLeftSide ? 1 : -1 );
 
-		const road = TvMapInstance.map.getRoadById( entity.roadId );
+		const road = TvMapInstance.map.getRoadById( entity.getCurrentRoadId() );
 
-		const current = TvMapQueries.getLanePosition( road.id, entity.getCurrentLaneId(), entity.sCoordinate, this.initialLaneOffset );
-		const desired = TvMapQueries.getLanePosition( road.id, this.targetLaneId, entity.sCoordinate, this.targetLaneOffset );
+		const current = TvMapQueries.getLanePosition( road.id, entity.getCurrentLaneId(), entity.getS(), this.initialLaneOffset );
+		const desired = TvMapQueries.getLanePosition( road.id, this.targetLaneId, entity.getS(), this.targetLaneOffset );
 		const distance = current.distanceTo( desired );
 
 		// change from center of this lane to center of new lane

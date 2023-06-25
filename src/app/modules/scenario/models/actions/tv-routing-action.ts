@@ -5,7 +5,7 @@
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
 import { CatalogReference } from '../tv-catalogs';
-import { EntityObject } from '../tv-entities';
+import { ScenarioEntity } from '../tv-entities';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
 import { Route } from '../tv-route';
 
@@ -18,7 +18,7 @@ export class RoutingAction {
 }
 
 export class FollowRouteAction extends AbstractRoutingAction {
-	execute ( entity: EntityObject ): void {
+	execute ( entity: ScenarioEntity ): void {
 		throw new Error( 'Method not implemented.' );
 	}
 
@@ -49,7 +49,7 @@ export class LongitudinalTiming {
 }
 
 export class AcquirePositionAction extends AbstractRoutingAction {
-	execute ( entity: EntityObject ): void {
+	execute ( entity: ScenarioEntity ): void {
 		throw new Error( 'Method not implemented.' );
 	}
 

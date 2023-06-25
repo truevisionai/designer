@@ -6,7 +6,7 @@ import { BoundingBox } from './tv-bounding-box';
 import { PedestrianCategory } from './tv-enums';
 import { IScenarioObject } from './tv-interfaces';
 import { ParameterDeclaration } from './tv-parameter-declaration';
-import { Properties } from './tv-properties';
+import { TvProperties } from './tv-properties';
 
 export class Pedestrian extends IScenarioObject {
 
@@ -16,6 +16,6 @@ export class Pedestrian extends IScenarioObject {
 	private m_Category: PedestrianCategory;
 	private m_ParameterDeclarations: ParameterDeclaration[];
 	private m_BoundingBox: BoundingBox;
-	private m_Properties: Properties;
+	private m_Properties: TvProperties;
 
 }

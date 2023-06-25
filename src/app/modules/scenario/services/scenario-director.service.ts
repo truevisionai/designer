@@ -11,11 +11,11 @@ import { ConditionUtils } from '../builders/condition-utils';
 import { ResetHelper } from '../helpers/tv-reset-helper';
 import { Act } from '../models/tv-act';
 import { TvAction } from '../models/tv-action';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity, VehicleEntity } from '../models/tv-entities';
 import { StoryboardElementState, StoryboardElementType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
-import { Sequence } from '../models/tv-sequence';
+import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioInstance } from './scenario-instance';
@@ -31,7 +31,7 @@ export interface StoryboardEvent {
 } )
 export class ScenarioDirectorService {
 
-	static traffic: Map<number, EntityObject[]> = new Map<number, EntityObject[]>();
+	static vehicleTraffic: Map<number, VehicleEntity[]> = new Map<number, VehicleEntity[]>();
 
 	private added: boolean;
 	private eventIndex: number = 0;
@@ -151,7 +151,7 @@ export class ScenarioDirectorService {
 
 			} );
 
-			this.setRoadProperties( obj );
+			ScenarioDirectorService.setRoadProperties( obj );
 
 		} );
 
@@ -211,7 +211,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateSequence ( sequence: Sequence ) {
+	private updateSequence ( sequence: ManeuverGroup ) {
 
 		sequence.maneuvers.forEach( maneuver => {
 
@@ -228,7 +228,7 @@ export class ScenarioDirectorService {
 		} );
 	}
 
-	private startManeuver ( maneuver: Maneuver, sequence: Sequence ) {
+	private startManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'started-manuever', maneuver.name );
 
@@ -239,7 +239,7 @@ export class ScenarioDirectorService {
 		this.updateManeuver( maneuver, sequence );
 	}
 
-	private updateManeuver ( maneuver: Maneuver, sequence: Sequence ) {
+	private updateManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'running-maneuver', maneuver.name );
 
@@ -283,7 +283,7 @@ export class ScenarioDirectorService {
 	}
 
 
-	private startEvent ( event: TvEvent, sequence: Sequence ) {
+	private startEvent ( event: TvEvent, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'started-event', event.name );
 
@@ -295,7 +295,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateEvent ( event: TvEvent, sequence: Sequence ) {
+	private updateEvent ( event: TvEvent, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'running-event', event.name );
 
@@ -338,7 +338,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private startAction ( action: TvAction, actionName: string, sequence: Sequence ) {
+	private startAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'started-action', actionName );
 
@@ -350,7 +350,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateAction ( action: TvAction, actionName: string, sequence: Sequence ) {
+	private updateAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'running-action', actionName );
 
@@ -371,25 +371,25 @@ export class ScenarioDirectorService {
 
 	}
 
-	private setRoadProperties ( obj: EntityObject ) {
+	private static setRoadProperties ( obj: ScenarioEntity ) {
 
 		const roadCoord = new TvPosTheta();
 
-		const pos = obj.gameObject.position;
+		const pos = obj.position;
 
 		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
 
 		if ( !res.road || !res.lane ) return;
 
-		obj.roadId = res.road.id;
+		obj.setRoadId( res.road.id );
 
-		obj.laneId = res.lane.id;
+		obj.setLaneId( res.lane.id );
 
-		obj.laneSectionId = res.road.getLaneSectionAt( roadCoord.s ).id;
+		obj.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
 
-		obj.direction = res.lane.id > 0 ? -1 : 1;
+		obj.setDirection( res.lane.id > 0 ? -1 : 1 );
 
-		obj.sCoordinate = roadCoord.s;
+		obj.setSValue( roadCoord.s );
 
 	}
 

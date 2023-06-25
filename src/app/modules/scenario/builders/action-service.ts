@@ -8,7 +8,7 @@ import { TvConsole } from '../../../core/utils/console';
 import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { Position } from '../models/position';
 import { PrivateAction } from '../models/private-action';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/tv-entities';
 import { ActionType, PositionType } from '../models/tv-enums';
 
 
@@ -17,7 +17,7 @@ import { ActionType, PositionType } from '../models/tv-enums';
 } )
 export class ActionService {
 
-	public static executePrivateAction ( obj: EntityObject, privateAction: PrivateAction ) {
+	public static executePrivateAction ( obj: ScenarioEntity, privateAction: PrivateAction ) {
 
 		switch ( privateAction.actionType ) {
 
@@ -75,7 +75,7 @@ export class ActionService {
 
 	}
 
-	public static executePositionAction ( obj: EntityObject, privateAction: TeleportAction ) {
+	public static executePositionAction ( obj: ScenarioEntity, privateAction: TeleportAction ) {
 
 		const position = privateAction.position;
 
@@ -113,15 +113,15 @@ export class ActionService {
 	}
 
 
-	private static executeWorldPositionAction ( position: Position, obj: EntityObject ) {
+	private static executeWorldPositionAction ( position: Position, obj: ScenarioEntity ) {
 
 		try {
 
 			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
 
-			obj.gameObject.position.copy( vector3 );
+			obj.position.copy( vector3 );
 
-			position.vector3 = obj.gameObject.position;
+			position.vector3 = obj.position;
 
 		} catch ( error ) {
 
@@ -130,15 +130,15 @@ export class ActionService {
 		}
 	}
 
-	private static executeLanePositionAction ( position: Position, obj: EntityObject ) {
+	private static executeLanePositionAction ( position: Position, obj: ScenarioEntity ) {
 
 		try {
 
 			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
 
-			obj.gameObject.position.copy( vector3 );
+			obj.position.copy( vector3 );
 
-			position.vector3 = obj.gameObject.position;
+			position.vector3 = obj.position;
 
 
 		} catch ( e ) {
@@ -149,15 +149,15 @@ export class ActionService {
 
 	}
 
-	private static executeRoadPositionAction ( position: Position, obj: EntityObject ) {
+	private static executeRoadPositionAction ( position: Position, obj: ScenarioEntity ) {
 
 		try {
 
 			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
 
-			obj.gameObject.position.copy( vector3 );
+			obj.position.copy( vector3 );
 
-			position.vector3 = obj.gameObject.position;
+			position.vector3 = obj.position;
 
 
 		} catch ( e ) {
@@ -168,15 +168,15 @@ export class ActionService {
 
 	}
 
-	private static executeRelativeWorldPositionAction ( position: Position, obj: EntityObject ) {
+	private static executeRelativeWorldPositionAction ( position: Position, obj: ScenarioEntity ) {
 
 		try {
 
 			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
 
-			obj.gameObject.position.copy( vector3 );
+			obj.position.copy( vector3 );
 
-			position.vector3 = obj.gameObject.position;
+			position.vector3 = obj.position;
 
 
 		} catch ( e ) {
@@ -187,15 +187,15 @@ export class ActionService {
 
 	}
 
-	private static executeRelativeObjectPositionAction ( position: Position, obj: EntityObject ) {
+	private static executeRelativeObjectPositionAction ( position: Position, obj: ScenarioEntity ) {
 
 		try {
 
 			const vector3 = position ? position.toVector3() : new Vector3( 0, 0, 0 );
 
-			obj.gameObject.position.copy( vector3 );
+			obj.position.copy( vector3 );
 
-			position.vector3 = obj.gameObject.position;
+			position.vector3 = obj.position;
 
 
 		} catch ( e ) {

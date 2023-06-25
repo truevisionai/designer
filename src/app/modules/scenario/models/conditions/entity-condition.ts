@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import { Position } from '../position';
-import { EntityObject } from '../tv-entities';
+import { ScenarioEntity } from '../tv-entities';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
 import { Condition } from './tv-condition';
 
@@ -29,14 +29,14 @@ export abstract class EntityCondition extends Condition {
 
 	}
 
-	protected getEntity ( entityName: string ): EntityObject {
+	protected getEntity ( entityName: string ): ScenarioEntity {
 
 		return this.scenario.findEntityOrFail( entityName );
 
 	}
 
 
-	public addEntity ( entityName: string ) {
+	public addTriggeringEntity ( entityName: string ) {
 
 		this.triggeringEntities.push( entityName );
 

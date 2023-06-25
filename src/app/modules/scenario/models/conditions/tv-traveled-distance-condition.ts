@@ -25,7 +25,7 @@ export class TraveledDistanceCondition extends EntityCondition {
 
 			const entity = this.scenario.findEntityOrFail( entityName );
 
-			return entity.distanceTravelled >= this.value;
+			return entity.getDistanceTraveled() >= this.value;
 
 		} );
 

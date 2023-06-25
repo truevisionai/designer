@@ -9,7 +9,7 @@ import { IComponent } from 'app/core/game-object';
 import { ActionFactory } from '../../builders/action-factory';
 import { ActionService } from '../../builders/action-service';
 import { PrivateAction } from '../../models/private-action';
-import { EntityObject } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/tv-entities';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
@@ -21,7 +21,7 @@ import { ScenarioInstance } from '../../services/scenario-instance';
 } )
 export class EntityInspector implements OnInit, IComponent {
 
-	@Input() data: EntityObject;
+	@Input() data: ScenarioEntity;
 
 	actionType = ActionType;
 	conditionType = ConditionType;
@@ -46,7 +46,7 @@ export class EntityInspector implements OnInit, IComponent {
 	}
 
 	get absolutePosition () {
-		return this.entity.gameObject.position;
+		return this.entity.position;
 	};
 
 	get scenario () {

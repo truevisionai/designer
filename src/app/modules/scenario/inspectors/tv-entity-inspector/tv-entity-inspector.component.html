@@ -4,7 +4,7 @@
 
 	<app-double-field *ngIf="debug" label="Speed" [value]="entity?.getCurrentSpeed()"></app-double-field>
 	<app-double-field *ngIf="debug" label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field>
-	<app-double-field *ngIf="debug" label="Distance" [value]="entity?.distanceTravelled"></app-double-field>
+	<app-double-field *ngIf="debug" label="Distance" [value]="entity?.getDistanceTraveled()"></app-double-field>
 
 </div>
 

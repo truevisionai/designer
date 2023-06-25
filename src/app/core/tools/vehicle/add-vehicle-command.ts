@@ -3,7 +3,7 @@ import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { SimulationTimeCondition } from 'app/modules/scenario/models/conditions/tv-simulation-time-condition';
-import { EntityObject } from 'app/modules/scenario/models/tv-entities';
+import { VehicleEntity } from 'app/modules/scenario/models/tv-entities';
 import { ActionType, Rule } from 'app/modules/scenario/models/tv-enums';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { MathUtils, Vector3 } from 'three';
@@ -14,11 +14,11 @@ export class AddVehicleCommand extends BaseCommand {
 
 	private setInspector: SetInspectorCommand;
 
-	constructor ( public entity: EntityObject, position: Vector3 ) {
+	constructor ( public entity: VehicleEntity, position: Vector3 ) {
 
 		super();
 
-		entity.gameObject.position.copy( position.clone() );
+		entity.position.copy( position.clone() );
 
 		entity.name = `Vehicle${ ScenarioInstance.scenario.objects.size + 1 }`;
 
@@ -35,7 +35,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 	execute (): void {
 
-		SceneService.add( this.entity.gameObject );
+		SceneService.add( this.entity );
 
 		ScenarioInstance.scenario.addObject( this.entity );
 
@@ -45,7 +45,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 	undo (): void {
 
-		SceneService.remove( this.entity.gameObject );
+		SceneService.remove( this.entity );
 
 		ScenarioInstance.scenario.removeObject( this.entity );
 

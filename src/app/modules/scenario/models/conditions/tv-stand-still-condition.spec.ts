@@ -4,7 +4,7 @@
 
 import { Time } from '../../../../core/time';
 import { ScenarioInstance } from '../../services/scenario-instance';
-import { EntityObject } from '../tv-entities';
+import { VehicleEntity } from '../tv-entities';
 import { TvScenario } from '../tv-scenario';
 import { StandStillCondition } from './tv-stand-still-condition';
 
@@ -19,13 +19,13 @@ describe( 'StandStillCondition', () => {
 
 		ScenarioInstance.scenario = new TvScenario();
 
-		const entityObject = new EntityObject( 'ego' );
+		const entityObject = new VehicleEntity( 'ego' );
 
 		ScenarioInstance.scenario.addObject( entityObject );
 
 		condition = new StandStillCondition( 1 );
 
-		condition.addEntity( entityObject.name );
+		condition.addTriggeringEntity( entityObject.name );
 
 	} );
 

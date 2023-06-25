@@ -11,9 +11,9 @@ import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
-import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
 import { Condition } from '../models/conditions/tv-condition';
@@ -29,7 +29,7 @@ import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/tv-entities';
 import { ActionCategory, ActionType, ConditionCategory, ConditionType, PositionType, TargetType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { CatalogReferenceController } from '../models/tv-interfaces';
@@ -38,7 +38,7 @@ import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
 import { RoadNetwork } from '../models/tv-road-network';
 import { TvScenario } from '../models/tv-scenario';
-import { Sequence } from '../models/tv-sequence';
+import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
@@ -118,7 +118,7 @@ export class WriterService {
 
 	}
 
-	writeEntities ( rootNode: any, objects: Map<string, EntityObject> ) {
+	writeEntities ( rootNode: any, objects: Map<string, ScenarioEntity> ) {
 
 		var entities = {
 			Object: []
@@ -133,25 +133,25 @@ export class WriterService {
 		rootNode.Entities = entities;
 	}
 
-	writeEntityObject ( key: string, object: EntityObject ): any {
+	writeEntityObject ( key: string, object: ScenarioEntity ): any {
 
-		var xml = {
-			attr_name: object.name,
-		};
-
-		if ( object.catalogReference != null ) {
-
-			xml[ 'CatalogReference' ] = this.writeCatalogReference( object.catalogReference );
-
-		}
-
-		if ( object.controller != null ) {
-
-			xml[ 'Controller' ] = this.writeController( object.controller );
-
-		}
-
-		return xml;
+		// var xml = {
+		// 	attr_name: object.name,
+		// };
+		//
+		// if ( object.catalogReference != null ) {
+		//
+		// 	xml[ 'CatalogReference' ] = this.writeCatalogReference( object.catalogReference );
+		//
+		// }
+		//
+		// if ( object.controller != null ) {
+		//
+		// 	xml[ 'Controller' ] = this.writeController( object.controller );
+		//
+		// }
+		//
+		// return xml;
 	}
 
 	writeController ( controller: AbstractController ): any {
@@ -430,7 +430,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeSequence ( sequence: Sequence ): any {
+	writeSequence ( sequence: ManeuverGroup ): any {
 
 		let xml = {
 

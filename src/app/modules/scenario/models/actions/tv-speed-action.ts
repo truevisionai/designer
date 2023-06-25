@@ -5,7 +5,7 @@
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { PrivateAction } from '../private-action';
-import { EntityObject } from '../tv-entities';
+import { ScenarioEntity } from '../tv-entities';
 import { ActionType } from '../tv-enums';
 import { Target } from './target';
 import { TransitionDynamics } from './transition-dynamics';
@@ -35,7 +35,7 @@ export class SpeedAction extends PrivateAction {
 
 	}
 
-	execute ( entity: EntityObject ) {
+	execute ( entity: ScenarioEntity ) {
 
 		if ( this.isCompleted ) return;
 
@@ -61,7 +61,7 @@ export class SpeedAction extends PrivateAction {
 
 		let newSpeed = this.dynamics.calculateSpeed( this.initialSpeed, this.targetSpeed, elapsedTime );
 
-		entity.updateSpeed( newSpeed );
+		entity.setSpeed( newSpeed );
 
 		if ( Maths.approxEquals( this.targetSpeed, entity.getCurrentSpeed() ) ) {
 
@@ -69,7 +69,7 @@ export class SpeedAction extends PrivateAction {
 
 		}
 
-		if ( this.debug ) console.log( 'SpeedAction', entity.maxSpeed, this.targetSpeed, elapsedTime, this.dynamics );
+		if ( this.debug ) console.log( 'SpeedAction', entity.getCurrentSpeed(), this.targetSpeed, elapsedTime, this.dynamics );
 
 	}
 

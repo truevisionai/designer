@@ -2,7 +2,7 @@ import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
 import { StoryboardEvent } from '../services/scenario-director.service';
 import { ScenarioInstance } from '../services/scenario-instance';
-import { EntityObject } from './tv-entities';
+import { ScenarioEntity } from './tv-entities';
 import { ActionCategory, ActionType } from './tv-enums';
 
 export abstract class TvAction {
@@ -11,7 +11,7 @@ export abstract class TvAction {
 	abstract actionType: ActionType;
 	abstract label: string;
 
-	abstract execute ( entity: EntityObject ): void;
+	abstract execute ( entity: ScenarioEntity ): void;
 
 	public readonly uuid = MathUtils.generateUUID();
 
@@ -32,7 +32,7 @@ export abstract class TvAction {
 		return ScenarioInstance.scenario;
 	}
 
-	protected getEntity ( entityName: string ): EntityObject {
+	protected getEntity ( entityName: string ): ScenarioEntity {
 		return this.scenario.findEntityOrFail( entityName );
 	}
 

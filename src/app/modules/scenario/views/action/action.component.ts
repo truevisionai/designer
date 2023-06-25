@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
-import { EntityObject } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/tv-entities';
 
 @Component( {
 	selector: 'app-action',
@@ -17,7 +17,7 @@ export class ActionComponent implements OnInit {
 
 	@Input() action: TvAction;
 
-	@Input() entity: EntityObject;
+	@Input() entity: ScenarioEntity;
 
 	@Output() removed = new EventEmitter<TvAction>();
 

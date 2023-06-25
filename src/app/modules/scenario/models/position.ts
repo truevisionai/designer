@@ -1,6 +1,6 @@
 import { Euler, MathUtils, Vector3 } from 'three';
 import { ScenarioInstance } from '../services/scenario-instance';
-import { EntityObject } from './tv-entities';
+import { ScenarioEntity } from './tv-entities';
 import { PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
 
@@ -45,7 +45,7 @@ export abstract class Position {
 		return this.rotation.multiplyScalar( MathUtils.RAD2DEG );
 	}
 
-	protected getEntity ( entity: string ): EntityObject {
+	protected getEntity ( entity: string ): ScenarioEntity {
 		return ScenarioInstance.scenario.findEntityOrFail( entity );
 	}
 }

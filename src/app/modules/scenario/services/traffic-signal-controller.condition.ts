@@ -3,6 +3,30 @@ import { ValueCondition } from '../models/conditions/value-condition';
 import { ConditionType } from '../models/tv-enums';
 
 /**
+ * Controls the state of a collection of traffic signals.
+ */
+export class TrafficSignalController {
+
+	/**
+	 *
+	 * @param name ID of the traffic signal controller in the road network.
+	 * @param delay The delay to the controller in the reference property.
+	 * 				If delay is set, reference is required. Unit: s; Range: [0..inf[.
+	 * @param reference A reference (ID) to the connected controller in the road network.
+	 * 					If reference is set, a delay is required
+	 * @param phases Phases of a TrafficSignalController.
+	 */
+	constructor (
+		public name: string,
+		public delay: number = null,
+		public reference: string = null,
+		public phases: TrafficSignalPhase[],
+	) {
+	}
+
+}
+
+/**
  * Possible state of traffic signal within a phase. One state per phase.
  */
 export class TrafficSignalState {
@@ -21,11 +45,17 @@ export class TrafficSignalState {
  * Phase of a TrafficSignalController.
  * A TrafficSignalController has sequential phases.
  * Each phase has multiple TrafficSignalStates.
+ *
+ * Each phase can have multiple TrafficSignalStates to provide the state
+ * for all traffic signals individually that are controlled by the controller.
+ * One for each TrafficSignal.
+ * E.g. name="go" (trafficSignal1:"off;off;on", trafficSignal2:"off;off;on").
  */
 export class TrafficSignalPhase {
 	/**
 	 *
-	 * @param name Name of the phase.
+	 * @param name Name of the phase. Semantic information about the phase.
+	 * 			   Typical values are: off, stop, attention, stop_attention, go, go_exclusive
 	 * @param duration Duration of the phase. Unit: s; Range: [0..inf[.
 	 * @param states Each phase has multiple TrafficSignalStates. One for each
 	 *  			 TrafficSignal that is controlled.

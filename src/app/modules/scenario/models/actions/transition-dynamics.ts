@@ -1,8 +1,8 @@
 import { TvConsole } from 'app/core/utils/console';
+import { Maths } from 'app/utils/maths';
 import { EnumHelper } from '../../../tv-map/models/tv-common';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { DynamicsDimension, DynamicsShape } from '../tv-enums';
-import { Maths } from 'app/utils/maths';
 
 export class TransitionDynamics {
 
@@ -70,11 +70,9 @@ export class TransitionDynamics {
 
 			let newSpeed = initialSpeed + transitionRate * elapsedTime;
 
-			if ( speedDifference > 0 )
-
+			if ( speedDifference > 0 ) {
 				return Maths.clamp( newSpeed, initialSpeed, targetSpeed );
-
-			else {
+			} else {
 
 				return Maths.clamp( newSpeed, targetSpeed, initialSpeed );
 			}
@@ -187,11 +185,11 @@ export class TransitionDynamics {
 
 	static fromXML ( xml: XmlElement ): TransitionDynamics {
 
-		const shape = EnumHelper.stringToDynamics( xml.attr_shape ?? 'step' );
+		const shape = EnumHelper.stringToDynamics( xml.attr_shape || xml.attr_dynamicsShape || 'step' );
 
-		const dimensionValue = parseFloat( xml.attr_rate || xml.attr_time || xml.attr_distance || 0 );
+		const dimensionValue = parseFloat( xml.attr_rate || xml.attr_time || xml.attr_distance || xml.attr_value || 0 );
 
-		const dimension = EnumHelper.stringToDimension( xml.attr_dimension ?? 'time' );
+		const dimension = EnumHelper.stringToDimension( xml.attr_dimension || xml.attr_dynamicsDimension || 'time' );
 
 		return new TransitionDynamics( shape, dimensionValue, dimension );
 

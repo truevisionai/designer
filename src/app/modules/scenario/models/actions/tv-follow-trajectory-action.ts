@@ -6,8 +6,8 @@ import { Vector3 } from 'three';
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { CatalogReference } from '../tv-catalogs';
-import { EntityObject } from '../tv-entities';
-import { ActionType, LateralPurpose, StoryboardElementType } from '../tv-enums';
+import { ScenarioEntity } from '../tv-entities';
+import { ActionType, LateralPurpose } from '../tv-enums';
 import { Trajectory } from '../tv-trajectory';
 import { AbstractRoutingAction, LongitudinalPurpose } from './tv-routing-action';
 
@@ -27,7 +27,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 		super();
 	}
 
-	execute ( entity: EntityObject ) {
+	execute ( entity: ScenarioEntity ) {
 
 		if ( !this.hasStarted ) {
 
@@ -47,15 +47,15 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private start ( entity: EntityObject ) {
+	private start ( entity: ScenarioEntity ) {
 
 		this.hasStarted = true;
 
-		entity.automove = false;
+		entity.setAutonomous( false );
 
 	}
 
-	private update ( entity: EntityObject ) {
+	private update ( entity: ScenarioEntity ) {
 
 		switch ( this.lateralPurpose ) {
 
@@ -74,7 +74,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private steering ( entity: EntityObject ) {
+	private steering ( entity: ScenarioEntity ) {
 
 		// console.log( this );
 
@@ -95,7 +95,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 		const targetDir = target.clone().sub( entity.position );
 
-		const maxChange = entity.speed * Maths.Speed2MPH * Time.deltaTime;
+		const maxChange = entity.getCurrentSpeed() * Maths.Speed2MPH * Time.deltaTime;
 
 		const newPosition: Vector3 = Maths.moveTowards( entity.position, target, maxChange );
 

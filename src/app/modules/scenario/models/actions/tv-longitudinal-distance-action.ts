@@ -4,10 +4,10 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { PrivateAction } from '../private-action';
-import { EntityObject } from '../tv-entities';
-import { ActionType } from '../tv-enums';
 import { DynamicConstraints } from '../dynamic-constraints';
+import { PrivateAction } from '../private-action';
+import { ScenarioEntity } from '../tv-entities';
+import { ActionType } from '../tv-enums';
 
 
 /**
@@ -44,7 +44,7 @@ export class LongitudinalDistanceAction extends PrivateAction {
 		this.targetDistance = null;
 	}
 
-	execute ( entity: EntityObject ) {
+	execute ( entity: ScenarioEntity ) {
 
 		if ( this.isCompleted ) return;
 
@@ -67,7 +67,7 @@ export class LongitudinalDistanceAction extends PrivateAction {
 			entity.getCurrentSpeed(), targetEntity.getCurrentSpeed()
 		);
 
-		entity.updateSpeed( newSpeed );
+		entity.setSpeed( newSpeed );
 
 		const distanceReached = Maths.approxEquals( currentDistance, this.targetDistance, 0.1 );
 
@@ -85,7 +85,7 @@ export class LongitudinalDistanceAction extends PrivateAction {
 		// console.log( 'LongitudinalDistanceAction', entity.name, currentDistance, this.targetDistance, entity.getCurrentSpeed() );
 	}
 
-	private computeLongitudinalDistance ( entity: EntityObject ) {
+	private computeLongitudinalDistance ( entity: ScenarioEntity ) {
 
 		if ( this.valueType === 'distance' ) {
 

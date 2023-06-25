@@ -27,13 +27,13 @@ export class Orientation {
 
 	static fromXML ( xml: XmlElement ): Orientation {
 
-		const h: number = parseFloat( xml.attr_h ) ?? 0;
-		const p: number = parseFloat( xml.attr_p ) ?? 0;
-		const r: number = parseFloat( xml.attr_r ) ?? 0;
+		const h: number = parseFloat( xml?.attr_h || 0 );
+		const p: number = parseFloat( xml?.attr_p || 0 );
+		const r: number = parseFloat( xml?.attr_r || 0 );
 
 		let type: OrientationType = OrientationType.absolute;
 
-		if ( xml.attr_type && xml.attr_type === OrientationType.relative ) {
+		if ( xml?.attr_type && xml?.attr_type === OrientationType.relative ) {
 			type = OrientationType.relative;
 		}
 

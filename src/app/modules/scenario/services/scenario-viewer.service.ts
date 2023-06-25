@@ -74,7 +74,7 @@ export class ScenarioViewerService {
 		this.originalPosition.copy( this.threeService.camera.position );
 		this.originalQuaternion.copy( this.threeService.camera.quaternion );
 
-		this.threeService.setFocusTarget( entity?.gameObject );
+		this.threeService.setFocusTarget( entity );
 
 	}
 

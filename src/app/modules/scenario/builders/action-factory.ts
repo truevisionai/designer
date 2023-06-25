@@ -13,12 +13,12 @@ import { SpeedAction } from '../models/actions/tv-speed-action';
 import { DynamicConstraints } from '../models/dynamic-constraints';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { TvAction } from '../models/tv-action';
-import { EntityObject } from '../models/tv-entities';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
+import { ScenarioEntity } from '../models/tv-entities';
 
 export class ActionFactory {
 
-	public static createNamedAction ( name: string, type: ActionType, entity?: EntityObject ) {
+	public static createNamedAction ( name: string, type: ActionType, entity?: ScenarioEntity ) {
 
 		const action = this.createActionWithoutName( type, entity ) as TvAction;
 
@@ -28,7 +28,7 @@ export class ActionFactory {
 
 	}
 
-	public static createActionWithoutName ( type: ActionType, entity?: EntityObject ) {
+	public static createActionWithoutName ( type: ActionType, entity?: ScenarioEntity ) {
 
 		let action: any;
 
@@ -111,7 +111,7 @@ export class ActionFactory {
 
 	}
 
-	static createChangeLaneOffsetAction ( entity?: EntityObject ) {
+	static createChangeLaneOffsetAction ( entity?: ScenarioEntity ) {
 
 		// 3.2 lane width
 		const target = entity ?
@@ -122,9 +122,9 @@ export class ActionFactory {
 
 	}
 
-	private static createPositionAction ( entity?: EntityObject ): TvAction {
+	private static createPositionAction ( entity?: ScenarioEntity ): TvAction {
 
-		const position = entity.gameObject?.position;
+		const position = entity?.position;
 
 		return new TeleportAction( new WorldPosition(
 			position?.x || 0,
@@ -134,15 +134,15 @@ export class ActionFactory {
 
 	}
 
-	private static createSpeedAction ( entity?: EntityObject ) {
+	private static createSpeedAction ( entity?: ScenarioEntity ) {
 
 		return new SpeedAction(
 			new TransitionDynamics( DynamicsShape.step, 0, DynamicsDimension.time ),
-			new AbsoluteTarget( entity?.speed || 40 )
+			new AbsoluteTarget( entity?.getCurrentSpeed() || 40 )
 		);
 	}
 
-	private static createLaneChangeAction ( entity?: EntityObject ) {
+	private static createLaneChangeAction ( entity?: ScenarioEntity ) {
 
 		const target = entity ? new RelativeTarget( entity.name, 1 ) : new AbsoluteTarget( 1 );
 
@@ -151,7 +151,7 @@ export class ActionFactory {
 		return new LaneChangeAction( dynamics, target );
 	}
 
-	static createLongitudinalDistanceAction ( entity: EntityObject ) {
+	static createLongitudinalDistanceAction ( entity: ScenarioEntity ) {
 
 		const dynamics = new DynamicConstraints( 3, 9, 40 );
 

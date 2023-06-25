@@ -72,4 +72,33 @@ export class Parameter {
 
 	}
 
+	getValue<T> (): T {
+
+		switch ( this.type ) {
+			case ParameterType.integer:
+				return parseInt( this.value ) as unknown as T;
+				break;
+			case ParameterType.double:
+				return parseFloat( this.value ) as unknown as T;
+				break;
+			case ParameterType.string:
+				return this.value as unknown as T;
+				break;
+			case ParameterType.boolean:
+				// return this.value === 'true' as unknown as T;
+				break;
+			case ParameterType.unsignedInt:
+				return parseInt( this.value ) as unknown as T;
+				break;
+			case ParameterType.unsignedShort:
+				return parseInt( this.value ) as unknown as T;
+				break;
+			case ParameterType.dateTime:
+				return this.value as unknown as T;
+				break;
+			default:
+				throw new Error( 'unknown paramater type' );
+		}
+
+	}
 }

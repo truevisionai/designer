@@ -1,4 +1,6 @@
-export function readXmlArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
+import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
+
+export function readXmlArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
 
 	if ( items != null ) {
 
@@ -20,7 +22,7 @@ export function readXmlArray ( items: any, callbackFn: ( xml: any, count: number
 
 }
 
-export function readXmlElement ( xml: any, callbackFn: ( xml: any ) => void ) {
+export function readXmlElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ) {
 
 	if ( xml != null ) {
 

@@ -89,7 +89,7 @@ describe( 'ReaderService', () => {
 			attr_owner: 'Ego'
 		};
 
-		const story = parser.readStory( xml );
+		const story = OpenScenarioImporter.readStory( xml );
 
 		expect( story.name ).toBe( xml.attr_name );
 		expect( story.ownerName ).toBe( xml.attr_owner );

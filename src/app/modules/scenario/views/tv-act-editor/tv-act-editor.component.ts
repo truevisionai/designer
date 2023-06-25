@@ -4,9 +4,8 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Condition } from '../../models/conditions/tv-condition';
 import { Act } from '../../models/tv-act';
-import { EntityObject } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/tv-entities';
 import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
@@ -21,7 +20,7 @@ export class ActEditorComponent implements OnInit {
 
 	constructor (
 		public dialogRef: MatDialogRef<ActEditorComponent>,
-		@Inject( MAT_DIALOG_DATA ) public data: EntityObject,
+		@Inject( MAT_DIALOG_DATA ) public data: ScenarioEntity,
 		private dialog: MatDialog
 	) {
 

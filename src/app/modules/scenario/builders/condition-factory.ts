@@ -14,12 +14,12 @@ import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/tv-entities';
 import { ConditionType, RelativeDistanceType, Rule, TriggeringRule } from '../models/tv-enums';
 
 export class ConditionFactory {
 
-	public static createCondition ( type: ConditionType, entity?: EntityObject ) {
+	public static createCondition ( type: ConditionType, entity?: ScenarioEntity ) {
 
 		switch ( type ) {
 
@@ -74,7 +74,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createDistanceCondition ( entity?: EntityObject ) {
+	private static createDistanceCondition ( entity?: ScenarioEntity ) {
 
 		const position = new WorldPosition();
 
@@ -82,94 +82,94 @@ export class ConditionFactory {
 
 	}
 
-	private static createReachedPositionCondition ( entity?: EntityObject ) {
+	private static createReachedPositionCondition ( entity?: ScenarioEntity ) {
 
 		const position = new WorldPosition();
 
 		const condition = new ReachPositionCondition( position, 5 );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 	}
 
-	private static createTimeHeadwayCondition ( entity?: EntityObject ) {
+	private static createTimeHeadwayCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new TimeHeadwayCondition( null, 5, false, false, Rule.greater_than );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 
 
 	}
 
-	private static createTraveledDistanceCondition ( entity?: EntityObject ) {
+	private static createTraveledDistanceCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new TraveledDistanceCondition( 100, TriggeringRule.Any );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 	}
 
-	private static createSpeedCondition ( entity?: EntityObject ) {
+	private static createSpeedCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new SpeedCondition( 40, Rule.greater_than );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 
 	}
 
-	private static createOffRoadCondition ( entity?: EntityObject ) {
+	private static createOffRoadCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new OffRoadCondition( 5 );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 
 	}
 
-	private static createEndOfRoadCondition ( entity?: EntityObject ) {
+	private static createEndOfRoadCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new EndOfRoadCondition( 5 );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 
 	}
 
-	private static createRelativeDistanceCondition ( entity?: EntityObject ) {
+	private static createRelativeDistanceCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new RelativeDistanceCondition(
 			entity?.name, 10, RelativeDistanceType.cartesianDistance,
 			false, Rule.less_than
 		);
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 
 	}
 
-	private static createAccelerationCondition ( entity?: EntityObject ) {
+	private static createAccelerationCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new AccelerationCondition( 1.0, Rule.greater_than );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 	}
 
-	private static createRelativeSpeedCondition ( entity?: EntityObject ) {
+	private static createRelativeSpeedCondition ( entity?: ScenarioEntity ) {
 
 		const condition = new RelativeSpeedCondition( entity?.name, 10, Rule.greater_than );
 
-		if ( entity ) condition.addEntity( entity.name );
+		if ( entity ) condition.addTriggeringEntity( entity.name );
 
 		return condition;
 	}

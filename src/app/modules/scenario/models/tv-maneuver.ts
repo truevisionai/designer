@@ -4,7 +4,6 @@
 
 import { EventEmitter } from '@angular/core';
 import { StoryboardEvent } from '../services/scenario-director.service';
-import { ScenarioInstance } from '../services/scenario-instance';
 import { TvAction } from './tv-action';
 import { StoryboardElementState, StoryboardElementType } from './tv-enums';
 import { TvEvent } from './tv-event';
@@ -20,7 +19,7 @@ export class Maneuver {
 
 	private static count = 1;
 
-	public parameterDeclaration: ParameterDeclaration;
+	private parameterDeclarations: ParameterDeclaration[] = [];
 
 	public events: TvEvent[] = [];
 
@@ -95,6 +94,10 @@ export class Maneuver {
 			} );
 
 		}
+	}
+
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+		this.parameterDeclarations.push( parameterDeclaration );
 	}
 }
 

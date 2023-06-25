@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { TvContactPoint } from '../../tv-map/models/tv-common';
@@ -12,11 +11,11 @@ import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { AbstractController } from '../models/abstract-controller';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/tv-entities';
 
 export class DefaultVehicleController extends AbstractController {
 
-	constructor ( private entity: EntityObject ) {
+	constructor ( private entity: ScenarioEntity ) {
 		super();
 	}
 
@@ -98,13 +97,13 @@ export class DefaultVehicleController extends AbstractController {
 					// update s-coordinate
 					if ( contactPoint === TvContactPoint.END ) {
 
-						actor.direction = -1;
-						actor.sCoordinate = nextRoad.length - ( actor.sCoordinate - currentRoad.length );
+						actor.setTravelingDirection( -1 );
+						actor.setSValue( nextRoad.length - ( actor.sCoordinate - currentRoad.length ) );
 
 					} else {
 
-						actor.direction = 1;
-						actor.sCoordinate = actor.sCoordinate - currentRoad.length;
+						actor.setTravelingDirection( 1 );
+						actor.setSValue( actor.sCoordinate - currentRoad.length );
 
 					}
 
@@ -211,13 +210,13 @@ export class DefaultVehicleController extends AbstractController {
 
 			const position = TvMapQueries.getLanePosition( actor.roadId, actor.laneId, actor.sCoordinate, actor.laneOffset, refPos );
 
-			actor.gameObject.position.copy( position );
+			actor.position.copy( position );
 
 			// right lane move forward
 			// left lane traffic move opposite
 			// actor.direction = obj.getLaneId() > 0 ? -1 : 1;
 
-			actor.gameObject.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
+			actor.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
 
 			actor.sCoordinate += actor.speed * actor.direction * Maths.Speed2MPH * Time.deltaTime;
 		}

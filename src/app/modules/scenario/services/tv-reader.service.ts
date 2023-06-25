@@ -6,12 +6,14 @@ import { Injectable } from '@angular/core';
 import { Debug } from 'app/core/utils/debug';
 
 import { XMLParser } from 'fast-xml-parser';
+import { Vector3 } from 'three';
 import { IFile } from '../../../core/models/file';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
 import { FileService } from '../../../services/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
+import { DefaultVehicleController } from '../controllers/vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
@@ -51,9 +53,11 @@ import { WorldPosition } from '../models/positions/tv-world-position';
 import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
 import { TvAction } from '../models/tv-action';
+import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../models/tv-bounding-box';
+
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
-import { EntityObject } from '../models/tv-entities';
+import { ScenarioEntity, VehicleEntity } from '../models/tv-entities';
 import {
 	ConditionEdge,
 	CoordinateSystem,
@@ -73,15 +77,21 @@ import { FileHeader } from '../models/tv-file-header';
 import { EventAction, Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
 import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
+import { TvProperty } from '../models/tv-properties';
 import { RoadNetwork } from '../models/tv-road-network';
 import { Route, Waypoint } from '../models/tv-route';
 import { TvScenario } from '../models/tv-scenario';
-import { Sequence } from '../models/tv-sequence';
+import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
 import { RelativeRoadPosition } from './relative-road.position';
-import { TrafficSignalControllerCondition } from './traffic-signal-controller.condition';
+import {
+	TrafficSignalController,
+	TrafficSignalControllerCondition,
+	TrafficSignalPhase,
+	TrafficSignalState
+} from './traffic-signal-controller.condition';
 import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
 
@@ -90,7 +100,7 @@ import { UserDefinedValueCondition } from './user-defined-value.condition';
 } )
 export class OpenScenarioImporter extends AbstractReader {
 
-	private openScenario: TvScenario;
+	private static openScenario: TvScenario;
 	private file: IFile;
 
 	constructor ( private fileService: FileService ) {
@@ -336,7 +346,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public readContents ( contents: string ): TvScenario {
 
-		this.openScenario = new TvScenario();
+		OpenScenarioImporter.openScenario = new TvScenario();
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -353,14 +363,12 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		console.log( xml );
 
-		this.readFile( xml );
+		OpenScenarioImporter.readRootElement( xml, OpenScenarioImporter.openScenario );
 
-		this.readOpenScenario( xml, this.openScenario );
-
-		return this.openScenario;
+		return OpenScenarioImporter.openScenario;
 	}
 
-	readCondition ( xml: XmlElement ) {
+	private static readCondition ( xml: XmlElement ) {
 
 		let condition: Condition = null;
 
@@ -401,7 +409,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	public readFileHeader ( xmlElement: any ) {
+	private static readFileHeader ( xmlElement: any ) {
 
 		return new FileHeader(
 			parseFloat( xmlElement.attr_revMajor ),
@@ -413,7 +421,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readLongitudinalPurpose ( xml: XmlElement ): LongitudinalPurpose {
+	private static readLongitudinalPurpose ( xml: XmlElement ): LongitudinalPurpose {
 
 		let longitudinalPurpose = new LongitudinalPurpose;
 
@@ -434,73 +442,67 @@ export class OpenScenarioImporter extends AbstractReader {
 		return longitudinalPurpose;
 	}
 
-	public readRoadNetwork ( xml: XmlElement ) {
+	private static readRoadNetwork ( xml: XmlElement ) {
 
-		let logics, sceneGraph;
+		let logics: File, sceneGraph: File;
+		let controllers: TrafficSignalController[] = [];
 
 		if ( xml.Logics || xml.LogicFile ) {
-
 			logics = this.readFile( xml.Logics || xml.LogicFile );
+		}
+
+		if ( xml.SceneGraph || xml.SceneGraphFile ) {
+			sceneGraph = this.readFile( xml.SceneGraph || xml.SceneGraphFile );
+		}
+
+		if ( xml.Signals || xml.TrafficSignals ) {
+
+			const items: XmlElement[] = xml.Signals?.Controller || xml.TrafficSignals?.TrafficSignalController;
+
+			readXmlArray( items, ( xml ) => {
+				controllers.push( this.readTrafficSignalController( xml ) );
+			} );
 
 		}
 
-		if ( xml.SceneGraph != null ) {
-
-			sceneGraph = this.readFile( xml.SceneGraph );
-		}
-
-		// TODO: RoadSignals
-
-		return new RoadNetwork( logics, sceneGraph );
+		return new RoadNetwork( logics, sceneGraph, controllers );
 	}
 
-	public readEntities ( xml: XmlElement ): EntityObject[] {
+	private static readEntities ( xml: XmlElement, scenario: TvScenario ): void {
 
-		const objects: EntityObject[] = [];
+		// Object is for 0.9 and ScenarioObject is for 1.0 and above
+		readXmlArray( xml?.Object || xml?.ScenarioObject, ( xml: XmlElement ) => {
 
-		this.readAsOptionalArray( xml.Object, ( object, count ) => {
-
-			const entityObject = this.readEntityObject( object );
-
-			objects.push( entityObject );
+			scenario.addObject( this.readScenarioObject( xml ) );
 
 		} );
 
-		this.readAsOptionalArray( xml.ScenarioObject, ( object, count ) => {
-
-			const entityObject = this.readEntityObject( object );
-
-			objects.push( entityObject );
-
-		} );
-
-		return objects;
-
 	}
 
-	public readEntityObject ( xml: XmlElement ): EntityObject {
+	private static readScenarioObject ( xml: XmlElement ): ScenarioEntity {
 
-		const name = xml.attr_name;
+		const name: string = xml.attr_name;
 
-		const entityObject = new EntityObject( name );
+		// const entityObject = new EntityObject( name );
+		let entityObject: ScenarioEntity;
 
-		if ( xml.CatalogReference != null ) {
+		if ( xml.Vehicle ) {
 
-			// entityObject.catalogReference = this.readCatalogReference( xml.CatalogReference );
+			entityObject = this.readVehicle( xml.Vehicle );
 
-		} else if ( xml.Vehicle != null ) {
+		} else if ( xml.Pedestrian ) {
 
-		} else if ( xml.Pedestrian != null ) {
+		} else if ( xml.MiscObject ) {
 
-		} else if ( xml.MiscObject != null ) {
+		} else if ( xml.CatalogReference ) {
 
 		}
 
-		this.readAsOptionalElement( xml.Controller, ( xml ) => {
+		entityObject = entityObject || new VehicleEntity( name );
 
-			const controller = this.readController( xml );
+		readXmlElement( xml.Controller || xml.ObjectController, ( xml ) => {
 
-			if ( controller ) entityObject.controller = controller;
+			this.readController( xml, entityObject );
 
 		} );
 
@@ -508,32 +510,154 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	public readController ( xml: XmlElement ): AbstractController {
+	static readVehicle ( xml: XmlElement ): ScenarioEntity {
 
-		let response: AbstractController = null;
+		// <xsd:complexType name="Vehicle">
+		// <xsd:all>
+		// <xsd:element name="ParameterDeclarations" type="ParameterDeclarations" minOccurs="0"/>
+		// <xsd:element name="BoundingBox" type="BoundingBox"/>
+		// <xsd:element name="Performance" type="Performance"/>
+		// <xsd:element name="Axles" type="Axles"/>
+		// <xsd:element name="Properties" type="Properties"/>
+		// </xsd:all>
+		// <xsd:attribute name="name" type="String" use="required"/>
+		// <xsd:attribute name="vehicleCategory" type="VehicleCategory" use="required"/>
+		// </xsd:complexType>
+
+		const name: string = xml.attr_name;
+
+		const category = xml.attr_category || xml.attr_vehicleCategory;
+
+		const boundingBox = this.readBoundingBox( xml.BoundingBox );
+
+		const performance = this.readPerformance( xml.Performance );
+
+		const axles: TvAxles = this.readAxles( xml.Axles );
+
+		const properties: TvProperty[] = this.readProperties( xml.Properties );
+
+		return new VehicleEntity( name, category, boundingBox, performance, axles, properties );
+	}
+
+	static readProperties ( xml: XmlElement ): TvProperty[] {
+
+		const properties: TvProperty[] = [];
+
+		readXmlArray( xml.Property, ( xml ) => TvProperty.fromXML( xml ) );
+
+		return properties;
+
+	}
+
+	static readAxles ( xml: XmlElement ): TvAxles {
+
+		// <xsd:element name="Front" type="OSCAxle"/>
+		// <xsd:element name="Rear" type="OSCAxle"/>
+		// <xsd:element name="Additional" type="OSCAxle" minOccurs="0" maxOccurs="unbounded"/>
+
+		const frontAxle = this.readAxle( xml.FrontAxle );
+		const rearAxle = this.readAxle( xml.RearAxle );
+		const additionalAxles = [];
+
+		readXmlArray( xml.AdditionalAxle, ( xml ) => additionalAxles.push( this.readAxle( xml ) ) );
+
+
+		return new TvAxles( frontAxle, rearAxle, additionalAxles );
+
+	}
+
+	static readAxle ( xml: XmlElement ): TvAxle {
+
+		// <xsd:attribute name="maxSteering"   type="xsd:double" use="required"/>
+		// <xsd:attribute name="wheelDiameter" type="xsd:double" use="required"/>
+		// <xsd:attribute name="trackWidth"    type="xsd:double" use="required"/>
+		// <xsd:attribute name="positionX"     type="xsd:double" use="required"/>
+		// <xsd:attribute name="positionZ"     type="xsd:double" use="required"/>
+
+		return new TvAxle(
+			parseFloat( xml.attr_maxSteering ),
+			parseFloat( xml.attr_wheelDiameter ),
+			parseFloat( xml.attr_trackWidth ),
+			parseFloat( xml.attr_positionX ),
+			parseFloat( xml.attr_positionZ ),
+		);
+
+	}
+
+	static readPerformance ( xml: XmlElement ): TvPerformance {
+
+		return new TvPerformance(
+			parseFloat( xml.attr_maxSpeed ),
+			parseFloat( xml.attr_maxAcceleration ),
+			parseFloat( xml.attr_maxDeceleration ),
+			parseFloat( xml.attr_mass || 0 ),
+		);
+
+	}
+
+	static readBoundingBox ( xml: XmlElement ): TvBoundingBox {
+
+		return new TvBoundingBox(
+			this.readVector3( xml.Center ),
+			this.readDimension( xml.Dimension ),
+		);
+	}
+
+	static readDimension ( xml: XmlElement ): TvDimension {
+
+		return new TvDimension(
+			parseFloat( xml.attr_x ),
+			parseFloat( xml.attr_y ),
+			parseFloat( xml.attr_z ),
+		);
+
+	}
+
+	static readVector3 ( xml: XmlElement ): Vector3 {
+
+		return new Vector3(
+			parseFloat( xml.attr_x ),
+			parseFloat( xml.attr_y ),
+			parseFloat( xml.attr_z ),
+		);
+
+	}
+
+	private static readController ( xml: XmlElement, entity: ScenarioEntity ): AbstractController {
+
+		let controller: AbstractController;
 
 		if ( xml.CatalogReference != null ) {
 
 			// const catalogReference = CatalogReference.readXml( xml.CatalogReference );
-
 			// response = new CatalogReferenceController( catalogReference );
+			controller = null;
 
 		} else if ( xml.Driver != null ) {
 
+			controller = null;
+
 		} else if ( xml.PedestrianController != null ) {
+
+			controller = null;
 
 		}
 
-		return response;
+		controller = controller || new DefaultVehicleController( entity );
+
+		entity.setController( controller );
+
+		return controller;
+
 	}
 
-	public readFile ( xml ) {
+	private static readFile ( xml ) {
 
 		return new File( xml.attr_filepath );
 
 	}
 
-	readConditionGroup ( xml: XmlElement ): ConditionGroup {
+	private static readConditionGroup ( xml: XmlElement ): ConditionGroup {
 
 		const conditionGroup = new ConditionGroup;
 
@@ -547,7 +671,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readByEntityCondition ( xml: XmlElement ): Condition {
+	private static readByEntityCondition ( xml: XmlElement ): Condition {
 
 		const condition = OpenScenarioImporter.readConditionByEntity( xml.EntityCondition );
 
@@ -557,12 +681,12 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			// 0.9
 			this.readAsOptionalArray( xml.Entity, ( xml ) => {
-				condition.triggeringEntities.push( xml.attr_name );
+				condition.addTriggeringEntity( xml.attr_name );
 			} );
 
 			// 1.0 or above
 			this.readAsOptionalArray( xml.EntityRef, ( xml ) => {
-				condition.triggeringEntities.push( xml.attr_entityRef );
+				condition.addTriggeringEntity( xml.attr_entityRef );
 			} );
 
 			// 0.9 and 1.0
@@ -688,7 +812,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new DistanceCondition( position, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 	}
 
-	readConditionByValue ( xml: XmlElement ): Condition {
+	private static readConditionByValue ( xml: XmlElement ): Condition {
 
 		if ( xml.Parameter || xml.ParameterCondition ) {
 
@@ -746,7 +870,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new SimulationTimeCondition( value, rule );
 	}
 
-	readAtStartCondition ( xml: XmlElement ): Condition {
+	private static readAtStartCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -755,7 +879,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new StoryboardElementStateCondition( type, elementName, StoryboardElementState.startTransition );
 	}
 
-	readAfterTerminationCondition ( xml: XmlElement ): Condition {
+	private static readAfterTerminationCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -764,7 +888,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new StoryboardElementStateCondition( type, elementName, StoryboardElementState.endTransition );
 	}
 
-	readStoryboardElementStateCondition ( xml: XmlElement ): Condition {
+	private static readStoryboardElementStateCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -776,32 +900,32 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	public readStory ( xml: XmlElement ): Story {
+	public static readStory ( xml: XmlElement ): Story {
 
 		let name = xml.attr_name;
 		let ownerName = xml.attr_owner ? xml.attr_owner : null;
 
 		const story = new Story( name, ownerName );
 
-		this.readAsOptionalArray( xml.Act, ( xml ) => {
+		readXmlArray( xml.Act, xml => story.addAct( this.readAct( xml ) ) );
 
-			story.addAct( this.readAct( xml ) );
-
-		} );
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration,
+			xml => story.addParameterDeclaration( this.readParameterDeclaration( xml ) )
+		);
 
 		return story;
 	}
 
-	readAct ( xml: XmlElement ): Act {
+	private static readAct ( xml: XmlElement ): Act {
 
 		const act = new Act;
 
 		act.name = xml.attr_name;
 
-		this.readAsOptionalArray( xml.Sequence, ( xml ) => {
-
+		// Sequence is for 0.9
+		// ManeuverGroup is for 1.0 and above
+		this.readAsOptionalArray( xml.Sequence || xml.ManeuverGroup, ( xml ) => {
 			act.addSequence( this.readSequence( xml ) );
-
 		} );
 
 		if ( xml.Conditions != null ) {
@@ -833,101 +957,112 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readSequence ( xml: XmlElement ): Sequence {
+	private static readSequence ( xml: XmlElement ): ManeuverGroup {
 
-		const sequence = new Sequence;
+		const maneuverGroup = new ManeuverGroup;
 
-		sequence.name = xml.attr_name;
-		sequence.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
+		maneuverGroup.name = xml.attr_name;
+		maneuverGroup.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
 
-		// read actors
-		this.readAsOptionalElement( xml.Actors, ( xml ) => {
-
-			this.readAsOptionalArray( xml.Entity, ( xml ) => {
-
-				sequence.actors.push( xml.attr_name );
-
-			} );
-
+		// support for 0.9
+		readXmlArray( xml.Actors?.Entity, ( xml ) => {
+			maneuverGroup.actors.push( xml.attr_name );
+		} );
+		// 1.0 and above
+		readXmlArray( xml.Actors?.EntityRef, ( xml ) => {
+			maneuverGroup.actors.push( xml.attr_entityRef );
 		} );
 
 		// read catalogReference
 		// read maneuvers
 
 		this.readAsOptionalArray( xml.Maneuver, ( xml ) => {
-
-			sequence.addManeuver( this.readManeuver( xml ) );
-
+			maneuverGroup.addManeuver( this.readManeuver( xml ) );
 		} );
 
-		return sequence;
+		return maneuverGroup;
 	}
 
-	readManeuver ( xml: XmlElement ): Maneuver {
+	private static readManeuver ( xml: XmlElement ): Maneuver {
 
 		const maneuver = new Maneuver( xml.attr_name );
 
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml: XmlElement ) => {
+			maneuver.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		// to support 0.9. for example check Stauende.xosc
+		readXmlArray( xml.ParameterDeclaration?.Parameter, ( xml: XmlElement ) => {
+			maneuver.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
 		this.readAsOptionalArray( xml.Event, ( xml ) => {
-
 			maneuver.addEventInstance( this.readEvent( xml ) );
-
 		} );
 
 		return maneuver;
 	}
 
-	readEvent ( xml: XmlElement ): TvEvent {
+	private static readEvent ( xml: XmlElement ): TvEvent {
 
 		const event = new TvEvent;
 
 		event.name = xml.attr_name;
 		event.priority = xml.attr_priority;
 
-		this.readAsOptionalArray( xml.Action, ( xml ) => {
+		readXmlArray( xml.Action, ( xml ) => {
 
-			const action = this.readEventAction( xml );
+			const eventAction = this.readEventAction( xml );
 
-			event.addNewAction( action.name, action.action );
+			if ( eventAction?.action ) {
+
+				event.addNewAction( eventAction.name, eventAction.action );
+
+			} else {
+
+				TvConsole.warn( `Event ${ event.name } has an invalid action ${ eventAction.name }` );
+
+				console.error( xml );
+
+			}
 
 		} );
 
-		if ( xml.StartConditions != null ) {
+		readXmlArray( xml.StartConditions?.ConditionGroup, ( xml ) => {
+			event.startConditionGroups.push( this.readConditionGroup( xml ) );
+		} );
+		readXmlArray( xml.StartTrigger?.ConditionGroup, ( xml ) => {
+			event.startConditionGroups.push( this.readConditionGroup( xml ) );
+		} );
 
-			this.readAsOptionalArray( xml.StartConditions.ConditionGroup, ( xml ) => {
-
-				event.startConditionGroups.push( this.readConditionGroup( xml ) );
-
-			} );
-
-		}
 
 		return event;
 	}
 
-	readEventAction ( xml: XmlElement ): EventAction {
+	private static readEventAction ( xml: XmlElement ): EventAction {
 
 		const action = new EventAction;
 
 		action.name = xml.attr_name;
 
-		if ( xml.Private != null ) {
+		if ( xml.Private || xml.PrivateAction ) {
 
-			action.action = this.readPrivateAction( xml.Private );
+			action.action = this.readPrivateAction( xml.Private || xml.PrivateAction );
 
-		} else if ( xml.UserDefined != null ) {
+		} else if ( xml.UserDefined || xml.UserDefinedAction ) {
 
-			action.action = this.readUserDefinedAction( xml.UserDefined );
+			action.action = this.readUserDefinedAction( xml.UserDefined || xml.UserDefinedAction );
 
-		} else if ( xml.Global != null ) {
+		} else if ( xml.Global || xml.GlobalAction ) {
 
-			action.action = this.readGlobalAction( xml.Global );
+			action.action = this.readGlobalAction( xml.Global || xml.GlobalAction );
 
 		}
 
 		return action;
 	}
 
-	public readInitActions ( xml: XmlElement, storyboard: Storyboard ) {
+	private static readInitActions ( xml: XmlElement, storyboard: Storyboard ) {
 
 		this.readAsOptionalArray( xml.Global, ( item ) => {
 
@@ -973,29 +1108,29 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readUserDefinedAction ( item: any ): TvAction {
+	private static readUserDefinedAction ( item: any ): TvAction {
 
 		throw new Error( 'Method not implemented.' );
 
 	}
 
-	readGlobalAction ( item: any ): TvAction {
+	private static readGlobalAction ( item: any ): TvAction {
 
 		throw new Error( 'Method not implemented.' );
 
 	}
 
-	readPrivateAction ( xml: XmlElement ): PrivateAction {
+	private static readPrivateAction ( xml: XmlElement ): PrivateAction {
 
 		let action = null;
 
-		if ( xml.Longitudinal != null || xml.LongitudinalAction != null ) {
+		if ( xml.Longitudinal || xml.LongitudinalAction ) {
 
 			action = this.readLongitudinalAction( xml.Longitudinal || xml.LongitudinalAction );
 
-		} else if ( xml.Lateral != null ) {
+		} else if ( xml.Lateral || xml.LateralAction ) {
 
-			action = this.readLateralAction( xml.Lateral );
+			action = this.readLateralAction( xml.Lateral || xml.LateralAction );
 
 		} else if ( xml.Visibility != null ) {
 
@@ -1028,6 +1163,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		} else {
 
 			throw new Error( 'Unknown private action' );
+			console.error( xml );
 
 		}
 
@@ -1035,23 +1171,33 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readLateralAction ( xml: XmlElement ): TvAction {
+	private static readLateralAction ( xml: XmlElement ): TvAction {
 
 		let action: TvAction = null;
 
-		if ( xml.LaneChange != null ) {
-			action = this.readLaneChangeAction( xml.LaneChange );
+		if ( xml.LaneChange || xml.LaneChangeAction ) {
+
+			action = this.readLaneChangeAction( xml.LaneChange || xml.LaneChangeAction );
+
 		} else if ( xml.LaneOffset != null ) {
+
+			throw new Error( 'action not implemented' );
+
 		} else if ( xml.Distance != null ) {
+
+			throw new Error( 'action not implemented' );
+
 		} else {
-			console.error( 'unknown lateral action' );
+
+			throw new Error( 'action not implemented' );
+
 		}
 
 		return action;
 
 	}
 
-	readRoutingAction ( xml: XmlElement ): AbstractRoutingAction {
+	private static readRoutingAction ( xml: XmlElement ): AbstractRoutingAction {
 
 		let action: AbstractRoutingAction = null;
 
@@ -1074,7 +1220,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	readFollowTrajectoryAction ( xml: XmlElement ): FollowTrajectoryAction {
+	private static readFollowTrajectoryAction ( xml: XmlElement ): FollowTrajectoryAction {
 
 		let trajectory: Trajectory = null;
 
@@ -1096,7 +1242,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	readTrajectory ( xml: XmlElement ): Trajectory {
+	private static readTrajectory ( xml: XmlElement ): Trajectory {
 
 		let name = xml.attr_name;
 		let closed = xml.attr_closed == 'true';
@@ -1119,7 +1265,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return trajectory;
 	}
 
-	readFollowRouteAction ( xml: XmlElement ): FollowRouteAction {
+	private static readFollowRouteAction ( xml: XmlElement ): FollowRouteAction {
 
 		let route: Route = null;
 
@@ -1138,7 +1284,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	readRoute ( xml: XmlElement ): Route {
+	private static readRoute ( xml: XmlElement ): Route {
 
 		let route = new Route;
 
@@ -1160,104 +1306,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return route;
 	}
 
-	// private readInitActions ( xmlElement: any ) {
-	//
-	//     // oscStoryboard.m_InitActions = InitActions.readXml( Storyboard.Init.Actions );
-	//
-	//     this.readPrivateElements( xmlElement.Private, this.openScenario.storyboard.initActions );
-	//
-	// }
-	//
-	// private readStory ( xml: XmlElement ) {
-	//
-	//     // oscStoryboard.Story = Story.readXml( Storyboard.Story );
-	// }
-	//
-	// private readPrivateElements ( xml: XmlElement, initActions: InitActions ) {
-	//
-	//     let owner = xml.attr_object;
-	//
-	//     if ( Array.isArray( xml ) ) {
-	//
-	//         for ( let i = 0; i < xml.length; i++ ) {
-	//
-	//             initActions.addPrivateAction( owner, this.readPrivateElement( xml[i] ) );
-	//
-	//         }
-	//
-	//     } else {
-	//
-	//         initActions.addPrivateAction( owner, this.readPrivateElement( xml ) );
-	//
-	//     }
-	//
-	// }
-	//
-	// private readPrivateElement ( xml: XmlElement ): AbstractPrivateAction {
-	//
-	//     const privateAction = new PrivateAction();
-	//
-	//     if ( Array.isArray( xml.Action ) ) {
-	//
-	//         for ( let i = 0; i < xml.Action.length; i++ ) {
-	//
-	//             const action = this.readActionElement( xml.Action[i] );
-	//
-	//             privateAction.actions.push( action );
-	//
-	//         }
-	//
-	//     } else {
-	//
-	//         const action = this.readActionElement( xml.Action );
-	//
-	//         privateAction.actions.push( action );
-	//     }
-	//
-	//     return privateAction;
-	// }
-	//
-	// private readActionElement ( xml: XmlElement ) : any {
-	//
-	//     let action: any = null;
-	//
-	//     if ( xml.Position != null ) {
-	//
-	//         action = this.readPositionAction( xml.Position );
-	//
-	//     }
-	//
-	//     return action;
-	//
-	// }
-	//
-	// private readPositionAction ( xml: XmlElement ): any {
-	//
-	//     let position: PositionAction;
-	//
-	//     if ( xml.World != null ) {
-	//
-	//         position = this.readWorldPosition( xml.World );
-	//
-	//     }
-	//
-	//     new PositionAction( position );
-	// }
-	//
-	// private readWorldPosition ( xml: XmlElement ): any {
-	//
-	//     return new WorldPosition(
-	//         xml.attr_x,
-	//         xml.attr_y,
-	//         xml.attr_z,
-	//
-	//         xml.attr_h,
-	//         xml.attr_p,
-	//         xml.attr_r,
-	//     );
-	// }
-
-	readWaypoint ( xml: XmlElement ): Waypoint {
+	private static readWaypoint ( xml: XmlElement ): Waypoint {
 
 		let position = OpenScenarioImporter.readPosition( xml.Position );
 		let strategy = xml.attr_strategy;
@@ -1265,25 +1314,25 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new Waypoint( position, strategy );
 	}
 
-	readLaneChangeAction ( xml: XmlElement ): TvAction {
+	private static readLaneChangeAction ( xml: XmlElement ): TvAction {
 
 		const targetLaneOffset = parseFloat( xml.attr_targetLaneOffset || 0 );
 
-		const dynamics = this.readTransitionDynamics( xml.Dynamics );
+		const dynamics = this.readTransitionDynamics( xml.Dynamics || xml.TransitionDynamics || xml.LaneChangeActionDynamics );
 
-		const target = this.readTarget( xml.Target );
+		const target = this.readTarget( xml.Target || xml.LaneChangeTarget );
 
 		return new LaneChangeAction( dynamics, target, targetLaneOffset );
 
 	}
 
-	readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
+	private static readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		return TransitionDynamics.fromXML( xml );
 
 	}
 
-	readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
+	private static readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		// TOOD: Fix parsing of enum
 		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape || xml.attr_shape;
@@ -1297,7 +1346,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	readPositionAction ( xml: XmlElement ): PrivateAction {
+	private static readPositionAction ( xml: XmlElement ): PrivateAction {
 
 		return new TeleportAction( OpenScenarioImporter.readPosition( xml ) );
 
@@ -1359,7 +1408,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new LanePosition( roadId, laneId, offset, s, orientation );
 	}
 
-	readLongitudinalAction ( xml: XmlElement ): any {
+	private static readLongitudinalAction ( xml: XmlElement ): any {
 
 		let action = null;
 
@@ -1382,30 +1431,67 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	readTarget ( xml: XmlElement ): Target {
+	private static readTarget ( xml: XmlElement ): Target {
 
-		if ( xml.Absolute || xml.AbsoluteTargetSpeed ) {
+		if ( xml.Absolute ) {
 
-			const absXml = xml.Absolute || xml.AbsoluteTargetSpeed;
+			return new AbsoluteTarget( parseFloat( xml.Absolute.attr_value ) );
 
-			const value = parseFloat( absXml.attr_value );
+		} else if ( xml.Relative ) {
 
-			return new AbsoluteTarget( value );
-
-		}
-
-		if ( xml.Relative != null ) {
-
-			const value = parseFloat( xml.Relative.attr_value );
-
-			const object = xml.Relative.attr_object;
+			const value = parseFloat( xml.Relative.attr_value || 0 );
+			const object: string = xml.Relative.attr_object;
 
 			return new RelativeTarget( object, value );
 
 		}
+
+		// new in OpenSCENARIO 1.0 and above
+
+		if ( xml.AbsoluteTargetSpeed ) {
+
+			const value = parseFloat( xml.AbsoluteTargetSpeed.attr_value || 0 );
+			const entityRef: string = xml.AbsoluteTargetSpeed.attr_entityRef;
+
+			return new RelativeTarget( entityRef, value );
+
+		} else if ( xml.RelativeTargetSpeed ) {
+
+			const value = parseFloat( xml.RelativeTargetSpeed.attr_value || 0 );
+			const entityRef: string = xml.RelativeTargetSpeed.attr_entityRef;
+
+			return new RelativeTarget( entityRef, value );
+
+		} else if ( xml.RelativeTargetLane ) {
+
+			const value: number = parseInt( xml.RelativeTargetLane.attr_value || 0 );
+			const entityRef: string = xml.RelativeTargetLane.attr_entityRef;
+
+			return new RelativeTarget( entityRef, value );
+
+		} else if ( xml.AbsoluteTargetLane ) {
+
+			return new AbsoluteTarget( parseInt( xml.AbsoluteTargetLane.attr_value || 0 ) );
+
+		} else if ( xml.RelativeTargetLaneOffset ) {
+
+			const value: number = parseFloat( xml.RelativeTargetLaneOffset.attr_value || 0 );
+			const entityRef: string = xml.RelativeTargetLaneOffset.attr_entityRef;
+
+			return new RelativeTarget( entityRef, value );
+
+		} else if ( xml.AbosoluteTargetLaneOffset ) {
+
+			return new AbsoluteTarget( parseFloat( xml.AbosoluteTargetLaneOffset.attr_value || 0 ) );
+
+		} else {
+
+			throw new Error( 'unknown target' );
+
+		}
 	}
 
-	readVertex ( xml: XmlElement ): Vertex {
+	private static readVertex ( xml: XmlElement ): Vertex {
 
 		const vertex = new Vertex;
 
@@ -1416,7 +1502,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return vertex;
 	}
 
-	readVertexShape ( xml: XmlElement ): AbstractShape {
+	private static readVertexShape ( xml: XmlElement ): AbstractShape {
 
 		if ( xml.Polyline != null ) {
 
@@ -1437,7 +1523,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	readClothoidShape ( xml: XmlElement ): ClothoidShape {
+	private static readClothoidShape ( xml: XmlElement ): ClothoidShape {
 
 		const clothoid = new ClothoidShape;
 
@@ -1448,7 +1534,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return clothoid;
 	}
 
-	readSplineShape ( xml: XmlElement ): SplineShape {
+	private static readSplineShape ( xml: XmlElement ): SplineShape {
 
 		const spline = new SplineShape;
 
@@ -1458,7 +1544,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return spline;
 	}
 
-	readSplineControlPoint ( xml: XmlElement ): ControlPoint {
+	private static readSplineControlPoint ( xml: XmlElement ): ControlPoint {
 
 		const controlPoint = new ControlPoint;
 
@@ -1467,41 +1553,29 @@ export class OpenScenarioImporter extends AbstractReader {
 		return controlPoint;
 	}
 
-	private readOpenScenario ( xml: XmlElement, openScenario: TvScenario ): any {
+	private static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
 
-		const root = xml.OpenSCENARIO;
+		const root: XmlElement = xml.OpenSCENARIO;
 
-		openScenario.fileHeader = this.readFileHeader( root.FileHeader );
+		scenario.fileHeader = this.readFileHeader( root.FileHeader );
 
-		// if ( openScenario.fileHeader.version != OpenScenarioVersion.v1_0 )
+		if ( root?.Storyboard ) {
 
-		// Parsing version 0.9
+			this.readScenario( root, scenario );
 
-		readXmlElement( root.ParameterDeclarations, ( xml: XmlElement ) => {
-			readXmlArray( xml.ParameterDeclaration, ( xml: XmlElement ) => {
-				openScenario.addParameterDeclaration( OpenScenarioImporter.readParameterDeclaration( xml ) );
-			} );
-		} );
+		} else if ( root?.CatalogDefinition ) {
 
-		// NOTE: Before reading the xml document further
-		// we need to replace all paramater variables in the xml
-		// this.replaceParamaterValues( OpenSCENARIO );
+			throw new Error( 'CatalogDefinition not implemented yet' );
 
-		// TODO: Read Catalogs
-		// openScenario.catalogs = this.readCatalogs(OpenSCENARIO.Catalogs);
+		} else if ( root?.ParameterValueDistribution ) {
 
-		openScenario.roadNetwork = this.readRoadNetwork( root.RoadNetwork );
+			throw new Error( 'ParameterValueDistribution not implemented yet' );
 
-		this.readEntities( root.Entities ).forEach( ( value: EntityObject ) => {
+		}
 
-			openScenario.addObject( value );
-
-		} );
-
-		openScenario.storyboard = this.readStoryboard( root.Storyboard );
 	}
 
-	private readStoryboard ( xml: XmlElement ): Storyboard {
+	private static readStoryboard ( xml: XmlElement ): Storyboard {
 
 		const storyboard = new Storyboard();
 
@@ -1513,10 +1587,12 @@ export class OpenScenarioImporter extends AbstractReader {
 			storyboard.addStory( this.readStory( xml ) );
 		} );
 
+		// to suppoer 0.9
 		readXmlArray( xml?.EndConditions?.ConditionGroup, ( xml: XmlElement ) => {
 			storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
 		} );
 
+		// to support 1.0 and above
 		readXmlArray( xml?.StopTrigger?.ConditionGroup, ( xml: XmlElement ) => {
 			storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
 		} );
@@ -1774,5 +1850,76 @@ export class OpenScenarioImporter extends AbstractReader {
 			return ConditionEdge.none;
 
 		}
+	}
+
+	private static readScenario ( xml: XmlElement, scenario: TvScenario ) {
+
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml: XmlElement ) => {
+			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		// to support 0.9. for example check Stauende.xosc
+		readXmlArray( xml.ParameterDeclaration?.Parameter, ( xml: XmlElement ) => {
+			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		// this.readCatalog( xml.CatalogLocations?.VehicleCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.ControllerCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.PedestrianCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.MiscObjectCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.EnvironmentCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.ManeuverCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.TrajectoryCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.RouteCatalog?.Directory?.attr_path );
+		//
+		// // support for 0.9
+		// // both moved into ControllerCatalogLocation in 1.0
+		// this.readCatalog( xml.CatalogLocations?.PedestrianControllerCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.DriverCatalog?.Directory?.attr_path );
+
+		scenario.roadNetwork = this.readRoadNetwork( xml.RoadNetwork );
+
+		this.readEntities( xml.Entities, scenario );
+
+		// EntitySelections
+		// TODO: implement
+
+		scenario.storyboard = this.readStoryboard( xml.Storyboard );
+
+	}
+
+	private static readTrafficSignalController ( xml: XmlElement ): TrafficSignalController {
+
+		const name = xml?.attr_name;
+		const delay = parseFloat( xml?.attr_delay );
+		const reference = xml?.attr_reference;
+
+		const phases: TrafficSignalPhase[] = [];
+
+		readXmlArray( xml?.Phase, ( xml: XmlElement ) => {
+			phases.push( this.readTrafficSignalPhase( xml ) );
+		} );
+
+		return new TrafficSignalController( name, delay, reference, phases );
+	}
+
+	private static readTrafficSignalPhase ( xml: XmlElement ): TrafficSignalPhase {
+
+		// 0.9 support
+		const name = xml?.attr_type || xml?.attr_name;
+		const duration = parseFloat( xml?.attr_duration || 0 );
+
+		const states: TrafficSignalState[] = [];
+
+		// in 0.9 it is Signal, in 1.0 and above it is State
+		readXmlArray( xml?.Signal || xml?.State, ( xml: XmlElement ) => {
+			states.push( new TrafficSignalState( xml?.attr_state, xml?.attr_name || xml?.attr_trafficSignalId ) );
+		} );
+
+		return new TrafficSignalPhase( name, duration, states );
+	}
+
+	private static readLaneChangeTarget ( xml: XmlElement ) {
+
 	}
 }

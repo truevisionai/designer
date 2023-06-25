@@ -2,6 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+/**
+ * @deprecated map signal controller
+ */
 export class TvController {
 
 	constructor ( id: number, name: string, sequence?: number ) {
@@ -55,6 +58,9 @@ export class TvController {
 	}
 }
 
+/**
+ * @deprecated map signal controller
+ */
 export class TvControllerControl {
 
 	constructor ( signalId: number, type: string ) {

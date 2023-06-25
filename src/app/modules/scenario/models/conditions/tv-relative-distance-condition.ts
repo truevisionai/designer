@@ -30,7 +30,7 @@ export class RelativeDistanceCondition extends EntityCondition {
 	constructor (
 		public targetEntity: string,
 		public distance: number = 0,
-		public distanceType: RelativeDistanceType = RelativeDistanceType.cartesianDistance,
+		public distanceType: RelativeDistanceType = RelativeDistanceType.longitudinal,
 		public freespace: boolean = false,
 		public rule: Rule = Rule.greater_than,
 		public coordinateSystem = CoordinateSystem.entity,
@@ -70,21 +70,15 @@ export class RelativeDistanceCondition extends EntityCondition {
 		const entity = this.getEntity( entityName );
 		const targetEntity = this.getEntity( this.targetEntity );
 
-		switch ( this.distanceType ) {
-
-			case RelativeDistanceType.longitudinal:
-				throw new Error( 'Not implemented' );
-				break;
-
-			case RelativeDistanceType.lateral:
-				throw new Error( 'Not implemented' );
-				break;
-
-			case RelativeDistanceType.cartesianDistance:
-				return entity.getCurrentPosition().distanceTo( targetEntity.getCurrentPosition() );
-				break;
-
+		if ( this.distanceType === RelativeDistanceType.longitudinal ) {// The difference between the x-coordinates of the entity and target entity.
+			return entity.getCurrentPosition().x - targetEntity.getCurrentPosition().x;
+		} else if ( this.distanceType === RelativeDistanceType.lateral ) {// The difference between the y-coordinates of the entity and target entity.
+			return entity.getCurrentPosition().y - targetEntity.getCurrentPosition().y;
+		} else if ( this.distanceType === RelativeDistanceType.cartesianDistance ) {// Euclidean distance between the positions of the entity and the target entity.
+			return entity.getCurrentPosition().distanceTo( targetEntity.getCurrentPosition() );
+		} else if ( this.distanceType === RelativeDistanceType.euclidianDistance ) {
 		}
+
 
 	}
 }

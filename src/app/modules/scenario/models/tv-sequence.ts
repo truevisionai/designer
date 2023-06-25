@@ -11,7 +11,7 @@ import { Maneuver } from './tv-maneuver';
  * Because we want Vehicle 1 to change lanes, we specify its name under Actors.
  * This means that all the actions under this ManeuverGroup are executed by Vehicle 1.
  */
-export class Sequence {
+export class ManeuverGroup {
 
 	private static count = 1;
 
@@ -28,7 +28,7 @@ export class Sequence {
 
 		if ( this.actors == null ) this.actors = [];
 
-		Sequence.count++;
+		ManeuverGroup.count++;
 
 	}
 

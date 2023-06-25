@@ -4,7 +4,7 @@
 
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
-import { Sequence } from './tv-sequence';
+import { ManeuverGroup } from './tv-sequence';
 
 /**
  * An Act allows a set of multiple instances of Trigger
@@ -15,7 +15,7 @@ export class Act {
 
 	private static count = 1;
 
-	public sequences: Sequence[] = [];
+	public sequences: ManeuverGroup[] = [];
 
 	public startConditionGroups: ConditionGroup[] = [];
 	public cancelConditionGroups: ConditionGroup[] = [];
@@ -39,7 +39,7 @@ export class Act {
 
 	addNewSequence ( name: string, numberOfExecutions: number, ...actors: string[] ) {
 
-		const sequence = new Sequence( name, numberOfExecutions, actors );
+		const sequence = new ManeuverGroup( name, numberOfExecutions, actors );
 
 		this.sequences.push( sequence );
 
@@ -47,7 +47,7 @@ export class Act {
 
 	}
 
-	addSequence ( sequence: Sequence ) {
+	addSequence ( sequence: ManeuverGroup ) {
 
 		this.sequences.push( sequence );
 
