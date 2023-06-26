@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
-import { PositionType } from '../tv-enums';
+import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeLanePosition extends Position {
@@ -19,14 +19,36 @@ export class RelativeLanePosition extends Position {
 		public ds: number,
 		public offset: number,
 		public dsLane: number,
-		public orientation: Orientation
+		public orientation: Orientation = new Orientation()
 	) {
 		super();
 	}
 
 
-	exportXml () {
-		throw new Error( 'Method not implemented.' );
+	toXML ( version?: OpenScenarioVersion ) {
+
+		return {
+			attr_entityRef: this.entityRef,
+			attr_dLane: this.dLane,
+			attr_ds: this.ds,
+			attr_offset: this.offset,
+			attr_dsLane: this.dsLane,
+			Orientation: this.orientation?.toXML( version ),
+		}
+
+	}
+
+	static fromXML ( xml: XmlElement ): RelativeLanePosition {
+
+		return new RelativeLanePosition(
+			xml.attr_entityRef,
+			xml.attr_dLane,
+			xml.attr_ds,
+			xml.attr_offset,
+			xml.attr_dsLane,
+			Orientation.fromXML( xml.Orientation )
+		);
+
 	}
 
 	toVector3 (): Vector3 {
@@ -46,10 +68,5 @@ export class RelativeLanePosition extends Position {
 		// return TvMapQueries.getLanePosition( roadId, laneId, sCoordinate, offset );
 
 	}
-
-	toXML (): XmlElement {
-		return undefined;
-	}
-
 
 }

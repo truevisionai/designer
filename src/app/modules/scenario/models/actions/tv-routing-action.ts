@@ -35,11 +35,11 @@ export class FollowRouteAction extends AbstractRoutingAction {
 
 }
 
-export class LongitudinalPurpose {
-	public timing: LongitudinalTiming;
+export class TimeReference {
+	public timing: Timing;
 }
 
-export class LongitudinalTiming {
+export class Timing {
 	constructor (
 		public domain: DomainAbsoluteRelative,
 		public scale: number,

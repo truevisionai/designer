@@ -36,10 +36,10 @@ export class ActionService {
 			case ActionType.Global_SetEnvironment:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case ActionType.Global_Entity:
+			case ActionType.Global_AddEntity:
 				throw new Error( 'Unsupported private action' );
 				break;
-			case ActionType.Global_Parameter:
+			case ActionType.Global_ParameterSet:
 				throw new Error( 'Unsupported private action' );
 				break;
 			case ActionType.Global_Infrastructure:

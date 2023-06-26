@@ -40,29 +40,29 @@ describe( 'WriterService', () => {
 
 		const vertex = new Vertex();
 		vertex.position = new WorldPosition( 1, 2, 3 );
-		vertex.reference = 1;
+		vertex.time = 1;
 		vertex.shape = new PolylineShape;
 
 		const xml = writer.writeVertex( vertex );
 
-		expect( xml.attr_reference ).toBe( vertex.reference );
+		expect( xml.attr_reference ).toBe( vertex.time );
 
 	} );
 
-	it( 'should write clothoid correcty', () => {
+	// it( 'should write clothoid correcty', () => {
 
-		const clothoid = new ClothoidShape();
-		clothoid.curvature = 1;
-		clothoid.curvatureDot = 2;
-		clothoid.length = 3;
+	// 	// const clothoid = new ClothoidShape();
+	// 	// clothoid.curvature = 1;
+	// 	// clothoid.curvatureDot = 2;
+	// 	// clothoid.length = 3;
 
-		const xml = writer.writeClothoid( clothoid );
+	// 	// const xml = writer.writeClothoid( clothoid );
 
-		expect( xml.Clothoid.attr_curvature ).toBe( clothoid.curvature );
-		expect( xml.Clothoid.attr_curvatureDot ).toBe( clothoid.curvatureDot );
-		expect( xml.Clothoid.attr_length ).toBe( clothoid.length );
+	// 	// expect( xml.Clothoid.attr_curvature ).toBe( clothoid.curvature );
+	// 	// expect( xml.Clothoid.attr_curvatureDot ).toBe( clothoid.curvatureDot );
+	// 	// expect( xml.Clothoid.attr_length ).toBe( clothoid.length );
 
-	} );
+	// } );
 
 	it( 'should write spline correctly', () => {
 

@@ -19,9 +19,17 @@ import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
+import {
+	AddEntityAction,
+	DeleteEntityAction,
+	EnvironmentAction,
+	GlobalAction,
+	ParameterModifyAction,
+	ParameterSetAction
+} from '../models/actions/tv-global-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
-import { AbstractRoutingAction, FollowRouteAction, LongitudinalPurpose, LongitudinalTiming } from '../models/actions/tv-routing-action';
+import { AbstractRoutingAction, FollowRouteAction, TimeReference, Timing } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
@@ -64,6 +72,7 @@ import {
 	DirectionDimension,
 	DynamicsDimension,
 	DynamicsShape,
+	LateralPurpose,
 	ParameterType,
 	RelativeDistanceType,
 	RoutingAlgorithm,
@@ -100,7 +109,7 @@ import { UserDefinedValueCondition } from './user-defined-value.condition';
 } )
 export class OpenScenarioImporter extends AbstractReader {
 
-	private static openScenario: TvScenario;
+	public static openScenario: TvScenario;
 	private file: IFile;
 
 	constructor ( private fileService: FileService ) {
@@ -142,7 +151,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	private static readWorldPosition ( xml: XmlElement ): WorldPosition {
+	public static readWorldPosition ( xml: XmlElement ): WorldPosition {
 
 		return new WorldPosition(
 			parseFloat( xml.attr_x || 0 ),
@@ -155,7 +164,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRelativeSpeedCondition ( xml: XmlElement ): RelativeSpeedCondition {
+	public static readRelativeSpeedCondition ( xml: XmlElement ): RelativeSpeedCondition {
 
 		const entity: string = xml.attr_entity || xml.attr_entityRef;
 		const value = parseFloat( xml.attr_value || 0 );
@@ -166,7 +175,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RelativeSpeedCondition( entity, value, rule, direction );
 	}
 
-	private static readRelativeLanePosition ( xml: XmlElement ): RelativeLanePosition {
+	public static readRelativeLanePosition ( xml: XmlElement ): RelativeLanePosition {
 
 		const entityRef: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
 		const dLane = parseInt( xml.attr_dLane );
@@ -179,7 +188,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RelativeLanePosition( entityRef, dLane, ds, offset, dsLane, orientation );
 	}
 
-	private static readRelativeObjectPosition ( xml: XmlElement ): RelativeObjectPosition {
+	public static readRelativeObjectPosition ( xml: XmlElement ): RelativeObjectPosition {
 
 		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
 		const entity: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
@@ -190,13 +199,13 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RelativeObjectPosition( entity, dx, dy, dz, orientation );
 	}
 
-	private static readOrientation ( xml: XmlElement ): Orientation {
+	public static readOrientation ( xml: XmlElement ): Orientation {
 
 		return Orientation.fromXML( xml );
 
 	}
 
-	private static readParameterDeclaration ( xml: XmlElement ): ParameterDeclaration {
+	public static readParameterDeclaration ( xml: XmlElement ): ParameterDeclaration {
 
 		const name: string = xml.attr_name;
 
@@ -208,7 +217,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readParameter ( xml: XmlElement ): Parameter {
+	public static readParameter ( xml: XmlElement ): Parameter {
 
 		const name: string = xml.attr_name;
 		const value: string = xml.attr_value;
@@ -218,7 +227,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new Parameter( name, type, value );
 	}
 
-	private static readSpeedCondition ( xml: XmlElement ): SpeedCondition {
+	public static readSpeedCondition ( xml: XmlElement ): SpeedCondition {
 
 		const value = parseFloat( xml?.attr_value || 0 );
 		const rule = this.readRule( xml?.attr_rule );
@@ -229,13 +238,13 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new SpeedCondition( value, rule, direction );
 	}
 
-	private static readDirectory ( xml: XmlElement ): Directory {
+	public static readDirectory ( xml: XmlElement ): Directory {
 
 		return new Directory( xml.attr_path );
 
 	}
 
-	private static readParameterCondition ( xml: XmlElement ): ParameterCondition {
+	public static readParameterCondition ( xml: XmlElement ): ParameterCondition {
 
 		const rule: Rule = this.readRule( xml.attr_rule );
 
@@ -246,7 +255,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new ParameterCondition( name, value, rule );
 	}
 
-	private static readTimeOfDayCondition ( xml: XmlElement ): TimeOfDayCondition {
+	public static readTimeOfDayCondition ( xml: XmlElement ): TimeOfDayCondition {
 
 		const rule: Rule = this.readRule( xml.attr_rule );
 
@@ -276,37 +285,31 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new TimeOfDayCondition( date, rule );
 	}
 
-	private static readUserDefinedValueCondition ( xml: XmlElement ): UserDefinedValueCondition {
+	public static readUserDefinedValueCondition ( xml: XmlElement ): UserDefinedValueCondition {
 
 		return new UserDefinedValueCondition( xml.attr_name, xml.attr_value, xml.attr_rule );
 
 	}
 
-	private static readTrafficSignalCondition ( xml: XmlElement ): TrafficSignalCondition {
+	public static readTrafficSignalCondition ( xml: XmlElement ): TrafficSignalCondition {
 
 		return new TrafficSignalCondition( xml.attr_name, xml.attr_state );
 
 	}
 
-	private static readTrafficSignalControllerCondition ( xml: XmlElement ): TrafficSignalControllerCondition {
+	public static readTrafficSignalControllerCondition ( xml: XmlElement ): TrafficSignalControllerCondition {
 
 		return new TrafficSignalControllerCondition( xml.attr_phase, xml.attr_trafficSignalControllerRef, );
 
 	}
 
-	private static readRelativeWorldPosition ( xml: XmlElement ): RelativeWorldPosition {
+	public static readRelativeWorldPosition ( xml: XmlElement ): RelativeWorldPosition {
 
-		const entity: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
-		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
-		const dx = parseFloat( xml.attr_dx || 0 );
-		const dy = parseFloat( xml.attr_dy || 0 );
-		const dz = parseFloat( xml.attr_dz || 0 );
-
-		return new RelativeWorldPosition( entity, dx, dy, dz, orientation );
+		return RelativeWorldPosition.fromXML( xml );
 
 	}
 
-	private static readRoadPosition ( xml: XmlElement ): RoadPosition {
+	public static readRoadPosition ( xml: XmlElement ): RoadPosition {
 
 		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
 		const roadId = parseInt( xml.attr_roadId );
@@ -317,7 +320,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRelativeRoadPosition ( xml: XmlElement ): RelativeRoadPosition {
+	public static readRelativeRoadPosition ( xml: XmlElement ): RelativeRoadPosition {
 
 		const entity: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
 		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
@@ -368,7 +371,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return OpenScenarioImporter.openScenario;
 	}
 
-	private static readCondition ( xml: XmlElement ) {
+	public static readCondition ( xml: XmlElement ) {
 
 		let condition: Condition = null;
 
@@ -409,7 +412,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readFileHeader ( xmlElement: any ) {
+	public static readFileHeader ( xmlElement: any ) {
 
 		return new FileHeader(
 			parseFloat( xmlElement.attr_revMajor ),
@@ -421,17 +424,17 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readLongitudinalPurpose ( xml: XmlElement ): LongitudinalPurpose {
+	public static readTimeReference ( xml: XmlElement ): TimeReference {
 
-		let longitudinalPurpose = new LongitudinalPurpose;
+		let timeReference = new TimeReference;
 
 		if ( xml.Timing != null ) {
 
-			let domain = xml.Timing.attr_domain;
+			let domainAbsoluteRelative = xml.Timing?.attr_domain || xml.Timing?.attr_domainAbsoluteRelative || 'absolute';
 			let scale = parseFloat( xml.Timing.attr_scale );
 			let offset = parseFloat( xml.Timing.attr_offset );
 
-			longitudinalPurpose.timing = new LongitudinalTiming( domain, scale, offset );
+			timeReference.timing = new Timing( domainAbsoluteRelative, scale, offset );
 
 		} else if ( xml.None != null ) {
 
@@ -439,10 +442,10 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		}
 
-		return longitudinalPurpose;
+		return timeReference;
 	}
 
-	private static readRoadNetwork ( xml: XmlElement ) {
+	public static readRoadNetwork ( xml: XmlElement ) {
 
 		let logics: File, sceneGraph: File;
 		let controllers: TrafficSignalController[] = [];
@@ -468,7 +471,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RoadNetwork( logics, sceneGraph, controllers );
 	}
 
-	private static readEntities ( xml: XmlElement, scenario: TvScenario ): void {
+	public static readEntities ( xml: XmlElement, scenario: TvScenario ): void {
 
 		// Object is for 0.9 and ScenarioObject is for 1.0 and above
 		readXmlArray( xml?.Object || xml?.ScenarioObject, ( xml: XmlElement ) => {
@@ -479,7 +482,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readScenarioObject ( xml: XmlElement ): ScenarioEntity {
+	public static readScenarioObject ( xml: XmlElement ): ScenarioEntity {
 
 		const name: string = xml.attr_name;
 
@@ -499,6 +502,8 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 
 		entityObject = entityObject || new VehicleEntity( name );
+
+		entityObject.name = name;
 
 		readXmlElement( xml.Controller || xml.ObjectController, ( xml ) => {
 
@@ -599,16 +604,16 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		return new TvBoundingBox(
 			this.readVector3( xml.Center ),
-			this.readDimension( xml.Dimension ),
+			this.readDimension( xml.Dimension || xml.Dimensions ),
 		);
 	}
 
 	static readDimension ( xml: XmlElement ): TvDimension {
 
 		return new TvDimension(
-			parseFloat( xml.attr_x ),
-			parseFloat( xml.attr_y ),
-			parseFloat( xml.attr_z ),
+			parseFloat( xml.attr_width ),
+			parseFloat( xml.attr_height ),
+			parseFloat( xml.attr_length ),
 		);
 
 	}
@@ -623,7 +628,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readController ( xml: XmlElement, entity: ScenarioEntity ): AbstractController {
+	public static readController ( xml: XmlElement, entity: ScenarioEntity ): AbstractController {
 
 		let controller: AbstractController;
 
@@ -661,13 +666,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readFile ( xml ) {
+	public static readFile ( xml ) {
 
 		return new File( xml.attr_filepath );
 
 	}
 
-	private static readConditionGroup ( xml: XmlElement ): ConditionGroup {
+	public static readConditionGroup ( xml: XmlElement ): ConditionGroup {
 
 		const conditionGroup = new ConditionGroup;
 
@@ -681,7 +686,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readByEntityCondition ( xml: XmlElement ): Condition {
+	public static readByEntityCondition ( xml: XmlElement ): Condition {
 
 		const condition = OpenScenarioImporter.readConditionByEntity( xml.EntityCondition );
 
@@ -711,7 +716,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return condition;
 	}
 
-	private static readConditionByEntity ( xml: XmlElement ): EntityCondition {
+	public static readConditionByEntity ( xml: XmlElement ): EntityCondition {
 
 		if ( xml.EndOfRoad || xml.EndOfRoadCondition ) {
 
@@ -800,7 +805,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readReachPositionCondition ( xml: XmlElement ): ReachPositionCondition {
+	public static readReachPositionCondition ( xml: XmlElement ): ReachPositionCondition {
 
 		const position = OpenScenarioImporter.readPosition( xml.Position );
 		const tolerance = parseFloat( xml.attr_tolerance || 0 );
@@ -808,7 +813,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new ReachPositionCondition( position, tolerance );
 	}
 
-	private static readDistanceCondition ( xml: XmlElement ): DistanceCondition {
+	public static readDistanceCondition ( xml: XmlElement ): DistanceCondition {
 
 		const value: number = parseFloat( xml.attr_value || 0 );
 		const freespace: boolean = xml.attr_freespace == 'true';
@@ -822,7 +827,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new DistanceCondition( position, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 	}
 
-	private static readConditionByValue ( xml: XmlElement ): Condition {
+	public static readConditionByValue ( xml: XmlElement ): Condition {
 
 		if ( xml.Parameter || xml.ParameterCondition ) {
 
@@ -872,7 +877,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	private static readSimulationTimeCondition ( xml: XmlElement ): SimulationTimeCondition {
+	public static readSimulationTimeCondition ( xml: XmlElement ): SimulationTimeCondition {
 
 		const value = parseFloat( xml.attr_value || 0 );
 		const rule = this.readRule( xml.attr_rule );
@@ -880,7 +885,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new SimulationTimeCondition( value, rule );
 	}
 
-	private static readAtStartCondition ( xml: XmlElement ): Condition {
+	public static readAtStartCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -889,7 +894,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new StoryboardElementStateCondition( type, elementName, StoryboardElementState.startTransition );
 	}
 
-	private static readAfterTerminationCondition ( xml: XmlElement ): Condition {
+	public static readAfterTerminationCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -898,7 +903,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new StoryboardElementStateCondition( type, elementName, StoryboardElementState.endTransition );
 	}
 
-	private static readStoryboardElementStateCondition ( xml: XmlElement ): Condition {
+	public static readStoryboardElementStateCondition ( xml: XmlElement ): Condition {
 
 		let type = StoryboardElementStateCondition.stringToStoryboardType( xml.attr_type || xml.attr_storyboardElementType );
 
@@ -926,7 +931,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return story;
 	}
 
-	private static readAct ( xml: XmlElement ): Act {
+	public static readAct ( xml: XmlElement ): Act {
 
 		const act = new Act;
 
@@ -967,7 +972,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readSequence ( xml: XmlElement ): ManeuverGroup {
+	public static readSequence ( xml: XmlElement ): ManeuverGroup {
 
 		const maneuverGroup = new ManeuverGroup;
 
@@ -993,7 +998,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return maneuverGroup;
 	}
 
-	private static readManeuver ( xml: XmlElement ): Maneuver {
+	public static readManeuver ( xml: XmlElement ): Maneuver {
 
 		const maneuver = new Maneuver( xml.attr_name );
 
@@ -1013,7 +1018,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return maneuver;
 	}
 
-	private static readEvent ( xml: XmlElement ): TvEvent {
+	public static readEvent ( xml: XmlElement ): TvEvent {
 
 		const event = new TvEvent;
 
@@ -1049,7 +1054,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return event;
 	}
 
-	private static readEventAction ( xml: XmlElement ): EventAction {
+	public static readEventAction ( xml: XmlElement ): EventAction {
 
 		const action = new EventAction;
 
@@ -1072,7 +1077,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	private static readInitActions ( xml: XmlElement, storyboard: Storyboard ) {
+	public static readInitActions ( xml: XmlElement, storyboard: Storyboard ) {
 
 		this.readAsOptionalArray( xml.Global, ( item ) => {
 
@@ -1086,51 +1091,77 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} );
 
-		// Read the Private tag
-		if ( xml.Private != null ) {
+		this.readAsOptionalArray( xml.Private || xml.PrivateAction, ( xml ) => {
 
-			this.readAsOptionalArray( xml.Private, ( xml ) => {
+			const object = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
 
-				const object = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
+			const entity = this.openScenario.objects.get( object );
 
-				const entity = this.openScenario.objects.get( object );
+			if ( !entity ) console.error( 'entity not found', xml );
+			if ( !entity ) return;
 
-				if ( !entity ) console.error( 'entity not found', xml );
-				if ( !entity ) return;
+			// Read the Action tag inside Private
+			// 0.9
+			this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-				// Read the Action tag inside Private
-				// 0.9
-				this.readAsOptionalArray( xml.Action, ( xml ) => {
-
-					entity.initActions.push( this.readPrivateAction( xml ) );
-
-				} );
-
-				// 1.0
-				this.readAsOptionalArray( xml.PrivateAction, ( xml ) => {
-
-					entity.initActions.push( this.readPrivateAction( xml ) );
-
-				} );
+				entity.initActions.push( this.readPrivateAction( xml ) );
 
 			} );
+
+			// 1.0
+			this.readAsOptionalArray( xml.PrivateAction, ( xml ) => {
+
+				entity.initActions.push( this.readPrivateAction( xml ) );
+
+			} );
+
+		} );
+
+	}
+
+	public static readUserDefinedAction ( item: any ): TvAction {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	public static readGlobalAction ( xml: XmlElement ): GlobalAction {
+
+		if ( xml.SetEnvironment || xml.EnvironmentAction ) {
+
+			// <xsd:element name="Environment"         type="OSCEnvironment"/>
+			// 	<xsd:element name="CatalogReference"    type="OSCCatalogReference"/>
+			// <xsd:element name="Environment" type="Environment"/>
+			// 	<xsd:element name="CatalogReference" type="CatalogReference"/>
+			return EnvironmentAction.fromXML( xml.Environment || xml.EnvironmentAction );
+		}
+
+		if ( xml.Entity?.Add || xml.EntityAction?.AddEntityAction ) {
+
+			return AddEntityAction.fromXML( xml.Entity || xml.EntityAction );
+
+		}
+
+		if ( xml.Entity?.Delete || xml.EntityAction?.DeleteEntityAction ) {
+
+			return DeleteEntityAction.fromXML( xml.Entity || xml.EntityAction );
+
+		}
+
+		if ( xml.Parameter || xml.ParameterAction ) {
+
+			return this.readParameterAction( xml.Parameter || xml.ParameterAction );
+
+		}
+
+		if ( xml.Infrastructure || xml.InfrastructureAction ) {
+
+
 		}
 
 	}
 
-	private static readUserDefinedAction ( item: any ): TvAction {
-
-		throw new Error( 'Method not implemented.' );
-
-	}
-
-	private static readGlobalAction ( item: any ): TvAction {
-
-		throw new Error( 'Method not implemented.' );
-
-	}
-
-	private static readPrivateAction ( xml: XmlElement ): PrivateAction {
+	public static readPrivateAction ( xml: XmlElement ): PrivateAction {
 
 		let action = null;
 
@@ -1158,22 +1189,19 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			throw new Error( 'action not implemented' );
 
-		} else if ( xml.Position || xml.PositionAction ) {
+		} else if ( xml.Position || xml.PositionAction || xml.TeleportAction ) {
 
-			action = this.readPositionAction( xml.Position || xml.PositionAction );
+			return this.readPositionAction( xml.Position || xml.PositionAction || xml.TeleportAction?.Position );
 
-		} else if ( xml.TeleportAction ) {
+		} else if ( xml.Routing || xml.RoutingAction ) {
 
-			action = this.readPositionAction( xml.TeleportAction.Position );
-
-		} else if ( xml.Routing != null ) {
-
-			action = this.readRoutingAction( xml.Routing );
+			return this.readRoutingAction( xml.Routing || xml.RoutingAction );
 
 		} else {
 
-			throw new Error( 'Unknown private action' );
 			console.error( xml );
+
+			throw new Error( 'Unknown private action' );
 
 		}
 
@@ -1181,7 +1209,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readLateralAction ( xml: XmlElement ): TvAction {
+	public static readLateralAction ( xml: XmlElement ): TvAction {
 
 		let action: TvAction = null;
 
@@ -1207,21 +1235,21 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRoutingAction ( xml: XmlElement ): AbstractRoutingAction {
+	public static readRoutingAction ( xml: XmlElement ): AbstractRoutingAction {
 
 		let action: AbstractRoutingAction = null;
 
-		if ( xml.FollowRoute != null ) {
+		if ( xml.FollowRoute || xml.FollowRouteAction ) {
 
-			action = this.readFollowRouteAction( xml.FollowRoute );
+			action = this.readFollowRouteAction( xml.FollowRoute || xml.FollowRouteAction );
 
-		} else if ( xml.FollowTrajectory != null ) {
+		} else if ( xml.FollowTrajectory || xml.FollowTrajectoryAction ) {
 
-			action = this.readFollowTrajectoryAction( xml.FollowTrajectory );
+			action = this.readFollowTrajectoryAction( xml.FollowTrajectory || xml.FollowTrajectoryAction );
 
 		} else if ( xml.AcquirePosition != null ) {
 
-		} else {
+		} else if ( xml.AssignRouteAction ) {
 
 			throw new Error( 'unknown routing action' );
 
@@ -1230,11 +1258,11 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	private static readFollowTrajectoryAction ( xml: XmlElement ): FollowTrajectoryAction {
+	public static readFollowTrajectoryAction ( xml: XmlElement ): FollowTrajectoryAction {
 
 		let trajectory: Trajectory = null;
 
-		if ( xml.Trajectory != null ) {
+		if ( xml.Trajectory ) {
 
 			trajectory = this.readTrajectory( xml.Trajectory );
 
@@ -1246,36 +1274,74 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let action = new FollowTrajectoryAction( trajectory );
 
-		action.lateralPurpose = xml.Lateral.attr_purpose;
-		action.longitudinalPurpose = this.readLongitudinalPurpose( xml.Longitudinal );
+		action.lateralPurpose = xml.Lateral?.attr_purpose || LateralPurpose.position;
+		action.longitudinalPurpose = this.readTimeReference( xml.Longitudinal || xml.TimeReference );
+
+		action;
 
 		return action;
 	}
 
-	private static readTrajectory ( xml: XmlElement ): Trajectory {
+	public static readTrajectory ( xml: XmlElement ): Trajectory {
 
-		let name = xml.attr_name;
-		let closed = xml.attr_closed == 'true';
+		let name: string = xml.attr_name;
+		let closed: boolean = xml.attr_closed == 'true';
+
+		// deprecated
 		let domain = xml.attr_domain;
 
 		const trajectory = new Trajectory( name, closed, domain );
 
-		this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
-
-			trajectory.parameterDeclaration.push( OpenScenarioImporter.readParameterDeclaration( xml ) );
-
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml ) => {
+			trajectory.addParameter( this.readParameterDeclaration( xml ) );
 		} );
 
-		this.readAsOptionalArray( xml.Vertex, ( xml ) => {
+		// this.readAsOptionalArray( xml.Vertex, ( xml ) => {
+		// 	trajectory.vertices.push( this.readVertex( xml ) );
+		// } );
 
-			trajectory.vertices.push( this.readVertex( xml ) );
-
-		} );
+		this.readTrajectoryShape( xml.Shape, trajectory );
 
 		return trajectory;
 	}
 
-	private static readFollowRouteAction ( xml: XmlElement ): FollowRouteAction {
+	static readTrajectoryShape ( xml: XmlElement, trajectory: Trajectory ): AbstractShape {
+
+		if ( xml.Polyline ) {
+
+			return this.readPolyline( xml.Polyline );
+
+		}
+
+		if ( xml.Clothoid ) {
+
+			return ClothoidShape.fromXML( xml.Clothoid );
+
+		}
+
+		if ( xml.Nurbs ) {
+
+		}
+
+
+	}
+
+	static readPolyline ( xml: XmlElement ): PolylineShape {
+
+		const shape = new PolylineShape();
+
+		readXmlArray( xml.Vertex, ( xml ) => {
+
+			shape.addVertex( this.readVertex( xml ) );
+
+		} );
+
+		return shape;
+
+
+	}
+
+	public static readFollowRouteAction ( xml: XmlElement ): FollowRouteAction {
 
 		let route: Route = null;
 
@@ -1294,29 +1360,28 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	private static readRoute ( xml: XmlElement ): Route {
+	public static readRoute ( xml: XmlElement ): Route {
 
-		let route = new Route;
+		const name = xml.attr_name;
 
-		route.name = xml.attr_name;
-		route.closed = xml.attr_closed == 'true';
+		const closed = xml.attr_closed == 'true';
 
-		// this.readAsOptionalArray( xml.ParameterDeclaration, ( xml ) => {
-		//
-		// 	route.parameterDeclaration.push( this.readParameterDeclaration( xml ) );
-		//
-		// } );
+		const parameters = [];
 
-		this.readAsOptionalArray( xml.Waypoint, ( xml ) => {
+		const waypoints = [];
 
-			route.waypoints.push( this.readWaypoint( xml ) );
-
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml ) => {
+			parameters.push( this.readParameterDeclaration( xml ) );
 		} );
 
-		return route;
+		readXmlArray( xml.Waypoint, ( xml ) => {
+			waypoints.push( this.readWaypoint( xml ) );
+		} );
+
+		return new Route( name, closed, parameters, waypoints );
 	}
 
-	private static readWaypoint ( xml: XmlElement ): Waypoint {
+	public static readWaypoint ( xml: XmlElement ): Waypoint {
 
 		let position = OpenScenarioImporter.readPosition( xml.Position );
 		let strategy = xml.attr_strategy;
@@ -1324,7 +1389,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new Waypoint( position, strategy );
 	}
 
-	private static readLaneChangeAction ( xml: XmlElement ): TvAction {
+	public static readLaneChangeAction ( xml: XmlElement ): TvAction {
 
 		const targetLaneOffset = parseFloat( xml.attr_targetLaneOffset || 0 );
 
@@ -1336,13 +1401,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
+	public static readTransitionDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		return TransitionDynamics.fromXML( xml );
 
 	}
 
-	private static readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
+	public static readSpeedDynamics ( xml: XmlElement ): TransitionDynamics {
 
 		// TOOD: Fix parsing of enum
 		const dynamicsShape: DynamicsShape = xml.attr_dynamicsShape || xml.attr_shape;
@@ -1356,13 +1421,13 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readPositionAction ( xml: XmlElement ): PrivateAction {
+	public static readPositionAction ( xml: XmlElement ): PrivateAction {
 
 		return new TeleportAction( OpenScenarioImporter.readPosition( xml ) );
 
 	}
 
-	private static readPosition ( xml: XmlElement ): Position {
+	public static readPosition ( xml: XmlElement ): Position {
 
 		let position: Position = null;
 
@@ -1407,7 +1472,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return position;
 	}
 
-	private static readLanePosition ( xml: XmlElement ): LanePosition {
+	public static readLanePosition ( xml: XmlElement ): LanePosition {
 
 		let roadId = parseInt( xml.attr_roadId );
 		let laneId = parseInt( xml.attr_laneId );
@@ -1418,7 +1483,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new LanePosition( roadId, laneId, offset, s, orientation );
 	}
 
-	private static readLongitudinalAction ( xml: XmlElement ): any {
+	public static readLongitudinalAction ( xml: XmlElement ): any {
 
 		let action = null;
 
@@ -1441,7 +1506,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return action;
 	}
 
-	private static readTarget ( xml: XmlElement ): Target {
+	public static readTarget ( xml: XmlElement ): Target {
 
 		if ( xml.Absolute ) {
 
@@ -1501,18 +1566,18 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	private static readVertex ( xml: XmlElement ): Vertex {
+	public static readVertex ( xml: XmlElement ): Vertex {
 
-		const vertex = new Vertex;
+		const time = parseFloat( xml.attr_time || xml.attr_reference || 0 );
 
-		vertex.reference = parseFloat( xml.attr_reference );
-		vertex.position = OpenScenarioImporter.readPosition( xml.Position );
-		vertex.shape = this.readVertexShape( xml.Shape );
+		const position = this.readPosition( xml.Position );
 
-		return vertex;
+		const shape = xml.Shape ? this.readVertexShape( xml.Shape ) : null;
+
+		return new Vertex( time, position, shape );
 	}
 
-	private static readVertexShape ( xml: XmlElement ): AbstractShape {
+	public static readVertexShape ( xml: XmlElement ): AbstractShape {
 
 		if ( xml.Polyline != null ) {
 
@@ -1533,7 +1598,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	private static readClothoidShape ( xml: XmlElement ): ClothoidShape {
+	public static readClothoidShape ( xml: XmlElement ): ClothoidShape {
 
 		const clothoid = new ClothoidShape;
 
@@ -1544,7 +1609,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return clothoid;
 	}
 
-	private static readSplineShape ( xml: XmlElement ): SplineShape {
+	public static readSplineShape ( xml: XmlElement ): SplineShape {
 
 		const spline = new SplineShape;
 
@@ -1554,7 +1619,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return spline;
 	}
 
-	private static readSplineControlPoint ( xml: XmlElement ): ControlPoint {
+	public static readSplineControlPoint ( xml: XmlElement ): ControlPoint {
 
 		const controlPoint = new ControlPoint;
 
@@ -1563,7 +1628,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return controlPoint;
 	}
 
-	private static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
+	public static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
 
 		const root: XmlElement = xml.OpenSCENARIO;
 
@@ -1585,7 +1650,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readStoryboard ( xml: XmlElement ): Storyboard {
+	public static readStoryboard ( xml: XmlElement ): Storyboard {
 
 		const storyboard = new Storyboard();
 
@@ -1597,13 +1662,8 @@ export class OpenScenarioImporter extends AbstractReader {
 			storyboard.addStory( this.readStory( xml ) );
 		} );
 
-		// to suppoer 0.9
-		readXmlArray( xml?.EndConditions?.ConditionGroup, ( xml: XmlElement ) => {
-			storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
-		} );
-
-		// to support 1.0 and above
-		readXmlArray( xml?.StopTrigger?.ConditionGroup, ( xml: XmlElement ) => {
+		// to suppoer 0.9 and to support 1.0 and above
+		readXmlArray( xml?.EndConditions?.ConditionGroup || xml?.StopTrigger?.ConditionGroup, ( xml: XmlElement ) => {
 			storyboard.addEndConditionGroup( this.readConditionGroup( xml ) );
 		} );
 
@@ -1653,13 +1713,13 @@ export class OpenScenarioImporter extends AbstractReader {
 		return catalog;
 	}
 
-	private static readRoutePositionPosition ( param: any ): Position {
+	public static readRoutePositionPosition ( param: any ): Position {
 
 		throw new Error( 'Method not implemented.' );
 
 	}
 
-	private static readScenarioObjectType ( value: string ) {
+	public static readScenarioObjectType ( value: string ) {
 
 		switch ( value ) {
 
@@ -1680,7 +1740,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readCoordinateSystem ( value: string ): CoordinateSystem {
+	public static readCoordinateSystem ( value: string ): CoordinateSystem {
 
 		switch ( value ) {
 
@@ -1704,7 +1764,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRelativeDistanceType ( value: string ): RelativeDistanceType {
+	public static readRelativeDistanceType ( value: string ): RelativeDistanceType {
 
 		switch ( value ) {
 
@@ -1728,7 +1788,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRoutingAlgorithm ( value: string ): RoutingAlgorithm {
+	public static readRoutingAlgorithm ( value: string ): RoutingAlgorithm {
 
 		switch ( value ) {
 
@@ -1758,7 +1818,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readTimeToCollisionCondition ( xml: XmlElement ) {
+	public static readTimeToCollisionCondition ( xml: XmlElement ) {
 
 		const entityRef =
 			xml?.Target?.Entity?.attr_name ||	// 0.9
@@ -1787,7 +1847,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readDirectionDimension ( value: string ): DirectionDimension {
+	public static readDirectionDimension ( value: string ): DirectionDimension {
 
 		switch ( value ) {
 
@@ -1808,7 +1868,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readRelativeDistanceCondition ( xml: XmlElement ): RelativeDistanceCondition {
+	public static readRelativeDistanceCondition ( xml: XmlElement ): RelativeDistanceCondition {
 
 		const entityRef: string = xml?.attr_entity || xml?.attr_entityRef;
 		const relativeDistanceType = this.readRelativeDistanceType( xml?.attr_type || xml?.relativeDistanceType );
@@ -1821,7 +1881,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RelativeDistanceCondition( entityRef, relativeDistanceType, value, freespace, rule, coordinateSystem, routingAlgorithm );
 	}
 
-	private static readTimeHeadwayCondition ( xml: XmlElement ): TimeHeadwayCondition {
+	public static readTimeHeadwayCondition ( xml: XmlElement ): TimeHeadwayCondition {
 
 		const entity: string = xml?.attr_entity || xml?.attr_entityRef;
 		const value = parseFloat( xml?.attr_value || 0 );
@@ -1841,7 +1901,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new TimeHeadwayCondition( entity, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 	}
 
-	private static readConditionEdge ( edge: string ): ConditionEdge {
+	public static readConditionEdge ( edge: string ): ConditionEdge {
 
 		if ( edge === 'rising' ) {
 
@@ -1862,7 +1922,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 	}
 
-	private static readScenario ( xml: XmlElement, scenario: TvScenario ) {
+	public static readScenario ( xml: XmlElement, scenario: TvScenario ) {
 
 		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml: XmlElement ) => {
 			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
@@ -1898,7 +1958,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	}
 
-	private static readTrafficSignalController ( xml: XmlElement ): TrafficSignalController {
+	public static readTrafficSignalController ( xml: XmlElement ): TrafficSignalController {
 
 		const name = xml?.attr_name;
 		const delay = parseFloat( xml?.attr_delay );
@@ -1913,7 +1973,7 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new TrafficSignalController( name, delay, reference, phases );
 	}
 
-	private static readTrafficSignalPhase ( xml: XmlElement ): TrafficSignalPhase {
+	public static readTrafficSignalPhase ( xml: XmlElement ): TrafficSignalPhase {
 
 		// 0.9 support
 		const name = xml?.attr_type || xml?.attr_name;
@@ -1929,7 +1989,37 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new TrafficSignalPhase( name, duration, states );
 	}
 
-	private static readLaneChangeTarget ( xml: XmlElement ) {
+	public static readLaneChangeTarget ( xml: XmlElement ) {
+
+	}
+
+	private static readParameterAction ( xml: XmlElement ): ParameterModifyAction | ParameterSetAction {
+
+		const paramterRef: string = xml?.attr_parameterRef || xml?.attr_parameterRef;
+
+		if ( xml?.Set || xml?.SetAction ) {
+
+			const value = xml?.Set?.attr_value || xml?.SetAction?.attr_value;
+
+			return new ParameterSetAction( paramterRef, value );
+
+		} else if ( xml?.Modify || xml?.ModifyAction ) {
+
+			// const add = xml?.Modify?.Rule?.Add || xml?.ModifyAction?.Rule?.AddValue;
+			// const multiply = xml?.Modify?.Rule?.Multiply || xml?.ModifyAction?.Rule?.MultiplyByValue;
+
+			const add_value: number =
+				xml?.Modify?.Rule?.Add?.attr_value ||
+				xml?.ModifyAction?.Rule?.AddValue?.attr_value;
+
+			const multiply_value: number =
+				xml?.Modify?.Rule?.Multiply?.attr_value ||
+				xml?.ModifyAction?.Rule?.MultiplyByValue?.attr_value;
+
+			const action = add_value ? 'add' : 'multiply';
+
+			return new ParameterModifyAction( paramterRef, add_value || multiply_value, action );
+		}
 
 	}
 }

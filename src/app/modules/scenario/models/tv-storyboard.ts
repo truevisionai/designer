@@ -2,34 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ScenarioInstance } from '../services/scenario-instance';
-import { PrivateAction } from './private-action';
 import { GlobalAction } from './actions/tv-global-action';
 import { UserDefinedAction } from './actions/tv-user-defined-action';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
+import { PrivateAction } from './private-action';
 import { Story } from './tv-story';
-
-
-export class EntityInitAction {
-
-	constructor ( public name: string, public action: PrivateAction ) {
-
-	}
-}
 
 export class Storyboard {
 
 	public stories: Map<string, Story> = new Map<string, Story>();
 	public endConditionGroups: ConditionGroup[] = [];
-	public privateInitAction: EntityInitAction[] = [];
-	private m_InitActions = new InitActions;
-
-	get initActions () {
-
-		return this.m_InitActions;
-
-	}
+	public initActions = new InitActions();
 
 	addStory ( story: Story ) {
 
@@ -76,14 +60,6 @@ export class Storyboard {
 		}
 
 	}
-
-
-	addPrivateInitAction ( owner: string, action: PrivateAction ): any {
-
-		this.privateInitAction.push( new EntityInitAction( owner, action ) );
-
-	}
-
 }
 
 
@@ -91,11 +67,13 @@ export class InitActions {
 
 	private globalActions: GlobalAction[] = [];
 	private userDefinedActions: UserDefinedAction[] = [];
-	private privateActions: PrivateAction[] = [];
+	private entities = new Map<string, PrivateAction[]>();
 
 	addPrivateAction ( owner: string, action: PrivateAction ): any {
 
-		this.privateActions.push( action );
+		if ( !this.entities.has( owner ) ) this.entities.set( owner, [] );
+
+		this.entities.get( owner ).push( action );
 
 	}
 

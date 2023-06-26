@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
+import { Vector3 } from 'three';
 
 export class TvDimension {
 
-	constructor ( public width: number, public height: number, public depth: number ) {
+	constructor ( public width: number = 0, public height: number = 0, public depth: number = 0 ) {
 
 	}
 
@@ -14,7 +14,7 @@ export class TvDimension {
 
 export class TvBoundingBox {
 
-	constructor ( public center: Vector3, public dimension: TvDimension ) {
+	constructor ( public center: Vector3 = new Vector3(), public dimension: TvDimension = new TvDimension( 0, 0, 0 ) ) {
 	}
 
 }

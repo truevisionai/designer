@@ -9,7 +9,7 @@ import { CatalogReference } from '../tv-catalogs';
 import { ScenarioEntity } from '../tv-entities';
 import { ActionType, LateralPurpose } from '../tv-enums';
 import { Trajectory } from '../tv-trajectory';
-import { AbstractRoutingAction, LongitudinalPurpose } from './tv-routing-action';
+import { AbstractRoutingAction, TimeReference } from './tv-routing-action';
 
 export class FollowTrajectoryAction extends AbstractRoutingAction {
 
@@ -17,7 +17,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 	readonly actionType: ActionType = ActionType.Private_Routing;
 	// optional
 	public catalogReference: CatalogReference;
-	public longitudinalPurpose: LongitudinalPurpose;
+	public longitudinalPurpose: TimeReference;
 	public lateralPurpose: LateralPurpose;
 	private distanceThreshold = 2;
 	private index = 0;

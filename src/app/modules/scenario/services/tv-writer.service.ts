@@ -86,7 +86,7 @@ export class WriterService {
 			Storyboard: null
 		};
 
-		rootNode.ParameterDeclaration = this.writeParameterDeclaration( this.openScenario.parameterDeclaration );
+		rootNode.ParameterDeclaration = this.writeParameterDeclarations( this.openScenario.parameterDeclarations );
 
 		if ( this.openScenario.catalogs != null ) {
 
@@ -497,9 +497,9 @@ export class WriterService {
 		event.getActionMap().forEach( ( action, name ) => {
 
 			let actionXml =
-				{
-					attr_name: name
-				};
+			{
+				attr_name: name
+			};
 
 			if ( action.category == ActionCategory.private ) {
 
@@ -738,22 +738,15 @@ export class WriterService {
 
 	writeRelativeLanePosition ( position: RelativeLanePosition ): any {
 
-		let xml = {
+		return {
 			RelativeLane: {
 				attr_object: position.entityRef,
 				attr_dLane: position.dLane,
 				attr_ds: position.ds,
 				attr_offset: position.offset ? position.offset : 0,
+				Orientations: this.writeOrientation( position.orientation )
 			}
 		};
-
-		position.orientations.forEach( orientation => {
-
-			xml.RelativeLane[ 'Orientation' ] = this.writeOrientation( orientation );
-
-		} );
-
-		return xml;
 	}
 
 	writeOrientation ( orientation: Orientation ) {
@@ -781,21 +774,17 @@ export class WriterService {
 
 	writeParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
 
-		let xml = {
-			Parameter: []
+		return {
+			attr_name: parameterDeclaration.parameter.name,
+			attr_value: parameterDeclaration.parameter.value,
+			attr_type: parameterDeclaration.parameter.type,
 		};
 
-		parameterDeclaration.parameters.forEach( ( parameter: Parameter ) => {
+	}
 
-			xml.Parameter.push( {
-				attr_name: parameter.name,
-				attr_value: parameter.value,
-				attr_type: parameter.type,
-			} );
+	writeParameterDeclarations ( parameterDeclarations: ParameterDeclaration[] ) {
 
-		} );
-
-		return xml;
+		return parameterDeclarations.map( item => this.writeParameterDeclaration( item ) );
 
 	}
 
@@ -817,7 +806,7 @@ export class WriterService {
 			}
 		};
 
-		trajectory.parameterDeclaration.forEach( item => {
+		trajectory.parameterDeclarations.forEach( item => {
 
 			xml.Trajectory.ParameterDeclaration.push( item );
 
@@ -835,7 +824,7 @@ export class WriterService {
 	writeVertex ( vertex: Vertex ) {
 
 		const xml = {
-			attr_reference: vertex.reference,
+			attr_reference: vertex.time,
 			Position: this.writePosition( vertex.position ),
 			Shape: this.writeShape( vertex.shape )
 		};

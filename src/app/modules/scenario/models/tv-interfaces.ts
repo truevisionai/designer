@@ -11,7 +11,7 @@ export abstract class IScenarioObject {
 export class CatalogReferenceController extends AbstractController {
 
 	constructor ( public catalogReference: CatalogReference ) {
-		super();
+		super( catalogReference.entryName );
 	}
 
 }

@@ -86,11 +86,11 @@ export class ActionFactory {
 				throw new Error( `Unsupported private action: ${ type }` );
 				break;
 
-			case ActionType.Global_Entity:
+			case ActionType.Global_AddEntity:
 				throw new Error( `Unsupported private action: ${ type }` );
 				break;
 
-			case ActionType.Global_Parameter:
+			case ActionType.Global_ParameterSet:
 				throw new Error( `Unsupported private action: ${ type }` );
 				break;
 

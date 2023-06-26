@@ -174,6 +174,7 @@ export enum ActionCategory {
 	userDefined = 'user_defined'
 }
 
+
 export enum ActionType {
 	Private_Longitudinal_Speed,
 	Private_Longitudinal_Distance,
@@ -190,10 +191,14 @@ export enum ActionType {
 	UserDefined_Script,
 
 	Global_SetEnvironment,
-	Global_Entity,
-	Global_Parameter,
+	Global_AddEntity,
+	Global_DeleteEntity,
+	Global_ParameterSet,
+	Global_ParameterModify,
 	Global_Infrastructure,
-	Global_Traffic
+	Global_Traffic,
+	Global_TrafficSignalState,
+	Global_TrafficSignalController
 }
 
 export enum RelativeDistanceType {
@@ -291,4 +296,9 @@ export enum DirectionDimension {
 	lateral,
 	vertical,
 	all,
+}
+
+export enum FollowingMode {
+	follow, //	Follow the lateral and/or longitudinal target value
+	position, // Follow the trajectory, shape or profile exactly by ignoring the dynamic constraints of the entity.
 }

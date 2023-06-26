@@ -4,7 +4,7 @@
 
 import { Euler } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { OrientationType } from './tv-enums';
+import { OpenScenarioVersion, OrientationType } from './tv-enums';
 
 export class Orientation {
 
@@ -16,7 +16,7 @@ export class Orientation {
 	) {
 	}
 
-	toXML (): XmlElement {
+	toXML ( version?: OpenScenarioVersion ) {
 		return {
 			attr_h: this.h ?? 0,
 			attr_p: this.p ?? 0,

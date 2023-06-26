@@ -4,8 +4,9 @@
 
 import { Euler, Vector3 } from 'three';
 import { Position } from '../position';
-import { OrientationType, PositionType } from '../tv-enums';
+import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 
 export class RelativeWorldPosition extends Position {
 
@@ -22,10 +23,29 @@ export class RelativeWorldPosition extends Position {
 		super();
 	}
 
-	exportXml () {
+	toXML ( version?: OpenScenarioVersion ) {
 
-		throw new Error( 'Method not implemented.' );
+		return {
+			attr_entityRef: this.entityRef,
+			attr_dx: this.dx,
+			attr_dy: this.dy,
+			attr_dz: this.dz,
+			Orientation: this.orientation?.toXML(),
+		}
 
+	}
+
+	static fromXML ( xml: XmlElement ): RelativeWorldPosition {
+
+		const entity: string = xml?.attr_object || xml?.attr_entity || xml?.attr_entityRef;
+
+		const dx = parseFloat( xml?.attr_dx || 0 );
+		const dy = parseFloat( xml?.attr_dy || 0 );
+		const dz = parseFloat( xml?.attr_dz || 0 );
+
+		const orientation = Orientation.fromXML( xml?.Orientation );
+
+		return new RelativeWorldPosition( entity, dx, dy, dz, orientation );
 	}
 
 	toVector3 (): Vector3 {

@@ -1,7 +1,9 @@
 import { Euler, MathUtils, Vector3 } from 'three';
+import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { ScenarioInstance } from '../services/scenario-instance';
+import { OpenScenarioImporter } from '../services/tv-reader.service';
 import { ScenarioEntity } from './tv-entities';
-import { PositionType } from './tv-enums';
+import { OpenScenarioVersion, PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
 
 export abstract class Position {
@@ -47,5 +49,13 @@ export abstract class Position {
 
 	protected getEntity ( entity: string ): ScenarioEntity {
 		return ScenarioInstance.scenario.findEntityOrFail( entity );
+	}
+
+	static fromXML ( xml: XmlElement ): Position {
+		return OpenScenarioImporter.readPosition( xml );
+	}
+
+	toXML ( version?: OpenScenarioVersion ) {
+		return {};
 	}
 }
