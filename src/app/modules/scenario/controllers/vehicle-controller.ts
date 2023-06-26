@@ -15,14 +15,8 @@ import { ScenarioEntity } from '../models/tv-entities';
 
 export class DefaultVehicleController extends AbstractController {
 
-	constructor ( private entity: ScenarioEntity ) {
-		super();
-	}
-
-	private get actor () {
-
-		return this.entity;
-
+	constructor ( name: 'DefaultVehicleController', private entity: ScenarioEntity ) {
+		super( name );
 	}
 
 	static getSuccessorRoad ( currentRoad: TvRoad, map: TvMap ) {
@@ -48,12 +42,12 @@ export class DefaultVehicleController extends AbstractController {
 
 	public update () {
 
-		const actor = this.actor;
+		const entity = this.entity;
 		const roads = this.map.roads;
 
-		const currentRoad = roads.get( actor.roadId );
-		const currentLaneSection = currentRoad.getLaneSectionById( actor.laneSectionId );
-		const currentLaneId = actor.laneId;
+		const currentRoad = roads.get( entity.roadId );
+		const currentLaneSection = currentRoad.getLaneSectionById( entity.laneSectionId );
+		const currentLaneId = entity.laneId;
 		const currentLane = currentLaneSection.getLaneById( currentLaneId );
 
 		let nextLaneId: number;
@@ -65,15 +59,15 @@ export class DefaultVehicleController extends AbstractController {
 		// for smart moved we will use another controller
 		// this.followFrontVehicle( actor );
 
-		if ( actor.sCoordinate > currentRoad.length ) {
+		if ( entity.sCoordinate > currentRoad.length ) {
 
-			if ( actor.direction > 0 ) {
+			if ( entity.direction > 0 ) {
 
 				const successor = currentRoad.successor;
 
 				if ( !successor ) {
 
-					actor.disable();
+					entity.disable();
 
 				} else {
 
@@ -97,18 +91,18 @@ export class DefaultVehicleController extends AbstractController {
 					// update s-coordinate
 					if ( contactPoint === TvContactPoint.END ) {
 
-						actor.setTravelingDirection( -1 );
-						actor.setSValue( nextRoad.length - ( actor.sCoordinate - currentRoad.length ) );
+						entity.setTravelingDirection( -1 );
+						entity.setSValue( nextRoad.length - ( entity.sCoordinate - currentRoad.length ) );
 
 					} else {
 
-						actor.setTravelingDirection( 1 );
-						actor.setSValue( actor.sCoordinate - currentRoad.length );
+						entity.setTravelingDirection( 1 );
+						entity.setSValue( entity.sCoordinate - currentRoad.length );
 
 					}
 
 					// find laneSection
-					const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
+					const nextLaneSection = nextRoad.getLaneSectionAt( entity.sCoordinate );
 
 					// find lane
 					nextLane = nextLaneSection.getLaneById( nextLaneId );
@@ -116,21 +110,21 @@ export class DefaultVehicleController extends AbstractController {
 					// console.info( currentRoad, currentLaneSection, currentLane, actor );
 					// console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
 
-					actor.roadId = nextRoad.id;
-					actor.laneSectionId = nextLaneSection.id;
-					actor.laneId = nextLane.id;
+					entity.roadId = nextRoad.id;
+					entity.laneSectionId = nextLaneSection.id;
+					entity.laneId = nextLane.id;
 
 				}
 
 			}
 
-		} else if ( actor.sCoordinate < 0 ) {
+		} else if ( entity.sCoordinate < 0 ) {
 
 			const predecessor = currentRoad.predecessor;
 
 			if ( !predecessor ) {
 
-				actor.disable();
+				entity.disable();
 
 			} else {
 
@@ -154,31 +148,31 @@ export class DefaultVehicleController extends AbstractController {
 				// update s-coordinate
 				if ( contactPoint === TvContactPoint.END ) {
 
-					actor.direction = -1;
-					actor.sCoordinate = nextRoad.length + actor.sCoordinate;
+					entity.direction = -1;
+					entity.sCoordinate = nextRoad.length + entity.sCoordinate;
 
 				} else {
 
-					actor.direction = 1;
-					actor.sCoordinate = -1 * actor.sCoordinate;
+					entity.direction = 1;
+					entity.sCoordinate = -1 * entity.sCoordinate;
 
 				}
 
 				// find laneSection
-				const nextLaneSection = nextRoad.getLaneSectionAt( actor.sCoordinate );
+				const nextLaneSection = nextRoad.getLaneSectionAt( entity.sCoordinate );
 
 				try {
 
 					nextLane = nextLaneSection.getLaneById( nextLaneId );
 
-					actor.roadId = nextRoad.id;
-					actor.laneSectionId = nextLaneSection.id;
-					actor.laneId = nextLane.id;
+					entity.roadId = nextRoad.id;
+					entity.laneSectionId = nextLaneSection.id;
+					entity.laneId = nextLane.id;
 
 				} catch ( e ) {
 
 					console.error( e );
-					console.info( currentRoad, currentLaneSection, currentLane, actor );
+					console.info( currentRoad, currentLaneSection, currentLane, entity );
 					console.info( nextRoad, nextLaneSection, nextLane, nextLaneId );
 
 				}
@@ -190,15 +184,15 @@ export class DefaultVehicleController extends AbstractController {
 		} else {
 
 			// positive direction
-			if ( actor.direction > 0 && actor.sCoordinate > currentLaneSection.endS ) {
+			if ( entity.direction > 0 && entity.sCoordinate > currentLaneSection.endS ) {
 
-				actor.laneSectionId += 1;
-				actor.laneId = currentLane.getSuccessor();
+				entity.laneSectionId += 1;
+				entity.laneId = currentLane.getSuccessor();
 
-			} else if ( actor.direction < 0 && actor.sCoordinate < currentLaneSection.s ) {
+			} else if ( entity.direction < 0 && entity.sCoordinate < currentLaneSection.s ) {
 
-				actor.laneSectionId -= 1;
-				actor.laneId = currentLane.getPredecessor();
+				entity.laneSectionId -= 1;
+				entity.laneId = currentLane.getPredecessor();
 
 			} else {
 
@@ -208,17 +202,17 @@ export class DefaultVehicleController extends AbstractController {
 
 			const refPos = new TvPosTheta();
 
-			const position = TvMapQueries.getLanePosition( actor.roadId, actor.laneId, actor.sCoordinate, actor.laneOffset, refPos );
+			const position = TvMapQueries.getLanePosition( entity.roadId, entity.laneId, entity.sCoordinate, entity.laneOffset, refPos );
 
-			actor.position.copy( position );
+			entity.position.copy( position );
 
 			// right lane move forward
 			// left lane traffic move opposite
 			// actor.direction = obj.getLaneId() > 0 ? -1 : 1;
 
-			actor.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
+			entity.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
 
-			actor.sCoordinate += actor.speed * actor.direction * Maths.Speed2MPH * Time.deltaTime;
+			entity.sCoordinate += entity.speed * entity.direction * Maths.Speed2MPH * Time.deltaTime;
 		}
 
 	}

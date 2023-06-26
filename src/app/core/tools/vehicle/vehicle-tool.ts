@@ -45,7 +45,7 @@ export class VehicleTool extends BaseTool {
 
 				const vehicleEntity = new VehicleEntity( name );
 
-				vehicleEntity.setController( new DefaultVehicleController( vehicleEntity ) );
+				vehicleEntity.setController( new DefaultVehicleController( 'DefaultVehicleController', vehicleEntity ) );
 
 				CommandHistory.execute( new AddVehicleCommand( vehicleEntity, event.point ) );
 

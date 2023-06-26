@@ -627,6 +627,8 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let controller: AbstractController;
 
+		const name = xml.attr_name;
+
 		if ( xml.CatalogReference != null ) {
 
 			// const catalogReference = CatalogReference.readXml( xml.CatalogReference );
@@ -643,9 +645,17 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		}
 
-		controller = controller || new DefaultVehicleController( entity );
+		controller = controller || new DefaultVehicleController( name, entity );
 
 		entity.setController( controller );
+
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml ) => {
+			controller.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		readXmlArray( xml.Properties?.Property, ( xml ) => {
+			controller.addProptery( TvProperty.fromXML( xml ) );
+		} );
 
 		return controller;
 
