@@ -5,7 +5,7 @@
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
-import { TvMapBuilder } from '../../../modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from '../../../modules/tv-map/builders/tv-map-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 import { LaneWidthInspector } from '../../../views/inspectors/lane-width-inspector/lane-width-inspector.component';

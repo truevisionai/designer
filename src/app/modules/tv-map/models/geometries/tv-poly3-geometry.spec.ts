@@ -35,22 +35,22 @@ describe( 'OdPoly3Geometry', () => {
 
 		road.addGeometryPoly( s, x, y, hdg, length, a, b, c, d );
 
-		road.getGeometryCoords( 0, pose );
+		pose = road.getRoadCoordAt( 0 );
 		expect( pose.x ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 		expect( pose.hdg ).toBe( 0 );
 
-		road.getGeometryCoords( 1, pose );
+		pose = road.getRoadCoordAt( 1 );
 		expect( pose.x ).toBe( 1 );
 		expect( pose.y ).toBe( 1 );
 		expect( pose.hdg ).toBe( 2 );
 
-		road.getGeometryCoords( 2, pose );
+		pose = road.getRoadCoordAt( 2 );
 		expect( pose.x ).toBe( 2 );
 		expect( pose.y ).toBe( 4 );
 		expect( pose.hdg ).toBe( 4 );
 
-		road.getGeometryCoords( 3, pose );
+		pose = road.getRoadCoordAt( 3 );
 		expect( pose.x ).toBe( 3 );
 		expect( pose.y ).toBe( 9 );
 		expect( pose.hdg ).toBe( 6 );

@@ -8,7 +8,6 @@ import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geo
 import { TvSide } from 'app/modules/tv-map/models/tv-common';
 import { Maths } from 'app/utils/maths';
 import { Curve, Vector3 } from 'three';
-import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 
 export class CustomSplineCurve {
 
@@ -96,9 +95,7 @@ export class CustomSplineCurve {
 
 				const arc = this.createArcGeometry( 0, x, y, p1, hdg, lineStartingPosition, hdg2, p2 );
 
-				const pos = new TvPosTheta();
-
-				arc.getCoords( arc.endS, pos );
+				const pos = arc.getRoadCoord( arc.endS );
 
 				const line = new TvLineGeometry( arc.endS, pos.x, pos.y, pos.hdg, lineLength );
 

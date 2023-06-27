@@ -24,7 +24,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SceneService } from '../../services/scene.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 
 export class LaneCreateTool extends BaseTool {
 

@@ -12,7 +12,6 @@ import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
@@ -90,59 +89,45 @@ export class OdRoadMarkBuilderV1 {
 
 		roadMarks.forEach( mark => mark.clearMesh() );
 
-		// this.updateLastCoordinate( roadMarks, laneSection );
-
-		roadMarks.forEach( ( mark, index ) => {
+		roadMarks.forEach( ( roadMark, index ) => {
 
 			const mesh = new MeshGeometryData();
 
-			const start = laneSection.s + mark.s;
+			const start = laneSection.s + roadMark.s;
 
 			// setting the next coordinate
 			// if the next road mark is not available,
 			// then the next coordinate is the end of the lane section
-			mark.lastSCoordinate = ( index < roadMarks.length - 1 )
+			roadMark.lastSCoordinate = ( index < roadMarks.length - 1 )
 				? roadMarks[ index + 1 ].sOffset
 				: laneSection.length;
 
-			for ( let step = 0; step < mark.length; step += OdBuilderConfig.ROAD_STEP ) {
+			for ( let step = 0; step < roadMark.length; step += OdBuilderConfig.ROAD_STEP ) {
 
-				this.createVertex( start + step, mark, laneSection, lane, mesh, mark.s + step );
+				// TODO: need to clamp these values
+				const s = start + step;
+
+				const laneSectionS = roadMark.s + step;
+
+				this.createVertex( s, roadMark, laneSection, lane, mesh, laneSectionS );
 
 			}
 
 			// one last entry to nearest to the end
-			if ( mark.length > 1 ) {
+			if ( roadMark.length > 1 ) {
 
-				const lastS = ( start + mark.length ) - Maths.Epsilon;
+				const lastS = ( start + roadMark.length ) - Maths.Epsilon;
 
-				const laneSectionS = ( mark.s + mark.length ) - Maths.Epsilon;
+				const laneSectionS = ( roadMark.s + roadMark.length ) - Maths.Epsilon;
 
-				this.createVertex( lastS, mark, laneSection, lane, mesh, laneSectionS );
+				this.createVertex( lastS, roadMark, laneSection, lane, mesh, laneSectionS );
 
 			}
 
 			// atleast 1 vertex is required to create a mesh
-			if ( mesh.vertices.length > 0 ) this.drawRoadMark( mark, mesh, lane );
+			if ( mesh.vertices.length < 1 ) return;
 
-		} );
-
-	}
-
-	private updateLastCoordinate ( roadMarks: TvLaneRoadMark[], laneSection: TvLaneSection ) {
-
-		// setting the last coordinate
-		roadMarks.forEach( ( mark, index ) => {
-
-			if ( index < roadMarks.length - 1 ) {
-
-				mark.lastSCoordinate = roadMarks[ index + 1 ].sOffset;
-
-			} else {
-
-				mark.lastSCoordinate = laneSection.length;
-
-			}
+			this.drawRoadMark( roadMark, mesh, lane );
 
 		} );
 
@@ -150,30 +135,17 @@ export class OdRoadMarkBuilderV1 {
 
 	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ) {
 
-		const posTheta = new TvPosTheta();
-
 		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
-		// if ( cumulativeWidth > 100 ) console.log( laneSectionS, this.road.id, laneSection.s, lane.id, cumulativeWidth );
-
-		lane.laneSection.road.getGeometryCoords( s, posTheta );
-
-		// const laneOffset = this.road.lanes.getLaneOffsetAt( s );
-		// posTheta.addLateralOffset( laneOffset );
-		// let laneWidth = laneSection.getWidthUptoEnd( lane, s );
+		const roadCoord = lane.laneSection.road.getRoadCoordAt( s );
 
 		const height = lane.getHeightValue( laneSectionS );
-		const elevation = lane.laneSection.road.getElevationValue( laneSectionS );
 
-		// console.log( roadMark.getHeight() );
+		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, roadCoord.hdg );
+		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, roadCoord.hdg );
 
-		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, posTheta.hdg );
-		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, posTheta.hdg );
-
-		const laneBorderX = posTheta.x + ( cosHdgPlusPiO2 * cumulativeWidth );
-		const laneBorderY = posTheta.y + ( sinHdgPlusPiO2 * cumulativeWidth );
-
-		// console.log( `LaneSection: ${laneSection.id} Lane: ${lane.id} Width: ${cumulativeWidth} S: ${s} LS: ${laneSectionS}` );
+		const laneBorderX = roadCoord.x + ( cosHdgPlusPiO2 * cumulativeWidth );
+		const laneBorderY = roadCoord.y + ( sinHdgPlusPiO2 * cumulativeWidth );
 
 		const roadMarkWidth = roadMark.getWidth();
 
@@ -194,14 +166,14 @@ export class OdRoadMarkBuilderV1 {
 		let roadMarkTexModifierMin2 = 0;
 		let roadMarkTexModifierMax2 = 0;
 
-		// Define the color of the current road mark:
-		if ( roadMark.getColor() === ( 'standard' ) || roadMark.getColor() === ( 'white' ) ) {
-			roadMarkColor = [ 255, 255, 255 ];
-		} else if ( roadMark.getColor() === 'yellow' ) {
-			roadMarkColor = [ 255, 255, 0 ];
-		} else {
-			roadMarkColor = [ 255, 255, 255 ];
-		}
+		// // Define the color of the current road mark:
+		// if ( roadMark.getColor() === ( 'standard' ) || roadMark.getColor() === ( 'white' ) ) {
+		// 	roadMarkColor = [ 255, 255, 255 ];
+		// } else if ( roadMark.getColor() === 'yellow' ) {
+		// 	roadMarkColor = [ 255, 255, 0 ];
+		// } else {
+		// 	roadMarkColor = [ 255, 255, 255 ];
+		// }
 
 		// Set the tex coords modifiers based on the type of the road mark
 		if ( roadMark.getType() === TvRoadMarkTypes.NONE ) {
@@ -272,17 +244,18 @@ export class OdRoadMarkBuilderV1 {
 		// First vertex
 		texX = roadMarkTexModifierMin1;
 
-		const v1 = new Vertex();
-		v1.position = new Vector3( x1, y1, elevation );
-		v1.uvs = new Vector2( texX, texY );
-
+		const v1 = new Vertex(
+			new Vector3( x1, y1, roadCoord.z ),
+			new Vector2( texX, texY )
+		);
 
 		// Second vertex
 		texX = roadMarkTexModifierMax1;
 
-		const v2 = new Vertex();
-		v2.position = new Vector3( x2, y2, elevation + height.getOuter() );
-		v2.uvs = new Vector2( texX, texY );
+		const v2 = new Vertex(
+			new Vector3( x2, y2, roadCoord.z + height.getOuter() ),
+			new Vector2( texX, texY )
+		);
 
 		if ( lane.side == TvLaneSide.LEFT ) {
 			this.addVertex( mesh, v1 );
@@ -316,7 +289,7 @@ export class OdRoadMarkBuilderV1 {
 	}
 
 	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
-		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
+		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + 0.11 );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
 		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 		meshData.indices.push( meshData.currentIndex++ );
@@ -345,7 +318,7 @@ export class OdRoadMarkBuilderV1 {
 
 	private getMaterial ( roadMark: TvLaneRoadMark ) {
 
-		let color = COLOR.WHITE;
+		let color: number;
 
 		switch ( roadMark.color ) {
 
@@ -425,8 +398,4 @@ export class OdRoadMarkBuilderV1 {
 		return width;
 	}
 
-	private processRoadMark ( roadmark: TvLaneRoadMark, road: TvRoad, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData ) {
-
-
-	}
 }

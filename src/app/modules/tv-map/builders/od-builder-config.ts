@@ -28,7 +28,7 @@ export class OdBuilderConfig {
 	// elevation shift, so that the road mark is drawn above the road
 	// 0.001 increases the z-fighting, and requires camera near value of 10
 	// 0.01 works well with camera near value of 1
-	public static ROADMARK_ELEVATION_SHIFT = 0.01;
+	public static ROADMARK_ELEVATION_SHIFT = 0.1;
 
 	// broken mark tiling
 	private static ROADMARK_BROKEN_TILING = 3.0;

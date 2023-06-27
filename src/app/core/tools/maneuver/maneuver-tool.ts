@@ -19,7 +19,6 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from 'app/views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
 import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
-import { Vector3 } from 'three';
 import { AddConnectionCommand } from '../../commands/add-connection-command';
 import { MultiCmdsCommand } from '../../commands/multi-cmds-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
@@ -27,11 +26,11 @@ import { UpdateRoadPointCommand } from '../../commands/update-road-point-command
 import { LanePathFactory } from '../../factories/lane-path-factory.service';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { KeyboardInput } from '../../input';
+import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { SceneService } from '../../services/scene.service';
 import { AutoSpline } from '../../shapes/auto-spline';
 import { BaseTool } from '../base-tool';
-import { ToolType } from '../../models/tool-types.enum';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
@@ -812,11 +811,11 @@ export class ManeuverTool extends BaseTool {
 
 				if ( firstconnection.contactPoint === TvContactPoint.START ) {
 
-					junction.position = connectionRoad.startPosition().toVector3();
+					junction.position = connectionRoad.getStartCoord().toVector3();
 
 				} else {
 
-					junction.position = connectionRoad.endPosition().toVector3();
+					junction.position = connectionRoad.getEndCoord().toVector3();
 
 				}
 

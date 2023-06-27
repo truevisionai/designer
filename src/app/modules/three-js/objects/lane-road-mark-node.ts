@@ -6,10 +6,9 @@ import { SnackBar } from '../../../services/snack-bar.service';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
-import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
-import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { AnyControlPoint} from './control-point';
+import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
 export class LaneRoadMarkNode extends Group implements ISelectable {
 
@@ -89,7 +88,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 		const s = roadCoord.s - this.lane.laneSection.s;
 
 		// our desired s value should lie between the previous node and the next node
-		const adjustedS = Maths.clamp(s, minS, maxS );
+		const adjustedS = Maths.clamp( s, minS, maxS );
 
 		// update s offset as per the new position on road
 		this.roadmark.sOffset = adjustedS;

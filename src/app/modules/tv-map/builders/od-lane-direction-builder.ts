@@ -4,11 +4,10 @@
 
 import { SceneService } from 'app/core/services/scene.service';
 import { ArrowHelper, Object3D, Vector3 } from 'three';
-import { Maths } from '../../../utils/maths';
-import { TvLaneSide, TvLaneType } from '../models/tv-common';
+import { LaneArrowObject } from '../../three-js/objects/lane-arrow-object';
+import { TvLaneSide } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 
 export class OdLaneDirectionBuilder {
@@ -61,7 +60,14 @@ export class OdLaneDirectionBuilder {
 		}
 	}
 
-	private createArrow ( origin: Vector3, direction: Vector3 ) {
+	/**
+	 *
+	 * @param origin
+	 * @param direction
+	 * @private
+	 * @deprecated not used anymore
+	 */
+	private createArrow3D ( origin: Vector3, direction: Vector3 ) {
 
 		// var dir = new Vector3( 0, 1, 0 );
 
@@ -86,43 +92,46 @@ export class OdLaneDirectionBuilder {
 		SceneService.addHelper( arrowHelper );
 	}
 
+	private createArrow2D ( origin: Vector3, hdg: number ) {
+
+		const arrow = new LaneArrowObject( origin, hdg );
+
+		this.arrows.push( arrow );
+
+		SceneService.addHelper( arrow );
+
+		return arrow;
+	}
+
 	private drawLane ( lane: TvLane, laneSection: TvLaneSection ) {
 
-		if ( lane.type !== TvLaneType.driving ) return;
+		// if ( lane.type !== TvLaneType.driving ) return;
 
 		let s = laneSection.s;
 
-		const posTheta = new TvPosTheta();
-
-		let laneOffset = 0;
-
-		let width = 0;
-
 		while ( s <= laneSection.endS ) {
 
-			laneOffset = this.road.lanes.getLaneOffsetValue( s );
+			// Compute the width of the lane section up to the current position.
+			let width = laneSection.getWidthUptoCenter( lane, s );
 
-			width = laneSection.getWidthUptoCenter( lane, s );
+			// Get the road coordinates at the current position.
+			const posTheta = lane.laneSection.road.getRoadCoordAt( s );
 
-			this.road.getGeometryCoords( s, posTheta );
-
-			posTheta.addLateralOffset( laneOffset );
-
-			if ( lane.side === TvLaneSide.RIGHT ) {
-
-				width *= -1;
-
-			} else if ( lane.side === TvLaneSide.LEFT ) {
-
-				// to show arrow in traffic direction
-				// TODO: Make traffic direction editable from editor
-				posTheta.hdg += Maths.M_PI;
-				width *= -1;
+			// Adjust position and heading based on lane side.
+			if ( lane.side === TvLaneSide.LEFT ) {
+				// Reverse the direction to show arrow in traffic direction.
+				// TODO: Make traffic direction editable from the editor.
+				posTheta.hdg += Math.PI;
 			}
 
+			// The width is negated regardless of the side
+			width *= -1;
+
+			// Add the lateral offset to the position.
 			posTheta.addLateralOffset( width );
 
-			this.createArrow( posTheta.toVector3(), posTheta.toDirectionVector() );
+			// Create a 2D arrow at the current position and direction.
+			this.createArrow2D( posTheta.toVector3(), posTheta.hdg );
 
 			s += this.stepValue;
 		}

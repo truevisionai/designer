@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';

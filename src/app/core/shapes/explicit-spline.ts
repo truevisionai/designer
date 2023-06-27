@@ -537,9 +537,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const geometry = geometries.find( g => s >= g.s && s <= g.endS );
 
-		const posTheta = new TvPosTheta();
-
-		geometry.getCoords( s, posTheta );
+		const posTheta = geometry.getRoadCoord( s );
 
 		posTheta.addLateralOffset( offset );
 

@@ -6,7 +6,7 @@ import { BufferGeometry, Group, LineBasicMaterial, LineSegments } from 'three';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { AnyControlPoint} from './control-point';
+import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 
 export class LaneWidthNode extends Group implements ISelectable {

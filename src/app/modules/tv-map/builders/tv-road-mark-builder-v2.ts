@@ -114,13 +114,13 @@ export class TvRoadMarkBuilderV2 {
 				? roadMarks[ index + 1 ].sOffset
 				: lane.laneSection.length;
 
-			const posTheta = new TvPosTheta();
+			let posTheta = new TvPosTheta();
 
 			for ( let step = 0; step < mark.length; step += OdBuilderConfig.ROAD_STEP ) {
 
 				posTheta.s = start + step;
 
-				lane.laneSection.road.getGeometryCoords( start + step, posTheta );
+				posTheta = lane.laneSection.road.getRoadCoordAt( start + step );
 
 				this.createVertex( posTheta, mark, mesh, mark.s + step );
 
@@ -132,7 +132,7 @@ export class TvRoadMarkBuilderV2 {
 			// one last entry is required to create a mesh
 			const lastS = posTheta.s = ( start + mark.length ) - Maths.Epsilon;
 			const laneSectionS = ( mark.s + mark.length ) - Maths.Epsilon;
-			lane.laneSection.road.getGeometryCoords( lastS, posTheta );
+			posTheta = lane.laneSection.road.getRoadCoordAt( lastS );
 			this.createVertex( posTheta, mark, mesh, laneSectionS );
 
 

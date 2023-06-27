@@ -4,7 +4,7 @@
 
 export class MeshGeometryData {
 	public vertices: number[] = [];
-	public triangles = [];n
+	public triangles = [];
 	public currentIndex = 0;
 	public indices: number[] = [];
 	public colors: number[] = [];

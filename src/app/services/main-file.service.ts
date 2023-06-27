@@ -8,7 +8,7 @@ import { IFile } from 'app/core/models/file';
 import { AppService } from 'app/core/services/app.service';
 import { ToolManager } from 'app/core/tools/tool-manager';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from './command-history';

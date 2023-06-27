@@ -9,7 +9,7 @@ import { SceneService } from "../../services/scene.service";
 import { BaseTool } from "../base-tool";
 import { AutoSpline } from "../../shapes/auto-spline";
 import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
-import { TvMapBuilder } from "app/modules/tv-map/builders/od-builder.service";
+import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { ToolType } from "../../models/tool-types.enum";
 
 export class RoadRampTool extends BaseTool {
