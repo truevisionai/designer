@@ -11,9 +11,19 @@
 	margin-top: 0;
 	margin-bottom: 0;
 	list-style-type: none;
-	padding-inline-start: 5px !important;
+	padding-inline-start: 0px !important;
 }
 
 .mat-icon-button {
 	margin-right: 15px !important;
+}
+
+.mat-tree-node {
+	min-height: 32px !important;
+}
+
+.mat-icon-button {
+	margin-right: 16px !important;
+	height: 32px !important;
+	line-height: 36px !important;
 }
