@@ -9,7 +9,7 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
-import { OpenScenarioImporter } from '../modules/scenario/services/tv-reader.service';
+import { OpenScenarioImporter } from '../modules/scenario/services/open-scenario-importer.service';
 import { AssetLoaderService } from './asset-loader.service';
 import { FileExtension, FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';

@@ -4,7 +4,7 @@ import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { FileService } from 'app/services/file.service';
 import { FileUtils } from '../../../../services/file-utils';
 import { TvScenario } from '../../models/tv-scenario';
-import { OpenScenarioImporter } from '../../services/tv-reader.service';
+import { OpenScenarioImporter } from '../../services/open-scenario-importer.service';
 
 export class ImportOpenScenarioDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {

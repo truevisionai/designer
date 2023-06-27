@@ -4,7 +4,7 @@
 
 import { PolylineShape } from '../models/tv-trajectory';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { OpenScenarioImporter } from './tv-reader.service';
+import { OpenScenarioImporter } from './open-scenario-importer.service';
 
 
 describe( 'ReaderService', () => {

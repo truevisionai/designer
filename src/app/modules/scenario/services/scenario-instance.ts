@@ -5,7 +5,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { TvScenario } from '../models/tv-scenario';
 import { ScenarioBuilder } from './scenario-builder.service';
-import { OpenScenarioImporter } from './tv-reader.service';
+import { OpenScenarioImporter } from './open-scenario-importer.service';
 
 @Injectable( {
 	providedIn: 'root'

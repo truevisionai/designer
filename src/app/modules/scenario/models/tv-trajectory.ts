@@ -5,6 +5,7 @@
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Position } from './position';
 import { ParameterDeclaration } from './tv-parameter-declaration';
+import { TvConsole } from 'app/core/utils/console';
 
 export enum EnumTrajectoryDomain {
 	Time = 'time',
@@ -122,5 +123,78 @@ export class ControlPoint {
 	}
 }
 
+export class NurbControlPoint {
+	constructor (
+		public position: Position,
+		public time: number,
+		public weight: number,
+	) {
+	}
+}
+
+export class Knot {
+	constructor ( public value: number ) {
+
+	}
+}
+
+export class Nurbs extends AbstractShape {
+
+	/**
+	 *
+	 * @param order Order of the NURBS trajectory. This is the order of the curve, not the degre
+	 * e of the polynomials, which will be one less than the order of the curve. Range [2..inf[.
+	 * @param controlPoints Control point vector of the NURBS trajectory. The number of control
+	 * points must be greater or equal to the order of the curve.
+	 * @param knots Knot vector of the NURBS trajectory. Knot values must be given in ascending order.
+	 * The number of knot vector values must be equal to the number of control points plus the order of the curve.
+	 */
+	constructor (
+		public order: number,
+		public controlPoints: NurbControlPoint[] = [],
+		public knots: Knot[] = [],
+	) {
+		super();
+	}
+
+	static fromXML ( xml: XmlElement ) {
+
+		TvConsole.warn( 'Nurbs are not suppoerted yet' );
+
+		const nurbs = new Nurbs( parseInt( xml.attr_order ) );
+
+		xml.ControlPoint.forEach( ( cp: XmlElement ) => {
+			nurbs.controlPoints.push( new NurbControlPoint(
+				Position.fromXML( cp.Position ),
+				parseFloat( cp.attr_time ),
+				parseFloat( cp.attr_weight )
+			) );
+		} );
+
+		xml.Knot.forEach( xml => {
+			nurbs.knots.push( new Knot( parseFloat( xml.attr_value ) ) );
+		} );
+
+		return nurbs;
+	}
+
+	toXML () {
+		return {
+			attr_order: this.order,
+			ControlPoint: this.controlPoints.map( cp => {
+				return {
+					attr_time: cp.time,
+					attr_weight: cp.weight,
+					Position: cp.position.toXML()
+				};
+			} ),
+			Knot: this.knots.map( knot => {
+				return {
+					attr_value: knot.value
+				};
+			} )
+		};
+	}
+}
 
 
