@@ -61,20 +61,13 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	get middleV3 (): Vector3 {
 
-		const pos = new TvPosTheta();
+		return this.getRoadCoord( this.endS / 2 ).toVector3();
 
-		this.getCoords( this.endS / 2, pos );
-
-		return pos.toVector3();
 	}
 
 	get endV3 (): Vector3 {
 
-		const pos = new TvPosTheta();
-
-		this.getCoords( this.endS, pos );
-
-		return pos.toVector3();
+		return this.getRoadCoord( this.endS ).toVector3();
 
 	}
 
@@ -86,7 +79,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getCoords ( s, odPosTheta: TvPosTheta ) {
+	getRoadCoord ( s: number ): TvPosTheta {
 
 		// calculate the first geometry element for the returning geometries
 		var ds = s - this.s;
@@ -98,11 +91,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		const retX = this.x - radius * Math.cos( rotation ) + radius * Math.cos( rotation + theta );
 		const retY = this.y - radius * Math.sin( rotation ) + radius * Math.sin( rotation + theta );
 
-		odPosTheta.x = retX;
-		odPosTheta.y = retY;
-		odPosTheta.hdg = this.hdg + theta;
-
-		return this.geometryType;
+		return new TvPosTheta( retX, retY, this.hdg + theta );
 	}
 
 	computeVars () {
@@ -154,16 +143,16 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		if ( this.curve != null ) return this.curve;
 
 		const points: Vector2[] = [];
-		const posTheta = new TvPosTheta();
+		let posTheta = new TvPosTheta();
 
 		for ( let sCoordinate = this.s; sCoordinate <= this.endS; sCoordinate++ ) {
 
-			this.getCoords( sCoordinate, posTheta );
+			posTheta = this.getRoadCoord( sCoordinate );
 			points.push( posTheta.toVector2() );
 
 		}
 
-		this.getCoords( this.endS - Maths.Epsilon, posTheta );
+		posTheta = this.getRoadCoord( this.endS - Maths.Epsilon );
 		points.push( posTheta.toVector2() );
 
 		return this.curve = new SplineCurve( points );

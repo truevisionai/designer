@@ -38,13 +38,13 @@ describe( 'OdRoad', () => {
 
 	it( 'should give correct geometry index', () => {
 
-		road.getGeometryCoords( 0, pose );
+		pose =road.getRoadCoordAt( 0 );
 		expect( pose.hdg ).toBe( 0 );
 
-		road.getGeometryCoords( 10, pose );
+		pose =road.getRoadCoordAt( 10 );
 		expect( pose.hdg ).toBe( 1 );
 
-		road.getGeometryCoords( 20, pose );
+		pose =road.getRoadCoordAt( 20 );
 		expect( pose.hdg ).toBe( 2 );
 
 	} );

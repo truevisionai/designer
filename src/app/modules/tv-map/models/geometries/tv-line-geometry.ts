@@ -53,16 +53,15 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getCoords ( s, odPosTheta: TvPosTheta ): TvGeometryType {
+	getRoadCoord ( s: number ): TvPosTheta {
 
 		const ds = s - this.s;
 
-		odPosTheta.x = this.x + Math.cos( this.hdg ) * ds;
-		odPosTheta.y = this.y + Math.sin( this.hdg ) * ds;
-
-		odPosTheta.hdg = this.hdg;
-
-		return this.geometryType;
+		return new TvPosTheta(
+			this.x + Math.cos( this.hdg ) * ds,
+			this.y + Math.sin( this.hdg ) * ds,
+			this.hdg
+		);
 
 	}
 

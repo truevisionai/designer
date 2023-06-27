@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';

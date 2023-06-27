@@ -171,7 +171,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	onMouseMove ( event: MouseEvent ) {
+	/**
+	 *
+	 * @param event
+	 * @returns
+	 * @deprecated just for reference
+	 */
+	onMouseMoveOld ( event: MouseEvent ) {
 
 		// TODO: implement GPU picking
 		// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
@@ -210,6 +216,38 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 	}
+
+	onMouseMove ( event: MouseEvent ) {
+
+		this.updateMousePosition( event );
+
+		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+
+		// Limit the frequency of raycasting operations.
+		if ( ( Date.now() - this.lastTime ) < this.minTime ) {
+			return;
+		}
+
+		this.lastTime = Date.now();
+
+		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+
+		this.intersections = this.raycaster.intersectObjects( SceneService.objects, true );
+
+		// if not intersection found then check for background intersection
+		if ( this.intersections.length < 1 ) {
+
+			this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+
+		}
+
+		if ( this.intersections.length > 0 ) {
+
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+
+		}
+	}
+
 
 	onMouseClick ( event: MouseEvent ) {
 

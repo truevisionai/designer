@@ -17,7 +17,7 @@ import { MathUtils, Vector2, Vector3 } from 'three';
 import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
-import { TvMapBuilder } from '../builders/od-builder.service';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -231,44 +231,24 @@ export class TvRoad {
 
 	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
 
-		// helps catch bugs
-		if ( this.geometries.length == 0 ) {
-			throw new Error( 'NoGeometriesFound' );
-		}
-
-		const pose = new TvPosTheta;
-
-		this.getGeometryCoordsAt( s, t, pose );
-
-		return pose;
-	}
-
-	getRoadPosition ( s: number ) {
-
-		return this.getPositionAt( s, 0 );
+		return this.getRoadCoordAt( s, t );
 
 	}
 
-	endPosition () {
+	getEndCoord () {
 
-		return this.getRoadPosition( this.length - Maths.Epsilon );
-
-	}
-
-	endCoord () {
-
-		return this.getPositionAt( this.length - Maths.Epsilon, 0 );
+		return this.getPositionAt( this.length - Maths.Epsilon );
 
 	}
 
-	startPosition () {
+	getStartCoord () {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
 			throw new Error( 'NoGeometriesFound' );
 		}
 
-		return this.getRoadPosition( 0 );
+		return this.getPositionAt( 0 );
 
 	}
 
@@ -556,105 +536,39 @@ export class TvRoad {
 
 	}
 
-	getLanes (): TvRoadLanes {
+	getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
 
-		return this.lanes;
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) throw new Error( 'NoGeometriesFound' );
 
-	}
-
-	recalculateGeometry () {
-
-		// Goes through geometry blocks and recalculates their coordinates and
-		// headings starting with the second record
-		// so the second geometry will start at the coordinates where the first one ended
-
-		let length = 0;
-		const lGeometryVectorSize = this._planView.geometries.length;
-
-		if ( lGeometryVectorSize > 0 ) {
-
-			const s = 0;
-			const posTheta = new TvPosTheta( 0, 0, 0 );
-
-			const abstractRoadGeometry = this._planView.geometries[ 0 ];
-
-			length += this._planView.getBlockLength();
-
-			abstractRoadGeometry.getCoords( s, posTheta );
-		}
-	}
-
-	getGeometryCoords ( s: number, odPosTheta: TvPosTheta ): number {
-
-		if ( s == null || s == undefined ) TvConsole.error( 's is undefined' );
+		if ( s == null ) TvConsole.error( 's is undefined' );
 
 		if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
 
 		const geometry = this.getGeometryAt( s );
 
-		if ( geometry == null ) {
+		const odPosTheta = geometry.getRoadCoord( s );
 
-			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
-
-			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
-
-			return;
-		}
-
-		const geometryType = geometry.getCoords( s, odPosTheta );
-
-		if ( !geometryType ) {
-
-			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
-
-			SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
-
-			return;
-		}
+		// if ( !geometryType ) {
+		//
+		// 	SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+		//
+		// 	SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
+		//
+		// 	return;
+		// }
 
 		const laneOffset = this.getLaneOffsetValue( s );
 
 		odPosTheta.addLateralOffset( laneOffset );
 
-		return geometryType;
-
-		// const index = this.checkGeometryInterval( sCheck );
-		//
-		// if ( index === -999 ) {
-		//     throw new Error( 'geometry index not found ' );
-		// }
-		//
-		// // Check the block and get coords.
-		// const res = this.planView.geometries[ index ].getCoords( sCheck, odPosTheta );
-		//
-		// const laneOffset = this.lanes.getLaneOffsetValue( sCheck );
-		//
-		// odPosTheta.addLateralOffset( laneOffset );
-		//
-		// // If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
-		// // then the result has been found and parameters filled, so, return the value
-		// if ( res > 0 ) {
-		//     return res;
-		// }
-		//
-		// // if s_check does not belong to the road, return -999
-		// return -999;
-	}
-
-	getGeometryCoordsAt ( sCheck, t, odPosTheta: TvPosTheta ): number {
-
-		const res = this.getGeometryCoords( sCheck, odPosTheta );
-
+		// this is additonal offset passed by user
+		// and not from lane-offset property of road
 		odPosTheta.addLateralOffset( t );
 
-		// If the returned value is one of the geometry types (for 0=line,1=arc and 2=spiral)
-		// then the result has been found and parameters filled, so, return the value
-		if ( res > 0 ) {
-			return res;
-		}
+		odPosTheta.z = this.getElevationValue( s );
 
-		// if s_check does not belong to the road, return -999
-		return -999;
+		return odPosTheta;
 	}
 
 	getGeometryBlockCount (): number {
@@ -1070,9 +984,20 @@ export class TvRoad {
 	//
 	// }
 
-	public getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
-		return TvUtils.checkIntervalArray( this.geometries, s );
+		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
+
+		if ( geometry == null ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
+
+		return geometry;
 
 	}
 
@@ -1092,50 +1017,6 @@ export class TvRoad {
 			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 		} );
-	}
-
-	/**
-	 * @deprecated currently not working need to fix
-	 * @param s s-coordinate
-	 */
-	public split ( s: number ) {
-
-		// TODO: not working, fix and complete
-
-		const newRoad: TvRoad = new TvRoad( 'New', 0, 0, -1 );
-
-		// divide geometry and clone other sections
-
-		const geometry = this.getGeometryAt( s );
-
-		const laneSection = this.getLaneSectionAt( s );
-
-		const newLength = this.length - s;
-
-		const posTheta = new TvPosTheta();
-
-		geometry.getCoords( s, posTheta );
-
-		if ( geometry instanceof TvLineGeometry ) {
-
-			const newG = new TvLineGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength );
-
-		} else if ( geometry instanceof TvArcGeometry ) {
-
-			const newG = new TvArcGeometry( s, posTheta.x, posTheta.y, posTheta.hdg, newLength, geometry.curvature );
-
-		} else {
-
-			SnackBar.warn( 'Cannot split this geometry' );
-
-		}
-
-		// divide laneSection
-
-		const newLaneSection = newRoad.addLaneSection( 0, false );
-
-		// const laneSectionsAfterS =
-
 	}
 
 	showHelpers (): void {

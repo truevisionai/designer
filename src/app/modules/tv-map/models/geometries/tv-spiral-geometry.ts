@@ -40,10 +40,9 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
 	/**
 	 * Gets the coordinates at the sample S offset
-	 * @param sCheck
-	 * @param odPosTheta
+	 * @param s
 	 */
-	getCoords ( sCheck, odPosTheta: TvPosTheta ) {
+	getRoadCoord ( sCheck: number ): TvPosTheta {
 
 		const dist = Maths.clamp( sCheck - this.s, 0.0, this.length );
 
@@ -67,11 +66,7 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 		const retX = this.x + x * Math.cos( angle ) - y * Math.sin( angle );
 		const retY = this.y + y * Math.cos( angle ) + x * Math.sin( angle );
 
-		odPosTheta.x = retX;
-		odPosTheta.y = retY;
-		odPosTheta.hdg = this.hdg + t;
-
-		return this.geometryType;
+		return new TvPosTheta( retX, retY, this.hdg + t );
 	}
 
 	getCurve (): import( 'three' ).Curve<import( 'three' ).Vector2> {

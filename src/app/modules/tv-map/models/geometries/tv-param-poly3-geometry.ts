@@ -71,10 +71,10 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getCoords ( sCheck, posTheta: TvPosTheta ) {
+	getRoadCoord ( s: number ): TvPosTheta {
 
 		// normalised p between 0 to 1
-		const du = sCheck - this.s;
+		const du = s - this.s;
 		const p = ( du / this.length );
 
 		const uLocal =
@@ -102,10 +102,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 		const tangent = Math.atan2( dy, dx );
 
-		// apply tranformation with respect to start
-		posTheta.x = this.x + xnew;
-		posTheta.y = this.y + ynew;
-		posTheta.hdg = this.hdg + tangent;
+		return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent );
 
 		// if ( this.curve != null ) {
 		//
@@ -139,7 +136,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 		// }
 
-		return this.geometryType;
+		// return this.geometryType;
 	}
 
 	getCurve (): Curve<Vector2> {

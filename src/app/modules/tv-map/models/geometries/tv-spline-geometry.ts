@@ -17,7 +17,7 @@ export class TvSplineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getCoords ( sCheck: any, posTheta: TvPosTheta ): TvGeometryType {
+	getRoadCoord ( s: number ): TvPosTheta {
 
 		throw new Error( 'Method not implemented.' );
 

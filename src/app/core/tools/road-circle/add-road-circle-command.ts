@@ -4,14 +4,13 @@
 
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { Maths } from 'app/utils/maths';
 import { Vector2, Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { AutoSpline } from '../../shapes/auto-spline';
-import { OdBaseCommand } from '../../commands/od-base-command';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
@@ -80,11 +79,8 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
-			const startPosTheta = new TvPosTheta();
-			const endPosTheta = new TvPosTheta();
-
-			arc.getCoords( 0, startPosTheta );
-			arc.getCoords( arcLength, endPosTheta );
+			const startPosTheta = arc.getRoadCoord( 0 );
+			const endPosTheta = arc.getRoadCoord( arcLength );
 
 			const distance = start.distanceTo( arc.endV3 ) * 0.3;
 

@@ -3,8 +3,7 @@
  */
 
 import { Curve, MathUtils, Vector2, Vector3 } from 'three';
-import { Maths } from '../../../../utils/maths';
-import { TvGeometryType, TvSide } from '../tv-common';
+import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 
 export abstract class TvAbstractRoadGeometry {
@@ -18,6 +17,12 @@ export abstract class TvAbstractRoadGeometry {
 	private _length: number;
 	protected _endS: number;
 	public abstract geometryType: TvGeometryType;
+
+	abstract getRoadCoord ( s: number ): TvPosTheta;
+
+	abstract computeVars ();
+
+	abstract getCurve (): Curve<Vector2>;
 
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
@@ -159,11 +164,6 @@ export abstract class TvAbstractRoadGeometry {
 		return false;
 	}
 
-	abstract getCoords ( sCheck, posTheta: TvPosTheta ): TvGeometryType;
-
-	abstract computeVars ();
-
-	abstract getCurve (): Curve<Vector2>;
 
 	public updateControlPoints () {
 
@@ -171,11 +171,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	public getPositionAt ( s ) {
 
-		const posTheta = new TvPosTheta();
-
-		this.getCoords( s, posTheta );
-
-		return posTheta;
+		return this.getRoadCoord( s );
 
 	}
 
@@ -191,68 +187,68 @@ export abstract class TvAbstractRoadGeometry {
 		return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
 	}
 
-	protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
-
-		let nearestPoint: Vector2 = null;
-
-		const point = new Vector2( x, y );
-
-		// const curve = this.getCurve();
-
-		const tmpPosTheta = new TvPosTheta();
-
-		let minDistance = Number.MAX_SAFE_INTEGER;
-
-		// const curveLength = curve.getLength();
-
-		for ( let s = this.s; s <= this.endS; s++ ) {
-
-			this.getCoords( s, tmpPosTheta );
-
-			const distance = tmpPosTheta.toVector2().distanceTo( point );
-
-			if ( distance < minDistance ) {
-
-				minDistance = distance;
-				nearestPoint = tmpPosTheta.toVector2();
-
-				if ( refPosTheta ) {
-
-					refPosTheta.x = x;
-					refPosTheta.y = y;
-					refPosTheta.s = s;
-					refPosTheta.t = distance;
-					refPosTheta.hdg = tmpPosTheta.hdg;
-				}
-			}
-		}
-
-		if ( nearestPoint == null ) {
-
-			throw new Error( 'could not find the nearest point' );
-
-		} else {
-
-			if ( refPosTheta ) {
-
-				// calculating the lane side for correct value of t
-
-				const tmp1 = new TvPosTheta();
-				const tmp2 = new TvPosTheta();
-
-				this.getCoords( refPosTheta.s, tmp1 );
-				this.getCoords( refPosTheta.s + 1, tmp2 );
-
-				const side = Maths.direction( tmp1.toVector3(), tmp2.toVector3(), refPosTheta.toVector3() );
-
-				if ( side == TvSide.RIGHT ) refPosTheta.t *= -1;
-
-			}
-
-		}
-
-		return nearestPoint;
-	}
+	// protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
+	//
+	// 	let nearestPoint: Vector2 = null;
+	//
+	// 	const point = new Vector2( x, y );
+	//
+	// 	// const curve = this.getCurve();
+	//
+	// 	let tmpPosTheta = new TvPosTheta();
+	//
+	// 	let minDistance = Number.MAX_SAFE_INTEGER;
+	//
+	// 	// const curveLength = curve.getLength();
+	//
+	// 	for ( let s = this.s; s <= this.endS; s++ ) {
+	//
+	// 		tmpPosTheta = this.getRoadCoord( s );
+	//
+	// 		const distance = tmpPosTheta.toVector2().distanceTo( point );
+	//
+	// 		if ( distance < minDistance ) {
+	//
+	// 			minDistance = distance;
+	// 			nearestPoint = tmpPosTheta.toVector2();
+	//
+	// 			if ( refPosTheta ) {
+	//
+	// 				refPosTheta.x = x;
+	// 				refPosTheta.y = y;
+	// 				refPosTheta.s = s;
+	// 				refPosTheta.t = distance;
+	// 				refPosTheta.hdg = tmpPosTheta.hdg;
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	if ( nearestPoint == null ) {
+	//
+	// 		throw new Error( 'could not find the nearest point' );
+	//
+	// 	} else {
+	//
+	// 		if ( refPosTheta ) {
+	//
+	// 			// calculating the lane side for correct value of t
+	//
+	// 			const tmp1 = new TvPosTheta();
+	// 			const tmp2 = new TvPosTheta();
+	//
+	// 			this.getRoadCoord( refPosTheta.s );
+	// 			this.getRoadCoord( refPosTheta.s + 1 );
+	//
+	// 			const side = Maths.direction( tmp1.toVector3(), tmp2.toVector3(), refPosTheta.toVector3() );
+	//
+	// 			if ( side == TvSide.RIGHT ) refPosTheta.t *= -1;
+	//
+	// 		}
+	//
+	// 	}
+	//
+	// 	return nearestPoint;
+	// }
 
 	protected binarySearch_GetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
 
@@ -268,11 +264,8 @@ export abstract class TvAbstractRoadGeometry {
 			const s1 = ( 2 * start + end ) / 3;
 			const s2 = ( start + 2 * end ) / 3;
 
-			const pos1 = new TvPosTheta();
-			const pos2 = new TvPosTheta();
-
-			this.getCoords( s1, pos1 );
-			this.getCoords( s2, pos2 );
+			const pos1 = this.getRoadCoord( s1 );
+			const pos2 = this.getRoadCoord( s2 );
 
 			const distance1 = point.distanceToSquared( pos1.toVector2() );
 			const distance2 = point.distanceToSquared( pos2.toVector2() );
@@ -286,9 +279,7 @@ export abstract class TvAbstractRoadGeometry {
 
 		const s = ( start + end ) / 2;
 
-		const tmpPosTheta = new TvPosTheta();
-
-		this.getCoords( s, tmpPosTheta );
+		const tmpPosTheta = this.getRoadCoord( s );
 
 		const nearestPoint = tmpPosTheta.toVector2();
 
@@ -315,11 +306,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	public endCoord (): TvPosTheta {
 
-		const pos = new TvPosTheta();
-
-		this.getCoords( this.endS, pos );
-
-		return pos;
+		return this.getRoadCoord( this.endS );
 
 	}
 }

@@ -40,17 +40,17 @@ describe( 'OdParamPoly3Geometry', () => {
 
 		road.addGeometryParamPoly( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
-		road.getGeometryCoords( 0, pose );
+		pose = road.getRoadCoordAt( 0 );
 		expect( pose.x ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 		expect( pose.hdg ).toBe( 0 );
 
-		road.getGeometryCoords( 10, pose );
+		pose = road.getRoadCoordAt( 10 );
 		expect( pose.x ).toBe( 0.45 );
 		expect( pose.y ).toBe( 0.1 );
 		expect( pose.hdg ).toBe( 0.20749622643520266 );
 
-		road.getGeometryCoords( 20, pose );
+		pose = road.getRoadCoordAt( 20 );
 		expect( pose.x ).toBe( 2.0 );
 		expect( pose.y ).toBe( 0.4 );
 		expect( pose.hdg ).toBe( 0.17985349979247828 );

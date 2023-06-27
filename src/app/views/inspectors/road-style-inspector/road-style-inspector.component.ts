@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GameObject, IComponent } from 'app/core/game-object';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadStyle } from 'app/services/road-style.service';
 import { Object3D } from 'three';

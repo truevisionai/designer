@@ -9,7 +9,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
 import { IComponent } from '../../../core/game-object';
-import { TvMapBuilder } from '../../../modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from '../../../modules/tv-map/builders/tv-map-builder';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 

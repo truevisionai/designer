@@ -33,7 +33,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		this.computeVars();
 	}
 
-	getCoords ( s: any, posTheta: TvPosTheta ) {
+	getRoadCoord ( s: number ): TvPosTheta {
 
 		// testing code from
 		// const t = ( s - this.s ) / this.length
@@ -60,22 +60,17 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
 		const tangent = this.polyeval( s, dCoeffs );
 
-		posTheta.x = this.x + xnew;
-		posTheta.y = this.y + ynew;
-
-		posTheta.hdg = this.hdg + tangent;
-
-		return this.geometryType;
+		return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent );
 	}
 
 	getCurve (): Curve<Vector2> {
 
 		const points: Vector2[] = [];
-		const posTheta = new TvPosTheta();
+		let posTheta = new TvPosTheta();
 
 		for ( let sCoordinate = this.s; sCoordinate < this.endS; sCoordinate++ ) {
 
-			this.getCoords( sCoordinate, posTheta );
+			posTheta = this.getRoadCoord( sCoordinate );
 			points.push( posTheta.toVector2() );
 
 		}

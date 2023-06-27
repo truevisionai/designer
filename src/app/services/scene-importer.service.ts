@@ -15,7 +15,7 @@ import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { ToolManager } from 'app/core/tools/tool-manager';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/od-builder.service';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';

@@ -8,13 +8,15 @@ import { Maths } from '../../../utils/maths';
 import { TvSide } from './tv-common';
 
 export class TvPosTheta {
+	public z: number = 0;
 
-	constructor ( x?: number, y?: number, hdg?: number, s?: number, t?: number ) {
+	constructor ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ) {
 		this._x = x;
 		this._y = y;
 		this._hdg = hdg;
 		this._s = s;
 		this._t = t;
+		this.z = z;
 	}
 
 	private _x: number;
@@ -68,7 +70,7 @@ export class TvPosTheta {
 	}
 
 	toVector3 (): Vector3 {
-		return new Vector3( this.x, this.y, 0 );
+		return new Vector3( this.x, this.y, this.z );
 	}
 
 	toVector2 (): Vector2 {
@@ -115,7 +117,7 @@ export class TvPosTheta {
 		const endPoint = new Vector3(
 			this.x + Math.cos( this.hdg ) * s,
 			this.y + Math.sin( this.hdg ) * s,
-			0
+			this.z
 		);
 
 		return Maths.isPointOnLine( startPoint, endPoint, new Vector3( point.x, point.y, 0 ) );
@@ -148,15 +150,23 @@ export class TvPosTheta {
 		return this;
 	}
 
-	clone ( x?: number, y?: number, hdg?: number, s?: number, t?: number ) {
+	clone ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ) {
 
-		return new TvPosTheta( x || this.x, y || this.y, hdg || this.hdg, s || this.s, t || this.t );
+		return new TvPosTheta(
+			x || this.x,
+			y || this.y,
+			hdg || this.hdg,
+			s || this.s,
+			t || this.t,
+			z || this.z
+		);
 
 	}
 
 	copy ( other: TvPosTheta ) {
 		this.x = other.x;
 		this.y = other.y;
+		this.z = other.z;
 		this.hdg = other.hdg;
 		this.s = other.s;
 		this.t = other.t;

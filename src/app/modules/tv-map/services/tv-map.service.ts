@@ -15,7 +15,7 @@ import { saveAs } from 'file-saver';
 
 import { IFile } from '../../../core/models/file';
 import { FileService } from '../../../services/file.service';
-import { TvMapBuilder } from '../builders/od-builder.service';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 import { OpenDriverParser } from './open-drive-parser.service';
 import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';

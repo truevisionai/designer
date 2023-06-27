@@ -8,7 +8,7 @@ import { TvMap } from '../tv-map.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
 
-describe( 'OdLineGeometry', () => {
+describe( 'TvLineGeometry', () => {
 
 	let map: TvMap;
 	let road: TvRoad;
@@ -30,15 +30,15 @@ describe( 'OdLineGeometry', () => {
 
 		road.addGeometryLine( 0, 0, 1, 0, 10 );
 
-		const posTheta = new TvPosTheta();
+		let posTheta = new TvPosTheta();
 
-		road.getGeometryCoords( 0, posTheta );
+		posTheta = road.getRoadCoordAt( 0 );
 
 		expect( posTheta.x ).toBe( 0 );
 		expect( posTheta.y ).toBe( 1 );
 		expect( posTheta.hdg ).toBe( 0 );
 
-		road.getGeometryCoords( 10, posTheta );
+		posTheta = road.getRoadCoordAt( 10 );
 
 		expect( posTheta.x ).toBe( 10 );
 		expect( posTheta.y ).toBe( 1 );
@@ -52,15 +52,15 @@ describe( 'OdLineGeometry', () => {
 
 		road.addGeometryLine( 0, 1, 0, hdg, 10 );
 
-		const posTheta = new TvPosTheta();
+		let posTheta = new TvPosTheta();
 
-		road.getGeometryCoords( 0, posTheta );
+		posTheta = road.getRoadCoordAt( 0 );
 
 		expect( posTheta.x ).toBe( 1 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		road.getGeometryCoords( 10, posTheta );
+		posTheta = road.getRoadCoordAt( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 1 );
 		expect( Math.round( posTheta.y ) ).toBe( 10 );
@@ -74,15 +74,13 @@ describe( 'OdLineGeometry', () => {
 
 		road.addGeometryLine( 0, 0, 0, hdg, 10 );
 
-		const posTheta = new TvPosTheta();
-
-		road.getGeometryCoords( 0, posTheta );
+		let posTheta = road.getRoadCoordAt( 0 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 0 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		road.getGeometryCoords( 10, posTheta );
+		posTheta = road.getRoadCoordAt( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( -10 );
 		expect( Math.round( posTheta.y ) ).toBe( 0 );
@@ -102,14 +100,14 @@ describe( 'OdLineGeometry', () => {
 
 		road.addGeometryLine( s, x, y, hdg, length );
 
-		road.getGeometryCoordsAt( s, t, pose );
+		pose = road.getRoadCoordAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 
 		t = 1;
 
-		road.getGeometryCoordsAt( s, t, pose );
+		pose = road.getRoadCoordAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( t );
@@ -128,14 +126,14 @@ describe( 'OdLineGeometry', () => {
 
 		road.addGeometryLine( s, x, y, hdg, length );
 
-		road.getGeometryCoordsAt( s, t, pose );
+		pose = road.getRoadCoordAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( Math.round( pose.y ) ).toBe( 0 );
 
 		t = 1;
 
-		road.getGeometryCoordsAt( s, t, pose );
+		pose = road.getRoadCoordAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( -1 );
 		expect( Math.round( pose.y ) ).toBe( 0 );
