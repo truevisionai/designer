@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { NgxResizableModule } from '@3dgenomes/ngx-resizable';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
@@ -92,6 +93,7 @@ import { TutorialsDialogComponent } from './dialogs/tutorials-dialog/tutorials-d
         MatIconModule,
         MatTooltipModule,
         ScenarioModule,
+        NgxResizableModule,
     ],
     exports: [
         PlayerBarComponent

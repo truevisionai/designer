@@ -16,17 +16,6 @@ import { SceneService } from '../../../core/services/scene.service';
 @Component( {
 	selector: 'app-viewport',
 	templateUrl: './viewport.component.html',
-	styles: [
-		`.app-viewport-stats {
-			top: 12px;
-			right: 10px;
-			color: white;
-			height: 38px;
-			padding: 0px 8px !important;
-			position: absolute;
-			width: auto !important;
-		}`
-	]
 } )
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 

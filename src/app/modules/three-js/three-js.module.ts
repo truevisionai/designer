@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { SharedModule } from 'app/shared/shared.module';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -14,17 +15,18 @@ import { PointerGuidesComponent } from './pointer-guides/pointer-guides.componen
 import { ViewportComponent } from './viewport/viewport.component';
 
 @NgModule( {
-	declarations: [ ViewportComponent, PointerGuidesComponent, TextureFieldComponent ],
-	imports: [
-		CommonModule,
-		SharedModule,
-		ColorPickerModule,
-		MatInputModule,
-		FlexModule
-	],
-	exports: [
-		ViewportComponent,
-	]
+    declarations: [ViewportComponent, PointerGuidesComponent, TextureFieldComponent],
+    exports: [
+        ViewportComponent,
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        ColorPickerModule,
+        MatInputModule,
+        FlexModule,
+        MatToolbarModule,
+    ]
 } )
 export class ThreeJsModule {
 }

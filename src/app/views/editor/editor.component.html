@@ -13,7 +13,7 @@
 	<!-- this ensures object-inspector does not outgrow parent -->
 	<div fxFlex fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap="0px" style="height: 500px; overflow: auto;">
 
-		<div fxFlex="80" fxLayout="column" fxLayoutAlign="space-around" fxLayoutGap="0px">
+		<div fxFlex="75" fxLayout="column" fxLayoutAlign="space-around" fxLayoutGap="0px">
 
 			<app-viewport fxFlex="70"></app-viewport>
 
@@ -28,7 +28,20 @@
 
 		</div>
 
-		<app-object-inspector fxFlex fxFlex="20"></app-object-inspector>
+		<mat-toolbar fxFlex="2.8" class="vertical-toolbar">
+			<button mat-icon-button class="selected" matTooltip="Property Inspector" matTooltipPosition="left">
+				<mat-icon>tune</mat-icon>
+			</button>
+			<button mat-icon-button matTooltip="Map Inspector" matTooltipPosition="left">
+				<mat-icon>map</mat-icon>
+			</button>
+			<button mat-icon-button matTooltip="Scenario Inspector" matTooltipPosition="left">
+				<mat-icon>settings</mat-icon>
+			</button>
+		</mat-toolbar>
+
+		<app-object-inspector fxFlex="22.2"></app-object-inspector>
+
 	</div>
 
 	<app-status-bar></app-status-bar>

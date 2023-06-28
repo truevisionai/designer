@@ -9,7 +9,9 @@
 //@import "themes/egret-navy";
 //@import "themes/egret-blue";
 //@import "themes/egret-dark-purple";
-@import "themes/egret-dark-pink";
+// @import "themes/egret-dark-pink";
+
+@import "themes/desktop-dark-theme";
 
 $background: map-get($egret-theme, background);
 $foreground: map-get($egret-theme, foreground);

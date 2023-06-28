@@ -2,16 +2,3 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-.folder-file-container {
-	height: 200px;
-	background: #424242;
-	border-left: 1px solid #171717;
-	border-bottom: 1px solid #171717;
-	border-top: 1px solid #171717;
-}
-
-.project-heirarchy-container {
-	height: 200px;
-	border-bottom: 1px solid #171717;
-	border-top: 1px solid #171717;
-}

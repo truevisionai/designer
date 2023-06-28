@@ -6,7 +6,14 @@
 
 	<img src="{{metadata.path}}" />
 
-	<mat-form-field>
+	<app-string-field label="Name" [value]="texture.name" [disabled]="true"></app-string-field>
+	<app-double-field label="WrapS" [value]="texture.wrapS" [disabled]="true"></app-double-field>
+	<app-double-field label="WrapT" [value]="texture.wrapT" [disabled]="true"></app-double-field>
+	<app-double-field label="Anisotropy" [value]="texture.anisotropy" [disabled]="true"></app-double-field>
+	<app-double-field label="Offset X" [value]="texture.offset.x" [disabled]="true"></app-double-field>
+	<app-double-field label="Offset Y" [value]="texture.offset.y" [disabled]="true"></app-double-field>
+
+	<!-- <mat-form-field>
 		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">
 	</mat-form-field>
 
@@ -28,6 +35,6 @@
 
 	<mat-form-field>
 		<input (change)="onChange($event)" [(ngModel)]="texture.offset.y" disabled matInput placeholder="Offset Y" type="number">
-	</mat-form-field>
+	</mat-form-field> -->
 
 </div>
