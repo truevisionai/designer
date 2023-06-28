@@ -114,4 +114,50 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 	}
 
+	private static isNumeric ( value: string ): boolean {
+
+		// Allow for a trailing decimal point
+		return /^-?\d*\.?\d*\.?$/.test( value );
+
+	}
+
+	onKeydown ( $event: KeyboardEvent ) {
+
+		// `key` holds the character ('1', 'a', '.', etc.) or the action ('ArrowRight', 'Backspace', etc.)
+		const key = $event.key;
+
+		// Arrow keys should be allowed for navigation
+		const navigationKeys = [ 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete' ];
+
+		if ( navigationKeys.includes( key ) ) {
+			return; // Allow navigation keys
+		}
+
+		// Check for numeric keys, decimal, or navigation keys
+		const isNumberKey = /^\d$/.test( key );
+		const isDecimalKey = key === '.';
+
+		// If key is not a number or decimal or it's a second decimal in the number, prevent its input
+		if ( !isNumberKey && !isDecimalKey ) {
+			$event.preventDefault();
+		}
+	}
+
+	onInput ( $event: Event ) {
+
+		const inputValue: string = ( $event.target as HTMLInputElement ).value;
+
+		if ( !DoubleFieldComponent.isNumeric( inputValue ) ) {
+
+			this.value = inputValue.replace( /[^\d.]/g, '' );
+
+			if ( inputValue.startsWith( '-' ) ) {
+				this.value = '-' + this.value;
+			}
+		} else {
+
+			console.log( 'inputValue', inputValue );
+
+		}
+	}
 }

@@ -4,30 +4,10 @@
 
 <div *ngIf="lane" class="inspector-form-container">
 
-	<mat-form-field>
-		<input [value]="lane.id" disabled matInput placeholder="Lane Id" type="number">
-	</mat-form-field>
+	<app-string-field [value]="lane.id" [disabled]="true" label="Lane ID"></app-string-field>
 
-	<mat-form-field>
-		<input [value]="lane.sideAsString" disabled matInput placeholder="Side" type="string">
-	</mat-form-field>
+	<app-string-field [value]="lane.sideAsString" [disabled]="true" label="Side"></app-string-field>
 
-	<mat-form-field class="full-width">
-		<mat-label>Type</mat-label>
-		<mat-select (selectionChange)="onTypeChanged($event)" [ngModel]="lane.type">
-			<mat-option [value]="types.driving">Driving</mat-option>
-			<mat-option [value]="types.border">Border</mat-option>
-			<mat-option [value]="types.shoulder">Shoulder</mat-option>
-			<mat-option [value]="types.sidewalk">Sidewalk</mat-option>
-			<mat-option [value]="types.stop">Stop</mat-option>
-		</mat-select>
-	</mat-form-field>
-
-	<!-- <button mat-raised-button color="primary" (click)="onDelete()">Delete!</button> -->
-	<!-- <button mat-stroked-button (click)="onDelete()">Delete!</button> -->
-
+	<app-enum-field [enum]="types" [value]="lane.type" (changed)="onTypeChanged($event)" label="Type"></app-enum-field>
 
 </div>
-
-
-<!-- <app-material-inspector [data]="data.gameObject.material" cpPosition="bottom"></app-material-inspector> -->

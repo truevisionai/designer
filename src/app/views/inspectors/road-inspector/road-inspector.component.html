@@ -2,13 +2,18 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="road" class="inspector-form-container">
+<div *ngIf="road" class="inspector-editor-padding">
 
 	<app-double-field [value]="road.length" [disabled]="true" label="Length" suffix="m"></app-double-field>
 
 	<app-double-field (changed)="onRoadSpeedChanged($event)" [value]="roadSpeed" label="Speed Limit" suffix="m/s" max="200" min="0"></app-double-field>
 
 	<app-enum-field (changed)="onRoadTypeChanged($event)" [enum]="roadTypesEnum" [value]="type" label="Road Type"></app-enum-field>
+
+</div>
+
+
+<div *ngIf="road">
 
 	<app-material-field (changed)="onDrivingMaterialChanged($event)" [guid]="road.drivingMaterialGuid" label="Driving Material"></app-material-field>
 
@@ -18,14 +23,9 @@
 
 	<app-material-field (changed)="onShoulderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
 
-	<div *ngIf="controlPoint">
-		<span>Road Control Point</span><br />
-		<mat-form-field style="width: 50%;">
-			<input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
-		</mat-form-field>
-		<mat-form-field style="width: 50%;">
-			<input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
-		</mat-form-field>
-	</div>
-
 </div>
+
+<div *ngIf="controlPoint" class="inspector-editor-padding">
+	<app-vector3-field label="Control Point" [value]="controlPoint.position"></app-vector3-field>
+</div>
+

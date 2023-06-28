@@ -12,7 +12,7 @@
 
 			<option *ngFor="let option of options" [selected]="option.value===value" [value]="option.value" class="tv-field-option">
 
-				{{ option.label}}
+				{{ option.label | titlecase }}
 
 			</option>
 

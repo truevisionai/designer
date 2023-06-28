@@ -8,7 +8,6 @@
 
 </div>
 
-
 <app-action
 	*ngFor="let action of initActions"
 	(removed)="removeInitAction(action)"
@@ -16,22 +15,18 @@
 	[entity]="entity">
 </app-action>
 
-<br/>
-
 <app-event-editor
 	*ngFor="let event of scenarioEvents"
 	[entity]="entity"
 	[event]="event">
 </app-event-editor>
 
-<br/>
-
-<mat-form-field class="example-full-width" style="margin: 8px">
-	<mat-label>Add Maneuver/Event</mat-label>
-	<mat-select #addAction (valueChange)="addEvent($event)">
-		<mat-option [value]="actionType.Private_Longitudinal_Speed">ChangeSpeed</mat-option>
-		<mat-option [value]="actionType.Private_LaneChange">ChangeLane</mat-option>
-		<mat-option [value]="actionType.Private_LaneOffset">ChangeLaneOffset</mat-option>
-		<mat-option [value]="actionType.Private_Longitudinal_Distance">Longitudinal_Distance</mat-option>
-	</mat-select>
-</mat-form-field>
+<div *ngIf="entity" class="inspector-editor-padding">
+	<button mat-stroked-button fxFill [matMenuTriggerFor]="menu">Add Maneuever</button>
+	<mat-menu #menu="matMenu">
+		<mat-option (click)="addEvent(actionType.Private_Longitudinal_Speed)">ChangeSpeed</mat-option>
+		<mat-option (click)="addEvent(actionType.Private_LaneChange)">ChangeLane</mat-option>
+		<mat-option (click)="addEvent(actionType.Private_LaneOffset)">ChangeLaneOffset</mat-option>
+		<mat-option (click)="addEvent(actionType.Private_Longitudinal_Distance)">Longitudinal_Distance</mat-option>
+	</mat-menu>
+</div>

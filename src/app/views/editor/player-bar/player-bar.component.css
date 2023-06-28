@@ -2,13 +2,4 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-.app-player-bar {
-	top: 0;
-	right: 0;
-	background: #424242;
-	height: 44px;
-	padding: 0px 4px !important;
-	position: absolute;
-	width: auto !important;
-	z-index: 1000;
-}
+
