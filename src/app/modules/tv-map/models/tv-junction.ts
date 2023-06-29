@@ -17,6 +17,8 @@ export class TvJunction {
 	private lastAddedJunctionPriorityIndex: number;
 	private lastAddedJunctionControllerIndex: number;
 
+	static counter: number = 1;
+
 	constructor ( name: string, id: number ) {
 		this._name = name;
 		this._id = id;
@@ -80,7 +82,7 @@ export class TvJunction {
 	 * @param connectingRoad ID of the connecting path
 	 * @param contactPoint Contact point on the connecting road (start or end)
 	 */
-	public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad?): TvJunctionConnection {
+	public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad? ): TvJunctionConnection {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
@@ -236,6 +238,12 @@ export class TvJunction {
 	public getJunctionConnection ( id: number ) {
 
 		return this.connections.get( id );
+
+	}
+
+	public getConnections () {
+
+		return Array.from( this.connections.values() );
 
 	}
 

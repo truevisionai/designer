@@ -60,6 +60,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		return <HTMLCanvasElement> this.elementRef.nativeElement;
 	}
 
+	get cameraType (): string {
+		return this.threeService.camera?.type || 'OrthographicCamera';
+	}
+
 	ngOnInit () {
 
 		this.prevTime = ( performance || Date ).now();
@@ -605,6 +609,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.setSize( width, height );
 
 		this.threeService.onWindowResized();
+
+	}
+
+	changeCamera () {
+
+		this.threeService.changeCamera();
 
 	}
 }

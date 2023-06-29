@@ -234,17 +234,6 @@ export class ToolBarComponent implements OnInit {
 			click: () => this.setToolType( ToolType.Surface )
 		},
 		{
-			id: 'changeCamera',
-			label: 'Camera',
-			class: 'toolbar-button',
-			toolType: null,
-			action: 'change-camera',
-			icon: 'camera',
-			track: 'menu',
-			tooltip: 'Change Camera',
-			click: () => this.changeCamera()
-		},
-		{
 			id: 'vehicle',
 			label: 'Vehicle Tool',
 			class: 'toolbar-button',
@@ -279,12 +268,6 @@ export class ToolBarComponent implements OnInit {
 		if ( !this.currentTool ) return tool.class;
 
 		return this.currentTool.toolType == tool.toolType ? 'mat-accent ' + tool.class : tool.class;
-
-	}
-
-	changeCamera () {
-
-		this.threeService.changeCamera();
 
 	}
 

@@ -86,6 +86,7 @@ $app-background: map-get($mat-gray, 100);
 $primary-dark: map-get($mat-gray, 100);
 $panel-color: map-get($mat-gray, 100);
 $panel-background: map-get($mat-gray, 200);
+$panel-100: map-get($mat-gray, 100);
 $panel-200: map-get($mat-gray, 200);
 $panel-300: map-get($mat-gray, 300);
 $panel-400: map-get($mat-gray, 400);
@@ -447,14 +448,14 @@ $border-radius: 0px !important;
 	}
 
 	.app-viewport-stats {
-		top: 12px;
+		top: 118px;
 		left: 8px;
 		color: white;
 		height: 38px;
 		padding: 0px 8px !important;
 		position: absolute;
 		width: auto !important;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 	}
 
 	.vertical-toolbar {
@@ -475,6 +476,29 @@ $border-radius: 0px !important;
 
 	.vertical-toolbar .mat-icon {
 		font-size: 18px;
+	}
+
+
+	.viewport-toolbar {
+		flex-direction: column;
+		background: transparent;
+		color: white;
+		width: 36px;
+		position: absolute;
+		right: 26vw;
+		top: 118px;
+	}
+
+	.viewport-toolbar .mat-icon-button {
+		width: 36px;
+		height: 36px;
+		margin-bottom: 8px;
+		background: $panel-100;
+	}
+
+	.viewport-toolbar .mat-icon {
+		font-size: 16px;
+		line-height: 18px;
 	}
 
 	.btn-icon {

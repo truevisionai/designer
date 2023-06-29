@@ -172,22 +172,15 @@ export class TvMap {
 
 	public addNewJunction ( junctionName?: string ): TvJunction {
 
-		const id = this.junctions.size + 1;
+		const id = TvJunction.counter++;
 
 		const name = junctionName || `${ id }`;
 
+		const junction = new TvJunction( name, id );
 
-		return this.junctions.get( id );
-	}
+		this.junctions.set( id, junction );
 
-	public addJunction ( name, id ): number {
-
-		const index = this.getJunctionCount();
-
-		this._junctions.set( id, new TvJunction( name, id ) );
-
-
-		return index;
+		return junction;
 	}
 
 	public addController ( id: number, name: string, sequence: number ): TvController {
@@ -358,5 +351,9 @@ export class TvMap {
 
 	hideSurfaceHelpers () {
 		this.surfaces.forEach( surface => surface.hideHelpers() );
+	}
+
+	getJunctions () {
+		return Array.from( this._junctions.values() );
 	}
 }
