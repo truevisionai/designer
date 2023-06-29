@@ -12,7 +12,7 @@ import { Color, Group, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { BaseControlPoint} from './control-point';
+import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 
 export class RoadNode extends Group implements ISelectable {
@@ -35,13 +35,14 @@ export class RoadNode extends Group implements ISelectable {
 
 		const result = road.getRoadWidthAt( sCoord );
 
-		const start = road.getPositionAt( sCoord, result.leftSideWidth );
-		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
+		const start = road.getPositionAt( sCoord, result.leftSideWidth ).toVector3();
+		const end = road.getPositionAt( sCoord, -result.rightSideWidth ).toVector3();
 
 		const lineGeometry = new LineGeometry();
-		lineGeometry.setPositions(
-			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
-		);
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
 
 		const lineMaterial = new LineMaterial( {
 			color: RoadNode.defaultColor,
