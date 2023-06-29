@@ -119,6 +119,10 @@ $border-radius: 0px !important;
 		color: #FFFFFF;
 	}
 
+	input[disabled] {
+		cursor: not-allowed;
+	}
+
 	.mat-card {
 		background: $app-background;
 		box-shadow: none !important;
@@ -519,6 +523,21 @@ $border-radius: 0px !important;
 
 	.mat-icon-button:hover {
 		//background: $panel-200;
+	}
+
+	.green-snackbar {
+		background: rgb(109, 203, 109) !important;
+		color: white !important;
+	}
+
+	.red-snackbar {
+		background: rgb(255, 152, 152) !important;
+		color: white !important;
+	}
+
+	.yellow-snackbar {
+		background: rgb(255, 233, 162) !important;
+		color: rgb(133, 100, 4) !important;
 	}
 
 }

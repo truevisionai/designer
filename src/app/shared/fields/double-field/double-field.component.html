@@ -9,6 +9,7 @@
 	<div class="tv-field-text-input" style="display: flex;">
 
 		<input
+			[ngStyle]="{'cursor': inFocus ? 'row-resize' : 'auto'}"
 			(blur)="onBlur()"
 			(focus)="onFocus()"
 			(keydown)="onKeydown($event)"

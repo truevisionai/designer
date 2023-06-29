@@ -71,7 +71,7 @@ export class DefaultVehicleController extends AbstractController {
 
 				} else {
 
-					const contactPoint = successor.contactPoint;
+					let contactPoint = successor.contactPoint;
 
 					// find road
 					if ( successor.elementType == 'road' ) {
@@ -83,6 +83,8 @@ export class DefaultVehicleController extends AbstractController {
 
 						const junction = this.map.getJunctionById( successor.elementId );
 						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
+
+						contactPoint = connection.contactPoint;
 
 						nextRoad = this.map.getRoadById( connection.connectingRoad );
 						nextLaneId = connection.getToLaneId( currentLaneId );
@@ -128,7 +130,7 @@ export class DefaultVehicleController extends AbstractController {
 
 			} else {
 
-				const contactPoint = predecessor.contactPoint;
+				let contactPoint = predecessor.contactPoint;
 
 				// find road
 				if ( predecessor.elementType == 'road' ) {
@@ -140,6 +142,8 @@ export class DefaultVehicleController extends AbstractController {
 
 					const junction = this.map.getJunctionById( predecessor.elementId );
 					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
+
+					contactPoint = connection.contactPoint;
 
 					nextRoad = this.map.getRoadById( connection.connectingRoad );
 					nextLaneId = connection.getToLaneId( currentLaneId );

@@ -3,7 +3,6 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 
 import { RemoveRoadmarkCommand } from '../../../core/commands/remove-roadmark-command';
 import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
@@ -58,35 +57,29 @@ export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnI
 
 	}
 
-	onWidthChanged ( value: number, item: TvLaneRoadMark ) {
+	onWidthChanged ( $width ) {
 
-		if ( item.width == value ) return;
-
-		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'width', value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'width', $width ) ) );
 
 	}
 
-	onTypeChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
+	onTypeChanged ( $event: TvRoadMarkTypes ) {
 
-		if ( item.type == $event.value ) return;
+		// if ( item.type == $event.value ) return;
 
-		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'type', $event.value ) ) );
-
-	}
-
-	onWeightChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
-
-		if ( item.weight == $event.value ) return;
-
-		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'weight', $event.value ) ) );
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'type', $event ) ) );
 
 	}
 
-	onColorChanged ( $event: MatSelectChange, item: TvLaneRoadMark ) {
+	onWeightChanged ( $weight ) {
 
-		if ( item.color == $event.value ) return;
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'weight', $weight ) ) );
 
-		CommandHistory.execute( ( new SetRoadmarkValueCommand( item, 'color', $event.value ) ) );
+	}
+
+	onColorChanged ( $color ) {
+
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'color', $color ) ) );
 
 	}
 }

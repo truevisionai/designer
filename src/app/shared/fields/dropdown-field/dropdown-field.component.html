@@ -10,7 +10,9 @@
 
 		<select (change)="onChanged($event)" [(ngModel)]="value" class="tv-field-dropdown">
 
-			<option *ngFor="let option of options" [value]="option" class="tv-field-option">{{option}}</option>
+			<option *ngFor="let option of options" [value]="option" class="tv-field-option">
+				{{option | titlecase}}
+			</option>
 
 		</select>
 

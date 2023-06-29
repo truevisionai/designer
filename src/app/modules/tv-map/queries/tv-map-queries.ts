@@ -272,13 +272,13 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
-		if ( !laneSection || laneSection == null ) {
+		if ( !laneSection ) {
 			throw new Error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
 		}
 
 		const lane = laneSection.getLaneById( laneId );
 
-		if ( !lane || lane === undefined || lane == null ) {
+		if ( !lane ) {
 			throw new Error( `Lane not found for road ${ roadId } at ${ sCoordinate } with id:${ laneId }` );
 		}
 
@@ -295,6 +295,32 @@ export class TvMapQueries extends TvBaseQueries {
 		if ( refPos ) refPos.copy( posTheta );
 
 		return posTheta.toVector3();
+
+	}
+
+	static getLanePosHdg ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0 ): TvPosTheta {
+
+		const posTheta = new TvPosTheta();
+
+		this.getLanePosition( roadId, laneId, sCoordinate, offset, posTheta );
+
+		return posTheta;
+
+	}
+
+	static getWaypoints ( direction: number, roadId: number, laneId: number, sCoordinate: number, offset: number = 0 ): TvPosTheta[] {
+
+		let waypoints = [];
+
+		const road = this.findRoadById( roadId );
+
+		for ( let s = sCoordinate; s <= road.length && s >= 0; s += direction ) {
+			const posTheta = new TvPosTheta();
+			this.getLanePosition( roadId, laneId, s, offset, posTheta );
+			waypoints.push( posTheta );
+		}
+
+		return waypoints;
 
 	}
 

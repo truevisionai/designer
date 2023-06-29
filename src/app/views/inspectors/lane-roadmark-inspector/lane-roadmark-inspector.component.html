@@ -4,38 +4,38 @@
 
 <div *ngIf="roadMark" class="inspector-form-container">
 
-	<mat-form-field>
-		<input [(ngModel)]="roadMark.sOffset" disabled matInput placeholder="S" type="number">
-	</mat-form-field>
+	<app-double-field
+		label="S"
+		[value]="roadMark.sOffset"
+		[disabled]="true">
+	</app-double-field>
 
-	<mat-form-field class="full-width">
-		<mat-label>Type</mat-label>
-		<mat-select (selectionChange)="onTypeChanged($event, roadMark)" [ngModel]="roadMark.type">
-			<mat-option [value]="types.NONE">None</mat-option>
-			<mat-option [value]="types.SOLID">Solid</mat-option>
-			<mat-option [value]="types.BROKEN">Broken</mat-option>
-		</mat-select>
-	</mat-form-field>
+	<app-double-field
+		label="Width"
+		[value]="roadMark.width"
+		(changed)="onWidthChanged($event)">
+	</app-double-field>
 
-	<mat-form-field class="full-width">
-		<mat-label>Weight</mat-label>
-		<mat-select (selectionChange)="onWeightChanged($event, roadMark)" [ngModel]="roadMark.weight">
-			<mat-option value="standard">Standard</mat-option>
-			<mat-option value="bold">Bold</mat-option>
-		</mat-select>
-	</mat-form-field>
+	<app-enum-field
+		label="Type"
+		[enum]="types"
+		[value]="roadMark.type"
+		(changed)="onTypeChanged($event)">
+	</app-enum-field>
 
-	<mat-form-field class="full-width">
-		<mat-label>Color</mat-label>
-		<mat-select (selectionChange)="onColorChanged($event, roadMark)" [ngModel]="roadMark.color">
-			<mat-option value="standard">Standard (White)</mat-option>
-			<mat-option value="white">White</mat-option>
-			<mat-option value="yellow">Yellow</mat-option>
-		</mat-select>
-	</mat-form-field>
+	<app-dropdown-field
+		label="Weight"
+		[options]="['standard', 'bold']"
+		[value]="roadMark.weight"
+		(changed)="onWeightChanged($event)">
+	</app-dropdown-field>
 
-	<mat-form-field>
-		<input (ngModelChange)="onWidthChanged($event, roadMark)" [ngModel]="roadMark.width" matInput placeholder="Width" type="number">
-	</mat-form-field>
+	<app-dropdown-field
+		label="Color"
+		[options]="['standard', 'white', 'yellow']"
+		[value]="roadMark.color"
+		(changed)="onColorChanged($event)">
+	</app-dropdown-field>
+
 
 </div>
