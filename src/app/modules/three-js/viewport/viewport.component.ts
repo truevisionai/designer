@@ -617,4 +617,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.threeService.changeCamera();
 
 	}
+
+	resetCamera () {
+
+		this.threeService.resetCamera();
+
+	}
 }

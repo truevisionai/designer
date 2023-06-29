@@ -8,7 +8,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { Maths } from 'app/utils/maths';
 
 import * as THREE from 'three';
-import { Material, Object3D, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from 'three';
+import { Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { IEngine } from '../../core/services/IEngine';
@@ -566,6 +566,10 @@ export class ThreeService implements IEngine {
 		for ( let i = 0; i < this.cameras.length; i++ ) {
 
 			this.cameras[ i ].lookAt( 0, 0, 0 );
+			this.cameras[ i ].userData.initialPosition = this.cameras[ i ].position.clone();
+			this.cameras[ i ].userData.initialUp = this.cameras[ i ].up.clone();
+			this.cameras[ i ].userData.initialRotation = this.cameras[ i ].rotation.clone();
+
 
 			SceneService.addHelper( this.cameras[ i ] );
 		}
@@ -613,5 +617,18 @@ export class ThreeService implements IEngine {
 
 		this.camera.lookAt( target.position );
 
+	}
+
+	resetCamera () {
+
+		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, 0, 50 ) );
+
+		this.camera.rotation.copy( this.camera.userData.initialRotation ?? new Euler() );
+
+		this.camera.up.copy( this.camera.userData.initialUp ?? new Vector3( 0, 0, 1 ) );
+
+		( this.camera as any ).lookAt( 0, 0, 0 );
+
+		( this.camera as any ).updateProjectionMatrix();
 	}
 }
