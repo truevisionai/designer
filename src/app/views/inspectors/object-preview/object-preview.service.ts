@@ -78,16 +78,27 @@ export class PreviewService {
 
 		this.resetCamera();
 
-		const directionaLight = new DirectionalLight( 0xffffff, 1 );
-		directionaLight.position.set( 45, 45, 45 );
-
-		this.scene.add( directionaLight );
-
-		this.scene.add( new AmbientLight( 0xffffff, 0.5 ) );
+		this.createLights();
 
 		this.addGreenGround( this.scene );
 
 		this.ground.visible = false;
+	}
+
+	createLights () {
+
+		const directionaLight = new DirectionalLight( 0xffffff, 1 );
+
+		directionaLight.position.set( 5, 10, 7.5 );
+
+		this.scene.add( directionaLight );
+
+		this.scene.add( directionaLight.target );
+
+		const ambientLight = new AmbientLight( 0xE6E6E6, 1 );
+
+		this.scene.add( ambientLight );
+
 	}
 
 	ngAfterViewInit (): void {
@@ -271,6 +282,8 @@ export class PreviewService {
 		const road = new TvRoad( '', 0, 1, -1 );
 
 		road.laneSections.push( roadStyle.laneSection );
+
+		roadStyle.laneSection.road = road;
 
 		road.addGeometryLine( 0, -50, 0, 0, 100 );
 

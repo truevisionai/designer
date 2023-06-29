@@ -233,7 +233,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.scene.add( directionaLight.target );
 
-		const ambientLight = new AmbientLight( 0x404040, 1 );
+		const ambientLight = new AmbientLight( 0xE6E6E6, 1 );
 
 		this.scene.add( ambientLight );
 
