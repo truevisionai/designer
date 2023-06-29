@@ -240,7 +240,7 @@ export class FileComponent implements OnInit {
 			{
 				label: 'Rename',
 				click: () => this.renameNode(),
-				enabled: !this.isDirectory,
+				// enabled: !this.isDirectory,
 			},
 			{
 				label: 'Duplicate',
@@ -381,17 +381,30 @@ export class FileComponent implements OnInit {
 
 		if ( $event.keyCode === 13 && this.nameInputRef ) {
 
-			this.file.name = this.nameInputRef.nativeElement.value + '.' + this.extension;
+			let nodeName: string;
+			if ( this.isDirectory ) {
+				nodeName = this.nameInputRef.nativeElement.value
+			} else {
+				nodeName = this.nameInputRef.nativeElement.value + '.' + this.extension;
+			}
 
 			const oldPath = this.file.path;
 
 			const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
 
-			const newPath = this.fileService.join( currentFolder, this.file.name );
+			const newPath = this.fileService.join( currentFolder, nodeName );
 
 			if ( !this.metadata ) {
 
-				this.metadata = MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
+				if ( this.isDirectory ) {
+
+					this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
+
+				} else {
+
+					this.metadata = MetadataFactory.createMetadata( nodeName, this.extension, this.file.path );
+				}
+
 
 			}
 
