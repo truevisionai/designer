@@ -2,32 +2,30 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdSignalBuilder } from '../builders/od-signal-builder';
+import { SignalFactory } from '../builders/signal-factory';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 
 export class TvSignalHelper {
 
-	private signalFactory = new OdSignalBuilder();
+	private static signalFactory = new SignalFactory();
 
-	constructor ( private road: TvRoad ) {
-
+	constructor () {
 	}
 
-	public create () {
+	public static create ( road: TvRoad ) {
 
-		this.road.signals.forEach( signal => {
+		road.signals.forEach( signal => {
 
-			this.createSignal( signal );
+			this.createSignal( road, signal );
 
 		} );
 
 	}
 
-	createSignal ( signal: TvRoadSignal ) {
+	private static createSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
-		this.signalFactory.createSignalGameObject( this.road, signal );
-
+		this.signalFactory.createSignalGameObject( road, signal );
 
 	}
 }

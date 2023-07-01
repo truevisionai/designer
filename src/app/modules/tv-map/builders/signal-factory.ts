@@ -8,13 +8,11 @@ import { SnackBar } from '../../../services/snack-bar.service';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { Maths } from '../../../utils/maths';
 import { TvObjectType } from '../interfaces/i-tv-object';
-import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { SignShapeType } from '../services/tv-sign.service';
 
-export class OdSignalBuilder {
+export class SignalFactory {
 
 	constructor () {
 	}
@@ -23,53 +21,11 @@ export class OdSignalBuilder {
 
 		const position = road.getPositionAt( signal.s, signal.t );
 
-		this.createPole( position.toVector3(), signal, road, shape );
+		SignalFactory.createPole( position.toVector3(), signal, road, shape );
 
 	}
 
-	createSignal (
-		assetName: string,
-		signShape: SignShapeType,
-		roadId: number,
-		s: number,
-		t: number,
-		name: string = '',
-		dynamic: TvDynamicTypes = TvDynamicTypes.NO,
-		orientation: TvOrientation = TvOrientation.MINUS,
-		zOffset: number = 0,
-		country: string = 'OpenDrive',
-		type: string = '-1',
-		subtype: string = '-1',
-		value: number = null,
-		unit: TvUnit = null,
-		height: number = 4,
-		width: number = null,
-		text: string = null,
-		hOffset: number = null,
-		pitch: number = null,
-		roll: number = null
-	): TvRoadSignal {
-
-		const road = TvMapInstance.map.getRoadById( roadId );
-
-		const id = road.getRoadSignalCount() + 1;
-
-		const signal = road.addRoadSignal(
-			s, t, id, name, dynamic, orientation, zOffset,
-			country, type, subtype,
-			value, unit,
-			height, width, text,
-			hOffset, pitch, roll
-		);
-
-		signal.addUserData( 'asset_name', assetName );
-		signal.addUserData( 'sign_shape', signShape as string );
-
-		return signal;
-	}
-
-
-	createPole ( position: Vector3, signal: TvRoadSignal, road: TvRoad, shape?: SignShapeType ) {
+	private static createPole ( position: Vector3, signal: TvRoadSignal, road: TvRoad, shape?: SignShapeType ) {
 
 		const assetName = signal.assetName ? signal.assetName.attr_value : 'default';
 
@@ -89,31 +45,31 @@ export class OdSignalBuilder {
 		switch ( signShape ) {
 
 			case SignShapeType.circle:
-				sign = this.createSphericalSignal( assetName, signal );
+				sign = SignalFactory.createSphericalSignal( assetName, signal );
 				break;
 
 			case SignShapeType.square:
-				sign = this.createSquareSignal( assetName, signal );
+				sign = SignalFactory.createSquareSignal( assetName, signal );
 				break;
 
 			case SignShapeType.diamond:
-				sign = this.createSquareSignal( assetName, signal );
+				sign = SignalFactory.createSquareSignal( assetName, signal );
 				break;
 
 			case SignShapeType.triangle:
-				sign = this.createSquareSignal( assetName, signal );
+				sign = SignalFactory.createSquareSignal( assetName, signal );
 				break;
 
 			case SignShapeType.triangle_inverted:
-				sign = this.createSquareSignal( assetName, signal );
+				sign = SignalFactory.createSquareSignal( assetName, signal );
 				break;
 
 			case SignShapeType.square_tilted:
-				sign = this.createTiltedSquareSignal( assetName, signal );
+				sign = SignalFactory.createTiltedSquareSignal( assetName, signal );
 				break;
 
 			case SignShapeType.rectangle:
-				sign = this.createRectangleSignal( assetName, signal );
+				sign = SignalFactory.createRectangleSignal( assetName, signal );
 				break;
 			case 'default':
 				break;
@@ -143,34 +99,32 @@ export class OdSignalBuilder {
 		road.gameObject.add( signal.gameObject );
 	}
 
-	createRectangleSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+	private static createRectangleSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
 		const geometry = new BoxGeometry( 1, 1.5, 0.05 );
 
-		const signMaterial = this.getSignMaterial( sign );
+		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		return this.createObject( geometry, signMaterial, signal );
+		return SignalFactory.createObject( geometry, signMaterial, signal );
 
 	}
 
-	createSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+	private static createSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
 		const geometry = new BoxGeometry( 1, 1, 0.05 );
 
-		const signMaterial = this.getSignMaterial( sign );
+		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const gameObject = this.createObject( geometry, signMaterial, signal );
-
-		return gameObject;
+		return SignalFactory.createObject( geometry, signMaterial, signal );
 	}
 
-	createTiltedSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+	private static createTiltedSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
 		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 4, 1 );
 
-		const signMaterial = this.getSignMaterial( sign );
+		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const gameObject = this.createObject( geometry, signMaterial, signal );
+		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
 
 		gameObject.rotateX( 90 * Maths.Deg2Rad );
 		gameObject.rotateY( 90 * Maths.Deg2Rad );
@@ -178,13 +132,13 @@ export class OdSignalBuilder {
 		return gameObject;
 	}
 
-	createSphericalSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+	private static createSphericalSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
 		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 32, 1 );
 
-		const signMaterial = this.getSignMaterial( sign );
+		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const gameObject = this.createObject( geometry, signMaterial, signal );
+		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
 
 		gameObject.rotateX( 90 * Maths.Deg2Rad );
 		gameObject.rotateY( 90 * Maths.Deg2Rad );
@@ -192,7 +146,7 @@ export class OdSignalBuilder {
 		return gameObject;
 	}
 
-	private createObject ( geometry, signMaterial, signal: TvRoadSignal ) {
+	private static createObject ( geometry, signMaterial, signal: TvRoadSignal ) {
 
 		const gameObject = new GameObject( 'Signal', geometry, signMaterial );
 
@@ -205,26 +159,24 @@ export class OdSignalBuilder {
 		return gameObject;
 	}
 
-	private getBlankMaterial () {
+	private static getBlankMaterial () {
 		const blankTexture = new TextureLoader().load( `assets/textures/blank.png` );
-		const blankMaterial = new MeshBasicMaterial( { map: blankTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+		return new MeshBasicMaterial( { map: blankTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 	}
 
-	private getMetalMaterial () {
+	private static getMetalMaterial () {
 		const metalTexture = new TextureLoader().load( `assets/signs/metal.png` );
-		const metalMaterial = new MeshBasicMaterial( { map: metalTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+		return new MeshBasicMaterial( { map: metalTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 	}
 
-	private getBackMaterial () {
+	private static getBackMaterial () {
 		const signBackTexture = new TextureLoader().load( `assets/signs/back_circle.png` );
-		const signBackMaterial = new MeshBasicMaterial( { map: signBackTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-		return signBackMaterial;
+		return new MeshBasicMaterial( { map: signBackTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 	}
 
-	private getSignMaterial ( sign: string ) {
+	private static getSignMaterial ( sign: string ) {
 		const signTexture = new TextureLoader().load( `assets/signs/${ sign }.png` );
-		const signMaterial = new MeshBasicMaterial( { map: signTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-		return signMaterial;
+		return new MeshBasicMaterial( { map: signTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 	}
 
 	// createPlaneSignal ( sign: string, signal: OdRoadSignal ): GameObject {

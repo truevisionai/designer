@@ -24,11 +24,11 @@ import { TvSignalHelper } from '../services/tv-signal-helper';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
 import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
-import { OdSignalBuilder } from './od-signal-builder';
+import { SignalFactory } from './signal-factory';
 
 export class TvMapBuilder {
 
-	private static signalFactory = new OdSignalBuilder;
+	private static signalFactory = new SignalFactory;
 	// private static roadMarkBuilder = new TvRoadMarkBuilderV2( null );
 	private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
@@ -78,7 +78,7 @@ export class TvMapBuilder {
 
 		this.roadMarkBuilder.buildRoad( road );
 
-		( new TvSignalHelper( road ) ).create();
+		TvSignalHelper.create( road );
 
 		parent.add( road.gameObject );
 

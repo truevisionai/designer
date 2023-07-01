@@ -11,6 +11,7 @@ import { TvLaneSide } from '../modules/tv-map/models/tv-common';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
+import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
 import { RoadStyle } from './road-style.service';
 import { SnackBar } from './snack-bar.service';
 
@@ -41,7 +42,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return this.importRoadStyle( roadStyleFile );
 	}
 
-	static importRoadStyle ( json: any ): RoadStyle {
+	static importRoadStyle ( json: XmlElement ): RoadStyle {
 
 		const roadStyle = new RoadStyle();
 
@@ -59,7 +60,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return roadStyle;
 	}
 
-	static importLaneSection ( json: any ): TvLaneSection {
+	static importLaneSection ( json: XmlElement ): TvLaneSection {
 
 		const laneSection = new TvLaneSection( 0, 0, true );
 
@@ -145,7 +146,7 @@ export class RoadStyleImporter extends AbstractReader {
 
 	}
 
-	static readLaneWidth ( lane: TvLane, json: any ) {
+	static readLaneWidth ( lane: TvLane, json: XmlElement ) {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 
@@ -157,7 +158,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return new TvLaneWidth( sOffset, a, b, c, d, lane, lane?.laneSection?.road );
 	}
 
-	static readLaneRoadMark ( lane: TvLane, json: any ) {
+	static readLaneRoadMark ( lane: TvLane, json: XmlElement ) {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 		const type = json.attr_type;

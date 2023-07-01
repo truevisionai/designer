@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
+import { readXmlArray } from '../../../core/tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { EnumHelper, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
@@ -96,7 +97,7 @@ export class OpenDriverParser extends AbstractReader {
 	 * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
 	 * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
 	 */
-	readHeader ( xmlElement ) {
+	readHeader ( xmlElement: XmlElement ) {
 
 		const revMajor = parseFloat( xmlElement.attr_revMajor );
 		const revMinor = parseFloat( xmlElement.attr_revMinor );
@@ -159,7 +160,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		// if ( xml.objects != null && xml.objects !== '' ) this.readObjects( road, xml.objects );
 
-		if ( xml.signals != null && xml.signals !== '' ) this.readSignals( road, xml.signals );
+		if ( xml.signals ) this.readSignals( road, xml.signals );
 
 		if ( xml.surface != null && xml.surface !== '' ) this.readSurface( road, xml.surface );
 
@@ -705,11 +706,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	public readSignals ( road: TvRoad, xmlElement: XmlElement ) {
 
-		this.readAsOptionalArray( xmlElement.signal, ( xml ) => {
-
-			this.readSignal( road, xml );
-
-		} );
+		readXmlArray( xmlElement.signal, x => this.readSignal( road, x ) );
 
 	}
 
@@ -753,8 +750,6 @@ export class OpenDriverParser extends AbstractReader {
 			pitch,
 			roll
 		);
-
-		roadSignal.roadId = road.id;
 
 		this.readSignalValidity( roadSignal, xmlElement );
 

@@ -80,12 +80,9 @@ export class TvMap {
 
 	public addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
 
-		const index = this.getRoadCount();
-
 		const road = new TvRoad( name, length, id, junction );
 
 		this.addRoadInstance( road );
-
 
 		return road;
 	}
@@ -101,22 +98,24 @@ export class TvMap {
 
 	addDefaultRoad (): TvRoad {
 
-		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
+		const id = TvRoad.counter++;
+
+		const road = this.addRoad( `Road${ id }`, 0, id, -1 );
 
 		const roadStyle = RoadStyleService.getRoadStyle( road );
 
-		// const laneOffset = road.addLaneOffset( 0, 0, 0, 0, 0 );
-		const laneOffset = road.addLaneOffsetInstance( roadStyle.laneOffset );
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
-		// const laneSection = road.addGetLaneSection( 0 );
-		const laneSection = road.addLaneSectionInstance( roadStyle.laneSection );
+		road.addLaneSectionInstance( roadStyle.laneSection );
 
 		return road;
 	}
 
 	addRampRoad ( lane: TvLane ): TvRoad {
 
-		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, -1 );
+		const id = TvRoad.counter++;
+
+		const road = this.addRoad( `Road${ id }`, 0, id, -1 );
 
 		road.addElevation( 0, 0.05, 0, 0, 0 );
 
@@ -131,8 +130,9 @@ export class TvMap {
 
 	addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
 
-		const road = this.addRoad( `${ this.roads.size + 1 }`, 0, this.roads.size + 1, junctionId );
+		const id = TvRoad.counter++;
 
+		const road = this.addRoad( `Road${ id }`, 0, id, junctionId );
 
 		const laneSection = road.addGetLaneSection( 0 );
 
@@ -170,15 +170,11 @@ export class TvMap {
 
 	}
 
-	public addNewJunction ( junctionName?: string ): TvJunction {
+	public addNewJunction ( name?: string ): TvJunction {
 
-		const id = TvJunction.counter++;
+		const junction = TvJunction.create( name );
 
-		const name = junctionName || `${ id }`;
-
-		const junction = new TvJunction( name, id );
-
-		this.junctions.set( id, junction );
+		this.junctions.set( junction.id, junction );
 
 		return junction;
 	}
@@ -297,7 +293,9 @@ export class TvMap {
 	}
 
 	addControllerInstance ( odController: TvController ) {
+
 		this.controllers.set( odController.id, odController );
+
 	}
 
 	destroy () {
@@ -355,5 +353,9 @@ export class TvMap {
 
 	getJunctions () {
 		return Array.from( this._junctions.values() );
+	}
+
+	removeJunction ( junction: TvJunction ) {
+		this._junctions.delete( junction.id );
 	}
 }

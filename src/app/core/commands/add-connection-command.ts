@@ -14,6 +14,9 @@ import { SceneService } from '../services/scene.service';
 import { ManeuverTool } from '../tools/maneuver/maneuver-tool';
 import { BaseCommand } from './base-command';
 
+/**
+ * @deprecated
+ */
 export class AddConnectionCommand extends BaseCommand {
 
 	private connectingRoad: TvRoad;
@@ -33,9 +36,7 @@ export class AddConnectionCommand extends BaseCommand {
 
 	execute (): void {
 
-		const laneWidth = this.entry.lane.getWidthValue( 0 );
-
-		this.connectingRoad = this.tool.createConnectingRoad( this.entry, this.exit, TvLaneSide.RIGHT, laneWidth, this.junction );
+		this.connectingRoad = this.tool.createConnectingRoad( this.entry, this.exit, TvLaneSide.RIGHT, this.junction );
 
 		const result = this.tool.createConnections( this.junction, this.entry, this.connectingRoad, this.exit );
 

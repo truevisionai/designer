@@ -4,6 +4,7 @@
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { OdLaneDirectionBuilder } from 'app/modules/tv-map/builders/od-lane-direction-builder';
@@ -11,16 +12,14 @@ import { TvContactPoint, TvElementType, TvLaneSide, TvLaneType } from 'app/modul
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { JunctionEntryInspector } from 'app/views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { LaneLinkInspector } from 'app/views/inspectors/lane-link-inspector/lane-link-inspector.component';
 import { RoadControlPointInspector } from 'app/views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
-import { AddConnectionCommand } from '../../commands/add-connection-command';
 import { MultiCmdsCommand } from '../../commands/multi-cmds-command';
+import { IToolWithPoint, SelectPointCommand } from '../../commands/select-point-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { UpdateRoadPointCommand } from '../../commands/update-road-point-command';
 import { LanePathFactory } from '../../factories/lane-path-factory.service';
@@ -29,12 +28,12 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { SceneService } from '../../services/scene.service';
-import { AutoSpline } from '../../shapes/auto-spline';
 import { BaseTool } from '../base-tool';
+import { CreateJunctionConnection } from './create-junction-connection';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
-export class ManeuverTool extends BaseTool {
+export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 	name: string = 'ManeuverTool';
 	toolType = ToolType.Maneuver;
@@ -53,6 +52,14 @@ export class ManeuverTool extends BaseTool {
 	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
 	public junctionEntryObject: JunctionEntryObject;
+
+	setPoint ( value: ISelectable ): void {
+		this.junctionEntryObject = value as JunctionEntryObject;
+	}
+
+	getPoint (): ISelectable {
+		return this.junctionEntryObject;
+	}
 
 	init () {
 
@@ -91,34 +98,33 @@ export class ManeuverTool extends BaseTool {
 
 	onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+		if ( e.button != MouseButton.LEFT ) return;
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		let hasInteracted = false;
+		// if ( !shiftKeyDown && this.checkRoadControlPointInteraction( e ) ) return;
 
-		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkRoadControlPointInteraction( e );
+		if ( !shiftKeyDown && this.hasClickedJunctionObject( e ) ) return;
 
-		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkJunctionEntryInteraction( e );
+		// if ( !shiftKeyDown && this.checkPathInteraction( e ) ) return;
 
-		if ( !shiftKeyDown && !hasInteracted ) hasInteracted = this.checkPathInteraction( e );
+		// const commands = [];
+		//
+		// commands.push( new SetInspectorCommand( null, null ) );
+		//
+		// CommandHistory.execute( new MultiCmdsCommand( commands ) );
+		//
+		// if ( this.connectingRoad ) {
+		//
+		// 	this.connectingRoad.hideNodes();
+		// 	this.connectingRoad.spline.hide();
+		// }
 
-		if ( !hasInteracted ) {
+		CommandHistory.execute( new SelectPointCommand( this, null ) );
 
-			const commands = [];
+		this.setHint( 'Select two junction points to create a new junction connection' );
 
-			commands.push( new SetInspectorCommand( null, null ) );
-
-			CommandHistory.execute( new MultiCmdsCommand( commands ) );
-
-			if ( this.connectingRoad ) {
-
-				this.connectingRoad.hideNodes();
-				this.connectingRoad.spline.hide();
-			}
-
-			// if ( this.lanePathObject ) this.lanePathObject.visible = false;
-		}
+		// if ( this.lanePathObject ) this.lanePathObject.visible = false;
 	}
 
 	onPointerUp ( e: PointerEventData ) {
@@ -186,68 +192,95 @@ export class ManeuverTool extends BaseTool {
 		return hasInteracted;
 	}
 
-	checkJunctionEntryInteraction ( event: PointerEventData ): boolean {
+	hasClickedJunctionObject ( event: PointerEventData ): boolean {
 
-		if ( event.button !== MouseButton.LEFT ) return;
+		const junctionObject = this.findIntersection<JunctionEntryObject>( JunctionEntryObject.tag, event.intersections );
 
-		let hasInteracted = false;
+		if ( !junctionObject ) return false;
 
-		for ( let i = 0; i < event.intersections.length; i++ ) {
+		if ( !this.junctionEntryObject ) {
 
-			const intersection = event.intersections[ i ];
+			CommandHistory.execute( new SelectPointCommand( this, junctionObject ) );
 
-			// tslint:disable-next-line: no-string-literal
-			if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
+			this.setHint( 'Select another junction entry to connect to' );
 
-				hasInteracted = true;
+		} else if ( this.junctionEntryObject.uuid !== junctionObject.uuid ) {
 
-				const junctionObject = intersection.object as JunctionEntryObject;
+			this.setHint( 'connect junction objects' );
 
-				const tryToConnect = this.junctionEntryObject && junctionObject;
+			const entryExitSide = this.validateEntryExitCombination( this.junctionEntryObject, junctionObject );
 
-				if ( tryToConnect ) {
+			if ( !entryExitSide ) return;
 
-					this.connectJunctionObject( this.junctionEntryObject, junctionObject );
+			this.connectJunctionObject( this.junctionEntryObject, junctionObject );
 
-					// const junctionEntryObject = created ? null : junctionObject;
+		} else {
 
-					// CommandHistory.executeAll( [
+			CommandHistory.execute( new SelectPointCommand( this, null ) );
 
-					//     new SetValueCommand( this, 'junctionEntryObject', junctionEntryObject ),
-
-					//     new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
-
-					// ] );
-
-				} else {
-
-					CommandHistory.executeAll( [
-
-						new SetValueCommand( this, 'junctionEntryObject', junctionObject ),
-
-						new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
-
-					] );
-
-				}
-
-				break;
-			}
-		}
-
-		if ( !hasInteracted ) {
-
-			CommandHistory.executeAll( [
-
-				new SetValueCommand( this, 'junctionEntryObject', null ),
-
-				new SetInspectorCommand( null, null )
-
-			] );
+			this.setHint( 'cannot connect' );
 
 		}
 
-		return hasInteracted;
+		return true;
+
+		// return;
+		// for ( let i = 0; i < event.intersections.length; i++ ) {
+		//
+		// 	const intersection = event.intersections[ i ];
+		//
+		// 	// tslint:disable-next-line: no-string-literal
+		// 	if ( intersection.object[ 'tag' ] === JunctionEntryObject.tag ) {
+		//
+		// 		hasInteracted = true;
+		//
+		// 		const junctionObject = intersection.object as JunctionEntryObject;
+		//
+		// 		const tryToConnect = this.junctionEntryObject && junctionObject;
+		//
+		// 		if ( tryToConnect ) {
+		//
+		// 			this.connectJunctionObject( this.junctionEntryObject, junctionObject );
+		//
+		// 			// const junctionEntryObject = created ? null : junctionObject;
+		//
+		// 			// CommandHistory.executeAll( [
+		//
+		// 			//     new SetValueCommand( this, 'junctionEntryObject', junctionEntryObject ),
+		//
+		// 			//     new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
+		//
+		// 			// ] );
+		//
+		// 		} else {
+		//
+		// 			CommandHistory.executeAll( [
+		//
+		// 				new SetValueCommand( this, 'junctionEntryObject', junctionObject ),
+		//
+		// 				new SetInspectorCommand( JunctionEntryInspector, junctionObject ),
+		//
+		// 			] );
+		//
+		// 		}
+		//
+		// 		break;
+		// 	}
+		// }
+
+		// if ( !hasInteracted ) {
+		//
+		// 	CommandHistory.executeAll( [
+		//
+		// 		new SetValueCommand( this, 'junctionEntryObject', null ),
+		//
+		// 		new SetInspectorCommand( null, null )
+		//
+		// 	] );
+		//
+		// }
+
+		// return hasInteracted;
 	}
 
 	checkRoadControlPointInteraction ( e: PointerEventData ): boolean {
@@ -299,65 +332,57 @@ export class ManeuverTool extends BaseTool {
 		return roadControlPoint != null;
 	}
 
-	connectJunctionObject ( a: JunctionEntryObject, b: JunctionEntryObject ): void {
-
-		if ( a == null || b == null ) return;
-
-		if ( a.id === b.id ) {
-
-			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
-
-			SnackBar.warn( 'Select a different entry/exit' );
-
-			return;
-		}
-
-		const entryExitSide = this.findEntryExitSide( a, b );
-
-		if ( !entryExitSide ) {
-
-			CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
-
-			SnackBar.warn( 'Cannot connect' );
-
-			return;
-		}
-
-		const entry = entryExitSide.entry;
-		const exit = entryExitSide.exit;
-
-		// if ( this.connectingRoad ) {
-
-		//     this.connectingRoad.hideNodes();
-		//     this.connectingRoad.spline.hide();
-		// }
+	connectJunctionObject ( entry: JunctionEntryObject, exit: JunctionEntryObject ): void {
 
 		try {
 
-			const junction = this.findJunction( a, b );
+			let junction = this.hasJunction( entry, exit );
 
-			const result = this.hasConnection( junction, entry, exit );
+			if ( !junction ) {
 
-			if ( result.connectionFound && result.laneLinkFound ) {
+				CommandHistory.execute( new CreateJunctionConnection( this, entry, exit, junction, null, null ) );
 
-				CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+			} else {
 
-				SnackBar.warn( 'Connection already exists' );
+				const result = this.hasConnection( junction, entry, exit );
 
-			} else if ( result.connectionFound && !result.laneLinkFound ) {
+				if ( result.connectionFound && result.laneLinkFound ) {
 
-				CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+					SnackBar.warn( 'Connection already exists' );
 
-				// this.createLink( result.connection, entry, exit, side, laneWidth, junction );
+				} else {
 
-				// SnackBar.success( "Connection created" );
+					CommandHistory.execute( new CreateJunctionConnection( this, entry, exit, junction, result.connection, result.laneLink ) );
 
-			} else if ( !result.connectionFound && !result.laneLinkFound ) {
+				}
 
-				this.createNewConnection( entry, exit, junction );
 
-				SnackBar.success( 'Connection created' );
+				// if ( result.connectionFound && result.laneLinkFound ) {
+				//
+				// 	CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+				//
+				// 	SnackBar.warn( 'Connection already exists' );
+				//
+				// } else if ( result.connectionFound && !result.laneLinkFound ) {
+				//
+				// 	CommandHistory.execute( new SetValueCommand( this, 'junctionEntryObject', null ) );
+				//
+				// } else if ( !result.connectionFound && !result.laneLinkFound ) {
+				//
+				// 	CommandHistory.executeAll( [
+				//
+				// 		new SetValueCommand( this, 'junctionEntryObject', null ),
+				//
+				// 		new SetInspectorCommand( null, null ),
+				//
+				// 		new AddConnectionCommand( entry, exit, junction, this ),
+				//
+				// 	] );
+				//
+				// 	SnackBar.success( 'Connection created' );
+				// }
 			}
+
 
 		} catch ( error ) {
 
@@ -410,177 +435,109 @@ export class ManeuverTool extends BaseTool {
 		// set
 
 
-		CommandHistory.executeAll( [
+	}
 
-			// new SetValueCommand( this, 'lanePathObject', lanePathObject ),
+	// /**
+	//  *
+	//  * @deprecated currently not being used
+	//  * @param connection
+	//  * @param entry
+	//  * @param exit
+	//  * @param side
+	//  * @param laneWidth
+	//  * @param junction
+	//  */
+	// createLink (
+	// 	connection: TvJunctionConnection,
+	// 	entry: JunctionEntryObject,
+	// 	exit: JunctionEntryObject,
+	// 	side: TvLaneSide,
+	// 	laneWidth: number,
+	// 	junction: TvJunction
+	// ) {
+	//
+	// 	const connectionRoad = this.map.getRoadById( connection.connectingRoad );
+	//
+	// 	const laneSection = connectionRoad.getFirstLaneSection();
+	//
+	// 	// -ve because its always for right side
+	// 	const newLaneId = -1 * ( laneSection.getRightLaneCount() + 1 );
+	//
+	// 	const nodes = this.getSplinePositions( entry, exit, side );
+	//
+	// 	const connectingLane = laneSection.addLane( nodes.side, newLaneId, entry.lane.type, entry.lane.level, true );
+	//
+	// 	connectingLane.addWidthRecord( 0, laneWidth, 0, 0, 0 );
+	//
+	// 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// 	connectionRoad.setPredecessor( 'road', entry.road.id, entry.contact );
+	//
+	// 	connectionRoad.setSuccessor( 'road', exit.road.id, exit.contact );
+	//
+	// 	connectingLane.setPredecessor( entry.lane.id );
+	//
+	// 	connectingLane.setSuccessor( exit.lane.id );
+	//
+	// 	const link = connection.addNewLink( entry.lane.id, connectingLane.id );
+	//
+	// 	if ( entry.contact === TvContactPoint.START ) {
+	//
+	// 		entry.road.setPredecessor( 'junction', junction.id );
+	//
+	// 	} else if ( entry.contact === TvContactPoint.END ) {
+	//
+	// 		entry.road.setSuccessor( 'junction', junction.id );
+	//
+	// 	}
+	//
+	// 	if ( exit.contact === TvContactPoint.START ) {
+	//
+	// 		exit.road.setPredecessor( 'junction', junction.id );
+	//
+	// 	} else if ( exit.contact === TvContactPoint.END ) {
+	//
+	// 		exit.road.setSuccessor( 'junction', junction.id );
+	//
+	// 	}
+	//
+	// 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// 	this.lanePathObject = LanePathFactory.createPathForLane( entry.road, this.connectingRoad, connectingLane, connection, link );
+	//
+	// 	this.lanePathObjects.push( this.lanePathObject );
+	//
+	// 	SceneService.add( this.lanePathObject );
+	//
+	// 	RoadFactory.rebuildRoad( this.connectingRoad );
+	//
+	// }
 
-			// new SetValueCommand( this, 'connectingRoad', connectingRoad ),
+	createConnectingRoad ( entry, exit, side, junction ) {
 
-			new SetValueCommand( this, 'junctionEntryObject', null ),
-
-			new SetInspectorCommand( null, null ),
-
-			new AddConnectionCommand( entry, exit, junction, this ),
-
-		] );
-
+		return RoadFactory.createConnectingRoad( entry, exit, side, junction );
 
 	}
 
-	/**
-	 *
-	 * @deprecated currently not being used
-	 * @param connection
-	 * @param entry
-	 * @param exit
-	 * @param side
-	 * @param laneWidth
-	 * @param junction
-	 */
-	createLink (
-		connection: TvJunctionConnection,
-		entry: JunctionEntryObject,
-		exit: JunctionEntryObject,
-		side: TvLaneSide,
-		laneWidth: number,
-		junction: TvJunction
-	) {
 
-		const connectionRoad = this.map.getRoadById( connection.connectingRoad );
+	validateEntryExitCombination ( a: JunctionEntryObject, b: JunctionEntryObject ) {
 
-		const laneSection = connectionRoad.getFirstLaneSection();
+		// Error Handling: Check if a and b are defined
+		if ( !a || !b ) throw new Error( 'Both a and b must be defined.' );
 
-		// -ve because its always for right side
-		const newLaneId = -1 * ( laneSection.getRightLaneCount() + 1 );
+		// Assuming a and b are instances of JunctionEntryObject, they should have the properties 'lane' and 'contact'
+		// If these properties are not defined, throw an error
+		if ( !a.lane || !a.contact || !b.lane || !b.contact ) throw new Error( 'a and b must have the properties \'lane\' and \'contact\'.' );
 
-		const nodes = this.getSplinePositions( entry, exit, side );
+		if ( a.isEntry && b.isEntry || a.isExit && b.isExit ) SnackBar.warn( 'Cannot connect two entries or two exits.' );
+		if ( a.isEntry && b.isEntry || a.isExit && b.isExit ) return;
 
-		const connectingLane = laneSection.addLane( nodes.side, newLaneId, entry.lane.type, entry.lane.level, true );
+		return {
+			entry: a.isEntry ? a : b,
+			exit: b.isExit ? b : a,
+			side: TvLaneSide.RIGHT
+		};
 
-		connectingLane.addWidthRecord( 0, laneWidth, 0, 0, 0 );
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		connectionRoad.setPredecessor( 'road', entry.road.id, entry.contact );
-
-		connectionRoad.setSuccessor( 'road', exit.road.id, exit.contact );
-
-		connectingLane.setPredecessor( entry.lane.id );
-
-		connectingLane.setSuccessor( exit.lane.id );
-
-		const link = connection.addNewLink( entry.lane.id, connectingLane.id );
-
-		if ( entry.contact === TvContactPoint.START ) {
-
-			entry.road.setPredecessor( 'junction', junction.id );
-
-		} else if ( entry.contact === TvContactPoint.END ) {
-
-			entry.road.setSuccessor( 'junction', junction.id );
-
-		}
-
-		if ( exit.contact === TvContactPoint.START ) {
-
-			exit.road.setPredecessor( 'junction', junction.id );
-
-		} else if ( exit.contact === TvContactPoint.END ) {
-
-			exit.road.setSuccessor( 'junction', junction.id );
-
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		this.lanePathObject = LanePathFactory.createPathForLane( entry.road, this.connectingRoad, connectingLane, connection, link );
-
-		this.lanePathObjects.push( this.lanePathObject );
-
-		SceneService.add( this.lanePathObject );
-
-		RoadFactory.rebuildRoad( this.connectingRoad );
-
-	}
-
-	createConnectingRoad ( entry, exit, side, laneWidth, junction ) {
-
-		const spline = this.createSpline( entry, exit, side );
-
-		const connectingRoad = this.map.addConnectingRoad( DEFAULT_SIDE, laneWidth, junction.id );
-
-		connectingRoad.spline = spline;
-
-		connectingRoad.updateGeometryFromSpline();
-
-		connectingRoad.spline.hide();
-
-		return connectingRoad;
-	}
-
-	createSpline ( entry, exit, side ) {
-
-		const nodes = this.getSplinePositions( entry, exit, side );
-
-		const spline = new AutoSpline();
-
-		SceneService.add( spline.addControlPointAt( nodes.start ) );
-		SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.end ) );
-
-		spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
-
-		return spline;
-	}
-
-	findEntryExitSide ( a: JunctionEntryObject, b: JunctionEntryObject ) {
-
-		const isAEntry =
-			( a.lane.direction === 'forward' && a.contact === TvContactPoint.END ) ||
-			( a.lane.direction === 'backward' && a.contact === TvContactPoint.START );
-
-		const isBEntry =
-			( b.lane.direction === 'forward' && b.contact === TvContactPoint.END ) ||
-			( b.lane.direction === 'backward' && b.contact === TvContactPoint.START );
-
-		const isAExit =
-			( a.lane.direction === 'forward' && a.contact === TvContactPoint.START ) ||
-			( a.lane.direction === 'backward' && a.contact === TvContactPoint.END );
-
-		const isBExit =
-			( b.lane.direction === 'forward' && b.contact === TvContactPoint.START ) ||
-			( b.lane.direction === 'backward' && b.contact === TvContactPoint.END );
-
-
-		if ( isAEntry && isBExit ) {
-
-			return {
-				entry: a,
-				exit: b,
-				side: TvLaneSide.RIGHT
-			};
-
-			// return [ a, b, LaneSide.LEFT ];
-
-		} else if ( isAExit && isBEntry ) {
-
-			return {
-				entry: b,
-				exit: a,
-				side: TvLaneSide.RIGHT
-			};
-
-			// return [ b, a, LaneSide.RIGHT ];
-
-		} else {
-
-			a.unselect();
-
-			b.unselect();
-
-			return;
-		}
 	}
 
 	// hasConnection ( junction: OdJunction, a: JunctionEntryObject, b: JunctionEntryObject, result?: any ) {
@@ -745,57 +702,8 @@ export class ManeuverTool extends BaseTool {
 		return { connectionFound, connection, laneLinkFound, laneLink };
 	}
 
-	// start position is always at the entry
-	// end position is always at the exit
-	getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
 
-		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
-		const aPosTheta = new TvPosTheta();
-		const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
-
-		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
-		const bPosTheta = new TvPosTheta();
-		const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
-
-		let a2: TvPosTheta;
-		let b2: TvPosTheta;
-
-		const distance = aPosition.distanceTo( bPosition ) * 0.3;
-
-		if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		}
-
-		return {
-			side: laneSide,
-			start: aPosition,
-			startPos: aPosTheta,
-			end: bPosition,
-			endPos: bPosTheta,
-			a2: a2,
-			b2: b2,
-		};
-	}
-
-	findJunction ( a: JunctionEntryObject, b: JunctionEntryObject ) {
+	hasJunction ( a: JunctionEntryObject, b: JunctionEntryObject ) {
 
 		// the nearest junction
 		let nearestJunction: TvJunction = null;
@@ -805,11 +713,11 @@ export class ManeuverTool extends BaseTool {
 
 			if ( !junction.position && junction.connections.size > 0 ) {
 
-				const firstconnection = [ ...junction.connections.values() ][ 0 ];
+				const connection = [ ...junction.connections.values() ][ 0 ];
 
-				const connectionRoad = this.map.getRoadById( firstconnection.connectingRoad );
+				const connectionRoad = this.map.getRoadById( connection.connectingRoad );
 
-				if ( firstconnection.contactPoint === TvContactPoint.START ) {
+				if ( connection.contactPoint === TvContactPoint.START ) {
 
 					junction.position = connectionRoad.getStartCoord().toVector3();
 
@@ -819,9 +727,7 @@ export class ManeuverTool extends BaseTool {
 
 				}
 
-			}
-
-			if ( junction.position ) {
+			} else if ( junction.position ) {
 
 				const aDistance = junction.position.distanceTo( a.position );
 				const bDistance = junction.position.distanceTo( b.position );
@@ -845,10 +751,10 @@ export class ManeuverTool extends BaseTool {
 
 		} );
 
-		if ( !nearestJunction ) nearestJunction = this.map.addNewJunction();
+		// if ( !nearestJunction ) nearestJunction = this.map.addNewJunction();
 
 		// todo make it the mid point between a and b
-		nearestJunction.position = a.position;
+		// nearestJunction.position = a.position;
 
 		return nearestJunction;
 	}
@@ -917,21 +823,18 @@ export class ManeuverTool extends BaseTool {
 
 	showJunctionEntries () {
 
-		this.map.roads.forEach( road => {
+		this.map.getRoads().filter( road => !road.isJunction ).forEach( road => {
 
-			if ( !road.isJunction ) {
+			if ( !road.predecessor || road.predecessor.elementType === TvElementType.junction ) {
 
-				if ( !road.predecessor || road.predecessor.elementType === TvElementType.junction ) {
+				this.showStartEntries( road );
 
-					this.showStartEntries( road );
+			}
 
-				}
+			if ( !road.successor || road.successor.elementType === TvElementType.junction ) {
 
-				if ( !road.successor || road.successor.elementType === TvElementType.junction ) {
+				this.showEndEntries( road );
 
-					this.showEndEntries( road );
-
-				}
 			}
 
 		} );

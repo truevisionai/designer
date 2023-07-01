@@ -40,6 +40,11 @@ import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 
+export enum TrafficRule {
+	RHT = 'RHT',
+	LHT = 'LHT'
+}
+
 export class TvRoad {
 
 	public readonly uuid: string;
@@ -62,6 +67,8 @@ export class TvRoad {
 	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
+	public trafficRule = TrafficRule.RHT;
+
 	/**
 	 * @deprecated use predecessor, successor directly
 	 */
@@ -70,7 +77,11 @@ export class TvRoad {
 	private lastAddedRoadObjectIndex: number;
 	private lastAddedRoadSignalIndex: number;
 
+	public static counter = 1;
+
 	constructor ( name: string, length: number, id: number, junction: number ) {
+
+		TvRoad.counter++;
 
 		this.uuid = MathUtils.generateUUID();
 		this._name = name;

@@ -23,6 +23,7 @@ import { XMLBuilder } from 'fast-xml-parser';
 import { saveAs } from 'file-saver';
 
 import { Euler, Vector3 } from 'three';
+import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
 import { FileService } from './file.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
@@ -117,7 +118,7 @@ export class SceneExporterService {
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: this.exportSurfaces( map.surfaces ),
-			junction: this.exportJunctions( [ ...map.junctions.values() ] ),
+			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 		};
 
 	}
@@ -225,7 +226,7 @@ export class SceneExporterService {
 
 	exportJunction ( junction: TvJunction ) {
 
-		const xml = {
+		return {
 			attr_id: junction.id,
 			attr_name: junction.name,
 			position: {
@@ -233,12 +234,12 @@ export class SceneExporterService {
 				attr_y: junction.position ? junction.position.y : 0,
 				attr_z: junction.position ? junction.position.z : 0,
 			},
-			connection: [],
+			connection: junction.getConnections().map( connection => SceneExporterService.exportJunctionConnection( connection ) ),
 			priority: [],
 			controller: []
 		};
 
-		this.openDriveWriter.writeJunctionConnection( xml, junction );
+		// this.openDriveWriter.writeJunctionConnection( xml, junction );
 
 		// TODO: Add controller and priority as well
 
@@ -246,7 +247,7 @@ export class SceneExporterService {
 
 		// this.openDriveWriter.writeJunctionPriority( xml, junction );
 
-		return xml;
+		// return xml;
 	}
 
 	exportProps ( props: PropInstance[] ) {
@@ -362,4 +363,18 @@ export class SceneExporterService {
 	}
 
 
+	static exportJunctionConnection ( connection: TvJunctionConnection ) {
+		return {
+			attr_id: connection.id,
+			attr_incomingRoad: connection.incomingRoad,
+			attr_connectingRoad: connection.connectingRoad,
+			attr_contactPoint: connection.contactPoint,
+			laneLink: connection.laneLink.map( link => {
+				return {
+					attr_from: link.from,
+					attr_to: link.to,
+				};
+			} ),
+		};
+	}
 }

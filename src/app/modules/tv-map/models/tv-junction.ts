@@ -24,6 +24,13 @@ export class TvJunction {
 		this._id = id;
 	}
 
+	static create ( name?: string ) {
+
+		const id = TvJunction.counter++;
+
+		return new TvJunction( name || `Junction-${ id }`, id );
+	}
+
 	private _priorities: TvJunctionPriority[] = [];
 
 	get priorities (): TvJunctionPriority[] {

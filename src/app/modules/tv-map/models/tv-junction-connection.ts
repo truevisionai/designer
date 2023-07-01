@@ -3,6 +3,7 @@
  */
 
 import { MathUtils } from 'three';
+import { TvConsole } from '../../../core/utils/console';
 import { TvContactPoint } from './tv-common';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvRoad } from './tv-road.model';
@@ -126,6 +127,32 @@ export class TvJunctionConnection {
 	removeLinkAtIndex ( index: number ) {
 
 		this.laneLink.splice( index, 1 );
+
+	}
+
+	static create (
+		incomingRoad: number,
+		connectingRoad: number,
+		contactPoint: TvContactPoint,
+		outgoingRoad?: number
+	) {
+		return new TvJunctionConnection( -1, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
+	}
+
+	removeLink ( laneLink: TvJunctionLaneLink ) {
+
+		const index = this.laneLink.findIndex( link => link.from == laneLink.from && link.to == laneLink.to );
+
+		if ( index > -1 ) {
+
+			this.laneLink.splice( index, 1 );
+
+		} else {
+
+			TvConsole.warn( 'TvJunctionConnection.removeLink' + 'Link not found' );
+
+		}
+
 
 	}
 }

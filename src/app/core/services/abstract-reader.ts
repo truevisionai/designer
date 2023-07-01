@@ -2,9 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
+
 export abstract class AbstractReader {
 
-	public static readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
+	public static readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
 
 		if ( items != null ) {
 
@@ -26,7 +28,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public static readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
+	public static readAsOptionalElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ) {
 
 		if ( xml != null ) {
 
@@ -36,7 +38,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public readAsOptionalArray ( items: any, callbackFn: ( xml: any, count: number ) => void ) {
+	public readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
 
 		if ( items != null ) {
 
@@ -58,7 +60,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public readAsOptionalElement ( xml: any, callbackFn: ( xml: any ) => void ) {
+	public readAsOptionalElement ( xml: XmlElement, callbackFn: ( xml: XmlElement ) => void ) {
 
 		if ( xml != null ) {
 

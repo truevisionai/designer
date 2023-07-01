@@ -3,12 +3,12 @@
  */
 
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TravelDirection, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
 import { TvLane } from '../../tv-map/models/tv-lane';
-import { BaseControlPoint} from './control-point';
+import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 
 export class JunctionEntryObject extends BaseControlPoint implements ISelectable {
@@ -74,4 +74,15 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		( this.material as PointsMaterial ).needsUpdate = true;
 
 	}
+
+	get isEntry () {
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.START );
+	}
+
+	get isExit () {
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.END );
+	}
+
 }

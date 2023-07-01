@@ -483,22 +483,22 @@ $border-radius: 0px !important;
 		flex-direction: column;
 		background: transparent;
 		color: white;
-		width: 36px;
+		width: 32px;
 		position: absolute;
 		right: 26vw;
 		top: 118px;
 	}
 
 	.viewport-toolbar .mat-icon-button {
-		width: 36px;
-		height: 36px;
+		width: 32px;
+		height: 32px;
 		margin-bottom: 8px;
 		background: $panel-100;
 	}
 
 	.viewport-toolbar .mat-icon {
 		font-size: 16px;
-		line-height: 18px;
+		line-height: 14px;
 	}
 
 	.btn-icon {
