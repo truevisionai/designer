@@ -4,7 +4,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Position } from '../../models/position';
-import { ScenarioEntity } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 
 @Component( {
 	selector: 'app-abstract-position-editor',

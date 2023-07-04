@@ -4,7 +4,7 @@ import { ActionFactory } from '../../builders/action-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
-import { ScenarioEntity } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';

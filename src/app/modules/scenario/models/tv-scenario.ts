@@ -10,7 +10,7 @@ import { Act } from './tv-act';
 import { TvAction } from './tv-action';
 import { Catalogs } from './tv-catalogs';
 import { File } from './tv-common';
-import { ScenarioEntity } from './tv-entities';
+import { ScenarioEntity } from './entities/scenario-entity';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
 import { Maneuver } from './tv-maneuver';

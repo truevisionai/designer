@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
-import { ScenarioEntity } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 
 @Component( {
 	selector: 'app-action',

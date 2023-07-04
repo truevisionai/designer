@@ -3,11 +3,11 @@ import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { SimulationTimeCondition } from 'app/modules/scenario/models/conditions/tv-simulation-time-condition';
-import { VehicleEntity } from 'app/modules/scenario/models/tv-entities';
 import { ActionType, Rule } from 'app/modules/scenario/models/tv-enums';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { MathUtils, Vector3 } from 'three';
 import { ActionFactory } from '../../../modules/scenario/builders/action-factory';
+import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
 
 
 export class AddVehicleCommand extends BaseCommand {

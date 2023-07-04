@@ -14,7 +14,7 @@ import { DynamicConstraints } from '../models/dynamic-constraints';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { TvAction } from '../models/tv-action';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 export class ActionFactory {
 

@@ -9,7 +9,7 @@ import { IComponent } from 'app/core/game-object';
 import { ActionFactory } from '../../builders/action-factory';
 import { ActionService } from '../../builders/action-service';
 import { PrivateAction } from '../../models/private-action';
-import { ScenarioEntity } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';

@@ -2,7 +2,7 @@ import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
 import { StoryboardEvent } from '../services/scenario-director.service';
 import { ScenarioInstance } from '../services/scenario-instance';
-import { ScenarioEntity } from './tv-entities';
+import { ScenarioEntity } from './entities/scenario-entity';
 import { ActionCategory, ActionType } from './tv-enums';
 
 export abstract class TvAction {

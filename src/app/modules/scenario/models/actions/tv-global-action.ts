@@ -5,7 +5,7 @@
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
 import { TvAction } from '../tv-action';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionCategory, ActionType } from '../tv-enums';
 import { ScenarioEnvironment } from './scenario-environment';
 

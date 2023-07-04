@@ -11,12 +11,13 @@ import { ConditionUtils } from '../builders/condition-utils';
 import { ResetHelper } from '../helpers/tv-reset-helper';
 import { Act } from '../models/tv-act';
 import { TvAction } from '../models/tv-action';
-import { ScenarioEntity, VehicleEntity } from '../models/tv-entities';
+import { ScenarioEntity} from '../models/entities/scenario-entity';
 import { StoryboardElementState, StoryboardElementType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
 import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioInstance } from './scenario-instance';
 

@@ -1,8 +1,8 @@
 import { Euler, MathUtils, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { ScenarioInstance } from '../services/scenario-instance';
 import { OpenScenarioImporter } from '../services/open-scenario-importer.service';
-import { ScenarioEntity } from './tv-entities';
+import { ScenarioInstance } from '../services/scenario-instance';
+import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
 

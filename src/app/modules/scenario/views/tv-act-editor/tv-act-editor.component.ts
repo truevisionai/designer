@@ -5,7 +5,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Act } from '../../models/tv-act';
-import { ScenarioEntity } from '../../models/tv-entities';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {

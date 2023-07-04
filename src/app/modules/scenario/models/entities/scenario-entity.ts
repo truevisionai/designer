@@ -2,17 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, Euler, MathUtils, MeshBasicMaterial, Vector3 } from 'three';
-import { GameObject } from '../../../core/game-object';
-import { TvConsole } from '../../../core/utils/console';
-import { AbstractController } from './abstract-controller';
+import { BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
+import { GameObject } from '../../../../core/game-object';
+import { TvConsole } from '../../../../core/utils/console';
+import { AbstractController } from '../abstract-controller';
 import { OpenDriveProperties } from './open-drive-properties';
-import { PrivateAction } from './private-action';
-import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from './tv-bounding-box';
-import { ScenarioObjectType, VehicleCategory } from './tv-enums';
-import { Orientation } from './tv-orientation';
-import { ParameterDeclaration } from './tv-parameter-declaration';
-import { TvProperty } from './tv-properties';
+import { PrivateAction } from '../private-action';
+import { TvBoundingBox } from '../tv-bounding-box';
+import { Orientation } from '../tv-orientation';
+import { ParameterDeclaration } from '../tv-parameter-declaration';
+import { TvProperty } from '../tv-properties';
 
 export abstract class ScenarioEntity extends GameObject {
 
@@ -258,24 +257,3 @@ export abstract class ScenarioEntity extends GameObject {
 }
 
 
-export class VehicleEntity extends ScenarioEntity {
-
-	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
-
-	constructor (
-		public name: string,
-		public vehicleCategory: VehicleCategory = VehicleCategory.car,
-		public boundingBox: TvBoundingBox = new TvBoundingBox( new Vector3( 0, 0, 0 ), new TvDimension( 2.0, 4.2, 1.6 ) ),
-		public performance: TvPerformance = new TvPerformance( 100, 4, 9 ),
-		public axles: TvAxles = null,
-		public properties: TvProperty[] = []
-	) {
-		super( name, boundingBox );
-	}
-
-	static getNewName ( name = 'Vehicle' ) {
-
-		return `${ name }${ MathUtils.generateUUID().substring( 0, 4 ) }`;
-
-	}
-}

@@ -5,7 +5,7 @@
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
 import { CatalogReference } from '../tv-catalogs';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
 import { Route } from '../tv-route';
 

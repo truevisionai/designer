@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import { Position } from '../position';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
 import { Condition } from './tv-condition';
 

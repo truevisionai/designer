@@ -11,7 +11,7 @@ import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { AbstractController } from '../models/abstract-controller';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 export class DefaultVehicleController extends AbstractController {
 

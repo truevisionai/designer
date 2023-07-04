@@ -4,7 +4,7 @@
 
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType } from '../tv-enums';
 
 export class TeleportAction extends PrivateAction {

@@ -65,7 +65,7 @@ import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../m
 
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
-import { ScenarioEntity, VehicleEntity } from '../models/tv-entities';
+import { ScenarioEntity} from '../models/entities/scenario-entity';
 import {
 	ConditionEdge,
 	CoordinateSystem,
@@ -94,6 +94,7 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { RelativeRoadPosition } from './relative-road.position';
 import {
 	TrafficSignalController,

@@ -29,7 +29,7 @@ import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { ActionCategory, ActionType, ConditionCategory, ConditionType, PositionType, TargetType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { CatalogReferenceController } from '../models/tv-interfaces';

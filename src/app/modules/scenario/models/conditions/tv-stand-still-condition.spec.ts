@@ -4,8 +4,8 @@
 
 import { Time } from '../../../../core/time';
 import { ScenarioInstance } from '../../services/scenario-instance';
-import { VehicleEntity } from '../tv-entities';
 import { TvScenario } from '../tv-scenario';
+import { VehicleEntity } from '../entities/vehicle-entity';
 import { StandStillCondition } from './tv-stand-still-condition';
 
 

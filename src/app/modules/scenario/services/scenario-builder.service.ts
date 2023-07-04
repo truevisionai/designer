@@ -4,7 +4,7 @@ import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
 

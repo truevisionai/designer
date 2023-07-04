@@ -14,7 +14,7 @@ import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { ConditionType, RelativeDistanceType, Rule, TriggeringRule } from '../models/tv-enums';
 
 export class ConditionFactory {

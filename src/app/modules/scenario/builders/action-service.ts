@@ -8,7 +8,7 @@ import { TvConsole } from '../../../core/utils/console';
 import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { Position } from '../models/position';
 import { PrivateAction } from '../models/private-action';
-import { ScenarioEntity } from '../models/tv-entities';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { ActionType, PositionType } from '../models/tv-enums';
 
 

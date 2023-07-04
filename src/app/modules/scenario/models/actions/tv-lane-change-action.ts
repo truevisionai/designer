@@ -7,7 +7,7 @@ import { Time } from '../../../../core/time';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
 import { PrivateAction } from '../private-action';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType } from '../tv-enums';
 import { Target } from './target';
 import { TransitionDynamics } from './transition-dynamics';

@@ -6,7 +6,7 @@ import { Vector3 } from 'three';
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
 import { CatalogReference } from '../tv-catalogs';
-import { ScenarioEntity } from '../tv-entities';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType, LateralPurpose } from '../tv-enums';
 import { Trajectory } from '../tv-trajectory';
 import { AbstractRoutingAction, TimeReference } from './tv-routing-action';
