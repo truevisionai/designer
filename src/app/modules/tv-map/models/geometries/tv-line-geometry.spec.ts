@@ -107,7 +107,7 @@ describe( 'TvLineGeometry', () => {
 
 		t = 1;
 
-		pose = road.getRoadCoordAt( s );
+		pose = road.getRoadCoordAt( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( t );
@@ -133,7 +133,7 @@ describe( 'TvLineGeometry', () => {
 
 		t = 1;
 
-		pose = road.getRoadCoordAt( s );
+		pose = road.getRoadCoordAt( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( -1 );
 		expect( Math.round( pose.y ) ).toBe( 0 );
