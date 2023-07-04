@@ -22,11 +22,11 @@ export class ScenarioViewerService {
 		private threeService: ThreeService
 	) {
 
-		// player.playerStarted.subscribe( e => this.onPlayerStarted() );
-		// player.playerResumed.subscribe( e => this.onPlayerResumed() );
-		// player.playerStopped.subscribe( e => this.onPlayerStopped() );
-		// player.playerPaused.subscribe( e => this.onPlayerPaused() );
-		// player.playerTick.subscribe( e => this.onPlayerTick( e ) );
+		player.playerStarted.subscribe( e => this.onPlayerStarted() );
+		player.playerResumed.subscribe( e => this.onPlayerResumed() );
+		player.playerStopped.subscribe( e => this.onPlayerStopped() );
+		player.playerPaused.subscribe( e => this.onPlayerPaused() );
+		player.playerTick.subscribe( e => this.onPlayerTick( e ) );
 
 	}
 

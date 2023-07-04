@@ -531,8 +531,8 @@ export class ThreeService implements IEngine {
 
 	removeFocusTarget () {
 
+		ThreeService.controls.setTarget( this.target?.position.clone() ?? new Vector3() );
 		this.target = null;
-		// ThreeService.controls.setTarget( null );
 
 	}
 
