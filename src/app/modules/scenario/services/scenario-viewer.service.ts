@@ -80,6 +80,15 @@ export class ScenarioViewerService {
 
 	private removeFocus () {
 
+		const entities = [ ...ScenarioInstance.scenario.objects.values() ];
+
+		if ( entities.length === 0 ) {
+
+			TvConsole.warn( 'No Entity to focus' );
+
+			return;
+		}
+
 		this.threeService.removeFocusTarget();
 		this.threeService.camera.position.copy( this.originalPosition );
 		this.threeService.camera.quaternion.copy( this.originalQuaternion );

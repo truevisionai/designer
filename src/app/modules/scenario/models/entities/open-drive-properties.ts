@@ -11,7 +11,8 @@ export class OpenDriveProperties {
 	public laneOffset: number = 0;
 	public direction: number = 0;
 	public autonomous: boolean = false;
-	public distanceTraveled: number;
+	public distanceTraveled: number = 0;
+	public isOpenDrive: boolean;
 
 	isEndOfRoad () {
 		const road = TvMapInstance.map.getRoadById( this.roadId );
@@ -64,6 +65,7 @@ export class OpenDriveProperties {
 		this.s = 0;
 		this.laneOffset = 0;
 		this.speed = 0;
+		this.isOpenDrive = false;
 
 	}
 

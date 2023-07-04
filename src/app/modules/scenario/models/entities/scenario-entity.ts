@@ -6,12 +6,12 @@ import { BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../../core/game-object';
 import { TvConsole } from '../../../../core/utils/console';
 import { AbstractController } from '../abstract-controller';
-import { OpenDriveProperties } from './open-drive-properties';
 import { PrivateAction } from '../private-action';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { Orientation } from '../tv-orientation';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
+import { OpenDriveProperties } from './open-drive-properties';
 
 export abstract class ScenarioEntity extends GameObject {
 
@@ -20,7 +20,7 @@ export abstract class ScenarioEntity extends GameObject {
 	public properties: TvProperty[] = [];
 	public initActions: PrivateAction[] = [];
 
-	protected openDriveProperties = new OpenDriveProperties();
+	public openDriveProperties = new OpenDriveProperties();
 
 	private enabled: Boolean = true;
 	private originalPosition: Vector3;
@@ -64,7 +64,7 @@ export abstract class ScenarioEntity extends GameObject {
 
 		const newPosition = this.position.clone();
 
-		this.openDriveProperties.distanceTraveled += previousPosition.distanceTo( newPosition );
+		// this.openDriveProperties.distanceTraveled += previousPosition.distanceTo( newPosition );
 	}
 
 	setLaneOffset ( laneOffset: number ): void {
@@ -223,6 +223,7 @@ export abstract class ScenarioEntity extends GameObject {
 
 	set sCoordinate ( value: number ) {
 		this.openDriveProperties.s = value;
+		this.openDriveProperties.distanceTraveled += value;
 	}
 
 	get sCoordinate () {
@@ -253,6 +254,7 @@ export abstract class ScenarioEntity extends GameObject {
 
 		this.initActions.forEach( action => action.execute( this ) );
 
+		this.controller?.start();
 	}
 }
 

@@ -25,4 +25,8 @@ export abstract class AbstractController {
 	addProptery ( property: TvProperty ) {
 		this.properties.push( property );
 	}
+
+	start () {
+		console.error( 'controller start method not overridden' );
+	}
 }

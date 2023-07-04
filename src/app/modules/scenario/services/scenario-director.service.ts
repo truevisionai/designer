@@ -9,15 +9,15 @@ import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ConditionUtils } from '../builders/condition-utils';
 import { ResetHelper } from '../helpers/tv-reset-helper';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { Act } from '../models/tv-act';
 import { TvAction } from '../models/tv-action';
-import { ScenarioEntity} from '../models/entities/scenario-entity';
 import { StoryboardElementState, StoryboardElementType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { Maneuver } from '../models/tv-maneuver';
 import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
-import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioInstance } from './scenario-instance';
 
@@ -146,9 +146,9 @@ export class ScenarioDirectorService {
 
 		this.scenario.objects.forEach( obj => {
 
-			obj.onStart();
-
 			ScenarioDirectorService.setRoadProperties( obj );
+
+			obj.onStart();
 
 		} );
 
@@ -377,6 +377,8 @@ export class ScenarioDirectorService {
 		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
 
 		if ( !res.road || !res.lane ) return;
+
+		obj.openDriveProperties.isOpenDrive = true;
 
 		obj.setRoadId( res.road.id );
 

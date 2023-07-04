@@ -3,6 +3,7 @@
  */
 
 import { Time } from '../../../core/time';
+import { TvConsole } from '../../../core/utils/console';
 import { Maths } from '../../../utils/maths';
 import { TvContactPoint } from '../../tv-map/models/tv-common';
 import { TvLane } from '../../tv-map/models/tv-lane';
@@ -15,7 +16,7 @@ import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 export class DefaultVehicleController extends AbstractController {
 
-	constructor ( name: 'DefaultVehicleController', private entity: ScenarioEntity ) {
+	constructor ( name = 'DefaultVehicleController', private entity: ScenarioEntity ) {
 		super( name );
 	}
 
@@ -41,6 +42,11 @@ export class DefaultVehicleController extends AbstractController {
 	}
 
 	public update () {
+
+		if ( !this.entity.openDriveProperties.isOpenDrive ) {
+			TvConsole.warn( this.entity.name + ` is not OpenDrive entity` );
+			return;
+		}
 
 		const entity = this.entity;
 		const roads = this.map.roads;
@@ -99,8 +105,11 @@ export class DefaultVehicleController extends AbstractController {
 					} else {
 
 						entity.setTravelingDirection( 1 );
-						entity.setSValue( entity.sCoordinate - currentRoad.length );
 
+						// const roadCoord = new TvPosTheta();
+						// const res = TvMapQueries.getRoadByCoords( entity.position.x, entity.position.y, roadCoord, currentRoad );
+						entity.setSValue( entity.sCoordinate - currentRoad.length );
+						// entity.setSValue( 0 );
 					}
 
 					// find laneSection

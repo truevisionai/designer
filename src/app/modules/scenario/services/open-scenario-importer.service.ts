@@ -13,7 +13,7 @@ import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
 import { FileService } from '../../../services/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { DefaultVehicleController } from '../controllers/vehicle-controller';
+import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
 import { Target } from '../models/actions/target';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
