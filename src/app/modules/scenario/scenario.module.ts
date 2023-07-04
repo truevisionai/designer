@@ -16,7 +16,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { SharedModule } from '../../shared/shared.module';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { TvMapModule } from '../tv-map/tv-map.module';
-import { ImportOpenScenarioDialogComponent } from './dialogs/tutorials-dialog/import-open-scenario-dialog.component';
+import { ImportOpenScenarioDialogComponent } from './dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
 import { EventEditorComponent } from './views/event-editor/event-editor.component';
 import { EntityInspector } from './inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { FileHeaderComponent } from './inspectors/tv-file-header/tv-file-header.component';

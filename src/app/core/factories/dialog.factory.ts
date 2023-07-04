@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {
 	ImportOpenScenarioDialogComponent,
 	ImportOpenScenarioDialogData
-} from '../../modules/scenario/dialogs/tutorials-dialog/import-open-scenario-dialog.component';
+} from '../../modules/scenario/dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
 
 
 @Injectable( {
