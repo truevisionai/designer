@@ -1,6 +1,7 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
+import { SnackBar } from 'app/services/snack-bar.service';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { SignalFactory } from '../../modules/tv-map/builders/signal-factory';
 import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
@@ -21,7 +22,12 @@ export class RoadSignalTool extends BaseTool {
 
 		const road = TvMapQueries.getRoadByCoords( e.point?.x, e.point?.y, posTheta );
 
-		if ( !road ) return;
+		if ( !road ) {
+
+			SnackBar.warn( 'Please select/create a road' );
+
+			return;
+		}
 
 		const signal = new StaticSignal( posTheta.s, posTheta.t );
 
