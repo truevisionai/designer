@@ -10,6 +10,8 @@ import { TvLaneValidity } from './tv-road-object';
 
 export class TvRoadSignal {
 
+	public static counter = 1;
+
 	public s: number;
 	public t: number;
 	public id: number;
@@ -47,14 +49,16 @@ export class TvRoadSignal {
 		type?: string,
 		subtype?: string,
 		value?: number,
-		unit?: TvUnit,
-		height?: number,
-		width?: number,
-		text?: string,
-		hOffset?: number,
-		pitch?: number,
-		roll?: number
+		unit: TvUnit = null,
+		height: number = 0,
+		width: number = 0,
+		text: string = '',
+		hOffset: number = 0,
+		pitch: number = 0,
+		roll: number = 0
 	) {
+
+		TvRoadSignal.counter++;
 
 		this.s = s;
 		this.t = t;
@@ -190,3 +194,15 @@ export class TvSignalReference {
 		return this.laneValidities[ i ];
 	}
 }
+
+export class StaticSignal extends TvRoadSignal {
+
+	constructor (
+		s: number,
+		t: number,
+	) {
+		super( s, t, TvRoadSignal.counter, 'StaticSignal', TvDynamicTypes.NO, TvOrientation.MINUS );
+	}
+
+}
+

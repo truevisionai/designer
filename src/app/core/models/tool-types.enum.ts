@@ -18,4 +18,5 @@ export enum ToolType {
 	Pointer,
 	RoadRampTool,
 	Vehicle,
+	RoadSignalTool,
 }

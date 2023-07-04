@@ -120,7 +120,7 @@ export class ScenarioDirectorService {
 
 			this.scenario.objects.forEach( obj => {
 
-				obj.update();
+				obj.onUpdate();
 
 			} );
 
@@ -145,11 +145,7 @@ export class ScenarioDirectorService {
 
 		this.scenario.objects.forEach( obj => {
 
-			obj.initActions.forEach( action => {
-
-				action.execute( obj );
-
-			} );
+			obj.onStart();
 
 			ScenarioDirectorService.setRoadProperties( obj );
 

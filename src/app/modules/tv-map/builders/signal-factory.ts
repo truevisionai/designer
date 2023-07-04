@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, TextureLoader, Vector3 } from 'three';
+import { BoxGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, PlaneGeometry, TextureLoader, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { SnackBar } from '../../../services/snack-bar.service';
+import { TvConsole } from '../../../core/utils/console';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { Maths } from '../../../utils/maths';
 import { TvObjectType } from '../interfaces/i-tv-object';
@@ -14,10 +14,7 @@ import { SignShapeType } from '../services/tv-sign.service';
 
 export class SignalFactory {
 
-	constructor () {
-	}
-
-	createSignalGameObject ( road: TvRoad, signal: TvRoadSignal, shape?: SignShapeType ) {
+	public static createSignal ( road: TvRoad, signal: TvRoadSignal, shape?: SignShapeType ) {
 
 		const position = road.getPositionAt( signal.s, signal.t );
 
@@ -71,12 +68,14 @@ export class SignalFactory {
 			case SignShapeType.rectangle:
 				sign = SignalFactory.createRectangleSignal( assetName, signal );
 				break;
+
 			case 'default':
+				TvConsole.warn( 'Sign shape not specified, using default square shape for now' );
+				sign = SignalFactory.createSquareSignal( assetName, signal );
 				break;
 
 			default:
-				SnackBar.show( 'Sign shape type not specified' );
-				console.error( 'Sign shape type not specified', signShape );
+				TvConsole.warn( 'Sign shape type not specified' );
 				break;
 		}
 
@@ -87,7 +86,6 @@ export class SignalFactory {
 		sign.position.set( 0, poleHeight * 0.5, poleWidth );
 
 		pole.rotateX( 90 * Maths.Deg2Rad );
-
 
 		pole.position.setZ( pole.position.z + ( poleHeight * 0.5 ) );
 
@@ -101,7 +99,8 @@ export class SignalFactory {
 
 	private static createRectangleSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-		const geometry = new BoxGeometry( 1, 1.5, 0.05 );
+		// const geometry = new BoxGeometry( 1, 1.5, 0.05 );
+		const geometry = new PlaneGeometry( 1, 1.5 );
 
 		const signMaterial = SignalFactory.getSignMaterial( sign );
 
@@ -111,7 +110,8 @@ export class SignalFactory {
 
 	private static createSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-		const geometry = new BoxGeometry( 1, 1, 0.05 );
+		// const geometry = new BoxGeometry( 1, 1, 0.05 );
+		const geometry = new PlaneGeometry( 1, 1 );
 
 		const signMaterial = SignalFactory.getSignMaterial( sign );
 

@@ -25,7 +25,7 @@ export class TvSignalHelper {
 
 	private static createSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
-		this.signalFactory.createSignalGameObject( road, signal );
+		SignalFactory.createSignal( road, signal );
 
 	}
 }

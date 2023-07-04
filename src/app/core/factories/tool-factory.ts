@@ -1,23 +1,24 @@
-import { ToolType } from "../models/tool-types.enum";
-import { BaseTool } from "../tools/base-tool";
-import { LaneAddTool } from "../tools/lane-add/lane-add-tool";
-import { LaneCreateTool } from "../tools/lane-create/lane-create-tool";
-import { LaneMarkingTool } from "../tools/lane-marking/lane-marking-tool";
-import { LaneOffsetTool } from "../tools/lane-offset/lane-offset-tool";
-import { LaneTool } from "../tools/lane/lane-tool";
-import { LaneWidthTool } from "../tools/lane-width/lane-width-tool";
-import { ManeuverTool } from "../tools/maneuver/maneuver-tool";
-import { MarkingLineTool } from "../tools/marking-line/marking-line-tool";
-import { MarkingPointTool } from "../tools/marking-point/marking-point-tool";
-import { ParkingBoxTool } from "../tools/parking-box-tool";
-import { PointerTool } from "../tools/pointer/pointer-tool";
-import { PropCurveTool } from "../tools/prop-curve/prop-curve-tool";
-import { PropPointTool } from "../tools/prop-point/prop-point-tool";
-import { RoadCircleTool } from "../tools/road-circle/road-circle-tool";
-import { RoadTool } from "../tools/road/road-tool";
-import { SurfaceTool } from "../tools/surface/surface-tool";
-import { PropPolygonTool } from "../tools/prop-polygon/prop-polygon-tool";
-import { VehicleTool } from "../tools/vehicle/vehicle-tool";
+import { ToolType } from '../models/tool-types.enum';
+import { BaseTool } from '../tools/base-tool';
+import { LaneAddTool } from '../tools/lane-add/lane-add-tool';
+import { LaneCreateTool } from '../tools/lane-create/lane-create-tool';
+import { LaneMarkingTool } from '../tools/lane-marking/lane-marking-tool';
+import { LaneOffsetTool } from '../tools/lane-offset/lane-offset-tool';
+import { LaneWidthTool } from '../tools/lane-width/lane-width-tool';
+import { LaneTool } from '../tools/lane/lane-tool';
+import { ManeuverTool } from '../tools/maneuver/maneuver-tool';
+import { MarkingLineTool } from '../tools/marking-line/marking-line-tool';
+import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
+import { ParkingBoxTool } from '../tools/parking-box-tool';
+import { PointerTool } from '../tools/pointer/pointer-tool';
+import { PropCurveTool } from '../tools/prop-curve/prop-curve-tool';
+import { PropPointTool } from '../tools/prop-point/prop-point-tool';
+import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
+import { RoadCircleTool } from '../tools/road-circle/road-circle-tool';
+import { RoadSignalTool } from '../tools/road-signal-tool';
+import { RoadTool } from '../tools/road/road-tool';
+import { SurfaceTool } from '../tools/surface/surface-tool';
+import { VehicleTool } from '../tools/vehicle/vehicle-tool';
 
 export class ToolFactory {
 
@@ -60,6 +61,8 @@ export class ToolFactory {
 				return new PointerTool();
 			case ToolType.Vehicle:
 				return new VehicleTool();
+			case ToolType.RoadSignalTool:
+				return new RoadSignalTool();
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

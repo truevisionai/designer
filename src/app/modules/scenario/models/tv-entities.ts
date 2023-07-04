@@ -5,82 +5,14 @@
 import { BoxGeometry, Euler, MathUtils, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvConsole } from '../../../core/utils/console';
-import { Maths } from '../../../utils/maths';
-import { TvLaneType } from '../../tv-map/models/tv-common';
-import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { AbstractController } from './abstract-controller';
+import { OpenDriveProperties } from './open-drive-properties';
 import { PrivateAction } from './private-action';
 import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from './tv-bounding-box';
 import { ScenarioObjectType, VehicleCategory } from './tv-enums';
 import { Orientation } from './tv-orientation';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 import { TvProperty } from './tv-properties';
-
-class OpenDriveProperties {
-	public speed: number = 0;
-	public roadId: number = 0;
-	public laneSectionId: number = 0;
-	public laneId: number = 0;
-	public s: number = 0;
-	public laneOffset: number = 0;
-	public direction: number = 0;
-	public autonomous: boolean = false;
-	public distanceTraveled: number;
-
-	isEndOfRoad () {
-		const road = TvMapInstance.map.getRoadById( this.roadId );
-
-		// either at the end of the road
-		// or at the beginning
-		if (
-			this.s >= road.length - Maths.Epsilon ||
-			this.s <= Maths.Epsilon
-		) {
-
-			return true;
-
-		} else {
-
-			return false;
-
-		}
-	}
-
-	isOffRoad () {
-		// TODO can be imrpved
-		const road = TvMapInstance.map.getRoadById( this.roadId );
-		const laneSection = road.getLaneSectionById( this.laneSectionId );
-		const lane = laneSection.getLaneById( this.laneId );
-
-		if (
-			lane.type == TvLaneType.driving ||
-			lane.type == TvLaneType.stop ||
-			lane.type == TvLaneType.parking
-		) {
-
-			return false;
-
-		} else {
-
-			return true;
-
-		}
-	}
-
-	reset () {
-
-		this.roadId = 0;
-		this.laneSectionId = 0;
-		this.laneId = 0;
-		this.autonomous = false;
-		this.distanceTraveled = 0;
-		this.direction = 0;
-		this.s = 0;
-		this.laneOffset = 0;
-		this.speed = 0;
-
-	}
-}
 
 export abstract class ScenarioEntity extends GameObject {
 
@@ -121,7 +53,7 @@ export abstract class ScenarioEntity extends GameObject {
 		this.initActions = this.initActions.filter( a => a !== action );
 	}
 
-	update () {
+	onUpdate () {
 
 		if ( !this.openDriveProperties.autonomous && !this.enabled ) return;
 
@@ -168,10 +100,8 @@ export abstract class ScenarioEntity extends GameObject {
 
 		this.openDriveProperties.reset();
 
-		if ( this.originalPosition ) {
-			this.setPosition( this.originalPosition );
-			this.originalPosition = null;
-		}
+		this.userData.position = this.position.copy( this.userData.position );
+		this.userData.rotation = this.rotation.copy( this.userData.rotation );
 
 	}
 
@@ -314,6 +244,16 @@ export abstract class ScenarioEntity extends GameObject {
 
 	get speed () {
 		return this.openDriveProperties.speed;
+	}
+
+	onStart () {
+
+		this.userData.position = this.position.clone();
+		this.userData.rotation = this.rotation.clone();
+		this.userData.openDriveProperties = this.openDriveProperties.clone();
+
+		this.initActions.forEach( action => action.execute( this ) );
+
 	}
 }
 

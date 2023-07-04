@@ -3,14 +3,14 @@
  */
 
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { SatPopover } from '@ncstate/sat-popover';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { ToolFactory } from 'app/core/factories/tool-factory';
+import { ToolType } from 'app/core/models/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../core/tools/base-tool';
 import { ToolManager } from '../../../core/tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
-import { ToolType } from 'app/core/models/tool-types.enum';
-import { ToolFactory } from 'app/core/factories/tool-factory';
-import { SatPopover } from '@ncstate/sat-popover';
 
 class IToolMenu {
 	id: string;
@@ -243,6 +243,17 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle )
+		},
+		{
+			id: 'signal',
+			label: 'RoadSignalTool',
+			class: 'toolbar-button',
+			toolType: ToolType.RoadSignalTool,
+			action: 'signal-tool',
+			icon: 'menu',
+			track: 'menu',
+			tooltip: 'RoadSignalTool Tool',
+			click: () => this.setToolType( ToolType.RoadSignalTool )
 		}
 		// add more tools here...
 	];

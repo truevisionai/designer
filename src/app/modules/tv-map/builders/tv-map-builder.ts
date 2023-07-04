@@ -236,7 +236,7 @@ export class TvMapBuilder {
 
 	static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
 
-		TvMapBuilder.signalFactory.createSignalGameObject( road, signal );
+		SignalFactory.createSignal( road, signal );
 
 	}
 
