@@ -90,8 +90,8 @@ export class TextureFieldComponent implements OnInit {
 					image.addEventListener( 'load', ( event: any ) => {
 
 						const texture = new Texture( image, THREE.UVMapping );
-						texture.sourceFile = file.name;
-						texture.format = file.type === 'image/jpeg' ? THREE.RGBFormat : THREE.RGBAFormat;
+						texture.source = file.name;
+						texture.format = file.type === 'image/jpeg' ? THREE.RGBAFormat : THREE.RGBAFormat;
 						texture.needsUpdate = true;
 
 						this.setValue( texture );
@@ -131,14 +131,14 @@ export class TextureFieldComponent implements OnInit {
 
 			if ( image !== undefined && image.width > 0 ) {
 
-				canvas.title = texture.sourceFile;
+				canvas.title = texture.source.data;
 
 				const scale = canvas.width / image.width;
 				context.drawImage( image, 0, 0, image.width * scale, image.height * scale );
 
 			} else {
 
-				canvas.title = texture.sourceFile + ' (error)';
+				canvas.title = texture.source.data + ' (error)';
 				context.clearRect( 0, 0, canvas.width, canvas.height );
 
 			}

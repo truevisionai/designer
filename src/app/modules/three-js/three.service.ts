@@ -16,6 +16,7 @@ import { SceneService } from '../../core/services/scene.service';
 import { SetPositionCommand } from './commands/set-position-command';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
+import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,6 +42,9 @@ export class ThreeService implements IEngine {
 	private light: THREE.AmbientLight;
 	private objectPositionOnDown: THREE.Vector3 = null;
 	private target: Object3D;
+
+	viewHelper: ViewHelper;
+	viewHelperCanavs: HTMLCanvasElement;
 
 	constructor () {
 
@@ -473,6 +477,8 @@ export class ThreeService implements IEngine {
 			ThreeService.controls.setRotateEnabled( true );
 
 		}
+
+		this.createViewHelper();
 	}
 
 	onWindowResized () {
@@ -500,6 +506,13 @@ export class ThreeService implements IEngine {
 
 
 		} );
+
+		this.createViewHelper();
+	}
+
+	createViewHelper () {
+
+		this.viewHelper = new ViewHelper( this.camera as any, this.viewHelperCanavs );
 
 	}
 

@@ -3,17 +3,15 @@
   -->
 
 
-<div #viewport (click)="onMouseClick($event)" (contextmenu)="onContextMenu($event)" (mousedown)="onMouseDown($event)"
-	 (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" (mousemove)="onMouseMove($event)"
-	 (mouseout)="onMouseOut($event)" (mouseup)="onMouseUp($event)" fxFlexFill fxLayout="column" id="canvas"
-	 style="background:red;" style="position:absolute;">
+<div #viewport (click)="onMouseClick($event)" (contextmenu)="onContextMenu($event)" (mousedown)="onMouseDown($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" (mousemove)="onMouseMove($event)"
+	 (mouseout)="onMouseOut($event)" (mouseup)="onMouseUp($event)" fxFlexFill fxLayout="column" id="canvas" style="background:red;" style="position:absolute;">
 
 	<ng-content></ng-content>
 
 </div>
 <div class="app-viewport-stats">
-	<span>{{ cameraType }}</span><br/>
-	<span>{{ fps }} FPS</span><br/>
+	<span>{{ cameraType }}</span><br />
+	<span>{{ fps }} FPS</span><br />
 </div>
 <mat-toolbar class="viewport-toolbar">
 	<button (click)="changeCamera()" mat-icon-button matTooltip="Switch Camera" matTooltipPosition="left">
@@ -23,3 +21,4 @@
 		<mat-icon>refresh</mat-icon>
 	</button>
 </mat-toolbar>
+<div (click)="handleViewHelperClick($event)" #viewHelper style="position: absolute; left: 0vw; top: 55vh; height:128px; width: 128px;"></div>

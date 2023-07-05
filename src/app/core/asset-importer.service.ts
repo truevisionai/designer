@@ -12,6 +12,8 @@ import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { ThreeJsUtils } from './utils/threejs-utils';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { FileUtils } from 'app/services/file-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -108,27 +110,6 @@ export class AssetImporterService {
 
 		} );
 
-		// this.fs.readFile( filepath, 'ascii', ( err, data ) => {
-
-		//     if ( err ) {
-		//         error( 'An error ocurred reading the file :' + err.message );
-		//         return;
-		//     }
-
-		//     const dir = filepath.split( '/' ).slice( 0, -1 ).join( '/' ) + "/";
-
-		//     loader.parse( data, `file:///${ dir }`, ( gltf ) => {
-
-		//         success( gltf.scene );
-
-		//     }, ( err ) => {
-
-		//         error( err )
-
-		//     } );
-
-		// } )
-
 	}
 
 	importCollada ( filepath: string, success: Function, error: Function ) {
@@ -152,51 +133,17 @@ export class AssetImporterService {
 
 	}
 
-	importFBX ( filepath: string, success: Function, error: Function ) {
+	async importFBX ( filepath: string, success: Function, error: Function ) {
 
-		SnackBar.warn( 'FBX files are not supported' );
+		const loader = new FBXLoader();
 
-		// var loader = new THREE.FBXLoader();
+		const buffer = await this.fileService.readAsArrayBuffer( filepath );
 
-		// loader.load( 'assets/TrafficCone01.fbx', function ( object ) {
-		//     // loader.load( 'assets/Box.fbx', function ( object ) {
+		const directory = FileUtils.getDirectoryFromPath( filepath );
 
-		//     object.traverse( ( child: any ) => {
+		const object = loader.parse( buffer, directory );
 
-		//         if ( child.isMesh ) {
-
-		//             child.castShadow = true;
-		//             child.receiveShadow = true;
-
-		//         }
-
-		//     } );
-
-		//     SceneService.add( object );
-
-		// }, ( e ) => console.debug( e ), ( e ) => console.error( e ) );
-
-		// this.fs.readFile( filepath, 'utf-8', ( err, data ) => {
-
-		//     if ( err ) {
-		//         error( 'An error ocurred reading the file :' + err.message );
-		//         return;
-		//     }
-
-		//     try {
-
-		//         success( loader.parse( data, filepath ) );
-
-		//     } catch ( error ) {
-
-		//         console.error( error );
-
-		//         error( 'Could not import file, ' + error.message );
-
-		//     }
-
-
-		// } );
+		success( object );
 
 	}
 

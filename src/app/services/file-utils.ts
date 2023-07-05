@@ -6,6 +6,16 @@ import { AppInfo } from 'app/core/services/app-info.service';
 
 export class FileUtils {
 
+	static getExtensionFromPath ( path: string ) {
+
+		if ( !path ) return;
+
+		// split by dot and return the last item
+
+		return path.split( '.' ).pop();
+
+	}
+
 	static getDirectoryFromPath ( path: string ): string {
 
 		if ( !path ) return;

@@ -6,8 +6,7 @@ import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import * as THREE from 'three';
-import { Mesh, Shape, ShapeGeometry, Vector2 } from 'three';
+import { BufferAttribute, Mesh, MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2, sRGBEncoding } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-source-file';
 
@@ -77,7 +76,7 @@ export class TvSurface {
 
 		this.mesh.geometry = new ShapeGeometry( shape );
 
-		const uvAttribute = this.mesh.geometry.attributes.uv;
+		const uvAttribute = this.mesh.geometry.attributes.uv as BufferAttribute;
 
 		for ( let i = 0; i < uvAttribute.count; i++ ) {
 
@@ -116,12 +115,12 @@ export class TvSurface {
 		const geometry = new ShapeGeometry( shape );
 
 		const texture = OdTextures.terrain.clone();
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.wrapS = texture.wrapT = RepeatWrapping;
 		texture.repeat.set( 0.008, 0.008 );
 		texture.anisotropy = 16;
-		texture.encoding = THREE.sRGBEncoding;
+		texture.encoding = sRGBEncoding;
 
-		const groundMaterial = new THREE.MeshLambertMaterial( { map: texture } );
+		const groundMaterial = new MeshLambertMaterial( { map: texture } );
 
 		const mesh = new GameObject( 'Surface', geometry, groundMaterial );
 

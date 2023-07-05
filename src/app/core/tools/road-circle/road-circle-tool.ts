@@ -5,7 +5,7 @@
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
-import { BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, RingGeometry, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, RingGeometry, Vector3 } from 'three';
 import { AddRoadCircleCommand } from './add-road-circle-command';
 import { BaseTool } from '../base-tool';
 import { TextObject } from 'app/modules/three-js/objects/text-object';
@@ -133,8 +133,10 @@ class CircleRoad {
 
 		const circleGeometry = new CircleGeometry( radius, radius * 4 );
 
+		const positions = circleGeometry.attributes.position as BufferAttribute;
+
 		const circleBufferGeometry = new BufferGeometry()
-			.setAttribute( 'position', new Float32BufferAttribute( circleGeometry.attributes.position.array, 3 ) );
+			.setAttribute( 'position', new Float32BufferAttribute( positions.array, 3 ) );
 
 		// Dispose of the old geometry and replace with the new one
 		this.line.geometry.dispose();

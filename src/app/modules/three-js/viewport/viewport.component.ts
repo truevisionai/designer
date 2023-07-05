@@ -38,6 +38,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	lastIntersection: THREE.Intersection;
 
 	@ViewChild( 'viewport' ) elementRef: ElementRef;
+	@ViewChild( 'viewHelper' ) viewHelperRef: ElementRef;
 
 	raycaster = new THREE.Raycaster;
 	mouse: THREE.Vector2 = new THREE.Vector2();
@@ -57,7 +58,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement> this.elementRef.nativeElement;
+		return <HTMLCanvasElement>this.elementRef.nativeElement;
+	}
+
+	get viewHelperCanavs (): HTMLCanvasElement {
+		return <HTMLCanvasElement>this.viewHelperRef.nativeElement;
 	}
 
 	get cameraType (): string {
@@ -105,7 +110,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer = new THREE.WebGLRenderer( { alpha: false, antialias: true, precision: 'highp', stencil: false } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setClearColor( 0xffffff, 1 );
-		this.renderer.autoClear = true;
+		this.renderer.autoClear = false;
 
 		this.raycaster = new THREE.Raycaster();
 		// this.raycaster.linePrecision = 0.25;
@@ -125,16 +130,28 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	clock = new THREE.Clock();
+
 	render () {
 
 		// this seems a faster want to call render function
 		requestAnimationFrame( this.render );
 
+		const delta = this.clock.getDelta();
+
 		this.frameBegin();
 
 		this.threeService.updateCameraPosition();
 
+		this.renderer.clear();
+
+		if ( this.threeService.viewHelper?.animating ) {
+			this.threeService.viewHelper.update( delta );
+		}
+
 		this.renderer.render( SceneService.scene, this.threeService.camera );
+
+		this.threeService.viewHelper?.render( this.renderer );
 
 		ThreeService.controls.update();
 
@@ -595,6 +612,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private resizeCanvas () {
 
+		this.threeService.viewHelperCanavs = this.viewHelperCanavs;
+
 		const container = this.renderer.domElement.parentElement.parentElement;
 
 		const box = container.getBoundingClientRect();
@@ -621,6 +640,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	resetCamera () {
 
 		this.threeService.resetCamera();
+
+	}
+
+	handleViewHelperClick ( $event ) {
+
+		$event.stopPropagation();
+
+		this.threeService.viewHelper?.handleClick( $event );
 
 	}
 }

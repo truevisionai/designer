@@ -220,13 +220,13 @@ export class MetadataFactory {
 
 		const data = texture.toJSON( undefined );
 
-		const version = data.metadata.version || 4.5;
+		// const version = data.metadata.version || 4.5;
 
-		data.metadata = null;
+		data['metadata'] = null;
 
 		return {
 			guid: guid,
-			version: version,
+			version: 4.5,
 			type: 'Texture',
 			importer: MetaImporter.TEXTURE,
 			data: data,

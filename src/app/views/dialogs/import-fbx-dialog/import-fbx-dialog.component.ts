@@ -7,6 +7,12 @@ import { AssetImporterService } from '../../../core/asset-importer.service';
 import { FileUtils } from '../../../services/file-utils';
 import { FileService } from '../../../services/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
+import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+
+export class ImportFbxDialogData {
+	constructor ( public path: string, public destinationPath: string, public extension: string ) {
+	}
+}
 
 @Component( {
 	selector: 'app-import-fbx-dialog',
@@ -21,8 +27,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 	constructor (
 		private dialogRef: MatDialogRef<ImportFbxDialogComponent>,
-		@Inject( MAT_DIALOG_DATA ) public data: any,
-		private assetImporterService: AssetImporterService,
+		@Inject( MAT_DIALOG_DATA ) public data: ImportFbxDialogData,
 		private fileService: FileService,
 	) {
 	}
@@ -31,34 +36,31 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const loader = new FBXLoader();
 
-		try {
+		const buffer = await this.fileService.readAsArrayBuffer( this.data.path );
 
-			const contents = await this.fileService.readAsync( this.data.path );
-			const directory = FileUtils.getDirectoryFromPath( this.data.path );
-			this.object = loader.parse( contents, directory );
+		const directory = FileUtils.getDirectoryFromPath( this.data.path );
 
-
-		} catch ( error ) {
-
-			const buffer = await this.fileService.readAsArrayBuffer( this.data.path );
-
-			const directory = FileUtils.getDirectoryFromPath( this.data.path );
-
-			this.object = loader.parse( buffer, directory );
-
-			console.error( error );
-
-		}
-
+		this.object = loader.parse( buffer, directory );
 
 	}
 
 	onScaleChanged ( $scale ) {
 
-		this.object?.scale.setScalar( $scale );
+		// this.object?.scale.setScalar( $scale );
+
 	}
 
 	import () {
+
+		this.fileService.fs.copyFileSync( this.data.path, this.data.destinationPath );
+
+		const filename = FileUtils.getFilenameFromPath( this.data.path );
+
+		const extension = this.data.extension || FileUtils.getExtensionFromPath( this.data.path );
+
+		MetadataFactory.createMetadata( filename, extension, this.data.destinationPath );
+
+		this.dialogRef.close();
 
 	}
 }
