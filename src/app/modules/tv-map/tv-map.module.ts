@@ -109,9 +109,10 @@ import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialo
 		MatFormFieldModule,
 		MatInputModule,
 	],
-	exports: [
-		TransformInspectorComponent
-	],
+    exports: [
+        TransformInspectorComponent,
+        ObjectPreviewComponent
+    ],
 	entryComponents: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,

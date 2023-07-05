@@ -10,7 +10,7 @@ import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspe
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { DefaultVehicleController } from '../../../modules/scenario/controllers/vehicle-controller';
+import { DefaultVehicleController } from '../../../modules/scenario/controllers/default-vehicle-controller';
 import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';

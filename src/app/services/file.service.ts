@@ -169,10 +169,20 @@ export class FileService {
 		return this.remote.dialog.showOpenDialog( options );
 	}
 
-	async readAsync ( path ) {
+	async readAsync ( path, encoding = 'utf-8' ): Promise<any> {
 
-		return Promise.resolve( this.fs.readFileSync( path, 'utf-8' ) );
+		return Promise.resolve( this.fs.readFileSync( path, encoding ) );
 
+	}
+
+	async readAsArrayBuffer ( path ): Promise<any> {
+
+		const data = this.fs.readFileSync( path, null );
+
+		// If no encoding is specified, return data as ArrayBuffer
+		const arrayBuffer = Uint8Array.from( data ).buffer;
+
+		return Promise.resolve( arrayBuffer );
 	}
 
 	showOpenWindow ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {

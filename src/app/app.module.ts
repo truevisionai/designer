@@ -30,6 +30,7 @@ import { SharedModule } from './shared/shared.module';
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';
 import { ScenarioModule } from './modules/scenario/scenario.module';
+import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -68,7 +69,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 			}
 		} ),
 	],
-	declarations: [ AppComponent ],
+	declarations: [ AppComponent, ImportFbxDialogComponent ],
 	providers: [
 		{ provide: ErrorHandler, useFactory: errorHandlerFactory, deps: [ Injector, AnalyticsService ], },
 		{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },

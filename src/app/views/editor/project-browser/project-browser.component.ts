@@ -319,7 +319,9 @@ export class ProjectBrowserComponent implements OnInit {
 				copied = this.copyFile( file.path, destinationPath );
 				break;
 
-			// case 'fbx': copied = this.copyFileInFolder( file.path, destinationPath, extension ); break;
+			case FileExtension.FBX:
+				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension );
+				break;
 
 			case FileExtension.JPG:
 				copied = this.copyFile( file.path, destinationPath );

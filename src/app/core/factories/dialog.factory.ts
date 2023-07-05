@@ -4,6 +4,7 @@ import {
 	ImportOpenScenarioDialogComponent,
 	ImportOpenScenarioDialogData
 } from '../../modules/scenario/dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
+import { ImportFbxDialogComponent } from 'app/views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 
 
 @Injectable( {
@@ -23,6 +24,16 @@ export class DialogFactory {
 			width: '680px',
 			height: '680px',
 			data: new ImportOpenScenarioDialogData( path, destinationPath, extension ),
+		} );
+
+	}
+
+	static showImportFBXDialog ( path: string, destinationPath: string, extension: string ) {
+
+		this.dialog.open( ImportFbxDialogComponent, {
+			width: '680px',
+			height: '680px',
+			data: { path, destinationPath, extension }
 		} );
 
 	}
