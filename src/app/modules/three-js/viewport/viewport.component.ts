@@ -327,7 +327,28 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.threeService.enableControls();
 
-		this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, null ) );
+		this.updateMousePosition( event );
+
+		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+
+		this.intersections = this.raycaster.intersectObjects( SceneService.objects, true );
+
+		// if not intersection found then check for background intersection
+		if ( this.intersections.length < 1 ) {
+
+			this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+
+		}
+
+		if ( this.intersections.length > 0 ) {
+
+			this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, this.intersections[ 0 ] ) );
+
+		} else {
+
+			this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, null ) );
+
+		}
 
 	}
 
