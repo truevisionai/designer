@@ -2,12 +2,11 @@
 
 	<label class="tv-field-label">{{ label }}</label>
 
-	<div class="tv-field-text-input" style="display: flex;">
+	<div class="tv-field-text-input" fxFlex fxLayout="row">
 
-		<input placeholder="X" (ngModelChange)="onXChanged($event)" [(ngModel)]="value.x"/>
-		<input placeholder="Y" (ngModelChange)="onYChanged($event)" [(ngModel)]="value.y"/>
-		<input placeholder="Z" (ngModelChange)="onZChanged($event)" [(ngModel)]="value.z"/>
-
+		<app-double-input style="width: 33%; margin-right: 4px;" [value]="value.x" [disabled]="disabled" (changed)="onXChanged($event)"></app-double-input>
+		<app-double-input style="width: 33%; margin-right: 4px;" [value]="value.y" [disabled]="disabled" (changed)="onYChanged($event)"></app-double-input>
+		<app-double-input style="width: 33%; margin-right: 0px;" min="0" [value]="value.z" [disabled]="disabled" (changed)="onZChanged($event)"></app-double-input>
 
 	</div>
 

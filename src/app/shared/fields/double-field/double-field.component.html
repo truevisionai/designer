@@ -8,18 +8,7 @@
 
 	<div class="tv-field-text-input" style="display: flex;">
 
-		<input
-			[ngStyle]="{'cursor': inFocus ? 'row-resize' : 'auto'}"
-			(blur)="onBlur()"
-			(focus)="onFocus()"
-			(keydown)="onKeydown($event)"
-			(input)="onInput($event)"
-			(ngModelChange)="onModelChanged($event)"
-			(wheel)="onWheel($event)"
-			[(ngModel)]="value"
-			[disabled]="disabled"
-			[placeholder]="label"
-			[value]="value"/>
+		<app-double-input style="width: 100%;" [value]="value" [disabled]="disabled" (changed)="onFieldValueChanged($event)"></app-double-input>
 
 		<span *ngIf="suffix" style="margin-left: 5px; margin-right: 5px">
 			{{suffix}}

@@ -50,7 +50,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.nodes.forEach( node => SceneService.remove( node ) );
+		this.map.getRoads().forEach( road => road.hideElevationNodes() );
 
 	}
 

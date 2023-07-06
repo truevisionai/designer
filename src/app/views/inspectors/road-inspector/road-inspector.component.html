@@ -2,7 +2,16 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="road" class="inspector-editor-padding">
+
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="isOpen=!isOpen" mat-icon-button class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>Road Inspector</span>
+</mat-toolbar>
+
+<div *ngIf="isOpen && road" class="inspector-editor-padding">
 
 	<app-double-field [value]="road.length" [disabled]="true" label="Length" suffix="m"></app-double-field>
 
@@ -12,8 +21,7 @@
 
 </div>
 
-
-<div *ngIf="road">
+<div *ngIf="isOpen && road">
 
 	<app-material-field (changed)="onDrivingMaterialChanged($event)" [guid]="road.drivingMaterialGuid" label="Driving Material"></app-material-field>
 
@@ -23,9 +31,8 @@
 
 	<app-material-field (changed)="onShoulderMaterialChanged($event)" [guid]="road.shoulderMaterialGuid" label="Shoulder Material"></app-material-field>
 
-</div>
+	<div *ngIf="controlPoint" class="inspector-editor-padding">
+		<app-vector3-field (changed)="onControlPointChanged($event)" label="Control Point" [value]="controlPointPosition"></app-vector3-field>
+	</div>
 
-<div *ngIf="controlPoint" class="inspector-editor-padding">
-	<app-vector3-field (changed)="onControlPointChanged($event)" label="Control Point" [value]="controlPointPosition"></app-vector3-field>
 </div>
-

@@ -7,7 +7,6 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from './od-base-command';
-import { SnackBar } from 'app/services/snack-bar.service';
 
 export class UpdateRoadPointCommand extends OdBaseCommand {
 

@@ -39,6 +39,8 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 		node: RoadNode,
 	};
 
+	isOpen: boolean = true;
+
 	constructor () {
 	}
 

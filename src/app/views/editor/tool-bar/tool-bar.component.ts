@@ -223,7 +223,7 @@ export class ToolBarComponent implements OnInit {
 		{
 			id: 'showPropPolygonTool',
 			label: 'PropPolygon',
-			class: 'toolbar-button border-right',
+			class: 'toolbar-button',
 			toolType: ToolType.PropPolygon,
 			action: 'prop-polygon-tool',
 			icon: 'category',
@@ -232,6 +232,17 @@ export class ToolBarComponent implements OnInit {
 			title: 'PROP-POLYGON-TOOL-TITLE',
 			description: 'PROP-POLYGON-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.PropPolygon )
+		},
+		{
+			id: 'signal',
+			label: 'Signal',
+			class: 'toolbar-button border-right',
+			toolType: ToolType.RoadSignalTool,
+			action: 'signal-tool',
+			icon: 'directions', // signpost,directions
+			track: 'menu',
+			tooltip: 'Signal Tool',
+			click: () => this.setToolType( ToolType.RoadSignalTool )
 		},
 		{
 			id: 'showSurfaceTool',
@@ -257,17 +268,6 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle )
 		},
-		{
-			id: 'signal',
-			label: 'RoadSignalTool',
-			class: 'toolbar-button',
-			toolType: ToolType.RoadSignalTool,
-			action: 'signal-tool',
-			icon: 'menu',
-			track: 'menu',
-			tooltip: 'RoadSignalTool Tool',
-			click: () => this.setToolType( ToolType.RoadSignalTool )
-		}
 		// add more tools here...
 	];
 
