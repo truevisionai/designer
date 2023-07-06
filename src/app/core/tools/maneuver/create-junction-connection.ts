@@ -1,3 +1,4 @@
+import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { JunctionEntryObject } from '../../../modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneSide } from '../../../modules/tv-map/models/tv-common';
 import { TvJunction } from '../../../modules/tv-map/models/tv-junction';
@@ -19,6 +20,8 @@ export class CreateJunctionConnection extends BaseCommand {
 	private laneLinkCreated: boolean;
 	private connectionCreated: boolean;
 
+	private selectJunctionCommand: SelectPointCommand;
+
 	constructor (
 		private tool: ManeuverTool,
 		private entry: JunctionEntryObject,
@@ -37,6 +40,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLink = laneLink || this.createLaneLink( this.entry );
 
+		this.selectJunctionCommand = new SelectPointCommand( tool, null );
 	}
 
 	execute (): void {
@@ -46,6 +50,8 @@ export class CreateJunctionConnection extends BaseCommand {
 		if ( this.connectionCreated ) this.junction.addConnection( this.connection );
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
+
+		this.selectJunctionCommand.execute();
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 
@@ -59,6 +65,8 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.removeLink( this.laneLink );
 
+		this.selectJunctionCommand.undo();
+
 		this.map.removeRoad( this.connectingRoad );
 
 	}
@@ -70,6 +78,8 @@ export class CreateJunctionConnection extends BaseCommand {
 		if ( this.connectionCreated ) this.junction.addConnection( this.connection );
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
+
+		this.selectJunctionCommand.execute();
 
 		this.map.addRoadInstance( this.connectingRoad );
 
