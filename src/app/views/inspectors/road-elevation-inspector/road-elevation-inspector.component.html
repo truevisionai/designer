@@ -1,0 +1,7 @@
+<div *ngIf="data" class="inspector-form-container">
+
+	<app-double-field label="S" [value]="data.elevation.s" (changed)="onDistanceChanged($event)"></app-double-field>
+
+	<app-double-field label="Elevation" [value]="data.elevation.a" (changed)="onElevationChanged($event)"></app-double-field>
+
+</div>

@@ -92,6 +92,7 @@ import { RoutePartsService } from './services/route-parts.service';
 import { ThemeService } from './services/theme.service';
 import { BooleanFieldComponent } from './fields/boolean-field/boolean-field.component';
 import { Vector3FieldComponent } from './fields/vector3-field/vector3-field.component';
+import { DoubleInputComponent } from './fields/double-input/double-input.component';
 
 /*
   Only Required if you want to use Angular Landing
@@ -136,6 +137,7 @@ const classesToInclude = [
 	Vector3FieldComponent,
 	BooleanFieldComponent,
 	DoubleFieldComponent,
+	DoubleInputComponent,
 	DropdownFieldComponent,
 	EnumFieldComponent,
 	StringFieldComponent,

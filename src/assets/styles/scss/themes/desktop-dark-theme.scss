@@ -120,10 +120,6 @@ $border-radius: 0px !important;
 		color: #FFFFFF;
 	}
 
-	input[disabled] {
-		cursor: not-allowed;
-	}
-
 	.mat-card {
 		background: $app-background;
 		box-shadow: none !important;
@@ -304,6 +300,10 @@ $border-radius: 0px !important;
 		outline: none;
 		box-shadow: none;
 		font-size: 0.85em;
+	}
+
+	input[disabled] {
+		cursor: not-allowed !important;
 	}
 
 	.inspector-toolbar {
