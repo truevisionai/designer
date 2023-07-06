@@ -12,10 +12,12 @@ import { SetLanePropertyCommand } from '../../../core/commands/set-lane-property
 import { BaseInspector } from '../../../core/components/base-inspector.component';
 import { IComponent } from '../../../core/game-object';
 import { OdTextures } from '../../../modules/tv-map/builders/od.textures';
-import { TvLaneType } from '../../../modules/tv-map/models/tv-common';
+import { TravelDirection, TvLaneType } from '../../../modules/tv-map/models/tv-common';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { CommandHistory } from '../../../services/command-history';
 import { COLOR } from '../../../shared/utils/colors.service';
+import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { DuplicateLaneCommand } from 'app/core/commands/duplicate-lane-command';
 
 @Component( {
 	selector: 'app-lane-type-inspector',
@@ -23,7 +25,11 @@ import { COLOR } from '../../../shared/utils/colors.service';
 } )
 export class LaneInspectorComponent extends BaseInspector implements IComponent {
 
-	data: TvLane;
+	public data: TvLane;
+
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.CYAN, false );
+
+	public directions = TravelDirection;
 
 	get types () {
 		return TvLaneType;
@@ -33,11 +39,17 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 		return this.data;
 	}
 
-	onDelete () {
+	deleteLane () {
 
 		if ( !this.lane ) return;
 
 		CommandHistory.execute( new RemoveLaneCommand( this.lane ) );
+
+	}
+
+	duplicateLane () {
+
+		CommandHistory.execute( new DuplicateLaneCommand( this.lane, this.laneHelper ) );
 
 	}
 
@@ -46,6 +58,14 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 		if ( !this.lane ) return;
 
 		CommandHistory.execute( new SetLanePropertyCommand( this.lane, 'type', $event.value ) );
+
+	}
+
+	onTravelDirectionChanged ( $event: MatSelectChange ) {
+
+		if ( !this.lane ) return;
+
+		CommandHistory.execute( new SetLanePropertyCommand( this.lane, 'travelDirection', $event.value ) );
 
 	}
 

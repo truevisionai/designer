@@ -26,6 +26,6 @@
 </div>
 
 <div *ngIf="controlPoint" class="inspector-editor-padding">
-	<app-vector3-field label="Control Point" [value]="controlPoint.position"></app-vector3-field>
+	<app-vector3-field (changed)="onControlPointChanged($event)" label="Control Point" [value]="controlPointPosition"></app-vector3-field>
 </div>
 

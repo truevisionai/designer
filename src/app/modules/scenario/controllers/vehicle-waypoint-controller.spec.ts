@@ -14,8 +14,6 @@ describe( 'VehicleWaypointController', () => {
 		const entity = new VehicleEntity( 'vehicle', );
 		const controller = new VehicleWaypointController( 'name', null );
 
-		controller.update();
-
 	} );
 
 

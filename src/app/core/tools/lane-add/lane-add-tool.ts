@@ -14,7 +14,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { CommandHistory } from 'app/services/command-history';
 import { CallFunctionCommand } from '../../commands/call-function-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { AddLaneCommand } from '../../commands/add-lane-command';
+import { DuplicateLaneCommand } from '../../commands/duplicate-lane-command';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { GameObject } from '../../game-object';
 import { Line } from 'three';
@@ -189,7 +189,7 @@ export class LaneAddTool extends BaseTool {
 
 	public cloneLane ( lane: TvLane ): void {
 
-		CommandHistory.execute( new AddLaneCommand( lane, this.laneHelper ) );
+		CommandHistory.execute( new DuplicateLaneCommand( lane, this.laneHelper ) );
 
 		this.setHint( 'Lane Added. Use CTRL Z to undo' );
 

@@ -15,6 +15,7 @@ import { PropCurveTool } from '../tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from '../tools/prop-point/prop-point-tool';
 import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
 import { RoadCircleTool } from '../tools/road-circle/road-circle-tool';
+import { RoadElevationTool } from '../tools/road-elevation/road-elevation-tool';
 import { RoadSignalTool } from '../tools/road-signal-tool';
 import { RoadTool } from '../tools/road/road-tool';
 import { SurfaceTool } from '../tools/surface/surface-tool';
@@ -63,6 +64,8 @@ export class ToolFactory {
 				return new VehicleTool();
 			case ToolType.RoadSignalTool:
 				return new RoadSignalTool();
+			case ToolType.RoadElevation:
+				return new RoadElevationTool();
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

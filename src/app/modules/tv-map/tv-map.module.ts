@@ -51,6 +51,7 @@ import { TextureInspector } from '../../views/inspectors/texture-inspector/textu
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
+import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component';
 
 
 @NgModule( {
@@ -80,6 +81,7 @@ import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialo
 		RoadControlPointInspector,
 		JunctionEntryInspector,
 		RoadStyleInspector,
+		RoadElevationInspector,
 	],
 	imports: [
 		CommonModule,
@@ -136,6 +138,7 @@ import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialo
 		JunctionEntryInspector,
 		ObjectPreviewComponent,
 		RoadStyleInspector,
+		RoadElevationInspector,
 	]
 } )
 export class TvMapModule {

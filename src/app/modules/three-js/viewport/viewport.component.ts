@@ -300,8 +300,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.eventSystem.pointerDown.emit(
 						this.preparePointerData( event.button, this.intersections[ 0 ] )
 					);
+					if ( this.intersections[ 0 ].object?.type === 'Points' ) {
+						this.threeService.disableControls();
+					}
 				} else {
 					this.eventSystem.pointerDown.emit( this.preparePointerData( event.button, null ) );
+					this.threeService.enableControls();
 				}
 				break;
 
@@ -320,6 +324,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	onMouseUp ( event: MouseEvent ) {
+
+		this.threeService.enableControls();
 
 		this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, null ) );
 

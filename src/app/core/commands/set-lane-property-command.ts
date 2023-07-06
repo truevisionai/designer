@@ -5,11 +5,11 @@
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { BaseCommand } from './base-command';
 
-export class SetLanePropertyCommand extends BaseCommand {
+export class SetLanePropertyCommand<T extends TvLane, K extends keyof T> extends BaseCommand {
 
-	private readonly oldValue: any;
+	private readonly oldValue: T[ K ];
 
-	constructor ( private lane: TvLane, private attribute: any, private newValue: any ) {
+	constructor ( private lane: T, private attribute: K, private newValue: T[ K ] ) {
 
 		super();
 

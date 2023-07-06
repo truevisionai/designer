@@ -8,13 +8,14 @@ import { BufferGeometry, Line, Vector3 } from 'three';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
+import { SceneService } from 'app/core/services/scene.service';
 
 export class OdRoadReferenceLineBuilder {
 
 	// private points: OdPosTheta[] = [];
 
 	line: any;
-	private material = new THREE.LineBasicMaterial( { color: COLOR.RED } );
+	private static material = new THREE.LineBasicMaterial( { color: COLOR.RED, linewidth: 2 } );
 	private cache: Map<number, Line> = new Map<number, Line>();
 
 	constructor ( private road: TvRoad ) {
@@ -57,17 +58,34 @@ export class OdRoadReferenceLineBuilder {
 		tmp = road.getRoadCoordAt( this.road.length - Maths.Epsilon );
 		points.push( new TvPosTheta( tmp.x, tmp.y, tmp.hdg ) );
 
-		this.drawLine( road, points );
+		OdRoadReferenceLineBuilder.drawLine( points );
 
 	}
 
-	private drawLine ( road: TvRoad, positions: TvPosTheta[] ) {
+	public static showRoadReferenceLine ( road: TvRoad ) {
 
-		// this.curve = new THREE.CatmullRomCurve3( this.getVector3Points() );
+		let tmp = new TvPosTheta();
+		const points: TvPosTheta[] = [];
 
-		// const points = this.curve.getPoints( 50 );
+		for ( let s = 0; s <= road.length; s++ ) {
 
-		const points = this.convertToVector3( positions );
+			tmp = road.getRoadCoordAt( s );
+			tmp.z += 0.1;
+			points.push( tmp.clone() );
+
+		}
+
+		// last entry
+		tmp = road.getRoadCoordAt( road.length - Maths.Epsilon );
+		points.push( tmp.clone() );
+
+		OdRoadReferenceLineBuilder.drawLine( points );
+
+	}
+
+	private static drawLine ( positions: TvPosTheta[] ) {
+
+		const points = OdRoadReferenceLineBuilder.convertToVector3( positions );
 
 		const geometry = new BufferGeometry();
 
@@ -75,22 +93,16 @@ export class OdRoadReferenceLineBuilder {
 
 		geometry.setFromPoints( points );
 
-		const object = new Line( geometry, this.material );
+		const line = new Line( geometry, this.material );
 
-		object.name = 'Line';
+		line.name = 'Line';
 
-		object.userData.is_selectable = false;
+		line.userData.is_selectable = false;
 
-		if ( this.line ) road.gameObject.remove( this.line );
-
-		this.line = object;
-
-		road.gameObject.add( this.line );
-
-		// this.cache.set( road.id, object );
+		SceneService.addHelper( line );
 	}
 
-	private convertToVector3 ( points: TvPosTheta[] ): Vector3[] {
+	private static convertToVector3 ( points: TvPosTheta[] ): Vector3[] {
 
 		const tmp: Vector3[] = [];
 

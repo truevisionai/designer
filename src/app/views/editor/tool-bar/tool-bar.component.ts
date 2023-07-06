@@ -70,8 +70,8 @@ export class ToolBarComponent implements OnInit {
 		},
 		{
 			id: 'showRoadCircleTool',
-			label: 'RoadCircle',
-			class: 'toolbar-button border-right',
+			label: 'Circle',
+			class: 'toolbar-button',
 			toolType: ToolType.RoadCircle,
 			action: 'road-circle-tool',
 			icon: 'trip_origin',
@@ -80,6 +80,19 @@ export class ToolBarComponent implements OnInit {
 			track: 'button',
 			tooltip: 'Road Circle Tool',
 			click: () => this.setToolType( ToolType.RoadCircle )
+		},
+		{
+			id: 'showRoadElevationTool',
+			label: 'Elevation',
+			class: 'toolbar-button border-right',
+			toolType: ToolType.RoadElevation,
+			action: 'road-Elevation-tool',
+			icon: 'height',
+			title: 'ROAD-Elevation-TITLE',
+			description: 'ROAD-Elevation-DESCRIPTION',
+			track: 'button',
+			tooltip: 'Road Elevation Tool',
+			click: () => this.setToolType( ToolType.RoadElevation )
 		},
 		{
 			id: 'showLaneTool',

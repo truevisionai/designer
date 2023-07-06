@@ -18,8 +18,9 @@ import { TvLaneWidth } from './tv-lane-width';
 import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { Copiable } from 'app/core/services/property-copy.service';
 
-export class TvLane implements ISelectable {
+export class TvLane implements ISelectable, Copiable {
 
 	public readonly uuid: string;
 
@@ -48,6 +49,8 @@ export class TvLane implements ISelectable {
 	private lastAddedLaneHeight: number;
 	private _laneSection: TvLaneSection;
 
+	public travelDirection: TravelDirection;
+
 	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, laneSection?: TvLaneSection ) {
 
 		this._side = laneSide;
@@ -58,6 +61,16 @@ export class TvLane implements ISelectable {
 		this.attr_level = level;
 		this.roadId = roadId;
 		this._laneSection = laneSection;
+
+		if ( this.side === TvLaneSide.LEFT ) {
+			this.travelDirection = TravelDirection.backward;
+		} else if ( this.side === TvLaneSide.RIGHT ) {
+			this.travelDirection = TravelDirection.forward;
+		} else if ( this.side === TvLaneSide.CENTER ) {
+			this.travelDirection = TravelDirection.undirected;
+		} else {
+			this.travelDirection = TravelDirection.undirected;
+		}
 	}
 
 	isSelected: boolean;
@@ -231,27 +244,9 @@ export class TvLane implements ISelectable {
 		return this._laneSection?.id;
 	}
 
-	get direction () {
+	get direction () { return this.travelDirection; }
 
-		if ( this.side === TvLaneSide.LEFT ) {
-
-			return TravelDirection.backward;
-
-		} else if ( this.side === TvLaneSide.RIGHT ) {
-
-			return TravelDirection.forward;
-
-		} else if ( this.side === TvLaneSide.CENTER ) {
-
-			return TravelDirection.undirected;
-
-		} else {
-
-			return TravelDirection.undirected;
-
-		}
-
-	}
+	set direction ( value: TravelDirection ) { this.travelDirection = value }
 
 	get sideAsString (): string {
 
@@ -290,6 +285,9 @@ export class TvLane implements ISelectable {
 		return this.attr_level;
 	}
 
+	set level ( value ) {
+		this.attr_level = value;
+	}
 
 	//
 	// Methods used to add child records to the respective lane records
@@ -1237,6 +1235,15 @@ export class TvLane implements ISelectable {
 
 		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
+	}
+
+	copyProperties?(): Object {
+
+		return {
+			travelDirection: this.travelDirection,
+			type: this.type,
+			level: this.level,
+		}
 	}
 }
 

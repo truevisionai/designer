@@ -12,6 +12,8 @@ import { IComponent } from '../../../core/game-object';
 import { TvMapBuilder } from '../../../modules/tv-map/builders/tv-map-builder';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { Vector3 } from 'three';
+import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -46,6 +48,10 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 	get controlPoint (): RoadControlPoint {
 		return this.data.controlPoint;
+	}
+
+	get controlPointPosition (): Vector3 {
+		return this.controlPoint?.position.clone();
 	}
 
 	get node (): RoadNode {
@@ -145,5 +151,11 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
 
 		)
+	}
+
+	onControlPointChanged ( $controlPoint: Vector3 ) {
+
+		CommandHistory.execute( new UpdateRoadPointCommand( this.road, this.controlPoint, $controlPoint, this.controlPoint.position ) );
+
 	}
 }

@@ -1,6 +1,7 @@
 export enum ToolType {
 	Road,
 	RoadCircle,
+	RoadElevation,
 	Maneuver,
 	LaneWidth,
 	LaneOffset,

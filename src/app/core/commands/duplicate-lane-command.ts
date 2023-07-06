@@ -11,36 +11,36 @@ import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 
-export class AddLaneCommand extends BaseCommand {
+export class DuplicateLaneCommand extends BaseCommand {
 
 	private road: TvRoad;
 
 	private laneSection: TvLaneSection;
 
-	private lane: TvLane;
+	private newLane: TvLane;
 
-	constructor ( lane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
+	constructor ( oldLane: TvLane, private laneHelper: OdLaneReferenceLineBuilder ) {
 
 		super();
 
-		this.lane = lane.clone();
+		this.newLane = oldLane.clone();
 
-		this.road = this.map.getRoadById( lane.roadId );
+		this.road = this.map.getRoadById( oldLane.roadId );
 
-		this.laneSection = this.road.getLaneSectionById( lane.laneSectionId );
+		this.laneSection = this.road.getLaneSectionById( oldLane.laneSectionId );
 
 	}
 
 	execute (): void {
 
-		this.laneSection.addLaneInstance( this.lane, true );
+		this.laneSection.addLaneInstance( this.newLane, true );
 
 		this.rebuild();
 	}
 
 	undo (): void {
 
-		this.laneSection.removeLaneById( this.lane.id );
+		this.laneSection.removeLaneById( this.newLane.id );
 
 		this.rebuild();
 

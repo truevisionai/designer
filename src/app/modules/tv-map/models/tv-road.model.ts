@@ -39,6 +39,7 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -314,13 +315,38 @@ export class TvRoad {
 
 		if ( index > this.getElevationCount() ) {
 
-			this.elevationProfile.elevation.push( new TvElevation( s, a, b, c, d ) );
+			this.addElevationInstance( new TvElevation( s, a, b, c, d ) );
 
 		} else {
 
 			this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
 
 		}
+	}
+
+	addElevationInstance ( elevation: TvElevation ) {
+
+		this.elevationProfile.elevation.push( elevation );
+
+		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
+
+	}
+
+	removeElevationInstance ( elevation: TvElevation ) {
+
+		const index = this.elevationProfile.elevation.indexOf( elevation );
+
+		if ( index > -1 ) {
+
+			this.elevationProfile.elevation.splice( index, 1 );
+
+		}
+
+		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
 	}
 
 	checkElevationInterval ( s: number ): number {
@@ -1345,6 +1371,52 @@ export class TvRoad {
 
 	}
 
+	showElevationNodes () {
+
+		this.getElevationProfile().getElevations().forEach( elevation => {
+
+			if ( elevation.node ) {
+
+				elevation.node.visible = true;
+
+			} else {
+
+				elevation.node = new RoadElevationNode( this, elevation );
+
+			}
+
+			SceneService.add( elevation.node );
+
+		} );
+
+	}
+
+	updateElevationNodes () {
+
+		this.getElevationProfile().getElevations().forEach( elevation => {
+
+			elevation.node?.updateValuesAndPosition();
+
+		} );
+
+	}
+
+	hideElevationNodes () {
+
+		this.getElevationProfile().getElevations().forEach( elevation => {
+
+			if ( elevation.node ) {
+
+				elevation.node.visible = false;
+
+			}
+
+			SceneService.remove( elevation.node );
+
+		} );
+
+	}
+
 	private computeLaneSectionLength () {
 
 		this.computeLaneSectionCoordinates();
@@ -1368,7 +1440,7 @@ export class TvRoad {
 		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
 	}
 
-	private getElevationAt ( s: number ): TvElevation {
+	getElevationAt ( s: number ): TvElevation {
 
 		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
 
