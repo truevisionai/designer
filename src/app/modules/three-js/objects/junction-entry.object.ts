@@ -75,12 +75,12 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 
 	}
 
-	get isEntry () {
+	get isEntry (): boolean {
 		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
 			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.START );
 	}
 
-	get isExit () {
+	get isExit (): boolean {
 		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
 			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.END );
 	}

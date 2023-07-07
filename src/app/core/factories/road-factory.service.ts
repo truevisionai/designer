@@ -45,6 +45,10 @@ export class RoadFactory {
 
 		const connectingRoad = this.map.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
 
+		connectingRoad.setPredecessor( 'road', entry.road.id, entry.contact );
+
+		connectingRoad.setSuccessor( 'road', exit.road.id, exit.contact );
+
 		connectingRoad.spline = spline;
 
 		connectingRoad.updateGeometryFromSpline();

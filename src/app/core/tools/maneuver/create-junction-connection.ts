@@ -51,6 +51,10 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
+		this.entry.road.setSuccessor( 'junction', this.junction.id );
+
+		this.exit.road.setPredecessor( 'junction', this.junction.id );
+
 		this.selectJunctionCommand.execute();
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
@@ -65,6 +69,10 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.removeLink( this.laneLink );
 
+		this.entry.road.setSuccessor( null, null );
+
+		this.exit.road.setPredecessor( null, null );
+
 		this.selectJunctionCommand.undo();
 
 		this.map.removeRoad( this.connectingRoad );
@@ -78,6 +86,10 @@ export class CreateJunctionConnection extends BaseCommand {
 		if ( this.connectionCreated ) this.junction.addConnection( this.connection );
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
+
+		this.entry.road.setSuccessor( 'junction', this.junction.id );
+
+		this.exit.road.setPredecessor( 'junction', this.junction.id );
 
 		this.selectJunctionCommand.execute();
 
