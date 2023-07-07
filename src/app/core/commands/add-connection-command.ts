@@ -36,7 +36,7 @@ export class AddConnectionCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.connectingRoad = this.tool.createConnectingRoad( this.entry, this.exit, TvLaneSide.RIGHT, this.junction );
+		this.connectingRoad = RoadFactory.createConnectingRoad( this.entry, this.exit, TvLaneSide.RIGHT, this.junction );
 
 		const result = this.tool.createConnections( this.junction, this.entry, this.connectingRoad, this.exit );
 

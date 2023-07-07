@@ -238,6 +238,13 @@ export class TvRoad {
 
 			this._predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
+		} else {
+
+			this._predecessor.elementType = elementType;
+			this._predecessor.elementId = elementId;
+			this._predecessor.contactPoint = contactPoint;
+
+
 		}
 	}
 
@@ -275,6 +282,12 @@ export class TvRoad {
 		if ( this._successor == null ) {
 
 			this._successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+
+		} else {
+
+			this._successor.elementType = elementType;
+			this._successor.elementId = elementId;
+			this._successor.contactPoint = contactPoint;
 
 		}
 	}

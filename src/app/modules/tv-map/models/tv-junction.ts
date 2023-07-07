@@ -17,6 +17,12 @@ export class TvJunction {
 	private lastAddedJunctionPriorityIndex: number;
 	private lastAddedJunctionControllerIndex: number;
 
+	private _name: string;
+	private _id: number;
+	private _priorities: TvJunctionPriority[] = [];
+	private _controllers: TvJunctionController[] = [];
+	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
+
 	static counter: number = 1;
 
 	constructor ( name: string, id: number ) {
@@ -31,8 +37,6 @@ export class TvJunction {
 		return new TvJunction( name || `Junction-${ id }`, id );
 	}
 
-	private _priorities: TvJunctionPriority[] = [];
-
 	get priorities (): TvJunctionPriority[] {
 		return this._priorities;
 	}
@@ -40,8 +44,6 @@ export class TvJunction {
 	set priorities ( value: TvJunctionPriority[] ) {
 		this._priorities = value;
 	}
-
-	private _controllers: TvJunctionController[] = [];
 
 	get controllers (): TvJunctionController[] {
 		return this._controllers;
@@ -51,8 +53,6 @@ export class TvJunction {
 		this._controllers = value;
 	}
 
-	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
-
 	get connections (): Map<number, TvJunctionConnection> {
 		return this._connections;
 	}
@@ -61,7 +61,9 @@ export class TvJunction {
 		this._connections = value;
 	}
 
-	private _name: string;
+	getConnections (): TvJunctionConnection[] {
+		return Array.from( this.connections.values() );
+	}
 
 	get name (): string {
 		return this._name;
@@ -70,8 +72,6 @@ export class TvJunction {
 	set name ( value: string ) {
 		this._name = value;
 	}
-
-	private _id: number;
 
 	get id (): number {
 		return this._id;
@@ -89,7 +89,7 @@ export class TvJunction {
 	 * @param connectingRoad ID of the connecting path
 	 * @param contactPoint Contact point on the connecting road (start or end)
 	 */
-	public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad? ): TvJunctionConnection {
+	public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad?): TvJunctionConnection {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
@@ -248,12 +248,6 @@ export class TvJunction {
 
 	}
 
-	public getConnections () {
-
-		return Array.from( this.connections.values() );
-
-	}
-
 	public getJunctionPriority ( index: number ) {
 
 		if ( index < this._priorities.length && this._priorities.length > 0 ) {
@@ -380,36 +374,28 @@ export class TvJunction {
 		}
 	}
 
-	private addJunctionRelation ( road: TvRoad ): void {
+	/**
+	 * Checks if the junction has a connection to the given road
+	 * @param road
+	 * @returns boolean
+	 */
+	public hasConnection ( road: TvRoad ): boolean {
 
-		// let hasConnections = false;
+		return this.findConnection( road ) !== undefined;
 
-		// for ( const connection of this.connections ) {
-
-		//     if ( connection[ 1 ].incomingRoad === road.id ) {
-
-		//         hasConnections = true;
-
-		//     } else if ( connection[ 1 ].outgoingRoad === road.id ) {
-
-		//         hasConnections = true;
-
-		//     }
-		// }
-
-		// if ( !hasConnections ) {
-
-		//     if ( road.successor && road.successor.elementType === "junction" && road.successor.elementId === this.id ) {
-
-		//         road.setSuccessor();
-
-		//     } else if ( road.predecessor && road.predecessor.elementType === "junction" && road.predecessor.elementId === this.id ) {
-
-		//         road.predecessor = null;
-
-		//     }
-
-		// }
 	}
+
+	/**
+	 * Find the connection to the given road
+	 * @param road
+	 * @returns {TvJunctionConnection}
+	 */
+	public findConnection ( road: TvRoad ): TvJunctionConnection {
+
+		return this.getConnections()
+			.find( connection => connection.incomingRoad === road.id );
+
+	}
+
 }
 
