@@ -84,8 +84,6 @@ export class ScenarioDirectorService {
 
 		if ( this.logEvents ) console.info( 'scenario-stopped' );
 
-		this.startScenario();
-
 		this.resetScenario();
 	}
 

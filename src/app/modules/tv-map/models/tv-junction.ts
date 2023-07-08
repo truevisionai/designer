@@ -89,9 +89,14 @@ export class TvJunction {
 	 * @param connectingRoad ID of the connecting path
 	 * @param contactPoint Contact point on the connecting road (start or end)
 	 */
-	public addJunctionConnection ( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad?): TvJunctionConnection {
+	public addJunctionConnection (
+		id: number,
+		incomingRoad: number,
+		connectingRoad: number,
+		contactPoint: TvContactPoint
+	): TvJunctionConnection {
 
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
 		this._connections.set( id, connection );
 
@@ -109,14 +114,11 @@ export class TvJunction {
 		incomingRoad: number,
 		connectingRoad: number,
 		contactPoint: TvContactPoint,
-		outgoingRoad?: number
 	): TvJunctionConnection {
 
 		const id = this.connections.size + 1;
 
-		const connection = this.addJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
-
-		return connection;
+		return this.addJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 	}
 
 	removeConnectionByUuid ( uuid: string ) {
@@ -327,11 +329,11 @@ export class TvJunction {
 
 			if ( laneId ) {
 
-				return ( connection.incomingRoad === incomingRoadId && connection.getToLaneId( laneId ) );
+				return ( connection.incomingRoadId === incomingRoadId && connection.getToLaneId( laneId ) );
 
 			} else {
 
-				return ( connection.incomingRoad === incomingRoadId );
+				return ( connection.incomingRoadId === incomingRoadId );
 
 			}
 
@@ -348,11 +350,11 @@ export class TvJunction {
 
 		for ( const connection of this.connections ) {
 
-			if ( connection[ 1 ].incomingRoad === road.id ) {
+			if ( connection[ 1 ].incomingRoadId === road.id ) {
 
 				hasConnections = true;
 
-			} else if ( connection[ 1 ].outgoingRoad === road.id ) {
+			} else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
 
 				hasConnections = true;
 
@@ -376,24 +378,29 @@ export class TvJunction {
 
 	/**
 	 * Checks if the junction has a connection to the given road
-	 * @param road
+	 *
+	 * @param incomingRoad
+	 * @param outgoingRoad
 	 * @returns boolean
 	 */
-	public hasConnection ( road: TvRoad ): boolean {
+	public hasConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
 
-		return this.findConnection( road ) !== undefined;
+		return this.findConnection( incomingRoad, outgoingRoad ) !== undefined;
 
 	}
 
 	/**
-	 * Find the connection to the given road
-	 * @param road
+	 * Find the connection to the given incoming and outgoing road
+	 *
+	 * @param incomingRoad
+	 * @param outgoingRoad
 	 * @returns {TvJunctionConnection}
 	 */
-	public findConnection ( road: TvRoad ): TvJunctionConnection {
+	public findConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
 
-		return this.getConnections()
-			.find( connection => connection.incomingRoad === road.id );
+		return this.getConnections().find( conn =>
+			conn.incomingRoadId === incomingRoad.id && conn.outgoingRoad.id === incomingRoad.id
+		);
 
 	}
 
