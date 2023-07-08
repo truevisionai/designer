@@ -333,7 +333,7 @@ export class TvMap {
 
 			connection = junction.getRandomConnectionFor( road.id );
 
-			return this.getRoadById( connection.connectingRoad );
+			return connection?.connectingRoad;
 
 		} else {
 
@@ -357,5 +357,31 @@ export class TvMap {
 
 	removeJunction ( junction: TvJunction ) {
 		this._junctions.delete( junction.id );
+	}
+
+	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
+
+		for ( const junction of this.getJunctions() ) {
+
+			const connections = junction.getConnections();
+
+			for ( let i = 0; i < connections.length; i++ ) {
+
+				const connection = connections[ i ];
+				const connectingRoad = this.getRoadById( connection.connectingRoadId );
+
+				if ( connection.incomingRoadId === incoming.id || connection.incomingRoadId === outgoing.id ) {
+					return junction;
+				}
+
+				if ( connectingRoad?.predecessor.elementId === incoming.id ) {
+					return junction;
+				}
+
+				if ( connectingRoad?.successor.elementId === outgoing.id ) {
+					return junction;
+				}
+			}
+		}
 	}
 }

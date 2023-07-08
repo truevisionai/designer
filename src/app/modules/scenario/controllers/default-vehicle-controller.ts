@@ -35,7 +35,7 @@ export class DefaultVehicleController extends AbstractController {
 			const junction = map.getJunctionById( successor.elementId );
 			const connection = junction.getRandomConnectionFor( currentRoad.id );
 
-			nextRoad = map.getRoadById( connection.connectingRoad );
+			nextRoad = connection.connectingRoad;
 		}
 
 		return nextRoad;
@@ -92,7 +92,7 @@ export class DefaultVehicleController extends AbstractController {
 
 						contactPoint = connection.contactPoint;
 
-						nextRoad = this.map.getRoadById( connection.connectingRoad );
+						nextRoad = connection.connectingRoad;
 						nextLaneId = connection.getToLaneId( currentLaneId );
 					}
 
@@ -154,7 +154,7 @@ export class DefaultVehicleController extends AbstractController {
 
 					contactPoint = connection.contactPoint;
 
-					nextRoad = this.map.getRoadById( connection.connectingRoad );
+					nextRoad = connection.connectingRoad;
 					nextLaneId = connection.getToLaneId( currentLaneId );
 				}
 

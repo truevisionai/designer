@@ -240,6 +240,10 @@ export class TvLane implements ISelectable, Copiable {
 		this.setPredecessor( laneId );
 	}
 
+	set successor ( laneId: number ) {
+		this.setSuccessor( laneId );
+	}
+
 	get laneSectionId () {
 		return this._laneSection?.id;
 	}

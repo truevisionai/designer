@@ -4,6 +4,7 @@
 
 import { MathUtils } from 'three';
 import { TvConsole } from '../../../core/utils/console';
+import { TvMapQueries } from '../queries/tv-map-queries';
 import { TvContactPoint } from './tv-common';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvRoad } from './tv-road.model';
@@ -16,14 +17,40 @@ export class TvJunctionConnection {
 
 	private lastAddedJunctionLaneLinkIndex: number;
 
+	private static counter = 1;
+
 	constructor (
 		public id: number,
-		public incomingRoad: number,
-		public connectingRoad: number,
+		public incomingRoadId: number,
+		public connectingRoadId: number,
 		public contactPoint: TvContactPoint,
-		public outgoingRoad?: number
 	) {
 		this.uuid = MathUtils.generateUUID();
+	}
+
+	get connectingRoad (): TvRoad {
+		return TvMapQueries.findRoadById( this.connectingRoadId );
+	}
+
+	get incomingRoad (): TvRoad {
+		return TvMapQueries.findRoadById( this.incomingRoadId );
+	}
+
+	get outgoingRoad (): TvRoad {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return TvMapQueries.findRoadById( this.connectingRoad?.successor.elementId );
+
+		} else if ( this.contactPoint == TvContactPoint.END ) {
+
+			return TvMapQueries.findRoadById( this.connectingRoad?.predecessor.elementId );
+
+		} else {
+
+			throw new Error( 'Invalid contact point' );
+
+		}
 	}
 
 	/**
@@ -130,13 +157,8 @@ export class TvJunctionConnection {
 
 	}
 
-	static create (
-		incomingRoad: number,
-		connectingRoad: number,
-		contactPoint: TvContactPoint,
-		outgoingRoad?: number
-	) {
-		return new TvJunctionConnection( -1, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
+	static create ( incomingRoad: number, connectingRoad: number, contactPoint: TvContactPoint ) {
+		return new TvJunctionConnection( TvJunctionConnection.counter++, incomingRoad, connectingRoad, contactPoint );
 	}
 
 	removeLink ( laneLink: TvJunctionLaneLink ) {
@@ -156,3 +178,4 @@ export class TvJunctionConnection {
 
 	}
 }
+

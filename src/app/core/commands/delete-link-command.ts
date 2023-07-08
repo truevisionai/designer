@@ -30,7 +30,7 @@ export class DeleteLinkCommand extends BaseCommand {
 		if ( index === -1 ) SnackBar.error( 'Link index not found' );
 		if ( index === -1 ) return;
 
-		this.connectingRoad = this.map.getRoadById( this.connection.connectingRoad );
+		this.connectingRoad = this.connection.connectingRoad;
 
 		this.map.removeRoad( this.connectingRoad );
 

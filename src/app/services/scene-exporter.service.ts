@@ -366,8 +366,8 @@ export class SceneExporterService {
 	static exportJunctionConnection ( connection: TvJunctionConnection ) {
 		return {
 			attr_id: connection.id,
-			attr_incomingRoad: connection.incomingRoad,
-			attr_connectingRoad: connection.connectingRoad,
+			attr_incomingRoad: connection.incomingRoadId,
+			attr_connectingRoad: connection.connectingRoadId,
 			attr_contactPoint: connection.contactPoint,
 			laneLink: connection.laneLink.map( link => {
 				return {

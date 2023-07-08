@@ -49,6 +49,17 @@ export class RoadFactory {
 
 		connectingRoad.setSuccessor( 'road', exit.road.id, exit.contact );
 
+		// TODO: test this
+		connectingRoad.laneSections.forEach( ( laneSection ) => {
+
+			laneSection.lanes.forEach( ( lane ) => {
+
+				lane.predecessor = entry.lane.id;
+				lane.successor = exit.lane.id;
+
+			} );
+		} )
+
 		connectingRoad.spline = spline;
 
 		connectingRoad.updateGeometryFromSpline();
