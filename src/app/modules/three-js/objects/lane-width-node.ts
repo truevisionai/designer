@@ -56,8 +56,8 @@ export class LaneWidthNode extends Group implements ISelectable {
 		const s = this.lane.laneSection.s + this.laneWidth.s;
 
 		const offset = this.laneWidth.getValue( this.laneWidth.s ) * 0.5;
-		const start = TvMapQueries.getLanePosition( road.id, lane.id, s, -offset );
-		const end = TvMapQueries.getLanePosition( road.id, lane.id, s, offset );
+		const start = TvMapQueries.getLaneCenterPosition( road.id, lane.id, s, -offset );
+		const end = TvMapQueries.getLaneCenterPosition( road.id, lane.id, s, offset );
 
 		this.point = AnyControlPoint.create( 'point', end );
 		this.point.tag = LaneWidthNode.pointTag;

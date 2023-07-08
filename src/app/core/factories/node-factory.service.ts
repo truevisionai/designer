@@ -77,8 +77,8 @@ export class NodeFactoryService {
 
 		}
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadCoord.s, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, roadCoord.s, offset );
+		const start = TvMapQueries.getLaneCenterPosition( node.roadId, node.laneId, roadCoord.s, -offset );
+		const end = TvMapQueries.getLaneCenterPosition( node.roadId, node.laneId, roadCoord.s, offset );
 
 
 		// TODO: can be improved
@@ -104,8 +104,8 @@ export class NodeFactoryService {
 
 		const offset = laneWidth.getValue( node.laneWidth.s ) * 0.5;
 
-		const start = TvMapQueries.getLanePosition( node.roadId, node.laneId, s, -offset );
-		const end = TvMapQueries.getLanePosition( node.roadId, node.laneId, s, offset );
+		const start = TvMapQueries.getLaneCenterPosition( node.roadId, node.laneId, s, -offset );
+		const end = TvMapQueries.getLaneCenterPosition( node.roadId, node.laneId, s, offset );
 
 		// TODO: can be improved
 		node.line.geometry.dispose();

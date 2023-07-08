@@ -35,7 +35,7 @@ export class LanePosition extends Position {
 
 		if ( this.roadId != 0 && this.roadId != null && this.laneId != null && this.sCoordinate != null ) {
 
-			return TvMapQueries.getLanePosition( this.roadId, this.laneId, this.sCoordinate, this.offset );
+			return TvMapQueries.getLaneCenterPosition( this.roadId, this.laneId, this.sCoordinate, this.offset );
 
 		} else {
 

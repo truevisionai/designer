@@ -907,7 +907,7 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 				this.laneDirectionHelper.drawSingleLane( road, lane );
 
-				const position = TvMapQueries.getLanePosition( road.id, lane.id, 0 );
+				const position = TvMapQueries.getLaneCenterPosition( road.id, lane.id, 0 );
 
 				const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.START }`;
 
@@ -930,7 +930,7 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 				this.laneDirectionHelper.drawSingleLane( road, lane );
 
-				const position = TvMapQueries.getLanePosition( road.id, lane.id, road.length );
+				const position = TvMapQueries.getLaneCenterPosition( road.id, lane.id, road.length );
 
 				const name = `road-${ road.id }-lane-${ lane.id }-${ TvContactPoint.END }`;
 

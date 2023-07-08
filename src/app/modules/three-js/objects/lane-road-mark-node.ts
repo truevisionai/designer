@@ -33,7 +33,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		const offset = this.lane.getWidthValue( s ) * 0.5;
 
-		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, s, offset );
+		const position = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, s, offset );
 
 		this.point = AnyControlPoint.create( 'point', position );
 
@@ -95,7 +95,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		const offset = this.lane.getWidthValue( adjustedS ) * 0.5;
 
-		const finalPosition = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
+		const finalPosition = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
 
 		this.point.copyPosition( finalPosition );
 	}

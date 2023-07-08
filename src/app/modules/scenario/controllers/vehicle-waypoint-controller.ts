@@ -36,7 +36,7 @@ export class VehicleWaypointController extends AbstractController {
 
 		for ( let s = this.entity.sCoordinate; s < currentRoad.length; s++ ) {
 
-			const position = TvMapQueries.getLanePosition( this.entity.roadId, this.entity.laneId, s, this.entity.laneOffset, refPos );
+			const position = TvMapQueries.getLaneCenterPosition( this.entity.roadId, this.entity.laneId, s, this.entity.laneOffset, refPos );
 
 			this.waypoints.push( position );
 
