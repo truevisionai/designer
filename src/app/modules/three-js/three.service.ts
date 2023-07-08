@@ -54,6 +54,10 @@ export class ThreeService implements IEngine {
 		return this.cameras[ this.currentCameraIndex ];
 	}
 
+	public get scene () {
+		return SceneService.scene;
+	}
+
 	setupScene ( canvas: HTMLCanvasElement, renderer: WebGLRenderer ): void {
 
 		this.canvas = canvas;
