@@ -10,11 +10,11 @@ export interface ISnappable {
 	snap ( strategy: ISnapStrategy ): void;
 }
 
-export interface IMovable extends Object3D {
+export interface IMovable {
 	move ( position: Vector3 ): void;
 }
 
-export interface IHasLane extends Object3D {
+export interface IHasLane {
 	lane: TvLane;
 }
 
@@ -22,7 +22,7 @@ export interface IHasSCoord {
 	s: number;
 }
 
-export interface IHasRoad extends Object3D {
+export interface IHasRoad {
 	road: TvRoad;
 }
 
