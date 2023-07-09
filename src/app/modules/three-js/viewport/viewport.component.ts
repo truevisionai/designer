@@ -211,16 +211,16 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
 
 		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
 		}
 
 		// TODO: no need to find intersections on mouse move
 		return;
 
-		this.findIntersections( false );
+		this.findIntersections( event, false );
 
 		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
 		} else {
 			// this.eventSystem.pointerMoved.emit( { point: new THREE.Vector3 } );
 		}
@@ -253,7 +253,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( this.intersections.length > 0 ) {
 
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
 
 		}
 	}
@@ -268,7 +268,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 			// left
 			case 0:
 				this.fireSelectionEvents();
-				this.fireClickedEvent( event.button );
+				this.fireClickedEvent( event );
 				break;
 
 			// middle click
@@ -285,7 +285,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseDown ( event: MouseEvent ) {
 
-		this.findIntersections( true );
+		this.findIntersections( event, true );
 
 		event.preventDefault();
 
@@ -298,13 +298,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.fireSelectionEvents();
 				if ( this.intersections.length > 0 ) {
 					this.eventSystem.pointerDown.emit(
-						this.preparePointerData( event.button, this.intersections[ 0 ] )
+						this.preparePointerData( event, this.intersections[ 0 ] )
 					);
 					if ( this.intersections[ 0 ].object?.type === 'Points' ) {
 						this.threeService.disableControls();
 					}
 				} else {
-					this.eventSystem.pointerDown.emit( this.preparePointerData( event.button, null ) );
+					this.eventSystem.pointerDown.emit( this.preparePointerData( event, null ) );
 					this.threeService.enableControls();
 				}
 				break;
@@ -316,7 +316,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			// right
 			case 2:
-				this.eventSystem.pointerDown.emit( this.preparePointerData( event.button, null ) );
+				this.eventSystem.pointerDown.emit( this.preparePointerData( event, null ) );
 				break;
 
 		}
@@ -342,11 +342,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( this.intersections.length > 0 ) {
 
-			this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerUp.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
 
 		} else {
 
-			this.eventSystem.pointerUp.emit( this.preparePointerData( event.button, null ) );
+			this.eventSystem.pointerUp.emit( this.preparePointerData( event, null ) );
 
 		}
 
@@ -399,15 +399,15 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.updateMousePosition( $event );
 
-		this.findIntersections();
+		this.findIntersections($event);
 
-		this.eventSystem.drop.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
 
 		let position = null;
 
 		if ( this.intersections.length > 0 ) {
 
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
 
 			position = this.intersections[ 0 ].point;
 
@@ -474,19 +474,19 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	fireClickedEvent ( button: number ): any {
+	fireClickedEvent ( event: MouseEvent ): any {
 
 		if ( this.intersections.length > 0 ) {
 
 			this.eventSystem.pointerClicked.emit(
-				this.preparePointerData( button, this.intersections[ 0 ] )
+				this.preparePointerData( event, this.intersections[ 0 ] )
 			);
 
 		}
 
 	}
 
-	preparePointerData ( button: number, i: THREE.Intersection ): PointerEventData {
+	preparePointerData ( $event: MouseEvent, i: THREE.Intersection ): PointerEventData {
 
 		let p = new PointerEventData();
 
@@ -503,6 +503,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.intersections = this.intersections;
 			p.camera = this.threeService.camera;
 			p.mouse = this.mouse;
+			p.mouseEvent = $event;
 
 			p.approxCameraDistance = this.calculateCameraDistance( i );
 
@@ -516,11 +517,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// ADDITIONAL
-		if ( button == 0 ) {
+		if ( $event.button == 0 ) {
 			p.button = MouseButton.LEFT;
-		} else if ( button == 1 ) {
+		} else if ( $event.button == 1 ) {
 			p.button = MouseButton.MIDDLE;
-		} else if ( button == 2 ) {
+		} else if ( $event.button == 2 ) {
 			p.button = MouseButton.RIGHT;
 		}
 
@@ -589,7 +590,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	findIntersections ( recursive: boolean = true ): void {
+	findIntersections ( event: MouseEvent, recursive: boolean = true ): void {
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
@@ -604,8 +605,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.intersections[ 0 ].object[ 'detectRaycast' ] == true
 			) {
 
-				this.eventSystem.pointerExit.emit( this.preparePointerData( 0, this.lastIntersection ) );
-				this.eventSystem.pointerEnter.emit( this.preparePointerData( 0, this.intersections[ 0 ] ) );
+				this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
+				this.eventSystem.pointerEnter.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
 
 			}
 
@@ -628,7 +629,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			if ( this.lastIntersection != null ) {
 
-				this.eventSystem.pointerExit.emit( this.preparePointerData( 0, this.lastIntersection ) );
+				this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
 
 			}
 

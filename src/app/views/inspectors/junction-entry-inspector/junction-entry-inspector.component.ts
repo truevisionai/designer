@@ -4,7 +4,9 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
+import { JunctionFactory } from 'app/core/factories/junction.factory';
 import { IComponent } from 'app/core/game-object';
+import { CreateJunctionConnection } from 'app/core/tools/maneuver/create-junction-connection';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 
 @Component( {
@@ -14,7 +16,7 @@ import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry
 } )
 export class JunctionEntryInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	data: JunctionEntryObject;
+	data: JunctionEntryObject | JunctionEntryObject[];
 
 	constructor () {
 
@@ -22,15 +24,29 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 
 	}
 
+	get items() {
+
+		return this.data as JunctionEntryObject[];
+
+	}
+
+	get hasMultipleSelected () { return this.data && Array.isArray( this.data ) && this.data.length > 1; }
+
 	ngOnInit () {
 
-		if ( this.data ) this.data.select();
 
 	}
 
 	ngOnDestroy (): void {
 
-		if ( this.data ) this.data.unselect();
+
+	}
+
+	createJunction () {
+
+		if ( !this.hasMultipleSelected ) return;
+
+		JunctionFactory.mergeEntries( this.data as JunctionEntryObject[] );
 
 	}
 }

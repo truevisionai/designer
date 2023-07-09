@@ -98,59 +98,59 @@ export class ThreeService implements IEngine {
 
 	createTransformControls (): void {
 
-		const self: ThreeService = this;
+		// const self: ThreeService = this;
 
-		this.transformControls = new TransformControls( this.camera, this.canvas );
+		// this.transformControls = new TransformControls( this.camera, this.canvas );
 
-		this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
+		// this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
 
-			ThreeService.controls.enabled = !event.value;
+		// 	ThreeService.controls.enabled = !event.value;
 
-		} );
+		// } );
 
-		this.transformControls.addEventListener( 'mouseDown', () => {
+		// this.transformControls.addEventListener( 'mouseDown', () => {
 
-			var object = self.transformControls.object;
-
-
-			this.objectPositionOnDown = object.position.clone();
-			// this.objectRotationOnDown = object.rotation.clone();
-			// this.objectScaleOnDown = object.scale.clone();
-
-			ThreeService.controls.enabled = false;
-
-		} );
-
-		this.transformControls.addEventListener( 'mouseUp', function () {
-
-			var object = self.transformControls.object;
-
-			if ( object !== undefined ) {
-
-				switch ( self.transformControls.getMode() ) {
-
-					case 'translate':
-
-						if ( !self.objectPositionOnDown.equals( object.position ) ) {
-
-							CommandHistory.execute( new SetPositionCommand( object, object.position, self.objectPositionOnDown ) );
-
-						}
-
-						break;
-
-					default:
-						break;
-				}
-
-			}
-
-			ThreeService.controls.enabled = true;
-
-		} );
+		// 	var object = self.transformControls.object;
 
 
-		SceneService.addHelper( this.transformControls );
+		// 	this.objectPositionOnDown = object.position.clone();
+		// 	// this.objectRotationOnDown = object.rotation.clone();
+		// 	// this.objectScaleOnDown = object.scale.clone();
+
+		// 	ThreeService.controls.enabled = false;
+
+		// } );
+
+		// this.transformControls.addEventListener( 'mouseUp', function () {
+
+		// 	var object = self.transformControls.object;
+
+		// 	if ( object !== undefined ) {
+
+		// 		switch ( self.transformControls.getMode() ) {
+
+		// 			case 'translate':
+
+		// 				if ( !self.objectPositionOnDown.equals( object.position ) ) {
+
+		// 					CommandHistory.execute( new SetPositionCommand( object, object.position, self.objectPositionOnDown ) );
+
+		// 				}
+
+		// 				break;
+
+		// 			default:
+		// 				break;
+		// 		}
+
+		// 	}
+
+		// 	ThreeService.controls.enabled = true;
+
+		// } );
+
+
+		// SceneService.addHelper( this.transformControls );
 
 	}
 
@@ -181,7 +181,7 @@ export class ThreeService implements IEngine {
 
 		this.createGridHelper();
 
-		this.createTransformControls();
+		// this.createTransformControls();
 
 		this.createBackgroundPlaneForClicks();
 
@@ -429,13 +429,13 @@ export class ThreeService implements IEngine {
 
 	public select ( obj: Object3D ) {
 
-		this.transformControls.attach( obj );
+		// this.transformControls.attach( obj );
 
 	}
 
 	public deselect () {
 
-		this.transformControls.detach();
+		// this.transformControls.detach();
 
 	}
 
@@ -455,8 +455,8 @@ export class ThreeService implements IEngine {
 
 		}
 
-		this.transformControls.detach();
-		this.transformControls.object = this.camera;
+		// this.transformControls.detach();
+		// this.transformControls.object = this.camera;
 
 		ThreeService.controls.setCamera( this.camera );
 

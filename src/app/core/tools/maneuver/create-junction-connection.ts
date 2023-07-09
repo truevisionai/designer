@@ -40,7 +40,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLink = laneLink || this.createLaneLink( this.entry );
 
-		this.selectJunctionCommand = new SelectPointCommand( tool, null );
+		// this.selectJunctionCommand = new SelectPointCommand( tool, null );
 	}
 
 	execute (): void {
@@ -55,7 +55,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.exit.road.setPredecessor( 'junction', this.junction.id );
 
-		this.selectJunctionCommand.execute();
+		this.selectJunctionCommand?.execute();
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 
@@ -73,7 +73,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.exit.road.setPredecessor( null, null );
 
-		this.selectJunctionCommand.undo();
+		this.selectJunctionCommand?.undo();
 
 		this.map.removeRoad( this.connectingRoad );
 
@@ -91,7 +91,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.exit.road.setPredecessor( 'junction', this.junction.id );
 
-		this.selectJunctionCommand.execute();
+		this.selectJunctionCommand?.execute();
 
 		this.map.addRoadInstance( this.connectingRoad );
 
