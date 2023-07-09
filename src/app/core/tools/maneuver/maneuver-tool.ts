@@ -25,6 +25,8 @@ import { CreateJunctionConnection } from './create-junction-connection';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { AppService } from 'app/core/services/app.service';
+import { AppInspector } from 'app/core/inspector';
+import { JunctionEntryInspector } from 'app/views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 
 const DEFAULT_SIDE = TvLaneSide.RIGHT;
 
@@ -43,7 +45,9 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 	private roadChanged = false;
 
 	private junctionEntryObjects: JunctionEntryObject[] = [];
+
 	private lanePathObjects = [];
+	private selectedObjects = new Set<JunctionEntryObject>();
 
 	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
@@ -56,9 +60,11 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 	init () {
 
-		// this.selectionHelper = new SelectionHelper( AppService.three.renderer, 'selectBox' );
-		// this.selectionBox = new SelectionBox( AppService.three.camera, SceneService.scene );
+		// disable internal events of helper
+		this.selectionHelper = new SelectionHelper( AppService.three.renderer, 'selectBox' );
+		this.selectionHelper.dispose();
 
+		this.selectionBox = new SelectionBox( AppService.three.camera, SceneService.scene, 1 );
 
 	}
 
@@ -111,11 +117,42 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
-		// if ( shiftKeyDown ) {
+		if ( shiftKeyDown ) {
 
-		// 	this.selectionHelper.start( e );
+			this.selectionHelper.onSelectStart( e.mouseEvent );
 
-		// }
+			this.selectionHelper.isDown = true;
+
+			this.selectionBox.startPoint.set( e.mouse.x, e.mouse.y, 0.5 );
+
+		} else if ( this.selectionHelper.isDown ) {
+
+			this.selectionHelper.isDown = false;
+
+			this.selectionHelper.onSelectOver( null );
+
+			this.selectionBox.select()
+				.filter( i => i[ 'tag' ] == JunctionEntryObject.tag )
+				.forEach( ( object: any ) => {
+					if ( object instanceof JunctionEntryObject ) {
+						object.select();
+					}
+					this.selectedObjects.add( object );
+				} )
+
+			AppInspector.setInspector( JunctionEntryInspector, Array.from( this.selectedObjects ) );
+
+			console.log( 'selected', this.selectedObjects );
+
+		} else {
+
+			this.selectedObjects.forEach( object => object.unselect() );
+
+			this.selectedObjects.clear();
+
+			console.log( 'unselect all' );
+
+		}
 
 
 		if ( !shiftKeyDown ) return;
@@ -129,9 +166,9 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 	onPointerUp ( e: PointerEventData ) {
 
-		// if ( this.selectionHelper.isSelecting ) {
+		// if ( this.selectionHelper.isDown ) {
 
-		// 	this.selectionHelper.end( e )
+		// 	this.selectionHelper.onSelectOver( null );
 
 		// }
 
@@ -139,34 +176,32 @@ export class ManeuverTool extends BaseTool implements IToolWithPoint {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		// if ( this.selectionHelper.isSelecting ) {
+		if ( this.selectionHelper.isDown ) {
 
-		// 	this.selectionHelper.update( e );
+			// console.log( this.selectionBox.startPoint, this.selectionBox.endPoint );
 
-		// }
+			// this.selectionBox.collection
+			// 	.filter( i => i[ 'tag' ] == JunctionEntryObject.tag )
+			// 	.forEach( ( object: any ) => {
+			// 		if ( object instanceof JunctionEntryObject ) {
+			// 			object.unselect();
+			// 		}
+			// 	} )
 
-		// if ( BoxSelectionToolHelper.selectionHelper.isDown ) {
-		//
-		// 	BoxSelectionToolHelper.selectionBox.collection
-		// 		.filter( i => i[ 'tag' ] = JunctionEntryObject.tag )
-		// 		.forEach( ( object: any ) => {
-		// 			if ( object instanceof JunctionEntryObject ) {
-		// 				object.unselect();
-		// 			}
-		// 		} );
-		//
-		// 	BoxSelectionToolHelper.selectionBox.endPoint.set( e.mouse.x, e.mouse.y, 0.5 );
-		//
-		// 	const allSelected = BoxSelectionToolHelper.selectionBox.select();
-		//
-		// 	allSelected
-		// 		.filter( i => i[ 'tag' ] == JunctionEntryObject.tag )
-		// 		.forEach( ( object: any ) => {
-		// 			if ( object instanceof JunctionEntryObject ) {
-		// 				object.select();
-		// 			}
-		// 		} );
-		// }
+			this.selectionHelper.onSelectMove( e.mouseEvent );
+
+			this.selectionBox.endPoint.set( e.mouse.x, e.mouse.y, 0.5 );
+
+			this.selectionBox.select()
+				.filter( i => i[ 'tag' ] == JunctionEntryObject.tag )
+				.forEach( ( object: any ) => {
+					if ( object instanceof JunctionEntryObject ) {
+						object.select();
+					}
+					this.selectedObjects.add( object );
+				} )
+
+		}
 
 	}
 
