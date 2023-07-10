@@ -191,7 +191,7 @@ export class ToolBarComponent implements OnInit {
 			action: 'maneuver-tool',
 			icon: 'fullscreen_exit',
 			title: 'Maneuver Tool',
-			description: 'Tool to create/edit junction maneuvers <br/> Use LEFT CLICK to select junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver',
+			description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
 			track: 'button',
 			tooltip: 'Maneuver Tool',
 			click: () => this.setToolType( ToolType.Maneuver )
