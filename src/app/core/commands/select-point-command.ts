@@ -86,16 +86,14 @@ export class SelectPointsCommand extends BaseCommand {
 	constructor (
 		private tool: IToolWithPoints,
 		private newPoint: ISelectable[] = [],
-		inspector?: Type<IComponent>,
+		inspector: Type<IComponent> = null,
 		inspectorData: ISelectable[] = []
 	) {
 		super();
 
 		this.oldPoint = this.tool.getPoint();
 
-		if ( inspector ) {
-			this.setInspectorCommand = new SetInspectorCommand( inspector, inspectorData );
-		}
+		this.setInspectorCommand = new SetInspectorCommand( inspector, inspectorData );
 	}
 
 	execute () {

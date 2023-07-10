@@ -16,21 +16,13 @@ import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry
 } )
 export class JunctionEntryInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	data: JunctionEntryObject | JunctionEntryObject[];
+	data: JunctionEntryObject[] = [];
 
 	constructor () {
 
 		super();
 
 	}
-
-	get items() {
-
-		return this.data as JunctionEntryObject[];
-
-	}
-
-	get hasMultipleSelected () { return this.data && Array.isArray( this.data ) && this.data.length > 1; }
 
 	ngOnInit () {
 
@@ -42,11 +34,9 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 
 	}
 
-	createJunction () {
+	createManeuvers () {
 
-		if ( !this.hasMultipleSelected ) return;
-
-		JunctionFactory.mergeEntries( this.data as JunctionEntryObject[] );
+		JunctionFactory.mergeEntries( this.data );
 
 	}
 }
