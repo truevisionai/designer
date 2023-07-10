@@ -3,12 +3,15 @@
  */
 
 import { GameObject } from 'app/core/game-object';
+import { Vector3 } from 'three';
+import { IMovable } from '../../../core/snapping/snapping';
 import { AnyControlPoint } from '../../three-js/objects/control-point';
+import { TvMapQueries } from '../queries/tv-map-queries';
 import { SignShapeType } from '../services/tv-sign.service';
 import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
 import { TvLaneValidity } from './tv-road-object';
 
-export class TvRoadSignal {
+export class TvRoadSignal implements IMovable {
 
 	public static counter = 1;
 
@@ -91,6 +94,10 @@ export class TvRoadSignal {
 		this._gameObject = value;
 	}
 
+	getRoad () {
+		return TvMapQueries.findRoadById( this.roadId );
+	}
+
 	private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
 
 	set userData ( values: TvUserData[] ) {
@@ -153,6 +160,11 @@ export class TvRoadSignal {
 
 	addUserData ( key: string, value: string ) {
 		this._userData.set( key, new TvUserData( key, value ) );
+	}
+
+	move ( position: Vector3 ): void {
+		this.gameObject?.position.copy( position );
+		this.controlPoint?.position.copy( position );
 	}
 }
 

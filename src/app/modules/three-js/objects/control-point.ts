@@ -25,6 +25,7 @@ export abstract class BaseControlPoint extends Points implements ISelectable {
 
 		super( geometry, material );
 
+		this.renderOrder = 3;
 	}
 
 	setPosition ( position: Vector3 ) {

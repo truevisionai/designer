@@ -215,7 +215,7 @@ export class DefaultVehicleController extends AbstractController {
 
 			const refPos = new TvPosTheta();
 
-			const position = TvMapQueries.getLanePosition( entity.roadId, entity.laneId, entity.sCoordinate, entity.laneOffset, refPos );
+			const position = TvMapQueries.getLaneCenterPosition( entity.roadId, entity.laneId, entity.sCoordinate, entity.laneOffset, refPos );
 
 			entity.position.copy( position );
 

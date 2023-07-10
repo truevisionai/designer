@@ -252,6 +252,34 @@ export class TvMapQueries extends TvBaseQueries {
 
 	}
 
+	static getLaneEndPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+
+		const road = this.roads.get( roadId );
+
+		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
+
+		let posTheta = road.getRoadCoordAt( sCoordinate );
+
+		const laneSection = road.getLaneSectionAt( sCoordinate );
+
+		const lane = laneSection.getLaneById( laneId );
+
+		const tDirection = laneId > 0 ? 1 : -1;
+
+		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, sCoordinate );
+
+		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+
+		posTheta.x += cosTheta * ( cumulativeWidth + offset );
+		posTheta.y += sinTheta * ( cumulativeWidth + offset );
+
+		if ( refPos ) refPos.copy( posTheta );
+
+		return posTheta.toVector3();
+
+	}
+
 	/**
 	 *
 	 * @param roadId
@@ -262,7 +290,7 @@ export class TvMapQueries extends TvBaseQueries {
 	 * @returns
 	 * @deprecated
 	 */
-	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+	static getLaneCenterPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
 
 		const road = this.roads.get( roadId );
 
@@ -302,7 +330,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const posTheta = new TvPosTheta();
 
-		this.getLanePosition( roadId, laneId, sCoordinate, offset, posTheta );
+		this.getLaneCenterPosition( roadId, laneId, sCoordinate, offset, posTheta );
 
 		return posTheta;
 
@@ -316,7 +344,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		for ( let s = sCoordinate; s <= road.length && s >= 0; s += direction ) {
 			const posTheta = new TvPosTheta();
-			this.getLanePosition( roadId, laneId, s, offset, posTheta );
+			this.getLaneCenterPosition( roadId, laneId, s, offset, posTheta );
 			waypoints.push( posTheta );
 		}
 

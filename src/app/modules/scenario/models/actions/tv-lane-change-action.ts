@@ -126,8 +126,8 @@ export class LaneChangeAction extends PrivateAction {
 
 		const road = TvMapInstance.map.getRoadById( entity.getCurrentRoadId() );
 
-		const current = TvMapQueries.getLanePosition( road.id, entity.getCurrentLaneId(), entity.getS(), this.initialLaneOffset );
-		const desired = TvMapQueries.getLanePosition( road.id, this.targetLaneId, entity.getS(), this.targetLaneOffset );
+		const current = TvMapQueries.getLaneCenterPosition( road.id, entity.getCurrentLaneId(), entity.getS(), this.initialLaneOffset );
+		const desired = TvMapQueries.getLaneCenterPosition( road.id, this.targetLaneId, entity.getS(), this.targetLaneOffset );
 		const distance = current.distanceTo( desired );
 
 		// change from center of this lane to center of new lane

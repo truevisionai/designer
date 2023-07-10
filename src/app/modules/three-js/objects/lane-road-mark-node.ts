@@ -9,6 +9,7 @@ import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
 import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { IMoveStrategy, LaneEndStrategy } from 'app/core/snapping/snapping';
 
 export class LaneRoadMarkNode extends Group implements ISelectable {
 
@@ -33,7 +34,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		const offset = this.lane.getWidthValue( s ) * 0.5;
 
-		const position = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, s, offset );
+		const position = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, s, offset );
 
 		this.point = AnyControlPoint.create( 'point', position );
 
@@ -95,9 +96,65 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		const offset = this.lane.getWidthValue( adjustedS ) * 0.5;
 
-		const finalPosition = TvMapQueries.getLanePosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
+		const finalPosition = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
 
 		this.point.copyPosition( finalPosition );
+	}
+
+}
+
+export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
+
+    public static readonly tag = 'roadmark-point';
+
+    public point: AnyControlPoint;
+
+    private strategy: IMoveStrategy;
+
+    constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
+
+        super();
+
+        this.strategy = new LaneEndStrategy( lane, this.lane.roadMark );
+
+        const s = this.lane.laneSection.s + this.roadmark.s;
+
+        this.point = AnyControlPoint.create( 'point', this.strategy.getVector3( s ) );
+
+        this.point.tag = LaneRoadMarkNode.tag;
+
+        this.add( this.point );
+
+
+    }
+
+    get isSelected () {
+
+        return this.point.isSelected;
+
+    }
+
+    select () {
+
+        this.point?.select();
+
+    }
+
+    unselect () {
+
+        this.point?.unselect();
+
+    }
+
+
+    updateByPosition ( point: Vector3 ): void {
+
+        const posTheta = this.strategy.getPosTheta( point );
+
+        this.point.copyPosition( posTheta.toVector3() );
+
+        this.roadmark.sOffset = posTheta.s;
+
 	}
 
 }
