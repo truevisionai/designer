@@ -280,6 +280,12 @@ export class TvMapQueries extends TvBaseQueries {
 
 	}
 
+	static getLanePosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+
+		return this.getLaneCenterPosition( roadId, laneId, sCoordinate, offset, refPos );
+
+	}
+
 	/**
 	 *
 	 * @param roadId
