@@ -2,8 +2,10 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="hasMultipleSelected">
-{{ items.length }} nodes selected
-</div>
+<div class="inspector-form-container">
 
-<button *ngIf="hasMultipleSelected" mat-raised-button (click)="createJunction()">Create Junction</button>
+	<app-string-field [disabled]="true" label="Nodes" [value]="data?.length"></app-string-field>
+
+	<button mat-stroked-button (click)="createManeuvers()">Create Maneuvers</button>
+
+</div>
