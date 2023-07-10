@@ -1,17 +1,29 @@
 import { Type } from '@angular/core';
 import { ISelectable } from '../../modules/three-js/objects/i-selectable';
 import { IComponent } from '../game-object';
+import { SelectionTool } from '../helpers/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 
 export interface IToolWithPoint {
 	setPoint ( value: ISelectable ): void;
+
 	getPoint (): ISelectable;
 }
 
+export interface IToolWithPoints {
+	setPoint ( value: ISelectable[] ): void;
+
+	getPoint (): ISelectable[];
+}
+
+export interface IToolWithSelection extends IToolWithPoints {
+	selectionTool: SelectionTool<any>;
+}
 
 export interface IToolWithMainObject {
 	setMainObject ( value: ISelectable ): void;
+
 	getMainObject (): ISelectable;
 }
 
@@ -66,7 +78,56 @@ export class SelectPointCommand extends BaseCommand {
 	}
 }
 
+export class SelectPointsCommand extends BaseCommand {
 
+	private readonly oldPoint: ISelectable[];
+	private readonly setInspectorCommand: SetInspectorCommand;
+
+	constructor (
+		private tool: IToolWithPoints,
+		private newPoint: ISelectable[] = [],
+		inspector?: Type<IComponent>,
+		inspectorData: ISelectable[] = []
+	) {
+		super();
+
+		this.oldPoint = this.tool.getPoint();
+
+		if ( inspector ) {
+			this.setInspectorCommand = new SetInspectorCommand( inspector, inspectorData );
+		}
+	}
+
+	execute () {
+
+		this.oldPoint.forEach( i => i.unselect() );
+
+		this.newPoint?.forEach( i => i.select() );
+
+		this.tool.setPoint( this.newPoint );
+
+		this.setInspectorCommand?.execute();
+
+	}
+
+	undo (): void {
+
+		this.newPoint.forEach( i => i.unselect() );
+
+		this.oldPoint.forEach( i => i.select() );
+
+		this.tool.setPoint( this.oldPoint );
+
+		this.setInspectorCommand?.undo();
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+}
 
 export class SelectMainObjectCommand extends BaseCommand {
 

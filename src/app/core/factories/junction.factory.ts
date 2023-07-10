@@ -15,7 +15,7 @@ export class JunctionFactory {
 
 		const roads = TvMapInstance.map.getRoads();
 
-		const entries = this.getEntries( roads );
+		const entries = this.createEntries( roads );
 
 		this.findEntryExitCombinations( entries );
 	}
@@ -24,7 +24,7 @@ export class JunctionFactory {
 
 		const roads = TvMapInstance.map.getRoads();
 
-		const entries = this.getEntries( roads );
+		const entries = this.createEntries( roads );
 
 		entries.forEach( entry => {
 
@@ -33,15 +33,15 @@ export class JunctionFactory {
 		} );
 	}
 
-	static getAllJunctionEntries (): JunctionEntryObject[] {
+	static createJunctionEntries (): JunctionEntryObject[] {
 
 		const roads = TvMapInstance.map.getRoads().filter( road => !road.isJunction );
 
-		return this.getEntries( roads );
+		return this.createEntries( roads );
 
 	}
 
-	static getEntries ( roads: TvRoad[] ) {
+	static createEntries ( roads: TvRoad[] ) {
 
 		const entries: JunctionEntryObject[] = [];
 
