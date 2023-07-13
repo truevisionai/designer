@@ -24,27 +24,27 @@ describe( 'OpenDrive LaneSection', () => {
 
 		laneSection = new TvLaneSection( 1, 0, true, null );
 
-		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
 		leftTwo = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
 		leftThree = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 		leftOne = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		rightOne = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
 		rightThree = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
 		rightTwo = laneSection.getLastAddedLane();
 
-		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
 		rightFour = laneSection.getLastAddedLane();
 
 		laneSection.getLaneArray().forEach( lane => {

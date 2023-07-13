@@ -47,6 +47,7 @@ export class OdWriter {
 			attributeNamePrefix: 'attr_',
 			attrNodeName: false,
 			ignoreAttributes: false,
+			suppressBooleanAttributes : false,
 			supressEmptyNode: true,
 			format: true,
 			trimValues: true,
@@ -476,7 +477,7 @@ export class OdWriter {
 		const laneNode = {
 			attr_id: lane.id,
 			attr_type: lane.type,
-			attr_level: lane.level,
+			attr_level: lane.level === true ? "true" : "false",
 			link: {},
 			width: [],
 			roadMark: [],

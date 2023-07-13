@@ -29,7 +29,17 @@ export class TvLane implements ISelectable, Copiable {
 	public markMeshData: MeshGeometryData;
 	public attr_id: number;
 	public attr_type: TvLaneType;
-	public attr_level;
+
+	/**
+	 * "true" = keep lane on level, .i.e. do not apply superelevation or crossfall
+	 * "false" = apply superelevation and crossfall to this lane (default,
+	 * also used if argument level is missing) lanes are also kept on level if
+	 * the argument level is present but no superelevation or crossfall
+	 * have been defined.
+	 * default is false
+	 */
+	public attr_level: boolean = false;
+
 	public link: TvRoadLaneSectionLaneLink;
 	public width: TvLaneWidth[] = [];
 	public border: TvLaneBorder[] = [];
@@ -51,7 +61,7 @@ export class TvLane implements ISelectable, Copiable {
 
 	public travelDirection: TravelDirection;
 
-	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, roadId?: number, laneSection?: TvLaneSection ) {
+	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
 
 		this._side = laneSide;
 

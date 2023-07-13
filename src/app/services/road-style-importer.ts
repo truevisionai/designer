@@ -89,7 +89,7 @@ export class RoadStyleImporter extends AbstractReader {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
-		const level = xmlElement.attr_level;
+		const level = xmlElement.attr_level == 'true';
 
 		laneSection.addLane( laneSide, id, type, level, false );
 

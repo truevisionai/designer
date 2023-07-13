@@ -55,7 +55,7 @@ describe( 'LaneAddTool', () => {
 
 		const gameObject = new Object3D();
 
-		const newLane = new TvLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true );
+		const newLane = new TvLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false );
 
 		gameObject.userData.lane = newLane;
 

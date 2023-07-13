@@ -137,14 +137,14 @@ export class TvMap {
 		const laneSection = road.addGetLaneSection( 0 );
 
 		if ( side === TvLaneSide.LEFT ) {
-			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
+			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 		}
 
 		if ( side === TvLaneSide.RIGHT ) {
-			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		}
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
 		laneSection.getLaneArray().forEach( lane => {
 

@@ -71,7 +71,7 @@ export class RoadStyleService {
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
-		roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
+		roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
 		roadStyle.laneSection.addLaneInstance( lane, true );
 
@@ -88,9 +88,9 @@ export class RoadStyleService {
 
 		const leftLane3 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
 		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-		const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 		const rightLane3 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
 
@@ -124,9 +124,9 @@ export class RoadStyleService {
 	//     roadStyle.laneSection = new TvLaneSection( 1, 0, true, -1 );
 
 	//     const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 	//     const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 
 	//     leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
@@ -157,9 +157,9 @@ export class RoadStyleService {
 	//     roadStyle.laneSection = new TvLaneSection( 1, 0, true, -1 );
 
 	//     const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 	//     const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 
 	//     leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
@@ -190,9 +190,9 @@ export class RoadStyleService {
 	//     roadStyle.laneSection = new TvLaneSection( 1, 0, true, -1 );
 
 	//     const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, true, true );
-	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, true, true );
-	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true );
+	//     const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+	//     const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+	//     const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 	//     const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 
 	//     leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
@@ -226,19 +226,19 @@ export class RoadStyleService {
 	//         .addLane( TvLaneSide.LEFT, 6, TvLaneType.shoulder, true, true );
 
 	//     const leftLane5 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.LEFT, 5, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.LEFT, 5, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const leftLane4 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.LEFT, 4, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const leftLane3 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const leftLane2 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const leftLane1 = roadStyle.laneSection
@@ -254,19 +254,19 @@ export class RoadStyleService {
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.YELLOW, 0.15, 'none', 0 );
 
 	//     const rightLane2 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane3 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane4 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane5 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane6 = roadStyle.laneSection
@@ -304,19 +304,19 @@ export class RoadStyleService {
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.YELLOW, 0.15, 'none', 0 );
 
 	//     const rightLane2 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane3 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane4 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane5 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true )
 	//         .addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
 
 	//     const rightLane6 = roadStyle.laneSection
@@ -353,7 +353,7 @@ export class RoadStyleService {
 	//         .addLane( TvLaneSide.CENTER, 0, TvLaneType.none, true, true );
 
 	//     const r1 = roadStyle.laneSection
-	//         .addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, true, true )
+	//         .addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true )
 	//         .addWidthRecord( 0, 3.6, 0, 0, 0 );
 
 	//     const r2 = roadStyle.laneSection
