@@ -53,6 +53,14 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 
 	}
 
+	onLevelChanged ( $level: boolean ) {
+
+		if ( !this.lane ) return;
+
+		CommandHistory.execute( new SetLanePropertyCommand( this.lane, 'level', $level ) );
+
+	}
+
 	onTypeChanged ( $event: MatSelectChange ) {
 
 		if ( !this.lane ) return;

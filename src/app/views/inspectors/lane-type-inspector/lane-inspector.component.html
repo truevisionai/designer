@@ -6,6 +6,8 @@
 
 	<app-string-field [value]="lane.id" [disabled]="true" label="Lane ID"></app-string-field>
 
+	<app-boolean-field [value]="lane.level" label="Level" (changed)="onLevelChanged($event)"></app-boolean-field>
+
 	<app-enum-field [enum]="directions" [value]="lane.travelDirection" (changed)="onTravelDirectionChanged($event)" label="Travel Direction"></app-enum-field>
 
 	<app-enum-field [enum]="types" [value]="lane.type" (changed)="onTypeChanged($event)" label="Type"></app-enum-field>
