@@ -260,10 +260,13 @@ export class FileService {
 
 		if ( directory == null ) directory = this.projectFolder;
 
-		// TODO:
-		const saveOptions = {
+		// const filename = 'Untitled.' + extension
+
+		// const defaultPath = this.path.join( directory, filename );
+
+		const saveOptions: Electron.SaveDialogOptions = {
 			title: 'Save File',
-			defaultPath: 'Untitled.' + extension,
+			defaultPath: directory,
 			filters: [
 				{ name: 'All Files', extensions: [ extension ] }
 			]
