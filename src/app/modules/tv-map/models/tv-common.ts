@@ -25,7 +25,9 @@ export enum TvLaneType {
 	border = 'border',
 	restricted = 'restricted',
 	parking = 'parking',
-	bidirectional = 'bidirectional',
+	bidirectional = 'bidirectional', // (this lane type has two use cases:
+	// a) only driving lane on a narrow road which may be used in both directions;
+	// b) continuous two-way left turn lane on multi-lane roads – US road networks)
 	median = 'median',
 	special1 = 'special1',
 	special2 = 'special2',
@@ -37,6 +39,10 @@ export enum TvLaneType {
 	exit = 'exit',
 	offRamp = 'offRamp',
 	onRamp = 'onRamp',
+	connectingRamp = 'connectingRamp',
+	bux = 'bux',
+	taxi = 'taxi',
+	HOV = 'HOV',
 }
 
 export enum TvRoadMarkTypes {
@@ -64,6 +70,7 @@ export enum TvColors {
 	RED = 'red',
 	WHITE = 'white',
 	YELLOW = 'yellow',
+	ORANGE = 'orange',
 }
 
 export enum TvParkingSpaceAccess {
@@ -141,6 +148,8 @@ export enum TvRoadType {
 export enum TvSide {
 	LEFT = 'left',
 	RIGHT = 'right',
+	FRONT = 'front',
+	REAR = 'rear',
 	ON_LINE = 'neither', // when points is not left/right of line but on line
 }
 
@@ -199,7 +208,43 @@ export enum ObjectTypes {
 	ROAD = 'ROAD',
 	LANE = 'LANE',
 	LANE_MARKING = 'LANE_MARKING',
-	VEHICLE = 'vehicle'
+	VEHICLE = 'vehicle',
+	barrier = 'barrier',
+	bike = 'bike',
+	building = 'building',
+	bus = 'bus',
+	car = 'car',
+	crosswalk = 'crosswalk',
+	gantry = 'gantry',
+	motorbike = 'motorbike',
+	none = 'none',
+	obstacle = 'obstacle',
+	parkingSpace = 'parkingSpace',
+	patch = 'patch',
+	pedestrian = 'pedestrian',
+	pole = 'pole',
+	railing = 'railing',
+	roadMark = 'roadMark',
+	soundBarrier = 'soundBarrier',
+	streetLamp = 'streetLamp',
+	trafficIsland = 'trafficIsland',
+	trailer = 'trailer',
+	train = 'train',
+	tram = 'tram',
+	tree = 'tree',
+	van = 'van',
+	vegetation = 'vegetation',
+	wind = 'wind',
+}
+
+export enum ObjectFillType {
+	grass,
+	concrete,
+	cobble,
+	asphalt,
+	pavement,
+	gravel,
+	soil,
 }
 
 export class EnumHelper {
@@ -319,5 +364,5 @@ export class EnumHelper {
 		}
 
 	}
-	
+
 }

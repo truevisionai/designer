@@ -4,8 +4,11 @@
 
 import { Mesh } from 'three';
 import {
+	ObjectFillType,
+	ObjectTypes,
 	TvBridgeTypes,
 	TvColors,
+	TvLaneType,
 	TvOrientation,
 	TvParkingSpaceAccess,
 	TvParkingSpaceMarkingSides,
@@ -13,6 +16,7 @@ import {
 	TvTunnelTypes,
 	TvUserData
 } from './tv-common';
+import { TvObjectMarking } from './tv-object-marking';
 
 export class TvObjectContainer {
 	public object: TvRoadObject[] = [];
@@ -40,7 +44,15 @@ export class TvRoadObject {
 	public attr_roll: number;
 
 	public repeat: TvObjectRepeat[] = [];
+
+	/**
+	 * @deprecated
+	 */
 	public outline: TvObjectOutline;
+	// multiple outlines are allowed
+	public outlines: TvObjectOutline[] = [];
+	public markings: TvObjectMarking[] = [];
+
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
 	public parkingSpace: TvParkingSpace;
@@ -50,7 +62,7 @@ export class TvRoadObject {
 	private lastAddedRepeatObjectIndex: number;
 
 	constructor (
-		type: string,
+		type: ObjectTypes,
 		name: string,
 		id: number,
 		s: number,
@@ -185,6 +197,16 @@ export class TvRoadObject {
 }
 
 export class TvObjectOutline {
+
+	constructor (
+		public id: number,
+		public fillType: ObjectFillType,
+		public outer: boolean,
+		public closed: boolean,
+		public laneType: TvLaneType
+	) {
+	}
+
 	public cornerRoad: TvCornerRoad[] = [];
 	public cornerLocal: TvCornerLocal[] = [];
 
@@ -248,6 +270,7 @@ export class TvObjectMaterial {
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
 export class TvCornerRoad {
+	public attr_id: number;
 	public attr_s: number;
 	public attr_t: number;
 	public attr_dz: number;
@@ -283,8 +306,8 @@ export class TvObjectRepeat {
 	public attr_zOffsetEnd: number;
 
 	constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-		zOffsetStart: number, zOffsetEnd: number ) {
+				  widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
+				  zOffsetStart: number, zOffsetEnd: number ) {
 
 		this.attr_s = s;
 		this.attr_length = length;

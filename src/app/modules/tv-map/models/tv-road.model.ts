@@ -21,7 +21,7 @@ import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
 import { TvJunctionConnection } from './tv-junction-connection';
@@ -708,7 +708,7 @@ export class TvRoad {
 	}
 
 	addRoadObject (
-		type: string,
+		type: ObjectTypes,
 		name: string,
 		id: number,
 		s: number,
