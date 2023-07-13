@@ -40,6 +40,8 @@ import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
+import { RoadStyle } from 'app/services/road-style.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -1524,4 +1526,16 @@ export class TvRoad {
 		// }
 
 	}
+
+	applyRoadStyle ( roadStyle: RoadStyle ) {
+
+		this.lanes.clear()
+
+		this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
+
+		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
+
+		RoadFactory.rebuildRoad( this );
+	}
+
 }

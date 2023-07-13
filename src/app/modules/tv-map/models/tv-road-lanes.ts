@@ -93,4 +93,10 @@ export class TvRoadLanes {
 		return TvUtils.checkIntervalArray( this.laneSections, s );
 
 	}
+
+	clear () {
+		this.laneSections = [];
+		this.laneOffsets = [];
+	}
+
 }

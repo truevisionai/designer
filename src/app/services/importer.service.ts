@@ -36,71 +36,80 @@ export class ImporterService {
 	) {
 	}
 
+	/**
+	 *
+	 * @param path
+	 * @param filename
+	 * @param position
+	 * @deprecated
+	 */
 	async onViewPortFileDropped ( path: string, filename?: string, position?: Vector3 ) {
 
-		const extension = FileService.getExtension( path );
+		throw new Error( 'method not implemented' );
 
-		const metadata = this.assetService.fetchMetaFile( path );
+		// const extension = FileService.getExtension( path );
 
-		switch ( extension ) {
+		// const metadata = this.assetService.fetchMetaFile( path );
 
-			case 'xodr':
-				this.importOpenDrive( path );
-				break;
+		// switch ( extension ) {
 
-			case FileExtension.OPENSCENARIO:
-				await this.importOpenScenario( path );
-				break;
+		// 	case 'xodr':
+		// 		this.importOpenDrive( path );
+		// 		break;
 
-			case 'gltf':
-				this.modelImporter.import( path, filename, extension, position, metadata );
-				break;
+		// 	case FileExtension.OPENSCENARIO:
+		// 		await this.importOpenScenario( path );
+		// 		break;
 
-			case 'glb':
+		// 	case 'gltf':
+		// 		this.modelImporter.import( path, filename, extension, position, metadata );
+		// 		break;
 
-				PropManager.setProp( metadata );
+		// 	case 'glb':
 
-				if ( ToolManager.currentTool instanceof PropPointTool ) {
+		// 		PropManager.setProp( metadata );
 
-					ToolManager.currentTool.shapeEditor.addControlPoint( position );
+		// 		if ( ToolManager.currentTool instanceof PropPointTool ) {
 
-				} else {
+		// 			ToolManager.currentTool.shapeEditor.addControlPoint( position );
 
-					ToolManager.currentTool = new PropPointTool();
+		// 		} else {
 
-					( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
+		// 			ToolManager.currentTool = new PropPointTool();
 
-				}
+		// 			( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
 
-				// this.modelImporter.import( path, filename, extension, position, metadata );
+		// 		}
 
-				break;
+		// 		// this.modelImporter.import( path, filename, extension, position, metadata );
 
-			case 'obj':
-				this.modelImporter.import( path, filename, extension, position, metadata );
-				break;
+		// 		break;
 
-			case 'fbx':
-				this.modelImporter.import( path, filename, extension, position, metadata );
-				break;
+		// 	case 'obj':
+		// 		this.modelImporter.import( path, filename, extension, position, metadata );
+		// 		break;
 
-			case 'prop':
-				// alert( 'import prop ' + path );
-				break;
+		// 	case 'fbx':
+		// 		this.modelImporter.import( path, filename, extension, position, metadata );
+		// 		break;
 
-			case 'scene':
-				this.importScene( path );
-				break;
+		// 	case 'prop':
+		// 		// alert( 'import prop ' + path );
+		// 		break;
 
-			case 'roadstyle':
-				console.error( 'method not implemented' );
-				break;
+		// 	case 'scene':
+		// 		this.importScene( path );
+		// 		break;
 
-			default:
-				console.error( `unknown file type: ${ extension }`, path );
-				SnackBar.warn( 'Unknown file! Not able to import' );
-				break;
-		}
+		// 	case 'roadstyle':
+		// 		console.error( 'method not implemented' );
+		// 		break;
+
+		// 	default:
+		// 		console.error( `unknown file type: ${ extension }`, path );
+		// 		SnackBar.warn( 'Unknown file! Not able to import' );
+		// 		break;
+		// }
 
 	}
 

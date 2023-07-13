@@ -12,6 +12,7 @@ import { ImporterService } from 'app/services/importer.service';
 import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
+import { ViewportService } from '../viewport.service';
 
 @Component( {
 	selector: 'app-viewport',
@@ -52,7 +53,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	constructor (
 		private threeService: ThreeService,
 		private eventSystem: EventSystem,
-		private importer: ImporterService,
+		private viewportService: ViewportService,
 	) {
 		this.render = this.render.bind( this );
 	}
@@ -377,17 +378,29 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	//Dragover listener
+	@HostListener( 'dragenter', [ '$event' ] )
+	onDragEnter ( $event: DragEvent ) {
+		// console.log( 'drag enter', $event.dataTransfer.getData( 'path' ) );
+		$event.preventDefault();
+		$event.stopPropagation();
+		// this.viewportService.onDragEnter( $event );
+	}
+
+	//Dragover listener
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( evt ) {
-		evt.preventDefault();
-		evt.stopPropagation();
+	onDragOver ( $event: DragEvent ) {
+		// console.log( 'drag over', $event.dataTransfer.getData( 'path' ) );
+		$event.preventDefault();
+		$event.stopPropagation();
+		// this.viewportService.onDragOver( $event );
 	}
 
 	//Dragleave listener
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( evt ) {
-		evt.preventDefault();
-		evt.stopPropagation();
+	onDragLeave ( $event: DragEvent ) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		// this.viewportService.onDragLeave( $event );
 	}
 
 	//Drop listener
@@ -399,7 +412,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.updateMousePosition( $event );
 
-		this.findIntersections($event);
+		this.findIntersections( $event );
 
 		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
 
@@ -414,7 +427,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 
-		await this.importer.onViewPortFileDropped( $event.dataTransfer.getData( 'path' ), '', position );
+		await this.viewportService.onDrop( $event, position );
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )

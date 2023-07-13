@@ -20,6 +20,7 @@ import { PreviewService } from 'app/views/inspectors/object-preview/object-previ
 import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
+import { DragDropService } from 'app/core/services/drag-drop.service';
 
 @Component( {
 	selector: 'app-file',
@@ -49,6 +50,7 @@ export class FileComponent implements OnInit {
 		private fileService: FileService,
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
+		private dragDropService: DragDropService,
 	) {
 
 	}
@@ -353,13 +355,14 @@ export class FileComponent implements OnInit {
 	@HostListener( 'dragstart', [ '$event' ] )
 	onDragStart ( $event ) {
 
+		this.dragDropService.setData( {
+			path: this.file.path,
+			extension: this.extension,
+			guid: this.metadata?.guid,
+		} )
+
 		$event.dataTransfer.setData( 'path', this.file.path );
-
-		if ( this.metadata ) {
-
-			$event.dataTransfer.setData( 'guid', this.metadata.guid );
-
-		}
+		if ( this.metadata ) $event.dataTransfer.setData( 'guid', this.metadata.guid );
 	}
 
 	onBlur ( $event ) {
