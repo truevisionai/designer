@@ -1482,6 +1482,21 @@ export class TvRoad {
 		return coordinates;
 	}
 
+	getReferenceLinePoints (): TvPosTheta[] {
+
+		const points: TvPosTheta[] = [];
+
+		for ( let s = 0; s <= this.length; s++ ) {
+
+			points.push( this.getRoadCoordAt( s ) );
+
+		}
+
+		points.push( this.getRoadCoordAt( this.length - Maths.Epsilon ) );
+
+		return points;
+	}
+
 	computeLaneSectionCoordinates () {
 
 		// Compute lastSCoordinate for all laneSections

@@ -6,6 +6,7 @@
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvSide } from './tv-common';
+import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvPosTheta {
 	public z: number = 0;
@@ -177,4 +178,11 @@ export class TvPosTheta {
 		return Maths.directionV3( this.toVector3(), this.hdg, B.toVector3() );
 
 	}
+
+	toRoadCoord ( roadId: number ): TvRoadCoord {
+
+		return new TvRoadCoord( roadId, this.s, this.t, this.z, this.hdg, 0, 0 );
+
+	}
+
 }

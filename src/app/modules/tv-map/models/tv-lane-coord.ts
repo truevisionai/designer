@@ -2,6 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvMapInstance } from "../services/tv-map-source-file";
+import { TvRoad } from "./tv-road.model";
+
 export class TvCoord {
 
 	constructor (
@@ -53,9 +56,11 @@ export class TvLaneCoord {
 
 export class TvRoadCoord {
 
-	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
+	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
 
 	}
+
+	get road (): TvRoad { return TvMapInstance.map.getRoadById( this.roadId ) }
 
 	init () {
 
