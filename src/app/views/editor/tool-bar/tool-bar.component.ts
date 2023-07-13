@@ -24,6 +24,7 @@ class IToolMenu {
 	track: string;
 	tooltip: string;
 	click: Function;
+	enabled?: boolean = true;
 }
 
 @Component( {
@@ -41,7 +42,7 @@ export class ToolBarComponent implements OnInit {
 
 	@ViewChild( 'popover', { static: false } ) popover: SatPopover;
 
-	tools: IToolMenu[] = [
+	private tools: IToolMenu[] = [
 		{
 			id: 'showPointerTool',
 			label: 'Pointer',
@@ -53,7 +54,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'Pointer tool is used to view from different angles and to select the objects. You can browse the scene without interacting with any object in the scene',
 			track: 'menu',
 			tooltip: 'Pointer Tool',
-			click: () => this.setToolType( ToolType.Pointer )
+			click: () => this.setToolType( ToolType.Pointer ),
+			enabled: true,
 		},
 		{
 			id: 'showRoadTool',
@@ -66,7 +68,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'ROAD-GEOMETRY-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Road Tool',
-			click: () => this.setToolType( ToolType.Road )
+			click: () => this.setToolType( ToolType.Road ),
+			enabled: true,
 		},
 		{
 			id: 'showRoadCircleTool',
@@ -79,7 +82,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'ROAD-CIRCLE-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Road Circle Tool',
-			click: () => this.setToolType( ToolType.RoadCircle )
+			click: () => this.setToolType( ToolType.RoadCircle ),
+			enabled: true,
 		},
 		{
 			id: 'showRoadElevationTool',
@@ -92,7 +96,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'ROAD-Elevation-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Road Elevation Tool',
-			click: () => this.setToolType( ToolType.RoadElevation )
+			click: () => this.setToolType( ToolType.RoadElevation ),
+			enabled: true,
 		},
 		{
 			id: 'showLaneTool',
@@ -105,7 +110,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'LANE-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Lane Tool',
-			click: () => this.setToolType( ToolType.Lane )
+			click: () => this.setToolType( ToolType.Lane ),
+			enabled: true,
 		},
 		{
 			id: 'showLaneWidthTool',
@@ -118,7 +124,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'LANE-WIDTH-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Lane Width Tool',
-			click: () => this.setToolType( ToolType.LaneWidth )
+			click: () => this.setToolType( ToolType.LaneWidth ),
+			enabled: true,
 		},
 		{
 			id: 'showLaneOffsetTool',
@@ -131,7 +138,8 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Lane Offset Tool',
 			title: 'Lane Offset Tool',
 			description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <br/><br/> <img src="assets/Lane-Offset-Tool.gif"/>',
-			click: () => this.setToolType( ToolType.LaneOffset )
+			click: () => this.setToolType( ToolType.LaneOffset ),
+			enabled: true,
 		},
 		{
 			id: 'showAddLaneTool',
@@ -144,19 +152,9 @@ export class ToolBarComponent implements OnInit {
 			description: 'ADD-LANE-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Add Lane Tool',
-			click: () => this.setToolType( ToolType.LaneAdd )
+			click: () => this.setToolType( ToolType.LaneAdd ),
+			enabled: true,
 		},
-		// {
-		// 	id: 'showCreateLaneTool',
-		// 	label: 'CreateLane',
-		// 	class: 'toolbar-button',
-		// 	toolType: ToolType.LaneCreate,
-		// 	action: 'create-lane-tool',
-		// 	icon: 'playlist_add',
-		// 	track: 'button',
-		// 	tooltip: 'Create Lane Tool',
-		// 	click: () => this.setToolType( ToolType.LaneCreate )
-		// },
 		{
 			id: 'showLaneMarkingTool',
 			label: 'LaneMarking',
@@ -168,7 +166,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'LANE-MARKING-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Add Lane Tool',
-			click: () => this.setToolType( ToolType.LaneMarking )
+			click: () => this.setToolType( ToolType.LaneMarking ),
+			enabled: true,
 		},
 		{
 			id: 'showMarkingPointTool',
@@ -181,7 +180,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'Tool to create road marking points <br/> Select a roadmarking from ProjectBrowser <br/> Then use SHIFT + LEFT CLICK on road to create a roadmarking point',
 			track: 'button',
 			tooltip: 'Marking Point Tool',
-			click: () => this.setToolType( ToolType.MarkingPoint )
+			click: () => this.setToolType( ToolType.MarkingPoint ),
+			enabled: false,
 		},
 		{
 			id: 'showManeueverTool',
@@ -194,7 +194,8 @@ export class ToolBarComponent implements OnInit {
 			description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
 			track: 'button',
 			tooltip: 'Maneuver Tool',
-			click: () => this.setToolType( ToolType.Maneuver )
+			click: () => this.setToolType( ToolType.Maneuver ),
+			enabled: true,
 		},
 		{
 			id: 'showPropPointTool',
@@ -207,7 +208,8 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Prop Point Tool',
 			title: 'PROP-POINT-TOOL-TITLE',
 			description: 'PROP-POINT-TOOL-DESCRIPTION',
-			click: () => this.setToolType( ToolType.PropPoint )
+			click: () => this.setToolType( ToolType.PropPoint ),
+			enabled: true,
 		},
 		{
 			id: 'showPropCurveTool',
@@ -220,7 +222,8 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Prop Curve Tool',
 			title: 'PROP-CURVE-TOOL-TITLE',
 			description: 'PROP-CURVE-TOOL-DESCRIPTION',
-			click: () => this.setToolType( ToolType.PropCurve )
+			click: () => this.setToolType( ToolType.PropCurve ),
+			enabled: true,
 		},
 		{
 			id: 'showPropPolygonTool',
@@ -233,7 +236,8 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Prop Polygon Tool',
 			title: 'PROP-POLYGON-TOOL-TITLE',
 			description: 'PROP-POLYGON-TOOL-DESCRIPTION',
-			click: () => this.setToolType( ToolType.PropPolygon )
+			click: () => this.setToolType( ToolType.PropPolygon ),
+			enabled: true,
 		},
 		{
 			id: 'signal',
@@ -244,7 +248,8 @@ export class ToolBarComponent implements OnInit {
 			icon: 'directions', // signpost,directions
 			track: 'menu',
 			tooltip: 'Signal Tool',
-			click: () => this.setToolType( ToolType.RoadSignalTool )
+			click: () => this.setToolType( ToolType.RoadSignalTool ),
+			enabled: false,
 		},
 		{
 			id: 'showSurfaceTool',
@@ -257,7 +262,8 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Surface Tool',
 			title: 'Surface Tool',
 			description: 'Tool to create simple surface around road networks <br/> Use `SHIFT` + `LEFT CLICK` to create control points <br/> DRAG control points to get desired shape <br/><br/> <img src="assets/Surface-Tool.gif"/>',
-			click: () => this.setToolType( ToolType.Surface )
+			click: () => this.setToolType( ToolType.Surface ),
+			enabled: true,
 		},
 		{
 			id: 'vehicle',
@@ -268,10 +274,13 @@ export class ToolBarComponent implements OnInit {
 			icon: 'directions_car',
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
-			click: () => this.setToolType( ToolType.Vehicle )
+			click: () => this.setToolType( ToolType.Vehicle ),
+			enabled: false,
 		},
 		// add more tools here...
 	];
+
+	enabledTools = this.tools.filter( tool => tool.enabled );
 
 	constructor (
 		private threeService: ThreeService,
