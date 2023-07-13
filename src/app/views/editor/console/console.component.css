@@ -4,6 +4,7 @@
 	min-height: 200px;
 	height: 100%;
 	color: rgb(37, 37, 37);
+	padding-top: 30px;
 }
 
 mat-icon .warn {
@@ -22,12 +23,19 @@ mat-icon .info {
 	flex: 1 1 auto;
 }
 
+.mat-toolbar {
+	height: 30px !important;
+	min-height: 30px !important;
+	position: absolute;
+	z-index: 999;
+}
+
 .console-toolbar-row {
-	height: 36px;
+	height: 30px;
 }
 
 .console-toolbar-button {
-	height: 36px;
+	height: 30px;
 	padding: 0;
 }
 
@@ -48,7 +56,11 @@ mat-icon .info {
 
 .counter-chip {
 	padding: 4px 8px 4px 8px !important;
-    line-height: 12px !important;
-    font-size: 12px;
-    display: block;
+	line-height: 12px !important;
+	font-size: 12px;
+	display: block;
+}
+
+perfect-scrollbar {
+	/* background: #424242 !important; */
 }

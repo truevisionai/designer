@@ -126,7 +126,7 @@ $border-radius: 0px !important;
 	}
 
 	perfect-scrollbar {
-		background: $app-background;
+		background: inherit;
 	}
 
 	.mat-tree {
@@ -204,7 +204,7 @@ $border-radius: 0px !important;
 
 	.mat-tab-nav-bar,
 	.mat-tab-header {
-		// border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+		border-bottom: 1px solid $panel-border-color;
 		background: $panel-color;
 	}
 

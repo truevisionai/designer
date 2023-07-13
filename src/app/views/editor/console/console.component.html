@@ -8,11 +8,14 @@
 </mat-toolbar>
 <mat-list class="console-container" role="list">
 
-	<perfect-scrollbar fxFlexFill>
+	<!-- <perfect-scrollbar fxFlexFill> -->
 
 		<mat-list-item *ngFor="let log of logs" role="listitem" class="console-log-item">
 
-			<mat-icon class="console-message-icon" mat-list-icon color="warn">{{log.icon}}</mat-icon>
+			<mat-icon class="console-message-icon" mat-list-icon color="error">
+				<!-- {{log.icon}} -->
+				error
+			</mat-icon>
 
 			<div class="console-message" mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
 
@@ -22,6 +25,6 @@
 
 		</mat-list-item>
 
-	</perfect-scrollbar>
+	<!-- </perfect-scrollbar> -->
 
 </mat-list>
