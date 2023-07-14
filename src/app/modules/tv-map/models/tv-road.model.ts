@@ -591,7 +591,9 @@ export class TvRoad {
 	getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
 
 		// helps catch bugs
-		if ( this.geometries.length == 0 ) throw new Error( 'NoGeometriesFound' );
+		if ( this.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
 
 		if ( s == null ) TvConsole.error( 's is undefined' );
 

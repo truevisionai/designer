@@ -355,6 +355,15 @@ export class OpenDriverParser extends AbstractReader {
 				this.readGeometryType( road, xmlElement.geometry );
 
 			}
+
+		} else {
+
+			TvConsole.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
+
+			SnackBar.error( 'NoGeometryFound In OpenDRIVE Road. Adding default line with length 1' );
+
+			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
+
 		}
 	}
 
