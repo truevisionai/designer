@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Mesh, Vector3 } from 'three';
+import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 
 export class TvObjectMarking {
@@ -255,12 +255,8 @@ export class TvObjectMarking {
 	// }
 
 	// with spline
-	static makeFromSpline ( marking: TvObjectMarking ): Mesh {
+	static makeFromSpline ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
 
-		const curve = new THREE.CatmullRomCurve3( [
-			new Vector3( 0, 0, 0 ),
-			new Vector3( 0, 7.2, 0 ),
-		] );
 
 		const totalLength = curve.getLength();
 		const fullStripeLength = marking.lineLength + marking.spaceLength;
