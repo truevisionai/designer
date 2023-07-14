@@ -6,6 +6,7 @@ import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-bu
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
 import { BaseCommand } from './base-command';
+import { SceneService } from '../services/scene.service';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
 
@@ -23,6 +24,8 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 		this.lane.gameObject.remove( this.roadmark.gameObject );
 
+		SceneService.remove( this.roadmark.node );
+
 		this.removeFromLane();
 
 		this.rebuild();
@@ -31,6 +34,8 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 	undo (): void {
 
 		this.lane.gameObject.add( this.roadmark.gameObject );
+
+		SceneService.add( this.roadmark.node );
 
 		this.lane.addRoadMarkInstance( this.roadmark );
 

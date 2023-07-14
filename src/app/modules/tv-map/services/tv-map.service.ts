@@ -3,10 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AppInspector } from 'app/core/inspector';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
-import { CommandHistory } from 'app/services/command-history';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
@@ -29,7 +26,6 @@ export class TvMapService {
 		private fileService: FileService,
 		private writer: OdWriter,
 		private electron: TvElectronService,
-		private openDriveParser: OpenDriverParser,
 		private sceneExporter: SceneExporterService,
 	) {
 
@@ -60,7 +56,7 @@ export class TvMapService {
 	/**
 	 * @deprecated
 	 */
-	async importOpenDrive () {
+	async showImportDialog () {
 
 		const res = await this.fileService.showAsyncDialog();
 
@@ -72,52 +68,63 @@ export class TvMapService {
 
 		SnackBar.show( 'Importing....' );
 
-		const contents = await this.fileService.readAsync( filepaths[ 0 ] );
+		try {
 
-		if ( this.map ) this.map.destroy();
+			const file = new IFile();
 
-		this.map = this.openDriveParser.parse( contents );
+			file.contents = await this.fileService.readAsync( filepaths[ 0 ] );
 
-		ToolManager.clear();
+			file.path = filepaths[ 0 ];
 
-		AppInspector.clear();
+			this.import( file );
 
-		CommandHistory.clear();
+		} catch ( e ) {
 
-		this.electron.setTitle( this.currentFile.name, this.currentFile.path );
+			SnackBar.error( 'Error while importing' );
 
-		TvMapBuilder.buildMap( this.map );
+			TvConsole.error( e );
 
-		SnackBar.success( `OpenDrive imported ${ filepaths[ 0 ] }` );
-
-		TvConsole.info( 'OpenDrive imported ' + filepaths[ 0 ] );
+		}
 
 	}
 
 	public import ( file: IFile, callbackFn = null ) {
 
-		ToolManager.clear();
+		const map = this.load( file, callbackFn );
 
-		AppInspector.clear();
+		if ( map == null ) return;
 
-		CommandHistory.clear();
+		this.map = map;
 
-		if ( this.map != null ) this.map.destroy();
+		TvMapBuilder.buildMap( this.map );
 
-		this.currentFile = file;
+		SnackBar.success( `OpenDrive imported ${ file?.path }` );
+
+		TvConsole.info( 'OpenDrive imported ' + file?.path );
+	}
+
+	public load ( file: IFile, callbackFn = null ) {
+
+		return this.parse( file.contents, callbackFn );
+
+	}
+
+	public parse ( contents: string, callbackFn = null ) {
 
 		let parser = new OpenDriverParser();
 
-		this.map = parser.parse( file.contents );
+		const map = parser.parse( contents );
 
-		TvMapBuilder.buildMap( this.map );
+		if ( map == null ) return;
+
+		this.map = map;
 
 		if ( callbackFn != null ) callbackFn();
 
 		// Important! removes garbage
 		parser = undefined;
 
-		SnackBar.success( 'File Imported' );
+		return map;
 	}
 
 	public importFromPath ( filepath: string, callbackFn = null ) {

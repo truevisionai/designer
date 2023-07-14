@@ -3,19 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
 import { OpenScenarioImporter } from '../modules/scenario/services/open-scenario-importer.service';
 import { AssetLoaderService } from './asset-loader.service';
-import { FileExtension, FileService } from './file.service';
+import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
-import { PropManager } from './prop-manager';
 import { SceneImporterService } from './scene-importer.service';
-import { SnackBar } from './snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'

@@ -1101,13 +1101,13 @@ export class TvRoad {
 
 	showControlPoints (): void {
 
-		this.spline.controlPoints.forEach( p => p.visible = true );
+		this.spline.showControlPoints();
 
 	}
 
 	hideControlPoints (): void {
 
-		this.spline.controlPoints.forEach( p => p.visible = false );
+		this.spline.hideControlPoints();
 
 	}
 

@@ -53,11 +53,17 @@ export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnI
 
 	onDelete () {
 
+		if ( !this.roadMark ) return;
+
 		CommandHistory.execute( new RemoveRoadmarkCommand( this.roadMark, this.roadMark.lane ) );
+
+		this.data = null;
 
 	}
 
 	onWidthChanged ( $width ) {
+
+		if ( !this.roadMark ) return;
 
 		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'width', $width ) ) );
 
@@ -67,17 +73,23 @@ export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnI
 
 		// if ( item.type == $event.value ) return;
 
+		if ( !this.roadMark ) return;
+
 		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'type', $event ) ) );
 
 	}
 
 	onWeightChanged ( $weight ) {
 
+		if ( !this.roadMark ) return;
+
 		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'weight', $weight ) ) );
 
 	}
 
 	onColorChanged ( $color ) {
+
+		if ( !this.roadMark ) return;
 
 		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'color', $color ) ) );
 

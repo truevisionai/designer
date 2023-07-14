@@ -20,7 +20,7 @@ export class CustomErrorHandler extends ErrorHandler {
 	// https://github.com/angular/angular/issues/17010
 	handleError ( error: Error ) {
 
-		SnackBar.error( error.message );
+		SnackBar.error( error?.message );
 
 		console.error( error );
 

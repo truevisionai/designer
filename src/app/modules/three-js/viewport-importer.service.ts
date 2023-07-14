@@ -3,17 +3,18 @@ import { Metadata } from 'app/core/models/metadata.model';
 import { DragDropData } from 'app/core/services/drag-drop.service';
 import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/core/tools/tool-manager';
+import { TvConsole } from 'app/core/utils/console';
+import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
 import { FileUtils } from 'app/services/file-utils';
 import { FileExtension } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
+import { MainFileService } from 'app/services/main-file.service';
 import { PropManager } from 'app/services/prop-manager';
+import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
-import { AssetDatabase } from 'app/services/asset-database';
-import { RoadStyle } from 'app/services/road-style.service';
-import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,9 @@ export class ViewportImporterService {
 	constructor (
 		private assetService: AssetLoaderService,
 		private importerService: ImporterService,
-	) { }
+		private mainFileService: MainFileService,
+	) {
+	}
 
 	async import ( data: DragDropData, position: Vector3 ) {
 
@@ -33,8 +36,8 @@ export class ViewportImporterService {
 
 		switch ( data.extension ) {
 
-			case 'xodr':
-				this.importerService.importOpenDrive( data.path );
+			case FileExtension.OPENDRIVE:
+				this.importOpenDrive( data.path );
 				break;
 
 			case FileExtension.OPENSCENARIO:
@@ -77,6 +80,14 @@ export class ViewportImporterService {
 
 	}
 
+	importOpenDrive ( path: string ) {
+
+		this.mainFileService.newFile();
+
+		this.importerService.importOpenDrive( path );
+
+	}
+
 	importRoadStyle ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
 
 		const road = TvMapQueries.getRoadByCoords( position.x, position.y );
@@ -110,7 +121,6 @@ export class ViewportImporterService {
 		// this.modelImporter.import( path, filename, extension, position, metadata );
 
 	}
-
 
 
 }
