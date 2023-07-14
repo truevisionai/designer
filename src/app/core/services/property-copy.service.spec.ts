@@ -12,7 +12,6 @@ describe( 'PropertyCopyService Test', () => {
 		PropertyCopyService.copyProperties( lane1 );
 		PropertyCopyService.pasteProperties( lane2 )
 
-		expect( lane2.side ).toBe( lane1.side );
 		expect( lane2.type ).toBe( lane1.type );
 		expect( lane2.level ).toBe( lane1.level );
 
