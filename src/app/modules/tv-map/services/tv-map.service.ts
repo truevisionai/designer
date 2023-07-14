@@ -16,6 +16,7 @@ import { TvMapBuilder } from '../builders/tv-map-builder';
 import { OpenDriverParser } from './open-drive-parser.service';
 import { OdWriter } from './open-drive-writer.service';
 import { TvMapInstance } from './tv-map-source-file';
+import { TvMap } from '../models/tv-map.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -94,6 +95,8 @@ export class TvMapService {
 
 		if ( map == null ) return;
 
+		this.map?.destroy();
+
 		this.map = map;
 
 		TvMapBuilder.buildMap( this.map );
@@ -103,21 +106,19 @@ export class TvMapService {
 		TvConsole.info( 'OpenDrive imported ' + file?.path );
 	}
 
-	public load ( file: IFile, callbackFn = null ) {
+	public load ( file: IFile, callbackFn = null ): TvMap {
 
 		return this.parse( file.contents, callbackFn );
 
 	}
 
-	public parse ( contents: string, callbackFn = null ) {
+	public parse ( contents: string, callbackFn = null ): TvMap {
 
 		let parser = new OpenDriverParser();
 
 		const map = parser.parse( contents );
 
 		if ( map == null ) return;
-
-		this.map = map;
 
 		if ( callbackFn != null ) callbackFn();
 

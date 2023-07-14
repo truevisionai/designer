@@ -23,6 +23,7 @@ import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 
 
 @Component( {
@@ -189,9 +190,19 @@ export class MenuBarComponent implements OnInit {
 
 		const filepath = `./assets/open-drive/${ filename }`;
 
-		this.http.get( filepath, { responseType: 'text' } ).subscribe( response => {
+		this.http.get( filepath, { responseType: 'text' } ).subscribe( contents => {
 
-			this.odService.importContent( response );
+			this.mainFileService.newFile();
+
+			this.mainFileService.map?.destroy();
+
+			const map = this.odService.parse( contents );
+
+			if ( map == null ) return;
+
+			this.mainFileService.map = map;
+
+			TvMapBuilder.buildMap( this.mainFileService.map );
 
 		} );
 	}
