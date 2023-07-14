@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Selectable } from '../../modules/three-js/objects/i-selectable';
 import { BaseCommand } from './base-command';
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { ActionFactory } from '../../builders/action-factory';

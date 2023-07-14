@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ConditionType, Rule } from '../tv-enums';
 import { ValueCondition } from './value-condition';
 

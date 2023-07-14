@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/modules/scenario/models/actions/tv-lane-offset-action';
 import { CommandHistory } from '../../../../../services/command-history';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SceneService } from 'app/core/services/scene.service';
 import * as THREE from 'three';
 import { Vector3, Scene } from 'three';

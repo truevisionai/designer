@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ToolType } from '../models/tool-types.enum';
 import { BaseTool } from '../tools/base-tool';
 import { LaneAddTool } from '../tools/lane-add/lane-add-tool';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
 
 export function readXmlArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {

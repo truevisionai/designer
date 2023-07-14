@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvElevation } from "app/modules/tv-map/models/tv-elevation";
 import { DynamicControlPoint } from "./dynamic-control-point";

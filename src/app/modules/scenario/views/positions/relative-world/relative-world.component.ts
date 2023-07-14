@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component } from '@angular/core';
 import { Vector3 } from 'three';
 import { RelativeWorldPosition } from '../../../models/positions/tv-relative-world-position';

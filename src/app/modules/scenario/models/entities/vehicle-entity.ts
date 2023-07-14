@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MathUtils, Vector3 } from 'three';
 import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../tv-bounding-box';
 import { ScenarioEntity } from './scenario-entity';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { DragDropService } from 'app/core/services/drag-drop.service';
 import { ViewportImporterService } from './viewport-importer.service';

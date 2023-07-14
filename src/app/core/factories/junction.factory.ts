@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';

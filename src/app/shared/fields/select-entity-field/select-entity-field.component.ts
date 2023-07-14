@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
 import { ScenarioInstance } from '../../../modules/scenario/services/scenario-instance';

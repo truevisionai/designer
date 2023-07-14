@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvConsole } from '../../../core/utils/console';
 import { Condition } from '../models/conditions/tv-condition';
 import { ConditionCategory, ConditionType, Rule } from '../models/tv-enums';

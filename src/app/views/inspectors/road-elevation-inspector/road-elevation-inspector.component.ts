@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { IComponent } from 'app/core/game-object';

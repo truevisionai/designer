@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { Condition } from '../../../models/conditions/tv-condition';
 import { RelativeDistanceCondition } from '../../../models/conditions/tv-relative-distance-condition';

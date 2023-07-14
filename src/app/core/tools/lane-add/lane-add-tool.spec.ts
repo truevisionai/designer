@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { LaneAddTool } from './lane-add-tool';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';

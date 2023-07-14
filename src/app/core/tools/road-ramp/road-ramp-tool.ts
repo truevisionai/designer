@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { AnyControlPoint } from "app/modules/three-js/objects/control-point";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";

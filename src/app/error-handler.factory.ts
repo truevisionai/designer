@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ErrorHandler, Injector } from '@angular/core';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { Environment } from './core/utils/environment';

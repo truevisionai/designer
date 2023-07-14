@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { AccelerationCondition } from 'app/modules/scenario/models/conditions/tv-acceleration-condition';
 import { Condition } from '../../../models/conditions/tv-condition';

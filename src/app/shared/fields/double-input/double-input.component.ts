@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Maths } from 'app/utils/maths';
 

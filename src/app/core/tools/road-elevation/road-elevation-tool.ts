@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ToolType } from "app/core/models/tool-types.enum";
 import { BaseTool } from "../base-tool";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";

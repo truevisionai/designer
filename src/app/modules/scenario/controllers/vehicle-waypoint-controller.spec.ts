@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { VehicleWaypointController } from './vehicle-waypoint-controller';
 

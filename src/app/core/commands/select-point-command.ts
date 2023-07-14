@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Type } from '@angular/core';
 import { ISelectable } from '../../modules/three-js/objects/i-selectable';
 import { IComponent } from '../game-object';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { Metadata } from 'app/core/models/metadata.model';
 import { DragDropData } from 'app/core/services/drag-drop.service';

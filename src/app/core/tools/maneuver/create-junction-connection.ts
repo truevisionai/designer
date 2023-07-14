@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { JunctionEntryObject } from '../../../modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneSide } from '../../../modules/tv-map/models/tv-common';

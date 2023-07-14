@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { PropertyCopyService } from "./property-copy.service";

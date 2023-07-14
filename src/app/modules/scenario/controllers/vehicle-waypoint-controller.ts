@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { Time } from '../../../core/time';
