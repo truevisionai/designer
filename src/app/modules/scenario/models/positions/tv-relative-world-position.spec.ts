@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { OpenScenarioVersion, OrientationType } from "../tv-enums";
 import { Orientation } from "../tv-orientation";
 import { RelativeWorldPosition } from "./tv-relative-world-position";

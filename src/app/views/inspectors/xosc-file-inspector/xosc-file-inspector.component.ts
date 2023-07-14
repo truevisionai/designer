@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { TvScenario } from 'app/modules/scenario/models/tv-scenario';

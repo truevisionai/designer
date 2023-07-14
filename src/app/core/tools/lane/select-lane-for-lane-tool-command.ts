@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SelectMainObjectCommand } from 'app/core/commands/select-point-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { OdLaneDirectionBuilder } from 'app/modules/tv-map/builders/od-lane-direction-builder';

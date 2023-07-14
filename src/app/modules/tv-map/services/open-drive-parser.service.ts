@@ -24,6 +24,8 @@ import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
+import { TvConsole } from 'app/core/utils/console';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 declare const fxp;
 
@@ -64,9 +66,9 @@ export class OpenDriverParser extends AbstractReader {
 
 		const data: any = parser.parse( this.xmlElement );
 
-		this.readFile( data );
+		const map = this.readFile( data );
 
-		return this.map;
+		return map;
 	}
 
 	/**
@@ -75,6 +77,14 @@ export class OpenDriverParser extends AbstractReader {
 	readFile ( xmlString ) {
 
 		const xmlElement = xmlString.OpenDRIVE;
+
+		if ( !xmlElement ) TvConsole.error( 'No OpenDRIVE tag found. Import Failed' );
+		if ( !xmlElement ) SnackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
+		if ( !xmlElement ) return;
+
+		if ( !xmlElement.road ) TvConsole.error( 'No road tag found. Import Failed' );
+		if ( !xmlElement.road ) SnackBar.warn( 'No road tag found' );
+		if ( !xmlElement.road ) return;
 
 		this.readHeader( xmlElement.header );
 
@@ -91,6 +101,8 @@ export class OpenDriverParser extends AbstractReader {
 			this.map.addJunctionInstance( this.readJunction( xml ) );
 
 		} );
+
+		return this.map;
 	}
 
 	/**
@@ -343,6 +355,15 @@ export class OpenDriverParser extends AbstractReader {
 				this.readGeometryType( road, xmlElement.geometry );
 
 			}
+
+		} else {
+
+			TvConsole.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
+
+			SnackBar.error( 'NoGeometryFound In OpenDRIVE Road. Adding default line with length 1' );
+
+			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
+
 		}
 	}
 

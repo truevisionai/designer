@@ -27,6 +27,7 @@ import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-conne
 import { FileService } from './file.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { TvConsole } from 'app/core/utils/console';
 
 export interface Scene {
 
@@ -129,6 +130,12 @@ export class SceneExporterService {
 	}
 
 	exportRoad ( road: TvRoad ) {
+
+		if ( road.spline.controlPoints.length < 2 ) {
+			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
+			SnackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
+			return
+		}
 
 		const xml = {
 			attr_id: road.id,

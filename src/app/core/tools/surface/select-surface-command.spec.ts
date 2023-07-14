@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';
 import { TvSurface } from '../../../modules/tv-map/models/tv-surface.model';
 import { CatmullRomSpline } from '../../shapes/catmull-rom-spline';

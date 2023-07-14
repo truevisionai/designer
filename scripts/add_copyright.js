@@ -7,7 +7,7 @@ const copyrightNotice = `/*
  */`;
 
 // Specify the target folder
-const targetFolder = '/Users/administrator/Code/designer/src/app/modules/open-scenario/';
+const targetFolder = '/Users/administrator/Code/designer/src/app/';
 
 // Get all files recursively in the target folder
 function getAllFiles ( dirPath, arrayOfFiles ) {

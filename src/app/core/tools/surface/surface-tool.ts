@@ -116,7 +116,7 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 	public onPointerUp ( e: PointerEventData ) {
 
-		if ( this.point && this.point.isSelected && this.pointUpdated ) {
+		if ( this.point?.position && this.point.isSelected && this.pointUpdated && this.pointerDownAt ) {
 
 			const oldPosition = this.pointerDownAt.clone();
 			const newPosition = this.point.position.clone();

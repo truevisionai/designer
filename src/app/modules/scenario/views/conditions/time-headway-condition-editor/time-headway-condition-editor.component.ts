@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { EntityCondition } from 'app/modules/scenario/models/conditions/entity-condition';
 import { TimeHeadwayCondition } from 'app/modules/scenario/models/conditions/tv-time-headway-condition';

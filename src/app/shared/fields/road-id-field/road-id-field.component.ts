@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';
 import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvConsole } from 'app/core/utils/console';
 import { Maths } from 'app/utils/maths';
 import { EnumHelper } from '../../../tv-map/models/tv-common';

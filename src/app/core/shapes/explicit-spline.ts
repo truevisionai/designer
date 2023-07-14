@@ -558,4 +558,30 @@ export class ExplicitSpline extends AbstractSpline {
 
 		return length;
 	}
+
+	markAsSpiral ( point: RoadControlPoint ) {
+
+		const idx = point.tagindex;
+
+		if ( idx > 0 ) {
+
+			const previousPoint = this.controlPoints[ idx - 1 ] as RoadControlPoint;
+			const currentPoint = this.controlPoints[ idx ] as RoadControlPoint;
+
+			// need to set previous point to spiral to avoid bugs
+			previousPoint.segmentType = TvGeometryType.SPIRAL;
+			currentPoint.segmentType = TvGeometryType.SPIRAL;
+
+			// FOR NOW: hdg changes are not needed those are handled in update function
+
+			// const dir1 = new Vector2( Math.cos( this.hdgs[ idx - 1 ][ 0 ] ), Math.sin( this.hdgs[ idx - 1 ][ 0 ] ) );
+			// const dir2 = new Vector2( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ) );
+
+			// const sd = SPIRAL.vec2Angle( dir1.x, dir1.y );
+			// const ed = SPIRAL.vec2Angle( dir2.x, dir2.y );
+
+		}
+
+	}
+
 }

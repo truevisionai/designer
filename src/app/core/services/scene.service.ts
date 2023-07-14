@@ -51,6 +51,18 @@ export class SceneService {
 		}
 	}
 
+	static clear () {
+
+		this.removeObjects();
+
+	}
+
+	static removeObjects() {
+
+		this.objects.forEach( object => this.remove( object ) );
+
+	}
+
 	static add ( object: Object3D, raycasting: boolean = true ): void {
 
 		this.scene.add( object );

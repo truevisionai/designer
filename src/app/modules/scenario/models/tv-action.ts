@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
 import { StoryboardEvent } from '../services/scenario-director.service';

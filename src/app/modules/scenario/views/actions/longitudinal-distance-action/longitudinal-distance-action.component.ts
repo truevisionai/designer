@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input } from '@angular/core';
 import { TvAction } from 'app/modules/scenario/models/tv-action';
 import { LongitudinalDistanceAction } from 'app/modules/scenario/models/actions/tv-longitudinal-distance-action';

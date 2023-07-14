@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { RoadNode } from "app/modules/three-js/objects/road-node";
 import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { Maths } from "app/utils/maths";

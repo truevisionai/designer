@@ -370,7 +370,7 @@ export class SceneImporterService extends AbstractReader {
 
 			const position = this.importVector3( xml );
 
-			spline.addControlPointAt( position );
+			SceneService.add( spline.addControlPointAt( position ) );
 
 		} );
 

@@ -20,7 +20,7 @@ export class EditorService {
 
 	newFile () {
 
-		this.mainFileService.newFile();
+		this.mainFileService.newScene();
 
 	}
 

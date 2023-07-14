@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AppLinks } from 'app/services/app-links';

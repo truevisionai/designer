@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SplashComponent } from './splash.component';

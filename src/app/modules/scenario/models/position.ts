@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Euler, MathUtils, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { OpenScenarioImporter } from '../services/open-scenario-importer.service';

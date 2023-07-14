@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
 import { ParameterDeclaration } from './tv-parameter-declaration';
 import { TvProperty } from './tv-properties';

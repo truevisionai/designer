@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { Vector3 } from 'three';
 import { AbstractFieldComponent } from '../../../core/components/abstract-field.component';

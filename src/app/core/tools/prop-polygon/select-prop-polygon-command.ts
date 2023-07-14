@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import { ICommand } from '../../commands/i-command';
 import { PropPolygonTool } from './prop-polygon-tool';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { Position } from '../position';
 import { ScenarioEntity } from '../entities/scenario-entity';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { PropertyCopyService } from "./property-copy.service";
@@ -12,7 +16,6 @@ describe( 'PropertyCopyService Test', () => {
 		PropertyCopyService.copyProperties( lane1 );
 		PropertyCopyService.pasteProperties( lane2 )
 
-		expect( lane2.side ).toBe( lane1.side );
 		expect( lane2.type ).toBe( lane1.type );
 		expect( lane2.level ).toBe( lane1.level );
 

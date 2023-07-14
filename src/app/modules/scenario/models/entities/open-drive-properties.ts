@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Maths } from '../../../../utils/maths';
 import { TvLaneType } from '../../../tv-map/models/tv-common';
 import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';

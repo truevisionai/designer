@@ -19,6 +19,7 @@ import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { SceneService } from 'app/core/services/scene.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,7 +65,19 @@ export class MainFileService {
 
 	}
 
-	newFile () {
+	newScene ( map?: TvMap ) {
+
+		this.currentFile = new IFile( 'Untitled.scene' );
+
+		this.electronService.setTitle( this.currentFile.name );
+
+		this.setMap( map || new TvMap() );
+
+	}
+
+	setMap ( map: TvMap ) {
+
+		SceneService.clear();
 
 		ToolManager.clear();
 
@@ -76,11 +89,7 @@ export class MainFileService {
 
 		if ( this.scenario ) this.scenario.destroy();
 
-		this.currentFile = new IFile( 'Untitled.scene' );
-
-		this.electronService.setTitle( this.currentFile.name );
-
-		this.map = new TvMap();
+		this.map = map;
 
 		TvMapBuilder.buildMap( this.map );
 	}
@@ -125,6 +134,12 @@ export class MainFileService {
 
 	saveAs () {
 
+		ToolManager.disable();
+
+		AppInspector.clear();
+
+		CommandHistory.clear();
+
 		this.sceneExporter.saveAs();
 
 	}
@@ -133,6 +148,12 @@ export class MainFileService {
 
 		// path exists means it was imported locally
 		if ( this.currentFile.path != null ) {
+
+			ToolManager.disable();
+
+			AppInspector.clear();
+
+			CommandHistory.clear();
 
 			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 

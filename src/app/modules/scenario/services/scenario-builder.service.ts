@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SceneService } from 'app/core/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';

@@ -1,6 +1,12 @@
 node_modules
 npm-debug.log
 Dockerfile
+dist/
+dist
+release/
 .dockerignore
 .git
 .gitignore
+.idea
+.vscode
+.run

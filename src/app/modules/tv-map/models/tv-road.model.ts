@@ -591,7 +591,9 @@ export class TvRoad {
 	getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
 
 		// helps catch bugs
-		if ( this.geometries.length == 0 ) throw new Error( 'NoGeometriesFound' );
+		if ( this.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
 
 		if ( s == null ) TvConsole.error( 's is undefined' );
 
@@ -1101,13 +1103,13 @@ export class TvRoad {
 
 	showControlPoints (): void {
 
-		this.spline.controlPoints.forEach( p => p.visible = true );
+		this.spline.showControlPoints();
 
 	}
 
 	hideControlPoints (): void {
 
-		this.spline.controlPoints.forEach( p => p.visible = false );
+		this.spline.hideControlPoints();
 
 	}
 

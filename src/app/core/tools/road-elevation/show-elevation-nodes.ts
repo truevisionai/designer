@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from "app/core/commands/base-command";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { RoadElevationTool } from "./road-elevation-tool";

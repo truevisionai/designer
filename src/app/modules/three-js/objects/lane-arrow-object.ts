@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
 import { OdBuilderConfig } from '../../tv-map/builders/od-builder-config';
 

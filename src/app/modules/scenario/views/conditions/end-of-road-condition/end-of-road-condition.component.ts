@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { EndOfRoadCondition } from 'app/modules/scenario/models/conditions/tv-end-of-road-condition';

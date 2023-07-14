@@ -18,18 +18,7 @@ import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-comm
 @Component( {
 	selector: 'app-road-inspector',
 	templateUrl: './road-inspector.component.html',
-	styles: [
-		`
-			.example-card {
-				max-width: 400px;
-			}
-
-			.example-header-image {
-				background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-				background-size: cover;
-			}
-		`
-	]
+	styles: []
 } )
 export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
@@ -46,6 +35,10 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 	get road (): TvRoad {
 		return this.data.road;
+	}
+
+	get splineType () {
+		return this.road?.spline?.type
 	}
 
 	get controlPoint (): RoadControlPoint {

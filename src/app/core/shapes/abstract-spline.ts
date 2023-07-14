@@ -115,6 +115,10 @@ export abstract class AbstractSpline {
 		this.controlPoints.splice( index, 1 );
 	}
 
+	hideControlPoints () { this.controlPoints.forEach( i => i.hide() ); }
+
+	showControlPoints () { this.controlPoints.forEach( i => i.show() ); }
+
 	getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
 		const distance = p1.distanceTo( p2 );

@@ -46,7 +46,7 @@ export class NewRoadDialogComponent implements OnInit {
 
 	createNew () {
 
-		this.mainFileService.newFile();
+		this.mainFileService.newScene();
 
 		// this.oscService.newFile();
 

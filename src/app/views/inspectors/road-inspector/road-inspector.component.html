@@ -19,6 +19,8 @@
 
 	<app-enum-field (changed)="onRoadTypeChanged($event)" [enum]="roadTypesEnum" [value]="type" label="Road Type"></app-enum-field>
 
+	<app-string-field [value]="splineType" [disabled]="true" label="Spline"></app-string-field>
+
 </div>
 
 <div *ngIf="isOpen && road">

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ScenarioEvents } from '../services/scenario-events';
 import { TvAction } from './tv-action';
 import { ActionCategory, StoryboardElementState, StoryboardElementType } from './tv-enums';
