@@ -7,6 +7,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from './od-base-command';
+import { ExplicitSpline } from '../shapes/explicit-spline';
 
 export class UpdateRoadPointCommand extends OdBaseCommand {
 
@@ -28,6 +29,12 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
 		// chanhe position of point
 		this.point.copyPosition( this.newPosition );
+
+		if ( this.road.spline instanceof ExplicitSpline ) {
+
+			this.road.spline.markAsSpiral( this.point );
+
+		}
 
 		// update spline
 		this.road.spline.update();
