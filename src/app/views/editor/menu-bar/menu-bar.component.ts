@@ -69,7 +69,7 @@ export class MenuBarComponent implements OnInit {
 
 	onNewFile () {
 
-		this.mainFileService.newFile();
+		this.mainFileService.newScene();
 
 	}
 
@@ -192,17 +192,11 @@ export class MenuBarComponent implements OnInit {
 
 		this.http.get( filepath, { responseType: 'text' } ).subscribe( contents => {
 
-			this.mainFileService.newFile();
-
-			this.mainFileService.map?.destroy();
-
 			const map = this.odService.parse( contents );
 
 			if ( map == null ) return;
 
-			this.mainFileService.map = map;
-
-			TvMapBuilder.buildMap( this.mainFileService.map );
+			this.mainFileService.newScene( map );
 
 		} );
 	}

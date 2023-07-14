@@ -86,7 +86,7 @@ export class ViewportImporterService {
 
 	importOpenDrive ( path: string ) {
 
-		this.mainFileService.newFile();
+		this.mainFileService.newScene();
 
 		this.importerService.importOpenDrive( path );
 

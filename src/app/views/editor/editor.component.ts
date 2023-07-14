@@ -44,7 +44,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	ngOnInit () {
 
-		this.mainFileService.newFile();
+		this.mainFileService.newScene();
 
 	}
 
