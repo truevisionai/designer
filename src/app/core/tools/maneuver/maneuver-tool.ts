@@ -48,7 +48,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
 
-		this.entries = JunctionFactory.createJunctionEntries();
+		this.entries = JunctionFactory.createJunctionEntries( this.map.getRoads() );
 		this.entries.forEach( obj => SceneService.add( obj ) );
 
 		this.showLanePathObjects();
@@ -154,7 +154,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 			} else {
 
-				const connection = junction.findConnection( entry.road, exit.road );
+				const connection = junction.findRoadConnection( entry.road, exit.road );
 
 				const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
 

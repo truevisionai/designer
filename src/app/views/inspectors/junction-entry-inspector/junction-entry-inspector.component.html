@@ -8,4 +8,26 @@
 
 	<button mat-stroked-button (click)="createManeuvers()">Create Maneuvers</button>
 
+	<div *ngFor="let dot of data">
+
+		<div *ngFor="let connection of dot.connections">
+
+			<div *ngFor="let link of connection.laneLink">
+
+				<div *ngIf="link.incomingLane?.id == dot.lane.id || link.connectingLane?.id == dot.lane.id">
+
+					Road: {{ link.incomingRoad?.id}} -> {{ link.connectingRoad?.id }} <br />
+					Lane: {{ link.incomingLane?.id}} -> {{ link.connectingLane?.id }} <br />
+
+					<button mat-stroked-button (click)="removeLink(connection,link)">Delete Link</button>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
 </div>

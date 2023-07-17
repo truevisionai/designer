@@ -3,15 +3,16 @@
  */
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { TvContactPoint, TvLaneType } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { SceneService } from '../services/scene.service';
-import { CreateJunctionConnection } from '../tools/maneuver/create-junction-connection';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { SceneService } from '../services/scene.service';
+import { CreateJunctionConnection } from '../tools/maneuver/create-junction-connection';
+import { TvConsole } from '../utils/console';
 
 export class JunctionFactory {
 
@@ -37,9 +38,9 @@ export class JunctionFactory {
 		} );
 	}
 
-	static createJunctionEntries (): JunctionEntryObject[] {
+	static createJunctionEntries ( allRoads: TvRoad[] ): JunctionEntryObject[] {
 
-		const roads = TvMapInstance.map.getRoads().filter( road => !road.isJunction );
+		const roads = allRoads.filter( road => !road.isJunction );
 
 		return this.createEntries( roads );
 
@@ -147,7 +148,7 @@ export class JunctionFactory {
 
 	}
 
-	static createJunctionEntriesForRoad ( road: TvRoad, contact: TvContactPoint ) {
+	static createJunctionEntriesForRoad ( road: TvRoad, contact: TvContactPoint ): JunctionEntryObject[] {
 
 		const laneSection = contact == TvContactPoint.START ?
 			road.getFirstLaneSection() :
@@ -171,7 +172,7 @@ export class JunctionFactory {
 
 	static mergeEntries ( objects: JunctionEntryObject[] ) {
 
-		const results = [];
+		const results: JunctionEntryObject[] = [];
 
 		for ( let i = 0; i < objects.length; i++ ) {
 
@@ -181,48 +182,17 @@ export class JunctionFactory {
 
 				const right = objects[ j ];
 
-				// dont merge same road
-				if ( left.road.id == right.road.id ) continue;
+				if ( left.canConnect( right ) && left.isStraightConnection( right ) ) {
 
-				// we only want to merge
-				// 1 with 1 or
-				// -1 with 1 or
-				// 1 with -1
-				// -1 with -1
-				// to ensure we have straight connections first
-				if ( Math.abs( left.lane.id ) != Math.abs( right.lane.id ) ) continue;
+					console.log( 'straight' );
 
-				// dont merge if both are entries
-				if ( left.isEntry && right.isEntry ) continue;
+					const entry = left.isEntry ? left : right;
+					const exit = left.isExit ? left : right;
 
-				// dont merge if both are exits
-				if ( left.isExit && right.isExit ) continue;
+					this.connect( entry, exit );
 
-				const entry = left.isEntry ? left : right;
-
-				const exit = left.isExit ? left : right;
-
-				const junction = TvMapInstance.map.findJunction( entry.road, exit.road );
-
-				if ( !junction ) {
-
-					CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, null, null ) );
-
-				} else {
-
-					const connection = junction.findConnection( entry.road, exit.road );
-
-					const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
-
-					if ( connection && laneLink ) {
-
-						SnackBar.warn( 'Connection already exists' );
-
-					} else {
-
-						CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, connection, laneLink ) );
-
-					}
+					results.push( entry );
+					results.push( exit );
 
 				}
 
@@ -230,8 +200,179 @@ export class JunctionFactory {
 
 		}
 
-		return results;
+		const unconnected = objects.filter( object => object.isLastDrivingLane() );
 
+		for ( let i = 0; i < unconnected.length; i++ ) {
+
+			const left = unconnected[ i ];
+
+			for ( let j = 0; j < results.length; j++ ) {
+
+				const right = results[ j ];
+
+				if ( left.id == right.id ) continue;
+
+				if ( left.isStraightConnection( right ) ) continue;
+
+				if ( !left.canConnect( right, 'complex' ) ) continue;
+
+				// for right connections we want the right most lane
+				if ( left.isRightConnection( right ) && right.isRightMost() ) {
+
+					const entry = left.isEntry ? left : right;
+					const exit = left.isExit ? left : right;
+
+					this.connect( entry, exit );
+
+					// for left connections we want the left most lane
+				} else if ( left.isLeftConnection( right ) && right.isLeftMost() ) {
+
+					const entry = left.isEntry ? left : right;
+					const exit = left.isExit ? left : right;
+
+					this.connect( entry, exit );
+
+				}
+
+
+			}
+
+		}
+
+		return results;
+	}
+
+	// merging entries based on angle
+	static mergeComplexEntries ( objects: JunctionEntryObject[] ) {
+
+		const results = [];
+
+		for ( let i = 0; i < objects.length; i++ ) {
+
+			const A = objects[ i ];
+
+			const mergeOptions = objects
+				.filter( B => B.road.id !== A.road.id )
+				.filter( B => B.junctionType != A.junctionType )
+				.filter( B => !A.canConnect( B ) )
+				.forEach( B => {
+
+					const aPos = A.getJunctionPosTheta();
+					const bPos = B.getJunctionPosTheta();
+
+					const sideAngle = aPos.computeSideAngle( bPos );
+
+					if ( sideAngle.angleDiff <= 20 ) {
+
+						// for straight connections we only merge same lane-id
+						if ( Math.abs( A.lane.id ) != Math.abs( B.lane.id ) ) return;
+
+						console.log( 'straight' );
+
+						const entry = A.isEntry ? A : B;
+
+						const exit = A.isExit ? A : B;
+
+						this.connect( entry, exit );
+
+					} else if ( sideAngle.side == TvLaneSide.LEFT ) {
+
+						if ( B.isLastDrivingLane() ) return;
+
+						console.log( 'left' );
+
+						const entry = A.isEntry ? A : B;
+
+						const exit = A.isExit ? A : B;
+
+						this.connect( entry, exit );
+
+					} else if ( sideAngle.side == TvLaneSide.RIGHT ) {
+
+						if ( B.isLastDrivingLane() ) return;
+
+						console.log( 'right' );
+
+						const entry = A.isEntry ? A : B;
+
+						const exit = A.isExit ? A : B;
+
+						this.connect( entry, exit );
+
+					}
+
+				} );
+
+
+			console.log( A, mergeOptions );
+
+		}
+	}
+
+	static straightConnection ( entry: JunctionEntryObject, exit: JunctionEntryObject ) {
+
+		const aPos = entry.getJunctionPosTheta();
+		const bPos = exit.getJunctionPosTheta();
+
+		const sideAngle = aPos.computeSideAngle( bPos );
+
+		if ( sideAngle.angleDiff <= 20 ) {
+
+			// for straight connections we only merge same lane-id
+			if ( Math.abs( entry.lane.id ) != Math.abs( exit.lane.id ) ) return;
+
+			console.log( 'straight' );
+
+			this.connect( entry, exit );
+
+		}
+
+		// else if ( sideAngle.side == TvLaneSide.LEFT ) {
+
+		// 	if ( exit.isLastDrivingLane() ) return;
+
+		// 	console.log( 'left' );
+
+		// 	this.connect( entry, exit );
+
+		// } else if ( sideAngle.side == TvLaneSide.RIGHT ) {
+
+		// 	if ( exit.isLastDrivingLane() ) return;
+
+		// 	console.log( 'right' );
+
+		// 	this.connect( entry, exit );
+
+		// }
+
+	}
+
+	static connect ( entry: JunctionEntryObject, exit: JunctionEntryObject ) {
+
+		const junction = TvMapInstance.map.findJunction( entry.road, exit.road );
+
+		if ( !junction ) {
+
+			CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, null, null ) );
+
+		} else {
+
+			const connection = junction.findRoadConnection( entry.road, exit.road );
+
+			const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
+
+			if ( connection && laneLink ) {
+
+				TvConsole.warn( 'Connection already exists' );
+				SnackBar.warn( 'Connection already exists' );
+
+			} else {
+
+				CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, connection, laneLink ) );
+
+			}
+
+		}
 
 	}
 }

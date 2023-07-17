@@ -12,8 +12,6 @@ import { BaseCommand } from './base-command';
 
 export class DeleteLinkCommand extends BaseCommand {
 
-	private connectingRoad: TvRoad;
-
 	constructor ( private connection: TvJunctionConnection, private link: TvJunctionLaneLink, private lanePathObject: LanePathObject ) {
 
 		super();
@@ -22,57 +20,63 @@ export class DeleteLinkCommand extends BaseCommand {
 
 	execute (): void {
 
-		if ( !this.link.lanePath ) SnackBar.error( 'Link mesh not found' );
-		if ( !this.link.lanePath ) return;
+		this.connection.removeLaneLink( this.link );
 
-		const index = this.connection.laneLink.findIndex( item => item.lanePath.id === this.link.lanePath.id );
+		// this.connectingRoad = this.connection.connectingRoad;
 
-		if ( index === -1 ) SnackBar.error( 'Link index not found' );
-		if ( index === -1 ) return;
+		// this.map.removeRoad( this.connectingRoad );
 
-		this.connectingRoad = this.connection.connectingRoad;
+		// this.link.hide();
 
-		this.map.removeRoad( this.connectingRoad );
+		// SceneService.remove( this.link.lanePath );
 
-		this.link.hide();
+		// this.connection.removeLinkAtIndex( index );
 
-		SceneService.remove( this.link.lanePath );
+		// const junction = this.map.getJunctionById( this.connectingRoad.junction );
 
-		this.connection.removeLinkAtIndex( index );
+		// if ( !junction ) SnackBar.error( 'Junction not found' );
 
-		const junction = this.map.getJunctionById( this.connectingRoad.junction );
+		// if ( this.connectingRoad.successor ) {
 
-		if ( !junction ) SnackBar.error( 'Junction not found' );
+		// 	const outgoingRoad = this.map.getRoadById( this.connectingRoad.successor.elementId );
 
-		if ( this.connectingRoad.successor ) {
+		// 	junction.removeConnection( this.connection, this.lanePathObject.incomingRoad, outgoingRoad );
 
-			const outgoingRoad = this.map.getRoadById( this.connectingRoad.successor.elementId );
-
-			junction.removeConnection( this.connection, this.lanePathObject.incomingRoad, outgoingRoad );
-
-		}
+		// }
 
 	}
 
 	undo (): void {
 
-		if ( !this.link.lanePath ) return;
-
-		this.link.lanePath.show();
-
-		SceneService.add( this.link.lanePath );
-
-		this.map.addRoadInstance( this.connectingRoad );
-
 		this.connection.addLaneLink( this.link );
 
-		const junction = this.map.getJunctionById( this.connectingRoad.junction );
+		this.link.connectingLane.laneSection.addLaneInstance( this.link.connectingLane, true );
 
-		if ( !junction ) console.error( 'junction not found with id ', this.connectingRoad.junction );
+		// TODO: check if we need to remove the whole connection if there are no more lane links
 
-		junction.addConnection( this.connection );
+		// rebuild connecting road because it might have changed after lane link removal
+		RoadFactory.rebuildRoad( this.connection.connectingRoad );
 
-		RoadFactory.rebuildRoad( this.connectingRoad );
+		if ( this.link.lanePath ) SceneService.add( this.link.lanePath );
+
+
+		// if ( !this.link.lanePath ) return;
+
+		// this.link.lanePath.show();
+
+		// SceneService.add( this.link.lanePath );
+
+		// this.map.addRoadInstance( this.connectingRoad );
+
+		// this.connection.addLaneLink( this.link );
+
+		// const junction = this.map.getJunctionById( this.connectingRoad.junction );
+
+		// if ( !junction ) console.error( 'junction not found with id ', this.connectingRoad.junction );
+
+		// junction.addConnection( this.connection );
+
+		// RoadFactory.rebuildRoad( this.connectingRoad );
 	}
 
 	redo (): void {

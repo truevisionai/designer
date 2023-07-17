@@ -3,20 +3,43 @@
  */
 
 import { Color, Line, LineBasicMaterial, Mesh, Object3D } from 'three';
+import { RoadFactory } from '../../../core/factories/road-factory.service';
+import { SceneService } from '../../../core/services/scene.service';
 import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 
 export class TvJunctionLaneLink {
 
 	public lanePath: LanePathObject;
 
+	public readonly incomingLane: TvLane;
+	public readonly connectingLane: TvLane;
+
 	/**
 	 *
 	 * @param from ID of the incoming lane
 	 * @param to ID of the connecting lane
 	 */
-	constructor ( public from: number, public to: number ) {
+	constructor ( from: TvLane, to: TvLane ) {
+		this.incomingLane = from;
+		this.connectingLane = to;
+	}
 
+	get from (): number {
+		return this.incomingLane?.id;
+	}
+
+	get to (): number {
+		return this.connectingLane?.id;
+	}
+
+	get incomingRoad () {
+		return this.incomingLane?.laneSection?.road;
+	}
+
+	get connectingRoad () {
+		return this.connectingLane?.laneSection?.road;
 	}
 
 	show () {
@@ -28,6 +51,19 @@ export class TvJunctionLaneLink {
 	hide () {
 
 		if ( this.lanePath ) this.lanePath.show();
+
+	}
+
+	delete () {
+
+		this.connectingLane.laneSection.removeLane( this.connectingLane );
+
+		// TODO: check if we need to remove the whole connection if there are no more lane links
+
+		// rebuild connecting road because it might have changed after lane link removal
+		RoadFactory.rebuildRoad( this.connectingRoad );
+
+		SceneService.remove( this.lanePath );
 
 	}
 }

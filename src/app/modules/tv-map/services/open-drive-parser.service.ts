@@ -4,6 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { TvConsole } from 'app/core/utils/console';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { readXmlArray } from '../../../core/tools/xml-utils';
@@ -24,8 +26,6 @@ import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
-import { TvConsole } from 'app/core/utils/console';
-import { SnackBar } from 'app/services/snack-bar.service';
 
 declare const fxp;
 
@@ -514,7 +514,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		this.readAsOptionalArray( xmlElement.connection, xml => {
 
-			junction.addConnection( this.readJunctionConnection( xml ) );
+			junction.addConnection( this.readJunctionConnection( xml, junction ) );
 
 		} );
 
@@ -533,30 +533,41 @@ export class OpenDriverParser extends AbstractReader {
 		return junction;
 	}
 
-	public readJunctionConnection ( xmlElement: XmlElement ) {
+	public readJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {
 
 		const id = parseInt( xmlElement.attr_id );
-		const incomingRoad = parseInt( xmlElement.attr_incomingRoad );
-		const connectingRoad = parseInt( xmlElement.attr_connectingRoad );
+		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
+		const connectingRoadId = parseInt( xmlElement.attr_connectingRoad );
 		const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
 
-		const junctionConnection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
+		const incomingRoad = this.map.getRoadById( incomingRoadId );
+		const connectingRoad = this.map.getRoadById( connectingRoadId );
+
+		const outgoingRoadId = contactPoint == TvContactPoint.START ?
+			connectingRoad?.successor?.elementId :
+			connectingRoad?.predecessor?.elementId;
+
+		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
+
+		if ( !outgoingRoad ) console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
+
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
 		this.readAsOptionalArray( xmlElement.laneLink, xml => {
 
-			junctionConnection.addLaneLink( this.readJunctionConnectionLaneLink( xml ) );
+			connection.addLaneLink( this.readJunctionConnectionLaneLink( xml, junction, connection ) );
 
 		} );
 
-		return junctionConnection;
+		return connection;
 	}
 
-	public readJunctionConnectionLaneLink ( xmlElement: XmlElement ): TvJunctionLaneLink {
+	public readJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
 
 		const from = parseInt( xmlElement.attr_from );
 		const to = parseInt( xmlElement.attr_to );
 
-		return new TvJunctionLaneLink( from, to );
+		return connection.makeLaneLink( junction, from, to );
 	}
 
 	public readJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {

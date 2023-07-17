@@ -592,7 +592,14 @@ export class TvRoad {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
-			throw new Error( 'NoGeometriesFound' );
+
+			if ( this.spline?.controlPoints.length > 1 ) {
+				this.updateGeometryFromSpline();
+			}
+
+			if ( this.geometries.length == 0 ) {
+				throw new Error( 'NoGeometriesFound' );
+			}
 		}
 
 		if ( s == null ) TvConsole.error( 's is undefined' );

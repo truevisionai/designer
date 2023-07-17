@@ -5,7 +5,7 @@
 // Class representing a position in space plus a direction.
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvSide } from './tv-common';
+import { TvLaneSide, TvSide } from './tv-common';
 
 export class TvPosTheta {
 	public z: number = 0;
@@ -176,5 +176,38 @@ export class TvPosTheta {
 
 		return Maths.directionV3( this.toVector3(), this.hdg, B.toVector3() );
 
+	}
+
+	computeSideAngle ( B: TvPosTheta ) {
+
+		const A = this;
+
+		// Calculate the direction to point B from point A
+		let dirToB = Math.atan2( B.y - A.y, B.x - A.x );
+
+		// Ensure dirToB is between 0 and 2*pi
+		if ( dirToB < 0 ) {
+			dirToB += 2 * Math.PI;
+		}
+
+		// Calculate the angle difference
+		let angleDiff = dirToB - A.hdg;
+		// Make sure angleDiff is between -pi and pi
+		if ( angleDiff > Math.PI ) {
+			angleDiff -= 2 * Math.PI;
+		} else if ( angleDiff < -Math.PI ) {
+			angleDiff += 2 * Math.PI;
+		}
+
+		// Determine left or right
+		let side = angleDiff > 0 ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+
+		// Convert radians to degrees
+		angleDiff = angleDiff * 180 / Math.PI;
+
+		return {
+			side: side,
+			angleDiff: Math.abs( angleDiff )
+		};
 	}
 }

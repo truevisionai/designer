@@ -71,7 +71,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.connectionCreated ) this.junction.removeConnectionById( this.connection.id );
 
-		if ( this.laneLinkCreated ) this.connection.removeLink( this.laneLink );
+		if ( this.laneLinkCreated ) this.connection.removeLaneLink( this.laneLink );
 
 		this.entry.road.setSuccessor( null, null );
 
@@ -114,7 +114,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLinkCreated = true;
 
-		return new TvJunctionLaneLink( entry.lane.id, connectingLane.id );
+		return new TvJunctionLaneLink( entry.lane, connectingLane );
 
 	}
 
@@ -122,7 +122,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.connectionCreated = true;
 
-		return TvJunctionConnection.create( entry.road.id, this.connectingRoad.id, TvContactPoint.START );
+		return TvJunctionConnection.create( entry.road, this.connectingRoad, TvContactPoint.START );
 
 	}
 

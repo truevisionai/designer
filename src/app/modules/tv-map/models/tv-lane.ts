@@ -287,6 +287,10 @@ export class TvLane implements ISelectable, Copiable {
 		return Number( this.attr_id );
 	}
 
+	set id ( value: number ) {
+		this.attr_id = value;
+	}
+
 	get type (): TvLaneType {
 		return this.attr_type;
 	}

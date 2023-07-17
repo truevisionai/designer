@@ -5,8 +5,11 @@
 import { MathUtils } from 'three';
 import { TvConsole } from '../../../core/utils/console';
 import { TvMapQueries } from '../queries/tv-map-queries';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvContactPoint } from './tv-common';
+import { TvJunction } from './tv-junction';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
+import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 
 export class TvJunctionConnection {
@@ -18,25 +21,45 @@ export class TvJunctionConnection {
 	private lastAddedJunctionLaneLinkIndex: number;
 
 	private static counter = 1;
+	private _outgoingRoad: TvRoad;
 
+	/**
+	 *
+	 * @param id Unique ID within the junction
+	 * @param incomingRoad ID of the incoming road
+	 * @param connectingRoad ID of the connecting road
+	 * @param contactPoint Contact point on the connecting road
+	 */
 	constructor (
 		public id: number,
-		public incomingRoadId: number,
-		public connectingRoadId: number,
+		public incomingRoad: TvRoad,
+		public connectingRoad: TvRoad,
 		public contactPoint: TvContactPoint,
+		outgoingRoad: TvRoad = null,
 	) {
 		this.uuid = MathUtils.generateUUID();
+		this._outgoingRoad = outgoingRoad;
 	}
 
-	get connectingRoad (): TvRoad {
-		return TvMapQueries.findRoadById( this.connectingRoadId );
+	get incomingRoadId (): number {
+		return this.incomingRoad?.id;
 	}
 
-	get incomingRoad (): TvRoad {
-		return TvMapQueries.findRoadById( this.incomingRoadId );
+	get connectingRoadId (): number {
+		return this.connectingRoad?.id;
+	}
+
+	get outgoingRoadId (): number {
+		return this.outgoingRoad?.id;
+	}
+
+	get junction () {
+		return TvMapInstance.map.getJunctionById( this.connectingRoad.junction );
 	}
 
 	get outgoingRoad (): TvRoad {
+
+		if ( this._outgoingRoad ) return this._outgoingRoad;
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
@@ -51,34 +74,6 @@ export class TvJunctionConnection {
 			throw new Error( 'Invalid contact point' );
 
 		}
-	}
-
-	/**
-	 * Add a lane link record
-	 *
-	 * @param {number} from
-	 * @param {number} to
-	 * @returns {number}
-	 */
-	public addJunctionLaneLink ( from: number, to: number ) {
-
-		const instance = new TvJunctionLaneLink( from, to );
-
-		this.addLaneLink( instance );
-
-		this.lastAddedJunctionLaneLinkIndex = this.laneLink.length - 1;
-
-		return this.lastAddedJunctionLaneLinkIndex;
-
-	}
-
-	addNewLink ( from: number, to: number ) {
-
-		const link = new TvJunctionLaneLink( from, to );
-
-		this.addLaneLink( link );
-
-		return link;
 	}
 
 	getJunctionLaneLinkCount (): number {
@@ -157,11 +152,13 @@ export class TvJunctionConnection {
 
 	}
 
-	static create ( incomingRoad: number, connectingRoad: number, contactPoint: TvContactPoint ) {
+	static create ( incomingRoad: TvRoad, connectingRoad: TvRoad, contactPoint: TvContactPoint ) {
+
 		return new TvJunctionConnection( TvJunctionConnection.counter++, incomingRoad, connectingRoad, contactPoint );
+
 	}
 
-	removeLink ( laneLink: TvJunctionLaneLink ) {
+	removeLaneLink ( laneLink: TvJunctionLaneLink ) {
 
 		const index = this.laneLink.findIndex( link => link.from == laneLink.from && link.to == laneLink.to );
 
@@ -169,12 +166,69 @@ export class TvJunctionConnection {
 
 			this.laneLink.splice( index, 1 );
 
+			laneLink.delete();
+
 		} else {
 
 			TvConsole.warn( 'TvJunctionConnection.removeLink' + 'Link not found' );
 
 		}
 
+	}
+
+	delete () {
+
+		// this.laneLink.forEach(lane => )
+
+		// this.connectingRoad
+
+		this.laneLink.splice( 0, this.laneLink.length );
+
+		// this.
+
+		if ( !this.junction ) return;
+
+		this.junction.removeConnectionById( this.id );
+
+	}
+
+	makeLaneLink ( junction: TvJunction, from: number, to: number ): TvJunctionLaneLink {
+
+		const fromLane = this.findFromLane( junction, from );
+		const toLane = this.findToLane( to );
+
+		return new TvJunctionLaneLink( fromLane, toLane );
+	}
+
+	private findFromLane ( junction: TvJunction, from: number ): TvLane {
+
+		const junctionId = this.connectingRoad.junction;
+
+		const successor = this.incomingRoad.successor;
+		const predecessor = this.incomingRoad.predecessor;
+
+		if ( successor?.elementType == 'junction' && successor.elementId == junctionId ) {
+
+			return this.incomingRoad.getLastLaneSection().getLaneById( from );
+
+		} else if ( predecessor?.elementType == 'junction' && predecessor.elementId == junctionId ) {
+
+			return this.incomingRoad.getFirstLaneSection().getLaneById( from );
+
+		}
+	}
+
+	private findToLane ( laneId: number ): TvLane {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.connectingRoad.getFirstLaneSection().getLaneById( laneId );
+
+		} else if ( this.contactPoint == TvContactPoint.END ) {
+
+			return this.connectingRoad.getLastLaneSection().getLaneById( laneId );
+
+		}
 
 	}
 }

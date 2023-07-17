@@ -283,15 +283,6 @@ export class TvLaneSection {
 	}
 
 	/**
-	 * Delete lane at provided index
-	 *
-	 * @param index
-	 */
-	deleteLane ( index ) {
-		this.laneArray.splice( index, 1 );
-	}
-
-	/**
 	 * Delete the outside left lane
 	 */
 	deleteLeftLane () {
@@ -763,12 +754,31 @@ export class TvLaneSection {
 
 	removeLaneById ( laneId: number ) {
 
-		this.laneMap.delete( laneId );
+		this.removeLane( this.getLaneById( laneId ) );
 
-		const inDescOrder = ( a, b ) => a[ 0 ] > b[ 0 ] ? -1 : 1;
+	}
 
-		this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+	removeLane ( deletedLane: TvLane ) {
 
+		this.laneMap.delete( deletedLane.id );
+
+		// create a new map
+		let newLaneMap = new Map<number, TvLane>();
+
+		// iterate through the old map
+		for ( let [ id, lane ] of this.laneMap.entries() ) {
+
+			// shift left lanes
+			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
+
+			// shift right lanes
+			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
+
+			newLaneMap.set( id, lane );
+
+		}
+
+		this.laneMap = newLaneMap;
 	}
 
 	updateLaneWidthValues ( lane: TvLane ): void {

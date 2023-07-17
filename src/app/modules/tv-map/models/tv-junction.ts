@@ -4,11 +4,16 @@
 
 import { Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvContactPoint } from './tv-common';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
+
+export enum JunctionType {
+	DEFAULT = 'default',
+	VIRTUAL = 'virtual',
+	DIRECT = 'direct',
+}
 
 export class TvJunction {
 
@@ -79,46 +84,6 @@ export class TvJunction {
 
 	set id ( value: number ) {
 		this._id = value;
-	}
-
-	/**
-	 * Adds a junction connection to the junction
-	 *
-	 * @param id ID within the junction
-	 * @param incomingRoad ID of the incoming road
-	 * @param connectingRoad ID of the connecting path
-	 * @param contactPoint Contact point on the connecting road (start or end)
-	 */
-	public addJunctionConnection (
-		id: number,
-		incomingRoad: number,
-		connectingRoad: number,
-		contactPoint: TvContactPoint
-	): TvJunctionConnection {
-
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
-
-		this._connections.set( id, connection );
-
-		return connection;
-	}
-
-	/**
-	 * Adds a junction connection to the junction
-	 *
-	 * @param incomingRoad ID of the incoming road
-	 * @param connectingRoad ID of the connecting path
-	 * @param contactPoint Contact point on the connecting road (start or end)
-	 */
-	public addNewConnection (
-		incomingRoad: number,
-		connectingRoad: number,
-		contactPoint: TvContactPoint,
-	): TvJunctionConnection {
-
-		const id = this.connections.size + 1;
-
-		return this.addJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 	}
 
 	removeConnectionByUuid ( uuid: string ) {
@@ -383,26 +348,27 @@ export class TvJunction {
 	 * @param outgoingRoad
 	 * @returns boolean
 	 */
-	public hasConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
+	public hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
 
-		return this.findConnection( incomingRoad, outgoingRoad ) !== undefined;
+		return this.findRoadConnection( incomingRoad, outgoingRoad ) !== undefined;
 
 	}
 
 	/**
-	 * Find the connection to the given incoming and outgoing road
+	 * Find connections to the given incoming and outgoing road
 	 *
 	 * @param incomingRoad
 	 * @param outgoingRoad
 	 * @returns {TvJunctionConnection}
 	 */
-	public findConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
+	public findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
 
-		return this.getConnections().find( conn =>
-			conn.incomingRoadId === incomingRoad.id && conn.outgoingRoad.id === incomingRoad.id
-		);
+		return this.getConnections()
+			.find( conn =>
+				conn.incomingRoadId === incomingRoad.id &&
+				conn.outgoingRoadId === outgoingRoad.id
+			);
 
 	}
-
 }
 
