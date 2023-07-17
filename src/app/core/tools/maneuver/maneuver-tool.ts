@@ -13,7 +13,7 @@ import { JunctionEntryInspector } from '../../../views/inspectors/junction-entry
 import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
 import { JunctionFactory } from '../../factories/junction.factory';
 import { LanePathFactory } from '../../factories/lane-path-factory.service';
-import { SelectionTool } from '../../helpers/selection-tool';
+import { SelectionTool } from '../../snapping/selection-tool';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { SceneService } from '../../services/scene.service';

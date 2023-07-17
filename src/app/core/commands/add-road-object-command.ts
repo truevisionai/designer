@@ -24,7 +24,7 @@ export class AddRoadObjectCommand extends OdBaseCommand {
 
 		SceneService.remove( this.roadObject.mesh, false );
 
-		this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.id );
+		this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.attr_id );
 
 		this.objects.forEach( object => SceneService.remove( object ) );
 

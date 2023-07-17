@@ -2,7 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Mesh } from 'three';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { Mesh, Object3D } from 'three';
+import { MarkingObjectFactory, RoadObjectFactory } from '../../../core/factories/marking-object.factory';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import {
 	ObjectFillType,
 	ObjectTypes,
@@ -17,6 +20,8 @@ import {
 	TvUserData
 } from './tv-common';
 import { TvObjectMarking } from './tv-object-marking';
+import { TvRoad } from './tv-road.model';
+import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvObjectContainer {
 	public object: TvRoadObject[] = [];
@@ -25,11 +30,16 @@ export class TvObjectContainer {
 	public bridge: TvRoadBridge[] = [];
 }
 
-export class TvRoadObject {
+export class TvRoadObject extends Object3D {
+	public road: TvRoad;
 
-	public attr_type: string;
-	public attr_name: string;
-	public attr_id: number;
+	get markings (): TvObjectMarking[] {
+		return this._markings;
+	}
+
+	public static counter = 1;
+
+	public attr_type: ObjectTypes;
 	public attr_s: number;
 	public attr_t: number;
 	public attr_zOffset: number;
@@ -51,7 +61,7 @@ export class TvRoadObject {
 	public outline: TvObjectOutline;
 	// multiple outlines are allowed
 	public outlines: TvObjectOutline[] = [];
-	public markings: TvObjectMarking[] = [];
+	private _markings: TvObjectMarking[] = [];
 
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
@@ -64,12 +74,12 @@ export class TvRoadObject {
 	constructor (
 		type: ObjectTypes,
 		name: string,
-		id: number,
+		public attr_id: number,
 		s: number,
 		t: number,
 		zOffset: number,
 		validLength: number,
-		orientation: TvOrientation,
+		orientation: TvOrientation = TvOrientation.NONE,
 		length: number = null,
 		width: number = null,
 		radius: number = null,
@@ -78,9 +88,10 @@ export class TvRoadObject {
 		pitch: number = null,
 		roll: number = null
 	) {
+		super();
+		TvRoadObject.counter++;
 		this.attr_type = type;
-		this.attr_name = name;
-		this.attr_id = id;
+		this.name = name;
 		this.attr_s = s;
 		this.attr_t = t;
 		this.attr_zOffset = zOffset;
@@ -93,18 +104,6 @@ export class TvRoadObject {
 		this.attr_hdg = hdg;
 		this.attr_pitch = pitch;
 		this.attr_roll = roll;
-	}
-
-	get type (): string {
-		return this.attr_type;
-	}
-
-	get name (): string {
-		return this.attr_name;
-	}
-
-	get id (): number {
-		return this.attr_id;
 	}
 
 	get s (): number {
@@ -194,21 +193,30 @@ export class TvRoadObject {
 	}
 
 
+	addMarkingObject ( markingObject: TvObjectMarking ): void {
+		this._markings.push( markingObject );
+	}
 }
 
 export class TvObjectOutline {
 
+	public cornerRoad: TvCornerRoad[] = [];
+	public cornerLocal: TvCornerLocal[] = [];
+
 	constructor (
 		public id: number,
-		public fillType: ObjectFillType,
-		public outer: boolean,
-		public closed: boolean,
-		public laneType: TvLaneType
+		public fillType: ObjectFillType = ObjectFillType.none,
+		public outer: boolean = false,
+		public closed: boolean = false,
+		public laneType: TvLaneType = TvLaneType.none,
 	) {
 	}
 
-	public cornerRoad: TvCornerRoad[] = [];
-	public cornerLocal: TvCornerLocal[] = [];
+	addCornerRoad ( roadId: number, s: number, t: number, dz: number = 0, height: number = 0, id?: number ): TvCornerRoad {
+		const cornerRoad = new TvCornerRoad( id || this.cornerRoad.length, roadId, s, t, dz, height );
+		this.cornerRoad.push( cornerRoad );
+		return cornerRoad;
+	}
 
 	getCornerLocal ( i: number ): TvCornerLocal {
 		return this.cornerLocal[ i ];
@@ -269,12 +277,17 @@ export class TvObjectMaterial {
 /**
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
-export class TvCornerRoad {
-	public attr_id: number;
-	public attr_s: number;
-	public attr_t: number;
-	public attr_dz: number;
-	public attr_height: number;
+export class TvCornerRoad extends DynamicControlPoint<TvCornerRoad> {
+	constructor (
+		public attr_id: number,
+		public roadId: number,
+		public s: number,
+		public t: number,
+		public dz: number = 0,
+		public height: number = 0
+	) {
+		super( null, TvMapInstance.map.getRoadById( roadId ).getPositionAt( s, t ).toVector3() );
+	}
 }
 
 /**
@@ -306,8 +319,8 @@ export class TvObjectRepeat {
 	public attr_zOffsetEnd: number;
 
 	constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-				  widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-				  zOffsetStart: number, zOffsetEnd: number ) {
+		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
+		zOffsetStart: number, zOffsetEnd: number ) {
 
 		this.attr_s = s;
 		this.attr_length = length;
@@ -472,3 +485,51 @@ export class TvLaneValidity {
 	}
 }
 
+export class Crosswalk extends TvRoadObject {
+
+	private node: Object3D;
+
+	constructor ( s: number, t: number, coords: TvRoadCoord[], ) {
+		super(
+			ObjectTypes.crosswalk,
+			'crosswalk',
+			TvRoadObject.counter++,
+			s,
+			t,
+			0,
+			0,
+		);
+
+		const id = TvRoadObject.counter;
+
+		const outline = new TvObjectOutline( id );
+
+		this.outlines.push( outline );
+
+		coords.forEach( i => {
+
+			this.add( outline.addCornerRoad( i.roadId, i.s, i.t ) );
+
+		} );
+
+		const marking = new TvObjectMarking();
+
+		this.addMarkingObject( marking );
+
+		this.node = MarkingObjectFactory.create( this );
+
+		this.add( this.node );
+	}
+
+	update () {
+
+		this.remove( this.node );
+
+		this.node = MarkingObjectFactory.create( this );
+
+		this.add( this.node );
+
+	}
+
+
+}

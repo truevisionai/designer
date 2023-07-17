@@ -615,9 +615,9 @@ export class OdWriter {
 		const nodeRoadObject = {
 
 			// Attributes
-			attr_type: roadObject.type,
+			attr_type: roadObject.attr_type,
 			attr_name: roadObject.name,
-			attr_id: roadObject.id,
+			attr_id: roadObject.attr_id,
 			attr_s: roadObject.s,
 			attr_t: roadObject.t,
 
@@ -625,6 +625,7 @@ export class OdWriter {
 			repeat: [],
 			validity: [],
 			userData: [],
+			marking: []
 		};
 
 		roadObject.zOffset ? nodeRoadObject[ 'attr_zOffset' ] = roadObject.zOffset : null;
@@ -694,10 +695,11 @@ export class OdWriter {
 
 				// TODO: ACCESS VIA GETTERS & SETTERS
 				xmlNode.cornerRoad.push( {
-					attr_s: cornerRoad.attr_s,
-					attr_t: cornerRoad.attr_t,
-					attr_dz: cornerRoad.attr_dz,
-					attr_heigh: cornerRoad.attr_height,
+					attr_id: cornerRoad.attr_id,
+					attr_s: cornerRoad.s,
+					attr_t: cornerRoad.t,
+					attr_dz: cornerRoad.dz,
+					attr_heigh: cornerRoad.height,
 				} );
 			}
 

@@ -245,6 +245,7 @@ export enum ObjectFillType {
 	pavement,
 	gravel,
 	soil,
+	none,
 }
 
 export class EnumHelper {

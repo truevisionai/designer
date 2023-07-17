@@ -2,23 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { ControlPointStrategy, OnRoadStrategy } from 'app/core/snapping/pointer-strategy';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
+import { ObjectTypes } from '../../../modules/tv-map/models/tv-common';
+import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
+import { TvObjectMarking } from '../../../modules/tv-map/models/tv-object-marking';
+import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
 import { ToolType } from '../../models/tool-types.enum';
+import { SceneService } from '../../services/scene.service';
 import { BaseTool } from '../base-tool';
-
-
-class OnRoadStrategy {
-	onPointerDown ( pointerEventData: PointerEventData ) {
-	}
-
-	onPointerMoved ( pointerEventData: PointerEventData ) {
-	}
-
-	onPointerUp ( pointerEventData: PointerEventData ) {
-	}
-}
-
 
 export class MarkingLineTool extends BaseTool {
 
@@ -26,9 +18,15 @@ export class MarkingLineTool extends BaseTool {
 
 	toolType = ToolType.MarkingLine;
 
-	markingObject: TvRoadObject;
+	roadObject: TvRoadObject;
 
-	strategy = new OnRoadStrategy();
+	roadStrategy = new OnRoadStrategy();
+
+	controlPointStrategy = new ControlPointStrategy<TvCornerRoad>();
+
+	coords: TvRoadCoord[] = [];
+	point: TvCornerRoad;
+	crosswalk: Crosswalk;
 
 	constructor () {
 
@@ -60,8 +58,61 @@ export class MarkingLineTool extends BaseTool {
 
 	onPointerDown ( pointerEventData: PointerEventData ) {
 
-		this.strategy.onPointerDown( pointerEventData );
+		const coord = this.roadStrategy.onPointerDown( pointerEventData );
+
+		this.point = this.controlPointStrategy.onPointerDown( pointerEventData );
+
+		if ( this.point ) {
+			this.crosswalk = this.point.parent as Crosswalk;
+			return
+		}
+
+		if ( !coord ) return;
+
+		this.coords.push( coord );
+
+		if ( this.coords.length < 2 ) return;
+
+		const crosswalk = this.crosswalk = new Crosswalk( coord.s, coord.t, this.coords );
+
+		SceneService.add( crosswalk );
+
+		coord.road.addRoadObjectInstance( crosswalk );
+
+		console.log( 'crosswalk', crosswalk );
+
+		this.coords = [];
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ) {
+
+		if ( this.point?.isSelected && this.pointerDownAt ) {
+			this.point?.copyPosition( pointerEventData.point );
+			return;
+		}
+
+		this.point = this.controlPointStrategy.onPointerMoved( pointerEventData );
+
+		console.log( 'point', this.point, pointerEventData.intersections );
+
+		if ( this.point ) return;
+
+		const coord = this.roadStrategy.onPointerMoved( pointerEventData );
+
+		console.log( coord );
 
 	}
 
+	onPointerUp ( pointerEventData: PointerEventData ): void {
+
+		console.log( 'onPointerUp', pointerEventData, this.point );
+
+		if ( this.point?.isSelected && this.pointerDownAt ) {
+			console.log( 'onPointerUp', pointerEventData, this.point );
+			this.point?.copyPosition( pointerEventData.point );
+			this.crosswalk?.update();
+			return;
+		}
+
+	}
 }

@@ -4,13 +4,16 @@
 
 import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -39,9 +42,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { RoadStyle } from 'app/services/road-style.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -715,16 +715,16 @@ export class TvRoad {
 		id: number,
 		s: number,
 		t: number,
-		zOffset: number,
-		validLength: number,
-		orientation: TvOrientation,
-		length: number,
-		width: number,
-		radius: number,
-		height: number,
-		hdg: number,
-		pitch: number,
-		roll: number
+		zOffset: number = 0,
+		validLength: number = 0,
+		orientation: TvOrientation = TvOrientation.NONE,
+		length: number = 0,
+		width: number = 0,
+		radius: number = 0,
+		height: number = 0,
+		hdg: number = 0,
+		pitch: number = 0,
+		roll: number = 0
 	): TvRoadObject {
 
 		const obj = new TvRoadObject(
@@ -744,6 +744,8 @@ export class TvRoad {
 			pitch,
 			roll
 		);
+
+		obj.road = this;
 
 		this.addRoadObjectInstance( obj );
 
@@ -1546,7 +1548,7 @@ export class TvRoad {
 
 	applyRoadStyle ( roadStyle: RoadStyle ) {
 
-		this.lanes.clear()
+		this.lanes.clear();
 
 		this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
 
