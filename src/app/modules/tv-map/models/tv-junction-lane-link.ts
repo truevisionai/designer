@@ -18,9 +18,6 @@ export class TvJunctionLaneLink {
 	public readonly incomingLane: TvLane;
 	public readonly connectingLane: TvLane;
 
-	public readonly incomingLane: TvLane;
-	public readonly connectingLane: TvLane;
-
 	/**
 	 *
 	 * @param from ID of the incoming lane
