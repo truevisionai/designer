@@ -14,13 +14,13 @@
 
 			<div *ngFor="let link of connection.laneLink">
 
-				<div *ngIf="link.incomingLane?.id == dot.lane.id || link.connectingLane?.id == dot.lane.id">
+				<div (mouseover)="onMouseOver(link)" (mouseout)="onMouseOut(link)" *ngIf="link.incomingLane?.id == dot.lane.id || link.connectingLane?.id == dot.lane.id">
 
-					Road: {{ link.incomingRoad?.id}} -> {{ link.connectingRoad?.id }} <br />
-					Lane: {{ link.incomingLane?.id}} -> {{ link.connectingLane?.id }} <br />
+					<app-string-field label="Incoming" [disabled]="true" value="Road:{{ link.incomingRoad?.id}} Lane:{{ link.incomingLane?.id }}"></app-string-field>
 
-					<button mat-stroked-button (click)="removeLink(connection,link)">Delete Link</button>
+					<app-string-field label="Connecting" [disabled]="true" value="Road:{{ link.connectingRoad?.id}} Lane:{{ link.connectingLane?.id }}"></app-string-field>
 
+					<app-button-field (clicked)="removeLink(connection,link)" label="Delete Link"></app-button-field>
 
 				</div>
 
