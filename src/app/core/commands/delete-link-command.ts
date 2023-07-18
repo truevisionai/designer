@@ -57,7 +57,7 @@ export class DeleteLinkCommand extends BaseCommand {
 		// rebuild connecting road because it might have changed after lane link removal
 		RoadFactory.rebuildRoad( this.connection.connectingRoad );
 
-		if ( this.link.lanePath ) SceneService.add( this.link.lanePath );
+		if ( this.link.mesh ) SceneService.add( this.link.mesh );
 
 
 		// if ( !this.link.lanePath ) return;

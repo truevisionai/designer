@@ -115,6 +115,14 @@ export class TvLane implements ISelectable, Copiable {
 		return this._side;
 	}
 
+	get isLeft (): boolean {
+		return this._side === TvLaneSide.LEFT;
+	}
+
+	get isRight (): boolean {
+		return this._side === TvLaneSide.RIGHT;
+	}
+
 	set side ( value ) {
 
 		const som = '' + value;
@@ -1263,5 +1271,57 @@ export class TvLane implements ISelectable, Copiable {
 			level: this.level,
 		}
 	}
+
+	get otherLanes () {
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			return this.laneSection.getRightLanes()
+
+		} else {
+
+			return this.laneSection.getLeftLanes();
+		}
+
+	}
+
+	isLastDrivingLane (): boolean {
+
+		const lanesIds = this.otherLanes
+			.filter( lane => lane.type === TvLaneType.driving )
+			.map( lane => lane.id );
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			return Math.min( ...lanesIds ) === this.id;
+
+		} else {
+
+			return Math.max( ...lanesIds ) == this.id;
+
+		}
+
+	}
+
+	isLastLane (): boolean {
+
+		const lanesIds = this.otherLanes.map( lane => lane.id );
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			const lastLaneId = Math.min( ...lanesIds );
+
+			return lastLaneId == this.id;
+
+		} else {
+
+			const lastLaneId = Math.max( ...lanesIds );
+
+			return lastLaneId == this.id;
+
+		}
+
+	}
+
 }
 
