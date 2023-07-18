@@ -26,6 +26,14 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 
 	public lane: TvLane;
 
+	/**
+	 *
+	 * @param name
+	 * @param position
+	 * @param contact contact point with respect to the road
+	 * @param road
+	 * @param lane
+	 */
 	constructor ( name: string, position: Vector3, contact: TvContactPoint, road: TvRoad, lane: TvLane ) {
 
 		const geometry = new BufferGeometry();
@@ -119,39 +127,35 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		}
 	}
 
-	isLastDrivingLane (): boolean {
+	get junction (): TvJunction {
 
-		if ( this.lane.id < 0 ) {
-
-			const lanesIds = this.lane.laneSection.getRightLanes().filter( lane => lane.type === TvLaneType.driving ).map( l => l.id );
-
-			const lastLaneId = Math.min( ...lanesIds );
-
-			return lastLaneId == this.lane.id;
-
-		} else {
-
-			const lanesIds = this.lane.laneSection.getLeftLanes().filter( lane => lane.type === TvLaneType.driving ).map( l => l.id );
-
-			const lastLaneId = Math.max( ...lanesIds );
-
-			return lastLaneId == this.lane.id;
-
+		if ( this.contact === TvContactPoint.START && this.road.predecessor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.predecessor.elementId );
 		}
 
+		if ( this.contact === TvContactPoint.END && this.road.successor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.successor.elementId );
+		}
 	}
 
-	isRightMost (): boolean {
+	hasJunction ( exit: JunctionEntryObject ): TvJunction {
 
+		if ( this.contact === TvContactPoint.START && this.road.predecessor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.predecessor.elementId );
+		}
 
-	}
+		if ( this.contact === TvContactPoint.END && this.road.successor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.successor.elementId );
+		}
 
-	hasJunction ( b: JunctionEntryObject ): TvJunction {
+		if ( exit.contact === TvContactPoint.END && exit.road.predecessor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( exit.road.predecessor.elementId );
+		}
 
-		const entry = this.isEntry ? this : b;
-		const exit = this.isExit ? this : b;
+		if ( exit.contact === TvContactPoint.START && exit.road.successor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( exit.road.successor.elementId );
+		}
 
-		return TvMapInstance.map.findJunction( entry.road, exit.road );
 	}
 
 
@@ -198,7 +202,7 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 
 			connection.laneLink.forEach( laneLink => {
 
-				if ( laneLink.incomingLane.id === this.lane.id ) {
+				if ( laneLink.incomingLane.uuid === this.lane.uuid ) {
 
 					results.push( laneLink );
 
@@ -206,6 +210,15 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 
 			} );
 
+			if ( connection.outgoingRoad.getFirstLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
+
+				results.push( {} );
+
+			} else if ( connection.outgoingRoad.getLastLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
+
+				results.push( {} );
+
+			}
 
 		} );
 
@@ -297,4 +310,40 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 
 		return false;
 	}
+
+	isRightMost (): boolean {
+
+		const lanesIds = this.lane.otherLanes
+			.filter( lane => lane.type === TvLaneType.driving )
+			.map( lane => lane.id );
+
+		if ( this.contact === TvContactPoint.START ) {
+
+			return Math.max( ...lanesIds ) === this.lane.id;
+
+		} else {
+
+			return Math.min( ...lanesIds ) === this.lane.id;
+
+		}
+
+	}
+
+	isLeftMost (): boolean {
+
+		const lanesIds = this.lane.otherLanes
+			.filter( lane => lane.type === TvLaneType.driving )
+			.map( lane => lane.id );
+
+		if ( this.contact === TvContactPoint.START ) {
+
+			return Math.min( ...lanesIds ) === this.lane.id;
+
+		} else {
+
+			return Math.max( ...lanesIds ) === this.lane.id;
+
+		}
+	}
+
 }

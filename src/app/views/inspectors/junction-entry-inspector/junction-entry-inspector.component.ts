@@ -12,6 +12,7 @@ import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
 import { CommandHistory } from 'app/services/command-history';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Component( {
 	selector: 'app-junction-entry-inspector',
@@ -38,16 +39,53 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 
 	}
 
+	onMouseOver ( link: TvJunctionLaneLink ) {
+
+		link.highlight();
+
+	}
+
+	onMouseOut ( link: TvJunctionLaneLink ) {
+
+		link.unhighlight();
+
+	}
+
 	createManeuvers () {
 
-		JunctionFactory.mergeEntries( this.data );
+		if ( this.data.length < 2 ) return;
+
+		if ( this.data.length === 2 ) {
+
+			const left = this.data[ 0 ];
+			const right = this.data[ 1 ];
+
+			if ( left.canConnect( right, 'complex' ) ) {
+
+				const entry = left.isEntry ? left : right;
+				const exit = left.isExit ? left : right;
+
+				JunctionFactory.connectTwo( entry, exit );
+
+			} else {
+
+				SnackBar.warn( 'Cannot create a connection between these two' );
+
+			}
+
+		} else if ( this.data.length > 2 ) {
+
+			JunctionFactory.mergeEntries( this.data );
+
+		}
+
 		//JunctionFactory.mergeComplexEntries( this.data );
 
 	}
 
 	removeLink ( connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		CommandHistory.execute( new DeleteLinkCommand( connection, link, link.lanePath ) );
+		CommandHistory.execute( new DeleteLinkCommand( connection, link, link.mesh ) );
 
 	}
 }

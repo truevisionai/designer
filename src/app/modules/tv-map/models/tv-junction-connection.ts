@@ -76,6 +76,20 @@ export class TvJunctionConnection {
 		}
 	}
 
+	get connectingLaneSection () {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.connectingRoad.getFirstLaneSection();
+
+		} else if ( this.contactPoint == TvContactPoint.END ) {
+
+			return this.connectingRoad.getLastLaneSection();
+
+		}
+
+	}
+
 	getJunctionLaneLinkCount (): number {
 
 		return this.laneLink.length;
@@ -220,15 +234,7 @@ export class TvJunctionConnection {
 
 	private findToLane ( laneId: number ): TvLane {
 
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			return this.connectingRoad.getFirstLaneSection().getLaneById( laneId );
-
-		} else if ( this.contactPoint == TvContactPoint.END ) {
-
-			return this.connectingRoad.getLastLaneSection().getLaneById( laneId );
-
-		}
+		return this.connectingLaneSection.getLaneById( laneId );
 
 	}
 }

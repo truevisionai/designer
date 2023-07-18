@@ -210,13 +210,9 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				connection.laneLink.forEach( link => {
 
-					// BUG: sometimes the connecting lane is not found
-					// https://instaveritas-m9.sentry.io/share/issue/750cf87d0f56414fb83c1f9908fd33c7/
-					const connectingLane = connection.connectingRoad.getFirstLaneSection().getLaneById( link.to );
+					link.show();
 
-					link.lanePath = LanePathFactory.createPathForLane( connection.incomingRoad, connection.connectingRoad, connectingLane, connection, link );
-
-					SceneService.add( link.lanePath );
+					SceneService.add( link.mesh );
 
 				} );
 
@@ -238,7 +234,9 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				connection.laneLink.forEach( link => {
 
-					if ( link.lanePath ) SceneService.remove( link.lanePath );
+					link.hide();
+
+					SceneService.remove( link.mesh );
 
 				} );
 

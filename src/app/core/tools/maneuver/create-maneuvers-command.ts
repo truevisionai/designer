@@ -15,7 +15,6 @@ export class CreateManeuversCommand extends BaseCommand {
 	execute (): void {
 
 		JunctionFactory.mergeEntries( this.entries );
-		JunctionFactory.mergeComplexEntries( this.entries );
 
 	}
 

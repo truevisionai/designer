@@ -12,6 +12,7 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { BaseCommand } from '../../commands/base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
+import { SceneService } from 'app/core/services/scene.service';
 
 export class CreateJunctionConnection extends BaseCommand {
 
@@ -44,6 +45,8 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLink = laneLink || this.createLaneLink( this.entry );
 
+		this.laneLink.show();
+
 		// this.selectJunctionCommand = new SelectPointCommand( tool, null );
 	}
 
@@ -60,6 +63,8 @@ export class CreateJunctionConnection extends BaseCommand {
 		this.exit.road.setPredecessor( 'junction', this.junction.id );
 
 		this.selectJunctionCommand?.execute();
+
+		SceneService.add( this.laneLink.mesh );
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 
@@ -78,6 +83,8 @@ export class CreateJunctionConnection extends BaseCommand {
 		this.exit.road.setPredecessor( null, null );
 
 		this.selectJunctionCommand?.undo();
+
+		SceneService.remove( this.laneLink.mesh );
 
 		this.map.removeRoad( this.connectingRoad );
 
@@ -98,6 +105,8 @@ export class CreateJunctionConnection extends BaseCommand {
 		this.selectJunctionCommand?.execute();
 
 		this.map.addRoadInstance( this.connectingRoad );
+
+		SceneService.add( this.laneLink.mesh );
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 	}
