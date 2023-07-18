@@ -7,15 +7,15 @@ import { OdBuilderConfig } from '../../tv-map/builders/od-builder-config';
 
 export class LaneArrowObject extends Mesh {
 
-	constructor ( position: Vector3, hdg: number ) {
+	constructor ( position: Vector3, hdg: number, size = 0.5 ) {
 
 		position.z = position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT;
 
 		// Define a unit arrow, pointing towards +Y direction.
 		const arrowVertices = [
-			-0.5, 0, 0,  // bottom of the arrow
-			0.5, 0, 0,  // right corner of the arrow head
-			0, 1, 0,  // tip of the arrow head
+			-size, 0, 0,  // bottom of the arrow
+			size, 0, 0,  // right corner of the arrow head
+			0, size * 2, 0,  // tip of the arrow head
 		];
 
 		// Colors for each vertex.

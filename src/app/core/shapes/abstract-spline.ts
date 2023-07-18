@@ -10,6 +10,7 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { SceneService } from '../services/scene.service';
+import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 
 export abstract class AbstractSpline {
 
@@ -193,6 +194,14 @@ export abstract class AbstractSpline {
 		this.controlPointAdded.emit( controlPointObject );
 
 		return controlPointObject;
+	}
+
+	getPath ( offset: number ) {
+		if ( this.type == 'auto' ) {
+			return new AutoSplinePath( this as any, offset );
+		} else if ( this.type == 'explicit' ) {
+			return new ExplicitSplinePath( this as any, offset );
+		}
 	}
 
 }
