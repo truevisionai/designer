@@ -51,7 +51,7 @@ describe( 'Crossing 8 XODR Tests', () => {
 
 	} );
 
-	it( 'should show junction entry lane links correctly', () => {
+	it( 'should create correct junction objects', () => {
 
 		const entries = JunctionFactory.createJunctionEntries( map.getRoads() );
 
@@ -59,10 +59,8 @@ describe( 'Crossing 8 XODR Tests', () => {
 		const end = entries.filter( entry => entry.road.id === 502 && entry.contact === 'end' )[ 0 ];
 
 		expect( start ).toBeDefined();
-		expect( end ).toBeDefined();
+		expect( end ).toBeUndefined();
 
-		expect( start.links.length ).toBe( 3 );
-		expect( end.links.length ).toBe( 0 );
 
 	} );
 

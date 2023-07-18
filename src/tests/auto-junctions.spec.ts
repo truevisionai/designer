@@ -6,7 +6,6 @@ import { TvContactPoint, TvLaneSide } from '../app/modules/tv-map/models/tv-comm
 import * as TIntersection from './stubs/3-way-intersection-auto-stub';
 import * as FourWayIntersection from './stubs/4-way-intersection-auto-stub';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { exec } from 'child_process';
 
 describe( 't-intersection auto maneuver logic tests', () => {
 
@@ -16,7 +15,6 @@ describe( 't-intersection auto maneuver logic tests', () => {
 	beforeEach( () => {
 
 		parser = new OpenDriverParser();
-		map = TvMapInstance.map = parser.parse( XML.XML );
 		map = TvMapInstance.map = parser.parse( TIntersection.XML );
 
 	} );
@@ -29,12 +27,12 @@ describe( 't-intersection auto maneuver logic tests', () => {
 		// } );
 
 		JunctionFactory.createJunctionEntriesForRoad( map.getRoadById( 2 ), TvContactPoint.END ).forEach( ( entry, i, entries ) => {
-			expect( entry.isLastDrivingLane() ).toBe( true );
+			expect( entry.lane.isLastDrivingLane() ).toBe( true );
 			expect( entries.length ).toBe( 2 );
 		} );
 
 		JunctionFactory.createJunctionEntriesForRoad( map.getRoadById( 3 ), TvContactPoint.START ).forEach( ( entry, i, entries ) => {
-			expect( entry.isLastDrivingLane() ).toBe( true );
+			expect( entry.lane.isLastDrivingLane() ).toBe( true );
 			expect( entries.length ).toBe( 2 );
 		} );
 
