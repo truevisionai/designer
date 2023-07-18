@@ -28,7 +28,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 	ngOnInit () {
 
-		if ( this.data.link && this.data.link.lanePath ) {
+		if ( this.data.link && this.data.link.mesh ) {
 
 			this.data.link.show();
 
@@ -51,7 +51,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 	ngOnDestroy (): void {
 
-		if ( this.data.link && this.data.link.lanePath ) this.data.link.lanePath.unselect();
+		if ( this.data.link && this.data.link.mesh ) this.data.link.mesh.unselect();
 
 		if ( this.data.connection ) {
 
