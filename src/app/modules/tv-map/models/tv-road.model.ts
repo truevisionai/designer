@@ -32,7 +32,7 @@ import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
-import { TvRoadLinkChild } from './tv-road-link-child';
+import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvObjectContainer, TvRoadObject } from './tv-road-object';
 import { TvRoadSignal } from './tv-road-signal.model';
@@ -42,6 +42,8 @@ import { TvUtils } from './tv-utils';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadStyle } from 'app/services/road-style.service';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvJunction } from './tv-junction';
+import { TvMapInstance } from '../services/tv-map-source-file';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -72,6 +74,11 @@ export class TvRoad {
 
 	public trafficRule = TrafficRule.RHT;
 
+	public successor: TvRoadLinkChild;
+	public predecessor: TvRoadLinkChild;
+
+	public junctionId: number;
+
 	/**
 	 * @deprecated use predecessor, successor directly
 	 */
@@ -82,7 +89,7 @@ export class TvRoad {
 
 	public static counter = 1;
 
-	constructor ( name: string, length: number, id: number, junction: number ) {
+	constructor ( name: string, length: number, id: number, junctionId: number ) {
 
 		TvRoad.counter++;
 
@@ -90,7 +97,7 @@ export class TvRoad {
 		this._name = name;
 		this._length = length;
 		this._id = id;
-		this._junction = junction;
+		this.junctionId = junctionId;
 
 		this.spline = new AutoSpline( this );
 
@@ -124,26 +131,6 @@ export class TvRoad {
 
 	set planView ( value: TvPlaneView ) {
 		this._planView = value;
-	}
-
-	private _predecessor: TvRoadLinkChild;
-
-	get predecessor (): TvRoadLinkChild {
-		return this._predecessor;
-	}
-
-	set predecessor ( value: TvRoadLinkChild ) {
-		this._predecessor = value;
-	}
-
-	private _successor: TvRoadLinkChild;
-
-	get successor (): TvRoadLinkChild {
-		return this._successor;
-	}
-
-	set successor ( value: TvRoadLinkChild ) {
-		this._successor = value;
 	}
 
 	private _neighbors: TvRoadLinkNeighbor[] = [];
@@ -186,14 +173,8 @@ export class TvRoad {
 		this._id = value;
 	}
 
-	private _junction: number;
-
-	get junction (): number {
-		return this._junction;
-	}
-
-	set junction ( value: number ) {
-		this._junction = value;
+	get junctionInstance (): TvJunction {
+		return TvMapInstance.map.getJunctionById( this.junctionId );
 	}
 
 	private _gameObject: GameObject;
@@ -207,7 +188,7 @@ export class TvRoad {
 	}
 
 	get isJunction (): boolean {
-		return this._junction !== -1;
+		return this.junctionId !== -1;
 	}
 
 	get geometries () {
@@ -222,6 +203,18 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
+	hide () {
+
+		if ( this.gameObject ) this.gameObject.visible = false;
+
+	}
+
+	show () {
+
+		if ( this.gameObject ) this.gameObject.visible = true;
+
+	}
+
 	onSuccessorUpdated ( successor: TvRoad ) {
 
 		console.log( 'successor of', this.id, 'updated' );
@@ -234,17 +227,17 @@ export class TvRoad {
 
 	}
 
-	setPredecessor ( elementType: 'road' | 'junction', elementId: number, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-		if ( this._predecessor == null ) {
+		if ( this.predecessor == null ) {
 
-			this._predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
 		} else {
 
-			this._predecessor.elementType = elementType;
-			this._predecessor.elementId = elementId;
-			this._predecessor.contactPoint = contactPoint;
+			this.predecessor.elementType = elementType;
+			this.predecessor.elementId = elementId;
+			this.predecessor.contactPoint = contactPoint;
 
 
 		}
@@ -279,19 +272,43 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: string, elementId: number, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-		if ( this._successor == null ) {
+		if ( this.successor == null ) {
 
-			this._successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
 		} else {
 
-			this._successor.elementType = elementType;
-			this._successor.elementId = elementId;
-			this._successor.contactPoint = contactPoint;
+			this.successor.elementType = elementType;
+			this.successor.elementId = elementId;
+			this.successor.contactPoint = contactPoint;
 
 		}
+	}
+
+	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+
+		if ( this.successor == null ) {
+			this.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
+
+		this.successor.elementType = TvRoadLinkChildType.road;
+		this.successor.elementId = road.id;
+		this.successor.contactPoint = contactPoint;
+
+	}
+
+	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+
+		if ( this.predecessor == null ) {
+			this.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
+
+		this.predecessor.elementType = TvRoadLinkChildType.road;
+		this.predecessor.elementId = road.id;
+		this.predecessor.contactPoint = contactPoint;
+
 	}
 
 	setNeighbor ( side: string, elementId: string, direction: string ) {
@@ -877,9 +894,9 @@ export class TvRoad {
 
 	getSuccessorRoad ( connection: TvJunctionConnection ) {
 
-		if ( this._successor.elementType == 'road' ) {
+		if ( this.successor.elementType == 'road' ) {
 
-		} else if ( this._successor.elementType == 'junction' ) {
+		} else if ( this.successor.elementType == 'junction' ) {
 
 		} else {
 

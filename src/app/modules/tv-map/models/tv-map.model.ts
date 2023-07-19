@@ -359,6 +359,23 @@ export class TvMap {
 		this._junctions.delete( junction.id );
 	}
 
+	sortRoads () {
+
+		const ascOrder = ( a: [ number, TvRoad ], b: [ number, TvRoad ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
+
+		this._roads = new Map( [ ...this._roads.entries() ].sort( ascOrder ) );
+	}
+
+	sortJunctions () {
+
+		this.junctions.forEach( junction => junction.sortConnections() );
+
+		const ascOrder = ( a: [ number, TvJunction ], b: [ number, TvJunction ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
+
+		this._junctions = new Map( [ ...this._junctions.entries() ].sort( ascOrder ) );
+	}
+
+
 	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
 
 		for ( const junction of this.getJunctions() ) {

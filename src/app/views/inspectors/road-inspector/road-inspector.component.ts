@@ -9,18 +9,20 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
 import { IComponent } from '../../../core/game-object';
-import { TvMapBuilder } from '../../../modules/tv-map/builders/tv-map-builder';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { RoadTool } from 'app/core/tools/road/road-tool';
+import { BaseInspector } from 'app/core/components/base-inspector.component';
 
 @Component( {
 	selector: 'app-road-inspector',
 	templateUrl: './road-inspector.component.html',
 	styles: []
 } )
-export class RoadInspector implements OnInit, OnDestroy, IComponent {
+export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
 	data: {
 		road: TvRoad,
@@ -31,6 +33,7 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 	isOpen: boolean = true;
 
 	constructor () {
+		super();
 	}
 
 	get road (): TvRoad {
@@ -152,5 +155,28 @@ export class RoadInspector implements OnInit, OnDestroy, IComponent {
 
 		CommandHistory.execute( new UpdateRoadPointCommand( this.road, this.controlPoint, $controlPoint, this.controlPoint.position ) );
 
+	}
+
+	onDelete (): void {
+
+		this.delete();
+
+	}
+
+	delete () {
+
+		const tool = ToolManager.getTool<RoadTool>();
+
+		if ( tool instanceof RoadTool ) {
+
+			tool.removeRoad( this.road );
+
+		} else {
+
+			console.error( 'RoadTool not found, creating new instance' );
+
+			( new RoadTool() ).removeRoad( this.road );
+
+		}
 	}
 }

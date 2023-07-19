@@ -129,7 +129,25 @@ export class TvJunction {
 
 	removeConnectionById ( id: number ): boolean {
 
+		const connection = this.connections.get( id );
+
+		connection.laneLink.forEach( laneLink => connection.removeLink( laneLink ) );
+
 		return this.connections.delete( id );
+
+	}
+
+	removeConnectingRoad ( road: TvRoad ): void {
+
+		this.connections.forEach( connection => {
+
+			if ( connection.connectingRoadId === road.id ) {
+
+				this.removeConnectionById( connection.id );
+
+			}
+
+		} )
 
 	}
 
@@ -403,6 +421,23 @@ export class TvJunction {
 		);
 
 	}
+
+	getConnectionsForRoad ( road: TvRoad ): TvJunctionConnection[] {
+
+		return this.getConnections().filter( connection => connection.connectingRoadId === road.id );
+
+	}
+
+	sortConnections (): void {
+
+		this._connections.forEach( connection => connection.sortLinks() );
+
+		const ascOrder = ( a: [ number, TvJunctionConnection ], b: [ number, TvJunctionConnection ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
+
+		this._connections = new Map( [ ...this._connections.entries() ].sort( ascOrder ) );
+
+	}
+
 
 }
 

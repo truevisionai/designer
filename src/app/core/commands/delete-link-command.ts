@@ -40,7 +40,7 @@ export class DeleteLinkCommand extends BaseCommand {
 
 		this.connection.removeLinkAtIndex( index );
 
-		const junction = this.map.getJunctionById( this.connectingRoad.junction );
+		const junction = this.map.getJunctionById( this.connectingRoad.junctionId );
 
 		if ( !junction ) SnackBar.error( 'Junction not found' );
 
@@ -66,9 +66,9 @@ export class DeleteLinkCommand extends BaseCommand {
 
 		this.connection.addLaneLink( this.link );
 
-		const junction = this.map.getJunctionById( this.connectingRoad.junction );
+		const junction = this.map.getJunctionById( this.connectingRoad.junctionId );
 
-		if ( !junction ) console.error( 'junction not found with id ', this.connectingRoad.junction );
+		if ( !junction ) console.error( 'junction not found with id ', this.connectingRoad.junctionId );
 
 		junction.addConnection( this.connection );
 
