@@ -13,6 +13,7 @@ import { BaseCommand } from '../../commands/base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
 import { SceneService } from 'app/core/services/scene.service';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class CreateJunctionConnection extends BaseCommand {
 

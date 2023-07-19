@@ -232,7 +232,7 @@ export class TvJunctionConnection {
 
 	private findFromLane ( junction: TvJunction, from: number ): TvLane {
 
-		const junctionId = this.connectingRoad.junction;
+		const junctionId = this.connectingRoad.junctionId;
 
 		const successor = this.incomingRoad.successor;
 		const predecessor = this.incomingRoad.predecessor;
