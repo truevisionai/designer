@@ -12,6 +12,7 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { BaseCommand } from '../../commands/base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class CreateJunctionConnection extends BaseCommand {
 
@@ -55,9 +56,9 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
 
@@ -91,9 +92,9 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
 

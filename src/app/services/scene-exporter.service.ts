@@ -141,7 +141,7 @@ export class SceneExporterService {
 			attr_id: road.id,
 			attr_name: road.name,
 			attr_length: road.length,
-			attr_junction: road.junction,
+			attr_junction: road.junctionId,
 			drivingMaterialGuid: road.drivingMaterialGuid,
 			sidewalkMaterialGuid: road.sidewalkMaterialGuid,
 			borderMaterialGuid: road.borderMaterialGuid,

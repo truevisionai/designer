@@ -28,6 +28,21 @@ export class TvJunctionConnection {
 		this.uuid = MathUtils.generateUUID();
 	}
 
+	clone () {
+
+		const clone = new TvJunctionConnection( this.id, this.incomingRoadId, this.connectingRoadId, this.contactPoint );
+
+		clone.laneLink = this.laneLink.map( link => link.clone() );
+
+		return clone;
+	}
+
+	sortLinks (): void {
+
+		this.laneLink = this.laneLink.sort( ( a, b ) => a.from > b.from ? 1 : -1 );
+
+	}
+
 	get connectingRoad (): TvRoad {
 		return TvMapQueries.findRoadById( this.connectingRoadId );
 	}

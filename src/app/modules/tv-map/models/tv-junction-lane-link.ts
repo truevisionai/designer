@@ -30,6 +30,13 @@ export class TvJunctionLaneLink {
 		if ( this.lanePath ) this.lanePath.show();
 
 	}
+
+	clone (): any {
+
+		return new TvJunctionLaneLink( this.from, this.to );
+
+	}
+
 }
 
 export class LanePathObject extends Object3D {
