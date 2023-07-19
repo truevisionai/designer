@@ -58,9 +58,9 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
 
@@ -98,9 +98,9 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
 

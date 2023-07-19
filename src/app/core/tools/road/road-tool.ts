@@ -22,6 +22,7 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
+import { RemoveRoadCommand } from './remove-road-command';
 
 /**
  *
@@ -96,6 +97,18 @@ export class RoadTool extends BaseTool {
 		this.controlPoint?.unselect();
 
 		this.node?.unselect();
+	}
+
+	removeRoad ( road: TvRoad ) {
+
+		CommandHistory.executeMany(
+
+			new RemoveRoadCommand( road ),
+
+			new SelectRoadForRoadToolCommand( this, null )
+
+		);
+
 	}
 
 	onPointerDown ( e: PointerEventData ) {
@@ -352,13 +365,11 @@ export class RoadTool extends BaseTool {
 
 		if ( !lane || !lane.laneSection.road ) return false;
 
-		if ( lane.laneSection.road.isJunction ) {
-
-			// we return true because we had interacted with
-			// road junction but there is not action for it right now
-			return true;
-
-		}
+		// if ( lane.laneSection.road.isJunction ) {
+		// 	// we return true because we had interacted with
+		// 	// road junction but there is not action for it right now
+		// 	return true;
+		// }
 
 		if ( !this.road || this.road.id !== lane.laneSection.road.id ) {
 

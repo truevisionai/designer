@@ -10,7 +10,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { readXmlArray } from '../../../core/tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { EnumHelper, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
+import { EnumHelper, TvContactPoint, TvElementType, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
@@ -26,6 +26,7 @@ import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
+import { TvRoadLinkChildType } from '../models/tv-road-link-child';
 
 declare const fxp;
 
@@ -257,15 +258,16 @@ export class OpenDriverParser extends AbstractReader {
 
 		if ( type === 0 ) {
 
-			const elementType = xmlElement.attr_elementType;
+			const elementType = this.readElementType( xmlElement.attr_elementType );
 			const elementId = parseFloat( xmlElement.attr_elementId );
 			const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
+
 
 			road.setPredecessor( elementType, elementId, contactPoint );
 
 		} else if ( type === 1 ) {
 
-			const elementType = xmlElement.attr_elementType;
+			const elementType = this.readElementType( xmlElement.attr_elementType );
 			const elementId = parseFloat( xmlElement.attr_elementId );
 			const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
 
@@ -280,6 +282,24 @@ export class OpenDriverParser extends AbstractReader {
 			// const direction = xmlElement.attr_direction;
 			//
 			// road.setNeighbor( side, elementId, direction );
+
+		}
+
+	}
+
+	readElementType ( value: string ): TvRoadLinkChildType {
+
+		if ( value === 'road' ) {
+
+			return TvRoadLinkChildType.road;
+
+		} else if ( value === 'junction' ) {
+
+			return TvRoadLinkChildType.junction;
+
+		} else {
+
+			return null;
 
 		}
 
