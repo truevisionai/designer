@@ -17,6 +17,12 @@ export class ToolManager {
 
 	}
 
+	static getTool<T extends BaseTool> (): T {
+
+		return this.tool as T;
+
+	}
+
 	static set currentTool ( value: BaseTool ) {
 
 		if ( !value ) {

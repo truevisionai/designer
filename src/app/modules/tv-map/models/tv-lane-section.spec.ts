@@ -159,4 +159,46 @@ describe( 'OpenDrive LaneSection', () => {
 
 	} );
 
+	it( 'should remove right lane correctly and maintain order', () => {
+
+		// 3 left 1 center 4 right
+		expect( laneSection.lanes.size ).toBe( 8 );
+
+		laneSection.removeLane( rightOne );
+
+		expect( laneSection.lanes.size ).toBe( 7 );
+
+		// 3 2 1
+		laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
+			expect( lane.id ).toBe( array.length - index );
+		} );
+
+		// -1, -2, -3
+		laneSection.getRightLanes().forEach( ( lane, index ) => {
+			expect( lane.id ).toBe( -1 - index );
+		} );
+
+	} );
+
+	it( 'should remove left lane correctly and maintain order', () => {
+
+		// 3 left 1 center 4 right
+		expect( laneSection.lanes.size ).toBe( 8 );
+
+		laneSection.removeLane( leftTwo );
+
+		expect( laneSection.lanes.size ).toBe( 7 );
+
+		// 3 2 1
+		laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
+			expect( lane.id ).toBe( array.length - index );
+		} );
+
+		// -1, -2, -3
+		laneSection.getRightLanes().forEach( ( lane, index ) => {
+			expect( lane.id ).toBe( -1 - index );
+		} );
+
+	} );
+
 } );

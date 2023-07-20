@@ -60,7 +60,8 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 		return new TvPosTheta(
 			this.x + Math.cos( this.hdg ) * ds,
 			this.y + Math.sin( this.hdg ) * ds,
-			this.hdg
+			this.hdg,
+			s
 		);
 
 	}

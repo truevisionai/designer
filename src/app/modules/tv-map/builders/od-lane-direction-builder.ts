@@ -138,3 +138,56 @@ export class OdLaneDirectionBuilder {
 
 	}
 }
+
+export class LaneDirectionHelper {
+
+	private static distance = 5;
+
+	public static drawSingleLane ( lane: TvLane, distance = 5, size = 0.5 ) {
+
+		this.distance = distance;
+
+		return this.drawLane( lane, lane.laneSection, size );
+
+	}
+
+	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size = 0.5 ) {
+
+		const arrows = []
+
+		// if ( lane.type !== TvLaneType.driving ) return;
+
+		let s = laneSection.s;
+
+		while ( s <= laneSection.endS ) {
+
+			// Compute the width of the lane section up to the current position.
+			let width = laneSection.getWidthUptoCenter( lane, s );
+
+			// Get the road coordinates at the current position.
+			const posTheta = lane.laneSection.road.getRoadCoordAt( s );
+
+			// Adjust position and heading based on lane side.
+			if ( lane.side === TvLaneSide.LEFT ) {
+				// Reverse the direction to show arrow in traffic direction.
+				// TODO: Make traffic direction editable from the editor.
+				posTheta.hdg += Math.PI;
+			}
+
+			// The width is negated regardless of the side
+			width *= -1;
+
+			// Add the lateral offset to the position.
+			posTheta.addLateralOffset( width );
+
+			// Create a 2D arrow at the current position and direction.
+			const arrow = new LaneArrowObject( posTheta.toVector3(), posTheta.hdg, size );
+
+			arrows.push( arrow );
+
+			s += this.distance;
+		}
+
+		return arrows;
+	}
+}

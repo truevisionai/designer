@@ -12,6 +12,8 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { BaseCommand } from '../../commands/base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
+import { SceneService } from 'app/core/services/scene.service';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class CreateJunctionConnection extends BaseCommand {
 
@@ -44,6 +46,8 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLink = laneLink || this.createLaneLink( this.entry );
 
+		this.laneLink.show();
+
 		// this.selectJunctionCommand = new SelectPointCommand( tool, null );
 	}
 
@@ -55,11 +59,13 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
+
+		SceneService.add( this.laneLink.mesh );
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 
@@ -71,13 +77,15 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.connectionCreated ) this.junction.removeConnectionById( this.connection.id );
 
-		if ( this.laneLinkCreated ) this.connection.removeLink( this.laneLink );
+		if ( this.laneLinkCreated ) this.connection.removeLaneLink( this.laneLink );
 
 		this.entry.road.setSuccessor( null, null );
 
 		this.exit.road.setPredecessor( null, null );
 
 		this.selectJunctionCommand?.undo();
+
+		SceneService.remove( this.laneLink.mesh );
 
 		this.map.removeRoad( this.connectingRoad );
 
@@ -91,13 +99,15 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( 'junction', this.junction.id );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 
-		this.exit.road.setPredecessor( 'junction', this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
 
 		this.selectJunctionCommand?.execute();
 
 		this.map.addRoadInstance( this.connectingRoad );
+
+		SceneService.add( this.laneLink.mesh );
 
 		RoadFactory.rebuildRoad( this.connectingRoad );
 	}
@@ -114,7 +124,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.laneLinkCreated = true;
 
-		return new TvJunctionLaneLink( entry.lane.id, connectingLane.id );
+		return new TvJunctionLaneLink( entry.lane, connectingLane );
 
 	}
 
@@ -122,7 +132,7 @@ export class CreateJunctionConnection extends BaseCommand {
 
 		this.connectionCreated = true;
 
-		return TvJunctionConnection.create( entry.road.id, this.connectingRoad.id, TvContactPoint.START );
+		return TvJunctionConnection.create( entry.road, this.connectingRoad, TvContactPoint.START );
 
 	}
 

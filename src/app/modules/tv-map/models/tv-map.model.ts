@@ -359,7 +359,26 @@ export class TvMap {
 		this._junctions.delete( junction.id );
 	}
 
+	sortRoads () {
+
+		const ascOrder = ( a: [ number, TvRoad ], b: [ number, TvRoad ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
+
+		this._roads = new Map( [ ...this._roads.entries() ].sort( ascOrder ) );
+	}
+
+	sortJunctions () {
+
+		this.junctions.forEach( junction => junction.sortConnections() );
+
+		const ascOrder = ( a: [ number, TvJunction ], b: [ number, TvJunction ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
+
+		this._junctions = new Map( [ ...this._junctions.entries() ].sort( ascOrder ) );
+	}
+
+
 	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
+
+		let finalJunction: TvJunction = null;
 
 		for ( const junction of this.getJunctions() ) {
 
@@ -368,20 +387,27 @@ export class TvMap {
 			for ( let i = 0; i < connections.length; i++ ) {
 
 				const connection = connections[ i ];
-				const connectingRoad = this.getRoadById( connection.connectingRoadId );
+				const connectingRoad = connection.connectingRoad;
 
 				if ( connection.incomingRoadId === incoming.id || connection.incomingRoadId === outgoing.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 
 				if ( connectingRoad?.predecessor.elementId === incoming.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 
 				if ( connectingRoad?.successor.elementId === outgoing.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 			}
+
+			if ( finalJunction ) break;
 		}
+
+		return finalJunction;
 	}
 }

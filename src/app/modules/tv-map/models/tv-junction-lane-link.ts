@@ -2,41 +2,138 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Color, Line, LineBasicMaterial, Mesh, Object3D } from 'three';
+import { BufferGeometry, Color, CurvePath, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Path, QuadraticBezierCurve, QuadraticBezierCurve3, Shape, Vector2, Vector3 } from 'three';
+import { RoadFactory } from '../../../core/factories/road-factory.service';
+import { SceneService } from '../../../core/services/scene.service';
 import { TvJunctionConnection } from './tv-junction-connection';
+import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
+import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 export class TvJunctionLaneLink {
 
-	public lanePath: LanePathObject;
+	public mesh: LanePathObject;
+
+	public readonly incomingLane: TvLane;
+	public readonly connectingLane: TvLane;
 
 	/**
 	 *
 	 * @param from ID of the incoming lane
 	 * @param to ID of the connecting lane
 	 */
-	constructor ( public from: number, public to: number ) {
+	constructor ( from: TvLane, to: TvLane, private connection?: TvJunctionConnection ) {
+		this.incomingLane = from;
+		this.connectingLane = to;
+		this.mesh = new LanePathObject( this.incomingRoad, this.connectingRoad, this.connection, this );
+	}
 
+	get from (): number {
+		return this.incomingLane?.id;
+	}
+
+	get to (): number {
+		return this.connectingLane?.id;
+	}
+
+	get incomingRoad () {
+		return this.incomingLane?.laneSection?.road;
+	}
+
+	get connectingRoad () {
+		return this.connectingLane?.laneSection?.road;
 	}
 
 	show () {
 
-		if ( this.lanePath ) this.lanePath.hide();
+		this.mesh?.show();
 
 	}
 
 	hide () {
 
-		if ( this.lanePath ) this.lanePath.show();
+		this.mesh?.hide();
 
 	}
+
+	highlight () {
+
+		this.mesh?.highlight();
+
+	}
+
+	unhighlight () {
+
+		this.mesh?.unhighlight();
+
+	}
+
+	delete () {
+
+		this.connectingLane.laneSection.removeLane( this.connectingLane );
+
+		// TODO: check if we need to remove the whole connection if there are no more lane links
+
+		// rebuild connecting road because it might have changed after lane link removal
+		RoadFactory.rebuildRoad( this.connectingRoad );
+
+		SceneService.remove( this.mesh );
+
+	}
+
+	createLanePathObject () {
+
+		if ( !this.mesh ) {
+
+		}
+	}
+
+	clone (): any {
+
+		return new TvJunctionLaneLink( this.incomingLane, this.connectingLane, this.connection );
+
+	}
+
 }
 
 export class LanePathObject extends Object3D {
 
+	update () {
+
+		// const connectingRoad = this.connectingRoad;
+
+		// let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
+
+		// if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+
+		// const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+
+		// const spline = connectingRoad.spline;
+
+		// const shape = new Shape();
+		// shape.moveTo( 0, -0.3 );
+		// shape.lineTo( 0, 0.3 );
+
+		// if ( spline.controlPointPositions.length < 2 ) return;
+
+		// let offset = width;
+
+		// if ( lane.id < 0 ) offset *= -1;
+
+		// const path = spline.getPath( offset );
+
+		// this.mesh.geometry.dispose();
+
+		// this.mesh.geometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+
+		// return this.mesh;
+
+	}
+
 	public static tag = 'lane-path';
 
-	public mesh: Mesh | Line;
+	private mesh: Mesh | Line;
 
 	public isSelected: boolean;
 
@@ -47,9 +144,59 @@ export class LanePathObject extends Object3D {
 		public link: TvJunctionLaneLink
 	) {
 		super();
+
+		this.createMesh();
 	}
 
-	get material () {
+	createMesh () {
+
+		const width = this.connectingRoad.getFirstLaneSection().getWidthUptoCenter( this.link.connectingLane, 0 );
+
+		const spline = this.connectingRoad.spline;
+
+		if ( spline.controlPointPositions.length < 2 ) return;
+
+		let offset = width;
+
+		if ( this.link.connectingLane.id < 0 ) offset *= -1;
+
+		// Define extrude settings
+		const extrudeSettings = {
+			steps: 50,
+			bevelEnabled: false,
+			bevelThickness: 1,
+			bevelSize: 1,
+			bevelOffset: 1,
+			bevelSegments: 1,
+			extrudePath: this.connectingRoad.spline.getPath( offset )
+		};
+
+		// Create a rectangular shape to be extruded along the path
+		const shape = new Shape();
+		shape.moveTo( -0.1, -1 );
+		shape.lineTo( -0.1, 1 );
+
+		// Create geometry and mesh
+		const geometry = new ExtrudeGeometry( shape, extrudeSettings );
+		const material = new MeshBasicMaterial( { color: COLOR.GREEN, opacity: 0.2, transparent: true } );
+
+		const mesh = this.mesh = new Mesh( geometry, material );
+
+		this.add( mesh );
+
+		this.createArrows();
+
+		return mesh;
+
+	}
+
+	createArrows () {
+		const distance = this.connectingRoad.length / 3;
+		const arrows = LaneDirectionHelper.drawSingleLane( this.link.connectingLane, distance, 0.25 );
+		arrows.forEach( arrow => this.add( arrow ) );
+	}
+
+	get material (): LineBasicMaterial {
 		return this.mesh.material as LineBasicMaterial;
 	}
 
@@ -58,7 +205,7 @@ export class LanePathObject extends Object3D {
 		this.isSelected = true;
 
 		// red
-		this.material.color = new Color( 0xff0000 );
+		this.material.color = new Color( COLOR.RED );
 		this.material.needsUpdate = true;
 
 	}
@@ -68,7 +215,23 @@ export class LanePathObject extends Object3D {
 		this.isSelected = false;
 
 		// green
-		this.material.color = new Color( 0x00ffff );
+		this.material.color = new Color( COLOR.GREEN );
+		this.material.needsUpdate = true;
+
+	}
+
+	highlight () {
+
+		// red
+		this.material.color = new Color( COLOR.RED );
+		this.material.needsUpdate = true;
+
+	}
+
+	unhighlight () {
+
+		// green
+		this.material.color = new Color( COLOR.GREEN );
 		this.material.needsUpdate = true;
 
 	}
@@ -85,5 +248,7 @@ export class LanePathObject extends Object3D {
 		this.visible = true;
 		this.mesh.visible = true;
 
+		this.createArrows();
 	}
 }
+

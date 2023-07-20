@@ -57,13 +57,13 @@ describe( 'OpenDrive Parsing', () => {
 			attr_junction: '-1'
 		};
 
-		const road = ( parser as any ).readRoad( xml );
+		const road = parser.readRoad( xml );
 
 		expect( road ).toBeDefined();
 		expect( road.id ).toBe( 1 );
 		expect( road.name ).toBe( xml.attr_name );
 		expect( road.length ).toBe( 100 );
-		expect( road.junction ).toBe( -1 );
+		expect( road.junctionId ).toBe( -1 );
 
 	} );
 

@@ -154,7 +154,7 @@ export class OdWriter {
 			attr_name: road.name,
 			attr_length: road.length,
 			attr_id: road.id,
-			attr_junction: road.junction,
+			attr_junction: road.junctionId,
 		};
 
 		xmlNode.road.push( nodeRoad );
