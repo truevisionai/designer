@@ -44,6 +44,8 @@ import { RoadStyle } from 'app/services/road-style.service';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { TvJunction } from './tv-junction';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -1562,6 +1564,41 @@ export class TvRoad {
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
 		RoadFactory.rebuildRoad( this );
+	}
+
+	private cornerPoints: BaseControlPoint[] = [];
+
+	showCornerPoints () {
+
+		this.createCornerPoints( this.getStartCoord() );
+
+		this.createCornerPoints( this.getEndCoord() );
+
+	}
+
+	private createCornerPoints ( coord: TvPosTheta ) {
+
+		const rightT = this.getRightsideWidth( coord.s );
+		const leftT = this.getLeftSideWidth( coord.s );
+
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+
+		const leftPoint = new DynamicControlPoint( this, leftPosition );
+		const rightPoint = new DynamicControlPoint( this, rightPosition );
+
+		this.cornerPoints.push( leftPoint );
+		this.cornerPoints.push( rightPoint );
+
+		this.gameObject.add( leftPoint );
+		this.gameObject.add( rightPoint );
+	}
+
+	hideCornerPoints () {
+
+		this.cornerPoints.forEach( point => this.gameObject.remove( point ) );
+		this.cornerPoints = [];
+
 	}
 
 }

@@ -60,7 +60,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		const dCoeffs = ( new Vector3( this.attr_b, this.attr_c, this.attr_d ) ).multiply( new Vector3( 1, 2, 3 ) );
 		const tangent = this.polyeval( s, dCoeffs );
 
-		return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent );
+		return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent, s );
 	}
 
 	getCurve (): Curve<Vector2> {
