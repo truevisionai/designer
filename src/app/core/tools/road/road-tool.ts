@@ -187,9 +187,9 @@ export class RoadTool extends BaseTool {
 
 			this.roadChanged = true;
 
-			this.updateSuccessor( this.road, this.controlPoint );
+			if ( !this.road.isJunction ) this.updateSuccessor( this.road, this.controlPoint );
 
-			this.updatePredecessor( this.road, this.controlPoint );
+			if ( !this.road.isJunction ) this.updatePredecessor( this.road, this.controlPoint );
 		}
 
 	}
