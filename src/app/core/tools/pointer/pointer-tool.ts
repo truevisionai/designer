@@ -25,17 +25,6 @@ export class PointerTool extends BaseTool {
 
 		this.setHint( 'Pointer Tool is used to browse and move through the scene' );
 
-		const marking = new TvObjectMarking();
-
-		// SceneService.add( TvObjectMarking.makeMesh( marking ) );
-		// SceneService.add( TvObjectMarking.makeFromSpline( marking ) );
-
-		marking.width = 0.1;
-		SceneService.add( TvObjectMarking.createZebraCrossingInPolygon( marking, [
-			new THREE.Vector3( 0, 0, 0 ),
-			new THREE.Vector3( -20, 50, 0 ),
-			new THREE.Vector3( 20, 50, 0 ),
-		] ) );
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): void {
