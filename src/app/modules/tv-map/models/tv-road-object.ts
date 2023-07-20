@@ -3,7 +3,7 @@
  */
 
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { Mesh, Object3D } from 'three';
+import { Mesh, Object3D, Vector3 } from 'three';
 import { MarkingObjectFactory, RoadObjectFactory } from '../../../core/factories/marking-object.factory';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import {
@@ -289,7 +289,7 @@ export class TvObjectMaterial {
 /**
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
-export class TvCornerRoad extends DynamicControlPoint<TvCornerRoad> {
+export class TvCornerRoad extends DynamicControlPoint<Crosswalk> {
 	constructor (
 		public attr_id: number,
 		public road: TvRoad,
@@ -299,6 +299,14 @@ export class TvCornerRoad extends DynamicControlPoint<TvCornerRoad> {
 		public height: number = 0
 	) {
 		super( null, road.getPositionAt( s, t ).toVector3() );
+	}
+
+	copyPosition ( position: Vector3 ): void {
+
+		super.copyPosition( position );
+
+		this.mainObject?.update();
+
 	}
 }
 
@@ -530,6 +538,8 @@ export class Crosswalk extends TvRoadObject {
 	}
 
 	addCornerRoad ( corner: TvCornerRoad ) {
+
+		corner.mainObject = this;
 
 		this.markings[ 0 ].addCornerRoad( corner );
 

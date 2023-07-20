@@ -2,18 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
 import { KeyboardInput } from 'app/core/input';
+import { CommandHistory } from 'app/services/command-history';
 import { PointerEventData } from '../../../events/pointer-event-data';
+import { CopyPositionCommand } from '../../../modules/three-js/commands/copy-position-command';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
-import { Crosswalk, TvCornerRoad, TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
+import { Crosswalk, TvCornerRoad } from '../../../modules/tv-map/models/tv-road-object';
+import { BaseCommand } from '../../commands/base-command';
 import { ToolType } from '../../models/tool-types.enum';
 import { ControlPointStrategy } from '../../snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from '../../snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from '../../snapping/select-strategies/select-strategy';
 import { BaseTool } from '../base-tool';
-import { CommandHistory } from 'app/services/command-history';
-import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
@@ -39,7 +40,7 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 		this.point = value;
 
-		this.crosswalk = this.point?.parent as Crosswalk;
+		this.crosswalk = this.point?.mainObject;
 
 	}
 
@@ -78,8 +79,8 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 						corner.show();
 
-					} )
-				} )
+					} );
+				} );
 
 			} );
 
@@ -107,9 +108,9 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 						corner.hide();
 
-					} )
+					} );
 
-				} )
+				} );
 
 			} );
 
@@ -124,11 +125,11 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 			const point = this.selectStrategy.onPointerDown( pointerEventData );
 
-			if ( point ) this.selectPoint( point );
+			if ( point && point != this.point ) this.selectPoint( point );
 
 			if ( point ) return;
 
-			this.selectPoint( null );
+			if ( this.point ) this.selectPoint( null );
 
 		} else {
 
@@ -144,13 +145,48 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 			} else {
 
-				this.createCrosswalk( coord );
+				CommandHistory.execute( new CreateCrossWalkCommand( coord ) );
 
 			}
 		}
 	}
 
-	addPoint ( coord: TvRoadCoord ) {
+
+	onPointerMoved ( pointerEventData: PointerEventData ) {
+
+		this.selectStrategy.onPointerMoved( pointerEventData );
+
+		if ( !this.point?.isSelected ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const coord = this.onRoadStrategy.onPointerMoved( pointerEventData );
+
+		if ( !coord ) return;
+
+		this.point.copyPosition( coord.toPosTheta().toVector3() );
+
+	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): void {
+
+		if ( !this.point?.isSelected ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const coord = this.onRoadStrategy.onPointerMoved( pointerEventData );
+
+		if ( !coord ) return;
+
+		const position = coord.toPosTheta().toVector3();
+
+		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+
+		CommandHistory.execute( new CopyPositionCommand( this.point, position, this.pointerDownAt ) );
+
+	}
+
+	private addPoint ( coord: TvRoadCoord ) {
 
 		console.log( 'add' );
 
@@ -163,68 +199,60 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 		this.selectPoint( point );
 	}
 
-	createCrosswalk ( coord: TvRoadCoord ) {
-
-		console.log( 'create' );
-
-		this.point = new TvCornerRoad( 0, coord.road, coord.s, coord.t );
-
-		this.crosswalk = new Crosswalk( coord.s, coord.t );
-
-		this.crosswalk.addCornerRoad( this.point );
-
-		coord.road.gameObject.add( this.crosswalk );
-
-		coord.road.addRoadObjectInstance( this.crosswalk );
-
-	}
-
-	unselectPoint () {
-
-		this.point?.unselect();
-
-		this.point = null;
-
-		this.crosswalk = null;
-
-	}
-
-	selectPoint ( point: TvCornerRoad ) {
+	private selectPoint ( point: TvCornerRoad ): void {
 
 		CommandHistory.execute( new SelectPointCommand( this, point ) );
 
 	}
 
-	onPointerMoved ( pointerEventData: PointerEventData ) {
+}
 
-		if ( !this.point?.isSelected ) return;
 
-		if ( !this.pointerDownAt ) return;
+export class CreateCrossWalkCommand extends BaseCommand {
 
-		const coord = this.onRoadStrategy.onPointerMoved( pointerEventData );
+	private readonly crosswalk: Crosswalk;
+	private readonly setValueCommand: SelectPointCommand;
 
-		if ( !coord ) return;
+	constructor ( private roadCoord: TvRoadCoord ) {
 
-		this.point.copyPosition( coord.toPosTheta().toVector3() );
+		super();
 
-		( this.point.parent as Crosswalk )?.update();
+		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t );
+
+		this.crosswalk = new Crosswalk( roadCoord.s, roadCoord.t );
+
+		this.crosswalk.addCornerRoad( point );
+
+		const tool = this.getTool<MarkingLineTool>();
+
+		this.setValueCommand = new SelectPointCommand( tool, point );
+
+	}
+
+	execute (): void {
+
+		this.roadCoord.road.gameObject.add( this.crosswalk );
+
+		this.roadCoord.road.addRoadObjectInstance( this.crosswalk );
+
+		this.setValueCommand.execute();
 
 	}
 
-	onPointerUp ( pointerEventData: PointerEventData ): void {
+	undo (): void {
 
-		// const coord = this.onRoadStrategy.onPointerUp( pointerEventData );
+		this.roadCoord.road.gameObject.remove( this.crosswalk );
 
-		// const point = this.selectStrategy.onPointerUp( pointerEventData );
+		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
 
-		// if ( point?.isSelected && this.pointerDownAt ) {
-
-		// 	point.copyPosition( coord.toPosTheta().toVector3() );
-
-		// 	( point.parent as Crosswalk )?.update();
-
-		// 	return;
-		// }
+		this.setValueCommand.undo();
 
 	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
 }
