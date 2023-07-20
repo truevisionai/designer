@@ -9,7 +9,7 @@ import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
-import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
+import { ObjectFillType, TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
@@ -22,8 +22,10 @@ import { TvLaneSpeed } from '../models/tv-lane-speed';
 import { TvLaneVisibility } from '../models/tv-lane-visibility';
 import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
-import { TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
+import { TvCornerLocal, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
+import { TvObjectMarking } from '../models/tv-object-marking';
+import { XmlElement } from './open-drive-parser.service';
 
 declare const fxp;
 
@@ -47,7 +49,7 @@ export class OdWriter {
 			attributeNamePrefix: 'attr_',
 			attrNodeName: false,
 			ignoreAttributes: false,
-			suppressBooleanAttributes : false,
+			suppressBooleanAttributes: false,
 			supressEmptyNode: true,
 			format: true,
 			trimValues: true,
@@ -625,7 +627,12 @@ export class OdWriter {
 			repeat: [],
 			validity: [],
 			userData: [],
-			marking: []
+			markings: {
+				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
+			},
+			outlines: {
+				outline: roadObject.outlines.map( outline => this.writeObjectOutlineV2( outline ) )
+			},
 		};
 
 		roadObject.zOffset ? nodeRoadObject[ 'attr_zOffset' ] = roadObject.zOffset : null;
@@ -641,8 +648,6 @@ export class OdWriter {
 
 		this.writeObjectRepeat( nodeRoadObject, roadObject );
 
-		this.writeObjectOutline( nodeRoadObject, roadObject.outline );
-
 		this.writeObjectMaterial( nodeRoadObject, roadObject );
 
 		this.writeObjectValidity( nodeRoadObject, roadObject );
@@ -652,6 +657,29 @@ export class OdWriter {
 		this.writeUserDataFromArray( nodeRoadObject.userData, roadObject.userData );
 
 		xmlNode.object.push( nodeRoadObject );
+	}
+
+	writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
+
+		const cornerReference = marking.cornerReferences.map( reference => {
+			return {
+				attr_id: reference
+			}
+		} );
+
+		return {
+			attr_color: marking.color,
+			attr_spaceLength: marking.spaceLength,
+			attr_lineLength: marking.lineLength,
+			attr_side: marking.side,
+			attr_weight: marking.weight,
+			attr_startOffset: marking.startOffset,
+			attr_stopOffset: marking.stopOffset,
+			attr_zOffset: marking.zOffset,
+			attr_width: marking.width,
+			cornerReference: cornerReference,
+		}
+
 	}
 
 	public writeObjectRepeat ( xmlNode, roadObject: TvRoadObject ) {
@@ -678,7 +706,13 @@ export class OdWriter {
 		}
 	}
 
-	public writeObjectOutline ( xmlNode, objectOutline: TvObjectOutline ) {
+	/**
+	 *
+	 * @param xmlNode
+	 * @param objectOutline
+	 * @deprecated
+	 */
+	public writeObjectOutline ( xmlNode, objectOutline: TvObjectOutline ): void {
 
 		if ( objectOutline != null ) {
 
@@ -717,6 +751,49 @@ export class OdWriter {
 			}
 		}
 	}
+
+	public writeObjectOutlineV2 ( objectOutline: TvObjectOutline ): XmlElement {
+
+		return {
+			attr_id: objectOutline.id,
+			attr_fillType: objectOutline.fillType,
+			attr_outer: objectOutline.outer,
+			attr_closed: objectOutline.closed,
+			attr_laneType: objectOutline.laneType,
+			cornerRoad: objectOutline?.cornerRoad.map(
+				cornerRoad => this.writeObjectCornerRoad( cornerRoad )
+			),
+			cornerLocal: objectOutline?.cornerLocal.map(
+				cornerLocal => this.writeObjectCornerLocal( cornerLocal )
+			),
+		}
+
+	}
+
+	writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
+
+		return {
+			attr_u: cornerLocal.attr_u,
+			attr_v: cornerLocal.attr_v,
+			attr_z: cornerLocal.attr_z,
+			attr_height: cornerLocal.attr_height,
+		};
+
+	}
+
+	writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
+
+		return {
+			attr_id: cornerRoad.attr_id,
+			// attr_roadId: cornerRoad.roadId, // roadId is not part of the OpenDRIVE standard
+			attr_s: cornerRoad.s,
+			attr_t: cornerRoad.t,
+			attr_dz: cornerRoad.dz,
+			attr_height: cornerRoad.height,
+		};
+
+	}
+
 
 	public writeObjectMaterial ( xmlNode, roadObject: TvRoadObject ) {
 

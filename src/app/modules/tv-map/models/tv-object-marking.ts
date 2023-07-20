@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
+import { TvCornerRoad } from './tv-road-object';
 
 export class TvObjectMarking {
 
@@ -28,10 +29,18 @@ export class TvObjectMarking {
 		public stopOffset: number = 0,
 		public zOffset: number = 0.005,
 		public width: number = 1.83,
-		public cornerReferences = [] = [] // 2 or more corners
+		public cornerReferences = [] // 2 or more corners
 	) {
 
 	}
+
+	addCornerRoad ( corner: TvCornerRoad ) {
+
+		this.cornerReferences.push( corner.attr_id );
+
+	}
+
+
 
 	// // version 1
 	// static makeMesh ( marking: TvObjectMarking ): Mesh {

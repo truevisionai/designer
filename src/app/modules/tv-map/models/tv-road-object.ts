@@ -61,7 +61,7 @@ export class TvRoadObject extends Object3D {
 	public outline: TvObjectOutline;
 	// multiple outlines are allowed
 	public outlines: TvObjectOutline[] = [];
-	private _markings: TvObjectMarking[] = [];
+	protected _markings: TvObjectMarking[] = [];
 
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
@@ -77,8 +77,8 @@ export class TvRoadObject extends Object3D {
 		public attr_id: number,
 		s: number,
 		t: number,
-		zOffset: number,
-		validLength: number,
+		zOffset: number = 0,
+		validLength: number = 0,
 		orientation: TvOrientation = TvOrientation.NONE,
 		length: number = null,
 		width: number = null,
@@ -196,6 +196,17 @@ export class TvRoadObject extends Object3D {
 	addMarkingObject ( markingObject: TvObjectMarking ): void {
 		this._markings.push( markingObject );
 	}
+
+	findCornerRoadById ( id: number ) {
+		for ( const outline of this.outlines ) {
+			for ( const corner of outline.cornerRoad ) {
+				if ( corner.attr_id == id ) {
+					return corner;
+				}
+			}
+		}
+	}
+
 }
 
 export class TvObjectOutline {
@@ -203,8 +214,9 @@ export class TvObjectOutline {
 	public cornerRoad: TvCornerRoad[] = [];
 	public cornerLocal: TvCornerLocal[] = [];
 
+	public id: number;
+
 	constructor (
-		public id: number,
 		public fillType: ObjectFillType = ObjectFillType.none,
 		public outer: boolean = false,
 		public closed: boolean = false,
@@ -212,8 +224,8 @@ export class TvObjectOutline {
 	) {
 	}
 
-	addCornerRoad ( roadId: number, s: number, t: number, dz: number = 0, height: number = 0, id?: number ): TvCornerRoad {
-		const cornerRoad = new TvCornerRoad( id || this.cornerRoad.length, roadId, s, t, dz, height );
+	addCornerRoad ( road: TvRoad, s: number, t: number, dz: number = 0, height: number = 0, id?: number ): TvCornerRoad {
+		const cornerRoad = new TvCornerRoad( id || this.cornerRoad.length, road, s, t, dz, height );
 		this.cornerRoad.push( cornerRoad );
 		return cornerRoad;
 	}
@@ -280,13 +292,13 @@ export class TvObjectMaterial {
 export class TvCornerRoad extends DynamicControlPoint<TvCornerRoad> {
 	constructor (
 		public attr_id: number,
-		public roadId: number,
+		public road: TvRoad,
 		public s: number,
 		public t: number,
 		public dz: number = 0,
 		public height: number = 0
 	) {
-		super( null, TvMapInstance.map.getRoadById( roadId ).getPositionAt( s, t ).toVector3() );
+		super( null, road.getPositionAt( s, t ).toVector3() );
 	}
 }
 
@@ -489,45 +501,43 @@ export class Crosswalk extends TvRoadObject {
 
 	private node: Object3D;
 
-	constructor ( s: number, t: number, coords: TvRoadCoord[], ) {
-		super(
-			ObjectTypes.crosswalk,
-			'crosswalk',
-			TvRoadObject.counter++,
-			s,
-			t,
-			0,
-			0,
-		);
+	constructor (
+		s: number,
+		t: number,
+		markings = [ new TvObjectMarking() ],
+		outlines = [ new TvObjectOutline() ]
+	) {
 
-		const id = TvRoadObject.counter;
+		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
 
-		const outline = new TvObjectOutline( id );
+		this.outlines = outlines;
 
-		this.outlines.push( outline );
+		this._markings = markings;
 
-		coords.forEach( i => {
-
-			this.add( outline.addCornerRoad( i.roadId, i.s, i.t ) );
-
-		} );
-
-		const marking = new TvObjectMarking();
-
-		this.addMarkingObject( marking );
-
-		this.node = MarkingObjectFactory.create( this );
-
-		this.add( this.node );
+		this.update();
 	}
 
 	update () {
 
 		this.remove( this.node );
 
+		if ( this.markings[ 0 ].cornerReferences.length < 2 ) return;
+
 		this.node = MarkingObjectFactory.create( this );
 
 		this.add( this.node );
+
+	}
+
+	addCornerRoad ( corner: TvCornerRoad ) {
+
+		this.markings[ 0 ].addCornerRoad( corner );
+
+		this.outlines[ 0 ].cornerRoad.push( corner );
+
+		this.add( corner );
+
+		this.update();
 
 	}
 

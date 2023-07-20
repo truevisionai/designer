@@ -238,14 +238,14 @@ export enum ObjectTypes {
 }
 
 export enum ObjectFillType {
-	grass,
-	concrete,
-	cobble,
-	asphalt,
-	pavement,
-	gravel,
-	soil,
-	none,
+	grass='grass',
+	concrete='concrete',
+	cobble='cobble',
+	asphalt='asphalt',
+	pavement='pavement',
+	gravel='gravel',
+	soil='soil',
+	none='none',
 }
 
 export class EnumHelper {

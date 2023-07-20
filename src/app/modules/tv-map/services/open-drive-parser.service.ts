@@ -10,7 +10,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { readXmlArray } from '../../../core/tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { EnumHelper, TvContactPoint, TvElementType, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
+import { EnumHelper, ObjectTypes, TvContactPoint, TvElementType, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
@@ -21,12 +21,15 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPlaneView } from '../models/tv-plane-view';
-import { TvRoadObject } from '../models/tv-road-object';
+import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
 import { TvRoadLinkChildType } from '../models/tv-road-link-child';
+import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
+import { SceneService } from 'app/core/services/scene.service';
+import { TvObjectMarking } from '../models/tv-object-marking';
 
 declare const fxp;
 
@@ -171,7 +174,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		if ( xml.lanes != null ) this.readLanes( road, xml.lanes );
 
-		// if ( xml.objects != null && xml.objects !== '' ) this.readObjects( road, xml.objects );
+		if ( xml.objects ) this.readObjects( road, xml.objects );
 
 		if ( xml.signals ) this.readSignals( road, xml.signals );
 
@@ -700,20 +703,91 @@ export class OpenDriverParser extends AbstractReader {
 		const pitch = parseFloat( xmlElement.attr_pitch );
 		const roll = parseFloat( xmlElement.attr_roll );
 
-		road.addRoadObject(
-			type, name, id,
-			s, t, zOffset,
-			validLength,
-			orientation,
-			length, width, radius, height,
-			hdg, pitch, roll
-		);
+		const outlines: TvObjectOutline[] = [];
+		const markings: TvObjectMarking[] = [];
+
+		readXmlArray( xmlElement.outlines?.outline, xml => {
+			outlines.push( this.readObjectOutline( xml, road ) );
+		} );
+
+		readXmlArray( xmlElement.markings?.marking, xml => {
+			markings.push( this.readObjectMarking( xml, road ) );
+		} );
+
+
+		if ( type == ObjectTypes.crosswalk ) {
+
+			const crosswalk = new Crosswalk( s, t, markings, outlines );
+
+			crosswalk.update();
+
+			road.gameObject.add( crosswalk );
+
+			road.addRoadObjectInstance( crosswalk );
+
+		} else {
+
+			road.addRoadObject(
+				type, name, id,
+				s, t, zOffset,
+				validLength,
+				orientation,
+				length, width, radius, height,
+				hdg, pitch, roll
+			);
+
+		}
 
 		const roadObject = road.getLastAddedRoadObject();
 
 		roadObject.userData = this.readUserData( xmlElement );
 
 		this.readRoadObjectRepeatArray( roadObject, xmlElement );
+	}
+
+	readObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {
+
+		const color = xml.attr_color;
+		const spaceLength = parseFloat( xml.attr_spaceLength );
+		const lineLength = parseFloat( xml.attr_lineLength );
+		const side = xml.attr_side;
+		const weight = xml.attr_weight;
+		const startOffset = parseFloat( xml.attr_startOffset );
+		const stopOffset = parseFloat( xml.attr_stopOffset );
+		const zOffset = parseFloat( xml.attr_zOffset );
+		const width = parseFloat( xml.attr_width );
+
+		const marking = new TvObjectMarking( color, spaceLength, lineLength, side, weight, startOffset, stopOffset, zOffset, width );
+
+		readXmlArray( xml.cornerReference, xml => {
+			marking.cornerReferences.push( xml.attr_id );
+		} );
+
+		return marking;
+	}
+
+	readObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
+
+		const outline = new TvObjectOutline();
+
+		outline.id = parseFloat( xml.attr_id );
+
+		readXmlArray( xml.cornerRoad, xml =>
+			outline.cornerRoad.push( this.readCornerRoad( xml, road ) )
+		);
+
+		return outline;
+	}
+
+	readCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {
+
+		const id = parseFloat( xml.attr_id );
+		const s = parseFloat( xml.attr_s );
+		const t = parseFloat( xml.attr_t );
+		const dz = parseFloat( xml.attr_dz );
+		const height = parseFloat( xml.attr_height );
+
+		return new TvCornerRoad( id, road, s, t, dz, height );
 	}
 
 	public readRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {

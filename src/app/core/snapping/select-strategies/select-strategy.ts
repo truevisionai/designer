@@ -8,7 +8,7 @@ export abstract class SelectStrategy<T> {
 
 	abstract onPointerMoved ( pointerEventData: PointerEventData ): T;
 
-	abstract onPointerUp ( pointerEventData: PointerEventData ): void;
+	abstract onPointerUp ( pointerEventData: PointerEventData ): T;
 
 	onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
 
