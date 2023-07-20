@@ -534,33 +534,3 @@ export class RoadTool extends BaseTool {
 
 	}
 }
-
-interface PointerDownStrategy {
-	execute ( event: Event ): void;
-}
-
-class ControlPointSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when control point is selected
-		console.log( 'Control Point Selected' );
-	}
-}
-
-class RoadNodeSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when road node is selected
-		console.log( 'Road Node Selected' );
-	}
-}
-
-class PointerDownContext {
-	private strategy: PointerDownStrategy;
-
-	constructor ( strategy: PointerDownStrategy ) {
-		this.strategy = strategy;
-	}
-
-	public onPointerDown ( event: Event ): void {
-		this.strategy.execute( event );
-	}
-}
