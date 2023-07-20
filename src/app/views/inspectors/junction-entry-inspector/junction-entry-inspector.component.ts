@@ -85,7 +85,7 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 
 	removeLink ( connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		CommandHistory.execute( new DeleteLinkCommand( connection, link, link.mesh ) );
+		CommandHistory.execute( new DeleteLinkCommand( connection, link ) );
 
 	}
 }
