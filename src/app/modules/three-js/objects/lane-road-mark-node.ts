@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 import { Group, LineSegments, Vector3 } from 'three';
+import { MoveStrategy } from '../../../core/snapping/move-strategies/move-strategy';
+import { LaneEndMoveStrategy } from '../../../core/snapping/move-strategies/lane-end-move.strategy';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../../tv-map/models/tv-lane';
@@ -9,7 +11,6 @@ import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
 import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { IMoveStrategy, LaneEndStrategy } from 'app/core/snapping/snapping';
 
 export class LaneRoadMarkNode extends Group implements ISelectable {
 
@@ -109,13 +110,13 @@ export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
 
     public point: AnyControlPoint;
 
-    private strategy: IMoveStrategy;
+    private strategy: MoveStrategy;
 
     constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
 
         super();
 
-        this.strategy = new LaneEndStrategy( lane, this.lane.roadMark );
+        this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
 
         const s = this.lane.laneSection.s + this.roadmark.s;
 

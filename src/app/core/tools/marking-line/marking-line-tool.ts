@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ControlPointStrategy, OnRoadStrategy } from 'app/core/snapping/pointer-strategy';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { ObjectTypes } from '../../../modules/tv-map/models/tv-common';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
@@ -10,6 +9,8 @@ import { TvObjectMarking } from '../../../modules/tv-map/models/tv-object-markin
 import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
 import { ToolType } from '../../models/tool-types.enum';
 import { SceneService } from '../../services/scene.service';
+import { ControlPointStrategy } from '../../snapping/select-strategies/control-point-strategy';
+import { OnRoadStrategy } from '../../snapping/select-strategies/on-road-strategy';
 import { BaseTool } from '../base-tool';
 
 export class MarkingLineTool extends BaseTool {

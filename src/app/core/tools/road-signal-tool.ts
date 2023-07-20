@@ -13,7 +13,7 @@ import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { KeyboardInput } from '../input';
 import { ToolType } from '../models/tool-types.enum';
 import { SceneService } from '../services/scene.service';
-import { IMovable } from '../snapping/snapping';
+import { IMovable } from '../snapping/snap-strategies/snapping';
 import { BaseTool } from './base-tool';
 
 export class RoadSignalTool extends BaseTool {
