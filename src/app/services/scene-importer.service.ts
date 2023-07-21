@@ -142,7 +142,7 @@ export class SceneImporterService extends AbstractReader {
 
 		this.map.destroy();
 
-		this.map = new TvMap();
+		this.map = this.odParser.map = new TvMap();
 
 	}
 
