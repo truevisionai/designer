@@ -207,23 +207,23 @@ const classesToInclude = [
 		AppLoaderService
 		// LandingPageService
 	],
-    declarations: [
-        classesToInclude,
-        RoadIdFieldComponent
-    ],
-    exports: [ classesToInclude,
-        MatTreeModule,
-        MatSelectModule,
-        MatListModule,
-        MatDialogModule,
-        MatIconModule,
-        MatTabsModule,
-        MatSelectModule,
-        MatGridListModule,
-        MatInputModule,
-        MatButtonModule,
-        MatExpansionModule, RoadIdFieldComponent,
-    ]
+	declarations: [
+		classesToInclude,
+		RoadIdFieldComponent
+	],
+	exports: [ classesToInclude,
+		MatTreeModule,
+		MatSelectModule,
+		MatListModule,
+		MatDialogModule,
+		MatIconModule,
+		MatTabsModule,
+		MatSelectModule,
+		MatGridListModule,
+		MatInputModule,
+		MatButtonModule,
+		MatExpansionModule, RoadIdFieldComponent,
+	]
 } )
 export class SharedModule {
 }

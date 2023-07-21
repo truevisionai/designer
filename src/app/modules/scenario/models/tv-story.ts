@@ -58,7 +58,7 @@ export class Story implements StoryboardElement {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 
-	getParameterValue <T>( name: string ): T {
+	getParameterValue<T> ( name: string ): T {
 
 		const parameterDeclaration = this.parameterDeclarations.find( p => p.parameter.name === name );
 

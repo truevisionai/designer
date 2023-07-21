@@ -2,22 +2,35 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="data" class="inspector-form-container">
+<div *ngIf="data"
+	class="inspector-form-container">
 
 	<div *ngFor="let curve of data.curves">
 
 		<mat-form-field style="width: 25%;">
-			<input (ngModelChange)="onChange()" [(ngModel)]="curve['v1'].x" matInput placeholder="X">
+			<input (ngModelChange)="onChange()"
+				[(ngModel)]="curve['v1'].x"
+				matInput
+				placeholder="X">
 		</mat-form-field>
 		<mat-form-field style="width: 25%;">
-			<input (ngModelChange)="onChange()" [(ngModel)]="curve['v1'].y" matInput placeholder="Y">
+			<input (ngModelChange)="onChange()"
+				[(ngModel)]="curve['v1'].y"
+				matInput
+				placeholder="Y">
 		</mat-form-field>
 
 		<mat-form-field style="width: 25%;">
-			<input (ngModelChange)="onChange()" [(ngModel)]="curve['v2'].x" matInput placeholder="X">
+			<input (ngModelChange)="onChange()"
+				[(ngModel)]="curve['v2'].x"
+				matInput
+				placeholder="X">
 		</mat-form-field>
 		<mat-form-field style="width: 25%;">
-			<input (ngModelChange)="onChange()" [(ngModel)]="curve['v2'].y" matInput placeholder="Y">
+			<input (ngModelChange)="onChange()"
+				[(ngModel)]="curve['v2'].y"
+				matInput
+				placeholder="Y">
 		</mat-form-field>
 
 	</div>

@@ -4,26 +4,44 @@
 
 <div class="page-wrap height-100 mat-bg-primary">
 	<div class="session-form-hold session-lockscreen">
-		<mat-progress-bar class="session-progress" mode="determinate"></mat-progress-bar>
+		<mat-progress-bar class="session-progress"
+			mode="determinate"></mat-progress-bar>
 		<mat-card>
 			<mat-card-content>
-				<div fxFlex="column" fxFlexWrap="wrap">
-					<div class="lockscreen-user" fxFlexWrap="wrap">
-						<img alt="" class="lockscreen-face" src="assets/images/face-3.jpg">
+				<div fxFlex="column"
+					fxFlexWrap="wrap">
+					<div class="lockscreen-user"
+						fxFlexWrap="wrap">
+						<img alt=""
+							class="lockscreen-face"
+							src="assets/images/face-3.jpg">
 						<h5 class="m-0 font-normal">John Doe</h5>
 						<small class="text-muted">Last seen 1 hour ago</small>
 					</div>
-					<form #lockscreenForm="ngForm" (ngSubmit)="unlock()">
+					<form #lockscreenForm="ngForm"
+						(ngSubmit)="unlock()">
 						<div class="">
 							<mat-form-field class="full-width">
-								<input #password="ngModel" [(ngModel)]="lockscreenData.password" matInput name="password" placeholder="Password" required type="password">
+								<input #password="ngModel"
+									[(ngModel)]="lockscreenData.password"
+									matInput
+									name="password"
+									placeholder="Password"
+									required
+									type="password">
 							</mat-form-field>
-							<small *ngIf="password.errors && (password.dirty || password.touched) && (password.errors.required)" class="form-error-msg"> Password is required </small>
+							<small *ngIf="password.errors && (password.dirty || password.touched) && (password.errors.required)"
+								class="form-error-msg"> Password is required </small>
 						</div>
 
-						<button [disabled]="lockscreenForm.invalid" class="mat-primary full-width mb-05" mat-raised-button>Unlock
+						<button [disabled]="lockscreenForm.invalid"
+							class="mat-primary full-width mb-05"
+							mat-raised-button>Unlock
 						</button>
-						<button [routerLink]="'/sessions/signin'" class="mat-primary full-width" color="accent" mat-raised-button>It's Not Me!
+						<button [routerLink]="'/sessions/signin'"
+							class="mat-primary full-width"
+							color="accent"
+							mat-raised-button>It's Not Me!
 						</button>
 					</form>
 				</div>

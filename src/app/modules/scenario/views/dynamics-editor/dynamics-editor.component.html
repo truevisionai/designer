@@ -1,12 +1,15 @@
-<app-enum-field [enum]="shapes" label="Shape" [value]="dynamics.dynamicsShape"
-				(changed)="onShapeChanged($event)"></app-enum-field>
+<app-enum-field [enum]="shapes"
+	label="Shape"
+	[value]="dynamics.dynamicsShape"
+	(changed)="onShapeChanged($event)"></app-enum-field>
 
-<app-double-field
-	[label]="dimensionValueLabel"
+<app-double-field [label]="dimensionValueLabel"
 	[suffix]="suffix"
 	(valueChanged)="onValueChanged($event)"
 	[value]="dynamics.value">
 </app-double-field>
 
-<app-enum-field [enum]="dimensions" label="Dimension" [value]="dynamics.dynamicsDimension"
-				(changed)="onDimensionChanged($event)"></app-enum-field>
+<app-enum-field [enum]="dimensions"
+	label="Dimension"
+	[value]="dynamics.dynamicsDimension"
+	(changed)="onDimensionChanged($event)"></app-enum-field>

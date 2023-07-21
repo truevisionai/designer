@@ -2,9 +2,14 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="data.polygon" class="inspector-form-container">
+<div *ngIf="data.polygon"
+	class="inspector-form-container">
 
-	<app-double-field (changed)="onDensityChanged($event)" [max]="1.0" [min]="0.0" [value]="data.polygon.density" label="Density"></app-double-field>
+	<app-double-field (changed)="onDensityChanged($event)"
+		[max]="1.0"
+		[min]="0.0"
+		[value]="data.polygon.density"
+		label="Density"></app-double-field>
 
 
 </div>
@@ -12,5 +17,7 @@
 <div *ngIf="data.controlPoint">
 	<br />
 	<span>Control Point</span><br />
-	<app-transform-inspector [data]="data.controlPoint" [showRotation]="false" [showScale]="false"></app-transform-inspector>
+	<app-transform-inspector [data]="data.controlPoint"
+		[showRotation]="false"
+		[showScale]="false"></app-transform-inspector>
 </div>

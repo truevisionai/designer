@@ -5,7 +5,7 @@ import { Group, LineSegments, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvRoadLaneOffset } from '../../tv-map/models/tv-road-lane-offset';
 import { TvRoad } from '../../tv-map/models/tv-road.model';
-import { AnyControlPoint} from './control-point';
+import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 
 export class LaneOffsetNode extends Group implements ISelectable {

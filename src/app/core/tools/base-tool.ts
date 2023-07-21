@@ -199,7 +199,7 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 			highlightedMaterial.setValues( {
 				color: COLOR.DEEP_CYAN
-			})
+			} )
 
 			// Assign the temporary material to the object
 			object.material = highlightedMaterial;

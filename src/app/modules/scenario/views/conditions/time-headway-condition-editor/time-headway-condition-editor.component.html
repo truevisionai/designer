@@ -1,13 +1,21 @@
-<app-select-entity-field
-	(changed)="onTargetEntityChanged($event)"
+<app-select-entity-field (changed)="onTargetEntityChanged($event)"
 	[value]="timeHeadwayCondition.targetEntity"
 	label="Target">
 </app-select-entity-field>
 
-<app-double-field (changed)="onValueChanged($event)" [value]="timeHeadwayCondition.value" label="Value"></app-double-field>
+<app-double-field (changed)="onValueChanged($event)"
+	[value]="timeHeadwayCondition.value"
+	label="Value"></app-double-field>
 
-<app-string-field (changed)="onFreespaceChanged($event)" [value]="timeHeadwayCondition.freespace" label="Freespace"></app-string-field>
+<app-string-field (changed)="onFreespaceChanged($event)"
+	[value]="timeHeadwayCondition.freespace"
+	label="Freespace"></app-string-field>
 
-<app-string-field (changed)="onAlongRouteChanged($event)" [value]="timeHeadwayCondition.alongRoute" label="Along Route"></app-string-field>
+<app-string-field (changed)="onAlongRouteChanged($event)"
+	[value]="timeHeadwayCondition.alongRoute"
+	label="Along Route"></app-string-field>
 
-<app-enum-field (changed)="onRuleChanged($event)" [enum]="rules" [value]="timeHeadwayCondition.rule" label="Rule"></app-enum-field>
+<app-enum-field (changed)="onRuleChanged($event)"
+	[enum]="rules"
+	[value]="timeHeadwayCondition.rule"
+	label="Rule"></app-enum-field>

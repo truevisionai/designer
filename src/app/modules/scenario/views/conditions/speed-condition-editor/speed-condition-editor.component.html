@@ -1,13 +1,9 @@
-<app-double-field
-	label="Speed"
+<app-double-field label="Speed"
 	[value]="speedCondition.value"
 	(changed)="onSpeedChanged($event)">
 </app-double-field>
-<app-enum-field
-	label="Rule"
+<app-enum-field label="Rule"
 	[enum]="rules"
 	[value]="speedCondition.rule"
 	(changed)="onRuleChanged($event)">
 </app-enum-field>
-
-

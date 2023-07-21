@@ -57,7 +57,7 @@ export class SceneService {
 
 	}
 
-	static removeObjects() {
+	static removeObjects () {
 
 		this.objects.forEach( object => this.remove( object ) );
 

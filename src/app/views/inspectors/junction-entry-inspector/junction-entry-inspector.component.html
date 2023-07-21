@@ -4,9 +4,12 @@
 
 <div class="inspector-form-container">
 
-	<app-string-field [disabled]="true" label="Nodes" [value]="data?.length"></app-string-field>
+	<app-string-field [disabled]="true"
+		label="Nodes"
+		[value]="data?.length"></app-string-field>
 
-	<button mat-stroked-button (click)="createManeuvers()">Create Maneuvers</button>
+	<button mat-stroked-button
+		(click)="createManeuvers()">Create Maneuvers</button>
 
 	<div *ngFor="let dot of data">
 

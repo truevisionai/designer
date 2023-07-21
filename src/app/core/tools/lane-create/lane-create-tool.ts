@@ -128,7 +128,7 @@ export class LaneCreateTool extends BaseTool {
 
 		newLane.addWidthRecord( 0, 0, 0, 0, 0 );
 
-		newLane.addWidthRecord( 20, lane.getWidthValue(0), 0, 0, 0 );
+		newLane.addWidthRecord( 20, lane.getWidthValue( 0 ), 0, 0, 0 );
 
 		newLaneSection.updateLaneWidthValues( newLane );
 

@@ -2,7 +2,8 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="material" class="inspector-form-container">
+<div *ngIf="material"
+	class="inspector-form-container">
 
 	<mat-card class="mat-card material-preview">
 		<img [src]="thumbnail" />
@@ -10,19 +11,35 @@
 
 	<!-- <app-string-field (changed)="onNameChanged($event)" [value]="material.name" label="Name"></app-string-field> -->
 
-	<app-double-field (changed)="onRoughnessChanged($event)" [value]="material.roughness" label="Roughness" max="1" min="0"></app-double-field>
+	<app-double-field (changed)="onRoughnessChanged($event)"
+		[value]="material.roughness"
+		label="Roughness"
+		max="1"
+		min="0"></app-double-field>
 
-	<app-double-field (changed)="onMetalnessChanged($event)" [value]="material.metalness" label="Metalness" max="1" min="0"></app-double-field>
+	<app-double-field (changed)="onMetalnessChanged($event)"
+		[value]="material.metalness"
+		label="Metalness"
+		max="1"
+		min="0"></app-double-field>
 
-	<app-color-field (changed)="onColorChanged($event)" [value]="material.color" label="Color"></app-color-field>
+	<app-color-field (changed)="onColorChanged($event)"
+		[value]="material.color"
+		label="Color"></app-color-field>
 
 	<!-- <app-color-field label="Emissive" [value]="material.emissive" (changed)="onEmissiveColorChanged($event)"></app-color-field> -->
 
-	<app-texture-field (changed)="onMapChanged($event)" [guid]="material.mapGuid" label="Map"></app-texture-field>
+	<app-texture-field (changed)="onMapChanged($event)"
+		[guid]="material.mapGuid"
+		label="Map"></app-texture-field>
 
-	<app-texture-field (changed)="onRoughnessMapChanged($event)" [guid]="material.roughnessMapGuid" label="Roughness Map"></app-texture-field>
+	<app-texture-field (changed)="onRoughnessMapChanged($event)"
+		[guid]="material.roughnessMapGuid"
+		label="Roughness Map"></app-texture-field>
 
-	<app-texture-field (changed)="onNormalMapChanged($event)" [guid]="material.normalMapGuid" label="NormalMap"></app-texture-field>
+	<app-texture-field (changed)="onNormalMapChanged($event)"
+		[guid]="material.normalMapGuid"
+		label="NormalMap"></app-texture-field>
 
 	<!-- <app-texture-field [guid]="material.aoMapGuid" label="Occlusion Map" (changed)="onMapChanged($event, 'aoMap')">
 	</app-texture-field> -->

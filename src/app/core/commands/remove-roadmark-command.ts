@@ -12,7 +12,7 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 	private index: number;
 
-	private roadMarkBuilder = new OdRoadMarkBuilderV1( );
+	private roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
 

@@ -106,55 +106,55 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
 
-    public static readonly tag = 'roadmark-point';
+	public static readonly tag = 'roadmark-point';
 
-    public point: AnyControlPoint;
+	public point: AnyControlPoint;
 
     private strategy: MoveStrategy;
 
-    constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
+	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
 
-        super();
+		super();
 
         this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
 
-        const s = this.lane.laneSection.s + this.roadmark.s;
+		const s = this.lane.laneSection.s + this.roadmark.s;
 
-        this.point = AnyControlPoint.create( 'point', this.strategy.getVector3( s ) );
+		this.point = AnyControlPoint.create( 'point', this.strategy.getVector3( s ) );
 
-        this.point.tag = LaneRoadMarkNode.tag;
+		this.point.tag = LaneRoadMarkNode.tag;
 
-        this.add( this.point );
-
-
-    }
-
-    get isSelected () {
-
-        return this.point.isSelected;
-
-    }
-
-    select () {
-
-        this.point?.select();
-
-    }
-
-    unselect () {
-
-        this.point?.unselect();
-
-    }
+		this.add( this.point );
 
 
-    updateByPosition ( point: Vector3 ): void {
+	}
 
-        const posTheta = this.strategy.getPosTheta( point );
+	get isSelected () {
 
-        this.point.copyPosition( posTheta.toVector3() );
+		return this.point.isSelected;
 
-        this.roadmark.sOffset = posTheta.s;
+	}
+
+	select () {
+
+		this.point?.select();
+
+	}
+
+	unselect () {
+
+		this.point?.unselect();
+
+	}
+
+
+	updateByPosition ( point: Vector3 ): void {
+
+		const posTheta = this.strategy.getPosTheta( point );
+
+		this.point.copyPosition( posTheta.toVector3() );
+
+		this.roadmark.sOffset = posTheta.s;
 
 	}
 

@@ -1,20 +1,29 @@
 <!--
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
-<div *ngIf="object" class="inspector-form-container">
+<div *ngIf="object"
+	class="inspector-form-container">
 
-	<app-object-preview *ngIf="object" [object]="object" objectType="model"></app-object-preview>
+	<app-object-preview *ngIf="object"
+		[object]="object"
+		objectType="model"></app-object-preview>
 
 	<!-- <app-string-field [disabled]="true" [value]="prop.guid" label="GUID"></app-string-field> -->
 
 
-	<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-		<mat-tree-node (click)="onNodeClicked(node)" *matTreeNodeDef="let node" matTreeNodePadding>
-			<button mat-icon-button disabled></button>
+	<mat-tree [dataSource]="dataSource"
+		[treeControl]="treeControl">
+		<mat-tree-node (click)="onNodeClicked(node)"
+			*matTreeNodeDef="let node"
+			matTreeNodePadding>
+			<button mat-icon-button
+				disabled></button>
 			{{node.name}}
 		</mat-tree-node>
-		<mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-			<button mat-icon-button matTreeNodeToggle>
+		<mat-tree-node *matTreeNodeDef="let node;when: hasChild"
+			matTreeNodePadding>
+			<button mat-icon-button
+				matTreeNodeToggle>
 				<mat-icon class="mat-icon-rtl-mirror">
 					{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
 				</mat-icon>

@@ -47,7 +47,7 @@ export class TvConsole {
 	static logs: TvLog[] = [];
 
 	static get lastLog () {
-		return this.logs[0];
+		return this.logs[ 0 ];
 	}
 
 	static clear () {

@@ -45,60 +45,60 @@ import { ToolBarComponent } from './tool-bar/tool-bar.component';
 import { TutorialsDialogComponent } from './dialogs/tutorials-dialog/tutorials-dialog.component';
 
 @NgModule( {
-    declarations: [
-        ToolBarComponent,
-        MenuBarComponent,
-        EditorLayoutComponent,
-        EditorComponent,
-        PlayerBarComponent,
-        ProjectBrowserComponent,
-        ProjectHierarchyComponent,
-        ProjectBreadcrumbsComponent,
-        FolderFilesComponent,
-        FileComponent,
-        ExportGlbDialog,
-        ExportOpenDriveDialog,
-        ConsoleComponent,
-        TutorialsDialogComponent
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        FlexModule,
-        RouterModule,
-        SharedModule,
-        MatMenuModule,
-        MatToolbarModule,
-        MatDividerModule,
-        ThreeJsModule,
-        SatPopoverModule,
-        MatIconModule,
-        MatTooltipModule,
-        MatButtonModule,
-        TranslateModule,
-        MatTreeModule,
-        MatGridListModule,
-        MatCardModule,
-        FlexLayoutModule,
-        PerfectScrollbarModule,
-        MatListModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTabsModule,
-        MatBadgeModule,
-        MatChipsModule,
-        MatIconModule,
-        MatTooltipModule,
-        ScenarioModule,
-    ],
-    exports: [
-        PlayerBarComponent
-    ],
-    entryComponents: [
-        ExportGlbDialog
-    ]
+	declarations: [
+		ToolBarComponent,
+		MenuBarComponent,
+		EditorLayoutComponent,
+		EditorComponent,
+		PlayerBarComponent,
+		ProjectBrowserComponent,
+		ProjectHierarchyComponent,
+		ProjectBreadcrumbsComponent,
+		FolderFilesComponent,
+		FileComponent,
+		ExportGlbDialog,
+		ExportOpenDriveDialog,
+		ConsoleComponent,
+		TutorialsDialogComponent
+	],
+	imports: [
+		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
+		FlexModule,
+		RouterModule,
+		SharedModule,
+		MatMenuModule,
+		MatToolbarModule,
+		MatDividerModule,
+		ThreeJsModule,
+		SatPopoverModule,
+		MatIconModule,
+		MatTooltipModule,
+		MatButtonModule,
+		TranslateModule,
+		MatTreeModule,
+		MatGridListModule,
+		MatCardModule,
+		FlexLayoutModule,
+		PerfectScrollbarModule,
+		MatListModule,
+		MatCheckboxModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatTabsModule,
+		MatBadgeModule,
+		MatChipsModule,
+		MatIconModule,
+		MatTooltipModule,
+		ScenarioModule,
+	],
+	exports: [
+		PlayerBarComponent
+	],
+	entryComponents: [
+		ExportGlbDialog
+	]
 } )
 export class EditorModule {
 }

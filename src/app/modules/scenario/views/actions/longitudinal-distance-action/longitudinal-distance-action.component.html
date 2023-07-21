@@ -1,34 +1,42 @@
-<app-double-field (changed)="onValueChanged($event)" label="Value"
-				  [value]="longitudinalDistanceAction.value"></app-double-field>
+<app-double-field (changed)="onValueChanged($event)"
+	label="Value"
+	[value]="longitudinalDistanceAction.value"></app-double-field>
 
-<app-select-entity-field label="Target" [value]="longitudinalDistanceAction.targetEntity"
-						 (changed)="onTargetChanged($event)"></app-select-entity-field>
+<app-select-entity-field label="Target"
+	[value]="longitudinalDistanceAction.targetEntity"
+	(changed)="onTargetChanged($event)"></app-select-entity-field>
 
 <app-boolean-field (changed)="onContinousChanged($event)"
-[value]="longitudinalDistanceAction.continous" label="Continous"></app-boolean-field>
+	[value]="longitudinalDistanceAction.continous"
+	label="Continous"></app-boolean-field>
 
 <app-boolean-field (changed)="onFreespaceChanged($event)"
-[value]="longitudinalDistanceAction.freespace" label="Freespace"></app-boolean-field>
+	[value]="longitudinalDistanceAction.freespace"
+	label="Freespace"></app-boolean-field>
 
-<div align="left" class="tv-field">
+<div align="left"
+	class="tv-field">
 	<label class="tv-field-label">Value Type</label>
 	<div class="tv-field-text-input">
-		<select (change)="onValueTypeChanged($event)" [(ngModel)]="longitudinalDistanceAction.valueType"
-				class="tv-field-dropdown">
-			<option value="distance" class="tv-field-option">Distance</option>
-			<option value="timeGap" class="tv-field-option">TimeGap</option>
+		<select (change)="onValueTypeChanged($event)"
+			[(ngModel)]="longitudinalDistanceAction.valueType"
+			class="tv-field-dropdown">
+			<option value="distance"
+				class="tv-field-option">Distance</option>
+			<option value="timeGap"
+				class="tv-field-option">TimeGap</option>
 		</select>
 	</div>
 </div>
 
 <app-double-field label="Max Acceleration"
-				  (changed)="onMaxAccelChanged($event)"
-				  [value]="longitudinalDistanceAction.dynamicConstraints.maxAcceleration"></app-double-field>
+	(changed)="onMaxAccelChanged($event)"
+	[value]="longitudinalDistanceAction.dynamicConstraints.maxAcceleration"></app-double-field>
 
 <app-double-field label="Max Deceleration"
-				  (changed)="onMaxDecelChanged($event)"
-				  [value]="longitudinalDistanceAction.dynamicConstraints.maxDeceleration"></app-double-field>
+	(changed)="onMaxDecelChanged($event)"
+	[value]="longitudinalDistanceAction.dynamicConstraints.maxDeceleration"></app-double-field>
 
 <app-double-field label="Max Speed"
-				  (changed)="onMaxSpeedChanged($event)"
-				  [value]="longitudinalDistanceAction.dynamicConstraints.maxSpeed"></app-double-field>
+	(changed)="onMaxSpeedChanged($event)"
+	[value]="longitudinalDistanceAction.dynamicConstraints.maxSpeed"></app-double-field>

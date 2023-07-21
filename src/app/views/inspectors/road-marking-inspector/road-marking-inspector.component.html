@@ -2,10 +2,13 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="data.roadMarking" class="inspector-form-container">
+<div *ngIf="data.roadMarking"
+	class="inspector-form-container">
 
 	<img src="{{ thumbnail }}" />
 
-	<app-texture-field (changed)="onTextureChanged($event)" [guid]="data.roadMarking.textureGuid" label="Map"></app-texture-field>
+	<app-texture-field (changed)="onTextureChanged($event)"
+		[guid]="data.roadMarking.textureGuid"
+		label="Map"></app-texture-field>
 
 </div>

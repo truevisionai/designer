@@ -2,20 +2,28 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="data.propCurve" class="inspector-form-container">
+<div *ngIf="data.propCurve"
+	class="inspector-form-container">
 
-	<app-double-field (changed)="onSpacingChanged($event)" [value]="data.propCurve.spacing" label="Distance"></app-double-field>
+	<app-double-field (changed)="onSpacingChanged($event)"
+		[value]="data.propCurve.spacing"
+		label="Distance"></app-double-field>
 
-	<app-double-field (changed)="onRotationChanged($event)" [value]="data.propCurve.rotation" label="Rotation"></app-double-field>
+	<app-double-field (changed)="onRotationChanged($event)"
+		[value]="data.propCurve.rotation"
+		label="Rotation"></app-double-field>
 
-	<app-double-field (changed)="onPositionVarianceChanged($event)" [value]="data.propCurve.positionVariance" label="Position"></app-double-field>
+	<app-double-field (changed)="onPositionVarianceChanged($event)"
+		[value]="data.propCurve.positionVariance"
+		label="Position"></app-double-field>
 
-	<button (click)="onBakeClicked()" mat-stroked-button>Bake Objects</button>
+	<button (click)="onBakeClicked()"
+		mat-stroked-button>Bake Objects</button>
 
 </div>
 
 <!-- <div *ngIf="data.controlPoint"> -->
-	<!-- <br /> -->
-	<!-- <span>Control Point</span><br /> -->
-	<!-- <app-transform-inspector [data]="data.controlPoint" [showRotation]="false" [showScale]="false"></app-transform-inspector> -->
+<!-- <br /> -->
+<!-- <span>Control Point</span><br /> -->
+<!-- <app-transform-inspector [data]="data.controlPoint" [showRotation]="false" [showScale]="false"></app-transform-inspector> -->
 <!-- </div> -->

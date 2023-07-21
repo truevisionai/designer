@@ -1,6 +1,10 @@
-<div align="left" class="tv-field">
+<div align="left"
+	class="tv-field">
 	<label class="tv-field-label">{{ label }}</label>
 	<div class="tv-field-text-input">
-		<mat-checkbox (ngModelChange)="onModelChanged($event)" [(ngModel)]="value" [disabled]="disabled" [checked]="value"></mat-checkbox>
+		<mat-checkbox (ngModelChange)="onModelChanged($event)"
+			[(ngModel)]="value"
+			[disabled]="disabled"
+			[checked]="value"></mat-checkbox>
 	</div>
 </div>

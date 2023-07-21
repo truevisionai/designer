@@ -2,22 +2,33 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="controlPoint" class="inspector-form-container">
+<div *ngIf="controlPoint"
+	class="inspector-form-container">
 
-	<span>Road Control Point</span><br/><br/>
+	<span>Road Control Point</span><br /><br />
 
 	<mat-form-field style="width: 50%;">
 
-		<input [(ngModel)]="controlPoint.position.x" disabled matInput placeholder="X" type="number">
+		<input [(ngModel)]="controlPoint.position.x"
+			disabled
+			matInput
+			placeholder="X"
+			type="number">
 
 	</mat-form-field>
 
 	<mat-form-field style="width: 50%;">
 
-		<input [(ngModel)]="controlPoint.position.y" disabled matInput placeholder="Y" type="number">
+		<input [(ngModel)]="controlPoint.position.y"
+			disabled
+			matInput
+			placeholder="Y"
+			type="number">
 
 	</mat-form-field>
 
-	<button *ngIf="!controlPoint.allowChange" color="warn" mat-flat-button>Editing Disabled</button>
+	<button *ngIf="!controlPoint.allowChange"
+		color="warn"
+		mat-flat-button>Editing Disabled</button>
 
 </div>

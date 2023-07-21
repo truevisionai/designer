@@ -65,7 +65,7 @@ import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../m
 
 import { CatalogReference, Catalogs, TrajectoryCatalog } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
-import { ScenarioEntity} from '../models/entities/scenario-entity';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import {
 	ConditionEdge,
 	CoordinateSystem,
