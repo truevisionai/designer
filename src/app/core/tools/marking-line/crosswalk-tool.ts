@@ -17,11 +17,11 @@ import { SelectStrategy } from '../../snapping/select-strategies/select-strategy
 import { BaseTool } from '../base-tool';
 import { CrosswalkInspectorComponent, ICrosswalkInspectorData } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 
-export class MarkingLineTool extends BaseTool implements IToolWithPoint {
+export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
-	name: string = 'MarkingLineTool';
+	name: string = 'CrosswalkTool';
 
-	toolType = ToolType.MarkingLine;
+	toolType = ToolType.Crosswalk;
 
 	onRoadStrategy = new OnRoadStrategy();
 
@@ -210,7 +210,7 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 }
 
-function getSelectPointCommand ( tool: MarkingLineTool, point: TvCornerRoad, crosswalk: Crosswalk ): SelectPointCommand {
+function getSelectPointCommand ( tool: CrosswalkTool, point: TvCornerRoad, crosswalk: Crosswalk ): SelectPointCommand {
 
 	const data: ICrosswalkInspectorData = {
 		point: point,
@@ -237,7 +237,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 		this.crosswalk.addCornerRoad( point );
 
-		const tool = this.getTool<MarkingLineTool>();
+		const tool = this.getTool<CrosswalkTool>();
 
 		this.selectPointCommand = getSelectPointCommand( tool, point, this.crosswalk );
 
@@ -284,7 +284,7 @@ export class AddCrosswalkPointCommand extends BaseCommand {
 
 		const point = this.point = new TvCornerRoad( id, coord.road, coord.s, coord.t );
 
-		const tool = this.getTool<MarkingLineTool>();
+		const tool = this.getTool<CrosswalkTool>();
 
 		this.selectPointCommand = getSelectPointCommand( tool, point, crosswalk );
 	}
