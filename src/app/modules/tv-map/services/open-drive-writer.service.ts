@@ -612,7 +612,7 @@ export class OdWriter {
 		}
 	}
 
-	public writeObject ( xmlNode, roadObject: TvRoadObject ) {
+	public writeObject ( xmlNode: XmlElement, roadObject: TvRoadObject ) {
 
 		const nodeRoadObject = {
 

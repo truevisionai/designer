@@ -313,6 +313,12 @@ export class TvCornerRoad extends DynamicControlPoint<Crosswalk> {
 
 		super.copyPosition( position );
 
+		const coord = this.road?.getCoordAt( position );
+
+		if ( coord ) this.s = coord.s;
+
+		if ( coord ) this.t = coord.t;
+
 		this.mainObject?.update();
 
 	}
@@ -524,13 +530,19 @@ export class Crosswalk extends TvRoadObject {
 
 		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
 
+		outlines.forEach( outline => outline.cornerRoad.forEach( cornerRoad => {
+
+			cornerRoad.mainObject = this;
+
+			this.add( cornerRoad );
+
+		} ) );
+
 		this.outlines = outlines;
 
-		this._markings = markings;
+		markings.map( marking => marking.roadObject = this )
 
-		this.markings.forEach( marking => {
-			marking.roadObject = this;
-		} )
+		this._markings = markings;
 
 		this.update();
 	}

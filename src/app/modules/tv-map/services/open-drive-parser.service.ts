@@ -689,19 +689,19 @@ export class OpenDriverParser extends AbstractReader {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
-		const id = parseFloat( xmlElement.attr_id );
-		const s = parseFloat( xmlElement.attr_s );
-		const t = parseFloat( xmlElement.attr_t );
-		const zOffset = parseFloat( xmlElement.attr_zOffset );
-		const validLength = parseFloat( xmlElement.attr_validLength );
+		const id = parseFloat( xmlElement.attr_id ) || 0;
+		const s = parseFloat( xmlElement.attr_s ) || 0;
+		const t = parseFloat( xmlElement.attr_t ) || 0;
+		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0.005;
+		const validLength = parseFloat( xmlElement.attr_validLength ) || 0;
 		const orientation = xmlElement.attr_orientation;
-		const length = parseFloat( xmlElement.attr_length );
-		const width = parseFloat( xmlElement.attr_width );
-		const radius = parseFloat( xmlElement.attr_radius );
-		const height = parseFloat( xmlElement.attr_height );
-		const hdg = parseFloat( xmlElement.attr_hdg );
-		const pitch = parseFloat( xmlElement.attr_pitch );
-		const roll = parseFloat( xmlElement.attr_roll );
+		const length = parseFloat( xmlElement.attr_length ) || 0;
+		const width = parseFloat( xmlElement.attr_width ) || 0;
+		const radius = parseFloat( xmlElement.attr_radius ) || 0;
+		const height = parseFloat( xmlElement.attr_height ) || 0;
+		const hdg = parseFloat( xmlElement.attr_hdg ) || 0;
+		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
+		const roll = parseFloat( xmlElement.attr_roll ) || 0;
 
 		const outlines: TvObjectOutline[] = [];
 		const markings: TvObjectMarking[] = [];
@@ -719,9 +719,11 @@ export class OpenDriverParser extends AbstractReader {
 
 			const crosswalk = new Crosswalk( s, t, markings, outlines );
 
+			markings.forEach( marking => marking.roadObject = crosswalk );
+
 			crosswalk.update();
 
-			road.gameObject.add( crosswalk );
+			SceneService.add( crosswalk );
 
 			road.addRoadObjectInstance( crosswalk );
 
@@ -760,7 +762,7 @@ export class OpenDriverParser extends AbstractReader {
 		const marking = new TvObjectMarking( color, spaceLength, lineLength, side, weight, startOffset, stopOffset, zOffset, width );
 
 		readXmlArray( xml.cornerReference, xml => {
-			marking.cornerReferences.push( xml.attr_id );
+			marking.cornerReferences.push( parseFloat( xml.attr_id ) );
 		} );
 
 		return marking;
@@ -787,7 +789,11 @@ export class OpenDriverParser extends AbstractReader {
 		const dz = parseFloat( xml.attr_dz );
 		const height = parseFloat( xml.attr_height );
 
-		return new TvCornerRoad( id, road, s, t, dz, height );
+		const corner = new TvCornerRoad( id, road, s, t, dz, height );
+
+		corner.hide();	// by default we want to hide corner points during import
+
+		return corner;
 	}
 
 	public readRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {

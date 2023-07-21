@@ -24,6 +24,8 @@ export class Vector3FieldComponent extends AbstractFieldComponent implements OnI
 
 	@Input() step: number = 0.1;
 
+	@Input() z: boolean = true;
+
 	constructor () {
 		super();
 	}
@@ -65,6 +67,8 @@ export class Vector3FieldComponent extends AbstractFieldComponent implements OnI
 	onZChanged ( $event: any ) {
 
 		if ( this.disabled ) return;
+
+		if ( !this.z ) return;
 
 		this.value.z = parseFloat( $event );
 

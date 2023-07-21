@@ -780,6 +780,8 @@ export class TvRoad {
 
 	addRoadObjectInstance ( roadObject: TvRoadObject ) {
 
+		roadObject.road = this;
+
 		this._objects.object.push( roadObject );
 
 		this.lastAddedRoadObjectIndex = this._objects.object.length - 1;

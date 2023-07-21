@@ -60,8 +60,18 @@
 	</app-double-field>
 
 	<app-vector3-field *ngIf="data?.point"
+		[z]="false"
 		(changed)="onPositionChanged($event)"
 		[value]="position"
-		label="Point"></app-vector3-field>
+		label="Point">
+	</app-vector3-field>
+
+	<button style="width: 100%;"
+		(click)="deletePoint()"
+		mat-stroked-button>Delete Point</button>
+
+	<button style="width: 100%;"
+		(click)="deleteCrosswalk()"
+		mat-stroked-button>Delete Crosswalk</button>
 
 </div>

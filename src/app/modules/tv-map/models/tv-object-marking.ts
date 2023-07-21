@@ -33,7 +33,7 @@ export class TvObjectMarking {
 		public stopOffset: number = 0,
 		public zOffset: number = 0.005,
 		public width: number = 1.83,
-		public cornerReferences = [] // 2 or more corners
+		public cornerReferences: number[] = [] // 2 or more corners
 	) {
 
 	}
