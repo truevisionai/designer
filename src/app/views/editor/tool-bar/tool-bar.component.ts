@@ -190,7 +190,7 @@ export class ToolBarComponent implements OnInit {
 			class: 'toolbar-button',
 			toolType: ToolType.Crosswalk,
 			action: 'crosswalk-tool',
-			icon: 'reorder', // 'call_split',
+			icon: 'reorder', // 'call_split', receipt
 			title: 'Crosswalk Tool',
 			track: 'button',
 			tooltip: 'Crosswalk Tool',
