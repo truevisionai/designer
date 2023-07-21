@@ -41,5 +41,7 @@
 	"javascript.validate.enable": true,
 	"typescript.validate.enable": true,
 	"html.format.wrapAttributes": "force",
-	"html.format.wrapLineLength": 140
+	"html.format.wrapLineLength": 140,
+	"editor.indentSize": 4,
+	"editor.insertSpaces": false,
 }
