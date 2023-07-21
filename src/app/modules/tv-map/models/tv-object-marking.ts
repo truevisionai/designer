@@ -40,7 +40,15 @@ export class TvObjectMarking {
 
 	}
 
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
 
+		const index = this.cornerReferences.indexOf( tvCornerRoad.attr_id );
+
+		if ( index > -1 ) {
+			this.cornerReferences.splice( index, 1 );
+		}
+
+	}
 
 	// // version 1
 	// static makeMesh ( marking: TvObjectMarking ): Mesh {

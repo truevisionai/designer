@@ -141,7 +141,7 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 			if ( this.crosswalk ) {
 
-				this.addPoint( coord );
+				CommandHistory.execute( new AddCrosswalkPointCommand( this.crosswalk, coord ) );
 
 			} else {
 
@@ -246,6 +246,48 @@ export class CreateCrossWalkCommand extends BaseCommand {
 		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
 
 		this.setValueCommand.undo();
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
+}
+
+export class AddCrosswalkPointCommand extends BaseCommand {
+
+	private selectPoint: SelectPointCommand;
+	private point: TvCornerRoad;
+
+	constructor ( private crosswalk: Crosswalk, private coord: TvRoadCoord ) {
+
+		super();
+
+		const id = this.crosswalk.outlines[ 0 ].cornerRoad.length;
+
+		const point = this.point = new TvCornerRoad( id, coord.road, coord.s, coord.t );
+
+		const tool = this.getTool<MarkingLineTool>();
+
+		this.selectPoint = new SelectPointCommand( tool, point );
+	}
+
+	execute (): void {
+
+		this.crosswalk.addCornerRoad( this.point );
+
+		this.selectPoint.execute();
+
+	}
+
+	undo (): void {
+
+		this.crosswalk.removeCornerRoad( this.point );
+
+		this.selectPoint.undo();
 
 	}
 

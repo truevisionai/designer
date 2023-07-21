@@ -4,8 +4,7 @@
 
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { Mesh, Object3D, Vector3 } from 'three';
-import { MarkingObjectFactory, RoadObjectFactory } from '../../../core/factories/marking-object.factory';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { MarkingObjectFactory } from '../../../core/factories/marking-object.factory';
 import {
 	ObjectFillType,
 	ObjectTypes,
@@ -21,7 +20,6 @@ import {
 } from './tv-common';
 import { TvObjectMarking } from './tv-object-marking';
 import { TvRoad } from './tv-road.model';
-import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvObjectContainer {
 	public object: TvRoadObject[] = [];
@@ -245,6 +243,16 @@ export class TvObjectOutline {
 	getCornerRoadCount (): number {
 		return this.cornerRoad.length;
 	}
+
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
+
+		const index = this.cornerRoad.indexOf( tvCornerRoad );
+
+		if ( index > -1 ) {
+			this.cornerRoad.splice( index, 1 );
+		}
+	}
+
 }
 
 export class TvParkingSpace {
@@ -537,19 +545,31 @@ export class Crosswalk extends TvRoadObject {
 
 	}
 
-	addCornerRoad ( corner: TvCornerRoad ) {
+	addCornerRoad ( cornerRoad: TvCornerRoad ) {
 
-		corner.mainObject = this;
+		cornerRoad.mainObject = this;
 
-		this.markings[ 0 ].addCornerRoad( corner );
+		this.markings[ 0 ].addCornerRoad( cornerRoad );
 
-		this.outlines[ 0 ].cornerRoad.push( corner );
+		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
 
-		this.add( corner );
+		this.add( cornerRoad );
 
 		this.update();
 
 	}
 
+
+	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
+
+		this.markings[ 0 ].removeCornerRoad( cornerRoad );
+
+		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
+
+		this.remove( cornerRoad );
+
+		this.update();
+
+	}
 
 }
