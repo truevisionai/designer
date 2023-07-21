@@ -74,7 +74,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 		const commands = [];
 
-		commands.push( new DeleteLinkCommand( this.data.connection, this.data.link, this.data ) );
+		commands.push( new DeleteLinkCommand( this.data.connection, this.data.link ) );
 
 		commands.push( new SetInspectorCommand( null, null ) );
 

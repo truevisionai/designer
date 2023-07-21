@@ -87,6 +87,11 @@ export class TvJunctionLaneLink {
 		if ( !this.mesh ) {
 
 		}
+	}
+
+	clone (): any {
+
+		return new TvJunctionLaneLink( this.incomingLane, this.connectingLane, this.connection );
 
 	}
 

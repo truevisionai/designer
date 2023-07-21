@@ -12,7 +12,7 @@ import { BaseCommand } from './base-command';
 
 export class DeleteLinkCommand extends BaseCommand {
 
-	constructor ( private connection: TvJunctionConnection, private link: TvJunctionLaneLink, private lanePathObject: LanePathObject ) {
+	constructor ( private connection: TvJunctionConnection, private link: TvJunctionLaneLink ) {
 
 		super();
 

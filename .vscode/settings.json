@@ -1,44 +1,45 @@
 {
-    "git.ignoreLimitWarning": true,
-    "javascript.format.insertSpaceAfterConstructor": true,
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
-    "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
-    "typescript.updateImportsOnFileMove.enabled": "always",
-    "typescript.format.insertSpaceAfterConstructor": true,
-    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
-    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
-    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
-    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
-    "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
-    "editor.detectIndentation": false,
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/*.pyc": true
-    },
-    "python.pythonPath": "/usr/bin/python",
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./python-client/",
-        "-p",
-        "test_*.py"
-    ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "editor.rulers": [
-        80,120
-    ],
-    "typescript.tsdk": "node_modules\\typescript\\lib",
-    "javascript.validate.enable": true,
-    "typescript.validate.enable": true,
-    "html.format.wrapAttributes": "aligned-multiple",
-    "html.format.wrapLineLength": 240
+	"git.ignoreLimitWarning": true,
+	"javascript.format.insertSpaceAfterConstructor": true,
+	"javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+	"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+	"javascript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
+	"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+	"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"typescript.format.insertSpaceAfterConstructor": true,
+	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+	"typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
+	"typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+	"editor.detectIndentation": false,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/*.pyc": true
+	},
+	"python.pythonPath": "/usr/bin/python",
+	"python.testing.unittestArgs": [
+		"-v",
+		"-s",
+		"./python-client/",
+		"-p",
+		"test_*.py"
+	],
+	"python.testing.pytestEnabled": false,
+	"python.testing.nosetestsEnabled": false,
+	"python.testing.unittestEnabled": true,
+	"editor.rulers": [
+		80,
+		120
+	],
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"javascript.validate.enable": true,
+	"typescript.validate.enable": true,
+	"html.format.wrapAttributes": "force",
+	"html.format.wrapLineLength": 140
 }

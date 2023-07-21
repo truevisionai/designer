@@ -4,7 +4,7 @@
 
 import { AddRoadObjectCommand } from 'app/core/commands/add-road-object-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { ObjectTypes, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { CommandHistory } from 'app/services/command-history';
@@ -64,7 +64,7 @@ export class ParkingBoxTool extends BaseParkingTool {
 
 		const road = TvMapQueries.getRoadByCoords( position.x, position.y, theta );
 
-		const type = 'parkingSpace';
+		const type = ObjectTypes.parkingSpace;
 		const name = '';
 		const id = 1;
 		const s = theta.s;

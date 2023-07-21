@@ -4,6 +4,9 @@
 
 import { BaseCommand } from 'app/core/commands/base-command';
 
+/**
+ * @deprecated use CopyPositionCommand for better control
+ */
 export class SetPositionCommand extends BaseCommand {
 
 	private oldPosition: THREE.Vector3;
@@ -56,3 +59,4 @@ export class SetPositionCommand extends BaseCommand {
 
 	}
 }
+

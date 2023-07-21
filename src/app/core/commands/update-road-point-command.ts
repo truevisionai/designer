@@ -45,7 +45,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		// build road
 		RoadFactory.rebuildRoad( this.road );
 
-		if ( this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
 
 			const successor = this.map.getRoadById( this.road.successor.elementId );
 
@@ -59,7 +59,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
 		}
 
-		if ( this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
+		if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
 
 			const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
 
@@ -89,7 +89,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		// build road
 		RoadFactory.rebuildRoad( this.road );
 
-		if ( this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
 
 			const successor = this.map.getRoadById( this.road.successor.elementId );
 
@@ -99,7 +99,7 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 
 		}
 
-		if ( this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
+		if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
 
 			const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
 

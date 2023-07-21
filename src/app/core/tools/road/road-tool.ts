@@ -22,6 +22,7 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
+import { RemoveRoadCommand } from './remove-road-command';
 
 /**
  *
@@ -96,6 +97,18 @@ export class RoadTool extends BaseTool {
 		this.controlPoint?.unselect();
 
 		this.node?.unselect();
+	}
+
+	removeRoad ( road: TvRoad ) {
+
+		CommandHistory.executeMany(
+
+			new RemoveRoadCommand( road ),
+
+			new SelectRoadForRoadToolCommand( this, null )
+
+		);
+
 	}
 
 	onPointerDown ( e: PointerEventData ) {
@@ -174,9 +187,9 @@ export class RoadTool extends BaseTool {
 
 			this.roadChanged = true;
 
-			this.updateSuccessor( this.road, this.controlPoint );
+			if ( !this.road.isJunction ) this.updateSuccessor( this.road, this.controlPoint );
 
-			this.updatePredecessor( this.road, this.controlPoint );
+			if ( !this.road.isJunction ) this.updatePredecessor( this.road, this.controlPoint );
 		}
 
 	}
@@ -352,13 +365,11 @@ export class RoadTool extends BaseTool {
 
 		if ( !lane || !lane.laneSection.road ) return false;
 
-		if ( lane.laneSection.road.isJunction ) {
-
-			// we return true because we had interacted with
-			// road junction but there is not action for it right now
-			return true;
-
-		}
+		// if ( lane.laneSection.road.isJunction ) {
+		// 	// we return true because we had interacted with
+		// 	// road junction but there is not action for it right now
+		// 	return true;
+		// }
 
 		if ( !this.road || this.road.id !== lane.laneSection.road.id ) {
 
@@ -521,35 +532,5 @@ export class RoadTool extends BaseTool {
 
 		// CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
-	}
-}
-
-interface PointerDownStrategy {
-	execute ( event: Event ): void;
-}
-
-class ControlPointSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when control point is selected
-		console.log( 'Control Point Selected' );
-	}
-}
-
-class RoadNodeSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when road node is selected
-		console.log( 'Road Node Selected' );
-	}
-}
-
-class PointerDownContext {
-	private strategy: PointerDownStrategy;
-
-	constructor ( strategy: PointerDownStrategy ) {
-		this.strategy = strategy;
-	}
-
-	public onPointerDown ( event: Event ): void {
-		this.strategy.execute( event );
 	}
 }

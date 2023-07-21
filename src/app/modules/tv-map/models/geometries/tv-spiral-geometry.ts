@@ -66,7 +66,7 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 		const retX = this.x + x * Math.cos( angle ) - y * Math.sin( angle );
 		const retY = this.y + y * Math.cos( angle ) + x * Math.sin( angle );
 
-		return new TvPosTheta( retX, retY, this.hdg + t );
+		return new TvPosTheta( retX, retY, this.hdg + t, sCheck );
 	}
 
 	getCurve (): import( 'three' ).Curve<import( 'three' ).Vector2> {

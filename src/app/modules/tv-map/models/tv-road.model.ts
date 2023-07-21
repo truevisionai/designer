@@ -4,13 +4,16 @@
 
 import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -21,7 +24,7 @@ import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
 import { TvJunctionConnection } from './tv-junction-connection';
@@ -32,16 +35,17 @@ import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
-import { TvRoadLinkChild } from './tv-road-link-child';
+import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvObjectContainer, TvRoadObject } from './tv-road-object';
 import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { RoadStyle } from 'app/services/road-style.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvJunction } from './tv-junction';
+import { TvMapInstance } from '../services/tv-map-source-file';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -72,6 +76,11 @@ export class TvRoad {
 
 	public trafficRule = TrafficRule.RHT;
 
+	public successor: TvRoadLinkChild;
+	public predecessor: TvRoadLinkChild;
+
+	public junctionId: number;
+
 	/**
 	 * @deprecated use predecessor, successor directly
 	 */
@@ -82,7 +91,7 @@ export class TvRoad {
 
 	public static counter = 1;
 
-	constructor ( name: string, length: number, id: number, junction: number ) {
+	constructor ( name: string, length: number, id: number, junctionId: number ) {
 
 		TvRoad.counter++;
 
@@ -90,7 +99,7 @@ export class TvRoad {
 		this._name = name;
 		this._length = length;
 		this._id = id;
-		this._junction = junction;
+		this.junctionId = junctionId;
 
 		this.spline = new AutoSpline( this );
 
@@ -124,26 +133,6 @@ export class TvRoad {
 
 	set planView ( value: TvPlaneView ) {
 		this._planView = value;
-	}
-
-	private _predecessor: TvRoadLinkChild;
-
-	get predecessor (): TvRoadLinkChild {
-		return this._predecessor;
-	}
-
-	set predecessor ( value: TvRoadLinkChild ) {
-		this._predecessor = value;
-	}
-
-	private _successor: TvRoadLinkChild;
-
-	get successor (): TvRoadLinkChild {
-		return this._successor;
-	}
-
-	set successor ( value: TvRoadLinkChild ) {
-		this._successor = value;
 	}
 
 	private _neighbors: TvRoadLinkNeighbor[] = [];
@@ -186,14 +175,8 @@ export class TvRoad {
 		this._id = value;
 	}
 
-	private _junction: number;
-
-	get junction (): number {
-		return this._junction;
-	}
-
-	set junction ( value: number ) {
-		this._junction = value;
+	get junctionInstance (): TvJunction {
+		return TvMapInstance.map.getJunctionById( this.junctionId );
 	}
 
 	private _gameObject: GameObject;
@@ -207,7 +190,7 @@ export class TvRoad {
 	}
 
 	get isJunction (): boolean {
-		return this._junction !== -1;
+		return this.junctionId !== -1;
 	}
 
 	get geometries () {
@@ -222,6 +205,18 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
+	hide () {
+
+		if ( this.gameObject ) this.gameObject.visible = false;
+
+	}
+
+	show () {
+
+		if ( this.gameObject ) this.gameObject.visible = true;
+
+	}
+
 	onSuccessorUpdated ( successor: TvRoad ) {
 
 		console.log( 'successor of', this.id, 'updated' );
@@ -234,17 +229,17 @@ export class TvRoad {
 
 	}
 
-	setPredecessor ( elementType: 'road' | 'junction', elementId: number, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-		if ( this._predecessor == null ) {
+		if ( this.predecessor == null ) {
 
-			this._predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
 		} else {
 
-			this._predecessor.elementType = elementType;
-			this._predecessor.elementId = elementId;
-			this._predecessor.contactPoint = contactPoint;
+			this.predecessor.elementType = elementType;
+			this.predecessor.elementId = elementId;
+			this.predecessor.contactPoint = contactPoint;
 
 
 		}
@@ -279,19 +274,43 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: string, elementId: number, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-		if ( this._successor == null ) {
+		if ( this.successor == null ) {
 
-			this._successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
 		} else {
 
-			this._successor.elementType = elementType;
-			this._successor.elementId = elementId;
-			this._successor.contactPoint = contactPoint;
+			this.successor.elementType = elementType;
+			this.successor.elementId = elementId;
+			this.successor.contactPoint = contactPoint;
 
 		}
+	}
+
+	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+
+		if ( this.successor == null ) {
+			this.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
+
+		this.successor.elementType = TvRoadLinkChildType.road;
+		this.successor.elementId = road.id;
+		this.successor.contactPoint = contactPoint;
+
+	}
+
+	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+
+		if ( this.predecessor == null ) {
+			this.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
+
+		this.predecessor.elementType = TvRoadLinkChildType.road;
+		this.predecessor.elementId = road.id;
+		this.predecessor.contactPoint = contactPoint;
+
 	}
 
 	setNeighbor ( side: string, elementId: string, direction: string ) {
@@ -717,21 +736,21 @@ export class TvRoad {
 	}
 
 	addRoadObject (
-		type: string,
+		type: ObjectTypes,
 		name: string,
 		id: number,
 		s: number,
 		t: number,
-		zOffset: number,
-		validLength: number,
-		orientation: TvOrientation,
-		length: number,
-		width: number,
-		radius: number,
-		height: number,
-		hdg: number,
-		pitch: number,
-		roll: number
+		zOffset: number = 0,
+		validLength: number = 0,
+		orientation: TvOrientation = TvOrientation.NONE,
+		length: number = 0,
+		width: number = 0,
+		radius: number = 0,
+		height: number = 0,
+		hdg: number = 0,
+		pitch: number = 0,
+		roll: number = 0
 	): TvRoadObject {
 
 		const obj = new TvRoadObject(
@@ -752,12 +771,16 @@ export class TvRoad {
 			roll
 		);
 
+		obj.road = this;
+
 		this.addRoadObjectInstance( obj );
 
 		return obj;
 	}
 
 	addRoadObjectInstance ( roadObject: TvRoadObject ) {
+
+		roadObject.road = this;
 
 		this._objects.object.push( roadObject );
 
@@ -884,9 +907,9 @@ export class TvRoad {
 
 	getSuccessorRoad ( connection: TvJunctionConnection ) {
 
-		if ( this._successor.elementType == 'road' ) {
+		if ( this.successor.elementType == 'road' ) {
 
-		} else if ( this._successor.elementType == 'junction' ) {
+		} else if ( this.successor.elementType == 'junction' ) {
 
 		} else {
 
@@ -1493,6 +1516,21 @@ export class TvRoad {
 		return coordinates;
 	}
 
+	getReferenceLinePoints (): TvPosTheta[] {
+
+		const points: TvPosTheta[] = [];
+
+		for ( let s = 0; s <= this.length; s++ ) {
+
+			points.push( this.getRoadCoordAt( s ) );
+
+		}
+
+		points.push( this.getRoadCoordAt( this.length - Maths.Epsilon ) );
+
+		return points;
+	}
+
 	computeLaneSectionCoordinates () {
 
 		// Compute lastSCoordinate for all laneSections
@@ -1538,13 +1576,48 @@ export class TvRoad {
 
 	applyRoadStyle ( roadStyle: RoadStyle ) {
 
-		this.lanes.clear()
+		this.lanes.clear();
 
 		this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
 		RoadFactory.rebuildRoad( this );
+	}
+
+	private cornerPoints: BaseControlPoint[] = [];
+
+	showCornerPoints () {
+
+		this.createCornerPoints( this.getStartCoord() );
+
+		this.createCornerPoints( this.getEndCoord() );
+
+	}
+
+	private createCornerPoints ( coord: TvPosTheta ) {
+
+		const rightT = this.getRightsideWidth( coord.s );
+		const leftT = this.getLeftSideWidth( coord.s );
+
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+
+		const leftPoint = new DynamicControlPoint( this, leftPosition );
+		const rightPoint = new DynamicControlPoint( this, rightPosition );
+
+		this.cornerPoints.push( leftPoint );
+		this.cornerPoints.push( rightPoint );
+
+		this.gameObject.add( leftPoint );
+		this.gameObject.add( rightPoint );
+	}
+
+	hideCornerPoints () {
+
+		this.cornerPoints.forEach( point => this.gameObject.remove( point ) );
+		this.cornerPoints = [];
+
 	}
 
 }

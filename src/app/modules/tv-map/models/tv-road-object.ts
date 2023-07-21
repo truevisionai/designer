@@ -2,10 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Mesh } from 'three';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { Mesh, Object3D, Vector3 } from 'three';
+import { MarkingObjectFactory } from '../../../core/factories/marking-object.factory';
 import {
+	ObjectFillType,
+	ObjectTypes,
 	TvBridgeTypes,
 	TvColors,
+	TvLaneType,
 	TvOrientation,
 	TvParkingSpaceAccess,
 	TvParkingSpaceMarkingSides,
@@ -13,6 +18,8 @@ import {
 	TvTunnelTypes,
 	TvUserData
 } from './tv-common';
+import { TvObjectMarking } from './tv-object-marking';
+import { TvRoad } from './tv-road.model';
 
 export class TvObjectContainer {
 	public object: TvRoadObject[] = [];
@@ -21,11 +28,16 @@ export class TvObjectContainer {
 	public bridge: TvRoadBridge[] = [];
 }
 
-export class TvRoadObject {
+export class TvRoadObject extends Object3D {
+	public road: TvRoad;
 
-	public attr_type: string;
-	public attr_name: string;
-	public attr_id: number;
+	get markings (): TvObjectMarking[] {
+		return this._markings;
+	}
+
+	public static counter = 1;
+
+	public attr_type: ObjectTypes;
 	public attr_s: number;
 	public attr_t: number;
 	public attr_zOffset: number;
@@ -40,7 +52,15 @@ export class TvRoadObject {
 	public attr_roll: number;
 
 	public repeat: TvObjectRepeat[] = [];
+
+	/**
+	 * @deprecated
+	 */
 	public outline: TvObjectOutline;
+	// multiple outlines are allowed
+	public outlines: TvObjectOutline[] = [];
+	protected _markings: TvObjectMarking[] = [];
+
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
 	public parkingSpace: TvParkingSpace;
@@ -50,14 +70,14 @@ export class TvRoadObject {
 	private lastAddedRepeatObjectIndex: number;
 
 	constructor (
-		type: string,
+		type: ObjectTypes,
 		name: string,
-		id: number,
+		public attr_id: number,
 		s: number,
 		t: number,
-		zOffset: number,
-		validLength: number,
-		orientation: TvOrientation,
+		zOffset: number = 0,
+		validLength: number = 0,
+		orientation: TvOrientation = TvOrientation.NONE,
 		length: number = null,
 		width: number = null,
 		radius: number = null,
@@ -66,9 +86,10 @@ export class TvRoadObject {
 		pitch: number = null,
 		roll: number = null
 	) {
+		super();
+		TvRoadObject.counter++;
 		this.attr_type = type;
-		this.attr_name = name;
-		this.attr_id = id;
+		this.name = name;
 		this.attr_s = s;
 		this.attr_t = t;
 		this.attr_zOffset = zOffset;
@@ -81,18 +102,6 @@ export class TvRoadObject {
 		this.attr_hdg = hdg;
 		this.attr_pitch = pitch;
 		this.attr_roll = roll;
-	}
-
-	get type (): string {
-		return this.attr_type;
-	}
-
-	get name (): string {
-		return this.attr_name;
-	}
-
-	get id (): number {
-		return this.attr_id;
 	}
 
 	get s (): number {
@@ -182,11 +191,42 @@ export class TvRoadObject {
 	}
 
 
+	addMarkingObject ( markingObject: TvObjectMarking ): void {
+		this._markings.push( markingObject );
+	}
+
+	findCornerRoadById ( id: number ) {
+		for ( const outline of this.outlines ) {
+			for ( const corner of outline.cornerRoad ) {
+				if ( corner.attr_id == id ) {
+					return corner;
+				}
+			}
+		}
+	}
+
 }
 
 export class TvObjectOutline {
+
 	public cornerRoad: TvCornerRoad[] = [];
 	public cornerLocal: TvCornerLocal[] = [];
+
+	public id: number;
+
+	constructor (
+		public fillType: ObjectFillType = ObjectFillType.none,
+		public outer: boolean = false,
+		public closed: boolean = false,
+		public laneType: TvLaneType = TvLaneType.none,
+	) {
+	}
+
+	addCornerRoad ( road: TvRoad, s: number, t: number, dz: number = 0, height: number = 0, id?: number ): TvCornerRoad {
+		const cornerRoad = new TvCornerRoad( id || this.cornerRoad.length, road, s, t, dz, height );
+		this.cornerRoad.push( cornerRoad );
+		return cornerRoad;
+	}
 
 	getCornerLocal ( i: number ): TvCornerLocal {
 		return this.cornerLocal[ i ];
@@ -203,6 +243,16 @@ export class TvObjectOutline {
 	getCornerRoadCount (): number {
 		return this.cornerRoad.length;
 	}
+
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
+
+		const index = this.cornerRoad.indexOf( tvCornerRoad );
+
+		if ( index > -1 ) {
+			this.cornerRoad.splice( index, 1 );
+		}
+	}
+
 }
 
 export class TvParkingSpace {
@@ -247,11 +297,31 @@ export class TvObjectMaterial {
 /**
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
-export class TvCornerRoad {
-	public attr_s: number;
-	public attr_t: number;
-	public attr_dz: number;
-	public attr_height: number;
+export class TvCornerRoad extends DynamicControlPoint<Crosswalk> {
+	constructor (
+		public attr_id: number,
+		public road: TvRoad,
+		public s: number,
+		public t: number,
+		public dz: number = 0,
+		public height: number = 0
+	) {
+		super( null, road.getPositionAt( s, t ).toVector3() );
+	}
+
+	copyPosition ( position: Vector3 ): void {
+
+		super.copyPosition( position );
+
+		const coord = this.road?.getCoordAt( position );
+
+		if ( coord ) this.s = coord.s;
+
+		if ( coord ) this.t = coord.t;
+
+		this.mainObject?.update();
+
+	}
 }
 
 /**
@@ -449,3 +519,73 @@ export class TvLaneValidity {
 	}
 }
 
+export class Crosswalk extends TvRoadObject {
+
+	constructor (
+		s: number,
+		t: number,
+		markings = [ new TvObjectMarking() ],
+		outlines = [ new TvObjectOutline() ]
+	) {
+
+		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
+
+		outlines.forEach( outline => outline.cornerRoad.forEach( cornerRoad => {
+
+			cornerRoad.mainObject = this;
+
+			this.add( cornerRoad );
+
+		} ) );
+
+		this.outlines = outlines;
+
+		markings.map( marking => marking.roadObject = this )
+
+		this._markings = markings;
+
+		this.update();
+	}
+
+	get marking () {
+
+		return this.markings[ 0 ];
+
+	}
+
+	update () {
+
+		if ( this.marking.cornerReferences.length < 2 ) return;
+
+		this.marking.update();
+
+	}
+
+	addCornerRoad ( cornerRoad: TvCornerRoad ) {
+
+		cornerRoad.mainObject = this;
+
+		this.marking.addCornerRoad( cornerRoad );
+
+		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
+
+		this.add( cornerRoad );
+
+		this.update();
+
+	}
+
+
+	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
+
+		this.marking.removeCornerRoad( cornerRoad );
+
+		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
+
+		this.remove( cornerRoad );
+
+		this.update();
+
+	}
+
+}

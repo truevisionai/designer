@@ -6,9 +6,10 @@ import { EventEmitter } from '@angular/core';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from 'three';
+import { IHasPosition } from './i-has-position';
 import { ISelectable } from './i-selectable';
 
-export abstract class BaseControlPoint extends Points implements ISelectable {
+export abstract class BaseControlPoint extends Points implements ISelectable, IHasPosition {
 
 	public mainObject: any;
 
@@ -38,6 +39,12 @@ export abstract class BaseControlPoint extends Points implements ISelectable {
 	copyPosition ( position: Vector3 ) {
 
 		this.setPosition( position.clone() );
+
+	}
+
+	getPosition (): Vector3 {
+
+		return this.position;
 
 	}
 

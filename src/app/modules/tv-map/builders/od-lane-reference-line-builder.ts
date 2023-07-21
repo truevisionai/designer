@@ -107,7 +107,7 @@ export class OdLaneReferenceLineBuilder {
 
 				const points: TvPosTheta[] = [];
 
-				this.makeLanePoints( laneSection, lane, points );
+				OdLaneReferenceLineBuilder.makeLanePoints( laneSection, lane, points );
 
 				this.drawLine( lane, this.convertToVector3List( points ), type );
 
@@ -117,18 +117,27 @@ export class OdLaneReferenceLineBuilder {
 		}
 	}
 
+	public showLaneLine ( lane: TvLane, type: LineType = LineType.SOLID ) {
+
+		const points: TvPosTheta[] = [];
+
+		OdLaneReferenceLineBuilder.makeLanePoints( lane.laneSection, lane, points );
+
+		this.drawLine( lane, this.convertToVector3List( points ), type );
+
+	}
+
 	public clear () {
 
-		if ( this.road && this.road.gameObject ) {
+		this.lines.forEach( line => {
 
-			this.lines.forEach( line => {
+			const lane = line.userData.lane as TvLane;
 
-				this.road.gameObject.remove( line );
+			lane.laneSection.road.gameObject.remove( line );
 
-			} );
+		} );
 
-			this.road = null;
-		}
+		this.road = null;
 
 	}
 
@@ -270,7 +279,7 @@ export class OdLaneReferenceLineBuilder {
 
 		this.lines.push( line );
 
-		this.road.gameObject.add( line );
+		lane.laneSection.road.gameObject.add( line );
 	}
 
 	private getLineMaterial ( type: LineType ) {
@@ -309,25 +318,25 @@ export class OdLaneReferenceLineBuilder {
 		return tmp;
 	}
 
-	private makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private static makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
 		let s = laneSection.s;
 
 		while ( s <= laneSection.endS ) {
 
-			this.makeLanePointsLoop( s, laneSection, lane, points );
+			OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
 
 			s++;
 		}
 
 		s = laneSection.endS - Maths.Epsilon;
 
-		this.makeLanePointsLoop( s, laneSection, lane, points );
+		OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
 	}
 
-	private makeLanePointsLoop ( s, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private static makeLanePointsLoop ( s: number, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
 
-		let posTheta = this.road.getRoadCoordAt( s );
+		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
 
 		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
 

@@ -11,7 +11,7 @@ import { LaneOffsetTool } from '../tools/lane-offset/lane-offset-tool';
 import { LaneWidthTool } from '../tools/lane-width/lane-width-tool';
 import { LaneTool } from '../tools/lane/lane-tool';
 import { ManeuverTool } from '../tools/maneuver/maneuver-tool';
-import { MarkingLineTool } from '../tools/marking-line/marking-line-tool';
+import { CrosswalkTool } from '../tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
 import { ParkingBoxTool } from '../tools/parking-box-tool';
 import { PointerTool } from '../tools/pointer/pointer-tool';
@@ -59,7 +59,9 @@ export class ToolFactory {
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
 			case ToolType.MarkingLine:
-				return new MarkingLineTool();
+				throw new Error( 'Invalid tool type' + type );
+			case ToolType.Crosswalk:
+				return new CrosswalkTool();
 			case ToolType.ParkingBox:
 				return new ParkingBoxTool();
 			case ToolType.Pointer:

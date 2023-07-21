@@ -12,6 +12,7 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
+import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvLaneSection {
 
@@ -788,6 +789,47 @@ export class TvLaneSection {
 		// this.length - lane.s;
 		TvUtils.computeCoefficients( lane.getLaneWidthVector(), this.length );
 
+	}
+
+	findNearestLane ( s: number, t: number, location: 'start' | 'center' | 'end' ): TvLane {
+
+		const lanes = t > 0 ? this.getLeftLanes() : this.getRightLanes();
+
+		if ( this.laneMap.has( 0 ) ) lanes.push( this.laneMap.get( 0 ) );
+
+		// we need to find the lane which is closest to the pointer
+		const THRESHOLD = 0.5;
+
+		let minDistance = Infinity
+
+		let targetLane: TvLane;
+
+		for ( const lane of lanes ) {
+
+			let laneT: number;
+
+			if ( location === 'center' ) {
+
+				laneT = this.getWidthUptoCenter( lane, s );
+
+			} else if ( location === 'end' ) {
+
+				laneT = this.getWidthUptoEnd( lane, s );
+
+			}
+
+			const distance = Math.abs( laneT - Math.abs( t ) );
+
+			// if ( this.debug ) console.log( lane.id, laneT, t, distance < THRESHOLD );
+
+			if ( distance < minDistance && distance < THRESHOLD ) {
+				minDistance = distance;
+				targetLane = lane;
+			}
+
+		}
+
+		return targetLane;
 	}
 
 	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {

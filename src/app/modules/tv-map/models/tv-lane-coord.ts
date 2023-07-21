@@ -2,6 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvRoad } from './tv-road.model';
+
 export class TvCoord {
 
 	constructor (
@@ -57,11 +60,19 @@ export class TvRoadCoord {
 
 	}
 
+	get road (): TvRoad {
+		return TvMapInstance.map.getRoadById( this.roadId );
+	}
+
 	init () {
 
 	}
 
 	add ( value: TvRoadCoord ) {
+	}
+
+	toPosTheta () {
+		return this.road?.getRoadCoordAt( this.s, this.t );
 	}
 }
 
