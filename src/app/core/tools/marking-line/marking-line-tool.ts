@@ -15,6 +15,7 @@ import { ControlPointStrategy } from '../../snapping/select-strategies/control-p
 import { OnRoadStrategy } from '../../snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from '../../snapping/select-strategies/select-strategy';
 import { BaseTool } from '../base-tool';
+import { CrosswalkInspectorComponent, ICrosswalkInspectorData } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 
 export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
@@ -201,9 +202,22 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 
 	private selectPoint ( point: TvCornerRoad ): void {
 
-		CommandHistory.execute( new SelectPointCommand( this, point ) );
+		const command = getSelectPointCommand( this, point, point?.mainObject );
+
+		CommandHistory.execute( command );
 
 	}
+
+}
+
+function getSelectPointCommand ( tool: MarkingLineTool, point: TvCornerRoad, crosswalk: Crosswalk ): SelectPointCommand {
+
+	const data: ICrosswalkInspectorData = {
+		point: point,
+		crosswalk: crosswalk
+	};
+
+	return new SelectPointCommand( tool, point, CrosswalkInspectorComponent, data );
 
 }
 
@@ -211,7 +225,7 @@ export class MarkingLineTool extends BaseTool implements IToolWithPoint {
 export class CreateCrossWalkCommand extends BaseCommand {
 
 	private readonly crosswalk: Crosswalk;
-	private readonly setValueCommand: SelectPointCommand;
+	private readonly selectPointCommand: SelectPointCommand;
 
 	constructor ( private roadCoord: TvRoadCoord ) {
 
@@ -225,7 +239,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 		const tool = this.getTool<MarkingLineTool>();
 
-		this.setValueCommand = new SelectPointCommand( tool, point );
+		this.selectPointCommand = getSelectPointCommand( tool, point, this.crosswalk );
 
 	}
 
@@ -235,7 +249,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 		this.roadCoord.road.addRoadObjectInstance( this.crosswalk );
 
-		this.setValueCommand.execute();
+		this.selectPointCommand.execute();
 
 	}
 
@@ -245,7 +259,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
 
-		this.setValueCommand.undo();
+		this.selectPointCommand.undo();
 
 	}
 
@@ -259,7 +273,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 export class AddCrosswalkPointCommand extends BaseCommand {
 
-	private selectPoint: SelectPointCommand;
+	private selectPointCommand: SelectPointCommand;
 	private point: TvCornerRoad;
 
 	constructor ( private crosswalk: Crosswalk, private coord: TvRoadCoord ) {
@@ -272,14 +286,14 @@ export class AddCrosswalkPointCommand extends BaseCommand {
 
 		const tool = this.getTool<MarkingLineTool>();
 
-		this.selectPoint = new SelectPointCommand( tool, point );
+		this.selectPointCommand = getSelectPointCommand( tool, point, crosswalk );
 	}
 
 	execute (): void {
 
 		this.crosswalk.addCornerRoad( this.point );
 
-		this.selectPoint.execute();
+		this.selectPointCommand.execute();
 
 	}
 
@@ -287,7 +301,7 @@ export class AddCrosswalkPointCommand extends BaseCommand {
 
 		this.crosswalk.removeCornerRoad( this.point );
 
-		this.selectPoint.undo();
+		this.selectPointCommand.undo();
 
 	}
 

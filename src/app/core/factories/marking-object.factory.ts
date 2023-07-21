@@ -96,7 +96,7 @@ export class MarkingObjectFactory {
 		return object3D;
 	}
 
-	private static createMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
+	static createMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
 
 		const object3D = new Object3D();
 

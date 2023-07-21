@@ -1,0 +1,67 @@
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="isOpen=!isOpen"
+		mat-icon-button
+		class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>Crosswalk Inspector</span>
+</mat-toolbar>
+
+<div *ngIf="isOpen && marking"
+	class="inspector-editor-padding">
+
+	<app-enum-field (changed)="onAttrChanged($event, 'color')"
+		[enum]="colors"
+		[value]="marking.color"
+		label="Color">
+	</app-enum-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'spaceLength')"
+		[min]="0"
+		[value]="marking.spaceLength"
+		label="spaceLength"
+		suffix="m">
+	</app-double-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'lineLength')"
+		[min]="0"
+		[value]="marking.lineLength"
+		label="lineLength"
+		suffix="m">
+	</app-double-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'startOffset')"
+		[min]="0"
+		[value]="marking.startOffset"
+		label="startOffset"
+		suffix="m">
+	</app-double-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'stopOffset')"
+		[min]="0"
+		[value]="marking.stopOffset"
+		label="stopOffset"
+		suffix="m">
+	</app-double-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'zOffset')"
+		[min]="0"
+		[value]="marking.zOffset"
+		label="zOffset"
+		suffix="m">
+	</app-double-field>
+
+	<app-double-field (changed)="onAttrChanged($event, 'width')"
+		min="0"
+		[value]="marking.width"
+		label="width"
+		suffix="m">
+	</app-double-field>
+
+	<app-vector3-field *ngIf="data?.point"
+		(changed)="onPositionChanged($event)"
+		[value]="position"
+		label="Point"></app-vector3-field>
+
+</div>

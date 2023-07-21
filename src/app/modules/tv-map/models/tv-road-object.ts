@@ -515,8 +515,6 @@ export class TvLaneValidity {
 
 export class Crosswalk extends TvRoadObject {
 
-	private node: Object3D;
-
 	constructor (
 		s: number,
 		t: number,
@@ -530,18 +528,24 @@ export class Crosswalk extends TvRoadObject {
 
 		this._markings = markings;
 
+		this.markings.forEach( marking => {
+			marking.roadObject = this;
+		} )
+
 		this.update();
+	}
+
+	get marking () {
+
+		return this.markings[ 0 ];
+
 	}
 
 	update () {
 
-		this.remove( this.node );
+		if ( this.marking.cornerReferences.length < 2 ) return;
 
-		if ( this.markings[ 0 ].cornerReferences.length < 2 ) return;
-
-		this.node = MarkingObjectFactory.create( this );
-
-		this.add( this.node );
+		this.marking.update();
 
 	}
 
@@ -549,7 +553,7 @@ export class Crosswalk extends TvRoadObject {
 
 		cornerRoad.mainObject = this;
 
-		this.markings[ 0 ].addCornerRoad( cornerRoad );
+		this.marking.addCornerRoad( cornerRoad );
 
 		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
 
@@ -562,7 +566,7 @@ export class Crosswalk extends TvRoadObject {
 
 	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
 
-		this.markings[ 0 ].removeCornerRoad( cornerRoad );
+		this.marking.removeCornerRoad( cornerRoad );
 
 		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
 

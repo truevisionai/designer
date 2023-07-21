@@ -1,9 +1,13 @@
 import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
-import { TvCornerRoad } from './tv-road-object';
+import { TvCornerRoad, TvRoadObject } from './tv-road-object';
+import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
 
 export class TvObjectMarking {
+
+	roadObject: TvRoadObject;
+	node: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>;
 
 	/**
 	 * Specifies a marking that is either attached to one side of the
@@ -47,6 +51,18 @@ export class TvObjectMarking {
 		if ( index > -1 ) {
 			this.cornerReferences.splice( index, 1 );
 		}
+
+	}
+
+	update (): void {
+
+		if ( !this.roadObject ) return;
+
+		this.roadObject.remove( this.node );
+
+		this.node = MarkingObjectFactory.createMarking( this.roadObject, this )
+
+		this.roadObject.add( this.node );
 
 	}
 

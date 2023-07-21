@@ -53,6 +53,7 @@ import { ThreeJsModule } from '../three-js/three-js.module';
 import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
 import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component';
 import { ObjectMarkingInspectorComponent } from 'app/views/inspectors/object-marking-inspector/object-marking-inspector.component';
+import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 
 
 @NgModule( {
@@ -83,6 +84,7 @@ import { ObjectMarkingInspectorComponent } from 'app/views/inspectors/object-mar
 		JunctionEntryInspector,
 		RoadStyleInspector,
 		RoadElevationInspector,
+		CrosswalkInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -112,10 +114,10 @@ import { ObjectMarkingInspectorComponent } from 'app/views/inspectors/object-mar
 		MatFormFieldModule,
 		MatInputModule,
 	],
-    exports: [
-        TransformInspectorComponent,
-        ObjectPreviewComponent
-    ],
+	exports: [
+		TransformInspectorComponent,
+		ObjectPreviewComponent
+	],
 	entryComponents: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,
@@ -141,6 +143,7 @@ import { ObjectMarkingInspectorComponent } from 'app/views/inspectors/object-mar
 		RoadStyleInspector,
 		RoadElevationInspector,
 		ObjectMarkingInspectorComponent,
+		CrosswalkInspectorComponent,
 	]
 } )
 export class TvMapModule {
