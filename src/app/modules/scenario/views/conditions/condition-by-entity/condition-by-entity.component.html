@@ -1,7 +1,11 @@
-<app-enum-field [enum]="rules" [value]="condition.triggeringRule" label="Trigger"></app-enum-field>
+<app-enum-field [enum]="rules"
+	[value]="condition.triggeringRule"
+	label="Trigger"></app-enum-field>
 
-<app-dropdown-field (changed)="onEntityChanged($event)" [value]="entity" [options]="entities"
-					label="Entities"></app-dropdown-field>
+<app-dropdown-field (changed)="onEntityChanged($event)"
+	[value]="entity"
+	[options]="entities"
+	label="Entities"></app-dropdown-field>
 
 <div [ngSwitch]="condition.conditionType">
 
@@ -50,4 +54,3 @@
 	</div>
 
 </div>
-

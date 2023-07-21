@@ -41,7 +41,7 @@ export class TvLaneHeight {
 		return this.attr_inner;
 	}
 
-	setInner ( value : number) {
+	setInner ( value: number ) {
 		this.attr_inner = value;
 	}
 

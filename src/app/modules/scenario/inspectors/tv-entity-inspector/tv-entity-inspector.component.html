@@ -1,28 +1,37 @@
-<div *ngIf="entity" class="inspector-form-container">
+<div *ngIf="entity"
+	class="inspector-form-container">
 
-	<app-string-field [value]="entity.name" label="Name"></app-string-field>
+	<app-string-field [value]="entity.name"
+		label="Name"></app-string-field>
 
-	<app-double-field *ngIf="debug" label="Speed" [value]="entity?.getCurrentSpeed()"></app-double-field>
-	<app-double-field *ngIf="debug" label="Accel" [value]="entity?.getCurrentAcceleration()"></app-double-field>
-	<app-double-field *ngIf="debug" label="Distance" [value]="entity?.getDistanceTraveled()"></app-double-field>
+	<app-double-field *ngIf="debug"
+		label="Speed"
+		[value]="entity?.getCurrentSpeed()"></app-double-field>
+	<app-double-field *ngIf="debug"
+		label="Accel"
+		[value]="entity?.getCurrentAcceleration()"></app-double-field>
+	<app-double-field *ngIf="debug"
+		label="Distance"
+		[value]="entity?.getDistanceTraveled()"></app-double-field>
 
 </div>
 
-<app-action
-	*ngFor="let action of initActions"
+<app-action *ngFor="let action of initActions"
 	(removed)="removeInitAction(action)"
 	[action]="action"
 	[entity]="entity">
 </app-action>
 
-<app-event-editor
-	*ngFor="let event of scenarioEvents"
+<app-event-editor *ngFor="let event of scenarioEvents"
 	[entity]="entity"
 	[event]="event">
 </app-event-editor>
 
-<div *ngIf="entity" class="inspector-editor-padding">
-	<button mat-stroked-button fxFill [matMenuTriggerFor]="menu">Add Maneuever</button>
+<div *ngIf="entity"
+	class="inspector-editor-padding">
+	<button mat-stroked-button
+		fxFill
+		[matMenuTriggerFor]="menu">Add Maneuever</button>
 	<mat-menu #menu="matMenu">
 		<mat-option (click)="addEvent(actionType.Private_Longitudinal_Speed)">ChangeSpeed</mat-option>
 		<mat-option (click)="addEvent(actionType.Private_LaneChange)">ChangeLane</mat-option>

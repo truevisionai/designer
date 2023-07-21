@@ -222,7 +222,7 @@ export class MetadataFactory {
 
 		// const version = data.metadata.version || 4.5;
 
-		data['metadata'] = null;
+		data[ 'metadata' ] = null;
 
 		return {
 			guid: guid,

@@ -285,13 +285,13 @@ export class TvRoadMarkBuilderV2 {
 				roadMarkTexModifierMax1 = 1;
 				break;
 			case TvRoadMarkTypes.SOLID_SOLID:
-				TvConsole.warn('SOLID_SOLID lane marking not supported');
+				TvConsole.warn( 'SOLID_SOLID lane marking not supported' );
 				type = 1;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
 				roadMarkTexModifierMax2 = roadMarkTexWidth;
 				break;
 			case TvRoadMarkTypes.SOLID_BROKEN:
-				TvConsole.warn('SOLID_BROKEN lane marking not supported');
+				TvConsole.warn( 'SOLID_BROKEN lane marking not supported' );
 				type = 2;
 				roadMarkTexModifierMin1 = 0;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
@@ -299,7 +299,7 @@ export class TvRoadMarkBuilderV2 {
 				roadMarkTexModifierMax2 = 1;
 				break;
 			case TvRoadMarkTypes.BROKEN_SOLID:
-				TvConsole.warn('BROKE_SOLID lane marking not supported');
+				TvConsole.warn( 'BROKE_SOLID lane marking not supported' );
 				type = 3;
 				roadMarkTexModifierMin1 = roadMarkTexWidth;
 				roadMarkTexModifierMax1 = 1;
@@ -307,22 +307,22 @@ export class TvRoadMarkBuilderV2 {
 				roadMarkTexModifierMax2 = roadMarkTexWidth;
 				break;
 			case TvRoadMarkTypes.BROKEN_BROKEN:
-				TvConsole.warn('BROKEN_BROKEN lane marking not supported');
+				TvConsole.warn( 'BROKEN_BROKEN lane marking not supported' );
 				type = 0;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
 				break;
 			case TvRoadMarkTypes.BOTTS_DOTS:
-				TvConsole.warn('BOTTS_DOTS lane marking not supported');
+				TvConsole.warn( 'BOTTS_DOTS lane marking not supported' );
 				type = 0;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
 				break;
 			case TvRoadMarkTypes.GRASS:
-				TvConsole.warn('GRASS lane marking not supported');
+				TvConsole.warn( 'GRASS lane marking not supported' );
 				type = 0;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
 				break;
 			case TvRoadMarkTypes.CURB:
-				TvConsole.warn('CURB lane marking not supported');
+				TvConsole.warn( 'CURB lane marking not supported' );
 				type = 0;
 				roadMarkTexModifierMax1 = roadMarkTexWidth;
 				break;

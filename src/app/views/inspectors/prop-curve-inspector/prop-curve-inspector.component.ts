@@ -39,7 +39,7 @@ export class PropCurveInspectorComponent implements IComponent {
 
 		CommandHistory.executeMany(
 
-			new SetValueCommand( this.propCurve, 'spacing', parseFloat( $event )),
+			new SetValueCommand( this.propCurve, 'spacing', parseFloat( $event ) ),
 
 			new CallFunctionCommand( this.propCurve, this.propCurve.updateProps, [], this.propCurve.updateProps, [] )
 
@@ -50,7 +50,7 @@ export class PropCurveInspectorComponent implements IComponent {
 
 		CommandHistory.executeMany(
 
-			new SetValueCommand( this.propCurve, 'rotation', parseFloat( $event )),
+			new SetValueCommand( this.propCurve, 'rotation', parseFloat( $event ) ),
 
 			new CallFunctionCommand( this.propCurve, this.propCurve.updateProps, [], this.propCurve.updateProps, [] )
 
@@ -61,7 +61,7 @@ export class PropCurveInspectorComponent implements IComponent {
 
 		CommandHistory.executeMany(
 
-			new SetValueCommand( this.propCurve, 'positionVariance', parseFloat( $event )),
+			new SetValueCommand( this.propCurve, 'positionVariance', parseFloat( $event ) ),
 
 			new CallFunctionCommand( this.propCurve, this.propCurve.updateProps, [], this.propCurve.updateProps, [] )
 

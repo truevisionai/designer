@@ -1,5 +1,4 @@
-<input
-	[ngStyle]="{'cursor': inFocus ? 'row-resize' : 'auto'}"
+<input [ngStyle]="{'cursor': inFocus ? 'row-resize' : 'auto'}"
 	(blur)="onBlur()"
 	(focus)="onFocus()"
 	(keydown)="onKeydown($event)"
@@ -9,4 +8,4 @@
 	[(ngModel)]="value"
 	[disabled]="disabled"
 	[placeholder]="label"
-	[value]="value"/>
+	[value]="value" />

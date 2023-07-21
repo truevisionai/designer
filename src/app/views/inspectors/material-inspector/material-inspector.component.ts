@@ -107,7 +107,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	onMapChanged ( $guid: string ) {
 
-		console.log('map changed', $guid)
+		console.log( 'map changed', $guid )
 
 		CommandHistory.execute(
 

@@ -1,29 +1,37 @@
 <mat-toolbar>
 	<mat-toolbar-row class="console-toolbar-row">
-		<button (click)="clear()" mat-button>Clear</button>
+		<button (click)="clear()"
+			mat-button>Clear</button>
 		<span class="console-toolbar-spacer"></span>
 		<!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar heart icon">favorite</mat-icon> -->
 		<!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar delete icon">delete</mat-icon> -->
 	</mat-toolbar-row>
 </mat-toolbar>
-<mat-list class="console-container" role="list">
+<mat-list class="console-container"
+	role="list">
 
 	<!-- <perfect-scrollbar fxFlexFill> -->
 
-		<mat-list-item *ngFor="let log of logs" role="listitem" class="console-log-item">
+	<mat-list-item *ngFor="let log of logs"
+		role="listitem"
+		class="console-log-item">
 
-			<mat-icon class="console-message-icon" mat-list-icon color="error">
-				<!-- {{log.icon}} -->
-				error
-			</mat-icon>
+		<mat-icon class="console-message-icon"
+			mat-list-icon
+			color="error">
+			<!-- {{log.icon}} -->
+			error
+		</mat-icon>
 
-			<div class="console-message" mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
+		<div class="console-message"
+			mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
 
-			<div *ngIf="log.counter > 0" class="counter">
-				<mat-chip class="counter-chip">{{log.counter}} </mat-chip>
-			</div>
+		<div *ngIf="log.counter > 0"
+			class="counter">
+			<mat-chip class="counter-chip">{{log.counter}} </mat-chip>
+		</div>
 
-		</mat-list-item>
+	</mat-list-item>
 
 	<!-- </perfect-scrollbar> -->
 

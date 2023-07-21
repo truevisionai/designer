@@ -5,10 +5,15 @@
 <div class="text-center mat-bg-primary pt-1 pb-1">
 	<h6 class="m-0">Notifications</h6>
 </div>
-<mat-nav-list class="notification-list" role="list">
+<mat-nav-list class="notification-list"
+	role="list">
 	<!-- Notification item -->
-	<mat-list-item *ngFor="let n of notifications" class="notific-item" role="listitem" routerLinkActive="open">
-		<mat-icon [color]="n.color" class="notific-icon mr-1">{{n.icon}}</mat-icon>
+	<mat-list-item *ngFor="let n of notifications"
+		class="notific-item"
+		role="listitem"
+		routerLinkActive="open">
+		<mat-icon [color]="n.color"
+			class="notific-icon mr-1">{{n.icon}}</mat-icon>
 		<a [routerLink]="[n.route || '/dashboard']">
 			<div class="mat-list-text">
 				<h4 class="message">{{n.message}}</h4>
@@ -17,6 +22,8 @@
 		</a>
 	</mat-list-item>
 </mat-nav-list>
-<div *ngIf="notifications.length" class="text-center mt-1">
-	<small><a (click)="clearAll($event)" href="#">Clear all notifications</a></small>
+<div *ngIf="notifications.length"
+	class="text-center mt-1">
+	<small><a (click)="clearAll($event)"
+			href="#">Clear all notifications</a></small>
 </div>

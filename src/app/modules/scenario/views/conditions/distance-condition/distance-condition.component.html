@@ -1,10 +1,18 @@
-<app-double-field (changed)="onDistanceChanged($event)" [value]="distanceCondition.value" label="Distance"></app-double-field>
+<app-double-field (changed)="onDistanceChanged($event)"
+	[value]="distanceCondition.value"
+	label="Distance"></app-double-field>
 
-<app-enum-field (changed)="onRuleChanged($event)" [enum]="rules" [value]="distanceCondition.rule" label="Rule"></app-enum-field>
+<app-enum-field (changed)="onRuleChanged($event)"
+	[enum]="rules"
+	[value]="distanceCondition.rule"
+	label="Rule"></app-enum-field>
 
-<app-string-field [value]="distanceCondition.freespace" label="Freespace"></app-string-field>
+<app-string-field [value]="distanceCondition.freespace"
+	label="Freespace"></app-string-field>
 
-<app-string-field [value]="distanceCondition.alongRoute" label="Along route"></app-string-field>
+<app-string-field [value]="distanceCondition.alongRoute"
+	label="Along route"></app-string-field>
 
-<app-position-editor (positionChanged)="onPositionChanged($event)" [position]="distanceCondition.position">
+<app-position-editor (positionChanged)="onPositionChanged($event)"
+	[position]="distanceCondition.position">
 </app-position-editor>

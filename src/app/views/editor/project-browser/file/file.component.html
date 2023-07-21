@@ -2,15 +2,26 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<mat-card [class.file-card]="true" [draggable]="!isDirectory && !isUnknown" [matTooltip]="file.name">
+<mat-card [class.file-card]="true"
+	[draggable]="!isDirectory && !isUnknown"
+	[matTooltip]="file.name">
 	<ng-container *ngIf="!isTexture">
-		<img [src]="imageSource" [class.file-card-image]="true" />
+		<img [src]="imageSource"
+			[class.file-card-image]="true" />
 	</ng-container>
 	<ng-container *ngIf="isTexture">
-		<img [src]="filePath" [class.file-card-image]="true"/>
+		<img [src]="filePath"
+			[class.file-card-image]="true" />
 	</ng-container>
-	<p *ngIf="!showRenaming" class="file-name">{{ filename }}</p>
-	<p *ngIf="showRenaming" class="file-name">
-		<input #nameInput (blur)="onBlur($event)" (focus)="onFocus($event)" [value]="filename" cdkFocusInitial type="text" />
+	<p *ngIf="!showRenaming"
+		class="file-name">{{ filename }}</p>
+	<p *ngIf="showRenaming"
+		class="file-name">
+		<input #nameInput
+			(blur)="onBlur($event)"
+			(focus)="onFocus($event)"
+			[value]="filename"
+			cdkFocusInitial
+			type="text" />
 	</p>
 </mat-card>

@@ -1,23 +1,19 @@
-<app-boolean-field
-	label="Continous"
+<app-boolean-field label="Continous"
 	(changed)="onContinousChanged($event)"
 	[value]="laneOffsetAction.continous">
 </app-boolean-field>
 
-<app-double-field
-	label="Max"
+<app-double-field label="Max"
 	min="0"
 	(changed)="onMaxAccelChanged($event)"
 	[value]="laneOffsetAction.maxLateralAcc">
 </app-double-field>
 
-<app-target-editor
-	(changed)="onTargetChanged($event)"
+<app-target-editor (changed)="onTargetChanged($event)"
 	[target]="laneOffsetAction.target">
 </app-target-editor>
 
-<app-enum-field
-	label="Shape"
+<app-enum-field label="Shape"
 	[enum]="shapes"
 	[value]="laneOffsetAction.dynamicsShape"
 	(changed)="onShapeChanged($event)">

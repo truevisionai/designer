@@ -1,47 +1,75 @@
 <mat-toolbar class="native-border inspector-toolbar">
-	<button (click)="toggle($event)" mat-icon-button class="inspector-toolbar-icon">
+	<button (click)="toggle($event)"
+		mat-icon-button
+		class="inspector-toolbar-icon">
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
 	<span>Maneuver</span>
 	<span class="spacer"></span>
-	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="conditionMenu">
+	<button mat-icon-button
+		class="inspector-toolbar-icon"
+		[matMenuTriggerFor]="conditionMenu">
 		<mat-icon>bolt</mat-icon>
 	</button>
-	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="actionMenu">
+	<button mat-icon-button
+		class="inspector-toolbar-icon"
+		[matMenuTriggerFor]="actionMenu">
 		<mat-icon>directions_run</mat-icon>
 	</button>
-	<button mat-icon-button class="inspector-toolbar-icon" [matMenuTriggerFor]="menu">
+	<button mat-icon-button
+		class="inspector-toolbar-icon"
+		[matMenuTriggerFor]="menu">
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-menu #menu="matMenu">
-		<button mat-menu-item (click)="deleteManeuver($event)">
+		<button mat-menu-item
+			(click)="deleteManeuver($event)">
 			<mat-icon>delete</mat-icon>
 			<span>Delete Maneuver</span>
 		</button>
 	</mat-menu>
 	<mat-menu #conditionMenu="matMenu">
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_Acceleration)">Acceleration</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_Collision)">Collision</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_Distance)">Distance</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_EndOfRoad)">EndOfRoad</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_Offroad)">OffRoad</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_ReachPosition)">ReadPosition</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_RelativeDistance)">RelativeDistance</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_RelativeSpeed)">RelativeSpeed</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_Speed)">Speed</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_StandStill)">StandStill</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_TimeHeadway)">TimeHeadway</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_TimeToCollision)">TimeToCollision</button>
-		<button mat-menu-item (click)="addCondition(CONDITION.ByEntity_TraveledDistance)">TraveledDistance</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_Acceleration)">Acceleration</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_Collision)">Collision</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_Distance)">Distance</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_EndOfRoad)">EndOfRoad</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_Offroad)">OffRoad</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_ReachPosition)">ReadPosition</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_RelativeDistance)">RelativeDistance</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_RelativeSpeed)">RelativeSpeed</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_Speed)">Speed</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_StandStill)">StandStill</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_TimeHeadway)">TimeHeadway</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_TimeToCollision)">TimeToCollision</button>
+		<button mat-menu-item
+			(click)="addCondition(CONDITION.ByEntity_TraveledDistance)">TraveledDistance</button>
 	</mat-menu>
 	<mat-menu #actionMenu="matMenu">
-		<button mat-menu-item (click)="addAction(ACTION.Private_LaneOffset)">Lane Offset</button>
-		<button mat-menu-item (click)="addAction(ACTION.Private_LaneChange)">Lane Change</button>
-		<button mat-menu-item (click)="addAction(ACTION.Private_Longitudinal_Distance)">Longitudinal Distance</button>
-		<button mat-menu-item (click)="addAction(ACTION.Private_Longitudinal_Speed)">Longitudinal Speed</button>
-		<button mat-menu-item (click)="addAction(ACTION.Private_Position)">Position</button>
-		<button mat-menu-item (click)="addAction(ACTION.Private_Routing)">Routing</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_LaneOffset)">Lane Offset</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_LaneChange)">Lane Change</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_Longitudinal_Distance)">Longitudinal Distance</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_Longitudinal_Speed)">Longitudinal Speed</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_Position)">Position</button>
+		<button mat-menu-item
+			(click)="addAction(ACTION.Private_Routing)">Routing</button>
 	</mat-menu>
 </mat-toolbar>
 
@@ -52,7 +80,9 @@
 	</div>
 
 	<div *ngFor="let action of event.getActions()">
-		<app-action (removed)="removeAction($event)" [action]="action" [entity]="entity">
+		<app-action (removed)="removeAction($event)"
+			[action]="action"
+			[entity]="entity">
 		</app-action>
 	</div>
 </div>

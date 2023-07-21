@@ -2,16 +2,29 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div *ngIf="texture" class="inspector-form-container">
+<div *ngIf="texture"
+	class="inspector-form-container">
 
 	<img src="{{metadata.path}}" />
 
-	<app-string-field label="Name" [value]="texture.name" [disabled]="true"></app-string-field>
-	<app-double-field label="WrapS" [value]="texture.wrapS" [disabled]="true"></app-double-field>
-	<app-double-field label="WrapT" [value]="texture.wrapT" [disabled]="true"></app-double-field>
-	<app-double-field label="Anisotropy" [value]="texture.anisotropy" [disabled]="true"></app-double-field>
-	<app-double-field label="Offset X" [value]="texture.offset.x" [disabled]="true"></app-double-field>
-	<app-double-field label="Offset Y" [value]="texture.offset.y" [disabled]="true"></app-double-field>
+	<app-string-field label="Name"
+		[value]="texture.name"
+		[disabled]="true"></app-string-field>
+	<app-double-field label="WrapS"
+		[value]="texture.wrapS"
+		[disabled]="true"></app-double-field>
+	<app-double-field label="WrapT"
+		[value]="texture.wrapT"
+		[disabled]="true"></app-double-field>
+	<app-double-field label="Anisotropy"
+		[value]="texture.anisotropy"
+		[disabled]="true"></app-double-field>
+	<app-double-field label="Offset X"
+		[value]="texture.offset.x"
+		[disabled]="true"></app-double-field>
+	<app-double-field label="Offset Y"
+		[value]="texture.offset.y"
+		[disabled]="true"></app-double-field>
 
 	<!-- <mat-form-field>
 		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">

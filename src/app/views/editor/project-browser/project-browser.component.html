@@ -2,18 +2,26 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div fxFlexFill fxLayout="row">
+<div fxFlexFill
+	fxLayout="row">
 
 	<div fxFlex="20">
-		<perfect-scrollbar class="project-heirarchy-container" fxFlexFill>
-			<app-project-hierarchy (folderChanged)="onFolderChanged($event)" [dataSource]="dataSource" [treeControl]="treeControl">
+		<perfect-scrollbar class="project-heirarchy-container"
+			fxFlexFill>
+			<app-project-hierarchy (folderChanged)="onFolderChanged($event)"
+				[dataSource]="dataSource"
+				[treeControl]="treeControl">
 			</app-project-hierarchy>
 		</perfect-scrollbar>
 	</div>
 
 	<div fxFlex="80">
-		<perfect-scrollbar class="folder-file-container" fxFlexFill>
-			<app-folder-files (folderChanged)="onFolderChanged($event)" [files]="files" [folder]="selectedFolder" fxFlexFill></app-folder-files>
+		<perfect-scrollbar class="folder-file-container"
+			fxFlexFill>
+			<app-folder-files (folderChanged)="onFolderChanged($event)"
+				[files]="files"
+				[folder]="selectedFolder"
+				fxFlexFill></app-folder-files>
 		</perfect-scrollbar>
 	</div>
 

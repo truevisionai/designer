@@ -47,7 +47,7 @@ export class OdWriter {
 			attributeNamePrefix: 'attr_',
 			attrNodeName: false,
 			ignoreAttributes: false,
-			suppressBooleanAttributes : false,
+			suppressBooleanAttributes: false,
 			supressEmptyNode: true,
 			format: true,
 			trimValues: true,

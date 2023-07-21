@@ -319,5 +319,5 @@ export class EnumHelper {
 		}
 
 	}
-	
+
 }

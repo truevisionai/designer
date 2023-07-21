@@ -111,10 +111,10 @@ import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-insp
 		MatFormFieldModule,
 		MatInputModule,
 	],
-    exports: [
-        TransformInspectorComponent,
-        ObjectPreviewComponent
-    ],
+	exports: [
+		TransformInspectorComponent,
+		ObjectPreviewComponent
+	],
 	entryComponents: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,

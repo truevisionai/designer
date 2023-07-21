@@ -2,15 +2,21 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div align="left" class="tv-field">
+<div align="left"
+	class="tv-field">
 
 	<label class="tv-field-label">{{ label }}</label>
 
-	<div class="tv-field-text-input" style="display: flex;">
+	<div class="tv-field-text-input"
+		style="display: flex;">
 
-		<app-double-input style="width: 100%;" [value]="value" [disabled]="disabled" (changed)="onFieldValueChanged($event)"></app-double-input>
+		<app-double-input style="width: 100%;"
+			[value]="value"
+			[disabled]="disabled"
+			(changed)="onFieldValueChanged($event)"></app-double-input>
 
-		<span *ngIf="suffix" style="margin-left: 5px; margin-right: 5px">
+		<span *ngIf="suffix"
+			style="margin-left: 5px; margin-right: 5px">
 			{{suffix}}
 		</span>
 

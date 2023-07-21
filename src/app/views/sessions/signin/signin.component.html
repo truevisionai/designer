@@ -4,35 +4,53 @@
 
 <div class="page-wrap height-100">
 	<div class="session-form-hold">
-		<mat-progress-bar class="session-progress" mode="determinate"></mat-progress-bar>
+		<mat-progress-bar class="session-progress"
+			mode="determinate"></mat-progress-bar>
 		<mat-card>
 			<mat-card-content>
 				<br />
-				<form (ngSubmit)="signin()" [formGroup]="signinForm">
+				<form (ngSubmit)="signin()"
+					[formGroup]="signinForm">
 					<div class="">
 						<mat-form-field class="full-width">
-							<input formControlName="email" matInput name="email" placeholder="Email" value="">
+							<input formControlName="email"
+								matInput
+								name="email"
+								placeholder="Email"
+								value="">
 						</mat-form-field>
-						<small *ngIf="signinForm.controls['email'].hasError('required') && signinForm.controls['email'].touched" class="form-error-msg"> Email is required </small>
-						<small *ngIf="signinForm.controls['email'].hasError('email') && signinForm.controls['email'].touched" class="form-error-msg"> Incorrect Email</small>
+						<small *ngIf="signinForm.controls['email'].hasError('required') && signinForm.controls['email'].touched"
+							class="form-error-msg"> Email is required </small>
+						<small *ngIf="signinForm.controls['email'].hasError('email') && signinForm.controls['email'].touched"
+							class="form-error-msg"> Incorrect Email</small>
 					</div>
 
 					<div class="">
 						<mat-form-field class="full-width">
-							<input formControlName="password" matInput name="password" placeholder="Password" type="password" value="">
+							<input formControlName="password"
+								matInput
+								name="password"
+								placeholder="Password"
+								type="password"
+								value="">
 						</mat-form-field>
-						<small *ngIf="signinForm.controls['password'].hasError('required') && signinForm.controls['password'].touched" class="form-error-msg"> Password is required </small>
+						<small *ngIf="signinForm.controls['password'].hasError('required') && signinForm.controls['password'].touched"
+							class="form-error-msg"> Password is required </small>
 					</div>
 
-					<button [disabled]="signinForm.invalid" class="mat-primary full-width mb-1" mat-raised-button>Sign
+					<button [disabled]="signinForm.invalid"
+						class="mat-primary full-width mb-1"
+						mat-raised-button>Sign
 						in
 					</button>
 
 					<div class="text-center">
-						<a [routerLink]="'/sessions/signup'" class="mat-primary text-center full-width">Create New
+						<a [routerLink]="'/sessions/signup'"
+							class="mat-primary text-center full-width">Create New
 							Account</a>
 						<span fxFlex></span>
-						<a [routerLink]="'/sessions/forgot-password'" class="mat-primary text-center full-width">Forgot
+						<a [routerLink]="'/sessions/forgot-password'"
+							class="mat-primary text-center full-width">Forgot
 							Password</a>
 					</div>
 				</form>
