@@ -143,7 +143,9 @@ export class RoadFactory {
 
 		joiningRoad.clearLaneSections();
 
-		joiningRoad.addLaneSectionInstance( firstNode.getLaneSection() );
+		const laneSection = firstNode.getLaneSection().cloneAtS( 0, 0, null, joiningRoad );
+
+		joiningRoad.addLaneSectionInstance( laneSection );
 
 		if ( firstRoad.hasType ) {
 
