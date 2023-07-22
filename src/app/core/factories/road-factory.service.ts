@@ -159,12 +159,16 @@ export class RoadFactory {
 
 		}
 
+		const nodeDistance = firstNode.getPosition().toVector3().distanceTo( secondNode.getPosition().toVector3() );
+		const d1 = nodeDistance * 0.1;
+		const d2 = nodeDistance * 0.3;
+
 		// control points for joining road
 		const firstPosition = firstNode.getPosition().toVector3();
-		const secondPosition = firstNode.moveAway( 20 ).toVector3();
-		const thirdPosition = firstNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
-		const fourthPosition = secondNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
-		const fifthPosition = secondNode.moveAway( 20 ).toVector3();
+		const secondPosition = firstNode.moveAway( d1 ).toVector3();
+		const thirdPosition = firstNode.moveAway( d2 ).addLateralOffset( 1 ).toVector3();
+		const fourthPosition = secondNode.moveAway( d2 ).addLateralOffset( 1 ).toVector3();
+		const fifthPosition = secondNode.moveAway( d1 ).toVector3();
 		const lastPosition = secondNode.getPosition().toVector3();
 
 		joiningRoad.addControlPointAt( firstPosition );
