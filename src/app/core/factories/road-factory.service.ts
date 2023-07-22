@@ -5,6 +5,7 @@
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { JunctionEntryObject } from '../../modules/three-js/objects/junction-entry.object';
@@ -14,7 +15,6 @@ import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class RoadFactory {
 
@@ -143,7 +143,9 @@ export class RoadFactory {
 
 		joiningRoad.clearLaneSections();
 
-		joiningRoad.addLaneSectionInstance( firstNode.getLaneSection() );
+		const laneSection = firstNode.getLaneSection().cloneAtS( 0, 0, null, joiningRoad );
+
+		joiningRoad.addLaneSectionInstance( laneSection );
 
 		if ( firstRoad.hasType ) {
 
@@ -157,12 +159,16 @@ export class RoadFactory {
 
 		}
 
+		const nodeDistance = firstNode.getPosition().toVector3().distanceTo( secondNode.getPosition().toVector3() );
+		const d1 = nodeDistance * 0.1;
+		const d2 = nodeDistance * 0.3;
+
 		// control points for joining road
 		const firstPosition = firstNode.getPosition().toVector3();
-		const secondPosition = firstNode.moveAway( 20 ).toVector3();
-		const thirdPosition = firstNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
-		const fourthPosition = secondNode.moveAway( 40 ).addLateralOffset( 5 ).toVector3();
-		const fifthPosition = secondNode.moveAway( 20 ).toVector3();
+		const secondPosition = firstNode.moveAway( d1 ).toVector3();
+		const thirdPosition = firstNode.moveAway( d2 ).addLateralOffset( 1 ).toVector3();
+		const fourthPosition = secondNode.moveAway( d2 ).addLateralOffset( 1 ).toVector3();
+		const fifthPosition = secondNode.moveAway( d1 ).toVector3();
 		const lastPosition = secondNode.getPosition().toVector3();
 
 		joiningRoad.addControlPointAt( firstPosition );
@@ -183,7 +189,7 @@ export class RoadFactory {
 
 	static makeRoadConnections ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
-		if ( firstNode.distance === 'start' ) {
+		if ( firstNode.contact === TvContactPoint.START ) {
 
 			// link will be negative as joining roaad will in opposite direction
 
@@ -213,7 +219,7 @@ export class RoadFactory {
 
 		}
 
-		if ( secondNode.distance === 'start' ) {
+		if ( secondNode.contact === TvContactPoint.START ) {
 
 			secondRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.END );
 			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
@@ -256,31 +262,4 @@ export class RoadFactory {
 
 	}
 
-	static removeRoadConnections ( firstRoad: TvRoad, secondRoad: TvRoad ) {
-
-		if ( firstRoad.predecessor && firstRoad.predecessor.elementId === secondRoad.id ) {
-
-			firstRoad.predecessor = null;
-
-		}
-
-		if ( firstRoad.successor && firstRoad.successor.elementId === secondRoad.id ) {
-
-			firstRoad.successor = null;
-
-		}
-
-		if ( secondRoad.predecessor && secondRoad.predecessor.elementId === firstRoad.id ) {
-
-			secondRoad.predecessor = null;
-
-		}
-
-		if ( secondRoad.successor && secondRoad.successor.elementId === firstRoad.id ) {
-
-			secondRoad.successor = null;
-
-		}
-
-	}
 }

@@ -14,6 +14,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -27,7 +28,7 @@ export class RoadNode extends Group implements ISelectable {
 	public line: Line2;
 	public isSelected = false;
 
-	constructor ( public road: TvRoad, public distance: 'start' | 'end', public s?: number ) {
+	constructor ( public road: TvRoad, public contact: TvContactPoint, public s?: number ) {
 
 		super();
 
@@ -58,7 +59,6 @@ export class RoadNode extends Group implements ISelectable {
 		this.line.renderOrder = 3;
 
 		this.add( this.line );
-
 	}
 
 	private createLineSegment () {
@@ -97,7 +97,9 @@ export class RoadNode extends Group implements ISelectable {
 
 	calculateS (): number {
 
-		return this.distance == 'start' ? 0 : this.road.length - Maths.Epsilon;
+		return this.contact == TvContactPoint.START ?
+			0 :
+			this.road.length - Maths.Epsilon;
 
 	}
 
@@ -142,21 +144,30 @@ export class RoadNode extends Group implements ISelectable {
 		);
 	}
 
+	canConnect () {
+
+		return this.contact == TvContactPoint.START ?
+			!this.road.predecessor :
+			!this.road.successor;
+
+
+	}
+
 	getPosition (): TvPosTheta {
 
-		return this.distance == 'start' ? this.road.getStartCoord() : this.road.getEndCoord();
+		return this.contact == TvContactPoint.START ? this.road.getStartCoord() : this.road.getEndCoord();
 
 	}
 
 	moveAway ( distance: number ): TvPosTheta {
 
-		if ( this.distance === 'start' ) {
+		if ( this.contact === TvContactPoint.START ) {
 
-			return this.road.getStartCoord().clone().rotateDegree( 180 ).moveForward( distance );
+			return this.getPosition().clone().rotateDegree( 180 ).moveForward( distance );
 
 		} else {
 
-			return this.road.getEndCoord().clone().moveForward( distance );
+			return this.getPosition().clone().moveForward( distance );
 
 		}
 
@@ -164,15 +175,17 @@ export class RoadNode extends Group implements ISelectable {
 
 	getLaneSection (): TvLaneSection {
 
-		const s = this.distance === 'start' ? 0 : this.road.length - Maths.Epsilon;
-
-		return this.road.getLaneSectionAt( s ).cloneAtS( 0, s );
+		return this.contact === TvContactPoint.START ?
+			this.road.getFirstLaneSection() :
+			this.road.getLastLaneSection();
 
 	}
 
 	getControlPoint (): BaseControlPoint {
 
-		return this.distance === 'start' ? this.road.spline.getFirstPoint() : this.road.spline.getLastPoint();
+		return this.contact === TvContactPoint.START ?
+			this.road.spline.getFirstPoint() :
+			this.road.spline.getLastPoint();
 
 	}
 }

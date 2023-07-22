@@ -296,4 +296,22 @@ export class TvRoadLinkChild {
 	}
 
 
+	get road () {
+
+		return this.getElement<TvRoad>() as TvRoad;
+
+	}
+
+	get laneSection () {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.road.getFirstLaneSection();
+
+		} else {
+
+			return this.road.getLastLaneSection();
+		}
+	}
+
 }

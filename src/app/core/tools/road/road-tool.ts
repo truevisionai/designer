@@ -434,7 +434,10 @@ export class RoadTool extends BaseTool {
 			// for a new road
 			// new road will have 4 more points, so total 6 points
 
-			this.joinNodes( this.node, interactedNode );
+			// both nodes should be unconnected //
+			if ( this.node.canConnect() && interactedNode.canConnect() ) {
+				this.joinNodes( this.node, interactedNode );
+			}
 
 		} else if ( this.controlPoint ) {
 
