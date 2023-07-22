@@ -189,7 +189,7 @@ export class RoadFactory {
 
 	static makeRoadConnections ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
-		if ( firstNode.distance === 'start' ) {
+		if ( firstNode.contact === TvContactPoint.START ) {
 
 			// link will be negative as joining roaad will in opposite direction
 
@@ -219,7 +219,7 @@ export class RoadFactory {
 
 		}
 
-		if ( secondNode.distance === 'start' ) {
+		if ( secondNode.contact === TvContactPoint.START ) {
 
 			secondRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.END );
 			secondRoad.getFirstLaneSection().lanes.forEach( lane => {

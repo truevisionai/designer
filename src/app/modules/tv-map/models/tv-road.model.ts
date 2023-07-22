@@ -1211,23 +1211,23 @@ export class TvRoad {
 		this.updateGeometryFromSpline();
 
 		if ( !this.startNode ) {
-			this.startNode = this.createRoadNode( 'start' );
+			this.startNode = this.createRoadNode( TvContactPoint.START );
 		} else {
 			this.startNode.update();
 		}
 
 
 		if ( !this.endNode ) {
-			this.endNode = this.createRoadNode( 'end' );
+			this.endNode = this.createRoadNode( TvContactPoint.END );
 		} else {
 			this.endNode.update();
 		}
 	}
 
 
-	private createRoadNode ( distance: 'start' | 'end' ) {
+	private createRoadNode ( contact: TvContactPoint ) {
 
-		const node = new RoadNode( this, distance );
+		const node = new RoadNode( this, contact );
 
 		SceneService.add( node );
 
