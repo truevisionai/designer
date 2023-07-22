@@ -88,15 +88,41 @@ describe( 'remove road test junction', () => {
 
 		const command = new RemoveRoadCommand( road );
 
+		const predecessor = road.predecessor;
+		const successor = road.successor;
+
 		command.execute();
 		expect( map.roads.size ).toBe( 17 );
 		expect( map.junctions.size ).toBe( 1 );
 		expect( junction.connections.size ).toBe( 11 );
+		expect( road.predecessor ).toBeNull();
+		expect( road.successor ).toBeNull();
+
+		// const predecessorRoad = map.getRoadById( predecessor.elementId );
+		// const successorRoad = map.getRoadById( successor.elementId );
+
+		// expect( predecessorRoad ).toBeDefined();
+		// expect( predecessorRoad.predecessor ).toBeNull();
+
+		// expect( successorRoad ).toBeDefined();
+		// expect( successorRoad.predecessor ).toBeNull();
+
 
 		command.undo();
 		expect( map.roads.size ).toBe( 18 );
 		expect( map.junctions.size ).toBe( 1 );
 		expect( junction.connections.size ).toBe( 12 );
+
+		expect( road.predecessor ).toBeDefined();
+		expect( road.predecessor.elementId ).toBe( predecessor.elementId );
+		expect( road.predecessor.elementType ).toBe( predecessor.elementType );
+		expect( road.predecessor.contactPoint ).toBe( predecessor.contactPoint );
+
+		expect( road.successor ).toBeDefined();
+		expect( road.successor.elementId ).toBe( successor.elementId );
+		expect( road.successor.elementType ).toBe( successor.elementType );
+		expect( road.successor.contactPoint ).toBe( successor.contactPoint );
+
 
 	} );
 
