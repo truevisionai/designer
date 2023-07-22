@@ -166,7 +166,7 @@ export class RoadNode extends Group implements ISelectable {
 
 		const s = this.distance === 'start' ? 0 : this.road.length - Maths.Epsilon;
 
-		return this.road.getLaneSectionAt( s ).cloneAtS( 0, s );
+		return this.road.getLaneSectionAt( s );
 
 	}
 
