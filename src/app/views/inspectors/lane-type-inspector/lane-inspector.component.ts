@@ -18,6 +18,7 @@ import { CommandHistory } from '../../../services/command-history';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { DuplicateLaneCommand } from 'app/core/commands/duplicate-lane-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 
 @Component( {
 	selector: 'app-lane-type-inspector',
@@ -43,11 +44,19 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 
 		if ( !this.lane ) return;
 
-		CommandHistory.execute( new RemoveLaneCommand( this.lane ) );
+		CommandHistory.executeMany(
+
+			new RemoveLaneCommand( this.lane ),
+
+			new SetInspectorCommand( null, null )
+
+		);
 
 	}
 
 	duplicateLane () {
+
+		if ( !this.lane ) return;
 
 		CommandHistory.execute( new DuplicateLaneCommand( this.lane, this.laneHelper ) );
 

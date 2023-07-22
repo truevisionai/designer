@@ -10,10 +10,10 @@ import { BaseCommand } from './base-command';
 import { SceneService } from '../services/scene.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvConsole } from '../utils/console';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 export class DuplicateLaneCommand extends BaseCommand {
-
-	private road: TvRoad;
 
 	private laneSection: TvLaneSection;
 
@@ -25,22 +25,20 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 		this.newLane = oldLane.clone();
 
-		this.road = this.map.getRoadById( oldLane.roadId );
-
-		this.laneSection = this.road.getLaneSectionById( oldLane.laneSectionId );
+		this.laneSection = oldLane.laneSection;
 
 	}
 
 	execute (): void {
 
-		this.laneSection.addLaneInstance( this.newLane, true );
+		this.laneSection?.addLaneInstance( this.newLane, true );
 
 		this.rebuild();
 	}
 
 	undo (): void {
 
-		this.laneSection.removeLaneById( this.newLane.id );
+		this.laneSection?.removeLaneById( this.newLane.id );
 
 		this.rebuild();
 
@@ -54,9 +52,16 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 	rebuild (): void {
 
-		SceneService.removeWithChildren( this.road.gameObject, true );
+		if ( this.laneSection ) {
 
-		TvMapBuilder.buildRoad( this.map.gameObject, this.road );
+			TvMapBuilder.rebuildRoad( this.laneSection.road );
+
+		} else {
+
+			TvConsole.error( 'Lane section not found' );
+
+			SnackBar.error( 'Lane section not found' );
+		}
 
 		this.laneHelper.redraw( LineType.SOLID );
 	}
