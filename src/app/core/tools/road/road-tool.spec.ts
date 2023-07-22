@@ -26,6 +26,59 @@ describe( 'RoadTool', () => {
 
 	} );
 
+	it( 'should update successor', () => {
+
+		const road1 = map.addRoad( 'road1', 10, 1, -1 );
+		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		road1.addControlPointAt( new Vector3( 10, 0, 0 ) );
+		road1.updateGeometryFromSpline();
+
+		const road2 = map.addRoad( 'road2', 10, 2, -1 );
+		road2.addControlPointAt( new Vector3( 10, 0, 0 ) );
+		road2.addControlPointAt( new Vector3( 20, 0, 0 ) );
+		road2.updateGeometryFromSpline();
+
+		const road3 = map.addRoad( 'road3', 10, 3, -1 );
+		road3.addControlPointAt( new Vector3( 10, 0, 0 ) );
+		road3.addControlPointAt( new Vector3( 20, 0, 0 ) );
+		road3.updateGeometryFromSpline();
+
+		road1.setSuccessorRoad( road2, TvContactPoint.START );
+		road2.setPredecessorRoad( road1, TvContactPoint.END );
+
+		road2.setSuccessorRoad( road3, TvContactPoint.END );
+		road3.setSuccessorRoad( road2, TvContactPoint.END );
+
+		const road1LastPoint = road1.spline.getLastPoint() as RoadControlPoint;
+		const road2FirstPoint = road2.spline.getFirstPoint() as RoadControlPoint;
+
+		road1LastPoint.copyPosition( new Vector3( 15, 0, 0 ) );
+		road1.updateConnections();
+
+		expect( road1LastPoint.position.x ).toBe( road2FirstPoint.position.x );
+		expect( road1LastPoint.position.y ).toBe( road2FirstPoint.position.y );
+		expect( road1LastPoint.position.z ).toBe( road2FirstPoint.position.z );
+
+		const road2LastPoint = road2.spline.getLastPoint() as RoadControlPoint;
+		const road3LastPoint = road3.spline.getLastPoint() as RoadControlPoint;
+
+		road2LastPoint.copyPosition( new Vector3( 25, 0, 0 ) );
+		road2.updateConnections();
+
+		expect( road2LastPoint.position.x ).toBe( 25 );
+		// expect( road2LastPoint.position.y ).toBe( road3LastPoint.position.y );
+		// expect( road2LastPoint.position.z ).toBe( road3LastPoint.position.z );
+
+		road3LastPoint.copyPosition( new Vector3( 30, 0, 0 ) );
+		road3.updateConnections();
+
+		expect( road3LastPoint.position.x ).toBe( 30 );
+		// expect( road3LastPoint.position.y ).toBe( road2LastPoint.position.y );
+		// expect( road3LastPoint.position.z ).toBe( road2LastPoint.position.z );
+
+
+	} );
+
 	it( 'should maintain hdg for connected roads', () => {
 
 		// c is th joining road

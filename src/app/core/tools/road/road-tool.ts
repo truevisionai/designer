@@ -23,6 +23,8 @@ import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { RemoveRoadCommand } from './remove-road-command';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 /**
  *
@@ -533,4 +535,72 @@ export class RoadTool extends BaseTool {
 		// CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
 	}
+}
+
+
+class RoadConnectionsUpdate {
+
+	static update ( road: TvRoad ) {
+
+		if ( road.isJunction ) {
+
+			this.updateJunctionRoad( road );
+
+		} else {
+
+			this.updateRoad( road );
+
+		}
+
+	}
+
+
+	static updateRoad ( road: TvRoad ) {
+
+		const firstPoint = road.spline.getFirstPoint() as RoadControlPoint;
+
+		const lastPoint = road.spline.getLastPoint() as RoadControlPoint;
+
+		const map = TvMapInstance.map;
+
+		const successors = map.getRoads().filter( r => r.predecessor?.elementId === road.id );
+
+		const predecessors = map.getRoads().filter( r => r.successor?.elementId === road.id );
+
+		successors.forEach( successor => {
+
+			const successorFirstPoint = successor.spline.getFirstPoint() as RoadControlPoint;
+
+			successorFirstPoint.copyPosition( lastPoint.position );
+
+			successor.spline.update();
+
+			successor.updateGeometryFromSpline();
+
+			RoadFactory.rebuildRoad( successor );
+
+		} )
+
+		predecessors.forEach( predecessor => {
+
+			const predecessorLastPoint = predecessor.spline.getLastPoint() as RoadControlPoint;
+
+			predecessorLastPoint.copyPosition( firstPoint.position );
+
+			predecessor.spline.update();
+
+			predecessor.updateGeometryFromSpline();
+
+			RoadFactory.rebuildRoad( predecessor );
+
+		} );
+
+	}
+
+	static updateJunctionRoad ( road: TvRoad ) {
+
+		console.error( 'updateJunctionRoad not implemented' );
+
+	}
+
 }

@@ -210,6 +210,8 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				connection.laneLink.forEach( link => {
 
+					link.update();
+
 					link.show();
 
 					SceneService.add( link.mesh );

@@ -2,8 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvContactPoint } from './tv-common';
+import { TvRoad } from './tv-road.model';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -135,5 +139,161 @@ export class TvRoadLinkChild {
 
 		}
 	}
+
+	update ( parentRoad: TvRoad, parentContact: TvContactPoint ) {
+
+		if ( this.elementType === TvRoadLinkChildType.road ) {
+
+			this.updateRoad( parentRoad, parentContact );
+
+		} else if ( this.elementType === TvRoadLinkChildType.junction ) {
+
+			console.error( 'Junctions not supported yet' );
+
+		}
+
+	}
+
+	updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint ) {
+
+		if ( parentRoad.spline.type == 'explicit' ) return;
+
+		const elementRoad = this.getElement<TvRoad>();
+
+		let point: RoadControlPoint;
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			point = elementRoad.spline.getFirstPoint() as RoadControlPoint;
+
+		} else {
+
+			point = elementRoad.spline.getLastPoint() as RoadControlPoint;
+
+		}
+
+		let parentPoint: RoadControlPoint;
+
+		if ( parentContact == TvContactPoint.START ) {
+
+			parentPoint = parentRoad.spline.getFirstPoint() as RoadControlPoint;
+
+		} else {
+
+			parentPoint = parentRoad.spline.getLastPoint() as RoadControlPoint;
+
+		}
+
+		point.copyPosition( parentPoint.position );
+
+
+		if ( parentContact == TvContactPoint.END ) {
+
+			this.updateSuccessor( parentRoad, point, elementRoad );
+
+		} else {
+
+			this.updatePredecessor( parentRoad, point, elementRoad );
+
+		}
+
+
+		// RoadFactory.rebuildRoad( elementRoad );
+	}
+
+	private updateSuccessor ( parentRoad: TvRoad, parentPoint: RoadControlPoint, successor: TvRoad ) {
+
+		if ( !successor ) return;
+
+		successor.showSpline();
+
+		const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
+		const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
+		const mid2 = successor.spline.getFirstPoint() as RoadControlPoint;
+		const end = successor.spline.getSecondPoint() as RoadControlPoint;
+
+		let distance: number = mid2.position.distanceTo( end.position );
+
+		mid2.copyPosition( mid1.position );
+
+		mid1.hdg = start.hdg;
+
+		mid2.hdg = mid1.hdg + Math.PI;
+
+		const newP4 = mid1.moveForward( distance );
+
+		end.copyPosition( newP4.position );
+
+		successor.spline.update();
+
+		console.log( 'updateSuccessor', newP4.position );
+
+
+	}
+
+	private updatePredecessor ( parentRoad: TvRoad, parentPoint: RoadControlPoint, predecessor: TvRoad ) {
+
+		if ( !predecessor ) return;
+
+		const P1 = parentRoad.spline.controlPoints[ 1 ] as RoadControlPoint;
+		const P2 = parentRoad.spline.controlPoints[ 0 ] as RoadControlPoint;
+
+		predecessor.showSpline();
+
+		let P3: RoadControlPoint;
+
+		let P4: RoadControlPoint;
+
+		let newP4: RoadControlPoint;
+
+		let distance: number;
+
+		P3 = predecessor.spline.getLastPoint() as RoadControlPoint;
+
+		P4 = predecessor.spline.getSecondLastPoint() as RoadControlPoint;
+
+		distance = P3.position.distanceTo( P4.position );
+
+		P3.copyPosition( P2.position );
+
+		P3.hdg = P4.hdg = P2.hdg + Math.PI;
+
+		newP4 = P3.moveForward( distance );
+
+		P4.copyPosition( newP4.position );
+
+		predecessor.spline.update();
+
+		console.log( 'updatePredecessor', newP4.position );
+	}
+
+	hideSpline () {
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			this.getElement<TvRoad>().hideSpline();
+
+		} else {
+
+		}
+
+	}
+
+	rebuild () {
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			const road = this.getElement<TvRoad>();
+
+			road.updateGeometryFromSpline()
+
+			RoadFactory.rebuildRoad( road );
+
+		} else {
+
+		}
+
+	}
+
 
 }

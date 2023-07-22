@@ -69,6 +69,12 @@ export class TvJunctionLaneLink {
 
 	}
 
+	update () {
+
+		this.mesh?.update();
+
+	}
+
 	delete () {
 
 		this.connectingLane.laneSection.removeLane( this.connectingLane );
@@ -80,13 +86,6 @@ export class TvJunctionLaneLink {
 
 		SceneService.remove( this.mesh );
 
-	}
-
-	createLanePathObject () {
-
-		if ( !this.mesh ) {
-
-		}
 	}
 
 	clone (): any {
@@ -101,33 +100,9 @@ export class LanePathObject extends Object3D {
 
 	update () {
 
-		// const connectingRoad = this.connectingRoad;
+		this.remove( this.mesh );
 
-		// let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
-
-		// if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
-
-		// const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
-
-		// const spline = connectingRoad.spline;
-
-		// const shape = new Shape();
-		// shape.moveTo( 0, -0.3 );
-		// shape.lineTo( 0, 0.3 );
-
-		// if ( spline.controlPointPositions.length < 2 ) return;
-
-		// let offset = width;
-
-		// if ( lane.id < 0 ) offset *= -1;
-
-		// const path = spline.getPath( offset );
-
-		// this.mesh.geometry.dispose();
-
-		// this.mesh.geometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
-
-		// return this.mesh;
+		this.mesh = this.createMesh();
 
 	}
 

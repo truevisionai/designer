@@ -54,6 +54,24 @@ export enum TrafficRule {
 
 export class TvRoad {
 
+	update () {
+
+		this.updateGeometryFromSpline()
+
+		this.updateConnections();
+
+		RoadFactory.rebuildRoad( this );
+
+	}
+
+	updateConnections () {
+
+		this.successor?.update( this, TvContactPoint.END );
+
+		this.predecessor?.update( this, TvContactPoint.START );
+
+	}
+
 	public readonly uuid: string;
 
 	public updated = new EventEmitter<TvRoad>();
@@ -219,13 +237,12 @@ export class TvRoad {
 
 	onSuccessorUpdated ( successor: TvRoad ) {
 
-		console.log( 'successor of', this.id, 'updated' );
 
 	}
 
 	onPredecessorUpdated ( predecessor: TvRoad ) {
 
-		console.log( 'predecssor of', this.id, 'updated' );
+
 
 	}
 
@@ -912,6 +929,52 @@ export class TvRoad {
 		} else if ( this.successor.elementType == 'junction' ) {
 
 		} else {
+
+		}
+
+	}
+
+	getRoadsByIncoming ( junction: TvJunction ): TvRoad[] {
+
+		const connections = junction.getConnections();
+
+		return connections
+			.filter( connection => connection.incomingRoadId === this.id )
+			.map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) )
+
+	}
+
+	getSuccessorRoads (): TvRoad[] {
+
+		if ( this.successor?.elementType === 'junction' ) {
+
+			return this.getRoadsByIncoming( this.successor.getElement() )
+
+		} else if ( this.successor?.elementType === 'road' ) {
+
+			return [ this.successor.getElement() ]
+
+		} else {
+
+			return [];
+
+		}
+
+	}
+
+	getPredecessorRoads (): TvRoad[] {
+
+		if ( this.predecessor?.elementType === 'junction' ) {
+
+			return this.getRoadsByIncoming( this.predecessor.getElement() )
+
+		} else if ( this.predecessor?.elementType === 'road' ) {
+
+			return [ this.predecessor.getElement() ]
+
+		} else {
+
+			return [];
 
 		}
 

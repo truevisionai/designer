@@ -69,18 +69,6 @@ export class LanePathFactory {
 		// return pathObject;
 	}
 
-	static createPathForLane (
-		incomingRoad: TvRoad,
-		connectingRoad: TvRoad,
-		lane: TvLane,
-		connection: TvJunctionConnection,
-		link: TvJunctionLaneLink
-	) {
-
-		// console.trace( "create-path-lane", incomingRoad.id, connectingRoad.id, lane.id );
-		return link.createLanePathObject();
-	}
-
 	/**
 	 *
 	 * @param connectingRoad
