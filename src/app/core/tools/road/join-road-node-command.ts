@@ -70,8 +70,8 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 
 		this.map.gameObject.remove( this.joiningRoad.gameObject );
 
-		RoadFactory.removeRoadConnections( this.firstRoad, this.joiningRoad );
-		RoadFactory.removeRoadConnections( this.secondRoad, this.joiningRoad );
+		this.firstRoad.removeConnection( this.joiningRoad );
+		this.joiningRoad.removeConnection( this.firstRoad );
 
 		this.inspectorCommand.undo();
 	}

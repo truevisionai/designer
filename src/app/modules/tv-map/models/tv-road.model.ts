@@ -1557,4 +1557,36 @@ export class TvRoad {
 		RoadFactory.rebuildRoad( this );
 	}
 
+	isPredecessor ( otherRoad: TvRoad ): boolean {
+
+		if ( !this.predecessor ) return false;
+
+		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) return false;
+
+		return this.predecessor.elementId === otherRoad.id;
+	}
+
+	isSuccessor ( otherRoad: TvRoad ): boolean {
+
+		if ( !this.successor ) return false;
+
+		if ( this.successor.elementType === TvRoadLinkChildType.junction ) return false;
+
+		return this.successor.elementId === otherRoad.id;
+	}
+
+	removeConnection ( otherRoad: TvRoad ) {
+
+		if ( this.isPredecessor( otherRoad ) ) {
+
+			this.predecessor = null;
+
+		} else if ( this.isSuccessor( otherRoad ) ) {
+
+			this.successor = null;
+
+		}
+
+	}
+
 }

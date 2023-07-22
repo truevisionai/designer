@@ -262,31 +262,4 @@ export class RoadFactory {
 
 	}
 
-	static removeRoadConnections ( firstRoad: TvRoad, secondRoad: TvRoad ) {
-
-		if ( firstRoad.predecessor && firstRoad.predecessor.elementId === secondRoad.id ) {
-
-			firstRoad.predecessor = null;
-
-		}
-
-		if ( firstRoad.successor && firstRoad.successor.elementId === secondRoad.id ) {
-
-			firstRoad.successor = null;
-
-		}
-
-		if ( secondRoad.predecessor && secondRoad.predecessor.elementId === firstRoad.id ) {
-
-			secondRoad.predecessor = null;
-
-		}
-
-		if ( secondRoad.successor && secondRoad.successor.elementId === firstRoad.id ) {
-
-			secondRoad.successor = null;
-
-		}
-
-	}
 }
