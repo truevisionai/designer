@@ -4,13 +4,16 @@
 
 import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -18,12 +21,14 @@ import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
 import { TvMapBuilder } from '../builders/tv-map-builder';
+import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvLaneSide, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
+import { TvJunction } from './tv-junction';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvLane } from './tv-lane';
 import { TvLaneSection } from './tv-lane-section';
@@ -39,11 +44,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { RoadStyle } from 'app/services/road-style.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { TvJunction } from './tv-junction';
-import { TvMapInstance } from '../services/tv-map-source-file';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -100,7 +100,6 @@ export class TvRoad {
 		this.junctionId = junctionId;
 
 		this.spline = new AutoSpline( this );
-
 	}
 
 	private _objects: TvObjectContainer = new TvObjectContainer();
@@ -1586,6 +1585,156 @@ export class TvRoad {
 			this.successor = null;
 
 		}
+
+		if ( otherRoad.isPredecessor( this ) ) {
+
+			otherRoad.predecessor = null;
+
+		} else if ( otherRoad.isSuccessor( this ) ) {
+
+			otherRoad.successor = null;
+
+		}
+
+	}
+
+	removePredecessor (): void {
+
+		if ( !this.predecessor ) return;
+
+		// junction
+
+		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
+
+		// road
+		const road = this.predecessor.road;
+		const contactPoint = this.predecessor.contactPoint;
+
+		this.predecessor = null;
+
+		if ( contactPoint === TvContactPoint.START ) {
+
+			road.removePredecessor();
+
+		} else {
+
+			road.removeSuccessor();
+
+		}
+	}
+
+	removeSuccessor (): void {
+
+		if ( !this.successor ) return;
+
+		// junction
+
+		if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
+
+		// road
+		const road = this.successor.road;
+		const contactPoint = this.successor.contactPoint;
+
+		this.successor = null;
+
+		if ( contactPoint === TvContactPoint.START ) {
+
+			road.removePredecessor();
+
+		} else {
+
+			road.removeSuccessor();
+
+		}
+
+		this.successor = null;
+	}
+
+	addPredecessor ( element: TvRoadLinkChild ) {
+
+		this.predecessor = element;
+
+		if ( !element ) return;
+
+		if ( element.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
+
+		// direction
+		// if predecessor is ending then our direction is positive
+		// -> ->
+		// if predecessor is starting then our direction is negative
+		// <- ->
+		const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
+
+		if ( element.contactPoint == TvContactPoint.START ) {
+
+			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+			} );
+
+		} else if ( element.contactPoint == TvContactPoint.END ) {
+
+			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+			} );
+
+		}
+
+		this.getFirstLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+		} );
+	}
+
+	addSuccessor ( element: TvRoadLinkChild ) {
+
+		this.successor = element;
+
+		if ( !element ) return;
+
+		if ( element.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
+
+		// direction
+		// if successor is starting then our direction is positive
+		// -> ->
+		// if successor is ending then our direction is negative
+		// -> <-
+		const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
+
+		if ( element.contactPoint == TvContactPoint.START ) {
+
+			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+			} );
+
+		} else if ( element.contactPoint == TvContactPoint.END ) {
+
+			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+			} );
+
+		}
+
+		this.getLastLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+		} );
+
 
 	}
 

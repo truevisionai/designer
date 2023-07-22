@@ -59,9 +59,6 @@ export class RoadNode extends Group implements ISelectable {
 		this.line.renderOrder = 3;
 
 		this.add( this.line );
-
-		// if ()
-
 	}
 
 	private createLineSegment () {
@@ -147,6 +144,15 @@ export class RoadNode extends Group implements ISelectable {
 		);
 	}
 
+	canConnect () {
+
+		return this.contact == TvContactPoint.START ?
+			!this.road.predecessor :
+			!this.road.successor;
+
+
+	}
+
 	getPosition (): TvPosTheta {
 
 		return this.contact == TvContactPoint.START ? this.road.getStartCoord() : this.road.getEndCoord();
@@ -157,11 +163,11 @@ export class RoadNode extends Group implements ISelectable {
 
 		if ( this.contact === TvContactPoint.START ) {
 
-			return this.road.getStartCoord().clone().rotateDegree( 180 ).moveForward( distance );
+			return this.getPosition().clone().rotateDegree( 180 ).moveForward( distance );
 
 		} else {
 
-			return this.road.getEndCoord().clone().moveForward( distance );
+			return this.getPosition().clone().moveForward( distance );
 
 		}
 
@@ -169,15 +175,17 @@ export class RoadNode extends Group implements ISelectable {
 
 	getLaneSection (): TvLaneSection {
 
-		const s = this.contact === TvContactPoint.START ? 0 : this.road.length - Maths.Epsilon;
-
-		return this.road.getLaneSectionAt( s );
+		return this.contact === TvContactPoint.START ?
+			this.road.getFirstLaneSection() :
+			this.road.getLastLaneSection();
 
 	}
 
 	getControlPoint (): BaseControlPoint {
 
-		return this.contact === TvContactPoint.START ? this.road.spline.getFirstPoint() : this.road.spline.getLastPoint();
+		return this.contact === TvContactPoint.START ?
+			this.road.spline.getFirstPoint() :
+			this.road.spline.getLastPoint();
 
 	}
 }

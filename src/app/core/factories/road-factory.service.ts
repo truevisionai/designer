@@ -5,6 +5,7 @@
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { JunctionEntryObject } from '../../modules/three-js/objects/junction-entry.object';
@@ -14,7 +15,6 @@ import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class RoadFactory {
 

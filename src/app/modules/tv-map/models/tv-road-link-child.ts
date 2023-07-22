@@ -4,6 +4,7 @@
 
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvContactPoint } from './tv-common';
+import { TvRoad } from './tv-road.model';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -133,6 +134,24 @@ export class TvRoadLinkChild {
 
 			return TvMapInstance.map.getJunctionById( this.elementId ) as any;
 
+		}
+	}
+
+	get road () {
+
+		return this.getElement<TvRoad>() as TvRoad;
+
+	}
+
+	get laneSection () {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.road.getFirstLaneSection();
+
+		} else {
+
+			return this.road.getLastLaneSection();
 		}
 	}
 

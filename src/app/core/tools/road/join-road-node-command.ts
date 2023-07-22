@@ -7,9 +7,9 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { RoadControlPoint } from '../../../modules/three-js/objects/road-control-point';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
-import { RoadTool } from './road-tool';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { RoadTool } from './road-tool';
 
 export class JoinRoadNodeCommand extends OdBaseCommand {
 
@@ -66,12 +66,17 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 		// remove and clear the splines points
 		// remove the entire game object
 
-		this.map.roads.delete( this.joiningRoad.id );
+		this.joiningRoad.hide();
+		this.joiningRoad.hideHelpers();
 
+		this.map.roads.delete( this.joiningRoad.id );
 		this.map.gameObject.remove( this.joiningRoad.gameObject );
 
 		this.firstRoad.removeConnection( this.joiningRoad );
+		this.secondRoad.removeConnection( this.joiningRoad );
+
 		this.joiningRoad.removeConnection( this.firstRoad );
+		this.joiningRoad.removeConnection( this.secondRoad );
 
 		this.inspectorCommand.undo();
 	}
@@ -83,8 +88,10 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 		this.tool.controlPoint = null;
 
 		this.map.roads.set( this.joiningRoad.id, this.joiningRoad );
-
 		this.map.gameObject.add( this.joiningRoad.gameObject );
+
+		this.joiningRoad.show();
+		this.joiningRoad.showHelpers();
 
 		RoadFactory.makeRoadConnections( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode, this.joiningRoad );
 
