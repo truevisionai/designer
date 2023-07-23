@@ -127,4 +127,8 @@ export class RoadPointerStrategy extends SelectStrategy<RoadControlPoint> {
 
 	}
 
+	dispose (): void {
+		throw new Error( 'Method not implemented.' );
+	}
+
 }

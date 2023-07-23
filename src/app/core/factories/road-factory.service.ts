@@ -24,6 +24,8 @@ export class RoadFactory {
 
 	static rebuildRoad ( road: TvRoad ) {
 
+		SceneService.removeWithChildren( road.gameObject, true );
+
 		this.map.gameObject.remove( road.gameObject );
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );

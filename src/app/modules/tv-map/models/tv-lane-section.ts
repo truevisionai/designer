@@ -716,7 +716,7 @@ export class TvLaneSection {
 		return lane;
 	}
 
-	addLaneInstance ( newLane: TvLane, sort: boolean ): void {
+	addLaneInstance ( newLane: TvLane, sort: boolean = true ): void {
 
 		if ( this.laneMap.has( newLane.id ) ) {
 
@@ -724,15 +724,13 @@ export class TvLaneSection {
 
 			this.laneMap.clear();
 
-			for ( let i = 0; i < lanes.length; i++ ) {
-
-				const lane = lanes[ i ][ 1 ];
+			for ( let [ id, lane ] of lanes ) {
 
 				// shift left lanes
-				if ( lane.id >= newLane.id && newLane.id > 0 ) lane.setId( lane.id + 1 );
+				if ( id >= newLane.id && newLane.id > 0 ) lane.setId( lane.id + 1 );
 
 				// shift right lanes
-				if ( lane.id <= newLane.id && newLane.id < 0 ) lane.setId( lane.id - 1 );
+				if ( id <= newLane.id && newLane.id < 0 ) lane.setId( lane.id - 1 );
 
 				this.laneMap.set( lane.id, lane );
 
@@ -744,13 +742,15 @@ export class TvLaneSection {
 
 		this.lastAddedLaneIndex = newLane.id;
 
-		if ( sort ) {
+		if ( sort ) this.sortLanes();
+	}
 
-			const inDescOrder = ( a, b ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+	sortLanes () {
 
-			this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+		const inDescOrder = ( a: [ number, TvLane ], b: [ number, TvLane ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
 
-		}
+		this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+
 	}
 
 	removeLaneById ( laneId: number ) {
@@ -763,11 +763,15 @@ export class TvLaneSection {
 
 		this.laneMap.delete( deletedLane.id );
 
+		const lanes = [ ...this.laneMap.entries() ];
+
+		this.laneMap.clear();
+
 		// create a new map
 		let newLaneMap = new Map<number, TvLane>();
 
 		// iterate through the old map
-		for ( let [ id, lane ] of this.laneMap.entries() ) {
+		for ( let [ id, lane ] of lanes ) {
 
 			// shift left lanes
 			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
@@ -775,7 +779,7 @@ export class TvLaneSection {
 			// shift right lanes
 			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
 
-			newLaneMap.set( id, lane );
+			newLaneMap.set( lane.id, lane );
 
 		}
 

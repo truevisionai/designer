@@ -85,9 +85,9 @@ export class MainFileService {
 
 		CommandHistory.clear();
 
-		if ( this.map ) this.map.destroy();
+		this.map?.destroy();
 
-		if ( this.scenario ) this.scenario.destroy();
+		this.scenario?.destroy();
 
 		this.map = map;
 

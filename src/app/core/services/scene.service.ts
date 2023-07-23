@@ -144,6 +144,8 @@ export class SceneService {
 
 	static removeWithChildren ( object: Object3D, raycasting: boolean = false ) {
 
+		if ( !object ) return;
+
 		while ( object.children.length > 0 ) {
 
 			this.disposeNode( object.children[ 0 ] );

@@ -10,6 +10,7 @@ import { SceneService } from '../services/scene.service';
 import { BaseTool } from '../tools/base-tool';
 import { ToolManager } from '../tools/tool-manager';
 import { ICommand, ICommandCallback } from './i-command';
+import { RoadFactory } from '../factories/road-factory.service';
 
 
 export abstract class BaseCommand implements ICommand {
@@ -34,9 +35,7 @@ export abstract class BaseCommand implements ICommand {
 
 		if ( !road ) return;
 
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		RoadFactory.rebuildRoad( road );
 
 	}
 

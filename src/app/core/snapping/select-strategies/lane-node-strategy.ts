@@ -66,7 +66,7 @@ export class LaneNodeStrategy<T> extends SelectStrategy<DynamicControlPoint<T>> 
 
 	}
 
-	onPointerUp ( pointerEventData: PointerEventData ): void {
+	onPointerUp ( pointerEventData: PointerEventData ): DynamicControlPoint<T> {
 
 		throw new Error( 'Method not implemented.' );
 

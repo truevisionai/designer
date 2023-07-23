@@ -41,4 +41,8 @@ export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStra
 
 	}
 
+	dispose (): void {
+		throw new Error( 'Method not implemented.' );
+	}
+
 }

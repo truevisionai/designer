@@ -281,7 +281,7 @@ export class LaneCreateTool extends BaseTool {
 
 	public cloneLane ( lane: TvLane ): void {
 
-		CommandHistory.execute( new DuplicateLaneCommand( lane, this.laneHelper ) );
+		CommandHistory.execute( new DuplicateLaneCommand( lane ) );
 
 		this.setHint( 'Lane Added. Use CTRL Z to undo' );
 
