@@ -1326,11 +1326,23 @@ export class TvRoad {
 
 		let leftWidth = 0, rightWidth = 0;
 
-		this.getLaneSectionAt( s )
+		const laneSection = this.getLaneSectionAt( s );
+
+		if ( !laneSection ) {
+
+			return {
+				totalWidth: 0,
+				leftSideWidth: 0,
+				rightSideWidth: 0
+			};
+
+		}
+
+		laneSection
 			.getLeftLanes()
 			.forEach( lane => leftWidth += lane.getWidthValue( s ) );
 
-		this.getLaneSectionAt( s )
+		laneSection
 			.getRightLanes()
 			.forEach( lane => rightWidth += lane.getWidthValue( s ) );
 
