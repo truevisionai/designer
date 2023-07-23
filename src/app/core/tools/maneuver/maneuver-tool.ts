@@ -12,7 +12,6 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from '../../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
 import { JunctionFactory } from '../../factories/junction.factory';
-import { LanePathFactory } from '../../factories/lane-path-factory.service';
 import { SelectionTool } from '../../snapping/selection-tool';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
