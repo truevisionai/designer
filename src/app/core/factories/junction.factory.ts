@@ -87,6 +87,9 @@ export class JunctionFactory {
 			road.getFirstLaneSection() :
 			road.getLastLaneSection();
 
+		if (!laneSection) TvConsole.error( 'No lane section found for Road: ' + road.id );
+		if (!laneSection) return [];
+
 		const lanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
 
 		return lanes.map( lane => this.createJunctionEntry( road, lane, contact ) );
