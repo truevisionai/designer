@@ -11,7 +11,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { SceneService } from '../services/scene.service';
-import { CreateJunctionConnection } from '../tools/maneuver/create-junction-connection';
+import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../utils/console';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
@@ -303,7 +303,7 @@ export class JunctionFactory {
 
 		if ( !junction ) {
 
-			CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, null, null ) );
+			CommandHistory.execute( new CreateSingleManeuver( null, entry, exit, junction, null, null ) );
 
 		} else {
 
@@ -317,7 +317,7 @@ export class JunctionFactory {
 
 			} else {
 
-				CommandHistory.execute( new CreateJunctionConnection( null, entry, exit, junction, connection, laneLink ) );
+				CommandHistory.execute( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) );
 
 			}
 

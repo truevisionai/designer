@@ -18,7 +18,7 @@ import { ToolType } from '../../models/tool-types.enum';
 import { SceneService } from '../../services/scene.service';
 import { TvConsole } from '../../utils/console';
 import { BaseTool } from '../base-tool';
-import { CreateJunctionConnection } from './create-junction-connection';
+import { CreateSingleManeuver } from './create-single-maneuver';
 
 export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
@@ -149,7 +149,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 			if ( !junction ) {
 
-				CommandHistory.execute( new CreateJunctionConnection( this, entry, exit, junction, null, null ) );
+				CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
 
 			} else {
 
@@ -163,7 +163,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				} else {
 
-					CommandHistory.execute( new CreateJunctionConnection( this, entry, exit, junction, connection, laneLink ) );
+					CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
 
 				}
 
