@@ -2,23 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ToolType } from "app/core/models/tool-types.enum";
-import { BaseTool } from "../base-tool";
-import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
-import { KeyboardInput } from "app/core/input";
-import { PickingHelper } from "app/core/services/picking-helper.service";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { RoadElevationNode } from "app/modules/three-js/objects/road-elevation-node";
-import { SceneService } from "app/core/services/scene.service";
-import { RoadElevationInspector } from "app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component";
-import { Vector3 } from "three";
-import { CommandHistory } from "app/services/command-history";
-import { IToolWithPoint, SelectPointCommand } from "app/core/commands/select-point-command";
-import { ISelectable } from "app/modules/three-js/objects/i-selectable";
-import { SetInspectorCommand } from "app/core/commands/set-inspector-command";
-import { CreateElevationNodeCommand } from "./create-elevation-node-command";
-import { UpdateElevationNodePosition } from "./update-elevation-node-position";
-import { HideElevationNodes, ShowElevationNodes } from "./show-elevation-nodes";
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { KeyboardInput } from 'app/core/input';
+import { ToolType } from 'app/core/models/tool-types.enum';
+import { PickingHelper } from 'app/core/services/picking-helper.service';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { CommandHistory } from 'app/services/command-history';
+import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component';
+import { Vector3 } from 'three';
+import { BaseTool } from '../base-tool';
+import { CreateElevationNodeCommand } from './create-elevation-node-command';
+import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
+import { UpdateElevationNodePosition } from './update-elevation-node-position';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -171,7 +170,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	selectNode ( node: RoadElevationNode ) {
 
-		const command = new SelectPointCommand( this, node, RoadElevationInspector, node )
+		const command = new SelectPointCommand( this, node, RoadElevationInspector, node );
 
 		CommandHistory.execute( command );
 

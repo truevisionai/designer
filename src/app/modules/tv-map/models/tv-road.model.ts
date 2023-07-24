@@ -10,6 +10,8 @@ import { SceneService } from 'app/core/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
@@ -44,8 +46,6 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -56,7 +56,7 @@ export class TvRoad {
 
 	update () {
 
-		this.updateGeometryFromSpline()
+		this.updateGeometryFromSpline();
 
 		this.updateConnections();
 
@@ -240,7 +240,6 @@ export class TvRoad {
 	}
 
 	onPredecessorUpdated ( predecessor: TvRoad ) {
-
 
 
 	}
@@ -939,7 +938,7 @@ export class TvRoad {
 
 		return connections
 			.filter( connection => connection.incomingRoadId === this.id )
-			.map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) )
+			.map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) );
 
 	}
 
@@ -947,11 +946,11 @@ export class TvRoad {
 
 		if ( this.successor?.elementType === 'junction' ) {
 
-			return this.getRoadsByIncoming( this.successor.getElement() )
+			return this.getRoadsByIncoming( this.successor.getElement() );
 
 		} else if ( this.successor?.elementType === 'road' ) {
 
-			return [ this.successor.getElement() ]
+			return [ this.successor.getElement() ];
 
 		} else {
 
@@ -965,11 +964,11 @@ export class TvRoad {
 
 		if ( this.predecessor?.elementType === 'junction' ) {
 
-			return this.getRoadsByIncoming( this.predecessor.getElement() )
+			return this.getRoadsByIncoming( this.predecessor.getElement() );
 
 		} else if ( this.predecessor?.elementType === 'road' ) {
 
-			return [ this.predecessor.getElement() ]
+			return [ this.predecessor.getElement() ];
 
 		} else {
 
