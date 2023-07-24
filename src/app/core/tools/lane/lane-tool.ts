@@ -2,16 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithMainObject } from 'app/core/commands/select-point-command';
+import { IToolWithMainObject, SelectMainObjectCommand } from 'app/core/commands/select-point-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { CommandHistory } from 'app/services/command-history';
-import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { PointerEventData } from '../../../events/pointer-event-data';
 import { OdLaneDirectionBuilder } from '../../../modules/tv-map/builders/od-lane-direction-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { SelectLaneForLaneToolCommand } from './select-lane-for-lane-tool-command';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 
 export class LaneTool extends BaseTool implements IToolWithMainObject {
 
@@ -19,15 +20,21 @@ export class LaneTool extends BaseTool implements IToolWithMainObject {
 
 	public toolType = ToolType.Lane;
 
-	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
-
 	private lane: TvLane;
+
+	private pointerStrategy: SelectStrategy<TvLane>;
+
+	init (): void {
+
+		this.pointerStrategy = new OnLaneStrategy();
+
+	}
 
 	disable (): void {
 
 		super.disable();
 
-		this.laneDirectionHelper.clear();
+		this.pointerStrategy?.dispose();
 
 	}
 
@@ -43,35 +50,24 @@ export class LaneTool extends BaseTool implements IToolWithMainObject {
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ): void {
 
-		if ( e.point == null || e.button !== MouseButton.LEFT ) return;
+		const lane = this.pointerStrategy?.onPointerDown( e );
 
-		if ( this.isLaneSelected( e ) ) return;
+		if ( !lane ) {
 
-		if ( this.lane ) {
+			CommandHistory.execute( new SelectMainObjectCommand( this, null ) );
 
-			CommandHistory.execute( new SelectLaneForLaneToolCommand( this, null, this.laneDirectionHelper ) );
+		} else if ( !this.lane || this.lane.uuid != lane.uuid ) {
+
+			CommandHistory.execute( new SelectMainObjectCommand( this, lane, LaneInspectorComponent, lane ) );
 
 		}
 	}
 
-	isLaneSelected ( e: PointerEventData ): boolean {
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		const laneObject = this.findIntersection( ObjectTypes.LANE, e.intersections );
+		const lane = this.pointerStrategy?.onPointerMoved( pointerEventData );
 
-		if ( !laneObject ) return false;
-
-		let lane = laneObject.userData.lane as TvLane;
-
-		if ( lane == null ) return false;
-
-		if ( !this.lane || this.lane.uuid != lane.uuid ) {
-
-			CommandHistory.execute( new SelectLaneForLaneToolCommand( this, lane, this.laneDirectionHelper ) );
-
-		}
-
-		return true;
 	}
 }

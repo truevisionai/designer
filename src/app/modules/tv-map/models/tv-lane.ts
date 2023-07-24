@@ -3,7 +3,7 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { MathUtils } from 'three';
+import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
@@ -19,8 +19,12 @@ import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { Copiable } from 'app/core/services/property-copy.service';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 
-export class TvLane implements ISelectable, Copiable {
+export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public readonly uuid: string;
 
@@ -83,12 +87,73 @@ export class TvLane implements ISelectable, Copiable {
 		}
 	}
 
-	isSelected: boolean;
-	select (): void {
-		this.isSelected = true;
+	update (): void {
+
+		RoadFactory.rebuildRoad( this.laneSection?.road );
+
+		this.laneSection?.road?.hideHelpers();
+
 	}
+
+	isSelected: boolean;
+
+	select (): void {
+
+		if ( this.isSelected ) return;
+
+		this.isSelected = true;
+
+		const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
+
+		clone.emissive.set( COLOR.RED );
+
+		this.gameObject.material = clone;
+
+	}
+
 	unselect (): void {
+
+		if ( !this.isSelected ) return;
+
 		this.isSelected = false;
+
+		( this.gameObject.material as MeshBasicMaterial )?.dispose();
+
+		this.gameObject.material = TvMapBuilder.getLaneMaterial( this.laneSection.road, this );
+
+		this.gameObject.material.needsUpdate = true;
+
+	}
+
+	highlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const orignal = this.gameObject.material as MeshStandardMaterial;
+
+		const clone = orignal.clone();
+
+		this.gameObject.material = clone;
+
+		clone.emissive.set( COLOR.GRAY );
+
+		// cache
+		this.gameObject.userData.material = orignal;
+
+	}
+
+	unhighlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
+
+		if ( !originalMaterial ) return;
+
+		this.gameObject.material = originalMaterial;
+
+		this.gameObject.material.needsUpdate = true;
+
 	}
 
 	private _roadId: number;

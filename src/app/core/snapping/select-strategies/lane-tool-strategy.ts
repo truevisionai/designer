@@ -76,6 +76,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 export class OnLaneStrategy extends SelectStrategy<TvLane> {
 
 	private lane: TvLane;
+	private selected: TvLane;
 
 	constructor () {
 		super();
@@ -83,7 +84,13 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 
 	onPointerDown ( pointerEventData: PointerEventData ): TvLane {
 
-		return this.onLaneGeometry( pointerEventData )
+		// this.selected?.unselect();
+
+		this.selected = this.onLaneGeometry( pointerEventData )
+
+		// this.selected?.select();
+
+		return this.selected;
 
 	}
 
@@ -107,6 +114,7 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 	dispose (): void {
 
 		this.lane?.unhighlight();
+		// this.selected?.unselect();
 
 	}
 
