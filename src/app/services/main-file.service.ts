@@ -77,7 +77,7 @@ export class MainFileService {
 
 	setMap ( map: TvMap ) {
 
-		SceneService.clear();
+		this.threeService.reset();
 
 		ToolManager.clear();
 

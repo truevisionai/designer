@@ -182,57 +182,55 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	/**
-	 *
-	 * @param event
-	 * @returns
-	 * @deprecated just for reference
-	 */
-	onMouseMoveOld ( event: MouseEvent ) {
+	// /**
+	//  *
+	//  * @param event
+	//  * @returns
+	//  * @deprecated just for reference
+	//  */
+	// onMouseMoveOld ( event: MouseEvent ) {
 
-		// TODO: implement GPU picking
-		// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
-		// https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
-		// https://github.com/brianxu/GPUPicker
+	// 	// TODO: implement GPU picking
+	// 	// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
+	// 	// https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
+	// 	// https://github.com/brianxu/GPUPicker
 
-		this.updateMousePosition( event );
+	// 	this.updateMousePosition( event );
 
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+	// 	this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
-		// logic to limit the number of time raycasting will be done
-		// return if less time has passed
-		if ( ( Date.now() - this.lastTime ) < this.minTime ) return;
+	// 	// logic to limit the number of time raycasting will be done
+	// 	// return if less time has passed
+	// 	if ( ( Date.now() - this.lastTime ) < this.minTime ) return;
 
-		this.lastTime = Date.now();
+	// 	this.lastTime = Date.now();
 
-		// this.editorService.move.emit( this.mouse );
+	// 	// this.editorService.move.emit( this.mouse );
 
-		// this.eventSystem.pointerMoved.emit( { this.INTERSECTIONS[0] } );
+	// 	// this.eventSystem.pointerMoved.emit( { this.INTERSECTIONS[0] } );
 
-		this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+	// 	this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
 
-		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-		}
+	// 	if ( this.intersections.length > 0 ) {
+	// 		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+	// 	}
 
-		// TODO: no need to find intersections on mouse move
-		return;
+	// 	// TODO: no need to find intersections on mouse move
+	// 	return;
 
-		this.findIntersections( event, false );
+	// 	this.findIntersections( event, false );
 
-		if ( this.intersections.length > 0 ) {
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-		} else {
-			// this.eventSystem.pointerMoved.emit( { point: new THREE.Vector3 } );
-		}
+	// 	if ( this.intersections.length > 0 ) {
+	// 		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+	// 	} else {
+	// 		// this.eventSystem.pointerMoved.emit( { point: new THREE.Vector3 } );
+	// 	}
 
-	}
+	// }
 
 	onMouseMove ( event: MouseEvent ) {
 
 		this.updateMousePosition( event );
-
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
 		// Limit the frequency of raycasting operations.
 		if ( ( Date.now() - this.lastTime ) < this.minTime ) {
@@ -241,16 +239,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.lastTime = Date.now();
 
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
-
-		this.intersections = this.raycaster.intersectObjects( SceneService.objects, true );
-
-		// if not intersection found then check for background intersection
-		if ( this.intersections.length < 1 ) {
-
-			this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
-
-		}
+		this.intersections = this.getIntersections( event, true );
 
 		if ( this.intersections.length > 0 ) {
 
@@ -286,11 +275,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseDown ( event: MouseEvent ) {
 
-		this.findIntersections( event, true );
+		this.intersections = this.getIntersections( event, true );
 
 		event.preventDefault();
-
-		// this.eventSystem.pointerDown.emit( new PointerEventData );
 
 		switch ( event.button ) {
 
@@ -412,7 +399,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.updateMousePosition( $event );
 
-		this.findIntersections( $event );
+		this.intersections = this.getIntersections( $event );
 
 		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
 
@@ -603,53 +590,72 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	findIntersections ( event: MouseEvent, recursive: boolean = true ): void {
+	getIntersections ( event: MouseEvent, recursive: boolean = true ): THREE.Intersection[] {
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
-		this.intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
+		let intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
 
-		if ( this.intersections.length > 0 ) {
+		if ( intersections.length > 0 ) {
 
-			// if new object then fire enter event
-			if (
-				this.lastIntersection != null &&
-				this.lastIntersection.object.id != this.intersections[ 0 ].object.id &&
-				this.intersections[ 0 ].object[ 'detectRaycast' ] == true
-			) {
-
-				this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
-				this.eventSystem.pointerEnter.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-
-			}
-
-			if ( this.intersections[ 0 ].object[ 'detectRaycast' ] == true ) {
-
-				this.lastIntersection = this.intersections[ 0 ];
-
-			}
-
-			// if ( this.threeIntersection.object.userData.is_annotation ) {
-			//   this.editorService.mouseOverAnnotationObject.emit( this.threeIntersection );
-			// }
-
-			// if ( this.threeIntersection.object.userData.is_button ) {
-			//   this.editorService.mouseOverButton.emit( this.threeIntersection );
-			// }
-
-
-		} else {
-
-			if ( this.lastIntersection != null ) {
-
-				this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
-
-			}
-
-			this.lastIntersection = null;
+			// if object is found then fire move event
+			return intersections;
 
 		}
+
+		// check for background intersection
+		intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+
+		return intersections;
 	}
+
+	// findIntersections ( event: MouseEvent, recursive: boolean = true ): void {
+
+	// 	this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+
+	// 	this.intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
+
+	// 	if ( this.intersections.length > 0 ) {
+
+	// 		// if new object then fire enter event
+	// 		if (
+	// 			this.lastIntersection != null &&
+	// 			this.lastIntersection.object.id != this.intersections[ 0 ].object.id &&
+	// 			this.intersections[ 0 ].object[ 'detectRaycast' ] == true
+	// 		) {
+
+	// 			this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
+	// 			this.eventSystem.pointerEnter.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+
+	// 		}
+
+	// 		if ( this.intersections[ 0 ].object[ 'detectRaycast' ] == true ) {
+
+	// 			this.lastIntersection = this.intersections[ 0 ];
+
+	// 		}
+
+	// 		// if ( this.threeIntersection.object.userData.is_annotation ) {
+	// 		//   this.editorService.mouseOverAnnotationObject.emit( this.threeIntersection );
+	// 		// }
+
+	// 		// if ( this.threeIntersection.object.userData.is_button ) {
+	// 		//   this.editorService.mouseOverButton.emit( this.threeIntersection );
+	// 		// }
+
+
+	// 	} else {
+
+	// 		if ( this.lastIntersection != null ) {
+
+	// 			this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
+
+	// 		}
+
+	// 		this.lastIntersection = null;
+
+	// 	}
+	// }
 
 	private resizeCanvas () {
 

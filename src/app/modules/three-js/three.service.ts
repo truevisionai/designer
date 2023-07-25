@@ -198,7 +198,7 @@ export class ThreeService implements IEngine {
 
 		ThreeService.bgForClicks.name = 'bgForClicks';
 
-		SceneService.add( ThreeService.bgForClicks, true );
+		SceneService.addHelper( ThreeService.bgForClicks );
 	}
 
 	setupPostProcessing (): any {
@@ -419,7 +419,7 @@ export class ThreeService implements IEngine {
 
 	reset () {
 
-		SceneService.reset();
+		SceneService.clear();
 
 	}
 
