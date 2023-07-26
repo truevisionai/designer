@@ -151,9 +151,9 @@ export class MainFileService {
 
 			ToolManager.disable();
 
-			AppInspector.clear();
+			// AppInspector.clear();
 
-			CommandHistory.clear();
+			// CommandHistory.clear();
 
 			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 
@@ -163,6 +163,9 @@ export class MainFileService {
 				this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
 				SnackBar.success( 'File Saved!' );
+
+				ToolManager.enable();
+
 
 			} );
 
