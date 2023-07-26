@@ -114,7 +114,7 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 	dispose (): void {
 
 		this.lane?.unhighlight();
-		// this.selected?.unselect();
+		this.selected?.unselect();
 
 	}
 

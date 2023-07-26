@@ -138,6 +138,10 @@ export class TvJunctionConnection {
 
 	public addLaneLink ( laneLink: TvJunctionLaneLink ) {
 
+		const exists = this.laneLink.find( link => link.from == laneLink.from && link.to == laneLink.to );
+
+		if ( exists ) return;
+
 		this.laneLink.push( laneLink );
 
 	}

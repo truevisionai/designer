@@ -47,8 +47,6 @@ export class CreateSingleManeuver extends BaseCommand {
 		this.laneLink = laneLink || this.createLaneLink( this.entry );
 
 		this.laneLink.show();
-
-		// this.selectJunctionCommand = new SelectPointCommand( tool, null );
 	}
 
 	execute (): void {
@@ -59,57 +57,73 @@ export class CreateSingleManeuver extends BaseCommand {
 
 		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
 
-		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
-
-		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
-
 		this.selectJunctionCommand?.execute();
 
 		SceneService.add( this.laneLink.mesh );
 
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
+
 		RoadFactory.rebuildRoad( this.connectingRoad );
 
+		// console.log( this.map.roads.size );
 	}
 
 	undo (): void {
 
 		if ( this.junctionCreated ) this.map.removeJunction( this.junction );
 
-		if ( this.connectionCreated ) this.junction.removeConnectionById( this.connection.id );
+		if ( this.connectionCreated ) {
+			this.junction.connections.delete( this.connection.id );
+		}
 
-		if ( this.laneLinkCreated ) this.connection.removeLaneLink( this.laneLink );
+		if ( this.laneLinkCreated ) {
 
-		this.entry.road.setSuccessor( null, null );
+			const index = this.connection.laneLink.findIndex( link => link.from == this.laneLink.from && link.to == this.laneLink.to );
 
-		this.exit.road.setPredecessor( null, null );
+			if ( index > -1 ) {
+
+				this.connection.laneLink.splice( index, 1 );
+
+			}
+		}
 
 		this.selectJunctionCommand?.undo();
 
 		SceneService.remove( this.laneLink.mesh );
 
-		this.map.removeRoad( this.connectingRoad );
+		this.entry.road.setSuccessor( null, null );
+		this.exit.road.setPredecessor( null, null );
 
+		this.map.roads.delete( this.connectingRoad.id );
+		this.map.gameObject.remove( this.connectingRoad.gameObject );
+
+		// console.log( this.map.roads.size );
 	}
 
 	redo (): void {
 
 		if ( this.junctionCreated ) this.map.addJunctionInstance( this.junction );
 
-		if ( this.connectionCreated ) this.junction.addConnection( this.connection );
+		if ( this.connectionCreated ) {
+			this.junction.connections.set( this.connection.id, this.connection );
+		}
 
-		if ( this.laneLinkCreated ) this.connection.addLaneLink( this.laneLink );
-
-		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
-
-		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
+		if ( this.laneLinkCreated ) {
+			this.connection.addLaneLink( this.laneLink );
+		}
 
 		this.selectJunctionCommand?.execute();
 
-		this.map.addRoadInstance( this.connectingRoad );
-
 		SceneService.add( this.laneLink.mesh );
 
-		RoadFactory.rebuildRoad( this.connectingRoad );
+		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
+		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
+
+		this.map.roads.set( this.connectingRoad.id, this.connectingRoad );
+		this.map.gameObject.add( this.connectingRoad.gameObject );
+
+		// console.log( this.map.roads.size );
 	}
 
 	private createLaneLink ( entry: JunctionEntryObject ): TvJunctionLaneLink {
