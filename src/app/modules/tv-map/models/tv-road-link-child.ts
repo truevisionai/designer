@@ -9,6 +9,7 @@ import { TvRoad } from './tv-road.model';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { Vector3 } from 'three';
+import { TvConsole } from 'app/core/utils/console';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -141,67 +142,56 @@ export class TvRoadLinkChild {
 		}
 	}
 
-	update ( parentRoad: TvRoad, parentContact: TvContactPoint ) {
+	update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
 
 		if ( this.elementType === TvRoadLinkChildType.road ) {
 
-			this.updateRoad( parentRoad, parentContact );
+			this.updateRoad( parentRoad, parentContact, rebuild );
 
 		} else if ( this.elementType === TvRoadLinkChildType.junction ) {
 
-			console.error( 'Junctions not supported yet' );
+			TvConsole.error( 'Junctions not supported yet' );
 
 		}
 
 	}
 
-	updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint ) {
+	get end () {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			return this.road.spline.getSecondPoint() as RoadControlPoint;
+		} else {
+			return this.road.spline.getSecondLastPoint() as RoadControlPoint;
+		}
+	}
+
+	get mid2 () {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			return this.road.spline.getFirstPoint() as RoadControlPoint;
+		} else {
+			return this.road.spline.getLastPoint() as RoadControlPoint;
+		}
+	}
+
+	updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
 
 		if ( parentRoad.spline.type == 'explicit' ) return;
 
 		const elementRoad = this.getElement<TvRoad>();
 
-		let point: RoadControlPoint;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			point = elementRoad.spline.getFirstPoint() as RoadControlPoint;
-
-		} else {
-
-			point = elementRoad.spline.getLastPoint() as RoadControlPoint;
-
-		}
-
-		let parentPoint: RoadControlPoint;
-
-		if ( parentContact == TvContactPoint.START ) {
-
-			parentPoint = parentRoad.spline.getFirstPoint() as RoadControlPoint;
-
-		} else {
-
-			parentPoint = parentRoad.spline.getLastPoint() as RoadControlPoint;
-
-		}
-
 		if ( parentContact == TvContactPoint.END ) {
 
-			this.updateSuccessorV2( parentRoad, point, elementRoad );
+			this.updateSuccessor( parentRoad, elementRoad );
 
 		} else {
 
-			point.copyPosition( parentPoint.position );
-
-			this.updatePredecessor( parentRoad, point, elementRoad );
+			this.updatePredecessor( parentRoad, elementRoad );
 
 		}
 
-
-		// RoadFactory.rebuildRoad( elementRoad );
+		if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
 	}
 
-	private updateSuccessor ( parentRoad: TvRoad, parentPoint: RoadControlPoint, successor: TvRoad ) {
+	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
 
 		if ( !successor ) return;
 
@@ -209,12 +199,12 @@ export class TvRoadLinkChild {
 
 		const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
 		const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
-		const mid2 = successor.spline.getFirstPoint() as RoadControlPoint;
-		const end = successor.spline.getSecondPoint() as RoadControlPoint;
+		const mid2 = this.mid2;
+		const end = this.end;
 
 		let distance: number = mid2.position.distanceTo( end.position );
 
-		mid2.copyPosition( mid1.position );
+		mid2.position.copy( mid1.position.clone() );
 
 		mid1.hdg = start.hdg;
 
@@ -222,13 +212,9 @@ export class TvRoadLinkChild {
 
 		const newP4 = mid1.moveForward( distance );
 
-		end.copyPosition( newP4.position );
+		end.position.copy( newP4.position );
 
-		successor.spline.update();
-
-		console.log( 'updateSuccessor', newP4.position );
-
-
+		successor.updateGeometryFromSpline();
 	}
 
 	// this update successor points with line logic
@@ -257,44 +243,33 @@ export class TvRoadLinkChild {
 		mid1.position.copy( direction ).multiplyScalar( distanceAB ).add( start.position );
 		mid2.position.copy( direction ).multiplyScalar( distanceAC ).add( start.position );
 
-		successor.spline.update();
+		successor.updateGeometryFromSpline();
 
 	}
 
-	private updatePredecessor ( parentRoad: TvRoad, parentPoint: RoadControlPoint, predecessor: TvRoad ) {
+	private updatePredecessor ( parentRoad: TvRoad, predecessor: TvRoad ) {
 
 		if ( !predecessor ) return;
 
-		const P1 = parentRoad.spline.controlPoints[ 1 ] as RoadControlPoint;
-		const P2 = parentRoad.spline.controlPoints[ 0 ] as RoadControlPoint;
-
 		predecessor.showSpline();
 
-		let P3: RoadControlPoint;
+		const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
+		const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
+		const mid2 = this.mid2;
+		const end = this.end;
 
-		let P4: RoadControlPoint;
+		const distance = mid2.position.distanceTo( end.position );
 
-		let newP4: RoadControlPoint;
+		mid2.position.copy( mid1.position.clone() );
 
-		let distance: number;
+		mid2.hdg = end.hdg = mid1.hdg + Math.PI;
 
-		P3 = predecessor.spline.getLastPoint() as RoadControlPoint;
+		const newP4 = mid2.moveForward( distance );
 
-		P4 = predecessor.spline.getSecondLastPoint() as RoadControlPoint;
+		end.position.copy( newP4.position );
 
-		distance = P3.position.distanceTo( P4.position );
+		predecessor.updateGeometryFromSpline();
 
-		P3.copyPosition( P2.position );
-
-		P3.hdg = P4.hdg = P2.hdg + Math.PI;
-
-		newP4 = P3.moveForward( distance );
-
-		P4.copyPosition( newP4.position );
-
-		predecessor.spline.update();
-
-		console.log( 'updatePredecessor', newP4.position );
 	}
 
 	hideSpline () {

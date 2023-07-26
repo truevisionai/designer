@@ -58,7 +58,7 @@ export class TvRoad {
 
 		this.updateGeometryFromSpline();
 
-		this.updateConnections();
+		// this.updateConnections();
 
 		RoadFactory.rebuildRoad( this );
 

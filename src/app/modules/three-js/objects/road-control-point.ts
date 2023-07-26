@@ -60,7 +60,7 @@ export class RoadControlPoint extends BaseControlPoint {
 			depthTest: false
 		} );
 
-		if ( position ) this.copyPosition( position );
+		if ( position ) this.initPosition( position );
 
 		this.userData.is_button = true;
 		this.userData.is_control_point = true;
@@ -73,11 +73,17 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	}
 
-	copyPosition ( position: Vector3 ) {
+	private initPosition ( position: Vector3 ) {
 
 		if ( !this.allowChange ) return;
 
 		super.copyPosition( position );
+
+		this.updateTangents();
+
+	}
+
+	updateTangents () {
 
 		if ( this.frontTangent ) {
 
@@ -111,13 +117,24 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	}
 
+	copyPosition ( position: Vector3 ) {
+
+		if ( !this.allowChange ) return;
+
+		super.copyPosition( position );
+
+		this.updateTangents();
+
+		this.update();
+	}
+
 	update () {
 
-		this.road.updateGeometryFromSpline();
+		this.road.update();
 
-		this.updateSuccessor();
+		this.updateSuccessor( true );
 
-		this.updatePredecessor();
+		this.updatePredecessor( true );
 
 	}
 
@@ -134,23 +151,23 @@ export class RoadControlPoint extends BaseControlPoint {
 		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
-	private updatePredecessor () {
+	public updatePredecessor ( rebuild = false ) {
 
 		if ( this.road.isJunction ) return;
 
 		if ( !this.shouldUpdatePredecessor ) return;
 
-		this.road.predecessor?.update( this.road, TvContactPoint.START );
+		this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
 
 	}
 
-	private updateSuccessor () {
+	public updateSuccessor ( rebuild = false ) {
 
 		if ( this.road.isJunction ) return;
 
 		if ( !this.shouldUpdateSuccessor ) return;
 
-		this.road.successor?.update( this.road, TvContactPoint.END );
+		this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
 	}
 
 	show () {
