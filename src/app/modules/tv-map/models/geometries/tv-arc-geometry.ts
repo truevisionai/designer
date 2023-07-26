@@ -158,4 +158,16 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		return this.curve = new SplineCurve( points );
 	}
 
+	clone ( s: number ): TvAbstractRoadGeometry {
+
+		if ( s == null ) s = this.s;
+
+		const length = this.endS - s;
+
+		const coord = this.getRoadCoord( s );
+
+		return new TvArcGeometry( 0, coord.x, coord.y, coord.hdg, length, this.curvature );
+
+	}
+
 }

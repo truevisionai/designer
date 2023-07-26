@@ -8,6 +8,7 @@ import { TvContactPoint } from './tv-common';
 import { TvRoad } from './tv-road.model';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { Vector3 } from 'three';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -184,14 +185,13 @@ export class TvRoadLinkChild {
 
 		}
 
-		point.copyPosition( parentPoint.position );
-
-
 		if ( parentContact == TvContactPoint.END ) {
 
-			this.updateSuccessor( parentRoad, point, elementRoad );
+			this.updateSuccessorV2( parentRoad, point, elementRoad );
 
 		} else {
+
+			point.copyPosition( parentPoint.position );
 
 			this.updatePredecessor( parentRoad, point, elementRoad );
 
@@ -228,6 +228,36 @@ export class TvRoadLinkChild {
 
 		console.log( 'updateSuccessor', newP4.position );
 
+
+	}
+
+	// this update successor points with line logic
+	private updateSuccessorV2 ( parentRoad: TvRoad, parentPoint: RoadControlPoint, successor: TvRoad ) {
+
+		// assumign points
+		// start, mid1, mid2, end
+
+		if ( !successor ) return;
+
+		successor.showSpline();
+
+		const start = parentRoad.spline.getSecondLastPoint();
+		const mid1 = parentRoad.spline.getLastPoint();
+		const mid2 = successor.spline.getFirstPoint();
+		const end = successor.spline.getSecondPoint();
+
+		const distanceAB = start.position.distanceTo( mid1.position );
+		const distanceAC = start.position.distanceTo( mid2.position );
+
+		var direction = new Vector3();
+		direction.subVectors( end.position, start.position );
+		direction.normalize();
+
+		// Now calculate positions for B and C based on distances
+		mid1.position.copy( direction ).multiplyScalar( distanceAB ).add( start.position );
+		mid2.position.copy( direction ).multiplyScalar( distanceAC ).add( start.position );
+
+		successor.spline.update();
 
 	}
 

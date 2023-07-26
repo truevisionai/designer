@@ -87,8 +87,8 @@ export class JunctionFactory {
 			road.getFirstLaneSection() :
 			road.getLastLaneSection();
 
-		if (!laneSection) TvConsole.error( 'No lane section found for Road: ' + road.id );
-		if (!laneSection) return [];
+		if ( !laneSection ) TvConsole.error( 'No lane section found for Road: ' + road.id );
+		if ( !laneSection ) return [];
 
 		const lanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
 
@@ -282,7 +282,7 @@ export class JunctionFactory {
 
 	}
 
-	private static groupEntriesByRoad ( objects: JunctionEntryObject[] ): Map<number, JunctionEntryObject[]> {
+	static groupEntriesByRoad ( objects: JunctionEntryObject[] ): Map<number, JunctionEntryObject[]> {
 
 		const roads = new Map<number, JunctionEntryObject[]>();
 
@@ -303,7 +303,7 @@ export class JunctionFactory {
 
 		if ( !junction ) {
 
-			CommandHistory.execute( new CreateSingleManeuver( null, entry, exit, junction, null, null ) );
+			( new CreateSingleManeuver( null, entry, exit, junction, null, null ) ).execute();
 
 		} else {
 
@@ -317,7 +317,7 @@ export class JunctionFactory {
 
 			} else {
 
-				CommandHistory.execute( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) );
+				( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) ).execute();
 
 			}
 

@@ -8,6 +8,7 @@ import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
+import { TvContactPoint } from './tv-common';
 
 export enum JunctionType {
 	DEFAULT = 'default',
@@ -405,6 +406,14 @@ export class TvJunction {
 
 	}
 
+	addOutgoingConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad, contactPoint: TvContactPoint ) {
+
+		const connection = new TvJunctionConnection( this.connections.size, incomingRoad, null, contactPoint, outgoingRoad );
+
+		this.addConnection( connection );
+
+		return connection;
+	}
 
 }
 

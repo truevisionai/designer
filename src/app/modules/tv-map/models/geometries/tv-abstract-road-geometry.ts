@@ -24,6 +24,8 @@ export abstract class TvAbstractRoadGeometry {
 
 	abstract getCurve (): Curve<Vector2>;
 
+	abstract clone ( s: number ): TvAbstractRoadGeometry;
+
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
 		this._s = s;

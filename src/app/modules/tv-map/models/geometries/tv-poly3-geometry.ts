@@ -99,4 +99,8 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 			( this.attr_d * du * du * du );
 	}
 
+	clone ( s?: number ): TvAbstractRoadGeometry {
+		throw new Error( 'Method not implemented.' );
+	}
+
 }

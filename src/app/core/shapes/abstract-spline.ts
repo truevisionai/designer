@@ -49,6 +49,10 @@ export abstract class AbstractSpline {
 
 	abstract exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[];
 
+	abstract getPoint ( t: number, offset: number ): Vector3;
+
+	abstract getLength (): number;
+
 	clear () {
 
 		throw new Error( 'Method not implemented.' );
@@ -202,6 +206,23 @@ export abstract class AbstractSpline {
 		} else if ( this.type == 'explicit' ) {
 			return new ExplicitSplinePath( this as any, offset );
 		}
+	}
+
+	getPoints ( step: number ) {
+
+		const points: Vector3[] = [];
+
+		const length = this.getLength();
+
+		const d = step / length;
+
+		for ( let i = 0; i <= 1; i += d ) {
+
+			points.push( this.getPoint( i, 0 ) );
+
+		}
+
+		return points;
 	}
 
 }

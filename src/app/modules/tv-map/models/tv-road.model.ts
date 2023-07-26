@@ -1875,4 +1875,62 @@ export class TvRoad {
 
 	}
 
+	cutRoad ( roadCoord: TvPosTheta ): TvRoad {
+
+		console.error( 'not complete' );
+
+		const laneSection = this.getLaneSectionAt( roadCoord.s ).cloneAtS( 0, 0 );
+		const length = this.length - ( roadCoord.s );
+
+		const secondPoint = this.getRoadCoordAt( this.length );
+
+		const newRoad = this.clone( roadCoord.s );
+		newRoad.addControlPointAt( roadCoord.toVector3() );
+		( newRoad.spline.getFirstPoint() as RoadControlPoint ).allowChange = false;
+		newRoad.addControlPointAt( secondPoint.toVector3(), true );
+
+		newRoad.clearLaneSections();
+		newRoad.addLaneSectionInstance( laneSection );
+
+		this.length = this.length - length;
+
+		this.spline.getLastPoint().position.copy( roadCoord.toVector3() );
+		( this.spline.getLastPoint() as RoadControlPoint ).allowChange = false;
+		this.updateGeometryFromSpline();
+
+		this.computeLaneSectionLength();
+		newRoad.computeLaneSectionLength();
+
+		return newRoad;
+	}
+
+	clone ( s: number ): TvRoad {
+
+		const length = this.length - s;
+
+		const road = new TvRoad( this.name, length, TvRoad.counter++, this.junctionId );
+
+		road.type = this.type;
+		// road.elevationProfile = this.elevationProfile;
+		// road.lateralProfile = this.lateralProfile;
+		// road.lanes = this.lanes;
+		road.drivingMaterialGuid = this.drivingMaterialGuid;
+		road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
+		road.borderMaterialGuid = this.borderMaterialGuid;
+		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
+		road.trafficRule = this.trafficRule;
+		// road.successor = this.successor;
+		// road.predecessor = this.predecessor;
+		road.junctionId = this.junctionId;
+		road._planView = this.planView.clone( s );
+		// road._objects = this.objects.clone();
+		// road._signals = this.signals;
+		// road._gameObject = this.gameObject;
+		// road._name = this.name;
+		// road._length = this.length;
+		// road._id = this.id;
+
+		return road;
+
+	}
 }

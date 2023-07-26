@@ -159,4 +159,10 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	getPoint ( t: number, offset: number ): Vector3 {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
 }

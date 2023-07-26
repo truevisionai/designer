@@ -87,4 +87,13 @@ export class TvPlaneView {
 
 	}
 
+	clone ( s: number = 0 ): TvPlaneView {
+
+		const tvPlaneView = new TvPlaneView();
+
+		tvPlaneView.geometries = this.geometries.map( geometry => geometry.clone( s ) );
+
+		return tvPlaneView;
+
+	}
 }

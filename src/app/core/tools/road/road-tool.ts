@@ -170,7 +170,6 @@ export class RoadTool extends BaseTool {
 			);
 
 			CommandHistory.execute( updateRoadPointCommand );
-
 		}
 
 		this.roadChanged = false;
@@ -189,9 +188,7 @@ export class RoadTool extends BaseTool {
 
 			this.roadChanged = true;
 
-			if ( !this.road.isJunction ) this.updateSuccessor( this.road, this.controlPoint );
-
-			if ( !this.road.isJunction ) this.updatePredecessor( this.road, this.controlPoint );
+			this.controlPoint.update();
 		}
 
 	}

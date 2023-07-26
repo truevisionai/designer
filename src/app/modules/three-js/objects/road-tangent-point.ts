@@ -10,8 +10,9 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
 import { RoadControlPoint } from './road-control-point';
+import { IHasUpdate } from '../commands/set-value-command';
 
-export class RoadTangentPoint extends BaseControlPoint {
+export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
 	// public static readonly tag = 'road-tangent-point';
 
@@ -59,11 +60,7 @@ export class RoadTangentPoint extends BaseControlPoint {
 
 	}
 
-	copyPosition ( position: Vector3 ) {
-
-		super.copyPosition( position );
-
-		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
+	update (): void {
 
 		if ( this.tag === 'tpf' && this.controlPoint.frontTangent ) {
 
@@ -112,6 +109,16 @@ export class RoadTangentPoint extends BaseControlPoint {
 		}
 
 		this.controlPoint.updateTangentLine();
+
+	}
+
+	copyPosition ( position: Vector3 ) {
+
+		super.copyPosition( position );
+
+		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
+
+		this.update();
 
 	}
 
