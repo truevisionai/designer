@@ -52,8 +52,9 @@ describe( 'RoadTool', () => {
 		const road1LastPoint = road1.spline.getLastPoint() as RoadControlPoint;
 		const road2FirstPoint = road2.spline.getFirstPoint() as RoadControlPoint;
 
-		road1LastPoint.copyPosition( new Vector3( 15, 0, 0 ) );
-		road1.updateConnections();
+		road1LastPoint.position.copy( new Vector3( 15, 0, 0 ) );
+		road1.successor?.update( road1, TvContactPoint.END, false );
+		road1.predecessor?.update( road1, TvContactPoint.START, false );
 
 		expect( road1LastPoint.position.x ).toBe( road2FirstPoint.position.x );
 		expect( road1LastPoint.position.y ).toBe( road2FirstPoint.position.y );
@@ -62,19 +63,21 @@ describe( 'RoadTool', () => {
 		const road2LastPoint = road2.spline.getLastPoint() as RoadControlPoint;
 		const road3LastPoint = road3.spline.getLastPoint() as RoadControlPoint;
 
-		road2LastPoint.copyPosition( new Vector3( 25, 0, 0 ) );
-		road2.updateConnections();
+		road2LastPoint.position.copy( new Vector3( 25, 0, 0 ) );
+		road2.successor?.update( road2, TvContactPoint.END, false );
+		road2.predecessor?.update( road2, TvContactPoint.START, false );
 
 		expect( road2LastPoint.position.x ).toBe( 25 );
-		// expect( road2LastPoint.position.y ).toBe( road3LastPoint.position.y );
-		// expect( road2LastPoint.position.z ).toBe( road3LastPoint.position.z );
+		expect( road2LastPoint.position.y ).toBe( road3LastPoint.position.y );
+		expect( road2LastPoint.position.z ).toBe( road3LastPoint.position.z );
 
-		road3LastPoint.copyPosition( new Vector3( 30, 0, 0 ) );
-		road3.updateConnections();
+		road3LastPoint.position.copy( new Vector3( 30, 0, 0 ) );
+		road3.successor?.update( road3, TvContactPoint.END, false );
+		road3.predecessor?.update( road3, TvContactPoint.START, false );
 
 		expect( road3LastPoint.position.x ).toBe( 30 );
-		// expect( road3LastPoint.position.y ).toBe( road2LastPoint.position.y );
-		// expect( road3LastPoint.position.z ).toBe( road2LastPoint.position.z );
+		expect( road3LastPoint.position.y ).toBe( road2LastPoint.position.y );
+		expect( road3LastPoint.position.z ).toBe( road2LastPoint.position.z );
 
 
 	} );
