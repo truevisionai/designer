@@ -38,17 +38,17 @@ export class PointerEventData extends BaseEventData {
 		super();
 		this.distance = partialData.distance || 0;
 		this.distanceToRay = partialData.distanceToRay;
-		this.point = partialData.point || new Vector3();
+		this.point = partialData.point;
 		this.index = partialData.index;
-		this.face = partialData.face || null;
+		this.face = partialData.face;
 		this.faceIndex = partialData.faceIndex;
-		this.uv = partialData.uv || new Vector2();
-		this.button = partialData.button || MouseButton.LEFT;
+		this.uv = partialData.uv;
+		this.button = partialData.button;
 		this.intersections = partialData.intersections || [];
 		this.approxCameraDistance = partialData.approxCameraDistance;
 		this.camera = partialData.camera;
-		this.mouse = partialData.mouse || new Vector2();
-		this.mouseEvent = partialData.mouseEvent || null;
+		this.mouse = partialData.mouse;
+		this.mouseEvent = partialData.mouseEvent;
 	}
 }
 

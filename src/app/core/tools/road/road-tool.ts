@@ -23,6 +23,9 @@ import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { RemoveRoadCommand } from './remove-road-command';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 
 /**
  *
@@ -163,11 +166,17 @@ export class RoadTool extends BaseTool {
 
 		if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
 
-			const updateRoadPointCommand = new UpdateRoadPointCommand(
-				this.road, this.controlPoint, this.controlPoint.position, this.pointerDownAt
-			);
+			const oldPosition = this.pointerDownAt.clone();
 
-			CommandHistory.execute( updateRoadPointCommand );
+			const newPosition = this.controlPoint.position.clone();
+
+			const command = new CopyPositionCommand( this.controlPoint, newPosition, oldPosition );
+
+			CommandHistory.execute( command );
+
+			this.road?.successor?.hideSpline();
+
+			this.road?.predecessor?.hideSpline();
 
 		}
 
@@ -178,145 +187,18 @@ export class RoadTool extends BaseTool {
 
 		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
 
-			this.controlPoint.copyPosition( e.point );
-
-			// dont update road if there is only one point
-			if ( this.road.spline.controlPoints.length < 2 ) return;
+			this.controlPoint.position.copy( e.point );
 
 			this.road.spline.update();
 
+			this.controlPoint.updateSuccessor( false );
+
+			this.controlPoint.updatePredecessor( false );
+
 			this.roadChanged = true;
 
-			this.updateSuccessor( this.road, this.controlPoint );
-
-			this.updatePredecessor( this.road, this.controlPoint );
 		}
 
-	}
-
-	private updateSuccessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
-
-		const P1 = road.spline.getSecondLastPoint() as RoadControlPoint;
-		const P2 = road.spline.getLastPoint() as RoadControlPoint;
-
-		if ( road.successor && road.successor.elementType !== 'junction'
-			&& ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
-
-			const successor = this.map.getRoadById( road.successor.elementId );
-
-			if ( !successor ) return;
-
-			successor.spline.show();
-
-			let P3: RoadControlPoint;
-
-			let P4: RoadControlPoint;
-
-			let newP4: RoadControlPoint;
-
-			let distance: number;
-
-			if ( road.successor.contactPoint === TvContactPoint.START ) {
-
-				P3 = successor.spline.controlPoints[ 0 ] as RoadControlPoint;
-
-				P4 = successor.spline.controlPoints[ 1 ] as RoadControlPoint;
-
-				distance = P3.position.distanceTo( P4.position );
-
-				P3.copyPosition( P2.position );
-
-				P2.hdg = P3.hdg = P1.hdg;
-
-				newP4 = P2.moveForward( distance );
-
-				P4.copyPosition( newP4.position );
-
-				successor.spline.update();
-
-			} else {
-
-				P3 = successor.spline.getLastPoint() as RoadControlPoint;
-
-				P4 = successor.spline.getSecondLastPoint() as RoadControlPoint;
-
-				distance = P3.position.distanceTo( P4.position );
-
-				P3.copyPosition( P2.position );
-
-				P2.hdg = P1.hdg;
-
-				P3.hdg = P2.hdg + Math.PI;
-
-				newP4 = P2.moveForward( distance );
-
-				P4.copyPosition( newP4.position );
-
-				successor.spline.update();
-			}
-		}
-	}
-
-	private updatePredecessor ( road: TvRoad, currentPoint: RoadControlPoint ) {
-
-		const P1 = road.spline.controlPoints[ 1 ] as RoadControlPoint;
-		const P2 = road.spline.controlPoints[ 0 ] as RoadControlPoint;
-
-		if ( road.predecessor && road.predecessor.elementType !== 'junction'
-			&& ( P1.id === currentPoint.id || P2.id === currentPoint.id ) ) {
-
-			const predecessor = this.map.getRoadById( road.predecessor.elementId );
-
-			if ( !predecessor ) return;
-
-			predecessor.spline.show();
-
-			let P3: RoadControlPoint;
-
-			let P4: RoadControlPoint;
-
-			let newP4: RoadControlPoint;
-
-			let distance: number;
-
-			if ( road.predecessor.contactPoint === TvContactPoint.START ) {
-
-				P3 = predecessor.spline.controlPoints[ 0 ] as RoadControlPoint;
-
-				P4 = predecessor.spline.controlPoints[ 1 ] as RoadControlPoint;
-
-				distance = P3.position.distanceTo( P4.position );
-
-				P3.copyPosition( P2.position );
-
-				P3.hdg = P4.hdg = P2.hdg + Math.PI;
-
-				newP4 = P3.moveForward( distance );
-
-				P4.copyPosition( newP4.position );
-
-				predecessor.spline.update();
-
-			} else {
-
-				P3 = predecessor.spline.getLastPoint() as RoadControlPoint;
-
-				P4 = predecessor.spline.getSecondLastPoint() as RoadControlPoint;
-
-				distance = P3.position.distanceTo( P4.position );
-
-				P3.copyPosition( P2.position );
-
-				P3.hdg = P4.hdg = P2.hdg + Math.PI;
-
-				newP4 = P3.moveForward( distance );
-
-				P4.copyPosition( newP4.position );
-
-				predecessor.spline.update();
-
-			}
-		}
 	}
 
 	private isControlPointSelected ( e: PointerEventData ): boolean {
@@ -538,32 +420,70 @@ export class RoadTool extends BaseTool {
 	}
 }
 
-interface PointerDownStrategy {
-	execute ( event: Event ): void;
-}
 
-class ControlPointSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when control point is selected
-		console.log( 'Control Point Selected' );
-	}
-}
+class RoadConnectionsUpdate {
 
-class RoadNodeSelectedStrategy implements PointerDownStrategy {
-	execute ( event: Event ): void {
-		// Implementation when road node is selected
-		console.log( 'Road Node Selected' );
-	}
-}
+	static update ( road: TvRoad ) {
 
-class PointerDownContext {
-	private strategy: PointerDownStrategy;
+		if ( road.isJunction ) {
 
-	constructor ( strategy: PointerDownStrategy ) {
-		this.strategy = strategy;
+			this.updateJunctionRoad( road );
+
+		} else {
+
+			this.updateRoad( road );
+
+		}
+
 	}
 
-	public onPointerDown ( event: Event ): void {
-		this.strategy.execute( event );
+
+	static updateRoad ( road: TvRoad ) {
+
+		const firstPoint = road.spline.getFirstPoint() as RoadControlPoint;
+
+		const lastPoint = road.spline.getLastPoint() as RoadControlPoint;
+
+		const map = TvMapInstance.map;
+
+		const successors = map.getRoads().filter( r => r.predecessor?.elementId === road.id );
+
+		const predecessors = map.getRoads().filter( r => r.successor?.elementId === road.id );
+
+		successors.forEach( successor => {
+
+			const successorFirstPoint = successor.spline.getFirstPoint() as RoadControlPoint;
+
+			successorFirstPoint.copyPosition( lastPoint.position );
+
+			successor.spline.update();
+
+			successor.updateGeometryFromSpline();
+
+			RoadFactory.rebuildRoad( successor );
+
+		} )
+
+		predecessors.forEach( predecessor => {
+
+			const predecessorLastPoint = predecessor.spline.getLastPoint() as RoadControlPoint;
+
+			predecessorLastPoint.copyPosition( firstPoint.position );
+
+			predecessor.spline.update();
+
+			predecessor.updateGeometryFromSpline();
+
+			RoadFactory.rebuildRoad( predecessor );
+
+		} );
+
 	}
+
+	static updateJunctionRoad ( road: TvRoad ) {
+
+		console.error( 'updateJunctionRoad not implemented' );
+
+	}
+
 }

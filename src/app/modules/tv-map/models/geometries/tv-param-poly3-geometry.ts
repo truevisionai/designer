@@ -187,4 +187,9 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 		return this.curve = new SplineCurve( points );
 
 	}
+
+	clone ( s?: number ): TvAbstractRoadGeometry {
+		throw new Error( 'Method not implemented.' );
+	}
+
 }

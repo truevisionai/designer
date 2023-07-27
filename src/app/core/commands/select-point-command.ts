@@ -5,7 +5,7 @@
 import { Type } from '@angular/core';
 import { ISelectable } from '../../modules/three-js/objects/i-selectable';
 import { IComponent } from '../game-object';
-import { SelectionTool } from '../helpers/selection-tool';
+import { SelectionTool } from '../snapping/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 
@@ -133,26 +133,50 @@ export class SelectPointsCommand extends BaseCommand {
 
 export class SelectMainObjectCommand extends BaseCommand {
 
-	protected readonly oldMainObject: ISelectable;
+	private readonly oldMainObject: ISelectable;
+	private readonly setInspectorCommand: SetInspectorCommand;
 
-	constructor ( protected tool: IToolWithMainObject, protected newMainObject: ISelectable ) {
+	constructor (
+		private tool: IToolWithMainObject,
+		private newMainObject: ISelectable,
+		private inspector: Type<IComponent> = null,
+		private inspectorData: any = null
+	) {
 		super();
+
 		this.oldMainObject = this.tool.getMainObject();
+
+		this.setInspectorCommand = new SetInspectorCommand( inspector, inspectorData );
 	}
 
 	execute () {
+
 		this.oldMainObject?.unselect();
+
 		this.newMainObject?.select();
+
 		this.tool.setMainObject( this.newMainObject );
+
+		this.setInspectorCommand?.execute();
+
 	}
 
 	undo (): void {
+
 		this.oldMainObject?.select();
+
 		this.newMainObject?.unselect();
+
 		this.tool.setMainObject( this.oldMainObject );
+
+		this.setInspectorCommand?.undo();
+
 	}
 
 	redo (): void {
+
 		this.execute();
+
 	}
+
 }

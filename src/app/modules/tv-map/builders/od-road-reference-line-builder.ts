@@ -44,19 +44,7 @@ export class OdRoadReferenceLineBuilder {
 
 		this.road = road;
 
-		let tmp = new TvPosTheta();
-		const points: TvPosTheta[] = [];
-
-		for ( let s = 0; s <= this.road.length; s++ ) {
-
-			tmp = road.getRoadCoordAt( s );
-			points.push( new TvPosTheta( tmp.x, tmp.y, tmp.hdg ) );
-
-		}
-
-		// last entry
-		tmp = road.getRoadCoordAt( this.road.length - Maths.Epsilon );
-		points.push( new TvPosTheta( tmp.x, tmp.y, tmp.hdg ) );
+		const points: TvPosTheta[] = road.getReferenceLinePoints();
 
 		OdRoadReferenceLineBuilder.drawLine( points );
 
@@ -65,27 +53,18 @@ export class OdRoadReferenceLineBuilder {
 	public static showRoadReferenceLine ( road: TvRoad ) {
 
 		let tmp = new TvPosTheta();
-		const points: TvPosTheta[] = [];
 
-		for ( let s = 0; s <= road.length; s++ ) {
+		const points: TvPosTheta[] = road.getReferenceLinePoints();
 
-			tmp = road.getRoadCoordAt( s );
-			tmp.z += 0.1;
-			points.push( tmp.clone() );
+		points.forEach( point => point.z += 0.1 );
 
-		}
-
-		// last entry
-		tmp = road.getRoadCoordAt( road.length - Maths.Epsilon );
-		points.push( tmp.clone() );
-
-		OdRoadReferenceLineBuilder.drawLine( points );
+		this.drawLine( points );
 
 	}
 
 	private static drawLine ( positions: TvPosTheta[] ) {
 
-		const points = OdRoadReferenceLineBuilder.convertToVector3( positions );
+		const points = this.convertToVector3( positions );
 
 		const geometry = new BufferGeometry();
 
@@ -104,14 +83,7 @@ export class OdRoadReferenceLineBuilder {
 
 	private static convertToVector3 ( points: TvPosTheta[] ): Vector3[] {
 
-		const tmp: Vector3[] = [];
+		return points.map( point => point.toVector3() );
 
-		points.forEach( point => {
-
-			tmp.push( new Vector3( point.x, point.y, point.z ) );
-
-		} );
-
-		return tmp;
 	}
 }

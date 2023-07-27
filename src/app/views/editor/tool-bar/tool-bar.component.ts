@@ -11,6 +11,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../core/tools/base-tool';
 import { ToolManager } from '../../../core/tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
+import { Environment } from 'app/core/utils/environment';
 
 class IToolMenu {
 	id: string;
@@ -184,6 +185,19 @@ export class ToolBarComponent implements OnInit {
 			enabled: false,
 		},
 		{
+			id: 'showCrosswalkTool',
+			label: 'Crosswalk',
+			class: 'toolbar-button',
+			toolType: ToolType.Crosswalk,
+			action: 'crosswalk-tool',
+			icon: 'reorder', // 'call_split', receipt
+			title: 'Crosswalk Tool',
+			track: 'button',
+			tooltip: 'Crosswalk Tool',
+			click: () => this.setToolType( ToolType.Crosswalk ),
+			enabled: !Environment.production,
+		},
+		{
 			id: 'showManeueverTool',
 			label: 'Maneuver',
 			class: 'toolbar-button border-right',
@@ -275,7 +289,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
-			enabled: false,
+			enabled: !Environment.production,
 		},
 		// add more tools here...
 	];

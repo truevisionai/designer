@@ -24,13 +24,10 @@ export class RemoveRoadCommand extends BaseCommand {
 				this.connections.push( c.clone() );
 			} );
 
-		} else {
-
-			this.predecessorElement = this.road.predecessor;
-			this.successorElement = this.road.successor;
-
 		}
 
+		this.predecessorElement = this.road.predecessor;
+		this.successorElement = this.road.successor;
 	}
 
 	execute (): void {
@@ -39,14 +36,11 @@ export class RemoveRoadCommand extends BaseCommand {
 		this.road.hideHelpers();
 
 		if ( this.road.isJunction ) {
-
 			this.road.junctionInstance?.removeConnectingRoad( this.road );
-
-		} else {
-
-			this.road.removePredecessor();
-			this.road.removeSuccessor();
 		}
+
+		this.road.removePredecessor();
+		this.road.removeSuccessor();
 
 		this.map.roads.delete( this.road.id );
 		this.map.gameObject.remove( this.road.gameObject );
@@ -66,12 +60,10 @@ export class RemoveRoadCommand extends BaseCommand {
 				this.road.junctionInstance?.addConnection( connection );
 			} );
 
-		} else {
-
-			this.road.addPredecessor( this.predecessorElement );
-			this.road.addSuccessor( this.successorElement );
-
 		}
+
+		this.road.addPredecessor( this.predecessorElement );
+		this.road.addSuccessor( this.successorElement );
 	}
 
 	redo (): void {

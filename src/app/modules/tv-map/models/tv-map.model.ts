@@ -378,6 +378,8 @@ export class TvMap {
 
 	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
 
+		let finalJunction: TvJunction = null;
+
 		for ( const junction of this.getJunctions() ) {
 
 			const connections = junction.getConnections();
@@ -385,20 +387,27 @@ export class TvMap {
 			for ( let i = 0; i < connections.length; i++ ) {
 
 				const connection = connections[ i ];
-				const connectingRoad = this.getRoadById( connection.connectingRoadId );
+				const connectingRoad = connection.connectingRoad;
 
 				if ( connection.incomingRoadId === incoming.id || connection.incomingRoadId === outgoing.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 
 				if ( connectingRoad?.predecessor.elementId === incoming.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 
 				if ( connectingRoad?.successor.elementId === outgoing.id ) {
-					return junction;
+					finalJunction = junction;
+					break;
 				}
 			}
+
+			if ( finalJunction ) break;
 		}
+
+		return finalJunction;
 	}
 }

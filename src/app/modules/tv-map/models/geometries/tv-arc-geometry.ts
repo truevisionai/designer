@@ -91,7 +91,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		const retX = this.x - radius * Math.cos( rotation ) + radius * Math.cos( rotation + theta );
 		const retY = this.y - radius * Math.sin( rotation ) + radius * Math.sin( rotation + theta );
 
-		return new TvPosTheta( retX, retY, this.hdg + theta );
+		return new TvPosTheta( retX, retY, this.hdg + theta, s );
 	}
 
 	computeVars () {
@@ -156,6 +156,18 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		points.push( posTheta.toVector2() );
 
 		return this.curve = new SplineCurve( points );
+	}
+
+	clone ( s: number ): TvAbstractRoadGeometry {
+
+		if ( s == null ) s = this.s;
+
+		const length = this.endS - s;
+
+		const coord = this.getRoadCoord( s );
+
+		return new TvArcGeometry( 0, coord.x, coord.y, coord.hdg, length, this.curvature );
+
 	}
 
 }

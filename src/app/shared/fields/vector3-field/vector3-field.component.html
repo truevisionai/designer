@@ -16,6 +16,7 @@
 			[disabled]="disabled"
 			(changed)="onYChanged($event)"></app-double-input>
 		<app-double-input style="width: 33%; margin-right: 0px;"
+			*ngIf="z"
 			min="0"
 			[value]="value.z"
 			[disabled]="disabled"

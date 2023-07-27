@@ -7,7 +7,7 @@ import { Maths } from '../../../utils/maths';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
-import { TvCoord, TvLaneCoord } from '../models/tv-lane-coord';
+import { TvCoord, TvLaneCoord, TvRoadCoord } from '../models/tv-lane-coord';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
@@ -83,6 +83,17 @@ export class TvMapQueries extends TvBaseQueries {
 
 		return this.findRoadById( roadId ).getPositionAt( s, t );
 
+	}
+
+	static findRoadCoord ( position: Vector3 ): TvRoadCoord {
+
+		const posTheta = new TvPosTheta();
+
+		const road = this.getRoadByCoords( position.x, position.y, posTheta );
+
+		if ( !road ) return null;
+
+		return posTheta.toRoadCoord( road.id );
 	}
 
 	static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {

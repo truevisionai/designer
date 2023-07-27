@@ -1,222 +1,143 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { Injectable } from '@angular/core';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { BufferGeometry, Line, LineBasicMaterial, Shape } from 'three';
-import { AbstractSpline } from '../shapes/abstract-spline';
-import { AutoSpline } from '../shapes/auto-spline';
-import { AutoSplinePath, ExplicitSplinePath } from '../shapes/cubic-spline-curve';
-import { ExplicitSpline } from '../shapes/explicit-spline';
+// import { Injectable } from '@angular/core';
+// import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+// import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+// import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+// import { BufferGeometry, Line, LineBasicMaterial, Shape } from 'three';
+// import { AbstractSpline } from '../shapes/abstract-spline';
+// import { AutoSpline } from '../shapes/auto-spline';
+// import { AutoSplinePath, ExplicitSplinePath } from '../shapes/cubic-spline-curve';
+// import { ExplicitSpline } from '../shapes/explicit-spline';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class LanePathFactory {
+// @Injectable( {
+// 	providedIn: 'root'
+// } )
+// export class LanePathFactory {
 
-	static create (
-		incomingRoad: TvRoad,
-		connectingRoad: TvRoad,
-		connection: TvJunctionConnection,
-		link: TvJunctionLaneLink
-	) {
+// 	static create (
+// 		incomingRoad: TvRoad,
+// 		connectingRoad: TvRoad,
+// 		connection: TvJunctionConnection,
+// 		link: TvJunctionLaneLink
+// 	) {
 
-		const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
+// 		// const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
 
-		const lane = connectingRoad.getLaneSectionAt( 0 ).getLaneById( link.to );
+// 		// const lane = connectingRoad.getLaneSectionAt( 0 ).getLaneById( link.to );
 
-		const width = connectingRoad.getLaneSectionAt( 0 ).getWidthUptoCenter( lane, 0 );
+// 		// const width = connectingRoad.getLaneSectionAt( 0 ).getWidthUptoCenter( lane, 0 );
 
-		const spline = connectingRoad.spline;
+// 		// const spline = connectingRoad.spline;
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+// 		// const shape = new Shape();
+// 		// shape.moveTo( 0, -0.3 );
+// 		// shape.lineTo( 0, 0.3 );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+// 		// if ( spline.controlPointPositions.length < 2 ) return;
 
-		let offset = width;
+// 		// let offset = width;
 
-		if ( lane.id < 0 ) offset *= -1;
+// 		// if ( lane.id < 0 ) offset *= -1;
 
-		const path = this.getPath( spline, offset );
+// 		// const path = this.getPath( spline, offset );
 
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
+// 		// const lineMaterial = new LineBasicMaterial( {
+// 		// 	color: 0x00ffff,
+// 		// 	linewidth: 100,
+// 		// 	opacity: 0.5,
+// 		// 	transparent: true,
+// 		// } );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+// 		// const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
+// 		// pathObject.mesh = new Line( lineGeometry, lineMaterial );
 
-		pathObject.mesh.castShadow = true;
+// 		// pathObject.mesh.castShadow = true;
 
-		pathObject.mesh.renderOrder = 3;
+// 		// pathObject.mesh.renderOrder = 3;
 
-		pathObject.mesh.frustumCulled = false;
+// 		// pathObject.mesh.frustumCulled = false;
 
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
+// 		// pathObject.mesh[ 'tag' ] = LanePathObject.tag;
 
-		pathObject.add( pathObject.mesh );
+// 		// pathObject.add( pathObject.mesh );
 
-		return pathObject;
-	}
+// 		// return pathObject;
+// 	}
 
-	static createPathForLane (
-		incomingRoad: TvRoad,
-		connectingRoad: TvRoad,
-		lane: TvLane,
-		connection: TvJunctionConnection,
-		link: TvJunctionLaneLink
-	) {
+// 	/**
+// 	 *
+// 	 * @param connectingRoad
+// 	 * @deprecated dont use this
+// 	 */
+// 	static createFromConnectingRoad ( connectingRoad: TvRoad ) {
 
-		// console.trace( "create-path-lane", incomingRoad.id, connectingRoad.id, lane.id );
+// 		// const pathObject = new LanePathObject( null, connectingRoad, null, null );
 
-		const pathObject = new LanePathObject( incomingRoad, connectingRoad, connection, link );
+// 		// let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
 
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+// 		// if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-		const spline = connectingRoad.spline;
+// 		// const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+// 		// const spline = connectingRoad.spline;
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+// 		// const shape = new Shape();
+// 		// shape.moveTo( 0, -0.3 );
+// 		// shape.lineTo( 0, 0.3 );
 
-		let offset = width;
+// 		// if ( spline.controlPointPositions.length < 2 ) return;
 
-		if ( lane.id < 0 ) offset *= -1;
+// 		// let offset = width;
 
-		const path = this.getPath( spline, offset );
+// 		// if ( lane.id < 0 ) offset *= -1;
 
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
+// 		// const path = this.getPath( spline, offset );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
+// 		// const lineMaterial = new LineBasicMaterial( {
+// 		// 	color: 0x00ffff,
+// 		// 	linewidth: 100,
+// 		// 	opacity: 0.5,
+// 		// 	transparent: true,
+// 		// } );
 
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
+// 		// const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
 
-		pathObject.mesh.castShadow = true;
+// 		// pathObject.mesh = new Line( lineGeometry, lineMaterial );
 
-		pathObject.mesh.renderOrder = 3;
+// 		// pathObject.mesh.castShadow = true;
 
-		pathObject.mesh.frustumCulled = false;
+// 		// pathObject.mesh.renderOrder = 3;
 
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
+// 		// pathObject.mesh.frustumCulled = false;
 
-		pathObject.add( pathObject.mesh );
+// 		// pathObject.mesh[ 'tag' ] = LanePathObject.tag;
 
-		return pathObject;
-	}
+// 		// pathObject.add( pathObject.mesh );
 
-	/**
-	 *
-	 * @param connectingRoad
-	 * @deprecated dont use this
-	 */
-	static createFromConnectingRoad ( connectingRoad: TvRoad ) {
+// 		// return pathObject;
+// 	}
 
-		const pathObject = new LanePathObject( null, connectingRoad, null, null );
+// 	static update ( pathObject: LanePathObject ) {
 
-		let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
+// 		pathObject.update()
 
-		if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
+// 	}
 
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
+// 	private static getPath ( spline: AbstractSpline, offset: number ) {
 
-		const spline = connectingRoad.spline;
+// 		if ( spline instanceof AutoSpline ) {
 
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
+// 			return new AutoSplinePath( spline, offset );
 
-		if ( spline.controlPointPositions.length < 2 ) return;
+// 		} else if ( spline instanceof ExplicitSpline ) {
 
-		let offset = width;
+// 			return new ExplicitSplinePath( spline, offset );
 
-		if ( lane.id < 0 ) offset *= -1;
-
-		const path = this.getPath( spline, offset );
-
-		const lineMaterial = new LineBasicMaterial( {
-			color: 0x00ffff,
-			linewidth: 100,
-			opacity: 0.5,
-			transparent: true,
-		} );
-
-		const lineGeometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
-
-		pathObject.mesh = new Line( lineGeometry, lineMaterial );
-
-		pathObject.mesh.castShadow = true;
-
-		pathObject.mesh.renderOrder = 3;
-
-		pathObject.mesh.frustumCulled = false;
-
-		pathObject.mesh[ 'tag' ] = LanePathObject.tag;
-
-		pathObject.add( pathObject.mesh );
-
-		return pathObject;
-	}
-
-	static update ( pathObject: LanePathObject ) {
-
-		if ( !pathObject ) return;
-
-		const connectingRoad = pathObject.connectingRoad;
-
-		let lane = connectingRoad.getFirstLaneSection().getLaneById( 1 );
-
-		if ( !lane ) lane = connectingRoad.getFirstLaneSection().getLaneById( -1 );
-
-		const width = connectingRoad.getFirstLaneSection().getWidthUptoCenter( lane, 0 );
-
-		const spline = connectingRoad.spline;
-
-		const shape = new Shape();
-		shape.moveTo( 0, -0.3 );
-		shape.lineTo( 0, 0.3 );
-
-		if ( spline.controlPointPositions.length < 2 ) return;
-
-		let offset = width;
-
-		if ( lane.id < 0 ) offset *= -1;
-
-		const path = this.getPath( spline, offset );
-
-		pathObject.mesh.geometry.dispose();
-
-		pathObject.mesh.geometry = new BufferGeometry().setFromPoints( path.getSpacedPoints( 50 ) );
-
-		return pathObject;
-	}
-
-	private static getPath ( spline: AbstractSpline, offset: number ) {
-
-		if ( spline instanceof AutoSpline ) {
-
-			return new AutoSplinePath( spline, offset );
-
-		} else if ( spline instanceof ExplicitSpline ) {
-
-			return new ExplicitSplinePath( spline, offset );
-
-		}
-	}
-}
+// 		}
+// 	}
+// }

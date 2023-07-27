@@ -11,4 +11,26 @@
 	<button mat-stroked-button
 		(click)="createManeuvers()">Create Maneuvers</button>
 
+	<div *ngFor="let dot of data">
+
+		<div *ngFor="let connection of dot.connections">
+
+			<div *ngFor="let link of connection.laneLink">
+
+				<div (mouseover)="onMouseOver(link)" (mouseout)="onMouseOut(link)" *ngIf="link.incomingLane?.id == dot.lane.id || link.connectingLane?.id == dot.lane.id">
+
+					<app-string-field label="Incoming" [disabled]="true" value="Road:{{ link.incomingRoad?.id}} Lane:{{ link.incomingLane?.id }}"></app-string-field>
+
+					<app-string-field label="Connecting" [disabled]="true" value="Road:{{ link.connectingRoad?.id}} Lane:{{ link.connectingLane?.id }}"></app-string-field>
+
+					<app-button-field (clicked)="removeLink(connection,link)" label="Delete Link"></app-button-field>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
 </div>

@@ -19,6 +19,7 @@ import { AbstractSpline } from './abstract-spline';
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -559,7 +560,7 @@ export class ExplicitSpline extends AbstractSpline {
 		return length;
 	}
 
-	markAsSpiral ( point: RoadControlPoint ) {
+	markAsSpiral ( point: BaseControlPoint ) {
 
 		const idx = point.tagindex;
 

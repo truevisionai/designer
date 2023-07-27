@@ -28,16 +28,22 @@ export class RoadNode extends Group implements ISelectable {
 	public line: Line2;
 	public isSelected = false;
 
-	constructor ( public road: TvRoad, public contact: TvContactPoint, public s?: number ) {
+	constructor ( public road: TvRoad, public contact: TvContactPoint ) {
 
 		super();
 
-		const sCoord = s || this.calculateS();
+		this.createLineSegment( road, contact );
+
+	}
+
+	private createLineSegment ( road: TvRoad, contact: TvContactPoint ) {
+
+		const sCoord = this.sCoordinate;
 
 		const result = road.getRoadWidthAt( sCoord );
 
-		const start = road.getPositionAt( sCoord, result.leftSideWidth ).toVector3();
-		const end = road.getPositionAt( sCoord, -result.rightSideWidth ).toVector3();
+		const start = road.getPositionAt( sCoord, result.leftSideWidth );
+		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 		lineGeometry.setPositions( [
@@ -59,23 +65,6 @@ export class RoadNode extends Group implements ISelectable {
 		this.line.renderOrder = 3;
 
 		this.add( this.line );
-	}
-
-	private createLineSegment () {
-
-		// const lineGeometry = new BufferGeometry().setFromPoints( [ start.toVector3(), end.toVector3() ] );
-
-		// this.line = new LineSegments( lineGeometry, new LineBasicMaterial( {
-		// 	color: RoadNode.defaultColor,
-		// 	opacity: RoadNode.defaultOpacity,
-		// 	linewidth: RoadNode.defaultWidth,
-		// } ) );
-
-		// this.line[ 'tag' ] = RoadNode.lineTag;
-
-		// this.line.renderOrder = 3;
-
-		// this.add( this.line );
 
 	}
 
@@ -88,19 +77,11 @@ export class RoadNode extends Group implements ISelectable {
 	}
 
 	get sCoordinate (): number {
-		return this.s || this.calculateS();
+		return this.contact == TvContactPoint.START ? 0 : this.road.length - Maths.Epsilon;
 	}
 
 	getRoadId (): number {
 		return this.road.id;
-	}
-
-	calculateS (): number {
-
-		return this.contact == TvContactPoint.START ?
-			0 :
-			this.road.length - Maths.Epsilon;
-
 	}
 
 	select () {
@@ -123,7 +104,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	update () {
 
-		const sCoord = this.calculateS();
+		const sCoord = this.sCoordinate;
 
 		const result = this.road.getRoadWidthAt( sCoord );
 

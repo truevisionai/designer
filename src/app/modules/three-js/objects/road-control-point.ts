@@ -5,7 +5,7 @@
 import { SceneService } from 'app/core/services/scene.service';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
@@ -60,7 +60,7 @@ export class RoadControlPoint extends BaseControlPoint {
 			depthTest: false
 		} );
 
-		if ( position ) this.copyPosition( position );
+		if ( position ) this.initPosition( position );
 
 		this.userData.is_button = true;
 		this.userData.is_control_point = true;
@@ -73,11 +73,17 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	}
 
-	copyPosition ( position: Vector3 ) {
+	private initPosition ( position: Vector3 ) {
 
 		if ( !this.allowChange ) return;
 
 		super.copyPosition( position );
+
+		this.updateTangents();
+
+	}
+
+	updateTangents () {
 
 		if ( this.frontTangent ) {
 
@@ -109,6 +115,59 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		}
 
+	}
+
+	copyPosition ( position: Vector3 ) {
+
+		if ( !this.allowChange ) return;
+
+		super.copyPosition( position );
+
+		this.updateTangents();
+
+		this.update();
+	}
+
+	update () {
+
+		this.road.update();
+
+		this.updateSuccessor( true );
+
+		this.updatePredecessor( true );
+
+	}
+
+	private get index () {
+		return this.road.spline?.controlPoints.indexOf( this );
+	}
+
+	private get shouldUpdatePredecessor () {
+		return this.index === 0 || this.index === 1;
+	}
+
+	private get shouldUpdateSuccessor () {
+		const controlPoints = this.road.spline.controlPoints;
+		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
+	}
+
+	public updatePredecessor ( rebuild = false ) {
+
+		if ( this.road.isJunction ) return;
+
+		if ( !this.shouldUpdatePredecessor ) return;
+
+		this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
+
+	}
+
+	public updateSuccessor ( rebuild = false ) {
+
+		if ( this.road.isJunction ) return;
+
+		if ( !this.shouldUpdateSuccessor ) return;
+
+		this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
 	}
 
 	show () {

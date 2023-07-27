@@ -12,6 +12,7 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
+import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvLaneSection {
 
@@ -280,15 +281,6 @@ export class TvLaneSection {
 		//
 		//     return this.lastAddedLaneIndex;
 		// }
-	}
-
-	/**
-	 * Delete lane at provided index
-	 *
-	 * @param index
-	 */
-	deleteLane ( index ) {
-		this.laneArray.splice( index, 1 );
 	}
 
 	/**
@@ -724,7 +716,7 @@ export class TvLaneSection {
 		return lane;
 	}
 
-	addLaneInstance ( newLane: TvLane, sort: boolean ): void {
+	addLaneInstance ( newLane: TvLane, sort: boolean = true ): void {
 
 		if ( this.laneMap.has( newLane.id ) ) {
 
@@ -732,15 +724,13 @@ export class TvLaneSection {
 
 			this.laneMap.clear();
 
-			for ( let i = 0; i < lanes.length; i++ ) {
-
-				const lane = lanes[ i ][ 1 ];
+			for ( let [ id, lane ] of lanes ) {
 
 				// shift left lanes
-				if ( lane.id >= newLane.id && newLane.id > 0 ) lane.setId( lane.id + 1 );
+				if ( id >= newLane.id && newLane.id > 0 ) lane.setId( lane.id + 1 );
 
 				// shift right lanes
-				if ( lane.id <= newLane.id && newLane.id < 0 ) lane.setId( lane.id - 1 );
+				if ( id <= newLane.id && newLane.id < 0 ) lane.setId( lane.id - 1 );
 
 				this.laneMap.set( lane.id, lane );
 
@@ -752,23 +742,48 @@ export class TvLaneSection {
 
 		this.lastAddedLaneIndex = newLane.id;
 
-		if ( sort ) {
+		if ( sort ) this.sortLanes();
+	}
 
-			const inDescOrder = ( a, b ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+	sortLanes () {
 
-			this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+		const inDescOrder = ( a: [ number, TvLane ], b: [ number, TvLane ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
 
-		}
+		this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+
 	}
 
 	removeLaneById ( laneId: number ) {
 
-		this.laneMap.delete( laneId );
+		this.removeLane( this.getLaneById( laneId ) );
 
-		const inDescOrder = ( a, b ) => a[ 0 ] > b[ 0 ] ? -1 : 1;
+	}
 
-		this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+	removeLane ( deletedLane: TvLane ) {
 
+		this.laneMap.delete( deletedLane.id );
+
+		const lanes = [ ...this.laneMap.entries() ];
+
+		this.laneMap.clear();
+
+		// create a new map
+		let newLaneMap = new Map<number, TvLane>();
+
+		// iterate through the old map
+		for ( let [ id, lane ] of lanes ) {
+
+			// shift left lanes
+			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
+
+			// shift right lanes
+			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
+
+			newLaneMap.set( lane.id, lane );
+
+		}
+
+		this.laneMap = newLaneMap;
 	}
 
 	updateLaneWidthValues ( lane: TvLane ): void {
@@ -778,6 +793,47 @@ export class TvLaneSection {
 		// this.length - lane.s;
 		TvUtils.computeCoefficients( lane.getLaneWidthVector(), this.length );
 
+	}
+
+	findNearestLane ( s: number, t: number, location: 'start' | 'center' | 'end' ): TvLane {
+
+		const lanes = t > 0 ? this.getLeftLanes() : this.getRightLanes();
+
+		if ( this.laneMap.has( 0 ) ) lanes.push( this.laneMap.get( 0 ) );
+
+		// we need to find the lane which is closest to the pointer
+		const THRESHOLD = 0.5;
+
+		let minDistance = Infinity
+
+		let targetLane: TvLane;
+
+		for ( const lane of lanes ) {
+
+			let laneT: number;
+
+			if ( location === 'center' ) {
+
+				laneT = this.getWidthUptoCenter( lane, s );
+
+			} else if ( location === 'end' ) {
+
+				laneT = this.getWidthUptoEnd( lane, s );
+
+			}
+
+			const distance = Math.abs( laneT - Math.abs( t ) );
+
+			// if ( this.debug ) console.log( lane.id, laneT, t, distance < THRESHOLD );
+
+			if ( distance < minDistance && distance < THRESHOLD ) {
+				minDistance = distance;
+				targetLane = lane;
+			}
+
+		}
+
+		return targetLane;
 	}
 
 	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {

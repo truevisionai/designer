@@ -11,6 +11,8 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { AutoSpline } from '../../shapes/auto-spline';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
@@ -87,10 +89,10 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 			let a2 = startPosTheta.moveForward( +distance );
 			let b2 = endPosTheta.moveForward( -distance );
 
-			if ( i == 0 ) this.points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 0, 0 ) );
-			this.points.push( new RoadControlPoint( road, arc.endV3, 'cp', 0, 0 ) );
+			this.points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+			this.points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
+			this.points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
+			this.points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
 
 			start = arc.endV3;
 
@@ -106,7 +108,7 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
 
-		if ( points.length != 13 ) throw new Error( 'Point count for circular road is incorrect' );
+		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
 
 		points.forEach( p => SceneService.add( p ) );
 
@@ -116,10 +118,10 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 			const spline = new AutoSpline( road );
 
-			spline.addControlPoint( points[ i * 3 + 0 ] );
-			spline.addControlPoint( points[ i * 3 + 1 ] );
-			spline.addControlPoint( points[ i * 3 + 2 ] );
-			spline.addControlPoint( points[ i * 3 + 3 ] );
+			spline.addControlPoint( points[ i * 4 + 0 ] );
+			spline.addControlPoint( points[ i * 4 + 1 ] );
+			spline.addControlPoint( points[ i * 4 + 2 ] );
+			spline.addControlPoint( points[ i * 4 + 3 ] );
 
 			road.spline = spline;
 
@@ -129,12 +131,18 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 			if ( ( i + 1 ) < roads.length ) {
 
-				RoadFactory.makeSuccessorConnection( roads[ i ], roads[ i + 1 ] );
+				const nextRoad = roads[ i + 1 ]
+
+				road.setSuccessor( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
+				nextRoad.setPredecessor( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
 			} else {
 
 				// its last road, so make connection with the first one
-				RoadFactory.makeSuccessorConnection( roads[ i ], roads[ 0 ] );
+				const firstRoad = roads[ 0 ];
+
+				road.setSuccessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+				firstRoad.setPredecessor( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
 			}
 

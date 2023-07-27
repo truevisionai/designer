@@ -5,6 +5,10 @@
 <div *ngIf="lane"
 	class="inspector-form-container">
 
+	<app-string-field [value]="lane.roadId"
+		[disabled]="true"
+		label="Road ID"></app-string-field>
+
 	<app-string-field [value]="lane.id"
 		[disabled]="true"
 		label="Lane ID"></app-string-field>

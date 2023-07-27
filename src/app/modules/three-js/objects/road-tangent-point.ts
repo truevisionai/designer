@@ -4,14 +4,16 @@
 
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
 import { RoadControlPoint } from './road-control-point';
+import { IHasUpdate } from '../commands/set-value-command';
+import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 
-export class RoadTangentPoint extends BaseControlPoint {
+export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
 	// public static readonly tag = 'road-tangent-point';
 
@@ -59,11 +61,21 @@ export class RoadTangentPoint extends BaseControlPoint {
 
 	}
 
-	copyPosition ( position: Vector3 ) {
+	update (): void {
 
-		super.copyPosition( position );
+		this.updateTangents();
 
-		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
+		this.controlPoint.updateTangentLine();
+
+		this.road.update();
+
+		this.updateSuccessor();
+
+		this.updatePredecessor();
+
+	}
+
+	updateTangents () {
 
 		if ( this.tag === 'tpf' && this.controlPoint.frontTangent ) {
 
@@ -111,8 +123,54 @@ export class RoadTangentPoint extends BaseControlPoint {
 
 		}
 
-		this.controlPoint.updateTangentLine();
+	}
 
+	copyPosition ( position: Vector3 ) {
+
+		super.copyPosition( position );
+
+		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
+
+		if ( this.road.spline instanceof ExplicitSpline ) {
+
+			this.road.spline.markAsSpiral( this );
+
+		}
+
+		this.update();
+
+	}
+
+	private get index () {
+		return this.road.spline?.controlPoints.indexOf( this );
+	}
+
+	private get shouldUpdatePredecessor () {
+		return this.index === 0 || this.index === 1;
+	}
+
+	private get shouldUpdateSuccessor () {
+		const controlPoints = this.road.spline.controlPoints;
+		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
+	}
+
+	private updatePredecessor () {
+
+		if ( this.road.isJunction ) return;
+
+		if ( !this.shouldUpdatePredecessor ) return;
+
+		this.road.predecessor?.update( this.road, TvContactPoint.START );
+
+	}
+
+	private updateSuccessor () {
+
+		if ( this.road.isJunction ) return;
+
+		if ( !this.shouldUpdateSuccessor ) return;
+
+		this.road.successor?.update( this.road, TvContactPoint.END );
 	}
 
 }

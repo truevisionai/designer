@@ -3,6 +3,7 @@
  */
 
 import { PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { TvObjectMarking } from '../../../modules/tv-map/models/tv-object-marking';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import * as THREE from 'three';

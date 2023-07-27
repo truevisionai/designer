@@ -77,7 +77,7 @@ export class MainFileService {
 
 	setMap ( map: TvMap ) {
 
-		SceneService.clear();
+		this.threeService.reset();
 
 		ToolManager.clear();
 
@@ -85,9 +85,9 @@ export class MainFileService {
 
 		CommandHistory.clear();
 
-		if ( this.map ) this.map.destroy();
+		this.map?.destroy();
 
-		if ( this.scenario ) this.scenario.destroy();
+		this.scenario?.destroy();
 
 		this.map = map;
 
@@ -151,9 +151,9 @@ export class MainFileService {
 
 			ToolManager.disable();
 
-			AppInspector.clear();
+			// AppInspector.clear();
 
-			CommandHistory.clear();
+			// CommandHistory.clear();
 
 			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 
@@ -163,6 +163,9 @@ export class MainFileService {
 				this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
 				SnackBar.success( 'File Saved!' );
+
+				ToolManager.enable();
+
 
 			} );
 

@@ -3,7 +3,7 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { MathUtils } from 'three';
+import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
@@ -19,8 +19,12 @@ import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { Copiable } from 'app/core/services/property-copy.service';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 
-export class TvLane implements ISelectable, Copiable {
+export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public readonly uuid: string;
 
@@ -83,12 +87,73 @@ export class TvLane implements ISelectable, Copiable {
 		}
 	}
 
-	isSelected: boolean;
-	select (): void {
-		this.isSelected = true;
+	update (): void {
+
+		RoadFactory.rebuildRoad( this.laneSection?.road );
+
+		this.laneSection?.road?.hideHelpers();
+
 	}
+
+	isSelected: boolean;
+
+	select (): void {
+
+		if ( this.isSelected ) return;
+
+		this.isSelected = true;
+
+		const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
+
+		clone.emissive.set( COLOR.RED );
+
+		this.gameObject.material = clone;
+
+	}
+
 	unselect (): void {
+
+		if ( !this.isSelected ) return;
+
 		this.isSelected = false;
+
+		( this.gameObject.material as MeshBasicMaterial )?.dispose();
+
+		this.gameObject.material = TvMapBuilder.getLaneMaterial( this.laneSection.road, this );
+
+		this.gameObject.material.needsUpdate = true;
+
+	}
+
+	highlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const orignal = this.gameObject.material as MeshStandardMaterial;
+
+		const clone = orignal.clone();
+
+		this.gameObject.material = clone;
+
+		clone.emissive.set( COLOR.GRAY );
+
+		// cache
+		this.gameObject.userData.material = orignal;
+
+	}
+
+	unhighlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
+
+		if ( !originalMaterial ) return;
+
+		this.gameObject.material = originalMaterial;
+
+		this.gameObject.material.needsUpdate = true;
+
 	}
 
 	private _roadId: number;
@@ -113,6 +178,14 @@ export class TvLane implements ISelectable, Copiable {
 
 	get side (): TvLaneSide {
 		return this._side;
+	}
+
+	get isLeft (): boolean {
+		return this._side === TvLaneSide.LEFT;
+	}
+
+	get isRight (): boolean {
+		return this._side === TvLaneSide.RIGHT;
 	}
 
 	set side ( value ) {
@@ -285,6 +358,10 @@ export class TvLane implements ISelectable, Copiable {
 
 	get id (): number {
 		return Number( this.attr_id );
+	}
+
+	set id ( value: number ) {
+		this.attr_id = value;
 	}
 
 	get type (): TvLaneType {
@@ -1259,5 +1336,84 @@ export class TvLane implements ISelectable, Copiable {
 			level: this.level,
 		}
 	}
+
+	getReferenceLinePoints ( location: 'start' | 'center' | 'end' ) {
+
+		const points = [];
+
+		const offset = this.side === TvLaneSide.LEFT ? 1 : -1;
+
+		let t = 0;
+
+		for ( let s = this.laneSection.s; s < this.laneSection.endS; s++ ) {
+
+			if ( location === 'center' ) {
+
+				t = this.laneSection.getWidthUptoCenter( this, s - this.laneSection.s );
+
+			} else if ( location === 'end' ) {
+
+				t = this.laneSection.getWidthUptoEnd( this, s - this.laneSection.s );
+
+			}
+
+			points.push( this.laneSection.road.getRoadCoordAt( s, t * offset ) );
+
+		}
+
+		return points;
+	}
+
+	get otherLanes () {
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			return this.laneSection.getRightLanes()
+
+		} else {
+
+			return this.laneSection.getLeftLanes();
+		}
+
+	}
+
+	isLastDrivingLane (): boolean {
+
+		const lanesIds = this.otherLanes
+			.filter( lane => lane.type === TvLaneType.driving )
+			.map( lane => lane.id );
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			return Math.min( ...lanesIds ) === this.id;
+
+		} else {
+
+			return Math.max( ...lanesIds ) == this.id;
+
+		}
+
+	}
+
+	isLastLane (): boolean {
+
+		const lanesIds = this.otherLanes.map( lane => lane.id );
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			const lastLaneId = Math.min( ...lanesIds );
+
+			return lastLaneId == this.id;
+
+		} else {
+
+			const lastLaneId = Math.max( ...lanesIds );
+
+			return lastLaneId == this.id;
+
+		}
+
+	}
+
 }
 

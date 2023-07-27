@@ -65,6 +65,8 @@ export class SceneService {
 
 	static add ( object: Object3D, raycasting: boolean = true ): void {
 
+		if ( object == null ) return;
+
 		this.scene.add( object );
 
 		if ( raycasting ) this.objects.push( object );
@@ -141,6 +143,8 @@ export class SceneService {
 	}
 
 	static removeWithChildren ( object: Object3D, raycasting: boolean = false ) {
+
+		if ( !object ) return;
 
 		while ( object.children.length > 0 ) {
 
