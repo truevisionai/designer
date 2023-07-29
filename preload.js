@@ -52,3 +52,21 @@ contextBridge.exposeInMainWorld( 'menus', {
 		} );
 	}
 } )
+
+
+var child = require( 'child_process' ).exec;
+
+var executablePath = "/home/himanshu/Downloads/esmini-bin_Linux/esmini/bin/odrviewer --window 60 60 800 400 --odr ~/Documents/Truevision/Roads/t-intersection.xodr";
+
+function run () {
+	child( executablePath, function ( err, data ) {
+		console.log( err )
+		console.log( data.toString() );
+	} )
+}
+
+// not in use for testing
+contextBridge.exposeInMainWorld( 'command', {
+	execute: () => run()
+} )
+

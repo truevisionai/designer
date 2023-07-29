@@ -5,6 +5,7 @@
 import { Component } from '@angular/core';
 import { PlayerService } from '../../../core/player.service';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -23,12 +24,16 @@ export class PlayerBarComponent {
 
 	constructor (
 		private playerService: PlayerService,
-		private scenarioViewerService: ScenarioViewerService
+		private scenarioViewerService: ScenarioViewerService,
+		private electronService: TvElectronService
 	) {
 	}
 
 
 	playSimulation () {
+
+		// ./bin/odrviewer --window 60 60 800 400 --odr ~/Documents/Truevision/Roads/t-intersection.xodr
+		this.electronService.runEsmini();
 
 		if ( this.isPlaying ) return;
 

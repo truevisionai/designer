@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 
 declare const window: any;
 declare const versions: any;
+declare const command: any;
 
 @Injectable( { providedIn: 'root' } )
 export class TvElectronService {
@@ -105,6 +106,10 @@ export class TvElectronService {
 
 		this.remote.shell.openExternal( link );
 
+	}
+
+	runEsmini() {
+		command.execute();
 	}
 
 
