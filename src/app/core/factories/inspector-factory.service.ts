@@ -19,6 +19,8 @@ import { AppInspector } from '../inspector';
 import { Metadata, MetaImporter } from '../models/metadata.model';
 import { XodrFileInspectorComponent } from 'app/views/inspectors/xodr-file-inspector/xodr-file-inspector.component';
 import { XoscFileInspectorComponent } from 'app/views/inspectors/xosc-file-inspector/xosc-file-inspector.component';
+import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
+import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -56,6 +58,14 @@ export class InspectorFactoryService {
 		let inspector: Type<IComponent>;
 
 		switch ( extension ) {
+
+			case 'prefab':
+				inspector = PrefabInspectorComponent;
+				break;
+
+			case 'geometry':
+				inspector = GeometryInspectorComponent;
+				break;
 
 			case 'obj':
 				inspector = PropModelInspectorComponent;

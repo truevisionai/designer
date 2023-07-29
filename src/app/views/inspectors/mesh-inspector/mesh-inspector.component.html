@@ -1,0 +1,5 @@
+<app-material-field *ngFor="let guid of materials; let index = index"
+	(changed)="onMaterialChanged($event, guid)"
+	[guid]="guid"
+	label="Material {{index}}">
+</app-material-field>

@@ -61,11 +61,11 @@ export class MetadataFactory {
 	}
 
 
-	static createMetadata ( fileName: string, ext: string, path: string ): Metadata {
+	static createMetadata ( fileName: string, ext: string, path: string, gguid?: string ): Metadata {
 
 		const extension = ext || FileService.getExtension( path );
 
-		const guid = THREE.MathUtils.generateUUID();
+		const guid = gguid || THREE.MathUtils.generateUUID();
 
 		let metadata: Metadata;
 
@@ -114,6 +114,14 @@ export class MetadataFactory {
 
 			case 'material':
 				metadata = this.createMaterialMetadata( fileName, guid, path );
+				break;
+
+			case 'geometry':
+				metadata = this.createGeometryMetadata( fileName, guid, path );
+				break;
+
+			case 'prefab':
+				metadata = this.createPrefabMetadata( fileName, guid, path );
 				break;
 
 			case 'sign':
@@ -240,6 +248,28 @@ export class MetadataFactory {
 		return {
 			guid: guid,
 			importer: MetaImporter.MATERIAL,
+			data: {},
+			path: path,
+		};
+
+	}
+
+	static createGeometryMetadata ( name: string, guid: string, path: string ) {
+
+		return {
+			guid: guid,
+			importer: MetaImporter.GEOMETRY,
+			data: {},
+			path: path,
+		};
+
+	}
+
+	static createPrefabMetadata ( name: string, guid: string, path: string ) {
+
+		return {
+			guid: guid,
+			importer: MetaImporter.PREFAB,
 			data: {},
 			path: path,
 		};

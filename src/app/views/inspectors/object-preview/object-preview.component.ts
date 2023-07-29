@@ -85,6 +85,12 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
 
+		this.camera.position.set( 0, 5, 10 );
+
+		this.camera.up.set( 0, 0, 1 );
+
+		this.camera.updateProjectionMatrix();
+
 		this.addDirectionLight();
 
 	}

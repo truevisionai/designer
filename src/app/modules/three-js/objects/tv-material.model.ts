@@ -3,7 +3,7 @@
  */
 
 import { AppService } from 'app/core/services/app.service';
-import { MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
+import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {
 
@@ -13,8 +13,7 @@ export class TvMaterial extends MeshStandardMaterial {
 	public aoMapGuid: string;
 	public displacementMapGuid: string;
 
-
-	constructor ( public guid: string, parameters?: MeshStandardMaterialParameters ) {
+	constructor ( public guid: string = MathUtils.generateUUID(), parameters?: MeshStandardMaterialParameters ) {
 		super( parameters );
 	}
 
@@ -38,7 +37,7 @@ export class TvMaterial extends MeshStandardMaterial {
 
 		}
 
-		var material = new TvMaterial( MathUtils.generateUUID() );
+		var material = new TvMaterial( json?.guid );
 
 		if ( json.uuid !== undefined ) material.uuid = json.uuid;
 		if ( json.name !== undefined ) material.name = json.name;
@@ -152,7 +151,23 @@ export class TvMaterial extends MeshStandardMaterial {
 		return material;
 	}
 
-	toJSON ( meta?: any ): any {
+	toJSON ( meta?: any ) {
+
+		const data = super.toJSON( meta );
+
+		// standard Material serialization
+		if ( this.guid ) data.guid = this.guid;
+		if ( this.mapGuid ) data.mapGuid = this.mapGuid;
+		if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
+		if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
+		if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
+		if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
+
+		return data;
+
+	}
+
+	toJSONs ( meta?: any ): any {
 
 		var isRoot = ( meta === undefined || typeof meta === 'string' );
 
@@ -170,6 +185,13 @@ export class TvMaterial extends MeshStandardMaterial {
 		};
 
 		// standard Material serialization
+		if ( this.guid ) data.guid = this.guid;
+		if ( this.mapGuid ) data.mapGuid = this.mapGuid;
+		if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
+		if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
+		if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
+		if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
+
 		data.uuid = this.uuid;
 		data.type = this.type;
 
@@ -188,15 +210,6 @@ export class TvMaterial extends MeshStandardMaterial {
 		// if ( this.clearCoat !== undefined ) data.clearCoat = this.clearCoat;
 		// if ( this.clearCoatRoughness !== undefined ) data.clearCoatRoughness = this.clearCoatRoughness;
 
-		if ( this.mapGuid ) data.mapGuid = this.mapGuid;
-
-		if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
-
-		if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
-
-		if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
-
-		if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
 
 		// if ( this.alphaMap && this.alphaMap.isTexture ) data.alphaMap = this.alphaMap.toJSON( meta ).uuid;
 		// if ( this.lightMap && this.lightMap.isTexture ) data.lightMap = this.lightMap.toJSON( meta ).uuid;
@@ -332,6 +345,12 @@ export class TvMaterial extends MeshStandardMaterial {
 	toJSONString (): string {
 
 		return JSON.stringify( this.toJSON(), null, 2 );
+
+	}
+
+	static fromMaterial ( guid: string, material: Material ): TvMaterial {
+
+		return new TvMaterial( guid, material );
 
 	}
 }

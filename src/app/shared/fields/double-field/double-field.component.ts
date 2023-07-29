@@ -79,7 +79,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 		if ( Number.isNaN( this.value ) ) this.value = 0;
 
-		this.value = Maths.clamp( this.value, this.min, this.max );
+		this.value = Maths.clamp( this.value, this.min, this.max ).toFixed( 3 );
 
 		// this helps avoid sending update event in every scroll
 

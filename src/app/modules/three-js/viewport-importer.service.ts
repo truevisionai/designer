@@ -17,8 +17,13 @@ import { MainFileService } from 'app/services/main-file.service';
 import { PropManager } from 'app/services/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Vector3 } from 'three';
+import { Box3, BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
+import { TvMesh } from './objects/tv-prefab.model';
+import { SceneService } from 'app/core/services/scene.service';
+import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
+import { CoordinateSystem } from 'app/services/exporter.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -46,6 +51,14 @@ export class ViewportImporterService {
 
 			case FileExtension.OPENSCENARIO:
 				this.importerService.importOpenScenario( data.path );
+				break;
+
+			case FileExtension.PREFAB:
+				this.importPrefab( data.path, filename, position, metadata );
+				break;
+
+			case 'geometry':
+				this.importGeometry( data.path, filename, position, metadata );
 				break;
 
 			case 'gltf':
@@ -82,6 +95,51 @@ export class ViewportImporterService {
 				break;
 		}
 
+	}
+
+	importGeometry ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
+
+		const geometry = AssetDatabase.getInstance<BufferGeometry>( metadata.guid );
+
+		const model = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.MAGENTA } ) );
+
+		model.position.copy( position );
+
+		// const box = new Box3().setFromObject( model );
+
+		// const size = box.getSize( new Vector3() );
+
+		// const center = box.getCenter( new Vector3() );
+
+		// clone.position.sub( center );
+
+		// clone.position.z = position.z + ( size.z / 2 );
+
+		SceneService.add( model );
+
+	}
+
+	importPrefab ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
+
+		const prefab = AssetDatabase.getInstance<TvMesh>( metadata.guid );
+
+		if ( !prefab ) return;
+
+		const clone = prefab.clone();
+
+		clone.position.copy( position );
+
+		// const box = new Box3().setFromObject( clone );
+
+		// const size = box.getSize( new Vector3() );
+
+		// const center = box.getCenter( new Vector3() );
+
+		// clone.position.sub( center );
+
+		// clone.position.z = position.z + ( size.z / 2 );
+
+		SceneService.add( clone );
 	}
 
 	importOpenDrive ( path: string ) {

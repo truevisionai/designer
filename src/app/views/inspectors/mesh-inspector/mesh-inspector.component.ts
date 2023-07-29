@@ -1,0 +1,38 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { TvMesh } from 'app/modules/three-js/objects/tv-prefab.model';
+
+@Component( {
+	selector: 'app-mesh-inspector',
+	templateUrl: './mesh-inspector.component.html',
+	styleUrls: [ './mesh-inspector.component.scss' ]
+} )
+export class MeshInspectorComponent implements OnInit {
+
+	@Input() mesh: TvMesh;
+
+	constructor () { }
+
+	ngOnInit () {
+
+		console.log( this.mesh.material );
+		console.log( this.mesh.materialGuid );
+
+	}
+
+	get materials (): string[] {
+
+		if ( this.mesh?.materialGuid instanceof Array ) {
+
+			return this.mesh?.materialGuid;
+
+		} else {
+
+			return [ this.mesh?.materialGuid ];
+		}
+	}
+
+	onMaterialChanged ( $event, $guid ) {
+
+
+	}
+}
