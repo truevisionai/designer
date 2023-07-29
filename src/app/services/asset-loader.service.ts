@@ -26,6 +26,7 @@ import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
 import { TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
+import { Debug } from 'app/core/utils/debug';
 
 @Injectable( {
 	providedIn: 'root'
@@ -239,12 +240,17 @@ export class AssetLoaderService {
 
 				const contents = await this.fileService.readAsync( meta.path )
 
-				// const material = TvMaterial.parseJSON( JSON.parse( contents ) );
 				const material = materialLoader.parseMaterial( JSON.parse( contents ) );
 
 				if ( material.guid != meta.guid ) {
 
-					console.error( 'material guid mismatch', meta.guid, material.guid );
+					Debug.log( 'material guid mismatch', meta.guid, material.guid );
+
+					material.guid = material.uuid = meta.guid;
+
+					AssetFactory.updateMaterial( meta.path, material );
+
+					AssetDatabase.setInstance( meta.guid, material );
 
 				} else {
 
@@ -314,8 +320,17 @@ export class AssetLoaderService {
 				const prefab = loader.parsePrefab( JSON.parse( contents ) );
 
 				if ( prefab.guid != meta.guid ) {
+
 					console.error( 'Prefab guid mismatch', meta.guid, prefab.guid );
+
+					prefab.guid = prefab.uuid = meta.guid;
+
+					AssetFactory.updatePrefab( meta.path, prefab );
+
+					AssetDatabase.setInstance( meta.guid, prefab );
+
 				} else {
+
 					AssetDatabase.setInstance( meta.guid, prefab );
 				}
 			}
