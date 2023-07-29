@@ -14,11 +14,11 @@ export class FileHeader {
 
 	// TODO: add license array
 	constructor (
-		revMajor: number = 0,
-		revMinor: number = 0,
-		date: string = '',
+		revMajor: number = 1,
+		revMinor: number = 2,
+		date: string = new Date().toISOString(),
 		description: string = '',
-		author: string = ''
+		author: string = '@truevision'
 	) {
 
 		this.revMajor = revMajor;
