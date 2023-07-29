@@ -55,6 +55,7 @@ contextBridge.exposeInMainWorld( 'menus', {
 
 
 var child = require( 'child_process' ).exec;
+var spawn = require( 'child_process' ).spawn;
 
 var binPath = null;
 var scenarioPath = null;
@@ -68,5 +69,23 @@ contextBridge.exposeInMainWorld( 'command', {
 		console.log( err )
 		console.log( data.toString() );
 	} ),
+	spawn: ( exec, args, out, err, close ) => {
+
+		var cmd = spawn( exec, args );
+
+		cmd.stdout.on( 'data', function ( data ) {
+			out( data.toString() );
+		} );
+
+		cmd.stderr.on( 'data', function ( data ) {
+			err( data.toString() );
+		} )
+
+		cmd.on( 'close', function ( code ) {
+			close( code );
+		} )
+
+		return cmd;
+	}
 } )
 
