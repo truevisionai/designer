@@ -134,6 +134,12 @@ export class MenuBarComponent implements OnInit {
 					key: 'esmini_path',
 					type: 'text',
 					value: this.editorService.settings.esminiPath
+				},
+				{
+					name: 'OdrViewer Path',
+					key: 'odrviewer_path',
+					type: 'text',
+					value: this.editorService.settings.odrViewerPath
 				}
 			]
 		}
@@ -141,6 +147,7 @@ export class MenuBarComponent implements OnInit {
 		this.inputDialogService.open( settings.title, settings.fields ).subscribe( result => {
 			if ( result ) {
 				this.editorService.settings.esminiPath = result.esmini_path;
+				this.editorService.settings.odrViewerPath = result.odrviewer_path;
 			}
 		} )
 

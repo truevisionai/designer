@@ -71,6 +71,14 @@ export class EditorSettings {
 		localStorage.setItem( 'esminiPath', value );
 	}
 
+	get odrViewerPath (): string {
+		return localStorage.getItem( 'odrViewerPath' );
+	}
+
+	set odrViewerPath ( value ) {
+		localStorage.setItem( 'odrViewerPath', value );
+	}
+
 }
 
 

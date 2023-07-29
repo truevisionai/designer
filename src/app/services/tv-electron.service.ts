@@ -108,11 +108,17 @@ export class TvElectronService {
 
 	}
 
-	runEsmini ( binPath: string, scenarioPath: string ) {
+	/**
+	 * @param exec
+	 * @param args
+	 * @param out
+	 * @param err
+	 * @param close
+	 * @returns
+	 */
+	spawn ( exec: string, args: string[], out: Function, err: Function, close: Function ): any {
 
-		command.setBinPath( binPath );
-		command.setScenarioPath( scenarioPath );
-		command.execute();
+		return command.spawn( exec, args, out, err, close );
 
 	}
 

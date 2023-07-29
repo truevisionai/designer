@@ -7,6 +7,7 @@ import { PlayerService } from '../../../core/player.service';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from 'app/core/services/editor.service';
+import { EsminiPlayerService } from 'app/core/esmini-player.service';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -28,11 +29,17 @@ export class PlayerBarComponent {
 		private scenarioViewerService: ScenarioViewerService,
 		private electronService: TvElectronService,
 		private editor: EditorService,
+		private esminiPlayerService: EsminiPlayerService,
 	) {
 	}
 
 
 	playSimulation () {
+
+		if ( this.esminiPlayerService.isEnabled ) {
+			this.esminiPlayerService.playSimulation();
+			return;
+		}
 
 		if ( this.isPlaying ) return;
 

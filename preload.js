@@ -54,21 +54,19 @@ contextBridge.exposeInMainWorld( 'menus', {
 } )
 
 
-var child = require( 'child_process' ).exec;
+// var child = require( 'child_process' ).exec;
 var spawn = require( 'child_process' ).spawn;
 
-var binPath = null;
-var scenarioPath = null;
-var command = binPath + " --window 60 60 800 400" + " --odr " + scenarioPath;
-
-// not in use for testing
+// var binPath = null;
+// var scenarioPath = null;
+// var command = binPath + " --window 60 60 800 400" + " --odr " + scenarioPath;
 contextBridge.exposeInMainWorld( 'command', {
-	setBinPath: ( value ) => binPath = value,
-	setScenarioPath: ( value ) => scenarioPath = value,
-	execute: () => child( command, function ( err, data ) {
-		console.log( err )
-		console.log( data.toString() );
-	} ),
+	// setBinPath: ( value ) => binPath = value,
+	// setScenarioPath: ( value ) => scenarioPath = value,
+	// execute: () => child( command, function ( err, data ) {
+	// 	console.log( err )
+	// 	console.log( data.toString() );
+	// } ),
 	spawn: ( exec, args, out, err, close ) => {
 
 		var cmd = spawn( exec, args );
