@@ -94,6 +94,8 @@ import { BooleanFieldComponent } from './fields/boolean-field/boolean-field.comp
 import { Vector3FieldComponent } from './fields/vector3-field/vector3-field.component';
 import { DoubleInputComponent } from './fields/double-input/double-input.component';
 import { ButtonFieldComponent } from './fields/button-field/button-field.component';
+import { AppInputDialogComponent } from './dialogs/app-input-dialog/app-input-dialog.component';
+import { AppInputDialogService } from './dialogs/app-input-dialog/app-input-dialog-service';
 
 /*
   Only Required if you want to use Angular Landing
@@ -147,6 +149,7 @@ const classesToInclude = [
 	SelectEntityFieldComponent,
 	PropBrowserComponent,
 	RoadIdFieldComponent,
+	AppInputDialogComponent,
 
 	// Material
 
@@ -196,6 +199,7 @@ const classesToInclude = [
 	entryComponents: [
 		AppComfirmComponent,
 		AppLoaderComponent,
+		AppInputDialogComponent,
 		ImportFileDialogComponent
 	],
 	providers: [
@@ -204,7 +208,8 @@ const classesToInclude = [
 		RoutePartsService,
 		AuthGuard,
 		AppConfirmService,
-		AppLoaderService
+		AppLoaderService,
+		AppInputDialogService,
 		// LandingPageService
 	],
 	declarations: [

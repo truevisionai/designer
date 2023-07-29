@@ -14,7 +14,8 @@ export class EditorService {
 
 	constructor (
 		private shortcutService: ShortcutService,
-		private mainFileService: MainFileService
+		private mainFileService: MainFileService,
+		public settings: EditorSettings
 	) {
 	}
 
@@ -54,3 +55,22 @@ export class EditorService {
 	}
 
 }
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class EditorSettings {
+
+	constructor () { }
+
+	get esminiPath (): string {
+		return localStorage.getItem( 'esminiPath' );
+	}
+
+	set esminiPath ( value ) {
+		localStorage.setItem( 'esminiPath', value );
+	}
+
+}
+
+

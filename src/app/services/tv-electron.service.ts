@@ -108,8 +108,12 @@ export class TvElectronService {
 
 	}
 
-	runEsmini() {
+	runEsmini ( binPath: string, scenarioPath: string ) {
+
+		command.setBinPath( binPath );
+		command.setScenarioPath( scenarioPath );
 		command.execute();
+
 	}
 
 
