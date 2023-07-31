@@ -67,15 +67,15 @@ export class AddVehicleCommand extends BaseCommand {
 
 		const story = this.scenario.createStory( this.entity );
 
-		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10, Rule.greater_than ) );
+		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10, Rule.GreaterThan ) );
 
-		const act = story.addNewAct( `Story-${ MathUtils.generateUUID() }` );
+		const act = story.addNewAct( `Story-${ MathUtils.randInt( 1, 100 ) }` );
 
-		const sequence = act.addNewSequence( `Sequence-${ MathUtils.generateUUID() }` + act.name, 1, this.entity.name );
+		const sequence = act.addNewSequence( `Sequence-${ MathUtils.randInt( 1, 100 ) }` + act.name, 1, this.entity.name );
 
-		act.addStartCondition( new SimulationTimeCondition( 2, Rule.greater_than ) );
+		act.addStartCondition( new SimulationTimeCondition( 2, Rule.GreaterThan ) );
 
-		const maneuver = sequence.addNewManeuver( `Maneuver-${ MathUtils.generateUUID() }` );
+		const maneuver = sequence.addNewManeuver( `Maneuver-${ MathUtils.randInt( 1, 100 ) }` );
 
 		// const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
 

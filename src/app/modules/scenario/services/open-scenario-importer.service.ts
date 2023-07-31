@@ -72,7 +72,7 @@ import {
 	DirectionDimension,
 	DynamicsDimension,
 	DynamicsShape,
-	LateralPurpose,
+	TrajectoryFollowingMode,
 	ParameterType,
 	RelativeDistanceType,
 	RoutingAlgorithm,
@@ -119,35 +119,35 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	static readRule ( rule: string ): Rule {
 
-		if ( rule === 'greater_than' || 'greaterThan' ) {
+		if ( rule === 'greater_than' || rule === 'greaterThan' ) {
 
-			return Rule.greater_than;
+			return Rule.GreaterThan;
 
-		} else if ( rule === 'less_than' || 'lessThan' ) {
+		} else if ( rule === 'less_than' || rule === 'lessThan' ) {
 
-			return Rule.less_than;
+			return Rule.LessThan;
 
-		} else if ( rule === 'equal_to' || 'equalTo' ) {
+		} else if ( rule === 'equal_to' || rule === 'equalTo' ) {
 
-			return Rule.equal_to;
+			return Rule.EqualTo;
 
-		} else if ( rule === 'greater_or_equal' || 'greaterOrEqual' ) {
+		} else if ( rule === 'greater_or_equal' || rule === 'greaterOrEqual' ) {
 
-			return Rule.greater_or_equal;
+			return Rule.GreaterOrEqual;
 
-		} else if ( rule === 'less_or_equal' || 'lessOrEqual' ) {
+		} else if ( rule === 'less_or_equal' || rule === 'lessOrEqual' ) {
 
-			return Rule.less_or_equal;
+			return Rule.LessOrEqual;
 
-		} else if ( rule === 'not_equal_to' || 'notEqualTo' ) {
+		} else if ( rule === 'not_equal_to' || rule === 'notEqualTo' ) {
 
-			return Rule.not_equal_to;
+			return Rule.NotEqualTo;
 
 		} else {
 
 			TvConsole.warn( 'unknown rule ' + rule );
 
-			return Rule.greater_or_equal;
+			return Rule.GreaterOrEqual;
 
 		}
 	}
@@ -405,7 +405,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			condition.label = name ? name : '';
 			condition.delay = delay ? delay : 0;
-			condition.edge = edge ? edge : ConditionEdge.risingOrFalling;
+			condition.edge = edge ? edge : ConditionEdge.rising;
 
 		}
 
@@ -975,10 +975,15 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readSequence ( xml: XmlElement ): ManeuverGroup {
 
-		const maneuverGroup = new ManeuverGroup;
+		const name = xml.attr_name;
+		const numberOfExecutions = parseFloat( xml.attr_numberOfExecutions || xml.attr_maximumExecutionCount );
 
-		maneuverGroup.name = xml.attr_name;
-		maneuverGroup.numberOfExecutions = parseFloat( xml.attr_numberOfExecutions );
+		const maneuverGroup = new ManeuverGroup( name, numberOfExecutions );
+
+		// for 1.0 and above
+		if ( xml.Actors?.attr_selectTriggeringEntities == 'true' ) {
+			maneuverGroup.selectTriggeringEntities = true;
+		}
 
 		// support for 0.9
 		readXmlArray( xml.Actors?.Entity, ( xml ) => {
@@ -1021,10 +1026,10 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readEvent ( xml: XmlElement ): TvEvent {
 
-		const event = new TvEvent;
+		const name = xml.attr_name;
+		const priority = xml.attr_priority;
 
-		event.name = xml.attr_name;
-		event.priority = xml.attr_priority;
+		const event = new TvEvent( name, priority );
 
 		readXmlArray( xml.Action, ( xml ) => {
 
@@ -1275,8 +1280,8 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		let action = new FollowTrajectoryAction( trajectory );
 
-		action.lateralPurpose = xml.Lateral?.attr_purpose || LateralPurpose.position;
-		action.longitudinalPurpose = this.readTimeReference( xml.Longitudinal || xml.TimeReference );
+		action.trajectoryFollowingMode = xml.Lateral?.attr_purpose || TrajectoryFollowingMode.position;
+		action.timeReference = this.readTimeReference( xml.Longitudinal || xml.TimeReference );
 
 		action;
 
@@ -1527,9 +1532,8 @@ export class OpenScenarioImporter extends AbstractReader {
 		if ( xml.AbsoluteTargetSpeed ) {
 
 			const value = parseFloat( xml.AbsoluteTargetSpeed.attr_value || 0 );
-			const entityRef: string = xml.AbsoluteTargetSpeed.attr_entityRef;
 
-			return new RelativeTarget( entityRef, value );
+			return new AbsoluteTarget( value );
 
 		} else if ( xml.RelativeTargetSpeed ) {
 
@@ -1872,14 +1876,14 @@ export class OpenScenarioImporter extends AbstractReader {
 	public static readRelativeDistanceCondition ( xml: XmlElement ): RelativeDistanceCondition {
 
 		const entityRef: string = xml?.attr_entity || xml?.attr_entityRef;
-		const relativeDistanceType = this.readRelativeDistanceType( xml?.attr_type || xml?.relativeDistanceType );
+		const relativeDistanceType = this.readRelativeDistanceType( xml?.attr_type || xml?.attr_relativeDistanceType );
 		const value = parseFloat( xml?.attr_value || 0 );
 		const freespace = xml?.attr_freespace == 'true';
 		const rule = this.readRule( xml.attr_rule );
 		const coordinateSystem = this.readCoordinateSystem( xml?.attr_coordinateSystem );
 		const routingAlgorithm = this.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
 
-		return new RelativeDistanceCondition( entityRef, relativeDistanceType, value, freespace, rule, coordinateSystem, routingAlgorithm );
+		return new RelativeDistanceCondition( entityRef, value, relativeDistanceType, freespace, rule, coordinateSystem, routingAlgorithm );
 	}
 
 	public static readTimeHeadwayCondition ( xml: XmlElement ): TimeHeadwayCondition {

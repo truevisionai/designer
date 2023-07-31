@@ -12,9 +12,11 @@ import { Orientation } from '../tv-orientation';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { OpenDriveProperties } from './open-drive-properties';
+import { ScenarioObjectType } from '../tv-enums';
 
 export abstract class ScenarioEntity extends GameObject {
 
+	public abstract scenarioObjectType: ScenarioObjectType;
 	public parameterDeclarations: ParameterDeclaration[] = [];
 	public controller: AbstractController;
 	public properties: TvProperty[] = [];

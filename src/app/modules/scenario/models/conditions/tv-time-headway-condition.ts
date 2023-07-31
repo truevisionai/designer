@@ -18,7 +18,7 @@ export class TimeHeadwayCondition extends EntityCondition {
 	public label: string = 'TimeHeadwayCondition';
 
 	/**
-	 * @param targetEntity reference entity to which the time headway is computed
+	 * @param entityRef reference entity to which the time headway is computed
 	 * @param value The time headway value. Unit: s; Range: [0..inf[.
 	 * @param freespace True: time headway is measured using the distance between closest bounding box points.
 	 * 					False: reference point distance is used.
@@ -30,7 +30,7 @@ export class TimeHeadwayCondition extends EntityCondition {
 	 * @param routingAlgorithm
 	 */
 	constructor (
-		public targetEntity: string,
+		public entityRef: string,
 		public value: number,
 		public freespace: boolean,
 		public alongRoute: boolean,
@@ -75,8 +75,8 @@ export class TimeHeadwayCondition extends EntityCondition {
 		const entitySpeed = this.getEntitySpeed( entityName );
 		const entityPosition = this.getEntityPosition( entityName );
 
-		const targetEntitySpeed = this.getEntitySpeed( this.targetEntity );
-		const targetEntityPosition = this.getEntityPosition( this.targetEntity );
+		const targetEntitySpeed = this.getEntitySpeed( this.entityRef );
+		const targetEntityPosition = this.getEntityPosition( this.entityRef );
 
 		let distance: number;
 
@@ -111,7 +111,7 @@ export class TimeHeadwayCondition extends EntityCondition {
 
 	setTargetEntity ( $targetEntity: string ) {
 
-		this.targetEntity = $targetEntity;
+		this.entityRef = $targetEntity;
 
 	}
 

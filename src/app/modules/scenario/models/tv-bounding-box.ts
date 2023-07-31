@@ -6,7 +6,7 @@ import { Vector3 } from 'three';
 
 export class TvDimension {
 
-	constructor ( public width: number = 0, public height: number = 0, public depth: number = 0 ) {
+	constructor ( public width: number = 0, public length: number = 0, public height: number = 0 ) {
 
 	}
 
@@ -22,7 +22,12 @@ export class TvBoundingBox {
 
 export class TvPerformance {
 
-	constructor ( public maxSpeed: number, public maxAcceleration: number, public maxDeceleration: number, public mass?: number ) {
+	constructor (
+		public maxSpeed: number,
+		public maxAcceleration: number,
+		public maxDeceleration: number,
+		public mass?: number
+	) {
 
 	}
 

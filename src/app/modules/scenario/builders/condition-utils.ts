@@ -13,15 +13,15 @@ export class ConditionUtils {
 
 		switch ( rule ) {
 
-			case Rule.greater_than:
+			case Rule.GreaterThan:
 				return hasPassed = left > right;
 				break;
 
-			case Rule.less_than:
+			case Rule.LessThan:
 				return hasPassed = left < right;
 				break;
 
-			case Rule.equal_to:
+			case Rule.EqualTo:
 				return hasPassed = left == right;
 				break;
 

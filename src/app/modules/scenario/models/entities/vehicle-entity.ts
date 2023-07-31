@@ -25,7 +25,7 @@ export class VehicleEntity extends ScenarioEntity {
 
 	static getNewName ( name = 'Vehicle' ) {
 
-		return `${ name }${ MathUtils.generateUUID().substring( 0, 4 ) }`;
+		return `${ name }${ MathUtils.randInt( 1, 100 ) }`;
 
 	}
 }

@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
-import { PositionType } from '../tv-enums';
+import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class LanePosition extends Position {
@@ -46,13 +46,17 @@ export class LanePosition extends Position {
 
 	}
 
-	toXML () {
+	toXML ( version: OpenScenarioVersion ) {
+
+		const key = version == OpenScenarioVersion.v0_9 ? 'Lane' : 'LanePosition';
+
 		return {
-			Lane: {
+			[ key ]: {
 				attr_roadId: this.roadId,
 				attr_laneId: this.laneId,
 				attr_s: this.sCoordinate,
 				attr_offset: this.offset ? this.offset : 0,
+				Orientation: this.orientation?.toXML( version )
 			}
 		};
 	}

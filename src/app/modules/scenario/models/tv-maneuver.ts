@@ -41,7 +41,7 @@ export class Maneuver {
 
 	}
 
-	addNewEvent ( name: string, priority: string ) {
+	addNewEvent ( name: string, priority: string = 'overwrite' ) {
 
 		// const hasName = ScenarioInstance.db.has_event( name );
 

@@ -41,11 +41,11 @@ export class ScenarioBuilder {
 
 			story.acts.forEach( ( act ) => {
 
-				const ownerName = story.getParameterValue<string>( '$owner' );
+				const ownerName = story.getParameterValue<string>( 'owner' );
 
-				act.sequences.forEach( ( sequence ) => {
+				act.maneueverGroups.forEach( ( sequence ) => {
 
-					const index = sequence.actors.findIndex( actor => actor === '$owner' );
+					const index = sequence.actors.findIndex( actor => actor === 'owner' );
 
 					if ( index >= 0 ) sequence.actors[ index ] = ownerName;
 
@@ -55,11 +55,11 @@ export class ScenarioBuilder {
 
 							event.actions.forEach( ( action ) => {
 
-								this.replaceVariablesHelper( action, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
+								this.replaceVariablesHelper( action, new Map<string, any>( [ [ 'owner', ownerName ] ] ) );
 
 								if ( action instanceof LaneChangeAction || action instanceof SpeedAction ) {
 
-									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
+									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ 'owner', ownerName ] ] ) );
 
 								}
 
@@ -67,7 +67,7 @@ export class ScenarioBuilder {
 
 							event.startConditions.filter( c => c instanceof EntityCondition ).forEach( ( condition: EntityCondition ) => {
 
-								const index = condition.triggeringEntities.findIndex( entity => entity === '$owner' );
+								const index = condition.triggeringEntities.findIndex( entity => entity === 'owner' );
 
 								if ( index >= 0 ) condition.triggeringEntities[ index ] = ownerName;
 

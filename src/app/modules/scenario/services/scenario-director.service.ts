@@ -198,7 +198,7 @@ export class ScenarioDirectorService {
 
 		if ( this.logEvents ) console.info( 'running-act', act.name );
 
-		act.sequences.forEach( sequence => {
+		act.maneueverGroups.forEach( sequence => {
 
 			this.updateSequence( sequence );
 
