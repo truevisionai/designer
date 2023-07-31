@@ -24,6 +24,10 @@ import { TvElectronService } from './tv-electron.service';
 import { cloneDeep } from 'lodash';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvConsole } from 'app/core/utils/console';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { WriterService } from 'app/modules/scenario/services/tv-writer.service';
+import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
 export enum CoordinateSystem {
 	THREE_JS,
@@ -41,7 +45,8 @@ export class ExporterService {
 		private odService: TvMapService,
 		private fileService: FileService,
 		private electron: TvElectronService,
-		private sceneExporter: SceneExporterService
+		private sceneExporter: SceneExporterService,
+		private scenarioWriter: WriterService
 	) {
 	}
 
@@ -59,6 +64,22 @@ export class ExporterService {
 		this.clearTool();
 
 		this.odService.saveAs();
+	}
+
+	exportOpenScenario ( filename = 'scenario.xosc' ) {
+
+		ToolManager.disable();
+
+		const contents = this.scenarioWriter.getOutputString( ScenarioInstance.scenario );
+
+		const directory = this.fileService.projectFolder;
+
+		this.fileService.saveFileWithExtension( directory, contents, 'xosc', ( file: IFile ) => {
+
+			SnackBar.success( `File saved ${ file.path }` );
+
+		} );
+
 	}
 
 	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF ) {

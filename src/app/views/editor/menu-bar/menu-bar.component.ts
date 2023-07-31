@@ -130,14 +130,20 @@ export class MenuBarComponent implements OnInit {
 			title: 'Esmini Settings',
 			fields: [
 				{
+					name: 'Esmini Enabled',
+					key: 'esminiEnabled',
+					type: 'checkbox',
+					value: this.editorService.settings.esminiEnabled
+				},
+				{
 					name: 'Esmini Path',
-					key: 'esmini_path',
+					key: 'esminiPath',
 					type: 'text',
 					value: this.editorService.settings.esminiPath
 				},
 				{
 					name: 'OdrViewer Path',
-					key: 'odrviewer_path',
+					key: 'odrViewerPath',
 					type: 'text',
 					value: this.editorService.settings.odrViewerPath
 				}
@@ -146,8 +152,9 @@ export class MenuBarComponent implements OnInit {
 
 		this.inputDialogService.open( settings.title, settings.fields ).subscribe( result => {
 			if ( result ) {
-				this.editorService.settings.esminiPath = result.esmini_path;
-				this.editorService.settings.odrViewerPath = result.odrviewer_path;
+				this.editorService.settings.esminiEnabled = result.esminiEnabled;
+				this.editorService.settings.esminiPath = result.esminiPath;
+				this.editorService.settings.odrViewerPath = result.odrViewerPath;
 			}
 		} )
 
@@ -255,7 +262,7 @@ export class MenuBarComponent implements OnInit {
 
 	exportOpenScenario () {
 
-		// this.exporter.exportOpenScenario();
+		this.exporter.exportOpenScenario()
 
 	}
 }

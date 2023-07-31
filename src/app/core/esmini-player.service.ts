@@ -18,7 +18,7 @@ import { TvConsole } from './utils/console';
 export class EsminiPlayerService {
 
 	get isEnabled (): boolean {
-		return this.editor.settings.esminiPath !== '';
+		return this.editor.settings.esminiEnabled == 'true';
 	}
 
 	constructor (

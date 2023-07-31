@@ -8,10 +8,16 @@
 	mat-dialog-content>
 	<div style="width: 100%;"
 		*ngFor="let field of fields">
-		<app-string-field [label]="field.name"
+		<app-string-field *ngIf="field.type == 'text'"
+			[label]="field.name"
 			(changed)="onFieldChange(field, $event)"
 			[value]="field.value">
 		</app-string-field>
+		<app-boolean-field *ngIf="field.type == 'checkbox'"
+			[label]="field.name"
+			(changed)="onFieldChange(field, $event)"
+			[value]="field.value == 'true'">
+		</app-boolean-field>
 	</div>
 </div>
 <div align="end"

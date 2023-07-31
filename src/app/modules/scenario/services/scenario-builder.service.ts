@@ -11,6 +11,7 @@ import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
+import { ParameterDeclaration } from '../models/tv-parameter-declaration';
 
 /**
  * This class is responsible for building the scenario
@@ -136,6 +137,39 @@ export class ScenarioBuilder {
 
 		}
 
+	}
+
+}
+
+export class ScenarioBuilderV2 {
+
+	constructor (
+		private scenario: TvScenario,
+		private scenarioString: string
+	) { }
+
+	setScenarioString ( value: string ) {
+		this.scenarioString = value;
+	}
+
+	setScenario ( value: TvScenario ) {
+		this.scenario = value;
+	}
+
+	buildScenario (): string {
+
+		this.scenario.parameterDeclarations.forEach( parameter =>
+			this.replaceParameter( parameter )
+		);
+
+		return this.scenarioString;
+	}
+
+	replaceParameter ( declaration: ParameterDeclaration ): void {
+
+		const regex = new RegExp( '\\$' + declaration.parameter.name, 'g' );
+
+		this.scenarioString = this.scenarioString.replace( regex, declaration.parameter.value );
 	}
 
 }

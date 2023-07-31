@@ -8,6 +8,7 @@ import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-vi
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from 'app/core/services/editor.service';
 import { EsminiPlayerService } from 'app/core/esmini-player.service';
+import { Environment } from 'app/core/utils/environment';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -33,6 +34,9 @@ export class PlayerBarComponent {
 	) {
 	}
 
+	get isEsminiEnabled () {
+		return this.esminiPlayerService.isEnabled && Environment.oscEnabled;
+	}
 
 	playSimulation () {
 
@@ -41,11 +45,11 @@ export class PlayerBarComponent {
 			return;
 		}
 
-		if ( this.isPlaying ) return;
+		// if ( this.isPlaying ) return;
 
-		this.playerService.play();
+		// this.playerService.play();
 
-		this.hasStarted = true;
+		// this.hasStarted = true;
 	}
 
 	pauseSimulation () {
