@@ -226,7 +226,17 @@ export class MetadataFactory {
 
 	static createTextureMetadata ( guid: string, path: string, texture: Texture ) {
 
+		const image = texture.image;
+
+		// unset image to avoid write image data in json
+		// this will reduce the size of the json file and
+		// saves time
+		texture.image = null
+
 		const data = texture.toJSON( undefined );
+
+		// set image again
+		texture.image = image;
 
 		// const version = data.metadata.version || 4.5;
 
