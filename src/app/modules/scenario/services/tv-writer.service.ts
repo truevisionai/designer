@@ -114,19 +114,18 @@ export class WriterService {
 
 		const rootNode = {
 			FileHeader: this.openScenario.fileHeader.exportXml(),
-			ParameterDeclaration: null,
-			Catalogs: null,
+			ParameterDeclarations: {
+				ParameterDeclaration: this.writeParameterDeclarations( this.openScenario.parameterDeclarations )
+			},
 			RoadNetwork: null,
 			Entities: null,
 			Storyboard: null
 		};
 
-		rootNode.ParameterDeclaration = this.writeParameterDeclarations( this.openScenario.parameterDeclarations );
-
-		if ( this.openScenario.catalogs != null ) {
-
-			rootNode.Catalogs = this.writeCatalogs( rootNode, this.openScenario.catalogs );
-
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			rootNode[ 'Catalogs' ] = this.writeCatalogs( rootNode, this.openScenario.catalogs );
+		} else {
+			rootNode[ 'CatalogLocations' ] = this.writeCatalogs( rootNode, this.openScenario.catalogs );
 		}
 
 		if ( this.openScenario.objects != null ) {
@@ -286,8 +285,7 @@ export class WriterService {
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
 			xml.RoadNetwork = {
-				Logics: null,
-				SceneGraph: null
+				Logics: null
 			};
 
 			if ( roadNetwork.logics != null ) {
@@ -295,14 +293,13 @@ export class WriterService {
 			}
 
 			if ( roadNetwork.sceneGraph != null ) {
-				xml.RoadNetwork.SceneGraph = this.writeFile( roadNetwork.sceneGraph );
+				xml.RoadNetwork[ 'SceneGraph' ] = this.writeFile( roadNetwork.sceneGraph );
 			}
 
 		} else {
 
 			xml.RoadNetwork = {
-				LogicFile: null,
-				SceneGraphFile: null
+				LogicFile: null
 			};
 
 			if ( roadNetwork.logics != null ) {
@@ -310,7 +307,7 @@ export class WriterService {
 			}
 
 			if ( roadNetwork.sceneGraph != null ) {
-				xml.RoadNetwork.SceneGraphFile = this.writeFile( roadNetwork.sceneGraph );
+				xml.RoadNetwork[ 'SceneGraphFile' ] = this.writeFile( roadNetwork.sceneGraph );
 			}
 
 			// TODO: export traffic signals

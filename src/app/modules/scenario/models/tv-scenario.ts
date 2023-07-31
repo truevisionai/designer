@@ -207,6 +207,8 @@ export class TvScenario {
 
 		this.db.clear();
 
+		this.parameterDeclarations.splice( 0, this.parameterDeclarations.length );
+
 		this.objects.forEach( entity => {
 
 			SceneService.remove( entity );

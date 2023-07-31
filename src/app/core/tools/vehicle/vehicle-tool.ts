@@ -16,6 +16,7 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
+import { VehicleFactory } from 'app/core/factories/vehicle.factory';
 
 export class VehicleTool extends BaseTool {
 
@@ -43,7 +44,7 @@ export class VehicleTool extends BaseTool {
 
 				const name = VehicleEntity.getNewName( 'Vehicle' );
 
-				const vehicleEntity = new VehicleEntity( name );
+				const vehicleEntity = VehicleFactory.createDefaultCar( name );
 
 				vehicleEntity.setController( new DefaultVehicleController( 'DefaultVehicleController', vehicleEntity ) );
 
