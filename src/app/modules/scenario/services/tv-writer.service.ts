@@ -30,7 +30,7 @@ import { Act } from '../models/tv-act';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
-import { ActionCategory, ActionType, ConditionCategory, ConditionType, PositionType, TargetType } from '../models/tv-enums';
+import { ActionCategory, ActionType, ConditionCategory, ConditionType, OpenScenarioVersion, PositionType, TargetType } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { CatalogReferenceController } from '../models/tv-interfaces';
 import { Maneuver } from '../models/tv-maneuver';
@@ -42,6 +42,30 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
+import { XMLBuilder } from 'fast-xml-parser';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
+import { RelativeRoadPosition } from './relative-road.position';
+import { RoadPosition } from '../models/positions/tv-road-position';
+import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
+import { AcquirePositionAction, FollowRouteAction } from '../models/actions/tv-routing-action';
+import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
+import { RelativeDistanceCondition } from '../models/conditions/tv-relative-distance-condition';
+import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
+import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
+import { CollisionCondition } from '../models/conditions/tv-collision-condition';
+import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
+import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-condition';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { TvConsole } from 'app/core/utils/console';
+import { SpeedCondition } from '../models/conditions/tv-speed-condition';
+import { StandStillCondition } from '../models/conditions/tv-stand-still-condition';
+import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
+import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
+import { TimeToCollisionCondition } from '../models/conditions/tv-time-to-collision-condition';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
+import { TvAxle } from '../models/tv-bounding-box';
+import { TvProperty } from '../models/tv-properties';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,6 +76,14 @@ export class WriterService {
 	private xmlDocument: Object;
 	private openScenario: TvScenario;
 
+	get version (): OpenScenarioVersion {
+		return this.openScenario.fileHeader.version;
+	}
+
+	get entityKey (): string {
+		return this.version == OpenScenarioVersion.v0_9 ? 'attr_object' : 'attr_entityRef';
+	}
+
 	getOutputString ( openScenario: TvScenario ) {
 
 		this.openScenario = openScenario;
@@ -60,19 +92,22 @@ export class WriterService {
 			attributeNamePrefix: 'attr_',
 			attrNodeName: false,
 			ignoreAttributes: false,
-			supressEmptyNode: true,
+			suppressBooleanAttributes: false,
+			suppressEmptyNode: true,
+			suppressUnpairedNode: true,
 			format: true,
 			trimValues: true,
 		};
 
-		const Parser = require( 'fast-xml-parser' ).j2xParser;
-		const parser = new Parser( defaultOptions );
+		const builder = new XMLBuilder( defaultOptions );
 
 		Debug.log( this.openScenario );
 
+		// this makes the osc object
 		this.writeOpenScenario();
 
-		return parser.parse( this.xmlDocument );
+		// this makes the osc xml file
+		return builder.build( this.xmlDocument );
 	}
 
 	writeOpenScenario (): any {
@@ -120,38 +155,91 @@ export class WriterService {
 
 	writeEntities ( rootNode: any, objects: Map<string, ScenarioEntity> ) {
 
-		var entities = {
-			Object: []
-		};
+		const scenarioObjects = [];
 
 		objects.forEach( ( item, key ) => {
-
-			entities.Object.push( this.writeEntityObject( key, item ) );
-
+			scenarioObjects.push( this.writeScenarioObject( key, item ) );
 		} );
 
-		rootNode.Entities = entities;
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return rootNode.Entities = {
+				Object: scenarioObjects
+			};
+
+		} else {
+
+			return rootNode.Entities = {
+				ScenarioObject: scenarioObjects
+			};
+		}
 	}
 
-	writeEntityObject ( key: string, object: ScenarioEntity ): any {
+	writeScenarioObject ( key: string, object: ScenarioEntity ): any {
 
-		// var xml = {
-		// 	attr_name: object.name,
-		// };
-		//
-		// if ( object.catalogReference != null ) {
-		//
-		// 	xml[ 'CatalogReference' ] = this.writeCatalogReference( object.catalogReference );
-		//
-		// }
-		//
-		// if ( object.controller != null ) {
-		//
-		// 	xml[ 'Controller' ] = this.writeController( object.controller );
-		//
-		// }
-		//
-		// return xml;
+		return {
+			attr_name: object.name,
+			Vehicle: this.writeVehicle( object as VehicleEntity ),
+			ObjectController: {
+				Controller: {
+					attr_name: 'DefaultController',
+				},
+			},
+		};
+	}
+
+	writeVehicle ( vehicle: VehicleEntity ) {
+
+		function writeAxle ( axle: TvAxle ) {
+			return {
+				attr_maxSteering: axle.maxSteering,
+				attr_wheelDiameter: axle.wheelDiameter,
+				attr_trackWidth: axle.trackWidth,
+				attr_positionX: axle.positionX,
+				attr_positionZ: axle.positionZ,
+			}
+		}
+
+		return {
+			attr_name: vehicle.name,
+			attr_vehicleCategory: vehicle.vehicleCategory,
+			ParameterDeclarations: {
+				ParameterDeclaration: this.writeParameterDeclarations( vehicle.parameterDeclarations )
+			},
+			Performance: {
+				attr_maxSpeed: vehicle.performance.maxSpeed,
+				attr_maxAcceleration: vehicle.performance.maxAcceleration,
+				attr_maxDeceleration: vehicle.performance.maxDeceleration,
+				attr_mass: vehicle.performance.mass,
+			},
+			BoundingBox: {
+				Center: {
+					attr_x: vehicle.boundingBox.center.x,
+					attr_y: vehicle.boundingBox.center.y,
+					attr_z: vehicle.boundingBox.center.z
+				},
+				Dimensions: {
+					attr_width: vehicle.boundingBox.dimension.width,
+					attr_length: vehicle.boundingBox.dimension.length,
+					attr_height: vehicle.boundingBox.dimension.height,
+				},
+			},
+			Axles: {
+				FrontAxle: vehicle.axles ? writeAxle( vehicle.axles.front ) : null,
+				RearAxle: vehicle.axles ? writeAxle( vehicle.axles.rear ) : null,
+				Additional: vehicle.axles?.additional?.map( axle => writeAxle( axle ) )
+			},
+			Properties: {
+				Property: vehicle.properties.map( property => this.writeProperty( property ) )
+			},
+		}
+	}
+
+	writeProperty ( property: TvProperty ): XmlElement {
+		return {
+			attr_name: property.name,
+			attr_value: property.value,
+		}
 	}
 
 	writeController ( controller: AbstractController ): any {
@@ -193,19 +281,40 @@ export class WriterService {
 
 	}
 
-	writeRoadNetwork ( xml: any, roadNetwork: RoadNetwork ) {
+	writeRoadNetwork ( xml: XmlElement, roadNetwork: RoadNetwork ) {
 
-		xml.RoadNetwork = {
-			Logics: null,
-			SceneGraph: null,
-		};
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
-		if ( roadNetwork.logics != null ) {
-			xml.RoadNetwork.Logics = this.writeFile( roadNetwork.logics );
-		}
+			xml.RoadNetwork = {
+				Logics: null,
+				SceneGraph: null
+			};
 
-		if ( roadNetwork.sceneGraph != null ) {
-			xml.RoadNetwork.SceneGraph = this.writeFile( roadNetwork.sceneGraph );
+			if ( roadNetwork.logics != null ) {
+				xml.RoadNetwork.Logics = this.writeFile( roadNetwork.logics );
+			}
+
+			if ( roadNetwork.sceneGraph != null ) {
+				xml.RoadNetwork.SceneGraph = this.writeFile( roadNetwork.sceneGraph );
+			}
+
+		} else {
+
+			xml.RoadNetwork = {
+				LogicFile: null,
+				SceneGraphFile: null
+			};
+
+			if ( roadNetwork.logics != null ) {
+				xml.RoadNetwork.LogicFile = this.writeFile( roadNetwork.logics );
+			}
+
+			if ( roadNetwork.sceneGraph != null ) {
+				xml.RoadNetwork.SceneGraphFile = this.writeFile( roadNetwork.sceneGraph );
+			}
+
+			// TODO: export traffic signals
+
 		}
 
 	}
@@ -220,17 +329,21 @@ export class WriterService {
 
 	writeStoryboard ( xml: any, storyboard: Storyboard ) {
 
+		const key = this.version == OpenScenarioVersion.v0_9 ? 'EndConditions' : 'StopTrigger';
+
 		const storyXml = {
 
 			Init: {
 				Actions: {
-					Private: []
+					Private: [],
+					GlobalAction: [], // TODO
+					UserDefinedAction: [], //
 				},
 			},
 
-			Story: [],
+			Story: Array.from( storyboard.stories.values() ).map( story => this.writeStory( story ) ),
 
-			EndConditions: {}
+			[ key ]: storyboard.endConditionGroups.map( conditionGroup => this.writeConditionGroup( conditionGroup ) )
 		};
 
 
@@ -238,63 +351,72 @@ export class WriterService {
 
 		this.writeInitActions( storyXml.Init.Actions );
 
-		storyboard.stories.forEach( story => {
-
-			storyXml.Story.push( this.writeStory( story ) );
-
-		} );
-
-		storyboard.endConditionGroups.forEach( conditionGroup => {
-
-			Debug.log( this.writeConditionGroup( conditionGroup ) );
-
-		} );
-
 	}
 
-	writeConditionGroup ( conditionGroup: ConditionGroup ): any {
-
-		let xml = {
-			Condition: []
+	writeConditionGroup ( conditionGroup: ConditionGroup ): XmlElement {
+		return {
+			ConditionGroup: {
+				Condition: conditionGroup.conditions.map( condition => this.writeCondition( condition ) )
+			}
 		};
-
-		conditionGroup.conditions.forEach( condition => {
-
-			xml.Condition.push( this.writeCondition( condition ) );
-
-		} );
-
-		return xml;
 	}
 
-	writeCondition ( condition: Condition ): any {
+	writeCondition ( condition: Condition ): XmlElement {
 
 		let xml = {
 
 			attr_name: condition.label,
 			attr_delay: condition.delay,
-			attr_edge: condition.edge,
 
 		};
 
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			xml[ 'attr_edge' ] = condition.edge;
+		} else {
+			xml[ 'attr_conditionEdge' ] = condition.edge;
+		}
+
 		if ( condition.category == ConditionCategory.ByEntity ) {
 
-			xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as EntityCondition );
+			if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+				xml[ 'ByEntity' ] = this.writeByEntityCondition( condition as EntityCondition );
+
+			} else {
+
+				xml[ 'ByEntityCondition' ] = this.writeByEntityCondition( condition as EntityCondition );
+
+			}
 
 		} else if ( condition.category == ConditionCategory.ByValue ) {
 
-			xml[ 'ByValue' ] = this.writeByValueCondition( condition );
+			if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+				xml[ 'ByValue' ] = this.writeByValueCondition( condition );
+
+			} else {
+
+				xml[ 'ByValueCondition' ] = this.writeByValueCondition( condition );
+
+			}
 
 		} else if ( condition.category == ConditionCategory.ByState ) {
 
-			xml[ 'ByState' ] = this.writeByStateCondition( condition );
+			if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+				xml[ 'ByState' ] = this.writeByStateCondition( condition );
+
+			} else {
+
+				xml[ 'ByStateCondition' ] = this.writeByStateCondition( condition );
+			}
 
 		}
 
 		return xml;
 	}
 
-	writeByStateCondition ( abstractCondition: Condition ): any {
+	writeByStateCondition ( abstractCondition: Condition ): XmlElement {
 
 		let xml = {};
 
@@ -313,152 +435,482 @@ export class WriterService {
 		return xml;
 	}
 
-	writeByValueCondition ( abstractCondition: Condition ): any {
+	writeByValueCondition ( abstractCondition: Condition ): XmlElement {
 
-		let xml = {};
-
-		// TODO : Write test for this in production for construtor error
 		if ( abstractCondition.conditionType === ConditionType.ByValue_SimulationTime ) {
 
-			xml[ 'SimulationTime' ] = {};
+			return this.writeSimulationTimeCondition( abstractCondition as SimulationTimeCondition );
 
-			let condition = abstractCondition as SimulationTimeCondition;
+		} else {
 
-			xml[ 'SimulationTime' ][ 'attr_value' ] = condition.value;
-			xml[ 'SimulationTime' ][ 'attr_rule' ] = condition.rule;
-
-		}
-
-		return xml;
-	}
-
-	writeByEntityCondition ( abstractCondition: EntityCondition ): any {
-
-		let xml = {
-
-			TriggeringEntities: {
-				attr_rule: abstractCondition.triggeringRule,
-				Entity: []
-			},
-
-			EntityCondition: {}
-
-		};
-
-		abstractCondition.triggeringEntities.forEach( entityName => {
-
-			xml.TriggeringEntities.Entity.push( {
-				attr_name: entityName
-			} );
-
-		} );
-
-		// TODO : Write test for this in production for constructor
-		if ( abstractCondition.conditionType === ConditionType.ByEntity_Distance ) {
-
-			xml.EntityCondition[ 'Distance' ] = this.writeDistanceCondition( abstractCondition as DistanceCondition );
+			console.error( 'Unsupported condition type' );
 
 		}
 
-		return xml;
 	}
 
-	writeDistanceCondition ( condition: DistanceCondition ): any {
+	writeSimulationTimeCondition ( condition: SimulationTimeCondition ): XmlElement {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ?
+			'SimulationTime' :
+			'SimulationTimeCondition';
 
 		return {
+			[ key ]: {
+				attr_value: condition.value,
+				attr_rule: condition.rule
+			}
+		}
+	}
 
+	writeByEntityCondition ( condition: EntityCondition ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				TriggeringEntities: {
+					attr_rule: condition.triggeringRule,
+					Entity: condition.triggeringEntities.map( entityName => ( {
+						attr_name: entityName
+					} ) )
+				},
+				EntityCondition: this.writeEntityCondition( condition )
+			}
+		}
+
+		return {
+			TriggeringEntities: {
+				attr_triggeringEntitiesRule: condition.triggeringRule,
+				EntityRef: condition.triggeringEntities.map( entityName => ( {
+					attr_entityRef: entityName
+				} ) )
+			},
+			EntityCondition: this.writeEntityCondition( condition )
+		}
+	}
+
+	writeEntityCondition ( condition: EntityCondition ) {
+
+		let conditionXml = {};
+
+		if ( condition.conditionType === ConditionType.ByEntity_EndOfRoad ) {
+
+			conditionXml = {
+				EndOfRoadCondition: this.writeEndOfRoadCondition( condition as EndOfRoadCondition )
+			};
+
+		} else if ( condition.conditionType === ConditionType.ByEntity_Collision ) {
+
+			conditionXml = {
+				CollisionCondition: this.writeCollisionCondition( condition as CollisionCondition )
+			};
+
+		} else if ( condition.conditionType === ConditionType.ByEntity_Distance ) {
+
+			conditionXml = {
+				DistanceCondition: this.writeDistanceCondition( condition as DistanceCondition )
+			};
+
+		} else if ( condition.conditionType === ConditionType.ByEntity_ReachPosition ) {
+
+			conditionXml = {
+				ReachPositionCondition: this.writeDistanceCondition( condition as DistanceCondition )
+			};
+
+		} else if ( condition.conditionType === ConditionType.ByEntity_TraveledDistance ) {
+
+			conditionXml = {
+				TraveledDistanceCondition: this.writeTraveledDistanceCondition( condition as TraveledDistanceCondition )
+			}
+
+		} else if ( condition.conditionType === ConditionType.ByEntity_RelativeDistance ) {
+
+			conditionXml = {
+				RelativeDistanceCondition: this.writeRelativeDistanceCondition( condition as RelativeDistanceCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_Offroad ) {
+
+			conditionXml = {
+				OffRoadCondition: this.writeOffRoadCondition( condition as OffRoadCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_RelativeSpeed ) {
+
+			conditionXml = {
+				RelativeSpeedCondition: this.writeRelativeSpeedCondition( condition as RelativeSpeedCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_Speed ) {
+
+			conditionXml = {
+				SpeedCondition: this.writeSpeedCondition( condition as SpeedCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_StandStill ) {
+
+			conditionXml = {
+				StandStillCondition: this.writeStandStillCondition( condition as StandStillCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_Acceleration ) {
+
+			conditionXml = {
+				AccelerationCondition: this.writeAccelerationCondition( condition as AccelerationCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_TimeHeadway ) {
+
+			conditionXml = {
+				TimeHeadwayCondition: this.writeTimeHeadwayCondition( condition as TimeHeadwayCondition )
+			}
+
+		} else if ( condition.conditionType == ConditionType.ByEntity_TimeToCollision ) {
+
+			conditionXml = {
+				TimeToCollisionCondition: this.writeTimeToCollisionCondition( condition as TimeToCollisionCondition )
+			}
+
+		} else {
+
+			TvConsole.error( 'Unsupported condition type' );
+
+		}
+
+		return conditionXml;
+
+	}
+
+	writeTimeToCollisionCondition ( condition: TimeToCollisionCondition ) {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,
+				attr_rule: condition.rule,
+				Target: this.writeTimeToCollisionTarget( condition.target )
+			}
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_0 || this.version == OpenScenarioVersion.v1_1 ) {
+			return {
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,
+				attr_rule: condition.rule,
+				TimeToCollisionConditionTarget: this.writeTimeToCollisionTarget( condition.target )
+			}
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_2 ) {
+			return {
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,		// @deprecated
+				attr_rule: condition.rule,
+				attr_relativeDistanceType: condition.relativeDistanceType,
+				attr_coordinateSystem: condition.coordinateSystem,
+				attr_routingAlgorithm: condition.routingAlgorithm,
+				TimeToCollisionConditionTarget: this.writeTimeToCollisionTarget( condition.target ),
+			}
+		}
+
+	}
+
+	writeTimeToCollisionTarget ( target: string | Position ): XmlElement {
+
+		if ( typeof target == 'string' && this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				Entity: {
+					attr_name: target
+				}
+			}
+
+		} else if ( typeof target == 'string' && this.version != OpenScenarioVersion.v0_9 ) {
+
+			return {
+				EntityRef: {
+					attr_entityRef: target
+				}
+			}
+
+		} else if ( target instanceof Position ) {
+
+			return {
+				Position: this.writePosition( target )
+			}
+
+		}
+	}
+
+	writeTimeHeadwayCondition ( condition: TimeHeadwayCondition ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				attr_entity: condition.entityRef,
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,
+				attr_rule: condition.rule,
+			}
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_0 || this.version == OpenScenarioVersion.v1_1 ) {
+			return {
+				attr_entityRef: condition.entityRef,
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,
+				attr_rule: condition.rule,
+			}
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_2 ) {
+			return {
+				attr_entityRef: condition.entityRef,
+				attr_value: condition.value,
+				attr_freespace: condition.freespace,
+				attr_alongRoute: condition.alongRoute,		// @deprecated
+				attr_rule: condition.rule,
+				attr_coordinateSystem: condition.coordinateSystem,
+				attr_relativeDistanceType: condition.relativeDistanceType,
+				attr_routingAlgorithm: condition.routingAlgorithm,
+			}
+		}
+	}
+
+	writeAccelerationCondition ( condition: AccelerationCondition ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				attr_value: condition.value,
+				attr_rule: condition.rule,
+			}
+		}
+
+		return {
+			attr_value: condition.value,
+			attr_rule: condition.rule,
+			attr_direction: condition.direction,
+		}
+
+	}
+
+	writeStandStillCondition ( condition: StandStillCondition ) {
+
+		return {
+			attr_duration: condition.duration,
+		}
+
+	}
+
+	writeSpeedCondition ( condition: SpeedCondition ) {
+
+		return {
+			attr_value: condition.value,
+			attr_rule: condition.rule,
+		}
+
+	}
+
+	writeRelativeSpeedCondition ( condition: RelativeSpeedCondition ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				attr_entity: condition.entity,
+				attr_value: condition.speed,
+				attr_rule: condition.rule,
+			}
+
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_0 || this.version == OpenScenarioVersion.v1_1 ) {
+
+			return {
+				attr_entityRef: condition.entity,
+				attr_value: condition.speed,
+				attr_rule: condition.rule,
+			}
+
+		}
+
+		if ( this.version == OpenScenarioVersion.v1_2 ) {
+
+			return {
+				attr_entityRef: condition.entity,
+				attr_value: condition.speed,
+				attr_rule: condition.rule,
+				attr_direction: condition.direction
+			}
+
+		}
+
+		TvConsole.error( 'Unsupported relative speed condition' );
+	}
+
+	writeOffRoadCondition ( condition: OffRoadCondition ): XmlElement {
+
+		return {
+			attr_duration: condition.duration,
+		}
+
+	}
+
+	writeCollisionCondition ( condition: CollisionCondition ): XmlElement {
+
+		if ( condition.entityRef && this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				ByEntity: {
+					attr_name: condition.entityRef,
+				}
+			}
+		}
+
+		if ( condition.entityRef && this.version != OpenScenarioVersion.v0_9 ) {
+			return {
+				EntityRef: {
+					attr_entityRef: condition.entityRef,
+				}
+			}
+		}
+
+		if ( condition.entityType ) {
+			return {
+				ByType: {
+					attr_type: condition.entityType,
+				}
+			}
+		}
+
+		console.error( 'Unsupported collision condition' );
+	}
+
+	writeTraveledDistanceCondition ( condition: TraveledDistanceCondition ): XmlElement {
+
+		return {
+			attr_value: condition.value,
+		}
+
+	}
+
+	writeEndOfRoadCondition ( condition: EndOfRoadCondition ): XmlElement {
+
+		return {
+			attr_duration: condition.duration,
+		}
+
+	}
+
+	writeRelativeDistanceCondition ( condition: RelativeDistanceCondition ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				attr_entity: condition.entityRef,
+				attr_freespace: condition.freespace,
+				attr_rule: condition.rule,
+				attr_value: condition.distance,
+				attr_relativeDistanceType: condition.distanceType,
+			}
+
+		}
+
+		return {
+			attr_entityRef: condition.entityRef,
+			attr_freespace: condition.freespace,
+			attr_relativeDistanceType: condition.distanceType,
+			attr_rule: condition.rule,
+			attr_value: condition.distance,
+			attr_coordinateSystem: condition.coordinateSystem,
+			attr_routingAlgorithm: condition.routingAlgorithm,
+		}
+
+	}
+
+	writeDistanceCondition ( condition: DistanceCondition ): XmlElement {
+
+		return {
 			attr_value: condition.value,
 			attr_freespace: condition.freespace,
 			attr_alongRoute: condition.alongRoute,
 			attr_rule: condition.rule,
-
 			Position: this.writePosition( condition.position )
-
 		};
 
 	}
 
-	writeStory ( story: Story ): any {
+	writeStory ( story: Story ): XmlElement {
 
-		let xml = {
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				attr_name: story.name,
+				attr_owner: story.ownerName,
+				ParameterDeclarations: {
+					ParameterDeclaration: this.writeParameterDeclarations( story.parameterDeclarations )
+				},
+				Act: story.acts.map( act => this.writeAct( act ) ),
+			};
+		}
 
+		return {
 			attr_name: story.name,
-			attr_owner: story.ownerName,
-
-			Act: [],
-
+			ParameterDeclarations: {
+				ParameterDeclaration: this.writeParameterDeclarations( story.parameterDeclarations )
+			},
+			Act: story.acts.map( act => this.writeAct( act ) ),
 		};
-
-		story.acts.forEach( act => {
-
-			xml.Act.push( this.writeAct( act ) );
-
-		} );
-
-		return xml;
 	}
 
 	writeAct ( act: Act ): any {
 
-		let xml = {
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
-			attr_name: act.name,
-
-			Sequence: [],
-
-			Conditions: {
-				Start: {
-					ConditionGroup: []
+			return {
+				attr_name: act.name,
+				Sequence: act.maneueverGroups.map( i => this.writeManeuverGroup( i ) ),
+				Conditions: {
+					Start: act.startConditionGroups.map( i => this.writeConditionGroup( i ) ),
+					End: act.endConditionGroups.map( i => this.writeConditionGroup( i ) ),
+					Cancel: act.cancelConditionGroups.map( i => this.writeConditionGroup( i ) ),
 				}
 			}
-		};
 
-		act.sequences.forEach( sequence => {
+		}
 
-			xml.Sequence.push( this.writeSequence( sequence ) );
-
-		} );
-
-		act.startConditionGroups.forEach( conditionGroup => {
-
-			xml.Conditions.Start.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
-
-		} );
-
-		// TODO: Cancel & End Conditions
-
-		return xml;
+		return {
+			attr_name: act.name,
+			ManeuverGroup: act.maneueverGroups.map( i => this.writeManeuverGroup( i ) ),
+			StartTrigger: act.startConditionGroups.map( i => this.writeConditionGroup( i ) ),
+			StopTrigger: act.endConditionGroups.map( i => this.writeConditionGroup( i ) ),
+		}
 	}
 
-	writeSequence ( sequence: ManeuverGroup ): any {
+	writeManeuverGroup ( group: ManeuverGroup ): any {
 
-		let xml = {
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
-			attr_name: sequence.name,
-			attr_numberOfExecutions: sequence.numberOfExecutions,
+			return {
+				attr_name: group.name,
+				attr_numberOfExecutions: group.numberOfExecutions,
+				Actors: {
+					Entity: group.actors.map( entityName => ( { attr_name: entityName } ) )
+				},
+				Maneuver: group.maneuvers.map( maneuver => this.writeManeuver( maneuver ) ),
+			}
 
+		}
+
+		return {
+			attr_name: group.name,
+			attr_maximumExecutionCount: group.numberOfExecutions,
 			Actors: {
-				Entity: []
+				attr_selectTriggeringEntities: group.selectTriggeringEntities,
+				EntityRef: group.actors.map( entityName => ( { attr_entityRef: entityName } ) )
 			},
-			Maneuver: []
-
-		};
-
-		sequence.actors.forEach( name => {
-
-			xml.Actors.Entity.push( {
-				attr_name: name
-			} );
-
-		} );
-
-		sequence.maneuvers.forEach( maneuver => {
-
-			xml.Maneuver.push( this.writeManeuver( maneuver ) );
-
-		} );
-
-		return xml;
+			Maneuver: group.maneuvers.map( maneuver => this.writeManeuver( maneuver ) ),
+		}
 	}
 
 	writeManeuver ( maneuver: Maneuver ): any {
@@ -482,6 +934,10 @@ export class WriterService {
 
 	writeEvent ( event: TvEvent ): any {
 
+		const conditionKey = this.version == OpenScenarioVersion.v0_9 ?
+			'StartConditions' :
+			'StartTrigger';
+
 		let xml = {
 
 			attr_name: event.name,
@@ -489,9 +945,7 @@ export class WriterService {
 
 			Action: [],
 
-			StartConditions: {
-				ConditionGroup: []
-			},
+			[ conditionKey ]: event.startConditionGroups.map( i => this.writeConditionGroup( i ) )
 		};
 
 		event.getActionMap().forEach( ( action, name ) => {
@@ -503,17 +957,15 @@ export class WriterService {
 
 			if ( action.category == ActionCategory.private ) {
 
-				actionXml[ 'Private' ] = this.writePrivateAction( action as PrivateAction );
+				const key = this.version == OpenScenarioVersion.v0_9 ?
+					'Private' :
+					'PrivateAction';
+
+				actionXml[ key ] = this.writePrivateAction( action as PrivateAction );
 
 			}
 
 			xml.Action.push( actionXml );
-
-		} );
-
-		event.startConditionGroups.forEach( conditionGroup => {
-
-			xml.StartConditions.ConditionGroup.push( this.writeConditionGroup( conditionGroup ) );
 
 		} );
 
@@ -525,18 +977,24 @@ export class WriterService {
 		this.openScenario.objects.forEach( object => {
 
 			const privateXml = {
-
-				attr_object: object.name,
-
-				Action: []
-
+				PrivateAction: []
 			};
+
+			if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+				privateXml[ 'attr_object' ] = object.name;
+
+			} else {
+
+				privateXml[ 'attr_entityRef' ] = object.name;
+
+			}
 
 			xml.Private.push( privateXml );
 
 			object.initActions.forEach( initAction => {
 
-				privateXml.Action.push( this.writePrivateAction( initAction ) );
+				privateXml.PrivateAction.push( this.writePrivateAction( initAction ) );
 
 			} );
 
@@ -544,26 +1002,42 @@ export class WriterService {
 
 	}
 
-	writePrivateAction ( abstractAction: PrivateAction ) {
+	writePrivateAction ( privateAction: PrivateAction ) {
 
 		let xml = null;
 
-		switch ( abstractAction.actionType ) {
+		switch ( privateAction.actionType ) {
 
 			case ActionType.Private_Position:
-				xml = this.writePositionAction( abstractAction as TeleportAction );
+				xml = this.writePositionAction( privateAction as TeleportAction );
 				break;
 
 			case ActionType.Private_Longitudinal_Speed:
-				xml = this.writeLongitudinalSpeedAction( abstractAction as SpeedAction );
+				xml = this.writeLongitudinalSpeedAction( privateAction as SpeedAction );
+				break;
+
+			case ActionType.Private_Longitudinal_Distance:
+				// TODO: implement
 				break;
 
 			case ActionType.Private_LaneChange:
-				xml = this.writeLaneChangeAction( abstractAction as LaneChangeAction );
+				xml = this.writeLaneChangeAction( privateAction as LaneChangeAction );
 				break;
 
-			case ActionType.Private_Routing:
-				xml = this.writeFollowTrajectoryAction( abstractAction as FollowTrajectoryAction );
+			case ActionType.Private_LaneOffset:
+				xml = this.writeLaneOffsetAction( privateAction as LaneOffsetAction );
+				break;
+
+			case ActionType.Private_Routing_AssignRoute: // or FollowRouteAction
+				xml = this.writeAssignRouteAction( privateAction as FollowRouteAction );
+				break;
+
+			case ActionType.Private_Routing_FollowTrajectory:
+				xml = this.writeFollowTrajectoryAction( privateAction as FollowTrajectoryAction );
+				break;
+
+			case ActionType.Private_Routing_AcquirePosition:
+				xml = this.writeAcquirePosition( privateAction as AcquirePositionAction );
 				break;
 
 			default:
@@ -575,13 +1049,102 @@ export class WriterService {
 
 	}
 
-	writeFollowTrajectoryAction ( action: FollowTrajectoryAction ): any {
+	writeAcquirePosition ( arg0: AcquirePositionAction ): any {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	writeAssignRouteAction ( arg0: FollowRouteAction ): any {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	writeLaneOffsetAction ( action: LaneOffsetAction ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			const duration = action.target.value / action.maxLateralAcc;
+
+			return {
+				Lateral: {
+					LaneOffset: {
+						Dynamics: {
+							attr_shape: action.dynamicsShape,
+							attr_maxLateralAcc: action.maxLateralAcc,
+							attr_duration: duration,
+						},
+						Target: this.writeTarget( action.target )
+					}
+				}
+			};
+
+		}
+
+		return {
+			LateralAction: {
+				LaneOffsetAction: {
+					attr_continuous: action.continous,
+					LaneOffsetActionDynamics: {
+						attr_dynamicsShape: action.dynamicsShape,
+						attr_maxLateralAcc: action.maxLateralAcc,
+					},
+					LaneOffsetTarget: this.writeTarget( action.target, 'AbsoluteTargetLaneOffset', 'RelativeTargetLaneOffset' ),
+				}
+			}
+		};
+
+	}
+
+	writeFollowTrajectoryAction ( action: FollowTrajectoryAction ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				Routing: {
+					FollowTrajectory: {
+						Lateral: {
+							attr_purpose: action.trajectoryFollowingMode
+						},
+						Longitudinal: {
+							Timing: {
+								attr_domain: action.timeReference?.timing?.domain,
+								attr_scale: action.timeReference?.timing?.scale,
+								attr_offset: action.timeReference?.timing?.offset
+							}
+						},
+						Trajectory: this.writeTrajectory( action.trajectory )
+					}
+				}
+			}
+		}
+
+		return {
+			Routing: {
+				FollowTrajectoryAction: {
+					attr_initialDistanceOffset: action.initialDistanceOffset,
+					TrajectoryFollowingMode: {
+						attr_followingMode: action.trajectoryFollowingMode
+					},
+					TimeReference: {
+						Timing: {
+							attr_domain: action.timeReference?.timing?.domain,
+							attr_scale: action.timeReference?.timing?.scale,
+							attr_offset: action.timeReference?.timing?.offset
+						}
+					},
+					Trajectory: this.writeTrajectory( action.trajectory ),
+				}
+			}
+		}
+
 
 		let xml = {
 			Routing: {
 				FollowTrajectory: {
 					Lateral: {
-						attr_purpose: action.lateralPurpose
+						attr_purpose: action.trajectoryFollowingMode
 					},
 					Longitudinal: {},
 					Trajectory: {}
@@ -589,9 +1152,9 @@ export class WriterService {
 			}
 		};
 
-		if ( action.longitudinalPurpose && action.longitudinalPurpose.timing != null ) {
+		if ( action.timeReference && action.timeReference.timing != null ) {
 
-			const timing = action.longitudinalPurpose.timing;
+			const timing = action.timeReference.timing;
 
 			xml.Routing.FollowTrajectory.Longitudinal = {
 				Timing: {
@@ -609,63 +1172,77 @@ export class WriterService {
 
 		}
 
-		if ( action.catalogReference != null ) {
-
-			throw new Error( 'Unsupported action' );
-
-		} else {
-
-			const trajectory = this.writeTrajectory( action.trajectory );
-
-			xml.Routing.FollowTrajectory.Trajectory = trajectory.Trajectory;
-
-		}
 
 		return xml;
 	}
 
 	writeLongitudinalSpeedAction ( action: SpeedAction ): any {
 
-		return {
-			Longitudinal: {
-				Speed: {
-					Dynamics: this.writeTransitionDynamics( action.dynamics ),
-					Target: this.writeTarget( action.target )
-				}
-			}
-		};
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
+			return {
+				Longitudinal: {
+					Speed: {
+						Dynamics: this.writeTransitionDynamics( action.dynamics ),
+						Target: this.writeTarget( action.target )
+					}
+				}
+			};
+
+		} else {
+
+			const target = this.writeTarget( action.target, 'AbsoluteTargetSpeed', 'RelativeTargetSpeed' );
+
+			return {
+				LongitudinalAction: {
+					SpeedAction: {
+						SpeedActionDynamics: this.writeTransitionDynamics( action.dynamics ),
+						SpeedActionTarget: target
+						// missing from RelativeTargetSpeed
+						// continuous
+						// speedTargetValueType: SpeedTargetValueType
+					}
+				}
+			};
+		}
 	}
 
 	writeLaneChangeAction ( action: LaneChangeAction ): any {
 
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				Lateral: {
+					LaneChange: {
+						attr_targetLaneOffset: action.targetLaneOffset ? action.targetLaneOffset : 0,
+						Dynamics: this.writeTransitionDynamics( action.dynamics ),
+						Target: this.writeTarget( action.target )
+					}
+				}
+			};
+
+		}
+
 		return {
-
-			Lateral: {
-
-				LaneChange: {
-
-					// TODO: dont add this when value is null
+			LateralAction: {
+				LaneChangeAction: {
 					attr_targetLaneOffset: action.targetLaneOffset ? action.targetLaneOffset : 0,
-
-					Dynamics: this.writeTransitionDynamics( action.dynamics ),
-
-					Target: this.writeTarget( action.target )
+					LaneChangeActionDynamics: this.writeTransitionDynamics( action.dynamics ),
+					LaneChangeTarget: this.writeTarget( action.target, 'AbsoluteTargetLane', 'RelativeTargetLane' )
 				}
 			}
-
 		};
 
 	}
 
-	writeTarget ( abstractTarget: Target ) {
+	writeTarget ( abstractTarget: Target, absoluteKey = 'Absolute', relativeKey = 'Relative' ) {
 
 		if ( abstractTarget.targetType == TargetType.absolute ) {
 
 			let target = abstractTarget as AbsoluteTarget;
 
 			return {
-				Absolute: {
+				[ absoluteKey ]: {
 					attr_value: target.value
 				}
 			};
@@ -675,8 +1252,8 @@ export class WriterService {
 			let target = abstractTarget as RelativeTarget;
 
 			return {
-				Relative: {
-					attr_object: target.entityName,
+				[ relativeKey ]: {
+					[ this.entityKey ]: target.entityName,
 					attr_value: target.value
 				}
 			};
@@ -685,25 +1262,38 @@ export class WriterService {
 
 	}
 
-	writeTransitionDynamics ( dynamics: TransitionDynamics ) {
+	writeTransitionDynamics ( dynamics: TransitionDynamics ): XmlElement {
+
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			// either time or distance should be returned
+			return {
+				attr_shape: dynamics.dynamicsShape,
+				attr_time: dynamics.value,
+				// attr_distance: dynamics.distance
+			};
+		}
 
 		return {
-			Dynamics: {
-				attr_dynamicsShape: dynamics.dynamicsShape,
-				attr_value: dynamics.value,
-				attr_dynamicsDimension: dynamics.dynamicsDimension
-			}
+			attr_dynamicsShape: dynamics.dynamicsShape,
+			attr_value: dynamics.value,
+			attr_dynamicsDimension: dynamics.dynamicsDimension
 		};
-
 
 	}
 
 	writePositionAction ( action: TeleportAction ) {
 
-		return {
-			Position: this.writePosition( action.position )
-		};
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				Position: this.writePosition( action.position )
+			}
+		}
 
+		return {
+			TeleportAction: {
+				Position: this.writePosition( action.position )
+			}
+		}
 	}
 
 	writePosition ( position: Position ): any {
@@ -716,16 +1306,28 @@ export class WriterService {
 				xml = this.writeWorldPosition( position as WorldPosition );
 				break;
 
+			case PositionType.RelativeWorld:
+				xml = this.writeRelativeWorldPosition( position as RelativeWorldPosition );
+				break;
+
 			case PositionType.RelativeObject:
 				xml = this.writeRelativeObjectPosition( position as RelativeObjectPosition );
 				break;
 
-			case PositionType.RelativeLane:
-				xml = this.writeRelativeLanePosition( position as RelativeLanePosition );
+			case PositionType.Road:
+				xml = this.writeRoadPosition( position as RoadPosition );
+				break;
+
+			case PositionType.RelativeRoad:
+				xml = this.writeRelativeRoadPosition( position as RelativeRoadPosition );
 				break;
 
 			case PositionType.Lane:
 				xml = this.writeLanePosition( position as LanePosition );
+				break;
+
+			case PositionType.RelativeLane:
+				xml = this.writeRelativeLanePosition( position as RelativeLanePosition );
 				break;
 
 			default:
@@ -736,17 +1338,57 @@ export class WriterService {
 		return xml;
 	}
 
-	writeRelativeLanePosition ( position: RelativeLanePosition ): any {
+	writeRoadPosition ( position: RoadPosition ): XmlElement {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ?
+			'Road' :
+			'RoadPosition';
 
 		return {
-			RelativeLane: {
-				attr_object: position.entityRef,
-				attr_dLane: position.dLane,
-				attr_ds: position.ds,
-				attr_offset: position.offset ? position.offset : 0,
-				Orientations: this.writeOrientation( position.orientation )
+			[ key ]: {
+				attr_roadId: position.roadId,
+				attr_s: position.sValue,
+				attr_t: position.tValue,
+				Orientation: this.writeOrientation( position.orientation )
 			}
 		};
+
+	}
+
+	writeRelativeRoadPosition ( position: RelativeRoadPosition ): XmlElement {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ?
+			'RelativeRoad' :
+			'RelativeRoadPosition';
+
+		return {
+			[ key ]: {
+				[ this.entityKey ]: position.entity,
+				attr_roadId: position.roadId,
+				attr_ds: position.ds,
+				attr_dt: position.dt,
+				Orientation: this.writeOrientation( position.orientation )
+			}
+		};
+
+	}
+
+	writeRelativeWorldPosition ( position: RelativeWorldPosition ): XmlElement {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ?
+			'RelativeWorld' :
+			'RelativeWorldPosition';
+
+		return {
+			[ key ]: {
+				[ this.entityKey ]: position.entityRef,
+				attr_dx: position.dx,
+				attr_dy: position.dy,
+				attr_dz: position.dz,
+				Orientation: this.writeOrientation( position.orientation )
+			}
+		};
+
 	}
 
 	writeOrientation ( orientation: Orientation ) {
@@ -757,13 +1399,23 @@ export class WriterService {
 
 	writeWorldPosition ( position: WorldPosition ) {
 
-		return position.toXML();
+		return position.toXML( this.version );
 
 	}
 
 	writeRelativeObjectPosition ( position: RelativeObjectPosition ) {
 
-		return position.toXML();
+		const key = this.version == OpenScenarioVersion.v0_9 ? 'RelativeObject' : 'RelativeObjectPosition';
+
+		return {
+			[ key ]: {
+				[ this.entityKey ]: position.entityRef,
+				attr_dx: position.dx,
+				attr_dy: position.dy,
+				attr_dz: position.dz ? position.dz : 0,
+				Orientation: position.orientation.toXML()
+			}
+		};
 	}
 
 	writeCatalogs ( rootNode: any, catalogs: Catalogs ) {
@@ -774,10 +1426,20 @@ export class WriterService {
 
 	writeParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
 
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+
+			return {
+				attr_name: parameterDeclaration.parameter.name,
+				attr_value: parameterDeclaration.parameter.value,
+				attr_type: parameterDeclaration.parameter.type,
+			};
+
+		}
+
 		return {
 			attr_name: parameterDeclaration.parameter.name,
 			attr_value: parameterDeclaration.parameter.value,
-			attr_type: parameterDeclaration.parameter.type,
+			attr_parameterType: parameterDeclaration.parameter.type,
 		};
 
 	}
@@ -790,35 +1452,49 @@ export class WriterService {
 
 	writeLanePosition ( position: LanePosition ) {
 
-		return position.toXML();
+		const key = this.version == OpenScenarioVersion.v0_9 ? 'Lane' : 'LanePosition';
+
+		return {
+			[ key ]: {
+				attr_roadId: position.roadId,
+				attr_laneId: position.laneId,
+				attr_s: position.sCoordinate,
+				attr_offset: position.offset ? position.offset : 0,
+				Orientation: position.orientation?.toXML()
+			}
+		};
+
+	}
+
+	writeRelativeLanePosition ( position: RelativeLanePosition ) {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ? 'RelativeLane' : 'RelativeLanePosition';
+
+		return {
+			[ key ]: {
+				[ this.entityKey ]: position.entityRef,
+				attr_dLane: position.dLane,
+				attr_ds: position.ds,
+				attr_offset: position.offset,
+				attr_dsLane: position.dsLane,
+				Orientation: position.orientation?.toXML()
+			}
+		};
 
 	}
 
 	writeTrajectory ( trajectory: Trajectory ) {
 
-		const xml = {
-			Trajectory: {
-				attr_name: trajectory.name,
-				attr_domain: trajectory.domain,
-				attr_closed: trajectory.closed,
-				ParameterDeclaration: [],
-				Vertex: []
-			}
+		return {
+			attr_name: trajectory.name,
+			attr_domain: trajectory.domain,
+			attr_closed: trajectory.closed,
+			ParameterDeclarations: {
+				ParameterDeclaration: this.writeParameterDeclarations( trajectory.parameterDeclarations )
+			},
+			Vertex: trajectory.vertices.map( vertex => this.writeVertex( vertex ) )
 		};
 
-		trajectory.parameterDeclarations.forEach( item => {
-
-			xml.Trajectory.ParameterDeclaration.push( item );
-
-		} );
-
-		trajectory.vertices.forEach( item => {
-
-			xml.Trajectory.Vertex.push( this.writeVertex( item ) );
-
-		} );
-
-		return xml;
 	}
 
 	writeVertex ( vertex: Vertex ) {
@@ -832,8 +1508,7 @@ export class WriterService {
 		return xml;
 	}
 
-	writeShape ( shape: AbstractShape ) {
-
+	writeShape ( shape: AbstractShape ): XmlElement {
 
 		// TODO : Test this against production
 		if ( shape instanceof PolylineShape ) {

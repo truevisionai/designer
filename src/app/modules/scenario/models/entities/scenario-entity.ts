@@ -30,8 +30,8 @@ export abstract class ScenarioEntity extends GameObject {
 	protected constructor ( public name: string, public boundingBox: TvBoundingBox ) {
 		super( name, new BoxGeometry(
 			boundingBox.dimension.width,
-			boundingBox.dimension.height,
-			boundingBox.dimension.depth
+			boundingBox.dimension.length,	// reverse because y is north
+			boundingBox.dimension.height // reverse because z is up
 		), new MeshBasicMaterial( {
 			color: Math.random() * 0xffffff
 		} ) );

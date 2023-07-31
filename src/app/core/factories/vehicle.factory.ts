@@ -5,9 +5,9 @@ import { Vector3 } from "three";
 
 export class VehicleFactory {
 
-	static createDefaultCar (): VehicleEntity {
+	static createDefaultCar ( name: string ): VehicleEntity {
 
-		const name = VehicleEntity.getNewName( 'car' );
+		// const name = VehicleEntity.getNewName( 'car' );
 
 		const boundingBox = new TvBoundingBox(
 			new Vector3( 1.3, 0.0, 0.75 ),

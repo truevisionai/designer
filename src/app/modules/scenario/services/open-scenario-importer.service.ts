@@ -104,6 +104,7 @@ import {
 } from './traffic-signal-controller.condition';
 import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
+import { VehicleFactory } from 'app/core/factories/vehicle.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -502,7 +503,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		}
 
-		entityObject = entityObject || new VehicleEntity( name );
+		entityObject = entityObject || VehicleFactory.createDefaultCar( name );
 
 		entityObject.name = name;
 
@@ -561,12 +562,13 @@ export class OpenScenarioImporter extends AbstractReader {
 		// <xsd:element name="Rear" type="OSCAxle"/>
 		// <xsd:element name="Additional" type="OSCAxle" minOccurs="0" maxOccurs="unbounded"/>
 
-		const frontAxle = this.readAxle( xml.FrontAxle );
-		const rearAxle = this.readAxle( xml.RearAxle );
+		const frontAxle = this.readAxle( xml.FrontAxle ) || new TvAxle( 0.5, 0.8, 1.68, 2.98, 0.4 );
+
+		const rearAxle = this.readAxle( xml.RearAxle ) || new TvAxle( 0.5, 0.8, 1.68, 0, 0.4 );
+
 		const additionalAxles = [];
 
 		readXmlArray( xml.AdditionalAxle, ( xml ) => additionalAxles.push( this.readAxle( xml ) ) );
-
 
 		return new TvAxles( frontAxle, rearAxle, additionalAxles );
 
@@ -613,8 +615,8 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		return new TvDimension(
 			parseFloat( xml.attr_width ),
-			parseFloat( xml.attr_height ),
 			parseFloat( xml.attr_length ),
+			parseFloat( xml.attr_height ),
 		);
 
 	}
