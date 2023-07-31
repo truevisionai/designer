@@ -127,7 +127,9 @@ export class PreviewService {
 
 		this.camera = new PerspectiveCamera( 50, WIDTH / HEIGHT, 0.1, 1000 );
 
-		this.camera.position.set( 0, 5, 10 );
+		this.camera.position.set( 0, 0, 5 );
+
+		this.camera.lookAt( 0, 0, 0 );
 
 		this.camera.up.set( 0, 0, 1 );
 
@@ -257,6 +259,10 @@ export class PreviewService {
 	getMaterialPreview ( material: Material ): string {
 
 		if ( !material ) return;
+
+		this.camera.position.set( 0, 0, 4 );
+
+		this.camera.updateProjectionMatrix();
 
 		this.sphere.visible = true;
 
@@ -398,7 +404,7 @@ export class PreviewService {
 		// Set the object's Y position to be half its height
 		object.position.z = size.z / 2;
 
-		camera.position.set( center.x, size.y, size.z );
+		camera.position.set( center.x, size.y, size.z * 2 );
 
 		camera.lookAt( center );
 
