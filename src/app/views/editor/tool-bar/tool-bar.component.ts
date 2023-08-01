@@ -195,6 +195,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'button',
 			tooltip: 'Crosswalk Tool',
 			click: () => this.setToolType( ToolType.Crosswalk ),
+			enabled: true,
 		},
 		{
 			id: 'showManeueverTool',
@@ -288,6 +289,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
+			enabled: true,
 		},
 		// add more tools here...
 	];
