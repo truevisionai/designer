@@ -9,25 +9,57 @@
 		<img [src]="thumbnail" />
 	</mat-card>
 
-	<!-- <app-string-field (changed)="onNameChanged($event)" [value]="material.name" label="Name"></app-string-field> -->
+	<app-string-field [disabled]="true"
+		[value]="material.name"
+		label="Name"></app-string-field>
 
-	<app-double-field (changed)="onRoughnessChanged($event)"
+	<!-- <app-dropdown-field (changed)="onTypeChanged($event)"
+		[options]="materialTypes"
+		[value]="material.type"></app-dropdown-field> -->
+
+	<app-double-field *ngIf="material.roughness != undefined"
+		(changed)="onRoughnessChanged($event)"
 		[value]="material.roughness"
 		label="Roughness"
 		max="1"
 		min="0"></app-double-field>
 
-	<app-double-field (changed)="onMetalnessChanged($event)"
+	<app-double-field *ngIf="material.metalness != undefined"
+		(changed)="onMetalnessChanged($event)"
 		[value]="material.metalness"
 		label="Metalness"
 		max="1"
 		min="0"></app-double-field>
 
-	<app-color-field (changed)="onColorChanged($event)"
+	<app-color-field *ngIf="material.emissive != undefined"
+		(changed)="onEmissiveChanged($event)"
+		[value]="material.emissive"
+		label="Emissive"></app-color-field>
+
+	<app-double-field *ngIf="material.emissiveIntensity != undefined"
+		(changed)="onEmissiveIntensityChanged($event)"
+		[value]="material.emissiveIntensity"
+		label="Emissive Intensity"
+		max="1"
+		min="0"></app-double-field>
+
+	<app-double-field *ngIf="material.opacity != undefined"
+		(changed)="onOpacityChanged($event)"
+		[value]="material.opacity"
+		label="Opacity"
+		max="1"
+		min="0"></app-double-field>
+
+	<app-boolean-field *ngIf="material.transparent != undefined"
+		(changed)="onTransparentChanged($event)"
+		[value]="material.transparent"
+		label="Transparent">
+	</app-boolean-field>
+
+	<app-color-field *ngIf="material.color != undefined"
+		(changed)="onColorChanged($event)"
 		[value]="material.color"
 		label="Color"></app-color-field>
-
-	<!-- <app-color-field label="Emissive" [value]="material.emissive" (changed)="onEmissiveColorChanged($event)"></app-color-field> -->
 
 	<app-texture-field (changed)="onMapChanged($event)"
 		[guid]="material.mapGuid"

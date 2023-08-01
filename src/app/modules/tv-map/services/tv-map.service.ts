@@ -24,7 +24,7 @@ import { TvMap } from '../models/tv-map.model';
 export class TvMapService {
 
 	constructor (
-		private fileService: FileService,
+		public fileService: FileService,
 		private writer: OdWriter,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
@@ -91,7 +91,7 @@ export class TvMapService {
 
 	public import ( file: IFile, callbackFn = null ) {
 
-		const map = this.load( file, callbackFn );
+		const map = this.load( file );
 
 		if ( map == null ) return;
 
@@ -100,6 +100,8 @@ export class TvMapService {
 		this.map = map;
 
 		TvMapBuilder.buildMap( this.map );
+
+		callbackFn?.( map );
 
 		SnackBar.success( `OpenDrive imported ${ file?.path }` );
 

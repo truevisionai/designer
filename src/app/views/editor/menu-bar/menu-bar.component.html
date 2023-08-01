@@ -102,9 +102,13 @@
 			mat-menu-item>
 			CARLA OpenDrive (.xodr)
 		</button>
-		<!-- <button (click)="exportOpenScenario()" action="export-glb" appTrack="menu" mat-menu-item> -->
-		<!-- <span>OpenSCENARIO</span> -->
-		<!-- </button> -->
+		<button *ngIf="oscEnabled"
+			(click)="exportOpenScenario()"
+			action="export-open-scenario"
+			appTrack="menu"
+			mat-menu-item>
+			<span>OpenSCENARIO</span>
+		</button>
 	</mat-menu>
 
 	<mat-menu #editMenu="matMenu">
@@ -119,6 +123,13 @@
 			appTrack="menu"
 			mat-menu-item>
 			<span>Redo (CTRL + Y)</span>
+		</button>
+		<mat-divider></mat-divider>
+		<button (click)="onEsminiSettings()"
+			action="esmini-settings"
+			appTrack="menu"
+			mat-menu-item>
+			<span>Esmini Settings</span>
 		</button>
 	</mat-menu>
 

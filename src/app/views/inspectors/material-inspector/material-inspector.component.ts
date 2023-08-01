@@ -12,7 +12,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { Color } from 'three';
+import { Color, MeshBasicMaterial, MeshLambertMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';
 
 @Component( {
@@ -40,6 +40,62 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	get material () {
 		return this.data.material;
+	}
+
+	get materialTypes () {
+		return [
+			'MeshStandardMaterial',
+			'MeshPhysicalMaterial',
+			'MeshPhongMaterial',
+			'MeshLambertMaterial',
+		]
+	}
+
+	onTypeChanged ( newMaterialType: string ) {
+
+		// You need to ensure the new material type is a valid one
+		if ( !this.materialTypes.includes( newMaterialType ) ) {
+			console.error( `Invalid material type: ${ newMaterialType }` );
+			return;
+		}
+
+		let newMaterial: any;
+
+		// Create new material of the chosen type
+		switch ( newMaterialType ) {
+			case 'MeshStandardMaterial':
+				newMaterial = new MeshStandardMaterial();
+				break;
+			case 'MeshBasicMaterial':
+				newMaterial = new MeshBasicMaterial();
+				break;
+			case 'MeshPhysicalMaterial':
+				newMaterial = new MeshPhysicalMaterial();
+				break;
+			case 'MeshNormalMaterial':
+				newMaterial = new MeshNormalMaterial();
+				break;
+			case 'MeshPhongMaterial':
+				newMaterial = new MeshPhongMaterial();
+				break;
+			case 'MeshLambertMaterial':
+				newMaterial = new MeshLambertMaterial();
+				break;
+			default:
+				console.error( `Unknown material type: ${ newMaterialType }` );
+				return;
+		}
+
+		try {
+			this.data.material = this.data.material.copy( newMaterial );
+		} catch ( error ) {
+			console.error( error );
+		}
+
+		AssetFactory.updateMaterial( this.metadata.path, newMaterial );
+
+		this.updatePreviewCache();
+
 	}
 
 	get color (): any {
@@ -105,6 +161,30 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
+	onEmissiveChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'emissive', $value );
+
+	}
+
+	onEmissiveIntensityChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'emissiveIntensity', $value );
+
+	}
+
+	onTransparentChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'transparent', $value );
+
+	}
+
+	onOpacityChanged ( $value ) {
+
+		this.updateMaterialProperty( this.material, 'opacity', $value );
+
+	}
+
 	onMapChanged ( $guid: string ) {
 
 		console.log( 'map changed', $guid )
@@ -145,7 +225,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	private updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
 
-		const oldValue = ( typeof material[ propertyName ] === 'number' )
+		const oldValue = ( typeof material[ propertyName ] === 'number' || typeof material[ propertyName ] === 'boolean' )
 			? material[ propertyName ]
 			: ( material[ propertyName ] as any ).clone();
 

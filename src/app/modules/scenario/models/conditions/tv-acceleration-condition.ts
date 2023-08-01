@@ -23,7 +23,11 @@ export class AccelerationCondition extends EntityCondition {
 	 * @param rule
 	 * @param direction
 	 */
-	constructor ( public value: number, public rule: Rule, public direction: DirectionDimension = DirectionDimension.all ) {
+	constructor (
+		public value: number,
+		public rule: Rule,
+		public direction: DirectionDimension = DirectionDimension.all
+	) {
 
 		super();
 

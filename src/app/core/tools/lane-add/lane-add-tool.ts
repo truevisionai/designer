@@ -2,37 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { KeyboardInput } from '../../input';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { CallFunctionCommand } from '../../commands/call-function-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { DuplicateLaneCommand } from '../../commands/duplicate-lane-command';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { GameObject } from '../../game-object';
-import { Line } from 'three';
-import { SnackBar } from 'app/services/snack-bar.service';
 import { ToolType } from '../../models/tool-types.enum';
+import { SelectMainObjectCommand } from 'app/core/commands/select-point-command';
+import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
 	public toolType = ToolType.LaneAdd;
 
-	public lane: TvLane;
+	private lane: TvLane;
 
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.CYAN, false );
+	private pointerStrategy: SelectStrategy<TvLane>;
 
-	constructor () {
+	init (): void {
 
-		super();
+		this.pointerStrategy = new OnLaneStrategy();
 
 	}
 
@@ -40,158 +32,40 @@ export class LaneAddTool extends BaseTool {
 
 		super.disable();
 
-		this.laneHelper.clear();
-
-		this.removeHighlight();
-	}
-
-	public onPointerDown ( e: PointerEventData ) {
-
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
-
-		if ( KeyboardInput.isShiftKeyDown && this.isReferenceLineSelected( e ) ) return;
-
-		this.isLaneSelected( e );
+		this.pointerStrategy?.dispose();
 
 	}
 
-	public onPointerMoved ( e: PointerEventData ) {
+	setMainObject ( value: ISelectable ): void {
 
-		this.removeHighlight();
-
-		if ( !this.lane ) this.setHint( 'Use LEFT CLICK to select road' );
-		if ( !this.lane ) return;
-
-		this.setHint( 'Move pointer over reference line of the lane you want to duplicate' );
-
-		if ( this.hasInteratedReferenceLine( e ) ) return;
+		this.lane = value as TvLane;
 
 	}
 
-	// hasInteractedLane ( e: PointerEventData ): boolean {
+	getMainObject (): ISelectable {
 
-	// 	const road = this.map.getRoadById( this.lane.roadId );
+		return this.lane;
 
-	// 	const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
-
-	// 	if ( !object ) return false;
-
-	// 	this.highlight( object as GameObject );
-
-	// 	return true;
-	// }
-
-	hasInteratedReferenceLine ( e: PointerEventData ): boolean {
-
-		const road = this.map.getRoadById( this.lane.roadId );
-
-		if ( !road ) console.error( 'Road not found' );
-
-		if ( !road ) return false;
-
-		const results = PickingHelper.findAllByTag( this.laneHelper.tag, e, road.gameObject.children );
-
-		if ( !results || results.length == 0 ) return false;
-
-		this.setHint( 'Use SHIFT + LEFT CLICK to duplicate lane' );
-
-		this.highlightLine( results[ 0 ] as Line );
-
-		return true;
 	}
 
-	public isLaneSelected ( e: PointerEventData ): boolean {
+	onPointerDown ( e: PointerEventData ): void {
 
-		const newLane = PickingHelper.checkLaneObjectInteraction( e );
+		const lane = this.pointerStrategy?.onPointerDown( e );
 
-		if ( this.shouldClearLane( newLane ) ) {
+		if ( !lane ) {
 
-			this.clearLane();
+			CommandHistory.execute( new SelectMainObjectCommand( this, null ) );
 
-		} else if ( this.shouldSelectNewLane( newLane ) ) {
+		} else if ( !this.lane || this.lane.uuid != lane.uuid ) {
 
-			this.selectNewLane( newLane );
-
-		} else if ( this.shouldClearInspector( newLane ) ) {
-
-			// do nothing
-			// AppInspector.clear();
+			CommandHistory.execute( new SelectMainObjectCommand( this, lane, LaneInspectorComponent, lane ) );
 
 		}
-
-		return newLane != null;
 	}
 
-	public shouldClearLane ( newLane: TvLane ): boolean {
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		return this.lane && newLane == null;
-
-	}
-
-	public shouldSelectNewLane ( newLane: TvLane ): boolean {
-
-		if ( !newLane ) return false;
-
-		if ( !this.lane ) return true;
-
-		return this.lane.gameObject.id !== newLane.gameObject.id;
-
-	}
-
-	public shouldClearInspector ( newLane: TvLane ): boolean {
-
-		return !this.lane && newLane == null;
-
-	}
-
-	public clearLane (): void {
-
-		CommandHistory.executeMany(
-
-			new SetValueCommand( this, 'lane', null ),
-
-			new CallFunctionCommand( this.laneHelper, this.laneHelper.clear, [], this.laneHelper.clear, [] ),
-
-			new SetInspectorCommand( null, null ),
-
-		);
-
-	}
-
-	public selectNewLane ( lane: TvLane ): void {
-
-		const road = this.map.getRoadById( lane.roadId );
-
-		CommandHistory.executeMany(
-
-			new SetValueCommand( this, 'lane', lane ),
-
-			new CallFunctionCommand( this.laneHelper, this.laneHelper.drawRoad, [ road, LineType.SOLID ], this.laneHelper.clear ),
-
-			new SetInspectorCommand( LaneInspectorComponent, lane ),
-
-		);
-
-	}
-
-	public isReferenceLineSelected ( e: PointerEventData ) {
-
-		const referenceLine = this.findIntersection( this.laneHelper.tag, e.intersections );
-
-		if ( !referenceLine ) return false;
-
-		if ( !referenceLine.userData.lane ) return false;
-
-		this.cloneLane( referenceLine.userData.lane as TvLane );
-
-		return true;
-	}
-
-	public cloneLane ( lane: TvLane ): void {
-
-		CommandHistory.execute( new DuplicateLaneCommand( lane ) );
-
-		this.setHint( 'Lane Added. Use CTRL Z to undo' );
+		const lane = this.pointerStrategy?.onPointerMoved( pointerEventData );
 
 	}
 }

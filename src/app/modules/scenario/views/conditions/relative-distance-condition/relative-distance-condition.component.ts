@@ -26,7 +26,7 @@ export class RelativeDistanceConditionComponent {
 
 	onTargetEntityChanged ( $targetEntity: string ) {
 
-		this.relativeDistanceCondition.targetEntity = $targetEntity;
+		this.relativeDistanceCondition.entityRef = $targetEntity;
 
 	}
 

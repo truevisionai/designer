@@ -10,10 +10,11 @@ import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-mark
 import { AssetDatabase } from 'app/services/asset-database';
 import { FileService } from 'app/services/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Texture } from 'three';
+import { BufferGeometry, Material, Object3D, Texture } from 'three';
 import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../services/app.service';
 import { MetadataFactory } from './metadata-factory.service';
+import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -127,7 +128,25 @@ export class AssetFactory {
 
 	static updateMaterial ( path: string, material: TvMaterial ) {
 
-		this.fileService.fs.writeFileSync( path, material.toJSONString() );
+		const value = JSON.stringify( material.toJSON(), null, 2 );
+
+		this.fileService.fs.writeFileSync( path, value );
+
+	}
+
+	static updateGeometry ( path: string, geometry: BufferGeometry ) {
+
+		const contents = JSON.stringify( geometry.toJSON(), null, 2 );
+
+		this.fileService.fs.writeFileSync( path, contents );
+
+	}
+
+	static updatePrefab ( path: string, prefab: TvPrefab ) {
+
+		const contents = JSON.stringify( prefab.toJSON(), null, 2 );
+
+		this.fileService.fs.writeFileSync( path, contents );
 
 	}
 

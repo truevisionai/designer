@@ -36,8 +36,6 @@ export class FileComponent implements OnInit {
 
 	@Input() file: FileNode;
 
-	public extension: string;
-
 	public metadata: Metadata;
 
 	public showRenaming: boolean;
@@ -60,6 +58,10 @@ export class FileComponent implements OnInit {
 		return this.metadata && this.metadata.preview;
 	}
 
+	public get extension () {
+		return FileUtils.getExtensionFromPath( this.filePath );
+	}
+
 	public get imageSource () {
 		if ( this.isDirectory ) {
 			return 'assets/folder-icon.png';
@@ -71,6 +73,9 @@ export class FileComponent implements OnInit {
 			return 'assets/unknown-file-icon.png';
 		}
 		if ( this.isUnknown ) {
+			return 'assets/unknown-file-icon.png';
+		}
+		if (!this.previewImage){
 			return 'assets/unknown-file-icon.png';
 		}
 		return this.previewImage;
@@ -136,8 +141,6 @@ export class FileComponent implements OnInit {
 	ngOnInit () {
 
 		try {
-
-			this.extension = this.file.name.split( '.' )[ 1 ];
 
 			if ( !this.assetService.hasMetaFile( this.file ) ) {
 

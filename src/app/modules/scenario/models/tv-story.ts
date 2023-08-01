@@ -21,7 +21,7 @@ export class Story implements StoryboardElement {
 	public hasStarted: boolean;
 	public isCompleted: boolean;
 
-	private parameterDeclarations: ParameterDeclaration[] = [];
+	public parameterDeclarations: ParameterDeclaration[] = [];
 
 	constructor ( public name: string, public ownerName: string ) {
 		Story.count++;
@@ -60,7 +60,12 @@ export class Story implements StoryboardElement {
 
 	getParameterValue<T> ( name: string ): T {
 
-		const parameterDeclaration = this.parameterDeclarations.find( p => p.parameter.name === name );
+		let parameterDeclaration = this.parameterDeclarations.find( p => p.parameter.name === name );
+
+		// try with $ prefix
+		if ( !parameterDeclaration ) {
+			parameterDeclaration = this.parameterDeclarations.find( p => p.parameter.name === `$` + name );
+		}
 
 		if ( !parameterDeclaration ) throw new Error( `Parameter declaration for '${ name }' not found` );
 

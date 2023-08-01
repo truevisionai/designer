@@ -11,6 +11,9 @@ import { UpdateWidthNodeDistanceCommand } from '../../../core/tools/lane-width/u
 import { UpdateWidthNodeValueCommand } from '../../../core/tools/lane-width/update-width-node-value-command';
 import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { SnackBar } from 'app/services/snack-bar.service';
+import { Maths } from 'app/utils/maths';
 
 @Component( {
 	selector: 'app-lane-width-inspector',
@@ -57,11 +60,22 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 	onDelete () {
 
-		if ( this.data ) {
+		if ( !this.data ) return;
 
-			CommandHistory.execute( new RemoveWidthNodeCommand( this.data.node ) );
+		if ( Maths.approxEquals( this.data.s, 0 ) ) {
 
+			SnackBar.show( 'Lane width at s=0 cannot be deleted' );
+
+			return
 		}
+
+		CommandHistory.executeMany(
+
+			new RemoveWidthNodeCommand( this.data.node ),
+
+			new SetInspectorCommand( null, null )
+
+		);
 
 	}
 }

@@ -70,7 +70,7 @@ export class ActionFactory {
 				throw new Error( `Unsupported private action: ${ type }` );
 				break;
 
-			case ActionType.Private_Routing:
+			case ActionType.Private_Routing_FollowTrajectory:
 				throw new Error( `Unsupported private action: ${ type }` );
 				break;
 

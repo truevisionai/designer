@@ -24,7 +24,7 @@ export class ActionService {
 			case ActionType.Private_Position:
 				this.executePositionAction( obj, privateAction as TeleportAction );
 				break;
-			case ActionType.Private_Routing:
+			case ActionType.Private_Routing_FollowTrajectory:
 				throw new Error( 'Unsupported private action' );
 				break;
 			case ActionType.UserDefined_Command:

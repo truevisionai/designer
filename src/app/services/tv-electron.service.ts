@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 
 declare const window: any;
 declare const versions: any;
+declare const command: any;
 
 @Injectable( { providedIn: 'root' } )
 export class TvElectronService {
@@ -104,6 +105,20 @@ export class TvElectronService {
 	openLink ( link: string ) {
 
 		this.remote.shell.openExternal( link );
+
+	}
+
+	/**
+	 * @param exec
+	 * @param args
+	 * @param out
+	 * @param err
+	 * @param close
+	 * @returns
+	 */
+	spawn ( exec: string, args: string[], out: Function, err: Function, close: Function ): any {
+
+		return command.spawn( exec, args, out, err, close );
 
 	}
 

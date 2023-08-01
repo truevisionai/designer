@@ -23,7 +23,7 @@ export class FollowRouteAction extends AbstractRoutingAction {
 	}
 
 	readonly label: string = 'FollowRoute';
-	readonly actionType: ActionType = ActionType.Private_Routing;
+	readonly actionType: ActionType = ActionType.Private_Routing_FollowTrajectory;
 
 
 	// optional
@@ -54,7 +54,7 @@ export class AcquirePositionAction extends AbstractRoutingAction {
 	}
 
 	readonly label: string = 'AcquirePosition';
-	readonly actionType: ActionType = ActionType.Private_Routing;
+	readonly actionType: ActionType = ActionType.Private_Routing_AcquirePosition;
 
 	constructor ( public position: Position ) {
 		super();

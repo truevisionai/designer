@@ -69,7 +69,7 @@ export class ConditionFactory {
 
 		return new SimulationTimeCondition(
 			0,
-			Rule.greater_than
+			Rule.GreaterThan
 		);
 
 	}
@@ -78,7 +78,7 @@ export class ConditionFactory {
 
 		const position = new WorldPosition();
 
-		return new DistanceCondition( position, 10, false, false, Rule.greater_than );
+		return new DistanceCondition( position, 10, false, false, Rule.GreaterThan );
 
 	}
 
@@ -95,7 +95,7 @@ export class ConditionFactory {
 
 	private static createTimeHeadwayCondition ( entity?: ScenarioEntity ) {
 
-		const condition = new TimeHeadwayCondition( null, 5, false, false, Rule.greater_than );
+		const condition = new TimeHeadwayCondition( null, 5, false, false, Rule.GreaterThan );
 
 		if ( entity ) condition.addTriggeringEntity( entity.name );
 
@@ -115,7 +115,7 @@ export class ConditionFactory {
 
 	private static createSpeedCondition ( entity?: ScenarioEntity ) {
 
-		const condition = new SpeedCondition( 40, Rule.greater_than );
+		const condition = new SpeedCondition( 40, Rule.GreaterThan );
 
 		if ( entity ) condition.addTriggeringEntity( entity.name );
 
@@ -147,7 +147,7 @@ export class ConditionFactory {
 
 		const condition = new RelativeDistanceCondition(
 			entity?.name, 10, RelativeDistanceType.cartesianDistance,
-			false, Rule.less_than
+			false, Rule.LessThan
 		);
 
 		if ( entity ) condition.addTriggeringEntity( entity.name );
@@ -158,7 +158,7 @@ export class ConditionFactory {
 
 	private static createAccelerationCondition ( entity?: ScenarioEntity ) {
 
-		const condition = new AccelerationCondition( 1.0, Rule.greater_than );
+		const condition = new AccelerationCondition( 1.0, Rule.GreaterThan );
 
 		if ( entity ) condition.addTriggeringEntity( entity.name );
 
@@ -167,7 +167,7 @@ export class ConditionFactory {
 
 	private static createRelativeSpeedCondition ( entity?: ScenarioEntity ) {
 
-		const condition = new RelativeSpeedCondition( entity?.name, 10, Rule.greater_than );
+		const condition = new RelativeSpeedCondition( entity?.name, 10, Rule.GreaterThan );
 
 		if ( entity ) condition.addTriggeringEntity( entity.name );
 

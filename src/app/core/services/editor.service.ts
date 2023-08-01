@@ -14,7 +14,8 @@ export class EditorService {
 
 	constructor (
 		private shortcutService: ShortcutService,
-		private mainFileService: MainFileService
+		private mainFileService: MainFileService,
+		public settings: EditorSettings
 	) {
 	}
 
@@ -54,3 +55,38 @@ export class EditorService {
 	}
 
 }
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class EditorSettings {
+
+	constructor () { }
+
+	get esminiEnabled (): string {
+		return localStorage.getItem( 'esminiEnabled' );
+	}
+
+	set esminiEnabled ( value ) {
+		localStorage.setItem( 'esminiEnabled', value );
+	}
+
+	get esminiPath (): string {
+		return localStorage.getItem( 'esminiPath' );
+	}
+
+	set esminiPath ( value ) {
+		localStorage.setItem( 'esminiPath', value );
+	}
+
+	get odrViewerPath (): string {
+		return localStorage.getItem( 'odrViewerPath' );
+	}
+
+	set odrViewerPath ( value ) {
+		localStorage.setItem( 'odrViewerPath', value );
+	}
+
+}
+
+

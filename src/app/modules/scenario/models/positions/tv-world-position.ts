@@ -4,7 +4,7 @@
 
 import { Euler, MathUtils, Vector3 } from 'three';
 import { Position } from '../position';
-import { PositionType } from '../tv-enums';
+import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class WorldPosition extends Position {
@@ -108,10 +108,14 @@ export class WorldPosition extends Position {
 
 	}
 
-	toXML () {
+	toXML ( version: OpenScenarioVersion ) {
+
+		const key = version == OpenScenarioVersion.v0_9 ?
+			'World' :
+			'WorldPosition';
 
 		return {
-			World: {
+			[ key ]: {
 				attr_x: this.vector3?.x ?? 0,
 				attr_y: this.vector3?.y ?? 0,
 				attr_z: this.vector3?.z ?? 0,

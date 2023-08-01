@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
-import { OrientationType, PositionType } from '../tv-enums';
+import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 
 export class RelativeObjectPosition extends Position {
@@ -83,9 +83,12 @@ export class RelativeObjectPosition extends Position {
 	// 	return new Vector3( rotatedX, rotatedY, rotatedZ );
 	// }
 
-	toXML (): XmlElement {
+	toXML ( version: OpenScenarioVersion ): XmlElement {
+
+		const key = version == OpenScenarioVersion.v0_9 ? 'RelativeObject' : 'RelativeObjectPosition';
+
 		return {
-			RelativeObject: {
+			[ key ]: {
 				attr_object: this.entityRef,
 				attr_dx: this.dx,
 				attr_dy: this.dy,

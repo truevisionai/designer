@@ -26,6 +26,8 @@ export enum MetaImporter {
 	MATERIAL = 'MaterialImporter',
 	SIGN = 'SignImporter',
 	MODEL = 'ModelImporter',
+	PREFAB = 'PrefabImporter',
+	GEOMETRY = 'GeometryImporter',
 	ROAD_STYLE = 'RoadStyleImporter',
 	ROAD_MARKING = 'RoadMarkingImporter',
 }

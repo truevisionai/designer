@@ -15,7 +15,7 @@ export class Act {
 
 	private static count = 1;
 
-	public sequences: ManeuverGroup[] = [];
+	public maneueverGroups: ManeuverGroup[] = [];
 
 	public startConditionGroups: ConditionGroup[] = [];
 	public cancelConditionGroups: ConditionGroup[] = [];
@@ -37,11 +37,11 @@ export class Act {
 
 	}
 
-	addNewSequence ( name: string, numberOfExecutions: number, ...actors: string[] ) {
+	addNewSequence ( name: string, numberOfExecutions: number = 1, ...actors: string[] ) {
 
 		const sequence = new ManeuverGroup( name, numberOfExecutions, actors );
 
-		this.sequences.push( sequence );
+		this.maneueverGroups.push( sequence );
 
 		return sequence;
 
@@ -49,7 +49,7 @@ export class Act {
 
 	addSequence ( sequence: ManeuverGroup ) {
 
-		this.sequences.push( sequence );
+		this.maneueverGroups.push( sequence );
 
 	}
 

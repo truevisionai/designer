@@ -34,6 +34,8 @@ import {
 	WebGLRenderer
 } from 'three';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
+import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { COLOR } from 'app/shared/utils/colors.service';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -73,7 +75,9 @@ export class PreviewService {
 	ngOnInit () {
 
 		this.createCube();
+
 		this.createSphere();
+
 		this.createPlane();
 
 		this.resetCamera();
@@ -122,7 +126,14 @@ export class PreviewService {
 	resetCamera () {
 
 		this.camera = new PerspectiveCamera( 50, WIDTH / HEIGHT, 0.1, 1000 );
-		this.camera.position.z = 3;
+
+		this.camera.position.set( 0, 0, 5 );
+
+		this.camera.lookAt( 0, 0, 0 );
+
+		this.camera.up.set( 0, 0, 1 );
+
+		this.camera.updateProjectionMatrix();
 
 	}
 
@@ -187,6 +198,14 @@ export class PreviewService {
 
 			}, metadata );
 
+		} else if ( metadata.importer === MetaImporter.PREFAB ) {
+
+			const prefab = AssetDatabase.getInstance<TvPrefab>( metadata.guid );
+
+			metadata.preview = this.getModelPreview( prefab );
+
+			AssetDatabase.setInstance( metadata.guid, prefab );
+
 		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
 
 			const instance = AssetDatabase.getInstance( metadata.guid );
@@ -203,13 +222,47 @@ export class PreviewService {
 
 			metadata.preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
 
+		} else if ( metadata.importer === MetaImporter.GEOMETRY ) {
+
+			const instance = AssetDatabase.getInstance( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getGeometryPreview( instance as THREE.BufferGeometry );
+
 		}
+
+	}
+
+	getGeometryPreview ( geometry: THREE.BufferGeometry ): any {
+
+		if ( !geometry ) return;
+
+		const model = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.GRAY, wireframe: true } ) );
+
+		this.modelPreviewSetup( this.scene, this.camera, model );
+
+		this.renderer.setSize( WIDTH, HEIGHT );
+
+		this.renderer.render( this.scene, this.camera );
+
+		const image = this.renderer.domElement.toDataURL();
+
+		this.scene.remove( model );
+
+		this.resetScene();
+
+		return image;
 
 	}
 
 	getMaterialPreview ( material: Material ): string {
 
 		if ( !material ) return;
+
+		this.camera.position.set( 0, 0, 4 );
+
+		this.camera.updateProjectionMatrix();
 
 		this.sphere.visible = true;
 
@@ -344,11 +397,14 @@ export class PreviewService {
 
 		const box = new Box3().setFromObject( object );
 
-		const size = box.getSize( new Vector3() ).length();
+		const size = box.getSize( new Vector3() );
 
 		const center = box.getCenter( new Vector3() );
 
-		camera.position.set( 0, 1, size * 1 );
+		// Set the object's Y position to be half its height
+		object.position.z = size.z / 2;
+
+		camera.position.set( center.x, size.y, size.z * 2 );
 
 		camera.lookAt( center );
 
@@ -366,8 +422,6 @@ export class PreviewService {
 
 		this.ground = new Mesh( new PlaneGeometry( 20000, 20000 ), groundMaterial );
 
-		this.ground.position.y = 0;
-		this.ground.rotation.x = -Math.PI / 2;
 		this.ground.receiveShadow = true;
 
 		scene.add( this.ground );

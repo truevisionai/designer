@@ -12,9 +12,11 @@ import { Orientation } from '../tv-orientation';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { OpenDriveProperties } from './open-drive-properties';
+import { ScenarioObjectType } from '../tv-enums';
 
 export abstract class ScenarioEntity extends GameObject {
 
+	public abstract scenarioObjectType: ScenarioObjectType;
 	public parameterDeclarations: ParameterDeclaration[] = [];
 	public controller: AbstractController;
 	public properties: TvProperty[] = [];
@@ -28,8 +30,8 @@ export abstract class ScenarioEntity extends GameObject {
 	protected constructor ( public name: string, public boundingBox: TvBoundingBox ) {
 		super( name, new BoxGeometry(
 			boundingBox.dimension.width,
-			boundingBox.dimension.height,
-			boundingBox.dimension.depth
+			boundingBox.dimension.length,	// reverse because y is north
+			boundingBox.dimension.height // reverse because z is up
 		), new MeshBasicMaterial( {
 			color: Math.random() * 0xffffff
 		} ) );

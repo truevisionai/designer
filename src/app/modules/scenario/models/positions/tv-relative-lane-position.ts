@@ -17,8 +17,8 @@ export class RelativeLanePosition extends Position {
 		public entityRef: string,
 		public dLane: number,
 		public ds: number,
-		public offset: number,
-		public dsLane: number,
+		public offset: number = 0,
+		public dsLane: number = 0,
 		public orientation: Orientation = new Orientation()
 	) {
 		super();

@@ -11,6 +11,7 @@ import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
+import { ParameterDeclaration } from '../models/tv-parameter-declaration';
 
 /**
  * This class is responsible for building the scenario
@@ -41,11 +42,11 @@ export class ScenarioBuilder {
 
 			story.acts.forEach( ( act ) => {
 
-				const ownerName = story.getParameterValue<string>( '$owner' );
+				const ownerName = story.getParameterValue<string>( 'owner' );
 
-				act.sequences.forEach( ( sequence ) => {
+				act.maneueverGroups.forEach( ( sequence ) => {
 
-					const index = sequence.actors.findIndex( actor => actor === '$owner' );
+					const index = sequence.actors.findIndex( actor => actor === 'owner' );
 
 					if ( index >= 0 ) sequence.actors[ index ] = ownerName;
 
@@ -55,11 +56,11 @@ export class ScenarioBuilder {
 
 							event.actions.forEach( ( action ) => {
 
-								this.replaceVariablesHelper( action, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
+								this.replaceVariablesHelper( action, new Map<string, any>( [ [ 'owner', ownerName ] ] ) );
 
 								if ( action instanceof LaneChangeAction || action instanceof SpeedAction ) {
 
-									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ '$owner', ownerName ] ] ) );
+									this.replaceVariablesHelper( action.target, new Map<string, any>( [ [ 'owner', ownerName ] ] ) );
 
 								}
 
@@ -67,7 +68,7 @@ export class ScenarioBuilder {
 
 							event.startConditions.filter( c => c instanceof EntityCondition ).forEach( ( condition: EntityCondition ) => {
 
-								const index = condition.triggeringEntities.findIndex( entity => entity === '$owner' );
+								const index = condition.triggeringEntities.findIndex( entity => entity === 'owner' );
 
 								if ( index >= 0 ) condition.triggeringEntities[ index ] = ownerName;
 
@@ -136,6 +137,39 @@ export class ScenarioBuilder {
 
 		}
 
+	}
+
+}
+
+export class ScenarioBuilderV2 {
+
+	constructor (
+		private scenario: TvScenario,
+		private scenarioString: string
+	) { }
+
+	setScenarioString ( value: string ) {
+		this.scenarioString = value;
+	}
+
+	setScenario ( value: TvScenario ) {
+		this.scenario = value;
+	}
+
+	buildScenario (): string {
+
+		this.scenario.parameterDeclarations.forEach( parameter =>
+			this.replaceParameter( parameter )
+		);
+
+		return this.scenarioString;
+	}
+
+	replaceParameter ( declaration: ParameterDeclaration ): void {
+
+		const regex = new RegExp( '\\$' + declaration.parameter.name, 'g' );
+
+		this.scenarioString = this.scenarioString.replace( regex, declaration.parameter.value );
 	}
 
 }

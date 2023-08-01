@@ -9,9 +9,11 @@ import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import {
+	BufferGeometryLoader,
 	LinearEncoding,
 	LinearFilter,
 	LinearMipMapLinearFilter,
+	MaterialLoader,
 	MeshStandardMaterial,
 	Object3D,
 	RGBAFormat,
@@ -23,6 +25,8 @@ import { AssetDatabase } from './asset-database';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
+import { TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
+import { Debug } from 'app/core/utils/debug';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,6 +62,10 @@ export class AssetLoaderService {
 		this.loadMaterials();
 
 		this.loadModels();
+
+		this.loadGeometries();
+
+		this.loadPrefabs();
 
 		this.loadRoadStyles();
 
@@ -224,13 +232,55 @@ export class AssetLoaderService {
 
 	loadMaterials () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+		const materialLoader = new TvMaterialLoader();
+
+		AssetDatabase.getMetadataAll().forEach( async meta => {
 
 			if ( meta.importer == MetaImporter.MATERIAL && meta.guid != 'defaultMaterial' ) {
 
-				const material = TvMaterial.parseString( this.fileService.fs.readFileSync( meta.path, 'utf-8' ) );
+				const contents = await this.fileService.readAsync( meta.path )
 
-				AssetDatabase.setInstance( meta.guid, material );
+				const material = materialLoader.parseMaterial( JSON.parse( contents ) );
+
+				if ( material.guid != meta.guid ) {
+
+					Debug.log( 'material guid mismatch', meta.guid, material.guid );
+
+					material.guid = material.uuid = meta.guid;
+
+					AssetFactory.updateMaterial( meta.path, material );
+
+					AssetDatabase.setInstance( meta.guid, material );
+
+				} else {
+
+					AssetDatabase.setInstance( meta.guid, material );
+
+				}
+
+			}
+
+		} );
+
+	}
+
+	loadGeometries () {
+
+		const loader = new BufferGeometryLoader();
+
+		AssetDatabase.getMetadataAll().forEach( async meta => {
+
+			if ( meta.importer == MetaImporter.GEOMETRY ) {
+
+				const contents = await this.fileService.readAsync( meta.path )
+
+				const json = JSON.parse( contents );
+
+				const geometry = loader.parse( json );
+
+				geometry.uuid = json.uuid;
+
+				AssetDatabase.setInstance( meta.guid, geometry );
 
 			}
 
@@ -251,6 +301,38 @@ export class AssetLoaderService {
 
 				}, meta );
 
+			}
+
+		} );
+
+	}
+
+	loadPrefabs () {
+
+		const loader = new TvPrefabLoader();
+
+		AssetDatabase.getMetadataAll().forEach( async meta => {
+
+			if ( meta.importer == MetaImporter.PREFAB ) {
+
+				const contents = await this.fileService.readAsync( meta.path );
+
+				const prefab = loader.parsePrefab( JSON.parse( contents ) );
+
+				if ( prefab.guid != meta.guid ) {
+
+					console.error( 'Prefab guid mismatch', meta.guid, prefab.guid );
+
+					prefab.guid = prefab.uuid = meta.guid;
+
+					AssetFactory.updatePrefab( meta.path, prefab );
+
+					AssetDatabase.setInstance( meta.guid, prefab );
+
+				} else {
+
+					AssetDatabase.setInstance( meta.guid, prefab );
+				}
 			}
 
 		} );

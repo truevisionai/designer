@@ -5,6 +5,10 @@
 import { Component } from '@angular/core';
 import { PlayerService } from '../../../core/player.service';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
+import { EditorService } from 'app/core/services/editor.service';
+import { EsminiPlayerService } from 'app/core/esmini-player.service';
+import { Environment } from 'app/core/utils/environment';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -23,18 +27,29 @@ export class PlayerBarComponent {
 
 	constructor (
 		private playerService: PlayerService,
-		private scenarioViewerService: ScenarioViewerService
+		private scenarioViewerService: ScenarioViewerService,
+		private electronService: TvElectronService,
+		private editor: EditorService,
+		private esminiPlayerService: EsminiPlayerService,
 	) {
 	}
 
+	get isEsminiEnabled () {
+		return this.esminiPlayerService.isEnabled && Environment.oscEnabled;
+	}
 
 	playSimulation () {
 
-		if ( this.isPlaying ) return;
+		if ( this.esminiPlayerService.isEnabled ) {
+			this.esminiPlayerService.playSimulation();
+			return;
+		}
 
-		this.playerService.play();
+		// if ( this.isPlaying ) return;
 
-		this.hasStarted = true;
+		// this.playerService.play();
+
+		// this.hasStarted = true;
 	}
 
 	pauseSimulation () {

@@ -12,7 +12,13 @@ export class RelativeRoadPosition extends Position {
 	readonly label: string = 'RelativeRoadPosition';
 	readonly type: PositionType = PositionType.RelativeRoad;
 
-	constructor ( public entity: string, public roadId: number, public ds: number, public dt: number, public orientation: Orientation ) {
+	constructor (
+		public entity: string,
+		public roadId: number,
+		public ds: number,
+		public dt: number,
+		public orientation: Orientation
+	) {
 		super();
 	}
 

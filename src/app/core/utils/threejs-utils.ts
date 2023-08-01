@@ -3,7 +3,7 @@
  */
 
 import { CoordinateSystem } from "app/services/exporter.service";
-import { CanvasTexture, Object3D } from "three";
+import { CanvasTexture, Object3D, Vector3 } from "three";
 
 export class ThreeJsUtils {
 
@@ -33,8 +33,14 @@ export class ThreeJsUtils {
 				// No change required
 				break;
 			case [ CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE ].join( '_' ):
+				// Set the "up" direction of the object to be along the z-axis
+				gameObject.up.set( 0, 0, 1 );
 				//Unity/glTF (Y-up) to OpenDRIVE (Z-up)
 				gameObject.rotateX( Math.PI / 2 );
+				// After changing the coordinate system, make the object face north
+				// Assuming the object's "front" is along the positive Z-axis
+				const northPoint = new Vector3( gameObject.position.x, gameObject.position.y + 1, gameObject.position.z );
+				gameObject.lookAt( northPoint );
 				break;
 			case [ CoordinateSystem.OPEN_DRIVE, CoordinateSystem.UNITY_GLTF ].join( '_' ):
 				// OpenDRIVE (Z-up) to Unity/glTF (Y-up)

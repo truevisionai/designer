@@ -25,16 +25,16 @@ export enum Sex {
 }
 
 export enum VehicleCategory {
-	car,
-	van,
-	truck,
-	trailer,
-	semitrailer,
-	bus,
-	motorbike,
-	bicycle,
-	train,
-	tram,
+	car = 'car',
+	van = 'van',
+	truck = 'truck',
+	trailer = 'trailer',
+	semitrailer = 'semitrailer',
+	bus = 'bus',
+	motorbike = 'motorbike',
+	bicycle = 'bicycle',
+	train = 'train',
+	tram = 'tram',
 }
 
 export enum ByConditionActor {
@@ -62,9 +62,9 @@ export enum ConditionEdge {
 }
 
 export enum ScenarioObjectType {
-	pedestrian,
-	vehicle,
-	miscellaneous
+	pedestrian = 'pedestrian',
+	vehicle = 'vehicle',
+	miscellaneous = 'miscellaneous',
 }
 
 export enum PositionType {
@@ -79,12 +79,12 @@ export enum PositionType {
 }
 
 export enum Rule {
-	greater_than = 'greater_than',
-	less_than = 'less_than',
-	equal_to = 'equal_to',
-	greater_or_equal = 'greater_or_equal',
-	less_or_equal = 'less_or_equal',
-	not_equal_to = 'not_equal_to',
+	GreaterThan = 'greaterThan',
+	LessThan = 'lessThan',
+	EqualTo = 'equalTo',
+	GreaterOrEqual = 'greaterOrEqual',
+	LessOrEqual = 'lessOrEqual',
+	NotEqualTo = 'notEqualTo',
 }
 
 export enum TargetType {
@@ -185,7 +185,9 @@ export enum ActionType {
 	Private_Autonomous,
 	Private_Controller,
 	Private_Position,
-	Private_Routing,
+	Private_Routing_FollowTrajectory,
+	Private_Routing_AcquirePosition,
+	Private_Routing_AssignRoute,
 
 	UserDefined_Command,
 	UserDefined_Script,
@@ -202,15 +204,16 @@ export enum ActionType {
 }
 
 export enum RelativeDistanceType {
-	longitudinal,
-	lateral,
-	cartesianDistance,// also called inertial
-	euclidianDistance
+	longitudinal = 'longitudinal',
+	lateral = 'lateral',
+	cartesianDistance = 'cartesianDistance',// also called inertial
+	euclidianDistance = 'euclidianDistance',
 }
 
-export enum LateralPurpose {
+export enum TrajectoryFollowingMode {
 	position = 'position',
-	steering = 'steering'
+	steering = 'steering',
+	follow = 'follow',
 }
 
 export enum Controller_domain {
@@ -285,20 +288,20 @@ export enum DynamicsDimension {
 }
 
 export enum CoordinateSystem {
-	entity,
-	lane,
-	road,
-	trajectory
+	entity = 'entity',
+	lane = 'lane',
+	road = 'road',
+	trajectory = 'trajectory',
 }
 
 export enum DirectionDimension {
-	longitudinal,
-	lateral,
-	vertical,
-	all,
+	longitudinal = 'longitudinal',
+	lateral = 'lateral',
+	vertical = 'vertical',
+	all = 'all',
 }
 
 export enum FollowingMode {
-	follow, //	Follow the lateral and/or longitudinal target value
-	position, // Follow the trajectory, shape or profile exactly by ignoring the dynamic constraints of the entity.
+	follow = 'follow', //	Follow the lateral and/or longitudinal target value
+	position = 'position', // Follow the trajectory, shape or profile exactly by ignoring the dynamic constraints of the entity.
 }

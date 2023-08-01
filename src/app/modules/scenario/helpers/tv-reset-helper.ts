@@ -73,7 +73,7 @@ export class ResetHelper {
 		this.resetGroups( act.endConditionGroups );
 		this.resetGroups( act.cancelConditionGroups );
 
-		act.sequences.forEach( sequence => {
+		act.maneueverGroups.forEach( sequence => {
 
 			sequence.maneuvers.forEach( maneuver => {
 

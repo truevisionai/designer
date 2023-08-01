@@ -24,7 +24,11 @@ export class ManeuverGroup {
 	public catalogReferences: CatalogReference[] = [];
 	public maneuvers: Maneuver[] = [];
 
-	constructor ( public name?: string, public numberOfExecutions?: number, public actors?: string[] ) {
+	// For determining actors during runtime,
+	// you have to use selectTriggeringEntities = true, which is explained in
+	public selectTriggeringEntities = false;
+
+	constructor ( public name?: string, public numberOfExecutions: number = 1, public actors?: string[] ) {
 
 		if ( this.actors == null ) this.actors = [];
 

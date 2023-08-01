@@ -18,7 +18,7 @@ export class RelativeDistanceCondition extends EntityCondition {
 
 	/**
 	 *
-	 * @param targetEntity Reference entity.
+	 * @param entityRef Reference entity.
 	 * @param distance The distance value. Unit: m; Range: [0..inf]
 	 * @param distanceType Alternative ways in which to calculate the distance
 	 * @param freespace True: distance is measured between closest bounding box points.
@@ -28,11 +28,11 @@ export class RelativeDistanceCondition extends EntityCondition {
 	 * @param routingAlgorithm
 	 */
 	constructor (
-		public targetEntity: string,
+		public entityRef: string,
 		public distance: number = 0,
 		public distanceType: RelativeDistanceType = RelativeDistanceType.longitudinal,
 		public freespace: boolean = false,
-		public rule: Rule = Rule.greater_than,
+		public rule: Rule = Rule.GreaterThan,
 		public coordinateSystem = CoordinateSystem.entity,
 		public routingAlgorithm = RoutingAlgorithm.undefined
 	) {
@@ -68,7 +68,7 @@ export class RelativeDistanceCondition extends EntityCondition {
 	private calculateRelativeDistance ( entityName: string ): number {
 
 		const entity = this.getEntity( entityName );
-		const targetEntity = this.getEntity( this.targetEntity );
+		const targetEntity = this.getEntity( this.entityRef );
 
 		if ( this.distanceType === RelativeDistanceType.longitudinal ) {// The difference between the x-coordinates of the entity and target entity.
 			return entity.getCurrentPosition().x - targetEntity.getCurrentPosition().x;

@@ -12,7 +12,7 @@ export class SimulationTimeCondition extends ValueCondition {
 
 	public label: string = 'SimulationTimeCondition';
 
-	constructor ( public value: number = 0, public rule: Rule = Rule.greater_than ) {
+	constructor ( public value: number = 0, public rule: Rule = Rule.GreaterThan ) {
 		super();
 	}
 

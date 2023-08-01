@@ -12,6 +12,11 @@ import { TransitionDynamics } from './transition-dynamics';
 import { AbsoluteTarget } from './tv-absolute-target';
 import { RelativeTarget } from './tv-relative-target';
 
+export enum SpeedTargetValueType {
+	delta = 'delta',
+	factor = 'factor',
+}
+
 /**
  * This action describes the transition of an entity's longitudinal
  * speed to a target longitudinal speed. SpeedActionDynamics
@@ -29,7 +34,12 @@ export class SpeedAction extends PrivateAction {
 	private initialSpeed: number;
 	private targetSpeed: number;
 
-	constructor ( public dynamics: TransitionDynamics = null, public target: Target = null ) {
+	constructor (
+		public dynamics: TransitionDynamics = null,
+		public target: Target = null,
+		public continuous = false,
+		public speedValueTargetType: SpeedTargetValueType = SpeedTargetValueType.delta
+	) {
 
 		super();
 

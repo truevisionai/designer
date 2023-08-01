@@ -13,6 +13,7 @@ import { RoadFactory } from '../../factories/road-factory.service';
 import { AutoSpline } from '../../shapes/auto-spline';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
@@ -133,16 +134,22 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 				const nextRoad = roads[ i + 1 ]
 
-				road.setSuccessor( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
-				nextRoad.setPredecessor( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				nextRoad.addPredecessor( predecessor );
 
 			} else {
 
 				// its last road, so make connection with the first one
 				const firstRoad = roads[ 0 ];
 
-				road.setSuccessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
-				firstRoad.setPredecessor( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				firstRoad.addPredecessor( predecessor );
 
 			}
 

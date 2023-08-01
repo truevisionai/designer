@@ -142,7 +142,7 @@ export class TvScenario {
 
 			story.acts.forEach( ( act ) => {
 
-				act.sequences.forEach( ( sequence ) => {
+				act.maneueverGroups.forEach( ( sequence ) => {
 
 					sequence.actors.forEach( ( name ) => {
 
@@ -207,6 +207,8 @@ export class TvScenario {
 
 		this.db.clear();
 
+		this.parameterDeclarations.splice( 0, this.parameterDeclarations.length );
+
 		this.objects.forEach( entity => {
 
 			SceneService.remove( entity );
@@ -220,6 +222,8 @@ export class TvScenario {
 			story.acts.splice( 0, story.acts.length );
 
 		} );
+
+		this.objects.clear();
 
 		this.storyboard.stories.clear();
 
@@ -271,9 +275,9 @@ export class TvScenario {
 
 		if ( maneuvers.length > 0 ) {
 
-			const event = maneuvers[ 0 ].addNewEvent( `Event-${ MathUtils.generateUUID() }`, 'overwrite' );
+			const event = maneuvers[ 0 ].addNewEvent( `Event-${ MathUtils.randInt( 1, 100 ) }` );
 
-			event.addNewAction( `Action-${ MathUtils.generateUUID() }`, action );
+			event.addNewAction( `Action-${ MathUtils.randInt( 1, 100 ) }`, action );
 
 			// event.addStartCondition( new SimulationTimeCondition( 0, Rule.greater_than ) );
 

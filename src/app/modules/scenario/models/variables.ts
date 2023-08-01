@@ -46,8 +46,8 @@ class StringCondition {
 
 }
 
-let conditionWithValue = new NumberCondition( new ConcreteValue( 10 ), Rule.greater_than );
-let conditionWithVariable = new NumberCondition( new NumberVariable( '$speed', ), Rule.greater_than );
+let conditionWithValue = new NumberCondition( new ConcreteValue( 10 ), Rule.GreaterThan );
+let conditionWithVariable = new NumberCondition( new NumberVariable( '$speed', ), Rule.GreaterThan );
 
 conditionWithValue.time.value;
 conditionWithVariable.time.value;

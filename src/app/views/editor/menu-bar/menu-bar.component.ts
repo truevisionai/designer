@@ -23,7 +23,8 @@ import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { AppInputDialogService } from 'app/shared/dialogs/app-input-dialog/app-input-dialog-service';
+import { EditorService } from 'app/core/services/editor.service';
 
 
 @Component( {
@@ -44,7 +45,9 @@ export class MenuBarComponent implements OnInit {
 		private recentFileService: RecentFileService,
 		private mainFileService: MainFileService,
 		private odExporter: OdWriter,
-		private roadStyleExporter: RoadExporterService
+		private roadStyleExporter: RoadExporterService,
+		private inputDialogService: AppInputDialogService,
+		private editorService: EditorService
 	) {
 	}
 
@@ -118,6 +121,42 @@ export class MenuBarComponent implements OnInit {
 	onRedo () {
 
 		CommandHistory.redo();
+
+	}
+
+	onEsminiSettings () {
+
+		const settings = {
+			title: 'Esmini Settings',
+			fields: [
+				{
+					name: 'Esmini Enabled',
+					key: 'esminiEnabled',
+					type: 'checkbox',
+					value: this.editorService.settings.esminiEnabled
+				},
+				{
+					name: 'Esmini Path',
+					key: 'esminiPath',
+					type: 'text',
+					value: this.editorService.settings.esminiPath
+				},
+				{
+					name: 'OdrViewer Path',
+					key: 'odrViewerPath',
+					type: 'text',
+					value: this.editorService.settings.odrViewerPath
+				}
+			]
+		}
+
+		this.inputDialogService.open( settings.title, settings.fields ).subscribe( result => {
+			if ( result ) {
+				this.editorService.settings.esminiEnabled = result.esminiEnabled;
+				this.editorService.settings.esminiPath = result.esminiPath;
+				this.editorService.settings.odrViewerPath = result.odrViewerPath;
+			}
+		} )
 
 	}
 
@@ -223,7 +262,7 @@ export class MenuBarComponent implements OnInit {
 
 	exportOpenScenario () {
 
-		// this.exporter.exportOpenScenario();
+		this.exporter.exportOpenScenario()
 
 	}
 }
