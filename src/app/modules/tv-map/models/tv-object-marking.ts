@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';

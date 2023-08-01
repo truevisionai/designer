@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Crosswalk, TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { CatmullRomCurve3, Object3D, Vector3 } from 'three';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';

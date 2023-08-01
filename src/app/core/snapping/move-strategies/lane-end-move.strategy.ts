@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';

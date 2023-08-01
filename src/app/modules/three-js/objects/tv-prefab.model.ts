@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BoxGeometry, BufferGeometry, Layers, LoadingManager, Material, MaterialLoader, MathUtils, Matrix4, Mesh, MeshStandardMaterial, Object3D, ObjectLoader, Texture, Vector3 } from "three";
 import { TvMaterial } from "./tv-material.model";
 import { MeshGeometryData } from "app/modules/tv-map/models/mesh-geometry.data";

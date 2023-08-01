@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from 'three';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';

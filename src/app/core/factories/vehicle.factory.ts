@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
 import { VehicleCategory } from "app/modules/scenario/models/tv-enums";

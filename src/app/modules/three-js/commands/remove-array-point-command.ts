@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from 'app/core/commands/base-command';
 import { BaseControlPoint } from '../objects/control-point';
 import { Object3D } from 'three';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { BaseControlPoint } from '../../../modules/three-js/objects/control-point';

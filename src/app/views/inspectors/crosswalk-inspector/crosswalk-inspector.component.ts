@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';

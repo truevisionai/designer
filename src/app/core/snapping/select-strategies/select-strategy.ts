@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneCoord, TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';

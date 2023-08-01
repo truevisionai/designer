@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import * as THREE from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { PointerEventData } from '../../../events/pointer-event-data';
