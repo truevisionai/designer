@@ -114,12 +114,12 @@ describe( 'WriterService', () => {
 
 		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( 'test', 1 ) ) );
 
-		expect( xml.LaneOffset.Dynamics.attr_continuous ).toBe( undefined );
-		expect( xml.LaneOffset.Dynamics.attr_maxLateralAcc ).toBe( 0.1 );
-		expect( xml.LaneOffset.Dynamics.attr_shape ).toBe( DynamicsShape.linear );
+		expect( xml.Lateral.LaneOffset.Dynamics.attr_continuous ).toBe( undefined );
+		expect( xml.Lateral.LaneOffset.Dynamics.attr_maxLateralAcc ).toBe( 0.1 );
+		expect( xml.Lateral.LaneOffset.Dynamics.attr_shape ).toBe( DynamicsShape.linear );
 
-		expect( xml.LaneOffset.Target.Relative.attr_object ).toBe( 'test' );
-		expect( xml.LaneOffset.Target.Relative.attr_value ).toBe( 1 );
+		expect( xml.Lateral.LaneOffset.Target.Relative.attr_object ).toBe( 'test' );
+		expect( xml.Lateral.LaneOffset.Target.Relative.attr_value ).toBe( 1 );
 
 	} );
 
@@ -129,9 +129,9 @@ describe( 'WriterService', () => {
 
 		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( 'test', 1 ) ) );
 
-		expect( xml.LaneOffsetAction.attr_continuous ).toBe( false );
-		expect( xml.LaneOffsetAction.LaneOffsetActionDynamics.attr_maxLateralAcc ).toBe( 0.1 );
-		expect( xml.LaneOffsetAction.LaneOffsetActionDynamics.attr_dynamicsShape ).toBe( DynamicsShape.linear );
+		expect( xml.LateralAction.LaneOffsetAction.attr_continuous ).toBe( false );
+		expect( xml.LateralAction.LaneOffsetAction.LaneOffsetActionDynamics.attr_maxLateralAcc ).toBe( 0.1 );
+		expect( xml.LateralAction.LaneOffsetAction.LaneOffsetActionDynamics.attr_dynamicsShape ).toBe( DynamicsShape.linear );
 
 	} );
 
