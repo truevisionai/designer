@@ -10,7 +10,7 @@ export abstract class Condition {
 
 	public abstract category: ConditionCategory;
 	public abstract conditionType: ConditionType;
-	public abstract label: string = 'Condition';
+	public abstract label: string;
 	public delay: number = 0;
 	public edge: ConditionEdge = ConditionEdge.risingOrFalling;
 	public passed: boolean;

@@ -2,13 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { FileService } from 'app/services/file.service';
 import { FileUtils } from '../../../../services/file-utils';
 import { TvScenario } from '../../models/tv-scenario';
 import { OpenScenarioImporter } from '../../services/open-scenario-importer.service';
+import { TvConsole } from 'app/core/utils/console';
+import { ScenarioBuilderV2 } from '../../services/scenario-builder.service';
 
 export class ImportOpenScenarioDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {
@@ -29,6 +31,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 		@Inject( MAT_DIALOG_DATA ) public data: ImportOpenScenarioDialogData,
 		private openScenarioImporter: OpenScenarioImporter,
 		private fileService: FileService,
+		private appRef: ApplicationRef
 	) {
 	}
 
@@ -66,11 +69,41 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	async ngOnInit (): Promise<void> {
 
-		console.log( this.data );
+		if ( !this.data?.path ) TvConsole.error( 'No path provided' );
 
-		this.scenario = await this.openScenarioImporter.readFromPath( this.data.path );
+		if ( !this.data?.path ) return;
 
-		console.log( this.scenario );
+		TvConsole.info( 'Reading scenarion from ' + this.data?.path );
+
+		const contents: string = await this.fileService.readAsync( this.data.path );
+
+		try {
+
+			const scenarioBuilder = new ScenarioBuilderV2();
+
+			const xmlWithVariables = this.openScenarioImporter.getXMLElement( contents );
+
+			const xml = scenarioBuilder.replaceParameterWithValue( xmlWithVariables );
+
+			const scenario = this.openScenarioImporter.parseXML( xml );
+
+			if ( !scenario.roadNetwork?.logics?.filepath ) {
+
+				TvConsole.error( 'No map file found for scenario' );
+
+			} else {
+
+				this.scenario = scenario
+
+			}
+
+		} catch ( error ) {
+
+			TvConsole.error( 'Error in reading scenario file' );
+			TvConsole.error( error );
+
+		}
+
 
 	}
 
@@ -79,6 +112,10 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 		this.importRoadNetwork();
 
 		this.importScenario();
+
+		this.dialogRef.close( this.newSubDirectory );
+
+		this.appRef.tick();
 
 	}
 

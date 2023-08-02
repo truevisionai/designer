@@ -13,13 +13,28 @@ export class RelativeLanePosition extends Position {
 	public readonly label: string = 'Relative Lane Position';
 	public readonly type = PositionType.RelativeLane;
 
+	/**
+	 *
+	 * @param entityRef Reference entity.
+	 * @param dLane The deviation value between the laneId of the lane,
+	 * where the reference entity is located, and the target laneId.
+	 * @param ds The offset along the road's reference line relative to the
+	 * s-coordinate of the reference entity. Mutually exclusive with dsLane. Unit: [m].
+	 * @param offset The lateral offset to the center line of the target lane
+	 * (along the normal to the road's reference line). Missing value is interpreted as 0.
+	 * The positive value means the offset is applied in the direction of the
+	 * t-axis being imagined at the target s-position. Unit: [m].
+	 * @param dsLane The offset along the center line of the lane, where the
+	 * reference entity is located. Mutually exclusive with ds. Unit: [m].
+	 * @param orientation
+	 */
 	constructor (
 		public entityRef: string,
 		public dLane: number,
 		public ds: number,
 		public offset: number = 0,
 		public dsLane: number = 0,
-		public orientation: Orientation = new Orientation()
+		public orientation: Orientation = null
 	) {
 		super();
 	}

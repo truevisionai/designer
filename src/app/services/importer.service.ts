@@ -111,7 +111,7 @@ export class ImporterService {
 
 	async importOpenScenario ( path: string ) {
 
-		await ScenarioInstance.loadInstanceFromPath( path );
+		await ScenarioInstance.importScenario( path );
 
 	}
 

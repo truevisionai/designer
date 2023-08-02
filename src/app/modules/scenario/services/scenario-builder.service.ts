@@ -144,15 +144,15 @@ export class ScenarioBuilder {
 export class ScenarioBuilderV2 {
 
 	constructor (
-		private scenario: TvScenario,
-		private scenarioString: string
+		private scenario: Partial<TvScenario> = null,
+		private scenarioString: string = null
 	) { }
 
 	setScenarioString ( value: string ) {
 		this.scenarioString = value;
 	}
 
-	setScenario ( value: TvScenario ) {
+	setScenario ( value: Partial<TvScenario> ) {
 		this.scenario = value;
 	}
 
@@ -165,6 +165,12 @@ export class ScenarioBuilderV2 {
 		return this.scenarioString;
 	}
 
+	replaceParameterWithValue ( obj: XmlElement ): XmlElement {
+
+		return replaceParams( obj );
+
+	}
+
 	replaceParameter ( declaration: ParameterDeclaration ): void {
 
 		const regex = new RegExp( '\\$' + declaration.parameter.name, 'g' );
@@ -173,3 +179,51 @@ export class ScenarioBuilderV2 {
 	}
 
 }
+
+import { cloneDeep } from 'lodash';
+import { isObject } from 'rxjs/internal-compatibility';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+
+const params = {}
+
+function isIterable ( obj: any ): boolean {
+	// Checks if obj is an iterable object (array, string, etc.)
+	return obj != null && typeof obj[ Symbol.iterator ] === 'function';
+}
+
+function replaceParams ( obj: any ): any {
+	// If obj is not an object or is null, return it as is
+	if ( !isObject( obj ) || obj === null ) {
+		return obj;
+	}
+
+	// Deep clone obj to avoid mutating the original object
+	let newObj = cloneDeep( obj );
+
+	// Iterate over keys of newObj
+	for ( let key of Object.keys( newObj ) ) {
+		if ( key === 'ParameterDeclaration' ) {
+			// Check if newObj[key] is iterable
+			if ( isIterable( newObj[ key ] ) ) {
+				// Update params with the new parameter declaration
+				for ( let param of newObj[ key ] ) {
+					params[ param.attr_name ] = param.attr_value;
+				}
+			} else {
+				// If newObj[key] is not iterable, treat it as a single object
+				params[ newObj[ key ].attr_name ] = newObj[ key ].attr_value;
+			}
+		} else {
+			if ( typeof newObj[ key ] === 'string' && newObj[ key ].startsWith( '$' ) ) {
+				// Replace parameterized value with the corresponding parameter value
+				newObj[ key ] = params[ newObj[ key ].substring( 1 ) ];
+			} else if ( isObject( newObj[ key ] ) ) {
+				// Recursively process child objects
+				newObj[ key ] = replaceParams( newObj[ key ] );
+			}
+		}
+	}
+
+	return newObj;
+}
+

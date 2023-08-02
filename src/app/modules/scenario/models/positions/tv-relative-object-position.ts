@@ -18,7 +18,7 @@ export class RelativeObjectPosition extends Position {
 		public dx = 0,
 		public dy = 0,
 		public dz = 0,
-		public orientation: Orientation = new Orientation()
+		public orientation: Orientation = null
 	) {
 		super();
 	}
@@ -93,7 +93,7 @@ export class RelativeObjectPosition extends Position {
 				attr_dx: this.dx,
 				attr_dy: this.dy,
 				attr_dz: this.dz ? this.dz : 0,
-				Orientation: this.orientation.toXML()
+				Orientation: this.orientation?.toXML()
 			}
 		};
 	}

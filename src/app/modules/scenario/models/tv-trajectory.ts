@@ -21,7 +21,8 @@ export class Trajectory {
 	constructor (
 		public name: string,
 		public closed: boolean,
-		public domain: EnumTrajectoryDomain
+		public domain: EnumTrajectoryDomain,
+		public shape: AbstractShape
 	) {
 
 	}
@@ -37,7 +38,6 @@ export class Vertex {
 	constructor (
 		public time?: number,
 		public position?: Position,
-		public shape?: AbstractShape
 	) {
 
 	}

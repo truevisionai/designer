@@ -27,6 +27,8 @@ export class Orientation {
 
 	static fromXML ( xml: XmlElement ): Orientation {
 
+		if ( !xml ) return null;
+
 		const h: number = parseFloat( xml?.attr_h || 0 );
 		const p: number = parseFloat( xml?.attr_p || 0 );
 		const r: number = parseFloat( xml?.attr_r || 0 );

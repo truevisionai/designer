@@ -41,6 +41,42 @@ export class StoryboardElementStateCondition extends ValueCondition {
 
 	}
 
+	get stateAsString () {
+		return StoryboardElementStateCondition.stateToString( this.state );
+	}
+
+	static stateToString ( state: StoryboardElementState ): string {
+
+		switch ( state ) {
+
+			case StoryboardElementState.startTransition:
+				return 'startTransition';
+
+			case StoryboardElementState.endTransition:
+				return 'endTransition';
+
+			case StoryboardElementState.stopTransition:
+				return 'stopTransition';
+
+			case StoryboardElementState.runningState:
+				return 'runningState';
+
+			case StoryboardElementState.skipTransition:
+				return 'skipTransition';
+
+			case StoryboardElementState.completeState:
+				return 'completeState';
+
+			case StoryboardElementState.standByState:
+				return 'standByState';
+
+			default:
+				return 'startTransition';
+
+		}
+
+	}
+
 	static stringToState ( state: string ): StoryboardElementState {
 
 		switch ( state ) {

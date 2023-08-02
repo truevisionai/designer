@@ -118,6 +118,98 @@ export class OpenScenarioImporter extends AbstractReader {
 		super();
 	}
 
+	public readContents ( contents: string ): TvScenario {
+
+		const xml = this.getXMLElement( contents );
+
+		return this.parseXML( xml );
+	}
+
+	public getXMLElement ( contents: string ): XmlElement {
+
+		const defaultOptions = {
+			attributeNamePrefix: 'attr_',
+			attrNodeName: false,
+			textNodeName: 'value',
+			ignoreAttributes: false,
+			supressEmptyNode: false,
+			format: true,
+		};
+
+		const xmlParser = new XMLParser( defaultOptions );
+
+		const xml: XmlElement = xmlParser.parse( contents );
+
+		return xml;
+	}
+
+	public parseXML ( xml: XmlElement ): TvScenario {
+
+		OpenScenarioImporter.openScenario = new TvScenario();
+
+		OpenScenarioImporter.readRootElement( xml, OpenScenarioImporter.openScenario );
+
+		return OpenScenarioImporter.openScenario;
+	}
+
+	public static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
+
+		const root: XmlElement = xml.OpenSCENARIO;
+
+		scenario.fileHeader = this.readFileHeader( root.FileHeader );
+
+		if ( root?.Storyboard ) {
+
+			this.readScenario( root, scenario );
+
+		} else if ( root?.CatalogDefinition ) {
+
+			throw new Error( 'CatalogDefinition not implemented yet' );
+
+		} else if ( root?.ParameterValueDistribution ) {
+
+			throw new Error( 'ParameterValueDistribution not implemented yet' );
+
+		}
+
+	}
+
+	public static readScenario ( xml: XmlElement, scenario: TvScenario ) {
+
+		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml: XmlElement ) => {
+			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		// to support 0.9. for example check Stauende.xosc
+		readXmlArray( xml.ParameterDeclaration?.Parameter, ( xml: XmlElement ) => {
+			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
+		} );
+
+		// this.readCatalog( xml.CatalogLocations?.VehicleCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.ControllerCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.PedestrianCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.MiscObjectCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.EnvironmentCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.ManeuverCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.TrajectoryCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.RouteCatalog?.Directory?.attr_path );
+		//
+		// // support for 0.9
+		// // both moved into ControllerCatalogLocation in 1.0
+		// this.readCatalog( xml.CatalogLocations?.PedestrianControllerCatalog?.Directory?.attr_path );
+		// this.readCatalog( xml.CatalogLocations?.DriverCatalog?.Directory?.attr_path );
+
+		scenario.roadNetwork = this.readRoadNetwork( xml.RoadNetwork );
+
+		this.readEntities( xml.Entities, scenario );
+
+		// EntitySelections
+		// TODO: implement
+
+		scenario.storyboard = this.readStoryboard( xml.Storyboard );
+
+	}
+
 	static readRule ( rule: string ): Rule {
 
 		if ( rule === 'greater_than' || rule === 'greaterThan' ) {
@@ -333,44 +425,12 @@ export class OpenScenarioImporter extends AbstractReader {
 		return new RelativeRoadPosition( entity, roadId, ds, dt, orientation );
 	}
 
-	public readFromFile ( file: IFile ): TvScenario {
-
-		this.file = file;
-
-		return this.readContents( this.file.contents );
-
-	}
-
 	public async readFromPath ( path: string ): Promise<TvScenario> {
 
 		const contents = await this.fileService.readAsync( path );
 
 		return this.readContents( contents );
 
-	}
-
-	public readContents ( contents: string ): TvScenario {
-
-		OpenScenarioImporter.openScenario = new TvScenario();
-
-		const defaultOptions = {
-			attributeNamePrefix: 'attr_',
-			attrNodeName: false,
-			textNodeName: 'value',
-			ignoreAttributes: false,
-			supressEmptyNode: false,
-			format: true,
-		};
-
-		const parser = new XMLParser( defaultOptions );
-
-		const xml: XmlElement = parser.parse( contents );
-
-		console.log( xml );
-
-		OpenScenarioImporter.readRootElement( xml, OpenScenarioImporter.openScenario );
-
-		return OpenScenarioImporter.openScenario;
 	}
 
 	public static readCondition ( xml: XmlElement ) {
@@ -946,30 +1006,27 @@ export class OpenScenarioImporter extends AbstractReader {
 			act.addSequence( this.readSequence( xml ) );
 		} );
 
-		if ( xml.Conditions != null ) {
-
-			// Start is a single element
-			this.readAsOptionalElement( xml.Conditions.Start, ( xml ) => {
-				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-					act.startConditionGroups.push( this.readConditionGroup( xml ) );
-				} );
+		// Start is a single element
+		this.readAsOptionalElement( xml.Conditions?.Start || xml.StartTrigger, ( xml ) => {
+			this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+				act.startConditionGroups.push( this.readConditionGroup( xml ) );
 			} );
+		} );
 
-			// TODO: Fix End could also be an array
-			this.readAsOptionalElement( xml.Conditions.End, ( xml ) => {
-				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-					act.endConditionGroups.push( this.readConditionGroup( xml ) );
-				} );
+		// TODO: Fix End could also be an array
+		this.readAsOptionalElement( xml.Conditions?.End || xml.StopTrigger, ( xml ) => {
+			this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+				act.endConditionGroups.push( this.readConditionGroup( xml ) );
 			} );
+		} );
 
-			// TODO: Fix Cancel could also be an array
-			this.readAsOptionalElement( xml.Conditions.Cancel, ( xml ) => {
-				this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
-					act.cancelConditionGroups.push( this.readConditionGroup( xml ) );
-				} );
+		// TODO: Fix Cancel could also be an array
+		this.readAsOptionalElement( xml.Conditions?.Cancel, ( xml ) => {
+			this.readAsOptionalArray( xml.ConditionGroup, ( xml ) => {
+				act.cancelConditionGroups.push( this.readConditionGroup( xml ) );
 			} );
+		} );
 
-		}
 
 		return act;
 
@@ -1164,6 +1221,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		if ( xml.Infrastructure || xml.InfrastructureAction ) {
 
+			TvConsole.warn( 'InfrastructureAction not supported yet' );
 
 		}
 
@@ -1183,19 +1241,19 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.Visibility != null ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'VisibilityAction not supported yet' );
 
 		} else if ( xml.Meeting != null ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'MeetingAction not supported yet' );
 
 		} else if ( xml.Autonomous != null ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'AutonomousAction not supported yet' );
 
 		} else if ( xml.Controller != null ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'ControllerAction not supported yet' );
 
 		} else if ( xml.Position || xml.PositionAction || xml.TeleportAction ) {
 
@@ -1207,9 +1265,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else {
 
-			console.error( xml );
-
-			throw new Error( 'Unknown private action' );
+			TvConsole.warn( `Unknown private action ` + xml );
 
 		}
 
@@ -1225,17 +1281,17 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			action = this.readLaneChangeAction( xml.LaneChange || xml.LaneChangeAction );
 
-		} else if ( xml.LaneOffset != null ) {
+		} else if ( xml.LaneOffset || xml.LaneOffsetAction ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'LaneOffsetAction not supported yet' );
 
-		} else if ( xml.Distance != null ) {
+		} else if ( xml.Distance || xml.DistanceAction ) {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'DistanceAction not supported yet' );
 
 		} else {
 
-			throw new Error( 'action not implemented' );
+			TvConsole.warn( 'Action not supported yet ' + xml );
 
 		}
 
@@ -1257,9 +1313,11 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.AcquirePosition != null ) {
 
+			TvConsole.warn( 'AcquirePosition not supported yet' );
+
 		} else if ( xml.AssignRouteAction ) {
 
-			throw new Error( 'unknown routing action' );
+			TvConsole.warn( 'AssignRouteAction not supported yet' );
 
 		}
 
@@ -1276,19 +1334,34 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.CatalogReference != null ) {
 
-			throw new Error( 'unsupported readFollowTrajectoryAction CatalogReference' );
+			TvConsole.warn( 'CatalogReference not supported yet for FollowTrajectoryAction' );
 
 		}
 
 		let action = new FollowTrajectoryAction( trajectory );
 
-		action.trajectoryFollowingMode = xml.Lateral?.attr_purpose || TrajectoryFollowingMode.position;
-		action.timeReference = this.readTimeReference( xml.Longitudinal || xml.TimeReference );
+		action.trajectoryFollowingMode = this.readTrajectoryFollowingMode(
+			xml.Lateral?.attr_purpose || xml.TrajectoryFollowingMode?.followingMode
+		);
 
-		action;
+		action.timeReference = this.readTimeReference( xml.Longitudinal || xml.TimeReference );
 
 		return action;
 	}
+
+	static readTrajectoryFollowingMode ( value: string ): TrajectoryFollowingMode {
+
+		if ( value == 'position' ) return TrajectoryFollowingMode.position;
+
+		if ( value == 'steering' ) return TrajectoryFollowingMode.steering;
+
+		if ( value == 'follow' ) return TrajectoryFollowingMode.follow;
+
+		TvConsole.warn( 'unknown TrajectoryFollowingMode ' + value );
+
+		return TrajectoryFollowingMode.position;
+	}
+
 
 	public static readTrajectory ( xml: XmlElement ): Trajectory {
 
@@ -1298,22 +1371,18 @@ export class OpenScenarioImporter extends AbstractReader {
 		// deprecated
 		let domain = xml.attr_domain;
 
-		const trajectory = new Trajectory( name, closed, domain );
+		const shape = this.readTrajectoryShape( xml.Shape );
+
+		const trajectory = new Trajectory( name, closed, domain, shape );
 
 		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml ) => {
 			trajectory.addParameter( this.readParameterDeclaration( xml ) );
 		} );
 
-		// this.readAsOptionalArray( xml.Vertex, ( xml ) => {
-		// 	trajectory.vertices.push( this.readVertex( xml ) );
-		// } );
-
-		this.readTrajectoryShape( xml.Shape, trajectory );
-
 		return trajectory;
 	}
 
-	static readTrajectoryShape ( xml: XmlElement, trajectory: Trajectory ): AbstractShape {
+	static readTrajectoryShape ( xml: XmlElement ): AbstractShape {
 
 		if ( xml.Polyline ) {
 
@@ -1327,10 +1396,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		}
 
-		if ( xml.Nurbs ) {
-
-		}
-
+		TvConsole.warn( 'Shape not supported yet' + xml );
 
 	}
 
@@ -1359,13 +1425,11 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.CatalogReference != null ) {
 
-			throw new Error( 'unsupported follow route action CatalogReference' );
+			TvConsole.warn( 'unsupported follow route action CatalogReference' );
 
 		}
 
-		const action = new FollowRouteAction( route );
-
-		return action;
+		return new FollowRouteAction( route );
 	}
 
 	public static readRoute ( xml: XmlElement ): Route {
@@ -1579,9 +1643,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		const position = this.readPosition( xml.Position );
 
-		const shape = xml.Shape ? this.readVertexShape( xml.Shape ) : null;
-
-		return new Vertex( time, position, shape );
+		return new Vertex( time, position );
 	}
 
 	public static readVertexShape ( xml: XmlElement ): AbstractShape {
@@ -1633,28 +1695,6 @@ export class OpenScenarioImporter extends AbstractReader {
 		controlPoint.status = xml.attr_status;
 
 		return controlPoint;
-	}
-
-	public static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
-
-		const root: XmlElement = xml.OpenSCENARIO;
-
-		scenario.fileHeader = this.readFileHeader( root.FileHeader );
-
-		if ( root?.Storyboard ) {
-
-			this.readScenario( root, scenario );
-
-		} else if ( root?.CatalogDefinition ) {
-
-			throw new Error( 'CatalogDefinition not implemented yet' );
-
-		} else if ( root?.ParameterValueDistribution ) {
-
-			throw new Error( 'ParameterValueDistribution not implemented yet' );
-
-		}
-
 	}
 
 	public static readStoryboard ( xml: XmlElement ): Storyboard {
@@ -1718,12 +1758,6 @@ export class OpenScenarioImporter extends AbstractReader {
 		}
 
 		return catalog;
-	}
-
-	public static readRoutePositionPosition ( param: any ): Position {
-
-		throw new Error( 'Method not implemented.' );
-
 	}
 
 	public static readScenarioObjectType ( value: string ) {
@@ -1927,42 +1961,6 @@ export class OpenScenarioImporter extends AbstractReader {
 			return ConditionEdge.none;
 
 		}
-	}
-
-	public static readScenario ( xml: XmlElement, scenario: TvScenario ) {
-
-		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration, ( xml: XmlElement ) => {
-			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
-		} );
-
-		// to support 0.9. for example check Stauende.xosc
-		readXmlArray( xml.ParameterDeclaration?.Parameter, ( xml: XmlElement ) => {
-			scenario.addParameterDeclaration( this.readParameterDeclaration( xml ) );
-		} );
-
-		// this.readCatalog( xml.CatalogLocations?.VehicleCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.ControllerCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.PedestrianCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.MiscObjectCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.EnvironmentCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.ManeuverCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.TrajectoryCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.RouteCatalog?.Directory?.attr_path );
-		//
-		// // support for 0.9
-		// // both moved into ControllerCatalogLocation in 1.0
-		// this.readCatalog( xml.CatalogLocations?.PedestrianControllerCatalog?.Directory?.attr_path );
-		// this.readCatalog( xml.CatalogLocations?.DriverCatalog?.Directory?.attr_path );
-
-		scenario.roadNetwork = this.readRoadNetwork( xml.RoadNetwork );
-
-		this.readEntities( xml.Entities, scenario );
-
-		// EntitySelections
-		// TODO: implement
-
-		scenario.storyboard = this.readStoryboard( xml.Storyboard );
-
 	}
 
 	public static readTrafficSignalController ( xml: XmlElement ): TrafficSignalController {

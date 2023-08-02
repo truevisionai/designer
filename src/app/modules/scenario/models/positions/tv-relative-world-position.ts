@@ -18,7 +18,7 @@ export class RelativeWorldPosition extends Position {
 		public dx: number = 0,
 		public dy: number = 0,
 		public dz: number = 0,
-		public orientation: Orientation = new Orientation()
+		public orientation: Orientation = null
 	) {
 		super();
 	}

@@ -66,6 +66,7 @@ import { TimeToCollisionCondition } from '../models/conditions/tv-time-to-collis
 import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { TvAxle } from '../models/tv-bounding-box';
 import { TvProperty } from '../models/tv-properties';
+import { StoryboardElementStateCondition } from '../models/conditions/tv-after-termination-condition';
 
 @Injectable( {
 	providedIn: 'root'
@@ -209,7 +210,7 @@ export class WriterService {
 				attr_maxSpeed: vehicle.performance.maxSpeed,
 				attr_maxAcceleration: vehicle.performance.maxAcceleration,
 				attr_maxDeceleration: vehicle.performance.maxDeceleration,
-				attr_mass: vehicle.performance.mass,
+				attr_mass: vehicle.performance.mass ?? null,
 			},
 			BoundingBox: {
 				Center: {
@@ -263,7 +264,7 @@ export class WriterService {
 
 		} else {
 
-			throw new Error( 'Unsupported controller entry' );
+			TvConsole.warn( 'Unsupported controller entry' );
 
 		}
 
@@ -438,12 +439,31 @@ export class WriterService {
 
 			return this.writeSimulationTimeCondition( abstractCondition as SimulationTimeCondition );
 
+		} else if ( abstractCondition.conditionType === ConditionType.StoryboardElementState ) {
+
+			return this.writeStoryboardElementStateCondition( abstractCondition as StoryboardElementStateCondition );
+
 		} else {
 
-			console.error( 'Unsupported condition type' );
+			TvConsole.error( 'Unsupported ByValueCondition' + abstractCondition.label );
 
 		}
 
+	}
+
+	writeStoryboardElementStateCondition ( condition: StoryboardElementStateCondition ): XmlElement {
+
+		const key = this.version == OpenScenarioVersion.v0_9 ?
+			'StoryboardElementState' :
+			'StoryboardElementStateCondition';
+
+		return {
+			[ key ]: {
+				attr_storyboardElementType: condition.storyboardElementType,
+				attr_storyboardElementRef: condition.storyboardElementRef,
+				attr_state: condition.stateAsString,
+			}
+		}
 	}
 
 	writeSimulationTimeCondition ( condition: SimulationTimeCondition ): XmlElement {
@@ -781,7 +801,7 @@ export class WriterService {
 			}
 		}
 
-		console.error( 'Unsupported collision condition' );
+		TvConsole.error( 'Unsupported collision condition' );
 	}
 
 	writeTraveledDistanceCondition ( condition: TraveledDistanceCondition ): XmlElement {
@@ -1038,7 +1058,7 @@ export class WriterService {
 				break;
 
 			default:
-				throw new Error( 'Unsupported private action' );
+				TvConsole.warn( 'Unsupported private action' );
 				break;
 		}
 
@@ -1048,13 +1068,13 @@ export class WriterService {
 
 	writeAcquirePosition ( arg0: AcquirePositionAction ): any {
 
-		throw new Error( 'Method not implemented.' );
+		TvConsole.warn( 'AcquirePositionAction not supported yet' );
 
 	}
 
 	writeAssignRouteAction ( arg0: FollowRouteAction ): any {
 
-		throw new Error( 'Method not implemented.' );
+		TvConsole.warn( 'FollowRouteAction not supported yet' );
 
 	}
 
@@ -1118,7 +1138,7 @@ export class WriterService {
 		}
 
 		return {
-			Routing: {
+			RoutingAction: {
 				FollowTrajectoryAction: {
 					attr_initialDistanceOffset: action.initialDistanceOffset,
 					TrajectoryFollowingMode: {
@@ -1126,7 +1146,7 @@ export class WriterService {
 					},
 					TimeReference: {
 						Timing: {
-							attr_domain: action.timeReference?.timing?.domain,
+							attr_domainAbsoluteRelative: action.timeReference?.timing?.domain,
 							attr_scale: action.timeReference?.timing?.scale,
 							attr_offset: action.timeReference?.timing?.offset
 						}
@@ -1328,7 +1348,7 @@ export class WriterService {
 				break;
 
 			default:
-				throw new Error( 'Unsupported position action' );
+				TvConsole.warn( 'Unsupported position action' );
 				break;
 		}
 
@@ -1390,6 +1410,8 @@ export class WriterService {
 
 	writeOrientation ( orientation: Orientation ) {
 
+		if ( !orientation ) return null;
+
 		return orientation.toXML();
 
 	}
@@ -1410,7 +1432,7 @@ export class WriterService {
 				attr_dx: position.dx,
 				attr_dy: position.dy,
 				attr_dz: position.dz ? position.dz : 0,
-				Orientation: position.orientation.toXML()
+				Orientation: position.orientation?.toXML()
 			}
 		};
 	}
@@ -1467,17 +1489,24 @@ export class WriterService {
 
 		const key = this.version == OpenScenarioVersion.v0_9 ? 'RelativeLane' : 'RelativeLanePosition';
 
-		return {
+		const xml = {
 			[ key ]: {
 				[ this.entityKey ]: position.entityRef,
 				attr_dLane: position.dLane,
 				attr_ds: position.ds,
-				attr_offset: position.offset,
-				attr_dsLane: position.dsLane,
 				Orientation: position.orientation?.toXML()
 			}
 		};
 
+		if ( position.offset != 0 ) {
+			xml[ key ][ 'attr_offset' ] = position.offset;
+		}
+
+		if ( !position.ds ) {
+			xml[ key ][ 'attr_dsLane' ] = position.ds ? null : position.dsLane;
+		}
+
+		return xml;
 	}
 
 	writeTrajectory ( trajectory: Trajectory ) {
@@ -1489,20 +1518,24 @@ export class WriterService {
 			ParameterDeclarations: {
 				ParameterDeclaration: this.writeParameterDeclarations( trajectory.parameterDeclarations )
 			},
-			Vertex: trajectory.vertices.map( vertex => this.writeVertex( vertex ) )
+			Shape: this.writeShape( trajectory.shape )
 		};
 
 	}
 
 	writeVertex ( vertex: Vertex ) {
 
-		const xml = {
-			attr_reference: vertex.time,
-			Position: this.writePosition( vertex.position ),
-			Shape: this.writeShape( vertex.shape )
-		};
+		if ( this.version == OpenScenarioVersion.v0_9 ) {
+			return {
+				attr_reference: vertex.time,
+				Position: this.writePosition( vertex.position ),
+			}
+		}
 
-		return xml;
+		return {
+			attr_time: vertex.time,
+			Position: this.writePosition( vertex.position ),
+		}
 	}
 
 	writeShape ( shape: AbstractShape ): XmlElement {
@@ -1522,14 +1555,16 @@ export class WriterService {
 
 		} else {
 
-			throw new Error( 'Unknown shape' );
+			TvConsole.warn( 'Unknown shape' );
 
 		}
 	}
 
 	writePolyline ( shape: PolylineShape ) {
 		return {
-			Polyline: {}
+			Polyline: {
+				Vertex: shape.vertices.map( vertex => this.writeVertex( vertex ) )
+			}
 		};
 	}
 

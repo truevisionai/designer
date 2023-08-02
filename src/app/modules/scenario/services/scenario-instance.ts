@@ -4,7 +4,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { TvScenario } from '../models/tv-scenario';
-import { ScenarioBuilder } from './scenario-builder.service';
+import { ScenarioBuilder, ScenarioBuilderV2 } from './scenario-builder.service';
 import { OpenScenarioImporter } from './open-scenario-importer.service';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { TvConsole } from 'app/core/utils/console';
@@ -20,10 +20,12 @@ export class ScenarioInstance {
 	private static _scenario: TvScenario = new TvScenario();
 	private static openScenarioImporter: OpenScenarioImporter;
 	private static mapService: TvMapService;
+	private static scenarioBuilder: ScenarioBuilderV2;
 
 	constructor ( openScenarioImporter: OpenScenarioImporter, mapService: TvMapService ) {
 		ScenarioInstance.openScenarioImporter = openScenarioImporter;
 		ScenarioInstance.mapService = mapService;
+		ScenarioInstance.scenarioBuilder = new ScenarioBuilderV2( null, null );
 	}
 
 	static get scenario () {
@@ -40,13 +42,20 @@ export class ScenarioInstance {
 
 	}
 
-	static async loadInstanceFromPath ( path: string ) {
+	static async importScenario ( path: string ) {
 
 		this.scenario?.destroy();
 
-		const scenario = await this.openScenarioImporter.readFromPath( path );
+		const contents: string = await this.mapService.fileService.readAsync( path );
+
+		const xmlWithVariables = this.openScenarioImporter.getXMLElement( contents );
+
+		const xml = this.scenarioBuilder.replaceParameterWithValue( xmlWithVariables );
+
+		const scenario = this.openScenarioImporter.parseXML( xml );
 
 		if ( !scenario?.roadNetwork?.logics?.filepath ) {
+
 			TvConsole.error( 'No map file found for scenario' );
 			return;
 		}
@@ -55,8 +64,6 @@ export class ScenarioInstance {
 		const mapFilePath = this.mapService.fileService.join( directory, scenario.roadNetwork.logics.filepath );
 
 		this.mapService.importFromPath( mapFilePath, () => {
-
-			ScenarioBuilder.buildScenario( scenario );
 
 			this.scenario = scenario;
 

@@ -74,7 +74,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			let position = new WorldPosition( e.position.x, e.position.y, e.position.z );
 
-			let vertex = new Vertex( reference, position, new PolylineShape );
+			let vertex = new Vertex( reference, position );
 
 			this.trajectory.vertices.push( vertex );
 
