@@ -1,8 +1,6 @@
 <input [ngStyle]="{'cursor': inFocus ? 'row-resize' : 'auto'}"
 	(blur)="onBlur()"
 	(focus)="onFocus()"
-	(keydown)="onKeydown($event)"
-	(input)="onInput($event)"
 	(ngModelChange)="onModelChanged($event)"
 	(wheel)="onWheel($event)"
 	[(ngModel)]="value"

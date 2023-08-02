@@ -95,58 +95,93 @@ export class DoubleInputComponent implements OnInit {
 		}, 300 );
 	}
 
-	onModelChanged ( $event: any ) {
+	onModelChanged ( $value: any ) {
 
 		if ( this.disabled ) return;
 
-		this.value = parseFloat( $event );
+		if ( Number.isNaN( parseFloat( $value ) ) ) {
 
-		if ( Number.isNaN( this.value ) ) this.value = 0;
+			setTimeout( () => { this.value = this.value; }, 100 );
 
-		this.value = Maths.clamp( this.value, this.min, this.max );
+		} else {
 
-		this.changed.emit( this.value );
+			this.value = Maths.clamp( parseFloat( $value ), this.min, this.max );
 
+			this.changed.emit( this.value );
+
+		}
 	}
 
 	onKeydown ( $event: KeyboardEvent ) {
 
-		// `key` holds the character ('1', 'a', '.', etc.) or the action ('ArrowRight', 'Backspace', etc.)
-		const key = $event.key;
+		// console.log( 'keydown', $event );
 
-		// Arrow keys should be allowed for navigation
-		const navigationKeys = [ 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete' ];
+		// console.log( this.value );
 
-		if ( navigationKeys.includes( key ) ) {
-			return; // Allow navigation keys
-		}
+		// // `key` holds the character ('1', 'a', '.', etc.) or the action ('ArrowRight', 'Backspace', etc.)
+		// const key = $event.key;
 
-		// Check for numeric keys, decimal, or navigation keys
-		const isNumberKey = /^\d$/.test( key );
-		const isDecimalKey = key === '.';
+		// // Arrow keys should be allowed for navigation
+		// const navigationKeys = [ 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete' ];
 
-		// If key is not a number or decimal or it's a second decimal in the number, prevent its input
-		if ( !isNumberKey && !isDecimalKey ) {
-			$event.preventDefault();
-		}
+		// if ( navigationKeys.includes( key ) ) {
+		// 	return; // Allow navigation keys
+		// }
+
+		// // Check for numeric keys, decimal, or navigation keys
+		// const isNumberKey = /^\d$/.test( key );
+		// const isDecimalKey = key === '.';
+
+		// // If key is not a number or decimal or it's a second decimal in the number, prevent its input
+		// if ( !isNumberKey && !isDecimalKey ) {
+		// 	$event.preventDefault();
+		// }
 	}
 
-	onInput ( $event: Event ) {
+	onInput ( $event: any ) {
 
-		const inputValue: string = ( $event.target as HTMLInputElement ).value;
+		// if ( this.disabled ) return;
 
-		if ( !DoubleInputComponent.isNumeric( inputValue ) ) {
+		// console.log( 'model changed', $event.data, this.value );
 
-			this.value = inputValue.replace( /[^\d.]/g, '' );
+		// if ( Number.isNaN( parseFloat( this.value ) ) ) {
 
-			if ( inputValue.startsWith( '-' ) ) {
-				this.value = '-' + this.value;
-			}
-		} else {
+		// 	setTimeout( () => { this.value = 0; }, 100 );
 
-			console.log( 'inputValue', inputValue );
+		// } else {
 
-		}
+		// 	this.value = Maths.clamp( $event.data, this.min, this.max );
+
+		// 	this.changed.emit( this.value );
+
+		// }
+
+		// if ( !DoubleInputComponent.isNumeric( ( $event as InputEvent ).data ) ) {
+
+		// 	console.log( 'input not numeris', $event );
+
+		// 	$event.preventDefault();
+
+		// 	return
+		// }
+
+		// console.log( 'input', $event );
+
+		// const inputValue: string = ( $event.target as HTMLInputElement ).value;
+
+		// if ( !DoubleInputComponent.isNumeric( inputValue ) ) {
+
+		// 	this.value = inputValue.replace( /[^\d.]/g, '' );
+
+		// 	if ( inputValue.startsWith( '-' ) ) {
+		// 		this.value = '-' + this.value;
+		// 	}
+
+		// } else {
+
+		// 	console.log( 'inputValue', inputValue );
+
+		// }
 	}
 
 	static isNumeric ( value: string ): boolean {
