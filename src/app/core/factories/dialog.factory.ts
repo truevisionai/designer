@@ -24,7 +24,7 @@ export class DialogFactory {
 
 	static showImportOpenScenarioDialog ( path: string, destinationPath: string, extension: string ) {
 
-		this.dialog.open( ImportOpenScenarioDialogComponent, {
+		return this.dialog.open( ImportOpenScenarioDialogComponent, {
 			width: '680px',
 			height: '680px',
 			data: new ImportOpenScenarioDialogData( path, destinationPath, extension ),
@@ -34,7 +34,7 @@ export class DialogFactory {
 
 	static showImportFBXDialog ( path: string, destinationPath: string, extension: string ) {
 
-		this.dialog.open( ImportFbxDialogComponent, {
+		return this.dialog.open( ImportFbxDialogComponent, {
 			width: '680px',
 			height: '680px',
 			data: { path, destinationPath, extension }

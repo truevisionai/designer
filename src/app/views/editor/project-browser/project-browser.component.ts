@@ -320,7 +320,11 @@ export class ProjectBrowserComponent implements OnInit {
 				break;
 
 			case FileExtension.FBX:
-				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension );
+				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension )
+					?.afterClosed()
+					.subscribe( () => {
+						this.onFolderChanged( this.selectedFolder );
+					} );
 				break;
 
 			case FileExtension.JPG:
@@ -340,7 +344,11 @@ export class ProjectBrowserComponent implements OnInit {
 				break;
 
 			case FileExtension.OPENSCENARIO:
-				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension );
+				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension )
+					?.afterClosed()
+					.subscribe( () => {
+						this.onFolderChanged( this.selectedFolder );
+					} )
 				break;
 
 			case FileExtension.OPENDRIVE:
@@ -355,6 +363,8 @@ export class ProjectBrowserComponent implements OnInit {
 		if ( copied ) {
 
 			MetadataFactory.createMetadata( file.name, extension, destinationPath );
+
+			this.onFolderChanged( this.selectedFolder );
 
 		}
 
