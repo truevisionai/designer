@@ -64,6 +64,10 @@ export class EsminiPlayerService {
 
 		const binPath = this.editor.settings.odrViewerPath;
 
+		if ( !binPath || binPath == '' ) TvConsole.error( 'Please set the ODR Viewer path in settings' );
+
+		if ( !binPath || binPath == '' ) return;
+
 		const args = [ "--window", "60", "60", "800", "400", "--odr", xodr, "--path", path ];
 
 		TvConsole.info( 'Starting odrviewer...' );
@@ -88,6 +92,10 @@ export class EsminiPlayerService {
 	runScenario ( path: string, xodr: string, xosc: string ) {
 
 		const binPath = this.editor.settings.esminiPath;
+
+		if ( !binPath || binPath == '' ) TvConsole.error( 'Please set the Esmini path in settings' );
+
+		if ( !binPath || binPath == '' ) return;
 
 		const args = [ "--window", "60", "60", "800", "400", "--osc", xosc, "--path", path ];
 
