@@ -109,7 +109,7 @@ import { VehicleFactory } from 'app/core/factories/vehicle.factory';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OpenScenarioImporter extends AbstractReader {
+export class OpenScenarioLoader extends AbstractReader {
 
 	public static openScenario: TvScenario;
 	private file: IFile;
@@ -145,11 +145,11 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public parseXML ( xml: XmlElement ): TvScenario {
 
-		OpenScenarioImporter.openScenario = new TvScenario();
+		OpenScenarioLoader.openScenario = new TvScenario();
 
-		OpenScenarioImporter.readRootElement( xml, OpenScenarioImporter.openScenario );
+		OpenScenarioLoader.readRootElement( xml, OpenScenarioLoader.openScenario );
 
-		return OpenScenarioImporter.openScenario;
+		return OpenScenarioLoader.openScenario;
 	}
 
 	public static readRootElement ( xml: XmlElement, scenario: TvScenario ): any {
@@ -262,7 +262,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		const entity: string = xml.attr_entity || xml.attr_entityRef;
 		const value = parseFloat( xml.attr_value || 0 );
-		const rule = OpenScenarioImporter.readRule( xml.attr_rule );
+		const rule = OpenScenarioLoader.readRule( xml.attr_rule );
 
 		const direction = this.readDirectionDimension( xml?.attr_direction );
 
@@ -277,14 +277,14 @@ export class OpenScenarioImporter extends AbstractReader {
 		const offset = parseFloat( xml.attr_offset || 0 );
 		const dsLane = parseFloat( xml.attr_offset || 0 );
 
-		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
+		const orientation = OpenScenarioLoader.readOrientation( xml.Orientation );
 
 		return new RelativeLanePosition( entityRef, dLane, ds, offset, dsLane, orientation );
 	}
 
 	public static readRelativeObjectPosition ( xml: XmlElement ): RelativeObjectPosition {
 
-		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
+		const orientation = OpenScenarioLoader.readOrientation( xml.Orientation );
 		const entity: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
 		const dx = parseFloat( xml.attr_dx || 0 );
 		const dy = parseFloat( xml.attr_dy || 0 );
@@ -405,7 +405,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readRoadPosition ( xml: XmlElement ): RoadPosition {
 
-		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
+		const orientation = OpenScenarioLoader.readOrientation( xml.Orientation );
 		const roadId = parseInt( xml.attr_roadId );
 		const s = parseFloat( xml.attr_s || 0 );
 		const t = parseFloat( xml.attr_t || 0 );
@@ -417,7 +417,7 @@ export class OpenScenarioImporter extends AbstractReader {
 	public static readRelativeRoadPosition ( xml: XmlElement ): RelativeRoadPosition {
 
 		const entity: string = xml.attr_object || xml.attr_entity || xml.attr_entityRef;
-		const orientation = OpenScenarioImporter.readOrientation( xml.Orientation );
+		const orientation = OpenScenarioLoader.readOrientation( xml.Orientation );
 		const roadId = parseInt( xml.attr_roadId );
 		const ds = parseFloat( xml.attr_ds || 0 );
 		const dt = parseFloat( xml.attr_dt || 0 );
@@ -439,7 +439,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		const name: string = xml.attr_name;
 		const delay = xml.attr_delay ? parseFloat( xml.attr_delay ) : 0;
-		const edge: ConditionEdge = OpenScenarioImporter.readConditionEdge( xml.attr_edge || xml.attr_conditionEdge );
+		const edge: ConditionEdge = OpenScenarioLoader.readConditionEdge( xml.attr_edge || xml.attr_conditionEdge );
 
 		if ( xml.ByEntity || xml.ByEntityCondition ) {
 
@@ -751,7 +751,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readByEntityCondition ( xml: XmlElement ): Condition {
 
-		const condition = OpenScenarioImporter.readConditionByEntity( xml.EntityCondition );
+		const condition = OpenScenarioLoader.readConditionByEntity( xml.EntityCondition );
 
 		if ( !condition ) return null;
 
@@ -797,7 +797,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 			// TODO: test
 			const object = child?.ByType?.attr_type || child?.ByType?.ByObjectType?.attr_type;
-			const objectType = OpenScenarioImporter.readScenarioObjectType( object );
+			const objectType = OpenScenarioLoader.readScenarioObjectType( object );
 
 			new CollisionCondition( entityRef, objectType );
 
@@ -810,21 +810,21 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.TimeHeadway || xml.TimeHeadwayCondition ) {
 
-			return OpenScenarioImporter.readTimeHeadwayCondition( xml.TimeHeadway || xml.TimeHeadwayCondition );
+			return OpenScenarioLoader.readTimeHeadwayCondition( xml.TimeHeadway || xml.TimeHeadwayCondition );
 
 		} else if ( xml.TimeToCollision || xml.TimeToCollisionCondition ) {
 
-			return OpenScenarioImporter.readTimeToCollisionCondition( xml.TimeToCollision || xml.TimeToCollisionCondition );
+			return OpenScenarioLoader.readTimeToCollisionCondition( xml.TimeToCollision || xml.TimeToCollisionCondition );
 
 		} else if ( xml.Acceleration || xml.AccelerationCondition ) {
 
 			const child = xml.Acceleration || xml.AccelerationCondition;
 
 			const value = parseFloat( child?.attr_value || 0 );
-			const rule = OpenScenarioImporter.readRule( child?.attr_rule );
+			const rule = OpenScenarioLoader.readRule( child?.attr_rule );
 
 			// added in 1.2
-			const direction: DirectionDimension = OpenScenarioImporter.readDirectionDimension( child?.attr_direction );
+			const direction: DirectionDimension = OpenScenarioLoader.readDirectionDimension( child?.attr_direction );
 
 			return new AccelerationCondition( value, rule, direction );
 
@@ -836,11 +836,11 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.Speed || xml.SpeedCondition ) {
 
-			return OpenScenarioImporter.readSpeedCondition( xml.Speed || xml.SpeedCondition );
+			return OpenScenarioLoader.readSpeedCondition( xml.Speed || xml.SpeedCondition );
 
 		} else if ( xml.RelativeSpeed || xml.RelativeSpeedCondition ) {
 
-			return OpenScenarioImporter.readRelativeSpeedCondition( xml.RelativeSpeed || xml.RelativeSpeedCondition );
+			return OpenScenarioLoader.readRelativeSpeedCondition( xml.RelativeSpeed || xml.RelativeSpeedCondition );
 
 		} else if ( xml.TraveledDistance || xml.TraveledDistanceCondition ) {
 
@@ -850,15 +850,15 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		} else if ( xml.ReachPosition || xml.ReachPositionCondition ) {
 
-			return OpenScenarioImporter.readReachPositionCondition( xml.ReachPosition || xml.ReachPositionCondition );
+			return OpenScenarioLoader.readReachPositionCondition( xml.ReachPosition || xml.ReachPositionCondition );
 
 		} else if ( xml.Distance || xml.DistanceCondition ) {
 
-			return OpenScenarioImporter.readDistanceCondition( xml.Distance || xml.DistanceCondition );
+			return OpenScenarioLoader.readDistanceCondition( xml.Distance || xml.DistanceCondition );
 
 		} else if ( xml.RelativeDistance || xml.RelativeDistanceCondition ) {
 
-			return OpenScenarioImporter.readRelativeDistanceCondition( xml.RelativeDistance || xml.RelativeDistanceCondition );
+			return OpenScenarioLoader.readRelativeDistanceCondition( xml.RelativeDistance || xml.RelativeDistanceCondition );
 
 		} else {
 
@@ -870,7 +870,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readReachPositionCondition ( xml: XmlElement ): ReachPositionCondition {
 
-		const position = OpenScenarioImporter.readPosition( xml.Position );
+		const position = OpenScenarioLoader.readPosition( xml.Position );
 		const tolerance = parseFloat( xml.attr_tolerance || 0 );
 
 		return new ReachPositionCondition( position, tolerance );
@@ -880,12 +880,12 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		const value: number = parseFloat( xml.attr_value || 0 );
 		const freespace: boolean = xml.attr_freespace == 'true';
-		const rule: Rule = OpenScenarioImporter.readRule( xml.attr_rule );
-		const position: Position = OpenScenarioImporter.readPosition( xml.Position );
+		const rule: Rule = OpenScenarioLoader.readRule( xml.attr_rule );
+		const position: Position = OpenScenarioLoader.readPosition( xml.Position );
 		const alongRoute: boolean = xml?.attr_alongRoute == 'true';
-		const coordinateSystem = OpenScenarioImporter.readCoordinateSystem( xml?.attr_coordinateSystem );
-		const relativeDistanceType = OpenScenarioImporter.readRelativeDistanceType( xml?.attr_relativeDistanceType );
-		const routingAlgorithm = OpenScenarioImporter.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
+		const coordinateSystem = OpenScenarioLoader.readCoordinateSystem( xml?.attr_coordinateSystem );
+		const relativeDistanceType = OpenScenarioLoader.readRelativeDistanceType( xml?.attr_relativeDistanceType );
+		const routingAlgorithm = OpenScenarioLoader.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
 
 		return new DistanceCondition( position, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 	}
@@ -894,30 +894,30 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		if ( xml.Parameter || xml.ParameterCondition ) {
 
-			return OpenScenarioImporter.readParameterCondition( xml.Parameter || xml.ParameterCondition );
+			return OpenScenarioLoader.readParameterCondition( xml.Parameter || xml.ParameterCondition );
 
 		} else if ( xml.TimeOfDay || xml.TimeOfDayCondition ) {
 
-			return OpenScenarioImporter.readTimeOfDayCondition( xml.TimeOfDay || xml.TimeOfDayCondition );
+			return OpenScenarioLoader.readTimeOfDayCondition( xml.TimeOfDay || xml.TimeOfDayCondition );
 
 		} else if ( xml.SimulationTime || xml.SimulationTimeCondition ) {
 
-			return OpenScenarioImporter.readSimulationTimeCondition( xml.SimulationTime || xml.SimulationTimeCondition );
+			return OpenScenarioLoader.readSimulationTimeCondition( xml.SimulationTime || xml.SimulationTimeCondition );
 
 		} else if ( xml.Command || xml.UserDefinedValueCondition ) {
 
 			// 0.9 and 1.0 above
-			return OpenScenarioImporter.readUserDefinedValueCondition( xml.Command || xml.UserDefinedValueCondition );
+			return OpenScenarioLoader.readUserDefinedValueCondition( xml.Command || xml.UserDefinedValueCondition );
 
 		} else if ( xml.Signal || xml.TrafficSignalCondition ) {
 
 			// 0.9 and 1.0 above
-			return OpenScenarioImporter.readTrafficSignalCondition( xml.Signal || xml.TrafficSignalCondition );
+			return OpenScenarioLoader.readTrafficSignalCondition( xml.Signal || xml.TrafficSignalCondition );
 
 		} else if ( xml.Controller || xml.TrafficSignalControllerCondition ) {
 
 			// 0.9 and 1.0 above
-			return OpenScenarioImporter.readTrafficSignalControllerCondition( xml.Controller || xml.TrafficSignalControllerCondition );
+			return OpenScenarioLoader.readTrafficSignalControllerCondition( xml.Controller || xml.TrafficSignalControllerCondition );
 
 		} else if ( xml.StoryboardElementStateCondition ) {
 
@@ -1455,7 +1455,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readWaypoint ( xml: XmlElement ): Waypoint {
 
-		let position = OpenScenarioImporter.readPosition( xml.Position );
+		let position = OpenScenarioLoader.readPosition( xml.Position );
 		let strategy = xml.attr_strategy;
 
 		return new Waypoint( position, strategy );
@@ -1495,7 +1495,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	public static readPositionAction ( xml: XmlElement ): PrivateAction {
 
-		return new TeleportAction( OpenScenarioImporter.readPosition( xml ) );
+		return new TeleportAction( OpenScenarioLoader.readPosition( xml ) );
 
 	}
 
@@ -1505,31 +1505,31 @@ export class OpenScenarioImporter extends AbstractReader {
 
 		if ( xml.World || xml.WorldPosition ) {
 
-			position = OpenScenarioImporter.readWorldPosition( xml.World || xml.WorldPosition );
+			position = OpenScenarioLoader.readWorldPosition( xml.World || xml.WorldPosition );
 
 		} else if ( xml.RelativeWorld || xml.RelativeWorldPosition ) {
 
-			position = OpenScenarioImporter.readRelativeWorldPosition( xml.RelativeWorld || xml.RelativeWorldPosition );
+			position = OpenScenarioLoader.readRelativeWorldPosition( xml.RelativeWorld || xml.RelativeWorldPosition );
 
 		} else if ( xml.RelativeObject || xml.RelativeObjectPosition ) {
 
-			position = OpenScenarioImporter.readRelativeObjectPosition( xml.RelativeObject || xml.RelativeObjectPosition );
+			position = OpenScenarioLoader.readRelativeObjectPosition( xml.RelativeObject || xml.RelativeObjectPosition );
 
 		} else if ( xml.Road || xml.RoadPosition ) {
 
-			position = OpenScenarioImporter.readRoadPosition( xml.Road || xml.RoadPosition );
+			position = OpenScenarioLoader.readRoadPosition( xml.Road || xml.RoadPosition );
 
 		} else if ( xml.RelativeRoad || xml.RelativeRoadPosition ) {
 
-			position = OpenScenarioImporter.readRelativeRoadPosition( xml.RelativeRoad || xml.RelativeRoadPosition );
+			position = OpenScenarioLoader.readRelativeRoadPosition( xml.RelativeRoad || xml.RelativeRoadPosition );
 
 		} else if ( xml.Lane || xml.LanePosition ) {
 
-			position = OpenScenarioImporter.readLanePosition( xml.Lane || xml.LanePosition );
+			position = OpenScenarioLoader.readLanePosition( xml.Lane || xml.LanePosition );
 
 		} else if ( xml.RelativeLane || xml.RelativeLanePosition ) {
 
-			position = OpenScenarioImporter.readRelativeLanePosition( xml.RelativeLane || xml.RelativeLanePosition );
+			position = OpenScenarioLoader.readRelativeLanePosition( xml.RelativeLane || xml.RelativeLanePosition );
 
 		} else if ( xml.RoutePosition || xml.RoutePositionPosition ) {
 
@@ -1739,7 +1739,7 @@ export class OpenScenarioImporter extends AbstractReader {
 
 	private readTrajectoryCatalog ( xml: XmlElement ): TrajectoryCatalog {
 
-		const directory = OpenScenarioImporter.readDirectory( xml.Directory );
+		const directory = OpenScenarioLoader.readDirectory( xml.Directory );
 
 		const catalog = new TrajectoryCatalog( directory );
 
@@ -1865,24 +1865,24 @@ export class OpenScenarioImporter extends AbstractReader {
 			xml?.Target?.Entity?.attr_name ||	// 0.9
 			xml?.TimeToCollisionConditionTarget?.EntityRef?.attr_entityRef; // 1.0 or above
 
-		const position = OpenScenarioImporter.readPosition(
+		const position = OpenScenarioLoader.readPosition(
 			xml?.Target.Position ||									// 0.9
 			xml?.TimeToCollisionConditionTarget?.Position					// 1.0 or above
 		);
 
 		const value = parseFloat( xml?.attr_value || 0 );
 		const freespace = xml?.attr_freespace == 'true';
-		const rule = OpenScenarioImporter.readRule( xml.attr_rule );
+		const rule = OpenScenarioLoader.readRule( xml.attr_rule );
 
 		// deprecated from 1,1
 		const alongRoute = xml?.attr_alongRoute == 'true';
 
 		// added in 1.1
-		const coordinateSystem = OpenScenarioImporter.readCoordinateSystem( xml?.attr_coordinateSystem );
-		const relativeDistanceType = OpenScenarioImporter.readRelativeDistanceType( xml?.attr_relativeDistanceType );
+		const coordinateSystem = OpenScenarioLoader.readCoordinateSystem( xml?.attr_coordinateSystem );
+		const relativeDistanceType = OpenScenarioLoader.readRelativeDistanceType( xml?.attr_relativeDistanceType );
 
 		// added in 1.2
-		const routingAlgorithm = OpenScenarioImporter.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
+		const routingAlgorithm = OpenScenarioLoader.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
 
 		return new TimeToCollisionCondition( entityRef ?? position, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 
@@ -1927,17 +1927,17 @@ export class OpenScenarioImporter extends AbstractReader {
 		const entity: string = xml?.attr_entity || xml?.attr_entityRef;
 		const value = parseFloat( xml?.attr_value || 0 );
 		const freespace = xml?.attr_freespace == 'true';
-		const rule = OpenScenarioImporter.readRule( xml.attr_rule );
+		const rule = OpenScenarioLoader.readRule( xml.attr_rule );
 
 		// deprecated from 1,1
 		const alongRoute = xml?.attr_alongRoute == 'true';
 
 		// added in 1.1
-		const coordinateSystem = OpenScenarioImporter.readCoordinateSystem( xml?.attr_coordinateSystem );
-		const relativeDistanceType = OpenScenarioImporter.readRelativeDistanceType( xml?.attr_relativeDistanceType );
+		const coordinateSystem = OpenScenarioLoader.readCoordinateSystem( xml?.attr_coordinateSystem );
+		const relativeDistanceType = OpenScenarioLoader.readRelativeDistanceType( xml?.attr_relativeDistanceType );
 
 		// added in 1.2
-		const routingAlgorithm = OpenScenarioImporter.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
+		const routingAlgorithm = OpenScenarioLoader.readRoutingAlgorithm( xml?.attr_routingAlgorithm );
 
 		return new TimeHeadwayCondition( entity, value, freespace, alongRoute, rule, coordinateSystem, relativeDistanceType, routingAlgorithm );
 	}

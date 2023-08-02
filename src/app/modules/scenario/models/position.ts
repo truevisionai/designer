@@ -4,7 +4,7 @@
 
 import { Euler, MathUtils, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { OpenScenarioImporter } from '../services/open-scenario-importer.service';
+import { OpenScenarioLoader } from '../services/open-scenario.loader';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
@@ -56,7 +56,7 @@ export abstract class Position {
 	}
 
 	static fromXML ( xml: XmlElement ): Position {
-		return OpenScenarioImporter.readPosition( xml );
+		return OpenScenarioLoader.readPosition( xml );
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {

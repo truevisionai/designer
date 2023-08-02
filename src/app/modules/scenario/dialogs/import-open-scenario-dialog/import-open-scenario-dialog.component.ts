@@ -8,7 +8,7 @@ import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { FileService } from 'app/services/file.service';
 import { FileUtils } from '../../../../services/file-utils';
 import { TvScenario } from '../../models/tv-scenario';
-import { OpenScenarioImporter } from '../../services/open-scenario-importer.service';
+import { OpenScenarioLoader } from '../../services/open-scenario.loader';
 import { TvConsole } from 'app/core/utils/console';
 import { ScenarioBuilderV2 } from '../../services/scenario-builder.service';
 
@@ -29,7 +29,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 	constructor (
 		private dialogRef: MatDialogRef<ImportOpenScenarioDialogComponent>,
 		@Inject( MAT_DIALOG_DATA ) public data: ImportOpenScenarioDialogData,
-		private openScenarioImporter: OpenScenarioImporter,
+		private openScenarioImporter: OpenScenarioLoader,
 		private fileService: FileService,
 		private appRef: ApplicationRef
 	) {

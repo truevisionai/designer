@@ -7,7 +7,7 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
-import { OpenScenarioImporter } from '../modules/scenario/services/open-scenario-importer.service';
+import { OpenScenarioLoader } from '../modules/scenario/services/open-scenario.loader';
 import { AssetLoaderService } from './asset-loader.service';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
@@ -27,7 +27,7 @@ export class ImporterService {
 		private modelImporter: ModelImporterService,
 		private assetService: AssetLoaderService,
 		private fileService: FileService,
-		private openScenarioImporter: OpenScenarioImporter,
+		private openScenarioImporter: OpenScenarioLoader,
 		private scenarioInstance: ScenarioInstance,		// dont remove required for import
 	) {
 	}

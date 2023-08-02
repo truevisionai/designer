@@ -4,15 +4,15 @@
 
 import { PolylineShape } from '../models/tv-trajectory';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { OpenScenarioImporter } from './open-scenario-importer.service';
+import { OpenScenarioLoader } from './open-scenario.loader';
 
 
 describe( 'ReaderService', () => {
 
-	let parser: OpenScenarioImporter;
+	let parser: OpenScenarioLoader;
 
 	beforeEach( () => {
-		parser = new OpenScenarioImporter( null );
+		parser = new OpenScenarioLoader( null );
 	} );
 
 	it( 'should parse Header correctly', () => {
@@ -25,7 +25,7 @@ describe( 'ReaderService', () => {
 			attr_date: '2017-07-27T10:00:00',
 		};
 
-		const header = OpenScenarioImporter.readFileHeader( headerXml );
+		const header = OpenScenarioLoader.readFileHeader( headerXml );
 
 		expect( header.revMajor ).toBe( 1 );
 		expect( header.revMinor ).toBe( 4 );
@@ -46,7 +46,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const roadNetwork = OpenScenarioImporter.readRoadNetwork( xml );
+		const roadNetwork = OpenScenarioLoader.readRoadNetwork( xml );
 
 		expect( roadNetwork.logics.filepath ).toBe( xml.Logics.attr_filepath );
 		expect( roadNetwork.sceneGraph.filepath ).toBe( xml.SceneGraph.attr_filepath );
@@ -76,7 +76,7 @@ describe( 'ReaderService', () => {
 			attr_name: 'Default_Vehicle'
 		};
 
-		const entityObject = OpenScenarioImporter.readScenarioObject( xml );
+		const entityObject = OpenScenarioLoader.readScenarioObject( xml );
 
 		expect( entityObject.name ).toBe( xml.attr_name );
 
@@ -89,7 +89,7 @@ describe( 'ReaderService', () => {
 			attr_owner: 'Ego'
 		};
 
-		const story = OpenScenarioImporter.readStory( xml );
+		const story = OpenScenarioLoader.readStory( xml );
 
 		expect( story.name ).toBe( xml.attr_name );
 		expect( story.ownerName ).toBe( xml.attr_owner );
@@ -130,7 +130,7 @@ describe( 'ReaderService', () => {
 			}
 		};
 
-		const vertex = OpenScenarioImporter.readVertex( xml );
+		const vertex = OpenScenarioLoader.readVertex( xml );
 
 		expect( vertex.time ).toBe( xml.attr_reference );
 
@@ -142,7 +142,7 @@ describe( 'ReaderService', () => {
 			Polyline: ''
 		};
 
-		const polyline = OpenScenarioImporter.readVertexShape( xml );
+		const polyline = OpenScenarioLoader.readVertexShape( xml );
 
 		expect( polyline ).toBeTruthy( polyline instanceof PolylineShape );
 
@@ -156,7 +156,7 @@ describe( 'ReaderService', () => {
 			attr_length: '3'
 		};
 
-		const clothoid = OpenScenarioImporter.readClothoidShape( xml );
+		const clothoid = OpenScenarioLoader.readClothoidShape( xml );
 
 		expect( clothoid.curvature ).toBe( 1 );
 		expect( clothoid.curvatureDot ).toBe( 2 );
@@ -175,7 +175,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const waypoint = OpenScenarioImporter.readWaypoint( xml );
+		const waypoint = OpenScenarioLoader.readWaypoint( xml );
 
 		expect( waypoint.strategy ).toBe( xml.attr_strategy );
 		expect( waypoint.position ).not.toBe( null );
@@ -189,7 +189,7 @@ describe( 'ReaderService', () => {
 			None: '',
 		};
 
-		const LongitudinalPurpose = OpenScenarioImporter.readTimeReference( xml );
+		const LongitudinalPurpose = OpenScenarioLoader.readTimeReference( xml );
 
 		expect( LongitudinalPurpose.timing ).toBe( null || undefined );
 
@@ -205,7 +205,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const object = OpenScenarioImporter.readTimeReference( xml );
+		const object = OpenScenarioLoader.readTimeReference( xml );
 
 		expect( object.timing ).not.toBe( null || undefined );
 		expect( object.timing.domain ).toBe( xml.Timing.attr_domain );
@@ -230,7 +230,7 @@ describe( 'ReaderService', () => {
 			}, ]
 		};
 
-		const route = OpenScenarioImporter.readRoute( xml );
+		const route = OpenScenarioLoader.readRoute( xml );
 
 		expect( route.name ).toBe( xml.attr_name );
 		expect( route.closed ).toBe( false );
