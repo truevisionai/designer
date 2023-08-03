@@ -10,7 +10,7 @@ enum TvLogType {
 	error,
 }
 
-class TvLog {
+export class TvLog {
 
 	public time = new Date();
 

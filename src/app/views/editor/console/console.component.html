@@ -12,7 +12,17 @@
 
 	<!-- <perfect-scrollbar fxFlexFill> -->
 
+	<sat-popover #popover
+		verticalAlign="above">
+		<div class="simple-popover" style="width: auto;"
+			*ngIf="log">
+			<div [innerHTML]="log.message| translate"></div>
+		</div>
+	</sat-popover>
+
 	<mat-list-item *ngFor="let log of logs"
+		(mouseover)="onMouseOver(log)"
+		(mouseout)="onMouseOut(log)"
 		role="listitem"
 		class="console-log-item">
 
