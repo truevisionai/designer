@@ -16,7 +16,7 @@
 		<app-boolean-field *ngIf="field.type == 'checkbox'"
 			[label]="field.name"
 			(changed)="onFieldChange(field, $event)"
-			[value]="field.value == 'true'">
+			[value]="field.value == 'true' || field.value == true">
 		</app-boolean-field>
 	</div>
 </div>

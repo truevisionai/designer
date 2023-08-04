@@ -20,7 +20,7 @@ import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/
 export class EsminiPlayerService {
 
 	get isEnabled (): boolean {
-		return this.editor.settings.esminiEnabled == 'true';
+		return this.editor.settings.esminiEnabled;
 	}
 
 	logs: string[] = [];

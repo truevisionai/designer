@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { MainFileService } from 'app/services/main-file.service';
 import { KeyboardInput } from '../input';
 import { ShortcutService } from './shortcut.service';
+import { FileService } from 'app/services/file.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -57,36 +58,80 @@ export class EditorService {
 }
 
 @Injectable( {
-	providedIn: 'root'
+	providedIn: 'root',
 } )
 export class EditorSettings {
 
-	constructor () { }
+	private settingsPath: string;
+	private settings = {};
 
-	get esminiEnabled (): string {
-		return localStorage.getItem( 'esminiEnabled' );
+	constructor ( private fileService: FileService ) {
+
+		const projectFolder = this.fileService.projectFolder
+
+		this.settingsPath = fileService.join( projectFolder, 'settings.json' );
+
+		this.loadSettings();
 	}
 
-	set esminiEnabled ( value ) {
-		localStorage.setItem( 'esminiEnabled', value );
+	private loadSettings () {
+
+		if ( this.fileService.fs.existsSync( this.settingsPath ) ) {
+
+			this.settings = JSON.parse( this.fileService.fs.readFileSync( this.settingsPath, 'utf-8' ) );
+
+		} else {
+
+			this.settings = {};
+
+			this.saveSettings();
+
+		}
+
+	}
+
+	private saveSettings () {
+
+		const value = JSON.stringify( this.settings, null, 2 );
+
+		this.fileService.fs.writeFileSync( this.settingsPath, value, 'utf-8' );
+
+	}
+
+	getSetting ( key: string ): any {
+		return this.settings[ key ];
+	}
+
+	setSetting ( key: string, value: any ) {
+		this.settings[ key ] = value;
+		this.saveSettings();
+	}
+
+	get esminiEnabled (): boolean {
+		return this.settings[ 'esminiEnabled' ] == 'true' || this.settings[ 'esminiEnabled' ] == true;
+	}
+
+	set esminiEnabled ( value: boolean ) {
+		this.setSetting( 'esminiEnabled', value );
 	}
 
 	get esminiPath (): string {
-		return localStorage.getItem( 'esminiPath' );
+		return this.settings[ 'esminiPath' ];
 	}
 
-	set esminiPath ( value ) {
-		localStorage.setItem( 'esminiPath', value );
+	set esminiPath ( value: string ) {
+		this.setSetting( 'esminiPath', value );
 	}
 
 	get odrViewerPath (): string {
-		return localStorage.getItem( 'odrViewerPath' );
+		return this.settings[ 'odrViewerPath' ];
 	}
 
-	set odrViewerPath ( value ) {
-		localStorage.setItem( 'odrViewerPath', value );
+	set odrViewerPath ( value: string ) {
+		this.setSetting( 'odrViewerPath', value );
 	}
 
 }
+
 
 
