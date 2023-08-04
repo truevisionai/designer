@@ -6,7 +6,7 @@
 	fxLayout="row">
 
 	<div fxFlex="20">
-		<perfect-scrollbar class="project-heirarchy-container"
+		<perfect-scrollbar class="project-heirarchy-container border-right"
 			fxFlexFill>
 			<app-project-hierarchy (folderChanged)="onFolderChanged($event)"
 				[dataSource]="dataSource"
@@ -15,14 +15,17 @@
 		</perfect-scrollbar>
 	</div>
 
-	<div fxFlex="80">
-		<perfect-scrollbar class="folder-file-container"
-			fxFlexFill>
-			<app-folder-files (folderChanged)="onFolderChanged($event)"
-				[files]="files"
-				[folder]="selectedFolder"
-				fxFlexFill></app-folder-files>
-		</perfect-scrollbar>
+	<div fxFlex="80"
+		class="border-right"
+		style="overflow: scroll;background: #606060;">
+		<!-- <perfect-scrollbar class="folder-file-container" -->
+		<!-- fxFlexFill> -->
+		<app-folder-files fxFlexFill
+			(folderChanged)="onFolderChanged($event)"
+			[files]="files"
+			[folder]="selectedFolder"
+			fxFlexFill></app-folder-files>
+		<!-- </perfect-scrollbar> -->
 	</div>
 
 </div>
