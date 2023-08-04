@@ -11,6 +11,8 @@ import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service'
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { FileService } from 'app/services/file.service';
 import { TvConsole } from './utils/console';
+import { AppInspector } from './inspector';
+import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +22,8 @@ export class EsminiPlayerService {
 	get isEnabled (): boolean {
 		return this.editor.settings.esminiEnabled == 'true';
 	}
+
+	logs: string[] = [];
 
 	constructor (
 		private fileService: FileService,
@@ -31,6 +35,10 @@ export class EsminiPlayerService {
 	}
 
 	playSimulation () {
+
+		this.logs.splice( 0, this.logs.length );
+
+		AppInspector.setInspector( EsminiInspectorComponent, this.logs );
 
 		const path = this.fileService.projectFolder + '/.temp';
 
@@ -76,13 +84,19 @@ export class EsminiPlayerService {
 
 			TvConsole.info( 'Esmini: ' + data );
 
+			this.logs.push( data );
+
 		}, ( err ) => {
 
 			TvConsole.error( 'Esmini: ' + err );
 
+			this.logs.push( err );
+
 		}, ( code ) => {
 
 			TvConsole.info( 'Esmini exited with code ' + code );
+
+			this.logs.push( 'Esmini exited with code ' + code );
 
 		} );
 
@@ -105,13 +119,19 @@ export class EsminiPlayerService {
 
 			TvConsole.info( 'Esmini: ' + data );
 
+			this.logs.push( data );
+
 		}, ( err ) => {
 
 			TvConsole.error( 'Esmini: ' + err );
 
+			this.logs.push( err );
+
 		}, ( code ) => {
 
 			TvConsole.info( 'Esmini exited with code ' + code );
+
+			this.logs.push( 'Esmini exited with code ' + code );
 
 		} );
 

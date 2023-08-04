@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterContentInit, Component, HostListener, OnInit } from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EditorService } from 'app/core/services/editor.service';
@@ -19,21 +19,27 @@ import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-di
 } )
 export class EditorComponent implements OnInit, AfterContentInit {
 
+	consoleLabel = 'Console';
+
 	constructor (
 		private dialog: MatDialog,
 		private analytics: AnalyticsService,
 		private mainFileService: MainFileService,
 		private editor: EditorService,
-		private oscPlayer: ScenarioDirectorService
+		private oscPlayer: ScenarioDirectorService,
+		private changeDetectorRef: ChangeDetectorRef,
 	) {
+
+		TvConsole.logsChanged.subscribe( () => this.onLogsChanged() );
 
 	}
 
-	get consoleLabel () {
+	onLogsChanged (): void {
 
-		if ( TvConsole.logs.length > 0 ) return `Console (${ TvConsole.logs.length })`;
+		this.consoleLabel = `Console (${ TvConsole.logs.length })`;
 
-		return 'Console';
+		this.changeDetectorRef.detectChanges();
+
 	}
 
 	get scenario () {

@@ -1,0 +1,18 @@
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="isOpen=!isOpen"
+		mat-icon-button
+		class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>Esmini Logs</span>
+</mat-toolbar>
+
+
+<div *ngIf="isOpen && data"
+	class="inspector-editor-padding">
+
+	<div *ngFor="let message of data">
+		<pre>{{ message }} </pre>
+	</div>
+</div>

@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { EventEmitter } from "@angular/core";
+
 const MAX_LOG_COUNT = 500;
 
 enum TvLogType {
@@ -46,6 +48,8 @@ export class TvConsole {
 
 	static logs: TvLog[] = [];
 
+	static logsChanged = new EventEmitter();
+
 	static get lastLog () {
 		return this.logs[ 0 ];
 	}
@@ -53,6 +57,8 @@ export class TvConsole {
 	static clear () {
 
 		this.logs.splice( 0, this.logs.length );
+
+		this.logsChanged.emit();
 
 	}
 
@@ -72,6 +78,8 @@ export class TvConsole {
 		}
 
 		if ( this.logs.length > MAX_LOG_COUNT ) this.logs.pop();
+
+		this.logsChanged.emit();
 	}
 
 
@@ -92,6 +100,7 @@ export class TvConsole {
 
 		if ( this.logs.length > MAX_LOG_COUNT ) this.logs.pop();
 
+		this.logsChanged.emit();
 	}
 
 
@@ -112,5 +121,6 @@ export class TvConsole {
 
 		if ( this.logs.length > MAX_LOG_COUNT ) this.logs.pop();
 
+		this.logsChanged.emit();
 	}
 }
