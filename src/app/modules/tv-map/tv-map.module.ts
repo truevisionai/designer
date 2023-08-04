@@ -56,6 +56,7 @@ import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-insp
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
+import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
 
 
 @NgModule( {
@@ -90,6 +91,7 @@ import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspec
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,
+		EsminiInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -151,6 +153,7 @@ import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspec
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,
+		EsminiInspectorComponent,
 	]
 } )
 export class TvMapModule {
