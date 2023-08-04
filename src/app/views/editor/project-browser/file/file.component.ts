@@ -75,7 +75,7 @@ export class FileComponent implements OnInit {
 		if ( this.isUnknown ) {
 			return 'assets/unknown-file-icon.png';
 		}
-		if (!this.previewImage){
+		if ( !this.previewImage ) {
 			return 'assets/unknown-file-icon.png';
 		}
 		return this.previewImage;
@@ -144,7 +144,14 @@ export class FileComponent implements OnInit {
 
 			if ( !this.assetService.hasMetaFile( this.file ) ) {
 
-				MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
+				if ( this.file.type == 'directory' ) {
+
+					MetadataFactory.createFolderMetadata( this.file.path );
+
+				} else {
+
+					MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
+				}
 
 			}
 

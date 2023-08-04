@@ -386,21 +386,21 @@ export class FileService {
 
 		if ( this.fs.existsSync( folderPath ) ) {
 
-			this.fs.readdirSync( folderPath ).forEach( ( file ) => {
+			this.fs.readdirSync( folderPath ).forEach( ( item ) => {
 
-				const curPath = this.path.join( folderPath, file );
+				const itemPath = this.path.join( folderPath, item );
 
-				if ( this.fs.lstatSync( curPath ).isDirectory() ) {
-					// Recursively delete subdirectories
-					this.deleteFolderRecursive( curPath );
+				if ( versions.stat.isDirectory( itemPath ) ) {
+
+					this.deleteFolderRecursive( itemPath );
+
 				} else {
-					// Delete files
-					this.fs.unlinkSync( curPath );
+
+					this.fs.unlinkSync( itemPath );
 				}
 
 			} );
 
-			// Delete the empty directory
 			this.fs.rmdirSync( folderPath );
 		}
 	}
@@ -567,4 +567,32 @@ export class FileService {
 		return this.path.join( path, filename );
 
 	}
+
+	copyDirSync ( source: string, destination: string ) {
+
+		if ( !this.fs.existsSync( destination ) ) {
+			this.fs.mkdirSync( destination, { recursive: true } );
+		}
+
+		const items = this.fs.readdirSync( source, { withFileTypes: true } );
+
+		for ( const item of items ) {
+
+			const itemPath = this.path.join( source, item.name );
+
+			const sourcePath = this.path.join( source, item.name );
+
+			const destinationPath = this.path.join( destination, item.name );
+
+			if ( versions.stat.isDirectory( itemPath ) ) {
+
+				this.copyDirSync( sourcePath, destinationPath );
+
+			} else if ( versions.stat.isFile( itemPath ) ) {
+
+				this.fs.copyFileSync( sourcePath, destinationPath );
+			}
+		}
+	}
+
 }
