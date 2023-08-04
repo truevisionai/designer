@@ -4,21 +4,6 @@
 
 import { Vector2, Vector4 } from 'three';
 
-class SplineData {
-
-	public xb: Vector4;
-
-	public yb: Vector4;
-
-	constructor ( p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2 ) {
-
-		this.xb = new Vector4( p0.x, p1.x, p2.x, p3.x );
-
-		this.yb = new Vector4( p0.y, p1.y, p2.y, p3.y );
-
-	}
-
-}
 
 // Optimised for t=0.5
 function Split ( spline: Vector4 ) {
@@ -42,6 +27,23 @@ function Split ( spline: Vector4 ) {
 	return [ new Vector4( sx, q0, r0, s0 ), new Vector4( s0, r1, q2, sw ) ];
 
 }
+
+class SplineData {
+
+	public xb: Vector4;
+
+	public yb: Vector4;
+
+	constructor ( p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2 ) {
+
+		this.xb = new Vector4( p0.x, p1.x, p2.x, p3.x );
+
+		this.yb = new Vector4( p0.y, p1.y, p2.y, p3.y );
+
+	}
+
+}
+
 
 export function HermiteSpline ( p0: Vector2, p1: Vector2, v0: Vector2, v1: Vector2 ): SplineData {
 
@@ -83,6 +85,8 @@ function LengthEstimate ( s: SplineData ) {
 
 export function Length ( s: SplineData, maxError /*float*/ ) {
 
+	// return computeSplineLength( s, 1000 );
+
 	let length, error;
 
 	[ length, error ] = LengthEstimate( s );
@@ -103,4 +107,29 @@ export function Length ( s: SplineData, maxError /*float*/ ) {
 
 	return length;
 
+}
+
+
+// another implementation for length calculation
+function computeSplineLength ( splineData: SplineData, n: number ): number {
+	let length = 0;
+	let prevPoint = evaluateSpline( splineData, 0 );
+
+	for ( let i = 1; i <= n; i++ ) {
+		const t = i / n;
+		const currPoint = evaluateSpline( splineData, t );
+		length += currPoint.distanceTo( prevPoint );
+		prevPoint = currPoint;
+	}
+
+	return length;
+}
+
+function evaluateSpline ( splineData: SplineData, t: number ): Vector2 {
+	const { xb, yb } = splineData;
+	const tt = t * t;
+	const ttt = tt * t;
+	const x = ( ( 2 * ttt - 3 * tt + 1 ) * xb.x ) + ( ( ttt - 2 * tt + t ) * xb.y ) + ( ( ttt - tt ) * xb.z ) + ( ( -2 * ttt + 3 * tt ) * xb.w );
+	const y = ( ( 2 * ttt - 3 * tt + 1 ) * yb.x ) + ( ( ttt - 2 * tt + t ) * yb.y ) + ( ( ttt - tt ) * yb.z ) + ( ( -2 * ttt + 3 * tt ) * yb.w );
+	return new Vector2( x, y );
 }

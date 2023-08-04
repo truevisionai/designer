@@ -366,6 +366,8 @@ export class ExplicitSpline extends AbstractSpline {
 
 		controlPoint.hdg = hdg;
 
+		controlPoint.userData.geometry = geometry;
+
 		controlPoint.addDefaultTangents( hdg, 1, 1 );
 
 		// update tangent line
@@ -536,7 +538,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const s = length * t;
 
-		const geometry = geometries.find( g => s >= g.s && s <= g.endS );
+		const geometry = geometries.filter( g => s >= g.s ).pop();
 
 		const posTheta = geometry.getRoadCoord( s );
 
@@ -585,4 +587,36 @@ export class ExplicitSpline extends AbstractSpline {
 
 	}
 
+}
+
+class ParamPoly3 {
+
+	constructor ( private p1: THREE.Vector3, private p2: THREE.Vector3, private hdg1: number, private hdg2: number ) { }
+
+	// Get point on the curve at t [0, 1]
+	getPoint ( t: number ): THREE.Vector3 {
+		const h00 = 2 * t * t * t - 3 * t * t + 1;  // calculate basis function 1
+		const h10 = t * t * t - 2 * t * t + t;      // calculate basis function 2
+		const h01 = -2 * t * t * t + 3 * t * t;     // calculate basis function 3
+		const h11 = t * t * t - t * t;              // calculate basis function 4
+
+		// Calculate direction vectors (tangents) at the start and the end
+		const t1 = new Vector3( Math.cos( this.hdg1 ), Math.sin( this.hdg1 ), 0 );
+		const t2 = new Vector3( Math.cos( this.hdg2 ), Math.sin( this.hdg2 ), 0 );
+
+		// Scale the tangents by the distance between the points
+		// (this assumes the arc length of the curve is approximately the distance between the points)
+		const d = this.p1.distanceTo( this.p2 );
+		t1.multiplyScalar( d );
+		t2.multiplyScalar( d );
+
+		// Calculate the interpolated point
+		const point = new Vector3();
+		point.copy( this.p1 ).multiplyScalar( h00 );
+		point.add( t1.multiplyScalar( h10 ) );
+		point.add( this.p2.clone().multiplyScalar( h01 ) );
+		point.add( t2.multiplyScalar( h11 ) );
+
+		return point;
+	}
 }
