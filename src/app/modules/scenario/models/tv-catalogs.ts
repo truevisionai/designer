@@ -2,27 +2,56 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvConsole } from 'app/core/utils/console';
 import { Directory } from './tv-common';
-import { Parameter } from './tv-parameter-declaration';
-import { Trajectory } from './tv-trajectory';
+import { FileHeader } from './tv-file-header';
 
+export enum CatalogType {
+	VEHICLE = 'Vehicle',
+	CONTROLLER = 'Controller',
+	PEDESTRIAN = 'Pedestrian',
+	MISC_OBJECT = 'MiscObject',
+	ENVIRONMENT = 'Environment',
+	MANEUVER = 'Maneuver',
+	TRAJECTORY = 'Trajectory',
+	ROUTE = 'Route',
+}
 
 export class Catalogs {
 
-	public static truevisionCatalog = 'TruevisionCatalog';
-	public static truevisionDefaultController = 'DefaultController';
+	private catalogs = new Map<string, Catalog>();
 
-	public vehicleCatalog: Catalog;
-	public driverCatalog: Catalog;
-	public pedestrianCatalog: Catalog;
-	public pedestrianControllerCatalog: Catalog;
-	public miscObjectCatalog: Catalog;
-	public environmentCatalog: Catalog;
-	public maneuverCatalog: Catalog;
-	public trajectoryCatalog: Catalog;
-	public routeCatalog: Catalog;
+	constructor () { }
 
-	constructor () {
+	addCatalog ( catalog: Catalog ): void {
+
+		if ( this.catalogs.has( catalog.name ) ) {
+
+			TvConsole.error( 'Catalog with same name already exists' );
+
+		} else {
+
+			this.catalogs.set( catalog.name, catalog );
+
+		}
+
+	}
+
+	getCatalog ( catalogName: string ): Catalog {
+
+		return this.catalogs.get( catalogName );
+
+	}
+
+	getCatalogs (): Catalog[] {
+
+		return Array.from( this.catalogs.values() );
+
+	}
+
+	getEntry ( catalogName: string, entryName: string ): any {
+
+		return this.getCatalog( catalogName )?.getEntry( entryName );
 
 	}
 
@@ -30,46 +59,66 @@ export class Catalogs {
 
 export class Catalog {
 
-	private m_Directory: Directory;
+	public catalogType: CatalogType;
 
-	constructor ( directory: Directory ) {
+	private entries = new Map<string, any>();
 
-		this.m_Directory = directory;
+	public fileHeader = new FileHeader();
 
+	constructor (
+		public name: string,
+		public directory: Directory
+	) {
+	}
+
+	getEntry<T> ( entryName: string ): T {
+		return this.entries.get( entryName );
+	}
+
+	getEntries<T> (): T[] {
+		return Array.from( this.entries.values() );
+	}
+
+	addEntry<T> ( entryName: string, entry: T ): void {
+		this.entries.set( entryName, entry );
 	}
 }
 
-export class TrajectoryCatalog extends Catalog {
+// export class TrajectoryCatalog extends Catalog {
 
-	private trajectories: Trajectory[] = [];
+// 	public catalogType = CatalogType.TRAJECTORY;
 
-	constructor ( directory: Directory ) {
+// 	constructor ( name: string, directory: Directory ) {
+// 		super( name, directory );
+// 	}
+// }
 
-		super( directory );
 
-	}
+// export class VehicleCatalog extends Catalog {
 
-}
+// 	public catalogType = CatalogType.VEHICLE;
+
+// 	constructor ( name: string, directory: Directory ) {
+// 		super( name, directory );
+// 	}
+// }
 
 export class CatalogReference {
 
-	private parameters: Parameter[];
-
-	constructor ( public catalogName: string, public entryName: string ) {
-
-	}
-
-	static readXml ( CatalogReference: any ): CatalogReference {
-
-		const oscCatalogReference = new CatalogReference( null, null );
-
-		oscCatalogReference.catalogName = CatalogReference.attr_catalogName;
-		oscCatalogReference.entryName = CatalogReference.attr_entryName;
-
-
-		return oscCatalogReference;
-
+	constructor (
+		public catalogName: string,
+		public entryName: string,
+		private parameterAssignments: ParameterAssignment[] = []
+	) {
 	}
 
 }
 
+export class ParameterAssignment {
+	constructor (
+		public parameterRef: string,
+		public value: any
+	) {
+
+	}
+}

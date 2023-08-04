@@ -18,7 +18,7 @@ describe( 'TvRelativeWorldPosition', () => {
 		expect( xml.attr_dx ).toBe( 0 );
 		expect( xml.attr_dy ).toBe( 1 );
 		expect( xml.attr_dz ).toBe( -1 );
-		expect( xml.Orientation ).toBeDefined();
+		expect( xml.Orientation ).toBeUndefined();
 
 
 	} );

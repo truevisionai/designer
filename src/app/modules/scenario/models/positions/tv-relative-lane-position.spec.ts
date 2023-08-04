@@ -26,7 +26,7 @@ describe( 'RelativeLanePosition', () => {
 		expect( xml.attr_ds ).toBe( 1 );
 		expect( xml.attr_offset ).toBe( -1 );
 		expect( xml.attr_dsLane ).toBe( -2 );
-		expect( xml.Orientation ).toBeDefined();
+		expect( xml.Orientation ).toBeUndefined();
 
 
 	} );

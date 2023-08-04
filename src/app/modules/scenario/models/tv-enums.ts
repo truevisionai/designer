@@ -76,6 +76,7 @@ export enum PositionType {
 	Lane = 'Lane',
 	RelativeLane = 'RelativeLane',
 	Route = 'Route',
+	Trajectory = 'Trajectory',
 }
 
 export enum Rule {

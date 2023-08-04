@@ -30,7 +30,10 @@ describe( 'WriterService', () => {
 	it( 'should write trajectory correctly', () => {
 
 		const trajectory = new Trajectory(
-			'TrajectoryName', true, EnumTrajectoryDomain.Distance
+			'TrajectoryName',
+			true,
+			EnumTrajectoryDomain.Distance,
+			new PolylineShape()
 		);
 
 		const xml = writer.writeTrajectory( trajectory );
@@ -48,7 +51,6 @@ describe( 'WriterService', () => {
 		const vertex = new Vertex();
 		vertex.position = new WorldPosition( 1, 2, 3 );
 		vertex.time = 1;
-		vertex.shape = new PolylineShape;
 
 		const xml = writer.writeVertex( vertex );
 

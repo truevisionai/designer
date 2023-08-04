@@ -10,7 +10,8 @@ import { FileUtils } from '../../../../services/file-utils';
 import { TvScenario } from '../../models/tv-scenario';
 import { OpenScenarioLoader } from '../../services/open-scenario.loader';
 import { TvConsole } from 'app/core/utils/console';
-import { ScenarioBuilderV2 } from '../../services/scenario-builder.service';
+import { Catalog } from '../../models/tv-catalogs';
+import { ParameterResolver } from '../../services/scenario-builder.service';
 
 export class ImportOpenScenarioDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {
@@ -52,7 +53,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 	}
 
 	get newSubDirectory (): string {
-		return this.fileService.join( this.destinationDirectory, this.sourceFilenameWithoutExtension );
+		return this.destinationDirectory;
 	}
 
 	get roadNetworkSource (): string {
@@ -75,15 +76,23 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 		TvConsole.info( 'Reading scenarion from ' + this.data?.path );
 
+		this.readScenario();
+
+	}
+
+	async readScenario () {
+
 		const contents: string = await this.fileService.readAsync( this.data.path );
 
 		try {
 
-			const scenarioBuilder = new ScenarioBuilderV2();
+			const scenarioBuilder = new ParameterResolver();
 
-			const xmlWithVariables = this.openScenarioImporter.getXMLElement( contents );
+			this.openScenarioImporter.setPath( this.sourceDirectory );
 
-			const xml = scenarioBuilder.replaceParameterWithValue( xmlWithVariables );
+			let xml = this.openScenarioImporter.getXMLElement( contents );
+
+			xml = scenarioBuilder.replaceParameterWithValue( xml );
 
 			const scenario = this.openScenarioImporter.parseXML( xml );
 
@@ -104,19 +113,58 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 		}
 
-
 	}
 
 	import () {
+
+		if ( !this.scenario ) return;
 
 		this.importRoadNetwork();
 
 		this.importScenario();
 
+		const catalogs = this.fileService.join( this.sourceDirectory, 'Catalogs' );
+
+		this.fileService.copyDirSync( catalogs, this.fileService.join( this.newSubDirectory, 'Catalogs' ) );
+
 		this.dialogRef.close( this.newSubDirectory );
 
 		this.appRef.tick();
 
+	}
+
+	copyCatalogs () {
+
+		this.scenario.catalogs.getCatalogs().forEach( catalog => {
+
+			this.importCatalog( catalog );
+
+		} );
+
+	}
+
+	importCatalog ( catalog: Catalog ) {
+
+		if ( !catalog.directory?.path ) TvConsole.error( 'No path found for catalog ' + catalog.name + ' ' + catalog.catalogType );
+		if ( !catalog.directory?.path ) return;
+
+		// const sourceDirectory = this.fileService.join( this.sourceDirectory, catalog.directory.path );
+
+		this.fileService.copyDirSync( 'Catalogs', this.newSubDirectory );
+
+		// const files: IFile[] = this.fileService.readPathContentsSync( sourceDirectory );
+
+		// files.filter( file => file.type == 'file' && FileService.getExtension( file.name ) === 'xosc' )
+
+		// 	.forEach( file => {
+
+		// 		let destinationPath = this.fileService.join( this.newSubDirectory, file.name );
+
+		// 		// destinationPath = this.fileService.join( destinationPath, file.name );
+
+		// 		this.fileService.fs.copyFileSync( file.path, destinationPath );
+
+		// 	} )
 	}
 
 	private importRoadNetwork (): void {
@@ -134,15 +182,13 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 		this.fileService.fs.copyFileSync( this.roadNetworkSource, destinationPath );
 
-		MetadataFactory.createFolderMetadata( this.newSubDirectory );
-		MetadataFactory.createFolderMetadata( destinationDir );
+		// MetadataFactory.createFolderMetadata( this.newSubDirectory );
+		// MetadataFactory.createFolderMetadata( destinationDir );
 		MetadataFactory.createMetadataFormPath( destinationPath );
 
 	}
 
 	private importScenario () {
-
-		this.importRoadNetwork();
 
 		this.fileService.fs.copyFileSync( this.data.path, this.scenarioFileDestination );
 

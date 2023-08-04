@@ -31,7 +31,8 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 		hdg: number,
 		length: number,
 		aU: number, bU: number, cU: number, dU: number,
-		aV: number, bV: number, cV: number, dV: number
+		aV: number, bV: number, cV: number, dV: number,
+		private pRange: 'arcLength' | 'normalized' = 'arcLength'
 	) {
 		super( s, x, y, hdg, length );
 		this.aU = aU;
@@ -71,40 +72,99 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
+	getPoint ( t: number ): THREE.Vector3 {
+
+		// Function to convert road coordinates to global coordinates
+		function roadToGlobal ( s: number, hdg: number, x: number, y: number, u: number, v: number ): THREE.Vector3 {
+			// Apply the rotation and translation to convert from road to global coordinates
+			const globalX = x + u * Math.cos( hdg ) - v * Math.sin( hdg );
+			const globalY = y + u * Math.sin( hdg ) + v * Math.cos( hdg );
+			return new Vector3( globalX, globalY, 0 );  // Assume Z = 0 for a 2D road
+		}
+
+		let u: number;
+		let v: number;
+
+		// Calculate U and V from the cubic polynomial depending on pRange
+		if ( this.pRange === 'arcLength' ) {
+			u = t * this.length;
+			v = this.aV + this.bV * t + this.cV * t * t + this.dV * t * t * t;
+		} else if ( this.pRange === 'normalized' ) {
+			u = this.aU + this.bU * t + this.cU * t * t + this.dU * t * t * t;
+			v = this.aV + this.bV * t + this.cV * t * t + this.dV * t * t * t;
+		}
+
+		// Convert from road coordinates to global coordinates
+		return roadToGlobal( this.s, this.hdg, this.x, this.y, u, v );
+	}
+
+	getHdg ( t: number ): number {
+
+		// Calculate the derivative dv/dt from the cubic polynomial
+		const dv_dt = this.bV + 2 * this.cV * t + 3 * this.dV * t * t;
+
+		// Calculate the heading angle using atan2
+		let hdg_t = Math.atan2( dv_dt, this.length );
+
+		// Add the initial road segment heading
+		hdg_t += this.hdg;
+
+		return hdg_t;
+	}
+
+
 	getRoadCoord ( s: number ): TvPosTheta {
 
-		// normalised p between 0 to 1
-		const du = s - this.s;
-		const p = ( du / this.length );
+		const t = s / this.length;
+		const pos = this.getPoint( t );
+		const hdg_t = this.getHdg( t );
 
-		const uLocal =
-			( this.aU ) +
-			( this.bU * p ) +
-			( this.cU * p * p ) +
-			( this.dU * p * p * p );
+		return new TvPosTheta( pos.x, pos.y, hdg_t );
 
-		const vLocal =
-			( this.aV ) +
-			( this.bV * p ) +
-			( this.cV * p * p ) +
-			( this.dV * p * p * p );
 
-		// apply rotation with respect to start
-		const xnew = uLocal * this.cosTheta - vLocal * this.sinTheta;
-		const ynew = uLocal * this.sinTheta + vLocal * this.cosTheta;
+		// // Calculate U and V from the cubic polynomial
+		// const u = s;
+		// const v = this.aV + this.bV * s + this.cV * s * s + this.dV * s * s * s;
 
-		// Derivate to get heading change
-		const dCoeffsU = ( new Vector3( this.bU, this.cU, this.dU ) ).multiply( new Vector3( 1, 2, 3 ) );
-		const dCoeffsV = ( new Vector3( this.bV, this.cV, this.dV ) ).multiply( new Vector3( 1, 2, 3 ) );
+		// // Convert from road coordinates to global coordinates
+		// const pos = roadToGlobal( this.s, this.hdg, this.x, this.y, u, v );
 
-		const dx = this.polyeval( p, dCoeffsU );
-		const dy = this.polyeval( p, dCoeffsV );
+		// return new TvPosTheta( pos.x, pos.y, this.hdg );
 
-		const tangent = Math.atan2( dy, dx );
+		// return;
 
-		return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent );
+		// // normalised p between 0 to 1
+		// const du = s - this.s;
+		// const p = ( du / this.length );
 
-		// if ( this.curve != null ) {
+		// const uLocal =
+		// 	( this.aU ) +
+		// 	( this.bU * p ) +
+		// 	( this.cU * p * p ) +
+		// 	( this.dU * p * p * p );
+
+		// const vLocal =
+		// 	( this.aV ) +
+		// 	( this.bV * p ) +
+		// 	( this.cV * p * p ) +
+		// 	( this.dV * p * p * p );
+
+		// // apply rotation with respect to start
+		// const xnew = uLocal * this.cosTheta - vLocal * this.sinTheta;
+		// const ynew = uLocal * this.sinTheta + vLocal * this.cosTheta;
+
+		// // Derivate to get heading change
+		// const dCoeffsU = ( new Vector3( this.bU, this.cU, this.dU ) ).multiply( new Vector3( 1, 2, 3 ) );
+		// const dCoeffsV = ( new Vector3( this.bV, this.cV, this.dV ) ).multiply( new Vector3( 1, 2, 3 ) );
+
+		// const dx = this.polyeval( p, dCoeffsU );
+		// const dy = this.polyeval( p, dCoeffsV );
+
+		// const tangent = Math.atan2( dy, dx );
+
+		// return new TvPosTheta( this.x + xnew, this.y + ynew, this.hdg + tangent );
+
+		// // if ( this.curve != null ) {
 		//
 		//     const du = sCheck - this.s;
 		//
@@ -189,7 +249,18 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 	}
 
 	clone ( s?: number ): TvAbstractRoadGeometry {
-		throw new Error( 'Method not implemented.' );
+
+		return new TvParamPoly3Geometry(
+			s || this.s,
+			this.x,
+			this.y,
+			this.hdg,
+			this.length,
+			this.aU, this.bU, this.cU, this.dU,
+			this.aV, this.bV, this.cV, this.dV,
+			this.pRange
+		);
+
 	}
 
 }

@@ -97,20 +97,6 @@ export class ClothoidShape extends AbstractShape {
 
 	}
 
-	static fromXML ( xml: XmlElement ): ClothoidShape {
-
-		const clothoid = new ClothoidShape();
-		clothoid.curvature = parseFloat( xml.attr_curvature );
-		clothoid.curvatureDot = parseFloat( xml.attr_curvatureDot );
-		clothoid.length = parseFloat( xml.attr_length );
-		clothoid.curvaturePrime = parseFloat( xml.attr_curvaturePrime );
-		clothoid.startTime = parseFloat( xml.attr_startTime );
-		clothoid.stopTime = parseFloat( xml.attr_stopTime );
-		clothoid.position = Position.fromXML( xml.Position );
-
-		return clothoid;
-
-	}
 }
 
 export class SplineShape extends AbstractShape {
@@ -161,21 +147,21 @@ export class Nurbs extends AbstractShape {
 
 		TvConsole.warn( 'Nurbs are not suppoerted yet' );
 
-		const nurbs = new Nurbs( parseInt( xml.attr_order ) );
+		// const nurbs = new Nurbs( parseInt( xml.attr_order ) );
 
-		xml.ControlPoint.forEach( ( cp: XmlElement ) => {
-			nurbs.controlPoints.push( new NurbControlPoint(
-				Position.fromXML( cp.Position ),
-				parseFloat( cp.attr_time ),
-				parseFloat( cp.attr_weight )
-			) );
-		} );
+		// xml.ControlPoint.forEach( ( cp: XmlElement ) => {
+		// 	nurbs.controlPoints.push( new NurbControlPoint(
+		// 		Position.fromXML( cp.Position ),
+		// 		parseFloat( cp.attr_time ),
+		// 		parseFloat( cp.attr_weight )
+		// 	) );
+		// } );
 
-		xml.Knot.forEach( xml => {
-			nurbs.knots.push( new Knot( parseFloat( xml.attr_value ) ) );
-		} );
+		// xml.Knot.forEach( xml => {
+		// 	nurbs.knots.push( new Knot( parseFloat( xml.attr_value ) ) );
+		// } );
 
-		return nurbs;
+		// return nurbs;
 	}
 
 	toXML () {

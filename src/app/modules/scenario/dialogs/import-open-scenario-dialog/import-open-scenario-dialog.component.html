@@ -31,7 +31,7 @@
 <div class="mat-tv-dialog-actions"
 	mat-dialog-actions>
 	<button mat-stroked-button
-		(click)="import()">Import</button>
+		(click)="import()" [disabled]="!scenario">Import</button>
 	<button mat-dialog-close
 		mat-stroked-button>Close</button>
 </div>

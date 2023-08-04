@@ -5,14 +5,50 @@
 import { PolylineShape } from '../models/tv-trajectory';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { OpenScenarioLoader } from './open-scenario.loader';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
+import { ParameterResolver } from './scenario-builder.service';
 
+const vehicleCatalogContent = `<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Schema/OpenSCENARIO.xsd">
+  <FileHeader revMajor="1" revMinor="2" date="2020-02-21T10:00:00" description="Example - Vehicle Catalog" author="ASAM e.V." />
+  <Catalog name="VehicleCatalog">
+    <Vehicle name="car1" vehicleCategory="car" model3d="white_limousine_model">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="Mass" parameterType="double" value="1600" />
+        <ParameterDeclaration name="MaxSpeed" parameterType="double" value="69" />
+      </ParameterDeclarations>
+      <BoundingBox>
+        <Center x="1.4" y="0.0" z="0.9" />
+        <Dimensions width="2.0" length="5.0" height="1.8" />
+      </BoundingBox>
+      <Performance maxSpeed="$MaxSpeed" maxAcceleration="200" maxDeceleration="30" mass="$Mass" />
+      <Axles>
+        <FrontAxle maxSteering="0.5235987756" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4"/>
+        <RearAxle maxSteering="0.5235987756" wheelDiameter="0.8" trackWidth="1.68" positionX="0" positionZ="0.4"/>
+      </Axles>
+      <Properties />
+    </Vehicle>
+    <Vehicle name="car2" vehicleCategory="car">
+      <BoundingBox>
+        <Center x="1.3" y="0.0" z="0.8" />
+        <Dimensions width="1.8" length="4.5" height="1.5" />
+      </BoundingBox>
+      <Performance maxSpeed="70" maxAcceleration="200" maxDeceleration="30" />
+      <Axles>
+        <FrontAxle maxSteering="0.5235987756" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4" />
+        <RearAxle maxSteering="0.5235987756" wheelDiameter="0.8" trackWidth="1.68" positionX="0" positionZ="0.4" />
+      </Axles>
+      <Properties />
+    </Vehicle>
+  </Catalog>
+</OpenSCENARIO>`
 
 describe( 'ReaderService', () => {
 
-	let parser: OpenScenarioLoader;
+	let loader: OpenScenarioLoader;
 
 	beforeEach( () => {
-		parser = new OpenScenarioLoader( null );
+		loader = new OpenScenarioLoader( null );
 	} );
 
 	it( 'should parse Header correctly', () => {
@@ -25,7 +61,7 @@ describe( 'ReaderService', () => {
 			attr_date: '2017-07-27T10:00:00',
 		};
 
-		const header = OpenScenarioLoader.readFileHeader( headerXml );
+		const header = loader.parseFileHeader( headerXml );
 
 		expect( header.revMajor ).toBe( 1 );
 		expect( header.revMinor ).toBe( 4 );
@@ -46,7 +82,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const roadNetwork = OpenScenarioLoader.readRoadNetwork( xml );
+		const roadNetwork = loader.parseRoadNetwork( xml );
 
 		expect( roadNetwork.logics.filepath ).toBe( xml.Logics.attr_filepath );
 		expect( roadNetwork.sceneGraph.filepath ).toBe( xml.SceneGraph.attr_filepath );
@@ -64,7 +100,7 @@ describe( 'ReaderService', () => {
 			]
 		};
 
-		// const objects = OpenScenarioImporter.readEntities( xml, null );
+		// const objects = OpenScenarioImporter.parseEntities( xml, null );
 		//
 		// expect( objects[ 0 ].name ).toBe( xml.Object[ 0 ].attr_name );
 
@@ -76,7 +112,7 @@ describe( 'ReaderService', () => {
 			attr_name: 'Default_Vehicle'
 		};
 
-		const entityObject = OpenScenarioLoader.readScenarioObject( xml );
+		const entityObject = loader.parseScenarioObject( xml, null );
 
 		expect( entityObject.name ).toBe( xml.attr_name );
 
@@ -89,7 +125,7 @@ describe( 'ReaderService', () => {
 			attr_owner: 'Ego'
 		};
 
-		const story = OpenScenarioLoader.readStory( xml );
+		const story = loader.parseStory( xml );
 
 		expect( story.name ).toBe( xml.attr_name );
 		expect( story.ownerName ).toBe( xml.attr_owner );
@@ -106,7 +142,7 @@ describe( 'ReaderService', () => {
 		// 	Vertex: []
 		// };
 
-		// const trajectory = OpenScenarioImporter.readTrajectory( xml );
+		// const trajectory = OpenScenarioImporter.parseTrajectory( xml );
 
 		// expect( trajectory.name ).toBe( xml.attr_name );
 		// expect( trajectory.closed ).toBe( false );
@@ -130,7 +166,7 @@ describe( 'ReaderService', () => {
 			}
 		};
 
-		const vertex = OpenScenarioLoader.readVertex( xml );
+		const vertex = loader.parseVertex( xml );
 
 		expect( vertex.time ).toBe( xml.attr_reference );
 
@@ -142,7 +178,7 @@ describe( 'ReaderService', () => {
 			Polyline: ''
 		};
 
-		const polyline = OpenScenarioLoader.readVertexShape( xml );
+		const polyline = loader.parseVertexShape( xml );
 
 		expect( polyline ).toBeTruthy( polyline instanceof PolylineShape );
 
@@ -156,7 +192,7 @@ describe( 'ReaderService', () => {
 			attr_length: '3'
 		};
 
-		const clothoid = OpenScenarioLoader.readClothoidShape( xml );
+		const clothoid = loader.parseClothoidShape( xml );
 
 		expect( clothoid.curvature ).toBe( 1 );
 		expect( clothoid.curvatureDot ).toBe( 2 );
@@ -175,7 +211,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const waypoint = OpenScenarioLoader.readWaypoint( xml );
+		const waypoint = loader.parseWaypoint( xml );
 
 		expect( waypoint.strategy ).toBe( xml.attr_strategy );
 		expect( waypoint.position ).not.toBe( null );
@@ -189,7 +225,7 @@ describe( 'ReaderService', () => {
 			None: '',
 		};
 
-		const LongitudinalPurpose = OpenScenarioLoader.readTimeReference( xml );
+		const LongitudinalPurpose = loader.parseTimeReference( xml );
 
 		expect( LongitudinalPurpose.timing ).toBe( null || undefined );
 
@@ -205,7 +241,7 @@ describe( 'ReaderService', () => {
 			},
 		};
 
-		const object = OpenScenarioLoader.readTimeReference( xml );
+		const object = loader.parseTimeReference( xml );
 
 		expect( object.timing ).not.toBe( null || undefined );
 		expect( object.timing.domain ).toBe( xml.Timing.attr_domain );
@@ -230,7 +266,7 @@ describe( 'ReaderService', () => {
 			}, ]
 		};
 
-		const route = OpenScenarioLoader.readRoute( xml );
+		const route = loader.parseRoute( xml );
 
 		expect( route.name ).toBe( xml.attr_name );
 		expect( route.closed ).toBe( false );
@@ -241,3 +277,64 @@ describe( 'ReaderService', () => {
 
 
 } );
+
+describe( 'CatalogLoader', () => {
+
+	let loader: OpenScenarioLoader;
+
+	beforeEach( () => {
+		loader = new OpenScenarioLoader( null );
+	} );
+
+	it( 'should parse vehicle catalog correctly', () => {
+
+		let xml = loader.getXMLElement( vehicleCatalogContent );
+
+		let catalog = loader.parseCatalogFile( xml );
+		expect( catalog.name ).toBe( 'VehicleCatalog' );
+		expect( catalog.getEntries().length ).toBe( 2 );
+
+		let car1 = catalog.getEntry<VehicleEntity>( 'car1' );
+		expect( car1.name ).toBe( 'car1' );
+		expect( car1.vehicleCategory ).toBe( 'car' );
+		expect( car1.model3d ).toBe( 'white_limousine_model' );
+		expect( car1.boundingBox.center.x ).toBe( 1.4 );
+		expect( car1.boundingBox.center.y ).toBe( 0 );
+		expect( car1.boundingBox.center.z ).toBe( 0.9 );
+		expect( car1.boundingBox.dimension.width ).toBe( 2 );
+		expect( car1.boundingBox.dimension.length ).toBe( 5 );
+		expect( car1.boundingBox.dimension.height ).toBe( 1.8 );
+		expect( car1.performance.maxAcceleration ).toBe( 200 );
+		expect( car1.performance.maxDeceleration ).toBe( 30 );
+
+		// these are not parsed correctly as they are variables
+		expect( car1.performance.mass ).toBeNaN();
+		expect( car1.performance.maxSpeed ).toBeNaN();
+
+		xml = new ParameterResolver( null ).replaceParameterWithValue( xml );
+		catalog = loader.parseCatalogFile( xml );
+
+		expect( catalog.name ).toBe( 'VehicleCatalog' );
+		expect( catalog.getEntries().length ).toBe( 2 );
+
+		car1 = catalog.getEntry<VehicleEntity>( 'car1' );
+		expect( car1.name ).toBe( 'car1' );
+		expect( car1.vehicleCategory ).toBe( 'car' );
+		expect( car1.model3d ).toBe( 'white_limousine_model' );
+		expect( car1.boundingBox.center.x ).toBe( 1.4 );
+		expect( car1.boundingBox.center.y ).toBe( 0 );
+		expect( car1.boundingBox.center.z ).toBe( 0.9 );
+		expect( car1.boundingBox.dimension.width ).toBe( 2 );
+		expect( car1.boundingBox.dimension.length ).toBe( 5 );
+		expect( car1.boundingBox.dimension.height ).toBe( 1.8 );
+		expect( car1.performance.maxSpeed as any ).toBe( 69 );
+		expect( car1.performance.maxAcceleration ).toBe( 200 );
+		expect( car1.performance.maxDeceleration ).toBe( 30 );
+		expect( car1.performance.mass as any ).toBe( 1600 );
+
+	} );
+
+
+
+
+} )

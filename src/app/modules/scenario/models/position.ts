@@ -3,8 +3,6 @@
  */
 
 import { Euler, MathUtils, Vector3 } from 'three';
-import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
-import { OpenScenarioLoader } from '../services/open-scenario.loader';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
@@ -53,10 +51,6 @@ export abstract class Position {
 
 	protected getEntity ( entity: string ): ScenarioEntity {
 		return ScenarioInstance.scenario.findEntityOrFail( entity );
-	}
-
-	static fromXML ( xml: XmlElement ): Position {
-		return OpenScenarioLoader.readPosition( xml );
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {

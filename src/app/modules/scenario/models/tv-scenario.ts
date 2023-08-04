@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Scene, Vector3 } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { ActionService } from '../builders/action-service';
 import { PrivateAction } from './private-action';
@@ -85,6 +85,8 @@ export class TvScenario {
 		this.objects.set( object.name, object );
 
 		// ScenarioInstance.db.add_entity( object.name, object );
+
+		SceneService.add( object );
 
 	}
 

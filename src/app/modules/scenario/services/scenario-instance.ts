@@ -4,7 +4,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { TvScenario } from '../models/tv-scenario';
-import { ScenarioBuilder, ScenarioBuilderV2 } from './scenario-builder.service';
+import { ParameterResolver, ScenarioBuilder } from './scenario-builder.service';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { TvConsole } from 'app/core/utils/console';
@@ -18,14 +18,12 @@ export class ScenarioInstance {
 	public static changed = new EventEmitter<TvScenario>();
 
 	private static _scenario: TvScenario = new TvScenario();
-	private static openScenarioImporter: OpenScenarioLoader;
+	private static scenarioLoader: OpenScenarioLoader;
 	private static mapService: TvMapService;
-	private static scenarioBuilder: ScenarioBuilderV2;
 
 	constructor ( openScenarioImporter: OpenScenarioLoader, mapService: TvMapService ) {
-		ScenarioInstance.openScenarioImporter = openScenarioImporter;
+		ScenarioInstance.scenarioLoader = openScenarioImporter;
 		ScenarioInstance.mapService = mapService;
-		ScenarioInstance.scenarioBuilder = new ScenarioBuilderV2( null, null );
 	}
 
 	static get scenario () {
@@ -46,13 +44,9 @@ export class ScenarioInstance {
 
 		this.scenario?.destroy();
 
-		const contents: string = await this.mapService.fileService.readAsync( path );
+		const scenario = await this.scenarioLoader.loadPath( path );
 
-		const xmlWithVariables = this.openScenarioImporter.getXMLElement( contents );
-
-		const xml = this.scenarioBuilder.replaceParameterWithValue( xmlWithVariables );
-
-		const scenario = this.openScenarioImporter.parseXML( xml );
+		new ScenarioBuilder( scenario ).buildScenario();
 
 		if ( !scenario?.roadNetwork?.logics?.filepath ) {
 
@@ -61,6 +55,7 @@ export class ScenarioInstance {
 		}
 
 		const directory = FileUtils.getDirectoryFromPath( path );
+
 		const mapFilePath = this.mapService.fileService.join( directory, scenario.roadNetwork.logics.filepath );
 
 		this.mapService.importFromPath( mapFilePath, () => {

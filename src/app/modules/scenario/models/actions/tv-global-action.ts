@@ -58,16 +58,6 @@ export class AddEntityAction extends GlobalAction {
 		throw new Error( 'Method not implemented.' );
 
 	}
-
-	static fromXML ( xml: XmlElement ) {
-
-		const entityRef = xml.attr_name || xml.attr_entity || xml.attr_entityRef;
-
-		const position = Position.fromXML( xml.Add?.Position || xml.AddEntityAction?.Position );
-
-		return new AddEntityAction( entityRef, position );
-
-	}
 }
 
 export class DeleteEntityAction extends GlobalAction {
@@ -85,14 +75,6 @@ export class DeleteEntityAction extends GlobalAction {
 
 	}
 
-	static fromXML ( xml: XmlElement ) {
-
-		const entityRef = xml.attr_name || xml.attr_entity || xml.attr_entityRef;
-
-		return new DeleteEntityAction( entityRef );
-
-	}
-
 }
 
 export class ParameterSetAction extends GlobalAction {
@@ -107,15 +89,6 @@ export class ParameterSetAction extends GlobalAction {
 	execute ( entity: ScenarioEntity ): void {
 		throw new Error( 'Method not implemented.' );
 	}
-
-	fromXML ( xml: XmlElement ): ParameterSetAction {
-
-		const parameterRef = xml.attr_parameterRef;
-		const value = xml.attr_value;
-
-		return new ParameterSetAction( parameterRef, value );
-
-	}
 }
 
 export class ParameterModifyAction extends GlobalAction {
@@ -129,16 +102,6 @@ export class ParameterModifyAction extends GlobalAction {
 
 	execute ( entity: ScenarioEntity ): void {
 		throw new Error( 'Method not implemented.' );
-	}
-
-	fromXML ( xml: XmlElement ): ParameterModifyAction {
-
-		const parameterRef: string = xml.attr_parameterRef;
-		const value: number = parseFloat( xml.attr_value );
-		const modifyType = xml.attr_modifyType;
-
-		return new ParameterModifyAction( parameterRef, value, modifyType );
-
 	}
 }
 
