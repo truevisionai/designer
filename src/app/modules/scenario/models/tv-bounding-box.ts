@@ -6,17 +6,35 @@ import { Vector3 } from 'three';
 
 export class TvDimension {
 
+
 	constructor ( public width: number = 0, public length: number = 0, public height: number = 0 ) {
 
+	}
+
+	clone (): TvDimension {
+		return new TvDimension(
+			this.width,
+			this.length,
+			this.height
+		);
 	}
 
 }
 
 export class TvBoundingBox {
 
-	constructor ( public center: Vector3 = new Vector3(), public dimension: TvDimension = new TvDimension( 0, 0, 0 ) ) {
+	constructor (
+		public center: Vector3 = new Vector3(),
+		public dimension: TvDimension = new TvDimension( 0, 0, 0 )
+	) {
 	}
 
+	clone (): TvBoundingBox {
+		return new TvBoundingBox(
+			this.center.clone(),
+			this.dimension.clone()
+		);
+	}
 }
 
 
@@ -31,6 +49,14 @@ export class TvPerformance {
 
 	}
 
+	clone (): TvPerformance {
+		return new TvPerformance(
+			this.maxSpeed,
+			this.maxAcceleration,
+			this.maxDeceleration,
+			this.mass
+		);
+	}
 }
 
 export class TvAxles {
@@ -45,6 +71,13 @@ export class TvAxles {
 	) {
 	}
 
+	clone (): TvAxles {
+		return new TvAxles(
+			this.front.clone(),
+			this.rear.clone(),
+			this.additional ? this.additional.map( a => a.clone() ) : null
+		);
+	}
 }
 
 export class TvAxle {
@@ -63,5 +96,13 @@ export class TvAxle {
 	) {
 	}
 
-
+	clone (): TvAxle {
+		return new TvAxle(
+			this.maxSteering,
+			this.wheelDiameter,
+			this.trackWidth,
+			this.positionX,
+			this.positionZ
+		);
+	}
 }

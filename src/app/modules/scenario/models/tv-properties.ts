@@ -13,16 +13,13 @@ export class TvProperties {
 }
 
 export class TvProperty {
-
-	constructor ( public name: string, public value: string ) { }
-
-	static fromXML ( xml: XmlElement ): TvProperty {
-
-		const name = xml.attr_name;
-		const value = xml.attr_value;
-
-		return new TvProperty( name, value );
-
+	clone (): any {
+		throw new Error( 'Method not implemented.' );
 	}
+
+	constructor (
+		public name: string,
+		public value: string
+	) { }
 
 }

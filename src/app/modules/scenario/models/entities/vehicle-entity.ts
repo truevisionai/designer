@@ -11,6 +11,7 @@ import { TvProperty } from '../tv-properties';
 export class VehicleEntity extends ScenarioEntity {
 
 	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
+	public model3d: string;
 
 	constructor (
 		public name: string,
@@ -26,6 +27,19 @@ export class VehicleEntity extends ScenarioEntity {
 	static getNewName ( name = 'Vehicle' ) {
 
 		return `${ name }${ MathUtils.randInt( 1, 100 ) }`;
+
+	}
+
+	clone (): this {
+
+		return new VehicleEntity(
+			this.name,
+			this.vehicleCategory,
+			this.boundingBox.clone(),
+			this.performance.clone(),
+			this.axles ? this.axles.clone() : null,
+			this.properties.map( p => p.clone() )
+		) as this;
 
 	}
 }
