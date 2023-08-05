@@ -1,0 +1,20 @@
+<mat-toolbar class="native-border inspector-toolbar">
+	<button mat-icon-button
+		class="inspector-toolbar-icon">
+		<mat-icon>chevron_right</mat-icon>
+	</button>
+	<span>Inspector</span>
+</mat-toolbar>
+
+
+<div class="inspector-editor-padding"
+	*ngIf="data">
+	<div *ngFor="let item of serializableFields">
+		<ng-container app-field-host></ng-container>
+	</div>
+	<div *ngFor="let action of serializableActions">
+		<app-button-field label="{{ action.name | titlecase }}"
+			(clicked)="action.method.apply(data)">
+		</app-button-field>
+	</div>
+</div>

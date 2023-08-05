@@ -12,7 +12,7 @@ import { SceneService } from "app/core/services/scene.service";
 import { SelectPointCommand } from "app/core/commands/select-point-command";
 import { RoadFactory } from "app/core/factories/road-factory.service";
 import { SetInspectorCommand } from "app/core/commands/set-inspector-command";
-import { RoadElevationInspector } from "app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component";
+import { DynamicInspectorComponent } from "app/views/inspectors/dynamic-inspector/dynamic-inspector.component";
 
 export class CreateElevationNodeCommand extends BaseCommand {
 
@@ -34,7 +34,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.selectPointCommand = new SelectPointCommand( tool, this.elevation.node );
 
-		this.inspectorCommand = new SetInspectorCommand( RoadElevationInspector, this.elevation.node );
+		this.inspectorCommand = new SetInspectorCommand( DynamicInspectorComponent, this.elevation.node );
 	}
 
 	execute (): void {

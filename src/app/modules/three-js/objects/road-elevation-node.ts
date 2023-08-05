@@ -7,6 +7,12 @@ import { TvElevation } from "app/modules/tv-map/models/tv-elevation";
 import { DynamicControlPoint } from "./dynamic-control-point";
 import { Vector3 } from "three";
 import { TvUtils } from "app/modules/tv-map/models/tv-utils";
+import { Action, SerializedField } from "app/core/components/serialization";
+import { RoadFactory } from "app/core/factories/road-factory.service";
+import { Maths } from "app/utils/maths";
+import { SnackBar } from "app/services/snack-bar.service";
+import { CommandHistory } from "app/services/command-history";
+import { DeleteElevationCommand } from "app/core/tools/road-elevation/delete-elevation-command";
 
 export class RoadElevationNode extends DynamicControlPoint<any> {
 
@@ -20,6 +26,35 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 
 		this.createLine();
 
+	}
+
+	@Action()
+	delete () {
+		if ( Maths.approxEquals( this.s, 0 ) ) {
+			SnackBar.warn( 'Cannot delete first node' );
+		} else {
+			CommandHistory.execute( new DeleteElevationCommand( this ) );
+		}
+	}
+
+	@SerializedField( { type: 'int' } )
+	get s (): number {
+		return this.elevation.s;
+	}
+	set s ( value: number ) {
+		this.elevation.s = value;
+		this.updateValuesAndPosition();
+		RoadFactory.rebuildRoad( this.road );
+	}
+
+	@SerializedField( { type: 'int' } )
+	get height (): number {
+		return this.elevation.a;
+	}
+	set height ( value: number ) {
+		this.elevation.a = value;
+		this.updateValuesAndPosition();
+		RoadFactory.rebuildRoad( this.road );
 	}
 
 	createLine () {

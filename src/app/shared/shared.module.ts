@@ -200,7 +200,13 @@ const classesToInclude = [
 		AppComfirmComponent,
 		AppLoaderComponent,
 		AppInputDialogComponent,
-		ImportFileDialogComponent
+		ImportFileDialogComponent,
+		DoubleFieldComponent,
+		DoubleInputComponent,
+		ButtonFieldComponent,
+		Vector3FieldComponent,
+		BooleanFieldComponent,
+		EnumFieldComponent,
 	],
 	providers: [
 		ThemeService,

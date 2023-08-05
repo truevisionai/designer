@@ -51,12 +51,12 @@ import { TextureInspector } from '../../views/inspectors/texture-inspector/textu
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
-import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component';
 import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
+import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 
 @NgModule( {
@@ -86,12 +86,13 @@ import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/
 		RoadControlPointInspector,
 		JunctionEntryInspector,
 		RoadStyleInspector,
-		RoadElevationInspector,
 		CrosswalkInspectorComponent,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
+		DynamicInspectorComponent,
+		FieldHostDirective,
 	],
 	imports: [
 		CommonModule,
@@ -148,12 +149,12 @@ import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/
 		JunctionEntryInspector,
 		ObjectPreviewComponent,
 		RoadStyleInspector,
-		RoadElevationInspector,
 		CrosswalkInspectorComponent,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
+		DynamicInspectorComponent,
 	]
 } )
 export class TvMapModule {

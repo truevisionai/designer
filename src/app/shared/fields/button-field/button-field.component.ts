@@ -10,9 +10,7 @@ import { AbstractFieldComponent } from 'app/core/components/abstract-field.compo
 	templateUrl: './button-field.component.html',
 	styleUrls: [ './button-field.component.scss' ]
 } )
-export class ButtonFieldComponent {
-
-	@Output() clicked = new EventEmitter<void>();
+export class ButtonFieldComponent extends AbstractFieldComponent {
 
 	@Input() value: any;
 
@@ -21,7 +19,7 @@ export class ButtonFieldComponent {
 	@Input() label: string;
 
 	constructor () {
-
+		super();
 	}
 
 

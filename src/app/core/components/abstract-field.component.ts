@@ -10,6 +10,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 } )
 export abstract class AbstractFieldComponent {
 
+	@Output() clicked = new EventEmitter<void>();
+
 	@Input() disabled: boolean = false;
 
 	@Input() abstract value: any;

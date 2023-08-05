@@ -12,12 +12,12 @@ import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
-import { RoadElevationInspector } from 'app/views/inspectors/road-elevation-inspector/road-elevation-inspector.component';
 import { Vector3 } from 'three';
 import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -170,7 +170,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	selectNode ( node: RoadElevationNode ) {
 
-		const command = new SelectPointCommand( this, node, RoadElevationInspector, node );
+		const command = new SelectPointCommand( this, node, DynamicInspectorComponent, node );
 
 		CommandHistory.execute( command );
 
