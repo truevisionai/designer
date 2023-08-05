@@ -209,11 +209,11 @@ $border-radius: 0px !important;
 	}
 
 	.mat-tab-label {
-		height: 36px !important;
+		height: 32px !important;
 		background: $panel-color;
 		opacity: 1;
 		// min-width: 120px !important;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 	}
 
 	.mat-tab-label-active {
@@ -307,8 +307,8 @@ $border-radius: 0px !important;
 	}
 
 	.inspector-toolbar {
-		height: 36px;
-		font-size: 12px;
+		height: 32px;
+		font-size: 0.7rem;
 		padding: 0px !important;
 	}
 
