@@ -12,6 +12,7 @@ import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
+import { Condition } from '../../models/conditions/tv-condition';
 
 @Component( {
 	selector: 'app-event-editor',
@@ -62,6 +63,12 @@ export class EventEditorComponent implements OnInit {
 
 	}
 
+	removeCondition ( condition: Condition ) {
+
+		this.event.removeCondition( condition );
+
+	}
+
 	@HostListener( 'contextmenu', [ '$event' ] )
 	onContextMenu ( $event ) {
 
@@ -91,12 +98,12 @@ export class EventEditorComponent implements OnInit {
 
 	}
 
-	deleteManeuver ( $event: MouseEvent ) {
+	delete ( $event: MouseEvent ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		// this.entity.removeEvent( this.event );
+		ScenarioInstance.scenario.storyboard.removeEvent( this.event );
 
 	}
 }

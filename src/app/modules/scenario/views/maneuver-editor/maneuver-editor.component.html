@@ -1,3 +1,16 @@
-<p>
-	maneuver-editor works!
-</p>
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="isOpen = !isOpen"
+		mat-icon-button
+		class="inspector-toolbar-icon">
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>Maneuver</span>
+</mat-toolbar>
+
+<div *ngIf="isOpen">
+	<app-event-editor *ngFor="let event of maneuver?.events"
+		[entity]="entity"
+		[event]="event">
+	</app-event-editor>
+</div>

@@ -5,7 +5,7 @@
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
-	<span>Maneuver</span>
+	<span>Event</span>
 	<span class="spacer"></span>
 	<button mat-icon-button
 		class="inspector-toolbar-icon"
@@ -24,9 +24,9 @@
 	</button>
 	<mat-menu #menu="matMenu">
 		<button mat-menu-item
-			(click)="deleteManeuver($event)">
+			(click)="delete($event)">
 			<mat-icon>delete</mat-icon>
-			<span>Delete Maneuver</span>
+			<span>Delete Event</span>
 		</button>
 	</mat-menu>
 	<mat-menu #conditionMenu="matMenu">
@@ -75,7 +75,8 @@
 
 <div *ngIf="isOpen">
 	<div *ngFor="let condition of event.startConditions">
-		<app-condition-editor [condition]="condition">
+		<app-condition-editor (removed)="removeCondition($event)"
+			[condition]="condition">
 		</app-condition-editor>
 	</div>
 

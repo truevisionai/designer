@@ -1,3 +1,11 @@
+<mat-toolbar class="native-border inspector-toolbar">
+	<button mat-icon-button
+		class="inspector-toolbar-icon">
+		<mat-icon>expand_more</mat-icon>
+	</button>
+	<span>Entity Inspector</span>
+</mat-toolbar>
+
 <div *ngIf="entity"
 	class="inspector-form-container">
 
@@ -22,10 +30,10 @@
 	[entity]="entity">
 </app-action>
 
-<app-event-editor *ngFor="let event of scenarioEvents"
+<app-maneuver-editor *ngFor="let maneuver of scenarioManeuevers"
 	[entity]="entity"
-	[event]="event">
-</app-event-editor>
+	[maneuver]="maneuver">
+</app-maneuver-editor>
 
 <div *ngIf="entity"
 	class="inspector-editor-padding">

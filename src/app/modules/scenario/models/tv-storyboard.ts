@@ -7,6 +7,7 @@ import { UserDefinedAction } from './actions/tv-user-defined-action';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { PrivateAction } from './private-action';
+import { TvEvent } from './tv-event';
 import { Story } from './tv-story';
 
 export class Storyboard {
@@ -60,6 +61,30 @@ export class Storyboard {
 		}
 
 	}
+
+
+	removeEvent ( event: TvEvent ) {
+
+		this.stories.forEach( story => {
+
+			story.acts.forEach( act => {
+
+				act.maneueverGroups.forEach( maneuverGroup => {
+
+					maneuverGroup.maneuvers.forEach( maneuver => {
+
+						maneuver.events = maneuver.events.filter( e => e !== event );
+
+					} )
+
+				} );
+
+			} )
+
+		} )
+
+	}
+
 }
 
 

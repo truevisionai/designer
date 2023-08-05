@@ -13,6 +13,7 @@ import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
+import { Maneuver } from '../../models/tv-maneuver';
 
 @Component( {
 	selector: 'app-tv-player-inspector',
@@ -59,6 +60,10 @@ export class EntityInspector implements OnInit, IComponent {
 
 	get scenarioEvents (): TvEvent[] {
 		return this.scenario.findEntityEvents( this.entity );
+	}
+
+	get scenarioManeuevers (): Maneuver[] {
+		return this.scenario.getManeuversForEntity( this.entity.name );
 	}
 
 	addEvent ( $actionType: ActionType ) {

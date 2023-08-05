@@ -4,6 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { Maneuver } from 'app/modules/scenario/models/tv-maneuver';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 
 @Component( {
 	selector: 'app-maneuver-editor',
@@ -11,12 +12,13 @@ import { Maneuver } from 'app/modules/scenario/models/tv-maneuver';
 } )
 export class ManeuverEditorComponent implements OnInit {
 
+	@Input() entity: ScenarioEntity;
 	@Input() maneuver: Maneuver;
 
-	constructor () {
-	}
+	isOpen: any;
 
-	ngOnInit () {
-	}
+	constructor () { }
+
+	ngOnInit () { }
 
 }
