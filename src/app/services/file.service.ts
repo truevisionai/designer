@@ -446,35 +446,21 @@ export class FileService {
 
 	createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
 
-		let slash = null;
-
-		if ( this.electronService.isWindows ) slash = '\\';
-
-		if ( this.electronService.isLinux ) slash = '/';
-
-		let filePath = `${ path }${ slash }${ name }.${ extension }`;
 		let fileName = name;
+		let filePath = this.join( path, `${ fileName }.${ extension }` );
 
-		if ( this.fs.existsSync( filePath ) ) {
+		let count = 1;
 
-			let count = 1;
-
-			fileName = `${ name }(${ count })`;
-			filePath = `${ path }${ slash }${ fileName }.${ extension }`;
-
-			while ( this.fs.existsSync( filePath ) ) {
-
-				fileName = `${ name }(${ count++ })`;
-				filePath = `${ path }${ slash }${ fileName }.${ extension }`;
-
-			}
-
+		while ( this.fs.existsSync( filePath ) ) {
+			fileName = `${ name }(${ count++ })`;
+			filePath = this.join( path, `${ fileName }.${ extension }` );
 		}
 
 		this.fs.writeFileSync( filePath, contents );
 
 		return { fileName, filePath };
 	}
+
 
 	readPathContents ( dirpath ) {
 		return new Promise( resolve => {
