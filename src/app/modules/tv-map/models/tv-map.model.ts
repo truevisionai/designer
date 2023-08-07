@@ -258,8 +258,10 @@ export class TvMap {
 	 */
 	public clear () {
 
+		TvRoad.counter = 0;
 		this._roads.clear();
 
+		TvJunction.counter = 0;
 		this._junctions.clear();
 
 		this.props.splice( 0, this.props.length );
