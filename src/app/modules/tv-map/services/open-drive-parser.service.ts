@@ -8,7 +8,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
-import { readXmlArray } from '../../../core/tools/xml-utils';
+import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { EnumHelper, ObjectTypes, TvContactPoint, TvElementType, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
@@ -69,7 +69,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		const data: any = parser.parse( this.content );
 
-		const map = this.readFile( data );
+		const map = this.parseFile( data );
 
 		return map;
 	}
@@ -77,7 +77,7 @@ export class OpenDriverParser extends AbstractReader {
 	/**
 	 * Reads the data from the OpenDrive structure to a file
 	 */
-	readFile ( xml: XmlElement ) {
+	public parseFile ( xml: XmlElement ) {
 
 		const openDRIVE: XmlElement = xml.OpenDRIVE;
 
@@ -89,19 +89,19 @@ export class OpenDriverParser extends AbstractReader {
 		if ( !openDRIVE.road ) SnackBar.warn( 'No road tag found' );
 		if ( !openDRIVE.road ) return;
 
-		this.readHeader( openDRIVE.header );
+		this.parseHeader( openDRIVE.header );
 
-		this.readRoads( openDRIVE );
+		this.parseRoads( openDRIVE );
 
-		this.readAsOptionalArray( openDRIVE.controller, xml => {
+		readXmlArray( openDRIVE.controller, xml => {
 
-			this.map.addControllerInstance( this.readController( xml ) );
+			this.map.addControllerInstance( this.parseController( xml ) );
 
 		} );
 
-		this.readAsOptionalArray( openDRIVE.junction, ( xml ) => {
+		readXmlArray( openDRIVE.junction, ( xml ) => {
 
-			this.map.addJunctionInstance( this.readJunction( xml ) );
+			this.map.addJunctionInstance( this.parseJunction( xml ) );
 
 		} );
 
@@ -112,7 +112,7 @@ export class OpenDriverParser extends AbstractReader {
 	 * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
 	 * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
 	 */
-	readHeader ( xmlElement: XmlElement ): TvMapHeader {
+	public parseHeader ( xmlElement: XmlElement ): TvMapHeader {
 
 		const revMajor = parseFloat( xmlElement.attr_revMajor );
 		const revMinor = parseFloat( xmlElement.attr_revMinor );
@@ -128,7 +128,7 @@ export class OpenDriverParser extends AbstractReader {
 		return this.map.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 	}
 
-	readRoad ( xml: XmlElement ) {
+	public parseRoad ( xml: XmlElement ) {
 
 		const name = xml.attr_name;
 		const length = parseFloat( xml.attr_length );
@@ -139,16 +139,16 @@ export class OpenDriverParser extends AbstractReader {
 
 		if ( xml.link != null ) {
 
-			this.readRoadLinks( road, xml.link );
+			this.parseRoadLinks( road, xml.link );
 
 		}
 
 		// Get type
-		this.readRoadTypes( road, xml );
+		this.parseRoadTypes( road, xml );
 
 		if ( xml.planView != null ) {
 
-			this.readPlanView( road, xml.planView );
+			this.parsePlanView( road, xml.planView );
 
 			road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
 
@@ -167,17 +167,17 @@ export class OpenDriverParser extends AbstractReader {
 			road.updated.emit( road );
 		}
 
-		if ( xml.elevationProfile != null ) this.readElevationProfile( road, xml.elevationProfile );
+		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
-		if ( xml.lateralProfile != null ) this.readLateralProfile( road, xml.lateralProfile );
+		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );
 
-		if ( xml.lanes != null ) this.readLanes( road, xml.lanes );
+		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
-		if ( xml.objects ) this.readObjects( road, xml.objects );
+		if ( xml.objects ) this.parseObjects( road, xml.objects );
 
-		if ( xml.signals ) this.readSignals( road, xml.signals );
+		if ( xml.signals ) this.parseSignals( road, xml.signals );
 
-		if ( xml.surface != null && xml.surface !== '' ) this.readSurface( road, xml.surface );
+		if ( xml.surface != null && xml.surface !== '' ) this.parseSurface( road, xml.surface );
 
 		return road;
 	}
@@ -208,7 +208,7 @@ export class OpenDriverParser extends AbstractReader {
 		return spline;
 	}
 
-	public readRoads ( xmlElement: XmlElement ) {
+	public parseRoads ( xmlElement: XmlElement ) {
 
 		if ( xmlElement.road == null ) {
 
@@ -216,25 +216,25 @@ export class OpenDriverParser extends AbstractReader {
 
 		}
 
-		this.readAsOptionalArray( xmlElement.road, ( xml ) => {
+		readXmlArray( xmlElement.road, ( xml ) => {
 
-			this.map.addRoad( this.readRoad( xml ) );
+			this.map.addRoad( this.parseRoad( xml ) );
 
 		} );
 
 	}
 
-	public readRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
 
 		if ( xmlElement.predecessor != null ) {
 
-			this.readRoadLink( road, xmlElement.predecessor, 0 );
+			this.parseRoadLink( road, xmlElement.predecessor, 0 );
 
 		}
 
 		if ( xmlElement.successor != null ) {
 
-			this.readRoadLink( road, xmlElement.successor, 1 );
+			this.parseRoadLink( road, xmlElement.successor, 1 );
 
 		}
 
@@ -244,34 +244,34 @@ export class OpenDriverParser extends AbstractReader {
 
 				for ( let i = 0; i < xmlElement.neighbor.length; i++ ) {
 
-					this.readRoadLink( road, xmlElement.neighbor[ i ], 2 );
+					this.parseRoadLink( road, xmlElement.neighbor[ i ], 2 );
 
 				}
 
 			} else {
 
-				this.readRoadLink( road, xmlElement.neighbor, 2 );
+				this.parseRoadLink( road, xmlElement.neighbor, 2 );
 
 			}
 		}
 	}
 
-	public readRoadLink ( road: TvRoad, xmlElement: XmlElement, type: number ) {
+	public parseRoadLink ( road: TvRoad, xmlElement: XmlElement, type: number ) {
 
 		if ( type === 0 ) {
 
-			const elementType = this.readElementType( xmlElement.attr_elementType );
+			const elementType = this.parseElementType( xmlElement.attr_elementType );
 			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
+			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
 
 			road.setPredecessor( elementType, elementId, contactPoint );
 
 		} else if ( type === 1 ) {
 
-			const elementType = this.readElementType( xmlElement.attr_elementType );
+			const elementType = this.parseElementType( xmlElement.attr_elementType );
 			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
+			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
 			road.setSuccessor( elementType, elementId, contactPoint );
 
@@ -289,7 +289,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	readElementType ( value: string ): TvRoadLinkChildType {
+	public parseElementType ( value: string ): TvRoadLinkChildType {
 
 		if ( value === 'road' ) {
 
@@ -307,7 +307,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readContactPoint ( value: string ): TvContactPoint {
+	public parseContactPoint ( value: string ): TvContactPoint {
 
 		if ( value === 'start' ) {
 
@@ -325,11 +325,11 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readRoadTypes ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseRoadTypes ( road: TvRoad, xmlElement: XmlElement ) {
 
 		if ( !xmlElement.type ) console.warn( 'no road type tag not present' );
 
-		this.readAsOptionalArray( xmlElement.type, ( xml: XmlElement ) => {
+		readXmlArray( xmlElement.type, ( xml: XmlElement ) => {
 
 			const s = parseFloat( xml.attr_s );
 
@@ -339,7 +339,7 @@ export class OpenDriverParser extends AbstractReader {
 
 			let unit = TvUnit.MILES_PER_HOUR;
 
-			this.readAsOptionalElement( xml.speed, xml => {
+			readXmlElement( xml.speed, xml => {
 
 				maxSpeed = parseFloat( xml.attr_max );
 
@@ -360,7 +360,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readPlanView ( road: TvRoad, xmlElement: XmlElement ) {
+	public parsePlanView ( road: TvRoad, xmlElement: XmlElement ) {
 
 		if ( xmlElement.geometry != null ) {
 
@@ -368,13 +368,13 @@ export class OpenDriverParser extends AbstractReader {
 
 				for ( let i = 0; i < xmlElement.geometry.length; i++ ) {
 
-					this.readGeometryType( road, xmlElement.geometry[ i ] );
+					this.parseGeometryType( road, xmlElement.geometry[ i ] );
 
 				}
 
 			} else {
 
-				this.readGeometryType( road, xmlElement.geometry );
+				this.parseGeometryType( road, xmlElement.geometry );
 
 			}
 
@@ -389,27 +389,27 @@ export class OpenDriverParser extends AbstractReader {
 		}
 	}
 
-	public readGeometryType ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseGeometryType ( road: TvRoad, xmlElement: XmlElement ) {
 
 		if ( xmlElement.line != null ) {
 
-			this.readGeometryBlock( road, xmlElement, TvGeometryType.LINE );
+			this.parseGeometryBlock( road, xmlElement, TvGeometryType.LINE );
 
 		} else if ( xmlElement.arc != null ) {
 
-			this.readGeometryBlock( road, xmlElement, TvGeometryType.ARC );
+			this.parseGeometryBlock( road, xmlElement, TvGeometryType.ARC );
 
 		} else if ( xmlElement.spiral != null ) {
 
-			this.readGeometryBlock( road, xmlElement, TvGeometryType.SPIRAL );
+			this.parseGeometryBlock( road, xmlElement, TvGeometryType.SPIRAL );
 
 		} else if ( xmlElement.poly3 != null ) {
 
-			this.readGeometryBlock( road, xmlElement, TvGeometryType.POLY3 );
+			this.parseGeometryBlock( road, xmlElement, TvGeometryType.POLY3 );
 
 		} else if ( xmlElement.paramPoly3 != null ) {
 
-			this.readGeometryBlock( road, xmlElement, TvGeometryType.PARAMPOLY3 );
+			this.parseGeometryBlock( road, xmlElement, TvGeometryType.PARAMPOLY3 );
 
 		} else {
 
@@ -418,7 +418,7 @@ export class OpenDriverParser extends AbstractReader {
 		}
 	}
 
-	public readGeometryBlock ( road: TvRoad, xmlElement: XmlElement, geometryType: TvGeometryType ) {
+	public parseGeometryBlock ( road: TvRoad, xmlElement: XmlElement, geometryType: TvGeometryType ) {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const x = parseFloat( xmlElement.attr_x );
@@ -430,10 +430,10 @@ export class OpenDriverParser extends AbstractReader {
 
 		const planView = road.getPlanView();
 
-		this.readGeometry( planView, xmlElement, geometryType );
+		this.parseGeometry( planView, xmlElement, geometryType );
 	}
 
-	public readGeometry ( planView: TvPlaneView, xmlElement: XmlElement, geometryType: TvGeometryType ) {
+	public parseGeometry ( planView: TvPlaneView, xmlElement: XmlElement, geometryType: TvGeometryType ) {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const x = parseFloat( xmlElement.attr_x );
@@ -510,7 +510,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readController ( xmlElement: XmlElement ): TvController {
+	public parseController ( xmlElement: XmlElement ): TvController {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const name = xmlElement.attr_name;
@@ -518,49 +518,49 @@ export class OpenDriverParser extends AbstractReader {
 
 		const controller = new TvController( id, name, sequence );
 
-		this.readAsOptionalArray( xmlElement.control, xml => {
+		readXmlArray( xmlElement.control, xml => {
 
-			controller.addControl( this.readControl( xml ) );
+			controller.addControl( this.parseControl( xml ) );
 
 		} );
 
 		return controller;
 	}
 
-	public readJunction ( xmlElement: XmlElement ): TvJunction {
+	public parseJunction ( xmlElement: XmlElement ): TvJunction {
 
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
 		const junction = JunctionFactory.createJunction( name, id );
 
-		this.readAsOptionalArray( xmlElement.connection, xml => {
+		readXmlArray( xmlElement.connection, xml => {
 
-			junction.addConnection( this.readJunctionConnection( xml, junction ) );
-
-		} );
-
-		this.readAsOptionalArray( xmlElement.priority, xml => {
-
-			junction.addPriority( this.readJunctionPriority( xml ) );
+			junction.addConnection( this.parseJunctionConnection( xml, junction ) );
 
 		} );
 
-		this.readAsOptionalArray( xmlElement.controller, xml => {
+		readXmlArray( xmlElement.priority, xml => {
 
-			junction.addController( this.readJunctionController( xml ) );
+			junction.addPriority( this.parseJunctionPriority( xml ) );
+
+		} );
+
+		readXmlArray( xmlElement.controller, xml => {
+
+			junction.addController( this.parseJunctionController( xml ) );
 
 		} );
 
 		return junction;
 	}
 
-	public readJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {
+	public parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {
 
 		const id = parseInt( xmlElement.attr_id );
 		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
 		const connectingRoadId = parseInt( xmlElement.attr_connectingRoad );
-		const contactPoint = this.readContactPoint( xmlElement.attr_contactPoint );
+		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
 		const incomingRoad = this.map.getRoadById( incomingRoadId );
 		const connectingRoad = this.map.getRoadById( connectingRoadId );
@@ -575,16 +575,16 @@ export class OpenDriverParser extends AbstractReader {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
-		this.readAsOptionalArray( xmlElement.laneLink, xml => {
+		readXmlArray( xmlElement.laneLink, xml => {
 
-			connection.addLaneLink( this.readJunctionConnectionLaneLink( xml, junction, connection ) );
+			connection.addLaneLink( this.parseJunctionConnectionLaneLink( xml, junction, connection ) );
 
 		} );
 
 		return connection;
 	}
 
-	public readJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
+	public parseJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
 
 		const from = parseInt( xmlElement.attr_from );
 		const to = parseInt( xmlElement.attr_to );
@@ -592,7 +592,7 @@ export class OpenDriverParser extends AbstractReader {
 		return connection.makeLaneLink( junction, from, to );
 	}
 
-	public readJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
+	public parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
 
 		const high = parseInt( xmlElement.attr_high );
 		const low = parseInt( xmlElement.attr_low );
@@ -600,7 +600,7 @@ export class OpenDriverParser extends AbstractReader {
 		return new TvJunctionPriority( high, low );
 	}
 
-	public readJunctionController ( xmlElement: XmlElement ): TvJunctionController {
+	public parseJunctionController ( xmlElement: XmlElement ): TvJunctionController {
 
 		const id = parseInt( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
@@ -609,11 +609,11 @@ export class OpenDriverParser extends AbstractReader {
 		return new TvJunctionController( id, type, sequence );
 	}
 
-	public readElevationProfile ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseElevationProfile ( road: TvRoad, xmlElement: XmlElement ) {
 
 		road.addElevationProfile();
 
-		this.readAsOptionalArray( xmlElement.elevation, ( xml: XmlElement ) => {
+		readXmlArray( xmlElement.elevation, ( xml: XmlElement ) => {
 
 			const s = parseFloat( xml.attr_s );
 			const a = parseFloat( xml.attr_a );
@@ -627,21 +627,21 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLateralProfile ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseLateralProfile ( road: TvRoad, xmlElement: XmlElement ) {
 
 	}
 
-	public readLanes ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseLanes ( road: TvRoad, xmlElement: XmlElement ) {
 
-		this.readAsOptionalArray( xmlElement.laneSection, ( xml ) => {
+		readXmlArray( xmlElement.laneSection, ( xml ) => {
 
-			this.readLaneSection( road, xml );
+			this.parseLaneSection( road, xml );
 
 		} );
 
-		this.readAsOptionalArray( xmlElement.laneOffset, ( xml ) => {
+		readXmlArray( xmlElement.laneOffset, ( xml ) => {
 
-			this.readLaneOffset( road, xml );
+			this.parseLaneOffset( road, xml );
 
 		} );
 
@@ -652,19 +652,19 @@ export class OpenDriverParser extends AbstractReader {
 		//
 		//         for ( let i = 0; i < xmlElement.laneSection.length; i++ ) {
 		//
-		//             this.readLaneSections( road, xmlElement.laneSection[i] );
+		//             this.parseLaneSections( road, xmlElement.laneSection[i] );
 		//
 		//         }
 		//
 		//     } else {
 		//
-		//         this.readLaneSections( road, xmlElement.laneSection );
+		//         this.parseLaneSections( road, xmlElement.laneSection );
 		//
 		//     }
 		// }
 	}
 
-	public readObjects ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseObjects ( road: TvRoad, xmlElement: XmlElement ) {
 
 		// @ts-ignore
 		if ( xmlElement != null && xmlElement !== '' ) {
@@ -673,18 +673,18 @@ export class OpenDriverParser extends AbstractReader {
 
 				for ( let i = 0; i < xmlElement.object.length; i++ ) {
 
-					this.readObject( road, xmlElement.object[ i ] );
+					this.parseObject( road, xmlElement.object[ i ] );
 
 				}
 			} else {
 
-				this.readObject( road, xmlElement.object );
+				this.parseObject( road, xmlElement.object );
 
 			}
 		}
 	}
 
-	public readObject ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseObject ( road: TvRoad, xmlElement: XmlElement ) {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
@@ -706,11 +706,11 @@ export class OpenDriverParser extends AbstractReader {
 		const markings: TvObjectMarking[] = [];
 
 		readXmlArray( xmlElement.outlines?.outline, xml => {
-			outlines.push( this.readObjectOutline( xml, road ) );
+			outlines.push( this.parseObjectOutline( xml, road ) );
 		} );
 
 		readXmlArray( xmlElement.markings?.marking, xml => {
-			markings.push( this.readObjectMarking( xml, road ) );
+			markings.push( this.parseObjectMarking( xml, road ) );
 		} );
 
 
@@ -741,12 +741,12 @@ export class OpenDriverParser extends AbstractReader {
 
 		const roadObject = road.getLastAddedRoadObject();
 
-		roadObject.userData = this.readUserData( xmlElement );
+		roadObject.userData = this.parseUserData( xmlElement );
 
-		this.readRoadObjectRepeatArray( roadObject, xmlElement );
+		this.parseRoadObjectRepeatArray( roadObject, xmlElement );
 	}
 
-	readObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {
+	public parseObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {
 
 		const color = xml.attr_color;
 		const spaceLength = parseFloat( xml.attr_spaceLength );
@@ -767,20 +767,20 @@ export class OpenDriverParser extends AbstractReader {
 		return marking;
 	}
 
-	readObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
+	public parseObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
 
 		const outline = new TvObjectOutline();
 
 		outline.id = parseFloat( xml.attr_id );
 
 		readXmlArray( xml.cornerRoad, xml =>
-			outline.cornerRoad.push( this.readCornerRoad( xml, road ) )
+			outline.cornerRoad.push( this.parseCornerRoad( xml, road ) )
 		);
 
 		return outline;
 	}
 
-	readCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {
+	public parseCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {
 
 		const id = parseFloat( xml.attr_id );
 		const s = parseFloat( xml.attr_s );
@@ -795,7 +795,7 @@ export class OpenDriverParser extends AbstractReader {
 		return corner;
 	}
 
-	public readRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
+	public parseRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.repeat != null && xmlElement.repeat !== '' ) {
 
@@ -803,13 +803,13 @@ export class OpenDriverParser extends AbstractReader {
 
 				for ( let i = 0; i < xmlElement.repeat.length; i++ ) {
 
-					this.readRoadObjectRepeat( roadObject, xmlElement.repeat[ i ] );
+					this.parseRoadObjectRepeat( roadObject, xmlElement.repeat[ i ] );
 
 				}
 
 			} else {
 
-				this.readRoadObjectRepeat( roadObject, xmlElement );
+				this.parseRoadObjectRepeat( roadObject, xmlElement );
 
 			}
 
@@ -817,7 +817,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
+	public parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const length = parseFloat( xmlElement.attr_length );
@@ -835,13 +835,13 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readSignals ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseSignals ( road: TvRoad, xmlElement: XmlElement ) {
 
-		readXmlArray( xmlElement.signal, x => this.readSignal( road, x ) );
+		readXmlArray( xmlElement.signal, x => this.parseSignal( road, x ) );
 
 	}
 
-	public readSignal ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseSignal ( road: TvRoad, xmlElement: XmlElement ) {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const t = xmlElement.attr_t;
@@ -882,11 +882,11 @@ export class OpenDriverParser extends AbstractReader {
 			roll
 		);
 
-		this.readSignalValidity( roadSignal, xmlElement );
+		this.parseSignalValidity( roadSignal, xmlElement );
 
-		this.readSignalDependency( roadSignal, xmlElement );
+		this.parseSignalDependency( roadSignal, xmlElement );
 
-		roadSignal.userData = this.readUserData( xmlElement );
+		roadSignal.userData = this.parseUserData( xmlElement );
 
 		if ( roadSignal.userDataMap.has( 'sign_shape' ) ) {
 
@@ -897,7 +897,7 @@ export class OpenDriverParser extends AbstractReader {
 		}
 	}
 
-	public readSignalValidity ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
+	public parseSignalValidity ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.validity != null && xmlElement.validity !== '' ) {
 
@@ -921,7 +921,7 @@ export class OpenDriverParser extends AbstractReader {
 		}
 	}
 
-	public readSignalDependency ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
+	public parseSignalDependency ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.dependency != null && xmlElement.dependency !== '' ) {
 
@@ -945,11 +945,11 @@ export class OpenDriverParser extends AbstractReader {
 		}
 	}
 
-	public readSurface ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseSurface ( road: TvRoad, xmlElement: XmlElement ) {
 
 	}
 
-	public readLaneSection ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseLaneSection ( road: TvRoad, xmlElement: XmlElement ) {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const singleSide = xmlElement.attr_singleSide == 'true';
@@ -958,27 +958,27 @@ export class OpenDriverParser extends AbstractReader {
 
 		const laneSection = road.getLastAddedLaneSection();
 
-		this.readAsOptionalElement( xmlElement.left, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
-				this.readLane( laneSection, xml, TvLaneSide.LEFT );
+		readXmlElement( xmlElement.left, xml => {
+			readXmlArray( xml.lane, xml => {
+				this.parseLane( laneSection, xml, TvLaneSide.LEFT );
 			} );
 		} );
 
-		this.readAsOptionalElement( xmlElement.center, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
-				this.readLane( laneSection, xml, TvLaneSide.CENTER );
+		readXmlElement( xmlElement.center, xml => {
+			readXmlArray( xml.lane, xml => {
+				this.parseLane( laneSection, xml, TvLaneSide.CENTER );
 			} );
 		} );
 
-		this.readAsOptionalElement( xmlElement.right, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
-				this.readLane( laneSection, xml, TvLaneSide.RIGHT );
+		readXmlElement( xmlElement.right, xml => {
+			readXmlArray( xml.lane, xml => {
+				this.parseLane( laneSection, xml, TvLaneSide.RIGHT );
 			} );
 		} );
 
 	}
 
-	public readLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {
+	public parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
@@ -1007,29 +1007,29 @@ export class OpenDriverParser extends AbstractReader {
 		}
 
 		//  Read Width
-		this.readAsOptionalArray( xmlElement.width, xml => this.readLaneWidth( lane, xml ) );
+		readXmlArray( xmlElement.width, xml => this.parseLaneWidth( lane, xml ) );
 
 		//  Read RoadMark
-		this.readAsOptionalArray( xmlElement.roadMark, xml => this.readLaneRoadMark( lane, xml ) );
+		readXmlArray( xmlElement.roadMark, xml => this.parseLaneRoadMark( lane, xml ) );
 
 		//  Read material
-		this.readAsOptionalArray( xmlElement.material, xml => this.readLaneMaterial( lane, xml ) );
+		readXmlArray( xmlElement.material, xml => this.parseLaneMaterial( lane, xml ) );
 
 		//  Read visibility
-		this.readAsOptionalArray( xmlElement.visibility, xml => this.readLaneVisibility( lane, xml ) );
+		readXmlArray( xmlElement.visibility, xml => this.parseLaneVisibility( lane, xml ) );
 
 		//  Read speed
-		this.readAsOptionalArray( xmlElement.speed, xml => this.readLaneSpeed( lane, xml ) );
+		readXmlArray( xmlElement.speed, xml => this.parseLaneSpeed( lane, xml ) );
 
 		//  Read access
-		this.readAsOptionalArray( xmlElement.access, xml => this.readLaneAccess( lane, xml ) );
+		readXmlArray( xmlElement.access, xml => this.parseLaneAccess( lane, xml ) );
 
 		//  Read height
-		this.readAsOptionalArray( xmlElement.height, xml => this.readLaneHeight( lane, xml ) );
+		readXmlArray( xmlElement.height, xml => this.parseLaneHeight( lane, xml ) );
 
 	}
 
-	public readLaneWidth ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneWidth ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 
@@ -1042,7 +1042,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const type = xmlElement.attr_type;
@@ -1056,7 +1056,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneMaterial ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneMaterial ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const surface = xmlElement.attr_surface;
@@ -1067,7 +1067,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneVisibility ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneVisibility ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const forward = parseFloat( xmlElement.attr_forward );
@@ -1079,7 +1079,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneSpeed ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneSpeed ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const max = parseFloat( xmlElement.attr_max );
@@ -1089,7 +1089,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneAccess ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneAccess ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const restriction = xmlElement.attr_restriction;
@@ -1098,7 +1098,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneHeight ( lane: TvLane, xmlElement: XmlElement ) {
+	public parseLaneHeight ( lane: TvLane, xmlElement: XmlElement ) {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const inner = parseFloat( xmlElement.attr_inner );
@@ -1108,7 +1108,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readUserData ( xmlElement: XmlElement ): TvUserData[] {
+	public parseUserData ( xmlElement: XmlElement ): TvUserData[] {
 
 		const response: TvUserData[] = [];
 
@@ -1136,7 +1136,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	}
 
-	public readLaneOffset ( road: TvRoad, xml: XmlElement ) {
+	public parseLaneOffset ( road: TvRoad, xml: XmlElement ) {
 
 		const s = parseFloat( xml.attr_s );
 		const a = parseFloat( xml.attr_a );
@@ -1147,7 +1147,7 @@ export class OpenDriverParser extends AbstractReader {
 		road.addLaneOffset( s, a, b, c, d );
 	}
 
-	public readControl ( xml: XmlElement ): TvControllerControl {
+	public parseControl ( xml: XmlElement ): TvControllerControl {
 
 		const signalId = parseFloat( xml.attr_signalId );
 		const type = xml.attr_type;

@@ -205,7 +205,7 @@ export class SceneImporterService extends AbstractReader {
 
 		this.readAsOptionalArray( xml.junction, xml => {
 
-			const junction = this.odParser.readJunction( xml );
+			const junction = this.odParser.parseJunction( xml );
 
 			if ( xml.position ) {
 
@@ -259,15 +259,15 @@ export class SceneImporterService extends AbstractReader {
 
 		road.spline = this.importSpline( xml.spline, road );
 
-		this.odParser.readRoadTypes( road, xml );
+		this.odParser.parseRoadTypes( road, xml );
 
-		if ( xml.link != null ) this.odParser.readRoadLinks( road, xml.link );
+		if ( xml.link != null ) this.odParser.parseRoadLinks( road, xml.link );
 
-		if ( xml.elevationProfile != null ) this.odParser.readElevationProfile( road, xml.elevationProfile );
+		if ( xml.elevationProfile != null ) this.odParser.parseElevationProfile( road, xml.elevationProfile );
 
-		if ( xml.lateralProfile != null ) this.odParser.readLateralProfile( road, xml.lateralProfile );
+		if ( xml.lateralProfile != null ) this.odParser.parseLateralProfile( road, xml.lateralProfile );
 
-		if ( xml.lanes != null ) this.odParser.readLanes( road, xml.lanes );
+		if ( xml.lanes != null ) this.odParser.parseLanes( road, xml.lanes );
 
 		// if ( xml.objects != null && xml.objects !== '' ) this.readObjects( road, xml.objects );
 
