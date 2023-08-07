@@ -36,6 +36,13 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	public selectionTool: SelectionTool<JunctionEntryObject>;
 
+	constructor () {
+
+		super();
+
+		this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
+	}
+
 	init () {
 
 
@@ -45,9 +52,8 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		super.enable();
 
-		this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
-
 		this.entries = JunctionFactory.createJunctionEntries( this.map.getRoads() );
+
 		this.entries.forEach( obj => SceneService.add( obj ) );
 
 		this.showLanePathObjects();
@@ -60,6 +66,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 		this.selectionTool?.dispose();
 
 		this.entries.forEach( obj => SceneService.remove( obj ) );
+
 		this.entries.splice( 0, this.entries.length );
 
 		this.hideLanePathObjects();
@@ -85,11 +92,11 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		if ( shiftKeyDown ) {
 
-			this.selectionTool.start( e );
+			this.selectionTool?.start( e );
 
-		} else if ( this.selectionTool.isSelecting ) {
+		} else if ( this.selectionTool?.isSelecting ) {
 
-			const newValue = this.selected.concat( this.selectionTool.end( e ) );
+			const newValue = this.selected.concat( this.selectionTool?.end( e ) );
 
 			CommandHistory.execute( new SelectPointsCommand( this, newValue, JunctionEntryInspector, newValue ) );
 
@@ -116,9 +123,9 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.selectionTool.isSelecting ) {
+		if ( this.selectionTool?.isSelecting ) {
 
-			this.selectionTool.update( e ).forEach( object => {
+			this.selectionTool?.update( e ).forEach( object => {
 				object.select();
 			} );
 
