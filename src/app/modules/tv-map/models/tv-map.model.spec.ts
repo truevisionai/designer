@@ -31,7 +31,7 @@ describe( 'OpenDrive Model', () => {
 
 		TvMapInstance.map = map;
 
-		road = map.addRoad( '', 10, 1, -1 );
+		road = map.addNewRoad( '', 10, 1, -1 );
 
 		road.addPlanView();
 

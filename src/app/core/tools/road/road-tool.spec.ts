@@ -28,17 +28,17 @@ describe( 'RoadTool', () => {
 
 	it( 'should update successor', () => {
 
-		const road1 = map.addRoad( 'road1', 10, 1, -1 );
+		const road1 = map.addNewRoad( 'road1', 10, 1, -1 );
 		road1.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		road1.addControlPointAt( new Vector3( 10, 0, 0 ) );
 		road1.updateGeometryFromSpline();
 
-		const road2 = map.addRoad( 'road2', 10, 2, -1 );
+		const road2 = map.addNewRoad( 'road2', 10, 2, -1 );
 		road2.addControlPointAt( new Vector3( 10, 0, 0 ) );
 		road2.addControlPointAt( new Vector3( 20, 0, 0 ) );
 		road2.updateGeometryFromSpline();
 
-		const road3 = map.addRoad( 'road3', 10, 3, -1 );
+		const road3 = map.addNewRoad( 'road3', 10, 3, -1 );
 		road3.addControlPointAt( new Vector3( 10, 0, 0 ) );
 		road3.addControlPointAt( new Vector3( 20, 0, 0 ) );
 		road3.updateGeometryFromSpline();

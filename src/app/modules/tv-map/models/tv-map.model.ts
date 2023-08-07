@@ -88,7 +88,7 @@ export class TvMap {
 	 * @returns
 	 * @deprecated use factory
 	 */
-	public addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
+	public addNewRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
 
 		const road = new TvRoad( name, length, id, junction );
 
