@@ -30,6 +30,9 @@ import { TvRoadLinkChildType } from '../models/tv-road-link-child';
 import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
 import { SceneService } from 'app/core/services/scene.service';
 import { TvObjectMarking } from '../models/tv-object-marking';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvMapHeader } from '../models/tv-map-header';
+import { JunctionFactory } from 'app/core/factories/junction.factory';
 
 declare const fxp;
 
@@ -43,19 +46,15 @@ export interface XmlElement {
 export class OpenDriverParser extends AbstractReader {
 
 	public map: TvMap = new TvMap();
-	public xmlElement: string;
+	public content: string;
 
 	constructor () {
 		super();
 	}
 
-	get openDrive () {
-		return this.map;
-	}
+	parse ( content: string ): TvMap {
 
-	parse ( xmlElement: string ): TvMap {
-
-		this.xmlElement = xmlElement;
+		this.content = content;
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -68,7 +67,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		const parser = new XMLParser( defaultOptions );
 
-		const data: any = parser.parse( this.xmlElement );
+		const data: any = parser.parse( this.content );
 
 		const map = this.readFile( data );
 
@@ -78,29 +77,29 @@ export class OpenDriverParser extends AbstractReader {
 	/**
 	 * Reads the data from the OpenDrive structure to a file
 	 */
-	readFile ( xmlString ) {
+	readFile ( xml: XmlElement ) {
 
-		const xmlElement = xmlString.OpenDRIVE;
+		const openDRIVE: XmlElement = xml.OpenDRIVE;
 
-		if ( !xmlElement ) TvConsole.error( 'No OpenDRIVE tag found. Import Failed' );
-		if ( !xmlElement ) SnackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
-		if ( !xmlElement ) return;
+		if ( !openDRIVE ) TvConsole.error( 'No OpenDRIVE tag found. Import Failed' );
+		if ( !openDRIVE ) SnackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
+		if ( !openDRIVE ) return;
 
-		if ( !xmlElement.road ) TvConsole.error( 'No road tag found. Import Failed' );
-		if ( !xmlElement.road ) SnackBar.warn( 'No road tag found' );
-		if ( !xmlElement.road ) return;
+		if ( !openDRIVE.road ) TvConsole.error( 'No road tag found. Import Failed' );
+		if ( !openDRIVE.road ) SnackBar.warn( 'No road tag found' );
+		if ( !openDRIVE.road ) return;
 
-		this.readHeader( xmlElement.header );
+		this.readHeader( openDRIVE.header );
 
-		this.readRoads( xmlElement );
+		this.readRoads( openDRIVE );
 
-		this.readAsOptionalArray( xmlElement.controller, xml => {
+		this.readAsOptionalArray( openDRIVE.controller, xml => {
 
 			this.map.addControllerInstance( this.readController( xml ) );
 
 		} );
 
-		this.readAsOptionalArray( xmlElement.junction, ( xml ) => {
+		this.readAsOptionalArray( openDRIVE.junction, ( xml ) => {
 
 			this.map.addJunctionInstance( this.readJunction( xml ) );
 
@@ -113,7 +112,7 @@ export class OpenDriverParser extends AbstractReader {
 	 * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
 	 * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
 	 */
-	readHeader ( xmlElement: XmlElement ) {
+	readHeader ( xmlElement: XmlElement ): TvMapHeader {
 
 		const revMajor = parseFloat( xmlElement.attr_revMajor );
 		const revMinor = parseFloat( xmlElement.attr_revMinor );
@@ -126,7 +125,7 @@ export class OpenDriverParser extends AbstractReader {
 		const west = parseFloat( xmlElement.attr_west );
 		const vendor = xmlElement.attr_vendor;
 
-		this.map.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+		return this.map.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 	}
 
 	readRoad ( xml: XmlElement ) {
@@ -136,7 +135,7 @@ export class OpenDriverParser extends AbstractReader {
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = parseFloat( xml.attr_junction );
 
-		const road = this.map.addRoad( name, length, id, junction );
+		const road = RoadFactory.getNewRoad( name, length, id, junction );
 
 		if ( xml.link != null ) {
 
@@ -219,7 +218,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		this.readAsOptionalArray( xmlElement.road, ( xml ) => {
 
-			this.readRoad( xml );
+			this.map.addRoadInstance( this.readRoad( xml ) );
 
 		} );
 
@@ -533,7 +532,7 @@ export class OpenDriverParser extends AbstractReader {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = new TvJunction( name, id );
+		const junction = JunctionFactory.createJunction( name, id );
 
 		this.readAsOptionalArray( xmlElement.connection, xml => {
 

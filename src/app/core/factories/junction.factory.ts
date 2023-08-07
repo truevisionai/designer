@@ -15,8 +15,42 @@ import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../utils/console';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { IDService } from './id.service';
 
 export class JunctionFactory {
+
+	private static IDService = new IDService();
+
+	static get map () {
+
+		return TvMapInstance.map;
+
+	}
+
+	static reset () {
+
+		this.IDService = new IDService();
+
+	}
+
+	static createJunction ( junctionName?: string, junctionId?: number ): TvJunction {
+
+		const id = this.IDService.getUniqueID( junctionId );
+
+		const name = junctionName || `Junction${ id }`;
+
+		return new TvJunction( name, id );
+
+	}
+
+	static addJunction ( junctionName?: string, junctionId?: number ): TvJunction {
+
+		const junction = this.createJunction( junctionName, junctionId );
+
+		this.map.addJunctionInstance( junction );
+
+		return junction;
+	}
 
 	static connectTwo ( entry: JunctionEntryObject, exit: JunctionEntryObject ) {
 
@@ -116,7 +150,7 @@ export class JunctionFactory {
 
 		if ( junctions.size == 0 ) {
 
-			const junction = TvMapInstance.map.addNewJunction();
+			const junction = JunctionFactory.addJunction();
 
 			this.mergeEntriesV3( junction, objects );
 

@@ -18,6 +18,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export class TvMap {
 
@@ -78,6 +79,15 @@ export class TvMap {
 		return this.header;
 	}
 
+	/**
+	 *
+	 * @param name
+	 * @param length
+	 * @param id
+	 * @param junction
+	 * @returns
+	 * @deprecated use factory
+	 */
 	public addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
 
 		const road = new TvRoad( name, length, id, junction );
@@ -87,76 +97,34 @@ export class TvMap {
 		return road;
 	}
 
-	addDefaultRoadWithType ( type: TvRoadType, maxSpeed = 40 ) {
-
-		const road = this.addDefaultRoad();
-
-		road.setType( type, maxSpeed );
-
-		return road;
-	}
-
 	addDefaultRoad (): TvRoad {
 
-		const id = TvRoad.counter++;
+		const road = RoadFactory.getDefaultRoad();
 
-		const road = this.addRoad( `Road${ id }`, 0, id, -1 );
-
-		const roadStyle = RoadStyleService.getRoadStyle( road );
-
-		road.addLaneOffsetInstance( roadStyle.laneOffset );
-
-		road.addLaneSectionInstance( roadStyle.laneSection );
+		this.addRoadInstance( road );
 
 		return road;
+
 	}
 
 	addRampRoad ( lane: TvLane ): TvRoad {
 
-		const id = TvRoad.counter++;
+		const road = RoadFactory.getRampRoad( lane );
 
-		const road = this.addRoad( `Road${ id }`, 0, id, -1 );
-
-		road.addElevation( 0, 0.05, 0, 0, 0 );
-
-		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
-
-		road.addLaneOffsetInstance( roadStyle.laneOffset );
-
-		road.addLaneSectionInstance( roadStyle.laneSection );
+		this.addRoadInstance( road );
 
 		return road;
+
 	}
 
 	addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
 
-		const id = TvRoad.counter++;
+		const road = RoadFactory.addConnectingRoad( side, width, junctionId );
 
-		const road = this.addRoad( `Road${ id }`, 0, id, junctionId );
-
-		const laneSection = road.addGetLaneSection( 0 );
-
-		if ( side === TvLaneSide.LEFT ) {
-			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		}
-
-		if ( side === TvLaneSide.RIGHT ) {
-			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
-		}
-
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
-
-		laneSection.getLaneArray().forEach( lane => {
-
-			if ( lane.side !== TvLaneSide.CENTER ) {
-
-				if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
-
-			}
-
-		} );
+		this.addRoadInstance( road );
 
 		return road;
+
 	}
 
 	addConnectingRoadLane () {
@@ -168,15 +136,6 @@ export class TvMap {
 
 		this._roads.set( road.id, road );
 
-	}
-
-	public addNewJunction ( name?: string ): TvJunction {
-
-		const junction = TvJunction.create( name );
-
-		this.junctions.set( junction.id, junction );
-
-		return junction;
 	}
 
 	public addController ( id: number, name: string, sequence: number ): TvController {
@@ -258,10 +217,8 @@ export class TvMap {
 	 */
 	public clear () {
 
-		TvRoad.counter = 0;
 		this._roads.clear();
 
-		TvJunction.counter = 0;
 		this._junctions.clear();
 
 		this.props.splice( 0, this.props.length );
@@ -284,7 +241,7 @@ export class TvMap {
 		vendor: string
 	) {
 
-		this.header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+		return this.header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 
 	}
 
@@ -319,6 +276,8 @@ export class TvMap {
 		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
 
 		this.clear();
+
+		RoadFactory.reset();
 	}
 
 	private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {

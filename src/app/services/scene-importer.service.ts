@@ -34,6 +34,7 @@ import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 
 @Injectable( {
@@ -249,7 +250,7 @@ export class SceneImporterService extends AbstractReader {
 		const id = parseInt( xml.attr_id );
 		const junction = parseInt( xml.attr_junction ) || -1;
 
-		const road = new TvRoad( name, length, id, junction );
+		const road = RoadFactory.getNewRoad( name, length, id, junction );
 
 		road.drivingMaterialGuid = xml.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;

@@ -4,7 +4,7 @@
 
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
-import { TvContactPoint, TvLaneSide, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
@@ -16,16 +16,61 @@ import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
 import { RoadStyleService } from 'app/services/road-style.service';
+import { Vector3 } from 'three';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { IDService } from './id.service';
 
 export class RoadFactory {
 
+	private static IDService = new IDService();
+
 	static get map () {
+
 		return TvMapInstance.map;
+
 	}
 
-	static createDefaultRoad ( type: TvRoadType, maxSpeed: number ): TvRoad {
+	static reset () {
 
-		const road = this.createRoad();
+		this.IDService = new IDService();
+
+	}
+
+	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {
+
+		const road = this.getDefaultRoad( TvRoadType.TOWN, 40 );
+
+		const point = road.addControlPointAt( position );
+
+		return point;
+
+	}
+
+	static createRoadControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
+
+		return new RoadControlPoint( road, position, 'cp', road.spline.controlPoints.length, road.spline.controlPoints.length )
+
+	}
+
+	static getRampRoad ( lane: TvLane ): TvRoad {
+
+		const road = this.getNewRoad();
+
+		road.addElevation( 0, 0.05, 0, 0, 0 );
+
+		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
+
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
+
+		road.addLaneSectionInstance( roadStyle.laneSection );
+
+		return road;
+
+	}
+
+	static getDefaultRoad ( type: TvRoadType = TvRoadType.TOWN, maxSpeed: number = 40 ): TvRoad {
+
+		const road = this.getNewRoad();
 
 		road.setType( type, maxSpeed );
 
@@ -39,11 +84,14 @@ export class RoadFactory {
 
 	}
 
-	static createRoad (): TvRoad {
+	static getNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
 
-		const id = TvRoad.counter;
+		const roadId = this.IDService.getUniqueID( id );
 
-		return new TvRoad( `Road${ id }`, 0, id, -1 );
+		const roadName = name || `Road${ roadId }`;
+
+		return new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+
 	}
 
 	static rebuildRoad ( road: TvRoad ) {
@@ -94,6 +142,46 @@ export class RoadFactory {
 		connectingRoad.spline.hide();
 
 		return connectingRoad;
+	}
+
+	static addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
+
+		const id = this.IDService.getUniqueID();
+
+		const road = this.addRoad( `Road${ id }`, 0, id, junctionId );
+
+		const laneSection = road.addGetLaneSection( 0 );
+
+		if ( side === TvLaneSide.LEFT ) {
+			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		}
+
+		if ( side === TvLaneSide.RIGHT ) {
+			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		}
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+
+		laneSection.getLaneArray().forEach( lane => {
+
+			if ( lane.side !== TvLaneSide.CENTER ) {
+
+				if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
+
+			}
+
+		} );
+
+		return road;
+	}
+
+	private static addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
+
+		const road = new TvRoad( name, length, id, junction );
+
+		this.map.roads.set( road.id, road );
+
+		return road;
 	}
 
 	private static createSpline ( entry, exit, side ) {
@@ -161,7 +249,6 @@ export class RoadFactory {
 			b2: b2,
 		};
 	}
-
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
 

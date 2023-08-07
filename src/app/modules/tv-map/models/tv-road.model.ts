@@ -107,11 +107,7 @@ export class TvRoad {
 	private lastAddedRoadObjectIndex: number;
 	private lastAddedRoadSignalIndex: number;
 
-	public static counter = 1;
-
 	constructor ( name: string, length: number, id: number, junctionId: number ) {
-
-		TvRoad.counter++;
 
 		this.uuid = MathUtils.generateUUID();
 		this._name = name;
@@ -1229,13 +1225,25 @@ export class TvRoad {
 		if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
 
-	addControlPointAt ( position: Vector3, udpateGeometry = true ) {
+	addControlPointAt ( position: Vector3, udpateGeometry = true ): RoadControlPoint {
 
-		const point = new RoadControlPoint( this, position, 'cp', 0, 0 );
+		const i = this.spline.controlPoints.length;
+
+		const point = new RoadControlPoint( this, position, 'cp', i, i );
 
 		this.addControlPoint( point, udpateGeometry );
 
 		return point;
+
+	}
+
+	removeControlPoint ( cp: RoadControlPoint ) {
+
+		this.spline.removeControlPoint( cp );
+
+		SceneService.remove( cp );
+
+		this.updateGeometryFromSpline();
 
 	}
 
@@ -1908,7 +1916,7 @@ export class TvRoad {
 
 		const length = this.length - s;
 
-		const road = new TvRoad( this.name, length, TvRoad.counter++, this.junctionId );
+		const road = new TvRoad( this.name, length, this.id, this.junctionId );
 
 		road.type = this.type;
 		// road.elevationProfile = this.elevationProfile;

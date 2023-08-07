@@ -14,6 +14,7 @@ import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
 import { SceneService } from 'app/core/services/scene.service';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { JunctionFactory } from 'app/core/factories/junction.factory';
 
 export class CreateSingleManeuver extends BaseCommand {
 
@@ -154,7 +155,7 @@ export class CreateSingleManeuver extends BaseCommand {
 
 		this.junctionCreated = true;
 
-		return TvJunction.create();
+		return JunctionFactory.addJunction();
 
 	}
 }

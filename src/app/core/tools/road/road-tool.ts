@@ -8,7 +8,7 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { ObjectTypes, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
@@ -26,6 +26,10 @@ import { RemoveRoadCommand } from './remove-road-command';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { TvConsole } from 'app/core/utils/console';
+import { SceneService } from 'app/core/services/scene.service';
+import { CreateControlPointCommand } from './create-control-point-command';
 
 /**
  *
@@ -53,7 +57,7 @@ import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position
  *
  *
  */
-export class RoadTool extends BaseTool {
+export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'RoadTool';
 	public toolType = ToolType.Road;
@@ -67,6 +71,18 @@ export class RoadTool extends BaseTool {
 	constructor () {
 
 		super();
+
+	}
+
+	setPoint ( value: RoadControlPoint ): void {
+
+		this.controlPoint = value;
+
+	}
+
+	getPoint (): RoadControlPoint {
+
+		return this.controlPoint;
 
 	}
 
@@ -124,15 +140,17 @@ export class RoadTool extends BaseTool {
 
 		if ( shiftKeyDown ) {
 
-			// is shift key is down we look to create/add road control point
+			if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length == 1 ) {
 
-			if ( this.road ) {
+				CommandHistory.execute( new CreateRoadCommand( this, this.controlPoint.road, e.point ) );
 
-				CommandHistory.execute( new AddRoadPointCommand( this, this.road, e.point ) );
+			} else if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length >= 2 ) {
+
+				CommandHistory.execute( new AddRoadPointCommand( this, this.controlPoint.road, e.point ) );
 
 			} else {
 
-				CommandHistory.execute( new CreateRoadCommand( this, e.point ) );
+				CommandHistory.execute( new CreateControlPointCommand( this, e.point ) );
 
 			}
 
@@ -221,18 +239,11 @@ export class RoadTool extends BaseTool {
 	private selectControlPoint ( controlPoint: RoadControlPoint ): void {
 
 		CommandHistory.executeAll( [
-			new SetInspectorCommand( RoadInspector, { road: this.road, controlPoint } ),
-			new SetValueCommand( this, 'controlPoint', controlPoint ),
+			new SelectPointCommand( this, controlPoint, RoadInspector, {
+				road: controlPoint.road,
+				controlPoint: controlPoint
+			} ),
 			new SetValueCommand( this, 'node', null )
-		] );
-
-	}
-
-	private deselectControlPoint (): void {
-
-		CommandHistory.executeAll( [
-			new SetValueCommand( this, 'controlPoint', null ),
-			new SetInspectorCommand( null, null )
 		] );
 
 	}
@@ -261,43 +272,6 @@ export class RoadTool extends BaseTool {
 
 		return true;
 	}
-
-	// private findLaneIntersection ( intersections: Intersection[] ): Intersection | null {
-	//
-	// 	for ( const intersection of intersections ) {
-	//
-	// 		if ( intersection.object && intersection.object[ 'tag' ] === ObjectTypes.LANE ) {
-	//
-	// 			return intersection;
-	//
-	// 		}
-	//
-	// 	}
-	//
-	// 	return null;
-	// }
-
-	// private selectRoad ( road: TvRoad ): void {
-	//
-	// 	const commands = [];
-	//
-	// 	if ( !this.road || this.road.id !== road.id ) {
-	// 		commands.push( new SetValueCommand( this, 'road', road ) );
-	// 		commands.push( new SetInspectorCommand( RoadInspector, { road } ) );
-	// 	}
-	//
-	// 	if ( this.controlPoint ) {
-	// 		commands.push( new SetValueCommand( this, 'controlPoint', null ) );
-	// 	}
-	//
-	// 	if ( this.node ) {
-	// 		commands.push( new SetValueCommand( this, 'node', null ) );
-	// 	}
-	//
-	// 	if ( commands.length > 0 ) {
-	// 		CommandHistory.executeAll( commands );
-	// 	}
-	// }
 
 	private isRoadNodeSelected ( e: PointerEventData ): boolean {
 
@@ -389,33 +363,9 @@ export class RoadTool extends BaseTool {
 		] );
 	}
 
-	private deselectNode (): void {
-
-		this.node.unselect();
-
-		this.node = null;
-
-	}
-
-
-	private addControlPoint ( position: Vector3 ) {
-
-
-	}
-
 	private joinNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		// const commands = [];
-
-		// commands.push( new SetValueCommand( this, 'node', null ) );
-
-		// commands.push( new SetValueCommand( this, 'road', null ) );
-
-		// commands.push( new SetValueCommand( this, 'controlPoint', null ) );
-
 		CommandHistory.execute( new JoinRoadNodeCommand( this, firstNode, secondNode ) );
-
-		// CommandHistory.execute( new MultiCmdsCommand( commands ) );
 
 	}
 }

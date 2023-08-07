@@ -31,9 +31,7 @@ describe( 'OpenDrive Parsing', () => {
 			attr_vendor: 'Truevision.ai',
 		};
 
-		parser.readHeader( headerXml );
-
-		const header = parser.openDrive.header;
+		const header = parser.readHeader( headerXml );
 
 		expect( header.attr_revMajor ).toBe( 1 );
 		expect( header.attr_revMinor ).toBe( 4 );

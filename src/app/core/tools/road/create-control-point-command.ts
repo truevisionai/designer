@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { RoadTool } from './road-tool';
@@ -10,17 +11,18 @@ import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
+import { SceneService } from 'app/core/services/scene.service';
 
-export class CreateRoadCommand extends OdBaseCommand {
+export class CreateControlPointCommand extends OdBaseCommand {
 
 	private selectPointCommand: SelectPointCommand;
 	private point: RoadControlPoint;
 
-	constructor ( tool: RoadTool, private road: TvRoad, position: Vector3 ) {
+	constructor ( private tool: RoadTool, position: Vector3 ) {
 
 		super();
 
-		this.point = RoadFactory.createRoadControlPoint( road, position );
+		this.point = RoadFactory.createFirstRoadControlPoint( position );
 
 		this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
 			road: this.point.road,
@@ -30,32 +32,24 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 	execute (): void {
 
-		this.road.showNodes();
-
-		this.road.spline.showLines();
-
-		this.map.roads.set( this.road.id, this.road );
-
-		this.road.addControlPoint( this.point );
+		this.tool.road = this.point.road;
 
 		this.selectPointCommand.execute();
 
-		RoadFactory.rebuildRoad( this.road );
+		this.point.visible = true;
+
+		SceneService.add( this.point );
 	}
 
 	undo (): void {
 
-		this.road.hideNodes();
-
-		this.road.spline.hideLines();
-
-		this.map.roads.delete( this.road.id );
-
-		this.road.removeControlPoint( this.point );
+		this.tool.road = null;
 
 		this.selectPointCommand.undo();
 
-		this.map.gameObject.remove( this.road.gameObject );
+		this.point.visible = true;
+
+		SceneService.remove( this.point );
 	}
 
 	redo (): void {

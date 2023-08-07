@@ -7,108 +7,51 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
-import { SceneService } from '../../services/scene.service';
 import { RoadTool } from './road-tool';
 import { OdBaseCommand } from '../../commands/od-base-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { SelectPointCommand } from 'app/core/commands/select-point-command';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export class AddRoadPointCommand extends OdBaseCommand {
 
-	private readonly newPoint: RoadControlPoint;
-	private readonly oldPoint: RoadControlPoint;
+	private point: RoadControlPoint;
+	private selectPointCommand: SelectPointCommand;
 
-	private setInspectorCommand: SetInspectorCommand;
-
-	constructor ( private tool: RoadTool, private road: TvRoad, private position: Vector3 ) {
+	constructor ( tool: RoadTool, private road: TvRoad, position: Vector3 ) {
 
 		super();
 
-		this.oldPoint = this.tool.controlPoint;
+		this.point = RoadFactory.createRoadControlPoint( road, position );
 
-		this.newPoint = this.addControlPoint( this.road, this.position );
-
-		this.setInspectorCommand = new SetInspectorCommand( RoadInspector, {
+		this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
 			road: road,
-			controlPoint: this.newPoint
-		} );
-
+			controlPoint: this.point
+		} )
 	}
 
 	execute (): void {
 
-		this.tool.controlPoint = this.newPoint;
+		this.selectPointCommand.execute();
 
-		this.setInspectorCommand.execute();
+		this.road.addControlPoint( this.point );
 
+		this.rebuildRoad( this.road );
 	}
 
 	undo (): void {
 
-		this.tool.controlPoint = this.oldPoint;
+		this.selectPointCommand.undo();
 
-		this.removeControlPoint( this.road, this.newPoint );
+		this.road.removeControlPoint( this.point );
 
-		this.setInspectorCommand.undo();
+		this.rebuildRoad( this.road );
+
 	}
 
 	redo (): void {
 
-		this.road.addControlPoint( this.newPoint );
+		this.execute();
 
-		this.rebuildRoad( this.road );
-
-		this.setInspectorCommand.execute();
-	}
-
-	addControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
-
-		const point = road.addControlPointAt( position );
-
-		if ( road.spline.controlPoints.length > 1 ) {
-			this.rebuildRoad( road );
-		}
-
-		return point;
-	}
-
-	removeControlPoint ( road: TvRoad, cp: RoadControlPoint ) {
-
-		road.spline.removeControlPoint( cp );
-
-		SceneService.remove( cp );
-
-		if ( road.spline.controlPoints.length === 0 ) {
-
-			this.map.gameObject.remove( road.gameObject );
-
-			// nothing to update, will throw error
-			// road.spline.update();
-
-			road.spline.hideLines();
-
-			road.clearGeometries();
-
-			road.clearNodes();
-
-		} else if ( road.spline.controlPoints.length === 1 ) {
-
-			this.map.gameObject.remove( road.gameObject );
-
-			road.spline.update();
-
-			road.spline.hideLines();
-
-			road.clearGeometries();
-
-			road.clearNodes();
-
-		} else if ( road.spline.controlPoints.length > 1 ) {
-
-			road.updateGeometryFromSpline();
-
-			this.rebuildRoad( road );
-
-		}
 	}
 
 	rebuildRoad ( road: TvRoad ) {

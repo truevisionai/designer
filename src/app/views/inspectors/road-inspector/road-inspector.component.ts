@@ -74,23 +74,23 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	ngOnInit () {
 
-		if ( this.road ) this.road.showHelpers();
+		// if ( this.road ) this.road.showHelpers();
 
-		if ( this.controlPoint ) this.controlPoint.select();
+		// if ( this.controlPoint ) this.controlPoint.select();
 
-		if ( this.data.node ) this.node.select();
+		// if ( this.data.node ) this.node.select();
 
 	}
 
 	ngOnDestroy () {
 
-		if ( this.road ) this.road.hideControlPoints();
+		// if ( this.road ) this.road.hideControlPoints();
 
-		// if ( this.road ) this.road.hideSpline();
+		// // if ( this.road ) this.road.hideSpline();
 
-		if ( this.controlPoint ) this.controlPoint.unselect();
+		// if ( this.controlPoint ) this.controlPoint.unselect();
 
-		if ( this.data.node ) this.data.node.unselect();
+		// if ( this.data.node ) this.data.node.unselect();
 
 	}
 

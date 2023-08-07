@@ -29,18 +29,9 @@ export class TvJunction {
 	private _controllers: TvJunctionController[] = [];
 	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
-	static counter: number = 1;
-
 	constructor ( name: string, id: number ) {
 		this._name = name;
 		this._id = id;
-	}
-
-	static create ( name?: string ) {
-
-		const id = TvJunction.counter++;
-
-		return new TvJunction( name || `Junction-${ id }`, id );
 	}
 
 	get priorities (): TvJunctionPriority[] {
