@@ -15,11 +15,35 @@ import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
+import { RoadStyleService } from 'app/services/road-style.service';
 
 export class RoadFactory {
 
 	static get map () {
 		return TvMapInstance.map;
+	}
+
+	static createDefaultRoad ( type: TvRoadType, maxSpeed: number ): TvRoad {
+
+		const road = this.createRoad();
+
+		road.setType( type, maxSpeed );
+
+		const roadStyle = RoadStyleService.getRoadStyle( road );
+
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
+
+		road.addLaneSectionInstance( roadStyle.laneSection );
+
+		return road;
+
+	}
+
+	static createRoad (): TvRoad {
+
+		const id = TvRoad.counter;
+
+		return new TvRoad( `Road${ id }`, 0, id, -1 );
 	}
 
 	static rebuildRoad ( road: TvRoad ) {
