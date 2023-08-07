@@ -34,8 +34,6 @@ import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { TvMapHeader } from '../models/tv-map-header';
 import { JunctionFactory } from 'app/core/factories/junction.factory';
 
-declare const fxp;
-
 export interface XmlElement {
 	[ key: string ]: any;
 }
@@ -67,7 +65,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		const parser = new XMLParser( defaultOptions );
 
-		const data: any = parser.parse( this.content );
+		const data: XmlElement = parser.parse( this.content );
 
 		const map = this.parseFile( data );
 
@@ -89,7 +87,7 @@ export class OpenDriverParser extends AbstractReader {
 		if ( !openDRIVE.road ) SnackBar.warn( 'No road tag found' );
 		if ( !openDRIVE.road ) return;
 
-		this.parseHeader( openDRIVE.header );
+		this.map.header = this.parseHeader( openDRIVE.header );
 
 		this.parseRoads( openDRIVE );
 
@@ -125,7 +123,7 @@ export class OpenDriverParser extends AbstractReader {
 		const west = parseFloat( xmlElement.attr_west );
 		const vendor = xmlElement.attr_vendor;
 
-		return this.map.setHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+		return new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 	}
 
 	public parseRoad ( xml: XmlElement ) {
@@ -210,11 +208,9 @@ export class OpenDriverParser extends AbstractReader {
 
 	public parseRoads ( xmlElement: XmlElement ) {
 
-		if ( xmlElement.road == null ) {
+		if ( xmlElement.road == null ) TvConsole.error( 'no roads found' );
 
-			throw new Error( 'no roads found' );
-
-		}
+		if ( xmlElement.road == null ) return;
 
 		readXmlArray( xmlElement.road, ( xml ) => {
 
