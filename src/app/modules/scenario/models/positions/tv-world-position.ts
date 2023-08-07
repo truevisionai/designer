@@ -6,6 +6,7 @@ import { Euler, MathUtils, Vector3 } from 'three';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { Maths } from 'app/utils/maths';
 
 export class WorldPosition extends Position {
 
@@ -43,16 +44,16 @@ export class WorldPosition extends Position {
 
 	get rotation (): Vector3 {
 
-		return new Vector3( this.h, this.p, this.r );
+		return new Vector3( this.r, this.p, this.h );
 
 	}
 
 	get rotationInDegree (): Vector3 {
 
 		return new Vector3(
-			this.h * MathUtils.RAD2DEG,
+			this.r * MathUtils.RAD2DEG,
 			this.p * MathUtils.RAD2DEG,
-			this.r * MathUtils.RAD2DEG
+			this.h * MathUtils.RAD2DEG,
 		);
 
 	}
@@ -82,13 +83,13 @@ export class WorldPosition extends Position {
 
 	toEuler (): Euler {
 
-		return new Euler( this.h, this.p, this.r, 'XYZ' );
+		return new Euler( this.r, this.p, this.h, 'ZXY' );
 
 	}
 
 	toOrientation (): Orientation {
 
-		return new Orientation( this.h, this.p, this.r );
+		return new Orientation( this.r, this.p, this.h );
 
 	}
 
@@ -119,7 +120,7 @@ export class WorldPosition extends Position {
 				attr_x: this.vector3?.x ?? 0,
 				attr_y: this.vector3?.y ?? 0,
 				attr_z: this.vector3?.z ?? 0,
-				attr_h: this.h ?? 0,
+				attr_h: this.h + Maths.M_PI_2 ?? 0,
 				attr_p: this.p ?? 0,
 				attr_r: this.r ?? 0,
 			}

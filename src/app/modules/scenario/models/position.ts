@@ -39,9 +39,9 @@ export abstract class Position {
 	get rotation (): Vector3 {
 		const euler = this.toEuler();
 		return new Vector3(
-			euler.x,
+			euler.z,
 			euler.y,
-			euler.z
+			euler.x
 		);
 	}
 

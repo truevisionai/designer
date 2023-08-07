@@ -12,27 +12,37 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { MathUtils, Vector3 } from 'three';
 import { ActionFactory } from '../../../modules/scenario/builders/action-factory';
 import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
+import { Maths } from 'app/utils/maths';
+import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-action';
 
 
 export class AddVehicleCommand extends BaseCommand {
 
 	private setInspector: SetInspectorCommand;
 
-	constructor ( public entity: VehicleEntity, position: Vector3 ) {
+	constructor ( public entity: VehicleEntity, roadCoord: TvRoadCoord ) {
 
 		super();
 
-		entity.position.copy( position.clone() );
+		const worldPosition = new WorldPosition(
+			roadCoord.position.x, roadCoord.position.y, roadCoord.position.z,
+			roadCoord.rotation.z - Maths.M_PI_2, 0, 0
+		);
 
 		entity.name = `Vehicle${ ScenarioInstance.scenario.objects.size + 1 }`;
 
-		const positionAction = ActionFactory.createActionWithoutName( ActionType.Private_Position, entity );
+		const positionAction = new TeleportAction( worldPosition );
 		const speedAction = ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, entity );
 
 		entity.addInitAction( positionAction );
 		entity.addInitAction( speedAction );
 
-		this.addStoryActions();
+		positionAction.execute( entity );
+		speedAction.execute( entity );
+
+		// this.addStoryActions();
 
 		this.setInspector = new SetInspectorCommand( EntityInspector, entity );
 	}

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
+import { ArrowHelper, BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../../core/game-object';
 import { TvConsole } from '../../../../core/utils/console';
 import { AbstractController } from '../abstract-controller';
@@ -33,9 +33,49 @@ export abstract class ScenarioEntity extends GameObject {
 			boundingBox.dimension.length,	// reverse because y is north
 			boundingBox.dimension.height // reverse because z is up
 		), new MeshBasicMaterial( {
-			color: Math.random() * 0xffffff
+			color: 0xffffff,
+			transparent: true,
+			opacity: 0.6,
 		} ) );
 		this.userData.entity = this;
+		// this.addArrow()
+	}
+	addArrow () {
+
+		// assuming yourObject is the object you want to show direction for
+
+		// get the world direction (forward direction) of the object
+		var forward = this.getWorldDirection( new Vector3() ).normalize();
+
+		// get the 'up' direction of the object
+		var up = this.up.clone();
+
+		// calculate 'right' direction which is the cross product of 'forward' and 'up' vectors
+		var right = new Vector3();
+		right.crossVectors( forward, up );
+
+		// create origin vectors at your object's current position
+		var origin = this.position;
+
+		// create a length for the arrow (this is up to you)
+		var length = 1;
+
+		// create hex colors for the arrows (these are up to you)
+		var hex_forward = 0xff0000;  // red for forward direction
+		var hex_up = 0x00ff00;      // green for up direction
+		var hex_right = 0x0000ff;   // blue for right direction
+
+		// create the arrowHelpers
+		var arrowHelperForward = new ArrowHelper( forward, origin, length, hex_forward );
+		var arrowHelperUp = new ArrowHelper( up, origin, length, hex_up );
+		var arrowHelperRight = new ArrowHelper( right, origin, length, hex_right );
+
+		// add the arrowHelpers to your scene
+		this.add( arrowHelperForward );
+		this.add( arrowHelperUp );
+		this.add( arrowHelperRight );
+
+
 	}
 
 	public addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {

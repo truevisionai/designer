@@ -17,6 +17,9 @@ import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
 import { VehicleFactory } from 'app/core/factories/vehicle.factory';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 
 export class VehicleTool extends BaseTool {
 
@@ -24,11 +27,13 @@ export class VehicleTool extends BaseTool {
 	public toolType = ToolType.Vehicle;
 
 	private selectedVehicle: VehicleEntity;
+	private strategy: SelectStrategy<TvRoadCoord>;
 
 	constructor () {
 
 		super();
 
+		this.strategy = new OnRoadStrategy();
 	}
 
 
@@ -36,19 +41,18 @@ export class VehicleTool extends BaseTool {
 
 		if ( event.button != MouseButton.LEFT ) return;
 
-		console.log( 'VehicleTool onPointerDown', event );
+		const roadCoord = this.strategy.onPointerDown( event );
 
 		if ( KeyboardInput.isShiftKeyDown ) {
 
 			if ( true || this.selectedVehicle ) {
 
-				const name = VehicleEntity.getNewName( 'Vehicle' );
+				if ( !roadCoord ) this.setHint( 'Click on road geometry to create vehicle' );
+				if ( !roadCoord ) return;
 
-				const vehicleEntity = VehicleFactory.createDefaultCar( name );
+				const vehicleEntity = VehicleFactory.createDefaultCar();
 
-				vehicleEntity.setController( new DefaultVehicleController( 'DefaultVehicleController', vehicleEntity ) );
-
-				CommandHistory.execute( new AddVehicleCommand( vehicleEntity, event.point ) );
+				CommandHistory.execute( new AddVehicleCommand( vehicleEntity, roadCoord ) );
 
 
 			} else {

@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoad } from './tv-road.model';
 
@@ -64,16 +65,22 @@ export class TvRoadCoord {
 		return TvMapInstance.map.getRoadById( this.roadId );
 	}
 
-	init () {
+	init () { }
 
-	}
-
-	add ( value: TvRoadCoord ) {
-	}
+	add ( value: TvRoadCoord ) { }
 
 	toPosTheta () {
 		return this.road?.getRoadCoordAt( this.s, this.t );
 	}
+
+	get position (): Vector3 {
+		return this.toPosTheta().toVector3();
+	}
+
+	get rotation (): Vector3 {
+		return new Vector3( this.r, this.p, this.h );
+	}
+
 }
 
 export class TvGeoCoord {

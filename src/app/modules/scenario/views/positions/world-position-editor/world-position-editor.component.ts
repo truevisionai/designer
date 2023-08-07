@@ -27,9 +27,9 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	onRotationChanged ( $event: Vector3 ) {
 
-		this.position.h = $event.x * MathUtils.DEG2RAD;
+		this.position.h = $event.z * MathUtils.DEG2RAD;
 		this.position.p = $event.y * MathUtils.DEG2RAD;
-		this.position.r = $event.z * MathUtils.DEG2RAD;
+		this.position.r = $event.x * MathUtils.DEG2RAD;
 
 		this.positionModified.emit( this.position );
 

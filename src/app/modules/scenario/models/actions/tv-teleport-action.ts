@@ -30,7 +30,7 @@ export class TeleportAction extends PrivateAction {
 
 	execute ( entity: ScenarioEntity ) {
 
-		entity.setPosition( this.position.toVector3() );
+		entity.setPosition( this.position.position );
 		entity.setEuler( this.position.toEuler() );
 
 	}

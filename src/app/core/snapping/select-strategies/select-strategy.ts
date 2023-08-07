@@ -17,7 +17,7 @@ export abstract class SelectStrategy<T> {
 
 	abstract dispose (): void;
 
-	onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
+	protected onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
 
 		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 
@@ -31,7 +31,7 @@ export abstract class SelectStrategy<T> {
 
 	}
 
-	onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
+	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
 
 		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 

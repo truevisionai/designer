@@ -106,6 +106,7 @@ import { AbstractReader } from 'app/core/services/abstract-reader';
 import { TrajectoryPosition } from '../models/positions/tv-trajectory-position';
 import { FileUtils } from 'app/services/file-utils';
 import { ParameterResolver } from './scenario-builder.service';
+import { Maths } from 'app/utils/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -428,7 +429,7 @@ export class OpenScenarioLoader extends AbstractReader {
 			parseFloat( xml.attr_x || 0 ),
 			parseFloat( xml.attr_y || 0 ),
 			parseFloat( xml.attr_z || 0 ),
-			parseFloat( xml.attr_h || 0 ),
+			parseFloat( xml.attr_h || 0 ) - Maths.M_PI_2,
 			parseFloat( xml.attr_p || 0 ),
 			parseFloat( xml.attr_r || 0 ),
 		);
