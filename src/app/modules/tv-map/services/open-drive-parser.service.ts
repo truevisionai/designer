@@ -218,7 +218,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		this.readAsOptionalArray( xmlElement.road, ( xml ) => {
 
-			this.map.addRoadInstance( this.readRoad( xml ) );
+			this.map.addRoad( this.readRoad( xml ) );
 
 		} );
 

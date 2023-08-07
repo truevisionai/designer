@@ -151,7 +151,7 @@ export class SceneImporterService extends AbstractReader {
 
 		this.readAsOptionalArray( xml.road, xml => {
 
-			this.map.addRoadInstance( this.importRoad( xml ) );
+			this.map.addRoad( this.importRoad( xml ) );
 
 		} );
 

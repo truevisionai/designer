@@ -120,8 +120,8 @@ export class FindIntersection {
 		const new1 = road1.cutRoad( coord1 );
 		const new2 = road2.cutRoad( coord2 );
 
-		TvMapInstance.map.addRoadInstance( new1 );
-		TvMapInstance.map.addRoadInstance( new2 );
+		TvMapInstance.map.addRoad( new1 );
+		TvMapInstance.map.addRoad( new2 );
 
 		RoadFactory.rebuildRoad( road1 );
 		RoadFactory.rebuildRoad( new1 );

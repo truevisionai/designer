@@ -92,7 +92,7 @@ export class TvMap {
 
 		const road = new TvRoad( name, length, id, junction );
 
-		this.addRoadInstance( road );
+		this.addRoad( road );
 
 		return road;
 	}
@@ -101,7 +101,7 @@ export class TvMap {
 
 		const road = RoadFactory.getDefaultRoad();
 
-		this.addRoadInstance( road );
+		this.addRoad( road );
 
 		return road;
 
@@ -111,7 +111,7 @@ export class TvMap {
 
 		const road = RoadFactory.getRampRoad( lane );
 
-		this.addRoadInstance( road );
+		this.addRoad( road );
 
 		return road;
 
@@ -121,7 +121,7 @@ export class TvMap {
 
 		const road = RoadFactory.addConnectingRoad( side, width, junctionId );
 
-		this.addRoadInstance( road );
+		this.addRoad( road );
 
 		return road;
 
@@ -132,7 +132,7 @@ export class TvMap {
 	}
 
 
-	addRoadInstance ( road: TvRoad ) {
+	addRoad ( road: TvRoad ) {
 
 		this._roads.set( road.id, road );
 
