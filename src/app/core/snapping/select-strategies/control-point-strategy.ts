@@ -46,7 +46,13 @@ export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStra
 	}
 
 	dispose (): void {
-		throw new Error( 'Method not implemented.' );
+
+		// this.current?.onMouseOut();
+
+		// this.selected?.unselect();
+
 	}
 
 }
+
+

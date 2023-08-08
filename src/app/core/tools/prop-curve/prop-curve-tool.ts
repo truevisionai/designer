@@ -7,10 +7,6 @@ import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import {
-	PropCurveInspectorComponent,
-	PropCurveInspectorData
-} from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 import { KeyboardInput } from '../../input';
 import { PropModel } from '../../models/prop-model.model';
 import { ToolType } from '../../models/tool-types.enum';
@@ -22,6 +18,8 @@ import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-contro
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
@@ -105,9 +103,9 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		if ( point ) {
 
-			const data = new PropCurveInspectorData( point, point.mainObject );
+			if ( point == this.point ) return;
 
-			const cmd = new SelectPointCommand( this, point, PropCurveInspectorComponent, data );
+			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
 
 			CommandHistory.execute( cmd );
 
@@ -116,14 +114,9 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 			return;
 		}
 
+		if ( !this.point ) return;
 
-		// in first click, remove focus from control point and hide tangent
-
-		const data = new PropCurveInspectorData( null, null );
-
-		const cmd = new SelectPointCommand( this, null, PropCurveInspectorComponent, data );
-
-		CommandHistory.execute( cmd );
+		CommandHistory.execute( new SelectPointCommand( this, null, DynamicInspectorComponent, null ) );
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
@@ -180,9 +173,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		const cmd = new UpdatePositionCommand( this.point, position, this.pointerDownAt );
-
-		CommandHistory.execute( cmd );
+		CommandHistory.execute( new UpdatePositionCommand( this.point, position, this.pointerDownAt ) );
 
 		this.setHint( 'Use Inspector to modify curve properties' );
 	}

@@ -42,18 +42,27 @@ export class PropPolygon implements ISelectable {
 
 		this.id = PropPolygon.index++;
 
-		// make a blank shape to avoid any errors
-		this.mesh = this.makeMesh( new Shape() );
+		const shape = spline?.controlPoints?.length > 1 ?
+			this.createShape( this.generatePoints() ) :
+			new Shape();
+
+		this.mesh = this.makeMesh( shape );
 	}
 
 	show (): void {
+
 		this.showCurve();
+
 		this.showControlPoints();
+
 	}
 
 	hide (): void {
+
 		this.hideCurve();
+
 		this.hideControlPoints();
+
 	}
 
 	@Action()
@@ -65,11 +74,13 @@ export class PropPolygon implements ISelectable {
 
 		this.mesh?.parent?.remove( this.spline.mesh );
 
+		this.mesh?.parent?.remove( this.mesh );
+
 		this.removeAndClearProps();
 
 	}
 
-	@SerializedField( { type: 'int', min: 0, max: 1 } )
+	@SerializedField( { type: 'float', min: 0, max: 1 } )
 	get density (): number {
 		return this._density;
 	}
@@ -122,6 +133,8 @@ export class PropPolygon implements ISelectable {
 
 		mesh.userData.polygon = mesh.userData.propPolygon = this;
 
+		mesh.visible = false;
+
 		return mesh;
 	}
 
@@ -155,7 +168,7 @@ export class PropPolygon implements ISelectable {
 	// Function to generate points from the spline curve
 	private generatePoints (): Vector2[] {
 
-		return this.spline.curve.getPoints( 50 ).map(
+		return this.spline?.curve?.getPoints( 50 ).map(
 			p => new Vector2( p.x, p.y )
 		);
 

@@ -225,6 +225,8 @@ export class TvMap {
 
 		this.propCurves.splice( 0, this.propCurves.length );
 
+		this.propPolygons.splice( 0, this.propPolygons.length );
+
 		this.surfaces.splice( 0, this.surfaces.length );
 	}
 
@@ -265,13 +267,19 @@ export class TvMap {
 
 		this.propCurves.forEach( curve => {
 
-			this.gameObject.remove( curve.spline.mesh );
+			curve.delete();
 
 			curve.props.forEach( prop => SceneService.remove( prop ) );
 
 		} );
 
-		this.propPolygons.forEach( polygon => polygon.delete() );
+		this.propPolygons.forEach( polygon => {
+
+			polygon.delete();
+
+			polygon.spline?.controlPoints.forEach( point => SceneService.remove( point ) );
+
+		} );
 
 		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
 

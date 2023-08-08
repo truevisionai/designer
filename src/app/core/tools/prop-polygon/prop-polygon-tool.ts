@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithMainObject, IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/core/commands/select-point-command';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
@@ -18,7 +18,9 @@ import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspecto
 import { PropModel } from 'app/core/models/prop-model.model';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ObjectTagStrategy, ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
 import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { GameObject } from 'app/core/game-object';
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -30,7 +32,9 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 	public propPolygon: PropPolygon;
 
-	private strategy: SelectStrategy<DynamicControlPoint<PropPolygon>>;
+	private controlPointStrategy: SelectStrategy<DynamicControlPoint<PropPolygon>>;
+
+	private objectStrategy: SelectStrategy<PropPolygon>;
 
 	private get prop (): PropModel {
 
@@ -48,7 +52,9 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		super();
 
-		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropPolygon>>();
+		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<PropPolygon>>();
+
+		this.objectStrategy = new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' );
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
@@ -113,9 +119,11 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 	handleSelectionMode ( e: PointerEventData ) {
 
-		const point = this.strategy.onPointerDown( e );
+		const point = this.controlPointStrategy.onPointerDown( e );
 
 		if ( point ) {
+
+			if ( point === this.point ) return;
 
 			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
 
@@ -127,11 +135,35 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 		}
 
 
-		// in first click, remove focus from control point and hide tangent
+		const polygon = this.objectStrategy.onPointerDown( e );
 
-		const cmd = new SelectPointCommand( this, null, DynamicInspectorComponent, null );
+		if ( polygon ) {
 
-		CommandHistory.execute( cmd );
+			if ( polygon === this.propPolygon ) return;
+
+			const cmd = new SelectMainObjectCommand( this, polygon, DynamicInspectorComponent, polygon );
+
+			CommandHistory.execute( cmd );
+
+			this.setHint( 'Drag control point using LEFT CLICK is down' );
+
+			return;
+
+		}
+
+
+		if ( this.point || this.propPolygon ) {
+
+			CommandHistory.executeMany(
+
+				new SelectPointCommand( this, null, DynamicInspectorComponent, null ),
+
+				new SelectMainObjectCommand( this, null, DynamicInspectorComponent, null )
+
+			);
+
+		}
+
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 

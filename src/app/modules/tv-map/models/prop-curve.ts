@@ -11,16 +11,19 @@ import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
+import { SerializedField } from 'app/core/components/serialization';
 
 export class PropCurve {
 
+	public static tag = 'propCurve';
+
 	public reverse: boolean = false;
 
-	public spacing: number = 5.0;
+	private _spacing: number = 5.0;
 
-	public rotation: number = 0.0;
+	private _rotation: number = 0.0;
 
-	public positionVariance: number = 0.0;
+	private _positionVariance: number = 0.0;
 
 	public props: Object3D[] = [];
 
@@ -30,10 +33,42 @@ export class PropCurve {
 
 			this.spline = new CatmullRomSpline( false, 'catmullrom', 0.001 );
 
-			this.spline.init();
+			this.spline.mesh.userData[ PropCurve.tag ] = this;
+
+			this.spline.mesh[ 'tag' ] = PropCurve.tag;
 
 		}
 
+	}
+
+	@SerializedField( { type: 'float', min: 0, max: 100 } )
+	get spacing (): number {
+		return this._spacing;
+	}
+
+	set spacing ( value: number ) {
+		this._spacing = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'float', min: 0, max: 1 } )
+	get rotation (): number {
+		return this._rotation;
+	}
+
+	set rotation ( value: number ) {
+		this._rotation = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'float', min: 0, max: 100 } )
+	get positionVariance (): number {
+		return this._positionVariance;
+	}
+
+	set positionVariance ( value: number ) {
+		this._positionVariance = value;
+		this.update();
 	}
 
 	show ( shapeEditor?: AbstractShapeEditor ): void {
@@ -131,6 +166,8 @@ export class PropCurve {
 
 	bake () {
 
+		// not used currently
+
 		this.props.forEach( object => {
 
 			const prop = new PropInstance( this.propGuid, object );
@@ -151,7 +188,11 @@ export class PropCurve {
 
 		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
 
+		this.props.forEach( prop => SceneService.remove( prop ) );
+
 		this.props.splice( 0, this.props.length );
+
+		SceneService.remove( this.spline.mesh );
 
 		this.spline.controlPoints.forEach( cp => {
 

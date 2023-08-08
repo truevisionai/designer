@@ -532,6 +532,8 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
+		SceneService.add( polygon.mesh );
+
 		return polygon;
 	}
 

@@ -20,6 +20,7 @@ export class FieldHostDirective {
 }
 
 const fieldComponents = {
+	'float': DoubleFieldComponent,
 	'int': DoubleFieldComponent,
 	'number': DoubleFieldComponent,
 	'string': StringFieldComponent,
@@ -69,6 +70,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 			const component = fieldComponents[ fieldType ];
 
+			if ( this.data[ item.field ] === undefined ) return;
+
 			const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent>( component );
 
 			setTimeout( () => {
@@ -107,8 +110,6 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 			component.max = settings?.max ?? Infinity;
 
 			component.step = settings?.step ?? 0.1;
-
-			console.log( component, settings );
 
 		}
 

@@ -40,6 +40,7 @@ export class CreatePropPolygonCommand extends BaseCommand {
 
 		SceneService.add( this.point );
 
+		SceneService.add( this.polygon.mesh );
 	}
 
 	undo (): void {
@@ -54,7 +55,7 @@ export class CreatePropPolygonCommand extends BaseCommand {
 
 		SceneService.remove( this.point );
 
-
+		SceneService.remove( this.polygon.mesh );
 	}
 
 	redo (): void {

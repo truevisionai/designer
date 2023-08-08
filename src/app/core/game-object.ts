@@ -6,6 +6,7 @@ import { ElementRef, Type } from '@angular/core';
 import * as THREE from 'three';
 import { BufferGeometry, Euler, Material, Vector3 } from 'three';
 import { ITvObject, TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 export interface IComponent {
 	data: any;
@@ -38,7 +39,7 @@ export class SomeNewComponent extends Component {
 
 }
 
-export class GameObject extends THREE.Mesh implements ITvObject {
+export class GameObject extends THREE.Mesh implements ITvObject, ISelectable {
 
 	OpenDriveType: TvObjectType;
 	public IsGameObject = true;
@@ -61,6 +62,20 @@ export class GameObject extends THREE.Mesh implements ITvObject {
 		this.userData.is_selectable = true;
 
 		// AppService.engine.add( this );
+
+	}
+
+	isSelected: boolean;
+
+	select (): void {
+
+		this.isSelected = true;
+
+	}
+
+	unselect (): void {
+
+		this.isSelected = false;
 
 	}
 

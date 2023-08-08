@@ -149,12 +149,6 @@ export class MainFileService {
 		// path exists means it was imported locally
 		if ( this.currentFile.path != null ) {
 
-			ToolManager.disable();
-
-			// AppInspector.clear();
-
-			// CommandHistory.clear();
-
 			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
 
 				this.currentFile.path = file.path;
