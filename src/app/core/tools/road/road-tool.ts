@@ -124,7 +124,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			new RemoveRoadCommand( road ),
 
-			new SelectRoadForRoadToolCommand( this, null )
+			new SetInspectorCommand( null, null )
 
 		);
 

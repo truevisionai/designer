@@ -6,11 +6,10 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, O
 import { EventSystem } from 'app/events/event-system.service';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { ImporterService } from 'app/services/importer.service';
 
 // import * as Stats from 'stats.js';
 import * as THREE from 'three';
-import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, WebGLRenderer } from 'three';
+import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { ViewportService } from '../viewport.service';
 
@@ -44,11 +43,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	raycaster = new THREE.Raycaster;
 	mouse: THREE.Vector2 = new THREE.Vector2();
 
-	private animationId;
+	private animationId: number;
 	private renderer: WebGLRenderer;
 
 	private lastTime: number = Date.now();
 	private minTime: number = 100;
+	private onCanvas: boolean;
 
 	constructor (
 		private threeService: ThreeService,
@@ -198,9 +198,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.lastTime = Date.now();
 
+		if ( !this.onCanvas ) return;
+
 		this.intersections = this.getIntersections( event, true );
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
+
+		if ( !intersection ) return;
 
 		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
 
@@ -208,7 +212,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseClick ( event: MouseEvent ) {
 
-		// this.findIntersections();
+		if ( !this.onCanvas ) return;
 
 		switch ( event.button ) {
 
@@ -232,11 +236,15 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseDown ( $event: MouseEvent ) {
 
+		if ( !this.onCanvas ) return;
+
 		this.intersections = this.getIntersections( $event, true );
 
 		$event.preventDefault();
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
+
+		if ( !intersection ) return;
 
 		switch ( $event.button ) {
 
@@ -302,63 +310,69 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		} else {
 
-			this.eventSystem.pointerUp.emit( this.preparePointerData( event, null ) );
+			// dont fire if no interaction
+			// this.eventSystem.pointerUp.emit( this.preparePointerData( event, null ) );
 
 		}
 
 	}
 
-	onMouseEnter ( event: Event ) {
+	/**
+	 *
+	 * @param $event
+	 */
+	onMouseEnter ( $event: Event ) {
 
+		this.onCanvas = true;
 		this.eventSystem.pointerEnter.emit( new PointerEventData );
 
 	}
 
-	onMouseExit ( event: MouseEvent ) {
-
-		this.eventSystem.pointerExit.emit( new PointerEventData );
-
-	}
-
+	/**
+	 * mouseleave event is only triggered when the mouse pointer
+	 * leaves the selected element.
+	 *
+	 * @param $event
+	 */
 	onMouseLeave ( $event: Event ) {
 
+		this.onCanvas = false;
 		this.eventSystem.pointerLeave.emit( new PointerEventData );
 
 	}
 
-	onMouseOut ( e: MouseEvent ) {
+	/**
+	 * mouseout event triggers when the mouse pointer leaves
+	 * any child elements as well the selected element.
+	 *
+	 * @param $event
+	 * @deprecated dont use use this event, as it triggers when mouse leaves any child elements
+	 */
+	onMouseOut ( $event: MouseEvent ) {
 
+		this.onCanvas = false;
 		this.eventSystem.pointerOut.emit( new PointerEventData );
 
 	}
 
-	//Dragover listener
 	@HostListener( 'dragenter', [ '$event' ] )
 	onDragEnter ( $event: DragEvent ) {
-		// console.log( 'drag enter', $event.dataTransfer.getData( 'path' ) );
 		$event.preventDefault();
 		$event.stopPropagation();
-		// this.viewportService.onDragEnter( $event );
 	}
 
-	//Dragover listener
 	@HostListener( 'dragover', [ '$event' ] )
 	onDragOver ( $event: DragEvent ) {
-		// console.log( 'drag over', $event.dataTransfer.getData( 'path' ) );
 		$event.preventDefault();
 		$event.stopPropagation();
-		// this.viewportService.onDragOver( $event );
 	}
 
-	//Dragleave listener
 	@HostListener( 'dragleave', [ '$event' ] )
 	onDragLeave ( $event: DragEvent ) {
 		$event.preventDefault();
 		$event.stopPropagation();
-		// this.viewportService.onDragLeave( $event );
 	}
 
-	//Drop listener
 	@HostListener( 'drop', [ '$event' ] )
 	async onDrop ( $event: DragEvent ) {
 
@@ -371,16 +385,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
 
-		let position = null;
+		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( this.intersections.length > 0 ) {
-
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
-
-			position = this.intersections[ 0 ].point;
-
-		}
-
+		const position = intersection?.point || new Vector3();
 
 		await this.viewportService.onDrop( $event, position );
 	}
@@ -608,11 +615,55 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleViewHelperClick ( $event ) {
+	handleViewHelperClick ( $event: MouseEvent ) {
 
 		$event.stopPropagation();
 
-		this.threeService.viewHelper?.handleClick( $event );
+		this.threeService.viewHelper?.handleClick( $event as PointerEvent );
 
 	}
 }
+
+
+class Animator {
+	private startTime: number | null = null;
+	private intervalId: any | null = null;
+	private duration: number;
+	private updateRate: number;
+
+	constructor ( duration: number, updateRate: number ) {
+		this.duration = duration;
+		this.updateRate = updateRate;
+	}
+
+	start ( callback: ( value: number ) => void ) {
+		if ( this.intervalId !== null ) {
+			this.stop();
+		}
+
+		this.startTime = performance.now();
+
+		this.intervalId = setInterval( () => {
+			const elapsedTime = performance.now() - ( this.startTime as number );
+
+			if ( elapsedTime >= this.duration ) {
+				callback( 1 );  // Ensure final value is 1
+				this.stop();
+				return;
+			}
+
+			const progress = elapsedTime / this.duration;
+			callback( progress );
+
+		}, this.updateRate );
+	}
+
+	stop () {
+		if ( this.intervalId !== null ) {
+			clearInterval( this.intervalId );
+			this.intervalId = null;
+			this.startTime = null;
+		}
+	}
+}
+

@@ -165,6 +165,8 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	delete () {
 
+		if ( !this.road ) return;
+
 		const tool = ToolManager.getTool<RoadTool>();
 
 		if ( tool instanceof RoadTool ) {

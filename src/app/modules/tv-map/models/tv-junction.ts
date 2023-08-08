@@ -100,8 +100,7 @@ export class TvJunction {
 
 			if ( connection.connectingRoadId === road.id ) {
 
-				this.removeConnectionById( connection.id );
-
+				this.connections.delete( connection.id );
 			}
 
 		} )

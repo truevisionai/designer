@@ -144,26 +144,29 @@ export class OpenDriverParser extends AbstractReader {
 		// Get type
 		this.parseRoadTypes( road, xml );
 
-		if ( xml.planView != null ) {
+		if ( !xml.planView ) SnackBar.error( 'no planView found, skipping road import' );
+		if ( !xml.planView ) return;
 
-			this.parsePlanView( road, xml.planView );
+		if ( !xml.planView?.geometry ) SnackBar.error( 'no geometry found, skipping road import' );
+		if ( !xml.planView?.geometry ) return;
 
-			road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
+		this.parsePlanView( road, xml.planView );
 
-			road.length = 0;
+		road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
 
-			road.spline.update();
+		road.length = 0;
 
-			road.clearGeometries();
+		road.spline.update();
 
-			road.spline.exportGeometries( true ).forEach( geometry => {
+		road.clearGeometries();
 
-				road.addGeometry( geometry );
+		road.spline.exportGeometries( true ).forEach( geometry => {
 
-			} );
+			road.addGeometry( geometry );
 
-			road.updated.emit( road );
-		}
+		} );
+
+		road.updated.emit( road );
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
@@ -214,7 +217,9 @@ export class OpenDriverParser extends AbstractReader {
 
 		readXmlArray( xmlElement.road, ( xml ) => {
 
-			this.map.addRoad( this.parseRoad( xml ) );
+			const road = this.parseRoad( xml );
+
+			if ( road ) this.map.addRoad( road );
 
 		} );
 
@@ -323,7 +328,7 @@ export class OpenDriverParser extends AbstractReader {
 
 	public parseRoadTypes ( road: TvRoad, xmlElement: XmlElement ) {
 
-		if ( !xmlElement.type ) console.warn( 'no road type tag not present' );
+		// if ( !xmlElement.type ) console.warn( 'no road type tag not present' );
 
 		readXmlArray( xmlElement.type, ( xml: XmlElement ) => {
 
@@ -376,9 +381,7 @@ export class OpenDriverParser extends AbstractReader {
 
 		} else {
 
-			TvConsole.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
-
-			SnackBar.error( 'NoGeometryFound In OpenDRIVE Road. Adding default line with length 1' );
+			SnackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
 
 			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
 

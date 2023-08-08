@@ -36,11 +36,17 @@ export class RemoveRoadCommand extends BaseCommand {
 		this.road.hideHelpers();
 
 		if ( this.road.isJunction ) {
+
 			this.road.junctionInstance?.removeConnectingRoad( this.road );
+
 		}
 
-		this.road.removePredecessor();
-		this.road.removeSuccessor();
+		if ( !this.road.isJunction ) {
+
+			this.road.removePredecessor();
+			this.road.removeSuccessor();
+
+		}
 
 		this.map.roads.delete( this.road.id );
 		this.map.gameObject.remove( this.road.gameObject );
@@ -62,8 +68,13 @@ export class RemoveRoadCommand extends BaseCommand {
 
 		}
 
-		this.road.addPredecessor( this.predecessorElement );
-		this.road.addSuccessor( this.successorElement );
+		if ( !this.road.isJunction ) {
+
+			this.road.addPredecessor( this.predecessorElement );
+			this.road.addSuccessor( this.successorElement );
+
+		}
+
 	}
 
 	redo (): void {

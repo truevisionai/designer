@@ -36,6 +36,7 @@ import {
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { COLOR } from 'app/shared/utils/colors.service';
+import { AppConfig } from 'app/app.config';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -131,7 +132,7 @@ export class PreviewService {
 
 		this.camera.lookAt( 0, 0, 0 );
 
-		this.camera.up.set( 0, 0, 1 );
+		this.camera.up.copy( AppConfig.DEFAULT_UP )
 
 		this.camera.updateProjectionMatrix();
 

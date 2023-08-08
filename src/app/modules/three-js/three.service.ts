@@ -3,20 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CommandHistory } from 'app/services/command-history';
-
 import { Maths } from 'app/utils/maths';
-
 import * as THREE from 'three';
 import { Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { IEngine } from '../../core/services/IEngine';
 import { SceneService } from '../../core/services/scene.service';
-import { SetPositionCommand } from './commands/set-position-command';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
 import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
+import { AppConfig } from 'app/app.config';
+import { TvViewHelper } from './objects/tv-view-helper';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,7 +42,7 @@ export class ThreeService implements IEngine {
 	private objectPositionOnDown: THREE.Vector3 = null;
 	private target: Object3D;
 
-	viewHelper: ViewHelper;
+	viewHelper: TvViewHelper;
 	viewHelperCanavs: HTMLCanvasElement;
 
 	constructor () {
@@ -228,162 +227,6 @@ export class ThreeService implements IEngine {
 
 	}
 
-	// addImageSprite (): any {
-
-	//     const self: ThreeService = this;
-
-	//     // const image = "assets/checkered.png";
-	//     const image = 'assets/buildings.jpeg';
-
-	//     var map = new THREE.TextureLoader().load( image, function ( texture ) {
-
-	//         var material = new THREE.SpriteMaterial( { map: texture, color: 0xffffff } );
-	//         var sprite = new THREE.Sprite( material );
-
-	//         sprite.scale.set( texture.image.width, 2622, 1 );
-
-	//         sprite.position.set( texture.image.width / 2, texture.image.height / 2, 0 );
-	//         // self.camera.position.set( texture.image.width / 2, texture.image.height / 2, 20 );
-	//         // self.camera.lookAt( new THREE.Vector3( texture.image.width / 2, texture.image.height / 2, 0 ) );
-	//         // self.camera.up.set( 0, 1, 0 );
-	//         // self.camera.lookAt( 1311, 1311, 0 );
-	//         // self.camera.position.set( 600, 0, 0 );
-	//         // self.camera.position.z = 20;
-
-	//         self.camera.updateProjectionMatrix();
-
-	//         self.add( sprite, true );
-
-	//     } );
-
-	// }
-
-	// addImageScreen (): any {
-	//
-	//     const self: ThreeService = this;
-	//
-	//     // const url = "http://true-label.test/images/checkered.png";
-	//     // const url = "https://picsum.photos/1200/900";
-	//     // const url = "assets/highway.jpg";
-	//     const url = 'assets/pedestrians/Frame_ (1).png';
-	//     // const url = "assets/buildings.jpeg";
-	//     // const url = "assets/sample.png";
-	//
-	//     // load a texture, set wrap mode to repeat
-	//     const textureLoader = new THREE.TextureLoader();
-	//
-	//     textureLoader.crossOrigin = '';
-	//
-	//     textureLoader.load( url, function ( texture ) {
-	//
-	//         texture.wrapS = THREE.RepeatWrapping;
-	//         texture.wrapT = THREE.RepeatWrapping;
-	//
-	//         var geometry = new THREE.PlaneGeometry( texture.image.width, texture.image.height );
-	//         var material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
-	//
-	//         self.image = new THREE.Mesh( geometry, material );
-	//
-	//         self.image.userData.is_image = true;
-	//
-	//         self.image.position.set( texture.image.width / 2, texture.image.height / 2, 0 );
-	//
-	//         self.camera.position.set( texture.image.width / 2, texture.image.height / 2, 20 );
-	//
-	//         self.orbitControls.target.set( texture.image.width / 2, texture.image.height / 2, 0 );
-	//
-	//         self.camera.updateProjectionMatrix();
-	//
-	//         self.add( self.image, true );
-	//
-	//     } );
-	// }
-
-	animate (): void {
-		// window.addEventListener( 'DOMContentLoaded', () => {
-		//   this.render();
-		// } );
-
-		// window.addEventListener( 'resize', () => {
-		//   this.resize();
-		// } );
-	}
-
-	// render () {
-	//   requestAnimationFrame( () => {
-	//     this.render();
-	//   } );
-
-	//   this.orbitControls.update();
-
-	//   // update the picking ray with the camera and mouse position
-	//   this.raycaster.setFromCamera( this.mouse, this.camera );
-
-	//   // calculate objects intersecting the picking ray
-	//   let intersects = this.raycaster.intersectObjects( this.raycastableObjects, false );
-
-	//   // intersects = this.raycaster.intersectObjects( this.unclickableObjects, false );
-
-	//   // Debug.log( intersects.length );
-
-	//   // this.cursorOnBox = false;
-
-	//   if ( intersects.length > 0 ) {
-
-	//     // Debug.log( intersects.length );
-
-	//     // this.sphereInter.visible = true;
-	//     // this.sphereInter.position.copy( intersects[0].point );
-
-	//     this.pointerPosition = intersects[0].point;
-
-	//     this.cursorOnImage = true;
-	//     this.pixelPosition.x = intersects[0].point.x;
-	//     this.pixelPosition.y = intersects[0].point.y;
-
-	//     if ( intersects[0].object.userData.is_annotation ) {
-	//       // this.dragControls['enabled'] = true;
-	//       this.cursorOnBox = true;
-	//       this.objectInFocus = intersects[0].object;
-	//       this.editorService.mouseOverAnnotationObject.emit( intersects[0].object.id );
-
-	//     } else if ( intersects[0].object.userData.is_button ) {
-
-	//       this.cursorOnBox = false;
-
-	//       // this.dragControls['enabled'] = false;
-
-	//       if ( intersects[0].object.userData.is_delete_button ) this.editorService.mouseOverDeleteButton.emit( 1 );
-
-	//     } else {
-
-	//       // this.dragControls['enabled'] = false;
-	//       this.cursorOnBox = false;
-	//       this.objectInFocus = null;
-
-	//     }
-
-	//     // Debug.log( this.cursorOnBox );
-
-	//   } else {
-
-	//     // this.sphereInter.visible = false;
-
-	//     this.cursorOnImage = false;
-	//     this.pixelPosition.x = 0;
-	//     this.pixelPosition.y = 0;
-
-	//   }
-
-	//   // for ( var i = 0; i < intersects.length; i++ ) {
-	//   //   intersects[i].object.material.color.set( 0xff0000 );
-	//   // }
-
-	//   // this.renderer.render( this.scene, this.camera );
-
-	// }
-
-
 	/**
 	 *
 	 * @param object
@@ -464,10 +307,11 @@ export class ThreeService implements IEngine {
 
 			// Set the position of the new orthographic camera
 			this.camera.position.copy( oldPosition );
-			this.camera.up.set( 0, 0, 1 );
+			this.camera.up.copy( AppConfig.DEFAULT_UP )
+
+			// this.camera.updateProjectionMatrix();
 
 			this.controls.setTarget( new THREE.Vector3( oldPosition.x, oldPosition.y, 0 ) );
-
 			this.controls.setScreenSpaceEnabled( true );
 			this.controls.setRotateEnabled( false );
 
@@ -476,6 +320,9 @@ export class ThreeService implements IEngine {
 			// Set the position and orientation of the new perspective camera
 			this.camera.position.copy( oldPosition );
 			this.camera.quaternion.copy( oldQuaternion );
+			this.camera.up.copy( AppConfig.DEFAULT_UP )
+
+			// this.camera.updateProjectionMatrix();
 
 			this.controls.setScreenSpaceEnabled( false );
 			this.controls.setRotateEnabled( true );
@@ -516,7 +363,36 @@ export class ThreeService implements IEngine {
 
 	createViewHelper () {
 
-		this.viewHelper = new ViewHelper( this.camera as any, this.viewHelperCanavs );
+		this.viewHelper?.dispose();
+
+		delete this.viewHelper;
+
+		try {
+
+			this.viewHelper = new TvViewHelper( this.camera as any, this.viewHelperCanavs );
+
+			// console.log( this.viewHelper.up );
+			// this.viewHelper.up.copy( AppConfig.DEFAULT_UP );
+
+			const container = this.viewHelper.domElement.parentElement;
+
+			const box = container.getBoundingClientRect();
+
+			const height = 128;
+
+			const left = box.left;
+			const top = box.top + box.height - height;
+
+			this.viewHelperCanavs.style.left = `${ left }px`;
+			this.viewHelperCanavs.style.top = `${ top }px`;
+
+
+		} catch ( error ) {
+
+			SnackBar.error( 'Error in creating in ViewHelper' );
+			SnackBar.error( error );
+
+		}
 
 	}
 
@@ -571,11 +447,11 @@ export class ThreeService implements IEngine {
 
 		const orthographicCamera = new THREE.OrthographicCamera( left, right, top, bottom, near, far );
 		orthographicCamera.position.set( 0, 0, 50 );
-		orthographicCamera.up.set( 0, 0, 1 );
+		orthographicCamera.up.copy( AppConfig.DEFAULT_UP )
 
 		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
 		perspectiveCamera.position.set( 0, 5, 10 );
-		perspectiveCamera.up.set( 0, 0, 1 );
+		perspectiveCamera.up.copy( AppConfig.DEFAULT_UP )
 
 		this.cameras.push( orthographicCamera );
 		this.cameras.push( perspectiveCamera );
@@ -642,7 +518,7 @@ export class ThreeService implements IEngine {
 
 		this.camera.rotation.copy( this.camera.userData.initialRotation ?? new Euler() );
 
-		this.camera.up.copy( this.camera.userData.initialUp ?? new Vector3( 0, 0, 1 ) );
+		this.camera.up.copy( this.camera.userData.initialUp ?? AppConfig.DEFAULT_UP );
 
 		( this.camera as any ).lookAt( 0, 0, 0 );
 

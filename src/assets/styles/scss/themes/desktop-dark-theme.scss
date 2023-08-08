@@ -478,6 +478,14 @@ $border-radius: 0px !important;
 		font-size: 18px;
 	}
 
+	.view-helper {
+		position: absolute;
+		left: 0;
+		top: 518px;
+		height: 128px;
+		width: 128px;
+		z-index: 1000;
+	}
 
 	.viewport-toolbar {
 		flex-direction: column;

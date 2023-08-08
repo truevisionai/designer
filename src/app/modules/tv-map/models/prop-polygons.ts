@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AppConfig } from 'app/app.config';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
@@ -381,7 +382,7 @@ export class PropPolygon implements ISelectable {
 
 		const propInstance: Object3D = AssetDatabase.getInstance( this.propGuid ) as Object3D;
 
-		propInstance.up.set( 0, 0, 1 );
+		propInstance.up.copy( AppConfig.DEFAULT_UP )
 
 		propInstance.updateMatrixWorld( true );
 

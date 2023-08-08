@@ -83,7 +83,7 @@ export class TvMapService {
 
 			SnackBar.error( 'Error while importing' );
 
-			TvConsole.error( e );
+			SnackBar.error( e );
 
 		}
 

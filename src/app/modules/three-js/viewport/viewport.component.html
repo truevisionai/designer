@@ -10,7 +10,6 @@
 	(mouseenter)="onMouseEnter($event)"
 	(mouseleave)="onMouseLeave($event)"
 	(mousemove)="onMouseMove($event)"
-	(mouseout)="onMouseOut($event)"
 	(mouseup)="onMouseUp($event)"
 	fxFlexFill
 	fxLayout="column"
@@ -39,6 +38,8 @@
 		<mat-icon>refresh</mat-icon>
 	</button>
 </mat-toolbar>
-<div (click)="handleViewHelperClick($event)"
-	#viewHelper
-	style="position: absolute; left: 0vw; top: 55vh; height:128px; width: 128px;"></div>
+
+<div #viewHelper
+	class="view-helper"
+	(click)="handleViewHelperClick($event)">
+</div>

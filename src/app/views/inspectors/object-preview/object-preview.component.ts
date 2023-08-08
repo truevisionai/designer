@@ -20,6 +20,7 @@ import {
 	WebGLRenderer
 } from 'three';
 import { PreviewService } from './object-preview.service';
+import { AppConfig } from 'app/app.config';
 
 @Component( {
 	selector: 'app-object-preview',
@@ -87,7 +88,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.camera.position.set( 0, 5, 10 );
 
-		this.camera.up.set( 0, 0, 1 );
+		this.camera.up.copy( AppConfig.DEFAULT_UP )
 
 		this.camera.updateProjectionMatrix();
 
