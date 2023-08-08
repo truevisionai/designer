@@ -24,7 +24,7 @@ import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
 export class ThreeService implements IEngine {
 
 
-	public static controls: IViewportController;
+	public controls: IViewportController;
 	static bgForClicks: THREE.Mesh;
 	public canvas: HTMLCanvasElement;
 	public renderer: THREE.WebGLRenderer;
@@ -91,8 +91,8 @@ export class ThreeService implements IEngine {
 
 	createControls (): void {
 
-		ThreeService.controls = TvOrbitControls.getNew( this.camera, this.canvas );
-		// ThreeService.controls = EditorControls.getNew( this.camera, this.canvas );
+		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
+		// this.controls = EditorControls.getNew( this.camera, this.canvas );
 
 	}
 
@@ -104,7 +104,7 @@ export class ThreeService implements IEngine {
 
 		// this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
 
-		// 	ThreeService.controls.enabled = !event.value;
+		// 	this.controls.enabled = !event.value;
 
 		// } );
 
@@ -117,7 +117,7 @@ export class ThreeService implements IEngine {
 		// 	// this.objectRotationOnDown = object.rotation.clone();
 		// 	// this.objectScaleOnDown = object.scale.clone();
 
-		// 	ThreeService.controls.enabled = false;
+		// 	this.controls.enabled = false;
 
 		// } );
 
@@ -145,7 +145,7 @@ export class ThreeService implements IEngine {
 
 		// 	}
 
-		// 	ThreeService.controls.enabled = true;
+		// 	this.controls.enabled = true;
 
 		// } );
 
@@ -411,8 +411,8 @@ export class ThreeService implements IEngine {
 		this.camera.lookAt( obj.position );
 
 		// change the target position for controls
-		ThreeService.controls.setTarget( obj.position );
-		ThreeService.controls.update();
+		this.controls.setTarget( obj.position );
+		this.controls.update();
 
 		( this.camera as any ).updateProjectionMatrix();
 	}
@@ -458,7 +458,7 @@ export class ThreeService implements IEngine {
 		// this.transformControls.detach();
 		// this.transformControls.object = this.camera;
 
-		ThreeService.controls.setCamera( this.camera );
+		this.controls.setCamera( this.camera );
 
 		if ( this.camera instanceof THREE.OrthographicCamera ) {
 
@@ -466,10 +466,10 @@ export class ThreeService implements IEngine {
 			this.camera.position.copy( oldPosition );
 			this.camera.up.set( 0, 0, 1 );
 
-			ThreeService.controls.setTarget( new THREE.Vector3( oldPosition.x, oldPosition.y, 0 ) );
+			this.controls.setTarget( new THREE.Vector3( oldPosition.x, oldPosition.y, 0 ) );
 
-			ThreeService.controls.setScreenSpaceEnabled( true );
-			ThreeService.controls.setRotateEnabled( false );
+			this.controls.setScreenSpaceEnabled( true );
+			this.controls.setRotateEnabled( false );
 
 		} else if ( this.camera instanceof THREE.PerspectiveCamera ) {
 
@@ -477,8 +477,8 @@ export class ThreeService implements IEngine {
 			this.camera.position.copy( oldPosition );
 			this.camera.quaternion.copy( oldQuaternion );
 
-			ThreeService.controls.setScreenSpaceEnabled( false );
-			ThreeService.controls.setRotateEnabled( true );
+			this.controls.setScreenSpaceEnabled( false );
+			this.controls.setRotateEnabled( true );
 
 		}
 
@@ -522,13 +522,13 @@ export class ThreeService implements IEngine {
 
 	enableControls () {
 
-		ThreeService.controls.enabled = true;
+		this.controls.enabled = true;
 
 	}
 
 	disableControls () {
 
-		ThreeService.controls.enabled = false;
+		this.controls.enabled = false;
 
 	}
 
@@ -536,7 +536,7 @@ export class ThreeService implements IEngine {
 	setFocusTarget ( target: THREE.Object3D ) {
 
 		this.target = target;
-		ThreeService.controls.setTarget( target.position );
+		this.controls.setTarget( target.position );
 
 	}
 
@@ -548,7 +548,7 @@ export class ThreeService implements IEngine {
 
 	removeFocusTarget () {
 
-		ThreeService.controls.setTarget( this.target?.position.clone() ?? new Vector3() );
+		this.controls.setTarget( this.target?.position.clone() ?? new Vector3() );
 		this.target = null;
 
 	}
