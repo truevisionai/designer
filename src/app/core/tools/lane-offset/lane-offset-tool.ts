@@ -54,7 +54,7 @@ export class LaneOffsetTool extends BaseTool {
 
 	public onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
@@ -84,6 +84,8 @@ export class LaneOffsetTool extends BaseTool {
 	}
 
 	public onPointerUp ( pointerEventData: PointerEventData ) {
+
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
 
 		if ( this.nodeDistanceUpdated && this.node ) {
 

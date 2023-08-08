@@ -50,6 +50,8 @@ export class LaneAddTool extends BaseTool {
 
 	onPointerDown ( e: PointerEventData ): void {
 
+		if ( e.button !== MouseButton.LEFT ) return;
+
 		const lane = this.pointerStrategy?.onPointerDown( e );
 
 		if ( !lane ) {

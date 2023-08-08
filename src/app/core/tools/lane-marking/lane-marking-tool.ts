@@ -89,7 +89,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	public onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 
@@ -104,7 +104,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	public onPointerUp ( e: PointerEventData ) {
 
-		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		if ( this.markingDistanceChanged && this.node && this.pointerDownAt ) {
 

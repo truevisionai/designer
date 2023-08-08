@@ -56,14 +56,14 @@ export class RoadCircleTool extends BaseTool {
 
 	onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button != MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		this.initCircle( this.pointerDownAt, e.point, this.radius );
 	}
 
 	onPointerUp ( e: PointerEventData ) {
 
-		if ( e.button != MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		this.createRoads();
 
@@ -79,7 +79,7 @@ export class RoadCircleTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( e.button != MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		if ( !this.isPointerDown ) return;
 		if ( !this.pointerDownAt ) return;

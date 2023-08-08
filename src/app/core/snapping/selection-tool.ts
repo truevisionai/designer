@@ -37,7 +37,7 @@ export class SelectionTool<T extends ISelectable> {
 
 		this.cssHelper.element.style.display = 'none';
 
-		this.cssHelper.dispose();
+		this.cssHelper?.dispose();
 
 		this.cssHelper.isDown = this.isSelecting = false;
 

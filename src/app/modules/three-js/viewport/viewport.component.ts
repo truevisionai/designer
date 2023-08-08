@@ -182,53 +182,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	// /**
-	//  *
-	//  * @param event
-	//  * @returns
-	//  * @deprecated just for reference
-	//  */
-	// onMouseMoveOld ( event: MouseEvent ) {
-
-	// 	// TODO: implement GPU picking
-	// 	// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
-	// 	// https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
-	// 	// https://github.com/brianxu/GPUPicker
-
-	// 	this.updateMousePosition( event );
-
-	// 	this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
-
-	// 	// logic to limit the number of time raycasting will be done
-	// 	// return if less time has passed
-	// 	if ( ( Date.now() - this.lastTime ) < this.minTime ) return;
-
-	// 	this.lastTime = Date.now();
-
-	// 	// this.editorService.move.emit( this.mouse );
-
-	// 	// this.eventSystem.pointerMoved.emit( { this.INTERSECTIONS[0] } );
-
-	// 	this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
-
-	// 	if ( this.intersections.length > 0 ) {
-	// 		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-	// 	}
-
-	// 	// TODO: no need to find intersections on mouse move
-	// 	return;
-
-	// 	this.findIntersections( event, false );
-
-	// 	if ( this.intersections.length > 0 ) {
-	// 		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-	// 	} else {
-	// 		// this.eventSystem.pointerMoved.emit( { point: new THREE.Vector3 } );
-	// 	}
-
-	// }
-
 	onMouseMove ( event: MouseEvent ) {
+
+		// TODO: implement GPU picking
+		// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
+		// https://stackoverflow.com/questions/48691642/three-js-raycaster-find-intersections-as-mouse-moves
+		// https://github.com/brianxu/GPUPicker
 
 		this.updateMousePosition( event );
 
@@ -241,13 +200,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.intersections = this.getIntersections( event, true );
 
-		if ( this.intersections.length > 0 ) {
+		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
 
-		}
 	}
-
 
 	onMouseClick ( event: MouseEvent ) {
 
@@ -273,42 +230,53 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	onMouseDown ( event: MouseEvent ) {
+	onMouseDown ( $event: MouseEvent ) {
 
-		this.intersections = this.getIntersections( event, true );
+		this.intersections = this.getIntersections( $event, true );
 
-		event.preventDefault();
+		$event.preventDefault();
 
-		switch ( event.button ) {
+		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-			// left
-			case 0:
-				this.fireSelectionEvents();
-				if ( this.intersections.length > 0 ) {
-					this.eventSystem.pointerDown.emit(
-						this.preparePointerData( event, this.intersections[ 0 ] )
-					);
-					if ( this.intersections[ 0 ].object?.type === 'Points' ) {
-						this.threeService.disableControls();
-					}
-				} else {
-					this.eventSystem.pointerDown.emit( this.preparePointerData( event, null ) );
-					this.threeService.enableControls();
-				}
-				break;
+		switch ( $event.button ) {
 
-			// middle
-			case 1:
-				// this.eventSystem.pointerDown.emit( this.convertToPointerData( event.button, null ) );
-				break;
+			case MouseButton.LEFT: this.handleLeftClick( $event, intersection ); break;
 
-			// right
-			case 2:
-				this.eventSystem.pointerDown.emit( this.preparePointerData( event, null ) );
-				break;
+			case MouseButton.MIDDLE: this.handleMiddleClick( $event, intersection ); break;
+
+			case MouseButton.RIGHT: this.handleRightClick( $event, intersection ); break;
 
 		}
 
+	}
+
+	handleRightClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+
+		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
+
+	}
+
+	handleMiddleClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+
+		// do nothing
+
+	}
+
+	handleLeftClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+
+		this.fireSelectionEvents();
+
+		if ( intersection?.object?.type === 'Points' ) {
+
+			this.threeService.disableControls();
+
+		} else {
+
+			this.threeService.enableControls();
+
+		}
+
+		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 	}
 
 	onMouseUp ( event: MouseEvent ) {
@@ -604,60 +572,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
-
-		return intersections;
+		return this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
 	}
 
-	// findIntersections ( event: MouseEvent, recursive: boolean = true ): void {
-
-	// 	this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
-
-	// 	this.intersections = this.raycaster.intersectObjects( SceneService.objects, recursive );
-
-	// 	if ( this.intersections.length > 0 ) {
-
-	// 		// if new object then fire enter event
-	// 		if (
-	// 			this.lastIntersection != null &&
-	// 			this.lastIntersection.object.id != this.intersections[ 0 ].object.id &&
-	// 			this.intersections[ 0 ].object[ 'detectRaycast' ] == true
-	// 		) {
-
-	// 			this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
-	// 			this.eventSystem.pointerEnter.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
-
-	// 		}
-
-	// 		if ( this.intersections[ 0 ].object[ 'detectRaycast' ] == true ) {
-
-	// 			this.lastIntersection = this.intersections[ 0 ];
-
-	// 		}
-
-	// 		// if ( this.threeIntersection.object.userData.is_annotation ) {
-	// 		//   this.editorService.mouseOverAnnotationObject.emit( this.threeIntersection );
-	// 		// }
-
-	// 		// if ( this.threeIntersection.object.userData.is_button ) {
-	// 		//   this.editorService.mouseOverButton.emit( this.threeIntersection );
-	// 		// }
-
-
-	// 	} else {
-
-	// 		if ( this.lastIntersection != null ) {
-
-	// 			this.eventSystem.pointerExit.emit( this.preparePointerData( event, this.lastIntersection ) );
-
-	// 		}
-
-	// 		this.lastIntersection = null;
-
-	// 	}
-	// }
-
-	private resizeCanvas () {
+	resizeCanvas () {
 
 		this.threeService.viewHelperCanavs = this.viewHelperCanavs;
 

@@ -41,27 +41,64 @@ export class MonoBehaviour {
 
 		if ( !AppService.eventSystem ) return;
 
-		this.pointerClickedSubscriber = AppService.eventSystem.pointerClicked.subscribe( e => this.onPointerClicked( e ) );
-		this.pointerMovedSubscriber = AppService.eventSystem.pointerMoved.subscribe( e => this.onPointerMoved( e ) );
+		this.pointerClickedSubscriber = AppService.eventSystem.pointerClicked.subscribe( e => {
+
+			if ( e.button !== MouseButton.LEFT ) return;
+
+			this.onPointerClicked( e );
+
+		} );
+
+		this.pointerMovedSubscriber = AppService.eventSystem.pointerMoved.subscribe( e => {
+
+			if ( e.button !== MouseButton.LEFT ) return;
+
+			this.onPointerMoved( e )
+
+		} );
+
 		this.pointerEnterSubscriber = AppService.eventSystem.pointerEnter.subscribe( e => this.onPointerEnter( e ) );
+
 		this.pointerExitSubscriber = AppService.eventSystem.pointerExit.subscribe( e => this.onPointerExit( e ) );
+
 		this.pointerUpSubscriber = AppService.eventSystem.pointerUp.subscribe( e => {
+
+			if ( e.button !== MouseButton.LEFT ) return;
+
 			this.onPointerUp( e );
+
 			this.isPointerDown = false;
+
 			this.pointerDownAt = null;
+
 		} );
+
 		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => {
+
+			if ( e.button !== MouseButton.LEFT ) return;
+
 			this.pointerDownAt = e.button === MouseButton.LEFT ? e.point?.clone() : null;
+
 			this.isPointerDown = e.button === MouseButton.LEFT;
+
 			this.onPointerDown( e );
+
 		} );
+
 		this.pointerLeaveSubscriber = AppService.eventSystem.pointerLeave.subscribe( e => this.onPointerLeave( e ) );
+
 		this.pointerOutSubscriber = AppService.eventSystem.pointerOut.subscribe( e => this.onPointerOut( e ) );
+
 		this.beginDragSubscriber = AppService.eventSystem.beginDrag.subscribe( e => this.onBeginDrag( e ) );
+
 		this.endDragSubscriber = AppService.eventSystem.endDrag.subscribe( e => this.onEndDrag( e ) );
+
 		this.dragSubscriber = AppService.eventSystem.drag.subscribe( e => this.onDrag( e ) );
+
 		this.dropSubscriber = AppService.eventSystem.drop.subscribe( e => this.onDrop( e ) );
+
 		this.selectSubscriber = AppService.eventSystem.select.subscribe( e => this.onSelect( e ) );
+
 		this.deSelectSubscriber = AppService.eventSystem.deSelect.subscribe( e => this.onDeSelect( e ) );
 
 		this.subscribed = true;
@@ -92,7 +129,7 @@ export class MonoBehaviour {
 	onPointerClicked ( pointerEventData: PointerEventData ): void { /*Debug.log( 'clicked' )*/
 	}
 
-	onPointerMoved ( pointerEventData: PointerMoveData ): void { /*Debug.log( 'moved' )*/
+	onPointerMoved ( pointerEventData: PointerEventData ): void { /*Debug.log( 'moved' )*/
 	}
 
 	onPointerEnter ( pointerEventData: PointerEventData ): void { /*Debug.log( 'enter' )*/

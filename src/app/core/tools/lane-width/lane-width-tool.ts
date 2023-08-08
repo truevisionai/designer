@@ -77,7 +77,7 @@ export class LaneWidthTool extends BaseTool {
 
 	public onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button === MouseButton.RIGHT || e.button === MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
 

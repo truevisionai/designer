@@ -62,7 +62,7 @@ export class LaneCreateTool extends BaseTool {
 
 	public onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		this.isPointerDown = true;
 

@@ -132,7 +132,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button == MouseButton.RIGHT || e.button == MouseButton.MIDDLE ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		if ( e.point == null ) return;
 

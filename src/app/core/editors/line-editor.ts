@@ -50,7 +50,7 @@ export class LineEditor extends AbstractShapeEditor {
 
 	onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button === MouseButton.RIGHT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		this.pointerIsDown = true;
 

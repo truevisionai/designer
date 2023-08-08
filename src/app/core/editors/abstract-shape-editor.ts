@@ -298,7 +298,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	onPointerDown ( e: PointerEventData ): any {
 
-		if ( e.button == MouseButton.RIGHT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		this.pointerIsDown = true;
 

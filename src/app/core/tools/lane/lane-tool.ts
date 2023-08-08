@@ -5,7 +5,7 @@
 import { IToolWithMainObject, SelectMainObjectCommand } from 'app/core/commands/select-point-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { CommandHistory } from 'app/services/command-history';
-import { PointerEventData } from '../../../events/pointer-event-data';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { OdLaneDirectionBuilder } from '../../../modules/tv-map/builders/od-lane-direction-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
@@ -51,6 +51,8 @@ export class LaneTool extends BaseTool implements IToolWithMainObject {
 	}
 
 	onPointerDown ( e: PointerEventData ): void {
+
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		const lane = this.pointerStrategy?.onPointerDown( e );
 

@@ -5,7 +5,7 @@
 import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
 import { KeyboardInput } from 'app/core/input';
 import { CommandHistory } from 'app/services/command-history';
-import { PointerEventData } from '../../../events/pointer-event-data';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { CopyPositionCommand } from '../../../modules/three-js/commands/copy-position-command';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
 import { Crosswalk, TvCornerRoad } from '../../../modules/tv-map/models/tv-road-object';
@@ -123,6 +123,8 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 	onPointerDown ( pointerEventData: PointerEventData ) {
 
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+
 		if ( !KeyboardInput.isShiftKeyDown ) {
 
 			// selection
@@ -158,6 +160,8 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 	onPointerMoved ( pointerEventData: PointerEventData ) {
 
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+
 		this.selectStrategy.onPointerMoved( pointerEventData );
 
 		if ( !this.point?.isSelected ) return;
@@ -173,6 +177,8 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 	}
 
 	onPointerUp ( pointerEventData: PointerEventData ): void {
+
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
 
 		if ( !this.point?.isSelected ) return;
 
