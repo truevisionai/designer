@@ -9,6 +9,7 @@ import { BooleanFieldComponent } from 'app/shared/fields/boolean-field/boolean-f
 import { DoubleFieldComponent } from 'app/shared/fields/double-field/double-field.component';
 import { EnumFieldComponent } from 'app/shared/fields/enum-field/enum-field.component';
 import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
+import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
 
 
 @Directive( {
@@ -24,6 +25,7 @@ const fieldComponents = {
 	'string': StringFieldComponent,
 	'boolean': BooleanFieldComponent,
 	'enum': EnumFieldComponent,
+	'vector3': Vector3FieldComponent,
 };
 
 @Component( {
@@ -41,20 +43,19 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
-
 	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
 
 	ngOnInit () {
 
-		this.serializableFields = getSerializableFields( this.data );
+		if ( this.data ) this.serializableFields = getSerializableFields( this.data );
 
-		this.serializableActions = getSerializableActions( this.data );
+		if ( this.data ) this.serializableActions = getSerializableActions( this.data );
 
 	}
 
 	ngAfterViewInit () {
 
-		this.loadFields();
+		if ( this.data ) this.loadFields();
 
 	}
 
@@ -70,25 +71,47 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 			const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent>( component );
 
-			const componentRef = fieldHost.viewContainerRef.createComponent( componentFactory );
+			setTimeout( () => {
 
-			componentRef.instance.value = this.data[ item.field ];
+				const componentRef = fieldHost.viewContainerRef.createComponent( componentFactory );
 
-			componentRef.instance.label = item.field;
+				componentRef.instance.value = this.data[ item.field ];
 
-			componentRef.instance.changed?.subscribe( ( value ) => {
+				componentRef.instance.label = item.field;
 
-				CommandHistory.execute( new SetValueCommand( this.data, item.field, value ) );
+				this.applyComponentSettings( componentRef.instance, item.settings );
 
-			} )
+				componentRef.instance.changed?.subscribe( ( value ) => {
 
-			componentRef.instance.clicked?.subscribe( ( value ) => {
+					CommandHistory.execute( new SetValueCommand( this.data, item.field, value ) );
 
-				CommandHistory.execute( new SetValueCommand( this.data, item.field, value ) );
+				} )
 
-			} )
+				componentRef.instance.clicked?.subscribe( ( value ) => {
+
+					CommandHistory.execute( new SetValueCommand( this.data, item.field, value ) );
+
+				} )
+
+			}, 10 );
 
 		} );
+	}
+
+	applyComponentSettings ( component: AbstractFieldComponent, settings: any ) {
+
+		if ( component instanceof DoubleFieldComponent ) {
+
+			component.min = settings?.min ?? -Infinity;
+
+			component.max = settings?.max ?? Infinity;
+
+			component.step = settings?.step ?? 0.1;
+
+			console.log( component, settings );
+
+		}
+
 	}
 
 }

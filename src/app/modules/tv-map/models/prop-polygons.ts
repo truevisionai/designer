@@ -2,16 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
-import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2 } from 'three';
+import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2, Vector3 } from 'three';
 
 interface IChildAndMesh {
 	mesh: Mesh;
@@ -34,7 +36,7 @@ export class PropPolygon implements ISelectable {
 
 	public isSelected: boolean;
 
-	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public density = 0.5 ) {
+	constructor ( public propGuid: string, public spline?: CatmullRomSpline, private _density = 0.5 ) {
 
 		this.spline = spline || new CatmullRomSpline( true, 'catmullrom', 0.001 );
 
@@ -44,6 +46,47 @@ export class PropPolygon implements ISelectable {
 		this.mesh = this.makeMesh( new Shape() );
 	}
 
+	show (): void {
+		this.showCurve();
+		this.showControlPoints();
+	}
+
+	hide (): void {
+		this.hideCurve();
+		this.hideControlPoints();
+	}
+
+	@Action()
+	delete () {
+
+		this.hideControlPoints();
+
+		this.hideCurve();
+
+		this.mesh?.parent?.remove( this.spline.mesh );
+
+		this.removeAndClearProps();
+
+	}
+
+	@SerializedField( { type: 'int', min: 0, max: 1 } )
+	get density (): number {
+		return this._density;
+	}
+
+	set density ( value: number ) {
+		this._density = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get point (): Vector3 {
+		return this.spline?.controlPoints.find( cp => cp.isSelected )?.position;
+	}
+
+	set point ( value: Vector3 ) {
+		this.spline?.controlPoints.find( cp => cp.isSelected )?.setPosition( value );
+	}
 
 	select (): void {
 
@@ -154,57 +197,51 @@ export class PropPolygon implements ISelectable {
 
 		const propChildren: IChildAndMesh[] = this.getChildMeshesAndMaterials( propObject );
 
-		const faces = this.computeFaces();
+		// const faces = this.computeFaces();
 
-		this.createInstancedMeshes( faces, propObject, propChildren );
+		// this.createInstancedMeshes( faces, propObject, propChildren );
+
+		this.createInstancedMeshesV2( this.spline.controlPoints, propObject, propChildren );
 	}
 
-	createInstancedMeshes ( faces: number[][], propObject: Object3D, propChildren: IChildAndMesh[] ): void {
+	createInstancedMeshesV2 ( controlPoints: BaseControlPoint[], propObject: Object3D, propChildren: IChildAndMesh[] ) {
+
+		if ( controlPoints.length < 3 ) return;
+
+		const positions = PolygonDistributionService.distributePoints( controlPoints.map( cp => cp.position ), this.density );
 
 		// a unique instance is created for each child of prop
-		const instancedMeshArray = this.createInstancedMeshArray( propChildren );
+		const instancedMeshArray = this.createInstancedMeshArray( propChildren, positions.length );
 
 		let instanceCounter = 0;
 
-		for ( let i = 0; i < faces.length; i++ ) {
+		for ( let i = 0; i < positions.length; i++ ) {
 
-			const face = faces[ i ];
+			const position = positions[ i ];
 
-			const spawnCount = this.computeSpawnCountByArea( face );
+			for ( let k = 0; k < instancedMeshArray.length; k++ ) {
 
-			for ( let j = 0; j < spawnCount; j++ ) {
+				const instancedMesh = instancedMeshArray[ k ];
 
-				const position = Maths.randomPositionInTriangle(
-					this.spline.controlPointPositions[ face[ 0 ] ],
-					this.spline.controlPointPositions[ face[ 1 ] ],
-					this.spline.controlPointPositions[ face[ 2 ] ]
-				);
+				const instanceMatrix = new Matrix4();
 
-				for ( let k = 0; k < instancedMeshArray.length; k++ ) {
+				instanceMatrix.setPosition( position );
 
-					const instancedMesh = instancedMeshArray[ k ];
+				instanceMatrix.multiply( instancedMesh.userData.worldMatrix );
 
-					const instanceMatrix = new Matrix4();
+				instancedMesh.setMatrixAt( instanceCounter, instanceMatrix );
 
-					instanceMatrix.setPosition( position );
-
-					instanceMatrix.multiply( instancedMesh.userData.worldMatrix );
-
-					instancedMesh.setMatrixAt( instanceCounter, instanceMatrix );
-
-					instancedMesh.instanceMatrix.needsUpdate = true;
-
-				}
+				instancedMesh.instanceMatrix.needsUpdate = true;
 
 				// used in exporting the object
 				const cloned = propObject.clone()
 				cloned.position.copy( position );
 				this.propObjectArray.push( cloned );
 
-				instanceCounter++;
+
 			}
 
-			instanceCounter += spawnCount;
+			instanceCounter++;
 
 		}
 
@@ -217,28 +254,97 @@ export class PropPolygon implements ISelectable {
 			this.instanceMeshArray.push( instancedMesh );
 
 		} );
+
 	}
 
-	private computeSpawnCountByArea ( face: number[] ): number {
+	// createInstancedMeshes ( faces: number[][], propObject: Object3D, propChildren: IChildAndMesh[] ): void {
 
-		const v0 = this.spline.controlPointPositions[ face[ 0 ] ];
-		const v1 = this.spline.controlPointPositions[ face[ 1 ] ];
-		const v2 = this.spline.controlPointPositions[ face[ 2 ] ];
+	// 	// Calculate total instances needed
+	// 	let totalInstancesNeeded = 0;
+	// 	for ( let i = 0; i < faces.length; i++ ) {
+	// 		totalInstancesNeeded += this.computeSpawnCountByArea( faces[ i ] );
+	// 	}
 
-		const t = new Triangle( v0, v1, v2 );
-		const area = t.getArea();
+	// 	// a unique instance is created for each child of prop
+	// 	const instancedMeshArray = this.createInstancedMeshArray( propChildren, totalInstancesNeeded );
 
-		let count = area * this.density * this.density * this.density * 0.5;
+	// 	let instanceCounter = 0;
 
-		return Maths.clamp( count, 0, 100 );
-	}
+	// 	for ( let i = 0; i < faces.length; i++ ) {
 
+	// 		const face = faces[ i ];
 
-	private createInstancedMeshArray ( propChildren: IChildAndMesh[] ): InstancedMesh[] {
+	// 		const spawnCount = this.computeSpawnCountByArea( face );
+
+	// 		for ( let j = 0; j < spawnCount; j++ ) {
+
+	// 			const position = Maths.randomPositionInTriangle(
+	// 				this.spline.controlPointPositions[ face[ 0 ] ],
+	// 				this.spline.controlPointPositions[ face[ 1 ] ],
+	// 				this.spline.controlPointPositions[ face[ 2 ] ]
+	// 			);
+
+	// 			for ( let k = 0; k < instancedMeshArray.length; k++ ) {
+
+	// 				const instancedMesh = instancedMeshArray[ k ];
+
+	// 				const instanceMatrix = new Matrix4();
+
+	// 				instanceMatrix.setPosition( position );
+
+	// 				instanceMatrix.multiply( instancedMesh.userData.worldMatrix );
+
+	// 				instancedMesh.setMatrixAt( instanceCounter, instanceMatrix );
+
+	// 				instancedMesh.instanceMatrix.needsUpdate = true;
+
+	// 			}
+
+	// 			// // used in exporting the object
+	// 			// const cloned = propObject.clone()
+	// 			// cloned.position.copy( position );
+	// 			// this.propObjectArray.push( cloned );
+
+	// 			instanceCounter++;
+	// 		}
+
+	// 		instanceCounter += spawnCount;
+
+	// 	}
+
+	// 	instancedMeshArray.forEach( instancedMesh => {
+
+	// 		// just adding the instance mesh in scene will add all 100s or 1000s of instances
+	// 		SceneService.add( instancedMesh );
+
+	// 		// usefull for maintain
+	// 		this.instanceMeshArray.push( instancedMesh );
+
+	// 	} );
+	// 	console.log( instancedMeshArray.length );
+	// 	console.log( instancedMeshArray[ 0 ].count );
+	// 	console.log( instancedMeshArray[ 1 ].count );
+	// }
+
+	// private computeSpawnCountByArea ( face: number[] ): number {
+
+	// 	const v0 = this.spline.controlPointPositions[ face[ 0 ] ];
+	// 	const v1 = this.spline.controlPointPositions[ face[ 1 ] ];
+	// 	const v2 = this.spline.controlPointPositions[ face[ 2 ] ];
+
+	// 	const t = new Triangle( v0, v1, v2 );
+	// 	const area = t.getArea();
+
+	// 	let count = area * this.density * this.density * this.density * 0.5;
+
+	// 	return Maths.clamp( count, 0, 100 );
+	// }
+
+	private createInstancedMeshArray ( propChildren: IChildAndMesh[], totalInstancesNeeded: number ): InstancedMesh[] {
 
 		return propChildren.map( ( { mesh, material, worldMatrix } ) => {
 
-			const instancedMesh = new InstancedMesh( mesh.geometry, mesh.material, 1000 );
+			const instancedMesh = new InstancedMesh( mesh.geometry, mesh.material, totalInstancesNeeded );
 
 			instancedMesh.userData.worldMatrix = worldMatrix;
 
@@ -347,18 +453,6 @@ export class PropPolygon implements ISelectable {
 
 	}
 
-	delete () {
-
-		this.hideControlPoints();
-
-		this.hideCurve();
-
-		this.mesh?.parent?.remove( this.spline.mesh );
-
-		this.removeAndClearProps();
-
-	}
-
 	hideControlPoints () {
 
 		this.spline.hidecontrolPoints();
@@ -430,5 +524,85 @@ export class PropPolygon implements ISelectable {
 
 		this.propObjectArray.push( propObject );
 
+	}
+}
+
+class PolygonDistributionService {
+	private static randomPointInTriangle ( a: Vector3, b: Vector3, c: Vector3 ): Vector3 {
+		// Barycentric coordinates
+		let u = Math.random();
+		let v = Math.random();
+
+		if ( u + v > 1 ) {
+			u = 1 - u;
+			v = 1 - v;
+		}
+
+		const w = 1 - u - v;
+
+		return new Vector3(
+			a.x * u + b.x * v + c.x * w,
+			a.y * u + b.y * v + c.y * w,
+			a.z * u + b.z * v + c.z * w
+		);
+	}
+
+	static distributePoints ( points: Vector3[], density: number ): Vector3[] {
+		if ( points.length < 3 ) {
+			throw new Error( "At least 3 points are required to form a polygon." );
+		}
+
+		if ( density < 0 || density > 1 ) {
+			throw new Error( "Density must be between 0 and 1." );
+		}
+
+		const flattenedPoints: number[] = [];
+		for ( const point of points ) {
+			flattenedPoints.push( point.x, point.y );
+		}
+		const triangles = earcut( flattenedPoints );
+
+		const totalArea = this.computePolygonArea( points );
+		const desiredTotalPoints = Math.floor( totalArea * density * 0.1 );
+		const resultPoints: Vector3[] = [];
+
+		for ( let i = 0; i < triangles.length; i += 3 ) {
+
+			const a = new Vector3( flattenedPoints[ triangles[ i ] * 2 ], flattenedPoints[ triangles[ i ] * 2 + 1 ], 0 );
+			const b = new Vector3( flattenedPoints[ triangles[ i + 1 ] * 2 ], flattenedPoints[ triangles[ i + 1 ] * 2 + 1 ], 0 );
+			const c = new Vector3( flattenedPoints[ triangles[ i + 2 ] * 2 ], flattenedPoints[ triangles[ i + 2 ] * 2 + 1 ], 0 );
+
+			const triangleArea = this.computeTriangleArea( a, b, c );
+			const pointsInThisTriangle = Math.floor( ( triangleArea / totalArea ) * desiredTotalPoints );
+
+			for ( let j = 0; j < pointsInThisTriangle; j++ ) {
+
+				const point = this.randomPointInTriangle( a, b, c );
+
+				resultPoints.push( point );
+
+			}
+
+		}
+
+		return resultPoints;
+	}
+
+	private static computeTriangleArea ( a: Vector3, b: Vector3, c: Vector3 ): number {
+		// Using the cross product to find the area of the triangle
+		const ab = new Vector3().subVectors( b, a );
+		const ac = new Vector3().subVectors( c, a );
+		const cross = new Vector3().crossVectors( ab, ac );
+		return cross.length() * 0.5;
+	}
+
+	private static computePolygonArea ( points: Vector3[] ): number {
+		// Assuming the polygon is convex and using the shoelace formula
+		let sum = 0;
+		for ( let i = 0; i < points.length; i++ ) {
+			const j = ( i + 1 ) % points.length;
+			sum += points[ i ].x * points[ j ].y - points[ j ].x * points[ i ].y;
+		}
+		return Math.abs( sum / 2.0 );
 	}
 }

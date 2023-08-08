@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/core/commands/select-point-command';
-import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { IToolWithMainObject, IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -12,191 +11,185 @@ import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-c
 import { PropPolygon } from '../../../modules/tv-map/models/prop-polygons';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
 import { CreatePropPolygonCommand } from './create-prop-polygon-command';
-import { SelectPropPolygonCommand } from './select-prop-polygon-command';
-import { UpdatePropPolygonPointCommand } from './update-prop-polygon-point-command';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { PropModel } from 'app/core/models/prop-model.model';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
 	public name: string = 'PropPolygonTool';
-	public toolType = ToolType.PropPolygon;
+
+	public toolType: ToolType = ToolType.PropPolygon;
 
 	public point: DynamicControlPoint<PropPolygon>;
+
 	public propPolygon: PropPolygon;
-	private pointUpdated: boolean;
+
+	private strategy: SelectStrategy<DynamicControlPoint<PropPolygon>>;
+
+	private get prop (): PropModel {
+
+		const prop = PropManager.getProp();
+
+		if ( prop ) {
+
+			return new PropModel( prop.guid, prop.data.rotationVariance, prop.data.scaleVariance );
+
+		}
+
+	}
 
 	constructor () {
 
 		super();
 
+		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropPolygon>>();
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
-	setMainObject ( value: ISelectable ): void {
-		this.propPolygon = value as PropPolygon;
+	setMainObject ( value: PropPolygon ): void {
+
+		this.propPolygon = value;
+
 	}
 
-	getMainObject (): ISelectable {
+	getMainObject (): PropPolygon {
+
 		return this.propPolygon;
+
 	}
 
-	setPoint ( value: ISelectable ): void {
-		this.point = value as DynamicControlPoint<PropPolygon>;
+
+	setPoint ( value: DynamicControlPoint<PropPolygon> ): void {
+
+		this.point = value;
+
 	}
 
-	getPoint (): ISelectable {
+	getPoint (): DynamicControlPoint<PropPolygon> {
+
 		return this.point;
-	}
-
-	public init () {
-
-		super.init();
 
 	}
 
-	public enable () {
+	enable (): void {
 
 		super.enable();
 
-		this.map.propPolygons.forEach( polygon => {
+		this.map.propPolygons.forEach( polygon => polygon.show() );
 
-			polygon.showControlPoints();
-			polygon.showCurve();
-
-			polygon.spline.controlPoints.forEach( cp => {
-
-				cp.mainObject = polygon;
-
-			} );
-		} );
 	}
 
-	public disable (): void {
+
+	disable (): void {
 
 		super.disable();
 
-		this.map.propPolygons.forEach( polygon => {
-
-			polygon.hideCurve();
-			polygon.hideControlPoints();
-
-		} );
+		this.map.propPolygons.forEach( polygon => polygon.hide() );
 
 	}
 
-	public onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ): void {
 
-		if ( !e.point || e.button != MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
 		if ( KeyboardInput.isShiftKeyDown ) {
 
-			const prop = PropManager.getProp();
-
-			if ( !prop ) return SnackBar.warn( 'Select a prop from the project browser' );
-
-			if ( this.propPolygon ) {
-
-				CommandHistory.execute( new AddPropPolygonPointCommand( this, this.propPolygon, e.point ) );
-
-			} else {
-
-				CommandHistory.execute( new CreatePropPolygonCommand( this, prop, e.point ) );
-			}
+			this.handleCreationMode( e );
 
 		} else {
 
-			if ( this.controlPointIsSelected( e ) ) return;
-
-			if ( this.propPolygonIsSelected( e ) ) return;
-
-			if ( this.propPolygon || this.point ) {
-
-				CommandHistory.executeMany(
-					new SelectMainObjectCommand( this, null ),
-					new SelectPointCommand( this, null ),
-				);
-
-			}
-		}
-	}
-
-	public onPointerMoved ( e: PointerMoveData ) {
-
-		if ( e.point && this.isPointerDown && this.point && this.point.isSelected ) {
-
-			this.point.copyPosition( e.point );
-
-			this.point.mainObject.spline.update();
-
-			this.pointUpdated = true;
+			this.handleSelectionMode( e );
 
 		}
 
 	}
 
-	public onPointerUp ( e: PointerEventData ) {
+	handleSelectionMode ( e: PointerEventData ) {
 
-		if ( this.point && this.point.isSelected && this.pointUpdated ) {
+		const point = this.strategy.onPointerDown( e );
 
-			const oldPosition = this.pointerDownAt.clone();
-			const newPosition = this.point.position.clone();
+		if ( point ) {
 
-			CommandHistory.execute( new UpdatePropPolygonPointCommand( this.point, newPosition, oldPosition ) );
+			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
 
+			CommandHistory.execute( cmd );
+
+			this.setHint( 'Drag control point using LEFT CLICK is down' );
+
+			return;
 		}
 
-		this.pointUpdated = false;
+
+		// in first click, remove focus from control point and hide tangent
+
+		const cmd = new SelectPointCommand( this, null, DynamicInspectorComponent, null );
+
+		CommandHistory.execute( cmd );
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
+	handleCreationMode ( e: PointerEventData ) {
 
-	propPolygonIsSelected ( e: PointerEventData ) {
+		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
 
-		const polygons = this.map.propPolygons.map( s => s.mesh );
+		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 
-		const results = PickingHelper.findAllByTag( PropPolygon.tag, e, polygons, false );
+		if ( !this.prop ) return;
 
-		if ( results.length == 0 ) return false;
+		if ( !this.point ) {
 
-		const propPolygon = results[ 0 ].userData.polygon as PropPolygon;
+			CommandHistory.execute( new CreatePropPolygonCommand( this, this.prop, e.point ) );
 
-		if ( !this.propPolygon || this.propPolygon.mesh.id !== propPolygon.mesh.id ) {
-
-			CommandHistory.executeMany(
-				new SelectPropPolygonCommand( this, propPolygon ),
-				new SelectPointCommand( this, null ),
-			);
+			this.setHint( 'Add two more control point to create polygon' );
 
 		} else {
 
-			CommandHistory.executeMany(
-				new SelectPointCommand( this, null ),
-			);
+			CommandHistory.execute( new AddPropPolygonPointCommand( this, this.point.mainObject, e.point ) );
 
+			this.setHint( 'Add more control points or drag control points to modify polygon' );
 		}
+	}
 
-		return true;
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
+
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+
+		if ( !this.point?.isSelected ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		this.point?.position.copy( pointerEventData.point );
+
+		this.point?.mainObject?.spline?.update();
 
 	}
 
-	controlPointIsSelected ( e: PointerEventData ) {
+	onPointerUp ( pointerEventData: PointerEventData ): void {
 
-		const points = this.map.propPolygons.reduce( ( acc, s ) => acc.concat( s.spline.controlPoints ), [] );
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
 
-		const point = PickingHelper.findByObjectType<DynamicControlPoint<PropPolygon>>( 'Points', e, points, true );
+		if ( !this.point?.isSelected ) return;
 
-		if ( !point ) return false;
+		if ( !this.pointerDownAt ) return;
 
-		if ( !this.point || this.point.uuid !== point.uuid ) {
+		const position = pointerEventData.point;
 
-			CommandHistory.execute( new SelectPointCommand( this, point ) );
+		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		}
+		const cmd = new UpdatePositionCommand( this.point, position, this.pointerDownAt );
 
-		return true;
+		CommandHistory.execute( cmd );
 
+		this.setHint( 'Use Inspector to modify polygon properties' );
 	}
 
 }

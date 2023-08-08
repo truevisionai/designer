@@ -7,20 +7,24 @@ export function Serializable () {
 	}
 }
 
-enum ISerializedFieldType {
+const enum ISerializedFieldType {
 	INT = 'int',
 	FLOAT = 'float',
 	STRING = 'string',
 	BOOLEAN = 'boolean',
 	ENUM = 'enum',
 	ARRAY = 'array',
+	Vector3 = 'vector3',
 }
 
 export interface ISerializedField {
-	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array';
+	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector3';
 	disabled?: boolean;
 	label?: string;
 	description?: string;
+	min?: number;
+	max?: number;
+	step?: number;
 }
 
 export function Action () {

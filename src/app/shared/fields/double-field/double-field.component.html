@@ -13,6 +13,10 @@
 		<app-double-input style="width: 100%;"
 			[value]="value"
 			[disabled]="disabled"
+			[label]="label"
+			[min]="min"
+			[max]="max"
+			[step]="step"
 			(changed)="onFieldValueChanged($event)"></app-double-input>
 
 		<span *ngIf="suffix"

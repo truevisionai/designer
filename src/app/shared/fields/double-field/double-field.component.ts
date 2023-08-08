@@ -15,7 +15,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 	@Input() value: any;
 
-	@Input() label: string;
+	@Input() label: string = '';
 
 	@Input() min: any = -Infinity;
 

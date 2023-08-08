@@ -26,8 +26,6 @@ export class DoubleInputComponent implements OnInit {
 
 	@Input() step: number = 0.1;
 
-	@Input() suffix: string;
-
 	inFocus = false;
 
 	sendTimeout: any;

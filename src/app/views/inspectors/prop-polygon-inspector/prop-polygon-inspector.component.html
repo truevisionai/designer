@@ -6,11 +6,10 @@
 	class="inspector-form-container">
 
 	<app-double-field (changed)="onDensityChanged($event)"
-		[max]="1.0"
-		[min]="0.0"
+		max="1"
+		min="0"
 		[value]="data.polygon.density"
 		label="Density"></app-double-field>
-
 
 </div>
 
