@@ -6,8 +6,9 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
+import { IHasUpdate } from '../commands/set-value-command';
 
-export class DynamicControlPoint<T> extends BaseControlPoint {
+export class DynamicControlPoint<T extends IHasUpdate> extends BaseControlPoint {
 
 	public mainObject: T;
 
@@ -37,4 +38,15 @@ export class DynamicControlPoint<T> extends BaseControlPoint {
 
 	}
 
+	copyPosition ( position: Vector3 ): void {
+
+		super.copyPosition( position );
+
+	}
+
+	update () {
+
+		this.mainObject?.update();
+
+	}
 }

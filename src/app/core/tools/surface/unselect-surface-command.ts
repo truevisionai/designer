@@ -6,10 +6,11 @@ import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvSurface } from '../../../modules/tv-map/models/tv-surface.model';
 import { BaseCommand } from '../../commands/base-command';
 import { SurfaceTool } from './surface-tool';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 export class UnselectSurfaceCommand extends BaseCommand {
 
-	private readonly oldPoint: AnyControlPoint;
+	private readonly oldPoint: DynamicControlPoint<TvSurface>;
 	private readonly oldSurface: TvSurface;
 
 	constructor ( private tool: SurfaceTool ) {

@@ -15,7 +15,7 @@ import { CrosswalkTool } from '../tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
 import { ParkingBoxTool } from '../tools/parking-box-tool';
 import { PointerTool } from '../tools/pointer/pointer-tool';
-import { PropCurveTool } from '../tools/prop-curve/prop-curve-tool';
+import { PropCurveToolV2 } from '../tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from '../tools/prop-point/prop-point-tool';
 import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
 import { RoadCircleTool } from '../tools/road-circle/road-circle-tool';
@@ -43,7 +43,7 @@ export class ToolFactory {
 			case ToolType.PropPoint:
 				return new PropPointTool();
 			case ToolType.PropCurve:
-				return new PropCurveTool();
+				return new PropCurveToolV2();
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
 			case ToolType.Surface:

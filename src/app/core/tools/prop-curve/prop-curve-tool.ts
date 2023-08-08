@@ -2,8 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PointerEventData } from 'app/events/pointer-event-data';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
@@ -12,43 +11,27 @@ import {
 	PropCurveInspectorComponent,
 	PropCurveInspectorData
 } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
-import { Subscription } from 'rxjs';
-import { PointEditor } from '../../editors/point-editor';
 import { KeyboardInput } from '../../input';
-import { AppInspector } from '../../inspector';
 import { PropModel } from '../../models/prop-model.model';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
 import { CreatePropCurveCommand } from './create-prop-curve-command';
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 
-export class PropCurveTool extends BaseTool {
+export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'PropCurveTool';
+
 	public toolType = ToolType.PropCurve;
 
-	public shapeEditor: PointEditor;
+	public point: DynamicControlPoint<PropCurve>;
 
-	private cpSubscriptions: Subscription[] = [];
-
-	private cpAddedSub: Subscription;
-	private cpMovedSub: Subscription;
-	private cpUpdatedSub: Subscription;
-	private cpSelectedSub: Subscription;
-	private cpUnselectedSub: Subscription;
-
-	public curve: PropCurve;
-	public point: AnyControlPoint;
-
-	constructor () {
-
-		super();
-
-	}
-
-	private get curves () {
-		return this.map.propCurves;
-	}
+	private strategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
 
 	private get prop (): PropModel {
 
@@ -62,208 +45,146 @@ export class PropCurveTool extends BaseTool {
 
 	}
 
-	public init () {
+	constructor () {
 
-		super.init();
+		super();
 
-		this.shapeEditor = new PointEditor( 100 );
+		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
-	public enable () {
+	setPoint ( value: DynamicControlPoint<PropCurve> ): void {
+
+		this.point = value;
+
+	}
+
+	getPoint (): DynamicControlPoint<PropCurve> {
+
+		return this.point;
+
+	}
+
+	enable (): void {
 
 		super.enable();
 
-		this.curves.forEach( curve => curve.show( this.shapeEditor ) );
-
-		this.cpAddedSub = this.shapeEditor.controlPointAdded
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointAdded( cp ) );
-
-		this.cpMovedSub = this.shapeEditor.controlPointMoved
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointMoved( cp ) );
-
-		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointUpdated( cp ) );
-
-		this.cpSelectedSub = this.shapeEditor.controlPointSelected
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointSelected( cp ) );
-
-		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
-			.subscribe( ( cp: AnyControlPoint ) => this.onControlPointUnselected() );
+		this.map.propCurves.forEach( curve => curve.show() );
 
 	}
 
-	public disable (): void {
+
+	disable (): void {
 
 		super.disable();
 
-		this.curves.forEach( curve => curve.hide() );
-
-		this.cpAddedSub.unsubscribe();
-		this.cpMovedSub.unsubscribe();
-		this.cpUpdatedSub.unsubscribe();
-		this.cpSelectedSub.unsubscribe();
-		this.cpUnselectedSub.unsubscribe();
-
-		this.shapeEditor.destroy();
-
-		this.unsubscribeFromControlPoints();
-	}
-
-	public onPointerClicked ( e: PointerEventData ) {
-
-		let hasInteracted = false;
-
-		// first check for any point intersections
-		for ( const i of e.intersections ) {
-
-			if ( i.object != null && i.object.type === 'Points' ) {
-
-				hasInteracted = true;
-
-				this.point = ( i.object as AnyControlPoint );
-
-				this.curve = this.point.mainObject as PropCurve;
-
-				this.showInspector( this.curve, this.point );
-
-				break;
-			}
-
-		}
-
-		// if not point intersections then check for curve intersections
-		for ( const i of e.intersections ) {
-
-			if ( i.object != null && i.object[ 'tag' ] === 'curve' && !hasInteracted ) {
-
-				hasInteracted = true;
-
-				this.curve = i.object.userData.parent;
-
-				this.point = null;
-
-				this.showInspector( this.curve, this.point );
-
-				break;
-
-			}
-		}
-
-		if ( hasInteracted ) return;
-
-		// Finally, If no objects were intersected then clear the inspector
-		if ( !KeyboardInput.isShiftKeyDown ) {
-
-			// unselect the curve in second click
-			if ( !this.point ) {
-
-				this.curve = null;
-
-				this.showInspector( this.curve, this.point );
-
-			} else {
-
-				// in first click, remove focus from control point and hide tangent
-				this.point = null;
-
-				this.showInspector( this.curve, this.point );
-			}
-		}
-	}
-
-	private onControlPointSelected ( cp: AnyControlPoint ) {
-
-		this.point = cp;
-
-		if ( cp.mainObject ) {
-
-			this.curve = cp.mainObject;
-
-			this.showInspector( this.curve, this.point );
-
-		}
-	}
-
-	private onControlPointUnselected () {
+		this.map.propCurves.forEach( curve => curve.hide() );
 
 	}
 
-	private showInspector ( curve: PropCurve, point: AnyControlPoint ) {
+	onPointerDown ( e: PointerEventData ): void {
 
-		if ( curve == null && point == null ) {
+		if ( e.button !== MouseButton.LEFT ) return;
 
-			AppInspector.clear();
+		if ( KeyboardInput.isShiftKeyDown ) {
+
+			this.handleCreationMode( e );
 
 		} else {
 
-			const data = new PropCurveInspectorData( point, curve );
+			this.handleSelectionMode( e );
 
-			AppInspector.setInspector( PropCurveInspectorComponent, data );
 		}
+
 	}
 
-	private onControlPointAdded ( point: AnyControlPoint ) {
+	handleSelectionMode ( e: PointerEventData ) {
 
-		if ( this.prop ) {
+		const point = this.strategy.onPointerDown( e );
 
-			if ( !this.curve ) {
+		if ( point ) {
 
-				CommandHistory.execute( new CreatePropCurveCommand( this, this.prop, point ) );
+			const data = new PropCurveInspectorData( point, point.mainObject );
 
-			} else {
+			const cmd = new SelectPointCommand( this, point, PropCurveInspectorComponent, data );
 
-				CommandHistory.execute( new AddPropCurvePointCommand( this, this.curve, point ) );
+			CommandHistory.execute( cmd );
 
-			}
+			this.setHint( 'Drag control point using LEFT CLICK is down' );
+
+			return;
+		}
+
+
+		// in first click, remove focus from control point and hide tangent
+
+		const data = new PropCurveInspectorData( null, null );
+
+		const cmd = new SelectPointCommand( this, null, PropCurveInspectorComponent, data );
+
+		CommandHistory.execute( cmd );
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+	}
+
+	handleCreationMode ( e: PointerEventData ) {
+
+		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
+
+		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
+
+		if ( !this.prop ) return;
+
+		if ( !this.point ) {
+
+			const point = new DynamicControlPoint<PropCurve>( null, e.point );
+
+			CommandHistory.execute( new CreatePropCurveCommand( this, this.prop, point ) );
+
+			this.setHint( 'Add one more control point to create curve' );
 
 		} else {
 
-			SnackBar.warn( 'Select a prop from the project browser' );
+			const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, e.point );
 
-			point.visible = false;
+			CommandHistory.execute( new AddPropCurvePointCommand( this, this.point.mainObject, point ) );
 
-			setTimeout( () => {
-
-				this.shapeEditor.removeControlPoint( point );
-
-			}, 100 );
-
-		}
-
-	}
-
-	private onControlPointUpdated ( cp: AnyControlPoint ) {
-
-		if ( cp.mainObject ) {
-
-			this.curve = cp.mainObject;
-
-			this.curve.update();
-
-			this.curve?.update();
-
+			this.setHint( 'Add more control points or drag control points to modify curve' );
 		}
 	}
 
-	private onControlPointMoved ( cp: AnyControlPoint ) {
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		if ( cp.mainObject ) {
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
 
-			this.curve = cp.mainObject;
+		if ( !this.point?.isSelected ) return;
 
-			this.curve.update();
+		if ( !this.pointerDownAt ) return;
 
-		}
+		this.point?.position.copy( pointerEventData.point );
 
-	}
-
-	private unsubscribeFromControlPoints () {
-
-		this.cpSubscriptions.forEach( sub => {
-
-			sub.unsubscribe();
-
-		} );
+		this.point?.update();
 
 	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): void {
+
+		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+
+		if ( !this.point?.isSelected ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const position = pointerEventData.point;
+
+		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+
+		const cmd = new UpdatePositionCommand( this.point, position, this.pointerDownAt );
+
+		CommandHistory.execute( cmd );
+
+		this.setHint( 'Use Inspector to modify curve properties' );
+	}
+
 }

@@ -55,9 +55,9 @@ export class StatusBarService {
 	}
 
 	get coordinates () {
-		const x = this.cursor.point.x.toFixed( 1 );
-		const y = this.cursor.point.y.toFixed( 1 );
-		const z = this.cursor.point.z.toFixed( 1 );
+		const x = this.cursor?.point?.x?.toFixed( 1 );
+		const y = this.cursor?.point?.y?.toFixed( 1 );
+		const z = this.cursor?.point?.z?.toFixed( 1 );
 		return `World x: ${ x }, y: ${ y }, z: ${ z }`;
 	}
 

@@ -35,6 +35,7 @@ import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 
 @Injectable( {
@@ -381,7 +382,7 @@ export class SceneImporterService extends AbstractReader {
 		return spline;
 	}
 
-	private importCatmullSpline ( xml: XmlElement ): CatmullRomSpline {
+	private importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
 		const closed = xml.attr_closed === 'true';
@@ -391,13 +392,9 @@ export class SceneImporterService extends AbstractReader {
 
 		this.readAsOptionalArray( xml.point, xml => {
 
-			const controlPoint = AnyControlPoint.create();
+			const position = this.importVector3( xml );
 
-			controlPoint.position.set(
-				parseFloat( xml.attr_x ),
-				parseFloat( xml.attr_y ),
-				parseFloat( xml.attr_z )
-			);
+			const controlPoint = new DynamicControlPoint( mainObject, position );
 
 			spline.addControlPoint( controlPoint );
 
@@ -496,33 +493,13 @@ export class SceneImporterService extends AbstractReader {
 
 			const prop = instance.clone();
 
-			const position = new Vector3(
-				parseFloat( propXml.position.attr_x ),
-				parseFloat( propXml.position.attr_y ),
-				parseFloat( propXml.position.attr_z ),
-			);
+			const position = this.importVector3( propXml?.position );
 
-			const propRotation = new Euler(
-				parseFloat( propXml.rotation.attr_x ),
-				parseFloat( propXml.rotation.attr_y ),
-				parseFloat( propXml.rotation.attr_z ),
-			);
+			const rotation = this.importVector3( propXml?.rotation );
 
-			const scale = new Vector3(
-				parseFloat( propXml.scale.attr_x ),
-				parseFloat( propXml.scale.attr_y ),
-				parseFloat( propXml.scale.attr_z ),
-			);
+			const scale = this.importVector3( propXml?.scale );
 
-			prop.position.copy( position );
-
-			prop.rotation.copy( propRotation );
-
-			prop.scale.copy( scale );
-
-			curve.props.push( prop );
-
-			SceneService.add( prop );
+			curve.addProp( prop, position, rotation, scale );
 
 		} );
 

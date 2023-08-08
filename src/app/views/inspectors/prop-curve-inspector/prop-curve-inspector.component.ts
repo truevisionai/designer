@@ -11,6 +11,9 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CallFunctionCommand } from 'app/core/commands/call-function-command';
+import { Vector3 } from 'three';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 export class PropCurveInspectorData {
 
@@ -32,6 +35,20 @@ export class PropCurveInspectorComponent implements IComponent {
 	get propCurve (): PropCurve {
 
 		return this.data.propCurve;
+
+	}
+
+	onControlPointChanged ( $newPosition: Vector3 ) {
+
+		CommandHistory.execute(
+
+			new UpdatePositionCommand(
+				this.data.controlPoint as DynamicControlPoint<PropCurve>,
+				$newPosition,
+				this.data.controlPoint.position
+			)
+
+		)
 
 	}
 

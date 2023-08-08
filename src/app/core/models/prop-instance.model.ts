@@ -13,5 +13,8 @@ export class PropInstance {
 
 	}
 
+	update () {
+
+	}
 
 }

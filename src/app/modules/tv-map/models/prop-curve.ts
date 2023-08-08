@@ -8,7 +8,7 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { AssetDatabase } from 'app/services/asset-database';
 import { Maths } from 'app/utils/maths';
-import { Object3D } from 'three';
+import { Object3D, Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 
@@ -82,26 +82,43 @@ export class PropCurve {
 
 			const t = spline.curve.getUtoTmapping( 0, i );
 
-			const position = spline.curve.getPoint( t );
+			const point = spline.curve.getPoint( t );
 
 			const prop = instance.clone();
 
 			// apply random position variance
-			position.setX( position.x + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ) );
-			position.setY( position.y + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ) );
+			const position = new Vector3(
+				point.x + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ),
+				point.y + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ),
+				point.z + 0,
+			);
 
 			// apply random rotation variance
-			prop.rotateX( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
-			prop.rotateY( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
-			prop.rotateZ( Maths.randomFloatBetween( -this.rotation, this.rotation ) );
+			const rotation = new Vector3(
+				prop.rotation.x + Maths.randomFloatBetween( -this.rotation, this.rotation ),
+				prop.rotation.y + Maths.randomFloatBetween( -this.rotation, this.rotation ),
+				prop.rotation.z + Maths.randomFloatBetween( -this.rotation, this.rotation ),
+			);
 
-			prop.position.copy( position );
+			this.addProp( prop, position, rotation, prop.scale );
 
 			this.props.push( prop );
 
-			TvMapInstance.map.gameObject.add( prop );
-
 		}
+
+	}
+
+	addProp ( prop: Object3D, position: Vector3, rotation: Vector3, scale: Vector3 ) {
+
+		prop.position.copy( position );
+
+		prop.rotation.setFromVector3( rotation );
+
+		prop.scale.copy( scale );
+
+		this.props.push( prop );
+
+		TvMapInstance.map.gameObject.add( prop );
 
 	}
 
