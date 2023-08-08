@@ -71,6 +71,8 @@ export class StatusBarService {
 
 	onPointerMoved ( data: PointerEventData ) {
 
+		if ( !data?.point ) return;
+
 		this.cursor = data;
 		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
 
