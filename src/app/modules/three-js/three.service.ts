@@ -284,9 +284,7 @@ export class ThreeService implements IEngine {
 
 	public changeCamera () {
 
-		// Save the current camera's position and orientation
 		const oldPosition = this.camera.position.clone();
-		const oldQuaternion = this.camera.quaternion.clone();
 
 		if ( this.currentCameraIndex + 1 >= this.cameras.length ) {
 
@@ -298,38 +296,15 @@ export class ThreeService implements IEngine {
 
 		}
 
-		// this.transformControls.detach();
-		// this.transformControls.object = this.camera;
+		this.camera.position.copy( oldPosition );
 
 		this.controls.setCamera( this.camera );
 
-		if ( this.camera instanceof THREE.OrthographicCamera ) {
+		const target = this.controls.getTarget();
 
-			// Set the position of the new orthographic camera
-			this.camera.position.copy( oldPosition );
-			this.camera.up.copy( AppConfig.DEFAULT_UP )
+		if ( target ) this.camera.lookAt( target.x, target.y, target.z );
 
-			// this.camera.updateProjectionMatrix();
-
-			this.controls.setTarget( new THREE.Vector3( oldPosition.x, oldPosition.y, 0 ) );
-			this.controls.setScreenSpaceEnabled( true );
-			this.controls.setRotateEnabled( false );
-
-		} else if ( this.camera instanceof THREE.PerspectiveCamera ) {
-
-			// Set the position and orientation of the new perspective camera
-			this.camera.position.copy( oldPosition );
-			this.camera.quaternion.copy( oldQuaternion );
-			this.camera.up.copy( AppConfig.DEFAULT_UP )
-
-			// this.camera.updateProjectionMatrix();
-
-			this.controls.setScreenSpaceEnabled( false );
-			this.controls.setRotateEnabled( true );
-
-		}
-
-		this.createViewHelper();
+		this.onWindowResized();
 	}
 
 	onWindowResized () {
@@ -337,22 +312,23 @@ export class ThreeService implements IEngine {
 		const width = this.canvasWidth;
 		const height = this.canvasHeight;
 
+		const aspect = width / height;
+
 		this.cameras.forEach( camera => {
 
-			if ( camera[ 'isOrthographicCamera' ] ) {
+			if ( camera instanceof OrthographicCamera ) {
 
-				( camera as OrthographicCamera ).left = width / -this.ORTHO_DRIVER;
-				( camera as OrthographicCamera ).right = width / this.ORTHO_DRIVER;
-				( camera as OrthographicCamera ).top = height / this.ORTHO_DRIVER;
-				( camera as OrthographicCamera ).bottom = height / -this.ORTHO_DRIVER;
+				camera.left = camera.bottom * aspect;
 
-				( camera as OrthographicCamera ).updateProjectionMatrix();
+				camera.right = camera.top * aspect;
 
-			} else if ( camera[ 'isPerspectiveCamera' ] ) {
+				camera.updateProjectionMatrix();
 
-				( camera as PerspectiveCamera ).aspect = width / height;
+			} else if ( camera instanceof PerspectiveCamera ) {
 
-				( camera as PerspectiveCamera ).updateProjectionMatrix();
+				camera.aspect = aspect;
+
+				camera.updateProjectionMatrix();
 			}
 
 

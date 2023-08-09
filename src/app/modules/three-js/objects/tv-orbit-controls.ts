@@ -14,8 +14,8 @@ export class TvOrbitControls extends OrbitControls implements IViewportControlle
 
 		const controls = new TvOrbitControls( camera, canvas );
 
-		controls.screenSpacePanning = true;
-		controls.enableRotate = false;
+		// controls.screenSpacePanning = true;
+		// controls.enableRotate = false;
 		// controls.enableKeys = false;
 
 		return controls;
