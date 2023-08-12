@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, MathUtils, Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
@@ -14,39 +14,30 @@ export abstract class Position {
 
 	abstract readonly label: string;
 
-	public vector3: THREE.Vector3 = new Vector3( 0, 0, 0 );
+	abstract readonly isDependent: boolean;
 
-	abstract toVector3 (): Vector3;
+	abstract getVectorPosition (): Vector3;
 
-	// abstract toXML (): XmlElement;
+	constructor (
+		private _vector3: Vector3,
+		public orientation: Orientation
+	) {
+	}
 
-	setPosition ( point: Vector3 ) {
-		throw new Error( 'Method not implemented.' );
+	get vector3 (): Vector3 {
+		return this._vector3;
+	}
+
+	setPosition ( value: Vector3 ) {
+		this._vector3 = value;
 	}
 
 	toEuler (): Euler {
-		return new Euler( 0, 0, 0 );
-	}
-
-	toOrientation (): Orientation {
-		return new Orientation();
+		return this.orientation?.toEuler() || new Euler( 0, 0, 0 );
 	}
 
 	get position (): Vector3 {
-		return this.toVector3();
-	}
-
-	get rotation (): Vector3 {
-		const euler = this.toEuler();
-		return new Vector3(
-			euler.z,
-			euler.y,
-			euler.x
-		);
-	}
-
-	get rotationInDegree (): Vector3 {
-		return this.rotation.multiplyScalar( MathUtils.RAD2DEG );
+		return this.getVectorPosition();
 	}
 
 	protected getEntity ( entity: string ): ScenarioEntity {
@@ -55,5 +46,9 @@ export abstract class Position {
 
 	toXML ( version?: OpenScenarioVersion ) {
 		return {};
+	}
+
+	setOrientationV2 ( orientation: Orientation ) {
+		this.orientation = orientation;
 	}
 }

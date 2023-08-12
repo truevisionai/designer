@@ -72,7 +72,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			let reference = this.trajectory.vertices.length;
 
-			let position = new WorldPosition( e.position.x, e.position.y, e.position.z );
+			let position = new WorldPosition( e.position.clone() );
 
 			let vertex = new Vertex( reference, position );
 
@@ -93,9 +93,9 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 		this.trajectory.vertices.forEach( vertex => {
 
 			// Important! Need to set the vector3
-			vertex.position.vector3 = vertex.position.toVector3();
+			vertex.position.setPosition( vertex.position.getVectorPosition() );
 
-			this.shapeEditor.addControlPoint( vertex.position.toVector3() );
+			this.shapeEditor.addControlPoint( vertex.position.getVectorPosition() );
 
 		} );
 

@@ -12,26 +12,25 @@ export class LanePosition extends Position {
 
 	public readonly label: string = 'Lane Position';
 	public readonly type = PositionType.Lane;
+	public readonly isDependent: boolean = false;
 
 	public roadId: number;
 	public laneId: number;
 	public offset: number;
 	public sCoordinate: number;
-	public orientation: Orientation;
 
 	constructor ( roadId = 0, laneId = 0, offset = 0, s = 0, orientation: Orientation = null ) {
 
-		super();
+		super( null, orientation );
 
 		this.roadId = roadId;
 		this.laneId = laneId;
 		this.offset = offset;
 		this.sCoordinate = s;
-		this.orientation = orientation;
 
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 
 		if ( this.roadId != 0 && this.roadId != null && this.laneId != null && this.sCoordinate != null ) {
 

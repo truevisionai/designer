@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler } from 'three';
+import { Euler, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { OpenScenarioVersion, OrientationType } from './tv-enums';
 
@@ -43,7 +43,22 @@ export class Orientation {
 	}
 
 	toEuler (): Euler {
-		return new Euler( this.h, this.p, this.r );
+		return new Euler( this.r, this.p, this.h - Math.PI / 2 );
+	}
+
+	toVector3 (): Vector3 {
+		return new Vector3( this.h, this.p, this.r );
+	}
+
+	clone (): Orientation {
+		return new Orientation( this.h, this.p, this.r, this.type );
+	}
+
+	copy ( orentation: Orientation ) {
+		this.h = orentation.h;
+		this.p = orentation.p;
+		this.r = orentation.r;
+		this.type = orentation.type;
 	}
 
 	getRelativeOrientation ( orientation: Orientation ): Orientation {

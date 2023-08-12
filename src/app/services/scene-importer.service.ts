@@ -441,7 +441,7 @@ export class SceneImporterService extends AbstractReader {
 
 		if ( Array.isArray( props ) ) {
 
-			props.forEach( ( prop: any ) => {
+			props.forEach( ( prop: XmlElement ) => {
 
 				instances.push( {
 					guid: prop.guid,
@@ -537,7 +537,7 @@ export class SceneImporterService extends AbstractReader {
 		return polygon;
 	}
 
-	private preparePropObject ( xml: any ): Object3D {
+	private preparePropObject ( xml: XmlElement ): Object3D {
 
 		const instance = AssetDatabase.getInstance<Object3D>( xml.attr_guid );
 

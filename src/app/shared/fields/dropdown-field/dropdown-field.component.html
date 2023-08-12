@@ -16,7 +16,7 @@
 			<option *ngFor="let option of options"
 				[value]="option"
 				class="tv-field-option">
-				{{option | titlecase}}
+				{{ showOption(option) }}
 			</option>
 
 		</select>

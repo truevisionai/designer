@@ -41,4 +41,10 @@ export class IDService {
 		return this.highestID;
 	}
 
+	getUniqueName ( prefix: string, importedID?: number ): string {
+
+		return `${ prefix }_${ this.getUniqueID( importedID ) }`;
+
+	}
+
 }

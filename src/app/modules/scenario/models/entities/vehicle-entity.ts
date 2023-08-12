@@ -24,12 +24,6 @@ export class VehicleEntity extends ScenarioEntity {
 		super( name, boundingBox );
 	}
 
-	static getNewName ( name = 'Vehicle' ) {
-
-		return `${ name }${ MathUtils.randInt( 1, 100 ) }`;
-
-	}
-
 	clone (): this {
 
 		return new VehicleEntity(

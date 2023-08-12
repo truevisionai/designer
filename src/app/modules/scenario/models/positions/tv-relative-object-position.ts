@@ -12,18 +12,19 @@ export class RelativeObjectPosition extends Position {
 
 	public readonly label: string = 'Relative Object Position';
 	public readonly type = PositionType.RelativeObject;
+	public readonly isDependent: boolean = true;
 
 	constructor (
 		public entityRef: string,
 		public dx = 0,
 		public dy = 0,
 		public dz = 0,
-		public orientation: Orientation = null
+		orientation: Orientation = null
 	) {
-		super();
+		super( null, orientation );
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 
 		// Retrieve the position of the referenced object
 		const relPos = this.entityRef ? this.getEntity( this.entityRef ).getCurrentPosition() : new Vector3();
@@ -44,7 +45,7 @@ export class RelativeObjectPosition extends Position {
 		);
 	}
 
-	toOrientation (): Orientation {
+	getOrientation (): Orientation {
 
 		// Check if the orientation is relative
 		if ( this.entityRef && this.orientation.type == OrientationType.relative ) {

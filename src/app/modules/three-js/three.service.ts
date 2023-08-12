@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
-import { Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import { Camera, Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { IEngine } from '../../core/services/IEngine';
@@ -22,6 +22,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 } )
 export class ThreeService implements IEngine {
 
+	cameraChanged = new EventEmitter<Camera>();
 
 	public controls: IViewportController;
 	static bgForClicks: THREE.Mesh;
@@ -303,6 +304,17 @@ export class ThreeService implements IEngine {
 		const target = this.controls.getTarget();
 
 		if ( target ) this.camera.lookAt( target.x, target.y, target.z );
+
+		if ( this.camera instanceof OrthographicCamera ) {
+
+			this.controls.setRotateEnabled( false );
+
+		} else if ( this.camera instanceof PerspectiveCamera ) {
+
+			this.controls.setRotateEnabled( true );
+		}
+
+		this.cameraChanged.emit( this.camera );
 
 		this.onWindowResized();
 	}

@@ -21,6 +21,7 @@ import {
 	UnsignedByteType
 } from 'three';
 import { Metadata, MetaImporter } from '../core/models/metadata.model';
+import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
 import { AssetDatabase } from './asset-database';
 import { FileService } from './file.service';
 import { ModelImporterService } from './model-importer.service';
@@ -195,7 +196,7 @@ export class AssetLoaderService {
 
 			if ( meta.importer === MetaImporter.TEXTURE ) {
 
-				const data = meta.data;
+				const data: XmlElement = meta.data;
 
 				const texture = new TextureLoader().load( meta.path );
 

@@ -5,7 +5,7 @@
 
 <div *ngIf="target.targetType === target.types.relative">
 	<app-select-entity-field (changed)="onEntityChanged($event)"
-		[value]="relativeTarget.entityName"
+		[value]="relativeTarget.entityRef.name"
 		label="Relative To"></app-select-entity-field>
 </div>
 

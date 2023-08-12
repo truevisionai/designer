@@ -5,14 +5,37 @@
 import { DefaultVehicleController } from "app/modules/scenario/controllers/default-vehicle-controller";
 import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
-import { VehicleCategory } from "app/modules/scenario/models/tv-enums";
+import { ActionType, VehicleCategory } from "app/modules/scenario/models/tv-enums";
+import { Orientation } from "app/modules/scenario/models/tv-orientation";
 import { Vector3 } from "three";
+import { IDService } from "./id.service";
+import { ActionFactory } from "app/modules/scenario/builders/action-factory";
 
 export class VehicleFactory {
 
+	private static entityId = new IDService();
+
+	static reset () {
+
+		this.entityId.reset();
+
+	}
+
+	static createVehicleAt ( vector3: Vector3, orientation?: Orientation ): VehicleEntity {
+
+		const vehicle = this.createDefaultCar();
+
+		vehicle.addInitAction( ActionFactory.createPositionAction( vehicle, vector3, orientation ) );
+
+		vehicle.addInitAction( ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );
+
+		return vehicle;
+
+	}
+
 	static createDefaultCar ( name?: string ): VehicleEntity {
 
-		const vehicleName = name || VehicleEntity.getNewName( 'Vehicle' );
+		const vehicleName = name || this.entityId.getUniqueName( 'Vehicle' );
 
 		const boundingBox = new TvBoundingBox(
 			new Vector3( 1.3, 0.0, 0.75 ),

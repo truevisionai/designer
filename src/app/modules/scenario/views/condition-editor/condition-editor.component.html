@@ -6,7 +6,7 @@
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
-	<span>{{condition.label}}</span>
+	<span>{{ condition.conditionTypeString }}</span>
 	<span class="spacer"></span>
 	<button mat-icon-button
 		class="inspector-toolbar-icon"
@@ -17,13 +17,17 @@
 		<button mat-menu-item
 			(click)="remove()">
 			<mat-icon>delete</mat-icon>
-			<span>Delete</span>
+			<span>Delete Condition</span>
 		</button>
 	</mat-menu>
 </mat-toolbar>
 <div *ngIf="isOpen"
 	[ngSwitch]="condition.category"
 	style="padding: 4px 8px">
+
+	<app-string-field label="Label"
+		[value]="condition.label">
+	</app-string-field>
 
 	<div *ngSwitchCase="categories.ByValue">
 		<div [ngSwitch]="condition.conditionType">
@@ -38,7 +42,7 @@
 	</div>
 
 	<div *ngSwitchCase="categories.ByState">
-		State Condition Not Supported
+		<!-- <app-condition-by-state [condition]="conditionByState"></app-condition-by-state> -->
 	</div>
 
 

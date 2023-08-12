@@ -1270,7 +1270,7 @@ export class WriterService {
 
 			return {
 				[ relativeKey ]: {
-					[ this.entityKey ]: target.entityName,
+					[ this.entityKey ]: target.entityRef.name,
 					attr_value: target.value
 				}
 			};
@@ -1410,7 +1410,7 @@ export class WriterService {
 
 	writeOrientation ( orientation: Orientation ) {
 
-		if ( !orientation ) return null;
+		if ( !orientation ) return;
 
 		return orientation.toXML();
 
@@ -1491,7 +1491,7 @@ export class WriterService {
 
 		const xml = {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
+				[ this.entityKey ]: position.entityRef?.name,
 				attr_dLane: position.dLane,
 				attr_ds: position.ds,
 				Orientation: position.orientation?.toXML()

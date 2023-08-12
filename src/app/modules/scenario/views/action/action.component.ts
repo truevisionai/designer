@@ -23,7 +23,7 @@ export class ActionComponent implements OnInit {
 
 	types = ActionType;
 
-	isOpen = false;
+	@Input() isOpen = true;
 
 	constructor () {
 

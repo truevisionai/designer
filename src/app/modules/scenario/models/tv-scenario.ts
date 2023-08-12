@@ -2,15 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils, Scene, Vector3 } from 'three';
+import { MathUtils, Vector3 } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
-import { ActionService } from '../builders/action-service';
+import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
+import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
+import { TeleportAction } from './actions/tv-teleport-action';
+import { ScenarioEntity } from './entities/scenario-entity';
+import { Position } from './position';
 import { PrivateAction } from './private-action';
 import { Act } from './tv-act';
 import { TvAction } from './tv-action';
 import { Catalogs } from './tv-catalogs';
 import { File } from './tv-common';
-import { ScenarioEntity } from './entities/scenario-entity';
 import { TvEvent } from './tv-event';
 import { FileHeader } from './tv-file-header';
 import { Maneuver } from './tv-maneuver';
@@ -20,6 +23,11 @@ import { RoadNetwork } from './tv-road-network';
 import { ManeuverGroup } from './tv-sequence';
 import { Story } from './tv-story';
 import { Storyboard } from './tv-storyboard';
+// import { ActionFactory, ScenarioElementFactory } from '../builders/action-factory';
+// import { JunctionFactory } from 'app/core/factories/junction.factory';
+// import { PositionFactory } from '../builders/position-factory';
+// import { VehicleFactory } from 'app/core/factories/vehicle.factory';
+// import { ConditionFactory } from '../builders/condition-factory';
 
 export class TvScenario {
 
@@ -63,6 +71,12 @@ export class TvScenario {
 		// this.m_Entities.addObject( object );
 	}
 
+	addStory ( story: Story ) {
+
+		this.storyboard.addStory( story );
+
+	}
+
 	findEntityOrFail ( entityName: string ) {
 
 		if ( !this.hasEntity( entityName ) ) throw new Error( `${ entityName } entity not found` );
@@ -78,15 +92,7 @@ export class TvScenario {
 
 	addObject ( object: ScenarioEntity ) {
 
-		// const hasName = ScenarioInstance.scenario.db.has_entity( object.name );
-
-		// if ( hasName ) throw new Error( `Entity name : ${ object.name } already used` );
-
 		this.objects.set( object.name, object );
-
-		// ScenarioInstance.db.add_entity( object.name, object );
-
-		SceneService.add( object );
 
 	}
 
@@ -112,8 +118,6 @@ export class TvScenario {
 	}
 
 	removeObject ( object: ScenarioEntity ) {
-
-		// ScenarioInstance.db.remove_entity( object.name );
 
 		this.objects.delete( object.name );
 
@@ -229,6 +233,12 @@ export class TvScenario {
 
 		this.storyboard.stories.clear();
 
+		// ScenarioElementFactory.reset();
+		// JunctionFactory.reset();
+		// ActionFactory.reset()
+		// PositionFactory.reset();
+		// VehicleFactory.reset();
+		// ConditionFactory.reset();
 	}
 
 	destroy () {
@@ -317,18 +327,82 @@ export class TvScenario {
 
 	executeInitActions () {
 
-		this.objects.forEach( ( entity ) => {
+		this.objects.forEach( entity => {
 
-			entity.initActions.forEach( ( action ) => {
+			entity.initActions.filter( i => i instanceof PrivateAction ).forEach( ( action: PrivateAction ) => {
 
-				// this can be used to execute actions that are not in the storyboard
-				// action.execute( entity );
-
-				ActionService.executePrivateAction( entity, action );
 
 			} );
 
 		} );
+
+
+		const laterActions: { entity: ScenarioEntity, action: TvAction }[] = [];
+
+		this.objects.forEach( ( entity ) => {
+
+			entity.initActions.forEach( ( action ) => {
+
+				if ( action instanceof TeleportAction ) {
+
+					if ( !action.position.isDependent ) {
+
+						action.execute( entity );
+
+						this.setRoadProperties( entity, action.position );
+
+					} else {
+
+						laterActions.push( { entity, action } );
+
+					}
+
+				} else {
+
+					action.execute( entity );
+
+				}
+
+			} );
+
+		} );
+
+		for ( let i = 0; i < laterActions.length; i++ ) {
+
+			const action = laterActions[ i ].action;
+			const entity = laterActions[ i ].entity;
+
+			action.execute( entity );
+
+			if ( action instanceof TeleportAction ) {
+				this.setRoadProperties( entity, action.position );
+			}
+
+		}
+
+	}
+
+	setRoadProperties ( entity: ScenarioEntity, position: Position ) {
+
+		const roadCoord = new TvPosTheta();
+
+		const pos = position.position;
+
+		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
+
+		if ( !res.road || !res.lane ) return;
+
+		entity.openDriveProperties.isOpenDrive = true;
+
+		entity.setRoadId( res.road.id );
+
+		entity.setLaneId( res.lane.id );
+
+		entity.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
+
+		entity.setDirection( res.lane.id > 0 ? -1 : 1 );
+
+		entity.setSValue( roadCoord.s );
 
 	}
 }

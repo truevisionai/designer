@@ -3,29 +3,29 @@
  */
 
 import { Vector3 } from 'three';
-import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
-import { OpenScenarioVersion, PositionType } from '../tv-enums';
-import { Orientation } from '../tv-orientation';
 import { CatalogReference } from '../tv-catalogs';
+import { PositionType } from '../tv-enums';
+import { Orientation } from '../tv-orientation';
 
 export class TrajectoryPosition extends Position {
 
 	public readonly label: string = 'Trajectory Position';
 	public readonly type = PositionType.Lane;
+	public readonly isDependent: boolean = false;
 
 	constructor (
 		public s: number,
 		public t: number,
 		public trajectoryRef: CatalogReference,
-		public orientaion: Orientation = null,
+		orientaion: Orientation = null,
 	) {
 
-		super();
+		super( null, orientaion );
 
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 
 		throw new Error( 'Method not implemented.' );
 

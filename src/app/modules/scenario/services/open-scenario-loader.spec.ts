@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PolylineShape } from '../models/tv-trajectory';
-import { WorldPosition } from '../models/positions/tv-world-position';
-import { OpenScenarioLoader } from './open-scenario.loader';
 import { VehicleEntity } from '../models/entities/vehicle-entity';
+import { WorldPosition } from '../models/positions/tv-world-position';
+import { PolylineShape } from '../models/tv-trajectory';
+import { OpenScenarioLoader } from './open-scenario.loader';
 import { ParameterResolver } from './scenario-builder.service';
 
 const vehicleCatalogContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -41,7 +41,7 @@ const vehicleCatalogContent = `<?xml version="1.0" encoding="UTF-8"?>
       <Properties />
     </Vehicle>
   </Catalog>
-</OpenSCENARIO>`
+</OpenSCENARIO>`;
 
 describe( 'ReaderService', () => {
 
@@ -125,7 +125,7 @@ describe( 'ReaderService', () => {
 			attr_owner: 'Ego'
 		};
 
-		const story = loader.parseStory( xml );
+		const story = loader.parseStory( xml, null );
 
 		expect( story.name ).toBe( xml.attr_name );
 		expect( story.ownerName ).toBe( xml.attr_owner );
@@ -260,10 +260,10 @@ describe( 'ReaderService', () => {
 				attr_strategy: 'fastest',
 				Position: { World: { attr_x: 1, attr_y: 2, attr_z: 3 } },
 			},
-			{
-				attr_strategy: 'fastest',
-				Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
-			}, ]
+				{
+					attr_strategy: 'fastest',
+					Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
+				}, ]
 		};
 
 		const route = loader.parseRoute( xml );
@@ -335,6 +335,4 @@ describe( 'CatalogLoader', () => {
 	} );
 
 
-
-
-} )
+} );

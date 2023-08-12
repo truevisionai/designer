@@ -56,7 +56,7 @@ import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/
 import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
-import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { DynamicArrayInspectorComponent, DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 
 @NgModule( {
@@ -92,6 +92,7 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
 		FieldHostDirective,
 	],
 	imports: [
@@ -124,7 +125,9 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 	],
 	exports: [
 		TransformInspectorComponent,
-		ObjectPreviewComponent
+		ObjectPreviewComponent,
+		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
 	],
 	entryComponents: [
 		OdSignalInspectorComponent,
@@ -155,6 +158,7 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
 	]
 } )
 export class TvMapModule {

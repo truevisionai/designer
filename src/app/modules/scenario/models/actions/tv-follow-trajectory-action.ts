@@ -123,7 +123,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 		// console.log( vertex );
 
-		const target = vertex.position.toVector3();
+		const target = vertex.position.getVectorPosition();
 
 		const targetDir = target.clone().sub( entity.position );
 

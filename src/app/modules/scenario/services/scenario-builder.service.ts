@@ -4,13 +4,13 @@
 
 import { SceneService } from 'app/core/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { cloneDeep } from 'lodash';
+import { isObject } from 'rxjs/internal-compatibility';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
-import { cloneDeep } from 'lodash';
-import { isObject } from 'rxjs/internal-compatibility';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 
 
 /**
@@ -18,21 +18,24 @@ import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.servic
  */
 export class ScenarioBuilder {
 
-	constructor ( public scenario: TvScenario ) { }
+	constructor (
+		public scenario: TvScenario
+	) {
+	}
 
 	public buildScenario (): void {
 
-		this.scenario.objects.forEach( ( value, key ) => this.buildEntityObject( value ) );
+		this.scenario.objects.forEach( ( value, key ) => ScenarioBuilder.buildEntityObject( value ) );
 
 		this.scenario.executeInitActions();
 
-		this.addEndCondition( this.scenario.storyboard );
+		ScenarioBuilder.addEndCondition( this.scenario.storyboard );
 
 		// return this.scenario;
 
 	}
 
-	private addEndCondition ( storyboard: Storyboard ) {
+	private static addEndCondition ( storyboard: Storyboard ) {
 
 		// if already has end conditions then return
 		if ( storyboard.endConditionGroups.length > 0 ) return;
@@ -43,7 +46,7 @@ export class ScenarioBuilder {
 
 	}
 
-	private buildEntityObject ( entity: ScenarioEntity ): void {
+	private static buildEntityObject ( entity: ScenarioEntity ): void {
 
 		if ( !entity ) TvConsole.error( 'Entity is null' );
 
@@ -63,7 +66,8 @@ export class ParameterResolver {
 	constructor (
 		private scenario: Partial<TvScenario> = null,
 		private scenarioString: string = null
-	) { }
+	) {
+	}
 
 	setScenarioString ( value: string ) {
 

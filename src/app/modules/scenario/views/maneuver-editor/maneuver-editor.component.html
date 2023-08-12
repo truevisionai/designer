@@ -5,7 +5,21 @@
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
-	<span>Maneuver</span>
+	<span>Maneuver - {{maneuver?.name}}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button
+		class="inspector-toolbar-icon"
+		[matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item
+			(click)="addEvent()">Add Event
+		</button>
+		<button mat-menu-item
+			(click)="delete($event)">Delete Maneuver
+		</button>
+	</mat-menu>
 </mat-toolbar>
 
 <div *ngIf="isOpen">

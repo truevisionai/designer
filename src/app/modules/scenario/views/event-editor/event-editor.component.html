@@ -5,7 +5,7 @@
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
-	<span>Event</span>
+	<span>Event {{event?.name}} </span>
 	<span class="spacer"></span>
 	<button mat-icon-button
 		class="inspector-toolbar-icon"
@@ -79,11 +79,21 @@
 			[condition]="condition">
 		</app-condition-editor>
 	</div>
+	<div *ngIf="event?.startConditions.length == 0">
+		<app-button-field [matMenuTriggerFor]="conditionMenu"
+			label="Add Condition">
+		</app-button-field>
+	</div>
 
 	<div *ngFor="let action of event.getActions()">
 		<app-action (removed)="removeAction($event)"
 			[action]="action"
 			[entity]="entity">
 		</app-action>
+	</div>
+	<div *ngIf="event.getActions().length == 0">
+		<app-button-field [matMenuTriggerFor]="actionMenu"
+			label="Add Action">
+		</app-button-field>
 	</div>
 </div>

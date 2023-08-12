@@ -2,25 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Euler, Vector3 } from 'three';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 
 export class RelativeWorldPosition extends Position {
 
 	public readonly label: string = 'Relative World Position';
 	public readonly type = PositionType.RelativeWorld;
+	public readonly isDependent: boolean = true;
 
 	constructor (
 		public entityRef: string,
 		public dx: number = 0,
 		public dy: number = 0,
 		public dz: number = 0,
-		public orientation: Orientation = null
+		orientation: Orientation = null
 	) {
-		super();
+		super( null, orientation );
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {
@@ -31,7 +32,7 @@ export class RelativeWorldPosition extends Position {
 			attr_dy: this.dy,
 			attr_dz: this.dz,
 			Orientation: this.orientation?.toXML(),
-		}
+		};
 
 	}
 
@@ -48,7 +49,7 @@ export class RelativeWorldPosition extends Position {
 		return new RelativeWorldPosition( entity, dx, dy, dz, orientation );
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 
 		// Retrieve the position of the referenced entity
 		const entityPosition = this.entityRef ?
@@ -86,7 +87,7 @@ export class RelativeWorldPosition extends Position {
 		return relativeOrientation.toEuler();
 	}
 
-	toOrientation (): Orientation {
+	getOrientation (): Orientation {
 
 		return new Orientation();
 

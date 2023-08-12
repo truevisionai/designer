@@ -72,7 +72,7 @@ export abstract class EntityCondition extends Condition {
 			const entityPosition = this.getEntityPosition( entityName );
 
 			// For free space distance, calculate the Euclidean distance from the entity to the position
-			return entityPosition.distanceTo( position.toVector3() );
+			return entityPosition.distanceTo( position.getVectorPosition() );
 
 		} else {
 

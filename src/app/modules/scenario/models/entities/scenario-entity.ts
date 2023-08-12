@@ -12,9 +12,14 @@ import { Orientation } from '../tv-orientation';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { OpenDriveProperties } from './open-drive-properties';
-import { ScenarioObjectType } from '../tv-enums';
+import { PositionType, ScenarioObjectType } from '../tv-enums';
+import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { WorldPosition } from '../positions/tv-world-position';
+import { TeleportAction } from '../actions/tv-teleport-action';
+import { PositionFactory } from '../../builders/position-factory';
+import { IHasPosition } from 'app/modules/three-js/objects/i-has-position';
 
-export abstract class ScenarioEntity extends GameObject {
+export abstract class ScenarioEntity extends GameObject implements IHasUpdate, IHasPosition {
 
 	public abstract scenarioObjectType: ScenarioObjectType;
 	public parameterDeclarations: ParameterDeclaration[] = [];
@@ -40,6 +45,29 @@ export abstract class ScenarioEntity extends GameObject {
 		this.userData.entity = this;
 		// this.addArrow()
 	}
+
+	copyPosition ( position: Vector3 ): void {
+		this.setPosition( position );
+	}
+
+	getPosition (): Vector3 {
+		return this.getPosition();
+	}
+
+	update (): void {
+
+		const teleportAction = this.initActions.find( action => action instanceof TeleportAction ) as TeleportAction;
+
+		if ( teleportAction ) {
+
+			const position = PositionFactory.createPositionFromVector( teleportAction.position.type, this.position.clone() );
+
+			teleportAction.setPosition( position );
+
+		}
+
+	}
+
 	addArrow () {
 
 		// assuming yourObject is the object you want to show direction for

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ScenarioInstance } from '../../services/scenario-instance';
+import { EntityRef } from '../entity-ref';
 import { TargetType } from '../tv-enums';
 import { Target } from './target';
 
@@ -10,15 +10,9 @@ export class RelativeTarget extends Target {
 
 	public targetType = TargetType.relative;
 
-	constructor ( public entityName: string, public target: number ) {
+	constructor ( public entityRef: EntityRef, public target: number ) {
 
 		super();
-
-	}
-
-	get entity () {
-
-		return ScenarioInstance.scenario.findEntityOrFail( this.entityName );
 
 	}
 

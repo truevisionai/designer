@@ -13,7 +13,7 @@ export class RoundLine {
 
 	curveType;
 
-	mesh;
+	mesh: Line;
 
 	constructor ( public points: BaseControlPoint[] ) {
 
@@ -117,7 +117,7 @@ export class RoundLine {
 
 		this.calcRadius();
 
-		const position: BufferAttribute = this.mesh.geometry.attributes.position;
+		const position = this.mesh.geometry.attributes.position as BufferAttribute;
 
 		const pos = new Vector3();
 

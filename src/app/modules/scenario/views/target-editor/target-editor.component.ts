@@ -27,7 +27,7 @@ export class TargetEditorComponent {
 
 	onEntityChanged ( $entity: string ) {
 
-		this.relativeTarget.entityName = $entity;
+		this.relativeTarget.entityRef.name = $entity;
 
 	}
 

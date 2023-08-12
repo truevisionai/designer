@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
 import { ActionFactory } from '../../builders/action-factory';
-import { ActionService } from '../../builders/action-service';
+import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
 import { PrivateAction } from '../../models/private-action';
 import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
@@ -27,14 +27,10 @@ export class EntityInspector implements OnInit, IComponent {
 	actionType = ActionType;
 	conditionType = ConditionType;
 
-	@ViewChild( 'addAction' ) addAction: MatSelect;
-	@ViewChild( 'addCondition' ) addCondition: MatSelect;
-
 	debug: boolean = false;
 
 	constructor (
-		public dialog: MatDialog,
-		public actionService: ActionService,
+		public dialog: MatDialog
 	) {
 	}
 
@@ -70,15 +66,9 @@ export class EntityInspector implements OnInit, IComponent {
 
 		if ( $actionType !== null ) {
 
-			const action = ActionFactory.createActionWithoutName( $actionType, this.entity );
+			const story = ScenarioElementFactory.makeStory( this.entity, $actionType );
 
-			if ( action === null ) {
-				return;
-			}
-
-			this.scenario.addActionEvent( this.entity, action );
-
-			this.addAction.value = null;
+			this.scenario.addStory( story );
 
 		}
 	}

@@ -2,13 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TitleCasePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 
 @Component( {
 	selector: 'app-dropdown-field',
 	templateUrl: './dropdown-field.component.html',
-	styleUrls: [ './dropdown-field.component.css' ]
+	styleUrls: [ './dropdown-field.component.css' ],
+	providers: [ TitleCasePipe ]
 } )
 export class DropdownFieldComponent extends AbstractFieldComponent implements OnInit {
 
@@ -18,7 +20,7 @@ export class DropdownFieldComponent extends AbstractFieldComponent implements On
 
 	@Input() options: any[] = [];
 
-	constructor () {
+	constructor ( private titleCase: TitleCasePipe ) {
 
 		super();
 
@@ -35,4 +37,17 @@ export class DropdownFieldComponent extends AbstractFieldComponent implements On
 
 	}
 
+	showOption ( option: any ) {
+
+		if ( typeof ( option ) == 'string' ) {
+
+			return this.titleCase.transform( option );
+
+		} else {
+
+			return option;
+
+		}
+
+	}
 }

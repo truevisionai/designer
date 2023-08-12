@@ -16,10 +16,15 @@ import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-dist
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { ConditionType, RelativeDistanceType, Rule, TriggeringRule } from '../models/tv-enums';
+import { Condition } from '../models/conditions/tv-condition';
+import { Vector3 } from 'three';
 
 export class ConditionFactory {
+	static reset () {
+		// throw new Error( 'Method not implemented.' );
+	}
 
-	public static createCondition ( type: ConditionType, entity?: ScenarioEntity ) {
+	public static createCondition ( type: ConditionType, entity?: ScenarioEntity ): Condition {
 
 		switch ( type ) {
 
@@ -76,7 +81,7 @@ export class ConditionFactory {
 
 	private static createDistanceCondition ( entity?: ScenarioEntity ) {
 
-		const position = new WorldPosition();
+		const position = new WorldPosition( entity?.position.clone() || new Vector3() );
 
 		return new DistanceCondition( position, 10, false, false, Rule.GreaterThan );
 
@@ -84,7 +89,7 @@ export class ConditionFactory {
 
 	private static createReachedPositionCondition ( entity?: ScenarioEntity ) {
 
-		const position = new WorldPosition();
+		const position = new WorldPosition( entity?.position.clone() || new Vector3() );
 
 		const condition = new ReachPositionCondition( position, 5 );
 

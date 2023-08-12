@@ -11,18 +11,20 @@ export class RelativeRoadPosition extends Position {
 
 	readonly label: string = 'RelativeRoadPosition';
 	readonly type: PositionType = PositionType.RelativeRoad;
+	readonly isDependent: boolean = true;
+
 
 	constructor (
 		public entity: string,
 		public roadId: number,
 		public ds: number,
 		public dt: number,
-		public orientation: Orientation
+		orientation: Orientation
 	) {
-		super();
+		super( null, orientation );
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 		throw new Error( 'Method not implemented.' );
 	}
 

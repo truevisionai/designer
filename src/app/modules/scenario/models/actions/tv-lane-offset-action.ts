@@ -70,7 +70,7 @@ export class LaneOffsetAction extends PrivateAction {
 
 			if ( this.target instanceof RelativeTarget ) {
 
-				this.targetOffset = this.target.value + this.target.entity.getCurrentLaneOffset();
+				this.targetOffset = this.target.value + this.target.entityRef.entity.getCurrentLaneOffset();
 
 			} else if ( this.target instanceof AbsoluteTarget ) {
 

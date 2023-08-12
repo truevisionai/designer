@@ -3,48 +3,25 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
-import { SimulationTimeCondition } from 'app/modules/scenario/models/conditions/tv-simulation-time-condition';
-import { ActionType, Rule } from 'app/modules/scenario/models/tv-enums';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { MathUtils, Vector3 } from 'three';
-import { ActionFactory } from '../../../modules/scenario/builders/action-factory';
 import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
-import { Maths } from 'app/utils/maths';
-import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-action';
+import { VehicleTool } from './vehicle-tool';
+import { SelectPointCommand } from 'app/core/commands/select-point-command';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 
 
 export class AddVehicleCommand extends BaseCommand {
 
-	private setInspector: SetInspectorCommand;
+	private setInspector: SelectPointCommand;
 
-	constructor ( public entity: VehicleEntity, roadCoord: TvRoadCoord ) {
+	constructor ( tool: VehicleTool, public entity: VehicleEntity, point: DynamicControlPoint<ScenarioEntity> ) {
 
 		super();
 
-		const worldPosition = new WorldPosition(
-			roadCoord.position.x, roadCoord.position.y, roadCoord.position.z,
-			roadCoord.rotation.z - Maths.M_PI_2, 0, 0
-		);
-
-		entity.name = `Vehicle${ ScenarioInstance.scenario.objects.size + 1 }`;
-
-		const positionAction = new TeleportAction( worldPosition );
-		const speedAction = ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, entity );
-
-		entity.addInitAction( positionAction );
-		entity.addInitAction( speedAction );
-
-		positionAction.execute( entity );
-		speedAction.execute( entity );
-
-		// this.addStoryActions();
-
-		this.setInspector = new SetInspectorCommand( EntityInspector, entity );
+		this.setInspector = new SelectPointCommand( tool, point, EntityInspector, point.mainObject );
 	}
 
 	execute (): void {
@@ -70,37 +47,6 @@ export class AddVehicleCommand extends BaseCommand {
 	redo (): void {
 
 		this.execute();
-
-	}
-
-	private addStoryActions () {
-
-		const story = this.scenario.createStory( this.entity );
-
-		this.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10, Rule.GreaterThan ) );
-
-		const act = story.addNewAct( `Story-${ MathUtils.randInt( 1, 100 ) }` );
-
-		const sequence = act.addNewSequence( `Sequence-${ MathUtils.randInt( 1, 100 ) }` + act.name, 1, this.entity.name );
-
-		act.addStartCondition( new SimulationTimeCondition( 2, Rule.GreaterThan ) );
-
-		const maneuver = sequence.addNewManeuver( `Maneuver-${ MathUtils.randInt( 1, 100 ) }` );
-
-		// const event = maneuver.addNewEvent( 'MyLaneChangeLeftEvent', 'overwrite' );
-
-		// event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
-		// 	new LaneChangeDynamics( 5, null, DynamicsShape.linear ),
-		// 	new AbsoluteTarget( -3 ),
-		// ) );
-
-		// event.addNewAction( 'MyLaneChangeLeftAction', new LaneChangeAction(
-		// 	new LaneChangeDynamics( 5, null, DynamicsShape.cubic ),
-		// 	new RelativeTarget( this.entity.name, 1 ),
-		// ) );
-
-
-		// event.addStartCondition( new SimulationTimeCondition( 2, Rule.greater_than ) );
 
 	}
 }
