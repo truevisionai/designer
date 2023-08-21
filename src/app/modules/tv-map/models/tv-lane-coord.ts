@@ -78,12 +78,13 @@ export class TvRoadCoord {
 		return this.toPosTheta().toVector3();
 	}
 
-	get rotation (): Vector3 {
-		return new Vector3( this.r, this.p, this.h );
-	}
-
 	get orientation (): Orientation {
-		return new Orientation( this.h, this.p, this.r );
+
+		let h = this.h;
+
+		if ( this.t > 0 ) h += Math.PI;
+
+		return new Orientation( h, this.p, this.r );
 	}
 }
 

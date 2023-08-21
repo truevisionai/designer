@@ -51,7 +51,7 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 	}
 
 	getPosition (): Vector3 {
-		return this.getPosition();
+		return this.position;
 	}
 
 	update (): void {
@@ -115,7 +115,11 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 	}
 
 	public addInitAction ( action: PrivateAction ): void {
+
 		this.initActions.push( action );
+
+		action.updated.subscribe( action => action.execute( this ) );
+
 	}
 
 	public removeInitAction ( action: PrivateAction ): void {

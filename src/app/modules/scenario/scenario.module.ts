@@ -63,6 +63,9 @@ import { RoadPositionEditorComponent } from './views/positions/road-position-edi
 import { WorldPositionEditorComponent } from './views/positions/world-position-editor/world-position-editor.component';
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
+import { RelativeLanePositionComponent } from './views/positions/relative-lane-position/relative-lane-position.component';
+import { RelativeRoadPositionComponent } from './views/positions/relative-road-position/relative-road-position.component';
+import { TrajectoryPositionComponent } from './views/positions/trajectory-position/trajectory-position.component';
 // import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.component';
 
 @NgModule( {
@@ -105,6 +108,9 @@ import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.componen
 		EventEditorComponent,
 		RelativeWorldComponent,
 		ImportOpenScenarioDialogComponent,
+		RelativeLanePositionComponent,
+		RelativeRoadPositionComponent,
+		TrajectoryPositionComponent,
 	],
 	imports: [
 		CommonModule,

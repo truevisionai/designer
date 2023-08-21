@@ -97,7 +97,7 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { RelativeRoadPosition } from './relative-road.position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { ParameterResolver } from './scenario-builder.service';
 import {
 	TrafficSignalController,
@@ -462,7 +462,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		const dy = parseFloat( xml.attr_dy || 0 );
 		const dz = parseFloat( xml.attr_dz || 0 );
 
-		return new RelativeObjectPosition( entity, dx, dy, dz, orientation );
+		return new RelativeObjectPosition( new EntityRef( entity ), new Vector3( dx, dy, dz ), orientation );
 	}
 
 	parseOrientation ( xml: XmlElement ): Orientation {
@@ -1367,14 +1367,14 @@ export class OpenScenarioLoader extends AbstractReader {
 			// 0.9
 			this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-				entity.initActions.push( this.parsePrivateAction( xml, scenario ) );
+				entity.addInitAction( this.parsePrivateAction( xml, scenario ) );
 
 			} );
 
 			// 1.0
 			this.readAsOptionalArray( xml.PrivateAction, ( xml ) => {
 
-				entity.initActions.push( this.parsePrivateAction( xml, scenario ) );
+				entity.addInitAction( this.parsePrivateAction( xml, scenario ) );
 
 			} );
 

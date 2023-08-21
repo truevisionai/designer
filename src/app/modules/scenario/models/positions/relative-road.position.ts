@@ -3,9 +3,9 @@
  */
 
 import { Vector3 } from 'three';
-import { Position } from '../models/position';
-import { PositionType } from '../models/tv-enums';
-import { Orientation } from '../models/tv-orientation';
+import { Position } from '../position';
+import { PositionType } from '../tv-enums';
+import { Orientation } from '../tv-orientation';
 
 export class RelativeRoadPosition extends Position {
 
@@ -26,6 +26,12 @@ export class RelativeRoadPosition extends Position {
 
 	getVectorPosition (): Vector3 {
 		throw new Error( 'Method not implemented.' );
+	}
+
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		throw new Error( 'Method not implemented.' );
+
 	}
 
 }

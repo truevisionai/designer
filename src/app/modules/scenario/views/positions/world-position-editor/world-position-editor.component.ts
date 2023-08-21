@@ -17,9 +17,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	onPositionChanged ( $event: Vector3 ) {
 
-		this.position.vector3.x = $event.x;
-		this.position.vector3.y = $event.y;
-		this.position.vector3.z = $event.z;
+		this.position.setPosition( $event );
 
 		this.positionModified.emit( this.position );
 
@@ -27,9 +25,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	onRotationChanged ( $event: Vector3 ) {
 
-		this.position.orientation.h = $event.x;
-		this.position.orientation.p = $event.y;
-		this.position.orientation.r = $event.z;
+		this.position.orientation?.copyFromVector3( $event );
 
 		this.positionModified.emit( this.position );
 

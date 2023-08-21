@@ -22,6 +22,7 @@ export abstract class TvAction {
 	public isCompleted: boolean;
 	public hasStarted: boolean;
 	public completed = new EventEmitter<StoryboardEvent>();
+	public updated = new EventEmitter<TvAction>();
 
 	public name: string;
 

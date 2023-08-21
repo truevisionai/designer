@@ -18,21 +18,23 @@ import { RoadPosition } from '../models/positions/tv-road-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PositionType } from '../models/tv-enums';
 import { Orientation } from '../models/tv-orientation';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 export class PositionFactory {
 	static reset () {
 		// throw new Error( 'Method not implemented.' );
 	}
 
-	public static createPosition ( type: PositionType, position: Position ): Position {
+	public static createPosition ( type: PositionType, position: Position, entity?: ScenarioEntity ): Position {
 
 		const vector3 = position ? position.getVectorPosition() : new Vector3( 0, 0, 0 );
 
-		return this.createPositionFromVector( type, vector3, position.orientation );
+		return this.createPositionFromVector( type, vector3, position.orientation, entity );
 
 	}
 
-	public static createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation ) {
+	public static createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation, entity?: ScenarioEntity ) {
 
 		if ( type == PositionType.World ) {
 
@@ -42,37 +44,31 @@ export class PositionFactory {
 
 		if ( type == PositionType.RelativeWorld ) {
 
-			return new RelativeWorldPosition( null, vector3.x, vector3.y, vector3.z );
+			// Calculate the relative position based on the reference entity's position
+			const delta = vector3.clone().sub( entity?.position || new Vector3( 0, 0, 0 ) );
+
+			return new RelativeWorldPosition( new EntityRef( entity?.name ), delta, orientation?.clone() );
 
 		}
 
 		if ( type == PositionType.RelativeObject ) {
 
-			return new RelativeObjectPosition( null, vector3.x, vector3.y, vector3.z );
+			// Calculate the relative position based on the reference entity's position
+			const delta = vector3.clone().sub( entity?.position || new Vector3( 0, 0, 0 ) );
+
+			return new RelativeObjectPosition( new EntityRef( entity?.name ), delta, orientation?.clone() );
 
 		}
 
 		if ( type == PositionType.Road ) {
 
-			const posTheta = new TvPosTheta();
-
-			const road = TvMapQueries.getRoadByCoords( vector3.x, vector3.y, posTheta );
-
-			if ( road ) {
-
-				return new RoadPosition( road.id, posTheta.s, posTheta.t, null );
-
-			} else {
-
-				TvConsole.error( `Road not found at ${ vector3.x }, ${ vector3.y }` );
-
-			}
+			return this.createRoadPosition( vector3, orientation );
 
 		}
 
 		if ( type == PositionType.RelativeRoad ) {
 
-			SnackBar.error( 'RelativeRoad position not implemented' );
+			return this.createRelativeRoadPosition( null, vector3, orientation );
 
 		}
 
@@ -91,6 +87,42 @@ export class PositionFactory {
 		if ( type == PositionType.Route ) {
 
 			SnackBar.error( 'Route position not implemented' );
+
+		}
+
+	}
+
+	static createRoadPosition ( vector3: Vector3, orientation: Orientation ): RoadPosition {
+
+		const posTheta = new TvPosTheta();
+
+		const road = TvMapQueries.getRoadByCoords( vector3.x, vector3.y, posTheta );
+
+		if ( road ) {
+
+			return new RoadPosition( road.id, posTheta.s, posTheta.t, null );
+
+		} else {
+
+			TvConsole.error( `Road not found at ${ vector3.x }, ${ vector3.y }` );
+
+		}
+
+	}
+
+	static createRelativeRoadPosition ( entity: EntityRef, vector3: Vector3, orientation: Orientation ): RelativeRoadPosition {
+
+		const posTheta = new TvPosTheta();
+
+		const road = TvMapQueries.getRoadByCoords( vector3.x, vector3.y, posTheta );
+
+		if ( road ) {
+
+			return new RelativeRoadPosition( entity?.name, road.id, posTheta.s, posTheta.t, orientation );
+
+		} else {
+
+			TvConsole.error( `Road not found at ${ vector3.x }, ${ vector3.y }` );
 
 		}
 
@@ -116,7 +148,21 @@ export class PositionFactory {
 
 	public static createRelativeLanePosition ( entityRef: string, vector3: Vector3, orientation: Orientation ): RelativeLanePosition {
 
-		return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
+		// return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
+
+		const posTheta = new TvPosTheta();
+
+		const results = TvMapQueries.getLaneByCoords( vector3.x, vector3.y, posTheta );
+
+		if ( results ) {
+
+			return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
+
+		} else {
+
+			TvConsole.error( `Lane not found at ${ vector3.x }, ${ vector3.y }` );
+
+		}
 
 	}
 

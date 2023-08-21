@@ -5,8 +5,8 @@
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { Vector3 } from 'three';
+import { SerializedField } from '../../../../core/components/serialization';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
-import { ScenarioEntity } from '../entities/scenario-entity';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
@@ -18,7 +18,15 @@ export class RelativeLanePosition extends Position {
 	public readonly type = PositionType.RelativeLane;
 	public readonly isDependent: boolean = true;
 
-	private entity: ScenarioEntity;
+	private _entityRef: EntityRef;
+
+	private _dLane: number;
+
+	private _ds: number;
+
+	private _offset: number = 0;
+
+	private _dsLane: number = 0;
 
 	/**
 	 *
@@ -36,25 +44,89 @@ export class RelativeLanePosition extends Position {
 	 * @param orientation
 	 */
 	constructor (
-		public entityRef: EntityRef,
-		public dLane: number,
-		public ds: number,
-		public offset: number = 0,
-		public dsLane: number = 0,
+		entityRef: EntityRef,
+		dLane: number,
+		ds: number,
+		offset: number = 0,
+		dsLane: number = 0,
 		orientation: Orientation = null
 	) {
 		super( null, orientation );
+		this._dsLane = dsLane;
+		this._offset = offset;
+		this._ds = ds;
+		this._dLane = dLane;
+		this._entityRef = entityRef;
+		console.log( 'init', this );
 	}
 
+	@SerializedField( { type: 'int' } )
+	get dsLane (): number {
+		return this._dsLane;
+	}
+
+	set dsLane ( value: number ) {
+		this._dsLane = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'float' } )
+	get offset (): number {
+		return this._offset;
+	}
+
+	set offset ( value: number ) {
+		this._offset = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'float' } )
+	get ds (): number {
+		return this._ds;
+	}
+
+	set ds ( value: number ) {
+		this._ds = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'int' } )
+	get dLane (): number {
+		return this._dLane;
+	}
+
+	set dLane ( value: number ) {
+		this._dLane = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'string' } )
+	get entityName (): string {
+		return this._entityRef.name;
+	}
+
+	set entityName ( value: string ) {
+		this._entityRef.name = value;
+		this.updated.emit();
+	}
+
+	get entityRef (): EntityRef {
+		return this._entityRef;
+	}
+
+	set entityRef ( value: EntityRef ) {
+		this._entityRef = value;
+		this.updated.emit();
+	}
 
 	toXML ( version?: OpenScenarioVersion ) {
 
 		return {
-			attr_entityRef: this.entityRef?.name,
-			attr_dLane: this.dLane,
-			attr_ds: this.ds,
-			attr_offset: this.offset,
-			attr_dsLane: this.dsLane,
+			attr_entityRef: this._entityRef?.name,
+			attr_dLane: this._dLane,
+			attr_ds: this._ds,
+			attr_offset: this._offset,
+			attr_dsLane: this._dsLane,
 			Orientation: this.orientation?.toXML( version ),
 		};
 
@@ -75,24 +147,33 @@ export class RelativeLanePosition extends Position {
 
 	getVectorPosition (): Vector3 {
 
-		if ( !this.entityRef ) TvConsole.info( 'No object reference found for relative lane position' );
-		if ( !this.entityRef ) return new Vector3();
+		console.trace( 'getVectorPosition' );
 
-		const entity = this.entityRef?.entity;
+		if ( !this._entityRef ) TvConsole.info( 'No object reference found for relative lane position' );
+		if ( !this._entityRef ) return new Vector3();
+
+		const entity = this._entityRef?.entity;
 
 		if ( !entity ) TvConsole.info( 'No object reference found for relative lane position' );
 		if ( !entity ) return new Vector3();
 
-		const laneId = entity.laneId + this.dLane;
+		const laneId = entity.laneId + this._dLane;
 
 		const roadId = entity.roadId;
 
-		const sCoordinate = entity.sCoordinate + this.ds;
+		const sCoordinate = entity.sCoordinate + this._ds;
 
-		const offset = entity.getCurrentLaneOffset() + this.offset;
+		const offset = entity.getCurrentLaneOffset() + this._offset;
 
 		return TvMapQueries.getLanePosition( roadId, laneId, sCoordinate, offset );
 
 	}
+
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
 
 }

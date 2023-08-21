@@ -31,4 +31,10 @@ export class TrajectoryPosition extends Position {
 
 	}
 
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
 }

@@ -8,6 +8,8 @@ import { CommandHistory } from 'app/services/command-history';
 import { BooleanFieldComponent } from 'app/shared/fields/boolean-field/boolean-field.component';
 import { DoubleFieldComponent } from 'app/shared/fields/double-field/double-field.component';
 import { EnumFieldComponent } from 'app/shared/fields/enum-field/enum-field.component';
+import { RoadIdFieldComponent } from 'app/shared/fields/road-id-field/road-id-field.component';
+import { SelectEntityFieldComponent } from 'app/shared/fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
 import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
 
@@ -26,6 +28,8 @@ const fieldComponents = {
 	'boolean': BooleanFieldComponent,
 	'enum': EnumFieldComponent,
 	'vector3': Vector3FieldComponent,
+	'road': RoadIdFieldComponent,
+	'entity': SelectEntityFieldComponent,
 };
 
 @Component( {
@@ -38,6 +42,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 	@Input() data: any;
 
 	@Input() label: string = 'Inspector';
+
+	@Input() showToolbar = true;
 
 	serializableFields: { field: string, settings: any }[] = [];
 
