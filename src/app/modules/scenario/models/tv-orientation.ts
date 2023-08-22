@@ -2,23 +2,55 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, Vector3 } from 'three';
+import { Euler, Matrix3, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { OpenScenarioVersion, OrientationType } from './tv-enums';
+import { Maths } from 'app/utils/maths';
 
+/**
+ * Orientation defined in terms of heading, pitch, roll angles.
+ * heading is the rotation around the z-axis, pitch is the rotation around the y-axis,
+ * and roll is the rotation around the x-axis.
+ * Assumed the positive rotation to be counter-clockwise.
+ *
+ * h=0 means the object is facing towards the positive x-axis .i.e towards east
+ * h=1.5 means the object is facing towards the positive y-axis .i.e towards north
+ * h=3 means the object is facing towards the negative x-axis .i.e towards west
+ * h is in radians and in the range of 0 to 2PI (0 to 360 degrees)
+ * h is positive in the counter-clockwise direction
+ *
+ * positive value means a counter-clockwise shift in both threejs and open scenario
+ *
+ *
+ */
 export class Orientation {
 
+	private euler: Euler;
+
 	constructor (
-		public h: number = 0,
-		public p: number = 0,
-		public r: number = 0,
+		h: number = 0,
+		p: number = 0,
+		r: number = 0,
 		public type: OrientationType = OrientationType.absolute
 	) {
+		this.euler = new Euler( r, p, h - Maths.M_PI_2 );
 	}
+
+	get h () { return this.euler.z }
+
+	get p () { return this.euler.y }
+
+	get r () { return this.euler.x }
+
+	set h ( value: number ) { this.euler.z = value }
+
+	set p ( value: number ) { this.euler.y = value }
+
+	set r ( value: number ) { this.euler.x = value }
 
 	toXML ( version?: OpenScenarioVersion ) {
 		return {
-			attr_h: this.h ?? 0,
+			attr_h: this.h + Maths.M_PI_2 ?? 0,
 			attr_p: this.p ?? 0,
 			attr_r: this.r ?? 0,
 			attr_type: this.type
@@ -43,7 +75,7 @@ export class Orientation {
 	}
 
 	toEuler (): Euler {
-		return new Euler( this.r, this.p, this.h - Math.PI / 2 );
+		return this.euler;
 	}
 
 	toVector3 (): Vector3 {
@@ -61,6 +93,12 @@ export class Orientation {
 		this.type = orentation.type;
 	}
 
+	copyFromVector3 ( value: Vector3 ) {
+		this.h = value.x;
+		this.p = value.y;
+		this.r = value.z;
+	}
+
 	getRelativeOrientation ( orientation: Orientation ): Orientation {
 
 		return new Orientation(
@@ -69,6 +107,53 @@ export class Orientation {
 			this.r + orientation.r,
 			OrientationType.relative
 		);
+	}
+
+	getRotationMatrix (): Matrix3 {
+
+		const cosR = Math.cos( this.r );
+		const sinR = Math.sin( this.r );
+		const cosP = Math.cos( this.p );
+		const sinP = Math.sin( this.p );
+		const cosH = Math.cos( this.h );
+		const sinH = Math.sin( this.h );
+
+		// Compute individual matrices
+		const rollMatrix = new Matrix3().set(
+			1, 0, 0,
+			0, cosR, -sinR,
+			0, sinR, cosR
+		);
+
+		const pitchMatrix = new Matrix3().set(
+			cosP, 0, sinP,
+			0, 1, 0,
+			-sinP, 0, cosP
+		);
+
+		const yawMatrix = new Matrix3().set(
+			cosH, -sinH, 0,
+			sinH, cosH, 0,
+			0, 0, 1
+		);
+
+		// Multiply matrices together
+		// Assuming Matrix3x3 has a multiply method
+		return yawMatrix.multiply( pitchMatrix.multiply( rollMatrix ) );
+
+	}
+
+	add ( relativeOrientation: Orientation ) {
+
+		this.h += relativeOrientation.h;
+		this.p += relativeOrientation.p;
+		this.r += relativeOrientation.r;
+
+		return this;
+	}
+
+	isNotEmpty () {
+		return this.h != 0 && this.p != 0 && this.r != 0;
 	}
 }
 

@@ -80,6 +80,8 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 	disable (): void {
 
+		super.disable();
+
 		this.points.forEach( ( point ) => {
 
 			point.parent.remove( point );
@@ -179,17 +181,8 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		const teleportAction = entity.initActions.find( action => action instanceof TeleportAction ) as TeleportAction;
 
-		if ( teleportAction ) {
+		teleportAction?.position?.updateFromWorldPosition( roadCoord.position, roadCoord.orientation );
 
-			let position = teleportAction.position;
-
-			position.setPosition( roadCoord.position );
-
-			position.setOrientationV2( roadCoord.orientation );
-
-			teleportAction.execute( entity );
-
-		}
 	}
 
 	onPointerUp ( pointerEventData: PointerEventData ): void {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, Directive, Input, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, Directive, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { getSerializableActions, getSerializableFields } from 'app/core/components/serialization';
@@ -12,6 +12,7 @@ import { RoadIdFieldComponent } from 'app/shared/fields/road-id-field/road-id-fi
 import { SelectEntityFieldComponent } from 'app/shared/fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
 import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
+import { Subscription } from 'rxjs';
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -37,7 +38,7 @@ const fieldComponents = {
 	templateUrl: './dynamic-inspector.component.html',
 	styleUrls: [ './dynamic-inspector.component.scss' ]
 } )
-export class DynamicInspectorComponent implements OnInit, AfterViewInit, IComponent {
+export class DynamicInspectorComponent implements OnInit, AfterViewInit, IComponent, OnDestroy {
 
 	@Input() data: any;
 
@@ -51,7 +52,15 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
+	updateSub?: Subscription;
+
 	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
+
+	ngOnDestroy (): void {
+
+		this.updateSub?.unsubscribe();
+
+	}
 
 	ngOnInit () {
 
@@ -123,6 +132,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		} )
 
 		componentRef.changeDetectorRef.detectChanges();
+
+		this.updateSub = data?.updated?.subscribe( () => componentRef.instance.value = data[ item.field ] );
 
 		// }
 

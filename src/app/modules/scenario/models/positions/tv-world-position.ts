@@ -69,7 +69,7 @@ export class WorldPosition extends Position {
 
 		this.vector0.copy( position );
 
-		this.orientation.copy( orientation )
+		if ( orientation ) this.orientation.copy( orientation )
 
 		this.updated.emit();
 

@@ -45,7 +45,7 @@ import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, V
 import { XMLBuilder } from 'fast-xml-parser';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
-import { RelativeRoadPosition } from './relative-road.position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { RoadPosition } from '../models/positions/tv-road-position';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { AcquirePositionAction, FollowRouteAction } from '../models/actions/tv-routing-action';
@@ -1398,10 +1398,10 @@ export class WriterService {
 
 		return {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
-				attr_dx: position.dx,
-				attr_dy: position.dy,
-				attr_dz: position.dz,
+				[ this.entityKey ]: position.entityRef?.name,
+				attr_dx: position.delta.x,
+				attr_dy: position.delta.y,
+				attr_dz: position.delta.z,
 				Orientation: this.writeOrientation( position.orientation )
 			}
 		};
@@ -1428,10 +1428,10 @@ export class WriterService {
 
 		return {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
-				attr_dx: position.dx,
-				attr_dy: position.dy,
-				attr_dz: position.dz ? position.dz : 0,
+				[ this.entityKey ]: position.entityRef?.name,
+				attr_dx: position.delta.x,
+				attr_dy: position.delta.y,
+				attr_dz: position.delta.z,
 				Orientation: position.orientation?.toXML()
 			}
 		};

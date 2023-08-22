@@ -25,6 +25,10 @@ export class VehicleFactory {
 
 		const vehicle = this.createDefaultCar();
 
+		vehicle.position.copy( vector3 );
+
+		vehicle.rotation.copy( orientation.toEuler() );
+
 		vehicle.addInitAction( ActionFactory.createPositionAction( vehicle, vector3, orientation ) );
 
 		vehicle.addInitAction( ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );

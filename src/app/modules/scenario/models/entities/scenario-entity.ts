@@ -58,13 +58,7 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 
 		const teleportAction = this.initActions.find( action => action instanceof TeleportAction ) as TeleportAction;
 
-		if ( teleportAction ) {
-
-			const position = PositionFactory.createPositionFromVector( teleportAction.position.type, this.position.clone() );
-
-			teleportAction.setPosition( position );
-
-		}
+		teleportAction?.position?.updateFromWorldPosition( this.position.clone(), null );
 
 	}
 
