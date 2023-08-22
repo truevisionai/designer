@@ -9,7 +9,7 @@ export class UndoShortcut extends BaseShortcut {
 
 	check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey == true && e.key === 'z';
+		return this.metaKey( e ) && e.key === 'z';
 
 	}
 

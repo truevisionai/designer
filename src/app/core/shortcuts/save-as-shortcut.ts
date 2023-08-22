@@ -9,7 +9,7 @@ export class SaveAsShortcut extends BaseShortcut {
 
 	check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey && e.shiftKey && e.key == 's';
+		return this.metaKey( e ) && e.shiftKey && e.key == 's';
 
 	}
 

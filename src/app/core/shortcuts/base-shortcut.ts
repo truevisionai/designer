@@ -17,6 +17,14 @@ export abstract class BaseShortcut extends AbstractKeyboardShortcut {
 
 	abstract execute (): void;
 
+	metaKey ( e: KeyboardEvent ): boolean {
+
+		return process.platform === 'darwin' ?
+			e.metaKey :  	// Use Cmd key for macOS
+			e.ctrlKey; 		// Use Ctrl key for Windows/Ubuntu
+
+	}
+
 }
 
 
