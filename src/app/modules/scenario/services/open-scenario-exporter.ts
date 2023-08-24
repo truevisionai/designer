@@ -72,7 +72,7 @@ import { StoryboardElementStateCondition } from '../models/conditions/tv-after-t
 	providedIn: 'root'
 } )
 
-export class WriterService {
+export class OpenScenarioExporter {
 
 	private xmlDocument: Object;
 	private openScenario: TvScenario;

@@ -4,7 +4,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { WriterService } from 'app/modules/scenario/services/tv-writer.service';
+import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from './services/editor.service';
 import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
@@ -28,7 +28,6 @@ export class EsminiPlayerService {
 	constructor (
 		private fileService: FileService,
 		private odWriter: OdWriter,
-		private scenarioWriter: WriterService,
 		private electronService: TvElectronService,
 		private editor: EditorService,
 	) {
@@ -154,7 +153,9 @@ export class EsminiPlayerService {
 
 	saveScenario ( path: string ): string {
 
-		const oscString = this.scenarioWriter.getOutputString( ScenarioInstance.scenario );
+		const scenarioExporter = new OpenScenarioExporter();
+
+		const oscString = scenarioExporter.getOutputString( ScenarioInstance.scenario );
 
 		const oscFilePath = path + '/map.xosc';
 

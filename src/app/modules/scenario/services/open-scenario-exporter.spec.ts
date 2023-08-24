@@ -12,19 +12,19 @@ import {
 	Vertex
 } from '../models/tv-trajectory';
 import { WorldPosition } from '../models/positions/tv-world-position';
-import { WriterService } from './tv-writer.service';
+import { OpenScenarioExporter } from './open-scenario-exporter';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { DynamicsShape, OpenScenarioVersion } from '../models/tv-enums';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 
-describe( 'WriterService', () => {
+describe( 'OpenScenarioExporter', () => {
 
-	let writer: WriterService;
+	let writer: OpenScenarioExporter;
 
 	beforeEach( () => {
-		writer = new WriterService();
+		writer = new OpenScenarioExporter();
 	} );
 
 	it( 'should write trajectory correctly', () => {

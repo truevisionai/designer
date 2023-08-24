@@ -25,7 +25,7 @@ import { cloneDeep } from 'lodash';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvConsole } from 'app/core/utils/console';
 import { ToolManager } from 'app/core/tools/tool-manager';
-import { WriterService } from 'app/modules/scenario/services/tv-writer.service';
+import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
@@ -46,7 +46,7 @@ export class ExporterService {
 		private fileService: FileService,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
-		private scenarioWriter: WriterService
+		private scenarioWriter: OpenScenarioExporter
 	) {
 	}
 
@@ -70,7 +70,9 @@ export class ExporterService {
 
 		ToolManager.disable();
 
-		const contents = this.scenarioWriter.getOutputString( ScenarioInstance.scenario );
+		const scenarioExporter = new OpenScenarioExporter();
+
+		const contents = scenarioExporter.getOutputString( ScenarioInstance.scenario );
 
 		const directory = this.fileService.projectFolder;
 
