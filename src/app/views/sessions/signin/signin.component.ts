@@ -6,14 +6,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
-
 import { Router } from '@angular/router';
 import { AppService } from 'app/core/services/app.service';
 import { AuthService } from 'app/core/services/auth.service';
-import { AppLinks } from 'app/services/app-links';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { TvElectronService } from 'app/services/tv-electron.service';
-
 
 @Component( {
 	selector: 'app-signin',
@@ -25,20 +21,27 @@ export class SigninComponent implements OnInit {
 	@ViewChild( MatProgressBar ) progressBar: MatProgressBar;
 	@ViewChild( MatButton ) submitButton: MatButton;
 
-	signinForm: FormGroup;
+	form: FormGroup;
 
 	constructor (
 		private authService: AuthService,
-		private router: Router,
-		private electron: TvElectronService
+		private router: Router
 	) {
+	}
+
+	get email (): FormControl {
+		return this.form?.get( 'email' ) as FormControl;
+	}
+
+	get password (): FormControl {
+		return this.form?.get( 'password' ) as FormControl;
 	}
 
 	ngOnInit () {
 
 		this.authService.logout();
 
-		this.signinForm = new FormGroup( {
+		this.form = new FormGroup( {
 			email: new FormControl( '', [ Validators.required, Validators.email ] ),
 			password: new FormControl( '', Validators.required ),
 			rememberMe: new FormControl( false )
@@ -46,9 +49,9 @@ export class SigninComponent implements OnInit {
 
 	}
 
-	signin () {
+	onSubmit () {
 
-		const formData = this.signinForm.value;
+		const formData = this.form.value;
 
 		this.submitButton.disabled = true;
 
@@ -80,18 +83,6 @@ export class SigninComponent implements OnInit {
 		SnackBar.show( 'Successfully signed in' );
 
 		this.router.navigateByUrl( AppService.homeUrl );
-
-	}
-
-	onCreateAccount () {
-
-		this.electron.shell.openExternal( AppLinks.createAccountLink );
-
-	}
-
-	onForgotPassword () {
-
-		this.electron.shell.openExternal( AppLinks.forgotPasswordLink );
 
 	}
 }
