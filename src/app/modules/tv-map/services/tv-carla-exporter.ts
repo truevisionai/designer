@@ -3,9 +3,9 @@
  */
 
 import { TvLane } from '../models/tv-lane';
-import { OdWriter } from './open-drive-writer.service';
+import { OpenDriveExporter } from './open-drive-exporter';
 
-export class TvCarlaExporter extends OdWriter {
+export class TvCarlaExporter extends OpenDriveExporter {
 
 	// override default
 	public writeLane ( xmlNode, lane: TvLane ) {

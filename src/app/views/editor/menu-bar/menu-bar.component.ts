@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { IFile } from 'app/core/models/file';
 import { Environment } from 'app/core/utils/environment';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
@@ -44,7 +44,7 @@ export class MenuBarComponent implements OnInit {
 		private router: Router,
 		private recentFileService: RecentFileService,
 		private mainFileService: MainFileService,
-		private odExporter: OdWriter,
+		private openDriveExporter: OpenDriveExporter,
 		private roadStyleExporter: RoadExporterService,
 		private inputDialogService: AppInputDialogService,
 		private editorService: EditorService

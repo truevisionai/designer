@@ -8,15 +8,13 @@ import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
-import { saveAs } from 'file-saver';
-
 import { IFile } from '../../../core/models/file';
 import { FileService } from '../../../services/file.service';
 import { TvMapBuilder } from '../builders/tv-map-builder';
-import { OpenDriverParser } from './open-drive-parser.service';
-import { OdWriter } from './open-drive-writer.service';
-import { TvMapInstance } from './tv-map-source-file';
 import { TvMap } from '../models/tv-map.model';
+import { OpenDriveExporter } from './open-drive-exporter';
+import { OpenDriverParser } from './open-drive-parser.service';
+import { TvMapInstance } from './tv-map-source-file';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,7 +23,7 @@ export class TvMapService {
 
 	constructor (
 		public fileService: FileService,
-		private writer: OdWriter,
+		private openDriveExporter: OpenDriveExporter,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
 	) {
@@ -140,37 +138,9 @@ export class TvMapService {
 
 	}
 
-	public importContent ( contents: string ) {
-
-		const file = new IFile();
-
-		file.name = 'Untitled.xml';
-		file.contents = contents;
-
-		this.import( file );
-
-	}
-
-	/**
-	 * @deprecated
-	 */
-	save () {
-
-		if ( this.currentFile == null ) {
-
-			throw new Error( 'Create file before saving' );
-
-		}
-
-		this.currentFile.contents = this.writer.getOutput( this.map );
-
-		this.saveLocally( this.currentFile );
-
-	}
-
 	getOpenDriveOutput () {
 
-		return this.writer.getOutput( this.map );
+		return this.openDriveExporter.getOutput( this.map );
 
 	}
 
@@ -180,64 +150,4 @@ export class TvMapService {
 
 	}
 
-	/**
-	 *
-	 * @deprecated
-	 * @param file
-	 */
-	saveLocally ( file: IFile ) {
-
-		// path exists means it was imported locally
-		if ( this.currentFile.path != null ) {
-
-			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
-
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
-
-				SnackBar.success( 'File Saved!' );
-
-			} );
-
-		} else {
-
-			this.saveAs();
-
-		}
-	}
-
-	saveLocallyAt ( path: string ) {
-
-		const contents = this.getOpenDriveOutput();
-
-		this.fileService.saveFile( path, contents, ( file: IFile ) => {
-
-			this.currentFile.path = file.path;
-			this.currentFile.name = file.name;
-
-		} );
-	}
-
-	saveAs () {
-
-		const contents = this.writer.getOutput( this.map );
-
-		if ( this.electron.isElectronApp ) {
-
-			this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
-
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
-
-				SnackBar.success( `File saved ${ file.path }` );
-
-			} );
-
-		} else {
-
-			saveAs( new Blob( [ contents ] ), 'road.xodr' );
-
-		}
-
-	}
 }

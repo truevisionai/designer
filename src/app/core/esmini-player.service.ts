@@ -7,7 +7,7 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from './services/editor.service';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { FileService } from 'app/services/file.service';
 import { TvConsole } from './utils/console';
@@ -27,7 +27,7 @@ export class EsminiPlayerService {
 
 	constructor (
 		private fileService: FileService,
-		private odWriter: OdWriter,
+		private openDriveExporter: OpenDriveExporter,
 		private electronService: TvElectronService,
 		private editor: EditorService,
 	) {
@@ -138,7 +138,7 @@ export class EsminiPlayerService {
 
 	saveMap ( path: string ): string {
 
-		const odString = this.odWriter.getOutput( TvMapInstance.map );
+		const odString = this.openDriveExporter.getOutput( TvMapInstance.map );
 
 		const odFilePath = path + '/map.xodr';
 

@@ -16,7 +16,7 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { XMLBuilder } from 'fast-xml-parser';
 
@@ -48,7 +48,7 @@ export class SceneExporterService {
 	private map: TvMap;
 
 	constructor (
-		private openDriveWriter: OdWriter,
+		private openDriveExporter: OpenDriveExporter,
 		private fileService: FileService,
 		private electron: TvElectronService
 	) {
@@ -149,24 +149,24 @@ export class SceneExporterService {
 			spline: this.exportRoadSpline( road.spline ),
 		};
 
-		this.openDriveWriter.writeRoadLinks( xml, road );
+		this.openDriveExporter.writeRoadLinks( xml, road );
 
-		this.openDriveWriter.writeRoadType( xml, road );
+		this.openDriveExporter.writeRoadType( xml, road );
 
 		// no need as geometry is being stored via spline
 		// this.openDriveWriter.writePlanView( xml, road );
 
-		this.openDriveWriter.writeElevationProfile( xml, road );
+		this.openDriveExporter.writeElevationProfile( xml, road );
 
-		this.openDriveWriter.writeLateralProfile( xml, road );
+		this.openDriveExporter.writeLateralProfile( xml, road );
 
-		this.openDriveWriter.writeLanes( xml, road );
-
-		// TODO: maybe not required here
-		this.openDriveWriter.writeObjects( xml, road );
+		this.openDriveExporter.writeLanes( xml, road );
 
 		// TODO: maybe not required here
-		this.openDriveWriter.writeSignals( xml, road );
+		this.openDriveExporter.writeObjects( xml, road );
+
+		// TODO: maybe not required here
+		this.openDriveExporter.writeSignals( xml, road );
 
 
 		return xml;

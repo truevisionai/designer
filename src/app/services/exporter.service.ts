@@ -28,6 +28,8 @@ import { ToolManager } from 'app/core/tools/tool-manager';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 
 export enum CoordinateSystem {
 	THREE_JS,
@@ -59,11 +61,24 @@ export class ExporterService {
 
 	}
 
-	exportOpenDrive () {
+	exportOpenDrive ( filename = 'map.xodr' ) {
 
-		this.clearTool();
+		ToolManager.disable();
 
-		this.odService.saveAs();
+		const mapExporter = new OpenDriveExporter();
+
+		const contents = mapExporter.getOutput( TvMapInstance.map );
+
+		const directory = this.fileService.projectFolder;
+
+		this.fileService.saveFileWithExtension( directory, contents, 'xodr', ( file: IFile ) => {
+
+			SnackBar.success( `File saved ${ file.path }` );
+
+			ToolManager.enable();
+
+		} );
+
 	}
 
 	exportOpenScenario ( filename = 'scenario.xosc' ) {
@@ -79,6 +94,8 @@ export class ExporterService {
 		this.fileService.saveFileWithExtension( directory, contents, 'xosc', ( file: IFile ) => {
 
 			SnackBar.success( `File saved ${ file.path }` );
+
+			ToolManager.enable();
 
 		} );
 

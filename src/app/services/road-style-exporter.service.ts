@@ -7,7 +7,7 @@ import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { Euler, Vector3 } from 'three';
 import { FileService } from './file.service';
@@ -31,7 +31,7 @@ export class RoadExporterService {
 	private readonly extension = 'roadstyle';
 
 	constructor (
-		private openDriveWriter: OdWriter,
+		private openDriveExporter: OpenDriveExporter,
 		private fileService: FileService,
 		private electron: TvElectronService
 	) {
@@ -114,11 +114,11 @@ export class RoadExporterService {
 		};
 
 		for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
-			this.openDriveWriter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
+			this.openDriveExporter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
 		}
 
 		for ( let i = 0; i < lane.getLaneRoadMarkCount(); i++ ) {
-			this.openDriveWriter.writeLaneRoadMark( laneNode, lane.getLaneRoadMark( i ) );
+			this.openDriveExporter.writeLaneRoadMark( laneNode, lane.getLaneRoadMark( i ) );
 		}
 
 		// NOTE: below lane properties can be added as needed
