@@ -14,6 +14,7 @@ import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'thre
 import { Metadata, MetaImporter } from '../models/metadata.model';
 import { AppService } from '../services/app.service';
 import { FileUtils } from 'app/services/file-utils';
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -100,16 +101,23 @@ export class MetadataFactory {
 				break;
 
 			case 'png':
-				metadata = this.createTextureMetaInternal( guid, path );
+				metadata = this.createTextureMetaInternal( guid, path, 'png' );
 				break;
+
 			case 'jpg':
-				metadata = this.createTextureMetaInternal( guid, path );
+				metadata = this.createTextureMetaInternal( guid, path, 'jpg' );
 				break;
+
 			case 'jpeg':
-				metadata = this.createTextureMetaInternal( guid, path );
+				metadata = this.createTextureMetaInternal( guid, path, 'jpeg' );
 				break;
+
 			case 'svg':
-				metadata = this.createTextureMetaInternal( guid, path );
+				metadata = this.createTextureMetaInternal( guid, path, 'svg' );
+				break;
+
+			case 'tga':
+				metadata = this.createTextureMetaInternal( guid, path, 'tga' );
 				break;
 
 			case 'material':
@@ -134,6 +142,10 @@ export class MetadataFactory {
 
 			case RoadStyle.extension:
 				metadata = this.createRoadStyleMetadata( fileName, guid, path );
+				break;
+
+			case 'entity':
+				metadata = this.createEntityMetadata( fileName, guid, path );
 				break;
 
 		}
@@ -161,6 +173,17 @@ export class MetadataFactory {
 		return {
 			guid: guid,
 			importer: RoadStyle.importer,
+			data: {},
+			path: path,
+		};
+
+	}
+
+	static createEntityMetadata ( name: string, guid: string, path: string ): Metadata {
+
+		return {
+			guid: guid,
+			importer: MetaImporter.ENTITY,
 			data: {},
 			path: path,
 		};
@@ -319,9 +342,41 @@ export class MetadataFactory {
 		}
 	}
 
-	private static createTextureMetaInternal ( guid: string, path: string ): Metadata {
+	static loadTGATexture ( path: string ): Texture {
 
-		const texture = this.loadTexture( path );
+		try {
+
+			const texture = new TGALoader().load( path );
+
+			texture.wrapS = RepeatWrapping;
+			texture.wrapT = RepeatWrapping;
+			texture.mapping = UVMapping;
+			texture.repeat.set( 1, 1 );
+
+			return texture;
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+			return null;
+
+		}
+	}
+
+	private static createTextureMetaInternal ( guid: string, path: string, extension: string ): Metadata {
+
+		let texture: Texture;
+
+		if ( extension == 'tga' ) {
+
+			texture = this.loadTGATexture( path );
+
+		} else {
+
+			texture = this.loadTexture( path );
+
+		}
 
 		const metadata = this.createTextureMetadata( guid, path, texture );
 

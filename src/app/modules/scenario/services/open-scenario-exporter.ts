@@ -175,9 +175,9 @@ export class OpenScenarioExporter {
 		}
 	}
 
-	writeScenarioObject ( key: string, object: ScenarioEntity ): any {
+	writeScenarioObject ( key: string, object: ScenarioEntity ): XmlElement {
 
-		return {
+		const scenarioObject: XmlElement = {
 			attr_name: object.name,
 			Vehicle: this.writeVehicle( object as VehicleEntity ),
 			ObjectController: {
@@ -186,6 +186,18 @@ export class OpenScenarioExporter {
 				},
 			},
 		};
+
+		if ( this.version == OpenScenarioVersion.v0_9 && object.model3d != null && object.model3d != 'default' ) {
+
+			scenarioObject.attr_model = object.model3d;
+
+		} else if ( object.model3d != null && object.model3d != 'default' ) {
+
+			scenarioObject.attr_model3d = object.model3d;
+
+		}
+
+		return scenarioObject;
 	}
 
 	writeVehicle ( vehicle: VehicleEntity ) {

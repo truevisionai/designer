@@ -7,11 +7,12 @@ import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../tv-boundi
 import { ScenarioEntity } from './scenario-entity';
 import { ScenarioObjectType, VehicleCategory } from '../tv-enums';
 import { TvProperty } from '../tv-properties';
+import { SerializedField } from 'app/core/components/serialization';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 
 export class VehicleEntity extends ScenarioEntity {
 
 	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
-	public model3d: string;
 
 	constructor (
 		public name: string,
@@ -22,6 +23,52 @@ export class VehicleEntity extends ScenarioEntity {
 		public properties: TvProperty[] = []
 	) {
 		super( name, boundingBox );
+	}
+
+
+	@SerializedField( { type: 'string' } )
+	get entityName (): string {
+		return this.name;
+	}
+
+	set entityName ( value: string ) {
+		this.name = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: VehicleCategory } )
+	get entityType (): VehicleCategory {
+		return this.vehicleCategory;
+	}
+
+	set entityType ( value: VehicleCategory ) {
+		this.vehicleCategory = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get height (): number {
+		return this.boundingBox.dimension.height;
+	}
+
+	set height ( value: number ) {
+		this.boundingBox.dimension.height = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get length (): number {
+		return this.boundingBox.dimension.length;
+	}
+
+	set length ( value: number ) {
+		this.boundingBox.dimension.length = value;
+	}
+
+	@SerializedField( { type: 'gameobject' } )
+	get modelName (): string {
+		return this.model3d;
+	}
+
+	set modelName ( value: string ) {
+		this.model3d = value;
 	}
 
 	clone (): this {
@@ -35,5 +82,18 @@ export class VehicleEntity extends ScenarioEntity {
 			this.properties.map( p => p.clone() )
 		) as this;
 
+	}
+
+	toJSON ( meta?: any ) {
+		return {
+			guid: this.uuid,
+			objectType: this.scenarioObjectType,
+			vehicleCategory: this.vehicleCategory,
+			name: this.name,
+			model3d: this.model3d,
+			boundingBox: this.boundingBox.toJSON(),
+			performance: this.performance.toJSON(),
+			axles: this.axles.toJSON(),
+		}
 	}
 }

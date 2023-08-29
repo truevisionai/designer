@@ -217,6 +217,26 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
+	onAOMapChanged ( $guid: string ) {
+
+		CommandHistory.execute(
+
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'aoMap', $guid )
+
+		)
+
+	}
+
+	onDisplacementMapChanged ( $guid: string ) {
+
+		CommandHistory.execute(
+
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'displacementMap', $guid )
+
+		)
+
+	}
+
 	private updatePreviewCache () {
 
 		this.metadata.preview = this.getFreshPreview();

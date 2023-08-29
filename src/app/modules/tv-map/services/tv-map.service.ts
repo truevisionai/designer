@@ -35,14 +35,6 @@ export class TvMapService {
 
 	}
 
-	public get currentFile () {
-		return TvMapInstance.currentFile;
-	}
-
-	public set currentFile ( value ) {
-		TvMapInstance.currentFile = value;
-	}
-
 	public get map () {
 		return TvMapInstance.map;
 	}

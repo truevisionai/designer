@@ -67,4 +67,15 @@ export class ScenarioInstance {
 		} );
 
 	}
+
+	static getGlobalParameterValue ( paremeterName: string ): string {
+
+		const declaration = this._scenario.getParameterDeclaration( paremeterName );
+
+		if ( !declaration ) return null;
+
+		return declaration.parameter?.getValue();
+
+	}
+
 }

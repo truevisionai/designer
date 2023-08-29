@@ -120,6 +120,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 					{ label: 'Folder', click: () => this.createNewFolder() },
 					{ label: 'Material', click: () => this.createNewMaterial() },
 					{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
+					{
+						label: 'Entity', submenu: [
+							{ label: 'Vehicle', click: () => this.createVehicleEntity() }
+						]
+					},
 					// { label: 'Prop Set' },
 					// { label: 'Extrusion Style' },
 					// { label: 'Post Style' },
@@ -159,6 +164,22 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
+
+	createVehicleEntity (): void {
+
+		try {
+
+			AssetFactory.createVehicleEntity( this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
 	}
 
 	reimport ( node: FileNode ) {

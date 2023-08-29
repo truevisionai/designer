@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from 'app/utils/maths';
 import { EntityRef } from '../entity-ref';
 import { OpenScenarioVersion, OrientationType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
@@ -34,7 +35,7 @@ describe( 'RelativeLanePosition', () => {
 
 	it( 'import XML for 1.2 correctly', () => {
 
-		relativeLanePosition = new RelativeLanePosition( new EntityRef( 'entityRef' ), 0, 1, -1, -2, new Orientation( 1, 2, 3 ) );
+		relativeLanePosition = new RelativeLanePosition( new EntityRef( 'entityRef' ), 0, 1, -1, -2, new Orientation( 0, 0, 0 ) );
 
 		const imported = RelativeLanePosition.fromXML( relativeLanePosition.toXML() );
 
@@ -44,9 +45,9 @@ describe( 'RelativeLanePosition', () => {
 		expect( imported.offset ).toBe( -1 );
 		expect( imported.dsLane ).toBe( -2 );
 		expect( imported.orientation ).toBeDefined();
-		expect( imported.orientation.h ).toBe( 1 );
-		expect( imported.orientation.p ).toBe( 2 );
-		expect( imported.orientation.r ).toBe( 3 );
+		expect( imported.orientation.h ).toBe( - Maths.M_PI_2 );
+		expect( imported.orientation.p ).toBe( 0 );
+		expect( imported.orientation.r ).toBe( 0 );
 		expect( imported.orientation.type ).toBe( OrientationType.absolute );
 
 

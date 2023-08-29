@@ -339,6 +339,10 @@ export class ProjectBrowserComponent implements OnInit {
 				copied = this.copyFile( file.path, destinationPath );
 				break;
 
+			case 'tga':
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
 			case 'svg':
 				copied = this.copyFile( file.path, destinationPath );
 				break;

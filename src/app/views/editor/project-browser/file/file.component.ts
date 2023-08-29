@@ -3,13 +3,11 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { CommandHistory } from 'app/services/command-history';
 import { FileUtils } from 'app/services/file-utils';
 import { FileService } from 'app/services/file.service';
 import { ImporterService } from 'app/services/importer.service';
@@ -64,7 +62,7 @@ export class FileComponent implements OnInit {
 
 	public get imageSource () {
 		if ( this.isDirectory ) {
-			return 'assets/folder-icon.png';
+			return 'assets/folder-icon-blue.png';
 		}
 		if ( this.isScene ) {
 			return 'assets/scene-icon.png';
@@ -199,11 +197,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
-
-			const inspectorData = InspectorFactoryService.getInspectorData( this.metadata );
-
-			CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
+			InspectorFactoryService.setAssetInspector( this.metadata );
 
 		} catch ( error ) {
 

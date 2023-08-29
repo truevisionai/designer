@@ -160,9 +160,6 @@ export class ExporterService {
 
 		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
-			this.odService.currentFile.path = file.path;
-			this.odService.currentFile.name = file.name;
-
 			SnackBar.success( `File saved ${ file.path }` );
 
 		} );

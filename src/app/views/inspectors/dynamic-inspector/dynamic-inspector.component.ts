@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ComponentFactoryResolver, Directive, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
-import { getSerializableActions, getSerializableFields } from 'app/core/components/serialization';
+import { ISerializedField, getSerializableActions, getSerializableFields } from 'app/core/components/serialization';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -12,6 +13,7 @@ import { RoadIdFieldComponent } from 'app/shared/fields/road-id-field/road-id-fi
 import { SelectEntityFieldComponent } from 'app/shared/fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
 import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
+import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 import { Subscription } from 'rxjs';
 
 @Directive( {
@@ -31,6 +33,7 @@ const fieldComponents = {
 	'vector3': Vector3FieldComponent,
 	'road': RoadIdFieldComponent,
 	'entity': SelectEntityFieldComponent,
+	'gameobject': GameObjectFieldComponent,
 };
 
 @Component( {
@@ -139,7 +142,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	applyComponentSettings ( component: AbstractFieldComponent, settings: any ) {
+	applyComponentSettings ( component: AbstractFieldComponent, settings: ISerializedField ) {
 
 		if ( component instanceof DoubleFieldComponent ) {
 
@@ -148,6 +151,10 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 			component.max = settings?.max ?? Infinity;
 
 			component.step = settings?.step ?? 0.1;
+
+		} else if ( component instanceof EnumFieldComponent ) {
+
+			component.enum = settings?.enum;
 
 		}
 
@@ -198,6 +205,31 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 			componentRef.changeDetectorRef.detectChanges();
 
 		} )
+	}
+
+}
+
+@Component( {
+	selector: 'app-dynamic-file-inspector',
+	templateUrl: './dynamic-inspector.component.html',
+	styleUrls: [ './dynamic-inspector.component.scss' ]
+} )
+export class DynamicFileInspectorComponent extends DynamicInspectorComponent implements OnDestroy {
+
+	ngOnDestroy (): void {
+
+		super.ngOnDestroy();
+
+		if ( this.data?.guid ) {
+
+			AssetFactory.updateAsset( this.data.guid, this.data );
+
+		} else if ( this.data?.uuid ) {
+
+			AssetFactory.updateAsset( this.data.uuid, this.data );
+
+		}
+
 	}
 
 }

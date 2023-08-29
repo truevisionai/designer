@@ -71,12 +71,14 @@
 
 	<app-texture-field (changed)="onNormalMapChanged($event)"
 		[guid]="material.normalMapGuid"
-		label="NormalMap"></app-texture-field>
+		label="Normal Map"></app-texture-field>
 
-	<!-- <app-texture-field [guid]="material.aoMapGuid" label="Occlusion Map" (changed)="onMapChanged($event, 'aoMap')">
-	</app-texture-field> -->
+	<app-texture-field (changed)="onAOMapChanged($event)"
+		[guid]="material.aoMapGuid"
+		label="AO Map"></app-texture-field>
 
-	<!-- <app-texture-field [guid]="material.displacementMapGuid" label="Displacement Map"
-		(changed)="onMapChanged($event, 'displacementMap')"></app-texture-field> -->
+	<app-texture-field (changed)="onDisplacementMapChanged($event)"
+		[guid]="material.displacementMapGuid"
+		label="Displacement Map"></app-texture-field>
 
 </div>

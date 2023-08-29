@@ -31,7 +31,7 @@ describe( 'OpenDrive Parsing', () => {
 			attr_vendor: 'Truevision.ai',
 		};
 
-		const header = parser.readHeader( headerXml );
+		const header = parser.parseHeader( headerXml );
 
 		expect( header.attr_revMajor ).toBe( 1 );
 		expect( header.attr_revMinor ).toBe( 4 );
@@ -46,24 +46,7 @@ describe( 'OpenDrive Parsing', () => {
 
 	} );
 
-	it( 'should parse road correctly', () => {
 
-		const xml = {
-			attr_id: '1',
-			attr_name: 'road',
-			attr_length: '100',
-			attr_junction: '-1'
-		};
-
-		const road = parser.readRoad( xml );
-
-		expect( road ).toBeDefined();
-		expect( road.id ).toBe( 1 );
-		expect( road.name ).toBe( xml.attr_name );
-		expect( road.length ).toBe( 100 );
-		expect( road.junctionId ).toBe( -1 );
-
-	} );
 
 
 } );

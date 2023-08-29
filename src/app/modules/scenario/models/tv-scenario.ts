@@ -61,6 +61,10 @@ export class TvScenario {
 		this.parameterDeclarations.push( declaration );
 	}
 
+	getParameterDeclaration ( name: string ): ParameterDeclaration {
+		return this.parameterDeclarations.find( param => param.parameter.name === name );
+	}
+
 	/**
 	 *
 	 * @deprecated

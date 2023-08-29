@@ -7,9 +7,11 @@ import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-enti
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
 import { ActionType, VehicleCategory } from "app/modules/scenario/models/tv-enums";
 import { Orientation } from "app/modules/scenario/models/tv-orientation";
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { IDService } from "./id.service";
 import { ActionFactory } from "app/modules/scenario/builders/action-factory";
+import { EntityManager } from "app/services/entity-manager";
+import { AssetDatabase } from "app/services/asset-database";
 
 export class VehicleFactory {
 
@@ -23,7 +25,7 @@ export class VehicleFactory {
 
 	static createVehicleAt ( vector3: Vector3, orientation?: Orientation ): VehicleEntity {
 
-		const vehicle = this.createDefaultCar();
+		const vehicle: VehicleEntity = this.getSelectedVehicle();
 
 		vehicle.position.copy( vector3 );
 
@@ -34,6 +36,38 @@ export class VehicleFactory {
 		vehicle.addInitAction( ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );
 
 		return vehicle;
+
+	}
+
+	static getSelectedVehicle (): VehicleEntity {
+
+		const selectedVehicle = EntityManager.getEntity<VehicleEntity>();
+
+		if ( !selectedVehicle ) return this.createDefaultCar();
+
+		if ( selectedVehicle.model3d && selectedVehicle.model3d !== 'default' ) {
+
+			const vehicle = selectedVehicle?.clone();
+
+			const mesh = AssetDatabase.getInstance<Object3D>( selectedVehicle.model3d ).clone();
+
+			vehicle.name = this.entityId.getUniqueName( 'Vehicle' );
+
+			vehicle.geometry.dispose();
+
+			vehicle.add( mesh );
+
+			return vehicle;
+
+		} else {
+
+			const vehicle = selectedVehicle?.clone();
+
+			vehicle.name = this.entityId.getUniqueName( 'Vehicle' );
+
+			return vehicle;
+
+		}
 
 	}
 

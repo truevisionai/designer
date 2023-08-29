@@ -17,7 +17,7 @@ export class UpdateMaterialMapCommand extends BaseCommand {
 		private previewService: PreviewService,
 		private material: TvMaterial,
 		private metadata: Metadata,
-		private mapName: 'map' | 'roughnessMap' | 'normalMap',
+		private mapName: 'map' | 'roughnessMap' | 'normalMap' | 'aoMap' | 'displacementMap',
 		private newGuid: string,
 		oldGuid?: string
 	) {
@@ -68,6 +68,20 @@ export class UpdateMaterialMapCommand extends BaseCommand {
 
 			this.material.normalMapGuid = guid;
 			this.material.normalMap = texture || null;
+
+			// if ( this.material.normalMap ) this.material.normalMap.needsUpdate = true;
+
+		} else if ( this.mapName === 'aoMap' ) {
+
+			this.material.aoMapGuid = guid;
+			this.material.aoMap = texture || null;
+
+			// if ( this.material.normalMap ) this.material.normalMap.needsUpdate = true;
+
+		} else if ( this.mapName === 'displacementMap' ) {
+
+			this.material.displacementMapGuid = guid;
+			this.material.displacementMap = texture || null;
 
 			// if ( this.material.normalMap ) this.material.normalMap.needsUpdate = true;
 

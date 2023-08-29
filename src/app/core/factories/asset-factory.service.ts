@@ -15,11 +15,27 @@ import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../services/app.service';
 import { MetadataFactory } from './metadata-factory.service';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { VehicleFactory } from './vehicle.factory';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetFactory {
+
+	static updateAsset ( guid: any, data: any ) {
+
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		if ( !metadata ) return;
+
+		if ( data instanceof VehicleEntity ) {
+
+			this.updateVehicleEntity( data, metadata.path );
+
+		}
+
+	}
 
 	private static get fileService (): FileService {
 
@@ -89,6 +105,36 @@ export class AssetFactory {
 			SnackBar.error( error );
 
 		}
+
+	}
+
+	static createVehicleEntity ( path: string ) {
+
+		try {
+
+			const vehicle = VehicleFactory.createDefaultCar();
+
+			const contents = JSON.stringify( vehicle.toJSON() );
+
+			const result = this.fileService.createFile( path, vehicle.name, 'entity', contents );
+
+			const meta = MetadataFactory.createMetadata( result.fileName, 'entity', result.filePath, vehicle.uuid );
+
+			AssetDatabase.setInstance( meta.guid, vehicle );
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	static updateVehicleEntity ( vehicle: VehicleEntity, path: string ) {
+
+		const value = JSON.stringify( vehicle.toJSON(), null, 2 );
+
+		this.fileService.fs.writeFileSync( path, value );
 
 	}
 

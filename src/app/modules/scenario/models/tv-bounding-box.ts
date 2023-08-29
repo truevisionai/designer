@@ -35,6 +35,14 @@ export class TvBoundingBox {
 			this.dimension.clone()
 		);
 	}
+
+	toJSON () {
+		return {
+			center: this.center,
+			dimension: this.dimension
+		}
+	}
+
 }
 
 
@@ -57,6 +65,10 @@ export class TvPerformance {
 			this.mass
 		);
 	}
+
+	toJSON () {
+		return this;
+	}
 }
 
 export class TvAxles {
@@ -77,6 +89,10 @@ export class TvAxles {
 			this.rear.clone(),
 			this.additional ? this.additional.map( a => a.clone() ) : null
 		);
+	}
+
+	toJSON () {
+		return this;
 	}
 }
 

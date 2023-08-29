@@ -32,6 +32,8 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 	private enabled: Boolean = true;
 	private originalPosition: Vector3;
 
+	public model3d: string = 'default';
+
 	protected constructor ( public name: string, public boundingBox: TvBoundingBox ) {
 		super( name, new BoxGeometry(
 			boundingBox.dimension.width,

@@ -19,13 +19,14 @@ const enum ISerializedFieldType {
 }
 
 export interface ISerializedField {
-	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector3' | 'road' | 'entity';
+	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector3' | 'road' | 'entity' | 'gameobject';
 	disabled?: boolean;
 	label?: string;
 	description?: string;
 	min?: number;
 	max?: number;
 	step?: number;
+	enum?: any;
 }
 
 export function Action () {

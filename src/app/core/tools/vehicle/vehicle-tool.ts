@@ -23,13 +23,14 @@ import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
+import { EntityManager } from 'app/services/entity-manager';
 
 export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'VehicleTool';
 	public toolType = ToolType.Vehicle;
 
-	private selectedVehicle: VehicleEntity;
+
 	private movingStrategy: SelectStrategy<TvRoadCoord>;
 	private controlPointStrategy: SelectStrategy<DynamicControlPoint<ScenarioEntity>>;
 
@@ -42,6 +43,12 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		this.movingStrategy = new OnRoadStrategy();
 		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<ScenarioEntity>>();
+	}
+
+	private get selectedVehicle (): VehicleEntity {
+
+		return EntityManager.getEntity<VehicleEntity>();
+
 	}
 
 	setPoint ( value: DynamicControlPoint<ScenarioEntity> ): void {
@@ -112,7 +119,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		const roadCoord = this.movingStrategy.onPointerDown( event );
 
-		if ( true || this.selectedVehicle ) {
+		if ( this.selectedVehicle ) {
 
 			if ( !roadCoord ) this.setHint( 'Click on road geometry to create vehicle' );
 			if ( !roadCoord ) return;
@@ -126,7 +133,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		} else {
 
-			SnackBar.warn( 'Please select a vehicle' );
+			SnackBar.warn( 'Please select a vehicle from project browser' );
 
 		}
 	}
