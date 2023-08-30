@@ -27,12 +27,11 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
-import { TvConsole } from 'app/core/utils/console';
-import { SceneService } from 'app/core/services/scene.service';
 import { CreateControlPointCommand } from './create-control-point-command';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { ObjectTagStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -47,7 +46,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private pointStrategy: SelectStrategy<RoadControlPoint>;
 	private nodeStrategy: SelectStrategy<RoadNode>;
-	private roadStrategy: SelectStrategy<TvRoad>;
+	private roadStrategy: SelectStrategy<TvRoadCoord>;
 
 	constructor () {
 
@@ -55,6 +54,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
+		this.roadStrategy = new OnRoadStrategy();
 
 
 	}
@@ -143,11 +143,22 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		if ( node ) this.onNodeSelected( node );
 		if ( node ) return;
 
-		// select road, unselect point and node
-		if ( this.isRoadSelected( e ) ) return;
+		const roadCoord = this.roadStrategy.onPointerDown( e );
+		if ( roadCoord ) this.onRoadSelected( roadCoord.road );
+		if ( roadCoord ) return;
 
 		// if no object is selected we unselect road, node and control point
 		CommandHistory.execute( new SelectRoadForRoadToolCommand( this, null ) );
+
+	}
+
+	onRoadSelected ( road: TvRoad ) {
+
+		if ( !this.road || this.road.id !== road.id ) {
+
+			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, road ) );
+
+		}
 
 	}
 
@@ -200,12 +211,6 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	}
 
-	onPointerClicked ( e: PointerEventData ) {
-
-		// NOTE: no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
-
-	}
-
 	onPointerUp ( e: PointerEventData ) {
 
 		if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
@@ -227,17 +232,11 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		this.roadChanged = false;
 	}
 
-	private tempNode: RoadNode;
-
 	onPointerMoved ( e: PointerEventData ) {
 
 		this.pointStrategy.onPointerMoved( e );
 
-		console.log( this.nodeStrategy.onPointerMoved( e ) );
-
-		// if ( this.tempNode && !this.tempNode.isSelected ) this.tempNode?.onMouseOut();
-		// this.tempNode = this.nodeStrategy.onPointerMoved( e )?.parent as RoadNode;
-		// if ( this.tempNode && !this.tempNode.isSelected ) this.tempNode.onMouseOver();
+		this.nodeStrategy.onPointerMoved( e );
 
 		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
 
