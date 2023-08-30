@@ -234,9 +234,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.pointStrategy.onPointerMoved( e );
-
-		this.nodeStrategy.onPointerMoved( e );
+		if ( !this.pointStrategy.onPointerMoved( e ) ) this.nodeStrategy.onPointerMoved( e );
 
 		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
 

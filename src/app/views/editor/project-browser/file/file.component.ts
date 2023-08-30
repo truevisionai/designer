@@ -19,6 +19,7 @@ import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { DragDropService } from 'app/core/services/drag-drop.service';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 
 @Component( {
 	selector: 'app-file',
@@ -250,9 +251,8 @@ export class FileComponent implements OnInit {
 			},
 			{
 				label: 'Duplicate',
-				click: () => {
-				},
-				enabled: false,
+				click: () => this.createDuplicate(),
+				enabled: this.canDuplicate(),
 			},
 			{
 				label: 'Show In Explorer',
@@ -273,6 +273,25 @@ export class FileComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
+	createDuplicate (): void {
+
+		try {
+
+			AssetFactory.copyAsset( this.metadata.guid );
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	canDuplicate (): boolean {
+
+		return this.extension == 'material';
+
+	}
 
 	deleteNode () {
 

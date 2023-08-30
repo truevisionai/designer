@@ -23,6 +23,34 @@ import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-enti
 } )
 export class AssetFactory {
 
+	static copyAsset ( guid: string ) {
+
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		const extension = FileService.getExtension( metadata.path );
+
+		const name = FileService.getFilenameFromPath( metadata.path ).replace( '.' + extension, '' );
+
+		if ( extension == 'material' ) {
+
+			const instance = AssetDatabase.getInstance<TvMaterial>( guid );
+
+			const clone = instance.clone();
+
+			AssetDatabase.setInstance( clone.guid, clone );
+
+			AssetDatabase.setMetadata( clone.guid, metadata );
+
+			clone.name = name + '_copy';
+
+			const newPath = metadata.path.replace( name, clone.name );
+
+			this.updateMaterial( newPath, clone );
+
+		}
+
+	}
+
 	static updateAsset ( guid: any, data: any ) {
 
 		const metadata = AssetDatabase.getMetadata( guid );
