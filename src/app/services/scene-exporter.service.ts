@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
@@ -24,7 +24,7 @@ import { saveAs } from 'file-saver';
 
 import { Euler, Vector3 } from 'three';
 import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { TvConsole } from 'app/core/utils/console';

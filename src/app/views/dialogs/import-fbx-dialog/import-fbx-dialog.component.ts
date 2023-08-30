@@ -7,9 +7,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BufferGeometry, Group, Material, Mesh, Object3D } from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { AssetImporterService } from '../../../core/asset-importer.service';
-import { FileUtils } from '../../../services/file-utils';
-import { FileService } from '../../../services/file.service';
+import { AssetImporterService } from '../../../core/io/asset-importer.service';
+import { FileUtils } from '../../../core/io/file-utils';
+import { FileService } from '../../../core/io/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { MainFileService } from 'app/services/main-file.service';
 import { KeyboardInput } from '../input';
 import { ShortcutService } from './shortcut.service';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 
 @Injectable( {
 	providedIn: 'root'

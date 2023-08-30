@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { Router } from '@angular/router';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 import { Environment } from 'app/core/utils/environment';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';

@@ -23,7 +23,7 @@ import {
 import { Metadata, MetaImporter } from '../core/models/metadata.model';
 import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
 import { AssetDatabase } from './asset-database';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
 import { TvEntityLoader, TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';

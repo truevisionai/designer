@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
@@ -13,7 +13,7 @@ import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
 import { Metadata, MetaImporter } from '../models/metadata.model';
 import { AppService } from '../services/app.service';
-import { FileUtils } from 'app/services/file-utils';
+import { FileUtils } from 'app/core/io/file-utils';
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 
 @Injectable( {

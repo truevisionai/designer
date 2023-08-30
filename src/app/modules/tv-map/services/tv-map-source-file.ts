@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { IFile } from '../../../core/models/file';
+import { IFile } from '../../../core/io/file';
 import { TvMap } from '../models/tv-map.model';
 
 export class TvMapInstance {

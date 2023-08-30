@@ -8,8 +8,8 @@ import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
-import { IFile } from '../../../core/models/file';
-import { FileService } from '../../../services/file.service';
+import { IFile } from '../../../core/io/file';
+import { FileService } from '../../../core/io/file.service';
 import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';

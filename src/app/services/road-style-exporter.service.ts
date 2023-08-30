@@ -10,7 +10,7 @@ import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { Euler, Vector3 } from 'three';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { RoadStyle } from './road-style.service';
 import { TvElectronService } from './tv-electron.service';
 

@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
 import { GameObject } from 'app/core/game-object';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
@@ -16,7 +16,7 @@ import { Object3D } from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 import { CommandHistory } from './command-history';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';

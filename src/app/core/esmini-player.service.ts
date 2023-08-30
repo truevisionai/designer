@@ -9,7 +9,7 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from './services/editor.service';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { TvConsole } from './utils/console';
 import { AppInspector } from './inspector';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';

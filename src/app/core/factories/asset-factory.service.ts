@@ -8,7 +8,7 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Material, Object3D, Texture } from 'three';
 import { PropModel } from '../models/prop-model.model';

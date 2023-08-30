@@ -4,7 +4,7 @@
 
 import { Metadata } from 'app/core/models/metadata.model';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
-import { FileUtils } from './file-utils';
+import { FileUtils } from '../core/io/file-utils';
 
 export class AssetDatabase {
 

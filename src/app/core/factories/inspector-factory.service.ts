@@ -5,7 +5,7 @@
 import { Injectable, Type } from '@angular/core';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';

@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractReader } from 'app/core/services/abstract-reader';
 import { SceneService } from 'app/core/services/scene.service';
@@ -30,7 +30,7 @@ import { TvConsole } from '../core/utils/console';
 import { AssetDatabase } from './asset-database';
 import { AssetLoaderService } from './asset-loader.service';
 import { CommandHistory } from './command-history';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';

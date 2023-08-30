@@ -5,13 +5,13 @@
 import { Injectable } from '@angular/core';
 import { VehicleFactory } from 'app/core/factories/vehicle.factory';
 import { AbstractReader } from 'app/core/services/abstract-reader';
-import { FileUtils } from 'app/services/file-utils';
+import { FileUtils } from 'app/core/io/file-utils';
 import { XMLParser } from 'fast-xml-parser';
 import { Vector3 } from 'three';
-import { IFile } from '../../../core/models/file';
+import { IFile } from '../../../core/io/file';
 import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
-import { FileService } from '../../../services/file.service';
+import { FileService } from '../../../core/io/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';

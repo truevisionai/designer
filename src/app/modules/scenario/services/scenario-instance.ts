@@ -5,7 +5,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileUtils } from 'app/services/file-utils';
+import { FileUtils } from 'app/core/io/file-utils';
 import { TvScenario } from '../models/tv-scenario';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { ScenarioBuilder } from './scenario-builder.service';
