@@ -66,10 +66,15 @@ export class RoadNode extends Group implements ISelectable {
 
 		this.add( this.line );
 
+		this[ 'tag' ] = RoadNode.tag;
 	}
 
 	get material () {
 		return this.line.material as LineMaterial;
+	}
+
+	set material ( value: LineMaterial ) {
+		this.line.material = value;
 	}
 
 	get roadId (): number {
@@ -100,6 +105,20 @@ export class RoadNode extends Group implements ISelectable {
 		this.material.color = new Color( RoadNode.defaultColor );
 
 		this.renderOrder = 3;
+	}
+
+	onMouseOver () {
+
+		this.material.color = new Color( COLOR.YELLOW );
+		this.material.needsUpdate = true;
+
+	}
+
+	onMouseOut () {
+
+		this.material.color = new Color( RoadNode.defaultColor );
+		this.material.needsUpdate = true;
+
 	}
 
 	update () {
