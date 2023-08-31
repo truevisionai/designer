@@ -7,15 +7,15 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BufferGeometry, Group, Material, Mesh, Object3D } from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { AssetImporterService } from '../../../core/io/asset-importer.service';
+import { AssetImporterService } from '../../../core/asset/asset-importer.service';
 import { FileUtils } from '../../../core/io/file-utils';
 import { FileService } from '../../../core/io/file.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CoordinateSystem } from 'app/services/exporter.service';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 

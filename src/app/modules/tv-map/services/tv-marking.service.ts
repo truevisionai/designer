@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { GameObject } from 'app/core/game-object';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import * as THREE from 'three';
 import { Mesh, PlaneGeometry, Shape, Texture } from 'three';
 

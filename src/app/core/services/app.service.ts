@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileService } from 'app/core/io/file.service';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

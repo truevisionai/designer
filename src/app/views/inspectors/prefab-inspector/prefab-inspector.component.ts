@@ -5,10 +5,10 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Object3D } from 'three';
 
 class FlatNode extends Object3D {

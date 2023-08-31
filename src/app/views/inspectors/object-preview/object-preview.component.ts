@@ -4,7 +4,7 @@
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/shared/utils/colors.service';
 import {

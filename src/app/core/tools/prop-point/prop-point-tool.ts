@@ -6,7 +6,7 @@ import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-c
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';

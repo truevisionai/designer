@@ -8,7 +8,7 @@ import { ScenarioEntity } from './scenario-entity';
 import { ScenarioObjectType, VehicleCategory } from '../tv-enums';
 import { TvProperty } from '../tv-properties';
 import { SerializedField } from 'app/core/components/serialization';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 
 export class VehicleEntity extends ScenarioEntity {
 

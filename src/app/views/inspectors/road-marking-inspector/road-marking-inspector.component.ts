@@ -4,12 +4,12 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SetRoadmarkTextureCommand } from 'app/core/commands/set-roadmark-texture-command';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
 import { MeshBasicMaterial, Texture } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';

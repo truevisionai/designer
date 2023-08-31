@@ -9,8 +9,8 @@ import { IViewportController } from 'app/modules/three-js/objects/i-viewport-con
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { AssetDatabase } from 'app/services/asset-database';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { RoadStyle } from 'app/services/road-style.service';
 import * as THREE from 'three';
 import {

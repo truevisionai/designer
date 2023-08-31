@@ -6,7 +6,7 @@ import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';

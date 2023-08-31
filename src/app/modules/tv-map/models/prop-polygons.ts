@@ -10,7 +10,7 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';

@@ -6,7 +6,7 @@ import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileExtension, FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { BehaviorSubject, merge, Observable } from 'rxjs';

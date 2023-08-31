@@ -5,12 +5,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CallFunctionCommand } from 'app/core/commands/call-function-command';
 import { UpdateMaterialMapCommand } from 'app/core/commands/update-material-map-command';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
 import { Color, MeshBasicMaterial, MeshLambertMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';

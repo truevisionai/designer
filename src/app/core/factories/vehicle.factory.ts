@@ -11,7 +11,7 @@ import { Object3D, Vector3 } from "three";
 import { IDService } from "./id.service";
 import { ActionFactory } from "app/modules/scenario/builders/action-factory";
 import { EntityManager } from "app/services/entity-manager";
-import { AssetDatabase } from "app/services/asset-database";
+import { AssetDatabase } from "app/core/asset/asset-database";
 
 export class VehicleFactory {
 

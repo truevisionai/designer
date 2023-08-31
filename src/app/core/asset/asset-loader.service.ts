@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
@@ -20,12 +20,12 @@ import {
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
-import { Metadata, MetaImporter } from '../core/models/metadata.model';
-import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
+import { Metadata, MetaImporter } from '../models/metadata.model';
+import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
 import { AssetDatabase } from './asset-database';
-import { FileService } from '../core/io/file.service';
-import { ModelImporterService } from './model-importer.service';
-import { RoadStyleImporter } from './road-style-importer';
+import { FileService } from '../io/file.service';
+import { ModelImporterService } from '../../services/model-importer.service';
+import { RoadStyleImporter } from '../../services/road-style-importer';
 import { TvEntityLoader, TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
 import { Debug } from 'app/core/utils/debug';
 

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ComponentFactoryResolver, Directive, Input, O
 import { NgModel } from '@angular/forms';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { ISerializedField, getSerializableActions, getSerializableFields } from 'app/core/components/serialization';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';

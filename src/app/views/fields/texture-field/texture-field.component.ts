@@ -4,7 +4,7 @@
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { MetaImporter } from 'app/core/models/metadata.model';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Texture } from 'three';
 

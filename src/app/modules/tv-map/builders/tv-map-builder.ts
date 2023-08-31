@@ -3,7 +3,7 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';

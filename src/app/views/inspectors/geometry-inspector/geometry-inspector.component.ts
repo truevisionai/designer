@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { AssetDatabase } from 'app/services/asset-database';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D } from 'three';
 

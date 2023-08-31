@@ -14,7 +14,7 @@ import {
 	Output,
 	ViewChild
 } from '@angular/core';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';

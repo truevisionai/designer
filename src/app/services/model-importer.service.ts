@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetImporterService } from 'app/core/io/asset-importer.service';
+import { AssetImporterService } from 'app/core/asset/asset-importer.service';
 import { Metadata } from 'app/core/models/metadata.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { Object3D, Vector3 } from 'three';

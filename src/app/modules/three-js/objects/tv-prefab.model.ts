@@ -6,7 +6,7 @@ import { BoxGeometry, BufferGeometry, Layers, Loader, LoadingManager, Material, 
 import { TvMaterial } from "./tv-material.model";
 import { MeshGeometryData } from "app/modules/tv-map/models/mesh-geometry.data";
 import { AppService } from "app/core/services/app.service";
-import { AssetDatabase } from "app/services/asset-database";
+import { AssetDatabase } from "app/core/asset/asset-database";
 import { ScenarioEntity } from "app/modules/scenario/models/entities/scenario-entity";
 import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";

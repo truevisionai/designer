@@ -6,8 +6,8 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
-import { AssetDatabase } from 'app/services/asset-database';
-import { AssetLoaderService } from 'app/services/asset-loader.service';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileUtils } from 'app/core/io/file-utils';
 import { FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
@@ -19,7 +19,7 @@ import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { DragDropService } from 'app/core/services/drag-drop.service';
-import { AssetFactory } from 'app/core/factories/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 
 @Component( {
 	selector: 'app-file',
