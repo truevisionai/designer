@@ -8,18 +8,62 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Material, Object3D, Texture } from 'three';
 import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../services/app.service';
 import { MetadataFactory } from './metadata-factory.service';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { VehicleFactory } from './vehicle.factory';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetFactory {
+
+	static copyAsset ( guid: string ) {
+
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		const extension = FileService.getExtension( metadata.path );
+
+		const name = FileService.getFilenameFromPath( metadata.path ).replace( '.' + extension, '' );
+
+		if ( extension == 'material' ) {
+
+			const instance = AssetDatabase.getInstance<TvMaterial>( guid );
+
+			const clone = instance.clone();
+
+			AssetDatabase.setInstance( clone.guid, clone );
+
+			AssetDatabase.setMetadata( clone.guid, metadata );
+
+			clone.name = name + '_copy';
+
+			const newPath = metadata.path.replace( name, clone.name );
+
+			this.updateMaterial( newPath, clone );
+
+		}
+
+	}
+
+	static updateAsset ( guid: any, data: any ) {
+
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		if ( !metadata ) return;
+
+		if ( data instanceof VehicleEntity ) {
+
+			this.updateVehicleEntity( data, metadata.path );
+
+		}
+
+	}
 
 	private static get fileService (): FileService {
 
@@ -89,6 +133,36 @@ export class AssetFactory {
 			SnackBar.error( error );
 
 		}
+
+	}
+
+	static createVehicleEntity ( path: string ) {
+
+		try {
+
+			const vehicle = VehicleFactory.createDefaultCar();
+
+			const contents = JSON.stringify( vehicle.toJSON() );
+
+			const result = this.fileService.createFile( path, vehicle.name, 'entity', contents );
+
+			const meta = MetadataFactory.createMetadata( result.fileName, 'entity', result.filePath, vehicle.uuid );
+
+			AssetDatabase.setInstance( meta.guid, vehicle );
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	static updateVehicleEntity ( vehicle: VehicleEntity, path: string ) {
+
+		const value = JSON.stringify( vehicle.toJSON(), null, 2 );
+
+		this.fileService.fs.writeFileSync( path, value );
 
 	}
 

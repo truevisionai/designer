@@ -2,21 +2,30 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Vector3 } from 'three';
 import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { LongitudinalDistanceAction } from '../models/actions/tv-longitudinal-distance-action';
-import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { SpeedAction } from '../models/actions/tv-speed-action';
+import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { DynamicConstraints } from '../models/dynamic-constraints';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { EntityRef } from '../models/entity-ref';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { TvAction } from '../models/tv-action';
 import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
-import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { Orientation } from '../models/tv-orientation';
 
 export class ActionFactory {
+
+	static reset () {
+
+		// IDService.reset();
+
+	}
 
 	public static createNamedAction ( name: string, type: ActionType, entity?: ScenarioEntity ) {
 
@@ -115,22 +124,18 @@ export class ActionFactory {
 
 		// 3.2 lane width
 		const target = entity ?
-			new RelativeTarget( entity.name, 3.2 ) :
+			new RelativeTarget( new EntityRef( entity.name ), 3.2 ) :
 			new AbsoluteTarget( 3.2 );
 
 		return new LaneOffsetAction( false, 0.01, DynamicsShape.linear, target );
 
 	}
 
-	private static createPositionAction ( entity?: ScenarioEntity ): TvAction {
+	public static createPositionAction ( entity?: ScenarioEntity, vector3?: Vector3, orientation?: Orientation ) {
 
-		const position = entity?.position;
+		const position = vector3 || entity?.position || new Vector3();
 
-		return new TeleportAction( new WorldPosition(
-			position?.x || 0,
-			position?.y || 0,
-			position?.z || 0
-		) );
+		return new TeleportAction( new WorldPosition( position, orientation ) );
 
 	}
 
@@ -138,13 +143,13 @@ export class ActionFactory {
 
 		return new SpeedAction(
 			new TransitionDynamics( DynamicsShape.step, 0, DynamicsDimension.time ),
-			new AbsoluteTarget( entity?.getCurrentSpeed() || 40 )
+			new AbsoluteTarget( entity?.getCurrentSpeed() || 30 )
 		);
 	}
 
 	private static createLaneChangeAction ( entity?: ScenarioEntity ) {
 
-		const target = entity ? new RelativeTarget( entity.name, 1 ) : new AbsoluteTarget( 1 );
+		const target = entity ? new RelativeTarget( new EntityRef( entity.name ), 1 ) : new AbsoluteTarget( 1 );
 
 		const dynamics = new TransitionDynamics( DynamicsShape.sinusoidal, 2, DynamicsDimension.time );
 

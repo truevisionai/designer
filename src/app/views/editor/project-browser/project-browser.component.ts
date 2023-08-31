@@ -7,7 +7,7 @@ import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { FileExtension, FileService } from 'app/services/file.service';
+import { FileExtension, FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -336,6 +336,10 @@ export class ProjectBrowserComponent implements OnInit {
 				break;
 
 			case 'png':
+				copied = this.copyFile( file.path, destinationPath );
+				break;
+
+			case 'tga':
 				copied = this.copyFile( file.path, destinationPath );
 				break;
 

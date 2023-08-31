@@ -9,7 +9,7 @@ export class NewFileShortcut extends BaseShortcut {
 
 	check ( e: KeyboardEvent ): boolean {
 
-		return e.ctrlKey == true && e.key === 'n';
+		return this.metaKey( e ) && e.key === 'n';
 
 	}
 

@@ -3,6 +3,7 @@
  */
 
 import { Vector2, Vector3 } from 'three';
+import { TvConsole } from '../../../core/utils/console';
 import { Maths } from '../../../utils/maths';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
@@ -308,6 +309,11 @@ export class TvMapQueries extends TvBaseQueries {
 	 * @deprecated
 	 */
 	static getLaneCenterPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
+
+		if ( sCoordinate < 0 ) {
+			TvConsole.warn( 'S coordinate cannot be less than 0. Setting it to 0' );
+			sCoordinate = 0;
+		}
 
 		const road = this.roads.get( roadId );
 

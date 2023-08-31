@@ -21,11 +21,12 @@ import {
 	UnsignedByteType
 } from 'three';
 import { Metadata, MetaImporter } from '../core/models/metadata.model';
+import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
 import { AssetDatabase } from './asset-database';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { ModelImporterService } from './model-importer.service';
 import { RoadStyleImporter } from './road-style-importer';
-import { TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvEntityLoader, TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
 import { Debug } from 'app/core/utils/debug';
 
 @Injectable( {
@@ -66,6 +67,8 @@ export class AssetLoaderService {
 		this.loadGeometries();
 
 		this.loadPrefabs();
+
+		this.loadEntities();
 
 		this.loadRoadStyles();
 
@@ -195,7 +198,7 @@ export class AssetLoaderService {
 
 			if ( meta.importer === MetaImporter.TEXTURE ) {
 
-				const data = meta.data;
+				const data: XmlElement = meta.data;
 
 				const texture = new TextureLoader().load( meta.path );
 
@@ -333,6 +336,26 @@ export class AssetLoaderService {
 
 					AssetDatabase.setInstance( meta.guid, prefab );
 				}
+			}
+
+		} );
+
+	}
+
+	loadEntities () {
+
+		const entityLoader = new TvEntityLoader();
+
+		AssetDatabase.getMetadataAll().forEach( async meta => {
+
+			if ( meta.importer == MetaImporter.ENTITY ) {
+
+				const contents = await this.fileService.readAsync( meta.path );
+
+				const entity = entityLoader.parseEntity( JSON.parse( contents ) );
+
+				AssetDatabase.setInstance( meta.guid, entity );
+
 			}
 
 		} );

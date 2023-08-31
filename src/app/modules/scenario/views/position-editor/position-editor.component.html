@@ -1,4 +1,4 @@
-<app-enum-field label="Type"
+<app-enum-field label="Position Type"
 	[enum]="types"
 	[value]="position.type"
 	(changed)="onPositionTypeChanged($event)">
@@ -7,27 +7,35 @@
 <div [ngSwitch]="position.type">
 
 	<div *ngSwitchCase="types.World">
-		<app-world-position-editor [position]="worldPosition"
-			(positionModified)="onPositionModified($event)">
-		</app-world-position-editor>
+		<!-- <app-world-position-editor [position]="worldPosition" -->
+			<!-- (positionModified)="onPositionModified($event)"> -->
+		<!-- </app-world-position-editor> -->
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
 	</div>
 
 	<div *ngSwitchCase="types.RelativeWorld">
-		<app-relative-world [position]="position"
-			(positionModified)="onPositionModified($event)">
-		</app-relative-world>
+		<!-- <app-relative-world [position]="position" -->
+			<!-- (positionModified)="onPositionModified($event)"> -->
+		<!-- </app-relative-world> -->
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
 	</div>
 
 	<div *ngSwitchCase="types.RelativeObject">
-		<app-relative-object-position-editor [position]="position"
-			(positionModified)="onPositionModified($event)">
-		</app-relative-object-position-editor>
+		<!-- <app-relative-object-position-editor [position]="position" -->
+			<!-- (positionModified)="onPositionModified($event)"> -->
+		<!-- </app-relative-object-position-editor> -->
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
 	</div>
 
 	<div *ngSwitchCase="types.Road">
-		<app-road-position-editor [position]="position"
-			(positionModified)="onPositionModified($event)">
-		</app-road-position-editor>
+		<!-- <app-road-position-editor [position]="position" -->
+			<!-- (positionModified)="onPositionModified($event)"> -->
+		<!-- </app-road-position-editor> -->
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
+	</div>
+
+	<div *ngSwitchCase="types.RelativeRoad">
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
 	</div>
 
 	<div *ngSwitchCase="types.Lane">
@@ -35,5 +43,21 @@
 			(positionModified)="onPositionModified($event)">
 		</app-lane-position-editor>
 	</div>
+
+	<div *ngSwitchCase="types.RelativeLane">
+		<app-dynamic-inspector [showToolbar]="false" [data]="position"></app-dynamic-inspector>
+	</div>
+
+	<!-- <div *ngSwitchCase="types.Road">
+		<app-route-position-editor [position]="position"
+			(positionModified)="onPositionModified($event)">
+		</app-route-position-editor>
+	</div> -->
+
+	<!-- <div *ngSwitchCase="types.Road">
+		<app-trajectory-position-editor [position]="position"
+			(positionModified)="onPositionModified($event)">
+		</app-trajectory-position-editor>
+	</div> -->
 
 </div>

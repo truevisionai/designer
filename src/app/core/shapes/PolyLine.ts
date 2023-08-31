@@ -11,7 +11,7 @@ export class PolyLine {
 
 	curveType;
 
-	mesh;
+	mesh: Line;
 
 	constructor ( public points: BaseControlPoint[] ) {
 
@@ -41,7 +41,7 @@ export class PolyLine {
 
 		if ( this.points.length <= 1 ) return;
 
-		const position = this.mesh.geometry.attributes.position;
+		const position = this.mesh.geometry.attributes.position as BufferAttribute;
 
 		// fill the whole buffer
 		for ( let i = 0; i < MAX_CTRL_POINTS; i++ ) {

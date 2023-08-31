@@ -5,14 +5,75 @@
 import { DefaultVehicleController } from "app/modules/scenario/controllers/default-vehicle-controller";
 import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
-import { VehicleCategory } from "app/modules/scenario/models/tv-enums";
-import { Vector3 } from "three";
+import { ActionType, VehicleCategory } from "app/modules/scenario/models/tv-enums";
+import { Orientation } from "app/modules/scenario/models/tv-orientation";
+import { Object3D, Vector3 } from "three";
+import { IDService } from "./id.service";
+import { ActionFactory } from "app/modules/scenario/builders/action-factory";
+import { EntityManager } from "app/services/entity-manager";
+import { AssetDatabase } from "app/services/asset-database";
 
 export class VehicleFactory {
 
+	private static entityId = new IDService();
+
+	static reset () {
+
+		this.entityId.reset();
+
+	}
+
+	static createVehicleAt ( vector3: Vector3, orientation?: Orientation ): VehicleEntity {
+
+		const vehicle: VehicleEntity = this.getSelectedVehicle();
+
+		vehicle.position.copy( vector3 );
+
+		vehicle.rotation.copy( orientation.toEuler() );
+
+		vehicle.addInitAction( ActionFactory.createPositionAction( vehicle, vector3, orientation ) );
+
+		vehicle.addInitAction( ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );
+
+		return vehicle;
+
+	}
+
+	static getSelectedVehicle (): VehicleEntity {
+
+		const selectedVehicle = EntityManager.getEntity<VehicleEntity>();
+
+		if ( !selectedVehicle ) return this.createDefaultCar();
+
+		if ( selectedVehicle.model3d && selectedVehicle.model3d !== 'default' ) {
+
+			const vehicle = selectedVehicle?.clone();
+
+			const mesh = AssetDatabase.getInstance<Object3D>( selectedVehicle.model3d ).clone();
+
+			vehicle.name = this.entityId.getUniqueName( 'Vehicle' );
+
+			vehicle.geometry.dispose();
+
+			vehicle.add( mesh );
+
+			return vehicle;
+
+		} else {
+
+			const vehicle = selectedVehicle?.clone();
+
+			vehicle.name = this.entityId.getUniqueName( 'Vehicle' );
+
+			return vehicle;
+
+		}
+
+	}
+
 	static createDefaultCar ( name?: string ): VehicleEntity {
 
-		const vehicleName = name || VehicleEntity.getNewName( 'Vehicle' );
+		const vehicleName = name || this.entityId.getUniqueName( 'Vehicle' );
 
 		const boundingBox = new TvBoundingBox(
 			new Vector3( 1.3, 0.0, 0.75 ),

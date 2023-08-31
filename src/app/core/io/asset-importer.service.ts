@@ -4,16 +4,16 @@
 
 import { Injectable } from '@angular/core';
 import { CoordinateSystem } from 'app/services/exporter.service';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import * as THREE from 'three';
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { ThreeJsUtils } from './utils/threejs-utils';
+import { ThreeJsUtils } from '../utils/threejs-utils';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { FileUtils } from 'app/services/file-utils';
+import { FileUtils } from 'app/core/io/file-utils';
 
 @Injectable( {
 	providedIn: 'root'

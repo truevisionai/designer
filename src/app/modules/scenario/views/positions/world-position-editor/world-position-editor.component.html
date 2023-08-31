@@ -2,6 +2,6 @@
 	[value]="position.position"
 	(changed)="onPositionChanged($event)"></app-vector3-field>
 
-<app-vector3-field label="Rotation"
-	[value]="position.rotationInDegree"
+<app-vector3-field label="Orientation"
+	[value]="position.orientation.toVector3()"
 	(changed)="onRotationChanged($event)"></app-vector3-field>

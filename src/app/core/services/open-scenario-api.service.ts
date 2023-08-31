@@ -4,8 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IFile } from '../models/file';
-import { FileApiService } from './file-api.service';
+import { IFile } from '../io/file';
+import { FileApiService } from '../io/file-api.service';
 
 @Injectable( {
 	providedIn: 'root'

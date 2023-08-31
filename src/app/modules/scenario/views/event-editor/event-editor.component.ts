@@ -5,6 +5,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { ActionFactory } from '../../builders/action-factory';
+import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
@@ -27,7 +28,7 @@ export class EventEditorComponent implements OnInit {
 	ACTION = ActionType;
 	CONDITION = ConditionType;
 
-	isOpen = false;
+	@Input() isOpen = true;
 
 	get scenario () {
 		return ScenarioInstance.scenario;
@@ -51,9 +52,9 @@ export class EventEditorComponent implements OnInit {
 
 	addAction ( $type: ActionType ) {
 
-		const action = ActionFactory.createActionWithoutName( $type, this.entity );
+		const action = ScenarioElementFactory.createEventAction( $type, this.entity );
 
-		this.event.addAction( action );
+		this.event.addNewAction( action.name, action );
 
 	}
 

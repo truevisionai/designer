@@ -1,13 +1,14 @@
-<mat-toolbar class="native-border inspector-toolbar">
+<mat-toolbar class="native-border inspector-toolbar"
+	*ngIf="showToolbar">
 	<button mat-icon-button
 		class="inspector-toolbar-icon">
 		<mat-icon>chevron_right</mat-icon>
 	</button>
-	<span>Inspector</span>
+	<span>{{label}}</span>
 </mat-toolbar>
 
 
-<div class="inspector-editor-padding"
+<div [class.inspector-editor-padding]="showToolbar"
 	*ngIf="data">
 	<div *ngFor="let item of serializableFields">
 		<ng-container app-field-host></ng-container>

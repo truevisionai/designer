@@ -2,29 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import {
-	EnumTrajectoryDomain,
-	ClothoidShape,
-	ControlPoint,
-	PolylineShape,
-	SplineShape,
-	Trajectory,
-	Vertex
-} from '../models/tv-trajectory';
-import { WorldPosition } from '../models/positions/tv-world-position';
-import { WriterService } from './tv-writer.service';
-import { ScenarioEntity } from '../models/entities/scenario-entity';
-import { VehicleEntity } from '../models/entities/vehicle-entity';
-import { DynamicsShape, OpenScenarioVersion } from '../models/tv-enums';
+import { Vector3 } from 'three';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { EntityRef } from '../models/entity-ref';
+import { WorldPosition } from '../models/positions/tv-world-position';
+import { DynamicsShape, OpenScenarioVersion } from '../models/tv-enums';
+import { ControlPoint, EnumTrajectoryDomain, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
+import { OpenScenarioExporter } from './open-scenario-exporter';
 
-describe( 'WriterService', () => {
+describe( 'OpenScenarioExporter', () => {
 
-	let writer: WriterService;
+	let writer: OpenScenarioExporter;
 
 	beforeEach( () => {
-		writer = new WriterService();
+		writer = new OpenScenarioExporter();
 	} );
 
 	it( 'should write trajectory correctly', () => {
@@ -49,7 +42,7 @@ describe( 'WriterService', () => {
 		spyOnProperty( writer, 'version', 'get' ).and.returnValue( OpenScenarioVersion.v0_9 );
 
 		const vertex = new Vertex();
-		vertex.position = new WorldPosition( 1, 2, 3 );
+		vertex.position = new WorldPosition( new Vector3(), null );
 		vertex.time = 1;
 
 		const xml = writer.writeVertex( vertex );
@@ -90,7 +83,7 @@ describe( 'WriterService', () => {
 
 		spyOnProperty( writer, 'version', 'get' ).and.returnValue( OpenScenarioVersion.v0_9 );
 
-		const root = {}
+		const root = {};
 
 		writer.writeEntities( root, new Map<string, ScenarioEntity>() );
 
@@ -102,7 +95,7 @@ describe( 'WriterService', () => {
 
 		spyOnProperty( writer, 'version', 'get' ).and.returnValue( OpenScenarioVersion.v1_0 );
 
-		const root = {}
+		const root = {};
 
 		writer.writeEntities( root, new Map<string, ScenarioEntity>() );
 
@@ -114,7 +107,7 @@ describe( 'WriterService', () => {
 
 		spyOnProperty( writer, 'version', 'get' ).and.returnValue( OpenScenarioVersion.v0_9 );
 
-		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( 'test', 1 ) ) );
+		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( new EntityRef( 'test' ), 1 ) ) );
 
 		expect( xml.Lateral.LaneOffset.Dynamics.attr_continuous ).toBe( undefined );
 		expect( xml.Lateral.LaneOffset.Dynamics.attr_maxLateralAcc ).toBe( 0.1 );
@@ -129,7 +122,7 @@ describe( 'WriterService', () => {
 
 		spyOnProperty( writer, 'version', 'get' ).and.returnValue( OpenScenarioVersion.v1_0 );
 
-		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( 'test', 1 ) ) );
+		const xml = writer.writePrivateAction( new LaneOffsetAction( false, 0.1, DynamicsShape.linear, new RelativeTarget( new EntityRef( 'test' ), 1 ) ) );
 
 		expect( xml.LateralAction.LaneOffsetAction.attr_continuous ).toBe( false );
 		expect( xml.LateralAction.LaneOffsetAction.LaneOffsetActionDynamics.attr_maxLateralAcc ).toBe( 0.1 );

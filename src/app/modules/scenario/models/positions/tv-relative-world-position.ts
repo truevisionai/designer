@@ -2,36 +2,91 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Euler, Vector3 } from 'three';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { SerializedField } from 'app/core/components/serialization';
+import { EntityRef } from '../entity-ref';
 
+/**
+ * Position defined in terms of delta x, y, (z) relative to a reference entity's
+ * position in world coordinate space. Optionally, an orientation can be
+ * defined in either absolute or relative values.
+ *
+ */
 export class RelativeWorldPosition extends Position {
 
 	public readonly label: string = 'Relative World Position';
 	public readonly type = PositionType.RelativeWorld;
+	public readonly isDependent: boolean = true;
 
+	/**
+	 * The absolute reference context refers to the orientation with respect to
+	 * the World coordinate system (i.e., the orientation of the reference entity is ignored).
+	 *
+	 * The relative reference context refers to the angular shift of orientation angles with
+	 * respect to the corresponding orientation angles of the reference entity in the World
+	 * coordinate system. The positive value means a counter-clockwise shift.
+	 *
+	 * Missing Orientation property is interpreted as the absolute
+	 * reference context with Heading=Pitch=Roll=0.
+	 */
+
+	/**
+	 *
+	 * @param entityRef
+	 * @param delta
+	 * @param orientation
+	 */
 	constructor (
-		public entityRef: string,
-		public dx: number = 0,
-		public dy: number = 0,
-		public dz: number = 0,
-		public orientation: Orientation = null
+		public entityRef: EntityRef,
+		delta: Vector3,
+		orientation?: Orientation
 	) {
-		super();
+		super( delta || new Vector3( 0, 0, 0 ), orientation || new Orientation( 0, 0, 0, OrientationType.absolute ) );
+	}
+
+	@SerializedField( { type: 'entity' } )
+	get entityName (): string {
+		return this.entityRef?.name;
+	}
+
+	set entityName ( value: string ) {
+		this.entityRef.name = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get delta (): Vector3 {
+		return this.vector0;
+	}
+
+	set delta ( value: Vector3 ) {
+		this.vector0.copy( value );
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get rotation (): Vector3 {
+		return this.orientation.toVector3();
+	}
+
+	set rotation ( value: Vector3 ) {
+		this.orientation.copyFromVector3( value );
+		this.updated.emit();
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {
 
 		return {
-			attr_entityRef: this.entityRef,
-			attr_dx: this.dx,
-			attr_dy: this.dy,
-			attr_dz: this.dz,
+			attr_entityRef: this.entityRef?.name,
+			attr_dx: this.delta.x,
+			attr_dy: this.delta.y,
+			attr_dz: this.delta.z,
 			Orientation: this.orientation?.toXML(),
-		}
+		};
 
 	}
 
@@ -45,52 +100,49 @@ export class RelativeWorldPosition extends Position {
 
 		const orientation = Orientation.fromXML( xml?.Orientation );
 
-		return new RelativeWorldPosition( entity, dx, dy, dz, orientation );
+		return new RelativeWorldPosition( new EntityRef( entity ), new Vector3( dx, dy, dz ), orientation );
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 
 		// Retrieve the position of the referenced entity
-		const entityPosition = this.entityRef ?
-			this.getEntity( this.entityRef ).getCurrentPosition() : new Vector3();
+		// const entityPosition = this.entityRef ? this.getEntity( this.entityRef ).getCurrentPosition() : new Vector3();
+		const entityPosition = this.entityRef.entity.position.clone();
 
 		// Calculate the relative position vector
-		const relativeVector = new Vector3(
-			entityPosition.x + this.dx,
-			entityPosition.y + this.dy,
-			entityPosition.z + this.dz
-		);
-
-		return relativeVector;
+		return entityPosition.add( this.delta );
 	}
 
 	toEuler (): Euler {
 
-		if ( !this.entityRef || this.orientation.type == OrientationType.absolute ) {
+		if ( !this.entityRef ) return this.orientation?.toEuler();
+
+		if ( !this.orientation ) return this.orientation?.toEuler();
+
+		if ( this.orientation.type == OrientationType.absolute ) {
 
 			return this.orientation.toEuler();
 
 		}
 
-		const entity = this.getEntity( this.entityRef );
+		const refOrientation = this.entityRef.entity.getOrientation().clone();
 
-		const entityOrientation = entity.getOrientation();
-
-		// Calculate the relative orientation
-		const relativeOrientation = new Orientation(
-			entityOrientation.h + this.orientation.h,
-			entityOrientation.p + this.orientation.p,
-			entityOrientation.r + this.orientation.r
-		);
-
-		return relativeOrientation.toEuler();
-	}
-
-	toOrientation (): Orientation {
-
-		return new Orientation();
+		return refOrientation.add( this.orientation ).toEuler();
 
 	}
 
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		const entityPosition = this.entityRef.entity.position.clone();
+
+		const delta = position.clone().sub( entityPosition );
+
+		this.vector0.copy( delta );
+
+		this.orientation.copy( orientation )
+
+		this.updated.emit();
+
+	}
 
 }

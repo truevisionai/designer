@@ -14,17 +14,17 @@ export abstract class PrivateAction extends TvAction {
 
 		this.isCompleted = true;
 
-		this.completed.emit( {
-			type: StoryboardElementType.action,
-			name: this.name,
-			state: StoryboardElementState.endTransition
-		} );
-
-		ScenarioEvents.events.emit( {
-			type: StoryboardElementType.action,
-			name: this.name,
-			state: StoryboardElementState.endTransition
-		} );
+		// this.completed.emit( {
+		// 	type: StoryboardElementType.action,
+		// 	name: this.name,
+		// 	state: StoryboardElementState.endTransition
+		// } );
+		//
+		// ScenarioEvents.events.emit( {
+		// 	type: StoryboardElementType.action,
+		// 	name: this.name,
+		// 	state: StoryboardElementState.endTransition
+		// } );
 
 	}
 

@@ -40,7 +40,7 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		// for example when changing from world to road
 		// the current vector3 can be translated to road position
 
-		this.position = PositionFactory.createPosition( $type, this.position );
+		this.position = PositionFactory.createPosition( $type, this.position, this.entity );
 
 		this.positionChanged.emit( this.position );
 

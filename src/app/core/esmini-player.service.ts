@@ -4,12 +4,12 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { WriterService } from 'app/modules/scenario/services/tv-writer.service';
+import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EditorService } from './services/editor.service';
-import { OdWriter } from 'app/modules/tv-map/services/open-drive-writer.service';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { TvConsole } from './utils/console';
 import { AppInspector } from './inspector';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
@@ -27,8 +27,7 @@ export class EsminiPlayerService {
 
 	constructor (
 		private fileService: FileService,
-		private odWriter: OdWriter,
-		private scenarioWriter: WriterService,
+		private openDriveExporter: OpenDriveExporter,
 		private electronService: TvElectronService,
 		private editor: EditorService,
 	) {
@@ -139,7 +138,7 @@ export class EsminiPlayerService {
 
 	saveMap ( path: string ): string {
 
-		const odString = this.odWriter.getOutput( TvMapInstance.map );
+		const odString = this.openDriveExporter.getOutput( TvMapInstance.map );
 
 		const odFilePath = path + '/map.xodr';
 
@@ -154,7 +153,9 @@ export class EsminiPlayerService {
 
 	saveScenario ( path: string ): string {
 
-		const oscString = this.scenarioWriter.getOutputString( ScenarioInstance.scenario );
+		const scenarioExporter = new OpenScenarioExporter();
+
+		const oscString = scenarioExporter.getOutputString( ScenarioInstance.scenario );
 
 		const oscFilePath = path + '/map.xosc';
 

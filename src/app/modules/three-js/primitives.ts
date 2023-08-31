@@ -109,7 +109,7 @@ export class BoundingBoxObject {
 		}
 	}
 
-	setPosition ( object, start: Vector3, end: Vector3, dimensions: Vector2 ) {
+	setPosition ( object: Object3D, start: Vector3, end: Vector3, dimensions: Vector2 ) {
 
 		if ( end.x < start.x ) dimensions.x *= -1;
 		if ( end.y < start.y ) dimensions.y *= -1;

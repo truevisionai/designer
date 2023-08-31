@@ -7,59 +7,86 @@ import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { EntityRef } from '../entity-ref';
+import { SerializedField } from 'app/core/components/serialization';
 
 export class RelativeObjectPosition extends Position {
 
 	public readonly label: string = 'Relative Object Position';
 	public readonly type = PositionType.RelativeObject;
+	public readonly isDependent: boolean = true;
 
 	constructor (
-		public entityRef: string,
-		public dx = 0,
-		public dy = 0,
-		public dz = 0,
-		public orientation: Orientation = null
+		public entityRef: EntityRef,
+		delta: Vector3,
+		orientation: Orientation = null
 	) {
-		super();
+		super( delta || new Vector3( 0, 0, 0 ), orientation );
 	}
 
-	toVector3 (): Vector3 {
+	@SerializedField( { type: 'entity' } )
+	get entityName (): string {
+		return this.entityRef?.name;
+	}
+
+	set entityName ( value: string ) {
+		this.entityRef.name = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get delta (): Vector3 {
+		return this.vector0;
+	}
+
+	set delta ( value: Vector3 ) {
+		this.vector0.copy( value );
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get rotation (): Vector3 {
+		return this.orientation.toVector3();
+	}
+
+	set rotation ( value: Vector3 ) {
+		this.orientation.copyFromVector3( value );
+		this.updated.emit();
+	}
+
+	getVectorPosition (): Vector3 {
 
 		// Retrieve the position of the referenced object
-		const relPos = this.entityRef ? this.getEntity( this.entityRef ).getCurrentPosition() : new Vector3();
+		const relativePosition = this.entityRef ? this.entityRef?.entity.position.clone() : new Vector3();
 
-		// Convert the orientation to radians
-		const yaw = this.orientation.h * Math.PI / 180;
+		let rotatedDelta: Vector3;
 
-		// Apply rotation matrix to the offse
-		const rotatedX = relPos.x + this.dx * Math.cos( yaw ) - this.dy * Math.sin( yaw );
-		const rotatedY = relPos.y + this.dy * Math.cos( yaw ) + this.dx * Math.sin( yaw );
-		const rotatedZ = relPos.z + this.dz;
+		if ( this.orientation ) {
 
-		// Calculate the relative position vector
-		return new Vector3(
-			rotatedX,
-			rotatedY,
-			rotatedZ
-		);
+			const rotationMatrix = this.orientation.getRotationMatrix();
+
+			rotatedDelta = this.delta.applyMatrix3( rotationMatrix )
+
+		} else {
+
+			rotatedDelta = this.delta.clone();
+
+		}
+
+		return relativePosition.add( rotatedDelta );
+
 	}
 
-	toOrientation (): Orientation {
+	getOrientation (): Orientation {
 
 		// Check if the orientation is relative
 		if ( this.entityRef && this.orientation.type == OrientationType.relative ) {
 
 			// Retrieve the orientation of the referenced object
-			const objectOrientation = this.getEntity( this.entityRef ).getOrientation();
+			const refOrientation = this.entityRef?.entity.getOrientation().clone();
 
 			// Calculate the relative orientation
-			const relativeOrientation = new Orientation(
-				objectOrientation.h + this.orientation.h,
-				objectOrientation.p + this.orientation.p,
-				objectOrientation.r + this.orientation.r
-			);
-
-			return relativeOrientation;
+			return refOrientation.add( this.orientation );
 
 		} else {
 			// The orientation is absolute, so return it as is
@@ -89,14 +116,27 @@ export class RelativeObjectPosition extends Position {
 
 		return {
 			[ key ]: {
-				attr_object: this.entityRef,
-				attr_dx: this.dx,
-				attr_dy: this.dy,
-				attr_dz: this.dz ? this.dz : 0,
+				attr_object: this.entityRef?.name,
+				attr_dx: this.vector0.x,
+				attr_dy: this.vector0.y,
+				attr_dz: this.vector0.z,
 				Orientation: this.orientation?.toXML()
 			}
 		};
 	}
 
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		const entityPosition = this.entityRef.entity.position.clone();
+
+		const delta = position.clone().sub( entityPosition );
+
+		this.vector0.copy( delta );
+
+		this.orientation.copy( orientation )
+
+		this.updated.emit();
+
+	}
 
 }

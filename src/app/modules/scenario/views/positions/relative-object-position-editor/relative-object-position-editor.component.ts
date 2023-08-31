@@ -18,25 +18,19 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 	}
 
 	get delta (): Vector3 {
-		return new Vector3(
-			this.relativeObjectPosition.dx,
-			this.relativeObjectPosition.dy,
-			this.relativeObjectPosition.dz,
-		);
+		return this.relativeObjectPosition.delta;
 	}
 
 	onDeltaChanged ( $delta: any ) {
 
-		this.relativeObjectPosition.dx = $delta.x;
-		this.relativeObjectPosition.dy = $delta.y;
-		this.relativeObjectPosition.dz = $delta.z;
+		this.relativeObjectPosition.delta = $delta;
 
 		this.positionModified.emit( this.position );
 	}
 
-	onEntityChanged ( $entityRef: string ) {
+	onEntityChanged ( $entityName: string ) {
 
-		this.relativeObjectPosition.entityRef = $entityRef;
+		this.relativeObjectPosition.entityRef.name = $entityName;
 
 		this.positionModified.emit( this.position );
 	}

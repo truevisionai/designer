@@ -116,7 +116,7 @@ export class LaneChangeAction extends PrivateAction {
 
 		// Compute the target lane ID based on whether the target is relative or not
 		if ( this.target instanceof RelativeTarget ) {
-			this.targetLaneId = this.target.entity.getCurrentLaneId() + ( isEntityOnLeftSide ? this.target.value : -this.target.value );
+			this.targetLaneId = this.target.entityRef.entity.getCurrentLaneId() + ( isEntityOnLeftSide ? this.target.value : -this.target.value );
 		} else {
 			this.targetLaneId = this.target.value;
 		}

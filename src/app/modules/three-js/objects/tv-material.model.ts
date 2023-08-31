@@ -3,6 +3,7 @@
  */
 
 import { AppService } from 'app/core/services/app.service';
+import { AssetDatabase } from 'app/services/asset-database';
 import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {
@@ -20,6 +21,41 @@ export class TvMaterial extends MeshStandardMaterial {
 	static new ( name = 'NewMaterial' ) {
 
 		return new TvMaterial( MathUtils.generateUUID(), { name: name } );
+
+	}
+
+	clone () {
+
+		const result = super.clone();
+
+		result.guid = result.uuid = MathUtils.generateUUID();
+
+		if ( this.mapGuid !== undefined ) {
+			result.mapGuid = this.mapGuid;
+			result.map = AssetDatabase.getInstance<Texture>( this.mapGuid );
+		}
+
+		if ( this.roughnessMapGuid !== undefined ) {
+			result.roughnessMapGuid = this.roughnessMapGuid;
+			result.roughnessMap = AssetDatabase.getInstance<Texture>( this.roughnessMapGuid );
+		}
+
+		if ( this.normalMapGuid !== undefined ) {
+			result.normalMapGuid = this.normalMapGuid;
+			result.normalMap = AssetDatabase.getInstance<Texture>( this.normalMapGuid );
+		}
+
+		if ( this.aoMapGuid !== undefined ) {
+			result.aoMapGuid = this.aoMapGuid;
+			result.aoMap = AssetDatabase.getInstance<Texture>( this.aoMapGuid );
+		}
+
+		if ( this.displacementMapGuid !== undefined ) {
+			result.displacementMapGuid = this.displacementMapGuid;
+			result.displacementMap = AssetDatabase.getInstance<Texture>( this.displacementMapGuid );
+		}
+
+		return result;
 
 	}
 

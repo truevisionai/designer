@@ -3,27 +3,35 @@
  */
 
 import { Vector3 } from 'three';
-import { Position } from '../models/position';
-import { PositionType } from '../models/tv-enums';
-import { Orientation } from '../models/tv-orientation';
+import { Position } from '../position';
+import { PositionType } from '../tv-enums';
+import { Orientation } from '../tv-orientation';
 
 export class RelativeRoadPosition extends Position {
 
 	readonly label: string = 'RelativeRoadPosition';
 	readonly type: PositionType = PositionType.RelativeRoad;
+	readonly isDependent: boolean = true;
+
 
 	constructor (
 		public entity: string,
 		public roadId: number,
 		public ds: number,
 		public dt: number,
-		public orientation: Orientation
+		orientation: Orientation
 	) {
-		super();
+		super( null, orientation );
 	}
 
-	toVector3 (): Vector3 {
+	getVectorPosition (): Vector3 {
 		throw new Error( 'Method not implemented.' );
+	}
+
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		throw new Error( 'Method not implemented.' );
+
 	}
 
 }

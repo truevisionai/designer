@@ -2,48 +2,90 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { SerializedField } from 'app/core/components/serialization';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class RoadPosition extends Position {
 
 	public readonly label: string = 'Road Position';
 	public readonly type = PositionType.Road;
+	public readonly isDependent: boolean = false;
 
 	constructor (
 		public roadId = 0,
 		public sValue = 0,
 		public tValue = 0,
-		public orientation: Orientation = null
+		orientation: Orientation = null
 	) {
 
-		super();
+		super( null, orientation );
 
-		this.orientation = orientation || new Orientation();
+		this.orientation = orientation;
 
+	}
+
+	@SerializedField( { type: 'road' } )
+	get road (): number {
+		return this.roadId;
+	}
+
+	set road ( value: number ) {
+		this.roadId = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'float' } )
+	get s (): number {
+		return this.sValue;
+	}
+
+	set s ( value: number ) {
+		this.sValue = value;
+		this.updated.emit();
+	}
+
+	@SerializedField( { type: 'float' } )
+	get t (): number {
+		return this.tValue;
+	}
+
+	set t ( value: number ) {
+		this.tValue = value;
+		this.updated.emit();
 	}
 
 	exportXml () {
 		throw new Error( 'Method not implemented.' );
 	}
 
-	toVector3 (): Vector3 {
-		return TvMapQueries.getRoadPosition( this.roadId, this.sValue, this.tValue ).toVector3();
-	}
-
-	toOrientation (): Orientation {
-		return this.orientation;
-	}
-
-	toEuler (): Euler {
-		return this.orientation.toEuler();
+	getVectorPosition (): Vector3 {
+		return this.getRoad()?.getPositionAt( this.sValue, this.tValue ).toVector3();
 	}
 
 	getRoad () {
 		return TvMapQueries.findRoadById( this.roadId );
+	}
+
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		const posTheta = new TvPosTheta();
+
+		const road = TvMapQueries.getRoadByCoords( position.x, position.y, posTheta );
+
+		this.roadId = road.id;
+
+		this.sValue = posTheta.s;
+
+		this.tValue = posTheta.t;
+
+		this.setPosition( position );
+
+		this.updated.emit();
 	}
 
 }

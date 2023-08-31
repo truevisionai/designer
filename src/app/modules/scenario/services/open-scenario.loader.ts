@@ -3,12 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
+import { VehicleFactory } from 'app/core/factories/vehicle.factory';
+import { AbstractReader } from 'app/core/services/abstract-reader';
+import { FileUtils } from 'app/core/io/file-utils';
 import { XMLParser } from 'fast-xml-parser';
 import { Vector3 } from 'three';
-import { IFile } from '../../../core/models/file';
+import { IFile } from '../../../core/io/file';
 import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
-import { FileService } from '../../../services/file.service';
+import { FileService } from '../../../core/io/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
@@ -48,12 +51,16 @@ import { StandStillCondition } from '../models/conditions/tv-stand-still-conditi
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { TimeToCollisionCondition } from '../models/conditions/tv-time-to-collision-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
+import { EntityRef } from '../models/entity-ref';
 import { Position } from '../models/position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
 import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
 import { RoadPosition } from '../models/positions/tv-road-position';
+import { TrajectoryPosition } from '../models/positions/tv-trajectory-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
@@ -62,20 +69,19 @@ import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../m
 
 import { Catalog, CatalogReference, Catalogs, ParameterAssignment } from '../models/tv-catalogs';
 import { Directory, File } from '../models/tv-common';
-import { ScenarioEntity } from '../models/entities/scenario-entity';
 import {
 	ConditionEdge,
 	CoordinateSystem,
 	DirectionDimension,
 	DynamicsDimension,
 	DynamicsShape,
-	TrajectoryFollowingMode,
 	ParameterType,
 	RelativeDistanceType,
 	RoutingAlgorithm,
 	Rule,
 	ScenarioObjectType,
 	StoryboardElementState,
+	TrajectoryFollowingMode,
 	TriggeringRule
 } from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
@@ -91,8 +97,8 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { VehicleEntity } from '../models/entities/vehicle-entity';
-import { RelativeRoadPosition } from './relative-road.position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
+import { ParameterResolver } from './scenario-builder.service';
 import {
 	TrafficSignalController,
 	TrafficSignalControllerCondition,
@@ -101,12 +107,6 @@ import {
 } from './traffic-signal-controller.condition';
 import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
-import { VehicleFactory } from 'app/core/factories/vehicle.factory';
-import { AbstractReader } from 'app/core/services/abstract-reader';
-import { TrajectoryPosition } from '../models/positions/tv-trajectory-position';
-import { FileUtils } from 'app/services/file-utils';
-import { ParameterResolver } from './scenario-builder.service';
-import { Maths } from 'app/utils/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -114,6 +114,8 @@ import { Maths } from 'app/utils/maths';
 export class OpenScenarioLoader extends AbstractReader {
 
 	private directoryPath: string;
+
+	private scenario: TvScenario;
 
 	constructor ( private fileService: FileService ) {
 		super();
@@ -129,19 +131,12 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		const xml = new ParameterResolver().replaceParameterWithValue( xmlWithVariables );
 
-		return this.parseXML( xml );
+		return this.parse( xml );
 
 	}
 
 	setPath ( path: string ) {
 		this.directoryPath = path;
-	}
-
-	parseContents ( contents: string ): TvScenario {
-
-		const xml = this.getXMLElement( contents );
-
-		return this.parseXML( xml );
 	}
 
 	getXMLElement ( contents: string ): XmlElement {
@@ -160,12 +155,6 @@ export class OpenScenarioLoader extends AbstractReader {
 		const xml: XmlElement = xmlParser.parse( contents );
 
 		return xml;
-	}
-
-	parseXML ( xml: XmlElement ): any {
-
-		return this.parseRootElement( xml );
-
 	}
 
 	parseCatalogFile ( xml: XmlElement ): Catalog {
@@ -195,11 +184,11 @@ export class OpenScenarioLoader extends AbstractReader {
 		return catalog;
 	}
 
-	parseRootElement ( xml: XmlElement ): any {
+	parse ( xml: XmlElement ): any {
 
 		const root: XmlElement = xml.OpenSCENARIO;
 
-		const fileHeader = this.parseFileHeader( root.FileHeader )
+		const fileHeader = this.parseFileHeader( root.FileHeader );
 
 		if ( root?.Storyboard ) {
 
@@ -227,7 +216,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseScenario ( xml: XmlElement ): TvScenario {
 
-		const scenario = new TvScenario();
+		const scenario = this.scenario = new TvScenario();
 
 		scenario.parameterDeclarations = this.parseParameterDeclarations( xml.ParameterDeclarations );
 
@@ -304,11 +293,11 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseCatalog ( xml: XmlElement ): Catalog[] {
 
-		if ( !xml ) return []
+		if ( !xml ) return [];
 
-		if ( !xml?.Directory ) return []
+		if ( !xml?.Directory ) return [];
 
-		if ( !xml?.Directory?.attr_path ) return []
+		if ( !xml?.Directory?.attr_path ) return [];
 
 		return this.loadCatalogsFromDirectory( xml?.Directory?.attr_path );
 
@@ -331,7 +320,7 @@ export class OpenScenarioLoader extends AbstractReader {
 			}
 		}
 
-		TvConsole.error( "None of the directories could be read." );
+		TvConsole.error( 'None of the directories could be read.' );
 
 		return [];
 	}
@@ -375,7 +364,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 				items.push( catalog );
 
-			} )
+			} );
 
 
 		} catch ( error ) {
@@ -425,14 +414,19 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseWorldPosition ( xml: XmlElement ): WorldPosition {
 
-		return new WorldPosition(
+		const vector3 = new Vector3(
 			parseFloat( xml.attr_x || 0 ),
 			parseFloat( xml.attr_y || 0 ),
 			parseFloat( xml.attr_z || 0 ),
-			parseFloat( xml.attr_h || 0 ) - Maths.M_PI_2,
-			parseFloat( xml.attr_p || 0 ),
-			parseFloat( xml.attr_r || 0 ),
 		);
+
+		const orientation = new Orientation(
+			parseFloat( xml.attr_h || 0 ),
+			parseFloat( xml.attr_p || 0 ),
+			parseFloat( xml.attr_r || 0 )
+		);
+
+		return new WorldPosition( vector3, orientation );
 
 	}
 
@@ -457,7 +451,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		const orientation = this.parseOrientation( xml.Orientation );
 
-		return new RelativeLanePosition( entityRef, dLane, ds, offset, dsLane, orientation );
+		return new RelativeLanePosition( new EntityRef( entityRef ), dLane, ds, offset, dsLane, orientation );
 	}
 
 	parseRelativeObjectPosition ( xml: XmlElement ): RelativeObjectPosition {
@@ -468,7 +462,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		const dy = parseFloat( xml.attr_dy || 0 );
 		const dz = parseFloat( xml.attr_dz || 0 );
 
-		return new RelativeObjectPosition( entity, dx, dy, dz, orientation );
+		return new RelativeObjectPosition( new EntityRef( entity ), new Vector3( dx, dy, dz ), orientation );
 	}
 
 	parseOrientation ( xml: XmlElement ): Orientation {
@@ -795,7 +789,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 			entity.addParameterDeclaration( this.parseParameterDeclaration( xml ) );
 
-		} )
+		} );
 
 		return entity;
 
@@ -1182,14 +1176,14 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parseStory ( xml: XmlElement ): Story {
+	parseStory ( xml: XmlElement, scenario: TvScenario ): Story {
 
 		let name = xml.attr_name;
 		let ownerName = xml.attr_owner ? xml.attr_owner : null;
 
 		const story = new Story( name, ownerName );
 
-		readXmlArray( xml.Act, xml => story.addAct( this.parseAct( xml ) ) );
+		readXmlArray( xml.Act, xml => story.addAct( this.parseAct( xml, scenario ) ) );
 
 		readXmlArray( xml.ParameterDeclarations?.ParameterDeclaration,
 			xml => story.addParameterDeclaration( this.parseParameterDeclaration( xml ) )
@@ -1198,7 +1192,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return story;
 	}
 
-	parseAct ( xml: XmlElement ): Act {
+	parseAct ( xml: XmlElement, scenario: TvScenario ): Act {
 
 		const act = new Act;
 
@@ -1207,7 +1201,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		// Sequence is for 0.9
 		// ManeuverGroup is for 1.0 and above
 		this.readAsOptionalArray( xml.Sequence || xml.ManeuverGroup, ( xml ) => {
-			act.addSequence( this.parseSequence( xml ) );
+			act.addManeuverGroup( this.parseSequence( xml, scenario ) );
 		} );
 
 		// Start is a single element
@@ -1236,7 +1230,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parseSequence ( xml: XmlElement ): ManeuverGroup {
+	parseSequence ( xml: XmlElement, scenario: TvScenario ): ManeuverGroup {
 
 		const name = xml.attr_name;
 		const numberOfExecutions = parseFloat( xml.attr_numberOfExecutions || xml.attr_maximumExecutionCount );
@@ -1261,13 +1255,13 @@ export class OpenScenarioLoader extends AbstractReader {
 		// parse maneuvers
 
 		this.readAsOptionalArray( xml.Maneuver, ( xml ) => {
-			maneuverGroup.addManeuver( this.parseManeuver( xml ) );
+			maneuverGroup.addManeuver( this.parseManeuver( xml, scenario ) );
 		} );
 
 		return maneuverGroup;
 	}
 
-	parseManeuver ( xml: XmlElement ): Maneuver {
+	parseManeuver ( xml: XmlElement, scenario: TvScenario ): Maneuver {
 
 		const maneuver = new Maneuver( xml.attr_name );
 
@@ -1281,13 +1275,13 @@ export class OpenScenarioLoader extends AbstractReader {
 		} );
 
 		this.readAsOptionalArray( xml.Event, ( xml ) => {
-			maneuver.addEventInstance( this.parseEvent( xml ) );
+			maneuver.addEvent( this.parseEvent( xml, scenario ) );
 		} );
 
 		return maneuver;
 	}
 
-	parseEvent ( xml: XmlElement ): TvEvent {
+	parseEvent ( xml: XmlElement, scenario: TvScenario ): TvEvent {
 
 		const name = xml.attr_name;
 		const priority = xml.attr_priority;
@@ -1296,7 +1290,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		readXmlArray( xml.Action, ( xml ) => {
 
-			const eventAction = this.parseEventAction( xml );
+			const eventAction = this.parseEventAction( xml, scenario );
 
 			if ( eventAction?.action ) {
 
@@ -1323,7 +1317,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return event;
 	}
 
-	parseEventAction ( xml: XmlElement ): EventAction {
+	parseEventAction ( xml: XmlElement, scenario: TvScenario ): EventAction {
 
 		const action = new EventAction;
 
@@ -1331,7 +1325,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		if ( xml.Private || xml.PrivateAction ) {
 
-			action.action = this.parsePrivateAction( xml.Private || xml.PrivateAction );
+			action.action = this.parsePrivateAction( xml.Private || xml.PrivateAction, scenario );
 
 		} else if ( xml.UserDefined || xml.UserDefinedAction ) {
 
@@ -1373,14 +1367,14 @@ export class OpenScenarioLoader extends AbstractReader {
 			// 0.9
 			this.readAsOptionalArray( xml.Action, ( xml ) => {
 
-				entity.initActions.push( this.parsePrivateAction( xml ) );
+				entity.addInitAction( this.parsePrivateAction( xml, scenario ) );
 
 			} );
 
 			// 1.0
 			this.readAsOptionalArray( xml.PrivateAction, ( xml ) => {
 
-				entity.initActions.push( this.parsePrivateAction( xml ) );
+				entity.addInitAction( this.parsePrivateAction( xml, scenario ) );
 
 			} );
 
@@ -1449,7 +1443,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parsePrivateAction ( xml: XmlElement ): PrivateAction {
+	parsePrivateAction ( xml: XmlElement, scenario: TvScenario ): PrivateAction {
 
 		let action = null;
 
@@ -1806,7 +1800,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 			parameterAssignments.push( this.parseParameterAssignment( xml ) );
 
-		} )
+		} );
 
 		return parameterAssignments;
 	}
@@ -1862,7 +1856,7 @@ export class OpenScenarioLoader extends AbstractReader {
 			const value = parseFloat( xml.Relative.attr_value || 0 );
 			const object: string = xml.Relative.attr_object;
 
-			return new RelativeTarget( object, value );
+			return new RelativeTarget( new EntityRef( object ), value );
 
 		}
 
@@ -1879,14 +1873,14 @@ export class OpenScenarioLoader extends AbstractReader {
 			const value = parseFloat( xml.RelativeTargetSpeed.attr_value || 0 );
 			const entityRef: string = xml.RelativeTargetSpeed.attr_entityRef;
 
-			return new RelativeTarget( entityRef, value );
+			return new RelativeTarget( new EntityRef( entityRef ), value );
 
 		} else if ( xml.RelativeTargetLane ) {
 
 			const value: number = parseInt( xml.RelativeTargetLane.attr_value || 0 );
 			const entityRef: string = xml.RelativeTargetLane.attr_entityRef;
 
-			return new RelativeTarget( entityRef, value );
+			return new RelativeTarget( new EntityRef( entityRef ), value );
 
 		} else if ( xml.AbsoluteTargetLane ) {
 
@@ -1897,7 +1891,7 @@ export class OpenScenarioLoader extends AbstractReader {
 			const value: number = parseFloat( xml.RelativeTargetLaneOffset.attr_value || 0 );
 			const entityRef: string = xml.RelativeTargetLaneOffset.attr_entityRef;
 
-			return new RelativeTarget( entityRef, value );
+			return new RelativeTarget( new EntityRef( entityRef ), value );
 
 		} else if ( xml.AbosoluteTargetLaneOffset ) {
 
@@ -1979,7 +1973,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		} );
 
 		readXmlArray( xml.Story, ( xml: XmlElement ) => {
-			storyboard.addStory( this.parseStory( xml ) );
+			storyboard.addStory( this.parseStory( xml, scenario ) );
 		} );
 
 		// to suppoer 0.9 and to support 1.0 and above

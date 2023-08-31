@@ -27,36 +27,12 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
-import { TvConsole } from 'app/core/utils/console';
-import { SceneService } from 'app/core/services/scene.service';
 import { CreateControlPointCommand } from './create-control-point-command';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 
-/**
- *
- *
- * NODE CONNECTION IS NOT WORKING
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'RoadTool';
@@ -68,9 +44,18 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private roadChanged: boolean = false;
 
+	private pointStrategy: SelectStrategy<RoadControlPoint>;
+	private nodeStrategy: SelectStrategy<RoadNode>;
+	private roadStrategy: SelectStrategy<TvRoadCoord>;
+
 	constructor () {
 
 		super();
+
+		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
+		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
+		this.roadStrategy = new OnRoadStrategy();
+
 
 	}
 
@@ -130,154 +115,54 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ) {
 
-		if ( e.button !== MouseButton.LEFT ) return;
+		if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length == 1 ) {
 
-		if ( e.point == null ) return;
+			CommandHistory.execute( new CreateRoadCommand( this, this.controlPoint.road, e.point ) );
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		} else if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length >= 2 ) {
 
-		if ( shiftKeyDown ) {
-
-			if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length == 1 ) {
-
-				CommandHistory.execute( new CreateRoadCommand( this, this.controlPoint.road, e.point ) );
-
-			} else if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length >= 2 ) {
-
-				CommandHistory.execute( new AddRoadPointCommand( this, this.controlPoint.road, e.point ) );
-
-			} else {
-
-				CommandHistory.execute( new CreateControlPointCommand( this, e.point ) );
-
-			}
+			CommandHistory.execute( new AddRoadPointCommand( this, this.controlPoint.road, e.point ) );
 
 		} else {
 
-			// is shift key not down we look to select objects
-
-			// select point, unselect node
-			if ( this.road && this.isControlPointSelected( e ) ) return;
-
-			// select node, unselect point
-			if ( this.isRoadNodeSelected( e ) ) return;
-
-			// select road, unselect point and node
-			if ( this.isRoadSelected( e ) ) return;
-
-			// if no object is selected we unselect road, node and control point
-			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, null ) );
-		}
-
-
-	}
-
-	onPointerClicked ( e: PointerEventData ) {
-
-		// NOTE: no need to do chck creation logic here, as it caused bugs, moved it in onPointerDown
-
-	}
-
-	onPointerUp ( e: PointerEventData ) {
-
-		if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
-
-			const oldPosition = this.pointerDownAt.clone();
-
-			const newPosition = this.controlPoint.position.clone();
-
-			const command = new CopyPositionCommand( this.controlPoint, newPosition, oldPosition );
-
-			CommandHistory.execute( command );
-
-			this.road?.successor?.hideSpline();
-
-			this.road?.predecessor?.hideSpline();
-
-		}
-
-		this.roadChanged = false;
-	}
-
-	onPointerMoved ( e: PointerEventData ) {
-
-		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
-
-			this.controlPoint.position.copy( e.point );
-
-			this.road.spline.update();
-
-			this.controlPoint.updateSuccessor( false );
-
-			this.controlPoint.updatePredecessor( false );
-
-			this.roadChanged = true;
+			CommandHistory.execute( new CreateControlPointCommand( this, e.point ) );
 
 		}
 
 	}
 
-	private isControlPointSelected ( e: PointerEventData ): boolean {
+	onPointerDownSelect ( e: PointerEventData ) {
 
-		if ( !this.road || !this.road.spline || !e.point ) return false;
+		const point = this.pointStrategy.onPointerDown( e );
+		if ( point ) this.onControlPointSelected( point );
+		if ( point ) return;
 
-		const nearestControlPoint = this.findNearestControlPoint( e, e.point );
+		const node = this.nodeStrategy.onPointerDown( e );
+		if ( node ) this.onNodeSelected( node );
+		if ( node ) return;
 
-		if ( !nearestControlPoint ) return false;
+		const roadCoord = this.roadStrategy.onPointerDown( e );
+		if ( roadCoord ) this.onRoadSelected( roadCoord.road );
+		if ( roadCoord ) return;
 
-		if ( !this.controlPoint || nearestControlPoint.id !== this.controlPoint.id ) {
+		// if no object is selected we unselect road, node and control point
+		CommandHistory.execute( new SelectRoadForRoadToolCommand( this, null ) );
 
-			this.selectControlPoint( nearestControlPoint );
+	}
+
+	onRoadSelected ( road: TvRoad ) {
+
+		if ( !this.road || this.road.id !== road.id ) {
+
+			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, road ) );
 
 		}
 
-		return true;
 	}
 
-	private selectControlPoint ( controlPoint: RoadControlPoint ): void {
-
-		CommandHistory.executeAll( [
-			new SelectPointCommand( this, controlPoint, RoadInspector, {
-				road: controlPoint.road,
-				controlPoint: controlPoint
-			} ),
-			new SetValueCommand( this, 'node', null )
-		] );
-
-	}
-
-	private isRoadSelected ( e: PointerEventData ): boolean {
-
-		const laneObject = this.findIntersection( ObjectTypes.LANE, e.intersections );
-
-		if ( !laneObject || !laneObject.userData.lane ) return false;
-
-		const lane = laneObject.userData.lane as TvLane;
-
-		if ( !lane || !lane.laneSection.road ) return false;
-
-		// if ( lane.laneSection.road.isJunction ) {
-		// 	// we return true because we had interacted with
-		// 	// road junction but there is not action for it right now
-		// 	return true;
-		// }
-
-		if ( !this.road || this.road.id !== lane.laneSection.road.id ) {
-
-			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, lane.laneSection.road ) );
-
-		}
-
-		return true;
-	}
-
-	private isRoadNodeSelected ( e: PointerEventData ): boolean {
-
-		const interactedNode = this.findRoadNodeFromIntersections( e.intersections );
-
-		if ( !interactedNode ) return false;
+	onNodeSelected ( interactedNode: RoadNode ) {
 
 		if ( this.node && this.node.getRoadId() !== interactedNode.getRoadId() ) {
 
@@ -308,7 +193,96 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		} else {
 
 			// this only selects the node
-			this.selectRoadNode( interactedNode.road, interactedNode );
+			CommandHistory.executeAll( [
+
+				new SetInspectorCommand( RoadInspector, { road: interactedNode.road, node: interactedNode } ),
+
+				new SetValueCommand( this, 'node', interactedNode ),
+
+				new SetValueCommand( this, 'road', interactedNode.road ),
+
+				new SetValueCommand( this, 'controlPoint', null ),
+
+			] );
+
+		}
+
+		return true;
+
+	}
+
+	onPointerUp ( e: PointerEventData ) {
+
+		if ( this.roadChanged && this.road && this.road.spline.controlPoints.length >= 2 ) {
+
+			const oldPosition = this.pointerDownAt.clone();
+
+			const newPosition = this.controlPoint.position.clone();
+
+			const command = new CopyPositionCommand( this.controlPoint, newPosition, oldPosition );
+
+			CommandHistory.execute( command );
+
+			this.road?.successor?.hideSpline();
+
+			this.road?.predecessor?.hideSpline();
+
+		}
+
+		this.roadChanged = false;
+	}
+
+	onPointerMoved ( e: PointerEventData ) {
+
+		if ( !this.pointStrategy.onPointerMoved( e ) ) this.nodeStrategy.onPointerMoved( e );
+
+		if ( this.isPointerDown && this.controlPoint && this.controlPoint.isSelected && this.road ) {
+
+			this.controlPoint.position.copy( e.point );
+
+			this.road.spline.update();
+
+			this.controlPoint.updateSuccessor( false );
+
+			this.controlPoint.updatePredecessor( false );
+
+			this.roadChanged = true;
+
+		}
+
+	}
+
+	private onControlPointSelected ( controlPoint: RoadControlPoint ): void {
+
+		CommandHistory.executeAll( [
+			new SelectPointCommand( this, controlPoint, RoadInspector, {
+				road: controlPoint.road,
+				controlPoint: controlPoint
+			} ),
+			new SetValueCommand( this, 'node', null )
+		] );
+
+	}
+
+	private isRoadSelected ( e: PointerEventData ): boolean {
+
+		const laneObject = this.findIntersection( ObjectTypes.LANE, e.intersections );
+
+		if ( !laneObject || !laneObject.userData.lane ) return false;
+
+		const lane = laneObject.userData.lane as TvLane;
+
+		if ( !lane || !lane.laneSection.road ) return false;
+
+		// if ( lane.laneSection.road.isJunction ) {
+		// 	// we return true because we had interacted with
+		// 	// road junction but there is not action for it right now
+		// 	return true;
+		// }
+
+		if ( !this.road || this.road.id !== lane.laneSection.road.id ) {
+
+			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, lane.laneSection.road ) );
 
 		}
 
@@ -346,21 +320,6 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		}
 
 		return null;
-	}
-
-	private selectRoadNode ( road: TvRoad, node: RoadNode ): void {
-
-		CommandHistory.executeAll( [
-
-			new SetInspectorCommand( RoadInspector, { road, node } ),
-
-			new SetValueCommand( this, 'node', node ),
-
-			new SetValueCommand( this, 'road', road ),
-
-			new SetValueCommand( this, 'controlPoint', null ),
-
-		] );
 	}
 
 	private joinNodes ( firstNode: RoadNode, secondNode: RoadNode ) {

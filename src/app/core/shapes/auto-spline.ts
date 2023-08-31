@@ -8,6 +8,7 @@ import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geome
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
+import { BaseControlPoint } from '../../modules/three-js/objects/control-point';
 import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
@@ -103,7 +104,7 @@ export class AutoSpline extends AbstractSpline {
 
 		const hdgs = [];
 
-		let hdg, p1, p2, currentPoint, previousPoint;
+		let hdg, p1, p2, currentPoint: BaseControlPoint, previousPoint: BaseControlPoint;
 
 		for ( let i = 1; i < this.controlPoints.length; i++ ) {
 

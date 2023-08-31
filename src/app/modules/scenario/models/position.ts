@@ -2,11 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, MathUtils, Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
+import { EventEmitter } from '@angular/core';
 
 export abstract class Position {
 
@@ -14,39 +15,31 @@ export abstract class Position {
 
 	abstract readonly label: string;
 
-	public vector3: THREE.Vector3 = new Vector3( 0, 0, 0 );
+	abstract readonly isDependent: boolean;
 
-	abstract toVector3 (): Vector3;
+	abstract getVectorPosition (): Vector3;
 
-	// abstract toXML (): XmlElement;
+	abstract updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void;
 
-	setPosition ( point: Vector3 ) {
-		throw new Error( 'Method not implemented.' );
+	public updated = new EventEmitter();
+
+	constructor (
+		protected vector0: Vector3,
+		public orientation: Orientation
+	) {
+	}
+
+	setPosition ( value: Vector3 ) {
+		if ( !this.vector0 ) this.vector0 = new Vector3();
+		this.vector0.copy( value )
 	}
 
 	toEuler (): Euler {
-		return new Euler( 0, 0, 0 );
-	}
-
-	toOrientation (): Orientation {
-		return new Orientation();
+		return this.orientation?.toEuler() || new Euler( 0, 0, 0 );
 	}
 
 	get position (): Vector3 {
-		return this.toVector3();
-	}
-
-	get rotation (): Vector3 {
-		const euler = this.toEuler();
-		return new Vector3(
-			euler.z,
-			euler.y,
-			euler.x
-		);
-	}
-
-	get rotationInDegree (): Vector3 {
-		return this.rotation.multiplyScalar( MathUtils.RAD2DEG );
+		return this.getVectorPosition();
 	}
 
 	protected getEntity ( entity: string ): ScenarioEntity {
@@ -56,4 +49,13 @@ export abstract class Position {
 	toXML ( version?: OpenScenarioVersion ) {
 		return {};
 	}
+
+	setOrientationV2 ( orientation: Orientation ) {
+		if ( this.orientation ) {
+			this.orientation.copy( orientation )
+		} else {
+			this.orientation = orientation
+		}
+	}
+
 }

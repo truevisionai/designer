@@ -5,7 +5,7 @@
 import { Injectable, Type } from '@angular/core';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/services/asset-database';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
@@ -21,6 +21,11 @@ import { XodrFileInspectorComponent } from 'app/views/inspectors/xodr-file-inspe
 import { XoscFileInspectorComponent } from 'app/views/inspectors/xosc-file-inspector/xosc-file-inspector.component';
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
+import { DynamicFileInspectorComponent, DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { CommandHistory } from 'app/services/command-history';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
+import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
+import { EntityManager } from 'app/services/entity-manager';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -31,6 +36,24 @@ export enum InspectorType {
 	providedIn: 'root'
 } )
 export class InspectorFactoryService {
+
+	static setAssetInspector ( metadata: Metadata ) {
+
+		const extension = FileService.getExtension( metadata.path );
+
+		const inspector = this.getInspectorByExtension( extension );
+
+		const inspectorData = this.getInspectorData( metadata );
+
+		CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
+
+		if ( inspectorData instanceof ScenarioEntity ) {
+
+			EntityManager.setEntity( inspectorData );
+
+		}
+
+	}
 
 	constructor () {
 	}
@@ -121,6 +144,10 @@ export class InspectorFactoryService {
 
 			case TvRoadMarking.extension:
 				inspector = RoadMarkingInspector;
+				break;
+
+			case 'entity':
+				inspector = DynamicFileInspectorComponent;
 				break;
 
 			default:

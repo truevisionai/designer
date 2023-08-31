@@ -15,7 +15,7 @@ import {
 	ViewChild
 } from '@angular/core';
 import { AssetFactory } from 'app/core/factories/asset-factory.service';
-import { FileService } from 'app/services/file.service';
+import { FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -120,6 +120,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 					{ label: 'Folder', click: () => this.createNewFolder() },
 					{ label: 'Material', click: () => this.createNewMaterial() },
 					{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
+					{
+						label: 'Entity', submenu: [
+							{ label: 'Vehicle', click: () => this.createVehicleEntity() }
+						]
+					},
 					// { label: 'Prop Set' },
 					// { label: 'Extrusion Style' },
 					// { label: 'Post Style' },
@@ -159,6 +164,22 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
+
+	createVehicleEntity (): void {
+
+		try {
+
+			AssetFactory.createVehicleEntity( this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
 	}
 
 	reimport ( node: FileNode ) {

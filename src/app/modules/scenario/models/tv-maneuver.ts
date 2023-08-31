@@ -41,6 +41,17 @@ export class Maneuver {
 
 	}
 
+	addEvent ( event: TvEvent ) {
+
+		this.events.push( event );
+
+		event.completed.subscribe( e => this.onEventCompleted( e ) );
+
+		return event;
+
+	}
+
+
 	addNewEvent ( name: string, priority: string = 'overwrite' ) {
 
 		// const hasName = ScenarioInstance.db.has_event( name );
@@ -49,21 +60,9 @@ export class Maneuver {
 
 		const event = new TvEvent( name, priority );
 
-		this.addEventInstance( event );
+		this.addEvent( event );
 
 		return event;
-	}
-
-	addEventInstance ( event: TvEvent ) {
-
-		this.events.push( event );
-
-		// ScenarioInstance.db.add_event( event.name, event );
-
-		event.completed.subscribe( e => this.onEventCompleted( e ) );
-
-		return event;
-
 	}
 
 	private onEventCompleted ( storyEvent: StoryboardEvent ) {
@@ -101,9 +100,15 @@ export class Maneuver {
 	}
 }
 
+/**
+ * @deprecated dont use this, migration to only event
+ */
 export class EventAction {
 
-	public name: string;
-	public action: TvAction;
+	constructor (
+		public name?: string,
+		public action?: TvAction
+	) {
+	}
 
 }

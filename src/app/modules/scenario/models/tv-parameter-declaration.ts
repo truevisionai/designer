@@ -32,14 +32,20 @@ export class Parameter {
 
 	public name: string;
 	public type: ParameterType;
-	public value: string;
 
-	constructor ( name: string, type: ParameterType, value: string ) {
+	constructor ( name: string, type: ParameterType, private _value: string ) {
 
 		this.name = name;
 		this.type = type;
-		this.value = value;
 
+	}
+
+	public get value (): string {
+		return this._value;
+	}
+
+	public set value ( value: string ) {
+		this._value = value;
 	}
 
 	static stringToEnum ( type: string ): ParameterType {
@@ -72,29 +78,29 @@ export class Parameter {
 
 	}
 
-	getValue<T> (): T {
+	getValue<T> (): any {
 
 		switch ( this.type ) {
 			case ParameterType.integer:
-				return parseInt( this.value ) as unknown as T;
+				return parseInt( this._value );
 				break;
 			case ParameterType.double:
-				return parseFloat( this.value ) as unknown as T;
+				return parseFloat( this._value );
 				break;
 			case ParameterType.string:
-				return this.value as unknown as T;
+				return this._value;
 				break;
 			case ParameterType.boolean:
-				// return this.value === 'true' as unknown as T;
+				return this._value === 'true';
 				break;
 			case ParameterType.unsignedInt:
-				return parseInt( this.value ) as unknown as T;
+				return parseInt( this._value );
 				break;
 			case ParameterType.unsignedShort:
-				return parseInt( this.value ) as unknown as T;
+				return parseInt( this._value );
 				break;
 			case ParameterType.dateTime:
-				return this.value as unknown as T;
+				return this._value;
 				break;
 			default:
 				throw new Error( 'unknown paramater type' );

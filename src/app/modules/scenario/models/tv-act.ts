@@ -47,7 +47,7 @@ export class Act {
 
 	}
 
-	addSequence ( sequence: ManeuverGroup ) {
+	addManeuverGroup ( sequence: ManeuverGroup ) {
 
 		this.maneueverGroups.push( sequence );
 

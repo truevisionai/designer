@@ -4,10 +4,10 @@
 
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
 
-import { IFile } from '../core/models/file';
+import { IFile } from './file';
 import { FileUtils } from './file-utils';
-import { SnackBar } from './snack-bar.service';
-import { TvElectronService } from './tv-electron.service';
+import { SnackBar } from '../../services/snack-bar.service';
+import { TvElectronService } from '../../services/tv-electron.service';
 
 declare const versions;
 

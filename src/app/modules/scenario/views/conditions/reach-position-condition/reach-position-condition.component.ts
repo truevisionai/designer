@@ -40,7 +40,7 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 
 		this.threeService.add( this.sphere );
 
-		this.sphere.position.copy( this.reachedCondition.position.toVector3() );
+		this.sphere.position.copy( this.reachedCondition.position.getVectorPosition() );
 	}
 
 	getGeometry ( radius ) {
@@ -60,13 +60,13 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 
 	onPositionTypeChanged ( position: Position ) {
 
-		this.sphere.position.copy( position.toVector3() );
+		this.sphere.position.copy( position.getVectorPosition() );
 
 	}
 
 	onPositionChanged ( position: Position ) {
 
-		this.sphere.position.copy( position.toVector3() );
+		this.sphere.position.copy( position.getVectorPosition() );
 
 	}
 

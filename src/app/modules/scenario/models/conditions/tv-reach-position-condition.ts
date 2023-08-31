@@ -28,7 +28,7 @@ export class ReachPositionCondition extends EntityCondition {
 
 			const entityPosition = this.getEntityPosition( entityName );
 
-			const distance = entityPosition.distanceTo( this.position.toVector3() );
+			const distance = entityPosition.distanceTo( this.position.getVectorPosition() );
 
 			return distance <= this.tolerance;
 

@@ -3,15 +3,13 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/services/asset-database';
 import { AssetLoaderService } from 'app/services/asset-loader.service';
-import { CommandHistory } from 'app/services/command-history';
-import { FileUtils } from 'app/services/file-utils';
-import { FileService } from 'app/services/file.service';
+import { FileUtils } from 'app/core/io/file-utils';
+import { FileService } from 'app/core/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -21,6 +19,7 @@ import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { DragDropService } from 'app/core/services/drag-drop.service';
+import { AssetFactory } from 'app/core/factories/asset-factory.service';
 
 @Component( {
 	selector: 'app-file',
@@ -64,7 +63,7 @@ export class FileComponent implements OnInit {
 
 	public get imageSource () {
 		if ( this.isDirectory ) {
-			return 'assets/folder-icon.png';
+			return 'assets/folder-icon-blue.png';
 		}
 		if ( this.isScene ) {
 			return 'assets/scene-icon.png';
@@ -199,11 +198,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			const inspector = InspectorFactoryService.getInspectorByExtension( this.extension );
-
-			const inspectorData = InspectorFactoryService.getInspectorData( this.metadata );
-
-			CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
+			InspectorFactoryService.setAssetInspector( this.metadata );
 
 		} catch ( error ) {
 
@@ -256,9 +251,8 @@ export class FileComponent implements OnInit {
 			},
 			{
 				label: 'Duplicate',
-				click: () => {
-				},
-				enabled: false,
+				click: () => this.createDuplicate(),
+				enabled: this.canDuplicate(),
 			},
 			{
 				label: 'Show In Explorer',
@@ -279,6 +273,25 @@ export class FileComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
+	createDuplicate (): void {
+
+		try {
+
+			AssetFactory.copyAsset( this.metadata.guid );
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	canDuplicate (): boolean {
+
+		return this.extension == 'material';
+
+	}
 
 	deleteNode () {
 

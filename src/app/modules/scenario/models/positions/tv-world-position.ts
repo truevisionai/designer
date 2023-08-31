@@ -2,110 +2,48 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, MathUtils, Vector3 } from 'three';
+import { SerializedField } from 'app/core/components/serialization';
+import { Vector3 } from 'three';
+import { Maths } from '../../../../utils/maths';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { Maths } from 'app/utils/maths';
 
 export class WorldPosition extends Position {
 
 	public readonly label: string = 'World Position';
 	public readonly type = PositionType.World;
+	public readonly isDependent: boolean = false;
 
-	constructor (
-		public x = 0,
-		public y = 0,
-		public z = 0,
-		public h = 0,
-		public p = 0,
-		public r = 0
-	) {
+	constructor ( vector3: Vector3, orientation?: Orientation ) {
 
-		super();
-
-		this.updateVector3();
+		super( vector3 || new Vector3(), orientation || new Orientation() );
 
 	}
 
+	@SerializedField( { type: 'vector3' } )
 	get position (): Vector3 {
-
-		return new Vector3( this.x, this.y, this.z );
-
+		return this.vector0;
 	}
 
-	// set position ( value: Vector3 ) {
+	set position ( value: Vector3 ) {
+		this.vector0 = value;
+		this.updated.emit();
+	}
 
-	// 	this.x = value.x;
-	// 	this.y = value.y;
-	// 	this.z = value.z;
-
-	// }
-
+	@SerializedField( { type: 'vector3' } )
 	get rotation (): Vector3 {
-
-		return new Vector3( this.r, this.p, this.h );
-
+		return this.orientation.toVector3();
 	}
 
-	get rotationInDegree (): Vector3 {
-
-		return new Vector3(
-			this.r * MathUtils.RAD2DEG,
-			this.p * MathUtils.RAD2DEG,
-			this.h * MathUtils.RAD2DEG,
-		);
-
+	set rotation ( value: Vector3 ) {
+		this.orientation.copyFromVector3( value );
+		this.updated.emit();
 	}
 
-	// set rotation ( value: Vector3 ) {
+	getVectorPosition (): Vector3 {
 
-	// 	this.h = value.x;
-	// 	this.p = value.y;
-	// 	this.r = value.z;
-
-	// }
-
-	static createFromVector3 ( point: THREE.Vector3 ): WorldPosition {
-
-		const worldPosition = new WorldPosition();
-
-		worldPosition.vector3 = point;
-
-		return worldPosition;
-	}
-
-	toVector3 (): Vector3 {
-
-		return this.position;
-
-	}
-
-	toEuler (): Euler {
-
-		return new Euler( this.r, this.p, this.h, 'ZXY' );
-
-	}
-
-	toOrientation (): Orientation {
-
-		return new Orientation( this.r, this.p, this.h );
-
-	}
-
-	setPosition ( point: Vector3 ) {
-
-		this.x = this.vector3.x = point.x;
-		this.y = this.vector3.y = point.y;
-		this.z = this.vector3.z = point.z;
-
-	}
-
-	updateVector3 () {
-
-		this.vector3.x = this.x;
-		this.vector3.y = this.y;
-		this.vector3.z = this.z;
+		return this.vector0;
 
 	}
 
@@ -117,13 +55,24 @@ export class WorldPosition extends Position {
 
 		return {
 			[ key ]: {
-				attr_x: this.vector3?.x ?? 0,
-				attr_y: this.vector3?.y ?? 0,
-				attr_z: this.vector3?.z ?? 0,
-				attr_h: this.h + Maths.M_PI_2 ?? 0,
-				attr_p: this.p ?? 0,
-				attr_r: this.r ?? 0,
+				attr_x: this.vector0?.x ?? 0,
+				attr_y: this.vector0?.y ?? 0,
+				attr_z: this.vector0?.z ?? 0,
+				attr_h: this.orientation?.h + Maths.M_PI_2 ?? 0,
+				attr_p: this.orientation?.p ?? 0,
+				attr_r: this.orientation?.r ?? 0,
 			}
 		};
 	}
+
+	updateFromWorldPosition ( position: Vector3, orientation?: Orientation ): void {
+
+		this.vector0.copy( position );
+
+		if ( orientation ) this.orientation.copy( orientation )
+
+		this.updated.emit();
+
+	}
+
 }

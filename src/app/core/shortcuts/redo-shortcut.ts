@@ -9,17 +9,9 @@ export class RedoShortcut extends BaseShortcut {
 
 	check ( e: KeyboardEvent ): boolean {
 
-		const isMac = process.platform === 'darwin';
+		return this.metaKey( e ) && e.shiftKey && e.key == 'z'
+			|| this.metaKey( e ) && e.key == 'y';
 
-		if ( isMac ) {
-			// Use Cmd key for macOS
-			return e.metaKey && e.shiftKey && e.key === 'z'
-				|| e.metaKey && e.key === 'y';
-		} else {
-			// Use Ctrl key for Windows/Ubuntu
-			return e.ctrlKey && e.shiftKey && e.key === 'z'
-				|| e.ctrlKey && e.key === 'y';
-		}
 	}
 
 

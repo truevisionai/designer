@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
 import { GameObject } from 'app/core/game-object';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
@@ -16,7 +16,7 @@ import { Object3D } from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 import { CommandHistory } from './command-history';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
@@ -25,9 +25,11 @@ import { cloneDeep } from 'lodash';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvConsole } from 'app/core/utils/console';
 import { ToolManager } from 'app/core/tools/tool-manager';
-import { WriterService } from 'app/modules/scenario/services/tv-writer.service';
+import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 
 export enum CoordinateSystem {
 	THREE_JS,
@@ -46,7 +48,7 @@ export class ExporterService {
 		private fileService: FileService,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
-		private scenarioWriter: WriterService
+		private scenarioWriter: OpenScenarioExporter
 	) {
 	}
 
@@ -59,24 +61,41 @@ export class ExporterService {
 
 	}
 
-	exportOpenDrive () {
+	exportOpenDrive ( filename = 'map.xodr' ) {
 
-		this.clearTool();
+		ToolManager.disable();
 
-		this.odService.saveAs();
+		const mapExporter = new OpenDriveExporter();
+
+		const contents = mapExporter.getOutput( TvMapInstance.map );
+
+		const directory = this.fileService.projectFolder;
+
+		this.fileService.saveFileWithExtension( directory, contents, 'xodr', ( file: IFile ) => {
+
+			SnackBar.success( `File saved ${ file.path }` );
+
+			ToolManager.enable();
+
+		} );
+
 	}
 
 	exportOpenScenario ( filename = 'scenario.xosc' ) {
 
 		ToolManager.disable();
 
-		const contents = this.scenarioWriter.getOutputString( ScenarioInstance.scenario );
+		const scenarioExporter = new OpenScenarioExporter();
+
+		const contents = scenarioExporter.getOutputString( ScenarioInstance.scenario );
 
 		const directory = this.fileService.projectFolder;
 
 		this.fileService.saveFileWithExtension( directory, contents, 'xosc', ( file: IFile ) => {
 
 			SnackBar.success( `File saved ${ file.path }` );
+
+			ToolManager.enable();
 
 		} );
 
@@ -140,9 +159,6 @@ export class ExporterService {
 		const contents = exporter.getOutput( this.odService.map );
 
 		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
-
-			this.odService.currentFile.path = file.path;
-			this.odService.currentFile.name = file.name;
 
 			SnackBar.success( `File saved ${ file.path }` );
 

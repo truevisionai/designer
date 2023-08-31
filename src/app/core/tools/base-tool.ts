@@ -17,6 +17,8 @@ import { StatusBarService } from 'app/services/status-bar.service';
 import { ToolType } from '../models/tool-types.enum';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { KeyboardInput } from '../input';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -76,6 +78,38 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	setInspector ( component: Type<IComponent>, data: any ) {
 
 		AppInspector.setInspector( component, data );
+
+	}
+
+	onPointerDown ( e: PointerEventData ) {
+
+		if ( e.button !== MouseButton.LEFT ) return;
+
+		if ( e.point == null ) return;
+
+		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+
+		if ( shiftKeyDown ) {
+
+			this.onPointerDownCreate( e );
+
+		} else {
+
+			this.onPointerDownSelect( e );
+
+		}
+
+	}
+
+	onPointerDownSelect ( e: PointerEventData ) {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	onPointerDownCreate ( e: PointerEventData ) {
+
+		console.error( 'Method not implemented.' );
 
 	}
 

@@ -5,8 +5,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { EntityCondition } from '../../models/conditions/entity-condition';
-import { DistanceCondition } from '../../models/conditions/tv-distance-condition';
-import { SimulationTimeCondition } from '../../models/conditions/tv-simulation-time-condition';
 import { ConditionCategory, ConditionType } from '../../models/tv-enums';
 
 @Component( {
@@ -22,7 +20,7 @@ export class ConditionEditorComponent implements OnInit {
 
 	@Output() removed = new EventEmitter<Condition>();
 
-	isOpen = false;
+	@Input() isOpen = true;
 
 	constructor () {
 	}

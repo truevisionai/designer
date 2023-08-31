@@ -5,13 +5,12 @@
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { FileService } from 'app/services/file.service';
-import { FileUtils } from '../../../../services/file-utils';
+import { TvConsole } from 'app/core/utils/console';
+import { FileService } from 'app/core/io/file.service';
+import { FileUtils } from '../../../../core/io/file-utils';
+import { Catalog } from '../../models/tv-catalogs';
 import { TvScenario } from '../../models/tv-scenario';
 import { OpenScenarioLoader } from '../../services/open-scenario.loader';
-import { TvConsole } from 'app/core/utils/console';
-import { Catalog } from '../../models/tv-catalogs';
-import { ParameterResolver } from '../../services/scenario-builder.service';
 
 export class ImportOpenScenarioDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {
@@ -82,19 +81,9 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	async readScenario () {
 
-		const contents: string = await this.fileService.readAsync( this.data.path );
-
 		try {
 
-			const scenarioBuilder = new ParameterResolver();
-
-			this.openScenarioImporter.setPath( this.sourceDirectory );
-
-			let xml = this.openScenarioImporter.getXMLElement( contents );
-
-			xml = scenarioBuilder.replaceParameterWithValue( xml );
-
-			const scenario = this.openScenarioImporter.parseXML( xml );
+			const scenario = await this.openScenarioImporter.loadPath( this.data.path );
 
 			if ( !scenario.roadNetwork?.logics?.filepath ) {
 
@@ -102,7 +91,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 			} else {
 
-				this.scenario = scenario
+				this.scenario = scenario;
 
 			}
 

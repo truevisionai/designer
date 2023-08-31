@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
-import { IFile } from 'app/core/models/file';
+import { IFile } from 'app/core/io/file';
 import { AppService } from 'app/core/services/app.service';
 import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
@@ -14,7 +14,7 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
-import { FileService } from './file.service';
+import { FileService } from '../core/io/file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';

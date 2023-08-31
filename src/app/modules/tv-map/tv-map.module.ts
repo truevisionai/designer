@@ -56,7 +56,8 @@ import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/
 import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
-import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { DynamicArrayInspectorComponent, DynamicFileInspectorComponent, DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 
 
 @NgModule( {
@@ -81,6 +82,7 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 		RoadSignInspector,
 		RoadMarkingInspector,
 		MaterialFieldComponent,
+		GameObjectFieldComponent,
 		TextureFieldComponent,
 		LaneLinkInspector,
 		RoadControlPointInspector,
@@ -92,7 +94,9 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
 		FieldHostDirective,
+		DynamicFileInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -124,7 +128,10 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 	],
 	exports: [
 		TransformInspectorComponent,
-		ObjectPreviewComponent
+		ObjectPreviewComponent,
+		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
+		DynamicFileInspectorComponent,
 	],
 	entryComponents: [
 		OdSignalInspectorComponent,
@@ -155,6 +162,8 @@ import { DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspect
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
+		DynamicArrayInspectorComponent,
+		DynamicFileInspectorComponent,
 	]
 } )
 export class TvMapModule {

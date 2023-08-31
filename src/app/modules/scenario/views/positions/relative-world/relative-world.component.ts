@@ -19,25 +19,19 @@ export class RelativeWorldComponent extends AbstractPositionEditor {
 	}
 
 	get delta (): Vector3 {
-		return new Vector3(
-			this.relativeWorldPosition.dx,
-			this.relativeWorldPosition.dy,
-			this.relativeWorldPosition.dz,
-		);
+		return this.relativeWorldPosition.delta;
 	}
 
-	onDeltaChanged ( $delta: any ) {
+	onDeltaChanged ( $delta: Vector3 ) {
 
-		this.relativeWorldPosition.dx = $delta.x;
-		this.relativeWorldPosition.dy = $delta.y;
-		this.relativeWorldPosition.dz = $delta.z;
+		this.relativeWorldPosition.delta = $delta;
 
 		this.positionModified.emit( this.position );
 	}
 
 	onEntityChanged ( $entityRef: string ) {
 
-		this.relativeWorldPosition.entityRef = $entityRef;
+		this.relativeWorldPosition.entityName = $entityRef;
 
 		this.positionModified.emit( this.position );
 	}

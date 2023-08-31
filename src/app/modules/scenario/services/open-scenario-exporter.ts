@@ -45,7 +45,7 @@ import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, V
 import { XMLBuilder } from 'fast-xml-parser';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
-import { RelativeRoadPosition } from './relative-road.position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { RoadPosition } from '../models/positions/tv-road-position';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { AcquirePositionAction, FollowRouteAction } from '../models/actions/tv-routing-action';
@@ -72,7 +72,7 @@ import { StoryboardElementStateCondition } from '../models/conditions/tv-after-t
 	providedIn: 'root'
 } )
 
-export class WriterService {
+export class OpenScenarioExporter {
 
 	private xmlDocument: Object;
 	private openScenario: TvScenario;
@@ -175,9 +175,9 @@ export class WriterService {
 		}
 	}
 
-	writeScenarioObject ( key: string, object: ScenarioEntity ): any {
+	writeScenarioObject ( key: string, object: ScenarioEntity ): XmlElement {
 
-		return {
+		const scenarioObject: XmlElement = {
 			attr_name: object.name,
 			Vehicle: this.writeVehicle( object as VehicleEntity ),
 			ObjectController: {
@@ -186,6 +186,18 @@ export class WriterService {
 				},
 			},
 		};
+
+		if ( this.version == OpenScenarioVersion.v0_9 && object.model3d != null && object.model3d != 'default' ) {
+
+			scenarioObject.attr_model = object.model3d;
+
+		} else if ( object.model3d != null && object.model3d != 'default' ) {
+
+			scenarioObject.attr_model3d = object.model3d;
+
+		}
+
+		return scenarioObject;
 	}
 
 	writeVehicle ( vehicle: VehicleEntity ) {
@@ -1270,7 +1282,7 @@ export class WriterService {
 
 			return {
 				[ relativeKey ]: {
-					[ this.entityKey ]: target.entityName,
+					[ this.entityKey ]: target.entityRef.name,
 					attr_value: target.value
 				}
 			};
@@ -1398,10 +1410,10 @@ export class WriterService {
 
 		return {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
-				attr_dx: position.dx,
-				attr_dy: position.dy,
-				attr_dz: position.dz,
+				[ this.entityKey ]: position.entityRef?.name,
+				attr_dx: position.delta.x,
+				attr_dy: position.delta.y,
+				attr_dz: position.delta.z,
 				Orientation: this.writeOrientation( position.orientation )
 			}
 		};
@@ -1410,7 +1422,7 @@ export class WriterService {
 
 	writeOrientation ( orientation: Orientation ) {
 
-		if ( !orientation ) return null;
+		if ( !orientation ) return;
 
 		return orientation.toXML();
 
@@ -1428,10 +1440,10 @@ export class WriterService {
 
 		return {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
-				attr_dx: position.dx,
-				attr_dy: position.dy,
-				attr_dz: position.dz ? position.dz : 0,
+				[ this.entityKey ]: position.entityRef?.name,
+				attr_dx: position.delta.x,
+				attr_dy: position.delta.y,
+				attr_dz: position.delta.z,
 				Orientation: position.orientation?.toXML()
 			}
 		};
@@ -1491,7 +1503,7 @@ export class WriterService {
 
 		const xml = {
 			[ key ]: {
-				[ this.entityKey ]: position.entityRef,
+				[ this.entityKey ]: position.entityRef?.name,
 				attr_dLane: position.dLane,
 				attr_ds: position.ds,
 				Orientation: position.orientation?.toXML()

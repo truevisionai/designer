@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import * as Sentry from "@sentry/angular";
 import { Environment } from '../utils/environment';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileApiService } from '../services/file-api.service';
+import { FileApiService } from '../io/file-api.service';
 
 @Injectable( {
 	providedIn: 'root'

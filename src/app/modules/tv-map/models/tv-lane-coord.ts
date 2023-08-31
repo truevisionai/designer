@@ -5,6 +5,7 @@
 import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoad } from './tv-road.model';
+import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 
 export class TvCoord {
 
@@ -77,10 +78,14 @@ export class TvRoadCoord {
 		return this.toPosTheta().toVector3();
 	}
 
-	get rotation (): Vector3 {
-		return new Vector3( this.r, this.p, this.h );
-	}
+	get orientation (): Orientation {
 
+		let h = this.h;
+
+		if ( this.t > 0 ) h += Math.PI;
+
+		return new Orientation( h, this.p, this.r );
+	}
 }
 
 export class TvGeoCoord {

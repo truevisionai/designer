@@ -32,7 +32,7 @@ declare const fxp;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OdWriter {
+export class OpenDriveExporter {
 
 	public xmlDocument: Object;
 	public map: TvMap;
