@@ -32,8 +32,20 @@ interface FlatNode {
 } )
 export class PropModelInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-	treeControl = new FlatTreeControl<FlatNode>(
-		node => node.level, node => node.expandable );
+	transformer = ( node: ObjectTreeNode, level: number ) => {
+		return {
+			expandable: !!node.children && node.children.length > 0,
+			name: node.name,
+			level: level,
+		};
+	};
+
+	treeFlattener = new MatTreeFlattener(
+		this.transformer, node => node.level, node => node.expandable, node => node.children
+	);
+
+	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
+
 	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 	public data: DynamicMeta<PropModel>;
 	public rotationVariance: Vector3;
@@ -105,14 +117,4 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 		console.log( node.name );
 	}
 
-	private _transformer = ( node: ObjectTreeNode, level: number ) => {
-		return {
-			expandable: !!node.children && node.children.length > 0,
-			name: node.name,
-			level: level,
-		};
-	};
-
-	treeFlattener = new MatTreeFlattener(
-		this._transformer, node => node.level, node => node.expandable, node => node.children );
 }

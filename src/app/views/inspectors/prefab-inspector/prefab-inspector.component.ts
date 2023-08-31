@@ -28,12 +28,6 @@ export class PrefabInspectorComponent implements OnInit, IComponent, OnDestroy {
 	currentObject: Object3D;
 
 	data: TvPrefab;
-	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
-	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
-
-	constructor ( private changeDet: ChangeDetectorRef ) {
-	}
-
 	transformer = ( node: Object3D, level: number ) => {
 		return {
 			id: node.id,
@@ -46,8 +40,12 @@ export class PrefabInspectorComponent implements OnInit, IComponent, OnDestroy {
 			object: node,
 		};
 	};
-
 	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
+	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
+	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
+
+	constructor ( private changeDet: ChangeDetectorRef ) {
+	}
 
 	hasChild = ( _: number, node: FlatNode ) => node.expandable;
 
