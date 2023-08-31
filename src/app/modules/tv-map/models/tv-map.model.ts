@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadStyleService } from 'app/services/road-style.service';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
-import { TvLaneSide, TvLaneType, TvRoadType } from './tv-common';
+import { TvLaneSide } from './tv-common';
 import { TvController } from './tv-controller';
 import { TvJunction } from './tv-junction';
 import { TvJunctionConnection } from './tv-junction-connection';
@@ -18,7 +18,6 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export class TvMap {
 
@@ -37,10 +36,6 @@ export class TvMap {
 	 */
 	get roads (): Map<number, TvRoad> {
 		return this._roads;
-	}
-
-	getRoads (): TvRoad[] {
-		return Array.from( this._roads.values() );
 	}
 
 	/**
@@ -68,6 +63,10 @@ export class TvMap {
 
 	set controllers ( value: Map<number, TvController> ) {
 		this._controllers = value;
+	}
+
+	getRoads (): TvRoad[] {
+		return Array.from( this._roads.values() );
 	}
 
 	update () {
@@ -288,30 +287,6 @@ export class TvMap {
 		RoadFactory.reset();
 	}
 
-	private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {
-
-		if ( child.elementType == 'road' ) {
-
-			connection = null;
-
-			return this.getRoadById( child.elementId );
-
-		} else if ( child.elementType == 'junction' ) {
-
-			const junction = this.getJunctionById( child.elementId );
-
-			connection = junction.getRandomConnectionFor( road.id );
-
-			return connection?.connectingRoad;
-
-		} else {
-
-			console.error( 'unknown successor type', child );
-
-		}
-
-	}
-
 	showSurfaceHelpers () {
 		this.surfaces.forEach( surface => surface.showHelpers() );
 	}
@@ -343,7 +318,6 @@ export class TvMap {
 
 		this._junctions = new Map( [ ...this._junctions.entries() ].sort( ascOrder ) );
 	}
-
 
 	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
 
@@ -378,5 +352,29 @@ export class TvMap {
 		}
 
 		return finalJunction;
+	}
+
+	private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {
+
+		if ( child.elementType == 'road' ) {
+
+			connection = null;
+
+			return this.getRoadById( child.elementId );
+
+		} else if ( child.elementType == 'junction' ) {
+
+			const junction = this.getJunctionById( child.elementId );
+
+			connection = junction.getRandomConnectionFor( road.id );
+
+			return connection?.connectingRoad;
+
+		} else {
+
+			console.error( 'unknown successor type', child );
+
+		}
+
 	}
 }

@@ -15,8 +15,10 @@ export class XodrFileInspectorComponent implements OnInit, IComponent {
 
 	data: TvMap;
 
-	constructor () { }
+	constructor () {
+	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 }

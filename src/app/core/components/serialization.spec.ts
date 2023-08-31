@@ -1,4 +1,4 @@
-import { PlayerStats, Serializable, SerializedField, getSerializableFields } from "./serialization";
+import { getSerializableFields, PlayerStats } from './serialization';
 
 describe( 'Serialization', () => {
 
@@ -10,6 +10,6 @@ describe( 'Serialization', () => {
 
 		console.log( properties );
 
-	} )
+	} );
 
 } );

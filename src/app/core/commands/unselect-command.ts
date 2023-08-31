@@ -3,7 +3,6 @@
  */
 
 import { Selectable } from '../../modules/three-js/objects/i-selectable';
-import { BaseCommand } from './base-command';
 
 export interface Tool<T extends Selectable> {
 	setPoint ( value: T ): void;

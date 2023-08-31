@@ -8,6 +8,7 @@ import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
+import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
@@ -23,11 +24,10 @@ import { XMLBuilder } from 'fast-xml-parser';
 import { saveAs } from 'file-saver';
 
 import { Euler, Vector3 } from 'three';
-import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
 import { FileService } from '../core/io/file.service';
+import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-import { TvConsole } from 'app/core/utils/console';
 
 export interface Scene {
 
@@ -60,6 +60,21 @@ export class SceneExporterService {
 
 	set currentFile ( value: IFile ) {
 		TvMapInstance.currentFile = value;
+	}
+
+	static exportJunctionConnection ( connection: TvJunctionConnection ) {
+		return {
+			attr_id: connection.id,
+			attr_incomingRoad: connection.incomingRoadId,
+			attr_connectingRoad: connection.connectingRoadId,
+			attr_contactPoint: connection.contactPoint,
+			laneLink: connection.laneLink.map( link => {
+				return {
+					attr_from: link.from,
+					attr_to: link.to,
+				};
+			} ),
+		};
 	}
 
 	export ( map?: TvMap ): string {
@@ -134,7 +149,7 @@ export class SceneExporterService {
 		if ( road.spline.controlPoints.length < 2 ) {
 			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
 			SnackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
-			return
+			return;
 		}
 
 		const xml = {
@@ -366,21 +381,5 @@ export class SceneExporterService {
 
 		return surface.toJson();
 
-	}
-
-
-	static exportJunctionConnection ( connection: TvJunctionConnection ) {
-		return {
-			attr_id: connection.id,
-			attr_incomingRoad: connection.incomingRoadId,
-			attr_connectingRoad: connection.connectingRoadId,
-			attr_contactPoint: connection.contactPoint,
-			laneLink: connection.laneLink.map( link => {
-				return {
-					attr_from: link.from,
-					attr_to: link.to,
-				};
-			} ),
-		};
 	}
 }

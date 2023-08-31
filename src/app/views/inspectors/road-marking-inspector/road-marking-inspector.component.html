@@ -3,12 +3,12 @@
   -->
 
 <div *ngIf="data.roadMarking"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
-	<img src="{{ thumbnail }}" />
+	<img src="{{ thumbnail }}"/>
 
 	<app-texture-field (changed)="onTextureChanged($event)"
-		[guid]="data.roadMarking.textureGuid"
-		label="Map"></app-texture-field>
+					   [guid]="data.roadMarking.textureGuid"
+					   label="Map"></app-texture-field>
 
 </div>

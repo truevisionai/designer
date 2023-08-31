@@ -94,10 +94,6 @@ export class TvRoadSignal implements IMovable {
 		this._gameObject = value;
 	}
 
-	getRoad () {
-		return TvMapQueries.findRoadById( this.roadId );
-	}
-
 	private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
 
 	set userData ( values: TvUserData[] ) {
@@ -120,6 +116,10 @@ export class TvRoadSignal implements IMovable {
 
 	get assetName () {
 		return this._userData.get( 'asset_name' );
+	}
+
+	getRoad () {
+		return TvMapQueries.findRoadById( this.roadId );
 	}
 
 	getUserData () {

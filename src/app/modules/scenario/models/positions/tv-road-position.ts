@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SerializedField } from 'app/core/components/serialization';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { Vector3 } from 'three';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { SerializedField } from 'app/core/components/serialization';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class RoadPosition extends Position {
 

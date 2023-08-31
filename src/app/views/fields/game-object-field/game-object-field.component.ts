@@ -1,7 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { MetaImporter } from 'app/core/models/metadata.model';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { MetaImporter } from 'app/core/models/metadata.model';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
 import { Object3D } from 'three';
 
@@ -21,7 +20,8 @@ export class GameObjectFieldComponent implements OnInit {
 
 	@Input() label: string;
 
-	constructor ( private previewService: PreviewService ) { }
+	constructor ( private previewService: PreviewService ) {
+	}
 
 	public get preview () {
 		return this.metadata ? this.metadata.preview : null;

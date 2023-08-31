@@ -75,13 +75,13 @@ export class Storyboard {
 
 						maneuver.events = maneuver.events.filter( e => e !== event );
 
-					} )
+					} );
 
 				} );
 
-			} )
+			} );
 
-		} )
+		} );
 
 	}
 

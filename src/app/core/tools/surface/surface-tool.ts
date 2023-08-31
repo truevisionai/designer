@@ -25,8 +25,15 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 	public toolType = ToolType.Surface;
 
 	public point: DynamicControlPoint<TvSurface>;
-	public _surface: TvSurface;
 	private pointUpdated: boolean;
+
+	constructor () {
+
+		super();
+
+	}
+
+	public _surface: TvSurface;
 
 	public get surface (): TvSurface {
 		return this._surface;
@@ -34,12 +41,6 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 	public set surface ( value: TvSurface ) {
 		this._surface = value;
-	}
-
-	constructor () {
-
-		super();
-
 	}
 
 	setPoint ( value: ISelectable ): void {
@@ -64,7 +65,7 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 		this.map.getRoads().forEach( road => {
 			road.showCornerPoints();
-		} )
+		} );
 	}
 
 	public disable (): void {
@@ -76,7 +77,7 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 		this.map.getRoads().forEach( road => {
 			road.hideCornerPoints();
-		} )
+		} );
 	}
 
 	public onPointerDown ( e: PointerEventData ) {

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ScenarioInstance } from '../services/scenario-instance';
 import { CatalogReference } from './tv-catalogs';
 import { Maneuver } from './tv-maneuver';
 

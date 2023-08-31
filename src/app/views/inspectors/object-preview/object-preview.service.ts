@@ -3,15 +3,18 @@
  */
 
 import { Injectable } from '@angular/core';
+import { AppConfig } from 'app/app.config';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { GameObject } from 'app/core/game-object';
 import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
+import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { RoadStyle } from 'app/services/road-style.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
 	AmbientLight,
@@ -28,15 +31,11 @@ import {
 	PlaneGeometry,
 	Scene,
 	SphereGeometry,
-	Texture,
 	TextureLoader,
 	Vector3,
 	WebGLRenderer
 } from 'three';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
-import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { AppConfig } from 'app/app.config';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -132,7 +131,7 @@ export class PreviewService {
 
 		this.camera.lookAt( 0, 0, 0 );
 
-		this.camera.up.copy( AppConfig.DEFAULT_UP )
+		this.camera.up.copy( AppConfig.DEFAULT_UP );
 
 		this.camera.updateProjectionMatrix();
 
@@ -162,7 +161,7 @@ export class PreviewService {
 
 	createSphere () {
 
-		const geometry = new SphereGeometry( 1, 32, 32 )
+		const geometry = new SphereGeometry( 1, 32, 32 );
 
 		this.sphere = new Mesh( geometry, this.sphereMaterial );
 

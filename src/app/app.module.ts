@@ -9,7 +9,7 @@ import { ErrorHandler, Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
 
-import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SatPopoverModule } from '@ncstate/sat-popover';
@@ -22,15 +22,15 @@ import { AppRoutingModule } from './app.routing';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { CoreModule } from './core/core.module';
 import { errorHandlerFactory } from './error-handler.factory';
+import { ScenarioModule } from './modules/scenario/scenario.module';
 import { ThreeJsModule } from './modules/three-js/three-js.module';
 
 import { TvMapModule } from './modules/tv-map/tv-map.module';
 
 import { SharedModule } from './shared/shared.module';
+import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';
-import { ScenarioModule } from './modules/scenario/scenario.module';
-import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {

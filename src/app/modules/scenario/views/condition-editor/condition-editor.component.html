@@ -1,32 +1,32 @@
 <!--<app-string-field [value]="condition.name" label="Name"></app-string-field>-->
 <mat-toolbar class="native-border inspector-toolbar">
 	<button (click)="toggle($event)"
-		mat-icon-button
-		class="inspector-toolbar-icon">
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
 	<span>{{ condition.conditionTypeString }}</span>
 	<span class="spacer"></span>
-	<button mat-icon-button
-		class="inspector-toolbar-icon"
-		[matMenuTriggerFor]="menu">
+	<button [matMenuTriggerFor]="menu"
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-menu #menu="matMenu">
-		<button mat-menu-item
-			(click)="remove()">
+		<button (click)="remove()"
+				mat-menu-item>
 			<mat-icon>delete</mat-icon>
 			<span>Delete Condition</span>
 		</button>
 	</mat-menu>
 </mat-toolbar>
 <div *ngIf="isOpen"
-	[ngSwitch]="condition.category"
-	style="padding: 4px 8px">
+	 [ngSwitch]="condition.category"
+	 style="padding: 4px 8px">
 
-	<app-string-field label="Label"
-		[value]="condition.label">
+	<app-string-field [value]="condition.label"
+					  label="Label">
 	</app-string-field>
 
 	<div *ngSwitchCase="categories.ByValue">

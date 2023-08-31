@@ -2,10 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Mesh, Vector3 } from 'three';
-import { ARC_SEGMENTS, PARACUBICFACTOR } from './spline-config';
-import { COLOR } from 'app/shared/utils/colors.service';
-
 // class ParametricPolynomial {
 // 	private curveType;
 // 	private mesh: Mesh;

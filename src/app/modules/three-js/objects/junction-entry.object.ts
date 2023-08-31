@@ -74,24 +74,6 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		return TvMapInstance.map;
 	}
 
-	select () {
-
-		this.isSelected = true;
-
-		( this.material as PointsMaterial ).color = new Color( COLOR.RED );
-		( this.material as PointsMaterial ).needsUpdate = true;
-
-	}
-
-	unselect () {
-
-		this.isSelected = false;
-
-		( this.material as PointsMaterial ).color = new Color( COLOR.SKYBLUE );
-		( this.material as PointsMaterial ).needsUpdate = true;
-
-	}
-
 	get isEntry (): boolean {
 		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
 			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.START );
@@ -106,27 +88,6 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		return this.isEntry ? TvContactPoint.START : TvContactPoint.END;
 	}
 
-	getPosTheta (): TvPosTheta {
-		if ( this.contact === TvContactPoint.START ) {
-			return this.road.getStartCoord();
-		} else {
-			return this.road.getEndCoord();
-		}
-	}
-
-	/**
-	 * This adjusts the hdg towards junction entry
-	 * @returns the position of the junction entry point
-	 */
-	getJunctionPosTheta (): TvPosTheta {
-		if ( this.contact === TvContactPoint.START ) {
-			// rotate by 180 degrees because start road is going away from junction
-			return this.road.getStartCoord().rotateRadian( Math.PI );
-		} else {
-			return this.road.getEndCoord();
-		}
-	}
-
 	get junction (): TvJunction {
 
 		if ( this.contact === TvContactPoint.START && this.road.predecessor?.elementType === 'junction' ) {
@@ -136,41 +97,6 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		if ( this.contact === TvContactPoint.END && this.road.successor?.elementType === 'junction' ) {
 			return this.map.getJunctionById( this.road.successor.elementId );
 		}
-	}
-
-	hasJunction ( exit: JunctionEntryObject ): TvJunction {
-
-		if ( this.contact === TvContactPoint.START && this.road.predecessor?.elementType === 'junction' ) {
-			return this.map.getJunctionById( this.road.predecessor.elementId );
-		}
-
-		if ( this.contact === TvContactPoint.END && this.road.successor?.elementType === 'junction' ) {
-			return this.map.getJunctionById( this.road.successor.elementId );
-		}
-
-		if ( exit.contact === TvContactPoint.END && exit.road.predecessor?.elementType === 'junction' ) {
-			return this.map.getJunctionById( exit.road.predecessor.elementId );
-		}
-
-		if ( exit.contact === TvContactPoint.START && exit.road.successor?.elementType === 'junction' ) {
-			return this.map.getJunctionById( exit.road.successor.elementId );
-		}
-
-	}
-
-
-	hasLinkWith ( b: JunctionEntryObject ): boolean {
-
-		if ( !this.hasJunction( b ) ) return false;
-
-		if ( !this.hasConnection( b ) ) return false;
-
-		const connection = this.hasConnection( b );
-
-		const entry = this.isEntry ? this : b;
-		const exit = this.isExit ? this : b;
-
-		return connection.laneLink.find( laneLink => laneLink.incomingLane.id === entry.lane.id ) != null;
 	}
 
 	get connections (): TvJunctionConnection[] {
@@ -223,6 +149,79 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 		} );
 
 		return results;
+	}
+
+	select () {
+
+		this.isSelected = true;
+
+		( this.material as PointsMaterial ).color = new Color( COLOR.RED );
+		( this.material as PointsMaterial ).needsUpdate = true;
+
+	}
+
+	unselect () {
+
+		this.isSelected = false;
+
+		( this.material as PointsMaterial ).color = new Color( COLOR.SKYBLUE );
+		( this.material as PointsMaterial ).needsUpdate = true;
+
+	}
+
+	getPosTheta (): TvPosTheta {
+		if ( this.contact === TvContactPoint.START ) {
+			return this.road.getStartCoord();
+		} else {
+			return this.road.getEndCoord();
+		}
+	}
+
+	/**
+	 * This adjusts the hdg towards junction entry
+	 * @returns the position of the junction entry point
+	 */
+	getJunctionPosTheta (): TvPosTheta {
+		if ( this.contact === TvContactPoint.START ) {
+			// rotate by 180 degrees because start road is going away from junction
+			return this.road.getStartCoord().rotateRadian( Math.PI );
+		} else {
+			return this.road.getEndCoord();
+		}
+	}
+
+	hasJunction ( exit: JunctionEntryObject ): TvJunction {
+
+		if ( this.contact === TvContactPoint.START && this.road.predecessor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.predecessor.elementId );
+		}
+
+		if ( this.contact === TvContactPoint.END && this.road.successor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( this.road.successor.elementId );
+		}
+
+		if ( exit.contact === TvContactPoint.END && exit.road.predecessor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( exit.road.predecessor.elementId );
+		}
+
+		if ( exit.contact === TvContactPoint.START && exit.road.successor?.elementType === 'junction' ) {
+			return this.map.getJunctionById( exit.road.successor.elementId );
+		}
+
+	}
+
+	hasLinkWith ( b: JunctionEntryObject ): boolean {
+
+		if ( !this.hasJunction( b ) ) return false;
+
+		if ( !this.hasConnection( b ) ) return false;
+
+		const connection = this.hasConnection( b );
+
+		const entry = this.isEntry ? this : b;
+		const exit = this.isExit ? this : b;
+
+		return connection.laneLink.find( laneLink => laneLink.incomingLane.id === entry.lane.id ) != null;
 	}
 
 	hasConnection ( b: JunctionEntryObject ): TvJunctionConnection {

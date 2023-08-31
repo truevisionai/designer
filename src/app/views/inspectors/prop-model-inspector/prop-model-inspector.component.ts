@@ -5,12 +5,12 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { IComponent } from 'app/core/game-object';
 import { DynamicMeta } from 'app/core/models/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { Object3D, Vector3 } from 'three';
@@ -32,33 +32,20 @@ interface FlatNode {
 } )
 export class PropModelInspectorComponent implements OnInit, IComponent, OnDestroy {
 
-	private _transformer = ( node: ObjectTreeNode, level: number ) => {
-		return {
-			expandable: !!node.children && node.children.length > 0,
-			name: node.name,
-			level: level,
-		};
-	}
-
 	treeControl = new FlatTreeControl<FlatNode>(
 		node => node.level, node => node.expandable );
-
-	treeFlattener = new MatTreeFlattener(
-		this._transformer, node => node.level, node => node.expandable, node => node.children );
-
 	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
-
-
 	public data: DynamicMeta<PropModel>;
-
 	public rotationVariance: Vector3;
-
 	public scaleVariance: Vector3;
-
 	public object: Object3D;
 
 	constructor ( private assetService: AssetLoaderService ) {
 
+	}
+
+	get prop () {
+		return this.data.data as PropModel;
 	}
 
 	hasChild = ( _: number, node: FlatNode ) => node.expandable;
@@ -72,11 +59,6 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 
 		return [ treeNode ];
 	}
-
-	get prop () {
-		return this.data.data as PropModel;
-	}
-
 
 	ngOnInit () {
 
@@ -122,4 +104,15 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 	onNodeClicked ( node: ObjectTreeNode ) {
 		console.log( node.name );
 	}
+
+	private _transformer = ( node: ObjectTreeNode, level: number ) => {
+		return {
+			expandable: !!node.children && node.children.length > 0,
+			name: node.name,
+			level: level,
+		};
+	};
+
+	treeFlattener = new MatTreeFlattener(
+		this._transformer, node => node.level, node => node.expandable, node => node.children );
 }

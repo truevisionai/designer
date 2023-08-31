@@ -2,12 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
-import { LaneAddTool } from './lane-add-tool';
-import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { Object3D, Vector3 } from 'three';
-import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-
 // describe( 'LaneAddTool', () => {
 
 // 	let laneAddTool: LaneAddTool;

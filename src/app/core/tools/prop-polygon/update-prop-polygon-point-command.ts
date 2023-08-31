@@ -15,12 +15,12 @@ export class UpdatePropPolygonPointCommand extends BaseCommand {
 
 	execute (): void {
 		this.point.copyPosition( this.newPosition );
-		this.point.mainObject.update()
+		this.point.mainObject.update();
 	}
 
 	undo (): void {
 		this.point.copyPosition( this.oldPosition );
-		this.point.mainObject.update()
+		this.point.mainObject.update();
 	}
 
 	redo (): void {

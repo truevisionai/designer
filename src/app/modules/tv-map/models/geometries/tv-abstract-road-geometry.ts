@@ -9,22 +9,7 @@ import { TvPosTheta } from '../tv-pos-theta';
 export abstract class TvAbstractRoadGeometry {
 
 	public readonly uuid: string;
-
-	private _s: number;
-	private _x: number;
-	private _y: number;
-	private _hdg: number;
-	private _length: number;
-	protected _endS: number;
 	public abstract geometryType: TvGeometryType;
-
-	abstract getRoadCoord ( s: number ): TvPosTheta;
-
-	abstract computeVars ();
-
-	abstract getCurve (): Curve<Vector2>;
-
-	abstract clone ( s: number ): TvAbstractRoadGeometry;
 
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
@@ -39,15 +24,7 @@ export abstract class TvAbstractRoadGeometry {
 		this.uuid = MathUtils.generateUUID();
 	}
 
-	get endS () {
-		return this._endS;
-	}
-
-	get startV3 (): Vector3 {
-
-		return new Vector3( this.x, this.y, 0 );
-
-	}
+	private _s: number;
 
 	get s () {
 
@@ -62,6 +39,8 @@ export abstract class TvAbstractRoadGeometry {
 		this._endS = this._s + this._length;
 	}
 
+	private _x: number;
+
 	get x () {
 
 		return this._x;
@@ -74,6 +53,8 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
+	private _y: number;
+
 	get y () {
 
 		return this._y;
@@ -85,6 +66,8 @@ export abstract class TvAbstractRoadGeometry {
 		this._y = value;
 
 	}
+
+	private _hdg: number;
 
 	get hdg () {
 
@@ -99,6 +82,8 @@ export abstract class TvAbstractRoadGeometry {
 		this.computeVars();
 	}
 
+	private _length: number;
+
 	get length () {
 
 		return this._length;
@@ -112,6 +97,18 @@ export abstract class TvAbstractRoadGeometry {
 		this._endS = this._s + this._length;
 
 		this.computeVars();
+	}
+
+	protected _endS: number;
+
+	get endS () {
+		return this._endS;
+	}
+
+	get startV3 (): Vector3 {
+
+		return new Vector3( this.x, this.y, 0 );
+
 	}
 
 	static getTypeAsString ( geometryType: TvGeometryType ): string {
@@ -139,6 +136,14 @@ export abstract class TvAbstractRoadGeometry {
 		}
 
 	}
+
+	abstract getRoadCoord ( s: number ): TvPosTheta;
+
+	abstract computeVars ();
+
+	abstract getCurve (): Curve<Vector2>;
+
+	abstract clone ( s: number ): TvAbstractRoadGeometry;
 
 	setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
 
@@ -252,6 +257,12 @@ export abstract class TvAbstractRoadGeometry {
 	// 	return nearestPoint;
 	// }
 
+	public endCoord (): TvPosTheta {
+
+		return this.getRoadCoord( this.endS );
+
+	}
+
 	protected binarySearch_GetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
 
 		const point = new Vector2( x, y );
@@ -304,11 +315,5 @@ export abstract class TvAbstractRoadGeometry {
 		}
 
 		return nearestPoint;
-	}
-
-	public endCoord (): TvPosTheta {
-
-		return this.getRoadCoord( this.endS );
-
 	}
 }

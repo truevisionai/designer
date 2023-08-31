@@ -2,8 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
+import { Copiable } from 'app/core/services/property-copy.service';
+import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
+import { TvMapBuilder } from '../builders/tv-map-builder';
 import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
@@ -17,12 +23,6 @@ import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { Copiable } from 'app/core/services/property-copy.service';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { TvMapBuilder } from '../builders/tv-map-builder';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -52,8 +52,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public visibility: TvLaneVisibility[] = [];
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
+	public travelDirection: TravelDirection;
+	isSelected: boolean;
 	private height: TvLaneHeight[] = [];
-	private _successor: number;
 	private lastAddedLaneWidth: number;
 	private lastAddedLaneRoadMark: number;
 	private lastAddedLaneMaterial: number;
@@ -61,9 +62,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	private lastAddedLaneSpeed: number;
 	private lastAddedLaneAccess: number;
 	private lastAddedLaneHeight: number;
-	private _laneSection: TvLaneSection;
-
-	public travelDirection: TravelDirection;
 
 	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
 
@@ -87,73 +85,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		}
 	}
 
-	update (): void {
+	private _successor: number;
 
-		RoadFactory.rebuildRoad( this.laneSection?.road );
-
-		this.laneSection?.road?.hideHelpers();
-
+	set successor ( laneId: number ) {
+		this.setSuccessor( laneId );
 	}
 
-	isSelected: boolean;
+	private _laneSection: TvLaneSection;
 
-	select (): void {
-
-		if ( this.isSelected ) return;
-
-		this.isSelected = true;
-
-		const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
-
-		clone.emissive.set( COLOR.RED );
-
-		this.gameObject.material = clone;
-
+	get laneSection (): TvLaneSection {
+		return this._laneSection;
 	}
 
-	unselect (): void {
-
-		if ( !this.isSelected ) return;
-
-		this.isSelected = false;
-
-		( this.gameObject.material as MeshBasicMaterial )?.dispose();
-
-		this.gameObject.material = TvMapBuilder.getLaneMaterial( this.laneSection.road, this );
-
-		this.gameObject.material.needsUpdate = true;
-
-	}
-
-	highlight (): void {
-
-		if ( this.isSelected ) return;
-
-		const orignal = this.gameObject.material as MeshStandardMaterial;
-
-		const clone = orignal.clone();
-
-		this.gameObject.material = clone;
-
-		clone.emissive.set( COLOR.GRAY );
-
-		// cache
-		this.gameObject.userData.material = orignal;
-
-	}
-
-	unhighlight (): void {
-
-		if ( this.isSelected ) return;
-
-		const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
-
-		if ( !originalMaterial ) return;
-
-		this.gameObject.material = originalMaterial;
-
-		this.gameObject.material.needsUpdate = true;
-
+	set laneSection ( value: TvLaneSection ) {
+		this._laneSection = value;
 	}
 
 	private _roadId: number;
@@ -166,26 +111,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this._roadId = value;
 	}
 
-	get laneSection (): TvLaneSection {
-		return this._laneSection;
-	}
-
-	set laneSection ( value: TvLaneSection ) {
-		this._laneSection = value;
-	}
-
 	private _side: TvLaneSide;
 
 	get side (): TvLaneSide {
 		return this._side;
-	}
-
-	get isLeft (): boolean {
-		return this._side === TvLaneSide.LEFT;
-	}
-
-	get isRight (): boolean {
-		return this._side === TvLaneSide.RIGHT;
 	}
 
 	set side ( value ) {
@@ -202,6 +131,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		}
 	}
 
+	get isLeft (): boolean {
+		return this._side === TvLaneSide.LEFT;
+	}
+
+	get isRight (): boolean {
+		return this._side === TvLaneSide.RIGHT;
+	}
+
 	private _predecessorExists: boolean;
 
 	get predecessorExists (): boolean {
@@ -213,6 +150,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	private _successorExists: boolean;
+
+	get successorExists (): boolean {
+		return this._successorExists;
+	}
+
+	set successorExists ( value: boolean ) {
+		this._successorExists = value;
+	}
+
+	private _predecessor: number;
+
+	get predecessor () {
+		return this._predecessor;
+	}
 
 	// updateMeshGeometry (): any {
 
@@ -305,35 +256,21 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	// }
 
-	get successorExists (): boolean {
-		return this._successorExists;
-	}
-
-	set successorExists ( value: boolean ) {
-		this._successorExists = value;
-	}
-
-	private _predecessor: number;
-
-	get predecessor () {
-		return this._predecessor;
-	}
-
 	set predecessor ( laneId: number ) {
 		this.setPredecessor( laneId );
-	}
-
-	set successor ( laneId: number ) {
-		this.setSuccessor( laneId );
 	}
 
 	get laneSectionId () {
 		return this._laneSection?.id;
 	}
 
-	get direction () { return this.travelDirection; }
+	get direction () {
+		return this.travelDirection;
+	}
 
-	set direction ( value: TravelDirection ) { this.travelDirection = value }
+	set direction ( value: TravelDirection ) {
+		this.travelDirection = value;
+	}
 
 	get sideAsString (): string {
 
@@ -380,16 +317,96 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.attr_level = value;
 	}
 
-	//
-	// Methods used to add child records to the respective lane records
-	//
-
 	get succcessor () {
 		return this._successor;
 	}
 
 	set succcessor ( laneId: number ) {
 		this.setPredecessor( laneId );
+	}
+
+	get otherLanes () {
+
+		if ( this.side === TvLaneSide.RIGHT ) {
+
+			return this.laneSection.getRightLanes();
+
+		} else {
+
+			return this.laneSection.getLeftLanes();
+		}
+
+	}
+
+	update (): void {
+
+		RoadFactory.rebuildRoad( this.laneSection?.road );
+
+		this.laneSection?.road?.hideHelpers();
+
+	}
+
+	select (): void {
+
+		if ( this.isSelected ) return;
+
+		this.isSelected = true;
+
+		const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
+
+		clone.emissive.set( COLOR.RED );
+
+		this.gameObject.material = clone;
+
+	}
+
+	//
+	// Methods used to add child records to the respective lane records
+	//
+
+	unselect (): void {
+
+		if ( !this.isSelected ) return;
+
+		this.isSelected = false;
+
+		( this.gameObject.material as MeshBasicMaterial )?.dispose();
+
+		this.gameObject.material = TvMapBuilder.getLaneMaterial( this.laneSection.road, this );
+
+		this.gameObject.material.needsUpdate = true;
+
+	}
+
+	highlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const orignal = this.gameObject.material as MeshStandardMaterial;
+
+		const clone = orignal.clone();
+
+		this.gameObject.material = clone;
+
+		clone.emissive.set( COLOR.GRAY );
+
+		// cache
+		this.gameObject.userData.material = orignal;
+
+	}
+
+	unhighlight (): void {
+
+		if ( this.isSelected ) return;
+
+		const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
+
+		if ( !originalMaterial ) return;
+
+		this.gameObject.material = originalMaterial;
+
+		this.gameObject.material.needsUpdate = true;
+
 	}
 
 	setSide ( side: TvLaneSide ) {
@@ -408,16 +425,16 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.attr_level = level;
 	}
 
+	//
+	// CLONE METHODS
+	//
+
 	setPredecessor ( laneId: number ) {
 
 		this._predecessor = laneId;
 		this._predecessorExists = true;
 
 	}
-
-	//
-	// CLONE METHODS
-	//
 
 	setSuccessor ( laneId: number ) {
 
@@ -471,6 +488,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return index;
 	}
 
+	//
+	// DELETE METHODS
+	//
+
 	addVisibilityRecord ( sOffset: number, forward: number, back: number, left: number, right: number ) {
 
 		const index = this.checkLaneVisibilityInterval( sOffset ) + 1;
@@ -490,10 +511,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return index;
 
 	}
-
-	//
-	// DELETE METHODS
-	//
 
 	addSpeedRecord ( sOffset: number, max: number, unit: string ) {
 
@@ -731,12 +748,12 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this._successorExists;
 	}
 
+	//
+	// GET POINTER TO RECORDS
+
 	getSuccessor () {
 		return this._successor;
 	}
-
-	//
-	// GET POINTER TO RECORDS
 
 	//
 	getLaneWidthVector (): TvLaneWidth[] {
@@ -763,14 +780,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.access;
 	}
 
-	getLaneHeightVector (): TvLaneHeight[] {
-		return this.height;
-	}
-
 
 	//
 	// GET ELEMENT AT INDEX
 	//
+
+	getLaneHeightVector (): TvLaneHeight[] {
+		return this.height;
+	}
 
 	getLaneWidth ( index ): TvLaneWidth {
 
@@ -826,6 +843,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
+	//
+	// GET COUNT OF ELEMENTS
+	//
+
 	getLaneHeight ( index ): TvLaneHeight {
 
 		if ( this.height.length > 0 && index < this.height.length ) {
@@ -834,10 +855,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		return null;
 	}
-
-	//
-	// GET COUNT OF ELEMENTS
-	//
 
 	getLaneWidthCount (): number {
 		return this.width.length;
@@ -863,13 +880,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.access.length;
 	}
 
-	getLaneHeightCount (): number {
-		return this.height.length;
-	}
-
 	//
 	// GET LAST ELEMENT
 	//
+
+	getLaneHeightCount (): number {
+		return this.height.length;
+	}
 
 	getLastLaneWidth () {
 
@@ -1288,8 +1305,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		if ( this.roadMark.length === 0 )
+		if ( this.roadMark.length === 0 ) {
 			this.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+		}
 
 		return TvUtils.checkIntervalArray( this.roadMark, s );
 
@@ -1328,13 +1346,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties?(): Object {
+	copyProperties? (): Object {
 
 		return {
 			travelDirection: this.travelDirection,
 			type: this.type,
 			level: this.level,
-		}
+		};
 	}
 
 	getReferenceLinePoints ( location: 'start' | 'center' | 'end' ) {
@@ -1362,19 +1380,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		}
 
 		return points;
-	}
-
-	get otherLanes () {
-
-		if ( this.side === TvLaneSide.RIGHT ) {
-
-			return this.laneSection.getRightLanes()
-
-		} else {
-
-			return this.laneSection.getLeftLanes();
-		}
-
 	}
 
 	isLastDrivingLane (): boolean {

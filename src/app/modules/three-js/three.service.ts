@@ -3,6 +3,8 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
+import { AppConfig } from 'app/app.config';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Camera, Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
@@ -12,20 +14,16 @@ import { IEngine } from '../../core/services/IEngine';
 import { SceneService } from '../../core/services/scene.service';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
-import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
-import { AppConfig } from 'app/app.config';
 import { TvViewHelper } from './objects/tv-view-helper';
-import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ThreeService implements IEngine {
 
-	cameraChanged = new EventEmitter<Camera>();
-
-	public controls: IViewportController;
 	static bgForClicks: THREE.Mesh;
+	cameraChanged = new EventEmitter<Camera>();
+	public controls: IViewportController;
 	public canvas: HTMLCanvasElement;
 	public renderer: THREE.WebGLRenderer;
 	public mouse: THREE.Vector2 = new THREE.Vector2;
@@ -35,6 +33,8 @@ export class ThreeService implements IEngine {
 	public leftOffset: number;
 	public topOffset: number;
 	public ORTHO_DRIVER = 4;
+	viewHelper: TvViewHelper;
+	viewHelperCanavs: HTMLCanvasElement;
 	private currentCameraIndex = 0;
 	private cameras: THREE.Camera[] = [];
 	private composer: EffectComposer;
@@ -42,9 +42,9 @@ export class ThreeService implements IEngine {
 	private light: THREE.AmbientLight;
 	private objectPositionOnDown: THREE.Vector3 = null;
 	private target: Object3D;
-
-	viewHelper: TvViewHelper;
-	viewHelperCanavs: HTMLCanvasElement;
+	// This will create a vector to store the offset position from the object
+	private p_offset = new THREE.Vector3( 20, 20, 20 );
+	private o_offset = new THREE.Vector3( 0, 0, 100 );
 
 	constructor () {
 
@@ -396,7 +396,6 @@ export class ThreeService implements IEngine {
 
 	}
 
-
 	setFocusTarget ( target: THREE.Object3D ) {
 
 		this.target = target;
@@ -416,66 +415,6 @@ export class ThreeService implements IEngine {
 		this.target = null;
 
 	}
-
-	private createCameras () {
-
-		// higher near value >= 10 reduces the z fighting that
-		// happens in rendering road markings
-		const near = 1;
-		const far = 100000;
-
-		const width = 791.88;
-		const height = 606;
-		const otherDivider = 4;
-
-		const left = width / -otherDivider;
-		const right = width / otherDivider;
-		const top = height / otherDivider;
-		const bottom = height / -otherDivider;
-
-		const orthographicCamera = new THREE.OrthographicCamera( left, right, top, bottom, near, far );
-		orthographicCamera.position.set( 0, 0, 50 );
-		orthographicCamera.up.copy( AppConfig.DEFAULT_UP )
-
-		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
-		perspectiveCamera.position.set( 0, 5, 10 );
-		perspectiveCamera.up.copy( AppConfig.DEFAULT_UP )
-
-		this.cameras.push( orthographicCamera );
-		this.cameras.push( perspectiveCamera );
-
-		for ( let i = 0; i < this.cameras.length; i++ ) {
-
-			this.cameras[ i ].lookAt( 0, 0, 0 );
-			this.cameras[ i ].userData.initialPosition = this.cameras[ i ].position.clone();
-			this.cameras[ i ].userData.initialUp = this.cameras[ i ].up.clone();
-			this.cameras[ i ].userData.initialRotation = this.cameras[ i ].rotation.clone();
-
-
-			SceneService.addHelper( this.cameras[ i ] );
-		}
-
-
-		if ( this.camera[ 'isOrthographicCamera' ] ) {
-
-			( this.camera as OrthographicCamera ).updateProjectionMatrix();
-
-		} else if ( this.camera[ 'isPerspectiveCamera' ] ) {
-
-			( this.camera as PerspectiveCamera ).updateProjectionMatrix();
-
-		}
-	}
-
-	private addAxesHelper () {
-
-		SceneService.addHelper( new THREE.AxesHelper( 3000 ) );
-
-	}
-
-	// This will create a vector to store the offset position from the object
-	private p_offset = new THREE.Vector3( 20, 20, 20 );
-	private o_offset = new THREE.Vector3( 0, 0, 100 );
 
 	updateCameraPosition () {
 
@@ -511,5 +450,61 @@ export class ThreeService implements IEngine {
 		( this.camera as any ).lookAt( 0, 0, 0 );
 
 		( this.camera as any ).updateProjectionMatrix();
+	}
+
+	private createCameras () {
+
+		// higher near value >= 10 reduces the z fighting that
+		// happens in rendering road markings
+		const near = 1;
+		const far = 100000;
+
+		const width = 791.88;
+		const height = 606;
+		const otherDivider = 4;
+
+		const left = width / -otherDivider;
+		const right = width / otherDivider;
+		const top = height / otherDivider;
+		const bottom = height / -otherDivider;
+
+		const orthographicCamera = new THREE.OrthographicCamera( left, right, top, bottom, near, far );
+		orthographicCamera.position.set( 0, 0, 50 );
+		orthographicCamera.up.copy( AppConfig.DEFAULT_UP );
+
+		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
+		perspectiveCamera.position.set( 0, 5, 10 );
+		perspectiveCamera.up.copy( AppConfig.DEFAULT_UP );
+
+		this.cameras.push( orthographicCamera );
+		this.cameras.push( perspectiveCamera );
+
+		for ( let i = 0; i < this.cameras.length; i++ ) {
+
+			this.cameras[ i ].lookAt( 0, 0, 0 );
+			this.cameras[ i ].userData.initialPosition = this.cameras[ i ].position.clone();
+			this.cameras[ i ].userData.initialUp = this.cameras[ i ].up.clone();
+			this.cameras[ i ].userData.initialRotation = this.cameras[ i ].rotation.clone();
+
+
+			SceneService.addHelper( this.cameras[ i ] );
+		}
+
+
+		if ( this.camera[ 'isOrthographicCamera' ] ) {
+
+			( this.camera as OrthographicCamera ).updateProjectionMatrix();
+
+		} else if ( this.camera[ 'isPerspectiveCamera' ] ) {
+
+			( this.camera as PerspectiveCamera ).updateProjectionMatrix();
+
+		}
+	}
+
+	private addAxesHelper () {
+
+		SceneService.addHelper( new THREE.AxesHelper( 3000 ) );
+
 	}
 }

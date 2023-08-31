@@ -3,8 +3,8 @@
  */
 
 import { Time } from '../../../../core/time';
-import { PrivateAction } from '../private-action';
 import { ScenarioEntity } from '../entities/scenario-entity';
+import { PrivateAction } from '../private-action';
 import { ActionType, DynamicsShape } from '../tv-enums';
 import { Target } from './target';
 import { AbsoluteTarget } from './tv-absolute-target';

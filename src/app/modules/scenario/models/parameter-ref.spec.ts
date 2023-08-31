@@ -1,16 +1,16 @@
-import { ScenarioInstance } from "../services/scenario-instance";
-import { ParameterRef } from "./parameter-ref";
-import { ParameterType } from "./tv-enums";
-import { Parameter, ParameterDeclaration } from "./tv-parameter-declaration";
+import { ScenarioInstance } from '../services/scenario-instance';
+import { ParameterRef } from './parameter-ref';
+import { ParameterType } from './tv-enums';
+import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
 
 describe( 'ParameterRef', () => {
 
 	beforeEach( () => {
 		ScenarioInstance.scenario.parameterDeclarations.splice( 0, ScenarioInstance.scenario.parameterDeclarations.length );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.integer, '5' ) ) )
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.double, '2.5' ) ) )
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.integer, '8' ) ) )
-	} )
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.integer, '5' ) ) );
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.double, '2.5' ) ) );
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.integer, '8' ) ) );
+	} );
 
 	it( 'should identify and interpret literals string correctly', () => {
 		const ref = new ParameterRef( '5.6' );
@@ -41,7 +41,7 @@ describe( 'ParameterRef', () => {
 
 	it( 'should throw error for undefined parameters', () => {
 		const ref = new ParameterRef( '$Undefined' );
-		expect( () => ref.getInterpretedValue() ).toThrow( new Error( "Parameter 'Undefined' is not defined" ) );
+		expect( () => ref.getInterpretedValue() ).toThrow( new Error( 'Parameter \'Undefined\' is not defined' ) );
 	} );
 
 	it( 'should throw error for unsafe or unsupported expressions', () => {
@@ -58,10 +58,10 @@ describe( 'ParameterRef Boolean Operators', () => {
 
 	beforeEach( () => {
 		ScenarioInstance.scenario.parameterDeclarations.splice( 0, ScenarioInstance.scenario.parameterDeclarations.length );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.boolean, 'true' ) ) )
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.boolean, 'false' ) ) )
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.boolean, 'false' ) ) )
-	} )
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.boolean, 'true' ) ) );
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.boolean, 'false' ) ) );
+		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.boolean, 'false' ) ) );
+	} );
 
 	it( 'should evaluate NOT operator correctly', () => {
 		const ref1 = new ParameterRef( '${not $A}' );

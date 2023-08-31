@@ -1,99 +1,118 @@
 <mat-toolbar class="native-border inspector-toolbar">
 	<button (click)="toggle($event)"
-		mat-icon-button
-		class="inspector-toolbar-icon">
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
 	<span>Event {{event?.name}} </span>
 	<span class="spacer"></span>
-	<button mat-icon-button
-		class="inspector-toolbar-icon"
-		[matMenuTriggerFor]="conditionMenu">
+	<button [matMenuTriggerFor]="conditionMenu"
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>bolt</mat-icon>
 	</button>
-	<button mat-icon-button
-		class="inspector-toolbar-icon"
-		[matMenuTriggerFor]="actionMenu">
+	<button [matMenuTriggerFor]="actionMenu"
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>directions_run</mat-icon>
 	</button>
-	<button mat-icon-button
-		class="inspector-toolbar-icon"
-		[matMenuTriggerFor]="menu">
+	<button [matMenuTriggerFor]="menu"
+			class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-menu #menu="matMenu">
-		<button mat-menu-item
-			(click)="delete($event)">
+		<button (click)="delete($event)"
+				mat-menu-item>
 			<mat-icon>delete</mat-icon>
 			<span>Delete Event</span>
 		</button>
 	</mat-menu>
 	<mat-menu #conditionMenu="matMenu">
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_Acceleration)">Acceleration</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_Collision)">Collision</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_Distance)">Distance</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_EndOfRoad)">EndOfRoad</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_Offroad)">OffRoad</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_ReachPosition)">ReadPosition</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_RelativeDistance)">RelativeDistance</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_RelativeSpeed)">RelativeSpeed</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_Speed)">Speed</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_StandStill)">StandStill</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_TimeHeadway)">TimeHeadway</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_TimeToCollision)">TimeToCollision</button>
-		<button mat-menu-item
-			(click)="addCondition(CONDITION.ByEntity_TraveledDistance)">TraveledDistance</button>
+		<button (click)="addCondition(CONDITION.ByEntity_Acceleration)"
+				mat-menu-item>Acceleration
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_Collision)"
+				mat-menu-item>Collision
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_Distance)"
+				mat-menu-item>Distance
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_EndOfRoad)"
+				mat-menu-item>EndOfRoad
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_Offroad)"
+				mat-menu-item>OffRoad
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_ReachPosition)"
+				mat-menu-item>ReadPosition
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_RelativeDistance)"
+				mat-menu-item>RelativeDistance
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_RelativeSpeed)"
+				mat-menu-item>RelativeSpeed
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_Speed)"
+				mat-menu-item>Speed
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_StandStill)"
+				mat-menu-item>StandStill
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_TimeHeadway)"
+				mat-menu-item>TimeHeadway
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_TimeToCollision)"
+				mat-menu-item>TimeToCollision
+		</button>
+		<button (click)="addCondition(CONDITION.ByEntity_TraveledDistance)"
+				mat-menu-item>TraveledDistance
+		</button>
 	</mat-menu>
 	<mat-menu #actionMenu="matMenu">
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_LaneOffset)">Lane Offset</button>
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_LaneChange)">Lane Change</button>
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_Longitudinal_Distance)">Longitudinal Distance</button>
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_Longitudinal_Speed)">Longitudinal Speed</button>
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_Position)">Position</button>
-		<button mat-menu-item
-			(click)="addAction(ACTION.Private_Routing_FollowTrajectory)">Follow Trajectory</button>
+		<button (click)="addAction(ACTION.Private_LaneOffset)"
+				mat-menu-item>Lane Offset
+		</button>
+		<button (click)="addAction(ACTION.Private_LaneChange)"
+				mat-menu-item>Lane Change
+		</button>
+		<button (click)="addAction(ACTION.Private_Longitudinal_Distance)"
+				mat-menu-item>Longitudinal Distance
+		</button>
+		<button (click)="addAction(ACTION.Private_Longitudinal_Speed)"
+				mat-menu-item>Longitudinal Speed
+		</button>
+		<button (click)="addAction(ACTION.Private_Position)"
+				mat-menu-item>Position
+		</button>
+		<button (click)="addAction(ACTION.Private_Routing_FollowTrajectory)"
+				mat-menu-item>Follow Trajectory
+		</button>
 	</mat-menu>
 </mat-toolbar>
 
 <div *ngIf="isOpen">
 	<div *ngFor="let condition of event.startConditions">
 		<app-condition-editor (removed)="removeCondition($event)"
-			[condition]="condition">
+							  [condition]="condition">
 		</app-condition-editor>
 	</div>
 	<div *ngIf="event?.startConditions.length == 0">
 		<app-button-field [matMenuTriggerFor]="conditionMenu"
-			label="Add Condition">
+						  label="Add Condition">
 		</app-button-field>
 	</div>
 
 	<div *ngFor="let action of event.getActions()">
 		<app-action (removed)="removeAction($event)"
-			[action]="action"
-			[entity]="entity">
+					[action]="action"
+					[entity]="entity">
 		</app-action>
 	</div>
 	<div *ngIf="event.getActions().length == 0">
 		<app-button-field [matMenuTriggerFor]="actionMenu"
-			label="Add Action">
+						  label="Add Action">
 		</app-button-field>
 	</div>
 </div>

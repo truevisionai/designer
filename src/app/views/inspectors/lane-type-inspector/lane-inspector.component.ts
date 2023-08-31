@@ -3,15 +3,15 @@
  */
 
 import { Component } from '@angular/core';
+import { DuplicateLaneCommand } from 'app/core/commands/duplicate-lane-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RemoveLaneCommand } from '../../../core/commands/remove-lane-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
 import { IComponent } from '../../../core/game-object';
 import { TravelDirection, TvLaneType } from '../../../modules/tv-map/models/tv-common';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { CommandHistory } from '../../../services/command-history';
-import { DuplicateLaneCommand } from 'app/core/commands/duplicate-lane-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-import { UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';
 
 @Component( {
 	selector: 'app-lane-type-inspector',
@@ -36,11 +36,9 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 		if ( !this.lane ) return;
 
 		CommandHistory.executeMany(
-
 			new RemoveLaneCommand( this.lane ),
 
 			new SetInspectorCommand( null, null )
-
 		);
 
 	}

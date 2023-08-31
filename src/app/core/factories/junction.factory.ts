@@ -3,18 +3,15 @@
  */
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvLaneType } from 'app/modules/tv-map/models/tv-common';
+import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { CommandHistory } from 'app/services/command-history';
-import { SnackBar } from 'app/services/snack-bar.service';
 import { SceneService } from '../services/scene.service';
 import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../utils/console';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { IDService } from './id.service';
 
 export class JunctionFactory {
@@ -388,7 +385,7 @@ export class JunctionFactory {
 
 				const exit = element.isExit ? element : otherElement;
 
-				if ( !entry.isRightMost() ) continue
+				if ( !entry.isRightMost() ) continue;
 
 				this.connect( junction, entry, exit );
 
@@ -426,7 +423,7 @@ export class JunctionFactory {
 
 				const exit = element.isExit ? element : otherElement;
 
-				if ( !entry.isLeftMost() ) continue
+				if ( !entry.isLeftMost() ) continue;
 
 				this.connect( junction, entry, exit );
 

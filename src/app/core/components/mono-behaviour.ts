@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseEventData, MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { BaseEventData, MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { Subscription } from 'rxjs';
-import { AppService } from '../services/app.service';
 import { Vector3 } from 'three';
+import { AppService } from '../services/app.service';
 
 export class MonoBehaviour {
 
@@ -53,7 +53,7 @@ export class MonoBehaviour {
 
 			if ( e.button !== MouseButton.LEFT ) return;
 
-			this.onPointerMoved( e )
+			this.onPointerMoved( e );
 
 		} );
 

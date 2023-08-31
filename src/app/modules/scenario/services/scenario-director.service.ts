@@ -60,6 +60,30 @@ export class ScenarioDirectorService {
 
 	}
 
+	private static setRoadProperties ( obj: ScenarioEntity ) {
+
+		const roadCoord = new TvPosTheta();
+
+		const pos = obj.position;
+
+		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
+
+		if ( !res.road || !res.lane ) return;
+
+		obj.openDriveProperties.isOpenDrive = true;
+
+		obj.setRoadId( res.road.id );
+
+		obj.setLaneId( res.lane.id );
+
+		obj.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
+
+		obj.setDirection( res.lane.id > 0 ? -1 : 1 );
+
+		obj.setSValue( roadCoord.s );
+
+	}
+
 	private onPlayerStarted () {
 
 		if ( this.logEvents ) console.info( 'scenario-started', this.scenario );
@@ -277,7 +301,6 @@ export class ScenarioDirectorService {
 
 	}
 
-
 	private startEvent ( event: TvEvent, sequence: ManeuverGroup ) {
 
 		if ( this.logEvents ) console.info( 'started-event', event.name );
@@ -363,30 +386,6 @@ export class ScenarioDirectorService {
 	private resetScenario () {
 
 		( new ResetHelper( this.scenario ) ).reset();
-
-	}
-
-	private static setRoadProperties ( obj: ScenarioEntity ) {
-
-		const roadCoord = new TvPosTheta();
-
-		const pos = obj.position;
-
-		const res = TvMapQueries.getLaneByCoords( pos.x, pos.y, roadCoord );
-
-		if ( !res.road || !res.lane ) return;
-
-		obj.openDriveProperties.isOpenDrive = true;
-
-		obj.setRoadId( res.road.id );
-
-		obj.setLaneId( res.lane.id );
-
-		obj.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
-
-		obj.setDirection( res.lane.id > 0 ? -1 : 1 );
-
-		obj.setSValue( roadCoord.s );
 
 	}
 

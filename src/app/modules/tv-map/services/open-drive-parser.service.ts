@@ -3,6 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
+import { JunctionFactory } from 'app/core/factories/junction.factory';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { SceneService } from 'app/core/services/scene.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -10,7 +13,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../core/services/abstract-reader';
 import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { EnumHelper, ObjectTypes, TvContactPoint, TvElementType, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
+import { EnumHelper, ObjectTypes, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
@@ -19,20 +22,16 @@ import { TvJunctionLaneLink } from '../models/tv-junction-lane-link';
 import { TvJunctionPriority } from '../models/tv-junction-priority';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
+import { TvMapHeader } from '../models/tv-map-header';
 import { TvMap } from '../models/tv-map.model';
+import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvPlaneView } from '../models/tv-plane-view';
+import { TvRoadLinkChildType } from '../models/tv-road-link-child';
 import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
-import { TvRoadLinkChildType } from '../models/tv-road-link-child';
-import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
-import { SceneService } from 'app/core/services/scene.service';
-import { TvObjectMarking } from '../models/tv-object-marking';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { TvMapHeader } from '../models/tv-map-header';
-import { JunctionFactory } from 'app/core/factories/junction.factory';
 
 export interface XmlElement {
 	[ key: string ]: any;

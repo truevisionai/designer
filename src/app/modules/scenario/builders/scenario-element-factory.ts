@@ -1,14 +1,14 @@
-import { ActionType, ConditionType } from '../models/tv-enums';
+import { IDService } from 'app/core/factories/id.service';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { PrivateAction } from '../models/private-action';
-import { Maneuver } from '../models/tv-maneuver';
-import { IDService } from 'app/core/factories/id.service';
-import { TvEvent } from '../models/tv-event';
-import { ConditionFactory } from './condition-factory';
-import { ManeuverGroup } from '../models/tv-sequence';
 import { Act } from '../models/tv-act';
+import { ActionType, ConditionType } from '../models/tv-enums';
+import { TvEvent } from '../models/tv-event';
+import { Maneuver } from '../models/tv-maneuver';
+import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { ActionFactory } from './action-factory';
+import { ConditionFactory } from './condition-factory';
 
 
 export class ScenarioElementFactory {

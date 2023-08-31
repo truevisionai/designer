@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AppService } from 'app/core/services/app.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AppService } from 'app/core/services/app.service';
 import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {
@@ -21,6 +21,12 @@ export class TvMaterial extends MeshStandardMaterial {
 	static new ( name = 'NewMaterial' ) {
 
 		return new TvMaterial( MathUtils.generateUUID(), { name: name } );
+
+	}
+
+	static fromMaterial ( guid: string, material: Material ): TvMaterial {
+
+		return new TvMaterial( guid, material );
 
 	}
 
@@ -97,12 +103,6 @@ export class TvMaterial extends MeshStandardMaterial {
 	toJSONString (): string {
 
 		return JSON.stringify( this.toJSON(), null, 2 );
-
-	}
-
-	static fromMaterial ( guid: string, material: Material ): TvMaterial {
-
-		return new TvMaterial( guid, material );
 
 	}
 }

@@ -3,23 +3,23 @@
   -->
 
 <div *ngIf="data"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
-	<app-vector3-field *ngIf="showPosition"
-		label="Position"
-		[value]="position"
-		(changed)="positionChanged($event)">
+	<app-vector3-field (changed)="positionChanged($event)"
+					   *ngIf="showPosition"
+					   [value]="position"
+					   label="Position">
 	</app-vector3-field>
 
-	<app-vector3-field *ngIf="showRotation"
-		label="Rotation"
-		[value]="rotation"
-		(changed)="rotationChanged($event)">
+	<app-vector3-field (changed)="rotationChanged($event)"
+					   *ngIf="showRotation"
+					   [value]="rotation"
+					   label="Rotation">
 	</app-vector3-field>
 
-	<app-vector3-field *ngIf="showScale"
-		label="Scale"
-		[value]="scale"
-		(changed)="scaleChanged($event)">
+	<app-vector3-field (changed)="scaleChanged($event)"
+					   *ngIf="showScale"
+					   [value]="scale"
+					   label="Scale">
 	</app-vector3-field>
 </div>

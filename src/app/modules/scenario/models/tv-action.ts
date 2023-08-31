@@ -14,17 +14,18 @@ export abstract class TvAction {
 	abstract category: ActionCategory;
 	abstract actionType: ActionType;
 	abstract label: string;
-
-	abstract execute ( entity: ScenarioEntity ): void;
-
 	public readonly uuid = MathUtils.generateUUID();
-
 	public isCompleted: boolean;
 	public hasStarted: boolean;
 	public completed = new EventEmitter<StoryboardEvent>();
 	public updated = new EventEmitter<TvAction>();
-
 	public name: string;
+
+	protected get scenario () {
+		return ScenarioInstance.scenario;
+	}
+
+	abstract execute ( entity: ScenarioEntity ): void;
 
 	reset () {
 
@@ -33,8 +34,8 @@ export abstract class TvAction {
 
 	}
 
-	protected get scenario () {
-		return ScenarioInstance.scenario;
+	setName ( name: string ) {
+		this.name = name;
 	}
 
 	protected getEntity ( entityName: string ): ScenarioEntity {
@@ -47,9 +48,5 @@ export abstract class TvAction {
 
 	protected getEntitySpeed ( entityName: string ): number {
 		return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
-	}
-
-	setName ( name: string ) {
-		this.name = name;
 	}
 }

@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
-import { SceneService } from '../../services/scene.service';
 import { BaseCommand } from '../../commands/base-command';
+import { SceneService } from '../../services/scene.service';
 
 export class UpdateLaneOffsetValueCommand extends BaseCommand {
 

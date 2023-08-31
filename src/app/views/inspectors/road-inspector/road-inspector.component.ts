@@ -4,18 +4,18 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CallFunctionCommand } from 'app/core/commands/call-function-command';
+import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
+import { BaseInspector } from 'app/core/components/base-inspector.component';
+import { RoadTool } from 'app/core/tools/road/road-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
+import { Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { RoadTool } from 'app/core/tools/road/road-tool';
-import { BaseInspector } from 'app/core/components/base-inspector.component';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -41,7 +41,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 	}
 
 	get splineType () {
-		return this.road?.spline?.type
+		return this.road?.spline?.type;
 	}
 
 	get controlPoint (): RoadControlPoint {
@@ -109,46 +109,38 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 	onDrivingMaterialChanged ( $guid: string ) {
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this.road, 'drivingMaterialGuid', $guid ),
 
 			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-
-		)
+		);
 
 	}
 
 	onSidewalkMaterialChanged ( $guid: string ) {
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this.road, 'sidewalkMaterialGuid', $guid ),
 
 			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-
-		)
+		);
 	}
 
 	onBorderMaterialChanged ( $guid: string ) {
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this.road, 'borderMaterialGuid', $guid ),
 
 			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-
-		)
+		);
 	}
 
 	onShoulderMaterialChanged ( $guid: string ) {
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this.road, 'shoulderMaterialGuid', $guid ),
 
 			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-
-		)
+		);
 	}
 
 	onControlPointChanged ( $controlPoint: Vector3 ) {

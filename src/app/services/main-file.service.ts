@@ -12,14 +12,13 @@ import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { FileService } from '../core/io/file.service';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
-import { FileService } from '../core/io/file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SceneImporterService } from './scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-import { SceneService } from 'app/core/services/scene.service';
 
 @Injectable( {
 	providedIn: 'root'

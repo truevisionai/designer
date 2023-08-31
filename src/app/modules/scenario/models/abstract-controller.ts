@@ -14,12 +14,12 @@ export abstract class AbstractController {
 	constructor ( public name: string ) {
 	}
 
-	update (): void {
-		console.error( 'controller update method not overridden' );
-	}
-
 	get map () {
 		return TvMapInstance.map;
+	}
+
+	update (): void {
+		console.error( 'controller update method not overridden' );
 	}
 
 	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {

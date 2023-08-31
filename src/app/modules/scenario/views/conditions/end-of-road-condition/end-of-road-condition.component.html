@@ -1,4 +1,4 @@
-<app-double-field label="Duration"
-	[value]="endOfRoadCondition.duration"
-	(changed)="onDurationChanged($event)">
+<app-double-field (changed)="onDurationChanged($event)"
+				  [value]="endOfRoadCondition.duration"
+				  label="Duration">
 </app-double-field>

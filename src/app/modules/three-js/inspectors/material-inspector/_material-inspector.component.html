@@ -3,21 +3,21 @@
   -->
 
 <div class="inspector-form-container"
-	style="min-height: 360px">
+	 style="min-height: 360px">
 
-	<span>Material</span> <br />
+	<span>Material</span> <br/>
 
 	<mat-form-field>
 		<input [(colorPicker)]="color"
-			[cpPosition]="cpPosition"
-			[style.background]="color"
-			matInput
-			placeholder="Color" />
+			   [cpPosition]="cpPosition"
+			   [style.background]="color"
+			   matInput
+			   placeholder="Color"/>
 	</mat-form-field>
 
 
 	<app-texture-field (changed)="onAlbedoChanged($event)"
-		[data]="material.map"
-		label="Albedo"></app-texture-field>
+					   [data]="material.map"
+					   label="Albedo"></app-texture-field>
 
 </div>

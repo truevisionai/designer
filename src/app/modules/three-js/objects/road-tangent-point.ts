@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { IHasUpdate } from '../commands/set-value-command';
 import { BaseControlPoint } from './control-point';
 import { RoadControlPoint } from './road-control-point';
-import { IHasUpdate } from '../commands/set-value-command';
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 
 export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
@@ -59,6 +59,19 @@ export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
 		this.renderOrder = 3;
 
+	}
+
+	private get index () {
+		return this.road.spline?.controlPoints.indexOf( this );
+	}
+
+	private get shouldUpdatePredecessor () {
+		return this.index === 0 || this.index === 1;
+	}
+
+	private get shouldUpdateSuccessor () {
+		const controlPoints = this.road.spline.controlPoints;
+		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
 	update (): void {
@@ -139,19 +152,6 @@ export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
 		this.update();
 
-	}
-
-	private get index () {
-		return this.road.spline?.controlPoints.indexOf( this );
-	}
-
-	private get shouldUpdatePredecessor () {
-		return this.index === 0 || this.index === 1;
-	}
-
-	private get shouldUpdateSuccessor () {
-		const controlPoints = this.road.spline.controlPoints;
-		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
 	private updatePredecessor () {

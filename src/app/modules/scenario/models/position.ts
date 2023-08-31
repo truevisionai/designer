@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { EventEmitter } from '@angular/core';
 import { Euler, Vector3 } from 'three';
 import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
-import { EventEmitter } from '@angular/core';
 
 export abstract class Position {
 
@@ -16,11 +16,6 @@ export abstract class Position {
 	abstract readonly label: string;
 
 	abstract readonly isDependent: boolean;
-
-	abstract getVectorPosition (): Vector3;
-
-	abstract updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void;
-
 	public updated = new EventEmitter();
 
 	constructor (
@@ -29,21 +24,21 @@ export abstract class Position {
 	) {
 	}
 
-	setPosition ( value: Vector3 ) {
-		if ( !this.vector0 ) this.vector0 = new Vector3();
-		this.vector0.copy( value )
-	}
-
-	toEuler (): Euler {
-		return this.orientation?.toEuler() || new Euler( 0, 0, 0 );
-	}
-
 	get position (): Vector3 {
 		return this.getVectorPosition();
 	}
 
-	protected getEntity ( entity: string ): ScenarioEntity {
-		return ScenarioInstance.scenario.findEntityOrFail( entity );
+	abstract getVectorPosition (): Vector3;
+
+	abstract updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void;
+
+	setPosition ( value: Vector3 ) {
+		if ( !this.vector0 ) this.vector0 = new Vector3();
+		this.vector0.copy( value );
+	}
+
+	toEuler (): Euler {
+		return this.orientation?.toEuler() || new Euler( 0, 0, 0 );
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {
@@ -52,10 +47,14 @@ export abstract class Position {
 
 	setOrientationV2 ( orientation: Orientation ) {
 		if ( this.orientation ) {
-			this.orientation.copy( orientation )
+			this.orientation.copy( orientation );
 		} else {
-			this.orientation = orientation
+			this.orientation = orientation;
 		}
+	}
+
+	protected getEntity ( entity: string ): ScenarioEntity {
+		return ScenarioInstance.scenario.findEntityOrFail( entity );
 	}
 
 }

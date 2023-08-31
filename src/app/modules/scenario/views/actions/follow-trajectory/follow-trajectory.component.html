@@ -1,13 +1,13 @@
 <div *ngIf="action"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
 	<h5> Edit {{ action.label }}</h5>
 
 	<app-tv-trajectory-inspector [trajectory]="action.trajectory"></app-tv-trajectory-inspector>
 
 	<button (click)="onExit()"
-		*ngIf="action.trajectory.vertices.length > 0"
-		mat-stroked-button>
+			*ngIf="action.trajectory.vertices.length > 0"
+			mat-stroked-button>
 		Exit
 	</button>
 

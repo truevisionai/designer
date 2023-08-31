@@ -9,7 +9,7 @@ import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
-import { ObjectFillType, TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
+import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
@@ -22,9 +22,9 @@ import { TvLaneSpeed } from '../models/tv-lane-speed';
 import { TvLaneVisibility } from '../models/tv-lane-visibility';
 import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
+import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvCornerLocal, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
-import { TvObjectMarking } from '../models/tv-object-marking';
 import { XmlElement } from './open-drive-parser.service';
 
 declare const fxp;
@@ -479,7 +479,7 @@ export class OpenDriveExporter {
 		const laneNode = {
 			attr_id: lane.id,
 			attr_type: lane.type,
-			attr_level: lane.level === true ? "true" : "false",
+			attr_level: lane.level === true ? 'true' : 'false',
 			link: {},
 			width: [],
 			roadMark: [],
@@ -664,7 +664,7 @@ export class OpenDriveExporter {
 		const cornerReference = marking.cornerReferences.map( reference => {
 			return {
 				attr_id: reference
-			}
+			};
 		} );
 
 		return {
@@ -678,7 +678,7 @@ export class OpenDriveExporter {
 			attr_zOffset: marking.zOffset,
 			attr_width: marking.width,
 			cornerReference: cornerReference,
-		}
+		};
 
 	}
 
@@ -766,7 +766,7 @@ export class OpenDriveExporter {
 			cornerLocal: objectOutline?.cornerLocal.map(
 				cornerLocal => this.writeObjectCornerLocal( cornerLocal )
 			),
-		}
+		};
 
 	}
 

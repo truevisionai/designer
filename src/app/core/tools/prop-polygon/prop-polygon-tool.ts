@@ -3,10 +3,16 @@
  */
 
 import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { PropModel } from 'app/core/models/prop-model.model';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';
 import { PropPolygon } from '../../../modules/tv-map/models/prop-polygons';
 import { KeyboardInput } from '../../input';
@@ -14,13 +20,6 @@ import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
 import { CreatePropPolygonCommand } from './create-prop-polygon-command';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { PropModel } from 'app/core/models/prop-model.model';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { ObjectTagStrategy, ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { GameObject } from 'app/core/game-object';
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -36,6 +35,17 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 	private objectStrategy: SelectStrategy<PropPolygon>;
 
+	constructor () {
+
+		super();
+
+		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<PropPolygon>>();
+
+		this.objectStrategy = new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' );
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+	}
+
 	private get prop (): PropModel {
 
 		const prop = PropManager.getProp();
@@ -46,17 +56,6 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		}
 
-	}
-
-	constructor () {
-
-		super();
-
-		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<PropPolygon>>();
-
-		this.objectStrategy = new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' );
-
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	setMainObject ( value: PropPolygon ): void {
@@ -155,11 +154,9 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 		if ( this.point || this.propPolygon ) {
 
 			CommandHistory.executeMany(
-
 				new SelectPointCommand( this, null, DynamicInspectorComponent, null ),
 
 				new SelectMainObjectCommand( this, null, DynamicInspectorComponent, null )
-
 			);
 
 		}

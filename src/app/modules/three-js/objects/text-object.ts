@@ -4,7 +4,7 @@
 
 import { SceneService } from 'app/core/services/scene.service';
 import * as THREE from 'three';
-import { Vector3, Scene } from 'three';
+import { Vector3 } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 export class TextObject {
@@ -27,21 +27,6 @@ export class TextObject {
 		} else {
 			this.createText();
 		}
-	}
-
-	private createText () {
-
-		const shapes = TextObject.font.generateShapes( this.message, this.size );
-		const geometry = new THREE.ShapeGeometry( shapes );
-		geometry.computeBoundingBox();
-
-		const xMid = -0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-		geometry.translate( xMid, 0, 0 );
-
-		this.textMesh = new THREE.Mesh( geometry, this.matLite );
-		this.textMesh.position.copy( this.position );
-
-		SceneService.addHelper( this.textMesh );
 	}
 
 	update ( message: string, position: Vector3, size: number = this.size, color: number = this.color ) {
@@ -78,5 +63,20 @@ export class TextObject {
 	remove () {
 		// Remove the text from the scene
 		SceneService.removeHelper( this.textMesh );
+	}
+
+	private createText () {
+
+		const shapes = TextObject.font.generateShapes( this.message, this.size );
+		const geometry = new THREE.ShapeGeometry( shapes );
+		geometry.computeBoundingBox();
+
+		const xMid = -0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+		geometry.translate( xMid, 0, 0 );
+
+		this.textMesh = new THREE.Mesh( geometry, this.matLite );
+		this.textMesh.position.copy( this.position );
+
+		SceneService.addHelper( this.textMesh );
 	}
 }

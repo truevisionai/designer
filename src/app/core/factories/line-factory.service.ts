@@ -3,10 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -26,7 +24,7 @@ export class LineFactoryService {
 
 		positions.forEach( ( position ) => {
 			positionsArray.push( position.x, position.y, position.z );
-		} )
+		} );
 
 		geometry.setPositions( positionsArray );
 
@@ -77,7 +75,7 @@ export class LineFactoryService {
 
 		positions.forEach( ( position ) => {
 			positionsArray.push( position.x, position.y, position.z );
-		} )
+		} );
 
 		geometry.setPositions( positionsArray );
 

@@ -11,7 +11,6 @@ import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../core/tools/base-tool';
 import { ToolManager } from '../../../core/tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
-import { Environment } from 'app/core/utils/environment';
 
 class IToolMenu {
 	id: string;

@@ -2,29 +2,25 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { CommandHistory } from 'app/services/command-history';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+import { Line } from 'three';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { KeyboardInput } from '../../input';
-import { PickingHelper } from '../../services/picking-helper.service';
-import { BaseTool } from '../base-tool';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
 import { CallFunctionCommand } from '../../commands/call-function-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { DuplicateLaneCommand } from '../../commands/duplicate-lane-command';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { GameObject } from '../../game-object';
-import { Line } from 'three';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../../models/tool-types.enum';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { PickingHelper } from '../../services/picking-helper.service';
 import { SceneService } from '../../services/scene.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { BaseTool } from '../base-tool';
 
 export class LaneCreateTool extends BaseTool {
 
@@ -32,12 +28,10 @@ export class LaneCreateTool extends BaseTool {
 	public toolType = ToolType.LaneCreate;
 
 	public lane: TvLane;
-
-	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.CYAN, false );
-
-	private dragging: boolean;
 	startPosTheta: TvPosTheta;
 	endPosTheta: TvPosTheta;
+	private laneHelper = new OdLaneReferenceLineBuilder( null, LineType.SOLID, COLOR.CYAN, false );
+	private dragging: boolean;
 
 	constructor () {
 
@@ -111,7 +105,7 @@ export class LaneCreateTool extends BaseTool {
 
 		this.dragging = false;
 
-		this.isPointerDown = false
+		this.isPointerDown = false;
 	}
 
 	createNewLane ( lane: TvLane, road: TvRoad, startPosTheta: TvPosTheta, endPosTheta: TvPosTheta ) {
@@ -134,7 +128,7 @@ export class LaneCreateTool extends BaseTool {
 
 		newLaneSection.addLaneInstance( newLane, true );
 
-		console.log( this.road.laneSections )
+		console.log( this.road.laneSections );
 
 		SceneService.removeWithChildren( this.road.gameObject, true );
 
@@ -223,13 +217,11 @@ export class LaneCreateTool extends BaseTool {
 	public clearLane (): void {
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this, 'lane', null ),
 
 			new CallFunctionCommand( this.laneHelper, this.laneHelper.clear, [], this.laneHelper.clear, [] ),
 
 			new SetInspectorCommand( null, null ),
-
 		);
 
 	}
@@ -239,13 +231,11 @@ export class LaneCreateTool extends BaseTool {
 		const road = this.map.getRoadById( lane.roadId );
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand( this, 'lane', lane ),
 
 			new CallFunctionCommand( this.laneHelper, this.laneHelper.drawRoad, [ road, LineType.SOLID ], this.laneHelper.clear ),
 
 			new SetInspectorCommand( LaneInspectorComponent, lane ),
-
 		);
 
 	}

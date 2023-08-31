@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from 'app/utils/maths';
 import { Euler, Matrix3, Vector3 } from 'three';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { OpenScenarioVersion, OrientationType } from './tv-enums';
-import { Maths } from 'app/utils/maths';
 
 /**
  * Orientation defined in terms of heading, pitch, roll angles.
@@ -36,25 +36,28 @@ export class Orientation {
 		this.euler = new Euler( r, p, h - Maths.M_PI_2 );
 	}
 
-	get h () { return this.euler.z }
+	get h () {
+		return this.euler.z;
+	}
 
-	get p () { return this.euler.y }
+	set h ( value: number ) {
+		this.euler.z = value;
+	}
 
-	get r () { return this.euler.x }
+	get p () {
+		return this.euler.y;
+	}
 
-	set h ( value: number ) { this.euler.z = value }
+	set p ( value: number ) {
+		this.euler.y = value;
+	}
 
-	set p ( value: number ) { this.euler.y = value }
+	get r () {
+		return this.euler.x;
+	}
 
-	set r ( value: number ) { this.euler.x = value }
-
-	toXML ( version?: OpenScenarioVersion ) {
-		return {
-			attr_h: this.h + Maths.M_PI_2 ?? 0,
-			attr_p: this.p ?? 0,
-			attr_r: this.r ?? 0,
-			attr_type: this.type
-		};
+	set r ( value: number ) {
+		this.euler.x = value;
 	}
 
 	static fromXML ( xml: XmlElement ): Orientation {
@@ -72,6 +75,15 @@ export class Orientation {
 		}
 
 		return new Orientation( h, p, r, type );
+	}
+
+	toXML ( version?: OpenScenarioVersion ) {
+		return {
+			attr_h: this.h + Maths.M_PI_2 ?? 0,
+			attr_p: this.p ?? 0,
+			attr_r: this.r ?? 0,
+			attr_type: this.type
+		};
 	}
 
 	toEuler (): Euler {

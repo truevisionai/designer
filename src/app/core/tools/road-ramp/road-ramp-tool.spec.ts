@@ -2,12 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { Vector3 } from 'three';
-import { RoadRampTool } from './road-ramp-tool';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-
 
 // describe( 'RoadRampTool Test', () => {
 

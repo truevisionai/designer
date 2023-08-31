@@ -6,9 +6,9 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadControlPoint } from '../../../modules/three-js/objects/road-control-point';
 import { RoadNode } from '../../../modules/three-js/objects/road-node';
 import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
-import { RoadTool } from './road-tool';
 import { BaseCommand } from '../../commands/base-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { RoadTool } from './road-tool';
 
 export class SelectRoadForRoadToolCommand extends BaseCommand {
 

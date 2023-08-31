@@ -6,7 +6,7 @@ import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { BufferAttribute, Mesh, MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2, sRGBEncoding } from 'three';
+import { BufferAttribute, Mesh, MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-source-file';
 

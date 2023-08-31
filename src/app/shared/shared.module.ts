@@ -59,6 +59,8 @@ import { SidebarSideComponent } from './components/sidebar-side/sidebar-side.com
 import { SidebarTopComponent } from './components/sidebar-top/sidebar-top.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { SplashComponent } from './components/splash/splash.component';
+import { AppInputDialogService } from './dialogs/app-input-dialog/app-input-dialog-service';
+import { AppInputDialogComponent } from './dialogs/app-input-dialog/app-input-dialog.component';
 import { ImportFileDialogComponent } from './dialogs/import-file-dialog/import-file-dialog.component';
 import { ComponentContainerDirective } from './directives/component-container.directive';
 import { DropdownAnchorDirective } from './directives/dropdown-anchor.directive';
@@ -68,13 +70,17 @@ import { EgretSideNavToggleDirective } from './directives/egret-side-nav-toggle.
 // DIRECTIVES
 import { FontSizeDirective } from './directives/font-size.directive';
 import { ScrollToDirective } from './directives/scroll-to.directive';
+import { BooleanFieldComponent } from './fields/boolean-field/boolean-field.component';
+import { ButtonFieldComponent } from './fields/button-field/button-field.component';
 import { ColorFieldComponent } from './fields/color-field/color-field.component';
 import { DoubleFieldComponent } from './fields/double-field/double-field.component';
+import { DoubleInputComponent } from './fields/double-input/double-input.component';
 import { DropdownFieldComponent } from './fields/dropdown-field/dropdown-field.component';
 import { EnumFieldComponent } from './fields/enum-field/enum-field.component';
 import { RoadIdFieldComponent } from './fields/road-id-field/road-id-field.component';
 import { SelectEntityFieldComponent } from './fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from './fields/string-field/string-field.component';
+import { Vector3FieldComponent } from './fields/vector3-field/vector3-field.component';
 import { ExcerptPipe } from './pipes/excerpt.pipe';
 import { GetValueByKeyPipe, KeysPipe } from './pipes/get-value-by-key.pipe';
 // PIPES
@@ -90,12 +96,6 @@ import { NavigationService } from './services/navigation.service';
 import { RoutePartsService } from './services/route-parts.service';
 // SERVICES
 import { ThemeService } from './services/theme.service';
-import { BooleanFieldComponent } from './fields/boolean-field/boolean-field.component';
-import { Vector3FieldComponent } from './fields/vector3-field/vector3-field.component';
-import { DoubleInputComponent } from './fields/double-input/double-input.component';
-import { ButtonFieldComponent } from './fields/button-field/button-field.component';
-import { AppInputDialogComponent } from './dialogs/app-input-dialog/app-input-dialog.component';
-import { AppInputDialogService } from './dialogs/app-input-dialog/app-input-dialog-service';
 
 /*
   Only Required if you want to use Angular Landing

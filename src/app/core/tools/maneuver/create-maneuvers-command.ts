@@ -21,7 +21,6 @@ export class CreateManeuversCommand extends BaseCommand {
 	redo (): void {
 
 
-
 	}
 
 	undo (): void {

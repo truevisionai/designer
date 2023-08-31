@@ -2,13 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import {
+	PropCurveInspectorComponent,
+	PropCurveInspectorData
+} from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 import { BaseCommand } from '../../commands/base-command';
 import { SceneService } from '../../services/scene.service';
 import { PropCurveToolV2 } from './prop-curve-tool';
-import { SelectPointCommand } from 'app/core/commands/select-point-command';
-import { PropCurveInspectorComponent, PropCurveInspectorData } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 
 export class AddPropCurvePointCommand extends BaseCommand {
 
@@ -20,7 +23,7 @@ export class AddPropCurvePointCommand extends BaseCommand {
 
 		point.mainObject = this.curve;
 
-		const data = new PropCurveInspectorData( this.point, this.curve )
+		const data = new PropCurveInspectorData( this.point, this.curve );
 
 		this.selectPointCommand = new SelectPointCommand( this.tool as PropCurveToolV2, this.point, PropCurveInspectorComponent, data );
 

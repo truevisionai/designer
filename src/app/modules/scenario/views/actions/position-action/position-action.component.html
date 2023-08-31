@@ -1,5 +1,5 @@
-<app-position-editor [entity]="entity"
-	(positionChanged)="onPositionChanged($event)"
-	(positionModified)="onPositionModified($event)"
-	[position]="position">
+<app-position-editor (positionChanged)="onPositionChanged($event)"
+					 (positionModified)="onPositionModified($event)"
+					 [entity]="entity"
+					 [position]="position">
 </app-position-editor>

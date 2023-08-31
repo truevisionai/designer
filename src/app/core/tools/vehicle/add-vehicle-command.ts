@@ -3,14 +3,14 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
+import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
+import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
 import { VehicleTool } from './vehicle-tool';
-import { SelectPointCommand } from 'app/core/commands/select-point-command';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 
 
 export class AddVehicleCommand extends BaseCommand {

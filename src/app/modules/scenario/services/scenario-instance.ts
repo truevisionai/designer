@@ -3,9 +3,9 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
+import { FileUtils } from 'app/core/io/file-utils';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
-import { FileUtils } from 'app/core/io/file-utils';
 import { TvScenario } from '../models/tv-scenario';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { ScenarioBuilder } from './scenario-builder.service';
@@ -16,8 +16,6 @@ import { ScenarioBuilder } from './scenario-builder.service';
 export class ScenarioInstance {
 
 	public static changed = new EventEmitter<TvScenario>();
-
-	private static _scenario: TvScenario = new TvScenario();
 	private static scenarioLoader: OpenScenarioLoader;
 	private static mapService: TvMapService;
 
@@ -25,6 +23,8 @@ export class ScenarioInstance {
 		ScenarioInstance.scenarioLoader = openScenarioImporter;
 		ScenarioInstance.mapService = mapService;
 	}
+
+	private static _scenario: TvScenario = new TvScenario();
 
 	static get scenario () {
 		return this._scenario;

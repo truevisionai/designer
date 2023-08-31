@@ -4,32 +4,28 @@
 
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/core/commands/set-tool-command';
-import { GameObject } from 'app/core/game-object';
 import { IFile } from 'app/core/io/file';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { TvConsole } from 'app/core/utils/console';
+import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
+import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
-import { Object3D } from 'three';
+
+import { cloneDeep } from 'lodash';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+import { FileService } from '../core/io/file.service';
 
 import { CommandHistory } from './command-history';
-import { FileService } from '../core/io/file.service';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-
-import { cloneDeep } from 'lodash';
-import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { TvConsole } from 'app/core/utils/console';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
-import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 
 export enum CoordinateSystem {
 	THREE_JS,

@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { Debug } from 'app/core/utils/debug';
+import { TvEntityLoader, TvMaterialLoader, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import {
@@ -13,21 +14,18 @@ import {
 	LinearEncoding,
 	LinearFilter,
 	LinearMipMapLinearFilter,
-	MaterialLoader,
 	MeshStandardMaterial,
 	Object3D,
 	RGBAFormat,
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
-import { Metadata, MetaImporter } from '../models/metadata.model';
 import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
-import { AssetDatabase } from './asset-database';
-import { FileService } from '../io/file.service';
 import { ModelImporterService } from '../../services/model-importer.service';
 import { RoadStyleImporter } from '../../services/road-style-importer';
-import { TvEntityLoader, TvMaterialLoader, TvMesh, TvPrefab, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
-import { Debug } from 'app/core/utils/debug';
+import { FileService } from '../io/file.service';
+import { Metadata, MetaImporter } from '../models/metadata.model';
+import { AssetDatabase } from './asset-database';
 
 @Injectable( {
 	providedIn: 'root'
@@ -241,7 +239,7 @@ export class AssetLoaderService {
 
 			if ( meta.importer == MetaImporter.MATERIAL && meta.guid != 'defaultMaterial' ) {
 
-				const contents = await this.fileService.readAsync( meta.path )
+				const contents = await this.fileService.readAsync( meta.path );
 
 				const material = materialLoader.parseMaterial( JSON.parse( contents ) );
 
@@ -275,7 +273,7 @@ export class AssetLoaderService {
 
 			if ( meta.importer == MetaImporter.GEOMETRY ) {
 
-				const contents = await this.fileService.readAsync( meta.path )
+				const contents = await this.fileService.readAsync( meta.path );
 
 				const json = JSON.parse( contents );
 

@@ -54,21 +54,21 @@ describe( 'OpenDriveQueries', () => {
 
 		let result: TvRoad;
 
-		const secondRoad = TvMapInstance.map.addNewRoad( '2', 10, 2, -1 )
+		const secondRoad = TvMapInstance.map.addNewRoad( '2', 10, 2, -1 );
 
 		secondRoad.addGeometryLine( 0, 10, 0, 0, 10 );
 
 		result = TvMapQueries.getRoadByCoords( 0, 0 );
-		expect( result.id ).toBe( road.id )
+		expect( result.id ).toBe( road.id );
 
 		result = TvMapQueries.getRoadByCoords( 10, 0 );
-		expect( result.id ).toBe( road.id )
+		expect( result.id ).toBe( road.id );
 
 		result = TvMapQueries.getRoadByCoords( 11, 0 );
-		expect( result.id ).toBe( secondRoad.id )
+		expect( result.id ).toBe( secondRoad.id );
 
 		result = TvMapQueries.getRoadByCoords( 15, 0 );
-		expect( result.id ).toBe( secondRoad.id )
+		expect( result.id ).toBe( secondRoad.id );
 
 	} );
 

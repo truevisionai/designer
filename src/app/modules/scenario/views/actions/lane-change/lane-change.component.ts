@@ -3,9 +3,9 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { PrivateAction } from '../../../models/private-action';
-import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action';
 import { Target } from 'app/modules/scenario/models/actions/target';
+import { LaneChangeAction } from '../../../models/actions/tv-lane-change-action';
+import { PrivateAction } from '../../../models/private-action';
 
 @Component( {
 	selector: 'app-lane-change',

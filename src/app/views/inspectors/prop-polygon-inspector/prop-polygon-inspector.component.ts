@@ -6,7 +6,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { PropManager } from 'app/services/prop-manager';
 
 export class PropPolygonInspectorData {
 
@@ -31,11 +30,9 @@ export class PropPolygonInspectorComponent implements OnInit, IComponent, OnDest
 	ngOnInit (): void {
 
 
-
 	}
 
 	ngOnDestroy (): void {
-
 
 
 	}

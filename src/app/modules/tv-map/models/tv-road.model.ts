@@ -54,51 +54,24 @@ export enum TrafficRule {
 
 export class TvRoad {
 
-	update () {
-
-		this.updateGeometryFromSpline();
-
-		// this.updateConnections();
-
-		RoadFactory.rebuildRoad( this );
-
-	}
-
-	updateConnections () {
-
-		this.successor?.update( this, TvContactPoint.END );
-
-		this.predecessor?.update( this, TvContactPoint.START );
-
-	}
-
 	public readonly uuid: string;
-
 	public updated = new EventEmitter<TvRoad>();
-
 	// auto will be the default spline for now
 	public spline: AbstractSpline;
-
 	public startNode: RoadNode;
 	public endNode: RoadNode;
-
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
 	public lanes = new TvRoadLanes( this );
-
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
 	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-
 	public trafficRule = TrafficRule.RHT;
-
 	public successor: TvRoadLinkChild;
 	public predecessor: TvRoadLinkChild;
-
 	public junctionId: number;
-
 	/**
 	 * @deprecated use predecessor, successor directly
 	 */
@@ -106,6 +79,7 @@ export class TvRoad {
 	private lastAddedLaneSectionIndex: number;
 	private lastAddedRoadObjectIndex: number;
 	private lastAddedRoadSignalIndex: number;
+	private cornerPoints: BaseControlPoint[] = [];
 
 	constructor ( name: string, length: number, id: number, junctionId: number ) {
 
@@ -216,6 +190,24 @@ export class TvRoad {
 
 	get hasType (): boolean {
 		return this.type.length > 0;
+	}
+
+	update () {
+
+		this.updateGeometryFromSpline();
+
+		// this.updateConnections();
+
+		RoadFactory.rebuildRoad( this );
+
+	}
+
+	updateConnections () {
+
+		this.successor?.update( this, TvContactPoint.END );
+
+		this.predecessor?.update( this, TvContactPoint.START );
+
 	}
 
 	hide () {
@@ -687,13 +679,6 @@ export class TvRoad {
 
 	}
 
-	// TODO: Fix this
-	getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
-
-		return null;
-
-	}
-
 	// fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
 	//
 	//     const index = this.checkLaneSectionInterval( s );
@@ -704,6 +689,13 @@ export class TvRoad {
 	//
 	//     }
 	// }
+
+	// TODO: Fix this
+	getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
+
+		return null;
+
+	}
 
 	addRoadSignal (
 		s: number,
@@ -862,7 +854,6 @@ export class TvRoad {
 
 		this.lanes.updateLaneOffsetValues( this.length );
 	}
-
 
 	getLaneOffsetAt ( s: number ) {
 
@@ -1056,32 +1047,6 @@ export class TvRoad {
 		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 	}
 
-	public findMaxSpeedAt ( s: number, laneId?: number ) {
-
-		let maxSpeed = null;
-
-		// get max-speed as per road
-		const type = this.getRoadTypeAt( s );
-
-		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
-
-		// check if lane-speed record exists
-		if ( laneId ) {
-
-			// const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
-			const laneSpeedRecord = Number.MAX_VALUE;
-
-			maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
-
-		} else {
-
-			maxSpeed = maxSpeedAsPerRoad;
-
-		}
-
-		return maxSpeed;
-	}
-
 	// private checkGeometryInterval ( sCheck: any ) {
 	//
 	//     let index = -999;
@@ -1125,21 +1090,30 @@ export class TvRoad {
 	//
 	// }
 
-	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+	public findMaxSpeedAt ( s: number, laneId?: number ) {
 
-		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
+		let maxSpeed = null;
 
-		if ( geometry == null ) {
+		// get max-speed as per road
+		const type = this.getRoadTypeAt( s );
 
-			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
 
-			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+		// check if lane-speed record exists
+		if ( laneId ) {
 
-			return;
+			// const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
+			const laneSpeedRecord = Number.MAX_VALUE;
+
+			maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
+
+		} else {
+
+			maxSpeed = maxSpeedAsPerRoad;
+
 		}
 
-		return geometry;
-
+		return maxSpeed;
 	}
 
 	/**
@@ -1306,16 +1280,6 @@ export class TvRoad {
 		}
 	}
 
-
-	private createRoadNode ( contact: TvContactPoint ) {
-
-		const node = new RoadNode( this, contact );
-
-		SceneService.add( node );
-
-		return node;
-	}
-
 	clearNodes () {
 
 		SceneService.remove( this.startNode );
@@ -1383,7 +1347,6 @@ export class TvRoad {
 		} );
 
 	}
-
 
 	hideLaneOffsetNodes () {
 
@@ -1545,29 +1508,6 @@ export class TvRoad {
 
 	}
 
-	private computeLaneSectionLength () {
-
-		this.computeLaneSectionCoordinates();
-
-		const sections = this.getLaneSections();
-
-		if ( sections.length == 0 ) return;
-
-		// update first, not required
-		// if ( sections.length == 1 ) sections[ 0 ].length = this.length;
-
-		for ( let i = 1; i < sections.length; i++ ) {
-
-			const current = sections[ i ];
-			const previous = sections[ i - 1 ];
-
-			previous.length = current.s - previous.s;
-		}
-
-		// update last
-		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
-	}
-
 	getElevationAt ( s: number ): TvElevation {
 
 		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
@@ -1666,32 +1606,12 @@ export class TvRoad {
 		RoadFactory.rebuildRoad( this );
 	}
 
-	private cornerPoints: BaseControlPoint[] = [];
-
 	showCornerPoints () {
 
 		this.createCornerPoints( this.getStartCoord() );
 
 		this.createCornerPoints( this.getEndCoord() );
 
-	}
-
-	private createCornerPoints ( coord: TvPosTheta ) {
-
-		const rightT = this.getRightsideWidth( coord.s );
-		const leftT = this.getLeftSideWidth( coord.s );
-
-		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
-
-		const leftPoint = new DynamicControlPoint( this, leftPosition );
-		const rightPoint = new DynamicControlPoint( this, rightPosition );
-
-		this.cornerPoints.push( leftPoint );
-		this.cornerPoints.push( rightPoint );
-
-		this.gameObject.add( leftPoint );
-		this.gameObject.add( rightPoint );
 	}
 
 	hideCornerPoints () {
@@ -1940,5 +1860,72 @@ export class TvRoad {
 
 		return road;
 
+	}
+
+	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+
+		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
+
+		if ( geometry == null ) {
+
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+
+			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+
+			return;
+		}
+
+		return geometry;
+
+	}
+
+	private createRoadNode ( contact: TvContactPoint ) {
+
+		const node = new RoadNode( this, contact );
+
+		SceneService.add( node );
+
+		return node;
+	}
+
+	private computeLaneSectionLength () {
+
+		this.computeLaneSectionCoordinates();
+
+		const sections = this.getLaneSections();
+
+		if ( sections.length == 0 ) return;
+
+		// update first, not required
+		// if ( sections.length == 1 ) sections[ 0 ].length = this.length;
+
+		for ( let i = 1; i < sections.length; i++ ) {
+
+			const current = sections[ i ];
+			const previous = sections[ i - 1 ];
+
+			previous.length = current.s - previous.s;
+		}
+
+		// update last
+		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
+	}
+
+	private createCornerPoints ( coord: TvPosTheta ) {
+
+		const rightT = this.getRightsideWidth( coord.s );
+		const leftT = this.getLeftSideWidth( coord.s );
+
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+
+		const leftPoint = new DynamicControlPoint( this, leftPosition );
+		const rightPoint = new DynamicControlPoint( this, rightPosition );
+
+		this.cornerPoints.push( leftPoint );
+		this.cornerPoints.push( rightPoint );
+
+		this.gameObject.add( leftPoint );
+		this.gameObject.add( rightPoint );
 	}
 }

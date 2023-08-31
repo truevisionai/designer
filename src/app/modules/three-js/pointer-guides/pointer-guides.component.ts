@@ -7,7 +7,6 @@ import { AppService } from 'app/core/services/app.service';
 import { PointerMoveData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import * as THREE from 'three';
-import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 
 @Component( {
 	selector: 'app-pointer-guides',

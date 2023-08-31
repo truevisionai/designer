@@ -5,7 +5,6 @@
 import { Vector3 } from 'three';
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { CatalogReference } from '../tv-catalogs';
 import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType, TrajectoryFollowingMode } from '../tv-enums';
 import { Trajectory } from '../tv-trajectory';
@@ -24,13 +23,6 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 	 * the actor. Moreover, a time offset or time scaling may be applied.
 	 */
 	public timeReference: TimeReference;
-
-	private distanceThreshold = 2;
-
-	private index = 0;
-
-	private rotationSpeed = 1;
-
 	/**
 	 * An offset into the trajectory. This has the effect of logically
 	 * truncating the trajectory, so the resulting new trajectory starts at
@@ -40,7 +32,6 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 	 * Unit: [m]. Range: [0..arclength of the trajectory].
 	 */
 	public initialDistanceOffset = 0;
-
 	/**
 	 * The mode how to follow the given trajectory.
 	 *
@@ -52,8 +43,11 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 	 * In mode 'follow' the resulting path of the entity is not guaranteed to
 	 * be identical for every simulation environment.
 	 */
-	// public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
+		// public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
 	public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
+	private distanceThreshold = 2;
+	private index = 0;
+	private rotationSpeed = 1;
 
 	constructor ( public trajectory: Trajectory ) {
 		super();

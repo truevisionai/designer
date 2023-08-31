@@ -4,14 +4,14 @@
 
 import { Injectable } from '@angular/core';
 import { VehicleFactory } from 'app/core/factories/vehicle.factory';
-import { AbstractReader } from 'app/core/services/abstract-reader';
 import { FileUtils } from 'app/core/io/file-utils';
+import { AbstractReader } from 'app/core/services/abstract-reader';
 import { XMLParser } from 'fast-xml-parser';
 import { Vector3 } from 'three';
 import { IFile } from '../../../core/io/file';
+import { FileService } from '../../../core/io/file.service';
 import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
-import { FileService } from '../../../core/io/file.service';
 import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
@@ -55,6 +55,7 @@ import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { EntityRef } from '../models/entity-ref';
 import { Position } from '../models/position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
@@ -97,7 +98,6 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { ParameterResolver } from './scenario-builder.service';
 import {
 	TrafficSignalController,

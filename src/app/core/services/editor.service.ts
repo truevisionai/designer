@@ -3,10 +3,10 @@
  */
 
 import { Injectable } from '@angular/core';
+import { FileService } from 'app/core/io/file.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { KeyboardInput } from '../input';
 import { ShortcutService } from './shortcut.service';
-import { FileService } from 'app/core/io/file.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -67,44 +67,11 @@ export class EditorSettings {
 
 	constructor ( private fileService: FileService ) {
 
-		const projectFolder = this.fileService.projectFolder
+		const projectFolder = this.fileService.projectFolder;
 
 		this.settingsPath = fileService.join( projectFolder, 'settings.json' );
 
 		this.loadSettings();
-	}
-
-	private loadSettings () {
-
-		if ( this.fileService.fs.existsSync( this.settingsPath ) ) {
-
-			this.settings = JSON.parse( this.fileService.fs.readFileSync( this.settingsPath, 'utf-8' ) );
-
-		} else {
-
-			this.settings = {};
-
-			this.saveSettings();
-
-		}
-
-	}
-
-	private saveSettings () {
-
-		const value = JSON.stringify( this.settings, null, 2 );
-
-		this.fileService.fs.writeFileSync( this.settingsPath, value, 'utf-8' );
-
-	}
-
-	getSetting ( key: string ): any {
-		return this.settings[ key ];
-	}
-
-	setSetting ( key: string, value: any ) {
-		this.settings[ key ] = value;
-		this.saveSettings();
 	}
 
 	get esminiEnabled (): boolean {
@@ -129,6 +96,39 @@ export class EditorSettings {
 
 	set odrViewerPath ( value: string ) {
 		this.setSetting( 'odrViewerPath', value );
+	}
+
+	getSetting ( key: string ): any {
+		return this.settings[ key ];
+	}
+
+	setSetting ( key: string, value: any ) {
+		this.settings[ key ] = value;
+		this.saveSettings();
+	}
+
+	private loadSettings () {
+
+		if ( this.fileService.fs.existsSync( this.settingsPath ) ) {
+
+			this.settings = JSON.parse( this.fileService.fs.readFileSync( this.settingsPath, 'utf-8' ) );
+
+		} else {
+
+			this.settings = {};
+
+			this.saveSettings();
+
+		}
+
+	}
+
+	private saveSettings () {
+
+		const value = JSON.stringify( this.settings, null, 2 );
+
+		this.fileService.fs.writeFileSync( this.settingsPath, value, 'utf-8' );
+
 	}
 
 }

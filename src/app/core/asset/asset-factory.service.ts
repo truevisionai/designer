@@ -3,25 +3,31 @@
  */
 
 import { Injectable } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { FileService } from 'app/core/io/file.service';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { FileService } from 'app/core/io/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { BufferGeometry, Material, Object3D, Texture } from 'three';
+import { BufferGeometry, Texture } from 'three';
+import { MetadataFactory } from '../factories/metadata-factory.service';
+import { VehicleFactory } from '../factories/vehicle.factory';
 import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../services/app.service';
-import { MetadataFactory } from '../factories/metadata-factory.service';
-import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { VehicleFactory } from '../factories/vehicle.factory';
-import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetFactory {
+
+	private static get fileService (): FileService {
+
+		return AppService.file;
+
+	}
 
 	static copyAsset ( guid: string ) {
 
@@ -62,12 +68,6 @@ export class AssetFactory {
 			this.updateVehicleEntity( data, metadata.path );
 
 		}
-
-	}
-
-	private static get fileService (): FileService {
-
-		return AppService.file;
 
 	}
 

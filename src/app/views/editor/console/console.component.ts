@@ -26,7 +26,8 @@ export class ConsoleComponent implements OnInit {
 		return TvConsole.logs;
 	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 	onMouseOver ( log: TvLog ) {
 

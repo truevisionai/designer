@@ -1,4 +1,3 @@
-
 export class IDService {
 
 	private highestID: number;

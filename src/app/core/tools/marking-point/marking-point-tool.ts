@@ -26,17 +26,15 @@ export class MarkingPointTool extends BaseMarkingTool {
 	public toolType = ToolType.MarkingPoint;
 
 	public shapeEditor: AbstractShapeEditor;
+	public currentMarking: TvRoadMarking;
 	private hasSignal = false;
 	private selectedSignal: TvRoadSignal;
 	private cpSubscriptions: Subscription[] = [];
-
 	private cpAddedSub: Subscription;
 	private cpSelectedSub: Subscription;
 	private cpUnselectedSub: Subscription;
 	private cpMovedSub: Subscription;
 	private cpUpdatedSub: Subscription;
-
-	public currentMarking: TvRoadMarking;
 
 	constructor () {
 

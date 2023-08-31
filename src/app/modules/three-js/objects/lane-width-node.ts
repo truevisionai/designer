@@ -48,6 +48,16 @@ export class LaneWidthNode extends Group implements ISelectable {
 
 	}
 
+	select () {
+		this.isSelected = true;
+		this.point?.select();
+	}
+
+	unselect () {
+		this.isSelected = false;
+		this.point?.unselect();
+	}
+
 	private createMesh () {
 
 		const road = this.road;
@@ -68,15 +78,5 @@ export class LaneWidthNode extends Group implements ISelectable {
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
 		this.line.renderOrder = 3;
 		this.add( this.line );
-	}
-
-	select () {
-		this.isSelected = true;
-		this.point?.select();
-	}
-
-	unselect () {
-		this.isSelected = false;
-		this.point?.unselect();
 	}
 }

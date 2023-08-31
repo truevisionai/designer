@@ -3,10 +3,10 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { IComponent } from 'app/core/game-object';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D } from 'three';
+import { BufferGeometry, Mesh, MeshBasicMaterial } from 'three';
 
 @Component( {
 	selector: 'app-geometry-inspector',
@@ -19,7 +19,8 @@ export class GeometryInspectorComponent implements OnInit, IComponent, OnDestroy
 
 	model: Mesh;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnDestroy (): void {
 
@@ -27,7 +28,7 @@ export class GeometryInspectorComponent implements OnInit, IComponent, OnDestroy
 
 	ngOnInit () {
 
-		this.model = new Mesh( this.data, new MeshBasicMaterial( { color: COLOR.MAGENTA } ) )
+		this.model = new Mesh( this.data, new MeshBasicMaterial( { color: COLOR.MAGENTA } ) );
 
 		console.log( this.data.scale );
 

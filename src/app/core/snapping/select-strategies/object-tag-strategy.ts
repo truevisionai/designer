@@ -1,7 +1,7 @@
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { Intersection, Object3D } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { SelectStrategy } from './select-strategy';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 
 function findByTag<T> ( tag: string, intersections: Intersection[] ): T {

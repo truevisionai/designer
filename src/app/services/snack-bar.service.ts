@@ -66,7 +66,7 @@ export class SnackBar {
 
 		TvConsole.error( message );
 
-		SentryService.captureMessage( 'SnackBar: ' + message, "error" );
+		SentryService.captureMessage( 'SnackBar: ' + message, 'error' );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,

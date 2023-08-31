@@ -3,8 +3,8 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { BaseControlPoint } from '../objects/control-point';
 import { Object3D } from 'three';
+import { BaseControlPoint } from '../objects/control-point';
 import { IHasUpdate } from './set-value-command';
 
 

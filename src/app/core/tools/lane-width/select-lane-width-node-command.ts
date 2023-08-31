@@ -4,9 +4,9 @@
 
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
 import { LaneWidthInspector } from '../../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
-import { LaneWidthTool } from './lane-width-tool';
 import { BaseCommand } from '../../commands/base-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
+import { LaneWidthTool } from './lane-width-tool';
 
 export class SelectLaneWidthNodeCommand extends BaseCommand {
 

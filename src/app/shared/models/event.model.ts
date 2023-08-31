@@ -27,7 +27,7 @@ export class EgretCalendarEvent implements CalendarEvent {
 		notes: string
 	};
 
-	constructor ( data?) {
+	constructor ( data? ) {
 		data = data || {};
 		this.start = new Date( data.start ) || startOfDay( new Date() );
 		this.end = data.end ? new Date( data.end ) : null;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { EsminiPlayerService } from 'app/core/esmini-player.service';
 import { IComponent } from 'app/core/game-object';
@@ -19,5 +19,6 @@ export class EsminiInspectorComponent extends BaseInspector implements IComponen
 		super();
 	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 }

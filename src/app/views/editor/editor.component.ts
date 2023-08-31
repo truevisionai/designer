@@ -34,17 +34,17 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
+	get scenario () {
+
+		return this.mainFileService.scenario;
+
+	}
+
 	onLogsChanged (): void {
 
 		this.consoleLabel = `Console (${ TvConsole.logs.length })`;
 
 		this.changeDetectorRef.detectChanges();
-
-	}
-
-	get scenario () {
-
-		return this.mainFileService.scenario;
 
 	}
 

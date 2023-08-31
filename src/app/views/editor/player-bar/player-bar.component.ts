@@ -3,12 +3,12 @@
  */
 
 import { Component } from '@angular/core';
-import { PlayerService } from '../../../core/player.service';
+import { EsminiPlayerService } from 'app/core/esmini-player.service';
+import { EditorService } from 'app/core/services/editor.service';
+import { Environment } from 'app/core/utils/environment';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
-import { EditorService } from 'app/core/services/editor.service';
-import { EsminiPlayerService } from 'app/core/esmini-player.service';
-import { Environment } from 'app/core/utils/environment';
+import { PlayerService } from '../../../core/player.service';
 
 @Component( {
 	selector: 'app-player-bar',
@@ -21,10 +21,6 @@ export class PlayerBarComponent {
 
 	private handle: NodeJS.Timeout;
 
-	public get isPlaying (): boolean {
-		return this.playerService.playing;
-	}
-
 	constructor (
 		private playerService: PlayerService,
 		private scenarioViewerService: ScenarioViewerService,
@@ -32,6 +28,10 @@ export class PlayerBarComponent {
 		private editor: EditorService,
 		private esminiPlayerService: EsminiPlayerService,
 	) {
+	}
+
+	public get isPlaying (): boolean {
+		return this.playerService.playing;
 	}
 
 	get isEsminiEnabled () {

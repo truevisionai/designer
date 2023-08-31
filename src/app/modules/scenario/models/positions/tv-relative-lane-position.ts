@@ -18,16 +18,6 @@ export class RelativeLanePosition extends Position {
 	public readonly type = PositionType.RelativeLane;
 	public readonly isDependent: boolean = true;
 
-	private _entityRef: EntityRef;
-
-	private _dLane: number;
-
-	private _ds: number;
-
-	private _offset: number = 0;
-
-	private _dsLane: number = 0;
-
 	/**
 	 *
 	 * @param entityRef Reference entity.
@@ -60,25 +50,30 @@ export class RelativeLanePosition extends Position {
 		console.log( 'init', this );
 	}
 
+	private _entityRef: EntityRef;
+
+	get entityRef (): EntityRef {
+		return this._entityRef;
+	}
+
+	set entityRef ( value: EntityRef ) {
+		this._entityRef = value;
+		this.updated.emit();
+	}
+
+	private _dLane: number;
+
 	@SerializedField( { type: 'int' } )
-	get dsLane (): number {
-		return this._dsLane;
+	get dLane (): number {
+		return this._dLane;
 	}
 
-	set dsLane ( value: number ) {
-		this._dsLane = value;
+	set dLane ( value: number ) {
+		this._dLane = value;
 		this.updated.emit();
 	}
 
-	@SerializedField( { type: 'float' } )
-	get offset (): number {
-		return this._offset;
-	}
-
-	set offset ( value: number ) {
-		this._offset = value;
-		this.updated.emit();
-	}
+	private _ds: number;
 
 	@SerializedField( { type: 'float' } )
 	get ds (): number {
@@ -90,13 +85,27 @@ export class RelativeLanePosition extends Position {
 		this.updated.emit();
 	}
 
-	@SerializedField( { type: 'int' } )
-	get dLane (): number {
-		return this._dLane;
+	private _offset: number = 0;
+
+	@SerializedField( { type: 'float' } )
+	get offset (): number {
+		return this._offset;
 	}
 
-	set dLane ( value: number ) {
-		this._dLane = value;
+	set offset ( value: number ) {
+		this._offset = value;
+		this.updated.emit();
+	}
+
+	private _dsLane: number = 0;
+
+	@SerializedField( { type: 'int' } )
+	get dsLane (): number {
+		return this._dsLane;
+	}
+
+	set dsLane ( value: number ) {
+		this._dsLane = value;
 		this.updated.emit();
 	}
 
@@ -110,13 +119,17 @@ export class RelativeLanePosition extends Position {
 		this.updated.emit();
 	}
 
-	get entityRef (): EntityRef {
-		return this._entityRef;
-	}
+	static fromXML ( xml: XmlElement ): RelativeLanePosition {
 
-	set entityRef ( value: EntityRef ) {
-		this._entityRef = value;
-		this.updated.emit();
+		return new RelativeLanePosition(
+			new EntityRef( xml.attr_entityRef ),
+			xml.attr_dLane,
+			xml.attr_ds,
+			xml.attr_offset,
+			xml.attr_dsLane,
+			Orientation.fromXML( xml.Orientation )
+		);
+
 	}
 
 	toXML ( version?: OpenScenarioVersion ) {
@@ -129,19 +142,6 @@ export class RelativeLanePosition extends Position {
 			attr_dsLane: this._dsLane,
 			Orientation: this.orientation?.toXML( version ),
 		};
-
-	}
-
-	static fromXML ( xml: XmlElement ): RelativeLanePosition {
-
-		return new RelativeLanePosition(
-			new EntityRef( xml.attr_entityRef ),
-			xml.attr_dLane,
-			xml.attr_ds,
-			xml.attr_offset,
-			xml.attr_dsLane,
-			Orientation.fromXML( xml.Orientation )
-		);
 
 	}
 

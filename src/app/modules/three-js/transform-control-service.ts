@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Vector3 } from 'three';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-import { ThreeService } from './three.service';
-import * as THREE from 'three';
 import { SceneService } from 'app/core/services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
+import * as THREE from 'three';
+import { Vector3 } from 'three';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { SetPositionCommand } from './commands/set-position-command';
+import { ThreeService } from './three.service';
 
 @Injectable( {
 	providedIn: 'root'

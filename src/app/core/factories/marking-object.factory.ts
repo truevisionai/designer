@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Crosswalk, TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
 import { CatmullRomCurve3, Object3D, Vector3 } from 'three';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvObjectMarking } from '../../modules/tv-map/models/tv-object-marking';
-import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 
 export class RoadObjectFactory {
 

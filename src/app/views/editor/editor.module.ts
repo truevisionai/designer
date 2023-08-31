@@ -32,6 +32,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ConsoleComponent } from './console/console.component';
 import { ExportGlbDialog } from './dialogs/export-glb-dialog/export-glb-dialog.component';
 import { ExportOpenDriveDialog } from './dialogs/export-opendrive-dialog/export-opendrive-dialog.component';
+import { TutorialsDialogComponent } from './dialogs/tutorials-dialog/tutorials-dialog.component';
 import { EditorComponent } from './editor.component';
 import { EditorLayoutComponent } from './layout/editor-layout.component';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
@@ -42,7 +43,6 @@ import { ProjectBreadcrumbsComponent } from './project-browser/project-breadcrum
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { ProjectHierarchyComponent } from './project-browser/project-hierarchy/project-hierarchy.component';
 import { ToolBarComponent } from './tool-bar/tool-bar.component';
-import { TutorialsDialogComponent } from './dialogs/tutorials-dialog/tutorials-dialog.component';
 
 @NgModule( {
 	declarations: [

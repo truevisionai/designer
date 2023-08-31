@@ -2,18 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { SceneService } from 'app/core/services/scene.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { isArray } from 'rxjs/internal-compatibility';
+import { Box3, BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from './select-strategy';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { time } from 'console';
-import { Box3, BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { isArray } from 'rxjs/internal-compatibility';
 
 export class OnRoadStrategy extends SelectStrategy<TvRoadCoord> {
 
@@ -69,7 +66,7 @@ export class FindIntersection {
 
 				console.debug( 'have intersection', road.id, otherRoad.id );
 
-				return
+				return;
 			}
 
 			const intersection = this.intersect( road, otherRoad );
@@ -100,7 +97,7 @@ export class FindIntersection {
 		let connections = road.gameObject.userData.connections;
 
 		if ( isArray( connections ) && connections.includes( otherRoad.id ) ) {
-			return true
+			return true;
 		}
 
 		connections = otherRoad.gameObject.userData.connections;
@@ -158,11 +155,9 @@ export class FindIntersection {
 			for ( var j = 0; j < points2.length - 1; j++ ) {
 
 				var intersect = this.checkLineIntersection(
-
 					points1[ i ], points1[ i + 1 ],
 
 					points2[ j ], points2[ j + 1 ]
-
 				);
 
 				if ( intersect ) {

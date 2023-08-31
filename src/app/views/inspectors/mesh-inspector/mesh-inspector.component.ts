@@ -14,13 +14,7 @@ export class MeshInspectorComponent implements OnInit {
 
 	@Input() mesh: TvMesh;
 
-	constructor () { }
-
-	ngOnInit () {
-
-		console.log( this.mesh.material );
-		console.log( this.mesh.materialGuid );
-
+	constructor () {
 	}
 
 	get materials (): string[] {
@@ -33,6 +27,13 @@ export class MeshInspectorComponent implements OnInit {
 
 			return [ this.mesh?.materialGuid ];
 		}
+	}
+
+	ngOnInit () {
+
+		console.log( this.mesh.material );
+		console.log( this.mesh.materialGuid );
+
 	}
 
 	onMaterialChanged ( $event, $guid ) {

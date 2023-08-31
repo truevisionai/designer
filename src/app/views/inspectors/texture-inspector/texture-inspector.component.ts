@@ -3,10 +3,10 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Texture } from 'three';
 
 @Component( {

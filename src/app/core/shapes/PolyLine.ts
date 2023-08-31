@@ -17,7 +17,7 @@ export class PolyLine {
 
 		const geometry = new BufferGeometry();
 
-		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 3 ), 3 ) )
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( MAX_CTRL_POINTS * 3 ), 3 ) );
 
 		this.curveType = 'polyline';
 

@@ -23,18 +23,6 @@ export class ScenarioBuilder {
 	) {
 	}
 
-	public buildScenario (): void {
-
-		this.scenario.objects.forEach( ( value, key ) => ScenarioBuilder.buildEntityObject( value ) );
-
-		this.scenario.executeInitActions();
-
-		ScenarioBuilder.addEndCondition( this.scenario.storyboard );
-
-		// return this.scenario;
-
-	}
-
 	private static addEndCondition ( storyboard: Storyboard ) {
 
 		// if already has end conditions then return
@@ -53,6 +41,18 @@ export class ScenarioBuilder {
 		entity.visible = true;
 
 		SceneService.add( entity );
+
+	}
+
+	public buildScenario (): void {
+
+		this.scenario.objects.forEach( ( value, key ) => ScenarioBuilder.buildEntityObject( value ) );
+
+		this.scenario.executeInitActions();
+
+		ScenarioBuilder.addEndCondition( this.scenario.storyboard );
+
+		// return this.scenario;
 
 	}
 

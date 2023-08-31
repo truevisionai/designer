@@ -4,7 +4,7 @@ import 'reflect-metadata';
 export function Serializable () {
 	return function ( target: any, propertyKey: string ) {
 		Reflect.defineMetadata( 'serializable', true, target, propertyKey );
-	}
+	};
 }
 
 const enum ISerializedFieldType {
@@ -37,14 +37,14 @@ export function Action () {
 			method: target[ propertyKey ]
 		} );
 		Reflect.defineMetadata( 'actions', actions, target );
-	}
+	};
 }
 
 export function SerializedField ( settings: ISerializedField ) {
 	return function ( target: any, propertyKey: string ) {
 		Reflect.defineMetadata( 'serializable', true, target, propertyKey );
 		Reflect.defineMetadata( 'fieldSettings', settings, target, propertyKey );
-	}
+	};
 }
 
 export function getSerializableActions ( target: any ): { name: string, method: Function }[] {
@@ -68,39 +68,43 @@ export function getSerializableFields ( object: any ): { field: string, settings
 
 export class PlayerStats {
 
-	private _movementSpeed: number;
-	private _hitPoints: number;
-	private _hasHealthPotion: boolean;
-
 	constructor () {
 		this._movementSpeed = 1;
 		this._hitPoints = 100;
 		this._hasHealthPotion = false;
 	}
 
+	private _movementSpeed: number;
 
 	@SerializedField( { type: 'int' } )
 	get movementSpeed (): number {
 		return this._movementSpeed;
 	}
+
 	set movementSpeed ( value: number ) {
 		this._movementSpeed = value;
 		// Perform other steps here...
 	}
 
+	private _hitPoints: number;
+
 	@SerializedField( { type: 'int' } )
 	get hitPoints (): number {
 		return this._hitPoints;
 	}
+
 	set hitPoints ( value: number ) {
 		this._hitPoints = value;
 		// Perform other steps here...
 	}
 
+	private _hasHealthPotion: boolean;
+
 	@SerializedField( { type: 'boolean' } )
 	get hasHealthPotion (): boolean {
 		return this._hasHealthPotion;
 	}
+
 	set hasHealthPotion ( value: boolean ) {
 		this._hasHealthPotion = value;
 		// Perform other steps here...

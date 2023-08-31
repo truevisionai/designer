@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { Router } from '@angular/router';
 import { IFile } from 'app/core/io/file';
+import { EditorService } from 'app/core/services/editor.service';
 import { Environment } from 'app/core/utils/environment';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';
@@ -15,6 +16,7 @@ import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
 import { RoadExporterService } from 'app/services/road-style-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
+import { AppInputDialogService } from 'app/shared/dialogs/app-input-dialog/app-input-dialog-service';
 
 import { AppService } from '../../../core/services/app.service';
 import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
@@ -23,8 +25,6 @@ import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
-import { AppInputDialogService } from 'app/shared/dialogs/app-input-dialog/app-input-dialog-service';
-import { EditorService } from 'app/core/services/editor.service';
 
 
 @Component( {
@@ -148,7 +148,7 @@ export class MenuBarComponent implements OnInit {
 					value: this.editorService.settings.odrViewerPath
 				}
 			]
-		}
+		};
 
 		this.inputDialogService.open( settings.title, settings.fields ).subscribe( result => {
 			if ( result ) {
@@ -156,7 +156,7 @@ export class MenuBarComponent implements OnInit {
 				this.editorService.settings.esminiPath = result.esminiPath;
 				this.editorService.settings.odrViewerPath = result.odrViewerPath;
 			}
-		} )
+		} );
 
 	}
 
@@ -262,7 +262,7 @@ export class MenuBarComponent implements OnInit {
 
 	exportOpenScenario () {
 
-		this.exporter.exportOpenScenario()
+		this.exporter.exportOpenScenario();
 
 	}
 }

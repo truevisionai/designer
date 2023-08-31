@@ -2,11 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { ICommand } from '../../commands/i-command';
-import { PropPolygonTool } from './prop-polygon-tool';
-import { BaseCommand } from 'app/core/commands/base-command';
 import { SelectMainObjectCommand } from 'app/core/commands/select-point-command';
+import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { PropPolygonTool } from './prop-polygon-tool';
 
 export class SelectPropPolygonCommand extends SelectMainObjectCommand {
 

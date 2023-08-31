@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter } from "@angular/core";
+import { EventEmitter } from '@angular/core';
 
 const MAX_LOG_COUNT = 500;
 

@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/core/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
@@ -13,7 +14,7 @@ import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { ToolManager } from 'app/core/tools/tool-manager';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
@@ -26,16 +27,14 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
-import { TvConsole } from '../core/utils/console';
 import { AssetDatabase } from '../core/asset/asset-database';
 import { AssetLoaderService } from '../core/asset/asset-loader.service';
-import { CommandHistory } from './command-history';
 import { FileService } from '../core/io/file.service';
+import { TvConsole } from '../core/utils/console';
+import { CommandHistory } from './command-history';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 
 @Injectable( {

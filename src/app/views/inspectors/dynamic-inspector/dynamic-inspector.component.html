@@ -1,21 +1,21 @@
-<mat-toolbar class="native-border inspector-toolbar"
-	*ngIf="showToolbar">
-	<button mat-icon-button
-		class="inspector-toolbar-icon">
+<mat-toolbar *ngIf="showToolbar"
+			 class="native-border inspector-toolbar">
+	<button class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>chevron_right</mat-icon>
 	</button>
 	<span>{{label}}</span>
 </mat-toolbar>
 
 
-<div [class.inspector-editor-padding]="showToolbar"
-	*ngIf="data">
+<div *ngIf="data"
+	 [class.inspector-editor-padding]="showToolbar">
 	<div *ngFor="let item of serializableFields">
 		<ng-container app-field-host></ng-container>
 	</div>
 	<div *ngFor="let action of serializableActions">
-		<app-button-field label="{{ action.name | titlecase }}"
-			(clicked)="action.method.apply(data)">
+		<app-button-field (clicked)="action.method.apply(data)"
+						  label="{{ action.name | titlecase }}">
 		</app-button-field>
 	</div>
 </div>

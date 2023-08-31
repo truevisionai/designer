@@ -4,7 +4,6 @@
 
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { Mesh, Object3D, Vector3 } from 'three';
-import { MarkingObjectFactory } from '../../../core/factories/marking-object.factory';
 import {
 	ObjectFillType,
 	ObjectTypes,
@@ -29,14 +28,8 @@ export class TvObjectContainer {
 }
 
 export class TvRoadObject extends Object3D {
-	public road: TvRoad;
-
-	get markings (): TvObjectMarking[] {
-		return this._markings;
-	}
-
 	public static counter = 1;
-
+	public road: TvRoad;
 	public attr_type: ObjectTypes;
 	public attr_s: number;
 	public attr_t: number;
@@ -50,17 +43,13 @@ export class TvRoadObject extends Object3D {
 	public attr_hdg: number;
 	public attr_pitch: number;
 	public attr_roll: number;
-
 	public repeat: TvObjectRepeat[] = [];
-
 	/**
 	 * @deprecated
 	 */
 	public outline: TvObjectOutline;
 	// multiple outlines are allowed
 	public outlines: TvObjectOutline[] = [];
-	protected _markings: TvObjectMarking[] = [];
-
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
 	public parkingSpace: TvParkingSpace;
@@ -102,6 +91,12 @@ export class TvRoadObject extends Object3D {
 		this.attr_hdg = hdg;
 		this.attr_pitch = pitch;
 		this.attr_roll = roll;
+	}
+
+	protected _markings: TvObjectMarking[] = [];
+
+	get markings (): TvObjectMarking[] {
+		return this._markings;
 	}
 
 	get s (): number {
@@ -353,8 +348,8 @@ export class TvObjectRepeat {
 	public attr_zOffsetEnd: number;
 
 	constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-		zOffsetStart: number, zOffsetEnd: number ) {
+				  widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
+				  zOffsetStart: number, zOffsetEnd: number ) {
 
 		this.attr_s = s;
 		this.attr_length = length;
@@ -540,7 +535,7 @@ export class Crosswalk extends TvRoadObject {
 
 		this.outlines = outlines;
 
-		markings.map( marking => marking.roadObject = this )
+		markings.map( marking => marking.roadObject = this );
 
 		this._markings = markings;
 

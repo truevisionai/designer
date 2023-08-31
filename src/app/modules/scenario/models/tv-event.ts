@@ -5,7 +5,6 @@
 import { EventEmitter } from '@angular/core';
 import { ConditionUtils } from '../builders/condition-utils';
 import { StoryboardEvent } from '../services/scenario-director.service';
-import { ScenarioInstance } from '../services/scenario-instance';
 import { Condition } from './conditions/tv-condition';
 import { ConditionGroup } from './conditions/tv-condition-group';
 import { PrivateAction } from './private-action';
@@ -22,13 +21,13 @@ export class TvEvent {
 
 	public completed = new EventEmitter<StoryboardEvent>();
 
-	private _actions: Map<string, TvAction> = new Map<string, TvAction>();
-
 	constructor ( public name?: string, public priority?: string ) {
 
 		TvEvent.count++;
 
 	}
+
+	private _actions: Map<string, TvAction> = new Map<string, TvAction>();
 
 	get actions (): Map<string, TvAction> {
 		return this._actions;
@@ -143,6 +142,27 @@ export class TvEvent {
 
 	}
 
+	removeAction ( action: PrivateAction ) {
+
+		this.actions.forEach( ( value, key ) => {
+
+			if ( value.uuid === action.uuid ) {
+
+				this.actions.delete( key );
+
+				return;
+
+			}
+
+		} );
+
+	}
+
+	addAction ( action: PrivateAction ) {
+
+		this.actions.set( action.name, action );
+
+	}
 
 	private onActionCompleted ( e: StoryboardEvent ) {
 
@@ -173,28 +193,6 @@ export class TvEvent {
 			} );
 		}
 
-
-	}
-
-	removeAction ( action: PrivateAction ) {
-
-		this.actions.forEach( ( value, key ) => {
-
-			if ( value.uuid === action.uuid ) {
-
-				this.actions.delete( key );
-
-				return;
-
-			}
-
-		} );
-
-	}
-
-	addAction ( action: PrivateAction ) {
-
-		this.actions.set( action.name, action );
 
 	}
 }

@@ -4,11 +4,13 @@
 
 export interface Selectable {
 	select (): void;
+
 	unselect (): void;
 }
 
 export interface Highlightable {
 	onMouseOver ();
+
 	onMouseOut ();
 }
 

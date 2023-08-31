@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 import { Vector3 } from 'three';
 import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
-import { NodeFactoryService } from '../../factories/node-factory.service';
 import { BaseCommand } from '../../commands/base-command';
-import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 
 export class UpdateRoadmarkNodeCommand extends BaseCommand {
 

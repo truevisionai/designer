@@ -2,22 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { IHasPosition } from 'app/modules/three-js/objects/i-has-position';
 import { ArrowHelper, BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../../core/game-object';
 import { TvConsole } from '../../../../core/utils/console';
 import { AbstractController } from '../abstract-controller';
+import { TeleportAction } from '../actions/tv-teleport-action';
 import { PrivateAction } from '../private-action';
 import { TvBoundingBox } from '../tv-bounding-box';
+import { ScenarioObjectType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { OpenDriveProperties } from './open-drive-properties';
-import { PositionType, ScenarioObjectType } from '../tv-enums';
-import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
-import { WorldPosition } from '../positions/tv-world-position';
-import { TeleportAction } from '../actions/tv-teleport-action';
-import { PositionFactory } from '../../builders/position-factory';
-import { IHasPosition } from 'app/modules/three-js/objects/i-has-position';
 
 export abstract class ScenarioEntity extends GameObject implements IHasUpdate, IHasPosition {
 
@@ -28,11 +26,9 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 	public initActions: PrivateAction[] = [];
 
 	public openDriveProperties = new OpenDriveProperties();
-
+	public model3d: string = 'default';
 	private enabled: Boolean = true;
 	private originalPosition: Vector3;
-
-	public model3d: string = 'default';
 
 	protected constructor ( public name: string, public boundingBox: TvBoundingBox ) {
 		super( name, new BoxGeometry(
@@ -46,6 +42,63 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 		} ) );
 		this.userData.entity = this;
 		// this.addArrow()
+	}
+
+	get roadId () {
+		return this.openDriveProperties.roadId;
+	}
+
+	set roadId ( value: number ) {
+		this.openDriveProperties.roadId = value;
+	}
+
+	get laneId () {
+		return this.openDriveProperties.laneId;
+	}
+
+	set laneId ( value: number ) {
+		this.openDriveProperties.laneId = value;
+	}
+
+	get laneSectionId () {
+		return this.openDriveProperties.laneSectionId;
+	}
+
+	set laneSectionId ( value: number ) {
+		this.openDriveProperties.laneSectionId = value;
+	}
+
+	get laneOffset () {
+		return this.openDriveProperties.laneOffset;
+	}
+
+	set laneOffset ( value: number ) {
+		this.openDriveProperties.laneOffset = value;
+	}
+
+	get sCoordinate () {
+		return this.openDriveProperties.s;
+	}
+
+	set sCoordinate ( value: number ) {
+		this.openDriveProperties.s = value;
+		this.openDriveProperties.distanceTraveled += value;
+	}
+
+	get direction () {
+		return this.openDriveProperties.direction;
+	}
+
+	set direction ( value: number ) {
+		this.openDriveProperties.direction = value;
+	}
+
+	get speed () {
+		return this.openDriveProperties.speed;
+	}
+
+	set speed ( value: number ) {
+		this.openDriveProperties.speed = value;
 	}
 
 	copyPosition ( position: Vector3 ): void {
@@ -257,63 +310,6 @@ export abstract class ScenarioEntity extends GameObject implements IHasUpdate, I
 
 	setTravelingDirection ( number: number ) {
 		this.openDriveProperties.direction = number;
-	}
-
-	set roadId ( value: number ) {
-		this.openDriveProperties.roadId = value;
-	}
-
-	get roadId () {
-		return this.openDriveProperties.roadId;
-	}
-
-	set laneId ( value: number ) {
-		this.openDriveProperties.laneId = value;
-	}
-
-	get laneId () {
-		return this.openDriveProperties.laneId;
-	}
-
-	set laneSectionId ( value: number ) {
-		this.openDriveProperties.laneSectionId = value;
-	}
-
-	get laneSectionId () {
-		return this.openDriveProperties.laneSectionId;
-	}
-
-	set laneOffset ( value: number ) {
-		this.openDriveProperties.laneOffset = value;
-	}
-
-	get laneOffset () {
-		return this.openDriveProperties.laneOffset;
-	}
-
-	set sCoordinate ( value: number ) {
-		this.openDriveProperties.s = value;
-		this.openDriveProperties.distanceTraveled += value;
-	}
-
-	get sCoordinate () {
-		return this.openDriveProperties.s;
-	}
-
-	set direction ( value: number ) {
-		this.openDriveProperties.direction = value;
-	}
-
-	get direction () {
-		return this.openDriveProperties.direction;
-	}
-
-	set speed ( value: number ) {
-		this.openDriveProperties.speed = value;
-	}
-
-	get speed () {
-		return this.openDriveProperties.speed;
 	}
 
 	onStart () {

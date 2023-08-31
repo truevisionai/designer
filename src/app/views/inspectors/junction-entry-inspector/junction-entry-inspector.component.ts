@@ -7,7 +7,6 @@ import { DeleteLinkCommand } from 'app/core/commands/delete-link-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { JunctionFactory } from 'app/core/factories/junction.factory';
 import { IComponent } from 'app/core/game-object';
-import { CreateSingleManeuver } from 'app/core/tools/maneuver/create-single-maneuver';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';

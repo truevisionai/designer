@@ -2,11 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvLaneSection } from './tv-lane-section';
-import { TvMap } from './tv-map.model';
 
 describe( 'OpenDrive LaneSection', () => {
 
@@ -105,7 +103,7 @@ function expecttCorrectOrderOfLanes ( laneSection: TvLaneSection ) {
 	} );
 
 	laneSection.getRightLanes().forEach( ( lane, index ) => {
-		const laneId = index + 1
+		const laneId = index + 1;
 		expect( lane.id ).toBe( -laneId );
 	} );
 

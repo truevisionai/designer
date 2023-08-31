@@ -23,24 +23,6 @@ export class StoryboardElementStateCondition extends ValueCondition {
 		ScenarioEvents.events.subscribe( ( event: StoryboardEvent ) => this.eventCallback( event ) );
 	}
 
-	hasPassed (): boolean {
-		return false;
-	}
-
-	private eventCallback ( event: StoryboardEvent ) {
-
-		if ( event.type !== this.storyboardElementType ) return;
-
-		if ( event.name !== this.storyboardElementRef ) return;
-
-		if ( event.state === this.state ) {
-
-			this.passed = true;
-
-		}
-
-	}
-
 	get stateAsString () {
 		return StoryboardElementStateCondition.stateToString( this.state );
 	}
@@ -132,6 +114,24 @@ export class StoryboardElementStateCondition extends ValueCondition {
 
 			default:
 				TvConsole.error( 'StoryboardElementStateCondition ' + 's tringToStoryboardType' + 'Invalid type: ' + type );
+
+		}
+
+	}
+
+	hasPassed (): boolean {
+		return false;
+	}
+
+	private eventCallback ( event: StoryboardEvent ) {
+
+		if ( event.type !== this.storyboardElementType ) return;
+
+		if ( event.name !== this.storyboardElementRef ) return;
+
+		if ( event.state === this.state ) {
+
+			this.passed = true;
 
 		}
 

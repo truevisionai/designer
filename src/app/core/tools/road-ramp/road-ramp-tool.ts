@@ -2,19 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
-import { AnyControlPoint } from "app/modules/three-js/objects/control-point";
-import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
-import { TvMapQueries } from "app/modules/tv-map/queries/tv-map-queries";
-import { Vector3 } from "three";
-import { PickingHelper } from "../../services/picking-helper.service";
-import { SceneService } from "../../services/scene.service";
-import { BaseTool } from "../base-tool";
-import { AutoSpline } from "../../shapes/auto-spline";
-import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
-import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
-import { ToolType } from "../../models/tool-types.enum";
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { Vector3 } from 'three';
+import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
 
 export class RoadRampTool extends BaseTool {
 
@@ -24,7 +20,8 @@ export class RoadRampTool extends BaseTool {
 	lane: TvLane;
 	start = new Vector3;
 	end = new Vector3();
-	posTheta: TvPosTheta;;
+	posTheta: TvPosTheta;
+;
 
 	onPointerDown ( e: PointerEventData ) {
 
@@ -93,7 +90,7 @@ export class RoadRampTool extends BaseTool {
 
 	makeRampRoad ( A: Vector3, B: Vector3, posTheta: TvPosTheta ) {
 
-		let v2, v3
+		let v2, v3;
 
 		[ A, v2, v3, B ] = this.makeRampRoadPoints( A, B, posTheta );
 

@@ -2,36 +2,34 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AddRoadPointCommand } from 'app/core/tools/road/add-road-point-command';
-import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { Intersection, Vector3 } from 'three';
-import { CreateRoadCommand } from './create-road-command';
-import { JoinRoadNodeCommand } from './join-road-node-command';
-import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
-import { RemoveRoadCommand } from './remove-road-command';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
 import { CreateControlPointCommand } from './create-control-point-command';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { CreateRoadCommand } from './create-road-command';
+import { JoinRoadNodeCommand } from './join-road-node-command';
+import { RemoveRoadCommand } from './remove-road-command';
+import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -106,11 +104,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	removeRoad ( road: TvRoad ) {
 
 		CommandHistory.executeMany(
-
 			new RemoveRoadCommand( road ),
 
 			new SetInspectorCommand( null, null )
-
 		);
 
 	}
@@ -371,7 +367,7 @@ class RoadConnectionsUpdate {
 
 			RoadFactory.rebuildRoad( successor );
 
-		} )
+		} );
 
 		predecessors.forEach( predecessor => {
 

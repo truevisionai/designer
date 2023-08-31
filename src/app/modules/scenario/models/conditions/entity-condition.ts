@@ -3,8 +3,8 @@
  */
 
 import { Vector3 } from 'three';
-import { Position } from '../position';
 import { ScenarioEntity } from '../entities/scenario-entity';
+import { Position } from '../position';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';
 import { Condition } from './tv-condition';
 
@@ -16,6 +16,16 @@ export abstract class EntityCondition extends Condition {
 
 	// name of all entities which can affect this condition
 	public triggeringEntities: string[] = [];
+
+	public addTriggeringEntity ( entityName: string ) {
+
+		this.triggeringEntities.push( entityName );
+
+	}
+
+	setTriggeringRule ( rule: TriggeringRule ): void {
+		this.triggeringRule = rule;
+	}
 
 	protected isTriggerRulePassing ( values: number[], rule: Rule, right: number ) {
 
@@ -36,13 +46,6 @@ export abstract class EntityCondition extends Condition {
 	protected getEntity ( entityName: string ): ScenarioEntity {
 
 		return this.scenario.findEntityOrFail( entityName );
-
-	}
-
-
-	public addTriggeringEntity ( entityName: string ) {
-
-		this.triggeringEntities.push( entityName );
 
 	}
 
@@ -84,9 +87,5 @@ export abstract class EntityCondition extends Condition {
 			// return this.getTravelledDistance( entityName );  // This function should return the total distance traveled by the entity along the route
 		}
 
-	}
-
-	setTriggeringRule ( rule: TriggeringRule ): void {
-		this.triggeringRule = rule;
 	}
 }

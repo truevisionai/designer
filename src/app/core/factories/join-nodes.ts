@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
-import { Maths } from "app/utils/maths";
-import { Vector2, Vector3 } from "three";
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { Maths } from 'app/utils/maths';
+import { Vector2, Vector3 } from 'three';
 
 export class JoinNode {
 
@@ -154,9 +154,9 @@ export class JoinNode {
 		const intersectionInDirectionB = Maths.isPointOnLine( b.toVector3(), b.moveForward( 1000 ).toVector3(), intersectionPoint );
 
 		if ( intersectionInDirectionA && intersectionInDirectionB ) {
-			console.log( "The intersection point follows the direction of both points:", intersectionPoint );
+			console.log( 'The intersection point follows the direction of both points:', intersectionPoint );
 		} else {
-			console.log( "The intersection point does not follow the direction of one or both points." );
+			console.log( 'The intersection point does not follow the direction of one or both points.' );
 		}
 	}
 }

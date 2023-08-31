@@ -3,8 +3,9 @@
  */
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
+import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
 import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/shared/utils/colors.service';
 import {
@@ -20,7 +21,6 @@ import {
 	WebGLRenderer
 } from 'three';
 import { PreviewService } from './object-preview.service';
-import { AppConfig } from 'app/app.config';
 
 @Component( {
 	selector: 'app-object-preview',
@@ -29,17 +29,12 @@ import { AppConfig } from 'app/app.config';
 } )
 export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	@Input() path: string;
-
-	@Input() guid: string;
-
-	@Input() object: Object3D;
-
-	@Input() objectType: 'default' | 'model' | 'material' | 'roadstyle' = 'default';
-
-	@ViewChild( 'viewport' ) viewportRef: ElementRef;
-
 	public static renderer: WebGLRenderer;
+	@Input() path: string;
+	@Input() guid: string;
+	@Input() object: Object3D;
+	@Input() objectType: 'default' | 'model' | 'material' | 'roadstyle' = 'default';
+	@ViewChild( 'viewport' ) viewportRef: ElementRef;
 	public frameId: number;
 
 	public scene: Scene = new Scene;
@@ -55,7 +50,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.viewportRef.nativeElement;
+		return <HTMLCanvasElement> this.viewportRef.nativeElement;
 	}
 
 	get width (): number {
@@ -88,7 +83,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.camera.position.set( 0, 5, 10 );
 
-		this.camera.up.copy( AppConfig.DEFAULT_UP )
+		this.camera.up.copy( AppConfig.DEFAULT_UP );
 
 		this.camera.updateProjectionMatrix();
 

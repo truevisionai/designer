@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Position } from 'app/modules/scenario/models/position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 

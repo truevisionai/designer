@@ -3,6 +3,7 @@
  */
 
 import { AppConfig } from 'app/app.config';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
@@ -10,11 +11,9 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { Maths } from 'app/utils/maths';
 
 import earcut from 'earcut';
-import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Triangle, Vector2, Vector3 } from 'three';
+import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Vector2, Vector3 } from 'three';
 
 interface IChildAndMesh {
 	mesh: Mesh;
@@ -29,13 +28,10 @@ export class PropPolygon implements ISelectable {
 	public static tag: string = 'prop-polygon';
 
 	public id: number;
-
+	public mesh: Mesh;
+	public isSelected: boolean;
 	private instanceMeshArray: InstancedMesh[] = [];
 	private propObjectArray: Object3D[] = [];
-
-	public mesh: Mesh;
-
-	public isSelected: boolean;
 
 	constructor ( public propGuid: string, public spline?: CatmullRomSpline, private _density = 0.5 ) {
 
@@ -48,6 +44,25 @@ export class PropPolygon implements ISelectable {
 			new Shape();
 
 		this.mesh = this.makeMesh( shape );
+	}
+
+	@SerializedField( { type: 'float', min: 0, max: 1 } )
+	get density (): number {
+		return this._density;
+	}
+
+	set density ( value: number ) {
+		this._density = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get point (): Vector3 {
+		return this.spline?.controlPoints.find( cp => cp.isSelected )?.position;
+	}
+
+	set point ( value: Vector3 ) {
+		this.spline?.controlPoints.find( cp => cp.isSelected )?.setPosition( value );
 	}
 
 	show (): void {
@@ -79,25 +94,6 @@ export class PropPolygon implements ISelectable {
 
 		this.removeAndClearProps();
 
-	}
-
-	@SerializedField( { type: 'float', min: 0, max: 1 } )
-	get density (): number {
-		return this._density;
-	}
-
-	set density ( value: number ) {
-		this._density = value;
-		this.update();
-	}
-
-	@SerializedField( { type: 'vector3' } )
-	get point (): Vector3 {
-		return this.spline?.controlPoints.find( cp => cp.isSelected )?.position;
-	}
-
-	set point ( value: Vector3 ) {
-		this.spline?.controlPoints.find( cp => cp.isSelected )?.setPosition( value );
 	}
 
 	select (): void {
@@ -146,63 +142,6 @@ export class PropPolygon implements ISelectable {
 		this.updateMeshGeometry();
 	}
 
-	// Function to update the mesh geometry
-	private updateMeshGeometry (): void {
-
-		if ( this.spline.controlPoints.length < 3 ) {
-
-			this.updateProps();
-
-		} else {
-
-			const points: Vector2[] = this.generatePoints();
-
-			const shape: Shape = this.createShape( points );
-
-			this.updateGeometry( shape );
-
-			this.updateProps();
-
-		}
-	}
-
-	// Function to generate points from the spline curve
-	private generatePoints (): Vector2[] {
-
-		return this.spline?.curve?.getPoints( 50 ).map(
-			p => new Vector2( p.x, p.y )
-		);
-
-	}
-
-	// Function to create a shape from the points
-	private createShape ( points: Vector2[] ): Shape {
-
-		const shape = new Shape();
-
-		const first: Vector2 | undefined = points.shift();
-
-		if ( first ) {
-
-			shape.moveTo( first.x, first.y );
-
-			shape.splineThru( points );
-		}
-
-		return shape;
-	}
-
-	// Function to update the geometry
-	private updateGeometry ( shape: Shape ): void {
-
-		this.mesh.geometry.dispose();
-
-		this.mesh.geometry = new ShapeGeometry( shape );
-
-		this.mesh.geometry.computeBoundingBox();
-	}
-
-
 	updateProps () {
 
 		this.removeAndClearProps();
@@ -248,7 +187,7 @@ export class PropPolygon implements ISelectable {
 				instancedMesh.instanceMatrix.needsUpdate = true;
 
 				// used in exporting the object
-				const cloned = propObject.clone()
+				const cloned = propObject.clone();
 				cloned.position.copy( position );
 				this.propObjectArray.push( cloned );
 
@@ -268,6 +207,33 @@ export class PropPolygon implements ISelectable {
 			this.instanceMeshArray.push( instancedMesh );
 
 		} );
+
+	}
+
+	addControlPoint ( cp: DynamicControlPoint<PropPolygon> ) {
+
+		( this.spline as CatmullRomSpline ).add( cp );
+
+		this.update();
+	}
+
+	removeControlPoint ( point: DynamicControlPoint<PropPolygon> ) {
+
+		this.spline.controlPoints.splice( this.spline.controlPoints.indexOf( point ), 1 );
+
+		this.update();
+
+	}
+
+	hideControlPoints () {
+
+		this.spline.hidecontrolPoints();
+
+	}
+
+	hideCurve () {
+
+		this.spline.hide();
 
 	}
 
@@ -354,6 +320,123 @@ export class PropPolygon implements ISelectable {
 	// 	return Maths.clamp( count, 0, 100 );
 	// }
 
+	showCurve () {
+
+		if ( this.spline.controlPoints.length < 2 ) return;
+
+		this.spline.show();
+
+	}
+
+	showControlPoints () {
+
+		this.spline.showcontrolPoints();
+
+	}
+
+	getExportJson () {
+
+		// const isInstanced = this.instanceMeshArray.find( i => i instanceof InstancedMesh );
+
+		// TODO: can be improved in futur
+		// instead of maintaing propObjectArray, we can loop over instanceMeshArray and return
+		// below code can help
+		//
+		// const position = new Vector3();
+		// const quaternion = new Quaternion();
+		// const scale = new Vector3();
+		//
+		// for ( let i = 0; i < instancedMesh.count; i++ ) {
+		// 	const matrix = new Matrix4();
+		// 	instancedMesh.getMatrixAt( i, matrix );
+		// 	matrix.decompose( position, quaternion, scale );
+		// 	const rotation = new Euler();
+		// 	rotation.setFromQuaternion( quaternion );
+		// 	// Now you can use the position, rotation (as a quaternion), and scale for this instance
+		// }
+		return this.propObjectArray.map( prop => ( {
+			attr_guid: this.propGuid,
+			position: {
+				attr_x: prop.position.x,
+				attr_y: prop.position.y,
+				attr_z: prop.position.z,
+			},
+			rotation: {
+				attr_x: prop.rotation.x,
+				attr_y: prop.rotation.y,
+				attr_z: prop.rotation.z,
+			},
+			scale: {
+				attr_x: prop.scale.x,
+				attr_y: prop.scale.y,
+				attr_z: prop.scale.z,
+			}
+		} ) );
+
+	}
+
+	addPropObject ( propObject: Object3D ) {
+
+		this.propObjectArray.push( propObject );
+
+	}
+
+	// Function to update the mesh geometry
+	private updateMeshGeometry (): void {
+
+		if ( this.spline.controlPoints.length < 3 ) {
+
+			this.updateProps();
+
+		} else {
+
+			const points: Vector2[] = this.generatePoints();
+
+			const shape: Shape = this.createShape( points );
+
+			this.updateGeometry( shape );
+
+			this.updateProps();
+
+		}
+	}
+
+	// Function to generate points from the spline curve
+	private generatePoints (): Vector2[] {
+
+		return this.spline?.curve?.getPoints( 50 ).map(
+			p => new Vector2( p.x, p.y )
+		);
+
+	}
+
+	// Function to create a shape from the points
+	private createShape ( points: Vector2[] ): Shape {
+
+		const shape = new Shape();
+
+		const first: Vector2 | undefined = points.shift();
+
+		if ( first ) {
+
+			shape.moveTo( first.x, first.y );
+
+			shape.splineThru( points );
+		}
+
+		return shape;
+	}
+
+	// Function to update the geometry
+	private updateGeometry ( shape: Shape ): void {
+
+		this.mesh.geometry.dispose();
+
+		this.mesh.geometry = new ShapeGeometry( shape );
+
+		this.mesh.geometry.computeBoundingBox();
+	}
+
 	private createInstancedMeshArray ( propChildren: IChildAndMesh[], totalInstancesNeeded: number ): InstancedMesh[] {
 
 		return propChildren.map( ( { mesh, material, worldMatrix } ) => {
@@ -382,14 +465,13 @@ export class PropPolygon implements ISelectable {
 
 		const propInstance: Object3D = AssetDatabase.getInstance( this.propGuid ) as Object3D;
 
-		propInstance.up.copy( AppConfig.DEFAULT_UP )
+		propInstance.up.copy( AppConfig.DEFAULT_UP );
 
 		propInstance.updateMatrixWorld( true );
 
 		return propInstance;
 
 	}
-
 
 	private getChildMeshesAndMaterials ( propInstance: Object3D ): IChildAndMesh[] {
 
@@ -451,123 +533,16 @@ export class PropPolygon implements ISelectable {
 
 		return meshesAndMaterials;
 	}
-
-	addControlPoint ( cp: DynamicControlPoint<PropPolygon> ) {
-
-		( this.spline as CatmullRomSpline ).add( cp );
-
-		this.update();
-	}
-
-	removeControlPoint ( point: DynamicControlPoint<PropPolygon> ) {
-
-		this.spline.controlPoints.splice( this.spline.controlPoints.indexOf( point ), 1 );
-
-		this.update();
-
-	}
-
-	hideControlPoints () {
-
-		this.spline.hidecontrolPoints();
-
-	}
-
-	hideCurve () {
-
-		this.spline.hide();
-
-	}
-
-	showCurve () {
-
-		if ( this.spline.controlPoints.length < 2 ) return;
-
-		this.spline.show();
-
-	}
-
-	showControlPoints () {
-
-		this.spline.showcontrolPoints();
-
-	}
-
-	getExportJson () {
-
-		// const isInstanced = this.instanceMeshArray.find( i => i instanceof InstancedMesh );
-
-		// TODO: can be improved in futur
-		// instead of maintaing propObjectArray, we can loop over instanceMeshArray and return
-		// below code can help
-		//
-		// const position = new Vector3();
-		// const quaternion = new Quaternion();
-		// const scale = new Vector3();
-		//
-		// for ( let i = 0; i < instancedMesh.count; i++ ) {
-		// 	const matrix = new Matrix4();
-		// 	instancedMesh.getMatrixAt( i, matrix );
-		// 	matrix.decompose( position, quaternion, scale );
-		// 	const rotation = new Euler();
-		// 	rotation.setFromQuaternion( quaternion );
-		// 	// Now you can use the position, rotation (as a quaternion), and scale for this instance
-		// }
-		return this.propObjectArray.map( prop => ( {
-			attr_guid: this.propGuid,
-			position: {
-				attr_x: prop.position.x,
-				attr_y: prop.position.y,
-				attr_z: prop.position.z,
-			},
-			rotation: {
-				attr_x: prop.rotation.x,
-				attr_y: prop.rotation.y,
-				attr_z: prop.rotation.z,
-			},
-			scale: {
-				attr_x: prop.scale.x,
-				attr_y: prop.scale.y,
-				attr_z: prop.scale.z,
-			}
-		} ) );
-
-	}
-
-	addPropObject ( propObject: Object3D ) {
-
-		this.propObjectArray.push( propObject );
-
-	}
 }
 
 class PolygonDistributionService {
-	private static randomPointInTriangle ( a: Vector3, b: Vector3, c: Vector3 ): Vector3 {
-		// Barycentric coordinates
-		let u = Math.random();
-		let v = Math.random();
-
-		if ( u + v > 1 ) {
-			u = 1 - u;
-			v = 1 - v;
-		}
-
-		const w = 1 - u - v;
-
-		return new Vector3(
-			a.x * u + b.x * v + c.x * w,
-			a.y * u + b.y * v + c.y * w,
-			a.z * u + b.z * v + c.z * w
-		);
-	}
-
 	static distributePoints ( points: Vector3[], density: number ): Vector3[] {
 		if ( points.length < 3 ) {
-			throw new Error( "At least 3 points are required to form a polygon." );
+			throw new Error( 'At least 3 points are required to form a polygon.' );
 		}
 
 		if ( density < 0 || density > 1 ) {
-			throw new Error( "Density must be between 0 and 1." );
+			throw new Error( 'Density must be between 0 and 1.' );
 		}
 
 		const flattenedPoints: number[] = [];
@@ -600,6 +575,25 @@ class PolygonDistributionService {
 		}
 
 		return resultPoints;
+	}
+
+	private static randomPointInTriangle ( a: Vector3, b: Vector3, c: Vector3 ): Vector3 {
+		// Barycentric coordinates
+		let u = Math.random();
+		let v = Math.random();
+
+		if ( u + v > 1 ) {
+			u = 1 - u;
+			v = 1 - v;
+		}
+
+		const w = 1 - u - v;
+
+		return new Vector3(
+			a.x * u + b.x * v + c.x * w,
+			a.y * u + b.y * v + c.y * w,
+			a.z * u + b.z * v + c.z * w
+		);
 	}
 
 	private static computeTriangleArea ( a: Vector3, b: Vector3, c: Vector3 ): number {

@@ -4,8 +4,8 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { Maneuver } from 'app/modules/scenario/models/tv-maneuver';
-import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 
 @Component( {
 	selector: 'app-maneuver-editor',
@@ -18,9 +18,11 @@ export class ManeuverEditorComponent implements OnInit {
 
 	@Input() isOpen = true;
 
-	constructor () { }
+	constructor () {
+	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 	delete ( $event: MouseEvent ) {
 

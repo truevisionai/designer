@@ -3,9 +3,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { AppInputDialogField } from './app-input-dialog-service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { AppInputDialogField } from './app-input-dialog-service';
 
 @Component( {
 	selector: 'app-app-input-dialog',

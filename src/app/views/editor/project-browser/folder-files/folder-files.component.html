@@ -3,21 +3,21 @@
   -->
 
 <div #content
-	(contextmenu)="onContextMenu($event)"
-	class="content"
-	fxFlexFill>
+	 (contextmenu)="onContextMenu($event)"
+	 class="content"
+	 fxFlexFill>
 
 	<div fxFlexFill
-		fxLayout="row wrap"
-		fxLayoutGap="0px grid">
+		 fxLayout="row wrap"
+		 fxLayoutGap="0px grid">
 
 		<div *ngFor="let file of sortedFiles"
-			[fxFlex]="widthInPercent">
+			 [fxFlex]="widthInPercent">
 
 			<app-file (deleted)="onFileDeleted($event)"
-				(renamed)="onFileRenamed($event)"
-				*ngIf="!file.isDeleted"
-				[file]="file"></app-file>
+					  (renamed)="onFileRenamed($event)"
+					  *ngIf="!file.isDeleted"
+					  [file]="file"></app-file>
 
 		</div>
 

@@ -20,7 +20,8 @@ export class AppInputDialogService {
 
 	dialogRef: MatDialogRef<AppInputDialogComponent>;
 
-	constructor ( private dialog: MatDialog ) { }
+	constructor ( private dialog: MatDialog ) {
+	}
 
 	public open ( title: string = 'Please wait', fields: AppInputDialogField[] ): Observable<any> {
 

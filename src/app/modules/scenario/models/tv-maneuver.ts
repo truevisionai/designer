@@ -18,16 +18,12 @@ import { ParameterDeclaration } from './tv-parameter-declaration';
 export class Maneuver {
 
 	private static count = 1;
-
-	private parameterDeclarations: ParameterDeclaration[] = [];
-
 	public events: TvEvent[] = [];
-
 	public hasStarted: boolean;
 	public isCompleted: boolean;
 	public eventIndex: number = 0;
-
 	public completed = new EventEmitter<StoryboardEvent>();
+	private parameterDeclarations: ParameterDeclaration[] = [];
 
 	constructor ( public name: string ) {
 
@@ -65,6 +61,10 @@ export class Maneuver {
 		return event;
 	}
 
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+		this.parameterDeclarations.push( parameterDeclaration );
+	}
+
 	private onEventCompleted ( storyEvent: StoryboardEvent ) {
 
 		this.eventIndex++;
@@ -93,10 +93,6 @@ export class Maneuver {
 			} );
 
 		}
-	}
-
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
-		this.parameterDeclarations.push( parameterDeclaration );
 	}
 }
 

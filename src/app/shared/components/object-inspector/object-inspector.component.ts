@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, ComponentFactoryResolver, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
 import { ComponentItem, IComponent } from '../../../core/game-object';
 import { AppInspector } from '../../../core/inspector';
 import { ComponentContainerDirective } from '../../directives/component-container.directive';

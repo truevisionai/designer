@@ -2,16 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, BufferGeometry, Layers, Loader, LoadingManager, Material, MaterialLoader, MathUtils, Matrix4, Mesh, MeshStandardMaterial, Object3D, ObjectLoader, Texture, Vector3 } from "three";
-import { TvMaterial } from "./tv-material.model";
-import { MeshGeometryData } from "app/modules/tv-map/models/mesh-geometry.data";
-import { AppService } from "app/core/services/app.service";
-import { AssetDatabase } from "app/core/asset/asset-database";
-import { ScenarioEntity } from "app/modules/scenario/models/entities/scenario-entity";
-import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
-import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
-import { XmlElement } from "app/modules/tv-map/services/open-drive-parser.service";
-import { readXmlArray } from "app/core/tools/xml-utils";
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { readXmlArray } from 'app/core/tools/xml-utils';
+import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
+import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { BufferGeometry, Loader, LoadingManager, MaterialLoader, MathUtils, Mesh, Object3D, ObjectLoader, Texture, Vector3 } from 'three';
+import { TvMaterial } from './tv-material.model';
 
 export class TvPrefab extends Object3D {
 
@@ -31,7 +29,7 @@ export class TvPrefab extends Object3D {
 		const prefab = new TvPrefab( json?.guid, json?.name );
 
 		json.children?.forEach( ( child: any ) => {
-			prefab.add( this.parseObject( child ) )
+			prefab.add( this.parseObject( child ) );
 		} );
 
 		return prefab;
@@ -39,14 +37,17 @@ export class TvPrefab extends Object3D {
 
 	static parseObject ( json: any ): TvPrefab {
 
-		if ( json.type === 'Mesh' )
+		if ( json.type === 'Mesh' ) {
 			return TvMesh.parseObject( json );
+		}
 
-		if ( json.type === 'Group' )
+		if ( json.type === 'Group' ) {
 			return this.parseJSON( json );
+		}
 
-		if ( json.type === 'Object3D' )
+		if ( json.type === 'Object3D' ) {
 			return this.parseJSON( json );
+		}
 
 		return new TvPrefab( json?.guid, json?.name );
 	}
@@ -62,12 +63,13 @@ export class TvPrefab extends Object3D {
 		return {
 			metadata: output.metadata,
 			object: output.object
-		}
+		};
 	}
 }
 
 export class TvMesh extends Mesh {
 
+	private static loader = new ObjectLoader();
 	public materialGuid: string | string[];
 	public geometryGuid: string;
 
@@ -105,8 +107,6 @@ export class TvMesh extends Mesh {
 
 		return this.parseObject( json.object );
 	}
-
-	private static loader = new ObjectLoader();
 
 	static parseObject ( json: any ): TvMesh {
 
@@ -181,7 +181,7 @@ export class TvMesh extends Mesh {
 export class TvPrefabLoader extends ObjectLoader {
 
 	constructor ( manager?: LoadingManager ) {
-		super( manager )
+		super( manager );
 	}
 
 	parsePrefab ( json: any ): TvPrefab {
@@ -244,7 +244,7 @@ export class TvPrefabLoader extends ObjectLoader {
 
 			json.children?.forEach( ( child: any ) => {
 
-				prefab.add( this.parseChild( child ) )
+				prefab.add( this.parseChild( child ) );
 
 			} );
 
@@ -258,7 +258,7 @@ export class TvPrefabLoader extends ObjectLoader {
 
 			json.children?.forEach( ( child: any ) => {
 
-				prefab.add( this.parseChild( child ) )
+				prefab.add( this.parseChild( child ) );
 
 			} );
 
@@ -267,7 +267,6 @@ export class TvPrefabLoader extends ObjectLoader {
 		}
 
 	}
-
 
 
 }
@@ -356,7 +355,7 @@ export class TvEntityLoader extends Loader {
 
 		const rear = this.parseAxle( json.rear );
 
-		const additional = []
+		const additional = [];
 
 		readXmlArray( json.additional, json => additional.push( this.parseAxle( json ) ) );
 
@@ -365,11 +364,11 @@ export class TvEntityLoader extends Loader {
 
 	parseAxle ( json: XmlElement ) {
 
-		const maxSteering: number = parseFloat( json.maxSteering )
-		const wheelDiameter: number = parseFloat( json.wheelDiameter )
-		const trackWidth: number = parseFloat( json.trackWidth )
-		const positionX: number = parseFloat( json.positionX )
-		const positionZ: number = parseFloat( json.positionZ )
+		const maxSteering: number = parseFloat( json.maxSteering );
+		const wheelDiameter: number = parseFloat( json.wheelDiameter );
+		const trackWidth: number = parseFloat( json.trackWidth );
+		const positionX: number = parseFloat( json.positionX );
+		const positionZ: number = parseFloat( json.positionZ );
 
 		return new TvAxle(
 			maxSteering,

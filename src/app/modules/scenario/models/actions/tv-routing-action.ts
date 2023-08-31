@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
 import { CatalogReference } from '../tv-catalogs';
-import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType, DomainAbsoluteRelative } from '../tv-enums';
 import { Route } from '../tv-route';
 
@@ -18,19 +18,17 @@ export class RoutingAction {
 }
 
 export class FollowRouteAction extends AbstractRoutingAction {
-	execute ( entity: ScenarioEntity ): void {
-		throw new Error( 'Method not implemented.' );
-	}
-
 	readonly label: string = 'FollowRoute';
 	readonly actionType: ActionType = ActionType.Private_Routing_FollowTrajectory;
-
-
 	// optional
 	public catalogReference: CatalogReference;
 
 	constructor ( public route: Route ) {
 		super();
+	}
+
+	execute ( entity: ScenarioEntity ): void {
+		throw new Error( 'Method not implemented.' );
 	}
 
 }
@@ -49,15 +47,15 @@ export class Timing {
 }
 
 export class AcquirePositionAction extends AbstractRoutingAction {
-	execute ( entity: ScenarioEntity ): void {
-		throw new Error( 'Method not implemented.' );
-	}
-
 	readonly label: string = 'AcquirePosition';
 	readonly actionType: ActionType = ActionType.Private_Routing_AcquirePosition;
 
 	constructor ( public position: Position ) {
 		super();
+	}
+
+	execute ( entity: ScenarioEntity ): void {
+		throw new Error( 'Method not implemented.' );
 	}
 
 }

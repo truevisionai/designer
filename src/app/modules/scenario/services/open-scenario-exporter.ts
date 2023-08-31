@@ -3,7 +3,10 @@
  */
 
 import { Injectable } from '@angular/core';
+import { TvConsole } from 'app/core/utils/console';
 import { Debug } from 'app/core/utils/debug';
+import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { XMLBuilder } from 'fast-xml-parser';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
 import { Target } from '../models/actions/target';
@@ -11,62 +14,65 @@ import { TransitionDynamics } from '../models/actions/transition-dynamics';
 import { AbsoluteTarget } from '../models/actions/tv-absolute-target';
 import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
 import { LaneChangeAction } from '../models/actions/tv-lane-change-action';
+import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
+import { AcquirePositionAction, FollowRouteAction } from '../models/actions/tv-routing-action';
 import { SpeedAction } from '../models/actions/tv-speed-action';
 import { TeleportAction } from '../models/actions/tv-teleport-action';
 import { EntityCondition } from '../models/conditions/entity-condition';
+import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
+import { StoryboardElementStateCondition } from '../models/conditions/tv-after-termination-condition';
 import { AtStartCondition } from '../models/conditions/tv-at-start-condition';
+import { CollisionCondition } from '../models/conditions/tv-collision-condition';
 import { Condition } from '../models/conditions/tv-condition';
 import { ConditionGroup } from '../models/conditions/tv-condition-group';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
+import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
+import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
+import { RelativeDistanceCondition } from '../models/conditions/tv-relative-distance-condition';
+import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-condition';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
+import { SpeedCondition } from '../models/conditions/tv-speed-condition';
+import { StandStillCondition } from '../models/conditions/tv-stand-still-condition';
+import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
+import { TimeToCollisionCondition } from '../models/conditions/tv-time-to-collision-condition';
+import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { Position } from '../models/position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
+import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
+import { RoadPosition } from '../models/positions/tv-road-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
+import { TvAxle } from '../models/tv-bounding-box';
 import { CatalogReference, Catalogs } from '../models/tv-catalogs';
 import { File } from '../models/tv-common';
-import { ScenarioEntity } from '../models/entities/scenario-entity';
-import { ActionCategory, ActionType, ConditionCategory, ConditionType, OpenScenarioVersion, PositionType, TargetType } from '../models/tv-enums';
+import {
+	ActionCategory,
+	ActionType,
+	ConditionCategory,
+	ConditionType,
+	OpenScenarioVersion,
+	PositionType,
+	TargetType
+} from '../models/tv-enums';
 import { TvEvent } from '../models/tv-event';
 import { CatalogReferenceController } from '../models/tv-interfaces';
 import { Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
-import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
+import { ParameterDeclaration } from '../models/tv-parameter-declaration';
+import { TvProperty } from '../models/tv-properties';
 import { RoadNetwork } from '../models/tv-road-network';
 import { TvScenario } from '../models/tv-scenario';
 import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { XMLBuilder } from 'fast-xml-parser';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
-import { RelativeWorldPosition } from '../models/positions/tv-relative-world-position';
-import { RelativeRoadPosition } from '../models/positions/relative-road.position';
-import { RoadPosition } from '../models/positions/tv-road-position';
-import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
-import { AcquirePositionAction, FollowRouteAction } from '../models/actions/tv-routing-action';
-import { ReachPositionCondition } from '../models/conditions/tv-reach-position-condition';
-import { RelativeDistanceCondition } from '../models/conditions/tv-relative-distance-condition';
-import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
-import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
-import { CollisionCondition } from '../models/conditions/tv-collision-condition';
-import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
-import { RelativeSpeedCondition } from '../models/conditions/tv-relative-speed-condition';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { TvConsole } from 'app/core/utils/console';
-import { SpeedCondition } from '../models/conditions/tv-speed-condition';
-import { StandStillCondition } from '../models/conditions/tv-stand-still-condition';
-import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
-import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
-import { TimeToCollisionCondition } from '../models/conditions/tv-time-to-collision-condition';
-import { VehicleEntity } from '../models/entities/vehicle-entity';
-import { TvAxle } from '../models/tv-bounding-box';
-import { TvProperty } from '../models/tv-properties';
-import { StoryboardElementStateCondition } from '../models/conditions/tv-after-termination-condition';
 
 @Injectable( {
 	providedIn: 'root'
@@ -209,7 +215,7 @@ export class OpenScenarioExporter {
 				attr_trackWidth: axle.trackWidth,
 				attr_positionX: axle.positionX,
 				attr_positionZ: axle.positionZ,
-			}
+			};
 		}
 
 		return {
@@ -244,14 +250,14 @@ export class OpenScenarioExporter {
 			Properties: {
 				Property: vehicle.properties.map( property => this.writeProperty( property ) )
 			},
-		}
+		};
 	}
 
 	writeProperty ( property: TvProperty ): XmlElement {
 		return {
 			attr_name: property.name,
 			attr_value: property.value,
-		}
+		};
 	}
 
 	writeController ( controller: AbstractController ): any {
@@ -475,7 +481,7 @@ export class OpenScenarioExporter {
 				attr_storyboardElementRef: condition.storyboardElementRef,
 				attr_state: condition.stateAsString,
 			}
-		}
+		};
 	}
 
 	writeSimulationTimeCondition ( condition: SimulationTimeCondition ): XmlElement {
@@ -489,7 +495,7 @@ export class OpenScenarioExporter {
 				attr_value: condition.value,
 				attr_rule: condition.rule
 			}
-		}
+		};
 	}
 
 	writeByEntityCondition ( condition: EntityCondition ): XmlElement {
@@ -503,7 +509,7 @@ export class OpenScenarioExporter {
 					} ) )
 				},
 				EntityCondition: this.writeEntityCondition( condition )
-			}
+			};
 		}
 
 		return {
@@ -514,7 +520,7 @@ export class OpenScenarioExporter {
 				} ) )
 			},
 			EntityCondition: this.writeEntityCondition( condition )
-		}
+		};
 	}
 
 	writeEntityCondition ( condition: EntityCondition ) {
@@ -549,55 +555,55 @@ export class OpenScenarioExporter {
 
 			conditionXml = {
 				TraveledDistanceCondition: this.writeTraveledDistanceCondition( condition as TraveledDistanceCondition )
-			}
+			};
 
 		} else if ( condition.conditionType === ConditionType.ByEntity_RelativeDistance ) {
 
 			conditionXml = {
 				RelativeDistanceCondition: this.writeRelativeDistanceCondition( condition as RelativeDistanceCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_Offroad ) {
 
 			conditionXml = {
 				OffRoadCondition: this.writeOffRoadCondition( condition as OffRoadCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_RelativeSpeed ) {
 
 			conditionXml = {
 				RelativeSpeedCondition: this.writeRelativeSpeedCondition( condition as RelativeSpeedCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_Speed ) {
 
 			conditionXml = {
 				SpeedCondition: this.writeSpeedCondition( condition as SpeedCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_StandStill ) {
 
 			conditionXml = {
 				StandStillCondition: this.writeStandStillCondition( condition as StandStillCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_Acceleration ) {
 
 			conditionXml = {
 				AccelerationCondition: this.writeAccelerationCondition( condition as AccelerationCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_TimeHeadway ) {
 
 			conditionXml = {
 				TimeHeadwayCondition: this.writeTimeHeadwayCondition( condition as TimeHeadwayCondition )
-			}
+			};
 
 		} else if ( condition.conditionType == ConditionType.ByEntity_TimeToCollision ) {
 
 			conditionXml = {
 				TimeToCollisionCondition: this.writeTimeToCollisionCondition( condition as TimeToCollisionCondition )
-			}
+			};
 
 		} else {
 
@@ -618,7 +624,7 @@ export class OpenScenarioExporter {
 				attr_alongRoute: condition.alongRoute,
 				attr_rule: condition.rule,
 				Target: this.writeTimeToCollisionTarget( condition.target )
-			}
+			};
 		}
 
 		if ( this.version == OpenScenarioVersion.v1_0 || this.version == OpenScenarioVersion.v1_1 ) {
@@ -628,7 +634,7 @@ export class OpenScenarioExporter {
 				attr_alongRoute: condition.alongRoute,
 				attr_rule: condition.rule,
 				TimeToCollisionConditionTarget: this.writeTimeToCollisionTarget( condition.target )
-			}
+			};
 		}
 
 		if ( this.version == OpenScenarioVersion.v1_2 ) {
@@ -641,7 +647,7 @@ export class OpenScenarioExporter {
 				attr_coordinateSystem: condition.coordinateSystem,
 				attr_routingAlgorithm: condition.routingAlgorithm,
 				TimeToCollisionConditionTarget: this.writeTimeToCollisionTarget( condition.target ),
-			}
+			};
 		}
 
 	}
@@ -654,7 +660,7 @@ export class OpenScenarioExporter {
 				Entity: {
 					attr_name: target
 				}
-			}
+			};
 
 		} else if ( typeof target == 'string' && this.version != OpenScenarioVersion.v0_9 ) {
 
@@ -662,13 +668,13 @@ export class OpenScenarioExporter {
 				EntityRef: {
 					attr_entityRef: target
 				}
-			}
+			};
 
 		} else if ( target instanceof Position ) {
 
 			return {
 				Position: this.writePosition( target )
-			}
+			};
 
 		}
 	}
@@ -682,7 +688,7 @@ export class OpenScenarioExporter {
 				attr_freespace: condition.freespace,
 				attr_alongRoute: condition.alongRoute,
 				attr_rule: condition.rule,
-			}
+			};
 		}
 
 		if ( this.version == OpenScenarioVersion.v1_0 || this.version == OpenScenarioVersion.v1_1 ) {
@@ -692,7 +698,7 @@ export class OpenScenarioExporter {
 				attr_freespace: condition.freespace,
 				attr_alongRoute: condition.alongRoute,
 				attr_rule: condition.rule,
-			}
+			};
 		}
 
 		if ( this.version == OpenScenarioVersion.v1_2 ) {
@@ -705,7 +711,7 @@ export class OpenScenarioExporter {
 				attr_coordinateSystem: condition.coordinateSystem,
 				attr_relativeDistanceType: condition.relativeDistanceType,
 				attr_routingAlgorithm: condition.routingAlgorithm,
-			}
+			};
 		}
 	}
 
@@ -715,14 +721,14 @@ export class OpenScenarioExporter {
 			return {
 				attr_value: condition.value,
 				attr_rule: condition.rule,
-			}
+			};
 		}
 
 		return {
 			attr_value: condition.value,
 			attr_rule: condition.rule,
 			attr_direction: condition.direction,
-		}
+		};
 
 	}
 
@@ -730,7 +736,7 @@ export class OpenScenarioExporter {
 
 		return {
 			attr_duration: condition.duration,
-		}
+		};
 
 	}
 
@@ -739,7 +745,7 @@ export class OpenScenarioExporter {
 		return {
 			attr_value: condition.value,
 			attr_rule: condition.rule,
-		}
+		};
 
 	}
 
@@ -751,7 +757,7 @@ export class OpenScenarioExporter {
 				attr_entity: condition.entity,
 				attr_value: condition.speed,
 				attr_rule: condition.rule,
-			}
+			};
 
 		}
 
@@ -761,7 +767,7 @@ export class OpenScenarioExporter {
 				attr_entityRef: condition.entity,
 				attr_value: condition.speed,
 				attr_rule: condition.rule,
-			}
+			};
 
 		}
 
@@ -772,7 +778,7 @@ export class OpenScenarioExporter {
 				attr_value: condition.speed,
 				attr_rule: condition.rule,
 				attr_direction: condition.direction
-			}
+			};
 
 		}
 
@@ -783,7 +789,7 @@ export class OpenScenarioExporter {
 
 		return {
 			attr_duration: condition.duration,
-		}
+		};
 
 	}
 
@@ -794,7 +800,7 @@ export class OpenScenarioExporter {
 				ByEntity: {
 					attr_name: condition.entityRef,
 				}
-			}
+			};
 		}
 
 		if ( condition.entityRef && this.version != OpenScenarioVersion.v0_9 ) {
@@ -802,7 +808,7 @@ export class OpenScenarioExporter {
 				EntityRef: {
 					attr_entityRef: condition.entityRef,
 				}
-			}
+			};
 		}
 
 		if ( condition.entityType ) {
@@ -810,7 +816,7 @@ export class OpenScenarioExporter {
 				ByType: {
 					attr_type: condition.entityType,
 				}
-			}
+			};
 		}
 
 		TvConsole.error( 'Unsupported collision condition' );
@@ -820,7 +826,7 @@ export class OpenScenarioExporter {
 
 		return {
 			attr_value: condition.value,
-		}
+		};
 
 	}
 
@@ -828,7 +834,7 @@ export class OpenScenarioExporter {
 
 		return {
 			attr_duration: condition.duration,
-		}
+		};
 
 	}
 
@@ -842,7 +848,7 @@ export class OpenScenarioExporter {
 				attr_rule: condition.rule,
 				attr_value: condition.distance,
 				attr_relativeDistanceType: condition.distanceType,
-			}
+			};
 
 		}
 
@@ -854,7 +860,7 @@ export class OpenScenarioExporter {
 			attr_value: condition.distance,
 			attr_coordinateSystem: condition.coordinateSystem,
 			attr_routingAlgorithm: condition.routingAlgorithm,
-		}
+		};
 
 	}
 
@@ -904,7 +910,7 @@ export class OpenScenarioExporter {
 					End: act.endConditionGroups.map( i => this.writeConditionGroup( i ) ),
 					Cancel: act.cancelConditionGroups.map( i => this.writeConditionGroup( i ) ),
 				}
-			}
+			};
 
 		}
 
@@ -913,7 +919,7 @@ export class OpenScenarioExporter {
 			ManeuverGroup: act.maneueverGroups.map( i => this.writeManeuverGroup( i ) ),
 			StartTrigger: act.startConditionGroups.map( i => this.writeConditionGroup( i ) ),
 			StopTrigger: act.endConditionGroups.map( i => this.writeConditionGroup( i ) ),
-		}
+		};
 	}
 
 	writeManeuverGroup ( group: ManeuverGroup ): any {
@@ -927,7 +933,7 @@ export class OpenScenarioExporter {
 					Entity: group.actors.map( entityName => ( { attr_name: entityName } ) )
 				},
 				Maneuver: group.maneuvers.map( maneuver => this.writeManeuver( maneuver ) ),
-			}
+			};
 
 		}
 
@@ -939,7 +945,7 @@ export class OpenScenarioExporter {
 				EntityRef: group.actors.map( entityName => ( { attr_entityRef: entityName } ) )
 			},
 			Maneuver: group.maneuvers.map( maneuver => this.writeManeuver( maneuver ) ),
-		}
+		};
 	}
 
 	writeManeuver ( maneuver: Maneuver ): any {
@@ -980,9 +986,9 @@ export class OpenScenarioExporter {
 		event.getActionMap().forEach( ( action, name ) => {
 
 			let actionXml =
-			{
-				attr_name: name
-			};
+				{
+					attr_name: name
+				};
 
 			if ( action.category == ActionCategory.private ) {
 
@@ -1146,7 +1152,7 @@ export class OpenScenarioExporter {
 						Trajectory: this.writeTrajectory( action.trajectory )
 					}
 				}
-			}
+			};
 		}
 
 		return {
@@ -1166,7 +1172,7 @@ export class OpenScenarioExporter {
 					Trajectory: this.writeTrajectory( action.trajectory ),
 				}
 			}
-		}
+		};
 
 
 		let xml = {
@@ -1315,14 +1321,14 @@ export class OpenScenarioExporter {
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 			return {
 				Position: this.writePosition( action.position )
-			}
+			};
 		}
 
 		return {
 			TeleportAction: {
 				Position: this.writePosition( action.position )
 			}
-		}
+		};
 	}
 
 	writePosition ( position: Position ): any {
@@ -1541,13 +1547,13 @@ export class OpenScenarioExporter {
 			return {
 				attr_reference: vertex.time,
 				Position: this.writePosition( vertex.position ),
-			}
+			};
 		}
 
 		return {
 			attr_time: vertex.time,
 			Position: this.writePosition( vertex.position ),
-		}
+		};
 	}
 
 	writeShape ( shape: AbstractShape ): XmlElement {

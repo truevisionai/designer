@@ -3,25 +3,25 @@
   -->
 <mat-toolbar class="app-toolbar native-border">
 	<ng-container *ngFor="let tool of enabledTools">
-		<button mat-button
-			(mouseover)="onMouseOver(tool)"
-			(mouseout)="onMouseOut(tool)"
-			[id]="tool.id"
-			(click)="tool.click()"
-			[ngClass]="getClass(tool)"
-			action="{{tool.action}}"
-			appTrack="{{tool.track}}"
-			matTooltip="{{tool.tooltip}}">
+		<button (click)="tool.click()"
+				(mouseout)="onMouseOut(tool)"
+				(mouseover)="onMouseOver(tool)"
+				[id]="tool.id"
+				[ngClass]="getClass(tool)"
+				action="{{tool.action}}"
+				appTrack="{{tool.track}}"
+				mat-button
+				matTooltip="{{tool.tooltip}}">
 			<mat-icon class="tool-button-icon">{{tool.icon}}</mat-icon>
 			<span class="icon-label">{{tool.label}}</span>
 		</button>
 	</ng-container>
 	<sat-popover #popover
-		verticalAlign="below">
-		<div class="simple-popover"
-			*ngIf="selectedTool">
-			<div class="title"
-				[innerHTML]="selectedTool.title | translate"></div>
+				 verticalAlign="below">
+		<div *ngIf="selectedTool"
+			 class="simple-popover">
+			<div [innerHTML]="selectedTool.title | translate"
+				 class="title"></div>
 			<div [innerHTML]="selectedTool.description | translate"></div>
 		</div>
 	</sat-popover>

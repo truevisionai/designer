@@ -6,14 +6,14 @@
 	<h6 class="m-0">Notifications</h6>
 </div>
 <mat-nav-list class="notification-list"
-	role="list">
+			  role="list">
 	<!-- Notification item -->
 	<mat-list-item *ngFor="let n of notifications"
-		class="notific-item"
-		role="listitem"
-		routerLinkActive="open">
+				   class="notific-item"
+				   role="listitem"
+				   routerLinkActive="open">
 		<mat-icon [color]="n.color"
-			class="notific-icon mr-1">{{n.icon}}</mat-icon>
+				  class="notific-icon mr-1">{{n.icon}}</mat-icon>
 		<a [routerLink]="[n.route || '/dashboard']">
 			<div class="mat-list-text">
 				<h4 class="message">{{n.message}}</h4>
@@ -23,7 +23,7 @@
 	</mat-list-item>
 </mat-nav-list>
 <div *ngIf="notifications.length"
-	class="text-center mt-1">
+	 class="text-center mt-1">
 	<small><a (click)="clearAll($event)"
-			href="#">Clear all notifications</a></small>
+			  href="#">Clear all notifications</a></small>
 </div>

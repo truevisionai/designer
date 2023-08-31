@@ -15,12 +15,11 @@ import { Vector3 } from 'three';
 } )
 export class StatusBarService {
 
+	static message: string = '';
+	static messageChanged = new EventEmitter<string>();
 	private cursor: PointerEventData;
 	private road: TvRoad;
 	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
-
-	static message: string = '';
-	static messageChanged = new EventEmitter<string>();
 
 	// public message = '';
 
@@ -69,15 +68,6 @@ export class StatusBarService {
 		return StatusBarService.message;
 	}
 
-	onPointerMoved ( data: PointerEventData ) {
-
-		if ( !data?.point ) return;
-
-		this.cursor = data;
-		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
-
-	}
-
 	static setHint ( msg: string ) {
 
 		this.setMessage( 'Hint: ' + msg );
@@ -97,6 +87,15 @@ export class StatusBarService {
 	static clearHint () {
 
 		this.message = '';
+
+	}
+
+	onPointerMoved ( data: PointerEventData ) {
+
+		if ( !data?.point ) return;
+
+		this.cursor = data;
+		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
 
 	}
 

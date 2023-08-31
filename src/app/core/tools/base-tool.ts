@@ -5,20 +5,18 @@
 import { Type } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { StatusBarService } from 'app/services/status-bar.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
 import { MonoBehaviour } from '../components/mono-behaviour';
-import { AppService } from '../services/app.service';
-import { IEditorState } from './i-editor-state';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { StatusBarService } from 'app/services/status-bar.service';
-import { ToolType } from '../models/tool-types.enum';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { KeyboardInput } from '../input';
+import { ToolType } from '../models/tool-types.enum';
+import { IEditorState } from './i-editor-state';
 
 export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
@@ -28,6 +26,8 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 	// highlighting variables
 	private previousColor = new Color();
 	private previousMaterial: MeshBasicMaterial;
+	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
+	private highlightedLines = new Map<Line, Material>();
 
 	constructor () {
 
@@ -113,6 +113,18 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
+	setHint ( msg: string ) {
+
+		StatusBarService.setHint( msg );
+
+	}
+
+	clearHint () {
+
+		StatusBarService.clearHint();
+
+	}
+
 	protected checkRoadIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
 
 		this.checkIntersection( ObjectTypes.LANE, intersections, ( obj ) => {
@@ -122,7 +134,6 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 		} );
 
 	}
-
 
 	protected checkLaneIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
 
@@ -191,9 +202,6 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
-	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
-	private highlightedLines = new Map<Line, Material>();
-
 	protected highlight ( object: Mesh ) {
 
 		const material = object.material as MeshBasicMaterial;
@@ -233,7 +241,7 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 			highlightedMaterial.setValues( {
 				color: COLOR.DEEP_CYAN
-			} )
+			} );
 
 			// Assign the temporary material to the object
 			object.material = highlightedMaterial;
@@ -296,18 +304,6 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 			}
 
 		} );
-	}
-
-	setHint ( msg: string ) {
-
-		StatusBarService.setHint( msg )
-
-	}
-
-	clearHint () {
-
-		StatusBarService.clearHint();
-
 	}
 
 }

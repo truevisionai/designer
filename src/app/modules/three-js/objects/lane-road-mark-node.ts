@@ -1,16 +1,16 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { Group, LineSegments, Vector3 } from 'three';
-import { MoveStrategy } from '../../../core/snapping/move-strategies/move-strategy';
 import { LaneEndMoveStrategy } from '../../../core/snapping/move-strategies/lane-end-move.strategy';
+import { MoveStrategy } from '../../../core/snapping/move-strategies/move-strategy';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
 import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
 export class LaneRoadMarkNode extends Group implements ISelectable {
 
@@ -26,22 +26,6 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 		super();
 
 		this.createPoint();
-
-	}
-
-	private createPoint () {
-
-		const s = this.lane.laneSection.s + this.roadmark.s;
-
-		const offset = this.lane.getWidthValue( s ) * 0.5;
-
-		const position = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, s, offset );
-
-		this.point = AnyControlPoint.create( 'point', position );
-
-		this.point.tag = LaneRoadMarkNode.pointTag;
-
-		this.add( this.point );
 
 	}
 
@@ -62,7 +46,6 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 		this.point?.unselect();
 
 	}
-
 
 	updateByPosition ( point: Vector3 ): void {
 
@@ -102,6 +85,22 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 		this.point.copyPosition( finalPosition );
 	}
 
+	private createPoint () {
+
+		const s = this.lane.laneSection.s + this.roadmark.s;
+
+		const offset = this.lane.getWidthValue( s ) * 0.5;
+
+		const position = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, s, offset );
+
+		this.point = AnyControlPoint.create( 'point', position );
+
+		this.point.tag = LaneRoadMarkNode.pointTag;
+
+		this.add( this.point );
+
+	}
+
 }
 
 export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
@@ -110,13 +109,13 @@ export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
 
 	public point: AnyControlPoint;
 
-    private strategy: MoveStrategy;
+	private strategy: MoveStrategy;
 
 	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
 
 		super();
 
-        this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
+		this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
 
 		const s = this.lane.laneSection.s + this.roadmark.s;
 

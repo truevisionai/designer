@@ -2,16 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from '../../services/scene.service';
-import { BaseCommand } from '../../commands/base-command';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropModel } from '../../models/prop-model.model';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AppInspector } from '../../inspector';
-import { PropCurveInspectorComponent, PropCurveInspectorData } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
-import { PropCurveToolV2 } from './prop-curve-tool';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SelectPointCommand } from 'app/core/commands/select-point-command';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import {
+	PropCurveInspectorComponent,
+	PropCurveInspectorData
+} from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
+import { BaseCommand } from '../../commands/base-command';
+import { PropModel } from '../../models/prop-model.model';
+import { SceneService } from '../../services/scene.service';
+import { PropCurveToolV2 } from './prop-curve-tool';
 
 export class CreatePropCurveCommand extends BaseCommand {
 
@@ -27,7 +28,7 @@ export class CreatePropCurveCommand extends BaseCommand {
 
 		point.mainObject = this.curve;
 
-		const data = new PropCurveInspectorData( this.point, this.curve )
+		const data = new PropCurveInspectorData( this.point, this.curve );
 
 		this.selectPointCommand = new SelectPointCommand( this.tool as PropCurveToolV2, this.point, PropCurveInspectorComponent, data );
 	}

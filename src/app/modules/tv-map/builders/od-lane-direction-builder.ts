@@ -153,7 +153,7 @@ export class LaneDirectionHelper {
 
 	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size = 0.5 ) {
 
-		const arrows = []
+		const arrows = [];
 
 		// if ( lane.type !== TvLaneType.driving ) return;
 

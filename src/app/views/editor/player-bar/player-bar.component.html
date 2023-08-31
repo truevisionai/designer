@@ -4,9 +4,9 @@
 
 <mat-toolbar class="app-player-bar native-border">
 
-	<button *ngIf="isEsminiEnabled" (click)="playSimulation()"
-		mat-icon-button
-		matTooltip="Play Scenario">
+	<button (click)="playSimulation()" *ngIf="isEsminiEnabled"
+			mat-icon-button
+			matTooltip="Play Scenario">
 		<mat-icon>play_arrow</mat-icon>
 	</button>
 

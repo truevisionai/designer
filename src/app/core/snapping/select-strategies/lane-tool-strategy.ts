@@ -71,6 +71,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 	onPointerUp ( pointerEventData: PointerEventData ): TvLane {
 		return this.onPointerMoved( pointerEventData );
 	}
+
 	dispose (): void {
 		throw new Error( 'Method not implemented.' );
 	}
@@ -90,7 +91,7 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 
 		// this.selected?.unselect();
 
-		this.selected = this.onLaneGeometry( pointerEventData )
+		this.selected = this.onLaneGeometry( pointerEventData );
 
 		// this.selected?.select();
 
@@ -102,7 +103,7 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 
 		this.lane?.unhighlight();
 
-		this.lane = this.onLaneGeometry( pointerEventData )
+		this.lane = this.onLaneGeometry( pointerEventData );
 
 		this.lane?.highlight();
 
@@ -111,7 +112,7 @@ export class OnLaneStrategy extends SelectStrategy<TvLane> {
 
 	onPointerUp ( pointerEventData: PointerEventData ): TvLane {
 
-		return this.onLaneGeometry( pointerEventData )
+		return this.onLaneGeometry( pointerEventData );
 
 	}
 

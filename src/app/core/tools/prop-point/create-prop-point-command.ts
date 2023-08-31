@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { BaseCommand } from '../../commands/base-command';
 import { PropInstance } from '../../models/prop-instance.model';
 import { PropPointTool } from './prop-point-tool';

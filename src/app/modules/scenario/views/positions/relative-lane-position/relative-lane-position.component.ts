@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
 } )
 export class RelativeLanePositionComponent implements OnInit {
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 	}

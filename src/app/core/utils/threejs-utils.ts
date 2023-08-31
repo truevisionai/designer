@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CoordinateSystem } from "app/services/exporter.service";
-import { CanvasTexture, Object3D, Vector3 } from "three";
+import { CoordinateSystem } from 'app/services/exporter.service';
+import { CanvasTexture, Object3D, Vector3 } from 'three';
 
 export class ThreeJsUtils {
 

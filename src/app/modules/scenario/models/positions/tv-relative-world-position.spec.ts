@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
-import { OpenScenarioVersion, OrientationType } from "../tv-enums";
-import { Orientation } from "../tv-orientation";
-import { RelativeWorldPosition } from "./tv-relative-world-position";
-import { EntityRef } from "../entity-ref";
-import { Maths } from "app/utils/maths";
+import { Maths } from 'app/utils/maths';
+import { Vector3 } from 'three';
+import { EntityRef } from '../entity-ref';
+import { OpenScenarioVersion, OrientationType } from '../tv-enums';
+import { Orientation } from '../tv-orientation';
+import { RelativeWorldPosition } from './tv-relative-world-position';
 
 describe( 'TvRelativeWorldPosition', () => {
 
@@ -37,7 +37,7 @@ describe( 'TvRelativeWorldPosition', () => {
 		expect( imported.delta.y ).toBe( 1 );
 		expect( imported.delta.z ).toBe( -1 );
 		expect( imported.orientation ).toBeDefined();
-		expect( imported.orientation.h ).toBe( - Maths.M_PI_2 );
+		expect( imported.orientation.h ).toBe( -Maths.M_PI_2 );
 		expect( imported.orientation.p ).toBe( 0 );
 		expect( imported.orientation.r ).toBe( 0 );
 		expect( imported.orientation.type ).toBe( OrientationType.absolute );

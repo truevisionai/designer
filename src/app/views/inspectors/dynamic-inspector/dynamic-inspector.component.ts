@@ -1,8 +1,18 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, Directive, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
-import { ISerializedField, getSerializableActions, getSerializableFields } from 'app/core/components/serialization';
+import {
+	AfterViewInit,
+	Component,
+	ComponentFactoryResolver,
+	Directive,
+	Input,
+	OnDestroy,
+	OnInit,
+	QueryList,
+	ViewChildren,
+	ViewContainerRef
+} from '@angular/core';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -20,7 +30,8 @@ import { Subscription } from 'rxjs';
 	selector: '[app-field-host]',
 } )
 export class FieldHostDirective {
-	constructor ( public viewContainerRef: ViewContainerRef ) { }
+	constructor ( public viewContainerRef: ViewContainerRef ) {
+	}
 }
 
 const fieldComponents = {
@@ -57,7 +68,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	updateSub?: Subscription;
 
-	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
+	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {
+	}
 
 	ngOnDestroy (): void {
 
@@ -126,13 +138,13 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
 
-		} )
+		} );
 
 		componentRef.instance.clicked?.subscribe( ( value ) => {
 
 			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
 
-		} )
+		} );
 
 		componentRef.changeDetectorRef.detectChanges();
 
@@ -176,7 +188,8 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
-	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
+	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {
+	}
 
 	ngOnInit (): void {
 
@@ -204,7 +217,7 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 
 			componentRef.changeDetectorRef.detectChanges();
 
-		} )
+		} );
 	}
 
 }

@@ -3,10 +3,10 @@
  */
 
 import { ElementRef, Type } from '@angular/core';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import * as THREE from 'three';
 import { BufferGeometry, Euler, Material, Vector3 } from 'three';
 import { ITvObject, TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 export interface IComponent {
 	data: any;
@@ -44,6 +44,7 @@ export class GameObject extends THREE.Mesh implements ITvObject, ISelectable {
 	OpenDriveType: TvObjectType;
 	public IsGameObject = true;
 	public detectRaycast = true;
+	isSelected: boolean;
 	private active: boolean;
 	private tag: string;
 	private transform: Transform;
@@ -62,20 +63,6 @@ export class GameObject extends THREE.Mesh implements ITvObject, ISelectable {
 		this.userData.is_selectable = true;
 
 		// AppService.engine.add( this );
-
-	}
-
-	isSelected: boolean;
-
-	select (): void {
-
-		this.isSelected = true;
-
-	}
-
-	unselect (): void {
-
-		this.isSelected = false;
 
 	}
 
@@ -101,6 +88,18 @@ export class GameObject extends THREE.Mesh implements ITvObject, ISelectable {
 
 	set Transform ( value ) {
 		this.transform = value;
+	}
+
+	select (): void {
+
+		this.isSelected = true;
+
+	}
+
+	unselect (): void {
+
+		this.isSelected = false;
+
 	}
 
 	getType (): TvObjectType {

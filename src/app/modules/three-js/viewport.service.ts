@@ -4,8 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { DragDropService } from 'app/core/services/drag-drop.service';
-import { ViewportImporterService } from './viewport-importer.service';
 import { Vector3 } from 'three';
+import { ViewportImporterService } from './viewport-importer.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,7 +15,8 @@ export class ViewportService {
 	constructor (
 		private dragDropService: DragDropService,
 		private viewportImporter: ViewportImporterService,
-	) { }
+	) {
+	}
 
 	onDragOver ( $event: DragEvent ) {
 

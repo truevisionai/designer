@@ -2,13 +2,14 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="tv-field"
-	align="left">
+<div align="left"
+	 class="tv-field">
 	<label class="tv-field-label">{{ label }}</label>
-	<div class="tv-field-color-input"
-		(click)="togglePicker()"
-		#toggleButton>
-		<div [style.background]="hex"></div><br />
+	<div #toggleButton
+		 (click)="togglePicker()"
+		 class="tv-field-color-input">
+		<div [style.background]="hex"></div>
+		<br/>
 	</div>
 </div>
 
@@ -16,12 +17,12 @@
 
 	<!-- <color-sketch *ngIf="isPickerOpen" [color]="value" (onChangeComplete)="onChangeCompleted($event)" (onChange)="onChange($event)"></color-sketch> -->
 
-	<color-chrome *ngIf="isPickerOpen"
-		[color]="hex"
-		(onChangeComplete)="onChangeCompleted($event)"
-		(onChange)="onChange($event)"></color-chrome>
+	<color-chrome (onChange)="onChange($event)"
+				  (onChangeComplete)="onChangeCompleted($event)"
+				  *ngIf="isPickerOpen"
+				  [color]="hex"></color-chrome>
 
 
 </div>
 
-<br />
+<br/>

@@ -139,6 +139,14 @@ export class ActionFactory {
 
 	}
 
+	static createLongitudinalDistanceAction ( entity: ScenarioEntity ) {
+
+		const dynamics = new DynamicConstraints( 3, 9, 40 );
+
+		return new LongitudinalDistanceAction( entity?.name, 10, 'distance', false, true, dynamics );
+
+	}
+
 	private static createSpeedAction ( entity?: ScenarioEntity ) {
 
 		return new SpeedAction(
@@ -154,14 +162,6 @@ export class ActionFactory {
 		const dynamics = new TransitionDynamics( DynamicsShape.sinusoidal, 2, DynamicsDimension.time );
 
 		return new LaneChangeAction( dynamics, target );
-	}
-
-	static createLongitudinalDistanceAction ( entity: ScenarioEntity ) {
-
-		const dynamics = new DynamicConstraints( 3, 9, 40 );
-
-		return new LongitudinalDistanceAction( entity?.name, 10, 'distance', false, true, dynamics );
-
 	}
 
 }

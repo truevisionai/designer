@@ -1,5 +1,4 @@
-import { Maths } from "app/utils/maths";
-import { OpenScenarioLoader } from "../../services/open-scenario.loader"
+import { OpenScenarioLoader } from '../../services/open-scenario.loader';
 
 describe( 'TvTeleportAction', () => {
 
@@ -8,13 +7,13 @@ describe( 'TvTeleportAction', () => {
 		const loader = new OpenScenarioLoader( null );
 
 		const worldPosition = loader.parseWorldPosition( {
-			"attr_x": 0,
-			"attr_y": 0,
-			"attr_z": 0,
-			"attr_h": 0,
-			"attr_p": 0,
-			"attr_r": 1.5
-		} )
+			'attr_x': 0,
+			'attr_y': 0,
+			'attr_z': 0,
+			'attr_h': 0,
+			'attr_p': 0,
+			'attr_r': 1.5
+		} );
 
 		expect( worldPosition ).toBeDefined();
 		expect( worldPosition.position.x ).toBe( 0 );
@@ -24,6 +23,6 @@ describe( 'TvTeleportAction', () => {
 		// expect( worldPosition.rotation.p ).toBe( 0 );
 		// expect( worldPosition.rotation.r ).toBe( 0 );
 
-	} )
+	} );
 
-} )
+} );

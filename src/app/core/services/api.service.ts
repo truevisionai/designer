@@ -16,7 +16,9 @@ export class ApiService {
 	) {
 	}
 
-	get apiUrl (): string { return Environment.api_url; }
+	get apiUrl (): string {
+		return Environment.api_url;
+	}
 
 	get<T> ( path: string, params: HttpParams = new HttpParams() ): Observable<any> {
 		return this.http.get<T>( `${ this.apiUrl }${ path }`, { params } )

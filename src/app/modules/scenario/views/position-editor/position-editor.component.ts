@@ -23,13 +23,13 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		return PositionType;
 	}
 
+	get worldPosition () {
+		return this.position as WorldPosition;
+	}
+
 	ngOnInit () {
 
 
-	}
-
-	get worldPosition () {
-		return this.position as WorldPosition;
 	}
 
 	onPositionTypeChanged ( $type: PositionType ) {

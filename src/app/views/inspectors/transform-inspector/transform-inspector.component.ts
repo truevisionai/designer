@@ -9,7 +9,6 @@ import { SetPositionCommand } from '../../../modules/three-js/commands/set-posit
 import { SetRotationCommand } from '../../../modules/three-js/commands/set-rotation-command';
 import { SetScaleCommand } from '../../../modules/three-js/commands/set-scale-command';
 import { CommandHistory } from '../../../services/command-history';
-import { Maths } from '../../../utils/maths';
 
 @Component( {
 	selector: 'app-transform-inspector',
@@ -59,7 +58,7 @@ export class TransformInspectorComponent implements OnInit, IComponent {
 		// $rotation.y *= Maths.Deg2Rad;
 		// $rotation.z *= Maths.Deg2Rad;
 
-		const command = new SetRotationCommand( this.data, new Euler().setFromVector3( $rotation ) )
+		const command = new SetRotationCommand( this.data, new Euler().setFromVector3( $rotation ) );
 
 		CommandHistory.execute( command );
 

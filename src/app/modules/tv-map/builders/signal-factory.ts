@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, CylinderGeometry, FrontSide, MeshBasicMaterial, PlaneGeometry, TextureLoader, Vector3 } from 'three';
+import { CylinderGeometry, FrontSide, MeshBasicMaterial, PlaneGeometry, TextureLoader, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvConsole } from '../../../core/utils/console';
 import { COLOR } from '../../../shared/utils/colors.service';

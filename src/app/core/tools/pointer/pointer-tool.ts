@@ -3,12 +3,10 @@
  */
 
 import { PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import { TvObjectMarking } from '../../../modules/tv-map/models/tv-object-marking';
+import { TextObject } from 'app/modules/three-js/objects/text-object';
+import * as THREE from 'three';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import * as THREE from 'three';
-import { SceneService } from 'app/core/services/scene.service';
-import { TextObject } from 'app/modules/three-js/objects/text-object';
 
 export class PointerTool extends BaseTool {
 

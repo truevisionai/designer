@@ -2,19 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
+import { DeleteCrossWalkCommand } from 'app/core/tools/marking-line/crosswalk-tool';
 import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { SetValueCommand, UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RemoveArrayPointCommand } from 'app/modules/three-js/commands/remove-array-point-command';
+import { UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvColors } from 'app/modules/tv-map/models/tv-common';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { Crosswalk, TvCornerRoad } from 'app/modules/tv-map/models/tv-road-object';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
-import { DeleteCrossWalkCommand } from 'app/core/tools/marking-line/crosswalk-tool';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 
 export interface ICrosswalkInspectorData {
 	crosswalk: Crosswalk;
@@ -42,7 +42,7 @@ export class CrosswalkInspectorComponent extends BaseInspector implements ICompo
 
 	get position (): Vector3 {
 
-		return this.data?.point?.position?.clone()
+		return this.data?.point?.position?.clone();
 
 	}
 
@@ -91,11 +91,9 @@ export class CrosswalkInspectorComponent extends BaseInspector implements ICompo
 		const points = this.data.crosswalk.outlines[ 0 ].cornerRoad;
 
 		CommandHistory.executeMany(
-
 			new RemoveArrayPointCommand( this.marking, points, this.data.point ),
 
 			new SetInspectorCommand( null, null ),
-
 		);
 
 	}

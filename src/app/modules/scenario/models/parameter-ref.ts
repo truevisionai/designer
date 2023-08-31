@@ -1,4 +1,4 @@
-import { ScenarioInstance } from "../services/scenario-instance";
+import { ScenarioInstance } from '../services/scenario-instance';
 
 export class ParameterRef {
 
@@ -19,6 +19,95 @@ export class ParameterRef {
 		// After the first initial character, names can also contain numbers (0-9).
 		return this._isMatching( /\$[A-Za-z_][\w]*/ );
 		// return this._isMatching(/^[A-Za-z_][A-Za-z0-9_]*$/); // this also works
+	}
+
+	public getInterpretedValue (): string | number | boolean | null {
+		let value: string | number | null;
+
+		if ( this.isLiteral() ) {
+			value = this.referenceText;
+		} else if ( this.isParameter() ) {
+			value = ScenarioInstance.getGlobalParameterValue( this.referenceText );
+			if ( value === null || value === undefined ) {
+				throw new Error( `Parameter '${ this.referenceText.substring( 1 ) }' is not defined` );
+			}
+		} else if ( this.isExpression() ) {
+			value = this.evaluateExpression();
+		} else {
+			value = null;
+		}
+
+		return value;
+	}
+
+	public toFloat (): number {
+		const value = this.getInterpretedValue();
+		if ( value !== null ) {
+			return parseFloat( value as string );
+		} else {
+			throw new Error( `Could not convert '${ this.referenceText }' to float` );
+		}
+	}
+
+	public toInt (): number {
+		const value = this.getInterpretedValue();
+		if ( value !== null ) {
+			return parseInt( value as string, 10 );
+		} else {
+			throw new Error( `Could not convert '${ this.referenceText }' to int` );
+		}
+	}
+
+	public toString (): string {
+		const value = this.getInterpretedValue() as string;
+		return value !== null ? value : this.referenceText;
+	}
+
+	// Instead, you would have to use these utility methods for arithmetic operations.
+	public add ( other: number ): number {
+		return this.toFloat() + other;
+	}
+
+	public subtract ( other: number ): number {
+		return this.toFloat() - other;
+	}
+
+	public multiply ( other: number ): number {
+		return this.toFloat() * other;
+	}
+
+	public divide ( other: number ): number {
+		return this.toFloat() / other;
+	}
+
+	// As mentioned, we can't directly override operators in TypeScript.
+
+	public equalTo ( other: number ): boolean {
+		return this.toFloat() === other;
+	}
+
+	public notEqualTo ( other: number ): boolean {
+		return this.toFloat() !== other;
+	}
+
+	public greaterThan ( other: number ): boolean {
+		return this.toFloat() > other;
+	}
+
+	public lessThan ( other: number ): boolean {
+		return this.toFloat() < other;
+	}
+
+	public greaterThanOrEqualTo ( other: number ): boolean {
+		return this.toFloat() >= other;
+	}
+
+	public lessThanOrEqualTo ( other: number ): boolean {
+		return this.toFloat() <= other;
+	}
+
+	public absoluteValue (): number {
+		return Math.abs( this.toFloat() );
 	}
 
 	private isExpression (): boolean {
@@ -85,93 +174,5 @@ export class ParameterRef {
 			return match[ 0 ] === this.referenceText;
 		}
 		return false;
-	}
-
-	public getInterpretedValue (): string | number | boolean | null {
-		let value: string | number | null;
-
-		if ( this.isLiteral() ) {
-			value = this.referenceText;
-		} else if ( this.isParameter() ) {
-			value = ScenarioInstance.getGlobalParameterValue( this.referenceText );
-			if ( value === null || value === undefined ) {
-				throw new Error( `Parameter '${ this.referenceText.substring( 1 ) }' is not defined` );
-			}
-		} else if ( this.isExpression() ) {
-			value = this.evaluateExpression();
-		} else {
-			value = null;
-		}
-
-		return value;
-	}
-
-	public toFloat (): number {
-		const value = this.getInterpretedValue();
-		if ( value !== null ) {
-			return parseFloat( value as string );
-		} else {
-			throw new Error( `Could not convert '${ this.referenceText }' to float` );
-		}
-	}
-
-	public toInt (): number {
-		const value = this.getInterpretedValue();
-		if ( value !== null ) {
-			return parseInt( value as string, 10 );
-		} else {
-			throw new Error( `Could not convert '${ this.referenceText }' to int` );
-		}
-	}
-
-	public toString (): string {
-		const value = this.getInterpretedValue() as string;
-		return value !== null ? value : this.referenceText;
-	}
-
-	// As mentioned, we can't directly override operators in TypeScript.
-	// Instead, you would have to use these utility methods for arithmetic operations.
-	public add ( other: number ): number {
-		return this.toFloat() + other;
-	}
-
-	public subtract ( other: number ): number {
-		return this.toFloat() - other;
-	}
-
-	public multiply ( other: number ): number {
-		return this.toFloat() * other;
-	}
-
-	public divide ( other: number ): number {
-		return this.toFloat() / other;
-	}
-
-	public equalTo ( other: number ): boolean {
-		return this.toFloat() === other;
-	}
-
-	public notEqualTo ( other: number ): boolean {
-		return this.toFloat() !== other;
-	}
-
-	public greaterThan ( other: number ): boolean {
-		return this.toFloat() > other;
-	}
-
-	public lessThan ( other: number ): boolean {
-		return this.toFloat() < other;
-	}
-
-	public greaterThanOrEqualTo ( other: number ): boolean {
-		return this.toFloat() >= other;
-	}
-
-	public lessThanOrEqualTo ( other: number ): boolean {
-		return this.toFloat() <= other;
-	}
-
-	public absoluteValue (): number {
-		return Math.abs( this.toFloat() );
 	}
 }

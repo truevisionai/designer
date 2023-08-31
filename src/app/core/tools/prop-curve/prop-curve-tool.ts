@@ -2,24 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { KeyboardInput } from '../../input';
 import { PropModel } from '../../models/prop-model.model';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
 import { CreatePropCurveCommand } from './create-prop-curve-command';
-import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
@@ -31,6 +30,15 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	private strategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
 
+	constructor () {
+
+		super();
+
+		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
+
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+	}
+
 	private get prop (): PropModel {
 
 		const prop = PropManager.getProp();
@@ -41,15 +49,6 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		}
 
-	}
-
-	constructor () {
-
-		super();
-
-		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
-
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	setPoint ( value: DynamicControlPoint<PropCurve> ): void {

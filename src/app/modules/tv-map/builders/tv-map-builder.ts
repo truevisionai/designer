@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { GameObject } from 'app/core/game-object';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { GameObject } from 'app/core/game-object';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';

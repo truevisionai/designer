@@ -2,26 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Injectable } from '@angular/core';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { Injectable } from '@angular/core';
+import { FileService } from 'app/core/io/file.service';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
-import { TvElectronService } from 'app/services/tv-electron.service';
-import { EditorService } from './services/editor.service';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { FileService } from 'app/core/io/file.service';
-import { TvConsole } from './utils/console';
-import { AppInspector } from './inspector';
+import { TvElectronService } from 'app/services/tv-electron.service';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
+import { AppInspector } from './inspector';
+import { EditorService } from './services/editor.service';
+import { TvConsole } from './utils/console';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class EsminiPlayerService {
-
-	get isEnabled (): boolean {
-		return this.editor.settings.esminiEnabled;
-	}
 
 	logs: string[] = [];
 
@@ -31,6 +27,10 @@ export class EsminiPlayerService {
 		private electronService: TvElectronService,
 		private editor: EditorService,
 	) {
+	}
+
+	get isEnabled (): boolean {
+		return this.editor.settings.esminiEnabled;
 	}
 
 	playSimulation () {
@@ -75,7 +75,7 @@ export class EsminiPlayerService {
 
 		if ( !binPath || binPath == '' ) return;
 
-		const args = [ "--window", "60", "60", "800", "400", "--odr", xodr, "--path", path ];
+		const args = [ '--window', '60', '60', '800', '400', '--odr', xodr, '--path', path ];
 
 		TvConsole.info( 'Starting odrviewer...' );
 
@@ -110,7 +110,7 @@ export class EsminiPlayerService {
 
 		if ( !binPath || binPath == '' ) return;
 
-		const args = [ "--window", "60", "60", "800", "400", "--osc", xosc, "--path", path ];
+		const args = [ '--window', '60', '60', '800', '400', '--osc', xosc, '--path', path ];
 
 		TvConsole.info( 'Starting esmini...' );
 

@@ -11,26 +11,29 @@
 
 
 			<table [dataSource]="files"
-				mat-table
-				style="width: 100%;">
+				   mat-table
+				   style="width: 100%;">
 
 				<ng-container matColumnDef="name">
 					<th *matHeaderCellDef
-						mat-header-cell> Name</th>
+						mat-header-cell> Name
+					</th>
 					<td *matCellDef="let element"
 						mat-cell> {{element.name}} </td>
 				</ng-container>
 
 				<ng-container matColumnDef="updated_at">
 					<th *matHeaderCellDef
-						mat-header-cell> Updated At</th>
+						mat-header-cell> Updated At
+					</th>
 					<td *matCellDef="let element"
 						mat-cell> {{element.updated_at}} </td>
 				</ng-container>
 
 				<ng-container matColumnDef="created_at">
 					<th *matHeaderCellDef
-						mat-header-cell> Created At</th>
+						mat-header-cell> Created At
+					</th>
 					<td *matCellDef="let element"
 						mat-cell> {{element.created_at}} </td>
 				</ng-container>
@@ -47,14 +50,16 @@
 		</mat-tab>
 		<mat-tab label="Upload">
 			<input (change)=fileChange($event)
-				type="file" />
+				   type="file"/>
 		</mat-tab>
 	</mat-tab-group>
 </div>
 
 <div mat-dialog-actions>
 	<button (click)="onCancel()"
-		mat-stroked-button>Cancel</button>
+			mat-stroked-button>Cancel
+	</button>
 	<button (click)="onImport()"
-		mat-stroked-button>Upload</button>
+			mat-stroked-button>Upload
+	</button>
 </div>

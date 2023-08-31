@@ -4,16 +4,16 @@
 
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { RemoveWidthNodeCommand } from 'app/core/commands/remove-width-node-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';
-import { UpdateWidthNodeDistanceCommand } from '../../../core/tools/lane-width/update-width-node-distance-command';
-import { UpdateWidthNodeValueCommand } from '../../../core/tools/lane-width/update-width-node-value-command';
-import { LineType, OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
+import { UpdateWidthNodeDistanceCommand } from '../../../core/tools/lane-width/update-width-node-distance-command';
+import { UpdateWidthNodeValueCommand } from '../../../core/tools/lane-width/update-width-node-value-command';
+import { OdLaneReferenceLineBuilder } from '../../../modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 
 @Component( {
 	selector: 'app-lane-width-inspector',
@@ -66,15 +66,13 @@ export class LaneWidthInspector extends BaseInspector implements OnInit, ICompon
 
 			SnackBar.show( 'Lane width at s=0 cannot be deleted' );
 
-			return
+			return;
 		}
 
 		CommandHistory.executeMany(
-
 			new RemoveWidthNodeCommand( this.data.node ),
 
 			new SetInspectorCommand( null, null )
-
 		);
 
 	}

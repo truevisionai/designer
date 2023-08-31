@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvConsole } from "../utils/console";
+import { TvConsole } from '../utils/console';
 
 export interface Copiable {
-	copyProperties?(): Object;
+	copyProperties? (): Object;
 }
 
 export class PropertyCopyService {

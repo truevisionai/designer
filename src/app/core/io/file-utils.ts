@@ -35,7 +35,7 @@ export class FileUtils {
 			return path.split( '/' ).slice( 0, -1 ).join( '/' );
 		}
 
-		throw new Error( "unknown platform" + process.platform );
+		throw new Error( 'unknown platform' + process.platform );
 
 	}
 
@@ -57,7 +57,7 @@ export class FileUtils {
 			return path.split( '/' ).pop();
 		}
 
-		throw new Error( "unknown platform" + process.platform );
+		throw new Error( 'unknown platform' + process.platform );
 	}
 
 	static pathToFileURL ( path: string ): string {

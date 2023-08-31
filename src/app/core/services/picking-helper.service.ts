@@ -10,6 +10,8 @@ import { Object3D, Raycaster, Vector3 } from 'three';
 
 export class PickingHelper {
 
+	private static raycaster = new Raycaster();
+
 	public static checkControlPointInteraction ( event: PointerEventData, tag: string, maxDistance = 0.5 ): BaseControlPoint {
 
 		let hasInteracted = false;
@@ -60,8 +62,6 @@ export class PickingHelper {
 
 		return nearestObject;
 	}
-
-	private static raycaster = new Raycaster();
 
 	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive = true ): T {
 

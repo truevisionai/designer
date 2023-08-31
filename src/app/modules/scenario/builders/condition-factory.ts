@@ -2,7 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Vector3 } from 'three';
 import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
+import { Condition } from '../models/conditions/tv-condition';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';
 import { EndOfRoadCondition } from '../models/conditions/tv-end-of-road-condition';
 import { OffRoadCondition } from '../models/conditions/tv-off-road-condition';
@@ -13,11 +15,9 @@ import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time
 import { SpeedCondition } from '../models/conditions/tv-speed-condition';
 import { TimeHeadwayCondition } from '../models/conditions/tv-time-headway-condition';
 import { TraveledDistanceCondition } from '../models/conditions/tv-traveled-distance-condition';
-import { WorldPosition } from '../models/positions/tv-world-position';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
+import { WorldPosition } from '../models/positions/tv-world-position';
 import { ConditionType, RelativeDistanceType, Rule, TriggeringRule } from '../models/tv-enums';
-import { Condition } from '../models/conditions/tv-condition';
-import { Vector3 } from 'three';
 
 export class ConditionFactory {
 	static reset () {

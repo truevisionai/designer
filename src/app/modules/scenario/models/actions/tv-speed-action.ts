@@ -4,8 +4,8 @@
 
 import { Time } from '../../../../core/time';
 import { Maths } from '../../../../utils/maths';
-import { PrivateAction } from '../private-action';
 import { ScenarioEntity } from '../entities/scenario-entity';
+import { PrivateAction } from '../private-action';
 import { ActionType } from '../tv-enums';
 import { Target } from './target';
 import { TransitionDynamics } from './transition-dynamics';

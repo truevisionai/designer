@@ -73,14 +73,17 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	}
 
-	private initPosition ( position: Vector3 ) {
+	private get index () {
+		return this.road.spline?.controlPoints.indexOf( this );
+	}
 
-		if ( !this.allowChange ) return;
+	private get shouldUpdatePredecessor () {
+		return this.index === 0 || this.index === 1;
+	}
 
-		super.copyPosition( position );
-
-		this.updateTangents();
-
+	private get shouldUpdateSuccessor () {
+		const controlPoints = this.road.spline.controlPoints;
+		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
 	updateTangents () {
@@ -136,19 +139,6 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.updatePredecessor( true );
 
-	}
-
-	private get index () {
-		return this.road.spline?.controlPoints.indexOf( this );
-	}
-
-	private get shouldUpdatePredecessor () {
-		return this.index === 0 || this.index === 1;
-	}
-
-	private get shouldUpdateSuccessor () {
-		const controlPoints = this.road.spline.controlPoints;
-		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
 	public updatePredecessor ( rebuild = false ) {
@@ -271,6 +261,16 @@ export class RoadControlPoint extends BaseControlPoint {
 		const y = this.position.y + Math.sin( this.hdg ) * s;
 
 		return new RoadControlPoint( this.road, new Vector3( x, y, 0 ), this.tag, this.tagindex, this.tagindex );
+	}
+
+	private initPosition ( position: Vector3 ) {
+
+		if ( !this.allowChange ) return;
+
+		super.copyPosition( position );
+
+		this.updateTangents();
+
 	}
 
 }

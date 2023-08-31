@@ -2,41 +2,37 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
-import { Vector3 } from 'three';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { NodeFactoryService } from '../../factories/node-factory.service';
+import { KeyboardInput } from '../../input';
+import { ToolType } from '../../models/tool-types.enum';
+import { PickingHelper } from '../../services/picking-helper.service';
+import { BaseTool } from '../base-tool';
 import { CreateWidthNodeCommand } from './create-lane-width-command';
 import { SelectLaneForLaneWidthCommand } from './select-lane-for-lane-width-command';
 import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
 import { UnselectLaneForLaneWidthCommand } from './unselect-lane-for-lane-width-command';
 import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
 import { UpdateWidthNodePositionCommand } from './update-width-node-position-command';
-import { NodeFactoryService } from '../../factories/node-factory.service';
-import { KeyboardInput } from '../../input';
-import { ToolType } from '../../models/tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
-import { BaseTool } from '../base-tool';
 
 export class LaneWidthTool extends BaseTool {
 
 	public name: string = 'LaneWidth';
 	public toolType = ToolType.LaneWidth;
-
-	private laneWidthChanged: boolean = false;
-
-	private _lane: TvLane;
-	private _node: LaneWidthNode;
-
 	public laneHelper = new OdLaneReferenceLineBuilder();
+	private laneWidthChanged: boolean = false;
 
 	constructor () {
 
 		super();
 
 	}
+
+	private _lane: TvLane;
 
 	get lane (): TvLane {
 		return this._lane;
@@ -45,6 +41,8 @@ export class LaneWidthTool extends BaseTool {
 	set lane ( value: TvLane ) {
 		this._lane = value;
 	}
+
+	private _node: LaneWidthNode;
 
 	get node (): LaneWidthNode {
 		return this._node;

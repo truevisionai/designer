@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Nurbs } from "./tv-trajectory";
+import { Nurbs } from './tv-trajectory';
 
 
 describe( 'Nurbs', () => {
@@ -17,8 +17,6 @@ describe( 'Nurbs', () => {
 
 
 	} );
-
-
 
 
 } );

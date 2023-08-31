@@ -3,6 +3,9 @@
  */
 
 import { SelectPointCommand } from 'app/core/commands/select-point-command';
+import { JunctionFactory } from 'app/core/factories/junction.factory';
+import { SceneService } from 'app/core/services/scene.service';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { JunctionEntryObject } from '../../../modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneSide } from '../../../modules/tv-map/models/tv-common';
 import { TvJunction } from '../../../modules/tv-map/models/tv-junction';
@@ -12,9 +15,6 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { BaseCommand } from '../../commands/base-command';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { ManeuverTool } from './maneuver-tool';
-import { SceneService } from 'app/core/services/scene.service';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { JunctionFactory } from 'app/core/factories/junction.factory';
 
 export class CreateSingleManeuver extends BaseCommand {
 

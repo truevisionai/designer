@@ -3,16 +3,22 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CallFunctionCommand } from 'app/core/commands/call-function-command';
-import { UpdateMaterialMapCommand } from 'app/core/commands/update-material-map-command';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { UpdateMaterialMapCommand } from 'app/core/commands/update-material-map-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { Color, MeshBasicMaterial, MeshLambertMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import {
+	MeshBasicMaterial,
+	MeshLambertMaterial,
+	MeshNormalMaterial,
+	MeshPhongMaterial,
+	MeshPhysicalMaterial,
+	MeshStandardMaterial
+} from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';
 
 @Component( {
@@ -48,7 +54,25 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 			'MeshPhysicalMaterial',
 			'MeshPhongMaterial',
 			'MeshLambertMaterial',
-		]
+		];
+	}
+
+	get color (): any {
+		return '#' + this.material.color.getHexString();
+	}
+
+	set color ( value: any ) {
+		this.material.color.setStyle( value );
+		this.updatePreviewCache();
+	}
+
+	get emissive () {
+		return '#' + this.material.emissive.getHexString();
+	}
+
+	set emissive ( value ) {
+		this.material.emissive.setStyle( value );
+		this.updatePreviewCache();
 	}
 
 	onTypeChanged ( newMaterialType: string ) {
@@ -96,24 +120,6 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 		this.updatePreviewCache();
 
-	}
-
-	get color (): any {
-		return '#' + this.material.color.getHexString();
-	}
-
-	set color ( value: any ) {
-		this.material.color.setStyle( value );
-		this.updatePreviewCache();
-	}
-
-	get emissive () {
-		return '#' + this.material.emissive.getHexString();
-	}
-
-	set emissive ( value ) {
-		this.material.emissive.setStyle( value );
-		this.updatePreviewCache();
 	}
 
 	ngOnInit () {
@@ -187,53 +193,43 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	onMapChanged ( $guid: string ) {
 
-		console.log( 'map changed', $guid )
+		console.log( 'map changed', $guid );
 
 		CommandHistory.execute(
-
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'map', $guid )
-
-		)
+		);
 
 	}
 
 	onRoughnessMapChanged ( $guid: string ) {
 
 		CommandHistory.execute(
-
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'roughnessMap', $guid )
-
-		)
+		);
 
 	}
 
 	onNormalMapChanged ( $guid: string ) {
 
 		CommandHistory.execute(
-
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'normalMap', $guid )
-
-		)
+		);
 
 	}
 
 	onAOMapChanged ( $guid: string ) {
 
 		CommandHistory.execute(
-
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'aoMap', $guid )
-
-		)
+		);
 
 	}
 
 	onDisplacementMapChanged ( $guid: string ) {
 
 		CommandHistory.execute(
-
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'displacementMap', $guid )
-
-		)
+		);
 
 	}
 
@@ -252,7 +248,6 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 		material[ propertyName ] = newValue;
 
 		CommandHistory.executeMany(
-
 			new SetValueCommand<T, K>( material, propertyName, newValue, oldValue ),
 
 			new SetValueCommand( this.metadata, 'preview', this.getFreshPreview() )

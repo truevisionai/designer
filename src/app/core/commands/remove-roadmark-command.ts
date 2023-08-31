@@ -5,8 +5,8 @@
 import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
-import { BaseCommand } from './base-command';
 import { SceneService } from '../services/scene.service';
+import { BaseCommand } from './base-command';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
 

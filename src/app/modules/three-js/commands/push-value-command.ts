@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from "app/core/commands/base-command";
+import { BaseCommand } from 'app/core/commands/base-command';
 
 export class PushValueCommand<T> extends BaseCommand {
 
@@ -20,6 +20,7 @@ export class PushValueCommand<T> extends BaseCommand {
 			this.container.splice( index, 1 );
 		}
 	}
+
 	redo (): void {
 		this.execute();
 	}

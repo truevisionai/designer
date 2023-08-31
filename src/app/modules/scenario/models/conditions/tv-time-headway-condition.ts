@@ -70,6 +70,18 @@ export class TimeHeadwayCondition extends EntityCondition {
 
 	}
 
+	setTargetEntity ( $targetEntity: string ) {
+
+		this.entityRef = $targetEntity;
+
+	}
+
+	setRule ( rule: Rule ) {
+
+		this.rule = rule;
+
+	}
+
 	private computeTimeHeadway ( entityName: string ): number {
 
 		const entitySpeed = this.getEntitySpeed( entityName );
@@ -107,17 +119,5 @@ export class TimeHeadwayCondition extends EntityCondition {
 		}
 
 		return headwayTime;
-	}
-
-	setTargetEntity ( $targetEntity: string ) {
-
-		this.entityRef = $targetEntity;
-
-	}
-
-	setRule ( rule: Rule ) {
-
-		this.rule = rule;
-
 	}
 }

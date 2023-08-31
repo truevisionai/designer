@@ -30,6 +30,26 @@ export class ScenarioViewerService {
 
 	}
 
+	setFocus () {
+
+		const entities = [ ...ScenarioInstance.scenario.objects.values() ];
+
+		if ( entities.length === 0 ) {
+
+			TvConsole.warn( 'No Entity to focus' );
+
+			return;
+		}
+
+		const entity = [ ...ScenarioInstance.scenario.objects.values() ][ 0 ];
+
+		// Store original position and orientation
+		this.originalPosition.copy( this.threeService.camera.position );
+		this.originalQuaternion.copy( this.threeService.camera.quaternion );
+
+		this.threeService.setFocusTarget( entity );
+
+	}
 
 	private onPlayerStarted () {
 
@@ -54,27 +74,6 @@ export class ScenarioViewerService {
 	}
 
 	private onPlayerTick ( e: PlayerUpdateData ) {
-
-	}
-
-	setFocus () {
-
-		const entities = [ ...ScenarioInstance.scenario.objects.values() ];
-
-		if ( entities.length === 0 ) {
-
-			TvConsole.warn( 'No Entity to focus' );
-
-			return;
-		}
-
-		const entity = [ ...ScenarioInstance.scenario.objects.values() ][ 0 ];
-
-		// Store original position and orientation
-		this.originalPosition.copy( this.threeService.camera.position );
-		this.originalQuaternion.copy( this.threeService.camera.quaternion );
-
-		this.threeService.setFocusTarget( entity );
 
 	}
 

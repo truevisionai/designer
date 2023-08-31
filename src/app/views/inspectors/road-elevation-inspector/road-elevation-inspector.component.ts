@@ -3,13 +3,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { UpdateElevationDistance } from 'app/core/tools/road-elevation/update-elevation-distance';
 import { UpdateElevationValue } from 'app/core/tools/road-elevation/update-elevation-value';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { CommandHistory } from 'app/services/command-history';
 
 @Component( {
@@ -21,7 +18,8 @@ export class RoadElevationInspector implements OnInit, IComponent {
 
 	data: RoadElevationNode;
 
-	constructor () { }
+	constructor () {
+	}
 
 	ngOnInit () {
 

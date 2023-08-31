@@ -3,8 +3,15 @@
  */
 
 import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { KeyboardInput } from 'app/core/input';
+import { SceneService } from 'app/core/services/scene.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
+import {
+	CrosswalkInspectorComponent,
+	ICrosswalkInspectorData
+} from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { CopyPositionCommand } from '../../../modules/three-js/commands/copy-position-command';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
@@ -15,10 +22,6 @@ import { ControlPointStrategy } from '../../snapping/select-strategies/control-p
 import { OnRoadStrategy } from '../../snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from '../../snapping/select-strategies/select-strategy';
 import { BaseTool } from '../base-tool';
-import { CrosswalkInspectorComponent, ICrosswalkInspectorData } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from 'app/core/services/scene.service';
 
 export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 

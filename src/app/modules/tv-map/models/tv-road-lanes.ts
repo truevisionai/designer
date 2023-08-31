@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvConsole } from 'app/core/utils/console';
+import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { TvLaneSection } from './tv-lane-section';
 import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
-import { TvConsole } from 'app/core/utils/console';
-import { SnackBar } from 'app/services/snack-bar.service';
 
 export class TvRoadLanes {
 
@@ -94,8 +94,8 @@ export class TvRoadLanes {
 
 		const lanesection = TvUtils.checkIntervalArray( this.laneSections, s );
 
-		if ( !lanesection ) TvConsole.error( `LaneSection not found for Road: ${this.road?.id} at ${ s }` );
-		if ( !lanesection ) SnackBar.error( `LaneSection not found for Road: ${this.road?.id} at ${ s }` );
+		if ( !lanesection ) TvConsole.error( `LaneSection not found for Road: ${ this.road?.id } at ${ s }` );
+		if ( !lanesection ) SnackBar.error( `LaneSection not found for Road: ${ this.road?.id } at ${ s }` );
 
 		return lanesection;
 	}

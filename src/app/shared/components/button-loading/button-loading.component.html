@@ -3,13 +3,13 @@
   -->
 
 <button [color]="color"
-	[disabled]="loading"
-	[ngClass]="{loading: loading}"
-	[type]="type"
-	class="button-loading {{btnClass}}"
-	mat-raised-button>
+		[disabled]="loading"
+		[ngClass]="{loading: loading}"
+		[type]="type"
+		class="button-loading {{btnClass}}"
+		mat-raised-button>
 	<div *ngIf="loading"
-		class="btn-spinner"></div>
+		 class="btn-spinner"></div>
 	<span *ngIf="!loading">
 		<ng-content></ng-content>
 	</span>

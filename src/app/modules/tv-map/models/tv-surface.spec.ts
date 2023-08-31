@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TestBed } from '@angular/core/testing';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Vector2, Vector3 } from 'three';
 import { TvSurface } from './tv-surface.model';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 
 describe( 'TvSurface', () => {
 

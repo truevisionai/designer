@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { DefaultVehicleController } from "app/modules/scenario/controllers/default-vehicle-controller";
-import { VehicleEntity } from "app/modules/scenario/models/entities/vehicle-entity";
-import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from "app/modules/scenario/models/tv-bounding-box";
-import { ActionType, VehicleCategory } from "app/modules/scenario/models/tv-enums";
-import { Orientation } from "app/modules/scenario/models/tv-orientation";
-import { Object3D, Vector3 } from "three";
-import { IDService } from "./id.service";
-import { ActionFactory } from "app/modules/scenario/builders/action-factory";
-import { EntityManager } from "app/services/entity-manager";
-import { AssetDatabase } from "app/core/asset/asset-database";
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { ActionFactory } from 'app/modules/scenario/builders/action-factory';
+import { DefaultVehicleController } from 'app/modules/scenario/controllers/default-vehicle-controller';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
+import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
+import { ActionType, VehicleCategory } from 'app/modules/scenario/models/tv-enums';
+import { Orientation } from 'app/modules/scenario/models/tv-orientation';
+import { EntityManager } from 'app/services/entity-manager';
+import { Object3D, Vector3 } from 'three';
+import { IDService } from './id.service';
 
 export class VehicleFactory {
 

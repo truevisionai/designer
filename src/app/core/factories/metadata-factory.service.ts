@@ -3,18 +3,18 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { FileUtils } from 'app/core/io/file-utils';
 import { FileService } from 'app/core/io/file.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 import { Metadata, MetaImporter } from '../models/metadata.model';
 import { AppService } from '../services/app.service';
-import { FileUtils } from 'app/core/io/file-utils';
-import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -254,7 +254,7 @@ export class MetadataFactory {
 		// unset image to avoid write image data in json
 		// this will reduce the size of the json file and
 		// saves time
-		texture.image = null
+		texture.image = null;
 
 		const data = texture.toJSON( undefined );
 

@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from "app/core/commands/base-command";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { RoadElevationNode } from "app/modules/three-js/objects/road-elevation-node";
-import { SceneService } from "app/core/services/scene.service";
-import { RoadFactory } from "app/core/factories/road-factory.service";
-import { SetInspectorCommand } from "app/core/commands/set-inspector-command";
+import { BaseCommand } from 'app/core/commands/base-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { SceneService } from 'app/core/services/scene.service';
+import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class DeleteElevationCommand extends BaseCommand {
 

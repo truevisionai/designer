@@ -8,8 +8,10 @@ import { Vector3 } from 'three';
 import { TvConsole } from '../../../core/utils/console';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { EntityRef } from '../models/entity-ref';
 import { Position } from '../models/position';
+import { RelativeRoadPosition } from '../models/positions/relative-road.position';
 import { LanePosition } from '../models/positions/tv-lane-position';
 import { RelativeLanePosition } from '../models/positions/tv-relative-lane-position';
 import { RelativeObjectPosition } from '../models/positions/tv-relative-object-position';
@@ -18,8 +20,6 @@ import { RoadPosition } from '../models/positions/tv-road-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PositionType } from '../models/tv-enums';
 import { Orientation } from '../models/tv-orientation';
-import { RelativeRoadPosition } from '../models/positions/relative-road.position';
-import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 export class PositionFactory {
 	static reset () {
@@ -128,24 +128,6 @@ export class PositionFactory {
 
 	}
 
-	private static createLanePosition ( vector3: Vector3, orientation: Orientation ): LanePosition {
-
-		const posTheta = new TvPosTheta();
-
-		const results = TvMapQueries.getLaneByCoords( vector3.x, vector3.y, posTheta );
-
-		if ( results ) {
-
-			return new LanePosition( results.road.id, results.lane?.id || 0, 0, posTheta.s, orientation );
-
-		} else {
-
-			TvConsole.error( `Lane not found at ${ vector3.x }, ${ vector3.y }` );
-
-		}
-
-	}
-
 	public static createRelativeLanePosition ( entityRef: string, vector3: Vector3, orientation: Orientation ): RelativeLanePosition {
 
 		// return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
@@ -157,6 +139,24 @@ export class PositionFactory {
 		if ( results ) {
 
 			return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
+
+		} else {
+
+			TvConsole.error( `Lane not found at ${ vector3.x }, ${ vector3.y }` );
+
+		}
+
+	}
+
+	private static createLanePosition ( vector3: Vector3, orientation: Orientation ): LanePosition {
+
+		const posTheta = new TvPosTheta();
+
+		const results = TvMapQueries.getLaneByCoords( vector3.x, vector3.y, posTheta );
+
+		if ( results ) {
+
+			return new LanePosition( results.road.id, results.lane?.id || 0, 0, posTheta.s, orientation );
 
 		} else {
 

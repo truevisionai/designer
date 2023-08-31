@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
@@ -9,7 +10,6 @@ import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geo
 import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-param-poly3-geometry';
 import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
@@ -19,7 +19,6 @@ import { AbstractSpline } from './abstract-spline';
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -591,7 +590,8 @@ export class ExplicitSpline extends AbstractSpline {
 
 class ParamPoly3 {
 
-	constructor ( private p1: THREE.Vector3, private p2: THREE.Vector3, private hdg1: number, private hdg2: number ) { }
+	constructor ( private p1: THREE.Vector3, private p2: THREE.Vector3, private hdg1: number, private hdg2: number ) {
+	}
 
 	// Get point on the curve at t [0, 1]
 	getPoint ( t: number ): THREE.Vector3 {

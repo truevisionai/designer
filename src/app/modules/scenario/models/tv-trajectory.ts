@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvConsole } from 'app/core/utils/console';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Position } from './position';
 import { ParameterDeclaration } from './tv-parameter-declaration';
-import { TvConsole } from 'app/core/utils/console';
 
 export enum EnumTrajectoryDomain {
 	Time = 'time',
@@ -50,6 +50,7 @@ export abstract class AbstractShape {
 
 export class PolylineShape extends AbstractShape {
 	vertices: Vertex[] = [];
+
 	addVertex ( vertex: Vertex ) {
 		this.vertices.push( vertex );
 	}

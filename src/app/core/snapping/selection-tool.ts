@@ -11,10 +11,9 @@ import { SceneService } from '../services/scene.service';
 
 export class SelectionTool<T extends ISelectable> {
 
+	public isSelecting = false;
 	private cssHelper: SelectionHelper;
 	private box: SelectionBox;
-
-	public isSelecting = false;
 
 	constructor ( private tag: string ) {
 

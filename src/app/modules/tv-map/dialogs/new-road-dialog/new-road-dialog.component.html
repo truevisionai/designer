@@ -17,17 +17,17 @@
 	<div *ngIf="!isElectronApp">
 		<h5>Open From Computer</h5>
 		<input (change)=fileChange($event)
-			type="file" />
+			   type="file"/>
 	</div>
 
-	<br />
+	<br/>
 
 	<mat-divider></mat-divider>
 
 	<mat-list>
 		<div mat-subheader>Recent Files</div>
 		<mat-list-item (click)="openFile(file)"
-			*ngFor="let file of recentFiles">
+					   *ngFor="let file of recentFiles">
 			<mat-icon mat-list-icon>folder</mat-icon>
 			<div mat-line>{{file.path}}</div>
 			<div mat-line> {{file.type}} </div>

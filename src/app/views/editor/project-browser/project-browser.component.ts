@@ -352,7 +352,7 @@ export class ProjectBrowserComponent implements OnInit {
 					?.afterClosed()
 					.subscribe( () => {
 						this.onFolderChanged( this.selectedFolder );
-					} )
+					} );
 				break;
 
 			case FileExtension.OPENDRIVE:

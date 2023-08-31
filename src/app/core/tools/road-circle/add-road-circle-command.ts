@@ -5,15 +5,13 @@
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { Maths } from 'app/utils/maths';
 import { Vector2, Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from '../../commands/od-base-command';
-import { RoadFactory } from '../../factories/road-factory.service';
 import { AutoSpline } from '../../shapes/auto-spline';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
 
 export class AddRoadCircleCommand extends OdBaseCommand {
 
@@ -132,7 +130,7 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 			if ( ( i + 1 ) < roads.length ) {
 
-				const nextRoad = roads[ i + 1 ]
+				const nextRoad = roads[ i + 1 ];
 
 				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
 				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );

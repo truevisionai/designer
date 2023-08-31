@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
-import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { PropertyCopyService } from "./property-copy.service";
+import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { PropertyCopyService } from './property-copy.service';
 
 describe( 'PropertyCopyService Test', () => {
 
@@ -14,10 +14,10 @@ describe( 'PropertyCopyService Test', () => {
 		const lane2 = new TvLane( TvLaneSide.RIGHT, 2, TvLaneType.border, false, 1, null );
 
 		PropertyCopyService.copyProperties( lane1 );
-		PropertyCopyService.pasteProperties( lane2 )
+		PropertyCopyService.pasteProperties( lane2 );
 
 		expect( lane2.type ).toBe( lane1.type );
 		expect( lane2.level ).toBe( lane1.level );
 
 	} );
-} )
+} );

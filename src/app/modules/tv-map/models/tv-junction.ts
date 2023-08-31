@@ -4,11 +4,11 @@
 
 import { Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
+import { TvContactPoint } from './tv-common';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
-import { TvContactPoint } from './tv-common';
 
 export enum JunctionType {
 	DEFAULT = 'default',
@@ -23,16 +23,32 @@ export class TvJunction {
 	private lastAddedJunctionPriorityIndex: number;
 	private lastAddedJunctionControllerIndex: number;
 
-	private _name: string;
-	private _id: number;
-	private _priorities: TvJunctionPriority[] = [];
-	private _controllers: TvJunctionController[] = [];
-	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
-
 	constructor ( name: string, id: number ) {
 		this._name = name;
 		this._id = id;
 	}
+
+	private _name: string;
+
+	get name (): string {
+		return this._name;
+	}
+
+	set name ( value: string ) {
+		this._name = value;
+	}
+
+	private _id: number;
+
+	get id (): number {
+		return this._id;
+	}
+
+	set id ( value: number ) {
+		this._id = value;
+	}
+
+	private _priorities: TvJunctionPriority[] = [];
 
 	get priorities (): TvJunctionPriority[] {
 		return this._priorities;
@@ -42,6 +58,8 @@ export class TvJunction {
 		this._priorities = value;
 	}
 
+	private _controllers: TvJunctionController[] = [];
+
 	get controllers (): TvJunctionController[] {
 		return this._controllers;
 	}
@@ -49,6 +67,8 @@ export class TvJunction {
 	set controllers ( value: TvJunctionController[] ) {
 		this._controllers = value;
 	}
+
+	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
 	get connections (): Map<number, TvJunctionConnection> {
 		return this._connections;
@@ -60,22 +80,6 @@ export class TvJunction {
 
 	getConnections (): TvJunctionConnection[] {
 		return Array.from( this.connections.values() );
-	}
-
-	get name (): string {
-		return this._name;
-	}
-
-	set name ( value: string ) {
-		this._name = value;
-	}
-
-	get id (): number {
-		return this._id;
-	}
-
-	set id ( value: number ) {
-		this._id = value;
 	}
 
 	removeConnectionByUuid ( uuid: string ) {
@@ -103,7 +107,7 @@ export class TvJunction {
 				this.connections.delete( connection.id );
 			}
 
-		} )
+		} );
 
 	}
 
@@ -318,38 +322,6 @@ export class TvJunction {
 		return connections[ randomIndex ];
 	}
 
-	private removeJunctionRelation ( road: TvRoad ): void {
-
-		let hasConnections = false;
-
-		for ( const connection of this.connections ) {
-
-			if ( connection[ 1 ].incomingRoadId === road.id ) {
-
-				hasConnections = true;
-
-			} else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
-
-				hasConnections = true;
-
-			}
-		}
-
-		if ( !hasConnections ) {
-
-			if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
-
-				road.successor = null;
-
-			} else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
-
-				road.predecessor = null;
-
-			}
-
-		}
-	}
-
 	/**
 	 * Checks if the junction has a connection to the given road
 	 *
@@ -403,6 +375,38 @@ export class TvJunction {
 		this.addConnection( connection );
 
 		return connection;
+	}
+
+	private removeJunctionRelation ( road: TvRoad ): void {
+
+		let hasConnections = false;
+
+		for ( const connection of this.connections ) {
+
+			if ( connection[ 1 ].incomingRoadId === road.id ) {
+
+				hasConnections = true;
+
+			} else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
+
+				hasConnections = true;
+
+			}
+		}
+
+		if ( !hasConnections ) {
+
+			if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
+
+				road.successor = null;
+
+			} else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
+
+				road.predecessor = null;
+
+			}
+
+		}
 	}
 
 }

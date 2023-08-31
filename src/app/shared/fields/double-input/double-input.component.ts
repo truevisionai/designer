@@ -30,7 +30,15 @@ export class DoubleInputComponent implements OnInit {
 
 	sendTimeout: any;
 
-	constructor () { }
+	constructor () {
+	}
+
+	static isNumeric ( value: string ): boolean {
+
+		// Allow for a trailing decimal point
+		return /^-?\d*\.?\d*\.?$/.test( value );
+
+	}
 
 	ngOnInit () {
 
@@ -99,7 +107,9 @@ export class DoubleInputComponent implements OnInit {
 
 		if ( Number.isNaN( parseFloat( $value ) ) ) {
 
-			setTimeout( () => { this.value = this.value; }, 100 );
+			setTimeout( () => {
+				this.value = this.value;
+			}, 100 );
 
 		} else {
 
@@ -180,13 +190,6 @@ export class DoubleInputComponent implements OnInit {
 		// 	console.log( 'inputValue', inputValue );
 
 		// }
-	}
-
-	static isNumeric ( value: string ): boolean {
-
-		// Allow for a trailing decimal point
-		return /^-?\d*\.?\d*\.?$/.test( value );
-
 	}
 
 }

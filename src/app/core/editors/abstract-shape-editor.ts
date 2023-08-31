@@ -49,30 +49,15 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 	public pickingEnabled: boolean = true;
 
 	public currentPoint: AnyControlPoint;
-
-	protected _pointerDownAt: THREE.Vector3;
-
-	public get pointerDownAt (): THREE.Vector3 {
-		return this._pointerDownAt;
-	}
-
-	protected set pointerDownAt ( value: THREE.Vector3 ) {
-		this._pointerDownAt = value;
-	}
-
 	protected isDragging: boolean;
-
 	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.CYAN;
 	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
 	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
-
 	protected DEFAULT_LINE_COLOR = COLOR.RED;
 	protected HIGHLIGHT_LINE_COLOR = COLOR.CYAN;
-
 	protected object: Object3D;
 	protected material = new THREE.LineBasicMaterial( { color: this.DEFAULT_LINE_COLOR, depthTest: false } );
 	protected pointerIsDown: boolean;
-
 	// subscribers
 	private pointerMovedSubscriber: Subscription;
 	private pointerClickedSubscriber: Subscription;
@@ -91,6 +76,16 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.enable();
 
+	}
+
+	protected _pointerDownAt: THREE.Vector3;
+
+	public get pointerDownAt (): THREE.Vector3 {
+		return this._pointerDownAt;
+	}
+
+	protected set pointerDownAt ( value: THREE.Vector3 ) {
+		this._pointerDownAt = value;
 	}
 
 	private _controlPoints: AnyControlPoint[] = [];
@@ -406,7 +401,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	protected createControlPoint ( position: Vector3, parent?: Object3D, size?: number ) {
 
-		const dotGeometry = new BufferGeometry()
+		const dotGeometry = new BufferGeometry();
 
 		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 

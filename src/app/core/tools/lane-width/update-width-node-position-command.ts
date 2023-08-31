@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
+import { BaseCommand } from '../../commands/base-command';
 import { NodeFactoryService } from '../../factories/node-factory.service';
 import { SceneService } from '../../services/scene.service';
-import { BaseCommand } from '../../commands/base-command';
 
 export class UpdateWidthNodePositionCommand extends BaseCommand {
 

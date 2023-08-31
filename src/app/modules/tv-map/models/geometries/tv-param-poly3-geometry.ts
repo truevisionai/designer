@@ -10,11 +10,6 @@ import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 	public geometryType: TvGeometryType = TvGeometryType.PARAMPOLY3;
-
-	private sinTheta;
-	private cosTheta;
-	private curve: Curve<Vector2>;
-
 	public aU: number;
 	public bU: number;
 	public cU: number;
@@ -23,6 +18,9 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 	public bV: number;
 	public cV: number;
 	public dV: number;
+	private sinTheta;
+	private cosTheta;
+	private curve: Curve<Vector2>;
 
 	constructor (
 		s: number,

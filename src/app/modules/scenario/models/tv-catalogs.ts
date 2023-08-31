@@ -21,7 +21,8 @@ export class Catalogs {
 
 	private catalogs = new Map<string, Catalog>();
 
-	constructor () { }
+	constructor () {
+	}
 
 	addCatalog ( catalog: Catalog ): void {
 
@@ -60,10 +61,8 @@ export class Catalogs {
 export class Catalog {
 
 	public catalogType: CatalogType;
-
-	private entries = new Map<string, any>();
-
 	public fileHeader = new FileHeader();
+	private entries = new Map<string, any>();
 
 	constructor (
 		public name: string,

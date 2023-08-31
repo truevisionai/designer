@@ -5,10 +5,10 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
-import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { Object3D } from 'three';
 
 class FlatNode extends Object3D {
@@ -28,6 +28,11 @@ export class PrefabInspectorComponent implements OnInit, IComponent, OnDestroy {
 	currentObject: Object3D;
 
 	data: TvPrefab;
+	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
+	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
+
+	constructor ( private changeDet: ChangeDetectorRef ) {
+	}
 
 	transformer = ( node: Object3D, level: number ) => {
 		return {
@@ -40,25 +45,18 @@ export class PrefabInspectorComponent implements OnInit, IComponent, OnDestroy {
 			level: level,
 			object: node,
 		};
-	}
-
-	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
+	};
 
 	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
-
-	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
 	hasChild = ( _: number, node: FlatNode ) => node.expandable;
 
 	generateTreeData ( object3d: THREE.Object3D ): Object3D[] {
 		// Convert the object and its children to a tree node
-		const treeNode: Object3D = object3d
+		const treeNode: Object3D = object3d;
 
 		return [ treeNode ];
 	}
-
-
-	constructor ( private changeDet: ChangeDetectorRef ) { }
 
 	ngOnInit (): void {
 

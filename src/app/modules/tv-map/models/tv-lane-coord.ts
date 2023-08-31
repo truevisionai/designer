@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoad } from './tv-road.model';
-import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 
 export class TvCoord {
 
@@ -58,20 +58,12 @@ export class TvLaneCoord {
 
 export class TvRoadCoord {
 
-	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
+	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
 
 	}
 
 	get road (): TvRoad {
 		return TvMapInstance.map.getRoadById( this.roadId );
-	}
-
-	init () { }
-
-	add ( value: TvRoadCoord ) { }
-
-	toPosTheta () {
-		return this.road?.getRoadCoordAt( this.s, this.t );
 	}
 
 	get position (): Vector3 {
@@ -85,6 +77,16 @@ export class TvRoadCoord {
 		if ( this.t > 0 ) h += Math.PI;
 
 		return new Orientation( h, this.p, this.r );
+	}
+
+	init () {
+	}
+
+	add ( value: TvRoadCoord ) {
+	}
+
+	toPosTheta () {
+		return this.road?.getRoadCoordAt( this.s, this.t );
 	}
 }
 

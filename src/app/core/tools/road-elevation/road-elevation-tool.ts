@@ -12,12 +12,12 @@ import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Vector3 } from 'three';
 import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -116,6 +116,41 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	}
 
+	selectRoad ( road: TvRoad ): void {
+
+		this.setHint( 'New Road Selected' );
+
+		CommandHistory.execute( new ShowElevationNodes( this, road, this.road ) );
+
+	}
+
+	unselectRoad (): void {
+
+		CommandHistory.execute( new HideElevationNodes( this, this.road, this.node ) );
+
+	}
+
+	selectNode ( node: RoadElevationNode ) {
+
+		const command = new SelectPointCommand( this, node, DynamicInspectorComponent, node );
+
+		CommandHistory.execute( command );
+
+		this.setHint( 'Drag node to modify position. Change properties from inspector' );
+	}
+
+	setPoint ( value: ISelectable ): void {
+
+		this.node = value as RoadElevationNode;
+
+	}
+
+	getPoint (): ISelectable {
+
+		return this.node;
+
+	}
+
 	private isRoadSelected ( e: PointerEventData ): boolean {
 
 		const newLane = PickingHelper.checkLaneObjectInteraction( e );
@@ -152,41 +187,6 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 		}
 
 		return true;
-	}
-
-	selectRoad ( road: TvRoad ): void {
-
-		this.setHint( 'New Road Selected' );
-
-		CommandHistory.execute( new ShowElevationNodes( this, road, this.road ) );
-
-	}
-
-	unselectRoad (): void {
-
-		CommandHistory.execute( new HideElevationNodes( this, this.road, this.node ) );
-
-	}
-
-	selectNode ( node: RoadElevationNode ) {
-
-		const command = new SelectPointCommand( this, node, DynamicInspectorComponent, node );
-
-		CommandHistory.execute( command );
-
-		this.setHint( 'Drag node to modify position. Change properties from inspector' );
-	}
-
-	setPoint ( value: ISelectable ): void {
-
-		this.node = value as RoadElevationNode;
-
-	}
-
-	getPoint (): ISelectable {
-
-		return this.node;
-
 	}
 
 }

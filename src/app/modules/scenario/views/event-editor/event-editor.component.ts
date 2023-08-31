@@ -4,16 +4,15 @@
 
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
-import { ActionFactory } from '../../builders/action-factory';
-import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
 import { ConditionFactory } from '../../builders/condition-factory';
+import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
+import { Condition } from '../../models/conditions/tv-condition';
+import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
-import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioInstance } from '../../services/scenario-instance';
-import { Condition } from '../../models/conditions/tv-condition';
 
 @Component( {
 	selector: 'app-event-editor',
@@ -30,13 +29,13 @@ export class EventEditorComponent implements OnInit {
 
 	@Input() isOpen = true;
 
-	get scenario () {
-		return ScenarioInstance.scenario;
-	}
-
 	constructor (
 		private menuService: MenuService
 	) {
+	}
+
+	get scenario () {
+		return ScenarioInstance.scenario;
 	}
 
 	ngOnInit () {

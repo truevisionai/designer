@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from './file';
-import { ApiService } from '../services/api.service';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { ApiService } from '../services/api.service';
+import { IFile } from './file';
 
 @Injectable( {
 	providedIn: 'root'

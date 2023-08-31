@@ -27,6 +27,13 @@ export class SignupComponent implements OnInit {
 
 	signupForm: FormGroup;
 
+	constructor (
+		private authService: AuthService,
+		private router: Router,
+		private electron: TvElectronService
+	) {
+	}
+
 	get agreed () {
 		return this.signupForm.controls[ 'agreed' ] as FormControl;
 	}
@@ -45,13 +52,6 @@ export class SignupComponent implements OnInit {
 
 	get email () {
 		return this.signupForm.controls[ 'email' ] as FormControl;
-	}
-
-	constructor (
-		private authService: AuthService,
-		private router: Router,
-		private electron: TvElectronService
-	) {
 	}
 
 	ngOnInit () {

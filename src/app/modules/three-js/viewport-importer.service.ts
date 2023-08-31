@@ -3,27 +3,25 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Metadata } from 'app/core/models/metadata.model';
-import { DragDropData } from 'app/core/services/drag-drop.service';
-import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { TvConsole } from 'app/core/utils/console';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileUtils } from 'app/core/io/file-utils';
 import { FileExtension } from 'app/core/io/file.service';
+import { Metadata } from 'app/core/models/metadata.model';
+import { DragDropData } from 'app/core/services/drag-drop.service';
+import { SceneService } from 'app/core/services/scene.service';
+import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
+import { ToolManager } from 'app/core/tools/tool-manager';
+import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/services/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { PropManager } from 'app/services/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Box3, BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
 import { TvMesh } from './objects/tv-prefab.model';
-import { SceneService } from 'app/core/services/scene.service';
-import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { CoordinateSystem } from 'app/services/exporter.service';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 @Injectable( {
 	providedIn: 'root'

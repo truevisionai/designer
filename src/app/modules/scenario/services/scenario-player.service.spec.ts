@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { PlayerService } from '../../../core/player.service';
-import { ScenarioDirectorService } from './scenario-director.service';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
-import { ScenarioInstance } from './scenario-instance';
 import { TvScenario } from '../models/tv-scenario';
+import { ScenarioDirectorService } from './scenario-director.service';
+import { ScenarioInstance } from './scenario-instance';
 
 
 describe( 'ScenarioPlayerService', () => {

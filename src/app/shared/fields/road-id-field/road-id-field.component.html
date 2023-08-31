@@ -1,5 +1,5 @@
-<app-dropdown-field label="RoadID"
-	[value]="value"
-	[options]="roads"
-	(changed)="onRoadIdChanged($event)">
+<app-dropdown-field (changed)="onRoadIdChanged($event)"
+					[options]="roads"
+					[value]="value"
+					label="RoadID">
 </app-dropdown-field>

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OpenScenarioVersion } from "./tv-enums";
+import { OpenScenarioVersion } from './tv-enums';
 
 export class FileHeader {
 

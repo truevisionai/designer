@@ -3,10 +3,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import * as Sentry from "@sentry/angular";
-import { Environment } from '../utils/environment';
+import * as Sentry from '@sentry/angular';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileApiService } from '../io/file-api.service';
+import { Environment } from '../utils/environment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -35,7 +35,7 @@ export class SentryService {
 
 		Sentry.setUser( {
 			email: email,
-			ip_address: "{{auto}}"
+			ip_address: '{{auto}}'
 		} );
 
 	}
@@ -65,7 +65,7 @@ export class SentryService {
 
 		} catch ( e ) {
 
-			Sentry.captureException( "Sending Via Scope Failed", context );
+			Sentry.captureException( 'Sending Via Scope Failed', context );
 			Sentry.captureException( error, context );
 
 		}
@@ -79,7 +79,7 @@ export class SentryService {
 		this.fileApiService.uploadMapFiles( error ).subscribe( ( links ) => {
 
 			Sentry.configureScope( scope => {
-				scope.setExtra( "links", links );
+				scope.setExtra( 'links', links );
 			} );
 
 			Sentry.captureException( error, context );

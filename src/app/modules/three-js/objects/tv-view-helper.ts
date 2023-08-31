@@ -73,7 +73,7 @@ export class TvViewHelper extends Object3D {
 		this.zAxis = new Mesh( this.geometry, getAxisMaterial( color3 ) );
 
 		this.yAxis.rotation.z = Math.PI / 2;
-		this.zAxis.rotation.y = - Math.PI / 2;
+		this.zAxis.rotation.y = -Math.PI / 2;
 
 		this.add( this.xAxis );
 		this.add( this.zAxis );
@@ -95,11 +95,11 @@ export class TvViewHelper extends Object3D {
 		this.posXAxisHelper.position.x = 1;
 		this.posYAxisHelper.position.y = 1;
 		this.posZAxisHelper.position.z = 1;
-		this.negXAxisHelper.position.x = - 1;
+		this.negXAxisHelper.position.x = -1;
 		this.negXAxisHelper.scale.setScalar( 0.8 );
-		this.negYAxisHelper.position.y = - 1;
+		this.negYAxisHelper.position.y = -1;
 		this.negYAxisHelper.scale.setScalar( 0.8 );
-		this.negZAxisHelper.position.z = - 1;
+		this.negZAxisHelper.position.z = -1;
 		this.negZAxisHelper.scale.setScalar( 0.8 );
 
 		this.add( this.posXAxisHelper );
@@ -210,7 +210,7 @@ export class TvViewHelper extends Object3D {
 		const offsetX = rect.left + ( this.domElement.offsetWidth - this.dim );
 		const offsetY = rect.top + ( this.domElement.offsetHeight - this.dim );
 		this.mouse.x = ( ( event.clientX - offsetX ) / ( rect.width - offsetX ) ) * 2 - 1;
-		this.mouse.y = - ( ( event.clientY - offsetY ) / ( rect.bottom - offsetY ) ) * 2 + 1;
+		this.mouse.y = -( ( event.clientY - offsetY ) / ( rect.bottom - offsetY ) ) * 2 + 1;
 
 		this.raycaster.setFromCamera( this.mouse, this.orthoCamera );
 
@@ -286,7 +286,7 @@ export class TvViewHelper extends Object3D {
 
 			case 'posY':
 				this.targetPosition.set( 0, 1, 0 );
-				this.targetQuaternion.setFromEuler( new Euler( - Math.PI * 0.5, 0, 0 ) );
+				this.targetQuaternion.setFromEuler( new Euler( -Math.PI * 0.5, 0, 0 ) );
 				break;
 
 			case 'posZ':
@@ -295,17 +295,17 @@ export class TvViewHelper extends Object3D {
 				break;
 
 			case 'negX':
-				this.targetPosition.set( - 1, 0, 0 );
-				this.targetQuaternion.setFromEuler( new Euler( 0, - Math.PI * 0.5, 0 ) );
+				this.targetPosition.set( -1, 0, 0 );
+				this.targetQuaternion.setFromEuler( new Euler( 0, -Math.PI * 0.5, 0 ) );
 				break;
 
 			case 'negY':
-				this.targetPosition.set( 0, - 1, 0 );
+				this.targetPosition.set( 0, -1, 0 );
 				this.targetQuaternion.setFromEuler( new Euler( Math.PI * 0.5, 0, 0 ) );
 				break;
 
 			case 'negZ':
-				this.targetPosition.set( 0, 0, - 1 );
+				this.targetPosition.set( 0, 0, -1 );
 				this.targetQuaternion.setFromEuler( new Euler( 0, Math.PI, 0 ) );
 				break;
 

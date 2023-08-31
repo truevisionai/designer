@@ -3,9 +3,9 @@
  */
 
 import { EventEmitter } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { GameObject } from 'app/core/game-object';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import * as THREE from 'three';
 import { Mesh, PlaneGeometry, Shape, Texture } from 'three';
 
@@ -48,10 +48,11 @@ export class TvRoadMarking {
 
 		let texture: Texture;
 
-		if ( this.textureGuid )
+		if ( this.textureGuid ) {
 			texture = AssetDatabase.getInstance<Texture>( this.textureGuid );
-		else
+		} else {
 			texture = ThreeJsUtils.createPinkTexture( 256, 256 );
+		}
 
 		// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		// texture.repeat.set( 0.008, 0.008 );

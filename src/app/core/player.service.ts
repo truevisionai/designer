@@ -21,11 +21,10 @@ export class PlayerService {
 	playerTick = new EventEmitter<PlayerUpdateData>();
 	playerPaused = new EventEmitter<any>();
 	playerStopped = new EventEmitter<any>();
-
+	public playing: boolean = false;
 	private prevTime: number;
 	private handle: number;
 	private paused: boolean = false;
-	public playing: boolean = false;
 
 	constructor () {
 	}

@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SnackBar } from 'app/services/snack-bar.service';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
-import { BaseCommand } from './base-command';
-import { TvConsole } from '../utils/console';
-import { SnackBar } from 'app/services/snack-bar.service';
 import { RoadFactory } from '../factories/road-factory.service';
+import { TvConsole } from '../utils/console';
+import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
-import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 
 export class DuplicateLaneCommand extends BaseCommand {
 

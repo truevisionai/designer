@@ -3,25 +3,25 @@
   -->
 
 <mat-card [class.file-card]="true"
-	[draggable]="!isDirectory && !isUnknown"
-	[matTooltip]="file.name">
+		  [draggable]="!isDirectory && !isUnknown"
+		  [matTooltip]="file.name">
 	<ng-container *ngIf="!isTexture">
-		<img [src]="imageSource"
-			[class.file-card-image]="true" />
+		<img [class.file-card-image]="true"
+			 [src]="imageSource"/>
 	</ng-container>
 	<ng-container *ngIf="isTexture">
-		<img [src]="filePath"
-			[class.file-card-image]="true" />
+		<img [class.file-card-image]="true"
+			 [src]="filePath"/>
 	</ng-container>
 	<p *ngIf="!showRenaming"
-		class="file-name">{{ filename }}</p>
+	   class="file-name">{{ filename }}</p>
 	<p *ngIf="showRenaming"
-		class="file-name">
+	   class="file-name">
 		<input #nameInput
-			(blur)="onBlur($event)"
-			(focus)="onFocus($event)"
-			[value]="filename"
-			cdkFocusInitial
-			type="text" />
+			   (blur)="onBlur($event)"
+			   (focus)="onFocus($event)"
+			   [value]="filename"
+			   cdkFocusInitial
+			   type="text"/>
 	</p>
 </mat-card>

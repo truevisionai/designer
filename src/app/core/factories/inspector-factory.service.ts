@@ -3,29 +3,29 @@
  */
 
 import { Injectable, Type } from '@angular/core';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { FileService } from 'app/core/io/file.service';
+import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { CommandHistory } from 'app/services/command-history';
+import { EntityManager } from 'app/services/entity-manager';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
+import { DynamicFileInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
+import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { PropInstanceInspectorComponent } from 'app/views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { PropModelInspectorComponent } from 'app/views/inspectors/prop-model-inspector/prop-model-inspector.component';
 import { RoadMarkingInspector } from 'app/views/inspectors/road-marking-inspector/road-marking-inspector.component';
 import { RoadSignInspector } from 'app/views/inspectors/road-sign-inspector/road-sign-inspector.component';
 import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
 import { TextureInspector } from 'app/views/inspectors/texture-inspector/texture-inspector.component';
+import { XodrFileInspectorComponent } from 'app/views/inspectors/xodr-file-inspector/xodr-file-inspector.component';
+import { XoscFileInspectorComponent } from 'app/views/inspectors/xosc-file-inspector/xosc-file-inspector.component';
+import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { IComponent } from '../game-object';
 import { AppInspector } from '../inspector';
 import { Metadata, MetaImporter } from '../models/metadata.model';
-import { XodrFileInspectorComponent } from 'app/views/inspectors/xodr-file-inspector/xodr-file-inspector.component';
-import { XoscFileInspectorComponent } from 'app/views/inspectors/xosc-file-inspector/xosc-file-inspector.component';
-import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
-import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
-import { DynamicFileInspectorComponent, DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { CommandHistory } from 'app/services/command-history';
-import { SetInspectorCommand } from '../commands/set-inspector-command';
-import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
-import { EntityManager } from 'app/services/entity-manager';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -36,6 +36,9 @@ export enum InspectorType {
 	providedIn: 'root'
 } )
 export class InspectorFactoryService {
+
+	constructor () {
+	}
 
 	static setAssetInspector ( metadata: Metadata ) {
 
@@ -53,9 +56,6 @@ export class InspectorFactoryService {
 
 		}
 
-	}
-
-	constructor () {
 	}
 
 	static setByType ( type: InspectorType, data: any ) {

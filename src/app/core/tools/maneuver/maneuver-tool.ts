@@ -12,10 +12,10 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from '../../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
 import { JunctionFactory } from '../../factories/junction.factory';
-import { SelectionTool } from '../../snapping/selection-tool';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { SceneService } from '../../services/scene.service';
+import { SelectionTool } from '../../snapping/selection-tool';
 import { TvConsole } from '../../utils/console';
 import { BaseTool } from '../base-tool';
 import { CreateSingleManeuver } from './create-single-maneuver';
@@ -25,16 +25,11 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 	name: string = 'ManeuverTool';
 
 	toolType = ToolType.Maneuver;
-
-	private entries: JunctionEntryObject[] = [];
-
-	private lanePathObjects = [];
-
-	private selected: JunctionEntryObject[] = [];
-
-	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
-
 	public selectionTool: SelectionTool<JunctionEntryObject>;
+	private entries: JunctionEntryObject[] = [];
+	private lanePathObjects = [];
+	private selected: JunctionEntryObject[] = [];
+	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
 	constructor () {
 

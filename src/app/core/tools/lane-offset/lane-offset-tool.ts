@@ -2,13 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
-import { COLOR } from 'app/shared/utils/colors.service';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
 import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
@@ -18,6 +16,7 @@ import { SelectLaneForLaneOffsetCommand } from './select-lane-for-lane-offset-co
 import { SelectLaneOffsetNodeCommand } from './select-lane-offset-node-command';
 import { UnselectLaneForLaneOffsetCommand } from './unselect-lane-for-lane-offset-command';
 import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
+import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
 
 export class LaneOffsetTool extends BaseTool {
 

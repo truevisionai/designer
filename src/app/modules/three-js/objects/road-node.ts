@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -14,7 +15,6 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -34,39 +34,6 @@ export class RoadNode extends Group implements ISelectable {
 
 		this.createLineSegment( road, contact );
 
-	}
-
-	private createLineSegment ( road: TvRoad, contact: TvContactPoint ) {
-
-		const sCoord = this.sCoordinate;
-
-		const result = road.getRoadWidthAt( sCoord );
-
-		const start = road.getPositionAt( sCoord, result.leftSideWidth );
-		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
-
-		const lineGeometry = new LineGeometry();
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z,
-			end.x, end.y, end.z
-		] );
-
-		const lineMaterial = new LineMaterial( {
-			color: RoadNode.defaultColor,
-			opacity: RoadNode.defaultOpacity,
-			linewidth: RoadNode.defaultWidth,
-			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
-		} );
-
-		this.line = new Line2( lineGeometry, lineMaterial );
-
-		this.line[ 'tag' ] = RoadNode.lineTag;
-
-		this.line.renderOrder = 3;
-
-		this.add( this.line );
-
-		this[ 'tag' ] = RoadNode.tag;
 	}
 
 	get material () {
@@ -187,5 +154,38 @@ export class RoadNode extends Group implements ISelectable {
 			this.road.spline.getFirstPoint() :
 			this.road.spline.getLastPoint();
 
+	}
+
+	private createLineSegment ( road: TvRoad, contact: TvContactPoint ) {
+
+		const sCoord = this.sCoordinate;
+
+		const result = road.getRoadWidthAt( sCoord );
+
+		const start = road.getPositionAt( sCoord, result.leftSideWidth );
+		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		const lineMaterial = new LineMaterial( {
+			color: RoadNode.defaultColor,
+			opacity: RoadNode.defaultOpacity,
+			linewidth: RoadNode.defaultWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+		} );
+
+		this.line = new Line2( lineGeometry, lineMaterial );
+
+		this.line[ 'tag' ] = RoadNode.lineTag;
+
+		this.line.renderOrder = 3;
+
+		this.add( this.line );
+
+		this[ 'tag' ] = RoadNode.tag;
 	}
 }

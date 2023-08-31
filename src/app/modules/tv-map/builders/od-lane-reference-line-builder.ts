@@ -62,6 +62,39 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
+	private static makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+
+		let s = laneSection.s;
+
+		while ( s <= laneSection.endS ) {
+
+			OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
+
+			s++;
+		}
+
+		s = laneSection.endS - Maths.Epsilon;
+
+		OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
+	}
+
+	private static makeLanePointsLoop ( s: number, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+
+		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
+
+		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
+
+		// If right side lane then make the offset negative
+		if ( lane.side === TvLaneSide.RIGHT ) {
+			width *= -1;
+		}
+
+		posTheta.addLateralOffset( width );
+
+		points.push( posTheta );
+
+	}
+
 	public setType ( lineType: LineType ) {
 
 		this.lineType = lineType;
@@ -83,7 +116,6 @@ export class OdLaneReferenceLineBuilder {
 
 		this.drawRoad( road, type );
 	}
-
 
 	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw = false ) {
 
@@ -316,39 +348,6 @@ export class OdLaneReferenceLineBuilder {
 		} );
 
 		return tmp;
-	}
-
-	private static makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
-
-		let s = laneSection.s;
-
-		while ( s <= laneSection.endS ) {
-
-			OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
-
-			s++;
-		}
-
-		s = laneSection.endS - Maths.Epsilon;
-
-		OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
-	}
-
-	private static makeLanePointsLoop ( s: number, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
-
-		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
-
-		let width = laneSection.getWidthUptoEnd( lane, s - laneSection.s );
-
-		// If right side lane then make the offset negative
-		if ( lane.side === TvLaneSide.RIGHT ) {
-			width *= -1;
-		}
-
-		posTheta.addLateralOffset( width );
-
-		points.push( posTheta );
-
 	}
 
 

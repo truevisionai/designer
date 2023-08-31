@@ -2,29 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { SerializedField } from 'app/core/components/serialization';
+import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
-import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
-import { SerializedField } from 'app/core/components/serialization';
 
 export class PropCurve {
 
 	public static tag = 'propCurve';
 
 	public reverse: boolean = false;
-
-	private _spacing: number = 5.0;
-
-	private _rotation: number = 0.0;
-
-	private _positionVariance: number = 0.0;
-
 	public props: Object3D[] = [];
 
 	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public headings: number[] = [] ) {
@@ -41,6 +34,8 @@ export class PropCurve {
 
 	}
 
+	private _spacing: number = 5.0;
+
 	@SerializedField( { type: 'float', min: 0, max: 100 } )
 	get spacing (): number {
 		return this._spacing;
@@ -51,6 +46,8 @@ export class PropCurve {
 		this.update();
 	}
 
+	private _rotation: number = 0.0;
+
 	@SerializedField( { type: 'float', min: 0, max: 1 } )
 	get rotation (): number {
 		return this._rotation;
@@ -60,6 +57,8 @@ export class PropCurve {
 		this._rotation = value;
 		this.update();
 	}
+
+	private _positionVariance: number = 0.0;
 
 	@SerializedField( { type: 'float', min: 0, max: 100 } )
 	get positionVariance (): number {

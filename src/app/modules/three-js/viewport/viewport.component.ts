@@ -42,10 +42,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	raycaster = new THREE.Raycaster;
 	mouse: THREE.Vector2 = new THREE.Vector2();
-
+	clock = new THREE.Clock();
 	private animationId: number;
 	private renderer: WebGLRenderer;
-
 	private lastTime: number = Date.now();
 	private minTime: number = 100;
 	private onCanvas: boolean;
@@ -59,11 +58,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.elementRef.nativeElement;
+		return <HTMLCanvasElement> this.elementRef.nativeElement;
 	}
 
 	get viewHelperCanavs (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.viewHelperRef.nativeElement;
+		return <HTMLCanvasElement> this.viewHelperRef.nativeElement;
 	}
 
 	get cameraType (): string {
@@ -130,8 +129,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 	}
-
-	clock = new THREE.Clock();
 
 	render () {
 
@@ -248,11 +245,17 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		switch ( $event.button ) {
 
-			case MouseButton.LEFT: this.handleLeftClick( $event, intersection ); break;
+			case MouseButton.LEFT:
+				this.handleLeftClick( $event, intersection );
+				break;
 
-			case MouseButton.MIDDLE: this.handleMiddleClick( $event, intersection ); break;
+			case MouseButton.MIDDLE:
+				this.handleMiddleClick( $event, intersection );
+				break;
 
-			case MouseButton.RIGHT: this.handleRightClick( $event, intersection ); break;
+			case MouseButton.RIGHT:
+				this.handleRightClick( $event, intersection );
+				break;
 
 		}
 

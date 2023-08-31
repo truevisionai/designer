@@ -8,8 +8,8 @@ import { PolyLineEditor } from 'app/core/editors/polyline-editor';
 import { Debug } from 'app/core/utils/debug';
 import { CatmullRomCurve3, Points } from 'three';
 import { Position } from '../../models/position';
-import { PolylineShape, Trajectory, Vertex } from '../../models/tv-trajectory';
 import { WorldPosition } from '../../models/positions/tv-world-position';
+import { Trajectory, Vertex } from '../../models/tv-trajectory';
 
 @Component( {
 	selector: 'app-tv-trajectory-inspector',

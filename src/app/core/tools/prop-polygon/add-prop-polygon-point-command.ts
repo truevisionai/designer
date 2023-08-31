@@ -7,9 +7,9 @@ import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Vector3 } from 'three';
 import { PropPolygonTool } from './prop-polygon-tool';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class AddPropPolygonPointCommand extends BaseCommand {
 

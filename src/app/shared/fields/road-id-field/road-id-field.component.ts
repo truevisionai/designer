@@ -15,12 +15,12 @@ export class RoadIdFieldComponent extends AbstractFieldComponent {
 
 	@Input() value: number;
 
-	get roads (): number[] {
-		return TvMapQueries.getRoadArray().map( ( road ) => road.id );
-	}
-
 	constructor () {
 		super();
+	}
+
+	get roads (): number[] {
+		return TvMapQueries.getRoadArray().map( ( road ) => road.id );
 	}
 
 	ngOnInit () {

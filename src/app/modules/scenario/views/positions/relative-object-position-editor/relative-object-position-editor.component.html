@@ -1,8 +1,8 @@
-<app-select-entity-field label="Entity"
-	[value]="relativeObjectPosition.entityName"
-	(changed)="onEntityChanged($event)">
+<app-select-entity-field (changed)="onEntityChanged($event)"
+						 [value]="relativeObjectPosition.entityName"
+						 label="Entity">
 </app-select-entity-field>
 
-<app-vector3-field label="Delta"
-	[value]="delta"
-	(changed)="onDeltaChanged($event)"></app-vector3-field>
+<app-vector3-field (changed)="onDeltaChanged($event)"
+				   [value]="delta"
+				   label="Delta"></app-vector3-field>

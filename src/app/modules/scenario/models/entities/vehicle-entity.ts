@@ -2,13 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils, Vector3 } from 'three';
+import { SerializedField } from 'app/core/components/serialization';
+import { Vector3 } from 'three';
 import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../tv-bounding-box';
-import { ScenarioEntity } from './scenario-entity';
 import { ScenarioObjectType, VehicleCategory } from '../tv-enums';
 import { TvProperty } from '../tv-properties';
-import { SerializedField } from 'app/core/components/serialization';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { ScenarioEntity } from './scenario-entity';
 
 export class VehicleEntity extends ScenarioEntity {
 
@@ -94,6 +93,6 @@ export class VehicleEntity extends ScenarioEntity {
 			boundingBox: this.boundingBox.toJSON(),
 			performance: this.performance.toJSON(),
 			axles: this.axles.toJSON(),
-		}
+		};
 	}
 }

@@ -72,15 +72,20 @@ export abstract class Condition {
 	public edge: ConditionEdge = ConditionEdge.risingOrFalling;
 	public passed: boolean;
 
-	constructor () { }
+	constructor () {
+	}
 
 	get conditionTypeString () {
 		return conditionTypeToString( this.conditionType );
 	}
 
-	abstract hasPassed (): boolean;
+	protected get scenario () {
+		return ScenarioInstance.scenario;
+	}
 
 	// abstract toXML (): any;
+
+	abstract hasPassed (): boolean;
 
 	hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 
@@ -90,10 +95,6 @@ export abstract class Condition {
 
 	reset () {
 		this.passed = false;
-	}
-
-	protected get scenario () {
-		return ScenarioInstance.scenario;
 	}
 }
 

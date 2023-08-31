@@ -20,15 +20,15 @@ export class SpeedConditionEditorComponent extends BaseConditionEditorComponent 
 
 	rules = Rule;
 
-	get speedCondition (): SpeedCondition {
-
-		return this.condition as SpeedCondition;
-
-	}
-
 	constructor () {
 
 		super();
+
+	}
+
+	get speedCondition (): SpeedCondition {
+
+		return this.condition as SpeedCondition;
 
 	}
 

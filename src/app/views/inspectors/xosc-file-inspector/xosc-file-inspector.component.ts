@@ -15,8 +15,10 @@ export class XoscFileInspectorComponent implements OnInit, IComponent {
 
 	data: TvScenario;
 
-	constructor () { }
+	constructor () {
+	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 }

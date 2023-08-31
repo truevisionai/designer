@@ -40,7 +40,7 @@ export class TvBoundingBox {
 		return {
 			center: this.center,
 			dimension: this.dimension
-		}
+		};
 	}
 
 }

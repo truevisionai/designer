@@ -35,6 +35,13 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 
 	}
 
+	private static isNumeric ( value: string ): boolean {
+
+		// Allow for a trailing decimal point
+		return /^-?\d*\.?\d*\.?$/.test( value );
+
+	}
+
 	ngOnInit () {
 
 		this.min = parseFloat( this.min );
@@ -111,13 +118,6 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 		this.valueChanged.emit( this.value );
 
 		this.changed.emit( this.value );
-
-	}
-
-	private static isNumeric ( value: string ): boolean {
-
-		// Allow for a trailing decimal point
-		return /^-?\d*\.?\d*\.?$/.test( value );
 
 	}
 

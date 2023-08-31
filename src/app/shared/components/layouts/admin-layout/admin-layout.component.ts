@@ -68,7 +68,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
 
 	scrollToTop ( selector: string ) {
 		if ( document ) {
-			let element = <HTMLElement>document.querySelector( selector );
+			let element = <HTMLElement> document.querySelector( selector );
 			element.scrollTop = 0;
 		}
 	}

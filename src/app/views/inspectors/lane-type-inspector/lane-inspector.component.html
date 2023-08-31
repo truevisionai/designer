@@ -3,36 +3,38 @@
   -->
 
 <div *ngIf="lane"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
-	<app-string-field [value]="lane.roadId"
-		[disabled]="true"
-		label="Road ID"></app-string-field>
+	<app-string-field [disabled]="true"
+					  [value]="lane.roadId"
+					  label="Road ID"></app-string-field>
 
-	<app-string-field [value]="lane.id"
-		[disabled]="true"
-		label="Lane ID"></app-string-field>
+	<app-string-field [disabled]="true"
+					  [value]="lane.id"
+					  label="Lane ID"></app-string-field>
 
-	<app-boolean-field [value]="lane.level"
-		label="Level"
-		(changed)="onLevelChanged($event)"></app-boolean-field>
+	<app-boolean-field (changed)="onLevelChanged($event)"
+					   [value]="lane.level"
+					   label="Level"></app-boolean-field>
 
-	<app-enum-field [enum]="directions"
-		[value]="lane.travelDirection"
-		(changed)="onTravelDirectionChanged($event)"
-		label="Travel Direction"></app-enum-field>
+	<app-enum-field (changed)="onTravelDirectionChanged($event)"
+					[enum]="directions"
+					[value]="lane.travelDirection"
+					label="Travel Direction"></app-enum-field>
 
-	<app-enum-field [enum]="types"
-		[value]="lane.type"
-		(changed)="onTypeChanged($event)"
-		label="Type"></app-enum-field>
+	<app-enum-field (changed)="onTypeChanged($event)"
+					[enum]="types"
+					[value]="lane.type"
+					label="Type"></app-enum-field>
 
 	<button (click)="duplicateLane()"
-		mat-stroked-button
-		fxFill>Duplicate Lane</button>
+			fxFill
+			mat-stroked-button>Duplicate Lane
+	</button>
 
 	<button (click)="deleteLane()"
-		mat-stroked-button
-		fxFill>Delete Lane</button>
+			fxFill
+			mat-stroked-button>Delete Lane
+	</button>
 
 </div>

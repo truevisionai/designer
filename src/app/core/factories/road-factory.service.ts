@@ -5,9 +5,12 @@
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/tv-map/models/tv-common';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { RoadStyleService } from 'app/services/road-style.service';
+import { Vector3 } from 'three';
 import { JunctionEntryObject } from '../../modules/three-js/objects/junction-entry.object';
 import { RoadControlPoint } from '../../modules/three-js/objects/road-control-point';
 import { TvJunction } from '../../modules/tv-map/models/tv-junction';
@@ -15,9 +18,6 @@ import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
-import { RoadStyleService } from 'app/services/road-style.service';
-import { Vector3 } from 'three';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { IDService } from './id.service';
 
 export class RoadFactory {
@@ -48,7 +48,7 @@ export class RoadFactory {
 
 	static createRoadControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
 
-		return new RoadControlPoint( road, position, 'cp', road.spline.controlPoints.length, road.spline.controlPoints.length )
+		return new RoadControlPoint( road, position, 'cp', road.spline.controlPoints.length, road.spline.controlPoints.length );
 
 	}
 
@@ -133,7 +133,7 @@ export class RoadFactory {
 				lane.successor = exit.lane.id;
 
 			} );
-		} )
+		} );
 
 		connectingRoad.spline = spline;
 
@@ -173,81 +173,6 @@ export class RoadFactory {
 		} );
 
 		return road;
-	}
-
-	private static addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
-
-		const road = new TvRoad( name, length, id, junction );
-
-		this.map.roads.set( road.id, road );
-
-		return road;
-	}
-
-	private static createSpline ( entry, exit, side ) {
-
-		const nodes = this.getSplinePositions( entry, exit, side );
-
-		const spline = new AutoSpline();
-
-		SceneService.add( spline.addControlPointAt( nodes.start ) );
-		SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.end ) );
-
-		spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
-
-		return spline;
-	}
-
-	// start position is always at the entry
-	// end position is always at the exit
-	private static getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
-
-		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
-		const aPosTheta = new TvPosTheta();
-		const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
-
-		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
-		const bPosTheta = new TvPosTheta();
-		const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
-
-		let a2: TvPosTheta;
-		let b2: TvPosTheta;
-
-		const distance = aPosition.distanceTo( bPosition ) * 0.3;
-
-		if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		}
-
-		return {
-			side: laneSide,
-			start: aPosition,
-			startPos: aPosTheta,
-			end: bPosition,
-			endPos: bPosTheta,
-			a2: a2,
-			b2: b2,
-		};
 	}
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
@@ -359,6 +284,8 @@ export class RoadFactory {
 		}
 	}
 
+	// start position is always at the entry
+
 	static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
 
 		firstRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad.id, TvContactPoint.START );
@@ -373,6 +300,80 @@ export class RoadFactory {
 			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
 		} );
 
+	}
+
+	private static addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
+
+		const road = new TvRoad( name, length, id, junction );
+
+		this.map.roads.set( road.id, road );
+
+		return road;
+	}
+
+	private static createSpline ( entry, exit, side ) {
+
+		const nodes = this.getSplinePositions( entry, exit, side );
+
+		const spline = new AutoSpline();
+
+		SceneService.add( spline.addControlPointAt( nodes.start ) );
+		SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
+		SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
+		SceneService.add( spline.addControlPointAt( nodes.end ) );
+
+		spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
+
+		return spline;
+	}
+
+	// end position is always at the exit
+	private static getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
+
+		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
+		const aPosTheta = new TvPosTheta();
+		const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
+
+		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
+		const bPosTheta = new TvPosTheta();
+		const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
+
+		let a2: TvPosTheta;
+		let b2: TvPosTheta;
+
+		const distance = aPosition.distanceTo( bPosition ) * 0.3;
+
+		if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
+
+			a2 = aPosTheta.moveForward( -distance );
+			b2 = bPosTheta.moveForward( -distance );
+
+		} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
+
+			a2 = aPosTheta.moveForward( -distance );
+			b2 = bPosTheta.moveForward( +distance );
+
+		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
+
+			a2 = aPosTheta.moveForward( +distance );
+			b2 = bPosTheta.moveForward( +distance );
+
+		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
+
+			a2 = aPosTheta.moveForward( +distance );
+			b2 = bPosTheta.moveForward( -distance );
+
+		}
+
+		return {
+			side: laneSide,
+			start: aPosition,
+			startPos: aPosTheta,
+			end: bPosition,
+			endPos: bPosTheta,
+			a2: a2,
+			b2: b2,
+		};
 	}
 
 }

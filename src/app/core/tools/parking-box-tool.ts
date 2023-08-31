@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
 import { Object3D } from 'three';
 import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { BoxCreatedEvent, BoxEditor } from '../editors/box-editor';
-import { BaseTool } from './base-tool';
 import { ToolType } from '../models/tool-types.enum';
+import { BaseTool } from './base-tool';
 
 export abstract class BaseParkingTool extends BaseTool {
 

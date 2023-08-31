@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SerializedField } from 'app/core/components/serialization';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Euler, Vector3 } from 'three';
+import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { SerializedField } from 'app/core/components/serialization';
-import { EntityRef } from '../entity-ref';
 
 /**
  * Position defined in terms of delta x, y, (z) relative to a reference entity's
@@ -78,18 +78,6 @@ export class RelativeWorldPosition extends Position {
 		this.updated.emit();
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
-
-		return {
-			attr_entityRef: this.entityRef?.name,
-			attr_dx: this.delta.x,
-			attr_dy: this.delta.y,
-			attr_dz: this.delta.z,
-			Orientation: this.orientation?.toXML(),
-		};
-
-	}
-
 	static fromXML ( xml: XmlElement ): RelativeWorldPosition {
 
 		const entity: string = xml?.attr_object || xml?.attr_entity || xml?.attr_entityRef;
@@ -101,6 +89,18 @@ export class RelativeWorldPosition extends Position {
 		const orientation = Orientation.fromXML( xml?.Orientation );
 
 		return new RelativeWorldPosition( new EntityRef( entity ), new Vector3( dx, dy, dz ), orientation );
+	}
+
+	toXML ( version?: OpenScenarioVersion ) {
+
+		return {
+			attr_entityRef: this.entityRef?.name,
+			attr_dx: this.delta.x,
+			attr_dy: this.delta.y,
+			attr_dz: this.delta.z,
+			Orientation: this.orientation?.toXML(),
+		};
+
 	}
 
 	getVectorPosition (): Vector3 {
@@ -139,7 +139,7 @@ export class RelativeWorldPosition extends Position {
 
 		this.vector0.copy( delta );
 
-		this.orientation.copy( orientation )
+		this.orientation.copy( orientation );
 
 		this.updated.emit();
 

@@ -2,14 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvContactPoint } from './tv-common';
 import { TvRoad } from './tv-road.model';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { Vector3 } from 'three';
-import { TvConsole } from 'app/core/utils/console';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -101,6 +100,40 @@ export class TvRoadLinkChild {
 		this.attr_contactPoint = value;
 	}
 
+	get end () {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			return this.road.spline.getSecondPoint() as RoadControlPoint;
+		} else {
+			return this.road.spline.getSecondLastPoint() as RoadControlPoint;
+		}
+	}
+
+	get mid2 () {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			return this.road.spline.getFirstPoint() as RoadControlPoint;
+		} else {
+			return this.road.spline.getLastPoint() as RoadControlPoint;
+		}
+	}
+
+	get road () {
+
+		return this.getElement<TvRoad>() as TvRoad;
+
+	}
+
+	get laneSection () {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.road.getFirstLaneSection();
+
+		} else {
+
+			return this.road.getLastLaneSection();
+		}
+	}
+
 	setSuccessor ( element: TvRoadLinkChild ) {
 		if ( this.elementType === TvRoadLinkChildType.road ) {
 			const road = TvMapInstance.map.getRoadById( this.elementId );
@@ -156,22 +189,6 @@ export class TvRoadLinkChild {
 
 	}
 
-	get end () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getSecondPoint() as RoadControlPoint;
-		} else {
-			return this.road.spline.getSecondLastPoint() as RoadControlPoint;
-		}
-	}
-
-	get mid2 () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getFirstPoint() as RoadControlPoint;
-		} else {
-			return this.road.spline.getLastPoint() as RoadControlPoint;
-		}
-	}
-
 	updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
 
 		if ( parentRoad.spline.type == 'explicit' ) return;
@@ -189,6 +206,34 @@ export class TvRoadLinkChild {
 		}
 
 		if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
+	}
+
+	hideSpline () {
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			this.getElement<TvRoad>().hideSpline();
+
+		} else {
+
+		}
+
+	}
+
+	rebuild () {
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			const road = this.getElement<TvRoad>();
+
+			road.updateGeometryFromSpline();
+
+			RoadFactory.rebuildRoad( road );
+
+		} else {
+
+		}
+
 	}
 
 	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
@@ -270,53 +315,6 @@ export class TvRoadLinkChild {
 
 		predecessor.updateGeometryFromSpline();
 
-	}
-
-	hideSpline () {
-
-		if ( this.elementType == TvRoadLinkChildType.road ) {
-
-			this.getElement<TvRoad>().hideSpline();
-
-		} else {
-
-		}
-
-	}
-
-	rebuild () {
-
-		if ( this.elementType == TvRoadLinkChildType.road ) {
-
-			const road = this.getElement<TvRoad>();
-
-			road.updateGeometryFromSpline()
-
-			RoadFactory.rebuildRoad( road );
-
-		} else {
-
-		}
-
-	}
-
-
-	get road () {
-
-		return this.getElement<TvRoad>() as TvRoad;
-
-	}
-
-	get laneSection () {
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			return this.road.getFirstLaneSection();
-
-		} else {
-
-			return this.road.getLastLaneSection();
-		}
 	}
 
 }

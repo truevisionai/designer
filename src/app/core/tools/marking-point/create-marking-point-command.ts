@@ -3,9 +3,9 @@
  */
 
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { BaseCommand } from '../../commands/base-command';
 import { MarkingPointTool } from './marking-point-tool';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 
 export class CreateMarkingPointCommand extends BaseCommand {
 
@@ -37,7 +37,7 @@ export class CreateMarkingPointCommand extends BaseCommand {
 
 	redo (): void {
 
-		this.tool.shapeEditor.pushControlPoint( this.point )
+		this.tool.shapeEditor.pushControlPoint( this.point );
 
 		this.map.gameObject.add( this.marking.mesh );
 

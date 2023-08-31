@@ -6,8 +6,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReachPositionCondition } from 'app/modules/scenario/models/conditions/tv-reach-position-condition';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { Mesh, MeshBasicMaterial, TorusGeometry } from 'three';
-import { Position } from '../../../models/position';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
+import { Position } from '../../../models/position';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
 
 @Component( {

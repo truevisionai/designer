@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
-import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
-import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { BaseTool } from '../base-tool';
-import { CommandHistory } from 'app/services/command-history';
-import { ToolType } from '../../models/tool-types.enum';
 import { SelectMainObjectCommand } from 'app/core/commands/select-point-command';
 import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { CommandHistory } from 'app/services/command-history';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { TvLane } from '../../../modules/tv-map/models/tv-lane';
+import { ToolType } from '../../models/tool-types.enum';
+import { BaseTool } from '../base-tool';
 
 export class LaneAddTool extends BaseTool {
 

@@ -3,8 +3,8 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { MetaImporter } from 'app/core/models/metadata.model';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { MetaImporter } from 'app/core/models/metadata.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Texture } from 'three';
 
@@ -21,7 +21,8 @@ export class TextureFieldComponent implements OnInit {
 
 	@Input() label: string = 'Map';
 
-	constructor () { }
+	constructor () {
+	}
 
 	get instance () {
 		return this.guid ? AssetDatabase.getInstance<Texture>( this.guid ) : null;
@@ -43,7 +44,8 @@ export class TextureFieldComponent implements OnInit {
 		return AssetDatabase.getMetadata( this.guid );
 	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 	onRemoveClicked () {
 

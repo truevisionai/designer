@@ -6,8 +6,8 @@ import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { OdBaseCommand } from './od-base-command';
 import { ExplicitSpline } from '../shapes/explicit-spline';
+import { OdBaseCommand } from './od-base-command';
 
 export class UpdateRoadPointCommand extends OdBaseCommand {
 

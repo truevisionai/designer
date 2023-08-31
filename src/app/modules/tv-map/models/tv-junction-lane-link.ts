@@ -2,14 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Color, CurvePath, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Path, QuadraticBezierCurve, QuadraticBezierCurve3, Shape, Vector2, Vector3 } from 'three';
+import { COLOR } from 'app/shared/utils/colors.service';
+import { Color, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Shape } from 'three';
 import { RoadFactory } from '../../../core/factories/road-factory.service';
 import { SceneService } from '../../../core/services/scene.service';
+import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
-import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 export class TvJunctionLaneLink {
 
@@ -98,19 +98,9 @@ export class TvJunctionLaneLink {
 
 export class LanePathObject extends Object3D {
 
-	update () {
-
-		this.remove( this.mesh );
-
-		this.mesh = this.createMesh();
-
-	}
-
 	public static tag = 'lane-path';
-
-	private mesh: Mesh | Line;
-
 	public isSelected: boolean;
+	private mesh: Mesh | Line;
 
 	constructor (
 		public incomingRoad: TvRoad,
@@ -121,6 +111,18 @@ export class LanePathObject extends Object3D {
 		super();
 
 		this.createMesh();
+	}
+
+	get material (): LineBasicMaterial {
+		return this.mesh.material as LineBasicMaterial;
+	}
+
+	update () {
+
+		this.remove( this.mesh );
+
+		this.mesh = this.createMesh();
+
 	}
 
 	createMesh () {
@@ -169,10 +171,6 @@ export class LanePathObject extends Object3D {
 		const distance = this.connectingRoad.length / 3;
 		const arrows = LaneDirectionHelper.drawSingleLane( this.link.connectingLane, distance, 0.25 );
 		arrows.forEach( arrow => this.add( arrow ) );
-	}
-
-	get material (): LineBasicMaterial {
-		return this.mesh.material as LineBasicMaterial;
 	}
 
 	select () {

@@ -18,14 +18,14 @@ export class TimeHeadwayConditionEditorComponent {
 
 	rules = Rule;
 
-	get timeHeadwayCondition () {
+	constructor () {
 
-		return this.condition as TimeHeadwayCondition;
 
 	}
 
-	constructor () {
+	get timeHeadwayCondition () {
 
+		return this.condition as TimeHeadwayCondition;
 
 	}
 

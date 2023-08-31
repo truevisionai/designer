@@ -14,14 +14,10 @@ import { TvRoad } from './tv-road.model';
 
 export class TvJunctionConnection {
 
-	public readonly uuid: string;
-
-	public laneLink: TvJunctionLaneLink[] = [];
-
-	private lastAddedJunctionLaneLinkIndex: number;
-
 	private static counter = 1;
-	private _outgoingRoad: TvRoad;
+	public readonly uuid: string;
+	public laneLink: TvJunctionLaneLink[] = [];
+	private lastAddedJunctionLaneLinkIndex: number;
 
 	/**
 	 *
@@ -41,37 +37,7 @@ export class TvJunctionConnection {
 		this._outgoingRoad = outgoingRoad;
 	}
 
-	get incomingRoadId (): number {
-		return this.incomingRoad?.id;
-	}
-
-	clone () {
-
-		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
-
-		clone.laneLink = this.laneLink.map( link => link.clone() );
-
-		return clone;
-	}
-
-	sortLinks (): void {
-
-		this.laneLink = this.laneLink.sort( ( a, b ) => a.from > b.from ? 1 : -1 );
-
-	}
-
-
-	get connectingRoadId (): number {
-		return this.connectingRoad?.id;
-	}
-
-	get outgoingRoadId (): number {
-		return this.outgoingRoad?.id;
-	}
-
-	get junction () {
-		return TvMapInstance.map.getJunctionById( this.connectingRoad.junctionId );
-	}
+	private _outgoingRoad: TvRoad;
 
 	get outgoingRoad (): TvRoad {
 
@@ -92,6 +58,22 @@ export class TvJunctionConnection {
 		}
 	}
 
+	get incomingRoadId (): number {
+		return this.incomingRoad?.id;
+	}
+
+	get connectingRoadId (): number {
+		return this.connectingRoad?.id;
+	}
+
+	get outgoingRoadId (): number {
+		return this.outgoingRoad?.id;
+	}
+
+	get junction () {
+		return TvMapInstance.map.getJunctionById( this.connectingRoad.junctionId );
+	}
+
 	get connectingLaneSection () {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
@@ -103,6 +85,27 @@ export class TvJunctionConnection {
 			return this.connectingRoad.getLastLaneSection();
 
 		}
+
+	}
+
+	static create ( incomingRoad: TvRoad, connectingRoad: TvRoad, contactPoint: TvContactPoint ) {
+
+		return new TvJunctionConnection( TvJunctionConnection.counter++, incomingRoad, connectingRoad, contactPoint );
+
+	}
+
+	clone () {
+
+		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
+
+		clone.laneLink = this.laneLink.map( link => link.clone() );
+
+		return clone;
+	}
+
+	sortLinks (): void {
+
+		this.laneLink = this.laneLink.sort( ( a, b ) => a.from > b.from ? 1 : -1 );
 
 	}
 
@@ -183,12 +186,6 @@ export class TvJunctionConnection {
 	removeLinkAtIndex ( index: number ) {
 
 		this.laneLink.splice( index, 1 );
-
-	}
-
-	static create ( incomingRoad: TvRoad, connectingRoad: TvRoad, contactPoint: TvContactPoint ) {
-
-		return new TvJunctionConnection( TvJunctionConnection.counter++, incomingRoad, connectingRoad, contactPoint );
 
 	}
 

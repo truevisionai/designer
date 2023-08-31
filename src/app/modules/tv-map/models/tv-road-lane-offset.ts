@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Object3D } from 'three';
 import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
 import { ThirdOrderPolynom } from './third-order-polynom';
 import { TvRoad } from './tv-road.model';

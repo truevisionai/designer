@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
 import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 import { TvCornerRoad, TvRoadObject } from './tv-road-object';
-import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
 
 export class TvObjectMarking {
 
@@ -42,31 +42,188 @@ export class TvObjectMarking {
 
 	}
 
+	// with spline
+	static makeFromSpline ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
+
+
+		const totalLength = curve.getLength();
+		const fullStripeLength = marking.lineLength + marking.spaceLength;
+		const numFullStripes = Math.floor( totalLength / fullStripeLength );
+		const positions = [];
+		const indices = [];
+		const colors = [];
+		const color = new THREE.Color( marking.color );
+
+		for ( let i = 0; i < numFullStripes; i++ ) {
+			const uStart = i * fullStripeLength / totalLength;
+			const uEnd = ( i * fullStripeLength + marking.lineLength ) / totalLength;
+			const distanceStart = uStart * totalLength;
+			const distanceEnd = uEnd * totalLength;
+			const tStart = curve.getUtoTmapping( uStart, distanceStart );
+			const tEnd = curve.getUtoTmapping( uEnd, distanceEnd );
+			const start = curve.getPoint( tStart );
+			const end = curve.getPoint( tEnd );
+			const tangentStart = curve.getTangent( tStart );
+			const tangentEnd = curve.getTangent( tEnd );
+			const perpendicularStart = new THREE.Vector3( -tangentStart.y, tangentStart.x, tangentStart.z ).multiplyScalar( marking.width / 2 );
+			const perpendicularEnd = new THREE.Vector3( -tangentEnd.y, tangentEnd.x, tangentEnd.z ).multiplyScalar( marking.width / 2 );
+			const startIndex = positions.length / 3;
+			const cornersStart = [
+				start.clone().add( perpendicularStart ),
+				start.clone().sub( perpendicularStart )
+			];
+			const cornersEnd = [
+				end.clone().add( perpendicularEnd ),
+				end.clone().sub( perpendicularEnd )
+			];
+
+			cornersStart.forEach( corner => {
+				positions.push( corner.x, corner.y, marking.zOffset );
+				positions.push( corner.x, corner.y, 0 );
+			} );
+
+			cornersEnd.forEach( corner => {
+				positions.push( corner.x, corner.y, marking.zOffset );
+				positions.push( corner.x, corner.y, 0 );
+			} );
+
+			for ( let j = 0; j < 8; j++ ) {
+				colors.push( color.r, color.g, color.b );
+			}
+
+			// Top face
+			indices.push(
+				startIndex, startIndex + 2, startIndex + 6,
+				startIndex, startIndex + 6, startIndex + 4
+			);
+
+			// Bottom face
+			indices.push(
+				startIndex + 1, startIndex + 3, startIndex + 7,
+				startIndex + 1, startIndex + 7, startIndex + 5
+			);
+
+			// Side faces
+			indices.push(
+				startIndex, startIndex + 1, startIndex + 3,
+				startIndex, startIndex + 3, startIndex + 2,
+				startIndex + 2, startIndex + 3, startIndex + 7,
+				startIndex + 2, startIndex + 7, startIndex + 6,
+				startIndex + 4, startIndex + 5, startIndex + 7,
+				startIndex + 4, startIndex + 7, startIndex + 6,
+				startIndex, startIndex + 1, startIndex + 5,
+				startIndex, startIndex + 5, startIndex + 4
+			);
+		}
+
+		const geometry = new THREE.BufferGeometry();
+		geometry.setIndex( indices );
+		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+		const material = new THREE.MeshBasicMaterial( { vertexColors: true } );
+
+		return new THREE.Mesh( geometry, material );
+	}
+
+	static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: THREE.Vector3[] ) {
+
+		const curve = new THREE.CatmullRomCurve3( [
+			new Vector3( 0, 0, 0 ),
+			new Vector3( 0, 7.2, 0 ),
+		] );
+
+		const totalLength = curve.getLength();
+		const fullStripeLength = marking.lineLength + marking.spaceLength;
+		const numFullStripes = Math.floor( totalLength / fullStripeLength );
+		const positions = [];
+		const indices = [];
+		const colors = [];
+		const color = new THREE.Color( marking.color );
+
+		for ( let i = 0; i < numFullStripes; i++ ) {
+
+			const uStart = i * fullStripeLength / totalLength;
+			const uEnd = ( i * fullStripeLength + marking.lineLength ) / totalLength;
+
+			const distanceStart = uStart * totalLength;
+			const distanceEnd = uEnd * totalLength;
+
+			const tStart = curve.getUtoTmapping( uStart, distanceStart );
+			const tEnd = curve.getUtoTmapping( uEnd, distanceEnd );
+
+			const start = curve.getPoint( tStart );
+			const end = curve.getPoint( tEnd );
+
+			const tangentStart = curve.getTangent( tStart );
+			const tangentEnd = curve.getTangent( tEnd );
+
+			const perpendicularStart = new THREE.Vector3( -tangentStart.y, tangentStart.x, tangentStart.z ).multiplyScalar( ( i + marking.width ) / 2 );
+			const perpendicularEnd = new THREE.Vector3( -tangentEnd.y, tangentEnd.x, tangentEnd.z ).multiplyScalar( ( i + marking.width ) / 2 );
+
+			const startIndex = positions.length / 3;
+			const cornersStart = [
+				start.clone().add( perpendicularStart ),
+				start.clone().sub( perpendicularStart )
+			];
+			const cornersEnd = [
+				end.clone().add( perpendicularEnd ),
+				end.clone().sub( perpendicularEnd )
+			];
+
+			cornersStart.forEach( corner => {
+				positions.push( corner.x, corner.y, marking.zOffset );
+				positions.push( corner.x, corner.y, 0 );
+			} );
+
+			cornersEnd.forEach( corner => {
+				positions.push( corner.x, corner.y, marking.zOffset );
+				positions.push( corner.x, corner.y, 0 );
+			} );
+
+			for ( let j = 0; j < 8; j++ ) {
+				colors.push( color.r, color.g, color.b );
+			}
+
+			// Top face
+			indices.push(
+				startIndex, startIndex + 2, startIndex + 6,
+				startIndex, startIndex + 6, startIndex + 4
+			);
+
+			// Bottom face
+			indices.push(
+				startIndex + 1, startIndex + 3, startIndex + 7,
+				startIndex + 1, startIndex + 7, startIndex + 5
+			);
+
+			// Side faces
+			indices.push(
+				startIndex, startIndex + 1, startIndex + 3,
+				startIndex, startIndex + 3, startIndex + 2,
+				startIndex + 2, startIndex + 3, startIndex + 7,
+				startIndex + 2, startIndex + 7, startIndex + 6,
+				startIndex + 4, startIndex + 5, startIndex + 7,
+				startIndex + 4, startIndex + 7, startIndex + 6,
+				startIndex, startIndex + 1, startIndex + 5,
+				startIndex, startIndex + 5, startIndex + 4
+			);
+		}
+
+		const geometry = new THREE.BufferGeometry();
+		geometry.setIndex( indices );
+		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+		const material = new THREE.MeshBasicMaterial( { vertexColors: true } );
+
+		return new THREE.Mesh( geometry, material );
+
+	}
+
 	addCornerRoad ( corner: TvCornerRoad ) {
 
 		this.cornerReferences.push( corner.attr_id );
-
-	}
-
-	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
-
-		const index = this.cornerReferences.indexOf( tvCornerRoad.attr_id );
-
-		if ( index > -1 ) {
-			this.cornerReferences.splice( index, 1 );
-		}
-
-	}
-
-	update (): void {
-
-		if ( !this.roadObject ) return;
-
-		this.roadObject.remove( this.node );
-
-		this.node = MarkingObjectFactory.createMarking( this.roadObject, this )
-
-		this.roadObject.add( this.node );
 
 	}
 
@@ -291,183 +448,25 @@ export class TvObjectMarking {
 	//
 	// }
 
-	// with spline
-	static makeFromSpline ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
 
+		const index = this.cornerReferences.indexOf( tvCornerRoad.attr_id );
 
-		const totalLength = curve.getLength();
-		const fullStripeLength = marking.lineLength + marking.spaceLength;
-		const numFullStripes = Math.floor( totalLength / fullStripeLength );
-		const positions = [];
-		const indices = [];
-		const colors = [];
-		const color = new THREE.Color( marking.color );
-
-		for ( let i = 0; i < numFullStripes; i++ ) {
-			const uStart = i * fullStripeLength / totalLength;
-			const uEnd = ( i * fullStripeLength + marking.lineLength ) / totalLength;
-			const distanceStart = uStart * totalLength;
-			const distanceEnd = uEnd * totalLength;
-			const tStart = curve.getUtoTmapping( uStart, distanceStart );
-			const tEnd = curve.getUtoTmapping( uEnd, distanceEnd );
-			const start = curve.getPoint( tStart );
-			const end = curve.getPoint( tEnd );
-			const tangentStart = curve.getTangent( tStart );
-			const tangentEnd = curve.getTangent( tEnd );
-			const perpendicularStart = new THREE.Vector3( -tangentStart.y, tangentStart.x, tangentStart.z ).multiplyScalar( marking.width / 2 );
-			const perpendicularEnd = new THREE.Vector3( -tangentEnd.y, tangentEnd.x, tangentEnd.z ).multiplyScalar( marking.width / 2 );
-			const startIndex = positions.length / 3;
-			const cornersStart = [
-				start.clone().add( perpendicularStart ),
-				start.clone().sub( perpendicularStart )
-			];
-			const cornersEnd = [
-				end.clone().add( perpendicularEnd ),
-				end.clone().sub( perpendicularEnd )
-			];
-
-			cornersStart.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
-
-			cornersEnd.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
-
-			for ( let j = 0; j < 8; j++ ) {
-				colors.push( color.r, color.g, color.b );
-			}
-
-			// Top face
-			indices.push(
-				startIndex, startIndex + 2, startIndex + 6,
-				startIndex, startIndex + 6, startIndex + 4
-			);
-
-			// Bottom face
-			indices.push(
-				startIndex + 1, startIndex + 3, startIndex + 7,
-				startIndex + 1, startIndex + 7, startIndex + 5
-			);
-
-			// Side faces
-			indices.push(
-				startIndex, startIndex + 1, startIndex + 3,
-				startIndex, startIndex + 3, startIndex + 2,
-				startIndex + 2, startIndex + 3, startIndex + 7,
-				startIndex + 2, startIndex + 7, startIndex + 6,
-				startIndex + 4, startIndex + 5, startIndex + 7,
-				startIndex + 4, startIndex + 7, startIndex + 6,
-				startIndex, startIndex + 1, startIndex + 5,
-				startIndex, startIndex + 5, startIndex + 4
-			);
+		if ( index > -1 ) {
+			this.cornerReferences.splice( index, 1 );
 		}
 
-		const geometry = new THREE.BufferGeometry();
-		geometry.setIndex( indices );
-		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-		const material = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-		return new THREE.Mesh( geometry, material );
 	}
 
+	update (): void {
 
-	static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: THREE.Vector3[] ) {
+		if ( !this.roadObject ) return;
 
-		const curve = new THREE.CatmullRomCurve3( [
-			new Vector3( 0, 0, 0 ),
-			new Vector3( 0, 7.2, 0 ),
-		] );
+		this.roadObject.remove( this.node );
 
-		const totalLength = curve.getLength();
-		const fullStripeLength = marking.lineLength + marking.spaceLength;
-		const numFullStripes = Math.floor( totalLength / fullStripeLength );
-		const positions = [];
-		const indices = [];
-		const colors = [];
-		const color = new THREE.Color( marking.color );
+		this.node = MarkingObjectFactory.createMarking( this.roadObject, this );
 
-		for ( let i = 0; i < numFullStripes; i++ ) {
-
-			const uStart = i * fullStripeLength / totalLength;
-			const uEnd = ( i * fullStripeLength + marking.lineLength ) / totalLength;
-
-			const distanceStart = uStart * totalLength;
-			const distanceEnd = uEnd * totalLength;
-
-			const tStart = curve.getUtoTmapping( uStart, distanceStart );
-			const tEnd = curve.getUtoTmapping( uEnd, distanceEnd );
-
-			const start = curve.getPoint( tStart );
-			const end = curve.getPoint( tEnd );
-
-			const tangentStart = curve.getTangent( tStart );
-			const tangentEnd = curve.getTangent( tEnd );
-
-			const perpendicularStart = new THREE.Vector3( -tangentStart.y, tangentStart.x, tangentStart.z ).multiplyScalar( ( i + marking.width ) / 2 );
-			const perpendicularEnd = new THREE.Vector3( -tangentEnd.y, tangentEnd.x, tangentEnd.z ).multiplyScalar( ( i + marking.width ) / 2 );
-
-			const startIndex = positions.length / 3;
-			const cornersStart = [
-				start.clone().add( perpendicularStart ),
-				start.clone().sub( perpendicularStart )
-			];
-			const cornersEnd = [
-				end.clone().add( perpendicularEnd ),
-				end.clone().sub( perpendicularEnd )
-			];
-
-			cornersStart.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
-
-			cornersEnd.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
-
-			for ( let j = 0; j < 8; j++ ) {
-				colors.push( color.r, color.g, color.b );
-			}
-
-			// Top face
-			indices.push(
-				startIndex, startIndex + 2, startIndex + 6,
-				startIndex, startIndex + 6, startIndex + 4
-			);
-
-			// Bottom face
-			indices.push(
-				startIndex + 1, startIndex + 3, startIndex + 7,
-				startIndex + 1, startIndex + 7, startIndex + 5
-			);
-
-			// Side faces
-			indices.push(
-				startIndex, startIndex + 1, startIndex + 3,
-				startIndex, startIndex + 3, startIndex + 2,
-				startIndex + 2, startIndex + 3, startIndex + 7,
-				startIndex + 2, startIndex + 7, startIndex + 6,
-				startIndex + 4, startIndex + 5, startIndex + 7,
-				startIndex + 4, startIndex + 7, startIndex + 6,
-				startIndex, startIndex + 1, startIndex + 5,
-				startIndex, startIndex + 5, startIndex + 4
-			);
-		}
-
-		const geometry = new THREE.BufferGeometry();
-		geometry.setIndex( indices );
-		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-		const material = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-		return new THREE.Mesh( geometry, material );
+		this.roadObject.add( this.node );
 
 	}
 

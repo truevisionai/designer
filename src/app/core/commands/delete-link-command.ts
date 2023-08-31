@@ -3,9 +3,7 @@
  */
 
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SnackBar } from 'app/services/snack-bar.service';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
 import { RoadFactory } from '../factories/road-factory.service';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';

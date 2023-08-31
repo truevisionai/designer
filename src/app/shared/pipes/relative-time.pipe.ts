@@ -33,6 +33,6 @@ export class RelativeTimePipe implements PipeTransform {
 		if ( interval > 1 ) {
 			return interval + ' minutes ago';
 		}
-		return Math.floor( seconds ) + " seconds ago";
+		return Math.floor( seconds ) + ' seconds ago';
 	}
 }

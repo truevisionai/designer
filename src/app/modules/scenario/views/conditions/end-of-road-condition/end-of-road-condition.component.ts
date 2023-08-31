@@ -17,23 +17,23 @@ export class EndOfRoadConditionComponent implements OnInit {
 
 	@Input() condition: Condition;
 
+	constructor () {
+	}
+
 	get endOfRoadCondition () {
 
 		return this.condition as EndOfRoadCondition;
 
 	}
 
-	constructor () { }
-
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 	onDurationChanged ( $duration: number ) {
 
 		CommandHistory.execute(
-
 			new SetValueCommand( this.endOfRoadCondition, 'duration', $duration )
-
-		)
+		);
 
 	}
 

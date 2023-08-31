@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
 import { MeshBasicMaterial, Texture } from 'three';
 import { Metadata } from '../models/metadata.model';

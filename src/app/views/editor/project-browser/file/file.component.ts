@@ -3,13 +3,15 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileUtils } from 'app/core/io/file-utils';
 import { FileService } from 'app/core/io/file.service';
+import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
+import { DragDropService } from 'app/core/services/drag-drop.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -18,8 +20,6 @@ import { PreviewService } from 'app/views/inspectors/object-preview/object-previ
 import { TvConsole } from '../../../../core/utils/console';
 import { FileNode } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
-import { DragDropService } from 'app/core/services/drag-drop.service';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 
 @Component( {
 	selector: 'app-file',
@@ -175,15 +175,6 @@ export class FileComponent implements OnInit {
 			console.error( 'error in preview', error, this.file );
 
 		}
-	}
-
-	private initPreview ( metadata: Metadata ) {
-
-		if ( metadata.importer == MetaImporter.SCENE ) return;
-
-		if ( metadata.preview ) return;
-
-		this.previewService.updatePreview( metadata );
 	}
 
 	@HostListener( 'click', [ '$event' ] )
@@ -382,7 +373,7 @@ export class FileComponent implements OnInit {
 			path: this.file.path,
 			extension: this.extension,
 			guid: this.metadata?.guid,
-		} )
+		} );
 
 		$event.dataTransfer.setData( 'path', this.file.path );
 		if ( this.metadata ) $event.dataTransfer.setData( 'guid', this.metadata.guid );
@@ -409,7 +400,7 @@ export class FileComponent implements OnInit {
 
 			let nodeName: string;
 			if ( this.isDirectory ) {
-				nodeName = this.nameInputRef.nativeElement.value
+				nodeName = this.nameInputRef.nativeElement.value;
 			} else {
 				nodeName = this.nameInputRef.nativeElement.value + '.' + this.extension;
 			}
@@ -457,5 +448,14 @@ export class FileComponent implements OnInit {
 
 		}
 
+	}
+
+	private initPreview ( metadata: Metadata ) {
+
+		if ( metadata.importer == MetaImporter.SCENE ) return;
+
+		if ( metadata.preview ) return;
+
+		this.previewService.updatePreview( metadata );
 	}
 }

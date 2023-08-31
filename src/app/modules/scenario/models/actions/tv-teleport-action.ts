@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Subscription } from 'rxjs';
+import { ScenarioEntity } from '../entities/scenario-entity';
 import { Position } from '../position';
 import { PrivateAction } from '../private-action';
-import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType } from '../tv-enums';
-import { Subscription } from 'rxjs';
 
 export class TeleportAction extends PrivateAction {
 

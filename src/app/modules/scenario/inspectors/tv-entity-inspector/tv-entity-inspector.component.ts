@@ -2,18 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSelect } from '@angular/material/select';
 import { IComponent } from 'app/core/game-object';
-import { ActionFactory } from '../../builders/action-factory';
 import { ScenarioElementFactory } from '../../builders/scenario-element-factory';
-import { PrivateAction } from '../../models/private-action';
 import { ScenarioEntity } from '../../models/entities/scenario-entity';
+import { PrivateAction } from '../../models/private-action';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
-import { ScenarioInstance } from '../../services/scenario-instance';
 import { Maneuver } from '../../models/tv-maneuver';
+import { ScenarioInstance } from '../../services/scenario-instance';
 
 @Component( {
 	selector: 'app-tv-player-inspector',

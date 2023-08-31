@@ -3,23 +3,23 @@
   -->
 
 <app-object-preview [object]="currentObject"
-	objectType="model"></app-object-preview>
+					objectType="model"></app-object-preview>
 
 <div *ngIf="data"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 	<mat-tree [dataSource]="dataSource"
-		[treeControl]="treeControl">
+			  [treeControl]="treeControl">
 		<mat-tree-node (click)="onNodeClicked(node)"
-			*matTreeNodeDef="let node"
-			matTreeNodePadding
-			matTreeNodePaddingIndent="16">
+					   *matTreeNodeDef="let node"
+					   matTreeNodePadding
+					   matTreeNodePaddingIndent="16">
 			{{node.name}}
 		</mat-tree-node>
 		<mat-tree-node *matTreeNodeDef="let node;when: hasChild"
-			matTreeNodePadding
-			matTreeNodePaddingIndent="16">
+					   matTreeNodePadding
+					   matTreeNodePaddingIndent="16">
 			<button mat-icon-button
-				matTreeNodeToggle>
+					matTreeNodeToggle>
 				<mat-icon class="mat-icon-rtl-mirror">
 					{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
 				</mat-icon>
@@ -32,4 +32,4 @@
 <!-- <app-mesh-inspector *ngIf="currentObject.type == 'Mesh'" [mesh]="currentObject"></app-mesh-inspector> -->
 
 <app-transform-inspector (changed)="onTransformChanged()"
-	[data]="currentObject"></app-transform-inspector>
+						 [data]="currentObject"></app-transform-inspector>

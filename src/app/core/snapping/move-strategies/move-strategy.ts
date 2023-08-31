@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
 import { Vector3 } from 'three';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from '../select-strategies/select-strategy';
-import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
 
 export interface MoveStrategy {
 	getPosTheta ( position: Vector3 ): TvPosTheta;
@@ -17,11 +17,13 @@ export interface MoveStrategy {
 
 export class RoadPointMovingStrategy implements MoveStrategy {
 
-	constructor ( private point: RoadControlPoint ) { }
+	constructor ( private point: RoadControlPoint ) {
+	}
 
 	getPosTheta ( position: Vector3 ): TvPosTheta {
 
-		const original = new TvPosTheta( position.x, position.y, position.z, this.point.hdg );;
+		const original = new TvPosTheta( position.x, position.y, position.z, this.point.hdg );
+
 
 		if ( this.point.road.isJunction ) {
 
@@ -58,7 +60,8 @@ export class RoadPointMovingStrategy implements MoveStrategy {
 
 export class RoadTangentMovingStrategy implements MoveStrategy {
 
-	constructor ( private tangent: RoadTangentPoint ) { }
+	constructor ( private tangent: RoadTangentPoint ) {
+	}
 
 	getPosTheta ( position: Vector3 ): TvPosTheta {
 

@@ -1,45 +1,46 @@
 <mat-toolbar class="native-border inspector-toolbar">
-	<button mat-icon-button
-		class="inspector-toolbar-icon">
+	<button class="inspector-toolbar-icon"
+			mat-icon-button>
 		<mat-icon>expand_more</mat-icon>
 	</button>
 	<span>Entity Inspector</span>
 </mat-toolbar>
 
 <div *ngIf="entity"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
 	<app-string-field [value]="entity.name"
-		label="Name"></app-string-field>
+					  label="Name"></app-string-field>
 
 	<app-double-field *ngIf="debug"
-		label="Speed"
-		[value]="entity?.getCurrentSpeed()"></app-double-field>
+					  [value]="entity?.getCurrentSpeed()"
+					  label="Speed"></app-double-field>
 	<app-double-field *ngIf="debug"
-		label="Accel"
-		[value]="entity?.getCurrentAcceleration()"></app-double-field>
+					  [value]="entity?.getCurrentAcceleration()"
+					  label="Accel"></app-double-field>
 	<app-double-field *ngIf="debug"
-		label="Distance"
-		[value]="entity?.getDistanceTraveled()"></app-double-field>
+					  [value]="entity?.getDistanceTraveled()"
+					  label="Distance"></app-double-field>
 
 </div>
 
-<app-action *ngFor="let action of initActions"
-	(removed)="removeInitAction(action)"
-	[action]="action"
-	[entity]="entity">
+<app-action (removed)="removeInitAction(action)"
+			*ngFor="let action of initActions"
+			[action]="action"
+			[entity]="entity">
 </app-action>
 
 <app-maneuver-editor *ngFor="let maneuver of scenarioManeuevers"
-	[entity]="entity"
-	[maneuver]="maneuver">
+					 [entity]="entity"
+					 [maneuver]="maneuver">
 </app-maneuver-editor>
 
 <div *ngIf="entity"
-	class="inspector-editor-padding">
-	<button mat-stroked-button
-		fxFill
-		[matMenuTriggerFor]="menu">Add Maneuever</button>
+	 class="inspector-editor-padding">
+	<button [matMenuTriggerFor]="menu"
+			fxFill
+			mat-stroked-button>Add Maneuever
+	</button>
 	<mat-menu #menu="matMenu">
 		<mat-option (click)="addEvent(actionType.Private_Longitudinal_Speed)">ChangeSpeed</mat-option>
 		<mat-option (click)="addEvent(actionType.Private_LaneChange)">ChangeLane</mat-option>

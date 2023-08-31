@@ -4,9 +4,9 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { PrivateAction } from '../../../models/private-action';
-import { SpeedAction } from '../../../models/actions/tv-speed-action';
 import { Target } from 'app/modules/scenario/models/actions/target';
+import { SpeedAction } from '../../../models/actions/tv-speed-action';
+import { PrivateAction } from '../../../models/private-action';
 
 @Component( {
 	selector: 'app-speed-action',

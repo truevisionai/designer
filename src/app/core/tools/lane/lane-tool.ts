@@ -3,16 +3,15 @@
  */
 
 import { IToolWithMainObject, SelectMainObjectCommand } from 'app/core/commands/select-point-command';
+import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { CommandHistory } from 'app/services/command-history';
+import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
-import { OdLaneDirectionBuilder } from '../../../modules/tv-map/builders/od-lane-direction-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
-import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 
 export class LaneTool extends BaseTool implements IToolWithMainObject {
 

@@ -5,8 +5,8 @@
 // Class representing a position in space plus a direction.
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvRoadCoord } from './tv-lane-coord';
 import { TvLaneSide, TvSide } from './tv-common';
+import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvPosTheta {
 	public z: number = 0;

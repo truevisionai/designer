@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -34,23 +34,21 @@ export class PropPointTool extends BaseTool {
 	public toolType = ToolType.PropPoint;
 
 	public shapeEditor: PointEditor;
-
+	public currentPoint: BaseControlPoint;
 	private cpAddedSub: Subscription;
 	private cpSelectedSub: Subscription;
 	private cpUnselectedSub: Subscription;
 	private cpMovedSub: Subscription;
 	private cpUpdatedSub: Subscription;
 
-	public currentPoint: BaseControlPoint;
-
-	get currentProp (): PropInstance {
-		return this.currentPoint?.mainObject;
-	}
-
 	constructor () {
 
 		super();
 
+	}
+
+	get currentProp (): PropInstance {
+		return this.currentPoint?.mainObject;
 	}
 
 	get prop (): PropInstance {

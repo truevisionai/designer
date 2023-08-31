@@ -3,28 +3,29 @@
   -->
 
 <div *ngIf="data.propCurve"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
 	<app-double-field (changed)="onSpacingChanged($event)"
-		[value]="data.propCurve.spacing"
-		label="Distance"></app-double-field>
+					  [value]="data.propCurve.spacing"
+					  label="Distance"></app-double-field>
 
 	<app-double-field (changed)="onRotationChanged($event)"
-		[value]="data.propCurve.rotation"
-		label="Rotation"></app-double-field>
+					  [value]="data.propCurve.rotation"
+					  label="Rotation"></app-double-field>
 
 	<app-double-field (changed)="onPositionVarianceChanged($event)"
-		[value]="data.propCurve.positionVariance"
-		label="Position"></app-double-field>
+					  [value]="data.propCurve.positionVariance"
+					  label="Position"></app-double-field>
 
 	<button (click)="onBakeClicked()"
-		mat-stroked-button>Bake Objects</button>
+			mat-stroked-button>Bake Objects
+	</button>
 
 </div>
 
 <div *ngIf="data.controlPoint">
-	<app-vector3-field label="Control Point"
-	[value]="data.controlPoint.position?.clone()"
-	(changed)="onControlPointChanged($event)"
+	<app-vector3-field (changed)="onControlPointChanged($event)"
+					   [value]="data.controlPoint.position?.clone()"
+					   label="Control Point"
 	></app-vector3-field>
 </div>

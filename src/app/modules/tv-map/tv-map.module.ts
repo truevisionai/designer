@@ -23,6 +23,18 @@ import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from 'app/core/core.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
+import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
+import {
+	DynamicArrayInspectorComponent,
+	DynamicFileInspectorComponent,
+	DynamicInspectorComponent,
+	FieldHostDirective
+} from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
+import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
+import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
+import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { PropPolygonInspectorComponent } from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
 import { RoadMarkingInspector } from 'app/views/inspectors/road-marking-inspector/road-marking-inspector.component';
 import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
@@ -51,13 +63,6 @@ import { TextureInspector } from '../../views/inspectors/texture-inspector/textu
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
-import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
-import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
-import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
-import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
-import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
-import { DynamicArrayInspectorComponent, DynamicFileInspectorComponent, DynamicInspectorComponent, FieldHostDirective } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 
 
 @NgModule( {

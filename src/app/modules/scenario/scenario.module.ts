@@ -17,7 +17,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { TvMapModule } from '../tv-map/tv-map.module';
 import { ImportOpenScenarioDialogComponent } from './dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
-import { EventEditorComponent } from './views/event-editor/event-editor.component';
 import { EntityInspector } from './inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { FileHeaderComponent } from './inspectors/tv-file-header/tv-file-header.component';
 import { ParamatersInspectorComponent } from './inspectors/tv-paramaters-inspector/tv-paramaters-inspector.component';
@@ -52,20 +51,22 @@ import {
 	TraveledDistanceConditionEditorComponent
 } from './views/conditions/traveled-distance-condition-editor/traveled-distance-condition-editor.component';
 import { DynamicsEditorComponent } from './views/dynamics-editor/dynamics-editor.component';
+import { EventEditorComponent } from './views/event-editor/event-editor.component';
 import { ManeuverEditorComponent } from './views/maneuver-editor/maneuver-editor.component';
 import { PositionEditorComponent } from './views/position-editor/position-editor.component';
 import { LanePositionEditorComponent } from './views/positions/lane-position-editor/lane-position-editor.component';
+import { RelativeLanePositionComponent } from './views/positions/relative-lane-position/relative-lane-position.component';
 import {
 	RelativeObjectPositionEditorComponent
 } from './views/positions/relative-object-position-editor/relative-object-position-editor.component';
+import { RelativeRoadPositionComponent } from './views/positions/relative-road-position/relative-road-position.component';
 import { RelativeWorldComponent } from './views/positions/relative-world/relative-world.component';
 import { RoadPositionEditorComponent } from './views/positions/road-position-editor/road-position-editor.component';
+import { TrajectoryPositionComponent } from './views/positions/trajectory-position/trajectory-position.component';
 import { WorldPositionEditorComponent } from './views/positions/world-position-editor/world-position-editor.component';
 import { TargetEditorComponent } from './views/target-editor/target-editor.component';
 import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.component';
-import { RelativeLanePositionComponent } from './views/positions/relative-lane-position/relative-lane-position.component';
-import { RelativeRoadPositionComponent } from './views/positions/relative-road-position/relative-road-position.component';
-import { TrajectoryPositionComponent } from './views/positions/trajectory-position/trajectory-position.component';
+
 // import { ScenarioTreeComponent } from './views/tv-hierarchy/scenario-tree.component';
 
 @NgModule( {

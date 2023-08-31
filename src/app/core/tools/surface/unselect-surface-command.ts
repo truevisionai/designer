@@ -2,11 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { TvSurface } from '../../../modules/tv-map/models/tv-surface.model';
 import { BaseCommand } from '../../commands/base-command';
 import { SurfaceTool } from './surface-tool';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 export class UnselectSurfaceCommand extends BaseCommand {
 

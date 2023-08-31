@@ -3,9 +3,9 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { ConditionType, TriggeringRule } from '../../../models/tv-enums';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 
 @Component( {
 	selector: 'app-condition-by-entity',
@@ -20,7 +20,8 @@ export class ConditionByEntityComponent implements OnInit {
 
 	conditions = ConditionType;
 
-	constructor () { }
+	constructor () {
+	}
 
 	get entities () {
 
@@ -55,6 +56,7 @@ export class ConditionByEntityComponent implements OnInit {
 
 	}
 
-	ngOnInit () { }
+	ngOnInit () {
+	}
 
 }

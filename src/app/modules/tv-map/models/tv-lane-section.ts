@@ -12,7 +12,6 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
-import { TvRoadCoord } from './tv-lane-coord';
 
 export class TvLaneSection {
 
@@ -31,7 +30,6 @@ export class TvLaneSection {
 	// public right: OdRoadLaneSectionContainer;
 	private lastAddedLaneIndex: number;
 	private laneMap: Map<number, TvLane> = new Map<number, TvLane>();
-	private _road: TvRoad;
 
 	constructor ( id: number, s: number, singleSide: boolean, road?: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
@@ -41,11 +39,17 @@ export class TvLaneSection {
 		this._road = road;
 	}
 
-	private _length: number;
+	private _road: TvRoad;
 
-	get roadId () {
-		return this._road?.id;
+	get road (): TvRoad {
+		return this._road;
 	}
+
+	set road ( value: TvRoad ) {
+		this._road = value;
+	}
+
+	private _length: number;
 
 	get length () {
 		return this._length;
@@ -56,20 +60,16 @@ export class TvLaneSection {
 		this._length = value;
 	}
 
+	get roadId () {
+		return this._road?.id;
+	}
+
 	public get lanes () {
 		return this.laneMap;
 	}
 
 	get s () {
 		return this.attr_s;
-	}
-
-	get road (): TvRoad {
-		return this._road;
-	}
-
-	set road ( value: TvRoad ) {
-		this._road = value;
 	}
 
 	// private laneVector: OdLane[] = [];
@@ -804,7 +804,7 @@ export class TvLaneSection {
 		// we need to find the lane which is closest to the pointer
 		const THRESHOLD = 0.5;
 
-		let minDistance = Infinity
+		let minDistance = Infinity;
 
 		let targetLane: TvLane;
 

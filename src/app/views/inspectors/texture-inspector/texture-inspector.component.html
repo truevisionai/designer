@@ -3,28 +3,28 @@
   -->
 
 <div *ngIf="texture"
-	class="inspector-form-container">
+	 class="inspector-form-container">
 
-	<img src="{{metadata.path}}" />
+	<img src="{{metadata.path}}"/>
 
-	<app-string-field label="Name"
-		[value]="texture.name"
-		[disabled]="true"></app-string-field>
-	<app-double-field label="WrapS"
-		[value]="texture.wrapS"
-		[disabled]="true"></app-double-field>
-	<app-double-field label="WrapT"
-		[value]="texture.wrapT"
-		[disabled]="true"></app-double-field>
-	<app-double-field label="Anisotropy"
-		[value]="texture.anisotropy"
-		[disabled]="true"></app-double-field>
-	<app-double-field label="Offset X"
-		[value]="texture.offset.x"
-		[disabled]="true"></app-double-field>
-	<app-double-field label="Offset Y"
-		[value]="texture.offset.y"
-		[disabled]="true"></app-double-field>
+	<app-string-field [disabled]="true"
+					  [value]="texture.name"
+					  label="Name"></app-string-field>
+	<app-double-field [disabled]="true"
+					  [value]="texture.wrapS"
+					  label="WrapS"></app-double-field>
+	<app-double-field [disabled]="true"
+					  [value]="texture.wrapT"
+					  label="WrapT"></app-double-field>
+	<app-double-field [disabled]="true"
+					  [value]="texture.anisotropy"
+					  label="Anisotropy"></app-double-field>
+	<app-double-field [disabled]="true"
+					  [value]="texture.offset.x"
+					  label="Offset X"></app-double-field>
+	<app-double-field [disabled]="true"
+					  [value]="texture.offset.y"
+					  label="Offset Y"></app-double-field>
 
 	<!-- <mat-form-field>
 		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">

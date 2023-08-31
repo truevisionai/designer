@@ -12,10 +12,9 @@ import { EntityCondition } from './entity-condition';
  */
 export class AccelerationCondition extends EntityCondition {
 
-	private debug = false;
 	public label: string = 'AccelerationCondition';
-
 	conditionType = ConditionType.ByEntity_Acceleration;
+	private debug = false;
 
 	/**
 	 * Acceleration value. Unit: m/s^2.

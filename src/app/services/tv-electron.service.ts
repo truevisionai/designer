@@ -11,9 +11,6 @@ declare const command: any;
 @Injectable( { providedIn: 'root' } )
 export class TvElectronService {
 
-	private _electron: typeof window.electron;
-	private _remote: any;
-
 	constructor () {
 		if ( this.isElectronApp ) {
 			this._electron = window.require( 'electron' );
@@ -21,8 +18,16 @@ export class TvElectronService {
 		}
 	}
 
+	private _electron: typeof window.electron;
+
 	get electron (): typeof window.electron {
 		return this._electron;
+	}
+
+	private _remote: any;
+
+	get remote (): any {
+		return this._remote;
 	}
 
 	get isElectronApp (): boolean {
@@ -87,10 +92,6 @@ export class TvElectronService {
 
 	get shell (): Electron.Shell {
 		return this.electron ? this.electron.shell : null;
-	}
-
-	get remote (): any {
-		return this._remote;
 	}
 
 	setTitle ( title: string, filePath?: string ) {

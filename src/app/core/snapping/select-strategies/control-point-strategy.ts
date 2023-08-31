@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { INode } from 'app/modules/three-js/objects/i-selectable';
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { BaseControlPoint } from '../../../modules/three-js/objects/control-point';
 import { SelectStrategy } from './select-strategy';
-import { INode } from 'app/modules/three-js/objects/i-selectable';
 
 export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStrategy<T> {
 

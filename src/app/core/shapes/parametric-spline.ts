@@ -4,12 +4,12 @@
 
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
 import { TangentLine } from './TangentLine';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 export class ParametricSpline extends AbstractSpline {
 

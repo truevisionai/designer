@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SerializedField } from 'app/core/components/serialization';
 import { Vector3 } from 'three';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
+import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
-import { EntityRef } from '../entity-ref';
-import { SerializedField } from 'app/core/components/serialization';
 
 export class RelativeObjectPosition extends Position {
 
@@ -65,7 +65,7 @@ export class RelativeObjectPosition extends Position {
 
 			const rotationMatrix = this.orientation.getRotationMatrix();
 
-			rotatedDelta = this.delta.applyMatrix3( rotationMatrix )
+			rotatedDelta = this.delta.applyMatrix3( rotationMatrix );
 
 		} else {
 
@@ -133,7 +133,7 @@ export class RelativeObjectPosition extends Position {
 
 		this.vector0.copy( delta );
 
-		this.orientation.copy( orientation )
+		this.orientation.copy( orientation );
 
 		this.updated.emit();
 
