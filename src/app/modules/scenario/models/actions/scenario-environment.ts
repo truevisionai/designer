@@ -2,10 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { SerializedField } from 'app/core/components/serialization';
 import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
+import { Vector3 } from 'three';
+// import { AppService } from 'app/core/services/app.service';
 
 enum CloudState {
 	Cloudy = 'cloudy',
@@ -81,14 +84,62 @@ class Weather {
 }
 
 class Sun {
+
+	/**
+	 *
+	 * @param _azimuth azimoith angle in radians counted clockwise 0=north pi/2=east pi=south 3pi/2=west Range[0,2*PI]
+	 * @param _elevation solar elevation angle in radians Range[-PI,PI] 0=x/y plane, PI/2=zenith
+	 * @param _illuminance illuminance in lux Range[0,inf]
+	 */
 	constructor (
-		public azimuth: number = 0,
-		public elevation: number = 0,
-		public illuminance: number = 1,
+		private _azimuth: number = 0,
+		private _elevation: number = 0,
+		private _illuminance: number = 1,
 	) {
 	}
 
+	@SerializedField( { 'type': 'float', 'min': 0, 'max': 2 * Math.PI } )
+	get azimuth () { return this._azimuth; }
+
+	set azimuth ( value: number ) { this._azimuth = value; this.updated(); }
+
+	@SerializedField( { 'type': 'float', 'min': -Math.PI, 'max': Math.PI } )
+	get elevation () { return this._elevation; }
+
+	set elevation ( value: number ) { this._elevation = value; this.updated(); }
+
+	@SerializedField( { 'type': 'float', 'min': 0, 'max': 100000 } )
+	get illuminance () { return this._illuminance; }
+
+	set illuminance ( value: number ) { this._illuminance = value; this.updated(); }
+
+	private get direction () {
+		return new Vector3(
+			Math.cos( this._elevation ) * Math.cos( this._azimuth ),
+			Math.sin( this._elevation ),
+			Math.cos( this._elevation ) * Math.sin( this._azimuth )
+		)
+	}
+
+	updated () {
+
+		// const directionalLight = AppService.three.directionLight;
+
+		// // Calculate the light direction based on azimuth and elevation
+		// const lightDirection = this.direction.normalize();
+
+		// // Set the light position based on the direction
+		// directionalLight.position.copy( lightDirection );
+
+		// // Set the light intensity
+		// directionalLight.intensity = this.illuminance;
+
+	}
+
+
 	private applyLight () {
+
+
 		// // Convert azimuth and elevation to radians
 		// const azimuthRad = THREE.MathUtils.degToRad(sun.azimuth);
 		// const elevationRad = THREE.MathUtils.degToRad(sun.elevation);
@@ -204,12 +255,21 @@ class RoadCondition {
 export class ScenarioEnvironment {
 
 	constructor (
-		public name: string,
+		private _name: string,
 		public timeOfDay: TimeOfDay = new TimeOfDay( false, new Date() ),
 		public weather: Weather = new Weather(),
 		public roadCondition: RoadCondition = new RoadCondition(),
 		public parameterDeclarations: ParameterDeclaration[] = []
 	) {
+	}
+
+	@SerializedField( { type: 'string' } )
+	get name (): string {
+		return this._name;
+	}
+
+	set name ( value: string ) {
+		this._name = value;
 	}
 
 	static fromXML ( xml: XmlElement ) {

@@ -20,6 +20,8 @@ import { TvViewHelper } from './objects/tv-view-helper';
 	providedIn: 'root'
 } )
 export class ThreeService implements IEngine {
+	directionLight: THREE.DirectionalLight;
+	ambientLight: THREE.AmbientLight;
 
 	static bgForClicks: THREE.Mesh;
 	cameraChanged = new EventEmitter<Camera>();
@@ -75,17 +77,15 @@ export class ThreeService implements IEngine {
 
 	addDirectionalLight () {
 
-		const directionaLight = new THREE.DirectionalLight( 0xffffff, 1 );
+		this.directionLight = new THREE.DirectionalLight( 0xffffff, 1 );
 
-		directionaLight.position.set( 5, 10, 7.5 );
+		this.directionLight.position.set( 5, 10, 7.5 );
 
-		SceneService.addHelper( directionaLight );
+		SceneService.addHelper( this.directionLight );
 
-		SceneService.addHelper( directionaLight.target );
+		this.ambientLight = new THREE.AmbientLight( 0xE6E6E6, 1 );
 
-		const ambientLight = new THREE.AmbientLight( 0xE6E6E6, 1 );
-
-		SceneService.addHelper( ambientLight );
+		SceneService.addHelper( this.ambientLight );
 
 	}
 
