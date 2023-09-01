@@ -3,51 +3,48 @@
   -->
 
 <div *ngIf="texture"
-	 class="inspector-form-container">
+	class="inspector-form-container">
 
-	<img src="{{metadata.path}}"/>
+	<img [src]="preview" />
 
 	<app-string-field [disabled]="true"
-					  [value]="texture.name"
-					  label="Name"></app-string-field>
-	<app-double-field [disabled]="true"
-					  [value]="texture.wrapS"
-					  label="WrapS"></app-double-field>
-	<app-double-field [disabled]="true"
-					  [value]="texture.wrapT"
-					  label="WrapT"></app-double-field>
-	<app-double-field [disabled]="true"
-					  [value]="texture.anisotropy"
-					  label="Anisotropy"></app-double-field>
-	<app-double-field [disabled]="true"
-					  [value]="texture.offset.x"
-					  label="Offset X"></app-double-field>
-	<app-double-field [disabled]="true"
-					  [value]="texture.offset.y"
-					  label="Offset Y"></app-double-field>
+		[value]="texture.name"
+		label="Name">
+	</app-string-field>
 
-	<!-- <mat-form-field>
-		<input [(ngModel)]="texture.name" disabled disabled matInput placeholder="Texture" type="string">
-	</mat-form-field>
+	<!-- <app-double-field (changed)="onChange($event, 'wrapS')"
+		[value]="texture.wrapS"
+		label="WrapS">
+	</app-double-field>
 
-	<mat-form-field>
-		<input (change)="onChange($event)" [(ngModel)]="texture.wrapS" disabled matInput placeholder="wrapS" type="number">
-	</mat-form-field>
+	<app-double-field (changed)="onChange($event, 'wrapT')"
+		[value]="texture.wrapT"
+		label="WrapT">
+	</app-double-field> -->
 
-	<mat-form-field>
-		<input (change)="onChange($event)" [(ngModel)]="texture.wrapT" disabled matInput placeholder="wrapS" type="number">
-	</mat-form-field>
+	<app-double-field (changed)="onChange($event, 'anisotropy')"
+		[value]="texture.anisotropy"
+		label="Anisotropy">
+	</app-double-field>
 
-	<mat-form-field>
-		<input (change)="onChange($event)" [(ngModel)]="texture.anisotropy" disabled matInput placeholder="anisotropy" type="number">
-	</mat-form-field>
+	<app-double-field (changed)="onChange($event, 'rotation')"
+		[value]="texture.rotation"
+		label="Rotation">
+	</app-double-field>
 
-	<mat-form-field>
-		<input (change)="onChange($event)" [(ngModel)]="texture.offset.x" disabled matInput placeholder="Offset X" type="number">
-	</mat-form-field>
+	<app-vector2-field (changed)="onChange($event, 'offset')"
+		[value]="texture.offset"
+		label="Offset">
+	</app-vector2-field>
 
-	<mat-form-field>
-		<input (change)="onChange($event)" [(ngModel)]="texture.offset.y" disabled matInput placeholder="Offset Y" type="number">
-	</mat-form-field> -->
+	<app-vector2-field (changed)="onChange($event, 'repeat')"
+		[value]="texture.repeat"
+		label="Repeat">
+	</app-vector2-field>
+
+	<!-- <app-vector2-field (changed)="onChange($event, 'center')"
+		[value]="texture.center"
+		label="Center">
+	</app-vector2-field> -->
 
 </div>

@@ -31,6 +31,7 @@ import {
 	PlaneGeometry,
 	Scene,
 	SphereGeometry,
+	Texture,
 	TextureLoader,
 	Vector3,
 	WebGLRenderer
@@ -230,6 +231,14 @@ export class PreviewService {
 
 			metadata.preview = this.getGeometryPreview( instance as THREE.BufferGeometry );
 
+		} else if ( metadata.importer === MetaImporter.TEXTURE ) {
+
+			const instance = AssetDatabase.getInstance<Texture>( metadata.guid );
+
+			if ( !instance ) return;
+
+			metadata.preview = this.getTexturePreview( instance );
+
 		}
 
 	}
@@ -320,6 +329,35 @@ export class PreviewService {
 		const image = this.renderer.domElement.toDataURL();
 
 		this.scene.remove( model );
+
+		this.resetScene();
+
+		return image;
+	}
+
+	getTexturePreview ( texture: THREE.Texture ): string {
+
+		if ( !texture ) return;
+
+		this.camera.position.set( 0, 0, 10 );
+
+		this.camera.updateProjectionMatrix();
+
+		const material = new MeshBasicMaterial( { map: texture } );
+
+		const plane = new PlaneGeometry( 10, 10 );
+
+		var quad = new Mesh( plane, material );
+
+		this.scene.add( quad );
+
+		this.renderer.setSize( WIDTH, HEIGHT );
+
+		this.renderer.render( this.scene, this.camera );
+
+		const image = this.renderer.domElement.toDataURL();
+
+		this.scene.remove( quad );
 
 		this.resetScene();
 

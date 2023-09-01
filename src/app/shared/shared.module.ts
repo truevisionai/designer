@@ -96,6 +96,7 @@ import { NavigationService } from './services/navigation.service';
 import { RoutePartsService } from './services/route-parts.service';
 // SERVICES
 import { ThemeService } from './services/theme.service';
+import { Vector2FieldComponent } from './fields/vector2-field/vector2-field.component';
 
 /*
   Only Required if you want to use Angular Landing
@@ -139,6 +140,7 @@ const classesToInclude = [
 	// Fields
 	ButtonFieldComponent,
 	Vector3FieldComponent,
+	Vector2FieldComponent,
 	BooleanFieldComponent,
 	DoubleFieldComponent,
 	DoubleInputComponent,
@@ -205,6 +207,7 @@ const classesToInclude = [
 		DoubleInputComponent,
 		ButtonFieldComponent,
 		Vector3FieldComponent,
+		Vector2FieldComponent,
 		BooleanFieldComponent,
 		EnumFieldComponent,
 	],

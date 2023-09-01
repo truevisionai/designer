@@ -255,7 +255,11 @@ export class AssetFactory {
 
 		const meta = this.getMeta( guid );
 
-		MetadataFactory.createTextureMetadata( meta.guid, meta.path, texture );
+		const json = MetadataFactory.createTextureMetadata( meta.guid, meta.path, texture );
+
+		const contents = JSON.stringify( json, null, 2 );
+
+		this.fileService.fs.writeFileSync( meta.path + '.meta', contents );
 	}
 
 }

@@ -1,0 +1,25 @@
+<div align="left"
+	class="tv-field">
+
+	<label class="tv-field-label">{{ label }}</label>
+
+	<div *ngIf="value"
+		class="tv-field-text-input"
+		fxFlex
+		fxLayout="row">
+
+		<app-double-input (changed)="onXChanged($event)"
+			[disabled]="disabled"
+			[value]="value.x"
+			style="width: 50%; margin-right: 4px;">
+		</app-double-input>
+
+		<app-double-input (changed)="onYChanged($event)"
+			[disabled]="disabled"
+			[value]="value.y"
+			style="width: 50%; margin-right: 4px;">
+		</app-double-input>
+
+	</div>
+
+</div>

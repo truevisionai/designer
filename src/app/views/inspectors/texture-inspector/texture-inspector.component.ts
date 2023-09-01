@@ -7,7 +7,11 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/models/metadata.model';
+import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';
+import { PreviewService } from '../object-preview/object-preview.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -25,7 +29,9 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	public metadata: Metadata;
 
-	constructor () {
+	public preview: string;
+
+	constructor ( private previewService: PreviewService ) {
 	}
 
 	get texture (): Texture {
@@ -36,7 +42,12 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 		this.metadata = AssetDatabase.getMetadata( this.data.guid );
 
-		console.log( this.data );
+		this.preview = this.previewService.getTexturePreview( this.texture );
+
+		// console.log( this.previewService.getTexturePreview( this.texture ) );
+		// console.log( this.data );
+		// console.log( this.texture.image );
+		// console.log( this.texture.source.data );
 		// console.log( this.texture );
 		// console.log( this.texture.image );
 
@@ -44,17 +55,29 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	ngOnDestroy () {
 
-		if ( this.texture ) {
+		this.save();
 
-			// TODO: fix file saving
-			MetadataFactory.createTextureMetadata( this.metadata.guid, this.metadata.path, this.texture );
-
-		}
 	}
 
-	onChange ( $event ) {
+	save () {
+
+		if ( !this.texture ) return;
+
+		this.preview = this.previewService.getTexturePreview( this.texture );
+
+		AssetFactory.updateTexture( this.metadata.guid, this.texture );
+
+	}
+
+	onChange ( $newValue: any, property: keyof Texture ) {
+
+		if ( !this.texture ) return;
+
+		CommandHistory.execute( new SetValueCommand( this.texture, property, $newValue ) );
 
 		this.texture.needsUpdate = true;
+
+		this.save();
 
 	}
 
