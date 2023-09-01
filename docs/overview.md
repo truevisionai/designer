@@ -23,7 +23,7 @@ This section explains how to use the Road Editor to create different kinds of ro
 
 
 <a name="mouse"></a>    
-## Mouse Interation
+## Mouse Interaction
 
 - `left-click` is used to select objects for inspecting
 - `shift + left-click` is used to add objects or controls points or some other kind of action
@@ -31,16 +31,16 @@ This section explains how to use the Road Editor to create different kinds of ro
 
 
 <a name="2d-navigation"></a>    
-## 2D Nagivation
+## 2D Navigation
 
 - `right-click` and drag to move the scene around
 - `middle-click` and move to zoom-in and out
 - `mouse-scroll` for zooming-in and out
 
 <a name="3d-navigation"></a>    
-## 3D Nagivation
+## 3D Navigation
 
-- `left-click` and drag to panning the camera
+- `left-click` and drag to pan the camera
 - `right-click` and drag to move the scene around
 - `middle-click` and move to zoom-in and out
 - `mouse-scroll` for zooming-in and out
