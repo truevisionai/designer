@@ -15,7 +15,7 @@
 Truevision Simulator has a few system requirements. 
 
 - i7 Processor or above
-- Alteast 16GB RAM
+- Al teast 16GB RAM
 - GTX 1040 GPU or above
 - ~4GB of Disk space
 - Active Internet Connection while running simulator
