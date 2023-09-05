@@ -19,9 +19,6 @@ import { ViewportService } from '../viewport.service';
 } )
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	@Input( 'directionalLight' ) directionalLightEnabled: boolean = false;
-	@Input( 'showPointerCoordinates' ) showPointerCoordinates: boolean = false;
-
 	public beginTime;
 	public prevTime;
 	public frames = 0;
@@ -111,10 +108,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setClearColor( 0xffffff, 1 );
 		this.renderer.autoClear = false;
+		// this.renderer.toneMapping = THREE.LinearToneMapping;
+		// this.renderer.toneMappingExposure = 1.0;
 
 		this.raycaster = new THREE.Raycaster();
 		// this.raycaster.linePrecision = 0.25;
 		this.raycaster.far = 10000;
+
+		SceneService.renderer = this.renderer;
 
 		this.renderer.setSize( this.CANVAS_WIDTH, this.CANVAS_HEIGHT );
 
@@ -123,10 +124,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.threeService.setupScene( this.canvas, this.renderer );
 
 		this.render();
-
-		if ( this.directionalLightEnabled ) {
-			this.threeService.addDirectionalLight();
-		}
 
 	}
 

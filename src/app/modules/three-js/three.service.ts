@@ -15,12 +15,13 @@ import { SceneService } from '../../core/services/scene.service';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
 import { TvViewHelper } from './objects/tv-view-helper';
+import { ScenarioEnvironment } from '../scenario/models/actions/scenario-environment';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ThreeService implements IEngine {
-	directionLight: THREE.DirectionalLight;
+
 	ambientLight: THREE.AmbientLight;
 
 	static bgForClicks: THREE.Mesh;
@@ -48,6 +49,8 @@ export class ThreeService implements IEngine {
 	private p_offset = new THREE.Vector3( 20, 20, 20 );
 	private o_offset = new THREE.Vector3( 0, 0, 100 );
 
+	environment: ScenarioEnvironment = new ScenarioEnvironment( 'Default' );
+
 	constructor () {
 
 	}
@@ -65,28 +68,37 @@ export class ThreeService implements IEngine {
 		this.canvas = canvas;
 		this.renderer = renderer;
 
-		// const box = this.getCanvasBounds();
-		// this.CANVAS_WIDTH = box.width === 0 ? this.CANVAS_WIDTH : box.width;
-		// this.CANVAS_HEIGHT = box.height === 0 ? this.CANVAS_HEIGHT : box.height;CO
-		SceneService.scene.background = new THREE.Color( 0x333333 );// new THREE.Color( 0x2e2e2e );
+		SceneService.scene.background = new THREE.Color( 0x333333 );
 
 		this.createCameras();
 
 		this.createSceneHelpers();
+
+		this.setEnvironment( this.environment, );
 	}
 
-	addDirectionalLight () {
+	setEnvironment ( environment: ScenarioEnvironment, removeOld = false ) {
 
-		this.directionLight = new THREE.DirectionalLight( 0xffffff, 1 );
+		if ( removeOld ) {
 
-		this.directionLight.position.set( 5, 10, 7.5 );
+			SceneService.removeHelper( this.environment?.weather?.sun?.light );
 
-		SceneService.addHelper( this.directionLight );
+			SceneService.removeHelper( this.ambientLight );
+
+			// if ( this.environment.weather.domeImage.sphereMesh ) {
+			// 	SceneService.removeHelper( this.environment.weather.domeImage.sphereMesh );
+			// }
+
+		}
+
+		// set new environment
+		SceneService.addHelper( environment.weather.sun.light );
 
 		this.ambientLight = new THREE.AmbientLight( 0xE6E6E6, 1 );
 
 		SceneService.addHelper( this.ambientLight );
 
+		this.environment = environment;
 	}
 
 	createControls (): void {
@@ -170,8 +182,6 @@ export class ThreeService implements IEngine {
 	}
 
 	createSceneHelpers (): any {
-
-		this.addDirectionalLight();
 
 		this.setupPostProcessing();
 

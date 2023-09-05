@@ -35,6 +35,8 @@ import { CommandHistory } from './command-history';
 import { ModelImporterService } from './model-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 
 
 @Injectable( {
@@ -49,6 +51,7 @@ export class SceneImporterService extends AbstractReader {
 		private odParser: OpenDriverParser,
 		private modelImporter: ModelImporterService,
 		private electronService: TvElectronService,
+		private threeService: ThreeService,
 	) {
 		super();
 	}
@@ -220,6 +223,7 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
+		this.readEnvironment( xml.environment );
 
 		this.map.roads.forEach( road => {
 
@@ -228,6 +232,24 @@ export class SceneImporterService extends AbstractReader {
 		} );
 
 		SceneService.add( this.map.gameObject );
+
+	}
+
+	readEnvironment ( xml: XmlElement ) {
+
+		let environment: ScenarioEnvironment;
+
+		if ( !xml ) {
+
+			environment = new ScenarioEnvironment( 'Default' );
+
+		} else {
+
+			environment = ScenarioEnvironment.import( xml );
+
+		}
+
+		this.threeService.setEnvironment( environment, true );
 
 	}
 

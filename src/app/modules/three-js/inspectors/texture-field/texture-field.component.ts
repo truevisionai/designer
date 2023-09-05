@@ -3,6 +3,7 @@
  */
 
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import * as THREE from 'three';
 import { Texture } from 'three';
 
@@ -41,6 +42,10 @@ export class TextureFieldComponent implements OnInit {
 	}
 
 	ngOnInit (): void {
+
+		if ( this.data instanceof String || typeof this.data === 'string' ) {
+			this.data = AssetDatabase.getInstance<Texture>( this.data as any );
+		}
 
 		const dom = document.createElement( 'span' );
 		const form = document.createElement( 'form' );

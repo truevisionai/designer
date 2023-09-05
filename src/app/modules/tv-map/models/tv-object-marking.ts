@@ -7,11 +7,16 @@ import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 import { TvCornerRoad, TvRoadObject } from './tv-road-object';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
 
 export class TvObjectMarking {
 
 	roadObject: TvRoadObject;
 	node: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>;
+
+	private _material: THREE.MeshBasicMaterial;
+	private _materialGuid: string = 'default';
 
 	/**
 	 * Specifies a marking that is either attached to one side of the
@@ -39,20 +44,37 @@ export class TvObjectMarking {
 		public width: number = 1.83,
 		public cornerReferences: number[] = [] // 2 or more corners
 	) {
+		this._material = new THREE.MeshBasicMaterial( { color: color } );
+	}
 
+	get material (): THREE.MeshBasicMaterial {
+		return this._material;
+	}
+
+	set material ( value: THREE.MeshBasicMaterial ) {
+		this._material = value;
+	}
+
+	get materialGuid (): string {
+		return this._materialGuid;
+	}
+
+	set materialGuid ( value: string ) {
+		this._materialGuid = value;
+		this._material = AssetDatabase.getInstance( value );
+		this._material.needsUpdate = true;
+		this.update();
 	}
 
 	// with spline
 	static makeFromSpline ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
-
 
 		const totalLength = curve.getLength();
 		const fullStripeLength = marking.lineLength + marking.spaceLength;
 		const numFullStripes = Math.floor( totalLength / fullStripeLength );
 		const positions = [];
 		const indices = [];
-		const colors = [];
-		const color = new THREE.Color( marking.color );
+		const uvs = [];
 
 		for ( let i = 0; i < numFullStripes; i++ ) {
 			const uStart = i * fullStripeLength / totalLength;
@@ -68,62 +90,36 @@ export class TvObjectMarking {
 			const perpendicularStart = new THREE.Vector3( -tangentStart.y, tangentStart.x, tangentStart.z ).multiplyScalar( marking.width / 2 );
 			const perpendicularEnd = new THREE.Vector3( -tangentEnd.y, tangentEnd.x, tangentEnd.z ).multiplyScalar( marking.width / 2 );
 			const startIndex = positions.length / 3;
-			const cornersStart = [
-				start.clone().add( perpendicularStart ),
-				start.clone().sub( perpendicularStart )
-			];
-			const cornersEnd = [
-				end.clone().add( perpendicularEnd ),
-				end.clone().sub( perpendicularEnd )
-			];
 
-			cornersStart.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
+			const frontLeft = start.clone().add( perpendicularStart );
+			const frontRight = start.clone().sub( perpendicularStart );
+			const backLeft = end.clone().add( perpendicularEnd );
+			const backRight = end.clone().sub( perpendicularEnd );
 
-			cornersEnd.forEach( corner => {
-				positions.push( corner.x, corner.y, marking.zOffset );
-				positions.push( corner.x, corner.y, 0 );
-			} );
+			positions.push( frontLeft.x, frontLeft.y, marking.zOffset );			// 0-front-left-top
+			positions.push( backLeft.x, backLeft.y, marking.zOffset );				// 4-back-left-top
+			positions.push( backRight.x, backRight.y, marking.zOffset );			// 6-back-right-top
+			positions.push( frontRight.x, frontRight.y, marking.zOffset );			// 2-front-right-top
 
-			for ( let j = 0; j < 8; j++ ) {
-				colors.push( color.r, color.g, color.b );
-			}
-
-			// Top face
 			indices.push(
-				startIndex, startIndex + 2, startIndex + 6,
-				startIndex, startIndex + 6, startIndex + 4
+				startIndex + 0, startIndex + 3, startIndex + 2,
+				startIndex + 0, startIndex + 2, startIndex + 1
 			);
 
-			// Bottom face
-			indices.push(
-				startIndex + 1, startIndex + 3, startIndex + 7,
-				startIndex + 1, startIndex + 7, startIndex + 5
-			);
+			uvs.push( 0, 0 );
+			uvs.push( marking.lineLength, 0 );
+			uvs.push( marking.lineLength, marking.width );
+			uvs.push( 0, marking.width );
 
-			// Side faces
-			indices.push(
-				startIndex, startIndex + 1, startIndex + 3,
-				startIndex, startIndex + 3, startIndex + 2,
-				startIndex + 2, startIndex + 3, startIndex + 7,
-				startIndex + 2, startIndex + 7, startIndex + 6,
-				startIndex + 4, startIndex + 5, startIndex + 7,
-				startIndex + 4, startIndex + 7, startIndex + 6,
-				startIndex, startIndex + 1, startIndex + 5,
-				startIndex, startIndex + 5, startIndex + 4
-			);
 		}
 
 		const geometry = new THREE.BufferGeometry();
 		geometry.setIndex( indices );
 		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+		geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( uvs, 2 ) );
+		geometry.computeVertexNormals();
 
-		const material = new THREE.MeshBasicMaterial( { vertexColors: true } );
-
-		return new THREE.Mesh( geometry, material );
+		return new THREE.Mesh( geometry, marking.material );
 	}
 
 	static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: THREE.Vector3[] ) {

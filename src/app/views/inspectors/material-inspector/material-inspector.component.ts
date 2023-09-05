@@ -233,13 +233,21 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
+	onAlphaMapChanged ( $guid: string ) {
+
+		CommandHistory.execute(
+			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'alphaMap', $guid )
+		);
+
+	}
+
 	private updatePreviewCache () {
 
 		this.metadata.preview = this.getFreshPreview();
 
 	}
 
-	private updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
+	updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
 
 		const oldValue = ( typeof material[ propertyName ] === 'number' || typeof material[ propertyName ] === 'boolean' )
 			? material[ propertyName ]

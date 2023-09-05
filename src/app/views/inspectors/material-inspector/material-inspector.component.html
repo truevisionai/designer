@@ -3,82 +3,92 @@
   -->
 
 <div *ngIf="material"
-	 class="inspector-form-container">
+	class="inspector-form-container">
 
 	<mat-card class="mat-card material-preview">
-		<img [src]="thumbnail"/>
+		<img [src]="thumbnail" />
 	</mat-card>
 
 	<app-string-field [disabled]="true"
-					  [value]="material.name"
-					  label="Name"></app-string-field>
+		[value]="material.name"
+		label="Name"></app-string-field>
 
 	<!-- <app-dropdown-field (changed)="onTypeChanged($event)"
 		[options]="materialTypes"
 		[value]="material.type"></app-dropdown-field> -->
 
 	<app-double-field (changed)="onRoughnessChanged($event)"
-					  *ngIf="material.roughness != undefined"
-					  [value]="material.roughness"
-					  label="Roughness"
-					  max="1"
-					  min="0"></app-double-field>
+		*ngIf="material.roughness != undefined"
+		[value]="material.roughness"
+		label="Roughness"
+		max="1"
+		min="0"></app-double-field>
 
 	<app-double-field (changed)="onMetalnessChanged($event)"
-					  *ngIf="material.metalness != undefined"
-					  [value]="material.metalness"
-					  label="Metalness"
-					  max="1"
-					  min="0"></app-double-field>
+		*ngIf="material.metalness != undefined"
+		[value]="material.metalness"
+		label="Metalness"
+		max="1"
+		min="0"></app-double-field>
 
 	<app-color-field (changed)="onEmissiveChanged($event)"
-					 *ngIf="material.emissive != undefined"
-					 [value]="material.emissive"
-					 label="Emissive"></app-color-field>
+		*ngIf="material.emissive != undefined"
+		[value]="material.emissive"
+		label="Emissive"></app-color-field>
 
 	<app-double-field (changed)="onEmissiveIntensityChanged($event)"
-					  *ngIf="material.emissiveIntensity != undefined"
-					  [value]="material.emissiveIntensity"
-					  label="Emissive Intensity"
-					  max="1"
-					  min="0"></app-double-field>
+		*ngIf="material.emissiveIntensity != undefined"
+		[value]="material.emissiveIntensity"
+		label="Emissive Intensity"
+		max="1"
+		min="0"></app-double-field>
 
 	<app-double-field (changed)="onOpacityChanged($event)"
-					  *ngIf="material.opacity != undefined"
-					  [value]="material.opacity"
-					  label="Opacity"
-					  max="1"
-					  min="0"></app-double-field>
+		*ngIf="material.opacity != undefined"
+		[value]="material.opacity"
+		label="Opacity"
+		max="1"
+		min="0"></app-double-field>
 
 	<app-boolean-field (changed)="onTransparentChanged($event)"
-					   *ngIf="material.transparent != undefined"
-					   [value]="material.transparent"
-					   label="Transparent">
+		*ngIf="material.transparent != undefined"
+		[value]="material.transparent"
+		label="Transparent">
 	</app-boolean-field>
 
 	<app-color-field (changed)="onColorChanged($event)"
-					 *ngIf="material.color != undefined"
-					 [value]="material.color"
-					 label="Color"></app-color-field>
+		*ngIf="material.color != undefined"
+		[value]="material.color"
+		label="Color"></app-color-field>
 
 	<app-texture-field (changed)="onMapChanged($event)"
-					   [guid]="material.mapGuid"
-					   label="Map"></app-texture-field>
+		[guid]="material.mapGuid"
+		label="Map"></app-texture-field>
 
 	<app-texture-field (changed)="onRoughnessMapChanged($event)"
-					   [guid]="material.roughnessMapGuid"
-					   label="Roughness Map"></app-texture-field>
+		[guid]="material.roughnessMapGuid"
+		label="Roughness Map"></app-texture-field>
 
 	<app-texture-field (changed)="onNormalMapChanged($event)"
-					   [guid]="material.normalMapGuid"
-					   label="Normal Map"></app-texture-field>
+		[guid]="material.normalMapGuid"
+		label="Normal Map"></app-texture-field>
 
 	<app-texture-field (changed)="onAOMapChanged($event)"
-					   [guid]="material.aoMapGuid"
-					   label="AO Map"></app-texture-field>
+		[guid]="material.aoMapGuid"
+		label="AO Map"></app-texture-field>
 
 	<app-texture-field (changed)="onDisplacementMapChanged($event)"
-					   [guid]="material.displacementMapGuid"
-					   label="Displacement Map"></app-texture-field>
+		[guid]="material.displacementMapGuid"
+		label="Displacement Map"></app-texture-field>
 
+	<app-texture-field (changed)="onAlphaMapChanged($event)"
+		[guid]="material.alphaMapGuid"
+		label="Alpha Map"></app-texture-field>
+
+	<app-double-field (changed)="updateMaterialProperty( this.material, 'alphaTest', $event )"
+		*ngIf="material.alphaTest != undefined"
+		[value]="material.alphaTest"
+		label="alphaTest"
+		max="1"
+		min="0"></app-double-field>
 </div>

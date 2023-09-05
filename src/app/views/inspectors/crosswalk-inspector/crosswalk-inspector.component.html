@@ -11,6 +11,11 @@
 <div *ngIf="isOpen && marking"
 	class="inspector-editor-padding">
 
+	<app-material-field (changed)="onAttrChanged($event, 'materialGuid')"
+		[guid]="marking.materialGuid"
+		label="Material">
+	</app-material-field>
+
 	<app-enum-field (changed)="onAttrChanged($event, 'color')"
 		[enum]="colors"
 		[value]="marking.color"

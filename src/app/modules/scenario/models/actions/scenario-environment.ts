@@ -7,8 +7,10 @@ import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
-import { Vector3 } from 'three';
-// import { AppService } from 'app/core/services/app.service';
+import { Color, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
+import { SceneService } from 'app/core/services/scene.service';
+import * as THREE from 'three';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 
 enum CloudState {
 	Cloudy = 'cloudy',
@@ -56,7 +58,7 @@ class Weather {
 		public fog = new Fog(),
 		public precipitation: Precipitation = new Precipitation(),
 		public wind: Wind = new Wind(),
-		public domeImage: DomeImage = null,
+		public domeImage: DomeImage = new DomeImage(),
 		public cloudState = CloudState.Free,
 		public atmosphericPressure = 80000,
 		public temperature = 300,
@@ -81,9 +83,35 @@ class Weather {
 		return new Weather( sun, fog, precipitation, wind, domeImage, cloudState, atmosphericPressure, temperature, fractionalCloudCover );
 
 	}
+
+	static import ( xml: XmlElement ) {
+
+		const sun = xml.Sun ? Sun.import( xml.Sun ) : new Sun();
+		// const fog = xml.Fog;
+		// const precipitation = xml.Precipitation;
+		// const wind = xml.Wind;
+		// const domeImage = xml.DomeImage;
+
+		// const cloudState = xml.attr_cloudState;
+		// const atmosphericPressure = xml.attr_atmosphericPressure;
+		// const temperature = xml.attr_temperature;
+		// const fractionalCloudCover = xml.attr_fractionalCloudCover;
+
+		return new Weather( sun );
+
+	}
+
+	export () {
+		return {
+			Sun: this.sun.export(),
+		}
+	}
+
 }
 
 class Sun {
+
+	public light: DirectionalLight;
 
 	/**
 	 *
@@ -92,26 +120,50 @@ class Sun {
 	 * @param _illuminance illuminance in lux Range[0,inf]
 	 */
 	constructor (
-		private _azimuth: number = 0,
+		private _azimuth: number = 1,
 		private _elevation: number = 0,
 		private _illuminance: number = 1,
+		color: number = 0xffffff
 	) {
+
+		const position = this.direction.normalize();
+
+		this.light = new DirectionalLight( color, this.illuminance );
+
+		this.light.position.set( position.x, position.y, position.z );
+	}
+
+	@SerializedField( { 'type': 'color' } )
+	get color () { return this.light.color; }
+
+	set color ( value: Color ) {
+		this.light.color = value;
+		this.update();
 	}
 
 	@SerializedField( { 'type': 'float', 'min': 0, 'max': 2 * Math.PI } )
 	get azimuth () { return this._azimuth; }
 
-	set azimuth ( value: number ) { this._azimuth = value; this.updated(); }
+	set azimuth ( value: number ) {
+		this._azimuth = value;
+		this.update();
+	}
 
 	@SerializedField( { 'type': 'float', 'min': -Math.PI, 'max': Math.PI } )
 	get elevation () { return this._elevation; }
 
-	set elevation ( value: number ) { this._elevation = value; this.updated(); }
+	set elevation ( value: number ) {
+		this._elevation = value;
+		this.update();
+	}
 
 	@SerializedField( { 'type': 'float', 'min': 0, 'max': 100000 } )
 	get illuminance () { return this._illuminance; }
 
-	set illuminance ( value: number ) { this._illuminance = value; this.updated(); }
+	set illuminance ( value: number ) {
+		this._illuminance = value;
+		this.update();
+	}
 
 	private get direction () {
 		return new Vector3(
@@ -121,41 +173,41 @@ class Sun {
 		)
 	}
 
-	updated () {
+	update () {
 
-		// const directionalLight = AppService.three.directionLight;
+		const lightDirection = this.direction.normalize();
 
-		// // Calculate the light direction based on azimuth and elevation
-		// const lightDirection = this.direction.normalize();
+		this.light.position.copy( lightDirection );
 
-		// // Set the light position based on the direction
-		// directionalLight.position.copy( lightDirection );
-
-		// // Set the light intensity
-		// directionalLight.intensity = this.illuminance;
+		this.light.intensity = this.illuminance;
 
 	}
 
+	static import ( xml: XmlElement ) {
 
-	private applyLight () {
+		const azimuth: number = parseFloat( xml.attr_azimuth ) || 1;
+		const elevation: number = parseFloat( xml.attr_elevation ) || 0;
+		const illuminance: number = parseFloat( xml.attr_illuminance ) || 1;
+		const sun = new Sun( azimuth, elevation, illuminance );
 
+		sun.light.color.setRGB( xml?.Color?.attr_r || 1, xml?.Color?.attr_g || 1, xml?.Color?.attr_b || 1 );
 
-		// // Convert azimuth and elevation to radians
-		// const azimuthRad = THREE.MathUtils.degToRad(sun.azimuth);
-		// const elevationRad = THREE.MathUtils.degToRad(sun.elevation);
-		//
-		// // Calculate the light direction based on azimuth and elevation
-		// const lightDirection = new THREE.Vector3(
-		// 	Math.cos(elevationRad) * Math.cos(azimuthRad),
-		// 	Math.sin(elevationRad),
-		// 	Math.cos(elevationRad) * Math.sin(azimuthRad)
-		// ).normalize();
-		//
-		// // Set the light position based on the direction
-		// light.position.copy(lightDirection);
-		//
-		// // Set the light intensity
-		// light.intensity = sun.intensity;
+		return sun
+	}
+
+	export () {
+
+		return {
+			'attr_azimuth': this.azimuth,
+			'attr_elevation': this.elevation,
+			'attr_illuminance': this.illuminance,
+			'Color': {
+				'attr_r': this.color.r,
+				'attr_g': this.color.g,
+				'attr_b': this.color.b,
+			}
+		}
+
 	}
 }
 
@@ -207,8 +259,103 @@ class Wind {
 }
 
 class DomeImage {
-	DomeFile: string;
-	azimuthOffset?: number;
+
+	private texture: THREE.DataTexture;
+	private renderTarget: WebGLCubeRenderTarget;
+	private cubeCamera: THREE.CubeCamera;
+
+	constructor ( private _textureGuid: string = null, private _azimuthOffset: number = 0 ) {
+
+		this.update();
+
+	}
+
+	@SerializedField( { type: 'texture' } )
+	get cubemap (): string {
+		return this._textureGuid;
+	}
+
+	set cubemap ( value: string ) {
+		this._textureGuid = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'float' } )
+	get azimouth (): number {
+		return this._azimuthOffset;
+	}
+
+	set azimouth ( value: number ) {
+		this._azimuthOffset = value;
+		this.texture.rotation = value;
+		this.update();
+	}
+
+	@SerializedField( { type: 'vector2' } )
+	get offset (): THREE.Vector2 {
+		return this.texture?.offset;
+	}
+
+	set offset ( value: THREE.Vector2 ) {
+		this.texture.offset = value;
+		this.texture.needsUpdate = true;
+		this.update();
+	}
+
+	update () {
+
+		// const dome = this;
+
+		// new RGBELoader().setPath( 'assets/default-hdr/' ).load( 'quarry_01_1k.hdr', function ( texture: THREE.DataTexture ) {
+
+		if ( this._textureGuid == null ) return;
+
+		if ( this._textureGuid == 'default' ) return;
+
+		const texture = AssetDatabase.getInstance<THREE.DataTexture>( this._textureGuid );
+
+		if ( !texture ) return;
+
+		texture.mapping = THREE.EquirectangularReflectionMapping;
+
+		this.texture = texture;
+
+		this.renderTarget = new THREE.WebGLCubeRenderTarget( 256 );
+
+		this.renderTarget.texture.type = THREE.HalfFloatType;
+
+		const scene = new THREE.Scene();
+
+		scene.add( new THREE.AmbientLight( 0xffffff, 0.5 ) );
+
+		scene.add( new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.5 ) );
+
+		const sphereGeometry = new THREE.SphereGeometry( 1000, 120, 80 );
+
+		sphereGeometry.scale( -1, 1, 1 );  // Invert the sphere geometry to render its inside.
+
+		const sphereMaterial = new THREE.MeshBasicMaterial( { map: this.texture } );
+
+		const sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
+
+		scene.add( sphereMesh );
+
+		sphereMesh.rotateX( Math.PI / 2 );
+
+		this.cubeCamera = new THREE.CubeCamera( 1, 1000, this.renderTarget )
+
+		this.cubeCamera.update( SceneService.renderer, scene );
+
+		this.renderTarget.texture.rotation = this.azimouth;
+
+		this.renderTarget.texture.offset = this.offset;
+
+		SceneService.scene.background = SceneService.scene.environment = this.renderTarget.texture;
+
+		SceneService.removeHelper( sphereMesh );
+
+	}
+
 }
 
 class TimeOfDay {
@@ -284,4 +431,26 @@ export class ScenarioEnvironment {
 
 		return new ScenarioEnvironment( name, timeOfDay, weather, roadCondition, [] );
 	}
+
+	export () {
+		return {
+			'attr_name': this.name,
+			Weather: this.weather.export()
+		}
+	}
+
+	static import ( xml: XmlElement ): ScenarioEnvironment {
+
+		const name = xml.attr_name || 'Default';
+
+		const timeOfDay = new TimeOfDay( false, new Date() );
+
+		const weather = xml?.Weather ? Weather.import( xml?.Weather ) : new Weather();
+
+		const roadCondition = new RoadCondition();
+
+		return new ScenarioEnvironment( name, timeOfDay, weather, roadCondition, [] );
+
+	}
+
 }

@@ -305,7 +305,7 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Environment',
 			click: () => {
 
-				const environment = new ScenarioEnvironment('')
+				const environment = this.threeService.environment;
 
 				const command = new SetInspectorCommand( EnvironmentInspectorComponent, environment )
 

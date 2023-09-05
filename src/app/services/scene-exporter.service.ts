@@ -28,6 +28,7 @@ import { FileService } from '../core/io/file.service';
 import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { ThreeService } from 'app/modules/three-js/three.service';
 
 export interface Scene {
 
@@ -50,7 +51,8 @@ export class SceneExporterService {
 	constructor (
 		private openDriveExporter: OpenDriveExporter,
 		private fileService: FileService,
-		private electron: TvElectronService
+		private electron: TvElectronService,
+		private threeService: ThreeService,
 	) {
 	}
 
@@ -134,6 +136,7 @@ export class SceneExporterService {
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: this.exportSurfaces( map.surfaces ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
+			environment: this.threeService.environment.export()
 		};
 
 	}

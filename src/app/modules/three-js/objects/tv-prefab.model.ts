@@ -306,6 +306,11 @@ export class TvMaterialLoader extends MaterialLoader {
 			tvMaterial.displacementMap = AssetDatabase.getInstance<Texture>( json.displacementMapGuid );
 		}
 
+		if ( json.alphaMapGuid !== undefined ) {
+			tvMaterial.alphaMapGuid = json.alphaMapGuid;
+			tvMaterial.alphaMap = AssetDatabase.getInstance<Texture>( json.alphaMapGuid );
+		}
+
 		return tvMaterial;
 	}
 
