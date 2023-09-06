@@ -462,6 +462,20 @@ export class ThreeService implements IEngine {
 		( this.camera as any ).updateProjectionMatrix();
 	}
 
+	wireframeMode ( showWireframe: boolean ) {
+
+		SceneService.scene.traverse( function ( child ) {
+
+			if ( child instanceof THREE.Mesh ) {
+
+				child.material.wireframe = showWireframe;
+
+			}
+
+		} );
+
+	}
+
 	private createCameras () {
 
 		// higher near value >= 10 reduces the z fighting that

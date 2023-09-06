@@ -3,39 +3,54 @@
   -->
 
 <div *ngIf="roadMark"
-	 class="inspector-form-container">
+	class="inspector-form-container">
+
+	<app-material-field (changed)="onMaterialChanged($event)"
+		[guid]="roadMark.materialGuid"
+		label="Material">
+	</app-material-field>
 
 	<app-double-field [disabled]="true"
-					  [value]="roadMark.sOffset"
-					  label="S">
+		[value]="roadMark.sOffset"
+		label="S">
 	</app-double-field>
 
 	<app-double-field (changed)="onWidthChanged($event)"
-					  [value]="roadMark.width"
-					  label="Width">
+		[value]="roadMark.width"
+		label="Width">
+	</app-double-field>
+
+	<app-double-field (changed)="onLengthChanged($event)"
+		[value]="roadMark.length"
+		label="Length">
+	</app-double-field>
+
+	<app-double-field (changed)="onSpaceChanged($event)"
+		[value]="roadMark.space"
+		label="Space">
 	</app-double-field>
 
 	<app-enum-field (changed)="onTypeChanged($event)"
-					[enum]="types"
-					[value]="roadMark.type"
-					label="Type">
+		[enum]="types"
+		[value]="roadMark.type"
+		label="Type">
 	</app-enum-field>
 
 	<app-dropdown-field (changed)="onWeightChanged($event)"
-						[options]="['standard', 'bold']"
-						[value]="roadMark.weight"
-						label="Weight">
+		[options]="['standard', 'bold']"
+		[value]="roadMark.weight"
+		label="Weight">
 	</app-dropdown-field>
 
 	<app-dropdown-field (changed)="onColorChanged($event)"
-						[options]="['standard', 'white', 'yellow']"
-						[value]="roadMark.color"
-						label="Color">
+		[options]="['standard', 'white', 'yellow']"
+		[value]="roadMark.color"
+		label="Color">
 	</app-dropdown-field>
 
 
 	<button (click)="onDelete()"
-			mat-stroked-button>Delete
+		mat-stroked-button>Delete
 	</button>
 
 </div>

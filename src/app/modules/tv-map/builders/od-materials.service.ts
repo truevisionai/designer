@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MeshBasicMaterial } from 'three';
+import { MeshStandardMaterial } from 'three';
 import { COLOR } from '../../../shared/utils/colors.service';
 import { TvLane } from '../models/tv-lane';
 import { OdTextures } from './od.textures';
@@ -13,11 +13,11 @@ export class OdMaterials {
 
 		if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
 
-			return lane.gameObject.material;
+			return lane.gameObject.material as MeshStandardMaterial;
 
 		}
 
-		return new MeshBasicMaterial( {
+		return new MeshStandardMaterial( {
 			map: OdTextures.getLaneTexture( lane ),
 			color: COLOR.WHITE,
 			wireframe: false,

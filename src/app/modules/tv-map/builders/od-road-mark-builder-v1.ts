@@ -102,7 +102,7 @@ export class OdRoadMarkBuilderV1 {
 				? roadMarks[ index + 1 ].sOffset
 				: laneSection.length;
 
-			for ( let step = 0; step < roadMark.length; step += OdBuilderConfig.ROAD_STEP ) {
+			for ( let step = 0; step < roadMark.s2; step += OdBuilderConfig.ROAD_STEP ) {
 
 				// TODO: need to clamp these values
 				const s = start + step;
@@ -114,11 +114,11 @@ export class OdRoadMarkBuilderV1 {
 			}
 
 			// one last entry to nearest to the end
-			if ( roadMark.length > 1 ) {
+			if ( roadMark.s2 > 1 ) {
 
-				const lastS = ( start + roadMark.length ) - Maths.Epsilon;
+				const lastS = ( start + roadMark.s2 ) - Maths.Epsilon;
 
-				const laneSectionS = ( roadMark.s + roadMark.length ) - Maths.Epsilon;
+				const laneSectionS = ( roadMark.s + roadMark.s2 ) - Maths.Epsilon;
 
 				this.createVertex( lastS, roadMark, laneSection, lane, mesh, laneSectionS );
 

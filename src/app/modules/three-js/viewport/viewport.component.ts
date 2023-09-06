@@ -615,6 +615,15 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	private showWireframe = false;
+	wireframeMode () {
+
+		this.showWireframe = !this.showWireframe;
+
+		this.threeService.wireframeMode( this.showWireframe );
+
+	}
+
 	handleViewHelperClick ( $event: MouseEvent ) {
 
 		$event.stopPropagation();

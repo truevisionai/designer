@@ -23,14 +23,15 @@ import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvSignalHelper } from '../services/tv-signal-helper';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
-import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
+// import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from './signal-factory';
+import { TvRoadMarkBuilderV2 } from './tv-road-mark-builder-v2';
 
 export class TvMapBuilder {
 
 	private static signalFactory = new SignalFactory;
-	// private static roadMarkBuilder = new TvRoadMarkBuilderV2( null );
-	private static roadMarkBuilder = new OdRoadMarkBuilderV1();
+	private static roadMarkBuilder = new TvRoadMarkBuilderV2( null );
+	// private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	private static JUNCTION_ELEVATION_SHIFT = 0.005;
 
@@ -248,48 +249,6 @@ export class TvMapBuilder {
 
 	}
 
-	public static getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
-
-		let material: Material;
-		let guid: string;
-
-		switch ( lane.type ) {
-
-			case TvLaneType.driving:
-				guid = road.drivingMaterialGuid;
-				break;
-
-			case TvLaneType.border:
-				guid = road.borderMaterialGuid;
-				break;
-
-			case TvLaneType.sidewalk:
-				guid = road.sidewalkMaterialGuid;
-				break;
-
-			case TvLaneType.shoulder:
-				guid = road.shoulderMaterialGuid;
-				break;
-
-			case TvLaneType.stop:
-				guid = road.shoulderMaterialGuid;
-				break;
-
-			default:
-				guid = road.drivingMaterialGuid;
-				break;
-
-		}
-
-		// find by guid
-		if ( guid ) material = AssetDatabase.getInstance( guid );
-
-		// if no material found then use in built
-		if ( !material ) material = OdMaterials.getLaneMaterial( lane ) as Material;
-
-		return material;
-	}
-
 	private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
 
 		this.createMeshIndices( lane.meshData );
@@ -310,10 +269,7 @@ export class TvMapBuilder {
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 
-		// const material = OdMaterials.getLaneMaterial( lane );
-		const material = this.getLaneMaterial( road, lane );
-
-		TvMapBuilder.createLaneGameObject( lane, geometry, material, laneSection );
+		TvMapBuilder.createLaneGameObject( lane, geometry, lane.threeMaterial, laneSection );
 
 	}
 

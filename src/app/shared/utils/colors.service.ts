@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { TvColors } from "app/modules/tv-map/models/tv-common";
+
 export class COLOR {
 
 	static RED = 0xFF0000;
@@ -49,6 +51,30 @@ export class COLOR {
 		var blue = this.rgbToHex( b );
 
 		return red + green + blue;
+	}
+
+	static stringToColor ( value: TvColors ): number {
+
+		switch ( value ) {
+
+			case 'standard': return COLOR.WHITE;
+
+			case 'white': return COLOR.WHITE;
+
+			case 'red': return COLOR.RED;
+
+			case 'green': return COLOR.GREEN;
+
+			case 'yellow': return COLOR.YELLOW;
+
+			case 'orange': return COLOR.ORANGE;
+
+			case 'blue': return COLOR.BLUE;
+
+			default: return COLOR.WHITE;
+
+		}
+
 	}
 
 	private static rgbToHex ( rgb ) {
