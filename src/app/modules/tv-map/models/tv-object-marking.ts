@@ -16,7 +16,7 @@ export class TvObjectMarking {
 	node: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>;
 
 	private _material: THREE.MeshBasicMaterial;
-	private _materialGuid: string = 'default';
+	private _materialGuid: string;
 
 	/**
 	 * Specifies a marking that is either attached to one side of the
@@ -42,7 +42,7 @@ export class TvObjectMarking {
 		public stopOffset: number = 0,
 		public zOffset: number = 0.005,
 		public width: number = 1.83,
-		public cornerReferences: number[] = [] // 2 or more corners
+		public cornerReferences: number[] = [] // 2 or more corners,
 	) {
 		this._material = new THREE.MeshBasicMaterial( { color: color } );
 	}

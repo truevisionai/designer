@@ -27,8 +27,6 @@ import { TvCornerLocal, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../m
 import { TvRoad } from '../models/tv-road.model';
 import { XmlElement } from './open-drive-parser.service';
 
-declare const fxp;
-
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -659,7 +657,7 @@ export class OpenDriveExporter {
 		xmlNode.object.push( nodeRoadObject );
 	}
 
-	writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
+	public writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
 
 		const cornerReference = marking.cornerReferences.map( reference => {
 			return {
@@ -770,7 +768,7 @@ export class OpenDriveExporter {
 
 	}
 
-	writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
+	public writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
 
 		return {
 			attr_u: cornerLocal.attr_u,
@@ -781,7 +779,7 @@ export class OpenDriveExporter {
 
 	}
 
-	writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
+	public writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
 
 		return {
 			attr_id: cornerRoad.attr_id,
@@ -793,7 +791,6 @@ export class OpenDriveExporter {
 		};
 
 	}
-
 
 	public writeObjectMaterial ( xmlNode, roadObject: TvRoadObject ) {
 

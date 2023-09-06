@@ -50,7 +50,8 @@ export class TvLaneRoadMark {
 		height: number,
 		lane: TvLane,
 		length: number = 3.0,
-		space: number = null
+		space: number = null,
+		materialGuid: string = null
 	) {
 
 		this.uuid = MathUtils.generateUUID();
@@ -65,11 +66,20 @@ export class TvLaneRoadMark {
 		this.attr_length = length;
 		this.attr_space = space || this.getSpaceByType( type );
 
-		this._material = new MeshStandardMaterial( {
-			color: this.threeColor,
-			roughness: 1.0,
-			metalness: 0.0,
-		} );
+		if ( materialGuid ) {
+
+			this.materialGuid = materialGuid;
+
+		} else {
+
+			this._material = new MeshStandardMaterial( {
+				color: this.threeColor,
+				roughness: 1.0,
+				metalness: 0.0,
+			} );
+
+		}
+
 
 		this.lane = lane;
 	}

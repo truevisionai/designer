@@ -55,8 +55,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
 	public travelDirection: TravelDirection;
-	isSelected: boolean;
-	private height: TvLaneHeight[] = [];
+	public height: TvLaneHeight[] = [];
+
+	public isSelected: boolean;
+
 	private lastAddedLaneWidth: number;
 	private lastAddedLaneRoadMark: number;
 	private lastAddedLaneMaterial: number;
