@@ -1462,27 +1462,27 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		switch ( this.type ) {
 
 			case TvLaneType.driving:
-				guid = this.laneSection.road?.drivingMaterialGuid || drivingMaterialGuid;
+				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
 				break;
 
 			case TvLaneType.border:
-				guid = this.laneSection.road?.borderMaterialGuid || borderMaterialGuid;
+				guid = this.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
 				break;
 
 			case TvLaneType.sidewalk:
-				guid = this.laneSection.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+				guid = this.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
 				break;
 
 			case TvLaneType.shoulder:
-				guid = this.laneSection.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
 				break;
 
 			case TvLaneType.stop:
-				guid = this.laneSection.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
 				break;
 
 			default:
-				guid = this.laneSection.road?.drivingMaterialGuid || drivingMaterialGuid;
+				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
 				break;
 
 		}
