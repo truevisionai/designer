@@ -1,0 +1,22 @@
+site_name: Documentation
+site_url: https://example.com/
+theme:
+    name: material
+    logo: https://www.truevision.ai/img/logo-fit.png
+    palette:
+        - scheme: default
+          primary: black
+          toggle:
+              icon: material/brightness-7
+              name: Switch to dark mode
+        - scheme: slate
+          toggle:
+              icon: material/brightness-4
+              name: Switch to light mode
+    font:
+        text: Roboto
+    features:
+        - navigation.tabs
+        - navigation.path
+        - navigation.top
+        - navigation.indexes

@@ -1,3 +1,7 @@
+# Overview
+
+![Image](img/welcome.jpg)
+
 - ## Getting Started
     - [User Guide](/designer/docs/{{version}}/user-guide)
     - [Installation](/designer/docs/{{version}}/installation)
@@ -8,3 +12,4 @@
     - [Lane Width Tool](/designer/docs/{{version}}/lane-width-tool)
 - ## OpenDrive
     - [Introduction](/designer/docs/{{version}}/open-drive)
+

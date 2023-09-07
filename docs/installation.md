@@ -1,10 +1,11 @@
-# Getting Started: Installation
+# Installation
 
 - [Installation](#installation)
-    - [System Requirements](#system-requirements)
-- [Installing On Ubuntu](#installing-on-ubuntu)        
-- [Launching](#launching)
-    - [Sign In](#sign-in)
+	- [Installation](#installation-1)
+		- [System Requirements](#system-requirements)
+	- [Installing On Ubuntu](#installing-on-ubuntu)
+	- [Launching Truevision](#launching-truevision)
+		- [Sign-In](#sign-in)
 
 <a name="installation"></a>
 ## Installation
