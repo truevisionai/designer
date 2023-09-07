@@ -101,17 +101,9 @@ export abstract class BaseTool extends MonoBehaviour implements IEditorState {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ) { }
 
-		console.error( 'Method not implemented.' );
-
-	}
-
-	onPointerDownCreate ( e: PointerEventData ) {
-
-		console.error( 'Method not implemented.' );
-
-	}
+	onPointerDownCreate ( e: PointerEventData ) { }
 
 	setHint ( msg: string ) {
 

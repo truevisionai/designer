@@ -8,7 +8,7 @@ import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strat
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { CommandHistory } from 'app/services/command-history';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
-import { MouseButton, PointerEventData } from '../../../events/pointer-event-data';
+import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
@@ -48,9 +48,7 @@ export class LaneAddTool extends BaseTool {
 
 	}
 
-	onPointerDown ( e: PointerEventData ): void {
-
-		if ( e.button !== MouseButton.LEFT ) return;
+	onPointerDownSelect ( e: PointerEventData ) {
 
 		const lane = this.pointerStrategy?.onPointerDown( e );
 
@@ -63,6 +61,7 @@ export class LaneAddTool extends BaseTool {
 			CommandHistory.execute( new SelectMainObjectCommand( this, lane, LaneInspectorComponent, lane ) );
 
 		}
+
 	}
 
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
