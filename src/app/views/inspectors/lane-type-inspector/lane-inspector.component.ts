@@ -70,4 +70,12 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 
 		CommandHistory.execute( new UpdateValueCommand( this.lane, 'travelDirection', $direction ) );
 	}
+
+	onMaterialChanged ( $value: string ) {
+
+		if ( !this.lane ) return;
+
+		CommandHistory.execute( new UpdateValueCommand( this.lane, 'threeMaterialGuid', $value ) );
+	}
+
 }

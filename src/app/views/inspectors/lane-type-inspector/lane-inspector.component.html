@@ -3,38 +3,43 @@
   -->
 
 <div *ngIf="lane"
-	 class="inspector-form-container">
+	class="inspector-form-container">
+
+	<app-material-field (changed)="onMaterialChanged($event)"
+		[guid]="lane.threeMaterialGuid"
+		label="Material">
+	</app-material-field>
 
 	<app-string-field [disabled]="true"
-					  [value]="lane.roadId"
-					  label="Road ID"></app-string-field>
+		[value]="lane.roadId"
+		label="Road ID"></app-string-field>
 
 	<app-string-field [disabled]="true"
-					  [value]="lane.id"
-					  label="Lane ID"></app-string-field>
+		[value]="lane.id"
+		label="Lane ID"></app-string-field>
 
 	<app-boolean-field (changed)="onLevelChanged($event)"
-					   [value]="lane.level"
-					   label="Level"></app-boolean-field>
+		[value]="lane.level"
+		label="Level"></app-boolean-field>
 
 	<app-enum-field (changed)="onTravelDirectionChanged($event)"
-					[enum]="directions"
-					[value]="lane.travelDirection"
-					label="Travel Direction"></app-enum-field>
+		[enum]="directions"
+		[value]="lane.travelDirection"
+		label="Travel Direction"></app-enum-field>
 
 	<app-enum-field (changed)="onTypeChanged($event)"
-					[enum]="types"
-					[value]="lane.type"
-					label="Type"></app-enum-field>
+		[enum]="types"
+		[value]="lane.type"
+		label="Type"></app-enum-field>
 
 	<button (click)="duplicateLane()"
-			fxFill
-			mat-stroked-button>Duplicate Lane
+		fxFill
+		mat-stroked-button>Duplicate Lane
 	</button>
 
 	<button (click)="deleteLane()"
-			fxFill
-			mat-stroked-button>Delete Lane
+		fxFill
+		mat-stroked-button>Delete Lane
 	</button>
 
 </div>

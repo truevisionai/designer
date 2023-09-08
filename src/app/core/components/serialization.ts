@@ -19,7 +19,7 @@ const enum ISerializedFieldType {
 }
 
 export interface ISerializedField {
-	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector3' | 'road' | 'entity' | 'gameobject';
+	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector2' | 'vector3' | 'road' | 'entity' | 'gameobject' | 'color' | 'texture';
 	disabled?: boolean;
 	label?: string;
 	description?: string;

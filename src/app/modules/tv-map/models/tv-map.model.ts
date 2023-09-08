@@ -260,7 +260,13 @@ export class TvMap {
 
 	destroy () {
 
-		this.roads.forEach( road => road.remove( this.gameObject ) );
+		this.roads.forEach( road => {
+
+			road.objects.object.forEach( object => SceneService.remove( object ) );
+
+			road.remove( this.gameObject );
+
+		} );
 
 		this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
 

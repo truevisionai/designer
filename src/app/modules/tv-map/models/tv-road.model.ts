@@ -1370,7 +1370,7 @@ export class TvRoad {
 
 			section.lanes.forEach( lane => {
 
-				lane.gameObject.material = TvMapBuilder.getLaneMaterial( this, lane );
+				lane.gameObject.material = lane.getThreeMaterial();
 
 			} );
 

@@ -11,6 +11,10 @@ import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../core/tools/base-tool';
 import { ToolManager } from '../../../core/tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { SceneService } from 'app/core/services/scene.service';
+import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
+import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 
 class IToolMenu {
 	id: string;
@@ -288,6 +292,26 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
+			enabled: true,
+		},
+		{
+			id: 'environment',
+			label: 'Environment',
+			class: 'toolbar-button',
+			toolType: ToolType.Environment,
+			action: 'environment-tool',
+			icon: 'light_mode',
+			track: 'menu',
+			tooltip: 'Environment',
+			click: () => {
+
+				const environment = this.threeService.environment;
+
+				const command = new SetInspectorCommand( EnvironmentInspectorComponent, environment )
+
+				CommandHistory.execute( command );
+
+			},
 			enabled: true,
 		},
 		// add more tools here...

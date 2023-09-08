@@ -24,5 +24,6 @@ export enum ToolType {
 	RoadRampTool,
 	Vehicle,
 	RoadSignalTool,
-	Crosswalk
+	Crosswalk,
+	Environment
 }

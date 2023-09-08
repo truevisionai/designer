@@ -69,6 +69,30 @@ export class LaneRoadmarkInspectorComponent extends BaseInspector implements OnI
 
 	}
 
+	onLengthChanged ( $length ) {
+
+		if ( !this.roadMark ) return;
+
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'length', $length ) ) );
+
+	}
+
+	onSpaceChanged ( $space ) {
+
+		if ( !this.roadMark ) return;
+
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'space', $space ) ) );
+
+	}
+
+	onMaterialChanged ( $guid: string ) {
+
+		if ( !this.roadMark ) return;
+
+		CommandHistory.execute( ( new SetRoadmarkValueCommand( this.roadMark, 'materialGuid', $guid ) ) );
+
+	}
+
 	onTypeChanged ( $event: TvRoadMarkTypes ) {
 
 		// if ( item.type == $event.value ) return;

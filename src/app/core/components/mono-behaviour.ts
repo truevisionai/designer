@@ -45,6 +45,8 @@ export class MonoBehaviour {
 
 			if ( e.button !== MouseButton.LEFT ) return;
 
+			if ( e.point == null ) return;
+
 			this.onPointerClicked( e );
 
 		} );
@@ -52,6 +54,8 @@ export class MonoBehaviour {
 		this.pointerMovedSubscriber = AppService.eventSystem.pointerMoved.subscribe( e => {
 
 			if ( e.button !== MouseButton.LEFT ) return;
+
+			if ( e.point == null ) return;
 
 			this.onPointerMoved( e );
 
@@ -76,6 +80,8 @@ export class MonoBehaviour {
 		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => {
 
 			if ( e.button !== MouseButton.LEFT ) return;
+
+			if ( e.point == null ) return;
 
 			this.pointerDownAt = e.button === MouseButton.LEFT ? e.point?.clone() : null;
 

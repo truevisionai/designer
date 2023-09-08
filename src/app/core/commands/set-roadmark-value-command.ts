@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
 import { BaseCommand } from './base-command';
+import { TvRoadMarkBuilderV2 } from 'app/modules/tv-map/builders/tv-road-mark-builder-v2';
 
 export class SetRoadmarkValueCommand extends BaseCommand {
 
 	private readonly oldValue: any;
 
-	private roadMarkBuilder = new OdRoadMarkBuilderV1();
+	private roadMarkBuilder = new TvRoadMarkBuilderV2();
 
 	constructor (
 		private roadmark: TvLaneRoadMark,

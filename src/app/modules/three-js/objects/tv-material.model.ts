@@ -13,6 +13,7 @@ export class TvMaterial extends MeshStandardMaterial {
 	public normalMapGuid: string;
 	public aoMapGuid: string;
 	public displacementMapGuid: string;
+	public alphaMapGuid: string;
 
 	constructor ( public guid: string = MathUtils.generateUUID(), parameters?: MeshStandardMaterialParameters ) {
 		super( parameters );
@@ -61,6 +62,11 @@ export class TvMaterial extends MeshStandardMaterial {
 			result.displacementMap = AssetDatabase.getInstance<Texture>( this.displacementMapGuid );
 		}
 
+		if ( this.alphaMapGuid !== undefined ) {
+			result.alphaMapGuid = this.alphaMapGuid;
+			result.alphaMap = AssetDatabase.getInstance<Texture>( this.alphaMapGuid );
+		}
+
 		return result;
 
 	}
@@ -78,6 +84,7 @@ export class TvMaterial extends MeshStandardMaterial {
 		if ( this.normalMapGuid ) this.normalMap = null;
 		if ( this.aoMapGuid ) this.aoMap = null;
 		if ( this.displacementMapGuid ) this.displacementMap = null;
+		if ( this.alphaMapGuid ) this.alphaMap = null;
 
 		const data = super.toJSON( meta );
 
@@ -88,6 +95,7 @@ export class TvMaterial extends MeshStandardMaterial {
 		if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
 		if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
 		if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
+		if ( this.alphaMapGuid ) data.alphaMapGuid = this.alphaMapGuid;
 
 		// set maps again
 		if ( this.mapGuid ) this.map = AppService.assets.getInstance( this.mapGuid ) as Texture;
@@ -95,6 +103,7 @@ export class TvMaterial extends MeshStandardMaterial {
 		if ( this.normalMapGuid ) this.normalMap = AppService.assets.getInstance( this.normalMapGuid ) as Texture;
 		if ( this.aoMapGuid ) this.aoMap = AppService.assets.getInstance( this.aoMapGuid ) as Texture;
 		if ( this.displacementMapGuid ) this.displacementMap = AppService.assets.getInstance( this.displacementMapGuid ) as Texture;
+		if ( this.alphaMapGuid ) this.alphaMap = AppService.assets.getInstance( this.alphaMapGuid ) as Texture;
 
 		return data;
 

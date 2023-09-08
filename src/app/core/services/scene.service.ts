@@ -15,6 +15,7 @@ export class SceneService {
 	public static scene: THREE.Scene = new THREE.Scene;
 	public static objects: Object3D[] = [];
 	public static sceneHelpers: Object3D[] = [];
+	public static renderer: THREE.WebGLRenderer;
 
 	constructor () {
 

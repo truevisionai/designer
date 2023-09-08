@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdRoadMarkBuilderV1 } from 'app/modules/tv-map/builders/od-road-mark-builder-v1';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Line } from 'three';
@@ -22,6 +21,7 @@ import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
 import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-command';
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
 import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
+import { TvRoadMarkBuilderV2 } from 'app/modules/tv-map/builders/tv-road-mark-builder-v2';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -47,7 +47,8 @@ export class LaneMarkingTool extends BaseTool {
 
 	public node: LaneRoadMarkNode;
 
-	public roadMarkBuilder = new OdRoadMarkBuilderV1();
+	// public roadMarkBuilder = new OdRoadMarkBuilderV1();
+	public roadMarkBuilder = new TvRoadMarkBuilderV2();
 
 	public laneHelper = new OdLaneReferenceLineBuilder();
 

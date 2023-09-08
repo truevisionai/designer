@@ -63,6 +63,7 @@ import { TextureInspector } from '../../views/inspectors/texture-inspector/textu
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
+import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 
 
 @NgModule( {
@@ -102,6 +103,7 @@ import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialo
 		DynamicArrayInspectorComponent,
 		FieldHostDirective,
 		DynamicFileInspectorComponent,
+		EnvironmentInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -169,6 +171,7 @@ import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialo
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
 		DynamicFileInspectorComponent,
+		EnvironmentInspectorComponent,
 	]
 } )
 export class TvMapModule {

@@ -12,15 +12,13 @@ import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { ViewportService } from '../viewport.service';
+import { Environment } from 'app/core/utils/environment';
 
 @Component( {
 	selector: 'app-viewport',
 	templateUrl: './viewport.component.html',
 } )
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
-
-	@Input( 'directionalLight' ) directionalLightEnabled: boolean = false;
-	@Input( 'showPointerCoordinates' ) showPointerCoordinates: boolean = false;
 
 	public beginTime;
 	public prevTime;
@@ -55,6 +53,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private viewportService: ViewportService,
 	) {
 		this.render = this.render.bind( this );
+	}
+
+	get isProduction () {
+		return Environment.production;
 	}
 
 	get canvas (): HTMLCanvasElement {
@@ -111,10 +113,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setClearColor( 0xffffff, 1 );
 		this.renderer.autoClear = false;
+		// this.renderer.toneMapping = THREE.LinearToneMapping;
+		// this.renderer.toneMappingExposure = 1.0;
 
 		this.raycaster = new THREE.Raycaster();
 		// this.raycaster.linePrecision = 0.25;
 		this.raycaster.far = 10000;
+
+		SceneService.renderer = this.renderer;
 
 		this.renderer.setSize( this.CANVAS_WIDTH, this.CANVAS_HEIGHT );
 
@@ -123,10 +129,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.threeService.setupScene( this.canvas, this.renderer );
 
 		this.render();
-
-		if ( this.directionalLightEnabled ) {
-			this.threeService.addDirectionalLight();
-		}
 
 	}
 
@@ -615,6 +617,15 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	resetCamera () {
 
 		this.threeService.resetCamera();
+
+	}
+
+	private showWireframe = false;
+	wireframeMode () {
+
+		this.showWireframe = !this.showWireframe;
+
+		this.threeService.wireframeMode( this.showWireframe );
 
 	}
 

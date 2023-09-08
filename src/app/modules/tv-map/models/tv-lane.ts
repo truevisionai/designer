@@ -23,6 +23,8 @@ import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { OdMaterials } from '../builders/od-materials.service';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -53,8 +55,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
 	public travelDirection: TravelDirection;
-	isSelected: boolean;
-	private height: TvLaneHeight[] = [];
+	public height: TvLaneHeight[] = [];
+
+	public isSelected: boolean;
+
 	private lastAddedLaneWidth: number;
 	private lastAddedLaneRoadMark: number;
 	private lastAddedLaneMaterial: number;
@@ -62,6 +66,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	private lastAddedLaneSpeed: number;
 	private lastAddedLaneAccess: number;
 	private lastAddedLaneHeight: number;
+
+	private _threeMaterial: MeshStandardMaterial;
+	private _threeMaterialGuid: string;
 
 	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
 
@@ -83,6 +90,25 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		} else {
 			this.travelDirection = TravelDirection.undirected;
 		}
+
+		this._threeMaterial = this.getThreeMaterial();
+	}
+
+	get threeMaterialGuid (): string {
+		return this._threeMaterialGuid;
+	}
+
+	set threeMaterialGuid ( value: string ) {
+		this._threeMaterialGuid = value;
+		this._threeMaterial = this.getThreeMaterial();
+	}
+
+	get threeMaterial (): MeshStandardMaterial {
+		return this._threeMaterial;
+	}
+
+	set threeMaterial ( value: MeshStandardMaterial ) {
+		this._threeMaterial = value;
 	}
 
 	private _successor: number;
@@ -372,7 +398,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		( this.gameObject.material as MeshBasicMaterial )?.dispose();
 
-		this.gameObject.material = TvMapBuilder.getLaneMaterial( this.laneSection.road, this );
+		this.gameObject.material = this.getThreeMaterial();
 
 		this.gameObject.material.needsUpdate = true;
 
@@ -1346,7 +1372,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties? (): Object {
+	copyProperties?(): Object {
 
 		return {
 			travelDirection: this.travelDirection,
@@ -1418,6 +1444,56 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		}
 
+	}
+
+	getThreeMaterial () {
+
+		// if guid is set use the material from the asset database
+		if ( this._threeMaterialGuid ) return AssetDatabase.getInstance<MeshStandardMaterial>( this._threeMaterialGuid );
+
+		let material: MeshStandardMaterial;
+		let guid: string;
+
+		const drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+		const borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
+		switch ( this.type ) {
+
+			case TvLaneType.driving:
+				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
+			case TvLaneType.border:
+				guid = this.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
+				break;
+
+			case TvLaneType.sidewalk:
+				guid = this.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+				break;
+
+			case TvLaneType.shoulder:
+				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			case TvLaneType.stop:
+				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			default:
+				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
+		}
+
+		// find by guid
+		if ( guid ) material = AssetDatabase.getInstance( guid );
+
+		// if no material found then use in built
+		if ( !material ) material = OdMaterials.getLaneMaterial( this );
+
+		return material;
 	}
 
 }

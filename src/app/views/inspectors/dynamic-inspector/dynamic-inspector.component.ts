@@ -15,13 +15,16 @@ import { AbstractFieldComponent } from 'app/core/components/abstract-field.compo
 import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { TextureFieldComponent } from 'app/modules/three-js/inspectors/texture-field/texture-field.component';
 import { CommandHistory } from 'app/services/command-history';
 import { BooleanFieldComponent } from 'app/shared/fields/boolean-field/boolean-field.component';
+import { ColorFieldComponent } from 'app/shared/fields/color-field/color-field.component';
 import { DoubleFieldComponent } from 'app/shared/fields/double-field/double-field.component';
 import { EnumFieldComponent } from 'app/shared/fields/enum-field/enum-field.component';
 import { RoadIdFieldComponent } from 'app/shared/fields/road-id-field/road-id-field.component';
 import { SelectEntityFieldComponent } from 'app/shared/fields/select-entity-field/select-entity-field.component';
 import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
+import { Vector2FieldComponent } from 'app/shared/fields/vector2-field/vector2-field.component';
 import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 import { Subscription } from 'rxjs';
@@ -41,10 +44,13 @@ const fieldComponents = {
 	'string': StringFieldComponent,
 	'boolean': BooleanFieldComponent,
 	'enum': EnumFieldComponent,
+	'vector2': Vector2FieldComponent,
 	'vector3': Vector3FieldComponent,
 	'road': RoadIdFieldComponent,
 	'entity': SelectEntityFieldComponent,
 	'gameobject': GameObjectFieldComponent,
+	'color': ColorFieldComponent,
+	'texture': TextureFieldComponent,
 };
 
 @Component( {
