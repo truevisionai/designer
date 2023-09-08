@@ -1,11 +1,5 @@
 # Road Tool
 
-- [Overview](#overview)
-- [Create Roads](#create-roads)
-- [Select Road](#select-road)
-- [Connect Roads](#connect-roads)
-
-
 <a name="overview"></a>
 ## Overview
 
