@@ -37,7 +37,7 @@
 			matTooltipPosition="left">
 		<mat-icon>refresh</mat-icon>
 	</button>
-	<button (click)="wireframeMode()"
+	<button *ngIf="!isProduction" (click)="wireframeMode()"
 			mat-icon-button
 			matTooltip="Wireframe Mode"
 			matTooltipPosition="left">

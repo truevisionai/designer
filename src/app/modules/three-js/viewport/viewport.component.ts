@@ -12,6 +12,7 @@ import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { ViewportService } from '../viewport.service';
+import { Environment } from 'app/core/utils/environment';
 
 @Component( {
 	selector: 'app-viewport',
@@ -52,6 +53,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private viewportService: ViewportService,
 	) {
 		this.render = this.render.bind( this );
+	}
+
+	get isProduction () {
+		return Environment.production;
 	}
 
 	get canvas (): HTMLCanvasElement {
