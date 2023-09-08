@@ -6,8 +6,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CallFunctionCommand } from 'app/core/commands/call-function-command';
 import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
-import { RoadTool } from 'app/core/tools/road/road-tool';
-import { ToolManager } from 'app/core/tools/tool-manager';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
@@ -16,6 +14,8 @@ import { Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { RemoveRoadCommand } from 'app/core/tools/road/remove-road-command';
+import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -159,18 +159,9 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		if ( !this.road ) return;
 
-		const tool = ToolManager.getTool<RoadTool>();
-
-		if ( tool instanceof RoadTool ) {
-
-			tool.removeRoad( this.road );
-
-		} else {
-
-			console.error( 'RoadTool not found, creating new instance' );
-
-			( new RoadTool() ).removeRoad( this.road );
-
-		}
+		CommandHistory.executeMany(
+			new RemoveRoadCommand( this.road ),
+			new SetInspectorCommand( null, null )
+		);
 	}
 }
