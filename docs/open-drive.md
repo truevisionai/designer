@@ -21,7 +21,7 @@ The OpenDRIVE file format provides the following features:
 - signs and signals incl. dependencies
 - signal controllers (e.g. for junctions)
 - road and road-side objects
-- user-defineable data beads
+- user-definable data beads
 - and more
 
 ### Road Layout
@@ -40,14 +40,14 @@ In the section, we'll look to create our very first simple road using OpenDRIVE.
 - Manually writing or modifying the XML
 
 
-The ScenarioDesigner is a much easier way to design roads as you'll not need to know anythign about OpenDRIVE and you can just visually create road by clicking and changing and few properties etc.
+The ScenarioDesigner is a much easier way to design roads as you'll not need to know anything about OpenDRIVE and you can just visually create roads by clicking and changing and few properties etc.
 
-Manually writing the XML file means you'll need to understand all the tags and element in OpenDRIVE, which can be quite a long excercise depending on how deeply you want to understand the format. Instead of covering everything, we'll be covering some of the most important elements which will improve your speed to iterate without spending too much time.
+Manually writing the XML file means you'll need to understand all the tags and elements in OpenDRIVE, which can be quite a long exercise depending on how deeply you want to understand the format. Instead of covering everything, we'll be covering some of the most important elements which will improve your speed to iterate without spending too much time.
 
 <a name="using-designer"></a>    
 ## Using Designer
 
-Follow the screenshots below to create a simple road with muliple lanes.
+Follow the screenshots below to create a simple road with multiple lanes.
 
 Open Designer
 <img src="../../../img/docs/step-1-open-designer.png" alt="" width="605"/>
