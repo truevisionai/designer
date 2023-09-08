@@ -2,7 +2,7 @@
 	"name": "truevision-designer",
 	"homepage": "https://www.truevision.ai",
 	"description": "Truevison designer is a tool to create environment and scenarios for training & testing autonomous vehicles",
-	"version": "2023.8.9",
+	"version": "2023.9.8",
 	"author": {
 		"name": "Truevision.ai",
 		"email": "himanshu@truevision.ai",
