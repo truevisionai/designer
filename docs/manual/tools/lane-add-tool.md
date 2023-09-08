@@ -1,8 +1,5 @@
 # Lane Add Tool
 
-- [Overview](#overview)
-- [Add Lane](#add-lane)
-
 
 <a name="overview"></a>
 ## Overview

@@ -1,7 +1,9 @@
-# SurfaceTool Usage Instructions
+# SurfaceTool 
 
 ## Create Surfaces
 Hold the `Shift` key and `Left-click` on the desired location to create control points. Drag the control points to change the shape of the surface. To create a new surface, first unselect the previously created surface by left-clicking on an empty area. Then, hold `Shift` and `Left-click` again to start creating a new surface.
+
+![Image title](/img/Surface-Tool.gif)
 
 ## Select Surface
 Hover your mouse pointer over the surface and use `Left-click` to select it for editing and modification.

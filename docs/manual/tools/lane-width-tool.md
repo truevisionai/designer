@@ -1,8 +1,5 @@
 # Lane Width Tool
 
-- [Overview](#overview)
-- [Create Width Node](#create-width-node)
-
 
 <a name="overview"></a>
 ## Overview

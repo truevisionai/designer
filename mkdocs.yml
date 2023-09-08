@@ -1,0 +1,19 @@
+site_name: Truevision Documentation
+site_url: https://truevision.ai/
+extra_css:
+  - css/extra.css
+theme:
+    name: material
+    palette:
+      primary: black
+    font:
+        text: Roboto
+    features:
+        - navigation.tabs
+        - navigation.path
+        - navigation.top
+        - navigation.indexes
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
