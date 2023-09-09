@@ -28,7 +28,7 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 		this.makePoints();
 
-		TvMapBuilder.buildMap( this.map );
+		this.roads.forEach( road => this.buildRoad( road ) )
 
 	}
 

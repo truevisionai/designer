@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Mesh, Object3D } from 'three';
 import { GameObject } from '../game-object';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,11 +28,36 @@ export class SceneService {
 		return this.scene.children;
 	}
 
+	static raycastableObjects () {
+
+		const raycastableObjects = [];
+
+		this.scene.traverse( object => {
+
+			if ( object instanceof THREE.Points && object.visible ) {
+
+				raycastableObjects.push( object );
+
+			}
+
+		} );
+
+		raycastableObjects.push( ThreeService.bgForClicks );
+
+		raycastableObjects.push( TvMapInstance.map.gameObject );
+
+		return raycastableObjects;
+
+	}
+
 	static addHelper ( object: Object3D ): void {
 
 		this.scene.add( object );
 
 		this.sceneHelpers.push( object );
+
+		// object.layers.set( 31 );
+
 	}
 
 	static removeHelper ( object: Object3D ): void {

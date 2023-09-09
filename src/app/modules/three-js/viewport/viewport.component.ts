@@ -60,11 +60,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement> this.elementRef.nativeElement;
+		return <HTMLCanvasElement>this.elementRef.nativeElement;
 	}
 
 	get viewHelperCanavs (): HTMLCanvasElement {
-		return <HTMLCanvasElement> this.viewHelperRef.nativeElement;
+		return <HTMLCanvasElement>this.viewHelperRef.nativeElement;
 	}
 
 	get cameraType (): string {
@@ -574,7 +574,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
-		let intersections = this.raycaster.intersectObjects( SceneService.objects.filter( i => i.visible ), recursive );
+		this.raycaster.layers.set( 0 );  // default layer
+
+		let intersections = this.raycaster.intersectObjects( SceneService.scene.children, recursive );
 
 		if ( intersections.length > 0 ) {
 

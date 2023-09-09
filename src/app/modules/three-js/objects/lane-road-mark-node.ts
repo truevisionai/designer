@@ -27,6 +27,7 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		this.createPoint();
 
+		this.layers.enable( 31 );
 	}
 
 	get isSelected () {

@@ -6,6 +6,8 @@ import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { BaseCommand } from '../../commands/base-command';
 import { PropInstance } from '../../models/prop-instance.model';
 import { PropPointTool } from './prop-point-tool';
+import { SceneService } from 'app/core/services/scene.service';
+import { Scene } from 'three';
 
 export class CreatePropPointCommand extends BaseCommand {
 
@@ -19,43 +21,39 @@ export class CreatePropPointCommand extends BaseCommand {
 
 		this.propInstance.object.position.copy( this.point.position );
 
-		this.propInstance.point = this.point;
-
 		this.point.mainObject = this.propInstance;
 
 	}
 
 	execute () {
 
-		this.map.gameObject.add( this.propInstance.object );
+		SceneService.add( this.propInstance.object );
+
+		SceneService.add( this.point );
 
 		this.map.props.push( this.propInstance );
 
-		this.tool.currentPoint = this.point;
+		this.tool.setPoint( this.point );
+
+		this.tool.points.push( this.point );
 	}
 
 	undo () {
 
-		this.map.gameObject.remove( this.propInstance.object );
+		SceneService.remove( this.propInstance.object );
 
-		const index = this.map.props.indexOf( this.propInstance );
+		SceneService.remove( this.point );
 
-		if ( index !== -1 ) {
+		this.map.props.splice( this.map.props.indexOf( this.propInstance ), 1 );
 
-			this.map.props.splice( index, 1 );
+		this.tool.setPoint( null );
 
-		}
-
-		this.tool.shapeEditor.removeControlPoint( this.point );
-
-		this.tool.currentPoint = null;
+		this.tool.points.splice( this.tool.points.indexOf( this.point ), 1 );
 	}
 
 	redo (): void {
 
 		this.execute();
-
-		this.tool.shapeEditor.pushControlPoint( this.point );
 
 	}
 

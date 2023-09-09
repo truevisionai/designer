@@ -59,6 +59,7 @@ export class RoadTangentPoint extends BaseControlPoint implements IHasUpdate {
 
 		this.renderOrder = 3;
 
+		this.layers.enable( 31 );
 	}
 
 	private get index () {
