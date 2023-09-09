@@ -51,6 +51,9 @@ export class ThreeService implements IEngine {
 
 	environment: ScenarioEnvironment = new ScenarioEnvironment( 'Default' );
 
+	private gridHelper: THREE.GridHelper;
+	private gridHelper2: THREE.GridHelper;
+
 	constructor () {
 
 	}
@@ -168,16 +171,66 @@ export class ThreeService implements IEngine {
 
 	createGridHelper (): void {
 
-		var gridHelper = new THREE.GridHelper( 1000, 100 );
+		this.gridHelper = this.createGridHelperNew( 1000, 100, 0.5 );
+		this.gridHelper2 = this.createGridHelperNew( 2000, 200, 0 );
 
-		( gridHelper.material as Material ).transparent = true;
-		( gridHelper.material as Material ).opacity = 0.5;
-		( gridHelper.material as Material ).needsUpdate = false;
+		SceneService.addHelper( this.gridHelper );
+		SceneService.addHelper( this.gridHelper2 );
+
+	}
+
+	createGridHelperNew ( size: number, divisions: number, opacity: number ): THREE.GridHelper {
+
+		const gridHelper = new THREE.GridHelper( size, divisions );
+
+		( gridHelper.material as THREE.Material ).transparent = true;
+		( gridHelper.material as THREE.Material ).opacity = opacity;
+		( gridHelper.material as THREE.Material ).needsUpdate = false;
 
 		// to adjust with up Z
 		gridHelper.rotateX( Maths.Deg2Rad * 90 );
 
-		SceneService.addHelper( gridHelper );
+		return gridHelper;
+	}
+
+	updateGridHelper ( camera: THREE.Camera ): void {
+
+		let distance;
+
+		if ( this.camera instanceof OrthographicCamera ) {
+
+			// Calculate the camera's dimensions
+			const cameraWidth = this.camera.right - this.camera.left;
+			const cameraHeight = this.camera.top - this.camera.bottom;
+
+			// Calculate the diagonal size of the camera's visible area
+			const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
+
+			// Calculate the approximate camera distance using the zoom and the diagonal size
+			distance = ( cameraDiagonalSize / ( 2 * this.camera.zoom ) );
+
+		} else if ( this.camera instanceof PerspectiveCamera ) {
+
+			distance = camera.position.distanceTo( this.gridHelper.position );
+
+		}
+
+		// Calculate new scale based on the camera distance
+		const newScale = Math.max( 1, Math.floor( distance / 500 ) );
+
+		// Update the scale of both grid helpers
+		this.gridHelper.scale.set( newScale, newScale, newScale );
+		this.gridHelper2.scale.set( newScale * 2, newScale * 2, newScale * 2 );
+
+		// Calculate the fade factor based on the camera distance
+		const fadeFactor = ( distance % 1000 ) / 1000;
+
+		// Update the opacities of both grid helpers
+		( this.gridHelper.material as THREE.Material ).opacity = 0.5 * ( 1 - fadeFactor );
+		( this.gridHelper2.material as THREE.Material ).opacity = 0.5 * fadeFactor;
+
+		( this.gridHelper.material as THREE.Material ).needsUpdate = true;
+		( this.gridHelper2.material as THREE.Material ).needsUpdate = true;
 
 	}
 

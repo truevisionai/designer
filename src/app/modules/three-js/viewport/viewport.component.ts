@@ -155,6 +155,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.threeService.controls.update();
 
+		this.threeService.updateGridHelper( this.threeService.camera );
+
 		this.frameEnd();
 	}
 
