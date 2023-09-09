@@ -34,6 +34,8 @@ export class RoadNode extends Group implements ISelectable {
 
 		this.createLineSegment( road, contact );
 
+		this.layers.enable( 31 );
+
 	}
 
 	get material () {

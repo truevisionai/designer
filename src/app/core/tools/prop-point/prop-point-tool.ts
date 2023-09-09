@@ -3,19 +3,22 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Subscription } from 'rxjs';
-import { PointEditor } from '../../editors/point-editor';
 import { PropInstance } from '../../models/prop-instance.model';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { CreatePropPointCommand } from './create-prop-point-command';
+import { SceneService } from 'app/core/services/scene.service';
+import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { CopyPositionCommand, UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 
 /**
  * Prop point tool
@@ -28,27 +31,25 @@ import { CreatePropPointCommand } from './create-prop-point-command';
  *
  *
  */
-export class PropPointTool extends BaseTool {
+export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 	public name: string = 'PropPointTool';
 	public toolType = ToolType.PropPoint;
 
-	public shapeEditor: PointEditor;
-	public currentPoint: BaseControlPoint;
-	private cpAddedSub: Subscription;
-	private cpSelectedSub: Subscription;
-	private cpUnselectedSub: Subscription;
-	private cpMovedSub: Subscription;
-	private cpUpdatedSub: Subscription;
+	public points: DynamicControlPoint<PropInstance>[] = [];
+	private point: DynamicControlPoint<PropInstance>;
+
+	private selectStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
+	private moveStrategy: MovePointStrategy;
 
 	constructor () {
 
 		super();
 
-	}
+		this.selectStrategy = new ControlPointStrategy();
 
-	get currentProp (): PropInstance {
-		return this.currentPoint?.mainObject;
+		this.moveStrategy = new MovePointStrategy();
+
 	}
 
 	get prop (): PropInstance {
@@ -67,7 +68,11 @@ export class PropPointTool extends BaseTool {
 
 		super.init();
 
-		this.shapeEditor = new PointEditor( 100, 1 );
+		this.map.props.forEach( ( prop: PropInstance ) => {
+
+			this.points.push( new DynamicControlPoint( prop, prop.getPosition().clone() ) );
+
+		} );
 
 	}
 
@@ -75,133 +80,109 @@ export class PropPointTool extends BaseTool {
 
 		super.enable();
 
-		this.map.props.forEach( ( prop: PropInstance ) => {
-
-			prop.point = prop.point ? prop.point : new DynamicControlPoint( prop, prop.object.position );
-
-			prop.point.visible = true;
-
-			this.shapeEditor.pushControlPoint( prop.point );
-
-		} );
-
-		this.cpAddedSub = this.shapeEditor.controlPointAdded
-			.subscribe( point => this.onControlPointAdded( point ) );
-
-		this.cpSelectedSub = this.shapeEditor.controlPointSelected
-			.subscribe( point => this.onControlPointSelected( point ) );
-
-		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
-			.subscribe( point => this.onControlPointUnselected( point ) );
-
-		this.cpMovedSub = this.shapeEditor.controlPointMoved
-			.subscribe( ( point ) => this.onControlPointMoved( point ) );
-
-		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
+		this.points.forEach( point => SceneService.add( point ) );
 
 	}
-
 
 	disable (): void {
 
 		super.disable();
 
-		this.cpAddedSub.unsubscribe();
-		this.cpSelectedSub.unsubscribe();
-		this.cpUnselectedSub.unsubscribe();
-		this.cpMovedSub?.unsubscribe();
-		this.cpUpdatedSub?.unsubscribe();
-
-		this.shapeEditor.destroy();
+		this.points.forEach( point => SceneService.remove( point ) );
 
 	}
 
-	onControlPointSelected ( point: BaseControlPoint ) {
+	setPoint ( value: ISelectable ): void {
 
-		// console.log( 'onControlPointSelected', point );
-
-		if ( this.currentPoint == null || point == null ) return;
-
-		if ( this.currentPoint === point ) return;
-
-		CommandHistory.executeMany(
-			new SetValueCommand( this, 'currentPoint', point ),
-
-			// new SetInspectorCommand( PropInstanceInspectorComponent, point.mainObject )
-
-		);
+		this.point = value as DynamicControlPoint<PropInstance>;
 
 	}
 
-	onControlPointUnselected ( point: BaseControlPoint ) {
+	getPoint (): ISelectable {
 
-		// console.log( 'onControlPointUnselected', point );
-
-		this.currentPoint = null;
-
-		// if ( this.currentPoint == null || point == null ) return;
-
-		// if ( this.currentPoint === point ) return;
-
-		// CommandHistory.executeMany(
-
-		// 	new SetValueCommand( this, 'currentPoint', null )
-
-		// 	// new SetInspectorCommand( null, null ),
-
-		// );
+		return this.point;
 
 	}
 
-	onControlPointAdded ( point: BaseControlPoint ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
-		if ( this.prop ) {
+		const point = this.selectStrategy.onPointerDown( e );
 
-			CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) );
+		if ( point ) {
 
-		} else {
+			if ( point == this.point ) return;
 
-			SnackBar.warn( 'Select a prop from the project browser' );
+			CommandHistory.execute( new SelectPointCommand( this, point ) );
 
-			point.visible = false;
+			this.setProp( point.mainObject );
 
-			setTimeout( () => {
+		} else if ( this.point ) {
 
-				this.shapeEditor.removeControlPoint( point );
-
-			}, 100 );
+			CommandHistory.execute( new SelectPointCommand( this, null ) );
 
 		}
 
 	}
 
-	onControlPointUpdated ( point: BaseControlPoint ): void {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.currentProp ) return;
+		if ( this.prop == null ) {
 
-		const oldPosition = this.shapeEditor.pointerDownAt;
+			SnackBar.warn( 'Select a prop from the project browser' );
 
-		const newPosition = point.position;
+			return;
 
-		if ( oldPosition == null || newPosition == null ) return;
+		}
 
-		if ( oldPosition.equals( newPosition ) ) return;
+		const point = new DynamicControlPoint( this.prop, e.point );
 
-		CommandHistory.executeMany(
-			new SetPositionCommand( this.currentProp.object, newPosition, oldPosition ),
+		CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) );
 
-			new SetPositionCommand( this.currentPoint, newPosition, oldPosition )
-		);
 	}
 
-	onControlPointMoved ( point: BaseControlPoint ): void {
+	onPointerMoved ( e: PointerEventData ): void {
 
-		if ( point.mainObject == null ) return;
+		this.selectStrategy.onPointerMoved( e );
 
-		this.currentPoint = point;
+		if ( !this.point?.isSelected ) return;
 
-		this.currentProp?.object.position.copy( point.position );
+		if ( !this.pointerDownAt ) return;
+
+		const position = this.moveStrategy.getPosition( e );
+
+		this.point.copyPosition( position )
+
+		this.point.mainObject.copyPosition( position );
+
+	}
+
+	onPointerUp ( e: PointerEventData ): void {
+
+		if ( !this.point?.isSelected ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const position = this.moveStrategy.getPosition( e );
+
+		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+
+		CommandHistory.executeMany(
+
+			new UpdatePositionCommand( this.point.mainObject, position, this.pointerDownAt ),
+
+			new CopyPositionCommand( this.point, position, this.pointerDownAt )
+
+		);
+
+	}
+
+	private setProp ( mainObject: PropInstance ) {
+
+		if ( !mainObject ) return;
+
+		const metadata = AssetDatabase.getMetadata( mainObject?.guid );
+
+		if ( metadata ) PropManager.setProp( metadata );
 
 	}
 

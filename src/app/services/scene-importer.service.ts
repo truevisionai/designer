@@ -277,13 +277,15 @@ export class SceneImporterService extends AbstractReader {
 
 	}
 
-	private importProp ( xml ) {
+	private importProp ( xml: XmlElement ) {
 
 		const propObject = SceneImporterService.preparePropObject( xml );
 
-		this.map.gameObject.add( propObject );
+		const propInstance = new PropInstance( xml.attr_guid, propObject );
 
-		this.map.props.push( new PropInstance( xml.attr_guid, propObject ) );
+		this.map.props.push( propInstance );
+
+		SceneService.add( propInstance );
 
 	}
 

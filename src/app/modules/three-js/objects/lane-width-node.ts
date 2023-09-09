@@ -24,6 +24,8 @@ export class LaneWidthNode extends Group implements ISelectable {
 		super();
 
 		this.createMesh();
+
+		this.layers.enable( 31 );
 	}
 
 	get road () {

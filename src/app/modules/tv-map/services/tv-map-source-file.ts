@@ -5,6 +5,8 @@
 import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../core/io/file';
 import { TvMap } from '../models/tv-map.model';
+import { Object3D, Event } from 'three';
+import { SceneService } from 'app/core/services/scene.service';
 
 export class TvMapInstance {
 
@@ -33,4 +35,13 @@ export class TvMapInstance {
 	static redraw () {
 		this.mapChanged.emit( this.map );
 	}
+
+	static removeProp ( prop: Object3D<Event> ): void {
+		SceneService.remove( prop );
+	}
+
+	static addProp ( prop: Object3D<Event> ): void {
+		SceneService.add( prop );
+	}
+
 }

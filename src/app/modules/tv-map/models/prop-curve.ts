@@ -104,7 +104,7 @@ export class PropCurve {
 
 		if ( length <= 0 ) return;
 
-		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
+		this.props.forEach( prop => TvMapInstance.removeProp( prop ) );
 
 		this.props.splice( 0, this.props.length );
 
@@ -152,7 +152,7 @@ export class PropCurve {
 
 		this.props.push( prop );
 
-		TvMapInstance.map.gameObject.add( prop );
+		TvMapInstance.addProp( prop );
 
 	}
 
@@ -165,21 +165,21 @@ export class PropCurve {
 
 	bake () {
 
-		// not used currently
+		// // not used currently
 
-		this.props.forEach( object => {
+		// this.props.forEach( object => {
 
-			const prop = new PropInstance( this.propGuid, object );
+		// 	const prop = new PropInstance( this.propGuid, object );
 
-			object.position.copy( object.position );
+		// 	object.position.copy( object.position );
 
-			prop.point = AnyControlPoint.create( prop.guid, object.position );
+		// 	// prop.point = AnyControlPoint.create( prop.guid, object.position );
 
-			prop.point.mainObject = prop;
+		// 	// prop.point.mainObject = prop;
 
-			TvMapInstance.map.props.push( prop );
+		// 	TvMapInstance.map.props.push( prop );
 
-		} );
+		// } );
 
 	}
 

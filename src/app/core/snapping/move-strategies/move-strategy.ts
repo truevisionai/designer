@@ -5,9 +5,11 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
-import { Vector3 } from 'three';
+import { Raycaster, Vector3 } from 'three';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
 import { SelectStrategy } from '../select-strategies/select-strategy';
+import { ThreeService } from 'app/modules/three-js/three.service';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 
 export interface MoveStrategy {
 	getPosTheta ( position: Vector3 ): TvPosTheta;
@@ -136,6 +138,49 @@ export class RoadPointerStrategy extends SelectStrategy<RoadControlPoint> {
 
 	dispose (): void {
 		throw new Error( 'Method not implemented.' );
+	}
+
+}
+
+export class MovePointStrategy implements MoveStrategy {
+
+	private raycaster = new Raycaster();
+
+	constructor () {
+
+		this.raycaster.far = 1000;
+
+	}
+
+
+	getPosTheta ( position: Vector3 ): TvPosTheta {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	getVector3 ( s: number ): Vector3 {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	getPosition ( e: PointerEventData ): Vector3 {
+
+		// const mouse = new Vector2()
+		// this.mouse.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
+		// this.mouse.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+
+		this.raycaster.setFromCamera( e.mouse, e.camera );
+
+		const raycastableObjects = [ TvMapInstance.map.gameObject, ThreeService.bgForClicks ];
+
+		const intersections = this.raycaster.intersectObjects( raycastableObjects, true );
+
+		if ( intersections.length > 0 ) return intersections[ 0 ].point;
+
+		return e.point;
+
 	}
 
 }

@@ -80,23 +80,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	}
 
-	onPointerDown ( e: PointerEventData ): void {
-
-		if ( e.button !== MouseButton.LEFT ) return;
-
-		if ( KeyboardInput.isShiftKeyDown ) {
-
-			this.handleCreationMode( e );
-
-		} else {
-
-			this.handleSelectionMode( e );
-
-		}
-
-	}
-
-	handleSelectionMode ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ) {
 
 		const point = this.strategy.onPointerDown( e );
 
@@ -120,7 +104,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
-	handleCreationMode ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ) {
 
 		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
 

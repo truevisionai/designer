@@ -169,13 +169,13 @@ export class ViewportImporterService {
 
 		if ( ToolManager.currentTool instanceof PropPointTool ) {
 
-			ToolManager.currentTool.shapeEditor.addControlPoint( position );
+			// ToolManager.currentTool.shapeEditor.addControlPoint( position );
 
 		} else {
 
 			ToolManager.currentTool = new PropPointTool();
 
-			( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
+			// ( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
 
 		}
 

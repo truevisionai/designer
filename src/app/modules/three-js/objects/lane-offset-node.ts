@@ -47,7 +47,7 @@ export class LaneOffsetNode extends Group implements ISelectable {
 
 		}
 
-
+		this.layers.enable( 31 );
 	}
 
 	get roadId () {
