@@ -6,13 +6,13 @@ import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
-import { TvRoadMarkBuilderV2 } from 'app/modules/tv-map/builders/tv-road-mark-builder-v2';
+import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
 
 	private index: number;
 
-	private roadMarkBuilder = new TvRoadMarkBuilderV2();
+	private roadMarkBuilder = new LaneRoadMarkFactory();
 
 	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
 

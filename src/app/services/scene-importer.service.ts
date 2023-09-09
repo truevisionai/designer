@@ -27,9 +27,12 @@ import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
 import {
 	EnumHelper,
 	ObjectTypes,
+	TvColors,
 	TvContactPoint,
 	TvGeometryType,
 	TvLaneSide,
+	TvRoadMarkTypes,
+	TvRoadMarkWeights,
 	TvRoadType,
 	TvUnit,
 	TvUserData
@@ -1401,15 +1404,15 @@ export class SceneImporterService extends AbstractReader {
 
 	private parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ) {
 
-		const sOffset = parseFloat( xmlElement.attr_sOffset );
-		const type = xmlElement.attr_type;
-		const weight = xmlElement.attr_weight;
-		const color = xmlElement.attr_color;
-		const width = parseFloat( xmlElement.attr_width );
+		const sOffset = parseFloat( xmlElement.attr_sOffset ) || 0;
+		const type = xmlElement.attr_type || TvRoadMarkTypes.SOLID;
+		const weight = xmlElement.attr_weight || TvRoadMarkWeights.STANDARD;
+		const color = xmlElement.attr_color || TvColors.STANDARD;
+		const width = parseFloat( xmlElement.attr_width ) || 0.3;
 		const laneChange = xmlElement.attr_laneChange;
-		const height = parseFloat( xmlElement.attr_height );
-		const length = parseFloat( xmlElement.attr_length );
-		const space = parseFloat( xmlElement.attr_space );
+		const height = parseFloat( xmlElement.attr_height ) || 0;
+		const length = parseFloat( xmlElement.attr_length ) || 3.0;
+		const space = parseFloat( xmlElement.attr_space ) || 0;
 		const materialGuid = xmlElement.attr_materialGuid;
 
 		return new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, lane, length, space, materialGuid )
