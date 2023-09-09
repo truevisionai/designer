@@ -21,7 +21,7 @@ import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
 import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-command';
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
 import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
-import { TvRoadMarkBuilderV2 } from 'app/modules/tv-map/builders/tv-road-mark-builder-v2';
+import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -48,7 +48,7 @@ export class LaneMarkingTool extends BaseTool {
 	public node: LaneRoadMarkNode;
 
 	// public roadMarkBuilder = new OdRoadMarkBuilderV1();
-	public roadMarkBuilder = new TvRoadMarkBuilderV2();
+	public roadMarkBuilder = new LaneRoadMarkFactory();
 
 	public laneHelper = new OdLaneReferenceLineBuilder();
 

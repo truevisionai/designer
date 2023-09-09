@@ -2,23 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SceneService } from 'app/core/services/scene.service';
+import { COLOR } from 'app/shared/utils/colors.service';
 import { MathUtils, MeshStandardMaterial } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { COLOR } from 'app/shared/utils/colors.service';
 
 export class TvLaneRoadMark {
 
-	// widths for the two types of weight values
-	public static STD_ROADMARK_WIDTH = 0.15;
-	public static BOLD_ROADMARK_WIDTH = 0.3;
-	// elevation shift, so that the road mark is drawn above the road
-	public static ROADMARK_ELEVATION_SHIFT = 0.01;
-	// broken mark tiling
 	public static ROADMARK_BROKEN_TILING = 3.0;
 	public readonly uuid: string;
 	public gameObject: GameObject;
@@ -42,12 +36,12 @@ export class TvLaneRoadMark {
 
 	constructor (
 		sOffset: number,
-		type: TvRoadMarkTypes,
-		weight: TvRoadMarkWeights,
-		color: TvColors = TvColors.WHITE,
-		width: number,
+		type: TvRoadMarkTypes = TvRoadMarkTypes.SOLID,
+		weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
+		color: TvColors = TvColors.STANDARD,
+		width: number = null,
 		laneChange: string,
-		height: number,
+		height: number = 0.05,
 		lane: TvLane,
 		length: number = 3.0,
 		space: number = null,
@@ -58,9 +52,9 @@ export class TvLaneRoadMark {
 
 		this.attr_sOffset = sOffset;
 		this.attr_type = type;
-		this.attr_weight = weight;
-		this.attr_color = color;
-		this.attr_width = width;
+		this.attr_weight = weight || TvRoadMarkWeights.STANDARD;
+		this.attr_color = color || TvColors.STANDARD;
+		this.attr_width = width || this.getWidthByWeight( weight );
 		this.attr_laneChange = laneChange;
 		this.attr_height = height;
 		this.attr_length = length;
@@ -107,7 +101,7 @@ export class TvLaneRoadMark {
 	}
 
 	get space () {
-		return this.attr_space
+		return this.attr_space;
 	}
 
 	set space ( value: number ) {
@@ -200,51 +194,19 @@ export class TvLaneRoadMark {
 		this.attr_type = value;
 	}
 
-	getWeight () {
-		return this.attr_weight;
-	}
-
-	setWeight ( value ) {
-		this.attr_weight = value;
-	}
-
-	getColor () {
-		return this.attr_color;
-	}
-
-	setColor ( value ) {
-		this.attr_color = value;
-	}
-
-	getWidth () {
-		return this.attr_width;
-	}
-
-	setWidth ( value ) {
-		this.attr_width = value;
-	}
-
-	getLaneChange () {
-		return this.attr_laneChange;
-	}
-
-	setLaneChange ( value ) {
-		this.attr_laneChange = value;
-	}
-
-	getHeight () {
-		return this.attr_height;
-	}
-
-	setHeight ( value ) {
-		this.attr_height = value;
-	}
-
 	getSpaceByType ( value: TvRoadMarkTypes ) {
 		if ( value == TvRoadMarkTypes.BROKEN ) {
 			return 4.5;
 		} else {
 			return 0;
+		}
+	}
+
+	getWidthByWeight ( value: TvRoadMarkWeights ) {
+		if ( value == TvRoadMarkWeights.BOLD ) {
+			return 0.3;
+		} else {
+			return 0.15;
 		}
 	}
 
@@ -272,7 +234,10 @@ export class TvLaneRoadMark {
 			this.width,
 			this.laneChange,
 			this.height,
-			this.lane
+			this.lane,
+			this.length,
+			this.space,
+			this.materialGuid,
 		);
 	}
 }

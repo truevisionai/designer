@@ -147,7 +147,7 @@ export class OdRoadMarkBuilderV1 {
 		const laneBorderX = roadCoord.x + ( cosHdgPlusPiO2 * cumulativeWidth );
 		const laneBorderY = roadCoord.y + ( sinHdgPlusPiO2 * cumulativeWidth );
 
-		const roadMarkWidth = roadMark.getWidth();
+		const roadMarkWidth = roadMark.width;
 
 		const x1 = laneBorderX + ( cosHdgPlusPiO2 * roadMarkWidth * 0.5 );
 		const y1 = laneBorderY + ( sinHdgPlusPiO2 * roadMarkWidth * 0.5 );

@@ -2,15 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { GameObject } from 'app/core/game-object';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
-import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import { BufferGeometry, MeshBasicMaterial, Vector2, Vector3 } from 'three';
 import { SceneService } from '../../../core/services/scene.service';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
+import { ObjectTypes, TvLaneSide } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
@@ -21,16 +20,15 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvSignalHelper } from '../services/tv-signal-helper';
+import { LaneRoadMarkFactory } from './lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
-import { OdMaterials } from './od-materials.service';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from './signal-factory';
-import { TvRoadMarkBuilderV2 } from './tv-road-mark-builder-v2';
 
 export class TvMapBuilder {
 
 	private static signalFactory = new SignalFactory;
-	private static roadMarkBuilder = new TvRoadMarkBuilderV2( null );
+	private static roadMarkBuilder = new LaneRoadMarkFactory();
 	// private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	private static JUNCTION_ELEVATION_SHIFT = 0.005;

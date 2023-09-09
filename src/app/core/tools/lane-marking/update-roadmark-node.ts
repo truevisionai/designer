@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { LaneRoadMarkNode } from '../../../modules/three-js/objects/lane-road-mark-node';
 import { BaseCommand } from '../../commands/base-command';
-import { TvRoadMarkBuilderV2 } from 'app/modules/tv-map/builders/tv-road-mark-builder-v2';
+import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
 
 export class UpdateRoadmarkNodeCommand extends BaseCommand {
 
@@ -13,7 +13,7 @@ export class UpdateRoadmarkNodeCommand extends BaseCommand {
 		private node: LaneRoadMarkNode,
 		private newPosition: Vector3,
 		private oldPosition: Vector3,
-		private roadMarkbuilder: TvRoadMarkBuilderV2
+		private roadMarkbuilder: LaneRoadMarkFactory
 	) {
 
 		super();
