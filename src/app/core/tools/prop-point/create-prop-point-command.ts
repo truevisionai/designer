@@ -2,24 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { BaseCommand } from '../../commands/base-command';
 import { PropInstance } from '../../models/prop-instance.model';
 import { PropPointTool } from './prop-point-tool';
 import { SceneService } from 'app/core/services/scene.service';
-import { Scene } from 'three';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 export class CreatePropPointCommand extends BaseCommand {
 
 	private propInstance: PropInstance;
 
-	constructor ( private tool: PropPointTool, prop: PropInstance, private point: BaseControlPoint ) {
+	constructor ( private tool: PropPointTool, prop: PropInstance, private point: DynamicControlPoint<PropInstance> ) {
 
 		super();
 
-		this.propInstance = new PropInstance( prop.guid, prop.object.clone() );
+		this.propInstance = prop.clone();
 
-		this.propInstance.object.position.copy( this.point.position );
+		this.propInstance.copyPosition( this.point.position );
 
 		this.point.mainObject = this.propInstance;
 
@@ -27,7 +26,7 @@ export class CreatePropPointCommand extends BaseCommand {
 
 	execute () {
 
-		SceneService.add( this.propInstance.object );
+		SceneService.add( this.propInstance );
 
 		SceneService.add( this.point );
 
@@ -40,7 +39,7 @@ export class CreatePropPointCommand extends BaseCommand {
 
 	undo () {
 
-		SceneService.remove( this.propInstance.object );
+		SceneService.remove( this.propInstance );
 
 		SceneService.remove( this.point );
 

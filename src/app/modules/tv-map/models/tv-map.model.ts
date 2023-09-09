@@ -286,7 +286,15 @@ export class TvMap {
 
 		} );
 
-		this.props.forEach( prop => this.gameObject.remove( prop.object ) );
+		this.props.forEach( prop => {
+
+			// SceneService.remove( prop.object );
+			SceneService.remove( prop );
+
+			// this.gameObject.remove( prop.object );
+			this.gameObject.remove( prop );
+
+		} );
 
 		this.clear();
 

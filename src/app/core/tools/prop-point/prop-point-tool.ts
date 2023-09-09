@@ -3,15 +3,10 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Subscription } from 'rxjs';
-import { PointEditor } from '../../editors/point-editor';
 import { PropInstance } from '../../models/prop-instance.model';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
@@ -23,6 +18,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 
 /**
  * Prop point tool
@@ -40,17 +36,19 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 	public name: string = 'PropPointTool';
 	public toolType = ToolType.PropPoint;
 
-	public points = [];
+	public points: DynamicControlPoint<PropInstance>[] = [];
 	private point: DynamicControlPoint<PropInstance>;
 
 	private selectStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
-	private moveStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
+	private moveStrategy: MovePointStrategy;
 
 	constructor () {
 
 		super();
 
 		this.selectStrategy = new ControlPointStrategy();
+
+		this.moveStrategy = new MovePointStrategy();
 
 	}
 
@@ -70,34 +68,27 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		super.init();
 
+		this.map.props.forEach( ( prop: PropInstance ) => {
+
+			this.points.push( new DynamicControlPoint( prop, prop.getPosition().clone() ) );
+
+		} );
+
 	}
 
 	enable () {
 
 		super.enable();
 
-		this.map.props.forEach( ( prop: PropInstance ) => {
-
-			const point = new DynamicControlPoint( prop, prop.object.position );
-
-			this.points.push( point );
-
-			SceneService.addHelper( point );
-
-		} );
+		this.points.forEach( point => SceneService.add( point ) );
 
 	}
-
 
 	disable (): void {
 
 		super.disable();
 
-		this.points.forEach( point => {
-
-			SceneService.removeHelper( point );
-
-		} );
+		this.points.forEach( point => SceneService.remove( point ) );
 
 	}
 
@@ -157,9 +148,11 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		if ( !this.pointerDownAt ) return;
 
-		this.point.copyPosition( e.point )
+		const position = this.moveStrategy.getPosition( e );
 
-		this.point.mainObject.copyPosition( e.point );
+		this.point.copyPosition( position )
+
+		this.point.mainObject.copyPosition( position );
 
 	}
 
@@ -169,7 +162,7 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = e.point;
+		const position = this.moveStrategy.getPosition( e );
 
 		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 

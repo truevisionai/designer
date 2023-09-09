@@ -17,25 +17,31 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 
 	setPosition ( position: Vector3 ): void {
 
-		this.position.copy( position );
+		this.object?.position.copy( position );
 
 	}
 
 	copyPosition ( position: Vector3 ): void {
 
-		this.position.copy( position );
+		this.object?.position.copy( position );
 
 	}
 
 	getPosition (): Vector3 {
 
-		return this.position;
+		return this.object?.position;
 
 	}
 
 	update () {
 
 		this.object?.updateMatrixWorld( true );
+
+	}
+
+	clone ( recursive?: boolean ): any {
+
+		return new PropInstance( this.guid, this.object.clone() )
 
 	}
 
