@@ -99,46 +99,23 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 	}
 
-	onPointerDown ( event: PointerEventData ): void {
-
-		if ( event.button != MouseButton.LEFT ) return;
-
-		if ( KeyboardInput.isShiftKeyDown ) {
-
-			this.handleCreation( event );
-
-		} else {
-
-			this.handleSelection( event );
-
-		}
-
-	}
-
-	handleCreation ( event: PointerEventData ) {
+	onPointerDownCreate ( event: PointerEventData ) {
 
 		const roadCoord = this.movingStrategy.onPointerDown( event );
 
-		if ( this.selectedVehicle ) {
+		if ( !roadCoord ) this.setHint( 'Click on road geometry to create vehicle' );
 
-			if ( !roadCoord ) this.setHint( 'Click on road geometry to create vehicle' );
-			if ( !roadCoord ) return;
+		if ( !roadCoord ) return;
 
-			const vehicleEntity = VehicleFactory.createVehicleAt( roadCoord.position, roadCoord.orientation );
+		const vehicleEntity = VehicleFactory.createVehicleAt( roadCoord.position, roadCoord.orientation );
 
-			const point = this.createControlPoint( vehicleEntity );
+		const point = this.createControlPoint( vehicleEntity );
 
-			CommandHistory.execute( new AddVehicleCommand( this, vehicleEntity, point ) );
+		CommandHistory.execute( new AddVehicleCommand( this, vehicleEntity, point ) );
 
-
-		} else {
-
-			SnackBar.warn( 'Please select a vehicle from project browser' );
-
-		}
 	}
 
-	handleSelection ( event: PointerEventData ) {
+	onPointerDownSelect ( event: PointerEventData ) {
 
 		// if ( this.isVehicleSelected( event ) ) return;
 		// deselect

@@ -70,22 +70,19 @@ export class PropCurve {
 		this.update();
 	}
 
-	show ( shapeEditor?: AbstractShapeEditor ): void {
+	show (): void {
 
 		this.spline.show();
 
-		if ( !shapeEditor ) return;
+		SceneService.add( this.spline.mesh );
 
-		this.spline.controlPoints.forEach( point => {
-
-			shapeEditor?.controlPoints.push( point );
-
-		} );
 	}
 
 	hide () {
 
 		this.spline.hide();
+
+		SceneService.remove( this.spline.mesh );
 
 	}
 

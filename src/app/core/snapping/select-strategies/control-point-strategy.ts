@@ -21,7 +21,9 @@ export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStra
 
 		this.selected?.unselect();
 
-		this.selected = pointerEventData.intersections.find( i => i.object instanceof Points )?.object as any;
+		this.selected = pointerEventData.intersections
+			.filter( i => i.object.visible )
+			.find( i => i.object instanceof Points )?.object as any;
 
 		this.selected?.select();
 
@@ -33,7 +35,9 @@ export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStra
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOut();
 
-		this.current = pointerEventData.intersections.find( i => i.object instanceof Points )?.object as any;
+		this.current = pointerEventData.intersections
+			.filter( i => i.object.visible )
+			.find( i => i.object instanceof Points )?.object as any;
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOver();
 
@@ -42,7 +46,9 @@ export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStra
 
 	onPointerUp ( pointerEventData: PointerEventData ): T {
 
-		return pointerEventData.intersections.find( i => i.object instanceof Points )?.object as any;
+		return pointerEventData.intersections
+			.filter( i => i.object.visible )
+			.find( i => i.object instanceof Points )?.object as any;
 
 	}
 

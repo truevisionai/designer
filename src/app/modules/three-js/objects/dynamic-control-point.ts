@@ -7,6 +7,7 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { IHasUpdate } from '../commands/set-value-command';
 import { BaseControlPoint } from './control-point';
+import { SerializedField } from 'app/core/components/serialization';
 
 export class DynamicControlPoint<T extends IHasUpdate> extends BaseControlPoint {
 
@@ -35,6 +36,34 @@ export class DynamicControlPoint<T extends IHasUpdate> extends BaseControlPoint 
 		this.mainObject = mainObject;
 
 		if ( position ) this.copyPosition( position );
+
+	}
+
+	@SerializedField( { type: 'object' } )
+	get object (): T {
+
+		return this.mainObject;
+
+	}
+
+	set object ( value: T ) {
+
+		// this.mainObject = value;
+		// this.update();
+
+	}
+
+	@SerializedField( { type: 'vector3' } )
+	get Position (): Vector3 {
+
+		return this.position.clone();
+
+	}
+
+	set Position ( value: Vector3 ) {
+
+		this.position.copy( value );
+		this.update();
 
 	}
 

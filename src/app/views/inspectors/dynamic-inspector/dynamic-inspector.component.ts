@@ -37,22 +37,6 @@ export class FieldHostDirective {
 	}
 }
 
-const fieldComponents = {
-	'float': DoubleFieldComponent,
-	'int': DoubleFieldComponent,
-	'number': DoubleFieldComponent,
-	'string': StringFieldComponent,
-	'boolean': BooleanFieldComponent,
-	'enum': EnumFieldComponent,
-	'vector2': Vector2FieldComponent,
-	'vector3': Vector3FieldComponent,
-	'road': RoadIdFieldComponent,
-	'entity': SelectEntityFieldComponent,
-	'gameobject': GameObjectFieldComponent,
-	'color': ColorFieldComponent,
-	'texture': TextureFieldComponent,
-};
-
 @Component( {
 	selector: 'app-dynamic-inspector',
 	templateUrl: './dynamic-inspector.component.html',
@@ -73,6 +57,29 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
 	updateSub?: Subscription;
+
+	set value ( value: any ) {
+
+		this.data = value;
+
+	}
+
+	fieldComponents = {
+		'float': DoubleFieldComponent,
+		'int': DoubleFieldComponent,
+		'number': DoubleFieldComponent,
+		'string': StringFieldComponent,
+		'boolean': BooleanFieldComponent,
+		'enum': EnumFieldComponent,
+		'vector2': Vector2FieldComponent,
+		'vector3': Vector3FieldComponent,
+		'road': RoadIdFieldComponent,
+		'entity': SelectEntityFieldComponent,
+		'gameobject': GameObjectFieldComponent,
+		'color': ColorFieldComponent,
+		'texture': TextureFieldComponent,
+		'object': DynamicInspectorComponent,
+	};
 
 	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {
 	}
@@ -116,7 +123,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		if ( fieldValue === undefined ) return;
 
-		const component = fieldComponents[ fieldType ];
+		const component = this.fieldComponents[ fieldType ];
 
 		// if ( fieldType == 'array' ) {
 
@@ -173,6 +180,10 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		} else if ( component instanceof EnumFieldComponent ) {
 
 			component.enum = settings?.enum;
+
+		} else if ( component instanceof DynamicInspectorComponent ) {
+
+			component.showToolbar = false;
 
 		}
 

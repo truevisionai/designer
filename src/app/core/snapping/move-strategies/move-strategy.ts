@@ -171,7 +171,7 @@ export class MovePointStrategy implements MoveStrategy {
 
 		const raycastableObjects = [ TvMapInstance.map.gameObject, ThreeService.bgForClicks ];
 
-		const intersections = this.raycaster.intersectObjects( raycastableObjects, true );
+		const intersections = this.raycaster.intersectObjects( raycastableObjects, true ).filter( i => i.object.visible );
 
 		if ( intersections.length > 0 ) return intersections[ 0 ].point;
 

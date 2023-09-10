@@ -54,6 +54,8 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		this.moveStrategy = new MovePointStrategy();
 
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+
 	}
 
 	get prop (): PropInstance {
@@ -144,27 +146,30 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 			this.setProp( point.mainObject );
 
+			this.setHint( 'Drag control point using LEFT CLICK is down' );
+
 		} else if ( this.point ) {
 
-			CommandHistory.execute( new SelectPointCommand( this, null ) );
+			CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
 
 		}
 
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( this.prop == null ) {
+		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
 
-			SnackBar.warn( 'Select a prop from the project browser' );
+		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 
-			return;
-
-		}
+		if ( !this.prop ) return;
 
 		const point = new DynamicControlPoint( this.prop, e.point );
 
 		CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) );
+
+		this.setHint( 'Add more control points or drag control points to modify' );
 
 	}
 
@@ -201,6 +206,8 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 			new CopyPositionCommand( this.point, position, this.pointerDownAt )
 
 		);
+
+		this.setHint( 'Use Inspector to modify prop properties' );
 
 	}
 

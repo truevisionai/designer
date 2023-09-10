@@ -92,7 +92,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 			if ( point == this.point ) return;
 
-			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
+			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point );
 
 			CommandHistory.execute( cmd );
 
@@ -103,7 +103,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		if ( !this.point ) return;
 
-		CommandHistory.execute( new SelectPointCommand( this, null, DynamicInspectorComponent, null ) );
+		CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}

@@ -127,7 +127,15 @@ export class EditorSettings {
 
 		const value = JSON.stringify( this.settings, null, 2 );
 
-		this.fileService.fs.writeFileSync( this.settingsPath, value, 'utf-8' );
+		try {
+
+			this.fileService.fs.writeFileSync( this.settingsPath, value, 'utf-8' );
+
+		} catch ( error ) {
+
+			console.error( error );
+
+		}
 
 	}
 
