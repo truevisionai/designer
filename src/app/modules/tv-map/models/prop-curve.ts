@@ -17,10 +17,16 @@ export class PropCurve {
 
 	public static tag = 'propCurve';
 
-	public reverse: boolean = false;
 	public props: Object3D[] = [];
 
-	constructor ( public propGuid: string, public spline?: CatmullRomSpline, public headings: number[] = [] ) {
+	constructor (
+		public propGuid: string,
+		public spline?: CatmullRomSpline,
+		private _spacing: number = 5.0,
+		private _rotation: number = 0.0,
+		private _positionVariance: number = 0.0,
+		public reverse = false,
+	) {
 
 		if ( !this.spline ) {
 
@@ -34,8 +40,6 @@ export class PropCurve {
 
 	}
 
-	private _spacing: number = 5.0;
-
 	@SerializedField( { type: 'float', min: 0, max: 100 } )
 	get spacing (): number {
 		return this._spacing;
@@ -46,8 +50,6 @@ export class PropCurve {
 		this.update();
 	}
 
-	private _rotation: number = 0.0;
-
 	@SerializedField( { type: 'float', min: 0, max: 1 } )
 	get rotation (): number {
 		return this._rotation;
@@ -57,8 +59,6 @@ export class PropCurve {
 		this._rotation = value;
 		this.update();
 	}
-
-	private _positionVariance: number = 0.0;
 
 	@SerializedField( { type: 'float', min: 0, max: 100 } )
 	get positionVariance (): number {

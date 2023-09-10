@@ -477,16 +477,14 @@ export class SceneImporterService extends AbstractReader {
 		if ( !meta ) return;
 
 		const spline = this.importCatmullSpline( xml.spline );
+		const reverse = xml.attr_reverse === 'true' ? true : false;
+		const rotation = parseFloat( xml.attr_rotation ) || 0;
+		const spacing = parseFloat( xml.attr_spacing ) || 5;
+		const positionVariance = parseFloat( xml.attr_positionVariance ) || 0;
 
-		const curve = new PropCurve( guid, spline );
+		const curve = new PropCurve( guid, spline, spacing, rotation, positionVariance, reverse );
 
 		spline.controlPoints.forEach( p => p.mainObject = curve );
-
-		curve.reverse = xml.attr_reverse === 'true' ? true : false;
-
-		curve.rotation = parseFloat( xml.attr_rotation ) || 0;
-
-		curve.positionVariance = parseFloat( xml.attr_positionVariance ) || 0;
 
 		this.readAsOptionalArray( xml.props, propXml => {
 

@@ -299,6 +299,7 @@ export class SceneExporterService {
 	exportPropCurve ( curve: PropCurve ) {
 
 		return {
+			attr_spacing: curve.spacing,
 			attr_rotation: curve.rotation,
 			attr_positionVariance: curve.positionVariance,
 			attr_reverse: curve.reverse,
