@@ -251,12 +251,6 @@ export class FileService {
 
 	}
 
-	saveFile ( defaultPath: string, contents: string, callbackFn: any = null ): any {
-
-		this.writeFile( defaultPath, contents, callbackFn );
-
-	}
-
 	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
 
 		if ( directory == null ) directory = this.projectFolder;

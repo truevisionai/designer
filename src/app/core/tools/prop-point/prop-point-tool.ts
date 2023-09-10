@@ -19,6 +19,9 @@ import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strat
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { Subscription } from 'rxjs';
+import { Object3D } from 'three';
 
 /**
  * Prop point tool
@@ -37,10 +40,11 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 	public toolType = ToolType.PropPoint;
 
 	public points: DynamicControlPoint<PropInstance>[] = [];
-	private point: DynamicControlPoint<PropInstance>;
 
+	private point: DynamicControlPoint<PropInstance>;
 	private selectStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
 	private moveStrategy: MovePointStrategy;
+	private subscriptions: Subscription[] = [];
 
 	constructor () {
 
@@ -58,29 +62,39 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		if ( prop ) {
 
-			return new PropInstance( prop.guid, AssetDatabase.getInstance( prop.guid ) );
+			const object = AssetDatabase.getInstance<Object3D>( prop.guid );
+
+			return new PropInstance( prop.guid, object.clone() );
 
 		}
 
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 
-		this.map.props.forEach( ( prop: PropInstance ) => {
-
-			this.points.push( new DynamicControlPoint( prop, prop.getPosition().clone() ) );
-
-		} );
-
 	}
 
-	enable () {
+	enable (): void {
 
 		super.enable();
 
-		this.points.forEach( point => SceneService.add( point ) );
+		this.clearScene();
+
+		this.map.props.forEach( ( prop: PropInstance ) => {
+
+			const point = new DynamicControlPoint( prop, prop.getPosition().clone() );
+
+			this.points.push( point );
+
+			SceneService.add( point )
+
+			const subscription = prop.updated.subscribe( prop => this.onPropUpdated( point, prop ) );
+
+			this.subscriptions.push( subscription )
+
+		} );
 
 	}
 
@@ -88,7 +102,19 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
+		this.clearScene();
+
+	}
+
+	clearScene (): void {
+
 		this.points.forEach( point => SceneService.remove( point ) );
+
+		this.points = [];
+
+		this.subscriptions.forEach( subscription => subscription.unsubscribe() );
+
+		this.subscriptions = [];
 
 	}
 
@@ -112,7 +138,9 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 			if ( point == this.point ) return;
 
-			CommandHistory.execute( new SelectPointCommand( this, point ) );
+			const command = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
+
+			CommandHistory.execute( command );
 
 			this.setProp( point.mainObject );
 
@@ -183,6 +211,12 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 		const metadata = AssetDatabase.getMetadata( mainObject?.guid );
 
 		if ( metadata ) PropManager.setProp( metadata );
+
+	}
+
+	private onPropUpdated ( point: DynamicControlPoint<PropInstance>, prop: PropInstance ): void {
+
+		point.copyPosition( prop.getPosition() );
 
 	}
 

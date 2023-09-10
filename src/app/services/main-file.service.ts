@@ -125,30 +125,14 @@ export class MainFileService {
 
 		if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
 
-		this.currentFile.contents = this.sceneExporter.export( this.map );
+		const contents = this.currentFile.contents = this.sceneExporter.export( this.map );
 
-		this.saveLocally( this.currentFile );
-
-	}
-
-	saveAs () {
-
-		ToolManager.disable();
-
-		AppInspector.clear();
-
-		CommandHistory.clear();
-
-		this.sceneExporter.saveAs();
-
-	}
-
-	saveLocally ( file: IFile ) {
+		ToolManager.disable();	// disable tools while saving
 
 		// path exists means it was imported locally
 		if ( this.currentFile.path != null ) {
 
-			this.fileService.saveFile( file.path, file.contents, ( file: IFile ) => {
+			this.fileService.writeFile( this.currentFile.path, contents, ( file: IFile ) => {
 
 				this.currentFile.path = file.path;
 				this.currentFile.name = file.name;
@@ -157,8 +141,7 @@ export class MainFileService {
 
 				SnackBar.success( 'File Saved!' );
 
-				ToolManager.enable();
-
+				ToolManager.enable();	// enable tools after saving
 
 			} );
 
@@ -167,6 +150,28 @@ export class MainFileService {
 			this.saveAs();
 
 		}
+
+	}
+
+	saveAs () {
+
+		const contents = this.sceneExporter.export();
+
+		const folder = this.fileService.projectFolder;
+
+		this.fileService.saveFileWithExtension( folder, contents, this.sceneExporter.extension, ( file: IFile ) => {
+
+			this.currentFile.path = file.path;
+			this.currentFile.name = file.name;
+
+			this.electronService.setTitle( file.name, file.path );
+
+			SnackBar.success( 'File Saved!' );
+
+			ToolManager.enable();	// enable tools after saving
+
+		} );
+
 	}
 
 }

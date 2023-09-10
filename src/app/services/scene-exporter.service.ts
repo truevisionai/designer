@@ -43,7 +43,7 @@ import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.servic
 } )
 export class SceneExporterService {
 
-	private readonly extension = 'scene';
+	readonly extension = 'scene';
 
 	private map: TvMap;
 
