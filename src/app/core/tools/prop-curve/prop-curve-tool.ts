@@ -13,12 +13,12 @@ import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/services/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { KeyboardInput } from '../../input';
 import { PropModel } from '../../models/prop-model.model';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
 import { CreatePropCurveCommand } from './create-prop-curve-command';
+import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 
 export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
@@ -28,13 +28,17 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	public point: DynamicControlPoint<PropCurve>;
 
-	private strategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
+	private selectStrategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
+
+	private moveStrategy: MovePointStrategy;
 
 	constructor () {
 
 		super();
 
-		this.strategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
+		this.selectStrategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
+
+		this.moveStrategy = new MovePointStrategy();
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
@@ -80,9 +84,9 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) {
+	onPointerDownSelect ( event: PointerEventData ) {
 
-		const point = this.strategy.onPointerDown( e );
+		const point = this.selectStrategy.onPointerDown( event );
 
 		if ( point ) {
 
@@ -104,7 +108,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
-	onPointerDownCreate ( e: PointerEventData ) {
+	onPointerDownCreate ( event: PointerEventData ) {
 
 		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
 
@@ -114,49 +118,57 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		if ( !this.point ) {
 
-			const point = new DynamicControlPoint<PropCurve>( null, e.point );
+			const point = new DynamicControlPoint<PropCurve>( null, event.point );
 
-			CommandHistory.execute( new CreatePropCurveCommand( this, this.prop, point ) );
+			const command = new CreatePropCurveCommand( this, this.prop, point )
+
+			CommandHistory.execute( command );
 
 			this.setHint( 'Add one more control point to create curve' );
 
 		} else {
 
-			const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, e.point );
+			const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, event.point );
 
-			CommandHistory.execute( new AddPropCurvePointCommand( this, this.point.mainObject, point ) );
+			const command = new AddPropCurvePointCommand( this, this.point.mainObject, point )
+
+			CommandHistory.execute( command );
 
 			this.setHint( 'Add more control points or drag control points to modify curve' );
 		}
 	}
 
-	onPointerMoved ( pointerEventData: PointerEventData ): void {
+	onPointerMoved ( event: PointerEventData ): void {
 
-		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+		this.selectStrategy.onPointerMoved( event );
 
 		if ( !this.point?.isSelected ) return;
 
 		if ( !this.pointerDownAt ) return;
 
-		this.point?.position.copy( pointerEventData.point );
+		const position = this.moveStrategy.getPosition( event );
+
+		this.point?.position.copy( position );
 
 		this.point?.update();
 
 	}
 
-	onPointerUp ( pointerEventData: PointerEventData ): void {
+	onPointerUp ( event: PointerEventData ): void {
 
-		if ( pointerEventData.button !== MouseButton.LEFT ) return;
+		if ( event.button !== MouseButton.LEFT ) return;
 
 		if ( !this.point?.isSelected ) return;
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = pointerEventData.point;
+		const position = this.moveStrategy.getPosition( event );
 
 		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		CommandHistory.execute( new UpdatePositionCommand( this.point, position, this.pointerDownAt ) );
+		const command = new UpdatePositionCommand( this.point, position, this.pointerDownAt )
+
+		CommandHistory.execute( command );
 
 		this.setHint( 'Use Inspector to modify curve properties' );
 	}

@@ -167,10 +167,6 @@ export class MovePointStrategy implements MoveStrategy {
 
 	getPosition ( e: PointerEventData ): Vector3 {
 
-		// const mouse = new Vector2()
-		// this.mouse.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
-		// this.mouse.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
-
 		this.raycaster.setFromCamera( e.mouse, e.camera );
 
 		const raycastableObjects = [ TvMapInstance.map.gameObject, ThreeService.bgForClicks ];

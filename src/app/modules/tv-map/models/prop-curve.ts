@@ -86,6 +86,7 @@ export class PropCurve {
 	hide () {
 
 		this.spline.hide();
+
 	}
 
 	update () {
