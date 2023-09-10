@@ -6,7 +6,7 @@ export class OdBuilderConfig {
 
 	public static ROAD_STEP = 1.0;
 
-	public static JUNCTION_STEP = 3.0;
+	public static JUNCTION_STEP = 0.5;
 
 	// Junction elevation shift, so that the junction tracks are drawn above the road
 	public static JUNCTION_ELEVATION_SHIFT = 0.05;

@@ -129,7 +129,7 @@ export class TvMapBuilder {
 
 	static buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
-		let roadStep = OdBuilderConfig.ROAD_STEP;
+		let roadStep = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
 		let posTheta = new TvPosTheta;
 
 		let cumulativeWidth = 0;

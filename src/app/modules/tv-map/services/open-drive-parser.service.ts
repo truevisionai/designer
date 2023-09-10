@@ -418,12 +418,6 @@ export class OpenDriverParser extends AbstractReader {
 
 	public parseGeometryBlock ( road: TvRoad, xmlElement: XmlElement, geometryType: TvGeometryType ) {
 
-		const s = parseFloat( xmlElement.attr_s );
-		const x = parseFloat( xmlElement.attr_x );
-		const y = parseFloat( xmlElement.attr_y );
-		const hdg = parseFloat( xmlElement.attr_hdg );
-		const length = parseFloat( xmlElement.attr_length );
-
 		road.addPlanView();
 
 		const planView = road.getPlanView();
@@ -436,7 +430,7 @@ export class OpenDriverParser extends AbstractReader {
 		const s = parseFloat( xmlElement.attr_s );
 		const x = parseFloat( xmlElement.attr_x );
 		const y = parseFloat( xmlElement.attr_y );
-		let hdg = parseFloat( xmlElement.attr_hdg );
+		const hdg = parseFloat( xmlElement.attr_hdg );
 		const length = parseFloat( xmlElement.attr_length );
 
 		// unsure of this, but works well so far
