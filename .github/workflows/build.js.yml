@@ -1,49 +1,144 @@
-name: Nightly Build
+name: Build
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *' # Runs every day at midnight
+    workflow_dispatch:
+    push:
+        tags:
+            - "*"
+
 jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
+    build-linux:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 16
 
-    - name: Install dependencies
-      run: npm install
+            - name: Install dependencies
+              run: |
+                  npm install
+                  cp third-party/sentry-cli ./sentry-cli
 
-    - name: Create environment.ts file
-      run: |
-        touch src/environments/environment.prod.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.prod.ts
-        touch src/environments/environment.ts && echo "${{ secrets.ENV_PROD }}" >> src/environments/environment.ts
+            - name: Create environment.ts file
+              run: |
+                  echo "${{ secrets.ENV_PROD }}" > src/environments/environment.prod.ts
+                  echo "${{ secrets.ENV_PROD }}" > src/environments/environment.ts
 
-    - name: Build Angular app
-      run: npm run build:prod
+            - name: Build Angular app
+              run: npm run build:prod
 
-    - name: Install Electron dependencies
-      run: npm install electron electron-builder --save-dev
+            - name: Sentry Inject Source Maps
+              run: sentry-cli sourcemaps inject ./dist
 
-    - name: Build Electron app
-      run: npm run linux
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            - name: Sentry Upload Source Maps
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  sentry-cli sourcemaps upload --use-artifact-bundle --release=$VERSION --validate ./dist
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
-    - name: Create GitHub release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: ${{ secrets.GH_TOKEN }}
-        automatic_release_tag: "nightly-${{ github.run_number }}"
-        title: "Nightly build ${{ github.run_number }}"
-        files: |
-          release/*.exe
-          release/*.dmg
-          release/*.AppImage
-          release/*.deb
+            - name: Install Electron dependencies
+              run: npm install electron electron-builder --save-dev
+
+            - name: Build Electron app
+              run: electron-builder build --linux
+              env:
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+            - name: Upload Linux Artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: "linux-artifacts"
+                  path: |
+                      release/*.AppImage
+                      release/*.deb
+                      release/*.yml
+
+    build-windows:
+        runs-on: windows-latest
+
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 16
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Create environment.ts file
+              run: |
+                  echo "${{ secrets.ENV_PROD }}" > src/environments/environment.prod.ts
+                  echo "${{ secrets.ENV_PROD }}" > src/environments/environment.ts
+
+            - name: Build Angular app
+              run: npm run build:prod
+
+            - name: Sentry Inject Source Maps
+              run: sentry-cli.exe sourcemaps inject ./dist
+
+            - name: Sentry Upload Source Maps
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  sentry-cli.exe sourcemaps upload --use-artifact-bundle --release=$VERSION --validate ./dist
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+
+            - name: Install Electron dependencies
+              run: npm install electron electron-builder --save-dev
+
+            - name: Build Electron app
+              run: electron-builder build --windows
+              env:
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+            - name: Upload Windows Artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: "windows-artifacts"
+                  path: |
+                      release/*.exe
+                      release/*.yml
+                      release/*.blockmap
+
+    upload:
+        name: "Create release and upload artifacts"
+        needs:
+            - build-linux
+            - build-windows
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Linux Artifacts
+              uses: actions/download-artifact@v2
+              with:
+                  name: linux-artifacts
+
+            - name: Download Windows Artifacts
+              uses: actions/download-artifact@v2
+              with:
+                  name: windows-artifacts
+
+            - name: "Inspect directory after downloading artifacts"
+              run: ls -alFR
+
+            - name: Create GitHub release
+              uses: marvinpinto/action-automatic-releases@latest
+              with:
+                  repo_token: ${{ secrets.GH_TOKEN }}
+                  automatic_release_tag: "nightly-${{ github.run_number }}"
+                  title: "Release ${{ github.ref_name }}"
+                  files: |
+                      linux-artifacts/*
+                      windows-artifacts/*
