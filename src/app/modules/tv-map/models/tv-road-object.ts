@@ -535,6 +535,8 @@ export class Crosswalk extends TvRoadObject {
 
 		this.outlines = outlines;
 
+		if ( !markings.length ) markings.push( new TvObjectMarking() );
+
 		markings.map( marking => marking.roadObject = this );
 
 		this._markings = markings;
