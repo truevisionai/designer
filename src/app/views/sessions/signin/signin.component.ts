@@ -19,9 +19,14 @@ import { SnackBar } from 'app/services/snack-bar.service';
 export class SigninComponent implements OnInit {
 
 	@ViewChild( MatProgressBar ) progressBar: MatProgressBar;
-	@ViewChild( MatButton ) submitButton: MatButton;
+	@ViewChild( 'signinButton' ) submitButton: MatButton;
+	@ViewChild( 'resendButton' ) resendButton: MatButton;
 
 	form: FormGroup;
+
+	error: string;
+	message: string;
+	showResendEmailConfirmationLink: boolean;
 
 	constructor (
 		private authService: AuthService,
@@ -62,16 +67,19 @@ export class SigninComponent implements OnInit {
 			.subscribe( res => this.onSuccess( res ), err => this.onError( err ) );
 	}
 
-	onError ( error: any ) {
+	onError ( errorResponse: any ) {
 
 		this.submitButton.disabled = false;
 		this.progressBar.mode = 'determinate';
 
-		let message = 'some error occured';
+		this.error = errorResponse?.error || 'Error';
+		this.message = errorResponse?.message || 'Something went wrong';
 
-		if ( error != null && error.message != null ) message = error.message;
+		if ( errorResponse?.code == 423 ) {
+			this.showResendEmailConfirmationLink = true;
+		}
 
-		SnackBar.error( message );
+		SnackBar.error( this.message );
 
 	}
 
@@ -83,6 +91,36 @@ export class SigninComponent implements OnInit {
 		SnackBar.show( 'Successfully signed in' );
 
 		this.router.navigateByUrl( AppService.homeUrl );
+
+	}
+
+	resendEmailConfirmationLink () {
+
+		if ( this.email.invalid ) {
+			this.email.markAsTouched();
+			return;
+		}
+
+		this.resendButton.disabled = true;
+
+		this.showResendEmailConfirmationLink = false;
+
+		this.authService.resendEmailConfirmationLink( this.email.value ).subscribe( res => {
+
+			SnackBar.success( 'Email confirmation link sent. Please check your inbox.' );
+
+		}, err => {
+
+			this.resendButton.disabled = false;
+
+			SnackBar.error( err?.message || 'Something went wrong' );
+
+		}, () => {
+
+			this.resendButton.disabled = false;
+
+		} )
+
 
 	}
 }

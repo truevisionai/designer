@@ -5,3 +5,7 @@
 a.link {
 	color: #00a8ab;
 }
+
+.error {
+	background: red;
+}

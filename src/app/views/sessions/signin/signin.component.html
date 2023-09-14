@@ -5,58 +5,71 @@
 <div class="page-wrap height-100">
 	<div class="session-form-hold">
 		<mat-progress-bar class="session-progress"
-						  mode="determinate"></mat-progress-bar>
+			mode="determinate"></mat-progress-bar>
 		<mat-card>
 			<mat-card-content>
-				<br/>
+				<br />
 				<form (ngSubmit)="onSubmit()"
-					  [formGroup]="form">
+					[formGroup]="form">
 					<div class="">
 						<mat-form-field class="full-width">
 							<input formControlName="email"
-								   matInput
-								   name="email"
-								   placeholder="Email"
-								   value="">
+								matInput
+								name="email"
+								placeholder="Email"
+								value="">
 						</mat-form-field>
 						<small *ngIf="email.hasError('required') && email.touched"
-							   class="form-error-msg"> Email is required </small>
+							class="form-error-msg"> Email is required </small>
 						<small *ngIf="email.hasError('email') && email.touched"
-							   class="form-error-msg"> Incorrect Email</small>
+							class="form-error-msg"> Incorrect Email</small>
 					</div>
 
 					<div class="">
 						<mat-form-field class="full-width">
 							<input formControlName="password"
-								   matInput
-								   name="password"
-								   placeholder="Password"
-								   type="password"
-								   value="">
+								matInput
+								name="password"
+								placeholder="Password"
+								type="password"
+								value="">
 						</mat-form-field>
-						<small
-							*ngIf="password.hasError('required') && password.touched"
+						<small *ngIf="password.hasError('required') && password.touched"
 							class="form-error-msg"> Password is required </small>
 					</div>
 
-					<button [disabled]="form.invalid"
-							class="mat-primary full-width mb-1"
-							mat-raised-button>Sign in
+					<button #signinButton [disabled]="form.invalid"
+						class="mat-primary full-width mb-1"
+						mat-raised-button>Sign in
 					</button>
 
 					<div class="text-center">
 						<a [routerLink]="'/sessions/signup'"
-						   class="mat-primary text-center full-width">
+							class="mat-primary text-center full-width">
 							Create New Account
 						</a>
 						<span fxFlex></span>
 						<a [routerLink]="'/sessions/forgot-password'"
-						   class="mat-primary text-center full-width">
+							class="mat-primary text-center full-width">
 							Forgot Password
 						</a>
 					</div>
 				</form>
 			</mat-card-content>
+		</mat-card>
+
+		<br />
+
+		<mat-card *ngIf="showResendEmailConfirmationLink">
+			<button #resendButton class="mat-button" type="button" (click)="resendEmailConfirmationLink()">Click Here to resend email confirmation link</button>
+		</mat-card>
+
+		<br />
+
+		<mat-card *ngIf="error || message"
+			class="error">
+			<h5>{{error}}</h5>
+			<p>{{message}}</p>
 		</mat-card>
 
 	</div>

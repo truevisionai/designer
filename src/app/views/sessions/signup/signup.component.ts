@@ -84,26 +84,32 @@ export class SignupComponent implements OnInit {
 
 		this.progressBar.mode = 'indeterminate';
 
-		console.log( form );
-
 		this.authService.register(
 			form.name,
 			form.email,
 			form.password,
 			form.confirmPassword,
 			form.agreed
-		).subscribe(
-			response => this.onSuccess( response ),
-			error => this.onError( error )
-		);
+		).subscribe( ( resposne ) => {
+
+			this.onSuccess( resposne );
+
+		}, ( error ) => {
+
+			this.onError( error );
+
+		} )
 	}
 
 	onSuccess ( response: any ): void {
 
 		this.submitButton.disabled = false;
+
 		this.progressBar.mode = 'determinate';
 
-		SnackBar.show( 'Successfully signed in' );
+		const message = response.message || "User successfully registered";
+
+		SnackBar.success( message );
 
 		this.router.navigateByUrl( AppService.homeUrl );
 	}
@@ -112,9 +118,10 @@ export class SignupComponent implements OnInit {
 	onError ( error: any ): void {
 
 		this.submitButton.disabled = false;
+
 		this.progressBar.mode = 'determinate';
 
-		let message = 'some error occured';
+		let message = error?.message || 'some error occured';
 
 		if ( error != null && error.message != null ) message = error.message;
 
