@@ -128,4 +128,10 @@ export class AuthService {
 
 	}
 
+	public resendEmailConfirmationLink ( email: string ) {
+
+		return this.api.post( '/auth/resend-email-confirmation', { email } );
+
+	}
+
 }
