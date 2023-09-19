@@ -68,8 +68,6 @@ export class ThreeService implements IEngine {
 		this.canvas = canvas;
 		this.renderer = renderer;
 
-		SceneService.scene.background = new THREE.Color( 0x333333 );
-
 		this.createCameras();
 
 		this.createSceneHelpers();
