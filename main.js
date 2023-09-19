@@ -3,7 +3,7 @@
  */
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, screen } = require( 'electron' );
+const { app, BrowserWindow, Menu, screen, ipcMain } = require( 'electron' );
 const path = require( 'path' );
 const log = require( 'electron-log' );
 
@@ -232,6 +232,12 @@ var template = [
 		]
 	}
 ];
+
+ipcMain.on( 'get-installation-dir', ( event, arg ) => {
+	let exePath = app.getPath( 'exe' );
+	let installationDir = path.dirname( exePath );
+	event.returnValue = installationDir;
+} )
 
 // not needed on windows
 if ( process.platform === 'win32' ) {

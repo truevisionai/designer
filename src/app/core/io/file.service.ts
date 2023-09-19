@@ -82,6 +82,15 @@ export class FileService {
 		return versions.currentDirectory;
 	}
 
+	get exeDirectory () {
+
+		if ( this.electronService.isPackaged ) {
+			return versions.exeDirectory();
+		}
+
+		return this.currentDirectory;
+	}
+
 	get projectFolder () {
 
 		if ( this.electronService.isWindows ) {
@@ -542,9 +551,9 @@ export class FileService {
 
 	}
 
-	join ( path, filename ): string {
+	join ( ...paths: string[] ): string {
 
-		return this.path.join( path, filename );
+		return this.path.join( ...paths );
 
 	}
 

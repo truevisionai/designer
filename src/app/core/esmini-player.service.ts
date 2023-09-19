@@ -30,7 +30,9 @@ export class EsminiPlayerService {
 	}
 
 	get isEnabled (): boolean {
-		return this.editor.settings.esminiEnabled;
+
+		return true;
+
 	}
 
 	playSimulation () {
@@ -69,7 +71,11 @@ export class EsminiPlayerService {
 
 	runOdrViewer ( path: string, xodr: string ) {
 
-		const binPath = this.editor.settings.odrViewerPath;
+		const defaultPath = this.fileService.join(
+			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'odrviewer.exe'
+		);
+
+		const binPath = this.editor.settings.odrViewerPath || defaultPath;
 
 		if ( !binPath || binPath == '' ) TvConsole.error( 'Please set the ODR Viewer path in settings' );
 
@@ -104,7 +110,11 @@ export class EsminiPlayerService {
 
 	runScenario ( path: string, xodr: string, xosc: string ) {
 
-		const binPath = this.editor.settings.esminiPath;
+		const defaultPath = this.fileService.join(
+			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'esmini.exe'
+		);
+
+		const binPath = this.editor.settings.esminiPath || defaultPath;
 
 		if ( !binPath || binPath == '' ) TvConsole.error( 'Please set the Esmini path in settings' );
 

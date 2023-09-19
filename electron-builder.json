@@ -24,7 +24,9 @@
 			"default-project",
 			"app-update.yml"
 		],
-		"extraFiles": [],
+		"extraFiles": [
+			"esmini"
+		],
 		"linux": {
 			"category": "Utility",
 			"target": "AppImage"
