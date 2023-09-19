@@ -72,7 +72,7 @@ export class EsminiPlayerService {
 	runOdrViewer ( path: string, xodr: string ) {
 
 		const defaultPath = this.fileService.join(
-			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'odrviewer.exe'
+			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'odrviewer'
 		);
 
 		const binPath = this.editor.settings.odrViewerPath || defaultPath;
@@ -111,7 +111,7 @@ export class EsminiPlayerService {
 	runScenario ( path: string, xodr: string, xosc: string ) {
 
 		const defaultPath = this.fileService.join(
-			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'esmini.exe'
+			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'esmini'
 		);
 
 		const binPath = this.editor.settings.esminiPath || defaultPath;
