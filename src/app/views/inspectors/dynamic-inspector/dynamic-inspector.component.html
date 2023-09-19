@@ -1,21 +1,23 @@
 <mat-toolbar *ngIf="showToolbar"
-			 class="native-border inspector-toolbar">
+	class="native-border inspector-toolbar">
 	<button class="inspector-toolbar-icon"
-			mat-icon-button>
-		<mat-icon>chevron_right</mat-icon>
+		(click)="toggleProperties()"
+		mat-icon-button>
+		<mat-icon *ngIf="!showProperties">chevron_right</mat-icon>
+		<mat-icon *ngIf="showProperties">expand_more</mat-icon>
 	</button>
 	<span>{{label}}</span>
 </mat-toolbar>
 
 
-<div *ngIf="data"
-	 [class.inspector-editor-padding]="showToolbar">
+<div *ngIf="data && showProperties"
+	[class.inspector-editor-padding]="showToolbar">
 	<div *ngFor="let item of serializableFields">
 		<ng-container app-field-host></ng-container>
 	</div>
 	<div *ngFor="let action of serializableActions">
 		<app-button-field (clicked)="action.method.apply(data)"
-						  label="{{ action.name | titlecase }}">
+			label="{{ action.name | titlecase }}">
 		</app-button-field>
 	</div>
 </div>

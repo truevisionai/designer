@@ -50,6 +50,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@Input() showToolbar = true;
 
+	@Input() showProperties = true;
+
 	serializableFields: { field: string, settings: any }[] = [];
 
 	serializableActions: { name: string; method: Function; }[];
@@ -104,6 +106,30 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
+	toggleProperties () {
+
+		this.showProperties = !this.showProperties;
+
+		if ( this.showProperties ) {
+
+			if ( this.data ) this.serializableFields = getSerializableFields( this.data );
+
+			if ( this.data ) this.serializableActions = getSerializableActions( this.data );
+
+			if ( this.data ) setTimeout( () => this.loadFields( this.data ), 10 );
+
+		} else {
+
+			this.fieldHosts.forEach( ( host ) => {
+
+				host.viewContainerRef.clear();
+
+			} );
+
+		}
+
+	}
+
 	loadFields ( data: any ) {
 
 		this.serializableFields.forEach( ( item, index ) => {
@@ -124,18 +150,6 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		if ( fieldValue === undefined ) return;
 
 		const component = this.fieldComponents[ fieldType ];
-
-		// if ( fieldType == 'array' ) {
-
-		// 	const componentFactory = this.componentFactoryResolver.resolveComponentFactory<DynamicArrayInspectorComponent>( DynamicArrayInspectorComponent );
-
-		// 	const componentRef = fieldHost.viewContainerRef.createComponent( componentFactory );
-
-		// 	componentRef.instance.data = fieldValue;
-
-		// 	componentRef.changeDetectorRef.detectChanges();
-
-		// } else {
 
 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent>( component );
 
@@ -162,8 +176,6 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		componentRef.changeDetectorRef.detectChanges();
 
 		this.updateSub = data?.updated?.subscribe( () => componentRef.instance.value = data[ item.field ] );
-
-		// }
 
 	}
 
