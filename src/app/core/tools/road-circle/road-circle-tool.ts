@@ -53,6 +53,8 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
+		this.map.getRoads().forEach( road => road.hideHelpers() );
+
 	}
 
 	onPointerDown ( e: PointerEventData ) {
