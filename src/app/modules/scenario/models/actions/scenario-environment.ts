@@ -308,7 +308,15 @@ class DomeImage {
 
 		// new RGBELoader().setPath( 'assets/default-hdr/' ).load( 'quarry_01_1k.hdr', function ( texture: THREE.DataTexture ) {
 
-		if ( this._textureGuid == null ) return;
+		if ( this._textureGuid == null ) {
+
+			SceneService.scene.background = new THREE.Color( 0x333333 );
+
+			SceneService.scene.environment = null;
+
+			return;
+
+		};
 
 		if ( this._textureGuid == 'default' ) return;
 
