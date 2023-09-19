@@ -11,12 +11,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { SharedModule } from 'app/shared/shared.module';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { TextureFieldComponent } from './inspectors/texture-field/texture-field.component';
 import { PointerGuidesComponent } from './pointer-guides/pointer-guides.component';
 import { ViewportComponent } from './viewport/viewport.component';
 
 @NgModule( {
-	declarations: [ ViewportComponent, PointerGuidesComponent, TextureFieldComponent ],
+	declarations: [ ViewportComponent, PointerGuidesComponent ],
 	exports: [
 		ViewportComponent,
 	],
