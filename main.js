@@ -233,4 +233,12 @@ var template = [
 	}
 ];
 
-Menu.setApplicationMenu( Menu.buildFromTemplate( template ) );
+// not needed on windows
+if ( process.platform === 'win32' ) {
+
+	Menu.setApplicationMenu( null );
+
+} else {
+
+	Menu.setApplicationMenu( Menu.buildFromTemplate( template ) );
+}
