@@ -20,6 +20,8 @@ import { ProjectBrowserService } from './project-browser.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
+import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
+import { VehicleFactory } from 'app/core/factories/vehicle.factory';
 
 // const DOCUMENT_PATH = '/home/himanshu/Documents/Truevision/';
 
@@ -404,55 +406,34 @@ export class ProjectBrowserComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
-			{
-				label: 'New',
-				submenu: [
-					{ label: 'Scene', click: () => this.createNewScene() },
-					{ label: 'Folder', click: () => this.createNewFolder() },
-					{ label: 'Material', click: () => this.createNewMaterial() },
-					{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
-					{
-						label: 'Entity', submenu: [
-							{ label: 'Vehicle', click: () => this.createVehicleEntity() }
-						]
-					},
-					// { label: 'Prop Set' },
-					// { label: 'Extrusion Style' },
-					// { label: 'Post Style' },
-					// { label: 'Sign', click: () => this.createNewSign() },
-					// { label: 'Crosswalk Marking' },
-					// { label: 'Lane Marking' },
-					// { label: 'Polygon Marking' },
-				]
-			},
-			// {
-			//     label: 'Delete',
-			//     click: () => this.deleteNode( selectedNode ),
-			//     enabled: selectedNode ? true : false
-			// },
-			// {
-			//     label: 'Rename',
-			//     click: () => this.renameNode( selectedNode ),
-			//     enabled: selectedNode ? true : false
-			// },
-			// {
-			//     label: 'Duplicate',
-			//     click: () => { console.log( "add vehiclie" ) },
-			//     enabled: selectedNode ? true : false
-			// },
-			{
-				label: 'Show In Explorer',
-				click: () => this.showInExplorer()
-			},
-			// {
-			//     label: 'Reimport',
-			//     click: () => this.reimport( selectedNode )
-			// },
-			// {
-			//     label: 'Reimport All',
-			//     click: () => this.reimportAll()
-			// },
+		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
+			label: 'New',
+			submenu: [
+				{ label: 'Scene', click: () => this.createNewScene() },
+				{ label: 'Folder', click: () => this.createNewFolder() },
+				{ label: 'Material', click: () => this.createNewMaterial() },
+				{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
+				{
+					label: 'Entity', submenu: [
+						{
+							label: 'Vehicle', submenu: [
+								{ label: 'Car', click: () => this.createVehicleEntity( VehicleCategory.car ) },
+								// { label: 'Van', click: () => this.createVehicleEntity( VehicleCategory.van ) },
+								{ label: 'Truck', click: () => this.createVehicleEntity( VehicleCategory.truck ) },
+								// { label: 'Trailer', click: () => this.createVehicleEntity( VehicleCategory.trailer ) },
+								// { label: 'Semi Trailer', click: () => this.createVehicleEntity( VehicleCategory.semitrailer ) },
+								// { label: 'Bus', click: () => this.createVehicleEntity( VehicleCategory.bus ) },
+								// { label: 'Motorbike', click: () => this.createVehicleEntity( VehicleCategory.motorbike ) },
+							]
+						}
+					]
+				},
+			]
+		},
+		{
+			label: 'Show In Explorer',
+			click: () => this.showInExplorer()
+		},
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
@@ -540,11 +521,13 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 
-	createVehicleEntity (): void {
+	createVehicleEntity ( category: VehicleCategory = VehicleCategory.car ): void {
 
 		try {
 
-			AssetFactory.createVehicleEntity( this.folder.path );
+			const vehicle = VehicleFactory.createVehicle( category );
+
+			AssetFactory.createVehicleEntity( this.folder.path, vehicle );
 
 			this.refershFolder();
 

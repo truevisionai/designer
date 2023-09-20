@@ -71,7 +71,27 @@ export class VehicleFactory {
 
 	}
 
-	static createDefaultCar ( name?: string ): VehicleEntity {
+	static createVehicle ( category: VehicleCategory ): VehicleEntity {
+
+		switch ( category ) {
+
+			case VehicleCategory.car:
+				return this.createDefaultCar()
+				break;
+
+			case VehicleCategory.truck:
+				return this.createDefaultTruck()
+				break;
+
+			default:
+				return this.createDefaultCar()
+				break;
+
+		}
+
+	}
+
+	static createDefaultCar ( name?: string, category = VehicleCategory.car ): VehicleEntity {
 
 		const vehicleName = name || this.entityId.getUniqueName( 'Vehicle' );
 
@@ -87,10 +107,34 @@ export class VehicleFactory {
 			new TvAxle( 0.523598775598, 0.8, 1.68, 0, 0.4 ),
 		);
 
-		const vehicleEntity = new VehicleEntity( vehicleName, VehicleCategory.car, boundingBox, performance, axles );
+		const vehicleEntity = new VehicleEntity( vehicleName, category, boundingBox, performance, axles );
 
 		vehicleEntity.setController( new DefaultVehicleController( 'DefaultVehicleController', vehicleEntity ) );
 
 		return vehicleEntity;
+	}
+
+	static createDefaultTruck ( name?: string, category = VehicleCategory.truck ): VehicleEntity {
+
+		const vehicleName = name || this.entityId.getUniqueName( 'Truck' );
+
+		const boundingBox = new TvBoundingBox(
+			new Vector3( 1.3, 0.0, 0.75 ),
+			new TvDimension( 1.8, 4.5, 1.5 )
+		);
+
+		const performance = new TvPerformance( 69, 5, 10 );
+
+		const axles = new TvAxles(
+			new TvAxle( 0.523598775598, 0.8, 1.68, 2.98, 0.4 ),
+			new TvAxle( 0.523598775598, 0.8, 1.68, 0, 0.4 ),
+		);
+
+		const vehicleEntity = new VehicleEntity( vehicleName, category, boundingBox, performance, axles );
+
+		vehicleEntity.setController( new DefaultVehicleController( 'DefaultVehicleController', vehicleEntity ) );
+
+		return vehicleEntity;
+
 	}
 }

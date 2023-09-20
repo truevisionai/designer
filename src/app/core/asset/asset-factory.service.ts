@@ -14,7 +14,6 @@ import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-mark
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
 import { MetadataFactory } from '../factories/metadata-factory.service';
-import { VehicleFactory } from '../factories/vehicle.factory';
 import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../services/app.service';
 
@@ -136,11 +135,9 @@ export class AssetFactory {
 
 	}
 
-	static createVehicleEntity ( path: string ) {
+	static createVehicleEntity ( path: string, vehicle: VehicleEntity ) {
 
 		try {
-
-			const vehicle = VehicleFactory.createDefaultCar();
 
 			const contents = JSON.stringify( vehicle.toJSON() );
 
