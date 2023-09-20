@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Mesh, Object3D } from 'three';
 import { GameObject } from '../game-object';
@@ -18,6 +18,7 @@ export class SceneService {
 	public static objects: Object3D[] = [];
 	public static sceneHelpers: Object3D[] = [];
 	public static renderer: THREE.WebGLRenderer;
+	public static changed = new EventEmitter();
 
 	constructor () {
 
@@ -89,6 +90,8 @@ export class SceneService {
 
 		this.objects.forEach( object => this.remove( object ) );
 
+		this.changed.emit();
+
 	}
 
 	static add ( object: Object3D, raycasting: boolean = true ): void {
@@ -98,6 +101,8 @@ export class SceneService {
 		this.scene.add( object );
 
 		if ( raycasting ) this.objects.push( object );
+
+		this.changed.emit();
 
 	}
 
@@ -134,6 +139,8 @@ export class SceneService {
 				}
 			}
 		}
+
+		this.changed.emit();
 	}
 
 	static reset (): void {
@@ -149,6 +156,8 @@ export class SceneService {
 		}
 
 		this.objects = [];
+
+		this.changed.emit();
 	}
 
 	static select ( object: Object3D ): void {

@@ -43,6 +43,7 @@ import { ProjectBreadcrumbsComponent } from './project-browser/project-breadcrum
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
 import { ProjectHierarchyComponent } from './project-browser/project-hierarchy/project-hierarchy.component';
 import { ToolBarComponent } from './tool-bar/tool-bar.component';
+import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.component';
 
 @NgModule( {
 	declarations: [
@@ -59,7 +60,8 @@ import { ToolBarComponent } from './tool-bar/tool-bar.component';
 		ExportGlbDialog,
 		ExportOpenDriveDialog,
 		ConsoleComponent,
-		TutorialsDialogComponent
+		TutorialsDialogComponent,
+		SceneHierarchyComponent,
 	],
 	imports: [
 		CommonModule,
