@@ -75,6 +75,16 @@ export class EsminiPlayerService {
 			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'odrviewer'
 		);
 
+		try {
+
+			this.fileService.fs.chmodSync( defaultPath, '755' );
+
+		} catch (error) {
+
+			TvConsole.error( 'Error changing permissions for odrviewer' );
+
+		}
+
 		const binPath = this.editor.settings.odrViewerPath || defaultPath;
 
 		if ( !binPath || binPath == '' ) TvConsole.error( 'Please set the ODR Viewer path in settings' );
@@ -113,6 +123,16 @@ export class EsminiPlayerService {
 		const defaultPath = this.fileService.join(
 			this.fileService.exeDirectory, 'esmini', this.electronService.platform, 'esmini'
 		);
+
+		try {
+
+			this.fileService.fs.chmodSync( defaultPath, '755' );
+
+		} catch (error) {
+
+			TvConsole.error( 'Error changing permissions for esmini' );
+
+		}
 
 		const binPath = this.editor.settings.esminiPath || defaultPath;
 
