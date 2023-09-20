@@ -17,6 +17,9 @@ import { TvConsole } from '../../../core/utils/console';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { FileNode } from './file-node.model';
 import { ProjectBrowserService } from './project-browser.service';
+import { ContextMenuType, MenuService } from 'app/services/menu.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { TvElectronService } from 'app/services/tv-electron.service';
 
 // const DOCUMENT_PATH = '/home/himanshu/Documents/Truevision/';
 
@@ -169,7 +172,7 @@ export class DynamicDataSource {
 } )
 export class ProjectBrowserComponent implements OnInit {
 
-	selectedFolder: FileNode;
+	folder: FileNode;
 
 	treeControl = new NestedTreeControl<FileNode>( ( node: FileNode ) => {
 		if ( node.type === 'directory' ) {
@@ -189,6 +192,8 @@ export class ProjectBrowserComponent implements OnInit {
 		private projectBrowser: ProjectBrowserService,
 		private importer: ImporterService,
 		private appRef: ApplicationRef,
+		private menuService: MenuService,
+		private electron: TvElectronService,
 		private dialogFactory: DialogFactory		// dont remove, needed to load dialog components
 	) {
 
@@ -210,9 +215,9 @@ export class ProjectBrowserComponent implements OnInit {
 
 	onFolderChanged ( node: FileNode ) {
 
-		this.selectedFolder = node;
+		this.folder = node;
 
-		this.files = this.selectedFolder.sub_files( this.fileService );
+		this.files = this.folder.sub_files( this.fileService );
 
 	}
 
@@ -229,7 +234,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	onClick ( node: FileNode ) {
 
-		this.selectedFolder = node;
+		this.folder = node;
 
 	}
 
@@ -273,8 +278,8 @@ export class ProjectBrowserComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		const folderPath = this.selectedFolder ?
-			this.selectedFolder.path :
+		const folderPath = this.folder ?
+			this.folder.path :
 			this.fileService.projectFolder;
 
 		for ( let i = 0; i < $event.dataTransfer.files.length; i++ ) {
@@ -285,9 +290,9 @@ export class ProjectBrowserComponent implements OnInit {
 
 		}
 
-		if ( this.selectedFolder ) {
+		if ( this.folder ) {
 
-			this.files = this.selectedFolder.sub_files( this.fileService );
+			this.files = this.folder.sub_files( this.fileService );
 
 			this.appRef.tick();
 
@@ -323,7 +328,7 @@ export class ProjectBrowserComponent implements OnInit {
 				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension )
 					?.afterClosed()
 					.subscribe( () => {
-						this.onFolderChanged( this.selectedFolder );
+						this.onFolderChanged( this.folder );
 					} );
 				break;
 
@@ -351,7 +356,7 @@ export class ProjectBrowserComponent implements OnInit {
 				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension )
 					?.afterClosed()
 					.subscribe( () => {
-						this.onFolderChanged( this.selectedFolder );
+						this.onFolderChanged( this.folder );
 					} );
 				break;
 
@@ -368,7 +373,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			MetadataFactory.createMetadata( file.name, extension, destinationPath );
 
-			this.onFolderChanged( this.selectedFolder );
+			this.onFolderChanged( this.folder );
 
 		}
 
@@ -392,5 +397,195 @@ export class ProjectBrowserComponent implements OnInit {
 			SnackBar.error( error );
 
 		}
+	}
+
+	onContextMenu ( $event, selectedNode?: FileNode ) {
+
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [
+			{
+				label: 'New',
+				submenu: [
+					{ label: 'Scene', click: () => this.createNewScene() },
+					{ label: 'Folder', click: () => this.createNewFolder() },
+					{ label: 'Material', click: () => this.createNewMaterial() },
+					{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
+					{
+						label: 'Entity', submenu: [
+							{ label: 'Vehicle', click: () => this.createVehicleEntity() }
+						]
+					},
+					// { label: 'Prop Set' },
+					// { label: 'Extrusion Style' },
+					// { label: 'Post Style' },
+					// { label: 'Sign', click: () => this.createNewSign() },
+					// { label: 'Crosswalk Marking' },
+					// { label: 'Lane Marking' },
+					// { label: 'Polygon Marking' },
+				]
+			},
+			// {
+			//     label: 'Delete',
+			//     click: () => this.deleteNode( selectedNode ),
+			//     enabled: selectedNode ? true : false
+			// },
+			// {
+			//     label: 'Rename',
+			//     click: () => this.renameNode( selectedNode ),
+			//     enabled: selectedNode ? true : false
+			// },
+			// {
+			//     label: 'Duplicate',
+			//     click: () => { console.log( "add vehiclie" ) },
+			//     enabled: selectedNode ? true : false
+			// },
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
+			// {
+			//     label: 'Reimport',
+			//     click: () => this.reimport( selectedNode )
+			// },
+			// {
+			//     label: 'Reimport All',
+			//     click: () => this.reimportAll()
+			// },
+		] );
+
+		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
+	}
+
+
+	createNewScene () {
+
+		try {
+
+			AssetFactory.createNewScene( this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	createNewFolder () {
+
+		try {
+
+			AssetFactory.createNewFolder( this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	createNewMaterial () {
+
+		try {
+
+			AssetFactory.createNewMaterial( this.folder.path, 'NewMaterial' );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	createNewSign () {
+
+		try {
+
+			AssetFactory.createNewSign( 'NewSign', this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+	createNewRoadMarking (): void {
+
+		try {
+
+			AssetFactory.createNewRoadMarking( this.folder.path, 'NewRoadMarking' );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+
+	createVehicleEntity (): void {
+
+		try {
+
+			AssetFactory.createVehicleEntity( this.folder.path );
+
+			this.refershFolder();
+
+		} catch ( error ) {
+
+			SnackBar.error( error );
+
+		}
+
+	}
+
+
+	refershFolder () {
+
+		this.files = this.folder.sub_files( this.fileService );
+
+		this.appRef.tick();
+
+	}
+
+	showInExplorer (): void {
+
+		try {
+
+			const selectedFile = this.files.find( file => file.isSelected === true );
+
+			if ( selectedFile ) {
+
+				this.electron.shell.showItemInFolder( selectedFile.path );
+
+			} else {
+
+				this.electron.shell.openPath( this.folder.path );
+
+			}
+
+		} catch ( error ) {
+
+			SnackBar.error( 'Some error occurred' );
+
+		}
+
 	}
 }
