@@ -75,7 +75,7 @@ export class TvMapBuilder {
 
 		}
 
-		this.roadMarkBuilder.buildRoad( road );
+		//this.roadMarkBuilder.buildRoad( road );
 
 		TvSignalHelper.create( road );
 
@@ -173,6 +173,9 @@ export class TvMapBuilder {
 
 	static makeLaneVertices ( sCoordinate: number, pos: TvPosTheta, lane: TvLane, road: TvRoad, cumulativeWidth: number, laneSectionS: number ) {
 
+		let vv1: Vertex;
+		let vv2: Vertex;
+
 		const width = lane.getWidthValue( laneSectionS );
 		const height = lane.getHeightValue( laneSectionS );
 
@@ -185,20 +188,40 @@ export class TvMapBuilder {
 		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z );
 		v1.uvs = new Vector2( 0, sCoordinate );
 
+		if ( height.getInner() > 0 ) {
+			vv1 = new Vertex();
+			const p1X = cosHdgPlusPiO2 * cumulativeWidth;
+			const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
+			vv1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z + height.getInner() );
+			vv1.uvs = new Vector2( height.getInner(), sCoordinate );
+		}
+
 		const v2 = new Vertex();
 		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
 		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.getOuter() );
-		v2.uvs = new Vector2( width + height.getOuter(), sCoordinate );
+		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z );
+		v2.uvs = new Vector2( height.getInner() + width, sCoordinate );
+
+		if ( height.getOuter() > 0 ) {
+			vv2 = new Vertex();
+			const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
+			const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
+			vv2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.getOuter() );
+			vv2.uvs = new Vector2( height.getInner() + width + height.getOuter(), sCoordinate );
+		}
 
 		if ( lane.side == TvLaneSide.RIGHT ) {
 
 			this.addVertex( lane.meshData, v1 );
+			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
+			if ( vv2 ) this.addVertex( lane.meshData, vv2 );
 			this.addVertex( lane.meshData, v2 );
 
 		} else {
 
 			this.addVertex( lane.meshData, v2 );
+			if ( vv2 ) this.addVertex( lane.meshData, vv2 );
+			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
 			this.addVertex( lane.meshData, v1 );
 
 		}
@@ -215,23 +238,58 @@ export class TvMapBuilder {
 	}
 
 
-	static createMeshIndices ( geom: MeshGeometryData ): void {
+	static createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
 
-		let index = 0;
-
-		for ( let i = 0; i < ( geom.indices.length / 2 ) - 1; i++ ) {
-
-			geom.triangles.push( index );
-			geom.triangles.push( index + 1 );
-			geom.triangles.push( index + 2 );
-
-			geom.triangles.push( index + 1 );
-			geom.triangles.push( index + 3 );
-			geom.triangles.push( index + 2 );
-
-			index += 2;
+		if ( verticesPerStep < 2 ) {
+			throw new Error( "verticesPerStep should be at least 2" );
 		}
+
+		for ( let i = 0; i < geom.indices.length / verticesPerStep - 1; i++ ) {
+
+			// This loop creates triangles for every consecutive pair of vertices
+			// within a step and between two consecutive steps.
+			for ( let j = 0; j < verticesPerStep - 1; j++ ) {
+
+				let index1 = i * verticesPerStep + j;
+				let index2 = i * verticesPerStep + j + 1;
+				let index3 = ( i + 1 ) * verticesPerStep + j;
+				let index4 = ( i + 1 ) * verticesPerStep + j + 1;
+
+				geom.triangles.push( index1, index2, index3 );
+				geom.triangles.push( index2, index4, index3 );
+			}
+		}
+
 	}
+
+
+	// Note: Experimental
+	// // for single mesh
+	// static createMeshIndicesMultiple ( geom: MeshGeometryData, rows: number, cols: number ): void {
+	// 	// Note that rows and cols are the number of vertices in each direction
+	// 	// So for a 4x4 grid, rows=4 and cols=4
+
+	// 	for ( let i = 0; i < rows - 1; i++ ) {         // iterate through rows
+	// 		for ( let j = 0; j < cols - 1; j++ ) {     // iterate through columns
+
+	// 			// Calculate base index for the current quad
+	// 			let index = i * cols + j;
+
+	// 			// Create two triangles for the current quad
+
+	// 			// Triangle 1
+	// 			geom.triangles.push( index );          // bottom-left
+	// 			geom.triangles.push( index + 1 );      // bottom-right
+	// 			geom.triangles.push( index + cols );   // top-left
+
+	// 			// Triangle 2
+	// 			geom.triangles.push( index + 1 );      // bottom-right
+	// 			geom.triangles.push( index + cols + 1 ); // top-right
+	// 			geom.triangles.push( index + cols );   // top-left
+	// 		}
+	// 	}
+	// }
+
 
 	static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
 
@@ -249,7 +307,14 @@ export class TvMapBuilder {
 
 	private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
 
-		this.createMeshIndices( lane.meshData );
+		let perStep = 2;
+
+		if ( lane.height.length > 0 ) {
+			if ( lane.height[ 0 ].inner > 0 ) perStep++;
+			if ( lane.height[ 0 ].outer > 0 ) perStep++;
+		}
+
+		this.createMeshIndices( lane.meshData, perStep );
 
 		const geometry = new BufferGeometry();
 
