@@ -5,12 +5,15 @@
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/core/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { BufferAttribute, Mesh, MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Vector2 } from 'three';
+import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
+import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { SerializedField } from 'app/core/components/serialization';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 
-export class TvSurface {
+export class TvSurface implements ISelectable {
 
 	public static readonly tag = 'surface';
 
@@ -20,18 +23,72 @@ export class TvSurface {
 
 	public id: number;
 
-	public textureDensity = 100;
+	@SerializedField( { type: 'float' } )
+	public get textureDensity () {
+		return this._textureDensity;
+	}
+
+	public set textureDensity ( value ) {
+		this._textureDensity = value;
+		this.update();
+	}
 
 	constructor (
-		public materialGuid: string,
-		public spline: CatmullRomSpline,
-		public offset: Vector2 = new Vector2( 0, 0 ),
-		public scale: Vector2 = new Vector2( 1, 1 ),
-		public rotation: number = 0.0,
-		public height: number = 0.0
+		private _materialGuid: string,
+		private _spline: CatmullRomSpline,
+		private _offset: Vector2 = new Vector2( 0, 0 ),
+		private _repeat: Vector2 = new Vector2( 1, 1 ),
+		private _rotation: number = 0.0,
+		private _height: number = 0.0,
+		private _textureDensity: number = 1
 	) {
-
 		this.init();
+	}
+
+	@SerializedField( { type: 'material' } )
+	get materialGuid () { return this._materialGuid; }
+
+	set materialGuid ( value: string ) {
+		this._materialGuid = value;
+		this.mesh.material = AssetDatabase.getInstance( value );
+	}
+
+	get spline () { return this._spline; }
+
+	set spline ( value: any ) { this._spline = value; this.update() }
+
+	@SerializedField( { type: 'vector2' } )
+	get offset () { return this._offset; }
+
+	set offset ( value: any ) { this._offset = value; this.update() }
+
+	@SerializedField( { type: 'vector2' } )
+	get repeat () { return this._repeat; }
+
+	set repeat ( value: any ) { this._repeat = value; this.update() }
+
+	@SerializedField( { type: 'float' } )
+	get rotation () { return this._rotation; }
+
+	set rotation ( value: any ) { this._rotation = value; this.update() }
+
+	@SerializedField( { type: 'float' } )
+	get height () { return this._height; }
+
+	set height ( value: any ) { this._height = value; this.update() }
+
+	isSelected: boolean;
+
+	select (): void {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	unselect (): void {
+
+		console.error( 'Method not implemented.' );
+
 	}
 
 	init (): void {
@@ -114,13 +171,24 @@ export class TvSurface {
 
 		const geometry = new ShapeGeometry( shape );
 
-		const texture = OdTextures.terrain.clone();
-		texture.wrapS = texture.wrapT = RepeatWrapping;
-		texture.repeat.set( 0.008, 0.008 );
-		texture.anisotropy = 16;
-		texture.encoding = sRGBEncoding;
+		let groundMaterial;
 
-		const groundMaterial = new MeshLambertMaterial( { map: texture } );
+		if ( this.materialGuid === undefined ) {
+
+			const texture = OdTextures.terrain.clone();
+			texture.wrapS = texture.wrapT = RepeatWrapping;
+			texture.offset.copy( this.offset );
+			texture.repeat.copy( this.repeat );
+			texture.anisotropy = 16;
+			texture.encoding = sRGBEncoding;
+
+			groundMaterial = new MeshLambertMaterial( { map: texture } );
+
+		} else {
+
+			groundMaterial = AssetDatabase.getInstance( this.materialGuid );
+
+		}
 
 		const mesh = new GameObject( 'Surface', geometry, groundMaterial );
 
@@ -129,8 +197,6 @@ export class TvSurface {
 		mesh.Tag = TvSurface.tag;
 
 		mesh.userData.surface = this;
-
-		groundMaterial.map.needsUpdate = true;
 
 		return mesh;
 	}
@@ -226,8 +292,8 @@ export class TvSurface {
 				attr_y: this.offset.y,
 			},
 			scale: {
-				attr_x: this.scale.x,
-				attr_y: this.scale.y,
+				attr_x: this.repeat.x,
+				attr_y: this.repeat.y,
 			},
 			spline: {
 				attr_type: this.spline.type,
@@ -252,4 +318,34 @@ export class TvSurface {
 		this.hideCurve();
 		this.hideControlPoints();
 	}
+}
+
+export class SurfaceFactory {
+
+	static createFromTextureGuid ( textureGuid: string, position: Vector3 ) {
+
+		const texture = AssetDatabase.getInstance<Texture>( textureGuid );
+
+		if ( !texture ) return;
+
+		const material = new MeshStandardMaterial( { map: texture } );
+
+		const textureSize = new Vector2( texture.image.width, texture.image.height );
+
+		const spline = new CatmullRomSpline( true, 'catmullrom', 0 );
+		spline.addControlPoint( AnyControlPoint.create( 'p1', position.clone().add( new Vector3( 0, 0, 0 ) ) ) );
+		spline.addControlPoint( AnyControlPoint.create( 'p2', position.clone().add( new Vector3( textureSize.x, 0, 0 ) ) ) );
+		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
+		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
+
+		spline.controlPoints.forEach( cp => SceneService.add( cp ) );
+
+		const surface = new TvSurface( null, spline );
+
+		surface.mesh.material = material;
+		surface.mesh.material.needsUpdate = true;
+
+		return surface
+	}
+
 }
