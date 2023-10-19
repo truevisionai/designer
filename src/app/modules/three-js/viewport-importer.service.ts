@@ -19,9 +19,13 @@ import { PropManager } from 'app/services/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { BufferGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
 import { TvMesh } from './objects/tv-prefab.model';
+import { SurfaceFactory, TvSurface } from '../tv-map/models/tv-surface.model';
+import { SurfaceTool } from 'app/core/tools/surface/surface-tool';
+import { ToolFactory } from 'app/core/factories/tool-factory';
+import { ToolType } from 'app/core/models/tool-types.enum';
 
 @Injectable( {
 	providedIn: 'root'
@@ -82,6 +86,14 @@ export class ViewportImporterService {
 				// alert( 'import prop ' + path );
 				break;
 
+			// case 'jpg':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
+
+			// case 'png':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
+
 			case 'scene':
 				this.importerService.importScene( data.path );
 				break;
@@ -97,6 +109,16 @@ export class ViewportImporterService {
 		}
 
 	}
+
+	// importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
+
+		// const surface = SurfaceFactory.createFromTextureGuid( metadata.guid, position );
+
+		// if ( !surface ) return;
+
+		// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
+
+	// }
 
 	importGeometry ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
 
@@ -173,7 +195,7 @@ export class ViewportImporterService {
 
 		} else {
 
-			ToolManager.currentTool = new PropPointTool();
+			ToolManager.currentTool = ToolFactory.createTool( ToolType.PropPoint );
 
 			// ( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
 
