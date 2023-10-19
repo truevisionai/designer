@@ -86,13 +86,13 @@ export class ViewportImporterService {
 				// alert( 'import prop ' + path );
 				break;
 
-			case 'jpg':
-				this.importTexture( data.path, filename, data.extension, position, metadata );
-				break;
+			// case 'jpg':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
 
-			case 'png':
-				this.importTexture( data.path, filename, data.extension, position, metadata );
-				break;
+			// case 'png':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
 
 			case 'scene':
 				this.importerService.importScene( data.path );
@@ -110,7 +110,7 @@ export class ViewportImporterService {
 
 	}
 
-	importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
+	// importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
 
 		// const surface = SurfaceFactory.createFromTextureGuid( metadata.guid, position );
 
@@ -118,7 +118,7 @@ export class ViewportImporterService {
 
 		// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
 
-	}
+	// }
 
 	importGeometry ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
 

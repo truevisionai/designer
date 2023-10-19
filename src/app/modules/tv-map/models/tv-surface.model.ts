@@ -117,8 +117,6 @@ export class TvSurface implements ISelectable {
 
 	update (): void {
 
-		console.log( 'Updating surface' );
-
 		this.spline.update();
 
 		// minimum 3 points are required to create a surface
