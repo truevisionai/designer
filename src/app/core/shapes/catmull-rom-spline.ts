@@ -10,15 +10,13 @@ import { AbstractSpline } from './abstract-spline';
 
 export class CatmullRomSpline extends AbstractSpline {
 
-	public type: string = 'catmullrom';
-
 	public curveType: string = 'curve';
 
 	public curve: CatmullRomCurve3;
 
 	public mesh: Line;
 
-	constructor ( closed = true, type = 'catmullrom', tension = 0.5 ) {
+	constructor ( closed = true, public type = 'catmullrom', tension = 0.5 ) {
 
 		super( closed, tension );
 

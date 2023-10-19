@@ -7,7 +7,7 @@ import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CommandHistory } from 'app/services/command-history';
 import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';
-import { IToolWithPoint } from '../../commands/select-point-command';
+import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from '../../commands/select-point-command';
 import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
@@ -18,37 +18,59 @@ import { SelectSurfaceCommand } from './select-surface-command';
 import { SelectSurfacePointCommand } from './select-surface-point-command';
 import { UnselectSurfaceCommand } from './unselect-surface-command';
 import { UpdateSurfacePointCommand } from './update-surface-point-command';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 
-export class SurfaceTool extends BaseTool implements IToolWithPoint {
+export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
 	public name: string = 'SurfaceTool';
+
 	public toolType = ToolType.Surface;
 
+	public surface: TvSurface;
+
 	public point: DynamicControlPoint<TvSurface>;
+
 	private pointUpdated: boolean;
+
+	private selectStrategy: SelectStrategy<TvSurface>;
+
+	private pointStrategy: SelectStrategy<DynamicControlPoint<TvSurface>>;
 
 	constructor () {
 
 		super();
 
+		this.selectStrategy = new ObjectUserDataStrategy( TvSurface.tag, 'surface' );
+
+		this.pointStrategy = new ControlPointStrategy();
 	}
 
-	public _surface: TvSurface;
+	setMainObject ( value: ISelectable ): void {
 
-	public get surface (): TvSurface {
-		return this._surface;
+		this.surface = value as TvSurface;
+
 	}
 
-	public set surface ( value: TvSurface ) {
-		this._surface = value;
+	getMainObject (): ISelectable {
+
+		return this.surface;
+
 	}
 
 	setPoint ( value: ISelectable ): void {
+
 		this.point = value as any;
+
 	}
 
 	getPoint (): ISelectable {
+
 		return this.point;
+
 	}
 
 	public init () {
@@ -74,44 +96,64 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 		this.map.hideSurfaceHelpers();
 
-
 		this.map.getRoads().forEach( road => {
 			road.hideCornerPoints();
 		} );
 	}
 
-	public onPointerDown ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !e.point || e.button != MouseButton.LEFT ) return;
+		if ( this.surface ) {
 
-		if ( KeyboardInput.isShiftKeyDown ) {
-
-			if ( this.surface ) {
-
-				CommandHistory.execute( new AddSurfacePointCommand( this, this.surface, e.point ) );
-
-			} else {
-
-				CommandHistory.execute( new CreateSurfaceCommand( this, e.point ) );
-			}
+			CommandHistory.execute( new AddSurfacePointCommand( this, this.surface, e.point ) );
 
 		} else {
 
-			if ( this.controlPointIsSelected( e ) ) return;
-
-			if ( this.surfaceIsSelected( e ) ) return;
-
-			if ( this.surface || this.point ) {
-
-				CommandHistory.execute( new UnselectSurfaceCommand( this ) );
-
-			}
+			CommandHistory.execute( new CreateSurfaceCommand( this, e.point ) );
 		}
+
 	}
 
-	public onPointerMoved ( e: PointerMoveData ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
-		if ( e.point && this.isPointerDown && this.point && this.point.isSelected ) {
+		const point = this.pointStrategy.onPointerDown( e );
+
+		if ( point ) {
+
+			if ( !this.point || this.point.uuid !== point.uuid ) {
+
+				CommandHistory.execute( new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject ) );
+
+			}
+
+			return;
+		}
+
+		const surface = this.selectStrategy.onPointerDown( e );
+
+		if ( surface ) {
+
+			if ( !this.surface || this.surface.id !== surface.id ) {
+
+				const command = new SelectMainObjectCommand( this, surface, DynamicInspectorComponent, surface );
+
+				CommandHistory.execute( command );
+
+			}
+
+			return;
+
+		}
+
+		CommandHistory.execute( new UnselectSurfaceCommand( this ) );
+
+	}
+
+	public onPointerMoved ( e: PointerEventData ) {
+
+		this.pointStrategy.onPointerMoved( e );
+
+		if ( this.isPointerDown && this.point && this.point.isSelected ) {
 
 			this.point.copyPosition( e.point );
 
@@ -125,12 +167,14 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 
 	public onPointerUp ( e: PointerEventData ) {
 
+		// const point = this.pointStrategy.onPointerMoved( e );
+
 		if ( this.point?.position && this.point.isSelected && this.pointUpdated && this.pointerDownAt ) {
 
 			const oldPosition = this.pointerDownAt.clone();
 			const newPosition = this.point.position.clone();
 
-			CommandHistory.execute( new UpdateSurfacePointCommand( this.point, newPosition, oldPosition ) );
+			CommandHistory.execute( new UpdatePositionCommand( this.point, newPosition, oldPosition ) );
 
 		}
 
@@ -139,41 +183,41 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint {
 	}
 
 
-	surfaceIsSelected ( e: PointerEventData ) {
+	// surfaceIsSelected ( e: PointerEventData ) {
 
-		const results = PickingHelper.findAllByTag( TvSurface.tag, e, this.map.gameObject.children, false );
+	// 	const results = PickingHelper.findAllByTag( TvSurface.tag, e, this.map.gameObject.children, false );
 
-		if ( results.length == 0 ) return false;
+	// 	if ( results.length == 0 ) return false;
 
-		const surface = results[ 0 ].userData.surface as TvSurface;
+	// 	const surface = results[ 0 ].userData.surface as TvSurface;
 
-		if ( !this.surface || this.surface.mesh.id !== surface.mesh.id ) {
+	// 	if ( !this.surface || this.surface.mesh.id !== surface.mesh.id ) {
 
-			CommandHistory.execute( new SelectSurfaceCommand( this, surface ) );
+	// 		CommandHistory.execute( new SelectSurfaceCommand( this, surface ) );
 
-		}
+	// 	}
 
-		return true;
+	// 	return true;
 
-	}
+	// }
 
-	controlPointIsSelected ( e: PointerEventData ) {
+	// controlPointIsSelected ( e: PointerEventData ) {
 
-		// const points = this.map.surfaces.flatMap(s => s.spline.controlPoints);
-		const points = this.map.surfaces.reduce( ( acc, s ) => acc.concat( s.spline.controlPoints ), [] );
+	// 	// const points = this.map.surfaces.flatMap(s => s.spline.controlPoints);
+	// 	const points = this.map.surfaces.reduce( ( acc, s ) => acc.concat( s.spline.controlPoints ), [] );
 
-		const point = PickingHelper.findByObjectType( 'Points', e, points, true );
+	// 	const point = PickingHelper.findByObjectType( 'Points', e, points, true );
 
-		if ( !point ) return false;
+	// 	if ( !point ) return false;
 
-		if ( !this.point || this.point.uuid !== point.uuid ) {
+	// 	if ( !this.point || this.point.uuid !== point.uuid ) {
 
-			CommandHistory.execute( new SelectSurfacePointCommand( this, point as DynamicControlPoint<TvSurface> ) );
+	// 		CommandHistory.execute( new SelectSurfacePointCommand( this, point as DynamicControlPoint<TvSurface> ) );
 
-		}
+	// 	}
 
-		return true;
+	// 	return true;
 
-	}
+	// }
 
 }
