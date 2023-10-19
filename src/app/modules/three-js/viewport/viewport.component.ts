@@ -263,19 +263,19 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleRightClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleRightClick ( event: MouseEvent, intersection: Intersection ) {
 
 		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
 	}
 
-	handleMiddleClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleMiddleClick ( event: MouseEvent, intersection: Intersection ) {
 
 		// do nothing
 
 	}
 
-	handleLeftClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleLeftClick ( event: MouseEvent, intersection: Intersection ) {
 
 		this.fireSelectionEvents();
 
