@@ -75,7 +75,7 @@ export class TvMapBuilder {
 
 		}
 
-		//this.roadMarkBuilder.buildRoad( road );
+		this.roadMarkBuilder.buildRoad( road );
 
 		TvSignalHelper.create( road );
 
