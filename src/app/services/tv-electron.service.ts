@@ -34,6 +34,10 @@ export class TvElectronService {
 		return !!window.navigator.userAgent.match( /Electron/ );
 	}
 
+	get isPackaged (): boolean {
+		return this.isElectronApp && this.electron.app.isPackaged;
+	}
+
 	get isMacOS (): boolean {
 		return this.isElectronApp && process.platform === 'darwin';
 	}
@@ -78,8 +82,8 @@ export class TvElectronService {
 		return this.electron ? this.electron.crashReporter : null;
 	}
 
-	get process (): any {
-		return this.electron ? this.electron.remote.process : null;
+	get platform (): any {
+		return this.isElectronApp ? process.platform : new Error( 'Unknown platform ' + process.platform );
 	}
 
 	get nativeImage (): typeof Electron.nativeImage {

@@ -1,4 +1,4 @@
-const { contextBridge } = require( 'electron' )
+const { contextBridge, ipcRenderer } = require( 'electron' )
 const remote = require( '@electron/remote' )
 const fs = require( 'fs' )
 
@@ -15,6 +15,7 @@ const statHelper = {
 
 contextBridge.exposeInMainWorld( 'versions', {
 	currentDirectory: __dirname,
+	exeDirectory: () => ipcRenderer.sendSync( 'get-installation-dir' ),
 	remote: () => remote,
 	setTitle: ( name ) => remote.getCurrentWindow().setTitle( name ),
 	fs: () => fs,

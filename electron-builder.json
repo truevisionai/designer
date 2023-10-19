@@ -24,13 +24,18 @@
 			"default-project",
 			"app-update.yml"
 		],
-		"extraFiles": [],
 		"linux": {
 			"category": "Utility",
-			"target": "AppImage"
+			"target": "AppImage",
+			"extraFiles": [
+				"esmini/linux"
+			]
 		},
 		"win": {
-			"target": "nsis"
+			"target": "nsis",
+			"extraFiles": [
+				"esmini/win32"
+			]
 		},
 		"nsis": {
 			"oneClick": false,
