@@ -9,16 +9,13 @@ import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls'
 import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/shared/utils/colors.service';
 import {
-	AmbientLight,
 	BoxGeometry,
 	Color,
-	DirectionalLight,
 	Mesh,
 	MeshBasicMaterial,
 	Object3D,
 	PerspectiveCamera,
 	Scene,
-	WebGLRenderer
 } from 'three';
 import { PreviewService } from './object-preview.service';
 
@@ -29,12 +26,16 @@ import { PreviewService } from './object-preview.service';
 } )
 export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	public static renderer: WebGLRenderer;
 	@Input() path: string;
+
 	@Input() guid: string;
+
 	@Input() object: Object3D;
+
 	@Input() objectType: 'default' | 'model' | 'material' | 'roadstyle' = 'default';
+
 	@ViewChild( 'viewport' ) viewportRef: ElementRef;
+
 	public frameId: number;
 
 	public scene: Scene = new Scene;
@@ -50,7 +51,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement> this.viewportRef.nativeElement;
+		return <HTMLCanvasElement>this.viewportRef.nativeElement;
 	}
 
 	get width (): number {
@@ -63,22 +64,6 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 	ngOnInit () {
 
-		if ( !ObjectPreviewComponent.renderer ) {
-
-			const options = {
-				alpha: false,
-				antialias: true,
-				precision: 'highp',
-				stencil: false
-			};
-
-			ObjectPreviewComponent.renderer = new WebGLRenderer( options );
-			ObjectPreviewComponent.renderer.setPixelRatio( window.devicePixelRatio );
-			ObjectPreviewComponent.renderer.setClearColor( 0xffffff, 1 );
-			ObjectPreviewComponent.renderer.autoClear = true;
-
-		}
-
 		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
 
 		this.camera.position.set( 0, 5, 10 );
@@ -87,7 +72,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.camera.updateProjectionMatrix();
 
-		this.addDirectionLight();
+		this.previewService.createLights( this.scene );
 
 	}
 
@@ -95,7 +80,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
-		this.canvas.appendChild( ObjectPreviewComponent.renderer.domElement );
+		this.canvas.appendChild( this.previewService.renderer.domElement );
 
 		switch ( this.objectType ) {
 
@@ -176,12 +161,9 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		}
 
 		this.camera = new PerspectiveCamera( 75, 200 / 100, 0.1, 1000 );
+
 		this.camera.position.z = 5;
 
-		// this.controls = new EditorControls( this.camera, ObjectPreviewComponent.renderer.domElement );
-		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
-
-		// console.log( this.width, this.height, this.canvas.clientWidth, this.canvas.clientHeight );
 	}
 
 
@@ -190,11 +172,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		// this seems a faster want to call render function
 		this.frameId = requestAnimationFrame( this.render );
 
-		// this.frameId = requestAnimationFrame( () => {
-		//     this.render();
-		// } );
-
-		ObjectPreviewComponent.renderer.render( this.scene, this.camera );
+		this.previewService.renderer.render( this.scene, this.camera );
 
 		this.controls.update();
 	}
@@ -208,7 +186,7 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 
 	setCanvasSize () {
 
-		const container = ObjectPreviewComponent.renderer.domElement.parentElement;
+		const container = this.previewService.renderer.domElement.parentElement;
 
 		const box = container.getBoundingClientRect();
 
@@ -217,27 +195,12 @@ export class ObjectPreviewComponent implements OnInit, AfterViewInit, OnDestroy 
 		// take 75% of the width to maintain 4:3 aspect ratio
 		const height = width ? width * 0.75 : 300; // container.clientHeight;
 
-		ObjectPreviewComponent.renderer.setViewport( -box.left, -box.top, width, height );
-		ObjectPreviewComponent.renderer.setSize( width, height );
+		this.previewService.renderer.setViewport( -box.left, -box.top, width, height );
+		this.previewService.renderer.setSize( width, height );
 
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
 
 	}
 
-	addDirectionLight () {
-
-		const directionaLight = new DirectionalLight( 0xffffff, 1 );
-
-		directionaLight.position.set( 5, 10, 7.5 );
-
-		this.scene.add( directionaLight );
-
-		this.scene.add( directionaLight.target );
-
-		const ambientLight = new AmbientLight( 0xE6E6E6, 1 );
-
-		this.scene.add( ambientLight );
-
-	}
 }
