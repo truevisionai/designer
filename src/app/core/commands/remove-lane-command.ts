@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MapEvents } from 'app/events/map-events';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { BaseCommand } from './base-command';
@@ -22,7 +23,6 @@ export class RemoveLaneCommand extends BaseCommand {
 
 		this.laneSection.removeLaneById( this.lane.id );
 
-		this.buildRoad( this.laneSection.road );
 
 	}
 
@@ -30,15 +30,13 @@ export class RemoveLaneCommand extends BaseCommand {
 
 		this.laneSection.addLaneInstance( this.lane, true );
 
-		this.buildRoad( this.laneSection.road );
+		MapEvents.laneCreated.emit( this.lane );
 
 	}
 
 	redo (): void {
 
 		this.laneSection.removeLaneById( this.lane.id );
-
-		this.buildRoad( this.laneSection.road );
 
 	}
 

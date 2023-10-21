@@ -6,10 +6,10 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
-import { RoadFactory } from '../factories/road-factory.service';
 import { TvConsole } from '../utils/console';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
+import { MapEvents } from 'app/events/map-events';
 
 export class DuplicateLaneCommand extends BaseCommand {
 
@@ -36,6 +36,8 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 		this.laneSection?.addLaneInstance( this.newLane, true );
 
+		MapEvents.laneCreated.emit( this.newLane );
+
 		this.rebuild();
 
 		this.setInspectorCommand.execute();
@@ -54,6 +56,8 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 		this.laneSection?.addLaneInstance( this.newLane, true );
 
+		MapEvents.laneCreated.emit( this.newLane );
+
 		this.rebuild();
 
 		this.setInspectorCommand.redo();
@@ -62,8 +66,6 @@ export class DuplicateLaneCommand extends BaseCommand {
 	rebuild (): void {
 
 		if ( this.laneSection ) {
-
-			RoadFactory.rebuildRoad( this.laneSection.road );
 
 			this.laneSection.road?.hideHelpers();
 
