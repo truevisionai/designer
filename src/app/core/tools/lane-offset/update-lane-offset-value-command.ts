@@ -8,6 +8,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
 import { BaseCommand } from '../../commands/base-command';
 import { SceneService } from '../../services/scene.service';
+import { MapEvents } from 'app/events/map-events';
 
 export class UpdateLaneOffsetValueCommand extends BaseCommand {
 
@@ -47,9 +48,7 @@ export class UpdateLaneOffsetValueCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		MapEvents.roadUpdated.emit( this.node.road );
 
 		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 

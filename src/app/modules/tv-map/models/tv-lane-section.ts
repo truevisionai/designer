@@ -290,6 +290,8 @@ export class TvLaneSection {
 
 		// Remove first element of array
 		this.laneArray.shift();
+
+		return this;
 	}
 
 	/**
@@ -299,6 +301,8 @@ export class TvLaneSection {
 
 		// Remove last element of array
 		this.laneArray.pop();
+
+		return this;
 	}
 
 	getLastLane (): TvLane {

@@ -13,23 +13,20 @@ import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { Intersection, Vector3 } from 'three';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../../models/tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { CreateControlPointCommand } from './create-control-point-command';
 import { CreateRoadCommand } from './create-road-command';
 import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
+import { RoadManager } from "../../../services/road-manager";
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -49,6 +46,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	constructor () {
 
 		super();
+
+		RoadManager.instance.init();
 
 		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
@@ -81,10 +80,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		this.map.getRoads()
 			.filter( road => !road.isJunction )
-			.forEach( road => {
-				road.updateRoadNodes();
-				road.showNodes();
-			} );
+			.forEach( road => RoadManager.instance.showNodes( road ) );
 
 	}
 

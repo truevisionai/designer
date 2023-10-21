@@ -58,7 +58,14 @@ export class TvMapBuilder {
 
 	}
 
-	static buildRoad ( parent: GameObject, road: TvRoad ): any {
+	/**
+	 *
+	 * @param parent
+	 * @param road
+	 * @param buildJunctions
+	 * @deprecated
+	 */
+	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): any {
 
 		road.gameObject = null;
 		road.gameObject = new GameObject( 'Road:' + road.id );
@@ -83,12 +90,24 @@ export class TvMapBuilder {
 
 	}
 
-	static rebuildRoad ( road: TvRoad ): any {
+	/**
+	 *
+	 * @param road
+	 * @param buildJunctions
+	 * @deprecated
+	 */
+	static rebuildRoad ( road: TvRoad, buildJunctions = true ): any {
 
-		this.buildRoad( TvMapInstance.map.gameObject, road );
+		this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
 
 	}
 
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @deprecated
+	 */
 	static buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
 
 		laneSection.gameObject = null;
@@ -350,5 +369,11 @@ export class TvMapBuilder {
 		lane.gameObject.userData.lane = lane;
 
 		laneSection.gameObject.add( lane.gameObject );
+	}
+
+	static removeRoad ( gameObject: GameObject, road: TvRoad ) {
+
+		gameObject.remove( road.gameObject );
+
 	}
 }

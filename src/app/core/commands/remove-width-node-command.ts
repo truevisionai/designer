@@ -11,6 +11,7 @@ import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
+import { MapEvents } from 'app/events/map-events';
 
 export class RemoveWidthNodeCommand extends BaseCommand {
 
@@ -69,9 +70,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		MapEvents.laneUpdated.emit( this.node.lane );
 
 		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 	}

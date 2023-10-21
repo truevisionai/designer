@@ -46,6 +46,7 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
+import { MapEvents } from 'app/events/map-events';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -472,6 +473,8 @@ export class TvRoad {
 
 		this.laneSections.push( laneSection );
 
+		this.sortLaneSections();
+
 		this.computeLaneSectionLength();
 	}
 
@@ -489,13 +492,38 @@ export class TvRoad {
 
 		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
-		laneSections.push( laneSection );
-
-		this.computeLaneSectionLength();
-
-		this.lastAddedLaneSectionIndex = laneSections.length - 1;
+		this.addLaneSectionInstance( laneSection );
 
 		return laneSection;
+	}
+
+	duplicateLaneSectionAt ( s: number ): TvLaneSection {
+
+		const laneSection = this.getLaneSectionAt( s );
+
+		const newId = this.lanes.laneSections.length + 1;
+
+		const newLaneSection = laneSection.cloneAtS( newId, s );
+
+		this.addLaneSectionInstance( newLaneSection );
+
+		return newLaneSection;
+	}
+
+	sortLaneSections () {
+
+		// sort the lansections by s value
+
+		this.lanes.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+		// const inDescOrder = ( a: [ number, TvLaneSection ], b: [ number, TvLaneSection ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+
+		// const laneSections = this.laneSections.map( laneSection => [ laneSection.id, laneSection ] );
+
+		// laneSections.sort( inDescOrder );
+
+		// this.lanes.laneSections = laneSections.map( laneSection => laneSection[ 1 ] );
+
 	}
 
 	getLaneSectionCount () {
@@ -1262,6 +1290,9 @@ export class TvRoad {
 
 	}
 
+	/**
+	 * @deprecated use RoadManager
+	 */
 	updateRoadNodes (): void {
 
 		this.updateGeometryFromSpline();
@@ -1462,52 +1493,6 @@ export class TvRoad {
 
 	}
 
-	showElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = true;
-
-			} else {
-
-				elevation.node = new RoadElevationNode( this, elevation );
-
-			}
-
-			SceneService.add( elevation.node );
-
-		} );
-
-	}
-
-	updateElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			elevation.node?.updateValuesAndPosition();
-
-		} );
-
-	}
-
-	hideElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = false;
-
-			}
-
-			SceneService.remove( elevation.node );
-
-		} );
-
-	}
-
 	getElevationAt ( s: number ): TvElevation {
 
 		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
@@ -1595,7 +1580,7 @@ export class TvRoad {
 
 	}
 
-	applyRoadStyle ( roadStyle: RoadStyle ) {
+	set roadStyle ( roadStyle: RoadStyle ) {
 
 		this.lanes.clear();
 
@@ -1603,7 +1588,19 @@ export class TvRoad {
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
-		RoadFactory.rebuildRoad( this );
+		MapEvents.roadUpdated.emit( this );
+	}
+
+	get roadStyle (): RoadStyle {
+
+		const roadStyle = new RoadStyle();
+
+		roadStyle.laneOffset = this.getLaneOffsetAt( 0 ).clone();
+
+		roadStyle.laneSection = this.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
+
+		return roadStyle;
+
 	}
 
 	showCornerPoints () {

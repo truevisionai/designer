@@ -4,16 +4,14 @@
 
 import { BaseCommand } from 'app/core/commands/base-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { SceneService } from 'app/core/services/scene.service';
+import { MapEvents } from 'app/events/map-events';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class DeleteElevationCommand extends BaseCommand {
 
 	private inspectorCommand: SetInspectorCommand;
-
-	private road: TvRoad;
 
 	constructor ( private node: RoadElevationNode ) {
 
@@ -30,7 +28,7 @@ export class DeleteElevationCommand extends BaseCommand {
 
 		this.inspectorCommand.execute();
 
-		RoadFactory.rebuildRoad( this.node.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 	}
 
 	undo (): void {
@@ -41,7 +39,7 @@ export class DeleteElevationCommand extends BaseCommand {
 
 		this.inspectorCommand.undo();
 
-		RoadFactory.rebuildRoad( this.node.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 	}
 
 	redo (): void {

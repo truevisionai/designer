@@ -10,6 +10,7 @@ import { Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadTool } from './road-tool';
+import { MapEvents } from 'app/events/map-events';
 
 export class CreateRoadCommand extends OdBaseCommand {
 
@@ -40,7 +41,7 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.selectPointCommand.execute();
 
-		RoadFactory.rebuildRoad( this.road );
+		MapEvents.roadCreated.emit( this.road );
 	}
 
 	undo (): void {
@@ -55,7 +56,7 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.selectPointCommand.undo();
 
-		this.map.gameObject.remove( this.road.gameObject );
+		MapEvents.roadRemoved.emit( this.road );
 	}
 
 	redo (): void {

@@ -5,7 +5,6 @@
 import { BaseCommand } from 'app/core/commands/base-command';
 import { SelectPointCommand } from 'app/core/commands/select-point-command';
 import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { SceneService } from 'app/core/services/scene.service';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
@@ -13,54 +12,47 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Vector3 } from 'three';
 import { RoadElevationTool } from './road-elevation-tool';
+import { MapEvents } from 'app/events/map-events';
 
 export class CreateElevationNodeCommand extends BaseCommand {
-
-	private elevation: TvElevation;
 
 	private selectPointCommand: SelectPointCommand;
 
 	private inspectorCommand: SetInspectorCommand;
 
-	constructor ( private tool: RoadElevationTool, private road: TvRoad, point: Vector3 ) {
+	constructor ( private tool: RoadElevationTool, private node: RoadElevationNode ) {
 
 		super();
 
-		const roadCoord = road.getCoordAt( point );
+		this.selectPointCommand = new SelectPointCommand( tool, this.node );
 
-		this.elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
-
-		this.elevation.node = new RoadElevationNode( road, this.elevation );
-
-		this.selectPointCommand = new SelectPointCommand( tool, this.elevation.node );
-
-		this.inspectorCommand = new SetInspectorCommand( DynamicInspectorComponent, this.elevation.node );
+		this.inspectorCommand = new SetInspectorCommand( DynamicInspectorComponent, this.node );
 	}
 
 	execute (): void {
 
-		this.road.addElevationInstance( this.elevation );
+		this.node.road.addElevationInstance( this.node.elevation );
 
-		SceneService.add( this.elevation.node );
+		SceneService.add( this.node );
 
 		this.selectPointCommand.execute();
 
 		this.inspectorCommand.execute();
 
-		RoadFactory.rebuildRoad( this.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 	}
 
 	undo (): void {
 
-		this.road.removeElevationInstance( this.elevation );
+		this.node.road.removeElevationInstance( this.node.elevation );
 
-		SceneService.remove( this.elevation.node );
+		SceneService.remove( this.node );
 
 		this.selectPointCommand.undo();
 
 		this.inspectorCommand.undo();
 
-		RoadFactory.rebuildRoad( this.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 	}
 
 	redo (): void {
