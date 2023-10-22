@@ -15,7 +15,6 @@ import { AbstractFieldComponent } from 'app/core/components/abstract-field.compo
 import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { TextureFieldComponent } from 'app/modules/three-js/inspectors/texture-field/texture-field.component';
 import { CommandHistory } from 'app/services/command-history';
 import { BooleanFieldComponent } from 'app/shared/fields/boolean-field/boolean-field.component';
 import { ColorFieldComponent } from 'app/shared/fields/color-field/color-field.component';
@@ -27,6 +26,8 @@ import { StringFieldComponent } from 'app/shared/fields/string-field/string-fiel
 import { Vector2FieldComponent } from 'app/shared/fields/vector2-field/vector2-field.component';
 import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
+import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
+import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
 
 @Directive( {
@@ -81,6 +82,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		'color': ColorFieldComponent,
 		'texture': TextureFieldComponent,
 		'object': DynamicInspectorComponent,
+		'material': MaterialFieldComponent,
 	};
 
 	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {

@@ -3,29 +3,28 @@
   -->
 
 <div fxFlexFill
-	 fxLayout="row">
+	fxLayout="row">
 
 	<div fxFlex="20">
 		<perfect-scrollbar class="project-heirarchy-container border-right"
-						   fxFlexFill>
+			fxFlexFill>
 			<app-project-hierarchy (folderChanged)="onFolderChanged($event)"
-								   [dataSource]="dataSource"
-								   [treeControl]="treeControl">
+				[dataSource]="dataSource"
+				[treeControl]="treeControl">
 			</app-project-hierarchy>
 		</perfect-scrollbar>
 	</div>
 
 	<div class="border-right"
-		 fxFlex="80"
-		 style="overflow: scroll;background: #606060;">
-		<!-- <perfect-scrollbar class="folder-file-container" -->
-		<!-- fxFlexFill> -->
-		<app-folder-files (folderChanged)="onFolderChanged($event)"
-						  [files]="files"
-						  [folder]="selectedFolder"
-						  fxFlexFill
-						  fxFlexFill></app-folder-files>
-		<!-- </perfect-scrollbar> -->
+		(contextmenu)="onContextMenu($event)"
+		fxFlex="80">
+		<perfect-scrollbar class="folder-file-container"
+			fxFlexFill>
+			<app-folder-files (folderChanged)="onFolderChanged($event)"
+				[files]="files"
+				[folder]="folder">
+			</app-folder-files>
+		</perfect-scrollbar>
 	</div>
 
 </div>
