@@ -24,6 +24,7 @@ import { LaneRoadMarkFactory } from './lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from './signal-factory';
+import { RoadObjectFactory } from 'app/core/factories/road-object.factory';
 
 export class TvMapBuilder {
 
@@ -84,9 +85,31 @@ export class TvMapBuilder {
 
 		this.roadMarkBuilder.buildRoad( road );
 
+		this.buildRoadObjects( road );
+
 		TvSignalHelper.create( road );
 
 		parent.add( road.gameObject );
+
+	}
+
+	static buildRoadObjects ( road: TvRoad ) {
+
+		const objectMeshes = new GameObject( 'RoadObjects' );
+
+		road.objects.object.forEach( roadObject => {
+
+			const mesh = RoadObjectFactory.create( roadObject );
+
+			if ( mesh ) {
+
+				objectMeshes.add( mesh );
+
+			}
+
+		} );
+
+		road.gameObject.add( objectMeshes );
 
 	}
 
@@ -313,14 +336,6 @@ export class TvMapBuilder {
 	static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
 
 		SignalFactory.createSignal( road, signal );
-
-	}
-
-	static makeObject ( road: TvRoad, object: TvRoadObject ): any {
-
-		var gameObject = new GameObject( 'Object:' + object.attr_id );
-
-		road.gameObject.add( gameObject );
 
 	}
 
