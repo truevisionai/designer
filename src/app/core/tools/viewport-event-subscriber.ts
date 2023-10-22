@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { Vector3 } from 'three';
 import { AppService } from '../services/app.service';
 
-export class MonoBehaviour {
+export abstract class ViewportEventSubscriber {
 
 	subscribed: boolean = false;
 

@@ -13,12 +13,12 @@ import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasic
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
-import { MonoBehaviour } from '../components/mono-behaviour';
+import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardInput } from '../input';
 import { ToolType } from '../models/tool-types.enum';
 import { IEditorState } from './i-editor-state';
 
-export abstract class BaseTool extends MonoBehaviour implements IEditorState {
+export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
 	abstract name: string;
 	abstract toolType: ToolType;
