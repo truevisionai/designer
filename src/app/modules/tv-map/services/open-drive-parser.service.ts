@@ -132,7 +132,7 @@ export class OpenDriverParser extends AbstractReader {
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = parseFloat( xml.attr_junction );
 
-		const road = RoadFactory.getNewRoad( name, length, id, junction );
+		const road = RoadFactory.createNewRoad( name, length, id, junction );
 
 		if ( xml.link != null ) {
 

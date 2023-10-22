@@ -298,7 +298,7 @@ export class SceneImporterService extends AbstractReader {
 		const id = parseInt( xml.attr_id );
 		const junction = parseInt( xml.attr_junction ) || -1;
 
-		const road = RoadFactory.getNewRoad( name, length, id, junction );
+		const road = RoadFactory.createNewRoad( name, length, id, junction );
 
 		road.drivingMaterialGuid = xml.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;

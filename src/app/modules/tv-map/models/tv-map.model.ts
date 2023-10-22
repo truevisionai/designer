@@ -98,7 +98,7 @@ export class TvMap {
 
 	addDefaultRoad (): TvRoad {
 
-		const road = RoadFactory.getDefaultRoad();
+		const road = RoadFactory.createDefaultRoad();
 
 		this.addRoad( road );
 
@@ -108,7 +108,7 @@ export class TvMap {
 
 	addRampRoad ( lane: TvLane ): TvRoad {
 
-		const road = RoadFactory.getRampRoad( lane );
+		const road = RoadFactory.createRampRoad( lane );
 
 		this.addRoad( road );
 
