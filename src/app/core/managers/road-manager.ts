@@ -27,6 +27,12 @@ export class RoadManager {
 		MapEvents.roadControlPointUpdated.subscribe( e => this.onRoadControlPointUpdated( e ) );
 	}
 
+	init () {
+
+		// this.onRoadCreated = this.onRoadCreated.bind( this );
+
+	}
+
 	onRoadControlPointUpdated ( event: { road: TvRoad, controlPoint: RoadControlPoint } ) {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
@@ -111,13 +117,7 @@ export class RoadManager {
 
 		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, road );
 
-		// this.updateRoadNodes();
-
-	}
-
-	init () {
-
-		// this.onRoadCreated = this.onRoadCreated.bind( this );
+		this.showNodes( road );
 
 	}
 
