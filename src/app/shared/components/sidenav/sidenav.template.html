@@ -4,7 +4,7 @@
 
 <div class="sidenav-hold">
 	<div *ngIf="hasIconTypeMenuItem"
-		 class="icon-menu">
+		class="icon-menu">
 		<!-- Icon menu separator -->
 		<div class="mt-1 mb-1 nav-item-sep">
 			<mat-divider [ngStyle]="{margin: '0 -24px'}"></mat-divider>
@@ -12,12 +12,12 @@
 		</div>
 		<!-- Icon menu items -->
 		<div *ngFor="let item of menuItems"
-			 class="icon-menu-item">
+			class="icon-menu-item">
 			<button *ngIf="!item.disabled && item.type === 'icon'"
-					[matTooltip]="item.tooltip"
-					mat-raised-button
-					routerLink="/{{item.state}}"
-					routerLinkActive="mat-bg-primary">
+				[matTooltip]="item.tooltip"
+				mat-raised-button
+				routerLink="/{{item.state}}"
+				routerLinkActive="mat-bg-primary">
 				<mat-icon>{{item.icon}}</mat-icon>
 			</button>
 		</div>
@@ -29,46 +29,46 @@
 			appDropdownLink
 			routerLinkActive="open">
 			<div *ngIf="item.type === 'separator'"
-				 class="nav-item-sep">
+				class="nav-item-sep">
 				<mat-divider></mat-divider>
 				<span class="text-muted">{{item.name}}</span>
 			</div>
 			<div *ngIf="!item.disabled && item.type !== 'separator' && item.type !== 'icon'"
-				 class="lvl1">
+				class="lvl1">
 				<a *ngIf="item.type === 'link'"
-				   appDropdownToggle
-				   matRipple
-				   routerLink="/{{item.state}}">
+					appDropdownToggle
+					matRipple
+					routerLink="/{{item.state}}">
 					<mat-icon>{{item.icon}}</mat-icon>
 					<span class="item-name lvl1">{{item.name}}</span>
 					<span fxFlex></span>
 					<span *ngFor="let badge of item.badges"
-						  [ngStyle]="{background: badge.color}"
-						  class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
+						[ngStyle]="{background: badge.color}"
+						class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
 				</a>
 				<a *ngIf="item.type === 'extLink'"
-				   [href]="item.state"
-				   appDropdownToggle
-				   matRipple
-				   target="_blank">
+					[href]="item.state"
+					appDropdownToggle
+					matRipple
+					target="_blank">
 					<mat-icon>{{item.icon}}</mat-icon>
 					<span class="item-name lvl1">{{item.name}}</span>
 					<span fxFlex></span>
 					<span *ngFor="let badge of item.badges"
-						  [ngStyle]="{background: badge.color}"
-						  class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
+						[ngStyle]="{background: badge.color}"
+						class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
 				</a>
 
 				<!-- DropDown -->
 				<a *ngIf="item.type === 'dropDown'"
-				   appDropdownToggle
-				   matRipple>
+					appDropdownToggle
+					matRipple>
 					<mat-icon>{{item.icon}}</mat-icon>
 					<span class="item-name lvl1">{{item.name }}</span>
 					<span fxFlex></span>
 					<span *ngFor="let badge of item.badges"
-						  [ngStyle]="{background: badge.color}"
-						  class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
+						[ngStyle]="{background: badge.color}"
+						class="menuitem-badge mat-bg-{{ badge.color }}">{{ badge.value }}</span>
 					<mat-icon class="menu-caret">keyboard_arrow_right</mat-icon>
 				</a>
 				<!-- LEVEL 2 -->
@@ -80,16 +80,16 @@
 						routerLinkActive="open">
 
 						<a *ngIf="itemLvL2.type !== 'dropDown'"
-						   appDropdownToggle
-						   matRipple
-						   routerLink="{{item.state ? '/'+item.state : ''}}/{{itemLvL2.state}}">
+							appDropdownToggle
+							matRipple
+							routerLink="{{item.state ? '/'+item.state : ''}}/{{itemLvL2.state}}">
 							<span class="item-name lvl2">{{itemLvL2.name }}</span>
 							<span fxFlex></span>
 						</a>
 
 						<a *ngIf="itemLvL2.type === 'dropDown'"
-						   appDropdownToggle
-						   matRipple>
+							appDropdownToggle
+							matRipple>
 							<span class="item-name lvl2">{{itemLvL2.name}}</span>
 							<span fxFlex></span>
 							<mat-icon class="menu-caret">keyboard_arrow_right</mat-icon>
@@ -103,8 +103,8 @@
 								appDropdownLink
 								routerLinkActive="open">
 								<a appDropdownToggle
-								   matRipple
-								   routerLink="{{item.state ? '/'+item.state : ''}}{{itemLvL2.state ? '/'+itemLvL2.state : ''}}/{{itemLvL3.state}}">
+									matRipple
+									routerLink="{{item.state ? '/'+item.state : ''}}{{itemLvL2.state ? '/'+itemLvL2.state : ''}}/{{itemLvL3.state}}">
 									<span class="item-name lvl3">{{itemLvL3.name}}</span>
 								</a>
 							</li>

@@ -5,13 +5,13 @@
 <h1 class="mat-tv-dialog-title"
 	mat-dialog-title>Export GLB</h1>
 <div class="mat-tv-dialog-content"
-	 mat-dialog-content>
+	mat-dialog-content>
 	<mat-form-field style="width: 100%;">
 		<mat-label>Filename</mat-label>
 		<input [(ngModel)]="filename"
-			   matInput>
+			matInput>
 	</mat-form-field>
-	<br/>
+	<br />
 	<mat-form-field style="width: 100%;">
 		<mat-label>Coordinate System</mat-label>
 		<mat-select [(ngModel)]="coordinateSystem">
@@ -21,17 +21,17 @@
 	</mat-form-field>
 	<mat-checkbox [(ngModel)]="includeProps">Export Props</mat-checkbox>
 	<mat-checkbox [(ngModel)]="forcePowerOfTwoTextures"
-				  disabled>Force Power Of Two Textures
+		disabled>Force Power Of Two Textures
 	</mat-checkbox>
 </div>
 <div align="end"
-	 class="mat-tv-dialog-actions"
-	 mat-dialog-actions>
+	class="mat-tv-dialog-actions"
+	mat-dialog-actions>
 	<button mat-dialog-close
-			mat-stroked-button>Close
+		mat-stroked-button>Close
 	</button>
 	<button (click)="export()"
-			cdkFocusInitial
-			mat-stroked-button>Export
+		cdkFocusInitial
+		mat-stroked-button>Export
 	</button>
 </div>

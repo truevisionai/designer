@@ -16,6 +16,7 @@ import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
 import { TvViewHelper } from './objects/tv-view-helper';
 import { ScenarioEnvironment } from '../scenario/models/actions/scenario-environment';
+import { DEFAULT_AMBIENT_LIGHT } from './default.config';
 
 @Injectable( {
 	providedIn: 'root'
@@ -92,9 +93,7 @@ export class ThreeService implements IEngine {
 		// set new environment
 		SceneService.addHelper( environment.weather.sun.light );
 
-		this.ambientLight = new THREE.AmbientLight( 0xE6E6E6, 1 );
-
-		SceneService.addHelper( this.ambientLight );
+		SceneService.addHelper( DEFAULT_AMBIENT_LIGHT );
 
 		this.environment = environment;
 	}

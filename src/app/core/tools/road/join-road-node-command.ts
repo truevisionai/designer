@@ -47,10 +47,9 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 	execute (): void {
 
 		this.tool.node = null;
-		this.tool.road = null;
 		this.tool.controlPoint = null;
 
-		this.joiningRoad = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
+		this.joiningRoad = this.tool.road = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
 
 		this.inspectorCommand.execute();
 

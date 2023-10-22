@@ -3,20 +3,20 @@
   -->
 
 <div align="left"
-	 class="tv-field">
+	class="tv-field">
 
 	<label class="tv-field-label">{{ label }}</label>
 
 	<div class="tv-field-text-input">
 
 		<select (change)="onChanged($event)"
-				[(ngModel)]="value"
-				class="tv-field-dropdown">
+			[(ngModel)]="value"
+			class="tv-field-dropdown">
 
 			<option *ngFor="let option of options"
-					[selected]="option.value===value"
-					[value]="option.value"
-					class="tv-field-option">
+				[selected]="option.value===value"
+				[value]="option.value"
+				class="tv-field-option">
 
 				{{ option.label | titlecase }}
 

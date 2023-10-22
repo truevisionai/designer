@@ -38,7 +38,7 @@ export class AddRoadCircleCommand extends OdBaseCommand {
 
 			road.hideHelpers();
 
-			this.map.removeRoad( road );
+			this.map.deleteRoad( road );
 
 		} );
 

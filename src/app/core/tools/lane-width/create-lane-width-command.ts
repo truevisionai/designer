@@ -5,7 +5,6 @@
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
-import { TvMapBuilder } from '../../../modules/tv-map/builders/tv-map-builder';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvLaneWidth } from '../../../modules/tv-map/models/tv-lane-width';
 import { LaneWidthInspector } from '../../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
@@ -14,6 +13,7 @@ import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { SceneService } from '../../services/scene.service';
 import { LaneWidthTool } from './lane-width-tool';
 import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
+import { MapEvents } from 'app/events/map-events';
 
 export class CreateWidthNodeCommand extends BaseCommand {
 
@@ -98,8 +98,7 @@ export class CreateWidthNodeCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		MapEvents.laneUpdated.emit( this.laneWidth.lane );
 
 	}
 

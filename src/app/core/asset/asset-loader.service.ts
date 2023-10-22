@@ -14,9 +14,12 @@ import {
 	LinearEncoding,
 	LinearFilter,
 	LinearMipMapLinearFilter,
+	LinearSRGBColorSpace,
 	MeshStandardMaterial,
+	NoColorSpace,
 	Object3D,
 	RGBAFormat,
+	SRGBColorSpace,
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
@@ -214,7 +217,7 @@ export class AssetLoaderService {
 				}
 
 				texture.rotation = data.rotation || 0;
-				texture.encoding = data.encoding || LinearEncoding;
+				texture.colorSpace = SRGBColorSpace;
 				texture.minFilter = data.minFilter || LinearMipMapLinearFilter;
 				texture.magFilter = data.magFilter || LinearFilter;
 				texture.anisotropy = data.anisotropy || 1;

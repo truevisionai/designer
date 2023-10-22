@@ -24,6 +24,7 @@ import { LaneRoadMarkFactory } from './lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from './signal-factory';
+import { RoadObjectFactory } from 'app/core/factories/road-object.factory';
 
 export class TvMapBuilder {
 
@@ -58,7 +59,14 @@ export class TvMapBuilder {
 
 	}
 
-	static buildRoad ( parent: GameObject, road: TvRoad ): any {
+	/**
+	 *
+	 * @param parent
+	 * @param road
+	 * @param buildJunctions
+	 * @deprecated
+	 */
+	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): any {
 
 		road.gameObject = null;
 		road.gameObject = new GameObject( 'Road:' + road.id );
@@ -77,18 +85,52 @@ export class TvMapBuilder {
 
 		this.roadMarkBuilder.buildRoad( road );
 
+		this.buildRoadObjects( road );
+
 		TvSignalHelper.create( road );
 
 		parent.add( road.gameObject );
 
 	}
 
-	static rebuildRoad ( road: TvRoad ): any {
+	static buildRoadObjects ( road: TvRoad ) {
 
-		this.buildRoad( TvMapInstance.map.gameObject, road );
+		const objectMeshes = new GameObject( 'RoadObjects' );
+
+		road.objects.object.forEach( roadObject => {
+
+			const mesh = RoadObjectFactory.create( roadObject );
+
+			if ( mesh ) {
+
+				objectMeshes.add( mesh );
+
+			}
+
+		} );
+
+		road.gameObject.add( objectMeshes );
 
 	}
 
+	/**
+	 *
+	 * @param road
+	 * @param buildJunctions
+	 * @deprecated
+	 */
+	static rebuildRoad ( road: TvRoad, buildJunctions = true ): any {
+
+		this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
+
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @deprecated
+	 */
 	static buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
 
 		laneSection.gameObject = null;
@@ -297,14 +339,6 @@ export class TvMapBuilder {
 
 	}
 
-	static makeObject ( road: TvRoad, object: TvRoadObject ): any {
-
-		var gameObject = new GameObject( 'Object:' + object.attr_id );
-
-		road.gameObject.add( gameObject );
-
-	}
-
 	private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
 
 		let perStep = 2;
@@ -350,5 +384,11 @@ export class TvMapBuilder {
 		lane.gameObject.userData.lane = lane;
 
 		laneSection.gameObject.add( lane.gameObject );
+	}
+
+	static removeRoad ( gameObject: GameObject, road: TvRoad ) {
+
+		gameObject.remove( road.gameObject );
+
 	}
 }

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
@@ -37,41 +36,46 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		}
 
 		// update spline
-		this.road.spline.update();
+		// this.road.spline.update();
 
 		// update geometry
-		this.road.updateGeometryFromSpline();
+		// this.road.updateGeometryFromSpline();
 
 		// build road
-		RoadFactory.rebuildRoad( this.road );
+		// RoadFactory.rebuildRoad( this.road );
 
-		if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		// MapEvents.roadControlPointUpdated.emit( {
+		// 	road: this.road,
+		// 	controlPoint: this.point
+		// } )
 
-			const successor = this.map.getRoadById( this.road.successor.elementId );
-
-			if ( successor ) {
-
-				successor.updateGeometryFromSpline();
-
-				RoadFactory.rebuildRoad( successor );
-
-			}
-
-		}
-
-		if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
-
-			const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
-
-			if ( predecessor ) {
-
-				predecessor.updateGeometryFromSpline();
-
-				RoadFactory.rebuildRoad( predecessor );
-
-			}
-
-		}
+		// if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		//
+		// 	const successor = this.map.getRoadById( this.road.successor.elementId );
+		//
+		// 	if ( successor ) {
+		//
+		// 		successor.updateGeometryFromSpline();
+		//
+		// 		RoadFactory.rebuildRoad( successor );
+		//
+		// 	}
+		//
+		// }
+		//
+		// if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
+		//
+		// 	const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
+		//
+		// 	if ( predecessor ) {
+		//
+		// 		predecessor.updateGeometryFromSpline();
+		//
+		// 		RoadFactory.rebuildRoad( predecessor );
+		//
+		// 	}
+		//
+		// }
 
 	}
 
@@ -81,33 +85,38 @@ export class UpdateRoadPointCommand extends OdBaseCommand {
 		this.point.copyPosition( this.oldPosition );
 
 		// update spline
-		this.road.spline.update();
+		// this.road.spline.update();
 
 		// update geometry
-		this.road.updateGeometryFromSpline();
+		// this.road.updateGeometryFromSpline();
 
 		// build road
-		RoadFactory.rebuildRoad( this.road );
+		// RoadFactory.rebuildRoad( this.road );
 
-		if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		// MapEvents.roadControlPointUpdated.emit( {
+		// 	road: this.road,
+		// 	controlPoint: this.point
+		// } )
 
-			const successor = this.map.getRoadById( this.road.successor.elementId );
-
-			successor.updateGeometryFromSpline();
-
-			RoadFactory.rebuildRoad( successor );
-
-		}
-
-		if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
-
-			const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
-
-			predecessor.updateGeometryFromSpline();
-
-			RoadFactory.rebuildRoad( predecessor );
-
-		}
+		// if ( !this.road.isJunction && this.road.successor && this.road.successor.elementType !== 'junction' ) {
+		//
+		// 	const successor = this.map.getRoadById( this.road.successor.elementId );
+		//
+		// 	successor.updateGeometryFromSpline();
+		//
+		// 	RoadFactory.rebuildRoad( successor );
+		//
+		// }
+		//
+		// if ( !this.road.isJunction && this.road.predecessor && this.road.predecessor.elementType !== 'junction' ) {
+		//
+		// 	const predecessor = this.map.getRoadById( this.road.predecessor.elementId );
+		//
+		// 	predecessor.updateGeometryFromSpline();
+		//
+		// 	RoadFactory.rebuildRoad( predecessor );
+		//
+		// }
 
 	}
 

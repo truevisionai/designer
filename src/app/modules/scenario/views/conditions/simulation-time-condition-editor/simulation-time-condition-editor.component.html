@@ -1,8 +1,8 @@
 <app-double-field (changed)="onTimeChanged($event)"
-				  [value]="simulationTimeCondition.value"
-				  label="Time"
-				  suffix="s"></app-double-field>
+	[value]="simulationTimeCondition.value"
+	label="Time"
+	suffix="s"></app-double-field>
 
 <app-enum-field [enum]="rules"
-				[value]="simulationTimeCondition.rule"
-				label="Rule"></app-enum-field>
+	[value]="simulationTimeCondition.rule"
+	label="Rule"></app-enum-field>

@@ -38,7 +38,8 @@
 							class="form-error-msg"> Password is required </small>
 					</div>
 
-					<button #signinButton [disabled]="form.invalid"
+					<button #signinButton
+						[disabled]="form.invalid"
 						class="mat-primary full-width mb-1"
 						mat-raised-button>Sign in
 					</button>
@@ -61,7 +62,10 @@
 		<br />
 
 		<mat-card *ngIf="showResendEmailConfirmationLink">
-			<button #resendButton class="mat-button" type="button" (click)="resendEmailConfirmationLink()">Click Here to resend email confirmation link</button>
+			<button #resendButton
+				class="mat-button"
+				type="button"
+				(click)="resendEmailConfirmationLink()">Click Here to resend email confirmation link</button>
 		</mat-card>
 
 		<br />

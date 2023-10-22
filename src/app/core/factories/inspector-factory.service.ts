@@ -8,7 +8,7 @@ import { FileService } from 'app/core/io/file.service';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
-import { EntityManager } from 'app/services/entity-manager';
+import { EntityManager } from 'app/core/managers/entity-manager';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { DynamicFileInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
@@ -52,7 +52,7 @@ export class InspectorFactoryService {
 
 		if ( inspectorData instanceof ScenarioEntity ) {
 
-			EntityManager.setEntity( inspectorData );
+			EntityManager.instance.setEntity( inspectorData );
 
 		}
 

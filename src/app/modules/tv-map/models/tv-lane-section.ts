@@ -12,6 +12,7 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
+import { MapEvents } from 'app/events/map-events';
 
 export class TvLaneSection {
 
@@ -29,27 +30,25 @@ export class TvLaneSection {
 	// public center: OdRoadLaneSectionContainer;
 	// public right: OdRoadLaneSectionContainer;
 	private lastAddedLaneIndex: number;
-	private laneMap: Map<number, TvLane> = new Map<number, TvLane>();
 
-	constructor ( id: number, s: number, singleSide: boolean, road?: TvRoad ) {
+	private _laneMap: Map<number, TvLane> = new Map<number, TvLane>();
+
+	private _length: number;
+
+	constructor ( id: number, s: number, singleSide: boolean, public road: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
 		this.id = id;
 		this.attr_s = s;
 		this.attr_singleSide = singleSide;
-		this._road = road;
 	}
 
-	private _road: TvRoad;
-
-	get road (): TvRoad {
-		return this._road;
+	get laneMap (): Map<number, TvLane> {
+		return this._laneMap;
 	}
 
-	set road ( value: TvRoad ) {
-		this._road = value;
+	set laneMap ( value: Map<number, TvLane> ) {
+		this._laneMap = value;
 	}
-
-	private _length: number;
 
 	get length () {
 		return this._length;
@@ -61,7 +60,7 @@ export class TvLaneSection {
 	}
 
 	get roadId () {
-		return this._road?.id;
+		return this.road?.id;
 	}
 
 	public get lanes () {
@@ -210,7 +209,7 @@ export class TvLaneSection {
 	 */
 	addLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
-		const newLane = new TvLane( laneSide, id, type, level, this.roadId, this );
+		const newLane = new TvLane( laneSide, id, type, level, this.road?.id, this );
 
 		this.addLaneInstance( newLane, sort );
 
@@ -290,6 +289,8 @@ export class TvLaneSection {
 
 		// Remove first element of array
 		this.laneArray.shift();
+
+		return this;
 	}
 
 	/**
@@ -299,6 +300,8 @@ export class TvLaneSection {
 
 		// Remove last element of array
 		this.laneArray.pop();
+
+		return this;
 	}
 
 	getLastLane (): TvLane {
@@ -763,27 +766,8 @@ export class TvLaneSection {
 
 		this.laneMap.delete( deletedLane.id );
 
-		const lanes = [ ...this.laneMap.entries() ];
+		MapEvents.laneRemoved.emit( deletedLane );
 
-		this.laneMap.clear();
-
-		// create a new map
-		let newLaneMap = new Map<number, TvLane>();
-
-		// iterate through the old map
-		for ( let [ id, lane ] of lanes ) {
-
-			// shift left lanes
-			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
-
-			// shift right lanes
-			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
-
-			newLaneMap.set( lane.id, lane );
-
-		}
-
-		this.laneMap = newLaneMap;
 	}
 
 	updateLaneWidthValues ( lane: TvLane ): void {

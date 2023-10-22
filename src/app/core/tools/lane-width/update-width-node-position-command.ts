@@ -3,13 +3,12 @@
  */
 
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { LaneWidthNode } from '../../../modules/three-js/objects/lane-width-node';
 import { BaseCommand } from '../../commands/base-command';
 import { NodeFactoryService } from '../../factories/node-factory.service';
-import { SceneService } from '../../services/scene.service';
+import { MapEvents } from 'app/events/map-events';
 
 export class UpdateWidthNodePositionCommand extends BaseCommand {
 
@@ -51,9 +50,7 @@ export class UpdateWidthNodePositionCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		MapEvents.laneUpdated.emit( this.node.lane );
 
 		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 

@@ -17,11 +17,9 @@ import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
-	AmbientLight,
 	Box3,
 	BoxGeometry,
 	Color,
-	DirectionalLight,
 	Material,
 	Mesh,
 	MeshBasicMaterial,
@@ -37,6 +35,7 @@ import {
 	WebGLRenderer
 } from 'three';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
+import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -83,32 +82,32 @@ export class PreviewService {
 
 		this.resetCamera();
 
-		this.createLights();
+		this.createLights( this.scene );
 
 		this.addGreenGround( this.scene );
 
 		this.ground.visible = false;
 	}
 
-	createLights () {
+	createLights ( scene: Scene ) {
 
-		const directionaLight = new DirectionalLight( 0xffffff, 1 );
+		const directionaLight = DEFAULT_DIRECTIONAL_LIGHT;
 
-		directionaLight.position.set( 5, 10, 7.5 );
+		directionaLight.position.copy( DIRECTIONAL_LIGHT_POSITION );
 
-		this.scene.add( directionaLight );
+		scene.add( directionaLight.clone() );
 
-		this.scene.add( directionaLight.target );
-
-		const ambientLight = new AmbientLight( 0xE6E6E6, 1 );
-
-		this.scene.add( ambientLight );
+		scene.add( new THREE.AmbientLight( AMBIENT_LIGHT_COLOR, 1 ) );
 
 	}
 
 	ngAfterViewInit (): void {
 
-		this.renderer = new WebGLRenderer( { alpha: true, antialias: true, precision: 'highp' } );
+		this.renderer = new WebGLRenderer( { alpha: true, antialias: true, precision: 'highp', stencil: false } );
+
+		this.renderer.setPixelRatio( window.devicePixelRatio );
+
+		this.renderer.autoClear = true;
 
 		this.renderer.setSize( WIDTH, HEIGHT );
 
@@ -456,7 +455,7 @@ export class PreviewService {
 		this.groundTexture.repeat.set( 1000, 1000 );
 		this.groundTexture.anisotropy = 16;
 
-		const groundMaterial = new MeshLambertMaterial( { map: this.groundTexture } );
+		const groundMaterial = new THREE.MeshStandardMaterial( { map: this.groundTexture } );
 
 		this.ground = new Mesh( new PlaneGeometry( 20000, 20000 ), groundMaterial );
 

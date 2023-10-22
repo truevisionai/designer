@@ -4,7 +4,6 @@
 
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
@@ -19,8 +18,8 @@ import { DuplicateLaneCommand } from '../../commands/duplicate-lane-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../../models/tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
-import { SceneService } from '../../services/scene.service';
 import { BaseTool } from '../base-tool';
+import { MapEvents } from 'app/events/map-events';
 
 export class LaneCreateTool extends BaseTool {
 
@@ -128,11 +127,7 @@ export class LaneCreateTool extends BaseTool {
 
 		newLaneSection.addLaneInstance( newLane, true );
 
-		console.log( this.road.laneSections );
-
-		SceneService.removeWithChildren( this.road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, this.road );
+		MapEvents.laneCreated.emit( newLane );
 
 		this.laneHelper.redraw( LineType.SOLID );
 

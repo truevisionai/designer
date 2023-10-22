@@ -18,6 +18,7 @@ import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
+import { RoadElevationManager } from 'app/core/factories/road-elevation-manager';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -53,7 +54,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => road.hideElevationNodes() );
+		this.map.getRoads().forEach( road => RoadElevationManager.removeNodes( road ) );
 
 	}
 
@@ -112,7 +113,15 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	createRoadElevationNode ( road: TvRoad, point: Vector3 ) {
 
-		CommandHistory.execute( new CreateElevationNodeCommand( this, road, point ) );
+		RoadElevationManager.showNodes( road );
+
+		const roadCoord = road.getCoordAt( point );
+
+		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
+
+		elevation.node = new RoadElevationNode( road, elevation );
+
+		CommandHistory.execute( new CreateElevationNodeCommand( this, elevation.node ) );
 
 	}
 

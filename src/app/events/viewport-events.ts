@@ -8,7 +8,7 @@ import { BaseEventData, PointerEventData } from './pointer-event-data';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class EventSystem {
+export class ViewportEvents {
 
 	@Output() pointerClicked = new EventEmitter<PointerEventData>();
 	@Output() pointerMoved = new EventEmitter<PointerEventData>();

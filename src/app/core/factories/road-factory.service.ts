@@ -38,7 +38,7 @@ export class RoadFactory {
 
 	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {
 
-		const road = this.getDefaultRoad( TvRoadType.TOWN, 40 );
+		const road = this.createDefaultRoad( TvRoadType.TOWN, 40 );
 
 		const point = road.addControlPointAt( position );
 
@@ -52,9 +52,9 @@ export class RoadFactory {
 
 	}
 
-	static getRampRoad ( lane: TvLane ): TvRoad {
+	static createRampRoad ( lane: TvLane ): TvRoad {
 
-		const road = this.getNewRoad();
+		const road = this.createNewRoad();
 
 		road.addElevation( 0, 0.05, 0, 0, 0 );
 
@@ -68,9 +68,9 @@ export class RoadFactory {
 
 	}
 
-	static getDefaultRoad ( type: TvRoadType = TvRoadType.TOWN, maxSpeed: number = 40 ): TvRoad {
+	static createDefaultRoad ( type: TvRoadType = TvRoadType.TOWN, maxSpeed: number = 40 ): TvRoad {
 
-		const road = this.getNewRoad();
+		const road = this.createNewRoad();
 
 		road.setType( type, maxSpeed );
 
@@ -84,7 +84,7 @@ export class RoadFactory {
 
 	}
 
-	static getNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
+	static createNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
 
 		const roadId = this.IDService.getUniqueID( id );
 
@@ -286,21 +286,21 @@ export class RoadFactory {
 
 	// start position is always at the entry
 
-	static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
-
-		firstRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad.id, TvContactPoint.START );
-
-		firstRoad.getLastLaneSection().lanes.forEach( lane => {
-			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
-		} );
-
-		secondRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.END );
-
-		secondRoad.getFirstLaneSection().lanes.forEach( lane => {
-			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
-		} );
-
-	}
+	// static makeSuccessorConnection ( firstRoad: TvRoad, secondRoad: TvRoad ) {
+	//
+	//     firstRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad.id, TvContactPoint.START );
+	//
+	//     firstRoad.getLastLaneSection().lanes.forEach( lane => {
+	//         if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+	//     } );
+	//
+	//     secondRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.END );
+	//
+	//     secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+	//         if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+	//     } );
+	//
+	// }
 
 	private static addRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
 

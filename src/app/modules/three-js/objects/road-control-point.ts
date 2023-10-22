@@ -11,6 +11,7 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
 import { RoadTangentPoint } from './road-tangent-point';
+import { MapEvents } from 'app/events/map-events';
 
 export class RoadControlPoint extends BaseControlPoint {
 
@@ -128,7 +129,11 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.updateTangents();
 
-		this.update();
+		// this.update();
+		MapEvents.roadControlPointUpdated.emit( {
+			road: this.road,
+			controlPoint: this
+		} );
 	}
 
 	update () {

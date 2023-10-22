@@ -192,7 +192,7 @@ export class TvPrefabLoader extends ObjectLoader {
 
 	parseChild ( json: any ): TvMesh | TvPrefab {
 
-		const object = super.parseObject( json, [], [], [] );
+		const object = super.parseObject( json, {}, {}, {} );
 
 		if ( json.type === 'Mesh' ) {
 

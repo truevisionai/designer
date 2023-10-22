@@ -11,6 +11,7 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadTool } from './road-tool';
+import { MapEvents } from 'app/events/map-events';
 
 export class AddRoadPointCommand extends OdBaseCommand {
 
@@ -35,7 +36,12 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		this.road.addControlPoint( this.point );
 
-		this.rebuildRoad( this.road );
+		// this.rebuildRoad( this.road );
+
+		MapEvents.roadControlPointCreated.emit( {
+			road: this.road,
+			controlPoint: this.point
+		} )
 	}
 
 	undo (): void {
@@ -44,7 +50,12 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 		this.road.removeControlPoint( this.point );
 
-		this.rebuildRoad( this.road );
+		// this.rebuildRoad( this.road );
+
+		MapEvents.roadControlPointRemoved.emit( {
+			road: this.road,
+			controlPoint: this.point
+		} )
 
 	}
 
@@ -54,13 +65,13 @@ export class AddRoadPointCommand extends OdBaseCommand {
 
 	}
 
-	rebuildRoad ( road: TvRoad ) {
+	// rebuildRoad ( road: TvRoad ) {
 
-		this.map.gameObject.remove( road.gameObject );
+	// 	this.map.gameObject.remove( road.gameObject );
 
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+	// 	TvMapBuilder.buildRoad( this.map.gameObject, road );
 
-		if ( !road.isJunction ) road.updateRoadNodes();
+	// 	if ( !road.isJunction ) road.updateRoadNodes();
 
-	}
+	// }
 }

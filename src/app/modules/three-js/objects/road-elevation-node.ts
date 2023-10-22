@@ -3,7 +3,6 @@
  */
 
 import { Action, SerializedField } from 'app/core/components/serialization';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
 import { DeleteElevationCommand } from 'app/core/tools/road-elevation/delete-elevation-command';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -13,6 +12,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
 import { DynamicControlPoint } from './dynamic-control-point';
+import { MapEvents } from 'app/events/map-events';
 
 export class RoadElevationNode extends DynamicControlPoint<any> {
 
@@ -36,7 +36,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set s ( value: number ) {
 		this.elevation.s = value;
 		this.updateValuesAndPosition();
-		RoadFactory.rebuildRoad( this.road );
+		MapEvents.roadUpdated.emit( this.road );
 	}
 
 	@SerializedField( { type: 'int' } )
@@ -47,7 +47,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set height ( value: number ) {
 		this.elevation.a = value;
 		this.updateValuesAndPosition();
-		RoadFactory.rebuildRoad( this.road );
+		MapEvents.roadUpdated.emit( this.road );
 	}
 
 	@Action()

@@ -9,6 +9,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
+import { MapEvents } from 'app/events/map-events';
 
 export class AddWidthNodeCommand extends BaseCommand {
 
@@ -62,9 +63,7 @@ export class AddWidthNodeCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		SceneService.removeWithChildren( road.gameObject, true );
-
-		TvMapBuilder.buildRoad( this.map.gameObject, road );
+		MapEvents.laneUpdated.emit( this.node.lane );
 
 		// not sure which is better
 		// this.laneHelper.redraw();

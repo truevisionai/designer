@@ -8,25 +8,25 @@
 			<!-- App Logo -->
 			<div class="topbar-branding">
 				<img alt=""
-					 class="app-logo"
-					 src="assets/images/logo.png">
+					class="app-logo"
+					src="assets/images/logo.png">
 			</div>
 
 			<ul *ngIf="!layoutConf.isMobile"
 				class="menu">
 				<li *ngFor="let item of menuItems; let i = index;">
 					<div *ngIf="item.type !== 'separator'"
-						 routerLinkActive="open">
+						routerLinkActive="open">
 						<a *ngIf="item.type === 'link'"
-						   matRipple
-						   routerLink="/{{item.state}}">
+							matRipple
+							routerLink="/{{item.state}}">
 							<mat-icon>{{item.icon}}</mat-icon>
 							{{item.name | translate}}
 						</a>
 						<div *ngIf="item.type === 'dropDown'">
 							<label class="toggle"
-								   for="drop-{{i}}"
-								   matRipple>
+								for="drop-{{i}}"
+								matRipple>
 								<mat-icon>{{item.icon}}</mat-icon>
 								{{item.name | translate}}
 							</label>
@@ -35,33 +35,33 @@
 								{{item.name | translate}}
 							</a>
 							<input id="drop-{{i}}"
-								   type="checkbox"/>
+								type="checkbox" />
 							<ul>
 								<li *ngFor="let itemLvL2 of item.sub; let j = index;"
 									routerLinkActive="open">
 									<a *ngIf="itemLvL2.type !== 'dropDown'"
-									   matRipple
-									   routerLink="{{item.state ? '/'+item.state : ''}}/{{itemLvL2.state}}">
+										matRipple
+										routerLink="{{item.state ? '/'+item.state : ''}}/{{itemLvL2.state}}">
 										<mat-icon *ngIf="itemLvL2.icon">{{itemLvL2.icon}}</mat-icon>
 										{{itemLvL2.name | translate}}
 									</a>
 
 									<div *ngIf="itemLvL2.type === 'dropDown'">
 										<label class="toggle"
-											   for="drop-{{i}}{{j}}"
-											   matRipple>{{itemLvL2.name | translate}}</label>
+											for="drop-{{i}}{{j}}"
+											matRipple>{{itemLvL2.name | translate}}</label>
 										<a matRipple>
 											<mat-icon *ngIf="itemLvL2.icon">{{itemLvL2.icon}}</mat-icon>
 											{{itemLvL2.name | translate}}
 										</a>
 										<input id="drop-{{i}}{{j}}"
-											   type="checkbox"/>
+											type="checkbox" />
 										<!-- Level 3 -->
 										<ul>
 											<li *ngFor="let itemLvL3 of itemLvL2.sub"
 												routerLinkActive="open">
 												<a matRipple
-												   routerLink="{{item.state ? '/'+item.state : ''}}{{itemLvL2.state ? '/'+itemLvL2.state : ''}}/{{itemLvL3.state}}">
+													routerLink="{{item.state ? '/'+item.state : ''}}{{itemLvL2.state ? '/'+itemLvL2.state : ''}}/{{itemLvL3.state}}">
 													<mat-icon *ngIf="itemLvL3.icon">{{itemLvL3.icon}}</mat-icon>
 													{{itemLvL3.name | translate}}
 												</a>
@@ -79,38 +79,38 @@
 
 			<!-- Language Switcher -->
 			<mat-select (selectionChange)="setLang()"
-						*ngIf="!layoutConf.isMobile"
-						[(ngModel)]="currentLang"
-						[style.width]="'auto'"
-						class="topbar-button-right"
-						id="langToggle"
-						name="currentLang"
-						placeholder="">
+				*ngIf="!layoutConf.isMobile"
+				[(ngModel)]="currentLang"
+				[style.width]="'auto'"
+				class="topbar-button-right"
+				id="langToggle"
+				name="currentLang"
+				placeholder="">
 				<mat-option *ngFor="let lang of availableLangs"
-							[value]="lang.code"
-							ngDefaultControl>{{ lang.name }}</mat-option>
+					[value]="lang.code"
+					ngDefaultControl>{{ lang.name }}</mat-option>
 			</mat-select>
 			<!-- Theme Switcher -->
 			<button [matMenuTriggerFor]="themeMenu"
-					[style.overflow]="'visible'"
-					class="topbar-button-right"
-					id="schemeToggle"
-					mat-icon-button
-					matTooltip="Color Schemes">
+				[style.overflow]="'visible'"
+				class="topbar-button-right"
+				id="schemeToggle"
+				mat-icon-button
+				matTooltip="Color Schemes">
 				<mat-icon>format_color_fill</mat-icon>
 			</button>
 			<mat-menu #themeMenu="matMenu">
 				<mat-grid-list class="theme-list"
-							   cols="2"
-							   rowHeight="48px">
+					cols="2"
+					rowHeight="48px">
 					<mat-grid-tile (click)="changeTheme(theme)"
-								   *ngFor="let theme of egretThemes">
+						*ngFor="let theme of egretThemes">
 						<div [title]="theme.name"
-							 mat-menu-item>
+							mat-menu-item>
 							<div [style.background]="theme.baseColor"
-								 class="egret-swatch"></div>
+								class="egret-swatch"></div>
 							<mat-icon *ngIf="theme.isActive"
-									  class="active-icon">check
+								class="active-icon">check
 							</mat-icon>
 						</div>
 					</mat-grid-tile>
@@ -118,28 +118,28 @@
 			</mat-menu>
 			<!-- Notification toggle button -->
 			<button (click)="toggleNotific()"
-					[style.overflow]="'visible'"
-					class="topbar-button-right"
-					mat-icon-button
-					matTooltip="Notifications">
+				[style.overflow]="'visible'"
+				class="topbar-button-right"
+				mat-icon-button
+				matTooltip="Notifications">
 				<mat-icon>notifications</mat-icon>
 				<span class="notification-number mat-bg-warn">3</span>
 			</button>
 			<!-- Top left user menu -->
 			<button [matMenuTriggerFor]="accountMenu"
-					class="topbar-button-right mr-1 img-button"
-					mat-icon-button>
+				class="topbar-button-right mr-1 img-button"
+				mat-icon-button>
 				<img alt=""
-					 src="assets/images/face-7.jpg">
+					src="assets/images/face-7.jpg">
 			</button>
 			<mat-menu #accountMenu="matMenu">
 				<button [routerLink]="['/profile/overview']"
-						mat-menu-item>
+					mat-menu-item>
 					<mat-icon>account_box</mat-icon>
 					<span>Profile</span>
 				</button>
 				<button [routerLink]="['/profile/settings']"
-						mat-menu-item>
+					mat-menu-item>
 					<mat-icon>settings</mat-icon>
 					<span>Account Settings</span>
 				</button>
@@ -148,16 +148,16 @@
 					<span>Disable alerts</span>
 				</button>
 				<button [routerLink]="['/sessions/signin']"
-						mat-menu-item>
+					mat-menu-item>
 					<mat-icon>exit_to_app</mat-icon>
 					<span>Sign out</span>
 				</button>
 			</mat-menu>
 			<!-- Mobile screen menu toggle -->
 			<button (click)="toggleSidenav()"
-					*ngIf="layoutConf.isMobile"
-					class="mr-1"
-					mat-icon-button>
+				*ngIf="layoutConf.isMobile"
+				class="mr-1"
+				mat-icon-button>
 				<mat-icon>menu</mat-icon>
 			</button>
 

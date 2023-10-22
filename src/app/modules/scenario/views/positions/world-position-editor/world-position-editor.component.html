@@ -1,7 +1,7 @@
 <app-vector3-field (changed)="onPositionChanged($event)"
-				   [value]="position.position"
-				   label="Position"></app-vector3-field>
+	[value]="position.position"
+	label="Position"></app-vector3-field>
 
 <app-vector3-field (changed)="onRotationChanged($event)"
-				   [value]="position.orientation.toVector3()"
-				   label="Orientation"></app-vector3-field>
+	[value]="position.orientation.toVector3()"
+	label="Orientation"></app-vector3-field>

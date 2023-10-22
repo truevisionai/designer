@@ -4,13 +4,13 @@
 
 <mat-card class="texture-card">
 	<button (click)="onRemoveClicked()"
-			*ngIf="guid"
-			class="btn-remove"
-			mat-icon-button>
+		*ngIf="guid"
+		class="btn-remove"
+		mat-icon-button>
 		<mat-icon>close</mat-icon>
 	</button>
 	<div class="mat-card-avatar texture-card-thumbnail">
-		<img src="{{ thumbnail }}"/>
+		<img src="{{ thumbnail }}" />
 	</div>
 	<mat-card-title>{{ label }}</mat-card-title>
 	<mat-card-subtitle>{{ filename }}</mat-card-subtitle>

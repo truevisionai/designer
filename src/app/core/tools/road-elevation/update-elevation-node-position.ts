@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from 'app/core/commands/base-command';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { MapEvents } from 'app/events/map-events';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { Vector3 } from 'three';
 
@@ -19,7 +19,7 @@ export class UpdateElevationNodePosition extends BaseCommand {
 
 		this.node.updateByPosition( this.newPosition );
 
-		RoadFactory.rebuildRoad( this.node.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 
 	}
 
@@ -27,7 +27,7 @@ export class UpdateElevationNodePosition extends BaseCommand {
 
 		this.node.updateByPosition( this.oldPosition );
 
-		RoadFactory.rebuildRoad( this.node.road );
+		MapEvents.roadUpdated.emit( this.node.road );
 
 	}
 

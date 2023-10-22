@@ -21,7 +21,6 @@ export class RoadRampTool extends BaseTool {
 	start = new Vector3;
 	end = new Vector3();
 	posTheta: TvPosTheta;
-;
 
 	onPointerDown ( e: PointerEventData ) {
 

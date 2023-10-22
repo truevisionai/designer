@@ -15,7 +15,7 @@ import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/services/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/core/managers/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/shared/utils/colors.service';
@@ -26,6 +26,8 @@ import { SurfaceFactory, TvSurface } from '../tv-map/models/tv-surface.model';
 import { SurfaceTool } from 'app/core/tools/surface/surface-tool';
 import { ToolFactory } from 'app/core/factories/tool-factory';
 import { ToolType } from 'app/core/models/tool-types.enum';
+import { CommandHistory } from 'app/services/command-history';
+import { SetValueCommand } from './commands/set-value-command';
 
 @Injectable( {
 	providedIn: 'root'
@@ -112,11 +114,11 @@ export class ViewportImporterService {
 
 	// importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
 
-		// const surface = SurfaceFactory.createFromTextureGuid( metadata.guid, position );
+	// const surface = SurfaceFactory.createFromTextureGuid( metadata.guid, position );
 
-		// if ( !surface ) return;
+	// if ( !surface ) return;
 
-		// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
+	// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
 
 	// }
 
@@ -181,7 +183,7 @@ export class ViewportImporterService {
 
 		const roadStyle = AssetDatabase.getInstance<RoadStyle>( metadata.guid );
 
-		road.applyRoadStyle( roadStyle );
+		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', roadStyle.clone( null ), road.roadStyle.clone( null ) ) );
 
 	}
 

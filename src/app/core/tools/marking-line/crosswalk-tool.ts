@@ -243,7 +243,7 @@ export class CreateCrossWalkCommand extends BaseCommand {
 
 		super();
 
-		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t );
+		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t, roadCoord.z );
 
 		this.crosswalk = new Crosswalk( roadCoord.s, roadCoord.t );
 

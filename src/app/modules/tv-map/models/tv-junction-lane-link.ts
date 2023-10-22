@@ -82,7 +82,7 @@ export class TvJunctionLaneLink {
 		// TODO: check if we need to remove the whole connection if there are no more lane links
 
 		// rebuild connecting road because it might have changed after lane link removal
-		RoadFactory.rebuildRoad( this.connectingRoad );
+		// RoadFactory.rebuildRoad( this.connectingRoad );
 
 		SceneService.remove( this.mesh );
 

@@ -12,7 +12,7 @@ import { DynamicMeta } from 'app/core/models/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/core/managers/prop-manager';
 import { Object3D, Vector3 } from 'three';
 
 interface ObjectTreeNode {

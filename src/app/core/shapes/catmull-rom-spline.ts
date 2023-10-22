@@ -5,7 +5,7 @@
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, CatmullRomCurve3, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
+import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
 
 export class CatmullRomSpline extends AbstractSpline {
@@ -16,7 +16,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	public mesh: Line;
 
-	constructor ( closed = true, public type = 'catmullrom', tension = 0.5 ) {
+	constructor ( closed = true, public type: CurveType = 'catmullrom', tension = 0.5 ) {
 
 		super( closed, tension );
 

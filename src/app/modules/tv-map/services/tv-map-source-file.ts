@@ -36,11 +36,11 @@ export class TvMapInstance {
 		this.mapChanged.emit( this.map );
 	}
 
-	static removeProp ( prop: Object3D<Event> ): void {
+	static removeProp ( prop: Object3D ): void {
 		SceneService.remove( prop );
 	}
 
-	static addProp ( prop: Object3D<Event> ): void {
+	static addProp ( prop: Object3D ): void {
 		SceneService.add( prop );
 	}
 

@@ -13,23 +13,20 @@ import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { Intersection, Vector3 } from 'three';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../../models/tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { CreateControlPointCommand } from './create-control-point-command';
 import { CreateRoadCommand } from './create-road-command';
 import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
+import { RoadManager } from "../../managers/road-manager";
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -49,6 +46,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	constructor () {
 
 		super();
+
+		RoadManager.instance.init();
 
 		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
@@ -81,10 +80,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		this.map.getRoads()
 			.filter( road => !road.isJunction )
-			.forEach( road => {
-				road.updateRoadNodes();
-				road.showNodes();
-			} );
+			.forEach( road => RoadManager.instance.showNodes( road ) );
 
 	}
 
@@ -117,11 +113,40 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			CommandHistory.execute( new CreateRoadCommand( this, this.controlPoint.road, e.point ) );
 
-		} else if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length >= 2 ) {
+		} else if ( this.road && this.road?.spline?.controlPoints.length >= 2 ) {
 
-			CommandHistory.execute( new AddRoadPointCommand( this, this.controlPoint.road, e.point ) );
+			const roadCoord = this.roadStrategy.onPointerDown( e );
 
-		} else {
+			if ( !roadCoord ) {
+
+				// new point is not on road so
+				// add point in last
+				CommandHistory.execute( new AddRoadPointCommand( this, this.road, e.point ) );
+
+				this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
+
+			} else if ( roadCoord.road.id === this.road.id ) {
+
+				// new point is on the same road so
+				// add a point in the middle
+				this.setHint( 'Cannot add control point to itself' );
+
+			} else {
+
+				// new point is on another road so
+				// add a point in the middle and join the roads
+
+				CommandHistory.execute( new AddRoadPointCommand( this, this.road, e.point ) );
+
+				this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
+
+			}
+
+			console.log( 'roadCoord', roadCoord );
+
+			// CommandHistory.execute( new AddRoadPointCommand( this, this.controlPoint.road, e.point ) );
+
+		} else if ( !this.road ) {
 
 			CommandHistory.execute( new CreateControlPointCommand( this, e.point ) );
 
@@ -154,6 +179,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, road ) );
 
+			this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
+
 		}
 
 	}
@@ -164,14 +191,17 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			// node with node then
 
-			// two roads need to joined
-			// we take both nodes and use them as start and end points
-			// for a new road
-			// new road will have 4 more points, so total 6 points
-
 			// both nodes should be unconnected //
 			if ( this.node.canConnect() && interactedNode.canConnect() ) {
+
 				this.joinNodes( this.node, interactedNode );
+
+				this.setHint( 'Modify road shape by dragging control points' );
+
+			} else {
+
+				this.setHint( 'Cannot join roads' );
+
 			}
 
 		} else if ( this.controlPoint ) {
@@ -185,6 +215,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 			// create new road and normally but with node as the first point
 			// and second point will be forward distance of x distance
 			// then 3rd point will be created wherever the point was selected
+
+			this.setHint( 'Select nodes to join roads' );
 
 		} else {
 
@@ -200,6 +232,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 				new SetValueCommand( this, 'controlPoint', null ),
 
 			] );
+
+			this.setHint( 'Select another node to join roads' );
 
 		}
 
@@ -258,65 +292,10 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 			new SetValueCommand( this, 'node', null )
 		] );
 
+		this.setHint( 'Drag to move control point and change road shape' );
+
 	}
 
-	private isRoadSelected ( e: PointerEventData ): boolean {
-
-		const laneObject = this.findIntersection( ObjectTypes.LANE, e.intersections );
-
-		if ( !laneObject || !laneObject.userData.lane ) return false;
-
-		const lane = laneObject.userData.lane as TvLane;
-
-		if ( !lane || !lane.laneSection.road ) return false;
-
-		// if ( lane.laneSection.road.isJunction ) {
-		// 	// we return true because we had interacted with
-		// 	// road junction but there is not action for it right now
-		// 	return true;
-		// }
-
-		if ( !this.road || this.road.id !== lane.laneSection.road.id ) {
-
-			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, lane.laneSection.road ) );
-
-		}
-
-		return true;
-	}
-
-	private findNearestControlPoint ( e: PointerEventData, point: Vector3 ): RoadControlPoint | null {
-
-		const maxDistance = Math.max( 0.5, Math.exp( 0.001 * e.approxCameraDistance ) );
-
-		const controlPoints = [];
-
-		this.road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => {
-
-			controlPoints.push( cp );
-
-			if ( cp.frontTangent ) controlPoints.push( cp.frontTangent );
-
-			if ( cp.backTangent ) controlPoints.push( cp.backTangent );
-
-		} );
-
-		return PickingHelper.findNearestViaDistance( point, controlPoints, maxDistance );
-	}
-
-	private findRoadNodeFromIntersections ( intersections: Intersection[] ): RoadNode | null {
-
-		for ( let i = 0; i < intersections.length; i++ ) {
-
-			const intersection = intersections[ i ];
-
-			if ( intersection.object && intersection.object[ 'tag' ] === RoadNode.lineTag ) {
-				return intersection.object.parent as RoadNode;
-			}
-		}
-
-		return null;
-	}
 
 	private joinNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 

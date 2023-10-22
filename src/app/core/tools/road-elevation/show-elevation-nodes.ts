@@ -7,6 +7,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadElevationTool } from './road-elevation-tool';
+import { RoadElevationManager } from 'app/core/factories/road-elevation-manager';
 
 export class ShowElevationNodes extends BaseCommand {
 
@@ -22,16 +23,8 @@ export class ShowElevationNodes extends BaseCommand {
 
 	execute (): void {
 
-		if ( this.newRoad.elevationProfile.getElevationCount() === 0 ) {
-
-			// add elevation at begininng and end
-			this.newRoad.addElevation( 0, 0, 0, 0, 0 );
-			this.newRoad.addElevation( this.newRoad.length, 0, 0, 0, 0 );
-
-		}
-
-		this.newRoad?.showElevationNodes();
-		this.oldRoad?.hideElevationNodes();
+		if ( this.newRoad ) RoadElevationManager.showNodes( this.newRoad );
+		if ( this.oldRoad ) RoadElevationManager.removeNodes( this.oldRoad );
 
 		this.setValueCommand.execute();
 
@@ -41,8 +34,8 @@ export class ShowElevationNodes extends BaseCommand {
 
 		this.setValueCommand.undo();
 
-		this.newRoad?.hideElevationNodes();
-		this.oldRoad?.showElevationNodes();
+		if ( this.newRoad ) RoadElevationManager.removeNodes( this.newRoad );
+		if ( this.oldRoad ) RoadElevationManager.showNodes( this.oldRoad );
 
 	}
 
@@ -69,7 +62,7 @@ export class HideElevationNodes extends BaseCommand {
 
 	execute (): void {
 
-		this.oldRoad?.hideElevationNodes();
+		RoadElevationManager.removeNodes( this.oldRoad );
 
 		this.oldNode?.unselect();
 
@@ -80,7 +73,7 @@ export class HideElevationNodes extends BaseCommand {
 
 	undo (): void {
 
-		this.oldRoad?.showElevationNodes();
+		RoadElevationManager.showNodes( this.oldRoad );
 
 		this.oldNode?.select();
 

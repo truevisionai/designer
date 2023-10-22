@@ -348,8 +348,8 @@ export class TvObjectRepeat {
 	public attr_zOffsetEnd: number;
 
 	constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-				  widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-				  zOffsetStart: number, zOffsetEnd: number ) {
+		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
+		zOffsetStart: number, zOffsetEnd: number ) {
 
 		this.attr_s = s;
 		this.attr_length = length;
