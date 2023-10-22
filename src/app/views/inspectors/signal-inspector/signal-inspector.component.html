@@ -5,9 +5,9 @@
 <div class="inspector-form-container">
 
 	<img [src]="'assets/signs/' + model + '.png'"
-		 alt="{{model}}"
-		 mat-card-image
-		 style="width:30%;">
+		alt="{{model}}"
+		mat-card-image
+		style="width:30%;">
 
 </div>
 
@@ -19,26 +19,26 @@
 
 	<mat-form-field>
 		<input [(ngModel)]="data.id"
-			   disabled
-			   matInput
-			   placeholder="ID">
+			disabled
+			matInput
+			placeholder="ID">
 	</mat-form-field>
 
 	<mat-form-field>
 		<input [(ngModel)]="data.roadId"
-			   disabled
-			   matInput
-			   placeholder="Road-ID">
+			disabled
+			matInput
+			placeholder="Road-ID">
 	</mat-form-field>
 
 	<mat-form-field>
 		<input [(ngModel)]="data.name"
-			   matInput
-			   placeholder="Name">
+			matInput
+			placeholder="Name">
 	</mat-form-field>
 
 	<button (click)="onDelete()"
-			mat-button>Delete!
+		mat-button>Delete!
 	</button>
 
 </div>

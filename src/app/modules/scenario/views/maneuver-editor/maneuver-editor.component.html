@@ -1,30 +1,30 @@
 <mat-toolbar class="native-border inspector-toolbar">
 	<button (click)="isOpen = !isOpen"
-			class="inspector-toolbar-icon"
-			mat-icon-button>
+		class="inspector-toolbar-icon"
+		mat-icon-button>
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
 	<span>Maneuver - {{maneuver?.name}}</span>
 	<span class="spacer"></span>
 	<button [matMenuTriggerFor]="menu"
-			class="inspector-toolbar-icon"
-			mat-icon-button>
+		class="inspector-toolbar-icon"
+		mat-icon-button>
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-menu #menu="matMenu">
 		<button (click)="addEvent()"
-				mat-menu-item>Add Event
+			mat-menu-item>Add Event
 		</button>
 		<button (click)="delete($event)"
-				mat-menu-item>Delete Maneuver
+			mat-menu-item>Delete Maneuver
 		</button>
 	</mat-menu>
 </mat-toolbar>
 
 <div *ngIf="isOpen">
 	<app-event-editor *ngFor="let event of maneuver?.events"
-					  [entity]="entity"
-					  [event]="event">
+		[entity]="entity"
+		[event]="event">
 	</app-event-editor>
 </div>

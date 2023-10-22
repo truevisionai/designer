@@ -7,14 +7,14 @@
 <!-- </mat-form-field> -->
 
 <div align="left"
-	 class="tv-field">
+	class="tv-field">
 	<label class="tv-field-label">{{ label }}</label>
 	<div class="tv-field-text-input">
 		<input (ngModelChange)="onModelChanged($event)"
-			   [(ngModel)]="value"
-			   [disabled]="disabled"
-			   [placeholder]="label"
-			   [value]="value"
-			   type="text"/>
+			[(ngModel)]="value"
+			[disabled]="disabled"
+			[placeholder]="label"
+			[value]="value"
+			type="text" />
 	</div>
 </div>

@@ -3,7 +3,7 @@
   -->
 
 <div [dir]='layoutConf.dir'
-	 class="app-admin-wrap">
+	class="app-admin-wrap">
 
 	<!--  <app-menu-bar></app-menu-bar>-->
 	<!--  <app-tool-bar></app-tool-bar>-->
@@ -11,12 +11,12 @@
 	<!-- Header for top navigation layout -->
 	<!-- ONLY REQUIRED FOR **TOP** NAVIGATION LAYOUT -->
 	<app-header-top *ngIf="layoutConf.navigationPos === 'top'"
-					[notificPanel]="notificationPanel">
+		[notificPanel]="notificationPanel">
 	</app-header-top>
 
 	<!-- Main Container -->
 	<mat-sidenav-container [dir]='layoutConf.dir'
-						   [ngClass]="{
+		[ngClass]="{
     'navigation-top': layoutConf.navigationPos === 'top',
     'sidebar-full': layoutConf.sidebarStyle === 'full',
     'sidebar-compact': layoutConf.sidebarStyle === 'compact' && layoutConf.navigationPos === 'side',
@@ -26,7 +26,7 @@
     'sidebar-closed': layoutConf.sidebarStyle === 'closed',
     'fixed-topbar': layoutConf.topbarFixed && layoutConf.navigationPos === 'side'
   }"
-						   class="app-admin-container app-side-nav-container mat-drawer-transition sidebar-{{layoutConf?.sidebarColor}} topbar-{{layoutConf?.topbarColor}}">
+		class="app-admin-container app-side-nav-container mat-drawer-transition sidebar-{{layoutConf?.sidebarColor}} topbar-{{layoutConf?.topbarColor}}">
 		<!-- SIDEBAR -->
 		<!-- ONLY REQUIRED FOR **SIDE** NAVIGATION LAYOUT -->
 		<!-- <app-sidebar-side
@@ -41,8 +41,8 @@
 
 		<!-- App content -->
 		<div [disabled]="layoutConf.topbarFixed || !layoutConf.perfectScrollbar"
-			 [perfectScrollbar]=""
-			 class="main-content-wrap">
+			[perfectScrollbar]=""
+			class="main-content-wrap">
 			<!-- Header for side navigation layout -->
 			<!-- ONLY REQUIRED FOR **SIDE** NAVIGATION LAYOUT -->
 			<!-- <app-header-side
@@ -51,11 +51,11 @@
 			</app-header-side> -->
 
 			<div [disabled]="!layoutConf.topbarFixed || !layoutConf.perfectScrollbar"
-				 [perfectScrollbar]="scrollConfig"
-				 class="rightside-content-hold">
+				[perfectScrollbar]="scrollConfig"
+				class="rightside-content-hold">
 				<!-- View Loader -->
 				<div *ngIf="isModuleLoading"
-					 class="view-loader">
+					class="view-loader">
 					<div class="spinner">
 						<div class="double-bounce1 mat-bg-accent"></div>
 						<div class="double-bounce2 mat-bg-primary"></div>
@@ -69,16 +69,16 @@
 		</div>
 		<!-- View overlay for mobile navigation -->
 		<div (click)="closeSidebar()"
-			 [ngClass]="{'visible': layoutConf.sidebarStyle !== 'closed' && layoutConf.isMobile}"
-			 class="sidebar-backdrop"></div>
+			[ngClass]="{'visible': layoutConf.sidebarStyle !== 'closed' && layoutConf.isMobile}"
+			class="sidebar-backdrop"></div>
 
 		<!-- Notificaation bar -->
 		<mat-sidenav #notificationPanel
-					 class=""
-					 mode="over"
-					 position="end">
+			class=""
+			mode="over"
+			position="end">
 			<div class=""
-				 fxLayout="column">
+				fxLayout="column">
 				<app-notifications [notificPanel]="notificationPanel"></app-notifications>
 			</div>
 		</mat-sidenav>

@@ -43,7 +43,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 	 * In mode 'follow' the resulting path of the entity is not guaranteed to
 	 * be identical for every simulation environment.
 	 */
-		// public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
+	// public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
 	public trajectoryFollowingMode: TrajectoryFollowingMode = TrajectoryFollowingMode.position;
 	private distanceThreshold = 2;
 	private index = 0;

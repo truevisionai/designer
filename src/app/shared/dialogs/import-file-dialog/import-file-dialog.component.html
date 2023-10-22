@@ -11,8 +11,8 @@
 
 
 			<table [dataSource]="files"
-				   mat-table
-				   style="width: 100%;">
+				mat-table
+				style="width: 100%;">
 
 				<ng-container matColumnDef="name">
 					<th *matHeaderCellDef
@@ -50,16 +50,16 @@
 		</mat-tab>
 		<mat-tab label="Upload">
 			<input (change)=fileChange($event)
-				   type="file"/>
+				type="file" />
 		</mat-tab>
 	</mat-tab-group>
 </div>
 
 <div mat-dialog-actions>
 	<button (click)="onCancel()"
-			mat-stroked-button>Cancel
+		mat-stroked-button>Cancel
 	</button>
 	<button (click)="onImport()"
-			mat-stroked-button>Upload
+		mat-stroked-button>Upload
 	</button>
 </div>

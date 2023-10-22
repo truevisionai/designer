@@ -986,9 +986,9 @@ export class OpenScenarioExporter {
 		event.getActionMap().forEach( ( action, name ) => {
 
 			let actionXml =
-				{
-					attr_name: name
-				};
+			{
+				attr_name: name
+			};
 
 			if ( action.category == ActionCategory.private ) {
 

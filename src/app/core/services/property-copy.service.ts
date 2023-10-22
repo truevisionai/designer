@@ -5,7 +5,7 @@
 import { TvConsole } from '../utils/console';
 
 export interface Copiable {
-	copyProperties? (): Object;
+	copyProperties?(): Object;
 }
 
 export class PropertyCopyService {

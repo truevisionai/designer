@@ -3,20 +3,21 @@
   -->
 
 <div *ngIf="data"
-	 class="inspector-form-container">
+	class="inspector-form-container">
 
 	<app-double-field (changed)="onDistanceChanged($event)"
-					  [disabled]="true"
-					  [value]="width.s"
-					  label="Distance"
-					  min="0"></app-double-field>
+		[disabled]="true"
+		[value]="width.s"
+		label="Distance"
+		min="0"></app-double-field>
 
 	<app-double-field (changed)="onWidthChanged($event)"
-					  [value]="width.a"
-					  label="Width"
-					  max="50"
-					  min="0.1"></app-double-field>
+		[value]="width.a"
+		label="Width"
+		max="50"
+		min="0.1"></app-double-field>
 
-	<app-button-field (clicked)="onDelete()" label="Delete"></app-button-field>
+	<app-button-field (clicked)="onDelete()"
+		label="Delete"></app-button-field>
 
 </div>

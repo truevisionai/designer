@@ -260,10 +260,10 @@ describe( 'ReaderService', () => {
 				attr_strategy: 'fastest',
 				Position: { World: { attr_x: 1, attr_y: 2, attr_z: 3 } },
 			},
-				{
-					attr_strategy: 'fastest',
-					Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
-				}, ]
+			{
+				attr_strategy: 'fastest',
+				Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
+			}, ]
 		};
 
 		const route = loader.parseRoute( xml );

@@ -1,11 +1,11 @@
-<app-object-preview *ngIf="model" [object]="model"
-					objectType="model">
+<app-object-preview *ngIf="model"
+	[object]="model"
+	objectType="model">
 </app-object-preview>
 
 
 <app-double-field (changed)="onScaleChanged($event)"
-				  [max]="1000"
-				  [min]="0.1"
-				  [step]="0.1"
-				  label="Scale"
-></app-double-field>
+	[max]="1000"
+	[min]="0.1"
+	[step]="0.1"
+	label="Scale"></app-double-field>
