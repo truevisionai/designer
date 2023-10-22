@@ -8,7 +8,7 @@ import { FileService } from 'app/core/io/file.service';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
-import { EventSystem } from '../../events/event-system.service';
+import { ViewportEvents } from '../../events/viewport-events';
 import { ThreeService } from '../../modules/three-js/three.service';
 import { SnackBar } from '../../services/snack-bar.service';
 import { AppInfo } from './app-info.service';
@@ -24,7 +24,7 @@ export class AppService {
 	static homeUrl = '';
 	static loginUrl = '/sessions/signin';
 
-	static eventSystem: EventSystem;
+	static eventSystem: ViewportEvents;
 	static three: ThreeService;
 	static electron: TvElectronService;
 	static assets: AssetLoaderService;
@@ -33,7 +33,7 @@ export class AppService {
 	static editor: EditorService;
 
 	constructor (
-		private eventSystem: EventSystem,
+		private eventSystem: ViewportEvents,
 		private electron: TvElectronService,
 		private scene: SceneService,
 		private snackBar: SnackBar,
