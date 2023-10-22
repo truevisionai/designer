@@ -52,10 +52,7 @@ export class RoadManager {
 
 		event.road.updateGeometryFromSpline();
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, event.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
-
-		this.updateRoadNodes( event.road );
+		MapEvents.roadUpdated.emit( event.road );
 
 	}
 
@@ -65,10 +62,7 @@ export class RoadManager {
 
 		event.road.updateGeometryFromSpline();
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, event.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
-
-		this.updateRoadNodes( event.road );
+		MapEvents.roadUpdated.emit( event.road );
 
 	}
 

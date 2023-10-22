@@ -12,7 +12,7 @@ export class EntityManager {
 
 	private static _instance = new EntityManager();
 
-	private debug = true;
+	private debug = false;
 
 	private entity?: ScenarioEntity;
 
