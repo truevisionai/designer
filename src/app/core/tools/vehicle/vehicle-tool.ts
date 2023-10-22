@@ -17,10 +17,7 @@ import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-positi
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { CommandHistory } from 'app/services/command-history';
-import { EntityManager } from 'app/core/managers/entity-manager';
-import { SnackBar } from 'app/services/snack-bar.service';
 import { VehicleEntity } from '../../../modules/scenario/models/entities/vehicle-entity';
-import { KeyboardInput } from '../../input';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
@@ -43,12 +40,6 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		this.movingStrategy = new OnRoadStrategy();
 		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<ScenarioEntity>>();
-	}
-
-	private get selectedVehicle (): VehicleEntity {
-
-		return EntityManager.getEntity<VehicleEntity>();
-
 	}
 
 	setPoint ( value: DynamicControlPoint<ScenarioEntity> ): void {

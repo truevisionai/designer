@@ -41,7 +41,7 @@ export class VehicleFactory {
 
 	static getSelectedVehicle (): VehicleEntity {
 
-		const selectedVehicle = EntityManager.getEntity<VehicleEntity>();
+		const selectedVehicle = EntityManager.instance.getEntity<VehicleEntity>();
 
 		if ( !selectedVehicle ) return this.createDefaultCar();
 

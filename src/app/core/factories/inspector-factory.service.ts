@@ -52,7 +52,7 @@ export class InspectorFactoryService {
 
 		if ( inspectorData instanceof ScenarioEntity ) {
 
-			EntityManager.setEntity( inspectorData );
+			EntityManager.instance.setEntity( inspectorData );
 
 		}
 

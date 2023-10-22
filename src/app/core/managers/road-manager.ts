@@ -42,10 +42,7 @@ export class RoadManager {
 		event.road.successor?.update( event.road, TvContactPoint.END );
 		event.road.predecessor?.update( event.road, TvContactPoint.START );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, event.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
-
-		this.updateRoadNodes( event.road );
+		MapEvents.roadUpdated.emit( event.road );
 
 	}
 
