@@ -12,7 +12,7 @@ import { MouseButton, PointerEventData } from '../../../events/pointer-event-dat
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { LaneManager } from 'app/services/lane-manager';
+import { LaneManager } from 'app/core/managers/lane-manager';
 
 export class LaneTool extends BaseTool implements IToolWithMainObject {
 

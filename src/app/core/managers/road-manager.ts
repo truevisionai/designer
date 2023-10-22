@@ -1,10 +1,10 @@
-import { MapEvents } from "../events/map-events";
-import { TvRoad } from "../modules/tv-map/models/tv-road.model";
-import { TvMapBuilder } from "../modules/tv-map/builders/tv-map-builder";
-import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
-import { RoadControlPoint } from "../modules/three-js/objects/road-control-point";
+import { MapEvents } from "../../events/map-events";
+import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
+import { TvMapBuilder } from "../../modules/tv-map/builders/tv-map-builder";
+import { TvMapInstance } from "../../modules/tv-map/services/tv-map-source-file";
+import { RoadControlPoint } from "../../modules/three-js/objects/road-control-point";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { RoadNode } from "../modules/three-js/objects/road-node";
+import { RoadNode } from "../../modules/three-js/objects/road-node";
 import { SceneService } from "app/core/services/scene.service";
 
 export class RoadManager {

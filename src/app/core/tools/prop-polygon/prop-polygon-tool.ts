@@ -10,7 +10,7 @@ import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strat
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/core/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DynamicControlPoint } from '../../../modules/three-js/objects/dynamic-control-point';

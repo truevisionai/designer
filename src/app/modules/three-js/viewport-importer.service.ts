@@ -15,7 +15,7 @@ import { ToolManager } from 'app/core/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/services/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/core/managers/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/shared/utils/colors.service';
