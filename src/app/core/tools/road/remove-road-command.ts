@@ -6,6 +6,7 @@ import { BaseCommand } from 'app/core/commands/base-command';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { MapEvents } from 'app/events/map-events';
 
 export class RemoveRoadCommand extends BaseCommand {
 
@@ -32,24 +33,8 @@ export class RemoveRoadCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.road.hide();
-		this.road.hideHelpers();
+		this.map.deleteRoad( this.road );
 
-		if ( this.road.isJunction ) {
-
-			this.road.junctionInstance?.removeConnectingRoad( this.road );
-
-		}
-
-		if ( !this.road.isJunction ) {
-
-			this.road.removePredecessor();
-			this.road.removeSuccessor();
-
-		}
-
-		this.map.roads.delete( this.road.id );
-		this.map.gameObject.remove( this.road.gameObject );
 	}
 
 	undo (): void {

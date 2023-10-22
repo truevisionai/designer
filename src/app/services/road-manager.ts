@@ -84,8 +84,25 @@ export class RoadManager {
 
 		if ( this.debug ) console.debug( 'onRoadRemoved' );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, road );
+		road.hide();
 
+		road.hideHelpers();
+
+		if ( road.isJunction ) {
+
+			road.junctionInstance?.removeConnectingRoad( road );
+
+		}
+
+		if ( !road.isJunction ) {
+
+			road.removePredecessor();
+
+			road.removeSuccessor();
+
+		}
+
+		TvMapInstance.map.gameObject.remove( road.gameObject );
 	}
 
 	onRoadCreated ( road: TvRoad ) {

@@ -26,13 +26,13 @@ import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
 import {
-    ObjectTypes,
-    TvContactPoint,
-    TvDynamicTypes,
-    TvLaneSide,
-    TvOrientation,
-    TvRoadType,
-    TvUnit
+	ObjectTypes,
+	TvContactPoint,
+	TvDynamicTypes,
+	TvLaneSide,
+	TvOrientation,
+	TvRoadType,
+	TvUnit
 } from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
@@ -55,1880 +55,1880 @@ import { TvUtils } from './tv-utils';
 import { MapEvents } from 'app/events/map-events';
 
 export enum TrafficRule {
-    RHT = 'RHT',
-    LHT = 'LHT'
+	RHT = 'RHT',
+	LHT = 'LHT'
 }
 
 export class TvRoad {
 
-    public readonly uuid: string;
-    public updated = new EventEmitter<TvRoad>();
-    // auto will be the default spline for now
-    public spline: AbstractSpline;
-    public startNode: RoadNode;
-    public endNode: RoadNode;
-    public type: TvRoadTypeClass[] = [];
-    public elevationProfile: TvElevationProfile = new TvElevationProfile;
-    public lateralProfile: TvLateralProfile;
-    public lanes = new TvRoadLanes( this );
-    public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-    public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
-    public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-    public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-    public trafficRule = TrafficRule.RHT;
-    public successor: TvRoadLinkChild;
-    public predecessor: TvRoadLinkChild;
-    public junctionId: number;
-    /**
-     * @deprecated use predecessor, successor directly
-     */
-    private link: TvRoadLink;
-    private lastAddedLaneSectionIndex: number;
-    private lastAddedRoadObjectIndex: number;
-    private lastAddedRoadSignalIndex: number;
-    private cornerPoints: BaseControlPoint[] = [];
-
-    constructor ( name: string, length: number, id: number, junctionId: number ) {
-
-        this.uuid = MathUtils.generateUUID();
-        this._name = name;
-        this._length = length;
-        this._id = id;
-        this.junctionId = junctionId;
-
-        this.spline = new AutoSpline( this );
-    }
-
-    private _objects: TvObjectContainer = new TvObjectContainer();
-
-    get objects (): TvObjectContainer {
-        return this._objects;
-    }
-
-    set objects ( value: TvObjectContainer ) {
-        this._objects = value;
-    }
+	public readonly uuid: string;
+	public updated = new EventEmitter<TvRoad>();
+	// auto will be the default spline for now
+	public spline: AbstractSpline;
+	public startNode: RoadNode;
+	public endNode: RoadNode;
+	public type: TvRoadTypeClass[] = [];
+	public elevationProfile: TvElevationProfile = new TvElevationProfile;
+	public lateralProfile: TvLateralProfile;
+	public lanes = new TvRoadLanes( this );
+	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	public trafficRule = TrafficRule.RHT;
+	public successor: TvRoadLinkChild;
+	public predecessor: TvRoadLinkChild;
+	public junctionId: number;
+	/**
+	 * @deprecated use predecessor, successor directly
+	 */
+	private link: TvRoadLink;
+	private lastAddedLaneSectionIndex: number;
+	private lastAddedRoadObjectIndex: number;
+	private lastAddedRoadSignalIndex: number;
+	private cornerPoints: BaseControlPoint[] = [];
+
+	constructor ( name: string, length: number, id: number, junctionId: number ) {
+
+		this.uuid = MathUtils.generateUUID();
+		this._name = name;
+		this._length = length;
+		this._id = id;
+		this.junctionId = junctionId;
+
+		this.spline = new AutoSpline( this );
+	}
+
+	private _objects: TvObjectContainer = new TvObjectContainer();
+
+	get objects (): TvObjectContainer {
+		return this._objects;
+	}
+
+	set objects ( value: TvObjectContainer ) {
+		this._objects = value;
+	}
 
-    private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
+	private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
 
-    get signals (): Map<number, TvRoadSignal> {
-        return this._signals;
-    }
+	get signals (): Map<number, TvRoadSignal> {
+		return this._signals;
+	}
 
-    set signals ( value: Map<number, TvRoadSignal> ) {
-        this._signals = value;
-    }
+	set signals ( value: Map<number, TvRoadSignal> ) {
+		this._signals = value;
+	}
 
-    private _planView = new TvPlaneView;
+	private _planView = new TvPlaneView;
 
-    get planView (): TvPlaneView {
-        return this._planView;
-    }
+	get planView (): TvPlaneView {
+		return this._planView;
+	}
 
-    set planView ( value: TvPlaneView ) {
-        this._planView = value;
-    }
+	set planView ( value: TvPlaneView ) {
+		this._planView = value;
+	}
 
-    private _neighbors: TvRoadLinkNeighbor[] = [];
+	private _neighbors: TvRoadLinkNeighbor[] = [];
 
-    get neighbors (): TvRoadLinkNeighbor[] {
-        return this._neighbors;
-    }
+	get neighbors (): TvRoadLinkNeighbor[] {
+		return this._neighbors;
+	}
 
-    set neighbors ( value: TvRoadLinkNeighbor[] ) {
-        this._neighbors = value;
-    }
+	set neighbors ( value: TvRoadLinkNeighbor[] ) {
+		this._neighbors = value;
+	}
 
-    private _name: string;
+	private _name: string;
 
-    get name (): string {
-        return this._name;
-    }
+	get name (): string {
+		return this._name;
+	}
 
-    set name ( value: string ) {
-        this._name = value;
-    }
+	set name ( value: string ) {
+		this._name = value;
+	}
 
-    private _length: number;
+	private _length: number;
 
-    get length (): number {
-        return this._length;
-    }
+	get length (): number {
+		return this._length;
+	}
 
-    set length ( value: number ) {
-        this._length = value;
-    }
+	set length ( value: number ) {
+		this._length = value;
+	}
 
-    private _id: number;
+	private _id: number;
 
-    get id (): number {
-        return this._id;
-    }
+	get id (): number {
+		return this._id;
+	}
 
-    set id ( value: number ) {
-        this._id = value;
-    }
+	set id ( value: number ) {
+		this._id = value;
+	}
 
-    get junctionInstance (): TvJunction {
-        return TvMapInstance.map.getJunctionById( this.junctionId );
-    }
+	get junctionInstance (): TvJunction {
+		return TvMapInstance.map.getJunctionById( this.junctionId );
+	}
 
-    private _gameObject: GameObject;
+	private _gameObject: GameObject;
 
-    get gameObject () {
-        return this._gameObject;
-    }
+	get gameObject () {
+		return this._gameObject;
+	}
 
-    set gameObject ( value ) {
-        this._gameObject = value;
-    }
+	set gameObject ( value ) {
+		this._gameObject = value;
+	}
 
-    get isJunction (): boolean {
-        return this.junctionId !== -1;
-    }
+	get isJunction (): boolean {
+		return this.junctionId !== -1;
+	}
 
-    get geometries () {
-        return this._planView.geometries;
-    }
+	get geometries () {
+		return this._planView.geometries;
+	}
 
-    get laneSections () {
-        return this.lanes.laneSections;
-    }
+	get laneSections () {
+		return this.lanes.laneSections;
+	}
 
-    get hasType (): boolean {
-        return this.type.length > 0;
-    }
+	get hasType (): boolean {
+		return this.type.length > 0;
+	}
 
-    update () {
+	update () {
 
-        this.updateGeometryFromSpline();
+		this.updateGeometryFromSpline();
 
-        // this.updateConnections();
+		// this.updateConnections();
 
-        RoadFactory.rebuildRoad( this );
+		RoadFactory.rebuildRoad( this );
 
-    }
+	}
 
-    updateConnections () {
+	updateConnections () {
 
-        this.successor?.update( this, TvContactPoint.END );
+		this.successor?.update( this, TvContactPoint.END );
 
-        this.predecessor?.update( this, TvContactPoint.START );
+		this.predecessor?.update( this, TvContactPoint.START );
 
-    }
+	}
 
-    hide () {
+	hide () {
 
-        if ( this.gameObject ) this.gameObject.visible = false;
+		if ( this.gameObject ) this.gameObject.visible = false;
 
-    }
+	}
 
-    show () {
+	show () {
 
-        if ( this.gameObject ) this.gameObject.visible = true;
+		if ( this.gameObject ) this.gameObject.visible = true;
 
-    }
+	}
 
-    onSuccessorUpdated ( successor: TvRoad ) {
+	onSuccessorUpdated ( successor: TvRoad ) {
 
 
-    }
+	}
 
-    onPredecessorUpdated ( predecessor: TvRoad ) {
+	onPredecessorUpdated ( predecessor: TvRoad ) {
 
 
-    }
+	}
 
-    setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-        if ( this.predecessor == null ) {
+		if ( this.predecessor == null ) {
 
-            this.predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
-        } else {
+		} else {
 
-            this.predecessor.elementType = elementType;
-            this.predecessor.elementId = elementId;
-            this.predecessor.contactPoint = contactPoint;
+			this.predecessor.elementType = elementType;
+			this.predecessor.elementId = elementId;
+			this.predecessor.contactPoint = contactPoint;
 
 
-        }
-    }
+		}
+	}
 
-    getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
+	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
 
-        return this.getRoadCoordAt( s, t );
+		return this.getRoadCoordAt( s, t );
 
-    }
+	}
 
-    getEndCoord () {
+	getEndCoord () {
 
-        return this.getPositionAt( this.length - Maths.Epsilon );
+		return this.getPositionAt( this.length - Maths.Epsilon );
 
-    }
+	}
 
-    getStartCoord () {
+	getStartCoord () {
 
-        // helps catch bugs
-        if ( this.geometries.length == 0 ) {
-            throw new Error( 'NoGeometriesFound' );
-        }
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
 
-        return this.getPositionAt( 0 );
+		return this.getPositionAt( 0 );
 
-    }
+	}
 
-    setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
+	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
 
-        this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
+		this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
 
-    }
+	}
 
-    setSuccessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
-        if ( this.successor == null ) {
+		if ( this.successor == null ) {
 
-            this.successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+			this.successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
-        } else {
+		} else {
 
-            this.successor.elementType = elementType;
-            this.successor.elementId = elementId;
-            this.successor.contactPoint = contactPoint;
+			this.successor.elementType = elementType;
+			this.successor.elementId = elementId;
+			this.successor.contactPoint = contactPoint;
 
-        }
-    }
+		}
+	}
 
-    setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-        if ( this.successor == null ) {
-            this.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
-        }
+		if ( this.successor == null ) {
+			this.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
 
-        this.successor.elementType = TvRoadLinkChildType.road;
-        this.successor.elementId = road.id;
-        this.successor.contactPoint = contactPoint;
+		this.successor.elementType = TvRoadLinkChildType.road;
+		this.successor.elementId = road.id;
+		this.successor.contactPoint = contactPoint;
 
-    }
+	}
 
-    setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-        if ( this.predecessor == null ) {
-            this.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
-        }
+		if ( this.predecessor == null ) {
+			this.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
+		}
 
-        this.predecessor.elementType = TvRoadLinkChildType.road;
-        this.predecessor.elementId = road.id;
-        this.predecessor.contactPoint = contactPoint;
+		this.predecessor.elementType = TvRoadLinkChildType.road;
+		this.predecessor.elementId = road.id;
+		this.predecessor.contactPoint = contactPoint;
 
-    }
+	}
 
-    setNeighbor ( side: string, elementId: string, direction: string ) {
+	setNeighbor ( side: string, elementId: string, direction: string ) {
 
-        console.error( 'neighbor not supported' );
+		console.error( 'neighbor not supported' );
 
-        // const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
-        //
-        // this.link.neighbor.push( neighbor );
-        //
-        // if ( this.neighbor1 === null ) {
-        //
-        //     this.neighbor1 = neighbor;
-        //
-        // }
-    }
+		// const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
+		//
+		// this.link.neighbor.push( neighbor );
+		//
+		// if ( this.neighbor1 === null ) {
+		//
+		//     this.neighbor1 = neighbor;
+		//
+		// }
+	}
 
-    getPlanView (): TvPlaneView {
+	getPlanView (): TvPlaneView {
 
-        return this._planView;
+		return this._planView;
 
-    }
+	}
 
-    addPlanView () {
+	addPlanView () {
 
-        if ( this._planView == null ) {
+		if ( this._planView == null ) {
 
-            this._planView = new TvPlaneView();
+			this._planView = new TvPlaneView();
 
-        }
-    }
+		}
+	}
 
-    addElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	addElevation ( s: number, a: number, b: number, c: number, d: number ) {
 
-        const index = this.checkElevationInterval( s ) + 1;
+		const index = this.checkElevationInterval( s ) + 1;
 
-        if ( index > this.getElevationCount() ) {
+		if ( index > this.getElevationCount() ) {
 
-            this.addElevationInstance( new TvElevation( s, a, b, c, d ) );
+			this.addElevationInstance( new TvElevation( s, a, b, c, d ) );
 
-        } else {
+		} else {
 
-            this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
+			this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
 
-        }
-    }
+		}
+	}
 
-    addElevationInstance ( elevation: TvElevation ) {
+	addElevationInstance ( elevation: TvElevation ) {
 
-        this.elevationProfile.elevation.push( elevation );
+		this.elevationProfile.elevation.push( elevation );
 
-        this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
-        TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
+		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
 
-    }
+	}
 
-    removeElevationInstance ( elevation: TvElevation ) {
+	removeElevationInstance ( elevation: TvElevation ) {
 
-        const index = this.elevationProfile.elevation.indexOf( elevation );
+		const index = this.elevationProfile.elevation.indexOf( elevation );
 
-        if ( index > -1 ) {
+		if ( index > -1 ) {
 
-            this.elevationProfile.elevation.splice( index, 1 );
+			this.elevationProfile.elevation.splice( index, 1 );
 
-        }
+		}
 
-        this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
-        TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
-    }
+		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
+	}
 
-    checkElevationInterval ( s: number ): number {
+	checkElevationInterval ( s: number ): number {
 
-        let res = -1;
+		let res = -1;
 
-        // Go through all the road type records
-        for ( let i = 0; i < this.elevationProfile.elevation.length; i++ ) {
+		// Go through all the road type records
+		for ( let i = 0; i < this.elevationProfile.elevation.length; i++ ) {
 
-            if ( this.elevationProfile.elevation[ i ].checkInterval( s ) ) {
+			if ( this.elevationProfile.elevation[ i ].checkInterval( s ) ) {
 
-                res = i;
+				res = i;
 
-            } else {
+			} else {
 
-                break;
+				break;
 
-            }
-        }
+			}
+		}
 
-        // return the result: 0 to MaxInt as the index to the
-        // record containing s_check or -1 if nothing found
-        return res;
-    }
+		// return the result: 0 to MaxInt as the index to the
+		// record containing s_check or -1 if nothing found
+		return res;
+	}
 
-    getElevationCount () {
+	getElevationCount () {
 
-        return this.elevationProfile.elevation.length;
+		return this.elevationProfile.elevation.length;
 
-    }
+	}
 
-    getElevationValue ( s: number ) {
+	getElevationValue ( s: number ) {
 
-        const elevation = this.getElevationAt( s );
+		const elevation = this.getElevationAt( s );
 
-        if ( elevation == null ) return 0;
+		if ( elevation == null ) return 0;
 
-        // console.log( value );
+		// console.log( value );
 
-        return elevation.getValue( s );
-    }
+		return elevation.getValue( s );
+	}
 
-    checkSuperElevationInterval ( s: number ) {
-        // TODO
-    }
+	checkSuperElevationInterval ( s: number ) {
+		// TODO
+	}
 
-    checkCrossfallInterval ( s: number ) {
-        // TODO
-    }
+	checkCrossfallInterval ( s: number ) {
+		// TODO
+	}
 
-    addElevationProfile () {
+	addElevationProfile () {
 
-        if ( this.elevationProfile == null ) {
+		if ( this.elevationProfile == null ) {
 
-            this.elevationProfile = new TvElevationProfile();
+			this.elevationProfile = new TvElevationProfile();
 
-        }
-    }
+		}
+	}
 
-    /**
-     *
-     * @param s
-     * @param singleSide
-     * @deprecated use addGetLaneSection
-     */
-    addLaneSection ( s: number, singleSide: boolean ) {
+	/**
+	 *
+	 * @param s
+	 * @param singleSide
+	 * @deprecated use addGetLaneSection
+	 */
+	addLaneSection ( s: number, singleSide: boolean ) {
 
-        this.addGetLaneSection( s, singleSide );
+		this.addGetLaneSection( s, singleSide );
 
-        this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
+		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
 
-        return this.lastAddedLaneSectionIndex;
-    }
+		return this.lastAddedLaneSectionIndex;
+	}
 
-    addLaneSectionInstance ( laneSection: TvLaneSection ) {
+	addLaneSectionInstance ( laneSection: TvLaneSection ) {
 
-        laneSection.road = this;
+		laneSection.road = this;
 
-        laneSection.lanes.forEach( lane => {
+		laneSection.lanes.forEach( lane => {
 
-            lane.roadId = this.id;
+			lane.roadId = this.id;
 
-            lane.laneSection = laneSection;
+			lane.laneSection = laneSection;
 
-        } );
+		} );
 
-        this.laneSections.push( laneSection );
+		this.laneSections.push( laneSection );
 
-        this.sortLaneSections();
+		this.sortLaneSections();
 
-        this.computeLaneSectionLength();
-    }
+		this.computeLaneSectionLength();
+	}
 
-    clearLaneSections () {
+	clearLaneSections () {
 
-        this.laneSections.splice( 0, this.laneSections.length );
+		this.laneSections.splice( 0, this.laneSections.length );
 
-    }
+	}
 
-    addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
+	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
-        const laneSections = this.getLaneSections();
+		const laneSections = this.getLaneSections();
 
-        const laneSectionId = laneSections.length + 1;
+		const laneSectionId = laneSections.length + 1;
 
-        const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
+		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
-        this.addLaneSectionInstance( laneSection );
+		this.addLaneSectionInstance( laneSection );
 
-        return laneSection;
-    }
+		return laneSection;
+	}
 
-    duplicateLaneSectionAt ( s: number ): TvLaneSection {
+	duplicateLaneSectionAt ( s: number ): TvLaneSection {
 
-        const laneSection = this.getLaneSectionAt( s );
+		const laneSection = this.getLaneSectionAt( s );
 
-        const newId = this.lanes.laneSections.length + 1;
+		const newId = this.lanes.laneSections.length + 1;
 
-        const newLaneSection = laneSection.cloneAtS( newId, s );
+		const newLaneSection = laneSection.cloneAtS( newId, s );
 
-        this.addLaneSectionInstance( newLaneSection );
+		this.addLaneSectionInstance( newLaneSection );
 
-        return newLaneSection;
-    }
+		return newLaneSection;
+	}
 
-    sortLaneSections () {
+	sortLaneSections () {
 
-        // sort the lansections by s value
+		// sort the lansections by s value
 
-        this.lanes.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.lanes.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
-        // const inDescOrder = ( a: [ number, TvLaneSection ], b: [ number, TvLaneSection ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+		// const inDescOrder = ( a: [ number, TvLaneSection ], b: [ number, TvLaneSection ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
 
-        // const laneSections = this.laneSections.map( laneSection => [ laneSection.id, laneSection ] );
+		// const laneSections = this.laneSections.map( laneSection => [ laneSection.id, laneSection ] );
 
-        // laneSections.sort( inDescOrder );
+		// laneSections.sort( inDescOrder );
 
-        // this.lanes.laneSections = laneSections.map( laneSection => laneSection[ 1 ] );
+		// this.lanes.laneSections = laneSections.map( laneSection => laneSection[ 1 ] );
 
-    }
+	}
 
-    getLaneSectionCount () {
+	getLaneSectionCount () {
 
-        return this.getLaneSections().length;
+		return this.getLaneSections().length;
 
-    }
+	}
 
-    getFirstLaneSection () {
+	getFirstLaneSection () {
 
-        return this.laneSections[ 0 ];
+		return this.laneSections[ 0 ];
 
-    }
+	}
 
-    getLastLaneSection () {
+	getLastLaneSection () {
 
-        return this.laneSections[ this.laneSections.length - 1 ];
+		return this.laneSections[ this.laneSections.length - 1 ];
 
-    }
+	}
 
-    getLaneSection ( i: number ) {
+	getLaneSection ( i: number ) {
 
-        return this.lanes.laneSections[ i ];
+		return this.lanes.laneSections[ i ];
 
-    }
+	}
 
-    getLaneSectionLength ( section: TvLaneSection ) {
+	getLaneSectionLength ( section: TvLaneSection ) {
 
-        // find next section higher than requested section
-        const next = this.laneSections.find( s => s.s > section.s );
+		// find next section higher than requested section
+		const next = this.laneSections.find( s => s.s > section.s );
 
-        return next ?
-            next.s - section.s :
-            this.length - section.s;
-    }
+		return next ?
+			next.s - section.s :
+			this.length - section.s;
+	}
 
-    getLastAddedLaneSection () {
+	getLastAddedLaneSection () {
 
-        return this.lanes.laneSections[ this.lastAddedLaneSectionIndex ];
+		return this.lanes.laneSections[ this.lastAddedLaneSectionIndex ];
 
-    }
+	}
 
-    getTypes (): TvRoadTypeClass[] {
+	getTypes (): TvRoadTypeClass[] {
 
-        return this.type;
+		return this.type;
 
-    }
+	}
 
-    addSignal ( signal: TvRoadSignal ): void {
+	addSignal ( signal: TvRoadSignal ): void {
 
-        this._signals.set( signal.id, signal );
+		this._signals.set( signal.id, signal );
 
-    }
+	}
 
-    removeSignal ( signal: TvRoadSignal ): any {
+	removeSignal ( signal: TvRoadSignal ): any {
 
-        this.removeSignalById( signal.id );
+		this.removeSignalById( signal.id );
 
-    }
+	}
 
-    removeSignalById ( signalId: number ): boolean {
+	removeSignalById ( signalId: number ): boolean {
 
-        return this.signals.delete( signalId );
+		return this.signals.delete( signalId );
 
-    }
+	}
 
-    getRoadSignalCount (): number {
+	getRoadSignalCount (): number {
 
-        return this._signals.size;
+		return this._signals.size;
 
-    }
+	}
 
-    getRoadSignal ( id: number ) {
+	getRoadSignal ( id: number ) {
 
-        return this._signals.get( id );
+		return this._signals.get( id );
 
-    }
+	}
 
-    getRoadSignalById ( id: number ): TvRoadSignal {
+	getRoadSignalById ( id: number ): TvRoadSignal {
 
-        return this._signals.get( id );
+		return this._signals.get( id );
 
-    }
+	}
 
-    getRoadObjects (): TvRoadObject[] {
+	getRoadObjects (): TvRoadObject[] {
 
-        return this._objects.object;
+		return this._objects.object;
 
-    }
+	}
 
-    getRoadObject ( i: number ): TvRoadObject {
+	getRoadObject ( i: number ): TvRoadObject {
 
-        return this._objects.object[ i ];
+		return this._objects.object[ i ];
 
-    }
+	}
 
-    getRoadObjectCount (): number {
+	getRoadObjectCount (): number {
 
-        return this._objects.object.length;
+		return this._objects.object.length;
 
-    }
+	}
 
-    getElevationProfile (): TvElevationProfile {
+	getElevationProfile (): TvElevationProfile {
 
-        return this.elevationProfile;
+		return this.elevationProfile;
 
-    }
+	}
 
-    getLaneSections (): TvLaneSection[] {
+	getLaneSections (): TvLaneSection[] {
 
-        return this.lanes.laneSections;
+		return this.lanes.laneSections;
 
-    }
+	}
 
-    getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
+	getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
 
-        // helps catch bugs
-        if ( this.geometries.length == 0 ) {
+		// helps catch bugs
+		if ( this.geometries.length == 0 ) {
 
-            if ( this.spline?.controlPoints.length > 1 ) {
-                this.updateGeometryFromSpline();
-            }
+			if ( this.spline?.controlPoints.length > 1 ) {
+				this.updateGeometryFromSpline();
+			}
 
-            if ( this.geometries.length == 0 ) {
-                throw new Error( 'NoGeometriesFound' );
-            }
-        }
+			if ( this.geometries.length == 0 ) {
+				throw new Error( 'NoGeometriesFound' );
+			}
+		}
 
-        if ( s == null ) TvConsole.error( 's is undefined' );
+		if ( s == null ) TvConsole.error( 's is undefined' );
 
-        if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
+		if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
 
-        const geometry = this.getGeometryAt( s );
+		const geometry = this.getGeometryAt( s );
 
-        const odPosTheta = geometry.getRoadCoord( s );
+		const odPosTheta = geometry.getRoadCoord( s );
 
-        // if ( !geometryType ) {
-        //
-        // 	SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
-        //
-        // 	SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
-        //
-        // 	return;
-        // }
+		// if ( !geometryType ) {
+		//
+		// 	SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+		//
+		// 	SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
+		//
+		// 	return;
+		// }
 
-        const laneOffset = this.getLaneOffsetValue( s );
+		const laneOffset = this.getLaneOffsetValue( s );
 
-        odPosTheta.addLateralOffset( laneOffset );
+		odPosTheta.addLateralOffset( laneOffset );
 
-        // this is additonal offset passed by user
-        // and not from lane-offset property of road
-        odPosTheta.addLateralOffset( t );
+		// this is additonal offset passed by user
+		// and not from lane-offset property of road
+		odPosTheta.addLateralOffset( t );
 
-        odPosTheta.z = this.getElevationValue( s );
+		odPosTheta.z = this.getElevationValue( s );
 
-        return odPosTheta;
-    }
+		return odPosTheta;
+	}
 
-    getGeometryBlockCount (): number {
+	getGeometryBlockCount (): number {
 
-        return this._planView.geometries.length;
+		return this._planView.geometries.length;
 
-    }
+	}
 
-    getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
+	getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
 
-        return this._planView.geometries[ i ];
+		return this._planView.geometries[ i ];
 
-    }
+	}
 
-    getRoadLength () {
+	getRoadLength () {
 
-        return this._length;
+		return this._length;
 
-    }
+	}
 
-    // TODO: Fix this
-    getSuperElevationValue ( s: number ): number {
+	// TODO: Fix this
+	getSuperElevationValue ( s: number ): number {
 
-        return null;
+		return null;
 
-    }
+	}
 
-    // fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
-    //
-    //     const index = this.checkLaneSectionInterval( s );
-    //
-    //     if ( index >= 0 ) {
-    //
-    //         this.lanes.laneSection[ index ].fillLaneSectionSample( s, laneSectionSample );
-    //
-    //     }
-    // }
+	// fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
+	//
+	//     const index = this.checkLaneSectionInterval( s );
+	//
+	//     if ( index >= 0 ) {
+	//
+	//         this.lanes.laneSection[ index ].fillLaneSectionSample( s, laneSectionSample );
+	//
+	//     }
+	// }
 
-    // TODO: Fix this
-    getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
+	// TODO: Fix this
+	getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
 
-        return null;
+		return null;
 
-    }
+	}
 
-    addRoadSignal (
-        s: number,
-        t: number,
-        id: number,
-        name: string,
-        dynamic: TvDynamicTypes,
-        orientation: TvOrientation,
-        zOffset: number,
-        country: string,
-        type: string,
-        subtype: string,
-        value: number,
-        unit: TvUnit,
-        height: number,
-        width: number,
-        text: string,
-        hOffset: number,
-        pitch: number,
-        roll: number
-    ) {
+	addRoadSignal (
+		s: number,
+		t: number,
+		id: number,
+		name: string,
+		dynamic: TvDynamicTypes,
+		orientation: TvOrientation,
+		zOffset: number,
+		country: string,
+		type: string,
+		subtype: string,
+		value: number,
+		unit: TvUnit,
+		height: number,
+		width: number,
+		text: string,
+		hOffset: number,
+		pitch: number,
+		roll: number
+	) {
 
-        const signal = new TvRoadSignal(
-            s, t, id, name,
-            dynamic, orientation, zOffset,
-            country, type, subtype,
-            value, unit,
-            height, width, text,
-            hOffset, pitch, roll
-        );
+		const signal = new TvRoadSignal(
+			s, t, id, name,
+			dynamic, orientation, zOffset,
+			country, type, subtype,
+			value, unit,
+			height, width, text,
+			hOffset, pitch, roll
+		);
 
-        signal.roadId = this.id;
+		signal.roadId = this.id;
 
-        this._signals.set( id, signal );
+		this._signals.set( id, signal );
 
-        return signal;
-    }
+		return signal;
+	}
 
-    getLastAddedRoadObject (): TvRoadObject {
-        return this._objects.object[ this.lastAddedRoadObjectIndex ];
-    }
+	getLastAddedRoadObject (): TvRoadObject {
+		return this._objects.object[ this.lastAddedRoadObjectIndex ];
+	}
 
-    addRoadObject (
-        type: ObjectTypes,
-        name: string,
-        id: number,
-        s: number,
-        t: number,
-        zOffset: number = 0,
-        validLength: number = 0,
-        orientation: TvOrientation = TvOrientation.NONE,
-        length: number = 0,
-        width: number = 0,
-        radius: number = 0,
-        height: number = 0,
-        hdg: number = 0,
-        pitch: number = 0,
-        roll: number = 0
-    ): TvRoadObject {
+	addRoadObject (
+		type: ObjectTypes,
+		name: string,
+		id: number,
+		s: number,
+		t: number,
+		zOffset: number = 0,
+		validLength: number = 0,
+		orientation: TvOrientation = TvOrientation.NONE,
+		length: number = 0,
+		width: number = 0,
+		radius: number = 0,
+		height: number = 0,
+		hdg: number = 0,
+		pitch: number = 0,
+		roll: number = 0
+	): TvRoadObject {
 
-        const obj = new TvRoadObject(
-            type,
-            name,
-            id,
-            s,
-            t,
-            zOffset,
-            validLength,
-            orientation,
-            length,
-            width,
-            radius,
-            height,
-            hdg,
-            pitch,
-            roll
-        );
+		const obj = new TvRoadObject(
+			type,
+			name,
+			id,
+			s,
+			t,
+			zOffset,
+			validLength,
+			orientation,
+			length,
+			width,
+			radius,
+			height,
+			hdg,
+			pitch,
+			roll
+		);
 
-        obj.road = this;
+		obj.road = this;
 
-        this.addRoadObjectInstance( obj );
+		this.addRoadObjectInstance( obj );
 
-        return obj;
-    }
+		return obj;
+	}
 
-    addRoadObjectInstance ( roadObject: TvRoadObject ) {
+	addRoadObjectInstance ( roadObject: TvRoadObject ) {
 
-        roadObject.road = this;
+		roadObject.road = this;
 
-        this._objects.object.push( roadObject );
+		this._objects.object.push( roadObject );
 
-        this.lastAddedRoadObjectIndex = this._objects.object.length - 1;
-    }
+		this.lastAddedRoadObjectIndex = this._objects.object.length - 1;
+	}
 
-    removeRoadObjectById ( id: number ) {
+	removeRoadObjectById ( id: number ) {
 
-        for ( let i = 0; i < this._objects.object.length; i++ ) {
+		for ( let i = 0; i < this._objects.object.length; i++ ) {
 
-            const element = this._objects.object[ i ];
+			const element = this._objects.object[ i ];
 
-            if ( element.attr_id == id ) {
+			if ( element.attr_id == id ) {
 
-                this._objects.object.splice( i, 1 );
-                break;
+				this._objects.object.splice( i, 1 );
+				break;
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    getLaneWidth ( sCoordinate: number, laneId: number ): number {
+	getLaneWidth ( sCoordinate: number, laneId: number ): number {
 
-        // TODO: Fix lanesection finding
-        const laneSection = this.lanes.getLaneSectionAt( sCoordinate );
+		// TODO: Fix lanesection finding
+		const laneSection = this.lanes.getLaneSectionAt( sCoordinate );
 
-        const lane = laneSection.getLaneById( laneId );
+		const lane = laneSection.getLaneById( laneId );
 
-        return lane.getWidthValue( sCoordinate );
-    }
+		return lane.getWidthValue( sCoordinate );
+	}
 
-    getLaneSectionAt ( s: number ): TvLaneSection {
+	getLaneSectionAt ( s: number ): TvLaneSection {
 
-        return this.lanes.getLaneSectionAt( s );
+		return this.lanes.getLaneSectionAt( s );
 
-    }
+	}
 
-    // todo move this lanes
-    updateLaneOffsetValues (): void {
+	// todo move this lanes
+	updateLaneOffsetValues (): void {
 
-        this.lanes.updateLaneOffsetValues( this.length );
+		this.lanes.updateLaneOffsetValues( this.length );
 
-    }
+	}
 
-    addLaneOffset ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
+	addLaneOffset ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
 
-        return this.lanes.addLaneOffsetRecord( s, a, b, c, d );
+		return this.lanes.addLaneOffsetRecord( s, a, b, c, d );
 
-    }
+	}
 
-    addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
+	addLaneOffsetInstance ( laneOffset: TvRoadLaneOffset ): void {
 
-        this.lanes.addLaneOffsetInstance( laneOffset );
+		this.lanes.addLaneOffsetInstance( laneOffset );
 
-        this.lanes.updateLaneOffsetValues( this.length );
+		this.lanes.updateLaneOffsetValues( this.length );
 
-    }
+	}
 
-    removeLaneOffset ( laneOffset: TvRoadLaneOffset ): void {
+	removeLaneOffset ( laneOffset: TvRoadLaneOffset ): void {
 
-        const index = this.lanes.getLaneOffsets().findIndex( i => i.uuid === laneOffset.uuid );
+		const index = this.lanes.getLaneOffsets().findIndex( i => i.uuid === laneOffset.uuid );
 
-        if ( index !== -1 ) {
+		if ( index !== -1 ) {
 
-            this.lanes.getLaneOffsets().splice( index, 1 );
+			this.lanes.getLaneOffsets().splice( index, 1 );
 
-        }
+		}
 
-        this.lanes.updateLaneOffsetValues( this.length );
-    }
+		this.lanes.updateLaneOffsetValues( this.length );
+	}
 
-    getLaneOffsetAt ( s: number ) {
+	getLaneOffsetAt ( s: number ) {
 
-        return this.lanes.getLaneOffsetEntryAt( s );
+		return this.lanes.getLaneOffsetEntryAt( s );
 
-    }
+	}
 
-    getLaneOffsets () {
+	getLaneOffsets () {
 
-        return this.lanes.getLaneOffsets();
+		return this.lanes.getLaneOffsets();
 
-    }
+	}
 
-    getLaneOffsetValue ( s: number ): number {
+	getLaneOffsetValue ( s: number ): number {
 
-        return this.lanes.getLaneOffsetValue( s );
+		return this.lanes.getLaneOffsetValue( s );
 
-    }
+	}
 
-    getLaneSectionById ( id: number ) {
+	getLaneSectionById ( id: number ) {
 
-        return this.laneSections.find( laneSection => {
+		return this.laneSections.find( laneSection => {
 
-            return laneSection.id === id;
+			return laneSection.id === id;
 
-        } );
+		} );
 
-    }
+	}
 
-    getWidthUptoStart ( s: number, lane: TvLane ) {
+	getWidthUptoStart ( s: number, lane: TvLane ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+		const laneSection = this.getLaneSectionAt( s );
 
-        return laneSection.getWidthUptoStart( lane, s );
+		return laneSection.getWidthUptoStart( lane, s );
 
-    }
+	}
 
-    getWidthUptoCenter ( s: number, lane: TvLane ) {
+	getWidthUptoCenter ( s: number, lane: TvLane ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+		const laneSection = this.getLaneSectionAt( s );
 
-        return laneSection.getWidthUptoCenter( lane, s );
+		return laneSection.getWidthUptoCenter( lane, s );
 
-    }
+	}
 
-    getWidthUptoEnd ( s: number, lane: TvLane ) {
+	getWidthUptoEnd ( s: number, lane: TvLane ) {
 
-        const laneSection = this.getLaneSectionAt( s );
+		const laneSection = this.getLaneSectionAt( s );
 
-        return laneSection.getWidthUptoEnd( lane, s );
+		return laneSection.getWidthUptoEnd( lane, s );
 
-    }
+	}
 
-    getSuccessorRoad ( connection: TvJunctionConnection ) {
+	getSuccessorRoad ( connection: TvJunctionConnection ) {
 
-        if ( this.successor.elementType == 'road' ) {
+		if ( this.successor.elementType == 'road' ) {
 
-        } else if ( this.successor.elementType == 'junction' ) {
+		} else if ( this.successor.elementType == 'junction' ) {
 
-        } else {
+		} else {
 
-        }
+		}
 
-    }
+	}
 
-    getRoadsByIncoming ( junction: TvJunction ): TvRoad[] {
+	getRoadsByIncoming ( junction: TvJunction ): TvRoad[] {
 
-        const connections = junction.getConnections();
+		const connections = junction.getConnections();
 
-        return connections
-            .filter( connection => connection.incomingRoadId === this.id )
-            .map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) );
+		return connections
+			.filter( connection => connection.incomingRoadId === this.id )
+			.map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) );
 
-    }
+	}
 
-    getSuccessorRoads (): TvRoad[] {
+	getSuccessorRoads (): TvRoad[] {
 
-        if ( this.successor?.elementType === 'junction' ) {
+		if ( this.successor?.elementType === 'junction' ) {
 
-            return this.getRoadsByIncoming( this.successor.getElement() );
+			return this.getRoadsByIncoming( this.successor.getElement() );
 
-        } else if ( this.successor?.elementType === 'road' ) {
+		} else if ( this.successor?.elementType === 'road' ) {
 
-            return [ this.successor.getElement() ];
+			return [ this.successor.getElement() ];
 
-        } else {
+		} else {
 
-            return [];
+			return [];
 
-        }
+		}
 
-    }
+	}
 
-    getPredecessorRoads (): TvRoad[] {
+	getPredecessorRoads (): TvRoad[] {
 
-        if ( this.predecessor?.elementType === 'junction' ) {
+		if ( this.predecessor?.elementType === 'junction' ) {
 
-            return this.getRoadsByIncoming( this.predecessor.getElement() );
+			return this.getRoadsByIncoming( this.predecessor.getElement() );
 
-        } else if ( this.predecessor?.elementType === 'road' ) {
+		} else if ( this.predecessor?.elementType === 'road' ) {
 
-            return [ this.predecessor.getElement() ];
+			return [ this.predecessor.getElement() ];
 
-        } else {
+		} else {
 
-            return [];
+			return [];
 
-        }
+		}
 
-    }
+	}
 
-    addGeometry ( geometry: TvAbstractRoadGeometry ) {
+	addGeometry ( geometry: TvAbstractRoadGeometry ) {
 
-        if ( ! this.planView ) this.addPlanView();
+		if ( !this.planView ) this.addPlanView();
 
-        this.geometries.push( geometry );
+		this.geometries.push( geometry );
 
-        this.length += geometry.length;
+		this.length += geometry.length;
 
-        this.computeLaneSectionLength();
-    }
+		this.computeLaneSectionLength();
+	}
 
-    addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
+	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
-        this.length += length;
+		this.length += length;
 
-        this.computeLaneSectionLength();
+		this.computeLaneSectionLength();
 
-        return this._planView.addGeometryLine( s, x, y, hdg, length );
+		return this._planView.addGeometryLine( s, x, y, hdg, length );
 
-    }
+	}
 
-    addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
+	addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
 
-        this.length += length;
+		this.length += length;
 
-        this.computeLaneSectionLength();
+		this.computeLaneSectionLength();
 
-        return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
+		return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
 
-    }
+	}
 
-    addGeometryParamPoly (
-        s: number, x: number, y: number, hdg: number, length: number,
-        aU: number, bU: number, cU: number, dU: number,
-        aV: number, bV: number, cV: number, dV: number
-    ) {
+	addGeometryParamPoly (
+		s: number, x: number, y: number, hdg: number, length: number,
+		aU: number, bU: number, cU: number, dU: number,
+		aV: number, bV: number, cV: number, dV: number
+	) {
 
-        this.length += length;
+		this.length += length;
 
-        this.computeLaneSectionLength();
+		this.computeLaneSectionLength();
 
-        return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
+		return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
-    }
+	}
 
-    addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
 
-        this.length += length;
+		this.length += length;
 
-        this.computeLaneSectionLength();
+		this.computeLaneSectionLength();
 
-        return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
+		return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
 
-    }
+	}
 
-    clearGeometries () {
+	clearGeometries () {
 
-        this.geometries.splice( 0, this.geometries.length );
+		this.geometries.splice( 0, this.geometries.length );
 
-        this.length = 0;
+		this.length = 0;
 
-        this.computeLaneSectionLength();
+		this.computeLaneSectionLength();
 
-    }
+	}
 
-    public removeGeometryByUUID ( uuid: string ) {
+	public removeGeometryByUUID ( uuid: string ) {
 
-        this.length += length;
+		this.length += length;
 
-        // find the index of geometry and remove it from the road
-        this.geometries.splice( this.geometries.findIndex( geom => geom.uuid === uuid ), 1 );
+		// find the index of geometry and remove it from the road
+		this.geometries.splice( this.geometries.findIndex( geom => geom.uuid === uuid ), 1 );
 
-    }
+	}
 
-    public getRoadTypeAt ( s: number ): TvRoadTypeClass {
+	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
-        // add a default type if none exists
-        if ( ! this.hasType ) this.setType( TvRoadType.TOWN, 40 );
+		// add a default type if none exists
+		if ( !this.hasType ) this.setType( TvRoadType.TOWN, 40 );
 
-        return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
-    }
+		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
+	}
 
-    // private checkGeometryInterval ( sCheck: any ) {
-    //
-    //     let index = -999;
-    //
-    //     for ( let i = 0; i < this._planView.geometries.length; i++ ) {
-    //
-    //         const odGeometry = this._planView.geometries[ i ];
-    //
-    //         if ( odGeometry.s <= sCheck ) {
-    //             index = i;
-    //         }
-    //
-    //         // if ( ( sCheck >= odGeometry.s ) && ( sCheck <= odGeometry.s2 ) ) {
-    //         //     return i;
-    //         // }
-    //     }
-    //
-    //     return index;
-    // }
+	// private checkGeometryInterval ( sCheck: any ) {
+	//
+	//     let index = -999;
+	//
+	//     for ( let i = 0; i < this._planView.geometries.length; i++ ) {
+	//
+	//         const odGeometry = this._planView.geometries[ i ];
+	//
+	//         if ( odGeometry.s <= sCheck ) {
+	//             index = i;
+	//         }
+	//
+	//         // if ( ( sCheck >= odGeometry.s ) && ( sCheck <= odGeometry.s2 ) ) {
+	//         //     return i;
+	//         // }
+	//     }
+	//
+	//     return index;
+	// }
 
-    // private checkLaneSectionInterval ( s: number ) {
-    //
-    //     let res = -1;
-    //
-    //     for ( let i = 0; i < this.lanes.laneSection.length; i++ ) {
-    //
-    //         // check if the s belongs to the current record
-    //         if ( this.lanes.laneSection[ i ].checkInterval( s ) ) {
-    //
-    //             res = i;
-    //
-    //         } else {
-    //
-    //             break;
-    //
-    //         }
-    //
-    //     }
-    //
-    //     return res;
-    //
-    // }
+	// private checkLaneSectionInterval ( s: number ) {
+	//
+	//     let res = -1;
+	//
+	//     for ( let i = 0; i < this.lanes.laneSection.length; i++ ) {
+	//
+	//         // check if the s belongs to the current record
+	//         if ( this.lanes.laneSection[ i ].checkInterval( s ) ) {
+	//
+	//             res = i;
+	//
+	//         } else {
+	//
+	//             break;
+	//
+	//         }
+	//
+	//     }
+	//
+	//     return res;
+	//
+	// }
 
-    public findMaxSpeedAt ( s: number, laneId?: number ) {
+	public findMaxSpeedAt ( s: number, laneId?: number ) {
 
-        let maxSpeed = null;
+		let maxSpeed = null;
 
-        // get max-speed as per road
-        const type = this.getRoadTypeAt( s );
+		// get max-speed as per road
+		const type = this.getRoadTypeAt( s );
 
-        const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
+		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
 
-        // check if lane-speed record exists
-        if ( laneId ) {
+		// check if lane-speed record exists
+		if ( laneId ) {
 
-            // const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
-            const laneSpeedRecord = Number.MAX_VALUE;
+			// const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
+			const laneSpeedRecord = Number.MAX_VALUE;
 
-            maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
+			maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
 
-        } else {
+		} else {
 
-            maxSpeed = maxSpeedAsPerRoad;
+			maxSpeed = maxSpeedAsPerRoad;
 
-        }
+		}
 
-        return maxSpeed;
-    }
+		return maxSpeed;
+	}
 
-    /**
-     * Remove any existing road model from the scene and its children
-     */
-    public remove ( parent: GameObject ) {
+	/**
+	 * Remove any existing road model from the scene and its children
+	 */
+	public remove ( parent: GameObject ) {
 
-        if ( this.spline ) this.spline.hide();
+		if ( this.spline ) this.spline.hide();
 
-        parent.remove( this.gameObject );
+		parent.remove( this.gameObject );
 
-        this.laneSections.forEach( laneSection => {
+		this.laneSections.forEach( laneSection => {
 
-            if ( this.gameObject ) this.gameObject.remove( laneSection.gameObject );
+			if ( this.gameObject ) this.gameObject.remove( laneSection.gameObject );
 
-            if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
+			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
-        } );
-    }
+		} );
+	}
 
-    showHelpers (): void {
+	showHelpers (): void {
 
-        this.spline.show();
+		this.spline.show();
 
-        this.showNodes();
+		this.showNodes();
 
-    }
+	}
 
-    hideHelpers (): void {
+	hideHelpers (): void {
 
-        this.spline.hide();
+		this.spline.hide();
 
-        this.hideNodes();
+		this.hideNodes();
 
-    }
+	}
 
-    showSpline (): void {
+	showSpline (): void {
 
-        this.spline.show();
+		this.spline.show();
 
-    }
+	}
 
-    hideSpline (): void {
+	hideSpline (): void {
 
-        this.spline.hide();
+		this.spline.hide();
 
-    }
+	}
 
-    showControlPoints (): void {
+	showControlPoints (): void {
 
-        this.spline.showControlPoints();
+		this.spline.showControlPoints();
 
-    }
+	}
 
-    hideControlPoints (): void {
+	hideControlPoints (): void {
 
-        this.spline.hideControlPoints();
+		this.spline.hideControlPoints();
 
-    }
+	}
 
-    showNodes (): any {
+	showNodes (): any {
 
-        if ( this.startNode ) this.startNode.visible = true;
-        if ( this.endNode ) this.endNode.visible = true;
+		if ( this.startNode ) this.startNode.visible = true;
+		if ( this.endNode ) this.endNode.visible = true;
 
-    }
+	}
 
-    hideNodes (): void {
+	hideNodes (): void {
 
-        if ( this.startNode ) this.startNode.visible = false;
-        if ( this.endNode ) this.endNode.visible = false;
+		if ( this.startNode ) this.startNode.visible = false;
+		if ( this.endNode ) this.endNode.visible = false;
 
-    }
+	}
 
-    addControlPoint ( point: RoadControlPoint, updateGeometry = true ) {
+	addControlPoint ( point: RoadControlPoint, updateGeometry = true ) {
 
-        point.mainObject = this;
+		point.mainObject = this;
 
-        this.spline.addControlPoint( point );
+		this.spline.addControlPoint( point );
 
-        SceneService.add( point );
+		SceneService.add( point );
 
-        if ( updateGeometry ) this.updateGeometryFromSpline();
-    }
+		if ( updateGeometry ) this.updateGeometryFromSpline();
+	}
 
-    addControlPointAt ( position: Vector3, udpateGeometry = true ): RoadControlPoint {
+	addControlPointAt ( position: Vector3, udpateGeometry = true ): RoadControlPoint {
 
-        const i = this.spline.controlPoints.length;
+		const i = this.spline.controlPoints.length;
 
-        const point = new RoadControlPoint( this, position, 'cp', i, i );
+		const point = new RoadControlPoint( this, position, 'cp', i, i );
 
-        this.addControlPoint( point, udpateGeometry );
+		this.addControlPoint( point, udpateGeometry );
 
-        return point;
+		return point;
 
-    }
+	}
 
-    removeControlPoint ( cp: RoadControlPoint ) {
+	removeControlPoint ( cp: RoadControlPoint ) {
 
-        this.spline.removeControlPoint( cp );
+		this.spline.removeControlPoint( cp );
 
-        SceneService.remove( cp );
+		SceneService.remove( cp );
 
-        this.updateGeometryFromSpline();
+		this.updateGeometryFromSpline();
 
-    }
+	}
 
-    updateGeometryFromSpline ( duringImport = false ) {
+	updateGeometryFromSpline ( duringImport = false ) {
 
-        // make length 0 because geometry will update road length again
-        this.length = 0;
+		// make length 0 because geometry will update road length again
+		this.length = 0;
 
-        this.spline.update();
+		this.spline.update();
 
-        this.clearGeometries();
+		this.clearGeometries();
 
-        this.spline.exportGeometries( duringImport ).forEach( geometry => {
+		this.spline.exportGeometries( duringImport ).forEach( geometry => {
 
-            this.addGeometry( geometry );
+			this.addGeometry( geometry );
 
-        } );
+		} );
 
-        this.updated.emit( this );
-    }
+		this.updated.emit( this );
+	}
 
-    getLeftSideWidth ( s: number ) {
+	getLeftSideWidth ( s: number ) {
 
-        let width = 0;
+		let width = 0;
 
-        this.getLaneSectionAt( s ).getLeftLanes().forEach( lane => {
-            width += lane.getWidthValue( s );
-        } );
+		this.getLaneSectionAt( s ).getLeftLanes().forEach( lane => {
+			width += lane.getWidthValue( s );
+		} );
 
-        return width;
-    }
+		return width;
+	}
 
-    getRightsideWidth ( s: number ) {
+	getRightsideWidth ( s: number ) {
 
-        let width = 0;
+		let width = 0;
 
-        this.getLaneSectionAt( s ).getRightLanes().forEach( lane => {
-            width += lane.getWidthValue( s );
-        } );
+		this.getLaneSectionAt( s ).getRightLanes().forEach( lane => {
+			width += lane.getWidthValue( s );
+		} );
 
-        return width;
+		return width;
 
-    }
+	}
 
-    /**
-     * @deprecated use RoadManager
-     */
-    updateRoadNodes (): void {
+	/**
+	 * @deprecated use RoadManager
+	 */
+	updateRoadNodes (): void {
 
-        this.updateGeometryFromSpline();
+		this.updateGeometryFromSpline();
 
-        if ( ! this.startNode ) {
-            this.startNode = this.createRoadNode( TvContactPoint.START );
-        } else {
-            this.startNode.update();
-        }
+		if ( !this.startNode ) {
+			this.startNode = this.createRoadNode( TvContactPoint.START );
+		} else {
+			this.startNode.update();
+		}
 
 
-        if ( ! this.endNode ) {
-            this.endNode = this.createRoadNode( TvContactPoint.END );
-        } else {
-            this.endNode.update();
-        }
-    }
+		if ( !this.endNode ) {
+			this.endNode = this.createRoadNode( TvContactPoint.END );
+		} else {
+			this.endNode.update();
+		}
+	}
 
-    clearNodes () {
+	clearNodes () {
 
-        SceneService.remove( this.startNode );
-        SceneService.remove( this.endNode );
+		SceneService.remove( this.startNode );
+		SceneService.remove( this.endNode );
 
-        this.startNode = null;
-        this.endNode = null;
+		this.startNode = null;
+		this.endNode = null;
 
-        delete this.startNode;
-        delete this.endNode;
+		delete this.startNode;
+		delete this.endNode;
 
-    }
+	}
 
-    getRoadWidthAt ( s: number ) {
+	getRoadWidthAt ( s: number ) {
 
-        let leftWidth = 0, rightWidth = 0;
+		let leftWidth = 0, rightWidth = 0;
 
-        const laneSection = this.getLaneSectionAt( s );
+		const laneSection = this.getLaneSectionAt( s );
 
-        if ( ! laneSection ) {
+		if ( !laneSection ) {
 
-            return {
-                totalWidth: 0,
-                leftSideWidth: 0,
-                rightSideWidth: 0
-            };
+			return {
+				totalWidth: 0,
+				leftSideWidth: 0,
+				rightSideWidth: 0
+			};
 
-        }
+		}
 
-        laneSection
-            .getLeftLanes()
-            .forEach( lane => leftWidth += lane.getWidthValue( s ) );
+		laneSection
+			.getLeftLanes()
+			.forEach( lane => leftWidth += lane.getWidthValue( s ) );
 
-        laneSection
-            .getRightLanes()
-            .forEach( lane => rightWidth += lane.getWidthValue( s ) );
+		laneSection
+			.getRightLanes()
+			.forEach( lane => rightWidth += lane.getWidthValue( s ) );
 
-        return {
-            totalWidth: leftWidth + rightWidth,
-            leftSideWidth: leftWidth,
-            rightSideWidth: rightWidth,
-        };
-    }
+		return {
+			totalWidth: leftWidth + rightWidth,
+			leftSideWidth: leftWidth,
+			rightSideWidth: rightWidth,
+		};
+	}
 
-    showLaneOffsetNodes () {
+	showLaneOffsetNodes () {
 
-        this.getLaneOffsets().forEach( laneOffset => {
+		this.getLaneOffsets().forEach( laneOffset => {
 
-            if ( laneOffset.node ) {
+			if ( laneOffset.node ) {
 
-                laneOffset.node.updatePosition();
+				laneOffset.node.updatePosition();
 
-                laneOffset.node.visible = true;
+				laneOffset.node.visible = true;
 
-                SceneService.add( laneOffset.node );
+				SceneService.add( laneOffset.node );
 
-            } else {
+			} else {
 
-                laneOffset.node = new LaneOffsetNode( this, laneOffset );
+				laneOffset.node = new LaneOffsetNode( this, laneOffset );
 
-                SceneService.add( laneOffset.node );
+				SceneService.add( laneOffset.node );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    hideLaneOffsetNodes () {
+	hideLaneOffsetNodes () {
 
-        this.getLaneOffsets().forEach( laneOffset => {
+		this.getLaneOffsets().forEach( laneOffset => {
 
-            if ( laneOffset.node ) {
+			if ( laneOffset.node ) {
 
-                laneOffset.node.visible = false;
+				laneOffset.node.visible = false;
 
-                SceneService.remove( laneOffset.node );
+				SceneService.remove( laneOffset.node );
 
-            }
+			}
 
-        } );
+		} );
 
-    }
+	}
 
-    updateLaneMaterial () {
+	updateLaneMaterial () {
 
-        this.laneSections.forEach( section => {
+		this.laneSections.forEach( section => {
 
-            section.lanes.forEach( lane => {
+			section.lanes.forEach( lane => {
 
-                lane.gameObject.material = lane.getThreeMaterial();
+				lane.gameObject.material = lane.getThreeMaterial();
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    public showLaneMarkingNodes () {
+	public showLaneMarkingNodes () {
 
-        this.laneSections.forEach( laneSection => {
+		this.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getRoadMarks().forEach( roadmark => {
+				lane.getRoadMarks().forEach( roadmark => {
 
-                    if ( roadmark.node ) {
+					if ( roadmark.node ) {
 
-                        roadmark.node.visible = true;
+						roadmark.node.visible = true;
 
-                    } else {
+					} else {
 
-                        roadmark.node = new LaneRoadMarkNode( lane, roadmark );
+						roadmark.node = new LaneRoadMarkNode( lane, roadmark );
 
-                        SceneService.add( roadmark.node );
+						SceneService.add( roadmark.node );
 
-                    }
+					}
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
-    }
+		} );
+	}
 
-    public hideLaneMarkingNodes () {
+	public hideLaneMarkingNodes () {
 
-        this.laneSections.forEach( laneSection => {
+		this.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getRoadMarks().forEach( roadmark => {
+				lane.getRoadMarks().forEach( roadmark => {
 
-                    if ( roadmark.node ) roadmark.node.visible = false;
+					if ( roadmark.node ) roadmark.node.visible = false;
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    public hideWidthNodes () {
+	public hideWidthNodes () {
 
-        this.laneSections.forEach( laneSection => {
+		this.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getLaneWidthVector().forEach( laneWidth => {
+				lane.getLaneWidthVector().forEach( laneWidth => {
 
-                    if ( laneWidth.node ) laneWidth.node.visible = false;
+					if ( laneWidth.node ) laneWidth.node.visible = false;
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
-    }
+		} );
+	}
 
-    public showWidthNodes () {
+	public showWidthNodes () {
 
-        this.laneSections.forEach( laneSection => {
+		this.laneSections.forEach( laneSection => {
 
-            laneSection.lanes.forEach( lane => {
+			laneSection.lanes.forEach( lane => {
 
-                lane.getLaneWidthVector().forEach( laneWidth => {
+				lane.getLaneWidthVector().forEach( laneWidth => {
 
-                    if ( laneWidth.node ) SceneService.remove( laneWidth.node );
+					if ( laneWidth.node ) SceneService.remove( laneWidth.node );
 
-                    laneWidth.node = new LaneWidthNode( laneWidth );
+					laneWidth.node = new LaneWidthNode( laneWidth );
 
-                    SceneService.add( laneWidth.node );
+					SceneService.add( laneWidth.node );
 
-                } );
+				} );
 
-            } );
+			} );
 
-        } );
+		} );
 
-    }
+	}
 
-    getElevationAt ( s: number ): TvElevation {
+	getElevationAt ( s: number ): TvElevation {
 
-        return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
+		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
 
-    }
+	}
 
-    getCoordAt ( point: Vector3 ): TvPosTheta {
+	getCoordAt ( point: Vector3 ): TvPosTheta {
 
-        let minDistance = Number.MAX_SAFE_INTEGER;
+		let minDistance = Number.MAX_SAFE_INTEGER;
 
-        const coordinates = new TvPosTheta();
+		const coordinates = new TvPosTheta();
 
-        for ( const geometry of this.geometries ) {
+		for ( const geometry of this.geometries ) {
 
-            const temp = new TvPosTheta();
+			const temp = new TvPosTheta();
 
-            const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
 
-            const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
 
-            if ( distance < minDistance ) {
-                minDistance = distance;
-                coordinates.copy( temp );
-            }
-        }
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+		}
 
-        return coordinates;
-    }
+		return coordinates;
+	}
 
-    getReferenceLinePoints (): TvPosTheta[] {
+	getReferenceLinePoints (): TvPosTheta[] {
 
-        const points: TvPosTheta[] = [];
+		const points: TvPosTheta[] = [];
 
-        for ( let s = 0; s <= this.length; s++ ) {
+		for ( let s = 0; s <= this.length; s++ ) {
 
-            points.push( this.getRoadCoordAt( s ) );
+			points.push( this.getRoadCoordAt( s ) );
 
-        }
+		}
 
-        points.push( this.getRoadCoordAt( this.length - Maths.Epsilon ) );
+		points.push( this.getRoadCoordAt( this.length - Maths.Epsilon ) );
 
-        return points;
-    }
+		return points;
+	}
 
-    computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates () {
 
-        // Compute lastSCoordinate for all laneSections
-        for ( let i = 0; i < this.laneSections.length; i++ ) {
+		// Compute lastSCoordinate for all laneSections
+		for ( let i = 0; i < this.laneSections.length; i++ ) {
 
-            const currentLaneSection = this.laneSections[ i ];
+			const currentLaneSection = this.laneSections[ i ];
 
-            // lastSCoordinate by default is equal to road length
-            let lastSCoordinate = this.length;
+			// lastSCoordinate by default is equal to road length
+			let lastSCoordinate = this.length;
 
-            // if next laneSection exists let's use its sCoordinate
-            if ( i + 1 < this.laneSections.length ) {
-                lastSCoordinate = this.laneSections[ i + 1 ].s;
-            }
+			// if next laneSection exists let's use its sCoordinate
+			if ( i + 1 < this.laneSections.length ) {
+				lastSCoordinate = this.laneSections[ i + 1 ].s;
+			}
 
-            currentLaneSection.endS = lastSCoordinate;
-        }
+			currentLaneSection.endS = lastSCoordinate;
+		}
 
-        // // Compute lastSCoordinate for all laneSections
-        // for ( let i = 0; i < this.laneSections.length; i++ ) {
-        //
-        // 	const currentLaneSection = this.laneSections[ i ];
-        //
-        // 	// by default it is equal to road lenght
-        // 	let lastSCoordinate = 0;
-        //
-        // 	// if next laneSection exists lets use its sCoordinate
-        // 	if ( i + 1 < this.laneSections.length ) {
-        //
-        // 		const nextLaneSection = this.laneSections[ i + 1 ];
-        // 		lastSCoordinate = nextLaneSection.attr_s;
-        //
-        // 	} else {
-        //
-        //
-        // 		lastSCoordinate = this.length;
-        // 	}
-        //
-        // 	currentLaneSection.lastSCoordinate = lastSCoordinate;
-        // }
+		// // Compute lastSCoordinate for all laneSections
+		// for ( let i = 0; i < this.laneSections.length; i++ ) {
+		//
+		// 	const currentLaneSection = this.laneSections[ i ];
+		//
+		// 	// by default it is equal to road lenght
+		// 	let lastSCoordinate = 0;
+		//
+		// 	// if next laneSection exists lets use its sCoordinate
+		// 	if ( i + 1 < this.laneSections.length ) {
+		//
+		// 		const nextLaneSection = this.laneSections[ i + 1 ];
+		// 		lastSCoordinate = nextLaneSection.attr_s;
+		//
+		// 	} else {
+		//
+		//
+		// 		lastSCoordinate = this.length;
+		// 	}
+		//
+		// 	currentLaneSection.lastSCoordinate = lastSCoordinate;
+		// }
 
-    }
+	}
 
-    set roadStyle ( roadStyle: RoadStyle ) {
+	set roadStyle ( roadStyle: RoadStyle ) {
 
-        this.lanes.clear();
+		this.lanes.clear();
 
-        this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
+		this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
 
-        this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
+		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
-        MapEvents.roadUpdated.emit( this );
-    }
+		MapEvents.roadUpdated.emit( this );
+	}
 
-    get roadStyle (): RoadStyle {
+	get roadStyle (): RoadStyle {
 
-        const roadStyle = new RoadStyle();
+		const roadStyle = new RoadStyle();
 
-        roadStyle.laneOffset = this.getLaneOffsetAt( 0 ).clone();
+		roadStyle.laneOffset = this.getLaneOffsetAt( 0 ).clone();
 
-        roadStyle.laneSection = this.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
+		roadStyle.laneSection = this.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
 
-        return roadStyle;
+		return roadStyle;
 
-    }
+	}
 
-    showCornerPoints () {
+	showCornerPoints () {
 
-        this.createCornerPoints( this.getStartCoord() );
+		this.createCornerPoints( this.getStartCoord() );
 
-        this.createCornerPoints( this.getEndCoord() );
+		this.createCornerPoints( this.getEndCoord() );
 
-    }
+	}
 
-    hideCornerPoints () {
+	hideCornerPoints () {
 
-        this.cornerPoints.forEach( point => this.gameObject.remove( point ) );
-        this.cornerPoints = [];
+		this.cornerPoints.forEach( point => this.gameObject.remove( point ) );
+		this.cornerPoints = [];
 
-    }
+	}
 
-    isPredecessor ( otherRoad: TvRoad ): boolean {
+	isPredecessor ( otherRoad: TvRoad ): boolean {
 
-        if ( ! this.predecessor ) return false;
+		if ( !this.predecessor ) return false;
 
-        if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) return false;
+		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) return false;
 
-        return this.predecessor.elementId === otherRoad.id;
-    }
+		return this.predecessor.elementId === otherRoad.id;
+	}
 
-    isSuccessor ( otherRoad: TvRoad ): boolean {
+	isSuccessor ( otherRoad: TvRoad ): boolean {
 
-        if ( ! this.successor ) return false;
+		if ( !this.successor ) return false;
 
-        if ( this.successor.elementType === TvRoadLinkChildType.junction ) return false;
+		if ( this.successor.elementType === TvRoadLinkChildType.junction ) return false;
 
-        return this.successor.elementId === otherRoad.id;
-    }
+		return this.successor.elementId === otherRoad.id;
+	}
 
-    removeConnection ( otherRoad: TvRoad ) {
+	removeConnection ( otherRoad: TvRoad ) {
 
-        if ( this.isPredecessor( otherRoad ) ) {
+		if ( this.isPredecessor( otherRoad ) ) {
 
-            this.predecessor = null;
+			this.predecessor = null;
 
-        } else if ( this.isSuccessor( otherRoad ) ) {
+		} else if ( this.isSuccessor( otherRoad ) ) {
 
-            this.successor = null;
+			this.successor = null;
 
-        }
+		}
 
-        if ( otherRoad.isPredecessor( this ) ) {
+		if ( otherRoad.isPredecessor( this ) ) {
 
-            otherRoad.predecessor = null;
+			otherRoad.predecessor = null;
 
-        } else if ( otherRoad.isSuccessor( this ) ) {
+		} else if ( otherRoad.isSuccessor( this ) ) {
 
-            otherRoad.successor = null;
+			otherRoad.successor = null;
 
-        }
+		}
 
-    }
+	}
 
-    removePredecessor (): void {
+	removePredecessor (): void {
 
-        if ( ! this.predecessor ) return;
+		if ( !this.predecessor ) return;
 
-        // junction
+		// junction
 
-        if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
-            return;
-        }
+		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
 
-        // road
-        const road = this.predecessor.road;
-        const contactPoint = this.predecessor.contactPoint;
+		// road
+		const road = this.predecessor.road;
+		const contactPoint = this.predecessor.contactPoint;
 
-        this.predecessor = null;
+		this.predecessor = null;
 
-        if ( contactPoint === TvContactPoint.START ) {
+		if ( contactPoint === TvContactPoint.START ) {
 
-            road.removePredecessor();
+			road.removePredecessor();
 
-        } else {
+		} else {
 
-            road.removeSuccessor();
+			road.removeSuccessor();
 
-        }
-    }
+		}
+	}
 
-    removeSuccessor (): void {
+	removeSuccessor (): void {
 
-        if ( ! this.successor ) return;
+		if ( !this.successor ) return;
 
-        // junction
+		// junction
 
-        if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
-            return;
-        }
+		if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
 
-        // road
-        const road = this.successor.road;
-        const contactPoint = this.successor.contactPoint;
+		// road
+		const road = this.successor.road;
+		const contactPoint = this.successor.contactPoint;
 
-        this.successor = null;
+		this.successor = null;
 
-        if ( contactPoint === TvContactPoint.START ) {
+		if ( contactPoint === TvContactPoint.START ) {
 
-            road.removePredecessor();
+			road.removePredecessor();
 
-        } else {
+		} else {
 
-            road.removeSuccessor();
+			road.removeSuccessor();
 
-        }
+		}
 
-        this.successor = null;
-    }
+		this.successor = null;
+	}
 
-    addPredecessor ( element: TvRoadLinkChild ) {
+	addPredecessor ( element: TvRoadLinkChild ) {
 
-        this.predecessor = element;
+		this.predecessor = element;
 
-        if ( ! element ) return;
+		if ( !element ) return;
 
-        if ( element.elementType == TvRoadLinkChildType.junction ) {
-            // TODO: might have to update connecting/incoming road
-            return;
-        }
+		if ( element.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
 
-        // direction
-        // if predecessor is ending then our direction is positive
-        // -> ->
-        // if predecessor is starting then our direction is negative
-        // <- ->
-        const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
+		// direction
+		// if predecessor is ending then our direction is positive
+		// -> ->
+		// if predecessor is starting then our direction is negative
+		// <- ->
+		const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
 
-        if ( element.contactPoint == TvContactPoint.START ) {
+		if ( element.contactPoint == TvContactPoint.START ) {
 
-            element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
 
-            element.laneSection.lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-            } );
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+			} );
 
-        } else if ( element.contactPoint == TvContactPoint.END ) {
+		} else if ( element.contactPoint == TvContactPoint.END ) {
 
-            element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
 
-            element.laneSection.lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-            } );
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+			} );
 
-        }
+		}
 
-        this.getFirstLaneSection().lanes.forEach( lane => {
-            if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-        } );
-    }
+		this.getFirstLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+		} );
+	}
 
-    addSuccessor ( element: TvRoadLinkChild ) {
+	addSuccessor ( element: TvRoadLinkChild ) {
 
-        this.successor = element;
+		this.successor = element;
 
-        if ( ! element ) return;
+		if ( !element ) return;
 
-        if ( element.elementType == TvRoadLinkChildType.junction ) {
-            // TODO: might have to update connecting/incoming road
-            return;
-        }
+		if ( element.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
 
-        // direction
-        // if successor is starting then our direction is positive
-        // -> ->
-        // if successor is ending then our direction is negative
-        // -> <-
-        const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
+		// direction
+		// if successor is starting then our direction is positive
+		// -> ->
+		// if successor is ending then our direction is negative
+		// -> <-
+		const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
 
-        if ( element.contactPoint == TvContactPoint.START ) {
+		if ( element.contactPoint == TvContactPoint.START ) {
 
-            element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
 
-            element.laneSection.lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-            } );
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+			} );
 
-        } else if ( element.contactPoint == TvContactPoint.END ) {
+		} else if ( element.contactPoint == TvContactPoint.END ) {
 
-            element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
 
-            element.laneSection.lanes.forEach( lane => {
-                if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-            } );
+			element.laneSection.lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+			} );
 
-        }
+		}
 
-        this.getLastLaneSection().lanes.forEach( lane => {
-            if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-        } );
+		this.getLastLaneSection().lanes.forEach( lane => {
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+		} );
 
 
-    }
+	}
 
-    cutRoad ( roadCoord: TvPosTheta ): TvRoad {
+	cutRoad ( roadCoord: TvPosTheta ): TvRoad {
 
-        console.error( 'not complete' );
+		console.error( 'not complete' );
 
-        const laneSection = this.getLaneSectionAt( roadCoord.s ).cloneAtS( 0, 0 );
-        const length = this.length - ( roadCoord.s );
+		const laneSection = this.getLaneSectionAt( roadCoord.s ).cloneAtS( 0, 0 );
+		const length = this.length - ( roadCoord.s );
 
-        const secondPoint = this.getRoadCoordAt( this.length );
+		const secondPoint = this.getRoadCoordAt( this.length );
 
-        const newRoad = this.clone( roadCoord.s );
-        newRoad.addControlPointAt( roadCoord.toVector3() );
-        ( newRoad.spline.getFirstPoint() as RoadControlPoint ).allowChange = false;
-        newRoad.addControlPointAt( secondPoint.toVector3(), true );
+		const newRoad = this.clone( roadCoord.s );
+		newRoad.addControlPointAt( roadCoord.toVector3() );
+		( newRoad.spline.getFirstPoint() as RoadControlPoint ).allowChange = false;
+		newRoad.addControlPointAt( secondPoint.toVector3(), true );
 
-        newRoad.clearLaneSections();
-        newRoad.addLaneSectionInstance( laneSection );
+		newRoad.clearLaneSections();
+		newRoad.addLaneSectionInstance( laneSection );
 
-        this.length = this.length - length;
+		this.length = this.length - length;
 
-        this.spline.getLastPoint().position.copy( roadCoord.toVector3() );
-        ( this.spline.getLastPoint() as RoadControlPoint ).allowChange = false;
-        this.updateGeometryFromSpline();
+		this.spline.getLastPoint().position.copy( roadCoord.toVector3() );
+		( this.spline.getLastPoint() as RoadControlPoint ).allowChange = false;
+		this.updateGeometryFromSpline();
 
-        this.computeLaneSectionLength();
-        newRoad.computeLaneSectionLength();
+		this.computeLaneSectionLength();
+		newRoad.computeLaneSectionLength();
 
-        return newRoad;
-    }
+		return newRoad;
+	}
 
-    clone ( s: number ): TvRoad {
+	clone ( s: number ): TvRoad {
 
-        const length = this.length - s;
+		const length = this.length - s;
 
-        const road = new TvRoad( this.name, length, this.id, this.junctionId );
+		const road = new TvRoad( this.name, length, this.id, this.junctionId );
 
-        road.type = this.type;
-        // road.elevationProfile = this.elevationProfile;
-        // road.lateralProfile = this.lateralProfile;
-        // road.lanes = this.lanes;
-        road.drivingMaterialGuid = this.drivingMaterialGuid;
-        road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
-        road.borderMaterialGuid = this.borderMaterialGuid;
-        road.shoulderMaterialGuid = this.shoulderMaterialGuid;
-        road.trafficRule = this.trafficRule;
-        // road.successor = this.successor;
-        // road.predecessor = this.predecessor;
-        road.junctionId = this.junctionId;
-        road._planView = this.planView.clone( s );
-        // road._objects = this.objects.clone();
-        // road._signals = this.signals;
-        // road._gameObject = this.gameObject;
-        // road._name = this.name;
-        // road._length = this.length;
-        // road._id = this.id;
+		road.type = this.type;
+		// road.elevationProfile = this.elevationProfile;
+		// road.lateralProfile = this.lateralProfile;
+		// road.lanes = this.lanes;
+		road.drivingMaterialGuid = this.drivingMaterialGuid;
+		road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
+		road.borderMaterialGuid = this.borderMaterialGuid;
+		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
+		road.trafficRule = this.trafficRule;
+		// road.successor = this.successor;
+		// road.predecessor = this.predecessor;
+		road.junctionId = this.junctionId;
+		road._planView = this.planView.clone( s );
+		// road._objects = this.objects.clone();
+		// road._signals = this.signals;
+		// road._gameObject = this.gameObject;
+		// road._name = this.name;
+		// road._length = this.length;
+		// road._id = this.id;
 
-        return road;
+		return road;
 
-    }
+	}
 
-    private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
-        const geometry = TvUtils.checkIntervalArray( this.geometries, s );
+		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
 
-        if ( geometry == null ) {
+		if ( geometry == null ) {
 
-            SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
+			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
 
-            SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
+			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
 
-            return;
-        }
+			return;
+		}
 
-        return geometry;
+		return geometry;
 
-    }
+	}
 
-    private createRoadNode ( contact: TvContactPoint ) {
+	private createRoadNode ( contact: TvContactPoint ) {
 
-        const node = new RoadNode( this, contact );
+		const node = new RoadNode( this, contact );
 
-        SceneService.add( node );
+		SceneService.add( node );
 
-        return node;
-    }
+		return node;
+	}
 
-    private computeLaneSectionLength () {
+	private computeLaneSectionLength () {
 
-        this.computeLaneSectionCoordinates();
+		this.computeLaneSectionCoordinates();
 
-        const sections = this.getLaneSections();
+		const sections = this.getLaneSections();
 
-        if ( sections.length == 0 ) return;
+		if ( sections.length == 0 ) return;
 
-        // update first, not required
-        // if ( sections.length == 1 ) sections[ 0 ].length = this.length;
+		// update first, not required
+		// if ( sections.length == 1 ) sections[ 0 ].length = this.length;
 
-        for ( let i = 1; i < sections.length; i++ ) {
+		for ( let i = 1; i < sections.length; i++ ) {
 
-            const current = sections[ i ];
-            const previous = sections[ i - 1 ];
+			const current = sections[ i ];
+			const previous = sections[ i - 1 ];
 
-            previous.length = current.s - previous.s;
-        }
+			previous.length = current.s - previous.s;
+		}
 
-        // update last
-        sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
-    }
+		// update last
+		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
+	}
 
-    private createCornerPoints ( coord: TvPosTheta ) {
+	private createCornerPoints ( coord: TvPosTheta ) {
 
-        const rightT = this.getRightsideWidth( coord.s );
-        const leftT = this.getLeftSideWidth( coord.s );
+		const rightT = this.getRightsideWidth( coord.s );
+		const leftT = this.getLeftSideWidth( coord.s );
 
-        const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-        const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
 
-        const leftPoint = new DynamicControlPoint( this, leftPosition );
-        const rightPoint = new DynamicControlPoint( this, rightPosition );
+		const leftPoint = new DynamicControlPoint( this, leftPosition );
+		const rightPoint = new DynamicControlPoint( this, rightPosition );
 
-        this.cornerPoints.push( leftPoint );
-        this.cornerPoints.push( rightPoint );
+		this.cornerPoints.push( leftPoint );
+		this.cornerPoints.push( rightPoint );
 
-        this.gameObject.add( leftPoint );
-        this.gameObject.add( rightPoint );
-    }
+		this.gameObject.add( leftPoint );
+		this.gameObject.add( rightPoint );
+	}
 }
