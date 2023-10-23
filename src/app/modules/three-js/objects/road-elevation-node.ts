@@ -22,7 +22,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 
 		super( elevation, road?.getPositionAt( elevation.s || 0 ).toVector3() || new Vector3() );
 
-		this.tag = RoadElevationNode.TAG;
+		this.tag = this.name = RoadElevationNode.TAG;
 
 		this.createLine();
 

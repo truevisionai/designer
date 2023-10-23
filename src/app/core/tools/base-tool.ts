@@ -17,6 +17,7 @@ import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardInput } from '../input';
 import { ToolType } from '../models/tool-types.enum';
 import { IEditorState } from './i-editor-state';
+import { SceneService } from '../services/scene.service';
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
@@ -72,6 +73,12 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	clearInspector () {
 
 		AppInspector.clear();
+
+	}
+
+	clearToolObjects (): void {
+
+		SceneService.clearToolObjects();
 
 	}
 

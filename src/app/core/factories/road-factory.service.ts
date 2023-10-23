@@ -6,11 +6,11 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { RoadStyleService } from 'app/services/road-style.service';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { JunctionEntryObject } from '../../modules/three-js/objects/junction-entry.object';
 import { RoadControlPoint } from '../../modules/three-js/objects/road-control-point';
 import { TvJunction } from '../../modules/tv-map/models/tv-junction';
@@ -19,6 +19,7 @@ import { TvMapQueries } from '../../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../shapes/auto-spline';
 import { IDService } from './id.service';
+import { Maths } from 'app/utils/maths';
 
 export class RoadFactory {
 
@@ -34,6 +35,101 @@ export class RoadFactory {
 
 		this.IDService = new IDService();
 
+	}
+
+	static createCircularRoads ( centre: Vector3, end: Vector3, radius: number ): TvRoad[] {
+
+		const p1 = new Vector2( centre.x, centre.y );
+		const p2 = new Vector2( end.x, end.y );
+
+		let start = end;
+
+		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+
+		const circumference = 2 * Math.PI * radius;
+
+		const arcLength = circumference * 0.25;
+
+		const curvature = 1 / radius;
+
+		const points = []
+
+		const roads = [];
+
+		for ( let i = 0; i < 4; i++ ) {
+
+			const road = roads[ i ] = this.map.addDefaultRoad();
+
+			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+
+			const startPosTheta = arc.getRoadCoord( 0 );
+			const endPosTheta = arc.getRoadCoord( arcLength );
+
+			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+
+			let a2 = startPosTheta.moveForward( +distance );
+			let b2 = endPosTheta.moveForward( -distance );
+
+			points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+			points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
+			points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
+			points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
+
+			start = arc.endV3;
+
+			hdg += Maths.M_PI_2;
+
+		}
+
+		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
+
+		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
+
+		points.forEach( p => SceneService.addToolObject( p ) );
+
+		for ( let j = 0; j < 4; j++ ) {
+
+			const road = roads[ j ];
+
+			const spline = new AutoSpline( road );
+
+			spline.addControlPoint( points[ j * 4 + 0 ] );
+			spline.addControlPoint( points[ j * 4 + 1 ] );
+			spline.addControlPoint( points[ j * 4 + 2 ] );
+			spline.addControlPoint( points[ j * 4 + 3 ] );
+
+			road.spline = spline;
+
+			road.spline.hide();
+
+			road.updateGeometryFromSpline();
+
+			if ( ( j + 1 ) < roads.length ) {
+
+				const nextRoad = roads[ j + 1 ];
+
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				nextRoad.addPredecessor( predecessor );
+
+			} else {
+
+				// its last road, so make connection with the first one
+				const firstRoad = roads[ 0 ];
+
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				firstRoad.addPredecessor( predecessor );
+
+			}
+
+		}
+
+		return roads;
 	}
 
 	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {

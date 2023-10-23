@@ -25,6 +25,8 @@ export class RoundLine {
 
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
+		this.mesh.name = 'roundline';
+
 		this.mesh.castShadow = true;
 
 		this.mesh.renderOrder = 3;

@@ -95,6 +95,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		this.controlPoint?.unselect();
 
 		this.node?.unselect();
+
+		// this.clearToolObjects();
 	}
 
 	removeRoad ( road: TvRoad ) {

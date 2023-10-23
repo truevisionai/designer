@@ -182,7 +182,7 @@ export class TvMap {
 
 			TvConsole.error( `${ roadId } road-id not found` );
 
-			throw new Error( `RoadNotFound` );
+			console.error( `${ roadId } road-id not found` );
 
 		}
 

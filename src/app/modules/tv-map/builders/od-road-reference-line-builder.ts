@@ -45,11 +45,11 @@ export class OdRoadReferenceLineBuilder {
 
 		const line = new Line( geometry, this.material );
 
-		line.name = 'Line';
+		line.name = 'road-reference-line';
 
 		line.userData.is_selectable = false;
 
-		SceneService.addHelper( line );
+		SceneService.addToolObject( line );
 	}
 
 	private static convertToVector3 ( points: TvPosTheta[] ): Vector3[] {

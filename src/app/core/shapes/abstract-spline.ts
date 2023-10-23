@@ -27,10 +27,6 @@ export abstract class AbstractSpline {
 
 	}
 
-	get scene () {
-		return SceneService.scene;
-	}
-
 	get controlPointPositions (): Vector3[] {
 		return this.controlPoints.map( point => point.position );
 	}
@@ -191,7 +187,7 @@ export abstract class AbstractSpline {
 		controlPointObject.userData.is_control_point = true;
 		controlPointObject.userData.is_selectable = true;
 
-		this.scene.add( controlPointObject );
+		SceneService.addToolObject( controlPointObject );
 
 		if ( cpobjidx == undefined ) {
 			this.controlPoints.push( controlPointObject );

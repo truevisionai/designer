@@ -44,7 +44,7 @@ export class OdLaneDirectionBuilder {
 
 	clear () {
 
-		this.arrows.forEach( arrow => SceneService.removeHelper( arrow ) );
+		this.arrows.forEach( arrow => SceneService.removeToolObject( arrow ) );
 
 	}
 
@@ -89,7 +89,7 @@ export class OdLaneDirectionBuilder {
 		this.arrows.push( arrowHelper );
 
 		// add to helper to avoid raycasting
-		SceneService.addHelper( arrowHelper );
+		SceneService.addToolObject( arrowHelper );
 	}
 
 	private createArrow2D ( origin: Vector3, hdg: number ) {
@@ -98,7 +98,7 @@ export class OdLaneDirectionBuilder {
 
 		this.arrows.push( arrow );
 
-		SceneService.addHelper( arrow );
+		SceneService.addToolObject( arrow );
 
 		return arrow;
 	}

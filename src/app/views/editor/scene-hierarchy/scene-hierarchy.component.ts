@@ -23,7 +23,7 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 		return {
 			id: node.id,
 			uuid: node.uuid,
-			name: node.name ?? 'unnamed',
+			name: node.id + ':' + node.name + ':' + node.type,
 			type: node.type,
 			children: node.children,
 			expandable: !!node.children && node.children.length > 0,
@@ -63,7 +63,9 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 		this.changeDet.detectChanges();
 
-		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged' );
+		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged', SceneService.scene );
+
+		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged', SceneService.scene );
 
 	}
 

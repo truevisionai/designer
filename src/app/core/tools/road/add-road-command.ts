@@ -1,53 +1,51 @@
-// /*
-//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
-//  */
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
 
-// import { AppInspector } from 'app/core/inspector';
-// import { SceneService } from 'app/core/services/scene.service';
-// import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-// import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-// import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
-// import { OdBaseCommand } from '../../commands/od-base-command';
+import { AppInspector } from 'app/core/inspector';
+import { SceneService } from 'app/core/services/scene.service';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
+import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
+import { OdBaseCommand } from '../../commands/od-base-command';
+import { MapEvents } from 'app/events/map-events';
 
-// export class AddRoadCommand extends OdBaseCommand {
+export class AddRoadCommand extends OdBaseCommand {
 
-// 	constructor ( private road: TvRoad, private point: RoadControlPoint ) {
+	constructor ( private roads: TvRoad[] = [] ) {
 
-// 		super();
+		super();
 
-// 	}
+	}
 
-// 	execute (): void {
+	execute (): void {
 
-// 		AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
+		this.roads.forEach( road => {
 
-// 	}
+			this.map.addRoad( road );
 
-// 	undo (): void {
+			MapEvents.roadCreated.emit( road );
 
-// 		this.road.spline.removeControlPoint( this.point );
+		} )
 
-// 		SceneService.remove( this.point );
+	}
 
-// 		this.road.spline.hide();
+	undo (): void {
 
-// 		this.map.removeRoad( this.road );
+		this.roads.forEach( road => {
 
-// 		AppInspector.clear();
-// 	}
+			MapEvents.roadRemoved.emit( road );
 
-// 	redo (): void {
+			this.map.roads.delete( road.id );
 
-// 		this.road.spline.addControlPoint( this.point );
+		} );
 
-// 		SceneService.add( this.point );
+	}
 
-// 		this.road.spline.show();
+	redo (): void {
 
-// 		this.map.addRoadInstance( this.road );
+		this.execute();
 
-// 		AppInspector.setInspector( RoadInspector, { road: this.road, controlPoint: this.point } );
-// 	}
+	}
 
-
-// }
+}

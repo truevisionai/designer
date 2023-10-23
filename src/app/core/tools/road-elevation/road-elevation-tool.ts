@@ -18,7 +18,13 @@ import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { RoadElevationManager } from 'app/core/factories/road-elevation-manager';
+import { RoadElevationManager } from 'app/core/managers/road-elevation-manager';
+import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -32,6 +38,10 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	nodeChanged: boolean = false;
 
+	private pointStrategy: SelectStrategy<RoadControlPoint>;
+	private nodeStrategy: SelectStrategy<RoadElevationNode>;
+	private roadStrategy: SelectStrategy<TvRoadCoord>;
+
 	get nodes () {
 
 		return this.road?.elevationProfile?.elevation.map( e => e.node ) || [];
@@ -41,6 +51,10 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 	init (): void {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
+
+		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
+		this.nodeStrategy = new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG, true );
+		this.roadStrategy = new OnRoadStrategy();
 
 	}
 
@@ -54,7 +68,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => RoadElevationManager.removeNodes( road ) );
+		this.map.getRoads().forEach( road => RoadElevationManager.instance.removeNodes( road ) );
 
 	}
 
@@ -101,6 +115,8 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
+		if ( !this.pointStrategy.onPointerMoved( e ) ) this.nodeStrategy.onPointerMoved( e );
+
 		if ( this.isPointerDown && this.node ) {
 
 			this.nodeChanged = true;
@@ -113,7 +129,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	createRoadElevationNode ( road: TvRoad, point: Vector3 ) {
 
-		RoadElevationManager.showNodes( road );
+		RoadElevationManager.instance.showNodes( road );
 
 		const roadCoord = road.getCoordAt( point );
 

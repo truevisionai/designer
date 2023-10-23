@@ -4,7 +4,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
-import { Mesh, Object3D } from 'three';
+import { Group, Mesh, Object3D } from 'three';
 import { GameObject } from '../game-object';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
@@ -20,8 +20,24 @@ export class SceneService {
 	public static renderer: THREE.WebGLRenderer;
 	public static changed = new EventEmitter();
 
+	private static editorLayer: Group;
+	private static mainLayer: Group;
+	private static toolLayer: Group;
+
 	constructor () {
 
+		SceneService.editorLayer = new Group();
+		SceneService.editorLayer.name = 'Editor';
+
+		SceneService.mainLayer = new Group();
+		SceneService.mainLayer.name = 'Main';
+
+		SceneService.toolLayer = new Group();
+		SceneService.toolLayer.name = 'Tool';
+
+		SceneService.scene.add( SceneService.editorLayer );
+		SceneService.scene.add( SceneService.mainLayer );
+		SceneService.scene.add( SceneService.toolLayer );
 
 	}
 
@@ -51,21 +67,37 @@ export class SceneService {
 
 	}
 
-	static addHelper ( object: Object3D ): void {
+	static addEditorObject ( object: Object3D ) {
 
-		this.scene.add( object );
+		this.editorLayer.add( object );
 
-		this.sceneHelpers.push( object );
+		this.changed.emit();
+	}
 
-		// object.layers.set( 31 );
+	static addToolObject ( object: Object3D ): void {
+
+		this.toolLayer.add( object );
+
+		this.changed.emit();
+	}
+
+	static clearToolObjects (): void {
+
+		this.toolLayer.children.forEach( child => {
+
+			this.removeToolObject( child, false );
+
+		} )
+
+		this.changed.emit();
 
 	}
 
-	static removeHelper ( object: Object3D ): void {
+	static removeToolObject ( object: Object3D, fireEvent = true ): void {
 
 		if ( object == null ) return;
 
-		this.scene.remove( object );
+		this.toolLayer.remove( object );
 
 		for ( let i = 0; i < this.sceneHelpers.length; i++ ) {
 
@@ -78,15 +110,17 @@ export class SceneService {
 				break;
 			}
 		}
+
+		if ( fireEvent ) this.changed.emit();
 	}
 
 	static clear () {
 
-		this.removeObjects();
+		this.removeMainObjects();
 
 	}
 
-	static removeObjects () {
+	static removeMainObjects () {
 
 		this.objects.forEach( object => this.remove( object ) );
 
@@ -98,7 +132,7 @@ export class SceneService {
 
 		if ( object == null ) return;
 
-		this.scene.add( object );
+		this.mainLayer.add( object );
 
 		if ( raycasting ) this.objects.push( object );
 

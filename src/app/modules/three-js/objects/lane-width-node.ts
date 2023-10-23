@@ -77,6 +77,7 @@ export class LaneWidthNode extends Group implements ISelectable {
 
 		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
 		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+		this.line.name = 'lane-width-node';
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
 		this.line.renderOrder = 3;
 		this.add( this.line );

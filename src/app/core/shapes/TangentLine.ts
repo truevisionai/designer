@@ -26,6 +26,8 @@ export class TangentLine {
 
 		this.mesh = new LineSegments( this.geometry, new LineBasicMaterial( { color: COLOR.DARKBLUE, opacity: 0.35 } ) );
 
+		this.mesh.name = 'tangent';
+
 		this.mesh.castShadow = true;
 
 		this.mesh.renderOrder = 3;

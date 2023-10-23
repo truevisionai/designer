@@ -7,6 +7,7 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
+import { SceneService } from '../services/scene.service';
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -45,7 +46,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 		this.mesh.frustumCulled = false;
 
-		this.scene.add( this.mesh );
+		SceneService.addToolObject( this.mesh );
 	}
 
 

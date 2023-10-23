@@ -33,7 +33,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.node.road.addElevationInstance( this.node.elevation );
 
-		SceneService.add( this.node );
+		SceneService.addToolObject( this.node );
 
 		this.selectPointCommand.execute();
 
@@ -46,7 +46,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.node.road.removeElevationInstance( this.node.elevation );
 
-		SceneService.remove( this.node );
+		SceneService.removeToolObject( this.node );
 
 		this.selectPointCommand.undo();
 

@@ -150,7 +150,7 @@ export class RoadManager {
 
 		const node = new RoadNode( road, contact );
 
-		SceneService.add( node );
+		SceneService.addToolObject( node );
 
 		return node;
 

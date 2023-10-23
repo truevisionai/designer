@@ -24,7 +24,7 @@ export class DeleteElevationCommand extends BaseCommand {
 
 		this.node.road.removeElevationInstance( this.node.elevation );
 
-		SceneService.remove( this.node );
+		SceneService.removeToolObject( this.node );
 
 		this.inspectorCommand.execute();
 
@@ -35,7 +35,7 @@ export class DeleteElevationCommand extends BaseCommand {
 
 		this.node.road.addElevationInstance( this.node.elevation );
 
-		SceneService.add( this.node );
+		SceneService.addToolObject( this.node );
 
 		this.inspectorCommand.undo();
 

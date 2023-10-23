@@ -361,7 +361,7 @@ class DomeImage {
 
 		SceneService.scene.background = SceneService.scene.environment = this.renderTarget.texture;
 
-		SceneService.removeHelper( sphereMesh );
+		SceneService.removeToolObject( sphereMesh );
 
 	}
 

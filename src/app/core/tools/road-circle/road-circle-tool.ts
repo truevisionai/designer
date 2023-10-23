@@ -10,8 +10,9 @@ import { COLOR } from 'app/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, CircleGeometry, Float32BufferAttribute, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AddRoadCircleCommand } from './add-road-circle-command';
 import { SceneService } from 'app/core/services/scene.service';
+import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { AddRoadCommand } from '../road/add-road-command';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -54,6 +55,8 @@ export class RoadCircleTool extends BaseTool {
 		super.disable();
 
 		this.map.getRoads().forEach( road => road.hideHelpers() );
+
+		// this.clearToolObjects();
 
 	}
 
@@ -122,11 +125,13 @@ class CircleRoad {
 
 		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN } ) );
 
+		this.line.name = 'circle';
+
 		this.line.position.copy( centre );
 
 		this.text = new TextObject( 'Radius: ' + radius.toFixed( 2 ), centre );
 
-		SceneService.addHelper( this.line );
+		SceneService.addToolObject( this.line );
 
 	}
 
@@ -158,9 +163,11 @@ class CircleRoad {
 
 		this.text.remove();
 
-		SceneService.removeHelper( this.line );
+		SceneService.removeToolObject( this.line );
 
-		CommandHistory.execute( new AddRoadCircleCommand( this.centre, this.end, this.radius ) );
+		const roads = RoadFactory.createCircularRoads( this.centre, this.end, this.radius );
+
+		CommandHistory.execute( new AddRoadCommand( roads ) );
 
 	}
 

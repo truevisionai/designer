@@ -63,6 +63,8 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		if ( position ) this.initPosition( position );
 
+		this.name = 'road-control-point';
+
 		this.userData.is_button = true;
 		this.userData.is_control_point = true;
 		this.userData.is_selectable = true;
@@ -225,6 +227,8 @@ export class RoadControlPoint extends BaseControlPoint {
 		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
 
 		this.tangentLine = new Line( this.tangentLineGeometry, this.tangentLineMaterial );
+
+		this.tangentLine.name = 'tangent-control-line';
 
 		this.tangentLine.castShadow = true;
 

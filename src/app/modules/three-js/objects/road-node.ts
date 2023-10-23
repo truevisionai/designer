@@ -182,6 +182,8 @@ export class RoadNode extends Group implements ISelectable {
 
 		this.line = new Line2( lineGeometry, lineMaterial );
 
+		this.line.name = RoadNode.lineTag;
+
 		this.line[ 'tag' ] = RoadNode.lineTag;
 
 		this.line.renderOrder = 3;

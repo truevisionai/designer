@@ -23,6 +23,8 @@ export class PolyLine {
 
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.WHITE, opacity: 0.35, linewidth: 2 } ) );
 
+		this.mesh.name = 'polyline';
+
 		this.mesh.castShadow = true;
 
 		this.mesh.renderOrder = 1;
