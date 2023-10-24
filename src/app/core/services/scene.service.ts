@@ -94,9 +94,9 @@ export class SceneService {
 
 	static clear () {
 
-		this.mainLayer.children.forEach( object => this.disposeNode( object ) );
+		this.disposeHierarchy( this.mainLayer, this.disposeNode );
 
-		this.toolLayer.traverse( object => this.disposeNode( object ) );
+		this.disposeHierarchy( this.toolLayer, this.disposeNode );
 
 		this.changed.emit();
 
@@ -121,96 +121,60 @@ export class SceneService {
 		this.changed.emit();
 	}
 
-	// public static disposeHierarchy ( node, callback ) {
+	private static disposeHierarchy ( node, callback ) {
 
-	// 	for ( let i = node.children.length - 1; i >= 0; i-- ) {
+		for ( let i = node.children.length - 1; i >= 0; i-- ) {
 
-	// 		const child = node.children[ i ];
+			const child = node.children[ i ];
 
-	// 		this.disposeHierarchy( child, callback );
+			this.disposeHierarchy( child, callback );
 
-	// 		callback( child );
+			callback( child );
 
-	// 	}
-	// }
-
-	// static removeWithChildren ( object: Object3D, raycasting: boolean = false ) {
-
-	// 	if ( !object ) return;
-
-	// 	while ( object.children.length > 0 ) {
-
-	// 		this.disposeNode( object.children[ 0 ] );
-
-	// 	}
-
-	// 	this.removeFromMain( object, raycasting );
-	// }
-
-	private static disposeNode ( group ) {
-
-		// This array will keep a reference to all children in the group
-		var objectsToRemove = [];
-
-		// This function populates objectsToRemove with all children
-		// (and children of children, and so forth)
-		group.traverse( function ( child ) {
-			if ( child !== group ) { // Avoid adding the group itself
-				objectsToRemove.push( child );
-			}
-		} );
-
-		// Remove each object from its parent. Since we're not modifying the
-		// children array directly, it's safe to do this operation in a loop.
-		for ( var i = 0; i < objectsToRemove.length; i++ ) {
-			var object = objectsToRemove[ i ];
-			object.parent.remove( object );
-
-			// If you're changing scenes often, you'll want to look into disposing geometries, materials, and textures as well
-			// to prevent memory leaks. This includes calling dispose on geometries, materials, and textures that you've loaded.
 		}
+	}
 
-		// At this point, the group should be empty with all objects removed
+	private static disposeNode ( node: any ) {
 
-		// if ( node instanceof Mesh ) {
+		if ( node instanceof Mesh ) {
 
-		// 	node.parent.remove( node );
-		// 	node.parent = undefined;
+			node.parent.remove( node );
+			node.parent = undefined;
 
-		// 	if ( node.geometry ) {
+			if ( node.geometry ) {
 
-		// 		node.geometry.dispose();
+				node.geometry.dispose();
 
-		// 	}
+			}
 
-		// 	let material: any = node.material;
+			let material: any = node.material;
 
-		// 	if ( material ) {
+			if ( material ) {
 
-		// 		if ( material.map ) material.map.dispose();
-		// 		if ( material.lightMap ) material.lightMap.dispose();
-		// 		if ( material.bumpMap ) material.bumpMap.dispose();
-		// 		if ( material.normalMap ) material.normalMap.dispose();
-		// 		if ( material.specularMap ) material.specularMap.dispose();
-		// 		if ( material.envMap ) material.envMap.dispose();
+				if ( material.map ) material.map.dispose();
+				if ( material.lightMap ) material.lightMap.dispose();
+				if ( material.bumpMap ) material.bumpMap.dispose();
+				if ( material.normalMap ) material.normalMap.dispose();
+				if ( material.specularMap ) material.specularMap.dispose();
+				if ( material.envMap ) material.envMap.dispose();
 
-		// 		material.dispose();
-		// 	}
+				material.dispose();
+			}
 
-		// } else if ( node instanceof Object3D ) {
+		} else if ( node instanceof Object3D ) {
 
-		// 	node.parent.remove( node );
-		// 	node.parent = undefined;
+			node.parent.remove( node );
+			node.parent = undefined;
 
-		// } else if ( node instanceof GameObject ) {
+		} else if ( node instanceof GameObject ) {
 
-		// 	node.parent.remove( node );
-		// 	node.parent = undefined;
+			node.parent.remove( node );
+			node.parent = undefined;
 
-		// } else {
+		} else {
 
-		// 	throw new Error( 'unknown type' );
+			console.error( 'unknown type' );
 
-		// }
+		}
 	}
 }
