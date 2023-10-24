@@ -7,8 +7,9 @@ import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-en
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Manager } from './manager';
 
-export class EntityManager {
+export class EntityManager extends Manager {
 
 	private static _instance = new EntityManager();
 
@@ -20,11 +21,18 @@ export class EntityManager {
 		return this._instance;
 	}
 
-	private constructor () {
+	constructor () {
+
+		super();
+
+	}
+
+	public init (): void {
 
 		MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
 
 	}
+
 
 	onRoadUpdated ( road: TvRoad ): void {
 

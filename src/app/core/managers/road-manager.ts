@@ -6,8 +6,9 @@ import { RoadControlPoint } from "../../modules/three-js/objects/road-control-po
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
 import { RoadNode } from "../../modules/three-js/objects/road-node";
 import { SceneService } from "app/core/services/scene.service";
+import { Manager } from "./manager";
 
-export class RoadManager {
+export class RoadManager extends Manager {
 
 	private static _instance = new RoadManager();
 	private debug = true;
@@ -16,7 +17,13 @@ export class RoadManager {
 		return this._instance;
 	}
 
-	private constructor () {
+	constructor () {
+
+		super();
+
+	}
+
+	init () {
 
 		MapEvents.roadCreated.subscribe( e => this.onRoadCreated( e ) );
 		MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
@@ -25,11 +32,6 @@ export class RoadManager {
 		MapEvents.roadControlPointCreated.subscribe( e => this.onRoadControlPointCreated( e ) );
 		MapEvents.roadControlPointRemoved.subscribe( e => this.onRoadControlPointRemoved( e ) );
 		MapEvents.roadControlPointUpdated.subscribe( e => this.onRoadControlPointUpdated( e ) );
-	}
-
-	init () {
-
-		// this.onRoadCreated = this.onRoadCreated.bind( this );
 
 	}
 

@@ -2,8 +2,9 @@ import { MapEvents } from "app/events/map-events";
 import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMapInstance } from "app/modules/tv-map/services/tv-map-source-file";
+import { Manager } from "./manager";
 
-export class LaneManager {
+export class LaneManager extends Manager {
 
 	private static _instance = new LaneManager();
 	private debug = true;
@@ -12,17 +13,15 @@ export class LaneManager {
 		return this._instance;
 	}
 
-	private constructor () {
-
-		MapEvents.laneCreated.subscribe( e => this.onLaneCreated( e ) );
-		MapEvents.laneRemoved.subscribe( e => this.onLaneRemoved( e ) );
-		MapEvents.laneUpdated.subscribe( e => this.onLaneUpdated( e ) );
-
+	constructor () {
+		super();
 	}
 
 	init () {
 
-		// do nothing
+		MapEvents.laneCreated.subscribe( e => this.onLaneCreated( e ) );
+		MapEvents.laneRemoved.subscribe( e => this.onLaneRemoved( e ) );
+		MapEvents.laneUpdated.subscribe( e => this.onLaneUpdated( e ) );
 
 	}
 

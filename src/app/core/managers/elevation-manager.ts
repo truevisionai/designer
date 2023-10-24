@@ -7,17 +7,24 @@ import { RoadElevationNode } from '../../modules/three-js/objects/road-elevation
 import { TvElevation } from '../../modules/tv-map/models/tv-elevation';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { SceneService } from '../services/scene.service';
+import { Manager } from './manager';
 
-export class RoadElevationManager {
+export class ElevationManager extends Manager {
 
-	private static _instance = new RoadElevationManager();
+	private static _instance = new ElevationManager();
 	private debug = true;
 
-	static get instance (): RoadElevationManager {
+	static get instance (): ElevationManager {
 		return this._instance;
 	}
 
-	private constructor () {
+	constructor () {
+
+		super();
+
+	}
+
+	init () {
 
 		MapEvents.roadCreated.subscribe( e => this.onRoadCreated( e ) );
 		MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
@@ -71,12 +78,6 @@ export class RoadElevationManager {
 
 			lastNode.node = new RoadElevationNode( road, lastNode );
 		}
-
-	}
-
-	init () {
-
-		// this.onRoadCreated = this.onRoadCreated.bind( this );
 
 	}
 

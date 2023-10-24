@@ -27,6 +27,7 @@ import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
 import { RoadManager } from "../../managers/road-manager";
+import { JunctionManager } from 'app/core/managers/junction-manager';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -46,8 +47,6 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	constructor () {
 
 		super();
-
-		RoadManager.instance.init();
 
 		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );

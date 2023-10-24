@@ -15,6 +15,13 @@ import { AppInfo } from './app-info.service';
 import { AuthService } from './auth.service';
 import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
+import { ManagerRegistry } from '../managers/manager-registry';
+import { JunctionManager } from '../managers/junction-manager';
+import { RoadManager } from '../managers/road-manager';
+import { EntityManager } from '../managers/entity-manager';
+import { LaneManager } from '../managers/lane-manager';
+import { MapManager } from '../managers/map-manager';
+import { ElevationManager } from '../managers/elevation-manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,6 +63,15 @@ export class AppService {
 		AppService.exporter = sceneExporter;
 
 		AppInfo.electron = electron;
+
+		ManagerRegistry.registerManager( RoadManager );
+		ManagerRegistry.registerManager( JunctionManager );
+		ManagerRegistry.registerManager( EntityManager );
+		ManagerRegistry.registerManager( LaneManager );
+		ManagerRegistry.registerManager( MapManager );
+		ManagerRegistry.registerManager( ElevationManager );
+
+		ManagerRegistry.initManagers();
 	}
 
 	static get isElectronApp (): boolean {

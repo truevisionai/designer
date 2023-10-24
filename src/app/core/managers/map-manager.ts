@@ -1,8 +1,9 @@
 import { MapEvents } from "app/events/map-events";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { SceneService } from "../services/scene.service";
+import { Manager } from "./manager";
 
-export class MapManager {
+export class MapManager extends Manager {
 
 	private static _instance = new MapManager();
 	private debug = true;
@@ -11,7 +12,13 @@ export class MapManager {
 		return this._instance;
 	}
 
-	private constructor () {
+	constructor () {
+
+		super();
+
+	}
+
+	init () {
 
 		MapEvents.mapLoaded.subscribe( e => this.onMapLoaded( e ) );
 		MapEvents.mapRemoved.subscribe( e => this.onMapRemoved( e ) );
@@ -75,12 +82,6 @@ export class MapManager {
 		map.propPolygons.splice( 0, map.propPolygons.length );
 
 		map.surfaces.splice( 0, map.surfaces.length );
-
-	}
-
-	init () {
-
-		// do nothing
 
 	}
 

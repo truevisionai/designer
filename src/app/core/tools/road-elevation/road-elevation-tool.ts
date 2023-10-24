@@ -18,7 +18,7 @@ import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { RoadElevationManager } from 'app/core/managers/road-elevation-manager';
+import { ElevationManager } from 'app/core/managers/elevation-manager';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
@@ -68,7 +68,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => RoadElevationManager.instance.removeNodes( road ) );
+		this.map.getRoads().forEach( road => ElevationManager.instance.removeNodes( road ) );
 
 	}
 
@@ -129,7 +129,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	createRoadElevationNode ( road: TvRoad, point: Vector3 ) {
 
-		RoadElevationManager.instance.showNodes( road );
+		ElevationManager.instance.showNodes( road );
 
 		const roadCoord = road.getCoordAt( point );
 
