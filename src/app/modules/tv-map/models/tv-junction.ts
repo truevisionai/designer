@@ -4,410 +4,249 @@
 
 import { Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvContactPoint } from './tv-common';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
 
 export enum JunctionType {
-	DEFAULT = 'default',
-	VIRTUAL = 'virtual',
-	DIRECT = 'direct',
+    DEFAULT = 'default',
+    VIRTUAL = 'virtual',
+    DIRECT = 'direct',
 }
 
 export class TvJunction {
 
-	public position?: Vector3;
-	private lastAddedJunctionConnectionIndex: number;
-	private lastAddedJunctionPriorityIndex: number;
-	private lastAddedJunctionControllerIndex: number;
+    private _id: number;
+    private _name: string;
+    private _priorities: TvJunctionPriority[] = [];
+    private _controllers: TvJunctionController[] = [];
+    private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
-	constructor ( name: string, id: number ) {
-		this._name = name;
-		this._id = id;
-	}
+    public position?: Vector3;
 
-	private _name: string;
+    constructor ( name: string, id: number ) {
+        this._name = name;
+        this._id = id;
+    }
 
-	get name (): string {
-		return this._name;
-	}
+    get name (): string {
+        return this._name;
+    }
 
-	set name ( value: string ) {
-		this._name = value;
-	}
+    set name ( value: string ) {
+        this._name = value;
+    }
 
-	private _id: number;
+    get id (): number {
+        return this._id;
+    }
 
-	get id (): number {
-		return this._id;
-	}
+    set id ( value: number ) {
+        this._id = value;
+    }
 
-	set id ( value: number ) {
-		this._id = value;
-	}
+    get priorities (): TvJunctionPriority[] {
+        return this._priorities;
+    }
 
-	private _priorities: TvJunctionPriority[] = [];
+    set priorities ( value: TvJunctionPriority[] ) {
+        this._priorities = value;
+    }
 
-	get priorities (): TvJunctionPriority[] {
-		return this._priorities;
-	}
+    get controllers (): TvJunctionController[] {
+        return this._controllers;
+    }
 
-	set priorities ( value: TvJunctionPriority[] ) {
-		this._priorities = value;
-	}
+    set controllers ( value: TvJunctionController[] ) {
+        this._controllers = value;
+    }
 
-	private _controllers: TvJunctionController[] = [];
+    get connections (): Map<number, TvJunctionConnection> {
+        return this._connections;
+    }
 
-	get controllers (): TvJunctionController[] {
-		return this._controllers;
-	}
+    set connections ( value: Map<number, TvJunctionConnection> ) {
+        this._connections = value;
+    }
 
-	set controllers ( value: TvJunctionController[] ) {
-		this._controllers = value;
-	}
+    getConnections (): TvJunctionConnection[] {
+        return Array.from( this.connections.values() );
+    }
 
-	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
+    removeConnectionById ( id: number ): boolean {
 
-	get connections (): Map<number, TvJunctionConnection> {
-		return this._connections;
-	}
+        const connection = this.connections.get( id );
 
-	set connections ( value: Map<number, TvJunctionConnection> ) {
-		this._connections = value;
-	}
+        connection.laneLink.forEach( laneLink => connection.removeLaneLink( laneLink ) );
 
-	getConnections (): TvJunctionConnection[] {
-		return Array.from( this.connections.values() );
-	}
+        return this.connections.delete( id );
 
-	removeConnectionByUuid ( uuid: string ) {
+    }
 
-		throw new Error( 'method not implemented' );
+    removeConnectingRoad ( road: TvRoad ): void {
 
-	}
+        this.connections.forEach( connection => {
 
-	removeConnectionById ( id: number ): boolean {
+            if ( connection.connectingRoadId === road.id ) {
 
-		const connection = this.connections.get( id );
+                this.connections.delete( connection.id );
+            }
 
-		connection.laneLink.forEach( laneLink => connection.removeLaneLink( laneLink ) );
+        } );
 
-		return this.connections.delete( id );
+    }
 
-	}
+    public getJunctionPriorityCount (): number {
 
-	removeConnectingRoad ( road: TvRoad ): void {
+        return this._priorities.length;
 
-		this.connections.forEach( connection => {
+    }
 
-			if ( connection.connectingRoadId === road.id ) {
+    public getJunctionControllerCount (): number {
 
-				this.connections.delete( connection.id );
-			}
+        return this._controllers.length;
 
-		} );
+    }
 
-	}
+    public getJunctionPriority ( index: number ) {
 
-	removeConnection ( connection: TvJunctionConnection, incomingRoad: TvRoad, outgoingRoad: TvRoad ) {
+        if ( index < this._priorities.length && this._priorities.length > 0 ) {
 
-		if ( this.removeConnectionById( connection.id ) ) {
+            return this._priorities[ index ];
 
-			this.removeJunctionRelation( incomingRoad );
+        }
 
-			this.removeJunctionRelation( outgoingRoad );
+        return null;
+    }
 
-		}
+    public getJunctionController ( index: number ) {
 
-	}
+        if ( index < this._controllers.length && this._controllers.length > 0 ) {
 
-	/**
-	 * Adds a priority parameter to the junction
-	 *
-	 * @param {number} high ID of the connecting road with higher priority
-	 * @param {number} low ID of the connecting road with lower priority
-	 * @returns {number}
-	 */
-	public addJunctionPriority ( high: number, low: number ): TvJunctionPriority {
+            return this._controllers[ index ];
 
-		const priority = new TvJunctionPriority( high, low );
+        }
 
-		this._priorities.push( priority );
+        return null;
+    }
 
-		return priority;
-	}
+    addConnection ( connection: TvJunctionConnection ) {
 
-	/**
-	 * Adds a controller to the junction
-	 *
-	 * @param {number} id ID of the controller to add
-	 * @param {string} type Type of control
-	 * @returns {number}
-	 */
-	public addJunctionController ( id: number, type: string ): TvJunctionController {
+        this._connections.set( connection.id, connection );
 
-		const controller = new TvJunctionController( id, type );
+    }
 
-		this._controllers.push( controller );
+    addPriority ( priority: TvJunctionPriority ) {
 
-		return controller;
-	}
+        this._priorities.push( priority );
 
-	public closeJunctionConnection ( index ) {
+    }
 
-		// TODO:
+    addController ( controller: TvJunctionController ) {
 
-	}
+        this._controllers.push( controller );
 
-	public closeJunctionPriority ( index ) {
+    }
 
-		// TODO:
+    getRandomConnectionFor ( incomingRoadId: number, laneId?: number ): TvJunctionConnection {
 
-	}
+        const connections = [ ...this.connections.values() ].filter( connection => {
 
-	public closeJunctionController ( index ) {
+            if ( laneId ) {
 
-		// TODO:
+                return ( connection.incomingRoadId === incomingRoadId && connection.getToLaneId( laneId ) );
 
-	}
+            } else {
 
-	public deleteJunctionConnection ( id: number ): void {
+                return ( connection.incomingRoadId === incomingRoadId );
 
-		this._connections.delete( id );
+            }
 
-	}
+        } );
 
-	public deleteJunctionPriority ( index: number ): void {
+        const randomIndex = Maths.randomNumberBetween( 0, connections.length - 1 );
 
-		this._priorities.splice( index, 1 );
+        return connections[ randomIndex ];
+    }
 
-	}
+    /**
+     * Checks if the junction has a connection to the given road
+     *
+     * @param incomingRoad
+     * @param outgoingRoad
+     * @returns boolean
+     */
+    public hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
 
-	public deleteJunctionController ( index: number ): void {
+        return this.findRoadConnection( incomingRoad, outgoingRoad ) !== undefined;
 
-		this._controllers.splice( index, 1 );
+    }
 
-	}
+    /**
+     * Find connections to the given incoming and outgoing road
+     *
+     * @param incomingRoad
+     * @param outgoingRoad
+     * @returns {TvJunctionConnection}
+     */
+    public findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
 
-	public getJunctionPriorities (): TvJunctionPriority[] {
+        return this.getConnections()
+            .find( conn =>
+                conn.incomingRoadId === incomingRoad.id &&
+                conn.outgoingRoadId === outgoingRoad.id
+            );
 
-		return this._priorities;
+    }
 
-	}
+    getConnectionsForRoad ( road: TvRoad ): TvJunctionConnection[] {
 
-	public getJunctionControllers (): TvJunctionController[] {
+        return this.getConnections().filter( connection => connection.connectingRoadId === road.id );
 
-		return this._controllers;
+    }
 
-	}
+    sortConnections (): void {
 
-	public getJunctionConnectionCount (): number {
+        this._connections.forEach( connection => connection.sortLinks() );
 
-		return this._connections.size;
+        const ascOrder = ( a: [ number, TvJunctionConnection ], b: [ number, TvJunctionConnection ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
 
-	}
+        this._connections = new Map( [ ...this._connections.entries() ].sort( ascOrder ) );
 
-	public getJunctionPriorityCount (): number {
+    }
 
-		return this._priorities.length;
+    private removeJunctionRelation ( road: TvRoad ): void {
 
-	}
+        let hasConnections = false;
 
-	public getJunctionControllerCount (): number {
+        for ( const connection of this.connections ) {
 
-		return this._controllers.length;
+            if ( connection[ 1 ].incomingRoadId === road.id ) {
 
-	}
+                hasConnections = true;
 
+            } else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
 
-	public getJunctionConnection ( id: number ) {
+                hasConnections = true;
 
-		return this.connections.get( id );
+            }
+        }
 
-	}
+        if ( ! hasConnections ) {
 
-	public getJunctionPriority ( index: number ) {
+            if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
 
-		if ( index < this._priorities.length && this._priorities.length > 0 ) {
+                road.successor = null;
 
-			return this._priorities[ index ];
+            } else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
 
-		}
+                road.predecessor = null;
 
-		return null;
-	}
+            }
 
-	public getJunctionController ( index: number ) {
-
-		if ( index < this._controllers.length && this._controllers.length > 0 ) {
-
-			return this._controllers[ index ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionConnection () {
-
-		if ( this.lastAddedJunctionConnectionIndex < this._connections.size ) {
-
-			return this._connections[ this.lastAddedJunctionConnectionIndex ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionPriority () {
-
-		if ( this.lastAddedJunctionPriorityIndex < this._priorities.length ) {
-
-			return this._priorities[ this.lastAddedJunctionPriorityIndex ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionController () {
-
-		if ( this.lastAddedJunctionConnectionIndex < this._controllers.length ) {
-
-			return this._controllers[ this.lastAddedJunctionConnectionIndex ];
-
-		}
-
-		return null;
-	}
-
-	addConnection ( connection: TvJunctionConnection ) {
-
-		this._connections.set( connection.id, connection );
-
-	}
-
-	addPriority ( priority: TvJunctionPriority ) {
-
-		this._priorities.push( priority );
-
-	}
-
-	addController ( controller: TvJunctionController ) {
-
-		this._controllers.push( controller );
-
-	}
-
-	getRandomConnectionFor ( incomingRoadId: number, laneId?: number ): TvJunctionConnection {
-
-		const connections = [ ...this.connections.values() ].filter( connection => {
-
-			if ( laneId ) {
-
-				return ( connection.incomingRoadId === incomingRoadId && connection.getToLaneId( laneId ) );
-
-			} else {
-
-				return ( connection.incomingRoadId === incomingRoadId );
-
-			}
-
-		} );
-
-		const randomIndex = Maths.randomNumberBetween( 0, connections.length - 1 );
-
-		return connections[ randomIndex ];
-	}
-
-	/**
-	 * Checks if the junction has a connection to the given road
-	 *
-	 * @param incomingRoad
-	 * @param outgoingRoad
-	 * @returns boolean
-	 */
-	public hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
-
-		return this.findRoadConnection( incomingRoad, outgoingRoad ) !== undefined;
-
-	}
-
-	/**
-	 * Find connections to the given incoming and outgoing road
-	 *
-	 * @param incomingRoad
-	 * @param outgoingRoad
-	 * @returns {TvJunctionConnection}
-	 */
-	public findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
-
-		return this.getConnections()
-			.find( conn =>
-				conn.incomingRoadId === incomingRoad.id &&
-				conn.outgoingRoadId === outgoingRoad.id
-			);
-
-	}
-
-	getConnectionsForRoad ( road: TvRoad ): TvJunctionConnection[] {
-
-		return this.getConnections().filter( connection => connection.connectingRoadId === road.id );
-
-	}
-
-	sortConnections (): void {
-
-		this._connections.forEach( connection => connection.sortLinks() );
-
-		const ascOrder = ( a: [ number, TvJunctionConnection ], b: [ number, TvJunctionConnection ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
-
-		this._connections = new Map( [ ...this._connections.entries() ].sort( ascOrder ) );
-
-	}
-
-	addOutgoingConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad, contactPoint: TvContactPoint ) {
-
-		const connection = new TvJunctionConnection( this.connections.size, incomingRoad, null, contactPoint, outgoingRoad );
-
-		this.addConnection( connection );
-
-		return connection;
-	}
-
-	private removeJunctionRelation ( road: TvRoad ): void {
-
-		let hasConnections = false;
-
-		for ( const connection of this.connections ) {
-
-			if ( connection[ 1 ].incomingRoadId === road.id ) {
-
-				hasConnections = true;
-
-			} else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
-
-				hasConnections = true;
-
-			}
-		}
-
-		if ( !hasConnections ) {
-
-			if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
-
-				road.successor = null;
-
-			} else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
-
-				road.predecessor = null;
-
-			}
-
-		}
-	}
+        }
+    }
 
 }
 

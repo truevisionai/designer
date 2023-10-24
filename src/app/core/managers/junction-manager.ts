@@ -95,7 +95,7 @@ export class JunctionManager extends Manager {
 
 		road.computeLaneSectionCoordinates();
 
-		MapEvents.roadUpdated.emit( road );
+		TvMapBuilder.rebuildRoad( road, false );
 
 	}
 
