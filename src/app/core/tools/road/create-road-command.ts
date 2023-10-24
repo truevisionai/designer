@@ -10,7 +10,7 @@ import { Vector3 } from 'three';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadTool } from './road-tool';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 export class CreateRoadCommand extends OdBaseCommand {
 
@@ -31,9 +31,9 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 	execute (): void {
 
-		this.road.showNodes();
+		// this.road.showNodes();
 
-		this.road.spline.showLines();
+		// this.road.spline.showLines();
 
 		this.map.roads.set( this.road.id, this.road );
 
@@ -41,14 +41,14 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.selectPointCommand.execute();
 
-		MapEvents.roadCreated.emit( this.road );
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 	}
 
 	undo (): void {
 
-		this.road.hideNodes();
+		// this.road.hideNodes();
 
-		this.road.spline.hideLines();
+		// this.road.spline.hideLines();
 
 		this.map.roads.delete( this.road.id );
 
@@ -56,7 +56,7 @@ export class CreateRoadCommand extends OdBaseCommand {
 
 		this.selectPointCommand.undo();
 
-		MapEvents.roadRemoved.emit( this.road );
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
 	}
 
 	redo (): void {

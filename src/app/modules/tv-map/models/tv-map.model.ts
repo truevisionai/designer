@@ -18,7 +18,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 
 export class TvMap {
 
@@ -163,7 +163,7 @@ export class TvMap {
 
 		this.roads.delete( road.id );
 
-		MapEvents.roadRemoved.emit( road );
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
 	}
 
 	public deleteJunction ( id ): void {

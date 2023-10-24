@@ -8,7 +8,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { RoadInspector } from '../../../views/inspectors/road-inspector/road-inspector.component';
 import { OdBaseCommand } from '../../commands/od-base-command';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 export class AddRoadCommand extends OdBaseCommand {
 
@@ -24,7 +24,7 @@ export class AddRoadCommand extends OdBaseCommand {
 
 			this.map.addRoad( road );
 
-			MapEvents.roadCreated.emit( road );
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( road, false ) );
 
 		} )
 
@@ -34,7 +34,7 @@ export class AddRoadCommand extends OdBaseCommand {
 
 		this.roads.forEach( road => {
 
-			MapEvents.roadRemoved.emit( road );
+			MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
 
 			this.map.roads.delete( road.id );
 

@@ -52,7 +52,7 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -1598,7 +1598,7 @@ export class TvRoad {
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
-		MapEvents.roadUpdated.emit( this );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this, false ) );
 	}
 
 	get roadStyle (): RoadStyle {

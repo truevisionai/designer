@@ -12,7 +12,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Vector3 } from 'three';
 import { RoadElevationTool } from './road-elevation-tool';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export class CreateElevationNodeCommand extends BaseCommand {
 
@@ -39,7 +39,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.inspectorCommand.execute();
 
-		MapEvents.roadUpdated.emit( this.node.road );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.node.road, false ) );
 	}
 
 	undo (): void {
@@ -52,7 +52,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.inspectorCommand.undo();
 
-		MapEvents.roadUpdated.emit( this.node.road );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.node.road, false ) );
 	}
 
 	redo (): void {

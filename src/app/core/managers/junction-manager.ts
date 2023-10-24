@@ -1,4 +1,4 @@
-import { MapEvents } from "app/events/map-events";
+import { MapEvents, RoadUpdatedEvent } from "app/events/map-events";
 import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { TvRoadCoord } from "app/modules/tv-map/models/tv-lane-coord";
@@ -32,22 +32,22 @@ export class JunctionManager extends Manager {
 
 	init () {
 
-		MapEvents.roadUpdated.subscribe( road => this.onRoadUpdated( road ) );
+		MapEvents.roadUpdated.subscribe( event => this.onRoadUpdated( event ) );
 
 	}
 
-	onRoadUpdated ( road: TvRoad ): void {
+	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
-		console.log( 'onRoadUpdated', road );
+		console.log( 'onRoadUpdated', event.road );
 
-		const intersections = this.findIntersectionsSlow( road );
+		const intersections = this.findIntersectionsSlow( event.road );
 
 		if ( intersections.length === 0 ) {
 
 			// if road previously has intersection, we need to remove it
-			if ( this.getJunctionSection( road ) ) {
+			if ( this.getJunctionSection( event.road ) ) {
 
-				this.removeJunctionSection( road );
+				this.removeJunctionSection( event.road );
 
 			}
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
@@ -34,7 +34,7 @@ export class EntityManager extends Manager {
 	}
 
 
-	onRoadUpdated ( road: TvRoad ): void {
+	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
 		if ( this.debug ) console.debug( 'onRoadUpdated' );
 
@@ -42,7 +42,7 @@ export class EntityManager extends Manager {
 		// when road is updated
 		ScenarioInstance.scenario.objects.forEach( ( entity: ScenarioEntity ) => {
 
-			this.updateEntityPosition( entity, road );
+			this.updateEntityPosition( entity, event.road );
 
 		} );
 

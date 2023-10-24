@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadElevationNode } from '../../modules/three-js/objects/road-elevation-node';
 import { TvElevation } from '../../modules/tv-map/models/tv-elevation';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
@@ -32,35 +32,35 @@ export class ElevationManager extends Manager {
 
 	}
 
-	onRoadRemoved ( road: TvRoad ): void {
+	onRoadRemoved ( event: RoadRemovedEvent ): void {
 
-		if ( this.debug ) console.log( 'onRoadRemoved', road );
+		if ( this.debug ) console.log( 'onRoadRemoved', event.road );
 
 	}
 
-	onRoadUpdated ( road: TvRoad ): void {
+	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
-		if ( this.debug ) console.log( 'onRoadUpdated', road );
+		if ( this.debug ) console.log( 'onRoadUpdated', event.road );
 
-		this.createDefaultNodes( road );
+		this.createDefaultNodes( event.road );
 
-		if ( road.elevationProfile.getElevationCount() >= 2 ) {
+		if ( event.road.elevationProfile.getElevationCount() >= 2 ) {
 
-			road.elevationProfile.elevation[ 0 ].s = 0
+			event.road.elevationProfile.elevation[ 0 ].s = 0
 
-			road.elevationProfile.elevation[ road.elevationProfile.elevation.length - 1 ].s = road.length
+			event.road.elevationProfile.elevation[ event.road.elevationProfile.elevation.length - 1 ].s = event.road.length
 
 		}
 
-		this.updateNodes( road );
+		this.updateNodes( event.road );
 
 	}
 
-	onRoadCreated ( road: TvRoad ): void {
+	onRoadCreated ( event: RoadCreatedEvent ): void {
 
-		if ( this.debug ) console.log( 'onRoadCreated', road );
+		if ( this.debug ) console.log( 'onRoadCreated', event.road );
 
-		this.createDefaultNodes( road );
+		this.createDefaultNodes( event.road );
 
 	}
 

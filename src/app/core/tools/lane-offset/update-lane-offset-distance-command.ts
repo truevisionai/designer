@@ -6,7 +6,7 @@ import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builder
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { LaneOffsetNode } from '../../../modules/three-js/objects/lane-offset-node';
 import { BaseCommand } from '../../commands/base-command';
-import { MapEvents } from 'app/events/map-events';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
@@ -47,7 +47,7 @@ export class UpdateLaneOffsetDistanceCommand extends BaseCommand {
 
 	rebuild ( road: TvRoad ): void {
 
-		MapEvents.roadUpdated.emit( this.node.road );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
 
 		this.laneHelper?.drawRoad( road, LineType.SOLID, true );
 

@@ -49,6 +49,8 @@ export class LaneOffsetTool extends BaseTool {
 		this.laneHelper?.clear();
 
 		this.map.getRoads().forEach( road => road.hideLaneOffsetNodes() );
+
+		this.clearToolObjects();
 	}
 
 	public onPointerDown ( e: PointerEventData ) {

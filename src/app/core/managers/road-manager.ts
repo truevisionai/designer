@@ -1,4 +1,4 @@
-import { MapEvents } from "../../events/map-events";
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../../events/map-events";
 import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
 import { TvMapBuilder } from "../../modules/tv-map/builders/tv-map-builder";
 import { TvMapInstance } from "../../modules/tv-map/services/tv-map-source-file";
@@ -7,6 +7,8 @@ import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
 import { RoadNode } from "../../modules/three-js/objects/road-node";
 import { SceneService } from "app/core/services/scene.service";
 import { Manager } from "./manager";
+import { AppInspector } from "../inspector";
+import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 
 export class RoadManager extends Manager {
 
@@ -44,7 +46,7 @@ export class RoadManager extends Manager {
 		event.road.successor?.update( event.road, TvContactPoint.END );
 		event.road.predecessor?.update( event.road, TvContactPoint.START );
 
-		MapEvents.roadUpdated.emit( event.road );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 
 	}
 
@@ -54,7 +56,7 @@ export class RoadManager extends Manager {
 
 		event.road.updateGeometryFromSpline();
 
-		MapEvents.roadUpdated.emit( event.road );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 
 	}
 
@@ -64,53 +66,63 @@ export class RoadManager extends Manager {
 
 		event.road.updateGeometryFromSpline();
 
-		MapEvents.roadUpdated.emit( event.road );
+		// TODO: check if we need to update the road inspector
+		// AppInspector.setInspector( RoadInspector, {
+		// 	road: event.road,
+		// 	controlPoint: event.controlPoint
+		// } );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 
 	}
 
-	onRoadUpdated ( road: TvRoad ) {
+	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
 		if ( this.debug ) console.debug( 'onRoadUpdated' );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, road );
+		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, event.road );
+		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
 
-		this.updateRoadNodes( road );
+		this.updateRoadNodes( event.road );
 
 	}
 
-	onRoadRemoved ( road: TvRoad ) {
+	onRoadRemoved ( event: RoadRemovedEvent ) {
 
 		if ( this.debug ) console.debug( 'onRoadRemoved' );
 
-		road.hide();
+		event.road.hide();
 
-		road.hideHelpers();
+		if ( event.hideHelpers ) event.road.hideHelpers();
 
-		if ( road.isJunction ) {
+		if ( event.hideHelpers ) event.road.spline?.hideLines();
 
-			road.junctionInstance?.removeConnectingRoad( road );
+		if ( event.road.isJunction ) {
 
-		}
-
-		if ( !road.isJunction ) {
-
-			road.removePredecessor();
-
-			road.removeSuccessor();
+			event.road.junctionInstance?.removeConnectingRoad( event.road );
 
 		}
 
-		TvMapInstance.map.gameObject.remove( road.gameObject );
+		if ( !event.road.isJunction ) {
+
+			event.road.removePredecessor();
+
+			event.road.removeSuccessor();
+
+		}
+
+		TvMapInstance.map.gameObject.remove( event.road.gameObject );
 	}
 
-	onRoadCreated ( road: TvRoad ) {
+	onRoadCreated ( event: RoadCreatedEvent ) {
 
 		if ( this.debug ) console.debug( 'onRoadCreated' );
 
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, road );
+		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
 
-		this.showNodes( road );
+		if ( event.showHelpers ) this.showNodes( event.road );
+
+		if ( event.showHelpers ) event.road.spline?.showLines();
 
 	}
 
