@@ -192,7 +192,7 @@ export class RoadFactory {
 
 	static rebuildRoad ( road: TvRoad ) {
 
-		SceneService.removeWithChildren( road.gameObject, true );
+		SceneService.removeFromMain( road.gameObject, true );
 
 		this.map.gameObject.remove( road.gameObject );
 
@@ -413,10 +413,10 @@ export class RoadFactory {
 
 		const spline = new AutoSpline();
 
-		SceneService.add( spline.addControlPointAt( nodes.start ) );
-		SceneService.add( spline.addControlPointAt( nodes.a2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.b2.toVector3() ) );
-		SceneService.add( spline.addControlPointAt( nodes.end ) );
+		SceneService.addToMain( spline.addControlPointAt( nodes.start ) );
+		SceneService.addToMain( spline.addControlPointAt( nodes.a2.toVector3() ) );
+		SceneService.addToMain( spline.addControlPointAt( nodes.b2.toVector3() ) );
+		SceneService.addToMain( spline.addControlPointAt( nodes.end ) );
 
 		spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
 

@@ -15,8 +15,6 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 export class SceneService {
 
 	public static scene: THREE.Scene = new THREE.Scene;
-	public static objects: Object3D[] = [];
-	public static sceneHelpers: Object3D[] = [];
 	public static renderer: THREE.WebGLRenderer;
 	public static changed = new EventEmitter();
 
@@ -39,10 +37,6 @@ export class SceneService {
 		SceneService.scene.add( SceneService.mainLayer );
 		SceneService.scene.add( SceneService.toolLayer );
 
-	}
-
-	public static get children () {
-		return this.scene.children;
 	}
 
 	static raycastableObjects () {
@@ -81,192 +75,142 @@ export class SceneService {
 		this.changed.emit();
 	}
 
-	static clearToolObjects (): void {
+	static removeToolObjects (): void {
 
-		this.toolLayer.children.forEach( child => {
-
-			this.removeToolObject( child, false );
-
-		} )
+		this.toolLayer.children.forEach( object => this.toolLayer.remove( object ) );
 
 		this.changed.emit();
 
 	}
 
-	static removeToolObject ( object: Object3D, fireEvent = true ): void {
+	static removeFromTool ( object: Object3D, fireEvent = true ): void {
 
 		if ( object == null ) return;
 
 		this.toolLayer.remove( object );
-
-		for ( let i = 0; i < this.sceneHelpers.length; i++ ) {
-
-			const element = this.sceneHelpers[ i ];
-
-			if ( element.id === object.id ) {
-
-				this.sceneHelpers.splice( i, 1 );
-
-				break;
-			}
-		}
 
 		if ( fireEvent ) this.changed.emit();
 	}
 
 	static clear () {
 
-		this.removeMainObjects();
+		this.mainLayer.children.forEach( object => this.disposeNode( object ) );
 
-	}
-
-	static removeMainObjects () {
-
-		this.objects.forEach( object => this.remove( object ) );
+		this.toolLayer.traverse( object => this.disposeNode( object ) );
 
 		this.changed.emit();
 
 	}
 
-	static add ( object: Object3D, raycasting: boolean = true ): void {
+	static addToMain ( object: Object3D, raycasting: boolean = true ): void {
 
 		if ( object == null ) return;
 
 		this.mainLayer.add( object );
 
-		if ( raycasting ) this.objects.push( object );
-
 		this.changed.emit();
 
 	}
 
-	static deselect ( object: Object3D ): void {
-
-		throw new Error( 'Not implemented' );
-
-	}
-
-	static focus ( object: Object3D ): void {
-
-		throw new Error( 'Not implemented' );
-
-	}
-
-	static remove ( object: Object3D, raycasting: boolean = true ): void {
+	static removeFromMain ( object: Object3D, raycasting: boolean = true ): void {
 
 		if ( object == null ) return;
 
-		this.scene.remove( object );
-
-		if ( raycasting ) {
-
-			for ( let i = 0; i < this.objects.length; i++ ) {
-
-				const element = this.objects[ i ];
-
-				if ( element.id === object.id ) {
-
-					this.objects.splice( i, 1 );
-
-					break;
-
-				}
-			}
-		}
+		this.mainLayer.remove( object );
 
 		this.changed.emit();
 	}
 
-	static reset (): void {
+	// public static disposeHierarchy ( node, callback ) {
 
-		while ( this.scene.children.length > 0 ) {
+	// 	for ( let i = node.children.length - 1; i >= 0; i-- ) {
 
-			let obj = this.scene.children[ 0 ];
+	// 		const child = node.children[ i ];
 
-			this.scene.remove( obj );
+	// 		this.disposeHierarchy( child, callback );
 
-			this.disposeHierarchy( obj, SceneService.disposeNode );
+	// 		callback( child );
 
-		}
+	// 	}
+	// }
 
-		this.objects = [];
+	// static removeWithChildren ( object: Object3D, raycasting: boolean = false ) {
 
-		this.changed.emit();
-	}
+	// 	if ( !object ) return;
 
-	static select ( object: Object3D ): void {
+	// 	while ( object.children.length > 0 ) {
 
-		throw new Error( 'Not implemented' );
+	// 		this.disposeNode( object.children[ 0 ] );
 
-	}
+	// 	}
 
-	public static disposeHierarchy ( node, callback ) {
+	// 	this.removeFromMain( object, raycasting );
+	// }
 
-		for ( let i = node.children.length - 1; i >= 0; i-- ) {
+	private static disposeNode ( group ) {
 
-			const child = node.children[ i ];
+		// This array will keep a reference to all children in the group
+		var objectsToRemove = [];
 
-			this.disposeHierarchy( child, callback );
-
-			callback( child );
-
-		}
-	}
-
-	static removeWithChildren ( object: Object3D, raycasting: boolean = false ) {
-
-		if ( !object ) return;
-
-		while ( object.children.length > 0 ) {
-
-			this.disposeNode( object.children[ 0 ] );
-
-		}
-
-		this.remove( object, raycasting );
-	}
-
-	private static disposeNode ( node ) {
-
-		if ( node instanceof Mesh ) {
-
-			node.parent.remove( node );
-			node.parent = undefined;
-
-			if ( node.geometry ) {
-
-				node.geometry.dispose();
-
+		// This function populates objectsToRemove with all children
+		// (and children of children, and so forth)
+		group.traverse( function ( child ) {
+			if ( child !== group ) { // Avoid adding the group itself
+				objectsToRemove.push( child );
 			}
+		} );
 
-			let material: any = node.material;
+		// Remove each object from its parent. Since we're not modifying the
+		// children array directly, it's safe to do this operation in a loop.
+		for ( var i = 0; i < objectsToRemove.length; i++ ) {
+			var object = objectsToRemove[ i ];
+			object.parent.remove( object );
 
-			if ( material ) {
-
-				if ( material.map ) material.map.dispose();
-				if ( material.lightMap ) material.lightMap.dispose();
-				if ( material.bumpMap ) material.bumpMap.dispose();
-				if ( material.normalMap ) material.normalMap.dispose();
-				if ( material.specularMap ) material.specularMap.dispose();
-				if ( material.envMap ) material.envMap.dispose();
-
-				material.dispose();
-			}
-
-		} else if ( node instanceof Object3D ) {
-
-			node.parent.remove( node );
-			node.parent = undefined;
-
-		} else if ( node instanceof GameObject ) {
-
-			node.parent.remove( node );
-			node.parent = undefined;
-
-		} else {
-
-			throw new Error( 'unknown type' );
-
+			// If you're changing scenes often, you'll want to look into disposing geometries, materials, and textures as well
+			// to prevent memory leaks. This includes calling dispose on geometries, materials, and textures that you've loaded.
 		}
+
+		// At this point, the group should be empty with all objects removed
+
+		// if ( node instanceof Mesh ) {
+
+		// 	node.parent.remove( node );
+		// 	node.parent = undefined;
+
+		// 	if ( node.geometry ) {
+
+		// 		node.geometry.dispose();
+
+		// 	}
+
+		// 	let material: any = node.material;
+
+		// 	if ( material ) {
+
+		// 		if ( material.map ) material.map.dispose();
+		// 		if ( material.lightMap ) material.lightMap.dispose();
+		// 		if ( material.bumpMap ) material.bumpMap.dispose();
+		// 		if ( material.normalMap ) material.normalMap.dispose();
+		// 		if ( material.specularMap ) material.specularMap.dispose();
+		// 		if ( material.envMap ) material.envMap.dispose();
+
+		// 		material.dispose();
+		// 	}
+
+		// } else if ( node instanceof Object3D ) {
+
+		// 	node.parent.remove( node );
+		// 	node.parent = undefined;
+
+		// } else if ( node instanceof GameObject ) {
+
+		// 	node.parent.remove( node );
+		// 	node.parent = undefined;
+
+		// } else {
+
+		// 	throw new Error( 'unknown type' );
+
+		// }
 	}
 }

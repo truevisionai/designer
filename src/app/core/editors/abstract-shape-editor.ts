@@ -140,7 +140,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.disable();
 
-		SceneService.remove( this.object );
+		SceneService.removeFromMain( this.object );
 
 	}
 
@@ -325,7 +325,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		if ( event ) this.controlPointAdded.emit( point );
 
-		SceneService.add( point );
+		SceneService.addToMain( point );
 
 		return point;
 	}
@@ -338,7 +338,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.controlPointRemoved.emit( point );
 
-		SceneService.remove( point );
+		SceneService.removeFromMain( point );
 	}
 
 	removeAllControlPoints () {
@@ -381,7 +381,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		object.renderOrder = 3;
 
-		SceneService.add( object );
+		SceneService.addToMain( object );
 
 		return object;
 

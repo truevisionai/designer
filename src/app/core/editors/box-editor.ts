@@ -53,13 +53,13 @@ export class BoxEditor extends AbstractShapeEditor {
 
 		this.boxGeometry = new BoxGeometry( this.height, this.width, this.length );
 
-		if ( this.boxMesh ) SceneService.remove( this.boxMesh );
+		if ( this.boxMesh ) SceneService.removeFromMain( this.boxMesh );
 
 		this.boxMesh = new Mesh( this.boxGeometry, this.boxMaterial );
 
 		this.boxMesh.position.copy( this.pointerDownAt );
 
-		SceneService.add( this.boxMesh );
+		SceneService.addToMain( this.boxMesh );
 	}
 
 	onPointerDown ( e: PointerEventData ) {
@@ -83,7 +83,7 @@ export class BoxEditor extends AbstractShapeEditor {
 
 		this.pointerIsDown = false;
 
-		if ( this.boxMesh ) SceneService.remove( this.boxMesh );
+		if ( this.boxMesh ) SceneService.removeFromMain( this.boxMesh );
 
 		const cp = this.addControlPoint( this.boxMesh.position );
 

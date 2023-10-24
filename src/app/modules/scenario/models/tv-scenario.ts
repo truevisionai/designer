@@ -221,7 +221,7 @@ export class TvScenario {
 
 		this.objects.forEach( entity => {
 
-			SceneService.remove( entity );
+			SceneService.removeFromMain( entity );
 
 			entity.initActions.splice( 0, entity.initActions.length );
 

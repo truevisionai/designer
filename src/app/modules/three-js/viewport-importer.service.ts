@@ -140,7 +140,7 @@ export class ViewportImporterService {
 
 		// clone.position.z = position.z + ( size.z / 2 );
 
-		SceneService.add( model );
+		SceneService.addToMain( model );
 
 	}
 
@@ -164,7 +164,7 @@ export class ViewportImporterService {
 
 		// clone.position.z = position.z + ( size.z / 2 );
 
-		SceneService.add( clone );
+		SceneService.addToMain( clone );
 	}
 
 	importOpenDrive ( path: string ) {

@@ -31,7 +31,7 @@ export class AddPropCurvePointCommand extends BaseCommand {
 
 	execute (): void {
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 
 		this.selectPointCommand.execute();
 
@@ -41,7 +41,7 @@ export class AddPropCurvePointCommand extends BaseCommand {
 
 	undo (): void {
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 
 		this.selectPointCommand.undo();
 

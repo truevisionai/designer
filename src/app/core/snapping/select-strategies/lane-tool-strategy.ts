@@ -37,7 +37,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 
 		if ( !targetLane ) {
 
-			if ( this.line ) SceneService.remove( this.line );
+			if ( this.line ) SceneService.removeFromMain( this.line );
 
 			if ( this.lane ) this.lane = null;
 
@@ -63,7 +63,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 
 		}
 
-		SceneService.add( this.line );
+		SceneService.addToMain( this.line );
 
 		return targetLane;
 	}

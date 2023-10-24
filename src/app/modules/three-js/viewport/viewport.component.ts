@@ -300,7 +300,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
-		this.intersections = this.raycaster.intersectObjects( SceneService.objects, true );
+		this.intersections = this.raycaster.intersectObjects( SceneService.raycastableObjects(), true );
 
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {

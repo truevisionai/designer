@@ -36,7 +36,7 @@ export class CreateControlPointCommand extends OdBaseCommand {
 
 		this.point.visible = true;
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 	}
 
 	undo (): void {
@@ -47,7 +47,7 @@ export class CreateControlPointCommand extends OdBaseCommand {
 
 		this.point.visible = true;
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 	}
 
 	redo (): void {

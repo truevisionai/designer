@@ -118,7 +118,7 @@ export class RoadElevationManager {
 
 			}
 
-			SceneService.removeToolObject( elevation.node );
+			SceneService.removeFromTool( elevation.node );
 
 		} );
 

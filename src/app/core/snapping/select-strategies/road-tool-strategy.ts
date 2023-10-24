@@ -31,13 +31,13 @@ export class RoadToolStrategy extends SelectStrategy<TvRoad> {
 
 		const line = this.line = LineFactoryService.createLine( points, 0xff0000 );
 
-		SceneService.add( line );
+		SceneService.addToMain( line );
 
 	}
 
 	onPointerMoved ( pointerEventData: PointerEventData ): TvRoad {
 
-		if ( this.line ) SceneService.remove( this.line );
+		if ( this.line ) SceneService.removeFromMain( this.line );
 
 		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 
@@ -47,7 +47,7 @@ export class RoadToolStrategy extends SelectStrategy<TvRoad> {
 
 		const line = this.line = LineFactoryService.createLine( points, 0xffffff );
 
-		SceneService.add( line );
+		SceneService.addToMain( line );
 
 		return roadCoord.road;
 	}

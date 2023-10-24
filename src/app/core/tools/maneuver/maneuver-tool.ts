@@ -49,7 +49,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		this.entries = JunctionFactory.createJunctionEntries( this.map.getRoads() );
 
-		this.entries.forEach( obj => SceneService.add( obj ) );
+		this.entries.forEach( obj => SceneService.addToMain( obj ) );
 
 		this.showLanePathObjects();
 	}
@@ -60,7 +60,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		this.selectionTool?.dispose();
 
-		this.entries.forEach( obj => SceneService.remove( obj ) );
+		this.entries.forEach( obj => SceneService.removeFromMain( obj ) );
 
 		this.entries.splice( 0, this.entries.length );
 
@@ -215,7 +215,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 					link.show();
 
-					SceneService.add( link.mesh );
+					SceneService.addToMain( link.mesh );
 
 				} );
 
@@ -227,7 +227,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	hideLanePathObjects () {
 
-		this.lanePathObjects.forEach( obj => SceneService.remove( obj ) );
+		this.lanePathObjects.forEach( obj => SceneService.removeFromMain( obj ) );
 
 		this.lanePathObjects.splice( 0, this.lanePathObjects.length );
 
@@ -239,7 +239,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 					link.hide();
 
-					SceneService.remove( link.mesh );
+					SceneService.removeFromMain( link.mesh );
 
 				} );
 

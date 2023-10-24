@@ -220,9 +220,9 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		// TODO: move this maybe somewhere else
 
-		SceneService.add( this.frontTangent );
+		SceneService.addToMain( this.frontTangent );
 
-		SceneService.add( this.backTangent );
+		SceneService.addToMain( this.backTangent );
 
 		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
 
@@ -236,7 +236,7 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.tangentLine.frustumCulled = false;
 
-		SceneService.add( this.tangentLine );
+		SceneService.addToMain( this.tangentLine );
 	}
 
 	updateTangentLine () {
@@ -256,11 +256,11 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	removeTangents () {
 
-		SceneService.remove( this.frontTangent );
+		SceneService.removeFromMain( this.frontTangent );
 
-		SceneService.remove( this.backTangent );
+		SceneService.removeFromMain( this.backTangent );
 
-		SceneService.remove( this.tangentLine );
+		SceneService.removeFromMain( this.tangentLine );
 
 	}
 

@@ -65,7 +65,7 @@ export class CubicBezierCurveEditor extends AbstractShapeEditor {
 
 	drawCurve () {
 
-		if ( this.referenceLine != null ) SceneService.remove( this.referenceLine, false );
+		if ( this.referenceLine != null ) SceneService.removeFromMain( this.referenceLine, false );
 
 		this.updateBezierPoints();
 
@@ -80,7 +80,7 @@ export class CubicBezierCurveEditor extends AbstractShapeEditor {
 		// Create the final object to add to the scene
 		this.referenceLine = new THREE.Line( geometry, material );
 
-		SceneService.add( this.referenceLine, false );
+		SceneService.addToMain( this.referenceLine, false );
 
 		if ( this.controlPoints.length == 2 ) {
 

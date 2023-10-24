@@ -53,7 +53,7 @@ export class FindIntersection {
 
 		console.time( 'find-intersection' );
 
-		this.meshes.forEach( mesh => SceneService.remove( mesh ) );
+		this.meshes.forEach( mesh => SceneService.removeFromMain( mesh ) );
 		this.meshes = [];
 
 		const roads = TvMapInstance.map.getRoads();
@@ -86,7 +86,7 @@ export class FindIntersection {
 
 		} );
 
-		this.meshes.forEach( mesh => SceneService.add( mesh ) );
+		this.meshes.forEach( mesh => SceneService.addToMain( mesh ) );
 
 		console.timeEnd( 'find-intersection' );
 

@@ -24,7 +24,7 @@ export class VehicleWaypointController extends AbstractController {
 	createCube () {
 		const geometry = new BoxGeometry( 1, 1, 1 );
 		this.cube = new Mesh( geometry, new MeshBasicMaterial( { color: 'red' } ) );
-		SceneService.add( this.cube );
+		SceneService.addToMain( this.cube );
 	}
 
 	start (): void {

@@ -45,7 +45,7 @@ export class CreateSurfaceCommand extends BaseCommand {
 
 		this.tool.surface = this.newSurface;
 
-		SceneService.add( this.newPoint );
+		SceneService.addToMain( this.newPoint );
 	}
 
 	undo () {
@@ -68,7 +68,7 @@ export class CreateSurfaceCommand extends BaseCommand {
 
 		this.tool.surface = this.oldSurface;
 
-		SceneService.remove( this.newPoint );
+		SceneService.removeFromMain( this.newPoint );
 	}
 
 	redo (): void {

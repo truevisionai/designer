@@ -50,7 +50,7 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
 		this.lane.addRoadMarkInstance( this.roadMark );
 
-		SceneService.add( this.roadMark.node );
+		SceneService.addToMain( this.roadMark.node );
 
 		this.tool.roadMarkBuilder.buildRoad( this.road );
 
@@ -66,7 +66,7 @@ export class AddRoadmarkNodeCommand extends BaseCommand {
 
 		this.lane.roadMark.splice( index, 1 );
 
-		SceneService.remove( this.roadMark.node );
+		SceneService.removeFromMain( this.roadMark.node );
 
 		this.tool.roadMarkBuilder.buildRoad( this.road );
 	}

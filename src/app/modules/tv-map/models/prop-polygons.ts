@@ -201,7 +201,7 @@ export class PropPolygon implements ISelectable {
 		instancedMeshArray.forEach( instancedMesh => {
 
 			// just adding the instance mesh in scene will add all 100s or 1000s of instances
-			SceneService.add( instancedMesh );
+			SceneService.addToMain( instancedMesh );
 
 			// usefull for maintain
 			this.instanceMeshArray.push( instancedMesh );
@@ -453,10 +453,10 @@ export class PropPolygon implements ISelectable {
 
 	private removeAndClearProps (): void {
 
-		this.propObjectArray.forEach( p => SceneService.remove( p ) );
+		this.propObjectArray.forEach( p => SceneService.removeFromMain( p ) );
 		this.propObjectArray.splice( 0, this.propObjectArray.length );
 
-		this.instanceMeshArray.forEach( p => SceneService.remove( p ) );
+		this.instanceMeshArray.forEach( p => SceneService.removeFromMain( p ) );
 		this.instanceMeshArray.splice( 0, this.instanceMeshArray.length );
 
 	}

@@ -29,7 +29,7 @@ export class Debug {
 
 			this.sphere = new Mesh( geometry, material );
 
-			SceneService.add( this.sphere );
+			SceneService.addToMain( this.sphere );
 
 			this.sphereAdded = true;
 		}

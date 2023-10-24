@@ -33,7 +33,7 @@ export class AddSurfacePointCommand extends BaseCommand {
 
 		this.surface.addControlPoint( this.newPoint );
 
-		SceneService.add( this.newPoint );
+		SceneService.addToMain( this.newPoint );
 	}
 
 	undo (): void {
@@ -46,7 +46,7 @@ export class AddSurfacePointCommand extends BaseCommand {
 
 		this.surface.removeControlPoint( this.newPoint );
 
-		SceneService.remove( this.newPoint );
+		SceneService.removeFromMain( this.newPoint );
 	}
 
 	redo (): void {

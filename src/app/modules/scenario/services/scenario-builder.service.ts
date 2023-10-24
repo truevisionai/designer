@@ -40,7 +40,7 @@ export class ScenarioBuilder {
 
 		entity.visible = true;
 
-		SceneService.add( entity );
+		SceneService.addToMain( entity );
 
 	}
 

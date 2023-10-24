@@ -72,7 +72,7 @@ export class JunctionFactory {
 
 		entries.forEach( entry => {
 
-			SceneService.add( entry );
+			SceneService.addToMain( entry );
 
 		} );
 	}

@@ -61,7 +61,7 @@ export class CreateLaneOffsetCommand extends BaseCommand {
 
 		this.newRoad.addLaneOffsetInstance( this.laneOffset );
 
-		SceneService.add( this.laneOffset.node );
+		SceneService.addToMain( this.laneOffset.node );
 
 		this.command.execute();
 		this.selectCommand.execute();
@@ -80,7 +80,7 @@ export class CreateLaneOffsetCommand extends BaseCommand {
 
 		this.newRoad.removeLaneOffset( this.laneOffset );
 
-		SceneService.remove( this.laneOffset.node );
+		SceneService.removeFromMain( this.laneOffset.node );
 
 		this.command.undo();
 		this.selectCommand.undo();

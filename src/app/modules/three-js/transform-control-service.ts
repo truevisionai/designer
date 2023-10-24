@@ -59,7 +59,7 @@ export class TransformControlService {
 
 		} );
 
-		SceneService.add( control );
+		SceneService.addToMain( control );
 
 		this.threeService.cameraChanged.subscribe( ( camera ) => {
 

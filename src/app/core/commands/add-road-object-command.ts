@@ -15,18 +15,18 @@ export class AddRoadObjectCommand extends OdBaseCommand {
 
 	execute (): void {
 
-		SceneService.add( this.roadObject.mesh, false );
+		SceneService.addToMain( this.roadObject.mesh, false );
 
 		this.map.getRoadById( this.roadId ).addRoadObjectInstance( this.roadObject );
 	}
 
 	undo (): void {
 
-		SceneService.remove( this.roadObject.mesh, false );
+		SceneService.removeFromMain( this.roadObject.mesh, false );
 
 		this.map.getRoadById( this.roadId ).removeRoadObjectById( this.roadObject.attr_id );
 
-		this.objects.forEach( object => SceneService.remove( object ) );
+		this.objects.forEach( object => SceneService.removeFromMain( object ) );
 
 	}
 
@@ -34,7 +34,7 @@ export class AddRoadObjectCommand extends OdBaseCommand {
 
 		this.execute();
 
-		this.objects.forEach( object => SceneService.add( object ) );
+		this.objects.forEach( object => SceneService.addToMain( object ) );
 
 	}
 

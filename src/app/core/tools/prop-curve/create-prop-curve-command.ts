@@ -41,7 +41,7 @@ export class CreatePropCurveCommand extends BaseCommand {
 
 		this.curve.addControlPoint( this.point );
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 
 		this.curve.show();
 
@@ -53,7 +53,7 @@ export class CreatePropCurveCommand extends BaseCommand {
 
 		this.curve.delete();
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 
 		const index = this.map.propCurves.indexOf( this.curve );
 

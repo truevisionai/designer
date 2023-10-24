@@ -37,7 +37,7 @@ export class BoundingBoxObject {
 		this.mesh.userData.is_annotation = true;
 		this.mesh.userData.uuid = this.mesh.uuid;
 
-		SceneService.add( this.mesh, true );
+		SceneService.addToMain( this.mesh, true );
 
 		if ( start && end ) this.updateGeometry( start, end );
 	}
@@ -118,7 +118,7 @@ export class BoundingBoxObject {
 	}
 
 	destroy () {
-		SceneService.remove( this.mesh, true );
+		SceneService.removeFromMain( this.mesh, true );
 	}
 
 }

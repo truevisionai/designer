@@ -214,7 +214,7 @@ export class TvLaneRoadMark {
 
 		if ( this.gameObject ) {
 
-			SceneService.remove( this.gameObject );
+			SceneService.removeFromMain( this.gameObject );
 
 			this.lane?.gameObject.remove( this.gameObject );
 

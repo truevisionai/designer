@@ -23,7 +23,7 @@ export class PolyLineEditor extends AbstractShapeEditor {
 
 	drawSpline () {
 
-		if ( this.object != null ) SceneService.remove( this.object, false );
+		if ( this.object != null ) SceneService.removeFromMain( this.object, false );
 
 		this.curve = new THREE.CatmullRomCurve3( this.controlPointPositions, false, 'catmullrom', 0 );
 
@@ -34,7 +34,7 @@ export class PolyLineEditor extends AbstractShapeEditor {
 
 		this.object.renderOrder = 2;
 
-		SceneService.add( this.object, false );
+		SceneService.addToMain( this.object, false );
 
 		this.curveGeometryChanged.emit( this.curve );
 	}

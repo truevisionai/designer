@@ -80,9 +80,9 @@ export class ThreeService implements IEngine {
 
 		if ( removeOld ) {
 
-			SceneService.removeToolObject( this.environment?.weather?.sun?.light );
+			SceneService.removeFromTool( this.environment?.weather?.sun?.light );
 
-			SceneService.removeToolObject( this.ambientLight );
+			SceneService.removeFromTool( this.ambientLight );
 
 			// if ( this.environment.weather.domeImage.sphereMesh ) {
 			// 	SceneService.removeHelper( this.environment.weather.domeImage.sphereMesh );
@@ -211,12 +211,12 @@ export class ThreeService implements IEngine {
 	 */
 	add ( object: THREE.Object3D, raycasting = false ): any {
 
-		SceneService.add( object, raycasting );
+		SceneService.addToMain( object, raycasting );
 	}
 
 	remove ( object: THREE.Object3D, raycasting = false ): any {
 
-		SceneService.remove( object, raycasting );
+		SceneService.removeFromMain( object, raycasting );
 
 	}
 
@@ -237,8 +237,6 @@ export class ThreeService implements IEngine {
 	}
 
 	reset () {
-
-		this.scene.traverse( function ( child ) { } );
 
 		SceneService.clear();
 

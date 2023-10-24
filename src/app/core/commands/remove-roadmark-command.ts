@@ -24,7 +24,7 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 		this.lane.gameObject.remove( this.roadmark.gameObject );
 
-		SceneService.remove( this.roadmark.node );
+		SceneService.removeFromMain( this.roadmark.node );
 
 		this.removeFromLane();
 
@@ -35,7 +35,7 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 		this.lane.gameObject.add( this.roadmark.gameObject );
 
-		SceneService.add( this.roadmark.node );
+		SceneService.addToMain( this.roadmark.node );
 
 		this.lane.addRoadMarkInstance( this.roadmark );
 

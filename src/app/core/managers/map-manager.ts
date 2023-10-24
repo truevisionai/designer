@@ -30,7 +30,7 @@ export class MapManager {
 
 		map.roads.forEach( road => {
 
-			road.objects.object.forEach( object => SceneService.remove( object ) );
+			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
 
 			road.remove( map.gameObject );
 
@@ -42,7 +42,7 @@ export class MapManager {
 
 			curve.delete();
 
-			curve.props.forEach( prop => SceneService.remove( prop ) );
+			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
 		} );
 
@@ -50,14 +50,14 @@ export class MapManager {
 
 			polygon.delete();
 
-			polygon.spline?.controlPoints.forEach( point => SceneService.remove( point ) );
+			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
 
 		} );
 
 		map.props.forEach( prop => {
 
 			// SceneService.remove( prop.object );
-			SceneService.remove( prop );
+			SceneService.removeFromMain( prop );
 
 			// this.gameObject.remove( prop.object );
 			map.gameObject.remove( prop );

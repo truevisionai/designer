@@ -31,7 +31,7 @@ export class TextObject {
 
 	update ( message: string, position: Vector3, size: number = this.size, color: number = this.color ) {
 		// Remove the old text from the scene
-		SceneService.removeToolObject( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 
 		// Update the text properties
 		this.message = message;
@@ -45,7 +45,7 @@ export class TextObject {
 
 	updateText ( message: string ) {
 		// Remove the old text from the scene
-		SceneService.removeToolObject( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 
 		this.message = message;
 
@@ -62,7 +62,7 @@ export class TextObject {
 
 	remove () {
 		// Remove the text from the scene
-		SceneService.removeToolObject( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 	}
 
 	private createText () {

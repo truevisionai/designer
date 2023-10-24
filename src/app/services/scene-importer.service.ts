@@ -255,7 +255,7 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		SceneService.add( this.map.gameObject );
+		SceneService.addToMain( this.map.gameObject );
 
 	}
 
@@ -285,7 +285,7 @@ export class SceneImporterService extends AbstractReader {
 
 		this.map.props.push( propInstance );
 
-		SceneService.add( propInstance );
+		SceneService.addToMain( propInstance );
 
 	}
 
@@ -419,7 +419,7 @@ export class SceneImporterService extends AbstractReader {
 
 			const position = this.importVector3( xml );
 
-			SceneService.add( spline.addControlPointAt( position ) );
+			SceneService.addToMain( spline.addControlPointAt( position ) );
 
 		} );
 
@@ -445,7 +445,7 @@ export class SceneImporterService extends AbstractReader {
 
 			spline.addControlPoint( controlPoint );
 
-			SceneService.add( controlPoint );
+			SceneService.addToMain( controlPoint );
 
 		} );
 
@@ -527,11 +527,11 @@ export class SceneImporterService extends AbstractReader {
 
 			polygon.addPropObject( propObject );
 
-			SceneService.add( propObject );
+			SceneService.addToMain( propObject );
 
 		} );
 
-		SceneService.add( polygon.mesh );
+		SceneService.addToMain( polygon.mesh );
 
 		return polygon;
 	}
@@ -1078,7 +1078,7 @@ export class SceneImporterService extends AbstractReader {
 
 			crosswalk.update();
 
-			SceneService.add( crosswalk );
+			SceneService.addToMain( crosswalk );
 
 			road.addRoadObjectInstance( crosswalk );
 

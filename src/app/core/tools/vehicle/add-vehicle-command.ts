@@ -26,7 +26,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 	execute (): void {
 
-		SceneService.add( this.entity );
+		SceneService.addToMain( this.entity );
 
 		ScenarioInstance.scenario.addObject( this.entity );
 
@@ -36,7 +36,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 	undo (): void {
 
-		SceneService.remove( this.entity );
+		SceneService.removeFromMain( this.entity );
 
 		ScenarioInstance.scenario.removeObject( this.entity );
 

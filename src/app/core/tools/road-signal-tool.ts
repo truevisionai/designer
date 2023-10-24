@@ -57,7 +57,7 @@ export class RoadSignalTool extends BaseTool {
 
 		signal.controlPoint = AnyControlPoint.create( '', e.point );
 
-		SceneService.add( signal.controlPoint );
+		SceneService.addToMain( signal.controlPoint );
 
 		signal.height = 1.5;
 

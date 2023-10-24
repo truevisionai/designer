@@ -1253,7 +1253,7 @@ export class TvRoad {
 
 		this.spline.removeControlPoint( cp );
 
-		SceneService.removeToolObject( cp );
+		SceneService.removeFromTool( cp );
 
 		this.updateGeometryFromSpline();
 
@@ -1323,8 +1323,8 @@ export class TvRoad {
 
 	clearNodes () {
 
-		SceneService.removeToolObject( this.startNode );
-		SceneService.removeToolObject( this.endNode );
+		SceneService.removeFromTool( this.startNode );
+		SceneService.removeFromTool( this.endNode );
 
 		this.startNode = null;
 		this.endNode = null;
@@ -1397,7 +1397,7 @@ export class TvRoad {
 
 				laneOffset.node.visible = false;
 
-				SceneService.removeToolObject( laneOffset.node );
+				SceneService.removeFromTool( laneOffset.node );
 
 			}
 
@@ -1489,7 +1489,7 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.node ) SceneService.removeToolObject( laneWidth.node );
+					if ( laneWidth.node ) SceneService.removeFromTool( laneWidth.node );
 
 					laneWidth.node = new LaneWidthNode( laneWidth );
 

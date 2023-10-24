@@ -84,7 +84,7 @@ export class TvJunctionLaneLink {
 		// rebuild connecting road because it might have changed after lane link removal
 		// RoadFactory.rebuildRoad( this.connectingRoad );
 
-		SceneService.remove( this.mesh );
+		SceneService.removeFromMain( this.mesh );
 
 	}
 

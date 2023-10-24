@@ -26,9 +26,9 @@ export class CreatePropPointCommand extends BaseCommand {
 
 	execute () {
 
-		SceneService.add( this.propInstance );
+		SceneService.addToMain( this.propInstance );
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 
 		this.map.props.push( this.propInstance );
 
@@ -39,9 +39,9 @@ export class CreatePropPointCommand extends BaseCommand {
 
 	undo () {
 
-		SceneService.remove( this.propInstance );
+		SceneService.removeFromMain( this.propInstance );
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 
 		this.map.props.splice( this.map.props.indexOf( this.propInstance ), 1 );
 

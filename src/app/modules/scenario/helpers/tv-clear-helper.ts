@@ -17,7 +17,7 @@ export class ClearHelper {
 
 		openScenario.objects.forEach( entity => {
 
-			SceneService.remove( entity.gameObject );
+			SceneService.removeFromMain( entity.gameObject );
 
 			entity.initActions.splice( 0, entity.initActions.length );
 

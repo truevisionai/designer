@@ -163,7 +163,7 @@ class CircleRoad {
 
 		this.text.remove();
 
-		SceneService.removeToolObject( this.line );
+		SceneService.removeFromTool( this.line );
 
 		const roads = RoadFactory.createCircularRoads( this.centre, this.end, this.radius );
 

@@ -90,7 +90,7 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 			this.points.push( point );
 
-			SceneService.add( point )
+			SceneService.addToMain( point )
 
 			const subscription = prop.updated.subscribe( prop => this.onPropUpdated( point, prop ) );
 
@@ -110,7 +110,7 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 	clearScene (): void {
 
-		this.points.forEach( point => SceneService.remove( point ) );
+		this.points.forEach( point => SceneService.removeFromMain( point ) );
 
 		this.points = [];
 

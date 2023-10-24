@@ -35,7 +35,7 @@ export class AddPropPolygonPointCommand extends BaseCommand {
 
 		this.selectCommand.execute();
 
-		SceneService.add( this.newPoint );
+		SceneService.addToMain( this.newPoint );
 
 	}
 
@@ -51,7 +51,7 @@ export class AddPropPolygonPointCommand extends BaseCommand {
 
 		this.selectCommand.undo();
 
-		SceneService.remove( this.newPoint );
+		SceneService.removeFromMain( this.newPoint );
 
 	}
 

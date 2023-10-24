@@ -33,7 +33,7 @@ export class LaneNodeStrategy<T> extends SelectStrategy<DynamicControlPoint<T>> 
 
 		if ( !targetLane ) {
 
-			if ( this.line ) SceneService.remove( this.line );
+			if ( this.line ) SceneService.removeFromMain( this.line );
 
 			if ( this.lane ) this.lane = null;
 

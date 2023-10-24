@@ -22,9 +22,9 @@ export class RemovePropCommand extends BaseCommand {
 
 	execute (): void {
 
-		SceneService.remove( this.prop );
+		SceneService.removeFromMain( this.prop );
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 
 		this.map.props.splice( this.map.props.indexOf( this.prop ), 1 );
 
@@ -37,9 +37,9 @@ export class RemovePropCommand extends BaseCommand {
 
 	undo (): void {
 
-		SceneService.add( this.prop );
+		SceneService.addToMain( this.prop );
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 
 		this.map.props.push( this.prop );
 

@@ -60,7 +60,7 @@ export class CreateSingleManeuver extends BaseCommand {
 
 		this.selectJunctionCommand?.execute();
 
-		SceneService.add( this.laneLink.mesh );
+		SceneService.addToMain( this.laneLink.mesh );
 
 		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );
@@ -91,7 +91,7 @@ export class CreateSingleManeuver extends BaseCommand {
 
 		this.selectJunctionCommand?.undo();
 
-		SceneService.remove( this.laneLink.mesh );
+		SceneService.removeFromMain( this.laneLink.mesh );
 
 		this.entry.road.setSuccessor( null, null );
 		this.exit.road.setPredecessor( null, null );
@@ -116,7 +116,7 @@ export class CreateSingleManeuver extends BaseCommand {
 
 		this.selectJunctionCommand?.execute();
 
-		SceneService.add( this.laneLink.mesh );
+		SceneService.addToMain( this.laneLink.mesh );
 
 		this.entry.road.setSuccessor( TvRoadLinkChildType.junction, this.junction.id );
 		this.exit.road.setPredecessor( TvRoadLinkChildType.junction, this.junction.id );

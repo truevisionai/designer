@@ -714,7 +714,7 @@ export class OpenDriverParser extends AbstractReader {
 
 			crosswalk.update();
 
-			SceneService.add( crosswalk );
+			SceneService.addToMain( crosswalk );
 
 			road.addRoadObjectInstance( crosswalk );
 

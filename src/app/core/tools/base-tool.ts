@@ -78,7 +78,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	clearToolObjects (): void {
 
-		SceneService.clearToolObjects();
+		SceneService.removeToolObjects();
 
 	}
 

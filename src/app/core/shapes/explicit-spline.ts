@@ -418,7 +418,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const line = this.segments[ index ];
 
-		SceneService.remove( line );
+		SceneService.removeFromMain( line );
 
 		this.segments.splice( index, 1 );
 

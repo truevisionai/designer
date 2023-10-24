@@ -83,7 +83,7 @@ export class CreateWidthNodeCommand extends BaseCommand {
 		this.laneWidth.node.lane.width.splice( index, 1 );
 		this.laneWidth.node.updateLaneWidthValues();
 
-		SceneService.removeToolObject( this.laneWidth.node );
+		SceneService.removeFromTool( this.laneWidth.node );
 		this.rebuild( this.laneWidth.node.road );
 
 		this.inspectorCommand.undo();

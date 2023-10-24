@@ -105,7 +105,7 @@ export class TvSurface implements ISelectable {
 
 		// add the spline mesh direcly to scene and not opendrive
 		// this helps avoid exporting it in the 3d file
-		SceneService.add( this.spline.mesh );
+		SceneService.addToMain( this.spline.mesh );
 
 		// set the main object of each control point to this surface
 		this.spline.controlPoints.forEach( cp => cp.mainObject = this );
@@ -338,7 +338,7 @@ export class SurfaceFactory {
 		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
 		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
 
-		spline.controlPoints.forEach( cp => SceneService.add( cp ) );
+		spline.controlPoints.forEach( cp => SceneService.addToMain( cp ) );
 
 		const surface = new TvSurface( null, spline );
 

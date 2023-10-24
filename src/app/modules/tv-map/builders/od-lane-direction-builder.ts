@@ -44,7 +44,7 @@ export class OdLaneDirectionBuilder {
 
 	clear () {
 
-		this.arrows.forEach( arrow => SceneService.removeToolObject( arrow ) );
+		this.arrows.forEach( arrow => SceneService.removeFromTool( arrow ) );
 
 	}
 

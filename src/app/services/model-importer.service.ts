@@ -26,7 +26,7 @@ export class ModelImporterService {
 
 			if ( position ) object.position.set( position.x, position.y, position.z );
 
-			SceneService.add( object );
+			SceneService.addToMain( object );
 
 		}, metadata, extension );
 

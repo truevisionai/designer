@@ -43,7 +43,7 @@ export class AddWidthNodeCommand extends BaseCommand {
 
 		this.node.updateLaneWidthValues();
 
-		SceneService.removeToolObject( this.node );
+		SceneService.removeFromTool( this.node );
 
 		this.rebuild( this.node.road );
 

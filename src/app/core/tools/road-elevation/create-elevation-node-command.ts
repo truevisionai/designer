@@ -46,7 +46,7 @@ export class CreateElevationNodeCommand extends BaseCommand {
 
 		this.node.road.removeElevationInstance( this.node.elevation );
 
-		SceneService.removeToolObject( this.node );
+		SceneService.removeFromTool( this.node );
 
 		this.selectPointCommand.undo();
 

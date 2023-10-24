@@ -65,8 +65,6 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged', SceneService.scene );
 
-		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged', SceneService.scene );
-
 	}
 
 	ngOnDestroy (): void {

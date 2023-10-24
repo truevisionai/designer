@@ -135,9 +135,9 @@ export class AutoSpline extends AbstractSpline {
 
 		this.controlPoints.splice( 0, this.controlPoints.length );
 
-		SceneService.remove( this.polyline.mesh );
+		SceneService.removeFromMain( this.polyline.mesh );
 
-		SceneService.remove( this.roundline.mesh );
+		SceneService.removeFromMain( this.roundline.mesh );
 
 	}
 

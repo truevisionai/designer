@@ -42,7 +42,7 @@ export class TvMapBuilder {
 
 		TvMapInstance.clearOpenDrive();
 
-		SceneService.remove( map.gameObject );
+		SceneService.removeFromMain( map.gameObject );
 
 		map.gameObject = null;
 		map.gameObject = new GameObject( 'OpenDrive' );
@@ -53,7 +53,7 @@ export class TvMapBuilder {
 
 		} );
 
-		SceneService.add( map.gameObject );
+		SceneService.addToMain( map.gameObject );
 
 		return map.gameObject;
 

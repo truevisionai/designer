@@ -16,13 +16,13 @@ export class AddObjectCommand extends BaseCommand {
 
 	execute (): void {
 
-		SceneService.add( this.object );
+		SceneService.addToMain( this.object );
 
 	}
 
 	undo (): void {
 
-		SceneService.remove( this.object );
+		SceneService.removeFromMain( this.object );
 
 	}
 

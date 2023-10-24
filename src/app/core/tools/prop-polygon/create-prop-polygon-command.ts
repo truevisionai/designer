@@ -38,9 +38,9 @@ export class CreatePropPolygonCommand extends BaseCommand {
 
 		this.selectPointCommand.execute();
 
-		SceneService.add( this.point );
+		SceneService.addToMain( this.point );
 
-		SceneService.add( this.polygon.mesh );
+		SceneService.addToMain( this.polygon.mesh );
 	}
 
 	undo (): void {
@@ -53,9 +53,9 @@ export class CreatePropPolygonCommand extends BaseCommand {
 
 		this.selectPointCommand.undo();
 
-		SceneService.remove( this.point );
+		SceneService.removeFromMain( this.point );
 
-		SceneService.remove( this.polygon.mesh );
+		SceneService.removeFromMain( this.polygon.mesh );
 	}
 
 	redo (): void {

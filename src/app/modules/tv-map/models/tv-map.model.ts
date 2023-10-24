@@ -257,7 +257,7 @@ export class TvMap {
 
 		this.roads.forEach( road => {
 
-			road.objects.object.forEach( object => SceneService.remove( object ) );
+			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
 
 			road.remove( this.gameObject );
 
@@ -269,7 +269,7 @@ export class TvMap {
 
 			curve.delete();
 
-			curve.props.forEach( prop => SceneService.remove( prop ) );
+			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
 		} );
 
@@ -277,14 +277,14 @@ export class TvMap {
 
 			polygon.delete();
 
-			polygon.spline?.controlPoints.forEach( point => SceneService.remove( point ) );
+			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
 
 		} );
 
 		this.props.forEach( prop => {
 
 			// SceneService.remove( prop.object );
-			SceneService.remove( prop );
+			SceneService.removeFromMain( prop );
 
 			// this.gameObject.remove( prop.object );
 			this.gameObject.remove( prop );

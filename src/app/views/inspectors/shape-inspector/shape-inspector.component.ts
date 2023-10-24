@@ -72,7 +72,7 @@ export class ShapeInspectorComponent implements OnInit, IComponent {
 
 		this.mesh = new THREE.Mesh( this.geometry, material );
 
-		SceneService.add( this.mesh );
+		SceneService.addToMain( this.mesh );
 	}
 
 	updateGroupGeometry () {

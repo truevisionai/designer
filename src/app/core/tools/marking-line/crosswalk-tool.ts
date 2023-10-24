@@ -300,7 +300,7 @@ export class DeleteCrossWalkCommand extends BaseCommand {
 
 		this.road?.gameObject.remove( this.crosswalk );
 
-		SceneService.remove( this.crosswalk );
+		SceneService.removeFromMain( this.crosswalk );
 
 		this.road?.removeRoadObjectById( this.crosswalk.attr_id );
 

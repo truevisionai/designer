@@ -37,11 +37,11 @@ export class TvMapInstance {
 	}
 
 	static removeProp ( prop: Object3D ): void {
-		SceneService.remove( prop );
+		SceneService.removeFromMain( prop );
 	}
 
 	static addProp ( prop: Object3D ): void {
-		SceneService.add( prop );
+		SceneService.addToMain( prop );
 	}
 
 }
