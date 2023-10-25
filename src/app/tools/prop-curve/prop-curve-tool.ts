@@ -18,8 +18,8 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 
 import { CreatePropCurveCommand } from './create-prop-curve-command';
-import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
+import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
 
 export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
@@ -31,7 +31,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	private selectStrategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
 
-	private moveStrategy: MovePointStrategy;
+	private moveStrategy: FreeMovingStrategy;
 
 	constructor () {
 
@@ -39,7 +39,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		this.selectStrategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
 
-		this.moveStrategy = new MovePointStrategy();
+		this.moveStrategy = new FreeMovingStrategy();
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
@@ -149,7 +149,7 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		const position = this.moveStrategy.getPosition( event );
 
-		this.point?.position.copy( position );
+		this.point?.position.copy( position.position );
 
 		this.point?.update();
 
@@ -165,9 +165,9 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		const position = this.moveStrategy.getPosition( event );
 
-		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		const command = new UpdatePositionCommand( this.point, position, this.pointerDownAt )
+		const command = new UpdatePositionCommand( this.point, position.position, this.pointerDownAt )
 
 		CommandHistory.execute( command );
 

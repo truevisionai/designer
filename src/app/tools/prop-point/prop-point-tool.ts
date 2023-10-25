@@ -18,10 +18,13 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
-import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Subscription } from 'rxjs';
 import { Object3D } from 'three';
+import { FreeMovingStrategy, AnyLaneMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
+import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { Position } from 'app/modules/scenario/models/position';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 
 /**
  * Prop point tool
@@ -43,8 +46,10 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 	private point: DynamicControlPoint<PropInstance>;
 	private selectStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
-	private moveStrategy: MovePointStrategy;
+
 	private subscriptions: Subscription[] = [];
+
+	private moveStrategies: MovingStrategy[] = [];
 
 	constructor () {
 
@@ -52,7 +57,8 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		this.selectStrategy = new ControlPointStrategy();
 
-		this.moveStrategy = new MovePointStrategy();
+		this.moveStrategies.push( new AnyLaneMovingStrategy( TvContactPoint.END ) );
+		this.moveStrategies.push( new FreeMovingStrategy() );
 
 		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 
@@ -181,11 +187,11 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = this.moveStrategy.getPosition( e );
+		const position = this.getMovedPosition( e );
 
-		this.point.copyPosition( position )
+		this.point.copyPosition( position.position )
 
-		this.point.mainObject.copyPosition( position );
+		this.point.mainObject.copyPosition( position.position );
 
 	}
 
@@ -195,15 +201,15 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = this.moveStrategy.getPosition( e );
+		const position = this.getMovedPosition( e );
 
-		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
 		CommandHistory.executeMany(
 
-			new UpdatePositionCommand( this.point.mainObject, position, this.pointerDownAt ),
+			new UpdatePositionCommand( this.point.mainObject, position.position, this.pointerDownAt ),
 
-			new CopyPositionCommand( this.point, position, this.pointerDownAt )
+			new CopyPositionCommand( this.point, position.position, this.pointerDownAt )
 
 		);
 
@@ -224,6 +230,18 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 	private onPropUpdated ( point: DynamicControlPoint<PropInstance>, prop: PropInstance ): void {
 
 		point.copyPosition( prop.getPosition() );
+
+	}
+
+	private getMovedPosition ( event: PointerEventData ): Position {
+
+		for ( let i = 0; i < this.moveStrategies.length; i++ ) {
+
+			const position = this.moveStrategies[ i ].getPosition( event );
+
+			if ( position ) return position;
+
+		}
 
 	}
 
