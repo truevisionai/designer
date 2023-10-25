@@ -96,7 +96,7 @@ export class ToolBarComponent implements OnInit {
 			class: 'toolbar-button',
 			toolType: ToolType.RoadRampTool,
 			action: 'ramp-tool',
-			icon: 'directions_car',
+			icon: 'fork_right', // fork_right, call_split
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
