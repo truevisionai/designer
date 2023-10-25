@@ -279,7 +279,7 @@ export class ToolBarComponent implements OnInit {
 			track: 'menu',
 			tooltip: 'Signal Tool',
 			click: () => this.setToolType( ToolType.RoadSignalTool ),
-			enabled: false,
+			enabled: !Environment.production,
 		},
 		{
 			id: 'showSurfaceTool',
