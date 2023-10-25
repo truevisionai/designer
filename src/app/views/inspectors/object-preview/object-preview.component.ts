@@ -6,7 +6,6 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, O
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
-import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import {
 	BoxGeometry,
@@ -18,6 +17,7 @@ import {
 	Scene,
 } from 'three';
 import { PreviewService } from './object-preview.service';
+import { RoadStyle } from "../../../core/asset/road.style";
 
 @Component( {
 	selector: 'app-object-preview',

@@ -9,7 +9,7 @@ import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-en
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
 import { EntityManager } from 'app/managers/entity-manager';
-import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
+import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { DynamicFileInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
@@ -26,6 +26,7 @@ import { SetInspectorCommand } from '../commands/set-inspector-command';
 import { IComponent } from '../core/game-object';
 import { AppInspector } from '../core/inspector';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
+import { RoadStyle } from "../core/asset/road.style";
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -184,7 +185,7 @@ export class InspectorFactoryService {
 
 		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
 
-			RoadStyleService.setCurrentStyle( instance as RoadStyle );
+			RoadStyleManager.setCurrentStyle( instance as RoadStyle );
 
 			return {
 				roadStyle: instance,

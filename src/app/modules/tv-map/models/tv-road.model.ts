@@ -14,7 +14,6 @@ import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -53,6 +52,7 @@ import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { RoadStyle } from "../../../core/asset/road.style";
 
 export enum TrafficRule {
 	RHT = 'RHT',

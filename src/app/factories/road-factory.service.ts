@@ -9,7 +9,7 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { RoadStyleService } from 'app/services/road-style.service';
+import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector2, Vector3 } from 'three';
 import { JunctionEntryObject } from '../modules/three-js/objects/junction-entry.object';
 import { RoadControlPoint } from '../modules/three-js/objects/road-control-point';
@@ -155,7 +155,7 @@ export class RoadFactory {
 		// FIX: minor elevation to avoid z-fighting
 		// road.addElevation( 0, 0.05, 0, 0, 0 );
 
-		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
+		const roadStyle = RoadStyleManager.getRampRoadStyle( road, lane );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
@@ -171,7 +171,7 @@ export class RoadFactory {
 
 		road.setType( type, maxSpeed );
 
-		const roadStyle = RoadStyleService.getRoadStyle( road );
+		const roadStyle = RoadStyleManager.getRoadStyle( road );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 

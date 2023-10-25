@@ -12,8 +12,8 @@ import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
 import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
-import { RoadStyle } from './road-style.service';
 import { SnackBar } from './snack-bar.service';
+import { RoadStyle } from "../core/asset/road.style";
 
 export class RoadStyleImporter extends AbstractReader {
 
