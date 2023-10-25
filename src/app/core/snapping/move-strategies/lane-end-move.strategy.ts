@@ -7,11 +7,14 @@ import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
 import { IHasSCoord } from '../snap-strategies/snapping';
-import { MoveStrategy } from './move-strategy';
+import { MovingStrategy } from './move-strategy';
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { Position } from 'app/modules/scenario/models/position';
 
-export class LaneEndMoveStrategy implements MoveStrategy {
+export class LaneEndMoveStrategy extends MovingStrategy {
 
 	constructor ( private lane: TvLane, private sValues: IHasSCoord[] = [] ) {
+		super();
 	}
 
 	getPosTheta ( position: Vector3 ): TvPosTheta {
@@ -35,4 +38,11 @@ export class LaneEndMoveStrategy implements MoveStrategy {
 		return TvMapQueries.getLaneEndPosition( this.lane.roadId, this.lane.id, s );
 
 	}
+
+	getPosition ( e: PointerEventData ): Position {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
 }
