@@ -4,7 +4,7 @@ import { CommandHistory } from 'app/services/command-history';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-import { SetPositionCommand } from './commands/set-position-command';
+import { SetPositionCommand } from '../../commands/set-position-command';
 import { ThreeService } from './three.service';
 
 @Injectable( {

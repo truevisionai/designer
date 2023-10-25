@@ -21,7 +21,7 @@ import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
 import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-command';
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
 import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
-import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
+import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
 
 export class LaneMarkingTool extends BaseTool {
 

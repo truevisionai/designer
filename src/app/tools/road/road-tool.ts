@@ -9,8 +9,8 @@ import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-stra
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { CopyPositionCommand } from 'app/commands/copy-position-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';

@@ -20,10 +20,10 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvSignalHelper } from '../services/tv-signal-helper';
-import { LaneRoadMarkFactory } from './lane-road-mark-factory';
+import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
-import { SignalFactory } from './signal-factory';
+import { SignalFactory } from '../../../factories/signal-factory';
 import { RoadObjectFactory } from 'app/factories/road-object.factory';
 
 export class TvMapBuilder {

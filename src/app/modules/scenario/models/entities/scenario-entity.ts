@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
+import { IHasUpdate } from 'app/commands/set-value-command';
 import { IHasPosition } from 'app/modules/three-js/objects/i-has-position';
 import { ArrowHelper, BoxGeometry, Euler, MeshBasicMaterial, Vector3 } from 'three';
 import { GameObject } from '../../../../core/game-object';

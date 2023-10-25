@@ -17,7 +17,7 @@ import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { CopyPositionCommand, UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { MovePointStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Subscription } from 'rxjs';

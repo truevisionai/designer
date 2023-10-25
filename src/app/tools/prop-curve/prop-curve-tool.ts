@@ -6,7 +6,7 @@ import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-co
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { CommandHistory } from 'app/services/command-history';

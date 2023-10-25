@@ -26,7 +26,7 @@ import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { ToolFactory } from 'app/factories/tool-factory';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
-import { SetValueCommand } from './commands/set-value-command';
+import { SetValueCommand } from '../../commands/set-value-command';
 import { RoadStyle } from "../../core/asset/road.style";
 
 @Injectable( {

@@ -6,7 +6,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CallFunctionCommand } from 'app/commands/call-function-command';
 import { UpdateRoadPointCommand } from 'app/commands/update-road-point-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';

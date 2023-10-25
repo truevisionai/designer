@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from '../../../commands/base-command';
-import { IHasPosition } from '../objects/i-has-position';
+import { BaseCommand } from './base-command';
+import { IHasPosition } from '../modules/three-js/objects/i-has-position';
 import { IHasUpdate } from './set-value-command';
 
 export interface IHasCopyUpdate extends IHasUpdate, IHasPosition {
