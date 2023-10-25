@@ -8,7 +8,7 @@ import earcut from 'earcut';
 import { Triangle } from 'three';
 
 
-describe( 'PropService test', () => {
+describe( 'PropManager test', () => {
 
 	beforeEach( () => TestBed.configureTestingModule( {} ) );
 

@@ -13,7 +13,6 @@ import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { RoadStyle } from 'app/services/road-style.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
@@ -36,6 +35,7 @@ import {
 } from 'three';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
+import { RoadStyle } from "../../../core/asset/road.style";
 
 const WIDTH = 200;
 const HEIGHT = 200;

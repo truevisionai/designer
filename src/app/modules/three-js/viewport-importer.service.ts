@@ -16,7 +16,6 @@ import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/services/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { PropManager } from 'app/managers/prop-manager';
-import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from 'three';
@@ -28,6 +27,7 @@ import { ToolFactory } from 'app/factories/tool-factory';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from './commands/set-value-command';
+import { RoadStyle } from "../../core/asset/road.style";
 
 @Injectable( {
 	providedIn: 'root'

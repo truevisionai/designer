@@ -7,7 +7,6 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';
@@ -15,6 +14,7 @@ import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'thre
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
 import { AppService } from '../services/app.service';
+import { RoadStyle } from "../core/asset/road.style";
 
 @Injectable( {
 	providedIn: 'root'

@@ -11,8 +11,8 @@ import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-export
 
 import { Euler, Vector3 } from 'three';
 import { FileService } from '../io/file.service';
-import { RoadStyle } from './road-style.service';
 import { TvElectronService } from './tv-electron.service';
+import { RoadStyle } from "../core/asset/road.style";
 
 export interface Scene {
 
