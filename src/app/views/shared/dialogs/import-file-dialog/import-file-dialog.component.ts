@@ -5,8 +5,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { FileApiService } from 'app/core/io/file-api.service';
-import { IFile } from '../../../../core/io/file';
+import { FileApiService } from 'app/io/file-api.service';
+import { IFile } from '../../../../io/file';
 
 @Component( {
 	selector: 'app-import-file-dialog',

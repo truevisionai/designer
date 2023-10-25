@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { FileUtils } from 'app/core/io/file-utils';
+import { FileUtils } from 'app/io/file-utils';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { TvScenario } from '../models/tv-scenario';

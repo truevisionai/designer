@@ -9,7 +9,7 @@ import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-enti
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
 import { ActionType, VehicleCategory } from 'app/modules/scenario/models/tv-enums';
 import { Orientation } from 'app/modules/scenario/models/tv-orientation';
-import { EntityManager } from 'app/core/managers/entity-manager';
+import { EntityManager } from 'app/managers/entity-manager';
 import { Object3D, Vector3 } from 'three';
 import { IDService } from './id.service';
 

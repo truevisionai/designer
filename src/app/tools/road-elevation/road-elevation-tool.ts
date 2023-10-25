@@ -18,7 +18,7 @@ import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { ElevationManager } from 'app/core/managers/elevation-manager';
+import { ElevationManager } from 'app/managers/elevation-manager';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';

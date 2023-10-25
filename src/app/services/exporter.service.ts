@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
-import { IFile } from 'app/core/io/file';
+import { IFile } from 'app/io/file';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
@@ -20,7 +20,7 @@ import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { FileService } from '../core/io/file.service';
+import { FileService } from '../io/file.service';
 
 import { CommandHistory } from './command-history';
 import { SceneExporterService } from './scene-exporter.service';

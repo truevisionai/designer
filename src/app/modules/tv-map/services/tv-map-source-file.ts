@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { IFile } from '../../../core/io/file';
+import { IFile } from '../../../io/file';
 import { TvMap } from '../models/tv-map.model';
 import { Object3D, Event } from 'three';
 import { SceneService } from 'app/services/scene.service';

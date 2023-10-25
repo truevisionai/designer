@@ -10,7 +10,7 @@ import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-positi
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { CommandHistory } from 'app/services/command-history';
-import { PropManager } from 'app/core/managers/prop-manager';
+import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { PropModel } from '../../core/models/prop-model.model';

@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';

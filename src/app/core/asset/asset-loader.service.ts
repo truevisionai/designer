@@ -26,7 +26,7 @@ import {
 import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
 import { ModelImporterService } from '../../services/model-importer.service';
 import { RoadStyleImporter } from '../../services/road-style-importer';
-import { FileService } from '../io/file.service';
+import { FileService } from '../../io/file.service';
 import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 

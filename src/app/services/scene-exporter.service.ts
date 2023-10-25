@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from 'app/core/io/file';
+import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
@@ -19,7 +19,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { XMLBuilder } from 'fast-xml-parser';
-import { FileService } from '../core/io/file.service';
+import { FileService } from '../io/file.service';
 import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';

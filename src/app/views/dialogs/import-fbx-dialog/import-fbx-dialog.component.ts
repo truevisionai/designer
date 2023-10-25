@@ -14,8 +14,8 @@ import { CoordinateSystem } from 'app/services/exporter.service';
 import { Group, Material, Mesh, Object3D } from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { FileUtils } from '../../../core/io/file-utils';
-import { FileService } from '../../../core/io/file.service';
+import { FileUtils } from '../../../io/file-utils';
+import { FileService } from '../../../io/file.service';
 
 export class ImportFbxDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {

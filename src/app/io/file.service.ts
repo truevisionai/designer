@@ -3,8 +3,8 @@
  */
 
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { SnackBar } from '../../services/snack-bar.service';
-import { TvElectronService } from '../../services/tv-electron.service';
+import { SnackBar } from '../services/snack-bar.service';
+import { TvElectronService } from '../services/tv-electron.service';
 
 import { IFile } from './file';
 import { FileUtils } from './file-utils';

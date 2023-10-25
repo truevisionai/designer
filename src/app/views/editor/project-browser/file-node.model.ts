@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 
 /** Flat node with expandable and level information */
 export class FileNode {

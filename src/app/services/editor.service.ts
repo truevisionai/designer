@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { KeyboardInput } from '../core/input';
 import { ShortcutService } from './shortcut.service';

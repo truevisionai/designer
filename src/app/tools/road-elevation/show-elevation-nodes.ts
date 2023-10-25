@@ -7,7 +7,7 @@ import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadElevationTool } from './road-elevation-tool';
-import { ElevationManager } from 'app/core/managers/elevation-manager';
+import { ElevationManager } from 'app/managers/elevation-manager';
 
 export class ShowElevationNodes extends BaseCommand {
 

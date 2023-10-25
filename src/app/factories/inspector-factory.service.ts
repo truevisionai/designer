@@ -4,11 +4,11 @@
 
 import { Injectable, Type } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
-import { EntityManager } from 'app/core/managers/entity-manager';
+import { EntityManager } from 'app/managers/entity-manager';
 import { RoadStyle, RoadStyleService } from 'app/services/road-style.service';
 import { DynamicFileInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';

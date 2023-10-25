@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';

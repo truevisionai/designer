@@ -4,8 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { FileUtils } from 'app/core/io/file-utils';
-import { FileService } from 'app/core/io/file.service';
+import { FileUtils } from 'app/io/file-utils';
+import { FileService } from 'app/io/file.service';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';

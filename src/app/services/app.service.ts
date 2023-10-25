@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { SceneExporterService } from 'app/services/scene-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
@@ -15,13 +15,13 @@ import { AppInfo } from './app-info.service';
 import { AuthService } from './auth.service';
 import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
-import { ManagerRegistry } from '../core/managers/manager-registry';
-import { JunctionManager } from '../core/managers/junction-manager';
-import { RoadManager } from '../core/managers/road-manager';
-import { EntityManager } from '../core/managers/entity-manager';
-import { LaneManager } from '../core/managers/lane-manager';
-import { MapManager } from '../core/managers/map-manager';
-import { ElevationManager } from '../core/managers/elevation-manager';
+import { ManagerRegistry } from '../managers/manager-registry';
+import { JunctionManager } from '../managers/junction-manager';
+import { RoadManager } from '../managers/road-manager';
+import { EntityManager } from '../managers/entity-manager';
+import { LaneManager } from '../managers/lane-manager';
+import { MapManager } from '../managers/map-manager';
+import { ElevationManager } from '../managers/elevation-manager';
 
 @Injectable( {
 	providedIn: 'root'

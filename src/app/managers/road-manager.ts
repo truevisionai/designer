@@ -1,13 +1,13 @@
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../../events/map-events";
-import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
-import { TvMapBuilder } from "../../modules/tv-map/builders/tv-map-builder";
-import { TvMapInstance } from "../../modules/tv-map/services/tv-map-source-file";
-import { RoadControlPoint } from "../../modules/three-js/objects/road-control-point";
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
+import { TvRoad } from "../modules/tv-map/models/tv-road.model";
+import { TvMapBuilder } from "../modules/tv-map/builders/tv-map-builder";
+import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
+import { RoadControlPoint } from "../modules/three-js/objects/road-control-point";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { RoadNode } from "../../modules/three-js/objects/road-node";
+import { RoadNode } from "../modules/three-js/objects/road-node";
 import { SceneService } from "app/services/scene.service";
 import { Manager } from "./manager";
-import { AppInspector } from "../inspector";
+import { AppInspector } from "../core/inspector";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 
 export class RoadManager extends Manager {

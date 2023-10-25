@@ -5,7 +5,7 @@
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { CommandHistory } from 'app/services/command-history';
-import { PropManager } from 'app/core/managers/prop-manager';
+import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';

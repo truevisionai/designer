@@ -26,7 +26,7 @@ import { CreateRoadCommand } from './create-road-command';
 import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
-import { RoadManager } from "../../core/managers/road-manager";
+import { RoadManager } from "../../managers/road-manager";
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
 
 export class RoadTool extends BaseTool implements IToolWithPoint {

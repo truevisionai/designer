@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { FileUtils } from 'app/core/io/file-utils';
+import { FileUtils } from 'app/io/file-utils';
 
 export class IFile {
 
