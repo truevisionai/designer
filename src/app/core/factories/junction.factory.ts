@@ -3,8 +3,8 @@
  */
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { TvContactPoint, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvContactPoint, TvLaneType, TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvJunction, TvVirtualJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
@@ -13,6 +13,14 @@ import { SceneService } from '../services/scene.service';
 import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../utils/console';
 import { IDService } from './id.service';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { Vector3 } from 'three';
+import { RoadFactory } from './road-factory.service';
+import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
+import { AutoSpline } from '../shapes/auto-spline';
 
 export class JunctionFactory {
 
@@ -37,6 +45,16 @@ export class JunctionFactory {
 		const name = junctionName || `Junction${ id }`;
 
 		return new TvJunction( name, id );
+
+	}
+
+	static createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
+
+		const id = this.IDService.getUniqueID();
+
+		const name = `VirtualJunction${ id }`;
+
+		return new TvVirtualJunction( name, id, mainRoad.id, sStart, sEnd, orientation );
 
 	}
 
@@ -431,5 +449,169 @@ export class JunctionFactory {
 		}
 
 	}
+
+	static createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ) {
+
+		let v1, v2, v3, v4;
+
+		if ( endCoord instanceof TvLaneCoord ) {
+			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord.position, startCoord.posTheta.toDirectionVector() );
+		} else if ( endCoord instanceof Vector3 ) {
+			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord, startCoord.posTheta.toDirectionVector() );
+		}
+
+		const newLane = startCoord.lane.cloneAtS( -1, startCoord.s );
+
+		const rampRoad = RoadFactory.createRampRoad( newLane );
+
+		const connection = new TvJunctionConnection( virtualJunction.connections.size, startCoord.road, rampRoad, TvContactPoint.START, null );
+
+		connection.addLaneLink( new TvJunctionLaneLink( startCoord.lane, newLane ) );
+
+		virtualJunction.addConnection( connection );
+
+		rampRoad.junctionId = virtualJunction.id;
+
+		rampRoad.addControlPointAt( v1 );
+		rampRoad.addControlPointAt( v2 );
+		rampRoad.addControlPointAt( v3 );
+		rampRoad.addControlPointAt( v4 );
+
+		const startElevation = startCoord.road.getElevationValue( startCoord.s );
+		const endElevation = endCoord instanceof TvLaneCoord ? endCoord.road.getElevationValue( endCoord.s ) : endCoord.z;
+
+		rampRoad.addElevation( 0, startElevation + 0.1, 0, 0, 0 );
+		rampRoad.addElevationInstance( new TvElevation( rampRoad.length, endElevation + 0.1, 0, 0, 0 ) );
+
+		rampRoad.updateGeometryFromSpline();
+
+		// rampRoad.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, startCoord.roadId, TvContactPoint.START );
+		// rampRoad.predecessor.elementDir = TvOrientation.PLUS;
+		// rampRoad.predecessor.elementS = startCoord.s;
+
+		return rampRoad;
+	}
+
+	static makeRampRoadPoints ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): Vector3[] {
+
+		// const direction = posTheta.toDirectionVector();
+		const normalizedDirection1 = direction1.clone().normalize();
+		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+
+		const upVector = new Vector3( 0, 0, 1 );
+		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+
+		const distanceAB = v1.distanceTo( v4 );
+
+		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+
+		return [ v1, v2, v3, v4 ];
+	}
+
+	static makeRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
+
+		// const direction = posTheta.toDirectionVector();
+		const normalizedDirection1 = direction1.clone().normalize();
+		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+
+		const upVector = new Vector3( 0, 0, 1 );
+		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+
+		const distanceAB = v1.distanceTo( v4 );
+
+		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+
+		const spline = new AutoSpline();
+
+		spline.addControlPointAt( v1 );
+		spline.addControlPointAt( v2 );
+		spline.addControlPointAt( v3 );
+		spline.addControlPointAt( v4 );
+
+		return spline;
+	}
+
+	static updateRampSpline ( spline: AutoSpline, v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
+
+		// const direction = posTheta.toDirectionVector();
+		const normalizedDirection1 = direction1.clone().normalize();
+		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+
+		const upVector = new Vector3( 0, 0, 1 );
+		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+
+		const distanceAB = v1.distanceTo( v4 );
+
+		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+
+		spline.getSecondPoint().position.copy( v2 );
+		spline.getSecondLastPoint().position.copy( v3 );
+
+		return spline;
+	}
+
+	// static makeRampRoadPoints ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): Vector3[] {
+
+	// 	let v1: Vector3, v4: Vector3;
+
+	// 	let directionV1: Vector3, directionV4: Vector3;
+
+	// 	// Normalize the direction vectors to ensure they have a unit length
+	// 	// const normalizedDirectionV1 = directionV1.clone().normalize();
+	// 	// const normalizedDirectionV4 = directionV4.clone().normalize();
+
+	// 	if ( startCoord instanceof TvLaneCoord ) {
+
+	// 		v1 = startCoord.position;
+	// 		directionV1 = startCoord.posTheta.toDirectionVector().clone().normalize();
+
+	// 	} else if ( startCoord instanceof Vector3 ) {
+
+	// 		v1 = startCoord;
+	// 		directionV1 = new Vector3( 0, 0, 1 );
+
+	// 	}
+
+	// 	if ( endCoord instanceof TvLaneCoord ) {
+
+	// 		v4 = endCoord.position;
+	// 		directionV4 = endCoord.posTheta.toDirectionVector().clone().normalize();
+
+	// 	} else if ( endCoord instanceof Vector3 ) {
+
+	// 		v4 = endCoord;
+	// 		directionV4 = new Vector3( 0, 0, 1 );
+
+	// 	}
+
+	// 	// Define the up vector representing the Z-axis.
+	// 	const upVector = new Vector3( 0, 0, 1 );
+	// 	// Calculate a vector perpendicular to the direction of V1.
+	// 	const perpendicular = directionV4.clone().cross( upVector );
+
+	// 	// Calculate the distance between the starting point v1 and the ending point v4.
+	// 	const distanceAB = v1.distanceTo( v4 );
+
+	// 	// Calculate the intermediate points v2 and v3. These points are crucial for the curvature of the ramp.
+	// 	// v2 is calculated using the direction of v1
+	// 	// const v2 = v1.clone().multiplyScalar( distanceAB / 3 ) );
+
+	// 	const v2 = v1.clone().add( directionV1.clone().multiplyScalar( distanceAB / 3 ) );
+	// 	const v3 = v4.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );
+
+
+	// 	// v3 is calculated using the direction of v4, which is the new part compared to the original function.
+	// 	// This ensures that the curve respects the direction in which v4 is supposed to point.
+	// 	// const v3 = v4.clone().add( directionV4.clone().multiplyScalar( -distanceAB / 3 ) );
+
+	// 	// Return the four control points that will be used to form the Bezier curve of the ramp.
+	// 	return [ v1, v2, v3, v4 ];
+	// }
 
 }

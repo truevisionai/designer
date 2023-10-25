@@ -3,7 +3,6 @@
  */
 
 import { IToolWithMainObject, SelectMainObjectCommand } from 'app/core/commands/select-point-command';
-import { OnLaneStrategy } from 'app/core/snapping/select-strategies/lane-tool-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { CommandHistory } from 'app/services/command-history';
@@ -12,7 +11,7 @@ import { MouseButton, PointerEventData } from '../../../events/pointer-event-dat
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../../models/tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { LaneManager } from 'app/core/managers/lane-manager';
+import { OnLaneStrategy } from "../../snapping/select-strategies/on-lane-strategy";
 
 export class LaneTool extends BaseTool implements IToolWithMainObject {
 
@@ -27,8 +26,6 @@ export class LaneTool extends BaseTool implements IToolWithMainObject {
 	init (): void {
 
 		this.pointerStrategy = new OnLaneStrategy();
-
-		LaneManager.instance.init();
 
 	}
 

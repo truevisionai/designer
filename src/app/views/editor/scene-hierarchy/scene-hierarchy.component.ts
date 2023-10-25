@@ -38,6 +38,9 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	private sceneChangedSubscription: Subscription;
 	private debug = true;
 
+	private timeoutId: any = null;
+	private readonly debounceDuration = 100; // duration in milliseconds
+
 	constructor ( private changeDet: ChangeDetectorRef ) { }
 
 	hasChild = ( _: number, node: FlatNode ) => node.expandable;
@@ -53,7 +56,21 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 		this.dataSource.data = this.generateTreeData( SceneService.scene );
 
-		this.sceneChangedSubscription = SceneService.changed.subscribe( () => this.onSceneChanged() );
+		this.sceneChangedSubscription = SceneService.changed.subscribe( () => {
+
+			// If there's a pending execution, cancel it
+			if ( this.timeoutId ) {
+				clearTimeout( this.timeoutId );
+			}
+
+			// Schedule a new execution
+			this.timeoutId = setTimeout( () => {
+
+				this.onSceneChanged();
+
+			}, this.debounceDuration );
+
+		} );
 
 	}
 

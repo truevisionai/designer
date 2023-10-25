@@ -68,6 +68,16 @@ export class SceneService {
 		this.changed.emit();
 	}
 
+	static removeFromEditor ( object: Object3D ) {
+
+		if ( object == null ) return;
+
+		this.editorLayer.remove( object );
+
+		this.changed.emit();
+
+	}
+
 	static addToolObject ( object: Object3D ): void {
 
 		this.toolLayer.add( object );
@@ -77,7 +87,7 @@ export class SceneService {
 
 	static removeToolObjects (): void {
 
-		this.toolLayer.children.forEach( object => this.toolLayer.remove( object ) );
+		this.disposeHierarchy( this.toolLayer, this.disposeNode );
 
 		this.changed.emit();
 

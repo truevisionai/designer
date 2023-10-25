@@ -8,6 +8,9 @@ import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvMapInstance } from "app/modules/tv-map/services/tv-map-source-file";
 import { Manager } from "./manager";
+import { TvJunction, TvVirtualJunction } from "app/modules/tv-map/models/tv-junction";
+import { JunctionFactory } from "../factories/junction.factory";
+import { Vector3 } from "three";
 
 interface TempIntersection {
 	x: number,
@@ -39,6 +42,12 @@ export class JunctionManager extends Manager {
 	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
 		console.log( 'onRoadUpdated', event.road );
+
+		const virtualJunction = this.getConnectedJunctions( event.road );
+
+		if ( virtualJunction ) {
+			this.updateVirtualJunction( event.road, virtualJunction as TvVirtualJunction );
+		}
 
 		const intersections = this.findIntersectionsSlow( event.road );
 
@@ -72,6 +81,39 @@ export class JunctionManager extends Manager {
 
 			console.log( intersection.coordA.road.laneSections.length, intersection.coordB.road.laneSections.length );
 		}
+
+	}
+
+	updateVirtualJunction ( mainRoad: TvRoad, junction: TvVirtualJunction ) {
+
+		console.log( 'updating virtual junction', junction );
+
+		const startCoord = mainRoad.getPositionAt( junction.sStart );
+		const endCoord = mainRoad.getPositionAt( junction.sEnd );
+
+		junction.connections.forEach( ( connection, connectionId ) => {
+
+			const road = this.map.getRoadById( connection.connectingRoadId );
+
+			const p1 = road.spline.getFirstPoint();
+			const p2 = road.spline.getSecondPoint();
+			const p4 = road.spline.getLastPoint();
+
+			p1.setPosition( startCoord.toVector3() );
+
+			const normalizedDirection = startCoord.toDirectionVector().normalize();
+
+			const distanceAB = p1.position.distanceTo( p4.position );
+
+			const v2 = p1.position.clone().add( normalizedDirection.clone().multiplyScalar( distanceAB / 3 ) );
+
+			p2.setPosition( v2 );
+
+			road.updateGeometryFromSpline();
+
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+
+		} );
 
 	}
 
@@ -273,4 +315,41 @@ export class JunctionManager extends Manager {
 
 	}
 
+	private getConnectedJunctions ( road: TvRoad ): TvJunction {
+
+		for ( let [ _, junction ] of this.map.junctions ) {
+
+			if ( junction instanceof TvVirtualJunction ) {
+
+				if ( junction.mainRoadId === road.id ) {
+
+					return junction
+
+				}
+
+				for ( let [ _, connection ] of junction.connections ) {
+
+					if ( connection.incomingRoadId === road.id ) {
+
+						return junction;
+
+					}
+
+				}
+
+			} else {
+
+				for ( let [ _, connection ] of junction.connections ) {
+
+					if ( connection.incomingRoadId === road.id ) {
+
+						return junction;
+
+					}
+
+				}
+
+			}
+		}
+	}
 }

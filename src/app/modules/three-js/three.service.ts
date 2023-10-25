@@ -80,9 +80,9 @@ export class ThreeService implements IEngine {
 
 		if ( removeOld ) {
 
-			SceneService.removeFromTool( this.environment?.weather?.sun?.light );
+			SceneService.removeFromEditor( this.environment?.weather?.sun?.light );
 
-			SceneService.removeFromTool( this.ambientLight );
+			SceneService.removeFromEditor( this.ambientLight );
 
 			// if ( this.environment.weather.domeImage.sphereMesh ) {
 			// 	SceneService.removeHelper( this.environment.weather.domeImage.sphereMesh );

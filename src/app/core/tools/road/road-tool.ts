@@ -4,7 +4,7 @@
 
 import { IToolWithPoint, SelectPointCommand } from 'app/core/commands/select-point-command';
 import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AddRoadPointCommand } from 'app/core/tools/road/add-road-point-command';
@@ -27,7 +27,7 @@ import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
 import { RoadManager } from "../../managers/road-manager";
-import { JunctionManager } from 'app/core/managers/junction-manager';
+import { NodeStrategy } from "../../snapping/select-strategies/node-strategy";
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -175,6 +175,13 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	}
 
 	onRoadSelected ( road: TvRoad ) {
+
+		// if ( road?.isJunction ) {
+
+		// 	this.setHint( 'Cannot edit junction/connections from Road Tool' );
+
+		// 	return;
+		// }
 
 		if ( !this.road || this.road.id !== road.id ) {
 

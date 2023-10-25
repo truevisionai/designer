@@ -152,7 +152,8 @@ export class RoadFactory {
 
 		const road = this.createNewRoad();
 
-		road.addElevation( 0, 0.05, 0, 0, 0 );
+		// FIX: minor elevation to avoid z-fighting
+		// road.addElevation( 0, 0.05, 0, 0, 0 );
 
 		const roadStyle = RoadStyleService.getRampRoadStyle( road, lane );
 

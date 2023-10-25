@@ -12,7 +12,7 @@ import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-ev
 
 export class AddRoadCommand extends OdBaseCommand {
 
-	constructor ( private roads: TvRoad[] = [] ) {
+	constructor ( private roads: TvRoad[] = [], private showHelpers = false ) {
 
 		super();
 
@@ -24,7 +24,7 @@ export class AddRoadCommand extends OdBaseCommand {
 
 			this.map.addRoad( road );
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( road, false ) );
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( road, this.showHelpers ) );
 
 		} )
 

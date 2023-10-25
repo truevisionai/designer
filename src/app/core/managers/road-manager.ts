@@ -122,7 +122,7 @@ export class RoadManager extends Manager {
 
 		if ( event.showHelpers ) this.showNodes( event.road );
 
-		if ( event.showHelpers ) event.road.spline?.showLines();
+		if ( event.showHelpers ) event.road.spline.show();
 
 	}
 

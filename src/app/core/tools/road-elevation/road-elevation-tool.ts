@@ -21,10 +21,11 @@ import { UpdateElevationNodePosition } from './update-elevation-node-position';
 import { ElevationManager } from 'app/core/managers/elevation-manager';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ControlPointStrategy, NodeStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { NodeStrategy } from "../../snapping/select-strategies/node-strategy";
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 

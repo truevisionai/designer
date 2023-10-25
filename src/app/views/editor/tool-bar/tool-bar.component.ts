@@ -15,6 +15,7 @@ import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
 import { SceneService } from 'app/core/services/scene.service';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
+import { Environment } from 'app/core/utils/environment';
 
 class IToolMenu {
 	id: string;
@@ -88,6 +89,18 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Road Circle Tool',
 			click: () => this.setToolType( ToolType.RoadCircle ),
 			enabled: true,
+		},
+		{
+			id: 'showRampTool',
+			label: 'Ramp',
+			class: 'toolbar-button',
+			toolType: ToolType.RoadRampTool,
+			action: 'ramp-tool',
+			icon: 'directions_car',
+			track: 'menu',
+			tooltip: 'Ramp Tool',
+			click: () => this.setToolType( ToolType.RoadRampTool ),
+			enabled: !Environment.production,
 		},
 		{
 			id: 'showRoadElevationTool',
