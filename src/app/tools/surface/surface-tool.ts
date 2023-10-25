@@ -22,7 +22,7 @@ import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strat
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 
 export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 

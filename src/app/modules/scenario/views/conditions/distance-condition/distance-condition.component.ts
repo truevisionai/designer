@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/modules/scenario/models/conditions/tv-distance-condition';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from '../../../../../services/command-history';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { Position } from '../../../models/position';

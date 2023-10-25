@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SignalFactory } from '../builders/signal-factory';
+import { SignalFactory } from '../../../factories/signal-factory';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 

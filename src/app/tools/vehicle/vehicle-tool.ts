@@ -13,7 +13,7 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-action';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { CommandHistory } from 'app/services/command-history';

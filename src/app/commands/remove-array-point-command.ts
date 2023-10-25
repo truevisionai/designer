@@ -4,7 +4,7 @@
 
 import { BaseCommand } from 'app/commands/base-command';
 import { Object3D } from 'three';
-import { BaseControlPoint } from '../objects/control-point';
+import { BaseControlPoint } from '../modules/three-js/objects/control-point';
 import { IHasUpdate } from './set-value-command';
 
 

@@ -5,9 +5,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Euler, Object3D, Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
-import { SetPositionCommand } from '../../../modules/three-js/commands/set-position-command';
-import { SetRotationCommand } from '../../../modules/three-js/commands/set-rotation-command';
-import { SetScaleCommand } from '../../../modules/three-js/commands/set-scale-command';
+import { SetPositionCommand } from '../../../commands/set-position-command';
+import { SetRotationCommand } from '../../../commands/set-rotation-command';
+import { SetScaleCommand } from '../../../commands/set-scale-command';
 import { CommandHistory } from '../../../services/command-history';
 
 @Component( {

@@ -7,7 +7,7 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';

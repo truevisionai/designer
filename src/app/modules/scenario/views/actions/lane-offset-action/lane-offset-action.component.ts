@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/modules/scenario/models/actions/tv-lane-offset-action';
 import { CommandHistory } from '../../../../../services/command-history';
-import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
+import { SetValueCommand } from '../../../../../commands/set-value-command';
 import { Target } from '../../../models/actions/target';
 import { PrivateAction } from '../../../models/private-action';
 import { DynamicsShape } from '../../../models/tv-enums';

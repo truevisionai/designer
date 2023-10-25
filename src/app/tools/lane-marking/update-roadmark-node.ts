@@ -5,7 +5,7 @@
 import { Vector3 } from 'three';
 import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
 import { BaseCommand } from '../../commands/base-command';
-import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
+import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
 
 export class UpdateRoadmarkNodeCommand extends BaseCommand {
 

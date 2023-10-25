@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IHasCopyUpdate } from 'app/modules/three-js/commands/copy-position-command';
+import { IHasCopyUpdate } from 'app/commands/copy-position-command';
 import { Object3D, Vector3 } from 'three';
 import { Action, SerializedField } from '../components/serialization';
 import { EventEmitter } from '@angular/core';

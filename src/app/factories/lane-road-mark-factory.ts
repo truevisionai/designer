@@ -5,16 +5,16 @@
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
-import { GameObject } from '../../../core/game-object';
-import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
-import { TvLane } from '../models/tv-lane';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoad } from '../models/tv-road.model';
-import { Vertex } from '../models/vertex';
-import { OdBuilderConfig } from './od-builder-config';
+import { GameObject } from '../core/game-object';
+import { MeshGeometryData } from '../modules/tv-map/models/mesh-geometry.data';
+import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../modules/tv-map/models/tv-common';
+import { TvLane } from '../modules/tv-map/models/tv-lane';
+import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
+import { TvLaneSection } from '../modules/tv-map/models/tv-lane-section';
+import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from '../modules/tv-map/models/tv-road.model';
+import { Vertex } from '../modules/tv-map/models/vertex';
+import { OdBuilderConfig } from '../modules/tv-map/builders/od-builder-config';
 
 export class LaneRoadMarkFactory {
 

@@ -5,8 +5,8 @@
 import { Component } from '@angular/core';
 import { CallFunctionCommand } from 'app/commands/call-function-command';
 import { IComponent } from 'app/core/game-object';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';

@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { TraveledDistanceCondition } from 'app/modules/scenario/models/conditions/tv-traveled-distance-condition';
 import { CommandHistory } from '../../../../../services/command-history';
-import { SetValueCommand } from '../../../../three-js/commands/set-value-command';
+import { SetValueCommand } from '../../../../../commands/set-value-command';
 import { Condition } from '../../../models/conditions/tv-condition';
 
 @Component( {

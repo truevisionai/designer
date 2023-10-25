@@ -5,7 +5,7 @@ import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../events/pointer-event-data';
-import { SignalFactory } from '../modules/tv-map/builders/signal-factory';
+import { SignalFactory } from '../factories/signal-factory';
 import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { StaticSignal } from '../modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';

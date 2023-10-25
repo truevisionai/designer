@@ -8,7 +8,7 @@ import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { CommandHistory } from 'app/services/command-history';
 import {

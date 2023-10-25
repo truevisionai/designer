@@ -13,7 +13,7 @@ import {
 	ICrosswalkInspectorData
 } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { CopyPositionCommand } from '../../modules/three-js/commands/copy-position-command';
+import { CopyPositionCommand } from '../../commands/copy-position-command';
 import { TvRoadCoord } from '../../modules/tv-map/models/tv-lane-coord';
 import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
 import { BaseCommand } from '../../commands/base-command';

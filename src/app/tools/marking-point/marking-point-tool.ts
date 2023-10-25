@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SetPositionCommand } from 'app/modules/three-js/commands/set-position-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetPositionCommand } from 'app/commands/set-position-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';

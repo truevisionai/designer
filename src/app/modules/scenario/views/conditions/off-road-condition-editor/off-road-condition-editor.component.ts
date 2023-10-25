@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { Condition } from 'app/modules/scenario/models/conditions/tv-condition';
 import { OffRoadCondition } from 'app/modules/scenario/models/conditions/tv-off-road-condition';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 
 @Component( {

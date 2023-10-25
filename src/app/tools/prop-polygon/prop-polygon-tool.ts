@@ -8,7 +8,7 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';

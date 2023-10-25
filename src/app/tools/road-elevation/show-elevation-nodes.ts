@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from 'app/commands/base-command';
-import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
+import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadElevationTool } from './road-elevation-tool';

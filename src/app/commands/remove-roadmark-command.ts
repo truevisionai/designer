@@ -6,7 +6,7 @@ import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
-import { LaneRoadMarkFactory } from 'app/modules/tv-map/builders/lane-road-mark-factory';
+import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
 
