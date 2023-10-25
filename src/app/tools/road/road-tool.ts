@@ -170,7 +170,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 		if ( roadCoord ) return;
 
 		// if no object is selected we unselect road, node and control point
-		CommandHistory.execute( new SelectRoadForRoadToolCommand( this, null ) );
+		if ( this.road || this.node || this.controlPoint ) {
+			CommandHistory.execute( new SelectRoadForRoadToolCommand( this, null ) );
+		}
 
 	}
 
