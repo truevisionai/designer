@@ -7,8 +7,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { Router } from '@angular/router';
-import { AppService } from 'app/core/services/app.service';
-import { AuthService } from 'app/core/services/auth.service';
+import { AppService } from 'app/services/app.service';
+import { AuthService } from 'app/services/auth.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 
 @Component( {

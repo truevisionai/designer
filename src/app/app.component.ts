@@ -10,12 +10,12 @@ import { Subject } from 'rxjs';
 
 import { filter, takeUntil } from 'rxjs/operators';
 import { AnalyticsService } from './core/analytics/analytics.service';
-import { AppService } from './core/services/app.service';
+import { AppService } from './services/app.service';
 import { Environment } from './core/utils/environment';
-import { LayoutService } from './shared/services/layout.service';
+import { LayoutService } from './views/shared/services/layout.service';
 
-import { RoutePartsService } from './shared/services/route-parts.service';
-import { ThemeService } from './shared/services/theme.service';
+import { RoutePartsService } from './views/shared/services/route-parts.service';
+import { ThemeService } from './views/shared/services/theme.service';
 
 @Component( {
 	selector: 'app-root',

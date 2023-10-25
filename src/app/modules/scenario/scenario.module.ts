@@ -13,7 +13,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../views/shared/shared.module';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { TvMapModule } from '../tv-map/tv-map.module';
 import { ImportOpenScenarioDialogComponent } from './dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';

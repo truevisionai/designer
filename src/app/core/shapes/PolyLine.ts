@@ -3,7 +3,7 @@
  */
 
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
 import { MAX_CTRL_POINTS } from './spline-config';
 

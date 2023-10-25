@@ -3,10 +3,10 @@
  */
 
 import { Component } from '@angular/core';
-import { DuplicateLaneCommand } from 'app/core/commands/duplicate-lane-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { DuplicateLaneCommand } from 'app/commands/duplicate-lane-command';
+import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';
-import { RemoveLaneCommand } from '../../../core/commands/remove-lane-command';
+import { RemoveLaneCommand } from '../../../commands/remove-lane-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
 import { IComponent } from '../../../core/game-object';
 import { TravelDirection, TvLaneType } from '../../../modules/tv-map/models/tv-common';

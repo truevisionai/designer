@@ -3,10 +3,10 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MarkingObjectFactory } from 'app/core/factories/marking-object.factory';
+import { MarkingObjectFactory } from 'app/factories/marking-object.factory';
 import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 import { TvCornerRoad, TvRoadObject } from './tv-road-object';
 

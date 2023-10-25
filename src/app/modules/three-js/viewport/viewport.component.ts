@@ -10,7 +10,7 @@ import { ThreeService } from 'app/modules/three-js/three.service';
 // import * as Stats from 'stats.js';
 import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { ViewportService } from '../viewport.service';
 import { Environment } from 'app/core/utils/environment';
 

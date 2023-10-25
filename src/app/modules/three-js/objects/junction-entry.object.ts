@@ -7,7 +7,7 @@ import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from 'app/mod
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
 import { TvJunction } from '../../tv-map/models/tv-junction';
 import { TvJunctionConnection } from '../../tv-map/models/tv-junction-connection';

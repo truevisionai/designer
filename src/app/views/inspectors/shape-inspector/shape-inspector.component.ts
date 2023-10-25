@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import { CurvePath, Mesh, Shape, Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 
 @Component( {
 	selector: 'app-shape-inspector',

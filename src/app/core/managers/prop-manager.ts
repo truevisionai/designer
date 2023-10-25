@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { DynamicMeta } from 'app/core/models/metadata.model';
+import { DynamicMeta } from 'app/core/asset/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
 
 export class PropManager {

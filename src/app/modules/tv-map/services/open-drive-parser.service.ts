@@ -3,15 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { JunctionFactory } from 'app/core/factories/junction.factory';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { SceneService } from 'app/core/services/scene.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { SceneService } from 'app/services/scene.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { XMLParser } from 'fast-xml-parser';
-import { AbstractReader } from '../../../core/services/abstract-reader';
-import { readXmlArray, readXmlElement } from '../../../core/tools/xml-utils';
+import { AbstractReader } from '../../../services/abstract-reader';
+import { readXmlArray, readXmlElement } from '../../../tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { EnumHelper, ObjectTypes, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';

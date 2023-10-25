@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { SetToolCommand } from 'app/core/commands/set-tool-command';
+import { SetToolCommand } from 'app/commands/set-tool-command';
 import { IFile } from 'app/core/io/file';
-import { ToolManager } from 'app/core/tools/tool-manager';
+import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';

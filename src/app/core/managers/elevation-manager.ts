@@ -6,7 +6,7 @@ import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 
 import { RoadElevationNode } from '../../modules/three-js/objects/road-elevation-node';
 import { TvElevation } from '../../modules/tv-map/models/tv-elevation';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { Manager } from './manager';
 
 export class ElevationManager extends Manager {

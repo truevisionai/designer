@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from 'app/core/commands/base-command';
+import { BaseCommand } from 'app/commands/base-command';
 import { Material, Texture } from 'three';
 
 export class SetMaterialMapCommand extends BaseCommand {

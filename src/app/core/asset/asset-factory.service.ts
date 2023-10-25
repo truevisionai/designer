@@ -13,9 +13,9 @@ import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
-import { MetadataFactory } from '../factories/metadata-factory.service';
+import { MetadataFactory } from '../../factories/metadata-factory.service';
 import { PropModel } from '../models/prop-model.model';
-import { AppService } from '../services/app.service';
+import { AppService } from '../../services/app.service';
 
 @Injectable( {
 	providedIn: 'root'

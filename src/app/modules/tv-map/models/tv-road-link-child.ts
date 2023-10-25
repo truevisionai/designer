@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { Vector3 } from 'three';

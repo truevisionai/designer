@@ -6,7 +6,7 @@ import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';

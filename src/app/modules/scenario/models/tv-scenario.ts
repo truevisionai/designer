@@ -3,7 +3,7 @@
  */
 
 import { MathUtils, Vector3 } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TeleportAction } from './actions/tv-teleport-action';

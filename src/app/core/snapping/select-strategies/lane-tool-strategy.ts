@@ -6,8 +6,8 @@ import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
-import { LineFactoryService } from '../../factories/line-factory.service';
-import { SceneService } from '../../services/scene.service';
+import { LineFactoryService } from '../../../factories/line-factory.service';
+import { SceneService } from '../../../services/scene.service';
 import { SelectStrategy } from './select-strategy';
 
 export class LaneToolStrategy extends SelectStrategy<TvLane> {

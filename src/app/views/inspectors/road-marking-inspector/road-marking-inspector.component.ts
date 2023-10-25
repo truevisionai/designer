@@ -5,9 +5,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
-import { SetRoadmarkTextureCommand } from 'app/core/commands/set-roadmark-texture-command';
+import { SetRoadmarkTextureCommand } from 'app/commands/set-roadmark-texture-command';
 import { IComponent } from 'app/core/game-object';
-import { Metadata } from 'app/core/models/metadata.model';
+import { Metadata } from 'app/core/asset/metadata.model';
 import { TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
 import { PreviewService } from '../object-preview/object-preview.service';

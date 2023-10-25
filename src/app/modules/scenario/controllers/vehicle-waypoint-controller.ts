@@ -3,7 +3,7 @@
  */
 
 import { BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { Time } from '../../../core/time';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';

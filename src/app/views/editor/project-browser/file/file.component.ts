@@ -6,12 +6,12 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
-import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { FileUtils } from 'app/core/io/file-utils';
 import { FileService } from 'app/core/io/file.service';
-import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
-import { DragDropService } from 'app/core/services/drag-drop.service';
+import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
+import { DragDropService } from 'app/services/drag-drop.service';
 import { ImporterService } from 'app/services/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';

@@ -4,15 +4,15 @@
 
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
-import { SetToolCommand } from 'app/core/commands/set-tool-command';
-import { ToolFactory } from 'app/core/factories/tool-factory';
-import { ToolType } from 'app/core/models/tool-types.enum';
+import { SetToolCommand } from 'app/commands/set-tool-command';
+import { ToolFactory } from 'app/factories/tool-factory';
+import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
-import { BaseTool } from '../../../core/tools/base-tool';
-import { ToolManager } from '../../../core/tools/tool-manager';
+import { BaseTool } from '../../../tools/base-tool';
+import { ToolManager } from '../../../tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-import { SceneService } from 'app/core/services/scene.service';
+import { SetInspectorCommand } from 'app/commands/set-inspector-command';
+import { SceneService } from 'app/services/scene.service';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { Environment } from 'app/core/utils/environment';

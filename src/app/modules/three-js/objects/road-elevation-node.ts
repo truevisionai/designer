@@ -3,7 +3,7 @@
  */
 
 import { Action, SerializedField } from 'app/core/components/serialization';
-import { DeleteElevationCommand } from 'app/core/tools/road-elevation/delete-elevation-command';
+import { DeleteElevationCommand } from 'app/tools/road-elevation/delete-elevation-command';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';

@@ -4,7 +4,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { Time } from './time';
-import { ToolManager } from './tools/tool-manager';
+import { ToolManager } from '../tools/tool-manager';
 
 export interface PlayerUpdateData {
 	time: number;

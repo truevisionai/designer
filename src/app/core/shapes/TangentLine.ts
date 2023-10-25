@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from 'three';
 import { CURVE_Y, MAX_CTRL_POINTS } from './spline-config';
 

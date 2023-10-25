@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { Debug } from 'app/core/utils/debug';
 import { TvEntityLoader, TvMaterialLoader, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
@@ -27,7 +27,7 @@ import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.serv
 import { ModelImporterService } from '../../services/model-importer.service';
 import { RoadStyleImporter } from '../../services/road-style-importer';
 import { FileService } from '../io/file.service';
-import { Metadata, MetaImporter } from '../models/metadata.model';
+import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 
 @Injectable( {

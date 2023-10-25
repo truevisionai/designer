@@ -11,9 +11,9 @@ import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-pa
 import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractSpline } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';

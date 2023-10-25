@@ -22,7 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from 'app/core/core.module';
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from 'app/views/shared/shared.module';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import {

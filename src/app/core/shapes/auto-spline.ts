@@ -12,7 +12,7 @@ import { BaseControlPoint } from '../../modules/three-js/objects/control-point';
 import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 
 
 export class AutoSpline extends AbstractSpline {

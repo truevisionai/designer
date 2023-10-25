@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { AppService } from 'app/core/services/app.service';
+import { AppService } from 'app/services/app.service';
 import { PointerMoveData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import * as THREE from 'three';

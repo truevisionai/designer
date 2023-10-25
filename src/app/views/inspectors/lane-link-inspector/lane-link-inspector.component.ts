@@ -3,9 +3,9 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DeleteLinkCommand } from 'app/core/commands/delete-link-command';
-import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { DeleteLinkCommand } from 'app/commands/delete-link-command';
+import { MultiCmdsCommand } from 'app/commands/multi-cmds-command';
+import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';

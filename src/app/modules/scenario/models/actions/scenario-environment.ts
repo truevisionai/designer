@@ -8,7 +8,7 @@ import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { Color, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/modules/three-js/default.config';

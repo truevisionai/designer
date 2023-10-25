@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from 'app/views/shared/shared.module';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PointerGuidesComponent } from './pointer-guides/pointer-guides.component';
 import { ViewportComponent } from './viewport/viewport.component';

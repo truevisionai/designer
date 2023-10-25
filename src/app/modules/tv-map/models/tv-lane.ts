@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
-import { Copiable } from 'app/core/services/property-copy.service';
+import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/modules/three-js/commands/set-value-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
 import { TvMapBuilder } from '../builders/tv-map-builder';
 import { MeshGeometryData } from './mesh-geometry.data';

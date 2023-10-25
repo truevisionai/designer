@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from 'app/core/commands/base-command';
+import { BaseCommand } from 'app/commands/base-command';
 
 export class PushValueCommand<T> extends BaseCommand {
 

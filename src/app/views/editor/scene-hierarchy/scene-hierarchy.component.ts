@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { Subscription } from 'rxjs';
 import { Object3D } from 'three';
 

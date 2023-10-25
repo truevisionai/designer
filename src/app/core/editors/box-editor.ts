@@ -5,10 +5,10 @@
 import { EventEmitter } from '@angular/core';
 import { KeyboardInput } from 'app/core/input';
 import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
-import { AppService } from '../services/app.service';
-import { SceneService } from '../services/scene.service';
+import { AppService } from '../../services/app.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export interface BoxCreatedEvent {

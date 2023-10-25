@@ -4,8 +4,8 @@
 
 import * as THREE from 'three';
 import { Mesh, Object3D, PlaneGeometry, Vector2, Vector3 } from 'three';
-import { SceneService } from '../../core/services/scene.service';
-import { COLOR } from '../../shared/utils/colors.service';
+import { SceneService } from '../../services/scene.service';
+import { COLOR } from '../../views/shared/utils/colors.service';
 
 export enum PrimitiveType {
 	CUBE = 1,

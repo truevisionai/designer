@@ -9,7 +9,7 @@ import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvMapInstance } from "app/modules/tv-map/services/tv-map-source-file";
 import { Manager } from "./manager";
 import { TvJunction, TvVirtualJunction } from "app/modules/tv-map/models/tv-junction";
-import { JunctionFactory } from "../factories/junction.factory";
+import { JunctionFactory } from "../../factories/junction.factory";
 import { Vector3 } from "three";
 
 interface TempIntersection {

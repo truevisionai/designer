@@ -9,7 +9,7 @@ import { EventEmitter } from '@angular/core';
 import { GameObject } from '../game-object';
 import { AssetDatabase } from '../asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { RemovePropCommand } from '../tools/prop-point/remove-prop-point-command';
+import { RemovePropCommand } from '../../tools/prop-point/remove-prop-point-command';
 
 export class PropInstance extends Object3D implements IHasCopyUpdate {
 

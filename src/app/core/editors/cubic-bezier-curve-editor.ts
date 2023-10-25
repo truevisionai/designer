@@ -7,7 +7,7 @@ import { Curve, Object3D } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
 import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { KeyboardInput } from '../input';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class CubicBezierCurveEditor extends AbstractShapeEditor {

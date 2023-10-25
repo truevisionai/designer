@@ -3,7 +3,7 @@
  */
 
 import { Component } from '@angular/core';
-import { CallFunctionCommand } from 'app/core/commands/call-function-command';
+import { CallFunctionCommand } from 'app/commands/call-function-command';
 import { IComponent } from 'app/core/game-object';
 import { UpdatePositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';

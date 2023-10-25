@@ -5,7 +5,7 @@ import { TvMapInstance } from "../../modules/tv-map/services/tv-map-source-file"
 import { RoadControlPoint } from "../../modules/three-js/objects/road-control-point";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
 import { RoadNode } from "../../modules/three-js/objects/road-node";
-import { SceneService } from "app/core/services/scene.service";
+import { SceneService } from "app/services/scene.service";
 import { Manager } from "./manager";
 import { AppInspector } from "../inspector";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";

@@ -11,7 +11,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
 import { AppInspector } from './inspector';
-import { EditorService } from './services/editor.service';
+import { EditorService } from '../services/editor.service';
 import { TvConsole } from './utils/console';
 
 @Injectable( {

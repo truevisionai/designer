@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { ArrowHelper, Object3D, Vector3 } from 'three';
 import { LaneArrowObject } from '../../three-js/objects/lane-arrow-object';
 import { TvLaneSide } from '../models/tv-common';

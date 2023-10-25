@@ -6,7 +6,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
-import { AuthService } from 'app/core/services/auth.service';
+import { AuthService } from 'app/services/auth.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 
 @Component( {

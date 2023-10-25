@@ -3,7 +3,7 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';

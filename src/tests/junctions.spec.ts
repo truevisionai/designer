@@ -1,4 +1,4 @@
-import { JunctionFactory } from 'app/core/factories/junction.factory';
+import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';

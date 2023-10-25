@@ -4,8 +4,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { UpdateElevationDistance } from 'app/core/tools/road-elevation/update-elevation-distance';
-import { UpdateElevationValue } from 'app/core/tools/road-elevation/update-elevation-value';
+import { UpdateElevationDistance } from 'app/tools/road-elevation/update-elevation-distance';
+import { UpdateElevationValue } from 'app/tools/road-elevation/update-elevation-value';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { CommandHistory } from 'app/services/command-history';
 

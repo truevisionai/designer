@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AppInfo } from 'app/core/services/app-info.service';
+import { AppInfo } from 'app/services/app-info.service';
 
 export class FileUtils {
 

@@ -3,7 +3,7 @@
  */
 
 import * as THREE from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class PolygonEditor extends AbstractShapeEditor {

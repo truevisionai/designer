@@ -28,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ScenarioModule } from '../../modules/scenario/scenario.module';
 import { ThreeJsModule } from '../../modules/three-js/three-js.module';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { ConsoleComponent } from './console/console.component';
 import { ExportGlbDialog } from './dialogs/export-glb-dialog/export-glb-dialog.component';
 import { ExportOpenDriveDialog } from './dialogs/export-opendrive-dialog/export-opendrive-dialog.component';

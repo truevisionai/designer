@@ -6,7 +6,7 @@ import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
 import { Color, Group, Vector2 } from 'three';
 

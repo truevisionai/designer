@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { BufferGeometry, Line, Vector3 } from 'three';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 

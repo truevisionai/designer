@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Shape } from 'three';
-import { RoadFactory } from '../../../core/factories/road-factory.service';
-import { SceneService } from '../../../core/services/scene.service';
+import { RoadFactory } from '../../../factories/road-factory.service';
+import { SceneService } from '../../../services/scene.service';
 import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvLane } from './tv-lane';

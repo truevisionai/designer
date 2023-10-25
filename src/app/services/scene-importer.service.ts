@@ -3,19 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { JunctionFactory } from 'app/core/factories/junction.factory';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/core/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { AbstractReader } from 'app/core/services/abstract-reader';
-import { SceneService } from 'app/core/services/scene.service';
+import { AbstractReader } from 'app/services/abstract-reader';
+import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { readXmlArray, readXmlElement } from 'app/core/tools/xml-utils';
+import { ToolManager } from 'app/tools/tool-manager';
+import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { SceneService } from 'app/core/services/scene.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { SceneService } from 'app/services/scene.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { isArray } from 'rxjs/internal-compatibility';

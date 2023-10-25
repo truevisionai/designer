@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';

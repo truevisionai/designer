@@ -7,14 +7,14 @@ import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { GameObject } from 'app/core/game-object';
-import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
+import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { RoadStyle } from 'app/services/road-style.service';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
 	Box3,

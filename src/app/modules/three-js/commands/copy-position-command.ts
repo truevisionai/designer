@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from '../../../core/commands/base-command';
+import { BaseCommand } from '../../../commands/base-command';
 import { IHasPosition } from '../objects/i-has-position';
 import { IHasUpdate } from './set-value-command';
 

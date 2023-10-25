@@ -1,6 +1,6 @@
 import { MapEvents } from "app/events/map-events";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
-import { SceneService } from "../services/scene.service";
+import { SceneService } from "../../services/scene.service";
 import { Manager } from "./manager";
 
 export class MapManager extends Manager {

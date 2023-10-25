@@ -4,8 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { AssetImporterService } from 'app/core/asset/asset-importer.service';
-import { Metadata } from 'app/core/models/metadata.model';
-import { SceneService } from 'app/core/services/scene.service';
+import { Metadata } from 'app/core/asset/metadata.model';
+import { SceneService } from 'app/services/scene.service';
 import { Object3D, Vector3 } from 'three';
 import { FileService } from '../core/io/file.service';
 import { SnackBar } from './snack-bar.service';

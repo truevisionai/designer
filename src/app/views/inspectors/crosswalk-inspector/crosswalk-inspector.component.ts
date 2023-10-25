@@ -3,10 +3,10 @@
  */
 
 import { Component } from '@angular/core';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
-import { DeleteCrossWalkCommand } from 'app/core/tools/marking-line/crosswalk-tool';
+import { DeleteCrossWalkCommand } from 'app/tools/marking-line/crosswalk-tool';
 import { CopyPositionCommand } from 'app/modules/three-js/commands/copy-position-command';
 import { RemoveArrayPointCommand } from 'app/modules/three-js/commands/remove-array-point-command';
 import { UpdateValueCommand } from 'app/modules/three-js/commands/set-value-command';

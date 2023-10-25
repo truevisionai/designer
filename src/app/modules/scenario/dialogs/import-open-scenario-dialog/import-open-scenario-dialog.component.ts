@@ -4,7 +4,7 @@
 
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { FileService } from 'app/core/io/file.service';
 import { TvConsole } from 'app/core/utils/console';
 import { FileUtils } from '../../../../core/io/file-utils';

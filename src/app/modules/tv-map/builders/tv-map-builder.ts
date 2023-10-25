@@ -6,7 +6,7 @@ import { GameObject } from 'app/core/game-object';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry, MeshBasicMaterial, Vector2, Vector3 } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { ObjectTypes, TvLaneSide } from '../models/tv-common';
@@ -24,7 +24,7 @@ import { LaneRoadMarkFactory } from './lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from './signal-factory';
-import { RoadObjectFactory } from 'app/core/factories/road-object.factory';
+import { RoadObjectFactory } from 'app/factories/road-object.factory';
 
 export class TvMapBuilder {
 

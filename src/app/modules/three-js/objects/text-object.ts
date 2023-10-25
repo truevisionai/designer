@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';

@@ -4,9 +4,9 @@
 
 import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';

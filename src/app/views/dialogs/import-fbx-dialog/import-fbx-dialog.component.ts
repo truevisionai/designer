@@ -6,7 +6,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';

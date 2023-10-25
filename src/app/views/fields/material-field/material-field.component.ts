@@ -4,7 +4,7 @@
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter } from 'app/core/models/metadata.model';
+import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
 

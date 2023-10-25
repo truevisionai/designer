@@ -4,10 +4,10 @@
 
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 
 export class CatmullRomSpline extends AbstractSpline {
 

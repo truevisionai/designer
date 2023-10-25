@@ -1,4 +1,4 @@
-import { IDService } from 'app/core/factories/id.service';
+import { IDService } from 'app/factories/id.service';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { PrivateAction } from '../models/private-action';
 import { Act } from '../models/tv-act';
