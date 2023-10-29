@@ -5,12 +5,13 @@
 import { EventEmitter } from '@angular/core';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
+import { RoadSegment } from './auto-spline-v2';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export abstract class AbstractSpline {
 
@@ -20,6 +21,7 @@ export abstract class AbstractSpline {
 	protected controlPointAdded = new EventEmitter<BaseControlPoint>();
 	protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
 	protected meshAddedInScene: boolean;
+	protected roadSegments: RoadSegment[] = [];
 
 	constructor ( public closed = true, public tension = 0.5 ) {
 
@@ -200,7 +202,7 @@ export abstract class AbstractSpline {
 		return controlPointObject;
 	}
 
-	getPath ( offset: number ) {
+	getPath ( offset: number = 0 ) {
 		if ( this.type == 'auto' ) {
 			return new AutoSplinePath( this as any, offset );
 		} else if ( this.type == 'explicit' ) {
@@ -223,6 +225,35 @@ export abstract class AbstractSpline {
 		}
 
 		return points;
+	}
+
+	addRoadSegment ( start: number, length: number, road: TvRoad ) {
+
+		this.roadSegments.push( { start, length, road: road, geometries: [] } );
+
+		// sort road segment by start
+		this.roadSegments.sort( ( a, b ) => a.start - b.start );
+
+		this.update();
+
+	}
+
+	removeRoadSegment ( segment: RoadSegment ) {
+
+		this.roadSegments = this.roadSegments.filter( i => i != segment );
+
+	}
+
+	removeRoadSegmentByRoadId ( roadId: number ) {
+
+		this.roadSegments = this.roadSegments.filter( segment => segment.road.id != roadId );
+
+	}
+
+	getRoadSegments (): RoadSegment[] {
+
+		return this.roadSegments;
+
 	}
 
 }

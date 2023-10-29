@@ -205,6 +205,8 @@ export class OpenDriverParser extends AbstractReader {
 
 		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
 
+		spline.addRoadSegment( 0, road.length, road );
+
 		return spline;
 	}
 

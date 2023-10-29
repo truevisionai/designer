@@ -1,0 +1,179 @@
+import { RoadFactory } from 'app/factories/road-factory.service';
+import {
+	BufferAttribute,
+	BufferGeometry,
+	CircleGeometry,
+	Float32BufferAttribute,
+	LineBasicMaterial,
+	LineLoop,
+	Vector2,
+	Vector3
+} from 'three';
+import { SceneService } from '../scene.service';
+import { TextObject } from 'app/modules/three-js/objects/text-object';
+import { AddRoadCommand } from 'app/tools/road/add-road-command';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { CommandHistory } from '../command-history';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Maths } from 'app/utils/maths';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+
+export class RoadCircleService {
+
+	private line: LineLoop;
+
+	private text: TextObject;
+
+	constructor ( private centre: Vector3, private end: Vector3, private radius: number ) {
+
+		let circleGeometry = new CircleGeometry( radius, radius * 4 );
+
+		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN } ) );
+
+		this.line.name = 'circle';
+
+		this.line.position.copy( centre );
+
+		this.text = new TextObject( 'Radius: ' + radius.toFixed( 2 ), centre );
+
+		SceneService.addToolObject( this.line );
+
+	}
+
+	update ( radius: number, end: Vector3 ) {
+
+		this.radius = radius;
+		this.end = end;
+
+		const circleGeometry = new CircleGeometry( radius, radius * 4 );
+
+		const positions = circleGeometry.attributes.position as BufferAttribute;
+
+		const circleBufferGeometry = new BufferGeometry()
+			.setAttribute( 'position', new Float32BufferAttribute( positions.array, 3 ) );
+
+		// Dispose of the old geometry and replace with the new one
+		this.line.geometry.dispose();
+
+		this.line.geometry = circleBufferGeometry;
+
+		this.text.updateText( 'Radius: ' + radius.toFixed( 2 ) );
+	}
+
+	/**
+	 * create 4 arc roads to form a circular road with correct
+	 * successor/predecessor relation
+	 */
+	createRoads () {
+
+		this.text.remove();
+
+		SceneService.removeFromTool( this.line );
+
+		const roads = this.createCircularRoads( this.centre, this.end, this.radius );
+
+		CommandHistory.execute( new AddRoadCommand( roads ) );
+
+	}
+
+	createCircularRoads ( centre: Vector3, end: Vector3, radius: number ): TvRoad[] {
+
+		const p1 = new Vector2( centre.x, centre.y );
+		const p2 = new Vector2( end.x, end.y );
+
+		let start = end;
+
+		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+
+		const circumference = 2 * Math.PI * radius;
+
+		const arcLength = circumference * 0.25;
+
+		const curvature = 1 / radius;
+
+		const points = []
+
+		const roads: TvRoad[] = [];
+
+		for ( let i = 0; i < 4; i++ ) {
+
+			const road = roads[ i ] = RoadFactory.createDefaultRoad();
+
+			TvMapInstance.map.addRoad( road );
+
+			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+
+			const startPosTheta = arc.getRoadCoord( 0 );
+			const endPosTheta = arc.getRoadCoord( arcLength );
+
+			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+
+			let a2 = startPosTheta.moveForward( +distance );
+			let b2 = endPosTheta.moveForward( -distance );
+
+			points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+			points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
+			points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
+			points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
+
+			start = arc.endV3;
+
+			hdg += Maths.M_PI_2;
+
+		}
+
+		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
+
+		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
+
+		points.forEach( p => SceneService.addToolObject( p ) );
+
+		for ( let j = 0; j < 4; j++ ) {
+
+			const road = roads[ j ];
+
+			// const spline = new AutoSpline( road );
+			const spline = road.spline;
+
+			spline.addControlPoint( points[ j * 4 + 0 ] );
+			spline.addControlPoint( points[ j * 4 + 1 ] );
+			spline.addControlPoint( points[ j * 4 + 2 ] );
+			spline.addControlPoint( points[ j * 4 + 3 ] );
+
+			road.spline = spline;
+
+			road.spline.hide();
+
+			road.updateGeometryFromSpline();
+
+			if ( ( j + 1 ) < roads.length ) {
+
+				const nextRoad = roads[ j + 1 ];
+
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				nextRoad.addPredecessor( predecessor );
+
+			} else {
+
+				// its last road, so make connection with the first one
+				const firstRoad = roads[ 0 ];
+
+				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+
+				road.addSuccessor( successor );
+				firstRoad.addPredecessor( predecessor );
+
+			}
+
+		}
+
+		return roads;
+	}
+}

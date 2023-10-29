@@ -20,6 +20,7 @@ import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../core/shapes/auto-spline';
 import { IDService } from './id.service';
 import { Maths } from 'app/utils/maths';
+import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 
 export class RoadFactory {
 
@@ -37,99 +38,20 @@ export class RoadFactory {
 
 	}
 
-	static createCircularRoads ( centre: Vector3, end: Vector3, radius: number ): TvRoad[] {
+	static getNextRoadId () {
 
-		const p1 = new Vector2( centre.x, centre.y );
-		const p2 = new Vector2( end.x, end.y );
+		return this.IDService.getUniqueID();
 
-		let start = end;
+	}
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+	static cloneRoad ( road: TvRoad, s = 0 ): TvRoad {
 
-		const circumference = 2 * Math.PI * radius;
+		const cloned = road.clone( s );
 
-		const arcLength = circumference * 0.25;
+		cloned.id = this.IDService.getUniqueID();
 
-		const curvature = 1 / radius;
+		return cloned;
 
-		const points = []
-
-		const roads = [];
-
-		for ( let i = 0; i < 4; i++ ) {
-
-			const road = roads[ i ] = this.map.addDefaultRoad();
-
-			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
-
-			const startPosTheta = arc.getRoadCoord( 0 );
-			const endPosTheta = arc.getRoadCoord( arcLength );
-
-			const distance = start.distanceTo( arc.endV3 ) * 0.3;
-
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
-
-			points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
-			points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
-			points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
-
-			start = arc.endV3;
-
-			hdg += Maths.M_PI_2;
-
-		}
-
-		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
-
-		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
-
-		points.forEach( p => SceneService.addToolObject( p ) );
-
-		for ( let j = 0; j < 4; j++ ) {
-
-			const road = roads[ j ];
-
-			const spline = new AutoSpline( road );
-
-			spline.addControlPoint( points[ j * 4 + 0 ] );
-			spline.addControlPoint( points[ j * 4 + 1 ] );
-			spline.addControlPoint( points[ j * 4 + 2 ] );
-			spline.addControlPoint( points[ j * 4 + 3 ] );
-
-			road.spline = spline;
-
-			road.spline.hide();
-
-			road.updateGeometryFromSpline();
-
-			if ( ( j + 1 ) < roads.length ) {
-
-				const nextRoad = roads[ j + 1 ];
-
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
-
-				road.addSuccessor( successor );
-				nextRoad.addPredecessor( predecessor );
-
-			} else {
-
-				// its last road, so make connection with the first one
-				const firstRoad = roads[ 0 ];
-
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
-
-				road.addSuccessor( successor );
-				firstRoad.addPredecessor( predecessor );
-
-			}
-
-		}
-
-		return roads;
 	}
 
 	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {
@@ -187,7 +109,15 @@ export class RoadFactory {
 
 		const roadName = name || `Road${ roadId }`;
 
-		return new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+		const road = new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+
+		const spline = new AutoSplineV2();
+
+		spline.addRoadSegment( 0, -1, road );
+
+		road.spline = spline;
+
+		return road;
 
 	}
 
@@ -215,7 +145,9 @@ export class RoadFactory {
 
 		const spline = this.createSpline( entry, exit, side );
 
-		const connectingRoad = this.map.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
+		const connectingRoad = RoadFactory.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
+
+		this.map.addRoad( connectingRoad );
 
 		connectingRoad.setPredecessor( TvRoadLinkChildType.road, entry.road.id, entry.contact );
 
@@ -274,7 +206,7 @@ export class RoadFactory {
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
 
-		const joiningRoad = this.map.addDefaultRoad();
+		const joiningRoad = RoadFactory.createDefaultRoad();
 
 		joiningRoad.clearLaneSections();
 

@@ -11,6 +11,7 @@ import { Manager } from "./manager";
 import { TvJunction, TvVirtualJunction } from "app/modules/tv-map/models/tv-junction";
 import { JunctionFactory } from "../factories/junction.factory";
 import { Vector3 } from "three";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 interface TempIntersection {
 	x: number,
@@ -145,31 +146,52 @@ export class JunctionManager extends Manager {
 
 		console.log( 'update intersection', intersection );
 
-		const roadAInterSection = intersection.coordA.road.laneSections.find( ls => ls.lanes.size <= 1 );
-		const roadBInterSection = intersection.coordB.road.laneSections.find( ls => ls.lanes.size <= 1 );
+		// const roadAInterSection = intersection.coordA.road.laneSections.find( ls => ls.lanes.size <= 1 );
+		// const roadBInterSection = intersection.coordB.road.laneSections.find( ls => ls.lanes.size <= 1 );
+
+		// const roadAWidth = intersection.coordA.road.getRoadWidthAt( intersection.coordA.s );
+		// const roadBWidth = intersection.coordB.road.getRoadWidthAt( intersection.coordB.s );
+
+		// const roadANextLaneSection = intersection.coordA.road.laneSections.find( ls => ls.s > roadAInterSection.s );
+		// const roadBNextLaneSection = intersection.coordB.road.laneSections.find( ls => ls.s > roadBInterSection.s );
+
+		// if ( !roadANextLaneSection || !roadBNextLaneSection ) {
+		// 	console.error( roadANextLaneSection, roadBNextLaneSection );
+		// 	return;
+		// }
+
+		// roadAInterSection.attr_s = intersection.coordA.s - ( roadBWidth.totalWidth / 2 );
+		// roadBInterSection.attr_s = intersection.coordB.s - ( roadAWidth.totalWidth / 2 );
+
+		// roadANextLaneSection.attr_s = intersection.coordA.s + ( roadBWidth.totalWidth / 2 );
+		// roadBNextLaneSection.attr_s = intersection.coordB.s + ( roadAWidth.totalWidth / 2 );
+
+		// intersection.coordA.road.computeLaneSectionCoordinates();
+		// intersection.coordB.road.computeLaneSectionCoordinates();
+
+		// TvMapInstance.map.gameObject.remove( intersection.coordA.road.gameObject );
+		// TvMapInstance.map.gameObject.remove( intersection.coordB.road.gameObject );
 
 		const roadAWidth = intersection.coordA.road.getRoadWidthAt( intersection.coordA.s );
 		const roadBWidth = intersection.coordB.road.getRoadWidthAt( intersection.coordB.s );
 
-		const roadANextLaneSection = intersection.coordA.road.laneSections.find( ls => ls.s > roadAInterSection.s );
-		const roadBNextLaneSection = intersection.coordB.road.laneSections.find( ls => ls.s > roadBInterSection.s );
+		// intersection.coordA.road
+		// 	.duplicateLaneSectionAt( intersection.coordA.s + ( roadBWidth.totalWidth / 2 ) )
+		// 	.deleteLeftLane()
+		// 	.deleteRightLane();
 
-		if ( !roadANextLaneSection || !roadBNextLaneSection ) {
-			console.error( roadANextLaneSection, roadBNextLaneSection );
-			return;
-		}
+		// intersection.coordB.road
+		// 	.duplicateLaneSectionAt( intersection.coordB.s + ( roadAWidth.totalWidth / 2 ) )
+		// 	.deleteLeftLane()
+		// 	.deleteRightLane();
 
-		roadAInterSection.attr_s = intersection.coordA.s - ( roadBWidth.totalWidth / 2 );
-		roadBInterSection.attr_s = intersection.coordB.s - ( roadAWidth.totalWidth / 2 );
+		// this.makeEmptyLaneSection( intersection.coordA.road.addGetLaneSection( intersection.coordA.s - ( roadBWidth.totalWidth / 2 ) ) );
+		// this.makeEmptyLaneSection( intersection.coordB.road.addGetLaneSection( intersection.coordB.s - ( roadAWidth.totalWidth / 2 ) ) );
 
-		roadANextLaneSection.attr_s = intersection.coordA.s + ( roadBWidth.totalWidth / 2 );
-		roadBNextLaneSection.attr_s = intersection.coordB.s + ( roadAWidth.totalWidth / 2 );
+		// console.log(intersection.coordA.road.laneSections, intersection.coordB.road.laneSections);
 
-		intersection.coordA.road.computeLaneSectionCoordinates();
-		intersection.coordB.road.computeLaneSectionCoordinates();
-
-		TvMapInstance.map.gameObject.remove( intersection.coordA.road.gameObject );
-		TvMapInstance.map.gameObject.remove( intersection.coordB.road.gameObject );
+		// intersection.coordA.road.splineStart = intersection.coordA.s + ( roadBWidth.totalWidth / 2 );
+		// intersection.coordB.road.length = intersection.coordB.s - ( roadAWidth.totalWidth / 2 );
 
 		TvMapBuilder.rebuildRoad( intersection.coordA.road, false );
 		TvMapBuilder.rebuildRoad( intersection.coordB.road, false );
@@ -179,33 +201,35 @@ export class JunctionManager extends Manager {
 
 		console.log( 'create intersection', intersection );
 
-		const roadAInterSection = intersection.coordA.road.laneSections.find( ls => ls.lanes.size <= 1 );
-		const roadBInterSection = intersection.coordB.road.laneSections.find( ls => ls.lanes.size <= 1 );
-
 		const roadAWidth = intersection.coordA.road.getRoadWidthAt( intersection.coordA.s );
 		const roadBWidth = intersection.coordB.road.getRoadWidthAt( intersection.coordB.s );
 
-		intersection.coordA.road
-			.duplicateLaneSectionAt( intersection.coordA.s + ( roadBWidth.totalWidth / 2 ) )
-			.deleteLeftLane()
-			.deleteRightLane();
+		// intersection.coordA.road
+		// 	.duplicateLaneSectionAt( intersection.coordA.s + ( roadBWidth.totalWidth / 2 ) )
+		// 	.deleteLeftLane()
+		// 	.deleteRightLane();
 
-		intersection.coordB.road
-			.duplicateLaneSectionAt( intersection.coordB.s + ( roadAWidth.totalWidth / 2 ) )
-			.deleteLeftLane()
-			.deleteRightLane();
+		// intersection.coordB.road
+		// 	.duplicateLaneSectionAt( intersection.coordB.s + ( roadAWidth.totalWidth / 2 ) )
+		// 	.deleteLeftLane()
+		// 	.deleteRightLane();
 
-		this.makeEmptyLaneSection( intersection.coordA.road.addGetLaneSection( intersection.coordA.s - ( roadBWidth.totalWidth / 2 ) ) );
-		this.makeEmptyLaneSection( intersection.coordB.road.addGetLaneSection( intersection.coordB.s - ( roadAWidth.totalWidth / 2 ) ) );
+		// this.makeEmptyLaneSection( intersection.coordA.road.addGetLaneSection( intersection.coordA.s - ( roadBWidth.totalWidth / 2 ) ) );
+		// this.makeEmptyLaneSection( intersection.coordB.road.addGetLaneSection( intersection.coordB.s - ( roadAWidth.totalWidth / 2 ) ) );
 
-		// intersection.coordA.road.getLaneSectionAt( intersection.coordA.s ).cloneAtS();
-		// intersection.coordA.road.getLaneSectionAt( intersection.coordA.s ).cloneAtS();
+		// console.log(intersection.coordA.road.laneSections, intersection.coordB.road.laneSections);
 
-		TvMapInstance.map.gameObject.remove( intersection.coordA.road.gameObject );
-		TvMapInstance.map.gameObject.remove( intersection.coordB.road.gameObject );
+		// const roadACopy = RoadFactory.cutRoad( intersection.coordA.road, intersection.coordA.s + ( roadBWidth.totalWidth / 2 ) );
+		// const roadBCopy = RoadFactory.cloneRoad( intersection.coordB.road, intersection.coordB.s );
 
-		TvMapBuilder.rebuildRoad( intersection.coordA.road, false );
-		TvMapBuilder.rebuildRoad( intersection.coordB.road, false );
+		// intersection.coordA.road.splineStart = intersection.coordA.s + ( roadBWidth.totalWidth / 2 );
+		// intersection.coordB.road.splineEnd = intersection.coordB.s - ( roadAWidth.totalWidth / 2 );
+
+		// TvMapInstance.map.addRoad( roadACopy );
+		// TvMapBuilder.rebuildRoad( roadACopy, false );
+
+		// TvMapBuilder.rebuildRoad( intersection.coordA.road, false );
+		// TvMapBuilder.rebuildRoad( intersection.coordB.road, false );
 	}
 
 	private makeEmptyLaneSection ( lanesection: TvLaneSection ) {

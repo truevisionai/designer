@@ -18,19 +18,14 @@ export class SceneService {
 	public static renderer: THREE.WebGLRenderer;
 	public static changed = new EventEmitter();
 
-	private static editorLayer: Group;
-	private static mainLayer: Group;
-	private static toolLayer: Group;
+	private static editorLayer: Group = new Group();
+	private static mainLayer: Group = new Group();
+	private static toolLayer: Group = new Group();
 
 	constructor () {
 
-		SceneService.editorLayer = new Group();
 		SceneService.editorLayer.name = 'Editor';
-
-		SceneService.mainLayer = new Group();
 		SceneService.mainLayer.name = 'Main';
-
-		SceneService.toolLayer = new Group();
 		SceneService.toolLayer.name = 'Tool';
 
 		SceneService.scene.add( SceneService.editorLayer );

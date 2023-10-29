@@ -17,6 +17,8 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	public static readonly tag = 'road-control-point';
 
+	public mainObject: TvRoad;
+
 	public frontTangent: RoadTangentPoint;
 	public backTangent: RoadTangentPoint;
 
@@ -44,6 +46,8 @@ export class RoadControlPoint extends BaseControlPoint {
 	) {
 
 		super( new BufferGeometry(), new PointsMaterial() );
+
+		this.mainObject = road;
 
 		this.geometry = new BufferGeometry();
 

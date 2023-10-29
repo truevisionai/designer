@@ -183,4 +183,49 @@ describe( 'TvLineGeometry', () => {
 
 	} );
 
+	it( 'should cut correctly', () => {
+
+		const lineGeometry1 = road.addGeometryLine( 0, 0, 0, 0, 10 );
+		const lineGeometry2 = road.addGeometryLine( 10, 10, 0, 0, 10 );
+		const lineGeometry3 = road.addGeometryLine( 20, 20, 0, 0, 10 );
+
+
+		const geometries = lineGeometry2.cut( 12 );
+
+		// for currently geometry only length is changed
+		expect( geometries[ 0 ].s ).toBe( 10 );
+		expect( geometries[ 0 ].length ).toBe( 2 );
+
+		expect( geometries[ 1 ].s ).toBe( 12 );
+		expect( geometries[ 1 ].x ).toBe( 12 );
+		expect( geometries[ 1 ].y ).toBe( 0 );
+		expect( geometries[ 1 ].hdg ).toBe( 0 );
+		expect( geometries[ 1 ].length ).toBe( 8 );
+
+		expect( road.geometries.length ).toBe( 3 );
+
+	} )
+
+	it( 'should cut correctly', () => {
+
+		const lineGeometry1 = road.addGeometryLine( 0, 0, 0, 0, 10 );
+		const lineGeometry2 = road.addGeometryLine( 10, 10, 0, 0, 10 );
+		const lineGeometry3 = road.addGeometryLine( 20, 20, 0, 0, 10 );
+
+		const geometries = lineGeometry2.cut( 18 );
+
+		// for currently geometry only length is changed
+		expect( geometries[ 0 ].s ).toBe( 10 );
+		expect( geometries[ 0 ].length ).toBe( 8 );
+
+		expect( geometries[ 1 ].s ).toBe( 18 );
+		expect( geometries[ 1 ].x ).toBe( 18 );
+		expect( geometries[ 1 ].y ).toBe( 0 );
+		expect( geometries[ 1 ].hdg ).toBe( 0 );
+		expect( geometries[ 1 ].length ).toBe( 2 );
+
+		expect( road.geometries.length ).toBe( 3 );
+
+	} )
+
 } );

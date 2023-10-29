@@ -79,7 +79,7 @@ export class CubicSplineCurve extends Curve<Vector3> {
 
 }
 
-export class HermiteSplineCurve extends CurvePath<Vector3> {
+export class HermiteSplineCurve extends Curve<Vector3> {
 
 	constructor (
 		public v0: Vector3, public v1: Vector3, public v2: Vector3, public v3: Vector3

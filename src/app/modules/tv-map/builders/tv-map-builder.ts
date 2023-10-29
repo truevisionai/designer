@@ -121,6 +121,8 @@ export class TvMapBuilder {
 	 */
 	static rebuildRoad ( road: TvRoad, buildJunctions = true ): any {
 
+		TvMapInstance.map.gameObject.remove( road.gameObject );
+
 		this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
 
 	}
@@ -194,7 +196,7 @@ export class TvMapBuilder {
 
 			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			posTheta = road.getRoadCoordAt( s, );
+			posTheta = road.getRoadCoordAt( s );
 
 			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
 
@@ -384,11 +386,5 @@ export class TvMapBuilder {
 		lane.gameObject.userData.lane = lane;
 
 		laneSection.gameObject.add( lane.gameObject );
-	}
-
-	static removeRoad ( gameObject: GameObject, road: TvRoad ) {
-
-		gameObject.remove( road.gameObject );
-
 	}
 }

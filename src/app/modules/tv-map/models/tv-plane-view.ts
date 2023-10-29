@@ -9,6 +9,7 @@ import { TvLineGeometry } from './geometries/tv-line-geometry';
 import { TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from './geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from './geometries/tv-spiral-geometry';
+import { TvUtils } from './tv-utils';
 
 export class TvPlaneView {
 
@@ -18,6 +19,12 @@ export class TvPlaneView {
 
 
 	constructor () {
+
+	}
+
+	getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+
+		return TvUtils.checkIntervalArray( this.geometries, s );
 
 	}
 
@@ -87,13 +94,43 @@ export class TvPlaneView {
 
 	}
 
-	clone ( s: number = 0 ): TvPlaneView {
+	clone (): TvPlaneView {
 
 		const tvPlaneView = new TvPlaneView();
 
-		tvPlaneView.geometries = this.geometries.map( geometry => geometry.clone( s ) );
+		tvPlaneView.geometries = this.geometries.map( geometry => geometry.clone() );
 
 		return tvPlaneView;
 
+	}
+
+	cut ( s: number ): [ TvPlaneView, TvPlaneView ] {
+
+		const planView1 = new TvPlaneView();
+		const planView2 = new TvPlaneView();
+
+		// this geometry has to be cut
+		const commonGeometry = this.getGeometryAt( s );
+
+		const planView1Geometries = this.geometries.filter( geometry => geometry.s < commonGeometry.s );
+		const planView2Geometries = this.geometries.filter( geometry => geometry.s > commonGeometry.s );
+
+		if ( !commonGeometry ) {
+			throw new Error( 'could not find geometry at s' );
+		}
+
+		const geometries = commonGeometry.cut( s );
+
+		planView1.addGeometry( geometries[ 0 ] );
+		planView1Geometries.forEach( geometry => planView1.addGeometry( geometry ) );
+
+		// planView1.geometries.forEach( geometry => geometry.s -= planView1.geometries[ 0 ].s );
+
+		planView2.addGeometry( geometries[ 1 ] );
+		planView2Geometries.forEach( geometry => planView2.addGeometry( geometry ) );
+
+		planView2.geometries.forEach( geometry => geometry.s -= planView2.geometries[ 0 ].s );
+
+		return [ planView1, planView2 ];
 	}
 }

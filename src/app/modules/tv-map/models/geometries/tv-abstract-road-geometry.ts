@@ -9,7 +9,26 @@ import { TvPosTheta } from '../tv-pos-theta';
 export abstract class TvAbstractRoadGeometry {
 
 	public readonly uuid: string;
+
 	public abstract geometryType: TvGeometryType;
+
+	public abstract getRoadCoord ( s: number ): TvPosTheta;
+
+	public abstract computeVars ();
+
+	public abstract getCurve (): Curve<Vector2>;
+
+	public abstract clone (): TvAbstractRoadGeometry;
+
+	private _s: number;
+
+	private _x: number;
+
+	private _y: number;
+
+	private _hdg: number;
+
+	private _length: number;
 
 	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
@@ -18,13 +37,9 @@ export abstract class TvAbstractRoadGeometry {
 		this._y = y;
 		this._hdg = hdg;
 		this._length = length;
-
-		this._endS = s + length;
-
 		this.uuid = MathUtils.generateUUID();
 	}
 
-	private _s: number;
 
 	get s () {
 
@@ -36,10 +51,7 @@ export abstract class TvAbstractRoadGeometry {
 
 		this._s = value;
 
-		this._endS = this._s + this._length;
 	}
-
-	private _x: number;
 
 	get x () {
 
@@ -53,8 +65,6 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
-	private _y: number;
-
 	get y () {
 
 		return this._y;
@@ -66,8 +76,6 @@ export abstract class TvAbstractRoadGeometry {
 		this._y = value;
 
 	}
-
-	private _hdg: number;
 
 	get hdg () {
 
@@ -82,8 +90,6 @@ export abstract class TvAbstractRoadGeometry {
 		this.computeVars();
 	}
 
-	private _length: number;
-
 	get length () {
 
 		return this._length;
@@ -94,15 +100,13 @@ export abstract class TvAbstractRoadGeometry {
 
 		this._length = value;
 
-		this._endS = this._s + this._length;
-
 		this.computeVars();
 	}
 
-	protected _endS: number;
-
 	get endS () {
-		return this._endS;
+
+		return this.s + this.length;
+
 	}
 
 	get startV3 (): Vector3 {
@@ -137,14 +141,6 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
-	abstract getRoadCoord ( s: number ): TvPosTheta;
-
-	abstract computeVars ();
-
-	abstract getCurve (): Curve<Vector2>;
-
-	abstract clone ( s: number ): TvAbstractRoadGeometry;
-
 	setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
 
 		this._s = s;
@@ -152,8 +148,6 @@ export abstract class TvAbstractRoadGeometry {
 		this._y = y;
 		this._hdg = hdg;
 		this._length = length;
-
-		this._endS = s + length;
 
 		if ( recalculate ) {
 			this.computeVars();
@@ -171,8 +165,35 @@ export abstract class TvAbstractRoadGeometry {
 		return false;
 	}
 
+	/**
+	 * cuts the geometry at the given s and returns the new geometry
+	 *
+	 * @param s coordinate at which the geometry is to be cut
+	 * @returns new geometries
+	 */
+	public cut ( s: number ): [ TvAbstractRoadGeometry, TvAbstractRoadGeometry ] {
 
-	public updateControlPoints () {
+		if ( s > this.endS ) throw new Error( `s: ${ s } is greater than endS: ${ this.endS }` );
+		if ( s < this.s ) throw new Error( `s: ${ s } is less than startS: ${ this.s }` );
+
+		if ( this.geometryType !== TvGeometryType.LINE && this.geometryType !== TvGeometryType.ARC ) {
+			throw new Error( 'cutting is only supported for line and arc' );
+		}
+
+		const coord = this.getRoadCoord( s );
+
+		const firstSection = this.clone();
+		const secondSection = this.clone();
+
+		secondSection.x = coord.x;
+		secondSection.y = coord.y;
+		secondSection.hdg = coord.hdg;
+		secondSection.s = s;
+		secondSection.length = this.endS - s;
+
+		firstSection.length = s - this.s;
+
+		return [ firstSection, secondSection ];
 
 	}
 

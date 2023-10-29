@@ -1222,7 +1222,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 			console.warn( 'roadmark not found using default' );
 
-			result = new TvLaneRoadMark( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, '', 0, this );
+			result = new TvLaneRoadMark( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, '', 0, this );
 
 		}
 

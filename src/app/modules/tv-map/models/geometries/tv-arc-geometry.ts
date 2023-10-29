@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Curve, Object3D, SplineCurve, Vector2, Vector3 } from 'three';
+import { Curve, SplineCurve, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../../utils/maths';
 import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
@@ -13,10 +13,6 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 	public geometryType: TvGeometryType = TvGeometryType.ARC;
 
 	public curvature: number;
-
-	public cp1: Object3D;
-	public cp2: Object3D;
-	public cp3: Object3D;
 
 	private curve: Curve<Vector2>;
 
@@ -68,14 +64,6 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 	get endV3 (): Vector3 {
 
 		return this.getRoadCoord( this.endS ).toVector3();
-
-	}
-
-	updateControlPoints () {
-
-		if ( this.cp1 ) this.cp1.position.copy( this.startV3 );
-		if ( this.cp2 ) this.cp2.position.copy( this.middleV3 );
-		if ( this.cp3 ) this.cp3.position.copy( this.endV3 );
 
 	}
 
@@ -158,15 +146,9 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		return this.curve = new SplineCurve( points );
 	}
 
-	clone ( s: number ): TvAbstractRoadGeometry {
+	clone (): TvAbstractRoadGeometry {
 
-		if ( s == null ) s = this.s;
-
-		const length = this.endS - s;
-
-		const coord = this.getRoadCoord( s );
-
-		return new TvArcGeometry( 0, coord.x, coord.y, coord.hdg, length, this.curvature );
+		return new TvArcGeometry( this.s, this.x, this.y, this.hdg, this.length, this.curvature );
 
 	}
 

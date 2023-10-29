@@ -3,7 +3,6 @@
  */
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
@@ -15,7 +14,6 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
@@ -26,7 +24,6 @@ import { CreateRoadCommand } from './create-road-command';
 import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
-import { RoadManager } from "../../managers/road-manager";
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
@@ -77,9 +74,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		super.enable();
 
-		this.map.getRoads()
-			.filter( road => !road.isJunction )
-			.forEach( road => RoadManager.instance.showNodes( road ) );
+		// this.map.getRoads()
+		// 	.filter( road => !road.isJunction )
+		// 	.forEach( road => RoadManager.instance.showNodes( road ) );
 
 	}
 
@@ -87,9 +84,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => road.hideHelpers() );
+		// this.map.getRoads().forEach( road => road.hideHelpers() );
 
-		this.road?.hideHelpers();
+		// this.road?.hideHelpers();
 
 		this.controlPoint?.unselect();
 
@@ -294,13 +291,18 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private onControlPointSelected ( controlPoint: RoadControlPoint ): void {
 
-		CommandHistory.executeAll( [
+		CommandHistory.executeMany(
+
 			new SelectPointCommand( this, controlPoint, RoadInspector, {
 				road: controlPoint.road,
 				controlPoint: controlPoint
 			} ),
-			new SetValueCommand( this, 'node', null )
-		] );
+
+			new SetValueCommand( this, 'node', null ),
+
+			new SetValueCommand( this, 'controlPoint', controlPoint ),
+
+		);
 
 		this.setHint( 'Drag to move control point and change road shape' );
 
@@ -315,69 +317,69 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 }
 
 
-class RoadConnectionsUpdate {
+// class RoadConnectionsUpdate {
 
-	static update ( road: TvRoad ) {
+// 	static update ( road: TvRoad ) {
 
-		if ( road.isJunction ) {
+// 		if ( road.isJunction ) {
 
-			this.updateJunctionRoad( road );
+// 			this.updateJunctionRoad( road );
 
-		} else {
+// 		} else {
 
-			this.updateRoad( road );
+// 			this.updateRoad( road );
 
-		}
+// 		}
 
-	}
+// 	}
 
 
-	static updateRoad ( road: TvRoad ) {
+// 	static updateRoad ( road: TvRoad ) {
 
-		const firstPoint = road.spline.getFirstPoint() as RoadControlPoint;
+// 		const firstPoint = road.spline.getFirstPoint() as RoadControlPoint;
 
-		const lastPoint = road.spline.getLastPoint() as RoadControlPoint;
+// 		const lastPoint = road.spline.getLastPoint() as RoadControlPoint;
 
-		const map = TvMapInstance.map;
+// 		const map = TvMapInstance.map;
 
-		const successors = map.getRoads().filter( r => r.predecessor?.elementId === road.id );
+// 		const successors = map.getRoads().filter( r => r.predecessor?.elementId === road.id );
 
-		const predecessors = map.getRoads().filter( r => r.successor?.elementId === road.id );
+// 		const predecessors = map.getRoads().filter( r => r.successor?.elementId === road.id );
 
-		successors.forEach( successor => {
+// 		successors.forEach( successor => {
 
-			const successorFirstPoint = successor.spline.getFirstPoint() as RoadControlPoint;
+// 			const successorFirstPoint = successor.spline.getFirstPoint() as RoadControlPoint;
 
-			successorFirstPoint.copyPosition( lastPoint.position );
+// 			successorFirstPoint.copyPosition( lastPoint.position );
 
-			successor.spline.update();
+// 			successor.spline.update();
 
-			successor.updateGeometryFromSpline();
+// 			successor.updateGeometryFromSpline();
 
-			RoadFactory.rebuildRoad( successor );
+// 			RoadFactory.rebuildRoad( successor );
 
-		} );
+// 		} );
 
-		predecessors.forEach( predecessor => {
+// 		predecessors.forEach( predecessor => {
 
-			const predecessorLastPoint = predecessor.spline.getLastPoint() as RoadControlPoint;
+// 			const predecessorLastPoint = predecessor.spline.getLastPoint() as RoadControlPoint;
 
-			predecessorLastPoint.copyPosition( firstPoint.position );
+// 			predecessorLastPoint.copyPosition( firstPoint.position );
 
-			predecessor.spline.update();
+// 			predecessor.spline.update();
 
-			predecessor.updateGeometryFromSpline();
+// 			predecessor.updateGeometryFromSpline();
 
-			RoadFactory.rebuildRoad( predecessor );
+// 			RoadFactory.rebuildRoad( predecessor );
 
-		} );
+// 		} );
 
-	}
+// 	}
 
-	static updateJunctionRoad ( road: TvRoad ) {
+// 	static updateJunctionRoad ( road: TvRoad ) {
 
-		console.error( 'updateJunctionRoad not implemented' );
+// 		console.error( 'updateJunctionRoad not implemented' );
 
-	}
+// 	}
 
-}
+// }

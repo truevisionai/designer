@@ -73,8 +73,10 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 		throw new Error( 'Method not implemented.' );
 	}
 
-	clone ( s?: number ): TvAbstractRoadGeometry {
-		throw new Error( 'Method not implemented.' );
+	clone (): TvAbstractRoadGeometry {
+
+		return new TvSpiralGeometry( this.s, this.x, this.y, this.hdg, this.length, this.attr_curvStart, this.attr_curvEnd );
+
 	}
 
 }

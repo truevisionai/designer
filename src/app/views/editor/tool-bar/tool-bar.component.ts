@@ -103,6 +103,18 @@ export class ToolBarComponent implements OnInit {
 			enabled: !Environment.production,
 		},
 		{
+			id: 'showCuttingTool',
+			label: 'Cut',
+			class: 'toolbar-button',
+			toolType: ToolType.RoadCuttingTool,
+			action: 'cutting-tool',
+			icon: 'content_cut', // fork_right, call_split
+			track: 'menu',
+			tooltip: 'Cutting Tool',
+			click: () => this.setToolType( ToolType.RoadCuttingTool ),
+			enabled: !Environment.production,
+		},
+		{
 			id: 'showRoadElevationTool',
 			label: 'Elevation',
 			class: 'toolbar-button border-right',

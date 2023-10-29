@@ -29,8 +29,7 @@ export class LaneManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onLaneUpdated', lane );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, lane.laneSection.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, lane.laneSection.road );
+		TvMapBuilder.rebuildRoad( lane.laneSection.road, false );
 
 	}
 
@@ -60,8 +59,7 @@ export class LaneManager extends Manager {
 
 		removedLane.laneSection.laneMap = newLaneMap;
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, removedLane.laneSection.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, removedLane.laneSection.road );
+		TvMapBuilder.rebuildRoad( removedLane.laneSection.road, false );
 
 	}
 
@@ -69,8 +67,7 @@ export class LaneManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onLaneCreated', lane );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, lane.laneSection.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, lane.laneSection.road );
+		TvMapBuilder.rebuildRoad( lane.laneSection.road, false );
 
 	}
 

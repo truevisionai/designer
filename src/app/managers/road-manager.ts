@@ -41,7 +41,7 @@ export class RoadManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
 
-		event.road.updateGeometryFromSpline();
+		this.regenerateGeometries( event.road );
 
 		event.road.successor?.update( event.road, TvContactPoint.END );
 		event.road.predecessor?.update( event.road, TvContactPoint.START );
@@ -54,7 +54,7 @@ export class RoadManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointRemoved' );
 
-		event.road.updateGeometryFromSpline();
+		this.regenerateGeometries( event.road );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 
@@ -64,7 +64,7 @@ export class RoadManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointCreated' );
 
-		event.road.updateGeometryFromSpline();
+		this.regenerateGeometries( event.road );
 
 		// TODO: check if we need to update the road inspector
 		// AppInspector.setInspector( RoadInspector, {
@@ -80,8 +80,9 @@ export class RoadManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadUpdated' );
 
-		TvMapBuilder.removeRoad( TvMapInstance.map.gameObject, event.road );
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
+		this.regenerateGeometries( event.road );
+
+		TvMapBuilder.rebuildRoad( event.road );
 
 		this.updateRoadNodes( event.road );
 
@@ -118,7 +119,7 @@ export class RoadManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadCreated' );
 
-		TvMapBuilder.buildRoad( TvMapInstance.map.gameObject, event.road );
+		this.regenerateGeometries( event.road );
 
 		if ( event.showHelpers ) this.showNodes( event.road );
 
@@ -160,7 +161,7 @@ export class RoadManager extends Manager {
 
 	}
 
-	createRoadNode ( road: TvRoad, contact: TvContactPoint ): RoadNode {
+	private createRoadNode ( road: TvRoad, contact: TvContactPoint ): RoadNode {
 
 		const node = new RoadNode( road, contact );
 
@@ -168,5 +169,22 @@ export class RoadManager extends Manager {
 
 		return node;
 
+	}
+
+	private regenerateGeometries ( road: TvRoad ) {
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		road.spline?.getRoadSegments().forEach( segment => {
+
+			const road = segment.road;
+
+			road.clearGeometries();
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+			TvMapBuilder.rebuildRoad( road );
+
+		} );
 	}
 }
