@@ -22,6 +22,7 @@ import { EntityManager } from '../managers/entity-manager';
 import { LaneManager } from '../managers/lane-manager';
 import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
+import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 
 @Injectable( {
 	providedIn: 'root'
@@ -70,6 +71,7 @@ export class AppService {
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
+		ManagerRegistry.registerManager( RoadSelectionListener );
 
 		ManagerRegistry.initManagers();
 	}

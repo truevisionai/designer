@@ -17,6 +17,14 @@ export class RoadRemovedEvent {
 	constructor ( public road: TvRoad, public hideHelpers = true ) { }
 }
 
+export class RoadSelectedEvent {
+	constructor ( public road: TvRoad ) { }
+}
+
+export class RoadUnselectedEvent {
+	constructor ( public road: TvRoad ) { }
+}
+
 export interface RoadControlPointCreatedEvent {
 	road: TvRoad;
 	controlPoint: RoadControlPoint;
@@ -68,6 +76,8 @@ export class MapEvents {
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
 	@Output() static roadRemoved = new EventEmitter<RoadRemovedEvent>();
+	@Output() static roadSelected = new EventEmitter<RoadSelectedEvent>();
+	@Output() static roadUnselected = new EventEmitter<RoadUnselectedEvent>();
 
 	@Output() static roadControlPointCreated = new EventEmitter<RoadControlPointCreatedEvent>();
 	@Output() static roadControlPointUpdated = new EventEmitter<RoadControlPointUpdatedEvent>();

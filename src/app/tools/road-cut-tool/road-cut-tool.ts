@@ -11,6 +11,7 @@ import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-stra
 import { CommandHistory } from 'app/services/command-history';
 import { AddRoadCommand } from '../road/add-road-command';
 import { RoadCutterService } from 'app/services/road/road-cutter.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class RoadCuttingTool extends BaseTool {
 
@@ -19,8 +20,6 @@ export class RoadCuttingTool extends BaseTool {
 	public toolType = ToolType.RoadCuttingTool;
 
 	private selectStrategy: SelectStrategy<TvRoadCoord>;
-
-	private roadCuttingService = new RoadCutterService;
 
 	constructor () {
 
@@ -70,6 +69,18 @@ export class RoadCuttingTool extends BaseTool {
 		const roadCoord = this.selectStrategy.onPointerMoved( e );
 
 		console.log( roadCoord );
+
+	}
+
+	onRoadSelected ( road: TvRoad ): void {
+
+		if ( road ) this.roadService.showRoadNodes( road );
+
+	}
+
+	onRoadUnselected ( road: TvRoad ): void {
+
+		if ( road ) this.roadService.hideRoadNodes( road );
 
 	}
 

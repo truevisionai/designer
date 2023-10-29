@@ -29,7 +29,7 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 
 		super();
 
-		this.oldRoad = tool.road;
+		this.oldRoad = tool.selectedRoad;
 		this.oldNode = tool.node;
 		this.oldControlPoint = tool.controlPoint;
 
@@ -49,7 +49,7 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 		this.tool.node = null;
 		this.tool.controlPoint = null;
 
-		this.joiningRoad = this.tool.road = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
+		this.joiningRoad = this.tool.selectedRoad = RoadFactory.joinRoadNodes( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode );
 
 		this.inspectorCommand.execute();
 
@@ -58,7 +58,7 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 	undo (): void {
 
 		this.tool.node = this.oldNode;
-		this.tool.road = this.oldRoad;
+		this.tool.selectedRoad = this.oldRoad;
 		this.tool.controlPoint = this.oldControlPoint;
 
 		// remove from opendrive
@@ -83,14 +83,14 @@ export class JoinRoadNodeCommand extends OdBaseCommand {
 	redo (): void {
 
 		this.tool.node = null;
-		this.tool.road = null;
+		this.tool.selectedRoad = null;
 		this.tool.controlPoint = null;
 
 		this.map.roads.set( this.joiningRoad.id, this.joiningRoad );
 		this.map.gameObject.add( this.joiningRoad.gameObject );
 
 		this.joiningRoad.show();
-		this.joiningRoad.showHelpers();
+		// this.joiningRoad.showHelpers();
 
 		RoadFactory.makeRoadConnections( this.firstRoad, this.firstNode, this.secondRoad, this.secondNode, this.joiningRoad );
 

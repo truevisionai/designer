@@ -1,19 +1,17 @@
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadSelectedEvent, RoadUpdatedEvent } from "../events/map-events";
 import { TvRoad } from "../modules/tv-map/models/tv-road.model";
 import { TvMapBuilder } from "../modules/tv-map/builders/tv-map-builder";
 import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
 import { RoadControlPoint } from "../modules/three-js/objects/road-control-point";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { RoadNode } from "../modules/three-js/objects/road-node";
-import { SceneService } from "app/services/scene.service";
 import { Manager } from "./manager";
-import { AppInspector } from "../core/inspector";
-import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
+import { RoadService } from "app/services/road/road.service";
 
 export class RoadManager extends Manager {
 
 	private static _instance = new RoadManager();
 	private debug = true;
+	private roadService: RoadService;
 
 	static get instance (): RoadManager {
 		return this._instance;
@@ -22,6 +20,8 @@ export class RoadManager extends Manager {
 	constructor () {
 
 		super();
+
+		this.roadService = new RoadService();
 
 	}
 
@@ -84,7 +84,7 @@ export class RoadManager extends Manager {
 
 		TvMapBuilder.rebuildRoad( event.road );
 
-		this.updateRoadNodes( event.road );
+		this.roadService.updateRoadNodes( event.road );
 
 	}
 
@@ -121,53 +121,11 @@ export class RoadManager extends Manager {
 
 		this.regenerateGeometries( event.road );
 
-		if ( event.showHelpers ) this.showNodes( event.road );
+		// if ( event.showHelpers ) this.roadService.showRoadNodes( event.road );
 
-		if ( event.showHelpers ) event.road.spline.show();
+		// if ( event.showHelpers ) event.road.spline.show();
 
-	}
-
-	showNodes ( road: TvRoad ): void {
-
-		this.updateRoadNodes( road );
-
-		road.startNode.visible = true;
-
-		road.endNode.visible = true;
-
-	}
-
-	updateRoadNodes ( road: TvRoad ) {
-
-		if ( !road.startNode ) {
-
-			road.startNode = this.createRoadNode( road, TvContactPoint.START );
-
-		} else {
-
-			road.startNode.update();
-
-		}
-
-		if ( !road.endNode ) {
-
-			road.endNode = this.createRoadNode( road, TvContactPoint.END );
-
-		} else {
-
-			road.endNode.update();
-
-		}
-
-	}
-
-	private createRoadNode ( road: TvRoad, contact: TvContactPoint ): RoadNode {
-
-		const node = new RoadNode( road, contact );
-
-		SceneService.addToolObject( node );
-
-		return node;
+		if ( event.showHelpers ) MapEvents.roadSelected.emit( new RoadSelectedEvent( event.road ) );
 
 	}
 

@@ -9,6 +9,7 @@ import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspec
 import { BaseCommand } from '../../commands/base-command';
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { RoadTool } from './road-tool';
+import { MapEvents, RoadSelectedEvent, RoadUnselectedEvent } from 'app/events/map-events';
 
 export class SelectRoadForRoadToolCommand extends BaseCommand {
 
@@ -22,7 +23,7 @@ export class SelectRoadForRoadToolCommand extends BaseCommand {
 
 		super();
 
-		this.oldRoad = tool.road;
+		this.oldRoad = tool.selectedRoad;
 		this.oldNode = tool.node;
 		this.oldControlPoint = tool.controlPoint;
 
@@ -31,38 +32,44 @@ export class SelectRoadForRoadToolCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.tool.road = this.newRoad;
+		this.tool.selectedRoad = this.newRoad;
 		this.tool.node = null;
 		this.tool.controlPoint = null;
 
-		this.newRoad?.showHelpers();
-		this.newRoad?.showControlPoints();
-		this.newRoad?.showSpline();
+		// this.newRoad?.showHelpers();
+		// this.newRoad?.showControlPoints();
+		// this.newRoad?.showSpline();
 
-		this.oldRoad?.hideSpline();
+		// this.oldRoad?.hideSpline();
 		this.oldControlPoint?.unselect();
 		this.oldNode?.unselect();
 
 		this.setInspectorCommand.execute();
 
+		if ( this.newRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
+		if ( this.oldRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.oldRoad ) );
+
 	}
 
 	undo (): void {
 
-		this.tool.road = this.oldRoad;
+		this.tool.selectedRoad = this.oldRoad;
 		this.tool.node = this.oldNode;
 		this.tool.controlPoint = this.oldControlPoint;
 
-		this.newRoad?.hideSpline();
-		this.newRoad?.hideControlPoints();
+		// this.newRoad?.hideSpline();
+		// this.newRoad?.hideControlPoints();
 
-		this.oldRoad?.showControlPoints();
-		this.oldRoad?.showHelpers();
-		this.oldRoad?.showSpline();
+		// this.oldRoad?.showControlPoints();
+		// this.oldRoad?.showHelpers();
+		// this.oldRoad?.showSpline();
 		this.oldNode?.select();
 		this.oldControlPoint?.select();
 
 		this.setInspectorCommand.undo();
+
+		if ( this.oldRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.oldRoad ) );
+		if ( this.newRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
 
 	}
 

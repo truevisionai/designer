@@ -11,99 +11,99 @@ import { RoadCircleService } from "../../services/road/road-circle.service";
 
 export class RoadCircleTool extends BaseTool {
 
-    public name: string = 'RoadCircleTool';
-    public toolType = ToolType.RoadCircle;
+	public name: string = 'RoadCircleTool';
+	public toolType = ToolType.RoadCircle;
 
-    private pointerLastAt: Vector3;
-    private currentRadius: number = 0;
+	private pointerLastAt: Vector3;
+	private currentRadius: number = 0;
 
-    private circleRoadService: RoadCircleService;
+	private circleRoadService: RoadCircleService;
 
-    constructor () {
+	constructor () {
 
-        super();
+		super();
 
-    }
+	}
 
-    get radius () {
-        return Math.max( 7.5, this.currentRadius || 0 );
-    }
+	get radius () {
+		return Math.max( 7.5, this.currentRadius || 0 );
+	}
 
-    init () {
+	init () {
 
-        // HACK: to load the font
-        const tempText = new TextObject( '', new Vector3() );
-        setTimeout( () => tempText.remove(), 2000 );
+		// HACK: to load the font
+		const tempText = new TextObject( '', new Vector3() );
+		setTimeout( () => tempText.remove(), 2000 );
 
-        super.init();
+		super.init();
 
-    }
+	}
 
-    enable () {
+	enable () {
 
-        super.enable();
+		super.enable();
 
-    }
+	}
 
-    disable () {
+	disable () {
 
-        super.disable();
+		super.disable();
 
-        this.map.getRoads().forEach( road => road.hideHelpers() );
+		// this.map.getRoads().forEach( road => road.hideHelpers() );
 
-        // this.clearToolObjects();
+		// this.clearToolObjects();
 
-    }
+	}
 
-    onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ) {
 
-        if ( e.button !== MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
-        this.initCircle( this.pointerDownAt, e.point, this.radius );
-    }
+		this.initCircle( this.pointerDownAt, e.point, this.radius );
+	}
 
-    onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ) {
 
-        if ( e.button !== MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
-        this.createRoads();
+		this.createRoads();
 
-        this.circleRoadService = null;
-        this.currentRadius = 0;
-    }
+		this.circleRoadService = null;
+		this.currentRadius = 0;
+	}
 
-    createRoads () {
+	createRoads () {
 
-        if ( this.circleRoadService ) this.circleRoadService.createRoads();
+		if ( this.circleRoadService ) this.circleRoadService.createRoads();
 
-    }
+	}
 
-    onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ) {
 
-        if ( e.button !== MouseButton.LEFT ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
-        if ( ! this.isPointerDown ) return;
-        if ( ! this.pointerDownAt ) return;
+		if ( !this.isPointerDown ) return;
+		if ( !this.pointerDownAt ) return;
 
-        this.pointerLastAt = e.point;
+		this.pointerLastAt = e.point;
 
-        this.currentRadius = this.pointerDownAt.distanceTo( this.pointerLastAt );
+		this.currentRadius = this.pointerDownAt.distanceTo( this.pointerLastAt );
 
-        if ( this.circleRoadService ) this.updateCircle( this.pointerLastAt, this.radius );
-    }
+		if ( this.circleRoadService ) this.updateCircle( this.pointerLastAt, this.radius );
+	}
 
-    initCircle ( centre: Vector3, end: Vector3, radius: number ) {
+	initCircle ( centre: Vector3, end: Vector3, radius: number ) {
 
-        this.circleRoadService = new RoadCircleService( centre, end, radius );
+		this.circleRoadService = new RoadCircleService( centre, end, radius );
 
-    }
+	}
 
-    updateCircle ( end: Vector3, radius: number ) {
+	updateCircle ( end: Vector3, radius: number ) {
 
-        if ( ! this.circleRoadService ) return;
+		if ( !this.circleRoadService ) return;
 
-        this.circleRoadService.update( radius, end );
+		this.circleRoadService.update( radius, end );
 
-    }
+	}
 
 }

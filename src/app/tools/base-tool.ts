@@ -18,6 +18,8 @@ import { KeyboardInput } from '../core/input';
 import { ToolType } from './tool-types.enum';
 import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
+import { RoadService } from "../services/road/road.service";
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
@@ -29,6 +31,10 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	private previousMaterial: MeshBasicMaterial;
 	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
 	private highlightedLines = new Map<Line, Material>();
+
+	protected roadService: RoadService = new RoadService();
+
+	public selectedRoad: TvRoad;
 
 	constructor () {
 
@@ -112,6 +118,14 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	onPointerDownCreate ( e: PointerEventData ) { }
 
+	onRoadSelected ( road: TvRoad ) { }
+
+	onRoadUnselected ( road: TvRoad ) { }
+
+	getRoad (): TvRoad { return this.selectedRoad; }
+
+	setRoad ( newRoad: TvRoad ) { this.selectedRoad = newRoad; }
+
 	setHint ( msg: string ) {
 
 		StatusBarService.setHint( msg );
@@ -121,70 +135,6 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	clearHint () {
 
 		StatusBarService.clearHint();
-
-	}
-
-	protected checkRoadIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
-
-		this.checkIntersection( ObjectTypes.LANE, intersections, ( obj ) => {
-
-			callback( obj.parent.parent );
-
-		} );
-
-	}
-
-	protected checkLaneIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
-
-		this.checkIntersection( ObjectTypes.LANE, intersections, callback );
-
-	}
-
-	protected checkVehicleIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
-
-		this.checkIntersection( ObjectTypes.VEHICLE, intersections, callback );
-
-	}
-
-	protected checkControlPointIntersection ( intersections: Intersection[], callback: ( object: AnyControlPoint ) => void ) {
-
-		for ( const i of intersections ) {
-
-			if ( i.object != null && i.object.type == 'Points' ) {
-
-				callback( i.object as AnyControlPoint );
-
-				break;
-			}
-		}
-	}
-
-	protected findControlPointFromIntersection ( intersections: Intersection[] ): AnyControlPoint | null {
-
-		for ( const i of intersections ) {
-
-			if ( i.object != null && i.object.type == 'Points' ) {
-
-				return i.object as AnyControlPoint;
-
-			}
-		}
-
-		return null;
-	}
-
-	protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
-
-		for ( const i of intersections ) {
-
-			if ( i.object[ 'tag' ] == tag ) {
-
-				callback( i.object );
-
-				break;
-			}
-
-		}
 
 	}
 
@@ -199,27 +149,6 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 		}
 
-	}
-
-	protected highlight ( object: Mesh ) {
-
-		const material = object.material as MeshBasicMaterial;
-
-		// Check if the object is already highlighted
-		if ( !this.highlightedObjects.has( object ) ) {
-
-			// Save the original material instance
-			this.highlightedObjects.set( object, material );
-
-			// Create a new instance of the material to avoid affecting the shared material
-			const highlightedMaterial = material.clone() as MeshBasicMaterial;
-
-			// Set the current temporary material property to highlighted color
-			highlightedMaterial.color.copy( material.color ).add( new Color( 0, 0, 0.5 ) );
-
-			// Assign the temporary material to the object
-			object.material = highlightedMaterial;
-		}
 	}
 
 	protected highlightLine ( object: Line ) {
@@ -306,4 +235,3 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	}
 
 }
-

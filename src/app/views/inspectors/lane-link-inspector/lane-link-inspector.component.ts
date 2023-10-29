@@ -10,6 +10,7 @@ import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';
 import { LanePathObject } from '../../../modules/tv-map/models/tv-junction-lane-link';
+import { RoadService } from "../../../services/road/road.service";
 
 @Component( {
 	selector: 'app-lane-link-inspector',
@@ -20,7 +21,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 	data: LanePathObject;
 
-	constructor () {
+	constructor ( private roadService: RoadService ) {
 
 		super();
 
@@ -36,15 +37,15 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 		if ( this.data.connection ) {
 
-			this.data.connection.connectingRoad?.spline?.show();
+			this.roadService.showSpline( this.data.connection.connectingRoad );
 
 		}
 
 		if ( this.data.connectingRoad ) {
 
-			this.data.connectingRoad.showNodes();
+			this.roadService.showRoadNodes( this.data.connectingRoad );
 
-			this.data.connectingRoad.spline.show();
+			this.roadService.showSpline( this.data.connectingRoad )
 
 		}
 	}
@@ -55,15 +56,15 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 		if ( this.data.connection ) {
 
-			this.data.connection.connectingRoad?.spline?.hide();
+			this.roadService.hideSpline( this.data.connection.connectingRoad );
 
 		}
 
 		if ( this.data.connectingRoad ) {
 
-			this.data.connectingRoad.hideNodes();
+			this.roadService.hideRoadNodes( this.data.connectingRoad );
 
-			this.data.connectingRoad.spline.hide();
+			this.roadService.hideSpline( this.data.connectingRoad )
 
 		}
 	}

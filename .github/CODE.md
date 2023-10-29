@@ -1,60 +1,71 @@
 # Coding Guidelines
 
+This document outlines the structure and responsibilities of various components in our codebase. Adhering to these guidelines ensures maintainability, consistency, and efficiency in our development process.
+
 ## Folder Structure 
+
+
 
 ```md
 src/app
-├── commands 
-├── core
-├── factories
-├── io
-├── managers - 
-├── services - 
-├── tools - store all tool classes
+├── commands - Command classes for handling small, abstract data manipulations.
+├── core - Essential utilities and helpers used across the application.
+├── factories - Classes dedicated to creating complex objects or classes.
+├── io - Operations related to file and folder CRUD within the OS.
+├── managers - Classes managing states of various app components.
+├── services - Business logic for complex backend operations.
+├── tools - Utility and helper classes providing various functionalities.
 ```
 
-## Responsibility
 
-## Commands
+## Responsibilities
 
-- Responsible for storing small and abstract addition/removal from data/map layer and in some cases 3d/visual layer. 
-- Should not store complex logic. 
+### Commands
+- Handle minor, abstract changes to data or visual layers.
+- Should not contain complex logic, delegate to services or managers as needed.
 
-## Factories
+### Factories
+- Responsible for creating complex objects or classes.
+- Should focus on object creation only, leaving logic for updates or management to services or managers.
 
-- Responsible for creating different kinds of complex objects/classes.
-- Factories should solely focus on creation 
-- Updation logic should go in services
+### IO
+- Handle all file and folder CRUD operations within the OS.
 
-## IO
+### Listeners 
+- Act upon system or user events, updating objects accordingly.
+- Delegate complex logic to services, focusing on responding to events only.
 
-- Responsible for file/folder CRUD operations in OS
+### Managers
+- Manage various application states.
+- Example roles include managing active tools, current inspectors, or visual attributes of roads.
 
-## Listeners
+### Services
+- Contain business logic for complex operations.
+- Centralize and standardize critical operations, making them available to external entities.
 
-- Responsible for listening to events and updating objects based on their relations.
-- Listeners will listen to certain events and then use services to run complex logic
-> For example when road shape is changed we need to update elevation and other nodes 
+### Models
+- Store and maintain consistent data.
+- Can contain data validation or manipulation logic but should not handle comprehensive business logic.
+- Should not trigger events, leaving that responsibility to commands or services.
 
-## Managers
+## Additional Best Practices
 
-- Responsible for managing state of different parts of the application. 
+### Consistency
+- Maintain clear, documented purposes for all directories and components.
 
-> For eg. ToolManager manages the state of currently selected Tool. InspectorManager manages the state of currently selected inspector. PropManager handles the state of prop.
+### Documentation
+- Provide thorough documentation for each component, including its role, examples, and standards.
 
-> RoadStyleManager handles for RoadStyle.
+### Error Handling
+- Implement consistent error and exception handling, especially for IO operations.
 
-## Services
+### Testing
+- Establish guidelines for testing all components to ensure independent functionality and correct interactions.
 
-Responsible for storing business logic of different complex operations like 
-- Creating a junction
-- Automatically creating maneuvers
-- Cutting a road
+### Code Review and Quality
+- Encourage regular code reviews and utilize static analysis tools to uphold coding standards and clarity.
 
-## Models
+### Dependency Management
+- Manage external libraries or tools effectively to prevent conflicts and ensure smooth updates and deployment.
 
-- Responsible for store data
-- Should contain logic for manipulating only own data
-- Should not contain business logic
-- Should not fire events as it increased responsibility of the data model. Events should be fire from the ideally Commands or Services
-
+Following these guidelines helps create a robust, clear, and efficient codebase, simplifying both individual contributions and team collaborations.

@@ -4,9 +4,7 @@
 
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadElevationNode } from '../modules/three-js/objects/road-elevation-node';
-import { TvElevation } from '../modules/tv-map/models/tv-elevation';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
-import { SceneService } from '../services/scene.service';
 import { Manager } from './manager';
 
 export class ElevationManager extends Manager {
@@ -81,24 +79,6 @@ export class ElevationManager extends Manager {
 
 	}
 
-	showNodes ( road: TvRoad ) {
-
-		if ( road.elevationProfile.getElevationCount() === 0 ) {
-
-			// add elevation at begininng and end
-			road.addElevation( 0, 0, 0, 0, 0 );
-			road.addElevation( road.length, 0, 0, 0, 0 );
-
-		}
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.makeNode( road, elevation );
-
-		} );
-
-	}
-
 	updateNodes ( road: TvRoad ) {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
@@ -106,74 +86,6 @@ export class ElevationManager extends Manager {
 			elevation.node?.updateValuesAndPosition();
 
 		} );
-
-	}
-
-	removeNodes ( road: TvRoad ) {
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = false;
-
-			}
-
-			SceneService.removeFromTool( elevation.node );
-
-		} );
-
-	}
-
-	makeNode ( road: TvRoad, elevation: TvElevation ) {
-
-		if ( elevation.node ) {
-
-			elevation.node.visible = true;
-
-		} else {
-
-			elevation.node = new RoadElevationNode( road, elevation );
-
-		}
-
-		SceneService.addToolObject( elevation.node );
-
-	}
-
-	showElevationNodes ( road: TvRoad ) {
-
-		// this.getElevationProfile().getElevations().forEach( elevation => {
-
-		// 	if ( elevation.node ) {
-
-		// 		elevation.node.visible = true;
-
-		// 	} else {
-
-		// 		elevation.node = new RoadElevationNode( this, elevation );
-
-		// 	}
-
-		// 	SceneService.add( elevation.node );
-
-		// } );
-
-	}
-
-	hideElevationNodes ( road: TvRoad ) {
-
-		// this.getElevationProfile().getElevations().forEach( elevation => {
-
-		// 	if ( elevation.node ) {
-
-		// 		elevation.node.visible = false;
-
-		// 	}
-
-		// 	SceneService.remove( elevation.node );
-
-		// } );
 
 	}
 }

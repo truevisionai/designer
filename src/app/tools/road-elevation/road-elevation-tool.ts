@@ -16,24 +16,21 @@ import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspecto
 import { Vector3 } from 'three';
 import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
-import { HideElevationNodes, ShowElevationNodes } from './show-elevation-nodes';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { ElevationManager } from 'app/managers/elevation-manager';
 import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
+import { SelectRoadCommand } from 'app/commands/select-road-command';
+import { UnselectRoadCommand } from "app/commands/unselect-road-command";
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	name: string = 'Road Elevation Tool';
 
 	toolType: ToolType = ToolType.RoadElevation;
-
-	road: TvRoad;
 
 	node: RoadElevationNode;
 
@@ -43,11 +40,6 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 	private nodeStrategy: SelectStrategy<RoadElevationNode>;
 	private roadStrategy: SelectStrategy<TvRoadCoord>;
 
-	get nodes () {
-
-		return this.road?.elevationProfile?.elevation.map( e => e.node ) || [];
-
-	}
 
 	init (): void {
 
@@ -69,7 +61,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.map.getRoads().forEach( road => ElevationManager.instance.removeNodes( road ) );
+		this.map.getRoads().forEach( road => this.roadService.removeElevationNodes( road ) );
 
 	}
 
@@ -91,7 +83,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 			if ( this.isRoadSelected( e ) ) return;
 
-			if ( this.road ) this.unselectRoad();
+			if ( this.selectedRoad ) this.unselectRoad();
 
 			this.setHint( 'use LEFT CLICK to select a road' );
 
@@ -130,7 +122,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	createRoadElevationNode ( road: TvRoad, point: Vector3 ) {
 
-		ElevationManager.instance.showNodes( road );
+		this.roadService.showElevationNodes( road );
 
 		const roadCoord = road.getCoordAt( point );
 
@@ -146,13 +138,13 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		this.setHint( 'New Road Selected' );
 
-		CommandHistory.execute( new ShowElevationNodes( this, road, this.road ) );
+		CommandHistory.execute( new SelectRoadCommand( this, road ) );
 
 	}
 
 	unselectRoad (): void {
 
-		CommandHistory.execute( new HideElevationNodes( this, this.road, this.node ) );
+		CommandHistory.execute( new UnselectRoadCommand( this, this.selectedRoad ) );
 
 	}
 
@@ -183,11 +175,11 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		if ( !newLane ) return false;
 
-		if ( !this.road || this.road?.id !== newLane.roadId ) {
+		if ( !this.selectedRoad || this.selectedRoad?.id !== newLane.roadId ) {
 
 			this.selectRoad( newLane.laneSection.road );
 
-		} else if ( this.road && this.node ) {
+		} else if ( this.selectedRoad && this.node ) {
 
 			// unselct node because road is selected
 			CommandHistory.executeMany(
@@ -198,6 +190,18 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 		}
 
 		return true;
+	}
+
+	onRoadSelected ( road: TvRoad ): void {
+
+		if ( road ) this.roadService.showElevationNodes( road );
+
+	}
+
+	onRoadUnselected ( road: TvRoad ): void {
+
+		if ( road ) this.roadService.removeElevationNodes( road );
+
 	}
 
 	private isNodeSelected ( e: PointerEventData ): boolean {

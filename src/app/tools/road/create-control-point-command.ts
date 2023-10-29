@@ -30,7 +30,7 @@ export class CreateControlPointCommand extends OdBaseCommand {
 
 	execute (): void {
 
-		this.tool.road = this.point.road;
+		this.tool.selectedRoad = this.point.road;
 
 		this.selectPointCommand.execute();
 
@@ -41,7 +41,7 @@ export class CreateControlPointCommand extends OdBaseCommand {
 
 	undo (): void {
 
-		this.tool.road = null;
+		this.tool.selectedRoad = null;
 
 		this.selectPointCommand.undo();
 

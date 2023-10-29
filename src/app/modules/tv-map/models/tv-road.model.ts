@@ -99,7 +99,6 @@ export class TvRoad {
 	private _id: number;
 	private _gameObject: GameObject;
 
-
 	constructor ( name: string, length: number, id: number, junctionId: number ) {
 
 		this.uuid = MathUtils.generateUUID();
@@ -235,11 +234,9 @@ export class TvRoad {
 
 	onSuccessorUpdated ( successor: TvRoad ) {
 
-
 	}
 
 	onPredecessorUpdated ( predecessor: TvRoad ) {
-
 
 	}
 
@@ -254,7 +251,6 @@ export class TvRoad {
 			this.predecessor.elementType = elementType;
 			this.predecessor.elementId = elementId;
 			this.predecessor.contactPoint = contactPoint;
-
 
 		}
 	}
@@ -852,16 +848,6 @@ export class TvRoad {
 		}
 	}
 
-	getLaneWidth ( sCoordinate: number, laneId: number ): number {
-
-		// TODO: Fix lanesection finding
-		const laneSection = this.lanes.getLaneSectionAt( sCoordinate );
-
-		const lane = laneSection.getLaneById( laneId );
-
-		return lane.getWidthValue( sCoordinate );
-	}
-
 	getLaneSectionAt ( s: number ): TvLaneSection {
 
 		return this.lanes.getLaneSectionAt( s );
@@ -930,88 +916,6 @@ export class TvRoad {
 
 	}
 
-	getWidthUptoStart ( s: number, lane: TvLane ) {
-
-		const laneSection = this.getLaneSectionAt( s );
-
-		return laneSection.getWidthUptoStart( lane, s );
-
-	}
-
-	getWidthUptoCenter ( s: number, lane: TvLane ) {
-
-		const laneSection = this.getLaneSectionAt( s );
-
-		return laneSection.getWidthUptoCenter( lane, s );
-
-	}
-
-	getWidthUptoEnd ( s: number, lane: TvLane ) {
-
-		const laneSection = this.getLaneSectionAt( s );
-
-		return laneSection.getWidthUptoEnd( lane, s );
-
-	}
-
-	getSuccessorRoad ( connection: TvJunctionConnection ) {
-
-		if ( this.successor.elementType == 'road' ) {
-
-		} else if ( this.successor.elementType == 'junction' ) {
-
-		} else {
-
-		}
-
-	}
-
-	getRoadsByIncoming ( junction: TvJunction ): TvRoad[] {
-
-		const connections = junction.getConnections();
-
-		return connections
-			.filter( connection => connection.incomingRoadId === this.id )
-			.map( connection => TvMapInstance.map.getRoadById( connection.connectingRoadId ) );
-
-	}
-
-	getSuccessorRoads (): TvRoad[] {
-
-		if ( this.successor?.elementType === 'junction' ) {
-
-			return this.getRoadsByIncoming( this.successor.getElement() );
-
-		} else if ( this.successor?.elementType === 'road' ) {
-
-			return [ this.successor.getElement() ];
-
-		} else {
-
-			return [];
-
-		}
-
-	}
-
-	getPredecessorRoads (): TvRoad[] {
-
-		if ( this.predecessor?.elementType === 'junction' ) {
-
-			return this.getRoadsByIncoming( this.predecessor.getElement() );
-
-		} else if ( this.predecessor?.elementType === 'road' ) {
-
-			return [ this.predecessor.getElement() ];
-
-		} else {
-
-			return [];
-
-		}
-
-	}
-
 	addGeometry ( geometry: TvAbstractRoadGeometry ) {
 
 		if ( !this.planView ) this.addPlanView();
@@ -1077,15 +981,6 @@ export class TvRoad {
 
 	}
 
-	public removeGeometryByUUID ( uuid: string ) {
-
-		this.length += length;
-
-		// find the index of geometry and remove it from the road
-		this.geometries.splice( this.geometries.findIndex( geom => geom.uuid === uuid ), 1 );
-
-	}
-
 	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
 		// add a default type if none exists
@@ -1137,31 +1032,31 @@ export class TvRoad {
 	//
 	// }
 
-	public findMaxSpeedAt ( s: number, laneId?: number ) {
-
-		let maxSpeed = null;
-
-		// get max-speed as per road
-		const type = this.getRoadTypeAt( s );
-
-		const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
-
-		// check if lane-speed record exists
-		if ( laneId ) {
-
-			// const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
-			const laneSpeedRecord = Number.MAX_VALUE;
-
-			maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
-
-		} else {
-
-			maxSpeed = maxSpeedAsPerRoad;
-
-		}
-
-		return maxSpeed;
-	}
+	// public findMaxSpeedAt ( s: number, laneId?: number ) {
+	//
+	//     let maxSpeed = null;
+	//
+	//     // get max-speed as per road
+	//     const type = this.getRoadTypeAt( s );
+	//
+	//     const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
+	//
+	//     // check if lane-speed record exists
+	//     if ( laneId ) {
+	//
+	//         // const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
+	//         const laneSpeedRecord = Number.MAX_VALUE;
+	//
+	//         maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
+	//
+	//     } else {
+	//
+	//         maxSpeed = maxSpeedAsPerRoad;
+	//
+	//     }
+	//
+	//     return maxSpeed;
+	// }
 
 	/**
 	 * Remove any existing road model from the scene and its children
@@ -1179,14 +1074,6 @@ export class TvRoad {
 			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 		} );
-	}
-
-	showHelpers (): void {
-
-		this.spline.show();
-
-		this.showNodes();
-
 	}
 
 	hideHelpers (): void {
@@ -1209,26 +1096,7 @@ export class TvRoad {
 
 	}
 
-	showControlPoints (): void {
-
-		this.spline.showControlPoints();
-
-	}
-
-	hideControlPoints (): void {
-
-		this.spline.hideControlPoints();
-
-	}
-
-	showNodes (): any {
-
-		if ( this.startNode ) this.startNode.visible = true;
-		if ( this.endNode ) this.endNode.visible = true;
-
-	}
-
-	hideNodes (): void {
+	private hideNodes (): void {
 
 		if ( this.startNode ) this.startNode.visible = false;
 		if ( this.endNode ) this.endNode.visible = false;
@@ -1329,7 +1197,6 @@ export class TvRoad {
 		} else {
 			this.startNode.update();
 		}
-
 
 		if ( !this.endNode ) {
 			this.endNode = this.createRoadNode( TvContactPoint.END );
@@ -1829,7 +1696,6 @@ export class TvRoad {
 		this.getLastLaneSection().lanes.forEach( lane => {
 			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
 		} );
-
 
 	}
 
