@@ -5,12 +5,14 @@ import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
 import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
 import { ToolManager } from "app/tools/tool-manager";
+import { RoadLinkService } from "app/services/road/road-link.service";
 
 export class RoadEventListener extends Manager {
 
 	private static _instance = new RoadEventListener();
 	private debug = true;
 	private roadService: RoadService;
+	private roadLinkService: RoadLinkService;
 
 	static get instance (): RoadEventListener {
 		return this._instance;
@@ -21,6 +23,7 @@ export class RoadEventListener extends Manager {
 		super();
 
 		this.roadService = new RoadService();
+		this.roadLinkService = new RoadLinkService();
 
 	}
 
@@ -64,13 +67,7 @@ export class RoadEventListener extends Manager {
 
 		}
 
-		if ( !event.road.isJunction ) {
-
-			event.road.removePredecessor();
-
-			event.road.removeSuccessor();
-
-		}
+		this.roadLinkService.removeLinks( event.road );
 
 		TvMapInstance.map.gameObject.remove( event.road.gameObject );
 	}

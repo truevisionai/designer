@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
@@ -9,6 +11,97 @@ import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-co
 export class RoadLinkService {
 
 	constructor () { }
+
+	removeLinks ( road: TvRoad ) {
+
+		if ( road.isJunction ) return;
+
+		this.removePredecessor( road );
+
+		this.removeSuccessor( road );
+
+	}
+
+	removeSuccessor ( road: TvRoad ) {
+
+		if ( !road.successor ) return;
+
+		if ( road.successor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
+
+		const linkedRoad = road.successor.road;
+
+		if ( !linkedRoad ) return;
+
+		if ( road.successor.contactPoint === TvContactPoint.START ) {
+
+			linkedRoad.predecessor = null;
+
+		} else {
+
+			linkedRoad.successor = null;
+
+		}
+
+		road.successor = null;
+	}
+
+	removePredecessor ( road: TvRoad ) {
+
+		if ( !road.predecessor ) return;
+
+		if ( road.predecessor.elementType === TvRoadLinkChildType.junction ) {
+			return;
+		}
+
+		const linkedRoad = road.predecessor.road;
+
+		if ( !linkedRoad ) return;
+
+		if ( road.predecessor.contactPoint === TvContactPoint.START ) {
+
+			linkedRoad.predecessor = null;
+
+		} else {
+
+			linkedRoad.successor = null;
+
+		}
+
+		road.predecessor = null;
+	}
+
+
+	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
+
+		this.createLinksOld( firstNode, secondNode, joiningRoad );
+
+		// joiningRoad.setPredecessorRoad( firstNode.road, firstNode.contact );
+
+		// joiningRoad.setSuccessorRoad( secondNode.road, secondNode.contact );
+
+		// if ( firstNode.contact === TvContactPoint.START ) {
+
+		// 	firstNode.road.setPredecessorRoad( joiningRoad, TvContactPoint.START );
+
+		// } else {
+
+		// 	firstNode.road.setSuccessorRoad( joiningRoad, TvContactPoint.END );
+
+		// }
+
+		// if ( secondNode.contact === TvContactPoint.START ) {
+
+		// 	secondNode.road.setPredecessorRoad( joiningRoad, TvContactPoint.START );
+
+		// } else {
+
+		// 	secondNode.road.setSuccessorRoad( joiningRoad, TvContactPoint.END );
+
+		// }
+
+	}
 
 	updateLinks ( road: TvRoad, controlPoint: AbstractControlPoint, rebuild: boolean = false ) {
 
@@ -131,6 +224,71 @@ export class RoadLinkService {
 		end.position.copy( newP4 );
 
 		predecessor.spline.update();
+
+	}
+
+	private createLinksOld ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
+
+		const firstRoad = firstNode.road;
+		const secondRoad = secondNode.road;
+
+		if ( firstNode.contact === TvContactPoint.START ) {
+
+			// link will be negative as joining roaad will in opposite direction
+
+			firstRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.START );
+			firstRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+			} );
+
+			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+			} );
+
+		} else {
+
+			// links will be in same direction
+
+			firstRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.START );
+			firstRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+			} );
+
+			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.END );
+			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+			} );
+
+		}
+
+		if ( secondNode.contact === TvContactPoint.START ) {
+
+			secondRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.END );
+			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+			} );
+
+			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad.id, TvContactPoint.START );
+			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+			} );
+
+		} else {
+
+			secondRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad.id, TvContactPoint.END );
+			secondRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+			} );
+
+			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad.id, TvContactPoint.END );
+			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+			} );
+
+		}
+
+
 
 	}
 

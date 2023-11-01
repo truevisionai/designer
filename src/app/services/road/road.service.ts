@@ -7,25 +7,23 @@ import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-n
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { BaseService } from '../base.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
-import { RoadConnectionService } from './road-connection.service';
+import { RoadLinkService } from './road-link.service';
 
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadService extends BaseService {
 
-	joinRoads ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
 		const joiningRoad = RoadFactory.createJoiningRoad( firstNode, secondNode );
 
 		const spline = ( new RoadSplineService() ).createSplineFromNodes( firstNode, secondNode );
 
-		( new RoadConnectionService() ).connectJoiningRoad( firstNode, secondNode, joiningRoad );
+		( new RoadLinkService() ).linkRoads( firstNode, secondNode, joiningRoad );
 
 		spline.addRoadSegment( 0, -1, joiningRoad.id );
 
