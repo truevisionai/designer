@@ -54,6 +54,23 @@ export abstract class AbstractSpline {
 
 	abstract getLength (): number;
 
+	clone () {
+
+		const spline: AbstractSpline = new ( this.constructor as any )( this.closed, this.tension );
+
+		this.controlPoints.forEach( cp => spline.addControlPointAt( cp.position ) );
+
+		this.roadSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.length, segment.roadId ) );
+
+		spline.type = this.type;
+
+		spline.init();
+
+		return spline;
+
+	}
+
+
 	clear () {
 
 		throw new Error( 'Method not implemented.' );

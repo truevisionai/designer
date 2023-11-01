@@ -85,9 +85,7 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMa
 
 		this.map.showSurfaceHelpers();
 
-		this.map.getRoads().forEach( road => {
-			road.showCornerPoints();
-		} );
+        this.roadService.showAllCornerPoints();
 	}
 
 	public disable (): void {
@@ -96,9 +94,8 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMa
 
 		this.map.hideSurfaceHelpers();
 
-		this.map.getRoads().forEach( road => {
-			road.hideCornerPoints();
-		} );
+        this.roadService.hideAllCornerPoints();
+
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {

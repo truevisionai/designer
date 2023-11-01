@@ -2,16 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -34,8 +30,6 @@ import {
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
 import { TvJunction } from './tv-junction';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvLane } from './tv-lane';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';
@@ -47,7 +41,6 @@ import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvObjectContainer, TvRoadObject } from './tv-road-object';
 import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
-import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadStyle } from "../../../core/asset/road.style";
@@ -62,31 +55,26 @@ export enum TrafficRule {
 export class TvRoad {
 
 	public readonly uuid: string;
-	public updated = new EventEmitter<TvRoad>();
-	// auto will be the default spline for now
+
 	private _spline: AbstractSpline;
-	public startNode: RoadNode;
-	public endNode: RoadNode;
+
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
 	public lateralProfile: TvLateralProfile;
 	public lanes = new TvRoadLanes( this );
+
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
 	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
 	public trafficRule = TrafficRule.RHT;
 	public successor: TvRoadLinkChild;
 	public predecessor: TvRoadLinkChild;
 	public junctionId: number;
-	/**
-	 * @deprecated use predecessor, successor directly
-	 */
-	private link: TvRoadLink;
+
 	private lastAddedLaneSectionIndex: number;
 	private lastAddedRoadObjectIndex: number;
-	private lastAddedRoadSignalIndex: number;
-	private cornerPoints: AbstractControlPoint[] = [];
 
 	private _objects: TvObjectContainer = new TvObjectContainer();
 	private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
@@ -231,14 +219,6 @@ export class TvRoad {
 
 	}
 
-	onSuccessorUpdated ( successor: TvRoad ) {
-
-	}
-
-	onPredecessorUpdated ( predecessor: TvRoad ) {
-
-	}
-
 	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
 		if ( this.predecessor == null ) {
@@ -320,21 +300,6 @@ export class TvRoad {
 		this.predecessor.elementId = road.id;
 		this.predecessor.contactPoint = contactPoint;
 
-	}
-
-	setNeighbor ( side: string, elementId: string, direction: string ) {
-
-		console.error( 'neighbor not supported' );
-
-		// const neighbor = new OdRoadLinkNeighbor( side, elementId, direction );
-		//
-		// this.link.neighbor.push( neighbor );
-		//
-		// if ( this.neighbor1 === null ) {
-		//
-		//     this.neighbor1 = neighbor;
-		//
-		// }
 	}
 
 	getPlanView (): TvPlaneView {
@@ -434,14 +399,6 @@ export class TvRoad {
 		// console.log( value );
 
 		return elevation.getValue( s );
-	}
-
-	checkSuperElevationInterval ( s: number ) {
-		// TODO
-	}
-
-	checkCrossfallInterval ( s: number ) {
-		// TODO
 	}
 
 	addElevationProfile () {
@@ -1079,8 +1036,6 @@ export class TvRoad {
 
 		this.spline.hide();
 
-		this.hideNodes();
-
 	}
 
 	showSpline (): void {
@@ -1092,13 +1047,6 @@ export class TvRoad {
 	hideSpline (): void {
 
 		this.spline.hide();
-
-	}
-
-	private hideNodes (): void {
-
-		if ( this.startNode ) this.startNode.visible = false;
-		if ( this.endNode ) this.endNode.visible = false;
 
 	}
 
@@ -1162,7 +1110,6 @@ export class TvRoad {
 
 		} );
 
-		this.updated.emit( this );
 	}
 
 	getLeftSideWidth ( s: number ) {
@@ -1185,39 +1132,6 @@ export class TvRoad {
 		} );
 
 		return width;
-
-	}
-
-	/**
-	 * @deprecated use RoadManager
-	 */
-	updateRoadNodes (): void {
-
-		this.updateGeometryFromSpline();
-
-		if ( !this.startNode ) {
-			this.startNode = this.createRoadNode( TvContactPoint.START );
-		} else {
-			this.startNode.update();
-		}
-
-		if ( !this.endNode ) {
-			this.endNode = this.createRoadNode( TvContactPoint.END );
-		} else {
-			this.endNode.update();
-		}
-	}
-
-	clearNodes () {
-
-		SceneService.removeFromTool( this.startNode );
-		SceneService.removeFromTool( this.endNode );
-
-		this.startNode = null;
-		this.endNode = null;
-
-		delete this.startNode;
-		delete this.endNode;
 
 	}
 
@@ -1500,21 +1414,6 @@ export class TvRoad {
 
 	}
 
-	showCornerPoints () {
-
-		this.createCornerPoints( this.getStartCoord() );
-
-		this.createCornerPoints( this.getEndCoord() );
-
-	}
-
-	hideCornerPoints () {
-
-		this.cornerPoints.forEach( point => this.gameObject.remove( point ) );
-		this.cornerPoints = [];
-
-	}
-
 	isPredecessor ( otherRoad: TvRoad ): boolean {
 
 		if ( !this.predecessor ) return false;
@@ -1729,6 +1628,8 @@ export class TvRoad {
 		// road._name = this.name;
 		// road._length = this.length;
 		// road._id = this.id;
+		road.predecessor = this.predecessor?.clone();
+		road.successor = this.successor?.clone();
 
 		road.addLaneSectionInstance( this.getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
@@ -1753,15 +1654,6 @@ export class TvRoad {
 
 	}
 
-	private createRoadNode ( contact: TvContactPoint ) {
-
-		const node = new RoadNode( this, contact );
-
-		SceneService.addToolObject( node );
-
-		return node;
-	}
-
 	private computeLaneSectionLength () {
 
 		this.computeLaneSectionCoordinates();
@@ -1783,23 +1675,5 @@ export class TvRoad {
 
 		// update last
 		sections[ sections.length - 1 ].length = this.length - sections[ sections.length - 1 ].s;
-	}
-
-	private createCornerPoints ( coord: TvPosTheta ) {
-
-		const rightT = this.getRightsideWidth( coord.s );
-		const leftT = this.getLeftSideWidth( coord.s );
-
-		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
-
-		const leftPoint = new DynamicControlPoint( this, leftPosition );
-		const rightPoint = new DynamicControlPoint( this, rightPosition );
-
-		this.cornerPoints.push( leftPoint );
-		this.cornerPoints.push( rightPoint );
-
-		this.gameObject.add( leftPoint );
-		this.gameObject.add( rightPoint );
 	}
 }

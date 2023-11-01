@@ -133,8 +133,6 @@ describe( 'RoadTool', () => {
 
 		roadA.updateGeometryFromSpline();
 
-		roadA.updateRoadNodes();
-
 		const roadB = map.addDefaultRoad();
 
 		roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 0, 50, 0 ) ) );
@@ -142,8 +140,6 @@ describe( 'RoadTool', () => {
 		roadB.spline.addControlPoint( new RoadControlPoint( roadB, new Vector3( 100, 50, 0 ) ) );
 
 		roadB.updateGeometryFromSpline();
-
-		roadB.updateRoadNodes();
 
 		const joiningRoad = RoadFactory.joinRoadNodes( roadA, roadA.endNode, roadB, roadB.endNode );
 

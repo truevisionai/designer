@@ -7,6 +7,7 @@ export enum ToolType {
 	RoadCircle,
 	RoadCuttingTool,
 	RoadElevation,
+	Junction,
 	Maneuver,
 	LaneWidth,
 	LaneOffset,
@@ -26,5 +27,7 @@ export enum ToolType {
 	Vehicle,
 	RoadSignalTool,
 	Crosswalk,
-	Environment
+	Environment,
+	TrafficLight,
+	Parking
 }

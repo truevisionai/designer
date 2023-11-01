@@ -24,6 +24,10 @@ export class AddRoadCommand extends OdBaseCommand {
 
 			this.map.addRoad( road );
 
+		} )
+
+		this.roads.forEach( road => {
+
 			MapEvents.roadCreated.emit( new RoadCreatedEvent( road, this.showHelpers ) );
 
 		} )
@@ -34,9 +38,13 @@ export class AddRoadCommand extends OdBaseCommand {
 
 		this.roads.forEach( road => {
 
-			MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
-
 			this.map.roads.delete( road.id );
+
+		} );
+
+		this.roads.forEach( road => {
+
+			MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
 
 		} );
 

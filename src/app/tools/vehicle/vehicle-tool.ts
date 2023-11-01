@@ -82,7 +82,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		this.points.forEach( ( point ) => {
 
-			point.parent.remove( point );
+			point.parent?.remove( point );
 
 		} );
 

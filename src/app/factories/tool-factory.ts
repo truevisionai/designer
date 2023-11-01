@@ -26,6 +26,7 @@ import { RoadTool } from '../tools/road/road-tool';
 import { SurfaceTool } from '../tools/surface/surface-tool';
 import { VehicleTool } from '../tools/vehicle/vehicle-tool';
 import { RoadCuttingTool } from 'app/tools/road-cut-tool/road-cut-tool';
+import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
 
 export class ToolFactory {
 
@@ -38,6 +39,8 @@ export class ToolFactory {
 				return new RoadCircleTool();
 			case ToolType.Maneuver:
 				return new ManeuverTool();
+			case ToolType.Junction:
+				return new JunctionTool();
 			case ToolType.LaneWidth:
 				return new LaneWidthTool();
 			case ToolType.LaneOffset:

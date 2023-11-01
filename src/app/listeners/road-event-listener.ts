@@ -67,6 +67,8 @@ export class RoadEventListener extends Manager {
 
 		}
 
+		this.roadService.hideRoadNodes( event.road );
+
 		this.roadLinkService.removeLinks( event.road );
 
 		TvMapInstance.map.gameObject.remove( event.road.gameObject );
@@ -77,6 +79,8 @@ export class RoadEventListener extends Manager {
 		if ( this.debug ) console.debug( 'onRoadCreated' );
 
 		this.regenerateGeometries( event.road );
+
+		if ( event.road.spline.controlPoints.length < 2 ) return;
 
 		// if ( event.showHelpers ) this.roadService.showRoadNodes( event.road );
 

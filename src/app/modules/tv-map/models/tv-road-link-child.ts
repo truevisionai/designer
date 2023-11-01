@@ -4,8 +4,6 @@
 
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
@@ -246,6 +244,17 @@ export class TvRoadLinkChild {
 		}
 
 	}
+
+	clone (): TvRoadLinkChild {
+
+		return new TvRoadLinkChild(
+			this.elementType,
+			this.elementId,
+			this.contactPoint
+		);
+
+	}
+
 
 	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
 

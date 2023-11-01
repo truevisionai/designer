@@ -165,8 +165,6 @@ export class OpenDriverParser extends AbstractReader {
 
 		} );
 
-		road.updated.emit( road );
-
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
 		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );

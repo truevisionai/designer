@@ -10,12 +10,29 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
 import { RoadLinkService } from './road-link.service';
-
+import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
+import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadService extends BaseService {
+
+	private static nodes: RoadNode[] = [];
+	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
+
+	hideAllRoadNodes () {
+
+		this.map.getRoads().forEach( road => this.hideRoadNodes( road ) );
+
+	}
+
+	showAllRoadNodes () {
+
+		this.map.getRoads().forEach( road => this.showRoadNodes( road ) );
+
+	}
 
 	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
@@ -35,19 +52,20 @@ export class RoadService extends BaseService {
 
 	showRoadNodes ( road: TvRoad ) {
 
-		this.updateRoadNodes( road );
+		this.hideRoadNodes( road );
 
-		if ( road.startNode ) road.startNode.visible = true;
-
-		if ( road.endNode ) road.endNode.visible = true;
+		this.createRoadNode( road, TvContactPoint.START );
+		this.createRoadNode( road, TvContactPoint.END );
 
 	}
 
 	hideRoadNodes ( road: TvRoad ) {
 
-		if ( road.startNode ) road.startNode.visible = false;
+		RoadService.nodes.filter( node => node.roadId == road.id ).forEach( node => {
 
-		if ( road.endNode ) road.endNode.visible = false;
+			SceneService.removeFromTool( node );
+
+		} );
 
 	}
 
@@ -77,25 +95,8 @@ export class RoadService extends BaseService {
 
 	updateRoadNodes ( road: TvRoad ) {
 
-		if ( !road.startNode ) {
-
-			road.startNode = this.createRoadNode( road, TvContactPoint.START );
-
-		} else {
-
-			if ( road.startNode ) road.startNode.update();
-
-		}
-
-		if ( !road.endNode ) {
-
-			road.endNode = this.createRoadNode( road, TvContactPoint.END );
-
-		} else {
-
-			road.endNode.update();
-
-		}
+		this.hideRoadNodes( road );
+		this.showRoadNodes( road );
 
 	}
 
@@ -158,7 +159,6 @@ export class RoadService extends BaseService {
 				segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
 			}
-
 
 		} );
 
@@ -223,8 +223,63 @@ export class RoadService extends BaseService {
 
 		SceneService.addToolObject( node );
 
+		RoadService.nodes.push( node );
+
 		return node;
 
 	}
 
+	showCornerPoints ( road: TvRoad, ) {
+
+		this.createCornerPoint( road, road.getStartCoord() );
+		this.createCornerPoint( road, road.getEndCoord() );
+
+	}
+
+	hideCornerPoints ( road: TvRoad ) {
+
+		RoadService.cornerPoints
+			.filter( point => point.mainObject.id == road.id )
+			.forEach( point => {
+
+				SceneService.removeFromTool( point );
+
+			} );
+
+	}
+
+	createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
+
+		const rightT = road.getRightsideWidth( coord.s );
+		const leftT = road.getLeftSideWidth( coord.s );
+
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+
+		const leftPoint = new DynamicControlPoint( road, leftPosition );
+		const rightPoint = new DynamicControlPoint( road, rightPosition );
+
+		RoadService.cornerPoints.push( leftPoint );
+		RoadService.cornerPoints.push( rightPoint );
+
+		SceneService.addToolObject( leftPoint );
+		SceneService.addToolObject( rightPoint );
+
+	}
+
+	showAllCornerPoints () {
+
+		this.map.getRoads().forEach( road => {
+			this.showCornerPoints( road );
+		} );
+
+	}
+
+	hideAllCornerPoints () {
+
+		this.map.getRoads().forEach( road => {
+			this.hideCornerPoints( road );
+		} );
+
+	}
 }
