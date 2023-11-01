@@ -81,6 +81,10 @@ export class TvLaneCoord {
 	get position (): Vector3 {
 		return this.posTheta.toVector3();
 	}
+
+	get direction (): Vector3 {
+		return this.posTheta.toDirectionVector();
+	}
 }
 
 export class TvRoadCoord {

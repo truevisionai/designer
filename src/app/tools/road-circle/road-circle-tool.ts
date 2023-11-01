@@ -8,6 +8,8 @@ import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleService } from "../../services/road/road-circle.service";
+import { MapEvents } from 'app/events/map-events';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -49,9 +51,16 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
-		// this.map.getRoads().forEach( road => road.hideHelpers() );
+		this.map.getRoads().forEach( ( road ) => {
 
-		// this.clearToolObjects();
+			this.roadService.hideRoadNodes( road );
+
+		} );
+	}
+
+	onRoadCreated ( road: TvRoad ): void {
+
+		this.roadService.showRoadNodes( road );
 
 	}
 

@@ -4,11 +4,11 @@
 
 import { BaseCommand } from 'app/commands/base-command';
 import { Object3D } from 'three';
-import { BaseControlPoint } from '../modules/three-js/objects/control-point';
 import { IHasUpdate } from './set-value-command';
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 
 
-export class RemoveArrayPointCommand<T extends IHasUpdate, K extends BaseControlPoint> extends BaseCommand {
+export class RemoveArrayPointCommand<T extends IHasUpdate, K extends AbstractControlPoint> extends BaseCommand {
 
 	private index: number;
 

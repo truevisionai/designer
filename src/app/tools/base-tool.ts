@@ -10,7 +10,6 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { StatusBarService } from 'app/services/status-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasicMaterial, Object3D } from 'three';
-import { AnyControlPoint } from '../modules/three-js/objects/control-point';
 import { ObjectTypes } from '../modules/tv-map/models/tv-common';
 import { TvMapInstance } from '../modules/tv-map/services/tv-map-source-file';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
@@ -20,6 +19,7 @@ import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
 import { RoadService } from "../services/road/road.service";
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { AnyControlPoint } from "../modules/three-js/objects/any-control-point";
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
@@ -117,6 +117,8 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	onPointerDownSelect ( e: PointerEventData ) { }
 
 	onPointerDownCreate ( e: PointerEventData ) { }
+
+	onRoadCreated ( road: TvRoad ) { }
 
 	onRoadSelected ( road: TvRoad ) { }
 

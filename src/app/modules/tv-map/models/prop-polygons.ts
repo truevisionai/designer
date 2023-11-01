@@ -8,12 +8,12 @@ import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 
 import earcut from 'earcut';
 import { Group, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, Vector2, Vector3 } from 'three';
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 interface IChildAndMesh {
 	mesh: Mesh;
@@ -157,7 +157,7 @@ export class PropPolygon implements ISelectable {
 		this.createInstancedMeshesV2( this.spline.controlPoints, propObject, propChildren );
 	}
 
-	createInstancedMeshesV2 ( controlPoints: BaseControlPoint[], propObject: Object3D, propChildren: IChildAndMesh[] ) {
+	createInstancedMeshesV2 ( controlPoints: AbstractControlPoint[], propObject: Object3D, propChildren: IChildAndMesh[] ) {
 
 		if ( controlPoints.length < 3 ) return;
 

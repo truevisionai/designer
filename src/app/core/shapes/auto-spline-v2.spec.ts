@@ -24,7 +24,7 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		spline.addRoadSegment( 0, 100, road );
+		spline.addRoadSegment( 0, 100, road.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -51,7 +51,7 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road );
+		spline.addRoadSegment( 10, 40, road.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -78,8 +78,8 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 200, 0, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road );
-		spline.addRoadSegment( 60, 40, road2 );
+		spline.addRoadSegment( 10, 40, road.id );
+		spline.addRoadSegment( 60, 40, road2.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -114,7 +114,7 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
 
-		spline.addRoadSegment( 10, 80, road );
+		spline.addRoadSegment( 10, 80, road.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -149,8 +149,8 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road );
-		spline.addRoadSegment( 50, 40, road2 );
+		spline.addRoadSegment( 10, 40, road.id );
+		spline.addRoadSegment( 50, 40, road2.id );
 
 		let segments = spline.getRoadSegments();
 

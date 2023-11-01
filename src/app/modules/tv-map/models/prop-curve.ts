@@ -8,10 +8,11 @@ import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
+import { AnyControlPoint } from "../../three-js/objects/any-control-point";
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 export class PropCurve {
 
@@ -201,7 +202,7 @@ export class PropCurve {
 
 	}
 
-	removeControlPoint ( point: BaseControlPoint ) {
+	removeControlPoint ( point: AbstractControlPoint ) {
 
 		const index = this.spline.controlPoints.indexOf( point );
 

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
@@ -19,6 +18,7 @@ import { AbstractSpline } from './abstract-spline';
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -563,7 +563,7 @@ export class ExplicitSpline extends AbstractSpline {
 		return length;
 	}
 
-	markAsSpiral ( point: BaseControlPoint ) {
+	markAsSpiral ( point: AbstractControlPoint ) {
 
 		const idx = point.tagindex;
 

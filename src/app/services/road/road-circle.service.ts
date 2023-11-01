@@ -16,10 +16,11 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { CommandHistory } from '../command-history';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+
+import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 
 export class RoadCircleService {
 
@@ -114,10 +115,15 @@ export class RoadCircleService {
 			let a2 = startPosTheta.moveForward( +distance );
 			let b2 = endPosTheta.moveForward( -distance );
 
-			points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
-			points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
-			points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
+			// points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
+			// points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
+			// points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
+			// points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
+
+			points.push( new SplineControlPoint( road.spline, start ) );
+			points.push( new SplineControlPoint( road.spline, a2.toVector3() ) );
+			points.push( new SplineControlPoint( road.spline, b2.toVector3() ) );
+			points.push( new SplineControlPoint( road.spline, arc.endV3.clone() ) );
 
 			start = arc.endV3;
 

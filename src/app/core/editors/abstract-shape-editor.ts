@@ -13,9 +13,10 @@ import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
-import { AnyControlPoint, NewDistanceNode } from '../../modules/three-js/objects/control-point';
+import { NewDistanceNode } from '../../modules/three-js/objects/control-point';
 import { SceneService } from '../../services/scene.service';
 import { IShapeEditor } from './i-shape-editor';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
 

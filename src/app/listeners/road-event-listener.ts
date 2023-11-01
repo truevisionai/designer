@@ -1,19 +1,18 @@
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadSelectedEvent, RoadUpdatedEvent } from "../events/map-events";
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
 import { TvRoad } from "../modules/tv-map/models/tv-road.model";
 import { TvMapBuilder } from "../modules/tv-map/builders/tv-map-builder";
 import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
-import { RoadControlPoint } from "../modules/three-js/objects/road-control-point";
-import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { Manager } from "./manager";
+import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
+import { ToolManager } from "app/tools/tool-manager";
 
-export class RoadManager extends Manager {
+export class RoadEventListener extends Manager {
 
-	private static _instance = new RoadManager();
+	private static _instance = new RoadEventListener();
 	private debug = true;
 	private roadService: RoadService;
 
-	static get instance (): RoadManager {
+	static get instance (): RoadEventListener {
 		return this._instance;
 	}
 
@@ -31,54 +30,15 @@ export class RoadManager extends Manager {
 		MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
 		MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
 
-		MapEvents.roadControlPointCreated.subscribe( e => this.onRoadControlPointCreated( e ) );
-		MapEvents.roadControlPointRemoved.subscribe( e => this.onRoadControlPointRemoved( e ) );
-		MapEvents.roadControlPointUpdated.subscribe( e => this.onRoadControlPointUpdated( e ) );
 
 	}
 
-	onRoadControlPointUpdated ( event: { road: TvRoad, controlPoint: RoadControlPoint } ) {
-
-		if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
-
-		this.regenerateGeometries( event.road );
-
-		event.road.successor?.update( event.road, TvContactPoint.END );
-		event.road.predecessor?.update( event.road, TvContactPoint.START );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
-
-	}
-
-	onRoadControlPointRemoved ( event: { road: TvRoad, controlPoint: RoadControlPoint } ) {
-
-		if ( this.debug ) console.debug( 'onRoadControlPointRemoved' );
-
-		this.regenerateGeometries( event.road );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
-
-	}
-
-	onRoadControlPointCreated ( event: { road: TvRoad, controlPoint: RoadControlPoint } ) {
-
-		if ( this.debug ) console.debug( 'onRoadControlPointCreated' );
-
-		this.regenerateGeometries( event.road );
-
-		// TODO: check if we need to update the road inspector
-		// AppInspector.setInspector( RoadInspector, {
-		// 	road: event.road,
-		// 	controlPoint: event.controlPoint
-		// } );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
-
-	}
 
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
 		if ( this.debug ) console.debug( 'onRoadUpdated' );
+
+		if ( event.road.spline.controlPoints.length < 2 ) return;
 
 		this.regenerateGeometries( event.road );
 
@@ -125,7 +85,9 @@ export class RoadManager extends Manager {
 
 		// if ( event.showHelpers ) event.road.spline.show();
 
-		if ( event.showHelpers ) MapEvents.roadSelected.emit( new RoadSelectedEvent( event.road ) );
+		// if ( event.showHelpers ) MapEvents.roadSelected.emit( new RoadSelectedEvent( event.road ) );
+
+		ToolManager.currentTool.onRoadCreated( event.road );
 
 	}
 
@@ -133,9 +95,11 @@ export class RoadManager extends Manager {
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
+		console.debug( 'regen', road );
+
 		road.spline?.getRoadSegments().forEach( segment => {
 
-			const road = segment.road;
+			const road = TvMapInstance.map.getRoadById( segment.roadId );
 
 			road.clearGeometries();
 

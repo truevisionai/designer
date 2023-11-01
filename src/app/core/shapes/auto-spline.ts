@@ -8,11 +8,11 @@ import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geome
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
-import { BaseControlPoint } from '../../modules/three-js/objects/control-point';
 import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 
 export class AutoSpline extends AbstractSpline {
@@ -39,13 +39,13 @@ export class AutoSpline extends AbstractSpline {
 
 		this.roundline = new RoundLine( this.controlPoints );
 
-		if ( this.meshAddedInScene ) return;
+		// if ( this.meshAddedInScene ) return;
 
-		SceneService.addToolObject( this.polyline.mesh );
+		// SceneService.addToolObject( this.polyline.mesh );
 
-		SceneService.addToolObject( this.roundline.mesh );
+		// SceneService.addToolObject( this.roundline.mesh );
 
-		this.meshAddedInScene = true;
+		// this.meshAddedInScene = true;
 
 	}
 
@@ -105,7 +105,7 @@ export class AutoSpline extends AbstractSpline {
 
 		const hdgs = [];
 
-		let hdg, p1, p2, currentPoint: BaseControlPoint, previousPoint: BaseControlPoint;
+		let hdg, p1, p2, currentPoint: AbstractControlPoint, previousPoint: AbstractControlPoint;
 
 		for ( let i = 1; i < this.controlPoints.length; i++ ) {
 

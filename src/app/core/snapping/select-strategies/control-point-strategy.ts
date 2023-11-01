@@ -4,10 +4,10 @@
 
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { BaseControlPoint } from '../../../modules/three-js/objects/control-point';
 import { SelectStrategy } from './select-strategy';
+import { AbstractControlPoint } from "../../../modules/three-js/objects/abstract-control-point";
 
-export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStrategy<T> {
+export class ControlPointStrategy<T extends AbstractControlPoint> extends SelectStrategy<T> {
 
 	private current: T = null;
 	private selected: T = null;

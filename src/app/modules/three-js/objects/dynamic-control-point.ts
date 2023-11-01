@@ -6,10 +6,10 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { IHasUpdate } from '../../../commands/set-value-command';
-import { BaseControlPoint } from './control-point';
 import { SerializedField } from 'app/core/components/serialization';
+import { AbstractControlPoint } from "./abstract-control-point";
 
-export class DynamicControlPoint<T extends IHasUpdate> extends BaseControlPoint {
+export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPoint {
 
 	public mainObject: T;
 
@@ -79,3 +79,4 @@ export class DynamicControlPoint<T extends IHasUpdate> extends BaseControlPoint 
 
 	}
 }
+

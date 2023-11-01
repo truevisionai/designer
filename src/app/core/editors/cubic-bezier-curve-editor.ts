@@ -5,10 +5,10 @@
 import * as THREE from 'three';
 import { Curve, Object3D } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { KeyboardInput } from '../input';
 import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export class CubicBezierCurveEditor extends AbstractShapeEditor {
 

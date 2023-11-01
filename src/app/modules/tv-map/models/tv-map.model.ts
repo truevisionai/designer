@@ -29,7 +29,7 @@ export class TvMap {
 
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
 
-	public splines: AbstractSpline[] = [];
+	private splines: AbstractSpline[] = [];
 
 	/**
 	 * @deprecated use getRoads();
@@ -73,6 +73,19 @@ export class TvMap {
 		return this.header;
 	}
 
+	addSpline ( spline: AbstractSpline ): void {
+		if ( this.splines.includes( spline ) ) return;
+		this.splines.push( spline );
+	}
+
+	removeSpline ( spline: AbstractSpline ): void {
+		this.splines.splice( this.splines.indexOf( spline ), 1 );
+	}
+
+	getSplines (): AbstractSpline[] {
+		return this.splines;
+	}
+
 	/**
 	 *
 	 * @param name
@@ -108,6 +121,8 @@ export class TvMap {
 	addRoad ( road: TvRoad ) {
 
 		this._roads.set( road.id, road );
+
+		this.addSpline( road.spline );
 
 	}
 

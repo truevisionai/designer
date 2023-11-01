@@ -10,9 +10,7 @@ import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
@@ -54,6 +52,7 @@ import { TvUtils } from './tv-utils';
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -87,7 +86,7 @@ export class TvRoad {
 	private lastAddedLaneSectionIndex: number;
 	private lastAddedRoadObjectIndex: number;
 	private lastAddedRoadSignalIndex: number;
-	private cornerPoints: BaseControlPoint[] = [];
+	private cornerPoints: AbstractControlPoint[] = [];
 
 	private _objects: TvObjectContainer = new TvObjectContainer();
 	private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
@@ -212,13 +211,13 @@ export class TvRoad {
 
 	}
 
-	updateConnections () {
+	// updateConnections () {
 
-		this.successor?.update( this, TvContactPoint.END );
+	// 	this.successor?.update( this, TvContactPoint.END );
 
-		this.predecessor?.update( this, TvContactPoint.START );
+	// 	this.predecessor?.update( this, TvContactPoint.START );
 
-	}
+	// }
 
 	hide () {
 
@@ -1103,44 +1102,48 @@ export class TvRoad {
 
 	}
 
-	addControlPoint ( point: RoadControlPoint, updateGeometry = true ) {
+	addControlPoint ( point: AbstractControlPoint, updateGeometry = true ) {
 
-		point.mainObject = this;
+		// point.mainObject = this;
 
 		this.spline.addControlPoint( point );
 
-		SceneService.addToolObject( point );
+		this.spline.update();
 
-		if ( updateGeometry ) this.updateGeometryFromSpline();
+		// SceneService.addToolObject( point );
+
+		// if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
 
-	addControlPointAt ( position: Vector3, udpateGeometry = true ): RoadControlPoint {
+	addControlPointAt ( position: Vector3, udpateGeometry = true ): AbstractControlPoint {
 
-		if ( this.spline instanceof AutoSplineV2 ) {
+		// if ( this.spline instanceof AutoSplineV2 ) {
 
-			return this.spline.addControlPointAt( position );
+		return this.spline.addControlPointAt( position );
 
-		} else {
+		// } else {
 
-			const i = this.spline?.controlPoints.length;
+		// 	// const i = this.spline?.controlPoints.length;
 
-			const point = new RoadControlPoint( this, position, 'cp', i, i );
+		// 	const point = new SplineControlPoint( this.spline, position );
 
-			this.addControlPoint( point, udpateGeometry );
+		// 	this.addControlPoint( point, udpateGeometry );
 
-			return point;
+		// 	return point;
 
-		}
+		// }
 
 	}
 
-	removeControlPoint ( cp: RoadControlPoint ) {
+	removeControlPoint ( cp: AbstractControlPoint ) {
 
 		this.spline.removeControlPoint( cp );
 
-		SceneService.removeFromTool( cp );
+		this.spline.update();
 
-		this.updateGeometryFromSpline();
+		// SceneService.removeFromTool( cp );
+
+		// this.updateGeometryFromSpline();
 
 	}
 

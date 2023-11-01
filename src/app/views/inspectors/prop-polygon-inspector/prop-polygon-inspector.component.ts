@@ -4,8 +4,8 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { AnyControlPoint } from "../../../modules/three-js/objects/any-control-point";
 
 export class PropPolygonInspectorData {
 

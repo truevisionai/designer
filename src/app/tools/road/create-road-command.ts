@@ -3,30 +3,29 @@
  */
 
 import { SelectPointCommand } from 'app/commands/select-point-command';
-import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { Vector3 } from 'three';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { OdBaseCommand } from '../../commands/od-base-command';
 import { RoadTool } from './road-tool';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class CreateRoadCommand extends OdBaseCommand {
 
 	private selectPointCommand: SelectPointCommand;
-	private point: RoadControlPoint;
+	private point: AbstractControlPoint;
 
 	constructor ( tool: RoadTool, private road: TvRoad, position: Vector3 ) {
 
 		super();
 
-		this.point = RoadFactory.createRoadControlPoint( road, position );
+		this.point = ControlPointFactory.createControl( road.spline, position );
 
-		this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
-			road: this.point.road,
-			controlPoint: this.point
-		} );
+		// this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
+		// 	road: this.point.mainObject,
+		// 	controlPoint: this.point
+		// } );
 	}
 
 	execute (): void {

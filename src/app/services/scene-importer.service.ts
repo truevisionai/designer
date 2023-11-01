@@ -66,6 +66,8 @@ import { CommandHistory } from './command-history';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { RoadService } from './road/road.service';
 
 
 @Injectable( {
@@ -77,6 +79,7 @@ export class SceneImporterService extends AbstractReader {
 		private fileService: FileService,
 		private electronService: TvElectronService,
 		private threeService: ThreeService,
+		private roadService: RoadService,
 	) {
 		super();
 	}
@@ -182,6 +185,26 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
+		this.readAsOptionalArray( xml.spline, xml => {
+
+			const spline = this.importSpline( xml );
+
+			this.map.addSpline( spline );
+
+			spline.updateRoadSegments();
+
+			spline.getRoadSegments().forEach( segment => {
+
+				const road = this.map.getRoadById( segment.roadId );
+
+				road.spline = spline;
+
+				this.roadService.updateSplineGeometries( road );
+
+			} );
+
+		} );
+
 		this.map.roads.forEach( road => {
 
 			if ( road.isJunction ) {
@@ -251,12 +274,33 @@ export class SceneImporterService extends AbstractReader {
 
 		this.map.roads.forEach( road => {
 
+			road.spline.updateRoadSegments();
+
+			road.spline.getRoadSegments().forEach( segment => {
+
+				const road = this.map.getRoadById( segment.roadId );
+
+				this.roadService.updateSplineGeometries( road );
+
+			} );
+
 			TvMapBuilder.buildRoad( this.map.gameObject, road );
 
 		} );
 
 		SceneService.addToMain( this.map.gameObject );
 
+	}
+
+	importSpline ( xml: XmlElement ): AbstractSpline {
+
+		if ( xml.attr_type === 'autov2' ) {
+
+			return this.importAutoSplineV2( xml );
+
+		}
+
+		TvConsole.error( 'unknown spline type' );
 	}
 
 	private readEnvironment ( xml: XmlElement ) {
@@ -291,7 +335,7 @@ export class SceneImporterService extends AbstractReader {
 
 	private importRoad ( xml: XmlElement ): TvRoad {
 
-		if ( !xml.spline ) throw new Error( 'Incorrect road' );
+		// if ( !xml.spline ) throw new Error( 'Incorrect road' );
 
 		const name = xml.attr_name || 'untitled';
 		const length = parseFloat( xml.attr_length );
@@ -305,7 +349,7 @@ export class SceneImporterService extends AbstractReader {
 		road.borderMaterialGuid = xml.borderMaterialGuid;
 		road.shoulderMaterialGuid = xml.shoulderMaterialGuid;
 
-		road.spline = this.importSpline( xml.spline, road );
+		this.importRoadSpline( xml.spline, road );
 
 		this.parseRoadTypes( road, xml );
 
@@ -353,32 +397,59 @@ export class SceneImporterService extends AbstractReader {
 		return surface;
 	}
 
-	private importSpline ( xml: XmlElement, road: TvRoad ): AbstractSpline {
+	private importRoadSpline ( xml: XmlElement, road: TvRoad ): void {
+
+		if ( !xml ) return;
 
 		const type = xml.attr_type;
 
 		if ( type === 'auto' ) {
 
-			const spline = this.importAutoSpline( xml, road );
+			const autoSpline = this.importAutoSpline( xml );
 
-			road.updateGeometryFromSpline();
+			const autoSplineV2 = new AutoSplineV2();
 
-			return spline;
+			autoSpline.controlPoints.forEach( cp => {
 
-		} else if ( type === 'explicit' ) {
+				autoSplineV2.addControlPointAt( cp.position );
 
-			const spline = road.spline = this.importExplicitSpline( xml, road );
+			} );
+
+			autoSplineV2.addRoadSegment( 0, -1, road.id );
+
+			road.spline = autoSplineV2;
+
+			this.map.addSpline( autoSplineV2 );
+
+			// autoSplineV2.updateRoadSegments();
+
+			// autoSplineV2.getRoadSegments().forEach( segment => {
+
+			// 	this.roadService.regenerateGeometries( road );
+
+			// } );
+
+			return;
+		}
+
+		// if ( type === 'autov2' ) {
+
+		// 	// road.spline = this.importAutoSplineV2( xml );
+
+		// 	return;
+		// }
+
+		if ( type === 'explicit' ) {
+
+			road.spline = this.importExplicitSpline( xml, road );
 
 			road.updateGeometryFromSpline( true );
 
-			return spline;
-
-		} else {
-
-			throw new Error( 'unknown spline type' );
+			return;
 
 		}
 
+		console.error( 'unknown spline type' );
 	}
 
 	private importExplicitSpline ( xml: XmlElement, road: TvRoad ): ExplicitSpline {
@@ -411,20 +482,45 @@ export class SceneImporterService extends AbstractReader {
 		return spline;
 	}
 
-	private importAutoSpline ( xml, road: TvRoad ): AutoSpline {
+	private importAutoSpline ( xml: XmlElement ): AbstractSpline {
 
-		const spline = road.spline as AutoSpline;
+		const spline = new AutoSpline()
 
 		this.readAsOptionalArray( xml.point, xml => {
 
 			const position = this.importVector3( xml );
 
-			SceneService.addToMain( spline.addControlPointAt( position ) );
+			spline.addControlPointAt( position )
 
 		} );
 
 		// to not show any lines or control points
-		spline.hide();
+		// spline.hide();
+
+		return spline;
+	}
+
+	private importAutoSplineV2 ( xml: XmlElement ): AutoSplineV2 {
+
+		const spline = new AutoSplineV2();
+
+		this.readAsOptionalArray( xml.point, xml => {
+
+			const position = this.importVector3( xml );
+
+			spline.addControlPointAt( position );
+
+		} );
+
+		this.readAsOptionalArray( xml.roadSegments, xml => {
+
+			const start = parseFloat( xml.attr_start );
+			const length = parseFloat( xml.attr_length );
+			const roadId = parseInt( xml.attr_roadId );
+
+			spline.addRoadSegment( start, length, roadId );
+
+		} );
 
 		return spline;
 	}

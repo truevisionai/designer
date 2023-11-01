@@ -4,7 +4,6 @@
 
 import { SetPositionCommand } from 'app/commands/set-position-command';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
@@ -15,6 +14,7 @@ import { PointEditor } from '../../core/editors/point-editor';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { CreateMarkingPointCommand } from './create-marking-point-command';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export abstract class BaseMarkingTool extends BaseTool {
 

@@ -33,14 +33,14 @@ export class RemoveRoadCommand extends BaseCommand {
 		this.predecessorElement = this.road.predecessor;
 		this.successorElement = this.road.successor;
 
-		this.segment = this.road.spline.getRoadSegments().find( i => i.road.id == this.road.id );
+		this.segment = this.road.spline.getRoadSegments().find( i => i.roadId == this.road.id );
 	}
 
 	execute (): void {
 
 		this.map.deleteRoad( this.road );
 
-		this.road.spline.removeRoadSegment( this.segment );
+		this.road.spline.removeRoadSegmentByRoadId( this.road.id );
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
 	}
@@ -49,7 +49,7 @@ export class RemoveRoadCommand extends BaseCommand {
 
 		this.map.addRoad( this.road );
 
-		this.road.spline.addRoadSegment( this.segment.start, this.segment.length, this.road );
+		this.road.spline.addRoadSegment( this.segment.start, this.segment.length, this.road.id );
 
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 

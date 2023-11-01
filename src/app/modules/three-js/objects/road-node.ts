@@ -13,8 +13,8 @@ import { Color, Group, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
+import { AbstractControlPoint } from "./abstract-control-point";
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -150,7 +150,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
-	getControlPoint (): BaseControlPoint {
+	getControlPoint (): AbstractControlPoint {
 
 		return this.contact === TvContactPoint.START ?
 			this.road.spline.getFirstPoint() :

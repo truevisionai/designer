@@ -115,17 +115,17 @@ export class TvRoadLinkChild {
 
 	get end () {
 		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getSecondPoint() as RoadControlPoint;
+			return this.road.spline.getSecondPoint();
 		} else {
-			return this.road.spline.getSecondLastPoint() as RoadControlPoint;
+			return this.road.spline.getSecondLastPoint();
 		}
 	}
 
 	get mid2 () {
 		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getFirstPoint() as RoadControlPoint;
+			return this.road.spline.getFirstPoint();
 		} else {
-			return this.road.spline.getLastPoint() as RoadControlPoint;
+			return this.road.spline.getLastPoint();
 		}
 	}
 
@@ -158,20 +158,6 @@ export class TvRoadLinkChild {
 		if ( this.elementType === TvRoadLinkChildType.road ) {
 			const road = TvMapInstance.map.getRoadById( this.elementId );
 			road.predecessor = element;
-		}
-	}
-
-	getSuccessor () {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			return road.successor;
-		}
-	}
-
-	getPredecessor () {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			return road.predecessor;
 		}
 	}
 
@@ -233,6 +219,18 @@ export class TvRoadLinkChild {
 
 	}
 
+	showSpline () {
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			this.getElement<TvRoad>().showSpline();
+
+		} else {
+
+		}
+
+	}
+
 	rebuild () {
 
 		if ( this.elementType == TvRoadLinkChildType.road ) {
@@ -251,82 +249,53 @@ export class TvRoadLinkChild {
 
 	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
 
-		if ( !successor ) return;
+		// if ( !successor ) return;
 
-		successor.showSpline();
+		// successor.showSpline();
 
-		const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
-		const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
-		const mid2 = this.mid2;
-		const end = this.end;
+		// const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
+		// const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
+		// const mid2 = this.mid2;
+		// const end = this.end;
 
-		let distance: number = mid2.position.distanceTo( end.position );
+		// let distance: number = mid2.position.distanceTo( end.position );
 
-		mid2.position.copy( mid1.position.clone() );
+		// mid2.position.copy( mid1.position.clone() );
 
-		mid1.hdg = start.hdg;
+		// mid1.hdg = start.hdg;
 
-		mid2.hdg = mid1.hdg + Math.PI;
+		// mid2.hdg = mid1.hdg + Math.PI;
 
-		const newP4 = mid1.moveForward( distance );
+		// const newP4 = mid1.moveForward( distance );
 
-		end.position.copy( newP4.position );
+		// end.position.copy( newP4.position );
 
-		successor.updateGeometryFromSpline();
+		// successor.updateGeometryFromSpline();
 	}
 
 	// this update successor points with line logic
-	private updateSuccessorV2 ( parentRoad: TvRoad, parentPoint: RoadControlPoint, successor: TvRoad ) {
-
-		// assumign points
-		// start, mid1, mid2, end
-
-		if ( !successor ) return;
-
-		successor.showSpline();
-
-		const start = parentRoad.spline.getSecondLastPoint();
-		const mid1 = parentRoad.spline.getLastPoint();
-		const mid2 = successor.spline.getFirstPoint();
-		const end = successor.spline.getSecondPoint();
-
-		const distanceAB = start.position.distanceTo( mid1.position );
-		const distanceAC = start.position.distanceTo( mid2.position );
-
-		var direction = new Vector3();
-		direction.subVectors( end.position, start.position );
-		direction.normalize();
-
-		// Now calculate positions for B and C based on distances
-		mid1.position.copy( direction ).multiplyScalar( distanceAB ).add( start.position );
-		mid2.position.copy( direction ).multiplyScalar( distanceAC ).add( start.position );
-
-		successor.updateGeometryFromSpline();
-
-	}
-
 	private updatePredecessor ( parentRoad: TvRoad, predecessor: TvRoad ) {
 
-		if ( !predecessor ) return;
+		// if ( !predecessor ) return;
 
-		predecessor.showSpline();
+		// predecessor.showSpline();
 
-		const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
-		const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
-		const mid2 = this.mid2;
-		const end = this.end;
+		// const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
+		// const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
+		// const mid2 = this.mid2;
+		// const end = this.end;
 
-		const distance = mid2.position.distanceTo( end.position );
+		// const distance = mid2.position.distanceTo( end.position );
 
-		mid2.position.copy( mid1.position.clone() );
+		// mid2.position.copy( mid1.position.clone() );
 
-		mid2.hdg = end.hdg = mid1.hdg + Math.PI;
+		// // mid2.hdg = end.hdg = mid1.hdg + Math.PI;
 
-		const newP4 = mid2.moveForward( distance );
+		// // const newP4 = mid2.moveForward( distance );
 
-		end.position.copy( newP4.position );
+		// end.position.copy( newP4.position );
 
-		predecessor.updateGeometryFromSpline();
+		// predecessor.updateGeometryFromSpline();
 
 	}
 

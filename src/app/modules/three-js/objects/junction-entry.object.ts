@@ -13,10 +13,10 @@ import { TvJunction } from '../../tv-map/models/tv-junction';
 import { TvJunctionConnection } from '../../tv-map/models/tv-junction-connection';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { BaseControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
+import { AbstractControlPoint } from "./abstract-control-point";
 
-export class JunctionEntryObject extends BaseControlPoint implements ISelectable {
+export class JunctionEntryObject extends AbstractControlPoint implements ISelectable {
 
 	public static tag = 'junction-dot';
 

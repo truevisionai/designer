@@ -1,7 +1,6 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../events/pointer-event-data';
@@ -15,6 +14,7 @@ import { ToolType } from './tool-types.enum';
 import { SceneService } from '../services/scene.service';
 import { IMovable } from '../core/snapping/snap-strategies/snapping';
 import { BaseTool } from './base-tool';
+import { AnyControlPoint } from "../modules/three-js/objects/any-control-point";
 
 export class RoadSignalTool extends BaseTool {
 

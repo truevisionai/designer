@@ -1,8 +1,8 @@
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { Vector2, Vector3 } from 'three';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 
 export class RoundLineFactory {

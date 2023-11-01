@@ -17,12 +17,13 @@ import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
 import { ManagerRegistry } from '../managers/manager-registry';
 import { JunctionManager } from '../managers/junction-manager';
-import { RoadManager } from '../managers/road-manager';
+import { RoadEventListener } from '../listeners/road-event-listener';
 import { EntityManager } from '../managers/entity-manager';
 import { LaneManager } from '../managers/lane-manager';
 import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
+import { RoadControlPointListener } from 'app/listeners/road-control-point-listener';
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,13 +66,14 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.registerManager( RoadManager );
+		ManagerRegistry.registerManager( RoadEventListener );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
 		ManagerRegistry.registerManager( RoadSelectionListener );
+		ManagerRegistry.registerManager( RoadControlPointListener );
 
 		ManagerRegistry.initManagers();
 	}

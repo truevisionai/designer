@@ -9,11 +9,14 @@ import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-com
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
-import { BaseControlPoint } from './control-point';
 import { RoadTangentPoint } from './road-tangent-point';
 import { MapEvents } from 'app/events/map-events';
+import { AbstractControlPoint } from "./abstract-control-point";
 
-export class RoadControlPoint extends BaseControlPoint {
+/**
+ * @deprecated
+ */
+export class RoadControlPoint extends AbstractControlPoint {
 
 	public static readonly tag = 'road-control-point';
 
@@ -135,11 +138,11 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.updateTangents();
 
-		// this.update();
-		MapEvents.roadControlPointUpdated.emit( {
-			road: this.road,
-			controlPoint: this
-		} );
+		// // this.update();
+		// MapEvents.roadControlPointUpdated.emit( {
+		// 	road: this.road,
+		// 	controlPoint: this
+		// } );
 	}
 
 	update () {
@@ -154,21 +157,21 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	public updatePredecessor ( rebuild = false ) {
 
-		if ( this.road.isJunction ) return;
+		// if ( this.road.isJunction ) return;
 
-		if ( !this.shouldUpdatePredecessor ) return;
+		// if ( !this.shouldUpdatePredecessor ) return;
 
-		this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
+		// this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
 
 	}
 
 	public updateSuccessor ( rebuild = false ) {
 
-		if ( this.road.isJunction ) return;
+		// if ( this.road.isJunction ) return;
 
-		if ( !this.shouldUpdateSuccessor ) return;
+		// if ( !this.shouldUpdateSuccessor ) return;
 
-		this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
+		// this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
 	}
 
 	show () {

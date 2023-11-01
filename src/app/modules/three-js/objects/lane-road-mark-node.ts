@@ -8,9 +8,9 @@ import { SnackBar } from '../../../services/snack-bar.service';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
-import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
 import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { AnyControlPoint } from "./any-control-point";
 
 export class LaneRoadMarkNode extends Group implements ISelectable {
 

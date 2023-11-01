@@ -6,7 +6,6 @@ import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Line } from 'three';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
 import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
 import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
@@ -22,6 +21,7 @@ import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-com
 import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
 import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
 import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export class LaneMarkingTool extends BaseTool {
 

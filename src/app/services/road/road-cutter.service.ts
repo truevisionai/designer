@@ -16,29 +16,35 @@ export class RoadCutterService {
 	// cut lane sections
 	// make successor and predecessor relationships
 
-	cutRoad ( road: TvRoad, roadCoord: TvRoadCoord ): TvRoad {
+	cutRoadAt ( road: TvRoad, s: number ): TvRoad {
 
 		const spline = road.spline as AutoSplineV2;
 
-		const newRoad = road.clone( roadCoord.s );
+		const newRoad = road.clone( s );
 		newRoad.id = RoadFactory.getNextRoadId();
 
-		const currentSegment = spline.getRoadSegments().find( i => i.road.id == road.id );
+		const currentSegment = spline.getRoadSegments().find( i => i.roadId == road.id );
 
 		if ( !currentSegment ) throw new Error( 'Road segment not found' );
 
 		const roadSplineStart = currentSegment.start;
 
-		const newRoadStart = roadSplineStart + roadCoord.s;
-		const newRoadLength = road.length - roadCoord.s;
+		const newRoadStart = roadSplineStart + s;
+		const newRoadLength = road.length - s;
 
-		spline.addRoadSegment( newRoadStart, newRoadLength, newRoad );
+		spline.addRoadSegment( newRoadStart, newRoadLength, newRoad.id );
 
-		const currentRoadLength = roadCoord.s;
+		const currentRoadLength = s;
 
 		currentSegment.length = currentRoadLength;
 
 		return newRoad;
+
+	}
+
+	cutRoad ( road: TvRoad, roadCoord: TvRoadCoord ): TvRoad {
+
+		return this.cutRoadAt( road, roadCoord.s );
 
 		// const laneSection = this.getLaneSectionAt( roadCoord.s ).cloneAtS( 0, 0 );
 		// const length = this.length - ( roadCoord.s );

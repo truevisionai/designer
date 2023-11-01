@@ -3,7 +3,6 @@
  */
 
 import { SelectPointCommand } from 'app/commands/select-point-command';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import {
 	PropCurveInspectorComponent,
@@ -13,6 +12,7 @@ import { BaseCommand } from '../../commands/base-command';
 import { PropModel } from '../../core/models/prop-model.model';
 import { SceneService } from '../../services/scene.service';
 import { PropCurveToolV2 } from './prop-curve-tool';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class CreatePropCurveCommand extends BaseCommand {
 
@@ -20,7 +20,7 @@ export class CreatePropCurveCommand extends BaseCommand {
 
 	private selectPointCommand: SelectPointCommand;
 
-	constructor ( private tool: PropCurveToolV2, private prop: PropModel, private point: BaseControlPoint ) {
+	constructor ( private tool: PropCurveToolV2, private prop: PropModel, private point: AbstractControlPoint ) {
 
 		super();
 

@@ -5,13 +5,14 @@
 import { GameObject } from 'app/core/game-object';
 import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { SerializedField } from 'app/core/components/serialization';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AnyControlPoint } from "../../three-js/objects/any-control-point";
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 export class TvSurface implements ISelectable {
 
@@ -213,7 +214,7 @@ export class TvSurface implements ISelectable {
 
 	}
 
-	addControlPoint ( point: BaseControlPoint ) {
+	addControlPoint ( point: AbstractControlPoint ) {
 
 		point.visible = true;
 
@@ -236,7 +237,7 @@ export class TvSurface implements ISelectable {
 		}
 	}
 
-	removeControlPoint ( point: BaseControlPoint ) {
+	removeControlPoint ( point: AbstractControlPoint ) {
 
 		point.visible = false;
 

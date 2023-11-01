@@ -450,111 +450,111 @@ export class JunctionFactory {
 
 	}
 
-	static createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ) {
+	// static createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ) {
 
-		let v1, v2, v3, v4;
+	// 	let v1, v2, v3, v4;
 
-		if ( endCoord instanceof TvLaneCoord ) {
-			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord.position, startCoord.posTheta.toDirectionVector() );
-		} else if ( endCoord instanceof Vector3 ) {
-			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord, startCoord.posTheta.toDirectionVector() );
-		}
+	// 	if ( endCoord instanceof TvLaneCoord ) {
+	// 		[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord.position, startCoord.posTheta.toDirectionVector() );
+	// 	} else if ( endCoord instanceof Vector3 ) {
+	// 		[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord, startCoord.posTheta.toDirectionVector() );
+	// 	}
 
-		const newLane = startCoord.lane.cloneAtS( -1, startCoord.s );
+	// 	const newLane = startCoord.lane.cloneAtS( -1, startCoord.s );
 
-		const rampRoad = RoadFactory.createRampRoad( newLane );
+	// 	const rampRoad = RoadFactory.createRampRoad( newLane );
 
-		const connection = new TvJunctionConnection( virtualJunction.connections.size, startCoord.road, rampRoad, TvContactPoint.START, null );
+	// 	const connection = new TvJunctionConnection( virtualJunction.connections.size, startCoord.road, rampRoad, TvContactPoint.START, null );
 
-		connection.addLaneLink( new TvJunctionLaneLink( startCoord.lane, newLane ) );
+	// 	connection.addLaneLink( new TvJunctionLaneLink( startCoord.lane, newLane ) );
 
-		virtualJunction.addConnection( connection );
+	// 	virtualJunction.addConnection( connection );
 
-		rampRoad.junctionId = virtualJunction.id;
+	// 	rampRoad.junctionId = virtualJunction.id;
 
-		rampRoad.addControlPointAt( v1 );
-		rampRoad.addControlPointAt( v2 );
-		rampRoad.addControlPointAt( v3 );
-		rampRoad.addControlPointAt( v4 );
+	// 	rampRoad.addControlPointAt( v1 );
+	// 	rampRoad.addControlPointAt( v2 );
+	// 	rampRoad.addControlPointAt( v3 );
+	// 	rampRoad.addControlPointAt( v4 );
 
-		const startElevation = startCoord.road.getElevationValue( startCoord.s );
-		const endElevation = endCoord instanceof TvLaneCoord ? endCoord.road.getElevationValue( endCoord.s ) : endCoord.z;
+	// 	const startElevation = startCoord.road.getElevationValue( startCoord.s );
+	// 	const endElevation = endCoord instanceof TvLaneCoord ? endCoord.road.getElevationValue( endCoord.s ) : endCoord.z;
 
-		rampRoad.addElevation( 0, startElevation + 0.1, 0, 0, 0 );
-		rampRoad.addElevationInstance( new TvElevation( rampRoad.length, endElevation + 0.1, 0, 0, 0 ) );
+	// 	rampRoad.addElevation( 0, startElevation + 0.1, 0, 0, 0 );
+	// 	rampRoad.addElevationInstance( new TvElevation( rampRoad.length, endElevation + 0.1, 0, 0, 0 ) );
 
-		rampRoad.updateGeometryFromSpline();
+	// 	rampRoad.updateGeometryFromSpline();
 
-		// rampRoad.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, startCoord.roadId, TvContactPoint.START );
-		// rampRoad.predecessor.elementDir = TvOrientation.PLUS;
-		// rampRoad.predecessor.elementS = startCoord.s;
+	// 	// rampRoad.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, startCoord.roadId, TvContactPoint.START );
+	// 	// rampRoad.predecessor.elementDir = TvOrientation.PLUS;
+	// 	// rampRoad.predecessor.elementS = startCoord.s;
 
-		return rampRoad;
-	}
+	// 	return rampRoad;
+	// }
 
-	static makeRampRoadPoints ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): Vector3[] {
+	// static makeRampRoadPoints ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): Vector3[] {
 
-		// const direction = posTheta.toDirectionVector();
-		const normalizedDirection1 = direction1.clone().normalize();
-		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+	// 	// const direction = posTheta.toDirectionVector();
+	// 	const normalizedDirection1 = direction1.clone().normalize();
+	// 	const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
 
-		const upVector = new Vector3( 0, 0, 1 );
-		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
-		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+	// 	const upVector = new Vector3( 0, 0, 1 );
+	// 	const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+	// 	const perpendicular4 = normalizedDirection4.clone().cross( upVector );
 
-		const distanceAB = v1.distanceTo( v4 );
+	// 	const distanceAB = v1.distanceTo( v4 );
 
-		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
-		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+	// 	const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+	// 	const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
 
-		return [ v1, v2, v3, v4 ];
-	}
+	// 	return [ v1, v2, v3, v4 ];
+	// }
 
-	static makeRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
+	// static makeRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
 
-		// const direction = posTheta.toDirectionVector();
-		const normalizedDirection1 = direction1.clone().normalize();
-		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+	// 	// const direction = posTheta.toDirectionVector();
+	// 	const normalizedDirection1 = direction1.clone().normalize();
+	// 	const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
 
-		const upVector = new Vector3( 0, 0, 1 );
-		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
-		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+	// 	const upVector = new Vector3( 0, 0, 1 );
+	// 	const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+	// 	const perpendicular4 = normalizedDirection4.clone().cross( upVector );
 
-		const distanceAB = v1.distanceTo( v4 );
+	// 	const distanceAB = v1.distanceTo( v4 );
 
-		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
-		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+	// 	const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+	// 	const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
 
-		const spline = new AutoSpline();
+	// 	const spline = new AutoSpline();
 
-		spline.addControlPointAt( v1 );
-		spline.addControlPointAt( v2 );
-		spline.addControlPointAt( v3 );
-		spline.addControlPointAt( v4 );
+	// 	spline.addControlPointAt( v1 );
+	// 	spline.addControlPointAt( v2 );
+	// 	spline.addControlPointAt( v3 );
+	// 	spline.addControlPointAt( v4 );
 
-		return spline;
-	}
+	// 	return spline;
+	// }
 
-	static updateRampSpline ( spline: AutoSpline, v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
+	// static updateRampSpline ( spline: AutoSpline, v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
 
-		// const direction = posTheta.toDirectionVector();
-		const normalizedDirection1 = direction1.clone().normalize();
-		const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
+	// 	// const direction = posTheta.toDirectionVector();
+	// 	const normalizedDirection1 = direction1.clone().normalize();
+	// 	const normalizedDirection4 = direction4 ? direction4.clone().normalize() : direction1.clone().normalize();
 
-		const upVector = new Vector3( 0, 0, 1 );
-		const perpendicular1 = normalizedDirection1.clone().cross( upVector );
-		const perpendicular4 = normalizedDirection4.clone().cross( upVector );
+	// 	const upVector = new Vector3( 0, 0, 1 );
+	// 	const perpendicular1 = normalizedDirection1.clone().cross( upVector );
+	// 	const perpendicular4 = normalizedDirection4.clone().cross( upVector );
 
-		const distanceAB = v1.distanceTo( v4 );
+	// 	const distanceAB = v1.distanceTo( v4 );
 
-		const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
-		const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
+	// 	const v2 = v1.clone().add( normalizedDirection1.clone().multiplyScalar( distanceAB / 3 ) );
+	// 	const v3 = v4.clone().add( perpendicular1.clone().multiplyScalar( -distanceAB / 3 ) );
 
-		spline.getSecondPoint().position.copy( v2 );
-		spline.getSecondLastPoint().position.copy( v3 );
+	// 	spline.getSecondPoint().position.copy( v2 );
+	// 	spline.getSecondLastPoint().position.copy( v3 );
 
-		return spline;
-	}
+	// 	return spline;
+	// }
 
 	// static makeRampRoadPoints ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): Vector3[] {
 

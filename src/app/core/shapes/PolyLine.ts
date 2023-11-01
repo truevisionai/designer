@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
 import { MAX_CTRL_POINTS } from './spline-config';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class PolyLine {
 
@@ -13,7 +13,7 @@ export class PolyLine {
 
 	mesh: Line;
 
-	constructor ( public points: BaseControlPoint[] ) {
+	constructor ( public points: AbstractControlPoint[] ) {
 
 		const geometry = new BufferGeometry();
 
@@ -32,7 +32,7 @@ export class PolyLine {
 		this.mesh.frustumCulled = false;
 	}
 
-	addPoint ( point: BaseControlPoint ) {
+	addPoint ( point: AbstractControlPoint ) {
 
 		this.points.push( point );
 

@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { BaseCommand } from '../../commands/base-command';
 import { MarkingPointTool } from './marking-point-tool';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class CreateMarkingPointCommand extends BaseCommand {
 
 	private marking: TvRoadMarking;
 
-	constructor ( private tool: MarkingPointTool, marking: TvRoadMarking, private point: BaseControlPoint ) {
+	constructor ( private tool: MarkingPointTool, marking: TvRoadMarking, private point: AbstractControlPoint ) {
 
 		super();
 

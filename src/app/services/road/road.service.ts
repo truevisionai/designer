@@ -1,33 +1,55 @@
 import { Injectable } from '@angular/core';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SceneService } from '../scene.service';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
+import { BaseService } from '../base.service';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { RoadSplineService } from './road-spline.service';
+import { RoadConnectionService } from './road-connection.service';
+
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadService {
+export class RoadService extends BaseService {
 
-	constructor () { }
+	joinRoads ( firstNode: RoadNode, secondNode: RoadNode ) {
+
+		const joiningRoad = RoadFactory.createJoiningRoad( firstNode, secondNode );
+
+		const spline = ( new RoadSplineService() ).createSplineFromNodes( firstNode, secondNode );
+
+		( new RoadConnectionService() ).connectJoiningRoad( firstNode, secondNode, joiningRoad );
+
+		spline.addRoadSegment( 0, -1, joiningRoad.id );
+
+		joiningRoad.spline = spline;
+
+		return joiningRoad;
+
+	}
 
 	showRoadNodes ( road: TvRoad ) {
 
 		this.updateRoadNodes( road );
 
-		road.startNode.visible = true;
+		if ( road.startNode ) road.startNode.visible = true;
 
-		road.endNode.visible = true;
+		if ( road.endNode ) road.endNode.visible = true;
 
 	}
 
 	hideRoadNodes ( road: TvRoad ) {
 
-		road.startNode.visible = false;
+		if ( road.startNode ) road.startNode.visible = false;
 
-		road.endNode.visible = false;
+		if ( road.endNode ) road.endNode.visible = false;
 
 	}
 
@@ -63,7 +85,7 @@ export class RoadService {
 
 		} else {
 
-			road.startNode.update();
+			if ( road.startNode ) road.startNode.update();
 
 		}
 
@@ -118,6 +140,64 @@ export class RoadService {
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
 			elevation.node?.updateValuesAndPosition();
+
+		} );
+
+	}
+
+	updateSplineRoads ( spline: AbstractSpline ) {
+
+		spline.updateRoadSegments();
+
+		spline.getRoadSegments().forEach( segment => {
+
+			const road = this.map.getRoadById( segment.roadId );
+
+			if ( road ) {
+
+				road.clearGeometries();
+
+				segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+			}
+
+
+		} );
+
+	}
+
+	updateSplineGeometries ( road: TvRoad ) {
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		road.spline?.getRoadSegments().forEach( segment => {
+
+			const road = this.map.getRoadById( segment.roadId );
+
+			road.clearGeometries();
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+		} );
+	}
+
+	rebuildRoad ( road: TvRoad ): void {
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		console.debug( 'regen', road );
+
+		road.spline?.getRoadSegments().forEach( segment => {
+
+			const road = this.map.getRoadById( segment.roadId );
+
+			road.clearGeometries();
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+			this.updateRoadNodes( road );
+
+			super.rebuildRoad( road );
 
 		} );
 

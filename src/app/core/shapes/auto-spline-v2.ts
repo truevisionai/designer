@@ -1,25 +1,24 @@
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { Vector2, Vector3 } from 'three';
-import { BaseControlPoint } from '../../modules/three-js/objects/control-point';
 import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
-export interface RoadSegment {
+export class RoadSegment {
 	start: number;  // Position on the spline where the segment starts
 	length: number;  // Length of the road segment
-	road: TvRoad;  // Road to which this segment belongs
+	roadId: number;  // Road to which this segment belongs
 	geometries: TvAbstractRoadGeometry[];  // Geometries for this road segment
 }
 
 export class AutoSplineV2 extends AbstractSpline {
 
-	public type = 'auto';
+	public type = 'autov2';
 
 	public polyline: PolyLine;
 
@@ -31,9 +30,9 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	}
 
-	get hdgs () {
-		return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg );
-	}
+	// get hdgs () {
+	// 	return this.controlPoints.map( ( cp: AbstractControlPoint ) => cp.hdg );
+	// }
 
 	init () {
 
@@ -41,19 +40,11 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		this.roundline = new RoundLine( this.controlPoints );
 
-		if ( this.meshAddedInScene ) return;
-
-		SceneService.addToolObject( this.polyline.mesh );
-
-		SceneService.addToolObject( this.roundline.mesh );
-
-		this.meshAddedInScene = true;
-
 	}
 
 	hide (): void {
 
-		this.controlPoints.forEach( i => i.visible = false );
+		this.hideControlPoints();
 
 		this.hideLines();
 
@@ -64,6 +55,9 @@ export class AutoSplineV2 extends AbstractSpline {
 		this.polyline.mesh.visible = false;
 		this.roundline.mesh.visible = false;
 
+		SceneService.removeFromTool( this.polyline.mesh );
+		SceneService.removeFromTool( this.roundline.mesh );
+
 	}
 
 	showLines () {
@@ -71,24 +65,27 @@ export class AutoSplineV2 extends AbstractSpline {
 		this.polyline.mesh.visible = true;
 		this.roundline.mesh.visible = true;
 
+		SceneService.addToolObject( this.polyline.mesh );
+		SceneService.addToolObject( this.roundline.mesh );
+
 	}
 
 
 	show (): void {
 
-		this.controlPoints.forEach( i => i.visible = true );
+		this.showControlPoints();
 
 		this.showLines();
 
 	}
 
-	addControlPoint ( cp: RoadControlPoint ) {
-		// this.polyline.addPoint( cp );
-
-		// this.roundline.addPoint( cp );
-		super.addControlPoint( cp );
-
-	}
+	// addControlPoint ( cp: AbstractControlPoint ) {
+	// 	// this.polyline.addPoint( cp );
+	//
+	// 	// this.roundline.addPoint( cp );
+	// 	super.addControlPoint( cp );
+	//
+	// }
 
 	update () {
 
@@ -229,13 +226,11 @@ export class AutoSplineV2 extends AbstractSpline {
 		} );
 	}
 
-
-
 	updateHdgs () {
 
 		const hdgs = [];
 
-		let hdg, p1, p2, currentPoint: BaseControlPoint, previousPoint: BaseControlPoint;
+		let hdg, p1, p2, currentPoint: AbstractControlPoint, previousPoint: AbstractControlPoint;
 
 		for ( let i = 1; i < this.controlPoints.length; i++ ) {
 
@@ -263,11 +258,8 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	clear () {
 
-		this.controlPoints.splice( 0, this.controlPoints.length );
-
-		SceneService.removeFromMain( this.polyline.mesh );
-
-		SceneService.removeFromMain( this.roundline.mesh );
+		this.hideControlPoints();
+		this.hideLines();
 
 	}
 
@@ -275,7 +267,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		let totalLength = 0;
 
-		const points = this.roundline.points as RoadControlPoint[];
+		const points = this.roundline.points as AbstractControlPoint[];
 
 		const radiuses = this.roundline.radiuses;
 
@@ -307,7 +299,7 @@ export class AutoSplineV2 extends AbstractSpline {
 					.toArray();
 
 				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ].hdg;
+				hdg = points[ i - 1 ]['hdg'];
 
 				length = d - radiuses[ i - 1 ] - radiuses[ i ];
 
@@ -387,7 +379,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		let totalLength = 0;
 
-		const points = this.roundline.points as RoadControlPoint[];
+		const points = this.roundline.points as AbstractControlPoint[];
 
 		const radiuses = this.roundline.radiuses;
 
@@ -419,7 +411,7 @@ export class AutoSplineV2 extends AbstractSpline {
 					.toArray();
 
 				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ].hdg;
+				hdg = points[ i - 1 ][ 'hdg' ];
 
 				length = d - radiuses[ i - 1 ] - radiuses[ i ];
 
@@ -495,25 +487,21 @@ export class AutoSplineV2 extends AbstractSpline {
 		return geometries;
 	}
 
-	addControlPointAt ( position: Vector3 ): RoadControlPoint {
+	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
 
-		const index = this.controlPoints.length;
+		// const index = this.controlPoints.length;
 
-		const lastSegment = this.roadSegments[ this.roadSegments.length - 1 ];
+		// const lastSegment = this.roadSegments[ this.roadSegments.length - 1 ];
 
-		const lastRoad = lastSegment?.road;
+		// const lastRoadId = lastSegment?.roadId;
 
-		const point = new RoadControlPoint( lastRoad, position, 'cp', index, index );
+		// const lastRoad = lastRoadId ? TvMapInstance.map.getRoadById( lastRoadId ) : null;
+
+		const point = ControlPointFactory.createControl( this, position );
 
 		this.controlPoints.push( point );
 
-		this.updateHdgs();
-
-		this.polyline.update();
-
-		this.roundline.update();
-
-		this.updateRoadSegments();
+		this.update();
 
 		return point;
 	}

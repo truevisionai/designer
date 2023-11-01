@@ -19,8 +19,9 @@ import { TvMapQueries } from '../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../core/shapes/auto-spline';
 import { IDService } from './id.service';
-import { Maths } from 'app/utils/maths';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 
 export class RoadFactory {
 
@@ -54,19 +55,15 @@ export class RoadFactory {
 
 	}
 
-	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {
+	static createFirstRoadControlPoint ( position: Vector3 ) {
 
 		const road = this.createDefaultRoad( TvRoadType.TOWN, 40 );
 
 		const point = road.addControlPointAt( position );
 
-		return point;
+		road.spline.addRoadSegment( 0, -1, road.id );
 
-	}
-
-	static createRoadControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
-
-		return new RoadControlPoint( road, position, 'cp', road.spline.controlPoints.length, road.spline.controlPoints.length );
+		return { point, road };
 
 	}
 
@@ -103,6 +100,71 @@ export class RoadFactory {
 
 	}
 
+	static createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
+
+		const road = this.createDefaultRoad();
+
+		road.addGeometryLine( 0, position.x, position.y, hdg, length );
+
+		return road;
+
+	}
+
+	static createSingleLaneRoad ( side = TvLaneSide.RIGHT, width = 3.6 ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		const laneSection = road.addGetLaneSection( 0 );
+
+		if ( side === TvLaneSide.LEFT ) {
+			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		}
+
+		if ( side === TvLaneSide.RIGHT ) {
+			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		}
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+
+		laneSection.getLaneArray().forEach( lane => {
+
+			if ( lane.side !== TvLaneSide.CENTER ) {
+
+				if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
+
+			}
+
+		} );
+
+		return road;
+
+	}
+
+	static createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
+
+		const road = this.createDefaultRoad();
+
+		road.clearLaneSections();
+
+		const laneSection = firstNode.getLaneSection().cloneAtS( 0, 0, null, road );
+
+		road.addLaneSectionInstance( laneSection );
+
+		if ( firstNode.road.hasType ) {
+
+			const roadType = firstNode.road.getRoadTypeAt( firstNode.sCoordinate );
+
+			road.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
+
+		} else {
+
+			road.setType( TvRoadType.TOWN, 40 );
+
+		}
+
+		return road;
+	}
+
 	static createNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
 
 		const roadId = this.IDService.getUniqueID( id );
@@ -113,7 +175,7 @@ export class RoadFactory {
 
 		const spline = new AutoSplineV2();
 
-		spline.addRoadSegment( 0, -1, road );
+		spline.addRoadSegment( 0, -1, road.id );
 
 		road.spline = spline;
 

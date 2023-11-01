@@ -37,6 +37,7 @@ import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { TvRoadObject, TvObjectOutline, TvCornerLocal, TvCornerRoad } from 'app/modules/tv-map/models/tv-road-object';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
+import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 
 @Injectable( {
 	providedIn: 'root'
@@ -126,9 +127,68 @@ export class SceneExporterService {
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: this.exportSurfaces( map.surfaces ),
+			spline: this.exportSplines( this.map.getSplines() ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export()
 		};
+
+	}
+
+	exportSplines ( splines: AbstractSpline[] ) {
+
+		return splines.map( spline => this.exportSpline( spline ) );
+
+	}
+
+	exportSpline ( spline: AbstractSpline ): any {
+
+		if ( spline instanceof AutoSpline ) {
+
+			return {
+				attr_type: spline.type,
+				point: spline.controlPointPositions.map( point => ( {
+					attr_x: point.x,
+					attr_y: point.y,
+					attr_z: point.z
+				} ) )
+			};
+
+		}
+
+		if ( spline instanceof AutoSplineV2 ) {
+
+			return {
+				attr_type: spline.type,
+				point: spline.controlPointPositions.map( point => ( {
+					attr_x: point.x,
+					attr_y: point.y,
+					attr_z: point.z
+				} ) ),
+				roadSegments: spline.getRoadSegments().map( segment => ( {
+					attr_start: segment.start,
+					attr_length: segment.length,
+					attr_roadId: segment.roadId,
+				} ) )
+			};
+
+		}
+
+		if ( spline instanceof ExplicitSpline ) {
+
+			return {
+				attr_type: spline.type,
+				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
+					attr_x: point.position.x,
+					attr_y: point.position.y,
+					attr_z: point.position.z,
+					attr_hdg: point.hdg,
+					attr_type: point.segmentType,
+				} ) )
+			};
+
+		}
+
+		SnackBar.error( 'Not able to export this spline type' );
 
 	}
 
@@ -155,7 +215,7 @@ export class SceneExporterService {
 			sidewalkMaterialGuid: road.sidewalkMaterialGuid,
 			borderMaterialGuid: road.borderMaterialGuid,
 			shoulderMaterialGuid: road.shoulderMaterialGuid,
-			spline: this.exportRoadSpline( road.spline ),
+			// spline: this.exportRoadSpline( road.spline ),
 		};
 
 		this.writeRoadLinks( xml, road );
@@ -190,8 +250,22 @@ export class SceneExporterService {
 				} ) )
 			};
 
+		}
 
-		} else if ( spline instanceof ExplicitSpline ) {
+		if ( spline instanceof AutoSplineV2 ) {
+
+			return {
+				attr_type: spline.type,
+				point: spline.controlPointPositions.map( point => ( {
+					attr_x: point.x,
+					attr_y: point.y,
+					attr_z: point.z
+				} ) )
+			};
+
+		}
+
+		if ( spline instanceof ExplicitSpline ) {
 
 			return {
 				attr_type: spline.type,
@@ -204,11 +278,9 @@ export class SceneExporterService {
 				} ) )
 			};
 
-		} else {
-
-			SnackBar.error( 'Not able to export this spline type' );
-
 		}
+
+		SnackBar.error( 'Not able to export this spline type' );
 
 	}
 

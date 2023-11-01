@@ -1,9 +1,10 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { RoadControlPoint } from "app/modules/three-js/objects/road-control-point";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/modules/tv-map/models/tv-junction";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 
 export class RoadCreatedEvent {
 	constructor ( public road: TvRoad, public showHelpers = true ) { }
@@ -25,19 +26,28 @@ export class RoadUnselectedEvent {
 	constructor ( public road: TvRoad ) { }
 }
 
-export interface RoadControlPointCreatedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadControlPointCreatedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
 }
 
-export interface RoadControlPointUpdatedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadControlPointUpdatedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
 }
 
-export interface RoadControlPointRemovedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadControlPointRemovedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+}
+
+export class SplineCreatedEvent {
+	constructor ( public spline: AbstractSpline ) { }
+}
+
+export class SplineUpdatedEvent {
+	constructor ( public spline: AbstractSpline ) { }
+}
+
+export class SplineRemovedEvent {
+	constructor ( public spline: AbstractSpline ) { }
 }
 
 export interface LaneCreatedEvent {

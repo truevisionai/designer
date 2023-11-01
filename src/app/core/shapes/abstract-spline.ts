@@ -3,24 +3,27 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { RoadSegment } from './auto-spline-v2';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export abstract class AbstractSpline {
 
 	abstract type: string;
-	public controlPoints: BaseControlPoint[] = [];
-	// tcboxgeometry = new THREE.BoxBufferGeometry( 0.7, 0.3, 0.7 );
-	protected controlPointAdded = new EventEmitter<BaseControlPoint>();
-	protected controlPointRemoved = new EventEmitter<BaseControlPoint>();
+
+	public controlPoints: AbstractControlPoint[] = [];
+
+	protected controlPointAdded = new EventEmitter<AbstractControlPoint>();
+
+	protected controlPointRemoved = new EventEmitter<AbstractControlPoint>();
+
 	protected meshAddedInScene: boolean;
+
 	protected roadSegments: RoadSegment[] = [];
 
 	constructor ( public closed = true, public tension = 0.5 ) {
@@ -57,19 +60,19 @@ export abstract class AbstractSpline {
 
 	}
 
-	addControlPoint ( cp: BaseControlPoint ) {
+	addControlPoint ( cp: AbstractControlPoint ) {
 
 		this.controlPoints.push( cp );
 
 	}
 
-	addControlPoints ( points: BaseControlPoint[] ): void {
+	addControlPoints ( points: AbstractControlPoint[] ): void {
 
 		points.forEach( point => this.addControlPoint( point ) );
 
 	}
 
-	addControlPointAtNew ( position: Vector3 ): RoadControlPoint {
+	addControlPointAtNew ( position: Vector3 ): AbstractControlPoint {
 
 		throw new Error( 'method not implemented' );
 
@@ -111,7 +114,7 @@ export abstract class AbstractSpline {
 
 	}
 
-	removeControlPoint ( cp: BaseControlPoint ) {
+	removeControlPoint ( cp: AbstractControlPoint ) {
 
 		const index = this.controlPoints.findIndex( p => p.id === cp.id );
 
@@ -119,11 +122,15 @@ export abstract class AbstractSpline {
 	}
 
 	hideControlPoints () {
-		this.controlPoints.forEach( i => i.hide() );
+
+		this.controlPoints.forEach( i => SceneService.removeFromTool( i ) );
+
 	}
 
 	showControlPoints () {
-		this.controlPoints.forEach( i => i.show() );
+
+		this.controlPoints.forEach( i => SceneService.addToolObject( i ) );
+
 	}
 
 	getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
@@ -154,22 +161,6 @@ export abstract class AbstractSpline {
 		return [ r, alpha, length, Math.sign( p2proj.y ) ];
 	}
 
-	updateControlPoint ( cp: BaseControlPoint, id: number, cpobjidx?: any ) {
-
-		cp[ 'tag' ] = 'cp';
-		cp[ 'tagindex' ] = id;
-
-		cp.userData.is_button = true;
-		cp.userData.is_control_point = true;
-		cp.userData.is_selectable = true;
-
-		if ( cpobjidx == undefined ) {
-			this.controlPoints.push( cp );
-		} else {
-			this.controlPoints.splice( cpobjidx, 0, cp );
-		}
-	}
-
 	/**
 	 *
 	 * @deprecated dont use this make another internal for any sub class
@@ -177,29 +168,31 @@ export abstract class AbstractSpline {
 	 * @param id
 	 * @param cpobjidx
 	 */
-	createControlPoint ( tag: 'cp' | 'tpf' | 'tpb', id: number, cpobjidx?: any ): BaseControlPoint {
+	createControlPoint ( tag: 'cp' | 'tpf' | 'tpb', id: number, cpobjidx?: any ): AbstractControlPoint {
 
-		// let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-		let controlPointObject = new RoadControlPoint( null, new Vector3(), tag, id, cpobjidx );
+		throw new Error( 'Method not implemented.' );
 
-		controlPointObject[ 'tag' ] = tag;
-		controlPointObject[ 'tagindex' ] = id;
+		// // let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+		// // let controlPointObject = new BaseControlPoint( null, new Vector3(), tag, id, cpobjidx );
 
-		controlPointObject.userData.is_button = true;
-		controlPointObject.userData.is_control_point = true;
-		controlPointObject.userData.is_selectable = true;
+		// controlPointObject[ 'tag' ] = tag;
+		// controlPointObject[ 'tagindex' ] = id;
 
-		SceneService.addToolObject( controlPointObject );
+		// controlPointObject.userData.is_button = true;
+		// controlPointObject.userData.is_control_point = true;
+		// controlPointObject.userData.is_selectable = true;
 
-		if ( cpobjidx == undefined ) {
-			this.controlPoints.push( controlPointObject );
-		} else {
-			this.controlPoints.splice( cpobjidx, 0, controlPointObject );
-		}
+		// SceneService.addToolObject( controlPointObject );
 
-		this.controlPointAdded.emit( controlPointObject );
+		// if ( cpobjidx == undefined ) {
+		// 	this.controlPoints.push( controlPointObject );
+		// } else {
+		// 	this.controlPoints.splice( cpobjidx, 0, controlPointObject );
+		// }
 
-		return controlPointObject;
+		// this.controlPointAdded.emit( controlPointObject );
+
+		// return controlPointObject;
 	}
 
 	getPath ( offset: number = 0 ) {
@@ -227,9 +220,12 @@ export abstract class AbstractSpline {
 		return points;
 	}
 
-	addRoadSegment ( start: number, length: number, road: TvRoad ) {
+	addRoadSegment ( start: number, length: number, roadId: number ) {
 
-		this.roadSegments.push( { start, length, road: road, geometries: [] } );
+		// check if road segment already exists
+		if ( this.roadSegments.find( i => i.roadId == roadId ) ) return;
+
+		this.roadSegments.push( { start, length, roadId: roadId, geometries: [] } );
 
 		// sort road segment by start
 		this.roadSegments.sort( ( a, b ) => a.start - b.start );
@@ -237,6 +233,8 @@ export abstract class AbstractSpline {
 		this.update();
 
 	}
+
+	updateRoadSegments () { }
 
 	removeRoadSegment ( segment: RoadSegment ) {
 
@@ -246,13 +244,19 @@ export abstract class AbstractSpline {
 
 	removeRoadSegmentByRoadId ( roadId: number ) {
 
-		this.roadSegments = this.roadSegments.filter( segment => segment.road.id != roadId );
+		this.roadSegments = this.roadSegments.filter( segment => segment.roadId != roadId );
 
 	}
 
 	getRoadSegments (): RoadSegment[] {
 
 		return this.roadSegments;
+
+	}
+
+	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
+
+		throw new Error( 'Method not implemented.' );
 
 	}
 

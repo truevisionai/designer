@@ -10,11 +10,14 @@ This document outlines the structure and responsibilities of various components 
 src/app
 ├── commands - Command classes for handling small, abstract data manipulations.
 ├── core - Essential utilities and helpers used across the application.
+├── builders - Classes dedicated to creating 3d objects/mesh from data
 ├── factories - Classes dedicated to creating complex objects or classes.
 ├── io - Operations related to file and folder CRUD within the OS.
 ├── managers - Classes managing states of various app components.
 ├── services - Business logic for complex backend operations.
 ├── tools - Utility and helper classes providing various functionalities.
+├── map - Data structures for map 
+├── scenario - Data structures for scenario
 ```
 
 
@@ -47,6 +50,14 @@ src/app
 - Store and maintain consistent data.
 - Can contain data validation or manipulation logic but should not handle comprehensive business logic.
 - Should not trigger events, leaving that responsibility to commands or services.
+
+### Builders
+- Builders should build the object
+  - MapMeshBuilder
+  - RoadMeshBuilder
+  - RoadObjectMeshBuilder   
+
+Mesh Builders are responsible for building 3d objects based on map/data layer
 
 ## Additional Best Practices
 

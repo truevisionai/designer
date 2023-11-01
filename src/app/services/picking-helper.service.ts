@@ -3,21 +3,21 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { Object3D, Raycaster, Vector3 } from 'three';
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 
 export class PickingHelper {
 
 	private static raycaster = new Raycaster();
 
-	public static checkControlPointInteraction ( event: PointerEventData, tag: string, maxDistance = 0.5 ): BaseControlPoint {
+	public static checkControlPointInteraction ( event: PointerEventData, tag: string, maxDistance = 0.5 ): AbstractControlPoint {
 
 		let hasInteracted = false;
 
 		let currentMin = Number.MAX_VALUE;
-		let controlPoint: BaseControlPoint = null;
+		let controlPoint: AbstractControlPoint = null;
 
 		for ( let i = 0; i < event.intersections.length; i++ ) {
 
@@ -31,7 +31,7 @@ export class PickingHelper {
 
 					currentMin = intersection.distanceToRay;
 
-					controlPoint = intersection.object as BaseControlPoint;
+					controlPoint = intersection.object as AbstractControlPoint;
 
 				}
 			}
