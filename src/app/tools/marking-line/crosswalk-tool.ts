@@ -212,9 +212,9 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 	private selectPoint ( point: TvCornerRoad ): void {
 
-		const command = getSelectPointCommand( this, point, point?.mainObject );
+		// const command = getSelectPointCommand( this, point, point?.mainObject );
 
-		CommandHistory.execute( command );
+		// CommandHistory.execute( command );
 
 	}
 

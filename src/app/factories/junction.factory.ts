@@ -9,7 +9,7 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { SceneService } from '../services/scene.service';
+// import { SceneService } from '../services/scene.service';
 // import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../core/utils/console';
 import { IDService } from './id.service';
@@ -288,7 +288,6 @@ export class JunctionFactory {
 
 	// }
 
-<<<<<<< Updated upstream
 	static mergeEntriesV3 ( junction: TvJunction, objects: JunctionEntryObject[] ) {
 
 		const roads = this.groupEntriesByRoad( objects );
@@ -450,7 +449,6 @@ export class JunctionFactory {
 		}
 
 	}
-=======
 	// static mergeEntriesV3 ( junction: TvJunction, objects: JunctionEntryObject[] ) {
 	//
 	// 	const roads = this.groupEntriesByRoad( objects );
@@ -612,7 +610,6 @@ export class JunctionFactory {
 	// 	}
 	//
 	// }
->>>>>>> Stashed changes
 
 	// static createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ) {
 
