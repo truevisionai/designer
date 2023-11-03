@@ -8,7 +8,7 @@ import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { NodeFactoryService } from '../../factories/node-factory.service';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
@@ -77,7 +77,7 @@ export class LaneWidthTool extends BaseTool {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.checkNodePointInteraction( e ) ) return;
 

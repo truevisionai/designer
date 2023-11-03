@@ -3,7 +3,7 @@
  */
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { CommandHistory } from 'app/services/command-history';
 import {
 	CrosswalkInspectorComponent,
@@ -126,7 +126,7 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 		if ( pointerEventData.button !== MouseButton.LEFT ) return;
 
-		if ( !KeyboardInput.isShiftKeyDown ) {
+		if ( !KeyboardEvents.isShiftKeyDown ) {
 
 			// selection
 

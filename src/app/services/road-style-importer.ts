@@ -6,7 +6,7 @@ import { AbstractReader } from 'app/services/abstract-reader';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { TvLaneSide } from '../modules/tv-map/models/tv-common';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';

@@ -11,9 +11,9 @@ import { StatusBarService } from 'app/services/status-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import { ObjectTypes } from '../modules/tv-map/models/tv-common';
-import { TvMapInstance } from '../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
-import { KeyboardInput } from '../core/input';
+import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
@@ -100,7 +100,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 		if ( e.point == null ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( shiftKeyDown ) {
 

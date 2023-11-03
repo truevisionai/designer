@@ -9,7 +9,7 @@ import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { StaticSignal } from '../modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from '../modules/tv-map/queries/tv-map-queries';
-import { KeyboardInput } from '../core/input';
+import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { SceneService } from '../services/scene.service';
 import { IMovable } from '../core/snapping/snap-strategies/snapping';
@@ -38,7 +38,7 @@ export class RoadSignalTool extends BaseTool {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		if ( !KeyboardInput.isShiftKeyDown ) return;
+		if ( !KeyboardEvents.isShiftKeyDown ) return;
 
 		const posTheta = new TvPosTheta();
 

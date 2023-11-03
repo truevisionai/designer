@@ -4,7 +4,7 @@
 
 import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 import { Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";

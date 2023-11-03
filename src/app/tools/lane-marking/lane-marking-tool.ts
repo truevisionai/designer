@@ -10,7 +10,7 @@ import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-
 import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
@@ -91,7 +91,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.lane && this.isNodeSelected( e ) ) return;
 

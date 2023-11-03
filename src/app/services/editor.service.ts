@@ -5,8 +5,7 @@
 import { Injectable } from '@angular/core';
 import { FileService } from 'app/io/file.service';
 import { MainFileService } from 'app/services/main-file.service';
-import { KeyboardInput } from '../core/input';
-import { ShortcutService } from './shortcut.service';
+import { KeyboardEvents } from '../events/keyboard-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -14,7 +13,6 @@ import { ShortcutService } from './shortcut.service';
 export class EditorService {
 
 	constructor (
-		private shortcutService: ShortcutService,
 		private mainFileService: MainFileService,
 		public settings: EditorSettings
 	) {
@@ -41,17 +39,14 @@ export class EditorService {
 	onKeyDown ( e: KeyboardEvent ) {
 
 		// fire the event for the whole application
-		KeyboardInput.OnKeyDown( e );
-
-		// handle shortcuts
-		ShortcutService.handleKeyDown( e );
+		KeyboardEvents.OnKeyDown( e );
 
 	}
 
 	onKeyUp ( e: KeyboardEvent ) {
 
 		// fire the event for the whole application
-		KeyboardInput.OnKeyUp( e );
+		KeyboardEvents.OnKeyUp( e );
 
 	}
 

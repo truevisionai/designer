@@ -8,7 +8,7 @@ import { IComponent } from 'app/core/game-object';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
 import { PropCurve } from '../../../modules/tv-map/models/prop-curve';

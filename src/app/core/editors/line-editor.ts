@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import * as THREE from 'three';
 import { SceneService } from '../../services/scene.service';
@@ -58,7 +58,7 @@ export class LineEditor extends AbstractShapeEditor {
 
 		if ( this.controlPoints.length >= this.maxPoints ) return;
 
-		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button === MouseButton.LEFT && KeyboardEvents.isShiftKeyDown && e.point != null ) {
 
 			this.addControlPoint( e.point );
 

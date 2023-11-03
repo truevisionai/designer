@@ -2,14 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
-import { TvMapBuilder } from '../builders/tv-map-builder';
 import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
@@ -365,8 +363,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	update (): void {
-
-		RoadFactory.rebuildRoad( this.laneSection?.road );
 
 		this.laneSection?.road?.hideHelpers();
 

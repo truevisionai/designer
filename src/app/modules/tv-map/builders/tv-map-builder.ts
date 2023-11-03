@@ -18,7 +18,7 @@ import { TvRoadObject } from '../models/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvSignalHelper } from '../services/tv-signal-helper';
 import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';

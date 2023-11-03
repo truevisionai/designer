@@ -3,10 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { Debug } from 'app/core/utils/debug';
-import { TvEntityLoader, TvMaterialLoader, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvPrefabLoader } from 'app/modules/three-js/objects/TvPrefabLoader';
+import { TvMaterialLoader } from 'app/modules/three-js/objects/TvMaterialLoader';
+import { TvEntityLoader } from 'app/modules/three-js/objects/TvEntityLoader';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
 import {
@@ -53,8 +54,6 @@ export class AssetLoaderService {
 
 	init () {
 
-		this.createProjectFolder();
-
 		this.loadDefaultAssets();
 
 		this.loadDirectory( this.fileService.readPathContentsSync( this.projectDir ) );
@@ -80,118 +79,7 @@ export class AssetLoaderService {
 		this.loadOpenScenarioFiles();
 	}
 
-	createProjectFolder () {
 
-		try {
-
-			// create Truevision Folder in user documents if it does not exist
-			if ( !this.fileService.fs.existsSync( this.projectDir ) ) {
-
-				this.fileService.createFolder( this.fileService.userDocumentFolder, 'Truevision' );
-
-				AssetFactory.createNewFolder( this.projectDir, 'Materials' );
-				AssetFactory.createNewFolder( this.projectDir, 'Props' );
-				AssetFactory.createNewFolder( this.projectDir, 'Roads' );
-				AssetFactory.createNewFolder( this.projectDir, 'RoadStyles' );
-				AssetFactory.createNewFolder( this.projectDir, 'RoadMarkings' );
-				AssetFactory.createNewFolder( this.projectDir, 'Signs' );
-				AssetFactory.createNewFolder( this.projectDir, 'Scenes' );
-				AssetFactory.createNewFolder( this.projectDir, 'Textures' );
-
-				this.createDefaultAssets();
-
-
-			}
-
-		} catch ( error ) {
-
-			console.log( error );
-
-			throw new Error( 'Error in setting up default project folder' );
-
-		}
-
-	}
-
-	createDefaultAssets () {
-
-		this.createRoadStyleAssets();
-
-		this.createPropAssets();
-
-		this.createRoadMarkingAssets();
-
-		this.createBaseAssets( 'Materials' );
-
-	}
-
-	createRoadMarkingAssets () {
-
-		this.createBaseAssets( 'RoadMarkings' );
-
-	}
-
-	createPropAssets () {
-
-		this.createBaseAssets( 'Props' );
-
-	}
-
-	createRoadStyleAssets () {
-
-		this.createBaseAssets( 'RoadStyles' );
-
-	}
-
-	createBaseAssets ( folder: string ) {
-
-		try {
-
-			let path = null;
-
-			if ( this.fileService.remote.app.isPackaged ) {
-
-				const appPath = this.fileService.remote.app.getAppPath();
-
-				path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
-
-			} else {
-
-				path = this.fileService.join( this.fileService.currentDirectory, `/default-project/${ folder }` );
-
-			}
-
-			this.fileService.readPathContentsSync( path ).forEach( file => {
-
-				const destinationFolder = this.fileService.join( this.projectDir, `/${ folder }/` );
-
-				const destinationPath = this.fileService.join( destinationFolder, file.name );
-
-				if ( file.name.includes( '.meta' ) ) {
-
-					const metadata = this.fetchMetaFile( file );
-
-					metadata.path = destinationPath.replace( '.meta', '' );
-
-					MetadataFactory.saveMetadataFile( destinationPath, metadata );
-
-				} else {
-
-					this.fileService.fs.copyFileSync( file.path, destinationPath );
-
-				}
-
-			} );
-
-		} catch ( error ) {
-
-			console.error( error );
-
-			throw new Error( 'Error in creating assets' );
-
-		}
-
-	}
 
 	loadTextures () {
 
@@ -252,7 +140,7 @@ export class AssetLoaderService {
 
 					material.guid = material.uuid = meta.guid;
 
-					AssetFactory.updateMaterial( meta.path, material );
+					// AssetFactory.updateMaterial( meta.path, material );
 
 					AssetDatabase.setInstance( meta.guid, material );
 
@@ -329,7 +217,7 @@ export class AssetLoaderService {
 
 					prefab.guid = prefab.uuid = meta.guid;
 
-					AssetFactory.updatePrefab( meta.path, prefab );
+					// AssetFactory.updatePrefab( meta.path, prefab );
 
 					AssetDatabase.setInstance( meta.guid, prefab );
 

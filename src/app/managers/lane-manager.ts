@@ -1,7 +1,7 @@
 import { MapEvents } from "app/events/map-events";
 import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { TvMapInstance } from "app/modules/tv-map/services/tv-map-source-file";
+import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
 import { Manager } from "./manager";
 
 export class LaneManager extends Manager {

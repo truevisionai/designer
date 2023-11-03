@@ -8,7 +8,7 @@ import { TvJunction, TvVirtualJunction } from 'app/modules/tv-map/models/tv-junc
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 // import { SceneService } from '../services/scene.service';
 // import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../core/utils/console';

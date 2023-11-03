@@ -4,7 +4,7 @@
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { PickingHelper } from 'app/services/picking-helper.service';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
@@ -69,7 +69,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		if ( !e.point || e.button != MouseButton.LEFT ) return;
 
-		if ( KeyboardInput.isShiftKeyDown ) {
+		if ( KeyboardEvents.isShiftKeyDown ) {
 
 			const lane = PickingHelper.checkLaneObjectInteraction( e );
 

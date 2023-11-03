@@ -1,6 +1,6 @@
 import { Raycaster } from "three";
 import { PointerEventData } from "../../../events/pointer-event-data";
-import { TvMapInstance } from "../../../modules/tv-map/services/tv-map-source-file";
+import { TvMapInstance } from "../../../modules/tv-map/services/tv-map-instance";
 import { MovingStrategy } from "./move-strategy";
 import { Position } from "app/modules/scenario/models/position";
 import { WorldPosition } from "app/modules/scenario/models/positions/tv-world-position";

@@ -4,7 +4,7 @@
 
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RoadFactory } from '../factories/road-factory.service';
 import { BaseTool } from '../tools/base-tool';
 import { ToolManager } from '../tools/tool-manager';

@@ -4,7 +4,7 @@
 
 import { EventEmitter } from '@angular/core';
 
-export class KeyboardInput {
+export class KeyboardEvents {
 
 	public static keyUp = new EventEmitter<KeyboardEvent>();
 	public static keyDown = new EventEmitter<KeyboardEvent>();

@@ -8,7 +8,7 @@ import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector2, Vector3 } from 'three';
 import { JunctionEntryObject } from '../modules/three-js/objects/junction-entry.object';

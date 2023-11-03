@@ -5,7 +5,7 @@
 import { Maths } from 'app/utils/maths';
 import { Time } from '../../../../core/time';
 import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
-import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../../tv-map/services/tv-map-instance';
 import { ScenarioEntity } from '../entities/scenario-entity';
 import { PrivateAction } from '../private-action';
 import { ActionType } from '../tv-enums';

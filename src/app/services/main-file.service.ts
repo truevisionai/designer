@@ -10,7 +10,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { FileService } from '../io/file.service';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';

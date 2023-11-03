@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvConsole } from 'app/core/utils/console';
-import { TvMapInstance } from '../services/tv-map-source-file';
+// import { TvMapInstance } from '../services/tv-map-instance';
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 
@@ -146,30 +145,32 @@ export class TvRoadLinkChild {
 	}
 
 	setSuccessor ( element: TvRoadLinkChild ) {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			road.successor = element;
-		}
+		// if ( this.elementType === TvRoadLinkChildType.road ) {
+		// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+		// 	road.successor = element;
+		// }
 	}
 
 	setPredecessor ( element: TvRoadLinkChild ) {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			road.predecessor = element;
-		}
+		// if ( this.elementType === TvRoadLinkChildType.road ) {
+		// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+		// 	road.predecessor = element;
+		// }
 	}
 
 	getElement<T> (): T {
 
-		if ( this.elementType == TvRoadLinkChildType.road ) {
+		throw new Error( 'Method not implemented.' );
 
-			return TvMapInstance.map.getRoadById( this.elementId ) as any;
+		// if ( this.elementType == TvRoadLinkChildType.road ) {
 
-		} else if ( this.elementType == TvRoadLinkChildType.junction ) {
+		// 	return TvMapInstance.map.getRoadById( this.elementId ) as any;
 
-			return TvMapInstance.map.getJunctionById( this.elementId ) as any;
+		// } else if ( this.elementType == TvRoadLinkChildType.junction ) {
 
-		}
+		// 	return TvMapInstance.map.getJunctionById( this.elementId ) as any;
+
+		// }
 	}
 
 	update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
@@ -202,7 +203,7 @@ export class TvRoadLinkChild {
 
 		}
 
-		if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
+		// if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
 	}
 
 	hideSpline () {
@@ -237,7 +238,7 @@ export class TvRoadLinkChild {
 
 			road.updateGeometryFromSpline();
 
-			RoadFactory.rebuildRoad( road );
+			// RoadFactory.rebuildRoad( road );
 
 		} else {
 

@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AppService } from 'app/services/app.service';
+// import { AppService } from 'app/services/app.service';
 import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {
@@ -71,43 +71,43 @@ export class TvMaterial extends MeshStandardMaterial {
 
 	}
 
-	toJSON () {
+	// toJSON () {
 
-		const meta = {
-			textures: {},
-			images: {}
-		};
+	// 	const meta = {
+	// 		textures: {},
+	// 		images: {}
+	// 	};
 
-		// unset maps to prevent serialization
-		if ( this.mapGuid ) this.map = null;
-		if ( this.roughnessMapGuid ) this.roughnessMap = null;
-		if ( this.normalMapGuid ) this.normalMap = null;
-		if ( this.aoMapGuid ) this.aoMap = null;
-		if ( this.displacementMapGuid ) this.displacementMap = null;
-		if ( this.alphaMapGuid ) this.alphaMap = null;
+	// 	// unset maps to prevent serialization
+	// 	if ( this.mapGuid ) this.map = null;
+	// 	if ( this.roughnessMapGuid ) this.roughnessMap = null;
+	// 	if ( this.normalMapGuid ) this.normalMap = null;
+	// 	if ( this.aoMapGuid ) this.aoMap = null;
+	// 	if ( this.displacementMapGuid ) this.displacementMap = null;
+	// 	if ( this.alphaMapGuid ) this.alphaMap = null;
 
-		const data = super.toJSON( meta );
+	// 	const data = super.toJSON( meta );
 
-		// standard Material serialization
-		if ( this.guid ) data.guid = this.guid;
-		if ( this.mapGuid ) data.mapGuid = this.mapGuid;
-		if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
-		if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
-		if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
-		if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
-		if ( this.alphaMapGuid ) data.alphaMapGuid = this.alphaMapGuid;
+	// 	// standard Material serialization
+	// 	if ( this.guid ) data.guid = this.guid;
+	// 	if ( this.mapGuid ) data.mapGuid = this.mapGuid;
+	// 	if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
+	// 	if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
+	// 	if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
+	// 	if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
+	// 	if ( this.alphaMapGuid ) data.alphaMapGuid = this.alphaMapGuid;
 
-		// set maps again
-		if ( this.mapGuid ) this.map = AppService.assets.getInstance( this.mapGuid ) as Texture;
-		if ( this.roughnessMapGuid ) this.roughnessMap = AppService.assets.getInstance( this.roughnessMapGuid ) as Texture;
-		if ( this.normalMapGuid ) this.normalMap = AppService.assets.getInstance( this.normalMapGuid ) as Texture;
-		if ( this.aoMapGuid ) this.aoMap = AppService.assets.getInstance( this.aoMapGuid ) as Texture;
-		if ( this.displacementMapGuid ) this.displacementMap = AppService.assets.getInstance( this.displacementMapGuid ) as Texture;
-		if ( this.alphaMapGuid ) this.alphaMap = AppService.assets.getInstance( this.alphaMapGuid ) as Texture;
+	// 	// set maps again
+	// 	if ( this.mapGuid ) this.map = AppService.assets.getInstance( this.mapGuid ) as Texture;
+	// 	if ( this.roughnessMapGuid ) this.roughnessMap = AppService.assets.getInstance( this.roughnessMapGuid ) as Texture;
+	// 	if ( this.normalMapGuid ) this.normalMap = AppService.assets.getInstance( this.normalMapGuid ) as Texture;
+	// 	if ( this.aoMapGuid ) this.aoMap = AppService.assets.getInstance( this.aoMapGuid ) as Texture;
+	// 	if ( this.displacementMapGuid ) this.displacementMap = AppService.assets.getInstance( this.displacementMapGuid ) as Texture;
+	// 	if ( this.alphaMapGuid ) this.alphaMap = AppService.assets.getInstance( this.alphaMapGuid ) as Texture;
 
-		return data;
+	// 	return data;
 
-	}
+	// }
 
 	toJSONString (): string {
 

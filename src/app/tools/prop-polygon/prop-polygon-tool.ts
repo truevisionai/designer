@@ -15,7 +15,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
 import { PropPolygon } from '../../modules/tv-map/models/prop-polygons';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
@@ -104,7 +104,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		if ( KeyboardInput.isShiftKeyDown ) {
+		if ( KeyboardEvents.isShiftKeyDown ) {
 
 			this.handleCreationMode( e );
 

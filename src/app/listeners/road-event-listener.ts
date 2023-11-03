@@ -1,5 +1,5 @@
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
-import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
+import { TvMapInstance } from "../modules/tv-map/services/tv-map-instance";
 import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
 import { ToolManager } from "app/tools/tool-manager";

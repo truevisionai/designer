@@ -3,7 +3,7 @@
  */
 
 import { TvMapQueries } from '../../queries/tv-map-queries';
-import { TvMapInstance } from '../../services/tv-map-source-file';
+import { TvMapInstance } from '../../services/tv-map-instance';
 import { TvMap } from '../tv-map.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';

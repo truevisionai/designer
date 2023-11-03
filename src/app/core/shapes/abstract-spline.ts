@@ -6,7 +6,7 @@ import { EventEmitter } from '@angular/core';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { MathUtils, Vector2, Vector3 } from 'three';
-import { SceneService } from '../../services/scene.service';
+// import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { RoadSegment } from './RoadSegment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
@@ -145,13 +145,13 @@ export abstract class AbstractSpline {
 
 	hideControlPoints () {
 
-		this.controlPoints.forEach( i => SceneService.removeFromTool( i ) );
+		// this.controlPoints.forEach( i => SceneService.removeFromTool( i ) );
 
 	}
 
 	showControlPoints () {
 
-		this.controlPoints.forEach( i => SceneService.addToolObject( i ) );
+		// this.controlPoints.forEach( i => SceneService.addToolObject( i ) );
 
 	}
 

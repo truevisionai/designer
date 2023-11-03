@@ -14,7 +14,7 @@ import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
 import { OpenDriverParser } from './open-drive-parser.service';
-import { TvMapInstance } from './tv-map-source-file';
+import { TvMapInstance } from './tv-map-instance';
 
 @Injectable( {
 	providedIn: 'root'

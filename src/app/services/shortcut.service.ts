@@ -5,6 +5,8 @@
 import { Injectable } from '@angular/core';
 import { ShorcutFactory } from '../core/shortcuts/shortcut-factory';
 import { IKeyboardShortcut } from '../core/shortcuts/shortcuts';
+import { EditorEvents } from './editor-events';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,6 +18,12 @@ export class ShortcutService {
 	constructor () {
 
 		this.init();
+
+		KeyboardEvents.keyDown.subscribe( ( e ) => {
+
+			ShortcutService.handleKeyDown( e );
+
+		} );
 
 	}
 

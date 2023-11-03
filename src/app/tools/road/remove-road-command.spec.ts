@@ -6,7 +6,7 @@ import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RemoveRoadCommand } from './remove-road-command';
 import { RoadTool } from './road-tool';
 import { RoadFactory } from 'app/factories/road-factory.service';

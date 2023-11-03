@@ -12,7 +12,7 @@ import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 
 import { TvJunction } from '../../tv-map/models/tv-junction';
 import { TvJunctionConnection } from '../../tv-map/models/tv-junction-connection';
 import { TvLane } from '../../tv-map/models/tv-lane';
-import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../tv-map/services/tv-map-instance';
 import { ISelectable } from './i-selectable';
 import { AbstractControlPoint } from "./abstract-control-point";
 

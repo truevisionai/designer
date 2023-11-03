@@ -1,7 +1,7 @@
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { JunctionEntryObject } from '../app/modules/three-js/objects/junction-entry.object';
 import * as CROSSING8 from './stubs/crossing-8-road-stub';
 

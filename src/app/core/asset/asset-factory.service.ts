@@ -16,6 +16,7 @@ import { BufferGeometry, Texture } from 'three';
 import { MetadataFactory } from '../../factories/metadata-factory.service';
 import { PropModel } from '../models/prop-model.model';
 import { AppService } from '../../services/app.service';
+import { MaterialExporter } from 'app/exporters/material-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -199,7 +200,9 @@ export class AssetFactory {
 
 	static updateMaterial ( path: string, material: TvMaterial ) {
 
-		const value = JSON.stringify( material.toJSON(), null, 2 );
+		const exporter = new MaterialExporter()
+
+		const value = JSON.stringify( exporter.toJSON( material ), null, 2 );
 
 		this.fileService.fs.writeFileSync( path, value );
 

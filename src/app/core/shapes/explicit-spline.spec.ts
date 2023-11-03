@@ -4,7 +4,7 @@
 
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { Maths } from 'app/utils/maths';
 import { Shape } from 'three';
 import { ExplicitSplinePath } from './cubic-spline-curve';

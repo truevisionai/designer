@@ -7,7 +7,7 @@ import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
 import { OdTextures } from '../builders/od.textures';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { SerializedField } from 'app/core/components/serialization';
 import { AssetDatabase } from 'app/core/asset/asset-database';

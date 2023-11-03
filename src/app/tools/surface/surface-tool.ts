@@ -8,7 +8,7 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CommandHistory } from 'app/services/command-history';
 import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
 import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from '../../commands/select-point-command';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';

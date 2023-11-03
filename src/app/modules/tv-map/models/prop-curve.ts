@@ -10,7 +10,7 @@ import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 

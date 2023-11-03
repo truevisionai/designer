@@ -6,7 +6,7 @@ import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvMapQueries } from './tv-map-queries';
 
 describe( 'OpenDriveQueries', () => {

@@ -9,7 +9,8 @@ import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvMesh } from 'app/modules/three-js/objects/TvMesh';
 import { CoordinateSystem } from 'app/services/CoordinateSystem';
 import { Group, Material, Mesh, Object3D } from 'three';
 

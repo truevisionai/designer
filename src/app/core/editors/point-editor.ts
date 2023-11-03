@@ -3,7 +3,7 @@
  */
 
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { KeyboardInput } from '../input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
@@ -45,7 +45,7 @@ export class PointEditor extends AbstractShapeEditor {
 
 		if ( e.object != null && e.object.userData.is_selectable === true ) return;
 
-		if ( e.button === MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button === MouseButton.LEFT && KeyboardEvents.isShiftKeyDown && e.point != null ) {
 
 			e.point.z = 0;
 

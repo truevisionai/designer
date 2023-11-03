@@ -13,7 +13,7 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
 

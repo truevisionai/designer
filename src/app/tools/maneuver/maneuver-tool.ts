@@ -10,7 +10,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { SelectionTool } from '../../core/snapping/selection-tool';
 import { TvConsole } from '../../core/utils/console';
@@ -83,7 +83,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( shiftKeyDown ) {
 

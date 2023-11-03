@@ -5,7 +5,7 @@
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { LaneMarkingTool } from './lane-marking-tool';
 
 

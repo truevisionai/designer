@@ -1,4 +1,3 @@
-import { AutoSplineV2 } from "app/core/shapes/auto-spline-v2";
 import { Vector3 } from "three";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 import { SplineControlPoint } from "../modules/three-js/objects/spline-control-point";
@@ -7,7 +6,7 @@ export class ControlPointFactory {
 
 	static createControl ( target: any, position: Vector3, type = 'spline' ): AbstractControlPoint {
 
-		if ( target instanceof AutoSplineV2 ) {
+		if ( type = 'spline' ) {
 
 			return this.createSplineControlPoint( target, position );
 

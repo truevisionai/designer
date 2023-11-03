@@ -6,7 +6,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { Vector3 } from 'three';
 import { RoadFactory } from '../../factories/road-factory.service';
 import { RoadTool } from './road-tool';

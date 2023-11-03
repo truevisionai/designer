@@ -3,7 +3,7 @@
  */
 
 import { Component, HostListener } from '@angular/core';
-import { TvMapInstance } from '../../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../modules/tv-map/services/tv-map-instance';
 
 enum KEY_CODE {
 	DELETE = 46

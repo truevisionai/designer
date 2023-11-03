@@ -3,7 +3,7 @@
  */
 
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { ManeuverTool } from './maneuver-tool';
 
 

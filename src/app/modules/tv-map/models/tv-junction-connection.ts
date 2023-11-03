@@ -5,7 +5,7 @@
 import { MathUtils } from 'three';
 import { TvConsole } from '../../../core/utils/console';
 import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvContactPoint } from './tv-common';
 import { TvJunction } from './tv-junction';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';

@@ -1,6 +1,6 @@
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { OpenDriverParser } from 'app/modules/tv-map/services/open-drive-parser.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { JunctionFactory } from '../app/factories/junction.factory';
 import { TvContactPoint, TvLaneSide } from '../app/modules/tv-map/models/tv-common';
 import * as TIntersection from './stubs/3-way-intersection-auto-stub';

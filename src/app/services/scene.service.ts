@@ -6,7 +6,6 @@ import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Group, Mesh, Object3D } from 'three';
 import { GameObject } from '../core/game-object';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,7 +58,9 @@ export class SceneService {
 
 		raycastableObjects.push( this.bgForClicks );
 
-		raycastableObjects.push( TvMapInstance.map.gameObject );
+		raycastableObjects.push( this.mainLayer );
+		raycastableObjects.push( this.toolLayer );
+		raycastableObjects.push( this.editorLayer );
 
 		return raycastableObjects;
 

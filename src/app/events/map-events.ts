@@ -101,5 +101,4 @@ export class MapEvents {
 	@Output() static junctionUpdated = new EventEmitter<JunctionUpdatedEvent>();
 	@Output() static junctionRemoved = new EventEmitter<JunctionRemovedEvent>();
 
-
 }

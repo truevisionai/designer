@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { AppService } from 'app/services/app.service';
 import { Debug } from 'app/core/utils/debug';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
@@ -302,7 +302,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		// if ( e.object != null && e.object.userData.is_selectable == true ) return;
 
-		if ( e.button == MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button == MouseButton.LEFT && KeyboardEvents.isShiftKeyDown && e.point != null ) {
 
 			this.addControlPoint( e.point );
 

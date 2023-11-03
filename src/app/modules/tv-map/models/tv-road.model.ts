@@ -2,19 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SentryService } from 'app/core/analytics/sentry.service';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { MathUtils, Vector2, Vector3 } from 'three';
-import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
-import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
-import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -171,7 +164,7 @@ export class TvRoad {
 	}
 
 	get junctionInstance (): TvJunction {
-		return TvMapInstance.map.getJunctionById( this.junctionId );
+		throw new Error( 'causing circular dependenc' );
 	}
 
 	get gameObject () {
@@ -204,7 +197,7 @@ export class TvRoad {
 
 		// this.updateConnections();
 
-		RoadFactory.rebuildRoad( this );
+		// RoadFactory.rebuildRoad( this );
 
 	}
 
@@ -1177,41 +1170,41 @@ export class TvRoad {
 
 	showLaneOffsetNodes () {
 
-		this.getLaneOffsets().forEach( laneOffset => {
+		// this.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.node ) {
+		// 	if ( laneOffset.node ) {
 
-				laneOffset.node.updatePosition();
+		// 		laneOffset.node.updatePosition();
 
-				laneOffset.node.visible = true;
+		// 		laneOffset.node.visible = true;
 
-				SceneService.addToolObject( laneOffset.node );
+		// 		SceneService.addToolObject( laneOffset.node );
 
-			} else {
+		// 	} else {
 
-				laneOffset.node = new LaneOffsetNode( this, laneOffset );
+		// 		laneOffset.node = new LaneOffsetNode( this, laneOffset );
 
-				SceneService.addToolObject( laneOffset.node );
+		// 		SceneService.addToolObject( laneOffset.node );
 
-			}
+		// 	}
 
-		} );
+		// } );
 
 	}
 
 	hideLaneOffsetNodes () {
 
-		this.getLaneOffsets().forEach( laneOffset => {
+		// this.getLaneOffsets().forEach( laneOffset => {
 
-			if ( laneOffset.node ) {
+		// 	if ( laneOffset.node ) {
 
-				laneOffset.node.visible = false;
+		// 		laneOffset.node.visible = false;
 
-				SceneService.removeFromTool( laneOffset.node );
+		// 		SceneService.removeFromTool( laneOffset.node );
 
-			}
+		// 	}
 
-		} );
+		// } );
 
 	}
 
@@ -1231,85 +1224,85 @@ export class TvRoad {
 
 	public showLaneMarkingNodes () {
 
-		this.laneSections.forEach( laneSection => {
+		// this.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				lane.getRoadMarks().forEach( roadmark => {
+		// 		lane.getRoadMarks().forEach( roadmark => {
 
-					if ( roadmark.node ) {
+		// 			if ( roadmark.node ) {
 
-						roadmark.node.visible = true;
+		// 				roadmark.node.visible = true;
 
-					} else {
+		// 			} else {
 
-						roadmark.node = new LaneRoadMarkNode( lane, roadmark );
+		// 				roadmark.node = new LaneRoadMarkNode( lane, roadmark );
 
-						SceneService.addToolObject( roadmark.node );
+		// 				SceneService.addToolObject( roadmark.node );
 
-					}
+		// 			}
 
-				} );
+		// 		} );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 	}
 
 	public hideLaneMarkingNodes () {
 
-		this.laneSections.forEach( laneSection => {
+		// this.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				lane.getRoadMarks().forEach( roadmark => {
+		// 		lane.getRoadMarks().forEach( roadmark => {
 
-					if ( roadmark.node ) roadmark.node.visible = false;
+		// 			if ( roadmark.node ) roadmark.node.visible = false;
 
-				} );
+		// 		} );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 
 	}
 
 	public hideWidthNodes () {
 
-		this.laneSections.forEach( laneSection => {
+		// this.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				lane.getLaneWidthVector().forEach( laneWidth => {
+		// 		lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.node ) laneWidth.node.visible = false;
+		// 			if ( laneWidth.node ) laneWidth.node.visible = false;
 
-				} );
+		// 		} );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 	}
 
 	public showWidthNodes () {
 
-		this.laneSections.forEach( laneSection => {
+		// this.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				lane.getLaneWidthVector().forEach( laneWidth => {
+		// 		lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.node ) SceneService.removeFromTool( laneWidth.node );
+		// 			if ( laneWidth.node ) SceneService.removeFromTool( laneWidth.node );
 
-					laneWidth.node = new LaneWidthNode( laneWidth );
+		// 			laneWidth.node = new LaneWidthNode( laneWidth );
 
-					SceneService.addToolObject( laneWidth.node );
+		// 			SceneService.addToolObject( laneWidth.node );
 
-				} );
+		// 		} );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 
 	}
 
@@ -1640,8 +1633,6 @@ export class TvRoad {
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
 
 		if ( geometry == null ) {
-
-			SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
 
 			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
 

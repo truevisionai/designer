@@ -7,7 +7,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
@@ -57,7 +57,7 @@ export class LaneOffsetTool extends BaseTool {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.isNodeSelected( e ) ) return;
 

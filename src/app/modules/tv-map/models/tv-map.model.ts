@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
+// import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { SceneService } from 'app/services/scene.service';
+// import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
@@ -110,11 +110,7 @@ export class TvMap {
 	 */
 	addDefaultRoad (): TvRoad {
 
-		const road = RoadFactory.createDefaultRoad();
-
-		this.addRoad( road );
-
-		return road;
+		throw new Error( 'Method not implemented.' );
 
 	}
 
@@ -247,45 +243,45 @@ export class TvMap {
 
 	destroy () {
 
-		this.roads.forEach( road => {
+		// this.roads.forEach( road => {
 
-			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
+		// 	road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
 
-			road.remove( this.gameObject );
+		// 	road.remove( this.gameObject );
 
-		} );
+		// } );
 
-		this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
+		// this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
 
-		this.propCurves.forEach( curve => {
+		// this.propCurves.forEach( curve => {
 
-			curve.delete();
+		// 	curve.delete();
 
-			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
+		// 	curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
-		} );
+		// } );
 
-		this.propPolygons.forEach( polygon => {
+		// this.propPolygons.forEach( polygon => {
 
-			polygon.delete();
+		// 	polygon.delete();
 
-			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
+		// 	polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
 
-		} );
+		// } );
 
-		this.props.forEach( prop => {
+		// this.props.forEach( prop => {
 
-			// SceneService.remove( prop.object );
-			SceneService.removeFromMain( prop );
+		// 	// SceneService.remove( prop.object );
+		// 	SceneService.removeFromMain( prop );
 
-			// this.gameObject.remove( prop.object );
-			this.gameObject.remove( prop );
+		// 	// this.gameObject.remove( prop.object );
+		// 	this.gameObject.remove( prop );
 
-		} );
+		// } );
 
 		this.clear();
 
-		RoadFactory.reset();
+		MapEvents.mapRemoved.emit();
 	}
 
 	showSurfaceHelpers () {

@@ -6,7 +6,7 @@ import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { TvMapInstance } from "app/modules/tv-map/services/tv-map-source-file";
+import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
 import { Manager } from "./manager";
 import { TvJunction, TvVirtualJunction } from "app/modules/tv-map/models/tv-junction";
 import { JunctionFactory } from "../factories/junction.factory";

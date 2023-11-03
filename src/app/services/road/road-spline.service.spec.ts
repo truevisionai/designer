@@ -5,7 +5,7 @@ import { RoadSplineService } from './road-spline.service';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { Vector3 } from 'three';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';

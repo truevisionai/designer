@@ -17,7 +17,7 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
 import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
