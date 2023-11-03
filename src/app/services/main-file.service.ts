@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
-import { AppService } from 'app/services/app.service';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
@@ -107,7 +106,7 @@ export class MainFileService {
 
 	openFromPath ( path: string, callback?: Function ) {
 
-		if ( AppService.isElectronApp ) {
+		if ( this.electronService.isElectronApp ) {
 
 			this.fileService.readFile( path, 'xml', ( file: IFile ) => {
 

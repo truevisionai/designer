@@ -26,13 +26,7 @@ import { CommandHistory } from './command-history';
 import { SceneExporterService } from './scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-
-export enum CoordinateSystem {
-	THREE_JS,
-	OPEN_DRIVE,
-	BLENDER,
-	UNITY_GLTF
-}
+import { CoordinateSystem } from './CoordinateSystem';
 
 @Injectable( {
 	providedIn: 'root'

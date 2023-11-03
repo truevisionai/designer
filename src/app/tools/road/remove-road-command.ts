@@ -7,7 +7,8 @@ import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-conn
 import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
-import { RoadSegment } from 'app/core/shapes/auto-spline-v2';
+import { RoadSegment } from 'app/core/shapes/RoadSegment';
+
 
 export class RemoveRoadCommand extends BaseCommand {
 
@@ -38,7 +39,7 @@ export class RemoveRoadCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.map.deleteRoad( this.road );
+		this.map.removeRoad( this.road );
 
 		this.road.spline.removeRoadSegmentByRoadId( this.road.id );
 
@@ -49,7 +50,7 @@ export class RemoveRoadCommand extends BaseCommand {
 
 		this.map.addRoad( this.road );
 
-		this.road.spline.addRoadSegment( this.segment.start, this.segment.length, this.road.id );
+		this.road.spline.addRoadSegment( this.segment.start, this.road.id );
 
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 

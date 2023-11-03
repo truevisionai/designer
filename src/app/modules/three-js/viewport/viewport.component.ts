@@ -305,7 +305,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {
 
-			this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+			this.intersections = this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 
 		}
 
@@ -586,7 +586,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		return this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 	}
 
 	resizeCanvas () {

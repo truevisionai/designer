@@ -10,7 +10,7 @@ import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvMesh, TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { CoordinateSystem } from 'app/services/exporter.service';
+import { CoordinateSystem } from 'app/services/CoordinateSystem';
 import { Group, Material, Mesh, Object3D } from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';

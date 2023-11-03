@@ -10,17 +10,17 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { SceneService } from '../services/scene.service';
-import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
+// import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
 import { TvConsole } from '../core/utils/console';
 import { IDService } from './id.service';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { Vector3 } from 'three';
-import { RoadFactory } from './road-factory.service';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { AutoSpline } from '../core/shapes/auto-spline';
+// import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+// import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+// import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+// import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+// import { Vector3 } from 'three';
+// import { RoadFactory } from './road-factory.service';
+// import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
+// import { AutoSpline } from '../core/shapes/auto-spline';
 
 export class JunctionFactory {
 
@@ -350,27 +350,27 @@ export class JunctionFactory {
 
 	static connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
 
-		if ( !junction ) {
+		// if ( !junction ) {
 
-			( new CreateSingleManeuver( null, entry, exit, junction, null, null ) ).execute();
+		// 	( new CreateSingleManeuver( null, entry, exit, junction, null, null ) ).execute();
 
-		} else {
+		// } else {
 
-			const connection = junction.findRoadConnection( entry.road, exit.road );
+		// 	const connection = junction.findRoadConnection( entry.road, exit.road );
 
-			const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
+		// 	const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
 
-			if ( connection && laneLink ) {
+		// 	if ( connection && laneLink ) {
 
-				TvConsole.warn( 'Connection already exists' );
+		// 		TvConsole.warn( 'Connection already exists' );
 
-			} else {
+		// 	} else {
 
-				( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) ).execute();
+		// 		( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) ).execute();
 
-			}
+		// 	}
 
-		}
+		// }
 
 	}
 

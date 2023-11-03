@@ -1,12 +1,12 @@
 import { Raycaster } from "three";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvMapInstance } from "../../../modules/tv-map/services/tv-map-source-file";
-import { ThreeService } from "../../../modules/three-js/three.service";
 import { MovingStrategy } from "./move-strategy";
 import { Position } from "app/modules/scenario/models/position";
 import { WorldPosition } from "app/modules/scenario/models/positions/tv-world-position";
 import { LanePosition } from "app/modules/scenario/models/positions/tv-lane-position";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { SceneService } from "app/services/scene.service";
 
 export class FreeMovingStrategy extends MovingStrategy {
 
@@ -22,7 +22,7 @@ export class FreeMovingStrategy extends MovingStrategy {
 
 		this.raycaster.setFromCamera( e.mouse, e.camera );
 
-		const raycastableObjects = [ TvMapInstance.map.gameObject, ThreeService.bgForClicks ];
+		const raycastableObjects = [ TvMapInstance.map.gameObject, SceneService.bgForClicks ];
 
 		const intersections = this.raycaster.intersectObjects( raycastableObjects, true ).filter( i => i.object.visible );
 

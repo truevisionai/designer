@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
-import { DeleteCrossWalkCommand } from 'app/tools/marking-line/crosswalk-tool';
+import { DeleteCrossWalkCommand } from 'app/tools/marking-line/DeleteCrossWalkCommand';
 import { CopyPositionCommand } from 'app/commands/copy-position-command';
 import { RemoveArrayPointCommand } from 'app/commands/remove-array-point-command';
 import { UpdateValueCommand } from 'app/commands/set-value-command';

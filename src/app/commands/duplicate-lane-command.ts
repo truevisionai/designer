@@ -3,7 +3,7 @@
  */
 
 import { SnackBar } from 'app/services/snack-bar.service';
-import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
+// import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneSection } from '../modules/tv-map/models/tv-lane-section';
 import { TvConsole } from '../core/utils/console';
@@ -17,7 +17,7 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 	private newLane: TvLane;
 
-	private setInspectorCommand: SetInspectorCommand;
+	// private setInspectorCommand: SetInspectorCommand;
 
 	constructor ( oldLane: TvLane ) {
 
@@ -29,7 +29,7 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 		this.laneSection = oldLane.laneSection;
 
-		this.setInspectorCommand = new SetInspectorCommand( LaneInspectorComponent, this.newLane );
+		// this.setInspectorCommand = new SetInspectorCommand( LaneInspectorComponent, this.newLane );
 	}
 
 	execute (): void {
@@ -38,29 +38,29 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 		MapEvents.laneCreated.emit( this.newLane );
 
-		this.rebuild();
+		// this.rebuild();
 
-		this.setInspectorCommand.execute();
+		// this.setInspectorCommand.execute();
 	}
 
 	undo (): void {
 
 		this.laneSection?.removeLaneById( this.newLane.id );
 
-		this.rebuild();
+		MapEvents.laneRemoved.emit( this.newLane );
 
-		this.setInspectorCommand.undo();
+		// this.rebuild();
+
+		// this.setInspectorCommand.undo();
 	}
 
 	redo (): void {
 
-		this.laneSection?.addLaneInstance( this.newLane, true );
+		this.execute();
 
-		MapEvents.laneCreated.emit( this.newLane );
+		// this.rebuild();
 
-		this.rebuild();
-
-		this.setInspectorCommand.redo();
+		// this.setInspectorCommand.redo();
 	}
 
 	rebuild (): void {

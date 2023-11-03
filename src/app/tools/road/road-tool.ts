@@ -118,7 +118,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 				// new point is not on road so
 				// add point in last
-				CommandHistory.execute( new AddRoadPointCommand( this, this.selectedRoad, e.point ) );
+				CommandHistory.execute( new AddRoadPointCommand( this.selectedRoad, e.point ) );
 
 				this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
 
@@ -133,7 +133,7 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 				// new point is on another road so
 				// add a point in the middle and join the roads
 
-				CommandHistory.execute( new AddRoadPointCommand( this, this.selectedRoad, e.point ) );
+				CommandHistory.execute( new AddRoadPointCommand( this.selectedRoad, e.point ) );
 
 				this.setHint( 'Use SHIFT + LEFT CLICK to create road control points' );
 

@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import * as Sentry from '@sentry/angular';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { FileApiService } from '../../io/file-api.service';
 import { Environment } from '../utils/environment';
 
@@ -14,12 +13,10 @@ import { Environment } from '../utils/environment';
 export class SentryService {
 
 	private static fileApiService: FileApiService;
-	private static mapService: TvMapService;
 
-	constructor ( fileApiService: FileApiService, private mapService: TvMapService ) {
+	constructor ( fileApiService: FileApiService ) {
 
 		SentryService.fileApiService = fileApiService;
-		SentryService.mapService = mapService;
 
 	}
 

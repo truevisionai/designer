@@ -3,10 +3,7 @@
  */
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { KeyboardInput } from 'app/core/input';
-import { SceneService } from 'app/services/scene.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import {
 	CrosswalkInspectorComponent,
@@ -16,12 +13,13 @@ import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { CopyPositionCommand } from '../../commands/copy-position-command';
 import { TvRoadCoord } from '../../modules/tv-map/models/tv-lane-coord';
 import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
-import { BaseCommand } from '../../commands/base-command';
 import { ToolType } from '../tool-types.enum';
 import { ControlPointStrategy } from '../../core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from '../../core/snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from '../../core/snapping/select-strategies/select-strategy';
 import { BaseTool } from '../base-tool';
+import { CreateCrossWalkCommand } from './CreateCrossWalkCommand';
+import { AddCrosswalkPointCommand } from './AddCrosswalkPointCommand';
 
 export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
@@ -222,148 +220,16 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 }
 
-function getSelectPointCommand ( tool: CrosswalkTool, point: TvCornerRoad, crosswalk: Crosswalk ): SelectPointCommand {
+// export function getSelectPointCommand ( tool: CrosswalkTool, point: TvCornerRoad, crosswalk: Crosswalk ): SelectPointCommand {
 
-	const data: ICrosswalkInspectorData = {
-		point: point,
-		crosswalk: crosswalk
-	};
+// 	const data: ICrosswalkInspectorData = {
+// 		point: point,
+// 		crosswalk: crosswalk
+// 	};
 
-	return new SelectPointCommand( tool, point, CrosswalkInspectorComponent, data );
+// 	return new SelectPointCommand( tool, point, CrosswalkInspectorComponent, data );
 
-}
+// }
 
 
-export class CreateCrossWalkCommand extends BaseCommand {
 
-	private readonly crosswalk: Crosswalk;
-	private readonly selectPointCommand: SelectPointCommand;
-
-	constructor ( private roadCoord: TvRoadCoord ) {
-
-		super();
-
-		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t, roadCoord.z );
-
-		this.crosswalk = new Crosswalk( roadCoord.s, roadCoord.t );
-
-		this.crosswalk.addCornerRoad( point );
-
-		const tool = this.getTool<CrosswalkTool>();
-
-		this.selectPointCommand = getSelectPointCommand( tool, point, this.crosswalk );
-
-	}
-
-	execute (): void {
-
-		this.roadCoord.road.gameObject.add( this.crosswalk );
-
-		this.roadCoord.road.addRoadObjectInstance( this.crosswalk );
-
-		this.selectPointCommand.execute();
-
-	}
-
-	undo (): void {
-
-		this.roadCoord.road.gameObject.remove( this.crosswalk );
-
-		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
-
-		this.selectPointCommand.undo();
-
-	}
-
-	redo (): void {
-
-		this.execute();
-
-	}
-
-}
-
-export class DeleteCrossWalkCommand extends BaseCommand {
-
-	private inspector: SetInspectorCommand;
-	private road: TvRoad;
-
-	constructor ( private crosswalk: Crosswalk ) {
-
-		super();
-
-		this.road = crosswalk.road;
-		this.inspector = new SetInspectorCommand( null, null );
-	}
-
-	execute (): void {
-
-		this.road?.gameObject.remove( this.crosswalk );
-
-		SceneService.removeFromMain( this.crosswalk );
-
-		this.road?.removeRoadObjectById( this.crosswalk.attr_id );
-
-		this.inspector.execute();
-
-	}
-
-	undo (): void {
-
-		this.road?.gameObject.add( this.crosswalk );
-
-		this.road?.addRoadObjectInstance( this.crosswalk );
-
-		this.inspector.undo();
-
-	}
-
-	redo (): void {
-
-		this.execute();
-
-	}
-
-}
-
-export class AddCrosswalkPointCommand extends BaseCommand {
-
-	private selectPointCommand: SelectPointCommand;
-	private point: TvCornerRoad;
-
-	constructor ( private crosswalk: Crosswalk, private coord: TvRoadCoord ) {
-
-		super();
-
-		const id = this.crosswalk.outlines[ 0 ].cornerRoad.length;
-
-		const point = this.point = new TvCornerRoad( id, coord.road, coord.s, coord.t );
-
-		const tool = this.getTool<CrosswalkTool>();
-
-		this.selectPointCommand = getSelectPointCommand( tool, point, crosswalk );
-	}
-
-	execute (): void {
-
-		this.crosswalk.addCornerRoad( this.point );
-
-		this.selectPointCommand.execute();
-
-	}
-
-	undo (): void {
-
-		this.crosswalk.removeCornerRoad( this.point );
-
-		this.selectPointCommand.undo();
-
-	}
-
-	redo (): void {
-
-		this.execute();
-
-	}
-
-}

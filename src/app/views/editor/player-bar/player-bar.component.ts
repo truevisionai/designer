@@ -9,6 +9,8 @@ import { Environment } from 'app/core/utils/environment';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { PlayerService } from '../../../core/player.service';
+import { AppInspector } from "../../../core/inspector";
+import { EsminiInspectorComponent } from "../../inspectors/esmini-inspector/esmini-inspector.component";
 
 @Component( {
 	selector: 'app-player-bar',
@@ -41,6 +43,7 @@ export class PlayerBarComponent {
 	playSimulation () {
 
 		if ( this.esminiPlayerService.isEnabled ) {
+			AppInspector.setInspector( EsminiInspectorComponent, this.esminiPlayerService.logs );
 			this.esminiPlayerService.playSimulation();
 			return;
 		}
