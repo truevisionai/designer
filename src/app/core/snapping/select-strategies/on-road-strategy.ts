@@ -3,7 +3,7 @@
  */
 
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { SelectStrategy } from './select-strategy';
 
 export class OnRoadStrategy extends SelectStrategy<TvRoadCoord> {

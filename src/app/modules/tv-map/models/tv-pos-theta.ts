@@ -6,7 +6,7 @@
 import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvLaneSide, TvSide } from './tv-common';
-import { TvRoadCoord } from './tv-lane-coord';
+import { TvRoadCoord } from './TvRoadCoord';
 
 export class TvPosTheta {
 	public z: number = 0;

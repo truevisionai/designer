@@ -1,7 +1,7 @@
 import { MapEvents, RoadUpdatedEvent } from "app/events/map-events";
 import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
-import { TvRoadCoord } from "app/modules/tv-map/models/tv-lane-coord";
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";

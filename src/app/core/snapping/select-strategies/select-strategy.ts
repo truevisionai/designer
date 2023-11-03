@@ -4,7 +4,8 @@
 
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneCoord, TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
 export abstract class SelectStrategy<T> {

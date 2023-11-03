@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from '../base.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, Object3D, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';

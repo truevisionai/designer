@@ -17,7 +17,7 @@ import { Vector3 } from 'three';
 import { BaseTool } from '../base-tool';
 import { CreateElevationNodeCommand } from './create-elevation-node-command';
 import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';

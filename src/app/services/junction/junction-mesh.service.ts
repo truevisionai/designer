@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Mesh, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import earcut from 'earcut';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';

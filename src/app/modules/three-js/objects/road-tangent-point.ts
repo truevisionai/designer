@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-common';
@@ -145,9 +144,9 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
 
-		if ( this.road.spline instanceof ExplicitSpline ) {
+		if ( this.road.spline.type === 'explicit' ) {
 
-			this.road.spline.markAsSpiral( this );
+			(this.road.spline as any ).markAsSpiral( this );
 
 		}
 

@@ -5,11 +5,11 @@
 import { GameObject } from 'app/core/game-object';
 import { Vector3 } from 'three';
 import { IMovable } from '../../../core/snapping/snap-strategies/snapping';
-import { TvMapQueries } from '../queries/tv-map-queries';
 import { SignShapeType } from '../services/tv-sign.service';
 import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
 import { TvLaneValidity } from './tv-road-object';
 import { AnyControlPoint } from "../../three-js/objects/any-control-point";
+import { TvRoad } from './tv-road.model';
 
 export class TvRoadSignal implements IMovable {
 
@@ -118,8 +118,9 @@ export class TvRoadSignal implements IMovable {
 		return this._userData.get( 'asset_name' );
 	}
 
-	getRoad () {
-		return TvMapQueries.findRoadById( this.roadId );
+	getRoad (): TvRoad {
+		throw new Error( 'method not implemented' );
+		// return TvMapQueries.findRoadById( this.roadId );
 	}
 
 	getUserData () {

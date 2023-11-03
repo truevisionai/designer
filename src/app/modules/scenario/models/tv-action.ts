@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { MathUtils, Vector3 } from 'three';
 import { StoryboardEvent } from '../services/scenario-director.service';
-import { ScenarioInstance } from '../services/scenario-instance';
+// import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { ActionCategory, ActionType } from './tv-enums';
 
@@ -22,7 +22,8 @@ export abstract class TvAction {
 	public name: string;
 
 	protected get scenario () {
-		return ScenarioInstance.scenario;
+		throw new Error( 'method not implemented' );
+		// return ScenarioInstance.scenario;
 	}
 
 	abstract execute ( entity: ScenarioEntity ): void;
@@ -39,14 +40,17 @@ export abstract class TvAction {
 	}
 
 	protected getEntity ( entityName: string ): ScenarioEntity {
-		return this.scenario.findEntityOrFail( entityName );
+		throw new Error( 'method not implemented' );
+		// return this.scenario.findEntityOrFail( entityName );
 	}
 
 	protected getEntityPosition ( entityName: string ): Vector3 {
-		return this.scenario.getEntityVectorPosition( entityName );
+		throw new Error( 'method not implemented' );
+		// return this.scenario.getEntityVectorPosition( entityName );
 	}
 
 	protected getEntitySpeed ( entityName: string ): number {
-		return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
+		throw new Error( 'method not implemented' );
+		// return this.scenario.findEntityOrFail( entityName ).getCurrentSpeed();
 	}
 }

@@ -1,4 +1,4 @@
-import { ScenarioInstance } from '../services/scenario-instance';
+// import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 
 export class EntityRef {
@@ -14,7 +14,8 @@ export class EntityRef {
 			return this.entityRef;
 		}
 
-		return ScenarioInstance.scenario.findEntityOrFail( this.entityRef );
+		throw new Error( 'method not implemented' );
+		// return ScenarioInstance.scenario.findEntityOrFail( this.entityRef );
 	}
 
 	get name (): string {

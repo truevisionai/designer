@@ -4,7 +4,7 @@
 
 import { EventEmitter } from '@angular/core';
 import { Euler, Vector3 } from 'three';
-import { ScenarioInstance } from '../services/scenario-instance';
+// import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';
 import { OpenScenarioVersion, PositionType } from './tv-enums';
 import { Orientation } from './tv-orientation';
@@ -54,7 +54,8 @@ export abstract class Position {
 	}
 
 	protected getEntity ( entity: string ): ScenarioEntity {
-		return ScenarioInstance.scenario.findEntityOrFail( entity );
+		throw new Error( 'method not implemented' );
+		// return ScenarioInstance.scenario.findEntityOrFail( entity );
 	}
 
 }

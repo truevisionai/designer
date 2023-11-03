@@ -6,7 +6,7 @@ import { Vector3 } from 'three';
 import { RoadCutterService } from '../road/road-cutter.service';
 import { ManeuverService } from './maneuver.service';
 import { BaseService } from '../base.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { JunctionMeshService } from './junction-mesh.service';
 import { JunctionNode } from './junction-node.service';

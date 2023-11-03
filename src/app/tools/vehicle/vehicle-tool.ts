@@ -15,7 +15,7 @@ import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { CommandHistory } from 'app/services/command-history';
 import { VehicleEntity } from '../../modules/scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';

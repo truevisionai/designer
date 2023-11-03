@@ -6,7 +6,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { CommandHistory } from 'app/services/command-history';
 import { AddRoadCommand } from '../road/add-road-command';

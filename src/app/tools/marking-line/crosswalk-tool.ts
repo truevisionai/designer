@@ -11,7 +11,7 @@ import {
 } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { CopyPositionCommand } from '../../commands/copy-position-command';
-import { TvRoadCoord } from '../../modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
 import { ToolType } from '../tool-types.enum';
 import { ControlPointStrategy } from '../../core/snapping/select-strategies/control-point-strategy';

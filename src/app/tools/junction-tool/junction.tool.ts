@@ -7,7 +7,7 @@ import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { SceneService } from 'app/services/scene.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';

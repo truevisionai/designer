@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneCoord, TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Vector2, Vector3 } from 'three';

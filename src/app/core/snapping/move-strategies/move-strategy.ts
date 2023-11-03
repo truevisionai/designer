@@ -5,7 +5,8 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Vector3 } from 'three';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
-import { TvLaneCoord, TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { Position } from 'app/modules/scenario/models/position';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
