@@ -2,17 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MapEvents } from 'app/events/map-events';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
-import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
-import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
 
 export class RemoveRoadmarkCommand extends BaseCommand {
-
-	private index: number;
-
-	private roadMarkBuilder = new LaneRoadMarkFactory();
 
 	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
 
@@ -22,55 +17,23 @@ export class RemoveRoadmarkCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.lane.gameObject.remove( this.roadmark.gameObject );
+		this.lane.removeRoadMark( this.roadmark );
 
-		SceneService.removeFromMain( this.roadmark.node );
+		MapEvents.laneUpdated.emit( this.lane );
 
-		this.removeFromLane();
-
-		this.rebuild();
 	}
 
 	undo (): void {
 
-		this.lane.gameObject.add( this.roadmark.gameObject );
-
-		SceneService.addToMain( this.roadmark.node );
-
 		this.lane.addRoadMarkInstance( this.roadmark );
 
-		this.rebuild();
+		MapEvents.laneUpdated.emit( this.lane );
+
 	}
 
 	redo (): void {
 
 		this.execute();
-
-	}
-
-	private rebuild () {
-
-		this.map.roads.forEach( road => {
-
-			this.roadMarkBuilder.buildRoad( road );
-
-		} );
-
-	}
-
-	private removeFromLane () {
-
-		this.lane.getRoadMarks().forEach( ( ( value, i ) => {
-
-			if ( value.sOffset === this.roadmark.sOffset ) {
-
-				this.index = i;
-
-			}
-
-		} ) );
-
-		this.lane.getRoadMarks().splice( this.index, 1 );
 
 	}
 }

@@ -1492,5 +1492,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return material;
 	}
 
+	removeRoadMark ( roadmark: TvLaneRoadMark ) {
+
+		this.roadMark.splice( this.roadMark.indexOf( roadmark ), 1 );
+
+	}
+
 }
 
