@@ -19,7 +19,7 @@ export class RemoveRoadCommand extends BaseCommand {
 
 	private segment: RoadSegment;
 
-	constructor ( private road: TvRoad ) {
+	constructor ( public road: TvRoad ) {
 
 		super();
 
@@ -50,7 +50,7 @@ export class RemoveRoadCommand extends BaseCommand {
 
 		this.map.addRoad( this.road );
 
-		this.road.spline.addRoadSegment( this.segment.start, this.road.id );
+		this.road.spline.addRoadSegment( this.road.sStart, this.road.id );
 
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 

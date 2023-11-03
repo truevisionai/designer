@@ -72,19 +72,33 @@ export class JunctionNodeService extends BaseService {
 
 		if ( road.isJunction ) return;
 
-		const startCoord = road.getStartCoord().toRoadCoord( road.id );
-		const startLine = this.createRoadWidthLine( startCoord );
-		JunctionNodeService.nodes.push( startLine );
-		SceneService.addToolObject( startLine );
+		if ( !road.predecessor || road.predecessor.elementType == 'junction' ) {
 
-		const endCoord = road.getEndCoord().toRoadCoord( road.id );
-		const endLine = this.createRoadWidthLine( endCoord );
-		JunctionNodeService.nodes.push( endLine );
-		SceneService.addToolObject( endLine );
+			const startCoord = road.getStartCoord().toRoadCoord( road.id );
+
+			const startLine = this.createJunctionNode( startCoord );
+
+			JunctionNodeService.nodes.push( startLine );
+
+			SceneService.addToolObject( startLine );
+
+		}
+
+		if ( !road.successor || road.successor.elementType == 'junction' ) {
+
+			const endCoord = road.getEndCoord().toRoadCoord( road.id );
+
+			const endLine = this.createJunctionNode( endCoord );
+
+			JunctionNodeService.nodes.push( endLine );
+
+			SceneService.addToolObject( endLine );
+
+		}
 
 	}
 
-	private createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
+	private createJunctionNode ( roadCoord: TvRoadCoord ): JunctionNode {
 
 		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
 

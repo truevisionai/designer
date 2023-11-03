@@ -11,7 +11,10 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { SceneService } from 'app/services/scene.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
-import { JunctionService } from 'app/services/junction/junction.service';
+// import { JunctionService } from 'app/services/junction/junction.service';
+// import { JunctionNode, JunctionNodeService } from 'app/services/junction/junction-node.service';
+// import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
+
 
 export class JunctionTool extends BaseTool {
 
@@ -21,13 +24,16 @@ export class JunctionTool extends BaseTool {
 
 	private roadStrategy: SelectStrategy<TvRoadCoord>;
 
-	private coords: TvRoadCoord[] = [];
+	private selectedCoords: TvRoadCoord[] = [];
+	// private selectedNodes: JunctionNode[] = [];
 
 	private debugDrawService = new DebugDrawService();
 
 	private debugLine: Line2;
 
-	private junctionService = new JunctionService();
+	private junctionService: any;
+	// private junctionNodeService = new JunctionNodeService();
+	// private nodeStrategy: NodeStrategy<JunctionNode>;
 
 	constructor () {
 
@@ -35,11 +41,42 @@ export class JunctionTool extends BaseTool {
 
 		this.roadStrategy = new OnRoadStrategy();
 
+		// this.nodeStrategy = new NodeStrategy<JunctionNode>( JunctionNode.tag );
+
+		this.map.junctions.forEach( junction => {
+
+			const mesh = this.junctionService.meshService.createMeshFromJunction( junction );
+
+			SceneService.addToolObject( mesh );
+
+		} )
+
 	}
 
 	init () {
 
 		this.setHint( 'Click on a road to create a junction' );
+
+		// const positions = [];
+
+		// positions.push( new Vector3( 0, 0, 0 ) );
+		// positions.push( new Vector3( 40, 1, 0 ) );
+		// positions.push( new Vector3( 25, 40, 0 ) );
+		// positions.push( new Vector3( -10, 37, 0 ) );
+		// positions.push( new Vector3( 0, 33, 0 ) );
+
+		// const mesh1 = this.junctionService.meshService.createPolygonalMesh( positions );
+		// mesh1.position.set( 0, 0, 0 );
+
+		// const mesh3 = this.junctionService.meshService.createLinedShapeMesh( positions );
+		// mesh3.position.set( 50, 0, 0 );
+
+		// const mesh4 = this.junctionService.meshService.createSmoothShapeMesh( positions );
+		// mesh4.position.set( 0, 50, 0 );
+
+		// SceneService.addToolObject( mesh1 );
+		// SceneService.addToolObject( mesh3 );
+		// SceneService.addToolObject( mesh4 );
 
 	}
 
@@ -47,11 +84,38 @@ export class JunctionTool extends BaseTool {
 
 		super.enable();
 
+		// this.junctionNodeService.showAllJunctionNodes();
+
 	}
 
 	disable () {
 
 		super.disable();
+
+		// this.junctionNodeService.hideAllJunctionNodes();
+
+	}
+
+	onPointerDownSelect ( e: PointerEventData ): void {
+
+		// const node = this.nodeStrategy.onPointerMoved( e );
+
+		// if ( node ) {
+
+		// 	node.select();
+
+		// 	this.selectedNodes.push( node );
+
+		// 	if ( this.selectedNodes.length === 3 ) {
+
+		// 		this.junctionService.createJunctionFromJunctionNodes( this.selectedNodes );
+
+		// 		this.selectedNodes.splice( 0, this.selectedNodes.length );
+
+		// 	}
+
+		// 	return;
+		// };
 
 	}
 
@@ -63,23 +127,27 @@ export class JunctionTool extends BaseTool {
 
 			SceneService.addToolObject( this.debugDrawService.createRoadWidthLine( roadCoord ) );
 
-			this.coords.push( roadCoord );
+			this.selectedCoords.push( roadCoord );
 
 		}
 
-		if ( this.coords.length === 2 ) {
+		if ( this.selectedCoords.length === 2 ) {
 
-			const junction = this.junctionService.createJunctionFromCoords( this.coords );
+			const junction = this.junctionService.createJunctionFromCoords( this.selectedCoords );
 
 			// SceneService.addToolObject( junction );
 
-			this.coords.splice( 0, this.coords.length );
+			this.selectedCoords.splice( 0, this.selectedCoords.length );
 
 		}
 
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
+
+		console.log( 'onPointerMoved', e.intersections );
+
+		// if ( this.nodeStrategy.onPointerMoved( e ) ) return;
 
 		const roadCoord = this.roadStrategy.onPointerMoved( e );
 

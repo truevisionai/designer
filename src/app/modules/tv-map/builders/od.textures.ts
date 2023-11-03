@@ -70,6 +70,13 @@ export class OdTextures {
 		return texture;
 	};
 
+	static arrowCircle = () => {
+		const texture = new THREE.TextureLoader().load( 'assets/arrow-circle.png' );
+		texture.colorSpace = SRGBColorSpace;
+		texture.anisotropy = 16;
+		return texture;
+	};
+
 	// misc
 	static point = new THREE.TextureLoader().load( 'assets/point.png' );
 	static arrow = new THREE.TextureLoader().load( 'assets/arrow.svg' );

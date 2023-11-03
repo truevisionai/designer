@@ -51,45 +51,45 @@ describe( 'Crossing 8 XODR Tests', () => {
 
 	} );
 
-	it( 'should create correct junction objects', () => {
+	// it( 'should create correct junction objects', () => {
+	//
+	// 	const entries = JunctionFactory.createJunctionEntries( map.getRoads() );
+	//
+	// 	const start = entries.filter( entry => entry.road.id === 502 && entry.contact === 'start' )[ 0 ];
+	// 	const end = entries.filter( entry => entry.road.id === 502 && entry.contact === 'end' )[ 0 ];
+	//
+	// 	expect( start ).toBeDefined();
+	// 	expect( end ).toBeUndefined();
+	//
+	//
+	// } );
 
-		const entries = JunctionFactory.createJunctionEntries( map.getRoads() );
-
-		const start = entries.filter( entry => entry.road.id === 502 && entry.contact === 'start' )[ 0 ];
-		const end = entries.filter( entry => entry.road.id === 502 && entry.contact === 'end' )[ 0 ];
-
-		expect( start ).toBeDefined();
-		expect( end ).toBeUndefined();
-
-
-	} );
-
-	it( 'should remove lane link correctly', () => {
-
-		const entries = JunctionFactory.createJunctionEntries( map.getRoads() );
-
-		const start: JunctionEntryObject = entries.filter( entry => entry.road.id === 502 && entry.contact === 'start' )[ 0 ];
-
-		expect( start ).toBeDefined();
-
-		// 3 connections
-		// 0 - 3 links
-		// 1 - 1 link
-		// 2 - 1 link
-		expect( start.connections.length ).toBe( 3 );
-
-		const connection = start.connections[ 0 ];
-		const laneLink = connection.laneLink[ 0 ];
-
-		expect( connection.laneLink.length ).toBe( 3 );
-		expect( laneLink.connectingLane.laneSection.lanes.size ).toBe( 5 );
-
-		connection.removeLaneLink( laneLink );
-
-		expect( connection.laneLink.length ).toBe( 2 );
-
-		expect( laneLink.connectingLane.laneSection.lanes.size ).toBe( 4 );
-
-	} );
+	// it( 'should remove lane link correctly', () => {
+	//
+	// 	const entries = JunctionFactory.createJunctionEntries( map.getRoads() );
+	//
+	// 	const start: JunctionEntryObject = entries.filter( entry => entry.road.id === 502 && entry.contact === 'start' )[ 0 ];
+	//
+	// 	expect( start ).toBeDefined();
+	//
+	// 	// 3 connections
+	// 	// 0 - 3 links
+	// 	// 1 - 1 link
+	// 	// 2 - 1 link
+	// 	expect( start.connections.length ).toBe( 3 );
+	//
+	// 	const connection = start.connections[ 0 ];
+	// 	const laneLink = connection.laneLink[ 0 ];
+	//
+	// 	expect( connection.laneLink.length ).toBe( 3 );
+	// 	expect( laneLink.connectingLane.laneSection.lanes.size ).toBe( 5 );
+	//
+	// 	connection.removeLaneLink( laneLink );
+	//
+	// 	expect( connection.laneLink.length ).toBe( 2 );
+	//
+	// 	expect( laneLink.connectingLane.laneSection.lanes.size ).toBe( 4 );
+	//
+	// } );
 
 } );

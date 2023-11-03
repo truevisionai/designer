@@ -8,7 +8,7 @@ import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-stra
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CopyPositionCommand } from 'app/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
@@ -19,14 +19,14 @@ import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspecto
 import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { CreateControlPointCommand } from './create-control-point-command';
-import { CreateRoadCommand } from './create-road-command';
-import { JoinRoadNodeCommand } from './join-road-node-command';
 import { RemoveRoadCommand } from './remove-road-command';
 import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
 import { SelectRoadCommand } from 'app/commands/select-road-command';
 import { AppInspector } from 'app/core/inspector';
+import { AddRoadCommand } from './add-road-command';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { RoadLinkService } from 'app/services/road/road-link.service';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -41,6 +41,8 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 	private pointStrategy: SelectStrategy<RoadControlPoint>;
 	private nodeStrategy: SelectStrategy<RoadNode>;
 	private roadStrategy: SelectStrategy<TvRoadCoord>;
+
+	private roadLinkService = new RoadLinkService();
 
 	constructor () {
 
@@ -106,13 +108,20 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	onPointerDownCreate ( e: PointerEventData ) {
 
-		if ( this.controlPoint && this.controlPoint?.road?.spline?.controlPoints.length == 1 ) {
+		if ( this.selectedRoad && this.selectedRoad?.spline?.controlPoints.length === 1 ) {
 
-			CommandHistory.execute( new CreateRoadCommand( this, this.controlPoint.road, e.point ) );
+			CommandHistory.execute( new AddRoadPointCommand( this.selectedRoad, e.point ) );
 
 		} else if ( this.selectedRoad && this.selectedRoad?.spline?.controlPoints.length >= 2 ) {
 
 			const roadCoord = this.roadStrategy.onPointerDown( e );
+
+			if ( this.selectedRoad.successor ) {
+
+				this.setHint( 'Cannot add control point to connected road' );
+
+				return;
+			}
 
 			if ( !roadCoord ) {
 
@@ -145,8 +154,19 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 		} else if ( !this.selectedRoad ) {
 
-			CommandHistory.execute( new CreateControlPointCommand( this, e.point ) );
+			const road = RoadFactory.createDefaultRoad();
 
+			CommandHistory.executeMany(
+
+				new AddRoadCommand( [ road ], true ),
+
+				new AddRoadPointCommand( road, e.point ),
+
+				new SelectRoadCommand( this, road ),
+
+			);
+
+			// CommandHistory.execute( new CreateRoadCommand( e.point ) );
 		}
 
 	}
@@ -247,13 +267,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			const newPosition = this.controlPoint.position.clone();
 
-			const command = new CopyPositionCommand( this.controlPoint, newPosition, oldPosition );
+			CommandHistory.execute( new UpdatePositionCommand( this.controlPoint, newPosition, oldPosition ) );
 
-			CommandHistory.execute( command );
-
-			this.selectedRoad?.successor?.hideSpline();
-
-			this.selectedRoad?.predecessor?.hideSpline();
+			this.roadLinkService.hideLinks( this.selectedRoad );
 
 		}
 
@@ -270,9 +286,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 			this.selectedRoad.spline.update();
 
-			this.controlPoint.updateSuccessor( false );
+			this.roadLinkService.updateLinks( this.selectedRoad, this.controlPoint );
 
-			this.controlPoint.updatePredecessor( false );
+			this.roadLinkService.showLinks( this.selectedRoad, this.controlPoint );
 
 			this.roadChanged = true;
 
@@ -299,7 +315,9 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private joinNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		CommandHistory.execute( new JoinRoadNodeCommand( this, firstNode, secondNode ) );
+		const newRoad = this.roadService.createJoiningRoad( firstNode, secondNode );
+
+		CommandHistory.execute( new AddRoadCommand( [ newRoad ] ) );
 
 	}
 

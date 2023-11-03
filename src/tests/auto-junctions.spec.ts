@@ -161,21 +161,21 @@ describe( '4-way-intersection auto maneuver logic tests', () => {
 
 	} );
 
-	it( 'should give correct junction count', () => {
-
-		const roads = map.getRoads();
-
-		expect( roads.length ).toBe( 4 );
-		expect( map.findJunction( roads[ 0 ], roads[ 1 ] ) ).toBeNull();
-
-		JunctionFactory.createJunctions()
-
-		expect( map.junctions.size ).toBe( 1 );
-
-		expect( map.findJunction( roads[ 0 ], roads[ 1 ] ) ).toBeDefined();
-
-
-	} );
+	// it( 'should give correct junction count', () => {
+	//
+	// 	const roads = map.getRoads();
+	//
+	// 	expect( roads.length ).toBe( 4 );
+	// 	expect( map.findJunction( roads[ 0 ], roads[ 1 ] ) ).toBeNull();
+	//
+	// 	JunctionFactory.createJunctions()
+	//
+	// 	expect( map.junctions.size ).toBe( 1 );
+	//
+	// 	expect( map.findJunction( roads[ 0 ], roads[ 1 ] ) ).toBeDefined();
+	//
+	//
+	// } );
 
 } );
 

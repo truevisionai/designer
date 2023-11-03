@@ -55,45 +55,37 @@ export class RoadCutterService extends BaseService {
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, from: number, to: number ) {
+	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
 
-		const clonedSpline = road.spline.clone();
+		if ( start > end ) throw new Error( 'Start must be less than end' );
 
-		const fromRoad = road.clone( from );
-		fromRoad.id = RoadFactory.getNextRoadId();
+		const right = road.clone( end );
+		right.id = RoadFactory.getNextRoadId();
+		right.sStart = road.sStart + end;
 
-		const roadSegment = road.spline.getRoadSegments().find( i => i.roadId == road.id );
-		if ( !roadSegment ) throw new Error( 'Road segment not found' );
+		// empty section/segment
+		road.spline.addRoadSegment( start, -1 );
 
-		const roadSplineStart = roadSegment.start;
-
-		// const newRoadStart = roadSplineStart + s;
-		// const newRoadLength = road.length - s;
-
-		// spline.addRoadSegment( newRoadStart, newRoadLength, fromRoad.id );
-
-		// const currentRoadLength = s;
-
-		// roadSegment.length = currentRoadLength;
-
-		// return fromRoad;
+		return [ road, right ];
 
 	}
 
 	private splitRoadOld ( road: TvRoad, s: number ) {
 
-		const originalLength = road.length;
+		// const originalLength = road.length;
 
-		const spline = road.spline.clone();
+		// const spline = road.spline.clone();
 
-		const left = road.clone( s );
+		// const left = road.clone( s );
 
 		const right = road.clone( s );
 		right.id = RoadFactory.getNextRoadId();
 
-		this.addNewRoadSegment( spline, left, right, originalLength, s );
+		right.sStart = road.sStart + s;
 
-		return [ left, right ];
+		// this.addNewRoadSegment( spline, left, right, originalLength, s );
+
+		return [ road, right ];
 	}
 
 	private addNewRoadSegment ( spline: AbstractSpline, currentRoad: TvRoad, newRoad: TvRoad, originalLength: number, s: number ) {
@@ -110,9 +102,9 @@ export class RoadCutterService extends BaseService {
 
 		// update this before adding new segment
 		// to make sure correct geometries are constructed
-		currentSegment.length = s;
+		// currentSegment.length = s;
 
-		spline.addRoadSegment( newRoadStart, newRoadLength, newRoad.id );
+		spline.addRoadSegment( newRoadStart, newRoad.id );
 
 	}
 

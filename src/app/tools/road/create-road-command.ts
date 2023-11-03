@@ -10,52 +10,43 @@ import { RoadTool } from './road-tool';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { RoadFactory } from 'app/factories/road-factory.service';
 
 export class CreateRoadCommand extends OdBaseCommand {
 
-	private selectPointCommand: SelectPointCommand;
 	private point: AbstractControlPoint;
+	private road: TvRoad;
 
-	constructor ( tool: RoadTool, private road: TvRoad, position: Vector3 ) {
+	constructor ( position: Vector3 ) {
 
 		super();
 
-		this.point = ControlPointFactory.createControl( road.spline, position );
+		this.road = RoadFactory.createDefaultRoad();
 
-		// this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
-		// 	road: this.point.mainObject,
-		// 	controlPoint: this.point
-		// } );
+		this.point = ControlPointFactory.createControl( this.road.spline, position );
+
+		this.road.spline.addControlPoint( this.point );
+
 	}
 
 	execute (): void {
 
-		// this.road.showNodes();
+		this.map.addSpline( this.road.spline );
 
-		// this.road.spline.showLines();
+		this.map.addRoad( this.road );
 
-		this.map.roads.set( this.road.id, this.road );
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road ) );
 
-		this.road.addControlPoint( this.point );
-
-		this.selectPointCommand.execute();
-
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 	}
 
 	undo (): void {
 
-		// this.road.hideNodes();
+		this.map.removeSpline( this.road.spline );
 
-		// this.road.spline.hideLines();
+		this.map.removeRoad( this.road );
 
-		this.map.roads.delete( this.road.id );
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road ) );
 
-		this.road.removeControlPoint( this.point );
-
-		this.selectPointCommand.undo();
-
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
 	}
 
 	redo (): void {
