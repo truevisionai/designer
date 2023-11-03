@@ -57,6 +57,7 @@ export class TvRoad {
 	public readonly uuid: string;
 
 	private _spline: AbstractSpline;
+	private _sStart: number;
 
 	public type: TvRoadTypeClass[] = [];
 	public elevationProfile: TvElevationProfile = new TvElevationProfile;
@@ -95,6 +96,14 @@ export class TvRoad {
 		this.junctionId = junctionId;
 
 		this.spline = new AutoSplineV2();
+	}
+
+	get sStart (): number {
+		return this._sStart;
+	}
+
+	set sStart ( value: number ) {
+		this._sStart = value;
 	}
 
 	get spline (): AbstractSpline {
@@ -1608,26 +1617,15 @@ export class TvRoad {
 		const road = new TvRoad( this.name, length, this.id, this.junctionId );
 
 		road.spline = this.spline;
-
-		road.type = this.type;
-		// road.elevationProfile = this.elevationProfile;
-		// road.lateralProfile = this.lateralProfile;
-		// road.lanes = this.lanes;
+		road.type = this.type.map( type => type.clone() );
+		road.sStart = this.sStart;
 		road.drivingMaterialGuid = this.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
 		road.borderMaterialGuid = this.borderMaterialGuid;
 		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
 		road.trafficRule = this.trafficRule;
-		// road.successor = this.successor;
-		// road.predecessor = this.predecessor;
 		road.junctionId = this.junctionId;
 		road.planView = this._planView.clone();
-		// road._objects = this.objects.clone();
-		// road._signals = this.signals;
-		// road._gameObject = this.gameObject;
-		// road._name = this.name;
-		// road._length = this.length;
-		// road._id = this.id;
 		road.predecessor = this.predecessor?.clone();
 		road.successor = this.successor?.clone();
 

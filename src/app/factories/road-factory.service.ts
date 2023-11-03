@@ -61,7 +61,7 @@ export class RoadFactory {
 
 		const point = road.addControlPointAt( position );
 
-		road.spline.addRoadSegment( 0, -1, road.id );
+		road.spline.addRoadSegment( 0, road.id );
 
 		return { point, road };
 
@@ -173,9 +173,11 @@ export class RoadFactory {
 
 		const road = new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
 
+		road.sStart = 0;
+
 		const spline = new AutoSplineV2();
 
-		spline.addRoadSegment( 0, -1, road.id );
+		spline.addRoadSegment( road.sStart, road.id );
 
 		road.spline = spline;
 

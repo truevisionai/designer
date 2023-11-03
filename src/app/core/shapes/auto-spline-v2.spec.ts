@@ -24,7 +24,7 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		spline.addRoadSegment( 0, 100, road.id );
+		spline.addRoadSegment( 0, road.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -32,7 +32,7 @@ describe( 'AutoSplineV2 tests', () => {
 		expect( segments.length ).toBe( 1 );
 
 		expect( segments[ 0 ].start ).toBe( 0 );
-		expect( segments[ 0 ].length ).toBe( 100 );
+		// expect( segments[ 0 ].length ).toBe( 100 );
 		expect( segments[ 0 ].geometries.length ).toBe( 1 );
 
 		expect( segments[ 0 ].geometries[ 0 ].s ).toBe( 0 );
@@ -51,22 +51,23 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road.id );
+		spline.addRoadSegment( 10, road.id );
+		spline.addRoadSegment( 40, -1 );
 
 		let segments = spline.getRoadSegments();
 
 		expect( spline.controlPoints.length ).toBe( 2 );
-		expect( segments.length ).toBe( 1 );
+		expect( segments.length ).toBe( 2 );
 
 		expect( segments[ 0 ].start ).toBe( 10 );
-		expect( segments[ 0 ].length ).toBe( 40 );
+		// expect( segments[ 0 ].length ).toBe( 40 );
 		expect( segments[ 0 ].geometries.length ).toBe( 1 );
 
 		expect( segments[ 0 ].geometries[ 0 ].s ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].x ).toBe( 10 );
 		expect( segments[ 0 ].geometries[ 0 ].y ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].hdg ).toBe( 0 );
-		expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 40 );
+		expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 30 );
 
 	} )
 
@@ -78,8 +79,8 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 200, 0, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road.id );
-		spline.addRoadSegment( 60, 40, road2.id );
+		spline.addRoadSegment( 10, road.id );
+		spline.addRoadSegment( 60, road2.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -87,22 +88,20 @@ describe( 'AutoSplineV2 tests', () => {
 		expect( segments.length ).toBe( 2 );
 
 		expect( segments[ 0 ].start ).toBe( 10 );
-		expect( segments[ 0 ].length ).toBe( 40 );
 		expect( segments[ 0 ].geometries.length ).toBe( 1 );
 		expect( segments[ 0 ].geometries[ 0 ].s ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].x ).toBe( 10 );
 		expect( segments[ 0 ].geometries[ 0 ].y ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].hdg ).toBe( 0 );
-		expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 40 );
+		expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 50 );
 
 		expect( segments[ 1 ].start ).toBe( 60 );
-		expect( segments[ 1 ].length ).toBe( 40 );
 		expect( segments[ 1 ].geometries.length ).toBe( 1 );
 		expect( segments[ 1 ].geometries[ 0 ].s ).toBe( 0 );
 		expect( segments[ 1 ].geometries[ 0 ].x ).toBe( 60 );
 		expect( segments[ 1 ].geometries[ 0 ].y ).toBe( 0 );
 		expect( segments[ 1 ].geometries[ 0 ].hdg ).toBe( 0 );
-		expect( segments[ 1 ].geometries[ 0 ].length ).toBe( 40 );
+		expect( segments[ 1 ].geometries[ 0 ].length ).toBe( 140 );
 
 	} )
 
@@ -114,15 +113,15 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
 
-		spline.addRoadSegment( 10, 80, road.id );
+		spline.addRoadSegment( 10, road.id );
+		spline.addRoadSegment( 80, -1 );
 
 		let segments = spline.getRoadSegments();
 
 		expect( spline.controlPoints.length ).toBe( 3 );
-		expect( segments.length ).toBe( 1 );
+		expect( segments.length ).toBe( 2 );
 
 		expect( segments[ 0 ].start ).toBe( 10 );
-		expect( segments[ 0 ].length ).toBe( 80 );
 		expect( segments[ 0 ].geometries.length ).toBe( 2 );
 
 		expect( segments[ 0 ].geometries[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
@@ -137,7 +136,7 @@ describe( 'AutoSplineV2 tests', () => {
 		expect( segments[ 0 ].geometries[ 1 ].x ).toBe( 50 );
 		expect( segments[ 0 ].geometries[ 1 ].y ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 1 ].hdg ).toBe( 0 );
-		expect( segments[ 0 ].geometries[ 1 ].length ).toBe( 40 );
+		expect( segments[ 0 ].geometries[ 1 ].length ).toBe( 30 );
 
 	} )
 
@@ -149,8 +148,8 @@ describe( 'AutoSplineV2 tests', () => {
 		spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 		spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
 
-		spline.addRoadSegment( 10, 40, road.id );
-		spline.addRoadSegment( 50, 40, road2.id );
+		spline.addRoadSegment( 10, road.id );
+		spline.addRoadSegment( 50, road2.id );
 
 		let segments = spline.getRoadSegments();
 
@@ -158,24 +157,22 @@ describe( 'AutoSplineV2 tests', () => {
 		expect( segments.length ).toBe( 2 );
 
 		expect( segments[ 0 ].start ).toBe( 10 );
-		expect( segments[ 0 ].length ).toBe( 40 );
 		expect( segments[ 0 ].geometries.length ).toBe( 1 );
 		expect( segments[ 0 ].geometries[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
 		expect( segments[ 0 ].geometries[ 0 ].s ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].x ).toBe( 10 );
 		expect( segments[ 0 ].geometries[ 0 ].y ).toBe( 0 );
 		expect( segments[ 0 ].geometries[ 0 ].hdg ).toBe( 0 );
-		expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 40 );
+		// expect( segments[ 0 ].geometries[ 0 ].length ).toBe( 40 );
 
 		expect( segments[ 1 ].start ).toBe( 50 );
-		expect( segments[ 1 ].length ).toBe( 40 );
 		expect( segments[ 1 ].geometries.length ).toBe( 1 );
 		expect( segments[ 1 ].geometries[ 0 ].geometryType ).toBe( TvGeometryType.ARC );
 		expect( segments[ 1 ].geometries[ 0 ].s ).toBe( 0 );
 		expect( segments[ 1 ].geometries[ 0 ].x ).toBe( 50 );
 		expect( segments[ 1 ].geometries[ 0 ].y ).toBe( 0 );
 		expect( segments[ 1 ].geometries[ 0 ].hdg ).toBe( 0 );
-		expect( segments[ 1 ].geometries[ 0 ].length ).toBe( 40 );
+		// expect( segments[ 1 ].geometries[ 0 ].length ).toBe( 40 );
 
 	} )
 

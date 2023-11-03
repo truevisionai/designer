@@ -2,36 +2,54 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
-import { SceneService } from 'app/services/scene.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { isArray } from 'rxjs/internal-compatibility';
-import { Box3, BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvRoadCoord } from '../../../modules/tv-map/models/tv-lane-coord';
 import { SelectStrategy } from './select-strategy';
 
 export class OnRoadStrategy extends SelectStrategy<TvRoadCoord> {
 
-	constructor () {
+	constructor ( private includeJunctionRoads = false ) {
 		super();
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): TvRoadCoord {
 
-		return this.onRoadGeometry( pointerEventData );
+		const coord = this.onRoadGeometry( pointerEventData );
+
+		if ( !coord ) return;
+
+		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
+			return;
+		}
+
+		return coord
 	}
 
 	onPointerMoved ( pointerEventData: PointerEventData ): TvRoadCoord {
 
-		return this.onRoadGeometry( pointerEventData );
+		const coord = this.onRoadGeometry( pointerEventData );
+
+		if ( !coord ) return;
+
+		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
+			return;
+		}
+
+		return coord
 
 	}
 
 	onPointerUp ( pointerEventData: PointerEventData ): TvRoadCoord {
 
-		return this.onRoadGeometry( pointerEventData );
+		const coord = this.onRoadGeometry( pointerEventData );
+
+		if ( !coord ) return;
+
+		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
+			return;
+		}
+
+		return coord
 
 	}
 

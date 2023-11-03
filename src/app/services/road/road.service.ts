@@ -12,7 +12,6 @@ import { RoadSplineService } from './road-spline.service';
 import { RoadLinkService } from './road-link.service';
 import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
 import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +20,8 @@ export class RoadService extends BaseService {
 
 	private static nodes: RoadNode[] = [];
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
+
+	private roadSplineService = new RoadSplineService;
 
 	hideAllRoadNodes () {
 
@@ -42,7 +43,7 @@ export class RoadService extends BaseService {
 
 		( new RoadLinkService() ).linkRoads( firstNode, secondNode, joiningRoad );
 
-		spline.addRoadSegment( 0, -1, joiningRoad.id );
+		spline.addRoadSegment( 0, joiningRoad.id );
 
 		joiningRoad.spline = spline;
 
@@ -144,39 +145,32 @@ export class RoadService extends BaseService {
 
 	}
 
-	updateSplineRoads ( spline: AbstractSpline ) {
+	// updateSplineRoads ( spline: AbstractSpline ) {
 
-		spline.updateRoadSegments();
+	// 	spline.updateRoadSegments();
 
-		spline.getRoadSegments().forEach( segment => {
+	// 	spline.getRoadSegments().forEach( segment => {
 
-			const road = this.map.getRoadById( segment.roadId );
+	// 		if ( segment.roadId == -1 ) return;
 
-			if ( road ) {
+	// 		const road = this.map.getRoadById( segment.roadId );
 
-				road.clearGeometries();
+	// 		if ( road ) {
 
-				segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+	// 			road.clearGeometries();
 
-			}
+	// 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-		} );
+	// 		}
 
-	}
+	// 	} );
+
+	// }
 
 	updateSplineGeometries ( road: TvRoad ) {
 
-		if ( road.spline.controlPoints.length < 2 ) return;
+		this.roadSplineService.updateRoadSpline( road.spline );
 
-		road.spline?.getRoadSegments().forEach( segment => {
-
-			const road = this.map.getRoadById( segment.roadId );
-
-			road.clearGeometries();
-
-			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-		} );
 	}
 
 	rebuildRoad ( road: TvRoad ): void {
@@ -186,6 +180,8 @@ export class RoadService extends BaseService {
 		console.debug( 'regen', road );
 
 		road.spline?.getRoadSegments().forEach( segment => {
+
+			if ( segment.roadId == -1 ) return;
 
 			const road = this.map.getRoadById( segment.roadId );
 

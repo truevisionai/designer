@@ -74,7 +74,7 @@ export class TvMap {
 	}
 
 	addSpline ( spline: AbstractSpline ): void {
-		if ( this.splines.includes( spline ) ) return;
+		if ( this.splines.find( s => s.uuid == spline.uuid ) ) return;
 		this.splines.push( spline );
 	}
 
@@ -122,7 +122,11 @@ export class TvMap {
 
 		this._roads.set( road.id, road );
 
-		this.addSpline( road.spline );
+	}
+
+	addRoads ( roads: TvRoad[] ) {
+
+		roads.forEach( road => this.addRoad( road ) );
 
 	}
 
@@ -147,7 +151,7 @@ export class TvMap {
 
 	}
 
-	public deleteRoad ( road: TvRoad ) {
+	public removeRoad ( road: TvRoad ) {
 
 		this.roads.delete( road.id );
 

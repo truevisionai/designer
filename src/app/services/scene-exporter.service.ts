@@ -145,11 +145,17 @@ export class SceneExporterService {
 		if ( spline instanceof AutoSpline ) {
 
 			return {
+				attr_uuid: spline.uuid,
 				attr_type: spline.type,
 				point: spline.controlPointPositions.map( point => ( {
 					attr_x: point.x,
 					attr_y: point.y,
 					attr_z: point.z
+				} ) ),
+				roadSegment: spline.getRoadSegments().map( segment => ( {
+					attr_start: segment.start,
+					// attr_length: segment.length,
+					attr_roadId: segment.roadId,
 				} ) )
 			};
 
@@ -158,15 +164,16 @@ export class SceneExporterService {
 		if ( spline instanceof AutoSplineV2 ) {
 
 			return {
+				attr_uuid: spline.uuid,
 				attr_type: spline.type,
 				point: spline.controlPointPositions.map( point => ( {
 					attr_x: point.x,
 					attr_y: point.y,
 					attr_z: point.z
 				} ) ),
-				roadSegments: spline.getRoadSegments().map( segment => ( {
+				roadSegment: spline.getRoadSegments().map( segment => ( {
 					attr_start: segment.start,
-					attr_length: segment.length,
+					// attr_length: segment.length,
 					attr_roadId: segment.roadId,
 				} ) )
 			};
@@ -176,6 +183,7 @@ export class SceneExporterService {
 		if ( spline instanceof ExplicitSpline ) {
 
 			return {
+				attr_uuid: spline.uuid,
 				attr_type: spline.type,
 				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
 					attr_x: point.position.x,
@@ -183,6 +191,11 @@ export class SceneExporterService {
 					attr_z: point.position.z,
 					attr_hdg: point.hdg,
 					attr_type: point.segmentType,
+				} ) ),
+				roadSegment: spline.getRoadSegments().map( segment => ( {
+					attr_start: segment.start,
+					// attr_length: segment.length,
+					attr_roadId: segment.roadId,
 				} ) )
 			};
 
@@ -208,6 +221,7 @@ export class SceneExporterService {
 
 		const xml = {
 			attr_id: road.id,
+			attr_sStart: road.sStart,
 			attr_name: road.name,
 			attr_length: road.length,
 			attr_junction: road.junctionId,

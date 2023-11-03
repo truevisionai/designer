@@ -176,12 +176,11 @@ export class TvSurface implements ISelectable {
 
 		if ( this.materialGuid === undefined ) {
 
-			const texture = OdTextures.terrain.clone();
+			const texture = OdTextures.terrain().clone();
 			texture.wrapS = texture.wrapT = RepeatWrapping;
 			texture.offset.copy( this.offset );
 			texture.repeat.copy( this.repeat );
 			texture.anisotropy = 16;
-			texture.encoding = sRGBEncoding;
 
 			groundMaterial = new MeshLambertMaterial( { map: texture } );
 

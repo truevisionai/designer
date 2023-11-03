@@ -27,7 +27,7 @@ export class ConnectingRoadService extends BaseService {
 
 		} );
 
-		this.map.deleteRoad( road );
+		this.map.removeRoad( road );
 
 	}
 

@@ -1,11 +1,10 @@
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
-import { TvRoad } from "../modules/tv-map/models/tv-road.model";
-import { TvMapBuilder } from "../modules/tv-map/builders/tv-map-builder";
 import { TvMapInstance } from "../modules/tv-map/services/tv-map-source-file";
 import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
 import { ToolManager } from "app/tools/tool-manager";
 import { RoadLinkService } from "app/services/road/road-link.service";
+import { RoadSplineService } from "app/services/road/road-spline.service";
 
 export class RoadEventListener extends Manager {
 
@@ -13,6 +12,7 @@ export class RoadEventListener extends Manager {
 	private debug = true;
 	private roadService: RoadService;
 	private roadLinkService: RoadLinkService;
+	private roadSplineService: RoadSplineService;
 
 	static get instance (): RoadEventListener {
 		return this._instance;
@@ -24,6 +24,7 @@ export class RoadEventListener extends Manager {
 
 		this.roadService = new RoadService();
 		this.roadLinkService = new RoadLinkService();
+		this.roadSplineService = new RoadSplineService();
 
 	}
 
@@ -43,9 +44,7 @@ export class RoadEventListener extends Manager {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.regenerateGeometries( event.road );
-
-		TvMapBuilder.rebuildRoad( event.road );
+		this.roadSplineService.rebuildSplineRoads( event.road.spline );
 
 		this.roadService.updateRoadNodes( event.road );
 
@@ -71,6 +70,8 @@ export class RoadEventListener extends Manager {
 
 		this.roadLinkService.removeLinks( event.road );
 
+		this.roadSplineService.removeRoadSegment( event.road );
+
 		TvMapInstance.map.gameObject.remove( event.road.gameObject );
 	}
 
@@ -78,7 +79,9 @@ export class RoadEventListener extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadCreated' );
 
-		this.regenerateGeometries( event.road );
+		this.roadSplineService.addRoadSegment( event.road );
+
+		this.roadSplineService.rebuildSplineRoads( event.road.spline );
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
@@ -92,22 +95,4 @@ export class RoadEventListener extends Manager {
 
 	}
 
-	private regenerateGeometries ( road: TvRoad ) {
-
-		if ( road.spline.controlPoints.length < 2 ) return;
-
-		console.debug( 'regen', road );
-
-		road.spline?.getRoadSegments().forEach( segment => {
-
-			const road = TvMapInstance.map.getRoadById( segment.roadId );
-
-			road.clearGeometries();
-
-			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-			TvMapBuilder.rebuildRoad( road );
-
-		} );
-	}
 }

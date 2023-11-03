@@ -5,14 +5,15 @@
 import { EventEmitter } from '@angular/core';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
-import { Vector2, Vector3 } from 'three';
+import { MathUtils, Vector2, Vector3 } from 'three';
 import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
-import { RoadSegment } from './auto-spline-v2';
-
+import { RoadSegment } from './RoadSegment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export abstract class AbstractSpline {
+
+	public uuid: string;
 
 	abstract type: string;
 
@@ -27,6 +28,8 @@ export abstract class AbstractSpline {
 	protected roadSegments: RoadSegment[] = [];
 
 	constructor ( public closed = true, public tension = 0.5 ) {
+
+		this.uuid = MathUtils.generateUUID();
 
 		this.init();
 
@@ -58,9 +61,11 @@ export abstract class AbstractSpline {
 
 		const spline: AbstractSpline = new ( this.constructor as any )( this.closed, this.tension );
 
+		spline.uuid = this.uuid;
+
 		this.controlPoints.forEach( cp => spline.addControlPointAt( cp.position ) );
 
-		this.roadSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.length, segment.roadId ) );
+		this.roadSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.roadId ) );
 
 		spline.type = this.type;
 
@@ -237,12 +242,24 @@ export abstract class AbstractSpline {
 		return points;
 	}
 
-	addRoadSegment ( start: number, length: number, roadId: number ) {
+	addRoadSegment ( start: number, roadId: number ) {
+
+		if ( start == null ) throw new Error( 'start is null' );
 
 		// check if road segment already exists
 		if ( this.roadSegments.find( i => i.roadId == roadId ) ) return;
 
-		this.roadSegments.push( { start, length, roadId: roadId, geometries: [] } );
+		const exists = this.roadSegments.find( seg => seg.start == start );
+
+		if ( exists ) {
+
+			exists.roadId = roadId;
+
+		} else {
+
+			this.roadSegments.push( { start: start, roadId: roadId, geometries: [] } );
+
+		}
 
 		// sort road segment by start
 		this.roadSegments.sort( ( a, b ) => a.start - b.start );

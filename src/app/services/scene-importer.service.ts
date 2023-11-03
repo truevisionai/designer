@@ -195,6 +195,8 @@ export class SceneImporterService extends AbstractReader {
 
 			spline.getRoadSegments().forEach( segment => {
 
+				if ( segment.roadId == -1 ) return;
+
 				const road = this.map.getRoadById( segment.roadId );
 
 				road.spline = spline;
@@ -278,6 +280,8 @@ export class SceneImporterService extends AbstractReader {
 
 			road.spline.getRoadSegments().forEach( segment => {
 
+				if ( segment.roadId == -1 ) return;
+
 				const road = this.map.getRoadById( segment.roadId );
 
 				this.roadService.updateSplineGeometries( road );
@@ -343,6 +347,8 @@ export class SceneImporterService extends AbstractReader {
 		const junction = parseInt( xml.attr_junction ) || -1;
 
 		const road = RoadFactory.createNewRoad( name, length, id, junction );
+
+		road.sStart = xml.attr_sStart ?? 0;
 
 		road.drivingMaterialGuid = xml.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;
@@ -415,7 +421,7 @@ export class SceneImporterService extends AbstractReader {
 
 			} );
 
-			autoSplineV2.addRoadSegment( 0, -1, road.id );
+			autoSplineV2.addRoadSegment( 0, road.id );
 
 			road.spline = autoSplineV2;
 
@@ -456,6 +462,8 @@ export class SceneImporterService extends AbstractReader {
 
 		const spline = road.spline = new ExplicitSpline( road );
 
+		if ( xml.attr_uuid ) spline.uuid;
+
 		let index = 0;
 
 		this.readAsOptionalArray( xml.point, xml => {
@@ -486,6 +494,8 @@ export class SceneImporterService extends AbstractReader {
 
 		const spline = new AutoSpline()
 
+		if ( xml.attr_uuid ) spline.uuid;
+
 		this.readAsOptionalArray( xml.point, xml => {
 
 			const position = this.importVector3( xml );
@@ -504,6 +514,8 @@ export class SceneImporterService extends AbstractReader {
 
 		const spline = new AutoSplineV2();
 
+		if ( xml.attr_uuid ) spline.uuid;
+
 		this.readAsOptionalArray( xml.point, xml => {
 
 			const position = this.importVector3( xml );
@@ -512,13 +524,12 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		this.readAsOptionalArray( xml.roadSegments, xml => {
+		this.readAsOptionalArray( xml.roadSegment, xml => {
 
 			const start = parseFloat( xml.attr_start );
-			const length = parseFloat( xml.attr_length );
 			const roadId = parseInt( xml.attr_roadId );
 
-			spline.addRoadSegment( start, length, roadId );
+			spline.addRoadSegment( start, roadId );
 
 		} );
 

@@ -41,6 +41,8 @@ export class RoadControlPointListener extends Manager {
 
 		spline.getRoadSegments().forEach( segment => {
 
+			if ( segment.roadId == -1 ) return;
+
 			const road = this.map.getRoadById( segment.roadId );
 
 			roadLinkService.updateLinks( road, event.controlPoint, true );
@@ -65,7 +67,7 @@ export class RoadControlPointListener extends Manager {
 
 		SceneService.removeFromTool( event.controlPoint );
 
-		this.roadService.updateSplineGeometries( event.road );
+		// this.roadService.updateSplineGeometries( event.road );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 
@@ -77,7 +79,7 @@ export class RoadControlPointListener extends Manager {
 
 		SceneService.addToolObject( event.controlPoint );
 
-		this.roadService.updateSplineGeometries( event.road );
+		// this.roadService.updateSplineGeometries( event.road );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
 

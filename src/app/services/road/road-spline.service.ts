@@ -8,13 +8,86 @@ import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector3 } from 'three';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { BaseService } from '../base.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadSplineService {
+export class RoadSplineService extends BaseService {
 
-	constructor () { }
+	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ) {
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		spline.getRoadSegments().forEach( segment => {
+
+			if ( segment.roadId == -1 ) return;
+
+			const road = this.map.getRoadById( segment.roadId );
+
+			road.clearGeometries();
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+			if ( rebuild ) this.rebuildRoad( road );
+
+		} );
+
+	}
+
+	rebuildSplineRoads ( spline: AbstractSpline ): void {
+
+		this.updateRoadSpline( spline, true );
+
+	}
+
+	addRoadSegment ( road: TvRoad ) {
+
+		const spline = road.spline;
+
+		if ( spline == null ) return;
+
+		this.map.addSpline( spline );
+
+		// if no road segments are present in the spline,
+		// then add the road this
+		spline.addRoadSegment( road.sStart, road.id );
+
+	}
+
+	removeRoadSegment ( road: TvRoad ) {
+
+		const spline = road.spline;
+
+		if ( spline == null ) return;
+
+		// get road segment and update if next road segment exists
+		// this is to make sure we maintains gaps if intended
+		const segment = spline.getRoadSegments().find( i => i.roadId == road.id );
+
+		if ( segment == null ) return;
+
+		const nextSegment = spline.getRoadSegments().find( i => i.start > segment.start );
+
+		if ( nextSegment ) {
+
+			// if next segment exists,
+			segment.roadId = -1;
+
+		} else {
+
+			spline.removeRoadSegmentByRoadId( road.id );
+
+
+		}
+
+		if ( spline.getRoadSegments().length == 0 ) {
+
+			this.map.removeSpline( spline );
+
+		}
+	}
 
 	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 

@@ -8,13 +8,7 @@ import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-
-export class RoadSegment {
-	start: number;  // Position on the spline where the segment starts
-	length: number;  // Length of the road segment
-	roadId: number;  // Road to which this segment belongs
-	geometries: TvAbstractRoadGeometry[];  // Geometries for this road segment
-}
+import { RoadSegment } from './RoadSegment';
 
 export class AutoSplineV2 extends AbstractSpline {
 
@@ -69,7 +63,6 @@ export class AutoSplineV2 extends AbstractSpline {
 		SceneService.addToolObject( this.roundline.mesh );
 
 	}
-
 
 	show (): void {
 
@@ -140,29 +133,41 @@ export class AutoSplineV2 extends AbstractSpline {
 	// 	} );
 	// }
 	updateRoadSegments () {
-		// Assuming this.getSplineGeometries() returns a sorted array of geometries based on their 's' value.
+
 		const geometries = this.getSplineGeometries();
+
 		const splineLength = this.getLength();
 
-		// if ( this.roadSegments.length > 1 ) {
-		// 	const lastSegment = this.roadSegments[ this.roadSegments.length - 1 ];
-		// 	lastSegment.length = splineLength - lastSegment.start;
-		// }
+		for ( let i = 0; i < this.roadSegments.length; i++ ) {
 
-		this.roadSegments.forEach( segment => {
+			const segment = this.roadSegments[ i ];
+
+			let nextSegment: RoadSegment;
+			if ( i + 1 < this.roadSegments.length ) {
+				nextSegment = this.roadSegments[ i + 1 ];
+			}
 
 			// Clear previous geometries
 			segment.geometries = [];
 
-			const segmentLength = segment.length == -1 ? splineLength : segment.length;
-
-			// Calculate the segment's actual end point based on its length.
-			const segmentEnd = segment.start + segmentLength;
+			let segmentLength: number;
+			if ( nextSegment ) {
+				segmentLength = nextSegment.start - segment.start
+			} else {
+				segmentLength = splineLength - segment.start;
+			}
 
 			// Variables to keep track of the current position and remaining length of the segment
 			let currentS = segment.start;
 			let remainingLength = segmentLength;
 			let lengthCovered = 0;
+
+			if ( segment.roadId == -1 ) {
+				remainingLength -= segmentLength;
+				currentS += segmentLength;
+				lengthCovered += segmentLength;
+				continue;
+			}
 
 			// Iterate through the geometries to find those that fall within the segment
 			for ( const geometry of geometries ) {
@@ -218,12 +223,12 @@ export class AutoSplineV2 extends AbstractSpline {
 			}
 
 			// Validation to ensure we are not exceeding the segment's length
-			const totalGeomLength = segment.geometries.reduce( ( total, geom ) => total + geom.length, 0 );
-			if ( segment.length != -1 && totalGeomLength > segment.length ) {
-				console.error( `Total length of geometries exceeds the segment length for segment starting at ${ segment.start }`, segment.length, totalGeomLength, segment.geometries );
-				// Additional handling may be needed here depending on your application's requirements
-			}
-		} );
+			// const totalGeomLength = segment.geometries.reduce( ( total, geom ) => total + geom.length, 0 );
+			// if ( segment.length != -1 && totalGeomLength > segment.length ) {
+			// 	console.error( `Total length of geometries exceeds the segment length for segment starting at ${ segment.start }`, segment.length, totalGeomLength, segment.geometries );
+			// 	// Additional handling may be needed here depending on your application's requirements
+			// }
+		}
 	}
 
 	updateHdgs () {
@@ -299,7 +304,7 @@ export class AutoSplineV2 extends AbstractSpline {
 					.toArray();
 
 				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ]['hdg'];
+				hdg = points[ i - 1 ][ 'hdg' ];
 
 				length = d - radiuses[ i - 1 ] - radiuses[ i ];
 
@@ -352,7 +357,6 @@ export class AutoSplineV2 extends AbstractSpline {
 
 					geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
 
-
 				} else {
 
 					s = totalLength;
@@ -366,7 +370,6 @@ export class AutoSplineV2 extends AbstractSpline {
 					console.warn( 'radius is infinity' );
 
 				}
-
 
 			}
 
@@ -464,7 +467,6 @@ export class AutoSplineV2 extends AbstractSpline {
 
 					geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
 
-
 				} else {
 
 					s = totalLength;
@@ -478,7 +480,6 @@ export class AutoSplineV2 extends AbstractSpline {
 					console.warn( 'radius is infinity' );
 
 				}
-
 
 			}
 
