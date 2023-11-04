@@ -5,6 +5,7 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
+import { Object3D } from "three";
 
 export class RoadCreatedEvent {
 	constructor ( public road: TvRoad, public showHelpers = true ) { }
@@ -83,12 +84,20 @@ export class MapEvents {
 	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
 
+	@Output() static objectSelected = new EventEmitter<any>();
+	@Output() static objectUnselected = new EventEmitter<any>();
+
+	@Output() static objectAdded = new EventEmitter<any>();
+	@Output() static objectRemoved = new EventEmitter<any>();
+
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
 	@Output() static roadRemoved = new EventEmitter<RoadRemovedEvent>();
 	@Output() static roadSelected = new EventEmitter<RoadSelectedEvent>();
 	@Output() static roadUnselected = new EventEmitter<RoadUnselectedEvent>();
 
+	@Output() static controlPointSelected = new EventEmitter<AbstractControlPoint>();
+	@Output() static controlPointUnselected = new EventEmitter<AbstractControlPoint>();
 	@Output() static roadControlPointCreated = new EventEmitter<RoadControlPointCreatedEvent>();
 	@Output() static roadControlPointUpdated = new EventEmitter<RoadControlPointUpdatedEvent>();
 	@Output() static roadControlPointRemoved = new EventEmitter<RoadControlPointRemovedEvent>();

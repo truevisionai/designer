@@ -9,15 +9,15 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 } )
 export abstract class BaseService {
 
-	get map () {
+	protected get map () {
 		return TvMapInstance.map;
 	}
 
-	get scenario () {
+	protected get scenario () {
 		return ScenarioInstance.scenario;
 	}
 
-	rebuildRoad ( road: TvRoad ) {
+	protected rebuildRoad ( road: TvRoad ) {
 		TvMapBuilder.rebuildRoad( road );
 	}
 

@@ -12,6 +12,7 @@ import { RoadSplineService } from './road-spline.service';
 import { RoadLinkService } from './road-link.service';
 import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
 import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,17 +22,20 @@ export class RoadService extends BaseService {
 	private static nodes: RoadNode[] = [];
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
 
-	private roadSplineService = new RoadSplineService;
+	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) {
+
+		super();
+	}
 
 	hideAllRoadNodes () {
 
-		this.map.getRoads().forEach( road => this.hideRoadNodes( road ) );
+		this.mapService.map.getRoads().forEach( road => this.hideRoadNodes( road ) );
 
 	}
 
 	showAllRoadNodes () {
 
-		this.map.getRoads().forEach( road => this.showRoadNodes( road ) );
+		this.mapService.map.getRoads().forEach( road => this.showRoadNodes( road ) );
 
 	}
 
@@ -39,7 +43,7 @@ export class RoadService extends BaseService {
 
 		const joiningRoad = RoadFactory.createJoiningRoad( firstNode, secondNode );
 
-		const spline = ( new RoadSplineService() ).createSplineFromNodes( firstNode, secondNode );
+		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
 
 		( new RoadLinkService() ).linkRoads( firstNode, secondNode, joiningRoad );
 
@@ -86,11 +90,23 @@ export class RoadService extends BaseService {
 
 		road.spline.showControlPoints();
 
+		road.spline.controlPoints.forEach( cp => {
+
+			SceneService.addToolObject( cp );
+
+		} );
+
 	}
 
 	hideControlPoints ( road: TvRoad ) {
 
 		road.spline.hideControlPoints();
+
+		road.spline.controlPoints.forEach( cp => {
+
+			SceneService.removeFromTool( cp );
+
+		} );
 
 	}
 
@@ -153,7 +169,7 @@ export class RoadService extends BaseService {
 
 	// 		if ( segment.roadId == -1 ) return;
 
-	// 		const road = this.map.getRoadById( segment.roadId );
+	// 		const road = this.mapService.map.getRoadById( segment.roadId );
 
 	// 		if ( road ) {
 
@@ -183,7 +199,7 @@ export class RoadService extends BaseService {
 
 			if ( segment.roadId == -1 ) return;
 
-			const road = this.map.getRoadById( segment.roadId );
+			const road = this.mapService.map.getRoadById( segment.roadId );
 
 			road.clearGeometries();
 
@@ -265,7 +281,7 @@ export class RoadService extends BaseService {
 
 	showAllCornerPoints () {
 
-		this.map.getRoads().forEach( road => {
+		this.mapService.map.getRoads().forEach( road => {
 			this.showCornerPoints( road );
 		} );
 
@@ -273,7 +289,7 @@ export class RoadService extends BaseService {
 
 	hideAllCornerPoints () {
 
-		this.map.getRoads().forEach( road => {
+		this.mapService.map.getRoads().forEach( road => {
 			this.hideCornerPoints( road );
 		} );
 

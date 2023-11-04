@@ -57,6 +57,8 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	}
 
+	update (): void { }
+
 	onMouseOver () {
 
 		( this.material as PointsMaterial ).color = new Color( this.HOVERED_CONTROL_POINT_COLOR );

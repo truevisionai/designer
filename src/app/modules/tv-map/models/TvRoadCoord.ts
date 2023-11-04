@@ -1,17 +1,15 @@
 import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 import { Vector3 } from 'three';
-// import { TvMapInstance } from '../services/tv-map-instance';
 import { TvRoad } from './tv-road.model';
 
 
 export class TvRoadCoord {
 
-	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
+	constructor ( public road: TvRoad, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
 	}
 
-	get road (): TvRoad {
-		throw new Error( 'method not implemented' );
-		// return TvMapInstance.map.getRoadById( this.roadId );
+	get roadId (): number {
+		return this.road.id;
 	}
 
 	get position (): Vector3 {

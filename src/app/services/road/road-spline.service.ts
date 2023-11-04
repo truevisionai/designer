@@ -10,11 +10,16 @@ import { Vector3 } from 'three';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BaseService } from '../base.service';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadSplineService extends BaseService {
+
+	constructor ( private mapService: MapService ) {
+		super();
+	}
 
 	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ) {
 
@@ -24,7 +29,7 @@ export class RoadSplineService extends BaseService {
 
 			if ( segment.roadId == -1 ) return;
 
-			const road = this.map.getRoadById( segment.roadId );
+			const road = this.mapService.map.getRoadById( segment.roadId );
 
 			road.clearGeometries();
 
@@ -48,7 +53,7 @@ export class RoadSplineService extends BaseService {
 
 		if ( spline == null ) return;
 
-		this.map.addSpline( spline );
+		this.mapService.map.addSpline( spline );
 
 		// if no road segments are present in the spline,
 		// then add the road this
@@ -84,7 +89,7 @@ export class RoadSplineService extends BaseService {
 
 		if ( spline.getRoadSegments().length == 0 ) {
 
-			this.map.removeSpline( spline );
+			this.mapService.map.removeSpline( spline );
 
 		}
 	}

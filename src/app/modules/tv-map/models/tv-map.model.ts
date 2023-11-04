@@ -16,8 +16,12 @@ import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
 import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Vector3 } from 'three';
 
 export class TvMap {
+	findRoadCoord ( point: Vector3 ) {
+		throw new Error( 'Method not implemented.' );
+	}
 
 	public props: PropInstance[] = [];
 	public propCurves: PropCurve[] = [];
@@ -243,53 +247,9 @@ export class TvMap {
 
 	destroy () {
 
-		// this.roads.forEach( road => {
-
-		// 	road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
-
-		// 	road.remove( this.gameObject );
-
-		// } );
-
-		// this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
-
-		// this.propCurves.forEach( curve => {
-
-		// 	curve.delete();
-
-		// 	curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
-
-		// } );
-
-		// this.propPolygons.forEach( polygon => {
-
-		// 	polygon.delete();
-
-		// 	polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
-
-		// } );
-
-		// this.props.forEach( prop => {
-
-		// 	// SceneService.remove( prop.object );
-		// 	SceneService.removeFromMain( prop );
-
-		// 	// this.gameObject.remove( prop.object );
-		// 	this.gameObject.remove( prop );
-
-		// } );
-
 		this.clear();
 
 		MapEvents.mapRemoved.emit();
-	}
-
-	showSurfaceHelpers () {
-		this.surfaces.forEach( surface => surface.showHelpers() );
-	}
-
-	hideSurfaceHelpers () {
-		this.surfaces.forEach( surface => surface.hideHelpers() );
 	}
 
 	getJunctions () {
@@ -350,4 +310,17 @@ export class TvMap {
 
 		return finalJunction;
 	}
+
+	removeSurface ( surface: TvSurface ) {
+
+		this.surfaces.splice( this.surfaces.indexOf( surface ), 1 );
+
+	}
+
+	addSurface ( surface: TvSurface ) {
+
+		this.surfaces.push( surface );
+
+	}
+
 }

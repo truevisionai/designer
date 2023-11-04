@@ -21,8 +21,6 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
 import { TvMesh } from './objects/TvMesh';
-import { SurfaceFactory, TvSurface } from '../tv-map/models/tv-surface.model';
-import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { ToolFactory } from 'app/factories/tool-factory';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';

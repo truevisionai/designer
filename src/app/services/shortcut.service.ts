@@ -15,17 +15,7 @@ export class ShortcutService {
 
 	private static shortcutInstances: IKeyboardShortcut[] = [];
 
-	constructor () {
-
-		this.init();
-
-		KeyboardEvents.keyDown.subscribe( ( e ) => {
-
-			ShortcutService.handleKeyDown( e );
-
-		} );
-
-	}
+	constructor () { }
 
 	static get shortcuts (): IKeyboardShortcut[] {
 
@@ -61,6 +51,11 @@ export class ShortcutService {
 
 		} );
 
+		KeyboardEvents.keyDown.subscribe( ( e ) => {
+
+			ShortcutService.handleKeyDown( e );
+
+		} );
 	}
 
 

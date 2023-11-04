@@ -20,6 +20,7 @@ import { SceneService } from '../services/scene.service';
 import { RoadService } from "../services/road/road.service";
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { AnyControlPoint } from "../modules/three-js/objects/any-control-point";
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
@@ -32,7 +33,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
 	private highlightedLines = new Map<Line, Material>();
 
-	protected roadService: RoadService = new RoadService();
+	protected roadService: RoadService;
 
 	public selectedRoad: TvRoad;
 
@@ -236,4 +237,69 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 		} );
 	}
 
+}
+
+export abstract class BaseToolv2 extends ViewportEventSubscriber implements IEditorState {
+
+	abstract name: string;
+
+	abstract toolType: ToolType;
+
+	abstract init (): void;
+
+	enable (): void {
+
+		this.subscribeToEvents();
+
+	}
+
+	disable (): void {
+
+		StatusBarService.clearHint();
+
+		this.unsubscribeToEvents();
+
+	}
+
+	onPointerDown ( e: PointerEventData ) {
+
+		if ( e.button !== MouseButton.LEFT ) return;
+
+		if ( e.point == null ) return;
+
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
+
+		if ( shiftKeyDown ) {
+
+			this.onPointerDownCreate( e );
+
+		} else {
+
+			this.onPointerDownSelect( e );
+
+		}
+
+	}
+
+	onPointerDownSelect ( e: PointerEventData ) { }
+
+	onPointerDownCreate ( e: PointerEventData ) { }
+
+	onRoadCreated ( road: TvRoad ) { }
+
+	onRoadSelected ( road: TvRoad ) { }
+
+	onRoadUnselected ( road: TvRoad ) { }
+
+	onControlPointSelected ( controlPoint: AbstractControlPoint ) { }
+
+	onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
+
+	onObjectSelected ( object: any ) { }
+
+	onObjectUnselected ( object: any ) { }
+
+	onObjectAdded ( object: any ) { }
+
+	onObjectRemoved ( object: any ) { }
 }

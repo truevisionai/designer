@@ -7,6 +7,7 @@ import { Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvLaneSide, TvSide } from './tv-common';
 import { TvRoadCoord } from './TvRoadCoord';
+import { TvRoad } from './tv-road.model';
 
 export class TvPosTheta {
 	public z: number = 0;
@@ -179,10 +180,9 @@ export class TvPosTheta {
 
 	}
 
-	toRoadCoord ( roadId: number ): TvRoadCoord {
+	toRoadCoord ( road: TvRoad ): TvRoadCoord {
 
-		return new TvRoadCoord( roadId, this.s, this.t, this.z, this.hdg, 0, 0 );
-
+		return new TvRoadCoord( road, this.s, this.t, this.z, this.hdg, 0, 0 );
 	}
 
 	computeSideAngle ( B: TvPosTheta ) {

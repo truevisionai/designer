@@ -16,6 +16,7 @@ import { SceneService } from 'app/services/scene.service';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { Environment } from 'app/core/utils/environment';
+import { ToolBarService } from './tool-bar.service';
 
 class IToolMenu {
 	id: string;
@@ -390,6 +391,7 @@ export class ToolBarComponent implements OnInit {
 	constructor (
 		private threeService: ThreeService,
 		private viewContainerRef: ViewContainerRef,
+		private toolBarService: ToolBarService,
 	) {
 	}
 
@@ -450,7 +452,9 @@ export class ToolBarComponent implements OnInit {
 
 	setToolType ( type: ToolType ) {
 
-		CommandHistory.execute( new SetToolCommand( ToolFactory.createTool( type ) ) );
+		this.toolBarService.setToolByType( type );
+
+		// CommandHistory.execute( new SetToolCommand( ToolFactory.createTool( type ) ) );
 
 	}
 

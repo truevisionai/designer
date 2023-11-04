@@ -96,7 +96,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		if ( !road ) return null;
 
-		return posTheta.toRoadCoord( road.id );
+		return posTheta.toRoadCoord( road );
 	}
 
 	static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {

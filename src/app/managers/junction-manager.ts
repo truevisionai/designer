@@ -36,7 +36,7 @@ export class JunctionManager extends Manager {
 
 	init () {
 
-		MapEvents.roadUpdated.subscribe( event => this.onRoadUpdated( event ) );
+		// MapEvents.roadUpdated.subscribe( event => this.onRoadUpdated( event ) );
 
 	}
 

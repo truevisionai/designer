@@ -27,6 +27,7 @@ import { AppInspector } from 'app/core/inspector';
 import { AddRoadCommand } from './add-road-command';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadLinkService } from 'app/services/road/road-link.service';
+import { RoadService } from 'app/services/road/road.service';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -44,9 +45,11 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private roadLinkService = new RoadLinkService();
 
-	constructor () {
+	constructor ( roadService?: RoadService ) {
 
 		super();
+
+		this.roadService = roadService;
 
 		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );

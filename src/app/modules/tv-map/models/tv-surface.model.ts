@@ -3,18 +3,17 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-instance';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { INode, ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { SerializedField } from 'app/core/components/serialization';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
-export class TvSurface implements ISelectable {
+export class TvSurface implements ISelectable, INode {
 
 	public static readonly tag = 'surface';
 
@@ -46,6 +45,14 @@ export class TvSurface implements ISelectable {
 		this.init();
 	}
 
+	onMouseOver () {
+		console.error( 'Method not implemented.' );
+	}
+
+	onMouseOut () {
+		console.error( 'Method not implemented.' );
+	}
+
 	@SerializedField( { type: 'material' } )
 	get materialGuid () { return this._materialGuid; }
 
@@ -54,7 +61,7 @@ export class TvSurface implements ISelectable {
 		this.mesh.material = AssetDatabase.getInstance( value );
 	}
 
-	get spline () { return this._spline; }
+	get spline (): AbstractSpline { return this._spline; }
 
 	set spline ( value: any ) { this._spline = value; this.update() }
 
@@ -106,7 +113,7 @@ export class TvSurface implements ISelectable {
 
 		// add the spline mesh direcly to scene and not opendrive
 		// this helps avoid exporting it in the 3d file
-		SceneService.addToMain( this.spline.mesh );
+		// SceneService.addToMain( this.spline.mesh );
 
 		// set the main object of each control point to this surface
 		this.spline.controlPoints.forEach( cp => cp.mainObject = this );
@@ -163,7 +170,7 @@ export class TvSurface implements ISelectable {
 
 	createPoints (): THREE.Vector2[] {
 
-		return this.spline.curve.getPoints( 50 ).map(
+		return this.spline.getPoints( 50 ).map(
 			point => new Vector2( point.x, point.y )
 		);
 	}
@@ -174,7 +181,7 @@ export class TvSurface implements ISelectable {
 
 		let groundMaterial;
 
-		if ( this.materialGuid === undefined ) {
+		if ( this.materialGuid === undefined || this.materialGuid === 'grass' ) {
 
 			const texture = OdTextures.terrain().clone();
 			texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -182,7 +189,7 @@ export class TvSurface implements ISelectable {
 			texture.repeat.copy( this.repeat );
 			texture.anisotropy = 16;
 
-			groundMaterial = new MeshLambertMaterial( { map: texture } );
+			groundMaterial = new MeshStandardMaterial( { map: texture } );
 
 		} else {
 
@@ -229,11 +236,6 @@ export class TvSurface implements ISelectable {
 
 		}
 
-		if ( this.spline.controlPoints.length >= 2 ) {
-
-			this.spline.mesh.visible = true;
-
-		}
 	}
 
 	removeControlPoint ( point: AbstractControlPoint ) {
@@ -244,36 +246,9 @@ export class TvSurface implements ISelectable {
 
 		this.update();
 
-		if ( this.spline.controlPoints.length < 3 ) {
-
-			this.mesh.visible = false;
-
-		}
-
-		if ( this.spline.controlPoints.length < 2 ) {
-
-			this.spline.mesh.visible = false;
-
-		}
-	}
-
-	showControlPoints (): void {
-
-		this.spline.showcontrolPoints();
-
-	}
-
-	hideControlPoints (): void {
-
-		this.spline.hidecontrolPoints();
-
 	}
 
 	delete (): void {
-
-		this.hideControlPoints();
-
-		this.hideCurve();
 
 		this.mesh.visible = false;
 
@@ -308,44 +283,34 @@ export class TvSurface implements ISelectable {
 		};
 
 	}
-
-	showHelpers () {
-		this.showCurve();
-		this.showControlPoints();
-	}
-
-	hideHelpers () {
-		this.hideCurve();
-		this.hideControlPoints();
-	}
 }
 
-export class SurfaceFactory {
+// export class SurfaceFactory {
 
-	static createFromTextureGuid ( textureGuid: string, position: Vector3 ) {
+// 	static createFromTextureGuid ( textureGuid: string, position: Vector3 ) {
 
-		const texture = AssetDatabase.getInstance<Texture>( textureGuid );
+// 		const texture = AssetDatabase.getInstance<Texture>( textureGuid );
 
-		if ( !texture ) return;
+// 		if ( !texture ) return;
 
-		const material = new MeshStandardMaterial( { map: texture } );
+// 		const material = new MeshStandardMaterial( { map: texture } );
 
-		const textureSize = new Vector2( texture.image.width, texture.image.height );
+// 		const textureSize = new Vector2( texture.image.width, texture.image.height );
 
-		const spline = new CatmullRomSpline( true, 'catmullrom', 0 );
-		spline.addControlPoint( AnyControlPoint.create( 'p1', position.clone().add( new Vector3( 0, 0, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p2', position.clone().add( new Vector3( textureSize.x, 0, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
+// 		const spline = new CatmullRomSpline( true, 'catmullrom', 0 );
+// 		spline.addControlPoint( AnyControlPoint.create( 'p1', position.clone().add( new Vector3( 0, 0, 0 ) ) ) );
+// 		spline.addControlPoint( AnyControlPoint.create( 'p2', position.clone().add( new Vector3( textureSize.x, 0, 0 ) ) ) );
+// 		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
+// 		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
 
-		spline.controlPoints.forEach( cp => SceneService.addToMain( cp ) );
+// 		spline.controlPoints.forEach( cp => SceneService.addToMain( cp ) );
 
-		const surface = new TvSurface( null, spline );
+// 		const surface = new TvSurface( null, spline );
 
-		surface.mesh.material = material;
-		surface.mesh.material.needsUpdate = true;
+// 		surface.mesh.material = material;
+// 		surface.mesh.material.needsUpdate = true;
 
-		return surface
-	}
+// 		return surface
+// 	}
 
-}
+// }

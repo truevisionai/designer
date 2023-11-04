@@ -46,3 +46,39 @@ export class SelectRoadCommand extends BaseCommand {
 	}
 
 }
+
+export class SelectRoadCommandv2 extends BaseCommand {
+
+	constructor ( private newRoad: TvRoad, private previousRoad?: TvRoad ) {
+
+		super();
+
+	}
+
+	execute (): void {
+
+		MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
+
+	}
+
+	undo (): void {
+
+		if ( this.previousRoad ) {
+
+			MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
+
+		} else {
+
+			MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
+
+		}
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
+}

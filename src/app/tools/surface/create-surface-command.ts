@@ -9,6 +9,7 @@ import { BaseCommand } from '../../commands/base-command';
 import { SceneService } from '../../services/scene.service';
 import { CatmullRomSpline } from '../../core/shapes/catmull-rom-spline';
 import { SurfaceTool } from './surface-tool';
+import { MapEvents } from 'app/events/map-events';
 
 export class CreateSurfaceCommand extends BaseCommand {
 
@@ -69,6 +70,36 @@ export class CreateSurfaceCommand extends BaseCommand {
 		this.tool.surface = this.oldSurface;
 
 		SceneService.removeFromMain( this.newPoint );
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
+}
+
+export class CreateSurfaceCommandv2 extends BaseCommand {
+
+	constructor ( private surface: TvSurface ) {
+
+		super();
+
+	}
+
+	execute () {
+
+		this.map.addSurface( this.surface );
+
+		MapEvents.objectSelected.emit( this.surface );
+
+	}
+
+	undo () {
+
+		this.map.removeSurface( this.surface );
+
 	}
 
 	redo (): void {

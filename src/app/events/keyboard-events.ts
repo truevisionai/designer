@@ -19,7 +19,7 @@ export class KeyboardEvents {
 		this.isKeyDown = true;
 		this.keyCode = e.keyCode;
 
-		this.keyUp.emit( e );
+		this.keyDown.emit( e );
 
 		this.isShiftKeyDown = e.shiftKey;
 	}
@@ -29,7 +29,7 @@ export class KeyboardEvents {
 		this.isKeyDown = false;
 		this.keyCode = e.keyCode;
 
-		this.keyDown.emit( e );
+		this.keyUp.emit( e );
 
 		this.isShiftKeyDown = e.shiftKey;
 	}

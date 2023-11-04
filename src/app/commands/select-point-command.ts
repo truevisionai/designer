@@ -8,6 +8,9 @@ import { IComponent } from '../core/game-object';
 import { SelectionTool } from '../core/snapping/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { MapEvents } from 'app/events/map-events';
+import { Object3D } from 'three';
 
 export interface IToolWithPoint {
 	setPoint ( value: ISelectable ): void;
@@ -72,6 +75,105 @@ export class SelectPointCommand extends BaseCommand {
 		this.tool.setPoint( this.oldPoint );
 
 		this.setInspectorCommand?.undo();
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+}
+
+export class SelectPointCommandv2 extends BaseCommand {
+
+	constructor ( private point: AbstractControlPoint, private previousPoint?: AbstractControlPoint ) {
+		super();
+	}
+
+	execute () {
+
+		MapEvents.controlPointSelected.emit( this.point );
+
+	}
+
+	undo (): void {
+
+		if ( this.previousPoint ) {
+
+			MapEvents.controlPointSelected.emit( this.previousPoint );
+
+		} else {
+
+			MapEvents.controlPointUnselected.emit( this.point );
+
+		}
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+}
+
+export class SelectObjectCommandv2 extends BaseCommand {
+
+	constructor ( private object: any, private previousObject?: any ) {
+		super();
+	}
+
+	execute () {
+
+		MapEvents.objectSelected.emit( this.object );
+
+	}
+
+	undo (): void {
+
+		if ( this.previousObject ) {
+
+			MapEvents.objectSelected.emit( this.previousObject );
+
+		} else {
+
+			MapEvents.objectUnselected.emit( this.object );
+
+		}
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+}
+
+export class UnselectObjectCommandv2 extends BaseCommand {
+
+	constructor ( private object: any ) {
+
+		super();
+
+		if ( object == null ) {
+
+			throw new Error( 'object cannot be null' );
+
+		}
+
+	}
+
+	execute () {
+
+		MapEvents.objectUnselected.emit( this.object );
+
+	}
+
+	undo (): void {
+
+		MapEvents.objectSelected.emit( this.object );
 
 	}
 

@@ -24,6 +24,9 @@ import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 import { RoadControlPointListener } from 'app/listeners/road-control-point-listener';
+import { RoadService } from './road/road.service';
+import { RoadSplineService } from './road/road-spline.service';
+import { MapService } from './map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,6 +55,9 @@ export class AppService {
 		public files: FileService,
 		sceneExporter: SceneExporterService,
 		public editor: EditorService,
+		private roadService: RoadService,
+		private roadSplineService: RoadSplineService,
+		private mapService: MapService,
 	) {
 
 
@@ -66,14 +72,16 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.registerManager( RoadEventListener );
+		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService ) );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
-		ManagerRegistry.registerManager( RoadSelectionListener );
-		ManagerRegistry.registerManager( RoadControlPointListener );
+		// ManagerRegistry.registerManager( RoadSelectionListener );
+		// ManagerRegistry.registerManager( RoadControlPointListener );
+		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
+		ManagerRegistry.setManager( 'road-control-point-listener', new RoadControlPointListener( this.roadService, this.mapService ) );
 
 		ManagerRegistry.initManagers();
 	}

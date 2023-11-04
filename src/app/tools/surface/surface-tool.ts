@@ -13,7 +13,7 @@ import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { AddSurfacePointCommand } from './add-surface-point-command';
-import { CreateSurfaceCommand } from './create-surface-command';
+import { CreateSurfaceCommand, CreateSurfaceCommandv2 } from './create-surface-command';
 import { SelectSurfaceCommand } from './select-surface-command';
 import { SelectSurfacePointCommand } from './select-surface-point-command';
 import { UnselectSurfaceCommand } from './unselect-surface-command';
@@ -23,6 +23,8 @@ import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/obje
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { SurfaceToolService } from './surface-tool.service';
+import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 
 export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -39,6 +41,8 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMa
 	private selectStrategy: SelectStrategy<TvSurface>;
 
 	private pointStrategy: SelectStrategy<DynamicControlPoint<TvSurface>>;
+
+	private surfaceService: SurfaceToolService;
 
 	constructor () {
 
@@ -83,18 +87,18 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMa
 
 		super.enable();
 
-		this.map.showSurfaceHelpers();
+		this.surfaceService.showSurfaceHelpers();
 
-        this.roadService.showAllCornerPoints();
+		this.roadService.showAllCornerPoints();
 	}
 
 	public disable (): void {
 
 		super.disable();
 
-		this.map.hideSurfaceHelpers();
+		this.surfaceService.hideSurfaceHelpers();
 
-        this.roadService.hideAllCornerPoints();
+		this.roadService.hideAllCornerPoints();
 
 	}
 

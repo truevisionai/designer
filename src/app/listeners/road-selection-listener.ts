@@ -4,21 +4,11 @@ import { RoadService } from "app/services/road/road.service";
 import { ToolManager } from "app/tools/tool-manager";
 
 export class RoadSelectionListener extends Manager {
+	debug: any;
 
-	private static _instance = new RoadSelectionListener();
-	private debug = true;
-
-	private roadService: RoadService;
-
-	static get instance (): RoadSelectionListener {
-		return this._instance;
-	}
-
-	constructor () {
+	constructor ( private roadService: RoadService ) {
 
 		super();
-
-		this.roadService = new RoadService();
 
 	}
 

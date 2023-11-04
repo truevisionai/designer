@@ -20,6 +20,12 @@ export class ManagerRegistry {
 
 	}
 
+	public static setManager<T extends Manager> ( name: string, manager: T ): void {
+
+		this.managers.set( name, manager );
+
+	}
+
 	public static initManagers () {
 
 		this.managers.forEach( manager => {

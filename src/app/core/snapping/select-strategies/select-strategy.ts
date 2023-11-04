@@ -16,6 +16,8 @@ export abstract class SelectStrategy<T> {
 
     abstract onPointerUp ( pointerEventData: PointerEventData ): T;
 
+	select ( e: PointerEventData ): T { return null; }
+
     abstract dispose (): void;
 
     protected onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
