@@ -27,6 +27,7 @@ import { RoadControlPointListener } from 'app/listeners/road-control-point-liste
 import { RoadService } from './road/road.service';
 import { RoadSplineService } from './road/road-spline.service';
 import { MapService } from './map.service';
+import { ObjectEventListener } from 'app/listeners/object-event-listener';
 
 @Injectable( {
 	providedIn: 'root'
@@ -78,6 +79,7 @@ export class AppService {
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
+		ManagerRegistry.registerManager( ObjectEventListener );
 		// ManagerRegistry.registerManager( RoadSelectionListener );
 		// ManagerRegistry.registerManager( RoadControlPointListener );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );

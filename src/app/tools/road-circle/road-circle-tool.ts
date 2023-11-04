@@ -51,16 +51,16 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
-		this.map.getRoads().forEach( ( road ) => {
+		// this.map.getRoads().forEach( ( road ) => {
 
-			this.roadService.hideRoadNodes( road );
+		// 	this.roadService.hideRoadNodes( road );
 
-		} );
+		// } );
 	}
 
 	onRoadCreated ( road: TvRoad ): void {
 
-		this.roadService.showRoadNodes( road );
+		// this.roadService.showRoadNodes( road );
 
 	}
 

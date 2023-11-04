@@ -9,7 +9,7 @@ import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';
-import { BaseTool, BaseToolv2 } from '../base-tool';
+import { BaseTool } from '../base-tool';
 import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2, SelectPointCommand } from 'app/commands/select-point-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { PointerEventData } from 'app/events/pointer-event-data';
@@ -22,7 +22,7 @@ import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { PropPointService } from './prop-point.service';
 import { AppInspector } from 'app/core/inspector';
 
-export class PropPointTool extends BaseToolv2 {
+export class PropPointTool extends BaseTool {
 
 	public name: string = 'PropPointTool';
 

@@ -87,18 +87,18 @@ export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMa
 
 		super.enable();
 
-		this.surfaceService.showSurfaceHelpers();
+		// this.surfaceService.showSurfaceHelpers();
 
-		this.roadService.showAllCornerPoints();
+		// this.roadService.showAllCornerPoints();
 	}
 
 	public disable (): void {
 
 		super.disable();
 
-		this.surfaceService.hideSurfaceHelpers();
+		// this.surfaceService.hideSurfaceHelpers();
 
-		this.roadService.hideAllCornerPoints();
+		// this.roadService.hideAllCornerPoints();
 
 	}
 

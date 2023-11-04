@@ -61,7 +61,7 @@ export class ToolBarService {
 
 		switch ( type ) {
 			case ToolType.Road:
-				return new RoadToolv2( this.roadToolService ) as any;
+				return new RoadToolv2( this.roadToolService );
 			case ToolType.RoadCircle:
 				return new RoadCircleTool();
 			case ToolType.Maneuver:
@@ -73,13 +73,13 @@ export class ToolBarService {
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
 			case ToolType.PropPoint:
-				return new PropPointTool(this.propPointService) as any;
+				return new PropPointTool( this.propPointService );
 			case ToolType.PropCurve:
 				return new PropCurveToolV2();
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
 			case ToolType.Surface:
-				return new SurfaceToolv2( this.surfaceToolService ) as any;
+				return new SurfaceToolv2( this.surfaceToolService );
 			case ToolType.LaneMarking:
 				return new LaneMarkingTool();
 			case ToolType.LaneAdd:

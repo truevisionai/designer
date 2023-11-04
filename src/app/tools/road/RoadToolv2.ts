@@ -5,7 +5,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { ToolType } from '../tool-types.enum';
-import { BaseToolv2 } from '../base-tool';
+import { BaseTool } from '../base-tool';
 import { SelectRoadCommandv2 } from 'app/commands/select-road-command';
 import { AppInspector } from 'app/core/inspector';
 import { AddRoadCommandv2 } from './add-road-command';
@@ -18,7 +18,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { Object3D } from 'three';
 
 
-export class RoadToolv2 extends BaseToolv2 {
+export class RoadToolv2 extends BaseTool {
 
 	name: string;
 

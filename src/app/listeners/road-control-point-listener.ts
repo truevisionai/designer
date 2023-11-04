@@ -7,10 +7,9 @@ import { RoadLinkService } from "app/services/road/road-link.service";
 import { AbstractControlPoint } from "app/modules/three-js/objects/abstract-control-point";
 import { ToolManager } from "app/tools/tool-manager";
 import { MapService } from "app/services/map.service";
-import { Object3D } from "three";
-// import { BaseTool, BaseToolv2 } from "app/tools/base-tool";
 
 export class RoadControlPointListener extends Manager {
+
 	debug: any;
 
 	constructor ( private roadService: RoadService, private mapService: MapService ) {
@@ -27,35 +26,6 @@ export class RoadControlPointListener extends Manager {
 
 		MapEvents.controlPointSelected.subscribe( e => this.onControlPointSelected( e ) );
 		MapEvents.controlPointUnselected.subscribe( e => this.onControlPointUnselected( e ) );
-
-		MapEvents.objectSelected.subscribe( e => this.onObjectSelected( e ) );
-		MapEvents.objectUnselected.subscribe( e => this.onObjectUnselected( e ) );
-		MapEvents.objectAdded.subscribe( e => this.onObjectAdded( e ) );
-		MapEvents.objectRemoved.subscribe( e => this.onObjectRemoved( e ) );
-
-	}
-
-	onObjectRemoved ( e: any ): void {
-
-		ToolManager.getTool<any>()?.onObjectRemoved( e );
-
-	}
-
-	onObjectAdded ( e: any ): void {
-
-		ToolManager.getTool<any>()?.onObjectAdded( e );
-
-	}
-
-	onObjectUnselected ( e: any ): void {
-
-		ToolManager.getTool<any>()?.onObjectUnselected( e );
-
-	}
-
-	onObjectSelected ( e: any ): void {
-
-		ToolManager.getTool<any>()?.onObjectSelected( e );
 
 	}
 

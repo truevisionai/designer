@@ -23,53 +23,53 @@ export class SelectRoadForRoadToolCommand extends BaseCommand {
 
 		super();
 
-		this.oldRoad = tool.selectedRoad;
-		this.oldNode = tool.node;
-		this.oldControlPoint = tool.controlPoint;
+		// this.oldRoad = tool.selectedRoad;
+		// this.oldNode = tool.node;
+		// this.oldControlPoint = tool.controlPoint;
 
-		this.setInspectorCommand = new SetInspectorCommand( RoadInspector, { road: newRoad } );
+		// this.setInspectorCommand = new SetInspectorCommand( RoadInspector, { road: newRoad } );
 	}
 
 	execute (): void {
 
-		this.tool.selectedRoad = this.newRoad;
-		this.tool.node = null;
-		this.tool.controlPoint = null;
+		// this.tool.selectedRoad = this.newRoad;
+		// this.tool.node = null;
+		// this.tool.controlPoint = null;
 
-		// this.newRoad?.showHelpers();
-		// this.newRoad?.showControlPoints();
-		// this.newRoad?.showSpline();
+		// // this.newRoad?.showHelpers();
+		// // this.newRoad?.showControlPoints();
+		// // this.newRoad?.showSpline();
 
-		// this.oldRoad?.hideSpline();
-		this.oldControlPoint?.unselect();
-		this.oldNode?.unselect();
+		// // this.oldRoad?.hideSpline();
+		// this.oldControlPoint?.unselect();
+		// this.oldNode?.unselect();
 
-		this.setInspectorCommand.execute();
+		// this.setInspectorCommand.execute();
 
-		if ( this.newRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
-		if ( this.oldRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.oldRoad ) );
+		// if ( this.newRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
+		// if ( this.oldRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.oldRoad ) );
 
 	}
 
 	undo (): void {
 
-		this.tool.selectedRoad = this.oldRoad;
-		this.tool.node = this.oldNode;
-		this.tool.controlPoint = this.oldControlPoint;
+		// this.tool.selectedRoad = this.oldRoad;
+		// this.tool.node = this.oldNode;
+		// this.tool.controlPoint = this.oldControlPoint;
 
-		// this.newRoad?.hideSpline();
-		// this.newRoad?.hideControlPoints();
+		// // this.newRoad?.hideSpline();
+		// // this.newRoad?.hideControlPoints();
 
-		// this.oldRoad?.showControlPoints();
-		// this.oldRoad?.showHelpers();
-		// this.oldRoad?.showSpline();
-		this.oldNode?.select();
-		this.oldControlPoint?.select();
+		// // this.oldRoad?.showControlPoints();
+		// // this.oldRoad?.showHelpers();
+		// // this.oldRoad?.showSpline();
+		// this.oldNode?.select();
+		// this.oldControlPoint?.select();
 
-		this.setInspectorCommand.undo();
+		// this.setInspectorCommand.undo();
 
-		if ( this.oldRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.oldRoad ) );
-		if ( this.newRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
+		// if ( this.oldRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.oldRoad ) );
+		// if ( this.newRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
 
 	}
 

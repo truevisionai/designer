@@ -50,7 +50,7 @@ export class RoadCuttingTool extends BaseTool {
 
 		super.enable();
 
-		this.roadService.showAllRoadNodes();
+		// this.roadService.showAllRoadNodes();
 
 	}
 
@@ -58,57 +58,57 @@ export class RoadCuttingTool extends BaseTool {
 
 		super.disable();
 
-		this.roadService.hideAllRoadNodes();
+		// this.roadService.hideAllRoadNodes();
 
-		this.clearToolObjects();
+		// this.clearToolObjects();
 
-		delete this.debugLine;
+		// delete this.debugLine;
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		const roadCoord = this.selectStrategy.onPointerDown( e );
+		// const roadCoord = this.selectStrategy.onPointerDown( e );
 
-		if ( !roadCoord ) return;
+		// if ( !roadCoord ) return;
 
-		const roads = new RoadCutterService().splitRoad( roadCoord.road, roadCoord );
+		// const roads = new RoadCutterService().splitRoad( roadCoord.road, roadCoord );
 
-		const removeCommand = new RemoveRoadCommand( roadCoord.road );
+		// const removeCommand = new RemoveRoadCommand( roadCoord.road );
 
-		const addCommand = new AddRoadCommand( roads );
+		// const addCommand = new AddRoadCommand( roads );
 
-		CommandHistory.execute( new SplitRoadCommand( removeCommand, addCommand ) );
+		// CommandHistory.execute( new SplitRoadCommand( removeCommand, addCommand ) );
 
-		this.setHint( 'Use RoadTool to modify the roads' );
+		// this.setHint( 'Use RoadTool to modify the roads' );
 
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		const roadCoord = this.selectStrategy.onPointerMoved( e );
+		// const roadCoord = this.selectStrategy.onPointerMoved( e );
 
-		if ( this.debugLine ) this.debugLine.visible = false;
+		// if ( this.debugLine ) this.debugLine.visible = false;
 
-		if ( !roadCoord ) return;
+		// if ( !roadCoord ) return;
 
-		if ( !this.debugLine ) {
+		// if ( !this.debugLine ) {
 
-			this.debugLine = this.debugDrawService.createRoadWidthLine( roadCoord );
+		// 	this.debugLine = this.debugDrawService.createRoadWidthLine( roadCoord );
 
-			SceneService.addToolObject( this.debugLine );
+		// 	SceneService.addToolObject( this.debugLine );
 
-		}
+		// }
 
-		this.debugLine.visible = true;
+		// this.debugLine.visible = true;
 
-		this.debugLine = this.debugDrawService.updateRoadWidthLine( this.debugLine, roadCoord );
+		// this.debugLine = this.debugDrawService.updateRoadWidthLine( this.debugLine, roadCoord );
 
 	}
 
 	onRoadCreated ( road: TvRoad ): void {
 
-		if ( road ) this.roadService.showRoadNodes( road );
+		// if ( road ) this.roadService.showRoadNodes( road );
 
 	}
 

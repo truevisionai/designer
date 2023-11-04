@@ -11,31 +11,31 @@ export class SelectRoadCommand extends BaseCommand {
 
 		super();
 
-		if ( tool == null ) throw new Error( 'tool cannot be null' );
+		// if ( tool == null ) throw new Error( 'tool cannot be null' );
 
-		if ( newRoad == null ) throw new Error( 'newRoad cannot be null' );
+		// if ( newRoad == null ) throw new Error( 'newRoad cannot be null' );
 
-		this.previousRoad = this.tool.getRoad();
+		// this.previousRoad = this.tool.getRoad();
 
 	}
 
 	execute (): void {
 
-		this.tool.setRoad( this.newRoad );
+		// this.tool.setRoad( this.newRoad );
 
-		MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
+		// MapEvents.roadSelected.emit( new RoadSelectedEvent( this.newRoad ) );
 
-		if ( this.previousRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.previousRoad ) );
+		// if ( this.previousRoad ) MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.previousRoad ) );
 
 	}
 
 	undo (): void {
 
-		this.tool.setRoad( this.previousRoad );
+		// this.tool.setRoad( this.previousRoad );
 
-		MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
+		// MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.newRoad ) );
 
-		if ( this.previousRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.previousRoad ) );
+		// if ( this.previousRoad ) MapEvents.roadSelected.emit( new RoadSelectedEvent( this.previousRoad ) );
 
 	}
 

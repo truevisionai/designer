@@ -9,25 +9,25 @@ export class UnselectRoadCommand extends BaseCommand {
 
 		super();
 
-		if ( tool == null ) throw new Error( 'tool cannot be null' );
+		// if ( tool == null ) throw new Error( 'tool cannot be null' );
 
-		if ( road == null ) throw new Error( 'newRoad cannot be null' );
+		// if ( road == null ) throw new Error( 'newRoad cannot be null' );
 
 	}
 
 	execute (): void {
 
-		this.tool.setRoad( null );
+		// this.tool.setRoad( null );
 
-		MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.road ) );
+		// MapEvents.roadUnselected.emit( new RoadUnselectedEvent( this.road ) );
 
 	}
 
 	undo (): void {
 
-		this.tool.setRoad( this.road );
+		// this.tool.setRoad( this.road );
 
-		MapEvents.roadSelected.emit( new RoadSelectedEvent( this.road ) );
+		// MapEvents.roadSelected.emit( new RoadSelectedEvent( this.road ) );
 
 
 	}

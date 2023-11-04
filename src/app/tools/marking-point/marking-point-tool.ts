@@ -60,20 +60,20 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 		super.enable();
 
-		this.cpAddedSub = this.shapeEditor.controlPointAdded
-			.subscribe( point => this.onControlPointAdded( point ) );
+		// this.cpAddedSub = this.shapeEditor.controlPointAdded
+		// 	.subscribe( point => this.onControlPointAdded( point ) );
 
-		this.cpSelectedSub = this.shapeEditor.controlPointSelected
-			.subscribe( point => this.onControlPointSelected( point ) );
+		// this.cpSelectedSub = this.shapeEditor.controlPointSelected
+		// 	.subscribe( point => this.onControlPointSelected( point ) );
 
-		this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
-			.subscribe( point => this.onControlPointUnselected( point ) );
+		// this.cpUnselectedSub = this.shapeEditor.controlPointUnselected
+		// 	.subscribe( point => this.onControlPointUnselected( point ) );
 
-		this.cpMovedSub = this.shapeEditor.controlPointMoved
-			.subscribe( ( point ) => this.onControlPointMoved( point ) );
+		// this.cpMovedSub = this.shapeEditor.controlPointMoved
+		// 	.subscribe( ( point ) => this.onControlPointMoved( point ) );
 
-		this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
-			.subscribe( ( point ) => this.onControlPointUpdated( point ) );
+		// this.cpUpdatedSub = this.shapeEditor.controlPointUpdated
+		// 	.subscribe( ( point ) => this.onControlPointUpdated( point ) );
 	}
 
 
@@ -81,83 +81,83 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 		super.disable();
 
-		this.cpAddedSub.unsubscribe();
-		this.cpSelectedSub.unsubscribe();
-		this.cpUnselectedSub.unsubscribe();
-		this.cpMovedSub?.unsubscribe();
-		this.cpUpdatedSub?.unsubscribe();
+		// this.cpAddedSub.unsubscribe();
+		// this.cpSelectedSub.unsubscribe();
+		// this.cpUnselectedSub.unsubscribe();
+		// this.cpMovedSub?.unsubscribe();
+		// this.cpUpdatedSub?.unsubscribe();
 
-		this.shapeEditor.destroy();
-
-	}
-
-	private onControlPointAdded ( point: AnyControlPoint ) {
-
-		if ( this.marking && this.marking.type === MarkingTypes.point ) {
-
-			CommandHistory.execute( new CreateMarkingPointCommand( this, this.marking, point ) );
-
-		} else {
-
-			SnackBar.warn( 'Select a marking from project browser' );
-
-			point.visible = false;
-
-			setTimeout( () => {
-
-				this.shapeEditor.removeControlPoint( point );
-
-			}, 100 );
-
-		}
+		// this.shapeEditor.destroy();
 
 	}
 
-	private onControlPointSelected ( point: AnyControlPoint ) {
+	// private onControlPointAdded ( point: AnyControlPoint ) {
 
-		if ( this.currentMarking == null || point == null ) return;
+	// 	if ( this.marking && this.marking.type === MarkingTypes.point ) {
 
-		if ( this.currentMarking === point.mainObject ) return;
+	// 		CommandHistory.execute( new CreateMarkingPointCommand( this, this.marking, point ) );
 
-		CommandHistory.executeMany(
-			new SetValueCommand( this, 'currentMarking', point.mainObject )
-		);
+	// 	} else {
 
-	}
+	// 		SnackBar.warn( 'Select a marking from project browser' );
 
-	private onControlPointMoved ( point: AnyControlPoint ) {
+	// 		point.visible = false;
 
-		if ( point.mainObject == null ) return;
+	// 		setTimeout( () => {
 
-		this.currentMarking = point.mainObject;
+	// 			this.shapeEditor.removeControlPoint( point );
 
-		this.currentMarking?.mesh.position.copy( point.position );
+	// 		}, 100 );
 
-	}
+	// 	}
 
-	private onControlPointUpdated ( point: AnyControlPoint ): void {
+	// }
 
-		if ( !this.currentMarking ) return;
+	// private onControlPointSelected ( point: AnyControlPoint ) {
 
-		const oldPosition = this.shapeEditor.pointerDownAt;
+	// 	if ( this.currentMarking == null || point == null ) return;
 
-		const newPosition = point.position;
+	// 	if ( this.currentMarking === point.mainObject ) return;
 
-		if ( oldPosition == null || newPosition == null ) return;
+	// 	CommandHistory.executeMany(
+	// 		new SetValueCommand( this, 'currentMarking', point.mainObject )
+	// 	);
 
-		if ( oldPosition.equals( newPosition ) ) return;
+	// }
 
-		CommandHistory.executeMany(
-			new SetPositionCommand( this.currentMarking.mesh, newPosition, oldPosition ),
+	// private onControlPointMoved ( point: AnyControlPoint ) {
 
-			new SetPositionCommand( point, newPosition, oldPosition ),
-		);
-	}
+	// 	if ( point.mainObject == null ) return;
 
-	private onControlPointUnselected ( point: AnyControlPoint ): void {
+	// 	this.currentMarking = point.mainObject;
 
-		this.currentMarking = null;
+	// 	this.currentMarking?.mesh.position.copy( point.position );
 
-	}
+	// }
+
+	// private onControlPointUpdated ( point: AnyControlPoint ): void {
+
+	// 	if ( !this.currentMarking ) return;
+
+	// 	const oldPosition = this.shapeEditor.pointerDownAt;
+
+	// 	const newPosition = point.position;
+
+	// 	if ( oldPosition == null || newPosition == null ) return;
+
+	// 	if ( oldPosition.equals( newPosition ) ) return;
+
+	// 	CommandHistory.executeMany(
+	// 		new SetPositionCommand( this.currentMarking.mesh, newPosition, oldPosition ),
+
+	// 		new SetPositionCommand( point, newPosition, oldPosition ),
+	// 	);
+	// }
+
+	// private onControlPointUnselected ( point: AnyControlPoint ): void {
+
+	// 	this.currentMarking = null;
+
+	// }
 
 }

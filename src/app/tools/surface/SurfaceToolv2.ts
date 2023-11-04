@@ -3,12 +3,12 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { CommandHistory } from 'app/services/command-history';
 import { SelectObjectCommandv2, UnselectObjectCommandv2 } from '../../commands/select-point-command';
 import { ToolType } from '../tool-types.enum';
-import { BaseToolv2 } from '../base-tool';
+import { BaseTool } from '../base-tool';
 import { SurfaceToolService } from './surface-tool.service';
 import { MapEvents } from 'app/events/map-events';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
-export class SurfaceToolv2 extends BaseToolv2 {
+export class SurfaceToolv2 extends BaseTool {
 
 	name: string;
 

@@ -84,11 +84,11 @@ export class MapEvents {
 	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
 
-	@Output() static objectSelected = new EventEmitter<any>();
-	@Output() static objectUnselected = new EventEmitter<any>();
+	@Output() static objectSelected = new EventEmitter<Object>();
+	@Output() static objectUnselected = new EventEmitter<Object>();
 
-	@Output() static objectAdded = new EventEmitter<any>();
-	@Output() static objectRemoved = new EventEmitter<any>();
+	@Output() static objectAdded = new EventEmitter<Object>();
+	@Output() static objectRemoved = new EventEmitter<Object>();
 
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
