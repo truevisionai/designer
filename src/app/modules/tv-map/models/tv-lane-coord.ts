@@ -20,7 +20,7 @@ export class TvLaneCoord {
 	// lane-Id
 	// lane-offset
 
-	constructor ( public roadId: number, public sectionId: number, public laneId: number, public s: number, public offset: number ) {
+	constructor ( public road: TvRoad, public section: TvLaneSection, public lane: TvLane, public s: number, public offset: number ) {
 
 	}
 
@@ -32,17 +32,16 @@ export class TvLaneCoord {
 
 	}
 
-	get road (): TvRoad {
-		throw new Error( 'method not implemented' );
-		// return TvMapInstance.map.getRoadById( this.roadId );
+	get roadId (): number {
+		return this.road?.id;
 	}
 
-	get laneSection (): TvLaneSection {
-		return this.road?.getLaneSectionById( this.sectionId );
+	get laneSectionId (): number {
+		return this.section?.id;
 	}
 
-	get lane (): TvLane {
-		return this.laneSection?.getLaneById( this.laneId );
+	get laneId (): number {
+		return this.lane?.id;
 	}
 
 	get posTheta () {

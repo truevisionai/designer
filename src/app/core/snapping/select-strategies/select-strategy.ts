@@ -16,7 +16,7 @@ export abstract class SelectStrategy<T> {
 
     abstract onPointerUp ( pointerEventData: PointerEventData ): T;
 
-	select ( e: PointerEventData ): T { return null; }
+	select ( e: PointerEventData ): T { return this.onPointerDown( e ); }
 
     abstract dispose (): void;
 
@@ -96,7 +96,7 @@ export abstract class SelectStrategy<T> {
 
             if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
 
-                return new TvLaneCoord( roadCoord.roadId, laneSection.id, lane.id, roadCoord.s, 0 );
+                return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
 
             }
 

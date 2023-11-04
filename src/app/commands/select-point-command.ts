@@ -10,7 +10,6 @@ import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { MapEvents } from 'app/events/map-events';
-import { Object3D } from 'three';
 
 export interface IToolWithPoint {
 	setPoint ( value: ISelectable ): void;
@@ -272,6 +271,58 @@ export class SelectMainObjectCommand extends BaseCommand {
 		this.tool.setMainObject( this.oldMainObject );
 
 		this.setInspectorCommand?.undo();
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
+}
+
+export class AddObjectCommand extends BaseCommand {
+
+	constructor ( private object: any ) {
+		super();
+	}
+
+	execute () {
+
+		MapEvents.objectAdded.emit( this.object );
+
+	}
+
+	undo (): void {
+
+		MapEvents.objectRemoved.emit( this.object );
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
+
+}
+
+export class RemoveObjectCommand extends BaseCommand {
+
+	constructor ( private object: any ) {
+		super();
+	}
+
+	execute () {
+
+		MapEvents.objectRemoved.emit( this.object );
+
+	}
+
+	undo (): void {
+
+		MapEvents.objectAdded.emit( this.object );
 
 	}
 

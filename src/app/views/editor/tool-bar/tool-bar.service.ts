@@ -31,6 +31,7 @@ import { SurfaceToolv2 } from 'app/tools/surface/SurfaceToolv2';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
+import { PropPointService } from 'app/tools/prop-point/prop-point.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,6 +41,7 @@ export class ToolBarService {
 	constructor (
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
+		private propPointService: PropPointService,
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -71,7 +73,7 @@ export class ToolBarService {
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
 			case ToolType.PropPoint:
-				return new PropPointTool();
+				return new PropPointTool(this.propPointService) as any;
 			case ToolType.PropCurve:
 				return new PropCurveToolV2();
 			case ToolType.PropPolygon:

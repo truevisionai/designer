@@ -41,8 +41,6 @@ export class GameObjectFieldComponent implements OnInit {
 
 	ngOnInit () {
 
-		console.log( this );
-
 		if ( this.metadata && !this.preview ) this.metadata.preview = this.previewService.getModelPreview( this.object );
 
 	}

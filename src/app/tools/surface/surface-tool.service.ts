@@ -39,7 +39,7 @@ export class SurfaceToolService {
 
 	select ( e: PointerEventData ) {
 
-		this.base.select( e, this.nodeStrategy, this.pointStrategy );
+		// this.base.select( e, this.nodeStrategy, this.pointStrategy );
 
 	}
 

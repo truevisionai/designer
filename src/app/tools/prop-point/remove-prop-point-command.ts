@@ -14,7 +14,7 @@ export class RemovePropCommand extends BaseCommand {
 
 		super();
 
-		this.point = this.getTool<PropPointTool>()?.points.find( point => point.mainObject == prop );
+		// this.point = this.getTool<PropPointTool>()?.points.find( point => point.mainObject == prop );
 
 		this.inspectorCommand = new SetInspectorCommand( null, null );
 
@@ -28,9 +28,9 @@ export class RemovePropCommand extends BaseCommand {
 
 		this.map.props.splice( this.map.props.indexOf( this.prop ), 1 );
 
-		this.getTool<PropPointTool>()?.points.splice( this.getTool<PropPointTool>()?.points.indexOf( this.point ), 1 );
+		// this.getTool<PropPointTool>()?.points.splice( this.getTool<PropPointTool>()?.points.indexOf( this.point ), 1 );
 
-		this.getTool<PropPointTool>()?.setPoint( null );
+		// this.getTool<PropPointTool>()?.setPoint( null );
 
 		this.inspectorCommand.execute();
 	}
@@ -43,9 +43,9 @@ export class RemovePropCommand extends BaseCommand {
 
 		this.map.props.push( this.prop );
 
-		this.getTool<PropPointTool>()?.points.push( this.point );
+		// this.getTool<PropPointTool>()?.points.push( this.point );
 
-		this.getTool<PropPointTool>()?.setPoint( this.point );
+		// this.getTool<PropPointTool>()?.setPoint( this.point );
 
 		this.inspectorCommand.undo();
 

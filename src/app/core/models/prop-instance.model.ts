@@ -6,10 +6,9 @@ import { IHasCopyUpdate } from 'app/commands/copy-position-command';
 import { Object3D, Vector3 } from 'three';
 import { Action, SerializedField } from '../components/serialization';
 import { EventEmitter } from '@angular/core';
-import { GameObject } from '../game-object';
 import { AssetDatabase } from '../asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { RemovePropCommand } from '../../tools/prop-point/remove-prop-point-command';
+import { RemoveObjectCommand, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 
 export class PropInstance extends Object3D implements IHasCopyUpdate {
 
@@ -27,7 +26,7 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 	@Action()
 	delete () {
 
-		CommandHistory.execute( new RemovePropCommand( this ) );
+		CommandHistory.executeMany( new UnselectObjectCommandv2( this ), new RemoveObjectCommand( this ) );
 
 	}
 

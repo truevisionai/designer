@@ -45,8 +45,6 @@ export class ToolFactory {
 				return new LaneWidthTool();
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
-			case ToolType.PropPoint:
-				return new PropPointTool();
 			case ToolType.PropCurve:
 				return new PropCurveToolV2();
 			case ToolType.PropPolygon:

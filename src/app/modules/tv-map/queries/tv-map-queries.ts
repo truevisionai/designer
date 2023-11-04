@@ -629,7 +629,7 @@ export class TvMapQueries extends TvBaseQueries {
 		// get random s on lane-section
 		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
 
-		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
+		return new TvLaneCoord( road, laneSection, lane, s, 0 );
 	}
 
 	static getRoadArray (): TvRoad[] {

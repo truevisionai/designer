@@ -34,7 +34,7 @@ export class CreatePropPointCommand extends BaseCommand {
 
 		this.tool.setPoint( this.point );
 
-		this.tool.points.push( this.point );
+		// this.tool.points.push( this.point );
 	}
 
 	undo () {
@@ -47,7 +47,7 @@ export class CreatePropPointCommand extends BaseCommand {
 
 		this.tool.setPoint( null );
 
-		this.tool.points.splice( this.tool.points.indexOf( this.point ), 1 );
+		// this.tool.points.splice( this.tool.points.indexOf( this.point ), 1 );
 	}
 
 	redo (): void {
