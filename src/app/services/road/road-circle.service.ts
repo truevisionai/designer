@@ -19,16 +19,45 @@ import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
+import { Injectable } from '@angular/core';
+import { RoadService } from './road.service';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class RoadCircleService {
 
 	private line: LineLoop;
 
 	private text: TextObject;
 
-	constructor ( private centre: Vector3, private end: Vector3, private radius: number ) {
+	private centre: Vector3;
+	private end: Vector3;
+	private radius: number;
+
+	constructor ( private roadService: RoadService ) { }
+
+	showRoadNodes ( road: TvRoad ) {
+
+		this.roadService.showRoadNodes( road );
+
+	}
+
+	hideRoadNodes ( road: TvRoad ) {
+
+		this.roadService.hideRoadNodes( road );
+
+	}
+
+
+	init ( centre: Vector3, end: Vector3, radius: number ) {
+
+		this.centre = centre;
+
+		this.end = end;
+
+		this.radius = radius;
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
 

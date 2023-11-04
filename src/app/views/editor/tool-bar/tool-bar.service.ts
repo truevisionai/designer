@@ -23,15 +23,15 @@ import { RoadCuttingTool } from 'app/tools/road-cut-tool/road-cut-tool';
 import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation-tool';
 import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from 'app/tools/road-signal-tool';
-import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolv2 } from 'app/tools/road/RoadToolv2';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
-import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { SurfaceToolv2 } from 'app/tools/surface/SurfaceToolv2';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropPointService } from 'app/tools/prop-point/prop-point.service';
+import { RoadCircleService } from 'app/services/road/road-circle.service';
+import { RoadElevationService } from 'app/services/road/road-elevation.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -42,6 +42,8 @@ export class ToolBarService {
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
 		private propPointService: PropPointService,
+		private roadCircleService: RoadCircleService,
+		private roadElevationService: RoadElevationService,
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -63,7 +65,7 @@ export class ToolBarService {
 			case ToolType.Road:
 				return new RoadToolv2( this.roadToolService );
 			case ToolType.RoadCircle:
-				return new RoadCircleTool();
+				return new RoadCircleTool( this.roadCircleService );
 			case ToolType.Maneuver:
 				return new ManeuverTool();
 			case ToolType.Junction:
@@ -103,7 +105,7 @@ export class ToolBarService {
 			case ToolType.RoadSignalTool:
 				return new RoadSignalTool();
 			case ToolType.RoadElevation:
-				return new RoadElevationTool();
+				return new RoadElevationTool( this.roadElevationService );
 			case ToolType.RoadRampTool:
 				return new RoadRampTool();
 			case ToolType.RoadCuttingTool:

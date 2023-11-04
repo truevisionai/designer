@@ -15,7 +15,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
 import { ToolType } from '../tool-types.enum';
 import { ControlPointStrategy } from '../../core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from '../../core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from '../../core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from '../../core/snapping/select-strategies/select-strategy';
 import { BaseTool } from '../base-tool';
 import { CreateCrossWalkCommand } from './CreateCrossWalkCommand';
@@ -27,7 +27,7 @@ export class CrosswalkTool extends BaseTool implements IToolWithPoint {
 
 	toolType = ToolType.Crosswalk;
 
-	onRoadStrategy = new OnRoadStrategy();
+	onRoadStrategy = new RoadCoordStrategy();
 
 	selectStrategy: SelectStrategy<TvCornerRoad>;
 

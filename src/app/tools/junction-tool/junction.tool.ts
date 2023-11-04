@@ -5,7 +5,7 @@
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
@@ -39,7 +39,7 @@ export class JunctionTool extends BaseTool {
 
 		super();
 
-		this.roadStrategy = new OnRoadStrategy();
+		this.roadStrategy = new RoadCoordStrategy();
 
 		// this.nodeStrategy = new NodeStrategy<JunctionNode>( JunctionNode.tag );
 

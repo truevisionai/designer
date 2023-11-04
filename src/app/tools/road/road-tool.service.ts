@@ -8,7 +8,7 @@ import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strat
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
@@ -30,7 +30,7 @@ export class RoadToolService {
 		public controlPointService: ControlPointFactory
 	) {
 		this.pointStrategy = new ControlPointStrategy();
-		this.roadStrategy = new OnRoadStrategy();
+		this.roadStrategy = new RoadCoordStrategy();
 		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
 
 		// this.pointStrategy.map = this.mapService;

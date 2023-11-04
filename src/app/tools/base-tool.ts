@@ -119,6 +119,8 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	onObjectAdded ( object: any ) { }
 
+	onObjectUpdated ( object: any ) { }
+
 	onObjectRemoved ( object: any ) { }
 
 	setHint ( msg: string ) {

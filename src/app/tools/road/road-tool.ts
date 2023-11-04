@@ -4,7 +4,7 @@
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';

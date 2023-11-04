@@ -55,6 +55,8 @@ export class BaseToolService {
 
 			if ( result ) {
 
+				if ( result === this.previous ) return;
+
 				CommandHistory.execute( new SelectObjectCommandv2( result, this.previous ) );
 
 				this.previous = result;
@@ -69,6 +71,20 @@ export class BaseToolService {
 			CommandHistory.execute( new UnselectObjectCommandv2( this.previous ) );
 
 			this.previous = null;
+
+		}
+
+	}
+
+	onPointerDown ( e: PointerEventData ) {
+
+		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+
+			const element = this.selectionStratgies[ i ];
+
+			const result = element.select( e );
+
+			if ( result ) return result;
 
 		}
 

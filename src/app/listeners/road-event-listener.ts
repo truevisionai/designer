@@ -40,7 +40,7 @@ export class RoadEventListener extends Manager {
 
 		this.roadSplineService.rebuildSplineRoads( event.road.spline );
 
-		this.roadService.updateRoadNodes( event.road );
+		if ( event.showHelpers ) this.roadService.updateRoadNodes( event.road );
 
 	}
 

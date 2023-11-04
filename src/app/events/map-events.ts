@@ -86,8 +86,8 @@ export class MapEvents {
 
 	@Output() static objectSelected = new EventEmitter<Object>();
 	@Output() static objectUnselected = new EventEmitter<Object>();
-
 	@Output() static objectAdded = new EventEmitter<Object>();
+	@Output() static objectUpdated = new EventEmitter<Object>();
 	@Output() static objectRemoved = new EventEmitter<Object>();
 
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();

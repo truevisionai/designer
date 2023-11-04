@@ -7,7 +7,7 @@ import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { CommandHistory } from 'app/services/command-history';
 import { AddRoadCommand } from '../road/add-road-command';
 import { RoadCutterService } from 'app/services/road/road-cutter.service';
@@ -40,7 +40,7 @@ export class RoadCuttingTool extends BaseTool {
 
 		super.init();
 
-		this.selectStrategy = new OnRoadStrategy();
+		this.selectStrategy = new RoadCoordStrategy();
 
 		this.setHint( 'Use LEFT CLICK to split a road' );
 

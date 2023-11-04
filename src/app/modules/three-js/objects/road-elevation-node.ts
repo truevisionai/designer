@@ -24,8 +24,6 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 
 		this.tag = this.name = RoadElevationNode.TAG;
 
-		this.createLine();
-
 	}
 
 	@SerializedField( { type: 'int' } )
@@ -59,16 +57,18 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 		}
 	}
 
-	createLine () {
+	update () {
 
-		// const start = this.getWorldPosition();
+		const roadCoord = this.road.getCoordAt( this.position );
 
-		// const end = start.clone();
-		// end.z = 0;
+		this.elevation.s = roadCoord.s;
 
-		// const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-		// const line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35, linewidth: 5 } ) );
-		// this.add( line );
+		this.updateValuesAndPosition();
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+
+		MapEvents.objectUpdated.emit( this );
+
 	}
 
 	getWorldPosition (): Vector3 {

@@ -18,7 +18,16 @@ export class ObjectEventListener extends Manager {
 		MapEvents.objectSelected.subscribe( e => this.onObjectSelected( e ) );
 		MapEvents.objectUnselected.subscribe( e => this.onObjectUnselected( e ) );
 		MapEvents.objectAdded.subscribe( e => this.onObjectAdded( e ) );
+		MapEvents.objectUpdated.subscribe( e => this.onObjectUpdated( e ) );
 		MapEvents.objectRemoved.subscribe( e => this.onObjectRemoved( e ) );
+
+	}
+
+	onObjectUpdated ( object: Object ): void {
+
+		if ( this.debug ) console.debug( 'onObjectUpdated', object );
+
+		ToolManager.getTool<BaseTool>()?.onObjectUpdated( object );
 
 	}
 

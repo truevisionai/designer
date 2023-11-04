@@ -4,7 +4,7 @@ import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointFactory } from 'app/factories/control-point.factory';

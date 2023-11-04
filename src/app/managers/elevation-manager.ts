@@ -4,14 +4,14 @@
 
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { Manager } from './manager';
-import { RoadElevationService } from 'app/services/road/road-elevation.service';
+// import { RoadElevationService } from 'app/services/road/road-elevation.service';
 
 export class ElevationManager extends Manager {
 
 	private static _instance = new ElevationManager();
 	private debug = true;
 
-	private elevationService = new RoadElevationService();
+	// private elevationService = new RoadElevationService();
 
 	static get instance (): ElevationManager {
 		return this._instance;
@@ -43,17 +43,17 @@ export class ElevationManager extends Manager {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.elevationService.createDefaultNodes( event.road );
+		// this.elevationService.createDefaultNodes( event.road );
 
-		if ( event.road.elevationProfile.getElevationCount() >= 2 ) {
+		// if ( event.road.elevationProfile.getElevationCount() >= 2 ) {
 
-			event.road.elevationProfile.elevation[ 0 ].s = 0
+		// 	event.road.elevationProfile.elevation[ 0 ].s = 0
 
-			event.road.elevationProfile.elevation[ event.road.elevationProfile.elevation.length - 1 ].s = event.road.length
+		// 	event.road.elevationProfile.elevation[ event.road.elevationProfile.elevation.length - 1 ].s = event.road.length
 
-		}
+		// }
 
-		this.elevationService.updateNodes( event.road );
+		// this.elevationService.updateNodes( event.road );
 
 	}
 
@@ -63,7 +63,7 @@ export class ElevationManager extends Manager {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.elevationService.createDefaultNodes( event.road );
+		// this.elevationService.createDefaultNodes( event.road );
 
 	}
 

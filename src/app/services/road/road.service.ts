@@ -22,7 +22,10 @@ export class RoadService extends BaseService {
 	private static nodes: RoadNode[] = [];
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
 
-	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) {
+	constructor (
+		private roadSplineService: RoadSplineService,
+		private mapService: MapService
+	) {
 
 		super();
 	}

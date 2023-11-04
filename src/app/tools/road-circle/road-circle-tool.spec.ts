@@ -15,7 +15,7 @@ describe( 'RoadCircleTool Test', () => {
 
 	beforeEach( () => {
 
-		tool = new RoadCircleTool();
+		// tool = new RoadCircleTool();
 
 		tool.init();
 
@@ -30,7 +30,7 @@ describe( 'RoadCircleTool Test', () => {
 
 		tool.initCircle( centre, end, 100 );
 
-		tool.createRoads();
+		// tool.createRoads();
 
 		expect( map.roads.size ).toBe( 4 );
 

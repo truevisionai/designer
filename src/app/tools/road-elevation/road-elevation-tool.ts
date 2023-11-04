@@ -2,29 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { KeyboardEvents } from 'app/events/keyboard-events';
+import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { ToolType } from 'app/tools/tool-types.enum';
-import { PickingHelper } from 'app/services/picking-helper.service';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
+import { PointerEventData } from 'app/events/pointer-event-data';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { Vector3 } from 'three';
-import { BaseTool } from '../base-tool';
-import { CreateElevationNodeCommand } from './create-elevation-node-command';
-import { UpdateElevationNodePosition } from './update-elevation-node-position';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { BaseTool } from '../base-tool'
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
-import { SelectRoadCommand } from 'app/commands/select-road-command';
-import { UnselectRoadCommand } from "app/commands/unselect-road-command";
+import { RoadElevationService } from 'app/services/road/road-elevation.service';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { AppInspector } from 'app/core/inspector';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/SelectRoadStrategy';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -32,22 +24,29 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	toolType: ToolType = ToolType.RoadElevation;
 
-	node: RoadElevationNode;
+	selectedRoad: TvRoad;
+
+	selectedNode: RoadElevationNode;
 
 	nodeChanged: boolean = false;
 
-	private pointStrategy: SelectStrategy<RoadControlPoint>;
-	private nodeStrategy: SelectStrategy<RoadElevationNode>;
-	private roadStrategy: SelectStrategy<TvRoadCoord>;
+	constructor (
+		private tool: RoadElevationService,
+	) {
+		super();
+	}
 
 
 	init (): void {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
-		this.nodeStrategy = new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG, true );
-		this.roadStrategy = new OnRoadStrategy();
+		// this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
+		// this.nodeStrategy = new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG, true );
+		// this.roadStrategy = new OnRoadStrategy();
+		// this.tool.base.addSelectionStrategy( new ControlPointStrategy<RoadControlPoint>() );
+		this.tool.base.addSelectionStrategy( new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG ) );
+		this.tool.base.addSelectionStrategy( new SelectRoadStrategy() );
 
 	}
 
@@ -61,162 +60,200 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		// this.map.getRoads().forEach( road => this.roadService.removeElevationNodes( road ) );
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
+		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
 	}
 
-	onPointerDown ( e: PointerEventData ): void {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-		// if ( !e.point || e.button != MouseButton.LEFT ) return;
+		if ( !this.tool.base.onPointerDown( e ) ) return;
 
-		// if ( KeyboardEvents.isShiftKeyDown ) {
+		if ( !this.selectedRoad ) return;
 
-		// 	const lane = PickingHelper.checkLaneObjectInteraction( e );
+		const node = this.tool.createElevation( this.selectedRoad, e.point );
 
-		// 	if ( !lane ) return;
+		const addCommand = new AddObjectCommand( node );
 
-		// 	this.createRoadElevationNode( lane.laneSection.road, e.point );
+		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
 
-		// } else {
+		CommandHistory.executeMany( addCommand, selectCommand );
 
-		// 	if ( this.isNodeSelected( e ) ) return;
+	}
 
-		// 	if ( this.isRoadSelected( e ) ) return;
+	onPointerDownSelect ( e: PointerEventData ): void {
 
-		// 	if ( this.selectedRoad ) this.unselectRoad();
-
-		// 	this.setHint( 'use LEFT CLICK to select a road' );
-
-		// }
+		this.tool.base.select( e );
 
 	}
 
 	public onPointerUp () {
 
-		if ( this.nodeChanged && this.node ) {
+		if ( !this.nodeChanged ) return;
 
-			const newPosition = this.node.position.clone();
+		if ( !this.selectedNode ) return;
 
-			const oldPosition = this.pointerDownAt.clone();
+		const newPosition = this.selectedNode.position.clone();
 
-			CommandHistory.execute( new UpdateElevationNodePosition( this.node, newPosition, oldPosition ) );
+		const oldPosition = this.pointerDownAt.clone();
 
-		}
+		const updateCommand = new UpdatePositionCommand( this.selectedNode, newPosition, oldPosition );
+
+		CommandHistory.execute( updateCommand );
 
 		this.nodeChanged = false;
 	}
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		if ( !this.pointStrategy.onPointerMoved( e ) ) this.nodeStrategy.onPointerMoved( e );
+		if ( !this.isPointerDown ) return;
 
-		if ( this.isPointerDown && this.node ) {
+		if ( !this.selectedNode ) return;
 
-			this.nodeChanged = true;
+		if ( !this.tool.base.onPointerDown( e ) ) return;
 
-			this.node.updateByPosition( e.point );
+		this.selectedNode.updateByPosition( e.point );
 
-		}
+		this.nodeChanged = true;
 
-	}
-
-	createRoadElevationNode ( road: TvRoad, point: Vector3 ) {
-
-		// this.roadService.showElevationNodes( road );
-
-		// const roadCoord = road.getCoordAt( point );
-
-		// const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
-
-		// elevation.node = new RoadElevationNode( road, elevation );
-
-		// CommandHistory.execute( new CreateElevationNodeCommand( this, elevation.node ) );
-
-	}
-
-	selectRoad ( road: TvRoad ): void {
-
-		this.setHint( 'New Road Selected' );
-
-		CommandHistory.execute( new SelectRoadCommand( this, road ) );
-
-	}
-
-	unselectRoad (): void {
-
-		// CommandHistory.execute( new UnselectRoadCommand( this, this.selectedRoad ) );
-
-	}
-
-	selectNode ( node: RoadElevationNode ) {
-
-		const command = new SelectPointCommand( this, node, DynamicInspectorComponent, node );
-
-		CommandHistory.execute( command );
-
-		this.setHint( 'Drag node to modify position. Change properties from inspector' );
 	}
 
 	setPoint ( value: ISelectable ): void {
 
-		this.node = value as RoadElevationNode;
+		this.selectedNode = value as RoadElevationNode;
 
 	}
 
 	getPoint (): ISelectable {
 
-		return this.node;
+		return this.selectedNode;
 
 	}
 
-	private isRoadSelected ( e: PointerEventData ): boolean {
+	onObjectAdded ( object: any ): void {
 
-		// const newLane = PickingHelper.checkLaneObjectInteraction( e );
+		console.log( 'onObjectAdded', object );
 
-		// if ( !newLane ) return false;
+		if ( object instanceof RoadElevationNode ) {
 
-		// if ( !this.selectedRoad || this.selectedRoad?.id !== newLane.roadId ) {
+			this.tool.addNode( object );
 
-		// 	this.selectRoad( newLane.laneSection.road );
-
-		// } else if ( this.selectedRoad && this.node ) {
-
-		// 	// unselct node because road is selected
-		// 	CommandHistory.executeMany(
-		// 		new SelectPointCommand( this, null ),
-		// 		new SetInspectorCommand( null, null )
-		// 	);
-
-		// }
-
-		return true;
+		}
 	}
 
-	onRoadSelected ( road: TvRoad ): void {
+	onObjectUpdated ( object: any ): void {
 
-		// if ( road ) this.roadService.showElevationNodes( road );
+		console.log( 'onObjectUpdated', object );
+
+		if ( object instanceof RoadElevationNode ) {
+
+			// this.tool.updateNode( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		console.log( 'onObjectRemoved', object );
+
+		if ( object instanceof RoadElevationNode ) {
+
+			this.tool.removeNode( object );
+
+		}
+
+	}
+
+	onObjectSelected ( object: any ): void {
+
+		console.log( 'onObjectSelected', object );
+
+		if ( object instanceof TvRoadCoord ) {
+
+			this.onRoadSelected( object.road );
+
+		} else if ( object instanceof RoadElevationNode ) {
+
+			this.onNodeSelected( object );
+
+		} else if ( object instanceof TvRoad ) {
+
+			this.onRoadSelected( object );
+
+		}
+
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		console.log( 'onObjectUnselected', object );
+
+		if ( object instanceof TvRoadCoord ) {
+
+			this.onRoadUnselected( object.road );
+
+		} else if ( object instanceof RoadElevationNode ) {
+
+			this.onNodeUnselected( object );
+
+		} else if ( object instanceof TvRoad ) {
+
+			this.onRoadUnselected( object );
+
+		}
+
+	}
+
+	onNodeSelected ( object: RoadElevationNode ) {
+
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
+		this.selectedNode = object;
+
+		this.selectedNode?.select();
+
+		AppInspector.setInspector( DynamicInspectorComponent, object );
+
+		this.setHint( 'Drag node to modify position. Change properties from inspector' );
+
+	}
+
+	onNodeUnselected ( object: RoadElevationNode ) {
+
+		object?.unselect();
+
+		this.selectedNode = null;
+
+		AppInspector.clear();
+
+		this.setHint( 'use LEFT CLICK to select a node' );
 
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		// if ( road ) this.roadService.removeElevationNodes( road );
+		this.selectedRoad = null;
+
+		this.tool.removeElevationNodes( road );
+
+		this.setHint( 'use LEFT CLICK to select a road' );
 
 	}
 
-	private isNodeSelected ( e: PointerEventData ): boolean {
+	onRoadSelected ( road: TvRoad ): void {
 
-		const node = PickingHelper.checkControlPointInteraction( e, RoadElevationNode.TAG ) as RoadElevationNode;
+		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
-		if ( !node || !node.parent ) return false;
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
-		if ( !this.node || this.node.uuid !== node.uuid ) {
+		this.selectedRoad = road;
 
-			this.selectNode( node );
+		this.tool.showElevationNodes( road );
 
-		}
+		this.setHint( 'use LEFT CLICK to select a node' );
 
-		return true;
 	}
 
 }

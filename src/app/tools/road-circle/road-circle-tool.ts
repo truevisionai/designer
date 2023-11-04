@@ -8,7 +8,6 @@ import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleService } from "../../services/road/road-circle.service";
-import { MapEvents } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class RoadCircleTool extends BaseTool {
@@ -19,9 +18,7 @@ export class RoadCircleTool extends BaseTool {
 	private pointerLastAt: Vector3;
 	private currentRadius: number = 0;
 
-	private circleRoadService: RoadCircleService;
-
-	constructor () {
+	constructor ( private circleRoadService: RoadCircleService ) {
 
 		super();
 
@@ -51,16 +48,11 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
-		// this.map.getRoads().forEach( ( road ) => {
-
-		// 	this.roadService.hideRoadNodes( road );
-
-		// } );
 	}
 
 	onRoadCreated ( road: TvRoad ): void {
 
-		// this.roadService.showRoadNodes( road );
+		this.circleRoadService.showRoadNodes( road );
 
 	}
 
@@ -68,23 +60,16 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		this.initCircle( this.pointerDownAt, e.point, this.radius );
+		this.circleRoadService.init( this.pointerDownAt, e.point, this.radius );
 	}
 
 	onPointerUp ( e: PointerEventData ) {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		this.createRoads();
+		this.circleRoadService.createRoads();
 
-		this.circleRoadService = null;
 		this.currentRadius = 0;
-	}
-
-	createRoads () {
-
-		if ( this.circleRoadService ) this.circleRoadService.createRoads();
-
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
@@ -98,21 +83,7 @@ export class RoadCircleTool extends BaseTool {
 
 		this.currentRadius = this.pointerDownAt.distanceTo( this.pointerLastAt );
 
-		if ( this.circleRoadService ) this.updateCircle( this.pointerLastAt, this.radius );
-	}
-
-	initCircle ( centre: Vector3, end: Vector3, radius: number ) {
-
-		this.circleRoadService = new RoadCircleService( centre, end, radius );
-
-	}
-
-	updateCircle ( end: Vector3, radius: number ) {
-
-		if ( !this.circleRoadService ) return;
-
-		this.circleRoadService.update( radius, end );
-
+		this.circleRoadService.update( this.radius, this.pointerDownAt );
 	}
 
 }

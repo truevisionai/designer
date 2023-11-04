@@ -7,7 +7,7 @@ import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { PickingHelper } from 'app/services/picking-helper.service';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
@@ -38,7 +38,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		super();
 
-		this.movingStrategy = new OnRoadStrategy();
+		this.movingStrategy = new RoadCoordStrategy();
 		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<ScenarioEntity>>();
 	}
 
