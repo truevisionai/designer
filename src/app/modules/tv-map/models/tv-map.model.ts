@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
@@ -18,6 +18,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
+import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 
 export class TvMap {
 
@@ -98,7 +99,7 @@ export class TvMap {
 
 	addDefaultRoad (): TvRoad {
 
-		const road = RoadFactory.getDefaultRoad();
+		const road = RoadFactory.createDefaultRoad();
 
 		this.addRoad( road );
 
@@ -108,7 +109,7 @@ export class TvMap {
 
 	addRampRoad ( lane: TvLane ): TvRoad {
 
-		const road = RoadFactory.getRampRoad( lane );
+		const road = RoadFactory.createRampRoad( lane );
 
 		this.addRoad( road );
 
@@ -158,17 +159,11 @@ export class TvMap {
 
 	}
 
-	public removeRoad ( road: TvRoad ) {
-
-		road.remove( this.gameObject );
+	public deleteRoad ( road: TvRoad ) {
 
 		this.roads.delete( road.id );
-	}
 
-	public deleteRoad ( id: number ): void {
-
-		this.roads.delete( id );
-
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
 	}
 
 	public deleteJunction ( id ): void {
@@ -187,7 +182,7 @@ export class TvMap {
 
 			TvConsole.error( `${ roadId } road-id not found` );
 
-			throw new Error( `RoadNotFound` );
+			console.error( `${ roadId } road-id not found` );
 
 		}
 
@@ -262,7 +257,7 @@ export class TvMap {
 
 		this.roads.forEach( road => {
 
-			road.objects.object.forEach( object => SceneService.remove( object ) );
+			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
 
 			road.remove( this.gameObject );
 
@@ -274,7 +269,7 @@ export class TvMap {
 
 			curve.delete();
 
-			curve.props.forEach( prop => SceneService.remove( prop ) );
+			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
 		} );
 
@@ -282,14 +277,14 @@ export class TvMap {
 
 			polygon.delete();
 
-			polygon.spline?.controlPoints.forEach( point => SceneService.remove( point ) );
+			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
 
 		} );
 
 		this.props.forEach( prop => {
 
 			// SceneService.remove( prop.object );
-			SceneService.remove( prop );
+			SceneService.removeFromMain( prop );
 
 			// this.gameObject.remove( prop.object );
 			this.gameObject.remove( prop );

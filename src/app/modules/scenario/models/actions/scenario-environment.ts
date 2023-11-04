@@ -8,9 +8,10 @@ import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
 import { Color, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/modules/three-js/default.config';
 
 enum CloudState {
 	Cloudy = 'cloudy',
@@ -122,8 +123,8 @@ class Sun {
 	constructor (
 		private _azimuth: number = 1,
 		private _elevation: number = 0,
-		private _illuminance: number = 1,
-		color: number = 0xffffff
+		private _illuminance: number = DIRECTIONAL_LIGHT_INTENSITY,
+		color: number = DIRECTIONAL_LIGHT_COLOR
 	) {
 
 		const position = this.direction.normalize();
@@ -360,7 +361,7 @@ class DomeImage {
 
 		SceneService.scene.background = SceneService.scene.environment = this.renderTarget.texture;
 
-		SceneService.removeHelper( sphereMesh );
+		SceneService.removeFromTool( sphereMesh );
 
 	}
 

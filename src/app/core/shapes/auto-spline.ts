@@ -12,6 +12,7 @@ import { BaseControlPoint } from '../../modules/three-js/objects/control-point';
 import { AbstractSpline } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
+import { SceneService } from '../../services/scene.service';
 
 
 export class AutoSpline extends AbstractSpline {
@@ -40,9 +41,9 @@ export class AutoSpline extends AbstractSpline {
 
 		if ( this.meshAddedInScene ) return;
 
-		this.scene.add( this.polyline.mesh );
+		SceneService.addToolObject( this.polyline.mesh );
 
-		this.scene.add( this.roundline.mesh );
+		SceneService.addToolObject( this.roundline.mesh );
 
 		this.meshAddedInScene = true;
 
@@ -134,9 +135,9 @@ export class AutoSpline extends AbstractSpline {
 
 		this.controlPoints.splice( 0, this.controlPoints.length );
 
-		this.scene.remove( this.polyline.mesh );
+		SceneService.removeFromMain( this.polyline.mesh );
 
-		this.scene.remove( this.roundline.mesh );
+		SceneService.removeFromMain( this.roundline.mesh );
 
 	}
 

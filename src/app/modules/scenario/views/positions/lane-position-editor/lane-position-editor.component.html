@@ -1,21 +1,21 @@
 <app-road-id-field (changed)="onRoadIdChanged($event)"
-				   [value]="lanePosition.roadId">
+	[value]="lanePosition.roadId">
 </app-road-id-field>
 
 <app-dropdown-field (changed)="onLaneIdChanged($event)"
-					[options]="laneIdOptions"
-					[value]="lanePosition.laneId"
-					label="Lane	ID">
+	[options]="laneIdOptions"
+	[value]="lanePosition.laneId"
+	label="Lane	ID">
 </app-dropdown-field>
 
 <app-double-field (changed)="onOffsetChanged($event)"
-				  [value]="lanePosition.offset"
-				  label="Offset"
-				  min="0">
+	[value]="lanePosition.offset"
+	label="Offset"
+	min="0">
 </app-double-field>
 
 <app-double-field (changed)="onSValueChanged($event)"
-				  [value]="lanePosition.sCoordinate"
-				  label="S"
-				  min="0">
+	[value]="lanePosition.sCoordinate"
+	label="S"
+	min="0">
 </app-double-field>

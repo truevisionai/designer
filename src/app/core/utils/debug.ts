@@ -3,7 +3,7 @@
  */
 
 import { Mesh, MeshBasicMaterial, SphereGeometry, Vector2, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { Environment } from './environment';
 
 export class Debug {
@@ -29,7 +29,7 @@ export class Debug {
 
 			this.sphere = new Mesh( geometry, material );
 
-			SceneService.add( this.sphere );
+			SceneService.addToMain( this.sphere );
 
 			this.sphereAdded = true;
 		}

@@ -9,7 +9,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 
 export abstract class AbstractSpline {
@@ -25,10 +25,6 @@ export abstract class AbstractSpline {
 
 		this.init();
 
-	}
-
-	get scene () {
-		return SceneService.scene;
 	}
 
 	get controlPointPositions (): Vector3[] {
@@ -191,7 +187,7 @@ export abstract class AbstractSpline {
 		controlPointObject.userData.is_control_point = true;
 		controlPointObject.userData.is_selectable = true;
 
-		this.scene.add( controlPointObject );
+		SceneService.addToolObject( controlPointObject );
 
 		if ( cpobjidx == undefined ) {
 			this.controlPoints.push( controlPointObject );

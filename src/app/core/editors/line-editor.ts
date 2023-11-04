@@ -6,7 +6,7 @@ import { KeyboardInput } from 'app/core/input';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import * as THREE from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class LineEditor extends AbstractShapeEditor {
@@ -25,7 +25,7 @@ export class LineEditor extends AbstractShapeEditor {
 
 	public draw () {
 
-		if ( this.object != null ) SceneService.remove( this.object, false );
+		if ( this.object != null ) SceneService.removeFromMain( this.object, false );
 
 		this.curve = new THREE.LineCurve3( this.controlPointPositions[ 0 ], this.controlPointPositions[ 1 ] );
 
@@ -43,7 +43,7 @@ export class LineEditor extends AbstractShapeEditor {
 
 		this.object.renderOrder = 3;
 
-		SceneService.add( this.object, false );
+		SceneService.addToMain( this.object, false );
 
 		this.curveGeometryChanged.emit( this.curve );
 	}

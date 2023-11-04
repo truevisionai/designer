@@ -4,9 +4,9 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
-import { InspectorFactoryService } from 'app/core/factories/inspector-factory.service';
+import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
 import { AppInspector } from 'app/core/inspector';
-import { Metadata, MetaImporter } from 'app/core/models/metadata.model';
+import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { FileNode } from './file-node.model';
 
 @Injectable( {

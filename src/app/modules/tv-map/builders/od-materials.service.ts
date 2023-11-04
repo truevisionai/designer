@@ -3,7 +3,7 @@
  */
 
 import { MeshStandardMaterial } from 'three';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvLane } from '../models/tv-lane';
 import { OdTextures } from './od.textures';
 

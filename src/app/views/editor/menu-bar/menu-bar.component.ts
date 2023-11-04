@@ -7,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { Router } from '@angular/router';
-import { IFile } from 'app/core/io/file';
-import { EditorService } from 'app/core/services/editor.service';
+import { IFile } from 'app/io/file';
+import { EditorService } from 'app/services/editor.service';
 import { Environment } from 'app/core/utils/environment';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';
@@ -16,9 +16,9 @@ import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
 import { RoadExporterService } from 'app/services/road-style-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
-import { AppInputDialogService } from 'app/shared/dialogs/app-input-dialog/app-input-dialog-service';
+import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog/app-input-dialog-service';
 
-import { AppService } from '../../../core/services/app.service';
+import { AppService } from '../../../services/app.service';
 import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { AppLinks } from '../../../services/app-links';

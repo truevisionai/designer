@@ -2,15 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
 import { BaseControlPoint } from './control-point';
 import { RoadTangentPoint } from './road-tangent-point';
+import { MapEvents } from 'app/events/map-events';
 
 export class RoadControlPoint extends BaseControlPoint {
 
@@ -61,6 +62,8 @@ export class RoadControlPoint extends BaseControlPoint {
 		} );
 
 		if ( position ) this.initPosition( position );
+
+		this.name = 'road-control-point';
 
 		this.userData.is_button = true;
 		this.userData.is_control_point = true;
@@ -128,7 +131,11 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.updateTangents();
 
-		this.update();
+		// this.update();
+		MapEvents.roadControlPointUpdated.emit( {
+			road: this.road,
+			controlPoint: this
+		} );
 	}
 
 	update () {
@@ -213,13 +220,15 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		// TODO: move this maybe somewhere else
 
-		SceneService.add( this.frontTangent );
+		SceneService.addToMain( this.frontTangent );
 
-		SceneService.add( this.backTangent );
+		SceneService.addToMain( this.backTangent );
 
 		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
 
 		this.tangentLine = new Line( this.tangentLineGeometry, this.tangentLineMaterial );
+
+		this.tangentLine.name = 'tangent-control-line';
 
 		this.tangentLine.castShadow = true;
 
@@ -227,7 +236,7 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.tangentLine.frustumCulled = false;
 
-		SceneService.add( this.tangentLine );
+		SceneService.addToMain( this.tangentLine );
 	}
 
 	updateTangentLine () {
@@ -247,11 +256,11 @@ export class RoadControlPoint extends BaseControlPoint {
 
 	removeTangents () {
 
-		SceneService.remove( this.frontTangent );
+		SceneService.removeFromMain( this.frontTangent );
 
-		SceneService.remove( this.backTangent );
+		SceneService.removeFromMain( this.backTangent );
 
-		SceneService.remove( this.tangentLine );
+		SceneService.removeFromMain( this.tangentLine );
 
 	}
 

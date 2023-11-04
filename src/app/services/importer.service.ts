@@ -8,7 +8,7 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
 import { AssetLoaderService } from '../core/asset/asset-loader.service';
-import { FileService } from '../core/io/file.service';
+import { FileService } from '../io/file.service';
 import { OpenScenarioLoader } from '../modules/scenario/services/open-scenario.loader';
 import { ModelImporterService } from './model-importer.service';
 import { SceneImporterService } from './scene-importer.service';

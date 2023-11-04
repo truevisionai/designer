@@ -16,16 +16,17 @@ import { getSerializableActions, getSerializableFields, ISerializedField } from 
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { BooleanFieldComponent } from 'app/shared/fields/boolean-field/boolean-field.component';
-import { ColorFieldComponent } from 'app/shared/fields/color-field/color-field.component';
-import { DoubleFieldComponent } from 'app/shared/fields/double-field/double-field.component';
-import { EnumFieldComponent } from 'app/shared/fields/enum-field/enum-field.component';
-import { RoadIdFieldComponent } from 'app/shared/fields/road-id-field/road-id-field.component';
-import { SelectEntityFieldComponent } from 'app/shared/fields/select-entity-field/select-entity-field.component';
-import { StringFieldComponent } from 'app/shared/fields/string-field/string-field.component';
-import { Vector2FieldComponent } from 'app/shared/fields/vector2-field/vector2-field.component';
-import { Vector3FieldComponent } from 'app/shared/fields/vector3-field/vector3-field.component';
+import { BooleanFieldComponent } from 'app/views/shared/fields/boolean-field/boolean-field.component';
+import { ColorFieldComponent } from 'app/views/shared/fields/color-field/color-field.component';
+import { DoubleFieldComponent } from 'app/views/shared/fields/double-field/double-field.component';
+import { EnumFieldComponent } from 'app/views/shared/fields/enum-field/enum-field.component';
+import { RoadIdFieldComponent } from 'app/views/shared/fields/road-id-field/road-id-field.component';
+import { SelectEntityFieldComponent } from 'app/views/shared/fields/select-entity-field/select-entity-field.component';
+import { StringFieldComponent } from 'app/views/shared/fields/string-field/string-field.component';
+import { Vector2FieldComponent } from 'app/views/shared/fields/vector2-field/vector2-field.component';
+import { Vector3FieldComponent } from 'app/views/shared/fields/vector3-field/vector3-field.component';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
+import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
 
@@ -81,6 +82,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		'color': ColorFieldComponent,
 		'texture': TextureFieldComponent,
 		'object': DynamicInspectorComponent,
+		'material': MaterialFieldComponent,
 	};
 
 	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {

@@ -10,7 +10,7 @@ import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geomet
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
 import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
-import { TvJunction } from '../models/tv-junction';
+import { JunctionType, TvJunction, TvVirtualJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
@@ -197,6 +197,12 @@ export class OpenDriveExporter {
 					attr_contactPoint: road.predecessor.contactPoint,
 				};
 
+				if ( road.predecessor.elementDir )
+					xmlNode.link.predecessor[ 'attr_elementDir' ] = road.predecessor.elementDir;
+
+				if ( road.predecessor.elementS )
+					xmlNode.link.predecessor[ 'attr_elementS' ] = road.predecessor.elementS;
+
 			}
 		}
 
@@ -216,6 +222,12 @@ export class OpenDriveExporter {
 					attr_elementId: road.successor.elementId,
 					attr_contactPoint: road.successor.contactPoint,
 				};
+
+				if ( road.successor.elementDir )
+					xmlNode.link.successor[ 'attr_elementDir' ] = road.successor.elementDir;
+
+				if ( road.successor.elementS )
+					xmlNode.link.successor[ 'attr_elementS' ] = road.successor.elementS;
 
 			}
 		}
@@ -985,13 +997,31 @@ export class OpenDriveExporter {
 
 		if ( junction.connections.size === 0 ) return;
 
-		const nodeJunction = {
+		let nodeJunction: XmlElement = {
 			attr_id: junction.id,
 			attr_name: junction.name,
 			connection: [],
 			priority: [],
 			controller: []
 		};
+
+		if ( junction.type == JunctionType.VIRTUAL ) {
+
+			nodeJunction = this.writeVirtualJunction( junction as TvVirtualJunction );
+
+		} else if ( junction.type == JunctionType.DEFAULT ) {
+
+			nodeJunction = this.writeDefaultJunction( junction );
+
+		} else if ( junction.type == JunctionType.DIRECT ) {
+
+			console.error( 'Unknown junction type: ' + junction.type );
+
+		} else {
+
+			console.error( 'Unknown junction type: ' + junction.type );
+
+		}
 
 		this.writeJunctionConnection( nodeJunction, junction );
 
@@ -1001,6 +1031,33 @@ export class OpenDriveExporter {
 
 		xmlNode.junction.push( nodeJunction );
 	}
+
+	private writeDefaultJunction ( junction: TvJunction ): XmlElement {
+		return {
+			attr_id: junction.id,
+			attr_name: junction.name,
+			connection: [],
+			priority: [],
+			controller: []
+		};
+	}
+
+	private writeVirtualJunction ( junction: TvVirtualJunction ): XmlElement {
+		// type="virtual" id="555" mainRoad="1" sStart="50" sEnd="70" orientation="+"
+		return {
+			attr_id: junction.id,
+			attr_name: junction.name,
+			attr_type: junction.type,
+			attr_mainRoad: junction.mainRoadId,
+			attr_sStart: junction.sStart,
+			attr_sEnd: junction.sEnd,
+			attr_orientation: junction.orientation,
+			connection: [],
+			priority: [],
+			controller: []
+		};
+	}
+
 
 	public writeJunctionConnection ( xmlNode, junction: TvJunction ) {
 

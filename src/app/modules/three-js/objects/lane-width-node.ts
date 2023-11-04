@@ -3,7 +3,7 @@
  */
 
 import { BufferGeometry, Group, LineBasicMaterial, LineSegments } from 'three';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { AnyControlPoint } from './control-point';
@@ -77,6 +77,7 @@ export class LaneWidthNode extends Group implements ISelectable {
 
 		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
 		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+		this.line.name = 'lane-width-node';
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
 		this.line.renderOrder = 3;
 		this.add( this.line );

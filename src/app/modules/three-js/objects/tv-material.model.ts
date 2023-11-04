@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AppService } from 'app/core/services/app.service';
+import { AppService } from 'app/services/app.service';
 import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
 
 export class TvMaterial extends MeshStandardMaterial {

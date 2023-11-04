@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MultiCmdsCommand } from 'app/core/commands/multi-cmds-command';
+import { MultiCmdsCommand } from 'app/commands/multi-cmds-command';
 import { Environment } from 'app/core/utils/environment';
-import { ICommand } from '../core/commands/i-command';
+import { ICommand } from '../commands/i-command';
 
 export class CommandHistory {
 

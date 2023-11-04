@@ -3,7 +3,7 @@
  */
 
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
-import { CatmullRomCurve3, Curve, CurvePath, Vector3 } from 'three';
+import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
 import { AutoSpline } from './auto-spline';
 import { ExplicitSpline } from './explicit-spline';
 
@@ -288,7 +288,7 @@ export class CatmullRomPath extends CurvePath<Vector3> {
 	constructor (
 		public points: Vector3[] = [],
 		public closed?: boolean,
-		public curveType?: string,
+		public curveType?: CurveType,
 		public tension?: number
 	) {
 

@@ -1,39 +1,40 @@
 <h1 class="mat-tv-dialog-title"
 	mat-dialog-title>Import OpenScenario</h1>
 <div *ngIf="scenario"
-	 class="mat-tv-dialog-content"
-	 mat-dialog-content>
+	class="mat-tv-dialog-content"
+	mat-dialog-content>
 
 	<app-string-field [value]="data?.path"
-					  label="Scenario File Path"></app-string-field>
+		label="Scenario File Path"></app-string-field>
 	<app-string-field [value]="scenarioFileDestination"
-					  label="Import To"></app-string-field>
-	<br/>
+		label="Import To"></app-string-field>
+	<br />
 
 	<app-string-field [value]="scenario.fileHeader.author"
-					  label="Author"></app-string-field>
+		label="Author"></app-string-field>
 	<app-string-field [value]="scenario.fileHeader.date"
-					  label="Date"></app-string-field>
+		label="Date"></app-string-field>
 	<app-string-field [value]="scenario.fileHeader.description"
-					  label="Description"></app-string-field>
+		label="Description"></app-string-field>
 	<app-string-field [value]="scenario.fileHeader.revMajor"
-					  label="Version Major"></app-string-field>
+		label="Version Major"></app-string-field>
 	<app-string-field [value]="scenario.fileHeader.revMinor"
-					  label="Version Minor"></app-string-field>
+		label="Version Minor"></app-string-field>
 
-	<br/>
+	<br />
 	<app-string-field [value]="scenario.roadNetwork.logics?.filepath"
-					  label="Road Network File Path"></app-string-field>
+		label="Road Network File Path"></app-string-field>
 	<app-string-field [value]="scenario.roadNetwork.sceneGraph?.filepath"
-					  label="3D File Path"></app-string-field>
+		label="3D File Path"></app-string-field>
 
 </div>
 <div class="mat-tv-dialog-actions"
-	 mat-dialog-actions>
+	mat-dialog-actions>
 	<button (click)="import()"
-			[disabled]="!scenario" mat-stroked-button>Import
+		[disabled]="!scenario"
+		mat-stroked-button>Import
 	</button>
 	<button mat-dialog-close
-			mat-stroked-button>Close
+		mat-stroked-button>Close
 	</button>
 </div>

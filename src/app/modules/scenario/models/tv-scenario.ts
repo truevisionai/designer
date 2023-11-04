@@ -3,7 +3,7 @@
  */
 
 import { MathUtils, Vector3 } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { TeleportAction } from './actions/tv-teleport-action';
@@ -221,7 +221,7 @@ export class TvScenario {
 
 		this.objects.forEach( entity => {
 
-			SceneService.remove( entity );
+			SceneService.removeFromMain( entity );
 
 			entity.initActions.splice( 0, entity.initActions.length );
 

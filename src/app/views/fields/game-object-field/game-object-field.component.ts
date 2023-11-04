@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter } from 'app/core/models/metadata.model';
+import { MetaImporter } from 'app/core/asset/metadata.model';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
 import { Object3D } from 'three';
 

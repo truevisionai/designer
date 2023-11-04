@@ -2,16 +2,16 @@
 
 	<mat-form-field>
 		<input (click)="selectTrajectory(trajectory)"
-			   [(ngModel)]="trajectory.name"
-			   matInput
-			   placeholder="Name">
+			[(ngModel)]="trajectory.name"
+			matInput
+			placeholder="Name">
 	</mat-form-field>
 
 	{{ isDisabled(trajectory) }}
 
 	<app-tv-trajectory-inspector [disableEditing]="isDisabled(trajectory)"
-								 [display]="false"
-								 [trajectory]="trajectory">
+		[display]="false"
+		[trajectory]="trajectory">
 	</app-tv-trajectory-inspector>
 
 </div>

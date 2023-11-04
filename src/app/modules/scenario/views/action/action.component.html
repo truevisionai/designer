@@ -1,28 +1,28 @@
 <mat-toolbar class="native-border inspector-toolbar">
 	<button (click)="toggle($event)"
-			class="inspector-toolbar-icon"
-			mat-icon-button>
+		class="inspector-toolbar-icon"
+		mat-icon-button>
 		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
 		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
 	</button>
 	<span>{{action.label}}</span>
 	<span class="spacer"></span>
 	<button [matMenuTriggerFor]="menu"
-			class="inspector-toolbar-icon"
-			mat-icon-button>
+		class="inspector-toolbar-icon"
+		mat-icon-button>
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-menu #menu="matMenu">
 		<button (click)="deleteAction($event)"
-				mat-menu-item>
+			mat-menu-item>
 			<mat-icon>delete</mat-icon>
 			<span>Delete Action</span>
 		</button>
 	</mat-menu>
 </mat-toolbar>
 <div *ngIf="isOpen"
-	 [ngSwitch]="action.actionType"
-	 style="padding: 4px 8px">
+	[ngSwitch]="action.actionType"
+	style="padding: 4px 8px">
 
 	<div *ngSwitchCase="types.Private_LaneChange">
 		<app-lane-change [action]="privateAction"></app-lane-change>
@@ -46,7 +46,7 @@
 
 	<div *ngSwitchCase="types.Private_Position">
 		<app-position-action [action]="privateAction"
-							 [entity]="entity"></app-position-action>
+			[entity]="entity"></app-position-action>
 	</div>
 
 </div>

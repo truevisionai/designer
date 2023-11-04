@@ -5,7 +5,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { IFile } from 'app/core/io/file';
+import { IFile } from 'app/io/file';
 import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

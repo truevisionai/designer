@@ -7,21 +7,21 @@
 	<mat-card class="example-card">
 		<mat-card-header>
 			<div (click)="onPropModelClicked()"
-				 class="example-header-image"
-				 mat-card-avatar>
+				class="example-header-image"
+				mat-card-avatar>
 				<img class="file-card-image"
-					 src="{{ previewImage }}">
+					src="{{ previewImage }}">
 			</div>
 		</mat-card-header>
 	</mat-card>
 
 	<app-string-field [disabled]="true"
-					  [value]="data.object.id"
-					  label="ID"></app-string-field>
+		[value]="data.object.id"
+		label="ID"></app-string-field>
 
 	<app-string-field [disabled]="true"
-					  [value]="data.object.name"
-					  label="Name"></app-string-field>
+		[value]="data.object.name"
+		label="Name"></app-string-field>
 
 </div>
 

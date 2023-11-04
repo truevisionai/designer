@@ -3,14 +3,14 @@
  */
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { EventSystem } from 'app/events/event-system.service';
+import { ViewportEvents } from 'app/events/viewport-events';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/modules/three-js/three.service';
 
 // import * as Stats from 'stats.js';
 import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { ViewportService } from '../viewport.service';
 import { Environment } from 'app/core/utils/environment';
 
@@ -49,7 +49,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	constructor (
 		private threeService: ThreeService,
-		private eventSystem: EventSystem,
+		private eventSystem: ViewportEvents,
 		private viewportService: ViewportService,
 	) {
 		this.render = this.render.bind( this );
@@ -263,19 +263,19 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleRightClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleRightClick ( event: MouseEvent, intersection: Intersection ) {
 
 		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
 	}
 
-	handleMiddleClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleMiddleClick ( event: MouseEvent, intersection: Intersection ) {
 
 		// do nothing
 
 	}
 
-	handleLeftClick ( event: MouseEvent, intersection: THREE.Intersection<THREE.Object3D<THREE.Event>> ) {
+	handleLeftClick ( event: MouseEvent, intersection: Intersection ) {
 
 		this.fireSelectionEvents();
 
@@ -300,7 +300,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
 
-		this.intersections = this.raycaster.intersectObjects( SceneService.objects, true );
+		this.intersections = this.raycaster.intersectObjects( SceneService.raycastableObjects(), true );
 
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {

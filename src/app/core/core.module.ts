@@ -10,8 +10,8 @@ import { TimeOutInterceptor } from './interceptors/time-out-interceptor';
 import { MaxPipe } from './pipes/max.pipe';
 import { MinPipe } from './pipes/min.pipe';
 
-import { ApiService } from './services/api.service';
-import { JwtService } from './services/jwt.service';
+import { ApiService } from '../services/api.service';
+import { JwtService } from '../services/jwt.service';
 
 @NgModule( {
 	declarations: [ MinPipe, MaxPipe ],

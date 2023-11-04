@@ -4,12 +4,13 @@
 
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
 import { TangentLine } from './TangentLine';
+import { SceneService } from '../../services/scene.service';
 
 export class ParametricSpline extends AbstractSpline {
 
@@ -55,11 +56,11 @@ export class ParametricSpline extends AbstractSpline {
 
 		this.mesh.add( this.tangent.mesh );
 
-		this.scene.add( this.mesh );
+		SceneService.addToolObject( this.mesh );
 
-		// this.scene.add( this.polyline.mesh );
+		// SceneService.add( this.polyline.mesh );
 
-		// this.scene.add( this.roundline.mesh );
+		// SceneService.add( this.roundline.mesh );
 
 		this.meshAddedInScene = true;
 
@@ -271,6 +272,8 @@ export class ParametricSpline extends AbstractSpline {
 
 		const curvemesh = new Line( buffgeo, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
+		curvemesh.name = 'ParametricSpline';
+
 		curvemesh[ 'tag' ] = 'curve';
 
 		curvemesh[ 'tagindex' ] = idx;
@@ -279,7 +282,7 @@ export class ParametricSpline extends AbstractSpline {
 
 		this.segments.push( curvemesh );
 
-		this.scene.add( curvemesh );
+		SceneService.addToolObject( curvemesh );
 
 		// this.controlPointLines.push( curvemesh );
 

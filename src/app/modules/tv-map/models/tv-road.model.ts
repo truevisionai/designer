@@ -4,16 +4,15 @@
 
 import { EventEmitter } from '@angular/core';
 import { SentryService } from 'app/core/analytics/sentry.service';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -22,12 +21,19 @@ import { MathUtils, Vector2, Vector3 } from 'three';
 import { LaneOffsetNode } from '../../three-js/objects/lane-offset-node';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
 import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
-import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvLaneSide, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import {
+	ObjectTypes,
+	TvContactPoint,
+	TvDynamicTypes,
+	TvLaneSide,
+	TvOrientation,
+	TvRoadType,
+	TvUnit
+} from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
 import { TvJunction } from './tv-junction';
@@ -46,6 +52,7 @@ import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvRoadLink } from './tv-road.link';
 import { TvUtils } from './tv-utils';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -350,15 +357,19 @@ export class TvRoad {
 
 		const index = this.checkElevationInterval( s ) + 1;
 
+		const node = new TvElevation( s, a, b, c, d );
+
 		if ( index > this.getElevationCount() ) {
 
-			this.addElevationInstance( new TvElevation( s, a, b, c, d ) );
+			this.addElevationInstance( node );
 
 		} else {
 
-			this.elevationProfile.elevation[ index ] = new TvElevation( s, a, b, c, d );
+			this.elevationProfile.elevation[ index ] = node;
 
 		}
+
+		return node;
 	}
 
 	addElevationInstance ( elevation: TvElevation ) {
@@ -472,6 +483,8 @@ export class TvRoad {
 
 		this.laneSections.push( laneSection );
 
+		this.sortLaneSections();
+
 		this.computeLaneSectionLength();
 	}
 
@@ -489,13 +502,38 @@ export class TvRoad {
 
 		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this );
 
-		laneSections.push( laneSection );
-
-		this.computeLaneSectionLength();
-
-		this.lastAddedLaneSectionIndex = laneSections.length - 1;
+		this.addLaneSectionInstance( laneSection );
 
 		return laneSection;
+	}
+
+	duplicateLaneSectionAt ( s: number ): TvLaneSection {
+
+		const laneSection = this.getLaneSectionAt( s );
+
+		const newId = this.lanes.laneSections.length + 1;
+
+		const newLaneSection = laneSection.cloneAtS( newId, s );
+
+		this.addLaneSectionInstance( newLaneSection );
+
+		return newLaneSection;
+	}
+
+	sortLaneSections () {
+
+		// sort the lansections by s value
+
+		this.lanes.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+		// const inDescOrder = ( a: [ number, TvLaneSection ], b: [ number, TvLaneSection ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+
+		// const laneSections = this.laneSections.map( laneSection => [ laneSection.id, laneSection ] );
+
+		// laneSections.sort( inDescOrder );
+
+		// this.lanes.laneSections = laneSections.map( laneSection => laneSection[ 1 ] );
+
 	}
 
 	getLaneSectionCount () {
@@ -1194,7 +1232,7 @@ export class TvRoad {
 
 		this.spline.addControlPoint( point );
 
-		SceneService.add( point );
+		SceneService.addToolObject( point );
 
 		if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
@@ -1215,7 +1253,7 @@ export class TvRoad {
 
 		this.spline.removeControlPoint( cp );
 
-		SceneService.remove( cp );
+		SceneService.removeFromTool( cp );
 
 		this.updateGeometryFromSpline();
 
@@ -1262,6 +1300,9 @@ export class TvRoad {
 
 	}
 
+	/**
+	 * @deprecated use RoadManager
+	 */
 	updateRoadNodes (): void {
 
 		this.updateGeometryFromSpline();
@@ -1282,8 +1323,8 @@ export class TvRoad {
 
 	clearNodes () {
 
-		SceneService.remove( this.startNode );
-		SceneService.remove( this.endNode );
+		SceneService.removeFromTool( this.startNode );
+		SceneService.removeFromTool( this.endNode );
 
 		this.startNode = null;
 		this.endNode = null;
@@ -1334,13 +1375,13 @@ export class TvRoad {
 
 				laneOffset.node.visible = true;
 
-				SceneService.add( laneOffset.node );
+				SceneService.addToolObject( laneOffset.node );
 
 			} else {
 
 				laneOffset.node = new LaneOffsetNode( this, laneOffset );
 
-				SceneService.add( laneOffset.node );
+				SceneService.addToolObject( laneOffset.node );
 
 			}
 
@@ -1356,7 +1397,7 @@ export class TvRoad {
 
 				laneOffset.node.visible = false;
 
-				SceneService.remove( laneOffset.node );
+				SceneService.removeFromTool( laneOffset.node );
 
 			}
 
@@ -1394,7 +1435,7 @@ export class TvRoad {
 
 						roadmark.node = new LaneRoadMarkNode( lane, roadmark );
 
-						SceneService.add( roadmark.node );
+						SceneService.addToolObject( roadmark.node );
 
 					}
 
@@ -1448,61 +1489,15 @@ export class TvRoad {
 
 				lane.getLaneWidthVector().forEach( laneWidth => {
 
-					if ( laneWidth.node ) SceneService.remove( laneWidth.node );
+					if ( laneWidth.node ) SceneService.removeFromTool( laneWidth.node );
 
 					laneWidth.node = new LaneWidthNode( laneWidth );
 
-					SceneService.add( laneWidth.node );
+					SceneService.addToolObject( laneWidth.node );
 
 				} );
 
 			} );
-
-		} );
-
-	}
-
-	showElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = true;
-
-			} else {
-
-				elevation.node = new RoadElevationNode( this, elevation );
-
-			}
-
-			SceneService.add( elevation.node );
-
-		} );
-
-	}
-
-	updateElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			elevation.node?.updateValuesAndPosition();
-
-		} );
-
-	}
-
-	hideElevationNodes () {
-
-		this.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = false;
-
-			}
-
-			SceneService.remove( elevation.node );
 
 		} );
 
@@ -1595,7 +1590,7 @@ export class TvRoad {
 
 	}
 
-	applyRoadStyle ( roadStyle: RoadStyle ) {
+	set roadStyle ( roadStyle: RoadStyle ) {
 
 		this.lanes.clear();
 
@@ -1603,7 +1598,19 @@ export class TvRoad {
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
-		RoadFactory.rebuildRoad( this );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this, false ) );
+	}
+
+	get roadStyle (): RoadStyle {
+
+		const roadStyle = new RoadStyle();
+
+		roadStyle.laneOffset = this.getLaneOffsetAt( 0 ).clone();
+
+		roadStyle.laneSection = this.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
+
+		return roadStyle;
+
 	}
 
 	showCornerPoints () {
@@ -1675,6 +1682,9 @@ export class TvRoad {
 
 		// road
 		const road = this.predecessor.road;
+
+		if ( !road ) return;
+
 		const contactPoint = this.predecessor.contactPoint;
 
 		this.predecessor = null;
@@ -1702,6 +1712,9 @@ export class TvRoad {
 
 		// road
 		const road = this.successor.road;
+
+		if ( !road ) return;
+
 		const contactPoint = this.successor.contactPoint;
 
 		this.successor = null;
@@ -1883,7 +1896,7 @@ export class TvRoad {
 
 		const node = new RoadNode( this, contact );
 
-		SceneService.add( node );
+		SceneService.addToolObject( node );
 
 		return node;
 	}

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { cloneDeep } from 'lodash';
@@ -40,7 +40,7 @@ export class ScenarioBuilder {
 
 		entity.visible = true;
 
-		SceneService.add( entity );
+		SceneService.addToMain( entity );
 
 	}
 

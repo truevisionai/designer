@@ -3,10 +3,10 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { IFile } from '../../../core/io/file';
+import { IFile } from '../../../io/file';
 import { TvMap } from '../models/tv-map.model';
 import { Object3D, Event } from 'three';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 
 export class TvMapInstance {
 
@@ -36,12 +36,12 @@ export class TvMapInstance {
 		this.mapChanged.emit( this.map );
 	}
 
-	static removeProp ( prop: Object3D<Event> ): void {
-		SceneService.remove( prop );
+	static removeProp ( prop: Object3D ): void {
+		SceneService.removeFromMain( prop );
 	}
 
-	static addProp ( prop: Object3D<Event> ): void {
-		SceneService.add( prop );
+	static addProp ( prop: Object3D ): void {
+		SceneService.addToMain( prop );
 	}
 
 }

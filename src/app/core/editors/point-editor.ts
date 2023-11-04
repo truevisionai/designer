@@ -4,7 +4,7 @@
 
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { KeyboardInput } from '../input';
-import { PickingHelper } from '../services/picking-helper.service';
+import { PickingHelper } from '../../services/picking-helper.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class PointEditor extends AbstractShapeEditor {

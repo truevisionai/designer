@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
@@ -31,7 +31,7 @@ export class TextObject {
 
 	update ( message: string, position: Vector3, size: number = this.size, color: number = this.color ) {
 		// Remove the old text from the scene
-		SceneService.removeHelper( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 
 		// Update the text properties
 		this.message = message;
@@ -45,7 +45,7 @@ export class TextObject {
 
 	updateText ( message: string ) {
 		// Remove the old text from the scene
-		SceneService.removeHelper( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 
 		this.message = message;
 
@@ -62,7 +62,7 @@ export class TextObject {
 
 	remove () {
 		// Remove the text from the scene
-		SceneService.removeHelper( this.textMesh );
+		SceneService.removeFromTool( this.textMesh );
 	}
 
 	private createText () {
@@ -77,6 +77,6 @@ export class TextObject {
 		this.textMesh = new THREE.Mesh( geometry, this.matLite );
 		this.textMesh.position.copy( this.position );
 
-		SceneService.addHelper( this.textMesh );
+		SceneService.addToolObject( this.textMesh );
 	}
 }

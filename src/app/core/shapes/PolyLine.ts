@@ -3,7 +3,7 @@
  */
 
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
 import { MAX_CTRL_POINTS } from './spline-config';
 
@@ -22,6 +22,8 @@ export class PolyLine {
 		this.curveType = 'polyline';
 
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.WHITE, opacity: 0.35, linewidth: 2 } ) );
+
+		this.mesh.name = 'polyline';
 
 		this.mesh.castShadow = true;
 

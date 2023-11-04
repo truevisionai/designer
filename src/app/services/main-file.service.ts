@@ -4,15 +4,15 @@
 
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
-import { IFile } from 'app/core/io/file';
-import { AppService } from 'app/core/services/app.service';
-import { ToolManager } from 'app/core/tools/tool-manager';
+import { IFile } from 'app/io/file';
+import { AppService } from 'app/services/app.service';
+import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
-import { FileService } from '../core/io/file.service';
+import { FileService } from '../io/file.service';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
 import { SceneExporterService } from './scene-exporter.service';

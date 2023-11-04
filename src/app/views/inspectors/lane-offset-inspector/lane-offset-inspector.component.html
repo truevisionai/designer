@@ -3,18 +3,18 @@
   -->
 
 <div *ngIf="data"
-	 class="inspector-form-container">
+	class="inspector-form-container">
 
 	<app-double-field (changed)="onDistanceChanged($event)"
-					  [value]="data.s"
-					  label="Distance"
-					  min="0"></app-double-field>
+		[value]="data.s"
+		label="Distance"
+		min="0"></app-double-field>
 
 	<app-double-field (changed)="onOffsetChanged($event)"
-					  [value]="data.a"
-					  label="Offset"
-					  max="50"
-					  min="0"></app-double-field>
+		[value]="data.a"
+		label="Offset"
+		max="50"
+		min="0"></app-double-field>
 
 	<!-- <app-double-field [disabled]="true" [value]="data.a" label="A" min="0"></app-double-field>
 	<app-double-field [disabled]="true" [value]="data.b" label="B" min="0"></app-double-field>

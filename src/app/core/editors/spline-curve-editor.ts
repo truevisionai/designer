@@ -4,7 +4,7 @@
 
 import * as THREE from 'three';
 import { Curve, Object3D } from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class SplineCurveEditor extends AbstractShapeEditor {
@@ -20,7 +20,7 @@ export class SplineCurveEditor extends AbstractShapeEditor {
 
 	public draw () {
 
-		if ( this.line != null ) SceneService.remove( this.line, false );
+		if ( this.line != null ) SceneService.removeFromMain( this.line, false );
 
 		// Create a sine-like wave
 		this.curve = new THREE.CatmullRomCurve3( this.controlPointPositions, false, 'catmullrom', 0 );
@@ -36,7 +36,7 @@ export class SplineCurveEditor extends AbstractShapeEditor {
 
 		this.line.renderOrder = 3;
 
-		SceneService.add( this.line, false );
+		SceneService.addToMain( this.line, false );
 	}
 
 }

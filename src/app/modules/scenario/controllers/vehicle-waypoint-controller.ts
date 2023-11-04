@@ -3,7 +3,7 @@
  */
 
 import { BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 import { Time } from '../../../core/time';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
@@ -24,7 +24,7 @@ export class VehicleWaypointController extends AbstractController {
 	createCube () {
 		const geometry = new BoxGeometry( 1, 1, 1 );
 		this.cube = new Mesh( geometry, new MeshBasicMaterial( { color: 'red' } ) );
-		SceneService.add( this.cube );
+		SceneService.addToMain( this.cube );
 	}
 
 	start (): void {

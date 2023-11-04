@@ -5,23 +5,29 @@
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
-import { FileUtils } from 'app/core/io/file-utils';
-import { FileExtension } from 'app/core/io/file.service';
-import { Metadata } from 'app/core/models/metadata.model';
-import { DragDropData } from 'app/core/services/drag-drop.service';
-import { SceneService } from 'app/core/services/scene.service';
-import { PropPointTool } from 'app/core/tools/prop-point/prop-point-tool';
-import { ToolManager } from 'app/core/tools/tool-manager';
+import { FileUtils } from 'app/io/file-utils';
+import { FileExtension } from 'app/io/file.service';
+import { Metadata } from 'app/core/asset/metadata.model';
+import { DragDropData } from 'app/services/drag-drop.service';
+import { SceneService } from 'app/services/scene.service';
+import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
+import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/services/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/managers/prop-manager';
 import { RoadStyle } from 'app/services/road-style.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { BufferGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
 import { TvMesh } from './objects/tv-prefab.model';
+import { SurfaceFactory, TvSurface } from '../tv-map/models/tv-surface.model';
+import { SurfaceTool } from 'app/tools/surface/surface-tool';
+import { ToolFactory } from 'app/factories/tool-factory';
+import { ToolType } from 'app/tools/tool-types.enum';
+import { CommandHistory } from 'app/services/command-history';
+import { SetValueCommand } from './commands/set-value-command';
 
 @Injectable( {
 	providedIn: 'root'
@@ -82,6 +88,14 @@ export class ViewportImporterService {
 				// alert( 'import prop ' + path );
 				break;
 
+			// case 'jpg':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
+
+			// case 'png':
+			// 	this.importTexture( data.path, filename, data.extension, position, metadata );
+			// 	break;
+
 			case 'scene':
 				this.importerService.importScene( data.path );
 				break;
@@ -97,6 +111,16 @@ export class ViewportImporterService {
 		}
 
 	}
+
+	// importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
+
+	// const surface = SurfaceFactory.createFromTextureGuid( metadata.guid, position );
+
+	// if ( !surface ) return;
+
+	// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
+
+	// }
 
 	importGeometry ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
 
@@ -116,7 +140,7 @@ export class ViewportImporterService {
 
 		// clone.position.z = position.z + ( size.z / 2 );
 
-		SceneService.add( model );
+		SceneService.addToMain( model );
 
 	}
 
@@ -140,7 +164,7 @@ export class ViewportImporterService {
 
 		// clone.position.z = position.z + ( size.z / 2 );
 
-		SceneService.add( clone );
+		SceneService.addToMain( clone );
 	}
 
 	importOpenDrive ( path: string ) {
@@ -159,7 +183,7 @@ export class ViewportImporterService {
 
 		const roadStyle = AssetDatabase.getInstance<RoadStyle>( metadata.guid );
 
-		road.applyRoadStyle( roadStyle );
+		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', roadStyle.clone( null ), road.roadStyle.clone( null ) ) );
 
 	}
 
@@ -173,7 +197,7 @@ export class ViewportImporterService {
 
 		} else {
 
-			ToolManager.currentTool = new PropPointTool();
+			ToolManager.currentTool = ToolFactory.createTool( ToolType.PropPoint );
 
 			// ( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
 

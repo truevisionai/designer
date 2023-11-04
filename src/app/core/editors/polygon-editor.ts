@@ -3,7 +3,7 @@
  */
 
 import * as THREE from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
 
 export class PolygonEditor extends AbstractShapeEditor {
@@ -23,8 +23,8 @@ export class PolygonEditor extends AbstractShapeEditor {
 
 	public drawPolygon () {
 
-		if ( this.group != null ) SceneService.remove( this.group );
-		if ( this.line != null ) SceneService.remove( this.line );
+		if ( this.group != null ) SceneService.removeFromMain( this.group );
+		if ( this.line != null ) SceneService.removeFromMain( this.line );
 
 		this.group = new THREE.Group();
 
@@ -40,7 +40,7 @@ export class PolygonEditor extends AbstractShapeEditor {
 
 		this.addShape( splineShape, 0xf08000, 0, 0, 0, 0, 0, 0, 1 );
 
-		SceneService.add( this.group );
+		SceneService.addToMain( this.group );
 
 	}
 

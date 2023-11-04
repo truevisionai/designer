@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
-import { SceneService } from 'app/core/services/scene.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { SceneService } from 'app/services/scene.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { isArray } from 'rxjs/internal-compatibility';
@@ -53,7 +53,7 @@ export class FindIntersection {
 
 		console.time( 'find-intersection' );
 
-		this.meshes.forEach( mesh => SceneService.remove( mesh ) );
+		this.meshes.forEach( mesh => SceneService.removeFromMain( mesh ) );
 		this.meshes = [];
 
 		const roads = TvMapInstance.map.getRoads();
@@ -86,7 +86,7 @@ export class FindIntersection {
 
 		} );
 
-		this.meshes.forEach( mesh => SceneService.add( mesh ) );
+		this.meshes.forEach( mesh => SceneService.addToMain( mesh ) );
 
 		console.timeEnd( 'find-intersection' );
 

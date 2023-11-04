@@ -1,7 +1,7 @@
 <mat-toolbar>
 	<mat-toolbar-row class="console-toolbar-row">
 		<button (click)="clear()"
-				mat-button>Clear
+			mat-button>Clear
 		</button>
 		<span class="console-toolbar-spacer"></span>
 		<!-- <mat-icon class="console-toolbar-icon" aria-hidden="false" aria-label="console-toolbar heart icon">favorite</mat-icon> -->
@@ -9,36 +9,37 @@
 	</mat-toolbar-row>
 </mat-toolbar>
 <mat-list class="console-container"
-		  role="list">
+	role="list">
 
 	<!-- <perfect-scrollbar fxFlexFill> -->
 
 	<sat-popover #popover
-				 verticalAlign="above">
-		<div *ngIf="log" class="simple-popover"
-			 style="width: auto;">
+		verticalAlign="above">
+		<div *ngIf="log"
+			class="simple-popover"
+			style="width: auto;">
 			<div [innerHTML]="log.message| translate"></div>
 		</div>
 	</sat-popover>
 
 	<mat-list-item (mouseout)="onMouseOut(log)"
-				   (mouseover)="onMouseOver(log)"
-				   *ngFor="let log of logs"
-				   class="console-log-item"
-				   role="listitem">
+		(mouseover)="onMouseOver(log)"
+		*ngFor="let log of logs"
+		class="console-log-item"
+		role="listitem">
 
 		<mat-icon class="console-message-icon"
-				  color="error"
-				  mat-list-icon>
+			color="error"
+			mat-list-icon>
 			<!-- {{log.icon}} -->
 			error
 		</mat-icon>
 
 		<div class="console-message"
-			 mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
+			mat-line>[{{log.time | date: 'hh:mm:ss' }}] [{{log.icon}}] {{log.message}}</div>
 
 		<div *ngIf="log.counter > 0"
-			 class="counter">
+			class="counter">
 			<mat-chip class="counter-chip">{{log.counter}} </mat-chip>
 		</div>
 

@@ -4,8 +4,8 @@
 
 import * as THREE from 'three';
 import { Mesh, Object3D, PlaneGeometry, Vector2, Vector3 } from 'three';
-import { SceneService } from '../../core/services/scene.service';
-import { COLOR } from '../../shared/utils/colors.service';
+import { SceneService } from '../../services/scene.service';
+import { COLOR } from '../../views/shared/utils/colors.service';
 
 export enum PrimitiveType {
 	CUBE = 1,
@@ -37,7 +37,7 @@ export class BoundingBoxObject {
 		this.mesh.userData.is_annotation = true;
 		this.mesh.userData.uuid = this.mesh.uuid;
 
-		SceneService.add( this.mesh, true );
+		SceneService.addToMain( this.mesh, true );
 
 		if ( start && end ) this.updateGeometry( start, end );
 	}
@@ -118,7 +118,7 @@ export class BoundingBoxObject {
 	}
 
 	destroy () {
-		SceneService.remove( this.mesh, true );
+		SceneService.removeFromMain( this.mesh, true );
 	}
 
 }

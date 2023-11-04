@@ -5,7 +5,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
-import { SplashComponent } from './shared/components/splash/splash.component';
+import { SplashComponent } from './views/shared/components/splash/splash.component';
 import { EditorComponent } from './views/editor/editor.component';
 import { EditorLayoutComponent } from './views/editor/layout/editor-layout.component';
 import { ErrorComponent } from './views/sessions/error/error.component';

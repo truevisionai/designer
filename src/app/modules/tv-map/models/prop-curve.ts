@@ -6,7 +6,7 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SerializedField } from 'app/core/components/serialization';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Maths } from 'app/utils/maths';
@@ -74,7 +74,7 @@ export class PropCurve {
 
 		this.spline.show();
 
-		SceneService.add( this.spline.mesh );
+		SceneService.addToMain( this.spline.mesh );
 
 	}
 
@@ -82,7 +82,7 @@ export class PropCurve {
 
 		this.spline.hide();
 
-		SceneService.remove( this.spline.mesh );
+		SceneService.removeFromMain( this.spline.mesh );
 
 	}
 
@@ -185,11 +185,11 @@ export class PropCurve {
 
 		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
 
-		this.props.forEach( prop => SceneService.remove( prop ) );
+		this.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
 		this.props.splice( 0, this.props.length );
 
-		SceneService.remove( this.spline.mesh );
+		SceneService.removeFromMain( this.spline.mesh );
 
 		this.spline.controlPoints.forEach( cp => {
 

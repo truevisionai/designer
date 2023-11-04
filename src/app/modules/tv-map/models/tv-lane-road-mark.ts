@@ -3,8 +3,8 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { SceneService } from 'app/core/services/scene.service';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { SceneService } from 'app/services/scene.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { MathUtils, MeshStandardMaterial } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
@@ -214,7 +214,7 @@ export class TvLaneRoadMark {
 
 		if ( this.gameObject ) {
 
-			SceneService.remove( this.gameObject );
+			SceneService.removeFromMain( this.gameObject );
 
 			this.lane?.gameObject.remove( this.gameObject );
 

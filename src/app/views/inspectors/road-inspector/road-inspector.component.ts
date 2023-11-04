@@ -3,8 +3,8 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CallFunctionCommand } from 'app/core/commands/call-function-command';
-import { UpdateRoadPointCommand } from 'app/core/commands/update-road-point-command';
+import { CallFunctionCommand } from 'app/commands/call-function-command';
+import { UpdateRoadPointCommand } from 'app/commands/update-road-point-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
@@ -14,8 +14,8 @@ import { Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-import { RemoveRoadCommand } from 'app/core/tools/road/remove-road-command';
-import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
+import { RemoveRoadCommand } from 'app/tools/road/remove-road-command';
+import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 
 @Component( {
 	selector: 'app-road-inspector',

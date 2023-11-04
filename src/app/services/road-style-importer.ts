@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractReader } from 'app/core/services/abstract-reader';
+import { AbstractReader } from 'app/services/abstract-reader';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
@@ -62,7 +62,7 @@ export class RoadStyleImporter extends AbstractReader {
 
 	static importLaneSection ( json: XmlElement ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( 0, 0, true );
+		const laneSection = new TvLaneSection( 0, 0, true, null );
 
 		this.readAsOptionalElement( json.laneSection.left, xml => {
 			this.readAsOptionalArray( xml.lane, xml => {

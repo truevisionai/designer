@@ -1,15 +1,15 @@
 <app-road-id-field (changed)="onRoadIdChanged($event)"
-				   [value]="roadPosition.roadId">
+	[value]="roadPosition.roadId">
 </app-road-id-field>
 
 <app-double-field (changed)="onSValueChanged($event)"
-				  [max]="max"
-				  [value]="roadPosition.sValue"
-				  label="S"
-				  min="0">
+	[max]="max"
+	[value]="roadPosition.sValue"
+	label="S"
+	min="0">
 </app-double-field>
 
 <app-double-field (changed)="onTValueChanged($event)"
-				  [value]="roadPosition.tValue"
-				  label="T">
+	[value]="roadPosition.tValue"
+	label="T">
 </app-double-field>

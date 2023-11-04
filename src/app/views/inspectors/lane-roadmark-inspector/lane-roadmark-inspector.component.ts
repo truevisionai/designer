@@ -4,8 +4,8 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { RemoveRoadmarkCommand } from '../../../core/commands/remove-roadmark-command';
-import { SetRoadmarkValueCommand } from '../../../core/commands/set-roadmark-value-command';
+import { RemoveRoadmarkCommand } from '../../../commands/remove-roadmark-command';
+import { SetRoadmarkValueCommand } from '../../../commands/set-roadmark-value-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
 import { IComponent } from '../../../core/game-object';
 import { TvRoadMarkTypes } from '../../../modules/tv-map/models/tv-common';

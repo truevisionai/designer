@@ -4,13 +4,12 @@
 
 import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { COLOR } from 'app/shared/utils/colors.service';
-import { BufferGeometry, CatmullRomCurve3, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline } from './abstract-spline';
+import { SceneService } from '../../services/scene.service';
 
 export class CatmullRomSpline extends AbstractSpline {
-
-	public type: string = 'catmullrom';
 
 	public curveType: string = 'curve';
 
@@ -18,7 +17,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	public mesh: Line;
 
-	constructor ( closed = true, type = 'catmullrom', tension = 0.5 ) {
+	constructor ( closed = true, public type: CurveType = 'catmullrom', tension = 0.5 ) {
 
 		super( closed, tension );
 
@@ -47,7 +46,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 		this.mesh.frustumCulled = false;
 
-		this.scene.add( this.mesh );
+		SceneService.addToolObject( this.mesh );
 	}
 
 

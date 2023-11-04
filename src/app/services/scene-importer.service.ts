@@ -3,19 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { JunctionFactory } from 'app/core/factories/junction.factory';
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
-import { IFile } from 'app/core/io/file';
+import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { AbstractReader } from 'app/core/services/abstract-reader';
-import { SceneService } from 'app/core/services/scene.service';
+import { AbstractReader } from 'app/services/abstract-reader';
+import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { ToolManager } from 'app/core/tools/tool-manager';
-import { readXmlArray, readXmlElement } from 'app/core/tools/xml-utils';
+import { ToolManager } from 'app/tools/tool-manager';
+import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
@@ -60,7 +60,7 @@ import { SignShapeType } from 'app/modules/tv-map/services/tv-sign.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
 import { AssetDatabase } from '../core/asset/asset-database';
-import { FileService } from '../core/io/file.service';
+import { FileService } from '../io/file.service';
 import { TvConsole } from '../core/utils/console';
 import { CommandHistory } from './command-history';
 import { SnackBar } from './snack-bar.service';
@@ -255,7 +255,7 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		SceneService.add( this.map.gameObject );
+		SceneService.addToMain( this.map.gameObject );
 
 	}
 
@@ -285,7 +285,7 @@ export class SceneImporterService extends AbstractReader {
 
 		this.map.props.push( propInstance );
 
-		SceneService.add( propInstance );
+		SceneService.addToMain( propInstance );
 
 	}
 
@@ -298,7 +298,7 @@ export class SceneImporterService extends AbstractReader {
 		const id = parseInt( xml.attr_id );
 		const junction = parseInt( xml.attr_junction ) || -1;
 
-		const road = RoadFactory.getNewRoad( name, length, id, junction );
+		const road = RoadFactory.createNewRoad( name, length, id, junction );
 
 		road.drivingMaterialGuid = xml.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;
@@ -419,7 +419,7 @@ export class SceneImporterService extends AbstractReader {
 
 			const position = this.importVector3( xml );
 
-			SceneService.add( spline.addControlPointAt( position ) );
+			SceneService.addToMain( spline.addControlPointAt( position ) );
 
 		} );
 
@@ -445,7 +445,7 @@ export class SceneImporterService extends AbstractReader {
 
 			spline.addControlPoint( controlPoint );
 
-			SceneService.add( controlPoint );
+			SceneService.addToMain( controlPoint );
 
 		} );
 
@@ -527,11 +527,11 @@ export class SceneImporterService extends AbstractReader {
 
 			polygon.addPropObject( propObject );
 
-			SceneService.add( propObject );
+			SceneService.addToMain( propObject );
 
 		} );
 
-		SceneService.add( polygon.mesh );
+		SceneService.addToMain( polygon.mesh );
 
 		return polygon;
 	}
@@ -1078,7 +1078,7 @@ export class SceneImporterService extends AbstractReader {
 
 			crosswalk.update();
 
-			SceneService.add( crosswalk );
+			SceneService.addToMain( crosswalk );
 
 			road.addRoadObjectInstance( crosswalk );
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { ArrowHelper, Object3D, Vector3 } from 'three';
 import { LaneArrowObject } from '../../three-js/objects/lane-arrow-object';
 import { TvLaneSide } from '../models/tv-common';
@@ -44,7 +44,7 @@ export class OdLaneDirectionBuilder {
 
 	clear () {
 
-		this.arrows.forEach( arrow => SceneService.removeHelper( arrow ) );
+		this.arrows.forEach( arrow => SceneService.removeFromTool( arrow ) );
 
 	}
 
@@ -89,7 +89,7 @@ export class OdLaneDirectionBuilder {
 		this.arrows.push( arrowHelper );
 
 		// add to helper to avoid raycasting
-		SceneService.addHelper( arrowHelper );
+		SceneService.addToolObject( arrowHelper );
 	}
 
 	private createArrow2D ( origin: Vector3, hdg: number ) {
@@ -98,7 +98,7 @@ export class OdLaneDirectionBuilder {
 
 		this.arrows.push( arrow );
 
-		SceneService.addHelper( arrow );
+		SceneService.addToolObject( arrow );
 
 		return arrow;
 	}

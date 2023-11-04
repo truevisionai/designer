@@ -4,11 +4,11 @@
 
 import { Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvContactPoint } from './tv-common';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
+import { TvOrientation } from './tv-common';
 
 export enum JunctionType {
 	DEFAULT = 'default',
@@ -18,17 +18,19 @@ export enum JunctionType {
 
 export class TvJunction {
 
+	private _id: number;
+	private _name: string;
+	private _priorities: TvJunctionPriority[] = [];
+	private _controllers: TvJunctionController[] = [];
+	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
+
 	public position?: Vector3;
-	private lastAddedJunctionConnectionIndex: number;
-	private lastAddedJunctionPriorityIndex: number;
-	private lastAddedJunctionControllerIndex: number;
+	public type: JunctionType = JunctionType.DEFAULT;
 
 	constructor ( name: string, id: number ) {
 		this._name = name;
 		this._id = id;
 	}
-
-	private _name: string;
 
 	get name (): string {
 		return this._name;
@@ -38,8 +40,6 @@ export class TvJunction {
 		this._name = value;
 	}
 
-	private _id: number;
-
 	get id (): number {
 		return this._id;
 	}
@@ -47,8 +47,6 @@ export class TvJunction {
 	set id ( value: number ) {
 		this._id = value;
 	}
-
-	private _priorities: TvJunctionPriority[] = [];
 
 	get priorities (): TvJunctionPriority[] {
 		return this._priorities;
@@ -58,8 +56,6 @@ export class TvJunction {
 		this._priorities = value;
 	}
 
-	private _controllers: TvJunctionController[] = [];
-
 	get controllers (): TvJunctionController[] {
 		return this._controllers;
 	}
@@ -67,8 +63,6 @@ export class TvJunction {
 	set controllers ( value: TvJunctionController[] ) {
 		this._controllers = value;
 	}
-
-	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
 	get connections (): Map<number, TvJunctionConnection> {
 		return this._connections;
@@ -80,12 +74,6 @@ export class TvJunction {
 
 	getConnections (): TvJunctionConnection[] {
 		return Array.from( this.connections.values() );
-	}
-
-	removeConnectionByUuid ( uuid: string ) {
-
-		throw new Error( 'method not implemented' );
-
 	}
 
 	removeConnectionById ( id: number ): boolean {
@@ -111,104 +99,6 @@ export class TvJunction {
 
 	}
 
-	removeConnection ( connection: TvJunctionConnection, incomingRoad: TvRoad, outgoingRoad: TvRoad ) {
-
-		if ( this.removeConnectionById( connection.id ) ) {
-
-			this.removeJunctionRelation( incomingRoad );
-
-			this.removeJunctionRelation( outgoingRoad );
-
-		}
-
-	}
-
-	/**
-	 * Adds a priority parameter to the junction
-	 *
-	 * @param {number} high ID of the connecting road with higher priority
-	 * @param {number} low ID of the connecting road with lower priority
-	 * @returns {number}
-	 */
-	public addJunctionPriority ( high: number, low: number ): TvJunctionPriority {
-
-		const priority = new TvJunctionPriority( high, low );
-
-		this._priorities.push( priority );
-
-		return priority;
-	}
-
-	/**
-	 * Adds a controller to the junction
-	 *
-	 * @param {number} id ID of the controller to add
-	 * @param {string} type Type of control
-	 * @returns {number}
-	 */
-	public addJunctionController ( id: number, type: string ): TvJunctionController {
-
-		const controller = new TvJunctionController( id, type );
-
-		this._controllers.push( controller );
-
-		return controller;
-	}
-
-	public closeJunctionConnection ( index ) {
-
-		// TODO:
-
-	}
-
-	public closeJunctionPriority ( index ) {
-
-		// TODO:
-
-	}
-
-	public closeJunctionController ( index ) {
-
-		// TODO:
-
-	}
-
-	public deleteJunctionConnection ( id: number ): void {
-
-		this._connections.delete( id );
-
-	}
-
-	public deleteJunctionPriority ( index: number ): void {
-
-		this._priorities.splice( index, 1 );
-
-	}
-
-	public deleteJunctionController ( index: number ): void {
-
-		this._controllers.splice( index, 1 );
-
-	}
-
-	public getJunctionPriorities (): TvJunctionPriority[] {
-
-		return this._priorities;
-
-	}
-
-	public getJunctionControllers (): TvJunctionController[] {
-
-		return this._controllers;
-
-	}
-
-	public getJunctionConnectionCount (): number {
-
-		return this._connections.size;
-
-	}
-
 	public getJunctionPriorityCount (): number {
 
 		return this._priorities.length;
@@ -218,13 +108,6 @@ export class TvJunction {
 	public getJunctionControllerCount (): number {
 
 		return this._controllers.length;
-
-	}
-
-
-	public getJunctionConnection ( id: number ) {
-
-		return this.connections.get( id );
 
 	}
 
@@ -244,39 +127,6 @@ export class TvJunction {
 		if ( index < this._controllers.length && this._controllers.length > 0 ) {
 
 			return this._controllers[ index ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionConnection () {
-
-		if ( this.lastAddedJunctionConnectionIndex < this._connections.size ) {
-
-			return this._connections[ this.lastAddedJunctionConnectionIndex ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionPriority () {
-
-		if ( this.lastAddedJunctionPriorityIndex < this._priorities.length ) {
-
-			return this._priorities[ this.lastAddedJunctionPriorityIndex ];
-
-		}
-
-		return null;
-	}
-
-	public getLastAddedJunctionController () {
-
-		if ( this.lastAddedJunctionConnectionIndex < this._controllers.length ) {
-
-			return this._controllers[ this.lastAddedJunctionConnectionIndex ];
 
 		}
 
@@ -368,15 +218,6 @@ export class TvJunction {
 
 	}
 
-	addOutgoingConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad, contactPoint: TvContactPoint ) {
-
-		const connection = new TvJunctionConnection( this.connections.size, incomingRoad, null, contactPoint, outgoingRoad );
-
-		this.addConnection( connection );
-
-		return connection;
-	}
-
 	private removeJunctionRelation ( road: TvRoad ): void {
 
 		let hasConnections = false;
@@ -411,3 +252,20 @@ export class TvJunction {
 
 }
 
+export class TvVirtualJunction extends TvJunction {
+
+	// type="virtual" id="555" mainRoad="1" sStart="50" sEnd="70" orientation="+"
+	public type: JunctionType = JunctionType.VIRTUAL;
+	public mainRoadId: number;
+	public sStart: number;
+	public sEnd: number;
+	public orientation: TvOrientation;
+
+	constructor ( name: string, id: number, mainRoadId: number, sStart: number, sEnd: number, orientation: TvOrientation ) {
+		super( name, id );
+		this.mainRoadId = mainRoadId;
+		this.sStart = sStart;
+		this.sEnd = sEnd;
+		this.orientation = orientation;
+	}
+}

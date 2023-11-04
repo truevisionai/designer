@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { DragDropService } from 'app/core/services/drag-drop.service';
+import { DragDropService } from 'app/services/drag-drop.service';
 import { Vector3 } from 'three';
 import { ViewportImporterService } from './viewport-importer.service';
 

@@ -4,9 +4,9 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { IComponent } from 'app/core/game-object';
-import { Metadata } from 'app/core/models/metadata.model';
+import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';

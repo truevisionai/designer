@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
@@ -13,9 +13,9 @@ import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
-import { MetadataFactory } from '../factories/metadata-factory.service';
+import { MetadataFactory } from '../../factories/metadata-factory.service';
 import { PropModel } from '../models/prop-model.model';
-import { AppService } from '../services/app.service';
+import { AppService } from '../../services/app.service';
 
 @Injectable( {
 	providedIn: 'root'

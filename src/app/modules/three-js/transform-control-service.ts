@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
@@ -59,7 +59,7 @@ export class TransformControlService {
 
 		} );
 
-		SceneService.add( control );
+		SceneService.addToMain( control );
 
 		this.threeService.cameraChanged.subscribe( ( camera ) => {
 

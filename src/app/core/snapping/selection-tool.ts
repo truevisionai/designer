@@ -6,8 +6,8 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { ISelectable } from '../../modules/three-js/objects/i-selectable';
-import { AppService } from '../services/app.service';
-import { SceneService } from '../services/scene.service';
+import { AppService } from '../../services/app.service';
+import { SceneService } from '../../services/scene.service';
 
 export class SelectionTool<T extends ISelectable> {
 

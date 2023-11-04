@@ -11,9 +11,9 @@ import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-pa
 import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { AbstractSpline } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';
@@ -359,7 +359,7 @@ export class ExplicitSpline extends AbstractSpline {
 		controlPoint.segmentType = segType;
 
 		// TODO: move this in spline mesh or somewhere else
-		SceneService.add( controlPoint );
+		SceneService.addToolObject( controlPoint );
 
 		this.controlPoints.push( controlPoint );
 
@@ -393,6 +393,8 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const line = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
+		line.name = 'curve-explicit-spline';
+
 		line[ 'tag' ] = 'curve';
 
 		line[ 'tagindex' ] = index;
@@ -407,7 +409,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		this.segments.push( line );
 
-		this.scene.add( line );
+		SceneService.addToolObject( line );
 
 		// this.tangentLines.push( line );
 	}
@@ -416,7 +418,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const line = this.segments[ index ];
 
-		this.scene.remove( line );
+		SceneService.removeFromMain( line );
 
 		this.segments.splice( index, 1 );
 

@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { Debug } from 'app/core/utils/debug';
 import { TvEntityLoader, TvMaterialLoader, TvPrefabLoader } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
@@ -14,17 +14,20 @@ import {
 	LinearEncoding,
 	LinearFilter,
 	LinearMipMapLinearFilter,
+	LinearSRGBColorSpace,
 	MeshStandardMaterial,
+	NoColorSpace,
 	Object3D,
 	RGBAFormat,
+	SRGBColorSpace,
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
 import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
 import { ModelImporterService } from '../../services/model-importer.service';
 import { RoadStyleImporter } from '../../services/road-style-importer';
-import { FileService } from '../io/file.service';
-import { Metadata, MetaImporter } from '../models/metadata.model';
+import { FileService } from '../../io/file.service';
+import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 
 @Injectable( {
@@ -214,7 +217,7 @@ export class AssetLoaderService {
 				}
 
 				texture.rotation = data.rotation || 0;
-				texture.encoding = data.encoding || LinearEncoding;
+				texture.colorSpace = SRGBColorSpace;
 				texture.minFilter = data.minFilter || LinearMipMapLinearFilter;
 				texture.magFilter = data.magFilter || LinearFilter;
 				texture.anisotropy = data.anisotropy || 1;

@@ -3,7 +3,7 @@
  */
 
 import { Object3D, Vector3 } from 'three';
-import { BaseCommand } from '../../../core/commands/base-command';
+import { BaseCommand } from '../../../commands/base-command';
 
 export class SetScaleCommand extends BaseCommand {
 

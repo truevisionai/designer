@@ -5,7 +5,7 @@
 import { CylinderGeometry, FrontSide, MeshBasicMaterial, PlaneGeometry, TextureLoader, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvConsole } from '../../../core/utils/console';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { Maths } from '../../../utils/maths';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';

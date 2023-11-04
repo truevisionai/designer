@@ -3,7 +3,7 @@
  */
 
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
 import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
 
@@ -24,6 +24,8 @@ export class RoundLine {
 		this.curveType = 'roundline';
 
 		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
+
+		this.mesh.name = 'roundline';
 
 		this.mesh.castShadow = true;
 

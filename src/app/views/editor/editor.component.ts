@@ -5,7 +5,7 @@
 import { AfterContentInit, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EditorService } from 'app/core/services/editor.service';
+import { EditorService } from 'app/services/editor.service';
 import { TvConsole } from 'app/core/utils/console';
 import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-director.service';
 import { MainFileService } from 'app/services/main-file.service';

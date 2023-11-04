@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Metadata } from 'app/core/models/metadata.model';
+import { Metadata } from 'app/core/asset/metadata.model';
 import { FileNode } from 'app/views/editor/project-browser/file-node.model';
-import { FileUtils } from '../io/file-utils';
+import { FileUtils } from '../../io/file-utils';
 
 export class AssetDatabase {
 

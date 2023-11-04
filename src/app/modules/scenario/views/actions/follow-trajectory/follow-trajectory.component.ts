@@ -5,7 +5,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from '../../../../../core/inspector';
-import { ToolManager } from '../../../../../core/tools/tool-manager';
+import { ToolManager } from '../../../../../tools/tool-manager';
 import { FollowTrajectoryAction } from '../../../models/actions/tv-follow-trajectory-action';
 
 @Component( {

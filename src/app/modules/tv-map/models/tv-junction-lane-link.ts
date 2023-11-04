@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Shape } from 'three';
-import { RoadFactory } from '../../../core/factories/road-factory.service';
-import { SceneService } from '../../../core/services/scene.service';
+import { RoadFactory } from '../../../factories/road-factory.service';
+import { SceneService } from '../../../services/scene.service';
 import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvLane } from './tv-lane';
@@ -82,9 +82,9 @@ export class TvJunctionLaneLink {
 		// TODO: check if we need to remove the whole connection if there are no more lane links
 
 		// rebuild connecting road because it might have changed after lane link removal
-		RoadFactory.rebuildRoad( this.connectingRoad );
+		// RoadFactory.rebuildRoad( this.connectingRoad );
 
-		SceneService.remove( this.mesh );
+		SceneService.removeFromMain( this.mesh );
 
 	}
 

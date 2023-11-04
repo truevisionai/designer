@@ -8,11 +8,11 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { IComponent } from 'app/core/game-object';
-import { DynamicMeta } from 'app/core/models/metadata.model';
+import { DynamicMeta } from 'app/core/asset/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { SetValueCommand } from 'app/modules/three-js/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { PropManager } from 'app/services/prop-manager';
+import { PropManager } from 'app/managers/prop-manager';
 import { Object3D, Vector3 } from 'three';
 
 interface ObjectTreeNode {

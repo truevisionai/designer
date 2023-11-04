@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileService } from 'app/core/io/file.service';
+import { FileService } from 'app/io/file.service';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
@@ -11,7 +11,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
 import { AppInspector } from './inspector';
-import { EditorService } from './services/editor.service';
+import { EditorService } from '../services/editor.service';
 import { TvConsole } from './utils/console';
 
 @Injectable( {

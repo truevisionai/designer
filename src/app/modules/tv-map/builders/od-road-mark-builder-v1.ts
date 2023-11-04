@@ -6,7 +6,7 @@ import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { COLOR } from '../../../shared/utils/colors.service';
+import { COLOR } from '../../../views/shared/utils/colors.service';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';

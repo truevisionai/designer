@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { AppService } from 'app/core/services/app.service';
+import { AppService } from 'app/services/app.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';

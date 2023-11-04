@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { readXmlArray } from 'app/core/tools/xml-utils';
+import { readXmlArray } from 'app/tools/xml-utils';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
@@ -192,7 +192,7 @@ export class TvPrefabLoader extends ObjectLoader {
 
 	parseChild ( json: any ): TvMesh | TvPrefab {
 
-		const object = super.parseObject( json, [], [], [] );
+		const object = super.parseObject( json, {}, {}, {} );
 
 		if ( json.type === 'Mesh' ) {
 

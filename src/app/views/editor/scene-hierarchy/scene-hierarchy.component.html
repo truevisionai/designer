@@ -1,0 +1,27 @@
+<div class="object-inspector-container"
+	fxFlexFill
+	fxLayout="column">
+	<perfect-scrollbar>
+		<mat-tree [dataSource]="dataSource"
+			[treeControl]="treeControl">
+			<!-- <mat-tree-node (click)="onNodeClicked(node)"
+				*matTreeNodeDef="let node"
+				matTreeNodePadding
+				matTreeNodePaddingIndent="8">
+				{{node.name || 'No name'}}
+			</mat-tree-node> -->
+			<mat-tree-node *matTreeNodeDef="let node;when: hasChild"
+				(click)="onNodeClicked(node)"
+				matTreeNodePadding
+				matTreeNodePaddingIndent="8">
+				<button mat-icon-button
+					matTreeNodeToggle>
+					<mat-icon *ngIf="node.expandable" class="mat-icon-rtl-mirror">
+						{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+					</mat-icon>
+				</button>
+				{{node.name || 'No name'}}
+			</mat-tree-node>
+		</mat-tree>
+	</perfect-scrollbar>
+</div>

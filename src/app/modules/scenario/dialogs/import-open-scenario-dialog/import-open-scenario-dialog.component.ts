@@ -4,10 +4,10 @@
 
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MetadataFactory } from 'app/core/factories/metadata-factory.service';
-import { FileService } from 'app/core/io/file.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
+import { FileService } from 'app/io/file.service';
 import { TvConsole } from 'app/core/utils/console';
-import { FileUtils } from '../../../../core/io/file-utils';
+import { FileUtils } from '../../../../io/file-utils';
 import { Catalog } from '../../models/tv-catalogs';
 import { TvScenario } from '../../models/tv-scenario';
 import { OpenScenarioLoader } from '../../services/open-scenario.loader';

@@ -4,17 +4,17 @@
 
 import { EventEmitter } from '@angular/core';
 import { KeyboardInput } from 'app/core/input';
-import { AppService } from 'app/core/services/app.service';
+import { AppService } from 'app/services/app.service';
 import { Debug } from 'app/core/utils/debug';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
 import { AnyControlPoint, NewDistanceNode } from '../../modules/three-js/objects/control-point';
-import { SceneService } from '../services/scene.service';
+import { SceneService } from '../../services/scene.service';
 import { IShapeEditor } from './i-shape-editor';
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
@@ -140,7 +140,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.disable();
 
-		SceneService.remove( this.object );
+		SceneService.removeFromMain( this.object );
 
 	}
 
@@ -325,7 +325,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		if ( event ) this.controlPointAdded.emit( point );
 
-		SceneService.add( point );
+		SceneService.addToMain( point );
 
 		return point;
 	}
@@ -338,7 +338,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		this.controlPointRemoved.emit( point );
 
-		SceneService.remove( point );
+		SceneService.removeFromMain( point );
 	}
 
 	removeAllControlPoints () {
@@ -381,7 +381,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		object.renderOrder = 3;
 
-		SceneService.add( object );
+		SceneService.addToMain( object );
 
 		return object;
 

@@ -6,8 +6,8 @@ import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
 import { TvMapQueries } from '../../../modules/tv-map/queries/tv-map-queries';
-import { LineFactoryService } from '../../factories/line-factory.service';
-import { SceneService } from '../../services/scene.service';
+import { LineFactoryService } from '../../../factories/line-factory.service';
+import { SceneService } from '../../../services/scene.service';
 import { SelectStrategy } from './select-strategy';
 
 export class LaneToolStrategy extends SelectStrategy<TvLane> {
@@ -37,7 +37,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 
 		if ( !targetLane ) {
 
-			if ( this.line ) SceneService.remove( this.line );
+			if ( this.line ) SceneService.removeFromMain( this.line );
 
 			if ( this.lane ) this.lane = null;
 
@@ -63,7 +63,7 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 
 		}
 
-		SceneService.add( this.line );
+		SceneService.addToMain( this.line );
 
 		return targetLane;
 	}
@@ -78,49 +78,3 @@ export class LaneToolStrategy extends SelectStrategy<TvLane> {
 
 }
 
-export class OnLaneStrategy extends SelectStrategy<TvLane> {
-
-	private lane: TvLane;
-	private selected: TvLane;
-
-	constructor () {
-		super();
-	}
-
-	onPointerDown ( pointerEventData: PointerEventData ): TvLane {
-
-		// this.selected?.unselect();
-
-		this.selected = this.onLaneGeometry( pointerEventData );
-
-		// this.selected?.select();
-
-		return this.selected;
-
-	}
-
-	onPointerMoved ( pointerEventData: PointerEventData ): TvLane {
-
-		this.lane?.unhighlight();
-
-		this.lane = this.onLaneGeometry( pointerEventData );
-
-		this.lane?.highlight();
-
-		return this.lane;
-	}
-
-	onPointerUp ( pointerEventData: PointerEventData ): TvLane {
-
-		return this.onLaneGeometry( pointerEventData );
-
-	}
-
-	dispose (): void {
-
-		this.lane?.unhighlight();
-		this.selected?.unselect();
-
-	}
-
-}

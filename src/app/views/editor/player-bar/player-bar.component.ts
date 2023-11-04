@@ -4,7 +4,7 @@
 
 import { Component } from '@angular/core';
 import { EsminiPlayerService } from 'app/core/esmini-player.service';
-import { EditorService } from 'app/core/services/editor.service';
+import { EditorService } from 'app/services/editor.service';
 import { Environment } from 'app/core/utils/environment';
 import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

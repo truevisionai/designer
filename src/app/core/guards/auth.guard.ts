@@ -5,8 +5,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { User } from '../models/user';
-import { AuthService } from '../services/auth.service';
-import { JwtService } from '../services/jwt.service';
+import { AuthService } from '../../services/auth.service';
+import { JwtService } from '../../services/jwt.service';
 
 @Injectable( {
 	providedIn: 'root'

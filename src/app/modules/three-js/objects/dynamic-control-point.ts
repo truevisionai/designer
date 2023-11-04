@@ -3,7 +3,7 @@
  */
 
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { COLOR } from 'app/shared/utils/colors.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { IHasUpdate } from '../commands/set-value-command';
 import { BaseControlPoint } from './control-point';

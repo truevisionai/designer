@@ -6,7 +6,7 @@ import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/core/services/scene.service';
+import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
@@ -201,7 +201,7 @@ export class PropPolygon implements ISelectable {
 		instancedMeshArray.forEach( instancedMesh => {
 
 			// just adding the instance mesh in scene will add all 100s or 1000s of instances
-			SceneService.add( instancedMesh );
+			SceneService.addToMain( instancedMesh );
 
 			// usefull for maintain
 			this.instanceMeshArray.push( instancedMesh );
@@ -453,10 +453,10 @@ export class PropPolygon implements ISelectable {
 
 	private removeAndClearProps (): void {
 
-		this.propObjectArray.forEach( p => SceneService.remove( p ) );
+		this.propObjectArray.forEach( p => SceneService.removeFromMain( p ) );
 		this.propObjectArray.splice( 0, this.propObjectArray.length );
 
-		this.instanceMeshArray.forEach( p => SceneService.remove( p ) );
+		this.instanceMeshArray.forEach( p => SceneService.removeFromMain( p ) );
 		this.instanceMeshArray.splice( 0, this.instanceMeshArray.length );
 
 	}

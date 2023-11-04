@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/core/factories/road-factory.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { Vector3 } from 'three';
 import { TvMapInstance } from '../services/tv-map-source-file';
-import { TvContactPoint } from './tv-common';
+import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 
 export enum TvRoadLinkChildType {
@@ -63,6 +63,19 @@ export class TvRoadLinkChild {
 	 * predecessor. Shall only be used for elementType "road"
 	 *
 	 */
+
+	/**
+	 * To be provided when elementS is used for the connection definition.
+	 * Indicates the direction on the predecessor from which the road is entered.
+	 */
+	public elementS?: number;
+
+	/**
+	 * Alternative to contactPoint for virtual junctions. Indicates a connection
+	 * within the predecessor, meaning not at the start or end of the
+	 * predecessor. Shall only be used for elementType "road"
+	 */
+	public elementDir?: TvOrientation;
 
 	/**
 	 *

@@ -7,12 +7,12 @@ import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
-import { FileExtension, FileService } from 'app/core/io/file.service';
+import { FileExtension, FileService } from 'app/io/file.service';
 import { ImporterService } from 'app/services/importer.service';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DialogFactory } from '../../../core/factories/dialog.factory';
-import { MetadataFactory } from '../../../core/factories/metadata-factory.service';
+import { DialogFactory } from '../../../factories/dialog.factory';
+import { MetadataFactory } from '../../../factories/metadata-factory.service';
 import { TvConsole } from '../../../core/utils/console';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { FileNode } from './file-node.model';
@@ -21,7 +21,7 @@ import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
-import { VehicleFactory } from 'app/core/factories/vehicle.factory';
+import { VehicleFactory } from 'app/factories/vehicle.factory';
 
 // const DOCUMENT_PATH = '/home/himanshu/Documents/Truevision/';
 

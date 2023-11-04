@@ -3,7 +3,7 @@
  */
 
 import { Euler, Object3D } from 'three';
-import { BaseCommand } from '../../../core/commands/base-command';
+import { BaseCommand } from '../../../commands/base-command';
 
 export class SetRotationCommand extends BaseCommand {
 

@@ -27,7 +27,7 @@ import { ThreeJsModule } from './modules/three-js/three-js.module';
 
 import { TvMapModule } from './modules/tv-map/tv-map.module';
 
-import { SharedModule } from './shared/shared.module';
+import { SharedModule } from './views/shared/shared.module';
 import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';

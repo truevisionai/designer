@@ -5,8 +5,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
-import { UpdateLaneOffsetDistanceCommand } from 'app/core/tools/lane-offset/update-lane-offset-distance-command';
-import { UpdateLaneOffsetValueCommand } from 'app/core/tools/lane-offset/update-lane-offset-value-command';
+import { UpdateLaneOffsetDistanceCommand } from 'app/tools/lane-offset/update-lane-offset-distance-command';
+import { UpdateLaneOffsetValueCommand } from 'app/tools/lane-offset/update-lane-offset-value-command';
 import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { CommandHistory } from 'app/services/command-history';

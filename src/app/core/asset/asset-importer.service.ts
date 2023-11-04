@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileUtils } from 'app/core/io/file-utils';
-import { FileService } from 'app/core/io/file.service';
+import { FileUtils } from 'app/io/file-utils';
+import { FileService } from 'app/io/file.service';
 import { CoordinateSystem } from 'app/services/exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

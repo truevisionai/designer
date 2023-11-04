@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import { CurvePath, Mesh, Shape, Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
-import { SceneService } from '../../../core/services/scene.service';
+import { SceneService } from '../../../services/scene.service';
 
 @Component( {
 	selector: 'app-shape-inspector',
@@ -72,7 +72,7 @@ export class ShapeInspectorComponent implements OnInit, IComponent {
 
 		this.mesh = new THREE.Mesh( this.geometry, material );
 
-		SceneService.add( this.mesh );
+		SceneService.addToMain( this.mesh );
 	}
 
 	updateGroupGeometry () {

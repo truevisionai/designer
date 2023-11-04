@@ -10,12 +10,13 @@ import * as THREE from 'three';
 import { Camera, Euler, Material, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { IEngine } from '../../core/services/IEngine';
-import { SceneService } from '../../core/services/scene.service';
+import { IEngine } from '../../services/IEngine';
+import { SceneService } from '../../services/scene.service';
 import { IViewportController } from './objects/i-viewport-controller';
 import { TvOrbitControls } from './objects/tv-orbit-controls';
 import { TvViewHelper } from './objects/tv-view-helper';
 import { ScenarioEnvironment } from '../scenario/models/actions/scenario-environment';
+import { DEFAULT_AMBIENT_LIGHT } from './default.config';
 
 @Injectable( {
 	providedIn: 'root'
@@ -79,9 +80,9 @@ export class ThreeService implements IEngine {
 
 		if ( removeOld ) {
 
-			SceneService.removeHelper( this.environment?.weather?.sun?.light );
+			SceneService.removeFromEditor( this.environment?.weather?.sun?.light );
 
-			SceneService.removeHelper( this.ambientLight );
+			SceneService.removeFromEditor( this.ambientLight );
 
 			// if ( this.environment.weather.domeImage.sphereMesh ) {
 			// 	SceneService.removeHelper( this.environment.weather.domeImage.sphereMesh );
@@ -90,11 +91,9 @@ export class ThreeService implements IEngine {
 		}
 
 		// set new environment
-		SceneService.addHelper( environment.weather.sun.light );
+		SceneService.addEditorObject( environment.weather.sun.light );
 
-		this.ambientLight = new THREE.AmbientLight( 0xE6E6E6, 1 );
-
-		SceneService.addHelper( this.ambientLight );
+		SceneService.addEditorObject( DEFAULT_AMBIENT_LIGHT );
 
 		this.environment = environment;
 	}
@@ -160,7 +159,7 @@ export class ThreeService implements IEngine {
 		// } );
 
 
-		// SceneService.addHelper( this.transformControls );
+		// SceneService.addEditorObject( this.transformControls );
 
 	}
 
@@ -175,21 +174,15 @@ export class ThreeService implements IEngine {
 		// to adjust with up Z
 		gridHelper.rotateX( Maths.Deg2Rad * 90 );
 
-		SceneService.addHelper( gridHelper );
+		SceneService.addEditorObject( gridHelper );
 
 	}
 
 	createSceneHelpers (): any {
 
-		this.setupPostProcessing();
-
 		this.createControls();
 
-		this.createDragControls();
-
 		this.createGridHelper();
-
-		// this.createTransformControls();
 
 		this.createBackgroundPlaneForClicks();
 
@@ -206,35 +199,9 @@ export class ThreeService implements IEngine {
 
 		ThreeService.bgForClicks.name = 'bgForClicks';
 
-		SceneService.addHelper( ThreeService.bgForClicks );
+		// SceneService.addEditorObject( ThreeService.bgForClicks );
 	}
 
-	setupPostProcessing (): any {
-
-		// // TODO : Move this to component, listen to resize to fix blurriness
-		//
-		// // postprocessing
-		// this.composer = new THREE.EffectComposer( this.renderer );
-		//
-		// let renderPass = new THREE.RenderPass( this.scene, this.camera );
-		//
-		//
-		// let copyPass = new THREE.ShaderPass( THREE.CopyShader );
-		// copyPass.renderToScreen = false;
-		//
-		// let res = new Vector2( this.CANVAS_WIDTH, this.CANVAS_HEIGHT );
-		// let outlinePass = new OutlinePass( res, this.scene, this.camera );
-		//
-		// this.composer.addPass( renderPass );
-		// // this.composer.addPass( copyPass );
-		// // this.composer.addPass( outlinePass );
-
-	}
-
-	createDragControls (): any {
-
-
-	}
 
 	/**
 	 *
@@ -244,12 +211,12 @@ export class ThreeService implements IEngine {
 	 */
 	add ( object: THREE.Object3D, raycasting = false ): any {
 
-		SceneService.add( object, raycasting );
+		SceneService.addToMain( object, raycasting );
 	}
 
 	remove ( object: THREE.Object3D, raycasting = false ): any {
 
-		SceneService.remove( object, raycasting );
+		SceneService.removeFromMain( object, raycasting );
 
 	}
 
@@ -509,7 +476,7 @@ export class ThreeService implements IEngine {
 			this.cameras[ i ].userData.initialRotation = this.cameras[ i ].rotation.clone();
 
 
-			SceneService.addHelper( this.cameras[ i ] );
+			SceneService.addEditorObject( this.cameras[ i ] );
 		}
 
 
@@ -526,7 +493,7 @@ export class ThreeService implements IEngine {
 
 	private addAxesHelper () {
 
-		SceneService.addHelper( new THREE.AxesHelper( 3000 ) );
+		SceneService.addEditorObject( new THREE.AxesHelper( 3000 ) );
 
 	}
 }

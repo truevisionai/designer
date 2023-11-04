@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from '../core/io/file';
-import { FileService } from '../core/io/file.service';
+import { IFile } from '../io/file';
+import { FileService } from '../io/file.service';
 import { StorageService } from './storage.service';
 
 @Injectable( {
