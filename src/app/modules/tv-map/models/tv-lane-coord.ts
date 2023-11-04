@@ -20,7 +20,13 @@ export class TvLaneCoord {
 	// lane-Id
 	// lane-offset
 
-	constructor ( public road: TvRoad, public section: TvLaneSection, public lane: TvLane, public s: number, public offset: number ) {
+	constructor (
+		public road: TvRoad,
+		public laneSection: TvLaneSection,
+		public lane: TvLane,
+		public s: number,
+		public offset: number
+	) {
 
 	}
 
@@ -37,7 +43,7 @@ export class TvLaneCoord {
 	}
 
 	get laneSectionId (): number {
-		return this.section?.id;
+		return this.laneSection?.id;
 	}
 
 	get laneId (): number {
@@ -45,22 +51,15 @@ export class TvLaneCoord {
 	}
 
 	get posTheta () {
-		throw new Error( 'method not implemented' );
-		// TODO: check if this is correct
-		// return this.road?.getRoadCoordAt( this.s, 0 );
-		// const posTheta = new TvPosTheta();
-		// TvMapQueries.getLaneStartPosition( this.roadId, this.laneId, this.s, this.offset, posTheta )
-		// return posTheta;
+		return this.road.getLaneStartPosition( this.lane, this.s, this.offset );
 	}
 
 	get position (): Vector3 {
-		throw new Error( 'method not implemented' );
-		// return this.posTheta.toVector3();
+		return this.posTheta.toVector3();
 	}
 
 	get direction (): Vector3 {
-		throw new Error( 'method not implemented' );
-		// return this.posTheta.toDirectionVector();
+		return this.posTheta.toDirectionVector();
 	}
 }
 

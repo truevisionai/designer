@@ -3,10 +3,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SceneService } from '../scene.service';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { BaseService } from '../base.service';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
 import { RoadLinkService } from './road-link.service';
@@ -120,50 +117,6 @@ export class RoadService extends BaseService {
 
 	}
 
-	showElevationNodes ( road: TvRoad ) {
-
-		if ( road.elevationProfile.getElevationCount() === 0 ) {
-
-			// add elevation at begininng and end
-			road.addElevation( 0, 0, 0, 0, 0 );
-			road.addElevation( road.length, 0, 0, 0, 0 );
-
-		}
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.createElevationNode( road, elevation );
-
-		} );
-
-	}
-
-	removeElevationNodes ( road: TvRoad ) {
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			if ( elevation.node ) {
-
-				elevation.node.visible = false;
-
-			}
-
-			SceneService.removeFromTool( elevation.node );
-
-		} );
-
-	}
-
-	updateElevationNodes ( road: TvRoad ) {
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			elevation.node?.updateValuesAndPosition();
-
-		} );
-
-	}
-
 	// updateSplineRoads ( spline: AbstractSpline ) {
 
 	// 	spline.updateRoadSegments();
@@ -213,22 +166,6 @@ export class RoadService extends BaseService {
 			super.rebuildRoad( road );
 
 		} );
-
-	}
-
-	private createElevationNode ( road: TvRoad, elevation: TvElevation ) {
-
-		if ( elevation.node ) {
-
-			elevation.node.visible = true;
-
-		} else {
-
-			elevation.node = new RoadElevationNode( road, elevation );
-
-		}
-
-		SceneService.addToolObject( elevation.node );
 
 	}
 

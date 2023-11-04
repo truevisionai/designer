@@ -39,6 +39,7 @@ import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
+import { TvLane } from './tv-lane';
 
 export enum TrafficRule {
 	RHT = 'RHT',
@@ -1626,6 +1627,25 @@ export class TvRoad {
 
 		return road;
 
+	}
+
+	getLaneStartPosition ( lane: TvLane, s: number, offset = 0 ) {
+
+		const posTheta = this.getRoadCoordAt( s );
+
+		const laneSection = this.getLaneSectionAt( s );
+
+		const tDirection = lane.id > 0 ? 1 : -1;
+
+		const cumulativeWidth = laneSection.getWidthUptoStart( lane, s );
+
+		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+
+		posTheta.x += cosTheta * ( cumulativeWidth + offset );
+		posTheta.y += sinTheta * ( cumulativeWidth + offset );
+
+		return posTheta;
 	}
 
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
