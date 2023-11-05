@@ -11,7 +11,7 @@ import { BaseTool } from '../base-tool';
 import { LaneWidthService } from './lane-width.service';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
+import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { MapEvents } from 'app/events/map-events';
@@ -75,7 +75,35 @@ export class LaneWidthTool extends BaseTool {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.laneWidthService.base.select( e );
+		this.laneWidthService.base.handleSelection( e, selected => {
+
+			if ( selected instanceof LaneWidthNode ) {
+
+				if ( this.selectedNode === selected ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+
+			} else if ( selected instanceof TvLane ) {
+
+				if ( this.selectedLane === selected ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedLane ) );
+
+			}
+
+		}, () => {
+
+			if ( this.selectedNode ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+
+			} else if ( this.selectedLane ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedLane ) );
+
+			}
+
+		} );
 
 	}
 
@@ -220,7 +248,7 @@ export class LaneWidthTool extends BaseTool {
 
 		this.selectedLane = lane;
 
-		this.selectedLane.select();
+		// this.selectedLane.select();
 
 		this.laneWidthService.showWidthNodes( lane.laneSection.road );
 
@@ -233,7 +261,7 @@ export class LaneWidthTool extends BaseTool {
 
 		this.selectedLane = null;
 
-		lane.unselect();
+		// lane.unselect();
 
 		this.laneWidthService.hideWidthNodes( lane.laneSection.road );
 

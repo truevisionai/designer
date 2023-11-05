@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2 } from 'app/commands/select-point-command';
+import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
@@ -12,7 +12,6 @@ import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../base-tool'
 import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
@@ -29,6 +28,8 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 	selectedNode: RoadElevationNode;
 
 	nodeChanged: boolean = false;
+
+	debug: boolean = false;
 
 	constructor (
 		private tool: RoadElevationService,
@@ -84,7 +85,37 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.select( e );
+		// this.tool.base.select( e );
+
+		this.tool.base.handleSelection( e, selected => {
+
+			if ( selected instanceof RoadElevationNode ) {
+
+				if ( this.selectedNode === selected ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+
+			} else if ( selected instanceof TvRoad ) {
+
+				if ( this.selectedRoad === selected ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedRoad ) );
+
+			}
+
+		}, () => {
+
+			if ( this.selectedNode ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+
+			} else if ( this.selectedRoad ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedRoad ) );
+
+			}
+
+		} );
 
 	}
 
@@ -135,7 +166,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onObjectAdded ( object: any ): void {
 
-		console.log( 'onObjectAdded', object );
+		if ( this.debug ) console.log( 'onObjectAdded', object );
 
 		if ( object instanceof RoadElevationNode ) {
 
@@ -146,7 +177,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onObjectUpdated ( object: any ): void {
 
-		console.log( 'onObjectUpdated', object );
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
 
 		if ( object instanceof RoadElevationNode ) {
 
@@ -158,7 +189,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onObjectRemoved ( object: any ): void {
 
-		console.log( 'onObjectRemoved', object );
+		if ( this.debug ) console.log( 'onObjectRemoved', object );
 
 		if ( object instanceof RoadElevationNode ) {
 
@@ -170,13 +201,9 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onObjectSelected ( object: any ): void {
 
-		console.log( 'onObjectSelected', object );
+		if ( this.debug ) console.log( 'onObjectSelected', object );
 
-		if ( object instanceof TvRoadCoord ) {
-
-			this.onRoadSelected( object.road );
-
-		} else if ( object instanceof RoadElevationNode ) {
+		if ( object instanceof RoadElevationNode ) {
 
 			this.onNodeSelected( object );
 
@@ -190,13 +217,9 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	onObjectUnselected ( object: any ): void {
 
-		console.log( 'onObjectUnselected', object );
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
-		if ( object instanceof TvRoadCoord ) {
-
-			this.onRoadUnselected( object.road );
-
-		} else if ( object instanceof RoadElevationNode ) {
+		if ( object instanceof RoadElevationNode ) {
 
 			this.onNodeUnselected( object );
 
@@ -248,7 +271,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
-		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+		// if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
 		this.selectedRoad = road;
 

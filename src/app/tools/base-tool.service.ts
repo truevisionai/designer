@@ -60,6 +60,57 @@ export class BaseToolService {
 
 	select ( e: PointerEventData ): void {
 
+		this.handleSelection( e, ( object ) => {
+
+			if ( object === this.currentSelected ) return;
+
+			CommandHistory.execute( new SelectObjectCommandv2( object, this.currentSelected ) );
+
+			this.currentSelected = object;
+
+		}, () => {
+
+			if ( this.currentSelected ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
+
+				this.currentSelected = null;
+
+			}
+
+		} )
+
+		// for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+
+		// 	const element = this.selectionStratgies[ i ];
+
+		// 	const result = element.select( e );
+
+		// 	if ( result ) {
+
+		// 		if ( result === this.currentSelected ) return;
+
+		// 		CommandHistory.execute( new SelectObjectCommandv2( result, this.currentSelected ) );
+
+		// 		this.currentSelected = result;
+
+		// 		return;
+		// 	}
+
+		// }
+
+		// if ( this.currentSelected ) {
+
+		// 	CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
+
+		// 	this.currentSelected = null;
+
+		// }
+
+	}
+
+	handleSelection ( e: PointerEventData, selectCallback: ( object: any ) => void, unselectCallback: () => void ): void {
+
 		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
 
 			const element = this.selectionStratgies[ i ];
@@ -68,24 +119,14 @@ export class BaseToolService {
 
 			if ( result ) {
 
-				if ( result === this.currentSelected ) return;
-
-				CommandHistory.execute( new SelectObjectCommandv2( result, this.currentSelected ) );
-
-				this.currentSelected = result;
+				selectCallback( result );
 
 				return;
 			}
 
 		}
 
-		if ( this.currentSelected ) {
-
-			CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
-
-			this.currentSelected = null;
-
-		}
+		unselectCallback();
 
 	}
 
