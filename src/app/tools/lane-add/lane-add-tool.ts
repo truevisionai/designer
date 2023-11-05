@@ -11,7 +11,7 @@ import { PointerEventData } from '../../events/pointer-event-data';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { OnLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
+import { SelectLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
 
 export class LaneAddTool extends BaseTool {
 
@@ -24,7 +24,7 @@ export class LaneAddTool extends BaseTool {
 
 	init (): void {
 
-		this.pointerStrategy = new OnLaneStrategy();
+		this.pointerStrategy = new SelectLaneStrategy();
 
 	}
 

@@ -9,22 +9,22 @@ import { AppService } from '../services/app.service';
 
 export abstract class ViewportEventSubscriber {
 
-	subscribed: boolean = false;
+	private subscribed: boolean = false;
 
-	pointerClickedSubscriber: Subscription;
-	pointerMovedSubscriber: Subscription;
-	pointerEnterSubscriber: Subscription;
-	pointerExitSubscriber: Subscription;
-	pointerUpSubscriber: Subscription;
-	pointerDownSubscriber: Subscription;
-	pointerLeaveSubscriber: Subscription;
-	pointerOutSubscriber: Subscription;
-	beginDragSubscriber: Subscription;
-	endDragSubscriber: Subscription;
-	dragSubscriber: Subscription;
-	dropSubscriber: Subscription;
-	selectSubscriber: Subscription;
-	deSelectSubscriber: Subscription;
+	private pointerClickedSubscriber: Subscription;
+	private pointerMovedSubscriber: Subscription;
+	private pointerEnterSubscriber: Subscription;
+	private pointerExitSubscriber: Subscription;
+	private pointerUpSubscriber: Subscription;
+	private pointerDownSubscriber: Subscription;
+	private pointerLeaveSubscriber: Subscription;
+	private pointerOutSubscriber: Subscription;
+	private beginDragSubscriber: Subscription;
+	private endDragSubscriber: Subscription;
+	private dragSubscriber: Subscription;
+	private dropSubscriber: Subscription;
+	private selectSubscriber: Subscription;
+	private deSelectSubscriber: Subscription;
 
 	protected pointerDownAt: Vector3;
 	protected isPointerDown: boolean;

@@ -31,8 +31,6 @@ export class ToolFactory {
 		switch ( type ) {
 			case ToolType.Junction:
 				return new JunctionTool();
-			case ToolType.LaneWidth:
-				return new LaneWidthTool();
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
 			case ToolType.PropCurve:

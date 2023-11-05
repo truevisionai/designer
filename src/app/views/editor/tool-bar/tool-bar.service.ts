@@ -33,6 +33,7 @@ import { PropPointService } from 'app/tools/prop-point/prop-point.service';
 import { RoadCircleService } from 'app/services/road/road-circle.service';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
+import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -46,6 +47,7 @@ export class ToolBarService {
 		private roadCircleService: RoadCircleService,
 		private roadElevationService: RoadElevationService,
 		private maneuverService: ManeuverService,
+		private laneWidthService: LaneWidthService
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -73,7 +75,7 @@ export class ToolBarService {
 			case ToolType.Junction:
 				return new JunctionTool();
 			case ToolType.LaneWidth:
-				return new LaneWidthTool();
+				return new LaneWidthTool( this.laneWidthService );
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
 			case ToolType.PropPoint:

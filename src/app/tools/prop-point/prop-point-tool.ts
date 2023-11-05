@@ -54,7 +54,7 @@ export class PropPointTool extends BaseTool {
 
 	init (): void {
 
-		this.tool.base.clearStrategies();
+		this.tool.base.init();
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 		this.tool.base.addMovingStrategy( new AnyLaneMovingStrategy( TvContactPoint.END ) );
@@ -119,7 +119,7 @@ export class PropPointTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.tool.base.move( e );
+		this.tool.base.onPointerMoved( e );
 
 		if ( !this.selectedProp ) return;
 

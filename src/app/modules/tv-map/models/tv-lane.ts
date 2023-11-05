@@ -1353,16 +1353,19 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		this.roadMark.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
 
-		// console.log( this.roadMark );
-
-		// this.lastAddedLaneRoadMark = index;
-		//
-		// return index;
 	}
 
 	addWidthRecordInstance ( laneWidth: TvLaneWidth ) {
 
 		this.width.push( laneWidth );
+
+		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+	}
+
+	removeWidthRecordInstance ( laneWidth: TvLaneWidth ) {
+
+		this.width.splice( this.width.indexOf( laneWidth ), 1 );
 
 		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 

@@ -2,57 +2,55 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
 import { CommandHistory } from 'app/services/command-history';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
+import { PointerEventData } from '../../events/pointer-event-data';
 import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { NodeFactoryService } from '../../factories/node-factory.service';
-import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
-import { CreateWidthNodeCommand } from './create-lane-width-command';
-import { SelectLaneForLaneWidthCommand } from './select-lane-for-lane-width-command';
-import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
-import { UnselectLaneForLaneWidthCommand } from './unselect-lane-for-lane-width-command';
-import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
-import { UpdateWidthNodePositionCommand } from './update-width-node-position-command';
+import { LaneWidthService } from './lane-width.service';
+import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
+import { AppInspector } from 'app/core/inspector';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { MapEvents } from 'app/events/map-events';
+import { SetValueCommand } from 'app/commands/set-value-command';
 
 export class LaneWidthTool extends BaseTool {
 
 	public name: string = 'LaneWidth';
-	public toolType = ToolType.LaneWidth;
-	public laneHelper = new OdLaneReferenceLineBuilder();
-	private laneWidthChanged: boolean = false;
 
-	constructor () {
+	public toolType = ToolType.LaneWidth;
+
+	// public laneHelper = new OdLaneReferenceLineBuilder();
+
+	private nodeChanged: boolean = false;
+
+	private selectedLane: TvLane;
+	private selectedNode: LaneWidthNode;
+	private oldValue: number;
+
+	private debug = false;
+
+	constructor ( private laneWidthService: LaneWidthService ) {
 
 		super();
 
 	}
 
-	private _lane: TvLane;
-
-	get lane (): TvLane {
-		return this._lane;
-	}
-
-	set lane ( value: TvLane ) {
-		this._lane = value;
-	}
-
-	private _node: LaneWidthNode;
-
-	get node (): LaneWidthNode {
-		return this._node;
-	}
-
-	set node ( value: LaneWidthNode ) {
-		this._node = value;
-	}
-
 	init () {
+
+		this.laneWidthService.base.init();
+
+		this.laneWidthService.base.addSelectionStrategy( new ControlPointStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: false,
+			tag: LaneWidthNode.pointTag,
+			returnParent: true,
+		} ) );
+
+		this.laneWidthService.base.addSelectionStrategy( new SelectLaneStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -68,110 +66,203 @@ export class LaneWidthTool extends BaseTool {
 
 		super.disable();
 
-		this.laneHelper.clear();
+		this.laneWidthService.removeAllWidthNodes()
 
-		this.map.getRoads().forEach( road => road.hideWidthNodes() );
+		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
+
+		if ( this.selectedNode ) this.onLaneWidthNodeUnselected( this.selectedNode );
 	}
 
-	public onPointerDown ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
-		if ( e.button !== MouseButton.LEFT ) return;
-
-		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
-
-		if ( !shiftKeyDown && this.checkNodePointInteraction( e ) ) return;
-
-		if ( !shiftKeyDown && this.checkLaneObjectInteraction( e ) ) return;
-
-		if ( shiftKeyDown && e.point != null ) {
-
-			const lane = PickingHelper.checkLaneObjectInteraction( e );
-
-			if ( !lane ) return false;
-
-			CommandHistory.execute( new CreateWidthNodeCommand( this, lane, e.point ) );
-
-			this.setHint( 'Drag node to modify position. Change properties from inspector' );
-
-
-		} else if ( this._lane ) {
-
-			CommandHistory.execute( new UnselectLaneForLaneWidthCommand( this, this._lane ) );
-
-			this.setHint( 'use LEFT CLICK to select a road/lane' );
-
-		}
-	}
-
-	public onPointerUp ( e ) {
-
-		if ( this.laneWidthChanged && this._node ) {
-
-			const newPosition = this._node.point.position.clone();
-
-			const oldPosition = this.pointerDownAt.clone();
-
-			CommandHistory.execute( new UpdateWidthNodePositionCommand( this._node, newPosition, oldPosition, this.laneHelper ) );
-
-		}
-
-		this.laneWidthChanged = false;
-	}
-
-	public onPointerMoved ( e: PointerEventData ) {
-
-		if ( this.isPointerDown && this._node ) {
-
-			this.laneWidthChanged = true;
-
-			NodeFactoryService.updateLaneWidthNode( this._node, e.point );
-
-			this._node.updateLaneWidthValues();
-
-		}
+		this.laneWidthService.base.select( e );
 
 	}
 
-	private checkNodePointInteraction ( e: PointerEventData ): boolean {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-		// Check for control point interactions
-		const interactedPoint = PickingHelper.checkControlPointInteraction( e, LaneWidthNode.pointTag );
+		if ( !this.laneWidthService.base.onPointerDown( e ) ) return;
 
-		if ( !interactedPoint || !interactedPoint.parent ) return false;
+		if ( !this.selectedLane ) return;
 
-		const newNode = interactedPoint.parent as LaneWidthNode;
+		const node = this.laneWidthService.createWidthNode( this.selectedLane, e.point );
 
-		if ( !this._node || this._node.uuid !== newNode.uuid ) {
+		const addCommand = new AddObjectCommand( node );
 
-			CommandHistory.execute( new SelectLaneWidthNodeCommand( this, newNode ) );
+		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
 
-			this.setHint( 'Drag node to modify position. Change properties from inspector' );
+		CommandHistory.executeMany( addCommand, selectCommand );
 
+	}
+
+	onPointerUp ( e: PointerEventData ) {
+
+		if ( !this.nodeChanged ) return;
+
+		if ( !this.selectedNode ) return;
+
+		if ( !this.oldValue ) return;
+
+		// these could also be user to get old and new s
+		// const newPosition = this.selectedNode.position.clone();
+		// const oldPosition = this.pointerDownAt.clone();
+
+		const newValue = this.selectedNode.s;
+
+		const oldValue = this.oldValue;
+
+		const setValueCommand = new SetValueCommand( this.selectedNode, 's', newValue, oldValue );
+
+		CommandHistory.execute( setValueCommand );
+
+		this.nodeChanged = false;
+
+		this.oldValue = null;
+	}
+
+	onPointerMoved ( e: PointerEventData ) {
+
+		this.laneWidthService.base.onPointerMoved( e );
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.selectedNode ) return;
+
+		if ( !this.laneWidthService.base.onPointerDown( e ) ) return;
+
+		this.laneWidthService.updateByPosition( this.selectedNode, e.point );
+
+		if ( !this.nodeChanged ) {
+			this.oldValue = this.selectedNode.s;
 		}
 
-		return true;
+		this.nodeChanged = true;
+
 	}
 
-	private checkLaneObjectInteraction ( e: PointerEventData ): boolean {
+	onObjectAdded ( object: any ): void {
 
-		const newLane = PickingHelper.checkLaneObjectInteraction( e );
+		if ( this.debug ) console.log( 'onObjectAdded', object );
 
-		if ( !newLane ) return false;
+		if ( object instanceof LaneWidthNode ) {
 
-		if ( !this._lane || this._lane.roadId !== newLane.roadId ) {
+			this.laneWidthService.addNode( object );
 
-			CommandHistory.execute( new SelectLaneForLaneWidthCommand( this, newLane ) );
+			MapEvents.laneUpdated.emit( object.lane );
+		}
 
-			this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+	}
 
-		} else if ( this._node ) {
+	onObjectUpdated ( object: any ): void {
 
-			CommandHistory.execute( new UnselectLaneWidthNodeCommand( this, this._node ) );
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
 
-			this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+		if ( object instanceof LaneWidthNode ) {
+
+			this.laneWidthService.updateNode( object );
+
+			MapEvents.laneUpdated.emit( object.lane );
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectRemoved', object );
+
+		if ( object instanceof LaneWidthNode ) {
+
+			this.laneWidthService.removeNode( object );
+
+			MapEvents.laneUpdated.emit( object.lane );
 
 		}
 
-		return true;
 	}
+
+	onObjectSelected ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectSelected', object );
+
+		this.laneWidthService.base.setSelected( object );
+
+		if ( object instanceof TvLane ) {
+
+			this.onLaneSelected( object );
+
+
+		} else if ( object instanceof LaneWidthNode ) {
+
+			this.onLaneWidthNodeSelected( object );
+		}
+
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
+
+		if ( object instanceof TvLane ) {
+
+			this.onLaneUnselected( object );
+
+		} else if ( object instanceof LaneWidthNode ) {
+
+			this.onLaneWidthNodeUnselected( object );
+
+		}
+
+	}
+
+	onLaneSelected ( lane: TvLane ): void {
+
+		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
+
+		this.selectedLane = lane;
+
+		this.selectedLane.select();
+
+		this.laneWidthService.showWidthNodes( lane.laneSection.road );
+
+		AppInspector.clear();
+
+		this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+	}
+
+	onLaneUnselected ( lane: TvLane ): void {
+
+		this.selectedLane = null;
+
+		lane.unselect();
+
+		this.laneWidthService.hideWidthNodes( lane.laneSection.road );
+
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
+	}
+
+	onLaneWidthNodeSelected ( node: LaneWidthNode ): void {
+
+		if ( this.selectedNode ) this.onLaneWidthNodeUnselected( this.selectedNode );
+
+		this.selectedNode = node;
+
+		this.laneWidthService.selectNode( node );
+
+		AppInspector.setInspector( DynamicInspectorComponent, node );
+
+		this.setHint( 'Drag node to modify position. Change properties from inspector' );
+	}
+
+	onLaneWidthNodeUnselected ( node: LaneWidthNode ): void {
+
+		this.selectedNode = null;
+
+		this.laneWidthService.unselectNode( node );
+
+		AppInspector.clear();
+
+		this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+
+	}
+
 }

@@ -4,6 +4,7 @@ import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy'
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/modules/scenario/models/position';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { CommandHistory } from 'app/services/command-history';
 import { StatusBarService } from 'app/services/status-bar.service';
 
@@ -15,33 +16,45 @@ export class BaseToolService {
 
 	private selectionStratgies: SelectStrategy<any>[] = [];
 	private movingStrategies: MovingStrategy[] = [];
-	private previous: any;
+	private currentSelected: any;
 
 	constructor (
 		public statusBar: StatusBarService,
 	) { }
 
-	public addSelectionStrategy ( strategy: SelectStrategy<any> ) {
+	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
 
 		this.selectionStratgies.push( strategy );
 
 	}
 
-	public getSelectionStrategies (): SelectStrategy<any>[] {
+	getSelectionStrategies (): SelectStrategy<any>[] {
 
 		return this.selectionStratgies;
 
 	}
 
-	public addMovingStrategy ( strategy: MovingStrategy ) {
+	addMovingStrategy ( strategy: MovingStrategy ) {
 
 		this.movingStrategies.push( strategy );
 
 	}
 
-	public getMovingStrategies (): MovingStrategy[] {
+	getMovingStrategies (): MovingStrategy[] {
 
 		return this.movingStrategies;
+
+	}
+
+	setSelected ( object: any ) {
+
+		this.currentSelected = object;
+
+	}
+
+	getSelected<T> (): T {
+
+		return this.currentSelected as T;
 
 	}
 
@@ -55,22 +68,22 @@ export class BaseToolService {
 
 			if ( result ) {
 
-				if ( result === this.previous ) return;
+				if ( result === this.currentSelected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( result, this.previous ) );
+				CommandHistory.execute( new SelectObjectCommandv2( result, this.currentSelected ) );
 
-				this.previous = result;
+				this.currentSelected = result;
 
 				return;
 			}
 
 		}
 
-		if ( this.previous ) {
+		if ( this.currentSelected ) {
 
-			CommandHistory.execute( new UnselectObjectCommandv2( this.previous ) );
+			CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
 
-			this.previous = null;
+			this.currentSelected = null;
 
 		}
 
@@ -83,6 +96,20 @@ export class BaseToolService {
 			const element = this.selectionStratgies[ i ];
 
 			const result = element.select( e );
+
+			if ( result ) return result;
+
+		}
+
+	}
+
+	onPointerMoved ( e: PointerEventData ) {
+
+		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+
+			const element = this.selectionStratgies[ i ];
+
+			const result = element.onPointerMoved( e );
 
 			if ( result ) return result;
 
@@ -120,6 +147,14 @@ export class BaseToolService {
 	clearHint () {
 
 		StatusBarService.clearHint();
+
+	}
+
+	init () {
+
+		this.clearStrategies();
+
+		this.currentSelected = null;
 
 	}
 

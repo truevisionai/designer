@@ -107,6 +107,8 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
+		this.tool.base.onPointerMoved( e );
+
 		if ( !this.isPointerDown ) return;
 
 		if ( !this.selectedNode ) return;
