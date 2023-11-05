@@ -32,6 +32,7 @@ import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropPointService } from 'app/tools/prop-point/prop-point.service';
 import { RoadCircleService } from 'app/services/road/road-circle.service';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
+import { ManeuverService } from 'app/services/junction/maneuver.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -44,6 +45,7 @@ export class ToolBarService {
 		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleService,
 		private roadElevationService: RoadElevationService,
+		private maneuverService: ManeuverService,
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -67,7 +69,7 @@ export class ToolBarService {
 			case ToolType.RoadCircle:
 				return new RoadCircleTool( this.roadCircleService );
 			case ToolType.Maneuver:
-				return new ManeuverTool();
+				return new ManeuverTool( this.maneuverService );
 			case ToolType.Junction:
 				return new JunctionTool();
 			case ToolType.LaneWidth:

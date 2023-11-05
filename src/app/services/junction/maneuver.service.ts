@@ -20,11 +20,12 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 } )
 export class ManeuverService extends BaseService {
 
-
 	private static maneuverMeshes: Mesh[] = [];
 	private static entryExitMeshes: Object3D[] = [];
 
-	private roadSplineService = new RoadSplineService();
+	constructor ( private roadSplineService: RoadSplineService ) {
+		super();
+	}
 
 	createConnectingRoad ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ) {
 

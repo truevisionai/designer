@@ -29,8 +29,6 @@ export class ToolFactory {
 	static createTool ( type: ToolType ): BaseTool {
 
 		switch ( type ) {
-			case ToolType.Maneuver:
-				return new ManeuverTool();
 			case ToolType.Junction:
 				return new JunctionTool();
 			case ToolType.LaneWidth:

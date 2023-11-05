@@ -16,7 +16,7 @@ import { SelectionTool } from '../../core/snapping/selection-tool';
 import { TvConsole } from '../../core/utils/console';
 import { BaseTool } from '../base-tool';
 import { CreateSingleManeuver } from './create-single-maneuver';
-// import { ManeuverService } from 'app/services/junction/maneuver.service';
+import { ManeuverService } from 'app/services/junction/maneuver.service';
 
 export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
@@ -33,15 +33,12 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	// private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
-	private maneuverService: any;
-
-	constructor () {
+	constructor ( private maneuverService: ManeuverService ) {
 
 		super();
 
 		this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
 
-		// this.maneuverService = new ManeuverService();
 	}
 
 	init () {
