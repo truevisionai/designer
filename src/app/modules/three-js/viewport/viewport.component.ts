@@ -118,6 +118,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster = new THREE.Raycaster();
 		// this.raycaster.linePrecision = 0.25;
+		this.raycaster.params.Line.threshold = 0.5;
+		this.raycaster.params.Line2 = {
+			threshold: 0.5
+		}
 		this.raycaster.far = 10000;
 
 		SceneService.renderer = this.renderer;

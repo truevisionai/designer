@@ -15,7 +15,7 @@ import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
-import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/SelectRoadStrategy';
+import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 

@@ -1,24 +1,31 @@
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from 'app/services/scene.service';
 import { LaneWidthNode } from 'app/modules/three-js/objects/lane-width-node';
 import { MapService } from 'app/services/map.service';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { BufferGeometry, Vector3 } from 'three';
+import { BufferGeometry, Vector2, Vector3 } from 'three';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { DebugLine, LaneReferenceLineService } from '../lane-reference-line.service';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { Object3DMap } from './object-3d-map';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class LaneWidthService {
 
-	private static nodes: LaneWidthNode[] = [];
+	private static nodeMap: Object3DMap<string, LaneWidthNode> = new Object3DMap();
+
+	private static lineMap: Object3DMap<string, DebugLine<LaneWidthNode>> = new Object3DMap();
 
 	constructor (
 		public base: BaseToolService,
-		private mapService: MapService
+		private mapService: MapService,
+		private laneReferenceLine: LaneReferenceLineService,
 	) { }
 
 	createWidthNode ( lane: TvLane, position: Vector3 ) {
@@ -64,17 +71,15 @@ export class LaneWidthService {
 
 	unselectNode ( node: LaneWidthNode ) {
 
-		LaneWidthService.nodes
-			.filter( i => i.laneWidth.uuid === node.laneWidth.uuid )
-			.forEach( i => i.unselect() );
+		LaneWidthService.nodeMap.get( node.laneWidth.uuid )?.unselect();
+		LaneWidthService.lineMap.get( node.laneWidth.uuid )?.unselect();
 
 	}
 
 	selectNode ( node: LaneWidthNode ) {
 
-		LaneWidthService.nodes
-			.filter( i => i.laneWidth.uuid === node.laneWidth.uuid )
-			.forEach( i => i.select() );
+		LaneWidthService.nodeMap.get( node.laneWidth.uuid )?.select();
+		LaneWidthService.lineMap.get( node.laneWidth.uuid )?.select();
 
 	}
 
@@ -82,9 +87,7 @@ export class LaneWidthService {
 
 		node.lane.addWidthRecordInstance( node.laneWidth );
 
-		SceneService.addToolObject( node );
-
-		LaneWidthService.nodes.push( node );
+		LaneWidthService.nodeMap.add( node.laneWidth.uuid, node );
 
 	}
 
@@ -92,13 +95,8 @@ export class LaneWidthService {
 
 		node.lane.removeWidthRecordInstance( node.laneWidth );
 
-		LaneWidthService.nodes.filter( i => i.laneWidth.uuid === node.laneWidth.uuid ).forEach( i => {
-
-			SceneService.removeFromTool( i );
-
-		} );
-
-		LaneWidthService.nodes = LaneWidthService.nodes.filter( i => i.laneWidth.uuid !== node.laneWidth.uuid );
+		LaneWidthService.nodeMap.remove( node.laneWidth.uuid );
+		LaneWidthService.lineMap.remove( node.laneWidth.uuid );
 
 	}
 
@@ -134,33 +132,67 @@ export class LaneWidthService {
 
 	}
 
-	public hideWidthNodes ( road: TvRoad ) {
-
-		LaneWidthService.nodes.filter( node => node.road.id === road.id ).forEach( node => {
-
-			SceneService.removeFromTool( node );
-
-		} );
-
-		LaneWidthService.nodes = LaneWidthService.nodes.filter( node => node.road.id !== road.id );
-
-	}
-
-	public showWidthNodes ( road: TvRoad ) {
+	hideWidthNodes ( road: TvRoad ) {
 
 		road.laneSections.forEach( laneSection => {
 
 			laneSection.lanes.forEach( lane => {
 
-				lane.getLaneWidthVector().forEach( laneWidth => {
+				for ( let i = 0; i < lane.width.length; i++ ) {
+
+					LaneWidthService.nodeMap.remove( lane.width[ i ].uuid );
+
+					LaneWidthService.lineMap.remove( lane.width[ i ].uuid );
+
+				}
+
+			} )
+
+		} );
+
+		LaneWidthService.lineMap.clear();
+
+		LaneWidthService.nodeMap.clear();
+
+	}
+
+	showWidthNodes ( road: TvRoad ) {
+
+		road.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				for ( let i = 0; i < lane.width.length; i++ ) {
+
+					const laneWidth = lane.width[ i ];
 
 					const node = new LaneWidthNode( laneWidth );
 
-					SceneService.addToolObject( node );
+					const sStart = laneWidth.s;
 
-					LaneWidthService.nodes.push( node );
+					// get s of next lane width node
+					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-				} );
+					const points = this.laneReferenceLine.getPoints( lane, sStart, sEnd );
+
+					const geometry = new LineGeometry()
+						.setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+					const material = new LineMaterial( {
+						color: COLOR.CYAN,
+						linewidth: 2,
+						resolution: new Vector2( window.innerWidth, window.innerHeight ),
+					} );
+
+					const line = new DebugLine( node, geometry, material );
+
+					line.renderOrder = 999;
+
+					LaneWidthService.lineMap.add( laneWidth.uuid, line );
+
+					LaneWidthService.nodeMap.add( laneWidth.uuid, node );
+
+				}
 
 			} );
 

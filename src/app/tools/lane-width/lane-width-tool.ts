@@ -11,19 +11,19 @@ import { BaseTool } from '../base-tool';
 import { LaneWidthService } from './lane-width.service';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { MapEvents } from 'app/events/map-events';
 import { SetValueCommand } from 'app/commands/set-value-command';
+import { DebugLine } from '../lane-reference-line.service';
 
 export class LaneWidthTool extends BaseTool {
 
 	public name: string = 'LaneWidth';
 
 	public toolType = ToolType.LaneWidth;
-
-	// public laneHelper = new OdLaneReferenceLineBuilder();
 
 	private nodeChanged: boolean = false;
 
@@ -49,6 +49,8 @@ export class LaneWidthTool extends BaseTool {
 			tag: LaneWidthNode.pointTag,
 			returnParent: true,
 		} ) );
+
+		this.laneWidthService.base.addSelectionStrategy( new SelectLineStrategy() );
 
 		this.laneWidthService.base.addSelectionStrategy( new SelectLaneStrategy() );
 
@@ -82,6 +84,12 @@ export class LaneWidthTool extends BaseTool {
 				if ( this.selectedNode === selected ) return;
 
 				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+
+			} else if ( selected instanceof DebugLine ) {
+
+				if ( this.selectedNode === selected.target ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected.target, this.selectedNode ) );
 
 			} else if ( selected instanceof TvLane ) {
 
