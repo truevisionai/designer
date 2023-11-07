@@ -18,7 +18,8 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 				higlightOnHover: true,
 				higlightOnSelect: true,
 				tag: null,
-				returnParent: false
+				returnParent: false,
+				returnTarget: false,
 			};
 		}
 
@@ -42,6 +43,10 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 			return this.selected?.parent as any;
 		}
 
+		if ( this.options?.returnTarget ) {
+			return this.selected?.target as T;
+		}
+
 		return this.selected;
 
 	}
@@ -61,10 +66,21 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 
 	onPointerUp ( pointerEventData: PointerEventData ): T {
 
-		return pointerEventData.intersections
+		const object = pointerEventData.intersections
 			.filter( i => i.object.visible )
 			.find( i => i.object instanceof Line2 )?.object as any;
 
+		if ( !object ) return;
+
+		if ( this.options.returnParent ) {
+			return object.parent as any;
+		}
+
+		if ( this.options.returnTarget ) {
+			return object.target as T;
+		}
+
+		return object;
 	}
 
 	dispose (): void {

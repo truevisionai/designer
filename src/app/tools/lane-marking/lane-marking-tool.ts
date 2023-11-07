@@ -2,26 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CommandHistory } from 'app/services/command-history';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { Line } from 'three';
-import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { OdLaneReferenceLineBuilder } from '../../modules/tv-map/builders/od-lane-reference-line-builder';
+import { PointerEventData } from '../../events/pointer-event-data';
+import { LaneMarkingNode } from '../../modules/three-js/objects/lane-road-mark-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from '../../modules/tv-map/models/tv-lane-road-mark';
-import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
-import { AddRoadmarkNodeCommand } from './add-roadmark-node';
-import { SelectLaneForRoadMarkCommand } from './select-lane-for-roadmark-command';
-import { SelectRoadmarNodeCommand } from './select-roadmark-node-command';
-import { UnselectLaneForRoadMarkCommand } from './unselect-lane-for-roadmark-command';
-import { UnselectRoadmarkNodeCommand } from './unselect-roadmark-node-command';
-import { UpdateRoadmarkNodeCommand } from './update-roadmark-node';
-import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { LaneMarkingService } from './lane-marking.service';
+import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
+import { CommandHistory } from 'app/services/command-history';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
+import { AppInspector } from 'app/core/inspector';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
+import { EndLaneMovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
+import { SetValueCommand } from 'app/commands/set-value-command';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -29,38 +26,21 @@ export class LaneMarkingTool extends BaseTool {
 
 	public toolType = ToolType.LaneMarking;
 
-	public pointerObject: any;
+	public nodeMoved: boolean;
 
-	public markingDistanceChanged: boolean;
+	public selectedRoad: TvRoad;
 
-	public lane: TvLane;
+	public selectedLane: TvLane;
 
-	/**
-	 * @deprecated
-	 */
-	public roadMark: TvLaneRoadMark;
+	public selectedNode: LaneMarkingNode;
 
-	/**
-	 * @deprecated
-	 */
-	public controlPoint: AnyControlPoint;
+	private debug: boolean = false;
 
-	public node: LaneRoadMarkNode;
+	private sOld: number;
 
-	// public roadMarkBuilder = new OdRoadMarkBuilderV1();
-	public roadMarkBuilder = new LaneRoadMarkFactory();
-
-	public laneHelper = new OdLaneReferenceLineBuilder();
-
-	constructor () {
+	constructor ( private laneMarkingService: LaneMarkingService ) {
 
 		super();
-
-	}
-
-	get road () {
-
-		return this.lane ? this.map.getRoadById( this.lane.roadId ) : null;
 
 	}
 
@@ -68,7 +48,27 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.setHint( 'Use LEFT CLICK to select road or lane' );
 
-		super.init();
+		this.laneMarkingService.base.init();
+
+		this.laneMarkingService.base.addSelectionStrategy( new ControlPointStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: false,
+			returnParent: false,
+		} ) );
+
+		this.laneMarkingService.base.addSelectionStrategy( new SelectLineStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: true,
+			tag: null,
+			returnParent: false,
+			returnTarget: true,
+		} ) );
+
+		this.laneMarkingService.base.addSelectionStrategy( new SelectLaneStrategy( false ) );
+
+		this.laneMarkingService.base.addLaneMovingStrategy( new EndLaneMovingStrategy() );
+
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 
@@ -82,190 +82,255 @@ export class LaneMarkingTool extends BaseTool {
 
 		super.disable();
 
-		if ( this.laneHelper ) this.laneHelper.clear();
+		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
-		this.map.getRoads().forEach( road => road.hideLaneMarkingNodes() );
 	}
 
-	public onPointerDown ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ) {
 
-		if ( e.button !== MouseButton.LEFT ) return;
+		this.laneMarkingService.base.handleSelection( e, selected => {
 
-		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
+			if ( selected instanceof LaneMarkingNode ) {
 
-		if ( !shiftKeyDown && this.lane && this.isNodeSelected( e ) ) return;
+				if ( this.selectedNode === selected ) return;
 
-		if ( shiftKeyDown && this.lane && this.hasCreatedNode( e ) ) return;
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
 
-		if ( !shiftKeyDown && this.isLaneSelected( e ) ) return;
+			}
 
-		if ( this.lane ) this.unselectLane( this.lane );
+			else if ( selected instanceof TvLane ) {
+
+				if ( this.selectedLane === selected ) return;
+
+				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedLane ) );
+
+			}
+
+		}, () => {
+
+			if ( this.selectedNode ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+
+			} else if ( this.selectedLane ) {
+
+				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedLane ) );
+
+			}
+
+		} );
+
 	}
 
-	public onPointerUp ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( e.button !== MouseButton.LEFT ) return;
+		if ( !this.laneMarkingService.base.onPointerDown( e ) ) return;
 
-		if ( this.markingDistanceChanged && this.node && this.pointerDownAt ) {
+		if ( !this.selectedLane ) return;
 
-			// e.point is null for some reason, so use node position
-			// const newPosition = e.point.clone();
+		const roadCoord = this.selectedRoad.getCoordAt( e.point );
 
-			// use the current positino of the node as the new position
-			const newPosition = this.node.point.position.clone();
+		const s = roadCoord.s - this.selectedLane.laneSection.s;
 
-			// old position is the location where the mouse was last down
-			const oldPosition = this.pointerDownAt.clone();
+		const marking = this.selectedLane.getRoadMarkAt( s ).clone( s );
 
-			const command = new UpdateRoadmarkNodeCommand( this.node, newPosition, oldPosition, this.roadMarkBuilder );
+		const node = new LaneMarkingNode( this.selectedLane, marking );
 
-			CommandHistory.execute( command );
+		const addCommand = new AddObjectCommand( node );
+
+		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
+
+		CommandHistory.executeMany( addCommand, selectCommand );
+
+	}
+
+	onPointerUp ( e: PointerEventData ) {
+
+		if ( !this.selectedNode ) return
+
+		if ( !this.nodeMoved ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const newPosition = this.selectedNode.position.clone();
+
+		const posTheta = this.selectedLane.laneSection.road.getCoordAt( newPosition );
+
+		const sCurrent = posTheta.s - this.selectedLane.laneSection.s;
+
+		CommandHistory.execute( new SetValueCommand( this.selectedNode, 's', sCurrent, this.sOld ) );
+
+		this.nodeMoved = false;
+
+		this.sOld = null;
+	}
+
+	onPointerMoved ( e: PointerEventData ) {
+
+		this.laneMarkingService.base.highlight( e );
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.selectedNode ) return
+
+		this.laneMarkingService.base.handleLaneMovement( e, this.selectedNode.lane, position => {
+
+			if ( !this.sOld ) this.sOld = this.selectedNode.s;
+
+			if ( position instanceof WorldPosition ) {
+
+				this.selectedNode.position.copy( position.position );
+
+			}
+
+			this.nodeMoved = true;
+
+		} );
+
+	}
+
+	onObjectSelected ( object: any ): void {
+
+		if ( object instanceof LaneMarkingNode ) {
+
+			this.onNodeSelected( object );
 
 		}
 
-		this.pointerObject = null;
+		else if ( object instanceof TvLane ) {
 
-		this.markingDistanceChanged = false;
+			this.onLaneSelected( object );
+
+		}
+
+		else if ( object instanceof TvRoad ) {
+
+			this.onRoadSelected( object );
+
+		}
+
 	}
 
-	public onPointerMoved ( e: PointerEventData ) {
+	onObjectAdded ( object: any ): void {
 
-		this.highlightLaneMarkingLines( e );
+		if ( this.debug ) console.log( 'onObjectAdded', object );
 
-		if ( this.isPointerDown && this.node && this.node.isSelected ) {
+		if ( object instanceof LaneMarkingNode ) {
 
-			this.markingDistanceChanged = true;
+			this.laneMarkingService.addNode( object );
 
-			// NodeFactoryService.updateRoadMarkNodeByPosition( this.node, e.point );
-			this.node.updateByPosition( e.point );
+		}
+
+	}
+
+	onObjectUpdated ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
+
+		if ( object instanceof LaneMarkingNode ) {
+
+			this.laneMarkingService.updateNode( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
+
+		if ( object instanceof LaneMarkingNode ) {
+
+			this.laneMarkingService.removeNode( object );
 
 		}
 	}
 
-	private highlightLaneMarkingLines ( e: PointerEventData ) {
+	onObjectUnselected ( object: any ): void {
 
-		this.removeHighlight();
+		if ( object instanceof LaneMarkingNode ) {
 
-		if ( this.isPointerDown ) return;
-
-		if ( !this.lane ) return;
-
-		const results = PickingHelper.findAllByTag( this.laneHelper.tag, e, this.road.gameObject.children );
-
-		if ( results.length > 0 ) {
-
-			this.highlightLine( results[ 0 ] as Line );
-
-		}
-	}
-
-	private isNodeSelected ( e: PointerEventData ): boolean {
-
-		const interactedPoint = PickingHelper.checkControlPointInteraction( e, LaneRoadMarkNode.pointTag, 1.0 );
-
-		if ( !interactedPoint ) return false;
-
-		const node = interactedPoint.parent as LaneRoadMarkNode;
-
-		if ( !this.node || this.node.id !== node.id ) {
-
-			this.selectNode( node );
+			this.onNodeUnselected( object );
 
 		}
 
-		return interactedPoint != null;
-	}
+		else if ( object instanceof TvLane ) {
 
-	private selectNode ( node: LaneRoadMarkNode ) {
-
-		CommandHistory.execute( new SelectRoadmarNodeCommand( this, node ) );
-
-	}
-
-	private unselectNode ( node: LaneRoadMarkNode ) {
-
-		CommandHistory.execute( new UnselectRoadmarkNodeCommand( this, node ) );
-
-	}
-
-	private isLaneSelected ( e: PointerEventData ): boolean {
-
-		const newLane = this.isOnLane( e );
-
-		if ( !newLane ) return false;
-
-		if ( !this.lane || this.lane.uuid !== newLane.uuid ) {
-
-			// new lane needs to be selected
-			this.selectLane( newLane );
-
-		} else if ( this.node ) {
-
-			this.unselectNode( this.node );
+			this.onLaneUnselected( object );
 
 		}
 
-		return newLane != null;
-	}
+		else if ( object instanceof TvRoad ) {
 
-	private isOnLane ( e: PointerEventData ): TvLane | null {
-
-		return PickingHelper.checkLaneObjectInteraction( e );
-
-	}
-
-	private selectLane ( lane: TvLane ) {
-
-		const road = this.map.getRoadById( lane.roadId );
-
-		if ( road.isJunction ) SnackBar.warn( 'LaneMark Editing on junction roads is currently not supported' );
-
-		if ( road.isJunction ) return;
-
-		this.setHint( 'Use LEFT CLICK to select a Lane Marking Node or use SHIFT + LEFT CLICK to add new Lane Marking Node' );
-
-		CommandHistory.execute( new SelectLaneForRoadMarkCommand( this, lane ), );
-
-	}
-
-	private unselectLane ( lane: TvLane ) {
-
-		CommandHistory.execute( new UnselectLaneForRoadMarkCommand( this, lane ) );
-
-	}
-
-	private hasCreatedNode ( e: PointerEventData ) {
-
-		const interactedLane = this.isOnLane( e );
-
-		if ( !interactedLane ) return;
-
-		if ( interactedLane ) {
-
-			this.setHint( 'Modify Lane Marking Node properties from the inspector like color, width etc' );
-
-			CommandHistory.execute( new AddRoadmarkNodeCommand( this, interactedLane, e.point ) );
+			this.onRoadUnselected( object );
 
 		}
 
-		return interactedLane != null;
 	}
 
-	// private selectRoadMarkAt ( position: Vector3, lane: TvLane ) {
+	onRoadSelected ( road: TvRoad ): void {
 
-	// 	const posTheta = new TvPosTheta();
+		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
-	// 	TvMapQueries.getRoadByCoords( position.x, position.y, posTheta );
+		this.selectedRoad = road;
 
-	// 	const roadMark = lane.getRoadMarkAt( posTheta.s );
+		this.laneMarkingService.showRoad( road );
 
-	// 	CommandHistory.executeAll( [
+	}
 
-	// 		new SetValueCommand( this, 'roadMark', roadMark ),
+	onRoadUnselected ( road: TvRoad ): void {
 
-	// 		new SetInspectorCommand( LaneRoadmarkInspectorComponent, roadMark ),
+		this.laneMarkingService.hideRoad( road );
 
-	// 	] );
+		this.selectedRoad = null;
 
-	// }
+	}
+
+	onLaneSelected ( lane: TvLane ): void {
+
+		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
+
+		this.selectedLane = lane;
+
+		this.selectedRoad = lane.laneSection.road;
+
+		this.laneMarkingService.showRoad( lane.laneSection.road );
+
+	}
+
+	onLaneUnselected ( lane: TvLane ): void {
+
+		this.laneMarkingService.hideRoad( lane.laneSection.road );
+
+		this.selectedLane = null;
+
+		this.selectedRoad = null;
+
+	}
+
+	onNodeSelected ( node: LaneMarkingNode ) {
+
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
+		node?.select();
+
+		this.selectedNode = node;
+
+		this.selectedLane = node.lane;
+
+		this.selectedRoad = node.lane.laneSection.road;
+
+		AppInspector.setInspector( DynamicInspectorComponent, node );
+	}
+
+	onNodeUnselected ( node: LaneMarkingNode ) {
+
+		node?.unselect();
+
+		this.selectedNode = null;
+
+		AppInspector.clear();
+
+	}
+
 }

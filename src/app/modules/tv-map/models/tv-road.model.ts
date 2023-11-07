@@ -1667,6 +1667,25 @@ export class TvRoad {
 		return posTheta;
 	}
 
+	getLaneEndPosition ( lane: TvLane, s: number, offset = 0 ) {
+
+		const posTheta = this.getRoadCoordAt( s );
+
+		const laneSection = this.getLaneSectionAt( s );
+
+		const tDirection = lane.id > 0 ? 1 : -1;
+
+		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, s );
+
+		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+
+		posTheta.x += cosTheta * ( cumulativeWidth + offset );
+		posTheta.y += sinTheta * ( cumulativeWidth + offset );
+
+		return posTheta;
+	}
+
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );

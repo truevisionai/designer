@@ -39,8 +39,6 @@ export class ToolFactory {
 				return new PropPolygonTool();
 			case ToolType.Surface:
 				return new SurfaceTool();
-			case ToolType.LaneMarking:
-				return new LaneMarkingTool();
 			case ToolType.LaneAdd:
 				return new LaneAddTool();
 			case ToolType.LaneCreate:

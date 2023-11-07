@@ -9,6 +9,7 @@ import { Vector3 } from 'three';
 import { CreateElevationNodeCommand } from 'app/tools/road-elevation/create-elevation-node-command';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { SceneService } from '../scene.service';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -93,11 +94,11 @@ export class RoadElevationService extends BaseService {
 
 	}
 
-	removeNode ( object: RoadElevationNode ) {
+	removeNode ( node: RoadElevationNode ) {
 
-		SceneService.removeFromTool( object );
+		SceneService.removeFromTool( node );
 
-		const index = RoadElevationService.nodes.indexOf( object );
+		const index = RoadElevationService.nodes.indexOf( node );
 
 		if ( index !== - 1 ) {
 
@@ -105,16 +106,36 @@ export class RoadElevationService extends BaseService {
 
 		}
 
-		object.road.removeElevationInstance( object.elevation );
+		node.road.removeElevationInstance( node.elevation );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
 	}
 
-	addNode ( object: RoadElevationNode ) {
+	updateNode ( node: RoadElevationNode ) {
 
-		SceneService.addToolObject( object );
+		const roadCoord = node.road.getCoordAt( node.position );
 
-		RoadElevationService.nodes.push( object );
+		node.elevation.s = roadCoord.s;
 
-		object.road.addElevationInstance( object.elevation );
+		node.updateValuesAndPosition();
+
+		this.removeElevationNodes( node.road );
+
+		this.showElevationNodes( node.road );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
+
+	}
+
+	addNode ( node: RoadElevationNode ) {
+
+		SceneService.addToolObject( node );
+
+		RoadElevationService.nodes.push( node );
+
+		node.road.addElevationInstance( node.elevation );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
 	}
 
 	// createDefaultNodes ( road: TvRoad ) {

@@ -12,6 +12,7 @@ export interface StrategySettings {
 	higlightOnSelect?: boolean;
 	tag?: string;
 	returnParent?: boolean;
+	returnTarget?: boolean;
 }
 
 export class ControlPointStrategy<T extends AbstractControlPoint> extends SelectStrategy<T> {

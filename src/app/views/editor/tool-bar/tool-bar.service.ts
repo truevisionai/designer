@@ -34,6 +34,7 @@ import { RoadCircleService } from 'app/services/road/road-circle.service';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
+import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,7 +48,8 @@ export class ToolBarService {
 		private roadCircleService: RoadCircleService,
 		private roadElevationService: RoadElevationService,
 		private maneuverService: ManeuverService,
-		private laneWidthService: LaneWidthService
+		private laneWidthService: LaneWidthService,
+		private laneMarkingService: LaneMarkingService,
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -87,7 +89,7 @@ export class ToolBarService {
 			case ToolType.Surface:
 				return new SurfaceToolv2( this.surfaceToolService );
 			case ToolType.LaneMarking:
-				return new LaneMarkingTool();
+				return new LaneMarkingTool( this.laneMarkingService );
 			case ToolType.LaneAdd:
 				return new LaneAddTool();
 			case ToolType.LaneCreate:

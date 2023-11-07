@@ -158,7 +158,7 @@ export class LaneWidthTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.laneWidthService.base.onPointerMoved( e );
+		this.laneWidthService.base.highlight( e );
 
 		if ( !this.isPointerDown ) return;
 

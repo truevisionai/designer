@@ -119,7 +119,7 @@ export class PropPointTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.tool.base.onPointerMoved( e );
+		this.tool.base.highlight( e );
 
 		if ( !this.selectedProp ) return;
 

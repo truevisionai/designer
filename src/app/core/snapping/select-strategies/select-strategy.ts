@@ -10,98 +10,107 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 
 export abstract class SelectStrategy<T> {
 
-    abstract onPointerDown ( pointerEventData: PointerEventData ): T;
+	abstract onPointerDown ( pointerEventData: PointerEventData ): T;
 
-    abstract onPointerMoved ( pointerEventData: PointerEventData ): T;
+	abstract onPointerMoved ( pointerEventData: PointerEventData ): T;
 
-    abstract onPointerUp ( pointerEventData: PointerEventData ): T;
+	abstract onPointerUp ( pointerEventData: PointerEventData ): T;
 
 	select ( e: PointerEventData ): T { return this.onPointerDown( e ); }
 
-    abstract dispose (): void;
+	abstract dispose (): void;
 
-    protected onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
+	protected onRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
 
-        const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
+		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 
-        if ( ! roadCoord ) return;
+		if ( !roadCoord ) return;
 
-        const width = roadCoord.t > 0 ? roadCoord.road.getLeftSideWidth( roadCoord.s ) : roadCoord.road.getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ? roadCoord.road.getLeftSideWidth( roadCoord.s ) : roadCoord.road.getRightsideWidth( roadCoord.s );
 
-        if ( Math.abs( roadCoord.t ) > width ) return;
+		if ( Math.abs( roadCoord.t ) > width ) return;
 
-        return roadCoord;
+		return roadCoord;
 
-    }
+	}
 
-    protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
+	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
 
-        const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
+		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 
-        if ( ! roadCoord ) return;
+		if ( !roadCoord ) return;
 
-        const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
 
-        const t = roadCoord.t;
+		const t = roadCoord.t;
 
-        const lanes = laneSection.lanes;
+		const lanes = laneSection.lanes;
 
-        let targetLane: TvLane;
+		let targetLane: TvLane;
 
-        const isLeft = t > 0;
-        const isRight = t < 0;
+		const isLeft = t > 0;
+		const isRight = t < 0;
 
-        for ( const [ id, lane ] of lanes ) {
+		if ( Math.abs( t ) < 0.1 ) {
+			return laneSection.getLaneById( 0 );
+		}
 
-            // logic to skip left or right lanes depending on t value
-            if ( isLeft && lane.isRight ) continue;
-            if ( isRight && lane.isLeft ) continue;
+		for ( const [ id, lane ] of lanes ) {
 
-            const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
-            const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+			// logic to skip left or right lanes depending on t value
+			if ( isLeft && lane.isRight ) continue;
+			if ( isRight && lane.isLeft ) continue;
 
-            if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
-                return lane;
-            }
+			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
+			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
 
-        }
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+				return lane;
+			}
 
-        return targetLane;
+		}
 
-    }
+		return targetLane;
 
-    protected onLaneCoord ( pointerEventData: PointerEventData ): TvLaneCoord {
+	}
 
-        const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
+	protected onLaneCoord ( pointerEventData: PointerEventData ): TvLaneCoord {
 
-        if ( ! roadCoord ) return;
+		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
 
-        const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+		if ( !roadCoord ) return;
 
-        const t = roadCoord.t;
+		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
 
-        const lanes = laneSection.lanes;
+		const t = roadCoord.t;
 
-        const isLeft = t > 0;
-        const isRight = t < 0;
+		const lanes = laneSection.lanes;
 
-        for ( const [ id, lane ] of lanes ) {
+		const isLeft = t > 0;
+		const isRight = t < 0;
 
-            // logic to skip left or right lanes depending on t value
-            if ( isLeft && lane.isRight ) continue;
-            if ( isRight && lane.isLeft ) continue;
+		if ( Math.abs( t ) < 0.1 ) {
+			const lane = laneSection.getLaneById( 0 );
+			return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+		}
 
-            const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
-            const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+		for ( const [ id, lane ] of lanes ) {
 
-            if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+			// logic to skip left or right lanes depending on t value
+			if ( isLeft && lane.isRight ) continue;
+			if ( isRight && lane.isLeft ) continue;
 
-                return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
+			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
 
-            }
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
 
-        }
-    }
+				return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+
+			}
+
+		}
+	}
 
 }
 

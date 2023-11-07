@@ -6,10 +6,11 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Vector3 } from 'three';
 import { TvPosTheta } from '../../../modules/tv-map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { Position } from 'app/modules/scenario/models/position';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { IHasSCoord } from '../snap-strategies/snapping';
+import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 
 interface IMovingStrategy {
 
@@ -87,6 +88,65 @@ export abstract class MovingStrategy implements IMovingStrategy {
 	}
 
 }
+
+export abstract class AbstractLaneMovingStrategy {
+
+	abstract getPosition ( event: PointerEventData, lane: TvLane, sValues?: IHasSCoord[] ): Position;
+
+	protected onLaneCoord ( event: PointerEventData ): TvLaneCoord {
+
+		const roadCoord = TvMapQueries.findRoadCoord( event.point );
+
+		if ( !roadCoord ) return;
+
+		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+
+		const t = roadCoord.t;
+
+		const lanes = laneSection.lanes;
+
+		const isLeft = t > 0;
+		const isRight = t < 0;
+
+		for ( const [ id, lane ] of lanes ) {
+
+			// logic to skip left or right lanes depending on t value
+			if ( isLeft && lane.isRight ) continue;
+			if ( isRight && lane.isLeft ) continue;
+
+			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
+			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+
+				return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+
+			}
+
+		}
+	}
+
+}
+
+export class EndLaneMovingStrategy extends AbstractLaneMovingStrategy {
+
+	getPosition ( event: PointerEventData, lane: TvLane ): Position {
+
+		const posTheta = lane.laneSection.road.getCoordAt( event.point );
+
+		const s = posTheta.s - lane.laneSection.s;
+
+		// console.log( posTheta, s );
+
+		const position = lane.laneSection.road.getLaneEndPosition( lane, s );
+
+		// return new LanePositionv2( lane.laneSection.road, lane, s );
+
+		return new WorldPosition( new Vector3( position.x, position.y, position.z ) );
+	}
+
+}
+
 
 // export class RoadPointMovingStrategy implements MoveStrategy {
 

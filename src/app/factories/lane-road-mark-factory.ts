@@ -15,7 +15,11 @@ import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
 import { Vertex } from '../modules/tv-map/models/vertex';
 import { OdBuilderConfig } from '../modules/tv-map/builders/od-builder-config';
+import { Injectable } from '@angular/core';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class LaneRoadMarkFactory {
 
 	public buildRoad ( road: TvRoad ): void {

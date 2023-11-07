@@ -1,5 +1,5 @@
 import { SelectObjectCommandv2, SelectPointCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
-import { AddRoadPointCommandv2 } from 'app/tools/road/add-road-point-command';
+import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
@@ -64,7 +64,7 @@ export class RoadToolv2 extends BaseTool {
 
 			CommandHistory.executeMany(
 
-				new AddRoadPointCommandv2( this.selectedRoad, point )
+				new AddRoadPointCommand( this.selectedRoad, point )
 
 			);
 
@@ -78,7 +78,7 @@ export class RoadToolv2 extends BaseTool {
 
 				new AddRoadCommandv2( this.roadToolService.mapService.map, [ road ], true ),
 
-				new AddRoadPointCommandv2( road, point ),
+				new AddRoadPointCommand( road, point ),
 
 				new SelectRoadCommandv2( road )
 

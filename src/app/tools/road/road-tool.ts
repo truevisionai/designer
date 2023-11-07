@@ -3,31 +3,32 @@
  */
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
+// import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+// import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
+// import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+// import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+// import { SetValueCommand } from 'app/commands/set-value-command';
+// import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+// import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { CommandHistory } from 'app/services/command-history';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
+// import { CommandHistory } from 'app/services/command-history';
+// import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
+// import { SetInspectorCommand } from '../../commands/set-inspector-command';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { RemoveRoadCommand } from './remove-road-command';
-import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
-import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
-import { SelectRoadCommand } from 'app/commands/select-road-command';
-import { AppInspector } from 'app/core/inspector';
-import { AddRoadCommand } from './add-road-command';
-import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadLinkService } from 'app/services/road/road-link.service';
+// import { RemoveRoadCommand } from './remove-road-command';
+// import { SelectRoadForRoadToolCommand } from './select-road-for-road-tool-command';
+// import { NodeStrategy } from "../../core/snapping/select-strategies/node-strategy";
+// import { SelectRoadCommand } from 'app/commands/select-road-command';
+// import { AppInspector } from 'app/core/inspector';
+// import { AddRoadCommand } from './add-road-command';
+// import { RoadFactory } from 'app/factories/road-factory.service';
+// import { RoadLinkService } from 'app/services/road/road-link.service';
 import { RoadService } from 'app/services/road/road.service';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 
 export class RoadTool extends BaseTool implements IToolWithPoint {
 
@@ -39,11 +40,10 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	private roadChanged: boolean = false;
 
-	private pointStrategy: SelectStrategy<RoadControlPoint>;
-	private nodeStrategy: SelectStrategy<RoadNode>;
-	private roadStrategy: SelectStrategy<TvRoadCoord>;
-
-	private roadLinkService = new RoadLinkService();
+	// private pointStrategy: SelectStrategy<RoadControlPoint>;
+	// private nodeStrategy: SelectStrategy<RoadNode>;
+	// private roadStrategy: SelectStrategy<TvRoadCoord>;
+	// private roadLinkService = new RoadLinkService();
 
 	constructor ( roadService?: RoadService ) {
 
@@ -101,11 +101,11 @@ export class RoadTool extends BaseTool implements IToolWithPoint {
 
 	removeRoad ( road: TvRoad ) {
 
-		CommandHistory.executeMany(
-			new RemoveRoadCommand( road ),
+		// CommandHistory.executeMany(
+		// 	new RemoveRoadCommand( road ),
 
-			new SetInspectorCommand( null, null )
-		);
+		// 	new SetInspectorCommand( null, null )
+		// );
 
 	}
 

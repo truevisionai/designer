@@ -51,7 +51,9 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 	}
 
 	dispose (): void {
-		throw new Error( 'Method not implemented.' );
+
+		// nothing to dispose
+
 	}
 
 }

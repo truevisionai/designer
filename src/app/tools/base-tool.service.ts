@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
-import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { AbstractLaneMovingStrategy, MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/modules/scenario/models/position';
@@ -16,6 +16,7 @@ export class BaseToolService {
 
 	private selectionStratgies: SelectStrategy<any>[] = [];
 	private movingStrategies: MovingStrategy[] = [];
+	private laneMovingStrategies: AbstractLaneMovingStrategy[] = [];
 	private currentSelected: any;
 
 	constructor (
@@ -40,9 +41,9 @@ export class BaseToolService {
 
 	}
 
-	getMovingStrategies (): MovingStrategy[] {
+	addLaneMovingStrategy ( strategy: AbstractLaneMovingStrategy ) {
 
-		return this.movingStrategies;
+		this.laneMovingStrategies.push( strategy );
 
 	}
 
@@ -144,7 +145,7 @@ export class BaseToolService {
 
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	highlight ( e: PointerEventData ) {
 
 		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
 
@@ -170,6 +171,38 @@ export class BaseToolService {
 
 	}
 
+	handleMovement ( e: PointerEventData, callback: ( position: Position ) => void ): void {
+
+		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
+
+			const position = this.movingStrategies[ i ].getPosition( e );
+
+			if ( position ) {
+
+				callback( position );
+
+			}
+
+		}
+
+	}
+
+	handleLaneMovement ( e: PointerEventData, lane: TvLane, callback: ( position: Position ) => void ): void {
+
+		for ( let i = 0; i < this.laneMovingStrategies.length; i++ ) {
+
+			const position = this.laneMovingStrategies[ i ].getPosition( e, lane );
+
+			if ( position ) {
+
+				callback( position );
+
+			}
+
+		}
+
+	}
+
 	clearStrategies () {
 
 		this.selectionStratgies.forEach( s => s.dispose() );
@@ -177,6 +210,7 @@ export class BaseToolService {
 
 		this.selectionStratgies = [];
 		this.movingStrategies = [];
+		this.laneMovingStrategies = [];
 	}
 
 	setHint ( msg: string ) {

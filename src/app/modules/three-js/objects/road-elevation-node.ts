@@ -12,7 +12,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
 import { DynamicControlPoint } from './dynamic-control-point';
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+// import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export class RoadElevationNode extends DynamicControlPoint<any> {
 
@@ -34,7 +34,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set s ( value: number ) {
 		this.elevation.s = value;
 		this.updateValuesAndPosition();
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
 	}
 
 	@SerializedField( { type: 'int' } )
@@ -45,7 +45,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set height ( value: number ) {
 		this.elevation.a = value;
 		this.updateValuesAndPosition();
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
 	}
 
 	@Action()
@@ -59,15 +59,15 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 
 	update () {
 
-		const roadCoord = this.road.getCoordAt( this.position );
+		// const roadCoord = this.road.getCoordAt( this.position );
 
-		this.elevation.s = roadCoord.s;
+		// this.elevation.s = roadCoord.s;
 
-		this.updateValuesAndPosition();
+		// this.updateValuesAndPosition();
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
 
-		MapEvents.objectUpdated.emit( this );
+		// MapEvents.objectUpdated.emit( this );
 
 	}
 

@@ -42,11 +42,8 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		// this.pointStrategy = new ControlPointStrategy<RoadControlPoint>();
-		// this.nodeStrategy = new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG, true );
-		// this.roadStrategy = new OnRoadStrategy();
-		// this.tool.base.addSelectionStrategy( new ControlPointStrategy<RoadControlPoint>() );
 		this.tool.base.addSelectionStrategy( new NodeStrategy<RoadElevationNode>( RoadElevationNode.TAG ) );
+
 		this.tool.base.addSelectionStrategy( new SelectRoadStrategy() );
 
 	}
@@ -138,7 +135,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 	public onPointerMoved ( e: PointerEventData ) {
 
-		this.tool.base.onPointerMoved( e );
+		this.tool.base.highlight( e );
 
 		if ( !this.isPointerDown ) return;
 
@@ -181,7 +178,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		if ( object instanceof RoadElevationNode ) {
 
-			// this.tool.updateNode( object );
+			this.tool.updateNode( object );
 
 		}
 
