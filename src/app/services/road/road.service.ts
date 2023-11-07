@@ -21,7 +21,8 @@ export class RoadService extends BaseService {
 
 	constructor (
 		private roadSplineService: RoadSplineService,
-		private mapService: MapService
+		private mapService: MapService,
+		private roadLinkService: RoadLinkService,
 	) {
 
 		super();
@@ -45,7 +46,7 @@ export class RoadService extends BaseService {
 
 		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
 
-		( new RoadLinkService() ).linkRoads( firstNode, secondNode, joiningRoad );
+		this.roadLinkService.linkRoads( firstNode, secondNode, joiningRoad );
 
 		spline.addRoadSegment( 0, joiningRoad.id );
 

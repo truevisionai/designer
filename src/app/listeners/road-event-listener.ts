@@ -9,17 +9,14 @@ import { RoadSplineService } from "app/services/road/road-spline.service";
 export class RoadEventListener extends Manager {
 
 	private debug = true;
-	private roadLinkService: RoadLinkService;
 
 	constructor (
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService
+		private roadSplineService: RoadSplineService,
+		private roadLinkService: RoadLinkService
 	) {
 
 		super();
-
-		this.roadLinkService = new RoadLinkService();
-
 	}
 
 	init () {

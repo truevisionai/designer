@@ -13,10 +13,16 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 export class RoadCircleTool extends BaseTool {
 
 	public name: string = 'RoadCircleTool';
+
 	public toolType = ToolType.RoadCircle;
 
 	private pointerLastAt: Vector3;
+
 	private currentRadius: number = 0;
+
+	private isDragging = false;
+
+	private debug = false;
 
 	constructor ( private circleRoadService: RoadCircleService ) {
 
@@ -25,7 +31,9 @@ export class RoadCircleTool extends BaseTool {
 	}
 
 	get radius () {
-		return Math.max( 7.5, this.currentRadius || 0 );
+
+		return Math.max( 10, this.currentRadius || 0 );
+
 	}
 
 	init () {
@@ -52,38 +60,52 @@ export class RoadCircleTool extends BaseTool {
 
 	onRoadCreated ( road: TvRoad ): void {
 
-		this.circleRoadService.showRoadNodes( road );
+		// this.circleRoadService.showRoadNodes( road );
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ) {
 
-		if ( e.button !== MouseButton.LEFT ) return;
+		if ( this.debug ) console.log( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
 		this.circleRoadService.init( this.pointerDownAt, e.point, this.radius );
+
+		this.isDragging = true;
+
 	}
 
 	onPointerUp ( e: PointerEventData ) {
 
+		if ( this.debug ) console.log( 'onPointerUp', e, this.isDragging, this.isPointerDown, this.currentRadius );
+
 		if ( e.button !== MouseButton.LEFT ) return;
+
+		if ( !this.isDragging ) return;
 
 		this.circleRoadService.createRoads();
 
 		this.currentRadius = 0;
+
+		this.isDragging = false;
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
+		if ( this.debug ) console.log( 'onPointerMoved', e, this.isDragging, this.isPointerDown, this.currentRadius );
+
 		if ( e.button !== MouseButton.LEFT ) return;
 
 		if ( !this.isPointerDown ) return;
+
 		if ( !this.pointerDownAt ) return;
+
+		if ( !this.isDragging ) return;
 
 		this.pointerLastAt = e.point;
 
 		this.currentRadius = this.pointerDownAt.distanceTo( this.pointerLastAt );
 
-		this.circleRoadService.update( this.radius, this.pointerDownAt );
+		this.circleRoadService.update( this.radius, this.pointerLastAt );
 	}
 
 }

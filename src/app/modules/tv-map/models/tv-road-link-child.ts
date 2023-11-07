@@ -110,54 +110,69 @@ export class TvRoadLinkChild {
 		this.attr_contactPoint = value;
 	}
 
-	get end () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getSecondPoint();
-		} else {
-			return this.road.spline.getSecondLastPoint();
-		}
-	}
+	// /**
+	//  * @deprecated
+	//  */
+	// get end () {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
+	// 		return this.road.spline.getSecondPoint();
+	// 	} else {
+	// 		return this.road.spline.getSecondLastPoint();
+	// 	}
+	// }
 
-	get mid2 () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getFirstPoint();
-		} else {
-			return this.road.spline.getLastPoint();
-		}
-	}
+	// /**
+	//  * @deprecated
+	//  */
+	// get mid2 () {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
+	// 		return this.road.spline.getFirstPoint();
+	// 	} else {
+	// 		return this.road.spline.getLastPoint();
+	// 	}
+	// }
 
-	get road () {
+	// /**
+	//  * @deprecated
+	//  */
+	// get road () {
 
-		return this.getElement<TvRoad>() as TvRoad;
+	// 	return this.getElement<TvRoad>() as TvRoad;
 
-	}
+	// }
 
-	get laneSection () {
+	// /**
+	//  * @deprecated
+	//  */
+	// get laneSection () {
 
-		if ( this.contactPoint == TvContactPoint.START ) {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
 
-			return this.road.getFirstLaneSection();
+	// 		return this.road.getFirstLaneSection();
 
-		} else {
+	// 	} else {
 
-			return this.road.getLastLaneSection();
-		}
-	}
+	// 		return this.road.getLastLaneSection();
+	// 	}
+	// }
 
-	setSuccessor ( element: TvRoadLinkChild ) {
-		// if ( this.elementType === TvRoadLinkChildType.road ) {
-		// 	const road = TvMapInstance.map.getRoadById( this.elementId );
-		// 	road.successor = element;
-		// }
-	}
+	// setSuccessor ( element: TvRoadLinkChild ) {
+	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
+	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+	// 	// 	road.successor = element;
+	// 	// }
+	// }
 
-	setPredecessor ( element: TvRoadLinkChild ) {
-		// if ( this.elementType === TvRoadLinkChildType.road ) {
-		// 	const road = TvMapInstance.map.getRoadById( this.elementId );
-		// 	road.predecessor = element;
-		// }
-	}
+	// setPredecessor ( element: TvRoadLinkChild ) {
+	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
+	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+	// 	// 	road.predecessor = element;
+	// 	// }
+	// }
 
+	/**
+	 * @deprecated
+	 */
 	getElement<T> (): T {
 
 		throw new Error( 'Method not implemented.' );

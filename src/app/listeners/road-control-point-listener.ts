@@ -7,12 +7,18 @@ import { RoadLinkService } from "app/services/road/road-link.service";
 import { AbstractControlPoint } from "app/modules/three-js/objects/abstract-control-point";
 import { ToolManager } from "app/tools/tool-manager";
 import { MapService } from "app/services/map.service";
+import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { TvRoadLinkChild, TvRoadLinkChildType } from "app/modules/tv-map/models/tv-road-link-child";
 
 export class RoadControlPointListener extends Manager {
 
 	debug: any;
 
-	constructor ( private roadService: RoadService, private mapService: MapService ) {
+	constructor (
+		private roadService: RoadService,
+		private mapService: MapService,
+		private roadLinkService: RoadLinkService,
+	) {
 
 		super();
 
@@ -47,27 +53,53 @@ export class RoadControlPointListener extends Manager {
 
 		const spline = event.controlPoint.mainObject as AbstractSpline;
 
-		const roadLinkService = new RoadLinkService();
-
 		spline.getRoadSegments().forEach( segment => {
 
 			if ( segment.roadId == -1 ) return;
 
 			const road = this.mapService.map.getRoadById( segment.roadId );
 
-			roadLinkService.updateLinks( road, event.controlPoint, true );
-
-			if ( road.predecessor ) {
-				this.roadService.rebuildRoad( road.predecessor.getElement() );
-			}
-
-			if ( road.successor ) {
-				this.roadService.rebuildRoad( road.successor.getElement() );
-			}
+			this.rebuildLinks( road, event.controlPoint );
 
 			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 		} );
+
+	}
+
+	rebuildLinks ( road: TvRoad, controlPoint: AbstractControlPoint ) {
+
+		this.roadLinkService.updateLinks( road, controlPoint, true );
+
+		this.rebuildLink( road.predecessor );
+
+		this.rebuildLink( road.successor );
+
+	}
+
+	rebuildLink ( link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		if ( link.elementType == TvRoadLinkChildType.road ) {
+
+			this.rebuildLinkedRoad( link );
+
+		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
+
+			console.warn( 'TODO: rebuild junction' );
+
+		}
+
+	}
+
+	rebuildLinkedRoad ( link: TvRoadLinkChild ) {
+
+		const road = this.mapService.map.getRoadById( link.elementId );
+
+		if ( !road ) return;
+
+		this.roadService.rebuildRoad( road );
 
 	}
 

@@ -4,13 +4,150 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadLinkService {
 
-	constructor () { }
+	constructor ( private mapService: MapService ) { }
+
+	addPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
+
+		mainRoad.predecessor = link;
+
+		if ( !link ) return;
+
+		if ( link.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
+
+		// direction
+		// if predecessor is ending then our direction is positive
+		// -> ->
+		// if predecessor is starting then our direction is negative
+		// <- ->
+		const direction = link.contactPoint === TvContactPoint.END ? 1 : -1;
+
+		mainRoad.getFirstLaneSection().lanes.forEach( lane => {
+
+			if ( lane.side !== TvLaneSide.CENTER ) {
+
+				lane.setPredecessor( lane.id * direction );
+
+			}
+
+		} );
+
+		const linkedRoad = this.mapService.map.getRoadById( link.elementId );
+
+		const linkedLaneSection = this.getLaneSection( linkedRoad, link.contactPoint );
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			linkedRoad.setPredecessor( TvRoadLinkChildType.road, mainRoad.id, TvContactPoint.START );
+
+			linkedLaneSection.lanes.forEach( lane => {
+
+				if ( lane.side !== TvLaneSide.CENTER ) {
+
+					lane.setPredecessor( lane.id * direction );
+
+				}
+
+			} );
+
+		} else if ( link.contactPoint == TvContactPoint.END ) {
+
+			linkedRoad.setSuccessor( TvRoadLinkChildType.road, mainRoad.id, TvContactPoint.START );
+
+			linkedLaneSection.lanes.forEach( lane => {
+
+				if ( lane.side !== TvLaneSide.CENTER ) {
+
+					lane.setSuccessor( lane.id * direction );
+
+				}
+
+			} );
+
+		}
+
+	}
+
+	addSuccessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
+
+		mainRoad.successor = link;
+
+		if ( !link ) return;
+
+		if ( link.elementType == TvRoadLinkChildType.junction ) {
+			// TODO: might have to update connecting/incoming road
+			return;
+		}
+
+		// direction
+		// if successor is starting then our direction is positive
+		// -> ->
+		// if successor is ending then our direction is negative
+		// -> <-
+		const direction = link.contactPoint === TvContactPoint.START ? 1 : -1;
+
+		mainRoad.getLastLaneSection().lanes.forEach( lane => {
+
+			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+
+		} );
+
+		const linkedRoad = this.mapService.map.getRoadById( link.elementId );
+
+		const linkedLaneSection = this.getLaneSection( linkedRoad, link.contactPoint );
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			linkedRoad.setPredecessor( TvRoadLinkChildType.road, linkedRoad.id, TvContactPoint.END );
+
+			linkedLaneSection.lanes.forEach( lane => {
+
+				if ( lane.side !== TvLaneSide.CENTER ) {
+
+					lane.setPredecessor( lane.id * direction );
+
+				}
+
+			} );
+
+		} else if ( link.contactPoint == TvContactPoint.END ) {
+
+			linkedRoad.setSuccessor( TvRoadLinkChildType.road, mainRoad.id, TvContactPoint.END );
+
+			linkedLaneSection.lanes.forEach( lane => {
+
+				if ( lane.side !== TvLaneSide.CENTER ) {
+
+					lane.setSuccessor( lane.id * direction );
+
+				}
+
+			} );
+
+		}
+	}
+
+	getLaneSection ( road: TvRoad, contactPoint: TvContactPoint ) {
+
+		if ( contactPoint == TvContactPoint.START ) {
+
+			return road.getFirstLaneSection();
+
+		} else {
+
+			return road.getLastLaneSection();
+		}
+
+	}
 
 	removeLinks ( road: TvRoad ) {
 
@@ -30,7 +167,7 @@ export class RoadLinkService {
 			return;
 		}
 
-		const linkedRoad = road.successor.road;
+		const linkedRoad = this.getElement<TvRoad>( road.successor );
 
 		if ( !linkedRoad ) return;
 
@@ -55,7 +192,7 @@ export class RoadLinkService {
 			return;
 		}
 
-		const linkedRoad = road.predecessor.road;
+		const linkedRoad = this.getElement<TvRoad>( road.predecessor );
 
 		if ( !linkedRoad ) return;
 
@@ -71,7 +208,6 @@ export class RoadLinkService {
 
 		road.predecessor = null;
 	}
-
 
 	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
@@ -177,12 +313,12 @@ export class RoadLinkService {
 
 		if ( !link ) return;
 
-		const successor = link.getElement<TvRoad>();
+		const successor = this.getElement<TvRoad>( link );
 
 		const start = road.spline.getSecondLastPoint();
 		const mid1 = road.spline.getLastPoint();
-		const mid2 = link.mid2;
-		const end = link.end;
+		const mid2 = this.getMid2( link );
+		const end = this.getEnd( link );
 
 		let distance: number = mid2.position.distanceTo( end.position );
 
@@ -204,14 +340,14 @@ export class RoadLinkService {
 
 		if ( road.spline.type == 'explicit' ) return;
 
-		const predecessor = link.getElement<TvRoad>();
+		const predecessor = this.getElement<TvRoad>( link );
 
 		if ( !predecessor ) return;
 
 		const start = road.spline.getSecondPoint();
 		const mid1 = road.spline.getFirstPoint();
-		const mid2 = link.mid2;
-		const end = link.end;
+		const mid2 = this.getMid2( link );
+		const end = this.getEnd( link );
 
 		const distance = mid2.position.distanceTo( end.position );
 
@@ -224,6 +360,48 @@ export class RoadLinkService {
 		end.position.copy( newP4 );
 
 		predecessor.spline.update();
+
+	}
+
+	private getElement<T> ( link: TvRoadLinkChild ): T {
+
+		if ( link.elementType == TvRoadLinkChildType.road ) {
+
+			return this.mapService.map.getRoadById( link.elementId ) as any;
+
+		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
+
+			return this.mapService.map.getJunctionById( link.elementId ) as any;
+
+		}
+
+	}
+
+	private getEnd ( link: TvRoadLinkChild ) {
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			return this.getElement<TvRoad>( link ).spline.getSecondPoint();
+
+		} else {
+
+			return this.getElement<TvRoad>( link ).spline.getSecondLastPoint();
+
+		}
+
+	}
+
+	private getMid2 ( link: TvRoadLinkChild ) {
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			return this.getElement<TvRoad>( link ).spline.getFirstPoint();
+
+		} else {
+
+			return this.getElement<TvRoad>( link ).spline.getLastPoint();
+
+		}
 
 	}
 

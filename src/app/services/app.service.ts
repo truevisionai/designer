@@ -28,6 +28,7 @@ import { RoadService } from './road/road.service';
 import { RoadSplineService } from './road/road-spline.service';
 import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
+import { RoadLinkService } from './road/road-link.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,6 +60,7 @@ export class AppService {
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
+		private roadLinkService: RoadLinkService,
 	) {
 
 
@@ -73,7 +75,7 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService ) );
+		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService ) );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( LaneManager );
@@ -83,7 +85,7 @@ export class AppService {
 		// ManagerRegistry.registerManager( RoadSelectionListener );
 		// ManagerRegistry.registerManager( RoadControlPointListener );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
-		ManagerRegistry.setManager( 'road-control-point-listener', new RoadControlPointListener( this.roadService, this.mapService ) );
+		ManagerRegistry.setManager( 'road-control-point-listener', new RoadControlPointListener( this.roadService, this.mapService, this.roadLinkService ) );
 
 		ManagerRegistry.initManagers();
 	}

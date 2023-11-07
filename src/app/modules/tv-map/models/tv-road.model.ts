@@ -1459,148 +1459,153 @@ export class TvRoad {
 
 	}
 
-	removePredecessor (): void {
+	// removePredecessor (): void {
 
-		if ( !this.predecessor ) return;
+	// 	if ( !this.predecessor ) return;
 
-		// junction
+	// 	// junction
 
-		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
-			return;
-		}
+	// 	if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
+	// 		return;
+	// 	}
 
-		// road
-		const road = this.predecessor.road;
+	// 	// road
+	// 	const road = this.predecessor.road;
 
-		if ( !road ) return;
+	// 	if ( !road ) return;
 
-		const contactPoint = this.predecessor.contactPoint;
+	// 	const contactPoint = this.predecessor.contactPoint;
 
-		this.predecessor = null;
+	// 	this.predecessor = null;
 
-		if ( contactPoint === TvContactPoint.START ) {
+	// 	if ( contactPoint === TvContactPoint.START ) {
 
-			road.removePredecessor();
+	// 		road.removePredecessor();
 
-		} else {
+	// 	} else {
 
-			road.removeSuccessor();
+	// 		road.removeSuccessor();
 
-		}
-	}
+	// 	}
+	// }
 
-	removeSuccessor (): void {
+	// removeSuccessor (): void {
 
-		if ( !this.successor ) return;
+	// 	if ( !this.successor ) return;
 
-		// junction
+	// 	// junction
 
-		if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
-			return;
-		}
+	// 	if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
+	// 		return;
+	// 	}
 
-		// road
-		const road = this.successor.road;
+	// 	// road
+	// 	const road = this.successor.road;
 
-		if ( !road ) return;
+	// 	if ( !road ) return;
 
-		const contactPoint = this.successor.contactPoint;
+	// 	const contactPoint = this.successor.contactPoint;
 
-		this.successor = null;
+	// 	this.successor = null;
 
-		if ( contactPoint === TvContactPoint.START ) {
+	// 	if ( contactPoint === TvContactPoint.START ) {
 
-			road.removePredecessor();
+	// 		road.removePredecessor();
 
-		} else {
+	// 	} else {
 
-			road.removeSuccessor();
+	// 		road.removeSuccessor();
 
-		}
+	// 	}
 
-		this.successor = null;
-	}
+	// 	this.successor = null;
+	// }
 
 	addPredecessor ( element: TvRoadLinkChild ) {
 
-		this.predecessor = element;
+		throw new Error( 'Method not implemented.' );
 
-		if ( !element ) return;
+		// this.predecessor = element;
 
-		if ( element.elementType == TvRoadLinkChildType.junction ) {
-			// TODO: might have to update connecting/incoming road
-			return;
-		}
+		// if ( !element ) return;
 
-		// direction
-		// if predecessor is ending then our direction is positive
-		// -> ->
-		// if predecessor is starting then our direction is negative
-		// <- ->
-		const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
+		// if ( element.elementType == TvRoadLinkChildType.junction ) {
+		// 	// TODO: might have to update connecting/incoming road
+		// 	return;
+		// }
 
-		if ( element.contactPoint == TvContactPoint.START ) {
+		// // direction
+		// // if predecessor is ending then our direction is positive
+		// // -> ->
+		// // if predecessor is starting then our direction is negative
+		// // <- ->
+		// const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
 
-			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+		// if ( element.contactPoint == TvContactPoint.START ) {
 
-			element.laneSection.lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-			} );
+		// 	element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
 
-		} else if ( element.contactPoint == TvContactPoint.END ) {
+		// 	element.laneSection.lanes.forEach( lane => {
+		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+		// 	} );
 
-			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
+		// } else if ( element.contactPoint == TvContactPoint.END ) {
 
-			element.laneSection.lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-			} );
+		// 	element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
 
-		}
+		// 	element.laneSection.lanes.forEach( lane => {
+		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+		// 	} );
 
-		this.getFirstLaneSection().lanes.forEach( lane => {
-			if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-		} );
+		// }
+
+		// this.getFirstLaneSection().lanes.forEach( lane => {
+		// 	if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+		// } );
 	}
 
 	addSuccessor ( element: TvRoadLinkChild ) {
 
-		this.successor = element;
+		throw new Error( 'Method not implemented.' );
 
-		if ( !element ) return;
+		// this.successor = element;
 
-		if ( element.elementType == TvRoadLinkChildType.junction ) {
-			// TODO: might have to update connecting/incoming road
-			return;
-		}
+		// if ( !element ) return;
 
-		// direction
-		// if successor is starting then our direction is positive
-		// -> ->
-		// if successor is ending then our direction is negative
-		// -> <-
-		const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
+		// if ( element.elementType == TvRoadLinkChildType.junction ) {
+		// 	// TODO: might have to update connecting/incoming road
+		// 	return;
+		// }
 
-		if ( element.contactPoint == TvContactPoint.START ) {
+		// // direction
+		// // if successor is starting then our direction is positive
+		// // -> ->
+		// // if successor is ending then our direction is negative
+		// // -> <-
+		// const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
 
-			element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+		// if ( element.contactPoint == TvContactPoint.START ) {
 
-			element.laneSection.lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-			} );
+		// 	//
+		// 	element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
 
-		} else if ( element.contactPoint == TvContactPoint.END ) {
+		// 	element.laneSection.lanes.forEach( lane => {
+		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
+		// 	} );
 
-			element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
+		// } else if ( element.contactPoint == TvContactPoint.END ) {
 
-			element.laneSection.lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-			} );
+		// 	element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
 
-		}
+		// 	element.laneSection.lanes.forEach( lane => {
+		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+		// 	} );
 
-		this.getLastLaneSection().lanes.forEach( lane => {
-			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-		} );
+		// }
+
+		// this.getLastLaneSection().lanes.forEach( lane => {
+		// 	if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
+		// } );
 
 	}
 

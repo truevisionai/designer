@@ -22,6 +22,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
 import { RoadService } from './road.service';
+import { RoadLinkService } from './road-link.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,7 +37,10 @@ export class RoadCircleService {
 	private end: Vector3;
 	private radius: number;
 
-	constructor ( private roadService: RoadService ) { }
+	constructor (
+		private roadService: RoadService,
+		private roadLinkService: RoadLinkService
+	) { }
 
 	showRoadNodes ( road: TvRoad ) {
 
@@ -49,7 +53,6 @@ export class RoadCircleService {
 		this.roadService.hideRoadNodes( road );
 
 	}
-
 
 	init ( centre: Vector3, end: Vector3, radius: number ) {
 
@@ -73,9 +76,24 @@ export class RoadCircleService {
 
 	}
 
+	reset () {
+
+		this.centre = null;
+
+		this.end = null;
+
+		this.radius = null;
+
+		SceneService.removeFromTool( this.line );
+
+		this.text.remove();
+
+	}
+
 	update ( radius: number, end: Vector3 ) {
 
 		this.radius = radius;
+
 		this.end = end;
 
 		const circleGeometry = new CircleGeometry( radius, radius * 4 );
@@ -93,19 +111,13 @@ export class RoadCircleService {
 		this.text.updateText( 'Radius: ' + radius.toFixed( 2 ) );
 	}
 
-	/**
-	 * create 4 arc roads to form a circular road with correct
-	 * successor/predecessor relation
-	 */
 	createRoads () {
-
-		this.text.remove();
-
-		SceneService.removeFromTool( this.line );
 
 		const roads = this.createCircularRoads( this.centre, this.end, this.radius );
 
 		CommandHistory.execute( new AddRoadCommand( roads ) );
+
+		this.reset();
 
 	}
 
@@ -144,11 +156,6 @@ export class RoadCircleService {
 			let a2 = startPosTheta.moveForward( +distance );
 			let b2 = endPosTheta.moveForward( -distance );
 
-			// points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			// points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
-			// points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
-			// points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
-
 			points.push( new SplineControlPoint( road.spline, start ) );
 			points.push( new SplineControlPoint( road.spline, a2.toVector3() ) );
 			points.push( new SplineControlPoint( road.spline, b2.toVector3() ) );
@@ -163,8 +170,6 @@ export class RoadCircleService {
 		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
 
 		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
-
-		points.forEach( p => SceneService.addToolObject( p ) );
 
 		for ( let j = 0; j < 4; j++ ) {
 
@@ -191,8 +196,8 @@ export class RoadCircleService {
 				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
 				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
-				road.addSuccessor( successor );
-				nextRoad.addPredecessor( predecessor );
+				this.roadLinkService.addSuccessor( road, successor );
+				this.roadLinkService.addPredecessor( nextRoad, predecessor );
 
 			} else {
 
@@ -202,8 +207,8 @@ export class RoadCircleService {
 				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
 				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
-				road.addSuccessor( successor );
-				firstRoad.addPredecessor( predecessor );
+				this.roadLinkService.addSuccessor( road, successor );
+				this.roadLinkService.addPredecessor( firstRoad, predecessor );
 
 			}
 
