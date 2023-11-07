@@ -21,7 +21,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.laneSection.removeLaneById( this.lane.id );
+		this.laneSection.removeLane( this.lane );
 
 
 	}
@@ -36,7 +36,7 @@ export class RemoveLaneCommand extends BaseCommand {
 
 	redo (): void {
 
-		this.laneSection.removeLaneById( this.lane.id );
+		this.laneSection.removeLane( this.lane );
 
 	}
 

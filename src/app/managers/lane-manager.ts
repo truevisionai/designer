@@ -37,28 +37,6 @@ export class LaneManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onLaneRemoved', removedLane );
 
-		const lanes = [ ...removedLane.laneSection.laneMap.entries() ];
-
-		removedLane.laneSection.laneMap.clear();
-
-		// create a new map
-		let newLaneMap = new Map<number, TvLane>();
-
-		// iterate through the old map
-		for ( let [ id, lane ] of lanes ) {
-
-			// shift left lanes
-			if ( id > removedLane.id && removedLane.id > 0 ) lane.setId( id - 1 );
-
-			// shift right lanes
-			if ( id < removedLane.id && removedLane.id < 0 ) lane.setId( id + 1 );
-
-			newLaneMap.set( lane.id, lane );
-
-		}
-
-		removedLane.laneSection.laneMap = newLaneMap;
-
 		TvMapBuilder.rebuildRoad( removedLane.laneSection.road, false );
 
 	}

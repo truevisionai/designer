@@ -4,13 +4,7 @@
 
 import { ToolType } from '../tools/tool-types.enum';
 import { BaseTool } from '../tools/base-tool';
-import { LaneAddTool } from '../tools/lane-add/lane-add-tool';
-import { LaneCreateTool } from '../tools/lane-create/lane-create-tool';
-import { LaneMarkingTool } from '../tools/lane-marking/lane-marking-tool';
 import { LaneOffsetTool } from '../tools/lane-offset/lane-offset-tool';
-import { LaneWidthTool } from '../tools/lane-width/lane-width-tool';
-import { LaneTool } from '../tools/lane/lane-tool';
-import { ManeuverTool } from '../tools/maneuver/maneuver-tool';
 import { CrosswalkTool } from '../tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
 import { ParkingBoxTool } from '../tools/parking-box-tool';
@@ -39,12 +33,6 @@ export class ToolFactory {
 				return new PropPolygonTool();
 			case ToolType.Surface:
 				return new SurfaceTool();
-			case ToolType.LaneAdd:
-				return new LaneAddTool();
-			case ToolType.LaneCreate:
-				return new LaneCreateTool();
-			case ToolType.Lane:
-				return new LaneTool();
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
 			case ToolType.MarkingLine:

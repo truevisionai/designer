@@ -75,13 +75,13 @@ export class JunctionEntryObject extends AbstractControlPoint implements ISelect
 	}
 
 	get isEntry (): boolean {
-		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
-			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.START );
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.START );
 	}
 
 	get isExit (): boolean {
-		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
-			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.END );
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.END );
 	}
 
 	get junctionType () {

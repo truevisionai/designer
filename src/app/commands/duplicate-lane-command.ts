@@ -45,7 +45,7 @@ export class DuplicateLaneCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.laneSection?.removeLaneById( this.newLane.id );
+		this.laneSection?.removeLane( this.newLane );
 
 		MapEvents.laneRemoved.emit( this.newLane );
 

@@ -32,6 +32,8 @@ export class PropPointTool extends BaseTool {
 
 	private selectedProp: PropInstance;
 
+	private debug: boolean;
+
 	constructor ( private tool: PropPointService ) {
 
 		super();
@@ -158,7 +160,7 @@ export class PropPointTool extends BaseTool {
 
 	onObjectSelected ( object: any ): void {
 
-		console.log( 'onObjectSelected', object );
+		if ( this.debug ) console.log( 'onObjectSelected', object );
 
 		if ( object instanceof PropInstance ) {
 
@@ -184,7 +186,7 @@ export class PropPointTool extends BaseTool {
 
 	onObjectUnselected ( object: any ): void {
 
-		console.log( 'onObjectUnselected', object );
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
 		if ( object instanceof PropInstance ) {
 
@@ -206,7 +208,7 @@ export class PropPointTool extends BaseTool {
 
 	onObjectAdded ( object: any ): void {
 
-		console.log( 'onObjectAdded', object );
+		if ( this.debug ) console.log( 'onObjectAdded', object );
 
 		if ( object instanceof PropInstance ) {
 
@@ -218,7 +220,7 @@ export class PropPointTool extends BaseTool {
 
 	onObjectRemoved ( object: any ): void {
 
-		console.log( 'onObjectRemoved', object );
+		if ( this.debug ) console.log( 'onObjectRemoved', object );
 
 		if ( object instanceof PropInstance ) {
 

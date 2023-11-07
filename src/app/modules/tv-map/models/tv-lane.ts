@@ -23,6 +23,7 @@ import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { OdMaterials } from '../builders/od-materials.service';
+import { SerializedField } from 'app/core/components/serialization';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -32,7 +33,43 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public meshData: MeshGeometryData;
 	public markMeshData: MeshGeometryData;
 	public attr_id: number;
-	public attr_type: TvLaneType;
+	private attr_type: TvLaneType;
+
+	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
+	get laneId (): number {
+		return Number( this.attr_id );
+	}
+
+	set laneId ( value: number ) {
+		this.attr_id = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvLaneType } )
+	get type (): TvLaneType {
+		return this.attr_type;
+	}
+
+	set type ( value: TvLaneType ) {
+		this.attr_type = value;
+	}
+
+	@SerializedField( { type: 'boolean' } )
+	get level (): boolean {
+		return this.attr_level;
+	}
+
+	set level ( value ) {
+		this.attr_level = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TravelDirection } )
+	get direction () {
+		return this.travelDirection;
+	}
+
+	set direction ( value: TravelDirection ) {
+		this.travelDirection = value;
+	}
 
 	/**
 	 * "true" = keep lane on level, .i.e. do not apply superelevation or crossfall
@@ -42,9 +79,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * have been defined.
 	 * default is false
 	 */
-	public attr_level: boolean = false;
+	private attr_level: boolean = false;
 
-	public link: TvRoadLaneSectionLaneLink;
 	public width: TvLaneWidth[] = [];
 	public border: TvLaneBorder[] = [];
 	public roadMark: TvLaneRoadMark[] = [];
@@ -52,11 +88,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public visibility: TvLaneVisibility[] = [];
 	public speed: TvLaneSpeed[] = [];
 	public access: TvLaneAccess[] = [];
-	public travelDirection: TravelDirection;
 	public height: TvLaneHeight[] = [];
 
 	public isSelected: boolean;
 
+	private travelDirection: TravelDirection;
 	private lastAddedLaneWidth: number;
 	private lastAddedLaneRoadMark: number;
 	private lastAddedLaneMaterial: number;
@@ -288,14 +324,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this._laneSection?.id;
 	}
 
-	get direction () {
-		return this.travelDirection;
-	}
-
-	set direction ( value: TravelDirection ) {
-		this.travelDirection = value;
-	}
-
 	get sideAsString (): string {
 
 		switch ( this.side ) {
@@ -323,22 +351,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	set id ( value: number ) {
 		this.attr_id = value;
-	}
-
-	get type (): TvLaneType {
-		return this.attr_type;
-	}
-
-	set type ( value: TvLaneType ) {
-		this.attr_type = value;
-	}
-
-	get level (): boolean {
-		return this.attr_level;
-	}
-
-	set level ( value ) {
-		this.attr_level = value;
 	}
 
 	get succcessor () {
@@ -1274,11 +1286,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
 
 		this.getLaneWidthVector().forEach( width => {
-			newLane.addWidthRecord( width.s, width.a, width.b, width.c, width.d );
+			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane, newLane.laneSection.road ) );
 		} );
 
 		this.getLaneRoadMarkVector().forEach( roadMark => {
-			newLane.addRoadMarkRecord( roadMark.sOffset, roadMark.type, roadMark.weight, roadMark.color, roadMark.width, roadMark.laneChange, roadMark.height );
+			newLane.addRoadMarkInstance( new TvLaneRoadMark(
+				roadMark.sOffset, roadMark.type, roadMark.weight, roadMark.color,
+				roadMark.width, roadMark.laneChange, roadMark.height, newLane
+			) );
 		} );
 
 		return newLane;

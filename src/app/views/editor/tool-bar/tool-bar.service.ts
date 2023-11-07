@@ -4,8 +4,6 @@ import { CommandHistory } from 'app/services/command-history';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTool } from 'app/tools/base-tool';
 import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
-import { LaneAddTool } from 'app/tools/lane-add/lane-add-tool';
-import { LaneCreateTool } from 'app/tools/lane-create/lane-create-tool';
 import { LaneMarkingTool } from 'app/tools/lane-marking/lane-marking-tool';
 import { LaneOffsetTool } from 'app/tools/lane-offset/lane-offset-tool';
 import { LaneWidthTool } from 'app/tools/lane-width/lane-width-tool';
@@ -35,6 +33,7 @@ import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
+import { LaneService } from 'app/tools/lane/lane.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -50,6 +49,7 @@ export class ToolBarService {
 		private maneuverService: ManeuverService,
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
+		private laneService: LaneService,
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -90,12 +90,8 @@ export class ToolBarService {
 				return new SurfaceToolv2( this.surfaceToolService );
 			case ToolType.LaneMarking:
 				return new LaneMarkingTool( this.laneMarkingService );
-			case ToolType.LaneAdd:
-				return new LaneAddTool();
-			case ToolType.LaneCreate:
-				return new LaneCreateTool();
 			case ToolType.Lane:
-				return new LaneTool();
+				return new LaneTool( this.laneService );
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
 			case ToolType.MarkingLine:

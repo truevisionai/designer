@@ -12,7 +12,7 @@ import { LaneWidthService } from './lane-width.service';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
-import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
+import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { MapEvents } from 'app/events/map-events';
@@ -83,19 +83,19 @@ export class LaneWidthTool extends BaseTool {
 
 				if ( this.selectedNode === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+				this.selectObject( selected, this.selectedNode );
 
 			} else if ( selected instanceof DebugLine ) {
 
 				if ( this.selectedNode === selected.target ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected.target, this.selectedNode ) );
+				this.selectObject( selected.target, this.selectedNode );
 
 			} else if ( selected instanceof TvLane ) {
 
 				if ( this.selectedLane === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedLane ) );
+				this.selectObject( selected, this.selectedLane );
 
 			}
 
@@ -103,11 +103,11 @@ export class LaneWidthTool extends BaseTool {
 
 			if ( this.selectedNode ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+				this.unselectObject( this.selectedNode );
 
 			} else if ( this.selectedLane ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedLane ) );
+				this.unselectObject( this.selectedLane );
 
 			}
 

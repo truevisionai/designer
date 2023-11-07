@@ -161,6 +161,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		componentRef.instance.label = item.field;
 
+		componentRef.instance.disabled = item.settings.disabled ?? false;
+
 		this.applyComponentSettings( componentRef.instance, item.settings );
 
 		componentRef.instance.changed?.subscribe( ( value ) => {

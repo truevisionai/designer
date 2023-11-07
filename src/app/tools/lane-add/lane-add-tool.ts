@@ -13,6 +13,9 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SelectLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
 
+/**
+ * @deprecated
+ */
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
