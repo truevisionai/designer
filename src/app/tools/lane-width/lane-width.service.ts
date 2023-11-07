@@ -87,7 +87,10 @@ export class LaneWidthService {
 
 		node.lane.addWidthRecordInstance( node.laneWidth );
 
-		LaneWidthService.nodeMap.add( node.laneWidth.uuid, node );
+		this.hideWidthNodes( node.lane.laneSection.road );
+		this.showWidthNodes( node.lane.laneSection.road );
+
+		// LaneWidthService.nodeMap.add( node.laneWidth.uuid, node );
 
 	}
 
@@ -95,8 +98,11 @@ export class LaneWidthService {
 
 		node.lane.removeWidthRecordInstance( node.laneWidth );
 
-		LaneWidthService.nodeMap.remove( node.laneWidth.uuid );
-		LaneWidthService.lineMap.remove( node.laneWidth.uuid );
+		this.hideWidthNodes( node.lane.laneSection.road );
+		this.showWidthNodes( node.lane.laneSection.road );
+
+		// LaneWidthService.nodeMap.remove( node.laneWidth.uuid );
+		// LaneWidthService.lineMap.remove( node.laneWidth.uuid );
 
 	}
 
@@ -119,6 +125,9 @@ export class LaneWidthService {
 		node.line.geometry.dispose();
 
 		node.line.geometry = new BufferGeometry().setFromPoints( [ start, end ] );
+
+		this.hideWidthNodes( node.lane.laneSection.road );
+		this.showWidthNodes( node.lane.laneSection.road );
 
 	}
 
@@ -173,7 +182,7 @@ export class LaneWidthService {
 					// get s of next lane width node
 					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.laneReferenceLine.getPoints( lane, sStart, sEnd );
+					const points = this.laneReferenceLine.getPoints( lane, sStart, sEnd, 0.1 );
 
 					const geometry = new LineGeometry()
 						.setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );

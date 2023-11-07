@@ -121,11 +121,11 @@ export class LaneReferenceLineService {
 
 	}
 
-	getPoints ( lane: TvLane, sStart: number, sEnd: number ) {
+	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
 
 		const points: Vector3[] = [];
 
-		for ( let s = sStart; s < sEnd; s++ ) {
+		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
 			points.push( this.getPoint( lane, s ) )
 
