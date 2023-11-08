@@ -3,7 +3,7 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
-import { RoadCuttingService } from '../road/road-cutter.service';
+import { RoadDividerService } from '../road/road-divider.service';
 import { ManeuverService } from './maneuver.service';
 import { BaseService } from '../base.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
@@ -19,7 +19,7 @@ export class JunctionService extends BaseService {
 
 	public meshService = new JunctionMeshService();
 
-	private roadCuttingService = new RoadCuttingService();
+	private roadCuttingService = new RoadDividerService();
 	private maneuverService = new ManeuverService();
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ) {
@@ -115,8 +115,8 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.splitRoadAt( roadA, 10 );
-		const roadBNext = this.roadCuttingService.splitRoadAt( roadB, 10 );
+		const roadANext = this.roadCuttingService.divideRoadAt( roadA, 10 );
+		const roadBNext = this.roadCuttingService.divideRoadAt( roadB, 10 );
 
 		return junction;
 	}
@@ -125,8 +125,8 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.splitRoadAt( roadA, 10 );
-		const roadBNext = this.roadCuttingService.splitRoadAt( roadB, 10 );
+		const roadANext = this.roadCuttingService.divideRoadAt( roadA, 10 );
+		const roadBNext = this.roadCuttingService.divideRoadAt( roadB, 10 );
 
 		return junction;
 	}
@@ -135,7 +135,7 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.splitRoadAt( headRoad, 10 );
+		const roadANext = this.roadCuttingService.divideRoadAt( headRoad, 10 );
 
 		//const roadBNext = this.roadCuttingService.cutRoadAt( incomingRoad, 10 );
 

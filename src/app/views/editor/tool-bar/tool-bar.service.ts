@@ -15,7 +15,7 @@ import { PropCurveToolV2 } from 'app/tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { PropPolygonTool } from 'app/tools/prop-polygon/prop-polygon-tool';
 import { RoadCircleTool } from 'app/tools/road-circle/road-circle-tool';
-import { RoadCuttingTool } from 'app/tools/road-cut-tool/road-cut-tool';
+import { RoadDividerTool } from 'app/tools/road-cut-tool/road-divider-tool';
 import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation-tool';
 import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from 'app/tools/road-signal-tool';
@@ -33,9 +33,9 @@ import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
 import { LaneService } from 'app/tools/lane/lane.service';
 import { CrosswalkObjectService } from 'app/tools/marking-line/crosswalk-object.service';
-import { RoadCuttingService } from 'app/services/road/road-cutter.service';
+import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
-import { RoadCutToolService } from 'app/tools/road-cut-tool/road-cut-tool.service';
+import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -53,9 +53,9 @@ export class ToolBarService {
 		private laneMarkingService: LaneMarkingService,
 		private laneService: LaneService,
 		private crosswalkService: CrosswalkObjectService,
-		private roadCuttingService: RoadCuttingService,
+		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
-		private roadCutToolService: RoadCutToolService
+		private roadCutToolService: RoadDividerToolService
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -114,8 +114,8 @@ export class ToolBarService {
 				return new RoadElevationTool( this.roadElevationService );
 			case ToolType.RoadRampTool:
 				return new RoadRampTool();
-			case ToolType.RoadCuttingTool:
-				return new RoadCuttingTool( this.roadCutToolService );
+			case ToolType.RoadDividerTool:
+				return new RoadDividerTool( this.roadCutToolService );
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

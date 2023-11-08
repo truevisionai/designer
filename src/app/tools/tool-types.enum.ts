@@ -5,7 +5,7 @@
 export enum ToolType {
 	Road,
 	RoadCircle,
-	RoadCuttingTool,
+	RoadDividerTool,
 	RoadElevation,
 	Junction,
 	Maneuver,

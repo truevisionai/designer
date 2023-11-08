@@ -104,15 +104,15 @@ export class ToolBarComponent implements OnInit {
 			enabled: !Environment.production,
 		},
 		{
-			id: 'showCuttingTool',
-			label: 'Cut',
+			id: 'showDividerTool',
+			label: 'Divide',
 			class: 'toolbar-button',
-			toolType: ToolType.RoadCuttingTool,
-			action: 'cutting-tool',
+			toolType: ToolType.RoadDividerTool,
+			action: 'divider-tool',
 			icon: 'content_cut', // fork_right, call_split
 			track: 'menu',
-			tooltip: 'Cutting Tool',
-			click: () => this.setToolType( ToolType.RoadCuttingTool ),
+			tooltip: 'Divider Tool',
+			click: () => this.setToolType( ToolType.RoadDividerTool ),
 			enabled: !Environment.production,
 		},
 		{
