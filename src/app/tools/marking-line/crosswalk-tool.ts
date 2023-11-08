@@ -4,13 +4,9 @@
 
 import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
-import {
-	CrosswalkInspectorComponent,
-	ICrosswalkInspectorData
-} from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
+import { CrosswalkInspectorComponent, } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
 import { ToolType } from '../tool-types.enum';
 import { ControlPointStrategy } from '../../core/snapping/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from '../../core/snapping/select-strategies/road-coord-strategy';
@@ -21,7 +17,8 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { CrosswalkObjectService } from './crosswalk-object.service';
 import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
-import { RoadLineMovingStrategy } from 'app/core/snapping/move-strategies/road-line-moving.strategy';
+import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
+import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 
 export class CrosswalkTool extends BaseTool {
 

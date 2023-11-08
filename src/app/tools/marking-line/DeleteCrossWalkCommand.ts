@@ -1,8 +1,8 @@
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { SceneService } from 'app/services/scene.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Crosswalk } from '../../modules/tv-map/models/tv-road-object';
 import { BaseCommand } from '../../commands/base-command';
+import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
 
 
 

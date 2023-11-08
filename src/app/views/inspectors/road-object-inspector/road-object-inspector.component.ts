@@ -4,7 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
-import { TvRoadObject } from '../../../modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from '../../../modules/tv-map/models/objects/tv-road-object';
 
 @Component( {
 	selector: 'app-road-object-inspector',

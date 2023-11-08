@@ -31,7 +31,7 @@ import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
 import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
-import { TvObjectContainer, TvRoadObject } from './tv-road-object';
+import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
@@ -40,6 +40,7 @@ import { RoadStyle } from "../../../core/asset/road.style";
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 import { TvLane } from './tv-lane';
+import { TvObjectContainer } from "./objects/tv-object-container";
 
 export enum TrafficRule {
 	RHT = 'RHT',

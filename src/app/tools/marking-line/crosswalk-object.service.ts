@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { MapService } from 'app/services/map.service';
-import { Crosswalk, TvCornerRoad } from 'app/modules/tv-map/models/tv-road-object';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
+import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 
 @Injectable( {
 	providedIn: 'root'

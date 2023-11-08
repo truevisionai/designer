@@ -12,9 +12,10 @@ import { RemoveArrayPointCommand } from 'app/commands/remove-array-point-command
 import { UpdateValueCommand } from 'app/commands/set-value-command';
 import { TvColors } from 'app/modules/tv-map/models/tv-common';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
-import { Crosswalk, TvCornerRoad } from 'app/modules/tv-map/models/tv-road-object';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
+import { Crosswalk } from "../../../modules/tv-map/models/objects/crosswalk";
+import { TvCornerRoad } from "../../../modules/tv-map/models/objects/tv-corner-road";
 
 export interface ICrosswalkInspectorData {
 	crosswalk: Crosswalk;

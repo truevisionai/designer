@@ -35,9 +35,12 @@ import { TvLaneSpeed } from 'app/modules/tv-map/models/tv-lane-speed';
 import { TvLaneVisibility } from 'app/modules/tv-map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
-import { TvRoadObject, TvObjectOutline, TvCornerLocal, TvCornerRoad } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { TvCornerLocal } from "../modules/tv-map/models/objects/tv-corner-local";
+import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
+import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 
 @Injectable( {
 	providedIn: 'root'

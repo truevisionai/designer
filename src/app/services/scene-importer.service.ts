@@ -49,7 +49,7 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { TvPlaneView } from 'app/modules/tv-map/models/tv-plane-view';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -68,6 +68,9 @@ import { TvElectronService } from './tv-electron.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadService } from './road/road.service';
+import { Crosswalk } from "../modules/tv-map/models/objects/crosswalk";
+import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
+import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 
 
 @Injectable( {

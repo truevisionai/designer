@@ -23,9 +23,12 @@ import { TvLaneVisibility } from '../models/tv-lane-visibility';
 import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
-import { TvCornerLocal, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
+import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
 import { XmlElement } from './open-drive-parser.service';
+import { TvCornerLocal } from "../models/objects/tv-corner-local";
+import { TvCornerRoad } from "../models/objects/tv-corner-road";
+import { TvObjectOutline } from "../models/objects/tv-object-outline";
 
 @Injectable( {
 	providedIn: 'root'

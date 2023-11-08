@@ -3,7 +3,7 @@
  */
 
 import { Object3D } from 'three';
-import { TvRoadObject } from '../modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from '../modules/tv-map/models/objects/tv-road-object';
 import { SceneService } from '../services/scene.service';
 import { OdBaseCommand } from './od-base-command';
 

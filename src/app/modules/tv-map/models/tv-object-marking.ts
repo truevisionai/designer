@@ -8,7 +8,8 @@ import * as THREE from 'three';
 import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
-import { TvCornerRoad, TvRoadObject } from './tv-road-object';
+import { TvRoadObject } from './objects/tv-road-object';
+import { TvCornerRoad } from "./objects/tv-corner-road";
 
 export class TvObjectMarking {
 

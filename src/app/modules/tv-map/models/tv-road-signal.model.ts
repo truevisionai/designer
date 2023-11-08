@@ -7,9 +7,9 @@ import { Vector3 } from 'three';
 import { IMovable } from '../../../core/snapping/snap-strategies/snapping';
 import { SignShapeType } from '../services/tv-sign.service';
 import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
-import { TvLaneValidity } from './tv-road-object';
 import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 import { TvRoad } from './tv-road.model';
+import { TvLaneValidity } from "./objects/tv-lane-validity";
 
 export class TvRoadSignal implements IMovable {
 

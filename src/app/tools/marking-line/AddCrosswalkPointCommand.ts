@@ -1,7 +1,8 @@
 // import { SelectPointCommand } from 'app/commands/select-point-command';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { Crosswalk, TvCornerRoad } from '../../modules/tv-map/models/tv-road-object';
 import { BaseCommand } from '../../commands/base-command';
+import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
+import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 // import { CrosswalkTool, getSelectPointCommand } from './crosswalk-tool';
 
 

@@ -6,7 +6,7 @@ import { AddRoadObjectCommand } from 'app/commands/add-road-object-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ObjectTypes, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadObjectInspectorComponent } from 'app/views/inspectors/road-object-inspector/road-object-inspector.component';
 import { Subscription } from 'rxjs';

@@ -1,4 +1,4 @@
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { Object3D } from 'three';
 import { ObjectTypes } from '../modules/tv-map/models/tv-common';
 import { MarkingObjectFactory } from './marking-object.factory';

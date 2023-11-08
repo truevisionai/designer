@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
 import { TvObjectMarking } from '../modules/tv-map/models/tv-object-marking';
 

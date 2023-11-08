@@ -27,11 +27,14 @@ import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvPlaneView } from '../models/tv-plane-view';
 import { TvRoadLinkChildType } from '../models/tv-road-link-child';
-import { Crosswalk, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
+import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
 import { TvRoad } from '../models/tv-road.model';
 import { SignShapeType } from './tv-sign.service';
+import { Crosswalk } from "../models/objects/crosswalk";
+import { TvCornerRoad } from "../models/objects/tv-corner-road";
+import { TvObjectOutline } from "../models/objects/tv-object-outline";
 
 export interface XmlElement {
 	[ key: string ]: any;

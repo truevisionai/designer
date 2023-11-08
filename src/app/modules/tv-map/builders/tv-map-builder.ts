@@ -14,7 +14,7 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoadObject } from '../models/tv-road-object';
+import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
