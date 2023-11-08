@@ -35,10 +35,6 @@ export class ToolFactory {
 				return new SurfaceTool();
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
-			case ToolType.MarkingLine:
-				throw new Error( 'Invalid tool type' + type );
-			case ToolType.Crosswalk:
-				return new CrosswalkTool();
 			case ToolType.ParkingBox:
 				return new ParkingBoxTool();
 			case ToolType.Pointer:

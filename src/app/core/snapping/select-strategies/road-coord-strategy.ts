@@ -54,7 +54,9 @@ export class RoadCoordStrategy extends SelectStrategy<TvRoadCoord> {
 	}
 
 	dispose (): void {
-		throw new Error( 'Method not implemented.' );
+
+		// console.log( 'dispose' );
+
 	}
 
 }

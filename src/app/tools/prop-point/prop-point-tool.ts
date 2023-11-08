@@ -17,7 +17,8 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Object3D } from 'three';
-import { FreeMovingStrategy, AnyLaneMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
+import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
+import { AnyLaneMovingStrategy } from "app/core/snapping/move-strategies/any-lane.moving.strategy";
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { PropPointService } from './prop-point.service';
 import { AppInspector } from 'app/core/inspector';

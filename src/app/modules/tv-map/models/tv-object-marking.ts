@@ -99,7 +99,7 @@ export class TvObjectMarking {
 
 		this.roadObject.remove( this.node );
 
-		this.node = MarkingObjectFactory.createMarking( this.roadObject, this );
+		this.node = MarkingObjectFactory.createMarkingMesh( this.roadObject, this );
 
 		this.roadObject.add( this.node );
 

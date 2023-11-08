@@ -8,22 +8,20 @@ import { TvObjectMarking } from '../modules/tv-map/models/tv-object-marking';
 
 export class MarkingObjectFactory {
 
-	static create ( roadObject: TvRoadObject ): Object3D {
+	static createMesh ( roadObject: TvRoadObject ): Object3D {
 
 		const object3D = new Object3D();
 
 		roadObject.markings.forEach( marking => {
 
-			object3D.add( this.createMarking( roadObject, marking ) );
+			object3D.add( this.createMarkingMesh( roadObject, marking ) );
 
 		} );
 
 		return object3D;
 	}
 
-	static createMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
-
-		const object3D = new Object3D();
+	static createMarkingMesh ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
 
 		const points: Vector3[] = [];
 
@@ -41,14 +39,17 @@ export class MarkingObjectFactory {
 
 		} );
 
-		const curve = new CatmullRomCurve3( points );
+		const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
 
-		return this.createMarkingFromCurve( marking, curve );
+		const geometry = this.createGeometryFromCurve( marking, curve );
 
+		const object3D = new Mesh( geometry, marking.material );
+
+		return object3D;
 	}
 
 	// with spline
-	static createMarkingFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
+	private static createGeometryFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): BufferGeometry {
 
 		const totalLength = curve.getLength();
 		const fullStripeLength = marking.lineLength + marking.spaceLength;
@@ -100,10 +101,11 @@ export class MarkingObjectFactory {
 		geometry.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
 		geometry.computeVertexNormals();
 
-		return new Mesh( geometry, marking.material );
+		return geometry;
+		// return new Mesh( geometry, marking.material );
 	}
 
-	static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
+	private static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
 
 		const curve = new CatmullRomCurve3( [
 			new Vector3( 0, 0, 0 ),

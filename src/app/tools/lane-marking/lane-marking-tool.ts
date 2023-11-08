@@ -16,7 +16,7 @@ import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-l
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
-import { EndLaneMovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { EndLaneMovingStrategy } from 'app/core/snapping/move-strategies/end-lane.moving.strategy';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { SetValueCommand } from 'app/commands/set-value-command';
 
@@ -66,7 +66,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.laneMarkingService.base.addSelectionStrategy( new SelectLaneStrategy( false ) );
 
-		this.laneMarkingService.base.addLaneMovingStrategy( new EndLaneMovingStrategy() );
+		this.laneMarkingService.base.addMovingStrategy( new EndLaneMovingStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -173,7 +173,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( !this.selectedNode ) return
 
-		this.laneMarkingService.base.handleLaneMovement( e, this.selectedNode.lane, position => {
+		this.laneMarkingService.base.handleTargetMovement( e, this.selectedNode.lane, position => {
 
 			if ( !this.sOld ) this.sOld = this.selectedNode.s;
 

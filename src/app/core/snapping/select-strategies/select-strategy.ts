@@ -30,13 +30,15 @@ export abstract class SelectStrategy<T> {
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 
+		if ( Math.abs( roadCoord.s ) < 0.01 ) return;
+
 		return roadCoord;
 
 	}
 
 	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
 
-		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
+		const roadCoord = this.onRoadGeometry( pointerEventData );
 
 		if ( !roadCoord ) return;
 
@@ -76,7 +78,7 @@ export abstract class SelectStrategy<T> {
 
 	protected onLaneCoord ( pointerEventData: PointerEventData ): TvLaneCoord {
 
-		const roadCoord = TvMapQueries.findRoadCoord( pointerEventData.point );
+		const roadCoord = this.onRoadGeometry( pointerEventData );
 
 		if ( !roadCoord ) return;
 

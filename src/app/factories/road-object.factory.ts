@@ -30,7 +30,7 @@ export class RoadObjectFactory {
 			case ObjectTypes.car:
 				break;
 			case ObjectTypes.crosswalk:
-				return MarkingObjectFactory.create( roadObject );
+				return MarkingObjectFactory.createMesh( roadObject );
 				break;
 			case ObjectTypes.gantry:
 				break;

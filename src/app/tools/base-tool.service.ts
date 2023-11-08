@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
-import { AbstractLaneMovingStrategy, MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { IMovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/modules/scenario/models/position';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { CommandHistory } from 'app/services/command-history';
 import { StatusBarService } from 'app/services/status-bar.service';
 
@@ -14,9 +13,9 @@ import { StatusBarService } from 'app/services/status-bar.service';
 } )
 export class BaseToolService {
 
-	private selectionStratgies: SelectStrategy<any>[] = [];
-	private movingStrategies: MovingStrategy[] = [];
-	private laneMovingStrategies: AbstractLaneMovingStrategy[] = [];
+	private creationStrategies: SelectStrategy<any>[] = [];
+	private selectionStrategies: SelectStrategy<any>[] = [];
+	private movingStrategies: IMovingStrategy[] = [];
 	private currentSelected: any;
 
 	constructor (
@@ -25,25 +24,19 @@ export class BaseToolService {
 
 	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
 
-		this.selectionStratgies.push( strategy );
+		this.selectionStrategies.push( strategy );
 
 	}
 
-	getSelectionStrategies (): SelectStrategy<any>[] {
+	addCreationStrategy ( strategy: SelectStrategy<any> ) {
 
-		return this.selectionStratgies;
+		this.creationStrategies.push( strategy );
 
 	}
 
-	addMovingStrategy ( strategy: MovingStrategy ) {
+	addMovingStrategy ( strategy: IMovingStrategy ) {
 
 		this.movingStrategies.push( strategy );
-
-	}
-
-	addLaneMovingStrategy ( strategy: AbstractLaneMovingStrategy ) {
-
-		this.laneMovingStrategies.push( strategy );
 
 	}
 
@@ -53,12 +46,10 @@ export class BaseToolService {
 
 	}
 
-	getSelected<T> (): T {
-
-		return this.currentSelected as T;
-
-	}
-
+	/**
+	 * @deprecated use handleSelection or handleCreation instead
+	 * @param e
+	 */
 	select ( e: PointerEventData ): void {
 
 		this.handleSelection( e, ( object ) => {
@@ -81,40 +72,13 @@ export class BaseToolService {
 
 		} )
 
-		// for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
-
-		// 	const element = this.selectionStratgies[ i ];
-
-		// 	const result = element.select( e );
-
-		// 	if ( result ) {
-
-		// 		if ( result === this.currentSelected ) return;
-
-		// 		CommandHistory.execute( new SelectObjectCommandv2( result, this.currentSelected ) );
-
-		// 		this.currentSelected = result;
-
-		// 		return;
-		// 	}
-
-		// }
-
-		// if ( this.currentSelected ) {
-
-		// 	CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
-
-		// 	this.currentSelected = null;
-
-		// }
-
 	}
 
 	handleSelection ( e: PointerEventData, selectCallback: ( object: any ) => void, unselectCallback: () => void ): void {
 
-		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
 
-			const element = this.selectionStratgies[ i ];
+			const element = this.selectionStrategies[ i ];
 
 			const result = element.select( e );
 
@@ -131,11 +95,30 @@ export class BaseToolService {
 
 	}
 
+	handleCreation ( e: PointerEventData, creationCallback: ( object: any ) => void ): void {
+
+		for ( let i = 0; i < this.creationStrategies.length; i++ ) {
+
+			const element = this.creationStrategies[ i ];
+
+			const result = element.select( e );
+
+			if ( result ) {
+
+				creationCallback( result );
+
+				return;
+			}
+
+		}
+
+	}
+
 	onPointerDown ( e: PointerEventData ) {
 
-		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
 
-			const element = this.selectionStratgies[ i ];
+			const element = this.selectionStrategies[ i ];
 
 			const result = element.select( e );
 
@@ -147,9 +130,9 @@ export class BaseToolService {
 
 	highlight ( e: PointerEventData ) {
 
-		for ( let i = 0; i < this.selectionStratgies.length; i++ ) {
+		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
 
-			const element = this.selectionStratgies[ i ];
+			const element = this.selectionStrategies[ i ];
 
 			const result = element.onPointerMoved( e );
 
@@ -175,7 +158,9 @@ export class BaseToolService {
 
 		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
 
-			const position = this.movingStrategies[ i ].getPosition( e );
+			const strategy = this.movingStrategies[ i ];
+
+			const position = strategy.getPosition( e );
 
 			if ( position ) {
 
@@ -187,11 +172,13 @@ export class BaseToolService {
 
 	}
 
-	handleLaneMovement ( e: PointerEventData, lane: TvLane, callback: ( position: Position ) => void ): void {
+	handleTargetMovement ( e: PointerEventData, target: any, callback: ( position: Position ) => void ): void {
 
-		for ( let i = 0; i < this.laneMovingStrategies.length; i++ ) {
+		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
 
-			const position = this.laneMovingStrategies[ i ].getPosition( e, lane );
+			const strategy = this.movingStrategies[ i ];
+
+			const position = strategy.getPosition( e, target );
 
 			if ( position ) {
 
@@ -205,12 +192,12 @@ export class BaseToolService {
 
 	clearStrategies () {
 
-		this.selectionStratgies.forEach( s => s.dispose() );
-		// this.movingStrategies.forEach( s => s.dispose() );
+		this.selectionStrategies.forEach( s => s.dispose() );
+		this.creationStrategies.forEach( s => s.dispose() );
 
-		this.selectionStratgies = [];
+		this.selectionStrategies = [];
 		this.movingStrategies = [];
-		this.laneMovingStrategies = [];
+		this.creationStrategies = [];
 	}
 
 	setHint ( msg: string ) {

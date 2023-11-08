@@ -34,6 +34,7 @@ import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
 import { LaneService } from 'app/tools/lane/lane.service';
+import { CrosswalkObjectService } from 'app/tools/marking-line/crosswalk-object.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -50,6 +51,7 @@ export class ToolBarService {
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
 		private laneService: LaneService,
+		private crosswalkService: CrosswalkObjectService
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -97,7 +99,7 @@ export class ToolBarService {
 			case ToolType.MarkingLine:
 				throw new Error( 'Invalid tool type' + type );
 			case ToolType.Crosswalk:
-				return new CrosswalkTool();
+				return new CrosswalkTool( this.crosswalkService );
 			case ToolType.ParkingBox:
 				return new ParkingBoxTool();
 			case ToolType.Pointer:
