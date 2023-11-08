@@ -74,7 +74,7 @@ export class BaseToolService {
 
 	}
 
-	handleSelection ( e: PointerEventData, selectCallback: ( object: any ) => void, unselectCallback: () => void ): void {
+	handleSelection ( e: PointerEventData, selectCallback: ( object: any ) => void, unselectCallback: () => void = null ): void {
 
 		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
 
@@ -154,7 +154,7 @@ export class BaseToolService {
 
 	}
 
-	handleMovement ( e: PointerEventData, callback: ( position: Position ) => void ): void {
+	handleMovement ( e: PointerEventData, successFn: ( position: Position ) => void, noneFn: () => void = null ): void {
 
 		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
 
@@ -164,11 +164,15 @@ export class BaseToolService {
 
 			if ( position ) {
 
-				callback( position );
+				successFn( position );
+
+				return;
 
 			}
 
 		}
+
+		if ( noneFn ) noneFn();
 
 	}
 

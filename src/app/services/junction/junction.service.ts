@@ -3,7 +3,7 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
-import { RoadCutterService } from '../road/road-cutter.service';
+import { RoadCuttingService } from '../road/road-cutter.service';
 import { ManeuverService } from './maneuver.service';
 import { BaseService } from '../base.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
@@ -19,7 +19,7 @@ export class JunctionService extends BaseService {
 
 	public meshService = new JunctionMeshService();
 
-	private roadCuttingService = new RoadCutterService();
+	private roadCuttingService = new RoadCuttingService();
 	private maneuverService = new ManeuverService();
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ) {

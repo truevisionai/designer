@@ -11,7 +11,7 @@ export class OnRoadMovingStrategy extends MovingStrategy<TvRoad> {
 		super();
 	}
 
-	getPosition ( event: PointerEventData, target: TvRoad ): Position {
+	getPosition ( event: PointerEventData, target?: TvRoad ): Position {
 
 		const coord = this.onRoadGeometry( event );
 
@@ -21,11 +21,11 @@ export class OnRoadMovingStrategy extends MovingStrategy<TvRoad> {
 			return;
 		}
 
-		if ( coord.road != target ) {
+		if ( target && coord.road != target ) {
 			return;
 		}
 
-		return new RoadPosition( target, coord.s, coord.t );
+		return new RoadPosition( coord.road, coord.s, coord.t );
 	}
 
 }

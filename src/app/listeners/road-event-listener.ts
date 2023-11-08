@@ -63,6 +63,8 @@ export class RoadEventListener extends Manager {
 
 		this.roadSplineService.removeRoadSegment( event.road );
 
+		this.roadSplineService.rebuildSplineRoads( event.road.spline );
+
 		TvMapInstance.map.gameObject.remove( event.road.gameObject );
 	}
 

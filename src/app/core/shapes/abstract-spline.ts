@@ -274,12 +274,14 @@ export abstract class AbstractSpline {
 
 		this.roadSegments = this.roadSegments.filter( i => i != segment );
 
+		this.update();
 	}
 
 	removeRoadSegmentByRoadId ( roadId: number ) {
 
 		this.roadSegments = this.roadSegments.filter( segment => segment.roadId != roadId );
 
+		this.update();
 	}
 
 	getRoadSegments (): RoadSegment[] {

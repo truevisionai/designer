@@ -8,7 +8,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadCutterService extends BaseService {
+export class RoadCuttingService extends BaseService {
 
 	splitRoadAt ( road: TvRoad, sStart: number ) {
 

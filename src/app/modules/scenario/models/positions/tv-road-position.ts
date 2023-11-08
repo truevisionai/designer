@@ -47,6 +47,15 @@ export class RoadPosition extends Position {
 		this.updated.emit();
 	}
 
+	get road (): TvRoad {
+		return this._road;
+	}
+
+	set road ( value: TvRoad ) {
+		this._road = value;
+		this._roadId = value.id;
+	}
+
 	@SerializedField( { type: 'float' } )
 	get s (): number {
 		return this.sValue;

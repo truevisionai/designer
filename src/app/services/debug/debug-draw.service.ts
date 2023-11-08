@@ -21,11 +21,17 @@ export class DebugDrawService {
 
 	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
 
-		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
+		return this.createRoadWidthLinev2( roadCoord.road, roadCoord.s );
 
-		const start = roadCoord.road.getPositionAt( roadCoord.s, result.leftSideWidth );
+	}
 
-		const end = roadCoord.road.getPositionAt( roadCoord.s, -result.rightSideWidth );
+	createRoadWidthLinev2 ( road: TvRoad, s: number ): Line2 {
+
+		const result = road.getRoadWidthAt( s );
+
+		const start = road.getPositionAt( s, result.leftSideWidth );
+
+		const end = road.getPositionAt( s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -57,6 +63,28 @@ export class DebugDrawService {
 		const start = roadCoord.road.getPositionAt( roadCoord.s, result.leftSideWidth );
 
 		const end = roadCoord.road.getPositionAt( roadCoord.s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+	}
+
+	updateRoadWidthLinev2 ( line: Line2, road: TvRoad, s: number ): Line2 {
+
+		const result = road.getRoadWidthAt( s );
+
+		const start = road.getPositionAt( s, result.leftSideWidth );
+
+		const end = road.getPositionAt( s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 

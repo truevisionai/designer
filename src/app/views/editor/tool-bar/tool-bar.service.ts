@@ -33,6 +33,9 @@ import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
 import { LaneService } from 'app/tools/lane/lane.service';
 import { CrosswalkObjectService } from 'app/tools/marking-line/crosswalk-object.service';
+import { RoadCuttingService } from 'app/services/road/road-cutter.service';
+import { BaseToolService } from 'app/tools/base-tool.service';
+import { RoadCutToolService } from 'app/tools/road-cut-tool/road-cut-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,7 +52,10 @@ export class ToolBarService {
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
 		private laneService: LaneService,
-		private crosswalkService: CrosswalkObjectService
+		private crosswalkService: CrosswalkObjectService,
+		private roadCuttingService: RoadCuttingService,
+		private baseToolService: BaseToolService,
+		private roadCutToolService: RoadCutToolService
 	) { }
 
 	setTool ( tool: BaseTool ) {
@@ -109,7 +115,7 @@ export class ToolBarService {
 			case ToolType.RoadRampTool:
 				return new RoadRampTool();
 			case ToolType.RoadCuttingTool:
-				return new RoadCuttingTool();
+				return new RoadCuttingTool( this.roadCutToolService );
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

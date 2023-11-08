@@ -13,7 +13,6 @@ import { RoadRampTool } from '../tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from '../tools/road-signal-tool';
 import { SurfaceTool } from '../tools/surface/surface-tool';
 import { VehicleTool } from '../tools/vehicle/vehicle-tool';
-import { RoadCuttingTool } from 'app/tools/road-cut-tool/road-cut-tool';
 import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
 
 export class ToolFactory {
@@ -41,8 +40,6 @@ export class ToolFactory {
 				return new RoadSignalTool();
 			case ToolType.RoadRampTool:
 				return new RoadRampTool();
-			case ToolType.RoadCuttingTool:
-				return new RoadCuttingTool();
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;
