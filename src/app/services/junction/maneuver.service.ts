@@ -129,47 +129,45 @@ export class ManeuverService extends BaseService {
 
 		const roads = this.map.getRoads();
 
-		const processLaneSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
+		const processFirstSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
 
 			laneSection
 				.getLaneArray()
 				.filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving )
 				.forEach( lane => {
 
-					if ( road.predecessor?.elementType != 'road' ) {
+					const laneWidth = lane.getWidthValue( laneSection.s );
 
-						const laneWidth = lane.getWidthValue( laneSection.s );
+					const posTheta = road.getLaneCenterPosition( lane, laneSection.s );
 
-						const posTheta = new TvPosTheta();
+					if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
-						const position1 = TvMapQueries.getLaneCenterPosition( road.id, lane.id, laneSection.s, 0, posTheta );
+					const mesh1 = this.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
 
-						if ( lane.isLeft ) posTheta.hdg += Math.PI;
-
-						const mesh1 = this.createEntryExitBoxMesh( position1, posTheta.hdg, laneWidth );
-
-						SceneService.addToolObject( mesh1 );
-
-					}
-
-					if ( road.successor?.elementType != 'road' ) {
-
-						const laneWidth = lane.getWidthValue( laneSection.endS );
-
-						const posTheta = new TvPosTheta();
-
-						const position2 = TvMapQueries.getLaneCenterPosition( road.id, lane.id, laneSection.endS, 0, posTheta );
-
-						if ( lane.isLeft ) posTheta.hdg += Math.PI;
-
-						const mesh2 = this.createEntryExitBoxMesh( position2, posTheta.hdg, laneWidth );
-
-						SceneService.addToolObject( mesh2 );
-
-					}
+					SceneService.addToolObject( mesh1 );
 
 				} );
 
+		}
+
+		const processLastSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
+
+			laneSection
+				.getLaneArray()
+				.filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving )
+				.forEach( lane => {
+
+					const laneWidth = lane.getWidthValue( laneSection.endS );
+
+					const posTheta = road.getLaneCenterPosition( lane, laneSection.endS, 0 );
+
+					if ( lane.isLeft ) posTheta.hdg += Math.PI;
+
+					const mesh2 = this.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
+
+					SceneService.addToolObject( mesh2 );
+
+				} );
 
 		}
 
@@ -179,14 +177,17 @@ export class ManeuverService extends BaseService {
 
 			if ( road.isJunction ) continue;
 
-			const firstLaneSection = road.getFirstLaneSection();
-			processLaneSection( road, firstLaneSection );
+			if ( !road.predecessor || road.predecessor.elementType != 'road' ) {
 
-			const lastLaneSection = road.getLastLaneSection();
-			if ( firstLaneSection == lastLaneSection ) continue;
+				processFirstSection( road, road.getFirstLaneSection() );
 
-			processLaneSection( road, lastLaneSection );
+			}
 
+			if ( !road.successor || road.successor.elementType != 'road' ) {
+
+				processLastSection( road, road.getLastLaneSection() );
+
+			}
 		}
 
 	}
