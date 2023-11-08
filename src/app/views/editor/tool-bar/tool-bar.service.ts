@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
 import { CommandHistory } from 'app/services/command-history';
-import { RoadService } from 'app/services/road/road.service';
 import { BaseTool } from 'app/tools/base-tool';
 import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
 import { LaneMarkingTool } from 'app/tools/lane-marking/lane-marking-tool';
@@ -11,7 +10,6 @@ import { LaneTool } from 'app/tools/lane/lane-tool';
 import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
 import { CrosswalkTool } from 'app/tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from 'app/tools/marking-point/marking-point-tool';
-import { ParkingBoxTool } from 'app/tools/parking-box-tool';
 import { PointerTool } from 'app/tools/pointer/pointer-tool';
 import { PropCurveToolV2 } from 'app/tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
@@ -100,8 +98,6 @@ export class ToolBarService {
 				throw new Error( 'Invalid tool type' + type );
 			case ToolType.Crosswalk:
 				return new CrosswalkTool( this.crosswalkService );
-			case ToolType.ParkingBox:
-				return new ParkingBoxTool();
 			case ToolType.Pointer:
 				return new PointerTool();
 			case ToolType.Vehicle:

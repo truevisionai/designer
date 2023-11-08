@@ -5,9 +5,7 @@
 import { ToolType } from '../tools/tool-types.enum';
 import { BaseTool } from '../tools/base-tool';
 import { LaneOffsetTool } from '../tools/lane-offset/lane-offset-tool';
-import { CrosswalkTool } from '../tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
-import { ParkingBoxTool } from '../tools/parking-box-tool';
 import { PointerTool } from '../tools/pointer/pointer-tool';
 import { PropCurveToolV2 } from '../tools/prop-curve/prop-curve-tool';
 import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
@@ -35,8 +33,6 @@ export class ToolFactory {
 				return new SurfaceTool();
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
-			case ToolType.ParkingBox:
-				return new ParkingBoxTool();
 			case ToolType.Pointer:
 				return new PointerTool();
 			case ToolType.Vehicle:
