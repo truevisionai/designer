@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
+import { BufferAttribute, Mesh, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
 import { TvMapInstance } from '../services/tv-map-instance';
 import { INode, ISelectable } from 'app/modules/three-js/objects/i-selectable';
@@ -23,35 +23,7 @@ export class TvSurface implements ISelectable, INode {
 
 	public id: number;
 
-	@SerializedField( { type: 'float' } )
-	public get textureDensity () {
-		return this._textureDensity;
-	}
-
-	public set textureDensity ( value ) {
-		this._textureDensity = value;
-		this.update();
-	}
-
-	constructor (
-		private _materialGuid: string,
-		private _spline: CatmullRomSpline,
-		private _offset: Vector2 = new Vector2( 0, 0 ),
-		private _repeat: Vector2 = new Vector2( 1, 1 ),
-		private _rotation: number = 0.0,
-		private _height: number = 0.0,
-		private _textureDensity: number = 1
-	) {
-		this.init();
-	}
-
-	onMouseOver () {
-		console.error( 'Method not implemented.' );
-	}
-
-	onMouseOut () {
-		console.error( 'Method not implemented.' );
-	}
+	isSelected: boolean;
 
 	@SerializedField( { type: 'material' } )
 	get materialGuid () { return this._materialGuid; }
@@ -85,17 +57,50 @@ export class TvSurface implements ISelectable, INode {
 
 	set height ( value: any ) { this._height = value; this.update() }
 
-	isSelected: boolean;
+	@SerializedField( { type: 'float' } )
+	public get textureDensity () {
+		return this._textureDensity;
+	}
+
+	public set textureDensity ( value ) {
+		this._textureDensity = value;
+		this.update();
+	}
+
+	constructor (
+		private _materialGuid: string,
+		private _spline: CatmullRomSpline,
+		private _offset: Vector2 = new Vector2( 0, 0 ),
+		private _repeat: Vector2 = new Vector2( 1, 1 ),
+		private _rotation: number = 0.0,
+		private _height: number = 0.0,
+		private _textureDensity: number = 1
+	) {
+		this.init();
+	}
+
+	onMouseOver () {
+
+		// console.error( 'Method not implemented.' );
+
+	}
+
+	onMouseOut () {
+
+		// console.error( 'Method not implemented.' );
+
+	}
+
 
 	select (): void {
 
-		console.error( 'Method not implemented.' );
+		// console.error( 'Method not implemented.' );
 
 	}
 
 	unselect (): void {
 
-		console.error( 'Method not implemented.' );
+		// console.error( 'Method not implemented.' );
 
 	}
 
@@ -148,7 +153,7 @@ export class TvSurface implements ISelectable, INode {
 			const u = uvAttribute.getX( i );
 			const v = uvAttribute.getY( i );
 
-			uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
+			uvAttribute.setXY( i, u * this._textureDensity, v * this._textureDensity );
 
 		}
 	}
@@ -285,32 +290,3 @@ export class TvSurface implements ISelectable, INode {
 	}
 }
 
-// export class SurfaceFactory {
-
-// 	static createFromTextureGuid ( textureGuid: string, position: Vector3 ) {
-
-// 		const texture = AssetDatabase.getInstance<Texture>( textureGuid );
-
-// 		if ( !texture ) return;
-
-// 		const material = new MeshStandardMaterial( { map: texture } );
-
-// 		const textureSize = new Vector2( texture.image.width, texture.image.height );
-
-// 		const spline = new CatmullRomSpline( true, 'catmullrom', 0 );
-// 		spline.addControlPoint( AnyControlPoint.create( 'p1', position.clone().add( new Vector3( 0, 0, 0 ) ) ) );
-// 		spline.addControlPoint( AnyControlPoint.create( 'p2', position.clone().add( new Vector3( textureSize.x, 0, 0 ) ) ) );
-// 		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
-// 		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
-
-// 		spline.controlPoints.forEach( cp => SceneService.addToMain( cp ) );
-
-// 		const surface = new TvSurface( null, spline );
-
-// 		surface.mesh.material = material;
-// 		surface.mesh.material.needsUpdate = true;
-
-// 		return surface
-// 	}
-
-// }

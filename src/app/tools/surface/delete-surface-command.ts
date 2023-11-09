@@ -1,54 +1,54 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { BaseCommand } from '../../commands/base-command';
-import { SurfaceTool } from './surface-tool';
+// import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+// import { BaseCommand } from '../../commands/base-command';
+// import { SurfaceTool } from './surface-tool';
 
-export class DeleteSurfaceCommand extends BaseCommand {
+// export class DeleteSurfaceCommand extends BaseCommand {
 
-	constructor ( private tool: SurfaceTool, private surface: TvSurface ) {
+// 	constructor ( private tool: SurfaceTool, private surface: TvSurface ) {
 
-		super();
+// 		super();
 
-	}
+// 	}
 
-	execute () {
+// 	execute () {
 
-		this.surface.delete();
+// 		this.surface.delete();
 
-		const index = this.map.surfaces.findIndex( s => s.id == this.surface.id );
+// 		const index = this.map.surfaces.findIndex( s => s.id == this.surface.id );
 
-		if ( index > -1 ) {
+// 		if ( index > -1 ) {
 
-			this.map.surfaces.splice( index, 1 );
+// 			this.map.surfaces.splice( index, 1 );
 
-		}
+// 		}
 
-		this.tool.surface = null;
+// 		this.tool.surface = null;
 
-		delete this.tool.surface;
-	}
+// 		delete this.tool.surface;
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.map.surfaces.push( this.surface );
+// 		this.map.surfaces.push( this.surface );
 
-		this.surface.showControlPoints();
+// 		this.surface.showControlPoints();
 
-		this.surface.showCurve();
+// 		this.surface.showCurve();
 
-		this.surface.mesh.visible = true;
+// 		this.surface.mesh.visible = true;
 
-		this.tool.surface = this.surface;
+// 		this.tool.surface = this.surface;
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-}
+// }

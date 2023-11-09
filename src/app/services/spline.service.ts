@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { SceneService } from './scene.service';
+import { Object3DArrayMap } from 'app/tools/lane-width/object-3d-map';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineService {
+
+	private pointMap = new Object3DArrayMap<AbstractSpline, AbstractControlPoint[]>();
 
 	constructor () { }
 
@@ -23,13 +26,21 @@ export class SplineService {
 
 	showControlPoints ( spline: AbstractSpline ) {
 
-		spline.controlPoints.forEach( cp => SceneService.addToolObject( cp ) );
+		spline.controlPoints.forEach( point => {
+
+			this.pointMap.addItem( spline, point );
+
+		} );
 
 	}
 
 	hideControlPoints ( spline: AbstractSpline ) {
 
-		spline.controlPoints.forEach( cp => SceneService.removeFromTool( cp ) );
+		spline.controlPoints.forEach( point => {
+
+			this.pointMap.removeItem( spline, point );
+
+		} );
 
 	}
 

@@ -58,3 +58,67 @@ export class Object3DMap<K, T extends Object3D> {
 	}
 
 }
+
+export class Object3DArrayMap<K, T extends Array<Object3D>> {
+
+	private map: Map<K, Array<Object3D>>;
+
+	constructor () {
+
+		this.map = new Map();
+
+	}
+
+	addItems ( key: K, objects: T ) {
+
+		objects.forEach( object => this.addItem( key, object ) );
+
+	}
+
+	addItem ( key: K, object: Object3D ) {
+
+		if ( !this.map.has( key ) ) {
+
+			this.map.set( key, [] );
+
+		}
+
+		this.map.get( key ).push( object );
+
+		SceneService.addToolObject( object );
+
+	}
+
+	removeItem ( key: K, object: Object3D ) {
+
+		this.map.get( key ).splice( this.map.get( key ).indexOf( object ), 1 );
+
+		SceneService.removeFromTool( object );
+
+	}
+
+	removeKey ( key: K ) {
+
+		this.map.get( key ).forEach( object => {
+
+			SceneService.removeFromTool( object );
+
+		} );
+
+		this.map.delete( key );
+	}
+
+
+	clear () {
+
+		this.map.forEach( objects => {
+
+			objects.forEach( object => SceneService.removeFromTool( object ) );
+
+		} );
+
+		this.map.clear();
+
+	}
+
+}

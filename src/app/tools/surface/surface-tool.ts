@@ -1,224 +1,311 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
-
-import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { CommandHistory } from 'app/services/command-history';
-import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
-import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from '../../commands/select-point-command';
-import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
-import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
-import { AddSurfacePointCommand } from './add-surface-point-command';
-import { CreateSurfaceCommand, CreateSurfaceCommandv2 } from './create-surface-command';
-import { SelectSurfaceCommand } from './select-surface-command';
-import { SelectSurfacePointCommand } from './select-surface-point-command';
-import { UnselectSurfaceCommand } from './unselect-surface-command';
-import { UpdateSurfacePointCommand } from './update-surface-point-command';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { SurfaceToolService } from './surface-tool.service';
-import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
+import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
+import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { Vector3 } from 'three';
+import { AppInspector } from 'app/core/inspector';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { CommandHistory } from 'app/services/command-history';
 
-export class SurfaceTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
+export class SurfaceTool extends BaseTool {
 
-	public name: string = 'SurfaceTool';
+	name: string = 'Surface Tool';
 
-	public toolType = ToolType.Surface;
+	toolType: ToolType = ToolType.Surface;
 
-	public surface: TvSurface;
+	selectedSurface: TvSurface;
 
-	public point: DynamicControlPoint<TvSurface>;
+	selectedControlPoint: AbstractControlPoint;
 
-	private pointUpdated: boolean;
+	controlPointMoved: boolean;
 
-	private selectStrategy: SelectStrategy<TvSurface>;
-
-	private pointStrategy: SelectStrategy<DynamicControlPoint<TvSurface>>;
-
-	private surfaceService: SurfaceToolService;
-
-	constructor () {
+	constructor ( private tool: SurfaceToolService ) {
 
 		super();
 
-		this.selectStrategy = new ObjectUserDataStrategy( TvSurface.tag, 'surface' );
-
-		this.pointStrategy = new ControlPointStrategy();
 	}
 
-	setMainObject ( value: ISelectable ): void {
+	init (): void {
 
-		this.surface = value as TvSurface;
+		this.tool.base.init();
 
-	}
+		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
-	getMainObject (): ISelectable {
+		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 
-		return this.surface;
+		this.tool.base.addSelectionStrategy( new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
 
 	}
 
-	setPoint ( value: ISelectable ): void {
-
-		this.point = value as any;
-
-	}
-
-	getPoint (): ISelectable {
-
-		return this.point;
-
-	}
-
-	public init () {
-
-		super.init();
-
-	}
-
-	public enable () {
+	enable (): void {
 
 		super.enable();
 
-		// this.surfaceService.showSurfaceHelpers();
+		this.tool.showSurfaceHelpers();
 
-		// this.roadService.showAllCornerPoints();
 	}
 
-	public disable (): void {
+	disable (): void {
 
 		super.disable();
 
-		// this.surfaceService.hideSurfaceHelpers();
-
-		// this.roadService.hideAllCornerPoints();
+		this.tool.hideSurfaceHelpers();
 
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( this.surface ) {
+		this.tool.base.handleMovement( e, ( position ) => {
 
-			CommandHistory.execute( new AddSurfacePointCommand( this, this.surface, e.point ) );
+			if ( position instanceof WorldPosition ) {
 
-		} else {
+				if ( !this.selectedSurface ) {
 
-			CommandHistory.execute( new CreateSurfaceCommand( this, e.point ) );
-		}
+					this.createSurface( position.position );
+
+				} else {
+
+					this.addConrolPoint( position.position );
+
+				}
+
+			}
+
+		} );
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		const point = this.pointStrategy.onPointerDown( e );
+		this.tool.base.handleSelection( e, ( object ) => {
 
-		if ( point ) {
+			if ( object instanceof AbstractControlPoint ) {
 
-			if ( !this.point || this.point.uuid !== point.uuid ) {
+				this.selectObject( object, this.selectedControlPoint );
 
-				CommandHistory.execute( new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject ) );
+			} else if ( object instanceof TvSurface ) {
 
-			}
-
-			return;
-		}
-
-		const surface = this.selectStrategy.onPointerDown( e );
-
-		if ( surface ) {
-
-			if ( !this.surface || this.surface.id !== surface.id ) {
-
-				const command = new SelectMainObjectCommand( this, surface, DynamicInspectorComponent, surface );
-
-				CommandHistory.execute( command );
+				this.selectObject( object, this.selectedSurface );
 
 			}
 
-			return;
+		}, () => {
 
-		}
+			if ( this.selectedControlPoint ) {
 
-		CommandHistory.execute( new UnselectSurfaceCommand( this ) );
+				this.unselectObject( this.selectedControlPoint );
 
-	}
+			} else if ( this.selectedSurface ) {
 
-	public onPointerMoved ( e: PointerEventData ) {
+				this.unselectObject( this.selectedSurface );
 
-		this.pointStrategy.onPointerMoved( e );
+			}
 
-		if ( this.isPointerDown && this.point && this.point.isSelected ) {
-
-			this.point.copyPosition( e.point );
-
-			this.point.mainObject.spline.update();
-
-			this.pointUpdated = true;
-
-		}
+		} );
 
 	}
 
-	public onPointerUp ( e: PointerEventData ) {
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		// const point = this.pointStrategy.onPointerMoved( e );
+		this.tool.base.highlight( pointerEventData );
 
-		if ( this.point?.position && this.point.isSelected && this.pointUpdated && this.pointerDownAt ) {
+		if ( !this.isPointerDown ) return;
 
-			const oldPosition = this.pointerDownAt.clone();
-			const newPosition = this.point.position.clone();
+		if ( !this.selectedSurface ) return;
 
-			CommandHistory.execute( new UpdatePositionCommand( this.point, newPosition, oldPosition ) );
+		if ( !this.selectedControlPoint ) return;
 
-		}
+		if ( !this.selectedControlPoint.isSelected ) return;
 
-		this.pointUpdated = false;
+		this.tool.base.handleMovement( pointerEventData, ( position ) => {
+
+			if ( position instanceof WorldPosition ) {
+
+				this.selectedControlPoint.copyPosition( position.position );
+
+				this.selectedSurface.spline.update();
+
+			}
+
+		} );
+
+		this.controlPointMoved = true;
 
 	}
 
+	onPointerUp ( pointerEventData: PointerEventData ): void {
 
-	// surfaceIsSelected ( e: PointerEventData ) {
+		if ( !this.controlPointMoved ) return;
 
-	// 	const results = PickingHelper.findAllByTag( TvSurface.tag, e, this.map.gameObject.children, false );
+		if ( !this.isPointerDown ) return;
 
-	// 	if ( results.length == 0 ) return false;
+		if ( !this.selectedControlPoint ) return;
 
-	// 	const surface = results[ 0 ].userData.surface as TvSurface;
+		if ( !this.selectedControlPoint.isSelected ) return;
 
-	// 	if ( !this.surface || this.surface.mesh.id !== surface.mesh.id ) {
+		const oldPosition = this.pointerDownAt.clone();
 
-	// 		CommandHistory.execute( new SelectSurfaceCommand( this, surface ) );
+		const newPosition = this.selectedControlPoint.position.clone();
 
-	// 	}
+		const updateCommand = new UpdatePositionCommand( this.selectedControlPoint, newPosition, oldPosition );
 
-	// 	return true;
+		CommandHistory.execute( updateCommand );
 
-	// }
+		this.controlPointMoved = false;
 
-	// controlPointIsSelected ( e: PointerEventData ) {
+	}
 
-	// 	// const points = this.map.surfaces.flatMap(s => s.spline.controlPoints);
-	// 	const points = this.map.surfaces.reduce( ( acc, s ) => acc.concat( s.spline.controlPoints ), [] );
+	addConrolPoint ( position: Vector3 ) {
 
-	// 	const point = PickingHelper.findByObjectType( 'Points', e, points, true );
+		const point = this.tool.createControlPoint( this.selectedSurface, position );
 
-	// 	if ( !point ) return false;
+		this.executeAddObject( point );
 
-	// 	if ( !this.point || this.point.uuid !== point.uuid ) {
+	}
 
-	// 		CommandHistory.execute( new SelectSurfacePointCommand( this, point as DynamicControlPoint<TvSurface> ) );
+	createSurface ( position: Vector3 ) {
 
-	// 	}
+		const surface = this.tool.createSurface( position );
 
-	// 	return true;
+		const point = this.tool.createControlPoint( surface, position );
 
-	// }
+		surface.addControlPoint( point );
 
+		// const addSurfaceCommand = new AddObjectCommand( surface );
+
+		// const selectCommand = new SelectObjectCommandv2( surface, this.selectedSurface );
+
+		// CommandHistory.executeMany( addSurfaceCommand );
+
+		this.executeAddObject( surface );
+
+	}
+
+	onObjectSelected ( object: any ): void {
+
+		if ( object instanceof TvSurface ) {
+
+			this.onSurfaceSelected( object );
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			this.onControlPointSelected( object );
+
+		}
+
+	}
+
+	onSurfaceSelected ( object: TvSurface ) {
+
+		if ( this.selectedSurface ) this.onSufaceUnselected( this.selectedSurface );
+
+		this.selectedSurface = object;
+
+		this.tool.showSurface( object );
+
+		AppInspector.setInspector( DynamicInspectorComponent, object );
+
+	}
+
+	onSufaceUnselected ( object: TvSurface ) {
+
+		this.tool.hideSurface( object );
+
+		this.selectedSurface = null;
+
+		AppInspector.clear();
+
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		if ( object instanceof TvSurface ) {
+
+			this.onSufaceUnselected( object );
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			this.onControlPointUnselected( object );
+
+		}
+
+	}
+
+	onControlPointUnselected ( controlPoint: AbstractControlPoint ) {
+
+		controlPoint.unselect();
+
+		this.selectedControlPoint = null;
+
+	}
+
+	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
+
+		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
+
+		this.selectedControlPoint = controlPoint;
+
+		this.selectedControlPoint.select();
+
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof TvSurface ) {
+
+			this.tool.addSurface( object );
+
+			this.onSurfaceSelected( object );
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			this.tool.addControlPoint( this.selectedSurface, object );
+
+			this.onControlPointSelected( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof TvSurface ) {
+
+			this.tool.removeSurface( object );
+
+			this.onSufaceUnselected( object );
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			this.tool.removeControlPoint( this.selectedSurface, object );
+
+		}
+
+	}
+
+	onObjectUpdated ( object: any ): void {
+
+		if ( object instanceof TvSurface ) {
+
+			object.update();
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			// this.tool.updateControlPoint( object );
+			if ( this.selectedSurface ) {
+
+				this.selectedSurface.update();
+
+			}
+
+		}
+
+	}
 }

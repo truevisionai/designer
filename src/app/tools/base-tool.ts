@@ -17,7 +17,7 @@ import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
+import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
@@ -146,6 +146,12 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	protected unselectObject ( object: any ) {
 
 		CommandHistory.execute( new UnselectObjectCommandv2( object ) );
+
+	}
+
+	protected executeAddObject ( object: any ) {
+
+		CommandHistory.execute( new AddObjectCommand( object ) );
 
 	}
 

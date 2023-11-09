@@ -21,7 +21,7 @@ import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from 'app/tools/road-signal-tool';
 import { RoadToolv2 } from 'app/tools/road/RoadToolv2';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
-import { SurfaceToolv2 } from 'app/tools/surface/SurfaceToolv2';
+import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
@@ -91,7 +91,7 @@ export class ToolBarService {
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
 			case ToolType.Surface:
-				return new SurfaceToolv2( this.surfaceToolService );
+				return new SurfaceTool( this.surfaceToolService );
 			case ToolType.LaneMarking:
 				return new LaneMarkingTool( this.laneMarkingService );
 			case ToolType.Lane:

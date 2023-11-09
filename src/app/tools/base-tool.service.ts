@@ -28,6 +28,12 @@ export class BaseToolService {
 
 	}
 
+	getSelectionStrategies () {
+
+		return this.selectionStrategies;
+
+	}
+
 	addCreationStrategy ( strategy: SelectStrategy<any> ) {
 
 		this.creationStrategies.push( strategy );
@@ -91,7 +97,7 @@ export class BaseToolService {
 
 		}
 
-		unselectCallback();
+		if ( unselectCallback ) unselectCallback();
 
 	}
 

@@ -11,9 +11,7 @@ import { PropCurveToolV2 } from '../tools/prop-curve/prop-curve-tool';
 import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
 import { RoadRampTool } from '../tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from '../tools/road-signal-tool';
-import { SurfaceTool } from '../tools/surface/surface-tool';
 import { VehicleTool } from '../tools/vehicle/vehicle-tool';
-import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
 
 export class ToolFactory {
 
@@ -26,8 +24,6 @@ export class ToolFactory {
 				return new PropCurveToolV2();
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
-			case ToolType.Surface:
-				return new SurfaceTool();
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
 			case ToolType.Pointer:

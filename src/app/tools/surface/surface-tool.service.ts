@@ -2,16 +2,10 @@ import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { MapService } from 'app/services/map.service';
 import { SceneService } from 'app/services/scene.service';
@@ -24,17 +18,12 @@ import { BaseToolService } from '../base-tool.service';
 } )
 export class SurfaceToolService {
 
-	public pointStrategy: SelectStrategy<AbstractControlPoint>;
-	public nodeStrategy: SelectStrategy<TvSurface>;
-
 	constructor (
-		private base: BaseToolService,
+		public base: BaseToolService,
 		private mapService: MapService,
 		private splineService: SplineService,
 		private controlPointFactory: ControlPointFactory,
 	) {
-		this.pointStrategy = new ControlPointStrategy();
-		this.nodeStrategy = new NodeStrategy<TvSurface>( TvSurface.tag );
 	}
 
 	select ( e: PointerEventData ) {
@@ -43,29 +32,47 @@ export class SurfaceToolService {
 
 	}
 
-	createSurface ( position: Vector3 ) {
+	createSurface ( position?: Vector3 ) {
 
-		const surface = new TvSurface( 'grass', new CatmullRomSpline() );
-
-		const point = this.controlPointFactory.createDynamic( surface, position );
-
-		surface.addControlPoint( point );
-
-		SceneService.addToolObject( surface.mesh );
-
-		SceneService.addToolObject( point );
-
-		return surface;
+		return new TvSurface( 'grass', new CatmullRomSpline() );
 
 	}
 
-	addControlPoint ( surface: TvSurface, position: Vector3 ) {
+	createControlPoint ( surface: TvSurface, position: Vector3 ) {
 
-		const point = this.controlPointFactory.createDynamic( surface, position );
+		return this.controlPointFactory.createDynamic( surface, position );
+
+	}
+
+	addSurface ( surface: TvSurface ) {
+
+		this.mapService.map.addSurface( surface );
+
+		SceneService.addToMain( surface.mesh );
+
+	}
+
+	removeSurface ( surface: TvSurface ) {
+
+		this.mapService.map.removeSurface( surface );
+
+		SceneService.removeFromMain( surface.mesh );
+
+	}
+
+	addControlPoint ( surface: TvSurface, point: AbstractControlPoint ) {
+
+		surface.addControlPoint( point );
 
 		SceneService.addToolObject( point );
 
-		surface.addControlPoint( point );
+	}
+
+	removeControlPoint ( surface: TvSurface, point: AbstractControlPoint ) {
+
+		surface.removeControlPoint( point );
+
+		SceneService.removeFromMain( point );
 
 	}
 
@@ -73,7 +80,7 @@ export class SurfaceToolService {
 
 		this.mapService.map.surfaces.forEach( surface => {
 
-			this.hide( surface );
+			this.hideSurface( surface );
 
 		} );
 
@@ -83,20 +90,20 @@ export class SurfaceToolService {
 
 		this.mapService.map.surfaces.forEach( surface => {
 
-			this.show( surface );
+			this.showSurface( surface );
 
 		} );
 
 	}
 
-	hide ( surface: TvSurface ) {
+	hideSurface ( surface: TvSurface ) {
 
 		this.splineService.hide( surface.spline );
 		this.splineService.hideControlPoints( surface.spline );
 
 	}
 
-	show ( surface: TvSurface ) {
+	showSurface ( surface: TvSurface ) {
 
 		this.splineService.show( surface.spline );
 		this.splineService.showControlPoints( surface.spline );
@@ -150,4 +157,7 @@ export class SurfaceToolService {
 
 	}
 
+	private updateSurfaceMesh ( surface: TvSurface ) {
+
+	}
 }
