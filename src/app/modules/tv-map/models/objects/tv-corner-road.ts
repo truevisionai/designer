@@ -7,6 +7,7 @@ import { Vector3 } from "three";
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
 export class TvCornerRoad extends DynamicControlPoint<Crosswalk> {
+
 	constructor (
 		public attr_id: number,
 		public road: TvRoad,

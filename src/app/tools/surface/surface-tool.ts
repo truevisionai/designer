@@ -144,8 +144,6 @@ export class SurfaceTool extends BaseTool {
 
 		if ( !this.controlPointMoved ) return;
 
-		if ( !this.isPointerDown ) return;
-
 		if ( !this.selectedControlPoint ) return;
 
 		if ( !this.selectedControlPoint.isSelected ) return;
@@ -159,6 +157,20 @@ export class SurfaceTool extends BaseTool {
 		CommandHistory.execute( updateCommand );
 
 		this.controlPointMoved = false;
+
+	}
+
+	onDeleteKeyDown (): void {
+
+		if ( this.selectedSurface && this.selectedControlPoint ) {
+
+			this.executeRemoveObject( this.selectedControlPoint );
+
+		} else if ( this.selectedSurface ) {
+
+			this.executeRemoveObject( this.selectedSurface );
+
+		}
 
 	}
 

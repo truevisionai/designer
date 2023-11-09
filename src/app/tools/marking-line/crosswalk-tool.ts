@@ -19,6 +19,7 @@ import { CrosswalkObjectService } from './crosswalk-object.service';
 import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
 import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
 import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 
 export class CrosswalkTool extends BaseTool {
 
@@ -31,6 +32,10 @@ export class CrosswalkTool extends BaseTool {
 	private selectedCrosswalk: Crosswalk;
 
 	private selectedRoad: TvRoad;
+
+	private debug = false;
+
+	private pointMoved: boolean;
 
 	constructor ( private tool: CrosswalkObjectService ) {
 
@@ -48,6 +53,8 @@ export class CrosswalkTool extends BaseTool {
 		this.tool.base.addSelectionStrategy( new SelectRoadStrategy() );
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
+
+		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	enable () {
@@ -134,45 +141,52 @@ export class CrosswalkTool extends BaseTool {
 
 		if ( !this.selectedPoint ) return;
 
+		if ( !this.selectedPoint.isSelected ) return;
+
 		this.tool.base.handleTargetMovement( pointerEventData, this.selectedRoad, position => {
 
 			this.selectedPoint?.copyPosition( position.position );
 
 		} );
 
-		// if ( pointerEventData.button !== MouseButton.LEFT ) return;
-
-		// this.selectStrategy.onPointerMoved( pointerEventData );
-
-		// if ( !this.point?.isSelected ) return;
-
-		// if ( !this.pointerDownAt ) return;
-
-		// const coord = this.onRoadStrategy.onPointerMoved( pointerEventData );
-
-		// if ( !coord ) return;
-
-		// this.point.copyPosition( coord.toPosTheta().toVector3() );
-
+		this.pointMoved = true;
 	}
 
 	onPointerUp ( pointerEventData: PointerEventData ): void {
 
-		// if ( pointerEventData.button !== MouseButton.LEFT ) return;
+		if ( !this.selectedRoad ) return;
 
-		// if ( !this.point?.isSelected ) return;
+		if ( !this.selectedPoint ) return;
 
-		// if ( !this.pointerDownAt ) return;
+		if ( !this.selectedPoint.isSelected ) return;
 
-		// const coord = this.onRoadStrategy.onPointerMoved( pointerEventData );
+		if ( !this.pointMoved ) return;
 
-		// if ( !coord ) return;
+		const oldPosition = this.pointerDownAt.clone();
 
-		// const position = coord.toPosTheta().toVector3();
+		const newPosition = this.selectedPoint.position.clone();
 
-		// if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		if ( newPosition.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		// CommandHistory.execute( new CopyPositionCommand( this.point, position, this.pointerDownAt ) );
+		const updateCommand = new UpdatePositionCommand( this.selectedPoint, newPosition, oldPosition );
+
+		CommandHistory.execute( updateCommand );
+
+		this.pointMoved = false;
+
+	}
+
+	onDeleteKeyDown (): void {
+
+		if ( this.selectedPoint && this.selectedCrosswalk ) {
+
+			this.executeRemoveObject( this.selectedPoint );
+
+		} else if ( this.selectedCrosswalk && this.selectedRoad ) {
+
+			this.executeRemoveObject( this.selectedCrosswalk );
+
+		}
 
 	}
 
@@ -208,7 +222,7 @@ export class CrosswalkTool extends BaseTool {
 
 	onObjectAdded ( object: any ): void {
 
-		console.log( 'onObjectAdded', object );
+		if ( this.debug ) console.log( 'onObjectAdded', object );
 
 		if ( object instanceof Crosswalk ) {
 
@@ -236,7 +250,7 @@ export class CrosswalkTool extends BaseTool {
 
 	onObjectRemoved ( object: any ): void {
 
-		console.log( 'onObjectRemoved', object );
+		if ( this.debug ) console.log( 'onObjectRemoved', object );
 
 		if ( object instanceof Crosswalk ) {
 
@@ -244,6 +258,7 @@ export class CrosswalkTool extends BaseTool {
 
 		} else if ( object instanceof TvCornerRoad ) {
 
+			this.tool.removeCornerRoad( this.selectedCrosswalk, object );
 
 		}
 
@@ -251,7 +266,7 @@ export class CrosswalkTool extends BaseTool {
 
 	onObjectSelected ( object: any ): void {
 
-		console.log( 'onObjectSelected', object );
+		if ( this.debug ) console.log( 'onObjectSelected', object );
 
 		if ( object instanceof TvRoad ) {
 
@@ -281,6 +296,8 @@ export class CrosswalkTool extends BaseTool {
 
 		AppInspector.setInspector( DynamicInspectorComponent, object );
 
+		this.tool.base.setHint( 'Drag the point to move the crosswalk' );
+
 	}
 
 	onCornerRoadUnselected ( object: TvCornerRoad ) {
@@ -295,7 +312,7 @@ export class CrosswalkTool extends BaseTool {
 
 	onObjectUnselected ( object: any ): void {
 
-		console.log( 'onObjectUnselected', object );
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
 		if ( object instanceof TvRoad ) {
 
@@ -318,6 +335,8 @@ export class CrosswalkTool extends BaseTool {
 		this.tool.showRoad( road );
 
 		this.selectedRoad = road;
+
+		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
@@ -325,6 +344,8 @@ export class CrosswalkTool extends BaseTool {
 		this.tool.hideRoad( road );
 
 		this.selectedRoad = null;
+
+		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	onCrosswalkSelected ( crosswalk: Crosswalk ) {
@@ -336,6 +357,8 @@ export class CrosswalkTool extends BaseTool {
 		this.selectedCrosswalk = crosswalk;
 
 		AppInspector.setInspector( CrosswalkInspectorComponent, crosswalk );
+
+		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
 	}
 
 	onCrosswalkUnselected ( crosswalk: Crosswalk ) {
@@ -343,6 +366,8 @@ export class CrosswalkTool extends BaseTool {
 		this.selectedCrosswalk = null;
 
 		AppInspector.clear();
+
+		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 
 	}
 

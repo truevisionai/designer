@@ -37,6 +37,13 @@ export class CrosswalkObjectService {
 
 	}
 
+	removeCornerRoad ( crosswalk: Crosswalk, cornerRoad: TvCornerRoad ) {
+
+		crosswalk.removeCornerRoad( cornerRoad );
+
+	}
+
+
 	showRoad ( road: TvRoad ) {
 
 		road.getRoadObjects().forEach( object => {
