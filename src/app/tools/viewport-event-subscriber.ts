@@ -6,6 +6,7 @@ import { BaseEventData, MouseButton, PointerEventData } from 'app/events/pointer
 import { Subscription } from 'rxjs';
 import { Vector3 } from 'three';
 import { AppService } from '../services/app.service';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 
 export abstract class ViewportEventSubscriber {
 
@@ -25,6 +26,7 @@ export abstract class ViewportEventSubscriber {
 	private dropSubscriber: Subscription;
 	private selectSubscriber: Subscription;
 	private deSelectSubscriber: Subscription;
+	private keyboardSubscriber: Subscription;
 
 	protected pointerDownAt: Vector3;
 	protected isPointerDown: boolean;
@@ -107,6 +109,8 @@ export abstract class ViewportEventSubscriber {
 
 		this.deSelectSubscriber = AppService.eventSystem.deSelect.subscribe( e => this.onDeSelect( e ) );
 
+		this.keyboardSubscriber = KeyboardEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
+
 		this.subscribed = true;
 	}
 
@@ -128,6 +132,7 @@ export abstract class ViewportEventSubscriber {
 		this.dropSubscriber.unsubscribe();
 		this.selectSubscriber.unsubscribe();
 		this.deSelectSubscriber.unsubscribe();
+		this.keyboardSubscriber.unsubscribe();
 
 		this.subscribed = false;
 	}
@@ -167,6 +172,8 @@ export abstract class ViewportEventSubscriber {
 
 	onDrop ( pointerEventData: PointerEventData ): void { /*Debug.log( 'drop' )*/
 	}
+
+	onKeyDown ( e: KeyboardEvent ): void { }
 
 	onDeSelect ( baseEventData: BaseEventData ): any {
 

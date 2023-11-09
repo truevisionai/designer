@@ -2,25 +2,47 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Mesh, Vector3 } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
 import { ManeuverService } from './maneuver.service';
 import { BaseService } from '../base.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { JunctionMeshService } from './junction-mesh.service';
-import { JunctionNode } from './junction-node.service';
+import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { SceneService } from '../scene.service';
+import { DebugDrawService } from '../debug/debug-draw.service';
+import { BaseToolService } from 'app/tools/base-tool.service';
+import { JunctionConnectionService } from "./junction-connection.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionService extends BaseService {
 
-	public meshService = new JunctionMeshService();
+	constructor (
+		private dividerService: RoadDividerService,
+		private maneuverService: ManeuverService,
+		private junctionNodeService: JunctionNodeService,
+		public junctionMeshService: JunctionMeshService,
+		private connectionService: JunctionConnectionService,
+		public debug: DebugDrawService,
+		public base: BaseToolService,
 
-	private roadCuttingService = new RoadDividerService();
-	private maneuverService = new ManeuverService();
+	) {
+		super();
+	}
+
+	removeJunctionNodes () {
+
+		this.junctionNodeService.showAllJunctionNodes();
+	}
+
+	showJunctionNodes () {
+
+		this.junctionNodeService.showAllJunctionNodes();
+
+	}
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ) {
 
@@ -35,7 +57,7 @@ export class JunctionService extends BaseService {
 				const firstCoord = sortedCoords[ 0 ];
 				const lastCoord = sortedCoords[ sortedCoords.length - 1 ];
 
-				const roads = this.roadCuttingService.cutRoadFromTo( road, firstCoord.s, lastCoord.s );
+				const roads = this.dividerService.cutRoadFromTo( road, firstCoord.s, lastCoord.s );
 
 				// this.map.removeRoad( road );
 				// this.map.addRoads( roads );
@@ -49,7 +71,7 @@ export class JunctionService extends BaseService {
 
 			// for ( const coord of coords ) {
 
-			// 	const newRoad = this.roadCuttingService.cutRoadAt( coord.road, coord.s );
+			// 	const newRoad = this.dividerService.cutRoadAt( coord.road, coord.s );
 
 			// 	this.map.addRoad( newRoad );
 
@@ -69,11 +91,29 @@ export class JunctionService extends BaseService {
 
 		const coords = nodes.map( node => node.roadCoord );
 
-		this.createJunctionFromRoadCoords( coords );
+		const junction = JunctionFactory.createJunction();
+
+		junction.mesh = this.createMeshFromRoadCoords( coords );
+
+		const connections = this.connectionService.createConnections( junction, coords );
+
+		connections.forEach( connection => junction.addConnection( connection ) );
+
+		console.log( connections );
+
+		// make connections
+
+		// make links
+
+		// make connecting-roads
+
+		// update roads links
+
+		return junction;
 
 	}
 
-	createJunctionFromRoadCoords ( coords: TvRoadCoord[] ) {
+	createMeshFromRoadCoords ( coords: TvRoadCoord[] ): Mesh {
 
 		const points = [];
 
@@ -84,15 +124,15 @@ export class JunctionService extends BaseService {
 			const rightT = roadCoord.road.getRightsideWidth( s );
 			const leftT = roadCoord.road.getLeftSideWidth( s );
 
-			const leftPosition = roadCoord.road.getPositionAt( s ).addLateralOffset( leftT );
-			const rightPosition = roadCoord.road.getPositionAt( s ).addLateralOffset( -rightT );
+			const leftCorner = roadCoord.road.getPositionAt( s ).addLateralOffset( leftT );
+			const rightCorner = roadCoord.road.getPositionAt( s ).addLateralOffset( -rightT );
 
-			points.push( leftPosition );
-			points.push( rightPosition );
+			points.push( leftCorner );
+			points.push( rightCorner );
 
 		} );
 
-		SceneService.addToolObject( this.meshService.createPolygonalMesh( points ) );
+		return this.junctionMeshService.createPolygonalMesh( points );
 
 	}
 
@@ -115,8 +155,8 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.divideRoadAt( roadA, 10 );
-		const roadBNext = this.roadCuttingService.divideRoadAt( roadB, 10 );
+		const roadANext = this.dividerService.divideRoadAt( roadA, 10 );
+		const roadBNext = this.dividerService.divideRoadAt( roadB, 10 );
 
 		return junction;
 	}
@@ -125,8 +165,8 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.divideRoadAt( roadA, 10 );
-		const roadBNext = this.roadCuttingService.divideRoadAt( roadB, 10 );
+		const roadANext = this.dividerService.divideRoadAt( roadA, 10 );
+		const roadBNext = this.dividerService.divideRoadAt( roadB, 10 );
 
 		return junction;
 	}
@@ -135,9 +175,9 @@ export class JunctionService extends BaseService {
 
 		const junction = JunctionFactory.createJunction();
 
-		const roadANext = this.roadCuttingService.divideRoadAt( headRoad, 10 );
+		const roadANext = this.dividerService.divideRoadAt( headRoad, 10 );
 
-		//const roadBNext = this.roadCuttingService.cutRoadAt( incomingRoad, 10 );
+		//const roadBNext = this.dividerService.cutRoadAt( incomingRoad, 10 );
 
 		// this.maneuverService.createConnectingRoad()
 
@@ -185,5 +225,6 @@ export class JunctionService extends BaseService {
 		return finalJunction;
 
 	}
+
 
 }

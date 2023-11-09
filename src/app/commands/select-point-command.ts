@@ -152,27 +152,29 @@ export class SelectObjectCommandv2 extends BaseCommand {
 
 export class UnselectObjectCommandv2 extends BaseCommand {
 
-	constructor ( private object: any ) {
+	private readonly objects: any[];
+
+	constructor ( object: any | any[] ) {
 
 		super();
 
 		if ( object == null ) {
-
 			throw new Error( 'object cannot be null' );
-
 		}
 
+		// Normalize the input to always be an array.
+		this.objects = Array.isArray( object ) ? [ ...object ] : [ object ];
 	}
 
 	execute () {
 
-		MapEvents.objectUnselected.emit( this.object );
+		this.objects.forEach( object => MapEvents.objectUnselected.emit( object ) );
 
 	}
 
 	undo (): void {
 
-		MapEvents.objectSelected.emit( this.object );
+		this.objects.forEach( object => MapEvents.objectSelected.emit( object ) );
 
 	}
 

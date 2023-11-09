@@ -454,8 +454,6 @@ export class ToolBarComponent implements OnInit {
 
 		this.toolBarService.setToolByType( type );
 
-		// CommandHistory.execute( new SetToolCommand( ToolFactory.createTool( type ) ) );
-
 	}
 
 }

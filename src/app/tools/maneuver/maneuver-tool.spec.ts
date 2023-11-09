@@ -14,9 +14,9 @@ describe( 'ManeuverTool Test', () => {
 
 	beforeEach( () => {
 
-		tool = new ManeuverTool();
+		// tool = new ManeuverTool();
 
-		tool.init();
+		// tool.init();
 
 		map = TvMapInstance.map = new TvMap();
 

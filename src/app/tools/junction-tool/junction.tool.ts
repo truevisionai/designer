@@ -5,15 +5,16 @@
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { DebugDrawService } from 'app/services/debug/debug-draw.service';
-import { SceneService } from 'app/services/scene.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
-// import { JunctionService } from 'app/services/junction/junction.service';
-// import { JunctionNode, JunctionNodeService } from 'app/services/junction/junction-node.service';
-// import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
+import { JunctionService } from 'app/services/junction/junction.service';
+import { JunctionNode } from 'app/services/junction/junction-node.service';
+import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
+import { SceneService } from 'app/services/scene.service';
+import { AddObjectCommand } from 'app/commands/select-point-command';
+import { CommandHistory } from 'app/services/command-history';
+import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
 
 
 export class JunctionTool extends BaseTool {
@@ -22,34 +23,15 @@ export class JunctionTool extends BaseTool {
 
 	public toolType = ToolType.Junction;
 
-	private roadStrategy: SelectStrategy<TvRoadCoord>;
-
 	private selectedCoords: TvRoadCoord[] = [];
-	// private selectedNodes: JunctionNode[] = [];
-
-	private debugDrawService = new DebugDrawService();
+	private selectedNodes: JunctionNode[] = [];
 
 	private debugLine: Line2;
+	private debug: boolean = true;
 
-	private junctionService: any;
-	// private junctionNodeService = new JunctionNodeService();
-	// private nodeStrategy: NodeStrategy<JunctionNode>;
-
-	constructor () {
+	constructor ( private tool: JunctionService ) {
 
 		super();
-
-		this.roadStrategy = new RoadCoordStrategy();
-
-		// this.nodeStrategy = new NodeStrategy<JunctionNode>( JunctionNode.tag );
-
-		this.map.junctions.forEach( junction => {
-
-			const mesh = this.junctionService.meshService.createMeshFromJunction( junction );
-
-			SceneService.addToolObject( mesh );
-
-		} )
 
 	}
 
@@ -57,26 +39,13 @@ export class JunctionTool extends BaseTool {
 
 		this.setHint( 'Click on a road to create a junction' );
 
-		// const positions = [];
-
-		// positions.push( new Vector3( 0, 0, 0 ) );
-		// positions.push( new Vector3( 40, 1, 0 ) );
-		// positions.push( new Vector3( 25, 40, 0 ) );
-		// positions.push( new Vector3( -10, 37, 0 ) );
-		// positions.push( new Vector3( 0, 33, 0 ) );
-
-		// const mesh1 = this.junctionService.meshService.createPolygonalMesh( positions );
-		// mesh1.position.set( 0, 0, 0 );
-
-		// const mesh3 = this.junctionService.meshService.createLinedShapeMesh( positions );
-		// mesh3.position.set( 50, 0, 0 );
-
-		// const mesh4 = this.junctionService.meshService.createSmoothShapeMesh( positions );
-		// mesh4.position.set( 0, 50, 0 );
-
-		// SceneService.addToolObject( mesh1 );
-		// SceneService.addToolObject( mesh3 );
-		// SceneService.addToolObject( mesh4 );
+		this.tool.base.addSelectionStrategy( new SelectLineStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: false,
+			tag: null,
+			returnParent: false,
+			returnTarget: false,
+		} ) );
 
 	}
 
@@ -84,7 +53,7 @@ export class JunctionTool extends BaseTool {
 
 		super.enable();
 
-		// this.junctionNodeService.showAllJunctionNodes();
+		this.tool.showJunctionNodes();
 
 	}
 
@@ -92,11 +61,25 @@ export class JunctionTool extends BaseTool {
 
 		super.disable();
 
-		// this.junctionNodeService.hideAllJunctionNodes();
+		this.tool.removeJunctionNodes();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
+
+		this.tool.base.handleSelection( e, ( object ) => {
+
+			if ( object instanceof JunctionNode ) {
+
+				this.selectObject( object, null );
+
+			}
+
+		}, () => {
+
+			this.unselectObject( this.selectedNodes );
+
+		} )
 
 		// const node = this.nodeStrategy.onPointerMoved( e );
 
@@ -121,52 +104,134 @@ export class JunctionTool extends BaseTool {
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		const roadCoord = this.roadStrategy.onPointerDown( e );
+		// const roadCoord = this.roadStrategy.onPointerDown( e );
 
-		if ( roadCoord ) {
+		// if ( roadCoord ) {
 
-			SceneService.addToolObject( this.debugDrawService.createRoadWidthLine( roadCoord ) );
+		// 	SceneService.addToolObject( this.tool.debug.createRoadWidthLine( roadCoord ) );
 
-			this.selectedCoords.push( roadCoord );
+		// 	this.selectedCoords.push( roadCoord );
 
-		}
+		// }
 
-		if ( this.selectedCoords.length === 2 ) {
+		// if ( this.selectedCoords.length === 2 ) {
 
-			const junction = this.junctionService.createJunctionFromCoords( this.selectedCoords );
+		// 	const junction = this.tool.createJunctionFromCoords( this.selectedCoords );
 
-			// SceneService.addToolObject( junction );
+		// 	// SceneService.addToolObject( junction );
 
-			this.selectedCoords.splice( 0, this.selectedCoords.length );
+		// 	this.selectedCoords.splice( 0, this.selectedCoords.length );
 
-		}
+		// }
 
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		console.log( 'onPointerMoved', e.intersections );
+		this.tool.base.highlight( e );
 
-		// if ( this.nodeStrategy.onPointerMoved( e ) ) return;
+		// if (this.debug) console.log( 'onPointerMoved', e.intersections );
 
-		const roadCoord = this.roadStrategy.onPointerMoved( e );
+		// // if ( this.nodeStrategy.onPointerMoved( e ) ) return;
 
-		if ( this.debugLine ) this.debugLine.visible = false;
+		// const roadCoord = this.roadStrategy.onPointerMoved( e );
 
-		if ( !roadCoord ) return;
+		// if ( this.debugLine ) this.debugLine.visible = false;
 
-		if ( !this.debugLine ) {
+		// if ( !roadCoord ) return;
 
-			this.debugLine = this.debugDrawService.createRoadWidthLine( roadCoord );
+		// if ( !this.debugLine ) {
 
-			SceneService.addToolObject( this.debugLine );
+		// 	this.debugLine = this.tool.debug.createRoadWidthLine( roadCoord );
+
+		// 	SceneService.addToolObject( this.debugLine );
+
+		// }
+
+		// this.debugLine.visible = true;
+
+		// this.debugLine = this.tool.debug.updateRoadWidthLine( this.debugLine, roadCoord );
+
+	}
+
+	onKeyDown ( e: KeyboardEvent ): void {
+
+		if ( this.selectedNodes.length < 2 ) return;
+
+		if ( this.debug ) console.log( 'onKeyDown', e );
+
+		if ( e.code !== 'Space' ) return;
+
+		if ( this.debug ) console.log( 'Space', 'join' );
+
+		const junction = this.tool.createJunctionFromJunctionNodes( this.selectedNodes );
+
+		const addCommand = new AddObjectCommand( junction );
+
+		CommandHistory.execute( addCommand );
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof TvJunction ) {
+
+			this.map.addJunctionInstance( object );
+
+			SceneService.addToMain( object.mesh );
 
 		}
 
-		this.debugLine.visible = true;
+	}
 
-		this.debugLine = this.debugDrawService.updateRoadWidthLine( this.debugLine, roadCoord );
+	onObjectRemoved ( object: any ): void {
 
+		if ( object instanceof TvJunction ) {
+
+			this.map.removeJunction( object );
+
+			SceneService.removeFromMain( object.mesh );
+		}
+
+	}
+
+	onObjectSelected ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectSelected', object );
+
+		if ( object instanceof JunctionNode ) {
+
+			this.onNodeSelected( object );
+
+		}
+
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
+
+		if ( object instanceof JunctionNode ) {
+
+			this.onNodeUnselected( object );
+
+		}
+
+	}
+
+	onNodeSelected ( node: JunctionNode ) {
+
+		console.log( 'onNodeSelected', node.roadCoord.contact );
+
+		node?.select();
+
+		this.selectedNodes.push( node );
+	}
+
+	onNodeUnselected ( node: JunctionNode ) {
+
+		node?.unselect();
+
+		this.selectedNodes.splice( this.selectedNodes.indexOf( node ), 1 );
 	}
 
 }

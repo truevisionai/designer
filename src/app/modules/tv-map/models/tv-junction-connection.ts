@@ -12,6 +12,26 @@ import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 
+/**
+
+Rules
+The following rules apply to connecting roads:
+Each connecting road shall be represented by exactly one <connection> element.
+A connecting road may contain as many lanes as required.
+
+An incoming road with multiple lanes may be connected to the lanes of the road
+leading out off the junction in different ways:
+
+By multiple connecting roads, each with one <laneLink> element for the connection
+between two specific lanes. Lane changes within this junction are not possible.
+
+By one connecting road with multiple <laneLink> elements for the connections
+between the lanes. Lane changes within this junction are possible.
+
+The linked lanes shall fit smoothly as described for roads (see Section 8.2).
+The @connectingRoad attribute shall not be used for junctions with @type="direct".
+
+**/
 export class TvJunctionConnection {
 
 	private static counter = 1;

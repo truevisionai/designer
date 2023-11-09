@@ -11,6 +11,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BaseService } from '../base.service';
 import { MapService } from '../map.service';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -92,6 +93,31 @@ export class RoadSplineService extends BaseService {
 			this.mapService.map.removeSpline( spline );
 
 		}
+	}
+
+	createConnectingRoadSpline ( incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
+
+		if ( incoming == null ) throw new Error( 'incoming is null' );
+		if ( outgoing == null ) throw new Error( 'outgoing is null' );
+
+		const a = incoming.position;
+		const b = outgoing.position;
+
+		let aDirection: Vector3, bDirection: Vector3;
+
+		if ( incoming.contact === TvContactPoint.START ) {
+			aDirection = incoming.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+		} else {
+			aDirection = incoming.toPosTheta().toDirectionVector();
+		}
+
+		if ( outgoing.contact === TvContactPoint.START ) {
+			bDirection = outgoing.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+		} else {
+			bDirection = outgoing.toPosTheta().toDirectionVector();
+		}
+
+		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
 	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {

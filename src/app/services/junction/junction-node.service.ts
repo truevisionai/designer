@@ -35,13 +35,11 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 	}
 
 	onMouseOver () {
-		console.log( 'onMouseOver' );
 		this.material.color = new Color( COLOR.YELLOW );
 		this.material.needsUpdate = true;
 	}
 
 	onMouseOut () {
-		console.log( 'onMouseOut' );
 		this.material.color = new Color( this.defaulColor );
 		this.material.needsUpdate = true;
 	}
@@ -74,7 +72,7 @@ export class JunctionNodeService extends BaseService {
 
 		if ( !road.predecessor || road.predecessor.elementType == 'junction' ) {
 
-			const startCoord = road.getStartCoord().toRoadCoord( road.id );
+			const startCoord = road.getStartCoord().toRoadCoord( road );
 
 			const startLine = this.createJunctionNode( startCoord );
 
@@ -86,7 +84,7 @@ export class JunctionNodeService extends BaseService {
 
 		if ( !road.successor || road.successor.elementType == 'junction' ) {
 
-			const endCoord = road.getEndCoord().toRoadCoord( road.id );
+			const endCoord = road.getEndCoord().toRoadCoord( road );
 
 			const endLine = this.createJunctionNode( endCoord );
 

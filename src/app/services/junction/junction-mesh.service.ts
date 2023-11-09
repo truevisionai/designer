@@ -51,11 +51,11 @@ export class JunctionMeshService {
 
 			if ( road?.successor?.elementType == 'junction' ) {
 
-				coords.push( road.getEndCoord().toRoadCoord( road.id ) );
+				coords.push( road.getEndCoord().toRoadCoord( road ) );
 
 			} else if ( road?.predecessor?.elementType == 'junction' ) {
 
-				coords.push( road.getStartCoord().toRoadCoord( road.id ) );
+				coords.push( road.getStartCoord().toRoadCoord( road ) );
 
 			}
 

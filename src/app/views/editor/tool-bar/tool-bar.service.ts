@@ -36,6 +36,8 @@ import { CrosswalkObjectService } from 'app/tools/marking-line/crosswalk-object.
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
+import { JunctionService } from 'app/services/junction/junction.service';
+import { ToolManager } from 'app/tools/tool-manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -55,19 +57,15 @@ export class ToolBarService {
 		private crosswalkService: CrosswalkObjectService,
 		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
-		private roadCutToolService: RoadDividerToolService
+		private roadCutToolService: RoadDividerToolService,
+		private junctionService: JunctionService,
 	) { }
-
-	setTool ( tool: BaseTool ) {
-
-		CommandHistory.execute( new SetToolCommand( tool ) );
-
-	}
 
 	setToolByType ( type: ToolType ) {
 
-		const tool = this.createTool( type );
-		this.setTool( tool );
+		if ( ToolManager.currentTool?.toolType === type ) return;
+
+		this.setTool( this.createTool( type ) );
 
 	}
 
@@ -81,7 +79,7 @@ export class ToolBarService {
 			case ToolType.Maneuver:
 				return new ManeuverTool( this.maneuverService );
 			case ToolType.Junction:
-				return new JunctionTool();
+				return new JunctionTool( this.junctionService );
 			case ToolType.LaneWidth:
 				return new LaneWidthTool( this.laneWidthService );
 			case ToolType.LaneOffset:
@@ -120,6 +118,12 @@ export class ToolBarService {
 				throw new Error( 'Invalid tool type' + type );
 				break;
 		}
+
+	}
+
+	private setTool ( tool: BaseTool ) {
+
+		CommandHistory.execute( new SetToolCommand( tool ) );
 
 	}
 }
