@@ -17,6 +17,10 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
 	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
+	get target (): any {
+		return this.mainObject;
+	}
+
 	constructor ( geometry?: BufferGeometry, material?: Material | Material[] ) {
 
 		super( geometry, material );

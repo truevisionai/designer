@@ -101,7 +101,7 @@ export class BaseToolService {
 
 	}
 
-	handleCreation ( e: PointerEventData, creationCallback: ( object: any ) => void ): void {
+	handleCreation ( e: PointerEventData, creationCallback: ( position: any ) => void ): void {
 
 		for ( let i = 0; i < this.creationStrategies.length; i++ ) {
 

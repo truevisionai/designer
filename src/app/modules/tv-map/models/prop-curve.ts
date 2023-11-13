@@ -149,7 +149,7 @@ export class PropCurve {
 
 		this.props.push( prop );
 
-		TvMapInstance.addProp( prop );
+		// TvMapInstance.addProp( prop );
 
 	}
 

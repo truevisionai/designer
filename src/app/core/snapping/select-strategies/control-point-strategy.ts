@@ -53,6 +53,10 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 			return this.selected?.parent as any;
 		}
 
+		if ( this.options?.returnTarget ) {
+			return this.selected?.target;
+		}
+
 		return this.selected;
 
 	}

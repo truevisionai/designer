@@ -13,6 +13,8 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
+import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
+import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 
 export class SurfaceTool extends BaseTool {
 
@@ -20,9 +22,13 @@ export class SurfaceTool extends BaseTool {
 
 	toolType: ToolType = ToolType.Surface;
 
-	selectedSurface: TvSurface;
+	get selectedSurface (): TvSurface {
+		return this.tool.selection.getLastSelected<TvSurface>( TvSurface.name );
+	}
 
-	selectedControlPoint: AbstractControlPoint;
+	get selectedControlPoint (): DynamicControlPoint<TvSurface> {
+		return this.tool.selection.getLastSelected<DynamicControlPoint<TvSurface>>( DynamicControlPoint.name );
+	}
 
 	controlPointMoved: boolean;
 
@@ -36,11 +42,11 @@ export class SurfaceTool extends BaseTool {
 
 		this.tool.base.init();
 
+		this.tool.selection.registerStrategy( DynamicControlPoint.name, new ControlPointStrategy() );
+
+		this.tool.selection.registerStrategy( TvSurface.name, new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
+
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
-
-		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
-
-		this.tool.base.addSelectionStrategy( new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
 
 	}
 
@@ -84,31 +90,7 @@ export class SurfaceTool extends BaseTool {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.handleSelection( e, ( object ) => {
-
-			if ( object instanceof AbstractControlPoint ) {
-
-				this.selectObject( object, this.selectedControlPoint );
-
-			} else if ( object instanceof TvSurface ) {
-
-				this.selectObject( object, this.selectedSurface );
-
-			}
-
-		}, () => {
-
-			if ( this.selectedControlPoint ) {
-
-				this.unselectObject( this.selectedControlPoint );
-
-			} else if ( this.selectedSurface ) {
-
-				this.unselectObject( this.selectedSurface );
-
-			}
-
-		} );
+		this.tool.selection.onPointerDown( e );
 
 	}
 
@@ -178,7 +160,11 @@ export class SurfaceTool extends BaseTool {
 
 		const point = this.tool.createControlPoint( this.selectedSurface, position );
 
-		this.executeAddObject( point );
+		const addCommand = new AddObjectCommand( point );
+
+		const selectCommand = new SelectObjectCommandv2( point, this.selectedControlPoint );
+
+		CommandHistory.executeMany( addCommand, selectCommand );
 
 	}
 
@@ -190,13 +176,11 @@ export class SurfaceTool extends BaseTool {
 
 		surface.addControlPoint( point );
 
-		// const addSurfaceCommand = new AddObjectCommand( surface );
+		const addSurfaceCommand = new AddObjectCommand( surface );
 
-		// const selectCommand = new SelectObjectCommandv2( surface, this.selectedSurface );
+		const selectCommand = new SelectObjectCommandv2( surface, this.selectedSurface );
 
-		// CommandHistory.executeMany( addSurfaceCommand );
-
-		this.executeAddObject( surface );
+		CommandHistory.executeMany( addSurfaceCommand, selectCommand );
 
 	}
 
@@ -218,8 +202,6 @@ export class SurfaceTool extends BaseTool {
 
 		if ( this.selectedSurface ) this.onSufaceUnselected( this.selectedSurface );
 
-		this.selectedSurface = object;
-
 		this.tool.showSurface( object );
 
 		AppInspector.setInspector( DynamicInspectorComponent, object );
@@ -229,8 +211,6 @@ export class SurfaceTool extends BaseTool {
 	onSufaceUnselected ( object: TvSurface ) {
 
 		this.tool.hideSurface( object );
-
-		this.selectedSurface = null;
 
 		AppInspector.clear();
 
@@ -254,17 +234,13 @@ export class SurfaceTool extends BaseTool {
 
 		controlPoint.unselect();
 
-		this.selectedControlPoint = null;
-
 	}
 
 	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
 
 		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
 
-		this.selectedControlPoint = controlPoint;
-
-		this.selectedControlPoint.select();
+		controlPoint.select();
 
 	}
 
@@ -274,13 +250,9 @@ export class SurfaceTool extends BaseTool {
 
 			this.tool.addSurface( object );
 
-			this.onSurfaceSelected( object );
-
 		} else if ( object instanceof AbstractControlPoint ) {
 
 			this.tool.addControlPoint( this.selectedSurface, object );
-
-			this.onControlPointSelected( object );
 
 		}
 

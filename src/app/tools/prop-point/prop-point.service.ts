@@ -4,95 +4,90 @@ import { MapService } from 'app/services/map.service';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { SceneService } from 'app/services/scene.service';
-import { Subscription } from 'rxjs';
 import { Vector3 } from 'three';
+import { SelectionService } from '../selection.service';
+import { Object3DMap } from '../lane-width/object-3d-map';
+import { SceneService } from 'app/services/scene.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class PropPointService {
 
-	private static points: DynamicControlPoint<PropInstance>[] = [];
-
-	private subscriptions: Subscription[] = [];
+	private static pointsMap = new Object3DMap<PropInstance, DynamicControlPoint<PropInstance>>();
 
 	constructor (
+		public selection: SelectionService,
 		public base: BaseToolService,
 		public mapService: MapService,
 		private controlPointFactory: ControlPointFactory
 	) { }
 
-	addAllPropPoints () {
+	showAll () {
 
 		this.mapService.map.props.forEach( ( prop: PropInstance ) => {
 
-			const point = this.controlPointFactory.createDynamic( prop, prop.getPosition().clone() );
+			const point = this.createControlPoint( prop, prop.getPosition() );
 
-			PropPointService.points.push( point );
-
-			SceneService.addToolObject( point )
-
-			const subscription = prop.updated.subscribe( prop => this.onPropUpdated( point, prop ) );
-
-			this.subscriptions.push( subscription )
+			PropPointService.pointsMap.add( prop, point );
 
 		} );
 
 	}
 
-	removePropPoint ( object: PropInstance ) {
+	updatePropInstance ( object: PropInstance ) {
 
-		this.mapService.map.props = this.mapService.map.props.filter( prop => prop !== object );
+		const point = this.getPoint( object );
 
-		SceneService.removeFromMain( object );
+		if ( point ) {
 
-		const index = PropPointService.points.findIndex( point => point.object === object );
+			console.log( 'updatePropInstance', point.position, object.getPosition() );
 
-		if ( index > -1 ) {
-
-			const point = PropPointService.points[ index ];
-
-			SceneService.removeFromTool( point );
-
-			this.subscriptions[ index ].unsubscribe();
-
-			this.subscriptions.splice( index, 1 );
-
-			PropPointService.points.splice( index, 1 );
+			point.copyPosition( object.getPosition() );
 
 		}
 
 	}
 
-	addPropPoint ( prop: PropInstance ) {
+	getPoint ( object: PropInstance ) {
 
-		this.mapService.map.props.push( prop );
-
-		const point = this.controlPointFactory.createDynamic( prop, prop.getPosition().clone() );
-
-		PropPointService.points.push( point );
-
-		SceneService.addToolObject( point )
-
-		SceneService.addToMain( prop );
-
-		const subscription = prop.updated.subscribe( prop => this.onPropUpdated( point, prop ) );
-
-		this.subscriptions.push( subscription )
+		return PropPointService.pointsMap.get( object );
 
 	}
 
+	removePropInstance ( prop: PropInstance ) {
 
-	removeAllPropPoints () {
+		this.mapService.map.props = this.mapService.map.props.filter( prop => prop !== prop );
 
-		PropPointService.points.forEach( point => {
+		SceneService.removeFromMain( prop );
 
-			SceneService.removeFromTool( point );
+		PropPointService.pointsMap.remove( prop );
 
-		} );
+	}
 
-		this.subscriptions.forEach( subscription => subscription.unsubscribe() );
+	addPropInstance ( prop: PropInstance ) {
+
+		this.mapService.map.props.push( prop );
+
+		SceneService.addToMain( prop );
+
+	}
+
+	addPoint ( point: DynamicControlPoint<PropInstance> ) {
+
+		PropPointService.pointsMap.add( point.mainObject, point );
+
+	}
+
+	createControlPoint ( prop: PropInstance, position: Vector3 ): DynamicControlPoint<PropInstance> {
+
+		return this.controlPointFactory.createDynamic( prop, position );
+
+	}
+
+	removeAll () {
+
+		PropPointService.pointsMap.clear();
 
 	}
 
@@ -102,8 +97,7 @@ export class PropPointService {
 
 	}
 
-
-	createPropPoint ( prop: PropInstance, position: Vector3 ): PropInstance {
+	createPropInstance ( prop: PropInstance, position: Vector3 ): PropInstance {
 
 		const clone = prop.clone();
 

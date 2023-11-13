@@ -34,6 +34,22 @@ export class SplineService {
 
 	}
 
+	addControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
+
+		spline.addControlPoint( point );
+
+		this.pointMap.addItem( spline, point );
+
+	}
+
+	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
+
+		spline.removeControlPoint( point );
+
+		this.pointMap.removeItem( spline, point );
+
+	}
+
 	hideControlPoints ( spline: AbstractSpline ) {
 
 		spline.controlPoints.forEach( point => {

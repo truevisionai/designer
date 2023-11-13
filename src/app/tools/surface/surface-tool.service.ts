@@ -12,6 +12,7 @@ import { SceneService } from 'app/services/scene.service';
 import { SplineService } from 'app/services/spline.service';
 import { MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
+import { SelectionService } from '../selection.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +20,7 @@ import { BaseToolService } from '../base-tool.service';
 export class SurfaceToolService {
 
 	constructor (
+		public selection: SelectionService,
 		public base: BaseToolService,
 		private mapService: MapService,
 		private splineService: SplineService,

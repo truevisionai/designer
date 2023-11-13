@@ -11,7 +11,7 @@ import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
 import { CrosswalkTool } from 'app/tools/marking-line/crosswalk-tool';
 import { MarkingPointTool } from 'app/tools/marking-point/marking-point-tool';
 import { PointerTool } from 'app/tools/pointer/pointer-tool';
-import { PropCurveToolV2 } from 'app/tools/prop-curve/prop-curve-tool';
+import { PropCurveTool } from 'app/tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { PropPolygonTool } from 'app/tools/prop-polygon/prop-polygon-tool';
 import { RoadCircleTool } from 'app/tools/road-circle/road-circle-tool';
@@ -38,6 +38,7 @@ import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { ToolManager } from 'app/tools/tool-manager';
+import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,6 +60,7 @@ export class ToolBarService {
 		private baseToolService: BaseToolService,
 		private roadCutToolService: RoadDividerToolService,
 		private junctionService: JunctionService,
+		private propCurveService: PropCurveService,
 	) { }
 
 	setToolByType ( type: ToolType ) {
@@ -87,7 +89,7 @@ export class ToolBarService {
 			case ToolType.PropPoint:
 				return new PropPointTool( this.propPointService );
 			case ToolType.PropCurve:
-				return new PropCurveToolV2();
+				return new PropCurveTool( this.propCurveService );
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
 			case ToolType.Surface:

@@ -10,11 +10,10 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2, SelectPointCommand } from 'app/commands/select-point-command';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Object3D } from 'three';
 import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
@@ -29,11 +28,17 @@ export class PropPointTool extends BaseTool {
 
 	public toolType = ToolType.PropPoint;
 
-	private selectedPoint: DynamicControlPoint<PropInstance>;
+	private propMoved: boolean;
 
-	private selectedProp: PropInstance;
+	get selectedProp (): PropInstance {
+		return this.tool.selection.getLastSelected<PropInstance>( PropInstance.name );
+	}
 
-	private debug: boolean;
+	get selectedPoint (): DynamicControlPoint<PropInstance> {
+		return this.selectedProp ? this.tool.getPoint( this.selectedProp ) : null;
+	}
+
+	private debug: boolean = true;
 
 	constructor ( private tool: PropPointService ) {
 
@@ -58,11 +63,20 @@ export class PropPointTool extends BaseTool {
 	init (): void {
 
 		this.tool.base.init();
-		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
+
+		this.tool.selection.reset();
+
+		this.tool.selection.registerStrategy( PropInstance.name, new ControlPointStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: false,
+			returnTarget: true
+		} ) );
+
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
+
 		this.tool.base.addMovingStrategy( new AnyLaneMovingStrategy( TvContactPoint.END ) );
 
-		this.tool.base.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+		this.tool.base.setHint( 'use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
@@ -70,7 +84,7 @@ export class PropPointTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.addAllPropPoints();
+		this.tool.showAll();
 
 	}
 
@@ -78,25 +92,13 @@ export class PropPointTool extends BaseTool {
 
 		super.disable();
 
-		this.tool.removeAllPropPoints();
-
-	}
-
-	setPoint ( value: ISelectable ): void {
-
-		this.selectedPoint = value as DynamicControlPoint<PropInstance>;
-
-	}
-
-	getPoint (): ISelectable {
-
-		return this.selectedPoint;
+		this.tool.removeAll();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.select( e );
+		this.tool.selection.onPointerDown( e );
 
 	}
 
@@ -108,13 +110,13 @@ export class PropPointTool extends BaseTool {
 
 		if ( !this.prop ) return;
 
-		const prop = this.tool.createPropPoint( this.prop, e.point );
+		const prop = this.tool.createPropInstance( this.prop, e.point );
 
 		const addCommand = new AddObjectCommand( prop );
 
 		const selectCommand = new SelectObjectCommandv2( prop, this.selectedProp );
 
-		CommandHistory.executeMany( addCommand, selectCommand )
+		CommandHistory.executeMany( addCommand, selectCommand );
 
 		this.tool.base.setHint( 'Add more control points or drag control points to modify' );
 
@@ -124,23 +126,28 @@ export class PropPointTool extends BaseTool {
 
 		this.tool.base.highlight( e );
 
-		if ( !this.selectedProp ) return;
-
 		if ( !this.selectedPoint ) return;
+
+		if ( !this.selectedPoint.isSelected ) return;
 
 		if ( !this.pointerDownAt ) return;
 
 		const position = this.tool.base.move( e );
 
-		this.selectedPoint.copyPosition( position.position );
-
 		this.selectedProp.copyPosition( position.position );
 
+		this.tool.updatePropInstance( this.selectedProp );
+
+		this.selectedPoint.mainObject.copyPosition( position.position );
+
+		this.propMoved = true;
 	}
 
 	onPointerUp ( e: PointerEventData ): void {
 
-		if ( !this.selectedPoint?.isSelected ) return;
+		if ( !this.propMoved ) return;
+
+		if ( !this.selectedProp ) return;
 
 		if ( !this.pointerDownAt ) return;
 
@@ -148,13 +155,11 @@ export class PropPointTool extends BaseTool {
 
 		if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		CommandHistory.executeMany(
+		const updateCommand = new UpdatePositionCommand( this.selectedProp, position.position, this.pointerDownAt );
 
-			new UpdatePositionCommand( this.selectedProp, position.position, this.pointerDownAt ),
+		CommandHistory.executeMany( updateCommand );
 
-			new CopyPositionCommand( this.selectedPoint, position.position, this.pointerDownAt )
-
-		);
+		this.propMoved = false;
 
 		this.tool.base.setHint( 'Use Inspector to modify prop properties' );
 	}
@@ -163,25 +168,27 @@ export class PropPointTool extends BaseTool {
 
 		if ( this.debug ) console.log( 'onObjectSelected', object );
 
-		if ( object instanceof PropInstance ) {
+		if ( object instanceof DynamicControlPoint ) {
 
-			this.selectedProp = object;
+			this.onPropSelected( object.mainObject );
 
-			AppInspector.setInspector( DynamicInspectorComponent, object );
+		} else if ( object instanceof PropInstance ) {
 
-			this.tool.base.setHint( 'Drag control point using LEFT CLICK is down' );
-
-		} else if ( object instanceof DynamicControlPoint ) {
-
-			this.selectedPoint = object;
-
-			this.selectedProp = object.mainObject;
-
-			AppInspector.setInspector( DynamicInspectorComponent, object.mainObject );
-
-			this.tool.base.setHint( 'Drag control point using LEFT CLICK is down' );
+			this.onPropSelected( object );
 
 		}
+
+	}
+
+	onPropSelected ( prop: PropInstance ): void {
+
+		if ( this.selectedProp ) this.onPropUnselected( this.selectedProp );
+
+		this.tool.getPoint( prop )?.select();
+
+		AppInspector.setInspector( DynamicInspectorComponent, prop );
+
+		this.tool.base.setHint( 'Drag control point using LEFT CLICK is down' );
 
 	}
 
@@ -189,21 +196,23 @@ export class PropPointTool extends BaseTool {
 
 		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
-		if ( object instanceof PropInstance ) {
+		if ( object instanceof DynamicControlPoint ) {
 
-			this.selectedProp = null;
+			this.onPropUnselected( object.mainObject );
 
-			AppInspector.setInspector( null, null );
+		} else if ( object instanceof PropInstance ) {
 
-		} else if ( object instanceof DynamicControlPoint ) {
-
-			this.selectedProp = null;
-
-			this.selectedPoint = null;
-
-			AppInspector.setInspector( null, null );
+			this.onPropUnselected( object );
 
 		}
+
+	}
+
+	onPropUnselected ( prop: PropInstance ): void {
+
+		this.tool.getPoint( prop )?.unselect();
+
+		AppInspector.setInspector( null, null );
 
 	}
 
@@ -213,7 +222,17 @@ export class PropPointTool extends BaseTool {
 
 		if ( object instanceof PropInstance ) {
 
-			this.tool.addPropPoint( object );
+			this.tool.addPropInstance( object );
+
+			const point = this.tool.createControlPoint( object, object.getPosition() );
+
+			this.tool.addPoint( point );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.addPropInstance( object.mainObject );
+
+			this.tool.addPoint( object );
 
 		}
 
@@ -225,7 +244,27 @@ export class PropPointTool extends BaseTool {
 
 		if ( object instanceof PropInstance ) {
 
-			this.tool.removePropPoint( object )
+			this.tool.removePropInstance( object );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.removePropInstance( object.mainObject );
+
+		}
+
+	}
+
+	onObjectUpdated ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
+
+		if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.updatePropInstance( object.mainObject );
+
+		} else if ( object instanceof PropInstance ) {
+
+			this.tool.updatePropInstance( object );
 
 		}
 

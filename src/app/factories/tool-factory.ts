@@ -7,7 +7,6 @@ import { BaseTool } from '../tools/base-tool';
 import { LaneOffsetTool } from '../tools/lane-offset/lane-offset-tool';
 import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
 import { PointerTool } from '../tools/pointer/pointer-tool';
-import { PropCurveToolV2 } from '../tools/prop-curve/prop-curve-tool';
 import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
 import { RoadRampTool } from '../tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from '../tools/road-signal-tool';
@@ -20,8 +19,6 @@ export class ToolFactory {
 		switch ( type ) {
 			case ToolType.LaneOffset:
 				return new LaneOffsetTool();
-			case ToolType.PropCurve:
-				return new PropCurveToolV2();
 			case ToolType.PropPolygon:
 				return new PropPolygonTool();
 			case ToolType.MarkingPoint:
