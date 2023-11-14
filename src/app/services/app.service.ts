@@ -29,6 +29,7 @@ import { RoadSplineService } from './road/road-spline.service';
 import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { RoadLinkService } from './road/road-link.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -61,6 +62,7 @@ export class AppService {
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
+		private metadataFactory: MetadataFactory
 	) {
 
 
