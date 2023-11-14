@@ -12,12 +12,13 @@ import { LaneWidthService } from './lane-width.service';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
-import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { MapEvents } from 'app/events/map-events';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugLine } from '../lane-reference-line.service';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class LaneWidthTool extends BaseTool {
 
@@ -125,7 +126,7 @@ export class LaneWidthTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( node );
 
-		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
+		const selectCommand = new SelectObjectCommand( node, this.selectedNode );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 

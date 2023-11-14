@@ -14,9 +14,9 @@ import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-posi
 import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
 import { RoadDividerToolService } from './road-divider-tool.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { AddObjectCommand } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { AddObjectCommand } from "../../commands/add-object-command";
 
 export class RoadDividerTool extends BaseTool {
 

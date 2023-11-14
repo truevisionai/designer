@@ -1,4 +1,3 @@
-import { AddObjectCommand } from 'app/commands/select-point-command';
 import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -18,6 +17,7 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
 import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
+import { AddObjectCommand } from "../../commands/add-object-command";
 
 
 export class RoadTool extends BaseTool {

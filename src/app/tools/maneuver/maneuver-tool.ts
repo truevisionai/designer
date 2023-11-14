@@ -9,7 +9,7 @@ import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
-import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
+import { IToolWithSelection } from '../../commands/select-point-command';
 import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { SelectionTool } from '../../core/snapping/selection-tool';
@@ -17,6 +17,7 @@ import { TvConsole } from '../../core/utils/console';
 import { BaseTool } from '../base-tool';
 import { CreateSingleManeuver } from './create-single-maneuver';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
+import { SelectPointsCommand } from "../../commands/select-points-command";
 
 export class ManeuverTool extends BaseTool implements IToolWithSelection {
 

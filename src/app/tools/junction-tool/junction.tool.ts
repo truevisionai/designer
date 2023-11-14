@@ -12,9 +12,9 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { JunctionNode } from 'app/services/junction/junction-node.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { SceneService } from 'app/services/scene.service';
-import { AddObjectCommand } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { AddObjectCommand } from "../../commands/add-object-command";
 
 
 export class JunctionTool extends BaseTool {

@@ -13,8 +13,9 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
-import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class SurfaceTool extends BaseTool {
 
@@ -162,7 +163,7 @@ export class SurfaceTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( point );
 
-		const selectCommand = new SelectObjectCommandv2( point, this.selectedControlPoint );
+		const selectCommand = new SelectObjectCommand( point, this.selectedControlPoint );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 
@@ -178,7 +179,7 @@ export class SurfaceTool extends BaseTool {
 
 		const addSurfaceCommand = new AddObjectCommand( surface );
 
-		const selectCommand = new SelectObjectCommandv2( surface, this.selectedSurface );
+		const selectCommand = new SelectObjectCommand( surface, this.selectedSurface );
 
 		CommandHistory.executeMany( addSurfaceCommand, selectCommand );
 

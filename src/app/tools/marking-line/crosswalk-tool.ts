@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 import { CrosswalkInspectorComponent, } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import { PointerEventData } from '../../events/pointer-event-data';
@@ -20,6 +19,8 @@ import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-
 import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
 import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class CrosswalkTool extends BaseTool {
 
@@ -198,7 +199,7 @@ export class CrosswalkTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( point );
 
-		const selectCommand = new SelectObjectCommandv2( point );
+		const selectCommand = new SelectObjectCommand( point );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 
@@ -214,7 +215,7 @@ export class CrosswalkTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( crosswalk );
 
-		const selectCommand = new SelectObjectCommandv2( crosswalk );
+		const selectCommand = new SelectObjectCommand( crosswalk );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 

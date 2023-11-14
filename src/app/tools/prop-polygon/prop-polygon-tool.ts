@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/commands/select-point-command';
+import { IToolWithMainObject, IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
@@ -20,6 +20,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
 import { CreatePropPolygonCommand } from './create-prop-polygon-command';
+import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AddObjectCommand, } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
@@ -13,6 +12,7 @@ import { LaneService } from './lane.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { AddObjectCommand } from "../../commands/add-object-command";
 
 export class LaneTool extends BaseTool {
 

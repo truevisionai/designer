@@ -10,7 +10,6 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AddObjectCommand, SelectObjectCommandv2 } from 'app/commands/select-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
@@ -21,6 +20,8 @@ import { AnyLaneMovingStrategy } from "app/core/snapping/move-strategies/any-lan
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { PropPointService } from './prop-point.service';
 import { AppInspector } from 'app/core/inspector';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class PropPointTool extends BaseTool {
 
@@ -114,7 +115,7 @@ export class PropPointTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( prop );
 
-		const selectCommand = new SelectObjectCommandv2( prop, this.selectedProp );
+		const selectCommand = new SelectObjectCommand( prop, this.selectedProp );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 

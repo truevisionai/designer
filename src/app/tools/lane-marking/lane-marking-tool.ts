@@ -8,7 +8,6 @@ import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { LaneMarkingService } from './lane-marking.service';
-import { AddObjectCommand, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
@@ -19,6 +18,9 @@ import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-
 import { EndLaneMovingStrategy } from 'app/core/snapping/move-strategies/end-lane.moving.strategy';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { SetValueCommand } from 'app/commands/set-value-command';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { UnselectObjectCommand } from "../../commands/unselect-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -94,7 +96,7 @@ export class LaneMarkingTool extends BaseTool {
 
 				if ( this.selectedNode === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedNode ) );
 
 			}
 
@@ -102,7 +104,7 @@ export class LaneMarkingTool extends BaseTool {
 
 				if ( this.selectedLane === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedLane ) );
+				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedLane ) );
 
 			}
 
@@ -110,11 +112,11 @@ export class LaneMarkingTool extends BaseTool {
 
 			if ( this.selectedNode ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+				CommandHistory.execute( new UnselectObjectCommand( this.selectedNode ) );
 
 			} else if ( this.selectedLane ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedLane ) );
+				CommandHistory.execute( new UnselectObjectCommand( this.selectedLane ) );
 
 			}
 
@@ -138,7 +140,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( node );
 
-		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
+		const selectCommand = new SelectObjectCommand( node, this.selectedNode );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 

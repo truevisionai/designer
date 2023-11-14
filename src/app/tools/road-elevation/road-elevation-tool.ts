@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AddObjectCommand, IToolWithPoint, SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
+import { IToolWithPoint } from 'app/commands/select-point-command';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
@@ -16,6 +16,9 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { UnselectObjectCommand } from "../../commands/unselect-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
 export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
@@ -74,7 +77,7 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 		const addCommand = new AddObjectCommand( node );
 
-		const selectCommand = new SelectObjectCommandv2( node, this.selectedNode );
+		const selectCommand = new SelectObjectCommand( node, this.selectedNode );
 
 		CommandHistory.executeMany( addCommand, selectCommand );
 
@@ -90,13 +93,13 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 				if ( this.selectedNode === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedNode ) );
+				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedNode ) );
 
 			} else if ( selected instanceof TvRoad ) {
 
 				if ( this.selectedRoad === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommandv2( selected, this.selectedRoad ) );
+				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedRoad ) );
 
 			}
 
@@ -104,11 +107,11 @@ export class RoadElevationTool extends BaseTool implements IToolWithPoint {
 
 			if ( this.selectedNode ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedNode ) );
+				CommandHistory.execute( new UnselectObjectCommand( this.selectedNode ) );
 
 			} else if ( this.selectedRoad ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.selectedRoad ) );
+				CommandHistory.execute( new UnselectObjectCommand( this.selectedRoad ) );
 
 			}
 

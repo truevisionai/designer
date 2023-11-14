@@ -8,7 +8,8 @@ import { Action, SerializedField } from '../components/serialization';
 import { EventEmitter } from '@angular/core';
 import { AssetDatabase } from '../asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
-import { RemoveObjectCommand, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
+import { RemoveObjectCommand } from "../../commands/remove-object-command";
+import { UnselectObjectCommand } from "../../commands/unselect-object-command";
 
 export class PropInstance extends Object3D implements IHasCopyUpdate {
 
@@ -26,7 +27,7 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 	@Action()
 	delete () {
 
-		CommandHistory.executeMany( new UnselectObjectCommandv2( this ), new RemoveObjectCommand( this ) );
+		CommandHistory.executeMany( new UnselectObjectCommand( this ), new RemoveObjectCommand( this ) );
 
 	}
 

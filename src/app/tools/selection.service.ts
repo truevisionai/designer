@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MapEvents } from 'app/events/map-events';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/services/command-history';
+import { UnselectObjectCommand } from "../commands/unselect-object-command";
+import { SelectObjectCommand } from "../commands/select-object-command";
 
 @Injectable( {
 	providedIn: 'root'
@@ -82,7 +83,7 @@ export class SelectionService {
 
 		const previousObject = this.selectedObjects.get( type );
 
-		CommandHistory.execute( new SelectObjectCommandv2( object, previousObject ) );
+		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
 
 	}
 
@@ -98,7 +99,7 @@ export class SelectionService {
 
 		const object = this.selectedObjects.get( type );
 
-		const deselectCommand = new UnselectObjectCommandv2( object );
+		const deselectCommand = new UnselectObjectCommand( object );
 
 		CommandHistory.execute( deselectCommand );
 

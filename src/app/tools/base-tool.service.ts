@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { SelectObjectCommandv2, UnselectObjectCommandv2 } from 'app/commands/select-point-command';
 import { IMovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/modules/scenario/models/position';
 import { CommandHistory } from 'app/services/command-history';
 import { StatusBarService } from 'app/services/status-bar.service';
+import { UnselectObjectCommand } from "../commands/unselect-object-command";
+import { SelectObjectCommand } from "../commands/select-object-command";
 
 
 @Injectable( {
@@ -62,7 +63,7 @@ export class BaseToolService {
 
 			if ( object === this.currentSelected ) return;
 
-			CommandHistory.execute( new SelectObjectCommandv2( object, this.currentSelected ) );
+			CommandHistory.execute( new SelectObjectCommand( object, this.currentSelected ) );
 
 			this.currentSelected = object;
 
@@ -70,7 +71,7 @@ export class BaseToolService {
 
 			if ( this.currentSelected ) {
 
-				CommandHistory.execute( new UnselectObjectCommandv2( this.currentSelected ) );
+				CommandHistory.execute( new UnselectObjectCommand( this.currentSelected ) );
 
 				this.currentSelected = null;
 
