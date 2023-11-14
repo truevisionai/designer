@@ -12,26 +12,28 @@ import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coor
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { SelectionService } from '../selection.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadToolService {
 
-	public pointStrategy: SelectStrategy<AbstractControlPoint>;
-	public roadStrategy: SelectStrategy<TvRoadCoord>;
-	public nodeStrategy: SelectStrategy<RoadNode>;
+	// public pointStrategy: SelectStrategy<AbstractControlPoint>;
+	// public roadStrategy: SelectStrategy<TvRoadCoord>;
+	// public nodeStrategy: SelectStrategy<RoadNode>;
 
 	constructor (
+		public selection: SelectionService,
 		public roadService: RoadService,
 		public roadSplineService: RoadSplineService,
 		public base: BaseToolService,
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory
 	) {
-		this.pointStrategy = new ControlPointStrategy();
-		this.roadStrategy = new RoadCoordStrategy();
-		this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
+		// this.pointStrategy = new ControlPointStrategy();
+		// this.roadStrategy = new RoadCoordStrategy();
+		// this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
 
 		// this.pointStrategy.map = this.mapService;
 		// this.roadStrategy.map = this.mapService;

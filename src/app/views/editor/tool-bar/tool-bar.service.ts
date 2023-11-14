@@ -19,7 +19,7 @@ import { RoadDividerTool } from 'app/tools/road-cut-tool/road-divider-tool';
 import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation-tool';
 import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from 'app/tools/road-signal-tool';
-import { RoadToolv2 } from 'app/tools/road/RoadToolv2';
+import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { ToolType } from 'app/tools/tool-types.enum';
@@ -75,7 +75,7 @@ export class ToolBarService {
 
 		switch ( type ) {
 			case ToolType.Road:
-				return new RoadToolv2( this.roadToolService );
+				return new RoadTool( this.roadToolService );
 			case ToolType.RoadCircle:
 				return new RoadCircleTool( this.roadCircleService );
 			case ToolType.Maneuver:

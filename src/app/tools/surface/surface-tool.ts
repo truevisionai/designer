@@ -90,7 +90,7 @@ export class SurfaceTool extends BaseTool {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.selection.onPointerDown( e );
+		this.tool.selection.handleSelection( e );
 
 	}
 

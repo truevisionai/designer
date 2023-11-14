@@ -37,13 +37,13 @@ export class RoadControlPointListener extends Manager {
 
 	onControlPointUnselected ( e: AbstractControlPoint ): void {
 
-		ToolManager.getTool<any>()?.onControlPointUnselected( e );
+		// ToolManager.getTool<any>()?.onControlPointUnselected( e );
 
 	}
 
 	onControlPointSelected ( e: AbstractControlPoint ): void {
 
-		ToolManager.getTool<any>()?.onControlPointSelected( e );
+		// ToolManager.getTool<any>()?.onControlPointSelected( e );
 
 	}
 

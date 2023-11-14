@@ -30,7 +30,7 @@ export class SelectionService {
 
 	}
 
-	onPointerDown ( e: PointerEventData ): void {
+	handleSelection ( e: PointerEventData ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
@@ -86,7 +86,7 @@ export class SelectionService {
 
 	}
 
-	onObjectSelected ( object: Object ): void {
+	private onObjectSelected ( object: Object ): void {
 
 		this.selectedObjects.set( object.constructor.name, object );
 
@@ -104,7 +104,7 @@ export class SelectionService {
 
 	}
 
-	onObjectUnselected ( object: any ): void {
+	private onObjectUnselected ( object: any ): void {
 
 		this.selectedObjects.delete( object.constructor.name );
 
