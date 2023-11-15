@@ -39,6 +39,7 @@ import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-too
 import { JunctionService } from 'app/services/junction/junction.service';
 import { ToolManager } from 'app/tools/tool-manager';
 import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
+import { RoadRampService } from 'app/services/road/road-ramp.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -61,6 +62,7 @@ export class ToolBarService {
 		private roadCutToolService: RoadDividerToolService,
 		private junctionService: JunctionService,
 		private propCurveService: PropCurveService,
+		private roadRampService: RoadRampService,
 	) { }
 
 	setToolByType ( type: ToolType ) {
@@ -113,7 +115,7 @@ export class ToolBarService {
 			case ToolType.RoadElevation:
 				return new RoadElevationTool( this.roadElevationService );
 			case ToolType.RoadRampTool:
-				return new RoadRampTool();
+				return new RoadRampTool( this.roadRampService );
 			case ToolType.RoadDividerTool:
 				return new RoadDividerTool( this.roadCutToolService );
 			default:

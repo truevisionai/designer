@@ -29,8 +29,6 @@ export class ToolFactory {
 				return new VehicleTool();
 			case ToolType.RoadSignalTool:
 				return new RoadSignalTool();
-			case ToolType.RoadRampTool:
-				return new RoadRampTool();
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

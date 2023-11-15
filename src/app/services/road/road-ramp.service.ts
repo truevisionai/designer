@@ -11,13 +11,22 @@ import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
+import { BaseToolService } from 'app/tools/base-tool.service';
+import { DebugDrawService } from '../debug/debug-draw.service';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { RoadSplineService } from './road-spline.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadRampService {
 
-	constructor () { }
+	constructor (
+		public base: BaseToolService,
+		public debug: DebugDrawService,
+		private roadSplineService: RoadSplineService,
+	) { }
 
 	createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ): TvRoad {
 
@@ -80,7 +89,79 @@ export class RoadRampService {
 		return [ v1, v2, v3, v4 ];
 	}
 
-	makeRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): AbstractSpline {
+	createRampSplineV2 ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): AbstractSpline {
+
+		let v1: Vector3, v2: Vector3, d1: Vector3, d2: Vector3;
+
+		if ( startPosition instanceof TvLaneCoord ) {
+
+			v1 = startPosition.position;
+
+			d1 = startPosition.laneDirection;
+
+		} else if ( startPosition instanceof Vector3 ) {
+
+			v1 = startPosition;
+
+			d1 = new Vector3( 0, 0, 1 );
+
+		}
+
+		if ( endPosition instanceof TvLaneCoord ) {
+
+			v2 = endPosition.position;
+
+			d2 = endPosition.laneDirection.negate();
+
+		} else if ( endPosition instanceof Vector3 ) {
+
+			v2 = endPosition;
+
+			d2 = d1.clone().multiplyScalar( -1 );
+
+		}
+
+		return this.roadSplineService.createSpline( v1, d1, v2, d2 );
+
+	}
+
+	createRampReferenceLine ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): Line2 {
+
+		const spline = this.createRampSplineV2( startPosition, endPosition );
+
+		const points = spline.getPoints( 0.1 );
+
+		const line = this.debug.createLine( points );
+
+		return line;
+
+	}
+
+	updateRampReferenceLine ( line: Line2, startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): Line2 {
+
+		const spline = this.createRampSplineV2( startPosition, endPosition );
+
+		const positions = spline.getPoints( 0.1 );
+
+		const geometry = new LineGeometry();
+
+		const positionsArray = [];
+
+		positions.forEach( ( position ) => {
+			positionsArray.push( position.x, position.y, position.z );
+		} );
+
+		geometry.setPositions( positionsArray );
+
+		line.geometry.dispose();
+
+		line.geometry = geometry;
+
+		return line;
+
+	}
+
+	createRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): AbstractSpline {
 
 		// const direction = posTheta.toDirectionVector();
 		const normalizedDirection1 = direction1.clone().normalize();

@@ -6,16 +6,17 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { LaneCoordStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { RoadRampService } from 'app/services/road/road-ramp.service';
+import { LaneCoordStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
+import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
 
 export class RoadRampTool extends BaseTool {
 
 	name: string = 'RoadRampTool';
+
 	toolType: ToolType = ToolType.RoadRampTool;
 
 	// lane: TvLane;
@@ -23,23 +24,27 @@ export class RoadRampTool extends BaseTool {
 	// end = new Vector3();
 	// posTheta: TvPosTheta;
 
-	private laneStrategy: SelectStrategy<TvLaneCoord>;
+	// private laneStrategy: SelectStrategy<TvLaneCoord>;
 
-	private startCoord: TvLaneCoord;
+	private startCoord: TvLaneCoord | Vector3;
 	private endCoord: TvLaneCoord | Vector3;
 
-	// private rampRoadSpline: AutoSpline;
-	// private roadRampService: RoadRampService;
-
-	private debugDrawService = new DebugDrawService();
-	private debugLine: Line2;
+	private startLine: Line2;
 	private referenceLine: Line2;
+
+	constructor (
+		private tool: RoadRampService,
+	) {
+		super();
+	}
 
 	init (): void {
 
-		this.laneStrategy = new LaneCoordStrategy();
+		this.tool.base.reset();
 
-		// this.roadRampService = new RoadRampService();
+		this.tool.base.addCreationStrategy( new LaneCoordStrategy() );
+
+		this.tool.base.addSelectionStrategy( new LaneCoordStrategy() );
 
 	}
 
@@ -53,85 +58,177 @@ export class RoadRampTool extends BaseTool {
 
 		super.disable();
 
-		this.laneStrategy?.dispose();
+		this.tool.base.reset();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		const laneCoord = this.laneStrategy?.onPointerDown( e );
+		this.tool.base.handleCreation( e, ( position ) => {
 
-		console.log( 'select', laneCoord );
+			this.handleCreation( position );
 
-		if ( !laneCoord ) return;
+		}, ( position: Vector3 ) => {
 
-		// if ( this.startCoord ) {
-		//
-		// 	this.endCoord = laneCoord;
-		//
-		// 	// const virtualJunction = JunctionFactory.createVirtualJunction( this.startCoord.road, this.startCoord.s, this.startCoord.s + 20, TvOrientation.PLUS );
-		//
-		// 	// const rampRoad = this.roadRampService.createRampRoad( virtualJunction, this.startCoord, this.endCoord );
-		//
-		// 	// CommandHistory.executeMany( new AddRoadCommand( [ rampRoad ], true ), new AddJunctionCommand( virtualJunction ) );
-		//
-		// 	this.startCoord = this.endCoord = this.rampRoadSpline = null;
-		//
-		// } else {
-		//
-		// 	this.startCoord = laneCoord;
-		//
-		// 	this.endCoord = e.point;
-		//
-		// 	this.rampRoadSpline = this.roadRampService.makeRampSpline( this.startCoord.position, this.endCoord, this.startCoord.posTheta.toDirectionVector() );
-		//
-		// 	this.rampRoadSpline.show();
-		//
-		// }
+			this.handleCreation( position );
 
+		} );
+
+	}
+
+	handleCreation ( position: TvLaneCoord | Vector3 ) {
+
+		if ( position instanceof TvLaneCoord ) {
+
+			//
+
+		} else if ( position instanceof Vector3 ) {
+
+			//
+
+		} else {
+
+			throw new Error( 'Invalid position' );
+
+		}
+
+		if ( this.startCoord ) {
+
+			this.endCoord = position;
+
+			this.startCoord = this.endCoord = null;
+
+		} else {
+
+			this.startCoord = position;
+
+			this.endCoord = position;
+
+		}
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		const laneCoord = this.laneStrategy?.onPointerMoved( e );
+		// if ( this.startLine ) this.startLine.visible = false;
 
-		if ( this.debugLine ) this.debugLine.visible = false;
-		if ( this.referenceLine ) this.referenceLine.visible = false;
+		// if ( this.referenceLine ) this.referenceLine.visible = false;
 
-		// if ( !this.startCoord ) return;
+		this.tool.base.handleCreation( e, position => {
 
-		if ( !laneCoord ) return;
+			this.handleMovement( position );
 
-		if ( !this.debugLine ) {
+		}, ( position: Vector3 ) => {
 
-			this.debugLine = this.debugDrawService.createLaneWidthLine( laneCoord );
+			this.handleMovement( position );
 
-			SceneService.addToolObject( this.debugLine );
+		} );
+
+	}
+
+	handleMovement ( position: TvLaneCoord | Vector3 ) {
+
+		if ( this.startCoord ) {
+
+			this.showRampLine( position );
+
+		} else {
+
+			this.showStartLine( position );
 
 		}
 
+		this.endCoord = position;
+	}
+
+	showRampLine ( position: TvLaneCoord | Vector3 ) {
+
+		const distance = this.getDistance( this.startCoord, position );
+
+		if ( distance < 5 ) return;
+
+		console.log( distance, this.startCoord, position );
+
 		if ( !this.referenceLine ) {
 
-			this.referenceLine = this.debugDrawService.createLaneReferenceLine( laneCoord.lane, 'center' );
+			this.referenceLine = this.tool.createRampReferenceLine( this.startCoord, position );
 
 			SceneService.addToolObject( this.referenceLine );
 
 		}
 
-		this.debugLine.visible = true;
-
 		this.referenceLine.visible = true;
 
-		this.debugLine = this.debugDrawService.updateLaneWidthLine( this.debugLine, laneCoord );
+		this.referenceLine = this.tool.updateRampReferenceLine( this.referenceLine, this.startCoord, position );
 
-		this.referenceLine = this.debugDrawService.updateLaneReferenceLine( this.referenceLine, laneCoord, 'center' );
+	}
+
+	getDistance ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ) {
+
+		const v1 = start instanceof TvLaneCoord ? start.position : start;
+
+		const v2 = end instanceof TvLaneCoord ? end.position : end;
+
+		const distance = v1.distanceTo( v2 );
+
+		// console.log( 'distance', distance, v1, v2 );
+
+		return distance;
+	}
+
+	showStartLine ( position: TvLaneCoord | Vector3 ) {
+
+		console.log( 'show start line', position );
+
+		if ( position instanceof TvLaneCoord ) {
+
+			if ( !this.startLine ) {
+
+				this.startLine = this.tool.debug.createLaneWidthLine( position );
+
+				SceneService.addToolObject( this.startLine );
+
+			}
+
+			this.startLine.visible = true;
+
+			this.startLine = this.tool.debug.updateLaneWidthLine( this.startLine, position );
+
+		}
+
+	}
+
+	updateRampRoad ( end: Vector3 | TvLaneCoord ) {
+
+		// if ( !this.debugLine ) {
+
+		// 	this.debugLine = this.tool.debug.createLaneWidthLine( end );
+
+		// 	SceneService.addToolObject( this.debugLine );
+
+		// }
+
+		// // if ( !this.referenceLine ) {
+
+		// // 	this.referenceLine = this.tool.debug.createLaneReferenceLine( laneCoord.lane, 'center' );
+
+		// // 	SceneService.addToolObject( this.referenceLine );
+
+		// // }
+
+		// this.debugLine.visible = true;
+
+		// // this.referenceLine.visible = true;
+
+		// this.debugLine = this.tool.debug.updateLaneWidthLine( this.debugLine, laneCoord );
+
+		// this.referenceLine = this.tool.debug.updateLaneReferenceLine( this.referenceLine, laneCoord, 'center' );
 
 		// this.endCoord = e.point;
-		//
-		// if ( this.rampRoadSpline ) {
-		// 	this.roadRampService.updateRampSpline( this.rampRoadSpline, this.startCoord.position, this.endCoord, this.startCoord.posTheta.toDirectionVector() );
-		// }
-		//
+
+		// // if ( this.rampRoadSpline ) {
+		// // 	this.roadRampService.updateRampSpline( this.rampRoadSpline, this.startCoord.position, this.endCoord, this.startCoord.posTheta.toDirectionVector() );
+		// // }
+
 		// console.log( 'moved', this.startCoord.position.distanceTo( e.point ), this.startCoord, this.endCoord );
 
 	}

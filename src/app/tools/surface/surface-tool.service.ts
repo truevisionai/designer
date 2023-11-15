@@ -115,7 +115,7 @@ export class SurfaceToolService {
 
 	private createSurfaceMesh ( surface: TvSurface ) {
 
-		const points: Vector2[] = surface.spline.getPoints( 50 ).map(
+		const points: Vector2[] = surface.spline.getPoints( 0.1 ).map(
 			point => new Vector2( point.x, point.y )
 		);
 

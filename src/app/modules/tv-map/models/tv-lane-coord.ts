@@ -3,22 +3,11 @@
  */
 
 import { Vector3 } from 'three';
-// import { TvMapInstance } from '../services/tv-map-instance';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-// import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvPosTheta } from './tv-pos-theta';
-import { TvRoadCoord } from './TvRoadCoord';
 
 export class TvLaneCoord {
-
-	// total 4 properties
-	// road-id
-	// lane-section-id
-	// s
-	// lane-Id
-	// lane-offset
 
 	constructor (
 		public road: TvRoad,
@@ -27,14 +16,6 @@ export class TvLaneCoord {
 		public s: number,
 		public offset: number
 	) {
-
-	}
-
-	init () {
-
-	}
-
-	addTrackCoord ( value: TvRoadCoord ) {
 
 	}
 
@@ -61,5 +42,14 @@ export class TvLaneCoord {
 	get direction (): Vector3 {
 		return this.posTheta.toDirectionVector();
 	}
+
+	get laneDirection (): Vector3 {
+		if ( this.lane.inRoadDirection ) {
+			return this.direction;
+		} else {
+			return this.direction.negate();
+		}
+	}
+
 }
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { TrafficRule, TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
 import { TvRoadCoord } from "../../modules/tv-map/models/TvRoadCoord";
 import { TvLane } from "../../modules/tv-map/models/tv-lane";
 import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";

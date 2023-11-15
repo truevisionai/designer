@@ -7,6 +7,8 @@ import { CommandHistory } from 'app/services/command-history';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
+import { SelectionService } from './selection.service';
+import { Vector3 } from 'three';
 
 
 @Injectable( {
@@ -21,6 +23,7 @@ export class BaseToolService {
 
 	constructor (
 		public statusBar: StatusBarService,
+		public selection: SelectionService,
 	) { }
 
 	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
@@ -102,7 +105,7 @@ export class BaseToolService {
 
 	}
 
-	handleCreation ( e: PointerEventData, creationCallback: ( position: any ) => void ): void {
+	handleCreation ( e: PointerEventData, creationCallback: ( position: any ) => void, noneFn?: ( position: Vector3 ) => void ): void {
 
 		for ( let i = 0; i < this.creationStrategies.length; i++ ) {
 
@@ -118,6 +121,8 @@ export class BaseToolService {
 			}
 
 		}
+
+		if ( noneFn ) noneFn( e.point );
 
 	}
 
@@ -226,6 +231,8 @@ export class BaseToolService {
 	reset () {
 
 		this.clearStrategies();
+
+		this.selection.reset();
 
 		this.currentSelected = null;
 

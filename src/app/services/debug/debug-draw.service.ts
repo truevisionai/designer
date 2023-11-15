@@ -163,7 +163,7 @@ export class DebugDrawService {
 
 	}
 
-	private createLine ( positions: Vector3[], color = 0xffffff ): Line2 {
+	createLine ( positions: Vector3[], color = 0xffffff ): Line2 {
 
 		const geometry = new LineGeometry();
 

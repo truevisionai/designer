@@ -41,11 +41,7 @@ import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
-
-export enum TrafficRule {
-	RHT = 'RHT',
-	LHT = 'LHT'
-}
+import { TrafficRule } from './traffic-rule';
 
 export class TvRoad {
 

@@ -24,6 +24,7 @@ import { TvUtils } from './tv-utils';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { OdMaterials } from '../builders/od-materials.service';
 import { SerializedField } from 'app/core/components/serialization';
+import { TrafficRule } from './traffic-rule';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -359,6 +360,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	set succcessor ( laneId: number ) {
 		this.setPredecessor( laneId );
+	}
+
+	get inRoadDirection (): boolean {
+
+		if ( this.laneSection.road.trafficRule == TrafficRule.RHT ) {
+
+			return this.side === TvLaneSide.RIGHT;
+
+		} else if ( this.laneSection.road.trafficRule == TrafficRule.LHT ) {
+
+			return this.side === TvLaneSide.LEFT;
+
+		}
+
 	}
 
 	get otherLanes () {
