@@ -358,17 +358,7 @@ export class RoadTool extends BaseTool {
 
 		if ( this.selectedNode ) {
 
-			this.selectedNode.unselect();
-
-			const road = this.tool.roadService.createJoiningRoad( this.selectedNode, node );
-
-			const addRoadCommand = new AddObjectCommand( road );
-
-			const selectRoadCommand = new SelectObjectCommand( road );
-
-			CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
-
-			this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+			this.connectNodes( this.selectedNode, node );
 
 		} else {
 
@@ -386,4 +376,42 @@ export class RoadTool extends BaseTool {
 
 	}
 
+	private connectNodes ( nodeA: RoadNode, nodeB: RoadNode ) {
+
+		nodeA.unselect();
+
+		if ( nodeA === nodeB ) return;
+
+		if ( nodeA.isConnected ) {
+
+			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+
+			return;
+		}
+
+		if ( nodeB.isConnected ) {
+
+			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+
+			return;
+		}
+
+		if ( nodeA.road === nodeB.road ) {
+
+			this.tool.base.setHint( 'Cannot connect a node to itself' );
+
+			return;
+		}
+
+		const road = this.tool.roadService.createJoiningRoad( nodeA, nodeB );
+
+		const addRoadCommand = new AddObjectCommand( road );
+
+		const selectRoadCommand = new SelectObjectCommand( road );
+
+		CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
+
+		this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+
+	}
 }

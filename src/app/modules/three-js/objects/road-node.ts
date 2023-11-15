@@ -113,12 +113,11 @@ export class RoadNode extends Group implements ISelectable {
 		);
 	}
 
-	canConnect () {
+	get isConnected () {
 
 		return this.contact == TvContactPoint.START ?
 			!this.road.predecessor :
 			!this.road.successor;
-
 
 	}
 
