@@ -1,55 +1,55 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+// import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
-import { BaseCommand } from '../../commands/base-command';
-import { ICommand } from '../../commands/i-command';
-import { LaneWidthTool } from './lane-width-tool';
-import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
+// import { BaseCommand } from '../../commands/base-command';
+// import { ICommand } from '../../commands/i-command';
+// import { LaneWidthTool } from './lane-width-tool';
+// import { UnselectLaneWidthNodeCommand } from './unselect-lane-width-node-command';
 
-export class UnselectLaneForLaneWidthCommand extends BaseCommand {
+// export class UnselectLaneForLaneWidthCommand extends BaseCommand {
 
-	private readonly road: TvRoad;
-	private unselectCommand: ICommand;
+// 	private readonly road: TvRoad;
+// 	private unselectCommand: ICommand;
 
-	constructor ( private tool: LaneWidthTool, private lane: TvLane ) {
+// 	constructor ( private tool: LaneWidthTool, private lane: TvLane ) {
 
-		super();
+// 		super();
 
-		if ( lane ) this.road = this.map.getRoadById( this.lane.roadId );
+// 		if ( lane ) this.road = this.map.getRoadById( this.lane.roadId );
 
-		this.unselectCommand = new UnselectLaneWidthNodeCommand( this.tool, this.tool.node );
+// 		this.unselectCommand = new UnselectLaneWidthNodeCommand( this.tool, this.tool.node );
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.road?.hideWidthNodes();
+// 		this.road?.hideWidthNodes();
 
-		this.tool.laneHelper.clear();
+// 		this.tool.laneHelper.clear();
 
-		this.tool.lane = null;
+// 		this.tool.lane = null;
 
-		this.unselectCommand.execute();
-	}
+// 		this.unselectCommand.execute();
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.road?.showWidthNodes();
+// 		this.road?.showWidthNodes();
 
-		this.tool.laneHelper.drawRoad( this.road );
+// 		this.tool.laneHelper.drawRoad( this.road );
 
-		this.tool.lane = this.lane;
+// 		this.tool.lane = this.lane;
 
-		this.unselectCommand.undo();
-	}
+// 		this.unselectCommand.undo();
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
-}
+// 	}
+// }

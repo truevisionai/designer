@@ -197,30 +197,6 @@ export class TvRoad {
 
 		this.updateGeometryFromSpline();
 
-		// this.updateConnections();
-
-		// RoadFactory.rebuildRoad( this );
-
-	}
-
-	// updateConnections () {
-
-	// 	this.successor?.update( this, TvContactPoint.END );
-
-	// 	this.predecessor?.update( this, TvContactPoint.START );
-
-	// }
-
-	hide () {
-
-		if ( this.gameObject ) this.gameObject.visible = false;
-
-	}
-
-	show () {
-
-		if ( this.gameObject ) this.gameObject.visible = true;
-
 	}
 
 	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
@@ -949,75 +925,6 @@ export class TvRoad {
 		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 	}
 
-	// private checkGeometryInterval ( sCheck: any ) {
-	//
-	//     let index = -999;
-	//
-	//     for ( let i = 0; i < this._planView.geometries.length; i++ ) {
-	//
-	//         const odGeometry = this._planView.geometries[ i ];
-	//
-	//         if ( odGeometry.s <= sCheck ) {
-	//             index = i;
-	//         }
-	//
-	//         // if ( ( sCheck >= odGeometry.s ) && ( sCheck <= odGeometry.s2 ) ) {
-	//         //     return i;
-	//         // }
-	//     }
-	//
-	//     return index;
-	// }
-
-	// private checkLaneSectionInterval ( s: number ) {
-	//
-	//     let res = -1;
-	//
-	//     for ( let i = 0; i < this.lanes.laneSection.length; i++ ) {
-	//
-	//         // check if the s belongs to the current record
-	//         if ( this.lanes.laneSection[ i ].checkInterval( s ) ) {
-	//
-	//             res = i;
-	//
-	//         } else {
-	//
-	//             break;
-	//
-	//         }
-	//
-	//     }
-	//
-	//     return res;
-	//
-	// }
-
-	// public findMaxSpeedAt ( s: number, laneId?: number ) {
-	//
-	//     let maxSpeed = null;
-	//
-	//     // get max-speed as per road
-	//     const type = this.getRoadTypeAt( s );
-	//
-	//     const maxSpeedAsPerRoad = type ? type.speed.inkmph() : Number.POSITIVE_INFINITY;
-	//
-	//     // check if lane-speed record exists
-	//     if ( laneId ) {
-	//
-	//         // const laneSpeedRecord = this.getLaneSectionAt( s ).getLaneById( laneId ).getLaneSpeedAt( s );
-	//         const laneSpeedRecord = Number.MAX_VALUE;
-	//
-	//         maxSpeed = Math.min( maxSpeedAsPerRoad, laneSpeedRecord );
-	//
-	//     } else {
-	//
-	//         maxSpeed = maxSpeedAsPerRoad;
-	//
-	//     }
-	//
-	//     return maxSpeed;
-	// }
-
 	/**
 	 * Remove any existing road model from the scene and its children
 	 */
@@ -1034,24 +941,6 @@ export class TvRoad {
 			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 		} );
-	}
-
-	hideHelpers (): void {
-
-		this.spline.hide();
-
-	}
-
-	showSpline (): void {
-
-		this.spline.show();
-
-	}
-
-	hideSpline (): void {
-
-		this.spline.hide();
-
 	}
 
 	addControlPoint ( point: AbstractControlPoint, updateGeometry = true ) {
@@ -1224,90 +1113,6 @@ export class TvRoad {
 
 	}
 
-	public showLaneMarkingNodes () {
-
-		// this.laneSections.forEach( laneSection => {
-
-		// 	laneSection.lanes.forEach( lane => {
-
-		// 		lane.getRoadMarks().forEach( roadmark => {
-
-		// 			if ( roadmark.node ) {
-
-		// 				roadmark.node.visible = true;
-
-		// 			} else {
-
-		// 				roadmark.node = new LaneRoadMarkNode( lane, roadmark );
-
-		// 				SceneService.addToolObject( roadmark.node );
-
-		// 			}
-
-		// 		} );
-
-		// 	} );
-
-		// } );
-	}
-
-	public hideLaneMarkingNodes () {
-
-		// this.laneSections.forEach( laneSection => {
-
-		// 	laneSection.lanes.forEach( lane => {
-
-		// 		lane.getRoadMarks().forEach( roadmark => {
-
-		// 			if ( roadmark.node ) roadmark.node.visible = false;
-
-		// 		} );
-
-		// 	} );
-
-		// } );
-
-	}
-
-	public hideWidthNodes () {
-
-		// this.laneSections.forEach( laneSection => {
-
-		// 	laneSection.lanes.forEach( lane => {
-
-		// 		lane.getLaneWidthVector().forEach( laneWidth => {
-
-		// 			if ( laneWidth.node ) laneWidth.node.visible = false;
-
-		// 		} );
-
-		// 	} );
-
-		// } );
-	}
-
-	public showWidthNodes () {
-
-		// this.laneSections.forEach( laneSection => {
-
-		// 	laneSection.lanes.forEach( lane => {
-
-		// 		lane.getLaneWidthVector().forEach( laneWidth => {
-
-		// 			if ( laneWidth.node ) SceneService.removeFromTool( laneWidth.node );
-
-		// 			laneWidth.node = new LaneWidthNode( laneWidth );
-
-		// 			SceneService.addToolObject( laneWidth.node );
-
-		// 		} );
-
-		// 	} );
-
-		// } );
-
-	}
-
 	getElevationAt ( s: number ): TvElevation {
 
 		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
@@ -1369,29 +1174,6 @@ export class TvRoad {
 
 			currentLaneSection.endS = lastSCoordinate;
 		}
-
-		// // Compute lastSCoordinate for all laneSections
-		// for ( let i = 0; i < this.laneSections.length; i++ ) {
-		//
-		// 	const currentLaneSection = this.laneSections[ i ];
-		//
-		// 	// by default it is equal to road lenght
-		// 	let lastSCoordinate = 0;
-		//
-		// 	// if next laneSection exists lets use its sCoordinate
-		// 	if ( i + 1 < this.laneSections.length ) {
-		//
-		// 		const nextLaneSection = this.laneSections[ i + 1 ];
-		// 		lastSCoordinate = nextLaneSection.attr_s;
-		//
-		// 	} else {
-		//
-		//
-		// 		lastSCoordinate = this.length;
-		// 	}
-		//
-		// 	currentLaneSection.lastSCoordinate = lastSCoordinate;
-		// }
 
 	}
 
@@ -1457,156 +1239,6 @@ export class TvRoad {
 			otherRoad.successor = null;
 
 		}
-
-	}
-
-	// removePredecessor (): void {
-
-	// 	if ( !this.predecessor ) return;
-
-	// 	// junction
-
-	// 	if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) {
-	// 		return;
-	// 	}
-
-	// 	// road
-	// 	const road = this.predecessor.road;
-
-	// 	if ( !road ) return;
-
-	// 	const contactPoint = this.predecessor.contactPoint;
-
-	// 	this.predecessor = null;
-
-	// 	if ( contactPoint === TvContactPoint.START ) {
-
-	// 		road.removePredecessor();
-
-	// 	} else {
-
-	// 		road.removeSuccessor();
-
-	// 	}
-	// }
-
-	// removeSuccessor (): void {
-
-	// 	if ( !this.successor ) return;
-
-	// 	// junction
-
-	// 	if ( this.successor.elementType === TvRoadLinkChildType.junction ) {
-	// 		return;
-	// 	}
-
-	// 	// road
-	// 	const road = this.successor.road;
-
-	// 	if ( !road ) return;
-
-	// 	const contactPoint = this.successor.contactPoint;
-
-	// 	this.successor = null;
-
-	// 	if ( contactPoint === TvContactPoint.START ) {
-
-	// 		road.removePredecessor();
-
-	// 	} else {
-
-	// 		road.removeSuccessor();
-
-	// 	}
-
-	// 	this.successor = null;
-	// }
-
-	addPredecessor ( element: TvRoadLinkChild ) {
-
-		throw new Error( 'Method not implemented.' );
-
-		// this.predecessor = element;
-
-		// if ( !element ) return;
-
-		// if ( element.elementType == TvRoadLinkChildType.junction ) {
-		// 	// TODO: might have to update connecting/incoming road
-		// 	return;
-		// }
-
-		// // direction
-		// // if predecessor is ending then our direction is positive
-		// // -> ->
-		// // if predecessor is starting then our direction is negative
-		// // <- ->
-		// const direction = element.contactPoint === TvContactPoint.END ? 1 : -1;
-
-		// if ( element.contactPoint == TvContactPoint.START ) {
-
-		// 	element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
-
-		// 	element.laneSection.lanes.forEach( lane => {
-		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-		// 	} );
-
-		// } else if ( element.contactPoint == TvContactPoint.END ) {
-
-		// 	element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.START );
-
-		// 	element.laneSection.lanes.forEach( lane => {
-		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-		// 	} );
-
-		// }
-
-		// this.getFirstLaneSection().lanes.forEach( lane => {
-		// 	if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-		// } );
-	}
-
-	addSuccessor ( element: TvRoadLinkChild ) {
-
-		throw new Error( 'Method not implemented.' );
-
-		// this.successor = element;
-
-		// if ( !element ) return;
-
-		// if ( element.elementType == TvRoadLinkChildType.junction ) {
-		// 	// TODO: might have to update connecting/incoming road
-		// 	return;
-		// }
-
-		// // direction
-		// // if successor is starting then our direction is positive
-		// // -> ->
-		// // if successor is ending then our direction is negative
-		// // -> <-
-		// const direction = element.contactPoint === TvContactPoint.START ? 1 : -1;
-
-		// if ( element.contactPoint == TvContactPoint.START ) {
-
-		// 	//
-		// 	element.road.setPredecessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
-
-		// 	element.laneSection.lanes.forEach( lane => {
-		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id * direction );
-		// 	} );
-
-		// } else if ( element.contactPoint == TvContactPoint.END ) {
-
-		// 	element.road.setSuccessor( TvRoadLinkChildType.road, this.id, TvContactPoint.END );
-
-		// 	element.laneSection.lanes.forEach( lane => {
-		// 		if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-		// 	} );
-
-		// }
-
-		// this.getLastLaneSection().lanes.forEach( lane => {
-		// 	if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-		// } );
 
 	}
 

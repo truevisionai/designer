@@ -38,7 +38,7 @@ export class RoadDividerTool extends BaseTool {
 
 		super.init();
 
-		this.tool.base.init();
+		this.tool.base.reset();
 
 		this.tool.base.addSelectionStrategy( new RoadCoordStrategy() );
 
@@ -59,6 +59,8 @@ export class RoadDividerTool extends BaseTool {
 	disable () {
 
 		super.disable();
+
+		this.tool.base.reset();
 
 		this.tool.roadService.hideAllRoadNodes();
 

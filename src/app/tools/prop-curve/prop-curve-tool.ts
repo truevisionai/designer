@@ -50,7 +50,7 @@ export class PropCurveTool extends BaseTool {
 
 	init (): void {
 
-		this.tool.base.init();
+		this.tool.base.reset();
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy<DynamicControlPoint<PropCurve>>() );
 
@@ -73,6 +73,8 @@ export class PropCurveTool extends BaseTool {
 	disable (): void {
 
 		super.disable();
+
+		this.tool.base.reset();
 
 		this.tool.hidePropCurves();
 

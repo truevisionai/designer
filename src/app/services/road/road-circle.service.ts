@@ -193,22 +193,22 @@ export class RoadCircleService {
 
 				const nextRoad = roads[ j + 1 ];
 
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				road.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
+				road.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
-				this.roadLinkService.addSuccessor( road, successor );
-				this.roadLinkService.addPredecessor( nextRoad, predecessor );
+				this.roadLinkService.linkSuccessor( road, road.successor );
+				this.roadLinkService.linkPredecessor( nextRoad, road.predecessor );
 
 			} else {
 
 				// its last road, so make connection with the first one
 				const firstRoad = roads[ 0 ];
 
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				road.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
+				road.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
 
-				this.roadLinkService.addSuccessor( road, successor );
-				this.roadLinkService.addPredecessor( firstRoad, predecessor );
+				this.roadLinkService.linkSuccessor( road, road.successor );
+				this.roadLinkService.linkPredecessor( firstRoad, road.predecessor );
 
 			}
 

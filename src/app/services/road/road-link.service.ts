@@ -5,17 +5,19 @@ import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-co
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { MapService } from '../map.service';
+import { SplineService } from '../spline.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadLinkService {
 
-	constructor ( private mapService: MapService ) { }
+	constructor (
+		private mapService: MapService,
+		private splineService: SplineService,
+	) { }
 
-	addPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
-
-		mainRoad.predecessor = link;
+	linkPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
 
 		if ( !link ) return;
 
@@ -77,9 +79,7 @@ export class RoadLinkService {
 
 	}
 
-	addSuccessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
-
-		mainRoad.successor = link;
+	linkSuccessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
 
 		if ( !link ) return;
 
@@ -107,7 +107,7 @@ export class RoadLinkService {
 
 		if ( link.contactPoint == TvContactPoint.START ) {
 
-			linkedRoad.setPredecessor( TvRoadLinkChildType.road, linkedRoad.id, TvContactPoint.END );
+			linkedRoad.setPredecessor( TvRoadLinkChildType.road, mainRoad.id, TvContactPoint.END );
 
 			linkedLaneSection.lanes.forEach( lane => {
 
@@ -159,7 +159,7 @@ export class RoadLinkService {
 
 	}
 
-	removeSuccessor ( road: TvRoad ) {
+	private removeSuccessor ( road: TvRoad ) {
 
 		if ( !road.successor ) return;
 
@@ -181,10 +181,10 @@ export class RoadLinkService {
 
 		}
 
-		road.successor = null;
+		// road.successor = null;
 	}
 
-	removePredecessor ( road: TvRoad ) {
+	private removePredecessor ( road: TvRoad ) {
 
 		if ( !road.predecessor ) return;
 
@@ -206,7 +206,7 @@ export class RoadLinkService {
 
 		}
 
-		road.predecessor = null;
+		// road.predecessor = null;
 	}
 
 	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
@@ -249,9 +249,25 @@ export class RoadLinkService {
 
 	hideLinks ( road: TvRoad ) {
 
-		road.successor?.hideSpline();
+		if ( road.successor ) {
 
-		road.predecessor?.hideSpline();
+			const successor = this.getElement<TvRoad>( road.successor );
+
+			this.splineService.hideLines( successor.spline );
+
+			this.splineService.hideControlPoints( successor.spline );
+
+		}
+
+		if ( road.predecessor ) {
+
+			const predecessor = this.getElement<TvRoad>( road.predecessor );
+
+			this.splineService.hideLines( predecessor.spline );
+
+			this.splineService.hideControlPoints( predecessor.spline );
+
+		}
 
 	}
 
@@ -259,13 +275,21 @@ export class RoadLinkService {
 
 		if ( this.shouldUpdateSuccessor( road, controlPoint ) ) {
 
-			road.successor?.showSpline();
+			const successor = this.getElement<TvRoad>( road.successor );
+
+			this.splineService.showLines( successor.spline );
+
+			this.splineService.showControlPoints( successor.spline );
 
 		}
 
 		if ( this.shouldUpdatePredecessor( road, controlPoint ) ) {
 
-			road.predecessor?.showSpline();
+			const predecessor = this.getElement<TvRoad>( road.predecessor );
+
+			this.splineService.showLines( predecessor.spline );
+
+			this.splineService.showControlPoints( predecessor.spline );
 
 		}
 
@@ -293,7 +317,9 @@ export class RoadLinkService {
 
 	private shouldUpdatePredecessor ( road: TvRoad, controlPoint: AbstractControlPoint ) {
 
-		const index = road.spline?.controlPoints.indexOf( controlPoint );
+		if ( !road.predecessor ) return false;
+
+		const index = road.spline.controlPoints.indexOf( controlPoint );
 
 		return index === 0 || index === 1;
 
@@ -301,9 +327,11 @@ export class RoadLinkService {
 
 	private shouldUpdateSuccessor ( road: TvRoad, controlPoint: AbstractControlPoint ) {
 
+		if ( !road.successor ) return false;
+
 		const controlPoints = road.spline.controlPoints;
 
-		const index = road.spline?.controlPoints.indexOf( controlPoint );
+		const index = road.spline.controlPoints.indexOf( controlPoint );
 
 		return index === controlPoints.length - 1 || index === controlPoints.length - 2;
 
@@ -373,6 +401,10 @@ export class RoadLinkService {
 
 			return this.mapService.map.getJunctionById( link.elementId ) as any;
 
+		} else {
+
+			throw new Error( 'RoadLinkService.getElement: unknown elementType: ' + link.elementType );
+
 		}
 
 	}
@@ -383,9 +415,13 @@ export class RoadLinkService {
 
 			return this.getElement<TvRoad>( link ).spline.getSecondPoint();
 
-		} else {
+		} else if ( link.contactPoint == TvContactPoint.END ) {
 
 			return this.getElement<TvRoad>( link ).spline.getSecondLastPoint();
+
+		} else {
+
+			throw new Error( 'RoadLinkService.getEnd: unknown contactPoint: ' + link.contactPoint );
 
 		}
 
@@ -397,9 +433,13 @@ export class RoadLinkService {
 
 			return this.getElement<TvRoad>( link ).spline.getFirstPoint();
 
-		} else {
+		} else if ( link.contactPoint == TvContactPoint.END ) {
 
 			return this.getElement<TvRoad>( link ).spline.getLastPoint();
+
+		} else {
+
+			throw new Error( 'RoadLinkService.getMid2: unknown contactPoint: ' + link.contactPoint );
 
 		}
 

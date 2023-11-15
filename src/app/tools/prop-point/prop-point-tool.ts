@@ -63,7 +63,7 @@ export class PropPointTool extends BaseTool {
 
 	init (): void {
 
-		this.tool.base.init();
+		this.tool.base.reset();
 
 		this.tool.selection.reset();
 
@@ -92,6 +92,8 @@ export class PropPointTool extends BaseTool {
 	disable (): void {
 
 		super.disable();
+
+		this.tool.base.reset();
 
 		this.tool.removeAll();
 

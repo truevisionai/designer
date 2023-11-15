@@ -14,8 +14,8 @@ export class RoadSelectionListener extends Manager {
 
 	init () {
 
-		MapEvents.roadSelected.subscribe( e => this.onRoadSelected( e ) );
-		MapEvents.roadUnselected.subscribe( e => this.onRoadUnselected( e ) );
+		// MapEvents.roadSelected.subscribe( e => this.onRoadSelected( e ) );
+		// MapEvents.roadUnselected.subscribe( e => this.onRoadUnselected( e ) );
 
 	}
 
@@ -23,7 +23,7 @@ export class RoadSelectionListener extends Manager {
 
 		if ( this.debug ) console.debug( e );
 
-		ToolManager.currentTool.onRoadSelected( e.road );
+		// ToolManager.currentTool.onRoadSelected( e.road );
 
 	}
 
@@ -31,7 +31,7 @@ export class RoadSelectionListener extends Manager {
 
 		if ( this.debug ) console.debug( e );
 
-		ToolManager.currentTool.onRoadUnselected( e.road );
+		// ToolManager.currentTool.onRoadUnselected( e.road );
 	}
 
 }

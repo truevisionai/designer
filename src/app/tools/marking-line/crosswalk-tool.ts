@@ -48,7 +48,7 @@ export class CrosswalkTool extends BaseTool {
 
 		super.init();
 
-		this.tool.base.init();
+		this.tool.base.reset();
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 		this.tool.base.addSelectionStrategy( new SelectRoadStrategy() );
@@ -67,6 +67,8 @@ export class CrosswalkTool extends BaseTool {
 	disable (): void {
 
 		super.disable();
+
+		this.tool.base.reset();
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 

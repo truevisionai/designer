@@ -223,7 +223,7 @@ export class BaseToolService {
 
 	}
 
-	init () {
+	reset () {
 
 		this.clearStrategies();
 

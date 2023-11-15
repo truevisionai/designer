@@ -32,7 +32,7 @@ export class PropCurveService {
 
 		this.mapService.map.propCurves.push( curve );
 
-		this.splineService.show( curve.spline );
+		this.splineService.showLines( curve.spline );
 
 		this.splineService.showControlPoints( curve.spline );
 
@@ -46,7 +46,7 @@ export class PropCurveService {
 
 			this.mapService.map.propCurves.splice( index, 1 );
 
-			this.splineService.hide( curve.spline );
+			this.splineService.hideLines( curve.spline );
 
 			this.splineService.hideControlPoints( curve.spline );
 

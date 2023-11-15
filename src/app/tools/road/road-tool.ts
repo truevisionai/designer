@@ -1,4 +1,3 @@
-import { AddRoadPointCommand } from 'app/tools/road/add-road-point-command';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
@@ -12,13 +11,15 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { Object3D } from 'three';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
 import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
 import { AddObjectCommand } from "../../commands/add-object-command";
-
+import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { SceneService } from 'app/services/scene.service';
+import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 export class RoadTool extends BaseTool {
 
@@ -26,21 +27,23 @@ export class RoadTool extends BaseTool {
 
 	toolType: ToolType = ToolType.Road;
 
-	roadChanged: boolean;
+	private roadChanged: boolean;
 
-	get selectedControlPoint (): SplineControlPoint {
+	private debug = true;
+
+	private get selectedControlPoint (): SplineControlPoint {
 
 		return this.tool.selection.getLastSelected<SplineControlPoint>( SplineControlPoint.name );
 
 	}
 
-	get selectedNode (): RoadNode {
+	private get selectedNode (): RoadNode {
 
 		return this.tool.selection.getLastSelected<RoadNode>( RoadNode.name );
 
 	}
 
-	get selectedRoad (): TvRoad {
+	private get selectedRoad (): TvRoad {
 
 		return this.tool.selection.getLastSelected<TvRoad>( TvRoad.name );
 
@@ -56,11 +59,15 @@ export class RoadTool extends BaseTool {
 
 		this.tool.selection.reset();
 
+		this.tool.base.reset();
+
 		this.tool.selection.registerStrategy( SplineControlPoint.name, new ControlPointStrategy() );
 
 		this.tool.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
 
 		this.tool.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+
+		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
 	}
 
@@ -78,23 +85,36 @@ export class RoadTool extends BaseTool {
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
-		this.selectedControlPoint?.unselect();
+		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
+
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
 		this.tool.roadService.hideAllRoadNodes();
 
+		this.tool.selection.reset();
+
+		this.tool.base.reset();
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( this.selectedRoad ) {
 
+			if ( this.selectedRoad.successor ) {
+
+				this.setHint( 'Cannot add a control point to a road with a successor' );
+
+				return;
+
+			}
+
 			const point = ControlPointFactory.createControl( this.selectedRoad.spline, e.point );
 
-			CommandHistory.executeMany(
+			const addPointCommand = new AddObjectCommand( point );
 
-				new AddRoadPointCommand( this.selectedRoad, point )
+			const selectPointCommand = new SelectObjectCommand( point );
 
-			);
+			CommandHistory.executeMany( addPointCommand, selectPointCommand );
 
 		} else {
 
@@ -102,17 +122,13 @@ export class RoadTool extends BaseTool {
 
 			const point = ControlPointFactory.createControl( road.spline, e.point );
 
-			const addCommand = new AddObjectCommand( road );
+			const addRoadCommand = new AddObjectCommand( road );
 
-			// CommandHistory.executeMany(
+			const selectRoadCommand = new SelectObjectCommand( road );
 
-			// 	new AddRoadCommandv2( this.tool.mapService.map, [ road ], true ),
+			road.addControlPoint( point );
 
-			// 	new AddRoadPointCommand( road, point ),
-
-			// 	new SelectRoadCommandv2( road )
-
-			// );
+			CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
 
 		}
 
@@ -126,27 +142,25 @@ export class RoadTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		// const roadCoord = this.tool.roadStrategy.onPointerDown( e );
+		if ( !this.isPointerDown ) return;
 
-		// // console.log( 'roadCoord', roadCoord );
+		if ( !this.selectedControlPoint ) return;
 
-		// // if ( !this.roadToolService.pointStrategy.onPointerMoved( e ) ) this.nodeStrategy.onPointerMoved( e );
+		if ( !this.selectedControlPoint.isSelected ) return;
 
-		// if ( this.isPointerDown && this.selectedControlPoint?.isSelected ) {
+		this.tool.base.handleMovement( e, ( position ) => {
 
-		// 	this.selectedControlPoint.position.copy( e.point );
+			this.selectedControlPoint.position.copy( position.position );
 
-		// 	// this.controlPoint.position.copy( e.point );
+			this.selectedRoad.spline.update();
 
-		// 	// this.selectedRoad.spline.update();
+			this.tool.roadLinkService.updateLinks( this.selectedRoad, this.selectedControlPoint );
 
-		// 	// this.roadLinkService.updateLinks( this.selectedRoad, this.controlPoint );
+			this.tool.roadLinkService.showLinks( this.selectedRoad, this.selectedControlPoint );
 
-		// 	// this.roadLinkService.showLinks( this.selectedRoad, this.controlPoint );
+			this.roadChanged = true;
 
-		// 	this.roadChanged = true;
-
-		// }
+		} );
 
 	}
 
@@ -158,9 +172,11 @@ export class RoadTool extends BaseTool {
 
 			const newPosition = this.selectedControlPoint.position.clone();
 
-			CommandHistory.execute( new UpdatePositionCommand( this.selectedControlPoint, newPosition, oldPosition ) );
+			const updateCommand = new UpdatePositionCommand( this.selectedControlPoint, newPosition, oldPosition );
 
-			// this.roadLinkService.hideLinks( this.selectedRoad );
+			CommandHistory.execute( updateCommand );
+
+			this.tool.roadLinkService.hideLinks( this.selectedRoad );
 
 		}
 
@@ -168,50 +184,93 @@ export class RoadTool extends BaseTool {
 
 	}
 
-	onRoadSelected ( road: TvRoad ): void {
+	onObjectAdded ( object: any ): void {
 
-		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
+		if ( object instanceof TvRoad ) {
 
-		// this.selectedRoad = road;
+			this.onRoadAdded( object );
 
-		this.tool.showRoad( road );
+		} else if ( object instanceof SplineControlPoint ) {
 
-		AppInspector.setInspector( RoadInspector, { road } );
+			this.onControlPointAdded( object );
 
-	}
+		} else {
 
-	onRoadUnselected ( road: TvRoad ): void {
+			throw new Error( 'RoadTool.onObjectAdded: unknown object type: ' + object.constructor.name );
 
-		// this.selectedRoad = null;
-
-		this.tool.hideRoad( road );
-
-		AppInspector.clear();
+		}
 
 	}
 
-	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
+	onObjectRemoved ( object: any ): void {
 
-		// this.selectedControlPoint?.unselect();
+		if ( object instanceof TvRoad ) {
 
-		// this.selectedControlPoint = controlPoint;
+			this.onRoadRemoved( object );
 
-		controlPoint?.select();
+		} else if ( object instanceof SplineControlPoint ) {
 
-		AppInspector.setInspector( RoadInspector, { road: this.selectedRoad, controlPoint } );
+			this.onControlPointRemoved( object );
+
+		} else {
+
+			throw new Error( 'RoadTool.onObjectRemoved: unknown object type: ' + object.constructor.name );
+
+		}
 
 	}
 
-	onControlPointUnselected ( controlPoint: AbstractControlPoint ): void {
+	onRoadRemoved ( road: TvRoad ) {
 
-		controlPoint?.unselect();
+		this.map.removeRoad( road );
 
-		// this.selectedControlPoint = null;
+		this.tool.roadSplineService.removeRoadSegment( road );
 
-		AppInspector.clear();
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+
 	}
 
-	onObjectSelected ( object: Object3D ): void {
+	onControlPointRemoved ( object: SplineControlPoint ) {
+
+		SceneService.removeFromTool( object );
+
+		this.selectedRoad.removeControlPoint( object );
+
+		if ( this.selectedRoad.spline.controlPoints.length < 2 ) return;
+
+		this.tool.roadSplineService.rebuildSplineRoads( this.selectedRoad.spline );
+
+		this.tool.roadService.updateRoadNodes( this.selectedRoad );
+
+	}
+
+	onRoadAdded ( road: TvRoad ): void {
+
+		this.map.addRoad( road );
+
+		this.tool.roadSplineService.addRoadSegment( road );
+
+		this.tool.roadSplineService.rebuildSplineRoads( road.spline );
+
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+
+	}
+
+	onControlPointAdded ( controlPoint: SplineControlPoint ): void {
+
+		SceneService.addToolObject( controlPoint );
+
+		this.selectedRoad.addControlPoint( controlPoint );
+
+		if ( this.selectedRoad.spline.controlPoints.length < 2 ) return;
+
+		this.tool.roadSplineService.rebuildSplineRoads( this.selectedRoad.spline );
+
+		this.tool.roadService.updateRoadNodes( this.selectedRoad );
+
+	}
+
+	onObjectSelected ( object: Object ): void {
 
 		if ( object instanceof RoadNode ) {
 
@@ -221,21 +280,19 @@ export class RoadTool extends BaseTool {
 
 			this.onRoadSelected( object );
 
+		} else if ( object instanceof SplineControlPoint ) {
+
+			this.onControlPointSelected( object );
+
+		} else {
+
+			throw new Error( 'RoadTool.onObjectSelected: unknown object type: ' + object.constructor.name );
+
 		}
 
 	}
 
-	onNodeSelected ( object: RoadNode ) {
-
-		// this.selectedNode?.unselect();
-
-		// this.selectedNode = object;
-
-		// this.selectedNode?.select();
-
-	}
-
-	onObjectUnselected ( object: Object3D ): void {
+	onObjectUnselected ( object: Object ): void {
 
 		if ( object instanceof RoadNode ) {
 
@@ -245,15 +302,87 @@ export class RoadTool extends BaseTool {
 
 			this.onRoadUnselected( object );
 
+		} else if ( object instanceof SplineControlPoint ) {
+
+			this.onControlPointUnselected( object );
+
+		} else {
+
+			throw new Error( 'RoadTool.onObjectUnselected: unknown object type: ' + object.constructor.name );
+
 		}
 
 	}
 
-	onNodeUnselected ( object: RoadNode ) {
+	onRoadSelected ( road: TvRoad ): void {
 
-		object?.unselect();
+		console.log( this.selectedRoad, road );
 
-		// this.selectedNode = null;
+		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
+
+		this.tool.showRoad( road );
+
+		AppInspector.setInspector( RoadInspector, { road } );
+
+		// this.tool.base.setHint( 'Click on the road to add a control point' );
+	}
+
+	onRoadUnselected ( road: TvRoad ): void {
+
+		this.tool.hideRoad( road );
+
+		AppInspector.clear();
+
+	}
+
+	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
+
+		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
+
+		controlPoint?.select();
+
+		AppInspector.setInspector( RoadInspector, { road: this.selectedRoad, controlPoint } );
+
+		// this.tool.base.setHint( 'Drag and move the control point to change the road' );
+	}
+
+	onControlPointUnselected ( controlPoint: AbstractControlPoint ): void {
+
+		controlPoint?.unselect();
+
+		AppInspector.clear();
+
+	}
+
+	onNodeSelected ( node: RoadNode ) {
+
+		if ( this.selectedNode ) {
+
+			this.selectedNode.unselect();
+
+			const road = this.tool.roadService.createJoiningRoad( this.selectedNode, node );
+
+			const addRoadCommand = new AddObjectCommand( road );
+
+			const selectRoadCommand = new SelectObjectCommand( road );
+
+			CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
+
+			this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+
+		} else {
+
+			node?.select();
+
+			this.tool.base.setHint( 'Select another node to connect' );
+
+		}
+
+	}
+
+	onNodeUnselected ( node: RoadNode ) {
+
+		node?.unselect();
 
 	}
 

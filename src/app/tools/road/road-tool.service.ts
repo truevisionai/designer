@@ -13,6 +13,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SelectionService } from '../selection.service';
+import { RoadLinkService } from 'app/services/road/road-link.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,7 +30,8 @@ export class RoadToolService {
 		public roadSplineService: RoadSplineService,
 		public base: BaseToolService,
 		public mapService: MapService,
-		public controlPointService: ControlPointFactory
+		public controlPointService: ControlPointFactory,
+		public roadLinkService: RoadLinkService,
 	) {
 		// this.pointStrategy = new ControlPointStrategy();
 		// this.roadStrategy = new RoadCoordStrategy();

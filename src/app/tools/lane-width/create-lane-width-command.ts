@@ -1,105 +1,105 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvLaneWidth } from '../../modules/tv-map/models/tv-lane-width';
-import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
-import { BaseCommand } from '../../commands/base-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { SceneService } from '../../services/scene.service';
-import { LaneWidthTool } from './lane-width-tool';
-import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
-import { MapEvents } from 'app/events/map-events';
+// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+// import { Vector3 } from 'three';
+// import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
+// import { TvLane } from '../../modules/tv-map/models/tv-lane';
+// import { TvLaneWidth } from '../../modules/tv-map/models/tv-lane-width';
+// import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
+// import { BaseCommand } from '../../commands/base-command';
+// import { SetInspectorCommand } from '../../commands/set-inspector-command';
+// import { SceneService } from '../../services/scene.service';
+// import { LaneWidthTool } from './lane-width-tool';
+// import { SelectLaneWidthNodeCommand } from './select-lane-width-node-command';
+// import { MapEvents } from 'app/events/map-events';
 
-export class CreateWidthNodeCommand extends BaseCommand {
+// export class CreateWidthNodeCommand extends BaseCommand {
 
-	private inspectorCommand: SetInspectorCommand;
-	private selectCommand: SelectLaneWidthNodeCommand;
+// 	private inspectorCommand: SetInspectorCommand;
+// 	private selectCommand: SelectLaneWidthNodeCommand;
 
-	private readonly laneWidth: TvLaneWidth;
-	private readonly oldNode: LaneWidthNode;
-	private readonly oldLane: TvLane;
+// 	private readonly laneWidth: TvLaneWidth;
+// 	private readonly oldNode: LaneWidthNode;
+// 	private readonly oldLane: TvLane;
 
-	constructor ( private tool: LaneWidthTool, private newLane: TvLane, position: Vector3 ) {
+// 	constructor ( private tool: LaneWidthTool, private newLane: TvLane, position: Vector3 ) {
 
-		super();
+// 		super();
 
-		this.oldNode = tool.node;
-		this.oldLane = tool.lane;
+// 		this.oldNode = tool.node;
+// 		this.oldLane = tool.lane;
 
-		const road = newLane.laneSection.road;
+// 		const road = newLane.laneSection.road;
 
-		const roadCoord = road.getCoordAt( position );
+// 		const roadCoord = road.getCoordAt( position );
 
-		const s = roadCoord.s - newLane.laneSection.s;
+// 		const s = roadCoord.s - newLane.laneSection.s;
 
-		this.laneWidth = newLane.getLaneWidthAt( s ).clone( s );
+// 		this.laneWidth = newLane.getLaneWidthAt( s ).clone( s );
 
-		this.laneWidth.node = new LaneWidthNode( this.laneWidth );
+// 		this.laneWidth.node = new LaneWidthNode( this.laneWidth );
 
-		this.inspectorCommand = new SetInspectorCommand( LaneWidthInspector, this.laneWidth );
-		this.selectCommand = new SelectLaneWidthNodeCommand( this.tool, this.laneWidth.node );
-	}
+// 		this.inspectorCommand = new SetInspectorCommand( LaneWidthInspector, this.laneWidth );
+// 		this.selectCommand = new SelectLaneWidthNodeCommand( this.tool, this.laneWidth.node );
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.oldLane?.laneSection.road.hideWidthNodes();
-		this.newLane.laneSection.road.showWidthNodes();
+// 		this.oldLane?.laneSection.road.hideWidthNodes();
+// 		this.newLane.laneSection.road.showWidthNodes();
 
-		this.tool.node = this.laneWidth.node;
-		this.tool.lane = this.newLane;
+// 		this.tool.node = this.laneWidth.node;
+// 		this.tool.lane = this.newLane;
 
-		this.newLane.addWidthRecordInstance( this.laneWidth );
-		this.laneWidth.node.updateLaneWidthValues();
+// 		this.newLane.addWidthRecordInstance( this.laneWidth );
+// 		this.laneWidth.node.updateLaneWidthValues();
 
-		SceneService.addToolObject( this.laneWidth.node );
-		this.rebuild( this.laneWidth.node.road );
+// 		SceneService.addToolObject( this.laneWidth.node );
+// 		this.rebuild( this.laneWidth.node.road );
 
-		this.tool.laneHelper.clear();
-		this.tool.laneHelper.drawRoad( this.newLane?.laneSection.road );
+// 		this.tool.laneHelper.clear();
+// 		this.tool.laneHelper.drawRoad( this.newLane?.laneSection.road );
 
-		this.inspectorCommand.execute();
-		this.selectCommand.execute();
-	}
+// 		this.inspectorCommand.execute();
+// 		this.selectCommand.execute();
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.newLane?.laneSection.road.hideWidthNodes();
-		this.oldLane?.laneSection.road.showWidthNodes();
+// 		this.newLane?.laneSection.road.hideWidthNodes();
+// 		this.oldLane?.laneSection.road.showWidthNodes();
 
-		this.tool.laneHelper.clear();
-		this.tool.laneHelper.drawRoad( this.oldLane?.laneSection.road );
+// 		this.tool.laneHelper.clear();
+// 		this.tool.laneHelper.drawRoad( this.oldLane?.laneSection.road );
 
-		this.tool.node = this.oldNode;
-		this.tool.lane = this.oldLane;
+// 		this.tool.node = this.oldNode;
+// 		this.tool.lane = this.oldLane;
 
-		const index = this.laneWidth.node.lane.width.findIndex(
-			laneWidth => laneWidth.uuid === this.laneWidth.uuid
-		);
-		this.laneWidth.node.lane.width.splice( index, 1 );
-		this.laneWidth.node.updateLaneWidthValues();
+// 		const index = this.laneWidth.node.lane.width.findIndex(
+// 			laneWidth => laneWidth.uuid === this.laneWidth.uuid
+// 		);
+// 		this.laneWidth.node.lane.width.splice( index, 1 );
+// 		this.laneWidth.node.updateLaneWidthValues();
 
-		SceneService.removeFromTool( this.laneWidth.node );
-		this.rebuild( this.laneWidth.node.road );
+// 		SceneService.removeFromTool( this.laneWidth.node );
+// 		this.rebuild( this.laneWidth.node.road );
 
-		this.inspectorCommand.undo();
-		this.selectCommand.undo();
-	}
+// 		this.inspectorCommand.undo();
+// 		this.selectCommand.undo();
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-	rebuild ( road: TvRoad ): void {
+// 	rebuild ( road: TvRoad ): void {
 
-		MapEvents.laneUpdated.emit( this.laneWidth.lane );
+// 		MapEvents.laneUpdated.emit( this.laneWidth.lane );
 
-	}
+// 	}
 
-}
+// }

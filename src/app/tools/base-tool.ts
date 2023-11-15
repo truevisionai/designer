@@ -120,15 +120,15 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	onDeleteKeyDown () { }
 
-	onRoadCreated ( road: TvRoad ) { }
+	// onRoadCreated ( road: TvRoad ) { }
 
-	onRoadSelected ( road: TvRoad ) { }
+	// onRoadSelected ( road: TvRoad ) { }
 
-	onRoadUnselected ( road: TvRoad ) { }
+	// onRoadUnselected ( road: TvRoad ) { }
 
-	onControlPointSelected ( controlPoint: AbstractControlPoint ) { }
+	// onControlPointSelected ( controlPoint: AbstractControlPoint ) { }
 
-	onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
+	// onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
 
 	onObjectSelected ( object: any ) { }
 

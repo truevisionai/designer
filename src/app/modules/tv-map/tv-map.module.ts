@@ -47,7 +47,6 @@ import { LaneLinkInspector } from '../../views/inspectors/lane-link-inspector/la
 import { LaneOffsetInspector } from '../../views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
 import { LaneRoadmarkInspectorComponent } from '../../views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
-import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
 import { ObjectPreviewComponent } from '../../views/inspectors/object-preview/object-preview.component';
 import { PropCurveInspectorComponent } from '../../views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
@@ -70,7 +69,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 	declarations: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,
-		LaneWidthInspector,
 		NewRoadDialogComponent,
 		RoadInspector,
 		LaneRoadmarkInspectorComponent,
@@ -143,7 +141,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 	entryComponents: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,
-		LaneWidthInspector,
 		NewRoadDialogComponent,
 		RoadInspector,
 		LaneRoadmarkInspectorComponent,

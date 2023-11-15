@@ -221,30 +221,6 @@ export class TvRoadLinkChild {
 		// if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
 	}
 
-	hideSpline () {
-
-		if ( this.elementType == TvRoadLinkChildType.road ) {
-
-			this.getElement<TvRoad>().hideSpline();
-
-		} else {
-
-		}
-
-	}
-
-	showSpline () {
-
-		if ( this.elementType == TvRoadLinkChildType.road ) {
-
-			this.getElement<TvRoad>().showSpline();
-
-		} else {
-
-		}
-
-	}
-
 	rebuild () {
 
 		if ( this.elementType == TvRoadLinkChildType.road ) {

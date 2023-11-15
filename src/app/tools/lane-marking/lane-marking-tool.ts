@@ -50,7 +50,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.setHint( 'Use LEFT CLICK to select road or lane' );
 
-		this.laneMarkingService.base.init();
+		this.laneMarkingService.base.reset();
 
 		this.laneMarkingService.base.addSelectionStrategy( new ControlPointStrategy( {
 			higlightOnHover: true,
@@ -83,6 +83,8 @@ export class LaneMarkingTool extends BaseTool {
 	disable (): void {
 
 		super.disable();
+
+		this.laneMarkingService.base.reset();
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 

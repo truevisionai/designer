@@ -41,7 +41,7 @@ export class SurfaceTool extends BaseTool {
 
 	init (): void {
 
-		this.tool.base.init();
+		this.tool.base.reset();
 
 		this.tool.selection.registerStrategy( DynamicControlPoint.name, new ControlPointStrategy() );
 
@@ -62,6 +62,8 @@ export class SurfaceTool extends BaseTool {
 	disable (): void {
 
 		super.disable();
+
+		this.tool.base.reset();
 
 		this.tool.hideSurfaceHelpers();
 

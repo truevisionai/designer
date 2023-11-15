@@ -3,33 +3,67 @@ import { MapEvents } from "../events/map-events";
 
 export class SelectObjectCommand extends BaseCommand {
 
-    constructor ( private object: any, private previousObject?: any ) {
-        super();
-    }
+	private readonly objects: any[] = [];
+	private readonly previousObjects: any[] = [];
 
-    execute () {
+	constructor ( object: any | any[], previousObject?: any | any[] ) {
 
-        MapEvents.objectSelected.emit( this.object );
+		super();
 
-    }
+		if ( object == null ) throw new Error( 'object cannot be null' );
 
-    undo (): void {
+		if ( Array.isArray( object ) ) {
 
-        if ( this.previousObject ) {
+			this.objects = [ ...object ];
 
-            MapEvents.objectSelected.emit( this.previousObject );
+		} else {
 
-        } else {
+			this.objects = [ object ];
 
-            MapEvents.objectUnselected.emit( this.object );
+		}
 
-        }
+		if ( previousObject ) {
 
-    }
+			this.previousObjects = Array.isArray( previousObject ) ? [ ...previousObject ] : [ previousObject ];
 
-    redo (): void {
+		}
+	}
 
-        this.execute();
+	execute () {
 
-    }
+		this.objects.forEach( object => {
+
+			MapEvents.objectSelected.emit( object );
+
+		} );
+
+	}
+
+	undo (): void {
+
+		if ( this.previousObjects.length > 0 ) {
+
+			this.previousObjects.forEach( previousObject => {
+
+				MapEvents.objectSelected.emit( previousObject );
+
+			} );
+
+		} else {
+
+			this.objects.forEach( object => {
+
+				MapEvents.objectUnselected.emit( object );
+
+			} );
+
+		}
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
 }

@@ -376,7 +376,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	update (): void {
 
-		this.laneSection?.road?.hideHelpers();
+		// this.laneSection?.road?.hideHelpers();
 
 	}
 

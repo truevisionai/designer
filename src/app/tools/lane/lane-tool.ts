@@ -30,7 +30,7 @@ export class LaneTool extends BaseTool {
 
 	init (): void {
 
-		this.laneService.base.init();
+		this.laneService.base.reset();
 
 		this.laneService.base.addSelectionStrategy( new SelectLineStrategy() );
 
@@ -44,7 +44,7 @@ export class LaneTool extends BaseTool {
 
 		super.disable();
 
-		this.laneService.base.clearStrategies();
+		this.laneService.base.reset();
 
 		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
 

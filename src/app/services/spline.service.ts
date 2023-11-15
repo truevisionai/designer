@@ -12,13 +12,13 @@ export class SplineService {
 
 	constructor () { }
 
-	show ( spline: AbstractSpline ) {
+	showLines ( spline: AbstractSpline ) {
 
 		spline.showLines();
 
 	}
 
-	hide ( spline: AbstractSpline ) {
+	hideLines ( spline: AbstractSpline ) {
 
 		spline.hideLines();
 

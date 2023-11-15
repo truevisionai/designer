@@ -351,7 +351,7 @@ export class SceneImporterService extends AbstractReader {
 
 		const road = RoadFactory.createNewRoad( name, length, id, junction );
 
-		road.sStart = xml.attr_sStart ?? 0;
+		road.sStart = parseFloat( xml.attr_sStart ) ?? 0;
 
 		road.drivingMaterialGuid = xml.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;

@@ -9,7 +9,7 @@ import { Manager } from './manager';
 export class ElevationManager extends Manager {
 
 	private static _instance = new ElevationManager();
-	private debug = true;
+	private debug = false;
 
 	// private elevationService = new RoadElevationService();
 

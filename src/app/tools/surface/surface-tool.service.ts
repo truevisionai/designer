@@ -100,14 +100,14 @@ export class SurfaceToolService {
 
 	hideSurface ( surface: TvSurface ) {
 
-		this.splineService.hide( surface.spline );
+		this.splineService.hideLines( surface.spline );
 		this.splineService.hideControlPoints( surface.spline );
 
 	}
 
 	showSurface ( surface: TvSurface ) {
 
-		this.splineService.show( surface.spline );
+		this.splineService.showLines( surface.spline );
 		this.splineService.showControlPoints( surface.spline );
 
 

@@ -12,13 +12,14 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BaseService } from '../base.service';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { SplineService } from '../spline.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadSplineService extends BaseService {
 
-	constructor ( private mapService: MapService ) {
+	constructor ( private mapService: MapService, public spline: SplineService ) {
 		super();
 	}
 

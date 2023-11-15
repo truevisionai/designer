@@ -42,7 +42,7 @@ export class LaneWidthTool extends BaseTool {
 
 	init () {
 
-		this.laneWidthService.base.init();
+		this.laneWidthService.base.reset();
 
 		this.laneWidthService.base.addSelectionStrategy( new ControlPointStrategy( {
 			higlightOnHover: true,
@@ -68,6 +68,8 @@ export class LaneWidthTool extends BaseTool {
 	disable () {
 
 		super.disable();
+
+		this.laneWidthService.base.reset();
 
 		this.laneWidthService.removeAllWidthNodes()
 

@@ -169,7 +169,7 @@ export class JunctionConnectionService {
 
 
 		this.splineService.showControlPoints( connectingRoad.spline );
-		this.splineService.show( connectingRoad.spline );
+		this.splineService.showLines( connectingRoad.spline );
 
 		console.log( connectingRoad.spline.getRoadSegments() );
 
