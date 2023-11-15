@@ -26,7 +26,7 @@ export class TvJunctionLaneLink {
 	constructor ( from: TvLane, to: TvLane, private connection?: TvJunctionConnection ) {
 		this.incomingLane = from;
 		this.connectingLane = to;
-		this.mesh = new LanePathObject( this.incomingRoad, this.connectingRoad, this.connection, this );
+		// this.mesh = new LanePathObject( this.incomingRoad, this.connectingRoad, this.connection, this );
 	}
 
 	get from (): number {

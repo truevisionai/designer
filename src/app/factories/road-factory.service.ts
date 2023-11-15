@@ -110,7 +110,7 @@ export class RoadFactory {
 
 	}
 
-	static createSingleLaneRoad ( side = TvLaneSide.RIGHT, width = 3.6 ): TvRoad {
+	static createSingleLaneRoad ( width = 3.6, side = TvLaneSide.RIGHT ): TvRoad {
 
 		const road = this.createNewRoad();
 
@@ -128,11 +128,11 @@ export class RoadFactory {
 
 		laneSection.getLaneArray().forEach( lane => {
 
-			if ( lane.side !== TvLaneSide.CENTER ) {
+			if ( lane.side === TvLaneSide.CENTER ) return;
 
-				if ( lane.type === TvLaneType.driving ) lane.addWidthRecord( 0, width, 0, 0, 0 );
+			if ( lane.type !== TvLaneType.driving ) return;
 
-			}
+			lane.addWidthRecord( 0, width, 0, 0, 0 );
 
 		} );
 

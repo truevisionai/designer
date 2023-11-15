@@ -6,6 +6,8 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
+import { TvContactPoint } from './tv-common';
+import { Maths } from 'app/utils/maths';
 
 export class TvLaneCoord {
 
@@ -17,6 +19,15 @@ export class TvLaneCoord {
 		public offset: number
 	) {
 
+	}
+
+	get contact (): TvContactPoint {
+
+		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+
+		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+
+		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}
 
 	get roadId (): number {

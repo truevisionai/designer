@@ -172,7 +172,21 @@ export class RoadSplineService extends BaseService {
 		if ( exit == null ) throw new Error( 'exit is null' );
 		if ( side == null ) throw new Error( 'side is null' );
 
-		return this.createSpline( entry.position, entry.direction, exit.position, exit.direction );
+		let entryDirection: Vector3, exitDirection: Vector3;
+
+		if ( entry.contact === TvContactPoint.START ) {
+			entryDirection = entry.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			entryDirection = entry.posTheta.toDirectionVector();
+		}
+
+		if ( exit.contact === TvContactPoint.START ) {
+			exitDirection = exit.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			exitDirection = exit.posTheta.toDirectionVector();
+		}
+
+		return this.createSpline( entry.position, entryDirection, exit.position, exitDirection );
 	}
 
 	/**

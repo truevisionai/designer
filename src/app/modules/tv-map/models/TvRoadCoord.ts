@@ -3,62 +3,70 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
+import { TvLaneCoord } from './tv-lane-coord';
+import { TvLane } from './tv-lane';
 
 export class TvRoadCoord {
 
-    constructor ( public road: TvRoad, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r? ) {
-    }
+	constructor ( public road: TvRoad, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
+	}
 
-    get contact (): TvContactPoint {
+	get contact (): TvContactPoint {
 
-        if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
 
-        if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
 
-        throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
-    }
+		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
+	}
 
-    get laneSection () {
+	get laneSection () {
 
-        if ( this.contact == TvContactPoint.START ) {
+		if ( this.contact == TvContactPoint.START ) {
 
-            return this.road.getFirstLaneSection();
+			return this.road.getFirstLaneSection();
 
-        } else if ( this.contact == TvContactPoint.END ) {
+		} else if ( this.contact == TvContactPoint.END ) {
 
-            return this.road.getLastLaneSection();
+			return this.road.getLastLaneSection();
 
-        } else {
+		} else {
 
-            throw new Error( `TvRoadCoord.laneSection: Invalid contact point ${ this.contact }` );
-        }
+			throw new Error( `TvRoadCoord.laneSection: Invalid contact point ${ this.contact }` );
+		}
 
-    }
+	}
 
-    get roadId (): number {
-        return this.road.id;
-    }
+	get roadId (): number {
 
-    get position (): Vector3 {
-        return this.toPosTheta().toVector3();
-    }
+		return this.road.id;
 
-    get orientation (): Orientation {
+	}
 
-        let h = this.h;
+	get position (): Vector3 {
 
-        if ( this.t > 0 ) h += Math.PI;
+		return this.toPosTheta().toVector3();
 
-        return new Orientation( h, this.p, this.r );
-    }
+	}
 
-    init () {
-    }
+	get orientation (): Orientation {
 
-    add ( value: TvRoadCoord ) {
-    }
+		let h = this.h;
 
-    toPosTheta () {
-        return this.road?.getRoadCoordAt( this.s, this.t );
-    }
+		if ( this.t > 0 ) h += Math.PI;
+
+		return new Orientation( h, this.p, this.r );
+	}
+
+	init () { }
+
+	add ( value: TvRoadCoord ) { }
+
+	toPosTheta () {
+		return this.road?.getRoadCoordAt( this.s, this.t );
+	}
+
+	toLaneCoord ( lane: TvLane ) {
+		return new TvLaneCoord( this.road, this.laneSection, lane, this.s, this.t );
+	}
 }

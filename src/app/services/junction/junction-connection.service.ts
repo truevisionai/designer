@@ -14,6 +14,8 @@ import { MapService } from '../map.service';
 import { SceneService } from '../scene.service';
 import { SplineService } from '../spline.service';
 import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,11 +26,43 @@ export class JunctionConnectionService {
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private splineService: SplineService
-	) { }
+	) {
+	}
 
 	createConnections ( junction: TvJunction, coords: TvRoadCoord[] ) {
 
 		return this.makeConnections( junction, coords );
+
+	}
+
+	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint ) {
+
+		const id = junction.connections.size + 1;
+
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact );
+
+		return connection
+	}
+
+	connectLaneCoord ( l1: TvLaneCoord, l2: TvLaneCoord ): TvRoad {
+
+		const width = l1.lane.getWidthValue( l1.s );
+
+		const road = RoadFactory.createSingleLaneRoad( width );
+
+		road.spline = this.roadSplineService.createManeuverSpline( l1, l2 );
+
+		// this.mapService.map.addRoad( road );
+
+		// this.roadSplineService.addRoadSegment( road );
+
+		// this.roadSplineService.rebuildSplineRoads( road.spline );
+
+		// TvMapBuilder.rebuildRoad( road );
+
+		// MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+
+		return road;
 
 	}
 

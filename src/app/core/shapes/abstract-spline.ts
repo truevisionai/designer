@@ -218,10 +218,12 @@ export abstract class AbstractSpline {
 	}
 
 	getPath ( offset: number = 0 ) {
-		if ( this.type == 'auto' ) {
+		if ( this.type == 'auto' || this.type == 'auto2' || this.type == 'autov2' ) {
 			return new AutoSplinePath( this as any, offset );
 		} else if ( this.type == 'explicit' ) {
 			return new ExplicitSplinePath( this as any, offset );
+		} else {
+			throw new Error( 'Invalid spline type' );
 		}
 	}
 

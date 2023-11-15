@@ -227,7 +227,7 @@ export class ManeuverService extends BaseService {
 		// Apply the rotation to the mesh based on the computed direction
 		mesh.quaternion.setFromUnitVectors( new Vector3( 0, 1, 0 ), direction );
 
-		const boxLine = new BoxGeometry( laneWidth, 0.2, 0.01 );
+		const boxLine = new BoxGeometry( laneWidth, 0.5, 0.01 );
 		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: COLOR.GREEN } ) );
 
 		mesh.add( meshLine );
@@ -249,6 +249,8 @@ export class ManeuverService extends BaseService {
 
 		if ( link.connectingLane.id < 0 ) offset *= -1;
 
+		const path = connection.connectingRoad.spline.getPath( offset );
+
 		// Define extrude settings
 		const extrudeSettings = {
 			steps: 50,
@@ -257,7 +259,7 @@ export class ManeuverService extends BaseService {
 			bevelSize: 1,
 			bevelOffset: 1,
 			bevelSegments: 1,
-			extrudePath: connection.connectingRoad.spline.getPath( offset )
+			extrudePath: path
 		};
 
 		// Create a rectangular shape to be extruded along the path
@@ -271,7 +273,7 @@ export class ManeuverService extends BaseService {
 
 		const mesh = new Mesh( geometry, material );
 
-		const distance = connection.connectingRoad.length / 3;
+		const distance = connection.connectingRoad.length / 5;
 		const arrows = LaneDirectionHelper.drawSingleLane( link.connectingLane, distance, 0.25 );
 
 		arrows.forEach( arrow => mesh.add( arrow ) );

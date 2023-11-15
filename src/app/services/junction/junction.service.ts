@@ -7,13 +7,15 @@ import { RoadDividerService } from '../road/road-divider.service';
 import { ManeuverService } from './maneuver.service';
 import { BaseService } from '../base.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { JunctionMeshService } from './junction-mesh.service';
 import { JunctionNode, JunctionNodeService } from './junction-node.service';
-import { SceneService } from '../scene.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
+import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { LaneLinkService } from './lane-link.service';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,17 +27,18 @@ export class JunctionService extends BaseService {
 		private maneuverService: ManeuverService,
 		private junctionNodeService: JunctionNodeService,
 		public junctionMeshService: JunctionMeshService,
-		private connectionService: JunctionConnectionService,
+		public connectionService: JunctionConnectionService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
-
+		public laneLinkService: LaneLinkService,
+		public mapService: MapService
 	) {
 		super();
 	}
 
 	removeJunctionNodes () {
 
-		this.junctionNodeService.showAllJunctionNodes();
+		this.junctionNodeService.hideAllJunctionNodes();
 	}
 
 	showJunctionNodes () {
