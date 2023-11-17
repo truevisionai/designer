@@ -13,7 +13,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { AbstractReader } from '../../../services/abstract-reader';
 import { readXmlArray, readXmlElement } from '../../../tools/xml-utils';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { EnumHelper, ObjectTypes, TvContactPoint, TvGeometryType, TvLaneSide, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
+import { EnumHelper, ObjectTypes, TvContactPoint, TvGeometryType, TvLaneSide, TvOrientation, TvRoadType, TvUnit, TvUserData } from '../models/tv-common';
 import { TvController, TvControllerControl } from '../models/tv-controller';
 import { TvJunction } from '../models/tv-junction';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
@@ -26,7 +26,7 @@ import { TvMapHeader } from '../models/tv-map-header';
 import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvPlaneView } from '../models/tv-plane-view';
-import { TvRoadLinkChildType } from '../models/tv-road-link-child';
+import { TvRoadLinkChild, TvRoadLinkChildType } from '../models/tv-road-link-child';
 import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../models/tv-road-type.class';
@@ -35,6 +35,7 @@ import { SignShapeType } from './tv-sign.service';
 import { Crosswalk } from "../models/objects/crosswalk";
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvObjectOutline } from "../models/objects/tv-object-outline";
+import { TvRoadLink } from '../models/tv-road.link';
 
 export interface XmlElement {
 	[ key: string ]: any;
@@ -231,62 +232,62 @@ export class OpenDriverParser extends AbstractReader {
 
 		if ( xmlElement.predecessor != null ) {
 
-			this.parseRoadLink( road, xmlElement.predecessor, 0 );
+			road.predecessor = this.parseRoadLinkChild( xmlElement.predecessor );
 
 		}
 
 		if ( xmlElement.successor != null ) {
 
-			this.parseRoadLink( road, xmlElement.successor, 1 );
+			road.successor = this.parseRoadLinkChild( xmlElement.successor );
 
 		}
 
 		if ( xmlElement.neighbor != null ) {
 
-			if ( Array.isArray( xmlElement.neighbor ) ) {
+			console.error( 'neighbour not supported' );
 
-				for ( let i = 0; i < xmlElement.neighbor.length; i++ ) {
-
-					this.parseRoadLink( road, xmlElement.neighbor[ i ], 2 );
-
-				}
-
-			} else {
-
-				this.parseRoadLink( road, xmlElement.neighbor, 2 );
-
-			}
 		}
 	}
 
-	public parseRoadLink ( road: TvRoad, xmlElement: XmlElement, type: number ) {
+	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLinkChild {
 
-		if ( type === 0 ) {
+		const elementType = this.parseElementType( xmlElement.attr_elementType );
+		const elementId = parseFloat( xmlElement.attr_elementId );
+		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-			const elementType = this.parseElementType( xmlElement.attr_elementType );
-			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
+		if ( !contactPoint ) TvConsole.error( 'no contact point found' );
 
+		const elementS = parseFloat( xmlElement.attr_elementS );
+		const elementDir = this.parseOrientation( xmlElement.attr_elementDir );
 
-			road.setPredecessor( elementType, elementId, contactPoint );
+		const roadLink = new TvRoadLinkChild( elementType, elementId, contactPoint );
 
-		} else if ( type === 1 ) {
+		if ( elementS != null ) {
+			roadLink.elementS = elementS;
+		}
 
-			const elementType = this.parseElementType( xmlElement.attr_elementType );
-			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
+		if ( elementDir != null ) {
+			roadLink.elementDir = elementDir;
+		}
 
-			road.setSuccessor( elementType, elementId, contactPoint );
+		return roadLink;
+	}
 
-		} else if ( type === 2 ) {
+	parseOrientation ( value: string ) {
 
-			console.error( 'neighbour not supported' );
+		switch ( value ) {
 
-			// const side = xmlElement.attr_side;
-			// const elementId = xmlElement.attr_elementId;
-			// const direction = xmlElement.attr_direction;
-			//
-			// road.setNeighbor( side, elementId, direction );
+			case '+':
+				return TvOrientation.PLUS;
+
+			case '-':
+				return TvOrientation.MINUS;
+
+			case 'none':
+				return TvOrientation.NONE;
+
+			default:
+				return TvOrientation.PLUS;
 
 		}
 

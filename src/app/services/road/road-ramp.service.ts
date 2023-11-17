@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-junction';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -16,6 +14,9 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { RoadSplineService } from './road-spline.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { JunctionConnectionService } from '../junction/junction-connection.service';
+import { LaneLinkService } from '../junction/lane-link.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,47 +26,78 @@ export class RoadRampService {
 	constructor (
 		public base: BaseToolService,
 		public debug: DebugDrawService,
-		private roadSplineService: RoadSplineService,
+		public roadSplineService: RoadSplineService,
+		private junctionConnection: JunctionConnectionService,
+		private laneLink: LaneLinkService,
 	) { }
 
-	createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord, endCoord: TvLaneCoord | Vector3 ): TvRoad {
+	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvVirtualJunction {
 
-		let v1, v2, v3, v4;
+		if ( startPosition instanceof TvLaneCoord ) {
 
-		if ( endCoord instanceof TvLaneCoord ) {
-			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord.position, startCoord.posTheta.toDirectionVector() );
-		} else if ( endCoord instanceof Vector3 ) {
-			[ v1, v2, v3, v4 ] = this.makeRampRoadPoints( startCoord.position, endCoord, startCoord.posTheta.toDirectionVector() );
+			const sStart = startPosition.s;
+
+			const sEnd = sStart + 20;
+
+			const orientation = TvOrientation.PLUS;
+
+			return JunctionFactory.createVirtualJunction( startPosition.road, sStart, sEnd, orientation );
+
+		} else {
+
+			throw new Error( 'startCoord must be of type TvLaneCoord' );
+
 		}
 
-		const newLane = startCoord.lane.cloneAtS( -1, startCoord.s );
+	}
 
-		const rampRoad = RoadFactory.createRampRoad( newLane );
+	// createConnection ( junction: TvVirtualJunction, startPosition: TvLaneCoord | Vector3, connectingRoad: TvRoad, connectingLane: TvLane ) {
 
-		const connection = new TvJunctionConnection( virtualJunction.connections.size, startCoord.road, rampRoad, TvContactPoint.START, null );
+	// 	const incomingRoad = startPosition instanceof TvLaneCoord ? startPosition.road : null;
 
-		connection.addLaneLink( new TvJunctionLaneLink( startCoord.lane, newLane ) );
+	// 	const incomingLane = startPosition instanceof TvLaneCoord ? startPosition.lane : null;
+
+	// 	const connection = this.junctionConnection.createConnectionV2( junction, incomingRoad, connectingRoad, TvContactPoint.START );
+
+	// 	const laneLink = this.laneLink.createLaneLink( incomingLane, connectingLane );
+
+	// 	connection.addLaneLink( laneLink );
+
+	// 	junction.addConnection( connection );
+
+	// 	return connection;
+
+	// }
+
+	createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): TvRoad {
+
+		const incomingRoad = startCoord instanceof TvLaneCoord ? startCoord.road : null;
+
+		const incomingLane = startCoord instanceof TvLaneCoord ? startCoord.lane : null;
+
+		const sStart = startCoord instanceof TvLaneCoord ? startCoord.s : 0;
+
+		const connectionLane = incomingLane.cloneAtS( -1, sStart );
+
+		const rampRoad = RoadFactory.createRampRoad( connectionLane );
+
+		rampRoad.spline = this.createRampSplineV2( startCoord, endCoord );
+
+		const connection = this.junctionConnection.createConnectionV2( virtualJunction, incomingRoad, rampRoad, TvContactPoint.START );
+
+		connection.addLaneLink( new TvJunctionLaneLink( incomingLane, connectionLane ) );
 
 		virtualJunction.addConnection( connection );
 
 		rampRoad.junctionId = virtualJunction.id;
 
-		rampRoad.addControlPointAt( v1 );
-		rampRoad.addControlPointAt( v2 );
-		rampRoad.addControlPointAt( v3 );
-		rampRoad.addControlPointAt( v4 );
+		// const startElevation = incomingRoad.getElevationValue( sStart );
 
-		const startElevation = startCoord.road.getElevationValue( startCoord.s );
-		const endElevation = endCoord instanceof TvLaneCoord ? endCoord.road.getElevationValue( endCoord.s ) : endCoord.z;
+		// const endElevation = endCoord instanceof TvLaneCoord ? endCoord.road.getElevationValue( endCoord.s ) : endCoord.z;
 
-		rampRoad.addElevation( 0, startElevation + 0.1, 0, 0, 0 );
-		rampRoad.addElevationInstance( new TvElevation( rampRoad.length, endElevation + 0.1, 0, 0, 0 ) );
+		// rampRoad.addElevation( 0, startElevation + 0.1, 0, 0, 0 );
 
-		// rampRoad.updateGeometryFromSpline();
-
-		// rampRoad.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, startCoord.roadId, TvContactPoint.START );
-		// rampRoad.predecessor.elementDir = TvOrientation.PLUS;
-		// rampRoad.predecessor.elementS = startCoord.s;
+		// rampRoad.addElevationInstance( new TvElevation( rampRoad.length, endElevation + 0.1, 0, 0, 0 ) );
 
 		return rampRoad;
 
@@ -161,6 +193,15 @@ export class RoadRampService {
 
 	}
 
+	/**
+	 *
+	 * @param v1
+	 * @param v4
+	 * @param direction1
+	 * @param direction4
+	 * @returns
+	 * @deprecated
+	 */
 	createRampSpline ( v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ): AbstractSpline {
 
 		// const direction = posTheta.toDirectionVector();
@@ -186,6 +227,16 @@ export class RoadRampService {
 		return spline;
 	}
 
+	/**
+	 *
+	 * @param spline
+	 * @param v1
+	 * @param v4
+	 * @param direction1
+	 * @param direction4
+	 * @returns
+	 * @deprecated
+	 */
 	updateRampSpline ( spline: AutoSpline, v1: Vector3, v4: Vector3, direction1: Vector3, direction4?: Vector3 ) {
 
 		// const direction = posTheta.toDirectionVector();

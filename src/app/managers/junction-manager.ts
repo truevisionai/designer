@@ -8,7 +8,8 @@ import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
 import { Manager } from "./manager";
-import { TvJunction, TvVirtualJunction } from "app/modules/tv-map/models/tv-junction";
+import { TvJunction } from "app/modules/tv-map/models/tv-junction";
+import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
 import { JunctionFactory } from "../factories/junction.factory";
 import { Vector3 } from "three";
 import { RoadFactory } from "app/factories/road-factory.service";
@@ -345,7 +346,7 @@ export class JunctionManager extends Manager {
 
 			if ( junction instanceof TvVirtualJunction ) {
 
-				if ( junction.mainRoadId === road.id ) {
+				if ( junction.mainRoad.id === road.id ) {
 
 					return junction
 

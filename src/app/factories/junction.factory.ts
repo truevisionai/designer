@@ -4,7 +4,8 @@
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneType, TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvJunction, TvVirtualJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
@@ -54,7 +55,7 @@ export class JunctionFactory {
 
 		const name = `VirtualJunction${ id }`;
 
-		return new TvVirtualJunction( name, id, mainRoad.id, sStart, sEnd, orientation );
+		return new TvVirtualJunction( name, id, mainRoad, sStart, sEnd, orientation );
 
 	}
 

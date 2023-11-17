@@ -8,13 +8,7 @@ import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from './tv-road.model';
-import { TvOrientation } from './tv-common';
-
-export enum JunctionType {
-	DEFAULT = 'default',
-	VIRTUAL = 'virtual',
-	DIRECT = 'direct',
-}
+import { JunctionType } from './JunctionType';
 
 export class TvJunction {
 
@@ -251,22 +245,4 @@ export class TvJunction {
 		}
 	}
 
-}
-
-export class TvVirtualJunction extends TvJunction {
-
-	// type="virtual" id="555" mainRoad="1" sStart="50" sEnd="70" orientation="+"
-	public type: JunctionType = JunctionType.VIRTUAL;
-	public mainRoadId: number;
-	public sStart: number;
-	public sEnd: number;
-	public orientation: TvOrientation;
-
-	constructor ( name: string, id: number, mainRoadId: number, sStart: number, sEnd: number, orientation: TvOrientation ) {
-		super( name, id );
-		this.mainRoadId = mainRoadId;
-		this.sStart = sStart;
-		this.sEnd = sEnd;
-		this.orientation = orientation;
-	}
 }

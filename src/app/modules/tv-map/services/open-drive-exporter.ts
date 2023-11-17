@@ -10,7 +10,9 @@ import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geomet
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
 import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
-import { JunctionType, TvJunction, TvVirtualJunction } from '../models/tv-junction';
+import { TvJunction } from '../models/tv-junction';
+import { TvVirtualJunction } from '../models/tv-virtual-junction';
+import { JunctionType } from '../models/JunctionType';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
@@ -51,7 +53,7 @@ export class OpenDriveExporter {
 			attrNodeName: false,
 			ignoreAttributes: false,
 			suppressBooleanAttributes: false,
-			supressEmptyNode: true,
+			supressEmptyNode: false,
 			format: true,
 			trimValues: true,
 		};
@@ -1051,7 +1053,7 @@ export class OpenDriveExporter {
 			attr_id: junction.id,
 			attr_name: junction.name,
 			attr_type: junction.type,
-			attr_mainRoad: junction.mainRoadId,
+			attr_mainRoad: junction.mainRoad.id,
 			attr_sStart: junction.sStart,
 			attr_sEnd: junction.sEnd,
 			attr_orientation: junction.orientation,

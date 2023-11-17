@@ -12,6 +12,11 @@ import { RoadRampService } from 'app/services/road/road-ramp.service';
 import { LaneCoordStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { CommandHistory } from 'app/services/command-history';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 export class RoadRampTool extends BaseTool {
 
@@ -96,6 +101,8 @@ export class RoadRampTool extends BaseTool {
 
 			this.endCoord = position;
 
+			this.createRampRoad( this.startCoord, this.endCoord );
+
 			this.startCoord = this.endCoord = null;
 
 		} else {
@@ -105,6 +112,56 @@ export class RoadRampTool extends BaseTool {
 			this.endCoord = position;
 
 		}
+	}
+
+	createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ) {
+
+		const virtualJunction = this.tool.createJunction( startCoord, endCoord );
+
+		const connectionRoad = this.tool.createRampRoad( virtualJunction, startCoord, endCoord );
+
+		const addJunctionCommand = new AddObjectCommand( virtualJunction );
+
+		const addRoadCommand = new AddObjectCommand( connectionRoad );
+
+		CommandHistory.executeMany( addJunctionCommand, addRoadCommand );
+
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof TvVirtualJunction ) {
+
+			this.map.addJunctionInstance( object );
+
+		} else if ( object instanceof TvRoad ) {
+
+			this.map.addRoad( object );
+
+			// this.tool.roadSplineService.addRoadSegment( object );
+
+			// this.tool.roadSplineService.rebuildSplineRoads( object.spline );
+
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( object ) );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof TvVirtualJunction ) {
+
+			this.map.removeJunction( object );
+
+		} else if ( object instanceof TvRoad ) {
+
+			this.map.removeRoad( object );
+
+			MapEvents.roadRemoved.emit( new RoadRemovedEvent( object ) );
+
+		}
+
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
