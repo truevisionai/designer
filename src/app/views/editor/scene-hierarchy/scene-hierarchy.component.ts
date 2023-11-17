@@ -19,6 +19,12 @@ class FlatNode extends Object3D {
 } )
 export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
+	showProperties = false;
+
+	toggleProperties () {
+		this.showProperties = !this.showProperties;
+	}
+
 	transformer = ( node: Object3D, level: number ) => {
 		return {
 			id: node.id,
