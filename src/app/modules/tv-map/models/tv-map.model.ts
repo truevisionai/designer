@@ -249,7 +249,7 @@ export class TvMap {
 
 		this.clear();
 
-		MapEvents.mapRemoved.emit();
+		MapEvents.mapRemoved.emit( this );
 	}
 
 	getJunctions () {

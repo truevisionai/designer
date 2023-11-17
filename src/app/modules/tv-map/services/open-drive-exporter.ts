@@ -27,10 +27,10 @@ import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
-import { XmlElement } from './open-drive-parser.service';
 import { TvCornerLocal } from "../models/objects/tv-corner-local";
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvObjectOutline } from "../models/objects/tv-object-outline";
+import { XmlElement } from 'app/importers/xml.element';
 
 @Injectable( {
 	providedIn: 'root'

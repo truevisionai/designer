@@ -1,5 +1,5 @@
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { OpenDriverParser } from 'app/importers/open-drive-parser.service';
+import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { JunctionFactory } from '../app/factories/junction.factory';
 import { TvContactPoint, TvLaneSide } from '../app/modules/tv-map/models/tv-common';
@@ -9,12 +9,12 @@ import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry
 
 describe( 't-intersection auto maneuver logic tests', () => {
 
-	let parser: OpenDriverParser;
+	let parser: OpenDrive14Parser;
 	let map: TvMap;
 
 	beforeEach( () => {
 
-		parser = new OpenDriverParser();
+		parser = new OpenDrive14Parser();
 		map = TvMapInstance.map = parser.parse( TIntersection.XML );
 
 	} );
@@ -151,12 +151,12 @@ describe( 't-intersection auto maneuver logic tests', () => {
 
 describe( '4-way-intersection auto maneuver logic tests', () => {
 
-	let parser: OpenDriverParser;
+	let parser: OpenDrive14Parser;
 	let map: TvMap;
 
 	beforeEach( () => {
 
-		parser = new OpenDriverParser();
+		parser = new OpenDrive14Parser();
 		map = TvMapInstance.map = parser.parse( FourWayIntersection.XML );
 
 	} );

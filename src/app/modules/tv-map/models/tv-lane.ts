@@ -83,7 +83,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	private attr_level: boolean = false;
 
 	public width: TvLaneWidth[] = [];
-	public border: TvLaneBorder[] = [];
+	public borders: TvLaneBorder[] = [];
 	public roadMark: TvLaneRoadMark[] = [];
 	public material: TvLaneMaterial[] = [];
 	public visibility: TvLaneVisibility[] = [];
@@ -508,7 +508,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this, this.laneSection.road ) );
+		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this ) );
 
 	}
 
@@ -1301,7 +1301,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
 
 		this.getLaneWidthVector().forEach( width => {
-			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane, newLane.laneSection.road ) );
+			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane ) );
 		} );
 
 		this.getLaneRoadMarkVector().forEach( roadMark => {
@@ -1528,6 +1528,18 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	removeRoadMark ( roadmark: TvLaneRoadMark ) {
 
 		this.roadMark.splice( this.roadMark.indexOf( roadmark ), 1 );
+
+	}
+
+	addBorder ( border: TvLaneBorder ) {
+
+		this.borders.push( border );
+
+	}
+
+	removeBorder ( border: TvLaneBorder ) {
+
+		this.borders.splice( this.borders.indexOf( border ), 1 );
 
 	}
 

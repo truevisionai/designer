@@ -12,14 +12,12 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 	public node?: LaneWidthNode;
 
 	public readonly lane: TvLane;
-	public readonly road: TvRoad;
 
-	constructor ( s: number, a: number, b: number, c: number, d: number, lane: TvLane, road: TvRoad ) {
+	constructor ( s: number, a: number, b: number, c: number, d: number, lane: TvLane ) {
 
 		super( s, a, b, c, d );
 
 		this.lane = lane;
-		this.road = road;
 
 	}
 
@@ -32,9 +30,13 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 		return this.lane.laneSection.road.id;
 	}
 
+	get road () {
+		return this.lane.laneSection.road;
+	}
+
 	clone ( s?: number ) {
 
-		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d, this.lane, this.road );
+		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d, this.lane );
 
 	}
 }

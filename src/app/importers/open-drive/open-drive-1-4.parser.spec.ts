@@ -3,17 +3,17 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { OpenDriverParser } from './open-drive-parser.service';
+import { OpenDrive14Parser } from './open-drive-1-4.parser';
 
 
 describe( 'OpenDrive Parsing', () => {
 
-	let parser: OpenDriverParser;
+	let parser: OpenDrive14Parser;
 
 	beforeEach( () => TestBed.configureTestingModule( {} ) );
 
 	beforeEach( () => {
-		parser = new OpenDriverParser();
+		parser = new OpenDrive14Parser();
 	} );
 
 	it( 'should parse header correctly', () => {

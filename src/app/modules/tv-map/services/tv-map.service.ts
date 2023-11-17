@@ -13,8 +13,8 @@ import { FileService } from '../../../io/file.service';
 import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
-import { OpenDriverParser } from '../../../importers/open-drive-parser.service';
 import { TvMapInstance } from './tv-map-instance';
+import { OpenDriveParserService } from "../../../importers/open-drive/open-drive-parser.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,6 +26,7 @@ export class TvMapService {
 		private openDriveExporter: OpenDriveExporter,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
+		private openDriveParserService: OpenDriveParserService
 	) {
 
 		// not reqiured now because open scenario not being used
@@ -106,16 +107,11 @@ export class TvMapService {
 
 	public parse ( contents: string, callbackFn = null ): TvMap {
 
-		let parser = new OpenDriverParser();
-
-		const map = parser.parse( contents );
+		const map = this.openDriveParserService.parse( contents );
 
 		if ( map == null ) return;
 
 		if ( callbackFn != null ) callbackFn();
-
-		// Important! removes garbage
-		parser = undefined;
 
 		return map;
 	}

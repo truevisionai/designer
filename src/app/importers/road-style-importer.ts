@@ -155,7 +155,7 @@ export class RoadStyleImporter extends AbstractReader {
 		const c = parseFloat( json.attr_c );
 		const d = parseFloat( json.attr_d );
 
-		return new TvLaneWidth( sOffset, a, b, c, d, lane, lane?.laneSection?.road );
+		return new TvLaneWidth( sOffset, a, b, c, d, lane );
 	}
 
 	static readLaneRoadMark ( lane: TvLane, json: XmlElement ) {
