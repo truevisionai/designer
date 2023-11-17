@@ -21,8 +21,8 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
 import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
-import { SnackBar } from './snack-bar.service';
-import { TvElectronService } from './tv-electron.service';
+import { SnackBar } from '../services/snack-bar.service';
+import { TvElectronService } from '../services/tv-electron.service';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
@@ -36,11 +36,11 @@ import { TvLaneVisibility } from 'app/modules/tv-map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { TvCornerLocal } from "../modules/tv-map/models/objects/tv-corner-local";
 import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
+import { XmlElement } from "../importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'

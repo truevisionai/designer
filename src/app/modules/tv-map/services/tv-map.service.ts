@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
-import { SceneExporterService } from 'app/services/scene-exporter.service';
+import { SceneExporterService } from 'app/exporters/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
@@ -13,7 +13,7 @@ import { FileService } from '../../../io/file.service';
 import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
-import { OpenDriverParser } from './open-drive-parser.service';
+import { OpenDriverParser } from '../../../importers/open-drive-parser.service';
 import { TvMapInstance } from './tv-map-instance';
 
 @Injectable( {

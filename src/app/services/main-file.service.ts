@@ -14,8 +14,8 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { FileService } from '../io/file.service';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from './scene-exporter.service';
-import { SceneImporterService } from './scene-importer.service';
+import { SceneExporterService } from '../exporters/scene-exporter.service';
+import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 

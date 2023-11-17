@@ -12,7 +12,7 @@ import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { DragDropService } from 'app/services/drag-drop.service';
-import { ImporterService } from 'app/services/importer.service';
+import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

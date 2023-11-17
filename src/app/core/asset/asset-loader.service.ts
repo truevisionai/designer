@@ -24,12 +24,12 @@ import {
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
-import { XmlElement } from '../../modules/tv-map/services/open-drive-parser.service';
-import { ModelImporterService } from '../../services/model-importer.service';
-import { RoadStyleImporter } from '../../services/road-style-importer';
+import { ModelImporterService } from '../../importers/model-importer.service';
+import { RoadStyleImporter } from '../../importers/road-style-importer';
 import { FileService } from '../../io/file.service';
 import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
+import { XmlElement } from "../../importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'

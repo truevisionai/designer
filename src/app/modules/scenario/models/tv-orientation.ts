@@ -4,8 +4,8 @@
 
 import { Maths } from 'app/utils/maths';
 import { Euler, Matrix3, Vector3 } from 'three';
-import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { OpenScenarioVersion, OrientationType } from './tv-enums';
+import { XmlElement } from "../../../importers/xml.element";
 
 /**
  * Orientation defined in terms of heading, pitch, roll angles.

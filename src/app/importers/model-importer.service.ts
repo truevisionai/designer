@@ -8,7 +8,7 @@ import { Metadata } from 'app/core/asset/metadata.model';
 import { SceneService } from 'app/services/scene.service';
 import { Object3D, Vector3 } from 'three';
 import { FileService } from '../io/file.service';
-import { SnackBar } from './snack-bar.service';
+import { SnackBar } from '../services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'

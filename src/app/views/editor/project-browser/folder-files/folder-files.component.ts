@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { FileService } from 'app/io/file.service';
-import { ImporterService } from 'app/services/importer.service';
+import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';

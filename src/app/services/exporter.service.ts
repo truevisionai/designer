@@ -23,7 +23,7 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
 
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from './scene-exporter.service';
+import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { CoordinateSystem } from './CoordinateSystem';

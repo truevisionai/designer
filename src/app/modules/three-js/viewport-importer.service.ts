@@ -13,7 +13,7 @@ import { SceneService } from 'app/services/scene.service';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
-import { ImporterService } from 'app/services/importer.service';
+import { ImporterService } from 'app/importers/importer.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';

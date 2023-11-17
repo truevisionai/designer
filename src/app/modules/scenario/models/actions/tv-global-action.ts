@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { ScenarioEntity } from '../entities/scenario-entity';
 import { Position } from '../position';
 import { TvAction } from '../tv-action';
 import { ActionCategory, ActionType } from '../tv-enums';
 import { ScenarioEnvironment } from './scenario-environment';
+import { XmlElement } from "../../../../importers/xml.element";
 
 export abstract class GlobalAction extends TvAction {
 

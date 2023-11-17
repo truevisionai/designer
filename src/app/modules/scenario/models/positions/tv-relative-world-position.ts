@@ -3,12 +3,12 @@
  */
 
 import { SerializedField } from 'app/core/components/serialization';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Euler, Vector3 } from 'three';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { XmlElement } from "../../../../importers/xml.element";
 
 /**
  * Position defined in terms of delta x, y, (z) relative to a reference entity's

@@ -8,7 +8,7 @@ import { RoadFactory } from 'app/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { AbstractReader } from 'app/services/abstract-reader';
+import { AbstractReader } from 'app/importers/abstract-reader';
 import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
@@ -54,7 +54,6 @@ import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { SignShapeType } from 'app/modules/tv-map/services/tv-sign.service';
 import { XMLParser } from 'fast-xml-parser';
@@ -62,15 +61,16 @@ import { Euler, Object3D, Vector2, Vector3 } from 'three';
 import { AssetDatabase } from '../core/asset/asset-database';
 import { FileService } from '../io/file.service';
 import { TvConsole } from '../core/utils/console';
-import { CommandHistory } from './command-history';
-import { SnackBar } from './snack-bar.service';
-import { TvElectronService } from './tv-electron.service';
+import { CommandHistory } from '../services/command-history';
+import { SnackBar } from '../services/snack-bar.service';
+import { TvElectronService } from '../services/tv-electron.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { RoadService } from './road/road.service';
+import { RoadService } from '../services/road/road.service';
 import { Crosswalk } from "../modules/tv-map/models/objects/crosswalk";
 import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
+import { XmlElement } from "./xml.element";
 
 
 @Injectable( {

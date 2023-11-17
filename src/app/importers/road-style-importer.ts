@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractReader } from 'app/services/abstract-reader';
+import { AbstractReader } from 'app/importers/abstract-reader';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
@@ -11,9 +11,9 @@ import { TvLaneSide } from '../modules/tv-map/models/tv-common';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
-import { XmlElement } from '../modules/tv-map/services/open-drive-parser.service';
-import { SnackBar } from './snack-bar.service';
+import { SnackBar } from '../services/snack-bar.service';
 import { RoadStyle } from "../core/asset/road.style";
+import { XmlElement } from "./xml.element";
 
 export class RoadStyleImporter extends AbstractReader {
 

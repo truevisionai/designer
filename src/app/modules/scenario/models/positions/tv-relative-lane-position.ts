@@ -6,11 +6,11 @@ import { TvConsole } from 'app/core/utils/console';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { Vector3 } from 'three';
 import { SerializedField } from '../../../../core/components/serialization';
-import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { XmlElement } from "../../../../importers/xml.element";
 
 export class RelativeLanePosition extends Position {
 

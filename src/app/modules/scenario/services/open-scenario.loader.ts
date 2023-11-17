@@ -5,14 +5,13 @@
 import { Injectable } from '@angular/core';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { FileUtils } from 'app/io/file-utils';
-import { AbstractReader } from 'app/services/abstract-reader';
+import { AbstractReader } from 'app/importers/abstract-reader';
 import { XMLParser } from 'fast-xml-parser';
 import { Vector3 } from 'three';
 import { IFile } from '../../../io/file';
 import { FileService } from '../../../io/file.service';
 import { readXmlArray, readXmlElement } from '../../../tools/xml-utils';
 import { TvConsole } from '../../../core/utils/console';
-import { XmlElement } from '../../tv-map/services/open-drive-parser.service';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
 import { Target } from '../models/actions/target';
@@ -107,6 +106,7 @@ import {
 } from './traffic-signal-controller.condition';
 import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
+import { XmlElement } from "../../../importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'

@@ -3,7 +3,6 @@
  */
 
 import { SerializedField } from 'app/core/components/serialization';
-import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
@@ -12,6 +11,7 @@ import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/modules/three-js/default.config';
+import { XmlElement } from "../../../../importers/xml.element";
 
 enum CloudState {
 	Cloudy = 'cloudy',

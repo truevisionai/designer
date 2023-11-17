@@ -3,9 +3,9 @@
  */
 
 import { TvConsole } from 'app/core/utils/console';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { Position } from './position';
 import { ParameterDeclaration } from './tv-parameter-declaration';
+import { XmlElement } from "../../../importers/xml.element";
 
 export enum EnumTrajectoryDomain {
 	Time = 'time',
