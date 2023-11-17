@@ -196,7 +196,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			throw new Error( 'RoadTool.onObjectAdded: unknown object type: ' + object.constructor.name );
+			console.error( 'RoadTool.onObjectAdded: unknown object type: ' + object.constructor.name );
 
 		}
 
@@ -214,7 +214,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			throw new Error( 'RoadTool.onObjectRemoved: unknown object type: ' + object.constructor.name );
+			console.error( 'RoadTool.onObjectRemoved: unknown object type: ' + object.constructor.name );
 
 		}
 
@@ -286,7 +286,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			throw new Error( 'RoadTool.onObjectSelected: unknown object type: ' + object.constructor.name );
+			console.error( 'RoadTool.onObjectSelected: unknown object type: ' + object.constructor.name );
 
 		}
 
@@ -308,7 +308,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			throw new Error( 'RoadTool.onObjectUnselected: unknown object type: ' + object.constructor.name );
+			console.error( 'RoadTool.onObjectUnselected: unknown object type: ' + object.constructor.name );
 
 		}
 

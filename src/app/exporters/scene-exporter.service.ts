@@ -232,8 +232,11 @@ export class SceneExporterService {
 			sidewalkMaterialGuid: road.sidewalkMaterialGuid,
 			borderMaterialGuid: road.borderMaterialGuid,
 			shoulderMaterialGuid: road.shoulderMaterialGuid,
-			// spline: this.exportRoadSpline( road.spline ),
 		};
+
+		if ( road.spline?.type == 'explicit' ) {
+			xml[ 'spline' ] = this.exportRoadSpline( road.spline );
+		}
 
 		this.writeRoadLinks( xml, road );
 

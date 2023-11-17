@@ -10,6 +10,7 @@ import { RoadLinkService } from './road-link.service';
 import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
 import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
 import { MapService } from '../map.service';
+import { SplineService } from '../spline.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +24,7 @@ export class RoadService extends BaseService {
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
+		private splineService: SplineService,
 	) {
 
 		super();
@@ -77,37 +79,25 @@ export class RoadService extends BaseService {
 
 	showSpline ( road: TvRoad ) {
 
-		road.spline.show();
+		this.splineService.show( road.spline );
 
 	}
 
 	hideSpline ( road: TvRoad ) {
 
-		road.spline.hide();
+		this.splineService.hide( road.spline );
 
 	}
 
 	showControlPoints ( road: TvRoad ) {
 
-		road.spline.showControlPoints();
-
-		road.spline.controlPoints.forEach( cp => {
-
-			SceneService.addToolObject( cp );
-
-		} );
+		this.splineService.showControlPoints( road.spline );
 
 	}
 
 	hideControlPoints ( road: TvRoad ) {
 
-		road.spline.hideControlPoints();
-
-		road.spline.controlPoints.forEach( cp => {
-
-			SceneService.removeFromTool( cp );
-
-		} );
+		this.splineService.hideControlPoints( road.spline );
 
 	}
 
