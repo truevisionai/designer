@@ -11,6 +11,8 @@ import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-cont
 import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
 import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 @Injectable( {
 	providedIn: 'root'
@@ -213,7 +215,9 @@ export class RoadService extends BaseService {
 	showAllCornerPoints () {
 
 		this.mapService.map.getRoads().forEach( road => {
+
 			this.showCornerPoints( road );
+
 		} );
 
 	}
@@ -221,8 +225,47 @@ export class RoadService extends BaseService {
 	hideAllCornerPoints () {
 
 		this.mapService.map.getRoads().forEach( road => {
+
 			this.hideCornerPoints( road );
+
 		} );
 
 	}
+
+	rebuildLinks ( road: TvRoad, controlPoint: AbstractControlPoint ) {
+
+		this.roadLinkService.updateLinks( road, controlPoint, true );
+
+		this.rebuildLink( road.predecessor );
+
+		this.rebuildLink( road.successor );
+
+	}
+
+	rebuildLink ( link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		if ( link.elementType == TvRoadLinkChildType.road ) {
+
+			this.rebuildLinkedRoad( link );
+
+		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
+
+			console.warn( 'TODO: rebuild junction' );
+
+		}
+
+	}
+
+	rebuildLinkedRoad ( link: TvRoadLinkChild ) {
+
+		const road = this.mapService.map.getRoadById( link.elementId );
+
+		if ( !road ) return;
+
+		this.rebuildRoad( road );
+
+	}
+
 }

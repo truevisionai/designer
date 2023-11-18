@@ -88,6 +88,8 @@ export class ExplicitSpline extends AbstractSpline {
 
 		}
 
+		this.updateRoadSegments();
+
 	}
 
 	clear () {
@@ -524,6 +526,16 @@ export class ExplicitSpline extends AbstractSpline {
 
 			posattr.needsUpdate = true;
 		}
+	}
+
+	updateRoadSegments () {
+
+		this.roadSegments.forEach( segment => {
+
+			segment.geometries = this.exportGeometries();
+
+		} );
+
 	}
 
 	/**

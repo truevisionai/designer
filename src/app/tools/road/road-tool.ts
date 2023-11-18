@@ -19,7 +19,9 @@ import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { SceneService } from 'app/services/scene.service';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents, RoadControlPointUpdatedEvent, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
 
 export class RoadTool extends BaseTool {
 
@@ -31,9 +33,9 @@ export class RoadTool extends BaseTool {
 
 	private debug = true;
 
-	private get selectedControlPoint (): SplineControlPoint {
+	private get selectedControlPoint (): AbstractControlPoint {
 
-		return this.tool.selection.getLastSelected<SplineControlPoint>( SplineControlPoint.name );
+		return this.tool.selection.getLastSelected<any>( 'point' );
 
 	}
 
@@ -61,11 +63,16 @@ export class RoadTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.selection.registerStrategy( SplineControlPoint.name, new ControlPointStrategy() );
+		this.tool.selection.registerStrategy( 'point', new ControlPointStrategy() );
 
 		this.tool.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
 
 		this.tool.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+
+		// we want all points to be selectable and use 1 point at a time
+		this.tool.selection.registerTag( SplineControlPoint.name, 'point' );
+		this.tool.selection.registerTag( RoadControlPoint.name, 'point' );
+		this.tool.selection.registerTag( RoadTangentPoint.name, 'point' );
 
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
@@ -220,6 +227,32 @@ export class RoadTool extends BaseTool {
 
 	}
 
+	onObjectUpdated ( object: any ): void {
+
+		if ( this.debug ) console.debug( 'RoadTool.onObjectUpdated', object );
+
+		if ( object instanceof TvRoad ) {
+
+			this.tool.roadService.rebuildRoad( object );
+
+		} else if ( object instanceof AbstractControlPoint ) {
+
+			this.selectedRoad.spline.update();
+
+			this.tool.roadSplineService.rebuildSplineRoads( this.selectedRoad.spline );
+
+			this.tool.roadService.rebuildLinks( this.selectedRoad, object );
+
+			this.tool.roadService.updateRoadNodes( this.selectedRoad );
+
+		} else {
+
+			console.error( 'RoadTool.onObjectUpdated: unknown object type: ' + object.constructor.name );
+
+		}
+
+	}
+
 	onRoadRemoved ( road: TvRoad ) {
 
 		this.map.removeRoad( road );
@@ -280,7 +313,7 @@ export class RoadTool extends BaseTool {
 
 			this.onRoadSelected( object );
 
-		} else if ( object instanceof SplineControlPoint ) {
+		} else if ( object instanceof AbstractControlPoint ) {
 
 			this.onControlPointSelected( object );
 
@@ -302,7 +335,7 @@ export class RoadTool extends BaseTool {
 
 			this.onRoadUnselected( object );
 
-		} else if ( object instanceof SplineControlPoint ) {
+		} else if ( object instanceof AbstractControlPoint ) {
 
 			this.onControlPointUnselected( object );
 

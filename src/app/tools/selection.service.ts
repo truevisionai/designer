@@ -15,6 +15,8 @@ export class SelectionService {
 
 	private selectedObjects = new Map<string, any>();
 
+	private tags = new Map<string, string>();
+
 	private debug = true;
 
 	constructor () {
@@ -28,6 +30,12 @@ export class SelectionService {
 	registerStrategy ( type: string, strategy: SelectStrategy<any> ): void {
 
 		this.strategies.set( type, strategy );
+
+	}
+
+	registerTag ( type: string, tag: any ): void {
+
+		this.tags.set( type, tag );
 
 	}
 
@@ -56,6 +64,28 @@ export class SelectionService {
 		}
 
 		this.handleDeselection();
+
+	}
+
+	getLastSelected<T> ( type: string ): T {
+
+		return this.selectedObjects.get( type ) as T;
+
+	}
+
+	getAllSelected<T> ( cls: new ( ...args: any[] ) => T ): T[] {
+
+		return Array.from( this.selectedObjects.values() ).filter( obj => obj instanceof cls ) as T[];
+
+	}
+
+	reset () {
+
+		this.strategies.clear();
+
+		this.selectedObjects.clear();
+
+		this.tags.clear();
 
 	}
 
@@ -89,9 +119,11 @@ export class SelectionService {
 
 	private onObjectSelected ( object: Object ): void {
 
-		this.selectedObjects.set( object.constructor.name, object );
+		const tag = this.getTag( object );
 
-		if ( this.debug ) console.log( 'selected', object.constructor.name, object, this.selectedObjects );
+		this.selectedObjects.set( tag, object );
+
+		if ( this.debug ) console.log( 'selected', tag, object, this.selectedObjects );
 
 	}
 
@@ -107,28 +139,24 @@ export class SelectionService {
 
 	private onObjectUnselected ( object: any ): void {
 
-		this.selectedObjects.delete( object.constructor.name );
+		const tag = this.getTag( object );
 
-		if ( this.debug ) console.log( 'unselected', object.constructor.name, object, this.selectedObjects );
+		this.selectedObjects.delete( tag );
+
+		if ( this.debug ) console.log( 'unselected', tag, object, this.selectedObjects );
 	}
 
-	getLastSelected<T> ( type: string ): T {
+	private getTag ( object: Object ): string {
 
-		return this.selectedObjects.get( type ) as T;
+		if ( this.tags.has( object.constructor.name ) ) {
 
-	}
+			return this.tags.get( object.constructor.name );
 
-	getAllSelected<T> ( cls: new ( ...args: any[] ) => T ): T[] {
+		} else {
 
-		return Array.from( this.selectedObjects.values() ).filter( obj => obj instanceof cls ) as T[];
+			return object.constructor.name;
 
-	}
-
-	reset () {
-
-		this.strategies.clear();
-
-		this.selectedObjects.clear();
+		}
 
 	}
 

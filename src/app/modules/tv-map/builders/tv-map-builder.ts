@@ -370,7 +370,7 @@ export class TvMapBuilder {
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 
-		TvMapBuilder.createLaneGameObject( lane, geometry, lane.threeMaterial, laneSection );
+		TvMapBuilder.createLaneGameObject( lane, geometry, lane.getThreeMaterial(), laneSection );
 
 	}
 

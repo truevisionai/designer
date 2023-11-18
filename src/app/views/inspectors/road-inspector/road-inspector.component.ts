@@ -3,19 +3,17 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CallFunctionCommand } from 'app/commands/call-function-command';
-import { UpdateRoadPointCommand } from 'app/commands/update-road-point-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector3 } from 'three';
 import { IComponent } from '../../../core/game-object';
 import { TvRoadType } from '../../../modules/tv-map/models/tv-common';
 import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
-import { RemoveRoadCommand } from 'app/tools/road/remove-road-command';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -26,7 +24,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	data: {
 		road: TvRoad,
-		controlPoint: RoadControlPoint,
+		controlPoint: AbstractControlPoint,
 		node: RoadNode,
 	};
 
@@ -44,7 +42,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 		return this.road?.spline?.type;
 	}
 
-	get controlPoint (): RoadControlPoint {
+	get controlPoint (): AbstractControlPoint {
 		return this.data.controlPoint;
 	}
 
@@ -74,27 +72,14 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	ngOnInit () {
 
-		// if ( this.road ) this.road.showHelpers();
-
-		// if ( this.controlPoint ) this.controlPoint.select();
-
-		// if ( this.data.node ) this.node.select();
 
 	}
 
 	ngOnDestroy () {
 
-		// if ( this.road ) this.road.hideControlPoints();
-
-		// // if ( this.road ) this.road.hideSpline();
-
-		// if ( this.controlPoint ) this.controlPoint.unselect();
-
-		// if ( this.data.node ) this.data.node.unselect();
-
 	}
 
-	onRoadSpeedChanged ( $value ) {
+	onRoadSpeedChanged ( $value: number ) {
 
 		CommandHistory.execute( new SetValueCommand( this.roadType.speed, 'max', $value ) );
 
@@ -108,60 +93,42 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	onDrivingMaterialChanged ( $guid: string ) {
 
-		CommandHistory.executeMany(
-			new SetValueCommand( this.road, 'drivingMaterialGuid', $guid ),
-
-			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-		);
+		CommandHistory.execute( new SetValueCommand( this.road, 'drivingMaterialGuid', $guid ) );
 
 	}
 
 	onSidewalkMaterialChanged ( $guid: string ) {
 
-		CommandHistory.executeMany(
-			new SetValueCommand( this.road, 'sidewalkMaterialGuid', $guid ),
+		CommandHistory.execute( new SetValueCommand( this.road, 'sidewalkMaterialGuid', $guid ) );
 
-			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-		);
 	}
 
 	onBorderMaterialChanged ( $guid: string ) {
 
-		CommandHistory.executeMany(
-			new SetValueCommand( this.road, 'borderMaterialGuid', $guid ),
+		CommandHistory.execute( new SetValueCommand( this.road, 'borderMaterialGuid', $guid ) );
 
-			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-		);
 	}
 
 	onShoulderMaterialChanged ( $guid: string ) {
 
-		CommandHistory.executeMany(
-			new SetValueCommand( this.road, 'shoulderMaterialGuid', $guid ),
+		CommandHistory.execute( new SetValueCommand( this.road, 'shoulderMaterialGuid', $guid ) );
 
-			new CallFunctionCommand( this.road, this.road.updateLaneMaterial, null, this.road.updateLaneMaterial )
-		);
 	}
 
-	onControlPointChanged ( $controlPoint: Vector3 ) {
+	onControlPointChanged ( $newPosition: Vector3 ) {
 
-		CommandHistory.execute( new UpdateRoadPointCommand( this.road, this.controlPoint, $controlPoint, this.controlPoint.position ) );
+		const oldPosition = this.controlPoint.position.clone();
+
+		const updateCommand = new UpdatePositionCommand( this.controlPoint, $newPosition, oldPosition );
+
+		CommandHistory.execute( updateCommand );
 
 	}
 
 	onDelete (): void {
 
-		this.delete();
+		CommandHistory.execute( new RemoveObjectCommand( this.road ) );
 
 	}
 
-	delete () {
-
-		if ( !this.road ) return;
-
-		CommandHistory.executeMany(
-			new RemoveRoadCommand( this.road ),
-			new SetInspectorCommand( null, null )
-		);
-	}
 }

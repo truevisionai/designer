@@ -15,7 +15,7 @@ export class SplineControlPoint extends DynamicControlPoint<AbstractSpline> {
 
         super.update();
 
-        MapEvents.roadControlPointUpdated.emit( new RoadControlPointUpdatedEvent( null, this ) );
+        // MapEvents.roadControlPointUpdated.emit( new RoadControlPointUpdatedEvent( null, this ) );
 
     }
 

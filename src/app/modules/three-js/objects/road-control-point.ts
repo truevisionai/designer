@@ -138,40 +138,12 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		this.updateTangents();
 
-		// // this.update();
-		// MapEvents.roadControlPointUpdated.emit( {
-		// 	road: this.road,
-		// 	controlPoint: this
-		// } );
 	}
 
 	update () {
 
 		this.road.update();
 
-		this.updateSuccessor( true );
-
-		this.updatePredecessor( true );
-
-	}
-
-	public updatePredecessor ( rebuild = false ) {
-
-		// if ( this.road.isJunction ) return;
-
-		// if ( !this.shouldUpdatePredecessor ) return;
-
-		// this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
-
-	}
-
-	public updateSuccessor ( rebuild = false ) {
-
-		// if ( this.road.isJunction ) return;
-
-		// if ( !this.shouldUpdateSuccessor ) return;
-
-		// this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
 	}
 
 	show () {

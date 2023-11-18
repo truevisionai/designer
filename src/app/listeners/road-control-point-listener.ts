@@ -51,55 +51,21 @@ export class RoadControlPointListener extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
 
-		const spline = event.controlPoint.mainObject as AbstractSpline;
+		const spline = event.road.spline || event.controlPoint.mainObject;
 
-		spline.getRoadSegments().forEach( segment => {
+		if ( !spline ) console.warn( 'no spline' );
+
+		spline?.getRoadSegments().forEach( segment => {
 
 			if ( segment.roadId == -1 ) return;
 
 			const road = this.mapService.map.getRoadById( segment.roadId );
 
-			this.rebuildLinks( road, event.controlPoint );
+			this.roadService.rebuildLinks( road, event.controlPoint );
 
 			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 		} );
-
-	}
-
-	rebuildLinks ( road: TvRoad, controlPoint: AbstractControlPoint ) {
-
-		this.roadLinkService.updateLinks( road, controlPoint, true );
-
-		this.rebuildLink( road.predecessor );
-
-		this.rebuildLink( road.successor );
-
-	}
-
-	rebuildLink ( link: TvRoadLinkChild ) {
-
-		if ( !link ) return;
-
-		if ( link.elementType == TvRoadLinkChildType.road ) {
-
-			this.rebuildLinkedRoad( link );
-
-		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
-
-			console.warn( 'TODO: rebuild junction' );
-
-		}
-
-	}
-
-	rebuildLinkedRoad ( link: TvRoadLinkChild ) {
-
-		const road = this.mapService.map.getRoadById( link.elementId );
-
-		if ( !road ) return;
-
-		this.roadService.rebuildRoad( road );
 
 	}
 
