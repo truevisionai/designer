@@ -7,6 +7,7 @@ import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { RoadObjectFactory } from 'app/factories/road-object.factory';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { Object3D } from 'three';
+import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 
 @Injectable( {
 	providedIn: 'root'
@@ -50,6 +51,8 @@ export class RoadObjectService {
 	removeRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		this.objectMap.remove( roadObject );
+
+		this.hideRoadObjectCorners( roadObject );
 
 		road.removeRoadObjectById( roadObject.attr_id );
 
@@ -121,17 +124,21 @@ export class RoadObjectService {
 
 		road.getRoadObjects().forEach( object => {
 
-			object.outlines.forEach( outline => {
+			this.hideRoadObjectCorners( object );
 
-				outline.cornerRoad.forEach( corner => {
+		} );
 
-					SceneService.removeFromTool( corner );
+	}
 
-					// corner.unselect();
+	hideRoadObjectCorners ( object: TvRoadObject ) {
 
-					corner.hide();
+		object.outlines.forEach( outline => {
 
-				} );
+			outline.cornerRoad.forEach( corner => {
+
+				SceneService.removeFromTool( corner );
+
+				corner.hide();
 
 			} );
 
@@ -170,11 +177,24 @@ export class RoadObjectService {
 
 	}
 
-	findRoadObject ( road: TvRoad, corner: TvCornerRoad ): TvRoadObject {
+	findByCornerRoad ( road: TvRoad, corner: TvCornerRoad ): TvRoadObject {
 
 		return road.getRoadObjects()
 			.find( roadObject => roadObject.outlines
 				.find( outline => outline.cornerRoad.includes( corner ) ) );
 
 	}
+
+	findRoadObjectByMarking ( road: TvRoad, marking: TvObjectMarking ): TvRoadObject {
+
+		return road.getRoadObjects().find( roadObject => roadObject.markings.includes( marking ) );
+
+	}
+
+	findMarkingByCornerRoad ( roadObject: TvRoadObject, corner: TvCornerRoad ): TvObjectMarking {
+
+		return roadObject.markings.find( marking => marking.cornerReferences.includes( corner.attr_id ) );
+
+	}
+
 }

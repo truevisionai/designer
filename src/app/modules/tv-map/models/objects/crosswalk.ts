@@ -1,77 +1,22 @@
-// import { TvObjectMarking } from "../tv-object-marking";
-// import { ObjectTypes } from "../tv-common";
-// import { TvRoadObject } from "./tv-road-object";
-// import { TvCornerRoad } from "./tv-corner-road";
-// import { TvObjectOutline } from "./tv-object-outline";
+import { Action, SerializedField } from "app/core/components/serialization";
+import { TvRoadObject } from "./tv-road-object";
+import { TvObjectMarking } from "../tv-object-marking";
+import { CommandHistory } from "app/services/command-history";
+import { RemoveObjectCommand } from "app/commands/remove-object-command";
 
-// export class Crosswalk extends TvRoadObject {
+export class MarkingObjectInspectorData {
 
-// 	constructor (
-// 		s: number,
-// 		t: number,
-// 		markings = [ new TvObjectMarking() ],
-// 		outlines = [ new TvObjectOutline() ]
-// 	) {
+	constructor ( private roadObject: TvRoadObject, private _marking?: TvObjectMarking ) { }
 
-// 		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
+	@SerializedField( { type: 'object' } )
+	get marking () {
+		return this._marking || this.roadObject.markings[ 0 ];
+	}
 
-// 		outlines.forEach( outline => outline.cornerRoad.forEach( cornerRoad => {
+	@Action( { name: 'Delete' } )
+	delete () {
 
-// 			cornerRoad.mainObject = this;
+		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );
 
-// 			// this.add( cornerRoad );
-
-// 		} ) );
-
-// 		this.outlines = outlines;
-
-// 		if ( !markings.length ) markings.push( new TvObjectMarking() );
-
-// 		markings.map( marking => marking.roadObject = this );
-
-// 		this._markings = markings;
-
-// 		this.update();
-// 	}
-
-// 	get marking () {
-
-// 		return this.markings[ 0 ];
-
-// 	}
-
-// 	update () {
-
-// 		if ( this.marking.cornerReferences.length < 2 ) return;
-
-// 		this.marking.update();
-
-// 	}
-
-// 	addCornerRoad ( cornerRoad: TvCornerRoad ) {
-
-// 		cornerRoad.mainObject = this;
-
-// 		this.marking.addCornerRoad( cornerRoad );
-
-// 		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
-
-// 		// this.add( cornerRoad );
-
-// 		this.update();
-
-// 	}
-
-// 	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
-
-// 		this.marking.removeCornerRoad( cornerRoad );
-
-// 		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
-
-// 		// this.remove( cornerRoad );
-
-// 		this.update();
-
-// 	}
-
-// }
+	}
+}

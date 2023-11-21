@@ -38,6 +38,7 @@ export class TvRoadObject {
 	// public mesh: Mesh;
 	// public gameObject: Object3D;
 	private lastAddedRepeatObjectIndex: number;
+	private _markings: TvObjectMarking[] = [];
 
 	constructor (
 		type: ObjectTypes,
@@ -73,8 +74,6 @@ export class TvRoadObject {
 		this.attr_pitch = pitch;
 		this.attr_roll = roll;
 	}
-
-	protected _markings: TvObjectMarking[] = [];
 
 	get markings (): TvObjectMarking[] {
 		return this._markings;

@@ -23,6 +23,7 @@ import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
+import { MarkingObjectInspectorData } from 'app/modules/tv-map/models/objects/crosswalk';
 
 export class CrosswalkTool extends BaseTool {
 
@@ -233,6 +234,8 @@ export class CrosswalkTool extends BaseTool {
 
 		this.tool.objectService.addRoadObject( this.selectedRoad, object );
 
+		this.onCrosswalkSelected( object );
+
 	}
 
 	onObjectUpdated ( object: any ): void {
@@ -247,13 +250,19 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onCornerRoadUpdated( object );
 
+		} else if ( object instanceof TvObjectMarking ) {
+
+			const roadObject = this.tool.objectService.findRoadObjectByMarking( this.selectedRoad, object );
+
+			this.tool.objectService.updateRoadObject( this.selectedRoad, roadObject );
+
 		}
 
 	}
 
 	onCornerRoadUpdated ( object: TvCornerRoad ) {
 
-		const roadObject = this.tool.objectService.findRoadObject( this.selectedRoad, object );
+		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, object );
 
 		if ( !roadObject ) return;
 
@@ -274,6 +283,8 @@ export class CrosswalkTool extends BaseTool {
 		if ( object instanceof TvRoadObject ) {
 
 			this.tool.objectService.removeRoadObject( this.selectedRoad, object );
+
+			this.onCrosswalkUnselected( object );
 
 		} else if ( object instanceof TvCornerRoad ) {
 
@@ -341,9 +352,10 @@ export class CrosswalkTool extends BaseTool {
 
 	onCrosswalkSelected ( roadObject: TvRoadObject ) {
 
-		AppInspector.setInspector( DynamicInspectorComponent, roadObject );
+		AppInspector.setInspector( DynamicInspectorComponent, new MarkingObjectInspectorData( roadObject ) );
 
 		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
+
 	}
 
 	onCrosswalkUnselected ( roadObject: TvRoadObject ) {
@@ -356,13 +368,15 @@ export class CrosswalkTool extends BaseTool {
 
 	onCornerRoadSelected ( object: TvCornerRoad ) {
 
-		const roadObject = this.tool.objectService.findRoadObject( this.selectedRoad, object );
+		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, object );
+
+		const marking = this.tool.objectService.findMarkingByCornerRoad( roadObject, object );
 
 		this.selectedPoint?.unselect();
 
 		object.select();
 
-		AppInspector.setInspector( DynamicInspectorComponent, roadObject );
+		AppInspector.setInspector( DynamicInspectorComponent, new MarkingObjectInspectorData( roadObject, marking ) );
 
 		this.tool.base.setHint( 'Drag the point to move the crosswalk' );
 

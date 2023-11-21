@@ -29,11 +29,11 @@ export interface ISerializedField {
 	enum?: any;
 }
 
-export function Action () {
+export function Action ( settings?: any ) {
 	return function ( target: any, propertyKey: string, descriptor: PropertyDescriptor ) {
 		let actions = Reflect.getMetadata( 'actions', target ) || [];
 		actions.push( {
-			name: propertyKey,
+			name: settings?.name || propertyKey,
 			method: target[ propertyKey ]
 		} );
 		Reflect.defineMetadata( 'actions', actions, target );

@@ -3,20 +3,107 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MarkingObjectFactory } from 'app/factories/marking-object.factory';
-import * as THREE from 'three';
-import { CatmullRomCurve3, Mesh, Vector3 } from 'three';
 import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
-import { TvRoadObject } from './objects/tv-road-object';
 import { TvCornerRoad } from "./objects/tv-corner-road";
+import { SerializedField } from 'app/core/components/serialization';
+import { MeshBasicMaterial } from 'three';
 
 export class TvObjectMarking {
 
-	roadObject: TvRoadObject;
-	node: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>;
+	@SerializedField( { type: 'float' } )
+	get width (): number {
+		return this._width;
+	}
+
+	set width ( value: number ) {
+		this._width = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get zOffset (): number {
+		return this._zOffset;
+	}
+
+	set zOffset ( value: number ) {
+		this._zOffset = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get stopOffset (): number {
+		return this._stopOffset;
+	}
+
+	set stopOffset ( value: number ) {
+		this._stopOffset = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get startOffset (): number {
+		return this._startOffset;
+	}
+
+	set startOffset ( value: number ) {
+		this._startOffset = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
+	get weight (): TvRoadMarkWeights {
+		return this._weight;
+	}
+	set weight ( value: TvRoadMarkWeights ) {
+		this._weight = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get lineLength (): number {
+		return this._lineLength;
+	}
+	set lineLength ( value: number ) {
+		this._lineLength = value;
+	}
+
+	get material (): THREE.MeshBasicMaterial {
+		return this._material;
+	}
+
+	set material ( value: THREE.MeshBasicMaterial ) {
+		this._material = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get spaceLength (): number {
+		return this._spaceLength;
+	}
+
+	set spaceLength ( value: number ) {
+		this._spaceLength = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvColors } )
+	get color (): TvColors {
+		return this._color;
+	}
+
+	set color ( value: TvColors ) {
+		this._color = value;
+		this._material?.color.set( COLOR.stringToColor( value ) );
+		this._material.needsUpdate = true;
+	}
+
+	@SerializedField( { type: 'material' } )
+	get materialGuid (): string {
+		return this._materialGuid;
+	}
+
+	set materialGuid ( value: string ) {
+		this._materialGuid = value;
+		this._material = AssetDatabase.getInstance( value );
+		this._material.needsUpdate = true;
+	}
 
 	private _material: THREE.MeshBasicMaterial;
+
 	private _materialGuid: string;
 
 	/**
@@ -36,46 +123,17 @@ export class TvObjectMarking {
 	 */
 	constructor (
 		private _color: TvColors = TvColors.WHITE,
-		public spaceLength: number = 0.3,
-		public lineLength: number = 0.3,
+		private _spaceLength: number = 0.3,
+		private _lineLength: number = 0.3,
 		public side: TvSide = TvSide.FRONT,
-		public weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
-		public startOffset: number = 0,
-		public stopOffset: number = 0,
-		public zOffset: number = 0.005,
-		public width: number = 1.83,
+		private _weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
+		private _startOffset: number = 0,
+		private _stopOffset: number = 0,
+		private _zOffset: number = 0.005,
+		private _width: number = 1.83,
 		public cornerReferences: number[] = [] // 2 or more corners,
 	) {
-		this._material = new THREE.MeshBasicMaterial( { color: _color } );
-	}
-
-	get material (): THREE.MeshBasicMaterial {
-		return this._material;
-	}
-
-	set material ( value: THREE.MeshBasicMaterial ) {
-		this._material = value;
-	}
-
-	get color (): TvColors {
-		return this._color;
-	}
-
-	set color ( value: TvColors ) {
-		this._color = value;
-		this._material?.color.set( COLOR.stringToColor( value ) );
-		this._material.needsUpdate = true;
-	}
-
-	get materialGuid (): string {
-		return this._materialGuid;
-	}
-
-	set materialGuid ( value: string ) {
-		this._materialGuid = value;
-		this._material = AssetDatabase.getInstance( value );
-		this._material.needsUpdate = true;
-		this.update();
+		this._material = new MeshBasicMaterial( { color: _color } );
 	}
 
 	addCornerRoad ( corner: TvCornerRoad ) {
@@ -91,18 +149,6 @@ export class TvObjectMarking {
 		if ( index > -1 ) {
 			this.cornerReferences.splice( index, 1 );
 		}
-
-	}
-
-	update (): void {
-
-		if ( !this.roadObject ) return;
-
-		// this.roadObject.remove( this.node );
-
-		// this.node = MarkingObjectFactory.createMarkingMesh( this.roadObject, this );
-
-		// this.roadObject.add( this.node );
 
 	}
 
