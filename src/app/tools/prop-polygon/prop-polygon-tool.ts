@@ -19,7 +19,7 @@ import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
-import { CreatePropPolygonCommand } from './create-prop-polygon-command';
+// import { CreatePropPolygonCommand } from './create-prop-polygon-command';
 import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
@@ -177,7 +177,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( !this.point ) {
 
-			CommandHistory.execute( new CreatePropPolygonCommand( this, this.prop, e.point ) );
+			// CommandHistory.execute( new CreatePropPolygonCommand( this, this.prop, e.point ) );
 
 			this.setHint( 'Add two more control point to create polygon' );
 

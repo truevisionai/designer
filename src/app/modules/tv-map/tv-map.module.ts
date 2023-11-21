@@ -45,7 +45,6 @@ import { TextureFieldComponent } from '../../views/fields/texture-field/texture-
 import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { LaneLinkInspector } from '../../views/inspectors/lane-link-inspector/lane-link-inspector.component';
 import { LaneOffsetInspector } from '../../views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
-import { LaneRoadmarkInspectorComponent } from '../../views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
 import { ObjectPreviewComponent } from '../../views/inspectors/object-preview/object-preview.component';
@@ -71,7 +70,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		LaneInspectorComponent,
 		NewRoadDialogComponent,
 		RoadInspector,
-		LaneRoadmarkInspectorComponent,
 		ShapeInspectorComponent,
 		TransformInspectorComponent,
 		RoadObjectInspectorComponent,
@@ -143,7 +141,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		LaneInspectorComponent,
 		NewRoadDialogComponent,
 		RoadInspector,
-		LaneRoadmarkInspectorComponent,
 		ShapeInspectorComponent,
 		RoadObjectInspectorComponent,
 		PropModelInspectorComponent,

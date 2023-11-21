@@ -15,7 +15,7 @@ import { ToolType } from '../tool-types.enum';
 import { SelectionTool } from '../../core/snapping/selection-tool';
 import { TvConsole } from '../../core/utils/console';
 import { BaseTool } from '../base-tool';
-import { CreateSingleManeuver } from './create-single-maneuver';
+// import { CreateSingleManeuver } from './create-single-maneuver';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { SelectPointsCommand } from "../../commands/select-points-command";
 
@@ -149,7 +149,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 			if ( !junction ) {
 
-				CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
+				// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
 
 			} else {
 
@@ -163,7 +163,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				} else {
 
-					CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
+					// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
 
 				}
 

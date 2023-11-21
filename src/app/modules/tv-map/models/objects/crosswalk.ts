@@ -1,77 +1,77 @@
-import { TvObjectMarking } from "../tv-object-marking";
-import { ObjectTypes } from "../tv-common";
-import { TvRoadObject } from "./tv-road-object";
-import { TvCornerRoad } from "./tv-corner-road";
-import { TvObjectOutline } from "./tv-object-outline";
+// import { TvObjectMarking } from "../tv-object-marking";
+// import { ObjectTypes } from "../tv-common";
+// import { TvRoadObject } from "./tv-road-object";
+// import { TvCornerRoad } from "./tv-corner-road";
+// import { TvObjectOutline } from "./tv-object-outline";
 
-export class Crosswalk extends TvRoadObject {
+// export class Crosswalk extends TvRoadObject {
 
-	constructor (
-		s: number,
-		t: number,
-		markings = [ new TvObjectMarking() ],
-		outlines = [ new TvObjectOutline() ]
-	) {
+// 	constructor (
+// 		s: number,
+// 		t: number,
+// 		markings = [ new TvObjectMarking() ],
+// 		outlines = [ new TvObjectOutline() ]
+// 	) {
 
-		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
+// 		super( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, s, t );
 
-		outlines.forEach( outline => outline.cornerRoad.forEach( cornerRoad => {
+// 		outlines.forEach( outline => outline.cornerRoad.forEach( cornerRoad => {
 
-			cornerRoad.mainObject = this;
+// 			cornerRoad.mainObject = this;
 
-			this.add( cornerRoad );
+// 			// this.add( cornerRoad );
 
-		} ) );
+// 		} ) );
 
-		this.outlines = outlines;
+// 		this.outlines = outlines;
 
-		if ( !markings.length ) markings.push( new TvObjectMarking() );
+// 		if ( !markings.length ) markings.push( new TvObjectMarking() );
 
-		markings.map( marking => marking.roadObject = this );
+// 		markings.map( marking => marking.roadObject = this );
 
-		this._markings = markings;
+// 		this._markings = markings;
 
-		this.update();
-	}
+// 		this.update();
+// 	}
 
-	get marking () {
+// 	get marking () {
 
-		return this.markings[ 0 ];
+// 		return this.markings[ 0 ];
 
-	}
+// 	}
 
-	update () {
+// 	update () {
 
-		if ( this.marking.cornerReferences.length < 2 ) return;
+// 		if ( this.marking.cornerReferences.length < 2 ) return;
 
-		this.marking.update();
+// 		this.marking.update();
 
-	}
+// 	}
 
-	addCornerRoad ( cornerRoad: TvCornerRoad ) {
+// 	addCornerRoad ( cornerRoad: TvCornerRoad ) {
 
-		cornerRoad.mainObject = this;
+// 		cornerRoad.mainObject = this;
 
-		this.marking.addCornerRoad( cornerRoad );
+// 		this.marking.addCornerRoad( cornerRoad );
 
-		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
+// 		this.outlines[ 0 ].cornerRoad.push( cornerRoad );
 
-		this.add( cornerRoad );
+// 		// this.add( cornerRoad );
 
-		this.update();
+// 		this.update();
 
-	}
+// 	}
 
-	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
+// 	removeCornerRoad ( cornerRoad: TvCornerRoad ) {
 
-		this.marking.removeCornerRoad( cornerRoad );
+// 		this.marking.removeCornerRoad( cornerRoad );
 
-		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
+// 		this.outlines[ 0 ].removeCornerRoad( cornerRoad );
 
-		this.remove( cornerRoad );
+// 		// this.remove( cornerRoad );
 
-		this.update();
+// 		this.update();
 
-	}
+// 	}
 
-}
+// }

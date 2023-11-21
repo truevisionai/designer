@@ -13,7 +13,7 @@ import { AbstractShapeEditor } from '../../core/editors/abstract-shape-editor';
 import { PointEditor } from '../../core/editors/point-editor';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { CreateMarkingPointCommand } from './create-marking-point-command';
+// import { CreateMarkingPointCommand } from './create-marking-point-command';
 import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export abstract class BaseMarkingTool extends BaseTool {

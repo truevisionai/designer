@@ -10,7 +10,11 @@ export class MarkingObjectFactory {
 
 	static createMesh ( roadObject: TvRoadObject ): Object3D {
 
+		console.trace( 'MarkingObjectFactory.createMesh', roadObject );
+
 		const object3D = new Object3D();
+
+		object3D.name = 'object:' + roadObject.attr_type;
 
 		roadObject.markings.forEach( marking => {
 
@@ -27,23 +31,27 @@ export class MarkingObjectFactory {
 
 		roadObject.outlines.forEach( outline => {
 
-			for ( let i = 0; i < outline.getCornerRoadCount(); i++ ) {
+			outline.cornerRoad.forEach( cornerRoad => {
 
-				const corner = outline.getCornerRoad( i );
+				if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
-				// const position = roadObject.road?.getPositionAt( corner.s, corner.t );
+					points.push( cornerRoad.position );
 
-				points.push( corner.position );
+				}
 
-			}
+			} );
 
 		} );
+
+		marking.cornerReferences.forEach( cornerReference => cornerReference )
 
 		const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
 
 		const geometry = this.createGeometryFromCurve( marking, curve );
 
 		const object3D = new Mesh( geometry, marking.material );
+
+		object3D.name = 'marking';
 
 		return object3D;
 	}

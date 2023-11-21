@@ -67,7 +67,6 @@ import { TvElectronService } from '../services/tv-electron.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadService } from '../services/road/road.service';
-import { Crosswalk } from "../modules/tv-map/models/objects/crosswalk";
 import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "./xml.element";
@@ -1139,12 +1138,12 @@ export class SceneImporterService extends AbstractReader {
 
 				for ( let i = 0; i < xmlElement.object.length; i++ ) {
 
-					this.parseObject( road, xmlElement.object[ i ] );
+					road.addRoadObjectInstance( this.parseObject( road, xmlElement.object[ i ] ) );
 
 				}
 			} else {
 
-				this.parseObject( road, xmlElement.object );
+				road.addRoadObjectInstance( this.parseObject( road, xmlElement.object ) );
 
 			}
 		}
@@ -1168,48 +1167,26 @@ export class SceneImporterService extends AbstractReader {
 		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
 		const roll = parseFloat( xmlElement.attr_roll ) || 0;
 
-		const outlines: TvObjectOutline[] = [];
-		const markings: TvObjectMarking[] = [];
+		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
 
 		readXmlArray( xmlElement.outlines?.outline, xml => {
-			outlines.push( this.parseObjectOutline( xml, road ) );
+
+			roadObject.outlines.push( this.parseObjectOutline( xml, road ) );
+
 		} );
 
 		readXmlArray( xmlElement.markings?.marking, xml => {
-			markings.push( this.parseObjectMarking( xml, road ) );
+
+			roadObject.markings.push( this.parseObjectMarking( xml, road ) );
+
 		} );
-
-
-		if ( type == ObjectTypes.crosswalk ) {
-
-			const crosswalk = new Crosswalk( s, t, markings, outlines );
-
-			markings.forEach( marking => marking.roadObject = crosswalk );
-
-			crosswalk.update();
-
-			SceneService.addToMain( crosswalk );
-
-			road.addRoadObjectInstance( crosswalk );
-
-		} else {
-
-			road.addRoadObject(
-				type, name, id,
-				s, t, zOffset,
-				validLength,
-				orientation,
-				length, width, radius, height,
-				hdg, pitch, roll
-			);
-
-		}
-
-		const roadObject = road.getLastAddedRoadObject();
 
 		roadObject.userData = this.parseUserData( xmlElement );
 
 		this.parseRoadObjectRepeatArray( roadObject, xmlElement );
+
+		return roadObject;
+
 	}
 
 	private parseObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {

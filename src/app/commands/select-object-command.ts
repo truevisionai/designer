@@ -31,6 +31,12 @@ export class SelectObjectCommand extends BaseCommand {
 
 	execute () {
 
+		this.previousObjects.forEach( previousObject => {
+
+			MapEvents.objectUnselected.emit( previousObject );
+
+		} );
+
 		this.objects.forEach( object => {
 
 			MapEvents.objectSelected.emit( object );

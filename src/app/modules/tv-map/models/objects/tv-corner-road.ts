@@ -1,12 +1,11 @@
 import { DynamicControlPoint } from "../../../three-js/objects/dynamic-control-point";
-import { Crosswalk } from "./crosswalk";
 import { TvRoad } from "../tv-road.model";
 import { Vector3 } from "three";
 
 /**
  * Defines a corner point on the object’s outline in road co-ordinates..
  */
-export class TvCornerRoad extends DynamicControlPoint<Crosswalk> {
+export class TvCornerRoad extends DynamicControlPoint<any> {
 
 	constructor (
 		public attr_id: number,

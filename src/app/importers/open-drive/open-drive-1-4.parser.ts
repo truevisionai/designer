@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { SceneService } from 'app/services/scene.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -41,7 +40,6 @@ import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
 import { SignShapeType } from '../../modules/tv-map/services/tv-sign.service';
-import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
 import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "../xml.element";
@@ -160,7 +158,10 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
-		if ( xml.objects ) this.parseObjects( road, xml.objects );
+
+		readXmlArray( xml.objects?.object, xml => {
+			road.addRoadObjectInstance( this.parseRoadObject( road, xml ) );
+		} );
 
 		if ( xml.signals ) this.parseSignals( road, xml.signals );
 
@@ -644,27 +645,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		// }
 	}
 
-	public parseObjects ( road: TvRoad, xmlElement: XmlElement ) {
-
-		// @ts-ignore
-		if ( xmlElement != null && xmlElement !== '' ) {
-
-			if ( Array.isArray( xmlElement.object ) ) {
-
-				for ( let i = 0; i < xmlElement.object.length; i++ ) {
-
-					this.parseObject( road, xmlElement.object[ i ] );
-
-				}
-			} else {
-
-				this.parseObject( road, xmlElement.object );
-
-			}
-		}
-	}
-
-	public parseObject ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseRoadObject ( road: TvRoad, xmlElement: XmlElement ): TvRoadObject {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
@@ -682,47 +663,25 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
 		const roll = parseFloat( xmlElement.attr_roll ) || 0;
 
-		const outlines: TvObjectOutline[] = [];
-		const markings: TvObjectMarking[] = [];
+		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
 
 		readXmlArray( xmlElement.outlines?.outline, xml => {
-			outlines.push( this.parseObjectOutline( xml, road ) );
+
+			roadObject.outlines.push( this.parseObjectOutline( xml, road ) );
+
 		} );
 
 		readXmlArray( xmlElement.markings?.marking, xml => {
-			markings.push( this.parseObjectMarking( xml, road ) );
+
+			roadObject.markings.push( this.parseObjectMarking( xml, road ) );
+
 		} );
-
-		if ( type == ObjectTypes.crosswalk ) {
-
-			const crosswalk = new Crosswalk( s, t, markings, outlines );
-
-			markings.forEach( marking => marking.roadObject = crosswalk );
-
-			crosswalk.update();
-
-			SceneService.addToMain( crosswalk );
-
-			road.addRoadObjectInstance( crosswalk );
-
-		} else {
-
-			road.addRoadObject(
-				type, name, id,
-				s, t, zOffset,
-				validLength,
-				orientation,
-				length, width, radius, height,
-				hdg, pitch, roll
-			);
-
-		}
-
-		const roadObject = road.getLastAddedRoadObject();
 
 		roadObject.userData = this.parseUserData( xmlElement );
 
 		this.parseRoadObjectRepeatArray( roadObject, xmlElement );
+
+		return roadObject;
 	}
 
 	public parseObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {

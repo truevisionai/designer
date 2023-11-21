@@ -32,7 +32,7 @@ import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
 import { LaneService } from 'app/tools/lane/lane.service';
-import { CrosswalkObjectService } from 'app/tools/marking-line/crosswalk-object.service';
+import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
@@ -56,7 +56,7 @@ export class ToolBarService {
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
 		private laneService: LaneService,
-		private crosswalkService: CrosswalkObjectService,
+		private crosswalkService: RoadObjectService,
 		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
 		private roadCutToolService: RoadDividerToolService,

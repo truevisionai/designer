@@ -23,6 +23,7 @@ import { SplineControlPoint } from "../../modules/three-js/objects/spline-contro
 import { Injectable } from '@angular/core';
 import { RoadService } from './road.service';
 import { RoadLinkService } from './road-link.service';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +40,8 @@ export class RoadCircleService {
 
 	constructor (
 		private roadService: RoadService,
-		private roadLinkService: RoadLinkService
+		private roadLinkService: RoadLinkService,
+		private mapService: MapService,
 	) { }
 
 	showRoadNodes ( road: TvRoad ) {
@@ -115,7 +117,7 @@ export class RoadCircleService {
 
 		const roads = this.createCircularRoads( this.centre, this.end, this.radius );
 
-		CommandHistory.execute( new AddRoadCommand( roads ) );
+		CommandHistory.execute( new AddRoadCommand( this.mapService.map, roads ) );
 
 		this.reset();
 

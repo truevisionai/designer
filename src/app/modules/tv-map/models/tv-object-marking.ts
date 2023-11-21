@@ -98,11 +98,11 @@ export class TvObjectMarking {
 
 		if ( !this.roadObject ) return;
 
-		this.roadObject.remove( this.node );
+		// this.roadObject.remove( this.node );
 
-		this.node = MarkingObjectFactory.createMarkingMesh( this.roadObject, this );
+		// this.node = MarkingObjectFactory.createMarkingMesh( this.roadObject, this );
 
-		this.roadObject.add( this.node );
+		// this.roadObject.add( this.node );
 
 	}
 

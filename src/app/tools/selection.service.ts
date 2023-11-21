@@ -17,6 +17,8 @@ export class SelectionService {
 
 	private tags = new Map<string, string>();
 
+	private priority = new Map<string, number>();
+
 	private debug = true;
 
 	constructor () {
@@ -31,6 +33,8 @@ export class SelectionService {
 
 		this.strategies.set( type, strategy );
 
+		this.priority.set( type, this.strategies.size );
+
 	}
 
 	registerTag ( type: string, tag: any ): void {
@@ -43,23 +47,13 @@ export class SelectionService {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
-			const selected = strategy.select( e );
+			const object = strategy.select( e );
 
-			if ( selected ) {
+			if ( !object ) continue;
 
-				const last = this.selectedObjects.get( type );
+			this.selectObject( object, type );
 
-				if ( last === selected ) {
-
-					return;
-
-				}
-
-				this.selectObject( selected, type );
-
-				return;
-
-			}
+			return;
 
 		}
 
@@ -87,21 +81,19 @@ export class SelectionService {
 
 		this.tags.clear();
 
+		this.priority.clear();
+
 	}
 
 	private handleDeselection (): void {
 
-		if ( this.strategies.size > 0 ) {
+		for ( const [ type, strategy ] of this.strategies ) {
 
-			for ( const [ type, strategy ] of this.strategies ) {
+			if ( this.selectedObjects.has( type ) ) {
 
-				if ( this.selectedObjects.has( type ) ) {
+				this.deselectObject( type );
 
-					this.deselectObject( type );
-
-					break;
-
-				}
+				break;
 
 			}
 
@@ -111,9 +103,26 @@ export class SelectionService {
 
 	private selectObject ( object: any, type: string ): void {
 
-		const previousObject = this.selectedObjects.get( type );
+		const index = this.priority.get( type );
 
-		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
+		// unselect objects with lower priority
+		const unselectObjects = [];
+
+		for ( const [ key, value ] of this.selectedObjects.entries() ) {
+
+			if ( this.priority.get( key ) < index ) {
+
+				unselectObjects.push( value );
+
+			}
+
+		}
+
+		const lastSelected = this.getLastSelected( type );
+
+		if ( lastSelected && lastSelected === object && unselectObjects.length === 0 ) return;
+
+		CommandHistory.execute( new SelectObjectCommand( object, unselectObjects ) );
 
 	}
 

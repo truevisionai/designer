@@ -14,7 +14,6 @@ import { BaseTool } from '../base-tool';
 import { CreateLaneOffsetCommand } from './create-lane-offset-command';
 import { SelectLaneForLaneOffsetCommand } from './select-lane-for-lane-offset-command';
 import { SelectLaneOffsetNodeCommand } from './select-lane-offset-node-command';
-import { UnselectLaneForLaneOffsetCommand } from './unselect-lane-for-lane-offset-command';
 import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
 import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
 
@@ -73,7 +72,7 @@ export class LaneOffsetTool extends BaseTool {
 
 		} else if ( this.lane ) {
 
-			CommandHistory.execute( new UnselectLaneForLaneOffsetCommand( this, this.lane ) );
+			// CommandHistory.execute( new UnselectLaneForLaneOffsetCommand( this, this.lane ) );
 
 		}
 	}

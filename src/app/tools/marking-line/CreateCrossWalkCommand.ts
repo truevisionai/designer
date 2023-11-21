@@ -1,57 +1,57 @@
-// import { SelectPointCommand } from 'app/commands/select-point-command';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { BaseCommand } from '../../commands/base-command';
-import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
-import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
-// import { CrosswalkTool, getSelectPointCommand } from './crosswalk-tool';
+// // import { SelectPointCommand } from 'app/commands/select-point-command';
+// import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+// import { BaseCommand } from '../../commands/base-command';
+// import { Crosswalk } from "../../modules/tv-map/models/objects/crosswalk";
+// import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
+// // import { CrosswalkTool, getSelectPointCommand } from './crosswalk-tool';
 
 
 
-export class CreateCrossWalkCommand extends BaseCommand {
+// export class CreateCrossWalkCommand extends BaseCommand {
 
-	private readonly crosswalk: Crosswalk;
-	// private readonly selectPointCommand: SelectPointCommand;
+// 	private readonly crosswalk: Crosswalk;
+// 	// private readonly selectPointCommand: SelectPointCommand;
 
-	constructor ( private roadCoord: TvRoadCoord ) {
+// 	constructor ( private roadCoord: TvRoadCoord ) {
 
-		super();
+// 		super();
 
-		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t, roadCoord.z );
+// 		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t, roadCoord.z );
 
-		this.crosswalk = new Crosswalk( roadCoord.s, roadCoord.t );
+// 		this.crosswalk = new Crosswalk( roadCoord.s, roadCoord.t );
 
-		this.crosswalk.addCornerRoad( point );
+// 		this.crosswalk.addCornerRoad( point );
 
-		// const tool = this.getTool<CrosswalkTool>();
+// 		// const tool = this.getTool<CrosswalkTool>();
 
-		// this.selectPointCommand = getSelectPointCommand( tool, point, this.crosswalk );
+// 		// this.selectPointCommand = getSelectPointCommand( tool, point, this.crosswalk );
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.roadCoord.road.gameObject.add( this.crosswalk );
+// 		this.roadCoord.road.gameObject.add( this.crosswalk );
 
-		this.roadCoord.road.addRoadObjectInstance( this.crosswalk );
+// 		this.roadCoord.road.addRoadObjectInstance( this.crosswalk );
 
-		// this.selectPointCommand.execute();
+// 		// this.selectPointCommand.execute();
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.roadCoord.road.gameObject.remove( this.crosswalk );
+// 		this.roadCoord.road.gameObject.remove( this.crosswalk );
 
-		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
+// 		this.roadCoord.road.removeRoadObjectById( this.crosswalk.attr_id );
 
-		// this.selectPointCommand.undo();
+// 		// this.selectPointCommand.undo();
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-}
+// }

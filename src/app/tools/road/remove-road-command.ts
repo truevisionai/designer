@@ -1,42 +1,42 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { BaseCommand } from 'app/commands/base-command';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+// import { BaseCommand } from 'app/commands/base-command';
+// import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+// import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
-export class RemoveRoadCommand extends BaseCommand {
+// export class RemoveRoadCommand extends BaseCommand {
 
-	constructor ( private road: TvRoad ) {
+// 	constructor ( private road: TvRoad ) {
 
-		super();
+// 		super();
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.map.removeRoad( this.road );
+// 		this.map.removeRoad( this.road );
 
-		this.road.spline.removeRoadSegmentByRoadId( this.road.id );
+// 		this.road.spline.removeRoadSegmentByRoadId( this.road.id );
 
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
-	}
+// 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.map.addRoad( this.road );
+// 		this.map.addRoad( this.road );
 
-		this.road.spline.addRoadSegment( this.road.sStart, this.road.id );
+// 		this.road.spline.addRoadSegment( this.road.sStart, this.road.id );
 
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
+// 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-}
+// }

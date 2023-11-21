@@ -17,28 +17,8 @@ export class RoadObjectInspectorComponent implements OnInit, IComponent {
 	constructor () {
 	}
 
-	// TODO: Get this properly
-	get signMaterial () {
-		return this.data.mesh.material;
-	}
-
-	ngOnInit () {
-	}
-
-	updatePosition ( $event: number ) {
-
-		// const road = OdSourceFile.openDrive.getRoadById( this.data.road_id );
-
-		// const pose = road.getPositionAt( this.data.attr_s, this.data.attr_t );
-
-		// this.data.GameObject.position.set( pose.x, pose.y, 0 );
-
-	}
-
-	onDelete () {
-
-		// CommandHistory.execute( new RemoveSignalCommand( this.data ) );
-
+	ngOnInit (): void {
+		throw new Error( 'Method not implemented.' );
 	}
 
 }

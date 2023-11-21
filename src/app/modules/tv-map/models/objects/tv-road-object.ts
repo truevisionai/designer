@@ -12,7 +12,7 @@ import { TvObjectMaterial } from "./tv-object-material";
 import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 
-export class TvRoadObject extends Object3D {
+export class TvRoadObject {
 	public static counter = 1;
 	public road: TvRoad;
 	public attr_type: ObjectTypes;
@@ -34,7 +34,8 @@ export class TvRoadObject extends Object3D {
 	public validity: TvLaneValidity[] = [];
 	public parkingSpace: TvParkingSpace;
 	public userData: TvUserData[] = [];
-	public mesh: Mesh;
+	public name: string;
+	// public mesh: Mesh;
 	// public gameObject: Object3D;
 	private lastAddedRepeatObjectIndex: number;
 
@@ -55,7 +56,7 @@ export class TvRoadObject extends Object3D {
 		pitch: number = null,
 		roll: number = null
 	) {
-		super();
+		// super();
 		TvRoadObject.counter++;
 		this.attr_type = type;
 		this.name = name;

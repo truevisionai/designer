@@ -37,8 +37,6 @@ export class MapManager extends Manager {
 
 		map.roads.forEach( road => {
 
-			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
-
 			road.remove( map.gameObject );
 
 		} );

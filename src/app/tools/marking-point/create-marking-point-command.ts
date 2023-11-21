@@ -1,46 +1,46 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { BaseCommand } from '../../commands/base-command';
-import { MarkingPointTool } from './marking-point-tool';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+// import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+// import { BaseCommand } from '../../commands/base-command';
+// import { MarkingPointTool } from './marking-point-tool';
+// import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
-export class CreateMarkingPointCommand extends BaseCommand {
+// export class CreateMarkingPointCommand extends BaseCommand {
 
-	private marking: TvRoadMarking;
+// 	private marking: TvRoadMarking;
 
-	constructor ( private tool: MarkingPointTool, marking: TvRoadMarking, private point: AbstractControlPoint ) {
+// 	constructor ( private tool: MarkingPointTool, marking: TvRoadMarking, private point: AbstractControlPoint ) {
 
-		super();
+// 		super();
 
-		this.marking = point.mainObject = marking.clone();
+// 		this.marking = point.mainObject = marking.clone();
 
-		this.marking.mesh.position.copy( point.position );
+// 		this.marking.mesh.position.copy( point.position );
 
-	}
+// 	}
 
-	execute () {
+// 	execute () {
 
-		this.map.gameObject.add( this.marking.mesh );
+// 		this.map.gameObject.add( this.marking.mesh );
 
-	}
+// 	}
 
-	undo () {
+// 	undo () {
 
-		this.map.gameObject.remove( this.marking.mesh );
+// 		this.map.gameObject.remove( this.marking.mesh );
 
-		this.tool.shapeEditor.removeControlPoint( this.point );
+// 		this.tool.shapeEditor.removeControlPoint( this.point );
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.tool.shapeEditor.pushControlPoint( this.point );
+// 		this.tool.shapeEditor.pushControlPoint( this.point );
 
-		this.map.gameObject.add( this.marking.mesh );
+// 		this.map.gameObject.add( this.marking.mesh );
 
-	}
+// 	}
 
-}
+// }
