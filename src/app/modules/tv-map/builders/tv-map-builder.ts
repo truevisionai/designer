@@ -98,7 +98,7 @@ export class TvMapBuilder {
 
 	static buildRoadObjects ( road: TvRoad ) {
 
-		// RoadObjectService.instance.buildRoadObjects( road );
+		RoadObjectService.instance.buildRoadObjects( road );
 
 	}
 

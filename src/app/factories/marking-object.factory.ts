@@ -10,8 +10,6 @@ export class MarkingObjectFactory {
 
 	static createMesh ( roadObject: TvRoadObject ): Object3D {
 
-		console.trace( 'MarkingObjectFactory.createMesh', roadObject );
-
 		const object3D = new Object3D();
 
 		object3D.name = 'object:' + roadObject.attr_type;
