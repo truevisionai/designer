@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BaseToolService } from '../base-tool.service';
 import { MapService } from 'app/services/map.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
@@ -7,8 +6,7 @@ import { SceneService } from 'app/services/scene.service';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { RoadObjectFactory } from 'app/factories/road-object.factory';
 import { Object3DMap } from '../lane-width/object-3d-map';
-import { Group, Object3D } from 'three';
-import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
+import { Object3D } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,7 +18,6 @@ export class RoadObjectService {
 	static instance: any;
 
 	constructor (
-		public base: BaseToolService,
 		private map: MapService
 	) {
 		RoadObjectService.instance = this;

@@ -40,6 +40,7 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { ToolManager } from 'app/tools/tool-manager';
 import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
+import { CrosswalkToolService } from "../../../tools/marking-line/crosswalk-tool.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,7 +57,7 @@ export class ToolBarService {
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
 		private laneService: LaneService,
-		private crosswalkService: RoadObjectService,
+		private crosswalkService: CrosswalkToolService,
 		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
 		private roadCutToolService: RoadDividerToolService,
