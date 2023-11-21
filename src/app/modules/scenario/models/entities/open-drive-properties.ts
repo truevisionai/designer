@@ -4,7 +4,7 @@
 
 import { Maths } from '../../../../utils/maths';
 import { TvLaneType } from '../../../tv-map/models/tv-common';
-import { TvMapInstance } from '../../../tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../../tv-map/services/tv-map-instance';
 
 export class OpenDriveProperties {
 	public speed: number = 0;

@@ -4,14 +4,13 @@
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SerializedField } from 'app/core/components/serialization';
-import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
-import { PropInstance } from 'app/core/models/prop-instance.model';
 import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
+import { AnyControlPoint } from "../../three-js/objects/any-control-point";
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 export class PropCurve {
 
@@ -74,7 +73,7 @@ export class PropCurve {
 
 		this.spline.show();
 
-		SceneService.addToMain( this.spline.mesh );
+		// SceneService.addToMain( this.spline.mesh );
 
 	}
 
@@ -82,7 +81,7 @@ export class PropCurve {
 
 		this.spline.hide();
 
-		SceneService.removeFromMain( this.spline.mesh );
+		// SceneService.removeFromMain( this.spline.mesh );
 
 	}
 
@@ -150,7 +149,7 @@ export class PropCurve {
 
 		this.props.push( prop );
 
-		TvMapInstance.addProp( prop );
+		// TvMapInstance.addProp( prop );
 
 	}
 
@@ -201,7 +200,7 @@ export class PropCurve {
 
 	}
 
-	removeControlPoint ( point: BaseControlPoint ) {
+	removeControlPoint ( point: AbstractControlPoint ) {
 
 		const index = this.spline.controlPoints.indexOf( point );
 

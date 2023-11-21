@@ -4,27 +4,58 @@
 
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { BaseControlPoint } from '../../../modules/three-js/objects/control-point';
 import { SelectStrategy } from './select-strategy';
+import { AbstractControlPoint } from "../../../modules/three-js/objects/abstract-control-point";
 
-export class ControlPointStrategy<T extends BaseControlPoint> extends SelectStrategy<T> {
+export interface StrategySettings {
+	higlightOnHover?: boolean;
+	higlightOnSelect?: boolean;
+	tag?: string;
+	returnParent?: boolean;
+	returnTarget?: boolean;
+}
+
+export class ControlPointStrategy<T extends AbstractControlPoint> extends SelectStrategy<T> {
 
 	private current: T = null;
 	private selected: T = null;
 
-	constructor () {
+	constructor ( private options?: StrategySettings ) {
+
 		super();
+
+		if ( !this.options ) {
+			this.options = {
+				higlightOnHover: true,
+				higlightOnSelect: true,
+				tag: null,
+				returnParent: false
+			}
+		}
+
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): T {
 
-		this.selected?.unselect();
+		if ( this.options?.higlightOnSelect ) {
+			this.selected?.unselect();
+		}
 
 		this.selected = pointerEventData.intersections
 			.filter( i => i.object.visible )
 			.find( i => i.object instanceof Points )?.object as any;
 
-		this.selected?.select();
+		if ( this.options?.higlightOnSelect ) {
+			this.selected?.select();
+		}
+
+		if ( this.options?.returnParent ) {
+			return this.selected?.parent as any;
+		}
+
+		if ( this.options?.returnTarget ) {
+			return this.selected?.target;
+		}
 
 		return this.selected;
 

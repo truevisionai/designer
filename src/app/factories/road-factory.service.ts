@@ -8,7 +8,7 @@ import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector2, Vector3 } from 'three';
 import { JunctionEntryObject } from '../modules/three-js/objects/junction-entry.object';
@@ -19,7 +19,9 @@ import { TvMapQueries } from '../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';
 import { AutoSpline } from '../core/shapes/auto-spline';
 import { IDService } from './id.service';
-import { Maths } from 'app/utils/maths';
+import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 
 export class RoadFactory {
 
@@ -37,114 +39,31 @@ export class RoadFactory {
 
 	}
 
-	static createCircularRoads ( centre: Vector3, end: Vector3, radius: number ): TvRoad[] {
+	static getNextRoadId () {
 
-		const p1 = new Vector2( centre.x, centre.y );
-		const p2 = new Vector2( end.x, end.y );
+		return this.IDService.getUniqueID();
 
-		let start = end;
-
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
-
-		const circumference = 2 * Math.PI * radius;
-
-		const arcLength = circumference * 0.25;
-
-		const curvature = 1 / radius;
-
-		const points = []
-
-		const roads = [];
-
-		for ( let i = 0; i < 4; i++ ) {
-
-			const road = roads[ i ] = this.map.addDefaultRoad();
-
-			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
-
-			const startPosTheta = arc.getRoadCoord( 0 );
-			const endPosTheta = arc.getRoadCoord( arcLength );
-
-			const distance = start.distanceTo( arc.endV3 ) * 0.3;
-
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
-
-			points.push( new RoadControlPoint( road, start, 'cp', 0, 0 ) );
-			points.push( new RoadControlPoint( road, a2.toVector3(), 'cp', 1, 1 ) );
-			points.push( new RoadControlPoint( road, b2.toVector3(), 'cp', 2, 2 ) );
-			points.push( new RoadControlPoint( road, arc.endV3.clone(), 'cp', 3, 3 ) );
-
-			start = arc.endV3;
-
-			hdg += Maths.M_PI_2;
-
-		}
-
-		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
-
-		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
-
-		points.forEach( p => SceneService.addToolObject( p ) );
-
-		for ( let j = 0; j < 4; j++ ) {
-
-			const road = roads[ j ];
-
-			const spline = new AutoSpline( road );
-
-			spline.addControlPoint( points[ j * 4 + 0 ] );
-			spline.addControlPoint( points[ j * 4 + 1 ] );
-			spline.addControlPoint( points[ j * 4 + 2 ] );
-			spline.addControlPoint( points[ j * 4 + 3 ] );
-
-			road.spline = spline;
-
-			road.spline.hide();
-
-			road.updateGeometryFromSpline();
-
-			if ( ( j + 1 ) < roads.length ) {
-
-				const nextRoad = roads[ j + 1 ];
-
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
-
-				road.addSuccessor( successor );
-				nextRoad.addPredecessor( predecessor );
-
-			} else {
-
-				// its last road, so make connection with the first one
-				const firstRoad = roads[ 0 ];
-
-				const successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
-				const predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
-
-				road.addSuccessor( successor );
-				firstRoad.addPredecessor( predecessor );
-
-			}
-
-		}
-
-		return roads;
 	}
 
-	static createFirstRoadControlPoint ( position: Vector3 ): RoadControlPoint {
+	static cloneRoad ( road: TvRoad, s = 0 ): TvRoad {
+
+		const cloned = road.clone( s );
+
+		cloned.id = this.IDService.getUniqueID();
+
+		return cloned;
+
+	}
+
+	static createFirstRoadControlPoint ( position: Vector3 ) {
 
 		const road = this.createDefaultRoad( TvRoadType.TOWN, 40 );
 
 		const point = road.addControlPointAt( position );
 
-		return point;
+		road.spline.addRoadSegment( 0, road.id );
 
-	}
-
-	static createRoadControlPoint ( road: TvRoad, position: Vector3 ): RoadControlPoint {
-
-		return new RoadControlPoint( road, position, 'cp', road.spline.controlPoints.length, road.spline.controlPoints.length );
+		return { point, road };
 
 	}
 
@@ -181,13 +100,88 @@ export class RoadFactory {
 
 	}
 
+	static createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
+
+		const road = this.createDefaultRoad();
+
+		road.addGeometryLine( 0, position.x, position.y, hdg, length );
+
+		return road;
+
+	}
+
+	static createSingleLaneRoad ( width = 3.6, side = TvLaneSide.RIGHT ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		const laneSection = road.addGetLaneSection( 0 );
+
+		if ( side === TvLaneSide.LEFT ) {
+			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		}
+
+		if ( side === TvLaneSide.RIGHT ) {
+			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		}
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+
+		laneSection.getLaneArray().forEach( lane => {
+
+			if ( lane.side === TvLaneSide.CENTER ) return;
+
+			if ( lane.type !== TvLaneType.driving ) return;
+
+			lane.addWidthRecord( 0, width, 0, 0, 0 );
+
+		} );
+
+		return road;
+
+	}
+
+	static createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
+
+		const road = this.createDefaultRoad();
+
+		road.clearLaneSections();
+
+		const laneSection = firstNode.getLaneSection().cloneAtS( 0, 0, null, road );
+
+		road.addLaneSectionInstance( laneSection );
+
+		if ( firstNode.road.hasType ) {
+
+			const roadType = firstNode.road.getRoadTypeAt( firstNode.sCoordinate );
+
+			road.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
+
+		} else {
+
+			road.setType( TvRoadType.TOWN, 40 );
+
+		}
+
+		return road;
+	}
+
 	static createNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
 
 		const roadId = this.IDService.getUniqueID( id );
 
 		const roadName = name || `Road${ roadId }`;
 
-		return new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+		const road = new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+
+		road.sStart = 0;
+
+		const spline = new AutoSplineV2();
+
+		spline.addRoadSegment( road.sStart, road.id );
+
+		road.spline = spline;
+
+		return road;
 
 	}
 
@@ -198,8 +192,6 @@ export class RoadFactory {
 		this.map.gameObject.remove( road.gameObject );
 
 		TvMapBuilder.buildRoad( this.map.gameObject, road );
-
-		if ( !road.isJunction ) road.updateRoadNodes();
 
 	}
 
@@ -215,7 +207,9 @@ export class RoadFactory {
 
 		const spline = this.createSpline( entry, exit, side );
 
-		const connectingRoad = this.map.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
+		const connectingRoad = RoadFactory.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
+
+		this.map.addRoad( connectingRoad );
 
 		connectingRoad.setPredecessor( TvRoadLinkChildType.road, entry.road.id, entry.contact );
 
@@ -274,7 +268,7 @@ export class RoadFactory {
 
 	static joinRoadNodes ( firstRoad: TvRoad, firstNode: RoadNode, secondRoad: TvRoad, secondNode: RoadNode ): TvRoad {
 
-		const joiningRoad = this.map.addDefaultRoad();
+		const joiningRoad = RoadFactory.createDefaultRoad();
 
 		joiningRoad.clearLaneSections();
 

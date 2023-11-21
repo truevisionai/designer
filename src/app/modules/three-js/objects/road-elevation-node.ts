@@ -12,7 +12,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
 import { DynamicControlPoint } from './dynamic-control-point';
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+// import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 
 export class RoadElevationNode extends DynamicControlPoint<any> {
 
@@ -24,8 +24,6 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 
 		this.tag = this.name = RoadElevationNode.TAG;
 
-		this.createLine();
-
 	}
 
 	@SerializedField( { type: 'int' } )
@@ -36,7 +34,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set s ( value: number ) {
 		this.elevation.s = value;
 		this.updateValuesAndPosition();
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
 	}
 
 	@SerializedField( { type: 'int' } )
@@ -47,7 +45,7 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 	set height ( value: number ) {
 		this.elevation.a = value;
 		this.updateValuesAndPosition();
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
 	}
 
 	@Action()
@@ -59,16 +57,18 @@ export class RoadElevationNode extends DynamicControlPoint<any> {
 		}
 	}
 
-	createLine () {
+	update () {
 
-		// const start = this.getWorldPosition();
+		// const roadCoord = this.road.getCoordAt( this.position );
 
-		// const end = start.clone();
-		// end.z = 0;
+		// this.elevation.s = roadCoord.s;
 
-		// const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-		// const line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.RED, opacity: 0.35, linewidth: 5 } ) );
-		// this.add( line );
+		// this.updateValuesAndPosition();
+
+		// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.road, false ) );
+
+		// MapEvents.objectUpdated.emit( this );
+
 	}
 
 	getWorldPosition (): Vector3 {

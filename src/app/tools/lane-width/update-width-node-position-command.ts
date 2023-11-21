@@ -1,59 +1,59 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { BaseCommand } from '../../commands/base-command';
-import { NodeFactoryService } from '../../factories/node-factory.service';
-import { MapEvents } from 'app/events/map-events';
+// import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+// import { Vector3 } from 'three';
+// import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
+// import { BaseCommand } from '../../commands/base-command';
+// import { NodeFactoryService } from '../../factories/node-factory.service';
+// import { MapEvents } from 'app/events/map-events';
 
-export class UpdateWidthNodePositionCommand extends BaseCommand {
+// export class UpdateWidthNodePositionCommand extends BaseCommand {
 
-	constructor (
-		private node: LaneWidthNode,
-		private newPosition: Vector3,
-		private oldPosition: Vector3,
-		private laneHelper: OdLaneReferenceLineBuilder
-	) {
+// 	constructor (
+// 		private node: LaneWidthNode,
+// 		private newPosition: Vector3,
+// 		private oldPosition: Vector3,
+// 		private laneHelper: OdLaneReferenceLineBuilder
+// 	) {
 
-		super();
+// 		super();
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		NodeFactoryService.updateLaneWidthNode( this.node, this.newPosition );
+// 		NodeFactoryService.updateLaneWidthNode( this.node, this.newPosition );
 
-		this.node.updateLaneWidthValues();
+// 		this.node.updateLaneWidthValues();
 
-		this.rebuild( this.map.getRoadById( this.node.roadId ) );
-	}
+// 		this.rebuild( this.map.getRoadById( this.node.roadId ) );
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		NodeFactoryService.updateLaneWidthNode( this.node, this.oldPosition );
+// 		NodeFactoryService.updateLaneWidthNode( this.node, this.oldPosition );
 
-		this.node.updateLaneWidthValues();
+// 		this.node.updateLaneWidthValues();
 
-		this.rebuild( this.map.getRoadById( this.node.roadId ) );
+// 		this.rebuild( this.map.getRoadById( this.node.roadId ) );
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-	rebuild ( road: TvRoad ): void {
+// 	rebuild ( road: TvRoad ): void {
 
-		MapEvents.laneUpdated.emit( this.node.lane );
+// 		MapEvents.laneUpdated.emit( this.node.lane );
 
-		this.laneHelper.drawRoad( road, LineType.SOLID, true );
+// 		this.laneHelper.drawRoad( road, LineType.SOLID, true );
 
-	}
+// 	}
 
-}
+// }

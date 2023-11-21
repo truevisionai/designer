@@ -2,25 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
+// import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { SceneService } from 'app/services/scene.service';
+// import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
-import { TvLaneSide } from './tv-common';
 import { TvController } from './tv-controller';
 import { TvJunction } from './tv-junction';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvLane } from './tv-lane';
 import { TvMapHeader } from './tv-map-header';
-import { TvRoadLinkChild } from './tv-road-link-child';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
 import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Vector3 } from 'three';
 
 export class TvMap {
+	findRoadCoord ( point: Vector3 ) {
+		throw new Error( 'Method not implemented.' );
+	}
 
 	public props: PropInstance[] = [];
 	public propCurves: PropCurve[] = [];
@@ -31,6 +32,8 @@ export class TvMap {
 	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
+
+	private splines: AbstractSpline[] = [];
 
 	/**
 	 * @deprecated use getRoads();
@@ -70,13 +73,21 @@ export class TvMap {
 		return Array.from( this._roads.values() );
 	}
 
-	update () {
-
-
-	}
-
 	public getHeader (): TvMapHeader {
 		return this.header;
+	}
+
+	addSpline ( spline: AbstractSpline ): void {
+		if ( this.splines.find( s => s.uuid == spline.uuid ) ) return;
+		this.splines.push( spline );
+	}
+
+	removeSpline ( spline: AbstractSpline ): void {
+		this.splines.splice( this.splines.indexOf( spline ), 1 );
+	}
+
+	getSplines (): AbstractSpline[] {
+		return this.splines;
 	}
 
 	/**
@@ -97,44 +108,25 @@ export class TvMap {
 		return road;
 	}
 
+	/**
+	 *
+	 * @returns @deprecated
+	 */
 	addDefaultRoad (): TvRoad {
 
-		const road = RoadFactory.createDefaultRoad();
-
-		this.addRoad( road );
-
-		return road;
+		throw new Error( 'Method not implemented.' );
 
 	}
-
-	addRampRoad ( lane: TvLane ): TvRoad {
-
-		const road = RoadFactory.createRampRoad( lane );
-
-		this.addRoad( road );
-
-		return road;
-
-	}
-
-	addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
-
-		const road = RoadFactory.addConnectingRoad( side, width, junctionId );
-
-		this.addRoad( road );
-
-		return road;
-
-	}
-
-	addConnectingRoadLane () {
-
-	}
-
 
 	addRoad ( road: TvRoad ) {
 
 		this._roads.set( road.id, road );
+
+	}
+
+	addRoads ( roads: TvRoad[] ) {
+
+		roads.forEach( road => this.addRoad( road ) );
 
 	}
 
@@ -159,7 +151,7 @@ export class TvMap {
 
 	}
 
-	public deleteRoad ( road: TvRoad ) {
+	public removeRoad ( road: TvRoad ) {
 
 		this.roads.delete( road.id );
 
@@ -255,53 +247,9 @@ export class TvMap {
 
 	destroy () {
 
-		this.roads.forEach( road => {
-
-			road.objects.object.forEach( object => SceneService.removeFromMain( object ) );
-
-			road.remove( this.gameObject );
-
-		} );
-
-		this.surfaces.forEach( surface => this.gameObject.remove( surface.mesh ) );
-
-		this.propCurves.forEach( curve => {
-
-			curve.delete();
-
-			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
-
-		} );
-
-		this.propPolygons.forEach( polygon => {
-
-			polygon.delete();
-
-			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
-
-		} );
-
-		this.props.forEach( prop => {
-
-			// SceneService.remove( prop.object );
-			SceneService.removeFromMain( prop );
-
-			// this.gameObject.remove( prop.object );
-			this.gameObject.remove( prop );
-
-		} );
-
 		this.clear();
 
-		RoadFactory.reset();
-	}
-
-	showSurfaceHelpers () {
-		this.surfaces.forEach( surface => surface.showHelpers() );
-	}
-
-	hideSurfaceHelpers () {
-		this.surfaces.forEach( surface => surface.hideHelpers() );
+		MapEvents.mapRemoved.emit( this );
 	}
 
 	getJunctions () {
@@ -363,27 +311,16 @@ export class TvMap {
 		return finalJunction;
 	}
 
-	private getNextRoad ( road: TvRoad, connection: TvJunctionConnection, child: TvRoadLinkChild ) {
+	removeSurface ( surface: TvSurface ) {
 
-		if ( child.elementType == 'road' ) {
-
-			connection = null;
-
-			return this.getRoadById( child.elementId );
-
-		} else if ( child.elementType == 'junction' ) {
-
-			const junction = this.getJunctionById( child.elementId );
-
-			connection = junction.getRandomConnectionFor( road.id );
-
-			return connection?.connectingRoad;
-
-		} else {
-
-			console.error( 'unknown successor type', child );
-
-		}
+		this.surfaces.splice( this.surfaces.indexOf( surface ), 1 );
 
 	}
+
+	addSurface ( surface: TvSurface ) {
+
+		this.surfaces.push( surface );
+
+	}
+
 }

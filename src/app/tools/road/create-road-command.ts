@@ -1,68 +1,58 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { SelectPointCommand } from 'app/commands/select-point-command';
-import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
-import { Vector3 } from 'three';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { OdBaseCommand } from '../../commands/od-base-command';
-import { RoadTool } from './road-tool';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+// import { SelectPointCommand } from 'app/commands/select-point-command';
+// import { Vector3 } from 'three';
+// import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+// import { OdBaseCommand } from '../../commands/od-base-command';
+// import { RoadTool } from './road-tool';
+// import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+// import { ControlPointFactory } from 'app/factories/control-point.factory';
+// import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+// import { RoadFactory } from 'app/factories/road-factory.service';
 
-export class CreateRoadCommand extends OdBaseCommand {
+// export class CreateRoadCommand extends OdBaseCommand {
 
-	private selectPointCommand: SelectPointCommand;
-	private point: RoadControlPoint;
+// 	private point: AbstractControlPoint;
+// 	private road: TvRoad;
 
-	constructor ( tool: RoadTool, private road: TvRoad, position: Vector3 ) {
+// 	constructor ( position: Vector3 ) {
 
-		super();
+// 		super();
 
-		this.point = RoadFactory.createRoadControlPoint( road, position );
+// 		this.road = RoadFactory.createDefaultRoad();
 
-		this.selectPointCommand = new SelectPointCommand( tool, this.point, RoadInspector, {
-			road: this.point.road,
-			controlPoint: this.point
-		} );
-	}
+// 		this.point = ControlPointFactory.createControl( this.road.spline, position );
 
-	execute (): void {
+// 		this.road.spline.addControlPoint( this.point );
 
-		// this.road.showNodes();
+// 	}
 
-		// this.road.spline.showLines();
+// 	execute (): void {
 
-		this.map.roads.set( this.road.id, this.road );
+// 		this.map.addSpline( this.road.spline );
 
-		this.road.addControlPoint( this.point );
+// 		this.map.addRoad( this.road );
 
-		this.selectPointCommand.execute();
+// 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road ) );
 
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		// this.road.hideNodes();
+// 		this.map.removeSpline( this.road.spline );
 
-		// this.road.spline.hideLines();
+// 		this.map.removeRoad( this.road );
 
-		this.map.roads.delete( this.road.id );
+// 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road ) );
 
-		this.road.removeControlPoint( this.point );
+// 	}
 
-		this.selectPointCommand.undo();
+// 	redo (): void {
 
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
-	}
+// 		this.execute();
 
-	redo (): void {
+// 	}
 
-		this.execute();
-
-	}
-
-}
+// }

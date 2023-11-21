@@ -4,7 +4,7 @@
 
 import { BaseCommand } from 'app/commands/base-command';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from '../modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
 
 export abstract class OdBaseCommand extends BaseCommand {
 

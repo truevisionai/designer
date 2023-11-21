@@ -3,12 +3,12 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { AppService } from 'app/services/app.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { Vector3 } from 'three';
+import { ViewportEvents } from 'app/events/viewport-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,7 +26,7 @@ export class StatusBarService {
 	constructor () {
 		this.cursor = new PointerEventData();
 		this.cursor.point = new Vector3();
-		AppService.eventSystem.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
+		ViewportEvents.instance.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
 	}
 
 	get x () {

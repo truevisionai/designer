@@ -118,6 +118,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster = new THREE.Raycaster();
 		// this.raycaster.linePrecision = 0.25;
+		this.raycaster.params.Line.threshold = 0.5;
+		this.raycaster.params.Line2 = {
+			threshold: 0.5
+		}
 		this.raycaster.far = 10000;
 
 		SceneService.renderer = this.renderer;
@@ -305,7 +309,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {
 
-			this.intersections = this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+			this.intersections = this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 
 		}
 
@@ -586,7 +590,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		return this.raycaster.intersectObjects( [ ThreeService.bgForClicks ], false );
+		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 	}
 
 	resizeCanvas () {

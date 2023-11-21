@@ -5,6 +5,7 @@
 import { BaseCommand } from './base-command';
 import { IHasPosition } from '../modules/three-js/objects/i-has-position';
 import { IHasUpdate } from './set-value-command';
+import { MapEvents } from 'app/events/map-events';
 
 export interface IHasCopyUpdate extends IHasUpdate, IHasPosition {
 
@@ -34,7 +35,7 @@ export class CopyPositionCommand extends BaseCommand {
 
 		this.object.updateMatrixWorld( true );
 
-		// this.editor.signals.objectChanged.dispatch( this.object );
+		MapEvents.objectUpdated.emit( this.object );
 
 	}
 
@@ -44,7 +45,7 @@ export class CopyPositionCommand extends BaseCommand {
 
 		this.object.updateMatrixWorld( true );
 
-		// this.editor.signals.objectChanged.dispatch( this.object );
+		MapEvents.objectUpdated.emit( this.object );
 
 	}
 
@@ -81,6 +82,8 @@ export class UpdatePositionCommand extends BaseCommand {
 
 		this.object?.update();
 
+		MapEvents.objectUpdated.emit( this.object );
+
 	}
 
 	undo (): void {
@@ -90,6 +93,8 @@ export class UpdatePositionCommand extends BaseCommand {
 		this.object?.updateMatrixWorld( true );
 
 		this.object?.update();
+
+		MapEvents.objectUpdated.emit( this.object );
 
 	}
 

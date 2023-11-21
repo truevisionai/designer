@@ -1,70 +1,70 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { SelectPointCommand } from 'app/commands/select-point-command';
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import {
-	PropCurveInspectorComponent,
-	PropCurveInspectorData
-} from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
-import { BaseCommand } from '../../commands/base-command';
-import { PropModel } from '../../core/models/prop-model.model';
-import { SceneService } from '../../services/scene.service';
-import { PropCurveToolV2 } from './prop-curve-tool';
+// import { SelectPointCommand } from 'app/commands/select-point-command';
+// import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+// import {
+// 	PropCurveInspectorComponent,
+// 	PropCurveInspectorData
+// } from 'app/views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
+// import { BaseCommand } from '../../commands/base-command';
+// import { PropModel } from '../../core/models/prop-model.model';
+// import { SceneService } from '../../services/scene.service';
+// import { PropCurveToolV2 } from './prop-curve-tool';
+// import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
-export class CreatePropCurveCommand extends BaseCommand {
+// export class CreatePropCurveCommand extends BaseCommand {
 
-	private curve: PropCurve;
+// 	private curve: PropCurve;
 
-	private selectPointCommand: SelectPointCommand;
+// 	private selectPointCommand: SelectPointCommand;
 
-	constructor ( private tool: PropCurveToolV2, private prop: PropModel, private point: BaseControlPoint ) {
+// 	constructor ( private tool: PropCurveToolV2, private prop: PropModel, private point: AbstractControlPoint ) {
 
-		super();
+// 		super();
 
-		this.curve = new PropCurve( this.prop.guid );
+// 		this.curve = new PropCurve( this.prop.guid );
 
-		point.mainObject = this.curve;
+// 		point.mainObject = this.curve;
 
-		const data = new PropCurveInspectorData( this.point, this.curve );
+// 		const data = new PropCurveInspectorData( this.point, this.curve );
 
-		this.selectPointCommand = new SelectPointCommand( this.tool as PropCurveToolV2, this.point, PropCurveInspectorComponent, data );
-	}
+// 		this.selectPointCommand = new SelectPointCommand( this.tool as PropCurveToolV2, this.point, PropCurveInspectorComponent, data );
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.selectPointCommand.execute();
+// 		this.selectPointCommand.execute();
 
-		this.map.propCurves.push( this.curve );
+// 		this.map.propCurves.push( this.curve );
 
-		this.curve.addControlPoint( this.point );
+// 		this.curve.addControlPoint( this.point );
 
-		SceneService.addToMain( this.point );
+// 		SceneService.addToMain( this.point );
 
-		this.curve.show();
+// 		this.curve.show();
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.selectPointCommand.undo();
+// 		this.selectPointCommand.undo();
 
-		this.curve.delete();
+// 		this.curve.delete();
 
-		SceneService.removeFromMain( this.point );
+// 		SceneService.removeFromMain( this.point );
 
-		const index = this.map.propCurves.indexOf( this.curve );
+// 		const index = this.map.propCurves.indexOf( this.curve );
 
-		this.map.propCurves.splice( index, 1 );
+// 		this.map.propCurves.splice( index, 1 );
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-}
+// }

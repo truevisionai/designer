@@ -2,46 +2,38 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { PointerEventData } from 'app/events/pointer-event-data';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { PropModel } from '../../core/models/prop-model.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-
-import { CreatePropCurveCommand } from './create-prop-curve-command';
-import { AddPropCurvePointCommand } from './add-prop-curve-point-command.ts';
 import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
+import { PropCurveService } from './prop-curve.service';
+import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
+import { Vector3 } from 'three';
 
-export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
+export class PropCurveTool extends BaseTool {
 
 	public name: string = 'PropCurveTool';
 
 	public toolType = ToolType.PropCurve;
 
-	public point: DynamicControlPoint<PropCurve>;
+	private selectedPoint: DynamicControlPoint<PropCurve>;
 
-	private selectStrategy: SelectStrategy<DynamicControlPoint<PropCurve>>;
+	private selectedCurve: PropCurve;
 
-	private moveStrategy: FreeMovingStrategy;
+	private pointMoved = false;
 
-	constructor () {
+	private debug = false;
+
+	constructor ( private tool: PropCurveService ) {
 
 		super();
 
-		this.selectStrategy = new ControlPointStrategy<DynamicControlPoint<PropCurve>>();
-
-		this.moveStrategy = new FreeMovingStrategy();
-
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	private get prop (): PropModel {
@@ -56,15 +48,15 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 	}
 
-	setPoint ( value: DynamicControlPoint<PropCurve> ): void {
+	init (): void {
 
-		this.point = value;
+		this.tool.base.reset();
 
-	}
+		this.tool.base.addSelectionStrategy( new ControlPointStrategy<DynamicControlPoint<PropCurve>>() );
 
-	getPoint (): DynamicControlPoint<PropCurve> {
+		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
-		return this.point;
+		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
@@ -72,41 +64,70 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		super.enable();
 
-		this.map.propCurves.forEach( curve => curve.show() );
+		this.tool.showPropCurves();
+
+		this.tool.base.setHint( 'Select a prop from the project browser' );
 
 	}
-
 
 	disable (): void {
 
 		super.disable();
 
-		this.map.propCurves.forEach( curve => curve.hide() );
+		this.tool.base.reset();
+
+		this.tool.hidePropCurves();
 
 	}
 
 	onPointerDownSelect ( event: PointerEventData ) {
 
-		const point = this.selectStrategy.onPointerDown( event );
+		this.tool.base.handleSelection( event, selected => {
 
-		if ( point ) {
+			if ( selected instanceof DynamicControlPoint ) {
 
-			if ( point == this.point ) return;
+				this.selectObject( selected, this.selectedPoint );
 
-			const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point );
+			} else if ( selected instanceof PropCurve ) {
 
-			CommandHistory.execute( cmd );
+				this.selectObject( selected, this.selectedCurve );
 
-			this.setHint( 'Drag control point using LEFT CLICK is down' );
+			}
 
-			return;
-		}
+		}, () => {
 
-		if ( !this.point ) return;
+			if ( this.selectedCurve ) {
 
-		CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
+				this.unselectObject( this.selectedCurve );
 
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+			} else if ( this.selectedPoint ) {
+
+				this.unselectObject( this.selectedPoint );
+
+			}
+
+		} );
+
+		// const point = this.selectStrategy.onPointerDown( event );
+
+		// if ( point ) {
+
+		// 	if ( point == this.point ) return;
+
+		// 	const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point );
+
+		// 	CommandHistory.execute( cmd );
+
+		// 	this.setHint( 'Drag control point using LEFT CLICK is down' );
+
+		// 	return;
+		// }
+
+		// if ( !this.point ) return;
+
+		// CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
+
+		// this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	onPointerDownCreate ( event: PointerEventData ) {
@@ -117,61 +138,145 @@ export class PropCurveToolV2 extends BaseTool implements IToolWithPoint {
 
 		if ( !this.prop ) return;
 
-		if ( !this.point ) {
+		this.tool.base.handleMovement( event, position => {
 
-			const point = new DynamicControlPoint<PropCurve>( null, event.point );
+			if ( position instanceof WorldPosition ) {
 
-			const command = new CreatePropCurveCommand( this, this.prop, point )
+				if ( this.selectedCurve ) {
 
-			CommandHistory.execute( command );
+					this.addCurvePoint( this.selectedCurve, position.position );
 
-			this.setHint( 'Add one more control point to create curve' );
+				} else {
 
-		} else {
+					this.createPropCurve( position.position );
 
-			const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, event.point );
+				}
 
-			const command = new AddPropCurvePointCommand( this, this.point.mainObject, point )
+			}
 
-			CommandHistory.execute( command );
+		} );
 
-			this.setHint( 'Add more control points or drag control points to modify curve' );
-		}
+		// if ( !this.point ) {
+
+		// 	const point = new DynamicControlPoint<PropCurve>( null, event.point );
+
+		// 	const command = new CreatePropCurveCommand( this, this.prop, point )
+
+		// 	CommandHistory.execute( command );
+
+		// 	this.setHint( 'Add one more control point to create curve' );
+
+		// } else {
+
+		// 	const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, event.point );
+
+		// 	const command = new AddPropCurvePointCommand( this, this.point.mainObject, point )
+
+		// 	CommandHistory.execute( command );
+
+		// 	this.setHint( 'Add more control points or drag control points to modify curve' );
+		// }
 	}
 
 	onPointerMoved ( event: PointerEventData ): void {
 
-		this.selectStrategy.onPointerMoved( event );
+		// this.selectStrategy.onPointerMoved( event );
 
-		if ( !this.point?.isSelected ) return;
+		// if ( !this.point?.isSelected ) return;
 
-		if ( !this.pointerDownAt ) return;
+		// if ( !this.pointerDownAt ) return;
 
-		const position = this.moveStrategy.getPosition( event );
+		// const position = this.moveStrategy.getPosition( event );
 
-		this.point?.position.copy( position.position );
+		// this.point?.position.copy( position.position );
 
-		this.point?.update();
+		// this.point?.update();
 
 	}
 
 	onPointerUp ( event: PointerEventData ): void {
 
-		if ( event.button !== MouseButton.LEFT ) return;
+		// if ( event.button !== MouseButton.LEFT ) return;
 
-		if ( !this.point?.isSelected ) return;
+		// if ( !this.point?.isSelected ) return;
 
-		if ( !this.pointerDownAt ) return;
+		// if ( !this.pointerDownAt ) return;
 
-		const position = this.moveStrategy.getPosition( event );
+		// const position = this.moveStrategy.getPosition( event );
 
-		if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		// if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		const command = new UpdatePositionCommand( this.point, position.position, this.pointerDownAt )
+		// const command = new UpdatePositionCommand( this.point, position.position, this.pointerDownAt )
 
-		CommandHistory.execute( command );
+		// CommandHistory.execute( command );
 
-		this.setHint( 'Use Inspector to modify curve properties' );
+		// this.setHint( 'Use Inspector to modify curve properties' );
+	}
+
+	createPropCurve ( position: Vector3 ) {
+
+		const propCurve = this.tool.createPropCurve( this.prop, position );
+
+		const point = this.tool.createCurvePoint( propCurve, position );
+
+		propCurve.addControlPoint( point );
+
+		this.executeAddObject( propCurve );
+
+	}
+
+	addCurvePoint ( selectedCurve: PropCurve, position: Vector3 ) {
+
+		const point = this.tool.createCurvePoint( selectedCurve, position );
+
+		this.executeAddObject( point );
+
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof PropCurve ) {
+
+			this.tool.addPropCurve( object );
+
+			this.onObjectSelected( object );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.addPropCurvePoint( this.selectedCurve, object );
+
+			this.onObjectSelected( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof PropCurve ) {
+
+			this.tool.removePropCurve( object );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.removePropCurvePoint( this.selectedCurve, object );
+
+		}
+
+	}
+
+	onObjectSelected ( object: any ): void {
+
+		if ( object instanceof PropCurve ) {
+
+			this.selectedCurve = object;
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.selectedPoint = object;
+
+		}
+
 	}
 
 }

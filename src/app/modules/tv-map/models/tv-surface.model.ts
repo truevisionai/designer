@@ -3,17 +3,17 @@
  */
 
 import { GameObject } from 'app/core/game-object';
-import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint, BaseControlPoint } from 'app/modules/three-js/objects/control-point';
-import { BufferAttribute, Mesh, MeshLambertMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, sRGBEncoding, Texture, Vector2, Vector3 } from 'three';
+import { BufferAttribute, Mesh, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2 } from 'three';
 import { OdTextures } from '../builders/od.textures';
-import { TvMapInstance } from '../services/tv-map-source-file';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { TvMapInstance } from '../services/tv-map-instance';
+import { INode, ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { SerializedField } from 'app/core/components/serialization';
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
-export class TvSurface implements ISelectable {
+export class TvSurface implements ISelectable, INode {
 
 	public static readonly tag = 'surface';
 
@@ -23,27 +23,7 @@ export class TvSurface implements ISelectable {
 
 	public id: number;
 
-	@SerializedField( { type: 'float' } )
-	public get textureDensity () {
-		return this._textureDensity;
-	}
-
-	public set textureDensity ( value ) {
-		this._textureDensity = value;
-		this.update();
-	}
-
-	constructor (
-		private _materialGuid: string,
-		private _spline: CatmullRomSpline,
-		private _offset: Vector2 = new Vector2( 0, 0 ),
-		private _repeat: Vector2 = new Vector2( 1, 1 ),
-		private _rotation: number = 0.0,
-		private _height: number = 0.0,
-		private _textureDensity: number = 1
-	) {
-		this.init();
-	}
+	isSelected: boolean;
 
 	@SerializedField( { type: 'material' } )
 	get materialGuid () { return this._materialGuid; }
@@ -53,7 +33,7 @@ export class TvSurface implements ISelectable {
 		this.mesh.material = AssetDatabase.getInstance( value );
 	}
 
-	get spline () { return this._spline; }
+	get spline (): AbstractSpline { return this._spline; }
 
 	set spline ( value: any ) { this._spline = value; this.update() }
 
@@ -77,17 +57,50 @@ export class TvSurface implements ISelectable {
 
 	set height ( value: any ) { this._height = value; this.update() }
 
-	isSelected: boolean;
+	@SerializedField( { type: 'float' } )
+	public get textureDensity () {
+		return this._textureDensity;
+	}
+
+	public set textureDensity ( value ) {
+		this._textureDensity = value;
+		this.update();
+	}
+
+	constructor (
+		private _materialGuid: string,
+		private _spline: CatmullRomSpline,
+		private _offset: Vector2 = new Vector2( 0, 0 ),
+		private _repeat: Vector2 = new Vector2( 1, 1 ),
+		private _rotation: number = 0.0,
+		private _height: number = 0.0,
+		private _textureDensity: number = 1
+	) {
+		this.init();
+	}
+
+	onMouseOver () {
+
+		// console.error( 'Method not implemented.' );
+
+	}
+
+	onMouseOut () {
+
+		// console.error( 'Method not implemented.' );
+
+	}
+
 
 	select (): void {
 
-		console.error( 'Method not implemented.' );
+		// console.error( 'Method not implemented.' );
 
 	}
 
 	unselect (): void {
 
-		console.error( 'Method not implemented.' );
+		// console.error( 'Method not implemented.' );
 
 	}
 
@@ -105,7 +118,7 @@ export class TvSurface implements ISelectable {
 
 		// add the spline mesh direcly to scene and not opendrive
 		// this helps avoid exporting it in the 3d file
-		SceneService.addToMain( this.spline.mesh );
+		// SceneService.addToMain( this.spline.mesh );
 
 		// set the main object of each control point to this surface
 		this.spline.controlPoints.forEach( cp => cp.mainObject = this );
@@ -140,7 +153,7 @@ export class TvSurface implements ISelectable {
 			const u = uvAttribute.getX( i );
 			const v = uvAttribute.getY( i );
 
-			uvAttribute.setXY( i, u * this.textureDensity, v * this.textureDensity );
+			uvAttribute.setXY( i, u * this._textureDensity, v * this._textureDensity );
 
 		}
 	}
@@ -162,7 +175,7 @@ export class TvSurface implements ISelectable {
 
 	createPoints (): THREE.Vector2[] {
 
-		return this.spline.curve.getPoints( 50 ).map(
+		return this.spline.getPoints( 50 ).map(
 			point => new Vector2( point.x, point.y )
 		);
 	}
@@ -173,16 +186,15 @@ export class TvSurface implements ISelectable {
 
 		let groundMaterial;
 
-		if ( this.materialGuid === undefined ) {
+		if ( this.materialGuid === undefined || this.materialGuid === 'grass' ) {
 
-			const texture = OdTextures.terrain.clone();
+			const texture = OdTextures.terrain().clone();
 			texture.wrapS = texture.wrapT = RepeatWrapping;
 			texture.offset.copy( this.offset );
 			texture.repeat.copy( this.repeat );
 			texture.anisotropy = 16;
-			texture.encoding = sRGBEncoding;
 
-			groundMaterial = new MeshLambertMaterial( { map: texture } );
+			groundMaterial = new MeshStandardMaterial( { map: texture } );
 
 		} else {
 
@@ -213,7 +225,7 @@ export class TvSurface implements ISelectable {
 
 	}
 
-	addControlPoint ( point: BaseControlPoint ) {
+	addControlPoint ( point: AbstractControlPoint ) {
 
 		point.visible = true;
 
@@ -229,14 +241,9 @@ export class TvSurface implements ISelectable {
 
 		}
 
-		if ( this.spline.controlPoints.length >= 2 ) {
-
-			this.spline.mesh.visible = true;
-
-		}
 	}
 
-	removeControlPoint ( point: BaseControlPoint ) {
+	removeControlPoint ( point: AbstractControlPoint ) {
 
 		point.visible = false;
 
@@ -244,36 +251,9 @@ export class TvSurface implements ISelectable {
 
 		this.update();
 
-		if ( this.spline.controlPoints.length < 3 ) {
-
-			this.mesh.visible = false;
-
-		}
-
-		if ( this.spline.controlPoints.length < 2 ) {
-
-			this.spline.mesh.visible = false;
-
-		}
-	}
-
-	showControlPoints (): void {
-
-		this.spline.showcontrolPoints();
-
-	}
-
-	hideControlPoints (): void {
-
-		this.spline.hidecontrolPoints();
-
 	}
 
 	delete (): void {
-
-		this.hideControlPoints();
-
-		this.hideCurve();
 
 		this.mesh.visible = false;
 
@@ -308,44 +288,5 @@ export class TvSurface implements ISelectable {
 		};
 
 	}
-
-	showHelpers () {
-		this.showCurve();
-		this.showControlPoints();
-	}
-
-	hideHelpers () {
-		this.hideCurve();
-		this.hideControlPoints();
-	}
 }
 
-export class SurfaceFactory {
-
-	static createFromTextureGuid ( textureGuid: string, position: Vector3 ) {
-
-		const texture = AssetDatabase.getInstance<Texture>( textureGuid );
-
-		if ( !texture ) return;
-
-		const material = new MeshStandardMaterial( { map: texture } );
-
-		const textureSize = new Vector2( texture.image.width, texture.image.height );
-
-		const spline = new CatmullRomSpline( true, 'catmullrom', 0 );
-		spline.addControlPoint( AnyControlPoint.create( 'p1', position.clone().add( new Vector3( 0, 0, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p2', position.clone().add( new Vector3( textureSize.x, 0, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p3', position.clone().add( new Vector3( textureSize.x, textureSize.y, 0 ) ) ) );
-		spline.addControlPoint( AnyControlPoint.create( 'p4', position.clone().add( new Vector3( 0, textureSize.y, 0 ) ) ) );
-
-		spline.controlPoints.forEach( cp => SceneService.addToMain( cp ) );
-
-		const surface = new TvSurface( null, spline );
-
-		surface.mesh.material = material;
-		surface.mesh.material.needsUpdate = true;
-
-		return surface
-	}
-
-}

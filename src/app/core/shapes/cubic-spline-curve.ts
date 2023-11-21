@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
 import { AutoSpline } from './auto-spline';
 import { ExplicitSpline } from './explicit-spline';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 
 function CubicBezierP0 ( t, p ) {
@@ -79,7 +79,7 @@ export class CubicSplineCurve extends Curve<Vector3> {
 
 }
 
-export class HermiteSplineCurve extends CurvePath<Vector3> {
+export class HermiteSplineCurve extends Curve<Vector3> {
 
 	constructor (
 		public v0: Vector3, public v1: Vector3, public v2: Vector3, public v3: Vector3

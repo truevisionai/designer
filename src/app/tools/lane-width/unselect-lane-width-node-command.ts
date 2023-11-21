@@ -1,55 +1,55 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
-import { BaseCommand } from '../../commands/base-command';
-import { ICommand } from '../../commands/i-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { LaneWidthTool } from './lane-width-tool';
+// import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
+// import { LaneWidthInspector } from '../../views/inspectors/lane-width-inspector/lane-width-inspector.component';
+// import { BaseCommand } from '../../commands/base-command';
+// import { ICommand } from '../../commands/i-command';
+// import { SetInspectorCommand } from '../../commands/set-inspector-command';
+// import { LaneWidthTool } from './lane-width-tool';
 
 
-export class UnselectLaneWidthNodeCommand extends BaseCommand {
+// export class UnselectLaneWidthNodeCommand extends BaseCommand {
 
-	private inspectorCommand: ICommand;
+// 	private inspectorCommand: ICommand;
 
-	constructor (
-		private tool: LaneWidthTool,
-		private node: LaneWidthNode,
-	) {
+// 	constructor (
+// 		private tool: LaneWidthTool,
+// 		private node: LaneWidthNode,
+// 	) {
 
-		super();
+// 		super();
 
-		this.inspectorCommand = new SetInspectorCommand( LaneWidthInspector, null );
+// 		this.inspectorCommand = new SetInspectorCommand( LaneWidthInspector, null );
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.tool.node?.unselect();
+// 		this.tool.node?.unselect();
 
-		this.tool.node = null;
+// 		this.tool.node = null;
 
-		this.inspectorCommand.execute();
+// 		this.inspectorCommand.execute();
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.tool.node?.unselect();
+// 		this.tool.node?.unselect();
 
-		this.tool.node = this.node;
+// 		this.tool.node = this.node;
 
-		this.tool.node?.select();
+// 		this.tool.node?.select();
 
-		this.inspectorCommand.undo();
+// 		this.inspectorCommand.undo();
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
-}
+// 	}
+// }

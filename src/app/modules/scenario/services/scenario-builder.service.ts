@@ -4,13 +4,13 @@
 
 import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { cloneDeep } from 'lodash';
 import { isObject } from 'rxjs/internal-compatibility';
 import { SimulationTimeCondition } from '../models/conditions/tv-simulation-time-condition';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { TvScenario } from '../models/tv-scenario';
 import { Storyboard } from '../models/tv-storyboard';
+import { XmlElement } from "../../../importers/xml.element";
 
 
 /**

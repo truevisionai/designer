@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
@@ -13,12 +12,12 @@ import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
-import { SceneService } from '../../services/scene.service';
 import { AbstractSpline } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -88,6 +87,8 @@ export class ExplicitSpline extends AbstractSpline {
 			this.updateSplineShape( i );
 
 		}
+
+		this.updateRoadSegments();
 
 	}
 
@@ -359,7 +360,7 @@ export class ExplicitSpline extends AbstractSpline {
 		controlPoint.segmentType = segType;
 
 		// TODO: move this in spline mesh or somewhere else
-		SceneService.addToolObject( controlPoint );
+		// SceneService.addToolObject( controlPoint );
 
 		this.controlPoints.push( controlPoint );
 
@@ -409,7 +410,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		this.segments.push( line );
 
-		SceneService.addToolObject( line );
+		// SceneService.addToolObject( line );
 
 		// this.tangentLines.push( line );
 	}
@@ -418,7 +419,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		const line = this.segments[ index ];
 
-		SceneService.removeFromMain( line );
+		// SceneService.removeFromMain( line );
 
 		this.segments.splice( index, 1 );
 
@@ -527,6 +528,16 @@ export class ExplicitSpline extends AbstractSpline {
 		}
 	}
 
+	updateRoadSegments () {
+
+		this.roadSegments.forEach( segment => {
+
+			segment.geometries = this.exportGeometries();
+
+		} );
+
+	}
+
 	/**
 	 * returns position on the curve
 	 * @param t A position on the curve. Must be in the range [ 0, 1 ].
@@ -563,7 +574,7 @@ export class ExplicitSpline extends AbstractSpline {
 		return length;
 	}
 
-	markAsSpiral ( point: BaseControlPoint ) {
+	markAsSpiral ( point: AbstractControlPoint ) {
 
 		const idx = point.tagindex;
 

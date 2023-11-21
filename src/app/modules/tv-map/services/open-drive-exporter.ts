@@ -10,7 +10,9 @@ import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geomet
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
 import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
-import { JunctionType, TvJunction, TvVirtualJunction } from '../models/tv-junction';
+import { TvJunction } from '../models/tv-junction';
+import { TvVirtualJunction } from '../models/tv-virtual-junction';
+import { JunctionType } from '../models/JunctionType';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
@@ -23,9 +25,12 @@ import { TvLaneVisibility } from '../models/tv-lane-visibility';
 import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
-import { TvCornerLocal, TvCornerRoad, TvObjectOutline, TvRoadObject } from '../models/tv-road-object';
+import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
-import { XmlElement } from './open-drive-parser.service';
+import { TvCornerLocal } from "../models/objects/tv-corner-local";
+import { TvCornerRoad } from "../models/objects/tv-corner-road";
+import { TvObjectOutline } from "../models/objects/tv-object-outline";
+import { XmlElement } from 'app/importers/xml.element';
 
 @Injectable( {
 	providedIn: 'root'
@@ -48,7 +53,7 @@ export class OpenDriveExporter {
 			attrNodeName: false,
 			ignoreAttributes: false,
 			suppressBooleanAttributes: false,
-			supressEmptyNode: true,
+			supressEmptyNode: false,
 			format: true,
 			trimValues: true,
 		};
@@ -1048,7 +1053,7 @@ export class OpenDriveExporter {
 			attr_id: junction.id,
 			attr_name: junction.name,
 			attr_type: junction.type,
-			attr_mainRoad: junction.mainRoadId,
+			attr_mainRoad: junction.mainRoad.id,
 			attr_sStart: junction.sStart,
 			attr_sEnd: junction.sEnd,
 			attr_orientation: junction.orientation,

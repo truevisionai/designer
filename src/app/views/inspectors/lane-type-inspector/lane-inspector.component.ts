@@ -3,15 +3,15 @@
  */
 
 import { Component } from '@angular/core';
-import { DuplicateLaneCommand } from 'app/commands/duplicate-lane-command';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { UpdateValueCommand } from 'app/commands/set-value-command';
-import { RemoveLaneCommand } from '../../../commands/remove-lane-command';
+// import { DuplicateLaneCommand } from 'app/commands/duplicate-lane-command';
+// import { SetInspectorCommand } from 'app/commands/set-inspector-command';
+// import { UpdateValueCommand } from 'app/commands/set-value-command';
+// import { RemoveLaneCommand } from '../../../commands/remove-lane-command';
 import { BaseInspector } from '../../../core/components/base-inspector.component';
 import { IComponent } from '../../../core/game-object';
 import { TravelDirection, TvLaneType } from '../../../modules/tv-map/models/tv-common';
 import { TvLane } from '../../../modules/tv-map/models/tv-lane';
-import { CommandHistory } from '../../../services/command-history';
+// import { CommandHistory } from '../../../services/command-history';
 
 @Component( {
 	selector: 'app-lane-type-inspector',
@@ -33,49 +33,49 @@ export class LaneInspectorComponent extends BaseInspector implements IComponent 
 
 	deleteLane () {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.executeMany(
-			new RemoveLaneCommand( this.lane ),
+		// CommandHistory.executeMany(
+		// 	new RemoveLaneCommand( this.lane ),
 
-			new SetInspectorCommand( null, null )
-		);
+		// 	new SetInspectorCommand( null, null )
+		// );
 
 	}
 
 	duplicateLane () {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.execute( new DuplicateLaneCommand( this.lane ) );
+		// CommandHistory.execute( new DuplicateLaneCommand( this.lane ) );
 	}
 
 	onLevelChanged ( $level: boolean ) {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.execute( new UpdateValueCommand( this.lane, 'level', $level ) );
+		// CommandHistory.execute( new UpdateValueCommand( this.lane, 'level', $level ) );
 	}
 
 	onTypeChanged ( $type: TvLaneType ) {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.execute( new UpdateValueCommand( this.lane, 'type', $type ) );
+		// CommandHistory.execute( new UpdateValueCommand( this.lane, 'type', $type ) );
 	}
 
 	onTravelDirectionChanged ( $direction: TravelDirection ) {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.execute( new UpdateValueCommand( this.lane, 'travelDirection', $direction ) );
+		// CommandHistory.execute( new UpdateValueCommand( this.lane, 'direction', $direction ) );
 	}
 
 	onMaterialChanged ( $value: string ) {
 
-		if ( !this.lane ) return;
+		// if ( !this.lane ) return;
 
-		CommandHistory.execute( new UpdateValueCommand( this.lane, 'threeMaterialGuid', $value ) );
+		// CommandHistory.execute( new UpdateValueCommand( this.lane, 'threeMaterialGuid', $value ) );
 	}
 
 }

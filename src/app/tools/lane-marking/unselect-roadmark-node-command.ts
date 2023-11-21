@@ -1,54 +1,54 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
-import { LaneRoadMarkNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { BaseCommand } from '../../commands/base-command';
-import { ICommand } from '../../commands/i-command';
-import { SetInspectorCommand } from '../../commands/set-inspector-command';
-import { LaneMarkingTool } from './lane-marking-tool';
+// import { LaneRoadmarkInspectorComponent } from 'app/views/inspectors/lane-roadmark-inspector/lane-roadmark-inspector.component';
+// import { LaneMarkingNode } from '../../modules/three-js/objects/lane-road-mark-node';
+// import { BaseCommand } from '../../commands/base-command';
+// import { ICommand } from '../../commands/i-command';
+// import { SetInspectorCommand } from '../../commands/set-inspector-command';
+// import { LaneMarkingTool } from './lane-marking-tool';
 
-export class UnselectRoadmarkNodeCommand extends BaseCommand {
+// export class UnselectRoadmarkNodeCommand extends BaseCommand {
 
-	private inspectorCommand: ICommand;
+// 	private inspectorCommand: ICommand;
 
-	constructor (
-		private tool: LaneMarkingTool,
-		private node: LaneRoadMarkNode,
-	) {
+// 	constructor (
+// 		private tool: LaneMarkingTool,
+// 		private node: LaneMarkingNode,
+// 	) {
 
-		super();
+// 		super();
 
-		this.inspectorCommand = new SetInspectorCommand( LaneRoadmarkInspectorComponent, null );
+// 		this.inspectorCommand = new SetInspectorCommand( LaneRoadmarkInspectorComponent, null );
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.tool.node?.unselect();
+// 		this.tool.selectedNode?.unselect();
 
-		this.tool.node = null;
+// 		this.tool.selectedNode = null;
 
-		this.inspectorCommand.execute();
+// 		this.inspectorCommand.execute();
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.tool.node?.unselect();
+// 		this.tool.selectedNode?.unselect();
 
-		this.tool.node = this.node;
+// 		this.tool.selectedNode = this.node;
 
-		this.tool.node?.select();
+// 		this.tool.selectedNode?.select();
 
-		this.inspectorCommand.undo();
+// 		this.inspectorCommand.undo();
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
-}
+// 	}
+// }

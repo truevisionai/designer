@@ -19,6 +19,12 @@ class FlatNode extends Object3D {
 } )
 export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
+	showProperties = false;
+
+	toggleProperties () {
+		this.showProperties = !this.showProperties;
+	}
+
 	transformer = ( node: Object3D, level: number ) => {
 		return {
 			id: node.id,
@@ -36,7 +42,7 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
 	private sceneChangedSubscription: Subscription;
-	private debug = true;
+	private debug = false;
 
 	private timeoutId: any = null;
 	private readonly debounceDuration = 100; // duration in milliseconds

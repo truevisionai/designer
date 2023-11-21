@@ -5,8 +5,8 @@
 import { TvConsole } from 'app/core/utils/console';
 import { Maths } from 'app/utils/maths';
 import { EnumHelper } from '../../../tv-map/models/tv-common';
-import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { DynamicsDimension, DynamicsShape } from '../tv-enums';
+import { XmlElement } from "../../../../importers/xml.element";
 
 export class TransitionDynamics {
 

@@ -2,49 +2,93 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { Group, LineSegments, Vector3 } from 'three';
-import { LaneEndMoveStrategy } from '../../../core/snapping/move-strategies/lane-end-move.strategy';
 import { SnackBar } from '../../../services/snack-bar.service';
 import { Maths } from '../../../utils/maths';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../../tv-map/models/tv-lane-road-mark';
-import { AnyControlPoint } from './control-point';
 import { ISelectable } from './i-selectable';
-import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
+import { SerializedField } from 'app/core/components/serialization';
+import { TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
+import { DynamicControlPoint } from './dynamic-control-point';
+import { Vector3 } from 'three';
 
-export class LaneRoadMarkNode extends Group implements ISelectable {
+export class LaneMarkingNode extends DynamicControlPoint<any> implements ISelectable {
 
 	public static readonly tag = 'roadmark-node';
-	public static readonly pointTag = 'roadmark-point';
-	public static readonly lineTag = 'roadmark-line';
 
-	public line: LineSegments;
-	public point: AnyControlPoint;
+	@SerializedField( { type: 'int' } )
+	get s (): number {
+		return this.roadmark.sOffset;
+	}
 
-	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
+	set s ( value: number ) {
+		this.roadmark.sOffset = value;
+	}
 
-		super();
+	@SerializedField( { type: 'float' } )
+	get width (): number {
+		return this.roadmark.width;
+	}
 
-		this.createPoint();
+	set width ( value: number ) {
+		this.roadmark.width = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get length (): number {
+		return this.roadmark.length;
+	}
+
+	set length ( value: number ) {
+		this.roadmark.length = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get space (): number {
+		return this.roadmark.space;
+	}
+
+	set space ( value: number ) {
+		this.roadmark.space = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvRoadMarkTypes } )
+	get markingType (): TvRoadMarkTypes {
+		return this.roadmark.type;
+	}
+
+	set markingType ( value: TvRoadMarkTypes ) {
+		this.roadmark.type = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
+	get weight (): TvRoadMarkWeights {
+		return this.roadmark.weight;
+	}
+
+	set weight ( value: TvRoadMarkWeights ) {
+		this.roadmark.weight = value;
+	}
+
+	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark, position?: Vector3 ) {
+
+		super( roadmark, position );
 
 		this.layers.enable( 31 );
-	}
 
-	get isSelected () {
+		this.tag = LaneMarkingNode.tag;
 
-		return this.point.isSelected;
+		if ( position ) {
 
-	}
+			this.position.copy( position );
 
-	select () {
+		} else {
 
-		this.point?.select();
+			const lanePosition = lane.laneSection.road.getLaneEndPosition( lane, roadmark.sOffset );
 
-	}
+			this.position.copy( lanePosition.toVector3() );
 
-	unselect () {
-
-		this.point?.unselect();
+		}
 
 	}
 
@@ -83,79 +127,63 @@ export class LaneRoadMarkNode extends Group implements ISelectable {
 
 		const finalPosition = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, roadCoord.s, offset );
 
-		this.point.copyPosition( finalPosition );
-	}
-
-	private createPoint () {
-
-		const s = this.lane.laneSection.s + this.roadmark.s;
-
-		const offset = this.lane.getWidthValue( s ) * 0.5;
-
-		const position = TvMapQueries.getLaneCenterPosition( this.lane.roadId, this.lane.id, s, offset );
-
-		this.point = AnyControlPoint.create( 'point', position );
-
-		this.point.tag = LaneRoadMarkNode.pointTag;
-
-		this.add( this.point );
-
+		// this.point.copyPosition( finalPosition );
 	}
 
 }
 
-export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
+// export class LaneRoadMarkNodeV2 extends Group implements ISelectable {
 
-	public static readonly tag = 'roadmark-point';
+// 	public static readonly tag = 'roadmark-point';
 
-	public point: AnyControlPoint;
+// 	public point: AnyControlPoint;
 
-	private strategy: MovingStrategy;
+// 	private strategy: MovingStrategy;
 
-	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
+// 	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
 
-		super();
+// 		super();
 
-		this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
+// 		this.strategy = new LaneEndMoveStrategy( lane, this.lane.roadMark );
 
-		const s = this.lane.laneSection.s + this.roadmark.s;
+// 		const s = this.lane.laneSection.s + this.roadmark.s;
 
-		this.point = AnyControlPoint.create( 'point', this.strategy.getVector3( s ) );
+// 		this.point = AnyControlPoint.create( 'point', this.strategy.getVector3( s ) );
 
-		this.point.tag = LaneRoadMarkNode.tag;
+// 		this.point.tag = LaneMarkingNode.tag;
 
-		this.add( this.point );
-
-
-	}
-
-	get isSelected () {
-
-		return this.point.isSelected;
-
-	}
-
-	select () {
-
-		this.point?.select();
-
-	}
-
-	unselect () {
-
-		this.point?.unselect();
-
-	}
+// 		this.add( this.point );
 
 
-	updateByPosition ( point: Vector3 ): void {
+// 	}
 
-		const posTheta = this.strategy.getPosTheta( point );
+// 	get isSelected () {
 
-		this.point.copyPosition( posTheta.toVector3() );
+// 		return this.point.isSelected;
 
-		this.roadmark.sOffset = posTheta.s;
+// 	}
 
-	}
+// 	select () {
 
-}
+// 		this.point?.select();
+
+// 	}
+
+// 	unselect () {
+
+// 		this.point?.unselect();
+
+// 	}
+
+
+// 	updateByPosition ( point: Vector3 ): void {
+
+// 		const posTheta = this.strategy.getPosTheta( point );
+
+// 		this.point.copyPosition( posTheta.toVector3() );
+
+// 		this.roadmark.sOffset = posTheta.s;
+
+// 	}
+
+// }

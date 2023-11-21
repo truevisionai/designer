@@ -2,14 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Group, LineBasicMaterial, LineSegments } from 'three';
+import { BufferGeometry, Group, LineBasicMaterial, LineSegments, Vector3 } from 'three';
 import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { AnyControlPoint } from './control-point';
-import { ISelectable } from './i-selectable';
+import { INode, ISelectable } from './i-selectable';
+import { AnyControlPoint } from "./any-control-point";
+import { SerializedField } from 'app/core/components/serialization';
+import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { IHasCopyUpdate } from 'app/commands/copy-position-command';
 
-export class LaneWidthNode extends Group implements ISelectable {
+export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	public static readonly tag = 'width-node';
 	public static readonly pointTag = 'width-point';
@@ -18,15 +21,6 @@ export class LaneWidthNode extends Group implements ISelectable {
 	public line: LineSegments;
 	public point: AnyControlPoint;
 	public isSelected: boolean = false;
-
-	constructor ( public laneWidth: TvLaneWidth ) {
-
-		super();
-
-		this.createMesh();
-
-		this.layers.enable( 31 );
-	}
 
 	get road () {
 		return this.laneWidth.lane.laneSection.road;
@@ -44,6 +38,77 @@ export class LaneWidthNode extends Group implements ISelectable {
 		return this.lane.id;
 	}
 
+	@SerializedField( { type: 'int' } )
+	get s (): number {
+		return this.laneWidth.s;
+	}
+
+	set s ( value: number ) {
+
+		this.laneWidth.s = value;
+		this.updateLaneWidthValues();
+		MapEvents.objectUpdated.emit( this );
+
+	}
+
+	@SerializedField( { type: 'int' } )
+	get width (): number {
+		return this.laneWidth.a;
+	}
+
+	set width ( value: number ) {
+		this.laneWidth.a = value;
+		this.updateLaneWidthValues();
+		MapEvents.objectUpdated.emit( this );
+	}
+
+	constructor ( public laneWidth: TvLaneWidth ) {
+
+		super();
+
+		// console.error( 'LaneWidthNode constructor' );
+
+		this.createMesh();
+
+		this.layers.enable( 31 );
+	}
+
+	update (): void {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	setPosition ( position: Vector3 ): void {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	copyPosition ( position: Vector3 ): void {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	getPosition (): Vector3 {
+
+		return this.position;
+
+	}
+
+	onMouseOver () {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
+	onMouseOut () {
+
+		console.error( 'Method not implemented.' );
+
+	}
+
 	updateLaneWidthValues () {
 
 		this.road.getLaneSectionAt( this.laneWidth.s ).updateLaneWidthValues( this.lane );
@@ -51,13 +116,17 @@ export class LaneWidthNode extends Group implements ISelectable {
 	}
 
 	select () {
+
 		this.isSelected = true;
 		this.point?.select();
+
 	}
 
 	unselect () {
+
 		this.isSelected = false;
 		this.point?.unselect();
+
 	}
 
 	private createMesh () {

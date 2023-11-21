@@ -5,10 +5,10 @@
 import * as THREE from 'three';
 import { Curve, Object3D } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { AnyControlPoint } from '../../modules/three-js/objects/control-point';
-import { KeyboardInput } from '../input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export class CubicBezierCurveEditor extends AbstractShapeEditor {
 
@@ -55,7 +55,7 @@ export class CubicBezierCurveEditor extends AbstractShapeEditor {
 
 		if ( e.object != null && e.object.userData.is_selectable == true ) return;
 
-		if ( e.button == MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button == MouseButton.LEFT && KeyboardEvents.isShiftKeyDown && e.point != null ) {
 
 			this.addControlPoint( e.point );
 

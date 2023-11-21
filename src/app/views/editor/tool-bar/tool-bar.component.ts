@@ -16,6 +16,7 @@ import { SceneService } from 'app/services/scene.service';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { Environment } from 'app/core/utils/environment';
+import { ToolBarService } from './tool-bar.service';
 
 class IToolMenu {
 	id: string;
@@ -103,6 +104,18 @@ export class ToolBarComponent implements OnInit {
 			enabled: !Environment.production,
 		},
 		{
+			id: 'showDividerTool',
+			label: 'Divide',
+			class: 'toolbar-button',
+			toolType: ToolType.RoadDividerTool,
+			action: 'divider-tool',
+			icon: 'content_cut', // fork_right, call_split
+			track: 'menu',
+			tooltip: 'Divider Tool',
+			click: () => this.setToolType( ToolType.RoadDividerTool ),
+			enabled: !Environment.production,
+		},
+		{
 			id: 'showRoadElevationTool',
 			label: 'Elevation',
 			class: 'toolbar-button border-right',
@@ -144,34 +157,34 @@ export class ToolBarComponent implements OnInit {
 			click: () => this.setToolType( ToolType.LaneWidth ),
 			enabled: true,
 		},
-		{
-			id: 'showLaneOffsetTool',
-			label: 'LaneOffset',
-			class: 'toolbar-button',
-			toolType: ToolType.LaneOffset,
-			action: 'lane-offset-tool',
-			icon: 'vertical_align_center',
-			track: 'button',
-			tooltip: 'Lane Offset Tool',
-			title: 'Lane Offset Tool',
-			description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <br/><br/> <img src="assets/Lane-Offset-Tool.gif"/>',
-			click: () => this.setToolType( ToolType.LaneOffset ),
-			enabled: true,
-		},
-		{
-			id: 'showAddLaneTool',
-			label: 'AddLane',
-			class: 'toolbar-button',
-			toolType: ToolType.LaneAdd,
-			action: 'add-lane-tool',
-			icon: 'playlist_add',
-			title: 'ADD-LANE-TOOL-TITLE',
-			description: 'ADD-LANE-TOOL-DESCRIPTION',
-			track: 'button',
-			tooltip: 'Add Lane Tool',
-			click: () => this.setToolType( ToolType.LaneAdd ),
-			enabled: true,
-		},
+		// {
+		// 	id: 'showLaneOffsetTool',
+		// 	label: 'LaneOffset',
+		// 	class: 'toolbar-button',
+		// 	toolType: ToolType.LaneOffset,
+		// 	action: 'lane-offset-tool',
+		// 	icon: 'vertical_align_center',
+		// 	track: 'button',
+		// 	tooltip: 'Lane Offset Tool',
+		// 	title: 'Lane Offset Tool',
+		// 	description: 'This tool allows for precise adjustment of individual lanes in a 3D road network, without the need to shift the entire road"s reference line. Whether it is to add a new turning lane or to modify an existing one <br/><br/> <img src="assets/Lane-Offset-Tool.gif"/>',
+		// 	click: () => this.setToolType( ToolType.LaneOffset ),
+		// 	enabled: true,
+		// },
+		// {
+		// 	id: 'showAddLaneTool',
+		// 	label: 'AddLane',
+		// 	class: 'toolbar-button',
+		// 	toolType: ToolType.LaneAdd,
+		// 	action: 'add-lane-tool',
+		// 	icon: 'playlist_add',
+		// 	title: 'ADD-LANE-TOOL-TITLE',
+		// 	description: 'ADD-LANE-TOOL-DESCRIPTION',
+		// 	track: 'button',
+		// 	tooltip: 'Add Lane Tool',
+		// 	click: () => this.setToolType( ToolType.LaneAdd ),
+		// 	enabled: false,
+		// },
 		{
 			id: 'showLaneMarkingTool',
 			label: 'LaneMarking',
@@ -187,6 +200,61 @@ export class ToolBarComponent implements OnInit {
 			enabled: true,
 		},
 		{
+			id: 'showJunctionTool',
+			label: 'Junction',
+			class: 'toolbar-button',
+			toolType: ToolType.Junction,
+			action: 'junction-tool',
+			icon: 'grid_goldenratio',
+			title: 'Junction Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Junction Tool',
+			click: () => this.setToolType( ToolType.Junction ),
+			enabled: !Environment.production,
+		},
+		{
+			id: 'showManeueverTool',
+			label: 'Maneuver',
+			class: 'toolbar-button',
+			toolType: ToolType.Maneuver,
+			action: 'maneuver-tool',
+			icon: 'roundabout_left',//'fullscreen_exit',
+			title: 'Maneuver Tool',
+			description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
+			track: 'button',
+			tooltip: 'Maneuver Tool',
+			click: () => this.setToolType( ToolType.Maneuver ),
+			enabled: true,
+		},
+		{
+			id: 'showTrafficTool',
+			label: 'Traffic-Light',
+			class: 'toolbar-button',
+			toolType: ToolType.TrafficLight,
+			action: 'traffic-light-tool',
+			icon: 'traffic',
+			title: 'Traffic Light Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Traffic Light Tool',
+			click: () => this.setToolType( ToolType.TrafficLight ),
+			enabled: !Environment.production,
+		},
+		{
+			id: 'showCrosswalkTool',
+			label: 'Crosswalk',
+			class: 'toolbar-button  border-right',
+			toolType: ToolType.Crosswalk,
+			action: 'crosswalk-tool',
+			icon: 'reorder', // 'call_split', receipt
+			title: 'Crosswalk Tool',
+			track: 'button',
+			tooltip: 'Crosswalk Tool',
+			click: () => this.setToolType( ToolType.Crosswalk ),
+			enabled: true,
+		},
+		{
 			id: 'showMarkingPointTool',
 			label: 'MarkingPoint',
 			class: 'toolbar-button',
@@ -198,36 +266,24 @@ export class ToolBarComponent implements OnInit {
 			track: 'button',
 			tooltip: 'Marking Point Tool',
 			click: () => this.setToolType( ToolType.MarkingPoint ),
-			enabled: false,
+			enabled: !Environment.production,
 		},
 		{
-			id: 'showCrosswalkTool',
-			label: 'Crosswalk',
+			id: 'showParkingTool',
+			label: 'Parking',
 			class: 'toolbar-button',
-			toolType: ToolType.Crosswalk,
-			action: 'crosswalk-tool',
-			icon: 'reorder', // 'call_split', receipt
-			title: 'Crosswalk Tool',
+			toolType: ToolType.Parking,
+			action: 'parking-tool',
+			icon: 'local_parking',
+			title: 'Parking Tool',
+			description: '',
 			track: 'button',
-			tooltip: 'Crosswalk Tool',
-			click: () => this.setToolType( ToolType.Crosswalk ),
-			enabled: true,
+			tooltip: 'Parking Light Tool',
+			click: () => this.setToolType( ToolType.Parking ),
+			enabled: !Environment.production,
 		},
 		{
-			id: 'showManeueverTool',
-			label: 'Maneuver',
-			class: 'toolbar-button border-right',
-			toolType: ToolType.Maneuver,
-			action: 'maneuver-tool',
-			icon: 'fullscreen_exit',
-			title: 'Maneuver Tool',
-			description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
-			track: 'button',
-			tooltip: 'Maneuver Tool',
-			click: () => this.setToolType( ToolType.Maneuver ),
-			enabled: true,
-		},
-		{
+
 			id: 'showPropPointTool',
 			label: 'PropPoint',
 			class: 'toolbar-button',
@@ -335,6 +391,7 @@ export class ToolBarComponent implements OnInit {
 	constructor (
 		private threeService: ThreeService,
 		private viewContainerRef: ViewContainerRef,
+		private toolBarService: ToolBarService,
 	) {
 	}
 
@@ -395,7 +452,7 @@ export class ToolBarComponent implements OnInit {
 
 	setToolType ( type: ToolType ) {
 
-		CommandHistory.execute( new SetToolCommand( ToolFactory.createTool( type ) ) );
+		this.toolBarService.setToolByType( type );
 
 	}
 

@@ -157,9 +157,9 @@ export class LaneDirectionHelper {
 
 		// if ( lane.type !== TvLaneType.driving ) return;
 
-		let s = laneSection.s;
+		let s = laneSection.s + this.distance;
 
-		while ( s <= laneSection.endS ) {
+		while ( s < laneSection.endS ) {
 
 			// Compute the width of the lane section up to the current position.
 			let width = laneSection.getWidthUptoCenter( lane, s );

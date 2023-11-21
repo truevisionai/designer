@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileService } from 'app/io/file.service';
-import { SceneExporterService } from 'app/services/scene-exporter.service';
+import { SceneExporterService } from 'app/exporters/scene-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 
 import { ViewportEvents } from '../events/viewport-events';
@@ -17,11 +17,19 @@ import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
 import { ManagerRegistry } from '../managers/manager-registry';
 import { JunctionManager } from '../managers/junction-manager';
-import { RoadManager } from '../managers/road-manager';
+import { RoadEventListener } from '../listeners/road-event-listener';
 import { EntityManager } from '../managers/entity-manager';
 import { LaneManager } from '../managers/lane-manager';
 import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
+import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
+import { RoadControlPointListener } from 'app/listeners/road-control-point-listener';
+import { RoadService } from './road/road.service';
+import { RoadSplineService } from './road/road-spline.service';
+import { MapService } from './map.service';
+import { ObjectEventListener } from 'app/listeners/object-event-listener';
+import { RoadLinkService } from './road/road-link.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -50,6 +58,11 @@ export class AppService {
 		public files: FileService,
 		sceneExporter: SceneExporterService,
 		public editor: EditorService,
+		private roadService: RoadService,
+		private roadSplineService: RoadSplineService,
+		private mapService: MapService,
+		private roadLinkService: RoadLinkService,
+		private metadataFactory: MetadataFactory
 	) {
 
 
@@ -64,12 +77,17 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.registerManager( RoadManager );
+		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService ) );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
+		ManagerRegistry.registerManager( ObjectEventListener );
+		// ManagerRegistry.registerManager( RoadSelectionListener );
+		// ManagerRegistry.registerManager( RoadControlPointListener );
+		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
+		ManagerRegistry.setManager( 'road-control-point-listener', new RoadControlPointListener( this.roadService, this.mapService, this.roadLinkService ) );
 
 		ManagerRegistry.initManagers();
 	}

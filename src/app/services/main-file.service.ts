@@ -5,18 +5,17 @@
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
-import { AppService } from 'app/services/app.service';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { FileService } from '../io/file.service';
 import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from './scene-exporter.service';
-import { SceneImporterService } from './scene-importer.service';
+import { SceneExporterService } from '../exporters/scene-exporter.service';
+import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 
@@ -107,7 +106,7 @@ export class MainFileService {
 
 	openFromPath ( path: string, callback?: Function ) {
 
-		if ( AppService.isElectronApp ) {
+		if ( this.electronService.isElectronApp ) {
 
 			this.fileService.readFile( path, 'xml', ( file: IFile ) => {
 

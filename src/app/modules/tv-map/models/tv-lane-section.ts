@@ -214,72 +214,6 @@ export class TvLaneSection {
 		this.addLaneInstance( newLane, sort );
 
 		return newLane;
-
-		// return;
-		//
-		// let counter = 0;
-		//
-		// if ( sort ) {
-		//
-		//     switch ( laneSide ) {
-		//
-		//         case LaneSide.RIGHT:
-		//
-		//             this.laneVector.push( new OdLane( laneSide, id, type, level, this.roadId ) );
-		//
-		//             this.lastAddedLaneIndex = this.laneVector.length - 1;
-		//
-		//             break;
-		//
-		//         case LaneSide.CENTER:
-		//
-		//             const size = this.getLaneCount();
-		//
-		//             if ( size > 0 ) {
-		//
-		//                 for ( let i = 0; i < size; i++ ) {
-		//
-		//                     if ( this.laneVector[ i ].getId() < 0 ) {
-		//
-		//                         counter = i;
-		//
-		//                         this.laneVector[ counter ] = new OdLane( laneSide, id, type, level, this.roadId );
-		//
-		//                         this.lastAddedLaneIndex = counter;
-		//
-		//                     }
-		//
-		//                 }
-		//
-		//             } else {
-		//
-		//                 counter = 0;
-		//
-		//                 this.laneVector.push( new OdLane( laneSide, id, type, level, this.roadId ) );
-		//
-		//                 this.lastAddedLaneIndex = counter;
-		//             }
-		//
-		//             break;
-		//
-		//         case LaneSide.LEFT:
-		//
-		//             // add to the beginning of the array
-		//             this.laneVector.unshift( new OdLane( laneSide, id, type, level, this.roadId ) );
-		//
-		//             this.lastAddedLaneIndex = counter;
-		//
-		//             break;
-		//
-		//     }
-		// } else {
-		//
-		//     this.laneVector.push( new OdLane( laneSide, id, type, level, this.roadId ) );
-		//
-		//     this.lastAddedLaneIndex = this.laneVector.length - 1;
-		//
-		//     return this.lastAddedLaneIndex;
-		// }
 	}
 
 	/**
@@ -756,17 +690,38 @@ export class TvLaneSection {
 
 	}
 
-	removeLaneById ( laneId: number ) {
-
-		this.removeLane( this.getLaneById( laneId ) );
-
-	}
-
 	removeLane ( deletedLane: TvLane ) {
+
+		if ( !this.laneMap.has( deletedLane.id ) ) {
+			console.warn( 'Lane not found' );
+			return;
+		}
 
 		this.laneMap.delete( deletedLane.id );
 
-		MapEvents.laneRemoved.emit( deletedLane );
+		const lanes = [ ...deletedLane.laneSection.laneMap.entries() ];
+
+		this.laneMap.clear();
+
+		// create a new map
+		let newLaneMap = new Map<number, TvLane>();
+
+		// iterate through the old map
+		for ( let [ id, lane ] of lanes ) {
+
+			// shift left lanes
+			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
+
+			// shift right lanes
+			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
+
+			newLaneMap.set( lane.id, lane );
+
+		}
+
+		this.laneMap = newLaneMap;
+
+		this.sortLanes()
 
 	}
 

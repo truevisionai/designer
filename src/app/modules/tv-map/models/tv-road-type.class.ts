@@ -56,6 +56,11 @@ export class TvRoadTypeClass {
 		}
 
 	}
+
+	clone (): TvRoadTypeClass {
+		return new TvRoadTypeClass( this.s, this.type, this.speed.max, this.speed.unit );
+	}
+
 }
 
 export class TvRoadSpeed {

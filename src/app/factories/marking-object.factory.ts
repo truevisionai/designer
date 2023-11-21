@@ -2,53 +2,60 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from 'app/modules/tv-map/models/tv-road-object';
+import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
 import { TvObjectMarking } from '../modules/tv-map/models/tv-object-marking';
 
 export class MarkingObjectFactory {
 
-	static create ( roadObject: TvRoadObject ): Object3D {
+	static createMesh ( roadObject: TvRoadObject ): Object3D {
 
 		const object3D = new Object3D();
 
+		object3D.name = 'object:' + roadObject.attr_type;
+
 		roadObject.markings.forEach( marking => {
 
-			object3D.add( this.createMarking( roadObject, marking ) );
+			object3D.add( this.createMarkingMesh( roadObject, marking ) );
 
 		} );
 
 		return object3D;
 	}
 
-	static createMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
-
-		const object3D = new Object3D();
+	static createMarkingMesh ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
 
 		const points: Vector3[] = [];
 
 		roadObject.outlines.forEach( outline => {
 
-			for ( let i = 0; i < outline.getCornerRoadCount(); i++ ) {
+			outline.cornerRoad.forEach( cornerRoad => {
 
-				const corner = outline.getCornerRoad( i );
+				if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
-				// const position = roadObject.road?.getPositionAt( corner.s, corner.t );
+					points.push( cornerRoad.position );
 
-				points.push( corner.position );
+				}
 
-			}
+			} );
 
 		} );
 
-		const curve = new CatmullRomCurve3( points );
+		marking.cornerReferences.forEach( cornerReference => cornerReference )
 
-		return this.createMarkingFromCurve( marking, curve );
+		const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
 
+		const geometry = this.createGeometryFromCurve( marking, curve );
+
+		const object3D = new Mesh( geometry, marking.material );
+
+		object3D.name = 'marking';
+
+		return object3D;
 	}
 
 	// with spline
-	static createMarkingFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): Mesh {
+	private static createGeometryFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): BufferGeometry {
 
 		const totalLength = curve.getLength();
 		const fullStripeLength = marking.lineLength + marking.spaceLength;
@@ -100,10 +107,11 @@ export class MarkingObjectFactory {
 		geometry.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
 		geometry.computeVertexNormals();
 
-		return new Mesh( geometry, marking.material );
+		return geometry;
+		// return new Mesh( geometry, marking.material );
 	}
 
-	static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
+	private static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
 
 		const curve = new CatmullRomCurve3( [
 			new Vector3( 0, 0, 0 ),

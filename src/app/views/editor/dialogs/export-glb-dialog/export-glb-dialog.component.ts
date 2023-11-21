@@ -5,7 +5,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { CoordinateSystem, ExporterService } from 'app/services/exporter.service';
+import { ExporterService } from 'app/services/exporter.service';
+import { CoordinateSystem } from 'app/services/CoordinateSystem';
 
 @Component( {
 	selector: 'app-export-glb-dialog',

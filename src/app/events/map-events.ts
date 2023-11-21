@@ -1,9 +1,11 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { RoadControlPoint } from "app/modules/three-js/objects/road-control-point";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/modules/tv-map/models/tv-junction";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
+import { Object3D } from "three";
 
 export class RoadCreatedEvent {
 	constructor ( public road: TvRoad, public showHelpers = true ) { }
@@ -17,19 +19,36 @@ export class RoadRemovedEvent {
 	constructor ( public road: TvRoad, public hideHelpers = true ) { }
 }
 
-export interface RoadControlPointCreatedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadSelectedEvent {
+	constructor ( public road: TvRoad ) { }
 }
 
-export interface RoadControlPointUpdatedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadUnselectedEvent {
+	constructor ( public road: TvRoad ) { }
 }
 
-export interface RoadControlPointRemovedEvent {
-	road: TvRoad;
-	controlPoint: RoadControlPoint;
+export class RoadControlPointCreatedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+}
+
+export class RoadControlPointUpdatedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+}
+
+export class RoadControlPointRemovedEvent {
+	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+}
+
+export class SplineCreatedEvent {
+	constructor ( public spline: AbstractSpline ) { }
+}
+
+export class SplineUpdatedEvent {
+	constructor ( public spline: AbstractSpline ) { }
+}
+
+export class SplineRemovedEvent {
+	constructor ( public spline: AbstractSpline ) { }
 }
 
 export interface LaneCreatedEvent {
@@ -65,10 +84,20 @@ export class MapEvents {
 	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
 
+	@Output() static objectSelected = new EventEmitter<Object>();
+	@Output() static objectUnselected = new EventEmitter<Object>();
+	@Output() static objectAdded = new EventEmitter<Object>();
+	@Output() static objectUpdated = new EventEmitter<Object>();
+	@Output() static objectRemoved = new EventEmitter<Object>();
+
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
 	@Output() static roadRemoved = new EventEmitter<RoadRemovedEvent>();
+	@Output() static roadSelected = new EventEmitter<RoadSelectedEvent>();
+	@Output() static roadUnselected = new EventEmitter<RoadUnselectedEvent>();
 
+	@Output() static controlPointSelected = new EventEmitter<AbstractControlPoint>();
+	@Output() static controlPointUnselected = new EventEmitter<AbstractControlPoint>();
 	@Output() static roadControlPointCreated = new EventEmitter<RoadControlPointCreatedEvent>();
 	@Output() static roadControlPointUpdated = new EventEmitter<RoadControlPointUpdatedEvent>();
 	@Output() static roadControlPointRemoved = new EventEmitter<RoadControlPointRemovedEvent>();
@@ -80,6 +109,5 @@ export class MapEvents {
 	@Output() static junctionCreated = new EventEmitter<JunctionCreatedEvent>();
 	@Output() static junctionUpdated = new EventEmitter<JunctionUpdatedEvent>();
 	@Output() static junctionRemoved = new EventEmitter<JunctionRemovedEvent>();
-
 
 }

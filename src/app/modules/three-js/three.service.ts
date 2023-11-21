@@ -25,7 +25,6 @@ export class ThreeService implements IEngine {
 
 	ambientLight: THREE.AmbientLight;
 
-	static bgForClicks: THREE.Mesh;
 	cameraChanged = new EventEmitter<Camera>();
 	public controls: IViewportController;
 	public canvas: HTMLCanvasElement;
@@ -184,24 +183,8 @@ export class ThreeService implements IEngine {
 
 		this.createGridHelper();
 
-		this.createBackgroundPlaneForClicks();
-
 		this.addAxesHelper();
 	}
-
-	createBackgroundPlaneForClicks () {
-
-		ThreeService.bgForClicks = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
-			color: 0xFFFFFF,
-			transparent: true,
-			opacity: 0
-		} ) );
-
-		ThreeService.bgForClicks.name = 'bgForClicks';
-
-		// SceneService.addEditorObject( ThreeService.bgForClicks );
-	}
-
 
 	/**
 	 *

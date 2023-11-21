@@ -2,15 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class EditorEvents {
 
-	@Output() static onZoomIn = new EventEmitter<any>();
-	@Output() static onZoomOut = new EventEmitter<any>();
-	@Output() static onZoomReset = new EventEmitter<any>();
+	static onZoomIn = new EventEmitter<any>();
+	static onZoomOut = new EventEmitter<any>();
+	static onZoomReset = new EventEmitter<any>();
 
-	@Output() static sceneRendered = new EventEmitter<number>();
-	@Output() static sceneCreated = new EventEmitter<null>();
+	static sceneRendered = new EventEmitter<number>();
+	static sceneCreated = new EventEmitter<null>();
 
 }

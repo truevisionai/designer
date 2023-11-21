@@ -3,7 +3,7 @@
  */
 
 import { TvMapQueries } from '../../queries/tv-map-queries';
-import { TvMapInstance } from '../../services/tv-map-source-file';
+import { TvMapInstance } from '../../services/tv-map-instance';
 import { TvMap } from '../tv-map.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
@@ -17,6 +17,8 @@ describe( 'OdArcGeometry', () => {
 	beforeEach( () => {
 
 		map = new TvMap();
+
+		road = new TvRoad( '', 0, 1, -1 );
 
 		TvMapInstance.map = map;
 
@@ -64,5 +66,49 @@ describe( 'OdArcGeometry', () => {
 		expect( roadResult.id ).toBe( 3 );
 
 	} );
+
+	it( 'should cut correctly', () => {
+
+		const geometry1 = road.addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
+		const geometry2 = road.addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
+		const geometry3 = road.addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
+
+		const newGeometry = geometry2.cut( 12 );
+
+		// for currently geometry only length is changed
+		expect( newGeometry[ 0 ].s ).toBe( 10 );
+		expect( newGeometry[ 0 ].length ).toBe( 2 );
+
+		expect( newGeometry[ 1 ].s ).toBeCloseTo( 12 );
+		expect( newGeometry[ 1 ].x ).toBeCloseTo( 12 );
+		expect( newGeometry[ 1 ].y ).toBeCloseTo( 0 );
+		expect( newGeometry[ 1 ].hdg ).toBeCloseTo( 0 );
+		expect( newGeometry[ 1 ].length ).toBe( 8 );
+
+		expect( road.geometries.length ).toBe( 3 );
+
+	} )
+
+	it( 'should cut correctly', () => {
+
+		const geometry1 = road.addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
+		const geometry2 = road.addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
+		const geometry3 = road.addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
+
+		const newGeometry = geometry2.cut( 18 );
+
+		// for currently geometry only length is changed
+		expect( newGeometry[ 0 ].s ).toBe( 10 );
+		expect( newGeometry[ 0 ].length ).toBe( 8 );
+
+		expect( newGeometry[ 1 ].s ).toBe( 18 );
+		expect( newGeometry[ 1 ].x ).toBeCloseTo( 18 );
+		expect( newGeometry[ 1 ].y ).toBeCloseTo( 0 );
+		expect( newGeometry[ 1 ].hdg ).toBeCloseTo( 0 );
+		expect( newGeometry[ 1 ].length ).toBe( 2 );
+
+		expect( road.geometries.length ).toBe( 3 );
+
+	} )
 
 } );

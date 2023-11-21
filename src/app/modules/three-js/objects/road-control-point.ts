@@ -9,13 +9,18 @@ import { TvContactPoint, TvGeometryType } from 'app/modules/tv-map/models/tv-com
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
-import { BaseControlPoint } from './control-point';
 import { RoadTangentPoint } from './road-tangent-point';
 import { MapEvents } from 'app/events/map-events';
+import { AbstractControlPoint } from "./abstract-control-point";
 
-export class RoadControlPoint extends BaseControlPoint {
+/**
+ * @deprecated
+ */
+export class RoadControlPoint extends AbstractControlPoint {
 
 	public static readonly tag = 'road-control-point';
+
+	public mainObject: TvRoad;
 
 	public frontTangent: RoadTangentPoint;
 	public backTangent: RoadTangentPoint;
@@ -44,6 +49,8 @@ export class RoadControlPoint extends BaseControlPoint {
 	) {
 
 		super( new BufferGeometry(), new PointsMaterial() );
+
+		this.mainObject = road;
 
 		this.geometry = new BufferGeometry();
 
@@ -131,40 +138,12 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.updateTangents();
 
-		// this.update();
-		MapEvents.roadControlPointUpdated.emit( {
-			road: this.road,
-			controlPoint: this
-		} );
 	}
 
 	update () {
 
 		this.road.update();
 
-		this.updateSuccessor( true );
-
-		this.updatePredecessor( true );
-
-	}
-
-	public updatePredecessor ( rebuild = false ) {
-
-		if ( this.road.isJunction ) return;
-
-		if ( !this.shouldUpdatePredecessor ) return;
-
-		this.road.predecessor?.update( this.road, TvContactPoint.START, rebuild );
-
-	}
-
-	public updateSuccessor ( rebuild = false ) {
-
-		if ( this.road.isJunction ) return;
-
-		if ( !this.shouldUpdateSuccessor ) return;
-
-		this.road.successor?.update( this.road, TvContactPoint.END, rebuild );
 	}
 
 	show () {
@@ -220,9 +199,9 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		// TODO: move this maybe somewhere else
 
-		SceneService.addToMain( this.frontTangent );
+		// SceneService.addToMain( this.frontTangent );
 
-		SceneService.addToMain( this.backTangent );
+		// SceneService.addToMain( this.backTangent );
 
 		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
 
@@ -236,7 +215,7 @@ export class RoadControlPoint extends BaseControlPoint {
 
 		this.tangentLine.frustumCulled = false;
 
-		SceneService.addToMain( this.tangentLine );
+		// SceneService.addToMain( this.tangentLine );
 	}
 
 	updateTangentLine () {

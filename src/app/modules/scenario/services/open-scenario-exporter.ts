@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { Debug } from 'app/core/utils/debug';
-import { XmlElement } from 'app/modules/tv-map/services/open-drive-parser.service';
 import { XMLBuilder } from 'fast-xml-parser';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
@@ -73,6 +72,7 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
 import { AbstractShape, ClothoidShape, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
+import { XmlElement } from "../../../importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'

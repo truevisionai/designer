@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
+import { TvMapInstance } from '../../tv-map/services/tv-map-instance';
 import { ConditionUtils } from '../builders/condition-utils';
 import { ResetHelper } from '../helpers/tv-reset-helper';
 import { ScenarioEntity } from '../models/entities/scenario-entity';

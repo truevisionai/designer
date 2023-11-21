@@ -3,6 +3,7 @@
  */
 
 import { BaseCommand } from 'app/commands/base-command';
+import { MapEvents } from 'app/events/map-events';
 
 export interface IHasUpdate {
 	update (): void;
@@ -24,11 +25,15 @@ export class SetValueCommand<T, K extends keyof T> extends BaseCommand {
 
 		this.object[ this.attributeName ] = this.newValue;
 
+		MapEvents.objectUpdated.emit( this.object );
+
 	}
 
 	undo (): void {
 
 		this.object[ this.attributeName ] = this.oldValue;
+
+		MapEvents.objectUpdated.emit( this.object );
 
 	}
 
@@ -58,6 +63,7 @@ export class UpdateValueCommand<T extends IHasUpdate, K extends keyof T> extends
 
 		this.object?.update();
 
+		MapEvents.objectUpdated.emit( this.object );
 	}
 
 	undo (): void {
@@ -65,6 +71,8 @@ export class UpdateValueCommand<T extends IHasUpdate, K extends keyof T> extends
 		this.object[ this.attributeName ] = this.oldValue;
 
 		this.object?.update();
+
+		MapEvents.objectUpdated.emit( this.object );
 	}
 
 	redo (): void {

@@ -64,7 +64,7 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 				const entry = left.isEntry ? left : right;
 				const exit = left.isExit ? left : right;
 
-				JunctionFactory.connectTwo( entry, exit );
+				// JunctionFactory.connectTwo( entry, exit );
 
 			} else {
 
@@ -74,7 +74,7 @@ export class JunctionEntryInspector extends BaseInspector implements OnInit, OnD
 
 		} else if ( this.data.length > 2 ) {
 
-			JunctionFactory.mergeEntries( this.data );
+			// JunctionFactory.mergeEntries( this.data );
 
 		}
 

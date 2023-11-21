@@ -1,0 +1,236 @@
+import { Injectable } from '@angular/core';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { Vector2, Vector3 } from 'three';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class DebugDrawService {
+
+	constructor () { }
+
+	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
+
+		return this.createRoadWidthLinev2( roadCoord.road, roadCoord.s );
+
+	}
+
+	createRoadWidthLinev2 ( road: TvRoad, s: number ): Line2 {
+
+		const result = road.getRoadWidthAt( s );
+
+		const start = road.getPositionAt( s, result.leftSideWidth );
+
+		const end = road.getPositionAt( s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z + 0.1,
+			end.x, end.y, end.z + 0.1
+		] );
+
+		const lineMaterial = new LineMaterial( {
+			color: COLOR.RED,
+			opacity: RoadNode.defaultOpacity,
+			linewidth: RoadNode.defaultWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+		} );
+
+		const line = new Line2( lineGeometry, lineMaterial );
+
+		line.name = 'DebugDrawService.createRoadWidthLine';
+
+		line.renderOrder = 3;
+
+		return line;
+	}
+
+	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
+
+		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
+
+		const start = roadCoord.road.getPositionAt( roadCoord.s, result.leftSideWidth );
+
+		const end = roadCoord.road.getPositionAt( roadCoord.s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+	}
+
+	updateRoadWidthLinev2 ( line: Line2, road: TvRoad, s: number ): Line2 {
+
+		const result = road.getRoadWidthAt( s );
+
+		const start = road.getPositionAt( s, result.leftSideWidth );
+
+		const end = road.getPositionAt( s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+	}
+
+	createLaneWidthLine ( laneCoord: TvLaneCoord ): Line2 {
+
+		const width = laneCoord.lane.getWidthValue( laneCoord.s );
+
+		const start = laneCoord.position;
+
+		const direction = laneCoord.direction.normalize();
+
+		const perpendicular = direction.clone().cross( new Vector3( 0, 0, 1 ) );
+
+		const end = start.clone().add( perpendicular.clone().multiplyScalar( width ) );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z + 0.1,
+			end.x, end.y, end.z + 0.1
+		] );
+
+		const lineMaterial = new LineMaterial( {
+			color: COLOR.RED,
+			opacity: RoadNode.defaultOpacity,
+			linewidth: RoadNode.defaultWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+		} );
+
+		const line = new Line2( lineGeometry, lineMaterial );
+
+		line.name = 'DebugDrawService.createRoadWidthLine';
+
+		line.renderOrder = 3;
+
+		return line;
+
+	}
+
+	updateLaneWidthLine ( line: Line2, laneCoord: TvLaneCoord ): Line2 {
+
+		const width = laneCoord.lane.getWidthValue( laneCoord.s );
+
+		const start = laneCoord.position;
+
+		const direction = laneCoord.direction.normalize();
+
+		const perpendicular = direction.clone().cross( new Vector3( 0, 0, 1 ) );
+
+		const end = start.clone().add( perpendicular.clone().multiplyScalar( width ) );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z + 0.1,
+			end.x, end.y, end.z + 0.1
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+
+	}
+
+	createLine ( positions: Vector3[], color = 0xffffff ): Line2 {
+
+		const geometry = new LineGeometry();
+
+		const positionsArray = [];
+
+		positions.forEach( ( position ) => {
+			positionsArray.push( position.x, position.y, position.z );
+		} );
+
+		geometry.setPositions( positionsArray );
+
+		const material = new LineMaterial( {
+			color: color,
+			linewidth: 2, // in world units with size attenuation, pixels otherwise
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+		} );
+
+		const line = new Line2( geometry, material );
+
+		return line;
+	}
+
+	private createLineSegment ( start: Vector3, end: Vector3 ): LineSegments2 {
+
+		const geometry = new LineSegmentsGeometry().setPositions( [
+			start.x, start.y, start.z, end.x, end.y, end.z
+		] );
+
+		const material = new LineMaterial( {
+			color: 0xffffff,
+			linewidth: 1, // in world units with size attenuation, pixels otherwise
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+		} );
+
+		const line = new LineSegments2( geometry, material );
+
+		line.computeLineDistances();
+
+		return line;
+	}
+
+	createLaneReferenceLine ( lane: TvLane, location: 'start' | 'center' | 'end', color = 0xffffff ): Line2 {
+
+		const positions = lane.getReferenceLinePoints( location ).map( ( point ) => point.toVector3() );
+
+		return this.createLine( positions, color );
+	}
+
+	updateLaneReferenceLine ( line: Line2, laneCoord: TvLaneCoord, location: 'start' | 'center' | 'end' ): Line2 {
+
+		const positions = laneCoord.lane.getReferenceLinePoints( location ).map( ( point ) => point.toVector3() );
+
+		const geometry = new LineGeometry();
+
+		const positionsArray = [];
+
+		positions.forEach( ( position ) => {
+			positionsArray.push( position.x, position.y, position.z );
+		} );
+
+		geometry.setPositions( positionsArray );
+
+		line.geometry.dispose();
+
+		line.geometry = geometry;
+
+		return line;
+	}
+
+}

@@ -47,14 +47,10 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	clone ( s: number ) {
+	clone () {
 
-		if ( !s ) s = this.s;
+		return new TvLineGeometry( this.s, this.x, this.y, this.hdg, this.length );
 
-		const length = this.endS - s;
-		const coord = this.getRoadCoord( s );
-
-		return new TvLineGeometry( 0, coord.x, coord.y, coord.hdg, length );
 	}
 
 	getRoadCoord ( s: number ): TvPosTheta {

@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { MouseButton, PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three';
@@ -66,7 +66,7 @@ export class BoxEditor extends AbstractShapeEditor {
 
 		AppService.three.disableControls();
 
-		if ( e.button !== MouseButton.LEFT && !KeyboardInput.isShiftKeyDown ) return;
+		if ( e.button !== MouseButton.LEFT && !KeyboardEvents.isShiftKeyDown ) return;
 
 		this.pointerIsDown = true;
 		this.pointerDownAt = e.point;
@@ -116,7 +116,7 @@ export class BoxEditor extends AbstractShapeEditor {
 
 	onPointerMoved ( e: PointerMoveData ) {
 
-		if ( this.pointerIsDown && KeyboardInput.isShiftKeyDown ) {
+		if ( this.pointerIsDown && KeyboardEvents.isShiftKeyDown ) {
 
 			this.creating = true;
 

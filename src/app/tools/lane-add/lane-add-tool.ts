@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SelectMainObjectCommand } from 'app/commands/select-point-command';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { CommandHistory } from 'app/services/command-history';
@@ -11,8 +10,12 @@ import { PointerEventData } from '../../events/pointer-event-data';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { OnLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
+import { SelectLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
+import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
 
+/**
+ * @deprecated
+ */
 export class LaneAddTool extends BaseTool {
 
 	public name: string = 'AddLane';
@@ -24,7 +27,7 @@ export class LaneAddTool extends BaseTool {
 
 	init (): void {
 
-		this.pointerStrategy = new OnLaneStrategy();
+		this.pointerStrategy = new SelectLaneStrategy();
 
 	}
 

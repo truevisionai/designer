@@ -5,20 +5,19 @@
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { OdLaneDirectionBuilder } from 'app/modules/tv-map/builders/od-lane-direction-builder';
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
-import { IToolWithSelection, SelectPointsCommand } from '../../commands/select-point-command';
-import { JunctionFactory } from '../../factories/junction.factory';
-import { KeyboardInput } from '../../core/input';
+import { IToolWithSelection } from '../../commands/select-point-command';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
-import { SceneService } from '../../services/scene.service';
 import { SelectionTool } from '../../core/snapping/selection-tool';
 import { TvConsole } from '../../core/utils/console';
 import { BaseTool } from '../base-tool';
-import { CreateSingleManeuver } from './create-single-maneuver';
+// import { CreateSingleManeuver } from './create-single-maneuver';
+import { ManeuverService } from 'app/services/junction/maneuver.service';
+import { SelectPointsCommand } from "../../commands/select-points-command";
 
 export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
@@ -26,16 +25,21 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	toolType = ToolType.Maneuver;
 	public selectionTool: SelectionTool<JunctionEntryObject>;
-	private entries: JunctionEntryObject[] = [];
-	private lanePathObjects = [];
-	private selected: JunctionEntryObject[] = [];
-	private laneDirectionHelper = new OdLaneDirectionBuilder( null );
 
-	constructor () {
+	// private entries: JunctionEntryObject[] = [];
+
+	// private lanePathObjects = [];
+
+	private selected: JunctionEntryObject[] = [];
+
+	// private laneDirectionHelper = new OdLaneDirectionBuilder( null );
+
+	constructor ( private maneuverService: ManeuverService ) {
 
 		super();
 
 		this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
+
 	}
 
 	init () {
@@ -47,11 +51,8 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		super.enable();
 
-		this.entries = JunctionFactory.createJunctionEntries( this.map.getRoads() );
-
-		this.entries.forEach( obj => SceneService.addToMain( obj ) );
-
-		this.showLanePathObjects();
+		this.maneuverService.showAllManeuvers();
+		this.maneuverService.showAllEntryExitPoints();
 	}
 
 	disable () {
@@ -60,11 +61,8 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		this.selectionTool?.dispose();
 
-		this.entries.forEach( obj => SceneService.removeFromMain( obj ) );
-
-		this.entries.splice( 0, this.entries.length );
-
-		this.hideLanePathObjects();
+		this.maneuverService.hideAllManeuvers();
+		this.maneuverService.hideAllEntryExitPoints();
 	}
 
 	setPoint ( value: ISelectable[] ): void {
@@ -83,7 +81,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( shiftKeyDown ) {
 
@@ -151,7 +149,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 			if ( !junction ) {
 
-				CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
+				// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
 
 			} else {
 
@@ -165,7 +163,7 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 				} else {
 
-					CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
+					// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
 
 				}
 
@@ -203,48 +201,48 @@ export class ManeuverTool extends BaseTool implements IToolWithSelection {
 
 	}
 
-	showLanePathObjects () {
+	// showLanePathObjects () {
 
-		this.map.junctions.forEach( junction => {
+	// 	this.map.junctions.forEach( junction => {
 
-			junction.connections.forEach( connection => {
+	// 		junction.connections.forEach( connection => {
 
-				connection.laneLink.forEach( link => {
+	// 			connection.laneLink.forEach( link => {
 
-					link.update();
+	// 				link.update();
 
-					link.show();
+	// 				link.show();
 
-					SceneService.addToMain( link.mesh );
+	// 				SceneService.addToMain( link.mesh );
 
-				} );
+	// 			} );
 
-			} );
+	// 		} );
 
-		} );
+	// 	} );
 
-	}
+	// }
 
-	hideLanePathObjects () {
+	// hideLanePathObjects () {
 
-		this.lanePathObjects.forEach( obj => SceneService.removeFromMain( obj ) );
+	// 	this.lanePathObjects.forEach( obj => SceneService.removeFromMain( obj ) );
 
-		this.lanePathObjects.splice( 0, this.lanePathObjects.length );
+	// 	this.lanePathObjects.splice( 0, this.lanePathObjects.length );
 
-		this.map.junctions.forEach( junction => {
+	// 	this.map.junctions.forEach( junction => {
 
-			junction.connections.forEach( connection => {
+	// 		junction.connections.forEach( connection => {
 
-				connection.laneLink.forEach( link => {
+	// 			connection.laneLink.forEach( link => {
 
-					link.hide();
+	// 				link.hide();
 
-					SceneService.removeFromMain( link.mesh );
+	// 				SceneService.removeFromMain( link.mesh );
 
-				} );
+	// 			} );
 
-			} );
+	// 		} );
 
-		} );
-	}
+	// 	} );
+	// }
 }

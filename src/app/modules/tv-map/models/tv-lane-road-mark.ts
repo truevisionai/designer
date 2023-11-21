@@ -3,11 +3,10 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { SceneService } from 'app/services/scene.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { MathUtils, MeshStandardMaterial } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { LaneRoadMarkNode } from '../../three-js/objects/lane-road-mark-node';
+import { LaneMarkingNode } from '../../three-js/objects/lane-road-mark-node';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
 
@@ -28,7 +27,7 @@ export class TvLaneRoadMark {
 	public attr_space: number = 4.5;
 	public lastSCoordinate: number;
 	public readonly lane: TvLane;
-	public node: LaneRoadMarkNode;
+	public node: LaneMarkingNode;
 
 	private attr_materialDetails: string;
 	private _materialGuid: string;
@@ -213,8 +212,6 @@ export class TvLaneRoadMark {
 	clearMesh () {
 
 		if ( this.gameObject ) {
-
-			SceneService.removeFromMain( this.gameObject );
 
 			this.lane?.gameObject.remove( this.gameObject );
 

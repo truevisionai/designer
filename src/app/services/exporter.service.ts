@@ -13,7 +13,7 @@ import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instanc
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
 
@@ -23,16 +23,10 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
 
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from './scene-exporter.service';
+import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
-
-export enum CoordinateSystem {
-	THREE_JS,
-	OPEN_DRIVE,
-	BLENDER,
-	UNITY_GLTF
-}
+import { CoordinateSystem } from './CoordinateSystem';
 
 @Injectable( {
 	providedIn: 'root'

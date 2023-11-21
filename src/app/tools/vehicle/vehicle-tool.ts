@@ -7,7 +7,7 @@ import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { PickingHelper } from 'app/services/picking-helper.service';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { OnRoadStrategy } from 'app/core/snapping/select-strategies/on-road-strategy';
+import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
@@ -15,7 +15,7 @@ import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { TvRoadCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { CommandHistory } from 'app/services/command-history';
 import { VehicleEntity } from '../../modules/scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';
@@ -38,7 +38,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		super();
 
-		this.movingStrategy = new OnRoadStrategy();
+		this.movingStrategy = new RoadCoordStrategy();
 		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<ScenarioEntity>>();
 	}
 
@@ -82,7 +82,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 		this.points.forEach( ( point ) => {
 
-			point.parent.remove( point );
+			point.parent?.remove( point );
 
 		} );
 

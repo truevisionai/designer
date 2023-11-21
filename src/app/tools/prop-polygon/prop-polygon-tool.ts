@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IToolWithMainObject, IToolWithPoint, SelectMainObjectCommand, SelectPointCommand } from 'app/commands/select-point-command';
+import { IToolWithMainObject, IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { PropModel } from 'app/core/models/prop-model.model';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
@@ -15,11 +15,12 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
 import { PropPolygon } from '../../modules/tv-map/models/prop-polygons';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
-import { CreatePropPolygonCommand } from './create-prop-polygon-command';
+// import { CreatePropPolygonCommand } from './create-prop-polygon-command';
+import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -104,7 +105,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		if ( KeyboardInput.isShiftKeyDown ) {
+		if ( KeyboardEvents.isShiftKeyDown ) {
 
 			this.handleCreationMode( e );
 
@@ -176,7 +177,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( !this.point ) {
 
-			CommandHistory.execute( new CreatePropPolygonCommand( this, this.prop, e.point ) );
+			// CommandHistory.execute( new CreatePropPolygonCommand( this, this.prop, e.point ) );
 
 			this.setHint( 'Add two more control point to create polygon' );
 

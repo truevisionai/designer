@@ -5,7 +5,7 @@
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+// import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Manager } from './manager';
 
@@ -40,11 +40,11 @@ export class EntityManager extends Manager {
 
 		// we want to teleport all entities to the new position
 		// when road is updated
-		ScenarioInstance.scenario.objects.forEach( ( entity: ScenarioEntity ) => {
+		// ScenarioInstance.scenario.objects.forEach( ( entity: ScenarioEntity ) => {
 
-			this.updateEntityPosition( entity, event.road );
+		// 	this.updateEntityPosition( entity, event.road );
 
-		} );
+		// } );
 
 	}
 

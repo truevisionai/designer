@@ -8,7 +8,7 @@ import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@an
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileExtension, FileService } from 'app/io/file.service';
-import { ImporterService } from 'app/services/importer.service';
+import { ImporterService } from 'app/importers/importer.service';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogFactory } from '../../../factories/dialog.factory';

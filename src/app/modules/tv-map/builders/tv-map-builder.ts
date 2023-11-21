@@ -14,17 +14,18 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoadObject } from '../models/tv-road-object';
+import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvSignalHelper } from '../services/tv-signal-helper';
 import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 // import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
 import { SignalFactory } from '../../../factories/signal-factory';
 import { RoadObjectFactory } from 'app/factories/road-object.factory';
+import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 
 export class TvMapBuilder {
 
@@ -34,7 +35,7 @@ export class TvMapBuilder {
 
 	private static JUNCTION_ELEVATION_SHIFT = 0.005;
 
-	constructor ( public map?: TvMap ) {
+	constructor () {
 
 	}
 
@@ -68,6 +69,8 @@ export class TvMapBuilder {
 	 */
 	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): any {
 
+		if ( road.isJunction ) return;
+
 		road.gameObject = null;
 		road.gameObject = new GameObject( 'Road:' + road.id );
 		road.gameObject.Tag = ObjectTypes.ROAD;
@@ -95,21 +98,7 @@ export class TvMapBuilder {
 
 	static buildRoadObjects ( road: TvRoad ) {
 
-		const objectMeshes = new GameObject( 'RoadObjects' );
-
-		road.objects.object.forEach( roadObject => {
-
-			const mesh = RoadObjectFactory.create( roadObject );
-
-			if ( mesh ) {
-
-				objectMeshes.add( mesh );
-
-			}
-
-		} );
-
-		road.gameObject.add( objectMeshes );
+		RoadObjectService.instance.buildRoadObjects( road );
 
 	}
 
@@ -120,6 +109,8 @@ export class TvMapBuilder {
 	 * @deprecated
 	 */
 	static rebuildRoad ( road: TvRoad, buildJunctions = true ): any {
+
+		TvMapInstance.map.gameObject.remove( road.gameObject );
 
 		this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
 
@@ -194,7 +185,7 @@ export class TvMapBuilder {
 
 			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			posTheta = road.getRoadCoordAt( s, );
+			posTheta = road.getRoadCoordAt( s );
 
 			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
 
@@ -374,7 +365,7 @@ export class TvMapBuilder {
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 
-		TvMapBuilder.createLaneGameObject( lane, geometry, lane.threeMaterial, laneSection );
+		TvMapBuilder.createLaneGameObject( lane, geometry, lane.getThreeMaterial(), laneSection );
 
 	}
 
@@ -392,12 +383,6 @@ export class TvMapBuilder {
 		lane.gameObject.userData.lane = lane;
 
 		laneSection.gameObject.add( lane.gameObject );
-	}
-
-	static removeRoad ( gameObject: GameObject, road: TvRoad ) {
-
-		gameObject.remove( road.gameObject );
-
 	}
 }
 

@@ -8,13 +8,15 @@ import { Maths } from '../../../utils/maths';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
-import { TvCoord, TvLaneCoord, TvRoadCoord } from '../models/tv-lane-coord';
+import { TvLaneCoord } from '../models/tv-lane-coord';
+import { TvCoord } from '../models/TvCoord';
+import { TvRoadCoord } from '../models/TvRoadCoord';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvUtils } from '../models/tv-utils';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 
 export abstract class TvBaseQueries {
 
@@ -94,7 +96,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		if ( !road ) return null;
 
-		return posTheta.toRoadCoord( road.id );
+		return posTheta.toRoadCoord( road );
 	}
 
 	static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
@@ -627,7 +629,7 @@ export class TvMapQueries extends TvBaseQueries {
 		// get random s on lane-section
 		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
 
-		return new TvLaneCoord( road.id, laneSection.id, lane.id, s, 0 );
+		return new TvLaneCoord( road, laneSection, lane, s, 0 );
 	}
 
 	static getRoadArray (): TvRoad[] {

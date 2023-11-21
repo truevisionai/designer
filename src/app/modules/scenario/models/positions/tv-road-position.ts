@@ -9,6 +9,7 @@ import { TvMapQueries } from '../../../tv-map/queries/tv-map-queries';
 import { Position } from '../position';
 import { PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 export class RoadPosition extends Position {
 
@@ -16,27 +17,43 @@ export class RoadPosition extends Position {
 	public readonly type = PositionType.Road;
 	public readonly isDependent: boolean = false;
 
+	private _road: TvRoad;
+	private _roadId: number;
+
 	constructor (
-		public roadId = 0,
-		public sValue = 0,
-		public tValue = 0,
+		road: number | TvRoad,
+		public sValue: number,
+		public tValue: number,
 		orientation: Orientation = null
 	) {
-
 		super( null, orientation );
 
-		this.orientation = orientation;
+		if ( typeof road === 'number' ) {
+			this._roadId = road;
+		} else if ( road instanceof TvRoad ) {
+			this._road = road;
+		}
 
+		this.orientation = orientation;
 	}
 
 	@SerializedField( { type: 'road' } )
-	get road (): number {
-		return this.roadId;
+	get roadId (): number {
+		return this._roadId;
 	}
 
-	set road ( value: number ) {
-		this.roadId = value;
+	set roadId ( value: number ) {
+		this._roadId = value;
 		this.updated.emit();
+	}
+
+	get road (): TvRoad {
+		return this._road;
+	}
+
+	set road ( value: TvRoad ) {
+		this._road = value;
+		this._roadId = value.id;
 	}
 
 	@SerializedField( { type: 'float' } )
@@ -68,7 +85,10 @@ export class RoadPosition extends Position {
 	}
 
 	getRoad () {
-		return TvMapQueries.findRoadById( this.roadId );
+		if ( this._road ) {
+			return this._road;
+		}
+		return this._road = TvMapQueries.findRoadById( this._roadId );
 	}
 
 	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
@@ -77,7 +97,7 @@ export class RoadPosition extends Position {
 
 		const road = TvMapQueries.getRoadByCoords( position.x, position.y, posTheta );
 
-		this.roadId = road.id;
+		this._roadId = road.id;
 
 		this.sValue = posTheta.s;
 

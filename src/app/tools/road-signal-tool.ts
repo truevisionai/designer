@@ -1,7 +1,6 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../events/pointer-event-data';
@@ -10,11 +9,12 @@ import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { StaticSignal } from '../modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from '../modules/tv-map/queries/tv-map-queries';
-import { KeyboardInput } from '../core/input';
+import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { SceneService } from '../services/scene.service';
 import { IMovable } from '../core/snapping/snap-strategies/snapping';
 import { BaseTool } from './base-tool';
+import { AnyControlPoint } from "../modules/three-js/objects/any-control-point";
 
 export class RoadSignalTool extends BaseTool {
 
@@ -38,7 +38,7 @@ export class RoadSignalTool extends BaseTool {
 
 		if ( e.button != MouseButton.LEFT ) return;
 
-		if ( !KeyboardInput.isShiftKeyDown ) return;
+		if ( !KeyboardEvents.isShiftKeyDown ) return;
 
 		const posTheta = new TvPosTheta();
 

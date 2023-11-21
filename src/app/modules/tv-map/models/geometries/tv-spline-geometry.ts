@@ -35,4 +35,10 @@ export class TvSplineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
+	clone (): TvAbstractRoadGeometry {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
 }

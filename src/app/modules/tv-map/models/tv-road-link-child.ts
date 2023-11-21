@@ -2,11 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-source-file';
+// import { TvMapInstance } from '../services/tv-map-instance';
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 
@@ -113,79 +110,82 @@ export class TvRoadLinkChild {
 		this.attr_contactPoint = value;
 	}
 
-	get end () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getSecondPoint() as RoadControlPoint;
-		} else {
-			return this.road.spline.getSecondLastPoint() as RoadControlPoint;
-		}
-	}
+	// /**
+	//  * @deprecated
+	//  */
+	// get end () {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
+	// 		return this.road.spline.getSecondPoint();
+	// 	} else {
+	// 		return this.road.spline.getSecondLastPoint();
+	// 	}
+	// }
 
-	get mid2 () {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			return this.road.spline.getFirstPoint() as RoadControlPoint;
-		} else {
-			return this.road.spline.getLastPoint() as RoadControlPoint;
-		}
-	}
+	// /**
+	//  * @deprecated
+	//  */
+	// get mid2 () {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
+	// 		return this.road.spline.getFirstPoint();
+	// 	} else {
+	// 		return this.road.spline.getLastPoint();
+	// 	}
+	// }
 
-	get road () {
+	// /**
+	//  * @deprecated
+	//  */
+	// get road () {
 
-		return this.getElement<TvRoad>() as TvRoad;
+	// 	return this.getElement<TvRoad>() as TvRoad;
 
-	}
+	// }
 
-	get laneSection () {
+	// /**
+	//  * @deprecated
+	//  */
+	// get laneSection () {
 
-		if ( this.contactPoint == TvContactPoint.START ) {
+	// 	if ( this.contactPoint == TvContactPoint.START ) {
 
-			return this.road.getFirstLaneSection();
+	// 		return this.road.getFirstLaneSection();
 
-		} else {
+	// 	} else {
 
-			return this.road.getLastLaneSection();
-		}
-	}
+	// 		return this.road.getLastLaneSection();
+	// 	}
+	// }
 
-	setSuccessor ( element: TvRoadLinkChild ) {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			road.successor = element;
-		}
-	}
+	// setSuccessor ( element: TvRoadLinkChild ) {
+	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
+	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+	// 	// 	road.successor = element;
+	// 	// }
+	// }
 
-	setPredecessor ( element: TvRoadLinkChild ) {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			road.predecessor = element;
-		}
-	}
+	// setPredecessor ( element: TvRoadLinkChild ) {
+	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
+	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
+	// 	// 	road.predecessor = element;
+	// 	// }
+	// }
 
-	getSuccessor () {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			return road.successor;
-		}
-	}
-
-	getPredecessor () {
-		if ( this.elementType === TvRoadLinkChildType.road ) {
-			const road = TvMapInstance.map.getRoadById( this.elementId );
-			return road.predecessor;
-		}
-	}
-
+	/**
+	 * @deprecated
+	 */
 	getElement<T> (): T {
 
-		if ( this.elementType == TvRoadLinkChildType.road ) {
+		throw new Error( 'Method not implemented.' );
 
-			return TvMapInstance.map.getRoadById( this.elementId ) as any;
+		// if ( this.elementType == TvRoadLinkChildType.road ) {
 
-		} else if ( this.elementType == TvRoadLinkChildType.junction ) {
+		// 	return TvMapInstance.map.getRoadById( this.elementId ) as any;
 
-			return TvMapInstance.map.getJunctionById( this.elementId ) as any;
+		// } else if ( this.elementType == TvRoadLinkChildType.junction ) {
 
-		}
+		// 	return TvMapInstance.map.getJunctionById( this.elementId ) as any;
+
+		// }
 	}
 
 	update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
@@ -218,19 +218,7 @@ export class TvRoadLinkChild {
 
 		}
 
-		if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
-	}
-
-	hideSpline () {
-
-		if ( this.elementType == TvRoadLinkChildType.road ) {
-
-			this.getElement<TvRoad>().hideSpline();
-
-		} else {
-
-		}
-
+		// if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
 	}
 
 	rebuild () {
@@ -241,7 +229,7 @@ export class TvRoadLinkChild {
 
 			road.updateGeometryFromSpline();
 
-			RoadFactory.rebuildRoad( road );
+			// RoadFactory.rebuildRoad( road );
 
 		} else {
 
@@ -249,84 +237,66 @@ export class TvRoadLinkChild {
 
 	}
 
+	clone (): TvRoadLinkChild {
+
+		return new TvRoadLinkChild(
+			this.elementType,
+			this.elementId,
+			this.contactPoint
+		);
+
+	}
+
+
 	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
 
-		if ( !successor ) return;
+		// if ( !successor ) return;
 
-		successor.showSpline();
+		// successor.showSpline();
 
-		const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
-		const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
-		const mid2 = this.mid2;
-		const end = this.end;
+		// const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
+		// const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
+		// const mid2 = this.mid2;
+		// const end = this.end;
 
-		let distance: number = mid2.position.distanceTo( end.position );
+		// let distance: number = mid2.position.distanceTo( end.position );
 
-		mid2.position.copy( mid1.position.clone() );
+		// mid2.position.copy( mid1.position.clone() );
 
-		mid1.hdg = start.hdg;
+		// mid1.hdg = start.hdg;
 
-		mid2.hdg = mid1.hdg + Math.PI;
+		// mid2.hdg = mid1.hdg + Math.PI;
 
-		const newP4 = mid1.moveForward( distance );
+		// const newP4 = mid1.moveForward( distance );
 
-		end.position.copy( newP4.position );
+		// end.position.copy( newP4.position );
 
-		successor.updateGeometryFromSpline();
+		// successor.updateGeometryFromSpline();
 	}
 
 	// this update successor points with line logic
-	private updateSuccessorV2 ( parentRoad: TvRoad, parentPoint: RoadControlPoint, successor: TvRoad ) {
-
-		// assumign points
-		// start, mid1, mid2, end
-
-		if ( !successor ) return;
-
-		successor.showSpline();
-
-		const start = parentRoad.spline.getSecondLastPoint();
-		const mid1 = parentRoad.spline.getLastPoint();
-		const mid2 = successor.spline.getFirstPoint();
-		const end = successor.spline.getSecondPoint();
-
-		const distanceAB = start.position.distanceTo( mid1.position );
-		const distanceAC = start.position.distanceTo( mid2.position );
-
-		var direction = new Vector3();
-		direction.subVectors( end.position, start.position );
-		direction.normalize();
-
-		// Now calculate positions for B and C based on distances
-		mid1.position.copy( direction ).multiplyScalar( distanceAB ).add( start.position );
-		mid2.position.copy( direction ).multiplyScalar( distanceAC ).add( start.position );
-
-		successor.updateGeometryFromSpline();
-
-	}
-
 	private updatePredecessor ( parentRoad: TvRoad, predecessor: TvRoad ) {
 
-		if ( !predecessor ) return;
+		// if ( !predecessor ) return;
 
-		predecessor.showSpline();
+		// predecessor.showSpline();
 
-		const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
-		const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
-		const mid2 = this.mid2;
-		const end = this.end;
+		// const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
+		// const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
+		// const mid2 = this.mid2;
+		// const end = this.end;
 
-		const distance = mid2.position.distanceTo( end.position );
+		// const distance = mid2.position.distanceTo( end.position );
 
-		mid2.position.copy( mid1.position.clone() );
+		// mid2.position.copy( mid1.position.clone() );
 
-		mid2.hdg = end.hdg = mid1.hdg + Math.PI;
+		// // mid2.hdg = end.hdg = mid1.hdg + Math.PI;
 
-		const newP4 = mid2.moveForward( distance );
+		// // const newP4 = mid2.moveForward( distance );
 
-		end.position.copy( newP4.position );
+		// end.position.copy( newP4.position );
 
-		predecessor.updateGeometryFromSpline();
+		// predecessor.updateGeometryFromSpline();
 
 	}
 

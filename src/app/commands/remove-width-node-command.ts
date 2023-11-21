@@ -2,32 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { LaneWidthInspector } from 'app/views/inspectors/lane-width-inspector/lane-width-inspector.component';
 import { LaneWidthNode } from '../modules/three-js/objects/lane-width-node';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
-import { SetInspectorCommand } from './set-inspector-command';
 import { MapEvents } from 'app/events/map-events';
 
 export class RemoveWidthNodeCommand extends BaseCommand {
 
 	constructor (
 		private node: LaneWidthNode,
-		private laneHelper?: OdLaneReferenceLineBuilder
 	) {
-
 		super();
-
-		if ( !laneHelper ) {
-
-			this.laneHelper = new OdLaneReferenceLineBuilder();
-
-		}
-
 	}
 
 	execute (): void {
@@ -41,11 +28,9 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		this.node.updateLaneWidthValues();
 
-		SceneService.removeFromTool( this.node );
+		MapEvents.laneUpdated.emit( this.node.lane );
 
-		this.rebuild( this.node.road );
-
-		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
+		// ( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 	}
 
 	undo (): void {
@@ -56,9 +41,9 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		SceneService.addToolObject( this.node );
 
-		this.rebuild( this.node.road );
+		MapEvents.laneUpdated.emit( this.node.lane );
 
-		( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
+		// ( new SetInspectorCommand( LaneWidthInspector, this.node.laneWidth ) ).execute();
 
 	}
 
@@ -72,7 +57,7 @@ export class RemoveWidthNodeCommand extends BaseCommand {
 
 		MapEvents.laneUpdated.emit( this.node.lane );
 
-		this.laneHelper.drawRoad( road, LineType.SOLID, true );
+		// this.laneHelper.drawRoad( road, LineType.SOLID, true );
 	}
 
 }

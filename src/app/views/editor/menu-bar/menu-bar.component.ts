@@ -14,7 +14,7 @@ import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-export
 import { ExporterService } from 'app/services/exporter.service';
 import { MainFileService } from 'app/services/main-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
-import { RoadExporterService } from 'app/services/road-style-exporter.service';
+import { RoadExporterService } from 'app/exporters/road-style-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog/app-input-dialog-service';
 

@@ -12,11 +12,11 @@ import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 
 import { TvJunction } from '../../tv-map/models/tv-junction';
 import { TvJunctionConnection } from '../../tv-map/models/tv-junction-connection';
 import { TvLane } from '../../tv-map/models/tv-lane';
-import { TvMapInstance } from '../../tv-map/services/tv-map-source-file';
-import { BaseControlPoint } from './control-point';
+import { TvMapInstance } from '../../tv-map/services/tv-map-instance';
 import { ISelectable } from './i-selectable';
+import { AbstractControlPoint } from "./abstract-control-point";
 
-export class JunctionEntryObject extends BaseControlPoint implements ISelectable {
+export class JunctionEntryObject extends AbstractControlPoint implements ISelectable {
 
 	public static tag = 'junction-dot';
 
@@ -75,13 +75,13 @@ export class JunctionEntryObject extends BaseControlPoint implements ISelectable
 	}
 
 	get isEntry (): boolean {
-		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
-			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.START );
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.END ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.START );
 	}
 
 	get isExit (): boolean {
-		return ( this.lane.travelDirection === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
-			( this.lane.travelDirection === TravelDirection.backward && this.contact === TvContactPoint.END );
+		return ( this.lane.direction === TravelDirection.forward && this.contact === TvContactPoint.START ) ||
+			( this.lane.direction === TravelDirection.backward && this.contact === TvContactPoint.END );
 	}
 
 	get junctionType () {

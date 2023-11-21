@@ -3,9 +3,9 @@
  */
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AnyControlPoint } from 'app/modules/three-js/objects/control-point';
 import { Vector2, Vector3 } from 'three';
 import { TvSurface } from './tv-surface.model';
+import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 
 describe( 'TvSurface', () => {
 

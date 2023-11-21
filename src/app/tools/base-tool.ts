@@ -8,27 +8,25 @@ import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { StatusBarService } from 'app/services/status-bar.service';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Color, Intersection, Line, LineBasicMaterial, Material, Mesh, MeshBasicMaterial, Object3D } from 'three';
-import { AnyControlPoint } from '../modules/three-js/objects/control-point';
-import { ObjectTypes } from '../modules/tv-map/models/tv-common';
-import { TvMapInstance } from '../modules/tv-map/services/tv-map-source-file';
+import { Intersection, Line, Mesh, Object3D } from 'three';
+import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
-import { KeyboardInput } from '../core/input';
+import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { CommandHistory } from 'app/services/command-history';
+import { AddObjectCommand } from "../commands/add-object-command";
+import { RemoveObjectCommand } from "../commands/remove-object-command";
+import { UnselectObjectCommand } from "../commands/unselect-object-command";
+import { SelectObjectCommand } from "../commands/select-object-command";
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
 	abstract name: string;
 	abstract toolType: ToolType;
-
-	// highlighting variables
-	private previousColor = new Color();
-	private previousMaterial: MeshBasicMaterial;
-	private highlightedObjects = new Map<Mesh, MeshBasicMaterial>();
-	private highlightedLines = new Map<Line, Material>();
 
 	constructor () {
 
@@ -50,9 +48,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	init () {
-
-	}
+	init (): void { }
 
 	enable (): void {
 
@@ -94,7 +90,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 		if ( e.point == null ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( shiftKeyDown ) {
 
@@ -112,6 +108,38 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	onPointerDownCreate ( e: PointerEventData ) { }
 
+	onKeyDown ( e: KeyboardEvent ): void {
+
+		if ( e.key === 'Delete' || e.key === 'Backspace' ) {
+
+			this.onDeleteKeyDown();
+
+		}
+
+	}
+
+	onDeleteKeyDown () { }
+
+	// onRoadCreated ( road: TvRoad ) { }
+
+	// onRoadSelected ( road: TvRoad ) { }
+
+	// onRoadUnselected ( road: TvRoad ) { }
+
+	// onControlPointSelected ( controlPoint: AbstractControlPoint ) { }
+
+	// onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
+
+	onObjectSelected ( object: any ) { }
+
+	onObjectUnselected ( object: any ) { }
+
+	onObjectAdded ( object: any ) { }
+
+	onObjectUpdated ( object: any ) { }
+
+	onObjectRemoved ( object: any ) { }
+
 	setHint ( msg: string ) {
 
 		StatusBarService.setHint( msg );
@@ -124,67 +152,27 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	protected checkRoadIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
+	protected selectObject ( object: any, previousObject: any ) {
 
-		this.checkIntersection( ObjectTypes.LANE, intersections, ( obj ) => {
-
-			callback( obj.parent.parent );
-
-		} );
+		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
 
 	}
 
-	protected checkLaneIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
+	protected unselectObject ( object: any ) {
 
-		this.checkIntersection( ObjectTypes.LANE, intersections, callback );
-
-	}
-
-	protected checkVehicleIntersection ( intersections: Intersection[], callback: ( object: Object3D ) => void ) {
-
-		this.checkIntersection( ObjectTypes.VEHICLE, intersections, callback );
+		CommandHistory.execute( new UnselectObjectCommand( object ) );
 
 	}
 
-	protected checkControlPointIntersection ( intersections: Intersection[], callback: ( object: AnyControlPoint ) => void ) {
+	protected executeAddObject ( object: any ) {
 
-		for ( const i of intersections ) {
+		CommandHistory.execute( new AddObjectCommand( object ) );
 
-			if ( i.object != null && i.object.type == 'Points' ) {
-
-				callback( i.object as AnyControlPoint );
-
-				break;
-			}
-		}
 	}
 
-	protected findControlPointFromIntersection ( intersections: Intersection[] ): AnyControlPoint | null {
+	protected executeRemoveObject ( object: any ) {
 
-		for ( const i of intersections ) {
-
-			if ( i.object != null && i.object.type == 'Points' ) {
-
-				return i.object as AnyControlPoint;
-
-			}
-		}
-
-		return null;
-	}
-
-	protected checkIntersection ( tag: string, intersections: Intersection[], callback: ( object: Object3D ) => void ): void {
-
-		for ( const i of intersections ) {
-
-			if ( i.object[ 'tag' ] == tag ) {
-
-				callback( i.object );
-
-				break;
-			}
-
-		}
+		CommandHistory.execute( new RemoveObjectCommand( object ) );
 
 	}
 
@@ -201,109 +189,87 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	protected highlight ( object: Mesh ) {
-
-		const material = object.material as MeshBasicMaterial;
-
-		// Check if the object is already highlighted
-		if ( !this.highlightedObjects.has( object ) ) {
-
-			// Save the original material instance
-			this.highlightedObjects.set( object, material );
-
-			// Create a new instance of the material to avoid affecting the shared material
-			const highlightedMaterial = material.clone() as MeshBasicMaterial;
-
-			// Set the current temporary material property to highlighted color
-			highlightedMaterial.color.copy( material.color ).add( new Color( 0, 0, 0.5 ) );
-
-			// Assign the temporary material to the object
-			object.material = highlightedMaterial;
-		}
-	}
-
 	protected highlightLine ( object: Line ) {
 
-		const material = object.material as LineBasicMaterial;
+		// const material = object.material as LineBasicMaterial;
 
-		// Check if the object is already highlighted
-		if ( !this.highlightedLines.has( object ) ) {
+		// // Check if the object is already highlighted
+		// if ( !this.highlightedLines.has( object ) ) {
 
-			// Save the original material instance
-			this.highlightedLines.set( object, material );
+		// 	// Save the original material instance
+		// 	this.highlightedLines.set( object, material );
 
-			// Create a new instance of the material to avoid affecting the shared material
-			const highlightedMaterial = material.clone() as LineBasicMaterial;
+		// 	// Create a new instance of the material to avoid affecting the shared material
+		// 	const highlightedMaterial = material.clone() as LineBasicMaterial;
 
-			// Set the current temporary material property to highlighted color
-			highlightedMaterial.linewidth += highlightedMaterial.linewidth;
+		// 	// Set the current temporary material property to highlighted color
+		// 	highlightedMaterial.linewidth += highlightedMaterial.linewidth;
 
-			highlightedMaterial.setValues( {
-				color: COLOR.DEEP_CYAN
-			} );
+		// 	highlightedMaterial.setValues( {
+		// 		color: COLOR.DEEP_CYAN
+		// 	} );
 
-			// Assign the temporary material to the object
-			object.material = highlightedMaterial;
+		// 	// Assign the temporary material to the object
+		// 	object.material = highlightedMaterial;
 
-		}
+		// }
 	}
 
 	protected removeHighlight ( object?: Mesh ) {
 
-		if ( object ) {
-			// Restore the specific object's highlight
-			this.restoreObjectHighlight( object );
-		} else {
-			// Restore all highlighted objects
-			this.restoreAllHighlights();
-		}
+		// if ( object ) {
+		// 	// Restore the specific object's highlight
+		// 	this.restoreObjectHighlight( object );
+		// } else {
+		// 	// Restore all highlighted objects
+		// 	this.restoreAllHighlights();
+		// }
 	}
 
 	private restoreObjectHighlight ( object: Mesh ) {
 
-		if ( this.highlightedObjects.has( object ) ) {
+		// if ( this.highlightedObjects.has( object ) ) {
 
-			// Get the original material from the map
-			const originalMaterial = this.highlightedObjects.get( object );
+		// 	// Get the original material from the map
+		// 	const originalMaterial = this.highlightedObjects.get( object );
 
-			// Restore the original material to the object
-			object.material = originalMaterial;
+		// 	// Restore the original material to the object
+		// 	object.material = originalMaterial;
 
-			// Dispose of the temporary material to free up memory
-			( object.material as MeshBasicMaterial ).dispose();
+		// 	// Dispose of the temporary material to free up memory
+		// 	( object.material as MeshBasicMaterial ).dispose();
 
-			// Remove the object from the map
-			this.highlightedObjects.delete( object );
-		}
+		// 	// Remove the object from the map
+		// 	this.highlightedObjects.delete( object );
+		// }
 	}
 
 	private restoreAllHighlights () {
 
-		this.highlightedObjects.forEach( ( originalMaterial, highlightedObject ) => {
+		// this.highlightedObjects.forEach( ( originalMaterial, highlightedObject ) => {
 
-			this.restoreObjectHighlight( highlightedObject );
+		// 	this.restoreObjectHighlight( highlightedObject );
 
-		} );
+		// } );
 
-		this.highlightedLines.forEach( ( originalMaterial, object ) => {
+		// this.highlightedLines.forEach( ( originalMaterial, object ) => {
 
-			if ( this.highlightedLines.has( object ) ) {
+		// 	if ( this.highlightedLines.has( object ) ) {
 
-				// Get the original material from the map
-				const originalMaterial = this.highlightedLines.get( object );
+		// 		// Get the original material from the map
+		// 		const originalMaterial = this.highlightedLines.get( object );
 
-				// Restore the original material to the object
-				object.material = originalMaterial;
+		// 		// Restore the original material to the object
+		// 		object.material = originalMaterial;
 
-				// Dispose of the temporary material to free up memory
-				( object.material as MeshBasicMaterial ).dispose();
+		// 		// Dispose of the temporary material to free up memory
+		// 		( object.material as MeshBasicMaterial ).dispose();
 
-				// Remove the object from the map
-				this.highlightedLines.delete( object );
-			}
+		// 		// Remove the object from the map
+		// 		this.highlightedLines.delete( object );
+		// 	}
 
-		} );
+		// } );
 	}
 
 }
-

@@ -7,14 +7,13 @@ import { CommandHistory } from 'app/services/command-history';
 import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { KeyboardInput } from '../../core/input';
+import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { PickingHelper } from '../../services/picking-helper.service';
 import { BaseTool } from '../base-tool';
 import { CreateLaneOffsetCommand } from './create-lane-offset-command';
 import { SelectLaneForLaneOffsetCommand } from './select-lane-for-lane-offset-command';
 import { SelectLaneOffsetNodeCommand } from './select-lane-offset-node-command';
-import { UnselectLaneForLaneOffsetCommand } from './unselect-lane-for-lane-offset-command';
 import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
 import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
 
@@ -57,7 +56,7 @@ export class LaneOffsetTool extends BaseTool {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
-		const shiftKeyDown = KeyboardInput.isShiftKeyDown;
+		const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
 
 		if ( !shiftKeyDown && this.isNodeSelected( e ) ) return;
 
@@ -73,7 +72,7 @@ export class LaneOffsetTool extends BaseTool {
 
 		} else if ( this.lane ) {
 
-			CommandHistory.execute( new UnselectLaneForLaneOffsetCommand( this, this.lane ) );
+			// CommandHistory.execute( new UnselectLaneForLaneOffsetCommand( this, this.lane ) );
 
 		}
 	}

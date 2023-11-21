@@ -6,8 +6,6 @@ import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Group, Mesh, Object3D } from 'three';
 import { GameObject } from '../core/game-object';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,24 +16,29 @@ export class SceneService {
 	public static renderer: THREE.WebGLRenderer;
 	public static changed = new EventEmitter();
 
-	private static editorLayer: Group;
-	private static mainLayer: Group;
-	private static toolLayer: Group;
+	private static editorLayer: Group = new Group();
+	private static mainLayer: Group = new Group();
+	private static toolLayer: Group = new Group();
+
+	public static bgForClicks: THREE.Mesh;
 
 	constructor () {
 
-		SceneService.editorLayer = new Group();
 		SceneService.editorLayer.name = 'Editor';
-
-		SceneService.mainLayer = new Group();
 		SceneService.mainLayer.name = 'Main';
-
-		SceneService.toolLayer = new Group();
 		SceneService.toolLayer.name = 'Tool';
 
 		SceneService.scene.add( SceneService.editorLayer );
 		SceneService.scene.add( SceneService.mainLayer );
 		SceneService.scene.add( SceneService.toolLayer );
+
+		SceneService.bgForClicks = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
+			color: 0xFFFFFF,
+			transparent: true,
+			opacity: 0
+		} ) );
+
+		SceneService.bgForClicks.name = 'bgForClicks';
 
 	}
 
@@ -53,9 +56,11 @@ export class SceneService {
 
 		} );
 
-		raycastableObjects.push( ThreeService.bgForClicks );
+		raycastableObjects.push( this.bgForClicks );
 
-		raycastableObjects.push( TvMapInstance.map.gameObject );
+		raycastableObjects.push( this.mainLayer );
+		raycastableObjects.push( this.toolLayer );
+		raycastableObjects.push( this.editorLayer );
 
 		return raycastableObjects;
 

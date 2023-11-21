@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseControlPoint } from 'app/modules/three-js/objects/control-point';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
 import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
+import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export class RoundLine {
 
@@ -15,7 +15,7 @@ export class RoundLine {
 
 	mesh: Line;
 
-	constructor ( public points: BaseControlPoint[] ) {
+	constructor ( public points: AbstractControlPoint[] ) {
 
 		const geometry = new BufferGeometry();
 
@@ -35,7 +35,7 @@ export class RoundLine {
 
 	}
 
-	addPoint ( point: BaseControlPoint ) {
+	addPoint ( point: AbstractControlPoint ) {
 
 		this.points.push( point );
 
@@ -51,9 +51,9 @@ export class RoundLine {
 		// store lengths from one point to another for the whole spline
 		const lengths = new Array( this.points.length - 1 );
 
-		let currentPoint: BaseControlPoint = null;
+		let currentPoint: AbstractControlPoint = null;
 
-		let nextPoint: BaseControlPoint = null;
+		let nextPoint: AbstractControlPoint = null;
 
 		this.points.forEach( ( currentPoint, i ) => {
 

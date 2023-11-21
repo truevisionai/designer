@@ -3,100 +3,100 @@ import { TvLane } from "../../../modules/tv-map/models/tv-lane";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvLaneCoord } from "../../../modules/tv-map/models/tv-lane-coord";
 
-export class OnLaneStrategy extends SelectStrategy<TvLane> {
+export class SelectLaneStrategy extends SelectStrategy<TvLane> {
 
-    private lane: TvLane;
-    private selected: TvLane;
+	private lane: TvLane;
+	private selected: TvLane;
 
-    constructor () {
-        super();
-    }
+	constructor ( private hoverHighlight = true, private selectHighlight = false ) {
+		super();
+	}
 
-    onPointerDown ( pointerEventData: PointerEventData ): TvLane {
+	onPointerDown ( pointerEventData: PointerEventData ): TvLane {
 
-        // this.selected?.unselect();
+		// this.selected?.unselect();
 
-        this.selected = this.onLaneGeometry( pointerEventData );
+		this.selected = this.onLaneGeometry( pointerEventData );
 
-        // this.selected?.select();
+		// this.selected?.select();
 
-        return this.selected;
+		return this.selected;
 
-    }
+	}
 
-    onPointerMoved ( pointerEventData: PointerEventData ): TvLane {
+	onPointerMoved ( pointerEventData: PointerEventData ): TvLane {
 
-        this.lane?.unhighlight();
+		if ( this.hoverHighlight ) this.lane?.unhighlight();
 
-        this.lane = this.onLaneGeometry( pointerEventData );
+		this.lane = this.onLaneGeometry( pointerEventData );
 
-        this.lane?.highlight();
+		if ( this.hoverHighlight ) this.lane?.highlight();
 
-        return this.lane;
-    }
+		return this.lane;
+	}
 
-    onPointerUp ( pointerEventData: PointerEventData ): TvLane {
+	onPointerUp ( pointerEventData: PointerEventData ): TvLane {
 
-        return this.onLaneGeometry( pointerEventData );
+		return this.onLaneGeometry( pointerEventData );
 
-    }
+	}
 
-    dispose (): void {
+	dispose (): void {
 
-        this.lane?.unhighlight();
-        this.selected?.unselect();
+		this.lane?.unhighlight();
+		this.selected?.unselect();
 
-    }
+	}
 
 }
 
 export class LaneCoordStrategy extends SelectStrategy<TvLaneCoord> {
 
-    private lane: TvLane;
-    private selectedLane: TvLane;
+	private lane: TvLane;
+	private selectedLane: TvLane;
 
-    constructor () {
-        super();
-    }
+	constructor () {
+		super();
+	}
 
-    onPointerDown ( pointerEventData: PointerEventData ): TvLaneCoord {
+	onPointerDown ( pointerEventData: PointerEventData ): TvLaneCoord {
 
-        const laneCoord = this.onLaneCoord( pointerEventData );
+		const laneCoord = this.onLaneCoord( pointerEventData );
 
-        if ( ! laneCoord ) return;
+		if ( !laneCoord ) return;
 
-        this.selectedLane = laneCoord.lane;
+		this.selectedLane = laneCoord.lane;
 
-        return laneCoord;
+		return laneCoord;
 
-    }
+	}
 
-    onPointerMoved ( pointerEventData: PointerEventData ): TvLaneCoord {
+	onPointerMoved ( pointerEventData: PointerEventData ): TvLaneCoord {
 
-        const laneCoord = this.onLaneCoord( pointerEventData );
+		const laneCoord = this.onLaneCoord( pointerEventData );
 
-        if ( ! laneCoord ) return;
+		if ( !laneCoord ) return;
 
-        this.lane?.unhighlight();
+		this.lane?.unhighlight();
 
-        this.lane = laneCoord.lane;
+		this.lane = laneCoord.lane;
 
-        this.lane?.highlight();
+		this.lane?.highlight();
 
-        return laneCoord;
-    }
+		return laneCoord;
+	}
 
-    onPointerUp ( pointerEventData: PointerEventData ): TvLaneCoord {
+	onPointerUp ( pointerEventData: PointerEventData ): TvLaneCoord {
 
-        return this.onLaneCoord( pointerEventData );
+		return this.onLaneCoord( pointerEventData );
 
-    }
+	}
 
-    dispose (): void {
+	dispose (): void {
 
-        this.lane?.unhighlight();
-        this.selectedLane?.unselect();
+		this.lane?.unhighlight();
+		this.selectedLane?.unselect();
 
-    }
+	}
 
 }

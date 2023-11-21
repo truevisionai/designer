@@ -4,11 +4,11 @@
 
 import { SerializedField } from 'app/core/components/serialization';
 import { Vector3 } from 'three';
-import { XmlElement } from '../../../tv-map/services/open-drive-parser.service';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { XmlElement } from "../../../../importers/xml.element";
 
 export class RelativeObjectPosition extends Position {
 

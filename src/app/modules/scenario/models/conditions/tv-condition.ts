@@ -3,7 +3,7 @@
  */
 
 import { ConditionUtils } from '../../builders/condition-utils';
-import { ScenarioInstance } from '../../services/scenario-instance';
+// import { ScenarioInstance } from '../../services/scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 
 export function conditionTypeToString ( type: ConditionType ) {
@@ -79,8 +79,9 @@ export abstract class Condition {
 		return conditionTypeToString( this.conditionType );
 	}
 
-	protected get scenario () {
-		return ScenarioInstance.scenario;
+	protected get scenario (): any {
+		throw new Error( 'method not implemented' );
+		// return ScenarioInstance.scenario;
 	}
 
 	// abstract toXML (): any;

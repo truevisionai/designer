@@ -1,71 +1,42 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { BaseCommand } from 'app/commands/base-command';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { MapEvents } from 'app/events/map-events';
+// import { BaseCommand } from 'app/commands/base-command';
+// import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+// import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
-export class RemoveRoadCommand extends BaseCommand {
+// export class RemoveRoadCommand extends BaseCommand {
 
-	private connections: TvJunctionConnection[] = [];
+// 	constructor ( private road: TvRoad ) {
 
-	private readonly successorElement: TvRoadLinkChild;
-	private readonly predecessorElement: TvRoadLinkChild;
+// 		super();
 
-	constructor ( private road: TvRoad ) {
+// 	}
 
-		super();
+// 	execute (): void {
 
-		if ( this.road.isJunction ) {
+// 		this.map.removeRoad( this.road );
 
-			this.road.junctionInstance?.getConnectionsForRoad( this.road ).forEach( c => {
-				this.connections.push( c.clone() );
-			} );
+// 		this.road.spline.removeRoadSegmentByRoadId( this.road.id );
 
-		}
+// 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( this.road, true ) );
+// 	}
 
-		this.predecessorElement = this.road.predecessor;
-		this.successorElement = this.road.successor;
-	}
+// 	undo (): void {
 
-	execute (): void {
+// 		this.map.addRoad( this.road );
 
-		this.map.deleteRoad( this.road );
+// 		this.road.spline.addRoadSegment( this.road.sStart, this.road.id );
 
-	}
+// 		MapEvents.roadCreated.emit( new RoadCreatedEvent( this.road, true ) );
 
-	undo (): void {
+// 	}
 
-		this.road.show();
-		this.road.showHelpers();
+// 	redo (): void {
 
-		this.map.roads.set( this.road.id, this.road );
-		this.map.gameObject.add( this.road.gameObject );
+// 		this.execute();
 
-		if ( this.road.isJunction ) {
+// 	}
 
-			this.connections.forEach( connection => {
-				this.road.junctionInstance?.addConnection( connection );
-			} );
-
-		}
-
-		if ( !this.road.isJunction ) {
-
-			this.road.addPredecessor( this.predecessorElement );
-			this.road.addSuccessor( this.successorElement );
-
-		}
-
-	}
-
-	redo (): void {
-
-		this.execute();
-
-	}
-
-}
+// }

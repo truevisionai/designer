@@ -11,6 +11,7 @@ import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-
 import { MainFileService } from 'app/services/main-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
+import { ShortcutService } from 'app/services/shortcut.service';
 
 @Component( {
 	selector: 'app-editor',
@@ -28,6 +29,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		private editor: EditorService,
 		private oscPlayer: ScenarioDirectorService,
 		private changeDetectorRef: ChangeDetectorRef,
+		private shortcutService: ShortcutService
 	) {
 
 		TvConsole.logsChanged.subscribe( () => this.onLogsChanged() );
@@ -51,6 +53,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 	ngOnInit () {
 
 		this.mainFileService.newScene();
+		this.shortcutService.init();
 
 	}
 

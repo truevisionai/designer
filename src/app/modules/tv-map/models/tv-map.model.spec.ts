@@ -3,7 +3,7 @@
  */
 
 import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvMapInstance } from '../services/tv-map-source-file';
+import { TvMapInstance } from '../services/tv-map-instance';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvLaneSection } from './tv-lane-section';

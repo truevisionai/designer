@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { KeyboardInput } from 'app/core/input';
+import { KeyboardEvents } from 'app/events/keyboard-events';
 import { AppService } from 'app/services/app.service';
 import { Debug } from 'app/core/utils/debug';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
@@ -13,9 +13,10 @@ import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
-import { AnyControlPoint, NewDistanceNode } from '../../modules/three-js/objects/control-point';
+import { NewDistanceNode } from '../../modules/three-js/objects/control-point';
 import { SceneService } from '../../services/scene.service';
 import { IShapeEditor } from './i-shape-editor';
+import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
 
@@ -301,7 +302,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		// if ( e.object != null && e.object.userData.is_selectable == true ) return;
 
-		if ( e.button == MouseButton.LEFT && KeyboardInput.isShiftKeyDown && e.point != null ) {
+		if ( e.button == MouseButton.LEFT && KeyboardEvents.isShiftKeyDown && e.point != null ) {
 
 			this.addControlPoint( e.point );
 

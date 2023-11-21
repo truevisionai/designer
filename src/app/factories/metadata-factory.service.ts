@@ -13,7 +13,6 @@ import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
-import { AppService } from '../services/app.service';
 import { RoadStyle } from "../core/asset/road.style";
 
 @Injectable( {
@@ -21,10 +20,11 @@ import { RoadStyle } from "../core/asset/road.style";
 } )
 export class MetadataFactory {
 
+	private static fileService: FileService;
 
-	private static get fileService (): FileService {
+	constructor ( private fileService: FileService ) {
 
-		return AppService.file;
+		MetadataFactory.fileService = fileService;
 
 	}
 

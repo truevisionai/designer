@@ -4,9 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, MatSnackBarVerticalPosition, SimpleSnackBar } from '@angular/material/snack-bar';
-
-import { AnalyticsService } from 'app/core/analytics/analytics.service';
-import { SentryService } from 'app/core/analytics/sentry.service';
+// import { SentryService } from 'app/core/analytics/sentry.service';
 import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
@@ -16,12 +14,10 @@ export class SnackBar {
 
 	private static snackBar: MatSnackBar;
 	private static verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-	private static analytics: AnalyticsService;
 
-	constructor ( private snackBar: MatSnackBar, private analytics: AnalyticsService ) {
+	constructor ( private snackBar: MatSnackBar ) {
 
 		SnackBar.snackBar = snackBar;
-		SnackBar.analytics = analytics;
 
 	}
 
@@ -66,7 +62,7 @@ export class SnackBar {
 
 		TvConsole.error( message );
 
-		SentryService.captureMessage( 'SnackBar: ' + message, 'error' );
+		// SentryService.captureMessage( 'SnackBar: ' + message, 'error' );
 
 		return this.snackBar.open( message, action, {
 			duration: duration,

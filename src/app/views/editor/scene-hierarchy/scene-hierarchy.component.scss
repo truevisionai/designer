@@ -1,11 +1,27 @@
 :root {
-	padding-top: 40px;
+	// padding-top: 40px;
 }
 
 .object-inspector-container {
-	padding-top: 40px;
+	// padding-top: 40px;
 }
 
 .mat-tree-node {
 	min-height: 36px;
+}
+
+.mat-tree-node,
+.mat-nested-tree-node {
+	font-weight: 400;
+	font-size: 12px !important;
+}
+
+.mat-icon-button {
+	padding: 0;
+	min-width: 0;
+	width: 36px;
+	height: 36px;
+	flex-shrink: 0;
+	line-height: 40px;
+	border-radius: 50%;
 }

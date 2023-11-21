@@ -10,7 +10,7 @@ import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { CommandHistory } from 'app/services/command-history';
 import { EntityManager } from 'app/managers/entity-manager';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
-import { DynamicFileInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { DynamicFileInspectorComponent, DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
@@ -27,6 +27,7 @@ import { IComponent } from '../core/game-object';
 import { AppInspector } from '../core/inspector';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
 import { RoadStyle } from "../core/asset/road.style";
+import { PropManager } from 'app/managers/prop-manager';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -77,7 +78,7 @@ export class InspectorFactoryService {
 
 	}
 
-	static getInspectorByExtension ( extension ): Type<IComponent> {
+	static getInspectorByExtension ( extension: string ): Type<IComponent> {
 
 		let inspector: Type<IComponent>;
 
@@ -104,7 +105,7 @@ export class InspectorFactoryService {
 				break;
 
 			case 'glb':
-				inspector = PropModelInspectorComponent;
+				inspector = DynamicInspectorComponent;
 				break;
 
 			case 'png':
@@ -193,6 +194,8 @@ export class InspectorFactoryService {
 			};
 
 		} else if ( metadata.importer === MetaImporter.MODEL ) {
+
+			PropManager.setProp( metadata );
 
 			return metadata;
 

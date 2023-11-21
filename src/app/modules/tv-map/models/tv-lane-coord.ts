@@ -2,123 +2,65 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 import { Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-source-file';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvPosTheta } from './tv-pos-theta';
-
-export class TvCoord {
-
-	constructor (
-		public x,
-		public y,
-		public z,
-		public h,
-		public p,
-		public r
-	) {
-	}
-
-	static getDist2d ( a: TvCoord, b: TvCoord ) {
-		const dx = a.x - b.x;
-		const dy = a.y - b.y;
-		return Math.sqrt( dx * dx + dy * dy );
-	}
-
-	static getDist3d ( a: TvCoord, b: TvCoord ) {
-		const dx = a.x - b.x;
-		const dy = a.y - b.y;
-		const dz = a.z - b.z;
-		return Math.sqrt( dx * dx + dy * dy + dz * dz );
-	}
-}
+import { TvContactPoint } from './tv-common';
+import { Maths } from 'app/utils/maths';
 
 export class TvLaneCoord {
 
-	// total 4 properties
-	// road-id
-	// lane-section-id
-	// s
-	// lane-Id
-	// lane-offset
-
-	constructor ( public roadId: number, public sectionId: number, public laneId: number, public s: number, public offset: number ) {
-
-	}
-
-	init () {
+	constructor (
+		public road: TvRoad,
+		public laneSection: TvLaneSection,
+		public lane: TvLane,
+		public s: number,
+		public offset: number
+	) {
 
 	}
 
-	addTrackCoord ( value: TvRoadCoord ) {
+	get contact (): TvContactPoint {
 
+		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+
+		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+
+		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}
 
-	get road (): TvRoad {
-		return TvMapInstance.map.getRoadById( this.roadId );
+	get roadId (): number {
+		return this.road?.id;
 	}
 
-	get laneSection (): TvLaneSection {
-		return this.road?.getLaneSectionById( this.sectionId );
+	get laneSectionId (): number {
+		return this.laneSection?.id;
 	}
 
-	get lane (): TvLane {
-		return this.laneSection?.getLaneById( this.laneId );
+	get laneId (): number {
+		return this.lane?.id;
 	}
 
 	get posTheta () {
-		// TODO: check if this is correct
-		// return this.road?.getRoadCoordAt( this.s, 0 );
-		const posTheta = new TvPosTheta();
-		TvMapQueries.getLaneStartPosition( this.roadId, this.laneId, this.s, this.offset, posTheta )
-		return posTheta;
+		return this.road.getLaneStartPosition( this.lane, this.s, this.offset );
 	}
 
 	get position (): Vector3 {
 		return this.posTheta.toVector3();
 	}
+
+	get direction (): Vector3 {
+		return this.posTheta.toDirectionVector();
+	}
+
+	get laneDirection (): Vector3 {
+		if ( this.lane.inRoadDirection ) {
+			return this.direction;
+		} else {
+			return this.direction.negate();
+		}
+	}
+
 }
 
-export class TvRoadCoord {
-
-	constructor ( public roadId, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {
-
-	}
-
-	get road (): TvRoad {
-		return TvMapInstance.map.getRoadById( this.roadId );
-	}
-
-	get position (): Vector3 {
-		return this.toPosTheta().toVector3();
-	}
-
-	get orientation (): Orientation {
-
-		let h = this.h;
-
-		if ( this.t > 0 ) h += Math.PI;
-
-		return new Orientation( h, this.p, this.r );
-	}
-
-	init () {
-	}
-
-	add ( value: TvRoadCoord ) {
-	}
-
-	toPosTheta () {
-		return this.road?.getRoadCoordAt( this.s, this.t );
-	}
-}
-
-export class TvGeoCoord {
-
-	constructor ( lat, long, z, h, p, r ) {
-	}
-}

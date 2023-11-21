@@ -1,48 +1,48 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
-import { TvSurface } from '../../modules/tv-map/models/tv-surface.model';
-import { BaseCommand } from '../../commands/base-command';
-import { SurfaceTool } from './surface-tool';
+// import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
+// import { TvSurface } from '../../modules/tv-map/models/tv-surface.model';
+// import { BaseCommand } from '../../commands/base-command';
+// import { SurfaceTool } from './surface-tool';
 
-export class SelectSurfacePointCommand extends BaseCommand {
+// export class SelectSurfacePointCommand extends BaseCommand {
 
-	private readonly oldPoint: DynamicControlPoint<TvSurface>;
+// 	private readonly oldPoint: DynamicControlPoint<TvSurface>;
 
-	constructor ( private tool: SurfaceTool, private newPoint: DynamicControlPoint<TvSurface> ) {
+// 	constructor ( private tool: SurfaceTool, private newPoint: DynamicControlPoint<TvSurface> ) {
 
-		super();
+// 		super();
 
-		this.oldPoint = this.tool.point;
+// 		this.oldPoint = this.tool.point;
 
-	}
+// 	}
 
-	execute () {
+// 	execute () {
 
-		this.oldPoint?.unselect();
+// 		this.oldPoint?.unselect();
 
-		this.tool.point = this.newPoint;
+// 		this.tool.point = this.newPoint;
 
-		this.newPoint?.select();
+// 		this.newPoint?.select();
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.newPoint?.unselect();
+// 		this.newPoint?.unselect();
 
-		this.tool.point = this.oldPoint;
+// 		this.tool.point = this.oldPoint;
 
-		this.oldPoint?.select();
+// 		this.oldPoint?.select();
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
+// 	}
 
-}
+// }

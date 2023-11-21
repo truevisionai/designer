@@ -10,57 +10,40 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { CreatePropPointCommand } from './create-prop-point-command';
-import { SceneService } from 'app/services/scene.service';
-import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
-import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { Subscription } from 'rxjs';
 import { Object3D } from 'three';
-import { FreeMovingStrategy, AnyLaneMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
-import { MovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
-import { Position } from 'app/modules/scenario/models/position';
+import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
+import { AnyLaneMovingStrategy } from "app/core/snapping/move-strategies/any-lane.moving.strategy";
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { PropPointService } from './prop-point.service';
+import { AppInspector } from 'app/core/inspector';
+import { AddObjectCommand } from "../../commands/add-object-command";
+import { SelectObjectCommand } from "../../commands/select-object-command";
 
-/**
- * Prop point tool
- *
- * Steps
- * 1. Select a prop (fbx, gltf) from library browser
- * 2. SHIFT + LEFT-CLICK to drop it in the scene
- *
- * Requires an instance of prop to be able to drop them in the scene
- *
- *
- */
-export class PropPointTool extends BaseTool implements IToolWithPoint {
+export class PropPointTool extends BaseTool {
 
 	public name: string = 'PropPointTool';
+
 	public toolType = ToolType.PropPoint;
 
-	public points: DynamicControlPoint<PropInstance>[] = [];
+	private propMoved: boolean;
 
-	private point: DynamicControlPoint<PropInstance>;
-	private selectStrategy: SelectStrategy<DynamicControlPoint<PropInstance>>;
+	get selectedProp (): PropInstance {
+		return this.tool.selection.getLastSelected<PropInstance>( PropInstance.name );
+	}
 
-	private subscriptions: Subscription[] = [];
+	get selectedPoint (): DynamicControlPoint<PropInstance> {
+		return this.selectedProp ? this.tool.getPoint( this.selectedProp ) : null;
+	}
 
-	private moveStrategies: MovingStrategy[] = [];
+	private debug: boolean = true;
 
-	constructor () {
+	constructor ( private tool: PropPointService ) {
 
 		super();
-
-		this.selectStrategy = new ControlPointStrategy();
-
-		this.moveStrategies.push( new AnyLaneMovingStrategy( TvContactPoint.END ) );
-		this.moveStrategies.push( new FreeMovingStrategy() );
-
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
@@ -80,7 +63,21 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 	init (): void {
 
-		super.init();
+		this.tool.base.reset();
+
+		this.tool.selection.reset();
+
+		this.tool.selection.registerStrategy( PropInstance.name, new ControlPointStrategy( {
+			higlightOnHover: true,
+			higlightOnSelect: false,
+			returnTarget: true
+		} ) );
+
+		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
+
+		this.tool.base.addMovingStrategy( new AnyLaneMovingStrategy( TvContactPoint.END ) );
+
+		this.tool.base.setHint( 'use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
@@ -88,21 +85,7 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		super.enable();
 
-		this.clearScene();
-
-		this.map.props.forEach( ( prop: PropInstance ) => {
-
-			const point = new DynamicControlPoint( prop, prop.getPosition().clone() );
-
-			this.points.push( point );
-
-			SceneService.addToMain( point )
-
-			const subscription = prop.updated.subscribe( prop => this.onPropUpdated( point, prop ) );
-
-			this.subscriptions.push( subscription )
-
-		} );
+		this.tool.showAll();
 
 	}
 
@@ -110,136 +93,181 @@ export class PropPointTool extends BaseTool implements IToolWithPoint {
 
 		super.disable();
 
-		this.clearScene();
+		this.tool.base.reset();
 
-	}
-
-	clearScene (): void {
-
-		this.points.forEach( point => SceneService.removeFromMain( point ) );
-
-		this.points = [];
-
-		this.subscriptions.forEach( subscription => subscription.unsubscribe() );
-
-		this.subscriptions = [];
-
-	}
-
-	setPoint ( value: ISelectable ): void {
-
-		this.point = value as DynamicControlPoint<PropInstance>;
-
-	}
-
-	getPoint (): ISelectable {
-
-		return this.point;
+		this.tool.removeAll();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		const point = this.selectStrategy.onPointerDown( e );
+		this.tool.selection.handleSelection( e );
 
-		if ( point ) {
-
-			if ( point == this.point ) return;
-
-			const command = new SelectPointCommand( this, point, DynamicInspectorComponent, point.mainObject );
-
-			CommandHistory.execute( command );
-
-			this.setProp( point.mainObject );
-
-			this.setHint( 'Drag control point using LEFT CLICK is down' );
-
-		} else if ( this.point ) {
-
-			CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
-
-		}
-
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
 
-		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
+		if ( !this.prop ) this.tool.base.setHint( 'Select a prop from the project browser' );
 
 		if ( !this.prop ) return;
 
-		const point = new DynamicControlPoint( this.prop, e.point );
+		const prop = this.tool.createPropInstance( this.prop, e.point );
 
-		CommandHistory.execute( new CreatePropPointCommand( this, this.prop, point ) );
+		const addCommand = new AddObjectCommand( prop );
 
-		this.setHint( 'Add more control points or drag control points to modify' );
+		const selectCommand = new SelectObjectCommand( prop, this.selectedProp );
+
+		CommandHistory.executeMany( addCommand, selectCommand );
+
+		this.tool.base.setHint( 'Add more control points or drag control points to modify' );
 
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.selectStrategy.onPointerMoved( e );
+		this.tool.base.highlight( e );
 
-		if ( !this.point?.isSelected ) return;
+		if ( !this.selectedPoint ) return;
+
+		if ( !this.selectedPoint.isSelected ) return;
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = this.getMovedPosition( e );
+		const position = this.tool.base.move( e );
 
-		this.point.copyPosition( position.position )
+		this.selectedProp.copyPosition( position.position );
 
-		this.point.mainObject.copyPosition( position.position );
+		this.tool.updatePropInstance( this.selectedProp );
 
+		this.selectedPoint.mainObject.copyPosition( position.position );
+
+		this.propMoved = true;
 	}
 
 	onPointerUp ( e: PointerEventData ): void {
 
-		if ( !this.point?.isSelected ) return;
+		if ( !this.propMoved ) return;
+
+		if ( !this.selectedProp ) return;
 
 		if ( !this.pointerDownAt ) return;
 
-		const position = this.getMovedPosition( e );
+		const position = this.tool.base.move( e );
 
 		if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		CommandHistory.executeMany(
+		const updateCommand = new UpdatePositionCommand( this.selectedProp, position.position, this.pointerDownAt );
 
-			new UpdatePositionCommand( this.point.mainObject, position.position, this.pointerDownAt ),
+		CommandHistory.executeMany( updateCommand );
 
-			new CopyPositionCommand( this.point, position.position, this.pointerDownAt )
+		this.propMoved = false;
 
-		);
+		this.tool.base.setHint( 'Use Inspector to modify prop properties' );
+	}
 
-		this.setHint( 'Use Inspector to modify prop properties' );
+	onObjectSelected ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectSelected', object );
+
+		if ( object instanceof DynamicControlPoint ) {
+
+			this.onPropSelected( object.mainObject );
+
+		} else if ( object instanceof PropInstance ) {
+
+			this.onPropSelected( object );
+
+		}
 
 	}
 
-	private setProp ( mainObject: PropInstance ) {
+	onPropSelected ( prop: PropInstance ): void {
 
-		if ( !mainObject ) return;
+		if ( this.selectedProp ) this.onPropUnselected( this.selectedProp );
 
-		const metadata = AssetDatabase.getMetadata( mainObject?.guid );
+		this.tool.getPoint( prop )?.select();
 
-		if ( metadata ) PropManager.setProp( metadata );
+		AppInspector.setInspector( DynamicInspectorComponent, prop );
 
-	}
-
-	private onPropUpdated ( point: DynamicControlPoint<PropInstance>, prop: PropInstance ): void {
-
-		point.copyPosition( prop.getPosition() );
+		this.tool.base.setHint( 'Drag control point using LEFT CLICK is down' );
 
 	}
 
-	private getMovedPosition ( event: PointerEventData ): Position {
+	onObjectUnselected ( object: any ): void {
 
-		for ( let i = 0; i < this.moveStrategies.length; i++ ) {
+		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
-			const position = this.moveStrategies[ i ].getPosition( event );
+		if ( object instanceof DynamicControlPoint ) {
 
-			if ( position ) return position;
+			this.onPropUnselected( object.mainObject );
+
+		} else if ( object instanceof PropInstance ) {
+
+			this.onPropUnselected( object );
+
+		}
+
+	}
+
+	onPropUnselected ( prop: PropInstance ): void {
+
+		this.tool.getPoint( prop )?.unselect();
+
+		AppInspector.setInspector( null, null );
+
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectAdded', object );
+
+		if ( object instanceof PropInstance ) {
+
+			this.tool.addPropInstance( object );
+
+			const point = this.tool.createControlPoint( object, object.getPosition() );
+
+			this.tool.addPoint( point );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.addPropInstance( object.mainObject );
+
+			this.tool.addPoint( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectRemoved', object );
+
+		if ( object instanceof PropInstance ) {
+
+			this.tool.removePropInstance( object );
+
+		} else if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.removePropInstance( object.mainObject );
+
+		}
+
+	}
+
+	onObjectUpdated ( object: any ): void {
+
+		if ( this.debug ) console.log( 'onObjectUpdated', object );
+
+		if ( object instanceof DynamicControlPoint ) {
+
+			this.tool.updatePropInstance( object.mainObject );
+
+		} else if ( object instanceof PropInstance ) {
+
+			this.tool.updatePropInstance( object );
 
 		}
 

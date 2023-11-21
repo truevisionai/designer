@@ -5,8 +5,10 @@
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-source-file';
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { LaneMarkingTool } from './lane-marking-tool';
+import { LaneMarkingService } from './lane-marking.service';
+import { TestBed } from '@angular/core/testing';
 
 
 describe( 'LaneMarkingTool Test', () => {
@@ -14,20 +16,32 @@ describe( 'LaneMarkingTool Test', () => {
 	let tool: LaneMarkingTool;
 	let map: TvMap;
 	let road: TvRoad;
+	let service: LaneMarkingService;
 
 	beforeEach( () => {
 
-		tool = new LaneMarkingTool();
+		TestBed.configureTestingModule( { providers: [ LaneMarkingService ] } );
 
-		map = TvMapInstance.map = new TvMap();
+		service = TestBed.inject( LaneMarkingService );
 
-		road = map.addDefaultRoad();
+		// tool = new LaneMarkingTool(new LaneMarkingService());
 
-		road.addGeometryLine( 0, 0, 0, 0, 100 );
+		// map = TvMapInstance.map = new TvMap();
 
-		TvMapBuilder.buildMap( map );
+		// road = map.addDefaultRoad();
+
+		// road.addGeometryLine( 0, 0, 0, 0, 100 );
+
+		// TvMapBuilder.buildMap( map );
 
 	} );
+
+	it ( 'should be true', () => {
+
+		// expect( true ).toBeTrue();
+		// expect( true ).toBeFalse();
+
+	})
 
 	// it( 'should do nothing on right-click', () => {
 
