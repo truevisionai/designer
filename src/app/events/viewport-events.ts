@@ -25,19 +25,11 @@ export class ViewportEvents {
 	@Output() select = new EventEmitter<BaseEventData>();
 	@Output() deSelect = new EventEmitter<BaseEventData>();
 
+	static instance: any;
 
 	constructor () {
 
-		// this.pointerClicked.subscribe( e => Debug.log( 'pointerClicked', e ) );
-		// this.pointerMoved.subscribe( e => Debug.log( 'pointerMoved', e ) );
-		// this.pointerUp.subscribe( e => Debug.log( 'pointerUp', e ) );
-		// this.pointerDown.subscribe( e => Debug.log( 'pointerDown', e ) );
-		// this.pointerEnter.subscribe( e => Debug.log( 'pointerEnter', e ) );
-		// this.pointerExit.subscribe( e => Debug.log( 'pointerExit', e ) );
-		// this.select.subscribe( e => Debug.log( 'select', e ) );
-		// this.deSelect.subscribe( e => Debug.log( 'deSelect', e ) );
-		// this.beginDrag.subscribe( e => Debug.log( 'beginDrag', e ) );
-		// this.drag.subscribe( e => Debug.log( 'drag', e ) );
+		ViewportEvents.instance = this;
 
 	}
 }
