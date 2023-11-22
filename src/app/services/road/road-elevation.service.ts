@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from '../base.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
 import { MapService } from '../map.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadService } from './road.service';
 import { Vector3 } from 'three';
-import { CreateElevationNodeCommand } from 'app/tools/road-elevation/create-elevation-node-command';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { SceneService } from '../scene.service';
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
@@ -14,7 +12,7 @@ import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadElevationService extends BaseService {
+export class RoadElevationService {
 
 	private static nodes: RoadElevationNode[] = [];
 
@@ -23,7 +21,6 @@ export class RoadElevationService extends BaseService {
 		private mapService: MapService,
 		private roadService: RoadService,
 	) {
-		super();
 	}
 
 	showElevationNodes ( road: TvRoad ) {

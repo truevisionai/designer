@@ -17,7 +17,7 @@ import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadService extends BaseService {
+export class RoadService {
 
 	private static nodes: RoadNode[] = [];
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
@@ -27,9 +27,8 @@ export class RoadService extends BaseService {
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
 		private splineService: SplineService,
+		private baseService: BaseService,
 	) {
-
-		super();
 	}
 
 	hideAllRoadNodes () {
@@ -156,7 +155,7 @@ export class RoadService extends BaseService {
 
 			this.updateRoadNodes( road );
 
-			super.rebuildRoad( road );
+			this.baseService.rebuildRoad( road );
 
 		} );
 

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadSplineService } from '../road/road-spline.service';
-import { BaseService } from '../base.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { BoxGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Shape, Vector3 } from 'three';
@@ -19,14 +18,12 @@ import { MapService } from '../map.service';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverService extends BaseService {
+export class ManeuverService {
 
 	private static maneuverMeshes: Mesh[] = [];
 	private static entryExitMeshes: Object3D[] = [];
 
-	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) {
-		super();
-	}
+	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) { }
 
 	createConnectingRoad ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ) {
 

@@ -9,18 +9,22 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector3 } from 'three';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { BaseService } from '../base.service';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { SplineService } from '../spline.service';
+import { BaseService } from '../base.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadSplineService extends BaseService {
+export class RoadSplineService {
 
-	constructor ( private mapService: MapService, public spline: SplineService ) {
-		super();
+	constructor (
+		private mapService: MapService,
+		public spline: SplineService,
+		private baseService: BaseService,
+	) {
+
 	}
 
 	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ) {
@@ -37,7 +41,7 @@ export class RoadSplineService extends BaseService {
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			if ( rebuild ) this.rebuildRoad( road );
+			if ( rebuild ) this.baseService.rebuildRoad( road );
 
 		} );
 

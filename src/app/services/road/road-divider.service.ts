@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { BaseService } from '../base.service';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
     providedIn: 'root'
 } )
-export class RoadDividerService extends BaseService {
+export class RoadDividerService {
 
     divideRoadAt ( road: TvRoad, s: number ) {
 
