@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Mesh, Vector3 } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';

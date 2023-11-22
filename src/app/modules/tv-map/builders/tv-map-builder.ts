@@ -63,7 +63,7 @@ export class TvMapBuilder {
 	 */
 	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): any {
 
-		if ( road.isJunction ) return;
+		// if ( road.isJunction ) return;
 
 		road.gameObject = null;
 		road.gameObject = new GameObject( 'Road:' + road.id );

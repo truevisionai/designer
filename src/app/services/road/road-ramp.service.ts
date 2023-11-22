@@ -3,7 +3,7 @@ import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';

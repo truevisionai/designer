@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
-import { TvJunction } from "app/modules/tv-map/models/tv-junction";
+import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";

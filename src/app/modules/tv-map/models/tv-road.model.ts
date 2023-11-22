@@ -22,7 +22,7 @@ import {
 } from './tv-common';
 import { TvElevation } from './tv-elevation';
 import { TvElevationProfile } from './tv-elevation-profile';
-import { TvJunction } from './tv-junction';
+import { TvJunction } from './junctions/tv-junction';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';

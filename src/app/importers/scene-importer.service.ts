@@ -38,7 +38,7 @@ import {
 	TvUserData
 } from 'app/modules/tv-map/models/tv-common';
 import { TvControllerControl } from 'app/modules/tv-map/models/tv-controller';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
 import { TvJunctionController } from 'app/modules/tv-map/models/tv-junction-controller';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';

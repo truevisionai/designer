@@ -14,7 +14,7 @@ import { SceneService } from 'app/services/scene.service';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
@@ -23,13 +23,6 @@ export class RoadRampTool extends BaseTool {
 	name: string = 'RoadRampTool';
 
 	toolType: ToolType = ToolType.RoadRampTool;
-
-	// lane: TvLane;
-	// start = new Vector3;
-	// end = new Vector3();
-	// posTheta: TvPosTheta;
-
-	// private laneStrategy: SelectStrategy<TvLaneCoord>;
 
 	private startCoord: TvLaneCoord | Vector3;
 	private endCoord: TvLaneCoord | Vector3;
@@ -65,9 +58,24 @@ export class RoadRampTool extends BaseTool {
 
 		this.tool.base.reset();
 
+		if ( this.startLine ) {
+
+			SceneService.removeFromTool( this.startLine );
+
+			this.startLine = null;
+
+		}
+
+		if ( this.referenceLine ) {
+
+			SceneService.removeFromTool( this.referenceLine );
+
+			this.referenceLine = null;
+
+		}
 	}
 
-	onPointerDownSelect ( e: PointerEventData ): void {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
 		this.tool.base.handleCreation( e, ( position ) => {
 

@@ -4,8 +4,8 @@
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneType, TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/tv-virtual-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';

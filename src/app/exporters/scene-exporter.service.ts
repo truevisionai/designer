@@ -12,7 +12,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';

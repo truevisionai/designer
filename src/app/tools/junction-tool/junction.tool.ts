@@ -13,7 +13,7 @@ import { JunctionNode } from 'app/services/junction/junction-node.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { SceneService } from 'app/services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { JunctionFactory } from 'app/factories/junction.factory';

@@ -10,9 +10,9 @@ import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geomet
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
 import { TvGeometryType, TvLaneSide, TvUserData } from '../models/tv-common';
-import { TvJunction } from '../models/tv-junction';
-import { TvVirtualJunction } from '../models/tv-virtual-junction';
-import { JunctionType } from '../models/JunctionType';
+import { TvJunction } from '../models/junctions/tv-junction';
+import { TvVirtualJunction } from '../models/junctions/tv-virtual-junction';
+import { TvJunctionType } from '../models/junctions/tv-junction-type';
 import { TvJunctionConnection } from '../models/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
@@ -1010,15 +1010,15 @@ export class OpenDriveExporter {
 			controller: []
 		};
 
-		if ( junction.type == JunctionType.VIRTUAL ) {
+		if ( junction.type == TvJunctionType.VIRTUAL ) {
 
 			nodeJunction = this.writeVirtualJunction( junction as TvVirtualJunction );
 
-		} else if ( junction.type == JunctionType.DEFAULT ) {
+		} else if ( junction.type == TvJunctionType.DEFAULT ) {
 
 			nodeJunction = this.writeDefaultJunction( junction );
 
-		} else if ( junction.type == JunctionType.DIRECT ) {
+		} else if ( junction.type == TvJunctionType.DIRECT ) {
 
 			console.error( 'Unknown junction type: ' + junction.type );
 

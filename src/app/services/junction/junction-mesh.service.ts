@@ -5,7 +5,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 
 @Injectable( {
 	providedIn: 'root'

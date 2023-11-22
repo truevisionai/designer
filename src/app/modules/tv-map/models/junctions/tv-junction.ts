@@ -3,12 +3,12 @@
  */
 
 import { Mesh, Vector3 } from 'three';
-import { Maths } from '../../../utils/maths';
-import { TvJunctionConnection } from './tv-junction-connection';
-import { TvJunctionController } from './tv-junction-controller';
-import { TvJunctionPriority } from './tv-junction-priority';
-import { TvRoad } from './tv-road.model';
-import { JunctionType } from './JunctionType';
+import { Maths } from '../../../../utils/maths';
+import { TvJunctionConnection } from '../tv-junction-connection';
+import { TvJunctionController } from '../tv-junction-controller';
+import { TvJunctionPriority } from '../tv-junction-priority';
+import { TvRoad } from '../tv-road.model';
+import { TvJunctionType } from './tv-junction-type';
 
 export class TvJunction {
 
@@ -19,7 +19,7 @@ export class TvJunction {
 	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
 	public position?: Vector3;
-	public type: JunctionType = JunctionType.DEFAULT;
+	public type: TvJunctionType = TvJunctionType.DEFAULT;
 	public mesh: Mesh;
 
 	constructor ( name: string, id: number ) {

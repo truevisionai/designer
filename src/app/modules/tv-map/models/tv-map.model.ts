@@ -10,7 +10,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
 import { TvController } from './tv-controller';
-import { TvJunction } from './tv-junction';
+import { TvJunction } from './junctions/tv-junction';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';

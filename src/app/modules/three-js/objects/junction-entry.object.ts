@@ -9,7 +9,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Color, PointsMaterial, Vector3 } from 'three';
-import { TvJunction } from '../../tv-map/models/tv-junction';
+import { TvJunction } from '../../tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from '../../tv-map/models/tv-junction-connection';
 import { TvLane } from '../../tv-map/models/tv-lane';
 import { TvMapInstance } from '../../tv-map/services/tv-map-instance';

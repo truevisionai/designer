@@ -1,9 +1,13 @@
-import { TvOrientation } from './tv-common';
-import { JunctionType } from './JunctionType';
+import { TvOrientation } from '../tv-common';
+import { TvJunctionType } from './tv-junction-type';
 import { TvJunction } from './tv-junction';
-import { TvRoad } from './tv-road.model';
+import { TvRoad } from '../tv-road.model';
 
 /**
+
+Virtual junctions are not designed for real world traffic situations.
+Their only use case are driveways that lead to parking lots or residential estates.
+
 Virtual junctions are junctions that describe connections within a road.
 Virtual junctions enable to create branches from a road without the need to
 interrupt the geometry of the road.
@@ -28,7 +32,7 @@ Rules
  */
 export class TvVirtualJunction extends TvJunction {
 
-	public type: JunctionType = JunctionType.VIRTUAL;
+	public type: TvJunctionType = TvJunctionType.VIRTUAL;
 
 	public mainRoad: TvRoad;
 

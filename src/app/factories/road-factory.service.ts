@@ -13,7 +13,7 @@ import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector2, Vector3 } from 'three';
 import { JunctionEntryObject } from '../modules/three-js/objects/junction-entry.object';
 import { RoadControlPoint } from '../modules/three-js/objects/road-control-point';
-import { TvJunction } from '../modules/tv-map/models/tv-junction';
+import { TvJunction } from '../modules/tv-map/models/junctions/tv-junction';
 import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../modules/tv-map/queries/tv-map-queries';
 import { SceneService } from '../services/scene.service';

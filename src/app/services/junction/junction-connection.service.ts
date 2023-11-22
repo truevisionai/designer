@@ -13,7 +13,7 @@ import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 import { MapService } from '../map.service';
 import { SceneService } from '../scene.service';
 import { SplineService } from '../spline.service';
-import { TvJunction } from 'app/modules/tv-map/models/tv-junction';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 

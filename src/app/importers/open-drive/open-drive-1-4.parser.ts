@@ -23,7 +23,7 @@ import {
 	TvUserData
 } from '../../modules/tv-map/models/tv-common';
 import { TvController, TvControllerControl } from '../../modules/tv-map/models/tv-controller';
-import { TvJunction } from '../../modules/tv-map/models/tv-junction';
+import { TvJunction } from '../../modules/tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from '../../modules/tv-map/models/tv-junction-connection';
 import { TvJunctionController } from '../../modules/tv-map/models/tv-junction-controller';
 import { TvJunctionLaneLink } from '../../modules/tv-map/models/tv-junction-lane-link';
