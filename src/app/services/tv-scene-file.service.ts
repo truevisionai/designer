@@ -12,7 +12,7 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { FileService } from '../io/file.service';
-import { ScenarioInstance } from '../modules/scenario/services/scenario-instance';
+import { ScenarioService } from '../modules/scenario/services/scenario.service';
 import { CommandHistory } from './command-history';
 import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SceneImporterService } from '../importers/scene-importer.service';
@@ -32,6 +32,7 @@ export class TvSceneFileService {
 		public threeService: ThreeService,
 		public electronService: TvElectronService,
 		private dialogService: DialogService,
+		private scenarioService: ScenarioService,
 	) {
 	}
 
@@ -52,11 +53,11 @@ export class TvSceneFileService {
 	}
 
 	private get scenario () {
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 	}
 
 	private set scenario ( value ) {
-		ScenarioInstance.scenario = value;
+		ScenarioService.scenario = value;
 	}
 
 	newScene ( map?: TvMap ) {

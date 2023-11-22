@@ -1,4 +1,4 @@
-import { ScenarioInstance } from '../services/scenario-instance';
+import { ScenarioService } from '../services/scenario.service';
 
 export class ParameterRef {
 
@@ -27,7 +27,7 @@ export class ParameterRef {
 		if ( this.isLiteral() ) {
 			value = this.referenceText;
 		} else if ( this.isParameter() ) {
-			value = ScenarioInstance.getGlobalParameterValue( this.referenceText );
+			value = ScenarioService.getGlobalParameterValue( this.referenceText );
 			if ( value === null || value === undefined ) {
 				throw new Error( `Parameter '${ this.referenceText.substring( 1 ) }' is not defined` );
 			}
@@ -119,7 +119,7 @@ export class ParameterRef {
 
 		// Replace parameters with their values
 		expr = expr.replace( /\$([A-Za-z_][A-Za-z0-9_]*)/g, ( match, p1 ) => {
-			const value = ScenarioInstance.getGlobalParameterValue( match );
+			const value = ScenarioService.getGlobalParameterValue( match );
 			if ( value === null || value === undefined ) {
 				throw new Error( `Parameter '${ p1 }' is not defined in the expression` );
 			}

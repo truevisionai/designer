@@ -9,7 +9,7 @@ import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
@@ -77,7 +77,7 @@ export class ExporterService {
 
 		const scenarioExporter = new OpenScenarioExporter();
 
-		const contents = scenarioExporter.getOutputString( ScenarioInstance.scenario );
+		const contents = scenarioExporter.getOutputString( ScenarioService.scenario );
 
 		const directory = this.fileService.projectFolder;
 

@@ -12,7 +12,7 @@ import { PrivateAction } from '../../models/private-action';
 import { TvAction } from '../../models/tv-action';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
-import { ScenarioInstance } from '../../services/scenario-instance';
+import { ScenarioService } from '../../services/scenario.service';
 
 @Component( {
 	selector: 'app-event-editor',
@@ -35,7 +35,7 @@ export class EventEditorComponent implements OnInit {
 	}
 
 	get scenario () {
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 	}
 
 	ngOnInit () {
@@ -103,7 +103,7 @@ export class EventEditorComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		ScenarioInstance.scenario.storyboard.removeEvent( this.event );
+		ScenarioService.scenario.storyboard.removeEvent( this.event );
 
 	}
 }

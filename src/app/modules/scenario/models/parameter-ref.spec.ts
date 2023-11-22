@@ -1,4 +1,4 @@
-import { ScenarioInstance } from '../services/scenario-instance';
+import { ScenarioService } from '../services/scenario.service';
 import { ParameterRef } from './parameter-ref';
 import { ParameterType } from './tv-enums';
 import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
@@ -6,10 +6,10 @@ import { Parameter, ParameterDeclaration } from './tv-parameter-declaration';
 describe( 'ParameterRef', () => {
 
 	beforeEach( () => {
-		ScenarioInstance.scenario.parameterDeclarations.splice( 0, ScenarioInstance.scenario.parameterDeclarations.length );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.integer, '5' ) ) );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.double, '2.5' ) ) );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.integer, '8' ) ) );
+		ScenarioService.scenario.parameterDeclarations.splice( 0, ScenarioService.scenario.parameterDeclarations.length );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.integer, '5' ) ) );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.double, '2.5' ) ) );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.integer, '8' ) ) );
 	} );
 
 	it( 'should identify and interpret literals string correctly', () => {
@@ -57,10 +57,10 @@ describe( 'ParameterRef', () => {
 describe( 'ParameterRef Boolean Operators', () => {
 
 	beforeEach( () => {
-		ScenarioInstance.scenario.parameterDeclarations.splice( 0, ScenarioInstance.scenario.parameterDeclarations.length );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.boolean, 'true' ) ) );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.boolean, 'false' ) ) );
-		ScenarioInstance.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.boolean, 'false' ) ) );
+		ScenarioService.scenario.parameterDeclarations.splice( 0, ScenarioService.scenario.parameterDeclarations.length );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$A', ParameterType.boolean, 'true' ) ) );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$B', ParameterType.boolean, 'false' ) ) );
+		ScenarioService.scenario.addParameterDeclaration( new ParameterDeclaration( new Parameter( '$C', ParameterType.boolean, 'false' ) ) );
 	} );
 
 	it( 'should evaluate NOT operator correctly', () => {

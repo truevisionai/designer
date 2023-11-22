@@ -22,7 +22,7 @@ import { FileHeaderComponent } from './inspectors/tv-file-header/tv-file-header.
 import { ParamatersInspectorComponent } from './inspectors/tv-paramaters-inspector/tv-paramaters-inspector.component';
 import { TrajectoriesInspectorComponent } from './inspectors/tv-trajectories-inspector/tv-trajectories-inspector.component';
 import { TrajectoryInspectorComponent } from './inspectors/tv-trajectory-inspector/tv-trajectory-inspector.component';
-import { ScenarioInstance } from './services/scenario-instance';
+import { ScenarioService } from './services/scenario.service';
 import { ActionComponent } from './views/action/action.component';
 import { FollowTrajectoryComponent } from './views/actions/follow-trajectory/follow-trajectory.component';
 import { LaneChangeComponent } from './views/actions/lane-change/lane-change.component';
@@ -146,7 +146,7 @@ import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.componen
 		// ScenarioTreeComponent,
 	],
 	providers: [
-		ScenarioInstance
+		ScenarioService
 	]
 } )
 export class ScenarioModule {

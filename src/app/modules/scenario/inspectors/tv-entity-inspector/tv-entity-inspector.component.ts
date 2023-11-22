@@ -11,7 +11,7 @@ import { PrivateAction } from '../../models/private-action';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { Maneuver } from '../../models/tv-maneuver';
-import { ScenarioInstance } from '../../services/scenario-instance';
+import { ScenarioService } from '../../services/scenario.service';
 
 @Component( {
 	selector: 'app-tv-player-inspector',
@@ -45,7 +45,7 @@ export class EntityInspector implements OnInit, IComponent {
 	};
 
 	get scenario () {
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 	}
 
 	get scenarioActions (): PrivateAction[] {

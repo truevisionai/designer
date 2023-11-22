@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 
 import { Vector3 } from 'three';
@@ -28,7 +28,7 @@ export class ImporterService {
 		private assetService: AssetLoaderService,
 		private fileService: FileService,
 		private openScenarioImporter: OpenScenarioLoader,
-		private scenarioInstance: ScenarioInstance,		// dont remove required for import
+		private scenarioInstance: ScenarioService,		// dont remove required for import
 	) {
 	}
 
@@ -111,7 +111,7 @@ export class ImporterService {
 
 	async importOpenScenario ( path: string ) {
 
-		await ScenarioInstance.importScenario( path );
+		await ScenarioService.importScenario( path );
 
 	}
 

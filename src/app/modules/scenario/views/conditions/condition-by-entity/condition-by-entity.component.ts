@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { ConditionType, TriggeringRule } from '../../../models/tv-enums';
 
@@ -25,7 +25,7 @@ export class ConditionByEntityComponent implements OnInit {
 
 	get entities () {
 
-		return [ ...ScenarioInstance.scenario.objects.keys() ];
+		return [ ...ScenarioService.scenario.objects.keys() ];
 
 	}
 

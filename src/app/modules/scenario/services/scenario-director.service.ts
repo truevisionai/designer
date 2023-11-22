@@ -19,7 +19,7 @@ import { Maneuver } from '../models/tv-maneuver';
 import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { ScenarioEvents } from './scenario-events';
-import { ScenarioInstance } from './scenario-instance';
+import { ScenarioService } from './scenario.service';
 
 export interface StoryboardEvent {
 	name: string;
@@ -56,7 +56,7 @@ export class ScenarioDirectorService {
 
 	get scenario () {
 
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 
 	}
 

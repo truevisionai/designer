@@ -7,7 +7,7 @@ import { SelectPointCommand } from 'app/commands/select-point-command';
 import { SceneService } from 'app/services/scene.service';
 import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { VehicleEntity } from '../../modules/scenario/models/entities/vehicle-entity';
 import { VehicleTool } from './vehicle-tool';
@@ -28,7 +28,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 		SceneService.addToMain( this.entity );
 
-		ScenarioInstance.scenario.addObject( this.entity );
+		ScenarioService.scenario.addObject( this.entity );
 
 		this.setInspector.execute();
 
@@ -38,7 +38,7 @@ export class AddVehicleCommand extends BaseCommand {
 
 		SceneService.removeFromMain( this.entity );
 
-		ScenarioInstance.scenario.removeObject( this.entity );
+		ScenarioService.scenario.removeObject( this.entity );
 
 		this.setInspector.undo();
 

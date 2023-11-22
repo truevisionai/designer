@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FileUtils } from 'app/io/file-utils';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
@@ -13,21 +13,26 @@ import { ScenarioBuilder } from './scenario-builder.service';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ScenarioInstance {
+export class ScenarioService {
 
-	public static changed = new EventEmitter<TvScenario>();
 	private static scenarioLoader: OpenScenarioLoader;
-	private static mapService: TvMapService;
 
-	constructor ( openScenarioImporter: OpenScenarioLoader, mapService: TvMapService ) {
-		ScenarioInstance.scenarioLoader = openScenarioImporter;
-		ScenarioInstance.mapService = mapService;
-	}
+	private static mapService: TvMapService;
 
 	private static _scenario: TvScenario = new TvScenario();
 
+	constructor ( openScenarioImporter: OpenScenarioLoader, mapService: TvMapService ) {
+
+		ScenarioService.scenarioLoader = openScenarioImporter;
+
+		ScenarioService.mapService = mapService;
+
+	}
+
 	static get scenario () {
+
 		return this._scenario;
+
 	}
 
 	static set scenario ( value ) {
@@ -35,8 +40,6 @@ export class ScenarioInstance {
 		this.scenario?.destroy();
 
 		this._scenario = value;
-
-		this.changed.emit( value );
 
 	}
 

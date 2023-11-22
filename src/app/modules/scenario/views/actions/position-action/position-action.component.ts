@@ -7,7 +7,7 @@ import { TeleportAction } from '../../../models/actions/tv-teleport-action';
 import { ScenarioEntity } from '../../../models/entities/scenario-entity';
 import { Position } from '../../../models/position';
 import { PrivateAction } from '../../../models/private-action';
-import { ScenarioInstance } from '../../../services/scenario-instance';
+import { ScenarioService } from '../../../services/scenario.service';
 
 @Component( {
 	selector: 'app-position-action',
@@ -46,7 +46,7 @@ export class PositionActionComponent {
 
 	private updateOtherEntities () {
 
-		ScenarioInstance.scenario.executeInitActions();
+		ScenarioService.scenario.executeInitActions();
 
 	}
 }

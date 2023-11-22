@@ -6,7 +6,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ScenarioEntity } from '../../models/entities/scenario-entity';
 import { Act } from '../../models/tv-act';
-import { ScenarioInstance } from '../../services/scenario-instance';
+import { ScenarioService } from '../../services/scenario.service';
 
 @Component( {
 	selector: 'app-tv-act-editor',
@@ -31,7 +31,7 @@ export class ActEditorComponent implements OnInit {
 	}
 
 	get scenario () {
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 	}
 
 	ngOnInit () {

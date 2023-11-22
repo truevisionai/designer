@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
-import { ScenarioInstance } from '../../../../modules/scenario/services/scenario-instance';
+import { ScenarioService } from '../../../../modules/scenario/services/scenario.service';
 
 @Component( {
 	selector: 'app-select-entity-field',
@@ -21,7 +21,7 @@ export class SelectEntityFieldComponent extends AbstractFieldComponent implement
 	}
 
 	get entities () {
-		return [ ...ScenarioInstance.scenario.objects.keys() ];
+		return [ ...ScenarioService.scenario.objects.keys() ];
 	}
 
 	ngOnInit () {

@@ -40,6 +40,8 @@ export class TvScenario {
 
 	public db: NameDB = new NameDB();
 
+	constructor () {}
+
 	// get parameters () {
 	// 	return this.parameterDeclaration.parameters;
 	// }

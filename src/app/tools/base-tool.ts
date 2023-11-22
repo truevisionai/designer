@@ -6,7 +6,7 @@ import { Type } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
+import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { Intersection, Line, Mesh, Object3D } from 'three';
 import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
@@ -44,7 +44,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	get scenario () {
 
-		return ScenarioInstance.scenario;
+		return ScenarioService.scenario;
 
 	}
 
