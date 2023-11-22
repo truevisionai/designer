@@ -9,6 +9,7 @@ import { Vector2 } from 'three';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapEvents } from 'app/events/map-events';
+import { BaseService } from 'app/services/base.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +21,7 @@ export class LaneService {
 	constructor (
 		public base: BaseToolService,
 		private laneReferenceLine: LaneReferenceLineService,
+		private baseService: BaseService,
 	) { }
 
 	showRoad ( road: TvRoad ) {
@@ -75,6 +77,8 @@ export class LaneService {
 
 		this.showRoad( lane.laneSection.road );
 
+		this.baseService.rebuildRoad( lane.laneSection.road );
+
 		MapEvents.laneCreated.emit( lane );
 
 	}
@@ -86,6 +90,8 @@ export class LaneService {
 		LaneService.lineMap.clear();
 
 		this.showRoad( lane.laneSection.road );
+
+		this.baseService.rebuildRoad( lane.laneSection.road );
 
 		MapEvents.laneRemoved.emit( lane );
 

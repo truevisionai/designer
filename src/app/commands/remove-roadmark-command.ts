@@ -1,39 +1,39 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { MapEvents } from 'app/events/map-events';
-import { TvLane } from '../modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
-import { BaseCommand } from './base-command';
+// import { MapEvents } from 'app/events/map-events';
+// import { TvLane } from '../modules/tv-map/models/tv-lane';
+// import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
+// import { BaseCommand } from './base-command';
 
-export class RemoveRoadmarkCommand extends BaseCommand {
+// export class RemoveRoadmarkCommand extends BaseCommand {
 
-	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
+// 	constructor ( private roadmark: TvLaneRoadMark, private lane: TvLane ) {
 
-		super();
+// 		super();
 
-	}
+// 	}
 
-	execute (): void {
+// 	execute (): void {
 
-		this.lane.removeRoadMark( this.roadmark );
+// 		this.lane.removeRoadMark( this.roadmark );
 
-		MapEvents.laneUpdated.emit( this.lane );
+// 		MapEvents.laneUpdated.emit( this.lane );
 
-	}
+// 	}
 
-	undo (): void {
+// 	undo (): void {
 
-		this.lane.addRoadMarkInstance( this.roadmark );
+// 		this.lane.addRoadMarkInstance( this.roadmark );
 
-		MapEvents.laneUpdated.emit( this.lane );
+// 		MapEvents.laneUpdated.emit( this.lane );
 
-	}
+// 	}
 
-	redo (): void {
+// 	redo (): void {
 
-		this.execute();
+// 		this.execute();
 
-	}
-}
+// 	}
+// }

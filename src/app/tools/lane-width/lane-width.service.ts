@@ -12,6 +12,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Object3DMap } from './object-3d-map';
+import { BaseService } from 'app/services/base.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,6 +27,7 @@ export class LaneWidthService {
 		public base: BaseToolService,
 		private mapService: MapService,
 		private laneReferenceLine: LaneReferenceLineService,
+		private baseService: BaseService,
 	) { }
 
 	createWidthNode ( lane: TvLane, position: Vector3 ) {
@@ -92,6 +94,8 @@ export class LaneWidthService {
 
 		// LaneWidthService.nodeMap.add( node.laneWidth.uuid, node );
 
+		this.baseService.rebuildRoad( node.lane.laneSection.road );
+
 	}
 
 	removeNode ( node: LaneWidthNode ) {
@@ -103,6 +107,8 @@ export class LaneWidthService {
 
 		// LaneWidthService.nodeMap.remove( node.laneWidth.uuid );
 		// LaneWidthService.lineMap.remove( node.laneWidth.uuid );
+
+		this.baseService.rebuildRoad( node.lane.laneSection.road );
 
 	}
 
@@ -128,6 +134,8 @@ export class LaneWidthService {
 
 		this.hideWidthNodes( node.lane.laneSection.road );
 		this.showWidthNodes( node.lane.laneSection.road );
+
+		this.baseService.rebuildRoad( node.lane.laneSection.road );
 
 	}
 

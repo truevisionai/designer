@@ -187,7 +187,6 @@ export class LaneWidthTool extends BaseTool {
 
 			this.laneWidthService.addNode( object );
 
-			MapEvents.laneUpdated.emit( object.lane );
 		}
 
 	}
@@ -200,7 +199,6 @@ export class LaneWidthTool extends BaseTool {
 
 			this.laneWidthService.updateNode( object );
 
-			MapEvents.laneUpdated.emit( object.lane );
 		}
 
 	}
@@ -212,8 +210,6 @@ export class LaneWidthTool extends BaseTool {
 		if ( object instanceof LaneWidthNode ) {
 
 			this.laneWidthService.removeNode( object );
-
-			MapEvents.laneUpdated.emit( object.lane );
 
 		}
 
