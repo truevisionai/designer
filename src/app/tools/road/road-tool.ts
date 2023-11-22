@@ -5,7 +5,6 @@ import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspecto
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AppInspector } from 'app/core/inspector';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadToolService } from './road-tool.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
@@ -125,7 +124,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			const road = RoadFactory.createDefaultRoad();
+			const road = this.tool.roadService.createDefaultRoad();
 
 			const point = ControlPointFactory.createControl( road.spline, e.point );
 

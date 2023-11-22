@@ -1,4 +1,3 @@
-import { RoadFactory } from 'app/factories/road-factory.service';
 import {
 	BufferAttribute,
 	BufferGeometry,
@@ -144,7 +143,7 @@ export class RoadCircleService {
 
 		for ( let i = 0; i < 4; i++ ) {
 
-			const road = roads[ i ] = RoadFactory.createDefaultRoad();
+			const road = roads[ i ] = this.roadService.createDefaultRoad();
 
 			TvMapInstance.map.addRoad( road );
 

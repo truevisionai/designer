@@ -2,29 +2,32 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Mesh, Vector3 } from 'three';
+import { Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
-import { ManeuverService } from './maneuver.service';
-import { BaseService } from '../base.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { JunctionMeshService } from './junction-mesh.service';
 import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { LaneLinkService } from './lane-link.service';
 import { MapService } from '../map.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionService extends BaseService {
+export class JunctionService {
+
+	public static instance: JunctionService;
+
+	private objectMap = new Object3DMap<TvJunction, Object3D>();
 
 	constructor (
 		private dividerService: RoadDividerService,
-		private maneuverService: ManeuverService,
 		private junctionNodeService: JunctionNodeService,
 		public junctionMeshService: JunctionMeshService,
 		public connectionService: JunctionConnectionService,
@@ -33,7 +36,35 @@ export class JunctionService extends BaseService {
 		public laneLinkService: LaneLinkService,
 		public mapService: MapService
 	) {
-		super();
+		JunctionService.instance = this;
+	}
+
+	addJunction ( junction: TvJunction ) {
+
+		this.mapService.map.addJunctionInstance( junction );
+
+		junction.connections.forEach( connection => {
+
+			connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+
+			connection.outgoingRoad.setPredecessor( TvRoadLinkChildType.junction, junction.id );
+
+			this.mapService.map.addRoad( connection.connectingRoad );
+
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( connection.connectingRoad ) );
+
+		} );
+
+		this.createJunctionMesh( junction );
+
+	}
+
+	removeJunction ( junction: TvJunction ) {
+
+		this.mapService.map.removeJunction( junction );
+
+		this.removeJunctionMesh( junction );
+
 	}
 
 	removeJunctionNodes () {
@@ -44,6 +75,26 @@ export class JunctionService extends BaseService {
 	showJunctionNodes () {
 
 		this.junctionNodeService.showAllJunctionNodes();
+
+	}
+
+	highlightJunctionMeshes () {
+
+		this.mapService.map.getJunctions().filter( junction => junction.mesh ).forEach( junction => {
+
+			( junction.mesh.material as MeshStandardMaterial ).emissive.set( COLOR.RED );
+
+		} );
+
+	}
+
+	hideJunctionMeshes () {
+
+		this.mapService.map.getJunctions().filter( junction => junction.mesh ).forEach( junction => {
+
+			( junction.mesh.material as MeshStandardMaterial ).emissive.set( COLOR.BLACK );
+
+		} );
 
 	}
 
@@ -62,8 +113,8 @@ export class JunctionService extends BaseService {
 
 				const roads = this.dividerService.cutRoadFromTo( road, firstCoord.s, lastCoord.s );
 
-				// this.map.removeRoad( road );
-				// this.map.addRoads( roads );
+				// this.mapService.map.removeRoad( road );
+				// this.mapService.map.addRoads( roads );
 
 				// MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) )
 				// roads.forEach( road => MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) ) );
@@ -76,7 +127,7 @@ export class JunctionService extends BaseService {
 
 			// 	const newRoad = this.dividerService.cutRoadAt( coord.road, coord.s );
 
-			// 	this.map.addRoad( newRoad );
+			// 	this.mapService.map.addRoad( newRoad );
 
 			// }
 
@@ -154,42 +205,17 @@ export class JunctionService extends BaseService {
 		return uniqueRoads;
 	}
 
-	createJunction ( roadA: TvRoad, roadB: TvRoad, position: Vector3 ): TvJunction {
+	createJunctionMesh ( junction: TvJunction ) {
 
-		const junction = JunctionFactory.createJunction();
+		const mesh = this.junctionMeshService.createMeshFromJunction( junction );
 
-		const roadANext = this.dividerService.divideRoadAt( roadA, 10 );
-		const roadBNext = this.dividerService.divideRoadAt( roadB, 10 );
+		this.objectMap.add( junction, mesh );
 
-		return junction;
 	}
 
-	create4x4Junction ( roadA: TvRoad, roadB: TvRoad, position: Vector3 ): TvJunction {
+	removeJunctionMesh ( junction: TvJunction ) {
 
-		const junction = JunctionFactory.createJunction();
-
-		const roadANext = this.dividerService.divideRoadAt( roadA, 10 );
-		const roadBNext = this.dividerService.divideRoadAt( roadB, 10 );
-
-		return junction;
-	}
-
-	createTJunction ( headRoad: TvRoad, incomingRoad: TvRoad, position: Vector3 ): TvJunction {
-
-		const junction = JunctionFactory.createJunction();
-
-		const roadANext = this.dividerService.divideRoadAt( headRoad, 10 );
-
-		//const roadBNext = this.dividerService.cutRoadAt( incomingRoad, 10 );
-
-		// this.maneuverService.createConnectingRoad()
-
-		return junction;
-	}
-
-	updateJunction ( roadA: TvRoad, roadB: TvRoad, position: Vector3 ) {
-
-
+		this.objectMap.remove( junction );
 
 	}
 
@@ -197,7 +223,7 @@ export class JunctionService extends BaseService {
 
 		let finalJunction: TvJunction = null;
 
-		for ( const junction of this.map.getJunctions() ) {
+		for ( const junction of this.mapService.map.getJunctions() ) {
 
 			const connections = junction.getConnections();
 

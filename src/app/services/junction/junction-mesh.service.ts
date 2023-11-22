@@ -6,13 +6,16 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionMeshService {
 
-	constructor () { }
+	constructor (
+		private mapService: MapService
+	) { }
 
 	createJunctionFromRoadCoords ( coords: TvRoadCoord[] ) {
 
@@ -39,21 +42,15 @@ export class JunctionMeshService {
 
 	createMeshFromJunction ( junction: TvJunction ) {
 
-		const connectingRoads = junction.getConnections().map( connection => connection.connectingRoad );
-		const incomingRoads = junction.getConnections().map( connection => connection.incomingRoad );
-
-		const uniqueIncomingRoads = incomingRoads
-			.filter( ( road, index, array ) => array.indexOf( road ) === index );
-
 		const coords: TvRoadCoord[] = [];
 
-		uniqueIncomingRoads.forEach( road => {
+		this.mapService.map.getRoads().filter( road => !road.isJunction ).forEach( road => {
 
-			if ( road?.successor?.elementType == 'junction' ) {
+			if ( road.successor?.elementType == 'junction' && road.successor?.elementId == junction.id ) {
 
 				coords.push( road.getEndCoord().toRoadCoord( road ) );
 
-			} else if ( road?.predecessor?.elementType == 'junction' ) {
+			} else if ( road.predecessor?.elementType == 'junction' && road.predecessor?.elementId == junction.id ) {
 
 				coords.push( road.getStartCoord().toRoadCoord( road ) );
 

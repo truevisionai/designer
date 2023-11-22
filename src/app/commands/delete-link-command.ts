@@ -4,7 +4,6 @@
 
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
-import { RoadFactory } from '../factories/road-factory.service';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';
 
@@ -53,7 +52,7 @@ export class DeleteLinkCommand extends BaseCommand {
 		// TODO: check if we need to remove the whole connection if there are no more lane links
 
 		// rebuild connecting road because it might have changed after lane link removal
-		RoadFactory.rebuildRoad( this.connection.connectingRoad );
+		// RoadFactory.rebuildRoad( this.connection.connectingRoad );
 
 		if ( this.link.mesh ) SceneService.addToMain( this.link.mesh );
 

@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
@@ -348,7 +347,7 @@ export class SceneImporterService extends AbstractReader {
 		const id = parseInt( xml.attr_id );
 		const junction = parseInt( xml.attr_junction ) || -1;
 
-		const road = RoadFactory.createNewRoad( name, length, id, junction );
+		const road = new TvRoad( name, length, id, junction );
 
 		road.sStart = parseFloat( xml.attr_sStart ) ?? 0;
 

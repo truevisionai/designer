@@ -10,9 +10,6 @@ import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
 import { Manager } from "./manager";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
-import { JunctionFactory } from "../factories/junction.factory";
-import { Vector3 } from "three";
-import { RoadFactory } from "app/factories/road-factory.service";
 
 interface TempIntersection {
 	x: number,

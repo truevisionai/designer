@@ -13,6 +13,7 @@ import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +21,7 @@ import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/
 export class RoadService {
 
 	private static nodes: RoadNode[] = [];
+
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
 
 	constructor (
@@ -28,7 +30,36 @@ export class RoadService {
 		private roadLinkService: RoadLinkService,
 		private splineService: SplineService,
 		private baseService: BaseService,
+		private roadFactory: RoadFactory,
 	) {
+	}
+
+	getNextRoadId (): number {
+
+		return this.roadFactory.getNextRoadId();
+
+	}
+
+	createRampRoad ( connectionLane: TvLane ) {
+
+		return this.roadFactory.createRampRoad( connectionLane );
+
+	}
+
+	createSingleLaneRoad ( width: number ) {
+
+		return this.roadFactory.createSingleLaneRoad( width );
+
+	}
+
+	createNewRoad () {
+
+		return this.roadFactory.createNewRoad();
+
+	}
+
+	createDefaultRoad (): TvRoad {
+		return this.roadFactory.createDefaultRoad();
 	}
 
 	hideAllRoadNodes () {
@@ -45,7 +76,7 @@ export class RoadService {
 
 	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		const joiningRoad = RoadFactory.createJoiningRoad( firstNode, secondNode );
+		const joiningRoad = this.roadFactory.createJoiningRoad( firstNode, secondNode );
 
 		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
 

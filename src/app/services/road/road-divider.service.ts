@@ -1,36 +1,41 @@
 import { Injectable } from '@angular/core';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadService } from './road.service';
 
 @Injectable( {
-    providedIn: 'root'
+	providedIn: 'root'
 } )
 export class RoadDividerService {
 
-    divideRoadAt ( road: TvRoad, s: number ) {
+	constructor (
+		private roadService: RoadService
+	) {
+	}
 
-        const clone = road.clone( s );
+	divideRoadAt ( road: TvRoad, s: number ) {
 
-        clone.id = RoadFactory.getNextRoadId();
+		const clone = road.clone( s );
 
-        clone.sStart = road.sStart + s;
+		clone.id = this.roadService.getNextRoadId();
 
-        return clone
+		clone.sStart = road.sStart + s;
 
-    }
+		return clone
 
-    cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
+	}
 
-        if ( start > end ) throw new Error( 'Start must be less than end' );
+	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
 
-        const right = road.clone( end );
-        right.id = RoadFactory.getNextRoadId();
-        right.sStart = road.sStart + end;
+		if ( start > end ) throw new Error( 'Start must be less than end' );
 
-        // empty section/segment
-        road.spline.addRoadSegment( start, -1 );
+		const right = road.clone( end );
+		right.id = this.roadService.getNextRoadId();
+		right.sStart = road.sStart + end;
 
-        return [ road, right ];
+		// empty section/segment
+		road.spline.addRoadSegment( start, -1 );
 
-    }
+		return [ road, right ];
+
+	}
 }

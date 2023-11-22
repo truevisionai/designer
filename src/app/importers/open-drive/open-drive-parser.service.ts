@@ -6,13 +6,16 @@ import { IOpenDriveParser } from "./i-open-drive.parser";
 import { OpenDrive15Parser } from './open-drive-1-5.parser';
 import { OpenDrive16Parser } from './open-drive-1-6.parser';
 import { TvConsole } from 'app/core/utils/console';
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenDriveParserService {
 
-	constructor () {
+	constructor (
+		private roadService: RoadService,
+	) {
 	}
 
 	parse ( contents: string ) {

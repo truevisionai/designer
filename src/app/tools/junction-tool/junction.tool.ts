@@ -15,10 +15,11 @@ import { SceneService } from 'app/services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { AddObjectCommand } from "../../commands/add-object-command";
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 
 export class JunctionTool extends BaseTool {
@@ -58,6 +59,7 @@ export class JunctionTool extends BaseTool {
 		super.enable();
 
 		this.tool.showJunctionNodes();
+		this.tool.highlightJunctionMeshes();
 
 	}
 
@@ -66,6 +68,7 @@ export class JunctionTool extends BaseTool {
 		super.disable();
 
 		this.tool.removeJunctionNodes();
+		this.tool.hideJunctionMeshes();
 
 	}
 
@@ -176,7 +179,7 @@ export class JunctionTool extends BaseTool {
 		this.selectedNodes[ 0 ].roadCoord.laneSection.lanes.forEach( lane => {
 
 			if ( lane.side == TvLaneSide.CENTER ) return;
-			if ( lane.id < 0 ) return; // only right side lanes
+			if ( lane.type != TvLaneType.driving ) return;
 
 			const l1 = lane;
 			const l2 = this.selectedNodes[ 1 ].roadCoord.laneSection.getLaneById( lane.id );
@@ -195,9 +198,11 @@ export class JunctionTool extends BaseTool {
 
 			}
 
+			connectingRoad.junctionId = junction.id;
+
 			const connectingRoadLane = connectingRoad.laneSections[ 0 ].getLaneArray().find( i => i.id != 0 );
 
-			const connection = this.tool.connectionService.createConnectionV2( junction, coord1.road, connectingRoad, coord1.contact );
+			const connection = this.tool.connectionService.createConnectionV2( junction, coord1.road, connectingRoad, coord1.contact, coord2.road );
 
 			const laneLink = this.tool.laneLinkService.createLaneLink( l1, connectingRoadLane );
 
@@ -206,8 +211,6 @@ export class JunctionTool extends BaseTool {
 			connection.addLaneLink( laneLink );
 
 		} );
-
-		// const junction = this.tool.createJunctionFromJunctionNodes( this.selectedNodes );
 
 		const addCommand = new AddObjectCommand( junction );
 
@@ -218,17 +221,7 @@ export class JunctionTool extends BaseTool {
 
 		if ( object instanceof TvJunction ) {
 
-			this.map.addJunctionInstance( object );
-
-			object.connections.forEach( connection => {
-
-				this.map.addRoad( connection.connectingRoad );
-
-				MapEvents.roadCreated.emit( new RoadCreatedEvent( connection.connectingRoad ) );
-
-			} );
-
-			SceneService.addToMain( object.mesh );
+			this.tool.addJunction( object );
 
 		}
 
@@ -240,15 +233,17 @@ export class JunctionTool extends BaseTool {
 
 			object.connections.forEach( connection => {
 
+				connection.incomingRoad.successor = null;
+
+				connection.outgoingRoad.predecessor = null;
+
 				MapEvents.roadRemoved.emit( new RoadRemovedEvent( connection.connectingRoad ) );
 
 				this.map.removeRoad( connection.connectingRoad );
 
 			} );
 
-			this.map.removeJunction( object );
-
-			SceneService.removeFromMain( object.mesh );
+			this.tool.removeJunction( object );
 		}
 
 	}

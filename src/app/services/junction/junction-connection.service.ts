@@ -5,17 +5,16 @@ import { TvRoadCoord } from "../../modules/tv-map/models/TvRoadCoord";
 import { TvLane } from "../../modules/tv-map/models/tv-lane";
 import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { RoadSplineService } from '../road/road-spline.service';
 import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 import { MapService } from '../map.service';
-import { SceneService } from '../scene.service';
 import { SplineService } from '../spline.service';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
+import { RoadService } from '../road/road.service';
+
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +22,7 @@ import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 export class JunctionConnectionService {
 
 	constructor (
+		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private splineService: SplineService
@@ -35,11 +35,11 @@ export class JunctionConnectionService {
 
 	}
 
-	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint ) {
+	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint, outgoingRoad?: TvRoad ) {
 
 		const id = junction.connections.size + 1;
 
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact );
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact, outgoingRoad );
 
 		return connection
 	}
@@ -48,7 +48,7 @@ export class JunctionConnectionService {
 
 		const width = l1.lane.getWidthValue( l1.s );
 
-		const road = RoadFactory.createSingleLaneRoad( width );
+		const road = this.roadService.createSingleLaneRoad( width );
 
 		road.spline = this.roadSplineService.createManeuverSpline( l1, l2 );
 
@@ -124,7 +124,7 @@ export class JunctionConnectionService {
 
 	private createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
 
-		const connectingRoad = RoadFactory.createNewRoad();
+		const connectingRoad = this.roadService.createNewRoad();
 
 		connectingRoad.junctionId = junction.id;
 

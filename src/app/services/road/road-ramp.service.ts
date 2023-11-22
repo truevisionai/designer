@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
@@ -17,6 +16,7 @@ import { RoadSplineService } from './road-spline.service';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { LaneLinkService } from '../junction/lane-link.service';
+import { RoadService } from './road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,6 +29,7 @@ export class RoadRampService {
 		public roadSplineService: RoadSplineService,
 		private junctionConnection: JunctionConnectionService,
 		private laneLink: LaneLinkService,
+		private roadService: RoadService,
 	) { }
 
 	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvVirtualJunction {
@@ -79,7 +80,7 @@ export class RoadRampService {
 
 		const connectionLane = incomingLane.cloneAtS( -1, sStart );
 
-		const rampRoad = RoadFactory.createRampRoad( connectionLane );
+		const rampRoad = this.roadService.createRampRoad( connectionLane );
 
 		rampRoad.spline = this.createRampSplineV2( startCoord, endCoord );
 

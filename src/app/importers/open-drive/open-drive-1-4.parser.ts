@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -119,7 +118,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = parseFloat( xml.attr_junction );
 
-		const road = RoadFactory.createNewRoad( name, length, id, junction );
+		const road = new TvRoad( name, length, id, junction );
 
 		if ( xml.link != null ) {
 

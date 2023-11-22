@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from '../base.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
