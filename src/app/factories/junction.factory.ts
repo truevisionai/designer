@@ -3,43 +3,27 @@
  */
 
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { TvContactPoint, TvLaneType, TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-// import { SceneService } from '../services/scene.service';
-// import { CreateSingleManeuver } from '../tools/maneuver/create-single-maneuver';
-import { TvConsole } from '../core/utils/console';
 import { IDService } from './id.service';
-// import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-// import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-// import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-// import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-// import { Vector3 } from 'three';
-// import { RoadFactory } from './road-factory.service';
-// import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-// import { AutoSpline } from '../core/shapes/auto-spline';
+import { Injectable } from '@angular/core';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class JunctionFactory {
 
-	private static IDService = new IDService();
+	private IDService = new IDService();
 
-	static get map () {
-
-		return TvMapInstance.map;
-
-	}
-
-	static reset () {
+	private reset () {
 
 		this.IDService = new IDService();
 
 	}
 
-	static createJunction ( junctionName?: string, junctionId?: number ): TvJunction {
+	createJunction ( junctionName?: string, junctionId?: number ): TvJunction {
 
 		const id = this.IDService.getUniqueID( junctionId );
 
@@ -49,7 +33,7 @@ export class JunctionFactory {
 
 	}
 
-	static createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
+	createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
 		const id = this.IDService.getUniqueID();
 
@@ -57,15 +41,6 @@ export class JunctionFactory {
 
 		return new TvVirtualJunction( name, id, mainRoad, sStart, sEnd, orientation );
 
-	}
-
-	static addJunction ( junctionName?: string, junctionId?: number ): TvJunction {
-
-		const junction = this.createJunction( junctionName, junctionId );
-
-		this.map.addJunctionInstance( junction );
-
-		return junction;
 	}
 
 	// static connectTwo ( entry: JunctionEntryObject, exit: JunctionEntryObject ) {
@@ -119,42 +94,41 @@ export class JunctionFactory {
 	// 	return entries;
 	// }
 
+	//createJunctionEntriesForRoad ( road: TvRoad, contact: TvContactPoint ): JunctionEntryObject[] {
+	//
+	//	// we dont want create junction points if predecessor or successor is road
+	//	// junction points are created with when road is not connected or connected to junction
+	//
+	//	if ( contact == TvContactPoint.START && road.predecessor?.elementType == 'road' ) {
+	//		return [];
+	//	}
+	//
+	//	if ( contact == TvContactPoint.END && road.successor?.elementType == 'road' ) {
+	//		return [];
+	//	}
+	//
+	//	const laneSection = contact == TvContactPoint.START ?
+	//		road.getFirstLaneSection() :
+	//		road.getLastLaneSection();
+	//
+	//	if ( !laneSection ) TvConsole.error( 'No lane section found for Road: ' + road.id );
+	//	if ( !laneSection ) return [];
+	//
+	//	const lanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
+	//
+	//	return lanes.map( lane => this.createJunctionEntry( road, lane, contact ) );
+	//}
 
-	static createJunctionEntriesForRoad ( road: TvRoad, contact: TvContactPoint ): JunctionEntryObject[] {
-
-		// we dont want create junction points if predecessor or successor is road
-		// junction points are created with when road is not connected or connected to junction
-
-		if ( contact == TvContactPoint.START && road.predecessor?.elementType == 'road' ) {
-			return [];
-		}
-
-		if ( contact == TvContactPoint.END && road.successor?.elementType == 'road' ) {
-			return [];
-		}
-
-		const laneSection = contact == TvContactPoint.START ?
-			road.getFirstLaneSection() :
-			road.getLastLaneSection();
-
-		if ( !laneSection ) TvConsole.error( 'No lane section found for Road: ' + road.id );
-		if ( !laneSection ) return [];
-
-		const lanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
-
-		return lanes.map( lane => this.createJunctionEntry( road, lane, contact ) );
-	}
-
-	static createJunctionEntry ( road: TvRoad, lane: TvLane, contact: TvContactPoint ): JunctionEntryObject {
-
-		const s = contact == TvContactPoint.START ? 0 : road.length;
-
-		const position = TvMapQueries.getLanePosition( road.id, lane.id, s );
-
-		const name = `road-${ road.id }-lane-${ lane.id }-${ contact }`;
-
-		return new JunctionEntryObject( name, position, contact, road, lane );
-	}
+	//createJunctionEntry ( road: TvRoad, lane: TvLane, contact: TvContactPoint ): JunctionEntryObject {
+	//
+	//	const s = contact == TvContactPoint.START ? 0 : road.length;
+	//
+	//	const position = TvMapQueries.getLanePosition( road.id, lane.id, s );
+	//
+	//	const name = `road-${ road.id }-lane-${ lane.id }-${ contact }`;
+	//
+	//	return new JunctionEntryObject( name, position, contact, road, lane );
+	//}
 
 	// static mergeEntries ( objects: JunctionEntryObject[] ) {
 	//
@@ -245,7 +219,6 @@ export class JunctionFactory {
 
 	// 			} );
 
-
 	// 		console.log( A, mergeOptions );
 
 	// 	}
@@ -289,67 +262,67 @@ export class JunctionFactory {
 
 	// }
 
-	static mergeEntriesV3 ( junction: TvJunction, objects: JunctionEntryObject[] ) {
+	//static mergeEntriesV3 ( junction: TvJunction, objects: JunctionEntryObject[] ) {
+	//
+	//	const roads = this.groupEntriesByRoad( objects );
+	//	const keys = Array.from( roads.keys() );
+	//
+	//	// straight connections
+	//	for ( let i = 0; i < objects.length; i++ ) {
+	//
+	//		const left = objects[ i ];
+	//
+	//		for ( let j = i + 1; j < objects.length; j++ ) {
+	//
+	//			const right = objects[ j ];
+	//
+	//			if ( left.canConnect( right ) && left.isStraightConnection( right ) ) {
+	//
+	//				const entry = left.isEntry ? left : right;
+	//				const exit = left.isExit ? left : right;
+	//
+	//				this.connect( junction, entry, exit );
+	//			}
+	//		}
+	//	}
+	//
+	//	for ( let i = 0; i < keys.length; i++ ) {
+	//
+	//		const road1 = roads.get( keys[ i ] );
+	//
+	//		for ( let j = i + 1; j < keys.length; j++ ) {
+	//
+	//			const road2 = roads.get( keys[ j ] );
+	//
+	//			this.makeRightManeuvers( junction, road1, road2 );
+	//			this.makeRightManeuvers( junction, road2, road1 );
+	//
+	//			this.makeLeftManeuvers( junction, road1, road2 );
+	//			this.makeLeftManeuvers( junction, road2, road1 );
+	//
+	//		}
+	//	}
+	//
+	//}
 
-		const roads = this.groupEntriesByRoad( objects );
-		const keys = Array.from( roads.keys() );
+	//static groupEntriesByRoad ( objects: JunctionEntryObject[] ): Map<number, JunctionEntryObject[]> {
+	//
+	//	const roads = new Map<number, JunctionEntryObject[]>();
+	//
+	//	objects.forEach( entry => {
+	//
+	//		if ( !roads.has( entry.road.id ) ) {
+	//			roads.set( entry.road.id, [] );
+	//		}
+	//
+	//		roads.get( entry.road.id ).push( entry );
+	//
+	//	} );
+	//
+	//	return roads;
+	//}
 
-		// straight connections
-		for ( let i = 0; i < objects.length; i++ ) {
-
-			const left = objects[ i ];
-
-			for ( let j = i + 1; j < objects.length; j++ ) {
-
-				const right = objects[ j ];
-
-				if ( left.canConnect( right ) && left.isStraightConnection( right ) ) {
-
-					const entry = left.isEntry ? left : right;
-					const exit = left.isExit ? left : right;
-
-					this.connect( junction, entry, exit );
-				}
-			}
-		}
-
-		for ( let i = 0; i < keys.length; i++ ) {
-
-			const road1 = roads.get( keys[ i ] );
-
-			for ( let j = i + 1; j < keys.length; j++ ) {
-
-				const road2 = roads.get( keys[ j ] );
-
-				this.makeRightManeuvers( junction, road1, road2 );
-				this.makeRightManeuvers( junction, road2, road1 );
-
-				this.makeLeftManeuvers( junction, road1, road2 );
-				this.makeLeftManeuvers( junction, road2, road1 );
-
-			}
-		}
-
-	}
-
-	static groupEntriesByRoad ( objects: JunctionEntryObject[] ): Map<number, JunctionEntryObject[]> {
-
-		const roads = new Map<number, JunctionEntryObject[]>();
-
-		objects.forEach( entry => {
-
-			if ( !roads.has( entry.road.id ) ) {
-				roads.set( entry.road.id, [] );
-			}
-
-			roads.get( entry.road.id ).push( entry );
-
-		} );
-
-		return roads;
-	}
-
-	static connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
+	connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
 
 		// if ( !junction ) {
 
@@ -375,81 +348,82 @@ export class JunctionFactory {
 
 	}
 
-	static makeRightManeuvers ( junction: TvJunction, listA: JunctionEntryObject[], listB: JunctionEntryObject[] ) {
+	//static makeRightManeuvers ( junction: TvJunction, listA: JunctionEntryObject[], listB: JunctionEntryObject[] ) {
+	//
+	//	const inDescOrder = ( a, b ) => a.id > b.id ? -1 : 1;
+	//	const inAscOrder = ( a, b ) => a.id > b.id ? 1 : -1;
+	//
+	//	const contactA = listA[ 0 ].contact;
+	//	const finalA = listA
+	//		.filter( e => contactA == TvContactPoint.END ? e.lane.isRight : e.lane.isLeft )
+	//		.sort( contactA == TvContactPoint.START ? inAscOrder : inDescOrder );
+	//
+	//	const contactB = listB[ 0 ].contact;
+	//	const finalB = listB
+	//		.filter( e => contactB == TvContactPoint.END ? e.lane.isLeft : e.lane.isRight )
+	//		.sort( contactB == TvContactPoint.START ? inDescOrder : inAscOrder );
+	//
+	//	for ( let i = 0; i < finalA.length; i++ ) {
+	//
+	//		const element = finalA[ i ];
+	//
+	//		if ( i < finalB.length ) {
+	//
+	//			const otherElement = finalB[ i ];
+	//
+	//			if ( !element.isRightConnection( otherElement ) ) continue;
+	//
+	//			const entry = element.isEntry ? element : otherElement;
+	//
+	//			const exit = element.isExit ? element : otherElement;
+	//
+	//			if ( !entry.isRightMost() ) continue;
+	//
+	//			this.connect( junction, entry, exit );
+	//
+	//		}
+	//	}
+	//
+	//}
 
-		const inDescOrder = ( a, b ) => a.id > b.id ? -1 : 1;
-		const inAscOrder = ( a, b ) => a.id > b.id ? 1 : -1;
+	//static makeLeftManeuvers ( junction: TvJunction, listA: JunctionEntryObject[], listB: JunctionEntryObject[] ) {
+	//
+	//	const inDescOrder = ( a, b ) => a.id > b.id ? -1 : 1;
+	//	const inAscOrder = ( a, b ) => a.id > b.id ? 1 : -1;
+	//
+	//	const contactA = listA[ 0 ].contact;
+	//	const finalA = listA
+	//		.filter( e => contactA == TvContactPoint.END ? e.lane.isRight : e.lane.isLeft )
+	//		.sort( contactA == TvContactPoint.END ? inDescOrder : inAscOrder );
+	//
+	//	const contactB = listB[ 0 ].contact;
+	//	const finalB = listB
+	//		.filter( e => contactB == TvContactPoint.START ? e.lane.isRight : e.lane.isLeft )
+	//		.sort( contactB == TvContactPoint.START ? inAscOrder : inDescOrder );
+	//
+	//	for ( let i = 0; i < finalA.length; i++ ) {
+	//
+	//		const element = finalA[ i ];
+	//
+	//		if ( i < finalB.length ) {
+	//
+	//			const otherElement = finalB[ i ];
+	//
+	//			if ( !element.isLeftConnection( otherElement ) ) continue;
+	//
+	//			const entry = element.isEntry ? element : otherElement;
+	//
+	//			const exit = element.isExit ? element : otherElement;
+	//
+	//			if ( !entry.isLeftMost() ) continue;
+	//
+	//			this.connect( junction, entry, exit );
+	//
+	//		}
+	//	}
+	//
+	//}
 
-		const contactA = listA[ 0 ].contact;
-		const finalA = listA
-			.filter( e => contactA == TvContactPoint.END ? e.lane.isRight : e.lane.isLeft )
-			.sort( contactA == TvContactPoint.START ? inAscOrder : inDescOrder );
-
-		const contactB = listB[ 0 ].contact;
-		const finalB = listB
-			.filter( e => contactB == TvContactPoint.END ? e.lane.isLeft : e.lane.isRight )
-			.sort( contactB == TvContactPoint.START ? inDescOrder : inAscOrder );
-
-		for ( let i = 0; i < finalA.length; i++ ) {
-
-			const element = finalA[ i ];
-
-			if ( i < finalB.length ) {
-
-				const otherElement = finalB[ i ];
-
-				if ( !element.isRightConnection( otherElement ) ) continue;
-
-				const entry = element.isEntry ? element : otherElement;
-
-				const exit = element.isExit ? element : otherElement;
-
-				if ( !entry.isRightMost() ) continue;
-
-				this.connect( junction, entry, exit );
-
-			}
-		}
-
-	}
-
-	static makeLeftManeuvers ( junction: TvJunction, listA: JunctionEntryObject[], listB: JunctionEntryObject[] ) {
-
-		const inDescOrder = ( a, b ) => a.id > b.id ? -1 : 1;
-		const inAscOrder = ( a, b ) => a.id > b.id ? 1 : -1;
-
-		const contactA = listA[ 0 ].contact;
-		const finalA = listA
-			.filter( e => contactA == TvContactPoint.END ? e.lane.isRight : e.lane.isLeft )
-			.sort( contactA == TvContactPoint.END ? inDescOrder : inAscOrder );
-
-		const contactB = listB[ 0 ].contact;
-		const finalB = listB
-			.filter( e => contactB == TvContactPoint.START ? e.lane.isRight : e.lane.isLeft )
-			.sort( contactB == TvContactPoint.START ? inAscOrder : inDescOrder );
-
-		for ( let i = 0; i < finalA.length; i++ ) {
-
-			const element = finalA[ i ];
-
-			if ( i < finalB.length ) {
-
-				const otherElement = finalB[ i ];
-
-				if ( !element.isLeftConnection( otherElement ) ) continue;
-
-				const entry = element.isEntry ? element : otherElement;
-
-				const exit = element.isExit ? element : otherElement;
-
-				if ( !entry.isLeftMost() ) continue;
-
-				this.connect( junction, entry, exit );
-
-			}
-		}
-
-	}
 	// static mergeEntriesV3 ( junction: TvJunction, objects: JunctionEntryObject[] ) {
 	//
 	// 	const roads = this.groupEntriesByRoad( objects );
@@ -766,7 +740,6 @@ export class JunctionFactory {
 
 	// 	const v2 = v1.clone().add( directionV1.clone().multiplyScalar( distanceAB / 3 ) );
 	// 	const v3 = v4.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );
-
 
 	// 	// v3 is calculated using the direction of v4, which is the new part compared to the original function.
 	// 	// This ensures that the curve respects the direction in which v4 is supposed to point.

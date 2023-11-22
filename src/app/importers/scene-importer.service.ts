@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { JunctionFactory } from 'app/factories/junction.factory';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
@@ -996,7 +995,7 @@ export class SceneImporterService extends AbstractReader {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = JunctionFactory.createJunction( name, id );
+		const junction = new TvJunction( name, id );
 
 		readXmlArray( xmlElement.connection, xml => {
 

@@ -34,7 +34,7 @@ export class RoadService {
 	) {
 	}
 
-	getNextRoadId (): number {
+	private getNextRoadId (): number {
 
 		return this.roadFactory.getNextRoadId();
 
@@ -295,6 +295,35 @@ export class RoadService {
 		if ( !road ) return;
 
 		this.rebuildRoad( road );
+
+	}
+
+	divideRoadAt ( road: TvRoad, s: number ) {
+
+		const clone = road.clone( s );
+
+		clone.id = this.getNextRoadId();
+
+		clone.sStart = road.sStart + s;
+
+		return clone
+
+	}
+
+	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
+
+		if ( start > end ) throw new Error( 'Start must be less than end' );
+
+		const right = road.clone( end );
+
+		right.id = this.getNextRoadId();
+
+		right.sStart = road.sStart + end;
+
+		// empty section/segment
+		road.spline.addRoadSegment( start, -1 );
+
+		return [ road, right ];
 
 	}
 

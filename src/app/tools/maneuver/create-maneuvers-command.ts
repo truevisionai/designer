@@ -4,7 +4,7 @@
 
 import { JunctionEntryObject } from '../../modules/three-js/objects/junction-entry.object';
 import { BaseCommand } from '../../commands/base-command';
-import { JunctionFactory } from '../../factories/junction.factory';
+// import { JunctionFactory } from '../../factories/junction.factory';
 
 export class CreateManeuversCommand extends BaseCommand {
 

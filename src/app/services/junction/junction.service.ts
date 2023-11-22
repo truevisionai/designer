@@ -16,6 +16,8 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
+import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,6 +29,7 @@ export class JunctionService {
 	private objectMap = new Object3DMap<TvJunction, Object3D>();
 
 	constructor (
+		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
 		private junctionNodeService: JunctionNodeService,
 		public junctionMeshService: JunctionMeshService,
@@ -145,7 +148,7 @@ export class JunctionService {
 
 		const coords = nodes.map( node => node.roadCoord );
 
-		const junction = JunctionFactory.createJunction();
+		const junction = this.factory.createJunction();
 
 		junction.mesh = this.createMeshFromRoadCoords( coords );
 
@@ -255,5 +258,16 @@ export class JunctionService {
 
 	}
 
+	createNewJunction () {
+
+		return this.factory.createJunction();
+
+	}
+
+	createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
+
+		return this.factory.createVirtualJunction( road, sStart, sEnd, orientation );
+
+	}
 
 }

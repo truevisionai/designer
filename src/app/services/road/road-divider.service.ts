@@ -14,28 +14,13 @@ export class RoadDividerService {
 
 	divideRoadAt ( road: TvRoad, s: number ) {
 
-		const clone = road.clone( s );
-
-		clone.id = this.roadService.getNextRoadId();
-
-		clone.sStart = road.sStart + s;
-
-		return clone
+		return this.roadService.divideRoadAt( road, s );
 
 	}
 
 	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
 
-		if ( start > end ) throw new Error( 'Start must be less than end' );
-
-		const right = road.clone( end );
-		right.id = this.roadService.getNextRoadId();
-		right.sStart = road.sStart + end;
-
-		// empty section/segment
-		road.spline.addRoadSegment( start, -1 );
-
-		return [ road, right ];
+		return this.roadService.cutRoadFromTo( road, start, end );
 
 	}
 }

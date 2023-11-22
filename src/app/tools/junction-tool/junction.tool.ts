@@ -5,21 +5,17 @@
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { JunctionNode } from 'app/services/junction/junction-node.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
-import { SceneService } from 'app/services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { JunctionFactory } from 'app/factories/junction.factory';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 
 export class JunctionTool extends BaseTool {
@@ -174,7 +170,7 @@ export class JunctionTool extends BaseTool {
 		const coord1 = this.selectedNodes[ 0 ].roadCoord;
 		const coord2 = this.selectedNodes[ 1 ].roadCoord;
 
-		const junction = JunctionFactory.createJunction();;
+		const junction = this.tool.createNewJunction();
 
 		this.selectedNodes[ 0 ].roadCoord.laneSection.lanes.forEach( lane => {
 

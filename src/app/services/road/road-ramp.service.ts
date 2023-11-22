@@ -13,10 +13,10 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { RoadSplineService } from './road-spline.service';
-import { JunctionFactory } from 'app/factories/junction.factory';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
+import { JunctionService } from '../junction/junction.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +30,7 @@ export class RoadRampService {
 		private junctionConnection: JunctionConnectionService,
 		private laneLink: LaneLinkService,
 		private roadService: RoadService,
+		private junctionService: JunctionService,
 	) { }
 
 	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvVirtualJunction {
@@ -42,7 +43,7 @@ export class RoadRampService {
 
 			const orientation = TvOrientation.PLUS;
 
-			return JunctionFactory.createVirtualJunction( startPosition.road, sStart, sEnd, orientation );
+			return this.junctionService.createVirtualJunction( startPosition.road, sStart, sEnd, orientation );
 
 		} else {
 

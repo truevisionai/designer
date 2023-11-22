@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { JunctionFactory } from 'app/factories/junction.factory';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -513,7 +512,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = JunctionFactory.createJunction( name, id );
+		const junction = new TvJunction( name, id );
 
 		readXmlArray( xmlElement.connection, xml => {
 
