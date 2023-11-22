@@ -12,14 +12,13 @@ import { EditorService } from 'app/services/editor.service';
 import { Environment } from 'app/core/utils/environment';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';
-import { MainFileService } from 'app/services/main-file.service';
+import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
 import { RoadExporterService } from 'app/exporters/road-style-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog/app-input-dialog-service';
 
 import { AppService } from '../../../services/app.service';
-import { NewRoadDialogComponent } from '../../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
@@ -43,7 +42,7 @@ export class MenuBarComponent implements OnInit {
 		private exporter: ExporterService,
 		private router: Router,
 		private recentFileService: RecentFileService,
-		private mainFileService: MainFileService,
+		private mainFileService: TvSceneFileService,
 		private openDriveExporter: OpenDriveExporter,
 		private roadStyleExporter: RoadExporterService,
 		private inputDialogService: AppInputDialogService,
@@ -84,12 +83,6 @@ export class MenuBarComponent implements OnInit {
 
 	showNewRoadDialog () {
 
-		this.dialog.open( NewRoadDialogComponent, {
-			width: '680px',
-			height: '680px',
-			data: null,
-			disableClose: true
-		} );
 
 	}
 

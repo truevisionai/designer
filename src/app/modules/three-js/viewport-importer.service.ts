@@ -14,7 +14,7 @@ import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/importers/importer.service';
-import { MainFileService } from 'app/services/main-file.service';
+import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
@@ -35,7 +35,7 @@ export class ViewportImporterService {
 	constructor (
 		private assetService: AssetLoaderService,
 		private importerService: ImporterService,
-		private mainFileService: MainFileService,
+		private mainFileService: TvSceneFileService,
 	) {
 	}
 

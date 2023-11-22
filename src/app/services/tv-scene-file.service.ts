@@ -23,7 +23,7 @@ import { DialogService } from './dialog/dialog.service';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class MainFileService {
+export class TvSceneFileService {
 
 	constructor (
 		public sceneExporter: SceneExporterService,
@@ -35,34 +35,28 @@ export class MainFileService {
 	) {
 	}
 
-	get currentFile () {
+	private get currentFile () {
 		return TvMapInstance.currentFile;
 	}
 
-	set currentFile ( value ) {
+	private set currentFile ( value ) {
 		TvMapInstance.currentFile = value;
 	}
 
-	get map () {
+	private get map () {
 		return TvMapInstance.map;
 	}
 
-	set map ( value ) {
+	private set map ( value ) {
 		TvMapInstance.map = value;
 	}
 
-	get scenario () {
+	private get scenario () {
 		return ScenarioInstance.scenario;
 	}
 
-	set scenario ( value ) {
+	private set scenario ( value ) {
 		ScenarioInstance.scenario = value;
-	}
-
-	importViaContent ( content: string ) {
-
-		this.sceneImporter.importFromString( content );
-
 	}
 
 	newScene ( map?: TvMap ) {
@@ -75,7 +69,7 @@ export class MainFileService {
 
 	}
 
-	setMap ( map: TvMap ) {
+	private setMap ( map: TvMap ) {
 
 		this.threeService.reset();
 
@@ -111,17 +105,9 @@ export class MainFileService {
 
 	openFromPath ( path: string, callback?: Function ) {
 
-		if ( this.electronService.isElectronApp ) {
+		this.sceneImporter.importFromPath( path );
 
-			this.fileService.readFile( path, 'xml', ( file: IFile ) => {
-
-				this.sceneImporter.importFromString( file.contents );
-
-				if ( callback ) callback();
-
-			} );
-
-		}
+		callback?.();
 
 	}
 

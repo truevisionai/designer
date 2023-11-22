@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { FileService } from 'app/io/file.service';
-import { MainFileService } from 'app/services/main-file.service';
+import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { KeyboardEvents } from '../events/keyboard-events';
 
 @Injectable( {
@@ -13,7 +13,7 @@ import { KeyboardEvents } from '../events/keyboard-events';
 export class EditorService {
 
 	constructor (
-		private mainFileService: MainFileService,
+		private mainFileService: TvSceneFileService,
 		public settings: EditorSettings
 	) {
 	}

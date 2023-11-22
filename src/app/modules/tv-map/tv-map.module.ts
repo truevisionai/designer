@@ -60,7 +60,6 @@ import { OdSignalInspectorComponent } from '../../views/inspectors/signal-inspec
 import { TextureInspector } from '../../views/inspectors/texture-inspector/texture-inspector.component';
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
-import { NewRoadDialogComponent } from './dialogs/new-road-dialog/new-road-dialog.component';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 
 
@@ -68,7 +67,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 	declarations: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,
-		NewRoadDialogComponent,
 		RoadInspector,
 		ShapeInspectorComponent,
 		TransformInspectorComponent,
@@ -139,7 +137,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 	entryComponents: [
 		OdSignalInspectorComponent,
 		LaneInspectorComponent,
-		NewRoadDialogComponent,
 		RoadInspector,
 		ShapeInspectorComponent,
 		RoadObjectInspectorComponent,

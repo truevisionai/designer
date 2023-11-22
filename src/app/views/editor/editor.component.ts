@@ -8,9 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditorService } from 'app/services/editor.service';
 import { TvConsole } from 'app/core/utils/console';
 import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-director.service';
-import { MainFileService } from 'app/services/main-file.service';
+import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
-import { NewRoadDialogComponent } from '../../modules/tv-map/dialogs/new-road-dialog/new-road-dialog.component';
 import { ShortcutService } from 'app/services/shortcut.service';
 
 @Component( {
@@ -25,7 +24,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 	constructor (
 		private dialog: MatDialog,
 		private analytics: AnalyticsService,
-		private mainFileService: MainFileService,
+		private mainFileService: TvSceneFileService,
 		private editor: EditorService,
 		private oscPlayer: ScenarioDirectorService,
 		private changeDetectorRef: ChangeDetectorRef,
@@ -33,12 +32,6 @@ export class EditorComponent implements OnInit, AfterContentInit {
 	) {
 
 		TvConsole.logsChanged.subscribe( () => this.onLogsChanged() );
-
-	}
-
-	get scenario () {
-
-		return this.mainFileService.scenario;
 
 	}
 
@@ -69,12 +62,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	showNewScenarioDialog () {
 
-		this.dialog.open( NewRoadDialogComponent, {
-			width: '680px',
-			height: '680px',
-			data: null,
-			disableClose: true
-		} );
+
 
 	}
 
