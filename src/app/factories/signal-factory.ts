@@ -1,213 +1,217 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
 
-import { CylinderGeometry, FrontSide, MeshBasicMaterial, PlaneGeometry, TextureLoader, Vector3 } from 'three';
-import { GameObject } from '../core/game-object';
-import { TvConsole } from '../core/utils/console';
-import { COLOR } from '../views/shared/utils/colors.service';
-import { Maths } from '../utils/maths';
-import { TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
-import { TvRoadSignal } from '../modules/tv-map/models/tv-road-signal.model';
-import { TvRoad } from '../modules/tv-map/models/tv-road.model';
-import { SignShapeType } from '../modules/tv-map/services/tv-sign.service';
+// import { CylinderGeometry, FrontSide, MeshBasicMaterial, Object3D, PlaneGeometry, TextureLoader, Vector3 } from 'three';
+// import { GameObject } from '../core/game-object';
+// import { TvConsole } from '../core/utils/console';
+// import { COLOR } from '../views/shared/utils/colors.service';
+// import { Maths } from '../utils/maths';
+// import { TvObjectType } from '../modules/tv-map/interfaces/i-tv-object';
+// import { TvRoadSignal } from '../modules/tv-map/models/tv-road-signal.model';
+// import { TvRoad } from '../modules/tv-map/models/tv-road.model';
+// import { SignShapeType } from '../modules/tv-map/services/tv-sign.service';
 
-export class SignalFactory {
+// export class SignalFactory {
 
-	public static createSignal ( road: TvRoad, signal: TvRoadSignal, shape?: SignShapeType ) {
+// 	public static createSignal ( road: TvRoad, signal: TvRoadSignal, shape?: SignShapeType ): Object3D {
 
-		const position = road.getPositionAt( signal.s, signal.t );
+// 		const position = road.getPositionAt( signal.s, signal.t );
 
-		SignalFactory.createPole( position.toVector3(), signal, road, shape );
+// 		return this.createPole( position.toVector3(), signal, road, shape );
 
-	}
+// 	}
 
-	private static createPole ( position: Vector3, signal: TvRoadSignal, road: TvRoad, shape?: SignShapeType ) {
+// 	private static createPole ( position: Vector3, signal: TvRoadSignal, road: TvRoad, shape?: SignShapeType ): Object3D {
 
-		const assetName = signal.assetName ? signal.assetName.attr_value : 'default';
+// 		const assetName = signal.assetName ? signal.assetName.attr_value : 'default';
 
-		// if shape is supplied
-		// else check for shape in signal data
-		const signShape = shape ? shape : signal.signShape ? signal.signShape : 'default';
+// 		// if shape is supplied
+// 		// else check for shape in signal data
+// 		const signShape = shape ? shape : signal.signShape ? signal.signShape : 'default';
 
-		const poleWidth = 0.05;
-		const poleHeight = signal.height;
+// 		const poleWidth = 0.05;
+// 		const poleHeight = signal.height;
 
-		const geometry = new CylinderGeometry( poleWidth, poleWidth, poleHeight, 32 );
-		const material = new MeshBasicMaterial( { color: COLOR.DARKGRAY } );
-		const pole = new GameObject( 'Signal', geometry, material );
+// 		const geometry = new CylinderGeometry( poleWidth, poleWidth, poleHeight, 32 );
+// 		const material = new MeshBasicMaterial( { color: COLOR.DARKGRAY } );
 
-		let sign: GameObject;
+// 		const pole = new GameObject( 'Signal', geometry, material );
 
-		switch ( signShape ) {
+// 		let sign: GameObject;
 
-			case SignShapeType.circle:
-				sign = SignalFactory.createSphericalSignal( assetName, signal );
-				break;
+// 		switch ( signShape ) {
 
-			case SignShapeType.square:
-				sign = SignalFactory.createSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.circle:
+// 				sign = SignalFactory.createSphericalSignal( assetName, signal );
+// 				break;
 
-			case SignShapeType.diamond:
-				sign = SignalFactory.createSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.square:
+// 				sign = SignalFactory.createSquareSignal( assetName, signal );
+// 				break;
 
-			case SignShapeType.triangle:
-				sign = SignalFactory.createSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.diamond:
+// 				sign = SignalFactory.createSquareSignal( assetName, signal );
+// 				break;
 
-			case SignShapeType.triangle_inverted:
-				sign = SignalFactory.createSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.triangle:
+// 				sign = SignalFactory.createSquareSignal( assetName, signal );
+// 				break;
 
-			case SignShapeType.square_tilted:
-				sign = SignalFactory.createTiltedSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.triangle_inverted:
+// 				sign = SignalFactory.createSquareSignal( assetName, signal );
+// 				break;
 
-			case SignShapeType.rectangle:
-				sign = SignalFactory.createRectangleSignal( assetName, signal );
-				break;
+// 			case SignShapeType.square_tilted:
+// 				sign = SignalFactory.createTiltedSquareSignal( assetName, signal );
+// 				break;
 
-			case 'default':
-				TvConsole.warn( 'Sign shape not specified, using default square shape for now' );
-				sign = SignalFactory.createSquareSignal( assetName, signal );
-				break;
+// 			case SignShapeType.rectangle:
+// 				sign = SignalFactory.createRectangleSignal( assetName, signal );
+// 				break;
 
-			default:
-				TvConsole.warn( 'Sign shape type not specified' );
-				break;
-		}
+// 			case 'default':
+// 				TvConsole.warn( 'Sign shape not specified, using default square shape for now' );
+// 				sign = SignalFactory.createSquareSignal( assetName, signal );
+// 				break;
 
-		if ( !sign ) return;
+// 			default:
+// 				TvConsole.warn( 'Sign shape type not specified' );
+// 				break;
+// 		}
 
-		pole.add( sign );
+// 		if ( !sign ) return;
 
-		sign.position.set( 0, poleHeight * 0.5, poleWidth );
+// 		pole.add( sign );
 
-		pole.rotateX( 90 * Maths.Deg2Rad );
+// 		sign.position.set( 0, poleHeight * 0.5, poleWidth );
 
-		pole.position.setZ( pole.position.z + ( poleHeight * 0.5 ) );
+// 		pole.rotateX( 90 * Maths.Deg2Rad );
 
-		signal.gameObject = new GameObject( 'Signal' );
-		signal.gameObject.add( pole );
-		signal.gameObject.position.setX( position.x );
-		signal.gameObject.position.setY( position.y );
+// 		pole.position.setZ( pole.position.z + ( poleHeight * 0.5 ) );
 
-		road.gameObject.add( signal.gameObject );
-	}
+// 		const object = new GameObject( 'Signal' );
 
-	private static createRectangleSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+// 		object.add( pole );
 
-		// const geometry = new BoxGeometry( 1, 1.5, 0.05 );
-		const geometry = new PlaneGeometry( 1, 1.5 );
+// 		object.position.setX( position.x );
 
-		const signMaterial = SignalFactory.getSignMaterial( sign );
+// 		object.position.setY( position.y );
 
-		return SignalFactory.createObject( geometry, signMaterial, signal );
+// 		return object;
+// 	}
 
-	}
+// 	private static createRectangleSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-	private static createSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+// 		// const geometry = new BoxGeometry( 1, 1.5, 0.05 );
+// 		const geometry = new PlaneGeometry( 1, 1.5 );
 
-		// const geometry = new BoxGeometry( 1, 1, 0.05 );
-		const geometry = new PlaneGeometry( 1, 1 );
+// 		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const signMaterial = SignalFactory.getSignMaterial( sign );
+// 		return SignalFactory.createObject( geometry, signMaterial, signal );
 
-		return SignalFactory.createObject( geometry, signMaterial, signal );
-	}
+// 	}
 
-	private static createTiltedSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+// 	private static createSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 4, 1 );
+// 		// const geometry = new BoxGeometry( 1, 1, 0.05 );
+// 		const geometry = new PlaneGeometry( 1, 1 );
 
-		const signMaterial = SignalFactory.getSignMaterial( sign );
+// 		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
+// 		return SignalFactory.createObject( geometry, signMaterial, signal );
+// 	}
 
-		gameObject.rotateX( 90 * Maths.Deg2Rad );
-		gameObject.rotateY( 90 * Maths.Deg2Rad );
+// 	private static createTiltedSquareSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-		return gameObject;
-	}
+// 		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 4, 1 );
 
-	private static createSphericalSignal ( sign: string, signal: TvRoadSignal ): GameObject {
+// 		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 32, 1 );
+// 		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
 
-		const signMaterial = SignalFactory.getSignMaterial( sign );
+// 		gameObject.rotateX( 90 * Maths.Deg2Rad );
+// 		gameObject.rotateY( 90 * Maths.Deg2Rad );
 
-		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
+// 		return gameObject;
+// 	}
 
-		gameObject.rotateX( 90 * Maths.Deg2Rad );
-		gameObject.rotateY( 90 * Maths.Deg2Rad );
+// 	private static createSphericalSignal ( sign: string, signal: TvRoadSignal ): GameObject {
 
-		return gameObject;
-	}
+// 		const geometry = new CylinderGeometry( 0.5, 0.5, 0.05, 32, 1 );
 
-	private static createObject ( geometry, signMaterial, signal: TvRoadSignal ) {
+// 		const signMaterial = SignalFactory.getSignMaterial( sign );
 
-		const gameObject = new GameObject( 'Signal', geometry, signMaterial );
+// 		const gameObject = SignalFactory.createObject( geometry, signMaterial, signal );
 
-		gameObject.Tag = TvObjectType[ TvObjectType.SIGNAL ];
+// 		gameObject.rotateX( 90 * Maths.Deg2Rad );
+// 		gameObject.rotateY( 90 * Maths.Deg2Rad );
 
-		gameObject.OpenDriveType = TvObjectType.SIGNAL;
+// 		return gameObject;
+// 	}
 
-		gameObject.userData.data = signal;
+// 	private static createObject ( geometry, signMaterial, signal: TvRoadSignal ) {
 
-		return gameObject;
-	}
+// 		const gameObject = new GameObject( 'Signal', geometry, signMaterial );
 
-	private static getBlankMaterial () {
-		const blankTexture = new TextureLoader().load( `assets/textures/blank.png` );
-		return new MeshBasicMaterial( { map: blankTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-	}
+// 		gameObject.Tag = TvObjectType[ TvObjectType.SIGNAL ];
 
-	private static getMetalMaterial () {
-		const metalTexture = new TextureLoader().load( `assets/signs/metal.png` );
-		return new MeshBasicMaterial( { map: metalTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-	}
+// 		gameObject.OpenDriveType = TvObjectType.SIGNAL;
 
-	private static getBackMaterial () {
-		const signBackTexture = new TextureLoader().load( `assets/signs/back_circle.png` );
-		return new MeshBasicMaterial( { map: signBackTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-	}
+// 		gameObject.userData.data = signal;
 
-	private static getSignMaterial ( sign: string ) {
-		const signTexture = new TextureLoader().load( `assets/signs/${ sign }.png` );
-		return new MeshBasicMaterial( { map: signTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-	}
+// 		return gameObject;
+// 	}
 
-	// createPlaneSignal ( sign: string, signal: OdRoadSignal ): GameObject {
-	//
-	//     const geometry = new PlaneGeometry( 1, 1, 1 );
-	//
-	//     let boxMaterial: MeshBasicMaterial;
-	//
-	//     const gameObject = new GameObject( 'Signal', geometry, boxMaterial );
-	//
-	//     new TextureLoader().load( `assets/signs/${sign}.png`, function ( texture ) {
-	//
-	//         gameObject.material = new MeshBasicMaterial( { map: texture, transparent: true, opacity: 0.9 } );
-	//
-	//         ( gameObject.material as Material ).needsUpdate = true;
-	//
-	//     } );
-	//
-	//     // var position = road.getPositionAt( signal.attr_s, signal.attr_t );
-	//
-	//     // gameObject.position.set( position.x, position.y, 0 );
-	//
-	//     gameObject.Tag = OpenDriveObjectType[ OpenDriveObjectType.SIGNAL ];
-	//
-	//     gameObject.OpenDriveType = OpenDriveObjectType.SIGNAL;
-	//
-	//     gameObject.userData.data = signal;
-	//
-	//     return gameObject;
-	//
-	// }
+// 	private static getBlankMaterial () {
+// 		const blankTexture = new TextureLoader().load( `assets/textures/blank.png` );
+// 		return new MeshBasicMaterial( { map: blankTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+// 	}
+
+// 	private static getMetalMaterial () {
+// 		const metalTexture = new TextureLoader().load( `assets/signs/metal.png` );
+// 		return new MeshBasicMaterial( { map: metalTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+// 	}
+
+// 	private static getBackMaterial () {
+// 		const signBackTexture = new TextureLoader().load( `assets/signs/back_circle.png` );
+// 		return new MeshBasicMaterial( { map: signBackTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+// 	}
+
+// 	private static getSignMaterial ( sign: string ) {
+// 		const signTexture = new TextureLoader().load( `assets/signs/${ sign }.png` );
+// 		return new MeshBasicMaterial( { map: signTexture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+// 	}
+
+// 	// createPlaneSignal ( sign: string, signal: OdRoadSignal ): GameObject {
+// 	//
+// 	//     const geometry = new PlaneGeometry( 1, 1, 1 );
+// 	//
+// 	//     let boxMaterial: MeshBasicMaterial;
+// 	//
+// 	//     const gameObject = new GameObject( 'Signal', geometry, boxMaterial );
+// 	//
+// 	//     new TextureLoader().load( `assets/signs/${sign}.png`, function ( texture ) {
+// 	//
+// 	//         gameObject.material = new MeshBasicMaterial( { map: texture, transparent: true, opacity: 0.9 } );
+// 	//
+// 	//         ( gameObject.material as Material ).needsUpdate = true;
+// 	//
+// 	//     } );
+// 	//
+// 	//     // var position = road.getPositionAt( signal.attr_s, signal.attr_t );
+// 	//
+// 	//     // gameObject.position.set( position.x, position.y, 0 );
+// 	//
+// 	//     gameObject.Tag = OpenDriveObjectType[ OpenDriveObjectType.SIGNAL ];
+// 	//
+// 	//     gameObject.OpenDriveType = OpenDriveObjectType.SIGNAL;
+// 	//
+// 	//     gameObject.userData.data = signal;
+// 	//
+// 	//     return gameObject;
+// 	//
+// 	// }
 
 
-}
+// }

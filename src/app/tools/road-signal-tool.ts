@@ -4,7 +4,6 @@
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
 import { MouseButton, PointerEventData, PointerMoveData } from '../events/pointer-event-data';
-import { SignalFactory } from '../factories/signal-factory';
 import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
 import { StaticSignal } from '../modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from '../modules/tv-map/models/tv-road.model';
@@ -36,32 +35,32 @@ export class RoadSignalTool extends BaseTool {
 
 	onPointerDown ( e: PointerEventData ) {
 
-		if ( e.button != MouseButton.LEFT ) return;
+		// if ( e.button != MouseButton.LEFT ) return;
 
-		if ( !KeyboardEvents.isShiftKeyDown ) return;
+		// if ( !KeyboardEvents.isShiftKeyDown ) return;
 
-		const posTheta = new TvPosTheta();
+		// const posTheta = new TvPosTheta();
 
-		const road = TvMapQueries.getRoadByCoords( e.point?.x, e.point?.y, posTheta );
+		// const road = TvMapQueries.getRoadByCoords( e.point?.x, e.point?.y, posTheta );
 
-		if ( !road ) {
+		// if ( !road ) {
 
-			SnackBar.warn( 'Please select/create a road' );
+		// 	SnackBar.warn( 'Please select/create a road' );
 
-			return;
-		}
+		// 	return;
+		// }
 
-		const signal = this.signal = new StaticSignal( posTheta.s, posTheta.t );
+		// const signal = this.signal = new StaticSignal( posTheta.s, posTheta.t );
 
-		signal.roadId = road.id;
+		// signal.roadId = road.id;
 
-		signal.controlPoint = AnyControlPoint.create( '', e.point );
+		// signal.controlPoint = AnyControlPoint.create( '', e.point );
 
-		SceneService.addToMain( signal.controlPoint );
+		// SceneService.addToMain( signal.controlPoint );
 
-		signal.height = 1.5;
+		// signal.height = 1.5;
 
-		SignalFactory.createSignal( road, signal );
+		// SignalFactory.createSignal( road, signal );
 
 	}
 

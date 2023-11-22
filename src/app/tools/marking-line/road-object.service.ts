@@ -8,6 +8,7 @@ import { RoadObjectFactory } from 'app/factories/road-object.factory';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { Object3D } from 'three';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
+import { RoadSignalService } from 'app/services/signal/road-signal.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,10 +17,11 @@ export class RoadObjectService {
 
 	private objectMap = new Object3DMap<TvRoadObject, Object3D>();
 
-	static instance: any;
+	static instance: RoadObjectService;
 
 	constructor (
-		private map: MapService
+		private map: MapService,
+		private signal: RoadSignalService, // just for import
 	) {
 		RoadObjectService.instance = this;
 	}

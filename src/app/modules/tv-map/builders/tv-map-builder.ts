@@ -14,22 +14,16 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoadObject } from '../models/objects/tv-road-object';
-import { TvRoadSignal } from '../models/tv-road-signal.model';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { TvMapInstance } from '../services/tv-map-instance';
-import { TvSignalHelper } from '../services/tv-signal-helper';
 import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
-// import { OdRoadMarkBuilderV1 } from './od-road-mark-builder-v1';
-import { SignalFactory } from '../../../factories/signal-factory';
-import { RoadObjectFactory } from 'app/factories/road-object.factory';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
+import { RoadSignalService } from 'app/services/signal/road-signal.service';
 
 export class TvMapBuilder {
 
-	private static signalFactory = new SignalFactory;
 	private static roadMarkBuilder = new LaneRoadMarkFactory();
 	// private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
@@ -90,9 +84,15 @@ export class TvMapBuilder {
 
 		this.buildRoadObjects( road );
 
-		TvSignalHelper.create( road );
+		this.buildRoadSignals( road );
 
 		parent.add( road.gameObject );
+
+	}
+
+	static buildRoadSignals ( road: TvRoad ) {
+
+		RoadSignalService.instance.createSignals( road );
 
 	}
 
@@ -330,13 +330,6 @@ export class TvMapBuilder {
 	// 		}
 	// 	}
 	// }
-
-
-	static makeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): any {
-
-		SignalFactory.createSignal( road, signal );
-
-	}
 
 	private static createLaneMeshFromGeometry ( road: TvRoad, lane: TvLane, laneSection: TvLaneSection ) {
 
