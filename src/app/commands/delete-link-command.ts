@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { RoadFactory } from '../factories/road-factory.service';
 import { SceneService } from '../services/scene.service';
 import { BaseCommand } from './base-command';

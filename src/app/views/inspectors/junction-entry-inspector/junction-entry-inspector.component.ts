@@ -8,8 +8,8 @@ import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { IComponent } from 'app/core/game-object';
 import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 

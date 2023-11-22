@@ -4,9 +4,9 @@
 
 import { Mesh, Vector3 } from 'three';
 import { Maths } from '../../../../utils/maths';
-import { TvJunctionConnection } from '../tv-junction-connection';
-import { TvJunctionController } from '../tv-junction-controller';
-import { TvJunctionPriority } from '../tv-junction-priority';
+import { TvJunctionConnection } from './tv-junction-connection';
+import { TvJunctionController } from './tv-junction-controller';
+import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 

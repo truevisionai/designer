@@ -24,10 +24,10 @@ import {
 } from '../../modules/tv-map/models/tv-common';
 import { TvController, TvControllerControl } from '../../modules/tv-map/models/tv-controller';
 import { TvJunction } from '../../modules/tv-map/models/junctions/tv-junction';
-import { TvJunctionConnection } from '../../modules/tv-map/models/tv-junction-connection';
-import { TvJunctionController } from '../../modules/tv-map/models/tv-junction-controller';
-import { TvJunctionLaneLink } from '../../modules/tv-map/models/tv-junction-lane-link';
-import { TvJunctionPriority } from '../../modules/tv-map/models/tv-junction-priority';
+import { TvJunctionConnection } from '../../modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionController } from '../../modules/tv-map/models/junctions/tv-junction-controller';
+import { TvJunctionLaneLink } from '../../modules/tv-map/models/junctions/tv-junction-lane-link';
+import { TvJunctionPriority } from '../../modules/tv-map/models/junctions/tv-junction-priority';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
 import { TvMapHeader } from '../../modules/tv-map/models/tv-map-header';

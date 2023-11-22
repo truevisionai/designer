@@ -4,12 +4,12 @@
 
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Shape } from 'three';
-import { RoadFactory } from '../../../factories/road-factory.service';
-import { SceneService } from '../../../services/scene.service';
-import { LaneDirectionHelper } from '../builders/od-lane-direction-builder';
+import { RoadFactory } from '../../../../factories/road-factory.service';
+import { SceneService } from '../../../../services/scene.service';
+import { LaneDirectionHelper } from '../../builders/od-lane-direction-builder';
 import { TvJunctionConnection } from './tv-junction-connection';
-import { TvLane } from './tv-lane';
-import { TvRoad } from './tv-road.model';
+import { TvLane } from '../tv-lane';
+import { TvRoad } from '../tv-road.model';
 
 export class TvJunctionLaneLink {
 

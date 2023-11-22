@@ -39,10 +39,10 @@ import {
 } from 'app/modules/tv-map/models/tv-common';
 import { TvControllerControl } from 'app/modules/tv-map/models/tv-controller';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvJunctionController } from 'app/modules/tv-map/models/tv-junction-controller';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-import { TvJunctionPriority } from 'app/modules/tv-map/models/tv-junction-priority';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionController } from 'app/modules/tv-map/models/junctions/tv-junction-controller';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
+import { TvJunctionPriority } from 'app/modules/tv-map/models/junctions/tv-junction-priority';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';

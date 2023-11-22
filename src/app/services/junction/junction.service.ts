@@ -12,7 +12,7 @@ import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { LaneLinkService } from './lane-link.service';
 import { MapService } from '../map.service';

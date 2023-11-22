@@ -9,7 +9,7 @@ import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
 import { CommandHistory } from 'app/services/command-history';
-import { LanePathObject } from '../../../modules/tv-map/models/tv-junction-lane-link';
+import { LanePathObject } from '../../../modules/tv-map/models/junctions/tv-junction-lane-link';
 import { RoadService } from "../../../services/road/road.service";
 
 @Component( {

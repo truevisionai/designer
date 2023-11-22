@@ -20,7 +20,7 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
-import { TvJunctionConnection } from '../modules/tv-map/models/tv-junction-connection';
+import { TvJunctionConnection } from '../modules/tv-map/models/junctions/tv-junction-connection';
 import { SnackBar } from '../services/snack-bar.service';
 import { TvElectronService } from '../services/tv-electron.service';
 import { ThreeService } from 'app/modules/three-js/three.service';

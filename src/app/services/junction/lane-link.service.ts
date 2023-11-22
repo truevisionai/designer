@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 
 @Injectable( {
