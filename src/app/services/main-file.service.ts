@@ -18,6 +18,7 @@ import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
+import { DialogService } from './dialog/dialog.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +31,7 @@ export class MainFileService {
 		public fileService: FileService,
 		public threeService: ThreeService,
 		public electronService: TvElectronService,
+		private dialogService: DialogService,
 	) {
 	}
 
@@ -92,15 +94,18 @@ export class MainFileService {
 		TvMapBuilder.buildMap( this.map );
 	}
 
-	showOpenWindow ( path?: string ) {
+	async showOpenWindow ( path?: string ) {
 
-		this.fileService.showOpenWindow( path, 'tv-map', [ 'xml', 'xosc' ], ( file: IFile ) => {
-
-			TvConsole.info( 'Opening file: ' + file.path );
-
-			this.sceneImporter.importFromFile( file );
-
+		const response = await this.dialogService.openDialog( {
+			path: path,
+			extensions: [ 'scene' ],
 		} );
+
+		if ( response.canceled ) return;
+
+		TvConsole.info( 'Opening file: ' + response.filePaths[ 0 ] );
+
+		this.sceneImporter.importFromPath( response.filePaths[ 0 ] );
 
 	}
 

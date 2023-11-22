@@ -186,43 +186,6 @@ export class FileService {
 		return Promise.resolve( arrayBuffer );
 	}
 
-	showOpenWindow ( path?: string, type: string = 'default', extensions = [ 'xml' ], callbackFn: any = null ) {
-
-		const options = {
-			title: 'Select file',
-			buttonLabel: 'Import',
-			defaultPath: path || this.projectFolder,
-			filters: [
-				{
-					name: 'Scene', extensions: [ 'scene' ]
-				}
-			],
-			message: 'Select file'
-		};
-
-		this.showOpenDialog( options, type, callbackFn );
-	}
-
-	showOpenDialog ( options: Electron.OpenDialogOptions, type, callbackFn: any = null ) {
-
-		this.remote.dialog.showOpenDialog( options ).then( ( res: Electron.OpenDialogReturnValue ) => {
-
-			if ( res.canceled ) {
-
-				SnackBar.show( 'File import cancelled' );
-
-			} else if ( res.filePaths.length > 0 ) {
-
-				this.readFile( res.filePaths[ 0 ], type, callbackFn );
-
-			}
-
-
-		} );
-
-	}
-
-
 	readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
 
 		this.fs.readFile( path, 'utf-8', ( err, data ) => {
