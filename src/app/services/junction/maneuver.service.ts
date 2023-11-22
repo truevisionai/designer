@@ -14,6 +14,7 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,7 @@ export class ManeuverService extends BaseService {
 	private static maneuverMeshes: Mesh[] = [];
 	private static entryExitMeshes: Object3D[] = [];
 
-	constructor ( private roadSplineService: RoadSplineService ) {
+	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) {
 		super();
 	}
 
@@ -97,7 +98,7 @@ export class ManeuverService extends BaseService {
 
 	showAllManeuvers () {
 
-		this.map.junctions.forEach( junction => {
+		this.mapService.map.junctions.forEach( junction => {
 
 			junction.connections.forEach( connection => {
 
@@ -127,7 +128,7 @@ export class ManeuverService extends BaseService {
 
 	showAllEntryExitPoints () {
 
-		const roads = this.map.getRoads();
+		const roads = this.mapService.map.getRoads();
 
 		const processFirstSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
 

@@ -10,6 +10,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { SceneService } from '../scene.service';
 import { Highlightable, ISelectable } from 'app/modules/three-js/objects/i-selectable';
+import { MapService } from '../map.service';
 
 export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 
@@ -48,13 +49,15 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionNodeService extends BaseService {
+export class JunctionNodeService {
 
 	private static nodes: Object3D[] = [];
 
+	constructor ( private mapService: MapService ) { }
+
 	showAllJunctionNodes () {
 
-		this.map.getRoads().forEach( road => this.showJunctionNode( road ) );
+		this.mapService.map.getRoads().forEach( road => this.showJunctionNode( road ) );
 
 	}
 
