@@ -9,24 +9,20 @@ import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { TvScenario } from '../models/tv-scenario';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { ScenarioBuilder } from './scenario-builder.service';
+import { FileService } from 'app/io/file.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ScenarioService {
 
-	private static scenarioLoader: OpenScenarioLoader;
-
-	private static mapService: TvMapService;
-
 	private static _scenario: TvScenario = new TvScenario();
 
-	constructor ( openScenarioImporter: OpenScenarioLoader, mapService: TvMapService ) {
-
-		ScenarioService.scenarioLoader = openScenarioImporter;
-
-		ScenarioService.mapService = mapService;
-
+	constructor (
+		private openScenarioImporter: OpenScenarioLoader,
+		private mapService: TvMapService,
+		private fileService: FileService,
+	) {
 	}
 
 	static get scenario () {
@@ -43,11 +39,11 @@ export class ScenarioService {
 
 	}
 
-	static async importScenario ( path: string ) {
+	async importScenario ( path: string ) {
 
-		this.scenario?.destroy();
+		ScenarioService.scenario?.destroy();
 
-		const scenario = await this.scenarioLoader.loadPath( path );
+		const scenario = await this.openScenarioImporter.loadPath( path );
 
 		if ( !scenario?.roadNetwork?.logics?.filepath ) {
 
@@ -57,11 +53,11 @@ export class ScenarioService {
 
 		const directory = FileUtils.getDirectoryFromPath( path );
 
-		const mapFilePath = this.mapService.fileService.join( directory, scenario.roadNetwork.logics.filepath );
+		const mapFilePath = this.fileService.join( directory, scenario.roadNetwork.logics.filepath );
 
 		this.mapService.importFromPath( mapFilePath, () => {
 
-			this.scenario = scenario;
+			ScenarioService.scenario = scenario;
 
 			// need after scenario change because action, objects in scenario are dependent
 			// this.scenario to be set and correct

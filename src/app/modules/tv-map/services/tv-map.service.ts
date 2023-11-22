@@ -36,11 +36,11 @@ export class TvMapService {
 
 	}
 
-	public get map () {
+	private get map () {
 		return TvMapInstance.map;
 	}
 
-	public set map ( value ) {
+	private set map ( value ) {
 		TvMapInstance.map = value;
 	}
 

@@ -28,7 +28,7 @@ export class ImporterService {
 		private assetService: AssetLoaderService,
 		private fileService: FileService,
 		private openScenarioImporter: OpenScenarioLoader,
-		private scenarioInstance: ScenarioService,		// dont remove required for import
+		private scenarioService: ScenarioService,		// dont remove required for import
 	) {
 	}
 
@@ -111,7 +111,7 @@ export class ImporterService {
 
 	async importOpenScenario ( path: string ) {
 
-		await ScenarioService.importScenario( path );
+		await this.scenarioService.importScenario( path );
 
 	}
 

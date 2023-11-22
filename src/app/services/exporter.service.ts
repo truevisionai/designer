@@ -27,6 +27,7 @@ import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { CoordinateSystem } from './CoordinateSystem';
+import { MapService } from './map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -38,7 +39,8 @@ export class ExporterService {
 		private fileService: FileService,
 		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
-		private scenarioWriter: OpenScenarioExporter
+		private scenarioWriter: OpenScenarioExporter,
+		private mapService: MapService,
 	) {
 	}
 
@@ -146,7 +148,7 @@ export class ExporterService {
 
 		const exporter = new TvCarlaExporter();
 
-		const contents = exporter.getOutput( this.odService.map );
+		const contents = exporter.getOutput( this.mapService.map );
 
 		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
