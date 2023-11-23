@@ -369,7 +369,7 @@ export class PreviewService {
 
 		const gameObject = new GameObject();
 
-		const road = new TvRoad( '', 0, 1, -1 );
+		const road = new TvRoad( '', 0, 1 );
 
 		road.laneSections.push( roadStyle.laneSection );
 

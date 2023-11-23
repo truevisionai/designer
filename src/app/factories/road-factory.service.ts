@@ -11,6 +11,7 @@ import { Vector3 } from 'three';
 import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
+import { TvJunction } from "../modules/tv-map/models/junctions/tv-junction";
 
 @Injectable( {
 	providedIn: 'root'
@@ -153,13 +154,13 @@ export class RoadFactory {
 		return road;
 	}
 
-	createNewRoad ( name?: string, length?: number, id?: number, junctionId?: number ): TvRoad {
+	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
 
 		const roadId = this.IDService.getUniqueID( id );
 
 		const roadName = name || `Road${ roadId }`;
 
-		const road = new TvRoad( roadName, length || 0, roadId, junctionId || -1 );
+		const road = new TvRoad( roadName, length || 0, roadId, junction );
 
 		road.sStart = 0;
 

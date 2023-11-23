@@ -6,44 +6,28 @@ import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { SceneExporterService } from 'app/exporters/scene-exporter.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { TvElectronService } from 'app/services/tv-electron.service';
-
 import { IFile } from '../../../io/file';
 import { FileService } from '../../../io/file.service';
 import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
-import { TvMapInstance } from './tv-map-instance';
 import { OpenDriveParserService } from "../../../importers/open-drive/open-drive-parser.service";
+import { MapService } from 'app/services/map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvMapService {
+export class OpenDriveService {
 
 	constructor (
 		public fileService: FileService,
 		private openDriveExporter: OpenDriveExporter,
-		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
-		private openDriveParserService: OpenDriveParserService
+		private openDriveParserService: OpenDriveParserService,
+		private mapService: MapService,
 	) {
 
-		// not reqiured now because open scenario not being used
-		// OdSourceFile.roadNetworkChanged.subscribe( ( e ) => {
-		// OdBuilder.makeOpenDrive( this.openDrive );
-		// } );
-
 	}
-
-	private get map () {
-		return TvMapInstance.map;
-	}
-
-	private set map ( value ) {
-		TvMapInstance.map = value;
-	}
-
 
 	/**
 	 * @deprecated
@@ -86,11 +70,11 @@ export class TvMapService {
 
 		if ( map == null ) return;
 
-		this.map?.destroy();
+		this.mapService.map?.destroy();
 
-		this.map = map;
+		this.mapService.map = map;
 
-		TvMapBuilder.buildMap( this.map );
+		TvMapBuilder.buildMap( this.mapService.map );
 
 		callbackFn?.( map );
 
@@ -128,7 +112,7 @@ export class TvMapService {
 
 	getOpenDriveOutput () {
 
-		return this.openDriveExporter.getOutput( this.map );
+		return this.openDriveExporter.getOutput( this.mapService.map );
 
 	}
 

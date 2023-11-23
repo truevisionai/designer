@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { FileService } from 'app/io/file.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { KeyboardEvents } from '../events/keyboard-events';
-import { TvMapService } from "../modules/tv-map/services/tv-map.service";
 import { MapService } from "./map.service";
 import { ScenarioService } from "../modules/scenario/services/scenario.service";
 
@@ -20,7 +19,7 @@ export class EditorService {
 	}
 
 	get scenario () {
-		return ScenarioService.scenario;
+		return this.scenarioService.getScenario();
 	}
 
 	constructor (

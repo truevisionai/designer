@@ -63,7 +63,7 @@ export class TvRoad {
 	public trafficRule = TrafficRule.RHT;
 	public successor: TvRoadLinkChild;
 	public predecessor: TvRoadLinkChild;
-	public junctionId: number;
+
 
 	private lastAddedLaneSectionIndex: number;
 	private lastAddedRoadObjectIndex: number;
@@ -77,16 +77,23 @@ export class TvRoad {
 	private _length: number;
 	private _id: number;
 	private _gameObject: GameObject;
+	private junction: TvJunction;
 
-	constructor ( name: string, length: number, id: number, junctionId: number ) {
+	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
 		this.uuid = MathUtils.generateUUID();
 		this._name = name;
 		this._length = length;
 		this._id = id;
-		this.junctionId = junctionId;
-
 		this.spline = new AutoSplineV2();
+	}
+
+	get junctionId (): number {
+		return this.junction?.id ?? -1;
+	}
+
+	setJunction ( junction: TvJunction ) {
+		this.junction = junction;
 	}
 
 	get sStart (): number {
@@ -1242,7 +1249,7 @@ export class TvRoad {
 
 		const length = this.length - s;
 
-		const road = new TvRoad( this.name, length, this.id, this.junctionId );
+		const road = new TvRoad( this.name, length, this.id, this.junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
@@ -1252,7 +1259,6 @@ export class TvRoad {
 		road.borderMaterialGuid = this.borderMaterialGuid;
 		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
 		road.trafficRule = this.trafficRule;
-		road.junctionId = this.junctionId;
 		road.planView = this._planView.clone();
 		road.predecessor = this.predecessor?.clone();
 		road.successor = this.successor?.clone();

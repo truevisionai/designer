@@ -73,8 +73,6 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		this.map.header = this.parseHeader( openDRIVE.header );
 
-		this.parseRoads( openDRIVE );
-
 		readXmlArray( openDRIVE.controller, xml => {
 
 			this.map.addControllerInstance( this.parseController( xml ) );
@@ -84,6 +82,18 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		readXmlArray( openDRIVE.junction, ( xml ) => {
 
 			this.map.addJunctionInstance( this.parseJunction( xml ) );
+
+		} );
+
+		this.parseRoads( openDRIVE );
+
+		readXmlArray( openDRIVE.junction, ( xml ) => {
+
+			this.parseJunctionConnections( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionPriorities( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionControllers( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
 
 		} );
 
@@ -115,7 +125,9 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const name = xml.attr_name;
 		const length = parseFloat( xml.attr_length );
 		const id = parseInt( xml.attr_id, 10 );
-		const junction = parseFloat( xml.attr_junction );
+
+		const junctionId = parseInt( xml.attr_junction ) || -1;
+		const junction = this.map.getJunctionById( junctionId );
 
 		const road = new TvRoad( name, length, id, junction );
 
@@ -512,7 +524,11 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = new TvJunction( name, id );
+		return new TvJunction( name, id );
+
+	}
+
+	public parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ) {
 
 		readXmlArray( xmlElement.connection, xml => {
 
@@ -520,11 +536,19 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		} );
 
+	}
+
+	public parseJunctionPriorities ( junction: TvJunction, xmlElement: XmlElement ) {
+
 		readXmlArray( xmlElement.priority, xml => {
 
 			junction.addPriority( this.parseJunctionPriority( xml ) );
 
 		} );
+
+	}
+
+	public parseJunctionControllers ( junction: TvJunction, xmlElement: XmlElement ) {
 
 		readXmlArray( xmlElement.controller, xml => {
 
@@ -532,7 +556,6 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		} );
 
-		return junction;
 	}
 
 	public parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {

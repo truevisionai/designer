@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
 import { ApiService } from '../services/api.service';
 import { IFile } from './file';
 
@@ -14,7 +14,7 @@ export class FileApiService {
 
 	constructor (
 		private api: ApiService,
-		private mapService: TvMapService
+		private mapService: OpenDriveService
 	) {
 	}
 

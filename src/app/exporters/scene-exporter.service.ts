@@ -17,7 +17,6 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
 import { TvJunctionConnection } from '../modules/tv-map/models/junctions/tv-junction-connection';
@@ -41,6 +40,8 @@ import { TvCornerLocal } from "../modules/tv-map/models/objects/tv-corner-local"
 import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "../importers/xml.element";
+import { MapService } from "../services/map.service";
+import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,21 +50,20 @@ export class SceneExporterService {
 
 	readonly extension = 'scene';
 
-	private map: TvMap;
+	get map (): TvMap {
+		return this.mapService.map;
+	}
 
 	constructor (
 		private fileService: FileService,
 		private electron: TvElectronService,
 		private threeService: ThreeService,
+		private mapService: MapService,
 	) {
 	}
 
 	get currentFile (): IFile {
 		return TvMapInstance.currentFile;
-	}
-
-	set currentFile ( value: IFile ) {
-		TvMapInstance.currentFile = value;
 	}
 
 	static exportJunctionConnection ( connection: TvJunctionConnection ) {
@@ -95,9 +95,7 @@ export class SceneExporterService {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		this.map = map || TvMapInstance.map;
-
-		const scene = this.exportMap( this.map );
+		const scene = this.exportMap( map || this.map );
 
 		const xmlDocument = builder.build( scene );
 
@@ -252,7 +250,6 @@ export class SceneExporterService {
 
 		// TODO: maybe not required here
 		this.writeSignals( xml, road );
-
 
 		return xml;
 	}
@@ -693,7 +690,6 @@ export class SceneExporterService {
 		}
 
 	}
-
 
 	writeLaneWidth ( laneWidth: TvLaneWidth ) {
 

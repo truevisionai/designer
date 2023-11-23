@@ -11,22 +11,17 @@ import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
 import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
-
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { saveAs } from 'file-saver';
-
-import { cloneDeep } from 'lodash';
-
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
-
 import { CommandHistory } from './command-history';
 import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
-import { TvElectronService } from './tv-electron.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map.service';
-import { TvMapService } from "../modules/tv-map/services/tv-map.service";
+
+import { saveAs } from 'file-saver';
+import { cloneDeep } from 'lodash';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,15 +29,11 @@ import { TvMapService } from "../modules/tv-map/services/tv-map.service";
 export class ExporterService {
 
 	constructor (
-		private odService: TvMapService,
 		private fileService: FileService,
-		private electron: TvElectronService,
 		private sceneExporter: SceneExporterService,
-		private scenarioWriter: OpenScenarioExporter,
 		private mapService: MapService,
 	) {
 	}
-
 
 	exportScene () {
 

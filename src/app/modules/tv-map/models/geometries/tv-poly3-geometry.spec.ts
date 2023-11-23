@@ -14,7 +14,7 @@ describe( 'OdPoly3Geometry', () => {
 
 		pose = new TvPosTheta();
 
-		road = new TvRoad( '', 100, 1, -1 );
+		road = new TvRoad( '', 100, 1);
 
 		road.addPlanView();
 

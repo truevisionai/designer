@@ -19,7 +19,7 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog/app-input-dialog-service';
 
 import { AppService } from '../../../services/app.service';
-import { TvMapService } from '../../../modules/tv-map/services/tv-map.service';
+import { OpenDriveService } from '../../../modules/tv-map/services/open-drive.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
@@ -35,7 +35,7 @@ export class MenuBarComponent implements OnInit {
 
 	constructor (
 		private appService: AppService,
-		private odService: TvMapService,
+		private odService: OpenDriveService,
 		private electron: TvElectronService,
 		private dialog: MatDialog,
 		private http: HttpClient,

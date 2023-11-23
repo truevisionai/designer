@@ -18,7 +18,7 @@ describe( 'OdArcGeometry', () => {
 
 		map = new TvMap();
 
-		road = new TvRoad( '', 0, 1, -1 );
+		road = new TvRoad( '', 0, 1 );
 
 		TvMapInstance.map = map;
 
@@ -29,9 +29,9 @@ describe( 'OdArcGeometry', () => {
 		// add roads
 		// 3 arc roads
 		// ==========|==========|==========
-		const road1 = map.addNewRoad( '', 10, 1, -1 );
-		const road2 = map.addNewRoad( '', 10, 2, -1 );
-		const road3 = map.addNewRoad( '', 10, 3, -1 );
+		const road1 = map.addNewRoad( '', 10, 1 );
+		const road2 = map.addNewRoad( '', 10, 2 );
+		const road3 = map.addNewRoad( '', 10, 3 );
 
 		road1.addPlanView();
 		road2.addPlanView();

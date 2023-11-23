@@ -93,7 +93,7 @@ export class RoadRampService {
 
 		virtualJunction.addConnection( connection );
 
-		rampRoad.junctionId = virtualJunction.id;
+		rampRoad.setJunction( virtualJunction );
 
 		// const startElevation = incomingRoad.getElevationValue( sStart );
 

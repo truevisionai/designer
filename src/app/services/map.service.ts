@@ -7,17 +7,14 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 } )
 export class MapService {
 
-	// map: TvMap;
-
 	constructor () {
-		// this.map = TvMapInstance.map;
 	}
 
 	get map () {
 		return TvMapInstance.map;
 	}
 
-	set map ( value ) {
+	set map ( value: TvMap ) {
 		TvMapInstance.map = value;
 	}
 }

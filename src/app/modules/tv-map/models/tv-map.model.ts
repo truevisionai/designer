@@ -18,11 +18,15 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 export class TvMap {
 
 	public props: PropInstance[] = [];
+
 	public propCurves: PropCurve[] = [];
+
 	public propPolygons: PropPolygon[] = [];
+
 	public surfaces: TvSurface[] = [];
 
 	public gameObject: GameObject = new GameObject( 'OpenDrive' );
+
 	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
@@ -93,7 +97,7 @@ export class TvMap {
 	 * @returns
 	 * @deprecated use factory
 	 */
-	public addNewRoad ( name: string, length: number, id: number, junction: number ): TvRoad {
+	public addNewRoad ( name: string, length: number, id: number, junction?: TvJunction ): TvRoad {
 
 		const road = new TvRoad( name, length, id, junction );
 
@@ -180,7 +184,7 @@ export class TvMap {
 
 	}
 
-	public getJunctionById ( id ): TvJunction {
+	public getJunctionById ( id: number ): TvJunction {
 
 		return this._junctions.get( id );
 

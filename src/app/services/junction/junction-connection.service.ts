@@ -126,7 +126,7 @@ export class JunctionConnectionService {
 
 		const connectingRoad = this.roadService.createNewRoad();
 
-		connectingRoad.junctionId = junction.id;
+		connectingRoad.setJunction( junction );
 
 		const spline = this.roadSplineService.createConnectingRoadSpline( incoming, outgoing );
 
@@ -240,11 +240,11 @@ export class JunctionConnectionService {
 		// return connectingRoad;
 	}
 
-	addConnectingRoad ( side: TvLaneSide, width: number, junctionId: number ): TvRoad {
+	addConnectingRoad ( side: TvLaneSide, width: number, junction?: TvJunction ): TvRoad {
 
 		const id = 1;
 
-		const road = new TvRoad( `Road${ id }`, 0, id, junctionId );
+		const road = new TvRoad( `Road${ id }`, 0, id, junction );
 
 		const laneSection = road.addGetLaneSection( 0 );
 

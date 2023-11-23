@@ -179,9 +179,36 @@ export class SceneImporterService extends AbstractReader {
 
 	private importScene ( xml: XmlElement ): void {
 
+		this.readAsOptionalArray( xml.junction, xml => {
+
+			const junction = this.parseJunction( xml );
+
+			if ( xml.position ) {
+
+				junction.position = new Vector3(
+					parseFloat( xml.position.attr_x ),
+					parseFloat( xml.position.attr_y ),
+					parseFloat( xml.position.attr_z ),
+				);
+			}
+
+			this.map.addJunctionInstance( junction );
+
+		} );
+
 		this.readAsOptionalArray( xml.road, xml => {
 
 			this.map.addRoad( this.importRoad( xml ) );
+
+		} );
+
+		this.readAsOptionalArray( xml.junction, xml => {
+
+			this.parseJunctionConnections( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionPriorities( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionControllers( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
 
 		} );
 
@@ -252,23 +279,6 @@ export class SceneImporterService extends AbstractReader {
 		this.readAsOptionalArray( xml.surface, xml => {
 
 			this.map.surfaces.push( this.importSurface( xml ) );
-
-		} );
-
-		this.readAsOptionalArray( xml.junction, xml => {
-
-			const junction = this.parseJunction( xml );
-
-			if ( xml.position ) {
-
-				junction.position = new Vector3(
-					parseFloat( xml.position.attr_x ),
-					parseFloat( xml.position.attr_y ),
-					parseFloat( xml.position.attr_z ),
-				);
-			}
-
-			this.map.addJunctionInstance( junction );
 
 		} );
 
@@ -344,7 +354,9 @@ export class SceneImporterService extends AbstractReader {
 		const name = xml.attr_name || 'untitled';
 		const length = parseFloat( xml.attr_length );
 		const id = parseInt( xml.attr_id );
-		const junction = parseInt( xml.attr_junction ) || -1;
+
+		const junctionId = parseInt( xml.attr_junction ) || -1;
+		const junction = this.map.getJunctionById( junctionId );
 
 		const road = new TvRoad( name, length, id, junction );
 
@@ -995,7 +1007,11 @@ export class SceneImporterService extends AbstractReader {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = new TvJunction( name, id );
+		return new TvJunction( name, id );
+
+	}
+
+	private parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ) {
 
 		readXmlArray( xmlElement.connection, xml => {
 
@@ -1003,11 +1019,19 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
+	}
+
+	private parseJunctionPriorities ( junction: TvJunction, xmlElement: XmlElement ) {
+
 		readXmlArray( xmlElement.priority, xml => {
 
 			junction.addPriority( this.parseJunctionPriority( xml ) );
 
 		} );
+
+	}
+
+	private parseJunctionControllers ( junction: TvJunction, xmlElement: XmlElement ) {
 
 		readXmlArray( xmlElement.controller, xml => {
 
@@ -1015,7 +1039,6 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		return junction;
 	}
 
 	private parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {

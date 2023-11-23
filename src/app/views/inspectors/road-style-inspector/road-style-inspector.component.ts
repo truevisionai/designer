@@ -31,7 +31,7 @@ export class RoadStyleInspector implements OnInit, IComponent, OnDestroy {
 
 		const gameObject = new GameObject();
 
-		const road = new TvRoad( '', 0, 1, -1 );
+		const road = new TvRoad( '', 0, 1 );
 
 		road.addGeometryLine( 0, -50, 0, 0, 100 );
 

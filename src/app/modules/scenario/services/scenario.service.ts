@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { FileUtils } from 'app/io/file-utils';
 import { TvConsole } from 'app/core/utils/console';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
+import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
 import { TvScenario } from '../models/tv-scenario';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { ScenarioBuilder } from './scenario-builder.service';
@@ -20,7 +20,7 @@ export class ScenarioService {
 
 	constructor (
 		private openScenarioImporter: OpenScenarioLoader,
-		private mapService: TvMapService,
+		private openDriveService: OpenDriveService,
 		private fileService: FileService,
 	) {
 	}
@@ -55,7 +55,7 @@ export class ScenarioService {
 
 		const mapFilePath = this.fileService.join( directory, scenario.roadNetwork.logics.filepath );
 
-		this.mapService.importFromPath( mapFilePath, () => {
+		this.openDriveService.importFromPath( mapFilePath, () => {
 
 			ScenarioService.scenario = scenario;
 

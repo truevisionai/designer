@@ -194,7 +194,7 @@ export class JunctionTool extends BaseTool {
 
 			}
 
-			connectingRoad.junctionId = junction.id;
+			connectingRoad.setJunction( junction );
 
 			const connectingRoadLane = connectingRoad.laneSections[ 0 ].getLaneArray().find( i => i.id != 0 );
 
