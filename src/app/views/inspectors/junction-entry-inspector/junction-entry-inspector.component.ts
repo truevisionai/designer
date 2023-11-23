@@ -6,7 +6,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DeleteLinkCommand } from 'app/commands/delete-link-command';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { IComponent } from 'app/core/game-object';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
+//import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { CommandHistory } from 'app/services/command-history';
@@ -19,7 +19,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 } )
 export class JunctionEntryInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	data: JunctionEntryObject[] = [];
+	data: any[] = [];
 
 	constructor () {
 

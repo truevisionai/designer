@@ -235,7 +235,7 @@ export class JunctionTool extends BaseTool {
 
 				MapEvents.roadRemoved.emit( new RoadRemovedEvent( connection.connectingRoad ) );
 
-				this.map.removeRoad( connection.connectingRoad );
+				this.tool.mapService.map.removeRoad( connection.connectingRoad );
 
 			} );
 

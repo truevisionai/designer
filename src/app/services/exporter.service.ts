@@ -13,8 +13,6 @@ import { ScenarioService } from 'app/modules/scenario/services/scenario.service'
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-import { TvMapService } from 'app/modules/tv-map/services/tv-map.service';
 import { saveAs } from 'file-saver';
 
 import { cloneDeep } from 'lodash';
@@ -28,6 +26,7 @@ import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map.service';
+import { TvMapService } from "../modules/tv-map/services/tv-map.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,7 +58,7 @@ export class ExporterService {
 
 		const mapExporter = new OpenDriveExporter();
 
-		const contents = mapExporter.getOutput( TvMapInstance.map );
+		const contents = mapExporter.getOutput( this.mapService.map );
 
 		const directory = this.fileService.projectFolder;
 
@@ -99,7 +98,7 @@ export class ExporterService {
 
 		const exporter = new GLTFExporter();
 
-		const gameObjectToExport = cloneDeep( TvMapInstance.map.gameObject );
+		const gameObjectToExport = cloneDeep( this.mapService.map.gameObject );
 
 		// Change the coordinate system of the cloned gameObject
 		ThreeJsUtils.changeCoordinateSystem( gameObjectToExport, CoordinateSystem.OPEN_DRIVE, coordinateSystem );
@@ -126,7 +125,7 @@ export class ExporterService {
 
 		const exporter = new GLTFExporter();
 
-		exporter.parse( TvMapInstance.map.gameObject, ( result ) => {
+		exporter.parse( this.mapService.map.gameObject, ( result ) => {
 
 			const text = JSON.stringify( result, null, 2 );
 

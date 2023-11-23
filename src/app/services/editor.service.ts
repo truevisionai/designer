@@ -6,15 +6,28 @@ import { Injectable } from '@angular/core';
 import { FileService } from 'app/io/file.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { KeyboardEvents } from '../events/keyboard-events';
+import { TvMapService } from "../modules/tv-map/services/tv-map.service";
+import { MapService } from "./map.service";
+import { ScenarioService } from "../modules/scenario/services/scenario.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class EditorService {
 
+	get map () {
+		return this.mapService.map;
+	}
+
+	get scenario () {
+		return ScenarioService.scenario;
+	}
+
 	constructor (
 		private mainFileService: TvSceneFileService,
-		public settings: EditorSettings
+		public settings: EditorSettings,
+		private mapService: MapService,
+		private scenarioService: ScenarioService,
 	) {
 	}
 
@@ -58,6 +71,7 @@ export class EditorService {
 export class EditorSettings {
 
 	private settingsPath: string;
+
 	private settings = {};
 
 	constructor ( private fileService: FileService ) {

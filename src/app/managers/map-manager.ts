@@ -45,8 +45,6 @@ export class MapManager extends Manager {
 
 		map.propCurves.forEach( curve => {
 
-			curve.delete();
-
 			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
 
 		} );

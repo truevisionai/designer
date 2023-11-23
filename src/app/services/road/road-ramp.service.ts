@@ -17,6 +17,7 @@ import { JunctionConnectionService } from '../junction/junction-connection.servi
 import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
 import { JunctionService } from '../junction/junction.service';
+import { MapService } from "../map.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,6 +32,7 @@ export class RoadRampService {
 		private laneLink: LaneLinkService,
 		private roadService: RoadService,
 		private junctionService: JunctionService,
+		public mapService: MapService,
 	) { }
 
 	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvVirtualJunction {

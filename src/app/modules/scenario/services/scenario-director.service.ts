@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { TvPosTheta } from '../../tv-map/models/tv-pos-theta';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { TvMapInstance } from '../../tv-map/services/tv-map-instance';
 import { ConditionUtils } from '../builders/condition-utils';
 import { ResetHelper } from '../helpers/tv-reset-helper';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
@@ -20,6 +19,7 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioService } from './scenario.service';
+import { MapService } from "../../../services/map.service";
 
 export interface StoryboardEvent {
 	name: string;
@@ -35,28 +35,26 @@ export class ScenarioDirectorService {
 	static vehicleTraffic: Map<number, VehicleEntity[]> = new Map<number, VehicleEntity[]>();
 
 	private added: boolean;
+
 	private eventIndex: number = 0;
+
 	private logEvents: boolean = false;
 
-	constructor ( public userPlayer: PlayerService ) {
+	get scenario () {
+		return this.scenarioService.getScenario();
+	}
+
+	constructor (
+		public userPlayer: PlayerService,
+		private mapService: MapService,
+		private scenarioService: ScenarioService
+	) {
 
 		userPlayer.playerStarted.subscribe( e => this.onPlayerStarted() );
 		userPlayer.playerResumed.subscribe( e => this.onPlayerResumed() );
 		userPlayer.playerStopped.subscribe( e => this.onPlayerStopped() );
 		userPlayer.playerPaused.subscribe( e => this.onPlayerPaused() );
 		userPlayer.playerTick.subscribe( e => this.onPlayerTick( e ) );
-
-	}
-
-	get openDrive () {
-
-		return TvMapInstance.map;
-
-	}
-
-	get scenario () {
-
-		return ScenarioService.scenario;
 
 	}
 
@@ -86,7 +84,7 @@ export class ScenarioDirectorService {
 
 	private onPlayerStarted () {
 
-		if ( this.logEvents ) console.info( 'scenario-started', this.scenario );
+		if ( this.logEvents ) console.info( 'scenario-started', this.scenarioService );
 
 		this.startScenario();
 		this.updateScenario();
@@ -129,7 +127,7 @@ export class ScenarioDirectorService {
 
 		} );
 
-		if ( ConditionUtils.hasGroupsPassed( this.scenario.storyboard.endConditionGroups ) ) {
+		if ( ConditionUtils.hasGroupsPassed( this.scenarioService.getScenario().storyboard.endConditionGroups ) ) {
 
 			this.userPlayer.stop();
 
@@ -173,7 +171,6 @@ export class ScenarioDirectorService {
 			obj.onStart();
 
 		} );
-
 
 		// if ( this.added ) return;
 		//
@@ -388,6 +385,5 @@ export class ScenarioDirectorService {
 		( new ResetHelper( this.scenario ) ).reset();
 
 	}
-
 
 }

@@ -16,4 +16,8 @@ export class MapService {
 	get map () {
 		return TvMapInstance.map;
 	}
+
+	set map ( value ) {
+		TvMapInstance.map = value;
+	}
 }

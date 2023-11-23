@@ -44,11 +44,9 @@ import { MaterialFieldComponent } from '../../views/fields/material-field/materi
 import { TextureFieldComponent } from '../../views/fields/texture-field/texture-field.component';
 import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
 import { LaneLinkInspector } from '../../views/inspectors/lane-link-inspector/lane-link-inspector.component';
-import { LaneOffsetInspector } from '../../views/inspectors/lane-offset-inspector/lane-offset-inspector.component';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
 import { ObjectPreviewComponent } from '../../views/inspectors/object-preview/object-preview.component';
-import { PropCurveInspectorComponent } from '../../views/inspectors/prop-curve-inspector/prop-curve-inspector.component';
 import { PropInstanceInspectorComponent } from '../../views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { PropModelInspectorComponent } from '../../views/inspectors/prop-model-inspector/prop-model-inspector.component';
 import { RoadControlPointInspector } from '../../views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
@@ -56,7 +54,6 @@ import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspec
 import { RoadObjectInspectorComponent } from '../../views/inspectors/road-object-inspector/road-object-inspector.component';
 import { RoadSignInspector } from '../../views/inspectors/road-sign-inspector/road-sign-inspector.component';
 import { ShapeInspectorComponent } from '../../views/inspectors/shape-inspector/shape-inspector.component';
-import { OdSignalInspectorComponent } from '../../views/inspectors/signal-inspector/signal-inspector.component';
 import { TextureInspector } from '../../views/inspectors/texture-inspector/texture-inspector.component';
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
@@ -65,7 +62,6 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 
 @NgModule( {
 	declarations: [
-		OdSignalInspectorComponent,
 		LaneInspectorComponent,
 		RoadInspector,
 		ShapeInspectorComponent,
@@ -73,9 +69,7 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		RoadObjectInspectorComponent,
 		PropModelInspectorComponent,
 		PropInstanceInspectorComponent,
-		PropCurveInspectorComponent,
 		PropPolygonInspectorComponent,
-		LaneOffsetInspector,
 		TextureInspector,
 		MaterialInspector,
 		ObjectPreviewComponent,
@@ -135,16 +129,13 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		DynamicFileInspectorComponent,
 	],
 	entryComponents: [
-		OdSignalInspectorComponent,
 		LaneInspectorComponent,
 		RoadInspector,
 		ShapeInspectorComponent,
 		RoadObjectInspectorComponent,
 		PropModelInspectorComponent,
 		PropInstanceInspectorComponent,
-		PropCurveInspectorComponent,
 		PropPolygonInspectorComponent,
-		LaneOffsetInspector,
 		TextureInspector,
 		MaterialInspector,
 		RoadSignInspector,

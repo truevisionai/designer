@@ -26,36 +26,63 @@ export class TvSurface implements ISelectable, INode {
 	isSelected: boolean;
 
 	@SerializedField( { type: 'material' } )
-	get materialGuid () { return this._materialGuid; }
+	get materialGuid () {
+		return this._materialGuid;
+	}
 
 	set materialGuid ( value: string ) {
 		this._materialGuid = value;
 		this.mesh.material = AssetDatabase.getInstance( value );
 	}
 
-	get spline (): AbstractSpline { return this._spline; }
+	get spline (): AbstractSpline {
+		return this._spline;
+	}
 
-	set spline ( value: any ) { this._spline = value; this.update() }
+	set spline ( value: any ) {
+		this._spline = value;
+		this.update()
+	}
 
 	@SerializedField( { type: 'vector2' } )
-	get offset () { return this._offset; }
+	get offset () {
+		return this._offset;
+	}
 
-	set offset ( value: any ) { this._offset = value; this.update() }
+	set offset ( value: any ) {
+		this._offset = value;
+		this.update()
+	}
 
 	@SerializedField( { type: 'vector2' } )
-	get repeat () { return this._repeat; }
+	get repeat () {
+		return this._repeat;
+	}
 
-	set repeat ( value: any ) { this._repeat = value; this.update() }
+	set repeat ( value: any ) {
+		this._repeat = value;
+		this.update()
+	}
 
 	@SerializedField( { type: 'float' } )
-	get rotation () { return this._rotation; }
+	get rotation () {
+		return this._rotation;
+	}
 
-	set rotation ( value: any ) { this._rotation = value; this.update() }
+	set rotation ( value: any ) {
+		this._rotation = value;
+		this.update()
+	}
 
 	@SerializedField( { type: 'float' } )
-	get height () { return this._height; }
+	get height () {
+		return this._height;
+	}
 
-	set height ( value: any ) { this._height = value; this.update() }
+	set height ( value: any ) {
+		this._height = value;
+		this.update()
+	}
 
 	@SerializedField( { type: 'float' } )
 	public get textureDensity () {
@@ -90,7 +117,6 @@ export class TvSurface implements ISelectable, INode {
 		// console.error( 'Method not implemented.' );
 
 	}
-
 
 	select (): void {
 
@@ -213,18 +239,6 @@ export class TvSurface implements ISelectable, INode {
 		return mesh;
 	}
 
-	showCurve (): void {
-
-		this.spline.show();
-
-	}
-
-	hideCurve (): void {
-
-		this.spline.hide();
-
-	}
-
 	addControlPoint ( point: AbstractControlPoint ) {
 
 		point.visible = true;
@@ -250,12 +264,6 @@ export class TvSurface implements ISelectable, INode {
 		this.spline.removeControlPoint( point );
 
 		this.update();
-
-	}
-
-	delete (): void {
-
-		this.mesh.visible = false;
 
 	}
 

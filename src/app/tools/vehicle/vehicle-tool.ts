@@ -21,6 +21,7 @@ import { VehicleEntity } from '../../modules/scenario/models/entities/vehicle-en
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from './add-vehicle-command';
+import { ScenarioService } from "../../modules/scenario/services/scenario.service";
 
 export class VehicleTool extends BaseTool implements IToolWithPoint {
 
@@ -56,7 +57,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 	enable (): void {
 
-		this.scenario.objects.forEach( ( entity ) => {
+		ScenarioService.scenario.objects.forEach( ( entity ) => {
 
 			this.createControlPoint( entity );
 
@@ -179,7 +180,7 @@ export class VehicleTool extends BaseTool implements IToolWithPoint {
 
 	isVehicleSelected ( event: PointerEventData ): boolean {
 
-		const vehicles = [ ...this.scenario.objects.values() ].map( ( object ) => object );
+		const vehicles = [ ...ScenarioService.scenario.objects.values() ].map( ( object ) => object );
 
 		const vehicle = PickingHelper.findNearestViaDistance( event.point, vehicles, 2 );
 

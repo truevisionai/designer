@@ -6,7 +6,6 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector3 } from 'three';
 import { IDService } from './id.service';
@@ -21,18 +20,6 @@ export class RoadFactory {
 	public static instance: RoadFactory;
 
 	private IDService = new IDService();
-
-	private get map () {
-
-		return TvMapInstance.map;
-
-	}
-
-	private reset () {
-
-		this.IDService = new IDService();
-
-	}
 
 	constructor () {
 

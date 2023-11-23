@@ -4,7 +4,6 @@ import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from 'app/tools/base-tool';
 import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
 import { LaneMarkingTool } from 'app/tools/lane-marking/lane-marking-tool';
-import { LaneOffsetTool } from 'app/tools/lane-offset/lane-offset-tool';
 import { LaneWidthTool } from 'app/tools/lane-width/lane-width-tool';
 import { LaneTool } from 'app/tools/lane/lane-tool';
 import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
@@ -41,6 +40,7 @@ import { ToolManager } from 'app/tools/tool-manager';
 import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
 import { CrosswalkToolService } from "../../../tools/marking-line/crosswalk-tool.service";
+import { PropPolygonToolService } from "../../../tools/prop-polygon/prop-polygon-tool.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,7 +64,9 @@ export class ToolBarService {
 		private junctionService: JunctionService,
 		private propCurveService: PropCurveService,
 		private roadRampService: RoadRampService,
-	) { }
+		private propPolygonToolService: PropPolygonToolService
+	) {
+	}
 
 	setToolByType ( type: ToolType ) {
 
@@ -87,14 +89,12 @@ export class ToolBarService {
 				return new JunctionTool( this.junctionService );
 			case ToolType.LaneWidth:
 				return new LaneWidthTool( this.laneWidthService );
-			case ToolType.LaneOffset:
-				return new LaneOffsetTool();
 			case ToolType.PropPoint:
 				return new PropPointTool( this.propPointService );
 			case ToolType.PropCurve:
 				return new PropCurveTool( this.propCurveService );
 			case ToolType.PropPolygon:
-				return new PropPolygonTool();
+				return new PropPolygonTool( this.propPolygonToolService );
 			case ToolType.Surface:
 				return new SurfaceTool( this.surfaceToolService );
 			case ToolType.LaneMarking:

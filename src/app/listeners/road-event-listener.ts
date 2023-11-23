@@ -4,6 +4,7 @@ import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
+import { MapService } from "../services/map.service";
 
 export class RoadEventListener extends Manager {
 
@@ -12,7 +13,8 @@ export class RoadEventListener extends Manager {
 	constructor (
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
-		private roadLinkService: RoadLinkService
+		private roadLinkService: RoadLinkService,
+		private mapService: MapService,
 	) {
 
 		super();
@@ -24,9 +26,7 @@ export class RoadEventListener extends Manager {
 		MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
 		MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
 
-
 	}
-
 
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
@@ -42,27 +42,8 @@ export class RoadEventListener extends Manager {
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
 
-		if ( this.debug ) console.debug( 'onRoadRemoved' );
+		this.roadService.removeRoad( event.road );
 
-		if ( event.hideHelpers ) this.roadSplineService.spline.hideLines( event.road.spline );
-
-		if ( event.hideHelpers ) this.roadSplineService.spline.hideControlPoints( event.road.spline );
-
-		if ( event.road.isJunction ) {
-
-			event.road.junctionInstance?.removeConnectingRoad( event.road );
-
-		}
-
-		this.roadService.hideRoadNodes( event.road );
-
-		this.roadLinkService.removeLinks( event.road );
-
-		this.roadSplineService.removeRoadSegment( event.road );
-
-		this.roadSplineService.rebuildSplineRoads( event.road.spline );
-
-		TvMapInstance.map.gameObject.remove( event.road.gameObject );
 	}
 
 	onRoadCreated ( event: RoadCreatedEvent ) {

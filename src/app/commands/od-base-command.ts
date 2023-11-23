@@ -3,8 +3,6 @@
  */
 
 import { BaseCommand } from 'app/commands/base-command';
-import { TvRoad } from '../modules/tv-map/models/tv-road.model';
-import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
 
 export abstract class OdBaseCommand extends BaseCommand {
 
@@ -13,9 +11,5 @@ export abstract class OdBaseCommand extends BaseCommand {
 	abstract undo (): void;
 
 	abstract redo (): void;
-
-	protected getRoad ( roadId: number ): TvRoad {
-		return TvMapInstance.map.getRoadById( roadId );
-	}
 
 }

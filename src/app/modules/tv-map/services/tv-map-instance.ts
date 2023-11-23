@@ -2,14 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter } from '@angular/core';
 import { IFile } from '../../../io/file';
 import { TvMap } from '../models/tv-map.model';
-import { Object3D } from 'three';
 
 export class TvMapInstance {
 
-	static mapChanged = new EventEmitter<TvMap>();
 	static currentFile: IFile;
 
 	private static _map: TvMap = new TvMap;
@@ -20,27 +17,5 @@ export class TvMapInstance {
 
 	static set map ( value: TvMap ) {
 		this._map = value;
-		this.mapChanged.emit( value );
 	}
-
-	static clearOpenDrive () {
-		// console.error( 'method not implemented' );
-	}
-
-	static clearScene () {
-		// console.error( 'method not implemented' );
-	}
-
-	static redraw () {
-		this.mapChanged.emit( this.map );
-	}
-
-	static removeProp ( prop: Object3D ): void {
-		// SceneService.removeFromMain( prop );
-	}
-
-	static addProp ( prop: Object3D ): void {
-		// SceneService.addToMain( prop );
-	}
-
 }

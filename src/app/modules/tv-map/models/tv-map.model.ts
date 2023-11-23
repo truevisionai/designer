@@ -2,10 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-// import { RoadFactory } from 'app/factories/road-factory.service';
 import { GameObject } from 'app/core/game-object';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-// import { SceneService } from 'app/services/scene.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from './prop-curve';
 import { PropPolygon } from './prop-polygons';
@@ -16,12 +14,8 @@ import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
 import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Vector3 } from 'three';
 
 export class TvMap {
-	findRoadCoord ( point: Vector3 ) {
-		throw new Error( 'Method not implemented.' );
-	}
 
 	public props: PropInstance[] = [];
 	public propCurves: PropCurve[] = [];

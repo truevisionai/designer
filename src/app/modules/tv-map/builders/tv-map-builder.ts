@@ -35,8 +35,6 @@ export class TvMapBuilder {
 
 	public static buildMap ( map?: TvMap ): GameObject {
 
-		TvMapInstance.clearOpenDrive();
-
 		SceneService.removeFromMain( map.gameObject );
 
 		map.gameObject = null;

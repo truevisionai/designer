@@ -77,7 +77,7 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService ) );
+		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService, this.mapService ) );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( LaneManager );

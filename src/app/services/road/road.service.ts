@@ -14,6 +14,7 @@ import { SplineService } from '../spline.service';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvMapInstance } from "../../modules/tv-map/services/tv-map-instance";
 
 @Injectable( {
 	providedIn: 'root'
@@ -327,4 +328,27 @@ export class RoadService {
 
 	}
 
+	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {
+
+		if ( hideHelpers ) this.roadSplineService.spline.hideLines( road.spline );
+
+		if ( hideHelpers ) this.roadSplineService.spline.hideControlPoints( road.spline );
+
+		if ( road.isJunction ) {
+
+			road.junctionInstance?.removeConnectingRoad( road );
+
+		}
+
+		this.hideRoadNodes( road );
+
+		this.roadLinkService.removeLinks( road );
+
+		this.roadSplineService.removeRoadSegment( road );
+
+		this.roadSplineService.rebuildSplineRoads( road.spline );
+
+		this.mapService.map.gameObject.remove( road.gameObject );
+
+	}
 }

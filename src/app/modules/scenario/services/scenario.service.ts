@@ -77,4 +77,10 @@ export class ScenarioService {
 
 	}
 
+	getScenario (): TvScenario {
+
+		return ScenarioService.scenario;
+
+	}
+
 }

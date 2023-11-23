@@ -19,6 +19,7 @@ import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
+import { MapService } from "./map.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,6 +34,7 @@ export class TvSceneFileService {
 		public electronService: TvElectronService,
 		private dialogService: DialogService,
 		private scenarioService: ScenarioService,
+		public mapService: MapService,
 	) {
 	}
 
@@ -44,20 +46,8 @@ export class TvSceneFileService {
 		TvMapInstance.currentFile = value;
 	}
 
-	private get map () {
-		return TvMapInstance.map;
-	}
-
-	private set map ( value ) {
-		TvMapInstance.map = value;
-	}
-
 	private get scenario () {
 		return ScenarioService.scenario;
-	}
-
-	private set scenario ( value ) {
-		ScenarioService.scenario = value;
 	}
 
 	newScene ( map?: TvMap ) {
@@ -80,13 +70,13 @@ export class TvSceneFileService {
 
 		CommandHistory.clear();
 
-		this.map?.destroy();
+		this.mapService.map?.destroy();
 
 		this.scenario?.destroy();
 
-		this.map = map;
+		this.mapService.map = map;
 
-		TvMapBuilder.buildMap( this.map );
+		TvMapBuilder.buildMap( this.mapService.map );
 	}
 
 	async showOpenWindow ( path?: string ) {
@@ -116,7 +106,7 @@ export class TvSceneFileService {
 
 		if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
 
-		const contents = this.currentFile.contents = this.sceneExporter.export( this.map );
+		const contents = this.currentFile.contents = this.sceneExporter.export( this.mapService.map );
 
 		ToolManager.disable();	// disable tools while saving
 

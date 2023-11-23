@@ -140,11 +140,11 @@ export class RoadRampTool extends BaseTool {
 
 		if ( object instanceof TvVirtualJunction ) {
 
-			this.map.addJunctionInstance( object );
+			this.tool.mapService.map.addJunctionInstance( object );
 
 		} else if ( object instanceof TvRoad ) {
 
-			this.map.addRoad( object );
+			this.tool.mapService.map.addRoad( object );
 
 			// this.tool.roadSplineService.addRoadSegment( object );
 
@@ -160,11 +160,11 @@ export class RoadRampTool extends BaseTool {
 
 		if ( object instanceof TvVirtualJunction ) {
 
-			this.map.removeJunction( object );
+			this.tool.mapService.map.removeJunction( object );
 
 		} else if ( object instanceof TvRoad ) {
 
-			this.map.removeRoad( object );
+			this.tool.mapService.map.removeRoad( object );
 
 			MapEvents.roadRemoved.emit( new RoadRemovedEvent( object ) );
 

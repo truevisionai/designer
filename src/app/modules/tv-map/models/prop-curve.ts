@@ -4,11 +4,9 @@
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SerializedField } from 'app/core/components/serialization';
-import { SceneService } from 'app/services/scene.service';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
-import { TvMapInstance } from '../services/tv-map-instance';
 import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
@@ -101,8 +99,6 @@ export class PropCurve {
 
 		if ( length <= 0 ) return;
 
-		this.props.forEach( prop => TvMapInstance.removeProp( prop ) );
-
 		this.props.splice( 0, this.props.length );
 
 		const spline = this.spline as CatmullRomSpline;
@@ -180,25 +176,25 @@ export class PropCurve {
 
 	}
 
-	delete () {
-
-		this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
-
-		this.props.forEach( prop => SceneService.removeFromMain( prop ) );
-
-		this.props.splice( 0, this.props.length );
-
-		SceneService.removeFromMain( this.spline.mesh );
-
-		this.spline.controlPoints.forEach( cp => {
-
-			this.spline.removeControlPoint( cp );
-
-		} );
-
-		this.spline.hide();
-
-	}
+	//delete () {
+	//
+	//	this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
+	//
+	//	this.props.forEach( prop => SceneService.removeFromMain( prop ) );
+	//
+	//	this.props.splice( 0, this.props.length );
+	//
+	//	SceneService.removeFromMain( this.spline.mesh );
+	//
+	//	this.spline.controlPoints.forEach( cp => {
+	//
+	//		this.spline.removeControlPoint( cp );
+	//
+	//	} );
+	//
+	//	this.spline.hide();
+	//
+	//}
 
 	removeControlPoint ( point: AbstractControlPoint ) {
 

@@ -17,7 +17,6 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
 import { RoadService } from './road.service';
@@ -145,7 +144,7 @@ export class RoadCircleService {
 
 			const road = roads[ i ] = this.roadService.createDefaultRoad();
 
-			TvMapInstance.map.addRoad( road );
+			this.mapService.map.addRoad( road );
 
 			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 

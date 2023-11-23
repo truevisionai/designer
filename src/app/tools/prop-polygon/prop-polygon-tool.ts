@@ -21,6 +21,7 @@ import { BaseTool } from '../base-tool';
 import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
 // import { CreatePropPolygonCommand } from './create-prop-polygon-command';
 import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
+import { PropPolygonToolService } from "./prop-polygon-tool.service";
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -36,7 +37,9 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 	private objectStrategy: SelectStrategy<PropPolygon>;
 
-	constructor () {
+	constructor (
+		private tool: PropPolygonToolService
+	) {
 
 		super();
 
@@ -88,7 +91,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		super.enable();
 
-		this.map.propPolygons.forEach( polygon => polygon.show() );
+		this.tool.mapService.map.propPolygons.forEach( polygon => polygon.show() );
 
 	}
 
@@ -97,7 +100,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		super.disable();
 
-		this.map.propPolygons.forEach( polygon => polygon.hide() );
+		this.tool.mapService.map.propPolygons.forEach( polygon => polygon.hide() );
 
 	}
 

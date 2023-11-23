@@ -6,17 +6,13 @@ import { Type } from '@angular/core';
 import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { Intersection, Line, Mesh, Object3D } from 'three';
-import { TvMapInstance } from '../modules/tv-map/services/tv-map-instance';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { IEditorState } from './i-editor-state';
 import { SceneService } from '../services/scene.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
@@ -26,6 +22,7 @@ import { SelectObjectCommand } from "../commands/select-object-command";
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
 	abstract name: string;
+
 	abstract toolType: ToolType;
 
 	constructor () {
@@ -36,19 +33,8 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	get map () {
-
-		return TvMapInstance.map;
-
+	init (): void {
 	}
-
-	get scenario () {
-
-		return ScenarioService.scenario;
-
-	}
-
-	init (): void { }
 
 	enable (): void {
 
@@ -104,9 +90,11 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) { }
+	onPointerDownSelect ( e: PointerEventData ) {
+	}
 
-	onPointerDownCreate ( e: PointerEventData ) { }
+	onPointerDownCreate ( e: PointerEventData ) {
+	}
 
 	onKeyDown ( e: KeyboardEvent ): void {
 
@@ -118,7 +106,8 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	onDeleteKeyDown () { }
+	onDeleteKeyDown () {
+	}
 
 	// onRoadCreated ( road: TvRoad ) { }
 
@@ -130,15 +119,20 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	// onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
 
-	onObjectSelected ( object: any ) { }
+	onObjectSelected ( object: any ) {
+	}
 
-	onObjectUnselected ( object: any ) { }
+	onObjectUnselected ( object: any ) {
+	}
 
-	onObjectAdded ( object: any ) { }
+	onObjectAdded ( object: any ) {
+	}
 
-	onObjectUpdated ( object: any ) { }
+	onObjectUpdated ( object: any ) {
+	}
 
-	onObjectRemoved ( object: any ) { }
+	onObjectRemoved ( object: any ) {
+	}
 
 	setHint ( msg: string ) {
 

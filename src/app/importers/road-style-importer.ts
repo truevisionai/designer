@@ -4,9 +4,7 @@
 
 import { AbstractReader } from 'app/importers/abstract-reader';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { TvLaneSide } from '../modules/tv-map/models/tv-common';
 import { TvLane } from '../modules/tv-map/models/tv-lane';
 import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
@@ -19,14 +17,6 @@ export class RoadStyleImporter extends AbstractReader {
 
 	constructor () {
 		super();
-	}
-
-	get map (): TvMap {
-		return TvMapInstance.map;
-	}
-
-	set map ( value ) {
-		TvMapInstance.map = value;
 	}
 
 	static importFromString ( contents: string ): RoadStyle {

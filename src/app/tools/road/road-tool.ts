@@ -254,7 +254,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		this.map.removeRoad( road );
+		this.tool.mapService.map.removeRoad( road );
 
 		this.tool.roadSplineService.removeRoadSegment( road );
 
@@ -278,7 +278,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadAdded ( road: TvRoad ): void {
 
-		this.map.addRoad( road );
+		this.tool.mapService.map.addRoad( road );
 
 		this.tool.roadSplineService.addRoadSegment( road );
 

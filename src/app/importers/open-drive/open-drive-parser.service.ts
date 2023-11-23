@@ -6,19 +6,16 @@ import { IOpenDriveParser } from "./i-open-drive.parser";
 import { OpenDrive15Parser } from './open-drive-1-5.parser';
 import { OpenDrive16Parser } from './open-drive-1-6.parser';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadService } from 'app/services/road/road.service';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenDriveParserService {
 
-	constructor (
-		private roadService: RoadService,
-	) {
-	}
+	constructor () { }
 
-	parse ( contents: string ) {
+	parse ( contents: string ): TvMap {
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',

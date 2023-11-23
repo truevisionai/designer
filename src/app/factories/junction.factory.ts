@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
@@ -322,7 +321,7 @@ export class JunctionFactory {
 	//	return roads;
 	//}
 
-	connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
+	//connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
 
 		// if ( !junction ) {
 
@@ -346,7 +345,7 @@ export class JunctionFactory {
 
 		// }
 
-	}
+	//}
 
 	//static makeRightManeuvers ( junction: TvJunction, listA: JunctionEntryObject[], listB: JunctionEntryObject[] ) {
 	//

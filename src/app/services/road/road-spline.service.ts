@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { JunctionEntryObject } from 'app/modules/three-js/objects/junction-entry.object';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
@@ -193,36 +192,36 @@ export class RoadSplineService {
 		return this.createSpline( entry.position, entryDirection, exit.position, exitDirection );
 	}
 
-	/**
-	 * returns a spline that connects the entry and exit on the junction
-	 *
-	 * @param entry
-	 * @param exit
-	 * @param side
-	 * @returns
-	 */
-	createJunctionSpline ( entry: JunctionEntryObject, exit: JunctionEntryObject, side: TvLaneSide = TvLaneSide.RIGHT ): AbstractSpline {
-
-		if ( entry == null ) throw new Error( 'entry is null' );
-		if ( exit == null ) throw new Error( 'exit is null' );
-		if ( side == null ) throw new Error( 'side is null' );
-
-		// const entryPosition = entry.position;
-		const entryDirection = entry.getJunctionPosTheta().toDirectionVector();
-
-		// const exitPosition = exit.position;
-		const exitDirection = exit.getJunctionPosTheta().toDirectionVector();
-
-		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
-		const aPosTheta = new TvPosTheta();
-		const entryPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
-
-		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
-		const bPosTheta = new TvPosTheta();
-		const exitPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
-
-		return this.createSpline( entryPosition, entryDirection, exitPosition, exitDirection );
-	}
+	///**
+	// * returns a spline that connects the entry and exit on the junction
+	// *
+	// * @param entry
+	// * @param exit
+	// * @param side
+	// * @returns
+	// */
+	//createJunctionSpline ( entry: JunctionEntryObject, exit: JunctionEntryObject, side: TvLaneSide = TvLaneSide.RIGHT ): AbstractSpline {
+	//
+	//	if ( entry == null ) throw new Error( 'entry is null' );
+	//	if ( exit == null ) throw new Error( 'exit is null' );
+	//	if ( side == null ) throw new Error( 'side is null' );
+	//
+	//	// const entryPosition = entry.position;
+	//	const entryDirection = entry.getJunctionPosTheta().toDirectionVector();
+	//
+	//	// const exitPosition = exit.position;
+	//	const exitDirection = exit.getJunctionPosTheta().toDirectionVector();
+	//
+	//	const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
+	//	const aPosTheta = new TvPosTheta();
+	//	const entryPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
+	//
+	//	const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
+	//	const bPosTheta = new TvPosTheta();
+	//	const exitPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
+	//
+	//	return this.createSpline( entryPosition, entryDirection, exitPosition, exitDirection );
+	//}
 
 	createSpline ( v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
 
@@ -251,51 +250,51 @@ export class RoadSplineService {
 	}
 
 	// end position is always at the exit
-	private getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
-
-		const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
-		const aPosTheta = new TvPosTheta();
-		const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
-
-		const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
-		const bPosTheta = new TvPosTheta();
-		const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
-
-		let a2: TvPosTheta;
-		let b2: TvPosTheta;
-
-		const distance = aPosition.distanceTo( bPosition ) * 0.3;
-
-		if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( -distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( +distance );
-
-		} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
-
-			a2 = aPosTheta.moveForward( +distance );
-			b2 = bPosTheta.moveForward( -distance );
-
-		}
-
-		return {
-			side: laneSide,
-			start: aPosition,
-			startPos: aPosTheta,
-			end: bPosition,
-			endPos: bPosTheta,
-			a2: a2,
-			b2: b2,
-		};
-	}
+	//private getSplinePositions ( entry: JunctionEntryObject, exit: JunctionEntryObject, laneSide: TvLaneSide ) {
+	//
+	//	const as = entry.contact === TvContactPoint.START ? 0 : entry.road.length;
+	//	const aPosTheta = new TvPosTheta();
+	//	const aPosition = TvMapQueries.getLaneStartPosition( entry.road.id, entry.lane.id, as, 0, aPosTheta );
+	//
+	//	const bs = exit.contact === TvContactPoint.START ? 0 : exit.road.length;
+	//	const bPosTheta = new TvPosTheta();
+	//	const bPosition = TvMapQueries.getLaneStartPosition( exit.road.id, exit.lane.id, bs, 0, bPosTheta );
+	//
+	//	let a2: TvPosTheta;
+	//	let b2: TvPosTheta;
+	//
+	//	const distance = aPosition.distanceTo( bPosition ) * 0.3;
+	//
+	//	if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.START ) {
+	//
+	//		a2 = aPosTheta.moveForward( -distance );
+	//		b2 = bPosTheta.moveForward( -distance );
+	//
+	//	} else if ( entry.contact === TvContactPoint.START && exit.contact === TvContactPoint.END ) {
+	//
+	//		a2 = aPosTheta.moveForward( -distance );
+	//		b2 = bPosTheta.moveForward( +distance );
+	//
+	//	} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.END ) {
+	//
+	//		a2 = aPosTheta.moveForward( +distance );
+	//		b2 = bPosTheta.moveForward( +distance );
+	//
+	//	} else if ( entry.contact === TvContactPoint.END && exit.contact === TvContactPoint.START ) {
+	//
+	//		a2 = aPosTheta.moveForward( +distance );
+	//		b2 = bPosTheta.moveForward( -distance );
+	//
+	//	}
+	//
+	//	return {
+	//		side: laneSide,
+	//		start: aPosition,
+	//		startPos: aPosTheta,
+	//		end: bPosition,
+	//		endPos: bPosTheta,
+	//		a2: a2,
+	//		b2: b2,
+	//	};
+	//}
 }
