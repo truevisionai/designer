@@ -12,7 +12,7 @@ import {
 	OnInit,
 	ViewChild
 } from '@angular/core';
-import { AssetNode } from '../file-node.model';
+import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
 @Component( {
@@ -40,9 +40,9 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 		let sorted = [];
 
-		this.files.filter( f => f.type == 'directory' ).forEach( f => sorted.push( f ) );
+		this.files.filter( f => f.type == AssetType.DIRECTORY ).forEach( f => sorted.push( f ) );
 
-		this.files.filter( f => f.type != 'directory' ).forEach( f => sorted.push( f ) );
+		this.files.filter( f => f.type != AssetType.DIRECTORY ).forEach( f => sorted.push( f ) );
 
 		return sorted;
 	}

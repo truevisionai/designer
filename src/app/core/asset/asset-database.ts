@@ -37,16 +37,6 @@ export class AssetDatabase {
 		}
 	}
 
-	static deleteFile ( file: AssetNode ) {
-
-		if ( file.type == 'directory' ) {
-
-		} else {
-
-		}
-
-	}
-
 	static deleteAssetByGuid ( guid: string ) {
 
 		const metadata = this.getMetadata( guid );

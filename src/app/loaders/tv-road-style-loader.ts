@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractReader } from 'app/importers/abstract-reader';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 import { TvLaneSide } from '../modules/tv-map/models/tv-common';
@@ -11,15 +10,32 @@ import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
 import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
 import { SnackBar } from '../services/snack-bar.service';
 import { RoadStyle } from "../core/asset/road.style";
-import { XmlElement } from "./xml.element";
+import { XmlElement } from "../importers/xml.element";
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Injectable } from '@angular/core';
+import { StorageService } from 'app/io/storage.service';
+import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 
-export class RoadStyleImporter extends AbstractReader {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class RoadStyleImporter {
 
-	constructor () {
-		super();
+	constructor (
+		private storageService: StorageService,
+	) { }
+
+	loadAsset ( asset: AssetNode ) {
+
+		const contents = this.storageService.readSync( asset.path );
+
+		const roadStyle = this.importFromString( contents );
+
+		return roadStyle;
+
 	}
 
-	static importFromString ( contents: string ): RoadStyle {
+	private importFromString ( contents: string ): RoadStyle {
 
 		const roadStyleFile: any = JSON.parse( contents );
 
@@ -32,7 +48,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return this.importRoadStyle( roadStyleFile );
 	}
 
-	static importRoadStyle ( json: XmlElement ): RoadStyle {
+	private importRoadStyle ( json: XmlElement ): RoadStyle {
 
 		const roadStyle = new RoadStyle();
 
@@ -50,24 +66,24 @@ export class RoadStyleImporter extends AbstractReader {
 		return roadStyle;
 	}
 
-	static importLaneSection ( json: XmlElement ): TvLaneSection {
+	private importLaneSection ( json: XmlElement ): TvLaneSection {
 
 		const laneSection = new TvLaneSection( 0, 0, true, null );
 
-		this.readAsOptionalElement( json.laneSection.left, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
+		readXmlElement( json.laneSection.left, xml => {
+			readXmlArray( xml.lane, xml => {
 				this.readLane( laneSection, xml, TvLaneSide.LEFT );
 			} );
 		} );
 
-		this.readAsOptionalElement( json.laneSection.center, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
+		readXmlElement( json.laneSection.center, xml => {
+			readXmlArray( xml.lane, xml => {
 				this.readLane( laneSection, xml, TvLaneSide.CENTER );
 			} );
 		} );
 
-		this.readAsOptionalElement( json.laneSection.right, xml => {
-			this.readAsOptionalArray( xml.lane, xml => {
+		readXmlElement( json.laneSection.right, xml => {
+			readXmlArray( xml.lane, xml => {
 				this.readLane( laneSection, xml, TvLaneSide.RIGHT );
 			} );
 		} );
@@ -75,7 +91,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return laneSection;
 	}
 
-	static readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ) {
+	private readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ) {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
@@ -106,37 +122,37 @@ export class RoadStyleImporter extends AbstractReader {
 		}
 
 		//  Read Width
-		this.readAsOptionalArray( xmlElement.width, xml => {
+		readXmlArray( xmlElement.width, xml => {
 
 			lane.addWidthRecordInstance( this.readLaneWidth( lane, xml ) );
 
 		} );
 
 		//  Read RoadMark
-		this.readAsOptionalArray( xmlElement.roadMark, xml => {
+		readXmlArray( xmlElement.roadMark, xml => {
 
 			lane.addRoadMarkInstance( this.readLaneRoadMark( lane, xml ) );
 
 		} );
 
 		// //  Read material
-		// this.readAsOptionalArray( xmlElement.material, xml => this.readLaneMaterial( lane, xml ) );
+		// this.readXmlArray( xmlElement.material, xml => this.readLaneMaterial( lane, xml ) );
 		//
 		// //  Read visibility
-		// this.readAsOptionalArray( xmlElement.visibility, xml => this.readLaneVisibility( lane, xml ) );
+		// this.readXmlArray( xmlElement.visibility, xml => this.readLaneVisibility( lane, xml ) );
 		//
 		// //  Read speed
-		// this.readAsOptionalArray( xmlElement.speed, xml => this.readLaneSpeed( lane, xml ) );
+		// this.readXmlArray( xmlElement.speed, xml => this.readLaneSpeed( lane, xml ) );
 		//
 		// //  Read access
-		// this.readAsOptionalArray( xmlElement.access, xml => this.readLaneAccess( lane, xml ) );
+		// this.readXmlArray( xmlElement.access, xml => this.readLaneAccess( lane, xml ) );
 		//
 		// //  Read height
-		// this.readAsOptionalArray( xmlElement.height, xml => this.readLaneHeight( lane, xml ) );
+		// this.readXmlArray( xmlElement.height, xml => this.readLaneHeight( lane, xml ) );
 
 	}
 
-	static readLaneWidth ( lane: TvLane, json: XmlElement ) {
+	private readLaneWidth ( lane: TvLane, json: XmlElement ) {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 
@@ -148,7 +164,7 @@ export class RoadStyleImporter extends AbstractReader {
 		return new TvLaneWidth( sOffset, a, b, c, d, lane );
 	}
 
-	static readLaneRoadMark ( lane: TvLane, json: XmlElement ) {
+	private readLaneRoadMark ( lane: TvLane, json: XmlElement ) {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 		const type = json.attr_type;

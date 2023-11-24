@@ -5,13 +5,14 @@
 import { Metadata } from "../../../core/asset/metadata.model";
 
 export enum AssetType {
-	DIRECTORY = 'directory',
-	FILE = 'file',
-	TEXTURE = 'texture',
-	MATERIAL = 'material',
-	MODEL = 'model',
-	MESH = 'mesh',
-	SCENE = 'scene',
+	DIRECTORY,
+	FILE,
+	TEXTURE,
+	MATERIAL,
+	MODEL,
+	MESH,
+	SCENE,
+	ROAD_STYLE,
 }
 
 /** Flat node with expandable and level information */

@@ -31,7 +31,7 @@ export class ProjectBrowserComponent implements OnInit {
 	currentFolder: AssetNode;
 
 	folderTree = new NestedTreeControl<AssetNode>( ( node: AssetNode ) => {
-		if ( node.type === 'directory' ) {
+		if ( node.type === AssetType.DIRECTORY ) {
 			return this.projectBrowser.getFolders( node.path )
 		} else {
 			return [];

@@ -25,7 +25,7 @@ import {
 	UnsignedByteType
 } from 'three';
 import { ModelImporterService } from '../../importers/model-importer.service';
-import { RoadStyleImporter } from '../../importers/road-style-importer';
+import { RoadStyleImporter } from '../../loaders/tv-road-style-loader';
 import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 import { XmlElement } from "../../importers/xml.element";
@@ -264,19 +264,19 @@ export class AssetLoaderService {
 
 	loadRoadStyles () {
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+		// AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == MetaImporter.ROAD_STYLE ) {
+		// 	if ( meta.importer == MetaImporter.ROAD_STYLE ) {
 
-				const contents = this.storageService.readSync( meta.path );
+		// 		const contents = this.storageService.readSync( meta.path );
 
-				const roadStyle = RoadStyleImporter.importFromString( contents );
+		// 		const roadStyle = RoadStyleImporter.importFromString( contents );
 
-				AssetDatabase.setInstance( meta.guid, roadStyle );
+		// 		AssetDatabase.setInstance( meta.guid, roadStyle );
 
-			}
+		// 	}
 
-		} );
+		// } );
 	}
 
 	loadRoadMarkings () {
