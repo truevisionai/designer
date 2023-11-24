@@ -1,8 +1,8 @@
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { LoadingManager, ObjectLoader } from 'three';
-import { TvMaterial } from './tv-material.model';
-import { TvPrefab } from './tv-prefab.model';
-import { TvMesh } from './TvMesh';
+import { TvMaterial } from '../modules/three-js/objects/tv-material.model';
+import { TvPrefab } from '../modules/three-js/objects/tv-prefab.model';
+import { TvMesh } from '../modules/three-js/objects/TvMesh';
 
 
 

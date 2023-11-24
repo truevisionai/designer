@@ -71,16 +71,6 @@
 		</button>
 	</mat-menu>
 
-	<mat-menu #openRecentMenu="matMenu">
-		<button (click)="importRecentFile(file)"
-			*ngFor="let file of recentFiles"
-			action="import-recent-file"
-			appTrack="menu"
-			mat-menu-item>
-			{{file.filename}}
-		</button>
-	</mat-menu>
-
 	<mat-menu #fileImportMenu="matMenu">
 		<button (click)="onImportOpenDRIVE()"
 			action="import-open-drive"

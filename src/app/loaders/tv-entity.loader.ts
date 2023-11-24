@@ -3,7 +3,7 @@ import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-en
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
 import { Loader, Vector3 } from 'three';
-import { XmlElement } from "../../../importers/xml.element";
+import { XmlElement } from "../importers/xml.element";
 
 
 export class TvEntityLoader extends Loader {

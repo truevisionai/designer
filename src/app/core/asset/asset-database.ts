@@ -3,7 +3,7 @@
  */
 
 import { Metadata } from 'app/core/asset/metadata.model';
-import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { FileUtils } from '../../io/file-utils';
 
 export class AssetDatabase {
@@ -37,10 +37,9 @@ export class AssetDatabase {
 		}
 	}
 
-	static deleteFile ( file: FileNode ) {
+	static deleteFile ( file: AssetNode ) {
 
 		if ( file.type == 'directory' ) {
-
 
 		} else {
 
@@ -120,7 +119,6 @@ export class AssetDatabase {
 			this.metadata.delete( guid );
 
 			this.instances.delete( guid );
-
 
 		} catch ( error ) {
 

@@ -135,18 +135,8 @@ export class FileService {
 
 	static getExtension ( filename: string ): string {
 
-		if ( this.electron.isWindows ) {
+		return FileUtils.getExtensionFromPath( filename );
 
-			const array = filename.split( '.' );
-
-			return array[ array.length - 1 ];
-		}
-
-		const regEx = /(?:\.([^.]+))?$/;
-
-		const extension = regEx.exec( filename )[ 1 ];
-
-		return extension;
 	}
 
 	static getFilenameFromPath ( path: string ): string {
@@ -170,9 +160,16 @@ export class FileService {
 		return this.remote.dialog.showOpenDialog( options );
 	}
 
-	async readAsync ( path, encoding = 'utf-8' ): Promise<any> {
+	async readAsync ( path: string, encoding = 'utf-8' ): Promise<any> {
 
 		return Promise.resolve( this.fs.readFileSync( path, encoding ) );
+
+	}
+
+
+	async writeAsync ( path: string, data, options ): Promise<any> {
+
+		return Promise.resolve( this.fs.writeFileSync( path, data, options ) );
 
 	}
 

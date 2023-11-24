@@ -3,7 +3,9 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FileNode } from '../file-node.model';
+import { AssetNode } from '../file-node.model';
+import { ProjectBrowserService } from '../project-browser.service';
+import { MatTreeNestedDataSource } from "@angular/material/tree";
 
 @Component( {
 	selector: 'app-project-hierarchy',
@@ -12,32 +14,25 @@ import { FileNode } from '../file-node.model';
 } )
 export class ProjectHierarchyComponent implements OnInit {
 
-	@Output() folderChanged = new EventEmitter<FileNode>();
-
 	@Input() treeControl;
-	@Input() dataSource;
+	@Input() dataSource: MatTreeNestedDataSource<AssetNode>;
 
-	selectedFolder;
+	selectedFolder: AssetNode;
 
-	constructor () {
-	}
+	constructor (
+		private projectBrowser: ProjectBrowserService
+	) { }
 
-	getLevel = ( node: FileNode ) => node.level;
-
-	isExpandable = ( node: FileNode ) => node.expandable;
-
-	hasChild = ( _: number, node: FileNode ) => true;
+	hasChild = ( _: number, node: AssetNode ) => true;
 
 	ngOnInit () {
 	}
 
-	onClick ( node: FileNode ) {
-
-		// console.log( 'folder-selected-in-hierarchy', node.name );
+	onClick ( node: AssetNode ) {
 
 		this.selectedFolder = node;
 
-		this.folderChanged.emit( node );
+		this.projectBrowser.folderChanged.emit( node );
 
 	}
 }

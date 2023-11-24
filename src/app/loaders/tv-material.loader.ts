@@ -1,13 +1,33 @@
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MaterialLoader, Texture } from 'three';
-import { TvMaterial } from './tv-material.model';
+import { TvMaterial } from '../modules/three-js/objects/tv-material.model';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { StorageService } from 'app/io/storage.service';
+import { Injectable } from '@angular/core';
 
 
-export class TvMaterialLoader extends MaterialLoader {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class TvMaterialLoader {
+
+	private loader = new MaterialLoader();
+
+	constructor ( private storageService: StorageService ) { }
+
+	loadMaterial ( asset: AssetNode ) {
+
+		const contents = this.storageService.readSync( asset.path );
+
+		const json = JSON.parse( contents );
+
+		return this.parseMaterial( json );
+
+	}
 
 	parseMaterial ( json: any ): TvMaterial {
 
-		const material = super.parse( json );
+		const material = this.loader.parse( json );
 
 		const tvMaterial = new TvMaterial( json?.guid );
 

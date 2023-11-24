@@ -39,14 +39,14 @@ export class ViewportImporterService {
 	) {
 	}
 
-	async import ( data: DragDropData, position: Vector3 ) {
+	import ( data: DragDropData, position: Vector3 ) {
 
 		if ( !data ) SnackBar.error( 'No data to import!' );
 		if ( !data ) return;
 
 		const filename = FileUtils.getFilenameFromPath( data.path );
 
-		const metadata = this.assetService.fetchMetaFile( data.path );
+		const metadata = this.assetService.readMetaSync( data.path );
 
 		switch ( data.extension ) {
 

@@ -8,7 +8,7 @@ import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
@@ -28,7 +28,7 @@ export class MetadataFactory {
 
 	}
 
-	static saveMetadataFile ( file: FileNode | string, metadata: Metadata ): void {
+	static saveMetadataFile ( file: AssetNode | string, metadata: Metadata ): void {
 
 		try {
 

@@ -2,170 +2,24 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
-import { ApplicationRef, Component, HostListener, Injectable, OnInit } from '@angular/core';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileExtension, FileService } from 'app/io/file.service';
 import { ImporterService } from 'app/importers/importer.service';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { DialogFactory } from '../../../factories/dialog.factory';
 import { MetadataFactory } from '../../../factories/metadata-factory.service';
 import { TvConsole } from '../../../core/utils/console';
 import { SnackBar } from '../../../services/snack-bar.service';
-import { FileNode } from './file-node.model';
+import { AssetNode, AssetType } from './file-node.model';
 import { ProjectBrowserService } from './project-browser.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
-
-// const DOCUMENT_PATH = '/home/himanshu/Documents/Truevision/';
-
-/**
- * Database for dynamic data. When expanding a node in the tree, the data source will need to fetch
- * the descendants data from the database.
- */
-export class DynamicDatabase {
-
-	rootLevelNodes: string[] = [ 'Fruits', 'Vegetables' ];
-	private init: FileNode[];
-
-	constructor ( private fileService: FileService ) {
-
-		this.init = this.getFolderInPath( this.projectDir, 0 );
-
-	}
-
-	// private projectDir = '/home/himanshu/Documents/Truevision';
-	private get projectDir () {
-		return this.fileService.projectFolder;
-	}
-
-	/** Initial data from database */
-	initialData (): FileNode[] {
-
-		return this.init;
-
-		// return this.init = this.getFolderInPath( this.projectDir, 0 );
-
-		// return this.rootLevelNodes.map( name => new FileNode( name, 0, true ) );
-	}
-
-	getChildren ( node: FileNode ): FileNode[] | undefined {
-
-		return this.getFolderInPath( node.path, node.level + 1 );
-
-		// return this.dataMap.get( node );
-
-	}
-
-	getFolderInPath ( path: string, level: number ) {
-
-		const tmp: FileNode[] = [];
-
-		// this.fileService.readPathContents( path ).then( ( files: any[] ) => {
-
-		//     files.forEach( file => {
-
-		//         if ( file.type === 'directory' ) tmp.push( new FileNode( file.name, level, true, false, file.path ) );
-
-		//     } );
-
-		// } );
-
-		return tmp;
-
-	}
-
-	isExpandable ( node: FileNode ): boolean {
-
-		return this.getFolderInPath( node.name, node.level + 1 ).length > 0;
-
-		// return this.dataMap.has( node );
-
-	}
-}
-
-/**
- * File database, it can build a tree structured Json object from string.
- * Each node in Json object represents a file or a directory. For a file, it has filename and type.
- * For a directory, it has filename and children (a list of files or directories).
- * The input will be a json object string, and the output is a list of `FileNode` with nested
- * structure.
- */
-@Injectable()
-export class DynamicDataSource {
-
-	dataChange = new BehaviorSubject<FileNode[]>( [] );
-
-	constructor ( private treeControl: FlatTreeControl<FileNode>, private database: DynamicDatabase ) {
-	}
-
-	get data (): FileNode[] {
-		return this.dataChange.value;
-	}
-
-	set data ( value: FileNode[] ) {
-		this.treeControl.dataNodes = value;
-		this.dataChange.next( value );
-	}
-
-	connect ( collectionViewer: CollectionViewer ): Observable<FileNode[]> {
-
-		this.treeControl.expansionModel.changed.subscribe( change => {
-			if ( ( change as SelectionChange<FileNode> ).added ||
-				( change as SelectionChange<FileNode> ).removed ) {
-				this.handleTreeControl( change as SelectionChange<FileNode> );
-			}
-		} );
-
-		return merge( collectionViewer.viewChange, this.dataChange ).pipe( map( () => this.data ) );
-	}
-
-	/** Handle expand/collapse behaviors */
-	handleTreeControl ( change: SelectionChange<FileNode> ) {
-		if ( change.added ) {
-			change.added.forEach( node => this.toggleNode( node, true ) );
-		}
-		if ( change.removed ) {
-			change.removed.slice().reverse().forEach( node => this.toggleNode( node, false ) );
-		}
-	}
-
-	/**
-	 * Toggle the node, remove from display list
-	 */
-	toggleNode ( node: FileNode, expand: boolean ) {
-		const children = this.database.getChildren( node );
-		const index = this.data.indexOf( node );
-		if ( !children || index < 0 ) { // If no children, or cannot find the node, no op
-			return;
-		}
-
-		node.isLoading = true;
-
-		setTimeout( () => {
-			if ( expand ) {
-				const nodes = children.map( child =>
-					new FileNode( child.name, node.level + 1, this.database.isExpandable( child ), false, child.path ) );
-				this.data.splice( index + 1, 0, ...nodes );
-			} else {
-				let count = 0;
-				for ( let i = index + 1; i < this.data.length && this.data[ i ].level > node.level; i++, count++ ) {
-				}
-				this.data.splice( index + 1, count );
-			}
-
-			// notify the change
-			this.dataChange.next( this.data );
-			node.isLoading = false;
-		}, 100 );
-	}
-}
+import { StorageService } from "../../../io/storage.service";
+import { ProjectService } from "../../../services/project.service";
 
 @Component( {
 	selector: 'app-project-browser',
@@ -174,23 +28,22 @@ export class DynamicDataSource {
 } )
 export class ProjectBrowserComponent implements OnInit {
 
-	folder: FileNode;
+	currentFolder: AssetNode;
 
-	treeControl = new NestedTreeControl<FileNode>( ( node: FileNode ) => {
+	folderTree = new NestedTreeControl<AssetNode>( ( node: AssetNode ) => {
 		if ( node.type === 'directory' ) {
-			return node.sub_folders( this.fileService );
+			return this.projectBrowser.getFolders( node.path )
 		} else {
 			return [];
 		}
 	} );
 
-	dataSource = new MatTreeNestedDataSource<any>();
-
-	files: FileNode[] = [];
+	dataSource: MatTreeNestedDataSource<AssetNode> = new MatTreeNestedDataSource<AssetNode>();
 
 	constructor (
+		private projectService: ProjectService,
+		private storage: StorageService,
 		private fileService: FileService,
-		private assets: AssetLoaderService,
 		private projectBrowser: ProjectBrowserService,
 		private importer: ImporterService,
 		private appRef: ApplicationRef,
@@ -198,16 +51,14 @@ export class ProjectBrowserComponent implements OnInit {
 		private electron: TvElectronService,
 		private dialogFactory: DialogFactory		// dont remove, needed to load dialog components
 	) {
-
-		const db = new DynamicDatabase( fileService );
-
 		this.dataSource.data = [];
-
 	}
 
 	ngOnInit () {
 
-		this.assets.init();
+		// this.assets.init();
+
+		this.currentFolder = new AssetNode( AssetType.DIRECTORY, 'root', this.projectService.projectPath );
 
 		this.loadFilesInFolder();
 
@@ -215,48 +66,16 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	onFolderChanged ( node: FileNode ) {
+	onFolderChanged ( node: AssetNode ) {
 
-		this.folder = node;
-
-		this.files = this.folder.sub_files( this.fileService );
-
-	}
-
-	selectFolder ( e: FileNode ) {
-
-		// console.log( 'select-folder', e );
-
-	}
-
-	selectFile ( e: FileNode ) {
-
-		// console.log( 'select-file', e );
-	}
-
-	onClick ( node: FileNode ) {
-
-		this.folder = node;
+		this.currentFolder = node;
 
 	}
 
 	loadFilesInFolder () {
 
-		const files = this.fileService.readPathContentsSync( this.fileService.projectFolder );
+		this.dataSource.data = this.projectBrowser.getFolders( this.projectService.projectPath );
 
-		const tmp = [];
-
-		files.forEach( file => {
-
-			if ( file.type === 'directory' ) {
-
-				tmp.push( new FileNode( file.name, 0, true, false, file.path, file.type ) );
-
-			}
-
-		} );
-
-		this.dataSource.data = tmp;
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
@@ -280,8 +99,8 @@ export class ProjectBrowserComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		const folderPath = this.folder ?
-			this.folder.path :
+		const folderPath = this.currentFolder ?
+			this.currentFolder.path :
 			this.fileService.projectFolder;
 
 		for ( let i = 0; i < $event.dataTransfer.files.length; i++ ) {
@@ -292,9 +111,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		}
 
-		if ( this.folder ) {
-
-			this.files = this.folder.sub_files( this.fileService );
+		if ( this.currentFolder ) {
 
 			this.appRef.tick();
 
@@ -330,7 +147,7 @@ export class ProjectBrowserComponent implements OnInit {
 				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension )
 					?.afterClosed()
 					.subscribe( () => {
-						this.onFolderChanged( this.folder );
+						this.onFolderChanged( this.currentFolder );
 					} );
 				break;
 
@@ -358,7 +175,7 @@ export class ProjectBrowserComponent implements OnInit {
 				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension )
 					?.afterClosed()
 					.subscribe( () => {
-						this.onFolderChanged( this.folder );
+						this.onFolderChanged( this.currentFolder );
 					} );
 				break;
 
@@ -375,7 +192,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			MetadataFactory.createMetadata( file.name, extension, destinationPath );
 
-			this.onFolderChanged( this.folder );
+			this.onFolderChanged( this.currentFolder );
 
 		}
 
@@ -401,7 +218,7 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 	}
 
-	onContextMenu ( $event, selectedNode?: FileNode ) {
+	onContextMenu ( $event, selectedNode?: AssetNode ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -430,21 +247,20 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 			]
 		},
-		{
-			label: 'Show In Explorer',
-			click: () => this.showInExplorer()
-		},
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-
 	createNewScene () {
 
 		try {
 
-			AssetFactory.createNewScene( this.folder.path );
+			AssetFactory.createNewScene( this.currentFolder.path );
 
 			this.refershFolder();
 
@@ -460,7 +276,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		try {
 
-			AssetFactory.createNewFolder( this.folder.path );
+			AssetFactory.createNewFolder( this.currentFolder.path );
 
 			this.refershFolder();
 
@@ -476,7 +292,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		try {
 
-			AssetFactory.createNewMaterial( this.folder.path, 'NewMaterial' );
+			AssetFactory.createNewMaterial( this.currentFolder.path, 'NewMaterial' );
 
 			this.refershFolder();
 
@@ -492,7 +308,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		try {
 
-			AssetFactory.createNewSign( 'NewSign', this.folder.path );
+			AssetFactory.createNewSign( 'NewSign', this.currentFolder.path );
 
 			this.refershFolder();
 
@@ -508,7 +324,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		try {
 
-			AssetFactory.createNewRoadMarking( this.folder.path, 'NewRoadMarking' );
+			AssetFactory.createNewRoadMarking( this.currentFolder.path, 'NewRoadMarking' );
 
 			this.refershFolder();
 
@@ -519,7 +335,6 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 
 	}
-
 
 	createVehicleEntity ( category: VehicleCategory = VehicleCategory.car ): void {
 
@@ -527,7 +342,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			const vehicle = VehicleFactory.createVehicle( category );
 
-			AssetFactory.createVehicleEntity( this.folder.path, vehicle );
+			AssetFactory.createVehicleEntity( this.currentFolder.path, vehicle );
 
 			this.refershFolder();
 
@@ -539,10 +354,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-
 	refershFolder () {
-
-		this.files = this.folder.sub_files( this.fileService );
 
 		this.appRef.tick();
 
@@ -550,23 +362,17 @@ export class ProjectBrowserComponent implements OnInit {
 
 	showInExplorer (): void {
 
+		if ( !this.currentFolder ) return;
+
 		try {
 
-			const selectedFile = this.files.find( file => file.isSelected === true );
+			this.electron.shell.openPath( this.currentFolder.path );
 
-			if ( selectedFile ) {
+		} catch ( e ) {
 
-				this.electron.shell.showItemInFolder( selectedFile.path );
+			TvConsole.error( e );
 
-			} else {
-
-				this.electron.shell.openPath( this.folder.path );
-
-			}
-
-		} catch ( error ) {
-
-			SnackBar.error( 'Some error occurred' );
+			SnackBar.error( e );
 
 		}
 

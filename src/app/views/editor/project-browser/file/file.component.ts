@@ -18,7 +18,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
 import { TvConsole } from '../../../../core/utils/console';
-import { FileNode } from '../file-node.model';
+import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 
 @Component( {
@@ -30,12 +30,11 @@ export class FileComponent implements OnInit {
 
 	@ViewChild( 'nameInput' ) nameInputRef: ElementRef;
 
-	@Output() deleted = new EventEmitter<FileNode>();
-	@Output() renamed = new EventEmitter<FileNode>();
+	@Output() deleted = new EventEmitter<AssetNode>();
 
-	@Input() file: FileNode;
+	@Output() renamed = new EventEmitter<AssetNode>();
 
-	public metadata: Metadata;
+	@Input() file: AssetNode;
 
 	public showRenaming: boolean;
 
@@ -52,7 +51,10 @@ export class FileComponent implements OnInit {
 
 	}
 
-	// public previewImage;
+	get metadata (): Metadata {
+		return this.file.metadata
+	}
+
 	public get previewImage () {
 		return this.metadata && this.metadata.preview;
 	}
@@ -81,15 +83,15 @@ export class FileComponent implements OnInit {
 	}
 
 	public get isModel (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.MODEL;
+		return this.file.type == AssetType.MODEL;
 	}
 
 	public get isMaterial (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.MATERIAL;
+		return this.file.type == AssetType.MATERIAL;
 	}
 
 	public get isTexture (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.TEXTURE;
+		return this.file.type == AssetType.TEXTURE;
 	}
 
 	public get isRoadStyle (): boolean {
@@ -101,7 +103,7 @@ export class FileComponent implements OnInit {
 	}
 
 	public get isScene (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.SCENE;
+		return this.file.type == AssetType.SCENE;
 	}
 
 	public get isSign (): boolean {
@@ -117,7 +119,7 @@ export class FileComponent implements OnInit {
 	}
 
 	public get isDirectory (): boolean {
-		return this.metadata && this.file.type == 'directory';
+		return this.file.type == AssetType.DIRECTORY;
 	}
 
 	public get isUnknown (): boolean {
@@ -128,12 +130,7 @@ export class FileComponent implements OnInit {
 		return this.file.name.split( '.' )[ 0 ];
 	}
 
-	// set filename ( value ) { this.file.name = value; }
-
-	// get extension () { return this.file.name.split( '.' )[ 1 ]; }
-
 	get filePath () {
-
 		return FileUtils.pathToFileURL( this.file.path );
 	}
 
@@ -141,34 +138,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			if ( !this.assetService.hasMetaFile( this.file ) ) {
-
-				if ( this.file.type == 'directory' ) {
-
-					MetadataFactory.createFolderMetadata( this.file.path );
-
-				} else {
-
-					MetadataFactory.createMetadata( this.file.name, this.extension, this.file.path );
-				}
-
-			}
-
-			this.metadata = this.assetService.fetchMetaFile( this.file );
-
-		} catch ( error ) {
-
-			console.error( 'error in getting meta', error, this.file );
-
-		}
-
-		if ( !this.metadata ) return;
-
-		this.metadata = this.assetService.find( this.metadata.guid );
-
-		try {
-
-			this.initPreview( this.metadata );
+			this.initPreview( this.file.metadata );
 
 		} catch ( error ) {
 
@@ -396,57 +366,59 @@ export class FileComponent implements OnInit {
 
 		if ( !this.showRenaming ) return;
 
-		if ( $event.keyCode === 13 && this.nameInputRef ) {
+		throw new Error( 'Not implemented' );
 
-			let nodeName: string;
-			if ( this.isDirectory ) {
-				nodeName = this.nameInputRef.nativeElement.value;
-			} else {
-				nodeName = this.nameInputRef.nativeElement.value + '.' + this.extension;
-			}
+		// if ( $event.keyCode === 13 && this.nameInputRef ) {
 
-			const oldPath = this.file.path;
+		// 	let nodeName: string;
+		// 	if ( this.isDirectory ) {
+		// 		nodeName = this.nameInputRef.nativeElement.value;
+		// 	} else {
+		// 		nodeName = this.nameInputRef.nativeElement.value + '.' + this.extension;
+		// 	}
 
-			const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
+		// 	const oldPath = this.file.path;
 
-			const newPath = this.fileService.join( currentFolder, nodeName );
+		// 	const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
 
-			if ( !this.metadata ) {
+		// 	const newPath = this.fileService.join( currentFolder, nodeName );
 
-				if ( this.isDirectory ) {
+		// 	if ( !this.metadata ) {
 
-					this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
+		// 		if ( this.isDirectory ) {
 
-				} else {
+		// 			this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
 
-					this.metadata = MetadataFactory.createMetadata( nodeName, this.extension, this.file.path );
-				}
+		// 		} else {
 
+		// 			this.metadata = MetadataFactory.createMetadata( nodeName, this.extension, this.file.path );
+		// 		}
 
-			}
+		// 	}
 
-			this.metadata.path = newPath;
-			this.metadata.preview = null;
+		// 	this.metadata.path = newPath;
 
-			try {
+		// 	this.metadata.preview = null;
 
-				MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
+		// 	try {
 
-				this.fileService.fs.renameSync( oldPath, newPath );
+		// 		MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
 
-				this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
+		// 		this.fileService.fs.renameSync( oldPath, newPath );
 
-				this.renamed.emit( this.file );
+		// 		this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
 
-			} catch ( error ) {
+		// 		this.renamed.emit( this.file );
 
-				console.error( 'error in renaming', error, oldPath, newPath );
+		// 	} catch ( error ) {
 
-			}
+		// 		console.error( 'error in renaming', error, oldPath, newPath );
 
-			this.showRenaming = false;
+		// 	}
 
-		}
+		// 	this.showRenaming = false;
+
+		// }
 
 	}
 

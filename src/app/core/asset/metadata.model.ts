@@ -6,7 +6,7 @@ export interface Metadata {
 	guid: string;
 	path: string;
 	isFolder?: boolean;
-	importer: string;
+	importer: MetaImporter;
 	data: any;
 	preview?: any;
 }

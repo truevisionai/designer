@@ -14,6 +14,7 @@ import { LockscreenComponent } from './views/sessions/lockscreen/lockscreen.comp
 import { NotFoundComponent } from './views/sessions/not-found/not-found.component';
 import { SigninComponent } from './views/sessions/signin/signin.component';
 import { SignupComponent } from './views/sessions/signup/signup.component';
+import { LoadingComponent } from './views/editor/loading/loading.component';
 
 const appRoutes: Routes = [
 	{
@@ -31,12 +32,20 @@ const appRoutes: Routes = [
 		component: EditorLayoutComponent,
 		children: [
 			{
-				path: '', component: EditorComponent,
+				path: '', component: LoadingComponent,
+				data: {
+					title: 'Loading',
+					breadcrumb: ''
+				}
+			},
+			{
+				path: 'editor', component: EditorComponent,
 				data: {
 					title: 'Editor',
 					breadcrumb: ''
 				}
 			},
+
 		]
 	},
 	{

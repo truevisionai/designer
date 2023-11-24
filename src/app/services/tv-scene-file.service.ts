@@ -20,6 +20,8 @@ import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
 import { MapService } from "./map.service";
+import { StorageService } from 'app/io/storage.service';
+import { FileUtils } from 'app/io/file-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,12 +31,12 @@ export class TvSceneFileService {
 	constructor (
 		public sceneExporter: SceneExporterService,
 		public sceneImporter: SceneImporterService,
-		public fileService: FileService,
 		public threeService: ThreeService,
 		public electronService: TvElectronService,
-		private dialogService: DialogService,
-		private scenarioService: ScenarioService,
 		public mapService: MapService,
+		public fileService: FileService,
+		private dialogService: DialogService,
+		private storageService: StorageService,
 	) {
 	}
 
@@ -88,21 +90,25 @@ export class TvSceneFileService {
 
 		if ( response.canceled ) return;
 
-		TvConsole.info( 'Opening file: ' + response.filePaths[ 0 ] );
+		if ( response.filePaths == null || response.filePaths.length == 0 ) return;
 
-		this.sceneImporter.importFromPath( response.filePaths[ 0 ] );
+		this.openFromPath( response.filePaths[ 0 ] );
 
 	}
 
-	openFromPath ( path: string, callback?: Function ) {
+	async openFromPath ( path: string, callback?: Function ) {
 
-		this.sceneImporter.importFromPath( path );
+		TvConsole.info( 'Opening file: ' + path );
+
+		const contents = await this.storageService.readAsync( path );
+
+		this.setMap( this.sceneImporter.import( contents ) );
 
 		callback?.();
 
 	}
 
-	save () {
+	async save () {
 
 		if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
 
@@ -113,18 +119,24 @@ export class TvSceneFileService {
 		// path exists means it was imported locally
 		if ( this.currentFile.path != null ) {
 
-			this.fileService.writeFile( this.currentFile.path, contents, ( file: IFile ) => {
+			await this.storageService.writeAsync( this.currentFile.path, contents );
 
-				this.currentFile.path = file.path;
-				this.currentFile.name = file.name;
+			SnackBar.success( 'File Saved!' );
 
-				this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
+			ToolManager.enable();	// enable tools after saving
 
-				SnackBar.success( 'File Saved!' );
+			// this.fileService.writeFile( this.currentFile.path, contents, ( file: IFile ) => {
 
-				ToolManager.enable();	// enable tools after saving
+			// 	this.currentFile.path = file.path;
+			// 	this.currentFile.name = file.name;
 
-			} );
+			// 	this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
+
+			// 	SnackBar.success( 'File Saved!' );
+
+			// 	ToolManager.enable();	// enable tools after saving
+
+			// } );
 
 		} else {
 
@@ -134,24 +146,40 @@ export class TvSceneFileService {
 
 	}
 
-	saveAs () {
+	async saveAs () {
+
+		const extension = this.sceneExporter.extension;
 
 		const contents = this.sceneExporter.export();
 
-		const folder = this.fileService.projectFolder;
+		const options = {
+			defaultPath: this.fileService.projectFolder,
+		}
 
-		this.fileService.saveFileWithExtension( folder, contents, this.sceneExporter.extension, ( file: IFile ) => {
+		const res = await this.dialogService.saveDialog( options );
 
-			this.currentFile.path = file.path;
-			this.currentFile.name = file.name;
+		if ( res.canceled ) return;
 
-			this.electronService.setTitle( file.name, file.path );
+		if ( res.filePath == null ) return;
 
-			SnackBar.success( 'File Saved!' );
+		// append the extension if not present in the path
+		if ( !res.filePath.includes( `.${ extension }` ) ) {
 
-			ToolManager.enable();	// enable tools after saving
+			res.filePath = res.filePath + '.' + extension;
 
-		} );
+		}
+
+		this.storageService.writeAsync( res.filePath, contents );
+
+		this.currentFile.path = res.filePath
+
+		this.currentFile.name = FileUtils.getFilenameFromPath( res.filePath );
+
+		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
+
+		SnackBar.success( 'File Saved!' );
+
+		ToolManager.enable();	// enable tools after saving
 
 	}
 

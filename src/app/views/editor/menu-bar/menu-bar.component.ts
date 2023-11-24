@@ -182,12 +182,6 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	importRecentFile ( file: IFile ) {
-
-		this.mainFileService.openFromPath( file.path, null );
-
-	}
-
 	onImportOpenDRIVE () {
 
 		this.odService.showImportDialog();

@@ -8,9 +8,9 @@
 	<div fxFlex="20">
 		<perfect-scrollbar class="project-heirarchy-container border-right"
 			fxFlexFill>
-			<app-project-hierarchy (folderChanged)="onFolderChanged($event)"
+			<app-project-hierarchy
 				[dataSource]="dataSource"
-				[treeControl]="treeControl">
+				[treeControl]="folderTree">
 			</app-project-hierarchy>
 		</perfect-scrollbar>
 	</div>
@@ -19,10 +19,7 @@
 		fxFlex="80">
 		<perfect-scrollbar class="folder-file-container"
 			fxFlexFill>
-			<app-folder-files (folderChanged)="onFolderChanged($event)"
-				[files]="files"
-				[folder]="folder">
-			</app-folder-files>
+			<app-folder-files [folder]="currentFolder"></app-folder-files>
 		</perfect-scrollbar>
 	</div>
 

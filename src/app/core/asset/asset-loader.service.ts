@@ -5,11 +5,11 @@
 import { Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { Debug } from 'app/core/utils/debug';
-import { TvPrefabLoader } from 'app/modules/three-js/objects/TvPrefabLoader';
-import { TvMaterialLoader } from 'app/modules/three-js/objects/TvMaterialLoader';
-import { TvEntityLoader } from 'app/modules/three-js/objects/TvEntityLoader';
+import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
+import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
+import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
-import { FileNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import {
 	BufferGeometryLoader,
 	LinearEncoding,
@@ -26,37 +26,39 @@ import {
 } from 'three';
 import { ModelImporterService } from '../../importers/model-importer.service';
 import { RoadStyleImporter } from '../../importers/road-style-importer';
-import { FileService } from '../../io/file.service';
 import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 import { XmlElement } from "../../importers/xml.element";
+import { StorageService } from 'app/io/storage.service';
+import { FileUtils } from 'app/io/file-utils';
+import { ProjectService } from 'app/services/project.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetLoaderService {
 
-	// public previewCache: Map<string, string> = new Map<string, string>();
-
-	// public assetInstances: Map<string, any> = new Map<string, any>();
-
 	/**
 	 * This class is responsible to loading, caching, importing, reading .meta files.
-	 *
-	 * @param fileService FileService
 	 */
-	constructor ( private fileService: FileService, public modelImporterService: ModelImporterService ) {
+	constructor (
+		public modelImporterService: ModelImporterService,
+		private storageService: StorageService,
+		private projectService: ProjectService
+	) {
 	}
 
 	private get projectDir () {
-		return this.fileService.projectFolder;
+		return this.projectService.projectPath;
 	}
 
 	init () {
 
 		this.loadDefaultAssets();
 
-		this.loadDirectory( this.fileService.readPathContentsSync( this.projectDir ) );
+		const files = this.storageService.getDirectoryFiles( this.projectDir );
+
+		this.loadDirectory( files );
 
 		this.loadTextures();
 
@@ -77,6 +79,7 @@ export class AssetLoaderService {
 		this.loadOpenDriveFiles();
 
 		this.loadOpenScenarioFiles();
+
 	}
 
 
@@ -124,35 +127,31 @@ export class AssetLoaderService {
 
 	loadMaterials () {
 
-		const materialLoader = new TvMaterialLoader();
+		// const materialLoader = new TvMaterialLoader();
 
-		AssetDatabase.getMetadataAll().forEach( async meta => {
+		// AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == MetaImporter.MATERIAL && meta.guid != 'defaultMaterial' ) {
+		// 	if ( meta.importer == MetaImporter.MATERIAL && meta.guid != 'defaultMaterial' ) {
 
-				const contents = await this.fileService.readAsync( meta.path );
+		// 		const contents = this.storageService.readSync( meta.path );
 
-				const material = materialLoader.parseMaterial( JSON.parse( contents ) );
+		// 		const material = materialLoader.parseMaterial( JSON.parse( contents ) );
 
-				if ( material.guid != meta.guid ) {
+		// 		if ( material.guid != meta.guid ) {
 
-					Debug.log( 'material guid mismatch', meta.guid, material.guid );
+		// 			Debug.log( 'material guid mismatch', meta.guid, material.guid );
 
-					material.guid = material.uuid = meta.guid;
+		// 			material.guid = material.uuid = meta.guid;
 
-					// AssetFactory.updateMaterial( meta.path, material );
+		// 			AssetDatabase.setInstance( meta.guid, material );
+		// 			AssetDatabase.setInstance( material.guid, material );
+		// 		}
 
-					AssetDatabase.setInstance( meta.guid, material );
+		// 		AssetDatabase.setInstance( meta.guid, material );
 
-				} else {
+		// 	}
 
-					AssetDatabase.setInstance( meta.guid, material );
-
-				}
-
-			}
-
-		} );
+		// } );
 
 	}
 
@@ -160,11 +159,11 @@ export class AssetLoaderService {
 
 		const loader = new BufferGeometryLoader();
 
-		AssetDatabase.getMetadataAll().forEach( async meta => {
+		AssetDatabase.getMetadataAll().forEach( meta => {
 
 			if ( meta.importer == MetaImporter.GEOMETRY ) {
 
-				const contents = await this.fileService.readAsync( meta.path );
+				const contents = this.storageService.readSync( meta.path );
 
 				const json = JSON.parse( contents );
 
@@ -203,11 +202,11 @@ export class AssetLoaderService {
 
 		const loader = new TvPrefabLoader();
 
-		AssetDatabase.getMetadataAll().forEach( async meta => {
+		AssetDatabase.getMetadataAll().forEach( meta => {
 
 			if ( meta.importer == MetaImporter.PREFAB ) {
 
-				const contents = await this.fileService.readAsync( meta.path );
+				const contents = this.storageService.readSync( meta.path );
 
 				const prefab = loader.parsePrefab( JSON.parse( contents ) );
 
@@ -235,11 +234,11 @@ export class AssetLoaderService {
 
 		const entityLoader = new TvEntityLoader();
 
-		AssetDatabase.getMetadataAll().forEach( async meta => {
+		AssetDatabase.getMetadataAll().forEach( meta => {
 
 			if ( meta.importer == MetaImporter.ENTITY ) {
 
-				const contents = await this.fileService.readAsync( meta.path );
+				const contents = this.storageService.readSync( meta.path );
 
 				const entity = entityLoader.parseEntity( JSON.parse( contents ) );
 
@@ -269,13 +268,12 @@ export class AssetLoaderService {
 
 			if ( meta.importer == MetaImporter.ROAD_STYLE ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+				const contents = this.storageService.readSync( meta.path );
 
-					const roadStyle = RoadStyleImporter.importFromString( contents );
+				const roadStyle = RoadStyleImporter.importFromString( contents );
 
-					AssetDatabase.setInstance( meta.guid, roadStyle );
+				AssetDatabase.setInstance( meta.guid, roadStyle );
 
-				} );
 			}
 
 		} );
@@ -287,13 +285,12 @@ export class AssetLoaderService {
 
 			if ( meta.importer === MetaImporter.ROAD_MARKING ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+				const contents = this.storageService.readSync( meta.path )
 
-					const marking = TvRoadMarking.importFromString( contents );
+				const marking = TvRoadMarking.importFromString( contents );
 
-					AssetDatabase.setInstance( meta.guid, marking );
+				AssetDatabase.setInstance( meta.guid, marking );
 
-				} );
 			}
 
 		} );
@@ -306,11 +303,9 @@ export class AssetLoaderService {
 
 			if ( meta.importer == MetaImporter.OPENDRIVE ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+				const contents = this.storageService.readSync( meta.path )
 
-					AssetDatabase.setInstance( meta.guid, contents );
-
-				} );
+				AssetDatabase.setInstance( meta.guid, contents );
 
 			}
 
@@ -324,11 +319,9 @@ export class AssetLoaderService {
 
 			if ( meta.importer == MetaImporter.OPENSCENARIO ) {
 
-				this.fileService.readAsync( meta.path ).then( contents => {
+				const contents = this.storageService.readSync( meta.path )
 
-					AssetDatabase.setInstance( meta.guid, contents );
-
-				} );
+				AssetDatabase.setInstance( meta.guid, contents );
 
 			}
 
@@ -347,129 +340,31 @@ export class AssetLoaderService {
 
 	}
 
-	// updateAsset ( guid: string, data: any ) {
-
-	//     try {
-
-	//         const metadata = this.find( guid );
-
-	//         this.writeMetafile( metadata.path, metadata );
-
-	//     } catch ( error ) {
-
-	//         SnackBar.error( "Error in updating asset" );
-
-	//     }
-
-	// }
-
-
-	// reimportProject () {
-
-	//     this.reimportFiles( this.fileService.readPathContentsSync( this.projectDir ) );
-
-	// }
-
-	// reimportFiles ( files: any[] ) {
-
-	//     files.forEach( file => {
-
-	//         const extension = FileService.getExtension( file.name );
-
-	//         if ( file.type === 'file' && extension != 'meta' ) {
-
-	//             this.reimport( file );
-
-	//         }
-
-	//         if ( file.type === 'directory' ) {
-
-	//             const guid = Math.random().toString( 36 ).substring( 7 );
-
-	//             const metadata = { guid: guid, isFolder: true, path: file.path, importer: null, data: null };
-
-	//             this.writeMetafile( file, metadata );
-
-	//             this.addMetafileInCache( guid, metadata );
-
-	//             this.reimportFiles( this.fileService.readPathContentsSync( file.path ) );
-
-	//         }
-
-	//     } );
-	// }
-
-	// reimport ( file: { path: string, name: string }, extension?: string ) {
-
-	//     const metadata = MetadataFactory.createMetadata( file.name, extension, file.path );
-
-	//     if ( metadata ) {
-
-	//         // this.writeMetafile( file.path, metadata );
-
-	//         this.addMetafileInCache( metadata.guid, metadata );
-
-	//     }
-	// }
-
-	// writeMetafile ( file: FileNode | string, metadata: Metadata ) {
-
-	//     try {
-
-	//         let path = null;
-
-	//         if ( typeof ( file ) === 'string' ) path = file;
-
-	//         if ( typeof ( file ) === 'object' ) path = file.path;
-
-	//         if ( !path.includes( '.meta' ) ) path = path + '.meta';
-
-	//         this.fileService.fs.writeFileSync( path, JSON.stringify( metadata ) );
-
-	//     } catch ( error ) {
-
-	//         console.error( error );
-
-	//         SnackBar.error( "Error in writing .meta file. Please Reimport the asset.", "", 5000 );
-	//     }
-
-	// }
-
 	loadDirectory ( files: any[] ) {
 
 		files.forEach( file => {
 
-			if ( file.type === 'file' && FileService.getExtension( file.name ) === 'meta' ) this.loadMetadata( file );
+			if ( file.type === 'file' && FileUtils.getExtensionFromPath( file.name ) === 'meta' ) {
+
+				try {
+
+					const metadata = this.readMetaSync( file );
+
+					AssetDatabase.setMetadata( metadata.guid, metadata );
+
+				} catch ( error ) {
+
+				}
+
+			}
 
 			if ( file.type === 'directory' ) {
-				this.loadDirectory( this.fileService.readPathContentsSync( file.path ) );
+
+				this.loadDirectory( this.storageService.getDirectoryFiles( file.path ) );
+
 			}
 
 		} );
-
-	}
-
-	loadMetadata ( file ): void {
-
-		// TODO: improve import pipeline
-		// import texture
-		// import materials
-		// import models
-		// import props, signs etc
-
-		try {
-
-			const metadata = this.fetchMetaFile( file );
-
-			AssetDatabase.setMetadata( metadata.guid, metadata );
-
-			// this.loadInstance( metadata.importer, metadata.guid, metadata.path );
-
-		} catch ( error ) {
-
-			console.error( error, file );
-
-		}
 
 	}
 
@@ -493,37 +388,7 @@ export class AssetLoaderService {
 
 	}
 
-	// loadInstance ( importer: string, guid: string, path: string ): any {
-
-	//     let instance = null;
-
-	//     try {
-
-	//         switch ( importer ) {
-
-	//             case MetaImporter.TEXTURE: instance = new TextureLoader().load( path ); break;
-
-	//             case MetaImporter.MATERIAL:
-	//                 {
-	//                     instance = TvMaterial.parseString( this.fileService.fs.readFileSync( path, 'utf-8' ) );
-	//                 }
-	//                 break;
-
-	//             default: break;
-	//         }
-
-	//     } catch ( error ) {
-
-	//         console.error( error );
-
-	//     }
-
-	//     if ( instance ) AssetCache.setInstance( guid, instance );
-
-	//     return instance;
-	// }
-
-	fetchMetaFile ( file: FileNode | string ): Metadata {
+	readMetaSync ( file: AssetNode | string ): Metadata {
 
 		try {
 
@@ -535,7 +400,9 @@ export class AssetLoaderService {
 
 			if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-			return JSON.parse( this.fileService.fs.readFileSync( path, 'utf-8' ) );
+			const contents = this.storageService.readSync( path );
+
+			return JSON.parse( contents );
 
 		} catch ( error ) {
 
@@ -546,7 +413,7 @@ export class AssetLoaderService {
 
 	}
 
-	hasMetaFile ( file: FileNode | string ): boolean {
+	hasMetaFile ( file: AssetNode | string ): boolean {
 
 		try {
 
@@ -558,7 +425,7 @@ export class AssetLoaderService {
 
 			if ( !path.includes( '.meta' ) ) path = path + '.meta';
 
-			return this.fileService.fs.existsSync( path );
+			return this.storageService.exists( path );
 
 		} catch ( error ) {
 

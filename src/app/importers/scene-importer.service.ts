@@ -3,8 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AppInspector } from 'app/core/inspector';
-import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { AbstractReader } from 'app/importers/abstract-reader';
 import { SceneService } from 'app/services/scene.service';
@@ -12,7 +10,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { ToolManager } from 'app/tools/tool-manager';
 import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
@@ -52,16 +49,12 @@ import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { SignShapeType } from 'app/modules/tv-map/services/tv-sign.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
 import { AssetDatabase } from '../core/asset/asset-database';
-import { FileService } from '../io/file.service';
 import { TvConsole } from '../core/utils/console';
-import { CommandHistory } from '../services/command-history';
 import { SnackBar } from '../services/snack-bar.service';
-import { TvElectronService } from '../services/tv-electron.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadService } from '../services/road/road.service';
@@ -69,70 +62,31 @@ import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "./xml.element";
 
-
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SceneImporterService extends AbstractReader {
 
+	private map: TvMap;
+
 	constructor (
-		private fileService: FileService,
-		private electronService: TvElectronService,
 		private threeService: ThreeService,
 		private roadService: RoadService,
 	) {
 		super();
 	}
 
-	get map (): TvMap {
-		return TvMapInstance.map;
-	}
+	import ( contents: string ): TvMap {
 
-	set map ( value ) {
-		TvMapInstance.map = value;
-	}
+		this.importFromString( contents );
 
-	importFromPath ( path: string ) {
-
-		try {
-
-			this.fileService.readFile( path, 'scene', ( file ) => {
-
-				this.importFromFile( file );
-
-			} );
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
+		return this.map;
 
 	}
 
-	importFromFile ( file: IFile ): void {
+	private importFromString ( contents: string ): boolean {
 
-		try {
-
-			if ( this.importFromString( file.contents ) ) {
-
-				TvMapInstance.currentFile = file;
-
-				this.electronService.setTitle( file.name, file.path );
-
-			}
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-			console.error( error, file );
-
-		}
-
-	}
-
-	importFromString ( contents: string ): boolean {
+		this.map = new TvMap();
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -156,25 +110,9 @@ export class SceneImporterService extends AbstractReader {
 		if ( !version ) console.error( 'Cannot read scene version', scene );
 		if ( !version ) return;
 
-		this.prepareToImport();
-
 		this.importScene( scene );
 
 		return true;
-	}
-
-	private prepareToImport () {
-
-		ToolManager.clear();
-
-		AppInspector.clear();
-
-		CommandHistory.clear();
-
-		this.map.destroy();
-
-		this.map = new TvMap();
-
 	}
 
 	private importScene ( xml: XmlElement ): void {
@@ -306,7 +244,7 @@ export class SceneImporterService extends AbstractReader {
 
 	}
 
-	importSpline ( xml: XmlElement ): AbstractSpline {
+	private importSpline ( xml: XmlElement ): AbstractSpline {
 
 		if ( xml.attr_type === 'autov2' ) {
 
@@ -758,7 +696,6 @@ export class SceneImporterService extends AbstractReader {
 			const elementId = parseFloat( xmlElement.attr_elementId );
 			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-
 			road.setPredecessor( elementType, elementId, contactPoint );
 
 		} else if ( type === 1 ) {
@@ -1130,7 +1067,6 @@ export class SceneImporterService extends AbstractReader {
 			this.parseLaneOffset( road, xml );
 
 		} );
-
 
 		// if ( xmlElement.laneSection != null ) {
 		//

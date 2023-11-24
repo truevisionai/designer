@@ -8,6 +8,19 @@ export class FileUtils {
 
 	static getExtensionFromPath ( path: string ) {
 
+		// if ( this.electron.isWindows ) {
+
+		// 	const array = filename.split( '.' );
+
+		// 	return array[ array.length - 1 ];
+		// }
+
+		// const regEx = /(?:\.([^.]+))?$/;
+
+		// const extension = regEx.exec( filename )[ 1 ];
+
+		// return extension;
+
 		if ( !path ) return;
 
 		// split by dot and return the last item

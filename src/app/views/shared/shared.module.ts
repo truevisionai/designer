@@ -97,6 +97,7 @@ import { RoutePartsService } from './services/route-parts.service';
 // SERVICES
 import { ThemeService } from './services/theme.service';
 import { Vector2FieldComponent } from './fields/vector2-field/vector2-field.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 /*
   Only Required if you want to use Angular Landing
@@ -236,7 +237,10 @@ const classesToInclude = [
 		MatGridListModule,
 		MatInputModule,
 		MatButtonModule,
-		MatExpansionModule, RoadIdFieldComponent,
+		MatExpansionModule,
+		RoadIdFieldComponent,
+		MatProgressSpinnerModule,
+		MatProgressBarModule,
 	]
 } )
 export class SharedModule {

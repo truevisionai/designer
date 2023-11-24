@@ -1,0 +1,143 @@
+import { Injectable } from '@angular/core';
+import { TvElectronService } from 'app/services/tv-electron.service';
+import { FileService } from './file.service';
+
+
+export interface PutFileResponse {
+	path: string;
+}
+
+export interface IStorageProvider {
+
+	exists ( path: string ): boolean;
+
+	readAsync ( path: string, options?: any ): Promise<string>;
+
+	readSync ( path: string, options?: any ): string;
+
+	writeSync ( path: string, contents: string, options?: any ): PutFileResponse;
+
+	writeAsync ( path: string, contents: string, options?: any ): Promise<PutFileResponse>;
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class StorageService {
+
+	private storageProvider: IStorageProvider;
+
+	constructor ( electron: TvElectronService, private fileService: FileService ) {
+
+		if ( electron.isElectronApp ) {
+
+			this.storageProvider = new ElectronStorageProvider( fileService );
+
+		} else {
+
+			throw new Error( 'Method not implemented.' );
+
+		}
+
+	}
+
+	createDirectory ( path: string, name: string ): PutFileResponse {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	readAsync ( path: string, options?: any ): Promise<string> {
+
+		return this.storageProvider.readAsync( path, options );
+
+	}
+
+	readSync ( path: string, options?: any ): string {
+
+		return this.storageProvider.readSync( path, options );
+
+	}
+
+	writeAsync ( path: string, contents: string, options?: any ): Promise<PutFileResponse> {
+
+		return this.storageProvider.writeAsync( path, contents, options );
+
+	}
+
+	writeSync ( path: string, contents: string, options?: any ): PutFileResponse {
+
+		return this.storageProvider.writeSync( path, contents, options );
+
+	}
+
+	getDirectoryFiles ( path: string ) {
+
+		return this.fileService.readPathContentsSync( path );
+
+	}
+
+	exists ( path: any ): boolean {
+
+		return this.storageProvider.exists( path );
+
+	}
+
+	join ( path, filename ): string {
+
+		return this.fileService.path.join( path, filename );
+
+	}
+
+	copyFileSync ( sourcePath: string, destinationPath: string ): PutFileResponse {
+
+		const contents = this.readSync( sourcePath );
+
+		return this.writeSync( destinationPath, contents );
+
+	}
+
+}
+
+export class ElectronStorageProvider implements IStorageProvider {
+
+	constructor (
+		private fileService: FileService
+	) {
+	}
+
+	readAsync ( path: string, options: any ): Promise<string> {
+
+		const encoding = options?.encoding || 'utf-8';
+
+		return this.fileService.readAsync( path, encoding );
+
+	}
+
+	readSync ( path: string, options?: any ): string {
+
+		const encoding = options?.encoding || 'utf-8';
+
+		return this.fileService.fs.readFileSync( path, encoding );
+	}
+
+	writeSync ( path: string, contents: string, options: any ): PutFileResponse {
+
+		return this.fileService.fs.writeFileSync( path, contents, options );
+
+	}
+
+	writeAsync ( path: string, contents: string, options: any ): Promise<PutFileResponse> {
+
+		return this.fileService.writeAsync( path, contents, options );
+
+	}
+
+	exists ( path: string ): boolean {
+
+		return this.fileService.fs.existsSync( path );
+
+	}
+
+}

@@ -22,11 +22,31 @@ interface OpenDialogReturnValue {
 	bookmarks?: string[];
 }
 
+interface SaveDialogReturnValue {
+	/**
+		 * whether or not the dialog was canceled.
+		 */
+	canceled: boolean;
+	/**
+	 * An array of file paths chosen by the user. If the dialog is cancelled this will
+	 * be an empty array.
+	 */
+	filePath: string;
+	/**
+	 * An array matching the `filePaths` array of base64 encoded strings which contains
+	 * security scoped bookmark data. `securityScopedBookmarks` must be enabled for
+	 * this to be populated. (For return values, see table here.)
+	 *
+	 * @platform darwin,mas
+	 */
+	bookmarks?: string[];
+}
+
 export interface IDialogProvider {
 
 	openDialog ( options: any ): Promise<OpenDialogReturnValue>;
 
-	saveDialog ( options: any ): Promise<IFile>;
+	saveDialog ( options: any ): Promise<SaveDialogReturnValue>;
 
 }
 
@@ -57,7 +77,7 @@ export class DialogService {
 
 	}
 
-	saveDialog ( options: any ): Promise<IFile> {
+	saveDialog ( options: any ): Promise<SaveDialogReturnValue> {
 
 		return this.dialogProvider.saveDialog( options );
 
@@ -73,7 +93,7 @@ export class ElectronDialogProvider implements IDialogProvider {
 
 	}
 
-	openDialog ( options: any ): Promise<any> {
+	openDialog ( options: any ): Promise<OpenDialogReturnValue> {
 
 		const filters = options?.extensions?.map( ( extension: string ) => {
 			return {
@@ -82,20 +102,28 @@ export class ElectronDialogProvider implements IDialogProvider {
 			}
 		} );
 
-		const electronOptions = {
+		const openOptions = {
 			title: options?.title || 'Select file',
 			buttonLabel: options?.title || 'Import',
 			filters: filters,
 			message: options?.title || 'Select file'
 		};
 
-		return this.electron.remote.dialog.showOpenDialog( electronOptions );
+		return this.electron.remote.dialog.showOpenDialog( openOptions );
 
 	}
 
-	saveDialog ( options: any ): Promise<any> {
+	saveDialog ( options: any ): Promise<SaveDialogReturnValue> {
 
-		throw new Error( 'Method not implemented.' );
+		const saveOptions: Electron.SaveDialogOptions = {
+			title: 'Save File',
+			defaultPath: options?.defaultPath || '',
+			filters: [
+				{ name: 'All Files', extensions: [ options?.extension ] }
+			]
+		};
+
+		return this.electron.remote.dialog.showSaveDialog( saveOptions );
 
 	}
 

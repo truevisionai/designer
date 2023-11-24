@@ -31,6 +31,7 @@ import { SharedModule } from './views/shared/shared.module';
 import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';
+import { LoadingModule } from './views/editor/loading/loading.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -60,6 +61,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 		SessionsModule,
 		SatPopoverModule,
+		LoadingModule,
 
 		TranslateModule.forRoot( {
 			loader: {

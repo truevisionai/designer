@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { IFile } from '../io/file';
 import { FileService } from '../io/file.service';
-import { StorageService } from './storage.service';
+import { LocalStorage } from './local-storage';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +19,7 @@ export class RecentFileService {
 	private mLastFile: IFile;
 
 	constructor (
-		private storage: StorageService,
+		private storage: LocalStorage,
 		private files: FileService
 	) {
 
