@@ -81,9 +81,9 @@ export class AssetService {
 		this.createNewAsset( AssetType.SCENE, 'Scene.scene', path, data, scene );
 	}
 
-	createFolderAsset ( path: string ) {
+	createFolderAsset ( path: string, name: string = 'Folder' ) {
 
-		const folder = this.fileService.createFolder( path, 'Folder' );
+		const folder = this.fileService.createFolder( path, name );
 
 		this.createNewAsset( AssetType.DIRECTORY, folder.name, path );
 

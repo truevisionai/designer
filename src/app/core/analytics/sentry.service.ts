@@ -12,21 +12,25 @@ import { Environment } from '../utils/environment';
 } )
 export class SentryService {
 
-	private static fileApiService: FileApiService;
-
-	constructor ( fileApiService: FileApiService ) {
-
-		SentryService.fileApiService = fileApiService;
-
-	}
-
-	static get isErrorTrackingEnabled (): boolean {
-
+	get isErrorTrackingEnabled (): boolean {
 		return Environment.errorTrackingEnabled;
+	}
+
+	constructor ( private fileApiService: FileApiService ) { }
+
+	static init (): void {
+
+		if ( !Environment.errorTrackingEnabled ) return;
+
+		Sentry.init( {
+			dsn: Environment.dsn,
+			environment: Environment.environment,
+			release: Environment.version,
+		} );
 
 	}
 
-	static setEmail ( email: string ): void {
+	setEmail ( email: string ): void {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 
@@ -37,19 +41,7 @@ export class SentryService {
 
 	}
 
-	static init (): void {
-
-		if ( !this.isErrorTrackingEnabled ) return;
-
-		Sentry.init( {
-			dsn: Environment.dsn,
-			environment: Environment.environment,
-			release: Environment.version,
-		} );
-
-	}
-
-	static captureException ( error: Error, context?: any ): void {
+	captureException ( error: Error, context?: any ): void {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 
@@ -69,7 +61,7 @@ export class SentryService {
 
 	}
 
-	static captureWithMapState ( error: Error, context: any ) {
+	captureWithMapState ( error: Error, context: any ) {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 
@@ -85,7 +77,7 @@ export class SentryService {
 
 	}
 
-	static captureMessage ( message: string, context?: any ): void {
+	captureMessage ( message: string, context?: any ): void {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 

@@ -3,7 +3,6 @@
  */
 
 import { ApplicationRef, ChangeDetectorRef, ErrorHandler, Injectable, Injector } from '@angular/core';
-import { AnalyticsService } from 'app/core/analytics/analytics.service';
 import { SentryService } from 'app/core/analytics/sentry.service';
 import { SnackBar } from '../../../services/snack-bar.service';
 
@@ -12,7 +11,10 @@ export class CustomErrorHandler extends ErrorHandler {
 
 	errorCount = 0;
 
-	constructor ( protected injector: Injector, private analytics: AnalyticsService ) {
+	constructor (
+		protected injector: Injector,
+		private sentry: SentryService
+	) {
 		super();
 	}
 
@@ -23,7 +25,7 @@ export class CustomErrorHandler extends ErrorHandler {
 
 		console.error( error );
 
-		SentryService.captureException( error );
+		this.sentry.captureException( error );
 
 		let increment = 5;
 		let max = 50;

@@ -75,7 +75,7 @@ export class AnalyticsService {
 
 		if ( Environment.production ) this.mixpanel.setEmail( email );
 
-		SentryService.setEmail( email );
+		this.sentry.setEmail( email );
 
 	}
 

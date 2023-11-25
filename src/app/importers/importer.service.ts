@@ -5,9 +5,6 @@
 import { Injectable } from '@angular/core';
 import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
 import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
-import { AssetLoaderService } from '../core/asset/asset-loader.service';
-import { OpenScenarioLoader } from '../modules/scenario/services/open-scenario.loader';
-import { ModelImporterService } from './model-importer.service';
 import { SceneImporterService } from './scene-importer.service';
 import { StorageService } from 'app/io/storage.service';
 import { MapService } from 'app/services/map.service';
@@ -24,9 +21,6 @@ export class ImporterService {
 		private storageService: StorageService,
 		private openDriveService: OpenDriveService,
 		private sceneImporter: SceneImporterService,
-		private modelImporter: ModelImporterService,
-		private assetService: AssetLoaderService,
-		private openScenarioImporter: OpenScenarioLoader,
 		private scenarioService: ScenarioService,		// dont remove required for import
 		private mapService: MapService,
 	) {

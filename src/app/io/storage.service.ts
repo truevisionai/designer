@@ -44,7 +44,7 @@ export class StorageService {
 
 	createDirectory ( path: string, name: string ): PutFileResponse {
 
-		throw new Error( 'Method not implemented.' );
+		return this.fileService.createFolder( path, name );
 
 	}
 
@@ -90,11 +90,15 @@ export class StorageService {
 
 	}
 
+	resolve ( appPath: any, arg1: string ): any {
+
+		return this.fileService.path.resolve( appPath, arg1 );
+
+	}
+
 	copyFileSync ( sourcePath: string, destinationPath: string ): PutFileResponse {
 
-		const contents = this.readSync( sourcePath );
-
-		return this.writeSync( destinationPath, contents );
+		return this.fileService.fs.copyFileSync( sourcePath, destinationPath );
 
 	}
 

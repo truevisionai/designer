@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ProjectBrowserService } from '../project-browser/project-browser.service';
 import { AssetNode, AssetType } from '../project-browser/file-node.model';
-import { MetaImporter } from 'app/core/asset/metadata.model';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
 import { TvTextureLoaderService } from 'app/loaders/tv-texture.loader';
 import { ModelImporterService } from 'app/importers/model-importer.service';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
+import { EditorSettings } from 'app/services/editor.settings';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +23,7 @@ export class LoadingService {
 		private modelLoader: ModelImporterService,
 		private roadStyleLoader: RoadStyleImporter,
 		private entityLoader: TvEntityLoader,
+		private editorSettings: EditorSettings,
 	) { }
 
 	loadProject ( path: string ) {
@@ -38,6 +39,8 @@ export class LoadingService {
 		this.loadRoadStyles();
 
 		this.loadEntities();
+
+		this.editorSettings.loadSettings();
 	}
 
 

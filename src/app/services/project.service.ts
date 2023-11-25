@@ -3,6 +3,8 @@ import { TvElectronService } from './tv-electron.service';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { StorageService } from 'app/io/storage.service';
+import { AssetService } from 'app/core/asset/asset.service';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 
 declare const versions;
 
@@ -10,11 +12,6 @@ declare const versions;
 	providedIn: 'root'
 } )
 export class ProjectService {
-
-	constructor (
-		private electronService: TvElectronService,
-		private storageService: StorageService,
-	) { }
 
 	get remote () {
 
@@ -56,28 +53,56 @@ export class ProjectService {
 
 	}
 
-	createProjectFolder () {
+	get isProjectFolder () {
+
+		return this.storageService.exists( this.projectPath );
+
+	}
+
+	get settingsPath () {
+
+		return this.storageService.join( this.projectPath, 'settings.json' );
+
+	}
+
+	constructor (
+		private electronService: TvElectronService,
+		private storageService: StorageService,
+		private assetService: AssetService,
+	) { }
+
+	createSettings (): any {
+
+		if ( !this.storageService.exists( this.settingsPath ) ) {
+
+			this.storageService.writeSync( this.settingsPath, JSON.stringify( {} ) );
+
+		}
+
+	}
+
+	setupDefaultAssets () {
 
 		try {
 
 			// create Truevision Folder in user documents if it does not exist
-			// if ( !this.storageService.exists( this.projectPath ) ) {
+			if ( !this.isProjectFolder ) {
 
-			// 	this.storageService.createDirectory( this.userDocumentFolder, 'Truevision' );
+				this.storageService.createDirectory( this.userDocumentFolder, 'Truevision' );
 
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Materials' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Props' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Roads' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'RoadStyles' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'RoadMarkings' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Signs' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Scenes' );
-			// 	AssetFactory.createNewFolder( this.projectPath, 'Textures' );
+				this.assetService.createFolderAsset( this.projectPath, 'Materials' );
+				this.assetService.createFolderAsset( this.projectPath, 'Props' );
+				this.assetService.createFolderAsset( this.projectPath, 'Roads' );
+				this.assetService.createFolderAsset( this.projectPath, 'RoadStyles' );
+				this.assetService.createFolderAsset( this.projectPath, 'RoadMarkings' );
+				this.assetService.createFolderAsset( this.projectPath, 'Signs' );
+				this.assetService.createFolderAsset( this.projectPath, 'Scenes' );
+				this.assetService.createFolderAsset( this.projectPath, 'Textures' );
 
-			// 	this.createDefaultAssets();
+				this.createDefaultAssets();
 
 
-			// }
+			}
 
 		} catch ( error ) {
 
@@ -87,77 +112,51 @@ export class ProjectService {
 
 		}
 
+		this.createSettings();
+
 	}
 
 	createDefaultAssets () {
 
-		this.createRoadStyleAssets();
+		this.createBaseAssets( 'RoadStyles' );
 
-		this.createPropAssets();
+		this.createBaseAssets( 'Props' );
 
-		this.createRoadMarkingAssets();
+		this.createBaseAssets( 'RoadMarkings' );
 
 		this.createBaseAssets( 'Materials' );
 
 	}
 
-	createRoadMarkingAssets () {
-
-		this.createBaseAssets( 'RoadMarkings' );
-
-	}
-
-	createPropAssets () {
-
-		this.createBaseAssets( 'Props' );
-
-	}
-
-	createRoadStyleAssets () {
-
-		this.createBaseAssets( 'RoadStyles' );
-
-	}
-
-	createBaseAssets ( folder: string ) {
+	createBaseAssets ( subFolder: string ) {
 
 		try {
 
-			// let path = null;
+			const defaultProjectPath = this.getDefaultProjectPath( subFolder );
 
-			// if ( this.electronService.remote.app.isPackaged ) {
+			this.storageService.getDirectoryFiles( defaultProjectPath ).forEach( file => {
 
-			// 	const appPath = this.electronService.remote.app.getAppPath();
+				const destinationFolder = this.storageService.join( this.projectPath, `/${ subFolder }/` );
 
-			// 	path = this.fileService.resolve( appPath, `./default-project/${ folder }` );
+				const destinationPath = this.storageService.join( destinationFolder, file.name );
 
-			// } else {
+				console.log( file, destinationPath );
 
-			// 	path = this.fileService.join( this.currentDirectory, `/default-project/${ folder }` );
+				if ( file.name.includes( '.meta' ) ) {
 
-			// }
+					const metadata = this.fetchMetaFile( file );
 
-			// this.fileService.readPathContentsSync( path ).forEach( file => {
+					metadata.path = destinationPath.replace( '.meta', '' );
 
-			// 	const destinationFolder = this.storageService.join( this.projectPath, `/${ folder }/` );
+					MetadataFactory.saveMetadataFile( destinationPath, metadata );
 
-			// 	const destinationPath = this.storageService.join( destinationFolder, file.name );
+				} else {
 
-			// 	if ( file.name.includes( '.meta' ) ) {
+					this.storageService.copyFileSync( file.path, destinationPath );
 
-			// 		const metadata = this.fetchMetaFile( file );
+				}
 
-			// 		metadata.path = destinationPath.replace( '.meta', '' );
-
-			// 		MetadataFactory.saveMetadataFile( destinationPath, metadata );
-
-			// 	} else {
-
-			// 		this.storageService.copyFileSync( file.path, destinationPath );
-
-			// 	}
-
-			// } );
+			} );
 
 		} catch ( error ) {
 
@@ -167,6 +166,21 @@ export class ProjectService {
 
 		}
 
+	}
+
+	getDefaultProjectPath ( folder: string ) {
+
+		if ( this.electronService.remote.app.isPackaged ) {
+
+			const appPath = this.electronService.remote.app.getAppPath();
+
+			return this.storageService.resolve( appPath, `./default-project/${ folder }` );
+
+		} else {
+
+			return this.storageService.join( this.currentDirectory, `/default-project/${ folder }` );
+
+		}
 	}
 
 	fetchMetaFile ( file: AssetNode | string ): Metadata {

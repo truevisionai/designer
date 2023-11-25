@@ -32,6 +32,7 @@ import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/impo
 import { EditorModule } from './views/editor/editor.module';
 import { SessionsModule } from './views/sessions/sessions.module';
 import { LoadingModule } from './views/editor/loading/loading.module';
+import { SentryService } from './core/analytics/sentry.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -73,7 +74,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 	],
 	declarations: [ AppComponent, ImportFbxDialogComponent ],
 	providers: [
-		{ provide: ErrorHandler, useFactory: errorHandlerFactory, deps: [ Injector, AnalyticsService ], },
+		{ provide: ErrorHandler, useFactory: errorHandlerFactory, deps: [ Injector, AnalyticsService, SentryService ], },
 		{ provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
 		{ provide: LocationStrategy, useClass: HashLocationStrategy }
 	],
