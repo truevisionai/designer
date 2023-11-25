@@ -58,6 +58,7 @@ import { TextureInspector } from '../../views/inspectors/texture-inspector/textu
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
+import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
 
 
 @NgModule( {
@@ -92,6 +93,7 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		FieldHostDirective,
 		DynamicFileInspectorComponent,
 		EnvironmentInspectorComponent,
+		AssetInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -154,6 +156,7 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 		DynamicArrayInspectorComponent,
 		DynamicFileInspectorComponent,
 		EnvironmentInspectorComponent,
+		AssetInspectorComponent,
 	]
 } )
 export class TvMapModule {

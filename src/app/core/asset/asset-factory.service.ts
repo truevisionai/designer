@@ -18,7 +18,13 @@ import { MaterialExporter } from 'app/exporters/material-exporter';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';
 import { SceneExporterService } from 'app/exporters/scene-exporter.service';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { ExporterService } from 'app/services/exporter.service';
+import { Metadata } from './metadata.model';
 
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -126,45 +132,6 @@ export class AssetFactory {
 
 	}
 
-	static createNewMaterial ( path: string, name: string = 'NewMaterial' ) {
-
-		try {
-
-			// const material = TvMaterial.new();
-
-			// const result = this.fileService.createFile( path, material.name, 'material', material.toJSONString() );
-
-			// const meta = MetadataFactory.createMetadata( result.fileName, 'material', result.filePath );
-
-			// AssetDatabase.setInstance( meta.guid, material );
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	static createVehicleEntity ( path: string, vehicle: VehicleEntity ) {
-
-		try {
-
-			// const contents = JSON.stringify( vehicle.toJSON() );
-
-			// const result = this.fileService.createFile( path, vehicle.name, 'entity', contents );
-
-			// const meta = MetadataFactory.createMetadata( result.fileName, 'entity', result.filePath, vehicle.uuid );
-
-			// AssetDatabase.setInstance( meta.guid, vehicle );
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
 
 	static updateVehicleEntity ( vehicle: VehicleEntity, path: string ) {
 
@@ -210,11 +177,11 @@ export class AssetFactory {
 
 	static updateMaterial ( path: string, material: TvMaterial ) {
 
-		const exporter = new MaterialExporter()
+		// const exporter = new MaterialExporter()
 
-		const value = JSON.stringify( exporter.toJSON( material ), null, 2 );
+		// const value = JSON.stringify( exporter.exportJSON( material ), null, 2 );
 
-		this.storageService.writeSync( path, value );
+		// this.storageService.writeSync( path, value );
 
 	}
 
@@ -270,6 +237,91 @@ export class AssetFactory {
 		const contents = JSON.stringify( json, null, 2 );
 
 		this.storageService.writeSync( meta.path + '.meta', contents );
+	}
+
+}
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class AssetFactoryNew {
+
+	constructor (
+		private storage: StorageService,
+		private exporter: ExporterService,
+	) { }
+
+	createAsset ( asset: AssetNode, data: string ) {
+
+		if ( data ) this.storage.writeSync( asset.path, data );
+
+		this.createAssetMeta( asset );
+
+	}
+
+	createAssetMeta ( asset: AssetNode ) {
+
+		if ( !asset.metadata ) return;
+
+		this.storage.writeSync( asset.path + '.meta', JSON.stringify( asset.metadata ) );
+
+	}
+
+	saveAssetByGuid ( type: AssetType, guid: string, instance?: any ) {
+
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		if ( !metadata ) return;
+
+		const data = this.exporter.exportAsset( type, guid );
+
+		if ( !data ) return;
+
+		this.storage.writeSync( metadata.path, data );
+
+		this.updateMetadata( metadata.path, metadata );
+
+	}
+
+	saveAsset ( asset: AssetNode ) {
+
+		const data = this.exporter.exportAsset( asset.type, asset.metadata.guid );
+
+		if ( !data ) return;
+
+		this.updateAsset( asset, data );
+
+	}
+
+	updateAsset ( asset: AssetNode, json: string ) {
+
+		this.storage.writeSync( asset.path, json );
+
+		this.updateAssetMeta( asset );
+
+	}
+
+	updateAssetMeta ( asset: AssetNode ) {
+
+		this.updateMetadata( asset.path, asset.metadata );
+
+	}
+
+	updateMetadata ( path: string, metadata: Metadata ) {
+
+		if ( !metadata ) return;
+
+		this.storage.writeSync( path + '.meta', JSON.stringify( metadata ) );
+
+	}
+
+	deleteAsset ( asset: AssetNode ) {
+
+		// this.storage.deleteSync( asset.path );
+
+		// this.storage.deleteSync( asset.path + '.meta' );
+
 	}
 
 }

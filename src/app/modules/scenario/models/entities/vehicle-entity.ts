@@ -11,6 +11,7 @@ import { ScenarioEntity } from './scenario-entity';
 
 export class VehicleEntity extends ScenarioEntity {
 
+
 	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
 
 	constructor (
@@ -94,5 +95,9 @@ export class VehicleEntity extends ScenarioEntity {
 			performance: this.performance.toJSON(),
 			axles: this.axles.toJSON(),
 		};
+	}
+
+	toJSONString (): string {
+		return JSON.stringify( this.toJSON() );
 	}
 }

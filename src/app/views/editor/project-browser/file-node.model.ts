@@ -2,7 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Metadata } from "../../../core/asset/metadata.model";
+import { FileExtension } from "app/io/file.service";
+import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
 
 export enum AssetType {
 	DIRECTORY,
@@ -13,6 +14,8 @@ export enum AssetType {
 	MESH,
 	SCENE,
 	ROAD_STYLE,
+	ROAD_SIGN,
+	ENTITY,
 }
 
 /** Flat node with expandable and level information */
@@ -22,6 +25,8 @@ export class AssetNode {
 
 	public isSelected = false;
 
+	public children: AssetNode[] = [];
+
 	constructor (
 		public type: AssetType,
 		public name: string,
@@ -29,4 +34,72 @@ export class AssetNode {
 		public metadata: Metadata = null,
 	) {
 	}
+
+	get extension (): string {
+
+		return this.path.split( '.' ).pop();
+
+	}
+
+	static getType ( importer: MetaImporter ): AssetType {
+
+		switch ( importer ) {
+
+			case MetaImporter.TEXTURE:
+				return AssetType.TEXTURE;
+				break;
+
+			case MetaImporter.MATERIAL:
+				return AssetType.MATERIAL;
+				break;
+
+			case MetaImporter.MODEL:
+				return AssetType.MODEL;
+				break;
+
+			case MetaImporter.ROAD_STYLE:
+				return AssetType.ROAD_STYLE;
+				break;
+
+			case MetaImporter.ENTITY:
+				return AssetType.ENTITY;
+				break;
+
+			default:
+				return AssetType.FILE;
+				break;
+
+		}
+
+	}
+
+	static getExtensionByAssetType ( type: AssetType ): string {
+
+		switch ( type ) {
+
+			case AssetType.DIRECTORY:
+				return;
+
+			case AssetType.MATERIAL:
+				return FileExtension.MATERIAL;
+
+			case AssetType.SCENE:
+				return FileExtension.SCENE;
+
+			case AssetType.ROAD_STYLE:
+				return FileExtension.ROADSTYLE;
+
+			case AssetType.ROAD_SIGN:
+				return FileExtension.ROADSIGN;
+
+			case AssetType.TEXTURE:
+				return FileExtension.ROADSIGN;
+
+			case AssetType.ROAD_SIGN:
+				return FileExtension.ROADSIGN;
+
+		}
+
+	}
+
 }

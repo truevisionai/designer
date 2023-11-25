@@ -7,6 +7,7 @@ import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
 import { TvTextureLoaderService } from 'app/loaders/tv-texture.loader';
 import { ModelImporterService } from 'app/importers/model-importer.service';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
+import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,7 +21,8 @@ export class LoadingService {
 		private materialLoader: TvMaterialLoader,
 		private textureLoader: TvTextureLoaderService,
 		private modelLoader: ModelImporterService,
-		private roadStyleLoader: RoadStyleImporter
+		private roadStyleLoader: RoadStyleImporter,
+		private entityLoader: TvEntityLoader,
 	) { }
 
 	loadProject ( path: string ) {
@@ -35,13 +37,21 @@ export class LoadingService {
 
 		this.loadRoadStyles();
 
+		this.loadEntities();
 	}
+
 
 	loadFolder ( path: string ) {
 
-		this.projectBrowserService.getFiles( path ).forEach( file => {
+		const folder = new AssetNode( AssetType.DIRECTORY, path, path );
 
-			this.loadFile( file );
+		this.projectBrowserService.getAssets( path ).forEach( asset => {
+
+			AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
+
+			this.assets.push( asset );
+
+			folder.children.push( asset );
 
 		} );
 
@@ -51,23 +61,8 @@ export class LoadingService {
 
 		} )
 
-	}
+		this.assets.push( folder );
 
-	loadFile ( file: AssetNode ) {
-
-		switch ( file.metadata.importer ) {
-
-			case MetaImporter.TEXTURE: file.type = AssetType.TEXTURE; break;
-
-			case MetaImporter.MATERIAL: file.type = AssetType.MATERIAL; break;
-
-			case MetaImporter.MODEL: file.type = AssetType.MODEL; break;
-
-			case MetaImporter.ROAD_STYLE: file.type = AssetType.ROAD_STYLE; break;
-
-		}
-
-		this.assets.push( file );
 	}
 
 	loadTextures () {
@@ -119,5 +114,18 @@ export class LoadingService {
 		} )
 
 	}
+
+	loadEntities () {
+
+		this.assets.filter( asset => asset.type == AssetType.ENTITY ).forEach( asset => {
+
+			const entity = this.entityLoader.loadEntity( asset );
+
+			AssetDatabase.setInstance( asset.metadata.guid, entity );
+
+		} )
+
+	}
+
 
 }

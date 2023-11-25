@@ -20,6 +20,8 @@ import { PreviewService } from 'app/views/inspectors/object-preview/object-previ
 import { TvConsole } from '../../../../core/utils/console';
 import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
+import { CommandHistory } from 'app/services/command-history';
+import { SelectObjectCommand } from 'app/commands/select-object-command';
 
 @Component( {
 	selector: 'app-file',
@@ -47,6 +49,7 @@ export class FileComponent implements OnInit {
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
 		private dragDropService: DragDropService,
+		private inspectorFactory: InspectorFactoryService,
 	) {
 
 	}
@@ -159,7 +162,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			InspectorFactoryService.setAssetInspector( this.metadata );
+			this.inspectorFactory.setAssetInspector( this.file );
 
 		} catch ( error ) {
 

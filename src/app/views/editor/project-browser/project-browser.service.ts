@@ -29,7 +29,7 @@ export class ProjectBrowserService {
 
 	}
 
-	getFiles ( path: string ) {
+	getAssets ( path: string ) {
 
 		return this.storage.getDirectoryFiles( path )
 			.filter( node => !node.name.includes( ".meta" ) )
@@ -44,7 +44,9 @@ export class ProjectBrowserService {
 
 				}
 
-				return new AssetNode( AssetType.FILE, node.name, node.path, metadata );
+				const type = AssetNode.getType( metadata.importer );
+
+				return new AssetNode( type, node.name, node.path, metadata );
 
 			} );
 

@@ -3,7 +3,6 @@
  */
 
 import { Metadata } from 'app/core/asset/metadata.model';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { FileUtils } from '../../io/file-utils';
 
 export class AssetDatabase {

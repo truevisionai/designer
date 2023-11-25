@@ -3,32 +3,79 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-// import { AppService } from 'app/services/app.service';
-import { Material, MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
+import { MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
+import { SerializedField } from "../../../core/components/serialization";
 
 export class TvMaterial extends MeshStandardMaterial {
 
-	public mapGuid: string;
-	public roughnessMapGuid: string;
-	public normalMapGuid: string;
-	public aoMapGuid: string;
-	public displacementMapGuid: string;
-	public alphaMapGuid: string;
+	@SerializedField( { 'type': 'texture' } )
+	get alphaMapGuid (): string {
+		return this._alphaMapGuid;
+	}
+
+	set alphaMapGuid ( value: string ) {
+		this._alphaMapGuid = value;
+	}
+
+	@SerializedField( { 'type': 'texture' } )
+	get displacementMapGuid (): string {
+		return this._displacementMapGuid;
+	}
+
+	set displacementMapGuid ( value: string ) {
+		this._displacementMapGuid = value;
+	}
+
+	@SerializedField( { 'type': 'texture' } )
+	get aoMapGuid (): string {
+		return this._aoMapGuid;
+	}
+
+	set aoMapGuid ( value: string ) {
+		this._aoMapGuid = value;
+	}
+
+	@SerializedField( { 'type': 'texture' } )
+	get normalMapGuid (): string {
+		return this._normalMapGuid;
+	}
+
+	set normalMapGuid ( value: string ) {
+		this._normalMapGuid = value;
+	}
+
+	@SerializedField( { 'type': 'texture' } )
+	get roughnessMapGuid (): string {
+		return this._roughnessMapGuid;
+	}
+
+	set roughnessMapGuid ( value: string ) {
+		this._roughnessMapGuid = value;
+	}
+
+	@SerializedField( { 'type': 'texture' } )
+	get mapGuid (): string {
+		return this._mapGuid;
+	}
+
+	set mapGuid ( value: string ) {
+		this._mapGuid = value;
+	}
+
+	private _mapGuid: string;
+
+	private _roughnessMapGuid: string;
+
+	private _normalMapGuid: string;
+
+	private _aoMapGuid: string;
+
+	private _displacementMapGuid: string;
+
+	private _alphaMapGuid: string;
 
 	constructor ( public guid: string = MathUtils.generateUUID(), parameters?: MeshStandardMaterialParameters ) {
 		super( parameters );
-	}
-
-	static new ( name = 'NewMaterial' ) {
-
-		return new TvMaterial( MathUtils.generateUUID(), { name: name } );
-
-	}
-
-	static fromMaterial ( guid: string, material: Material ): TvMaterial {
-
-		return new TvMaterial( guid, material );
-
 	}
 
 	clone () {
@@ -37,81 +84,37 @@ export class TvMaterial extends MeshStandardMaterial {
 
 		result.guid = result.uuid = MathUtils.generateUUID();
 
-		if ( this.mapGuid !== undefined ) {
-			result.mapGuid = this.mapGuid;
-			result.map = AssetDatabase.getInstance<Texture>( this.mapGuid );
+		if ( this._mapGuid !== undefined ) {
+			result.mapGuid = this._mapGuid;
+			result.map = AssetDatabase.getInstance<Texture>( this._mapGuid );
 		}
 
-		if ( this.roughnessMapGuid !== undefined ) {
-			result.roughnessMapGuid = this.roughnessMapGuid;
-			result.roughnessMap = AssetDatabase.getInstance<Texture>( this.roughnessMapGuid );
+		if ( this._roughnessMapGuid !== undefined ) {
+			result.roughnessMapGuid = this._roughnessMapGuid;
+			result.roughnessMap = AssetDatabase.getInstance<Texture>( this._roughnessMapGuid );
 		}
 
-		if ( this.normalMapGuid !== undefined ) {
-			result.normalMapGuid = this.normalMapGuid;
-			result.normalMap = AssetDatabase.getInstance<Texture>( this.normalMapGuid );
+		if ( this._normalMapGuid !== undefined ) {
+			result.normalMapGuid = this._normalMapGuid;
+			result.normalMap = AssetDatabase.getInstance<Texture>( this._normalMapGuid );
 		}
 
-		if ( this.aoMapGuid !== undefined ) {
-			result.aoMapGuid = this.aoMapGuid;
-			result.aoMap = AssetDatabase.getInstance<Texture>( this.aoMapGuid );
+		if ( this._aoMapGuid !== undefined ) {
+			result.aoMapGuid = this._aoMapGuid;
+			result.aoMap = AssetDatabase.getInstance<Texture>( this._aoMapGuid );
 		}
 
-		if ( this.displacementMapGuid !== undefined ) {
-			result.displacementMapGuid = this.displacementMapGuid;
-			result.displacementMap = AssetDatabase.getInstance<Texture>( this.displacementMapGuid );
+		if ( this._displacementMapGuid !== undefined ) {
+			result.displacementMapGuid = this._displacementMapGuid;
+			result.displacementMap = AssetDatabase.getInstance<Texture>( this._displacementMapGuid );
 		}
 
-		if ( this.alphaMapGuid !== undefined ) {
-			result.alphaMapGuid = this.alphaMapGuid;
-			result.alphaMap = AssetDatabase.getInstance<Texture>( this.alphaMapGuid );
+		if ( this._alphaMapGuid !== undefined ) {
+			result.alphaMapGuid = this._alphaMapGuid;
+			result.alphaMap = AssetDatabase.getInstance<Texture>( this._alphaMapGuid );
 		}
 
 		return result;
-
-	}
-
-	// toJSON () {
-
-	// 	const meta = {
-	// 		textures: {},
-	// 		images: {}
-	// 	};
-
-	// 	// unset maps to prevent serialization
-	// 	if ( this.mapGuid ) this.map = null;
-	// 	if ( this.roughnessMapGuid ) this.roughnessMap = null;
-	// 	if ( this.normalMapGuid ) this.normalMap = null;
-	// 	if ( this.aoMapGuid ) this.aoMap = null;
-	// 	if ( this.displacementMapGuid ) this.displacementMap = null;
-	// 	if ( this.alphaMapGuid ) this.alphaMap = null;
-
-	// 	const data = super.toJSON( meta );
-
-	// 	// standard Material serialization
-	// 	if ( this.guid ) data.guid = this.guid;
-	// 	if ( this.mapGuid ) data.mapGuid = this.mapGuid;
-	// 	if ( this.roughnessMapGuid ) data.roughnessMapGuid = this.roughnessMapGuid;
-	// 	if ( this.normalMapGuid ) data.normalMapGuid = this.normalMapGuid;
-	// 	if ( this.aoMapGuid ) data.aoMapGuid = this.aoMapGuid;
-	// 	if ( this.displacementMapGuid ) data.displacementMapGuid = this.displacementMapGuid;
-	// 	if ( this.alphaMapGuid ) data.alphaMapGuid = this.alphaMapGuid;
-
-	// 	// set maps again
-	// 	if ( this.mapGuid ) this.map = AppService.assets.getInstance( this.mapGuid ) as Texture;
-	// 	if ( this.roughnessMapGuid ) this.roughnessMap = AppService.assets.getInstance( this.roughnessMapGuid ) as Texture;
-	// 	if ( this.normalMapGuid ) this.normalMap = AppService.assets.getInstance( this.normalMapGuid ) as Texture;
-	// 	if ( this.aoMapGuid ) this.aoMap = AppService.assets.getInstance( this.aoMapGuid ) as Texture;
-	// 	if ( this.displacementMapGuid ) this.displacementMap = AppService.assets.getInstance( this.displacementMapGuid ) as Texture;
-	// 	if ( this.alphaMapGuid ) this.alphaMap = AppService.assets.getInstance( this.alphaMapGuid ) as Texture;
-
-	// 	return data;
-
-	// }
-
-	toJSONString (): string {
-
-		return JSON.stringify( this.toJSON(), null, 2 );
 
 	}
 }

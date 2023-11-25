@@ -1,10 +1,21 @@
+import { Injectable } from "@angular/core";
 import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
-import { AppService } from "app/services/app.service";
 import { Texture } from "three";
+import { AssetDatabase } from "../core/asset/asset-database";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class MaterialExporter {
 
-	toJSON ( material: TvMaterial ) {
+	export ( material: TvMaterial ): string {
+
+		const data = this.exportJSON( material );
+
+		return JSON.stringify( data );
+	}
+
+	exportJSON ( material: TvMaterial ) {
 
 		const meta = {
 			textures: {},
@@ -31,12 +42,12 @@ export class MaterialExporter {
 		if ( material.alphaMapGuid ) data.alphaMapGuid = material.alphaMapGuid;
 
 		// set maps again
-		if ( material.mapGuid ) material.map = AppService.assets.getInstance( material.mapGuid ) as Texture;
-		if ( material.roughnessMapGuid ) material.roughnessMap = AppService.assets.getInstance( material.roughnessMapGuid ) as Texture;
-		if ( material.normalMapGuid ) material.normalMap = AppService.assets.getInstance( material.normalMapGuid ) as Texture;
-		if ( material.aoMapGuid ) material.aoMap = AppService.assets.getInstance( material.aoMapGuid ) as Texture;
-		if ( material.displacementMapGuid ) material.displacementMap = AppService.assets.getInstance( material.displacementMapGuid ) as Texture;
-		if ( material.alphaMapGuid ) material.alphaMap = AppService.assets.getInstance( material.alphaMapGuid ) as Texture;
+		if ( material.mapGuid ) material.map = AssetDatabase.getInstance( material.mapGuid ) as Texture;
+		if ( material.roughnessMapGuid ) material.roughnessMap = AssetDatabase.getInstance( material.roughnessMapGuid ) as Texture;
+		if ( material.normalMapGuid ) material.normalMap = AssetDatabase.getInstance( material.normalMapGuid ) as Texture;
+		if ( material.aoMapGuid ) material.aoMap = AssetDatabase.getInstance( material.aoMapGuid ) as Texture;
+		if ( material.displacementMapGuid ) material.displacementMap = AssetDatabase.getInstance( material.displacementMapGuid ) as Texture;
+		if ( material.alphaMapGuid ) material.alphaMap = AssetDatabase.getInstance( material.alphaMapGuid ) as Texture;
 
 		return data;
 

@@ -60,11 +60,11 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	save () {
 
-		if ( !this.texture ) return;
+		// if ( !this.texture ) return;
 
-		this.preview = this.previewService.getTexturePreview( this.texture );
+		// this.preview = this.previewService.getTexturePreview( this.texture );
 
-		AssetFactory.updateTexture( this.metadata.guid, this.texture );
+		// AssetFactory.updateTexture( this.metadata.guid, this.texture );
 
 	}
 

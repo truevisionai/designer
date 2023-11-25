@@ -19,6 +19,13 @@ import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map.service';
+import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { MaterialExporter } from 'app/exporters/material-exporter';
+import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
+import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
@@ -32,7 +39,54 @@ export class ExporterService {
 		private fileService: FileService,
 		private sceneExporter: SceneExporterService,
 		private mapService: MapService,
+		private materialExporter: MaterialExporter
 	) {
+	}
+
+	exportAsset ( assetType: AssetType, assetGuid: string ): string {
+
+		if ( assetType == AssetType.MATERIAL ) {
+
+			return this.getMaterialExport( AssetDatabase.getInstance( assetGuid ) );
+
+		} else if ( assetType == AssetType.SCENE ) {
+
+			return this.getSceneExport( AssetDatabase.getInstance( assetGuid ) );
+
+		} else if ( assetType == AssetType.ENTITY ) {
+
+			return this.getVehicleExport( AssetDatabase.getInstance( assetGuid ) );
+
+		} else {
+
+			TvConsole.error( 'ExporterService: exportAsset: Unknown asset type ' + assetType );
+
+		}
+
+	}
+
+	getRoadSignExport ( sign: TvRoadSign ) {
+
+		return sign.toJSONString();
+
+	}
+
+	getSceneExport ( map: TvMap ): string {
+
+		return this.sceneExporter.export( map );
+
+	}
+
+	getVehicleExport ( vehicle: VehicleEntity ): string {
+
+		return vehicle.toJSONString();
+
+	}
+
+	getMaterialExport ( material: TvMaterial ): string {
+
+		return this.materialExporter.export( material );
+
 	}
 
 	exportScene () {

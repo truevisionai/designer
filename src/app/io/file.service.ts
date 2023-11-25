@@ -38,7 +38,9 @@ export enum FileExtension {
 	PROP = 'prop',
 	SCENE = 'scene',
 	ROADSTYLE = 'roadstyle',
+	ROADSIGN = 'roadsign',
 	PREFAB = 'prefab',
+	MATERIAL = 'material',
 
 }
 

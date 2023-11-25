@@ -4,10 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
-import { Debug } from 'app/core/utils/debug';
 import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
-import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
-import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import {
@@ -25,7 +22,6 @@ import {
 	UnsignedByteType
 } from 'three';
 import { ModelImporterService } from '../../importers/model-importer.service';
-import { RoadStyleImporter } from '../../loaders/tv-road-style-loader';
 import { Metadata, MetaImporter } from './metadata.model';
 import { AssetDatabase } from './asset-database';
 import { XmlElement } from "../../importers/xml.element";
@@ -232,21 +228,21 @@ export class AssetLoaderService {
 
 	loadEntities () {
 
-		const entityLoader = new TvEntityLoader();
+		// const entityLoader = new TvEntityLoader();
 
-		AssetDatabase.getMetadataAll().forEach( meta => {
+		// AssetDatabase.getMetadataAll().forEach( meta => {
 
-			if ( meta.importer == MetaImporter.ENTITY ) {
+		// 	if ( meta.importer == MetaImporter.ENTITY ) {
 
-				const contents = this.storageService.readSync( meta.path );
+		// 		const contents = this.storageService.readSync( meta.path );
 
-				const entity = entityLoader.parseEntity( JSON.parse( contents ) );
+		// 		const entity = entityLoader.parseEntity( JSON.parse( contents ) );
 
-				AssetDatabase.setInstance( meta.guid, entity );
+		// 		AssetDatabase.setInstance( meta.guid, entity );
 
-			}
+		// 	}
 
-		} );
+		// } );
 
 	}
 

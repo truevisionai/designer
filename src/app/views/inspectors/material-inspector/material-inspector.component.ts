@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { AssetFactory, AssetFactoryNew } from 'app/core/asset/asset-factory.service';
 import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
@@ -20,6 +20,7 @@ import {
 	MeshStandardMaterial
 } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';
+import { AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 @Component( {
 	selector: 'app-material-inspector',
@@ -37,6 +38,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	constructor (
 		private previewService: PreviewService,
+		private assetFactory: AssetFactoryNew
 	) {
 	}
 
@@ -131,9 +133,10 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	ngOnDestroy () {
 
-		AssetFactory.updateMaterial( this.metadata.path, this.material );
+		this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, this.data.guid, this.data.material );
 
 		this.updatePreviewCache();
+
 	}
 
 	getFreshPreview () {

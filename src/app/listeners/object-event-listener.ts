@@ -1,13 +1,18 @@
+import { AssetFactoryNew } from "app/core/asset/asset-factory.service";
 import { MapEvents } from "app/events/map-events";
 import { Manager } from "app/managers/manager";
+import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
 import { BaseTool } from "app/tools/base-tool";
 import { ToolManager } from "app/tools/tool-manager";
+import { AssetType } from "app/views/editor/project-browser/file-node.model";
 
 export class ObjectEventListener extends Manager {
 
 	debug: boolean;
 
-	constructor () {
+	constructor (
+		private assetFactory: AssetFactoryNew
+	) {
 
 		super();
 
@@ -27,7 +32,15 @@ export class ObjectEventListener extends Manager {
 
 		if ( this.debug ) console.debug( 'onObjectUpdated', object );
 
-		ToolManager.getTool<BaseTool>()?.onObjectUpdated( object );
+		if ( object instanceof TvMaterial ) {
+
+			this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, object.guid, object );
+
+		} else {
+
+			ToolManager.getTool<BaseTool>()?.onObjectUpdated( object );
+
+		}
 
 	}
 

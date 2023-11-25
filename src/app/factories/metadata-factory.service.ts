@@ -8,7 +8,7 @@ import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';
 import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
@@ -25,6 +25,112 @@ export class MetadataFactory {
 	constructor ( private fileService: FileService ) {
 
 		MetadataFactory.fileService = fileService;
+
+	}
+
+	makeAssetMetadata ( asset: AssetNode ): Metadata {
+
+		if ( asset.type == AssetType.DIRECTORY ) {
+
+			return MetadataFactory.createFolderMetadata( asset.path );
+
+		} else {
+
+			return this.makeMetadata( asset.name, asset.extension, asset.path );
+
+		}
+
+	}
+
+	makeMetadata ( fileName: string, ext: string, path: string, gguid?: string ): Metadata {
+
+		const extension = ext || FileService.getExtension( path );
+
+		const guid = gguid || THREE.MathUtils.generateUUID();
+
+		let metadata: Metadata;
+
+		switch ( extension ) {
+
+			case 'scene':
+				metadata = MetadataFactory.createSceneMetadata( fileName, guid, path );
+				break;
+
+			case 'obj':
+				metadata = MetadataFactory.createModelMetadata( fileName, guid, path );
+				break;
+
+			case 'fbx':
+				metadata = MetadataFactory.createModelMetadata( fileName, guid, path );
+				break;
+
+			case 'gltf':
+				metadata = MetadataFactory.createModelMetadata( fileName, guid, path );
+				break;
+
+			case 'glb':
+				metadata = MetadataFactory.createModelMetadata( fileName, guid, path );
+				break;
+
+			case 'xodr':
+				metadata = MetadataFactory.createOpenDriveMetadata( fileName, guid, path );
+				break;
+
+			case 'xosc':
+				metadata = MetadataFactory.createOpenScenarioMetadata( fileName, guid, path );
+				break;
+
+			case 'png':
+				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'png' );
+				break;
+
+			case 'jpg':
+				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'jpg' );
+				break;
+
+			case 'jpeg':
+				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'jpeg' );
+				break;
+
+			case 'svg':
+				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'svg' );
+				break;
+
+			case 'tga':
+				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'tga' );
+				break;
+
+			case 'material':
+				metadata = MetadataFactory.createMaterialMetadata( fileName, guid, path );
+				break;
+
+			case 'geometry':
+				metadata = MetadataFactory.createGeometryMetadata( fileName, guid, path );
+				break;
+
+			case 'prefab':
+				metadata = MetadataFactory.createPrefabMetadata( fileName, guid, path );
+				break;
+
+			case 'sign':
+				metadata = MetadataFactory.createSignMetadata( fileName, guid, path );
+				break;
+
+			case TvRoadMarking.extension:
+				metadata = MetadataFactory.createRoadMarkingMetadata( fileName, guid, path );
+				break;
+
+			case RoadStyle.extension:
+				metadata = MetadataFactory.createRoadStyleMetadata( fileName, guid, path );
+				break;
+
+			case 'entity':
+				metadata = MetadataFactory.createEntityMetadata( fileName, guid, path );
+				break;
+
+		}
+
+		return metadata;
 
 	}
 

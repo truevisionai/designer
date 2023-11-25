@@ -5,9 +5,7 @@
 import { Injectable } from '@angular/core';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileService } from 'app/io/file.service';
-import { SceneExporterService } from 'app/exporters/scene-exporter.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
-
 import { ViewportEvents } from '../events/viewport-events';
 import { ThreeService } from '../modules/three-js/three.service';
 import { SnackBar } from './snack-bar.service';
@@ -29,7 +27,7 @@ import { RoadSplineService } from './road/road-spline.service';
 import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { RoadLinkService } from './road/road-link.service';
-import { MetadataFactory } from 'app/factories/metadata-factory.service';
+import { AssetFactoryNew } from 'app/core/asset/asset-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -44,7 +42,6 @@ export class AppService {
 	static electron: TvElectronService;
 	static assets: AssetLoaderService;
 	static file: FileService;
-	static exporter: SceneExporterService;
 	static editor: EditorService;
 
 	constructor (
@@ -56,13 +53,12 @@ export class AppService {
 		public auth: AuthService,
 		public assets: AssetLoaderService,
 		public files: FileService,
-		sceneExporter: SceneExporterService,
 		public editor: EditorService,
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
-		private metadataFactory: MetadataFactory
+		private assetFactory: AssetFactoryNew,
 	) {
 
 
@@ -73,8 +69,6 @@ export class AppService {
 		AppService.file = files;
 		AppService.editor = editor;
 
-		AppService.exporter = sceneExporter;
-
 		AppInfo.electron = electron;
 
 		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService, this.mapService ) );
@@ -83,7 +77,7 @@ export class AppService {
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
-		ManagerRegistry.registerManager( ObjectEventListener );
+		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetFactory ) );
 		// ManagerRegistry.registerManager( RoadSelectionListener );
 		// ManagerRegistry.registerManager( RoadControlPointListener );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );

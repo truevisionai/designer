@@ -6,7 +6,6 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { FileExtension, FileService } from 'app/io/file.service';
-import { ImporterService } from 'app/importers/importer.service';
 import { DialogFactory } from '../../../factories/dialog.factory';
 import { MetadataFactory } from '../../../factories/metadata-factory.service';
 import { TvConsole } from '../../../core/utils/console';
@@ -14,12 +13,10 @@ import { SnackBar } from '../../../services/snack-bar.service';
 import { AssetNode, AssetType } from './file-node.model';
 import { ProjectBrowserService } from './project-browser.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
-import { VehicleFactory } from 'app/factories/vehicle.factory';
-import { StorageService } from "../../../io/storage.service";
 import { ProjectService } from "../../../services/project.service";
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Component( {
 	selector: 'app-project-browser',
@@ -42,21 +39,19 @@ export class ProjectBrowserComponent implements OnInit {
 
 	constructor (
 		private projectService: ProjectService,
-		private storage: StorageService,
 		private fileService: FileService,
 		private projectBrowser: ProjectBrowserService,
-		private importer: ImporterService,
 		private appRef: ApplicationRef,
 		private menuService: MenuService,
 		private electron: TvElectronService,
-		private dialogFactory: DialogFactory		// dont remove, needed to load dialog components
+		private dialogFactory: DialogFactory,		// dont remove, needed to load dialog components,
+		private assetService: AssetService,
 	) {
-		this.dataSource.data = [];
 	}
 
 	ngOnInit () {
 
-		// this.assets.init();
+		this.dataSource.data = [];
 
 		this.currentFolder = new AssetNode( AssetType.DIRECTORY, 'root', this.projectService.projectPath );
 
@@ -226,133 +221,47 @@ export class ProjectBrowserComponent implements OnInit {
 		this.menuService.registerContextMenu( ContextMenuType.HIERARCHY, [ {
 			label: 'New',
 			submenu: [
-				{ label: 'Scene', click: () => this.createNewScene() },
-				{ label: 'Folder', click: () => this.createNewFolder() },
-				{ label: 'Material', click: () => this.createNewMaterial() },
-				{ label: 'Road Marking', click: () => this.createNewRoadMarking() },
 				{
-					label: 'Entity', submenu: [
+					label: 'Scene',
+					click: () => this.assetService.createSceneAsset( this.currentFolder.path )
+				},
+				{
+					label: 'Folder',
+					click: () => this.assetService.createFolderAsset( this.currentFolder.path )
+				},
+				{
+					label: 'Material',
+					click: () => this.assetService.createMaterialAsset( this.currentFolder.path )
+				},
+				{
+					label: 'Entity',
+					submenu: [
 						{
-							label: 'Vehicle', submenu: [
-								{ label: 'Car', click: () => this.createVehicleEntity( VehicleCategory.car ) },
-								// { label: 'Van', click: () => this.createVehicleEntity( VehicleCategory.van ) },
-								{ label: 'Truck', click: () => this.createVehicleEntity( VehicleCategory.truck ) },
-								// { label: 'Trailer', click: () => this.createVehicleEntity( VehicleCategory.trailer ) },
-								// { label: 'Semi Trailer', click: () => this.createVehicleEntity( VehicleCategory.semitrailer ) },
-								// { label: 'Bus', click: () => this.createVehicleEntity( VehicleCategory.bus ) },
-								// { label: 'Motorbike', click: () => this.createVehicleEntity( VehicleCategory.motorbike ) },
+							label: 'Vehicle',
+							submenu: [
+								{
+									label: 'Car',
+									click: () => this.assetService.createEntityAsset( this.currentFolder.path, VehicleCategory.car )
+								},
+								{
+									label: 'Truck',
+									click: () => this.assetService.createEntityAsset( this.currentFolder.path, VehicleCategory.truck )
+								},
 							]
 						}
 					]
 				},
 			]
 		},
-			{
-				label: 'Show In Explorer',
-				click: () => this.showInExplorer()
-			},
+		{
+			label: 'Show In Explorer',
+			click: () => this.showInExplorer()
+		},
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-	createNewScene () {
-
-		try {
-
-			AssetFactory.createNewScene( this.currentFolder.path );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	createNewFolder () {
-
-		try {
-
-			AssetFactory.createNewFolder( this.currentFolder.path );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	createNewMaterial () {
-
-		try {
-
-			AssetFactory.createNewMaterial( this.currentFolder.path, 'NewMaterial' );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	createNewSign () {
-
-		try {
-
-			AssetFactory.createNewSign( 'NewSign', this.currentFolder.path );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	createNewRoadMarking (): void {
-
-		try {
-
-			AssetFactory.createNewRoadMarking( this.currentFolder.path, 'NewRoadMarking' );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
-
-	createVehicleEntity ( category: VehicleCategory = VehicleCategory.car ): void {
-
-		try {
-
-			const vehicle = VehicleFactory.createVehicle( category );
-
-			AssetFactory.createVehicleEntity( this.currentFolder.path, vehicle );
-
-			this.refershFolder();
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
-
-	}
 
 	refershFolder () {
 

@@ -4,7 +4,7 @@
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter } from 'app/core/asset/metadata.model';
+import { MetaImporter, Metadata } from 'app/core/asset/metadata.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Texture } from 'three';
 
@@ -21,30 +21,30 @@ export class TextureFieldComponent implements OnInit {
 
 	@Input() label: string = 'Map';
 
-	constructor () {
-	}
+	instance: Texture;
 
-	get instance () {
-		return this.guid ? AssetDatabase.getInstance<Texture>( this.guid ) : null;
-	}
+	image: any;
 
-	get image () {
-		return this.instance ? this.instance.image : null;
-	}
+	thumbnail: string;
 
-	get thumbnail () {
-		return this.image ? this.image.currentSrc : '';
-	}
+	filename: string;
 
-	get filename () {
-		return AssetDatabase.getAssetNameByGuid( this.guid );
-	}
+	metadata: Metadata;
 
-	get metadata () {
-		return AssetDatabase.getMetadata( this.guid );
-	}
+	constructor () { }
 
 	ngOnInit () {
+
+		this.instance = this.guid ? AssetDatabase.getInstance<Texture>( this.guid ) : null;
+
+		this.image = this.instance ? this.instance.image : null;
+
+		this.thumbnail = this.image ? this.image.currentSrc : '';
+
+		this.filename = this.guid ? AssetDatabase.getAssetNameByGuid( this.guid ) : '';
+
+		this.metadata = this.guid ? AssetDatabase.getMetadata( this.guid ) : null;
+
 	}
 
 	onRemoveClicked () {
@@ -86,7 +86,6 @@ export class TextureFieldComponent implements OnInit {
 		$event.stopPropagation();
 
 	}
-
 
 	@HostListener( 'drop', [ '$event' ] )
 	onDrop ( $event: DragEvent ) {

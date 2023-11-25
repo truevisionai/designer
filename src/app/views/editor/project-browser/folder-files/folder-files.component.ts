@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Component( {
 	selector: 'app-folder-files',
@@ -32,7 +33,8 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	constructor (
 		private appRef: ApplicationRef,
-		private projectBrowserService: ProjectBrowserService
+		private projectBrowserService: ProjectBrowserService,
+		private assetService: AssetService,
 	) {
 	}
 
@@ -51,9 +53,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 		console.log( 'folder-files.component.ts ngOnInit()', this.folder );
 
-		this.files = this.folder ? this.projectBrowserService.getFiles( this.folder.path ) : [];
+		this.files = this.folder ? this.projectBrowserService.getAssets( this.folder.path ) : [];
 
 		this.projectBrowserService.folderChanged.subscribe( folder => this.refershFolder() );
+
+		this.assetService.assetCreated.subscribe( asset => this.refershFolder() );
 
 	}
 
@@ -95,7 +99,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 		this.appRef.tick();
 
-		this.files = this.folder ? this.projectBrowserService.getFiles( this.folder.path ) : [];
+		this.files = this.folder ? this.projectBrowserService.getAssets( this.folder.path ) : [];
 
 	}
 }

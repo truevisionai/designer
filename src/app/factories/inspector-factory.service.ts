@@ -28,6 +28,8 @@ import { AppInspector } from '../core/inspector';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
 import { RoadStyle } from "../core/asset/road.style";
 import { PropManager } from 'app/managers/prop-manager';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
 
 export enum InspectorType {
 	prop_model_inspector = 'prop_model_inspector',
@@ -40,6 +42,43 @@ export enum InspectorType {
 export class InspectorFactoryService {
 
 	constructor () {
+	}
+
+	setAssetInspector ( asset: AssetNode ) {
+
+		const instance = AssetDatabase.getInstance( asset.metadata.guid );
+
+		if ( asset.type === AssetType.TEXTURE ) {
+
+			CommandHistory.execute( new SetInspectorCommand( TextureInspector, {
+				texture: instance,
+				guid: asset.metadata.guid
+			} ) );
+
+		} else if ( asset.type === AssetType.MATERIAL ) {
+
+			CommandHistory.execute( new SetInspectorCommand( MaterialInspector, {
+				material: instance,
+				guid: asset.metadata.guid
+			} ) );
+
+		} else if ( asset.type === AssetType.ROAD_STYLE ) {
+
+			CommandHistory.execute( new SetInspectorCommand( RoadStyleInspector, {
+				roadStyle: instance,
+				guid: asset.metadata.guid
+			} ) );
+
+		} else if ( asset.type === AssetType.MODEL ) {
+
+			CommandHistory.execute( new SetInspectorCommand( AssetInspectorComponent, asset ) );
+
+		} else {
+
+			CommandHistory.execute( new SetInspectorCommand( DynamicFileInspectorComponent, asset ) );
+
+		}
+
 	}
 
 	static setAssetInspector ( metadata: Metadata ) {

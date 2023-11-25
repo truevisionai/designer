@@ -2,11 +2,31 @@ import { readXmlArray } from 'app/tools/xml-utils';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/modules/scenario/models/tv-bounding-box';
-import { Loader, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { XmlElement } from "../importers/xml.element";
+import { Injectable } from '@angular/core';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { StorageService } from 'app/io/storage.service';
 
+@Injectable( {
+	providedIn: 'root'
+} )
+export class TvEntityLoader {
 
-export class TvEntityLoader extends Loader {
+	constructor (
+		private storageService: StorageService
+	) {
+	}
+
+	loadEntity ( asset: AssetNode ) {
+
+		const contents = this.storageService.readSync( asset.path );
+
+		const json = JSON.parse( contents );
+
+		return this.parseEntity( json );
+
+	}
 
 	parseEntity ( json: any ): ScenarioEntity {
 

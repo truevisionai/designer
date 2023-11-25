@@ -10,7 +10,7 @@ import {
 	ViewChildren,
 	ViewContainerRef
 } from '@angular/core';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { AssetFactory, AssetFactoryNew } from 'app/core/asset/asset-factory.service';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
@@ -29,6 +29,7 @@ import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/gam
 import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -262,19 +263,34 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 } )
 export class DynamicFileInspectorComponent extends DynamicInspectorComponent implements OnDestroy {
 
+	@Input() data: AssetNode;
+
+	constructor (
+		componentFactoryResolver: ComponentFactoryResolver,
+		private assetFactory: AssetFactoryNew
+	) {
+		super( componentFactoryResolver );
+	}
+
 	ngOnDestroy (): void {
 
 		super.ngOnDestroy();
 
-		if ( this.data?.guid ) {
+		this.assetFactory.saveAsset( this.data );
 
-			AssetFactory.updateAsset( this.data.guid, this.data );
+		// if ( this.data?.guid ) {
 
-		} else if ( this.data?.uuid ) {
+		// 	this.assetFactory.updateAsset( this.data.guid, this.data );
 
-			AssetFactory.updateAsset( this.data.uuid, this.data );
+		// } else if ( this.data?.metadata?.guid ) {
 
-		}
+		// 	this.assetFactory.updateAsset( this.data.metadata.guid, this.data );
+
+		// } else if ( this.data?.uuid ) {
+
+		// 	this.assetFactory.updateAsset( this.data.uuid, this.data );
+
+		// }
 
 	}
 
