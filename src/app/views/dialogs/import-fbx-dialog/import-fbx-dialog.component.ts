@@ -5,7 +5,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
+import { DepAssetFactory } from 'app/core/asset/asset-factory.service';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
@@ -67,7 +67,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const directory = FileUtils.getDirectoryFromPath( this.data.destinationPath );
 
-		const folder = AssetFactory.createNewFolder( directory );
+		const folder = DepAssetFactory.createNewFolder( directory );
 
 		this.destinationFolder = folder.path;
 
@@ -176,7 +176,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, prefab.guid );
 
-		AssetFactory.updatePrefab( metadata.path, prefab );
+		DepAssetFactory.updatePrefab( metadata.path, prefab );
 
 		AssetDatabase.setInstance( metadata.guid, prefab );
 
@@ -202,7 +202,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, mesh.geometry.uuid );
 
-		AssetFactory.updateGeometry( metadata.path, mesh.geometry );
+		DepAssetFactory.updateGeometry( metadata.path, mesh.geometry );
 
 		AssetDatabase.setInstance( metadata.guid, mesh.geometry );
 
@@ -232,7 +232,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, tvMaterial.guid );
 
-		AssetFactory.updateMaterial( metadata.path, tvMaterial );
+		DepAssetFactory.updateMaterial( metadata.path, tvMaterial );
 
 		AssetDatabase.setInstance( metadata.guid, tvMaterial );
 

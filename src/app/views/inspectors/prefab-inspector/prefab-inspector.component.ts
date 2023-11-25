@@ -6,7 +6,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { IComponent } from 'app/core/game-object';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { Object3D } from 'three';
@@ -66,11 +65,11 @@ export class PrefabInspectorComponent implements OnInit, IComponent, OnDestroy {
 
 	ngOnDestroy (): void {
 
-		const metadata = AssetFactory.getMeta( this.data.guid );
+		// const metadata = AssetFactory.getMeta( this.data.guid );
 
-		AssetFactory.updatePrefab( metadata.path, this.data );
+		// AssetFactory.updatePrefab( metadata.path, this.data );
 
-		AssetDatabase.setInstance( metadata.guid, this.data );
+		// AssetDatabase.setInstance( metadata.guid, this.data );
 
 	}
 

@@ -4,7 +4,6 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { SetRoadmarkTextureCommand } from 'app/commands/set-roadmark-texture-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
@@ -50,8 +49,6 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 	updateAssetFile () {
 
 		if ( !this.metadata ) return;
-
-		AssetFactory.updateRoadMarking( this.metadata.path, this.data.roadMarking );
 
 	}
 

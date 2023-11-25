@@ -41,6 +41,12 @@ export class AssetNode {
 
 	}
 
+	get assetName (): string {
+
+		return this.name.split( '.' ).shift();
+
+	}
+
 	static getType ( importer: MetaImporter ): AssetType {
 
 		switch ( importer ) {

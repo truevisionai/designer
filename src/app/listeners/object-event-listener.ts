@@ -1,4 +1,4 @@
-import { AssetFactoryNew } from "app/core/asset/asset-factory.service";
+import { AssetService } from "app/core/asset/asset.service";
 import { MapEvents } from "app/events/map-events";
 import { Manager } from "app/managers/manager";
 import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
@@ -11,7 +11,7 @@ export class ObjectEventListener extends Manager {
 	debug: boolean;
 
 	constructor (
-		private assetFactory: AssetFactoryNew
+		private assetService: AssetService,
 	) {
 
 		super();
@@ -34,7 +34,7 @@ export class ObjectEventListener extends Manager {
 
 		if ( object instanceof TvMaterial ) {
 
-			this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, object.guid, object );
+			this.assetService.saveAssetByGuid( AssetType.MATERIAL, object.guid, object );
 
 		} else {
 

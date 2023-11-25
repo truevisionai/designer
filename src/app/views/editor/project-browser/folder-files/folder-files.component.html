@@ -6,7 +6,8 @@
 	class="content"
 	fxFlexFill>
 
-	<div fxFlexFill
+	<div *ngIf="files.length > 0"
+		fxFlexFill
 		fxLayout="row wrap"
 		fxLayoutGap="0px grid">
 

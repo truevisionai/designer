@@ -9,6 +9,9 @@ import { PreviewService } from '../object-preview/object-preview.service';
 	templateUrl: './asset-inspector.component.html',
 	styleUrls: [ './asset-inspector.component.scss' ]
 } )
+/**
+ * @deprecated
+ */
 export class AssetInspectorComponent implements IComponent, OnInit {
 
 	instance: any;

@@ -10,7 +10,6 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';
 import { PreviewService } from '../object-preview/object-preview.service';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -18,8 +17,6 @@ import { AssetFactory } from 'app/core/asset/asset-factory.service';
 	styleUrls: [ './texture-inspector.component.css' ]
 } )
 export class TextureInspector implements OnInit, IComponent, OnDestroy {
-
-	// @Input() texture: Texture;
 
 	public data: {
 		texture: Texture,
@@ -42,13 +39,6 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 		this.metadata = AssetDatabase.getMetadata( this.data.guid );
 
 		this.preview = this.previewService.getTexturePreview( this.texture );
-
-		// console.log( this.previewService.getTexturePreview( this.texture ) );
-		// console.log( this.data );
-		// console.log( this.texture.image );
-		// console.log( this.texture.source.data );
-		// console.log( this.texture );
-		// console.log( this.texture.image );
 
 	}
 

@@ -69,10 +69,6 @@ export class InspectorFactoryService {
 				guid: asset.metadata.guid
 			} ) );
 
-		} else if ( asset.type === AssetType.MODEL ) {
-
-			CommandHistory.execute( new SetInspectorCommand( AssetInspectorComponent, asset ) );
-
 		} else {
 
 			CommandHistory.execute( new SetInspectorCommand( DynamicFileInspectorComponent, asset ) );
@@ -81,175 +77,175 @@ export class InspectorFactoryService {
 
 	}
 
-	static setAssetInspector ( metadata: Metadata ) {
+	// static setAssetInspector ( metadata: Metadata ) {
 
-		const extension = FileService.getExtension( metadata.path );
+	// 	const extension = FileService.getExtension( metadata.path );
 
-		const inspector = this.getInspectorByExtension( extension );
+	// 	const inspector = this.getInspectorByExtension( extension );
 
-		const inspectorData = this.getInspectorData( metadata );
+	// 	const inspectorData = this.getInspectorData( metadata );
 
-		CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
+	// 	CommandHistory.execute( new SetInspectorCommand( inspector, inspectorData ) );
 
-		if ( inspectorData instanceof ScenarioEntity ) {
+	// 	if ( inspectorData instanceof ScenarioEntity ) {
 
-			EntityManager.instance.setEntity( inspectorData );
+	// 		EntityManager.instance.setEntity( inspectorData );
 
-		}
+	// 	}
 
-	}
+	// }
 
-	static setByType ( type: InspectorType, data: any ) {
+	// static setByType ( type: InspectorType, data: any ) {
 
-		switch ( type ) {
+	// 	switch ( type ) {
 
-			case InspectorType.prop_instance_inspector:
-				AppInspector.setInspector( PropInstanceInspectorComponent, data );
-				break;
+	// 		case InspectorType.prop_instance_inspector:
+	// 			AppInspector.setInspector( PropInstanceInspectorComponent, data );
+	// 			break;
 
-			case InspectorType.prop_model_inspector:
-				AppInspector.setInspector( PropModelInspectorComponent, data );
-				break;
+	// 		case InspectorType.prop_model_inspector:
+	// 			AppInspector.setInspector( PropModelInspectorComponent, data );
+	// 			break;
 
-			default:
-				break;
-		}
+	// 		default:
+	// 			break;
+	// 	}
 
-	}
+	// }
 
-	static getInspectorByExtension ( extension: string ): Type<IComponent> {
+	// static getInspectorByExtension ( extension: string ): Type<IComponent> {
 
-		let inspector: Type<IComponent>;
+	// 	let inspector: Type<IComponent>;
 
-		switch ( extension ) {
+	// 	switch ( extension ) {
 
-			case 'prefab':
-				inspector = PrefabInspectorComponent;
-				break;
+	// 		case 'prefab':
+	// 			inspector = PrefabInspectorComponent;
+	// 			break;
 
-			case 'geometry':
-				inspector = GeometryInspectorComponent;
-				break;
+	// 		case 'geometry':
+	// 			inspector = GeometryInspectorComponent;
+	// 			break;
 
-			case 'obj':
-				inspector = PropModelInspectorComponent;
-				break;
+	// 		case 'obj':
+	// 			inspector = PropModelInspectorComponent;
+	// 			break;
 
-			case 'fbx':
-				inspector = PropModelInspectorComponent;
-				break;
+	// 		case 'fbx':
+	// 			inspector = PropModelInspectorComponent;
+	// 			break;
 
-			case 'gltf':
-				inspector = PropModelInspectorComponent;
-				break;
+	// 		case 'gltf':
+	// 			inspector = PropModelInspectorComponent;
+	// 			break;
 
-			case 'glb':
-				inspector = DynamicInspectorComponent;
-				break;
+	// 		case 'glb':
+	// 			inspector = DynamicInspectorComponent;
+	// 			break;
 
-			case 'png':
-				inspector = TextureInspector;
-				break;
+	// 		case 'png':
+	// 			inspector = TextureInspector;
+	// 			break;
 
-			case 'jpg':
-				inspector = TextureInspector;
-				break;
+	// 		case 'jpg':
+	// 			inspector = TextureInspector;
+	// 			break;
 
-			case 'jpeg':
-				inspector = TextureInspector;
-				break;
+	// 		case 'jpeg':
+	// 			inspector = TextureInspector;
+	// 			break;
 
-			case 'svg':
-				inspector = TextureInspector;
-				break;
+	// 		case 'svg':
+	// 			inspector = TextureInspector;
+	// 			break;
 
-			case 'material':
-				inspector = MaterialInspector;
-				break;
+	// 		case 'material':
+	// 			inspector = MaterialInspector;
+	// 			break;
 
-			case 'sign':
-				inspector = RoadSignInspector;
-				break;
+	// 		case 'sign':
+	// 			inspector = RoadSignInspector;
+	// 			break;
 
-			case 'roadstyle':
-				inspector = RoadStyleInspector;
-				break;
+	// 		case 'roadstyle':
+	// 			inspector = RoadStyleInspector;
+	// 			break;
 
-			case 'xodr':
-				inspector = XodrFileInspectorComponent;
-				break;
+	// 		case 'xodr':
+	// 			inspector = XodrFileInspectorComponent;
+	// 			break;
 
-			case 'xosc':
-				inspector = XoscFileInspectorComponent;
-				break;
+	// 		case 'xosc':
+	// 			inspector = XoscFileInspectorComponent;
+	// 			break;
 
-			case TvRoadMarking.extension:
-				inspector = RoadMarkingInspector;
-				break;
+	// 		case TvRoadMarking.extension:
+	// 			inspector = RoadMarkingInspector;
+	// 			break;
 
-			case 'entity':
-				inspector = DynamicFileInspectorComponent;
-				break;
+	// 		case 'entity':
+	// 			inspector = DynamicFileInspectorComponent;
+	// 			break;
 
-			default:
-				break;
-		}
+	// 		default:
+	// 			break;
+	// 	}
 
-		return inspector;
-	}
+	// 	return inspector;
+	// }
 
-	static getInpectorByFilename ( filename: string ): Type<IComponent> {
+	// static getInpectorByFilename ( filename: string ): Type<IComponent> {
 
-		const extension = FileService.getExtension( filename );
+	// 	const extension = FileService.getExtension( filename );
 
-		return this.getInspectorByExtension( extension );
-	}
+	// 	return this.getInspectorByExtension( extension );
+	// }
 
-	static getInspectorData ( metadata: Metadata ) {
+	// static getInspectorData ( metadata: Metadata ) {
 
-		const instance = AssetDatabase.getInstance( metadata.guid );
+	// 	const instance = AssetDatabase.getInstance( metadata.guid );
 
-		if ( metadata.importer === MetaImporter.MATERIAL ) {
+	// 	if ( metadata.importer === MetaImporter.MATERIAL ) {
 
-			return {
-				material: instance,
-				guid: metadata.guid
-			};
+	// 		return {
+	// 			material: instance,
+	// 			guid: metadata.guid
+	// 		};
 
-		} else if ( metadata.importer === MetaImporter.TEXTURE ) {
+	// 	} else if ( metadata.importer === MetaImporter.TEXTURE ) {
 
-			return {
-				texture: instance,
-				guid: metadata.guid
-			};
+	// 		return {
+	// 			texture: instance,
+	// 			guid: metadata.guid
+	// 		};
 
-		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
+	// 	} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
 
-			RoadStyleManager.setCurrentStyle( instance as RoadStyle );
+	// 		RoadStyleManager.setCurrentStyle( instance as RoadStyle );
 
-			return {
-				roadStyle: instance,
-				guid: metadata.guid
-			};
+	// 		return {
+	// 			roadStyle: instance,
+	// 			guid: metadata.guid
+	// 		};
 
-		} else if ( metadata.importer === MetaImporter.MODEL ) {
+	// 	} else if ( metadata.importer === MetaImporter.MODEL ) {
 
-			PropManager.setProp( metadata );
+	// 		PropManager.setProp( metadata );
 
-			return metadata;
+	// 		return metadata;
 
-		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+	// 	} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
 
-			return {
-				roadMarking: instance,
-				guid: metadata.guid
-			};
+	// 		return {
+	// 			roadMarking: instance,
+	// 			guid: metadata.guid
+	// 		};
 
-		} else {
+	// 	} else {
 
-			return instance;
+	// 		return instance;
 
-		}
+	// 	}
 
-	}
+	// }
 }

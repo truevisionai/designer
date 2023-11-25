@@ -8,8 +8,11 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { ExporterService } from 'app/services/exporter.service';
 import { AssetType, AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { AssetFactoryNew } from './asset-factory.service';
+import { AssetFactory } from './asset-factory.service';
 import { AssetDatabase } from './asset-database';
+import { StorageService } from 'app/io/storage.service';
+import { TvConsole } from '../utils/console';
+import { MathUtils } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,8 +24,9 @@ export class AssetService {
 	constructor (
 		private exporter: ExporterService,
 		private fileService: FileService,
+		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
-		private assetFactory: AssetFactoryNew,
+		private assetFactory: AssetFactory,
 	) { }
 
 	createNewAsset ( type: AssetType, name: string, path: string, data?: string, instance?: any ) {
@@ -42,6 +46,32 @@ export class AssetService {
 		return asset;
 	}
 
+	private saveFile ( asset: AssetNode ) {
+
+		// const directory = this.fileService.path.dirname( path );
+
+		// const fullName = this.fileService.path.basename( path );
+
+		// const extension = this.fileService.path.extname( path );
+
+		// let baseName = fullName.replace( extension, '' );
+
+		// let count = 1;
+
+		// while ( this.exists( path ) ) {
+
+		// 	baseName = `${ baseName }(${ count++ })`;
+
+		// 	path = this.fileService.join( directory, `${ baseName }${ extension }` );
+
+		// }
+
+		// this.fileService.fs.writeFileSync( path, contents, options );
+
+		// return { path: path };
+
+	}
+
 	createSceneAsset ( path: string, instance?: TvMap ) {
 
 		const scene = instance || new TvMap();
@@ -59,13 +89,13 @@ export class AssetService {
 
 	}
 
-	createMaterialAsset ( path: string, material?: TvMaterial ) {
+	createMaterialAsset ( path: string, instance?: TvMaterial ) {
 
-		const instance = material || new TvMaterial();
+		const material = instance || new TvMaterial();
 
 		const data = this.exporter.getMaterialExport( material );
 
-		return this.createNewAsset( AssetType.MATERIAL, 'Material.material', path, data, instance );
+		return this.createNewAsset( AssetType.MATERIAL, 'Material.material', path, data, material );
 
 	}
 
@@ -85,6 +115,102 @@ export class AssetService {
 		const data = this.exporter.getVehicleExport( entity );
 
 		this.createNewAsset( AssetType.ENTITY, entity.name + '.entity', path, data, entity );
+
+	}
+
+	saveAssetByGuid ( type: AssetType, guid: string, object: any ) {
+
+		this.assetFactory.saveAssetByGuid( type, guid, object );
+
+	}
+
+	saveAsset ( data: AssetNode ) {
+
+		this.saveAssetByGuid( data.type, data.metadata.guid, AssetDatabase.getInstance( data.metadata.guid ) );
+
+	}
+
+	copyAsset ( asset: AssetNode ) {
+
+		const cloneName = asset.assetName + '_copy';
+
+		if ( asset.type == AssetType.MATERIAL ) {
+
+			const instance = AssetDatabase.getInstance<TvMaterial>( asset.metadata.guid );
+
+			const clone = instance.clone();
+
+			clone.guid = clone.uuid = MathUtils.generateUUID();
+
+			// const newPath = asset.metadata.path.replace( asset.name, clone.name );
+
+			// const data = this.createMaterialAsset( newPath, clone );
+
+		}
+
+	}
+
+	deleteAsset ( asset: AssetNode ) {
+
+		if ( asset.type == AssetType.DIRECTORY ) {
+
+			this.deleteFolder( asset );
+
+		} else {
+
+			this.deleteFile( asset );
+
+		}
+
+		this.deleteMetadata( asset )
+
+	}
+
+	private deleteFolder ( asset: AssetNode ) {
+
+		try {
+
+			this.fileService.deleteFolderRecursive( asset.path );
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+
+		}
+
+	}
+
+	private deleteFile ( asset: AssetNode ) {
+
+		try {
+
+			this.fileService.deleteFileSync( asset.path );
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+
+		}
+
+	}
+
+	private deleteMetadata ( asset: AssetNode ) {
+
+		try {
+
+			this.fileService.deleteFileSync( asset.path + '.meta' );
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+
+		}
+
+		asset.isDeleted = true;
+
+		AssetDatabase.removeInstance( asset.metadata.guid );
+
+		AssetDatabase.removeMetadata( asset.metadata.guid );
 
 	}
 

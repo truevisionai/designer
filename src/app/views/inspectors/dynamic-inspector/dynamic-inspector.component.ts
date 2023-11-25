@@ -10,7 +10,7 @@ import {
 	ViewChildren,
 	ViewContainerRef
 } from '@angular/core';
-import { AssetFactory, AssetFactoryNew } from 'app/core/asset/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
@@ -30,6 +30,7 @@ import { MaterialFieldComponent } from 'app/views/fields/material-field/material
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -267,7 +268,7 @@ export class DynamicFileInspectorComponent extends DynamicInspectorComponent imp
 
 	constructor (
 		componentFactoryResolver: ComponentFactoryResolver,
-		private assetFactory: AssetFactoryNew
+		private assetSerice: AssetService,
 	) {
 		super( componentFactoryResolver );
 	}
@@ -276,21 +277,7 @@ export class DynamicFileInspectorComponent extends DynamicInspectorComponent imp
 
 		super.ngOnDestroy();
 
-		this.assetFactory.saveAsset( this.data );
-
-		// if ( this.data?.guid ) {
-
-		// 	this.assetFactory.updateAsset( this.data.guid, this.data );
-
-		// } else if ( this.data?.metadata?.guid ) {
-
-		// 	this.assetFactory.updateAsset( this.data.metadata.guid, this.data );
-
-		// } else if ( this.data?.uuid ) {
-
-		// 	this.assetFactory.updateAsset( this.data.uuid, this.data );
-
-		// }
+		this.assetSerice.saveAsset( this.data );
 
 	}
 

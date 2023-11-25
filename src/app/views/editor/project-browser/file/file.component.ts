@@ -3,11 +3,8 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
-import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
@@ -20,8 +17,7 @@ import { PreviewService } from 'app/views/inspectors/object-preview/object-previ
 import { TvConsole } from '../../../../core/utils/console';
 import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
-import { CommandHistory } from 'app/services/command-history';
-import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Component( {
 	selector: 'app-file',
@@ -43,13 +39,14 @@ export class FileComponent implements OnInit {
 	constructor (
 		private electron: TvElectronService,
 		private menuService: MenuService,
-		private assetService: AssetLoaderService,
+		private assetLoaderService: AssetLoaderService,
 		private previewService: PreviewService,
 		private fileService: FileService,
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
 		private dragDropService: DragDropService,
 		private inspectorFactory: InspectorFactoryService,
+		private assetService: AssetService,
 	) {
 
 	}
@@ -239,21 +236,13 @@ export class FileComponent implements OnInit {
 
 	createDuplicate (): void {
 
-		try {
-
-			AssetFactory.copyAsset( this.metadata.guid );
-
-		} catch ( error ) {
-
-			SnackBar.error( error );
-
-		}
+		this.assetService.copyAsset( this.file );
 
 	}
 
 	canDuplicate (): boolean {
 
-		return this.extension == 'material';
+		return this.file.type == AssetType.MATERIAL;
 
 	}
 
@@ -261,39 +250,14 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			if ( this.isDirectory ) {
-
-				// TODO: need to loop over each file in the folder to delete them
-				// from database as well
-
-				// Delete the folder recursively
-				this.fileService.deleteFolderRecursive( this.file.path );
-
-				this.fileService.deleteFileSync( this.file.path + '.meta' );
-
-				this.file.isDeleted = true;
-
-				AssetDatabase.remove( this.metadata.guid );
-
-				SnackBar.success( 'Folder deleted' );
-
-			} else {
-
-				this.fileService.deleteFileSync( this.file.path );
-				this.fileService.deleteFileSync( this.file.path + '.meta' );
-
-				this.file.isDeleted = true;
-
-				AssetDatabase.remove( this.metadata.guid );
-
-				SnackBar.success( 'File deleted' );
-			}
+			this.assetService.deleteAsset( this.file );
 
 			this.deleted.emit( this.file );
 
 		} catch ( error ) {
 
 			SnackBar.warn( 'Could Not Delete Item' );
+
 			TvConsole.error( 'Could Not Delete Item' );
 
 		}

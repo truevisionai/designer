@@ -8,13 +8,11 @@ import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-enti
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
-import { MarkingTypes, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
 import { MetadataFactory } from '../../factories/metadata-factory.service';
 import { PropModel } from '../models/prop-model.model';
-import { MaterialExporter } from 'app/exporters/material-exporter';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';
 import { SceneExporterService } from 'app/exporters/scene-exporter.service';
@@ -28,7 +26,7 @@ import { Metadata } from './metadata.model';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AssetFactory {
+export class DepAssetFactory {
 
 	private static storageService: StorageService;
 	private static sceneExporter: SceneExporterService;
@@ -37,8 +35,8 @@ export class AssetFactory {
 		storageService: StorageService,
 		sceneExporter: SceneExporterService
 	) {
-		AssetFactory.storageService = storageService;
-		AssetFactory.sceneExporter = sceneExporter;
+		DepAssetFactory.storageService = storageService;
+		DepAssetFactory.sceneExporter = sceneExporter;
 	}
 
 	static copyAsset ( guid: string ) {
@@ -245,7 +243,7 @@ export class AssetFactory {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AssetFactoryNew {
+export class AssetFactory {
 
 	constructor (
 		private storage: StorageService,

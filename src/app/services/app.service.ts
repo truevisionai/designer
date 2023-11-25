@@ -27,7 +27,7 @@ import { RoadSplineService } from './road/road-spline.service';
 import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { RoadLinkService } from './road/road-link.service';
-import { AssetFactoryNew } from 'app/core/asset/asset-factory.service';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,7 +58,7 @@ export class AppService {
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
-		private assetFactory: AssetFactoryNew,
+		private assetService: AssetService,
 	) {
 
 
@@ -77,7 +77,7 @@ export class AppService {
 		ManagerRegistry.registerManager( LaneManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
-		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetFactory ) );
+		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetService ) );
 		// ManagerRegistry.registerManager( RoadSelectionListener );
 		// ManagerRegistry.registerManager( RoadControlPointListener );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );

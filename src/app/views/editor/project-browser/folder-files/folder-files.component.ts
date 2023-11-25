@@ -31,13 +31,6 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	files: AssetNode[] = [];
 
-	constructor (
-		private appRef: ApplicationRef,
-		private projectBrowserService: ProjectBrowserService,
-		private assetService: AssetService,
-	) {
-	}
-
 	get sortedFiles () {
 
 		let sorted = [];
@@ -49,9 +42,14 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 		return sorted;
 	}
 
-	ngOnInit () {
+	constructor (
+		private appRef: ApplicationRef,
+		private projectBrowserService: ProjectBrowserService,
+		private assetService: AssetService,
+	) {
+	}
 
-		console.log( 'folder-files.component.ts ngOnInit()', this.folder );
+	ngOnInit () {
 
 		this.files = this.folder ? this.projectBrowserService.getAssets( this.folder.path ) : [];
 

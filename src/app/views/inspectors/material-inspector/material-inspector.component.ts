@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory, AssetFactoryNew } from 'app/core/asset/asset-factory.service';
+import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
@@ -38,7 +38,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	constructor (
 		private previewService: PreviewService,
-		private assetFactory: AssetFactoryNew
+		private assetFactory: AssetFactory
 	) {
 	}
 
@@ -118,7 +118,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 			console.error( error );
 		}
 
-		AssetFactory.updateMaterial( this.metadata.path, newMaterial );
+		this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, this.data.guid, this.data.material );
 
 		this.updatePreviewCache();
 
