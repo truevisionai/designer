@@ -16,33 +16,38 @@ export enum TvElementType {
 }
 
 export enum TvLaneType {
-	none = 'none',
-	driving = 'driving',
-	stop = 'stop',
-	shoulder = 'shoulder',
-	biking = 'biking',
-	sidewalk = 'sidewalk',
-	border = 'border',
-	restricted = 'restricted',
-	parking = 'parking',
+	none = 'none', // Describes the space on the outermost edge of the road and
+	// does not have actual content Its only purpose is for applications to
+	// register that ASAM OpenDRIVE is still present in case the (human) driver leaves the road.
+	driving = 'driving', // Describes a "normal" drivable road that is not one of the other types.
+	stop = 'stop', // Hard shoulder on motorways for emergency stops
+	shoulder = 'shoulder', // Describes a soft border at the edge of the road.
+	biking = 'biking', // Describes a lane that is reserved for cyclists.
+	sidewalk = 'sidewalk', // Describes a lane on which pedestrians can walk.
+	border = 'border', // Describes a hard border at the edge of the road. It has the same height as the drivable lane.
+	restricted = 'restricted', // Describes a lane on which cars should not drive. The lane has the same height as
+	// drivable lanes. Typically, the lane is separated with lines and often contains dotted lines as well.
+	parking = 'parking', // Describes a lane with parking spaces.
 	bidirectional = 'bidirectional', // (this lane type has two use cases:
 	// a) only driving lane on a narrow road which may be used in both directions;
 	// b) continuous two-way left turn lane on multi-lane roads – US road networks)
-	median = 'median',
+	median = 'median', // Describes a lane that sits between driving lanes that lead in opposite directions.
+	// It is typically used to separate traffic in towns on large roads.
 	special1 = 'special1',
 	special2 = 'special2',
 	special3 = 'special3',
 	roadWorks = 'roadWorks',
 	tram = 'tram',
 	rail = 'rail',
-	entry = 'entry',
-	exit = 'exit',
-	offRamp = 'offRamp',
-	onRamp = 'onRamp',
-	connectingRamp = 'connectingRamp',
+	entry = 'entry', // Describes a lane type that is used for sections that are parallel to the main road. It is mainly used for acceleration lanes.
+	exit = 'exit', // Describes a lane that is used for sections that are parallel to the main road. It is mainly used for deceleration lanes.
+	offRamp = 'offRamp', // A ramp leading away from a motorway and onto rural urban roads.
+	onRamp = 'onRamp', // A ramp leading to a motorway from rural or urban roads.
+	connectingRamp = 'connectingRamp', // A ramp that connects two motorways, for example, motorway junctions.
 	bux = 'bux',
 	taxi = 'taxi',
 	HOV = 'HOV',
+	curb = 'curb', // Describes curb stones. Curb stones have a different height than the adjacent drivable lanes.
 }
 
 export enum TvRoadMarkTypes {
