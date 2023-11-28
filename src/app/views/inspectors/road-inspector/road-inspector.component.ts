@@ -14,6 +14,9 @@ import { TvRoad } from '../../../modules/tv-map/models/tv-road.model';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { DialogService } from 'app/services/dialog/dialog.service';
+import { RoadStyle } from 'app/core/asset/road.style';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -30,7 +33,10 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	isOpen: boolean = true;
 
-	constructor () {
+	constructor (
+		private dialogService: DialogService,
+		private assetService: AssetService,
+	) {
 		super();
 	}
 
@@ -76,6 +82,19 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 	}
 
 	ngOnDestroy () {
+
+
+	}
+
+	async exportRoadStyle () {
+
+		const saved = await this.dialogService.saveDialogSimple( 'RoadStyle', RoadStyle.extension );
+
+		if ( !saved ) return;
+
+		this.assetService.createRoadStyleAsset( saved.directory, this.road, saved.filename );
+
+		console.log( 'exporting road style to: ' + saved.filePath );
 
 	}
 

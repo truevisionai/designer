@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TvElectronService } from '../tv-electron.service';
 import { IFile } from 'app/io/file';
+import { ProjectService } from '../project.service';
+import { FileUtils } from 'app/io/file-utils';
 
 interface OpenDialogReturnValue {
 	/**
@@ -40,6 +42,10 @@ interface SaveDialogReturnValue {
 	 * @platform darwin,mas
 	 */
 	bookmarks?: string[];
+
+	directory?: string;
+
+	filename?: string;
 }
 
 export interface IDialogProvider {
@@ -57,7 +63,10 @@ export class DialogService {
 
 	private dialogProvider: IDialogProvider;
 
-	constructor ( private electron: TvElectronService ) {
+	constructor (
+		private electron: TvElectronService,
+		private project: ProjectService,
+	) {
 
 		if ( this.electron.isElectronApp ) {
 
@@ -77,10 +86,32 @@ export class DialogService {
 
 	}
 
-	saveDialog ( options: any ): Promise<SaveDialogReturnValue> {
+	saveDialog ( options: Electron.SaveDialogOptions ): Promise<SaveDialogReturnValue> {
 
 		return this.dialogProvider.saveDialog( options );
 
+	}
+
+	async saveDialogSimple ( title: string, extension: string ): Promise<SaveDialogReturnValue> {
+
+		const options = {
+			defaultPath: this.project.projectPath,
+			filters: [
+				{ name: title, extensions: [ extension ] },
+			],
+		}
+
+		const response = await this.saveDialog( options );
+
+		if ( response.canceled ) return;
+
+		if ( response.filePath == null ) return;
+
+		const directory = FileUtils.getDirectoryFromPath( response.filePath );
+
+		const filename = FileUtils.getFilenameFromPath( response.filePath );
+
+		return { ...response, directory, filename };
 	}
 
 }
@@ -113,14 +144,12 @@ export class ElectronDialogProvider implements IDialogProvider {
 
 	}
 
-	saveDialog ( options: any ): Promise<SaveDialogReturnValue> {
+	saveDialog ( options: Electron.SaveDialogOptions ): Promise<SaveDialogReturnValue> {
 
 		const saveOptions: Electron.SaveDialogOptions = {
 			title: 'Save File',
 			defaultPath: options?.defaultPath || '',
-			filters: [
-				{ name: 'All Files', extensions: [ options?.extension ] }
-			]
+			filters: options?.filters || [],
 		};
 
 		return this.electron.remote.dialog.showSaveDialog( saveOptions );

@@ -8,36 +8,21 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
 import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
-
-import { Euler, Vector3 } from 'three';
-import { FileService } from '../io/file.service';
-import { TvElectronService } from '../services/tv-electron.service';
 import { RoadStyle } from "../core/asset/road.style";
-
-export interface Scene {
-
-	road: { guid: string },
-
-	props: { guid: string, position: Vector3, rotation: Euler, scale: Vector3 }[],
-
-	propCurves: []
-}
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadExporterService {
 
-	private readonly extension = 'roadstyle';
-
 	constructor (
 		private openDriveExporter: OpenDriveExporter,
-		private fileService: FileService,
-		private electron: TvElectronService
 	) {
 	}
 
-	exportRoadStyle ( road: RoadStyle ) {
+	exportRoadStyle ( style: RoadStyle ): string {
 
 		const xmlNode = {
 			version: 1,
@@ -45,11 +30,23 @@ export class RoadExporterService {
 			laneSection: null,
 		};
 
-		this.writeLaneOffset( xmlNode, road );
+		this.writeLaneOffset( xmlNode, style.laneOffset );
 
-		this.writeLaneSection( xmlNode, road.laneSection );
+		this.writeLaneSection( xmlNode, style.laneSection );
 
-		return xmlNode;
+		return JSON.stringify( xmlNode );
+	}
+
+	exportRoadAsStyle ( road: TvRoad ) {
+
+		const roadStyle = new RoadStyle();
+
+		roadStyle.laneOffset = road.getLaneOffsetAt( 0 ).clone();
+
+		roadStyle.laneSection = road.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
+
+		return this.exportRoadStyle( roadStyle );
+
 	}
 
 	writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
@@ -148,14 +145,14 @@ export class RoadExporterService {
 		return laneNode;
 	}
 
-	writeLaneOffset ( xmlNode, road: RoadStyle ) {
+	writeLaneOffset ( xmlNode, laneOffset: TvRoadLaneOffset ) {
 
 		xmlNode.laneOffset = {
-			attr_s: road.laneOffset.s,
-			attr_a: road.laneOffset.a,
-			attr_b: road.laneOffset.b,
-			attr_c: road.laneOffset.c,
-			attr_d: road.laneOffset.d,
+			attr_s: laneOffset.s,
+			attr_a: laneOffset.a,
+			attr_b: laneOffset.b,
+			attr_c: laneOffset.c,
+			attr_d: laneOffset.d,
 		};
 
 		return xmlNode;

@@ -29,6 +29,9 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
+import { RoadStyle } from 'app/core/asset/road.style';
+import { RoadExporterService } from 'app/exporters/road-style-exporter.service';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +42,8 @@ export class ExporterService {
 		private fileService: FileService,
 		private sceneExporter: SceneExporterService,
 		private mapService: MapService,
-		private materialExporter: MaterialExporter
+		private materialExporter: MaterialExporter,
+		private roadStyleExporter: RoadExporterService,
 	) {
 	}
 
@@ -64,6 +68,25 @@ export class ExporterService {
 		}
 
 	}
+
+	getRoadStyleExport ( roadStyle: TvRoad | RoadStyle ): string {
+
+		if ( roadStyle instanceof TvRoad ) {
+
+			return this.roadStyleExporter.exportRoadAsStyle( roadStyle );
+
+		} else if ( roadStyle instanceof RoadStyle ) {
+
+			return this.roadStyleExporter.exportRoadStyle( roadStyle );
+
+		} else {
+
+			TvConsole.error( 'ExporterService: getRoadStyleExport: Unknown input type ' + roadStyle );
+
+		}
+
+	}
+
 
 	getRoadSignExport ( sign: TvRoadSign ) {
 

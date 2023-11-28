@@ -10,9 +10,10 @@ import { ExporterService } from 'app/services/exporter.service';
 import { AssetType, AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { AssetFactory } from './asset-factory.service';
 import { AssetDatabase } from './asset-database';
-import { StorageService } from 'app/io/storage.service';
 import { TvConsole } from '../utils/console';
 import { MathUtils } from 'three';
+import { RoadStyle } from './road.style';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -60,6 +61,14 @@ export class AssetService {
 		const data = this.exporter.getSceneExport( scene );
 
 		return this.createNewAsset( AssetType.SCENE, filename, directory, data, scene );
+
+	}
+
+	createRoadStyleAsset ( directory: string, style: TvRoad | RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
+
+		const data = this.exporter.getRoadStyleExport( style );
+
+		return this.createNewAsset( AssetType.ROAD_STYLE, filename, directory, data, style );
 
 	}
 
