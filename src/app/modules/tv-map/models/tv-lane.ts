@@ -126,7 +126,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 			this.travelDirection = TravelDirection.undirected;
 		}
 
-		this._threeMaterial = this.getThreeMaterial();
+		this._threeMaterial = this._threeMaterialGuid ? AssetDatabase.getInstance( this._threeMaterialGuid ) : null;
 	}
 
 	get threeMaterialGuid (): string {
@@ -135,7 +135,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	set threeMaterialGuid ( value: string ) {
 		this._threeMaterialGuid = value;
-		this._threeMaterial = this.getThreeMaterial();
+		this._threeMaterial = this._threeMaterialGuid ? AssetDatabase.getInstance( this._threeMaterialGuid ) : null;
 	}
 
 	get threeMaterial (): MeshStandardMaterial {
@@ -401,11 +401,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		this.isSelected = true;
 
-		const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
+		// const clone = ( this.gameObject.material as MeshStandardMaterial ).clone();
 
-		clone.emissive.set( COLOR.RED );
+		// clone.emissive.set( COLOR.RED );
 
-		this.gameObject.material = clone;
+		// this.gameObject.material = clone;
 
 	}
 
@@ -419,11 +419,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		this.isSelected = false;
 
-		( this.gameObject.material as MeshBasicMaterial )?.dispose();
+		// ( this.gameObject.material as MeshBasicMaterial )?.dispose();
 
-		this.gameObject.material = this.getThreeMaterial();
+		// this.gameObject.material = this.getThreeMaterial();
 
-		this.gameObject.material.needsUpdate = true;
+		// this.gameObject.material.needsUpdate = true;
 
 	}
 
@@ -743,6 +743,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	clearLaneWidth () {
 		this.width.splice( 0, this.width.length );
+	}
+
+	clearLaneHeight () {
+		this.height.splice( 0, this.height.length );
 	}
 
 	deleteLaneRoadMark ( index: number ) {
@@ -1475,55 +1479,59 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	getThreeMaterial () {
+	// getThreeMaterial () {
 
-		// if guid is set use the material from the asset database
-		if ( this._threeMaterialGuid ) return AssetDatabase.getInstance<MeshStandardMaterial>( this._threeMaterialGuid );
+	// 	// if guid is set use the material from the asset database
+	// 	if ( this._threeMaterialGuid ) return AssetDatabase.getInstance<MeshStandardMaterial>( this._threeMaterialGuid );
 
-		let material: MeshStandardMaterial;
-		let guid: string;
+	// 	let material: MeshStandardMaterial;
+	// 	let guid: string;
 
-		const drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-		const sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
-		const borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
-		const shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	// 	const drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	// 	const sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+	// 	const borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+	// 	const shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
-		switch ( this.type ) {
+	// 	switch ( this.type ) {
 
-			case TvLaneType.driving:
-				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
-				break;
+	// 		case TvLaneType.driving:
+	// 			guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+	// 			break;
 
-			case TvLaneType.border:
-				guid = this.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
-				break;
+	// 		case TvLaneType.border:
+	// 			guid = this.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
+	// 			break;
 
-			case TvLaneType.sidewalk:
-				guid = this.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
-				break;
+	// 		case TvLaneType.sidewalk:
+	// 			guid = this.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+	// 			break;
 
-			case TvLaneType.shoulder:
-				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
-				break;
+	// 		case TvLaneType.shoulder:
+	// 			guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+	// 			break;
 
-			case TvLaneType.stop:
-				guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
-				break;
+	// 		case TvLaneType.stop:
+	// 			guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+	// 			break;
 
-			default:
-				guid = this.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
-				break;
+	// 		case TvLaneType.stop:
+	// 			guid = this.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+	// 			break;
 
-		}
+	// 		default:
+	// 			guid = null;
+	// 			break;
 
-		// find by guid
-		if ( guid ) material = AssetDatabase.getInstance( guid );
+	// 	}
 
-		// if no material found then use in built
-		if ( !material ) material = OdMaterials.getLaneMaterial( this );
+	// 	// find by guid
+	// 	if ( guid ) material = AssetDatabase.getInstance( guid );
 
-		return material;
-	}
+	// 	// if no material found then use in built
+	// 	if ( !material ) material = OdMaterials.getLaneMaterial( this );
+
+	// 	return material;
+	// }
 
 	removeRoadMark ( roadmark: TvLaneRoadMark ) {
 

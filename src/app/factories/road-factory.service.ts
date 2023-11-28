@@ -89,6 +89,23 @@ export class RoadFactory {
 
 	}
 
+	createParkingRoad ( type: TvRoadType = TvRoadType.LOW_SPEED, maxSpeed: number = 10 ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		road.setType( type, maxSpeed );
+
+		const roadStyle = RoadStyleManager.getParkingRoadStyle( road );
+
+		road.addLaneOffsetInstance( roadStyle.laneOffset );
+
+		road.addLaneSectionInstance( roadStyle.laneSection );
+
+		return road;
+
+	}
+
+
 	createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
 
 		const road = this.createDefaultRoad();

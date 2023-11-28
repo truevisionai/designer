@@ -11,11 +11,9 @@ export class OdMaterials {
 
 	static getLaneMaterial ( lane: TvLane, forceNew = false ) {
 
-		if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
-
-			return lane.gameObject.material as MeshStandardMaterial;
-
-		}
+		// if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
+		// 	return lane.gameObject.material as MeshStandardMaterial;
+		// }
 
 		return new MeshStandardMaterial( {
 			map: OdTextures.getLaneTexture( lane ),

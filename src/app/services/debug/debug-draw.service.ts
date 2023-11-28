@@ -5,19 +5,50 @@ import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Vector2, Vector3 } from 'three';
+import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
+import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class DebugDrawService {
 
-	constructor () { }
+	private debugObjects = new Object3DMap<this, Object3D>();
+
+	drawSphere ( start: Vector3 ) {
+
+		const geometry = new SphereGeometry( 0.1, 32, 32 );
+
+		const material = new MeshBasicMaterial( { color: 0xffff00 } );
+
+		const sphere = new Mesh( geometry, material );
+
+		sphere.position.copy( start );
+
+		this.debugObjects.add( this, sphere );
+
+	}
+
+	clear () {
+
+		this.debugObjects.clear();
+
+	}
+
+	private static _instance: DebugDrawService;
+
+	static get instance (): DebugDrawService {
+		return this._instance;
+	}
+
+	constructor () {
+		DebugDrawService._instance = this;
+	}
 
 	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
 

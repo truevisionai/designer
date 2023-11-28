@@ -21,7 +21,6 @@ export enum ToolType {
 	Lane,
 	MarkingPoint,
 	MarkingLine,
-	ParkingBox,
 	Pointer,
 	RoadRampTool,
 	Vehicle,
@@ -29,5 +28,7 @@ export enum ToolType {
 	Crosswalk,
 	Environment,
 	TrafficLight,
-	Parking
+	Parking,
+	ParkingBox,
+	ParkingRoad,
 }

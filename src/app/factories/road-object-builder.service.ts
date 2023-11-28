@@ -1,29 +1,97 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
-
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
-import { TvObjectMarking } from '../modules/tv-map/models/tv-object-marking';
+import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
+import { ObjectTypes } from '../modules/tv-map/models/tv-common';
+import { MarkingObjectBuilder } from './marking-object.builder';
+import { Injectable } from "@angular/core";
+import { TvRoad } from "../modules/tv-map/models/tv-road.model";
+import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 
-export class MarkingObjectFactory {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class RoadObjectBuilder {
 
-	static createMesh ( roadObject: TvRoadObject ): Object3D {
+	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		const object3D = new Object3D();
+		const type: ObjectTypes = roadObject.attr_type;
 
-		object3D.name = 'object:' + roadObject.attr_type;
+		switch ( type ) {
+
+			case ObjectTypes.crosswalk:
+				return this.buildCrosswalkObject( road, roadObject );
+
+			case ObjectTypes.parkingSpace:
+				return this.buildParkingSpaceObject( road, roadObject );
+
+		}
+
+	}
+
+	private buildParkingSpaceObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		const posTheta = road.getPositionAt( roadObject.s, roadObject.t );
+
+		const roadObjectMesh = new Object3D();
+
+		roadObjectMesh.name = 'object:' + roadObject.attr_type;
+
+		roadObjectMesh.position.copy( posTheta.toVector3() );
+
+		roadObjectMesh.position.z += roadObject.height / 2;
+
+		roadObjectMesh.rotation.set( 0, 0, posTheta.hdg );
 
 		roadObject.markings.forEach( marking => {
 
-			object3D.add( this.createMarkingMesh( roadObject, marking ) );
+			roadObjectMesh.add( this.buildMarking( roadObject, marking ) );
+
+		} )
+
+		return roadObjectMesh;
+
+	}
+
+	private buildCrosswalkObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		if ( roadObject.markings.length < 1 ) return;
+
+		if ( roadObject.outlines.length < 1 ) return;
+
+		if ( roadObject.markings[ 0 ].cornerReferences.length < 2 ) return;
+
+		const roadObjectMesh = new Object3D();
+
+		roadObjectMesh.name = 'object:' + roadObject.attr_type;
+
+		// const posTheta = road.getPositionAt( roadObject.s, roadObject.t );
+
+		// roadObjectMesh.position.copy( posTheta.toVector3() );
+
+		// roadObjectMesh.position.z += roadObject.height / 2;
+
+		// roadObjectMesh.rotation.set( 0, 0, posTheta.hdg );
+
+		roadObject.markings.forEach( marking => {
+
+			roadObjectMesh.add( this.buildMarking( roadObject, marking ) );
 
 		} );
 
-		return object3D;
+		return roadObjectMesh;
 	}
 
-	static createMarkingMesh ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
+	private buildRoadObjectBbox ( roadObject: TvRoadObject ): Object3D {
+
+		const boxGeometry = new BoxGeometry( roadObject.width, roadObject.length, roadObject.height );
+
+		const bbox = new Mesh( boxGeometry, new MeshBasicMaterial( { color: '#00ff00', wireframe: true } ) );
+
+		bbox.name = 'object:' + roadObject.attr_type + ':bbox';
+
+		return bbox;
+	}
+
+	private buildMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
 
 		const points: Vector3[] = [];
 
@@ -41,11 +109,32 @@ export class MarkingObjectFactory {
 
 		} );
 
-		marking.cornerReferences.forEach( cornerReference => cornerReference )
+		let geometry: BufferGeometry;
 
-		const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
+		if ( points.length < 2 && marking.side != null && roadObject.attr_type == ObjectTypes.parkingSpace ) {
 
-		const geometry = this.createGeometryFromCurve( marking, curve );
+			const side = marking.side == 'left' ? 1 : -1;
+
+			const startPosition = new Vector3( -roadObject.width * 0.5 * side, -roadObject.length / 2, -roadObject.height / 2 );
+			const endPosition = new Vector3( -roadObject.width * 0.5 * side, roadObject.length / 2, -roadObject.height / 2 );
+
+			// // If the bounding box is rotated, apply the same rotation to the start and end points
+			// if ( mesh ) startPosition.applyQuaternion( mesh.quaternion );
+			// if ( mesh ) endPosition.applyQuaternion( mesh.quaternion );
+
+			// if ( mesh ) startPosition.add( mesh.position );
+			// if ( mesh ) endPosition.add( mesh.position );
+
+			geometry = this.createGeometryFromPoint( marking, startPosition, endPosition );
+
+		} else {
+
+			const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
+
+			geometry = this.createGeometryFromCurve( marking, curve );
+
+		}
+
 
 		const object3D = new Mesh( geometry, marking.material );
 
@@ -55,7 +144,7 @@ export class MarkingObjectFactory {
 	}
 
 	// with spline
-	private static createGeometryFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): BufferGeometry {
+	private createGeometryFromCurve ( marking: TvObjectMarking, curve: CatmullRomCurve3 ): BufferGeometry {
 
 		const totalLength = curve.getLength();
 		const fullStripeLength = marking.lineLength + marking.spaceLength;
@@ -111,7 +200,14 @@ export class MarkingObjectFactory {
 		// return new Mesh( geometry, marking.material );
 	}
 
-	private static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
+	private createGeometryFromPoint ( marking: TvObjectMarking, start: Vector3, end: Vector3 ): BufferGeometry {
+
+		const curve = new CatmullRomCurve3( [ start, end ], false, 'catmullrom', 0 );
+
+		return this.createGeometryFromCurve( marking, curve );
+	}
+
+	private createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
 
 		const curve = new CatmullRomCurve3( [
 			new Vector3( 0, 0, 0 ),
@@ -426,5 +522,4 @@ export class MarkingObjectFactory {
 	// 	return new THREE.Mesh( geometry, material );
 	//
 	// }
-
 }

@@ -10,6 +10,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapEvents } from 'app/events/map-events';
 import { BaseService } from 'app/services/base.service';
+import { TvLaneType } from 'app/modules/tv-map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
@@ -94,6 +95,34 @@ export class LaneService {
 		this.baseService.rebuildRoad( lane.laneSection.road );
 
 		MapEvents.laneRemoved.emit( lane );
+
+	}
+
+	updateLane ( lane: TvLane ) {
+
+		MapEvents.laneUpdated.emit( lane );
+
+	}
+
+	updateLaneByType ( lane: TvLane, type: TvLaneType ) {
+
+		if ( type == TvLaneType.sidewalk || type == TvLaneType.curb ) {
+
+			if ( lane.getLaneHeightCount() == 0 ) {
+
+				lane.addHeightRecord( 0, 0.12, 0.12 );
+
+			}
+
+		} else {
+
+			if ( lane.getLaneHeightCount() == 1 && lane.getLaneHeight( 0 ).sOffset == 0 ) {
+
+				lane.clearLaneHeight();
+
+			}
+
+		}
 
 	}
 

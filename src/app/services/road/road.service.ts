@@ -15,6 +15,7 @@ import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-cont
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvMapInstance } from "../../modules/tv-map/services/tv-map-instance";
+import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,6 +34,12 @@ export class RoadService {
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
 	) {
+	}
+
+	get roads (): TvRoad[] {
+
+		return this.mapService.map.getRoads();
+
 	}
 
 	private getNextRoadId (): number {
@@ -60,7 +67,15 @@ export class RoadService {
 	}
 
 	createDefaultRoad (): TvRoad {
+
 		return this.roadFactory.createDefaultRoad();
+
+	}
+
+	createParkingRoad (): TvRoad {
+
+		return this.roadFactory.createParkingRoad();
+
 	}
 
 	hideAllRoadNodes () {
@@ -326,6 +341,19 @@ export class RoadService {
 
 		return [ road, right ];
 
+	}
+
+	addRoad ( road: TvRoad ) {
+
+		this.mapService.map.addRoad( road );
+
+		this.roadSplineService.addRoadSegment( road );
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		this.roadSplineService.rebuildSplineRoads( road.spline );
+
+		this.updateRoadNodes( road );
 	}
 
 	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {

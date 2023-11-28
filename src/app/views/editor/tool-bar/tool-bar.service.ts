@@ -41,6 +41,8 @@ import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
 import { CrosswalkToolService } from "../../../tools/marking-line/crosswalk-tool.service";
 import { PropPolygonToolService } from "../../../tools/prop-polygon/prop-polygon-tool.service";
+import { ParkingRoadTool } from 'app/tools/parking/parking-road-tool';
+import { ParkingRoadToolService } from 'app/tools/parking/parking-road-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,7 +66,8 @@ export class ToolBarService {
 		private junctionService: JunctionService,
 		private propCurveService: PropCurveService,
 		private roadRampService: RoadRampService,
-		private propPolygonToolService: PropPolygonToolService
+		private propPolygonToolService: PropPolygonToolService,
+		private parkingRoadToolService: ParkingRoadToolService,
 	) {
 	}
 
@@ -119,6 +122,8 @@ export class ToolBarService {
 				return new RoadRampTool( this.roadRampService );
 			case ToolType.RoadDividerTool:
 				return new RoadDividerTool( this.roadCutToolService );
+			case ToolType.ParkingRoad:
+				return new ParkingRoadTool( this.parkingRoadToolService );
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

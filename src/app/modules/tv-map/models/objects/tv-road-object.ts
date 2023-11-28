@@ -13,31 +13,30 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 
 export class TvRoadObject {
+
 	public static counter = 1;
 	public road: TvRoad;
 	public attr_type: ObjectTypes;
-	public attr_s: number;
-	public attr_t: number;
-	public attr_zOffset: number;
-	public attr_validLength: number;
-	public attr_orientation: any;
-	public attr_length: number;
-	public attr_width: number;
-	public attr_radius: number;
-	public attr_height: number;
-	public attr_hdg: number;
-	public attr_pitch: number;
-	public attr_roll: number;
-	public repeat: TvObjectRepeat[] = [];
+	private attr_s: number;
+	private attr_t: number;
+	private attr_zOffset: number;
+	private attr_validLength: number;
+	private attr_orientation: any;
+	private attr_length: number;
+	private attr_width: number;
+	private attr_radius: number;
+	private attr_height: number;
+	private attr_hdg: number;
+	private attr_pitch: number;
+	private attr_roll: number;
+	private repeat: TvObjectRepeat[] = [];
+
 	public outlines: TvObjectOutline[] = [];
 	public material: TvObjectMaterial;
 	public validity: TvLaneValidity[] = [];
 	public parkingSpace: TvParkingSpace;
 	public userData: TvUserData[] = [];
 	public name: string;
-	// public mesh: Mesh;
-	// public gameObject: Object3D;
-	private lastAddedRepeatObjectIndex: number;
 	private _markings: TvObjectMarking[] = [];
 
 	constructor (
@@ -103,8 +102,16 @@ export class TvRoadObject {
 		return this.attr_length;
 	}
 
+	set length ( value: number ) {
+		this.attr_length = value;
+	}
+
 	get width (): number {
 		return this.attr_width;
+	}
+
+	set width ( value: number ) {
+		this.attr_width = value;
 	}
 
 	get radius (): number {
@@ -115,8 +122,16 @@ export class TvRoadObject {
 		return this.attr_height;
 	}
 
+	set height ( value: number ) {
+		this.attr_height = value;
+	}
+
 	get hdg (): number {
 		return this.attr_hdg;
+	}
+
+	set hdg ( value: number ) {
+		this.attr_hdg = value;
 	}
 
 	get pitch (): number {
@@ -160,8 +175,6 @@ export class TvRoadObject {
 		this.repeat.push(
 			new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd )
 		);
-
-		this.lastAddedRepeatObjectIndex = this.repeat.length - 1;
 
 	}
 

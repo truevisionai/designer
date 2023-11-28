@@ -16,6 +16,30 @@ import { MapEvents } from 'app/events/map-events';
 
 export class TvLaneSection {
 
+	removeLeftLanes () {
+
+		const lanes = this.getLeftLanes();
+
+		lanes.forEach( lane => {
+
+			this.removeLane( lane );
+
+		} );
+
+	}
+
+	removeRightLanes () {
+
+		const lanes = this.getRightLanes();
+
+		lanes.forEach( lane => {
+
+			this.removeLane( lane );
+
+		} );
+
+	}
+
 	public readonly id: number;
 	public readonly uuid: string;
 

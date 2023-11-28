@@ -4,11 +4,14 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 import { SceneService } from 'app/services/scene.service';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { RoadObjectFactory } from 'app/factories/road-object.factory';
+import { RoadObjectBuilder } from 'app/factories/road-object-builder.service';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { Object3D } from 'three';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
+import { ObjectTypes, TvColors, TvRoadMarkWeights, TvSide } from 'app/modules/tv-map/models/tv-common';
+import { IDService } from 'app/factories/id.service';
+import { MarkingObjectBuilder } from 'app/factories/marking-object.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,20 +20,35 @@ export class RoadObjectService {
 
 	private objectMap = new Object3DMap<TvRoadObject, Object3D>();
 
+	private idService = new IDService();
+
 	static instance: RoadObjectService;
 
 	constructor (
 		private map: MapService,
-		private signal: RoadSignalService, // just for import
+		private signal: RoadSignalService, // just for import,
+		private builder: RoadObjectBuilder,
 	) {
 		RoadObjectService.instance = this;
+	}
+
+	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
+
+		return new TvRoadObject( type, '', this.idService.getUniqueID(), s, t );
+
+	}
+
+	createMarking () {
+
+		return new TvObjectMarking( TvColors.WHITE, 0.0, 1.0, TvSide.FRONT, TvRoadMarkWeights.STANDARD, 0, 0, 0.005, 0.1, [] );
+
 	}
 
 	buildRoadObjects ( road: TvRoad ): void {
 
 		road.objects.object.forEach( roadObject => {
 
-			const mesh = this.createRoadObjectMesh( roadObject );
+			const mesh = this.buildRoadObject( road, roadObject );
 
 			this.objectMap.add( roadObject, mesh );
 
@@ -40,13 +58,19 @@ export class RoadObjectService {
 
 	addRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		const mesh = this.createRoadObjectMesh( roadObject );
+		const mesh = this.buildRoadObject( road, roadObject );
 
 		this.objectMap.add( roadObject, mesh );
 
 		road.addRoadObjectInstance( roadObject );
 
 		this.showRoadObjectCorners( roadObject );
+
+	}
+
+	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ) {
+
+		return this.builder.buildRoadObject( road, roadObject );
 
 	}
 
@@ -165,18 +189,6 @@ export class RoadObjectService {
 			this.hideRoad( road );
 
 		} );
-	}
-
-	createRoadObjectMesh ( roadObject: TvRoadObject ): Object3D {
-
-		if ( roadObject.markings.length < 1 ) return;
-
-		if ( roadObject.outlines.length < 1 ) return;
-
-		if ( roadObject.markings[ 0 ].cornerReferences.length < 2 ) return;
-
-		return RoadObjectFactory.create( roadObject );
-
 	}
 
 	findByCornerRoad ( road: TvRoad, corner: TvCornerRoad ): TvRoadObject {

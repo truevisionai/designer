@@ -89,4 +89,44 @@ export class RoadStyleManager {
 		return roadStyle;
 	}
 
+	static getParkingRoadStyle ( road: TvRoad ): RoadStyle {
+
+		const roadStyle = new RoadStyle( road );
+
+		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
+
+		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
+
+		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.parking, true, true );
+		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.parking, true, true );
+
+		leftLane2.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+		leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+		centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+		rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+		rightLane2.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+
+		roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
+
+			if ( lane.type == TvLaneType.driving ) {
+
+				lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
+
+			} else if ( lane.type == TvLaneType.parking ) {
+
+				lane.addWidthRecord( 0, 5.6, 0, 0, 0 );
+
+			} else {
+
+				lane.addWidthRecord( 0, 3.6, 0, 0, 0 );
+
+			}
+
+		} );
+
+		return roadStyle;
+	}
 }

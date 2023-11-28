@@ -108,6 +108,18 @@ export class LaneTool extends BaseTool {
 
 	}
 
+	onObjectUpdated ( object: any ): void {
+
+		if ( object instanceof TvLane ) {
+
+			this.laneService.updateLaneByType( object, object.type );
+
+			this.laneService.updateLane( object );
+
+		}
+
+	}
+
 	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof TvLane ) {

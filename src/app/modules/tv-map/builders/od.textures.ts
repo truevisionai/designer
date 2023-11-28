@@ -123,6 +123,10 @@ export class OdTextures {
 				texture = this.parking();
 				break;
 
+			case TvLaneType.curb:
+				texture = this.terrain();
+				break;
+
 			default:
 				texture = this.terrain();
 				break;

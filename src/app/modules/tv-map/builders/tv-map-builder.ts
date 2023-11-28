@@ -5,11 +5,11 @@
 import { GameObject } from 'app/core/game-object';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
-import { BufferGeometry, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import { BufferGeometry, MeshBasicMaterial, MeshStandardMaterial, Vector2, Vector3 } from 'three';
 import { SceneService } from '../../../services/scene.service';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide } from '../models/tv-common';
+import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvMap } from '../models/tv-map.model';
@@ -21,6 +21,8 @@ import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
 import { OdBuilderConfig } from './od-builder-config';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { OdMaterials } from './od-materials.service';
 
 export class TvMapBuilder {
 
@@ -206,7 +208,62 @@ export class TvMapBuilder {
 
 		const geometry = new LaneBufferGeometry( lane, laneSection, road );
 
-		this.createLaneGameObject( lane, geometry, lane.getThreeMaterial(), laneSection );
+		this.createLaneGameObject( lane, geometry, this.getLaneMaterial( lane ), laneSection );
+
+	}
+
+	static getLaneMaterial ( lane: TvLane ) {
+
+		// if guid is set use the material from the asset database
+		if ( lane.threeMaterialGuid ) return AssetDatabase.getInstance<MeshStandardMaterial>( lane.threeMaterialGuid );
+
+		let material: MeshStandardMaterial;
+		let guid: string;
+
+		const drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+		const borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
+		switch ( lane.type ) {
+
+			case TvLaneType.driving:
+				guid = lane.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
+			case TvLaneType.border:
+				guid = lane.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
+				break;
+
+			case TvLaneType.sidewalk:
+				guid = lane.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+				break;
+
+			case TvLaneType.shoulder:
+				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			case TvLaneType.stop:
+				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			case TvLaneType.stop:
+				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			default:
+				guid = null;
+				break;
+
+		}
+
+		// find by guid
+		if ( guid ) material = AssetDatabase.getInstance( guid );
+
+		// if no material found then use in built
+		if ( !material ) material = OdMaterials.getLaneMaterial( lane );
+
+		return material;
 
 	}
 
@@ -356,7 +413,7 @@ export class TvMapBuilder {
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 
-		TvMapBuilder.createLaneGameObject( lane, geometry, lane.getThreeMaterial(), laneSection );
+		TvMapBuilder.createLaneGameObject( lane, geometry, this.getLaneMaterial( lane ), laneSection );
 
 	}
 

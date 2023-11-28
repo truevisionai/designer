@@ -1,18 +1,15 @@
-import { MapEvents } from "app/events/map-events";
+import { MapEvents, RoadUpdatedEvent } from "app/events/map-events";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { Manager } from "./manager";
 
 export class LaneManager extends Manager {
 
-	private static _instance = new LaneManager();
 	private debug = true;
 
-	static get instance (): LaneManager {
-		return this._instance;
-	}
-
 	constructor () {
+
 		super();
+
 	}
 
 	init () {
@@ -27,11 +24,15 @@ export class LaneManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onLaneUpdated', lane );
 
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
+
 	}
 
-	onLaneRemoved ( removedLane: TvLane ): void {
+	onLaneRemoved ( lane: TvLane ): void {
 
-		if ( this.debug ) console.debug( 'onLaneRemoved', removedLane );
+		if ( this.debug ) console.debug( 'onLaneRemoved', lane );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
 
 	}
 
@@ -39,6 +40,7 @@ export class LaneManager extends Manager {
 
 		if ( this.debug ) console.debug( 'onLaneCreated', lane );
 
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
 	}
 
 }
