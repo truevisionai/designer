@@ -5,7 +5,7 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
-import { Object3D } from "three";
+import { AssetNode } from "app/views/editor/project-browser/file-node.model";
 
 export class RoadCreatedEvent {
 	constructor ( public road: TvRoad, public showHelpers = true ) { }
@@ -83,6 +83,8 @@ export class MapEvents {
 
 	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
+
+	@Output() static assetSelected = new EventEmitter<AssetNode>();
 
 	@Output() static objectSelected = new EventEmitter<Object>();
 	@Output() static objectUnselected = new EventEmitter<Object>();

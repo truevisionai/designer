@@ -24,6 +24,7 @@ import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
+import { ProjectService } from 'app/services/project.service';
 
 
 @Component( {
@@ -33,6 +34,14 @@ import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-
 } )
 export class MenuBarComponent implements OnInit {
 
+	get oscEnabled (): boolean {
+		return Environment.oscEnabled;
+	}
+
+	get isElectronApp () {
+		return this.electron.isElectronApp;
+	}
+
 	constructor (
 		private appService: AppService,
 		private odService: OpenDriveService,
@@ -41,28 +50,11 @@ export class MenuBarComponent implements OnInit {
 		private http: HttpClient,
 		private exporter: ExporterService,
 		private router: Router,
-		private recentFileService: RecentFileService,
 		private mainFileService: TvSceneFileService,
-		private openDriveExporter: OpenDriveExporter,
-		private roadStyleExporter: RoadExporterService,
 		private inputDialogService: AppInputDialogService,
-		private editorService: EditorService
+		private editorService: EditorService,
+		private projectService: ProjectService,
 	) {
-	}
-
-
-	get oscEnabled (): boolean {
-		return Environment.oscEnabled;
-	}
-
-	get recentFiles () {
-		return this.recentFileService.recentFiles;
-	}
-
-	get isElectronApp () {
-
-		return this.electron.isElectronApp;
-
 	}
 
 	ngOnInit () {
@@ -77,7 +69,7 @@ export class MenuBarComponent implements OnInit {
 
 	onOpenFile () {
 
-		this.mainFileService.showOpenWindow( this.mainFileService.fileService.projectFolder );
+		this.mainFileService.showOpenWindow( this.projectService.projectPath );
 
 	}
 

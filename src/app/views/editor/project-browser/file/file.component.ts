@@ -18,6 +18,7 @@ import { TvConsole } from '../../../../core/utils/console';
 import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { AssetService } from 'app/core/asset/asset.service';
+import { MapEvents } from 'app/events/map-events';
 
 @Component( {
 	selector: 'app-file',
@@ -160,6 +161,8 @@ export class FileComponent implements OnInit {
 		try {
 
 			this.inspectorFactory.setAssetInspector( this.file );
+
+			MapEvents.assetSelected.emit( this.file );
 
 		} catch ( error ) {
 

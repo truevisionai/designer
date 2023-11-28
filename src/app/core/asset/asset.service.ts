@@ -19,21 +19,28 @@ import { MathUtils } from 'three';
 } )
 export class AssetService {
 
+
 	assetCreated = new EventEmitter<AssetNode>();
 
 	constructor (
 		private exporter: ExporterService,
 		private fileService: FileService,
-		private storageService: StorageService,
+		// private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private assetFactory: AssetFactory,
 	) { }
 
-	createNewAsset ( type: AssetType, name: string, path: string, data?: string, instance?: any ) {
+	getAssetInstance<T> ( asset: AssetNode ): T {
 
-		const fullPath = this.fileService.join( path, name );
+		return AssetDatabase.getInstance( asset.metadata.guid );
 
-		const asset = new AssetNode( type, name, fullPath );
+	}
+
+	createNewAsset ( type: AssetType, filename: string, directory: string, data?: string, instance?: any ) {
+
+		const fullPath = this.fileService.join( directory, filename );
+
+		const asset = new AssetNode( type, filename, fullPath );
 
 		asset.metadata = this.metadataFactory.makeAssetMetadata( asset );
 
@@ -46,39 +53,14 @@ export class AssetService {
 		return asset;
 	}
 
-	private saveFile ( asset: AssetNode ) {
-
-		// const directory = this.fileService.path.dirname( path );
-
-		// const fullName = this.fileService.path.basename( path );
-
-		// const extension = this.fileService.path.extname( path );
-
-		// let baseName = fullName.replace( extension, '' );
-
-		// let count = 1;
-
-		// while ( this.exists( path ) ) {
-
-		// 	baseName = `${ baseName }(${ count++ })`;
-
-		// 	path = this.fileService.join( directory, `${ baseName }${ extension }` );
-
-		// }
-
-		// this.fileService.fs.writeFileSync( path, contents, options );
-
-		// return { path: path };
-
-	}
-
-	createSceneAsset ( path: string, instance?: TvMap ) {
+	createSceneAsset ( directory: string, instance?: TvMap, filename: string = 'Scene.scene' ) {
 
 		const scene = instance || new TvMap();
 
 		const data = this.exporter.getSceneExport( scene );
 
-		this.createNewAsset( AssetType.SCENE, 'Scene.scene', path, data, scene );
+		return this.createNewAsset( AssetType.SCENE, filename, directory, data, scene );
+
 	}
 
 	createFolderAsset ( path: string, name: string = 'Folder' ) {

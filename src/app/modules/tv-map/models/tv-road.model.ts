@@ -959,25 +959,6 @@ export class TvRoad {
 		// if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
 
-	addControlPointAt ( position: Vector3, udpateGeometry = true ): AbstractControlPoint {
-
-		// if ( this.spline instanceof AutoSplineV2 ) {
-
-		return this.spline.addControlPointAt( position );
-
-		// } else {
-
-		// 	// const i = this.spline?.controlPoints.length;
-
-		// 	const point = new SplineControlPoint( this.spline, position );
-
-		// 	this.addControlPoint( point, udpateGeometry );
-
-		// 	return point;
-
-		// }
-
-	}
 
 	removeControlPoint ( cp: AbstractControlPoint ) {
 
@@ -1060,60 +1041,6 @@ export class TvRoad {
 			leftSideWidth: leftWidth,
 			rightSideWidth: rightWidth,
 		};
-	}
-
-	showLaneOffsetNodes () {
-
-		// this.getLaneOffsets().forEach( laneOffset => {
-
-		// 	if ( laneOffset.node ) {
-
-		// 		laneOffset.node.updatePosition();
-
-		// 		laneOffset.node.visible = true;
-
-		// 		SceneService.addToolObject( laneOffset.node );
-
-		// 	} else {
-
-		// 		laneOffset.node = new LaneOffsetNode( this, laneOffset );
-
-		// 		SceneService.addToolObject( laneOffset.node );
-
-		// 	}
-
-		// } );
-
-	}
-
-	hideLaneOffsetNodes () {
-
-		// this.getLaneOffsets().forEach( laneOffset => {
-
-		// 	if ( laneOffset.node ) {
-
-		// 		laneOffset.node.visible = false;
-
-		// 		SceneService.removeFromTool( laneOffset.node );
-
-		// 	}
-
-		// } );
-
-	}
-
-	updateLaneMaterial () {
-
-		this.laneSections.forEach( section => {
-
-			section.lanes.forEach( lane => {
-
-				lane.gameObject.material = lane.getThreeMaterial();
-
-			} );
-
-		} );
-
 	}
 
 	getElevationAt ( s: number ): TvElevation {

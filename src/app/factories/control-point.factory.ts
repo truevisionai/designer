@@ -34,4 +34,10 @@ export class ControlPointFactory {
 
 	}
 
+	createSplineControlPoint ( target: any, position: Vector3 ) {
+
+		return new SplineControlPoint( target, position );
+
+	}
+
 }

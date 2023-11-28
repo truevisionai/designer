@@ -11,17 +11,17 @@ import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-import { FileService } from '../io/file.service';
 import { ScenarioService } from '../modules/scenario/services/scenario.service';
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
 import { MapService } from "./map.service";
 import { StorageService } from 'app/io/storage.service';
+import { AssetService } from 'app/core/asset/asset.service';
 import { FileUtils } from 'app/io/file-utils';
+import { ProjectService } from './project.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,14 +29,14 @@ import { FileUtils } from 'app/io/file-utils';
 export class TvSceneFileService {
 
 	constructor (
-		public sceneExporter: SceneExporterService,
-		public sceneImporter: SceneImporterService,
-		public threeService: ThreeService,
-		public electronService: TvElectronService,
-		public mapService: MapService,
-		public fileService: FileService,
+		private sceneImporter: SceneImporterService,
+		private threeService: ThreeService,
+		private electronService: TvElectronService,
+		private mapService: MapService,
 		private dialogService: DialogService,
 		private storageService: StorageService,
+		private assetService: AssetService,
+		private projectService: ProjectService,
 	) {
 	}
 
@@ -110,33 +110,19 @@ export class TvSceneFileService {
 
 	async save () {
 
-		if ( this.currentFile == null ) throw new Error( 'Create file before saving' );
-
-		const contents = this.currentFile.contents = this.sceneExporter.export( this.mapService.map );
-
-		ToolManager.disable();	// disable tools while saving
+		if ( this.currentFile == null ) {
+			TvConsole.error( 'Create file before saving' );
+			return;
+		}
 
 		// path exists means it was imported locally
 		if ( this.currentFile.path != null ) {
 
-			await this.storageService.writeAsync( this.currentFile.path, contents );
+			ToolManager.disable();	// disable tools while saving
 
-			SnackBar.success( 'File Saved!' );
+			this.saveToPath( this.currentFile.path );
 
 			ToolManager.enable();	// enable tools after saving
-
-			// this.fileService.writeFile( this.currentFile.path, contents, ( file: IFile ) => {
-
-			// 	this.currentFile.path = file.path;
-			// 	this.currentFile.name = file.name;
-
-			// 	this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
-
-			// 	SnackBar.success( 'File Saved!' );
-
-			// 	ToolManager.enable();	// enable tools after saving
-
-			// } );
 
 		} else {
 
@@ -148,12 +134,10 @@ export class TvSceneFileService {
 
 	async saveAs () {
 
-		const extension = this.sceneExporter.extension;
-
-		const contents = this.sceneExporter.export();
+		ToolManager.disable();	// disable tools while saving
 
 		const options = {
-			defaultPath: this.fileService.projectFolder,
+			defaultPath: this.projectService.projectPath,
 		}
 
 		const res = await this.dialogService.saveDialog( options );
@@ -162,24 +146,34 @@ export class TvSceneFileService {
 
 		if ( res.filePath == null ) return;
 
-		// append the extension if not present in the path
-		if ( !res.filePath.includes( `.${ extension }` ) ) {
-
-			res.filePath = res.filePath + '.' + extension;
-
-		}
-
-		this.storageService.writeAsync( res.filePath, contents );
-
-		this.currentFile.path = res.filePath
-
-		this.currentFile.name = FileUtils.getFilenameFromPath( res.filePath );
-
-		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
-
-		SnackBar.success( 'File Saved!' );
+		this.saveToPath( res.filePath );
 
 		ToolManager.enable();	// enable tools after saving
+
+	}
+
+	private saveToPath ( path: string ) {
+
+		const extension = 'scene';
+
+		// append the extension if not present in the path
+		if ( !path.includes( `.${ extension }` ) ) {
+			path = path + '.' + extension;
+		}
+
+		const directory = FileUtils.getDirectoryFromPath( path );
+
+		const fullName = FileUtils.getFilenameFromPath( path );
+
+		const scene = this.assetService.createSceneAsset( directory, this.mapService.map, fullName );
+
+		this.currentFile.path = scene.path;
+
+		this.currentFile.name = scene.name;
+
+		this.electronService.setTitle( scene.name, scene.path );
+
+		SnackBar.success( 'File Saved!' );
 
 	}
 

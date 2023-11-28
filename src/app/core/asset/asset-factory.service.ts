@@ -258,6 +258,32 @@ export class AssetFactory {
 
 	}
 
+	private saveFile ( asset: AssetNode ) {
+
+		// const directory = this.fileService.path.dirname( path );
+
+		// const fullName = this.fileService.path.basename( path );
+
+		// const extension = this.fileService.path.extname( path );
+
+		// let baseName = fullName.replace( extension, '' );
+
+		// let count = 1;
+
+		// while ( this.exists( path ) ) {
+
+		// 	baseName = `${ baseName }(${ count++ })`;
+
+		// 	path = this.fileService.join( directory, `${ baseName }${ extension }` );
+
+		// }
+
+		// this.fileService.fs.writeFileSync( path, contents, options );
+
+		// return { path: path };
+
+	}
+
 	createAssetMeta ( asset: AssetNode ) {
 
 		if ( !asset.metadata ) return;
