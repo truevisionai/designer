@@ -23,8 +23,11 @@ import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { OdMaterials } from '../builders/od-materials.service';
-import { SerializedField } from 'app/core/components/serialization';
+import { Action, SerializedField } from 'app/core/components/serialization';
 import { TrafficRule } from './traffic-rule';
+import { CommandHistory } from 'app/services/command-history';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { AddObjectCommand } from 'app/commands/add-object-command';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -70,6 +73,24 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	set direction ( value: TravelDirection ) {
 		this.travelDirection = value;
+	}
+
+	@Action()
+	duplicate () {
+
+		const newId = this.isLeft ? this.id + 1 : this.id - 1;
+
+		const newLane = this.clone( newId );
+
+		const command = new AddObjectCommand( newLane );
+
+		CommandHistory.execute( command );
+
+	}
+
+	@Action()
+	delete () {
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
 	}
 
 	/**
@@ -431,16 +452,16 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		if ( this.isSelected ) return;
 
-		const orignal = this.gameObject.material as MeshStandardMaterial;
+		// const orignal = this.gameObject.material as MeshStandardMaterial;
 
-		const clone = orignal.clone();
+		// const clone = orignal.clone();
 
-		this.gameObject.material = clone;
+		// this.gameObject.material = clone;
 
-		clone.emissive.set( COLOR.GRAY );
+		// clone.emissive.set( COLOR.GRAY );
 
-		// cache
-		this.gameObject.userData.material = orignal;
+		// // cache
+		// this.gameObject.userData.material = orignal;
 
 	}
 
@@ -448,13 +469,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		if ( this.isSelected ) return;
 
-		const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
+		// const originalMaterial: MeshStandardMaterial = this.gameObject.userData.material;
 
-		if ( !originalMaterial ) return;
+		// if ( !originalMaterial ) return;
 
-		this.gameObject.material = originalMaterial;
+		// this.gameObject.material = originalMaterial;
 
-		this.gameObject.material.needsUpdate = true;
+		// this.gameObject.material.needsUpdate = true;
 
 	}
 

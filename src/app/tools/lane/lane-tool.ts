@@ -80,13 +80,7 @@ export class LaneTool extends BaseTool {
 
 			if ( lane instanceof TvLane ) {
 
-				const newId = lane.isLeft ? lane.id + 1 : lane.id - 1;
-
-				const newLane = lane.clone( newId );
-
-				const command = new AddObjectCommand( newLane );
-
-				CommandHistory.execute( command );
+				lane.duplicate();
 
 			}
 
