@@ -8,6 +8,7 @@ import { RoadObjectService } from '../marking-line/road-object.service';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
+import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 
 const PARKING_WIDTH = 2.5;
 const PARKING_HEIGHT = 4.0;
@@ -187,9 +188,226 @@ export class ParkingRoadToolService {
 
 		roadObject.addMarkingObject( rightMarking );
 
+		// const outline = this.roadObjectService.createOutline( roadObject );
+		// this.createStripedMarking( roadObject, outline );
+		// this.createDiagonalMarking( roadObject, outline );
+		// roadObject.outlines.push( outline );
+
 		return roadObject;
 
 	}
+
+	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ) {
+
+		const numStripes = Math.floor( roadObject.length / ( gapLength ) );
+
+		let currentV = -roadObject.length / 2;
+
+		for ( let i = 0; i < numStripes; i++ ) {
+
+			const stripe = this.roadObjectService.createMarking();
+			stripe.side = TvSide.NONE;
+			stripe.lineLength = 0.5;
+
+			// Each stripe is a rectangle defined by two corner points (start and end)
+			const leftU = -roadObject.width / 2;
+			const leftV = currentV;
+
+			const rightU = roadObject.width / 2;
+			const rightV = currentV + stripeOffset;
+
+			const corner1 = this.roadObjectService.pushCornerLocal( outline, leftU, leftV );
+			const corner2 = this.roadObjectService.pushCornerLocal( outline, rightU, rightV );
+
+			stripe.cornerReferences.push( corner1.attr_id );
+			stripe.cornerReferences.push( corner2.attr_id );
+
+			roadObject.addMarkingObject( stripe );
+
+			// Move the current position to the end of the gap after the stripe
+			currentV += gapLength;
+		}
+
+	}
+
+	// createDiagonalMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeWidth = 0.3, gap = 0.3 ) {
+
+	// 	// NOT WORKING
+
+	// 	const width = roadObject.width;
+	// 	const height = roadObject.length;
+
+	// 	// Calculate the number of lines based on the diagonal distance and the gap
+	// 	const diagonalDistance = Math.sqrt( width * width + height * height );
+	// 	const numberOfLines = Math.floor( diagonalDistance / gap );
+
+	// 	const topLeft = new THREE.Vector3( -width / 2, height / 2, 0 );
+	// 	const topRight = new THREE.Vector3( width / 2, height / 2, 0 );
+	// 	const bottomLeft = new THREE.Vector3( -width / 2, -height / 2, 0 );
+	// 	const bottomRight = new THREE.Vector3( width / 2, -height / 2, 0 );
+
+	// 	// Function to interpolate between two points
+	// 	function interpolate ( start: Vector3, end: Vector3, t: number ) {
+
+	// 		return start.clone().lerp( end, t );
+
+	// 	}
+
+	// 	// Function to create and add a line to the scene
+	// 	const addLine = ( marking, start, end ) => {
+
+	// 		const corner1 = this.roadObjectService.pushCornerLocal( outline, start.x, start.y );
+	// 		const corner2 = this.roadObjectService.pushCornerLocal( outline, end.x, end.y );
+
+	// 		marking.cornerReferences.push( corner1.attr_id );
+	// 		marking.cornerReferences.push( corner2.attr_id );
+
+	// 	}
+
+	// 	// Create the diagonal lines
+	// 	for ( let i = 0; i <= numberOfLines; i++ ) {
+
+	// 		const marking = this.roadObjectService.createMarking();
+	// 		marking.side = TvSide.NONE;
+	// 		marking.lineLength = 0.5;
+
+	// 		const offset = gap * i;
+
+	// 		// Calculate the offsets for both sets of lines
+	// 		let startOffset = offset / height;
+	// 		let endOffset = offset / width;
+
+	// 		// Make sure we don't exceed 1 in our interpolations
+	// 		if ( startOffset > 1 ) {
+	// 			startOffset = 1;
+	// 		}
+	// 		if ( endOffset > 1 ) {
+	// 			endOffset = 1;
+	// 		}
+
+	// 		// Create lines from top left to bottom right
+	// 		let start = interpolate( topLeft, bottomLeft, startOffset );
+	// 		let end = interpolate( topRight, bottomRight, endOffset );
+	// 		addLine( marking, start, end );
+
+	// 		// Create lines from top right to bottom left
+	// 		start = interpolate( topRight, bottomLeft, startOffset );
+	// 		end = interpolate( topLeft, bottomRight, endOffset );
+	// 		addLine( marking, start, end );
+
+	// 		roadObject.addMarkingObject( marking );
+	// 	}
+	// }
+
+	// createDiagonalMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ) {
+
+	// 	const stripeWidth = 0.3, stripeSpacing = 0.3;
+
+	// 	/// Assuming roadObject.length and roadObject.width are the dimensions of the area to be marked
+	// 	const length = roadObject.length;
+	// 	const width = roadObject.width;
+
+	// 	let currentV = -roadObject.length / 2;
+
+	// 	// Create stripes slanting from left to right
+	// 	while ( currentV < ( roadObject.length / 2 ) ) {
+
+	// 		const marking = this.roadObjectService.createMarking();
+	// 		marking.side = TvSide.NONE;
+	// 		marking.lineLength = 0.5;
+
+	// 		const left = { u: -width / 2, v: currentV };
+	// 		const right = { u: width / 2, v: currentV + width };
+
+	// 		// Push corners for the start and end of this stripe
+	// 		const corner1 = this.roadObjectService.pushCornerLocal( outline, left.u, left.v );
+	// 		const corner2 = this.roadObjectService.pushCornerLocal( outline, right.u, right.v );
+
+	// 		marking.cornerReferences.push( corner1.attr_id );
+	// 		marking.cornerReferences.push( corner2.attr_id );
+
+	// 		roadObject.addMarkingObject( marking );
+
+	// 		// Increment the currentV position by the stripe width plus spacing
+	// 		currentV += stripeWidth + stripeSpacing;
+	// 	}
+
+	// 	currentV = -roadObject.length / 2;
+
+	// 	// Create stripes slanting from right to left
+	// 	while ( currentV < ( roadObject.length / 2 ) ) {
+
+	// 		const marking = this.roadObjectService.createMarking();
+	// 		marking.side = TvSide.NONE;
+	// 		marking.lineLength = 0.5;
+
+	// 		const right = { u: width / 2, v: currentV };
+	// 		const left = { u: -width / 2, v: currentV + width };
+
+	// 		// Push corners for the start and end of this stripe
+	// 		const corner1 = this.roadObjectService.pushCornerLocal( outline, right.u, right.v );
+	// 		const corner2 = this.roadObjectService.pushCornerLocal( outline, left.u, left.v );
+
+	// 		marking.cornerReferences.push( corner1.attr_id );
+	// 		marking.cornerReferences.push( corner2.attr_id );
+
+	// 		roadObject.addMarkingObject( marking );
+
+	// 		// Increment the currentV position by the stripe width plus spacing
+	// 		currentV += stripeWidth + stripeSpacing;
+	// 	}
+
+	// }
+
+	// createDiagonalMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeWidth = 0.3, gapLength = 0.3 ) {
+
+	// 	// Define the number of stripes based on the road object's width and length
+	// 	const numStripes = Math.ceil( ( roadObject.length + roadObject.width ) / ( stripeWidth + gapLength ) );
+
+	// 	// Create diagonal stripes slanting from left to right
+	// 	for ( let i = 0; i < numStripes; i++ ) {
+
+	// 		// Calculate the start and end positions of each stripe
+	// 		let startPos = -roadObject.length / 2 + i * ( stripeWidth + gapLength );
+	// 		let endPos = startPos + roadObject.length;
+
+	// 		// Ensure the start and end positions are within the road object's boundaries
+	// 		startPos = Math.max( startPos, -roadObject.length / 2 );
+	// 		endPos = Math.min( endPos, roadObject.length / 2 );
+
+	// 		// Create the marking and add it to the road object
+	// 		const marking = this.roadObjectService.createMarking();
+	// 		marking.side = TvSide.NONE;
+
+	// 		const corner1 = this.roadObjectService.pushCornerLocal( outline, -roadObject.width / 2, startPos );
+	// 		const corner2 = this.roadObjectService.pushCornerLocal( outline, roadObject.width / 2, endPos );
+	// 		marking.cornerReferences.push( corner1.attr_id, corner2.attr_id );
+
+	// 		roadObject.addMarkingObject( marking );
+	// 	}
+
+	// 	// Create diagonal stripes slanting from right to left
+	// 	for ( let i = 0; i < numStripes; i++ ) {
+
+	// 		// Calculate the start and end positions of each stripe
+	// 		let startPos = -roadObject.length / 2 + i * ( stripeWidth + gapLength );
+	// 		let endPos = startPos + roadObject.length;
+
+	// 		// Ensure the start and end positions are within the road object's boundaries
+	// 		startPos = Math.max( startPos, -roadObject.length / 2 );
+	// 		endPos = Math.min( endPos, roadObject.length / 2 );
+
+	// 		// Create the marking and add it to the road object
+	// 		const marking = this.roadObjectService.createMarking();
+	// 		marking.side = TvSide.NONE;
+
+	// 		const corner1 = this.roadObjectService.pushCornerLocal( outline, roadObject.width / 2, startPos );
+	// 		const corner2 = this.roadObjectService.pushCornerLocal( outline, -roadObject.width / 2, endPos );
+	// 		marking.cornerReferences.push( corner1.attr_id, corner2.attr_id );
+
+	// 		roadObject.addMarkingObject( marking );
+	// 	}
+	// }
 
 	createRectangularParkingLot ( start: Vector3, end: Vector3 ) {
 

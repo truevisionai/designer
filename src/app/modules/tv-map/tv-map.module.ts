@@ -24,7 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from 'app/core/core.module';
 import { SharedModule } from 'app/views/shared/shared.module';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
-import { CrosswalkInspectorComponent } from 'app/views/inspectors/crosswalk-inspector/crosswalk-inspector.component';
 import {
 	DynamicArrayInspectorComponent,
 	DynamicFileInspectorComponent,
@@ -83,7 +82,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		RoadControlPointInspector,
 		JunctionEntryInspector,
 		RoadStyleInspector,
-		CrosswalkInspectorComponent,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,
@@ -147,7 +145,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		JunctionEntryInspector,
 		ObjectPreviewComponent,
 		RoadStyleInspector,
-		CrosswalkInspectorComponent,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
 		GeometryInspectorComponent,

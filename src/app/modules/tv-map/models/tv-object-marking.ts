@@ -2,16 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 import { TvCornerRoad } from "./objects/tv-corner-road";
-import { SerializedField } from 'app/core/components/serialization';
 import { MeshBasicMaterial } from 'three';
 
 export class TvObjectMarking {
 
-	@SerializedField( { type: 'float' } )
 	get width (): number {
 		return this._width;
 	}
@@ -20,7 +16,6 @@ export class TvObjectMarking {
 		this._width = value;
 	}
 
-	@SerializedField( { type: 'float' } )
 	get zOffset (): number {
 		return this._zOffset;
 	}
@@ -29,7 +24,6 @@ export class TvObjectMarking {
 		this._zOffset = value;
 	}
 
-	@SerializedField( { type: 'float' } )
 	get stopOffset (): number {
 		return this._stopOffset;
 	}
@@ -38,7 +32,6 @@ export class TvObjectMarking {
 		this._stopOffset = value;
 	}
 
-	@SerializedField( { type: 'float' } )
 	get startOffset (): number {
 		return this._startOffset;
 	}
@@ -47,20 +40,44 @@ export class TvObjectMarking {
 		this._startOffset = value;
 	}
 
-	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
 	get weight (): TvRoadMarkWeights {
 		return this._weight;
 	}
+
 	set weight ( value: TvRoadMarkWeights ) {
 		this._weight = value;
 	}
 
-	@SerializedField( { type: 'float' } )
+	get side (): TvSide {
+		return this._side;
+	}
+
+	set side ( value: TvSide ) {
+		this._side = value;
+	}
+
 	get lineLength (): number {
 		return this._lineLength;
 	}
+
 	set lineLength ( value: number ) {
 		this._lineLength = value;
+	}
+
+	get spaceLength (): number {
+		return this._spaceLength;
+	}
+
+	set spaceLength ( value: number ) {
+		this._spaceLength = value;
+	}
+
+	get color (): TvColors {
+		return this._color;
+	}
+
+	set color ( value: TvColors ) {
+		this._color = value;
 	}
 
 	get material (): THREE.MeshBasicMaterial {
@@ -71,39 +88,15 @@ export class TvObjectMarking {
 		this._material = value;
 	}
 
-	@SerializedField( { type: 'float' } )
-	get spaceLength (): number {
-		return this._spaceLength;
-	}
-
-	set spaceLength ( value: number ) {
-		this._spaceLength = value;
-	}
-
-	@SerializedField( { type: 'enum', enum: TvColors } )
-	get color (): TvColors {
-		return this._color;
-	}
-
-	set color ( value: TvColors ) {
-		this._color = value;
-		this._material?.color.set( COLOR.stringToColor( value ) );
-		this._material.needsUpdate = true;
-	}
-
-	@SerializedField( { type: 'material' } )
 	get materialGuid (): string {
 		return this._materialGuid;
 	}
 
 	set materialGuid ( value: string ) {
 		this._materialGuid = value;
-		this._material = AssetDatabase.getInstance( value );
-		this._material.needsUpdate = true;
 	}
 
 	private _material: THREE.MeshBasicMaterial;
-
 	private _materialGuid: string;
 
 	/**
@@ -125,7 +118,7 @@ export class TvObjectMarking {
 		private _color: TvColors = TvColors.WHITE,
 		private _spaceLength: number = 0.3,
 		private _lineLength: number = 0.3,
-		public side: TvSide = TvSide.FRONT,
+		private _side: TvSide = TvSide.NONE,
 		private _weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
 		private _startOffset: number = 0,
 		private _stopOffset: number = 0,

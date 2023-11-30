@@ -23,7 +23,7 @@ import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
-import { MarkingObjectInspectorData } from 'app/modules/tv-map/models/objects/crosswalk';
+import { MarkingObjectInspectorData } from 'app/modules/tv-map/models/objects/marking-object-inspector-data';
 
 export class CrosswalkTool extends BaseTool {
 
@@ -352,7 +352,11 @@ export class CrosswalkTool extends BaseTool {
 
 	onCrosswalkSelected ( roadObject: TvRoadObject ) {
 
-		AppInspector.setInspector( DynamicInspectorComponent, new MarkingObjectInspectorData( roadObject ) );
+		const marking = roadObject.markings[ 0 ];
+
+		if ( !marking ) return;
+
+		AppInspector.setInspector( DynamicInspectorComponent, new MarkingObjectInspectorData( roadObject, marking ) );
 
 		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
 

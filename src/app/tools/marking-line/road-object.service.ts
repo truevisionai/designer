@@ -12,6 +12,8 @@ import { RoadSignalService } from 'app/services/signal/road-signal.service';
 import { ObjectTypes, TvColors, TvRoadMarkWeights, TvSide } from 'app/modules/tv-map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
 import { MarkingObjectBuilder } from 'app/factories/marking-object.builder';
+import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
+import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,7 +42,7 @@ export class RoadObjectService {
 
 	createMarking () {
 
-		return new TvObjectMarking( TvColors.WHITE, 0.0, 1.0, TvSide.FRONT, TvRoadMarkWeights.STANDARD, 0, 0, 0.005, 0.1, [] );
+		return new TvObjectMarking( TvColors.WHITE, 0.0, 1.0, null, TvRoadMarkWeights.STANDARD, 0, 0, 0.005, 0.1, [] );
 
 	}
 
@@ -169,6 +171,52 @@ export class RoadObjectService {
 			} );
 
 		} );
+
+	}
+
+	pushCornerRoad ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz = 0.0 ) {
+
+		const cornerRoad = this.createCornerRoad( road, outline, s, t, height, dz );
+
+		outline.cornerRoad.push( cornerRoad );
+
+		return cornerRoad;
+
+	}
+
+	createCornerRoad ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz = 0.0 ) {
+
+		const id = outline.cornerLocal.length + outline.cornerRoad.length;
+
+		return new TvCornerRoad( id, road, s, t, dz, height );
+
+	}
+
+	createCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
+
+		const id = outline.cornerLocal.length + outline.cornerRoad.length;
+
+		return new TvCornerLocal( id, u, v, z, height );
+
+	}
+
+	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
+
+		const cornerLocal = this.createCornerLocal( outline, u, v, z, height );
+
+		outline.cornerLocal.push( cornerLocal );
+
+		return cornerLocal;
+
+	}
+
+	createOutline ( roadObject: TvRoadObject ): TvObjectOutline {
+
+		const outline = new TvObjectOutline();
+
+		outline.id = roadObject.outlines.length;
+
+		return outline;
 
 	}
 

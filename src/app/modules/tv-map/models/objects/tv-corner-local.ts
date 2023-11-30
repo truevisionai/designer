@@ -4,10 +4,21 @@
  * of the <object> entry.
  */
 export class TvCornerLocal {
-	public attr_u: number;
-	public attr_v: number;
-	public attr_z: number;
 
-	// height of the object at this corner
-	public attr_height: number;
+	/**
+	 *
+	 * @param attr_id ID of the outline point. Shall be unique within one outline.
+	 * @param attr_u Local u-coordinate of the corner
+	 * @param attr_v Local v-coordinate of the corner
+	 * @param attr_z Local z-coordinate of the corner
+	 * @param attr_height Height of the object at this corner, along the z-axis
+	 */
+	constructor (
+		public attr_id: number,
+		public attr_u: number,
+		public attr_v: number,
+		public attr_z: number = 0,
+		public attr_height: number = 0,
+	) {
+	}
 }

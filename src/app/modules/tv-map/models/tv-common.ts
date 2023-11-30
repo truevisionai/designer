@@ -157,6 +157,7 @@ export enum TvSide {
 	FRONT = 'front',
 	REAR = 'rear',
 	ON_LINE = 'neither', // when points is not left/right of line but on line
+	NONE = 'none',
 }
 
 export enum TvContactPoint {

@@ -103,10 +103,10 @@ export class TextMarkingTool extends BaseTool {
 
 			if ( position instanceof RoadPosition ) {
 
-				this.signal.s = position.s;
-				this.signal.t = position.t;
+				// this.signal.s = position.s;
+				// this.signal.t = position.t;
 
-				this.tool.updateSignalPosition( this.signal );
+				// this.tool.updateSignalPosition( this.signal );
 
 			}
 
