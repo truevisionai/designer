@@ -25,6 +25,7 @@ class IToolMenu {
 	toolType: ToolType;
 	action: string;
 	icon: string;
+	icon2?: string;
 	title?: string;
 	description?: string;
 	track: string;
@@ -62,6 +63,20 @@ export class ToolBarComponent implements OnInit {
 			tooltip: 'Pointer Tool',
 			click: () => this.setToolType( ToolType.Pointer ),
 			enabled: true,
+		},
+		{
+			id: 'showMeasurementTool',
+			label: 'Measurement',
+			class: 'toolbar-button border-right',
+			toolType: ToolType.MeasurementTool,
+			action: 'Measurement-tool',
+			icon: 'straighten',
+			title: 'Measurement Tool',
+			description: 'Measurement tool is used to measure the distance between two points in the scene',
+			track: 'menu',
+			tooltip: 'Measurement Tool',
+			click: () => this.setToolType( ToolType.MeasurementTool ),
+			enabled: !Environment.production,
 		},
 		{
 			id: 'showRoadTool',
@@ -269,17 +284,47 @@ export class ToolBarComponent implements OnInit {
 			enabled: !Environment.production,
 		},
 		{
-			id: 'showParkingTool',
+			id: 'showTextMarkingTool',
+			label: 'Text Marking',
+			class: 'toolbar-button',
+			toolType: ToolType.TextMarkingTool,
+			action: 'text-marking-tool',
+			icon: 'text_fields', // format_color_text, text_fields
+			title: 'Text Marking Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Text Marking Tool',
+			click: () => this.setToolType( ToolType.TextMarkingTool ),
+			enabled: !Environment.production,
+		},
+		{
+			id: 'showParkingRoadTool',
 			label: 'Parking Road',
 			class: 'toolbar-button',
 			toolType: ToolType.ParkingRoad,
-			action: 'parking-tool',
+			action: 'parking-road-tool',
 			icon: 'local_parking',
+			icon2: 'timeline',
 			title: 'Parking Road Tool',
 			description: '',
 			track: 'button',
 			tooltip: 'Parking Road Tool',
 			click: () => this.setToolType( ToolType.ParkingRoad ),
+			enabled: !Environment.production,
+		},
+		{
+			id: 'showParkingLotTool',
+			label: 'Parking Lot',
+			class: 'toolbar-button',
+			toolType: ToolType.ParkingLot,
+			action: 'parking-lot-tool',
+			icon: 'local_parking',
+			icon2: 'square',
+			title: 'Parking Lot Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Parking Lot Tool',
+			click: () => this.setToolType( ToolType.ParkingLot ),
 			enabled: !Environment.production,
 		},
 		{

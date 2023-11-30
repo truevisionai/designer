@@ -1,21 +1,36 @@
+import { TvLane } from "../tv-lane";
+
 export class TvObjectRepeat {
 
-	public attr_s: number;
-	public attr_length: number;
-	public attr_distance: number;
-	public attr_tStart: number;
-	public attr_tEnd: number;
-	public attr_widthStart: number;
-	public attr_widthEnd: number;
-	public attr_heightStart: number;
-	public attr_heightEnd: number;
-	public attr_zOffsetStart: number;
-	public attr_zOffsetEnd: number;
+	private attr_s: number;
+	private attr_length: number;
+	private attr_distance: number;
+	private attr_tStart: number;
+	private attr_tEnd: number;
+	private attr_widthStart: number;
+	private attr_widthEnd: number;
+	private attr_heightStart: number;
+	private attr_heightEnd: number;
+	private attr_zOffsetStart: number;
+	private attr_zOffsetEnd: number;
+	private attr_lengthStart: number;
+	private attr_lengthEnd: number;
 
-	constructor ( s: number, length: number, distance: number, tStart: number, tEnd: number,
-		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-		zOffsetStart: number, zOffsetEnd: number ) {
+	public targetLane: TvLane;
 
+	constructor (
+		s: number,
+		length: number,
+		distance: number,
+		tStart?: number,
+		tEnd?: number,
+		widthStart?: number,
+		widthEnd?: number,
+		heightStart?: number,
+		heightEnd?: number,
+		zOffsetStart?: number,
+		zOffsetEnd?: number
+	) {
 		this.attr_s = s;
 		this.attr_length = length;
 		this.attr_distance = distance;
@@ -27,7 +42,6 @@ export class TvObjectRepeat {
 		this.attr_heightEnd = heightEnd;
 		this.attr_zOffsetStart = zOffsetStart;
 		this.attr_zOffsetEnd = zOffsetEnd;
-
 	}
 
 	get s (): number {
@@ -116,5 +130,21 @@ export class TvObjectRepeat {
 
 	set zOffsetEnd ( value: number ) {
 		this.attr_zOffsetEnd = value;
+	}
+
+	get lengthStart (): number {
+		return this.attr_lengthStart;
+	}
+
+	set lengthStart ( value: number ) {
+		this.attr_lengthStart = value;
+	}
+
+	get lengthEnd (): number {
+		return this.attr_lengthEnd;
+	}
+
+	set lengthEnd ( value: number ) {
+		this.attr_lengthEnd = value;
 	}
 }

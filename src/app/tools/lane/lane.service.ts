@@ -11,6 +11,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapEvents } from 'app/events/map-events';
 import { BaseService } from 'app/services/base.service';
 import { TvLaneType } from 'app/modules/tv-map/models/tv-common';
+import { ParkingRoadToolService } from '../parking/parking-road-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +24,7 @@ export class LaneService {
 		public base: BaseToolService,
 		private laneReferenceLine: LaneReferenceLineService,
 		private baseService: BaseService,
+		private parkingRoadToolService: ParkingRoadToolService,
 	) { }
 
 	showRoad ( road: TvRoad ) {
@@ -104,9 +106,20 @@ export class LaneService {
 
 	}
 
-	updateLaneByType ( lane: TvLane, type: TvLaneType ) {
+	onLaneUpdated ( lane: TvLane ) {
 
-		if ( type == TvLaneType.sidewalk || type == TvLaneType.curb ) {
+		if ( lane.type == TvLaneType.parking ) {
+
+			this.parkingRoadToolService.removeRepeatedParkingObject( lane.laneSection.road, lane );
+			this.parkingRoadToolService.addRepeatedParkingObject( lane.laneSection.road, lane );
+
+		} else {
+
+			this.parkingRoadToolService.removeRepeatedParkingObject( lane.laneSection.road, lane );
+
+		}
+
+		if ( lane.type == TvLaneType.sidewalk || lane.type == TvLaneType.curb ) {
 
 			if ( lane.getLaneHeightCount() == 0 ) {
 

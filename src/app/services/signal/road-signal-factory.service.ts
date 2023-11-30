@@ -3,8 +3,10 @@ import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { CircleGeometry, CylinderGeometry, FrontSide, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, TextureLoader } from 'three';
+import { CircleGeometry, CylinderGeometry, FrontSide, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, TextureLoader, Vector3 } from 'three';
 import { ApiService } from '../api.service';
+import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TextObjectService } from 'app/tools/marking-point/text-object.service';
 
 const signDB = [
 	{
@@ -24,13 +26,20 @@ const signDB = [
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadSignalFactory {
+export class RoadSignalBuilder {
 
 	constructor (
-		private api: ApiService
+		private api: ApiService,
+		private textService: TextObjectService,
 	) { }
 
-	createSignal ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+	buildSignal ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+
+		if ( signal.type === 'roadMark' ) {
+
+			return this.buildRoadMark( road, signal );
+
+		}
 
 		const poleWidth = 0.05;
 
@@ -44,7 +53,7 @@ export class RoadSignalFactory {
 
 		object.add( pole );
 
-		const sign = this.createSign( signal );
+		const sign = this.buildSign( signal );
 
 		sign.position.set( 0, 0, poleHeight );
 
@@ -56,7 +65,68 @@ export class RoadSignalFactory {
 
 	}
 
-	createSign ( signal: TvRoadSignal ): Object3D {
+	buildRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+
+		if ( signal.subtype === 'text' ) {
+
+			return this.buildTextRoadMark( road, signal );
+
+		}
+
+	}
+
+	buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+
+		const roadCoord = road.getPositionAt( signal.s, signal.t );
+
+		const textObject3d = this.textService.createTextObject( signal.text, signal.value );
+
+		textObject3d.position.copy( roadCoord.position );
+
+		textObject3d.position.z += signal.zOffset;
+
+		textObject3d.rotation.x = signal.pitch;
+
+		textObject3d.rotation.y = signal.roll;
+
+		let hdg: number;
+
+		if ( signal.orientations === TvOrientation.PLUS ) {
+
+			hdg = signal.hOffset + roadCoord.hdg - Maths.M_PI_2;
+
+		} else if ( signal.orientations === TvOrientation.MINUS ) {
+
+			hdg = signal.hOffset + roadCoord.hdg + Maths.M_PI_2;
+
+		} else {
+
+			hdg = roadCoord.hdg;
+
+		}
+
+		textObject3d.rotation.z = hdg;
+
+		try {
+
+			const measure = new Vector3();
+
+			textObject3d.geometry.boundingBox.getSize( measure )
+
+			signal.width = measure.x;
+
+			signal.height = measure.y;
+
+		} catch ( error ) {
+
+			console.error( error );
+
+		}
+
+		return textObject3d;
+	}
+
+	buildSign ( signal: TvRoadSignal ): Object3D {
 
 		const geometry = this.getSignGeometry( signal );
 

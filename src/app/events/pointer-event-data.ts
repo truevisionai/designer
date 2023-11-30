@@ -33,6 +33,7 @@ export class PointerEventData extends BaseEventData {
 	camera?: Camera;
 	mouse?: Vector2;
 	mouseEvent?: MouseEvent;
+	mouseDelta?: Vector2;
 
 	constructor ( partialData: Partial<PointerEventData> = {} ) {
 		super();
@@ -49,6 +50,7 @@ export class PointerEventData extends BaseEventData {
 		this.camera = partialData.camera;
 		this.mouse = partialData.mouse;
 		this.mouseEvent = partialData.mouseEvent;
+		this.mouseDelta = partialData.mouseDelta;
 	}
 }
 

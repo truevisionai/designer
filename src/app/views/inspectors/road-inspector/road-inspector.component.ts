@@ -17,6 +17,8 @@ import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-cont
 import { DialogService } from 'app/services/dialog/dialog.service';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { AssetService } from 'app/core/asset/asset.service';
+import { RoadService } from 'app/services/road/road.service';
+import { AddObjectCommand } from 'app/commands/add-object-command';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -36,6 +38,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 	constructor (
 		private dialogService: DialogService,
 		private assetService: AssetService,
+		private roadService: RoadService,
 	) {
 		super();
 	}
@@ -95,6 +98,12 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 		this.assetService.createRoadStyleAsset( saved.directory, this.road, saved.filename );
 
 		console.log( 'exporting road style to: ' + saved.filePath );
+
+	}
+
+	async duplicateRoad () {
+
+		this.roadService.duplicateRoad( this.road );
 
 	}
 

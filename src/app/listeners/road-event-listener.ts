@@ -5,6 +5,7 @@ import { RoadService } from "app/services/road/road.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
 import { MapService } from "../services/map.service";
+import { LaneService } from "app/tools/lane/lane.service";
 
 export class RoadEventListener extends Manager {
 
@@ -15,6 +16,7 @@ export class RoadEventListener extends Manager {
 		private roadSplineService: RoadSplineService,
 		private roadLinkService: RoadLinkService,
 		private mapService: MapService,
+		private laneService: LaneService
 	) {
 
 		super();

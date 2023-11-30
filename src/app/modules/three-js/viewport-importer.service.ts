@@ -26,6 +26,7 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from '../../commands/set-value-command';
 import { RoadStyle } from "../../core/asset/road.style";
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,6 +37,7 @@ export class ViewportImporterService {
 		private assetService: AssetLoaderService,
 		private importerService: ImporterService,
 		private mainFileService: TvSceneFileService,
+		private roadService: RoadService,
 	) {
 	}
 
@@ -180,6 +182,8 @@ export class ViewportImporterService {
 		if ( !road ) return;
 
 		const roadStyle = AssetDatabase.getInstance<RoadStyle>( metadata.guid );
+
+		if ( !roadStyle ) return;
 
 		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', roadStyle.clone( null ), road.roadStyle.clone( null ) ) );
 

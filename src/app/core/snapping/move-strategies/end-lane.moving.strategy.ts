@@ -22,4 +22,21 @@ export class EndLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 }
 
+export class MidLaneMovingStrategy extends MovingStrategy<TvLane> {
+
+	getPosition ( event: PointerEventData, target: TvLane ): Position {
+
+		const posTheta = target.laneSection.road.getCoordAt( event.point );
+
+		const s = posTheta.s - target.laneSection.s;
+
+		// console.log( posTheta, s );
+		const position = target.laneSection.road.getLaneCenterPosition( target, s );
+
+		// return new LanePositionv2( lane.laneSection.road, lane, s );
+		return new WorldPosition( new Vector3( position.x, position.y, position.z ) );
+	}
+
+}
+
 

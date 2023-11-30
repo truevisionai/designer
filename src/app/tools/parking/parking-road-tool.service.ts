@@ -9,6 +9,9 @@ import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 
+const PARKING_WIDTH = 2.5;
+const PARKING_HEIGHT = 4.0;
+
 /**
 
 When designing a parking lot, it's essential to be aware of typical dimensions
@@ -115,15 +118,37 @@ export class ParkingRoadToolService {
 
 		road.getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 
-			for ( let s = 2.5; s < road.length; s += 2.5 ) {
-
-				const roadObject = this.createParkingSpace( road, lane, s );
-
-				this.roadObjectService.addRoadObject( road, roadObject );
-
-			}
+			this.addRepeatedParkingObject( road, lane );
 
 		} );
+	}
+
+	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+
+		const s = PARKING_WIDTH * 0.5;
+
+		const roadObject = this.createParkingSpace( road, lane, s );
+
+		const repeatLength = road.length - s;
+
+		const distance = roadObject.width;
+
+		roadObject.addLaneRepeat( lane, s, repeatLength, distance );
+
+		this.roadObjectService.addRoadObject( road, roadObject );
+
+	}
+
+	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+
+		road.objects.object
+			.filter( roadObject => roadObject.getRepeatList().find( repeat => repeat.targetLane == lane ) )
+			.forEach( roadObject => {
+
+				this.roadObjectService.removeRoadObject( road, roadObject );
+
+			} );
+
 	}
 
 	removeRoad ( object: TvRoad ) {
@@ -142,11 +167,11 @@ export class ParkingRoadToolService {
 
 		const roadObject = this.roadObjectService.createRoadObject( road, ObjectTypes.parkingSpace, s, t );
 
-		roadObject.width = 2.5;
+		roadObject.width = PARKING_WIDTH;
 
 		roadObject.length = laneWidth;
 
-		roadObject.height = 4.0;
+		roadObject.height = PARKING_HEIGHT;
 
 		roadObject.hdg = Math.PI / 2;
 
@@ -163,9 +188,10 @@ export class ParkingRoadToolService {
 		roadObject.addMarkingObject( rightMarking );
 
 		return roadObject;
+
 	}
 
-	createParkingLot ( start: Vector3, end: Vector3 ) {
+	createRectangularParkingLot ( start: Vector3, end: Vector3 ) {
 
 		// Calculate width and height
 		var width = Math.abs( start.x - end.x );
@@ -175,22 +201,6 @@ export class ParkingRoadToolService {
 		var centerX = ( start.x + end.x ) / 2;
 		var centerY = ( start.y + end.y ) / 2;
 		var centerZ = ( start.z + end.z ) / 2;
-
-		// // Create geometry
-		// var geometry = new THREE.PlaneGeometry( width, height );
-
-		// // Create material
-		// var material = new THREE.MeshStandardMaterial( {
-		// 	map: OdTextures.terrain(),
-		// } );;
-
-		// // Create mesh
-		// var mesh = new THREE.Mesh( geometry, material );
-
-		// // Set position
-		// mesh.position.set( centerX, centerY, centerZ - 0.1 );
-
-		// SceneService.addToolObject( mesh );
 
 		// Calculate points C and D
 		var topLeft = new THREE.Vector3( centerX - width / 2, centerY + height / 2, centerZ );

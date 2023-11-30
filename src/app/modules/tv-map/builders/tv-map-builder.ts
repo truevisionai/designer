@@ -92,7 +92,7 @@ export class TvMapBuilder {
 
 	static buildRoadSignals ( road: TvRoad ) {
 
-		RoadSignalService.instance.createSignals( road );
+		RoadSignalService.instance.buildSignals( road );
 
 	}
 
@@ -251,8 +251,12 @@ export class TvMapBuilder {
 				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
 				break;
 
+			case TvLaneType.parking:
+				guid = lane.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
 			default:
-				guid = null;
+				guid = drivingMaterialGuid;
 				break;
 
 		}

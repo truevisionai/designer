@@ -39,7 +39,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild( 'viewHelper' ) viewHelperRef: ElementRef;
 
 	raycaster = new THREE.Raycaster;
-	mouse: THREE.Vector2 = new THREE.Vector2();
+
+	currentMousePosition: THREE.Vector2 = new THREE.Vector2();
+	prevMousePosition: THREE.Vector2 = new THREE.Vector2();
+	mouseDelta: THREE.Vector2 = new THREE.Vector2();
+
 	clock = new THREE.Clock();
 	private animationId: number;
 	private renderer: WebGLRenderer;
@@ -302,7 +306,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.updateMousePosition( event );
 
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+		this.raycaster.setFromCamera( this.currentMousePosition, this.threeService.camera );
 
 		this.intersections = this.raycaster.intersectObjects( SceneService.raycastableObjects(), true );
 
@@ -486,7 +490,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.uv = i.uv;
 			p.intersections = this.intersections;
 			p.camera = this.threeService.camera;
-			p.mouse = this.mouse;
+			p.mouse = this.currentMousePosition;
+			p.mouseDelta = this.mouseDelta;
 			p.mouseEvent = $event;
 
 			p.approxCameraDistance = this.calculateCameraDistance( i );
@@ -495,7 +500,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			p.intersections = [];												// intersection are empty
 			p.camera = this.threeService.camera;
-			p.mouse = this.mouse;
+			p.mouse = this.currentMousePosition;
+			p.mouseDelta = this.mouseDelta;
 			p.approxCameraDistance = 100;
 
 		}
@@ -569,14 +575,20 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	updateMousePosition ( $event: MouseEvent ) {
 
-		this.mouse.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
-		this.mouse.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+		this.currentMousePosition.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
+		this.currentMousePosition.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+
+		this.mouseDelta.x = this.currentMousePosition.x - this.prevMousePosition.x;
+		this.mouseDelta.y = this.currentMousePosition.y - this.prevMousePosition.y;
+
+		this.prevMousePosition.x = this.currentMousePosition.x;
+		this.prevMousePosition.y = this.currentMousePosition.y;
 
 	}
 
 	getIntersections ( event: MouseEvent, recursive: boolean = true ): THREE.Intersection[] {
 
-		this.raycaster.setFromCamera( this.mouse, this.threeService.camera );
+		this.raycaster.setFromCamera( this.currentMousePosition, this.threeService.camera );
 
 		this.raycaster.layers.set( 0 );  // default layer
 

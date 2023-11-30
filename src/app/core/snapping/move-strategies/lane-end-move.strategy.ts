@@ -11,38 +11,38 @@ import { MovingStrategy } from './move-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/modules/scenario/models/position';
 
-export class LaneEndMoveStrategy extends MovingStrategy {
+// export class LaneEndMoveStrategy extends MovingStrategy {
 
-	constructor ( private lane: TvLane, private sValues: IHasSCoord[] = [] ) {
-		super();
-	}
+// 	constructor ( private lane: TvLane, private sValues: IHasSCoord[] = [] ) {
+// 		super();
+// 	}
 
-	getPosTheta ( position: Vector3 ): TvPosTheta {
+// 	getPosTheta ( position: Vector3 ): TvPosTheta {
 
-		const posTheta = this.lane.laneSection.road.getCoordAt( position );
+// 		const posTheta = this.lane.laneSection.road.getCoordAt( position );
 
-		const s = posTheta.s - this.lane.laneSection.s;
+// 		const s = posTheta.s - this.lane.laneSection.s;
 
-		const laneEndPosition = this.getVector3( s );
+// 		const laneEndPosition = this.getVector3( s );
 
-		posTheta.x = laneEndPosition.x;
-		posTheta.y = laneEndPosition.y;
-		posTheta.z = laneEndPosition.z;
-		posTheta.s = s;
+// 		posTheta.x = laneEndPosition.x;
+// 		posTheta.y = laneEndPosition.y;
+// 		posTheta.z = laneEndPosition.z;
+// 		posTheta.s = s;
 
-		return posTheta;
-	}
+// 		return posTheta;
+// 	}
 
-	getVector3 ( s: number ): Vector3 {
+// 	getVector3 ( s: number ): Vector3 {
 
-		return TvMapQueries.getLaneEndPosition( this.lane.roadId, this.lane.id, s );
+// 		return TvMapQueries.getLaneEndPosition( this.lane.roadId, this.lane.id, s );
 
-	}
+// 	}
 
-	getPosition ( e: PointerEventData ): Position {
+// 	getPosition ( e: PointerEventData ): Position {
 
-		throw new Error( 'Method not implemented.' );
+// 		throw new Error( 'Method not implemented.' );
 
-	}
+// 	}
 
-}
+// }

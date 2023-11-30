@@ -16,6 +16,8 @@ import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvMapInstance } from "../../modules/tv-map/services/tv-map-instance";
 import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
+import { CommandHistory } from '../command-history';
+import { AddObjectCommand } from 'app/commands/add-object-command';
 
 @Injectable( {
 	providedIn: 'root'
@@ -42,9 +44,25 @@ export class RoadService {
 
 	}
 
+	getRoad ( roadId: number ) {
+
+		return this.mapService.map.getRoadById( roadId );
+
+	}
+
 	private getNextRoadId (): number {
 
 		return this.roadFactory.getNextRoadId();
+
+	}
+
+	clone ( road: TvRoad ) {
+
+		const clone = road.clone( 0 );
+
+		clone.id = this.getNextRoadId();
+
+		return clone;
 
 	}
 
@@ -353,7 +371,7 @@ export class RoadService {
 
 		this.roadSplineService.rebuildSplineRoads( road.spline );
 
-		this.updateRoadNodes( road );
+		// this.updateRoadNodes( road );
 	}
 
 	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {
@@ -377,6 +395,37 @@ export class RoadService {
 		this.roadSplineService.rebuildSplineRoads( road.spline );
 
 		this.mapService.map.gameObject.remove( road.gameObject );
+
+	}
+
+	duplicateRoad ( road: TvRoad ) {
+
+		const clone = this.clone( road );
+
+		const roadWidth = road.getRoadWidthAt( 0 );
+
+		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
+
+		CommandHistory.execute( new AddObjectCommand( clone ) );
+
+	}
+
+	shiftRoad ( road: TvRoad, x: number, y: number ) {
+
+		const posTheta = road.getStartCoord();
+
+		posTheta.rotateDegree( -90 );
+
+		const direction = posTheta.toDirectionVector();
+
+		direction.multiplyScalar( x );
+
+		road.spline.controlPoints.forEach( point => {
+
+			// move in direction of road
+			point.position.add( direction );
+
+		} );
 
 	}
 }

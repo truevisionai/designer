@@ -11,6 +11,7 @@ import { TvLaneValidity } from "./tv-lane-validity";
 import { TvObjectMaterial } from "./tv-object-material";
 import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
+import { TvLane } from '../tv-lane';
 
 export class TvRoadObject {
 
@@ -167,17 +168,47 @@ export class TvRoadObject {
 	}
 
 	addRepeat (
-		s: number, length: number, distance: number, tStart: number, tEnd: number,
-		widthStart: number, widthEnd: number, heightStart: number, heightEnd: number,
-		zOffsetStart: number, zOffsetEnd: number
-	): void {
+		s: number,
+		length: number,
+		distance: number,
+		tStart?: number, tEnd?: number,
+		widthStart?: number, widthEnd?: number,
+		heightStart?: number, heightEnd?: number,
+		zOffsetStart?: number, zOffsetEnd?: number
+	) {
 
-		this.repeat.push(
-			new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd )
-		);
+		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
+		this.addRepeatObject( object );
+
+		return object;
 	}
 
+	addLaneRepeat (
+		lane: TvLane,
+		s: number,
+		length: number,
+		distance: number,
+		tStart?: number, tEnd?: number,
+		widthStart?: number, widthEnd?: number,
+		heightStart?: number, heightEnd?: number,
+		zOffsetStart?: number, zOffsetEnd?: number
+	) {
+
+		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
+
+		object.targetLane = lane;
+
+		this.addRepeatObject( object );
+
+		return object;
+	}
+
+	addRepeatObject ( repeat: TvObjectRepeat ): void {
+
+		this.repeat.push( repeat );
+
+	}
 
 	addMarkingObject ( markingObject: TvObjectMarking ): void {
 		this._markings.push( markingObject );

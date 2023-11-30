@@ -102,11 +102,18 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 			this.onDeleteKeyDown();
 
+		} else if ( e.key === 'd' ) {
+
+			this.onDuplicateKeyDown();
+
 		}
 
 	}
 
 	onDeleteKeyDown () {
+	}
+
+	onDuplicateKeyDown () {
 	}
 
 	// onRoadCreated ( road: TvRoad ) { }

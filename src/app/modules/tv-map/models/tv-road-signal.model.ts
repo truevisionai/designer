@@ -2,14 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { GameObject } from 'app/core/game-object';
 import { Vector3 } from 'three';
 import { IMovable } from '../../../core/snapping/snap-strategies/snapping';
 import { SignShapeType } from '../services/tv-sign.service';
 import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
-import { AnyControlPoint } from "../../three-js/objects/any-control-point";
 import { TvRoad } from './tv-road.model';
 import { TvLaneValidity } from "./objects/tv-lane-validity";
+
+export enum TvSignalType {
+	RoadMark = 'roadMark',
+	Unknown = 'unknown',
+}
+
+export enum TvSignalSubType {
+	Text = 'text',
+	Unknown = 'unknown',
+}
 
 export class TvRoadSignal implements IMovable {
 
@@ -38,21 +46,40 @@ export class TvRoadSignal implements IMovable {
 	public signalReferences: TvSignalReference[] = [];
 	public roadId: number;
 
-	public controlPoint?: AnyControlPoint;
-
+	/**
+	 *
+	 * @param s
+	 * @param t
+	 * @param id
+	 * @param name
+	 * @param dynamic
+	 * @param orientation "+" = valid in positive s- direction, "-" = valid in negative s- direction, "none" = valid in both directions
+	 * @param zOffset z offset from the road to bottom edge of the signal. This represents the vertical clearance of the object. Relative to the reference line.
+	 * @param country
+	 * @param type Type identifier according to country code or "-1" / "none". See extra document.
+	 * @param subtype Subtype identifier according to country code or "-1" / "none"
+	 * @param value Value of the signal, if value is given, unit is mandatory
+	 * @param unit Unit of @value
+	 * @param height Height of the signal, measured from bottom edge of the signal
+	 * @param width Width of the signal
+	 * @param text Additional text associated with the signal, for example, text on city limit "City\nBadAibling"
+	 * @param hOffset Heading offset of the signal (relative to @orientation, if orientation is equal to “+” or “-“) Heading offset of the signal (relative to reference line, if orientation is equal to “none”
+	 * @param pitch
+	 * @param roll
+	 */
 	constructor (
 		s: number,
 		t: number,
 		id: number,
 		name: string,
-		dynamic: TvDynamicTypes,
-		orientation: TvOrientation,
+		dynamic?: TvDynamicTypes,
+		orientation?: TvOrientation,
 		zOffset?: number,
 		country?: string,
 		type?: string,
 		subtype?: string,
 		value?: number,
-		unit: TvUnit = null,
+		unit: TvUnit = TvUnit.NONE,
 		height: number = 0,
 		width: number = 0,
 		text: string = '',
@@ -73,7 +100,7 @@ export class TvRoadSignal implements IMovable {
 		this.country = country;
 		this.type = type;
 		this.subtype = subtype;
-		this.value = value;
+		this.value = value || 0;
 		this.unit = unit;
 		this.height = height;
 		this.width = width;
@@ -82,16 +109,6 @@ export class TvRoadSignal implements IMovable {
 		this.pitch = pitch;
 		this.roll = roll;
 
-	}
-
-	private _gameObject: GameObject;
-
-	get gameObject () {
-		return this._gameObject;
-	}
-
-	set gameObject ( value ) {
-		this._gameObject = value;
 	}
 
 	private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
@@ -164,8 +181,8 @@ export class TvRoadSignal implements IMovable {
 	}
 
 	move ( position: Vector3 ): void {
-		this.gameObject?.position.copy( position );
-		this.controlPoint?.position.copy( position );
+		// this.gameObject?.position.copy( position );
+		// this.controlPoint?.position.copy( position );
 	}
 }
 

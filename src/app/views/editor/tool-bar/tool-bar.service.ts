@@ -42,7 +42,11 @@ import { RoadRampService } from 'app/services/road/road-ramp.service';
 import { CrosswalkToolService } from "../../../tools/marking-line/crosswalk-tool.service";
 import { PropPolygonToolService } from "../../../tools/prop-polygon/prop-polygon-tool.service";
 import { ParkingRoadTool } from 'app/tools/parking/parking-road-tool';
+import { ParkingLotTool } from 'app/tools/parking/parking-lot.tool';
 import { ParkingRoadToolService } from 'app/tools/parking/parking-road-tool.service';
+import { MeasurementTool } from 'app/tools/pointer/measurement.tool';
+import { TextMarkingTool } from 'app/tools/marking-point/text-marking.tool';
+import { TextMarkingToolService } from 'app/tools/marking-point/text-marking-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -68,6 +72,7 @@ export class ToolBarService {
 		private roadRampService: RoadRampService,
 		private propPolygonToolService: PropPolygonToolService,
 		private parkingRoadToolService: ParkingRoadToolService,
+		private textMarkingToolService: TextMarkingToolService,
 	) {
 	}
 
@@ -106,12 +111,16 @@ export class ToolBarService {
 				return new LaneTool( this.laneService );
 			case ToolType.MarkingPoint:
 				return new MarkingPointTool();
+			case ToolType.TextMarkingTool:
+				return new TextMarkingTool( this.textMarkingToolService );
 			case ToolType.MarkingLine:
 				throw new Error( 'Invalid tool type' + type );
 			case ToolType.Crosswalk:
 				return new CrosswalkTool( this.crosswalkService );
 			case ToolType.Pointer:
 				return new PointerTool();
+			case ToolType.MeasurementTool:
+				return new MeasurementTool();
 			case ToolType.Vehicle:
 				return new VehicleTool();
 			case ToolType.RoadSignalTool:
@@ -124,6 +133,8 @@ export class ToolBarService {
 				return new RoadDividerTool( this.roadCutToolService );
 			case ToolType.ParkingRoad:
 				return new ParkingRoadTool( this.parkingRoadToolService );
+			case ToolType.ParkingLot:
+				return new ParkingLotTool( this.parkingRoadToolService );
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;

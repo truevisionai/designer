@@ -7,6 +7,9 @@ import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
+/**
+ * @deprecated use TextObjectService instead
+ */
 export class TextObject {
 
 	private static font: Font;
@@ -79,4 +82,14 @@ export class TextObject {
 
 		SceneService.addToolObject( this.textMesh );
 	}
+}
+
+export class TextObject3d extends THREE.Mesh {
+
+	constructor ( public text: string, public size: number, geometry: THREE.BufferGeometry, material: THREE.Material ) {
+
+		super( geometry, material );
+
+	}
+
 }

@@ -202,6 +202,18 @@ export class TvRoad {
 
 	}
 
+	hasSuccessor () {
+
+		return this.successor != null;
+
+	}
+
+	hasPredecessor () {
+
+		return this.predecessor != null;
+
+	}
+
 	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
 
 		if ( this.predecessor == null ) {
@@ -542,6 +554,12 @@ export class TvRoad {
 	getRoadSignalCount (): number {
 
 		return this._signals.size;
+
+	}
+
+	getRoadSignals (): TvRoadSignal[] {
+
+		return [ ...this._signals.values() ];
 
 	}
 
@@ -1115,7 +1133,16 @@ export class TvRoad {
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this, false ) );
+		this.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				MapEvents.laneUpdated.emit( lane );
+
+			} );
+
+		} )
+
 	}
 
 	get roadStyle (): RoadStyle {

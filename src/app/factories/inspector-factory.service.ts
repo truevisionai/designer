@@ -50,28 +50,28 @@ export class InspectorFactoryService {
 
 		if ( asset.type === AssetType.TEXTURE ) {
 
-			CommandHistory.execute( new SetInspectorCommand( TextureInspector, {
+			AppInspector.setInspector( TextureInspector, {
 				texture: instance,
 				guid: asset.metadata.guid
-			} ) );
+			} );
 
 		} else if ( asset.type === AssetType.MATERIAL ) {
 
-			CommandHistory.execute( new SetInspectorCommand( MaterialInspector, {
+			AppInspector.setInspector( MaterialInspector, {
 				material: instance,
 				guid: asset.metadata.guid
-			} ) );
+			} );
 
 		} else if ( asset.type === AssetType.ROAD_STYLE ) {
 
-			CommandHistory.execute( new SetInspectorCommand( RoadStyleInspector, {
+			AppInspector.setInspector( RoadStyleInspector, {
 				roadStyle: instance,
 				guid: asset.metadata.guid
-			} ) );
+			} );
 
 		} else {
 
-			CommandHistory.execute( new SetInspectorCommand( DynamicFileInspectorComponent, asset ) );
+			new SetInspectorCommand( DynamicFileInspectorComponent, asset ).execute();
 
 		}
 

@@ -94,7 +94,7 @@ export class LaneWidthService {
 
 		// LaneWidthService.nodeMap.add( node.laneWidth.uuid, node );
 
-		this.baseService.rebuildRoad( node.lane.laneSection.road );
+		// this.baseService.rebuildRoad( node.lane.laneSection.road );
 
 	}
 
@@ -108,7 +108,7 @@ export class LaneWidthService {
 		// LaneWidthService.nodeMap.remove( node.laneWidth.uuid );
 		// LaneWidthService.lineMap.remove( node.laneWidth.uuid );
 
-		this.baseService.rebuildRoad( node.lane.laneSection.road );
+		// this.baseService.rebuildRoad( node.lane.laneSection.road );
 
 	}
 
@@ -135,7 +135,7 @@ export class LaneWidthService {
 		this.hideWidthNodes( node.lane.laneSection.road );
 		this.showWidthNodes( node.lane.laneSection.road );
 
-		this.baseService.rebuildRoad( node.lane.laneSection.road );
+		// this.baseService.rebuildRoad( node.lane.laneSection.road );
 
 	}
 

@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 import { SplineControlPoint } from "../modules/three-js/objects/spline-control-point";
 import { Injectable } from "@angular/core";
-import { DynamicControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
+import { DynamicControlPoint, SimpleControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
 import { IHasUpdate } from "app/commands/set-value-command";
 
 @Injectable( {
@@ -31,6 +31,12 @@ export class ControlPointFactory {
 	createDynamic<T extends IHasUpdate> ( target: T, position: Vector3 ): DynamicControlPoint<T> {
 
 		return new DynamicControlPoint( target, position );
+
+	}
+
+	createSimpleControlPoint<T> ( target: T, position: Vector3 ): SimpleControlPoint<T> {
+
+		return new SimpleControlPoint( target, position );
 
 	}
 

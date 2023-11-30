@@ -4,11 +4,11 @@ import { ToolType } from "../tool-types.enum";
 import { ParkingRoadToolService } from "./parking-road-tool.service";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 
-export class ParkingRoadTool extends BaseTool {
+export class ParkingLotTool extends BaseTool {
 
-	public name: string = 'Parking Road';
+	public name: string = 'Parking Lot';
 
-	public toolType: ToolType = ToolType.ParkingRoad;
+	public toolType: ToolType = ToolType.ParkingLot;
 
 	points = [];
 
@@ -20,7 +20,6 @@ export class ParkingRoadTool extends BaseTool {
 
 	init () {
 
-		// do tnighin
 
 	}
 
@@ -45,9 +44,7 @@ export class ParkingRoadTool extends BaseTool {
 
 		if ( this.points.length < 2 ) return;
 
-		const road = this.tool.createParkingRoad( this.points );
-
-		this.executeAddObject( road );
+		this.tool.createRectangularParkingLot( this.points[ 0 ], this.points[ 1 ] );
 
 		this.points = [];
 

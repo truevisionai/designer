@@ -71,6 +71,10 @@ export class TvPosTheta {
 		this._hdg = value;
 	}
 
+	get position (): Vector3 {
+		return new Vector3( this.x, this.y, this.z );
+	}
+
 	toVector3 (): Vector3 {
 		return new Vector3( this.x, this.y, this.z );
 	}
@@ -79,12 +83,12 @@ export class TvPosTheta {
 		return new Vector2( this.x, this.y );
 	}
 
-	toDirectionVector (): Vector3 {
+	toDirectionVector ( hdg?: number ): Vector3 {
 
 		const direction = new Vector3();
 
-		direction.x = Math.cos( this.hdg ) * Math.cos( 0 );
-		direction.y = Math.sin( this.hdg ) * Math.cos( 0 );
+		direction.x = Math.cos( hdg || this.hdg ) * Math.cos( 0 );
+		direction.y = Math.sin( hdg || this.hdg ) * Math.cos( 0 );
 		direction.z = 0; // Math.sin( pose.hdg );
 
 		return direction;

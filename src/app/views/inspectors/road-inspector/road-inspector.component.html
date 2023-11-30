@@ -69,14 +69,19 @@
 <div *ngIf="isOpen && road"
 	class="inspector-editor-padding">
 
-	<button (click)="onDelete()"
-		mat-stroked-button
-		style="width: 100%;">Delete Road
-	</button>
-
 	<button (click)="exportRoadStyle()"
 		mat-stroked-button
 		style="width: 100%;">Export Road Style
+	</button>
+
+	<button (click)="duplicateRoad()"
+		mat-stroked-button
+		style="width: 100%;">Duplicate Road
+	</button>
+
+	<button (click)="onDelete()"
+		mat-stroked-button
+		style="width: 100%;">Delete Road
 	</button>
 
 </div>

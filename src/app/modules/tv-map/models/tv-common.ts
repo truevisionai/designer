@@ -124,7 +124,8 @@ export enum TvUnit {
 	KM_PER_HOUR = 'km/h',
 	KG = 'kg',
 	T = 't',
-	PERCENT = '%'
+	PERCENT = '%',
+	NONE = 'none'
 }
 
 export enum TvDirection {

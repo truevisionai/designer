@@ -13,6 +13,7 @@
 			mat-button
 			matTooltip="{{tool.tooltip}}">
 			<mat-icon class="tool-button-icon">{{tool.icon}}</mat-icon>
+			<mat-icon *ngIf="tool.icon2" class="tool-button-icon">{{tool.icon2}}</mat-icon>
 			<span class="icon-label">{{tool.label}}</span>
 		</button>
 	</ng-container>
