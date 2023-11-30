@@ -8,7 +8,7 @@ import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-enti
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
 import { MetadataFactory } from '../../factories/metadata-factory.service';

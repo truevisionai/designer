@@ -7,7 +7,7 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { SetRoadmarkTextureCommand } from 'app/commands/set-roadmark-texture-command';
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
-import { TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarkingManager, TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { CommandHistory } from 'app/services/command-history';
 import { PreviewService } from '../object-preview/object-preview.service';
 
@@ -34,7 +34,7 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 
 	ngOnInit () {
 
-		TvMarkingService.currentMarking = this.data.roadMarking;
+		TvRoadMarkingManager.currentMarking = this.data.roadMarking;
 
 		this.metadata = AssetDatabase.getMetadata( this.data.guid );
 

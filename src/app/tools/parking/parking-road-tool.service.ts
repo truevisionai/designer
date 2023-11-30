@@ -127,7 +127,7 @@ export class ParkingRoadToolService {
 
 		const s = PARKING_WIDTH * 0.5;
 
-		const roadObject = this.createParkingSpace( road, lane, s );
+		const roadObject = this.createParkingSpaceRoadObject( road, lane, s );
 
 		const repeatLength = road.length - s;
 
@@ -157,7 +157,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createParkingSpace ( road: TvRoad, lane: TvLane, s: number ) {
+	createParkingSpaceRoadObject ( road: TvRoad, lane: TvLane, s: number ) {
 
 		const laneWidth = lane.getWidthValue( s );
 

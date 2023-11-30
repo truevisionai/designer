@@ -5,7 +5,7 @@
 import { SetPositionCommand } from 'app/commands/set-position-command';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { MarkingTypes, TvMarkingService, TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { MarkingTypes, TvRoadMarkingManager, TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { CommandHistory } from 'app/services/command-history';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Subscription } from 'rxjs';
@@ -44,7 +44,7 @@ export class MarkingPointTool extends BaseMarkingTool {
 
 	get marking () {
 
-		return TvMarkingService.currentMarking;
+		return TvRoadMarkingManager.currentMarking;
 
 	}
 

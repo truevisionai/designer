@@ -6,7 +6,7 @@ import { Injectable, Type } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { FileService } from 'app/io/file.service';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { CommandHistory } from 'app/services/command-history';
 import { EntityManager } from 'app/managers/entity-manager';
 import { RoadStyleManager } from 'app/managers/road-style.manager';

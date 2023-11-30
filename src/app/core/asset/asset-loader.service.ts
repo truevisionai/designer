@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import {
 	BufferGeometryLoader,

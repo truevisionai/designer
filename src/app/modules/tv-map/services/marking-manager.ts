@@ -91,7 +91,7 @@ export class TvRoadMarking {
 }
 
 
-export class TvMarkingService {
+export class TvRoadMarkingManager {
 
 	public static markingChanged = new EventEmitter<TvRoadMarking>();
 

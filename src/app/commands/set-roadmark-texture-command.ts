@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvRoadMarking } from 'app/modules/tv-map/services/tv-marking.service';
+import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
 import { MeshBasicMaterial, Texture } from 'three';
 import { Metadata } from '../core/asset/metadata.model';
