@@ -31,6 +31,12 @@ import { TvCornerLocal } from "../models/objects/tv-corner-local";
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvObjectOutline } from "../models/objects/tv-object-outline";
 import { XmlElement } from 'app/importers/xml.element';
+import { TvConsole } from 'app/core/utils/console';
+import { TvObjectRepeat } from '../models/objects/tv-object-repeat';
+import { TvLaneValidity } from '../models/objects/tv-lane-validity';
+import { TvObjectPolyline } from "../models/objects/tv-object-polyline";
+import { TvObjectVertexRoad } from "../models/objects/tv-object-vertex-road";
+import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
 
 @Injectable( {
 	providedIn: 'root'
@@ -155,30 +161,32 @@ export class OpenDriveExporter {
 
 	public writeRoad ( xmlNode, road: TvRoad ) {
 
-		const nodeRoad = {
+		const xml = {
 			attr_name: road.name,
 			attr_length: road.length,
 			attr_id: road.id,
 			attr_junction: road.junctionId,
 		};
 
-		xmlNode.road.push( nodeRoad );
+		xmlNode.road.push( xml );
 
-		this.writeRoadLinks( nodeRoad, road );
+		this.writeRoadLinks( xml, road );
 
-		this.writeRoadType( nodeRoad, road );
+		this.writeRoadType( xml, road );
 
-		this.writePlanView( nodeRoad, road );
+		this.writePlanView( xml, road );
 
-		this.writeElevationProfile( nodeRoad, road );
+		this.writeElevationProfile( xml, road );
 
-		this.writeLateralProfile( nodeRoad, road );
+		this.writeLateralProfile( xml, road );
 
-		this.writeLanes( nodeRoad, road );
+		this.writeLanes( xml, road );
 
-		this.writeObjects( nodeRoad, road );
+		xml[ 'objects' ] = {
+			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
+		};
 
-		this.writeSignals( nodeRoad, road );
+		this.writeSignals( xml, road );
 	}
 
 	public writeRoadLinks ( xmlNode, road: TvRoad ) {
@@ -612,36 +620,17 @@ export class OpenDriveExporter {
 		} );
 	}
 
-	public writeObjects ( xmlNode, road: TvRoad ) {
+	public writeRoadObject ( roadObject: TvRoadObject ): XmlElement {
 
-		xmlNode.objects = {
-			object: []
-		};
-
-		for ( let i = 0; i < road.getRoadObjectCount(); i++ ) {
-
-			const roadObject = road.getRoadObject( i );
-
-			this.writeObject( xmlNode.objects, roadObject );
-
-		}
-	}
-
-	public writeObject ( xmlNode: XmlElement, roadObject: TvRoadObject ) {
-
-		const nodeRoadObject = {
-
-			// Attributes
+		const xml = {
 			attr_type: roadObject.attr_type,
 			attr_name: roadObject.name,
 			attr_id: roadObject.attr_id,
 			attr_s: roadObject.s,
 			attr_t: roadObject.t,
-
-			// Elements
-			repeat: [],
-			validity: [],
-			userData: [],
+			repeat: roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat ) ),
+			validity: roadObject.validity.map( validity => this.writeObjectValidity( validity ) ),
+			userData: roadObject.userData.map( userData => this.writeUserData( userData ) ),
 			markings: {
 				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
 			},
@@ -650,28 +639,33 @@ export class OpenDriveExporter {
 			},
 		};
 
-		roadObject.zOffset ? nodeRoadObject[ 'attr_zOffset' ] = roadObject.zOffset : null;
-		roadObject.validLength ? nodeRoadObject[ 'attr_validLength' ] = roadObject.validLength : null;
-		roadObject.orientation ? nodeRoadObject[ 'attr_orientation' ] = roadObject.orientation : null;
-		roadObject.length ? nodeRoadObject[ 'attr_length' ] = roadObject.length : null;
-		roadObject.width ? nodeRoadObject[ 'attr_width' ] = roadObject.width : null;
-		roadObject.radius ? nodeRoadObject[ 'attr_radius' ] = roadObject.radius : null;
-		roadObject.height ? nodeRoadObject[ 'attr_height' ] = roadObject.height : null;
-		roadObject.hdg ? nodeRoadObject[ 'attr_hdg' ] = roadObject.hdg : null;
-		roadObject.pitch ? nodeRoadObject[ 'attr_pitch' ] = roadObject.pitch : null;
-		roadObject.roll ? nodeRoadObject[ 'attr_roll' ] = roadObject.roll : null;
+		if ( roadObject.zOffset ) xml[ 'attr_zOffset' ] = roadObject.zOffset;
+		if ( roadObject.validLength ) xml[ 'attr_validLength' ] = roadObject.validLength;
+		if ( roadObject.orientation ) xml[ 'attr_orientation' ] = roadObject.toOrientationString();
+		if ( roadObject.length ) xml[ 'attr_length' ] = roadObject.length;
+		if ( roadObject.width ) xml[ 'attr_width' ] = roadObject.width;
+		if ( roadObject.radius ) xml[ 'attr_radius' ] = roadObject.radius;
+		if ( roadObject.height ) xml[ 'attr_height' ] = roadObject.height;
+		if ( roadObject.hdg ) xml[ 'attr_hdg' ] = roadObject.hdg;
+		if ( roadObject.pitch ) xml[ 'attr_pitch' ] = roadObject.pitch;
+		if ( roadObject.roll ) xml[ 'attr_roll' ] = roadObject.roll;
 
-		this.writeObjectRepeat( nodeRoadObject, roadObject );
+		this.writeObjectMaterial( xml, roadObject );
 
-		this.writeObjectMaterial( nodeRoadObject, roadObject );
+		this.writeObjectParkingSpace( xml, roadObject );
 
-		this.writeObjectValidity( nodeRoadObject, roadObject );
+		if (
+			roadObject.skeleton &&
+			roadObject.skeleton.polylines.length > 0 &&
+			roadObject.skeleton.polylines[ 0 ].vertices.length > 0
+		) {
+			xml[ 'skeleton' ] = {
+				'polyline': roadObject.skeleton.polylines.map( polyline => this.writeObjectPolyline( polyline ) )
+			};
+		}
 
-		this.writeObjectParkingSpace( nodeRoadObject, roadObject );
+		return xml;
 
-		this.writeUserDataFromArray( nodeRoadObject.userData, roadObject.userData );
-
-		xmlNode.object.push( nodeRoadObject );
 	}
 
 	public writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
@@ -697,28 +691,26 @@ export class OpenDriveExporter {
 
 	}
 
-	public writeObjectRepeat ( xmlNode, roadObject: TvRoadObject ) {
+	writeObjectRepeat ( repeat: TvObjectRepeat ): XmlElement {
 
-		xmlNode.repeat = [];
-
-		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
-
-			const repeat = roadObject.getRepeat( i );
-
-			xmlNode.repeat.push( {
-				attr_s: repeat.s,
-				attr_length: repeat.length,
-				attr_distance: repeat.distance,
-				attr_tStart: repeat.tStart,
-				attr_tEnd: repeat.tEnd,
-				attr_widthStart: repeat.widthStart,
-				attr_widthEnd: repeat.widthEnd,
-				attr_heightStart: repeat.heightStart,
-				attr_heightEnd: repeat.heightEnd,
-				attr_zOffsetStart: repeat.zOffsetStart,
-				attr_zOffsetEnd: repeat.zOffsetEnd,
-			} );
+		const xml = {
+			attr_s: repeat.s,
+			attr_length: repeat.length,
+			attr_distance: repeat.distance,
 		}
+
+		if ( repeat.tStart ) xml[ 'attr_tStart' ] = repeat.tStart;
+		if ( repeat.tEnd ) xml[ 'attr_tEnd' ] = repeat.tEnd;
+		if ( repeat.widthStart ) xml[ 'attr_widthStart' ] = repeat.widthStart;
+		if ( repeat.widthEnd ) xml[ 'attr_widthEnd' ] = repeat.widthEnd;
+		if ( repeat.heightStart ) xml[ 'attr_heightStart' ] = repeat.heightStart;
+		if ( repeat.heightEnd ) xml[ 'attr_heightEnd' ] = repeat.heightEnd;
+		if ( repeat.zOffsetStart ) xml[ 'attr_zOffsetStart' ] = repeat.zOffsetStart;
+		if ( repeat.zOffsetEnd ) xml[ 'attr_zOffsetEnd' ] = repeat.zOffsetEnd;
+		if ( repeat.lengthStart ) xml[ 'attr_lengthStart' ] = repeat.lengthStart;
+		if ( repeat.lengthEnd ) xml[ 'attr_lengthEnd' ] = repeat.lengthEnd;
+
+		return xml;
 	}
 
 	/**
@@ -824,20 +816,64 @@ export class OpenDriveExporter {
 		}
 	}
 
-	public writeObjectValidity ( xmlNode, roadObject: TvRoadObject ) {
+	writeObjectPolyline ( polyline: TvObjectPolyline ): XmlElement {
 
-		xmlNode.validity = [];
+		if ( polyline.vertices[ 0 ] instanceof TvObjectVertexRoad ) {
 
-		for ( let i = 0; i < roadObject.getValidityCount(); i++ ) {
+			return {
+				attr_id: polyline.id,
+				vertexRoad: polyline.vertices.map( vertex => this.writePolylineVertex( vertex ) )
+			}
 
-			const validity = roadObject.getValidity( i );
-
-			// TODO: ACCESS VIA GETTERS & SETTER
-			xmlNode.validity.push( {
-				attr_fromLane: validity.attr_fromLane,
-				attr_toLane: validity.attr_toLane
-			} );
 		}
+
+		if ( polyline.vertices[ 0 ] instanceof TvObjectVertexLocal ) {
+
+			return {
+				attr_id: polyline.id,
+				vertexLocal: polyline.vertices.map( vertex => this.writePolylineVertex( vertex ) )
+			}
+
+		}
+
+		TvConsole.error( 'Unknown vertex type' );
+	}
+
+	writePolylineVertex ( vertex: any ): XmlElement {
+
+		if ( vertex instanceof TvObjectVertexRoad ) {
+
+			return {
+				attr_id: vertex.id,
+				attr_s: vertex.s,
+				attr_t: vertex.t,
+				attr_dz: vertex.dz,
+				attr_radius: vertex.radius,
+				attr_intersectionPoint: vertex.intersectionPoint,
+			}
+
+		} else if ( vertex instanceof TvObjectVertexLocal ) {
+
+			return {
+				attr_id: vertex.id,
+				attr_u: vertex.uvz.x,
+				attr_v: vertex.uvz.y,
+				attr_z: vertex.uvz.z,
+				attr_radius: vertex.radius,
+				attr_intersectionPoint: vertex.intersectionPoint,
+			}
+		}
+
+	}
+
+
+	public writeObjectValidity ( validity: TvLaneValidity ): XmlElement {
+
+		return {
+			attr_fromLane: validity.attr_fromLane,
+			attr_toLane: validity.attr_toLane
+		}
+
 	}
 
 	public writeObjectParkingSpace ( xmlNode, roadObject: TvRoadObject ) {
@@ -1135,24 +1171,25 @@ export class OpenDriveExporter {
 
 			const data = userData[ i ];
 
-			xmlNode.push( {
-				attr_code: data.attr_code,
-				attr_value: data.attr_value
-			} );
+			xmlNode.push( this.writeUserData( data ) );
 
 		}
+	}
+
+	public writeUserData ( data: TvUserData ) {
+
+		return {
+			attr_code: data.attr_code,
+			attr_value: data.attr_value
+		}
+
 	}
 
 	public writeUserDataFromMap ( xmlNode, userData: Map<any, TvUserData> ) {
 
 		userData.forEach( userData => {
 
-			xmlNode.push( {
-
-				attr_code: userData.attr_code,
-				attr_value: userData.attr_value
-
-			} );
+			xmlNode.push( this.writeUserData( userData ) );
 
 		} );
 

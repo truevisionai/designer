@@ -33,15 +33,12 @@ import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvLaneSpeed } from 'app/modules/tv-map/models/tv-lane-speed';
 import { TvLaneVisibility } from 'app/modules/tv-map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
-import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { TvCornerLocal } from "../modules/tv-map/models/objects/tv-corner-local";
-import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
-import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "../importers/xml.element";
 import { MapService } from "../services/map.service";
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
+import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -59,6 +56,7 @@ export class SceneExporterService {
 		private electron: TvElectronService,
 		private threeService: ThreeService,
 		private mapService: MapService,
+		private openDrive: OpenDriveExporter,
 	) {
 	}
 
@@ -246,7 +244,9 @@ export class SceneExporterService {
 
 		this.writeLanes( xml, road );
 
-		this.writeObjects( xml, road );
+		xml[ 'objects' ] = {
+			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
+		};
 
 		// TODO: maybe not required here
 		this.writeSignals( xml, road );
@@ -768,208 +768,115 @@ export class SceneExporterService {
 
 	}
 
-	writeObjects ( xmlNode: XmlElement, road: TvRoad ) {
-
-		xmlNode.objects = {
-			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
-		};
-
-	}
-
 	writeRoadObject ( roadObject: TvRoadObject ): XmlElement {
 
-		const xml = {
+		const xml = this.openDrive.writeRoadObject( roadObject );
 
-			// Attributes
-			attr_type: roadObject.attr_type,
-			attr_name: roadObject.name,
-			attr_id: roadObject.attr_id,
-			attr_s: roadObject.s,
-			attr_t: roadObject.t,
-
-			// Elements
-			repeat: [],
-			validity: [],
-			userData: [],
-			markings: {
-				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
-			},
-			outlines: {
-				outline: roadObject.outlines.map( outline => this.writeObjectOutlineV2( outline ) )
-			},
-		};
-
-		roadObject.zOffset ? xml[ 'attr_zOffset' ] = roadObject.zOffset : null;
-		roadObject.validLength ? xml[ 'attr_validLength' ] = roadObject.validLength : null;
-		roadObject.orientation ? xml[ 'attr_orientation' ] = roadObject.orientation : null;
-		roadObject.length ? xml[ 'attr_length' ] = roadObject.length : null;
-		roadObject.width ? xml[ 'attr_width' ] = roadObject.width : null;
-		roadObject.radius ? xml[ 'attr_radius' ] = roadObject.radius : null;
-		roadObject.height ? xml[ 'attr_height' ] = roadObject.height : null;
-		roadObject.hdg ? xml[ 'attr_hdg' ] = roadObject.hdg : null;
-		roadObject.pitch ? xml[ 'attr_pitch' ] = roadObject.pitch : null;
-		roadObject.roll ? xml[ 'attr_roll' ] = roadObject.roll : null;
 		roadObject.assetGuid ? xml[ 'attr_assetGuid' ] = roadObject.assetGuid : null;
-
-		this.writeObjectRepeat( xml, roadObject );
-
-		this.writeObjectMaterial( xml, roadObject );
-
-		this.writeObjectValidity( xml, roadObject );
-
-		this.writeObjectParkingSpace( xml, roadObject );
 
 		return xml
 	}
 
-	writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
+	//writeObjectOutlineV2 ( objectOutline: TvObjectOutline ): XmlElement {
+	//
+	//	return {
+	//		attr_id: objectOutline.id,
+	//		attr_fillType: objectOutline.fillType,
+	//		attr_outer: objectOutline.outer,
+	//		attr_closed: objectOutline.closed,
+	//		attr_laneType: objectOutline.laneType,
+	//		cornerRoad: objectOutline?.cornerRoad.map(
+	//			cornerRoad => this.writeObjectCornerRoad( cornerRoad )
+	//		),
+	//		cornerLocal: objectOutline?.cornerLocal.map(
+	//			cornerLocal => this.writeObjectCornerLocal( cornerLocal )
+	//		),
+	//	};
+	//
+	//}
 
-		return {
-			attr_color: marking.color,
-			attr_spaceLength: marking.spaceLength,
-			attr_lineLength: marking.lineLength,
-			attr_side: marking.side,
-			attr_weight: marking.weight,
-			attr_startOffset: marking.startOffset,
-			attr_stopOffset: marking.stopOffset,
-			attr_zOffset: marking.zOffset,
-			attr_width: marking.width,
-			attr_materialGuid: marking.materialGuid,
-			cornerReference: marking.cornerReferences.map( reference => {
-				return {
-					attr_id: reference
-				};
-			} ),
-		};
+	//writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
+	//
+	//	return {
+	//		attr_u: cornerLocal.attr_u,
+	//		attr_v: cornerLocal.attr_v,
+	//		attr_z: cornerLocal.attr_z,
+	//		attr_height: cornerLocal.attr_height,
+	//	};
+	//
+	//}
 
-	}
+	//writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
+	//
+	//	return {
+	//		attr_id: cornerRoad.attr_id,
+	//		// attr_roadId: cornerRoad.roadId, // roadId is not part of the OpenDRIVE standard
+	//		attr_s: cornerRoad.s,
+	//		attr_t: cornerRoad.t,
+	//		attr_dz: cornerRoad.dz,
+	//		attr_height: cornerRoad.height,
+	//	};
+	//
+	//}
 
-	writeObjectRepeat ( xmlNode, roadObject: TvRoadObject ) {
+	//writeObjectMaterial ( xmlNode, roadObject: TvRoadObject ) {
+	//
+	//	if ( roadObject.material != null ) {
+	//
+	//		xmlNode[ 'material' ] = {};
+	//
+	//		// TODO: ACCESS VIA GETTERS & SETTERS
+	//		xmlNode.material = {
+	//			attr_surface: roadObject.material.attr_surface,
+	//			attr_friction: roadObject.material.attr_friction,
+	//			attr_roughness: roadObject.material.attr_roughness,
+	//		};
+	//	}
+	//}
 
-		xmlNode.repeat = [];
+	//writeObjectValidity ( xmlNode, roadObject: TvRoadObject ) {
+	//
+	//	xmlNode.validity = [];
+	//
+	//	for ( let i = 0; i < roadObject.getValidityCount(); i++ ) {
+	//
+	//		const validity = roadObject.getValidity( i );
+	//
+	//		// TODO: ACCESS VIA GETTERS & SETTER
+	//		xmlNode.validity.push( {
+	//			attr_fromLane: validity.attr_fromLane,
+	//			attr_toLane: validity.attr_toLane
+	//		} );
+	//	}
+	//}
 
-		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
-
-			const repeat = roadObject.getRepeat( i );
-
-			xmlNode.repeat.push( {
-				attr_s: repeat.s,
-				attr_length: repeat.length,
-				attr_distance: repeat.distance,
-				attr_tStart: repeat.tStart,
-				attr_tEnd: repeat.tEnd,
-				attr_widthStart: repeat.widthStart,
-				attr_widthEnd: repeat.widthEnd,
-				attr_heightStart: repeat.heightStart,
-				attr_heightEnd: repeat.heightEnd,
-				attr_zOffsetStart: repeat.zOffsetStart,
-				attr_zOffsetEnd: repeat.zOffsetEnd,
-				attr_lengthStart: repeat.lengthStart,
-				attr_lengthEnd: repeat.lengthEnd,
-			} );
-		}
-	}
-
-	writeObjectOutlineV2 ( objectOutline: TvObjectOutline ): XmlElement {
-
-		return {
-			attr_id: objectOutline.id,
-			attr_fillType: objectOutline.fillType,
-			attr_outer: objectOutline.outer,
-			attr_closed: objectOutline.closed,
-			attr_laneType: objectOutline.laneType,
-			cornerRoad: objectOutline?.cornerRoad.map(
-				cornerRoad => this.writeObjectCornerRoad( cornerRoad )
-			),
-			cornerLocal: objectOutline?.cornerLocal.map(
-				cornerLocal => this.writeObjectCornerLocal( cornerLocal )
-			),
-		};
-
-	}
-
-	writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
-
-		return {
-			attr_u: cornerLocal.attr_u,
-			attr_v: cornerLocal.attr_v,
-			attr_z: cornerLocal.attr_z,
-			attr_height: cornerLocal.attr_height,
-		};
-
-	}
-
-	writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
-
-		return {
-			attr_id: cornerRoad.attr_id,
-			// attr_roadId: cornerRoad.roadId, // roadId is not part of the OpenDRIVE standard
-			attr_s: cornerRoad.s,
-			attr_t: cornerRoad.t,
-			attr_dz: cornerRoad.dz,
-			attr_height: cornerRoad.height,
-		};
-
-	}
-
-	writeObjectMaterial ( xmlNode, roadObject: TvRoadObject ) {
-
-		if ( roadObject.material != null ) {
-
-			xmlNode[ 'material' ] = {};
-
-			// TODO: ACCESS VIA GETTERS & SETTERS
-			xmlNode.material = {
-				attr_surface: roadObject.material.attr_surface,
-				attr_friction: roadObject.material.attr_friction,
-				attr_roughness: roadObject.material.attr_roughness,
-			};
-		}
-	}
-
-	writeObjectValidity ( xmlNode, roadObject: TvRoadObject ) {
-
-		xmlNode.validity = [];
-
-		for ( let i = 0; i < roadObject.getValidityCount(); i++ ) {
-
-			const validity = roadObject.getValidity( i );
-
-			// TODO: ACCESS VIA GETTERS & SETTER
-			xmlNode.validity.push( {
-				attr_fromLane: validity.attr_fromLane,
-				attr_toLane: validity.attr_toLane
-			} );
-		}
-	}
-
-	writeObjectParkingSpace ( xmlNode, roadObject: TvRoadObject ) {
-
-		if ( roadObject.parkingSpace != null ) {
-
-			xmlNode[ 'parkingSpace' ] = {};
-
-			// TODO: ACCESS VIA GETTERS & SETTERS
-			xmlNode.parkingSpace = {
-				attr_access: roadObject.parkingSpace.attr_access,
-				attr_restriction: roadObject.parkingSpace.attr_restriction,
-				marking: []
-			};
-
-			for ( let i = 0; i < roadObject.parkingSpace.getMarkingCount(); i++ ) {
-
-				const marking = roadObject.parkingSpace.getMarking( i );
-
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				xmlNode.parkingSpace.marking.push( {
-					attr_side: marking.attr_side,
-					attr_type: marking.attr_type,
-					attr_width: marking.attr_width,
-					attr_color: marking.attr_color,
-				} );
-			}
-		}
-	}
+	//writeObjectParkingSpace ( xmlNode, roadObject: TvRoadObject ) {
+	//
+	//	if ( roadObject.parkingSpace != null ) {
+	//
+	//		xmlNode[ 'parkingSpace' ] = {};
+	//
+	//		// TODO: ACCESS VIA GETTERS & SETTERS
+	//		xmlNode.parkingSpace = {
+	//			attr_access: roadObject.parkingSpace.attr_access,
+	//			attr_restriction: roadObject.parkingSpace.attr_restriction,
+	//			marking: []
+	//		};
+	//
+	//		for ( let i = 0; i < roadObject.parkingSpace.getMarkingCount(); i++ ) {
+	//
+	//			const marking = roadObject.parkingSpace.getMarking( i );
+	//
+	//			// TODO: ACCESS VIA GETTERS & SETTERS
+	//			xmlNode.parkingSpace.marking.push( {
+	//				attr_side: marking.attr_side,
+	//				attr_type: marking.attr_type,
+	//				attr_width: marking.attr_width,
+	//				attr_color: marking.attr_color,
+	//			} );
+	//		}
+	//	}
+	//}
 
 	writeSignals ( xmlNode, road: TvRoad ) {
 
@@ -1063,38 +970,37 @@ export class SceneExporterService {
 
 	}
 
-	writeSurface ( xmlNode, road: TvRoad ) {
-	}
+	//writeSurface ( xmlNode, road: TvRoad ) {}
 
-	writeControllers ( xmlNode ) {
-
-		xmlNode.controller = [];
-
-		this.map.controllers.forEach( controller => {
-
-			const nodeController = {
-				attr_id: controller.id,
-				attr_name: controller.name,
-				control: []
-			};
-
-			if ( controller.sequence ) {
-				nodeController[ 'attr_sequence' ] = controller.sequence;
-			}
-
-			controller.controls.forEach( control => {
-
-				nodeController.control.push( {
-					attr_signalId: control.signalId,
-					attr_type: control.type
-				} );
-
-			} );
-
-			xmlNode.controller.push( nodeController );
-
-		} );
-	}
+	//writeControllers ( xmlNode ) {
+	//
+	//	xmlNode.controller = [];
+	//
+	//	this.map.controllers.forEach( controller => {
+	//
+	//		const nodeController = {
+	//			attr_id: controller.id,
+	//			attr_name: controller.name,
+	//			control: []
+	//		};
+	//
+	//		if ( controller.sequence ) {
+	//			nodeController[ 'attr_sequence' ] = controller.sequence;
+	//		}
+	//
+	//		controller.controls.forEach( control => {
+	//
+	//			nodeController.control.push( {
+	//				attr_signalId: control.signalId,
+	//				attr_type: control.type
+	//			} );
+	//
+	//		} );
+	//
+	//		xmlNode.controller.push( nodeController );
+	//
+	//	} );
+	//}
 
 	writeJunction ( xmlNode, junction: TvJunction ) {
 

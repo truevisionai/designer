@@ -49,6 +49,8 @@ import { TextMarkingTool } from 'app/tools/marking-point/text-marking.tool';
 import { TextMarkingToolService } from 'app/tools/marking-point/text-marking-tool.service';
 import { PropSpanTool } from 'app/tools/road-span/prop-span-tool';
 import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service';
+import { PolePropTool } from 'app/tools/prop-barrier/pole-prop-tool';
+import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -78,6 +80,7 @@ export class ToolBarService {
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
+		private propBarrierToolService: PolePropToolService,
 	) {
 	}
 
@@ -110,6 +113,8 @@ export class ToolBarService {
 				return new PropPolygonTool( this.propPolygonToolService );
 			case ToolType.PropSpanTool:
 				return new PropSpanTool( this.propSpanToolService );
+			case ToolType.PolePropTool:
+				return new PolePropTool( this.propBarrierToolService );
 			case ToolType.Surface:
 				return new SurfaceTool( this.surfaceToolService );
 			case ToolType.LaneMarking:

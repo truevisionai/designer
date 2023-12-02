@@ -1,22 +1,24 @@
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
+import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { ObjectTypes, TvSide } from '../modules/tv-map/models/tv-common';
-import { MarkingObjectBuilder } from './marking-object.builder';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../modules/tv-map/models/tv-road.model";
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { Maths } from 'app/utils/maths';
-import { SceneService } from 'app/services/scene.service';
 import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvConsole } from 'app/core/utils/console';
+import { ExtrudeService } from './extrude.service';
+import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadObjectBuilder {
 
-	constructor () { }
+	constructor (
+		private extrudeService: ExtrudeService
+	) { }
 
 	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
@@ -36,7 +38,85 @@ export class RoadObjectBuilder {
 			case ObjectTypes.vegetation:
 				return this.buildVegetationObject( road, roadObject );
 
+			case ObjectTypes.barrier:
+				return this.buildBarrierObject( road, roadObject );
+
+			case ObjectTypes.pole:
+				return this.buildPoleObject( road, roadObject );
 		}
+
+	}
+
+	buildPoleObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		const object3D = new Object3D();
+
+		object3D.name = 'object:' + roadObject.attr_type;
+
+		const position = road.getPositionAt( roadObject.s, roadObject.t );
+
+		if ( roadObject.skeleton?.polylines.length > 0 ) {
+
+			if ( roadObject.skeleton.polylines[ 0 ].vertices[ 0 ] instanceof TvObjectVertexLocal ) {
+
+				object3D.position.copy( position.position );
+
+			}
+
+			object3D.add( ...this.buildSkeletonMesh( road, roadObject ) );
+
+		}
+
+		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
+
+			const repeat = roadObject.getRepeat( i );
+
+			for ( let ds = 0; ds < repeat.length; ds += repeat.distance ) {
+
+				const s = repeat.s + ds;
+
+				const fraction = ds / repeat.length;
+
+				const t = repeat.tStart && repeat.tEnd ?
+					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
+
+				const width = repeat.widthStart && repeat.widthEnd ?
+					Maths.linearInterpolation( repeat.widthStart, repeat.widthEnd, fraction ) : roadObject.width;
+
+				const height = repeat.heightStart && repeat.heightEnd ?
+					Maths.linearInterpolation( repeat.heightStart, repeat.heightEnd, fraction ) : roadObject.height;
+
+				const zOffset = repeat.zOffsetStart && repeat.zOffsetEnd ?
+					Maths.linearInterpolation( repeat.zOffsetStart, repeat.zOffsetEnd, fraction ) : roadObject.zOffset;
+
+				const length = repeat.lengthStart && repeat.lengthEnd ?
+					Maths.linearInterpolation( repeat.lengthStart, repeat.lengthEnd, fraction ) : roadObject.length;
+
+				const posTheta = road.getPositionAt( s, t );
+
+				const repeatMesh = new Object3D();
+
+				repeatMesh.add( this.buildRoadObjectBbox( roadObject ) );
+
+				repeatMesh.position.copy( posTheta.position );
+
+				repeatMesh.position.z += zOffset;
+
+				// repeatMesh.rotation.set( 0, 0, posTheta.hdg );
+
+				object3D.add( repeatMesh );
+
+			}
+
+		}
+
+		return object3D;
+
+	}
+
+	buildBarrierObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		throw new Error( 'Method not implemented.' );
 
 	}
 
@@ -299,6 +379,21 @@ export class RoadObjectBuilder {
 		const position = road.getPositionAt( s, t );
 
 		return position.position;
+	}
+
+	private buildSkeletonMesh ( road: TvRoad, roadObject: TvRoadObject ): Object3D[] {
+
+		const objects: Object3D[] = [];
+
+		const geometries = this.extrudeService.buildSkeletonGeometries( roadObject, roadObject.skeleton );
+
+		for ( let i = 0; i < geometries.length; i++ ) {
+
+			objects.push( new Mesh( geometries[ i ], new MeshStandardMaterial( { color: '#919A9E' } ) ) );
+
+		}
+
+		return objects;
 	}
 
 	// with spline

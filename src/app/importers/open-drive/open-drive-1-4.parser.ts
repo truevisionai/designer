@@ -675,7 +675,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const t = parseFloat( xmlElement.attr_t ) || 0;
 		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0.005;
 		const validLength = parseFloat( xmlElement.attr_validLength ) || 0;
-		const orientation = xmlElement.attr_orientation;
+
 		const length = parseFloat( xmlElement.attr_length ) || 0;
 		const width = parseFloat( xmlElement.attr_width ) || 0;
 		const radius = parseFloat( xmlElement.attr_radius ) || 0;
@@ -683,6 +683,8 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const hdg = parseFloat( xmlElement.attr_hdg ) || 0;
 		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
 		const roll = parseFloat( xmlElement.attr_roll ) || 0;
+
+		const orientation = TvRoadObject.orientationFromString( xmlElement.attr_orientation );
 
 		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
 

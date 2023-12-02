@@ -11,33 +11,58 @@ import { TvObjectMaterial } from "./tv-object-material";
 import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
+import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
 
 export class TvRoadObject {
 
 	public static counter = 1;
+
 	public road: TvRoad;
+
 	public attr_type: ObjectTypes;
+
 	public outlines: TvObjectOutline[] = [];
+
 	public material: TvObjectMaterial;
+
 	public validity: TvLaneValidity[] = [];
+
 	public parkingSpace: TvParkingSpace;
+
 	public userData: TvUserData[] = [];
+
 	public name: string;
+
 	public assetGuid: string;
 
+	public skeleton?: TvRoadObjectSkeleton;
+
 	private attr_s: number;
+
 	private attr_t: number;
+
 	private attr_zOffset: number;
+
 	private attr_validLength: number;
-	private attr_orientation: any;
+
+	private attr_orientation: TvOrientation;
+
 	private attr_length: number;
+
 	private attr_width: number;
+
 	private attr_radius: number;
+
 	private attr_height: number;
+
 	private attr_hdg: number;
+
 	private attr_pitch: number;
+
 	private attr_roll: number;
+
 	private repeat: TvObjectRepeat[] = [];
+
 	private _markings: TvObjectMarking[] = [];
 
 	get repeats (): TvObjectRepeat[] {
@@ -131,6 +156,10 @@ export class TvRoadObject {
 		return this.attr_radius;
 	}
 
+	set radius ( value: number ) {
+		this.attr_radius = value;
+	}
+
 	get height (): number {
 		return this.attr_height;
 	}
@@ -165,18 +194,6 @@ export class TvRoadObject {
 
 	getRepeat ( i: number ): TvObjectRepeat {
 		return this.repeat[ i ];
-	}
-
-	getValidityCount (): number {
-		return this.validity.length;
-	}
-
-	getValidityList (): TvLaneValidity[] {
-		return this.validity;
-	}
-
-	getValidity ( i: number ): TvLaneValidity {
-		return this.validity[ i ];
 	}
 
 	addRepeat (
@@ -222,6 +239,12 @@ export class TvRoadObject {
 
 	}
 
+	removeRepeatObject ( repeat: TvObjectRepeat ) {
+
+		this.repeat = this.repeat.filter( r => r !== repeat );
+
+	}
+
 	addMarkingObject ( markingObject: TvObjectMarking ): void {
 		this._markings.push( markingObject );
 	}
@@ -234,6 +257,73 @@ export class TvRoadObject {
 				}
 			}
 		}
+	}
+
+	toOrientationString (): string {
+
+		switch ( this.attr_orientation ) {
+
+			case TvOrientation.NONE: return 'none';
+
+			case TvOrientation.PLUS: return 'left';
+
+			case TvOrientation.MINUS: return 'right';
+
+			default: return 'none';
+
+		}
+
+	}
+
+	static orientationFromString ( orientation: string ): TvOrientation {
+
+		switch ( orientation.toLowerCase().trim() ) {
+
+			case 'none': return TvOrientation.NONE;
+
+			case 'left': return TvOrientation.PLUS;
+
+			case 'right': return TvOrientation.MINUS;
+
+			default: return TvOrientation.NONE;
+
+		}
+
+	}
+
+
+	clone ( id: number ): TvRoadObject {
+
+		const object = new TvRoadObject(
+			this.attr_type,
+			this.name,
+			id || this.attr_id,
+			this.attr_s,
+			this.attr_t,
+			this.attr_zOffset,
+			this.attr_validLength,
+			this.attr_orientation,
+			this.attr_length,
+			this.attr_width,
+			this.attr_radius,
+			this.attr_height,
+			this.attr_hdg,
+			this.attr_pitch,
+			this.attr_roll
+		);
+
+		object.road = this.road;
+		object.assetGuid = this.assetGuid;
+		// object.material = this.material?.clone();
+		// object.parkingSpace = this.parkingSpace?.clone();
+		// object.repeat = this.repeat.map( repeat => repeat.clone() );
+		// object.validity = this.validity.map( validity => validity.clone() );
+		// object.outlines = this.outlines.map( outline => outline.clone() );
+		// object.userData = this.userData.map( userData => userData.clone() );
+		object.skeleton = this.skeleton?.clone();
+
+		return object;
+
 	}
 
 }

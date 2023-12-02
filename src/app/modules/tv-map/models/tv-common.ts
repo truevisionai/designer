@@ -212,36 +212,69 @@ export enum TvLaneSide {
 }
 
 export enum ObjectTypes {
+
+	// A barrier is a continuous roadside object, which cannot be passed.
+	barrier = 'barrier',
+
+	// A building is a closed object, which cannot be passed.
+	building = 'building',
+
+	// A crosswalk is an object on the road that can be passed.
+	// It is recommended to be defined as <crossPath> within a junction for pedestrian/bicycle simulation.
+	//If the crosswalk is defined as an object only, it will not be used for pedestrian/bicycle simulation
+	crosswalk = 'crosswalk',
+
+	// A gantry is an object above a road on which <signals> are placed.
+	gantry = 'gantry',
+
+
+	// An obstacle is an object on or beside the road that cannot be passed.
+	obstacle = 'obstacle',
+
+	// A parkingSpace is an object on a lane on which vehicles are parked.
+	parkingSpace = 'parkingSpace',
+
+	// A pole is a thin long object.
+	pole = 'pole',
+
+	// A roadMark object is painted on the road and can be passed.
+	roadMark = 'roadMark',
+
+	// A roadSurface object is on the road and can be passed.
+	// new in 1.8
+	roadSurface = 'roadSurface',
+
+	// A trafficIsland object is on the road and should not be passed by vehicles.
+	trafficIsland = 'trafficIsland',
+
+	// A tree object is a single vegetational object with a trunk.
+	tree = 'tree',
+
+	// A vegetation object is a single vegetational object without a trunk or an area of vegetation.
+	vegetation = 'vegetation',
+
+	// All other objects, that don’t fit into existing categories or unknown.
+	none = 'none',
+
+	// deprecated all below
+	patch = 'patch',
+	motorbike = 'motorbike',
+	pedestrian = 'pedestrian',
+	railing = 'railing',
+	soundBarrier = 'soundBarrier',
+	streetLamp = 'streetLamp',
+	trailer = 'trailer',
+	train = 'train',
+	tram = 'tram',
+	van = 'van',
+	wind = 'wind',
+	bus = 'bus',
+	bike = 'bike',
+	car = 'car',
 	ROAD = 'ROAD',
 	LANE = 'LANE',
 	LANE_MARKING = 'LANE_MARKING',
 	VEHICLE = 'vehicle',
-	barrier = 'barrier',
-	bike = 'bike',
-	building = 'building',
-	bus = 'bus',
-	car = 'car',
-	crosswalk = 'crosswalk',
-	gantry = 'gantry',
-	motorbike = 'motorbike',
-	none = 'none',
-	obstacle = 'obstacle',
-	parkingSpace = 'parkingSpace',
-	patch = 'patch',
-	pedestrian = 'pedestrian',
-	pole = 'pole',
-	railing = 'railing',
-	roadMark = 'roadMark',
-	soundBarrier = 'soundBarrier',
-	streetLamp = 'streetLamp',
-	trafficIsland = 'trafficIsland',
-	trailer = 'trailer',
-	train = 'train',
-	tram = 'tram',
-	tree = 'tree',
-	van = 'van',
-	vegetation = 'vegetation',
-	wind = 'wind',
 }
 
 export enum ObjectFillType {

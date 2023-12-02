@@ -21,6 +21,7 @@ import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repe
 } )
 export class RoadObjectService {
 
+
 	private objectMap = new Object3DMap<TvRoadObject, Object3D>();
 
 	private idService = new IDService();
@@ -35,9 +36,21 @@ export class RoadObjectService {
 		RoadObjectService.instance = this;
 	}
 
+	clone ( roadObject: TvRoadObject ): TvRoadObject {
+
+		const id = roadObject.road.objects.object.length + 1;
+
+		const clone = roadObject.clone( id );
+
+		return clone;
+
+	}
+
 	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
 
 		const roadObject = new TvRoadObject( type, '', this.idService.getUniqueID(), s, t );
+
+		roadObject.attr_id = road.objects.object.length + 1;
 
 		roadObject.road = road;
 
@@ -65,6 +78,8 @@ export class RoadObjectService {
 
 	addRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
+		if ( road.objects.object.find( object => object.attr_id === roadObject.attr_id ) ) return;
+
 		const mesh = this.buildRoadObject( road, roadObject );
 
 		this.objectMap.add( roadObject, mesh );
@@ -72,6 +87,22 @@ export class RoadObjectService {
 		road.addRoadObjectInstance( roadObject );
 
 		this.showRoadObjectCorners( roadObject );
+
+	}
+
+	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+
+		roadObject.addRepeatObject( repeat );
+
+		this.updateRoadObject( roadObject.road, roadObject );
+
+	}
+
+	removeRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+
+		roadObject.removeRepeatObject( repeat );
+
+		this.updateRoadObject( roadObject.road, roadObject );
 
 	}
 

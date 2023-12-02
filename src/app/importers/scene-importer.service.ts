@@ -60,6 +60,10 @@ import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "./xml.element";
 import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
+import { TvRoadObjectSkeleton } from "../modules/tv-map/models/objects/tv-road-object-skeleton";
+import { TvObjectPolyline } from "../modules/tv-map/models/objects/tv-object-polyline";
+import { TvObjectVertexRoad } from "../modules/tv-map/models/objects/tv-object-vertex-road";
+import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
 
 @Injectable( {
 	providedIn: 'root'
@@ -1059,7 +1063,7 @@ export class SceneImporterService extends AbstractReader {
 		const t = parseFloat( xmlElement.attr_t ) || 0;
 		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0.005;
 		const validLength = parseFloat( xmlElement.attr_validLength ) || 0;
-		const orientation = xmlElement.attr_orientation;
+
 		const length = parseFloat( xmlElement.attr_length ) || 0;
 		const width = parseFloat( xmlElement.attr_width ) || 0;
 		const radius = parseFloat( xmlElement.attr_radius ) || 0;
@@ -1067,6 +1071,8 @@ export class SceneImporterService extends AbstractReader {
 		const hdg = parseFloat( xmlElement.attr_hdg ) || 0;
 		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
 		const roll = parseFloat( xmlElement.attr_roll ) || 0;
+
+		const orientation = TvRoadObject.orientationFromString( xmlElement.attr_orientation );
 
 		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
 
@@ -1092,7 +1098,76 @@ export class SceneImporterService extends AbstractReader {
 
 		} )
 
+		readXmlElement( xmlElement.skeleton, xml => {
+
+			roadObject.skeleton = this.parseObjectSkeleton( xml );
+
+		} );
+
 		return roadObject;
+
+	}
+
+	parseObjectSkeleton ( xml: XmlElement ): TvRoadObjectSkeleton {
+
+		const skeleton = new TvRoadObjectSkeleton();
+
+		readXmlArray( xml.polyline, xml => {
+
+			const polyline = this.parseObjectPolyline( xml );
+
+			skeleton.polylines.push( polyline );
+
+		} );
+
+		return skeleton;
+
+	}
+
+	parseObjectPolyline ( xml: XmlElement ): TvObjectPolyline {
+
+		const id = parseFloat( xml.attr_id ) || 0;
+
+		const polyline = new TvObjectPolyline( id );
+
+		readXmlArray( xml.vertexRoad, xml => {
+
+			polyline.vertices.push( this.parserVertexRoad( xml ) );
+
+		} );
+
+		readXmlArray( xml.vertexLocal, xml => {
+
+			polyline.vertices.push( this.parserVertexLocal( xml ) );
+
+		} );
+
+		return polyline;
+	}
+
+	parserVertexRoad ( xml: XmlElement ): TvObjectVertexRoad {
+
+		const id = parseFloat( xml.attr_id ) || 0;
+		const s = parseFloat( xml.attr_s ) || 0;
+		const t = parseFloat( xml.attr_t ) || 0;
+		const dz = parseFloat( xml.attr_dz ) || 0;
+		const radius = parseFloat( xml.attr_radius ) || 0;
+		const intersectionPoint = xml.attr_intersectionPoint === 'true' ? true : false;
+
+		return new TvObjectVertexRoad( id, s, t, dz, null, radius, intersectionPoint );
+
+	}
+
+	parserVertexLocal ( xml: XmlElement ): TvObjectVertexLocal {
+
+		const id = parseFloat( xml.attr_id ) || 0;
+		const u = parseFloat( xml.attr_u ) || 0;
+		const v = parseFloat( xml.attr_v ) || 0;
+		const z = parseFloat( xml.attr_z ) || 0;
+		const radius = parseFloat( xml.attr_radius ) || 0;
+		const intersectionPoint = xml.attr_intersectionPoint === 'true' ? true : false;
+
+		return new TvObjectVertexLocal( id, new Vector3( u, v, z ), null, radius, intersectionPoint );
 
 	}
 
