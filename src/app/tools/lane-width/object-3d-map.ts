@@ -101,6 +101,8 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	removeKey ( key: K ) {
 
+		if ( !this.map.has( key ) ) return;
+
 		this.map.get( key ).forEach( object => {
 
 			SceneService.removeFromTool( object );

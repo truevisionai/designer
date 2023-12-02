@@ -47,6 +47,8 @@ import { ParkingRoadToolService } from 'app/tools/parking/parking-road-tool.serv
 import { MeasurementTool } from 'app/tools/pointer/measurement.tool';
 import { TextMarkingTool } from 'app/tools/marking-point/text-marking.tool';
 import { TextMarkingToolService } from 'app/tools/marking-point/text-marking-tool.service';
+import { PropSpanTool } from 'app/tools/road-span/prop-span-tool';
+import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,6 +75,7 @@ export class ToolBarService {
 		private propPolygonToolService: PropPolygonToolService,
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
+		private propSpanToolService: PropSpanToolService,
 	) {
 	}
 
@@ -103,6 +106,8 @@ export class ToolBarService {
 				return new PropCurveTool( this.propCurveService );
 			case ToolType.PropPolygon:
 				return new PropPolygonTool( this.propPolygonToolService );
+			case ToolType.PropSpanTool:
+				return new PropSpanTool( this.propSpanToolService );
 			case ToolType.Surface:
 				return new SurfaceTool( this.surfaceToolService );
 			case ToolType.LaneMarking:

@@ -14,6 +14,7 @@ import { IDService } from 'app/factories/id.service';
 import { MarkingObjectBuilder } from 'app/factories/marking-object.builder';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
+import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,7 +37,11 @@ export class RoadObjectService {
 
 	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
 
-		return new TvRoadObject( type, '', this.idService.getUniqueID(), s, t );
+		const roadObject = new TvRoadObject( type, '', this.idService.getUniqueID(), s, t );
+
+		roadObject.road = road;
+
+		return roadObject
 
 	}
 
@@ -83,6 +88,16 @@ export class RoadObjectService {
 		this.hideRoadObjectCorners( roadObject );
 
 		road.removeRoadObjectById( roadObject.attr_id );
+
+	}
+
+	removeRoadObjectV2 ( roadObject: TvRoadObject ): void {
+
+		const road = this.findRoadByRoadObject( roadObject );
+
+		if ( !road ) return;
+
+		this.removeRoadObject( road, roadObject );
 
 	}
 
@@ -257,6 +272,35 @@ export class RoadObjectService {
 
 		return roadObject.markings.find( marking => marking.cornerReferences.includes( corner.attr_id ) );
 
+	}
+
+	findRoadByRoadObject ( roadObject: TvRoadObject ): TvRoad {
+
+		return this.map.map.getRoads().find( road => road.getRoadObjects().includes( roadObject ) );
+
+	}
+
+	findRoadObjectByRepeat ( objectRepeat: TvObjectRepeat ): TvRoadObject {
+
+		const roads = this.map.map.getRoads();
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const road = roads[ i ];
+
+			const objects = road.getRoadObjects();
+
+			for ( let j = 0; j < objects.length; j++ ) {
+
+				const object = objects[ j ];
+
+				if ( object.repeats.includes( objectRepeat ) ) {
+
+					return object;
+
+				}
+			}
+		}
 	}
 
 }

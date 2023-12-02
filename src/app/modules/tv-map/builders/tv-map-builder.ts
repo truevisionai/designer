@@ -61,7 +61,7 @@ export class TvMapBuilder {
 	 * @param buildJunctions
 	 * @deprecated
 	 */
-	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): any {
+	static buildRoad ( parent: GameObject, road: TvRoad, buildJunctions = true ): GameObject {
 
 		// if ( road.isJunction ) return;
 
@@ -87,6 +87,8 @@ export class TvMapBuilder {
 		this.buildRoadSignals( road );
 
 		parent.add( road.gameObject );
+
+		return road.gameObject;
 
 	}
 

@@ -10,7 +10,7 @@ import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { CommandHistory } from 'app/services/command-history';
 import { EntityManager } from 'app/managers/entity-manager';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
-import { DynamicFileInspectorComponent, DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
 import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
@@ -46,9 +46,9 @@ export class InspectorFactoryService {
 
 	setAssetInspector ( asset: AssetNode ) {
 
-		const instance = AssetDatabase.getInstance( asset.metadata.guid );
-
 		if ( asset.type === AssetType.TEXTURE ) {
+
+			const instance = AssetDatabase.getInstance( asset.metadata.guid );
 
 			AppInspector.setInspector( TextureInspector, {
 				texture: instance,
@@ -57,12 +57,16 @@ export class InspectorFactoryService {
 
 		} else if ( asset.type === AssetType.MATERIAL ) {
 
+			const instance = AssetDatabase.getInstance( asset.metadata.guid );
+
 			AppInspector.setInspector( MaterialInspector, {
 				material: instance,
 				guid: asset.metadata.guid
 			} );
 
 		} else if ( asset.type === AssetType.ROAD_STYLE ) {
+
+			const instance = AssetDatabase.getInstance( asset.metadata.guid );
 
 			AppInspector.setInspector( RoadStyleInspector, {
 				roadStyle: instance,
@@ -71,7 +75,7 @@ export class InspectorFactoryService {
 
 		} else {
 
-			new SetInspectorCommand( DynamicFileInspectorComponent, asset ).execute();
+			AppInspector.setInspector( AssetInspectorComponent, asset );
 
 		}
 

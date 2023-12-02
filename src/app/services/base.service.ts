@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { GameObject } from 'app/core/game-object';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 
@@ -12,8 +13,10 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 } )
 export abstract class BaseService {
 
-	rebuildRoad ( road: TvRoad ) {
-		TvMapBuilder.rebuildRoad( road );
+	rebuildRoad ( road: TvRoad ): GameObject {
+
+		return TvMapBuilder.rebuildRoad( road );
+
 	}
 
 }

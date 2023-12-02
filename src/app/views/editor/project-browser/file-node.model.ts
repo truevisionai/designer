@@ -35,6 +35,12 @@ export class AssetNode {
 	) {
 	}
 
+	get guid () {
+
+		return this.metadata?.guid;
+
+	}
+
 	get extension (): string {
 
 		return this.path.split( '.' ).pop();

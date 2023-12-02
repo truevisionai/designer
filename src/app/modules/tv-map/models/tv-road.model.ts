@@ -783,6 +783,8 @@ export class TvRoad {
 
 	addRoadObjectInstance ( roadObject: TvRoadObject ) {
 
+		if ( this.objects.object.includes( roadObject ) ) return;
+
 		roadObject.road = this;
 
 		this._objects.object.push( roadObject );

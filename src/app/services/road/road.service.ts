@@ -18,6 +18,7 @@ import { TvMapInstance } from "../../modules/tv-map/services/tv-map-instance";
 import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
 	providedIn: 'root'
@@ -167,10 +168,11 @@ export class RoadService {
 
 	}
 
-	updateRoadNodes ( road: TvRoad ) {
+	updateRoadNodes ( road: TvRoad, show = true ) {
 
 		this.hideRoadNodes( road );
-		this.showRoadNodes( road );
+
+		if ( show ) this.showRoadNodes( road );
 
 	}
 
@@ -202,13 +204,23 @@ export class RoadService {
 
 	}
 
-	rebuildRoad ( road: TvRoad ): void {
+	rebuildRoad ( road: TvRoad, showNodes = true ): void {
 
-		if ( road.spline.controlPoints.length < 2 ) return;
+		this.buildSpline( road.spline, showNodes );
 
-		console.debug( 'regen', road );
+	}
 
-		road.spline?.getRoadSegments().forEach( segment => {
+	buildRoad ( road: TvRoad ): void {
+
+		this.rebuildRoad( road, false );
+
+	}
+
+	buildSpline ( spline: AbstractSpline, showNodes = true ): void {
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		spline.getRoadSegments().forEach( segment => {
 
 			if ( segment.roadId == -1 ) return;
 
@@ -218,7 +230,7 @@ export class RoadService {
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			this.updateRoadNodes( road );
+			this.updateRoadNodes( road, showNodes );
 
 			this.baseService.rebuildRoad( road );
 

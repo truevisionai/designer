@@ -29,8 +29,6 @@ export class TextObjectService {
 
 		const shapes = this.font.generateShapes( text, size );
 
-		console.log( shapes );
-
 		const geometry = new ShapeGeometry( shapes );
 
 		geometry.computeBoundingBox();

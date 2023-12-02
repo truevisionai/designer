@@ -18,6 +18,20 @@ export class TvObjectRepeat {
 
 	public targetLane: TvLane;
 
+	/**
+	 *
+	 * @param s s-coordinate of start position, overrides the corresponding argument in the original <object> record
+	 * @param length Length of the repeat area, along the reference line in s-direction.
+	 * @param distance Distance between two instances of the object; If this value is zero, then the object is treated like a continuous feature, for example, a guard rail, a wall, etc.
+	 * @param tStart Lateral offset of objects reference point at @s
+	 * @param tEnd Lateral offset of object’s reference point at @s + @length
+	 * @param widthStart
+	 * @param widthEnd
+	 * @param heightStart
+	 * @param heightEnd
+	 * @param zOffsetStart
+	 * @param zOffsetEnd
+	 */
 	constructor (
 		s: number,
 		length: number,

@@ -7,7 +7,7 @@ import { ScenarioService } from 'app/modules/scenario/services/scenario.service'
 import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
 import { SceneImporterService } from './scene-importer.service';
 import { StorageService } from 'app/io/storage.service';
-import { MapService } from 'app/services/map.service';
+import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,7 +22,7 @@ export class ImporterService {
 		private openDriveService: OpenDriveService,
 		private sceneImporter: SceneImporterService,
 		private scenarioService: ScenarioService,		// dont remove required for import
-		private mapService: MapService,
+		private sceneFileService: TvSceneFileService,
 	) {
 	}
 
@@ -34,13 +34,7 @@ export class ImporterService {
 
 	async importScene ( path: string ) {
 
-		const contents = await this.storageService.readAsync( path, );
-
-		const map = this.sceneImporter.import( contents );
-
-		// TODO: pass this to builder
-
-		this.mapService.map = map;
+		this.sceneFileService.openFromPath( path );
 
 	}
 

@@ -4,6 +4,7 @@
 
 import { EventEmitter, Type } from '@angular/core';
 import { ComponentItem, IComponent } from './game-object';
+import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class AppInspector {
 
@@ -31,6 +32,12 @@ export class AppInspector {
 		this.componentItem = new ComponentItem( component, data );
 
 		this.inspectorChanged.emit( this.componentItem );
+
+	}
+
+	public static setDynamicInspector ( data: any ) {
+
+		this.setInspector( DynamicInspectorComponent, data );
 
 	}
 

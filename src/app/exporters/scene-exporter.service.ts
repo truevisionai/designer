@@ -768,24 +768,17 @@ export class SceneExporterService {
 
 	}
 
-	writeObjects ( xmlNode, road: TvRoad ) {
+	writeObjects ( xmlNode: XmlElement, road: TvRoad ) {
 
 		xmlNode.objects = {
-			object: []
+			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
 		};
 
-		for ( let i = 0; i < road.getRoadObjectCount(); i++ ) {
-
-			const roadObject = road.getRoadObject( i );
-
-			this.writeObject( xmlNode.objects, roadObject );
-
-		}
 	}
 
-	writeObject ( xmlNode: XmlElement, roadObject: TvRoadObject ) {
+	writeRoadObject ( roadObject: TvRoadObject ): XmlElement {
 
-		const nodeRoadObject = {
+		const xml = {
 
 			// Attributes
 			attr_type: roadObject.attr_type,
@@ -806,26 +799,27 @@ export class SceneExporterService {
 			},
 		};
 
-		roadObject.zOffset ? nodeRoadObject[ 'attr_zOffset' ] = roadObject.zOffset : null;
-		roadObject.validLength ? nodeRoadObject[ 'attr_validLength' ] = roadObject.validLength : null;
-		roadObject.orientation ? nodeRoadObject[ 'attr_orientation' ] = roadObject.orientation : null;
-		roadObject.length ? nodeRoadObject[ 'attr_length' ] = roadObject.length : null;
-		roadObject.width ? nodeRoadObject[ 'attr_width' ] = roadObject.width : null;
-		roadObject.radius ? nodeRoadObject[ 'attr_radius' ] = roadObject.radius : null;
-		roadObject.height ? nodeRoadObject[ 'attr_height' ] = roadObject.height : null;
-		roadObject.hdg ? nodeRoadObject[ 'attr_hdg' ] = roadObject.hdg : null;
-		roadObject.pitch ? nodeRoadObject[ 'attr_pitch' ] = roadObject.pitch : null;
-		roadObject.roll ? nodeRoadObject[ 'attr_roll' ] = roadObject.roll : null;
+		roadObject.zOffset ? xml[ 'attr_zOffset' ] = roadObject.zOffset : null;
+		roadObject.validLength ? xml[ 'attr_validLength' ] = roadObject.validLength : null;
+		roadObject.orientation ? xml[ 'attr_orientation' ] = roadObject.orientation : null;
+		roadObject.length ? xml[ 'attr_length' ] = roadObject.length : null;
+		roadObject.width ? xml[ 'attr_width' ] = roadObject.width : null;
+		roadObject.radius ? xml[ 'attr_radius' ] = roadObject.radius : null;
+		roadObject.height ? xml[ 'attr_height' ] = roadObject.height : null;
+		roadObject.hdg ? xml[ 'attr_hdg' ] = roadObject.hdg : null;
+		roadObject.pitch ? xml[ 'attr_pitch' ] = roadObject.pitch : null;
+		roadObject.roll ? xml[ 'attr_roll' ] = roadObject.roll : null;
+		roadObject.assetGuid ? xml[ 'attr_assetGuid' ] = roadObject.assetGuid : null;
 
-		this.writeObjectRepeat( nodeRoadObject, roadObject );
+		this.writeObjectRepeat( xml, roadObject );
 
-		this.writeObjectMaterial( nodeRoadObject, roadObject );
+		this.writeObjectMaterial( xml, roadObject );
 
-		this.writeObjectValidity( nodeRoadObject, roadObject );
+		this.writeObjectValidity( xml, roadObject );
 
-		this.writeObjectParkingSpace( nodeRoadObject, roadObject );
+		this.writeObjectParkingSpace( xml, roadObject );
 
-		xmlNode.object.push( nodeRoadObject );
+		return xml
 	}
 
 	writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
@@ -870,6 +864,8 @@ export class SceneExporterService {
 				attr_heightEnd: repeat.heightEnd,
 				attr_zOffsetStart: repeat.zOffsetStart,
 				attr_zOffsetEnd: repeat.zOffsetEnd,
+				attr_lengthStart: repeat.lengthStart,
+				attr_lengthEnd: repeat.lengthEnd,
 			} );
 		}
 	}

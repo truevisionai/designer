@@ -2,16 +2,14 @@ import { Injectable } from '@angular/core';
 import { INode } from 'app/modules/three-js/objects/i-selectable';
 import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from 'app/services/scene.service';
 import { Maths } from 'app/utils/maths';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, Color, Line, LineBasicMaterial, Object3D, Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { Object3DArrayMap } from './lane-width/object-3d-map';
 
 export class DebugLine<T> extends Line2 implements INode {
 
@@ -68,9 +66,29 @@ export class DebugLine<T> extends Line2 implements INode {
 } )
 export class LaneReferenceLineService {
 
+	private objectMap = new Object3DArrayMap<TvRoad, Object3D[]>();
+
 	constructor () { }
 
-	showWidthNodeLines ( road: TvRoad ) {
+	showRoadLaneLines ( road: TvRoad, stepSize = 1.0, zOffset = 0.0, width = 2 ) {
+
+		const lines = this.createRoadLaneLines( road, stepSize, zOffset, width );
+
+		lines.forEach( line => {
+
+			this.objectMap.addItem( road, line );
+
+		} );
+
+	}
+
+	hideRoadLaneLines ( road: TvRoad ) {
+
+		this.objectMap.removeKey( road );
+
+	}
+
+	createRoadLaneLines ( road: TvRoad, stepSize = 1.0, zOffset = 0.0, width = 2 ) {
 
 		const lines: Object3D[] = [];
 
@@ -87,37 +105,37 @@ export class LaneReferenceLineService {
 					// get s of next lane width node
 					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.getPoints( lane, sStart, sEnd );
+					const points = this.getPoints( lane, sStart, sEnd, stepSize );
 
-					// const geometry = new BufferGeometry().setFromPoints( points );
-					const geometry = new LineGeometry()
-						.setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
-
-					// random color for now
-					// const color = Math.random() * 0xffffff;
-
-					const material = new LineMaterial( {
-						color: COLOR.CYAN,
-						linewidth: 2,
-						resolution: new Vector2( window.innerWidth, window.innerHeight ),
-					} );
-
-					const line = new DebugLine( lane.width, geometry, material );
-
-					line.renderOrder = 999;
+					const line = this.createLine( lane, points, zOffset, width );
 
 					lines.push( line );
 
-					SceneService.addToolObject( line );
-
 				}
-
 
 			} );
 
 		} );
 
 		return lines;
+
+	}
+
+	createLine ( target: any, points: Vector3[], zOffset = 0.0, lineWidth = 2 ) {
+
+		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + zOffset ] ) );
+
+		const material = new LineMaterial( {
+			color: COLOR.CYAN,
+			linewidth: lineWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+		} );
+
+		const line = new DebugLine( target, geometry, material );
+
+		line.renderOrder = 999;
+
+		return line;
 
 	}
 
@@ -134,28 +152,6 @@ export class LaneReferenceLineService {
 		points.push( this.getPoint( lane, sEnd - Maths.Epsilon ) );
 
 		return points;
-	}
-
-	private getLaneSectionPoints ( laneSection: TvLaneSection, lane: TvLane, ) {
-
-		return this.getPoints( lane, laneSection.s, laneSection.s + laneSection.length );
-
-		// const points: TvPosTheta[] = [];
-
-		// let s = laneSection.s;
-
-		// while ( s <= laneSection.endS ) {
-
-		// 	points.push( this.getPoint( s, laneSection, lane ) )
-
-		// 	s++;
-		// }
-
-		// s = laneSection.endS - Maths.Epsilon;
-
-		// points.push( this.getPoint( s, laneSection, lane ) );
-
-		// return points;
 	}
 
 	private getPoint ( lane: TvLane, s: number ) {

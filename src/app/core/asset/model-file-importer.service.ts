@@ -17,7 +17,7 @@ import { ThreeJsUtils } from '../utils/threejs-utils';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AssetImporterService {
+export class ModelFileImporterService {
 
 	private fs;
 	private path;

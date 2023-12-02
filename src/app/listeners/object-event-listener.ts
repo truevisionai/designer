@@ -2,6 +2,7 @@ import { AssetService } from "app/core/asset/asset.service";
 import { RoadStyle } from "app/core/asset/road.style";
 import { MapEvents } from "app/events/map-events";
 import { Manager } from "app/managers/manager";
+import { PropManager } from "app/managers/prop-manager";
 import { RoadStyleManager } from "app/managers/road-style.manager";
 import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
 import { BaseTool } from "app/tools/base-tool";
@@ -42,6 +43,9 @@ export class ObjectEventListener extends Manager {
 				RoadStyleManager.setCurrentStyle( instance as RoadStyle );
 				break;
 
+			case AssetType.MODEL:
+				PropManager.setProp( asset as any );
+				break;
 
 		}
 

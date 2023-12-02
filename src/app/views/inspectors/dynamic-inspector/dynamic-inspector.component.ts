@@ -256,29 +256,3 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 	}
 
 }
-
-@Component( {
-	selector: 'app-dynamic-file-inspector',
-	templateUrl: './dynamic-inspector.component.html',
-	styleUrls: [ './dynamic-inspector.component.scss' ]
-} )
-export class DynamicFileInspectorComponent extends DynamicInspectorComponent implements OnDestroy {
-
-	@Input() data: AssetNode;
-
-	constructor (
-		componentFactoryResolver: ComponentFactoryResolver,
-		private assetSerice: AssetService,
-	) {
-		super( componentFactoryResolver );
-	}
-
-	ngOnDestroy (): void {
-
-		super.ngOnDestroy();
-
-		this.assetSerice.saveAsset( this.data );
-
-	}
-
-}

@@ -26,7 +26,6 @@ import { SharedModule } from 'app/views/shared/shared.module';
 import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/game-object-field.component';
 import {
 	DynamicArrayInspectorComponent,
-	DynamicFileInspectorComponent,
 	DynamicInspectorComponent,
 	FieldHostDirective
 } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
@@ -89,7 +88,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
 		FieldHostDirective,
-		DynamicFileInspectorComponent,
 		EnvironmentInspectorComponent,
 		AssetInspectorComponent,
 	],
@@ -101,7 +99,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		CoreModule,
 		FlexLayoutModule,
 		FormsModule,
-
 		MatSidenavModule,
 		MatToolbarModule,
 		MatButtonModule,
@@ -126,7 +123,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		ObjectPreviewComponent,
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
-		DynamicFileInspectorComponent,
+		AssetInspectorComponent,
 	],
 	entryComponents: [
 		LaneInspectorComponent,
@@ -150,10 +147,9 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
-		DynamicArrayInspectorComponent,
-		DynamicFileInspectorComponent,
-		EnvironmentInspectorComponent,
 		AssetInspectorComponent,
+		DynamicArrayInspectorComponent,
+		EnvironmentInspectorComponent,
 	]
 } )
 export class TvMapModule {

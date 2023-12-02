@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetImporterService } from 'app/core/asset/asset-importer.service';
+import { ModelFileImporterService } from 'app/core/asset/model-file-importer.service';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { SceneService } from 'app/services/scene.service';
 import { Object3D, Vector3 } from 'three';
@@ -15,7 +15,7 @@ import { SnackBar } from '../services/snack-bar.service';
 } )
 export class ModelImporterService {
 
-	constructor ( private assetImporter: AssetImporterService ) {
+	constructor ( private modelImporter: ModelFileImporterService ) {
 	}
 
 	public import ( path: string, filename?: string, extension?: string, position?: Vector3, metadata?: Metadata ) {
@@ -66,7 +66,7 @@ export class ModelImporterService {
 
 	private load3DFile ( path: string, callback: ( object: Object3D ) => void ): void {
 
-		this.assetImporter.import( path, ( object ) => {
+		this.modelImporter.import( path, ( object ) => {
 
 			callback( object );
 

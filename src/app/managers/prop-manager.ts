@@ -4,6 +4,7 @@
 
 import { DynamicMeta } from 'app/core/asset/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
 export class PropManager {
 
@@ -18,6 +19,12 @@ export class PropManager {
 	static getProp (): DynamicMeta<PropModel> {
 
 		return this.prop;
+
+	}
+
+	static getAssetNode (): AssetNode {
+
+		return this.prop as any;
 
 	}
 }

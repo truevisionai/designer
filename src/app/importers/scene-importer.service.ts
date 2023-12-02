@@ -15,7 +15,6 @@ import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenari
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
@@ -57,10 +56,10 @@ import { TvConsole } from '../core/utils/console';
 import { SnackBar } from '../services/snack-bar.service';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { RoadService } from '../services/road/road.service';
 import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "./xml.element";
+import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
 
 @Injectable( {
 	providedIn: 'root'
@@ -71,7 +70,6 @@ export class SceneImporterService extends AbstractReader {
 
 	constructor (
 		private threeService: ThreeService,
-		private roadService: RoadService,
 	) {
 		super();
 	}
@@ -156,45 +154,11 @@ export class SceneImporterService extends AbstractReader {
 
 			this.map.addSpline( spline );
 
-			spline.updateRoadSegments();
-
-			spline.getRoadSegments().forEach( segment => {
-
-				if ( segment.roadId == -1 ) return;
-
-				const road = this.map.getRoadById( segment.roadId );
-
-				road.spline = spline;
-
-				this.roadService.updateSplineGeometries( road );
-
-			} );
-
 		} );
 
-		this.map.roads.forEach( road => {
-
-			if ( road.isJunction ) {
-
-				road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
-
-			}
-
-			// if ( road.successor && road.successor.elementType === "road" ) {
-
-			//     const successor = this.openDrive.getRoadById( road.successor.elementId );
-
-			//     successor.updated.subscribe( i => road.onSuccessorUpdated( i ) );
-			// }
-
-			// if ( road.predecessor && road.predecessor.elementType === "road" ) {
-
-			//     const predecessor = this.openDrive.getRoadById( road.predecessor.elementId );
-
-			//     predecessor.updated.subscribe( i => road.onPredecessorUpdated( i ) );
-			// }
-
-		} );
+		// this.map.getRoads().filter( road => road.isJunction ).forEach( road => {
+		// 	road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
+		// } );
 
 		this.readAsOptionalArray( xml.prop, xml => {
 
@@ -221,26 +185,6 @@ export class SceneImporterService extends AbstractReader {
 		} );
 
 		this.readEnvironment( xml.environment );
-
-		this.map.roads.forEach( road => {
-
-			road.spline.updateRoadSegments();
-
-			road.spline.getRoadSegments().forEach( segment => {
-
-				if ( segment.roadId == -1 ) return;
-
-				const road = this.map.getRoadById( segment.roadId );
-
-				this.roadService.updateSplineGeometries( road );
-
-			} );
-
-			TvMapBuilder.buildRoad( this.map.gameObject, road );
-
-		} );
-
-		SceneService.addToMain( this.map.gameObject );
 
 	}
 
@@ -319,7 +263,7 @@ export class SceneImporterService extends AbstractReader {
 
 		if ( xml.objects != null && xml.objects !== '' ) this.parseObjects( road, xml.objects );
 
-		// if ( xml.signals != null && xml.signals !== '' ) this.readSignals( road, xml.signals );
+		if ( xml.signals != null && xml.signals !== '' ) this.parseSignals( road, xml.signals );
 
 		// if ( xml.surface != null && xml.surface !== '' ) this.readSurface( road, xml.surface );
 
@@ -1126,6 +1070,8 @@ export class SceneImporterService extends AbstractReader {
 
 		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
 
+		roadObject.assetGuid = xmlElement.attr_assetGuid;
+
 		readXmlArray( xmlElement.outlines?.outline, xml => {
 
 			roadObject.outlines.push( this.parseObjectOutline( xml, road ) );
@@ -1140,7 +1086,11 @@ export class SceneImporterService extends AbstractReader {
 
 		roadObject.userData = this.parseUserData( xmlElement );
 
-		this.parseRoadObjectRepeatArray( roadObject, xmlElement );
+		readXmlArray( xmlElement.repeat, xml => {
+
+			roadObject.addRepeatObject( this.parseRoadObjectRepeat( roadObject, xml ) );
+
+		} )
 
 		return roadObject;
 
@@ -1197,29 +1147,7 @@ export class SceneImporterService extends AbstractReader {
 		return corner;
 	}
 
-	private parseRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
-
-		if ( xmlElement.repeat != null && xmlElement.repeat !== '' ) {
-
-			if ( Array.isArray( xmlElement.repeat ) ) {
-
-				for ( let i = 0; i < xmlElement.repeat.length; i++ ) {
-
-					this.parseRoadObjectRepeat( roadObject, xmlElement.repeat[ i ] );
-
-				}
-
-			} else {
-
-				this.parseRoadObjectRepeat( roadObject, xmlElement );
-
-			}
-
-		}
-
-	}
-
-	private parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {
+	private parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): TvObjectRepeat {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const length = parseFloat( xmlElement.attr_length );
@@ -1233,8 +1161,12 @@ export class SceneImporterService extends AbstractReader {
 		const zOffsetStart = parseFloat( xmlElement.attr_zOffsetStart );
 		const zOffsetEnd = parseFloat( xmlElement.attr_zOffsetEnd );
 
-		roadObject.addRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
+		const repeat = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
+		repeat.lengthStart = parseFloat( xmlElement.attr_lengthStart );
+		repeat.lengthEnd = parseFloat( xmlElement.attr_lengthEnd );
+
+		return repeat;
 	}
 
 	private parseSignals ( road: TvRoad, xmlElement: XmlElement ) {

@@ -1,15 +1,22 @@
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
-import { ObjectTypes } from '../modules/tv-map/models/tv-common';
+import { ObjectTypes, TvSide } from '../modules/tv-map/models/tv-common';
 import { MarkingObjectBuilder } from './marking-object.builder';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../modules/tv-map/models/tv-road.model";
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
+import { Maths } from 'app/utils/maths';
+import { SceneService } from 'app/services/scene.service';
+import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadObjectBuilder {
+
+	constructor () { }
 
 	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
@@ -23,29 +30,153 @@ export class RoadObjectBuilder {
 			case ObjectTypes.parkingSpace:
 				return this.buildParkingSpaceObject( road, roadObject );
 
+			case ObjectTypes.tree:
+				return this.buildTreeObject( road, roadObject );
+
+			case ObjectTypes.vegetation:
+				return this.buildVegetationObject( road, roadObject );
+
 		}
+
+	}
+
+	buildVegetationObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	buildTreeObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		if ( !roadObject.assetGuid ) {
+
+			TvConsole.error( 'Tree object with asset guid not implemented yet' );
+
+			return;
+		}
+
+		const roadObjectMesh = new Object3D();
+
+		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
+
+			const repeat = roadObject.getRepeat( i );
+
+			for ( let ds = 0; ds < repeat.length; ds += repeat.distance ) {
+
+				const s = repeat.s + ds;
+
+				const fraction = ds / repeat.length;
+
+				const width = repeat.widthStart && repeat.widthEnd ?
+					Maths.linearInterpolation( repeat.widthStart, repeat.widthEnd, fraction ) : roadObject.width;
+
+				const height = repeat.heightStart && repeat.heightEnd ?
+					Maths.linearInterpolation( repeat.heightStart, repeat.heightEnd, fraction ) : roadObject.height;
+
+				const zOffset = repeat.zOffsetStart && repeat.zOffsetEnd ?
+					Maths.linearInterpolation( repeat.zOffsetStart, repeat.zOffsetEnd, fraction ) : roadObject.zOffset;
+
+				const length = repeat.lengthStart && repeat.lengthEnd ?
+					Maths.linearInterpolation( repeat.lengthStart, repeat.lengthEnd, fraction ) : roadObject.length;
+
+				const t = repeat.tStart && repeat.tEnd ?
+					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
+
+				const posTheta = road.getPositionAt( s, t );
+
+				const repeatMesh = AssetDatabase.getInstance<Object3D>( roadObject.assetGuid )?.clone();
+
+				repeatMesh.name = 'repeat:' + i;
+
+				repeatMesh.position.copy( posTheta.position );
+
+				repeatMesh.position.z += zOffset;
+
+				roadObjectMesh.add( repeatMesh );
+
+			}
+
+		}
+
+		return roadObjectMesh;
+
 
 	}
 
 	private buildParkingSpaceObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		const posTheta = road.getPositionAt( roadObject.s, roadObject.t );
+		// const posTheta = road.getPositionAt( roadObject.s, roadObject.t );
 
 		const roadObjectMesh = new Object3D();
 
-		roadObjectMesh.name = 'object:' + roadObject.attr_type;
+		// roadObjectMesh.name = 'object:' + roadObject.attr_type;
 
-		roadObjectMesh.position.copy( posTheta.toVector3() );
+		// roadObjectMesh.position.copy( posTheta.toVector3() );
 
-		roadObjectMesh.position.z += roadObject.height / 2;
+		// roadObjectMesh.position.z += roadObject.height / 2;
 
-		roadObjectMesh.rotation.set( 0, 0, posTheta.hdg );
+		// roadObjectMesh.rotation.set( 0, 0, posTheta.hdg );
 
-		roadObject.markings.forEach( marking => {
+		// roadObject.markings.forEach( marking => {
 
-			roadObjectMesh.add( this.buildMarking( roadObject, marking ) );
+		// 	roadObjectMesh.add( this.buildMarking( roadObject, marking ) );
 
-		} )
+		// } )
+
+		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
+
+			const repeat = roadObject.getRepeat( i );
+
+			for ( let s = repeat.s; s < repeat.length; s += repeat.distance ) {
+
+				const fraction = s / repeat.length;
+
+				const width = repeat.widthStart && repeat.widthEnd ?
+					Maths.linearInterpolation( repeat.widthStart, repeat.widthEnd, fraction ) : roadObject.width;
+
+				const height = repeat.heightStart && repeat.heightEnd ?
+					Maths.linearInterpolation( repeat.heightStart, repeat.heightEnd, fraction ) : roadObject.height;
+
+				const zOffset = repeat.zOffsetStart && repeat.zOffsetEnd ?
+					Maths.linearInterpolation( repeat.zOffsetStart, repeat.zOffsetEnd, fraction ) : roadObject.zOffset;
+
+				const length = repeat.lengthStart && repeat.lengthEnd ?
+					Maths.linearInterpolation( repeat.lengthStart, repeat.lengthEnd, fraction ) : roadObject.length;
+
+				const t = repeat.tStart && repeat.tEnd ?
+					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
+
+				const posTheta = road.getPositionAt( s, t );
+
+				const repeatMesh = new Object3D();
+
+				repeatMesh.name = 'repeat:' + i;
+
+				repeatMesh.position.copy( posTheta.position );
+
+				repeatMesh.rotation.set( 0, 0, posTheta.hdg );
+
+				repeatMesh.position.z += height / 2;
+
+				roadObjectMesh.add( repeatMesh );
+
+				roadObject.markings.forEach( marking => {
+
+					if ( marking.side ) {
+
+						repeatMesh.add( this.buildMarking( road, roadObject, marking ) );
+
+					} else {
+
+						repeatMesh.add( this.buildMarking( road, roadObject, marking ) );
+
+					}
+
+				} );
+
+			}
+
+		}
 
 		return roadObjectMesh;
 
@@ -73,7 +204,7 @@ export class RoadObjectBuilder {
 
 		roadObject.markings.forEach( marking => {
 
-			roadObjectMesh.add( this.buildMarking( roadObject, marking ) );
+			roadObjectMesh.add( this.buildMarking( road, roadObject, marking ) );
 
 		} );
 
@@ -91,56 +222,83 @@ export class RoadObjectBuilder {
 		return bbox;
 	}
 
-	private buildMarking ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
+	private buildMarking ( road: TvRoad, roadObject: TvRoadObject, marking: TvObjectMarking ) {
 
 		const points: Vector3[] = [];
 
-		roadObject.outlines.forEach( outline => {
+		if ( marking.side != null && marking.side != TvSide.NONE && roadObject.attr_type == ObjectTypes.parkingSpace ) {
 
-			outline.cornerRoad.forEach( cornerRoad => {
+			const side = marking.side == TvSide.LEFT ? 1 : -1;
 
-				if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
+			const startPosition = new Vector3( -roadObject.width * 0.5 * side, -roadObject.length / 2, -roadObject.height / 2 );
+			const endPosition = new Vector3( -roadObject.width * 0.5 * side, roadObject.length / 2, -roadObject.height / 2 );
 
-					points.push( cornerRoad.position );
+			points.push( startPosition );
+			points.push( endPosition );
+
+		} else {
+
+			roadObject.outlines.forEach( outline => {
+
+				if ( outline.cornerRoad.length >= 2 ) {
+
+					outline.cornerRoad.forEach( cornerRoad => {
+
+						if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
+
+							points.push( cornerRoad.position );
+
+						}
+
+					} );
+
+				} else if ( outline.cornerLocal.length >= 2 ) {
+
+					outline.cornerLocal.forEach( cornerLocal => {
+
+						if ( marking.cornerReferences.includes( cornerLocal.attr_id ) ) {
+
+							const position = this.getCornerLocalPosition( road, roadObject, cornerLocal );
+
+							points.push( position );
+
+						}
+
+					} );
 
 				}
 
 			} );
 
-		} );
-
-		let geometry: BufferGeometry;
-
-		if ( points.length < 2 && marking.side != null && roadObject.attr_type == ObjectTypes.parkingSpace ) {
-
-			const side = marking.side == 'left' ? 1 : -1;
-
-			const startPosition = new Vector3( -roadObject.width * 0.5 * side, -roadObject.length / 2, -roadObject.height / 2 );
-			const endPosition = new Vector3( -roadObject.width * 0.5 * side, roadObject.length / 2, -roadObject.height / 2 );
-
-			// // If the bounding box is rotated, apply the same rotation to the start and end points
-			// if ( mesh ) startPosition.applyQuaternion( mesh.quaternion );
-			// if ( mesh ) endPosition.applyQuaternion( mesh.quaternion );
-
-			// if ( mesh ) startPosition.add( mesh.position );
-			// if ( mesh ) endPosition.add( mesh.position );
-
-			geometry = this.createGeometryFromPoint( marking, startPosition, endPosition );
-
-		} else {
-
-			const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
-
-			geometry = this.createGeometryFromCurve( marking, curve );
-
 		}
 
+		if ( points.length < 2 ) return;
+
+		const curve = new CatmullRomCurve3( points, false, 'catmullrom', 0 );
+
+		const geometry = this.createGeometryFromCurve( marking, curve );
 
 		const object3D = new Mesh( geometry, marking.material );
 
 		object3D.name = 'marking';
 
 		return object3D;
+	}
+
+	getCornerLocalPosition ( road: TvRoad, roadObject: TvRoadObject, cornerLocal: TvCornerLocal ) {
+
+		return new Vector3( cornerLocal.attr_u, cornerLocal.attr_v, cornerLocal.attr_z );
+
+		// u is positive to the right
+		// lateral position, positive to the left within the inertial x/y plane
+		const s = Math.min( 0, Math.max( roadObject.s + cornerLocal.attr_v, road.length ) );
+
+		// v is positive to the top
+		const t = roadObject.t - cornerLocal.attr_u;
+
+		const position = road.getPositionAt( s, t );
+
+		return position.position;
 	}
 
 	// with spline

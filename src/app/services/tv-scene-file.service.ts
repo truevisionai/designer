@@ -22,6 +22,7 @@ import { StorageService } from 'app/io/storage.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { FileUtils } from 'app/io/file-utils';
 import { ProjectService } from './project.service';
+import { SceneBuilderService } from './scene-builder.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -37,6 +38,7 @@ export class TvSceneFileService {
 		private storageService: StorageService,
 		private assetService: AssetService,
 		private projectService: ProjectService,
+		private sceneBuilder: SceneBuilderService,
 	) {
 	}
 
@@ -78,7 +80,8 @@ export class TvSceneFileService {
 
 		this.mapService.map = map;
 
-		TvMapBuilder.buildMap( this.mapService.map );
+		this.sceneBuilder.buildScene( this.mapService.map );
+
 	}
 
 	async showOpenWindow ( path?: string ) {
@@ -103,6 +106,12 @@ export class TvSceneFileService {
 		const contents = await this.storageService.readAsync( path );
 
 		this.setMap( this.sceneImporter.import( contents ) );
+
+		this.currentFile.path = path;
+
+		this.currentFile.name = FileUtils.getFilenameFromPath( path );
+
+		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
 		callback?.();
 

@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Mesh, Object3D } from 'three';
 import { ObjectTypes, TvOrientation, TvUserData } from '../tv-common';
 import { TvObjectMarking } from '../tv-object-marking';
 import { TvRoad } from '../tv-road.model';
@@ -18,6 +17,14 @@ export class TvRoadObject {
 	public static counter = 1;
 	public road: TvRoad;
 	public attr_type: ObjectTypes;
+	public outlines: TvObjectOutline[] = [];
+	public material: TvObjectMaterial;
+	public validity: TvLaneValidity[] = [];
+	public parkingSpace: TvParkingSpace;
+	public userData: TvUserData[] = [];
+	public name: string;
+	public assetGuid: string;
+
 	private attr_s: number;
 	private attr_t: number;
 	private attr_zOffset: number;
@@ -31,14 +38,11 @@ export class TvRoadObject {
 	private attr_pitch: number;
 	private attr_roll: number;
 	private repeat: TvObjectRepeat[] = [];
-
-	public outlines: TvObjectOutline[] = [];
-	public material: TvObjectMaterial;
-	public validity: TvLaneValidity[] = [];
-	public parkingSpace: TvParkingSpace;
-	public userData: TvUserData[] = [];
-	public name: string;
 	private _markings: TvObjectMarking[] = [];
+
+	get repeats (): TvObjectRepeat[] {
+		return this.repeat;
+	}
 
 	constructor (
 		type: ObjectTypes,
@@ -83,8 +87,16 @@ export class TvRoadObject {
 		return this.attr_s;
 	}
 
+	set s ( value: number ) {
+		this.attr_s = value;
+	}
+
 	get t (): number {
 		return this.attr_t;
+	}
+
+	set t ( value: number ) {
+		this.attr_t = value;
 	}
 
 	get zOffset (): number {
