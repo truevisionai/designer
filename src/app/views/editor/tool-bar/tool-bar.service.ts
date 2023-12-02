@@ -55,6 +55,8 @@ import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service'
 } )
 export class ToolBarService {
 
+	private height: number;
+
 	constructor (
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
@@ -152,4 +154,17 @@ export class ToolBarService {
 		CommandHistory.execute( new SetToolCommand( tool ) );
 
 	}
+
+	setToolbarHeight ( height: number ) {
+
+		this.height = height;
+
+	}
+
+	getToolbarHeight (): number {
+
+		return this.height;
+
+	}
+
 }

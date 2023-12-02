@@ -2,21 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
-import { SetToolCommand } from 'app/commands/set-tool-command';
-import { ToolFactory } from 'app/factories/tool-factory';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../tools/base-tool';
 import { ToolManager } from '../../../tools/tool-manager';
 import { ThreeService } from '../../../modules/three-js/three.service';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { SceneService } from 'app/services/scene.service';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
-import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
+import { MatToolbar } from '@angular/material/toolbar';
 
 class IToolMenu {
 	id: string;
@@ -39,7 +36,7 @@ class IToolMenu {
 	templateUrl: './tool-bar.component.html',
 	styleUrls: [ './tool-bar.component.css' ],
 } )
-export class ToolBarComponent implements OnInit {
+export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	currentTool: BaseTool;
 
@@ -48,6 +45,8 @@ export class ToolBarComponent implements OnInit {
 	selectedTool: any;
 
 	@ViewChild( 'popover', { static: false } ) popover: SatPopover;
+
+	@ViewChild( 'toolbar', { static: false } ) toolbar: MatToolbar;
 
 	private tools: IToolMenu[] = [
 		{
@@ -461,6 +460,12 @@ export class ToolBarComponent implements OnInit {
 			this.currentTool = tool;
 
 		} );
+
+	}
+
+	ngAfterViewInit (): void {
+
+		this.toolBarService.setToolbarHeight( this.toolbar._elementRef.nativeElement.offsetHeight );
 
 	}
 
