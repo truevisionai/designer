@@ -7,7 +7,6 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { DragDropData } from 'app/services/drag-drop.service';
 import { SceneService } from 'app/services/scene.service';
-import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/importers/importer.service';
@@ -15,16 +14,17 @@ import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from 'three';
+import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Texture, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
 import { TvMesh } from './objects/TvMesh';
-import { ToolFactory } from 'app/factories/tool-factory';
-import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from '../../commands/set-value-command';
 import { RoadStyle } from "../../core/asset/road.style";
-import { RoadService } from 'app/services/road/road.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { PropInstance } from 'app/core/models/prop-instance.model';
+import { ToolType } from 'app/tools/tool-types.enum';
 
 @Injectable( {
 	providedIn: 'root'
@@ -150,7 +150,7 @@ export class ViewportImporterService {
 
 	}
 
-	importRoadStyle ( asset: AssetNode, position: Vector3) {
+	importRoadStyle ( asset: AssetNode, position: Vector3 ) {
 
 		const road = TvMapQueries.getRoadByCoords( position.x, position.y );
 
@@ -166,17 +166,25 @@ export class ViewportImporterService {
 
 	importModel ( asset: AssetNode, position: Vector3 ) {
 
-		// PropManager.setProp( metadata );
+		const tool = ToolManager.currentTool;
 
-		if ( ToolManager.currentTool instanceof PropPointTool ) {
+		if ( tool.toolType == ToolType.PropPoint ) {
 
-			// ToolManager.currentTool.shapeEditor.addControlPoint( position );
+			PropManager.setProp( asset as any );
 
-		} else {
+			const object = AssetDatabase.getInstance<Object3D>( asset.guid );
 
-			// ToolManager.currentTool = ToolFactory.createTool( ToolType.PropPoint );
+			if ( !object ) return;
 
-			// ( ToolManager.currentTool as PropPointTool ).shapeEditor.addControlPoint( position );
+			const prop = new PropInstance( asset.guid, object.clone() )
+
+			prop.copyPosition( position );
+
+			const addCommand = new AddObjectCommand( prop );
+
+			const selectCommand = new SelectObjectCommand( prop );
+
+			CommandHistory.executeMany( addCommand, selectCommand );
 
 		}
 

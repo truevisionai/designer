@@ -135,7 +135,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			this.initPreview( this.file.metadata );
+			this.initPreview( this.file );
 
 		} catch ( error ) {
 
@@ -384,12 +384,10 @@ export class FileComponent implements OnInit {
 
 	}
 
-	private initPreview ( metadata: Metadata ) {
+	private initPreview ( asset: AssetNode ) {
 
-		if ( metadata.importer == MetaImporter.SCENE ) return;
+		if ( asset.type == AssetType.SCENE ) return;
 
-		if ( metadata.preview ) return;
-
-		this.previewService.updatePreview( metadata );
+		this.previewService.updatePreview( asset );
 	}
 }

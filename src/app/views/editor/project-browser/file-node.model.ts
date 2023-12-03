@@ -5,9 +5,6 @@
 import { FileExtension } from 'app/io/FileExtension';
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
 
-
-
-
 export enum AssetType {
 	DIRECTORY,
 	FILE,
@@ -22,7 +19,8 @@ export enum AssetType {
 	OPENDRIVE,
 	OPENSCENARIO,
 	PREFAB,
-	GEOMETRY
+	GEOMETRY,
+	ROAD_MARKING
 }
 
 /** Flat node with expandable and level information */
@@ -45,6 +43,18 @@ export class AssetNode {
 	get guid () {
 
 		return this.metadata?.guid;
+
+	}
+
+	get preview () {
+
+		return this.metadata?.preview;
+
+	}
+
+	set preview ( value ) {
+
+		this.metadata.preview = value;
 
 	}
 

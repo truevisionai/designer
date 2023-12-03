@@ -14,7 +14,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { Object3D } from 'three';
+import { Object3D, Vector3 } from 'three';
 import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
 import { AnyLaneMovingStrategy } from "app/core/snapping/move-strategies/any-lane.moving.strategy";
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
@@ -113,7 +113,7 @@ export class PropPointTool extends BaseTool {
 
 		if ( !this.prop ) return;
 
-		const prop = this.tool.createPropInstance( this.prop, e.point );
+		const prop = this.createPropInstance( this.prop, e.point );
 
 		const addCommand = new AddObjectCommand( prop );
 
@@ -122,6 +122,12 @@ export class PropPointTool extends BaseTool {
 		CommandHistory.executeMany( addCommand, selectCommand );
 
 		this.tool.base.setHint( 'Add more control points or drag control points to modify' );
+
+	}
+
+	createPropInstance ( prop: PropInstance, point: Vector3 ) {
+
+		return this.tool.createPropInstance( prop, point );
 
 	}
 

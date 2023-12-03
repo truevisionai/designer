@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { GameObject } from 'app/core/game-object';
-import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
 import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
@@ -17,11 +16,11 @@ import * as THREE from 'three';
 import {
 	Box3,
 	BoxGeometry,
+	BufferGeometry,
 	Color,
 	Material,
 	Mesh,
-	MeshBasicMaterial,
-	MeshLambertMaterial,
+	MeshStandardMaterial,
 	Object3D,
 	PerspectiveCamera,
 	PlaneGeometry,
@@ -36,6 +35,7 @@ import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
 import { ModelLoader } from 'app/loaders/model.loader';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -59,9 +59,9 @@ export class PreviewService {
 	private sphere: Mesh;
 	private plane: Mesh;
 
-	private cubeMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
-	private sphereMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
-	private planeMaterial = new MeshBasicMaterial( { color: 0x00ff00 } );
+	private cubeMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
+	private sphereMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
+	private planeMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
@@ -172,77 +172,69 @@ export class PreviewService {
 		this.sphere.visible = false;
 	}
 
-	updatePreview ( metadata: Metadata ) {
+	updatePreview ( asset: AssetNode ) {
 
-		if ( metadata.importer === MetaImporter.MATERIAL ) {
+		if ( asset.type === AssetType.MATERIAL ) {
 
-			const instance = AssetDatabase.getInstance( metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.getMaterialPreview( instance as Material );
-
-		} else if ( metadata.importer === MetaImporter.SIGN ) {
-
-			const instance = AssetDatabase.getInstance( metadata.guid );
+			const instance = AssetDatabase.getInstance<Material>( asset.guid );
 
 			if ( !instance ) return;
 
-			metadata.preview = this.getSignPreview( instance as TvRoadSign );
+			asset.preview = this.getMaterialPreview( instance );
 
-		} else if ( metadata.importer === MetaImporter.MODEL ) {
+		} else if ( asset.type === AssetType.ROAD_SIGN ) {
 
-			this.modelLoader.load( metadata.path, ( obj ) => {
-
-				metadata.preview = this.getModelPreview( obj );
-
-				AssetDatabase.setInstance( metadata.guid, obj );
-
-			}, ( error ) => {
-
-				console.log( error );
-
-			} );
-
-		} else if ( metadata.importer === MetaImporter.PREFAB ) {
-
-			const prefab = AssetDatabase.getInstance<TvPrefab>( metadata.guid );
-
-			metadata.preview = this.getModelPreview( prefab );
-
-			AssetDatabase.setInstance( metadata.guid, prefab );
-
-		} else if ( metadata.importer === MetaImporter.ROAD_STYLE ) {
-
-			const instance = AssetDatabase.getInstance( metadata.guid );
+			const instance = AssetDatabase.getInstance<TvRoadSign>( asset.guid );
 
 			if ( !instance ) return;
 
-			metadata.preview = this.getRoadStylePreview( instance as RoadStyle );
+			asset.preview = this.getSignPreview( instance );
 
-		} else if ( metadata.importer === MetaImporter.ROAD_MARKING ) {
+		} else if ( asset.type === AssetType.MODEL ) {
 
-			const instance = AssetDatabase.getInstance( metadata.guid );
-
-			if ( !instance ) return;
-
-			metadata.preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
-
-		} else if ( metadata.importer === MetaImporter.GEOMETRY ) {
-
-			const instance = AssetDatabase.getInstance( metadata.guid );
+			const instance = AssetDatabase.getInstance<Object3D>( asset.guid );
 
 			if ( !instance ) return;
 
-			metadata.preview = this.getGeometryPreview( instance as THREE.BufferGeometry );
+			asset.preview = this.getModelPreview( instance );
 
-		} else if ( metadata.importer === MetaImporter.TEXTURE ) {
+		} else if ( asset.type === AssetType.PREFAB ) {
 
-			const instance = AssetDatabase.getInstance<Texture>( metadata.guid );
+			const prefab = AssetDatabase.getInstance<TvPrefab>( asset.guid );
+
+			asset.preview = this.getModelPreview( prefab );
+
+		} else if ( asset.type === AssetType.ROAD_STYLE ) {
+
+			const instance = AssetDatabase.getInstance<RoadStyle>( asset.guid );
 
 			if ( !instance ) return;
 
-			metadata.preview = this.getTexturePreview( instance );
+			asset.preview = this.getRoadStylePreview( instance );
+
+		} else if ( asset.type === AssetType.ROAD_MARKING ) {
+
+			const instance = AssetDatabase.getInstance( asset.guid );
+
+			if ( !instance ) return;
+
+			asset.preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
+
+		} else if ( asset.type === AssetType.GEOMETRY ) {
+
+			const instance = AssetDatabase.getInstance<BufferGeometry>( asset.guid );
+
+			if ( !instance ) return;
+
+			asset.preview = this.getGeometryPreview( instance );
+
+		} else if ( asset.type === AssetType.TEXTURE ) {
+
+			const instance = AssetDatabase.getInstance<Texture>( asset.guid );
+
+			if ( !instance ) return;
+
+			asset.preview = this.getTexturePreview( instance );
 
 		}
 
@@ -252,7 +244,7 @@ export class PreviewService {
 
 		if ( !geometry ) return;
 
-		const model = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.GRAY, wireframe: true } ) );
+		const model = new Mesh( geometry, new MeshStandardMaterial( { color: COLOR.GRAY, wireframe: true } ) );
 
 		this.modelPreviewSetup( this.scene, this.camera, model );
 
@@ -348,7 +340,7 @@ export class PreviewService {
 
 		this.camera.updateProjectionMatrix();
 
-		const material = new MeshBasicMaterial( { map: texture } );
+		const material = new MeshStandardMaterial( { map: texture } );
 
 		const plane = new PlaneGeometry( 10, 10 );
 
