@@ -5,7 +5,8 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { FileExtension, FileService } from 'app/io/file.service';
+import { FileService } from 'app/io/file.service';
+import { FileExtension } from 'app/io/FileExtension';
 import { DialogFactory } from '../../../factories/dialog.factory';
 import { MetadataFactory } from '../../../factories/metadata-factory.service';
 import { TvConsole } from '../../../core/utils/console';
