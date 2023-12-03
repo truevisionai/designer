@@ -4,7 +4,7 @@ import { AssetNode, AssetType } from '../project-browser/file-node.model';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
 import { TvTextureLoaderService } from 'app/loaders/tv-texture.loader';
-import { ModelImporterService } from 'app/importers/model-importer.service';
+import { ModelLoader } from 'app/loaders/model.loader';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor.settings';
@@ -13,6 +13,7 @@ import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
 import { MeshStandardMaterial } from 'three';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,7 +26,7 @@ export class LoadingService {
 		private projectBrowserService: ProjectBrowserService,
 		private materialLoader: TvMaterialLoader,
 		private textureLoader: TvTextureLoaderService,
-		private modelLoader: ModelImporterService,
+		private modelLoader: ModelLoader,
 		private roadStyleLoader: RoadStyleImporter,
 		private entityLoader: TvEntityLoader,
 		private editorSettings: EditorSettings,
@@ -44,6 +45,12 @@ export class LoadingService {
 		this.loadRoadStyles();
 
 		this.loadEntities();
+
+		this.loadSceneFiles();
+
+		this.loadOpenDriveFiles();
+
+		this.loadOpenScenarioFiles();
 
 		this.editorSettings.loadSettings();
 	}
@@ -117,7 +124,11 @@ export class LoadingService {
 
 				AssetDatabase.setInstance( asset.metadata.guid, model );
 
-			}, asset.metadata );
+			}, ( error ) => {
+
+				TvConsole.error( error );
+
+			} );
 
 		} )
 
@@ -149,7 +160,7 @@ export class LoadingService {
 
 	loadGeometries () {
 
-		const loader = new BufferGeometryLoader();
+		// const loader = new BufferGeometryLoader();
 
 		// AssetDatabase.getMetadataAll().forEach( meta => {
 
@@ -203,17 +214,33 @@ export class LoadingService {
 
 	}
 
+	loadSceneFiles () {
+
+		this.assets.filter( asset => asset.type == AssetType.SCENE ).forEach( asset => {
+
+			AssetDatabase.setInstance( asset.guid, asset.metadata );
+
+		} );
+
+	}
+
 	loadOpenDriveFiles () {
+
+		this.assets.filter( asset => asset.type == AssetType.OPENDRIVE ).forEach( asset => {
+
+			AssetDatabase.setInstance( asset.guid, asset.metadata );
+
+		} );
 
 		// AssetDatabase.getMetadataAll().forEach( meta => {
 
-			// if ( meta.importer == MetaImporter.OPENDRIVE ) {
+		// if ( meta.importer == MetaImporter.OPENDRIVE ) {
 
-				// const contents = this.storageService.readSync( meta.path )
+		// const contents = this.storageService.readSync( meta.path )
 
-				// AssetDatabase.setInstance( meta.guid, contents );
+		// AssetDatabase.setInstance( meta.guid, contents );
 
-			// }
+		// }
 
 		// } );
 
@@ -221,15 +248,21 @@ export class LoadingService {
 
 	loadOpenScenarioFiles () {
 
+		this.assets.filter( asset => asset.type == AssetType.OPENSCENARIO ).forEach( asset => {
+
+			AssetDatabase.setInstance( asset.guid, asset.metadata );
+
+		} );
+
 		// AssetDatabase.getMetadataAll().forEach( meta => {
 
-			// if ( meta.importer == MetaImporter.OPENSCENARIO ) {
+		// if ( meta.importer == MetaImporter.OPENSCENARIO ) {
 
-				// const contents = this.storageService.readSync( meta.path )
+		// const contents = this.storageService.readSync( meta.path )
 
-				// AssetDatabase.setInstance( meta.guid, contents );
+		// AssetDatabase.setInstance( meta.guid, contents );
 
-			// }
+		// }
 
 		// } );
 

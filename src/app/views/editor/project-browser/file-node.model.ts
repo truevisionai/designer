@@ -84,6 +84,22 @@ export class AssetNode {
 				return AssetType.ENTITY;
 				break;
 
+			case MetaImporter.SCENE:
+				return AssetType.SCENE;
+				break;
+
+			case MetaImporter.PREFAB:
+				return AssetType.PREFAB;
+				break;
+
+			case MetaImporter.OPENDRIVE:
+				return AssetType.OPENDRIVE;
+				break;
+
+			case MetaImporter.OPENSCENARIO:
+				return AssetType.OPENSCENARIO;
+				break;
+
 			default:
 				return AssetType.FILE;
 				break;
@@ -116,6 +132,15 @@ export class AssetNode {
 
 			case AssetType.ROAD_SIGN:
 				return FileExtension.ROADSIGN;
+
+			case AssetType.OPENDRIVE:
+				return FileExtension.OPENDRIVE;
+
+			case AssetType.OPENSCENARIO:
+				return FileExtension.OPENSCENARIO;
+
+			case AssetType.PREFAB:
+				return FileExtension.PREFAB;
 
 		}
 

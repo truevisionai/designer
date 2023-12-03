@@ -35,7 +35,7 @@ import {
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
-import { ModelImporterService } from 'app/importers/model-importer.service';
+import { ModelLoader } from 'app/loaders/model.loader';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -66,8 +66,8 @@ export class PreviewService {
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
 	constructor (
-		private modelImporterService: ModelImporterService
-	 ) {
+		private modelLoader: ModelLoader
+	) {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -192,13 +192,17 @@ export class PreviewService {
 
 		} else if ( metadata.importer === MetaImporter.MODEL ) {
 
-			this.modelImporterService.load( metadata.path, ( obj ) => {
+			this.modelLoader.load( metadata.path, ( obj ) => {
 
 				metadata.preview = this.getModelPreview( obj );
 
 				AssetDatabase.setInstance( metadata.guid, obj );
 
-			}, metadata );
+			}, ( error ) => {
+
+				console.log( error );
+
+			} );
 
 		} else if ( metadata.importer === MetaImporter.PREFAB ) {
 
