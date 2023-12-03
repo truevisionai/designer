@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { FileService } from 'app/io/file.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { ViewportEvents } from '../events/viewport-events';
@@ -41,7 +40,6 @@ export class AppService {
 	static eventSystem: ViewportEvents;
 	static three: ThreeService;
 	static electron: TvElectronService;
-	static assets: AssetLoaderService;
 	static file: FileService;
 	static editor: EditorService;
 
@@ -52,7 +50,6 @@ export class AppService {
 		private snackBar: SnackBar,
 		private three: ThreeService,
 		public auth: AuthService,
-		public assets: AssetLoaderService,
 		public files: FileService,
 		public editor: EditorService,
 		private roadService: RoadService,
@@ -67,7 +64,6 @@ export class AppService {
 		AppService.eventSystem = eventSystem;
 		AppService.three = three;
 		AppService.electron = electron;
-		AppService.assets = assets;
 		AppService.file = files;
 		AppService.editor = editor;
 

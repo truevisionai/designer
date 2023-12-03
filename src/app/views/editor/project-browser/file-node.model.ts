@@ -5,6 +5,9 @@
 import { FileExtension } from "app/io/file.service";
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
 
+
+
+
 export enum AssetType {
 	DIRECTORY,
 	FILE,
@@ -16,6 +19,10 @@ export enum AssetType {
 	ROAD_STYLE,
 	ROAD_SIGN,
 	ENTITY,
+	OPENDRIVE,
+	OPENSCENARIO,
+	PREFAB,
+	GEOMETRY
 }
 
 /** Flat node with expandable and level information */

@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { GameObject } from 'app/core/game-object';
 import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
@@ -36,6 +35,7 @@ import {
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
 import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
+import { ModelImporterService } from 'app/importers/model-importer.service';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -65,7 +65,9 @@ export class PreviewService {
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
-	constructor ( private assetService: AssetLoaderService ) {
+	constructor (
+		private modelImporterService: ModelImporterService
+	 ) {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -190,7 +192,7 @@ export class PreviewService {
 
 		} else if ( metadata.importer === MetaImporter.MODEL ) {
 
-			this.assetService.modelImporterService.load( metadata.path, ( obj ) => {
+			this.modelImporterService.load( metadata.path, ( obj ) => {
 
 				metadata.preview = this.getModelPreview( obj );
 

@@ -6,7 +6,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { IComponent } from 'app/core/game-object';
 import { DynamicMeta } from 'app/core/asset/metadata.model';
 import { PropModel } from 'app/core/models/prop-model.model';
@@ -52,7 +51,7 @@ export class PropModelInspectorComponent implements OnInit, IComponent, OnDestro
 	public scaleVariance: Vector3;
 	public object: Object3D;
 
-	constructor ( private assetService: AssetLoaderService ) {
+	constructor () {
 
 	}
 

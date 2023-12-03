@@ -8,6 +8,11 @@ import { ModelImporterService } from 'app/importers/model-importer.service';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor.settings';
+import { BufferGeometryLoader } from 'three/src/loaders/BufferGeometryLoader';
+import { MetaImporter } from 'app/core/asset/metadata.model';
+import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
+import { MeshStandardMaterial } from 'three';
+import { MetadataFactory } from 'app/factories/metadata-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,6 +70,18 @@ export class LoadingService {
 		} )
 
 		this.assets.push( folder );
+
+	}
+
+	loadDefaultAssets () {
+
+		const defaultMaterial = new MeshStandardMaterial( { name: 'DefaultMaterial' } );
+
+		const meta = MetadataFactory.createMaterialMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
+
+		AssetDatabase.setMetadata( meta.guid, meta );
+
+		AssetDatabase.setInstance( meta.guid, defaultMaterial );
 
 	}
 
@@ -130,5 +147,110 @@ export class LoadingService {
 
 	}
 
+	loadGeometries () {
+
+		const loader = new BufferGeometryLoader();
+
+		// AssetDatabase.getMetadataAll().forEach( meta => {
+
+		// 	if ( meta.importer == MetaImporter.GEOMETRY ) {
+
+		// 		const contents = this.storageService.readSync( meta.path );
+
+		// 		const json = JSON.parse( contents );
+
+		// 		const geometry = loader.parse( json );
+
+		// 		geometry.uuid = json.uuid;
+
+		// 		AssetDatabase.setInstance( meta.guid, geometry );
+
+		// 	}
+
+		// } );
+
+	}
+
+	loadPrefabs () {
+
+		// const loader = new TvPrefabLoader();
+
+		// AssetDatabase.getMetadataAll().forEach( meta => {
+
+		// 	if ( meta.importer == MetaImporter.PREFAB ) {
+
+		// 		const contents = this.storageService.readSync( meta.path );
+
+		// 		const prefab = loader.parsePrefab( JSON.parse( contents ) );
+
+		// 		if ( prefab.guid != meta.guid ) {
+
+		// 			console.error( 'Prefab guid mismatch', meta.guid, prefab.guid );
+
+		// 			prefab.guid = prefab.uuid = meta.guid;
+
+		// 			// AssetFactory.updatePrefab( meta.path, prefab );
+
+		// 			AssetDatabase.setInstance( meta.guid, prefab );
+
+		// 		} else {
+
+		// 			AssetDatabase.setInstance( meta.guid, prefab );
+		// 		}
+		// 	}
+
+		// } );
+
+	}
+
+	loadOpenDriveFiles () {
+
+		// AssetDatabase.getMetadataAll().forEach( meta => {
+
+			// if ( meta.importer == MetaImporter.OPENDRIVE ) {
+
+				// const contents = this.storageService.readSync( meta.path )
+
+				// AssetDatabase.setInstance( meta.guid, contents );
+
+			// }
+
+		// } );
+
+	}
+
+	loadOpenScenarioFiles () {
+
+		// AssetDatabase.getMetadataAll().forEach( meta => {
+
+			// if ( meta.importer == MetaImporter.OPENSCENARIO ) {
+
+				// const contents = this.storageService.readSync( meta.path )
+
+				// AssetDatabase.setInstance( meta.guid, contents );
+
+			// }
+
+		// } );
+
+	}
+
+	loadRoadMarkings () {
+
+		// AssetDatabase.getMetadataAll().forEach( meta => {
+
+		// 	if ( meta.importer === MetaImporter.ROAD_MARKING ) {
+
+		// 		const contents = this.storageService.readSync( meta.path )
+
+		// 		const marking = TvRoadMarking.importFromString( contents );
+
+		// 		AssetDatabase.setInstance( meta.guid, marking );
+
+		// 	}
+
+		// } );
+
+	}
 
 }

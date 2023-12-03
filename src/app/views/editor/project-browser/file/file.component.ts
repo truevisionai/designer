@@ -3,10 +3,8 @@
  */
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { AssetLoaderService } from 'app/core/asset/asset-loader.service';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
 import { FileUtils } from 'app/io/file-utils';
-import { FileService } from 'app/io/file.service';
 import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
 import { DragDropService } from 'app/services/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
@@ -40,9 +38,7 @@ export class FileComponent implements OnInit {
 	constructor (
 		private electron: TvElectronService,
 		private menuService: MenuService,
-		private assetLoaderService: AssetLoaderService,
 		private previewService: PreviewService,
-		private fileService: FileService,
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
 		private dragDropService: DragDropService,
@@ -309,11 +305,7 @@ export class FileComponent implements OnInit {
 	@HostListener( 'dragstart', [ '$event' ] )
 	onDragStart ( $event ) {
 
-		this.dragDropService.setData( {
-			path: this.file.path,
-			extension: this.extension,
-			guid: this.metadata?.guid,
-		} );
+		this.dragDropService.setData( this.file );
 
 		$event.dataTransfer.setData( 'path', this.file.path );
 		if ( this.metadata ) $event.dataTransfer.setData( 'guid', this.metadata.guid );

@@ -3,11 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
-export interface DragDropData {
-	path: string;
-	extension: string;
-	guid?: string;
+export interface DragDropData extends AssetNode {
 }
 
 @Injectable( {
