@@ -17,5 +17,20 @@
 	margin-bottom: 4px;
 	color: $headings-color;
 	text-transform: uppercase;
+}
 
+.file-info-popover {
+	padding: 12px 16px;
+	background: white;
+	line-height: 22px;
+	font-size: 13px;
+	color: #474747;
+}
+
+.file-info-popover .title {
+	font-weight: 700;
+	font-size: 16px;
+	margin-bottom: 4px;
+	color: #474747;
+	text-transform: uppercase;
 }

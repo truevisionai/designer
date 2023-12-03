@@ -2,9 +2,10 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<mat-card [class.file-card]="true"
-	[draggable]="!isDirectory && !isUnknown"
-	[matTooltip]="file.name">
+<mat-card [satPopoverAnchor]="popover"
+	[satPopoverHover]="1"
+	[class.file-card]="true"
+	[draggable]="!isDirectory && !isUnknown">
 	<ng-container *ngIf="!isTexture">
 		<img [class.file-card-image]="true"
 			[src]="imageSource" />
@@ -25,3 +26,13 @@
 			type="text" />
 	</p>
 </mat-card>
+<sat-popover #popover
+	verticalAlign="above">
+	<div class="file-info-popover"
+		*ngIf="file">
+		<div class="title">GUID: {{ file?.guid }}</div>
+		<div>Type: {{ file?.getTypeAsString() | uppercase }}</div>
+		<div>Name: {{ file?.name }}</div>
+		<div>Path: {{ file?.path }}</div>
+	</div>
+</sat-popover>

@@ -80,8 +80,7 @@ export class ViewportImporterService {
 				break;
 
 			default:
-				TvConsole.warn( `unknown file type: ${ asset.extension } ` + asset.path );
-				SnackBar.warn( 'Unknown file! Not able to import' );
+				TvConsole.warn( `File not supported for viewport extension: ${ asset.extension } ` + asset.path );
 				break;
 		}
 

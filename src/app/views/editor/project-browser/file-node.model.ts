@@ -70,6 +70,65 @@ export class AssetNode {
 
 	}
 
+	getTypeAsString (): string {
+
+		return AssetNode.getTypeAsString( this.type );
+
+	}
+
+	static getTypeAsString ( type: AssetType ): string {
+
+		switch ( type ) {
+
+			case AssetType.DIRECTORY:
+				return 'directory';
+
+			case AssetType.FILE:
+				return 'file';
+
+			case AssetType.TEXTURE:
+				return 'texture';
+
+			case AssetType.MATERIAL:
+				return 'material';
+
+			case AssetType.MODEL:
+				return 'model';
+
+			case AssetType.MESH:
+				return 'mesh';
+
+			case AssetType.SCENE:
+				return 'scene';
+
+			case AssetType.ROAD_STYLE:
+				return 'road_style';
+
+			case AssetType.ROAD_SIGN:
+				return 'road_sign';
+
+			case AssetType.ENTITY:
+				return 'entity';
+
+			case AssetType.OPENDRIVE:
+				return 'opendrive';
+
+			case AssetType.OPENSCENARIO:
+				return 'openscenario';
+
+			case AssetType.PREFAB:
+				return 'prefab';
+
+			case AssetType.GEOMETRY:
+				return 'geometry';
+
+			case AssetType.ROAD_MARKING:
+				return 'road_marking';
+
+		}
+
+	}
+
 	static getType ( importer: MetaImporter ): AssetType {
 
 		switch ( importer ) {
