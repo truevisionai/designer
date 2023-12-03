@@ -69,6 +69,7 @@ export class ViewportImporterService {
 				break;
 
 			case AssetType.TEXTURE:
+				this.importTexture( asset, position );
 				break;
 
 			case AssetType.SCENE:
@@ -86,13 +87,21 @@ export class ViewportImporterService {
 
 	}
 
-	importTexture ( path: string, filename: string, extension: string, position: Vector3, metadata: Metadata ) {
+	importTexture ( asset: AssetNode, position: Vector3 ) {
 
-		// const surface = SurfaceToolService.createFromTextureGuid( metadata.guid, position );
+		const texture = AssetDatabase.getInstance<Texture>( asset.guid );
 
-		// if ( !surface ) return;
+		if ( !texture ) return;
 
-		// ToolManager.currentTool = ToolFactory.createTool( ToolType.Surface );
+		// const geometry = new PlaneGeometry( 1, 1 );
+
+		// const material = new MeshBasicMaterial( { map: texture } );
+
+		// const model = new Mesh( geometry, material );
+
+		// model.position.copy( position );
+
+		// SceneService.addToMain( model );
 
 	}
 

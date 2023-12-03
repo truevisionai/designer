@@ -12,8 +12,9 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { StorageService } from 'app/io/storage.service';
-import { Object3D } from 'three';
+import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, ShapeGeometry } from 'three';
 import { TvConsole } from 'app/core/utils/console';
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,30 +26,34 @@ export class ModelLoader {
 	) {
 	}
 
-	load ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
 
 		const fileExtension = FileUtils.getExtensionFromPath( path );
 
-		switch ( fileExtension ) {
+		switch ( fileExtension.toLowerCase().trim() ) {
 
 			case 'obj':
-				this.importOBJ( path, successCallback, errorCallback );
+				this.loadOBJ( path, successCallback, errorCallback );
 				break;
 
 			case 'dae':
-				this.importCollada( path, successCallback, errorCallback );
+				this.loadCollada( path, successCallback, errorCallback );
 				break;
 
 			case 'gltf':
-				this.importGLTF( path, successCallback, errorCallback );
+				this.loadGLTF( path, successCallback, errorCallback );
 				break;
 
 			case 'glb':
-				this.importGLTF( path, successCallback, errorCallback );
+				this.loadGLTF( path, successCallback, errorCallback );
 				break;
 
 			case 'fbx':
-				this.importFBX( path, successCallback, errorCallback );
+				this.loadFBX( path, successCallback, errorCallback );
+				break;
+
+			case 'svg':
+				this.loadSVG( path, successCallback, errorCallback );
 				break;
 
 			default:
@@ -58,7 +63,7 @@ export class ModelLoader {
 
 	}
 
-	private importOBJ ( filepath: string, success: Function, error: Function ) {
+	private loadOBJ ( filepath: string, success: Function, error: Function ) {
 
 		var loader = new OBJLoader();
 
@@ -79,7 +84,7 @@ export class ModelLoader {
 
 	}
 
-	private importGLTF ( filepath: string, success: Function, error: Function ) {
+	private loadGLTF ( filepath: string, success: Function, error: Function ) {
 
 		const loader = new GLTFLoader();
 
@@ -103,7 +108,7 @@ export class ModelLoader {
 
 	}
 
-	private importCollada ( filepath: string, success: Function, error: Function ) {
+	private loadCollada ( filepath: string, success: Function, error: Function ) {
 
 		var loader = new ColladaLoader();
 
@@ -124,7 +129,7 @@ export class ModelLoader {
 
 	}
 
-	private async importFBX ( filepath: string, success: Function, error: Function ) {
+	private async loadFBX ( filepath: string, success: Function, error: Function ) {
 
 		const loader = new FBXLoader();
 
@@ -139,6 +144,57 @@ export class ModelLoader {
 		const object = loader.parse( buffer, directory );
 
 		success( object );
+
+	}
+
+	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+
+		const loader = new SVGLoader();
+
+		loader.load( path, function ( data ) {
+
+			const paths = data.paths;
+			const group = new Group();
+
+			for ( let i = 0; i < paths.length; i++ ) {
+
+				const path = paths[ i ];
+
+				const material = new MeshStandardMaterial( {
+					color: path.color,
+					side: DoubleSide,
+					depthWrite: false
+				} );
+
+				const shapes = SVGLoader.createShapes( path );
+
+				for ( let j = 0; j < shapes.length; j++ ) {
+
+					const shape = shapes[ j ];
+
+					const geometry = new ShapeGeometry( shape );
+
+					const mesh = new Mesh( geometry, material );
+
+					group.add( mesh );
+
+				}
+
+			}
+
+			successCallback( group );
+
+		}, function ( xhr ) {
+
+			// errorCallback
+
+		}, function ( error ) {
+
+			errorCallback( "Error in loading SVG file" );
+
+			SnackBar.error( 'Error in loading SVG file' );
+
+		} );
 
 	}
 }

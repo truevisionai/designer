@@ -120,7 +120,7 @@ export class LoadingService {
 
 		this.assets.filter( asset => asset.type == AssetType.MODEL ).forEach( asset => {
 
-			this.modelLoader.load( asset.path, ( model ) => {
+			this.modelLoader.loadSync( asset.path, ( model ) => {
 
 				AssetDatabase.setInstance( asset.metadata.guid, model );
 
