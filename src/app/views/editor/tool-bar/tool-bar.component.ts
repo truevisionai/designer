@@ -269,17 +269,17 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: true,
 		},
 		{
-			id: 'showMarkingPointTool',
-			label: 'MarkingPoint',
+			id: 'showPointMarkingTool',
+			label: 'Point Marking',
 			class: 'toolbar-button',
-			toolType: ToolType.MarkingPoint,
-			action: 'marking-point-tool',
+			toolType: ToolType.PointMarkingTool,
+			action: 'point-marking-tool',
 			icon: 'call_split',
-			title: 'Marking Point Tool',
+			title: 'Point Marking Tool',
 			description: 'Tool to create road marking points <br/> Select a roadmarking from ProjectBrowser <br/> Then use SHIFT + LEFT CLICK on road to create a roadmarking point',
 			track: 'button',
-			tooltip: 'Marking Point Tool',
-			click: () => this.setToolType( ToolType.MarkingPoint ),
+			tooltip: 'Point Marking Tool',
+			click: () => this.setToolType( ToolType.PointMarkingTool ),
 			enabled: !Environment.production,
 		},
 		{
@@ -483,7 +483,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
-	getClass ( tool ) {
+	getClass ( tool: IToolMenu ) {
 
 		if ( !this.currentTool ) return tool.class;
 

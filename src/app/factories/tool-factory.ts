@@ -4,9 +4,7 @@
 
 import { ToolType } from '../tools/tool-types.enum';
 import { BaseTool } from '../tools/base-tool';
-import { MarkingPointTool } from '../tools/marking-point/marking-point-tool';
 import { PointerTool } from '../tools/pointer/pointer-tool';
-import { PropPolygonTool } from '../tools/prop-polygon/prop-polygon-tool';
 import { RoadSignalTool } from '../tools/road-signal-tool';
 import { VehicleTool } from '../tools/vehicle/vehicle-tool';
 
@@ -15,8 +13,6 @@ export class ToolFactory {
 	static createTool ( type: ToolType ): BaseTool {
 
 		switch ( type ) {
-			case ToolType.MarkingPoint:
-				return new MarkingPointTool();
 			case ToolType.Pointer:
 				return new PointerTool();
 			case ToolType.Vehicle:

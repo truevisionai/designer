@@ -1064,8 +1064,8 @@ export class SceneImporterService extends AbstractReader {
 		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0.005;
 		const validLength = parseFloat( xmlElement.attr_validLength ) || 0;
 
-		const length = parseFloat( xmlElement.attr_length ) || 0;
-		const width = parseFloat( xmlElement.attr_width ) || 0;
+		const length = parseFloat( xmlElement.attr_length ) || 1;
+		const width = parseFloat( xmlElement.attr_width ) || 1;
 		const radius = parseFloat( xmlElement.attr_radius ) || 0;
 		const height = parseFloat( xmlElement.attr_height ) || 0;
 		const hdg = parseFloat( xmlElement.attr_hdg ) || 0;

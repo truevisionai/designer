@@ -1282,6 +1282,12 @@ export class TvRoad {
 		return posTheta;
 	}
 
+	getLaneAt ( s: number, t: number ): TvLane {
+
+		return this.getLaneSectionAt( s ).getLaneAt( s, t );
+
+	}
+
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );

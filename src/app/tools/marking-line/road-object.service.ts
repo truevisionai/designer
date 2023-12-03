@@ -11,7 +11,6 @@ import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
 import { ObjectTypes, TvColors, TvRoadMarkWeights, TvSide } from 'app/modules/tv-map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
-import { MarkingObjectBuilder } from 'app/factories/marking-object.builder';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
 import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
@@ -21,10 +20,9 @@ import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repe
 } )
 export class RoadObjectService {
 
-
 	private objectMap = new Object3DMap<TvRoadObject, Object3D>();
 
-	private idService = new IDService();
+	private ids: Map<TvRoad, IDService> = new Map();
 
 	static instance: RoadObjectService;
 
@@ -38,7 +36,7 @@ export class RoadObjectService {
 
 	clone ( roadObject: TvRoadObject ): TvRoadObject {
 
-		const id = roadObject.road.objects.object.length + 1;
+		const id = this.getRoadObjectId( roadObject.road );
 
 		const clone = roadObject.clone( id );
 
@@ -46,11 +44,28 @@ export class RoadObjectService {
 
 	}
 
+	private getRoadObjectId ( road: TvRoad ): number {
+
+		if ( !this.ids.has( road ) ) {
+
+			this.ids.set( road, new IDService() );
+
+			road.objects.object.forEach( object => {
+
+				this.ids.get( road ).getUniqueID( object.attr_id );
+
+			} )
+
+		}
+
+		return this.ids.get( road ).getUniqueID();
+	}
+
 	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
 
-		const roadObject = new TvRoadObject( type, '', this.idService.getUniqueID(), s, t );
+		const id = this.getRoadObjectId( road );
 
-		roadObject.attr_id = road.objects.object.length + 1;
+		const roadObject = new TvRoadObject( type, '', id, s, t );
 
 		roadObject.road = road;
 
@@ -70,6 +85,8 @@ export class RoadObjectService {
 
 			const mesh = this.buildRoadObject( road, roadObject );
 
+			if ( !mesh ) return;
+
 			this.objectMap.add( roadObject, mesh );
 
 		} );
@@ -81,6 +98,8 @@ export class RoadObjectService {
 		if ( road.objects.object.find( object => object.attr_id === roadObject.attr_id ) ) return;
 
 		const mesh = this.buildRoadObject( road, roadObject );
+
+		if ( !mesh ) return;
 
 		this.objectMap.add( roadObject, mesh );
 

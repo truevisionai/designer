@@ -80,6 +80,10 @@ export class ViewportImporterService {
 				this.importRoadStyle( asset, position );
 				break;
 
+			case AssetType.MATERIAL:
+				this.importMaterial( asset, position );
+				break;
+
 			default:
 				TvConsole.warn( `File not supported for viewport extension: ${ asset.extension } ` + asset.path );
 				break;
@@ -87,21 +91,19 @@ export class ViewportImporterService {
 
 	}
 
+	importMaterial ( asset: AssetNode, position: Vector3 ) {
+
+		asset.lastPosition = position;
+
+		CommandHistory.execute( new AddObjectCommand( asset ) );
+
+	}
+
 	importTexture ( asset: AssetNode, position: Vector3 ) {
 
-		const texture = AssetDatabase.getInstance<Texture>( asset.guid );
+		asset.lastPosition = position;
 
-		if ( !texture ) return;
-
-		// const geometry = new PlaneGeometry( 1, 1 );
-
-		// const material = new MeshBasicMaterial( { map: texture } );
-
-		// const model = new Mesh( geometry, material );
-
-		// model.position.copy( position );
-
-		// SceneService.addToMain( model );
+		CommandHistory.execute( new AddObjectCommand( asset ) );
 
 	}
 

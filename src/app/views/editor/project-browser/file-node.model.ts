@@ -4,6 +4,7 @@
 
 import { FileExtension } from 'app/io/FileExtension';
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
+import { Vector3 } from 'three';
 
 export enum AssetType {
 	DIRECTORY,
@@ -31,6 +32,8 @@ export class AssetNode {
 	public isSelected = false;
 
 	public children: AssetNode[] = [];
+
+	public lastPosition?: Vector3;
 
 	constructor (
 		public type: AssetType,

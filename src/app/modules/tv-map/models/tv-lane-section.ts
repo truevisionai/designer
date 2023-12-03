@@ -799,6 +799,33 @@ export class TvLaneSection {
 		return targetLane;
 	}
 
+	getLaneAt ( s: number, t: number ): TvLane {
+
+		const lanes = this.lanes;
+
+		const isLeft = t > 0;
+		const isRight = t < 0;
+
+		if ( Math.abs( t ) < 0.1 ) {
+			return this.getLaneById( 0 );
+		}
+
+		for ( const [ id, lane ] of lanes ) {
+
+			// logic to skip left or right lanes depending on t value
+			if ( isLeft && lane.isRight ) continue;
+			if ( isRight && lane.isLeft ) continue;
+
+			const startT = this.getWidthUptoStart( lane, s );
+			const endT = this.getWidthUptoEnd( lane, s );
+
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+				return lane;
+			}
+
+		}
+	}
+
 	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {
 
 		const laneSection = new TvLaneSection( id || 0, s || this.s, side || this.attr_singleSide, road || this.road );

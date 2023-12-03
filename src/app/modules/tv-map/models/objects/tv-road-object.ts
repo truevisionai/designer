@@ -12,6 +12,7 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
+import { Euler, Vector3 } from 'three';
 
 export class TvRoadObject {
 
@@ -128,6 +129,10 @@ export class TvRoadObject {
 		return this.attr_zOffset;
 	}
 
+	set zOffset ( value: number ) {
+		this.attr_zOffset = value;
+	}
+
 	get validLength (): number {
 		return this.attr_validLength;
 	}
@@ -180,8 +185,36 @@ export class TvRoadObject {
 		return this.attr_pitch;
 	}
 
+	set pitch ( value: number ) {
+		this.attr_pitch = value;
+	}
+
 	get roll (): number {
 		return this.attr_roll;
+	}
+
+	set roll ( value: number ) {
+		this.attr_roll = value;
+	}
+
+	get scale (): Vector3 {
+		return new Vector3( this.width || 0, this.height || 0, this.length || 0 );
+	}
+
+	set scale ( value: Vector3 ) {
+		this.width = value.x;
+		this.height = value.y;
+		this.length = value.z;
+	}
+
+	get rotation (): Euler {
+		return new Euler( this.hdg || 0, this.pitch || 0, this.roll || 0 );
+	}
+
+	set rotation ( value: Vector3|Euler ) {
+		this.hdg = value.x;
+		this.pitch = value.y;
+		this.roll = value.z;
 	}
 
 	getRepeatCount (): number {

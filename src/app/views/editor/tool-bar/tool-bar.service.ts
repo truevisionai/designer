@@ -8,7 +8,7 @@ import { LaneWidthTool } from 'app/tools/lane-width/lane-width-tool';
 import { LaneTool } from 'app/tools/lane/lane-tool';
 import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
 import { CrosswalkTool } from 'app/tools/marking-line/crosswalk-tool';
-import { MarkingPointTool } from 'app/tools/marking-point/marking-point-tool';
+import { PointMarkingTool } from 'app/tools/marking-point/point-marking.tool';
 import { PointerTool } from 'app/tools/pointer/pointer-tool';
 import { PropCurveTool } from 'app/tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
@@ -51,6 +51,7 @@ import { PropSpanTool } from 'app/tools/road-span/prop-span-tool';
 import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service';
 import { PolePropTool } from 'app/tools/prop-barrier/pole-prop-tool';
 import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.service';
+import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -81,6 +82,7 @@ export class ToolBarService {
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
 		private propBarrierToolService: PolePropToolService,
+		private pointMarkingToolService: PointMarkingToolService,
 	) {
 	}
 
@@ -121,11 +123,11 @@ export class ToolBarService {
 				return new LaneMarkingTool( this.laneMarkingService );
 			case ToolType.Lane:
 				return new LaneTool( this.laneService );
-			case ToolType.MarkingPoint:
-				return new MarkingPointTool();
+			case ToolType.PointMarkingTool:
+				return new PointMarkingTool( this.pointMarkingToolService );
 			case ToolType.TextMarkingTool:
 				return new TextMarkingTool( this.textMarkingToolService );
-			case ToolType.MarkingLine:
+			case ToolType.LineMarkingTool:
 				throw new Error( 'Invalid tool type' + type );
 			case ToolType.Crosswalk:
 				return new CrosswalkTool( this.crosswalkService );

@@ -44,35 +44,9 @@ export abstract class SelectStrategy<T> {
 
 		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
 
-		const t = roadCoord.t;
+		if ( !laneSection ) return;
 
-		const lanes = laneSection.lanes;
-
-		let targetLane: TvLane;
-
-		const isLeft = t > 0;
-		const isRight = t < 0;
-
-		if ( Math.abs( t ) < 0.1 ) {
-			return laneSection.getLaneById( 0 );
-		}
-
-		for ( const [ id, lane ] of lanes ) {
-
-			// logic to skip left or right lanes depending on t value
-			if ( isLeft && lane.isRight ) continue;
-			if ( isRight && lane.isLeft ) continue;
-
-			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
-			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
-
-			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
-				return lane;
-			}
-
-		}
-
-		return targetLane;
+		return laneSection.getLaneAt( roadCoord.s, roadCoord.t );
 
 	}
 
@@ -84,34 +58,42 @@ export abstract class SelectStrategy<T> {
 
 		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
 
-		const t = roadCoord.t;
+		if ( !laneSection ) return;
 
-		const lanes = laneSection.lanes;
+		const lane = laneSection.getLaneAt( roadCoord.s, roadCoord.t );
 
-		const isLeft = t > 0;
-		const isRight = t < 0;
+		if ( !lane ) return;
 
-		if ( Math.abs( t ) < 0.1 ) {
-			const lane = laneSection.getLaneById( 0 );
-			return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
-		}
+		return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, roadCoord.t );
 
-		for ( const [ id, lane ] of lanes ) {
+		// const t = roadCoord.t;
 
-			// logic to skip left or right lanes depending on t value
-			if ( isLeft && lane.isRight ) continue;
-			if ( isRight && lane.isLeft ) continue;
+		// const lanes = laneSection.lanes;
 
-			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
-			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+		// const isLeft = t > 0;
+		// const isRight = t < 0;
 
-			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+		// if ( Math.abs( t ) < 0.1 ) {
+		// 	const lane = laneSection.getLaneById( 0 );
+		// 	return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+		// }
 
-				return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+		// for ( const [ id, lane ] of lanes ) {
 
-			}
+		// 	// logic to skip left or right lanes depending on t value
+		// 	if ( isLeft && lane.isRight ) continue;
+		// 	if ( isRight && lane.isLeft ) continue;
 
-		}
+		// 	const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
+		// 	const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+
+		// 	if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+
+		// 		return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+
+		// 	}
+
+		// }
 	}
 
 }

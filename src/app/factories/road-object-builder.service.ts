@@ -1,5 +1,5 @@
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Euler, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, PlaneGeometry, Texture, Vector3 } from 'three';
 import { ObjectTypes, TvSide } from '../modules/tv-map/models/tv-common';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../modules/tv-map/models/tv-road.model";
@@ -10,6 +10,7 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvConsole } from 'app/core/utils/console';
 import { ExtrudeService } from './extrude.service';
 import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
+import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,8 +44,66 @@ export class RoadObjectBuilder {
 
 			case ObjectTypes.pole:
 				return this.buildPoleObject( road, roadObject );
+
+			case ObjectTypes.roadMark:
+				return this.buildRoadMarkObject( road, roadObject );
 		}
 
+	}
+
+	buildRoadMarkObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+
+		if ( !roadObject.assetGuid ) return;
+
+		const asset = AssetDatabase.getInstance( roadObject.assetGuid );
+
+		let material: MeshStandardMaterial;
+
+		if ( asset instanceof MeshStandardMaterial ) {
+
+			material = asset;
+
+		} else if ( asset instanceof Texture ) {
+
+			material = new MeshStandardMaterial( {
+				map: asset,
+				transparent: true,
+				alphaTest: 0.9
+			} );
+
+		}
+
+		const roadCoord = road.getPositionAt( roadObject.s, roadObject.t );
+
+		const lane = roadObject.road.getLaneAt( roadObject.s, roadObject.t );
+
+		let geometry: BufferGeometry;
+
+		if ( !lane ) {
+
+			geometry = new PlaneGeometry( 1, 1 );
+
+			const model = new Mesh( geometry, material );
+
+			model.position.copy( roadCoord.position );
+
+			model.position.z += roadObject.zOffset;
+
+			model.scale.copy( roadObject.scale )
+
+			return model;
+
+		} else {
+
+			geometry = new DecalGeometry( lane.gameObject, roadCoord.position, roadObject.rotation, roadObject.scale )
+
+			const model = new Mesh( geometry, material );
+
+			model.position.z += roadObject.zOffset;
+
+			return model;
+
+		}
 	}
 
 	buildPoleObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {

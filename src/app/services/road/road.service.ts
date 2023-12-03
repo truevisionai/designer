@@ -14,11 +14,12 @@ import { SplineService } from '../spline.service';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvMapInstance } from "../../modules/tv-map/services/tv-map-instance";
-import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Vector3 } from 'three';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -440,4 +441,57 @@ export class RoadService {
 		} );
 
 	}
+
+	findRoadCoordAtPosition ( position: Vector3 ): TvRoadCoord {
+
+		return TvMapQueries.findRoadCoord( position );
+
+	}
+
+	findLaneAtPosition ( position: Vector3 ): TvLane {
+
+		const roadCoord = this.findRoadCoordAtPosition( position );
+
+		if ( !roadCoord ) return;
+
+		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+
+		const t = roadCoord.t;
+
+		const lanes = laneSection.lanes;
+
+		let targetLane: TvLane;
+
+		const isLeft = t > 0;
+		const isRight = t < 0;
+
+		if ( Math.abs( t ) < 0.1 ) {
+			return laneSection.getLaneById( 0 );
+		}
+
+		for ( const [ id, lane ] of lanes ) {
+
+			// logic to skip left or right lanes depending on t value
+			if ( isLeft && lane.isRight ) continue;
+			if ( isRight && lane.isLeft ) continue;
+
+			const startT = laneSection.getWidthUptoStart( lane, roadCoord.s );
+			const endT = laneSection.getWidthUptoEnd( lane, roadCoord.s );
+
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+				return lane;
+			}
+
+		}
+
+		return targetLane;
+
+	}
+
+	getRoadMesh ( road: TvRoad ) {
+
+		return road.gameObject;
+
+	}
+
 }
