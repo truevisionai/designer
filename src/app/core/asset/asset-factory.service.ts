@@ -258,32 +258,6 @@ export class AssetFactory {
 
 	}
 
-	private saveFile ( asset: AssetNode ) {
-
-		// const directory = this.fileService.path.dirname( path );
-
-		// const fullName = this.fileService.path.basename( path );
-
-		// const extension = this.fileService.path.extname( path );
-
-		// let baseName = fullName.replace( extension, '' );
-
-		// let count = 1;
-
-		// while ( this.exists( path ) ) {
-
-		// 	baseName = `${ baseName }(${ count++ })`;
-
-		// 	path = this.fileService.join( directory, `${ baseName }${ extension }` );
-
-		// }
-
-		// this.fileService.fs.writeFileSync( path, contents, options );
-
-		// return { path: path };
-
-	}
-
 	createAssetMeta ( asset: AssetNode ) {
 
 		if ( !asset.metadata ) return;
@@ -349,5 +323,34 @@ export class AssetFactory {
 		// this.storage.deleteSync( asset.path + '.meta' );
 
 	}
+
+	getNameAndPath ( asset: AssetNode ): { name: string, path: string } {
+
+		let name = asset.assetName;
+
+		let path = asset.path;
+
+		let count = 1;
+
+		while ( this.storage.exists( path ) && count <= 20 ) {
+
+			name = `${ asset.assetName }(${ count++ })`;
+
+			if ( asset.isDirectory ) {
+
+				path = this.storage.join( asset.directoryPath, name );
+
+			} else {
+
+				path = this.storage.join( asset.directoryPath, `${ name }.${ asset.extension }` );
+
+			}
+
+		}
+
+		return { name, path };
+
+	}
+
 
 }

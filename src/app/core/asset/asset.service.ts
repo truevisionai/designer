@@ -28,7 +28,7 @@ export class AssetService {
 
 	constructor (
 		private exporter: ExporterService,
-		private fileService: FileService,
+		// private fileService: FileService,
 		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private assetFactory: AssetFactory,
@@ -42,9 +42,19 @@ export class AssetService {
 
 	createNewAsset ( type: AssetType, filename: string, directory: string, data?: string, instance?: any ) {
 
-		const fullPath = this.fileService.join( directory, filename );
+		const fullPath = this.storageService.join( directory, filename );
 
 		const asset = new AssetNode( type, filename, fullPath );
+
+		if ( type != AssetType.DIRECTORY ) {
+
+			const response = this.assetFactory.getNameAndPath( asset );
+
+			asset.name = response.name;
+
+			asset.path = response.path;
+
+		}
 
 		asset.metadata = this.metadataFactory.makeAssetMetadata( asset );
 
@@ -75,11 +85,13 @@ export class AssetService {
 
 	}
 
-	createFolderAsset ( path: string, name: string = 'Folder' ) {
+	createFolderAsset ( path: string, name: string = 'Untitled' ) {
 
-		const folder = this.fileService.createFolder( path, name );
+		const response = this.storageService.createDirectory( path, name );
 
-		this.createNewAsset( AssetType.DIRECTORY, folder.name, path );
+		const folderName = FileUtils.getFilenameFromPath( response.path );
+
+		this.createNewAsset( AssetType.DIRECTORY, folderName, path );
 
 	}
 
@@ -207,7 +219,9 @@ export class AssetService {
 
 		try {
 
-			this.fileService.deleteFolderRecursive( asset.path );
+			this.storageService.deleteFolderSync( asset.path );
+
+			asset.isDeleted = true;
 
 		} catch ( error ) {
 
@@ -221,7 +235,9 @@ export class AssetService {
 
 		try {
 
-			this.fileService.deleteFileSync( asset.path );
+			this.storageService.deleteFileSync( asset.path );
+
+			asset.isDeleted = true;
 
 		} catch ( error ) {
 
@@ -235,7 +251,7 @@ export class AssetService {
 
 		try {
 
-			this.fileService.deleteFileSync( asset.path + '.meta' );
+			this.storageService.deleteFileSync( asset.path + '.meta' );
 
 		} catch ( error ) {
 

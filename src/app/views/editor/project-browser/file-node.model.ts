@@ -4,6 +4,7 @@
 
 import { FileExtension } from 'app/io/FileExtension';
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
+import { FileUtils } from 'app/io/file-utils';
 
 export enum AssetType {
 	DIRECTORY,
@@ -98,7 +99,10 @@ export class AssetNode {
 	set path ( value: string ) {
 
 		this._path = value;
-		this.metadata.path = value;
+
+		if ( this.metadata ) {
+			this.metadata.path = value;
+		}
 
 	}
 
@@ -138,6 +142,12 @@ export class AssetNode {
 	get assetName (): string {
 
 		return this.name.split( '.' ).shift();
+
+	}
+
+	get directoryPath (): string {
+
+		return FileUtils.getDirectoryFromPath( this.path );
 
 	}
 
