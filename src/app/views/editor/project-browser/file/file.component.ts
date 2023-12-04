@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnInit, Output, ViewChild } from '@angular/core';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
-import { Metadata } from 'app/core/asset/metadata.model';
 import { DragDropService } from 'app/services/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
@@ -25,7 +24,7 @@ import { StorageService } from 'app/io/storage.service';
 } )
 export class FileComponent implements OnInit {
 
-	@ViewChild( 'nameInput' ) nameInputRef: ElementRef;
+	@ViewChild( 'nameInput' ) nameInputRef: ElementRef<HTMLInputElement>;
 
 	@Output() deleted = new EventEmitter<AssetNode>();
 
@@ -57,6 +56,7 @@ export class FileComponent implements OnInit {
 		private inspectorFactory: InspectorFactoryService,
 		private assetService: AssetService,
 		private storageService: StorageService,
+		private ngZone: NgZone,
 	) {
 
 	}
@@ -137,7 +137,7 @@ export class FileComponent implements OnInit {
 			{
 				label: 'Rename',
 				click: () => this.renameNode(),
-				// enabled: !this.isDirectory,
+				enabled: !this.asset.isDirectory,
 			},
 			{
 				label: 'Duplicate',
@@ -197,12 +197,21 @@ export class FileComponent implements OnInit {
 
 		this.showRenaming = true;
 
-		setTimeout( () => {
+		// Use NgZone to ensure the focus logic is aligned with Angular's change detection
+		this.ngZone.run( () => {
 
-			if ( this.nameInputRef ) this.nameInputRef.nativeElement.focus();
-			if ( this.nameInputRef ) this.nameInputRef.nativeElement.select();
+			setTimeout( () => {
 
-		}, 100 );
+				if ( this.nameInputRef ) {
+
+					this.nameInputRef.nativeElement.focus();
+					this.nameInputRef.nativeElement.select();
+
+				}
+
+			}, 300 );
+
+		} );
 
 	}
 
@@ -233,7 +242,7 @@ export class FileComponent implements OnInit {
 	}
 
 	@HostListener( 'dragstart', [ '$event' ] )
-	onDragStart ( $event ) {
+	onDragStart ( $event: DragEvent ) {
 
 		this.dragDropService.setData( this.asset );
 
@@ -242,15 +251,35 @@ export class FileComponent implements OnInit {
 		$event.dataTransfer.setData( 'guid', this.asset.guid );
 	}
 
-	onBlur ( $event ) {
+	@HostListener( 'dragend', [ '$event' ] )
+	onDragEnd ( $event ) {
 
-		this.showRenaming = false;
+		// console.log( $event )
 
 	}
 
-	onFocus ( $event ) {
 
-		this.showRenaming = true;
+	@HostListener( 'drop', [ '$event' ] )
+	onDrop ( $event ) {
+
+		if ( !this.asset.isDirectory ) return;
+
+		// here we can get the path of the folder where the asset is dropped
+
+	}
+
+	@HostListener( 'window:mousedown', [ '$event' ] )
+	onMouseDown ( $event: MouseEvent ) {
+
+		if ( !this.showRenaming ) return;
+
+		// if the click is outside the input element
+		// then stop renaming
+		if ( this.nameInputRef && this.nameInputRef.nativeElement !== $event.target ) {
+
+			this.showRenaming = false;
+
+		}
 
 	}
 
@@ -261,9 +290,31 @@ export class FileComponent implements OnInit {
 
 		if ( !this.asset ) return;
 
-		if ( $event.keyCode === 13 && this.nameInputRef ) {
+		if ( !this.nameInputRef ) return;
+
+		if ( document.activeElement !== this.nameInputRef.nativeElement ) {
+
+			this.nameInputRef.nativeElement.focus();
+			this.nameInputRef.nativeElement.select();
+
+		}
+
+		// if enter key is pressed
+		if ( $event.code === 'Enter' && this.nameInputRef ) {
+
+			const isValid = this.isValidFilename( this.nameInputRef.nativeElement.value );
+
+			if ( !isValid.success ) {
+
+				SnackBar.warn( isValid.messsage );
+
+				return;
+
+			}
 
 			let newName: string;
+
+
 
 			if ( this.asset.isDirectory ) {
 
@@ -274,6 +325,7 @@ export class FileComponent implements OnInit {
 				newName = this.nameInputRef.nativeElement.value + '.' + this.asset.extension;
 
 			}
+
 
 			// const oldPath = this.file.path;
 
@@ -330,4 +382,45 @@ export class FileComponent implements OnInit {
 
 		this.previewService.updatePreview( asset );
 	}
+
+	private isValidFilename ( name: string ): { success: boolean, messsage: string } {
+
+		// Regex for validating filename
+		const invalidCharacters = /[<>.,:'"/\\|?*\x00-\x1F]/g;
+		const windowsReserved = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+
+		if ( invalidCharacters.test( name ) ) {
+			return {
+				success: false,
+				messsage: 'The following characters are not allowed in file names: ., <, >, \', :, ", /, \, |, ?, *.'
+			};
+		}
+
+		if ( name.length > 60 ) {
+			return {
+				success: false,
+				messsage: 'File name too long, should not be more than 60 characters.'
+			};
+		}
+
+		if ( windowsReserved.test( name ) ) {
+			return {
+				success: false,
+				messsage: 'The following names are not allowed for files: CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, LPT9.'
+			};
+		}
+
+		if ( name.endsWith( ' ' ) || name.endsWith( '.' ) ) {
+			return {
+				success: false,
+				messsage: 'File name should not end with space or dot.'
+			};
+		}
+
+		return {
+			success: true,
+			messsage: ''
+		};
+	}
+
 }

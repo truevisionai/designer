@@ -3,30 +3,28 @@
   -->
 
 <mat-card [satPopoverAnchor]="popover"
-          [satPopoverHover]="1"
-          [class.file-card]="true"
-          [draggable]="isDraggable">
-    <img [class.file-card-image]="true"
-         [src]="thumbnail"/>
-    <p *ngIf="!showRenaming"
-       class="file-name">{{ filename }}</p>
-    <p *ngIf="showRenaming"
-       class="file-name">
-        <input #nameInput
-               (blur)="onBlur($event)"
-               (focus)="onFocus($event)"
-               [value]="filename"
-               cdkFocusInitial
-               type="text"/>
-    </p>
+	[satPopoverHover]="1"
+	[class.file-card]="true"
+	[draggable]="isDraggable">
+	<img [class.file-card-image]="true"
+		[src]="thumbnail" />
+	<p *ngIf="!showRenaming"
+		class="file-name">{{ filename }}</p>
+	<div *ngIf="showRenaming"
+		class="file-name">
+		<input style="border: 1px solid #ffcd00;"
+			#nameInput
+			[value]="filename"
+			type="text" />
+	</div>
 </mat-card>
 <sat-popover #popover
-             verticalAlign="above">
-    <div class="file-info-popover"
-         *ngIf="asset">
-        <div class="title">GUID: {{ asset?.guid }}</div>
-        <div>Type: {{ asset?.getTypeAsString () | uppercase }}</div>
-        <div>Name: {{ asset?.name }}</div>
-        <div>Path: {{ asset?.path }}</div>
-    </div>
+	verticalAlign="above">
+	<div class="file-info-popover"
+		*ngIf="asset">
+		<div class="title">GUID: {{ asset?.guid }}</div>
+		<div>Type: {{ asset?.getTypeAsString () | uppercase }}</div>
+		<div>Name: {{ asset?.name }}</div>
+		<div>Path: {{ asset?.path }}</div>
+	</div>
 </sat-popover>
