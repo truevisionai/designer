@@ -91,10 +91,24 @@ export class AssetNode {
 
 	}
 
+	get path (): string {
+
+		return this._path;
+
+	}
+
+	set path ( value: string ) {
+
+		this._path = value;
+		this.metadata.path = value;
+
+	}
+
+
 	constructor (
 		public type: AssetType,
 		public name: string,
-		public path: string,
+		private _path: string,
 		public metadata: Metadata = null,
 	) {
 	}

@@ -102,6 +102,24 @@ export class StorageService {
 
 	}
 
+	renameSync ( oldPath: string, newPath: string ): PutFileResponse {
+
+		return this.fileService.fs.renameSync( oldPath, newPath );
+
+	}
+
+	deleteFileSync ( path: string ) {
+
+		return this.fileService.deleteFileSync( path );
+
+	}
+
+	deleteFolderSync ( path: string ) {
+
+		return this.fileService.deleteFolderRecursive( path );
+
+	}
+
 }
 
 export class ElectronStorageProvider implements IStorageProvider {

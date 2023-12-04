@@ -15,6 +15,8 @@ import { MathUtils } from 'three';
 import { RoadStyle } from './road.style';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { StorageService } from 'app/io/storage.service';
+import { FileUtils } from 'app/io/file-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,7 +29,7 @@ export class AssetService {
 	constructor (
 		private exporter: ExporterService,
 		private fileService: FileService,
-		// private storageService: StorageService,
+		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private assetFactory: AssetFactory,
 	) { }
@@ -142,19 +144,49 @@ export class AssetService {
 
 	}
 
-	renameAsset ( asset: AssetNode, newName: string ) {
+	renameAsset ( asset: AssetNode, name: string ) {
 
-		if ( asset.type == AssetType.DIRECTORY && asset.children.length > 0 ) {
+		if ( asset.children.length > 0 ) {
 
-			SnackBar.warn( 'Cannot rename folder with children' );
+			SnackBar.warn( 'Cannot rename folder or asset with children' );
 
 			return;
 		}
 
-		asset.name = newName;
+		const currentFolder = FileUtils.getDirectoryFromPath( asset.path );
+
+		const newPath = this.storageService.join( currentFolder, name );
+
+		const oldPath = asset.path;
+
+		try {
+
+			this.storageService.renameSync( oldPath, newPath );
+
+			this.storageService.deleteFileSync( oldPath + '.meta' );
+
+			asset.name = name;
+
+			asset.path = newPath;
+
+			this.assetFactory.updateMetaFileByAsset( asset );
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+
+		}
+
 	}
 
-	deleteAsset ( asset: AssetNode ) {
+	deleteAsset ( asset: AssetNode ): boolean {
+
+		if ( asset.children.length > 0 ) {
+
+			SnackBar.warn( 'Cannot delete folder or asset with children' );
+
+			return false;
+		}
 
 		if ( asset.type == AssetType.DIRECTORY ) {
 
@@ -168,6 +200,7 @@ export class AssetService {
 
 		this.deleteMetadata( asset )
 
+		return true;
 	}
 
 	private deleteFolder ( asset: AssetNode ) {

@@ -304,35 +304,37 @@ export class AssetFactory {
 
 		this.storage.writeSync( metadata.path, data );
 
-		this.updateMetadata( metadata.path, metadata );
+		this.updateMetaFile( metadata.path, metadata );
 
 	}
 
-	saveAsset ( asset: AssetNode ) {
+	saveAssetFile ( asset: AssetNode ) {
 
 		const data = this.exporter.exportAsset( asset.type, asset.metadata.guid );
 
 		if ( !data ) return;
 
-		this.updateAsset( asset, data );
+		this.updateAssetFile( asset, data );
 
 	}
 
-	updateAsset ( asset: AssetNode, json: string ) {
+	updateAssetFile ( asset: AssetNode, json: string ) {
 
 		this.storage.writeSync( asset.path, json );
 
-		this.updateAssetMeta( asset );
+		this.updateMetaFileByAsset( asset );
 
 	}
 
-	updateAssetMeta ( asset: AssetNode ) {
+	updateMetaFileByAsset ( asset: AssetNode ) {
 
-		this.updateMetadata( asset.path, asset.metadata );
+		AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
+
+		this.updateMetaFile( asset.path, asset.metadata );
 
 	}
 
-	updateMetadata ( path: string, metadata: Metadata ) {
+	updateMetaFile ( path: string, metadata: Metadata ) {
 
 		if ( !metadata ) return;
 

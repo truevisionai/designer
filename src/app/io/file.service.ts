@@ -8,6 +8,7 @@ import { TvElectronService } from '../services/tv-electron.service';
 
 import { IFile } from './file';
 import { FileUtils } from './file-utils';
+import { TvConsole } from 'app/core/utils/console';
 
 declare const versions;
 
@@ -398,7 +399,19 @@ export class FileService {
 
 	readPathContentsSync ( dirpath ) {
 
-		const files = this.fs.readdirSync( dirpath );
+		let files = [];
+
+		try {
+
+			files = this.fs.readdirSync( dirpath )
+
+		} catch ( error ) {
+
+			TvConsole.error( error );
+
+			return [];
+
+		}
 
 		const items = [];
 

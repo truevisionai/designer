@@ -133,11 +133,12 @@ export class FileComponent implements OnInit {
 			{
 				label: 'Delete',
 				click: () => this.deleteNode(),
+				enabled: this.asset.children.length == 0,
 			},
 			{
 				label: 'Rename',
 				click: () => this.renameNode(),
-				enabled: !this.asset.isDirectory,
+				enabled: this.asset.children.length == 0,
 			},
 			{
 				label: 'Duplicate',
@@ -179,15 +180,13 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			this.assetService.deleteAsset( this.asset );
+			if ( !this.assetService.deleteAsset( this.asset ) ) return;
 
 			this.deleted.emit( this.asset );
 
 		} catch ( error ) {
 
 			SnackBar.warn( 'Could Not Delete Item' );
-
-			TvConsole.error( 'Could Not Delete Item' );
 
 		}
 
@@ -326,49 +325,9 @@ export class FileComponent implements OnInit {
 
 			}
 
-
-			// const oldPath = this.file.path;
-
-			// const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
-
-			// const newPath = this.storageService.join( currentFolder, assetName );
-
 			this.assetService.renameAsset( this.asset, newName );
 
-			// this.asset.name = newName;
-
-			// if ( !this.metadata ) {
-
-			// 	if ( this.isDirectory ) {
-
-			// 		// this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
-
-			// 	} else {
-
-			// 		// this.metadata = MetadataFactory.createMetadata( assetName, this.extension, this.file.path );
-			// 	}
-
-			// }
-
-			// this.metadata.path = newPath;
-
-			// this.metadata.preview = null;
-
-			// try {
-
-			// 	// MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
-
-			// 	// this.fileService.fs.renameSync( oldPath, newPath );
-
-			// 	// this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
-
-			// 	// this.renamed.emit( this.file );
-
-			// } catch ( error ) {
-
-			// 	console.error( 'error in renaming', error, oldPath, newPath );
-
-			// }
+			this.renamed.emit( this.asset );
 
 			this.showRenaming = false;
 
