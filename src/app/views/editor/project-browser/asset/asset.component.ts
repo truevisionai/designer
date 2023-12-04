@@ -18,11 +18,11 @@ import { MapEvents } from 'app/events/map-events';
 import { StorageService } from 'app/io/storage.service';
 
 @Component( {
-	selector: 'app-file',
-	templateUrl: './file.component.html',
-	styleUrls: [ './file.component.css' ]
+	selector: 'app-asset',
+	templateUrl: './asset.component.html',
+	styleUrls: [ './asset.component.css' ]
 } )
-export class FileComponent implements OnInit {
+export class AssetComponent implements OnInit {
 
 	@ViewChild( 'nameInput' ) nameInputRef: ElementRef<HTMLInputElement>;
 

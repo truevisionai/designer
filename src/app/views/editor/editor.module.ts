@@ -37,7 +37,7 @@ import { EditorComponent } from './editor.component';
 import { EditorLayoutComponent } from './layout/editor-layout.component';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { PlayerBarComponent } from './player-bar/player-bar.component';
-import { FileComponent } from './project-browser/file/file.component';
+import { AssetComponent } from './project-browser/asset/asset.component';
 import { FolderFilesComponent } from './project-browser/folder-files/folder-files.component';
 import { ProjectBreadcrumbsComponent } from './project-browser/project-breadcrumbs/project-breadcrumbs.component';
 import { ProjectBrowserComponent } from './project-browser/project-browser.component';
@@ -56,7 +56,7 @@ import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.compo
 		ProjectHierarchyComponent,
 		ProjectBreadcrumbsComponent,
 		FolderFilesComponent,
-		FileComponent,
+		AssetComponent,
 		ExportGlbDialog,
 		ExportOpenDriveDialog,
 		ConsoleComponent,
