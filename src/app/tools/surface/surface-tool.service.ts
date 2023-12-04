@@ -16,6 +16,7 @@ import { SelectionService } from '../selection.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvSurfaceBuilder } from 'app/modules/tv-map/builders/tv-surface.builder';
 import { Object3DMap } from '../lane-width/object-3d-map';
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,6 +32,7 @@ export class SurfaceToolService {
 		private splineService: SplineService,
 		private controlPointFactory: ControlPointFactory,
 		private surfaceBuilder: TvSurfaceBuilder,
+		private roadService: RoadService,
 	) {
 	}
 
@@ -114,6 +116,8 @@ export class SurfaceToolService {
 
 		} );
 
+		this.roadService.resetMapOpacity();
+
 	}
 
 	showSurfaceHelpers () {
@@ -123,6 +127,8 @@ export class SurfaceToolService {
 			this.showSurface( surface );
 
 		} );
+
+		this.roadService.setMapOpacity( 0.5 );
 
 	}
 
