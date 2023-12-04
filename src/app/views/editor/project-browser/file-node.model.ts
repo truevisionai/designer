@@ -4,7 +4,6 @@
 
 import { FileExtension } from 'app/io/FileExtension';
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
-import { Vector3 } from 'three';
 
 export enum AssetType {
 	DIRECTORY,
@@ -12,7 +11,6 @@ export enum AssetType {
 	TEXTURE,
 	MATERIAL,
 	MODEL,
-	MESH,
 	SCENE,
 	ROAD_STYLE,
 	ROAD_SIGN,
@@ -167,9 +165,6 @@ export class AssetNode {
 
 			case AssetType.MODEL:
 				return 'model';
-
-			case AssetType.MESH:
-				return 'mesh';
 
 			case AssetType.SCENE:
 				return 'scene';
