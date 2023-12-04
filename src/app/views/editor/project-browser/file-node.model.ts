@@ -33,7 +33,63 @@ export class AssetNode {
 
 	public children: AssetNode[] = [];
 
-	public lastPosition?: Vector3;
+	get isDirectory (): boolean {
+
+		return this.type === AssetType.DIRECTORY;
+
+	}
+
+	get thumbnail (): string {
+
+		let response = null;
+
+		switch ( this.type ) {
+
+			case AssetType.DIRECTORY:
+				response = 'assets/folder-icon-blue.png';
+				break;
+
+			case AssetType.TEXTURE:
+				response = this.path;
+				break;
+
+			case AssetType.MATERIAL:
+				response = this.preview;
+				break;
+
+			case AssetType.MODEL:
+				response = this.preview;
+				break;
+
+			case AssetType.SCENE:
+				response = 'assets/scene-icon.png';
+				break;
+
+			case AssetType.OPENDRIVE:
+				response = 'assets/unknown-file-icon.png';
+				break;
+
+			case AssetType.OPENSCENARIO:
+				response = 'assets/unknown-file-icon.png';
+				break;
+
+			case AssetType.ROAD_STYLE:
+				response = this.preview;
+				break;
+
+			default:
+				response = null;
+				break;
+
+		}
+
+		if ( response === null ) {
+			return 'assets/unknown-file-icon.png';
+		}
+
+		return response;
+
+	}
 
 	constructor (
 		public type: AssetType,

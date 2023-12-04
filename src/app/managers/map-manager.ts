@@ -41,8 +41,6 @@ export class MapManager extends Manager {
 
 		} );
 
-		map.surfaces.forEach( surface => map.gameObject.remove( surface.mesh ) );
-
 		map.propCurves.forEach( curve => {
 
 			curve.props.forEach( prop => SceneService.removeFromMain( prop ) );

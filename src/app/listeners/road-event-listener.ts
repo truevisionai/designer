@@ -44,7 +44,7 @@ export class RoadEventListener extends Manager {
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
 
-		this.roadService.removeRoad( event.road );
+		// this.roadService.removeRoad( event.road );
 
 	}
 

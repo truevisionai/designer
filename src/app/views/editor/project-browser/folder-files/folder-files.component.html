@@ -17,7 +17,7 @@
 			<app-file (deleted)="onFileDeleted($event)"
 				(renamed)="onFileRenamed($event)"
 				*ngIf="!file.isDeleted"
-				[file]="file"></app-file>
+				[asset]="file"></app-file>
 
 		</div>
 

@@ -276,25 +276,29 @@ export class SceneImporterService extends AbstractReader {
 
 	private importSurface ( xml: XmlElement ): TvSurface {
 
-		const height = parseFloat( xml.attr_height ) || 0.0;
-
 		const rotation = parseFloat( xml.attr_rotation ) || 0.0;
 
-		const material = xml.material.attr_guid || 'grass';
+		const material = xml.material?.attr_guid || 'grass';
 
 		const offset = new Vector2(
-			parseFloat( xml.offset.attr_x ),
-			parseFloat( xml.offset.attr_y ),
+			parseFloat( xml.offset?.attr_x || 0 ),
+			parseFloat( xml.offset?.attr_y || 0 ),
 		);
 
 		const scale = new Vector2(
-			parseFloat( xml.scale.attr_x ),
-			parseFloat( xml.scale.attr_y ),
+			parseFloat( xml.scale?.attr_x || 1 ),
+			parseFloat( xml.scale?.attr_y || 1 ),
 		);
 
 		const spline = this.importCatmullSpline( xml.spline );
 
-		const surface = new TvSurface( material, spline, offset, scale, rotation, height );
+		const surface = new TvSurface( material, spline, offset, scale, rotation );
+
+		surface.textureGuid = xml.texture?.attr_guid;
+
+		surface.transparent = xml.material?.attr_transparent === 'true' ? true : false;
+
+		surface.opacity = parseFloat( xml.material?.attr_opacity ) || 1.0;
 
 		spline.controlPoints.forEach( p => p.mainObject = surface );
 
@@ -449,8 +453,6 @@ export class SceneImporterService extends AbstractReader {
 			const controlPoint = new DynamicControlPoint( mainObject, position );
 
 			spline.addControlPoint( controlPoint );
-
-			SceneService.addToMain( controlPoint );
 
 		} );
 

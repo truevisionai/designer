@@ -310,9 +310,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		this.tool.mapService.map.removeRoad( road );
-
-		this.tool.roadSplineService.removeRoadSegment( road );
+		this.tool.roadService.removeRoad( road, true );
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 

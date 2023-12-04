@@ -93,17 +93,13 @@ export class ViewportImporterService {
 
 	importMaterial ( asset: AssetNode, position: Vector3 ) {
 
-		asset.lastPosition = position;
-
-		CommandHistory.execute( new AddObjectCommand( asset ) );
+		ToolManager.currentTool?.onAssetDropped( asset, position );
 
 	}
 
 	importTexture ( asset: AssetNode, position: Vector3 ) {
 
-		asset.lastPosition = position;
-
-		CommandHistory.execute( new AddObjectCommand( asset ) );
+		ToolManager.currentTool?.onAssetDropped( asset, position );
 
 	}
 

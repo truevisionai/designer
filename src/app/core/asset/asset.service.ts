@@ -14,6 +14,7 @@ import { TvConsole } from '../utils/console';
 import { MathUtils } from 'three';
 import { RoadStyle } from './road.style';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -139,6 +140,18 @@ export class AssetService {
 
 		}
 
+	}
+
+	renameAsset ( asset: AssetNode, newName: string ) {
+
+		if ( asset.type == AssetType.DIRECTORY && asset.children.length > 0 ) {
+
+			SnackBar.warn( 'Cannot rename folder with children' );
+
+			return;
+		}
+
+		asset.name = newName;
 	}
 
 	deleteAsset ( asset: AssetNode ) {

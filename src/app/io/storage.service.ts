@@ -84,7 +84,7 @@ export class StorageService {
 
 	}
 
-	join ( path, filename ): string {
+	join ( path: string, filename: string ): string {
 
 		return this.fileService.path.join( path, filename );
 

@@ -85,6 +85,11 @@ export class SceneService {
 
 	static addToolObject ( object: Object3D ): void {
 
+		// BUG FIX: this is a hack to fix the issue of removing an object from the scene
+		if ( object.parent === undefined ) {
+			object.parent = null;
+		}
+
 		this.toolLayer.add( object );
 
 		this.changed.emit();

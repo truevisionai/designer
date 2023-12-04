@@ -6,6 +6,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SceneService } from './scene.service';
 import { GameObject } from 'app/core/game-object';
 import { TvConsole } from 'app/core/utils/console';
+import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,7 +14,8 @@ import { TvConsole } from 'app/core/utils/console';
 export class SceneBuilderService {
 
 	constructor (
-		private roadService: RoadService
+		private roadService: RoadService,
+		private surfaceService: SurfaceToolService,
 	) { }
 
 	buildScene ( map: TvMap ) {
@@ -25,6 +27,8 @@ export class SceneBuilderService {
 		map.gameObject = new GameObject( 'OpenDrive' );
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
+
+		map.getSurfaces().forEach( surface => this.surfaceService.buildSurface( surface ) );
 
 		SceneService.addToMain( map.gameObject );
 

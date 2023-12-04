@@ -17,6 +17,7 @@ import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-r
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { Vector3 } from 'three';
 
 export class PointMarkingTool extends BaseTool {
 
@@ -80,6 +81,16 @@ export class PointMarkingTool extends BaseTool {
 
 	}
 
+	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
+
+		if ( !position ) return;
+
+		const roadObject = this.tool.createPointMarking( asset, position );
+
+		this.executeAddObject( roadObject );
+
+	}
+
 	onObjectSelected ( object: any ): void {
 
 		if ( object instanceof TvRoad ) {
@@ -120,17 +131,7 @@ export class PointMarkingTool extends BaseTool {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( object instanceof AssetNode ) {
-
-			const position = object.lastPosition ? object.lastPosition : null;
-
-			if ( !position ) return;
-
-			const roadObject = this.tool.createPointMarking( object, position );
-
-			this.executeAddObject( roadObject );
-
-		} else if ( object instanceof TvRoadObject ) {
+		if ( object instanceof TvRoadObject ) {
 
 			this.tool.roadObjectService.addRoadObject( object.road, object );
 

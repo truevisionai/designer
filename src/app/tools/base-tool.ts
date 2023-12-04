@@ -7,7 +7,7 @@ import { IComponent } from 'app/core/game-object';
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { StatusBarService } from 'app/services/status-bar.service';
-import { Intersection, Line, Mesh, Object3D } from 'three';
+import { Intersection, Line, Mesh, Object3D, Vector3 } from 'three';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
@@ -18,6 +18,7 @@ import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
 export abstract class BaseTool extends ViewportEventSubscriber implements IEditorState {
 
@@ -139,6 +140,10 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 	}
 
 	onObjectRemoved ( object: any ) {
+	}
+
+	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
+
 	}
 
 	setHint ( msg: string ) {

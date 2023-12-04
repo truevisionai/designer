@@ -10,14 +10,19 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { MapService } from 'app/services/map.service';
 import { SceneService } from 'app/services/scene.service';
 import { SplineService } from 'app/services/spline.service';
-import { MeshLambertMaterial, RepeatWrapping, Shape, ShapeGeometry, Vector2, Vector3 } from 'three';
+import { Mesh, MeshLambertMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { SelectionService } from '../selection.service';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { TvSurfaceBuilder } from 'app/modules/tv-map/builders/tv-surface.builder';
+import { Object3DMap } from '../lane-width/object-3d-map';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SurfaceToolService {
+
+	private meshes = new Object3DMap<TvSurface, Mesh>();
 
 	constructor (
 		public selection: SelectionService,
@@ -25,7 +30,14 @@ export class SurfaceToolService {
 		private mapService: MapService,
 		private splineService: SplineService,
 		private controlPointFactory: ControlPointFactory,
+		private surfaceBuilder: TvSurfaceBuilder,
 	) {
+	}
+
+	getSurfaceMesh ( object: TvSurface ) {
+
+		return this.meshes.get( object );
+
 	}
 
 	select ( e: PointerEventData ) {
@@ -34,15 +46,23 @@ export class SurfaceToolService {
 
 	}
 
-	createSurface ( position?: Vector3 ) {
+	createSurface ( materialGuid = 'grass', position?: Vector3, curve?: CatmullRomSpline ) {
 
-		return new TvSurface( 'grass', new CatmullRomSpline() );
+		return new TvSurface( materialGuid, curve || new CatmullRomSpline() );
 
 	}
 
 	createControlPoint ( surface: TvSurface, position: Vector3 ) {
 
-		return this.controlPointFactory.createDynamic( surface, position );
+		return this.controlPointFactory.createSimpleControlPoint( surface, position );
+
+	}
+
+	updateSurface ( surface: TvSurface ) {
+
+		this.meshes.remove( surface );
+
+		this.buildSurface( surface );
 
 	}
 
@@ -50,15 +70,23 @@ export class SurfaceToolService {
 
 		this.mapService.map.addSurface( surface );
 
-		SceneService.addToMain( surface.mesh );
+		this.buildSurface( surface );
+
+	}
+
+	buildSurface ( surface: TvSurface ) {
+
+		const mesh = this.surfaceBuilder.buildSurface( surface );
+
+		this.meshes.add( surface, mesh );
 
 	}
 
 	removeSurface ( surface: TvSurface ) {
 
-		this.mapService.map.removeSurface( surface );
+		this.meshes.remove( surface );
 
-		SceneService.removeFromMain( surface.mesh );
+		this.mapService.map.removeSurface( surface );
 
 	}
 
@@ -110,56 +138,72 @@ export class SurfaceToolService {
 		this.splineService.showLines( surface.spline );
 		this.splineService.showControlPoints( surface.spline );
 
+	}
+
+	createFromAsset ( asset: AssetNode, position: Vector3 ) {
+
+		if ( asset.type == AssetType.TEXTURE ) {
+
+			const texture = AssetDatabase.getInstance<Texture>( asset.guid );
+
+			const surfaceWidth = texture.image.width;
+
+			const surfaceHeight = texture.image.height;
+
+			const surface = this.createSurface( null, position, new CatmullRomSpline( true, 'catmullrom', 0 ) );
+
+			surface.textureGuid = asset.guid;
+
+			surface.repeat.set( 1 / surfaceWidth, 1 / surfaceHeight );
+
+			// create 4 control points for the surface
+			const p1 = this.createControlPoint( surface, new Vector3( 0, 0, 0 ) );
+			const p2 = this.createControlPoint( surface, new Vector3( surfaceWidth, 0, 0 ) );
+			const p3 = this.createControlPoint( surface, new Vector3( surfaceWidth, surfaceHeight, 0 ) );
+			const p4 = this.createControlPoint( surface, new Vector3( 0, surfaceHeight, 0 ) );
+
+			// add the control points to the surface
+			this.addControlPoint( surface, p1 );
+			this.addControlPoint( surface, p2 );
+			this.addControlPoint( surface, p3 );
+			this.addControlPoint( surface, p4 );
+
+			return surface;
+		}
 
 	}
 
-	private createSurfaceMesh ( surface: TvSurface ) {
+	updateSurfaceMeshByDimensions ( surface: TvSurface, width: number, height: number ) {
 
-		const points: Vector2[] = surface.spline.getPoints( 0.1 ).map(
-			point => new Vector2( point.x, point.y )
-		);
+		const mesh = this.meshes.get( surface );
+
+		const geometry = mesh.geometry as ShapeGeometry;
 
 		const shape = new Shape();
 
-		const first = points.shift();
+		shape.moveTo( 0, 0 );
+		shape.lineTo( width, 0 );
+		shape.lineTo( width, height );
+		shape.lineTo( 0, height );
+		shape.lineTo( 0, 0 );
 
-		shape.moveTo( first.x, first.y );
+		// also update the spline
 
-		shape.splineThru( points );
+		const spline = surface.spline;
 
-		const geometry = new ShapeGeometry( shape );
-
-		let groundMaterial;
-
-		if ( surface.materialGuid === undefined || surface.materialGuid === 'grass' ) {
-
-			const texture = OdTextures.terrain().clone();
-			texture.wrapS = texture.wrapT = RepeatWrapping;
-			texture.offset.copy( surface.offset );
-			texture.repeat.copy( surface.repeat );
-			texture.anisotropy = 16;
-
-			groundMaterial = new MeshLambertMaterial( { map: texture } );
-
-		} else {
-
-			groundMaterial = AssetDatabase.getInstance( surface.materialGuid );
-
+		if ( spline?.controlPoints.length == 4 ) {
+			spline.controlPoints[ 0 ].position.set( 0, 0, 0 );
+			spline.controlPoints[ 1 ].position.set( width, 0, 0 );
+			spline.controlPoints[ 2 ].position.set( width, height, 0 );
+			spline.controlPoints[ 3 ].position.set( 0, height, 0 );
 		}
 
-		const mesh = new GameObject( 'Surface', geometry, groundMaterial );
+		geometry.dispose();
 
-		mesh.position.set( 0, 0, -0.1 );
+		geometry.copy( new ShapeGeometry( shape ) );
 
-		mesh.Tag = TvSurface.tag;
-
-		mesh.userData.surface = this;
-
-		return mesh;
+		surface.repeat.set( 1 / width, 1 / height );
 
 	}
 
-	private updateSurfaceMesh ( surface: TvSurface ) {
-
-	}
 }

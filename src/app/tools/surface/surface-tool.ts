@@ -1,5 +1,6 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { TvSurfaceObject } from 'app/modules/tv-map/models/TvSurfaceObject';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SurfaceToolService } from './surface-tool.service';
@@ -10,12 +11,12 @@ import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-po
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
 import { Vector3 } from 'three';
 import { AppInspector } from 'app/core/inspector';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
+import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
 export class SurfaceTool extends BaseTool {
 
@@ -27,8 +28,8 @@ export class SurfaceTool extends BaseTool {
 		return this.tool.selection.getLastSelected<TvSurface>( TvSurface.name );
 	}
 
-	get selectedControlPoint (): DynamicControlPoint<TvSurface> {
-		return this.tool.selection.getLastSelected<DynamicControlPoint<TvSurface>>( DynamicControlPoint.name );
+	get selectedControlPoint (): SimpleControlPoint<TvSurface> {
+		return this.tool.selection.getLastSelected<SimpleControlPoint<TvSurface>>( SimpleControlPoint.name );
 	}
 
 	controlPointMoved: boolean;
@@ -43,7 +44,7 @@ export class SurfaceTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.selection.registerStrategy( DynamicControlPoint.name, new ControlPointStrategy() );
+		this.tool.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
 		this.tool.selection.registerStrategy( TvSurface.name, new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
 
@@ -147,15 +148,15 @@ export class SurfaceTool extends BaseTool {
 
 	onDeleteKeyDown (): void {
 
-		if ( this.selectedSurface && this.selectedControlPoint ) {
+		// if ( this.selectedSurface && this.selectedControlPoint ) {
 
-			this.executeRemoveObject( this.selectedControlPoint );
+		// 	this.executeRemoveObject( this.selectedControlPoint );
 
-		} else if ( this.selectedSurface ) {
+		// } else if ( this.selectedSurface ) {
 
-			this.executeRemoveObject( this.selectedSurface );
+		// 	this.executeRemoveObject( this.selectedSurface );
 
-		}
+		// }
 
 	}
 
@@ -173,7 +174,7 @@ export class SurfaceTool extends BaseTool {
 
 	createSurface ( position: Vector3 ) {
 
-		const surface = this.tool.createSurface( position );
+		const surface = this.tool.createSurface( 'grass', position );
 
 		const point = this.tool.createControlPoint( surface, position );
 
@@ -207,7 +208,9 @@ export class SurfaceTool extends BaseTool {
 
 		this.tool.showSurface( object );
 
-		AppInspector.setInspector( DynamicInspectorComponent, object );
+		const mesh = this.tool.getSurfaceMesh( object );
+
+		AppInspector.setDynamicInspector( new TvSurfaceObject( object, mesh, this.tool ) );
 
 	}
 
@@ -261,6 +264,16 @@ export class SurfaceTool extends BaseTool {
 
 	}
 
+	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
+
+		const surface = this.tool.createFromAsset( asset, position );
+
+		if ( !surface ) return;
+
+		this.executeAddObject( surface );
+
+	}
+
 	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof TvSurface ) {
@@ -281,16 +294,20 @@ export class SurfaceTool extends BaseTool {
 
 		if ( object instanceof TvSurface ) {
 
-			object.update();
+			this.tool.updateSurface( object );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
 			// this.tool.updateControlPoint( object );
 			if ( this.selectedSurface ) {
 
-				this.selectedSurface.update();
+				this.tool.updateSurface( this.selectedSurface );
 
 			}
+
+		} else if ( object instanceof TvSurfaceObject ) {
+
+			this.tool.updateSurface( object.surface );
 
 		}
 

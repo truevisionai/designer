@@ -128,6 +128,12 @@ export class TvMap {
 
 	}
 
+	getSurfaces () {
+
+		return this.surfaces;
+
+	}
+
 	public addController ( id: number, name: string, sequence: number ): TvController {
 
 		const controller = new TvController( id, name, sequence );

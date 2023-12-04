@@ -20,6 +20,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector3 } from 'three';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -37,6 +38,7 @@ export class RoadService {
 		private splineService: SplineService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
+		private roadObjectService: RoadObjectService
 	) {
 	}
 
@@ -398,6 +400,14 @@ export class RoadService {
 			road.junctionInstance?.removeConnectingRoad( road );
 
 		}
+
+		this.mapService.map.removeRoad( road );
+
+		road.objects.object.forEach( object => {
+
+			this.roadObjectService.removeObject3d( object );
+
+		} );
 
 		this.hideRoadNodes( road );
 

@@ -133,7 +133,7 @@ export class RoadObjectService {
 
 	removeRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		this.objectMap.remove( roadObject );
+		this.removeObject3d( roadObject );
 
 		this.hideRoadObjectCorners( roadObject );
 
@@ -141,13 +141,9 @@ export class RoadObjectService {
 
 	}
 
-	removeRoadObjectV2 ( roadObject: TvRoadObject ): void {
+	removeObject3d ( roadObject: TvRoadObject ): void {
 
-		const road = this.findRoadByRoadObject( roadObject );
-
-		if ( !road ) return;
-
-		this.removeRoadObject( road, roadObject );
+		this.objectMap.remove( roadObject );
 
 	}
 

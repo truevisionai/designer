@@ -32,11 +32,10 @@ describe( 'TvSurface', () => {
 		const rotation = 45;
 		const height = 10;
 
-		surface = new TvSurface( materialGuid, spline, offset, scale, rotation, height );
+		surface = new TvSurface( materialGuid, spline, offset, scale, rotation );
 
 		const json = surface.toJson();
 
-		expect( json.attr_height ).toEqual( height );
 		expect( json.attr_rotation ).toEqual( rotation );
 		expect( json.material.attr_guid ).toEqual( materialGuid );
 		expect( json.offset.attr_x ).toEqual( offset.x );

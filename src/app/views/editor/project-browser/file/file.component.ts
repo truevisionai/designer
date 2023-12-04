@@ -4,8 +4,7 @@
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
-import { FileUtils } from 'app/io/file-utils';
-import { Metadata, MetaImporter } from 'app/core/asset/metadata.model';
+import { Metadata } from 'app/core/asset/metadata.model';
 import { DragDropService } from 'app/services/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
@@ -17,6 +16,7 @@ import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { MapEvents } from 'app/events/map-events';
+import { StorageService } from 'app/io/storage.service';
 
 @Component( {
 	selector: 'app-file',
@@ -31,9 +31,21 @@ export class FileComponent implements OnInit {
 
 	@Output() renamed = new EventEmitter<AssetNode>();
 
-	@Input() file: AssetNode;
+	@Input() asset: AssetNode;
 
 	public showRenaming: boolean;
+
+	get isDraggable (): boolean {
+		return this.asset?.type != AssetType.DIRECTORY;
+	}
+
+	get filename () {
+		return this.asset?.assetName;
+	}
+
+	get thumbnail () {
+		return this.asset?.thumbnail;
+	}
 
 	constructor (
 		private electron: TvElectronService,
@@ -44,102 +56,20 @@ export class FileComponent implements OnInit {
 		private dragDropService: DragDropService,
 		private inspectorFactory: InspectorFactoryService,
 		private assetService: AssetService,
+		private storageService: StorageService,
 	) {
 
-	}
-
-	get metadata (): Metadata {
-		return this.file.metadata
-	}
-
-	public get previewImage () {
-		return this.metadata && this.metadata.preview;
-	}
-
-	public get extension () {
-		return FileUtils.getExtensionFromPath( this.filePath );
-	}
-
-	public get imageSource () {
-		if ( this.isDirectory ) {
-			return 'assets/folder-icon-blue.png';
-		}
-		if ( this.isScene ) {
-			return 'assets/scene-icon.png';
-		}
-		if ( this.isOpenDrive || this.isOpenScenario ) {
-			return 'assets/unknown-file-icon.png';
-		}
-		if ( this.isUnknown ) {
-			return 'assets/unknown-file-icon.png';
-		}
-		if ( !this.previewImage ) {
-			return 'assets/unknown-file-icon.png';
-		}
-		return this.previewImage;
-	}
-
-	public get isModel (): boolean {
-		return this.file.type == AssetType.MODEL;
-	}
-
-	public get isMaterial (): boolean {
-		return this.file.type == AssetType.MATERIAL;
-	}
-
-	public get isTexture (): boolean {
-		return this.file.type == AssetType.TEXTURE;
-	}
-
-	public get isRoadStyle (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.ROAD_STYLE;
-	}
-
-	public get isRoadMarking (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.ROAD_MARKING;
-	}
-
-	public get isScene (): boolean {
-		return this.file.type == AssetType.SCENE;
-	}
-
-	public get isSign (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.SIGN;
-	}
-
-	public get isOpenDrive (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.OPENDRIVE;
-	}
-
-	public get isOpenScenario (): boolean {
-		return this.metadata && this.metadata.importer == MetaImporter.OPENSCENARIO;
-	}
-
-	public get isDirectory (): boolean {
-		return this.file.type == AssetType.DIRECTORY;
-	}
-
-	public get isUnknown (): boolean {
-		return !this.isDirectory && ( !this.metadata || !this.extension );
-	}
-
-	get filename () {
-		return this.file.name.split( '.' )[ 0 ];
-	}
-
-	get filePath () {
-		return FileUtils.pathToFileURL( this.file.path );
 	}
 
 	ngOnInit () {
 
 		try {
 
-			this.initPreview( this.file );
+			this.initPreview( this.asset );
 
 		} catch ( error ) {
 
-			console.error( 'error in preview', error, this.file );
+			console.error( 'error in preview', error, this.asset );
 
 		}
 	}
@@ -150,15 +80,15 @@ export class FileComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		if ( this.isDirectory ) return;
+		if ( this.asset.isDirectory ) return;
 
-		if ( this.isScene ) return;
+		if ( this.asset.type == AssetType.SCENE ) return;
 
 		try {
 
-			this.inspectorFactory.setAssetInspector( this.file );
+			this.inspectorFactory.setAssetInspector( this.asset );
 
-			MapEvents.assetSelected.emit( this.file );
+			MapEvents.assetSelected.emit( this.asset );
 
 		} catch ( error ) {
 
@@ -171,17 +101,17 @@ export class FileComponent implements OnInit {
 	@HostListener( 'dblclick', [ '$event' ] )
 	onDoubleClick ( $event ) {
 
-		if ( this.isDirectory ) {
+		if ( this.asset.isDirectory ) {
 
-			this.projectBrowserService.folderChanged.emit( this.file );
+			this.projectBrowserService.folderChanged.emit( this.asset );
 
 		} else {
 
-			switch ( this.extension ) {
+			switch ( this.asset.type ) {
 
-				case 'scene':
-					this.importer.importScene( this.file.path );
-					SnackBar.success( 'Importing Scene ' + this.file.name );
+				case AssetType.SCENE:
+					this.importer.importScene( this.asset.path );
+					SnackBar.success( 'Importing Scene ' + this.asset.name );
 					break;
 
 			}
@@ -235,13 +165,13 @@ export class FileComponent implements OnInit {
 
 	createDuplicate (): void {
 
-		this.assetService.copyAsset( this.file );
+		this.assetService.copyAsset( this.asset );
 
 	}
 
 	canDuplicate (): boolean {
 
-		return this.file.type == AssetType.MATERIAL;
+		return this.asset.type == AssetType.MATERIAL;
 
 	}
 
@@ -249,9 +179,9 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			this.assetService.deleteAsset( this.file );
+			this.assetService.deleteAsset( this.asset );
 
-			this.deleted.emit( this.file );
+			this.deleted.emit( this.asset );
 
 		} catch ( error ) {
 
@@ -280,7 +210,7 @@ export class FileComponent implements OnInit {
 
 		try {
 
-			this.electron.shell.showItemInFolder( this.file.path );
+			this.electron.shell.showItemInFolder( this.asset.path );
 
 		} catch ( error ) {
 
@@ -305,10 +235,11 @@ export class FileComponent implements OnInit {
 	@HostListener( 'dragstart', [ '$event' ] )
 	onDragStart ( $event ) {
 
-		this.dragDropService.setData( this.file );
+		this.dragDropService.setData( this.asset );
 
-		$event.dataTransfer.setData( 'path', this.file.path );
-		if ( this.metadata ) $event.dataTransfer.setData( 'guid', this.metadata.guid );
+		$event.dataTransfer.setData( 'path', this.asset.path );
+
+		$event.dataTransfer.setData( 'guid', this.asset.guid );
 	}
 
 	onBlur ( $event ) {
@@ -328,59 +259,68 @@ export class FileComponent implements OnInit {
 
 		if ( !this.showRenaming ) return;
 
-		throw new Error( 'Not implemented' );
+		if ( !this.asset ) return;
 
-		// if ( $event.keyCode === 13 && this.nameInputRef ) {
+		if ( $event.keyCode === 13 && this.nameInputRef ) {
 
-		// 	let nodeName: string;
-		// 	if ( this.isDirectory ) {
-		// 		nodeName = this.nameInputRef.nativeElement.value;
-		// 	} else {
-		// 		nodeName = this.nameInputRef.nativeElement.value + '.' + this.extension;
-		// 	}
+			let newName: string;
 
-		// 	const oldPath = this.file.path;
+			if ( this.asset.isDirectory ) {
 
-		// 	const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
+				newName = this.nameInputRef.nativeElement.value;
 
-		// 	const newPath = this.fileService.join( currentFolder, nodeName );
+			} else {
 
-		// 	if ( !this.metadata ) {
+				newName = this.nameInputRef.nativeElement.value + '.' + this.asset.extension;
 
-		// 		if ( this.isDirectory ) {
+			}
 
-		// 			this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
+			// const oldPath = this.file.path;
 
-		// 		} else {
+			// const currentFolder = FileUtils.getDirectoryFromPath( this.file.path );
 
-		// 			this.metadata = MetadataFactory.createMetadata( nodeName, this.extension, this.file.path );
-		// 		}
+			// const newPath = this.storageService.join( currentFolder, assetName );
 
-		// 	}
+			this.assetService.renameAsset( this.asset, newName );
 
-		// 	this.metadata.path = newPath;
+			// this.asset.name = newName;
 
-		// 	this.metadata.preview = null;
+			// if ( !this.metadata ) {
 
-		// 	try {
+			// 	if ( this.isDirectory ) {
 
-		// 		MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
+			// 		// this.metadata = MetadataFactory.createFolderMetadata( this.file.path );
 
-		// 		this.fileService.fs.renameSync( oldPath, newPath );
+			// 	} else {
 
-		// 		this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
+			// 		// this.metadata = MetadataFactory.createMetadata( assetName, this.extension, this.file.path );
+			// 	}
 
-		// 		this.renamed.emit( this.file );
+			// }
 
-		// 	} catch ( error ) {
+			// this.metadata.path = newPath;
 
-		// 		console.error( 'error in renaming', error, oldPath, newPath );
+			// this.metadata.preview = null;
 
-		// 	}
+			// try {
 
-		// 	this.showRenaming = false;
+			// 	// MetadataFactory.saveMetadataFile( oldPath + '.meta', this.metadata );
 
-		// }
+			// 	// this.fileService.fs.renameSync( oldPath, newPath );
+
+			// 	// this.fileService.fs.renameSync( oldPath + '.meta', newPath + '.meta' );
+
+			// 	// this.renamed.emit( this.file );
+
+			// } catch ( error ) {
+
+			// 	console.error( 'error in renaming', error, oldPath, newPath );
+
+			// }
+
+			this.showRenaming = false;
+
+		}
 
 	}
 
