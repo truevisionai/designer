@@ -77,6 +77,15 @@ export class OdTextures {
 		return texture;
 	};
 
+	private static _arrowSharp: Texture;
+	static arrowSharp = () => {
+		if ( OdTextures._arrowSharp ) return OdTextures._arrowSharp;
+		OdTextures._arrowSharp = new THREE.TextureLoader().load( 'assets/arrow-sharp.svg' );
+		OdTextures._arrowSharp.colorSpace = SRGBColorSpace;
+		OdTextures._arrowSharp.anisotropy = 16;
+		return OdTextures._arrowSharp;
+	};
+
 	// misc
 	static point = new THREE.TextureLoader().load( 'assets/point.png' );
 	static arrow = new THREE.TextureLoader().load( 'assets/arrow.svg' );

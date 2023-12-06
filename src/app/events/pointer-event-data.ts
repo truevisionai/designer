@@ -52,5 +52,26 @@ export class PointerEventData extends BaseEventData {
 		this.mouseEvent = partialData.mouseEvent;
 		this.mouseDelta = partialData.mouseDelta;
 	}
+
+	clone (): PointerEventData {
+
+		return new PointerEventData( {
+			distance: this.distance,
+			distanceToRay: this.distanceToRay,
+			point: this.point,
+			index: this.index,
+			face: this.face,
+			faceIndex: this.faceIndex,
+			uv: this.uv,
+			button: this.button,
+			intersections: this.intersections,
+			approxCameraDistance: this.approxCameraDistance,
+			camera: this.camera,
+			mouse: this.mouse,
+			mouseEvent: this.mouseEvent,
+			mouseDelta: this.mouseDelta
+		} );
+
+	}
 }
 

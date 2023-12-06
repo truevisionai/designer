@@ -28,6 +28,9 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 		this.renderOrder = 3;
 
 		this.layers.enable( 31 );
+
+		this.tag = 'control-point';
+
 	}
 
 	setPosition ( position: Vector3 ) {

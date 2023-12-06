@@ -9,6 +9,7 @@ import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { BoxSelectionService } from '../box-selection-service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,6 +23,7 @@ export class PointMarkingToolService {
 		public roadService: RoadService,
 		public roadObjectService: RoadObjectService,
 		private controlPointFactory: ControlPointFactory,
+		public boxSelectionService: BoxSelectionService,
 	) { }
 
 	createPointMarking ( asset: AssetNode, position: Vector3 ): TvRoadObject {

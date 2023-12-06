@@ -25,6 +25,8 @@ export class PointMarkingTool extends BaseTool {
 
 	public toolType = ToolType.PointMarkingTool;
 
+	private boxSelectionStarted: boolean = false;
+
 	get selectedRoad () {
 
 		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
@@ -63,6 +65,10 @@ export class PointMarkingTool extends BaseTool {
 
 		super.enable();
 
+		this.tool.boxSelectionService.setStrategy( new ControlPointStrategy() );
+
+		this.tool.boxSelectionService.init();
+
 	}
 
 	disable (): void {
@@ -73,11 +79,54 @@ export class PointMarkingTool extends BaseTool {
 
 		this.tool.base.reset();
 
+		this.tool.boxSelectionService.reset();
+
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
+		if ( this.boxSelectionStarted ) {
+
+			const objects = this.tool.boxSelectionService.end( e );
+
+			this.selectObject( objects, this.selectedMarking );
+
+			this.boxSelectionStarted = false;
+
+			return;
+		};
+
 		this.tool.base.selection.handleSelection( e );
+
+	}
+
+	onPointerDownCreate ( e: PointerEventData ): void {
+
+		if ( !this.selectedRoad ) return;
+
+		if ( this.boxSelectionStarted ) {
+
+			const objects = this.tool.boxSelectionService.end( e );
+
+			this.selectObject( objects, this.selectedMarking );
+
+			this.boxSelectionStarted = false;
+
+		} else {
+
+			this.tool.boxSelectionService.start( e );
+
+			this.boxSelectionStarted = true;
+
+		}
+
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ): void {
+
+		if ( !this.boxSelectionStarted ) return;
+
+		this.tool.boxSelectionService.update( pointerEventData );
 
 	}
 
@@ -107,7 +156,16 @@ export class PointMarkingTool extends BaseTool {
 
 			this.tool.showControls( object.mainObject.road );
 
-			AppInspector.setDynamicInspector( new PointMarkingObject( object.mainObject ) );
+			AppInspector.setDynamicInspector( new PointMarkingObject( [ object.mainObject ] ) );
+
+		} else if ( object instanceof Array ) {
+
+			if ( object[ 0 ] instanceof SimpleControlPoint ) {
+
+				AppInspector.setDynamicInspector( new PointMarkingObject( object.map( o => o.mainObject ) ) );
+
+			}
+
 
 		}
 
@@ -161,9 +219,31 @@ export class PointMarkingTool extends BaseTool {
 
 		if ( object instanceof PointMarkingObject ) {
 
-			this.tool.roadObjectService.updateRoadObject( object.roadObject.road, object.roadObject );
+			object.items.forEach( obj => {
 
-			this.tool.updateControls( object.roadObject );
+				this.tool.roadObjectService.updateRoadObject( obj.road, obj );
+
+				this.tool.updateControls( obj );
+
+			} )
+
+			if ( object.items instanceof Array ) {
+
+				object.items.forEach( obj => {
+
+					this.tool.roadObjectService.updateRoadObject( obj.road, obj );
+
+					this.tool.updateControls( obj );
+
+				} )
+
+			} else {
+
+				// this.tool.roadObjectService.updateRoadObject( object.object.road, object.object );
+
+				// this.tool.updateControls( object.object );
+
+			}
 
 		}
 
@@ -193,57 +273,109 @@ export class PointMarkingTool extends BaseTool {
 
 class PointMarkingObject {
 
-	constructor ( public roadObject: TvRoadObject ) { }
+	constructor ( public items: TvRoadObject[] ) { }
+
+	getValue<T, K extends keyof T> ( items: T[], key: K, multi = true ): T[ K ] {
+
+		if ( items.length > 1 ) {
+
+			return multi ? items[ 0 ][ key ] : undefined;
+
+		} else if ( items.length == 1 ) {
+
+			return items[ 0 ][ key ];
+
+		}
+
+	}
+
+	setValue<T, K extends keyof T> ( items: T[], key: K, value: T[ K ], multi = true ) {
+
+		if ( items.length > 1 ) {
+
+			if ( multi ) {
+
+				items.forEach( obj => obj[ key ] = value );
+
+			}
+
+		} else if ( items.length == 1 ) {
+
+			items[ 0 ][ key ] = value;
+
+		}
+
+	}
 
 	@SerializedField( { 'type': 'float', label: 'Distance' } )
 	get s () {
-		return this.roadObject.s;
+
+		return this.getValue( this.items, 's', false );
+
 	}
 
 	set s ( value ) {
-		this.roadObject.s = value;
+
+		this.setValue( this.items, 's', value, false );
+
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Offset' } )
 	get t () {
-		return this.roadObject.t;
+
+		return this.getValue( this.items, 't', true );
+
 	}
 
 	set t ( value ) {
-		this.roadObject.t = value;
+
+		this.setValue( this.items, 't', value, true );
+
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Z Offset' } )
 	get zOffset () {
-		return this.roadObject.zOffset;
+
+		return this.getValue( this.items, 'zOffset', true );
+
 	}
 
 	set zOffset ( value ) {
-		this.roadObject.zOffset = value;
+
+		this.setValue( this.items, 'zOffset', value, true );
+
 	}
 
 	@SerializedField( { 'type': 'vector3', label: 'Rotation' } )
 	get rotation () {
-		return this.roadObject.rotation;
+
+		return this.getValue( this.items, 'rotation', true );
+
 	}
 
 	set rotation ( value ) {
-		this.roadObject.rotation = value;
+
+		this.setValue( this.items, 'rotation', value, true );
+
 	}
 
 	@SerializedField( { 'type': 'vector3', label: 'Scale' } )
 	get scale () {
-		return this.roadObject.scale;
+
+		return this.getValue( this.items, 'scale', true );
+
 	}
 
 	set scale ( value ) {
-		this.roadObject.scale = value;
+
+		this.setValue( this.items, 'scale', value, true );
+
 	}
 
 	@Action( { label: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );
+		CommandHistory.execute( new RemoveObjectCommand( this.items ) );
 
 	}
 

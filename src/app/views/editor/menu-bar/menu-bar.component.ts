@@ -67,9 +67,9 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	onOpenFile () {
+	async onOpenFile () {
 
-		this.mainFileService.showOpenWindow( this.projectService.projectPath );
+		await this.mainFileService.showOpenWindow( this.projectService.projectPath );
 
 	}
 

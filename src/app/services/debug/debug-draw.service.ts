@@ -12,6 +12,8 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
+import { SimpleArrowObject, SharpArrowObject } from 'app/modules/three-js/objects/lane-arrow-object';
+import { DebugLine } from './debug-line';
 
 @Injectable( {
 	providedIn: 'root'
@@ -210,11 +212,47 @@ export class DebugDrawService {
 			color: color,
 			linewidth: 2, // in world units with size attenuation, pixels otherwise
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
 		} );
 
-		const line = new Line2( geometry, material );
+		return new Line2( geometry, material );
+	}
+
+	createDebugLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
+
+		// const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + zOffset ] ) );
+		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+		const material = new LineMaterial( {
+			color: color,
+			linewidth: lineWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+		const line = new DebugLine( target, geometry, material );
+
+		line.renderOrder = 999;
 
 		return line;
+
+	}
+
+	createArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+
+		// Create a 2D arrow at the current position and direction.
+		return new SimpleArrowObject( position, hdg, size );
+
+	}
+
+	createSharpArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+
+		return new SharpArrowObject( position, hdg, color, size );
+
 	}
 
 	private createLineSegment ( start: Vector3, end: Vector3 ): LineSegments2 {

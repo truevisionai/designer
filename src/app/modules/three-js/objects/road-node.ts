@@ -23,7 +23,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	public static defaultColor = COLOR.MAGENTA;
 	public static defaultOpacity = 0.35;
-	public static defaultWidth = 8;
+	public static defaultWidth = 4;
 
 	public line: Line2;
 	public isSelected = false;
@@ -181,6 +181,8 @@ export class RoadNode extends Group implements ISelectable {
 			opacity: RoadNode.defaultOpacity,
 			linewidth: RoadNode.defaultWidth,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+			depthTest: false,
+			depthWrite: false,
 		} );
 
 		this.line = new Line2( lineGeometry, lineMaterial );

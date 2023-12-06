@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { RoadService } from './road/road.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { SceneService } from './scene.service';
 import { GameObject } from 'app/core/game-object';
 import { TvConsole } from 'app/core/utils/console';
@@ -38,15 +38,21 @@ export class SceneBuilderService {
 
 		const spline = this.findSpline( map, road );
 
-		if ( !spline ) {
+		if ( spline && ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) ) {
 
-			TvConsole.error( 'spline not found for road' + road.id );
+			road.spline = spline;
 
-			return;
+		} else if ( road.spline.type === SplineType.EXPLICIT ) {
 
-		};
+			if ( road.sStart === undefined || road.sStart === null ) {
+				road.sStart = 0;
+			}
 
-		road.spline = spline;
+			if ( road.spline.getRoadSegments().length == 0 ) {
+				road.spline.addRoadSegment( 0, road.id );
+			}
+
+		}
 
 		this.roadService.buildRoad( road );
 

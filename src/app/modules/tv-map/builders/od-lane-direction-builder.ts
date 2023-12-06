@@ -4,7 +4,7 @@
 
 import { SceneService } from 'app/services/scene.service';
 import { ArrowHelper, Object3D, Vector3 } from 'three';
-import { LaneArrowObject } from '../../three-js/objects/lane-arrow-object';
+import { SimpleArrowObject } from '../../three-js/objects/lane-arrow-object';
 import { TvLaneSide } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
@@ -94,7 +94,7 @@ export class OdLaneDirectionBuilder {
 
 	private createArrow2D ( origin: Vector3, hdg: number ) {
 
-		const arrow = new LaneArrowObject( origin, hdg );
+		const arrow = new SimpleArrowObject( origin, hdg );
 
 		this.arrows.push( arrow );
 
@@ -181,7 +181,7 @@ export class LaneDirectionHelper {
 			posTheta.addLateralOffset( width );
 
 			// Create a 2D arrow at the current position and direction.
-			const arrow = new LaneArrowObject( posTheta.toVector3(), posTheta.hdg, size );
+			const arrow = new SimpleArrowObject( posTheta.toVector3(), posTheta.hdg, size );
 
 			arrows.push( arrow );
 

@@ -4,16 +4,10 @@ import { RoadService } from 'app/services/road/road.service';
 import { BaseToolService } from '../base-tool.service';
 import { MapService } from 'app/services/map.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { SelectionService } from '../selection.service';
 import { RoadLinkService } from 'app/services/road/road-link.service';
+import { RoadDebugService } from "../../services/debug/road-debug.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,6 +26,7 @@ export class RoadToolService {
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory,
 		public roadLinkService: RoadLinkService,
+		public debug: RoadDebugService,
 	) {
 		// this.pointStrategy = new ControlPointStrategy();
 		// this.roadStrategy = new RoadCoordStrategy();

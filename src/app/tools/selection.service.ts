@@ -43,6 +43,22 @@ export class SelectionService {
 
 	}
 
+	handleHighlight ( e: PointerEventData, highlightCallback: ( object: any ) => void ): any {
+
+		for ( const [ type, strategy ] of this.strategies ) {
+
+			const object = strategy.select( e );
+
+			if ( !object ) continue;
+
+			highlightCallback( object )
+
+			return;
+
+		}
+
+	}
+
 	handleSelection ( e: PointerEventData ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {
@@ -128,6 +144,10 @@ export class SelectionService {
 
 	private onObjectSelected ( object: Object ): void {
 
+		if ( object == null ) return;
+
+		if ( object instanceof Array && object.length == 0 ) return;
+
 		const tag = this.getTag( object );
 
 		this.selectedObjects.set( tag, object );
@@ -157,15 +177,34 @@ export class SelectionService {
 
 	private getTag ( object: Object ): string {
 
-		if ( this.tags.has( object.constructor.name ) ) {
+		const className = this.getClassName( object );
 
-			return this.tags.get( object.constructor.name );
+		if ( this.tags.has( className ) ) {
+
+			return this.tags.get( className );
 
 		} else {
 
-			return object.constructor.name;
+			return className;
 
 		}
+
+	}
+
+	private getClassName ( object: Object ): string {
+
+		if ( object instanceof Array ) {
+
+			if ( object.length > 0 ) {
+
+				return object[ 0 ].constructor.name;
+
+			}
+
+			return null;
+		}
+
+		return object.constructor.name;
 
 	}
 

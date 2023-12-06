@@ -3,7 +3,8 @@ import { BaseToolService } from '../base-tool.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { LaneMarkingNode } from 'app/modules/three-js/objects/lane-road-mark-node';
-import { DebugLine, LaneReferenceLineService } from '../lane-reference-line.service';
+import { LaneDebugService } from '../../services/debug/lane-debug.service';
+import { DebugLine } from 'app/services/debug/debug-line';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { COLOR } from 'app/views/shared/utils/colors.service';
@@ -21,7 +22,7 @@ export class LaneMarkingService {
 
 	constructor (
 		public base: BaseToolService,
-		private laneReferenceLine: LaneReferenceLineService,
+		private debug: LaneDebugService,
 		private roadMarkBuilder: LaneRoadMarkFactory
 	) { }
 
@@ -78,7 +79,7 @@ export class LaneMarkingService {
 
 					const sEnd = lane.roadMark[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.laneReferenceLine.getPoints( lane, sStart, sEnd, 0.1 );
+					const points = this.debug.getPoints( lane, sStart, sEnd, 0.1 );
 
 					const geometry = new LineGeometry()
 						.setPositions( points.flatMap( p => [ p.x, p.y, p.z + 0.2 ] ) );

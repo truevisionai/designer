@@ -49,6 +49,11 @@ export class OpenDriveParserService {
 
 		TvConsole.info( "Importing OpenDRIVE version: " + version );
 
+		return this.getParser( version );
+	}
+
+	getParser ( version: string ): IOpenDriveParser {
+
 		if ( version == "v1.0" ) {
 			return new OpenDrive14Parser();
 		}

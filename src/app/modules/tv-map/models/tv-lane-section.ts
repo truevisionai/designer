@@ -714,6 +714,18 @@ export class TvLaneSection {
 
 	}
 
+	getRightMostLane (): TvLane {
+
+		return this.laneArray[ this.laneArray.length - 1 ];
+
+	}
+
+	getLeftMostLane (): TvLane {
+
+		return this.laneArray[ 0 ];
+
+	}
+
 	removeLane ( deletedLane: TvLane ) {
 
 		if ( !this.laneMap.has( deletedLane.id ) ) {

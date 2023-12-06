@@ -8,7 +8,6 @@ import { IFile } from 'app/io/file';
 import { ToolManager } from 'app/tools/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 import { ScenarioService } from '../modules/scenario/services/scenario.service';
@@ -95,7 +94,7 @@ export class TvSceneFileService {
 
 		if ( response.filePaths == null || response.filePaths.length == 0 ) return;
 
-		this.openFromPath( response.filePaths[ 0 ] );
+		await this.openFromPath( response.filePaths[ 0 ] );
 
 	}
 
@@ -124,26 +123,21 @@ export class TvSceneFileService {
 			return;
 		}
 
-		// path exists means it was imported locally
-		if ( this.currentFile.path != null ) {
+		const isFileOpen = this.currentFile.path != null;
 
-			ToolManager.disable();	// disable tools while saving
+		if ( isFileOpen ) {
 
-			this.saveToPath( this.currentFile.path );
-
-			ToolManager.enable();	// enable tools after saving
+			this.updateSceneAsset( this.currentFile.path );
 
 		} else {
 
-			this.saveAs();
+			await this.saveAs();
 
 		}
 
 	}
 
 	async saveAs () {
-
-		ToolManager.disable();	// disable tools while saving
 
 		const options = {
 			defaultPath: this.projectService.projectPath,
@@ -155,13 +149,11 @@ export class TvSceneFileService {
 
 		if ( res.filePath == null ) return;
 
-		this.saveToPath( res.filePath );
-
-		ToolManager.enable();	// enable tools after saving
+		this.createSceneAsset( res.filePath );
 
 	}
 
-	private saveToPath ( path: string ) {
+	private createSceneAsset ( path: string ) {
 
 		const extension = 'scene';
 
@@ -182,7 +174,22 @@ export class TvSceneFileService {
 
 		this.electronService.setTitle( scene.name, scene.path );
 
-		SnackBar.success( 'File Saved!' );
+		SnackBar.success( 'Scene Saved!' );
+
+	}
+
+	private updateSceneAsset ( path: string ) {
+
+		const extension = 'scene';
+
+		// append the extension if not present in the path
+		if ( !path.includes( `.${ extension }` ) ) {
+			path = path + '.' + extension;
+		}
+
+		this.assetService.updateSceneAsset( path, this.mapService.map );
+
+		SnackBar.success( 'Scene Saved!' );
 
 	}
 

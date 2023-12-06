@@ -2,10 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
+import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, PlaneGeometry, Quaternion, Vector3 } from 'three';
 import { OdBuilderConfig } from '../../tv-map/builders/od-builder-config';
+import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 
-export class LaneArrowObject extends Mesh {
+export class SimpleArrowObject extends Mesh {
 
 	constructor ( position: Vector3, hdg: number, size = 0.5 ) {
 
@@ -33,6 +34,49 @@ export class LaneArrowObject extends Mesh {
 
 		super( geometry, material );
 
+		this.name = 'SimpleArrowObject';
+
+		// Compute the direction vector from the heading
+		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );
+
+		// Compute the quaternion that represents the rotation from +Y to the direction.
+		const quaternion = new Quaternion().setFromUnitVectors( new Vector3( 0, 1, 0 ), direction.normalize() );
+
+		// Create the transformation matrix.
+		const matrix = new Matrix4();
+		matrix.compose( position, quaternion, new Vector3( 1, 1, 1 ) );  // Using uniform scaling.
+
+		// Apply the transformation to the arrow.
+		this.applyMatrix4( matrix );
+
+
+	}
+
+
+}
+
+export class SharpArrowObject extends Mesh {
+
+	constructor ( position: Vector3, hdg: number, color = 0xffffff, size = 0.5 ) {
+
+		position.z = position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT;
+
+		const geometry = new PlaneGeometry( size, size );
+
+		const texture = OdTextures.arrowSharp();
+
+		const material = new MeshBasicMaterial( {
+			color: color,
+			map: texture,
+			transparent: true,
+			alphaTest: 0.9,
+			depthTest: false,
+			depthWrite: false,
+		} );
+
+		super( geometry, material );
+
+		this.name = 'SharpArrowObject';
 
 		// Compute the direction vector from the heading
 		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );

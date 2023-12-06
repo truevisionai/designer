@@ -42,16 +42,21 @@ import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road
 import { TvObjectOutline } from "../../modules/tv-map/models/objects/tv-object-outline";
 import { XmlElement } from "../xml.element";
 import { IOpenDriveParser } from "./i-open-drive.parser";
+import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParser {
 
-	private map: TvMap;
+	protected map: TvMap;
 
 	constructor () {
 		super();
+	}
+
+	setMap ( map: TvMap ) {
+		this.map = map;
 	}
 
 	/**
@@ -140,13 +145,13 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		// Get type
 		this.parseRoadTypes( road, xml );
 
-		if ( !xml.planView ) SnackBar.error( 'no planView found, skipping road import' );
-		if ( !xml.planView ) return;
+		// if ( !xml.planView ) SnackBar.error( 'no planView found, skipping road import' );
+		// if ( !xml.planView ) return;
 
-		if ( !xml.planView?.geometry ) SnackBar.error( 'no geometry found, skipping road import' );
-		if ( !xml.planView?.geometry ) return;
+		// if ( !xml.planView?.geometry ) SnackBar.error( 'no geometry found, skipping road import' );
+		// if ( !xml.planView?.geometry ) return;
 
-		this.parsePlanView( road, xml.planView );
+		if ( xml.planView ) this.parsePlanView( road, xml.planView );
 
 		road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
 
@@ -167,7 +172,6 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );
 
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
-
 
 		readXmlArray( xml.objects?.object, xml => {
 			road.addRoadObjectInstance( this.parseRoadObject( road, xml ) );
@@ -738,7 +742,22 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 			outline.cornerRoad.push( this.parseCornerRoad( xml, road ) )
 		);
 
+		readXmlArray( xml.cornerLocal, xml =>
+			outline.cornerLocal.push( this.parseCornerLocal( xml ) )
+		);
+
 		return outline;
+	}
+
+	parseCornerLocal ( xml: XmlElement ): TvCornerLocal {
+
+		const id = parseFloat( xml.attr_id );
+		const u = parseFloat( xml.attr_u );
+		const v = parseFloat( xml.attr_v );
+		const z = parseFloat( xml.attr_z );
+		const height = parseFloat( xml.attr_height );
+
+		return new TvCornerLocal( id, u, v, z, height );
 	}
 
 	public parseCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {

@@ -12,7 +12,7 @@ import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
-import { AbstractSpline } from './abstract-spline';
+import { AbstractSpline, SplineType } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
@@ -21,7 +21,7 @@ import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-co
 
 export class ExplicitSpline extends AbstractSpline {
 
-	type: string = 'explicit';
+	type: string = SplineType.EXPLICIT;
 
 	private segments: Line[] = [];
 

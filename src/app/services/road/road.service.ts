@@ -21,6 +21,7 @@ import { Material, Mesh, Vector3 } from 'three';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
+import { GameObject } from 'app/core/game-object';
 
 @Injectable( {
 	providedIn: 'root'
@@ -213,15 +214,19 @@ export class RoadService {
 
 	}
 
-	buildRoad ( road: TvRoad ): void {
+	buildRoad ( road: TvRoad ): GameObject[] {
 
-		this.rebuildRoad( road, false );
+		return this.buildSpline( road.spline, false );
 
 	}
 
-	buildSpline ( spline: AbstractSpline, showNodes = true ): void {
+	buildSpline ( spline: AbstractSpline, showNodes = true ): GameObject[] {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		const gameObjects = [];
+
+		if ( spline.controlPoints.length < 2 ) {
+			return gameObjects;
+		}
 
 		spline.getRoadSegments().forEach( segment => {
 
@@ -235,10 +240,13 @@ export class RoadService {
 
 			this.updateRoadNodes( road, showNodes );
 
-			this.baseService.rebuildRoad( road );
+			const gameObject = this.baseService.rebuildRoad( road );
+
+			gameObjects.push( gameObject );
 
 		} );
 
+		return gameObjects;
 	}
 
 	private createRoadNode ( road: TvRoad, contact: TvContactPoint ): RoadNode {

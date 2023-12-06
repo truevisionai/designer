@@ -16,7 +16,7 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { MapEvents } from 'app/events/map-events';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { DebugLine } from '../lane-reference-line.service';
+import { DebugLine } from 'app/services/debug/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 

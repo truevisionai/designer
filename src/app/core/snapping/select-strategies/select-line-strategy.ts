@@ -1,7 +1,7 @@
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { SelectStrategy } from './select-strategy';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
-import { DebugLine } from 'app/tools/lane-reference-line.service';
+import { DebugLine } from 'app/services/debug/debug-line';
 import { StrategySettings } from './control-point-strategy';
 
 export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy<T> {

@@ -7,7 +7,8 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { BufferGeometry, Vector2, Vector3 } from 'three';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { DebugLine, LaneReferenceLineService } from '../lane-reference-line.service';
+import { LaneDebugService } from '../../services/debug/lane-debug.service';
+import { DebugLine } from 'app/services/debug/debug-line';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -26,7 +27,7 @@ export class LaneWidthService {
 	constructor (
 		public base: BaseToolService,
 		private mapService: MapService,
-		private laneReferenceLine: LaneReferenceLineService,
+		private debug: LaneDebugService,
 		private baseService: BaseService,
 	) { }
 
@@ -190,7 +191,7 @@ export class LaneWidthService {
 					// get s of next lane width node
 					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.laneReferenceLine.getPoints( lane, sStart, sEnd, 0.1 );
+					const points = this.debug.getPoints( lane, sStart, sEnd, 0.1 );
 
 					const geometry = new LineGeometry()
 						.setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );

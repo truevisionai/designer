@@ -1,7 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
-import { FileService } from 'app/io/file.service';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
@@ -23,20 +22,27 @@ import { FileUtils } from 'app/io/file-utils';
 } )
 export class AssetService {
 
-
 	assetCreated = new EventEmitter<AssetNode>();
 
 	constructor (
 		private exporter: ExporterService,
-		// private fileService: FileService,
 		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private assetFactory: AssetFactory,
-	) { }
+	) {
+	}
 
 	getAssetInstance<T> ( asset: AssetNode ): T {
 
 		return AssetDatabase.getInstance( asset.metadata.guid );
+
+	}
+
+	updateSceneAsset ( path: string, scene: TvMap ): void {
+
+		const data = this.exporter.getSceneExport( scene );
+
+		this.storageService.writeSync( path, data );
 
 	}
 

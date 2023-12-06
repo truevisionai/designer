@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { DebugLine, LaneReferenceLineService } from '../lane-reference-line.service';
+import { LaneDebugService } from '../../services/debug/lane-debug.service';
+import { DebugLine } from 'app/services/debug/debug-line';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
@@ -12,6 +13,7 @@ import { MapEvents } from 'app/events/map-events';
 import { BaseService } from 'app/services/base.service';
 import { TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { ParkingRoadToolService } from '../parking/parking-road-tool.service';
+import { RoadDebugService } from 'app/services/debug/road-debug.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,9 +24,10 @@ export class LaneService {
 
 	constructor (
 		public base: BaseToolService,
-		private laneReferenceLine: LaneReferenceLineService,
+		public laneDebug: LaneDebugService,
 		private baseService: BaseService,
 		private parkingRoadToolService: ParkingRoadToolService,
+		public roadDebug: RoadDebugService,
 	) { }
 
 	showRoad ( road: TvRoad ) {
@@ -35,7 +38,7 @@ export class LaneService {
 
 			laneSection.lanes.forEach( lane => {
 
-				const points = this.laneReferenceLine.getPoints( lane, laneSection.s, laneSection.endS );
+				const points = this.laneDebug.getPoints( lane, laneSection.s, laneSection.endS );
 
 				const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + 0.05 ] ) );
 

@@ -11,6 +11,12 @@ import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { RoadSegment } from './RoadSegment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
+export enum SplineType {
+	AUTO = 'auto',
+	AUTOV2 = 'autov2',
+	EXPLICIT = 'explicit'
+}
+
 export abstract class AbstractSpline {
 
 	public uuid: string;

@@ -1092,11 +1092,11 @@ export class TvRoad {
 		return coordinates;
 	}
 
-	getReferenceLinePoints (): TvPosTheta[] {
+	getReferenceLinePoints ( step = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
-		for ( let s = 0; s <= this.length; s++ ) {
+		for ( let s = 0; s <= this.length; s += step ) {
 
 			points.push( this.getRoadCoordAt( s ) );
 

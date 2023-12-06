@@ -55,7 +55,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@Input() showProperties = true;
 
-	serializableFields: { field: string, settings: any }[] = [];
+	serializableFields: { field: string, settings: ISerializedField }[] = [];
 
 	serializableActions: { name: string; method: Function; }[];
 
@@ -143,7 +143,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		} );
 	}
 
-	loadField ( data: any, item: { field: string; settings: any; }, index: number ) {
+	loadField ( data: any, item: { field: string; settings: ISerializedField; }, index: number ) {
 
 		const fieldHost = this.fieldHosts.toArray()[ index ];
 

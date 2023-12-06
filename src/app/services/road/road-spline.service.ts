@@ -5,13 +5,14 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Vector3 } from 'three';
+import { Mesh, Vector3 } from 'three';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { SplineService } from '../spline.service';
 import { BaseService } from '../base.service';
+import { GameObject } from 'app/core/game-object';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,9 +27,11 @@ export class RoadSplineService {
 
 	}
 
-	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ) {
+	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ): Mesh[] {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		const meshes: Mesh[] = [];
+
+		if ( spline.controlPoints.length < 2 ) return [];
 
 		spline.getRoadSegments().forEach( segment => {
 
@@ -40,10 +43,15 @@ export class RoadSplineService {
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			if ( rebuild ) this.baseService.rebuildRoad( road );
+			if ( rebuild ) {
+
+				meshes.push( this.baseService.rebuildRoad( road ) );
+
+			}
 
 		} );
 
+		return meshes;
 	}
 
 	rebuildSplineRoads ( spline: AbstractSpline ): void {

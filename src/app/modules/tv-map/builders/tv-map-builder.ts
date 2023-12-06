@@ -110,11 +110,11 @@ export class TvMapBuilder {
 	 * @param buildJunctions
 	 * @deprecated
 	 */
-	static rebuildRoad ( road: TvRoad, buildJunctions = true ): any {
+	static rebuildRoad ( road: TvRoad, buildJunctions = true ): GameObject {
 
 		TvMapInstance.map.gameObject.remove( road.gameObject );
 
-		this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
+		return this.buildRoad( TvMapInstance.map.gameObject, road, buildJunctions );
 
 	}
 
