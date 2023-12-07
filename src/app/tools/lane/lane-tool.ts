@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CommandHistory } from 'app/services/command-history';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
@@ -12,7 +11,12 @@ import { LaneService } from './lane.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { AddObjectCommand } from "../../commands/add-object-command";
+import { DebugLine } from 'app/services/debug/debug-line';
+import { CommandHistory } from 'app/services/command-history';
+import { Action, SerializedField } from 'app/core/components/serialization';
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { TvLaneType, TravelDirection } from 'app/modules/tv-map/models/tv-common';
 
 export class LaneTool extends BaseTool {
 
@@ -20,21 +24,23 @@ export class LaneTool extends BaseTool {
 
 	public toolType = ToolType.Lane;
 
-	private selectedLane: TvLane;
+	get selectedLane () {
+		return this.tool.base.selection.getLastSelected<TvLane>( TvLane.name );
+	}
 
 	constructor (
-		private laneService: LaneService
+		private tool: LaneService
 	) {
 		super();
 	}
 
 	init (): void {
 
-		this.laneService.base.reset();
+		this.tool.base.reset();
 
-		this.laneService.base.addSelectionStrategy( new SelectLineStrategy() );
+		this.tool.base.selection.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 
-		this.laneService.base.addSelectionStrategy( new SelectLaneStrategy() );
+		this.tool.base.selection.registerStrategy( TvLane.name, new SelectLaneStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -44,29 +50,27 @@ export class LaneTool extends BaseTool {
 
 		super.disable();
 
-		this.laneService.base.reset();
+		this.tool.base.reset();
 
 		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
+
+		this.tool.laneDebug.clear();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.laneService.base.handleSelection( e, ( selected ) => {
+		this.tool.base.selection.handleSelection( e );
 
-			if ( selected instanceof TvLane ) {
+	}
 
-				if ( selected == this.selectedLane ) return;
+	onPointerDownCreate ( e: PointerEventData ): void {
 
-				this.selectObject( selected, this.selectedLane );
+		this.tool.base.selection.handleCreation( e, ( object ) => {
 
-			}
+			if ( object instanceof TvLane ) {
 
-		}, () => {
-
-			if ( this.selectedLane ) {
-
-				this.unselectObject( this.selectedLane );
+				// object.duplicate();
 
 			}
 
@@ -74,19 +78,17 @@ export class LaneTool extends BaseTool {
 
 	}
 
-	onPointerDownCreate ( e: PointerEventData ): void {
+	onPointerMoved ( e: PointerEventData ): void {
 
-		this.laneService.base.handleSelection( e, ( lane ) => {
+		this.tool.laneDebug.removeHighlight();
 
-			if ( lane instanceof TvLane ) {
+		this.tool.base.selection.handleHighlight( e, ( object ) => {
 
-				lane.duplicate();
+			if ( object instanceof TvLane ) {
+
+				this.tool.laneDebug.higlightLane( object );
 
 			}
-
-		}, () => {
-
-			// do nothing
 
 		} );
 
@@ -106,7 +108,7 @@ export class LaneTool extends BaseTool {
 
 		if ( object instanceof TvLane ) {
 
-			this.laneService.updateLane( object );
+			this.tool.updateLane( object );
 
 		}
 
@@ -124,13 +126,13 @@ export class LaneTool extends BaseTool {
 
 	onLaneRemoved ( lane: TvLane ) {
 
-		this.laneService.removeLane( lane );
+		this.tool.removeLane( lane );
 
 	}
 
 	onLaneAdded ( lane: TvLane ) {
 
-		this.laneService.addLane( lane );
+		this.tool.addLane( lane );
 
 	}
 
@@ -156,15 +158,9 @@ export class LaneTool extends BaseTool {
 
 	onLaneSelected ( object: TvLane ) {
 
-		if ( this.selectedLane === object ) return;
+		this.tool.laneDebug.selectLane( object );
 
-		if ( !this.selectedLane ) this.onLaneUnselected( object );
-
-		this.selectedLane = object;
-
-		this.laneService.showRoad( object.laneSection.road );
-
-		AppInspector.setInspector( DynamicInspectorComponent, object );
+		AppInspector.setInspector( DynamicInspectorComponent, new TvLaneObject( object ) );
 
 		this.setHint( 'use SHIFT + LEFT CLICK to duplicate a lane' );
 
@@ -172,12 +168,74 @@ export class LaneTool extends BaseTool {
 
 	onLaneUnselected ( object: TvLane ) {
 
-		this.selectedLane = null;
-
-		this.laneService.hideRoad( object.laneSection.road );
+		this.tool.laneDebug.unselectLane( object );
 
 		AppInspector.clear();
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 	}
+}
+
+
+
+export class TvLaneObject {
+
+	constructor ( private lane: TvLane ) { }
+
+	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
+	get laneId (): number {
+		return Number( this.lane.id );
+	}
+
+	set laneId ( value: number ) {
+		this.lane.id = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvLaneType } )
+	get type (): TvLaneType {
+		return this.lane.type;
+	}
+
+	set type ( value: TvLaneType ) {
+		this.lane.type = value;
+	}
+
+	@SerializedField( { type: 'boolean' } )
+	get level (): boolean {
+		return this.lane.level;
+	}
+
+	set level ( value ) {
+		this.lane.level = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TravelDirection } )
+	get direction () {
+		return this.lane.direction;
+	}
+
+	set direction ( value: TravelDirection ) {
+		this.lane.direction = value;
+	}
+
+	@Action()
+	duplicate () {
+
+		const newId = this.lane.isLeft ? this.lane.id + 1 : this.lane.id - 1;
+
+		const newLane = this.lane.clone( newId );
+
+		const command = new AddObjectCommand( newLane );
+
+		CommandHistory.execute( command );
+
+	}
+
+	@Action()
+	delete () {
+
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
+
+	}
+
 }

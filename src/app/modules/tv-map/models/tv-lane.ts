@@ -6,8 +6,7 @@ import { GameObject } from 'app/core/game-object';
 import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { MathUtils, MeshBasicMaterial, MeshStandardMaterial } from 'three';
+import { MathUtils, MeshStandardMaterial } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
@@ -19,15 +18,9 @@ import { TvLaneSection } from './tv-lane-section';
 import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
-import { TvRoadLaneSectionLaneLink } from './tv-road-lane-section-lane-link';
 import { TvUtils } from './tv-utils';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { OdMaterials } from '../builders/od-materials.service';
-import { Action, SerializedField } from 'app/core/components/serialization';
 import { TrafficRule } from './traffic-rule';
-import { CommandHistory } from 'app/services/command-history';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { AddObjectCommand } from 'app/commands/add-object-command';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -39,7 +32,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public attr_id: number;
 	private attr_type: TvLaneType;
 
-	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
 	get laneId (): number {
 		return Number( this.attr_id );
 	}
@@ -48,7 +40,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.attr_id = value;
 	}
 
-	@SerializedField( { type: 'enum', enum: TvLaneType } )
 	get type (): TvLaneType {
 		return this.attr_type;
 	}
@@ -57,7 +48,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.attr_type = value;
 	}
 
-	@SerializedField( { type: 'boolean' } )
 	get level (): boolean {
 		return this.attr_level;
 	}
@@ -66,31 +56,12 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.attr_level = value;
 	}
 
-	@SerializedField( { type: 'enum', enum: TravelDirection } )
 	get direction () {
 		return this.travelDirection;
 	}
 
 	set direction ( value: TravelDirection ) {
 		this.travelDirection = value;
-	}
-
-	@Action()
-	duplicate () {
-
-		const newId = this.isLeft ? this.id + 1 : this.id - 1;
-
-		const newLane = this.clone( newId );
-
-		const command = new AddObjectCommand( newLane );
-
-		CommandHistory.execute( command );
-
-	}
-
-	@Action()
-	delete () {
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
 	}
 
 	/**
