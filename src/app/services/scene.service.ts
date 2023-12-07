@@ -167,18 +167,71 @@ export class SceneService {
 
 			}
 
-			let material: any = node.material;
+			function disposeMaterial ( material: any ) {
 
-			if ( material ) {
+				if ( material.map != null || material.map != undefined ) {
+					material.map.dispose();
+				}
 
-				if ( material.map ) material.map.dispose();
-				if ( material.lightMap ) material.lightMap.dispose();
-				if ( material.bumpMap ) material.bumpMap.dispose();
-				if ( material.normalMap ) material.normalMap.dispose();
-				if ( material.specularMap ) material.specularMap.dispose();
-				if ( material.envMap ) material.envMap.dispose();
+				if ( material.lightMap != null || material.lightMap != undefined ) {
+					material.lightMap.dispose();
+				}
+
+				if ( material.bumpMap != null || material.bumpMap != undefined ) {
+					material.bumpMap.dispose();
+				}
+
+				if ( material.normalMap != null || material.normalMap != undefined ) {
+					material.normalMap.dispose();
+				}
+
+				if ( material.specularMap != null || material.specularMap != undefined ) {
+					material.specularMap.dispose();
+				}
+
+				if ( material.envMap != null || material.envMap != undefined ) {
+					material.envMap.dispose();
+				}
+
+				if ( material.alphaMap != null || material.alphaMap != undefined ) {
+					material.alphaMap.dispose();
+				}
+
+				if ( material.aoMap != null || material.aoMap != undefined ) {
+					material.aoMap.dispose();
+				}
+
+				if ( material.displacementMap != null || material.displacementMap != undefined ) {
+					material.displacementMap.dispose();
+				}
+
+				if ( material.emissiveMap != null || material.emissiveMap != undefined ) {
+					material.emissiveMap.dispose();
+				}
+
+				if ( material.gradientMap != null || material.gradientMap != undefined ) {
+					material.gradientMap.dispose();
+				}
+
+				if ( material.metalnessMap != null || material.metalnessMap != undefined ) {
+					material.metalnessMap.dispose();
+				}
 
 				material.dispose();
+			}
+
+			if ( node.material instanceof Array ) {
+
+				node.material.forEach( material => {
+
+					disposeMaterial( material );
+
+				} )
+
+			} else if ( node.material instanceof Material ) {
+
+				disposeMaterial( node.material );
+
 			}
 
 		} else if ( node instanceof Object3D ) {

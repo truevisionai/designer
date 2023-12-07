@@ -20,7 +20,7 @@ import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repe
 } )
 export class RoadObjectService {
 
-	private objectMap = new Object3DMap<TvRoadObject, Object3D>();
+	private objects = new Object3DMap<TvRoadObject, Object3D>();
 
 	private ids: Map<TvRoad, IDService> = new Map();
 
@@ -33,6 +33,17 @@ export class RoadObjectService {
 	) {
 		RoadObjectService.instance = this;
 	}
+
+	removeObjectsByRoad ( road: TvRoad ) {
+
+		road.getRoadObjects().forEach( object => {
+
+			this.removeRoadObject( road, object );
+
+		} );
+
+	}
+
 
 	clone ( roadObject: TvRoadObject ): TvRoadObject {
 
@@ -87,7 +98,7 @@ export class RoadObjectService {
 
 			if ( !mesh ) return;
 
-			this.objectMap.add( roadObject, mesh );
+			this.objects.add( roadObject, mesh );
 
 		} );
 
@@ -101,7 +112,7 @@ export class RoadObjectService {
 
 		if ( !mesh ) return;
 
-		this.objectMap.add( roadObject, mesh );
+		this.objects.add( roadObject, mesh );
 
 		road.addRoadObjectInstance( roadObject );
 
@@ -143,7 +154,7 @@ export class RoadObjectService {
 
 	removeObject3d ( roadObject: TvRoadObject ): void {
 
-		this.objectMap.remove( roadObject );
+		this.objects.remove( roadObject );
 
 	}
 

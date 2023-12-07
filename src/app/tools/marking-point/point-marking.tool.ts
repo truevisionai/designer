@@ -191,13 +191,27 @@ export class PointMarkingTool extends BaseTool {
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.tool.roadObjectService.addRoadObject( object.road, object );
+			this.addRoadObject( object );
 
-			this.tool.hideAllControls();
+		} else if ( object instanceof Array ) {
 
-			this.tool.showControls( object.road );
+			if ( object[ 0 ] instanceof TvRoadObject ) {
+
+				object.forEach( obj => this.addRoadObject( obj ) );
+
+			}
 
 		}
+
+	}
+
+	addRoadObject ( object: TvRoadObject ) {
+
+		this.tool.roadObjectService.addRoadObject( object.road, object );
+
+		this.tool.hideAllControls();
+
+		this.tool.showControls( object.road );
 
 	}
 
@@ -210,6 +224,14 @@ export class PointMarkingTool extends BaseTool {
 		} else if ( object instanceof TvRoadObject ) {
 
 			this.tool.removePointMarking( object );
+
+		} else if ( object instanceof Array ) {
+
+			if ( object[ 0 ] instanceof TvRoadObject ) {
+
+				object.forEach( obj => this.tool.removePointMarking( obj ) );
+
+			}
 
 		}
 
@@ -253,7 +275,19 @@ export class PointMarkingTool extends BaseTool {
 
 		if ( !this.selectedMarking ) return;
 
-		this.tool.removePointMarking( this.selectedMarking.mainObject );
+		if ( this.selectedMarking instanceof Array ) {
+
+			this.selectedMarking.forEach( marking => {
+
+				this.tool.removePointMarking( marking.mainObject );
+
+			} );
+
+		} else {
+
+			this.tool.removePointMarking( this.selectedMarking.mainObject );
+
+		}
 
 	}
 

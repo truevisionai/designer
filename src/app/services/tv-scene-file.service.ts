@@ -22,6 +22,8 @@ import { AssetService } from 'app/core/asset/asset.service';
 import { FileUtils } from 'app/io/file-utils';
 import { ProjectService } from './project.service';
 import { SceneBuilderService } from './scene-builder.service';
+import { RoadService } from './road/road.service';
+import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -38,6 +40,8 @@ export class TvSceneFileService {
 		private assetService: AssetService,
 		private projectService: ProjectService,
 		private sceneBuilder: SceneBuilderService,
+		private roadService: RoadService,
+		private roadObjectService: RoadObjectService,
 	) {
 	}
 
@@ -73,13 +77,29 @@ export class TvSceneFileService {
 
 		CommandHistory.clear();
 
-		this.mapService.map?.destroy();
+		this.destroyMap( this.mapService.map );
 
 		this.scenario?.destroy();
 
 		this.mapService.map = map;
 
-		this.sceneBuilder.buildScene( this.mapService.map );
+		this.sceneBuilder.buildScene( map );
+
+	}
+
+	destroyMap ( map: TvMap ) {
+
+		if ( map == null ) return;
+
+		map.getRoads().forEach( road => {
+
+			this.roadService.removeRoad( road, true );
+
+			this.roadObjectService.removeObjectsByRoad( road );
+
+		} );
+
+		map.destroy();
 
 	}
 

@@ -126,7 +126,7 @@ export class SelectionService {
 
 		for ( const [ key, value ] of this.selectedObjects.entries() ) {
 
-			if ( this.priority.get( key ) < index ) {
+			if ( this.priority.get( key ) <= index ) {
 
 				unselectObjects.push( value );
 

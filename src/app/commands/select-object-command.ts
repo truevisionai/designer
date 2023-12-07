@@ -4,6 +4,7 @@ import { MapEvents } from "../events/map-events";
 export class SelectObjectCommand extends BaseCommand {
 
 	private readonly objects: any[] = [];
+
 	private readonly previousObjects: any[] = [];
 
 	constructor ( object: any | any[], previousObject?: any | any[] ) {
@@ -37,11 +38,7 @@ export class SelectObjectCommand extends BaseCommand {
 
 		} );
 
-		this.objects.forEach( object => {
-
-			MapEvents.objectSelected.emit( object );
-
-		} );
+		MapEvents.objectSelected.emit( this.objects.length > 1 ? this.objects : this.objects[ 0 ] );
 
 	}
 

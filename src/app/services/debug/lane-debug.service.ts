@@ -36,6 +36,44 @@ export class LaneDebugService {
 	) {
 	}
 
+	clear () {
+
+		this.lines.clear();
+
+		this.arrows.clear();
+
+		this.highlightedLanes.clear();
+
+		this.selectedLanes.clear();
+
+	}
+
+	selectLane ( lane: TvLane ) {
+
+		if ( this.selectedLanes.has( lane ) ) return;
+
+		this.removeHighlight();
+
+		this.showLaneBorderLine( lane, LINE_WIDTH * 2, COLOR.RED );
+
+		this.showLaneDirectionArrows( lane );
+
+		this.selectedLanes.add( lane );
+
+	}
+
+	unselectLane ( lane: TvLane ) {
+
+		if ( ! this.selectedLanes.has( lane ) ) return;
+
+		this.lines.removeKey( lane );
+
+		this.arrows.removeKey( lane );
+
+		this.selectedLanes.delete( lane );
+
+	}
+
 	higlightLane ( lane: TvLane ) {
 
 		if ( this.selectedLanes.has( lane ) ) return;

@@ -6,9 +6,15 @@ export class Object3DMap<K, T extends Object3D> {
 
 	private map: Map<K, T>;
 
-	constructor () {
+	constructor ( private parent?: Object3D ) {
 
 		this.map = new Map();
+
+	}
+
+	setParent ( parent: Object3D ) {
+
+		this.parent = parent;
 
 	}
 
@@ -63,9 +69,15 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	private map: Map<K, Array<Object3D>>;
 
-	constructor () {
+	constructor ( private parent?: Object3D ) {
 
 		this.map = new Map();
+
+	}
+
+	setParent ( parent: Object3D ) {
+
+		this.parent = parent;
 
 	}
 
