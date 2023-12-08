@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
-import { ThreeService } from 'app/modules/three-js/three.service';
 import { Camera, Mesh } from 'three';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { RendererService } from 'app/modules/three-js/renderer.service';
+import { CameraService } from 'app/modules/three-js/camera.service';
+import { SceneService } from 'app/services/scene.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,14 +25,16 @@ export class BoxSelectionService {
 	private filteredCollection = [];
 
 	constructor (
-		private threeService: ThreeService
+		private rendererService: RendererService,
+		private cameraService: CameraService,
+		private sceneService: SceneService,
 	) {
-		this.threeService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
+		this.cameraService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
 	}
 
 	private onCameraChanged ( camera: Camera ): void {
 
-		this.box = new SelectionBox( camera, this.threeService.scene, 1 );
+		this.box = new SelectionBox( camera, this.sceneService.scene, 1 );
 
 	}
 
@@ -45,7 +49,7 @@ export class BoxSelectionService {
 		if ( strategy ) this.setStrategy( strategy );
 
 		// disable internal events so we can control manually
-		this.cssHelper = new SelectionHelper( this.threeService.renderer, 'selectBox' );
+		this.cssHelper = new SelectionHelper( this.rendererService.renderer, 'selectBox' );
 
 		this.cssHelper.element.style.display = 'none';
 
@@ -53,7 +57,7 @@ export class BoxSelectionService {
 
 		this.cssHelper?.dispose();
 
-		this.box = new SelectionBox( this.threeService.camera, this.threeService.scene, 1 );
+		this.box = new SelectionBox( this.cameraService.camera, this.sceneService.scene, 1 );
 
 	}
 

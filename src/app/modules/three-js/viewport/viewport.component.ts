@@ -11,8 +11,14 @@ import { ThreeService } from 'app/modules/three-js/three.service';
 import * as THREE from 'three';
 import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { SceneService } from '../../../services/scene.service';
-import { ViewportService } from '../viewport.service';
+import { CanvasService } from '../canvas.service';
 import { Environment } from 'app/core/utils/environment';
+import { RendererService } from "../renderer.service";
+import { ViewHelperService } from "../view-helper.service";
+import { DragDropService } from "../../../services/drag-drop.service";
+import { ViewportImporterService } from "../viewport-importer.service";
+import { ViewControllerService } from "../view-controller.service";
+import { CameraService } from "../camera.service";
 
 @Component( {
 	selector: 'app-viewport',
@@ -21,43 +27,42 @@ import { Environment } from 'app/core/utils/environment';
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	public beginTime;
+
 	public prevTime;
+
 	public frames = 0;
-	public fps;
 
-	CANVAS_WIDTH = 600;
-	CANVAS_HEIGHT = 600;
-
-	OFFSET_LEFT: number = 0;
-	OFFSET_TOP: number = 0;
+	public fps: number;
 
 	selected: Object3D;
+
 	intersections: THREE.Intersection[] = [];
+
 	lastIntersection: THREE.Intersection;
 
 	@ViewChild( 'viewport' ) elementRef: ElementRef;
+
 	@ViewChild( 'viewHelper' ) viewHelperRef: ElementRef;
 
 	raycaster = new THREE.Raycaster;
 
 	currentMousePosition: THREE.Vector2 = new THREE.Vector2();
+
 	prevMousePosition: THREE.Vector2 = new THREE.Vector2();
+
 	mouseDelta: THREE.Vector2 = new THREE.Vector2();
 
 	clock = new THREE.Clock();
+
 	private animationId: number;
-	private renderer: WebGLRenderer;
+
 	private lastTime: number = Date.now();
+
 	private minTime: number = 100;
+
 	private onCanvas: boolean;
 
-	constructor (
-		private threeService: ThreeService,
-		private eventSystem: ViewportEvents,
-		private viewportService: ViewportService,
-	) {
-		this.render = this.render.bind( this );
-	}
+	private showWireframe = false;
 
 	get isProduction () {
 		return Environment.production;
@@ -67,12 +72,30 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		return <HTMLCanvasElement>this.elementRef.nativeElement;
 	}
 
-	get viewHelperCanavs (): HTMLCanvasElement {
+	get viewHelperCanvas (): HTMLCanvasElement {
 		return <HTMLCanvasElement>this.viewHelperRef.nativeElement;
 	}
 
 	get cameraType (): string {
 		return this.threeService.camera?.type || 'OrthographicCamera';
+	}
+
+	get renderer (): WebGLRenderer {
+		return this.rendererService.renderer;
+	}
+
+	constructor (
+		private threeService: ThreeService,
+		private eventSystem: ViewportEvents,
+		private canvasService: CanvasService,
+		private rendererService: RendererService,
+		private viewHelperService: ViewHelperService,
+		private dragDropService: DragDropService,
+		private viewportImporter: ViewportImporterService,
+		private viewControllerService: ViewControllerService,
+		private cameraService: CameraService,
+	) {
+		this.render = this.render.bind( this );
 	}
 
 	ngOnInit () {
@@ -82,7 +105,43 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	// was used when multiple canvas instances were used
+	ngAfterViewInit (): void {
+
+		if ( !this.detectWebgl() ) {
+
+			alert( 'Your Browser does not support WebGL. Please visit from a browser which supports WebGL.' );
+
+			return;
+		}
+
+		this.rendererService.init( this.canvas );
+
+		this.threeService.setupScene();
+
+		this.cameraService.init();
+
+		this.viewControllerService.init( this.cameraService.camera, this.canvas );
+
+		this.raycaster = new THREE.Raycaster();
+		this.raycaster.params.Line.threshold = 0.5;
+		this.raycaster.params.Line2 = {
+			threshold: 0.5
+		}
+		this.raycaster.far = 10000;
+
+		this.render();
+
+		setTimeout( () => {
+
+			this.viewHelperService.init( this.viewHelperCanvas );
+
+			this.onWindowResized();
+
+		}, 10 );
+
+	}
+
+	// was used when multiple canvas instances were use
 	ngOnDestroy (): void {
 
 		this.canvas.remove();
@@ -90,54 +149,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.dispose();
 
 		cancelAnimationFrame( this.animationId );
-	}
-
-	ngAfterViewInit (): void {
-
-		if ( this.detectWebgl() ) {
-
-			this.setupRenderer();
-
-			setTimeout( () => {
-
-				this.resizeCanvas();
-
-			}, 0 );
-
-		} else {
-
-			alert( 'Your Browser does not support WebGL. Please visit from a browser which supports WebGL.' );
-		}
-
-	}
-
-	setupRenderer () {
-
-		this.renderer = new THREE.WebGLRenderer( { alpha: false, antialias: true, precision: 'highp', stencil: false } );
-		this.renderer.setPixelRatio( window.devicePixelRatio );
-		this.renderer.setClearColor( 0xffffff, 1 );
-		this.renderer.autoClear = false;
-		// this.renderer.toneMapping = THREE.LinearToneMapping;
-		// this.renderer.toneMappingExposure = 1.0;
-
-		this.raycaster = new THREE.Raycaster();
-		// this.raycaster.linePrecision = 0.25;
-		this.raycaster.params.Line.threshold = 0.5;
-		this.raycaster.params.Line2 = {
-			threshold: 0.5
-		}
-		this.raycaster.far = 10000;
-
-		SceneService.renderer = this.renderer;
-
-		this.renderer.setSize( this.CANVAS_WIDTH, this.CANVAS_HEIGHT );
-
-		this.canvas.appendChild( this.renderer.domElement );
-
-		this.threeService.setupScene( this.canvas, this.renderer );
-
-		this.render();
-
 	}
 
 	render () {
@@ -149,19 +160,17 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.frameBegin();
 
-		this.threeService.updateCameraPosition();
+		this.viewControllerService.updateCameraPosition();
 
 		this.renderer.clear();
 
-		if ( this.threeService.viewHelper?.animating ) {
-			this.threeService.viewHelper.update( delta );
-		}
+		this.viewHelperService.update( delta );
 
 		this.renderer.render( SceneService.scene, this.threeService.camera );
 
-		this.threeService.viewHelper?.render( this.renderer );
+		this.viewHelperService.render( this.renderer );
 
-		this.threeService.controls.update();
+		this.viewControllerService.update( delta );
 
 		this.frameEnd();
 	}
@@ -289,11 +298,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( intersection?.object?.type === 'Points' ) {
 
-			this.threeService.disableControls();
+			this.viewControllerService.disableControls();
 
 		} else {
 
-			this.threeService.enableControls();
+			this.viewControllerService.enableControls();
 
 		}
 
@@ -302,7 +311,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseUp ( event: MouseEvent ) {
 
-		this.threeService.enableControls();
+		this.viewControllerService.enableControls();
 
 		this.updateMousePosition( event );
 
@@ -402,13 +411,21 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const position = intersection?.point || new Vector3();
 
-		await this.viewportService.onDrop( $event, position );
+		const data = this.dragDropService.getData();
+
+		this.viewportImporter.import( data, position );
+
+		this.dragDropService.clear();
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )
-	resize () {
+	onWindowResized () {
 
-		this.resizeCanvas();
+		const container = this.renderer.domElement.parentElement.parentElement;
+
+		this.canvasService.resizeViewport( container );
+
+		this.rendererService.onCanvasResized();
 
 	}
 
@@ -570,13 +587,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onContextMenu ( $event: MouseEvent ) {
 
-
 	}
 
 	updateMousePosition ( $event: MouseEvent ) {
 
-		this.currentMousePosition.x = ( ( $event.clientX - this.OFFSET_LEFT ) / this.CANVAS_WIDTH ) * 2 - 1;
-		this.currentMousePosition.y = -( ( $event.clientY - this.OFFSET_TOP ) / this.CANVAS_HEIGHT ) * 2 + 1;
+		this.currentMousePosition.x = ( ( $event.clientX - this.canvasService.left ) / this.canvasService.width ) * 2 - 1;
+		this.currentMousePosition.y = -( ( $event.clientY - this.canvasService.top ) / this.canvasService.height ) * 2 + 1;
 
 		this.mouseDelta.x = this.currentMousePosition.x - this.prevMousePosition.x;
 		this.mouseDelta.y = this.currentMousePosition.y - this.prevMousePosition.y;
@@ -605,40 +621,18 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 	}
 
-	resizeCanvas () {
-
-		this.threeService.viewHelperCanavs = this.viewHelperCanavs;
-
-		const container = this.renderer.domElement.parentElement.parentElement;
-
-		const box = container.getBoundingClientRect();
-
-		const width = this.threeService.canvasWidth = this.CANVAS_WIDTH = container.clientWidth;
-		const height = this.threeService.canvasHeight = this.CANVAS_HEIGHT = container.clientHeight;
-
-		this.OFFSET_LEFT = this.threeService.leftOffset = box.left;
-		this.OFFSET_TOP = this.threeService.topOffset = box.top;
-
-		this.renderer.setViewport( -box.left, -box.top, width, height );
-		this.renderer.setSize( width, height );
-
-		this.threeService.onWindowResized();
-
-	}
-
 	changeCamera () {
 
-		this.threeService.changeCamera();
+		this.cameraService.changeCamera();
 
 	}
 
 	resetCamera () {
 
-		this.threeService.resetCamera();
+		this.cameraService.resetCamera();
 
 	}
 
-	private showWireframe = false;
 	wireframeMode () {
 
 		this.showWireframe = !this.showWireframe;
@@ -651,51 +645,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		$event.stopPropagation();
 
-		this.threeService.viewHelper?.handleClick( $event as PointerEvent );
+		this.viewHelperService.handleClick( $event as PointerEvent );
 
 	}
 }
-
-
-class Animator {
-	private startTime: number | null = null;
-	private intervalId: any | null = null;
-	private duration: number;
-	private updateRate: number;
-
-	constructor ( duration: number, updateRate: number ) {
-		this.duration = duration;
-		this.updateRate = updateRate;
-	}
-
-	start ( callback: ( value: number ) => void ) {
-		if ( this.intervalId !== null ) {
-			this.stop();
-		}
-
-		this.startTime = performance.now();
-
-		this.intervalId = setInterval( () => {
-			const elapsedTime = performance.now() - ( this.startTime as number );
-
-			if ( elapsedTime >= this.duration ) {
-				callback( 1 );  // Ensure final value is 1
-				this.stop();
-				return;
-			}
-
-			const progress = elapsedTime / this.duration;
-			callback( progress );
-
-		}, this.updateRate );
-	}
-
-	stop () {
-		if ( this.intervalId !== null ) {
-			clearInterval( this.intervalId );
-			this.intervalId = null;
-			this.startTime = null;
-		}
-	}
-}
-

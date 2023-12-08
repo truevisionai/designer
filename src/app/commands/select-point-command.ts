@@ -5,7 +5,7 @@
 import { Type } from '@angular/core';
 import { ISelectable } from '../modules/three-js/objects/i-selectable';
 import { IComponent } from '../core/game-object';
-import { SelectionTool } from '../core/snapping/selection-tool';
+// import { SelectionTool } from '../core/snapping/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 
@@ -25,13 +25,6 @@ export interface IToolWithPoints {
 	setPoint ( value: ISelectable[] ): void;
 
 	getPoint (): ISelectable[];
-}
-
-/**
- * @deprecated
- */
-export interface IToolWithSelection extends IToolWithPoints {
-	selectionTool: SelectionTool<any>;
 }
 
 /**

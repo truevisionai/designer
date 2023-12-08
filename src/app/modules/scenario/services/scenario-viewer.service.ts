@@ -6,8 +6,9 @@ import { Injectable } from '@angular/core';
 import { Quaternion, Vector3 } from 'three';
 import { PlayerService, PlayerUpdateData } from '../../../core/player.service';
 import { TvConsole } from '../../../core/utils/console';
-import { ThreeService } from '../../three-js/three.service';
 import { ScenarioService } from './scenario.service';
+import { ViewControllerService } from "../../three-js/view-controller.service";
+import { CameraService } from "../../three-js/camera.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +20,8 @@ export class ScenarioViewerService {
 
 	constructor (
 		private player: PlayerService,
-		private threeService: ThreeService
+		private viewController: ViewControllerService,
+		private cameraService: CameraService,
 	) {
 
 		player.playerStarted.subscribe( e => this.onPlayerStarted() );
@@ -44,10 +46,10 @@ export class ScenarioViewerService {
 		const entity = [ ...ScenarioService.scenario.objects.values() ][ 0 ];
 
 		// Store original position and orientation
-		this.originalPosition.copy( this.threeService.camera.position );
-		this.originalQuaternion.copy( this.threeService.camera.quaternion );
+		this.originalPosition.copy( this.cameraService.camera.position );
+		this.originalQuaternion.copy( this.cameraService.camera.quaternion );
 
-		this.threeService.setFocusTarget( entity );
+		this.viewController.setFocusTarget( entity );
 
 	}
 
@@ -88,9 +90,9 @@ export class ScenarioViewerService {
 			return;
 		}
 
-		this.threeService.removeFocusTarget();
-		this.threeService.camera.position.copy( this.originalPosition );
-		this.threeService.camera.quaternion.copy( this.originalQuaternion );
+		this.viewController.removeFocusTarget();
+		this.cameraService.camera.position.copy( this.originalPosition );
+		this.cameraService.camera.quaternion.copy( this.originalQuaternion );
 
 	}
 

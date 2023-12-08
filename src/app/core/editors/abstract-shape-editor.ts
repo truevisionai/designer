@@ -437,14 +437,14 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 		e.select();
 
-		AppService.three.disableControls();
+		//AppService.three.disableControls();
 	}
 
 	private onControlPointUnselected ( e: AnyControlPoint ) {
 
 		e.unselect();
 
-		AppService.three.enableControls();
+		//AppService.three.enableControls();
 	}
 
 }

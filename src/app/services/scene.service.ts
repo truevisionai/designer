@@ -22,6 +22,10 @@ export class SceneService {
 
 	public static bgForClicks: THREE.Mesh;
 
+	get scene (): THREE.Scene {
+		return SceneService.scene;
+	}
+
 	constructor () {
 
 		SceneService.editorLayer.name = 'Editor';
