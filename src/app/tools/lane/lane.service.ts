@@ -32,56 +32,56 @@ export class LaneService {
 
 	showRoad ( road: TvRoad ) {
 
-		LaneService.lineMap.clear();
+		// LaneService.lineMap.clear();
 
-		road.laneSections.forEach( laneSection => {
+		// road.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				const points = this.laneDebug.getPoints( lane, laneSection.s, laneSection.endS );
+		// 		const points = this.laneDebug.getPoints( lane, laneSection.s, laneSection.endS );
 
-				const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + 0.05 ] ) );
+		// 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + 0.05 ] ) );
 
-				const material = new LineMaterial( {
-					color: COLOR.CYAN,
-					linewidth: 2,
-					resolution: new Vector2( window.innerWidth, window.innerHeight ),
-				} );
+		// 		const material = new LineMaterial( {
+		// 			color: COLOR.CYAN,
+		// 			linewidth: 2,
+		// 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+		// 		} );
 
-				const line = new DebugLine( lane, geometry, material );
+		// 		const line = new DebugLine( lane, geometry, material );
 
-				line.renderOrder = 999;
+		// 		line.renderOrder = 999;
 
-				LaneService.lineMap.add( lane.uuid, line );
+		// 		LaneService.lineMap.add( lane.uuid, line );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 
 	}
 
 	hideRoad ( road: TvRoad ) {
 
-		road.laneSections.forEach( laneSection => {
+		// road.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+		// 	laneSection.lanes.forEach( lane => {
 
-				LaneService.lineMap.remove( lane.uuid );
+		// 		LaneService.lineMap.remove( lane.uuid );
 
-			} );
+		// 	} );
 
-		} );
+		// } );
 
-		LaneService.lineMap.clear();
+		// LaneService.lineMap.clear();
 	}
 
 	addLane ( lane: TvLane ) {
 
 		lane.laneSection.addLaneInstance( lane, true );
 
-		LaneService.lineMap.clear();
+		// LaneService.lineMap.clear();
 
-		this.showRoad( lane.laneSection.road );
+		// this.showRoad( lane.laneSection.road );
 
 		this.baseService.rebuildRoad( lane.laneSection.road );
 
@@ -93,9 +93,9 @@ export class LaneService {
 
 		lane.laneSection.removeLane( lane );
 
-		LaneService.lineMap.clear();
+		// LaneService.lineMap.clear();
 
-		this.showRoad( lane.laneSection.road );
+		// this.showRoad( lane.laneSection.road );
 
 		this.baseService.rebuildRoad( lane.laneSection.road );
 

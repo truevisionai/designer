@@ -3,7 +3,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { ThreeService } from 'app/modules/three-js/three.service';
-import { Mesh } from 'three';
+import { Camera, Mesh } from 'three';
 import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
@@ -25,6 +25,13 @@ export class BoxSelectionService {
 	constructor (
 		private threeService: ThreeService
 	) {
+		this.threeService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
+	}
+
+	private onCameraChanged ( camera: Camera ): void {
+
+		this.box = new SelectionBox( camera, this.threeService.scene, 1 );
+
 	}
 
 	setStrategy ( strategy: SelectStrategy<any> ) {
@@ -72,7 +79,7 @@ export class BoxSelectionService {
 
 		this.cssHelper.isDown = this.isSelecting = true;
 
-		this.box.startPoint.set( e.mouse.x, e.mouse.y, 0.5 );
+		this.box.startPoint.set( e.mouse.x, e.mouse.y, 0.9 );
 
 	}
 
@@ -107,8 +114,11 @@ export class BoxSelectionService {
 
 		this.cssHelper.element.style.display = 'none';
 
-		return this.filteredCollection;
+		const response = this.filteredCollection;
 
+		this.filteredCollection = [];
+
+		return response;
 	}
 
 	filter ( event: PointerEventData, objects: Mesh[] ): void {

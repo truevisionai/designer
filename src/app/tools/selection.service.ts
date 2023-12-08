@@ -77,6 +77,22 @@ export class SelectionService {
 
 	}
 
+	handleCreation ( e: PointerEventData, callback: Function ): void {
+
+		for ( const [ type, strategy ] of this.strategies ) {
+
+			const object = strategy.select( e );
+
+			if ( !object ) continue;
+
+			callback( object );
+
+			return;
+
+		}
+
+	}
+
 	getLastSelected<T> ( type: string ): T {
 
 		return this.selectedObjects.get( type ) as T;
@@ -117,28 +133,35 @@ export class SelectionService {
 
 	}
 
-	private selectObject ( object: any, type: string ): void {
+	private selectObject ( newSelected: any, selectedType: string ): void {
 
-		const index = this.priority.get( type );
+		const newSelectedPriority = this.priority.get( selectedType );
 
-		// unselect objects with lower priority
 		const unselectObjects = [];
 
-		for ( const [ key, value ] of this.selectedObjects.entries() ) {
+		for ( const [ oldSelectedType, oldSelected ] of this.selectedObjects.entries() ) {
 
-			if ( this.priority.get( key ) <= index ) {
+			const oldSelectedPriority = this.priority.get( oldSelectedType );
 
-				unselectObjects.push( value );
+			// unselect objects with lower priority
+			if ( oldSelectedPriority < newSelectedPriority ) {
+
+				unselectObjects.push( oldSelected );
+
+				// unselect objects with same priority if they are not the same
+			} else if ( oldSelectedPriority == newSelectedPriority && oldSelected !== newSelected ) {
+
+				unselectObjects.push( oldSelected );
 
 			}
 
 		}
 
-		const lastSelected = this.getLastSelected( type );
+		const lastSelected = this.getLastSelected( selectedType );
 
-		if ( lastSelected && lastSelected === object && unselectObjects.length === 0 ) return;
+		if ( lastSelected && lastSelected === newSelected && unselectObjects.length === 0 ) return;
 
-		CommandHistory.execute( new SelectObjectCommand( object, unselectObjects ) );
+		CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
 
 	}
 
