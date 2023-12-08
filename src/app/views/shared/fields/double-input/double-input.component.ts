@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { Maths } from 'app/utils/maths';
 
 @Component( {
@@ -30,8 +30,9 @@ export class DoubleInputComponent implements OnInit {
 
 	sendTimeout: any;
 
-	constructor () {
-	}
+	lastValue: number;
+
+	constructor () { }
 
 	static isNumeric ( value: string ): boolean {
 
@@ -52,6 +53,8 @@ export class DoubleInputComponent implements OnInit {
 
 		this.inFocus = false;
 
+		this.fireChangedEvent();
+
 	}
 
 	onFocus () {
@@ -62,23 +65,32 @@ export class DoubleInputComponent implements OnInit {
 
 	onWheel ( $event: WheelEvent ) {
 
-		if ( this.disabled ) return;
-
-		if ( !this.inFocus ) return;
-
 		// presvent default action to stop scrolling
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		// console.log( $event.deltaX, $event.deltaY );
+		if ( this.disabled ) return;
+
+		if ( !this.inFocus ) return;
 
 		if ( $event.deltaY < 0 && this.value < this.max ) {
+
 			this.value += this.step;
-		} else if ( $event.deltaY < 0 && this.value >= this.max ) this.value = this.max;
+
+		} else if ( $event.deltaY < 0 && this.value >= this.max ) {
+
+			this.value = this.max;
+		}
 
 		if ( $event.deltaY > 0 && this.value > this.min ) {
+
 			this.value -= this.step;
-		} else if ( $event.deltaY > 0 && this.value <= this.min ) this.value = this.min;
+
+		} else if ( $event.deltaY > 0 && this.value <= this.min ) {
+
+			this.value = this.min;
+
+		}
 
 		this.value = +this.value.toFixed( 3 );
 
@@ -86,110 +98,63 @@ export class DoubleInputComponent implements OnInit {
 
 		this.value = Maths.clamp( this.value, this.min, this.max );
 
-		// this helps avoid sending update event in every scroll
-
-		if ( this.sendTimeout ) {
-
-			clearTimeout( this.sendTimeout );
-
-		}
-
-		this.sendTimeout = setTimeout( () => {
-
-			this.changed.emit( this.value );
-
-		}, 300 );
 	}
 
 	onModelChanged ( $value: any ) {
 
 		if ( this.disabled ) return;
 
-		if ( Number.isNaN( parseFloat( $value ) ) ) {
+		const value = parseFloat( $value )
 
-			setTimeout( () => {
-				this.value = this.value;
-			}, 100 );
+		if ( Number.isNaN( value ) ) {
+
+			this.value = 0;
 
 		} else {
 
-			this.value = Maths.clamp( parseFloat( $value ), this.min, this.max );
-
-			this.changed.emit( this.value );
+			this.value = Maths.clamp( value, this.min, this.max );
 
 		}
 	}
 
+	@HostListener( 'keydown', [ '$event' ] )
 	onKeydown ( $event: KeyboardEvent ) {
 
-		// console.log( 'keydown', $event );
+		if ( this.disabled ) return;
 
-		// console.log( this.value );
+		if ( !this.inFocus ) return;
 
-		// // `key` holds the character ('1', 'a', '.', etc.) or the action ('ArrowRight', 'Backspace', etc.)
-		// const key = $event.key;
+		if ( $event.key === 'Enter' ) {
 
-		// // Arrow keys should be allowed for navigation
-		// const navigationKeys = [ 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete' ];
+			this.fireChangedEvent();
 
-		// if ( navigationKeys.includes( key ) ) {
-		// 	return; // Allow navigation keys
-		// }
+		}
 
-		// // Check for numeric keys, decimal, or navigation keys
-		// const isNumberKey = /^\d$/.test( key );
-		// const isDecimalKey = key === '.';
+	}
 
-		// // If key is not a number or decimal or it's a second decimal in the number, prevent its input
-		// if ( !isNumberKey && !isDecimalKey ) {
-		// 	$event.preventDefault();
-		// }
+	fireChangedEvent () {
+
+		let value = parseFloat( this.value );
+
+		if ( Number.isNaN( value ) ) {
+
+			value = 0;
+
+		}
+
+		value = Maths.clamp( value, this.min, this.max );
+
+		if ( value == this.lastValue ) return;
+
+		this.changed.emit( value );
+
+		this.lastValue = value;
+
 	}
 
 	onInput ( $event: any ) {
 
-		// if ( this.disabled ) return;
 
-		// console.log( 'model changed', $event.data, this.value );
-
-		// if ( Number.isNaN( parseFloat( this.value ) ) ) {
-
-		// 	setTimeout( () => { this.value = 0; }, 100 );
-
-		// } else {
-
-		// 	this.value = Maths.clamp( $event.data, this.min, this.max );
-
-		// 	this.changed.emit( this.value );
-
-		// }
-
-		// if ( !DoubleInputComponent.isNumeric( ( $event as InputEvent ).data ) ) {
-
-		// 	console.log( 'input not numeris', $event );
-
-		// 	$event.preventDefault();
-
-		// 	return
-		// }
-
-		// console.log( 'input', $event );
-
-		// const inputValue: string = ( $event.target as HTMLInputElement ).value;
-
-		// if ( !DoubleInputComponent.isNumeric( inputValue ) ) {
-
-		// 	this.value = inputValue.replace( /[^\d.]/g, '' );
-
-		// 	if ( inputValue.startsWith( '-' ) ) {
-		// 		this.value = '-' + this.value;
-		// 	}
-
-		// } else {
-
-		// 	console.log( 'inputValue', inputValue );
-
-		// }
 	}
 
 }

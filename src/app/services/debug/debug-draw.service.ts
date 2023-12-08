@@ -222,7 +222,6 @@ export class DebugDrawService {
 
 	createDebugLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
 
-		// const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z + zOffset ] ) );
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
 		const material = new LineMaterial( {

@@ -32,11 +32,11 @@ export class SelectObjectCommand extends BaseCommand {
 
 	execute () {
 
-		this.previousObjects.forEach( previousObject => {
+		if ( this.previousObjects.length > 0 ) {
 
-			MapEvents.objectUnselected.emit( previousObject );
+			MapEvents.objectUnselected.emit( this.previousObjects.length > 1 ? this.previousObjects : this.previousObjects[ 0 ] );
 
-		} );
+		}
 
 		MapEvents.objectSelected.emit( this.objects.length > 1 ? this.objects : this.objects[ 0 ] );
 
@@ -44,21 +44,11 @@ export class SelectObjectCommand extends BaseCommand {
 
 	undo (): void {
 
+		MapEvents.objectUnselected.emit( this.objects.length > 1 ? this.objects : this.objects[ 0 ] );
+
 		if ( this.previousObjects.length > 0 ) {
 
-			this.previousObjects.forEach( previousObject => {
-
-				MapEvents.objectSelected.emit( previousObject );
-
-			} );
-
-		} else {
-
-			this.objects.forEach( object => {
-
-				MapEvents.objectUnselected.emit( object );
-
-			} );
+			MapEvents.objectSelected.emit( this.previousObjects.length > 1 ? this.previousObjects : this.previousObjects[ 0 ] );
 
 		}
 
