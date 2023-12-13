@@ -38,13 +38,13 @@ export class RoadTool extends BaseTool {
 
 	private debug = true;
 
+	private selectedNode: RoadNode;
+
 	private get selectedControlPoint (): AbstractControlPoint {
 
 		return this.tool.selection.getLastSelected<any>( 'point' );
 
 	}
-
-	private selectedNode: RoadNode;
 
 	private get selectedRoad (): TvRoad {
 
@@ -118,7 +118,7 @@ export class RoadTool extends BaseTool {
 
 			const addPointCommand = new AddObjectCommand( point );
 
-			const selectPointCommand = new SelectObjectCommand( point );
+			const selectPointCommand = new SelectObjectCommand( point, this.selectedControlPoint );
 
 			CommandHistory.executeMany( addPointCommand, selectPointCommand );
 
@@ -130,7 +130,7 @@ export class RoadTool extends BaseTool {
 
 			const addRoadCommand = new AddObjectCommand( road );
 
-			const selectRoadCommand = new SelectObjectCommand( road );
+			const selectRoadCommand = new SelectObjectCommand( road, this.selectedRoad );
 
 			road.addControlPoint( point );
 
@@ -152,7 +152,7 @@ export class RoadTool extends BaseTool {
 
 		this.tool.base.handleMovement( e, ( position ) => {
 
-			if ( this.selectedControlPoint && this.selectedControlPoint.isSelected ) {
+			if ( this.selectedRoad && this.selectedControlPoint && this.selectedControlPoint.isSelected ) {
 
 				this.handleControlPointMovement( position );
 
@@ -310,17 +310,17 @@ export class RoadTool extends BaseTool {
 
 	}
 
-	onControlPointRemoved ( object: SplineControlPoint ) {
+	onControlPointRemoved ( controlPoint: SplineControlPoint ) {
 
-		SceneService.removeFromTool( object );
+		SceneService.removeFromTool( controlPoint );
 
-		this.selectedRoad.removeControlPoint( object );
+		controlPoint.spline.removeControlPoint( controlPoint );
 
-		if ( this.selectedRoad.spline.controlPoints.length < 2 ) return;
+		if ( controlPoint.spline.controlPoints.length < 2 ) return;
 
-		this.tool.roadSplineService.rebuildSplineRoads( this.selectedRoad.spline );
+		this.tool.roadSplineService.rebuildSplineRoads( controlPoint.spline );
 
-		this.tool.roadService.updateRoadNodes( this.selectedRoad );
+		if ( this.selectedRoad ) this.tool.roadService.updateRoadNodes( this.selectedRoad );
 
 	}
 
@@ -388,15 +388,12 @@ export class RoadTool extends BaseTool {
 
 	onRoadSelected ( road: TvRoad ): void {
 
-		console.log( this.selectedRoad, road );
-
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
 		this.tool.showRoad( road );
 
 		AppInspector.setInspector( RoadInspector, { road } );
 
-		// this.tool.base.setHint( 'Click on the road to add a control point' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
@@ -408,8 +405,6 @@ export class RoadTool extends BaseTool {
 	}
 
 	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
-
-		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
 
 		controlPoint?.select();
 
