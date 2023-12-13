@@ -115,9 +115,10 @@ export class JunctionNodeService {
 
 		const lineMaterial = new LineMaterial( {
 			color: COLOR.CYAN,
-			opacity: RoadNode.defaultOpacity,
 			linewidth: RoadNode.defaultWidth,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+			depthTest: false,
+			depthWrite: false,
 		} );
 
 		const junctionNode = new JunctionNode( roadCoord, lineGeometry, lineMaterial );
