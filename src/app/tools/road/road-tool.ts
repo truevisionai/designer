@@ -46,12 +46,6 @@ export class RoadTool extends BaseTool {
 
 	private selectedNode: RoadNode;
 
-	// private get selectedNode (): RoadNode {
-
-	// 	return this.tool.selection.getLastSelected<RoadNode>( RoadNode.name );
-
-	// }
-
 	private get selectedRoad (): TvRoad {
 
 		return this.tool.selection.getLastSelected<TvRoad>( TvRoad.name );
@@ -444,7 +438,7 @@ export class RoadTool extends BaseTool {
 
 			this.selectedNode = node;
 
-			node?.select();
+			node.select();
 
 			this.tool.base.setHint( 'Select another node to connect' );
 
@@ -454,9 +448,15 @@ export class RoadTool extends BaseTool {
 
 	onNodeUnselected ( node: RoadNode ) {
 
-		node?.unselect();
+		node.unselect();
 
-		this.selectedNode = null;
+		// time hack to make sure the node is unselected
+		// before we clear the selected node
+		setTimeout( () => {
+
+			this.selectedNode = null;
+
+		}, 300 );
 
 	}
 
@@ -471,6 +471,8 @@ export class RoadTool extends BaseTool {
 	private connectNodes ( nodeA: RoadNode, nodeB: RoadNode ) {
 
 		nodeA.unselect();
+
+		nodeB.unselect();
 
 		if ( nodeA === nodeB ) return;
 
