@@ -59,7 +59,7 @@ export class SelectionService {
 
 	}
 
-	handleSelection ( e: PointerEventData ): void {
+	handleSelection ( e: PointerEventData, selected?: ( object: any ) => void, unselected?: () => void ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
@@ -67,11 +67,15 @@ export class SelectionService {
 
 			if ( !object ) continue;
 
+			if ( selected ) selected( object );
+
 			this.selectObject( object, type );
 
 			return;
 
 		}
+
+		if ( unselected ) unselected();
 
 		this.handleDeselection();
 

@@ -40,6 +40,9 @@ export class RoadTool extends BaseTool {
 
 	private selectedNode: RoadNode;
 
+	private isRoadDoubleClicked: boolean;
+	private lastRoadClicked: TvRoad;
+
 	private get selectedControlPoint (): AbstractControlPoint {
 
 		return this.tool.selection.getLastSelected<any>( 'point' );
@@ -64,14 +67,14 @@ export class RoadTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.selection.registerStrategy( 'point', new ControlPointStrategy() );
-		this.tool.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
-		this.tool.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
+		this.tool.base.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
+		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		// we want all points to be selectable and use 1 point at a time
-		this.tool.selection.registerTag( SplineControlPoint.name, 'point' );
-		this.tool.selection.registerTag( RoadControlPoint.name, 'point' );
-		this.tool.selection.registerTag( RoadTangentPoint.name, 'point' );
+		this.tool.base.selection.registerTag( SplineControlPoint.name, 'point' );
+		this.tool.base.selection.registerTag( RoadControlPoint.name, 'point' );
+		this.tool.base.selection.registerTag( RoadTangentPoint.name, 'point' );
 
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
@@ -179,13 +182,37 @@ export class RoadTool extends BaseTool {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.selection.handleSelection( e );
+		this.tool.base.selection.handleSelection( e, ( object ) => {
+
+			if ( object instanceof TvRoad ) {
+
+				this.isRoadDoubleClicked = this.lastRoadClicked === object;
+
+				this.lastRoadClicked = object;
+
+			} else {
+
+				this.isRoadDoubleClicked = false;
+
+				this.lastRoadClicked = null;
+
+			}
+
+		}, () => {
+
+			this.lastRoadClicked = null;
+
+			this.isRoadDoubleClicked = false;
+
+		} );
 
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
 
 		if ( !this.isPointerDown ) return;
+
+		console.log( this.selectedRoad, this.isRoadDoubleClicked );
 
 		this.tool.base.handleMovement( e, ( position ) => {
 
@@ -195,7 +222,7 @@ export class RoadTool extends BaseTool {
 
 				this.controlPointMoved = true;
 
-			} else if ( this.selectedRoad ) {
+			} else if ( this.selectedRoad && this.isRoadDoubleClicked ) {
 
 				this.handleRoadMovement( position );
 
@@ -434,8 +461,6 @@ export class RoadTool extends BaseTool {
 	}
 
 	onRoadSelected ( road: TvRoad ): void {
-
-		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
 		this.tool.showRoad( road );
 
