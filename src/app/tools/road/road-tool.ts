@@ -114,7 +114,7 @@ export class RoadTool extends BaseTool {
 
 			}
 
-			const point = ControlPointFactory.createControl( this.selectedRoad.spline, e.point );
+			const point = this.tool.controlPointService.createSplineControlPoint( this.selectedRoad.spline, e.point );
 
 			const addPointCommand = new AddObjectCommand( point );
 
@@ -126,7 +126,7 @@ export class RoadTool extends BaseTool {
 
 			const road = this.tool.roadService.createDefaultRoad();
 
-			const point = ControlPointFactory.createControl( road.spline, e.point );
+			const point = this.tool.controlPointService.createSplineControlPoint( road.spline, e.point );
 
 			const addRoadCommand = new AddObjectCommand( road );
 

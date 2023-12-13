@@ -6,6 +6,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
+import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -303,6 +304,8 @@ export class RoadLinkService {
 
 		this.updatePredecessorLink( road, road.predecessor );
 
+		this.updatePredecessorElevation( road, road.predecessor );
+
 	}
 
 	updateSuccessor ( road: TvRoad, controlPoint: AbstractControlPoint, rebuild: boolean = false ) {
@@ -312,6 +315,35 @@ export class RoadLinkService {
 		if ( !this.shouldUpdateSuccessor( road, controlPoint ) ) return;
 
 		this.updateSuccessorLink( road, road.successor );
+
+		this.updateSuccessorElevation( road, road.successor );
+	}
+
+	updateSuccessorElevation ( road: TvRoad, link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		const successor = this.getElement<TvRoad>( link );
+
+		const prevElevation = road.getElevationValue( road.length );
+
+		successor.addElevation( 0, prevElevation, 0, 0, 0 );
+
+		TvUtils.computeCoefficients( successor.elevationProfile.getElevations(), road.length );
+
+	}
+
+	updatePredecessorElevation ( road: TvRoad, link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		const predecessor = this.getElement<TvRoad>( link );
+
+		const prevElevation = road.getElevationValue( 0 );
+
+		predecessor.addElevation( predecessor.length, prevElevation, 0, 0, 0 );
+
+		TvUtils.computeCoefficients( predecessor.elevationProfile.getElevations(), road.length );
 
 	}
 

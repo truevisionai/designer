@@ -77,7 +77,7 @@ export class SelectionService {
 
 	}
 
-	handleCreation ( e: PointerEventData, callback: Function ): void {
+	handleCreation ( e: PointerEventData, callback: ( object ) => void, none?: Function ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
@@ -91,6 +91,7 @@ export class SelectionService {
 
 		}
 
+		if ( none ) none();
 	}
 
 	getLastSelected<T> ( type: string ): T {

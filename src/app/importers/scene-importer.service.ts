@@ -13,7 +13,6 @@ import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';

@@ -29,23 +29,11 @@ export class AutoSpline extends AbstractSpline {
 
 	}
 
-	get hdgs () {
-		return this.controlPoints.map( ( cp: RoadControlPoint ) => cp.hdg );
-	}
-
 	init () {
 
 		this.polyline = new PolyLine( this.controlPoints );
 
 		this.roundline = new RoundLine( this.controlPoints );
-
-		// if ( this.meshAddedInScene ) return;
-
-		// SceneService.addToolObject( this.polyline.mesh );
-
-		// SceneService.addToolObject( this.roundline.mesh );
-
-		// this.meshAddedInScene = true;
 
 	}
 
@@ -82,10 +70,6 @@ export class AutoSpline extends AbstractSpline {
 
 	addControlPoint ( cp: RoadControlPoint ) {
 
-		// this.polyline.addPoint( cp );
-
-		// this.roundline.addPoint( cp );
-
 		super.addControlPoint( cp );
 
 	}
@@ -97,7 +81,6 @@ export class AutoSpline extends AbstractSpline {
 		this.polyline.update();
 
 		this.roundline.update();
-
 
 	}
 

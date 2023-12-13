@@ -71,15 +71,6 @@ export class AutoSplineV2 extends AbstractSpline {
 		this.showLines();
 
 	}
-
-	// addControlPoint ( cp: AbstractControlPoint ) {
-	// 	// this.polyline.addPoint( cp );
-	//
-	// 	// this.roundline.addPoint( cp );
-	// 	super.addControlPoint( cp );
-	//
-	// }
-
 	update () {
 
 		this.updateHdgs();
@@ -92,46 +83,6 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	}
 
-	// updateRoadSegments () {
-	// 	const geometries = this.getSplineGeometries();
-	// 	const splineLength = this.getLength();
-	// 	this.roadSegments.forEach( segment => {
-	// 		// Clear previous geometries
-	// 		segment.geometries = [];
-	// 		const t = segment.start / splineLength;
-	// 		const start = this.getPoint( t );
-	// 		// find the control point which matches with start
-	// 		const startPoint = this.controlPoints.find( p =>
-	// 			Maths.approxEquals( p.position.x, start.x ) && Maths.approxEquals( p.position.y, start.y )
-	// 		);
-	// 		const segmentEnd = segment.start + segment.length;
-	// 		const tEnd = segmentEnd / splineLength;
-	// 		const end = this.getPoint( tEnd )
-	// 		// find the control point which matches with start
-	// 		const endPoint = this.controlPoints.find( p =>
-	// 			Maths.approxEquals( p.position.x, end.x ) && Maths.approxEquals( p.position.y, end.y )
-	// 		);
-	// 		let firstGeometry: TvAbstractRoadGeometry;
-	// 		let lastGeometry: TvAbstractRoadGeometry;
-	// 		let firstSection: TvAbstractRoadGeometry;
-	// 		let lastSection: TvAbstractRoadGeometry;
-	// 		if ( !startPoint ) {
-	// 			firstGeometry = TvUtils.checkIntervalArray( geometries, segment.start );
-	// 			firstSection = firstGeometry.cut( segment.start - firstGeometry.s )[ 1 ];
-	// 			firstSection.s = 0
-	// 			firstSection.length = segment.length
-	// 			segment.geometries.push( firstSection );
-	// 			console.log( 'no-start', segment.geometries )
-	// 		} else if ( !endPoint ) {
-	// 			lastGeometry = TvUtils.checkIntervalArray( geometries, segment.start + segment.length );
-	// 			if ( !lastGeometry ) throw new Error( "no last geometry" );
-	// 			lastSection = lastGeometry.cut( segment.start + segment.length )[ 0 ];
-	// 			lastSection.s = 0;
-	// 			segment.geometries.push( lastSection );
-	// 			console.log( 'no-end', segment.geometries )
-	// 		}
-	// 	} );
-	// }
 	updateRoadSegments () {
 
 		const geometries = this.getSplineGeometries();

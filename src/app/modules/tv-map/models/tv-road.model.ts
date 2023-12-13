@@ -970,29 +970,29 @@ export class TvRoad {
 		} );
 	}
 
-	addControlPoint ( point: AbstractControlPoint, updateGeometry = true ) {
-
-		// point.mainObject = this;
+	/**
+	 *
+	 * @param point
+	 * @deprecated
+	 */
+	addControlPoint ( point: AbstractControlPoint ) {
 
 		this.spline.addControlPoint( point );
 
 		this.spline.update();
 
-		// SceneService.addToolObject( point );
-
-		// if ( updateGeometry ) this.updateGeometryFromSpline();
 	}
 
-
+	/**
+	 *
+	 * @param cp
+	 * @deprecated
+	 */
 	removeControlPoint ( cp: AbstractControlPoint ) {
 
 		this.spline.removeControlPoint( cp );
 
 		this.spline.update();
-
-		// SceneService.removeFromTool( cp );
-
-		// this.updateGeometryFromSpline();
 
 	}
 

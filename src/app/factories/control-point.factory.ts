@@ -4,13 +4,14 @@ import { SplineControlPoint } from "../modules/three-js/objects/spline-control-p
 import { Injectable } from "@angular/core";
 import { DynamicControlPoint, SimpleControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
 import { IHasUpdate } from "app/commands/set-value-command";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ControlPointFactory {
 
-	static createControl ( target: any, position: Vector3, type = 'spline' ): AbstractControlPoint {
+	static createControl ( target: AbstractSpline, position: Vector3, type = 'spline' ): AbstractControlPoint {
 
 		if ( type = 'spline' ) {
 
@@ -40,7 +41,7 @@ export class ControlPointFactory {
 
 	}
 
-	createSplineControlPoint ( target: any, position: Vector3 ) {
+	createSplineControlPoint ( target: AbstractSpline, position: Vector3 ) {
 
 		return new SplineControlPoint( target, position );
 
