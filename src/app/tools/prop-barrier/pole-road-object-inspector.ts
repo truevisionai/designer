@@ -77,13 +77,23 @@ export class PoleRoadObjectInspector {
 		this.roadObject.s = value;
 	}
 
-	@SerializedField( { 'type': 'float', label: 'Laterl Offset Start' } )
+	@SerializedField( { 'type': 'float', label: 'Lateral Offset Start' } )
 	get t () {
 		return this.roadObject.t;
 	}
 
 	set t ( value ) {
 		this.roadObject.t = value;
+	}
+
+
+	@SerializedField( { 'type': 'float', label: 'Z Offset' } )
+	get zOffset () {
+		return this.roadObject.zOffset;
+	}
+
+	set zOffset ( value ) {
+		this.roadObject.zOffset = value;
 	}
 
 	// @Action( { label: 'Repeat' } )

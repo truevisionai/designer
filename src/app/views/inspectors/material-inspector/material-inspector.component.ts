@@ -19,7 +19,7 @@ import {
 	MeshPhysicalMaterial,
 	MeshStandardMaterial
 } from 'three';
-import { PreviewService } from '../object-preview/object-preview.service';
+import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 import { AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 @Component( {
@@ -37,7 +37,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 	public metadata: Metadata;
 
 	constructor (
-		private previewService: PreviewService,
+		private previewService: AssetPreviewService,
 		private assetFactory: AssetFactory
 	) {
 	}

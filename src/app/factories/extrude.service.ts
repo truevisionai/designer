@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CatmullRomPath } from 'app/core/shapes/cubic-spline-curve';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { BufferGeometry, ExtrudeGeometry, ExtrudeGeometryOptions, Mesh, MeshStandardMaterial, Shape, Vector3 } from 'three';
+import { BufferGeometry, CurvePath, ExtrudeGeometry, ExtrudeGeometryOptions, Mesh, MeshStandardMaterial, Shape, Vector3 } from 'three';
 import { TvRoadObjectSkeleton } from "../modules/tv-map/models/objects/tv-road-object-skeleton";
 import { TvObjectPolyline } from "../modules/tv-map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../modules/tv-map/models/objects/tv-object-vertex-road";
@@ -13,6 +13,44 @@ import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-
 export class ExtrudeService {
 
 	constructor () { }
+
+	// const sqLength = 1, sqWidth = 0.25;
+	// const squareShape = new Shape()
+	// 	.moveTo( 0, 0 )
+	// 	.lineTo( 0, -sqWidth )
+	// 	.lineTo( -sqLength, -sqWidth )
+	// 	.lineTo( -sqLength, 0 )
+	// 	.lineTo( 0, 0 );
+	buildShape ( polyline: TvObjectPolyline ): Shape {
+
+		const points: Vector3[] = [];
+
+		polyline.vertices.forEach( vertex => {
+
+			if ( vertex instanceof TvObjectVertexRoad ) {
+
+				throw new Error( 'Not implemented' );
+
+			} else if ( vertex instanceof TvObjectVertexLocal ) {
+
+				points.push( vertex.uvz );
+
+			}
+
+		} )
+
+		const shape = new Shape();
+
+		shape.moveTo( 0, 0 );
+
+		for ( let i = 0; i < points.length; i++ ) {
+
+			shape.lineTo( -points[ i ].z, -points[ i ].y );
+
+		}
+
+		return shape;
+	}
 
 	buildRadiusObject ( points: Vector3[], radius: number ) {
 
@@ -87,25 +125,26 @@ export class ExtrudeService {
 		// 	.lineTo( -sqLength, 0 )
 		// 	.lineTo( 0, 0 );
 
-
 		const path = new CatmullRomPath( points, false );
 
-		// Define extrude settings
-		const options: ExtrudeGeometryOptions = {
-			steps: points.length,
-			bevelEnabled: false,
-			bevelThickness: 1,
-			bevelSize: 1,
-			bevelOffset: 1,
-			bevelSegments: 1,
-			extrudePath: path
-		};
-
-		// Create geometry and mesh
-		const geometry = new ExtrudeGeometry( circleShape, options );
-
-		return geometry;
+		return this.buildExtrudeGeometry( path, circleShape );
 	}
 
+	buildExtrudeGeometry ( path: CurvePath<Vector3>, shape: Shape, config?: Partial<ExtrudeGeometryOptions> ): BufferGeometry {
+
+		const options: ExtrudeGeometryOptions = {
+			steps: Math.floor( path.getLength() * 2 ),
+			depth: 4,
+			bevelEnabled: config?.bevelEnabled || true,
+			bevelThickness: config?.bevelThickness || 1,
+			bevelSize: config?.bevelSize || 1,
+			bevelOffset: config?.bevelOffset || 0,
+			bevelSegments: config?.bevelSegments || 1,
+			extrudePath: path,
+		};
+
+		return new ExtrudeGeometry( shape, options );
+
+	}
 
 }

@@ -9,7 +9,7 @@ import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';
-import { PreviewService } from '../object-preview/object-preview.service';
+import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -27,7 +27,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	public preview: string;
 
-	constructor ( private previewService: PreviewService ) {
+	constructor ( private previewService: AssetPreviewService ) {
 	}
 
 	get texture (): Texture {

@@ -54,9 +54,9 @@ export class LaneDebugService {
 
 		this.removeHighlight();
 
-		this.showLaneBorderLine( lane, LINE_WIDTH * 2, COLOR.RED );
+		this.showLaneBorders( lane, LINE_WIDTH * 2, COLOR.RED );
 
-		this.showLaneDirectionArrows( lane );
+		this.showLaneDirection( lane );
 
 		this.selectedLanes.add( lane );
 
@@ -82,9 +82,9 @@ export class LaneDebugService {
 
 		this.lines.removeKey( lane );
 
-		this.showLaneBorderLine( lane, LINE_WIDTH * 2 );
+		this.showLaneBorders( lane, LINE_WIDTH * 2 );
 
-		this.showLaneDirectionArrows( lane );
+		this.showLaneDirection( lane );
 
 		this.highlightedLanes.add( lane );
 
@@ -106,7 +106,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneBorderLine ( lane: TvLane, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
+	showLaneBorders ( lane: TvLane, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
 		const add = ( lane: TvLane, side: TvLaneSide ) => {
 
@@ -141,7 +141,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneDirectionArrows ( lane: TvLane ) {
+	showLaneDirection ( lane: TvLane ) {
 
 		this.getArrowPoints( lane, TvLaneSide.CENTER, ARROW_STEP ).forEach( point => {
 
@@ -153,40 +153,40 @@ export class LaneDebugService {
 
 	}
 
-	createRoadLaneLines ( road: TvRoad, stepSize = 1.0, zOffset = 0.0, width = 2 ) {
+	// createRoadLaneLines ( road: TvRoad, stepSize = 1.0, zOffset = 0.0, width = 2 ) {
 
-		const lines: DebugLine<TvLane>[] = [];
+	// 	const lines: DebugLine<TvLane>[] = [];
 
-		road.laneSections.forEach( laneSection => {
+	// 	road.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+	// 		laneSection.lanes.forEach( lane => {
 
-				for ( let i = 0; i < lane.width.length; i++ ) {
+	// 			for ( let i = 0; i < lane.width.length; i++ ) {
 
-					const laneWidth = lane.width[ i ];
+	// 				const laneWidth = lane.width[ i ];
 
-					const sStart = laneWidth.s;
+	// 				const sStart = laneWidth.s;
 
-					// get s of next lane width node
-					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
+	// 				// get s of next lane width node
+	// 				let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.getPoints( lane, sStart, sEnd, stepSize );
+	// 				const points = this.getPoints( lane, sStart, sEnd, stepSize );
 
-					points.forEach( point => point.z += zOffset );
+	// 				points.forEach( point => point.z += zOffset );
 
-					const line = this.debugService.createDebugLine( lane, points, width );
+	// 				const line = this.debugService.createDebugLine( lane, points, width );
 
-					lines.push( line );
+	// 				lines.push( line );
 
-				}
+	// 			}
 
-			} );
+	// 		} );
 
-		} );
+	// 	} );
 
-		return lines;
+	// 	return lines;
 
-	}
+	// }
 
 	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
 

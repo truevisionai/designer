@@ -4,7 +4,7 @@
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
+import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { Texture } from 'three';
 import { Metadata } from '../core/asset/metadata.model';
 import { BaseCommand } from './base-command';
@@ -14,7 +14,7 @@ export class UpdateMaterialMapCommand extends BaseCommand {
 	private oldGuid: string;
 
 	constructor (
-		private previewService: PreviewService,
+		private previewService: AssetPreviewService,
 		private material: TvMaterial,
 		private metadata: Metadata,
 		private mapName: 'map' | 'roughnessMap' | 'normalMap' | 'aoMap' | 'displacementMap' | 'alphaMap',

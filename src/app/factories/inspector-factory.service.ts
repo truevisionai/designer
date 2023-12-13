@@ -64,15 +64,6 @@ export class InspectorFactoryService {
 				guid: asset.metadata.guid
 			} );
 
-		} else if ( asset.type === AssetType.ROAD_STYLE ) {
-
-			const instance = AssetDatabase.getInstance( asset.metadata.guid );
-
-			AppInspector.setInspector( RoadStyleInspector, {
-				roadStyle: instance,
-				guid: asset.metadata.guid
-			} );
-
 		} else {
 
 			AppInspector.setInspector( AssetInspectorComponent, asset );

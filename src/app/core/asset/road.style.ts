@@ -2,36 +2,56 @@ import { MetaImporter } from "./metadata.model";
 import { TvRoadLaneOffset } from "../../modules/tv-map/models/tv-road-lane-offset";
 import { TvLaneSection } from "../../modules/tv-map/models/tv-lane-section";
 import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
+import { TvElevationProfile } from "app/modules/tv-map/models/tv-elevation-profile";
+import { TvElevation } from "app/modules/tv-map/models/tv-elevation";
 
 export class RoadStyle {
 
-    public static extension = 'roadstyle';
+	public static extension = 'roadstyle';
 
-    public static importer = MetaImporter.ROAD_STYLE;
+	public static importer = MetaImporter.ROAD_STYLE;
 
-    public laneOffset: TvRoadLaneOffset;
+	public laneOffset: TvRoadLaneOffset;
 
-    public laneSection: TvLaneSection;
+	public laneSection: TvLaneSection;
 
-    constructor ( road?: TvRoad ) {
+	get elevations (): TvElevation[] {
+		return this.elevationProfile?.getElevations().filter( e => e.s <= 1 );
+	}
 
-        this.laneOffset = new TvRoadLaneOffset( null, 0, 0, 0, 0, 0 );
+	get elevationProfile (): TvElevationProfile {
+		return this._elevationProfile;
+	}
 
-        this.laneSection = new TvLaneSection( 0, 0, true, road );
+	set elevationProfile ( value: TvElevationProfile ) {
+		this._elevationProfile = value;
+	}
 
-        this.laneSection.road = road;
+	private _elevationProfile: TvElevationProfile;
 
-    }
+	constructor ( road?: TvRoad ) {
 
-    clone ( road: TvRoad ): RoadStyle {
+		this.laneOffset = new TvRoadLaneOffset( null, 0, 0, 0, 0, 0 );
 
-        const style = new RoadStyle( road );
+		this.laneSection = new TvLaneSection( 0, 0, true, road );
 
-        style.laneOffset = this.laneOffset.clone();
+		this.elevationProfile = road ? road.elevationProfile.clone() : new TvElevationProfile();
 
-        style.laneSection = this.laneSection.cloneAtS();
+		this.laneSection.road = road;
 
-        return style;
-    }
+	}
+
+	clone ( road: TvRoad ): RoadStyle {
+
+		const style = new RoadStyle( road );
+
+		style.laneOffset = this.laneOffset.clone();
+
+		style.laneSection = this.laneSection.cloneAtS();
+
+		style.elevationProfile = this.elevationProfile.clone();
+
+		return style;
+	}
 
 }

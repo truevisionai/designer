@@ -16,7 +16,7 @@ import * as THREE from 'three';
 import {
 	Box3,
 	BoxGeometry,
-	BufferGeometry,
+	BufferGeometry, Camera,
 	Color,
 	Material,
 	Mesh,
@@ -32,9 +32,13 @@ import {
 	WebGLRenderer
 } from 'three';
 import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
-import { AMBIENT_LIGHT_COLOR, DEFAULT_AMBIENT_LIGHT, DEFAULT_DIRECTIONAL_LIGHT, DIRECTIONAL_LIGHT_POSITION } from 'app/modules/three-js/default.config';
+import {
+	AMBIENT_LIGHT_COLOR,
+	DEFAULT_AMBIENT_LIGHT,
+	DEFAULT_DIRECTIONAL_LIGHT,
+	DIRECTIONAL_LIGHT_POSITION
+} from 'app/modules/three-js/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
-import { ModelLoader } from 'app/loaders/model.loader';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 const WIDTH = 200;
@@ -43,31 +47,35 @@ const HEIGHT = 200;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PreviewService {
-
-	public instance: PreviewService;
+export class AssetPreviewService {
 
 	public renderer: WebGLRenderer;
+
 	public frameId: number;
 
 	public scene: Scene = new Scene;
+
 	public camera: PerspectiveCamera;
+
 	public controls: IViewportController;
+
 	public ground: Mesh;
 
 	private cube: Mesh;
+
 	private sphere: Mesh;
+
 	private plane: Mesh;
 
 	private cubeMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
+
 	private sphereMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
+
 	private planeMaterial = new MeshStandardMaterial( { color: 0x00ff00 } );
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
-	constructor (
-		private modelLoader: ModelLoader
-	) {
+	constructor () {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -246,7 +254,9 @@ export class PreviewService {
 
 		const model = new Mesh( geometry, new MeshStandardMaterial( { color: COLOR.GRAY, wireframe: true } ) );
 
-		this.modelPreviewSetup( this.scene, this.camera, model );
+		this.setupScene( AssetType.GEOMETRY, model, this.scene );
+
+		this.setupCamera( AssetType.GEOMETRY, model, this.camera );
 
 		this.renderer.setSize( WIDTH, HEIGHT );
 
@@ -303,6 +313,8 @@ export class PreviewService {
 
 		this.scene.fog = null;
 
+		this.scene.remove( this.ground );
+
 		this.resetCamera();
 
 	}
@@ -317,7 +329,9 @@ export class PreviewService {
 
 		if ( !model ) return;
 
-		this.modelPreviewSetup( this.scene, this.camera, model );
+		this.setupScene( AssetType.MODEL, model, this.scene );
+
+		this.setupCamera( AssetType.MODEL, model, this.camera );
 
 		this.renderer.setSize( WIDTH, HEIGHT );
 
@@ -336,17 +350,15 @@ export class PreviewService {
 
 		if ( !texture ) return;
 
-		this.camera.position.set( 0, 0, 10 );
-
-		this.camera.updateProjectionMatrix();
-
 		const material = new MeshStandardMaterial( { map: texture } );
 
 		const plane = new PlaneGeometry( 10, 10 );
 
 		var quad = new Mesh( plane, material );
 
-		this.scene.add( quad );
+		this.setupScene( AssetType.TEXTURE, quad, this.scene );
+
+		this.setupCamera( AssetType.TEXTURE, quad, this.camera );
 
 		this.renderer.setSize( WIDTH, HEIGHT );
 
@@ -363,7 +375,26 @@ export class PreviewService {
 
 	getRoadStylePreview ( roadStyle: RoadStyle ): string {
 
-		this.camera.position.z = 20;
+		const object3d = this.getRoadStyleObject( roadStyle );
+
+		this.setupScene( AssetType.ROAD_STYLE, object3d, this.scene );
+
+		this.setupCamera( AssetType.ROAD_STYLE, object3d, this.camera );
+
+		this.renderer.setSize( WIDTH, HEIGHT );
+
+		this.renderer.render( this.scene, this.camera );
+
+		const image = this.renderer.domElement.toDataURL();
+
+		this.scene.remove( object3d );
+
+		this.resetScene();
+
+		return image;
+	}
+
+	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
 
 		const gameObject = new GameObject();
 
@@ -373,25 +404,11 @@ export class PreviewService {
 
 		roadStyle.laneSection.road = road;
 
-		road.addGeometryLine( 0, -50, 0, 0, 100 );
+		road.addGeometryLine( 0, -250, 0, 0, 500 );
 
 		TvMapBuilder.buildRoad( gameObject, road );
 
-		this.scene.add( gameObject );
-
-		this.camera.position.z = road.getLeftSideWidth( 0 ) + road.getRightsideWidth( 0 );
-
-		this.renderer.setSize( WIDTH, HEIGHT );
-
-		this.renderer.render( this.scene, this.camera );
-
-		const image = this.renderer.domElement.toDataURL();
-
-		this.scene.remove( gameObject );
-
-		this.resetScene();
-
-		return image;
+		return gameObject;
 	}
 
 	getRoadMarkingPreview ( marking: TvRoadMarking ): string {
@@ -418,7 +435,42 @@ export class PreviewService {
 		return image;
 	}
 
-	modelPreviewSetup ( scene: Scene, camera: PerspectiveCamera, object: Object3D ) {
+	setupCamera ( assetType: AssetType, object: Object3D, camera: Camera ) {
+
+		const box = new Box3().setFromObject( object );
+		const size = box.getSize( new Vector3() );
+		const center = box.getCenter( new Vector3() );
+
+		switch ( assetType ) {
+
+			case AssetType.MODEL:
+				camera.position.set( center.x, size.y, size.z * 2 );
+				break;
+
+			case AssetType.ROAD_STYLE:
+				const width = size.y;
+				const length = size.x;
+				camera.position.set( width * 0.5, width * 0.5, width * 0.5 );
+				break;
+
+			case AssetType.TEXTURE:
+				camera.position.set( 0, 0, 10 );
+				break;
+
+			default:
+				camera.position.set( center.x, size.y, size.z * 2 );
+				break;
+		}
+
+		camera.lookAt( center );
+
+		if ( camera instanceof PerspectiveCamera ) {
+			camera.updateProjectionMatrix();
+		}
+
+	}
+
+	setupScene ( assetType: AssetType, object: Object3D, scene: Scene ) {
 
 		scene.background = new Color( 0xcce0ff );
 
@@ -428,22 +480,20 @@ export class PreviewService {
 
 		scene.add( object );
 
+		scene.add( this.ground );
+
 		this.ground.visible = true;
 
-		const box = new Box3().setFromObject( object );
+		if ( assetType == AssetType.ROAD_STYLE ) {
 
-		const size = box.getSize( new Vector3() );
+			this.ground.position.z = -0.2;
 
-		const center = box.getCenter( new Vector3() );
+		} else {
 
-		// Set the object's Y position to be half its height
-		object.position.z = size.z / 2;
+			this.ground.position.z = 0;
 
-		camera.position.set( center.x, size.y, size.z * 2 );
+		}
 
-		camera.lookAt( center );
-
-		camera.updateProjectionMatrix();
 	}
 
 	private addGreenGround ( scene ) {
@@ -456,6 +506,8 @@ export class PreviewService {
 		const groundMaterial = new THREE.MeshStandardMaterial( { map: this.groundTexture } );
 
 		this.ground = new Mesh( new PlaneGeometry( 20000, 20000 ), groundMaterial );
+
+		this.ground.position.z -= 0.1;
 
 		this.ground.receiveShadow = true;
 

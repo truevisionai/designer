@@ -4,12 +4,7 @@
 <div *ngIf="object"
 	class="inspector-form-container">
 
-	<app-object-preview *ngIf="object"
-		[object]="object"
-		objectType="model"></app-object-preview>
-
 	<!-- <app-string-field [disabled]="true" [value]="prop.guid" label="GUID"></app-string-field> -->
-
 
 	<mat-tree [dataSource]="dataSource"
 		[treeControl]="treeControl">

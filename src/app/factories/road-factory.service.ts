@@ -85,6 +85,8 @@ export class RoadFactory {
 
 		road.addLaneSectionInstance( roadStyle.laneSection );
 
+		road.addElevationProfile( roadStyle.elevationProfile );
+
 		return road;
 
 	}

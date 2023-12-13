@@ -22,6 +22,8 @@ export class TvRoadObject {
 
 	public attr_type: ObjectTypes;
 
+	public subType: string;
+
 	public outlines: TvObjectOutline[] = [];
 
 	public material: TvObjectMaterial;
@@ -211,7 +213,7 @@ export class TvRoadObject {
 		return new Euler( this.hdg || 0, this.pitch || 0, this.roll || 0 );
 	}
 
-	set rotation ( value: Vector3|Euler ) {
+	set rotation ( value: Vector3 | Euler ) {
 		this.hdg = value.x;
 		this.pitch = value.y;
 		this.roll = value.z;
@@ -347,6 +349,7 @@ export class TvRoadObject {
 
 		object.road = this.road;
 		object.assetGuid = this.assetGuid;
+		object.subType = this.subType;
 		// object.material = this.material?.clone();
 		// object.parkingSpace = this.parkingSpace?.clone();
 		// object.repeat = this.repeat.map( repeat => repeat.clone() );

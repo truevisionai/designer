@@ -9,7 +9,7 @@ import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
-import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
+import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { TvConsole } from '../../../../core/utils/console';
 import { AssetNode, AssetType } from '../file-node.model';
 import { ProjectBrowserService } from '../project-browser.service';
@@ -49,7 +49,7 @@ export class AssetComponent implements OnInit {
 	constructor (
 		private electron: TvElectronService,
 		private menuService: MenuService,
-		private previewService: PreviewService,
+		private previewService: AssetPreviewService,
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
 		private dragDropService: DragDropService,

@@ -126,6 +126,8 @@ export class RoadObjectBuilder {
 
 		}
 
+		object3D.position.z += roadObject.zOffset;
+
 		for ( let i = 0; i < roadObject.getRepeatCount(); i++ ) {
 
 			const repeat = roadObject.getRepeat( i );
@@ -175,8 +177,23 @@ export class RoadObjectBuilder {
 
 	buildBarrierObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		throw new Error( 'Method not implemented.' );
+		const object3D = new Object3D();
 
+		roadObject.skeleton.polylines.forEach( polyline => {
+
+			const shape = this.extrudeService.buildShape( polyline );
+
+			const path = road.spline.getPath( roadObject.t );
+
+			const geometry = this.extrudeService.buildExtrudeGeometry( path, shape );
+
+			const mesh = new Mesh( geometry, new MeshStandardMaterial( { color: '#919A9E' } ) );
+
+			object3D.add( mesh );
+
+		} )
+
+		return object3D;
 	}
 
 	buildVegetationObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {

@@ -34,7 +34,7 @@ export class RoadDebugService {
 
 	constructor (
 		private debugService: DebugDrawService,
-		private laneReferenceLineService: LaneDebugService,
+		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
 	) {
 	}
@@ -55,7 +55,7 @@ export class RoadDebugService {
 
 		const add = ( lane: TvLane ) => {
 
-			const points = this.laneReferenceLineService.getPoints( lane, 0, lane.laneSection.length, LINE_STEP );
+			const points = this.laneDebugService.getPoints( lane, 0, lane.laneSection.length, LINE_STEP );
 
 			const line = this.debugService.createDebugLine( road, points, lineWidth, color );
 
@@ -226,6 +226,17 @@ export class RoadDebugService {
 		this.lines.clear();
 
 		this.arrows.clear();
+
+	}
+
+	createRoadNode<T> ( road: TvRoad, target: T, s: number ): DebugLine<T> {
+
+		const result = road.getRoadWidthAt( s );
+
+		const start = road.getPositionAt( s, result.leftSideWidth );
+		const end = road.getPositionAt( s, -result.rightSideWidth );
+
+		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ] );
 
 	}
 

@@ -28,6 +28,17 @@ export class RoadExporterService {
 			version: 1,
 			laneOffset: null,
 			laneSection: null,
+			elevationProfile: {
+				elevation: style.elevations.map( elevation => {
+					return {
+						attr_s: elevation.s,
+						attr_a: elevation.a,
+						attr_b: elevation.b,
+						attr_c: elevation.c,
+						attr_d: elevation.d,
+					};
+				} )
+			},
 		};
 
 		this.writeLaneOffset( xmlNode, style.laneOffset );
@@ -43,7 +54,9 @@ export class RoadExporterService {
 
 		roadStyle.laneOffset = road.getLaneOffsetAt( 0 ).clone();
 
-		roadStyle.laneSection = road.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
+		roadStyle.laneSection = road.getLaneSectionAt( 0 ).cloneAtS( 0, 0 );
+
+		roadStyle.elevationProfile = road.elevationProfile.clone();
 
 		return this.exportRoadStyle( roadStyle );
 

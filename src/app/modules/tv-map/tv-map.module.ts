@@ -44,7 +44,7 @@ import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-in
 import { LaneLinkInspector } from '../../views/inspectors/lane-link-inspector/lane-link-inspector.component';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
-import { ObjectPreviewComponent } from '../../views/inspectors/object-preview/object-preview.component';
+import { AssetPreviewComponent } from '../../views/inspectors/asset-preview/asset-preview.component';
 import { PropInstanceInspectorComponent } from '../../views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
 import { PropModelInspectorComponent } from '../../views/inspectors/prop-model-inspector/prop-model-inspector.component';
 import { RoadControlPointInspector } from '../../views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
@@ -71,7 +71,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		PropPolygonInspectorComponent,
 		TextureInspector,
 		MaterialInspector,
-		ObjectPreviewComponent,
+		AssetPreviewComponent,
 		RoadSignInspector,
 		RoadMarkingInspector,
 		MaterialFieldComponent,
@@ -120,7 +120,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 	],
 	exports: [
 		TransformInspectorComponent,
-		ObjectPreviewComponent,
+		AssetPreviewComponent,
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
 		AssetInspectorComponent,
@@ -140,7 +140,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		LaneLinkInspector,
 		RoadControlPointInspector,
 		JunctionEntryInspector,
-		ObjectPreviewComponent,
+		AssetPreviewComponent,
 		RoadStyleInspector,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,

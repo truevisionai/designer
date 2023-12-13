@@ -15,6 +15,7 @@ import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { Injectable } from '@angular/core';
 import { StorageService } from 'app/io/storage.service';
 import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
+import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profile';
 
 @Injectable( {
 	providedIn: 'root'
@@ -63,7 +64,28 @@ export class RoadStyleImporter {
 
 		roadStyle.laneSection = this.importLaneSection( json );
 
+		roadStyle.elevationProfile = this.importElevationProfile( json );
+
 		return roadStyle;
+	}
+
+	importElevationProfile ( json: XmlElement ): TvElevationProfile {
+
+		const elevationProfile = new TvElevationProfile();
+
+		readXmlArray( json.elevationProfile?.elevation, xml => {
+
+			const s = parseFloat( xml.attr_s );
+			const a = parseFloat( xml.attr_a );
+			const b = parseFloat( xml.attr_b );
+			const c = parseFloat( xml.attr_c );
+			const d = parseFloat( xml.attr_d );
+
+			elevationProfile.addElevation( s, a, b, c, d );
+
+		} );
+
+		return elevationProfile;
 	}
 
 	private importLaneSection ( json: XmlElement ): TvLaneSection {

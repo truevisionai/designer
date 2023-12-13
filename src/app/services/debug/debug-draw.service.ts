@@ -14,6 +14,8 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { SimpleArrowObject, SharpArrowObject } from 'app/modules/three-js/objects/lane-arrow-object';
 import { DebugLine } from './debug-line';
+import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 @Injectable( {
 	providedIn: 'root'
@@ -299,6 +301,60 @@ export class DebugDrawService {
 		line.geometry = geometry;
 
 		return line;
+	}
+
+	getLanePoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): TvPosTheta[] {
+
+		const points: TvPosTheta[] = [];
+
+		for ( let s = sStart; s < sEnd; s += stepSize ) {
+
+			points.push( this.getLanePoint( lane, s ) )
+
+		}
+
+		points.push( this.getLanePoint( lane, sEnd - Number.EPSILON ) );
+
+		return points;
+	}
+
+	private getLanePoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
+
+		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
+
+		let width: number;
+
+		if ( side === TvLaneSide.LEFT ) {
+
+			width = lane.laneSection.getWidthUptoStart( lane, s - lane.laneSection.s );
+
+		} else if ( side === TvLaneSide.CENTER ) {
+
+			width = lane.laneSection.getWidthUptoCenter( lane, s - lane.laneSection.s );
+
+		} else {
+
+			width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
+
+		}
+
+		// If right side lane then make the offset negative
+		if ( lane.side === TvLaneSide.RIGHT ) {
+
+			width *= -1;
+
+			posTheta.addLateralOffset( width );
+
+		} else {
+
+			posTheta.addLateralOffset( width );
+
+			posTheta.hdg += Math.PI;
+
+		}
+
+		return posTheta;
+
 	}
 
 }

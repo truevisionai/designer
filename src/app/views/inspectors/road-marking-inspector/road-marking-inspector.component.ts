@@ -9,7 +9,7 @@ import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { TvRoadMarkingManager, TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { CommandHistory } from 'app/services/command-history';
-import { PreviewService } from '../object-preview/object-preview.service';
+import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 
 @Component( {
 	selector: 'app-road-marking-inspector',
@@ -25,7 +25,7 @@ export class RoadMarkingInspector implements OnInit, IComponent, OnDestroy {
 
 	metadata: Metadata;
 
-	constructor ( private previewService: PreviewService ) {
+	constructor ( private previewService: AssetPreviewService ) {
 	}
 
 	get thumbnail () {

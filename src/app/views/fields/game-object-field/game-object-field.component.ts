@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter } from 'app/core/asset/metadata.model';
-import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
+import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { Object3D } from 'three';
 
 @Component( {
@@ -20,7 +20,7 @@ export class GameObjectFieldComponent implements OnInit {
 
 	@Input() label: string;
 
-	constructor ( private previewService: PreviewService ) {
+	constructor ( private previewService: AssetPreviewService ) {
 	}
 
 	public get preview () {

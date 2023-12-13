@@ -6,7 +6,7 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@a
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { PreviewService } from '../../inspectors/object-preview/object-preview.service';
+import { AssetPreviewService } from '../../inspectors/asset-preview/asset-preview.service';
 
 @Component( {
 	selector: 'app-material-field',
@@ -21,7 +21,7 @@ export class MaterialFieldComponent implements OnInit {
 
 	@Input() label: string;
 
-	constructor ( private previewService: PreviewService ) {
+	constructor ( private previewService: AssetPreviewService ) {
 	}
 
 	public get preview () {

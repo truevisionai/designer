@@ -4,7 +4,7 @@
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
-import { PreviewService } from 'app/views/inspectors/object-preview/object-preview.service';
+import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { MeshBasicMaterial, Texture } from 'three';
 import { Metadata } from '../core/asset/metadata.model';
 import { BaseCommand } from './base-command';
@@ -14,7 +14,7 @@ export class SetRoadmarkTextureCommand extends BaseCommand {
 	private oldGuid: string;
 
 	constructor (
-		private previewService: PreviewService,
+		private previewService: AssetPreviewService,
 		private metadata: Metadata,
 		private roadmark: TvRoadMarking,
 		private newTextureGuid: string

@@ -396,9 +396,13 @@ export class TvRoad {
 		return elevation.getValue( s );
 	}
 
-	addElevationProfile () {
+	addElevationProfile ( elevationProfile?: TvElevationProfile ) {
 
-		if ( this.elevationProfile == null ) {
+		if ( elevationProfile ) {
+
+			this.elevationProfile = elevationProfile;
+
+		} else if ( this.elevationProfile == null ) {
 
 			this.elevationProfile = new TvElevationProfile();
 
@@ -1144,6 +1148,8 @@ export class TvRoad {
 			} );
 
 		} )
+
+		this.elevationProfile = roadStyle.elevationProfile.clone();
 
 	}
 
