@@ -115,9 +115,9 @@ export class RoadService {
 
 	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		const joiningRoad = this.roadFactory.createJoiningRoad( firstNode, secondNode );
-
 		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
+
+		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
 		this.roadLinkService.linkRoads( firstNode, secondNode, joiningRoad );
 

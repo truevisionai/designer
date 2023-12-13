@@ -12,6 +12,9 @@ import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../modules/tv-map/models/junctions/tv-junction";
+import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profile';
+import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
 	providedIn: 'root'
@@ -148,7 +151,7 @@ export class RoadFactory {
 
 	}
 
-	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
+	createJoiningRoad ( spline: AbstractSpline, firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
 
 		const road = this.createDefaultRoad();
 
@@ -170,7 +173,40 @@ export class RoadFactory {
 
 		}
 
+		const roadLength = spline.getLength();;
+
+		const elevationProfile = this.computeElevationProfile(
+			roadLength,
+			firstNode.road,
+			firstNode.sCoordinate,
+			secondNode.road,
+			secondNode.sCoordinate
+		);
+
+		road.addElevationProfile( elevationProfile );
+
 		return road;
+	}
+
+	private computeElevationProfile (
+		roadLength: number,
+		firstRoad: TvRoad,
+		firstS: number,
+		secondRoad: TvRoad,
+		secondS: number
+	): TvElevationProfile {
+
+		const profile = new TvElevationProfile();
+
+		const startElevation = firstRoad.getElevationValue( firstS )
+		const endElevation = secondRoad.getElevationValue( secondS );
+
+		profile.addElevation( 0, startElevation, 0, 0, 0 );
+		profile.addElevation( roadLength, endElevation, 0, 0, 0 );
+
+		TvUtils.computeCoefficients( profile.getElevations(), roadLength );
+
+		return profile;
 	}
 
 	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
