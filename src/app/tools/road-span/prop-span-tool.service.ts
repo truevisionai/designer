@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneReferenceLineService } from '../lane-reference-line.service';
+import { LaneDebugService } from '../../services/debug/lane-debug.service';
 import { MapService } from 'app/services/map.service';
 import { BaseToolService } from '../base-tool.service';
 import { RoadObjectService } from '../marking-line/road-object.service';
@@ -23,7 +23,7 @@ export class PropSpanToolService {
 
 	constructor (
 		public base: BaseToolService,
-		private lineService: LaneReferenceLineService,
+		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
 		public roadObjectService: RoadObjectService,
 		private controlPointFactory: ControlPointFactory,
@@ -42,7 +42,7 @@ export class PropSpanToolService {
 
 	showRoadLines ( road: TvRoad ) {
 
-		this.lineService.showRoadLaneLines( road, 0.1, 0.1, 2 );
+		this.laneDebugService.showRoadLaneLines( road, 0.1, 0.1, 2 );
 
 	}
 
@@ -106,9 +106,9 @@ export class PropSpanToolService {
 
 			const points = this.getLinePoints( roadObject, repeat );
 
-			const line = this.lineService.createLine( repeat, points, 0.1, 4 );
+			// const line = this.lineService.createLine( repeat, points, 0.1, 4 );
 
-			this.lines.add( repeat, line );
+			// this.lines.add( repeat, line );
 
 		} );
 
@@ -126,7 +126,7 @@ export class PropSpanToolService {
 
 	hideRoadLines ( road: TvRoad ) {
 
-		this.lineService.hideRoadLaneLines( road );
+		this.laneDebugService.hideRoadLaneLines( road );
 
 	}
 

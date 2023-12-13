@@ -1,29 +1,30 @@
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadElevationNode } from 'app/modules/three-js/objects/road-elevation-node';
-import { MapService } from '../map.service';
+import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-elevation-node';
 import { BaseToolService } from 'app/tools/base-tool.service';
-import { RoadService } from './road.service';
 import { Vector3 } from 'three';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { SceneService } from '../scene.service';
 import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
+import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { RoadDebugService } from '../debug/road-debug.service';
+import { DebugLine } from '../debug/debug-line';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadElevationService {
 
-	private static nodes: RoadElevationNode[] = [];
+	private nodes = new Object3DMap<TvElevation, RoadElevationControlPoint>();
+	private lines = new Object3DMap<TvElevation, DebugLine<TvElevation>>();
 
 	constructor (
 		public base: BaseToolService,
-		private mapService: MapService,
-		private roadService: RoadService,
+		public debug: RoadDebugService,
 	) {
 	}
 
-	showElevationNodes ( road: TvRoad ) {
+	showControlPoints ( road: TvRoad ) {
 
 		if ( road.elevationProfile.getElevationCount() === 0 ) {
 
@@ -35,133 +36,89 @@ export class RoadElevationService {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
-			const node = this.createElevationNode( road, elevation );
+			this.nodes.add( elevation, this.createElevationNode( road, elevation ) );
 
-			SceneService.addToolObject( node );
-
-			RoadElevationService.nodes.push( node );
+			this.lines.add( elevation, this.createElevationLine( road, elevation ) );
 
 		} );
 
 	}
 
-	removeElevationNodes ( road: TvRoad ) {
+	hideControlPoints ( road: TvRoad ) {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
-			SceneService.removeFromTool( elevation.node );
+			this.nodes.remove( elevation );
 
-			const index = RoadElevationService.nodes.indexOf( elevation.node );
-
-			if ( index !== - 1 ) {
-
-				RoadElevationService.nodes.splice( index, 1 );
-
-			}
+			this.lines.remove( elevation );
 
 		} );
 
 	}
 
-	createElevation ( road: TvRoad, point: Vector3 ): RoadElevationNode {
+	createElevation ( road: TvRoad, point: Vector3 ) {
 
 		const roadCoord = road.getCoordAt( point );
 
 		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
 
-		elevation.node = new RoadElevationNode( road, elevation );
-
-		return elevation.node;
+		return elevation;
 
 	}
 
-	createElevationNode ( road: TvRoad, elevation: TvElevation ): RoadElevationNode {
+	createElevationNode ( road: TvRoad, elevation: TvElevation ): RoadElevationControlPoint {
 
-		if ( elevation.node ) {
+		return new RoadElevationControlPoint( road, elevation );
+	}
 
-			elevation.node.visible = true;
+	createElevationLine ( road: TvRoad, elevation: TvElevation ): DebugLine<TvElevation> {
 
-		} else {
-
-			elevation.node = new RoadElevationNode( road, elevation );
-
-		}
-
-		return elevation.node;
+		return this.debug.createRoadNode( road, elevation, elevation.s );
 
 	}
 
-	removeNode ( node: RoadElevationNode ) {
+	removeElevation ( road: TvRoad, node: TvElevation ) {
 
-		SceneService.removeFromTool( node );
+		this.nodes.remove( node );
 
-		const index = RoadElevationService.nodes.indexOf( node );
+		this.lines.remove( node );
 
-		if ( index !== - 1 ) {
+		road.removeElevationInstance( node );
 
-			RoadElevationService.nodes.splice( index, 1 );
-
-		}
-
-		node.road.removeElevationInstance( node.elevation );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
 	}
 
-	updateNode ( node: RoadElevationNode ) {
+	updateElevationNode ( road: TvRoad, node: RoadElevationControlPoint, position: Vector3 ) {
 
-		const roadCoord = node.road.getCoordAt( node.position );
+		const roadCoord = road.getCoordAt( position );
 
 		node.elevation.s = roadCoord.s;
 
-		node.updateValuesAndPosition();
-
-		this.removeElevationNodes( node.road );
-
-		this.showElevationNodes( node.road );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
+		this.updateElevation( road, node.elevation );
 
 	}
 
-	addNode ( node: RoadElevationNode ) {
+	updateElevation ( road: TvRoad, elevation: TvElevation ) {
 
-		SceneService.addToolObject( node );
+		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		RoadElevationService.nodes.push( node );
+		this.hideControlPoints( road );
 
-		node.road.addElevationInstance( node.elevation );
+		this.showControlPoints( road );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( node.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+
 	}
 
-	// createDefaultNodes ( road: TvRoad ) {
+	addElevation ( road: TvRoad, elevation: TvElevation ) {
 
-	// 	if ( road.spline.controlPoints.length < 2 ) return;
+		road.addElevationInstance( elevation );
 
-	// 	if ( road.elevationProfile.getElevationCount() === 0 ) {
+		this.nodes.add( elevation, this.createElevationNode( road, elevation ) );
 
-	// 		// add elevation at begininng
-	// 		const firstNode = road.addElevation( 0, 0, 0, 0, 0 );
+		this.lines.add( elevation, this.createElevationLine( road, elevation ) );
 
-	// 		// add elevation at end
-	// 		const lastNode = road.addElevation( road.length, 0, 0, 0, 0 );
-
-	// 		firstNode.node = new RoadElevationNode( road, firstNode );
-
-	// 		lastNode.node = new RoadElevationNode( road, lastNode );
-	// 	}
-
-	// }
-
-	// updateNodes ( road: TvRoad ) {
-
-	// 	road.getElevationProfile().getElevations().forEach( elevation => {
-
-	// 		elevation.node?.updateValuesAndPosition();
-
-	// 	} );
-
-	// }
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+	}
 
 }

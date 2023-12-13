@@ -110,6 +110,10 @@ export class LaneTool extends BaseTool {
 
 			this.tool.updateLane( object );
 
+		} else if ( object instanceof TvLaneObject ) {
+
+			this.tool.updateLane( object.lane );
+
 		}
 
 	}
@@ -180,7 +184,7 @@ export class LaneTool extends BaseTool {
 
 export class TvLaneObject {
 
-	constructor ( private lane: TvLane ) { }
+	constructor ( public lane: TvLane ) { }
 
 	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
 	get laneId (): number {
