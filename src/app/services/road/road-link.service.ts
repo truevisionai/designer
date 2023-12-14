@@ -423,7 +423,7 @@ export class RoadLinkService {
 
 	}
 
-	private getElement<T> ( link: TvRoadLinkChild ): T {
+	getElement<T> ( link: TvRoadLinkChild ): T {
 
 		if ( link.elementType == TvRoadLinkChildType.road ) {
 

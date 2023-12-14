@@ -1,25 +1,26 @@
 import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
-import { TvMapInstance } from "../modules/tv-map/services/tv-map-instance";
-import { Manager } from "../managers/manager";
-import { RoadService } from "app/services/road/road.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
-import { MapService } from "../services/map.service";
-import { LaneService } from "app/tools/lane/lane.service";
+import { Injectable } from "@angular/core";
+import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { RoadObjectService } from "app/tools/marking-line/road-object.service";
+import { RoadElevationService } from "app/services/road/road-elevation.service";
+import { TvRoadLinkChildType } from "app/modules/tv-map/models/tv-road-link-child";
+import { TvUtils } from "app/modules/tv-map/models/tv-utils";
+import { RoadService } from "app/services/road/road.service";
 
-export class RoadEventListener extends Manager {
-
-	private debug = true;
+@Injectable( {
+	providedIn: 'root'
+} )
+export class RoadEventListener {
 
 	constructor (
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 		private roadLinkService: RoadLinkService,
-		private mapService: MapService,
-		private laneService: LaneService
+		private roadObjectService: RoadObjectService,
+		private roadElevationService: RoadElevationService,
 	) {
-
-		super();
 	}
 
 	init () {
@@ -32,43 +33,91 @@ export class RoadEventListener extends Manager {
 
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
-		if ( this.debug ) console.debug( 'onRoadUpdated' );
-
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.roadSplineService.rebuildSplineRoads( event.road.spline );
+		this.rebuildRoad( event.road );
 
-		if ( event.showHelpers ) this.roadService.updateRoadNodes( event.road );
+		this.updateElevationNodes( event.road );
+
+		this.rebuildNeighbours( event.road );
+
+		this.updateRoadObjects( event.road );
 
 	}
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
 
-		// this.roadService.removeRoad( event.road );
 
 	}
 
 	onRoadCreated ( event: RoadCreatedEvent ) {
 
-		if ( this.debug ) console.debug( 'onRoadCreated' );
-
-		this.roadSplineService.addRoadSegment( event.road );
-
-		this.roadSplineService.rebuildSplineRoads( event.road.spline );
-
-		if ( event.road.spline.controlPoints.length < 2 ) return;
-
 		this.roadLinkService.linkSuccessor( event.road, event.road.successor );
 
 		this.roadLinkService.linkPredecessor( event.road, event.road.predecessor );
 
-		// if ( event.showHelpers ) this.roadService.showRoadNodes( event.road );
+		this.roadElevationService.createDefaultNodes( event.road );
 
-		// if ( event.showHelpers ) event.road.spline.show();
+	}
 
-		// if ( event.showHelpers ) MapEvents.roadSelected.emit( new RoadSelectedEvent( event.road ) );
+	private rebuildRoad ( road: TvRoad ): void {
 
-		// ToolManager.currentTool.onRoadCreated( event.road );
+		this.roadSplineService.rebuildSplineRoads( road.spline );
+
+	}
+
+	private updateRoadObjects ( road: TvRoad ): void {
+
+		this.roadObjectService.updateRoadObjectPositions( road );
+
+	}
+
+	private updateElevationNodes ( road: TvRoad ): void {
+
+		this.roadElevationService.createDefaultNodes( road );
+
+		if ( road.elevationProfile.getElevationCount() < 2 ) return;
+
+		const lastIndex = road.elevationProfile.elevation.length - 1;
+
+		const lastElevationNode = road.elevationProfile.elevation[ lastIndex ];
+
+		lastElevationNode.s = road.length;
+
+		if ( road.successor && road.successor.elementType == TvRoadLinkChildType.road ) {
+
+			const successor = this.roadLinkService.getElement<TvRoad>( road.successor );
+
+			this.roadElevationService.createDefaultNodes( successor );
+
+			const firstSuccessorElevation = successor.elevationProfile.elevation[ 0 ];
+
+			firstSuccessorElevation.a = road.getElevationValue( road.length );
+
+			TvUtils.computeCoefficients( successor.elevationProfile.elevation, successor.length );
+		}
+
+		if ( road.predecessor && road.predecessor.elementType == TvRoadLinkChildType.road ) {
+
+			const predecessor = this.roadLinkService.getElement<TvRoad>( road.predecessor );
+
+			this.roadElevationService.createDefaultNodes( predecessor );
+
+			const lastPredecessorElevation = predecessor.elevationProfile.elevation[ predecessor.elevationProfile.elevation.length - 1 ];
+
+			lastPredecessorElevation.a = road.getElevationValue( 0 );
+
+			TvUtils.computeCoefficients( predecessor.elevationProfile.elevation, predecessor.length );
+
+		}
+
+	}
+
+	private rebuildNeighbours ( road: TvRoad ): void {
+
+		this.roadService.rebuildLink( road.predecessor );
+
+		this.roadService.rebuildLink( road.successor );
 
 	}
 

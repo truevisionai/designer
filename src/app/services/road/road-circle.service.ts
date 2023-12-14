@@ -10,9 +10,7 @@ import {
 } from 'three';
 import { SceneService } from '../scene.service';
 import { TextObject } from 'app/modules/three-js/objects/text-object';
-import { AddRoadCommand } from 'app/tools/road/add-road-command';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { CommandHistory } from '../command-history';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';

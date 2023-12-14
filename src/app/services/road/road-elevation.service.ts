@@ -9,6 +9,7 @@ import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { RoadDebugService } from '../debug/road-debug.service';
 import { DebugLine } from '../debug/debug-line';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -72,6 +73,18 @@ export class RoadElevationService {
 
 		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
 
+		elevation.a = road.getElevationValue( roadCoord.s );
+
+		return elevation;
+
+	}
+
+	createElevationAt ( road: TvRoad, roadCoord: TvRoadCoord ) {
+
+		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
+
+		elevation.a = road.getElevationValue( roadCoord.s );
+
 		return elevation;
 
 	}
@@ -129,6 +142,26 @@ export class RoadElevationService {
 		this.lines.add( elevation, this.createElevationLine( road, elevation ) );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+	}
+
+	createDefaultNodes ( road: TvRoad ) {
+
+		if ( road.elevationProfile.elevation.length == 0 ) {
+
+			road.addElevation( 0, 0, 0, 0, 0 );
+
+			if ( road.length > 0.1 ) {
+
+				road.addElevation( road.length, 0, 0, 0, 0 );
+
+			}
+
+		} else if ( road.elevationProfile.elevation.length == 1 ) {
+
+			road.addElevation( road.length, 0, 0, 0, 0 );
+
+		}
+
 	}
 
 }

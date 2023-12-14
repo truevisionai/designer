@@ -28,6 +28,7 @@ import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { RoadLinkService } from './road/road-link.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { LaneService } from 'app/tools/lane/lane.service';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,6 +59,7 @@ export class AppService {
 		private roadLinkService: RoadLinkService,
 		private assetService: AssetService,
 		private laneService: LaneService,
+		private eventServiceProvider: EventServiceProvider,
 	) {
 
 
@@ -69,7 +71,6 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.setManager( 'road-event-listern', new RoadEventListener( this.roadService, this.roadSplineService, this.roadLinkService, this.mapService, this.laneService ) );
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.setManager( 'lane-manager', new LaneManager( this.laneService ) );
@@ -82,6 +83,8 @@ export class AppService {
 		ManagerRegistry.setManager( 'road-control-point-listener', new RoadControlPointListener( this.roadService, this.mapService, this.roadLinkService ) );
 
 		ManagerRegistry.initManagers();
+
+		this.eventServiceProvider.init();
 	}
 
 	static get isElectronApp (): boolean {

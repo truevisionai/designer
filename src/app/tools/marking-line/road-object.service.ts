@@ -55,6 +55,18 @@ export class RoadObjectService {
 
 	}
 
+	updateRoadObjectPositions ( road: TvRoad ) {
+
+		road.getRoadObjects().forEach( object => {
+
+			// TODO: update position of road object
+			// this is inefficient, but it works for now
+			this.updateRoadObject( object.road, object );
+
+		} );
+
+	}
+
 	private getRoadObjectId ( road: TvRoad ): number {
 
 		if ( !this.ids.has( road ) ) {
