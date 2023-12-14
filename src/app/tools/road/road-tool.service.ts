@@ -11,45 +11,124 @@ import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadToolService {
 
-	// public pointStrategy: SelectStrategy<AbstractControlPoint>;
-	// public roadStrategy: SelectStrategy<TvRoadCoord>;
-	// public nodeStrategy: SelectStrategy<RoadNode>;
-
 	constructor (
 		public selection: SelectionService,
-		public roadService: RoadService,
 		public roadSplineService: RoadSplineService,
 		public base: BaseToolService,
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory,
-		public roadLinkService: RoadLinkService,
-		public debug: RoadDebugService,
+		private roadLinkService: RoadLinkService,
+		private debug: RoadDebugService,
+		private roadService: RoadService,
 	) {
-		// this.pointStrategy = new ControlPointStrategy();
-		// this.roadStrategy = new RoadCoordStrategy();
-		// this.nodeStrategy = new NodeStrategy<RoadNode>( RoadNode.lineTag, true );
-
-		// this.pointStrategy.map = this.mapService;
-		// this.roadStrategy.map = this.mapService;
 	}
 
-	hideRoad ( road: TvRoad ) {
+	showLinks ( road: TvRoad, point: AbstractControlPoint ) {
+
+		this.roadLinkService.showLinks( road, point );
+
+	}
+
+	updateLinks ( road: TvRoad, point: AbstractControlPoint ) {
+
+		this.roadLinkService.updateLinks( road, point );
+
+	}
+
+	hideLinks ( selectedRoad: TvRoad ) {
+
+		this.roadLinkService.hideLinks( selectedRoad );
+
+	}
+
+	onToolDisabled () {
+
+		this.roadService.hideAllRoadNodes();
+
+		this.debug.clear();
+
+	}
+
+	onToolEnabled () {
+
+		this.roadService.showAllRoadNodes();
+
+		this.roadService.roads.forEach( road => this.debug.showRoadBorderLine( road ) );
+
+	}
+
+	createDefaultRoad () {
+
+		return this.roadService.createDefaultRoad();
+
+	}
+
+	rebuildRoad ( road: TvRoad ) {
+
+		this.roadService.rebuildRoad( road );
+
+	}
+
+	rebuildLinks ( selectedRoad: TvRoad, object: SplineControlPoint ) {
+
+		this.roadService.rebuildLinks( selectedRoad, object );
+
+	}
+
+	removeRoad ( road: TvRoad, hideHelpers: boolean ) {
+
+		this.roadService.removeRoad( road, hideHelpers );
+
+	}
+
+	updateRoadNodes ( road: TvRoad ) {
+
+		this.roadService.updateRoadNodes( road );
+
+		this.debug.clear();
+
+		this.debug.removeHighlight();
+
+		this.roadService.roads.forEach( road => this.debug.showRoadBorderLine( road ) );
+
+		this.debug.selectRoad( road );
+
+	}
+
+	duplicateRoad ( selectedRoad: TvRoad ) {
+
+		return this.roadService.duplicateRoad( selectedRoad );
+
+	}
+
+	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ) {
+
+		return this.roadService.createJoiningRoad( nodeA, nodeB );
+
+	}
+
+	unselectRoad ( road: TvRoad ) {
 
 		this.roadService.hideControlPoints( road );
 		this.roadService.hideSpline( road );
 
+		this.debug.unselectRoad( road );
+
 	}
 
-	showRoad ( road: TvRoad ) {
+	selectRoad ( road: TvRoad ) {
 
 		this.roadService.showControlPoints( road );
 		this.roadService.showSpline( road );
+
+		if ( road.spline.controlPoints.length >= 2 ) this.debug.selectRoad( road );
 
 	}
 
@@ -114,6 +193,15 @@ export class RoadToolService {
 
 	}
 
+	highlightRoad ( road: TvRoad ) {
 
+		this.debug.highlightRoad( road );
 
+	}
+
+	removeHighlight () {
+
+		this.debug.removeHighlight();
+
+	}
 }

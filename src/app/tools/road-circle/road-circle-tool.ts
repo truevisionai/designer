@@ -9,6 +9,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleService } from "../../services/road/road-circle.service";
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 export class RoadCircleTool extends BaseTool {
 
@@ -56,11 +57,52 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
+		this.circleRoadService.onToolDisabled();
+
 	}
 
-	onRoadCreated ( road: TvRoad ): void {
+	onObjectAdded ( object: any ): void {
 
-		// this.circleRoadService.showRoadNodes( road );
+		if ( object instanceof TvRoad ) {
+
+			this.onRoadAdded( object );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( object => this.onObjectAdded( object ) );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof TvRoad ) {
+
+			this.onRoadRemoved( object );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( object => this.onObjectRemoved( object ) );
+
+		}
+
+	}
+
+
+	onRoadAdded ( road: TvRoad ) {
+
+		this.circleRoadService.addRoad( road );
+
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( road, false ) );
+
+	}
+
+	onRoadRemoved ( road: TvRoad ) {
+
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+
+		this.circleRoadService.removeRoad( road );
 
 	}
 
@@ -82,7 +124,9 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( !this.isDragging ) return;
 
-		this.circleRoadService.createRoads();
+		const roads = this.circleRoadService.createRoads();
+
+		this.executeAddObject( roads );
 
 		this.currentRadius = 0;
 

@@ -227,6 +227,10 @@ export class RoadDebugService {
 
 		this.arrows.clear();
 
+		this.removeHighlight();
+
+		this.selectedRoads.clear();
+
 	}
 
 	createRoadNode<T> ( road: TvRoad, target: T, s: number ): DebugLine<T> {

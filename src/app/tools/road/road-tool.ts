@@ -23,6 +23,8 @@ import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-poin
 import { Vector3 } from 'three';
 import { Position } from 'app/modules/scenario/models/position';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
+import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
 
 export class RoadTool extends BaseTool {
 
@@ -41,6 +43,7 @@ export class RoadTool extends BaseTool {
 	private selectedNode: RoadNode;
 
 	private isRoadDoubleClicked: boolean;
+
 	private lastRoadClicked: TvRoad;
 
 	private get selectedControlPoint (): AbstractControlPoint {
@@ -76,6 +79,7 @@ export class RoadTool extends BaseTool {
 		this.tool.base.selection.registerTag( RoadControlPoint.name, 'point' );
 		this.tool.base.selection.registerTag( RoadTangentPoint.name, 'point' );
 
+		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
 	}
@@ -84,7 +88,7 @@ export class RoadTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.roadService.showAllRoadNodes();
+		this.tool.onToolEnabled();
 
 	}
 
@@ -98,7 +102,7 @@ export class RoadTool extends BaseTool {
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
-		this.tool.roadService.hideAllRoadNodes();
+		this.tool.onToolDisabled();
 
 		this.tool.selection.reset();
 
@@ -113,7 +117,7 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			const road = this.tool.roadService.createDefaultRoad();
+			const road = this.tool.createDefaultRoad();
 
 			const point = this.tool.controlPointService.createSplineControlPoint( road.spline, e.point );
 
@@ -210,19 +214,25 @@ export class RoadTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		if ( !this.isPointerDown ) return;
-
-		console.log( this.selectedRoad, this.isRoadDoubleClicked );
+		this.tool.removeHighlight();
 
 		this.tool.base.handleMovement( e, ( position ) => {
 
-			if ( this.selectedRoad && this.selectedControlPoint && this.selectedControlPoint.isSelected ) {
+			if ( position instanceof RoadPosition ) {
+				this.tool.highlightRoad( position.road );
+			}
+
+			if ( !this.isPointerDown ) return;
+
+			if ( !this.selectedRoad ) return;
+
+			if ( this.selectedControlPoint && this.selectedControlPoint.isSelected ) {
 
 				this.handleControlPointMovement( this.selectedRoad, this.selectedControlPoint, position );
 
 				this.controlPointMoved = true;
 
-			} else if ( this.selectedRoad && this.isRoadDoubleClicked ) {
+			} else if ( this.isRoadDoubleClicked ) {
 
 				this.handleRoadMovement( position );
 
@@ -265,9 +275,9 @@ export class RoadTool extends BaseTool {
 
 		road.spline.update();
 
-		this.tool.roadLinkService.updateLinks( road, point );
+		this.tool.updateLinks( road, point );
 
-		this.tool.roadLinkService.showLinks( road, point );
+		this.tool.showLinks( road, point );
 
 		this.controlPointMoved = true;
 
@@ -285,7 +295,7 @@ export class RoadTool extends BaseTool {
 
 			CommandHistory.execute( updateCommand );
 
-			this.tool.roadLinkService.hideLinks( this.selectedRoad );
+			this.tool.hideLinks( this.selectedRoad );
 
 		} else if ( this.roadMoved ) {
 
@@ -293,7 +303,7 @@ export class RoadTool extends BaseTool {
 
 			this.selectedRoad.spline.controlPoints.forEach( ( point, index ) => {
 
-				const oldPosition = this.pointPositionCache[ index ].clone();;
+				const oldPosition = this.pointPositionCache[ index ].clone();
 
 				const newPosition = point.position.clone();
 
@@ -305,7 +315,7 @@ export class RoadTool extends BaseTool {
 
 			CommandHistory.executeMany( ...commands );
 
-			this.tool.roadLinkService.hideLinks( this.selectedRoad );
+			this.tool.hideLinks( this.selectedRoad );
 
 			this.pointPositionCache = [];
 
@@ -350,7 +360,7 @@ export class RoadTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.rebuildRoad( object );
+			this.tool.rebuildRoad( object );
 
 		} else if ( object instanceof SplineControlPoint ) {
 
@@ -358,11 +368,11 @@ export class RoadTool extends BaseTool {
 
 			this.tool.roadSplineService.rebuildSplineRoads( object.spline );
 
-			this.tool.roadService.rebuildLinks( this.selectedRoad, object );
+			this.tool.rebuildLinks( this.selectedRoad, object );
 
 			if ( object.spline.controlPoints.length < 2 ) return;
 
-			this.tool.roadService.updateRoadNodes( this.selectedRoad );
+			this.tool.updateRoadNodes( this.selectedRoad );
 
 		}
 
@@ -370,7 +380,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		this.tool.roadService.removeRoad( road, true );
+		this.tool.removeRoad( road, true );
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
@@ -386,7 +396,7 @@ export class RoadTool extends BaseTool {
 
 		this.tool.roadSplineService.rebuildSplineRoads( controlPoint.spline );
 
-		if ( this.selectedRoad ) this.tool.roadService.updateRoadNodes( this.selectedRoad );
+		if ( this.selectedRoad ) this.tool.updateRoadNodes( this.selectedRoad );
 
 	}
 
@@ -420,7 +430,7 @@ export class RoadTool extends BaseTool {
 
 		this.tool.roadSplineService.rebuildSplineRoads( controlPoint.spline );
 
-		this.tool.roadService.updateRoadNodes( this.selectedRoad );
+		this.tool.updateRoadNodes( this.selectedRoad );
 
 	}
 
@@ -462,7 +472,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadSelected ( road: TvRoad ): void {
 
-		this.tool.showRoad( road );
+		this.tool.selectRoad( road );
 
 		AppInspector.setInspector( RoadInspector, { road } );
 
@@ -470,7 +480,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.tool.hideRoad( road );
+		this.tool.unselectRoad( road );
 
 		AppInspector.clear();
 
@@ -531,7 +541,7 @@ export class RoadTool extends BaseTool {
 
 		if ( !this.selectedRoad ) return;
 
-		this.tool.roadService.duplicateRoad( this.selectedRoad );
+		this.tool.duplicateRoad( this.selectedRoad );
 
 	}
 
@@ -564,7 +574,7 @@ export class RoadTool extends BaseTool {
 			return;
 		}
 
-		const road = this.tool.roadService.createJoiningRoad( nodeA, nodeB );
+		const road = this.tool.createJoiningRoad( nodeA, nodeB );
 
 		const addRoadCommand = new AddObjectCommand( road );
 

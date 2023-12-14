@@ -19,6 +19,7 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
+import { SetValueCommand } from 'app/commands/set-value-command';
 
 export class RoadElevationTool extends BaseTool {
 
@@ -76,6 +77,8 @@ export class RoadElevationTool extends BaseTool {
 		this.tool.base.reset();
 
 		this.tool.debug.clear();
+
+		this.tool.onToolDisabled();
 
 	}
 
@@ -175,9 +178,17 @@ export class RoadElevationTool extends BaseTool {
 
 			this.tool.updateElevationNode( this.selectedRoad, object, object.position );
 
-		} else if ( object instanceof RoadElevationObject ) {
+		} else if ( object instanceof ElevationNodeObject ) {
 
 			this.tool.updateElevation( this.selectedRoad, object.elevation );
+
+		} else if ( object instanceof RoadElevationObject ) {
+
+			object.road.elevationProfile.elevation.forEach( elevation => {
+
+				this.tool.updateElevation( object.road, elevation );
+
+			} )
 
 		}
 
@@ -231,7 +242,7 @@ export class RoadElevationTool extends BaseTool {
 
 		object?.select();
 
-		AppInspector.setInspector( DynamicInspectorComponent, new RoadElevationObject( object.road, object.elevation ) );
+		AppInspector.setInspector( DynamicInspectorComponent, new ElevationNodeObject( object.road, object.elevation ) );
 
 		this.setHint( 'Drag node to modify position. Change properties from inspector' );
 
@@ -251,6 +262,8 @@ export class RoadElevationTool extends BaseTool {
 
 		this.tool.hideControlPoints( road );
 
+		AppInspector.clear();
+
 		this.setHint( 'use LEFT CLICK to select a road' );
 
 	}
@@ -259,6 +272,8 @@ export class RoadElevationTool extends BaseTool {
 
 		this.tool.showControlPoints( road );
 
+		AppInspector.setInspector( DynamicInspectorComponent, new RoadElevationObject( road ) );
+
 		this.setHint( 'use LEFT CLICK to select a node' );
 
 	}
@@ -266,7 +281,7 @@ export class RoadElevationTool extends BaseTool {
 }
 
 
-class RoadElevationObject {
+class ElevationNodeObject {
 
 	constructor (
 		public road: TvRoad,
@@ -300,6 +315,28 @@ class RoadElevationObject {
 
 	}
 
+	@Action( { label: 'Increase Elevation' } )
+	increase () {
+
+		const newValue = this.elevation.a + 1;
+
+		const oldValue = this.elevation.a;
+
+		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
+
+	}
+
+	@Action( { label: 'Decrease Elevation' } )
+	decrease () {
+
+		const newValue = this.elevation.a - 1;
+
+		const oldValue = this.elevation.a;
+
+		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
+
+	}
+
 	@Action()
 	delete () {
 
@@ -313,27 +350,43 @@ class RoadElevationObject {
 		}
 	}
 
+}
 
-	// getWorldPosition (): Vector3 {
+class RoadElevationObject {
 
-	// 	return this.road?.getPositionAt( this.elevation.s ).toVector3();
+	constructor (
+		public road: TvRoad
+	) {
+	}
 
-	// }
+	@Action( { label: 'Increase Elevation' } )
+	increase () {
 
-	// updateValuesAndPosition () {
+		this.road.elevationProfile.elevation.forEach( elevation => {
 
-	// 	TvUtils.computeCoefficients( this.road.elevationProfile.elevation, this.road.length );
+			const newValue = elevation.a + 1;
 
-	// }
+			const oldValue = elevation.a;
 
-	// updateByPosition ( point: Vector3 ) {
+			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
 
-	// 	const roadCoord = this.road.getCoordAt( point );
+		} );
 
-	// 	this.elevation.s = roadCoord.s;
+	}
 
-	// 	this.updateValuesAndPosition();
+	@Action( { label: 'Decrease Elevation' } )
+	decrease () {
 
-	// }
+		this.road.elevationProfile.elevation.forEach( elevation => {
+
+			const newValue = elevation.a - 1;
+
+			const oldValue = elevation.a;
+
+			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
+
+		} );
+
+	}
 
 }

@@ -24,6 +24,16 @@ export class RoadElevationService {
 	) {
 	}
 
+	onToolDisabled () {
+
+		this.nodes.clear();
+
+		this.lines.clear();
+
+		this.debug.clear();
+
+	}
+
 	showControlPoints ( road: TvRoad ) {
 
 		if ( road.elevationProfile.getElevationCount() === 0 ) {

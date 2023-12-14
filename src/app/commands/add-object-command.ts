@@ -3,9 +3,12 @@ import { MapEvents } from "../events/map-events";
 
 export class AddObjectCommand extends BaseCommand {
 
-    constructor ( private object: any ) {
-        super();
-    }
+	constructor ( private object: any | any[] ) {
+
+		super();
+
+		if ( object == null ) throw new Error( 'object cannot be null' );
+	}
 
     execute () {
 

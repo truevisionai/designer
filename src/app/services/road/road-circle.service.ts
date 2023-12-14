@@ -42,6 +42,32 @@ export class RoadCircleService {
 		private mapService: MapService,
 	) { }
 
+	onToolDisabled () {
+
+		this.roadService.roads.forEach( road => {
+
+			this.hideRoadNodes( road );
+
+		} );
+
+	}
+
+	addRoad ( road: TvRoad ) {
+
+		this.roadService.addRoad( road );
+
+		this.showRoadNodes( road );
+
+	}
+
+	removeRoad ( road: TvRoad ) {
+
+		this.roadService.removeRoad( road );
+
+		this.hideRoadNodes( road );
+
+	}
+
 	showRoadNodes ( road: TvRoad ) {
 
 		this.roadService.showRoadNodes( road );
@@ -115,9 +141,9 @@ export class RoadCircleService {
 
 		const roads = this.createCircularRoads( this.centre, this.end, this.radius );
 
-		CommandHistory.execute( new AddRoadCommand( this.mapService.map, roads ) );
-
 		this.reset();
+
+		return roads;
 
 	}
 
