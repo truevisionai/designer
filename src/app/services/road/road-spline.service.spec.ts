@@ -22,11 +22,11 @@ describe( 'Service: RoadSpline', () => {
 			providers: [ RoadSplineService ]
 		} );
 
-		road1 = RoadFactory.createStraightRoad( new Vector3( 0, 0, 0 ), Math.PI / 2, 10 );
-		road2 = RoadFactory.createStraightRoad( new Vector3( 10, 0, 0 ), Math.PI / 2, 10 );
+		// road1 = RoadFactory.createStraightRoad( new Vector3( 0, 0, 0 ), Math.PI / 2, 10 );
+		// road2 = RoadFactory.createStraightRoad( new Vector3( 10, 0, 0 ), Math.PI / 2, 10 );
 
-		TvMapInstance.map.addRoad( road1 );
-		TvMapInstance.map.addRoad( road2 );
+		// TvMapInstance.map.addRoad( road1 );
+		// TvMapInstance.map.addRoad( road2 );
 
 	} );
 

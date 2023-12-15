@@ -26,7 +26,7 @@ export class StatusBarService {
 	constructor () {
 		this.cursor = new PointerEventData();
 		this.cursor.point = new Vector3();
-		ViewportEvents.instance.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
+		ViewportEvents.instance?.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
 	}
 
 	get x () {
