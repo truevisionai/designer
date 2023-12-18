@@ -195,7 +195,7 @@ export class OpenDriveExporter {
 
 		if ( road.predecessor != null ) {
 
-			if ( road.predecessor.elementType === 'junction' ) {
+			if ( road.predecessor.isJunction ) {
 
 				xmlNode.link.predecessor = {
 					attr_elementType: road.predecessor.attr_elementType,
@@ -221,7 +221,7 @@ export class OpenDriveExporter {
 
 		if ( road.successor != null ) {
 
-			if ( road.successor.elementType === 'junction' ) {
+			if ( road.successor.isJunction ) {
 
 				xmlNode.link.successor = {
 					attr_elementType: road.successor.attr_elementType,

@@ -22,7 +22,7 @@ export class RoadLinkService {
 
 		if ( !link ) return;
 
-		if ( link.elementType == TvRoadLinkChildType.junction ) {
+		if ( link.isJunction ) {
 			// TODO: might have to update connecting/incoming road
 			return;
 		}
@@ -84,7 +84,7 @@ export class RoadLinkService {
 
 		if ( !link ) return;
 
-		if ( link.elementType == TvRoadLinkChildType.junction ) {
+		if ( link.isJunction ) {
 			// TODO: might have to update connecting/incoming road
 			return;
 		}
@@ -164,7 +164,7 @@ export class RoadLinkService {
 
 		if ( !road.successor ) return;
 
-		if ( road.successor.elementType === TvRoadLinkChildType.junction ) {
+		if ( road.successor.isJunction ) {
 			return;
 		}
 
@@ -189,7 +189,7 @@ export class RoadLinkService {
 
 		if ( !road.predecessor ) return;
 
-		if ( road.predecessor.elementType === TvRoadLinkChildType.junction ) {
+		if ( road.predecessor.isJunction ) {
 			return;
 		}
 
@@ -425,11 +425,11 @@ export class RoadLinkService {
 
 	getElement<T> ( link: TvRoadLinkChild ): T {
 
-		if ( link.elementType == TvRoadLinkChildType.road ) {
+		if ( link.isRoad ) {
 
 			return this.mapService.map.getRoadById( link.elementId ) as any;
 
-		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
+		} else if ( link.isJunction ) {
 
 			return this.mapService.map.getJunctionById( link.elementId ) as any;
 

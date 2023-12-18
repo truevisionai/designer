@@ -86,6 +86,14 @@ export class TvRoadLinkChild {
 		this.attr_contactPoint = contactPoint;
 	}
 
+	get isRoad () {
+		return this.attr_elementType === TvRoadLinkChildType.road;
+	}
+
+	get isJunction () {
+		return this.attr_elementType === TvRoadLinkChildType.junction;
+	}
+
 	get elementType () {
 		return this.attr_elementType;
 	}
@@ -190,11 +198,11 @@ export class TvRoadLinkChild {
 
 	update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
 
-		if ( this.elementType === TvRoadLinkChildType.road ) {
+		if ( this.isRoad ) {
 
 			this.updateRoad( parentRoad, parentContact, rebuild );
 
-		} else if ( this.elementType === TvRoadLinkChildType.junction ) {
+		} else if ( this.isJunction ) {
 
 			TvConsole.error( 'Junctions not supported yet' );
 
@@ -223,7 +231,7 @@ export class TvRoadLinkChild {
 
 	rebuild () {
 
-		if ( this.elementType == TvRoadLinkChildType.road ) {
+		if ( this.isRoad ) {
 
 			const road = this.getElement<TvRoad>();
 

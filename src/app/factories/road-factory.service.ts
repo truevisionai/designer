@@ -31,9 +31,9 @@ export class RoadFactory {
 
 	}
 
-	getNextRoadId () {
+	getNextRoadId ( id?: number ) {
 
-		return this.IDService.getUniqueID();
+		return this.IDService.getUniqueID( id );
 
 	}
 

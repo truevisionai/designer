@@ -258,11 +258,11 @@ export class TvJunctionConnection {
 		const successor = this.incomingRoad.successor;
 		const predecessor = this.incomingRoad.predecessor;
 
-		if ( successor?.elementType == 'junction' && successor.elementId == junctionId ) {
+		if ( successor?.isJunction && successor.elementId == junctionId ) {
 
 			return this.incomingRoad.getLastLaneSection().getLaneById( from );
 
-		} else if ( predecessor?.elementType == 'junction' && predecessor.elementId == junctionId ) {
+		} else if ( predecessor?.isJunction && predecessor.elementId == junctionId ) {
 
 			return this.incomingRoad.getFirstLaneSection().getLaneById( from );
 

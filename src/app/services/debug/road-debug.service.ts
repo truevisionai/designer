@@ -246,7 +246,7 @@ export class RoadDebugService {
 
 	private updatePredecessor ( road: TvRoad, callback: ( road: TvRoad ) => void ): void {
 
-		if ( road.predecessor?.elementType === TvRoadLinkChildType.road ) {
+		if ( road.predecessor?.isRoad ) {
 
 			const predecessor = this.mapService.map.getRoadById( road.predecessor.elementId );
 
@@ -258,7 +258,7 @@ export class RoadDebugService {
 
 	private updateSuccessor ( road: TvRoad, callback: ( road: TvRoad ) => void ): void {
 
-		if ( road.successor?.elementType === TvRoadLinkChildType.road ) {
+		if ( road.successor?.isRoad ) {
 
 			const successor = this.mapService.map.getRoadById( road.successor.elementId );
 

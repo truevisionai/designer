@@ -18,9 +18,9 @@ export class RoadDividerService {
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
+	// cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
 
-		return this.roadService.cutRoadFromTo( road, start, end );
+	// 	return this.roadService.cutRoadFromTo( road, start, end );
 
-	}
+	// }
 }

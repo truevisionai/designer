@@ -25,9 +25,9 @@ export class ElevationManager extends Manager {
 
 	init () {
 
-		MapEvents.roadCreated.subscribe( e => this.onRoadCreated( e ) );
-		MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
-		MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
+		// MapEvents.roadCreated.subscribe( e => this.onRoadCreated( e ) );
+		// MapEvents.roadUpdated.subscribe( e => this.onRoadUpdated( e ) );
+		// MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
 
 	}
 

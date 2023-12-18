@@ -22,6 +22,7 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { GameObject } from 'app/core/game-object';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,6 +30,8 @@ import { GameObject } from 'app/core/game-object';
 export class RoadService {
 
 	private static nodes: RoadNode[] = [];
+
+	private opacityObjects = new Map<Mesh, Material>();
 
 	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
 
@@ -61,9 +64,9 @@ export class RoadService {
 
 	}
 
-	clone ( road: TvRoad ) {
+	clone ( road: TvRoad, s = 0 ) {
 
-		const clone = road.clone( 0 );
+		const clone = road.clone( s );
 
 		clone.id = this.getNextRoadId();
 
@@ -103,13 +106,13 @@ export class RoadService {
 
 	hideAllRoadNodes () {
 
-		this.mapService.map.getRoads().forEach( road => this.hideRoadNodes( road ) );
+		this.roads.forEach( road => this.hideRoadNodes( road ) );
 
 	}
 
 	showAllRoadNodes () {
 
-		this.mapService.map.getRoads().forEach( road => this.showRoadNodes( road ) );
+		this.roads.filter( road => !road.isJunction ).forEach( road => this.showRoadNodes( road ) );
 
 	}
 
@@ -333,11 +336,11 @@ export class RoadService {
 
 		if ( !link ) return;
 
-		if ( link.elementType == TvRoadLinkChildType.road ) {
+		if ( link.isRoad ) {
 
 			this.rebuildLinkedRoad( link );
 
-		} else if ( link.elementType == TvRoadLinkChildType.junction ) {
+		} else if ( link.isJunction ) {
 
 			console.warn( 'TODO: rebuild junction' );
 
@@ -367,20 +370,53 @@ export class RoadService {
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, start: number, end: number ): TvRoad[] {
+	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number ): TvRoad {
 
-		if ( start > end ) throw new Error( 'Start must be less than end' );
+		if ( sStart >= sEnd ) {
+			console.error( 'Start must be less than end' );
+			return;
+		}
 
-		const right = road.clone( end );
+		if ( sStart < 0 || sEnd < 0 ) {
+			console.error( 'Start/End must be greater than 0' );
+			return;
+		}
 
-		right.id = this.getNextRoadId();
+		if ( sStart > road.length ) {
+			console.error( 'Start must be less than road length' );
+			return;
+		}
 
-		right.sStart = road.sStart + end;
+		road.spline.addRoadSegment( sStart, -1 );
 
-		// empty section/segment
-		road.spline.addRoadSegment( start, -1 );
+		if ( sEnd > road.length ) {
+			console.error( 'End must be less than road length' );
+			return;
+		}
 
-		return [ road, right ];
+		const newRoad = this.clone( road, sEnd );
+
+		road.spline.addRoadSegment( sEnd, newRoad.id );
+
+		// update links
+
+		if ( road.successor?.isRoad ) {
+
+			const successor = this.roadLinkService.getElement<TvRoad>( road.successor );
+
+			successor.setPredecessorRoad( newRoad, TvContactPoint.END );
+
+			newRoad.successor = road.successor;
+
+			// TODO: this will be junction and not null
+			road.successor = null;
+
+		}
+
+		// TODO: this will be junction and not null
+		newRoad.predecessor = null;
+
+		return newRoad;
 
 	}
 
@@ -512,7 +548,21 @@ export class RoadService {
 
 	}
 
-	private opacityObjects = new Map<Mesh, Material>();
+	createConnectionRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		road.spline = this.roadSplineService.createConnectingRoadSpline( incoming, outgoing );
+
+		road.setJunction( junction );
+
+		road.setPredecessor( TvRoadLinkChildType.road, incoming.road.id, incoming.contact );
+
+		road.setSuccessor( TvRoadLinkChildType.road, outgoing.road.id, outgoing.contact );
+
+		return road;
+
+	}
 
 	setMapOpacity ( opacity: number ) {
 
@@ -564,5 +614,10 @@ export class RoadService {
 
 	}
 
+	setRoadIdCounter ( id: number ) {
+
+		return this.roadFactory.getNextRoadId( id );
+
+	}
 
 }

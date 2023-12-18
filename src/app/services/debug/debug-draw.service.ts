@@ -24,15 +24,15 @@ export class DebugDrawService {
 
 	private debugObjects = new Object3DMap<this, Object3D>();
 
-	drawSphere ( start: Vector3 ) {
+	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
 
-		const geometry = new SphereGeometry( 0.1, 32, 32 );
+		const geometry = new SphereGeometry( size, 32, 32 );
 
-		const material = new MeshBasicMaterial( { color: 0xffff00 } );
+		const material = new MeshBasicMaterial( { color: color } );
 
 		const sphere = new Mesh( geometry, material );
 
-		sphere.position.copy( start );
+		sphere.position.copy( position );
 
 		this.debugObjects.add( this, sphere );
 

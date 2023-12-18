@@ -232,11 +232,11 @@ export class TvJunction {
 
 		if ( !hasConnections ) {
 
-			if ( road.successor && road.successor.elementType === 'junction' && road.successor.elementId === this.id ) {
+			if ( road.successor?.isJunction && road.successor.elementId === this.id ) {
 
 				road.successor = null;
 
-			} else if ( road.predecessor && road.predecessor.elementType === 'junction' && road.predecessor.elementId === this.id ) {
+			} else if ( road.predecessor?.isJunction && road.predecessor.elementId === this.id ) {
 
 				road.predecessor = null;
 

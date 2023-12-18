@@ -7,7 +7,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
-import { MathUtils, Vector2, Vector3 } from 'three';
+import { Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -63,6 +63,7 @@ export class TvRoad {
 	public trafficRule = TrafficRule.RHT;
 	public successor: TvRoadLinkChild;
 	public predecessor: TvRoadLinkChild;
+	public boundingBox: Box3;
 
 
 	private lastAddedLaneSectionIndex: number;
@@ -85,6 +86,7 @@ export class TvRoad {
 		this._name = name;
 		this._length = length;
 		this._id = id;
+		this.junction = junction;
 		this.spline = new AutoSplineV2();
 	}
 
@@ -169,7 +171,7 @@ export class TvRoad {
 	}
 
 	get junctionInstance (): TvJunction {
-		throw new Error( 'causing circular dependenc' );
+		return this.junction;
 	}
 
 	get gameObject () {
@@ -1169,7 +1171,7 @@ export class TvRoad {
 
 		if ( !this.predecessor ) return false;
 
-		if ( this.predecessor.elementType === TvRoadLinkChildType.junction ) return false;
+		if ( this.predecessor.isJunction ) return false;
 
 		return this.predecessor.elementId === otherRoad.id;
 	}
@@ -1178,7 +1180,7 @@ export class TvRoad {
 
 		if ( !this.successor ) return false;
 
-		if ( this.successor.elementType === TvRoadLinkChildType.junction ) return false;
+		if ( this.successor.isJunction ) return false;
 
 		return this.successor.elementId === otherRoad.id;
 	}
@@ -1215,7 +1217,7 @@ export class TvRoad {
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
-		road.sStart = this.sStart;
+		road.sStart = this.sStart + s;
 		road.drivingMaterialGuid = this.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
 		road.borderMaterialGuid = this.borderMaterialGuid;
@@ -1291,6 +1293,30 @@ export class TvRoad {
 	getLaneAt ( s: number, t: number ): TvLane {
 
 		return this.getLaneSectionAt( s ).getLaneAt( s, t );
+
+	}
+
+	computeBoundingBox (): void {
+
+		let boundingBox: Box3;
+
+		this.lanes.laneSections.map( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				if ( lane.id == 0 ) return;
+
+				if ( !lane.gameObject ) return;
+
+				if ( boundingBox ) return;
+
+				boundingBox = lane.gameObject.geometry.boundingBox;
+
+			} );
+
+		} );
+
+		this.boundingBox = boundingBox;
 
 	}
 

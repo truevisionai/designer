@@ -6,7 +6,6 @@ import { EventEmitter } from '@angular/core';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { MathUtils, Vector2, Vector3 } from 'three';
-// import { SceneService } from '../../services/scene.service';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { RoadSegment } from './RoadSegment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
@@ -250,14 +249,14 @@ export abstract class AbstractSpline {
 		return points;
 	}
 
-	addRoadSegment ( start: number, roadId: number ) {
+	addRoadSegment ( sStart: number, roadId: number ) {
 
-		if ( start == null ) throw new Error( 'start is null' );
+		if ( sStart == null ) return;
 
 		// check if road segment already exists
 		if ( this.roadSegments.find( i => i.roadId == roadId ) ) return;
 
-		const exists = this.roadSegments.find( seg => seg.start == start );
+		const exists = this.roadSegments.find( seg => seg.start == sStart );
 
 		if ( exists ) {
 
@@ -265,7 +264,7 @@ export abstract class AbstractSpline {
 
 		} else {
 
-			this.roadSegments.push( { start: start, roadId: roadId, geometries: [] } );
+			this.roadSegments.push( { start: sStart, roadId: roadId, geometries: [] } );
 
 		}
 

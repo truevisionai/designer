@@ -15,16 +15,14 @@ import { MapService } from '../map.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { MapEvents, RoadCreatedEvent } from 'app/events/map-events';
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionService {
-
-	public static instance: JunctionService;
 
 	private objectMap = new Object3DMap<TvJunction, Object3D>();
 
@@ -37,26 +35,36 @@ export class JunctionService {
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public laneLinkService: LaneLinkService,
-		public mapService: MapService
+		public mapService: MapService,
+		private roadService: RoadService,
 	) {
-		JunctionService.instance = this;
 	}
 
 	addJunction ( junction: TvJunction ) {
 
 		this.mapService.map.addJunctionInstance( junction );
 
-		junction.connections.forEach( connection => {
+		const connections = junction.getConnections();
 
-			connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+		for ( let i = 0; i < connections.length; i++ ) {
 
-			connection.outgoingRoad.setPredecessor( TvRoadLinkChildType.junction, junction.id );
+			const connection = connections[ i ];
 
-			this.mapService.map.addRoad( connection.connectingRoad );
+			if ( connection.contactPoint == TvContactPoint.START ) {
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( connection.connectingRoad ) );
+				connection.incomingRoad.setPredecessor( TvRoadLinkChildType.junction, junction.id );
 
-		} );
+			} else if ( connection.contactPoint == TvContactPoint.END ) {
+
+				connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+
+			}
+
+			// connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+
+			this.roadService.addRoad( connection.connectingRoad );;
+
+		}
 
 		this.createJunctionMesh( junction );
 
@@ -101,6 +109,56 @@ export class JunctionService {
 
 	}
 
+	createJunctionFromContact (
+		roadA: TvRoad, contactA: TvContactPoint,
+		roadB: TvRoad, contactB: TvContactPoint
+	): TvJunction {
+
+		const junction = this.factory.createJunction();
+
+		const coordA = this.getRoadCoords( roadA, contactA );
+		const coordB = this.getRoadCoords( roadB, contactB );
+
+		this.setLink( roadA, contactA, junction );
+		this.setLink( roadB, contactB, junction );
+
+		const connectionA = this.connectionService.createConnection( junction, coordA, coordB );
+		junction.addConnection( connectionA );
+
+		const connectionB = this.connectionService.createConnection( junction, coordB, coordA );
+		junction.addConnection( connectionB );
+
+		return junction;
+	}
+
+	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
+
+		if ( contact == TvContactPoint.START ) {
+
+			road.setPredecessor( TvRoadLinkChildType.junction, junction.id );
+
+		} else if ( contact == TvContactPoint.END ) {
+
+			road.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+
+		}
+
+	}
+
+	getRoadCoords ( road: TvRoad, contact: TvContactPoint ) {
+
+		if ( contact === TvContactPoint.START ) {
+
+			return road.getPositionAt( 0 ).toRoadCoord( road );
+
+		} else {
+
+			return road.getPositionAt( road.length ).toRoadCoord( road );
+
+		}
+
+	}
+
 	createJunctionFromCoords ( coords: TvRoadCoord[] ) {
 
 		const uniqueRoads = this.getUniqueRoads( coords );
@@ -114,25 +172,7 @@ export class JunctionService {
 				const firstCoord = sortedCoords[ 0 ];
 				const lastCoord = sortedCoords[ sortedCoords.length - 1 ];
 
-				const roads = this.dividerService.cutRoadFromTo( road, firstCoord.s, lastCoord.s );
-
-				// this.mapService.map.removeRoad( road );
-				// this.mapService.map.addRoads( roads );
-
-				// MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) )
-				// roads.forEach( road => MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) ) );
-
-				// automatically maneuvers
-
 			}
-
-			// for ( const coord of coords ) {
-
-			// 	const newRoad = this.dividerService.cutRoadAt( coord.road, coord.s );
-
-			// 	this.mapService.map.addRoad( newRoad );
-
-			// }
 
 		}
 

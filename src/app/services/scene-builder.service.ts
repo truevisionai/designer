@@ -56,6 +56,8 @@ export class SceneBuilderService {
 
 		this.roadService.buildRoad( road );
 
+		this.roadService.setRoadIdCounter( road.id );
+
 	}
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {

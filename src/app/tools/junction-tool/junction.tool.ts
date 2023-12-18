@@ -170,43 +170,10 @@ export class JunctionTool extends BaseTool {
 		const coord1 = this.selectedNodes[ 0 ].roadCoord;
 		const coord2 = this.selectedNodes[ 1 ].roadCoord;
 
-		const junction = this.tool.createNewJunction();
-
-		this.selectedNodes[ 0 ].roadCoord.laneSection.lanes.forEach( lane => {
-
-			if ( lane.side == TvLaneSide.CENTER ) return;
-			if ( lane.type != TvLaneType.driving ) return;
-
-			const l1 = lane;
-			const l2 = this.selectedNodes[ 1 ].roadCoord.laneSection.getLaneById( lane.id );
-
-			if ( !l2 ) return;
-
-			let connectingRoad: TvRoad;
-
-			if ( coord1.contact == coord2.contact ) {
-
-				connectingRoad = this.tool.connectionService.connectLaneCoord( coord2.toLaneCoord( l2 ), coord1.toLaneCoord( l1 ) );
-
-			} else {
-
-				connectingRoad = this.tool.connectionService.connectLaneCoord( coord1.toLaneCoord( l1 ), coord2.toLaneCoord( l2 ) );
-
-			}
-
-			connectingRoad.setJunction( junction );
-
-			const connectingRoadLane = connectingRoad.laneSections[ 0 ].getLaneArray().find( i => i.id != 0 );
-
-			const connection = this.tool.connectionService.createConnectionV2( junction, coord1.road, connectingRoad, coord1.contact, coord2.road );
-
-			const laneLink = this.tool.laneLinkService.createLaneLink( l1, connectingRoadLane );
-
-			junction.addConnection( connection );
-
-			connection.addLaneLink( laneLink );
-
-		} );
+		const junction = this.tool.createJunctionFromContact(
+			coord1.road, coord1.contact,
+			coord2.road, coord2.contact
+		);
 
 		const addCommand = new AddObjectCommand( junction );
 

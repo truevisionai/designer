@@ -19,7 +19,7 @@ export class IDService {
 
 	getUniqueID ( importedID?: number ): number {
 
-		if ( importedID !== undefined ) {
+		if ( importedID !== undefined && importedID !== null ) {
 
 			this.usedIDs.add( importedID );
 

@@ -17,7 +17,7 @@ import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { SceneService } from 'app/services/scene.service';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
 import { Vector3 } from 'three';
@@ -25,6 +25,7 @@ import { Position } from 'app/modules/scenario/models/position';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
 import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 export class RoadTool extends BaseTool {
 
@@ -360,21 +361,25 @@ export class RoadTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.rebuildRoad( object );
+			this.onRoadUpdated( object );
 
 		} else if ( object instanceof SplineControlPoint ) {
 
-			object.spline.update();
+			if ( !this.selectedRoad ) return;
 
-			this.tool.roadSplineService.rebuildSplineRoads( object.spline );
-
-			this.tool.rebuildLinks( this.selectedRoad, object );
-
-			if ( object.spline.controlPoints.length < 2 ) return;
-
-			this.tool.updateRoadNodes( this.selectedRoad );
+			this.onRoadUpdated( this.selectedRoad );
 
 		}
+
+	}
+
+	onRoadUpdated ( road: TvRoad ) {
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		this.tool.updateRoadNodes( road );
 
 	}
 
@@ -428,7 +433,7 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint.spline.controlPoints.length < 2 ) return;
 
-		this.tool.roadSplineService.rebuildSplineRoads( controlPoint.spline );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( this.selectedRoad, false ) );
 
 		this.tool.updateRoadNodes( this.selectedRoad );
 
@@ -545,7 +550,7 @@ export class RoadTool extends BaseTool {
 
 	}
 
-	private connectNodes ( nodeA: RoadNode, nodeB: RoadNode ) {
+	connectNodes ( nodeA: RoadNode, nodeB: RoadNode ) {
 
 		nodeA.unselect();
 
@@ -583,6 +588,10 @@ export class RoadTool extends BaseTool {
 		CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
 
 		this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+
+	}
+
+	connectRoads ( coordA: TvRoadCoord, coordB: TvRoadCoord ) {
 
 	}
 }
