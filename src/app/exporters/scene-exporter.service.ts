@@ -153,8 +153,8 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getRoadSegments().map( segment => ( {
 					attr_start: segment.start,
-					// attr_length: segment.length,
-					attr_roadId: segment.roadId,
+					attr_roadId: segment.id,
+					attr_type: segment.type,
 				} ) )
 			};
 
@@ -172,8 +172,8 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getRoadSegments().map( segment => ( {
 					attr_start: segment.start,
-					// attr_length: segment.length,
-					attr_roadId: segment.roadId,
+					attr_roadId: segment.id,
+					attr_type: segment.type,
 				} ) )
 			};
 
@@ -193,8 +193,8 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getRoadSegments().map( segment => ( {
 					attr_start: segment.start,
-					// attr_length: segment.length,
-					attr_roadId: segment.roadId,
+					attr_roadId: segment.id,
+					attr_type: segment.type,
 				} ) )
 			};
 

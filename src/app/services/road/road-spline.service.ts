@@ -13,6 +13,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { SplineService } from '../spline.service';
 import { BaseService } from '../base.service';
 import { GameObject } from 'app/core/game-object';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,11 +34,13 @@ export class RoadSplineService {
 
 		if ( spline.controlPoints.length < 2 ) return [];
 
+		spline.update();
+
 		spline.getRoadSegments().forEach( segment => {
 
-			if ( segment.roadId == -1 ) return;
+			if ( !segment.isRoad ) return;
 
-			const road = this.mapService.map.getRoadById( segment.roadId );
+			const road = this.mapService.map.getRoadById( segment.id );
 
 			road.clearGeometries();
 
@@ -82,7 +85,7 @@ export class RoadSplineService {
 
 		// get road segment and update if next road segment exists
 		// this is to make sure we maintains gaps if intended
-		const segment = spline.getRoadSegments().find( i => i.roadId == road.id );
+		const segment = spline.getRoadSegments().find( i => i.id == road.id );
 
 		if ( segment == null ) return;
 
@@ -91,7 +94,7 @@ export class RoadSplineService {
 		if ( nextSegment ) {
 
 			// if next segment exists,
-			segment.roadId = -1;
+			segment.id = -1;
 
 		} else {
 
@@ -107,7 +110,7 @@ export class RoadSplineService {
 		}
 	}
 
-	createConnectingRoadSpline ( incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
+	createConnectingRoadSpline ( road: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
 
 		if ( incoming == null ) throw new Error( 'incoming is null' );
 		if ( outgoing == null ) throw new Error( 'outgoing is null' );
@@ -129,7 +132,40 @@ export class RoadSplineService {
 			bDirection = outgoing.toPosTheta().toDirectionVector();
 		}
 
-		return this.createSpline( a, aDirection, b, bDirection );
+		return this.createRoadSpline( road, a, aDirection, b, bDirection );
+	}
+
+	updateConnectingRoadSpline ( connection: TvJunctionConnection ): void {
+
+		const incoming = connection.incomingRoad.getRoadCoordAt( connection.incomingRoad.length ).toRoadCoord( connection.incomingRoad );
+		const outgoing = connection.outgoingRoad.getRoadCoordAt( 0 ).toRoadCoord( connection.outgoingRoad );
+
+		if ( incoming == null ) throw new Error( 'incoming is null' );
+		if ( outgoing == null ) throw new Error( 'outgoing is null' );
+
+		const a = incoming.position;
+		const b = outgoing.position;
+
+		let aDirection: Vector3, bDirection: Vector3;
+
+		if ( incoming.contact === TvContactPoint.START ) {
+			aDirection = incoming.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+		} else {
+			aDirection = incoming.toPosTheta().toDirectionVector();
+		}
+
+		if ( outgoing.contact === TvContactPoint.START ) {
+			bDirection = outgoing.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+		} else {
+			bDirection = outgoing.toPosTheta().toDirectionVector();
+		}
+
+		const spline = this.createSpline( a, aDirection, b, bDirection );
+
+		spline.addRoadSegment( 0, connection.connectingRoadId );
+
+		connection.connectingRoad.spline = spline
+
 	}
 
 	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
@@ -233,6 +269,12 @@ export class RoadSplineService {
 
 	createSpline ( v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
 
+		return this.createRoadSpline( null, v1, v1Direction, v4, v4Direction );
+
+	}
+
+	private createRoadSpline ( road: TvRoad, v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
+
 		if ( v1 == null ) throw new Error( 'entry is null' );
 		if ( v1Direction == null ) throw new Error( 'entryDirection is null' );
 		if ( v4 == null ) throw new Error( 'exit is null' );
@@ -248,6 +290,8 @@ export class RoadSplineService {
 		const v3 = v4.clone().add( d4.clone().multiplyScalar( distanceAB / 4 ) );
 
 		const spline = new AutoSplineV2();
+
+		if ( road ) spline.addRoadSegment( 0, road.id );
 
 		spline.addControlPointAt( v1 );
 		spline.addControlPointAt( v2 );

@@ -23,6 +23,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { RoadSegmentType } from 'app/core/shapes/RoadSegment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -233,9 +234,9 @@ export class RoadService {
 
 		spline.getRoadSegments().forEach( segment => {
 
-			if ( segment.roadId == -1 ) return;
+			if ( !segment.isRoad ) return;
 
-			const road = this.mapService.map.getRoadById( segment.roadId );
+			const road = this.mapService.map.getRoadById( segment.id );
 
 			road.clearGeometries();
 
@@ -342,7 +343,25 @@ export class RoadService {
 
 		} else if ( link.isJunction ) {
 
-			console.warn( 'TODO: rebuild junction' );
+			// this.rebuildLinkedJunction( link );
+
+		}
+
+	}
+
+	rebuildLinkedJunction ( link: TvRoadLinkChild ) {
+
+		const junction = this.mapService.map.getJunctionById( link.elementId );
+
+		if ( !junction ) return;
+
+		// console.warn( 'TODO: rebuild junction' );
+
+		for ( const connection of junction.getConnections() ) {
+
+			// this.roadSplineService.updateConnectingRoadSpline( connection );
+
+			// this.rebuildRoad( connection.connectingRoad );
 
 		}
 
@@ -370,27 +389,27 @@ export class RoadService {
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number ): TvRoad {
+	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number, segmentId = -1, segmentType = RoadSegmentType.NONE ): TvRoad {
 
 		if ( sStart >= sEnd ) {
-			console.error( 'Start must be less than end' );
+			throw new Error( 'Start must be less than end' );
 			return;
 		}
 
 		if ( sStart < 0 || sEnd < 0 ) {
-			console.error( 'Start/End must be greater than 0' );
+			throw new Error( 'Start/End must be greater than 0' );
 			return;
 		}
 
 		if ( sStart > road.length ) {
-			console.error( 'Start must be less than road length' );
+			throw new Error( 'Start must be less than road length' );
 			return;
 		}
 
-		road.spline.addRoadSegment( sStart, -1 );
+		road.spline.addSegmentSection( sStart, segmentId, segmentType );
 
 		if ( sEnd > road.length ) {
-			console.error( 'End must be less than road length' );
+			// throw new Error( 'End must be less than road length' );
 			return;
 		}
 
@@ -415,6 +434,8 @@ export class RoadService {
 
 		// TODO: this will be junction and not null
 		newRoad.predecessor = null;
+
+		road.length = sStart - road.sStart;
 
 		return newRoad;
 
@@ -552,7 +573,7 @@ export class RoadService {
 
 		const road = this.createNewRoad();
 
-		road.spline = this.roadSplineService.createConnectingRoadSpline( incoming, outgoing );
+		road.spline = this.roadSplineService.createConnectingRoadSpline( road, incoming, outgoing );
 
 		road.setJunction( junction );
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Mesh, Vector3 } from 'three';
+import { Box3, Mesh, Vector3 } from 'three';
 import { Maths } from '../../../../utils/maths';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
@@ -21,6 +21,7 @@ export class TvJunction {
 	public position?: Vector3;
 	public type: TvJunctionType = TvJunctionType.DEFAULT;
 	public mesh: Mesh;
+	public boundingBox: Box3;
 
 	constructor ( name: string, id: number ) {
 		this._name = name;

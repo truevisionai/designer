@@ -113,7 +113,7 @@ export class AutoSplineV2 extends AbstractSpline {
 			let remainingLength = segmentLength;
 			let lengthCovered = 0;
 
-			if ( segment.roadId == -1 ) {
+			if ( !segment.isRoad ) {
 				remainingLength -= segmentLength;
 				currentS += segmentLength;
 				lengthCovered += segmentLength;
@@ -229,23 +229,28 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		const geometries: TvAbstractRoadGeometry[] = [];
 
-		let s = totalLength;
+		let s = 0;
 
 		for ( let i = 1; i < points.length; i++ ) {
 
-			let x, y, hdg, length;
+			let x: number, y: number, hdg: number, length: number;
 
-			const previous = points[ i - 1 ].position;
-			const current = points[ i ].position;
+			const previousPoint = points[ i - 1 ];
+			const currentPoint = points[ i ];
 
-			const p1 = new Vector2( previous.x, previous.y );
+			const previousPointPosition = previousPoint.position;
+			const currentPointPosition = currentPoint.position;
 
-			const p2 = new Vector2( current.x, current.y );
+			const p1 = new Vector2( previousPointPosition.x, previousPointPosition.y );
+			const p2 = new Vector2( currentPointPosition.x, currentPointPosition.y );
 
-			const d = p1.distanceTo( p2 );
+			const distance = p1.distanceTo( p2 );
+
+			const currentRadius = radiuses[ i ];
+			const previousRadius = radiuses[ i - 1 ];
 
 			// line between p1 and p2
-			if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
+			if ( distance - previousRadius - currentRadius > 0.001 ) {
 
 				[ x, y ] = new Vector2()
 					.subVectors( p2, p1 )
@@ -257,7 +262,7 @@ export class AutoSplineV2 extends AbstractSpline {
 				// hdg = new Vector2().subVectors( p2, p1 ).angle();
 				hdg = points[ i - 1 ][ 'hdg' ];
 
-				length = d - radiuses[ i - 1 ] - radiuses[ i ];
+				length = distance - previousRadius - currentRadius;
 
 				s = totalLength;
 
@@ -272,9 +277,9 @@ export class AutoSplineV2 extends AbstractSpline {
 
 				const next = points[ i + 1 ].position;
 
-				const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
+				const dir1 = new Vector2( currentPointPosition.x - previousPointPosition.x, currentPointPosition.y - previousPointPosition.y ).normalize();
 
-				const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
+				const dir2 = new Vector2( next.x - currentPointPosition.x, next.y - currentPointPosition.y ).normalize();
 
 				const pp1 = new Vector2()
 					.subVectors( p1, p2 )
@@ -294,7 +299,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 				hdg = dir1.angle();
 
-				let r, alpha, sign;
+				let r: number, alpha: number, sign: number;
 
 				[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
 

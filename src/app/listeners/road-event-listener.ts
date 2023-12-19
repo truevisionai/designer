@@ -8,6 +8,15 @@ import { RoadElevationService } from "app/services/road/road-elevation.service";
 import { TvRoadLinkChildType } from "app/modules/tv-map/models/tv-road-link-child";
 import { TvUtils } from "app/modules/tv-map/models/tv-utils";
 import { RoadService } from "app/services/road/road.service";
+import { IntersectionService } from "app/services/junction/intersection.service";
+import { DebugDrawService } from "app/services/debug/debug-draw.service";
+import { Box3, Vector3 } from "three";
+import { JunctionService } from "app/services/junction/junction.service";
+import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
+import { SceneService } from "app/services/scene.service";
+import { JunctionConnectionService } from "app/services/junction/junction-connection.service";
+import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { RoadSegmentType } from "app/core/shapes/RoadSegment";
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +29,10 @@ export class RoadEventListener {
 		private roadLinkService: RoadLinkService,
 		private roadObjectService: RoadObjectService,
 		private roadElevationService: RoadElevationService,
+		private intersectionService: IntersectionService,
+		private debugService: DebugDrawService,
+		private junctionService: JunctionService,
+		private junctionConnectionService: JunctionConnectionService
 	) {
 	}
 
@@ -35,13 +48,23 @@ export class RoadEventListener {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.rebuildRoad( event.road );
+		this.buildRoad( event.road );
+
+		this.updateRoadBoundingBox( event.road );
+
+		// this.checkIntersections( event.road );
 
 		this.updateElevationNodes( event.road );
 
 		this.rebuildNeighbours( event.road );
 
 		this.updateRoadObjects( event.road );
+
+	}
+
+	updateRoadBoundingBox ( road: TvRoad ) {
+
+		road.computeBoundingBox();
 
 	}
 
@@ -60,7 +83,31 @@ export class RoadEventListener {
 
 	}
 
-	private rebuildRoad ( road: TvRoad ): void {
+	checkIntersections ( road: TvRoad ) {
+
+		// console.time( "time" );
+
+		const roads = this.roadService.roads.filter( road => !road.isJunction );
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const otherRoad = roads[ i ];
+
+			const intersection = this.intersectionService.detectIntersections( road, otherRoad );
+
+			if ( !intersection ) continue;
+
+			// console.log( 'intersection detected', intersection );
+
+			this.createIntersection( road, otherRoad, intersection );
+
+		}
+
+		// console.timeEnd( "time" );
+
+	}
+
+	private buildRoad ( road: TvRoad ): void {
 
 		this.roadSplineService.rebuildSplineRoads( road.spline );
 
@@ -69,6 +116,53 @@ export class RoadEventListener {
 	private updateRoadObjects ( road: TvRoad ): void {
 
 		this.roadObjectService.updateRoadObjectPositions( road );
+
+	}
+
+	private createIntersection ( roadA: TvRoad, roadB: TvRoad, position: Vector3 ): void {
+
+		const junction = this.junctionService.createNewJunction();
+
+		// this.debugService.drawSphere( position, 1 );
+
+		let coordA = roadA.getCoordAt( position ).toRoadCoord( roadA );
+		let coordB = roadB.getCoordAt( position ).toRoadCoord( roadB );
+
+		// if (coordA.road.spline.hasJuncti)
+
+		const roadC = this.roadService.cutRoadFromTo( roadA, coordA.s - 10, coordA.s + 10, junction.id, RoadSegmentType.JUNCTION );
+		const roadD = this.roadService.cutRoadFromTo( roadB, coordB.s - 10, coordB.s + 10, junction.id, RoadSegmentType.JUNCTION );
+
+		if ( roadC ) coordA.s -= 10;
+		if ( roadD ) coordB.s -= 10;
+
+		this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadB, coordB.contact );
+
+		if ( roadC ) {
+
+			this.roadService.addRoad( roadC );
+
+			this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadC, TvContactPoint.START );
+			this.junctionService.addConnectionsFromContact( junction, roadB, coordB.contact, roadC, TvContactPoint.START );
+		}
+
+		if ( roadD ) {
+
+			this.roadService.addRoad( roadD );
+
+			this.junctionService.addConnectionsFromContact( junction, roadB, coordB.contact, roadD, TvContactPoint.START );
+			this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadD, TvContactPoint.START );
+
+		}
+
+		if ( roadC && roadD ) {
+
+			this.junctionService.addConnectionsFromContact( junction, roadC, TvContactPoint.START, roadD, TvContactPoint.START );
+
+		}
+
+		this.junctionService.addJunction( junction );
+
 
 	}
 

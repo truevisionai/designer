@@ -250,7 +250,7 @@ export class RoadLinkService {
 
 	hideLinks ( road: TvRoad ) {
 
-		if ( road.successor ) {
+		if ( road.successor?.isRoad ) {
 
 			const successor = this.getElement<TvRoad>( road.successor );
 
@@ -260,7 +260,7 @@ export class RoadLinkService {
 
 		}
 
-		if ( road.predecessor ) {
+		if ( road.predecessor?.isRoad ) {
 
 			const predecessor = this.getElement<TvRoad>( road.predecessor );
 
@@ -351,6 +351,8 @@ export class RoadLinkService {
 
 		if ( !road.predecessor ) return false;
 
+		if ( road.predecessor.isJunction ) return false;
+
 		const index = road.spline.controlPoints.indexOf( controlPoint );
 
 		return index === 0 || index === 1;
@@ -360,6 +362,8 @@ export class RoadLinkService {
 	private shouldUpdateSuccessor ( road: TvRoad, controlPoint: AbstractControlPoint ) {
 
 		if ( !road.successor ) return false;
+
+		if ( road.successor.isJunction ) return false;
 
 		const controlPoints = road.spline.controlPoints;
 

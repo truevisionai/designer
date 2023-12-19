@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Box3, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { JunctionMeshService } from './junction-mesh.service';
@@ -38,6 +38,12 @@ export class JunctionService {
 		public mapService: MapService,
 		private roadService: RoadService,
 	) {
+	}
+
+	get junctions () {
+
+		return this.mapService.map.getJunctions();
+
 	}
 
 	addJunction ( junction: TvJunction ) {
@@ -81,6 +87,7 @@ export class JunctionService {
 	removeJunctionNodes () {
 
 		this.junctionNodeService.hideAllJunctionNodes();
+
 	}
 
 	showJunctionNodes () {
@@ -115,6 +122,17 @@ export class JunctionService {
 	): TvJunction {
 
 		const junction = this.factory.createJunction();
+
+		this.addConnectionsFromContact( junction, roadA, contactA, roadB, contactB );
+
+		return junction;
+	}
+
+	addConnectionsFromContact (
+		junction: TvJunction,
+		roadA: TvRoad, contactA: TvContactPoint,
+		roadB: TvRoad, contactB: TvContactPoint
+	): TvJunction {
 
 		const coordA = this.getRoadCoords( roadA, contactA );
 		const coordB = this.getRoadCoords( roadB, contactB );
@@ -154,29 +172,6 @@ export class JunctionService {
 		} else {
 
 			return road.getPositionAt( road.length ).toRoadCoord( road );
-
-		}
-
-	}
-
-	createJunctionFromCoords ( coords: TvRoadCoord[] ) {
-
-		const uniqueRoads = this.getUniqueRoads( coords );
-
-		if ( uniqueRoads.length == 1 ) {
-
-			for ( const road of uniqueRoads ) {
-
-				const sortedCoords = coords.filter( i => i.road === road ).sort( ( a, b ) => a.s - b.s );
-
-				const firstCoord = sortedCoords[ 0 ];
-				const lastCoord = sortedCoords[ sortedCoords.length - 1 ];
-
-			}
-
-		}
-
-		if ( uniqueRoads.length == 2 ) {
 
 		}
 
@@ -253,6 +248,8 @@ export class JunctionService {
 		const mesh = this.junctionMeshService.createMeshFromJunction( junction );
 
 		this.objectMap.add( junction, mesh );
+
+		// junction.boundingBox = new Box3().setFromObject( mesh );
 
 	}
 

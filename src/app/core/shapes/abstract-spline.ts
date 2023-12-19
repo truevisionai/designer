@@ -7,7 +7,7 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import * as THREE from 'three';
 import { MathUtils, Vector2, Vector3 } from 'three';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
-import { RoadSegment } from './RoadSegment';
+import { RoadSegment, RoadSegmentType } from './RoadSegment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 
 export enum SplineType {
@@ -70,7 +70,7 @@ export abstract class AbstractSpline {
 
 		this.controlPoints.forEach( cp => spline.addControlPointAt( cp.position ) );
 
-		this.roadSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.roadId ) );
+		this.roadSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.id ) );
 
 		spline.type = this.type;
 
@@ -249,22 +249,22 @@ export abstract class AbstractSpline {
 		return points;
 	}
 
-	addRoadSegment ( sStart: number, roadId: number ) {
+	addSegmentSection ( sStart: number, id: number, type: RoadSegmentType ) {
 
 		if ( sStart == null ) return;
 
 		// check if road segment already exists
-		if ( this.roadSegments.find( i => i.roadId == roadId ) ) return;
+		if ( this.roadSegments.find( i => i.id == id && i.type == type ) ) return;
 
 		const exists = this.roadSegments.find( seg => seg.start == sStart );
 
 		if ( exists ) {
 
-			exists.roadId = roadId;
+			exists.id = id;
 
 		} else {
 
-			this.roadSegments.push( { start: sStart, roadId: roadId, geometries: [] } );
+			this.roadSegments.push( new RoadSegment( sStart, id, type, [] ) );
 
 		}
 
@@ -272,6 +272,18 @@ export abstract class AbstractSpline {
 		this.roadSegments.sort( ( a, b ) => a.start - b.start );
 
 		this.update();
+
+	}
+
+	addRoadSegment ( sStart: number, roadId: number ) {
+
+		this.addSegmentSection( sStart, roadId, RoadSegmentType.ROAD );
+
+	}
+
+	addJunctionSegment ( sStart: number, junctonId: number ) {
+
+		this.addSegmentSection( sStart, junctonId, RoadSegmentType.JUNCTION );
 
 	}
 
@@ -286,7 +298,7 @@ export abstract class AbstractSpline {
 
 	removeRoadSegmentByRoadId ( roadId: number ) {
 
-		this.roadSegments = this.roadSegments.filter( segment => segment.roadId != roadId );
+		this.roadSegments = this.roadSegments.filter( segment => segment.id != roadId );
 
 		this.update();
 	}

@@ -54,8 +54,6 @@ export class IntersectionService {
 
 		const boxIntersection = roadABox.intersectsBox( roadBBox );
 
-		if ( boxIntersection ) console.log( roadA.id, roadB.id, boxIntersection, roadABox, roadBBox );
-
 		return boxIntersection;
 
 	}

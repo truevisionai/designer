@@ -96,7 +96,7 @@ export class RoadToolService {
 
 		this.debug.removeHighlight();
 
-		this.roadService.roads.forEach( road => this.debug.showRoadBorderLine( road ) );
+		this.debug.showRoadBorderLine( road );
 
 		this.debug.selectRoad( road );
 

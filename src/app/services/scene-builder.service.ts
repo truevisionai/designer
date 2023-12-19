@@ -62,7 +62,7 @@ export class SceneBuilderService {
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
 
-		return scene.getSplines().find( spline => spline.getRoadSegments().find( segment => segment.roadId === road.id ) );
+		return scene.getSplines().find( spline => spline.getRoadSegments().find( segment => segment.id === road.id ) );
 
 	}
 
