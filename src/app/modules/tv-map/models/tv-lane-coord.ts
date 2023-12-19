@@ -8,6 +8,7 @@ import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
 import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
+import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 
 export class TvLaneCoord {
 
@@ -60,6 +61,13 @@ export class TvLaneCoord {
 		} else {
 			return this.direction.negate();
 		}
+	}
+
+	get orientation (): Orientation {
+		// let h = this.h;
+		// if ( this.t > 0 ) h += Math.PI;
+		// return new Orientation( h, this.p, this.r );
+		return new Orientation( 0, 0, 0 );
 	}
 
 }

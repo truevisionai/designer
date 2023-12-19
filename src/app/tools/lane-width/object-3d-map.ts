@@ -45,9 +45,15 @@ export class Object3DMap<K, T extends Object3D> {
 
 	}
 
-	getAll () {
+	values () {
 
 		return this.map.values();
+
+	}
+
+	keys () {
+
+		return this.map.keys();
 
 	}
 
