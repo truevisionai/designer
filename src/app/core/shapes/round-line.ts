@@ -41,7 +41,40 @@ export class RoundLine {
 
 	}
 
-	calcRadius (): void {
+	private calcRadiusNew (): void {
+
+		// Exit if there are no points
+		if ( this.points.length === 0 ) return;
+
+		// Initialize all radii to 0
+		this.radiuses = new Array( this.points.length ).fill( 0 );
+
+		// If there are exactly 2 points, they form a straight line, so keep radii as 0
+		if ( this.points.length === 2 ) return;
+
+		// Iterate through each point, skipping the first and last
+		for ( let i = 1; i < this.points.length - 1; i++ ) {
+
+			const p0 = this.points[ i - 1 ].position;
+			const p1 = this.points[ i ].position;
+			const p2 = this.points[ i + 1 ].position;
+
+			// Check if the current point and its neighbors are in a straight line
+			if ( !this.isStraightLine( p0, p1, p2 ) ) {
+
+				// Calculate distances to adjacent points
+				const lengths = [ p0.distanceTo( p1 ), p1.distanceTo( p2 ) ];
+
+				// Set radius as half the minimum of these distances
+				this.radiuses[ i ] = Math.min( ...lengths ) / 2;
+			}
+
+			// For straight lines, the radius remains 0 (set during initialization)
+		}
+
+	}
+
+	private calcRadiusOld (): void {
 
 		if ( this.points.length === 0 ) return;
 
@@ -117,7 +150,8 @@ export class RoundLine {
 
 		if ( this.points.length <= 1 ) return;
 
-		this.calcRadius();
+		this.calcRadiusOld();
+		// this.calcRadiusNew();
 
 		const position = this.mesh.geometry.attributes.position as BufferAttribute;
 
@@ -201,7 +235,7 @@ export class RoundLine {
 		position.needsUpdate = true;
 	}
 
-	arcInterpolation ( currentPoint: Vector3, prevPoint: Vector3, nextPoint: Vector3, radius: number, v: Vector3 ) {
+	private arcInterpolation ( currentPoint: Vector3, prevPoint: Vector3, nextPoint: Vector3, radius: number, v: Vector3 ) {
 
 		const va = new Vector3()
 			.subVectors( prevPoint, currentPoint )
@@ -226,4 +260,17 @@ export class RoundLine {
 		// project to circle
 		return new Vector3().subVectors( v, p ).normalize().multiplyScalar( r ).add( p );
 	}
+
+	private isStraightLine ( p0: Vector3, p1: Vector3, p2: Vector3 ): boolean {
+
+		const v1 = new Vector3().subVectors( p1, p0 ).normalize();
+
+		const v2 = new Vector3().subVectors( p2, p1 ).normalize();
+
+		const angle = v1.angleTo( v2 );
+
+		return Math.abs( angle ) < 0.01 || Math.abs( Math.PI - angle ) < 0.01; // Threshold for straight line
+
+	}
+
 }

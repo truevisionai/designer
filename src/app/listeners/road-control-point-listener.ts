@@ -49,23 +49,25 @@ export class RoadControlPointListener extends Manager {
 
 	onRoadControlPointUpdated ( event: RoadControlPointUpdatedEvent ) {
 
-		if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
+		// NOT NEEDED
 
-		const spline = event.road.spline || event.controlPoint.mainObject;
+		// if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
 
-		if ( !spline ) console.warn( 'no spline' );
+		// const spline = event.road.spline || event.controlPoint.mainObject;
 
-		spline?.getRoadSegments().forEach( segment => {
+		// if ( !spline ) console.warn( 'no spline' );
 
-			if ( segment.roadId == -1 ) return;
+		// spline?.getRoadSegments().forEach( segment => {
 
-			const road = this.mapService.map.getRoadById( segment.roadId );
+		// 	if ( segment.roadId == -1 ) return;
 
-			this.roadService.rebuildLinks( road, event.controlPoint );
+		// 	const road = this.mapService.map.getRoadById( segment.roadId );
 
-			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+		// 	this.roadService.rebuildLinks( road, event.controlPoint );
 
-		} );
+			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+
+		// } );
 
 	}
 
@@ -73,7 +75,7 @@ export class RoadControlPointListener extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointRemoved' );
 
-		SceneService.removeFromTool( event.controlPoint );
+		// SceneService.removeFromTool( event.controlPoint );
 
 		// this.roadService.updateSplineGeometries( event.road );
 
@@ -85,7 +87,7 @@ export class RoadControlPointListener extends Manager {
 
 		if ( this.debug ) console.debug( 'onRoadControlPointCreated' );
 
-		SceneService.addToolObject( event.controlPoint );
+		// SceneService.addToolObject( event.controlPoint );
 
 		// this.roadService.updateSplineGeometries( event.road );
 
