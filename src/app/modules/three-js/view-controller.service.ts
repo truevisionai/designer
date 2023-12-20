@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TvOrbitControls } from "./objects/tv-orbit-controls";
+import { TvMapControls, TvOrbitControls } from "./objects/tv-orbit-controls";
 import * as THREE from "three";
 import { Object3D, OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
 import { CameraService } from "./camera.service";

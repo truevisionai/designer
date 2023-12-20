@@ -9,6 +9,7 @@ import { Camera, Color, Fog, Object3D, PerspectiveCamera, Scene, } from 'three';
 import { AssetPreviewService } from './asset-preview.service';
 import { AssetNode, AssetType } from "../../editor/project-browser/file-node.model";
 import { AssetDatabase } from 'app/core/asset/asset-database';
+import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 
 @Component( {
 	selector: 'app-asset-preview',
@@ -27,7 +28,7 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	public camera: PerspectiveCamera;
 
-	public controls: TvOrbitControls;
+	public controls: IViewportController;
 
 	object3d: Object3D;
 
