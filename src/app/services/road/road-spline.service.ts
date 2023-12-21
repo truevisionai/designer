@@ -14,6 +14,7 @@ import { SplineService } from '../spline.service';
 import { BaseService } from '../base.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -95,6 +96,7 @@ export class RoadSplineService {
 
 			// if next segment exists,
 			segment.id = -1;
+			segment.type = SplineSegmentType.NONE;
 
 		} else {
 

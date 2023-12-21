@@ -10,7 +10,7 @@ export enum SplineSegmentType {
 export class SplineSegment {
 
 	get isRoad () {
-		return this.type == SplineSegmentType.ROAD;
+		return this.type == SplineSegmentType.ROAD && this.id != -1;
 	}
 
 	constructor (
