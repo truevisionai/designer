@@ -16,7 +16,7 @@ import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
 import { SceneService } from "app/services/scene.service";
 import { JunctionConnectionService } from "app/services/junction/junction-connection.service";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { RoadSegmentType } from "app/core/shapes/RoadSegment";
+import { SplineSegmentType } from "app/core/shapes/spline-segment";
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,7 +52,7 @@ export class RoadEventListener {
 
 		this.updateRoadBoundingBox( event.road );
 
-		// this.checkIntersections( event.road );
+		this.checkIntersections( event.road );
 
 		this.updateElevationNodes( event.road );
 
@@ -130,8 +130,8 @@ export class RoadEventListener {
 
 		// if (coordA.road.spline.hasJuncti)
 
-		const roadC = this.roadService.cutRoadFromTo( roadA, coordA.s - 10, coordA.s + 10, junction.id, RoadSegmentType.JUNCTION );
-		const roadD = this.roadService.cutRoadFromTo( roadB, coordB.s - 10, coordB.s + 10, junction.id, RoadSegmentType.JUNCTION );
+		const roadC = this.roadService.cutRoadFromTo( roadA, coordA.s - 10, coordA.s + 10, junction.id, SplineSegmentType.JUNCTION );
+		const roadD = this.roadService.cutRoadFromTo( roadB, coordB.s - 10, coordB.s + 10, junction.id, SplineSegmentType.JUNCTION );
 
 		if ( roadC ) coordA.s -= 10;
 		if ( roadD ) coordB.s -= 10;

@@ -23,7 +23,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 	type: string = SplineType.EXPLICIT;
 
-	private segments: Line[] = [];
+	private explicitSegments: Line[] = [];
 
 	// no need for now
 	// private tangentLines: Line[] = [];
@@ -54,13 +54,13 @@ export class ExplicitSpline extends AbstractSpline {
 
 	hideLines () {
 
-		this.segments.forEach( segment => segment.visible = false );
+		this.explicitSegments.forEach( segment => segment.visible = false );
 
 	}
 
 	showLines () {
 
-		this.segments.forEach( segment => segment.visible = true );
+		this.explicitSegments.forEach( segment => segment.visible = true );
 
 	}
 
@@ -68,7 +68,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		this.controlPoints.forEach( i => i.hide() );
 
-		this.segments.forEach( segment => segment.visible = false );
+		this.explicitSegments.forEach( segment => segment.visible = false );
 
 	}
 
@@ -76,13 +76,13 @@ export class ExplicitSpline extends AbstractSpline {
 
 		this.controlPoints.forEach( i => i.show() );
 
-		this.segments.forEach( segment => segment.visible = true );
+		this.explicitSegments.forEach( segment => segment.visible = true );
 
 	}
 
 	update (): void {
 
-		for ( let i = 0; i < this.segments.length; i++ ) {
+		for ( let i = 0; i < this.explicitSegments.length; i++ ) {
 
 			this.updateSplineShape( i );
 
@@ -96,7 +96,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		this.controlPoints.splice( 0, 1 );
 
-		this.segments.forEach( segment => segment.visible = false );
+		this.explicitSegments.forEach( segment => segment.visible = false );
 
 	}
 
@@ -111,7 +111,7 @@ export class ExplicitSpline extends AbstractSpline {
 		let totalLength = 0;
 		const geometries: TvAbstractRoadGeometry[] = [];
 
-		for ( let i = 0; i < this.segments.length; i++ ) {
+		for ( let i = 0; i < this.explicitSegments.length; i++ ) {
 
 			const hdg1 = hdgs[ i ];
 			const hdg2 = hdgs[ i + 1 ];
@@ -325,7 +325,7 @@ export class ExplicitSpline extends AbstractSpline {
 		this.removeSegment( cp.tagindex - 1 );
 
 		// Update remaining segments
-		for ( let i = cp.tagindex; i < this.segments.length; i++ ) {
+		for ( let i = cp.tagindex; i < this.explicitSegments.length; i++ ) {
 			this.updateSplineShape( i );
 		}
 
@@ -408,7 +408,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		line.userData.geometry = abstractRoadGeometry;
 
-		this.segments.push( line );
+		this.explicitSegments.push( line );
 
 		// SceneService.addToolObject( line );
 
@@ -417,11 +417,11 @@ export class ExplicitSpline extends AbstractSpline {
 
 	removeSegment ( index: number ) {
 
-		const line = this.segments[ index ];
+		const line = this.explicitSegments[ index ];
 
 		// SceneService.removeFromMain( line );
 
-		this.segments.splice( index, 1 );
+		this.explicitSegments.splice( index, 1 );
 
 		// this.tangentLines.splice( index, 1 );
 
@@ -429,7 +429,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 	updateSplineShape ( idx: number ) {
 
-		const mesh = this.segments[ idx ];
+		const mesh = this.explicitSegments[ idx ];
 		const posattr = ( mesh.geometry as BufferGeometry ).attributes.position as BufferAttribute;
 
 		const dir1 = new Vector2( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ) );
@@ -530,7 +530,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 	updateRoadSegments () {
 
-		this.roadSegments.forEach( segment => {
+		this.splineSegments.forEach( segment => {
 
 			segment.geometries = this.exportGeometries();
 

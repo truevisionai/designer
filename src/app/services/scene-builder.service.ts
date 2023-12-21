@@ -48,7 +48,7 @@ export class SceneBuilderService {
 				road.sStart = 0;
 			}
 
-			if ( road.spline.getRoadSegments().length == 0 ) {
+			if ( road.spline.getSplineSegments().length == 0 ) {
 				road.spline.addRoadSegment( 0, road.id );
 			}
 
@@ -62,7 +62,7 @@ export class SceneBuilderService {
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
 
-		return scene.getSplines().find( spline => spline.getRoadSegments().find( segment => segment.id === road.id ) );
+		return scene.getSplines().find( spline => spline.getSplineSegments().find( segment => segment.id === road.id ) );
 
 	}
 

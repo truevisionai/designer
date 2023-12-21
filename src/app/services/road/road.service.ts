@@ -23,7 +23,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { RoadSegmentType } from 'app/core/shapes/RoadSegment';
+import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -232,7 +232,7 @@ export class RoadService {
 			return gameObjects;
 		}
 
-		spline.getRoadSegments().forEach( segment => {
+		spline.getSplineSegments().forEach( segment => {
 
 			if ( !segment.isRoad ) return;
 
@@ -389,7 +389,7 @@ export class RoadService {
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number, segmentId = -1, segmentType = RoadSegmentType.NONE ): TvRoad {
+	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number, segmentId = -1, segmentType = SplineSegmentType.NONE ): TvRoad {
 
 		if ( sStart >= sEnd ) {
 			throw new Error( 'Start must be less than end' );

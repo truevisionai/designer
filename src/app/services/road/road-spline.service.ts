@@ -36,7 +36,7 @@ export class RoadSplineService {
 
 		spline.update();
 
-		spline.getRoadSegments().forEach( segment => {
+		spline.getSplineSegments().forEach( segment => {
 
 			if ( !segment.isRoad ) return;
 
@@ -85,11 +85,11 @@ export class RoadSplineService {
 
 		// get road segment and update if next road segment exists
 		// this is to make sure we maintains gaps if intended
-		const segment = spline.getRoadSegments().find( i => i.id == road.id );
+		const segment = spline.getSplineSegments().find( i => i.id == road.id );
 
 		if ( segment == null ) return;
 
-		const nextSegment = spline.getRoadSegments().find( i => i.start > segment.start );
+		const nextSegment = spline.getSplineSegments().find( i => i.start > segment.start );
 
 		if ( nextSegment ) {
 
@@ -103,7 +103,7 @@ export class RoadSplineService {
 
 		}
 
-		if ( spline.getRoadSegments().length == 0 ) {
+		if ( spline.getSplineSegments().length == 0 ) {
 
 			this.mapService.map.removeSpline( spline );
 

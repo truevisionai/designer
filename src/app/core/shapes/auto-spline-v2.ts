@@ -8,7 +8,7 @@ import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-import { RoadSegment } from './RoadSegment';
+import { SplineSegment } from './spline-segment';
 
 export class AutoSplineV2 extends AbstractSpline {
 
@@ -89,13 +89,13 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		const splineLength = this.getLength();
 
-		for ( let i = 0; i < this.roadSegments.length; i++ ) {
+		for ( let i = 0; i < this.splineSegments.length; i++ ) {
 
-			const segment = this.roadSegments[ i ];
+			const segment = this.splineSegments[ i ];
 
-			let nextSegment: RoadSegment;
-			if ( i + 1 < this.roadSegments.length ) {
-				nextSegment = this.roadSegments[ i + 1 ];
+			let nextSegment: SplineSegment;
+			if ( i + 1 < this.splineSegments.length ) {
+				nextSegment = this.splineSegments[ i + 1 ];
 			}
 
 			// Clear previous geometries

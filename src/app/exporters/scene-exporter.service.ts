@@ -151,7 +151,7 @@ export class SceneExporterService {
 					attr_y: point.y,
 					attr_z: point.z
 				} ) ),
-				roadSegment: spline.getRoadSegments().map( segment => ( {
+				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
 					attr_roadId: segment.id,
 					attr_type: segment.type,
@@ -170,7 +170,7 @@ export class SceneExporterService {
 					attr_y: point.y,
 					attr_z: point.z
 				} ) ),
-				roadSegment: spline.getRoadSegments().map( segment => ( {
+				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
 					attr_roadId: segment.id,
 					attr_type: segment.type,
@@ -191,7 +191,7 @@ export class SceneExporterService {
 					attr_hdg: point.hdg,
 					attr_type: point.segmentType,
 				} ) ),
-				roadSegment: spline.getRoadSegments().map( segment => ( {
+				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
 					attr_roadId: segment.id,
 					attr_type: segment.type,

@@ -34,7 +34,7 @@ describe( 'Service: RoadCut', () => {
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).toBeDefined();
 
-		expect( oldRoad.spline.getRoadSegments().length ).toBe( 3 );
+		expect( oldRoad.spline.getSplineSegments().length ).toBe( 3 );
 		expect( oldRoad.sStart ).toBe( 0 );
 		expect( newRoad.sStart ).toBe( 60 );
 
@@ -65,7 +65,7 @@ describe( 'Service: RoadCut', () => {
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).not.toBeDefined();
 
-		expect( oldRoad.spline.getRoadSegments().length ).toBe( 2 );
+		expect( oldRoad.spline.getSplineSegments().length ).toBe( 2 );
 		expect( oldRoad.sStart ).toBe( 0 );
 
 		roadService.buildSpline( oldRoad.spline );
