@@ -118,7 +118,7 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.mapService.map.addRoad( object );
+			this.tool.roadService.addRoad( object );
 
 			MapEvents.roadCreated.emit( new RoadCreatedEvent( object, false ) );
 

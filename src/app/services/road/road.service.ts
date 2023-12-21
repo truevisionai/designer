@@ -71,6 +71,12 @@ export class RoadService {
 
 		clone.id = this.getNextRoadId();
 
+		clone.name = `Road ${clone.id}`;
+
+		clone.sStart = road.sStart + s;
+
+		// road.length = s;
+
 		return clone;
 
 	}
@@ -377,15 +383,15 @@ export class RoadService {
 
 	}
 
-	divideRoadAt ( road: TvRoad, s: number ) {
+	divideRoadAt ( road: TvRoad, s: number ): TvRoad {
 
-		const clone = road.clone( s );
+		const newRoad = this.clone( road, s );
 
-		clone.id = this.getNextRoadId();
+		road.setSuccessorRoad( newRoad, TvContactPoint.START );
 
-		clone.sStart = road.sStart + s;
+		newRoad.setPredecessorRoad( road, TvContactPoint.END );
 
-		return clone
+		return newRoad
 
 	}
 
