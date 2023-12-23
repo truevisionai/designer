@@ -20,6 +20,7 @@ import { Injectable } from '@angular/core';
 import { RoadService } from './road.service';
 import { RoadLinkService } from './road-link.service';
 import { MapService } from '../map.service';
+import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,6 +57,7 @@ export class RoadCircleService {
 
 		this.showRoadNodes( road );
 
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 	}
 
 	removeRoad ( road: TvRoad ) {
@@ -64,6 +66,7 @@ export class RoadCircleService {
 
 		this.hideRoadNodes( road );
 
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 	}
 
 	showRoadNodes ( road: TvRoad ) {

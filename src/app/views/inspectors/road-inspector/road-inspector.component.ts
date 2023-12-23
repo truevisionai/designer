@@ -159,4 +159,10 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	}
 
+	onDeleteSpline (): void {
+
+		CommandHistory.execute( new RemoveObjectCommand( this.road.spline ) );
+
+	}
+
 }

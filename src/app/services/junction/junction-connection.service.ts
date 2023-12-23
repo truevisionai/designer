@@ -9,6 +9,7 @@ import { RoadSplineService } from '../road/road-spline.service';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +20,22 @@ export class JunctionConnectionService {
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 	) {
+	}
+
+	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
+
+		junction.addConnection( connection );
+
+		this.roadService.addRoad( connection.connectingRoad );
+
+	}
+
+	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
+
+		junction.removeConnection( connection );
+
+		this.roadService.removeRoad( connection.connectingRoad );
+
 	}
 
 	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint, outgoingRoad?: TvRoad ) {
@@ -134,6 +151,8 @@ export class JunctionConnectionService {
 
 			const incomingLane = incomingLanes[ i ];
 
+			if ( incomingLane.type != TvLaneType.driving ) continue;
+
 			const outgoingLane = outgoingLanes.find( outgoingLane => Math.abs( outgoingLane.id ) === Math.abs( incomingLane.id ) );
 
 			const connectionLane = laneSection.addLane(
@@ -159,4 +178,44 @@ export class JunctionConnectionService {
 		return connection;
 	}
 
+	addNonDrivingLaneLinks ( connection: TvJunctionConnection ) {
+
+		const incomingLanes: TvLane[] = connection.getIncomingLanes();
+		const outgoingLanes: TvLane[] = connection.getOutgoingLanes();
+
+		// connection.removeLaneLinks();
+		// connection.connectingLaneSection.removeLanes();
+
+		for ( let i = 0; i < incomingLanes.length; i++ ) {
+
+			const incomingLane = incomingLanes[ i ];
+
+			if ( incomingLane.side != TvLaneSide.RIGHT ) continue;
+
+			const outgoingLane = outgoingLanes.find( outgoingLane => Math.abs( outgoingLane.id ) === Math.abs( incomingLane.id ) );
+
+			if ( connection.connectingLaneSection.hasLaneId( incomingLane.id ) ) continue;
+
+			const connectionLane = connection.connectingLaneSection.addLane(
+				incomingLane.side,
+				incomingLane.id,
+				incomingLane.type,
+				incomingLane.level,
+				true
+			);
+
+			const incomingLaneWidth = incomingLane.getWidthValue( 0 );
+
+			connectionLane.addWidthRecord( 0, incomingLaneWidth, 0, 0, 0 );
+
+			if ( !outgoingLane ) continue;
+
+			const laneLink = new TvJunctionLaneLink( incomingLane, connectionLane );
+
+			connection.addLaneLink( laneLink );
+
+		}
+
+		return connection;
+	}
 }

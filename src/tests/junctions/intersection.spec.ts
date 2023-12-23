@@ -29,7 +29,7 @@ describe( 'IntersectionService', () => {
 		const roadB = roadService.createDefaultRoad();
 		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
 
-		const intersection = intersectionService.detectIntersections( roadA, roadB );
+		const intersection = intersectionService.detectRoadIntersections( roadA, roadB );
 
 		expect( intersection ).toBeDefined();
 		expect( intersection.x ).toBeCloseTo( 0 );
@@ -48,7 +48,7 @@ describe( 'IntersectionService', () => {
 		roadB.addElevation( 0, 10, 0, 0, 0 );
 		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
 
-		const intersection = intersectionService.detectIntersections( roadA, roadB );
+		const intersection = intersectionService.detectRoadIntersections( roadA, roadB );
 
 		expect( intersection ).toBeDefined();
 		expect( intersection.x ).toBeCloseTo( 0 );
@@ -66,7 +66,7 @@ describe( 'IntersectionService', () => {
 		roadB.addElevation( 0, 10, 0, 0, 0 );
 		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
 
-		const intersection = intersectionService.detectIntersections( roadA, roadB );
+		const intersection = intersectionService.detectRoadIntersections( roadA, roadB );
 
 		expect( intersection ).not.toBeDefined();
 
@@ -82,7 +82,7 @@ describe( 'IntersectionService', () => {
 		roadB.addElevation( 0, 10, 0, 0, 0 );
 		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
 
-		const intersection = intersectionService.detectIntersections( roadA, roadB );
+		const intersection = intersectionService.detectRoadIntersections( roadA, roadB );
 
 		expect( intersection ).not.toBeDefined();
 

@@ -6,12 +6,10 @@ import { SceneService } from '../scene.service';
 import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
-import { RoadLinkService } from './road-link.service';
 import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
 import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
 import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { CommandHistory } from '../command-history';
@@ -39,7 +37,6 @@ export class RoadService {
 	constructor (
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
-		private roadLinkService: RoadLinkService,
 		private splineService: SplineService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
@@ -71,7 +68,7 @@ export class RoadService {
 
 		clone.id = this.getNextRoadId();
 
-		clone.name = `Road ${clone.id}`;
+		clone.name = `Road ${ clone.id }`;
 
 		clone.sStart = road.sStart + s;
 
@@ -128,8 +125,6 @@ export class RoadService {
 		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
-
-		this.roadLinkService.linkRoads( firstNode, secondNode, joiningRoad );
 
 		spline.addRoadSegment( 0, joiningRoad.id );
 
@@ -329,16 +324,6 @@ export class RoadService {
 
 	}
 
-	rebuildLinks ( road: TvRoad, controlPoint: AbstractControlPoint ) {
-
-		this.roadLinkService.updateLinks( road, controlPoint, true );
-
-		this.rebuildLink( road.predecessor );
-
-		this.rebuildLink( road.successor );
-
-	}
-
 	rebuildLink ( link: TvRoadLinkChild ) {
 
 		if ( !link ) return;
@@ -427,7 +412,7 @@ export class RoadService {
 
 		if ( road.successor?.isRoad ) {
 
-			const successor = this.roadLinkService.getElement<TvRoad>( road.successor );
+			const successor = this.getRoad( road.successor.elementId );
 
 			successor.setPredecessorRoad( newRoad, TvContactPoint.END );
 
@@ -458,6 +443,8 @@ export class RoadService {
 		this.roadSplineService.rebuildSplineRoads( road.spline );
 
 		// this.updateRoadNodes( road );
+
+		this.mapService.map.gameObject.add( road.gameObject );
 	}
 
 	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {
@@ -481,8 +468,6 @@ export class RoadService {
 		} );
 
 		this.hideRoadNodes( road );
-
-		this.roadLinkService.removeLinks( road );
 
 		this.roadSplineService.removeRoadSegment( road );
 

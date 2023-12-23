@@ -6,13 +6,14 @@ import { TvMap } from "app/modules/tv-map/models/tv-map.model";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { SplineControlPoint } from "app/modules/three-js/objects/spline-control-point";
 
 export class RoadCreatedEvent {
-	constructor ( public road: TvRoad, public showHelpers = true ) { }
+	constructor ( public road: TvRoad, public showHelpers = false ) { }
 }
 
 export class RoadUpdatedEvent {
-	constructor ( public road: TvRoad, public showHelpers = true ) { }
+	constructor ( public road: TvRoad, public showHelpers = false ) { }
 }
 
 export class RoadRemovedEvent {
@@ -28,15 +29,15 @@ export class RoadUnselectedEvent {
 }
 
 export class RoadControlPointCreatedEvent {
-	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+	constructor ( public controlPoint: SplineControlPoint ) { }
 }
 
 export class RoadControlPointUpdatedEvent {
-	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
 }
 
 export class RoadControlPointRemovedEvent {
-	constructor ( public road: TvRoad, public controlPoint: AbstractControlPoint ) { }
+	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
 }
 
 export class SplineCreatedEvent {

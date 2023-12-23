@@ -7,6 +7,9 @@ import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common'
 import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { JunctionConnectionService } from '../junction/junction-connection.service';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,6 +19,7 @@ export class RoadLinkService {
 	constructor (
 		private mapService: MapService,
 		private splineService: SplineService,
+		private connectionService: JunctionConnectionService,
 	) { }
 
 	linkPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
@@ -85,7 +89,31 @@ export class RoadLinkService {
 		if ( !link ) return;
 
 		if ( link.isJunction ) {
+
 			// TODO: might have to update connecting/incoming road
+
+			const junction = this.getElement<TvJunction>( link );
+
+			const s = mainRoad.length;
+
+			const coordA = mainRoad.getRoadCoordAt( s ).toRoadCoord( mainRoad );
+
+			const roads = junction.getRoads();
+
+			for ( let i = 0; i < roads.length; i++ ) {
+
+				const road = roads[ i ];
+
+				const s = this.getOtherRoadContact( coordA, road );
+
+				const coordB = road.getRoadCoordAt( s ).toRoadCoord( road );
+
+				const connection = this.connectionService.createConnection( junction, coordA, coordB );
+
+				this.connectionService.addConnection( junction, connection );
+
+			}
+
 			return;
 		}
 
@@ -137,6 +165,23 @@ export class RoadLinkService {
 		}
 	}
 
+	getOtherRoadContact ( coordA: TvRoadCoord, road: TvRoad ): number {
+
+		const distance1 = road.getPositionAt( 0 ).position.distanceTo( coordA.position );
+		const distance2 = road.getPositionAt( road.length ).position.distanceTo( coordA.position );
+
+		if ( distance1 < distance2 ) {
+
+			return 0;
+
+		} else {
+
+			return road.length;
+
+		}
+
+	}
+
 	getLaneSection ( road: TvRoad, contactPoint: TvContactPoint ) {
 
 		if ( contactPoint == TvContactPoint.START ) {
@@ -152,19 +197,52 @@ export class RoadLinkService {
 
 	removeLinks ( road: TvRoad ) {
 
-		if ( road.isJunction ) return;
+		if ( road.isJunction ) {
 
-		this.removePredecessor( road );
+			road.junctionInstance?.removeConnectingRoad( road );
 
-		this.removeSuccessor( road );
+		} else {
+
+			this.removePredecessor( road );
+
+			this.removeSuccessor( road );
+
+		}
+	}
+
+	addLinks ( road: TvRoad ) {
+
+		if ( road.isJunction ) {
+
+			// road.junctionInstance?.removeConnections( road );
+
+		} else {
+
+			this.linkSuccessor( road, road.successor );
+
+			this.linkPredecessor( road, road.predecessor );
+
+		}
 
 	}
+
 
 	private removeSuccessor ( road: TvRoad ) {
 
 		if ( !road.successor ) return;
 
 		if ( road.successor.isJunction ) {
+
+			const junction = this.getElement<TvJunction>( road.successor );
+
+			const connections = junction.getConnectionsForRoad( road );
+
+			connections.forEach( connection => {
+
+				this.connectionService.removeConnection( junction, connection );
+
+			} );
+
 			return;
 		}
 
@@ -190,6 +268,17 @@ export class RoadLinkService {
 		if ( !road.predecessor ) return;
 
 		if ( road.predecessor.isJunction ) {
+
+			const junction = this.getElement<TvJunction>( road.predecessor );
+
+			const connections = junction.getConnectionsForRoad( road );
+
+			connections.forEach( connection => {
+
+				this.connectionService.removeConnection( junction, connection );
+
+			} );
+
 			return;
 		}
 

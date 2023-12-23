@@ -9,6 +9,7 @@ import { MathUtils, Vector2, Vector3 } from 'three';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { SplineSegment, SplineSegmentType } from './spline-segment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -19,6 +20,8 @@ export enum SplineType {
 export abstract class AbstractSpline {
 
 	public uuid: string;
+
+	public boundingBox: THREE.Box3;
 
 	abstract type: string;
 
@@ -312,6 +315,46 @@ export abstract class AbstractSpline {
 	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
 
 		throw new Error( 'Method not implemented.' );
+
+	}
+
+	getCoordAt ( point: Vector3 ) {
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const coordinates = new TvPosTheta();
+
+		for ( const geometry of this.exportGeometries() ) {
+
+			const temp = new TvPosTheta();
+
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+		}
+
+		return coordinates;
+
+	}
+
+	getSegmentAt ( s: number ) {
+
+		const segments = this.getSplineSegments();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			const end = i + 1 < segments.length ? segments[ i + 1 ].start : Number.MAX_VALUE;
+
+			if ( s >= segment.start && s < end ) return segment;
+
+		}
 
 	}
 

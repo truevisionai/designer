@@ -113,4 +113,10 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	}
 
+	getDirectionVector () {
+
+		return new Vector3( Math.cos( this[ 'hdg' ] ), Math.sin( this[ 'hdg' ] ), 0 );
+
+	}
+
 }

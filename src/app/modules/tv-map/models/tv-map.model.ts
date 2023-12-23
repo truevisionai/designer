@@ -159,7 +159,6 @@ export class TvMap {
 
 		this.roads.delete( road.id );
 
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road, true ) );
 	}
 
 	public deleteJunction ( id ): void {

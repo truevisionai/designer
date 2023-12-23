@@ -1,26 +1,27 @@
 import { MapEvents, RoadControlPointCreatedEvent, RoadControlPointRemovedEvent, RoadControlPointUpdatedEvent, RoadUpdatedEvent } from "../events/map-events";
-import { Manager } from "../managers/manager";
 import { RoadService } from "app/services/road/road.service";
-import { SceneService } from "app/services/scene.service";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { AbstractControlPoint } from "app/modules/three-js/objects/abstract-control-point";
-import { ToolManager } from "app/tools/tool-manager";
 import { MapService } from "app/services/map.service";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { TvRoadLinkChild, TvRoadLinkChildType } from "app/modules/tv-map/models/tv-road-link-child";
+import { Box3 } from "three";
+import { SplineControlPoint } from "app/modules/three-js/objects/spline-control-point";
+import { IntersectionService } from "app/services/junction/intersection.service";
+import { Injectable } from "@angular/core";
 
-export class RoadControlPointListener extends Manager {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class RoadControlPointListener {
 
-	debug: any;
+	private debug = true;
 
 	constructor (
 		private roadService: RoadService,
 		private mapService: MapService,
 		private roadLinkService: RoadLinkService,
+		private intersectionService: IntersectionService,
 	) {
-
-		super();
 
 	}
 
@@ -47,52 +48,108 @@ export class RoadControlPointListener extends Manager {
 
 	}
 
+	onRoadControlPointCreated ( event: RoadControlPointCreatedEvent ) {
+
+		if ( this.debug ) console.debug( 'onRoadControlPointCreated', event );
+
+		if ( event.controlPoint.spline.controlPoints.length < 2 ) return;
+
+		this.updateRoads( event.controlPoint.spline, event.controlPoint );
+
+		this.updateSplineBoundingBox( event.controlPoint.spline );
+
+		this.checkIntersections( event.controlPoint, event.controlPoint.spline );
+
+	}
+
 	onRoadControlPointUpdated ( event: RoadControlPointUpdatedEvent ) {
 
-		// NOT NEEDED
+		if ( this.debug ) console.debug( 'onRoadControlPointUpdated', event );
 
-		// if ( this.debug ) console.debug( 'onRoadControlPointUpdated' );
+		if ( event.controlPoint.spline.controlPoints.length < 2 ) return;
 
-		// const spline = event.road.spline || event.controlPoint.mainObject;
+		this.updateRoads( event.spline, event.controlPoint );
 
-		// if ( !spline ) console.warn( 'no spline' );
-
-		// spline?.getRoadSegments().forEach( segment => {
-
-		// 	if ( segment.roadId == -1 ) return;
-
-		// 	const road = this.mapService.map.getRoadById( segment.roadId );
-
-		// 	this.roadService.rebuildLinks( road, event.controlPoint );
-
-			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
-
-		// } );
+		this.updateSplineBoundingBox( event.spline );
 
 	}
 
 	onRoadControlPointRemoved ( event: RoadControlPointRemovedEvent ) {
 
-		if ( this.debug ) console.debug( 'onRoadControlPointRemoved' );
+		if ( this.debug ) console.debug( 'onRoadControlPointRemoved', event );
 
-		// SceneService.removeFromTool( event.controlPoint );
+		if ( event.spline.controlPoints.length < 2 ) return;
 
-		// this.roadService.updateSplineGeometries( event.road );
+		this.updateRoads( event.spline, event.controlPoint );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
+		this.updateSplineBoundingBox( event.spline );
+
+	}
+
+	private updateRoads ( spline: AbstractSpline, point: AbstractControlPoint ) {
+
+		const segments = spline.getSplineSegments();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
+
+			const road = this.roadService.getRoad( segment.id );
+
+			if ( !road ) continue;
+
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+
+			this.roadService.updateRoadNodes( road );
+
+			this.roadLinkService.updateLinks( road, point );
+
+		}
 
 	}
 
-	onRoadControlPointCreated ( event: RoadControlPointCreatedEvent ) {
+	private updateSplineBoundingBox ( spline: AbstractSpline ) {
 
-		if ( this.debug ) console.debug( 'onRoadControlPointCreated' );
+		if ( spline.controlPoints.length < 2 ) return;
 
-		// SceneService.addToolObject( event.controlPoint );
+		const boundingBox = new Box3();
 
-		// this.roadService.updateSplineGeometries( event.road );
+		const segments = spline.getSplineSegments();
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.road, true ) );
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
+
+			const road = this.roadService.getRoad( segment.id );
+
+			if ( !road ) continue;
+
+			if ( road.boundingBox ) {
+
+				boundingBox.union( road.boundingBox );
+
+			} else {
+
+				road.computeBoundingBox();
+
+				boundingBox.union( road.boundingBox );
+
+			}
+
+		}
+
+		spline.boundingBox = boundingBox;
+	}
+
+	private checkIntersections ( controlPoint: SplineControlPoint, spline: AbstractSpline ) {
+
+		this.intersectionService.checkSplineIntersections( spline );
 
 	}
+
 
 }

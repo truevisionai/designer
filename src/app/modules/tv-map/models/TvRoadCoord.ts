@@ -69,4 +69,38 @@ export class TvRoadCoord {
 	toLaneCoord ( lane: TvLane ) {
 		return new TvLaneCoord( this.road, this.laneSection, lane, this.s, this.t );
 	}
+
+	getNearestContact ( road: TvRoad ): TvContactPoint {
+
+		const startDistance = road.getPositionAt( 0 ).position.distanceTo( this.position );
+		const endDistance = road.getPositionAt( road.length ).position.distanceTo( this.position );
+
+		if ( startDistance < endDistance ) {
+
+			return TvContactPoint.START;
+
+		} else {
+
+			return TvContactPoint.END
+
+		}
+
+	}
+
+	getContactPosition ( road: TvRoad ): number {
+
+		const startDistance = road.getPositionAt( 0 ).position.distanceTo( this.position );
+		const endDistance = road.getPositionAt( road.length ).position.distanceTo( this.position );
+
+		if ( startDistance < endDistance ) {
+
+			return 0;
+
+		} else {
+
+			return road.length;;
+
+		}
+
+	}
 }

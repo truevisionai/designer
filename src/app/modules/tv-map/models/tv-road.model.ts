@@ -61,10 +61,7 @@ export class TvRoad {
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 	public trafficRule = TrafficRule.RHT;
-	public successor: TvRoadLinkChild;
-	public predecessor: TvRoadLinkChild;
 	public boundingBox: Box3;
-
 
 	private lastAddedLaneSectionIndex: number;
 	private lastAddedRoadObjectIndex: number;
@@ -79,6 +76,8 @@ export class TvRoad {
 	private _id: number;
 	private _gameObject: GameObject;
 	private junction: TvJunction;
+	private _successor: TvRoadLinkChild;
+	private _predecessor: TvRoadLinkChild;
 
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
@@ -88,6 +87,22 @@ export class TvRoad {
 		this._id = id;
 		this.junction = junction;
 		this.spline = new AutoSplineV2();
+	}
+
+	get successor (): TvRoadLinkChild {
+		return this._successor;
+	}
+
+	set successor ( value: TvRoadLinkChild ) {
+		this._successor = value;
+	}
+
+	get predecessor (): TvRoadLinkChild {
+		return this._predecessor;
+	}
+
+	set predecessor ( value: TvRoadLinkChild ) {
+		this._predecessor = value;
 	}
 
 	get junctionId (): number {
@@ -1308,9 +1323,15 @@ export class TvRoad {
 
 				if ( !lane.gameObject ) return;
 
-				if ( boundingBox ) return;
+				if ( !boundingBox ) {
 
-				boundingBox = lane.gameObject.geometry.boundingBox;
+					boundingBox = lane.gameObject.geometry.boundingBox;
+
+				} else {
+
+					boundingBox.union( lane.gameObject.geometry.boundingBox );
+
+				}
 
 			} );
 

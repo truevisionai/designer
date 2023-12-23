@@ -1,19 +1,33 @@
 import { Injectable } from '@angular/core';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineSegmentType } from 'app/core/shapes/spline-segment';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Box3, Vector3 } from 'three';
+import { JunctionConnectionService } from './junction-connection.service';
+import { JunctionService } from './junction.service';
+import { RoadService } from '../road/road.service';
+import { RoadSplineService } from '../road/road-spline.service';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class IntersectionService {
 
-	constructor () { }
+	constructor (
+		private mapService: MapService,
+		private roadService: RoadService,
+		private junctionService: JunctionService,
+		private junctionConnectionService: JunctionConnectionService
+	) { }
 
-	detectIntersections ( roadA: TvRoad, roadB: TvRoad, stepSize = 1 ): Vector3 | null {
+	detectRoadIntersections ( roadA: TvRoad, roadB: TvRoad, stepSize = 1 ): Vector3 | null {
 
 		if ( roadA.id == roadB.id ) return;
 
-		if ( !this.intersectsBox( roadA, roadB ) ) return;
+		if ( !this.intersectsRoadBox( roadA, roadB ) ) return;
 
 		const pointsA = roadA.getReferenceLinePoints( stepSize );
 		const pointsB = roadB.getReferenceLinePoints( stepSize );
@@ -41,18 +55,242 @@ export class IntersectionService {
 
 	}
 
-	private intersectsBox ( roadA: TvRoad, roadB: TvRoad ): boolean {
+	detectSplineIntersections ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
+
+		if ( splineA == splineB ) return;
+
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
+
+		const pointsA = splineA.getPoints( stepSize )
+		const pointsB = splineB.getPoints( stepSize );
+
+		for ( let i = 0; i < pointsA.length - 1; i++ ) {
+
+			for ( let j = 0; j < pointsB.length - 1; j++ ) {
+
+				const a = pointsA[ i ];
+				const b = pointsA[ i + 1 ];
+				const c = pointsB[ j ];
+				const d = pointsB[ j + 1 ];
+
+				const distance = a.distanceTo( c );
+
+				if ( distance < stepSize ) {
+
+					return this.lineIntersection( a, b, c, d );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	checkRoadIntersections ( road: TvRoad ) {
+
+		const roads = this.roadService.roads.filter( road => !road.isJunction );
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const otherRoad = roads[ i ];
+
+			const intersection = this.detectRoadIntersections( road, otherRoad );
+
+			if ( !intersection ) continue;
+
+			this.createRoadIntersection( road, otherRoad, intersection );
+
+		}
+
+	}
+
+	checkSplineIntersections ( spline: AbstractSpline ) {
+
+		const splines = this.mapService.map.getSplines();
+
+		for ( let i = 0; i < splines.length; i++ ) {
+
+			const otherSpline = splines[ i ];
+
+			const intersection = this.detectSplineIntersections( spline, otherSpline );
+
+			if ( !intersection ) continue;
+
+			this.createSplineIntersection( spline, otherSpline, intersection );
+
+		}
+
+	}
+
+	createSplineIntersection ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
+
+		const coordA = splineA.getCoordAt( point );
+		const coordB = splineB.getCoordAt( point );
+
+		const segmentA = splineA.getSegmentAt( coordA.s );
+		const segmentB = splineB.getSegmentAt( coordB.s );
+
+		if ( !segmentA.isRoad ) return;
+		if ( !segmentB.isRoad ) return;
+
+		const roadA = this.roadService.getRoad( segmentA.id );
+		const roadB = this.roadService.getRoad( segmentB.id );
+
+		this.createRoadIntersection( roadA, roadB, point );
+
+	}
+
+	private createRoadIntersection ( roadA: TvRoad, roadB: TvRoad, position: Vector3 ): void {
+
+		const junction = this.junctionService.createNewJunction();
+
+		let coordA = roadA.getCoordAt( position ).toRoadCoord( roadA );
+		let coordB = roadB.getCoordAt( position ).toRoadCoord( roadB );
+
+		const junctionWidth = Math.max( roadA.getRoadWidthAt( coordA.s ).totalWidth, roadB.getRoadWidthAt( coordB.s ).totalWidth );;
+
+		const roadC = this.roadService.cutRoadFromTo(
+			roadA,
+			coordA.s - junctionWidth,
+			coordA.s + junctionWidth,
+			junction.id,
+			SplineSegmentType.JUNCTION
+		);
+
+		const roadD = this.roadService.cutRoadFromTo(
+			roadB,
+			coordB.s - junctionWidth,
+			coordB.s + junctionWidth,
+			junction.id,
+			SplineSegmentType.JUNCTION
+		);
+
+		if ( roadC ) coordA.s -= junctionWidth;
+		if ( roadD ) coordB.s -= junctionWidth;
+
+		this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadB, coordB.contact );
+
+		if ( roadC ) {
+
+			this.roadService.addRoad( roadC );
+
+			this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadC, TvContactPoint.START );
+			this.junctionService.addConnectionsFromContact( junction, roadB, coordB.contact, roadC, TvContactPoint.START );
+		}
+
+		if ( roadD ) {
+
+			this.roadService.addRoad( roadD );
+
+			this.junctionService.addConnectionsFromContact( junction, roadB, coordB.contact, roadD, TvContactPoint.START );
+			this.junctionService.addConnectionsFromContact( junction, roadA, coordA.contact, roadD, TvContactPoint.START );
+
+		}
+
+		if ( roadC && roadD ) {
+
+			this.junctionService.addConnectionsFromContact( junction, roadC, TvContactPoint.START, roadD, TvContactPoint.START );
+
+		}
+
+		this.postProcessJunction( junction );
+
+		this.junctionService.addJunction( junction );
+
+	}
+
+	postProcessJunction ( junction: TvJunction ) {
+
+		const roads = junction.getRoads();
+
+		const connections = junction.getConnections();
+
+		function findClosedConnection ( road: TvRoad ) {
+
+			const roadConnections = connections.filter( i => i.incomingRoadId == road.id );
+
+			if ( roadConnections.length == 0 ) return;
+
+			let minAngle = 2 * Math.PI; // Initialize with maximum possible angle (360 degrees)
+			let minDistance = Infinity;
+			let nearestConnection = null;
+
+			for ( let i = 0; i < roadConnections.length; i++ ) {
+
+				const connection = roadConnections[ i ];
+
+				const connectingRoad = connection.connectingRoad;
+
+				const p1 = connectingRoad.spline.getFirstPoint()
+				const p1Direction = p1.getDirectionVector();
+
+				const p2 = connectingRoad.spline.getLastPoint();
+				const p2Direction = p2.getDirectionVector().negate();
+
+				const distance = p1.position.distanceTo( p2.position );
+
+				// find angle between road direction and connecting road direction
+				let crossProduct = new Vector3().crossVectors( p1Direction, p2Direction );
+				let angle = p1Direction.angleTo( p2Direction );
+
+				// Determine if the angle is to the left or right
+				if ( crossProduct.z < 0 ) {
+					// Angle to the right
+					angle = Math.PI * 2 - angle;
+				}
+
+				if ( angle < minAngle ) {
+
+					minDistance = distance;
+					minAngle = angle;
+					nearestConnection = connection;
+
+				}
+
+			}
+
+			return nearestConnection;
+
+		}
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const road = roads[ i ];
+
+			const nearestConnection = findClosedConnection( road );
+
+			if ( nearestConnection ) {
+
+				this.junctionConnectionService.addNonDrivingLaneLinks( nearestConnection );
+
+			}
+
+		}
+
+	}
+
+	private intersectsRoadBox ( roadA: TvRoad, roadB: TvRoad ): boolean {
 
 		if ( !roadA.boundingBox ) roadA.computeBoundingBox();
 		if ( !roadB.boundingBox ) roadB.computeBoundingBox();
 
-		const roadABox = roadA.boundingBox;
-		const roadBBox = roadB.boundingBox;
+		return this.intersectsBox( roadA.boundingBox, roadB.boundingBox );
+
+	}
+
+	private intersectsSplineBox ( splineA: AbstractSpline, splineB: AbstractSpline ): boolean {
+
+		return this.intersectsBox( splineA.boundingBox, splineB.boundingBox );
+
+	}
+
+	private intersectsBox ( boxA: Box3, boxB: Box3 ): boolean {
 
 		// return true if we box is not generated
-		if ( !roadABox || !roadBBox ) return true;
+		if ( !boxA || !boxB ) return true;
 
-		const boxIntersection = roadABox.intersectsBox( roadBBox );
+		const boxIntersection = boxA.intersectsBox( boxB );
 
 		return boxIntersection;
 

@@ -45,6 +45,13 @@ export class RoadSplineService {
 
 			road.clearGeometries();
 
+			if ( segment.geometries.length == 0 ) {
+
+				console.error( 'segment.geometries.length == 0', spline );
+
+				return;
+			}
+
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
 			if ( rebuild ) {

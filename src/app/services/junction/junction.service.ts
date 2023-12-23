@@ -46,6 +46,20 @@ export class JunctionService {
 
 	}
 
+	buildJunction ( junction: TvJunction ) {
+
+		const connections = junction.getConnections();
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			this.roadService.rebuildRoad( connections[ i ].connectingRoad );
+
+		}
+
+		this.createJunctionMesh( junction );
+
+	}
+
 	addJunction ( junction: TvJunction ) {
 
 		this.mapService.map.addJunctionInstance( junction );
@@ -56,23 +70,15 @@ export class JunctionService {
 
 			const connection = connections[ i ];
 
-			if ( connection.contactPoint == TvContactPoint.START ) {
-
-				connection.incomingRoad.setPredecessor( TvRoadLinkChildType.junction, junction.id );
-
-			} else if ( connection.contactPoint == TvContactPoint.END ) {
-
-				connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
-
-			}
-
-			// connection.incomingRoad.setSuccessor( TvRoadLinkChildType.junction, junction.id );
-
 			this.roadService.addRoad( connection.connectingRoad );;
 
 		}
 
-		this.createJunctionMesh( junction );
+	}
+
+	updateJunction ( junction: TvJunction ) {
+
+		this.buildJunction( junction );
 
 	}
 
@@ -245,9 +251,9 @@ export class JunctionService {
 
 	createJunctionMesh ( junction: TvJunction ) {
 
-		const mesh = this.junctionMeshService.createMeshFromJunction( junction );
+		// const mesh = this.junctionMeshService.createMeshFromJunction( junction );
 
-		this.objectMap.add( junction, mesh );
+		// this.objectMap.add( junction, mesh );
 
 		// junction.boundingBox = new Box3().setFromObject( mesh );
 

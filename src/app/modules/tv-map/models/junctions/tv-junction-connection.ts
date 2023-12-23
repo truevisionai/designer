@@ -108,12 +108,6 @@ export class TvJunctionConnection {
 
 	}
 
-	static create ( incomingRoad: TvRoad, connectingRoad: TvRoad, contactPoint: TvContactPoint ) {
-
-		return new TvJunctionConnection( TvJunctionConnection.counter++, incomingRoad, connectingRoad, contactPoint );
-
-	}
-
 	clone () {
 
 		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
@@ -249,6 +243,32 @@ export class TvJunctionConnection {
 		const toLane = this.findToLane( to );
 
 		return new TvJunctionLaneLink( fromLane, toLane );
+	}
+
+	getIncomingLaneSection () {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.incomingRoad.getFirstLaneSection();
+
+		} else {
+
+			return this.incomingRoad.getLastLaneSection();
+
+		}
+
+	}
+
+	getIncomingLanes (): TvLane[] {
+
+		return this.getIncomingLaneSection().getLaneArray();
+
+	}
+
+	getOutgoingLanes (): TvLane[] {
+
+		return this.outgoingRoad.getFirstLaneSection().getLaneArray();
+
 	}
 
 	private findFromLane ( junction: TvJunction, from: number ): TvLane {

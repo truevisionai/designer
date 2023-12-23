@@ -95,6 +95,109 @@ export class TvJunction {
 
 	}
 
+	removeConnection ( connection: TvJunctionConnection ) {
+
+		this.connections.delete( connection.id );
+
+	}
+
+	private removeConnectionsForRoad ( road: TvRoad ): void {
+
+		this.removeIncomingConnections( road );
+
+		this.removeOutgoingConnections( road );
+
+	}
+
+	getIncomingRoads (): TvRoad[] {
+
+		const incomingRoads: TvRoad[] = [];
+
+		this.connections.forEach( connection => {
+
+			if ( connection.incomingRoad ) {
+
+				incomingRoads.push( connection.incomingRoad );
+
+			}
+
+		} );
+
+		return incomingRoads;
+
+	}
+
+	getOutgoingRoads (): TvRoad[] {
+
+		const outgoingRoads: TvRoad[] = [];
+
+		this.connections.forEach( connection => {
+
+			if ( connection.outgoingRoad ) {
+
+				outgoingRoads.push( connection.outgoingRoad );
+
+			}
+
+		} );
+
+		return outgoingRoads;
+
+	}
+
+	getRoads (): TvRoad[] {
+
+		const connections = this.getConnections();
+
+		const roads = [];
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			if ( connection.incomingRoad && roads.indexOf( connection.incomingRoad ) === -1 ) {
+
+				roads.push( connection.incomingRoad );
+
+			} else if ( connection.outgoingRoad && roads.indexOf( connection.outgoingRoad ) === -1 ) {
+
+				roads.push( connection.outgoingRoad );
+
+			}
+
+		}
+
+		return roads;
+	}
+
+	private removeIncomingConnections ( road: TvRoad ) {
+
+		this.connections.forEach( connection => {
+
+			if ( connection.incomingRoadId === road.id ) {
+
+				this.connections.delete( connection.id );
+
+			}
+
+		} );
+
+	}
+
+	private removeOutgoingConnections ( road: TvRoad ) {
+
+		this.connections.forEach( connection => {
+
+			if ( connection.outgoingRoadId === road.id ) {
+
+				this.connections.delete( connection.id );
+
+			}
+
+		} );
+
+	}
+
 	public getJunctionPriorityCount (): number {
 
 		return this._priorities.length;
@@ -200,8 +303,31 @@ export class TvJunction {
 
 	getConnectionsForRoad ( road: TvRoad ): TvJunctionConnection[] {
 
-		return this.getConnections().filter( connection => connection.connectingRoadId === road.id );
+		const connections = this.getConnections();
 
+		const results = [];
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			if ( connection.connectingRoadId === road.id ) {
+
+				results.push( connection );
+
+			} else if ( connection.incomingRoadId === road.id ) {
+
+				results.push( connection );
+
+			} else if ( connection.outgoingRoadId === road.id ) {
+
+				results.push( connection );
+
+			}
+
+		}
+
+		return results;
 	}
 
 	sortConnections (): void {

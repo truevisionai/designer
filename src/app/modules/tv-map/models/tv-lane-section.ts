@@ -12,7 +12,6 @@ import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
-import { MapEvents } from 'app/events/map-events';
 
 export class TvLaneSection {
 
@@ -98,6 +97,12 @@ export class TvLaneSection {
 	// private laneVector: OdLane[] = [];
 	private get laneArray (): TvLane[] {
 		return [ ...this.laneMap.values() ];
+	}
+
+	hasLaneId ( laneId: number ) {
+
+		return this.laneMap.has( laneId );
+
 	}
 
 	updateMeshGeometry ( offset: number ): any {

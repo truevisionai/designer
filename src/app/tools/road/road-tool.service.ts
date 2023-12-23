@@ -26,7 +26,7 @@ export class RoadToolService {
 		public controlPointService: ControlPointFactory,
 		private roadLinkService: RoadLinkService,
 		private debug: RoadDebugService,
-		private roadService: RoadService,
+		public roadService: RoadService,
 	) {
 	}
 
@@ -76,12 +76,6 @@ export class RoadToolService {
 
 	}
 
-	rebuildLinks ( selectedRoad: TvRoad, object: SplineControlPoint ) {
-
-		this.roadService.rebuildLinks( selectedRoad, object );
-
-	}
-
 	removeRoad ( road: TvRoad, hideHelpers: boolean ) {
 
 		this.roadService.removeRoad( road, hideHelpers );
@@ -110,7 +104,11 @@ export class RoadToolService {
 
 	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ) {
 
-		return this.roadService.createJoiningRoad( nodeA, nodeB );
+		const joiningRoad = this.roadService.createJoiningRoad( nodeA, nodeB );
+
+		this.roadLinkService.linkRoads( nodeA, nodeB, joiningRoad );
+
+		return joiningRoad;
 
 	}
 
