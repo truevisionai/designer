@@ -221,4 +221,24 @@ export class TvPosTheta {
 			angleDiff: Math.abs( angleDiff )
 		};
 	}
+
+
+	angleTo ( point: TvPosTheta ) {
+
+		let dirFrom = this.toDirectionVector();
+		let dirTo = point.toDirectionVector();
+
+		let crossProduct = new Vector3().crossVectors( dirFrom, dirTo );
+		let angle = dirFrom.angleTo( dirTo );
+
+		// Determine if the angle is to the left or right
+		if ( crossProduct.z > 0 ) {
+			// Angle to the left
+			return angle
+		} else {
+			// Angle to the right
+			return ( Math.PI * 2 - angle )
+		}
+
+	}
 }
