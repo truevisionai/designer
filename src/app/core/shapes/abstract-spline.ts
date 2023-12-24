@@ -10,6 +10,8 @@ import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { SplineSegment, SplineSegmentType } from './spline-segment';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -73,7 +75,12 @@ export abstract class AbstractSpline {
 
 		this.controlPoints.forEach( cp => spline.addControlPointAt( cp.position ) );
 
-		this.splineSegments.forEach( segment => spline.addRoadSegment( segment.start, segment.id ) );
+		this.splineSegments.forEach( segment => spline.addSegmentSection(
+			segment.start,
+			segment.id,
+			segment.type,
+			segment.segment
+		) );
 
 		spline.type = this.type;
 
@@ -82,7 +89,6 @@ export abstract class AbstractSpline {
 		return spline;
 
 	}
-
 
 	clear () {
 
@@ -226,13 +232,21 @@ export abstract class AbstractSpline {
 	}
 
 	getPath ( offset: number = 0 ) {
+
 		if ( this.type == 'auto' || this.type == 'auto2' || this.type == 'autov2' ) {
+
 			return new AutoSplinePath( this as any, offset );
+
 		} else if ( this.type == 'explicit' ) {
+
 			return new ExplicitSplinePath( this as any, offset );
+
 		} else {
+
 			throw new Error( 'Invalid spline type' );
+
 		}
+
 	}
 
 	getPoints ( step: number ) {
@@ -240,6 +254,8 @@ export abstract class AbstractSpline {
 		const points: Vector3[] = [];
 
 		const length = this.getLength();
+
+		if ( length == 0 ) return [];
 
 		const d = step / length;
 
@@ -252,7 +268,7 @@ export abstract class AbstractSpline {
 		return points;
 	}
 
-	addSegmentSection ( sStart: number, id: number, type: SplineSegmentType ) {
+	addSegmentSection ( sStart: number, id: number, type: SplineSegmentType, segment: TvRoad | TvJunction ) {
 
 		if ( sStart == null ) return;
 
@@ -263,11 +279,11 @@ export abstract class AbstractSpline {
 
 		if ( exists ) {
 
-			exists.id = id;
+			throw new Error( 'Segment already exists' );
 
 		} else {
 
-			this.splineSegments.push( new SplineSegment( sStart, id, type, [] ) );
+			this.splineSegments.push( new SplineSegment( sStart, type, segment ) );
 
 		}
 
@@ -278,15 +294,15 @@ export abstract class AbstractSpline {
 
 	}
 
-	addRoadSegment ( sStart: number, roadId: number ) {
+	addRoadSegment ( sStart: number, road: TvRoad ) {
 
-		this.addSegmentSection( sStart, roadId, SplineSegmentType.ROAD );
+		this.addSegmentSection( sStart, road.id, SplineSegmentType.ROAD, road );
 
 	}
 
-	addJunctionSegment ( sStart: number, junctonId: number ) {
+	addJunctionSegment ( sStart: number, juncton: TvJunction ) {
 
-		this.addSegmentSection( sStart, junctonId, SplineSegmentType.JUNCTION );
+		this.addSegmentSection( sStart, juncton.id, SplineSegmentType.JUNCTION, juncton );
 
 	}
 
@@ -318,7 +334,7 @@ export abstract class AbstractSpline {
 
 	}
 
-	getCoordAt ( point: Vector3 ) {
+	getCoordAt ( point: Vector3 ): TvPosTheta {
 
 		let minDistance = Number.MAX_SAFE_INTEGER;
 
@@ -342,7 +358,7 @@ export abstract class AbstractSpline {
 
 	}
 
-	getSegmentAt ( s: number ) {
+	getSegmentAt ( s: number ): SplineSegment {
 
 		const segments = this.getSplineSegments();
 
@@ -358,6 +374,36 @@ export abstract class AbstractSpline {
 
 	}
 
+	findSegment ( segment: TvRoad | TvJunction ): SplineSegment {
+
+		if ( segment instanceof TvRoad ) {
+
+			return this.splineSegments.find( i => i.id == segment.id && i.type == SplineSegmentType.ROAD );
+
+		} else if ( segment instanceof TvJunction ) {
+
+			return this.splineSegments.find( i => i.id == segment.id && i.type == SplineSegmentType.JUNCTION );
+
+		} else {
+
+			return null;
+		}
+
+	}
+
+	removeSegment ( segment: TvRoad | TvJunction ): void {
+
+		if ( segment instanceof TvRoad ) {
+
+			this.splineSegments = this.splineSegments.filter( i => i.id != segment.id && i.type != SplineSegmentType.ROAD );
+
+		} else if ( segment instanceof TvJunction ) {
+
+			this.splineSegments = this.splineSegments.filter( i => i.id != segment.id && i.type != SplineSegmentType.JUNCTION );
+
+		}
+
+	}
 }
 
 

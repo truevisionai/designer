@@ -221,7 +221,7 @@ export class RoadFactory {
 
 		const spline = new AutoSplineV2();
 
-		spline.addRoadSegment( road.sStart, road.id );
+		spline.addRoadSegment( 0, road );
 
 		road.spline = spline;
 

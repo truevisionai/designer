@@ -24,10 +24,6 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	}
 
-	// get hdgs () {
-	// 	return this.controlPoints.map( ( cp: AbstractControlPoint ) => cp.hdg );
-	// }
-
 	init () {
 
 		this.polyline = new PolyLine( this.controlPoints );
@@ -71,6 +67,7 @@ export class AutoSplineV2 extends AbstractSpline {
 		this.showLines();
 
 	}
+
 	update () {
 
 		this.updateHdgs();

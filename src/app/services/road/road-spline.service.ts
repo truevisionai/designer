@@ -15,6 +15,7 @@ import { BaseService } from '../base.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { SplineSegmentType } from 'app/core/shapes/spline-segment';
+import { TvJunction } from "../../modules/tv-map/models/junctions/tv-junction";
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,6 +30,51 @@ export class RoadSplineService {
 
 	}
 
+	addJunctionSegment ( spline: AbstractSpline, sStart: number, junction: TvJunction ) {
+
+		if ( sStart >= spline.getLength() ) {
+			throw new Error( 'Start must be less than end' );
+			return;
+		}
+
+		if ( sStart <= 0 ) {
+			throw new Error( 'Start/End must be greater than 0' );
+			return;
+		}
+
+		spline.addJunctionSegment( sStart, junction );
+	}
+
+	addEmptySegment ( spline: AbstractSpline, sStart: number ) {
+
+		if ( sStart >= spline.getLength() ) {
+			throw new Error( 'Start must be less than end' );
+			return;
+		}
+
+		if ( sStart <= 0 ) {
+			throw new Error( 'Start/End must be greater than 0' );
+			return;
+		}
+
+		spline.addSegmentSection( sStart, -1, SplineSegmentType.NONE, null );
+	}
+
+	addRoadSegmentNew ( spline: AbstractSpline, sStart: number, road: TvRoad ) {
+
+		if ( sStart >= spline.getLength() ) {
+			throw new Error( 'Start must be less than end' );
+			return;
+		}
+
+		if ( sStart <= 0 ) {
+			throw new Error( 'Start/End must be greater than 0' );
+			return;
+		}
+
+		spline.addRoadSegment( sStart, road );
+	}
+
 	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ): Mesh[] {
 
 		const meshes: Mesh[] = [];
@@ -41,7 +87,7 @@ export class RoadSplineService {
 
 			if ( !segment.isRoad ) return;
 
-			const road = this.mapService.map.getRoadById( segment.id );
+			const road = segment.getInstance<TvRoad>();
 
 			road.clearGeometries();
 
@@ -71,20 +117,6 @@ export class RoadSplineService {
 
 	}
 
-	addRoadSegment ( road: TvRoad ) {
-
-		const spline = road.spline;
-
-		if ( spline == null ) return;
-
-		this.mapService.map.addSpline( spline );
-
-		// if no road segments are present in the spline,
-		// then add the road this
-		spline.addRoadSegment( road.sStart, road.id );
-
-	}
-
 	removeRoadSegment ( road: TvRoad ) {
 
 		const spline = road.spline;
@@ -93,22 +125,20 @@ export class RoadSplineService {
 
 		// get road segment and update if next road segment exists
 		// this is to make sure we maintains gaps if intended
-		const segment = spline.getSplineSegments().find( i => i.id == road.id );
+		const currentSegment = spline.findSegment( road );
 
-		if ( segment == null ) return;
+		if ( currentSegment == null ) return;
 
-		const nextSegment = spline.getSplineSegments().find( i => i.start > segment.start );
+		const nextSegment = spline.getSplineSegments().find( i => i.start > currentSegment.start );
 
 		if ( nextSegment ) {
 
 			// if next segment exists,
-			segment.id = -1;
-			segment.type = SplineSegmentType.NONE;
+			currentSegment.makeEmpty();
 
 		} else {
 
-			spline.removeRoadSegmentByRoadId( road.id );
-
+			spline.removeSegment( road );
 
 		}
 
@@ -171,7 +201,7 @@ export class RoadSplineService {
 
 		const spline = this.createSpline( a, aDirection, b, bDirection );
 
-		spline.addRoadSegment( 0, connection.connectingRoadId );
+		spline.addRoadSegment( 0, connection.connectingRoad );
 
 		connection.connectingRoad.spline = spline
 
@@ -300,7 +330,7 @@ export class RoadSplineService {
 
 		const spline = new AutoSplineV2();
 
-		if ( road ) spline.addRoadSegment( 0, road.id );
+		if ( road ) spline.addRoadSegment( 0, road );
 
 		spline.addControlPointAt( v1 );
 		spline.addControlPointAt( v2 );

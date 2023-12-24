@@ -322,7 +322,7 @@ export class ExplicitSpline extends AbstractSpline {
 		this.hdgs.splice( cp.tagindex, 1 );
 
 		// Remove the segment
-		this.removeSegment( cp.tagindex - 1 );
+		this.removeExplicitSegment( cp.tagindex - 1 );
 
 		// Update remaining segments
 		for ( let i = cp.tagindex; i < this.explicitSegments.length; i++ ) {
@@ -415,7 +415,7 @@ export class ExplicitSpline extends AbstractSpline {
 		// this.tangentLines.push( line );
 	}
 
-	removeSegment ( index: number ) {
+	removeExplicitSegment ( index: number ) {
 
 		const line = this.explicitSegments[ index ];
 

@@ -27,7 +27,7 @@ export class LaneOffsetNode extends Group implements ISelectable {
 
 		let position: Vector3;
 
-		if ( Maths.approxEquals( laneOffset.s, 0 ) || Maths.approxEquals( laneOffset.road.length, 0 ) ) {
+		if ( Maths.approxEquals( laneOffset.s, 0 ) || Maths.approxEquals( this.road.length, 0 ) ) {
 
 			this.point = AnyControlPoint.create( 'point', new Vector3( 0, 0, 0 ) );
 

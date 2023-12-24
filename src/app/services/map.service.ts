@@ -17,4 +17,19 @@ export class MapService {
 	set map ( value: TvMap ) {
 		TvMapInstance.map = value;
 	}
+
+	reset () {
+
+		this.map.getSplines().forEach( spline => {
+
+			this.map.removeSpline( spline );
+
+		} );
+
+		this.map.roads.clear();
+
+		this.map.junctions.clear();
+
+	}
+
 }

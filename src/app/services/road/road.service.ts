@@ -50,6 +50,18 @@ export class RoadService {
 
 	}
 
+	getRoadCount (): number {
+
+		return this.roads.length;
+
+	}
+
+	removeAllRoads () {
+
+		this.roads.forEach( road => this.removeRoad( road ) );
+
+	}
+
 	getRoad ( roadId: number ) {
 
 		return this.mapService.map.getRoadById( roadId );
@@ -69,10 +81,6 @@ export class RoadService {
 		clone.id = this.getNextRoadId();
 
 		clone.name = `Road ${ clone.id }`;
-
-		clone.sStart = road.sStart + s;
-
-		// road.length = s;
 
 		return clone;
 
@@ -126,7 +134,7 @@ export class RoadService {
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
-		spline.addRoadSegment( 0, joiningRoad.id );
+		spline.addRoadSegment( 0, joiningRoad );
 
 		joiningRoad.spline = spline;
 
@@ -368,45 +376,35 @@ export class RoadService {
 
 	}
 
-	divideRoadAt ( road: TvRoad, s: number ): TvRoad {
+	divideRoadAt ( road: TvRoad, sRoad: number ): TvRoad {
 
-		const newRoad = this.clone( road, s );
+		const newRoad = this.clone( road, sRoad );
 
 		road.setSuccessorRoad( newRoad, TvContactPoint.START );
 
 		newRoad.setPredecessorRoad( road, TvContactPoint.END );
 
+		newRoad.sStart = road.sStart + sRoad;
+
+		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+
 		return newRoad
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number, segmentId = -1, segmentType = SplineSegmentType.NONE ): TvRoad {
+	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number ): TvRoad {
 
-		if ( sStart >= sEnd ) {
-			throw new Error( 'Start must be less than end' );
-			return;
-		}
+		// TODO: Not used and might need fixes
 
-		if ( sStart < 0 || sEnd < 0 ) {
-			throw new Error( 'Start/End must be greater than 0' );
-			return;
-		}
+		this.roadSplineService.addEmptySegment( road.spline, road.sStart + sStart );
 
-		if ( sStart > road.length ) {
-			throw new Error( 'Start must be less than road length' );
-			return;
-		}
-
-		road.spline.addSegmentSection( sStart, segmentId, segmentType );
-
-		if ( sEnd > road.length ) {
-			// throw new Error( 'End must be less than road length' );
-			return;
-		}
+		if ( sEnd > road.length ) return;
 
 		const newRoad = this.clone( road, sEnd );
 
-		road.spline.addRoadSegment( sEnd, newRoad.id );
+		newRoad.sStart = road.sStart + sEnd;
+
+		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
 		// update links
 
@@ -423,10 +421,7 @@ export class RoadService {
 
 		}
 
-		// TODO: this will be junction and not null
 		newRoad.predecessor = null;
-
-		road.length = sStart - road.sStart;
 
 		return newRoad;
 
@@ -436,7 +431,7 @@ export class RoadService {
 
 		this.mapService.map.addRoad( road );
 
-		this.roadSplineService.addRoadSegment( road );
+		this.mapService.map.addSpline( road.spline );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 

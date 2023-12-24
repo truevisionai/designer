@@ -9,6 +9,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
+import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
@@ -19,6 +20,7 @@ describe( 'automatic junctions', () => {
 
 	let tool: RoadTool;
 
+	let mapService: MapService;
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
@@ -34,6 +36,7 @@ describe( 'automatic junctions', () => {
 
 		tool = new RoadTool( TestBed.inject( RoadToolService ) )
 
+		mapService = TestBed.inject( MapService );
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
@@ -41,6 +44,31 @@ describe( 'automatic junctions', () => {
 		junctionConnectionService = TestBed.inject( JunctionConnectionService );
 
 	} );
+
+	afterEach( () => {
+
+		mapService.reset();
+
+	} )
+
+	// it( 'should create straight junction between 2 roads', () => {
+
+	// 	// left to right
+	// 	const road1 = roadService.createDefaultRoad();
+	// 	road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
+	// 	road1.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+
+	// 	// bottom to top
+	// 	const road2 = roadService.createDefaultRoad();
+	// 	road2.spline.addControlPointAt( new Vector3( 0, 20, 0 ) );
+	// 	road2.spline.addControlPointAt( new Vector3( 0, 70, 0 ) );
+
+	// 	roadService.addRoad( road1 );
+	// 	roadService.addRoad( road2 );
+
+	// 	intersectionService.checkRoadIntersections( road2 );
+
+	// } )
 
 	it( 'should create 4-way junction', () => {
 
@@ -57,7 +85,9 @@ describe( 'automatic junctions', () => {
 		roadService.addRoad( road1 );
 		roadService.addRoad( road2 );
 
-		intersectionService.checkRoadIntersections( road2 );
+		intersectionService.checkSplineIntersections( road2.spline );
+
+		expect( junctionService.junctions.length ).toBe( 1 );
 
 		const junction = junctionService.junctions[ 0 ];
 		const connections = junction.getConnections();
@@ -74,6 +104,11 @@ describe( 'automatic junctions', () => {
 		const bottomRoad = roadService.getRoad( 2 );
 		const topRoad = roadService.getRoad( 3 );
 		const rightRoad = roadService.getRoad( 4 );
+
+		expect( leftRoad.length ).toBeCloseTo( 37.8 );
+		expect( bottomRoad.length ).toBeCloseTo( 37.8 );
+		expect( rightRoad.length ).toBeCloseTo( 37.8 );
+		expect( topRoad.length ).toBeCloseTo( 37.8 );
 
 		expect( leftRoad.predecessor ).toBeUndefined();
 		expect( bottomRoad.predecessor ).toBeUndefined();
@@ -117,19 +152,26 @@ describe( 'automatic junctions', () => {
 
 		}
 
-		// expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( 1 );
-		// expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( 2 );
 		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( 5 );
+		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( bottomRoad.id );
+		expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( leftRoad.id );
 
-		const bottomHalfRoad = roadService.getRoad( 3 );
-		expect( bottomHalfRoad ).toBeDefined();
-		expect( bottomHalfRoad.successor ).toBeUndefined();
-		expect( bottomHalfRoad.predecessor ).toBeDefined();
-		expect( bottomHalfRoad.predecessor.elementId ).toBe( junction.id );
+		expect( junction.connections.get( 1 ).connectingRoad.id ).toBe( 6 );
+		expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( leftRoad.id );
+		expect( junction.connections.get( 1 ).outgoingRoad.id ).toBe( bottomRoad.id );
 
-		const connectingRoad4to5 = junction.connections.get( 0 ).connectingRoad;
+		expect( junction.connections.get( 2 ).connectingRoad.id ).toBe( 7 );
+		expect( junction.connections.get( 2 ).incomingRoad.id ).toBe( bottomRoad.id );
+		expect( junction.connections.get( 2 ).outgoingRoad.id ).toBe( topRoad.id );
 
-		expect( connectingRoad4to5.geometries.length ).toBe( 5 );
+		expect( junction.connections.get( 3 ).connectingRoad.id ).toBe( 8 );
+		expect( junction.connections.get( 3 ).incomingRoad.id ).toBe( topRoad.id );
+		expect( junction.connections.get( 3 ).outgoingRoad.id ).toBe( bottomRoad.id );
+
+		expect( junction.connections.get( 4 ).connectingRoad.id ).toBe( 9 );
+		expect( junction.connections.get( 4 ).incomingRoad.id ).toBe( leftRoad.id );
+		expect( junction.connections.get( 4 ).outgoingRoad.id ).toBe( topRoad.id );
+
 
 	} );
 
@@ -148,7 +190,7 @@ describe( 'automatic junctions', () => {
 		roadService.addRoad( road1 );
 		roadService.addRoad( road2 );
 
-		intersectionService.checkRoadIntersections( road2 );
+		intersectionService.checkSplineIntersections( road2.spline );
 
 		// 4 roads
 		// 12 connections
@@ -202,13 +244,42 @@ describe( 'automatic junctions', () => {
 
 		junction.addConnection( connection );
 
-		// intersectionService.postProcessJunction( junction );
-
 		junctionConnectionService.addNonDrivingLaneLinks( connection );
 
 		expect( connection.laneLink.length ).toBe( 3 );
 
 	} );
 
+	it( 'should create 2 4-way junctions automatically', () => {
+
+		expect( roadService.getRoadCount() ).toBe( 0 );
+
+		// left to right
+		const road1 = roadService.createDefaultRoad();
+		road1.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
+		road1.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+
+		// left to right
+		const road2 = roadService.createDefaultRoad();
+		road2.spline.addControlPointAt( new Vector3( -100, 50, 0 ) );
+		road2.spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
+
+		// bottom to top
+		const road3 = roadService.createDefaultRoad();
+		road3.spline.addControlPointAt( new Vector3( 0, -200, 0 ) );
+		road3.spline.addControlPointAt( new Vector3( 0, 200, 0 ) );
+
+		roadService.addRoad( road1 );
+		roadService.addRoad( road2 );
+		roadService.addRoad( road3 );
+
+		intersectionService.checkSplineIntersections( road3.spline );
+
+		expect( junctionService.junctions.length ).toBe( 2 );
+		// 12 for each junction
+		expect( roadService.roads.filter( road => road.isJunction ).length ).toBe( 24 );
+		expect( roadService.roads.filter( road => !road.isJunction ).length ).toBe( 7 );
+
+	} );
 
 } );

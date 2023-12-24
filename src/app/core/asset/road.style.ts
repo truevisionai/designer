@@ -31,7 +31,7 @@ export class RoadStyle {
 
 	constructor ( road?: TvRoad ) {
 
-		this.laneOffset = new TvRoadLaneOffset( null, 0, 0, 0, 0, 0 );
+		this.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		this.laneSection = new TvLaneSection( 0, 0, true, road );
 

@@ -88,6 +88,10 @@ export class TvMap {
 		return this.splines;
 	}
 
+	getSplineCount (): number {
+		return this.splines.length;
+	}
+
 	/**
 	 *
 	 * @param name

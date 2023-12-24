@@ -39,7 +39,7 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle();
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
@@ -54,7 +54,7 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle( road );
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
@@ -93,7 +93,7 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle( road );
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( road, 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 

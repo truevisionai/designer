@@ -35,48 +35,65 @@ import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from './tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
 import { RoadStyle } from "../../../core/asset/road.style";
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
+import { MapEvents } from 'app/events/map-events';
 
 export class TvRoad {
 
 	public readonly uuid: string;
 
 	private _spline: AbstractSpline;
+
 	private _sStart: number;
 
 	public type: TvRoadTypeClass[] = [];
-	public elevationProfile: TvElevationProfile = new TvElevationProfile;
+
+	public elevationProfile: TvElevationProfile;
+
 	public lateralProfile: TvLateralProfile;
-	public lanes = new TvRoadLanes( this );
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
 	public sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+
 	public borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 	public trafficRule = TrafficRule.RHT;
+
 	public boundingBox: Box3;
 
 	private lastAddedLaneSectionIndex: number;
+
 	private lastAddedRoadObjectIndex: number;
 
-	private _objects: TvObjectContainer = new TvObjectContainer();
-	private _signals: Map<number, TvRoadSignal> = new Map<number, TvRoadSignal>();
+	private lanes: TvRoadLanes;
+
+	private _objects: TvObjectContainer;
+
+	private _signals: Map<number, TvRoadSignal>;
+
 	private _planView = new TvPlaneView;
 
 	private _neighbors: TvRoadLinkNeighbor[] = [];
+
 	private _name: string;
+
 	private _length: number;
+
 	private _id: number;
+
 	private _gameObject: GameObject;
+
 	private junction: TvJunction;
+
 	private _successor: TvRoadLinkChild;
+
 	private _predecessor: TvRoadLinkChild;
 
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
@@ -86,7 +103,11 @@ export class TvRoad {
 		this._length = length;
 		this._id = id;
 		this.junction = junction;
-		this.spline = new AutoSplineV2();
+		this.lanes = new TvRoadLanes();
+		this.elevationProfile = new TvElevationProfile();
+		this._objects = new TvObjectContainer();
+		this._signals = new Map<number, TvRoadSignal>();
+
 	}
 
 	get successor (): TvRoadLinkChild {
@@ -830,7 +851,7 @@ export class TvRoad {
 
 	getLaneSectionAt ( s: number ): TvLaneSection {
 
-		return this.lanes.getLaneSectionAt( s );
+		return TvUtils.checkIntervalArray( this.laneSections, s );
 
 	}
 
@@ -882,7 +903,7 @@ export class TvRoad {
 
 	getLaneOffsetValue ( s: number ): number {
 
-		return this.lanes.getLaneOffsetValue( s );
+		return this.getLaneOffsetAt( s )?.getValue( s );
 
 	}
 
@@ -1226,13 +1247,11 @@ export class TvRoad {
 
 	clone ( s: number ): TvRoad {
 
-		const length = this.length - s;
-
-		const road = new TvRoad( this.name, length, this.id, this.junction );
+		const road = new TvRoad( this.name, this.length, this.id, this.junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
-		road.sStart = this.sStart + s;
+		road.sStart = this.sStart;
 		road.drivingMaterialGuid = this.drivingMaterialGuid;
 		road.sidewalkMaterialGuid = this.sidewalkMaterialGuid;
 		road.borderMaterialGuid = this.borderMaterialGuid;
@@ -1309,6 +1328,15 @@ export class TvRoad {
 
 		return this.getLaneSectionAt( s ).getLaneAt( s, t );
 
+	}
+
+	addLaneOffsetRecord ( s: number, a: number, b: number, c: number, d: number ): TvRoadLaneOffset {
+
+		const laneOffset = new TvRoadLaneOffset( s, a, b, c, d );
+
+		this.addLaneOffsetInstance( laneOffset );
+
+		return laneOffset;
 	}
 
 	computeBoundingBox (): void {

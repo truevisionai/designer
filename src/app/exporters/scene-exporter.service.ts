@@ -126,16 +126,10 @@ export class SceneExporterService {
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: this.exportSurfaces( map.surfaces ),
-			spline: this.exportSplines( this.map.getSplines() ),
+			spline: this.map.getSplines().map( spline => this.exportSpline( spline ) ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export()
 		};
-
-	}
-
-	exportSplines ( splines: AbstractSpline[] ) {
-
-		return splines.map( spline => this.exportSpline( spline ) );
 
 	}
 
@@ -153,7 +147,7 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
-					attr_roadId: segment.id,
+					attr_id: segment.id,
 					attr_type: segment.type,
 				} ) )
 			};
@@ -172,7 +166,7 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
-					attr_roadId: segment.id,
+					attr_id: segment.id,
 					attr_type: segment.type,
 				} ) )
 			};
@@ -193,7 +187,7 @@ export class SceneExporterService {
 				} ) ),
 				roadSegment: spline.getSplineSegments().map( segment => ( {
 					attr_start: segment.start,
-					attr_roadId: segment.id,
+					attr_id: segment.id,
 					attr_type: segment.type,
 				} ) )
 			};

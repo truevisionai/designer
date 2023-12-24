@@ -49,7 +49,7 @@ export class SceneBuilderService {
 			}
 
 			if ( road.spline.getSplineSegments().length == 0 ) {
-				road.spline.addRoadSegment( 0, road.id );
+				road.spline.addRoadSegment( 0, road );
 			}
 
 		}

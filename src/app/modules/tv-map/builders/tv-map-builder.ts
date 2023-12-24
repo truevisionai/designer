@@ -72,7 +72,7 @@ export class TvMapBuilder {
 
 		road.computeLaneSectionCoordinates();
 
-		const laneSections = road.lanes.getLaneSections();
+		const laneSections = road.getLaneSections();
 
 		for ( let i = 0; i < laneSections.length; i++ ) {
 

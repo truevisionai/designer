@@ -63,6 +63,7 @@ import { TvRoadObjectSkeleton } from "../modules/tv-map/models/objects/tv-road-o
 import { TvObjectPolyline } from "../modules/tv-map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../modules/tv-map/models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
+import { SplineSegment, SplineSegmentType } from "../core/shapes/spline-segment";
 
 @Injectable( {
 	providedIn: 'root'
@@ -322,7 +323,7 @@ export class SceneImporterService extends AbstractReader {
 
 			} );
 
-			autoSplineV2.addRoadSegment( 0, road.id );
+			autoSplineV2.addRoadSegment( 0, road );
 
 			road.spline = autoSplineV2;
 
@@ -361,7 +362,7 @@ export class SceneImporterService extends AbstractReader {
 
 	private importExplicitSpline ( xml: XmlElement, road: TvRoad ): ExplicitSpline {
 
-		const spline = road.spline = new ExplicitSpline( road );
+		const spline = new ExplicitSpline( road );
 
 		if ( xml.attr_uuid ) spline.uuid;
 
@@ -428,9 +429,30 @@ export class SceneImporterService extends AbstractReader {
 		this.readAsOptionalArray( xml.roadSegment, xml => {
 
 			const start = parseFloat( xml.attr_start );
-			const roadId = parseInt( xml.attr_roadId );
+			// roadId for old file
+			const id = parseInt( xml.attr_id || xml.attr_roadId || xml.attr_road_id );
+			const type = SplineSegment.stringToType( xml.attr_type );
 
-			spline.addRoadSegment( start, roadId );
+			if ( type == SplineSegmentType.ROAD ) {
+
+				const road = this.map.getRoadById( id );
+				spline.addSegmentSection( start, id, type, road );
+
+			} else if ( type == SplineSegmentType.JUNCTION ) {
+
+				const junction = this.map.getJunctionById( id );
+				spline.addSegmentSection( start, id, type, junction );
+
+			} else {
+
+				// to support old files
+				if ( id != -1 ) {
+					const road = this.map.getRoadById( id );
+					if ( !road ) return;
+					spline.addSegmentSection( start, id, SplineSegmentType.ROAD, road );
+				}
+
+			}
 
 		} );
 

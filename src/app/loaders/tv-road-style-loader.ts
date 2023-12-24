@@ -54,7 +54,6 @@ export class RoadStyleImporter {
 		const roadStyle = new RoadStyle();
 
 		roadStyle.laneOffset = new TvRoadLaneOffset(
-			null,
 			json.laneOffset.attr_s || 0,
 			json.laneOffset.attr_a || 0,
 			json.laneOffset.attr_b || 0,

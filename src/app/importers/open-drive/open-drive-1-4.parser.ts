@@ -207,7 +207,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
 
-		spline.addRoadSegment( 0, road.id );
+		spline.addRoadSegment( 0, road );
 
 		return spline;
 	}
