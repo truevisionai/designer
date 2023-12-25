@@ -1,11 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RoadRemovedEvent } from 'app/events/map-events';
 import { RoadEventListener } from 'app/listeners/road-event-listener';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
@@ -13,7 +11,6 @@ import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
-import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
 
 describe( 'automatic junctions', () => {
@@ -51,24 +48,49 @@ describe( 'automatic junctions', () => {
 
 	} )
 
-	// it( 'should create straight junction between 2 roads', () => {
+	it( 'should create simple junction between 2 different roads', () => {
 
-	// 	// left to right
-	// 	const road1 = roadService.createDefaultRoad();
-	// 	road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-	// 	road1.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		// left to right
+		const roadA = roadService.createDefaultRoad();
+		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
+		roadA.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 
-	// 	// bottom to top
-	// 	const road2 = roadService.createDefaultRoad();
-	// 	road2.spline.addControlPointAt( new Vector3( 0, 20, 0 ) );
-	// 	road2.spline.addControlPointAt( new Vector3( 0, 70, 0 ) );
+		// bottom to top
+		const roadB = roadService.createDefaultRoad();
+		roadB.spline.addControlPointAt( new Vector3( 0, 20, 0 ) );
+		roadB.spline.addControlPointAt( new Vector3( 0, 70, 0 ) );
 
-	// 	roadService.addRoad( road1 );
-	// 	roadService.addRoad( road2 );
+		roadService.addRoad( roadA );
+		roadService.addRoad( roadB );
 
-	// 	intersectionService.checkRoadIntersections( road2 );
+		const coordA = roadA.getEndCoord().toRoadCoord( roadA );
+		const coordB = roadB.getStartCoord().toRoadCoord( roadB );
 
-	// } )
+		const junction = intersectionService.createIntersectionFromCoords(
+			coordA,
+			TvContactPoint.END,
+			coordB,
+			TvContactPoint.START
+		);
+
+		junctionService.addJunction( junction );
+
+		expect( roadService.roads.length ).toBe( 4 );
+
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 2 );
+
+		expect( junction.connections.get( 0 ) ).toBeDefined()
+		expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
+		expect( junction.connections.get( 0 ).outgoingRoad ).toBe( roadB );
+		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+
+		expect( junction.connections.get( 1 ) ).toBeDefined()
+		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
+		expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
+		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+
+	} )
 
 	it( 'should create 4-way junction', () => {
 

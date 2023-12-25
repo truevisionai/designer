@@ -12,12 +12,11 @@ import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
 import { LaneLinkService } from './lane-link.service';
 import { MapService } from '../map.service';
-import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { RoadService } from '../road/road.service';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 @Injectable( {
 	providedIn: 'root'
@@ -87,99 +86,6 @@ export class JunctionService {
 		this.mapService.map.removeJunction( junction );
 
 		this.removeJunctionMesh( junction );
-
-	}
-
-	removeJunctionNodes () {
-
-		this.junctionNodeService.hideAllJunctionNodes();
-
-	}
-
-	showJunctionNodes () {
-
-		this.junctionNodeService.showAllJunctionNodes();
-
-	}
-
-	highlightJunctionMeshes () {
-
-		this.mapService.map.getJunctions().filter( junction => junction.mesh ).forEach( junction => {
-
-			( junction.mesh.material as MeshStandardMaterial ).emissive.set( COLOR.RED );
-
-		} );
-
-	}
-
-	hideJunctionMeshes () {
-
-		this.mapService.map.getJunctions().filter( junction => junction.mesh ).forEach( junction => {
-
-			( junction.mesh.material as MeshStandardMaterial ).emissive.set( COLOR.BLACK );
-
-		} );
-
-	}
-
-	createJunctionFromContact (
-		roadA: TvRoad, contactA: TvContactPoint,
-		roadB: TvRoad, contactB: TvContactPoint
-	): TvJunction {
-
-		const junction = this.factory.createJunction();
-
-		this.addConnectionsFromContact( junction, roadA, contactA, roadB, contactB );
-
-		return junction;
-	}
-
-	addConnectionsFromContact (
-		junction: TvJunction,
-		roadA: TvRoad, contactA: TvContactPoint,
-		roadB: TvRoad, contactB: TvContactPoint
-	): TvJunction {
-
-		const coordA = this.getRoadCoords( roadA, contactA );
-		const coordB = this.getRoadCoords( roadB, contactB );
-
-		this.setLink( roadA, contactA, junction );
-		this.setLink( roadB, contactB, junction );
-
-		const connectionA = this.connectionService.createConnection( junction, coordA, coordB );
-		junction.addConnection( connectionA );
-
-		const connectionB = this.connectionService.createConnection( junction, coordB, coordA );
-		junction.addConnection( connectionB );
-
-		return junction;
-	}
-
-	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
-
-		if ( contact == TvContactPoint.START ) {
-
-			road.setPredecessor( TvRoadLinkChildType.junction, junction.id );
-
-		} else if ( contact == TvContactPoint.END ) {
-
-			road.setSuccessor( TvRoadLinkChildType.junction, junction.id );
-
-		}
-
-	}
-
-	getRoadCoords ( road: TvRoad, contact: TvContactPoint ) {
-
-		if ( contact === TvContactPoint.START ) {
-
-			return road.getPositionAt( 0 ).toRoadCoord( road );
-
-		} else {
-
-			return road.getPositionAt( road.length ).toRoadCoord( road );
-
-		}
 
 	}
 
@@ -310,6 +216,67 @@ export class JunctionService {
 	createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
 		return this.factory.createVirtualJunction( road, sStart, sEnd, orientation );
+
+	}
+
+	createJunctionFromContact (
+		roadA: TvRoad, contactA: TvContactPoint,
+		roadB: TvRoad, contactB: TvContactPoint
+	): TvJunction {
+
+		const junction = this.factory.createJunction();
+
+		this.addConnectionsFromContact( junction, roadA, contactA, roadB, contactB );
+
+		return junction;
+	}
+
+	addConnectionsFromContact (
+		junction: TvJunction,
+		roadA: TvRoad, contactA: TvContactPoint,
+		roadB: TvRoad, contactB: TvContactPoint
+	): TvJunction {
+
+		const coordA = this.getRoadCoords( roadA, contactA );
+		const coordB = this.getRoadCoords( roadB, contactB );
+
+		this.setLink( roadA, contactA, junction );
+		this.setLink( roadB, contactB, junction );
+
+		const connectionA = this.connectionService.createConnection( junction, coordA, coordB );
+		junction.addConnection( connectionA );
+
+		const connectionB = this.connectionService.createConnection( junction, coordB, coordA );
+		junction.addConnection( connectionB );
+
+		return junction;
+	}
+
+	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
+
+		if ( contact == TvContactPoint.START ) {
+
+			road.setPredecessor( TvRoadLinkChildType.junction, junction.id );
+
+		} else if ( contact == TvContactPoint.END ) {
+
+			road.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+
+		}
+
+	}
+
+	getRoadCoords ( road: TvRoad, contact: TvContactPoint ) {
+
+		if ( contact === TvContactPoint.START ) {
+
+			return road.getPositionAt( 0 ).toRoadCoord( road );
+
+		} else {
+
+			return road.getPositionAt( road.length ).toRoadCoord( road );
+
+		}
 
 	}
 

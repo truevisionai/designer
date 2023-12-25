@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
@@ -130,8 +129,9 @@ export class IntersectionService {
 		const coordA = roadA.getCoordAt( point ).toRoadCoord( roadA );
 		const coordB = roadB.getCoordAt( point ).toRoadCoord( roadB );
 
-		this.createIntersectionFromCoords( coordA, coordB );
+		const junction = this.internal_createIntersectionFromCoords( coordA, coordB );
 
+		this.junctionService.addJunction( junction );
 	}
 
 	postProcessJunction ( junction: TvJunction ) {
@@ -201,6 +201,36 @@ export class IntersectionService {
 			}
 
 		}
+
+	}
+
+	createIntersectionFromCoords (
+		coordA: TvRoadCoord,
+		contactA: TvContactPoint,
+		coordB: TvRoadCoord,
+		contactB: TvContactPoint
+	): TvJunction {
+
+		let junction: TvJunction;
+
+		// roads should be different
+		if ( coordA.road === coordB.road ) return;
+
+		// could be usefull to calculcating if we need
+		// to add junction into the roads
+		// const distance = coordA.distanceTo( coordB );
+
+		if ( coordA.contactCheck == contactA && coordB.contactCheck == contactB ) {
+
+			junction = this.junctionService.createNewJunction();
+
+			this.internal_addConnectios( junction, coordA, coordB, null, null );
+
+			this.postProcessJunction( junction );
+
+		}
+
+		return junction;
 
 	}
 
@@ -325,12 +355,22 @@ export class IntersectionService {
 		}
 	}
 
-	private createIntersectionFromCoords ( coordA: TvRoadCoord, coordB: TvRoadCoord ): void {
+	private internal_createIntersectionFromCoords ( coordA: TvRoadCoord, coordB: TvRoadCoord ): TvJunction {
 
 		const junction = this.junctionService.createNewJunction();
 
 		const roadC = this.processRoadForJunction( coordA, junction );
 		const roadD = this.processRoadForJunction( coordB, junction );
+
+		this.internal_addConnectios( junction, coordA, coordB, roadC, roadD );
+
+		this.postProcessJunction( junction );
+
+		return junction;
+
+	}
+
+	private internal_addConnectios ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord, roadC: TvRoad, roadD: TvRoad ) {
 
 		this.junctionService.addConnectionsFromContact(
 			junction,
@@ -390,10 +430,6 @@ export class IntersectionService {
 			);
 
 		}
-
-		this.postProcessJunction( junction );
-
-		this.junctionService.addJunction( junction );
 
 	}
 }

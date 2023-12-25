@@ -52,6 +52,7 @@ import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service'
 import { PolePropTool } from 'app/tools/prop-barrier/pole-prop-tool';
 import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.service';
 import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-tool.service';
+import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -74,7 +75,7 @@ export class ToolBarService {
 		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
 		private roadCutToolService: RoadDividerToolService,
-		private junctionService: JunctionService,
+		private junctionToolService: JunctionToolService,
 		private propCurveService: PropCurveService,
 		private roadRampService: RoadRampService,
 		private propPolygonToolService: PropPolygonToolService,
@@ -104,7 +105,7 @@ export class ToolBarService {
 			case ToolType.Maneuver:
 				return new ManeuverTool( this.maneuverService );
 			case ToolType.Junction:
-				return new JunctionTool( this.junctionService );
+				return new JunctionTool( this.junctionToolService );
 			case ToolType.LaneWidth:
 				return new LaneWidthTool( this.laneWidthService );
 			case ToolType.PropPoint:

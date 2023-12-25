@@ -20,6 +20,14 @@ export class TvRoadCoord {
 		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}
 
+	get contactCheck (): TvContactPoint {
+
+		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+
+		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+
+	}
+
 	get laneSection () {
 
 		if ( this.contact == TvContactPoint.START ) {
@@ -103,4 +111,11 @@ export class TvRoadCoord {
 		}
 
 	}
+
+	distanceTo ( coordB: TvRoadCoord ): number {
+
+		return this.position.distanceTo( coordB.position );
+
+	}
+
 }

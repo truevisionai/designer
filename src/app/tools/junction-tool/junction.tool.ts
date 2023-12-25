@@ -16,6 +16,7 @@ import { AddObjectCommand } from "../../commands/add-object-command";
 import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { JunctionToolService } from './junction-tool.service';
 
 
 export class JunctionTool extends BaseTool {
@@ -30,7 +31,7 @@ export class JunctionTool extends BaseTool {
 	private debugLine: Line2;
 	private debug: boolean = true;
 
-	constructor ( private tool: JunctionService ) {
+	constructor ( private tool: JunctionToolService ) {
 
 		super();
 
