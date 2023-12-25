@@ -214,7 +214,7 @@ export class RoadDebugService {
 
 		for ( let s = step * 0.5; s < road.length; s += step ) {
 
-			points.push( road.getRoadCoordAt( s ) );
+			points.push( road.getPosThetaAt( s ) );
 
 		}
 
@@ -237,8 +237,8 @@ export class RoadDebugService {
 
 		const result = road.getRoadWidthAt( s );
 
-		const start = road.getPositionAt( s, result.leftSideWidth );
-		const end = road.getPositionAt( s, -result.rightSideWidth );
+		const start = road.getPosThetaAt( s, result.leftSideWidth );
+		const end = road.getPosThetaAt( s, -result.rightSideWidth );
 
 		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ] );
 

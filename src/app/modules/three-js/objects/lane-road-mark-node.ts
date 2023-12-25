@@ -114,7 +114,7 @@ export class LaneMarkingNode extends DynamicControlPoint<any> implements ISelect
 		}
 
 		const road = this.lane.laneSection.road;
-		const roadCoord = road.getCoordAt( point );
+		const roadCoord = road.getPosThetaByPosition( point );
 		const s = roadCoord.s - this.lane.laneSection.s;
 
 		// our desired s value should lie between the previous node and the next node

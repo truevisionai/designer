@@ -32,13 +32,13 @@ describe( 'TvLineGeometry', () => {
 
 		let posTheta = new TvPosTheta();
 
-		posTheta = road.getRoadCoordAt( 0 );
+		posTheta = road.getPosThetaAt( 0 );
 
 		expect( posTheta.x ).toBe( 0 );
 		expect( posTheta.y ).toBe( 1 );
 		expect( posTheta.hdg ).toBe( 0 );
 
-		posTheta = road.getRoadCoordAt( 10 );
+		posTheta = road.getPosThetaAt( 10 );
 
 		expect( posTheta.x ).toBe( 10 );
 		expect( posTheta.y ).toBe( 1 );
@@ -54,13 +54,13 @@ describe( 'TvLineGeometry', () => {
 
 		let posTheta = new TvPosTheta();
 
-		posTheta = road.getRoadCoordAt( 0 );
+		posTheta = road.getPosThetaAt( 0 );
 
 		expect( posTheta.x ).toBe( 1 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		posTheta = road.getRoadCoordAt( 10 );
+		posTheta = road.getPosThetaAt( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 1 );
 		expect( Math.round( posTheta.y ) ).toBe( 10 );
@@ -74,13 +74,13 @@ describe( 'TvLineGeometry', () => {
 
 		road.addGeometryLine( 0, 0, 0, hdg, 10 );
 
-		let posTheta = road.getRoadCoordAt( 0 );
+		let posTheta = road.getPosThetaAt( 0 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 0 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		posTheta = road.getRoadCoordAt( 10 );
+		posTheta = road.getPosThetaAt( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( -10 );
 		expect( Math.round( posTheta.y ) ).toBe( 0 );
@@ -100,14 +100,14 @@ describe( 'TvLineGeometry', () => {
 
 		road.addGeometryLine( s, x, y, hdg, length );
 
-		pose = road.getRoadCoordAt( s );
+		pose = road.getPosThetaAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 
 		t = 1;
 
-		pose = road.getRoadCoordAt( s, t );
+		pose = road.getPosThetaAt( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( t );
@@ -126,14 +126,14 @@ describe( 'TvLineGeometry', () => {
 
 		road.addGeometryLine( s, x, y, hdg, length );
 
-		pose = road.getRoadCoordAt( s );
+		pose = road.getPosThetaAt( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( Math.round( pose.y ) ).toBe( 0 );
 
 		t = 1;
 
-		pose = road.getRoadCoordAt( s, t );
+		pose = road.getPosThetaAt( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( -1 );
 		expect( Math.round( pose.y ) ).toBe( 0 );

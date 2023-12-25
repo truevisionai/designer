@@ -64,9 +64,9 @@ export class DebugDrawService {
 
 		const result = road.getRoadWidthAt( s );
 
-		const start = road.getPositionAt( s, result.leftSideWidth );
+		const start = road.getPosThetaAt( s, result.leftSideWidth );
 
-		const end = road.getPositionAt( s, -result.rightSideWidth );
+		const end = road.getPosThetaAt( s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -96,9 +96,9 @@ export class DebugDrawService {
 
 		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
 
-		const start = roadCoord.road.getPositionAt( roadCoord.s, result.leftSideWidth );
+		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
 
-		const end = roadCoord.road.getPositionAt( roadCoord.s, -result.rightSideWidth );
+		const end = roadCoord.road.getPosThetaAt( roadCoord.s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -118,9 +118,9 @@ export class DebugDrawService {
 
 		const result = road.getRoadWidthAt( s );
 
-		const start = road.getPositionAt( s, result.leftSideWidth );
+		const start = road.getPosThetaAt( s, result.leftSideWidth );
 
-		const end = road.getPositionAt( s, -result.rightSideWidth );
+		const end = road.getPosThetaAt( s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -322,7 +322,7 @@ export class DebugDrawService {
 
 	private getLanePoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
 
-		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
+		let posTheta = lane.laneSection.road.getPosThetaAt( s );
 
 		let width: number;
 

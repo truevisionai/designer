@@ -87,8 +87,8 @@ export class JunctionManager extends Manager {
 
 		console.log( 'updating virtual junction', junction );
 
-		const startCoord = mainRoad.getPositionAt( junction.sStart );
-		const endCoord = mainRoad.getPositionAt( junction.sEnd );
+		const startCoord = mainRoad.getPosThetaAt( junction.sStart );
+		const endCoord = mainRoad.getPosThetaAt( junction.sEnd );
 
 		junction.connections.forEach( ( connection, connectionId ) => {
 

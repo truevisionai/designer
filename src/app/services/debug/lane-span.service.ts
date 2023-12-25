@@ -59,7 +59,7 @@ export class LaneSpanService {
 
 		for ( let s = sStart; s < sEnd; s += step ) {
 
-			const pos = lane.laneSection.road.getPositionAt( s )
+			const pos = lane.laneSection.road.getPosThetaAt( s )
 
 			points.push( pos );
 

@@ -137,7 +137,7 @@ export class OdRoadMarkBuilderV1 {
 
 		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
-		const roadCoord = lane.laneSection.road.getRoadCoordAt( s );
+		const roadCoord = lane.laneSection.road.getPosThetaAt( s );
 
 		const height = lane.getHeightValue( laneSectionS );
 

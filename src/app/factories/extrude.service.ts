@@ -95,7 +95,7 @@ export class ExtrudeService {
 
 			if ( vertex instanceof TvObjectVertexRoad ) {
 
-				const point = roadObject.road.getPositionAt( vertex.s, vertex.t ).position;
+				const point = roadObject.road.getPosThetaAt( vertex.s, vertex.t ).position;
 
 				point.z += vertex.dz;
 

@@ -71,7 +71,7 @@ export class TvRoadCoord {
 	add ( value: TvRoadCoord ) { }
 
 	toPosTheta () {
-		return this.road?.getRoadCoordAt( this.s, this.t );
+		return this.road?.getPosThetaAt( this.s, this.t );
 	}
 
 	toLaneCoord ( lane: TvLane ) {
@@ -80,8 +80,8 @@ export class TvRoadCoord {
 
 	getNearestContact ( road: TvRoad ): TvContactPoint {
 
-		const startDistance = road.getPositionAt( 0 ).position.distanceTo( this.position );
-		const endDistance = road.getPositionAt( road.length ).position.distanceTo( this.position );
+		const startDistance = road.getPosThetaAt( 0 ).position.distanceTo( this.position );
+		const endDistance = road.getPosThetaAt( road.length ).position.distanceTo( this.position );
 
 		if ( startDistance < endDistance ) {
 
@@ -97,8 +97,8 @@ export class TvRoadCoord {
 
 	getContactPosition ( road: TvRoad ): number {
 
-		const startDistance = road.getPositionAt( 0 ).position.distanceTo( this.position );
-		const endDistance = road.getPositionAt( road.length ).position.distanceTo( this.position );
+		const startDistance = road.getPosThetaAt( 0 ).position.distanceTo( this.position );
+		const endDistance = road.getPosThetaAt( road.length ).position.distanceTo( this.position );
 
 		if ( startDistance < endDistance ) {
 

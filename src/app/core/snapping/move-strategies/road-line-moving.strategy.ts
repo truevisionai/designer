@@ -9,7 +9,7 @@ export class RoadLineMovingStrategy extends MovingStrategy<TvRoad> {
 
 	getPosition ( event: PointerEventData, target: TvRoad ): Position {
 
-		const posTheta = target.getCoordAt( event.point );
+		const posTheta = target.getPosThetaByPosition( event.point );
 
 		return new RoadPosition( target, posTheta.s, 0 );
 

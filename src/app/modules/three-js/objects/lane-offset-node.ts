@@ -110,7 +110,7 @@ export class LaneOffsetNode extends Group implements ISelectable {
 
 		if ( !this.road ) return;
 
-		const position = this.road.getPositionAt( this.laneOffset.s, 0 );
+		const position = this.road.getPosThetaAt( this.laneOffset.s, 0 );
 
 		this.point.copyPosition( position.toVector3() );
 	}

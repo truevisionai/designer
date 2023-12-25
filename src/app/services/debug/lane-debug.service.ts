@@ -233,7 +233,7 @@ export class LaneDebugService {
 
 	private getPoint ( lane: TvLane, s: number ) {
 
-		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
+		let posTheta = lane.laneSection.road.getPosThetaAt( s );
 
 		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
 
@@ -250,7 +250,7 @@ export class LaneDebugService {
 
 	private getDirectedPoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ) {
 
-		let posTheta = lane.laneSection.road.getRoadCoordAt( s );
+		let posTheta = lane.laneSection.road.getPosThetaAt( s );
 
 		let width: number;
 

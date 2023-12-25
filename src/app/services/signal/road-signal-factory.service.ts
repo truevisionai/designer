@@ -45,7 +45,7 @@ export class RoadSignalBuilder {
 
 		const poleHeight = signal.height || 3.5;
 
-		const position = road.getPositionAt( signal.s, signal.t );
+		const position = road.getPosThetaAt( signal.s, signal.t );
 
 		const object = new Object3D();
 
@@ -77,7 +77,7 @@ export class RoadSignalBuilder {
 
 	buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
-		const roadCoord = road.getPositionAt( signal.s, signal.t );
+		const roadCoord = road.getPosThetaAt( signal.s, signal.t );
 
 		const textObject3d = this.textService.createTextObject( signal.text, signal.value );
 

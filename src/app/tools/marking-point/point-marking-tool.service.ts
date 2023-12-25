@@ -82,7 +82,7 @@ export class PointMarkingToolService {
 
 		road.objects.object.filter( roadObject => roadObject.attr_type == ObjectTypes.roadMark ).forEach( roadObject => {
 
-			const position = road.getPositionAt( roadObject.s, roadObject.t ).position;
+			const position = road.getPosThetaAt( roadObject.s, roadObject.t ).position;
 
 			const controlPoint = this.controlPointFactory.createSimpleControlPoint( roadObject, position );
 
@@ -96,7 +96,7 @@ export class PointMarkingToolService {
 
 		if ( !roadObject ) return;
 
-		const position = roadObject.road.getPositionAt( roadObject.s, roadObject.t ).position;
+		const position = roadObject.road.getPosThetaAt( roadObject.s, roadObject.t ).position;
 
 		const controlPoint = this.controlPoints.get( roadObject );
 

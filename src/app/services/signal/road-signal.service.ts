@@ -89,7 +89,7 @@ export class RoadSignalService {
 
 	getSignalPosition ( road: TvRoad, signal: TvRoadSignal ) {
 
-		return road.getPositionAt( signal.s, signal.t );
+		return road.getPosThetaAt( signal.s, signal.t );
 
 	}
 

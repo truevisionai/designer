@@ -73,7 +73,7 @@ export class RoadObjectBuilder {
 
 		}
 
-		const roadCoord = road.getPositionAt( roadObject.s, roadObject.t );
+		const roadCoord = road.getPosThetaAt( roadObject.s, roadObject.t );
 
 		const lane = roadObject.road.getLaneAt( roadObject.s, roadObject.t );
 
@@ -112,7 +112,7 @@ export class RoadObjectBuilder {
 
 		object3D.name = 'object:' + roadObject.attr_type;
 
-		const position = road.getPositionAt( roadObject.s, roadObject.t );
+		const position = road.getPosThetaAt( roadObject.s, roadObject.t );
 
 		if ( roadObject.skeleton?.polylines.length > 0 ) {
 
@@ -153,7 +153,7 @@ export class RoadObjectBuilder {
 				const length = repeat.lengthStart && repeat.lengthEnd ?
 					Maths.linearInterpolation( repeat.lengthStart, repeat.lengthEnd, fraction ) : roadObject.length;
 
-				const posTheta = road.getPositionAt( s, t );
+				const posTheta = road.getPosThetaAt( s, t );
 
 				const repeatMesh = new Object3D();
 
@@ -238,7 +238,7 @@ export class RoadObjectBuilder {
 				const t = repeat.tStart && repeat.tEnd ?
 					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
 
-				const posTheta = road.getPositionAt( s, t );
+				const posTheta = road.getPosThetaAt( s, t );
 
 				const repeatMesh = AssetDatabase.getInstance<Object3D>( roadObject.assetGuid )?.clone();
 
@@ -302,7 +302,7 @@ export class RoadObjectBuilder {
 				const t = repeat.tStart && repeat.tEnd ?
 					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
 
-				const posTheta = road.getPositionAt( s, t );
+				const posTheta = road.getPosThetaAt( s, t );
 
 				const repeatMesh = new Object3D();
 
@@ -452,7 +452,7 @@ export class RoadObjectBuilder {
 		// v is positive to the top
 		const t = roadObject.t - cornerLocal.attr_u;
 
-		const position = road.getPositionAt( s, t );
+		const position = road.getPosThetaAt( s, t );
 
 		return position.position;
 	}

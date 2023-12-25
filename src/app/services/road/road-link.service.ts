@@ -96,7 +96,7 @@ export class RoadLinkService {
 
 			const s = mainRoad.length;
 
-			const coordA = mainRoad.getRoadCoordAt( s ).toRoadCoord( mainRoad );
+			const coordA = mainRoad.getPosThetaAt( s ).toRoadCoord( mainRoad );
 
 			const roads = junction.getRoads();
 
@@ -106,7 +106,7 @@ export class RoadLinkService {
 
 				const s = this.getOtherRoadContact( coordA, road );
 
-				const coordB = road.getRoadCoordAt( s ).toRoadCoord( road );
+				const coordB = road.getPosThetaAt( s ).toRoadCoord( road );
 
 				const connection = this.connectionService.createConnection( junction, coordA, coordB );
 
@@ -167,8 +167,8 @@ export class RoadLinkService {
 
 	getOtherRoadContact ( coordA: TvRoadCoord, road: TvRoad ): number {
 
-		const distance1 = road.getPositionAt( 0 ).position.distanceTo( coordA.position );
-		const distance2 = road.getPositionAt( road.length ).position.distanceTo( coordA.position );
+		const distance1 = road.getPosThetaAt( 0 ).position.distanceTo( coordA.position );
+		const distance2 = road.getPosThetaAt( road.length ).position.distanceTo( coordA.position );
 
 		if ( distance1 < distance2 ) {
 

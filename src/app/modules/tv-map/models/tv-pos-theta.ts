@@ -10,7 +10,41 @@ import { TvRoadCoord } from './TvRoadCoord';
 import { TvRoad } from './tv-road.model';
 
 export class TvPosTheta {
-	public z: number = 0;
+
+	private _x: number;
+	private _y: number;
+	private _z: number = 0;
+	private _s: number;
+	private _t: number;
+	private _hdg: number;
+
+	get x () { return this._x; }
+
+	set x ( value ) { this._x = value; }
+
+	get y () { return this._y; }
+
+	set y ( value ) { this._y = value; }
+
+	get z (): number { return this._z; }
+
+	set z ( value: number ) { this._z = value; }
+
+	get s () { return this._s; }
+
+	set s ( value ) { this._s = value; }
+
+	get t () { return this._t; }
+
+	set t ( value ) { this._t = value; }
+
+	get hdg () { return this._hdg; }
+
+	set hdg ( value ) { this._hdg = value; }
+
+	get position (): Vector3 {
+		return new Vector3( this.x, this.y, this.z );
+	}
 
 	constructor ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ) {
 		this._x = x;
@@ -19,60 +53,6 @@ export class TvPosTheta {
 		this._s = s;
 		this._t = t;
 		this.z = z;
-	}
-
-	private _x: number;
-
-	get x () {
-		return this._x;
-	}
-
-	set x ( value ) {
-		this._x = value;
-	}
-
-	private _s: number;
-
-	get s () {
-		return this._s;
-	}
-
-	set s ( value ) {
-		this._s = value;
-	}
-
-	private _t: number;
-
-	get t () {
-		return this._t;
-	}
-
-	set t ( value ) {
-		this._t = value;
-	}
-
-	private _y: number;
-
-	get y () {
-		return this._y;
-	}
-
-	set y ( value ) {
-		this._y = value;
-	}
-
-	private _hdg: number;
-
-	get hdg () {
-		return this._hdg;
-	}
-
-	set hdg ( value ) {
-		this._hdg = value;
-	}
-
-	get position (): Vector3 {
-		return new Vector3( this.x, this.y, this.z );
 	}
 
 	toVector3 (): Vector3 {

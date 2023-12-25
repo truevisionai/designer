@@ -110,8 +110,8 @@ describe( 'ConnectionService', () => {
 
 		const junction = junctionService.createNewJunction();
 
-		const incoming = leftRoad.getEndCoord().toRoadCoord( leftRoad );
-		const outgoing = rightRoad.getStartCoord().toRoadCoord( rightRoad );
+		const incoming = leftRoad.getEndPosTheta().toRoadCoord( leftRoad );
+		const outgoing = rightRoad.getStartPosTheta().toRoadCoord( rightRoad );
 
 		const connection = connectionService.createConnection( junction, incoming, outgoing );
 

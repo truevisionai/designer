@@ -9,7 +9,7 @@ export class EndLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 	getPosition ( event: PointerEventData, target: TvLane ): Position {
 
-		const posTheta = target.laneSection.road.getCoordAt( event.point );
+		const posTheta = target.laneSection.road.getPosThetaByPosition( event.point );
 
 		const s = posTheta.s - target.laneSection.s;
 
@@ -26,7 +26,7 @@ export class MidLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 	getPosition ( event: PointerEventData, target: TvLane ): Position {
 
-		const posTheta = target.laneSection.road.getCoordAt( event.point );
+		const posTheta = target.laneSection.road.getPosThetaByPosition( event.point );
 
 		const s = posTheta.s - target.laneSection.s;
 

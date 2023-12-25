@@ -15,14 +15,14 @@ export class TvCornerRoad extends DynamicControlPoint<any> {
 		public dz: number = 0,
 		public height: number = 0
 	) {
-		super( null, road.getPositionAt( s, t ).toVector3() );
+		super( null, road.getPosThetaAt( s, t ).toVector3() );
 	}
 
 	copyPosition ( position: Vector3 ): void {
 
 		super.copyPosition( position );
 
-		const coord = this.road?.getCoordAt( position );
+		const coord = this.road?.getPosThetaByPosition( position );
 
 		if ( coord ) this.s = coord.s;
 

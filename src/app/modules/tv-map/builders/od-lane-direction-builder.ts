@@ -115,7 +115,7 @@ export class OdLaneDirectionBuilder {
 			let width = laneSection.getWidthUptoCenter( lane, s );
 
 			// Get the road coordinates at the current position.
-			const posTheta = lane.laneSection.road.getRoadCoordAt( s );
+			const posTheta = lane.laneSection.road.getPosThetaAt( s );
 
 			// Adjust position and heading based on lane side.
 			if ( lane.side === TvLaneSide.LEFT ) {
@@ -165,7 +165,7 @@ export class LaneDirectionHelper {
 			let width = laneSection.getWidthUptoCenter( lane, s );
 
 			// Get the road coordinates at the current position.
-			const posTheta = lane.laneSection.road.getRoadCoordAt( s );
+			const posTheta = lane.laneSection.road.getPosThetaAt( s );
 
 			// Adjust position and heading based on lane side.
 			if ( lane.side === TvLaneSide.LEFT ) {

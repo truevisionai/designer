@@ -90,10 +90,13 @@ export class JunctionToolService {
 		contactB: TvContactPoint
 	): TvJunction {
 
-		return this.junctionService.createJunctionFromContact(
-			roadA,
+		const coordA = roadA.getRoadCoordByContact( contactA );
+		const coordB = roadB.getRoadCoordByContact( contactB );
+
+		return this.intersection.createIntersectionFromCoords(
+			coordA,
 			contactA,
-			roadB,
+			coordB,
 			contactB
 		);
 

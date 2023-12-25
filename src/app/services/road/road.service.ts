@@ -276,8 +276,8 @@ export class RoadService {
 
 	showCornerPoints ( road: TvRoad, ) {
 
-		this.createCornerPoint( road, road.getStartCoord() );
-		this.createCornerPoint( road, road.getEndCoord() );
+		this.createCornerPoint( road, road.getStartPosTheta() );
+		this.createCornerPoint( road, road.getEndPosTheta() );
 
 	}
 
@@ -486,7 +486,7 @@ export class RoadService {
 
 	shiftRoad ( road: TvRoad, x: number, y: number ) {
 
-		const posTheta = road.getStartCoord();
+		const posTheta = road.getStartPosTheta();
 
 		posTheta.rotateDegree( -90 );
 

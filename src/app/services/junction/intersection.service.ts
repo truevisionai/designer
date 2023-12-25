@@ -126,8 +126,8 @@ export class IntersectionService {
 		if ( !roadA ) return;
 		if ( !roadB ) return;
 
-		const coordA = roadA.getCoordAt( point ).toRoadCoord( roadA );
-		const coordB = roadB.getCoordAt( point ).toRoadCoord( roadB );
+		const coordA = roadA.getPosThetaByPosition( point ).toRoadCoord( roadA );
+		const coordB = roadB.getPosThetaByPosition( point ).toRoadCoord( roadB );
 
 		const junction = this.internal_createIntersectionFromCoords( coordA, coordB );
 

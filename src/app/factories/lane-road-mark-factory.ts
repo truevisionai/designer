@@ -99,7 +99,7 @@ export class LaneRoadMarkFactory {
 	private static createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
 
 		const endS = Math.min( start.s + roadMark.length, roadMark.lane.laneSection.endS );
-		const end = roadMark.lane.laneSection.road.getRoadCoordAt( endS );
+		const end = roadMark.lane.laneSection.road.getPosThetaAt( endS );
 
 		const lane = roadMark.lane;
 
@@ -272,7 +272,7 @@ export class LaneRoadMarkFactory {
 
 			posTheta.s = start + s;
 
-			posTheta = roadMark.lane.laneSection.road.getRoadCoordAt( start + s );
+			posTheta = roadMark.lane.laneSection.road.getPosThetaAt( start + s );
 
 			LaneRoadMarkFactory.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
 

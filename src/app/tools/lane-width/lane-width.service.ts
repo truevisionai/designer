@@ -35,7 +35,7 @@ export class LaneWidthService {
 
 		const road = lane.laneSection.road;
 
-		const roadCoord = road.getCoordAt( position );
+		const roadCoord = road.getPosThetaByPosition( position );
 
 		const s = roadCoord.s - lane.laneSection.s;
 
@@ -61,7 +61,7 @@ export class LaneWidthService {
 
 		const road = node.lane.laneSection.road;
 
-		const roadCoord = road.getCoordAt( position );
+		const roadCoord = road.getPosThetaByPosition( position );
 
 		const adjustedS = roadCoord.s - node.lane.laneSection.s;
 

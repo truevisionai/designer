@@ -95,8 +95,8 @@ export class RoadNode extends Group implements ISelectable {
 
 		const result = this.road.getRoadWidthAt( sCoord );
 
-		const start = this.road.getPositionAt( sCoord, result.leftSideWidth );
-		const end = this.road.getPositionAt( sCoord, -result.rightSideWidth );
+		const start = this.road.getPosThetaAt( sCoord, result.leftSideWidth );
+		const end = this.road.getPosThetaAt( sCoord, -result.rightSideWidth );
 
 		// TODO: can be improved
 		this.line.geometry.dispose();
@@ -126,7 +126,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	getPosition (): TvPosTheta {
 
-		return this.contact == TvContactPoint.START ? this.road.getStartCoord() : this.road.getEndCoord();
+		return this.contact == TvContactPoint.START ? this.road.getStartPosTheta() : this.road.getEndPosTheta();
 
 	}
 
@@ -166,8 +166,8 @@ export class RoadNode extends Group implements ISelectable {
 
 		const result = road.getRoadWidthAt( sCoord );
 
-		const start = road.getPositionAt( sCoord, result.leftSideWidth );
-		const end = road.getPositionAt( sCoord, -result.rightSideWidth );
+		const start = road.getPosThetaAt( sCoord, result.leftSideWidth );
+		const end = road.getPosThetaAt( sCoord, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 		lineGeometry.setPositions( [

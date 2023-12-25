@@ -1426,7 +1426,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 			}
 
-			points.push( this.laneSection.road.getRoadCoordAt( s, t * offset ) );
+			points.push( this.laneSection.road.getPosThetaAt( s, t * offset ) );
 
 		}
 

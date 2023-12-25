@@ -41,6 +41,7 @@ import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
 import { MapEvents } from 'app/events/map-events';
+import { TvRoadCoord } from "./TvRoadCoord";
 
 export class TvRoad {
 
@@ -267,26 +268,20 @@ export class TvRoad {
 		}
 	}
 
-	getPositionAt ( s: number, t: number = 0 ): TvPosTheta {
+	getEndPosTheta () {
 
-		return this.getRoadCoordAt( s, t );
-
-	}
-
-	getEndCoord () {
-
-		return this.getPositionAt( this.length - Maths.Epsilon );
+		return this.getPosThetaAt( this.length - Maths.Epsilon );
 
 	}
 
-	getStartCoord () {
+	getStartPosTheta () {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
 			throw new Error( 'NoGeometriesFound' );
 		}
 
-		return this.getPositionAt( 0 );
+		return this.getPosThetaAt( 0 );
 
 	}
 
@@ -647,7 +642,7 @@ export class TvRoad {
 
 	}
 
-	getRoadCoordAt ( s: number, t = 0 ): TvPosTheta {
+	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
 
 		// // helps catch bugs
 		// if ( this.geometries.length == 0 ) {
@@ -1111,7 +1106,7 @@ export class TvRoad {
 
 	}
 
-	getCoordAt ( point: Vector3 ): TvPosTheta {
+	getPosThetaByPosition ( point: Vector3 ): TvPosTheta {
 
 		let minDistance = Number.MAX_SAFE_INTEGER;
 
@@ -1140,11 +1135,11 @@ export class TvRoad {
 
 		for ( let s = 0; s <= this.length; s += step ) {
 
-			points.push( this.getRoadCoordAt( s ) );
+			points.push( this.getPosThetaAt( s ) );
 
 		}
 
-		points.push( this.getRoadCoordAt( this.length - Maths.Epsilon ) );
+		points.push( this.getPosThetaAt( this.length - Maths.Epsilon ) );
 
 		return points;
 	}
@@ -1269,7 +1264,7 @@ export class TvRoad {
 
 	getLaneCenterPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getRoadCoordAt( s );
+		const posTheta = this.getPosThetaAt( s );
 
 		const laneSection = this.getLaneSectionAt( s );
 
@@ -1288,7 +1283,7 @@ export class TvRoad {
 
 	getLaneStartPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getRoadCoordAt( s );
+		const posTheta = this.getPosThetaAt( s );
 
 		const laneSection = this.getLaneSectionAt( s );
 
@@ -1307,7 +1302,7 @@ export class TvRoad {
 
 	getLaneEndPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getRoadCoordAt( s );
+		const posTheta = this.getPosThetaAt( s );
 
 		const laneSection = this.getLaneSectionAt( s );
 
@@ -1366,6 +1361,26 @@ export class TvRoad {
 		} );
 
 		this.boundingBox = boundingBox;
+
+	}
+
+	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
+
+		if ( contact === TvContactPoint.START ) {
+
+			return this.getStartPosTheta()
+
+		} else {
+
+			return this.getEndPosTheta()
+
+		}
+
+	}
+
+	getRoadCoordByContact ( contact: TvContactPoint ): TvRoadCoord {
+
+		return this.getPosThetaByContact( contact ).toRoadCoord( this );
 
 	}
 

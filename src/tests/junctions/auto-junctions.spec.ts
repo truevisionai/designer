@@ -63,8 +63,8 @@ describe( 'automatic junctions', () => {
 		roadService.addRoad( roadA );
 		roadService.addRoad( roadB );
 
-		const coordA = roadA.getEndCoord().toRoadCoord( roadA );
-		const coordB = roadB.getStartCoord().toRoadCoord( roadB );
+		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
+		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
 
 		const junction = intersectionService.createIntersectionFromCoords(
 			coordA,
@@ -152,7 +152,7 @@ describe( 'automatic junctions', () => {
 			const road = roadService.getRoad( i );
 
 			expect( road ).toBeDefined();
-			expect( road.getRoadCoordAt( 0 ) ).toBeDefined();
+			expect( road.getPosThetaAt( 0 ) ).toBeDefined();
 
 			if ( road.spline.controlPoints.length == 2 ) {
 

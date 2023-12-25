@@ -176,8 +176,8 @@ export class RoadSplineService {
 
 	updateConnectingRoadSpline ( connection: TvJunctionConnection ): void {
 
-		const incoming = connection.incomingRoad.getRoadCoordAt( connection.incomingRoad.length ).toRoadCoord( connection.incomingRoad );
-		const outgoing = connection.outgoingRoad.getRoadCoordAt( 0 ).toRoadCoord( connection.outgoingRoad );
+		const incoming = connection.incomingRoad.getPosThetaAt( connection.incomingRoad.length ).toRoadCoord( connection.incomingRoad );
+		const outgoing = connection.outgoingRoad.getPosThetaAt( 0 ).toRoadCoord( connection.outgoingRoad );
 
 		if ( incoming == null ) throw new Error( 'incoming is null' );
 		if ( outgoing == null ) throw new Error( 'outgoing is null' );

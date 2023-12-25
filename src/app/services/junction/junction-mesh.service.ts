@@ -28,8 +28,8 @@ export class JunctionMeshService {
 			const rightT = roadCoord.road.getRightsideWidth( s );
 			const leftT = roadCoord.road.getLeftSideWidth( s );
 
-			const leftPosition = roadCoord.road.getPositionAt( s ).addLateralOffset( leftT );
-			const rightPosition = roadCoord.road.getPositionAt( s ).addLateralOffset( -rightT );
+			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
+			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
 
 			points.push( leftPosition );
 			points.push( rightPosition );
@@ -48,11 +48,11 @@ export class JunctionMeshService {
 
 			if ( road.successor?.elementType == 'junction' && road.successor?.elementId == junction.id ) {
 
-				coords.push( road.getEndCoord().toRoadCoord( road ) );
+				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
 
 			} else if ( road.predecessor?.elementType == 'junction' && road.predecessor?.elementId == junction.id ) {
 
-				coords.push( road.getStartCoord().toRoadCoord( road ) );
+				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
 
 			}
 
@@ -70,11 +70,11 @@ export class JunctionMeshService {
 
 			if ( road?.successor?.elementType == 'junction' ) {
 
-				coords.push( road.getEndCoord() );
+				coords.push( road.getEndPosTheta() );
 
 			} else if ( road?.predecessor?.elementType == 'junction' ) {
 
-				coords.push( road.getStartCoord() );
+				coords.push( road.getStartPosTheta() );
 
 			}
 

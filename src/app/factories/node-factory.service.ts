@@ -22,7 +22,7 @@ export class NodeFactoryService {
 
 	static createLaneWidthNodeByPosition ( road: TvRoad, lane: TvLane, point: Vector3 ): LaneWidthNode {
 
-		const roadCoord = road.getCoordAt( point );
+		const roadCoord = road.getPosThetaByPosition( point );
 
 		const laneWidth = lane.getLaneWidthAt( roadCoord.s ).clone( roadCoord.s );
 
@@ -54,7 +54,7 @@ export class NodeFactoryService {
 		// }
 
 		const road = node.lane.laneSection.road;
-		const roadCoord = road.getCoordAt( point );
+		const roadCoord = road.getPosThetaByPosition( point );
 		const adjustedS = roadCoord.s - node.lane.laneSection.s;
 
 		// // our desired s value should lie between the previous node and the next node
@@ -122,7 +122,7 @@ export class NodeFactoryService {
 
 		const offset = node.laneOffset.getValue( node.laneOffset.s );
 
-		const position = TvMapQueries.findRoadById( node.roadId ).getPositionAt( node.laneOffset.s, 0 );
+		const position = TvMapQueries.findRoadById( node.roadId ).getPosThetaAt( node.laneOffset.s, 0 );
 
 		node.point.copyPosition( position.toVector3() );
 

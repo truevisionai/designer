@@ -69,7 +69,7 @@ export class RoadElevationService {
 
 	createElevation ( road: TvRoad, point: Vector3 ) {
 
-		const roadCoord = road.getCoordAt( point );
+		const roadCoord = road.getPosThetaByPosition( point );
 
 		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
 
@@ -113,7 +113,7 @@ export class RoadElevationService {
 
 	updateElevationNode ( road: TvRoad, node: RoadElevationControlPoint, position: Vector3 ) {
 
-		const roadCoord = road.getCoordAt( position );
+		const roadCoord = road.getPosThetaByPosition( position );
 
 		node.elevation.s = roadCoord.s;
 

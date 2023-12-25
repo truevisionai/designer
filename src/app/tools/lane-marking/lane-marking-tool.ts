@@ -132,7 +132,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( !this.selectedLane ) return;
 
-		const roadCoord = this.selectedRoad.getCoordAt( e.point );
+		const roadCoord = this.selectedRoad.getPosThetaByPosition( e.point );
 
 		const s = roadCoord.s - this.selectedLane.laneSection.s;
 
@@ -158,7 +158,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		const newPosition = this.selectedNode.position.clone();
 
-		const posTheta = this.selectedLane.laneSection.road.getCoordAt( newPosition );
+		const posTheta = this.selectedLane.laneSection.road.getPosThetaByPosition( newPosition );
 
 		const sCurrent = posTheta.s - this.selectedLane.laneSection.s;
 

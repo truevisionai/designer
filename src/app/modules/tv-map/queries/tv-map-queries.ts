@@ -84,7 +84,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRoadPosition ( roadId: number, s: number, t: number ): TvPosTheta {
 
-		return this.findRoadById( roadId ).getPositionAt( s, t );
+		return this.findRoadById( roadId ).getPosThetaAt( s, t );
 
 	}
 
@@ -210,9 +210,9 @@ export class TvMapQueries extends TvBaseQueries {
 		const distanceMin = point.distanceToSquared( nearestPosition );
 
 		if ( distanceStart < distanceMin ) {
-			nearestPosition = road.getPositionAt( nearestGeometry.s ).toVector2();
+			nearestPosition = road.getPosThetaAt( nearestGeometry.s ).toVector2();
 		} else if ( distanceEnd < distanceMin ) {
-			nearestPosition = road.getPositionAt( nearestGeometry.endS ).toVector2();
+			nearestPosition = road.getPosThetaAt( nearestGeometry.endS ).toVector2();
 		}
 
 		if ( point.distanceTo( nearestPosition ) > 1 ) {
@@ -244,7 +244,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-		let posTheta = road.getRoadCoordAt( sCoordinate );
+		let posTheta = road.getPosThetaAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
@@ -272,7 +272,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-		let posTheta = road.getRoadCoordAt( sCoordinate );
+		let posTheta = road.getPosThetaAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
@@ -321,7 +321,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
 
-		const posTheta = road.getRoadCoordAt( sCoordinate );
+		const posTheta = road.getPosThetaAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 

@@ -187,7 +187,7 @@ export class TvMapBuilder {
 
 			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			posTheta = road.getRoadCoordAt( s );
+			posTheta = road.getPosThetaAt( s );
 
 			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
 
@@ -198,7 +198,7 @@ export class TvMapBuilder {
 
 		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
 
-		posTheta = road.getRoadCoordAt( lastSCoordinate );
+		posTheta = road.getPosThetaAt( lastSCoordinate );
 
 		this.makeLaneVertices( lastSCoordinate, posTheta, lane, road, cumulativeWidth, laneSectionLength );
 
@@ -476,7 +476,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 
 			s = Maths.clamp( s, laneSection.s, laneSection.endS );
 
-			refLine = this.road.getRoadCoordAt( s, );
+			refLine = this.road.getPosThetaAt( s, );
 
 			const width = lane.getWidthValue( s );
 			const height = lane.getHeightValue( s );
@@ -515,7 +515,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 
 		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSection.length );
 
-		refLine = this.road.getRoadCoordAt( step );
+		refLine = this.road.getPosThetaAt( step );
 
 		const width = lane.getWidthValue( step );
 		const height = lane.getHeightValue( step );

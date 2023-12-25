@@ -128,8 +128,8 @@ export class JunctionService {
 			const rightT = roadCoord.road.getRightsideWidth( s );
 			const leftT = roadCoord.road.getLeftSideWidth( s );
 
-			const leftCorner = roadCoord.road.getPositionAt( s ).addLateralOffset( leftT );
-			const rightCorner = roadCoord.road.getPositionAt( s ).addLateralOffset( -rightT );
+			const leftCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
+			const rightCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
 
 			points.push( leftCorner );
 			points.push( rightCorner );
@@ -237,8 +237,8 @@ export class JunctionService {
 		roadB: TvRoad, contactB: TvContactPoint
 	): TvJunction {
 
-		const coordA = this.getRoadCoords( roadA, contactA );
-		const coordB = this.getRoadCoords( roadB, contactB );
+		const coordA = roadA.getRoadCoordByContact( contactA );
+		const coordB = roadB.getRoadCoordByContact( contactB );
 
 		this.setLink( roadA, contactA, junction );
 		this.setLink( roadB, contactB, junction );
@@ -261,20 +261,6 @@ export class JunctionService {
 		} else if ( contact == TvContactPoint.END ) {
 
 			road.setSuccessor( TvRoadLinkChildType.junction, junction.id );
-
-		}
-
-	}
-
-	getRoadCoords ( road: TvRoad, contact: TvContactPoint ) {
-
-		if ( contact === TvContactPoint.START ) {
-
-			return road.getPositionAt( 0 ).toRoadCoord( road );
-
-		} else {
-
-			return road.getPositionAt( road.length ).toRoadCoord( road );
 
 		}
 

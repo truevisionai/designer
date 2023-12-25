@@ -79,7 +79,7 @@ class RoadSnapMoveStrategy {
 
 	static move ( object: IMovable, road: TvRoad, posTheta, position: Vector3 ) {
 
-		const finalPosition = road.getPositionAt( posTheta.s, 0 ).toVector3();
+		const finalPosition = road.getPosThetaAt( posTheta.s, 0 ).toVector3();
 
 		object.move( finalPosition );
 
@@ -93,7 +93,7 @@ class SignalMoveStrategy {
 
 		const road = object.getRoad();
 
-		const posTheta = road.getCoordAt( position );
+		const posTheta = road.getPosThetaByPosition( position );
 
 		const distance = posTheta.toVector3().distanceTo( position );
 

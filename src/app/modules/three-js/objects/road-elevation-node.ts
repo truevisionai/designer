@@ -13,7 +13,7 @@ export class RoadElevationControlPoint extends DynamicControlPoint<any> {
 
 	constructor ( public road: TvRoad, public elevation: TvElevation ) {
 
-		super( elevation, road?.getPositionAt( elevation.s || 0 ).toVector3() || new Vector3() );
+		super( elevation, road?.getPosThetaAt( elevation.s || 0 ).toVector3() || new Vector3() );
 
 		this.tag = this.name = RoadElevationControlPoint.TAG;
 

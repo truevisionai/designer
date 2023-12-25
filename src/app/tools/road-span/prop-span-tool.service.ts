@@ -94,7 +94,7 @@ export class PropSpanToolService {
 
 		roadObject.repeats.forEach( repeat => {
 
-			const position = road.getPositionAt( repeat.s, roadObject.t ).position;
+			const position = road.getPosThetaAt( repeat.s, roadObject.t ).position;
 
 			const controlPoint = this.controlPointFactory.createSimpleControlPoint( repeat, position );
 
@@ -192,7 +192,7 @@ export class PropSpanToolService {
 
 			const s = repeat.s + ds;
 
-			const position = roadObject.road.getPositionAt( s, roadObject.t ).position;
+			const position = roadObject.road.getPosThetaAt( s, roadObject.t ).position;
 
 			points.push( position );
 

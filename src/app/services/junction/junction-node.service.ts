@@ -74,7 +74,7 @@ export class JunctionNodeService {
 
 		if ( !road.predecessor || road.predecessor.elementType == 'junction' ) {
 
-			const startCoord = road.getStartCoord().toRoadCoord( road );
+			const startCoord = road.getStartPosTheta().toRoadCoord( road );
 
 			const startLine = this.createJunctionNode( startCoord );
 
@@ -86,7 +86,7 @@ export class JunctionNodeService {
 
 		if ( !road.successor || road.successor.elementType == 'junction' ) {
 
-			const endCoord = road.getEndCoord().toRoadCoord( road );
+			const endCoord = road.getEndPosTheta().toRoadCoord( road );
 
 			const endLine = this.createJunctionNode( endCoord );
 
@@ -102,9 +102,9 @@ export class JunctionNodeService {
 
 		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
 
-		const start = roadCoord.road.getPositionAt( roadCoord.s, result.leftSideWidth );
+		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
 
-		const end = roadCoord.road.getPositionAt( roadCoord.s, -result.rightSideWidth );
+		const end = roadCoord.road.getPosThetaAt( roadCoord.s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
