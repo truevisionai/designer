@@ -17,6 +17,7 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -93,13 +94,42 @@ export class JunctionToolService {
 		const coordA = roadA.getRoadCoordByContact( contactA );
 		const coordB = roadB.getRoadCoordByContact( contactB );
 
-		return this.intersection.createIntersectionFromCoords(
+		return this.intersection.createIntersectionByContact(
 			coordA,
 			contactA,
 			coordB,
 			contactB
 		);
 
+	}
+
+	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
+
+		let junction: TvJunction;
+
+		junction = this.junctionService.createNewJunction();
+
+		for ( let i = 0; i < coords.length; i++ ) {
+
+			const coordA = coords[ i ];
+
+			for ( let j = i + 1; j < coords.length; j++ ) {
+
+				const coordB = coords[ j ];
+
+				// roads should be different
+				if ( coordA.road === coordB.road ) continue;
+
+				this.intersection.addConnections( junction, coordA, coordB );
+
+
+			}
+
+		}
+
+		this.intersection.postProcessJunction( junction );
+
+		return junction;
 	}
 
 	addConnectionsFromContact (

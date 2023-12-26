@@ -109,6 +109,24 @@ export class TvJunction {
 
 	}
 
+	getConnectingRoads (): TvRoad[] {
+
+		const connectingRoads: TvRoad[] = [];
+
+		this.connections.forEach( connection => {
+
+			if ( connection.connectingRoad ) {
+
+				connectingRoads.push( connection.connectingRoad );
+
+			}
+
+		} );
+
+		return connectingRoads;
+
+	}
+
 	getIncomingRoads (): TvRoad[] {
 
 		const incomingRoads: TvRoad[] = [];

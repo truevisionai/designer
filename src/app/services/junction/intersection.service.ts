@@ -196,7 +196,7 @@ export class IntersectionService {
 
 			if ( nearestConnection ) {
 
-				this.junctionConnectionService.addNonDrivingLaneLinks( nearestConnection );
+				this.junctionConnectionService.createNonDrivingLinks( nearestConnection );
 
 			}
 
@@ -204,7 +204,7 @@ export class IntersectionService {
 
 	}
 
-	createIntersectionFromCoords (
+	createIntersectionByContact (
 		coordA: TvRoadCoord,
 		contactA: TvContactPoint,
 		coordB: TvRoadCoord,
@@ -231,6 +231,18 @@ export class IntersectionService {
 		}
 
 		return junction;
+
+	}
+
+	addConnections ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ) {
+
+		this.junctionService.addConnectionsFromContact(
+			junction,
+			coordA.road,
+			coordA.contact,
+			coordB.road,
+			coordB.contact
+		);
 
 	}
 

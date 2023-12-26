@@ -266,4 +266,25 @@ export class JunctionService {
 
 	}
 
+	computeBoundingBox ( junction: TvJunction ): Box3 {
+
+		const boundingBox = new Box3();
+
+		const connectingRoads = junction.getConnectingRoads();
+
+		for ( let i = 0; i < connectingRoads.length; i++ ) {
+
+			const connectingRoad = connectingRoads[ i ];
+
+			if ( !connectingRoad.boundingBox ) {
+				connectingRoad.computeBoundingBox();
+			}
+
+			boundingBox.union( connectingRoad.boundingBox );
+
+		}
+
+		return boundingBox;
+	}
+
 }

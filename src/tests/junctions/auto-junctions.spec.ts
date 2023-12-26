@@ -66,7 +66,7 @@ describe( 'automatic junctions', () => {
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
 
-		const junction = intersectionService.createIntersectionFromCoords(
+		const junction = intersectionService.createIntersectionByContact(
 			coordA,
 			TvContactPoint.END,
 			coordB,
@@ -266,7 +266,7 @@ describe( 'automatic junctions', () => {
 
 		junction.addConnection( connection );
 
-		junctionConnectionService.addNonDrivingLaneLinks( connection );
+		junctionConnectionService.createNonDrivingLinks( connection );
 
 		expect( connection.laneLink.length ).toBe( 3 );
 

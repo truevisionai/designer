@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
 import { TvRoadCoord } from "../../modules/tv-map/models/TvRoadCoord";
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { RoadSplineService } from '../road/road-spline.service';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { LaneLinkService } from './lane-link.service';
+import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +18,7 @@ export class JunctionConnectionService {
 	constructor (
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
+		private linkService: LaneLinkService,
 	) {
 	}
 
@@ -141,81 +141,14 @@ export class JunctionConnectionService {
 			throw new Error( 'Traffic rule not implemented' );
 		}
 
-		const incomingLanes = incoming.laneSection.getLaneArray().filter( lane => lane.direction === TravelDirection.forward );
-
-		const outgoingDirection = incoming.contact !== outgoing.contact ? TravelDirection.forward : TravelDirection.backward;
-
-		const outgoingLanes = outgoing.laneSection.getLaneArray().filter( lane => lane.direction === outgoingDirection );
-
-		for ( let i = 0; i < incomingLanes.length; i++ ) {
-
-			const incomingLane = incomingLanes[ i ];
-
-			if ( incomingLane.type != TvLaneType.driving ) continue;
-
-			const outgoingLane = outgoingLanes.find( outgoingLane => Math.abs( outgoingLane.id ) === Math.abs( incomingLane.id ) );
-
-			const connectionLane = laneSection.addLane(
-				incomingLane.side,
-				incomingLane.id,
-				incomingLane.type,
-				incomingLane.level,
-				true
-			);
-
-			const incomingLaneWidth = incomingLane.getWidthValue( incoming.s ) || incomingLane.getWidthValue( 0 );
-
-			connectionLane.addWidthRecord( 0, incomingLaneWidth, 0, 0, 0 );
-
-			if ( !outgoingLane ) continue;
-
-			const laneLink = new TvJunctionLaneLink( incomingLane, connectionLane );
-
-			connection.addLaneLink( laneLink );
-
-		}
+		this.linkService.createDrivingLinks( connection, incoming, outgoing );
 
 		return connection;
 	}
 
-	addNonDrivingLaneLinks ( connection: TvJunctionConnection ) {
+	createNonDrivingLinks ( connection: TvJunctionConnection ) {
 
-		const incomingLanes: TvLane[] = connection.getIncomingLanes();
-		const outgoingLanes: TvLane[] = connection.getOutgoingLanes();
+		return this.linkService.createNonDrivingLinks( connection );
 
-		// connection.removeLaneLinks();
-		// connection.connectingLaneSection.removeLanes();
-
-		for ( let i = 0; i < incomingLanes.length; i++ ) {
-
-			const incomingLane = incomingLanes[ i ];
-
-			if ( incomingLane.side != TvLaneSide.RIGHT ) continue;
-
-			const outgoingLane = outgoingLanes.find( outgoingLane => Math.abs( outgoingLane.id ) === Math.abs( incomingLane.id ) );
-
-			if ( connection.connectingLaneSection.hasLaneId( incomingLane.id ) ) continue;
-
-			const connectionLane = connection.connectingLaneSection.addLane(
-				incomingLane.side,
-				incomingLane.id,
-				incomingLane.type,
-				incomingLane.level,
-				true
-			);
-
-			const incomingLaneWidth = incomingLane.getWidthValue( 0 );
-
-			connectionLane.addWidthRecord( 0, incomingLaneWidth, 0, 0, 0 );
-
-			if ( !outgoingLane ) continue;
-
-			const laneLink = new TvJunctionLaneLink( incomingLane, connectionLane );
-
-			connection.addLaneLink( laneLink );
-
-		}
-
-		return connection;
 	}
 }

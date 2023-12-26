@@ -168,13 +168,9 @@ export class JunctionTool extends BaseTool {
 
 		if ( this.debug ) console.log( 'Space', this.selectedNodes );
 
-		const coord1 = this.selectedNodes[ 0 ].roadCoord;
-		const coord2 = this.selectedNodes[ 1 ].roadCoord;
+		const coords = this.selectedNodes.map( node => node.roadCoord );
 
-		const junction = this.tool.createJunctionFromContact(
-			coord1.road, coord1.contact,
-			coord2.road, coord2.contact
-		);
+		const junction = this.tool.createJunctionFromCoords( coords );
 
 		const addCommand = new AddObjectCommand( junction );
 
