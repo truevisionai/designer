@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector3 } from 'three';
 
@@ -18,7 +19,7 @@ describe( 'Service: RoadCut', () => {
 
 	} ) );
 
-	it( 'should cut straight road in middle', inject( [ RoadService ], ( roadService: RoadService ) => {
+	it( 'should cut straight road in middle', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
 
 		const oldRoad = roadService.createDefaultRoad();
 
@@ -29,7 +30,7 @@ describe( 'Service: RoadCut', () => {
 
 		expect( oldRoad.length ).toBe( 100 );
 
-		const newRoad = roadService.cutRoadFromTo( oldRoad, 40, 60 );
+		const newRoad = roadDividerService.cutRoadFromTo( oldRoad, 40, 60 );
 
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).toBeDefined();
@@ -49,7 +50,7 @@ describe( 'Service: RoadCut', () => {
 
 	} ) );
 
-	it( 'should cut straight road in end', inject( [ RoadService ], ( roadService: RoadService ) => {
+	it( 'should cut straight road in end', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
 
 		const oldRoad = roadService.createDefaultRoad();
 
@@ -60,7 +61,7 @@ describe( 'Service: RoadCut', () => {
 
 		expect( oldRoad.length ).toBe( 50 );
 
-		const newRoad = roadService.cutRoadFromTo( oldRoad, 40, 60 );
+		const newRoad = roadDividerService.cutRoadFromTo( oldRoad, 40, 60 );
 
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).not.toBeDefined();

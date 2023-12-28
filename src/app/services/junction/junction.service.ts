@@ -45,6 +45,12 @@ export class JunctionService {
 
 	}
 
+	getJunctionById ( id: number ) {
+
+		return this.mapService.map.getJunctionById( id );
+
+	}
+
 	buildJunction ( junction: TvJunction ) {
 
 		const connections = junction.getConnections();

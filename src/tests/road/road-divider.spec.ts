@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector3 } from 'three';
 
@@ -19,7 +20,7 @@ describe( 'Service: RoadDivider', () => {
 
 	} ) );
 
-	it( 'should divide straight road in middle', inject( [ RoadService ], ( roadService: RoadService ) => {
+	it( 'should divide straight road in middle', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
 
 		const road = roadService.createDefaultRoad();
 
@@ -30,7 +31,7 @@ describe( 'Service: RoadDivider', () => {
 
 		expect( road.length ).toBe( 100 );
 
-		const newRoad = roadService.divideRoadAt( road, 50 );
+		const newRoad = roadDividerService.divideRoadAt( road, 50 );
 
 		roadService.addRoad( newRoad );
 

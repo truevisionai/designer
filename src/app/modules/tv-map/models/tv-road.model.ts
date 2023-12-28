@@ -642,6 +642,12 @@ export class TvRoad {
 
 	}
 
+	getRoadCoordAt ( s: number, t = 0 ) {
+
+		return this.getPosThetaAt( s, t ).toRoadCoord( this );
+
+	}
+
 	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
 
 		// // helps catch bugs

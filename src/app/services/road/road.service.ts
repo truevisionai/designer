@@ -376,57 +376,6 @@ export class RoadService {
 
 	}
 
-	divideRoadAt ( road: TvRoad, sRoad: number ): TvRoad {
-
-		const newRoad = this.clone( road, sRoad );
-
-		road.setSuccessorRoad( newRoad, TvContactPoint.START );
-
-		newRoad.setPredecessorRoad( road, TvContactPoint.END );
-
-		newRoad.sStart = road.sStart + sRoad;
-
-		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
-
-		return newRoad
-
-	}
-
-	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number ): TvRoad {
-
-		// TODO: Not used and might need fixes
-
-		this.roadSplineService.addEmptySegment( road.spline, road.sStart + sStart );
-
-		if ( sEnd > road.length ) return;
-
-		const newRoad = this.clone( road, sEnd );
-
-		newRoad.sStart = road.sStart + sEnd;
-
-		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
-
-		// update links
-
-		if ( road.successor?.isRoad ) {
-
-			const successor = this.getRoad( road.successor.elementId );
-
-			successor.setPredecessorRoad( newRoad, TvContactPoint.END );
-
-			newRoad.successor = road.successor;
-
-			// TODO: this will be junction and not null
-			road.successor = null;
-
-		}
-
-		newRoad.predecessor = null;
-
-		return newRoad;
-
-	}
-
 	addRoad ( road: TvRoad ) {
 
 		this.mapService.map.addRoad( road );

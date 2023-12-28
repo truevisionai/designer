@@ -44,6 +44,9 @@ export class SplineSegment {
 		this.segment = null;
 	}
 
+	setStart ( start: number ) {
+		this.start = start;
+	}
 
 	static stringToType ( type: string ): SplineSegmentType {
 		switch ( type ) {

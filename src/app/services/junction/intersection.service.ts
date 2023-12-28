@@ -76,7 +76,7 @@ export class IntersectionService {
 
 				const distance = a.distanceTo( c );
 
-				if ( distance < stepSize ) {
+				if ( distance <= stepSize * 2 ) {
 
 					return this.lineIntersection( a, b, c, d );
 
@@ -211,10 +211,26 @@ export class IntersectionService {
 		contactB: TvContactPoint
 	): TvJunction {
 
-		let junction: TvJunction;
-
 		// roads should be different
-		if ( coordA.road === coordB.road ) return;
+		if ( coordA.road === coordB.road ) {
+
+			const junction = this.junctionService.createNewJunction();
+
+			const coord = coordA.s > coordB.s ? coordA : coordB;
+
+			const roadC = this.cutRoadForJunction( coord, junction );
+
+			this.junctionService.addConnectionsFromContact(
+				junction,
+				coordA.road,
+				TvContactPoint.END,
+				roadC,
+				TvContactPoint.START
+			);
+
+			return junction;
+
+		}
 
 		// could be usefull to calculcating if we need
 		// to add junction into the roads
@@ -222,15 +238,15 @@ export class IntersectionService {
 
 		if ( coordA.contactCheck == contactA && coordB.contactCheck == contactB ) {
 
-			junction = this.junctionService.createNewJunction();
+			const junction = this.junctionService.createNewJunction();
 
-			this.internal_addConnectios( junction, coordA, coordB, null, null );
+			this.internal_addConnections( junction, coordA, coordB, null, null );
 
 			this.postProcessJunction( junction );
 
-		}
+			return junction;
 
-		return junction;
+		}
 
 	}
 
@@ -302,9 +318,9 @@ export class IntersectionService {
 
 	}
 
-	private processRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoad {
+	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoad {
 
-		function isTintersection ( coord: TvRoadCoord, width: number ) {
+		function isNearRoadStartOrEnd ( coord: TvRoadCoord, width: number ) {
 
 			const isOver = coord.s + width >= coord.road.length;
 			const isUnder = coord.s - width <= 0;
@@ -313,52 +329,66 @@ export class IntersectionService {
 
 		}
 
-		function getJunctionSCoord ( coord: TvRoadCoord, width: number ): number {
-
-			const isOver = coord.s + width >= coord.road.length;
-			const isUnder = coord.s - width <= 0;
-
-			if ( isOver ) return coord.road.length - width;
-			if ( isUnder ) return width;
-
-		}
-
 		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
 
 		let newRoad: TvRoad
 
-		const sStart = coord.road.sStart + coord.s - junctionWidth;
-		const sEnd = coord.road.sStart + coord.s + junctionWidth;
+		if ( !isNearRoadStartOrEnd( coord, junctionWidth ) ) {
 
-		if ( !isTintersection( coord, junctionWidth ) ) {
+			const sStartJunction = coord.road.sStart + coord.s - junctionWidth;
+			const sEndJunction = coord.road.sStart + coord.s + junctionWidth;
 
-			this.roadSplineService.addJunctionSegment( coord.road.spline, sStart, junction );
+			this.roadSplineService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
 
-			if ( sEnd < coord.road.spline.getLength() ) {
+			if ( sEndJunction < coord.road.spline.getLength() ) {
 
 				newRoad = this.roadService.clone( coord.road, coord.s + junctionWidth );
 
-				newRoad.sStart = sEnd;
+				newRoad.sStart = sEndJunction;
 
 				this.roadSplineService.addRoadSegmentNew( coord.road.spline, newRoad.sStart, newRoad );
 
 			}
 
-			coord.road.length = sEnd - sStart - junctionWidth;
+			coord.road.length = sStartJunction;
+
+			coord.s -= junctionWidth;
 
 		} else {
 
-			const junctionS = getJunctionSCoord( coord, junctionWidth );
+			const isOver = coord.s + junctionWidth >= coord.road.length;
+			const isUnder = coord.s - junctionWidth <= 0;
 
-			coord.road.spline.addJunctionSegment( junctionS, junction );
+			if ( isOver ) {
 
-			coord.road.length = sEnd - sStart - junctionWidth;
+				const sStartJunction = coord.road.length - junctionWidth;
+				const sEndJunction = coord.road.length;
+
+				coord.road.spline.addJunctionSegment( sStartJunction, junction );
+
+				coord.road.length = sStartJunction;
+
+				coord.s = sStartJunction;
+
+			} else if ( isUnder ) {
+
+				const sStartJunction = 0;
+				const sEndJunction = junctionWidth;
+
+				const roadSegment = coord.road.spline.getSegmentAt( 0 );
+
+				roadSegment.setStart( sEndJunction );
+				coord.road.length = coord.road.length - sEndJunction;
+
+				coord.road.spline.addJunctionSegment( sStartJunction, junction );
+
+				coord.s = sStartJunction;
+
+			}
 
 		}
 
 		if ( newRoad ) {
-
-			coord.s -= junctionWidth;
 
 			this.roadService.addRoad( newRoad );
 
@@ -371,10 +401,10 @@ export class IntersectionService {
 
 		const junction = this.junctionService.createNewJunction();
 
-		const roadC = this.processRoadForJunction( coordA, junction );
-		const roadD = this.processRoadForJunction( coordB, junction );
+		const roadC = this.cutRoadForJunction( coordA, junction );
+		const roadD = this.cutRoadForJunction( coordB, junction );
 
-		this.internal_addConnectios( junction, coordA, coordB, roadC, roadD );
+		this.internal_addConnections( junction, coordA, coordB, roadC, roadD );
 
 		this.postProcessJunction( junction );
 
@@ -382,7 +412,7 @@ export class IntersectionService {
 
 	}
 
-	private internal_addConnectios ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord, roadC: TvRoad, roadD: TvRoad ) {
+	private internal_addConnections ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord, roadC: TvRoad, roadD: TvRoad ) {
 
 		this.junctionService.addConnectionsFromContact(
 			junction,

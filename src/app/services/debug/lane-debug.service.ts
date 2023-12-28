@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TravelDirection, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
@@ -64,7 +64,7 @@ export class LaneDebugService {
 
 	unselectLane ( lane: TvLane ) {
 
-		if ( ! this.selectedLanes.has( lane ) ) return;
+		if ( !this.selectedLanes.has( lane ) ) return;
 
 		this.lines.removeKey( lane );
 
@@ -143,13 +143,34 @@ export class LaneDebugService {
 
 	showLaneDirection ( lane: TvLane ) {
 
-		this.getArrowPoints( lane, TvLaneSide.CENTER, ARROW_STEP ).forEach( point => {
+		if ( lane.direction == TravelDirection.undirected ) return;
 
-			const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
+		const addArrow = ( position: Vector3, hdg: number ) => {
+
+			const arrow = this.debugService.createSharpArrow( position, hdg, ARROW_COLOR, ARROW_SIZE );
 
 			this.arrows.addItem( lane, arrow );
 
-		} );
+		}
+
+		const points = this.getArrowPoints( lane, TvLaneSide.CENTER, ARROW_STEP );
+
+		for ( let i = 0; i < points.length; i++ ) {
+
+			const point = points[ i ];
+
+			if ( lane.direction == TravelDirection.backward ) {
+				point.hdg += Math.PI;
+			}
+
+			addArrow( point.position, point.hdg );
+
+			if ( lane.direction != TravelDirection.bidirectional ) continue;
+
+			// for direction we add arrows in both direction
+			addArrow( point.position, point.hdg + Math.PI );
+
+		}
 
 	}
 
@@ -278,8 +299,6 @@ export class LaneDebugService {
 		} else {
 
 			posTheta.addLateralOffset( width );
-
-			posTheta.hdg += Math.PI;
 
 		}
 

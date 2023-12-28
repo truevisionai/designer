@@ -13,6 +13,8 @@ import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { Vector3 } from 'three';
 
+const DEFAULT_ROAD_WIDTH = 12.2;
+
 describe( 'automatic junctions', () => {
 
 	let tool: RoadTool;
@@ -42,11 +44,17 @@ describe( 'automatic junctions', () => {
 
 	} );
 
+	beforeEach( () => {
+
+		mapService.reset();
+
+	} );
+
 	afterEach( () => {
 
 		mapService.reset();
 
-	} )
+	} );
 
 	it( 'should create simple junction between 2 different roads', () => {
 
@@ -89,6 +97,44 @@ describe( 'automatic junctions', () => {
 		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
 		expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+
+	} )
+
+	it( 'should create simple junction between same roads', () => {
+
+		// left to right
+		const roadA = roadService.createDefaultRoad();
+		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
+		roadA.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+
+		roadService.addRoad( roadA );
+
+		const coordA = roadA.getPosThetaAt( 50 ).toRoadCoord( roadA );
+		const coordB = roadA.getPosThetaAt( 100 ).toRoadCoord( roadA );
+
+		const junction = intersectionService.createIntersectionByContact(
+			coordA,
+			TvContactPoint.END,
+			coordB,
+			TvContactPoint.START
+		);
+
+		junctionService.addJunction( junction );
+
+		expect( roadService.roads.length ).toBe( 4 );
+
+		// expect( junction ).toBeDefined();
+		// expect( junction.connections.size ).toBe( 2 );
+
+		// expect( junction.connections.get( 0 ) ).toBeDefined()
+		// expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
+		// expect( junction.connections.get( 0 ).outgoingRoad ).toBe( roadB );
+		// expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+
+		// expect( junction.connections.get( 1 ) ).toBeDefined()
+		// expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
+		// expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
+		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
 	} )
 
@@ -301,6 +347,163 @@ describe( 'automatic junctions', () => {
 		// 12 for each junction
 		expect( roadService.roads.filter( road => road.isJunction ).length ).toBe( 24 );
 		expect( roadService.roads.filter( road => !road.isJunction ).length ).toBe( 7 );
+
+	} );
+
+} );
+
+
+describe( 't-junction tests', () => {
+
+	let mapService: MapService;
+	let roadService: RoadService;
+	let intersectionService: IntersectionService;
+	let junctionService: JunctionService;
+
+	beforeEach( () => {
+
+		TestBed.configureTestingModule( {
+			imports: [ HttpClientModule ],
+			providers: [ RoadToolService ]
+		} );
+
+		mapService = TestBed.inject( MapService );
+		roadService = TestBed.inject( RoadService );
+		intersectionService = TestBed.inject( IntersectionService );
+		junctionService = TestBed.inject( JunctionService );
+
+	} );
+
+	beforeEach( () => {
+
+		mapService.reset();
+
+	} );
+
+	afterEach( () => {
+
+		mapService.reset();
+
+	} );
+
+	it( 'should cut roads for t-junction at road end', () => {
+
+		// left to right
+		const xAxisRoad = roadService.createDefaultRoad();
+		xAxisRoad.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
+		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+
+		// bottom to top
+		const yAxisRoad = roadService.createDefaultRoad();
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+
+		roadService.addRoad( xAxisRoad );
+		roadService.addRoad( yAxisRoad );
+
+		const junction = junctionService.createNewJunction();
+
+		const coord1 = xAxisRoad.getRoadCoordAt( 100 );
+		intersectionService.cutRoadForJunction( coord1, junction );
+		expect( xAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+
+		const coord2 = yAxisRoad.getRoadCoordAt( 100 );
+		intersectionService.cutRoadForJunction( coord2, junction );
+		expect( yAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+
+		expect( xAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+		expect( yAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+
+	} );
+
+	it( 'should cut roads for t-junction at road start', () => {
+
+		// left to right
+		const xAxisRoad = roadService.createDefaultRoad();
+		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		roadService.addRoad( xAxisRoad );
+
+		// bottom to top
+		const yAxisRoad = roadService.createDefaultRoad();
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		roadService.addRoad( yAxisRoad );
+
+		const junction = junctionService.createNewJunction();
+
+		const coord1 = xAxisRoad.getRoadCoordAt( 100 );
+		intersectionService.cutRoadForJunction( coord1, junction );
+
+		const coord2 = yAxisRoad.getRoadCoordAt( 100 );
+		intersectionService.cutRoadForJunction( coord2, junction );
+
+		const newYAxisRoad = roadService.getRoad( 3 );
+
+		expect( newYAxisRoad ).toBeDefined();
+
+		expect( xAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+		expect( yAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+		expect( newYAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
+
+
+	} );
+
+	it( 'should create t-junction connections at road end', () => {
+
+		expect( roadService.getRoadCount() ).toBe( 0 );
+
+		// left to right
+		const xAxisRoad = roadService.createDefaultRoad();
+		xAxisRoad.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
+		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		roadService.addRoad( xAxisRoad );
+
+		// bottom to top
+		const yAxisRoad = roadService.createDefaultRoad();
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		roadService.addRoad( yAxisRoad );
+
+		intersectionService.checkSplineIntersections( yAxisRoad.spline );
+
+		const newYAxisRoad = roadService.getRoad( 3 );
+
+		expect( newYAxisRoad ).toBeDefined();
+
+		const junction = junctionService.getJunctionById( 1 );
+
+		expect( junction.connections.size ).toBe( 6 );
+		expect( roadService.getRoadCount() ).toBe( 9 );
+
+	} );
+
+	it( 'should create t-junction connections at road start', () => {
+
+		expect( roadService.getRoadCount() ).toBe( 0 );
+
+		// left to right
+		const xAxisRoad = roadService.createDefaultRoad();
+		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		roadService.addRoad( xAxisRoad );
+
+		// bottom to top
+		const yAxisRoad = roadService.createDefaultRoad();
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
+		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		roadService.addRoad( yAxisRoad );
+
+		intersectionService.checkSplineIntersections( yAxisRoad.spline );
+
+		const newYAxisRoad = roadService.getRoad( 3 );
+
+		expect( newYAxisRoad ).toBeDefined();
+
+		const junction = junctionService.getJunctionById( 1 );
+
+		expect( junction.connections.size ).toBe( 6 );
+		expect( roadService.getRoadCount() ).toBe( 9 );
 
 	} );
 
