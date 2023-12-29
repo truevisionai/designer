@@ -196,7 +196,7 @@ export class IntersectionService {
 
 			if ( nearestConnection ) {
 
-				this.junctionConnectionService.createNonDrivingLinks( nearestConnection );
+				this.junctionConnectionService.postProcessConnection( nearestConnection );
 
 			}
 
@@ -227,6 +227,8 @@ export class IntersectionService {
 				roadC,
 				TvContactPoint.START
 			);
+
+			this.postProcessJunction( junction );
 
 			return junction;
 

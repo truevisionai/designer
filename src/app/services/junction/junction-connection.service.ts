@@ -123,6 +123,10 @@ export class JunctionConnectionService {
 
 	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
 
+		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
+			throw new Error( 'Traffic rule not implemented' );
+		}
+
 		const connectingRoad = this.roadService.createConnectionRoad( junction, incoming, outgoing );
 
 		const laneSection = connectingRoad.addGetLaneSection( 0 );
@@ -137,18 +141,20 @@ export class JunctionConnectionService {
 			outgoing.road
 		);
 
-		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
-			throw new Error( 'Traffic rule not implemented' );
-		}
+		this.roadSplineService.rebuildSplineRoads( connectingRoad.spline );
 
 		this.linkService.createDrivingLinks( connection, incoming, outgoing );
 
 		return connection;
 	}
 
-	createNonDrivingLinks ( connection: TvJunctionConnection ) {
+	postProcessConnection ( connection: TvJunctionConnection ): TvJunctionConnection {
 
-		return this.linkService.createNonDrivingLinks( connection );
+		this.linkService.createNonDrivingLinks( connection );
 
+		this.linkService.addRoadMarks( connection );
+
+		return connection;
 	}
+
 }

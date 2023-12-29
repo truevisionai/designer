@@ -151,6 +151,34 @@ export class RoadFactory {
 
 	}
 
+	createRoadWithLaneCount ( leftCount = 1, rightCount = 1, leftWidth = 3.6, rightWidth = 3.6 ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		const laneSection = road.addGetLaneSection( 0 );
+
+		for ( let i = 1; i <= leftCount; i++ ) {
+
+			const lane = laneSection.addLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
+
+			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
+
+		}
+
+		for ( let i = 1; i <= rightCount; i++ ) {
+
+			const lane = laneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
+
+			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
+
+		}
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+
+		return road;
+
+	}
+
 	createJoiningRoad ( spline: AbstractSpline, firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
 
 		const road = this.createDefaultRoad();

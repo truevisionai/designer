@@ -83,9 +83,13 @@ export class RoadSplineService {
 
 		spline.update();
 
-		spline.getSplineSegments().forEach( segment => {
+		const segments = spline.getSplineSegments();
 
-			if ( !segment.isRoad ) return;
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
 
 			const road = segment.getInstance<TvRoad>();
 
@@ -95,7 +99,7 @@ export class RoadSplineService {
 
 				console.error( 'segment.geometries.length == 0', spline );
 
-				return;
+				continue;
 			}
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
@@ -106,7 +110,7 @@ export class RoadSplineService {
 
 			}
 
-		} );
+		}
 
 		return meshes;
 	}

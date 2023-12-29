@@ -297,22 +297,23 @@ describe( 'automatic junctions', () => {
 		road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
 		road1.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 
-		const road2 = roadService.createNewRoad();
-		road2.addGetLaneSection( 0 );
-		road2.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		road2.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
-
 		const road3 = roadService.createDefaultRoad();
 		road3.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
 		road3.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
+		roadService.addRoad( road1 );
+		roadService.addRoad( road3 );
+
 		const junction = junctionService.createNewJunction();
 
-		const connection = new TvJunctionConnection( 1, road1, road2, TvContactPoint.START, road3 );
+		const incoming = road1.getEndPosTheta().toRoadCoord( road1 );
+		const outgoing = road3.getStartPosTheta().toRoadCoord( road3 );
+
+		const connection = junctionConnectionService.createConnection( junction, incoming, outgoing );
 
 		junction.addConnection( connection );
 
-		junctionConnectionService.createNonDrivingLinks( connection );
+		junctionConnectionService.postProcessConnection( connection );
 
 		expect( connection.laneLink.length ).toBe( 3 );
 

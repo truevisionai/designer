@@ -55,20 +55,6 @@ export class RoadEventListener {
 		this.updateJunction( event.road );
 	}
 
-	updateJunction ( road: TvRoad ) {
-
-		if ( !road.isJunction ) return;
-
-		road.junctionInstance.boundingBox = this.junctionService.computeBoundingBox( road.junctionInstance );
-
-	}
-
-	updateRoadBoundingBox ( road: TvRoad ) {
-
-		road.computeBoundingBox();
-
-	}
-
 	onRoadRemoved ( event: RoadRemovedEvent ) {
 
 		event.road.objects.object.forEach( object => {
@@ -118,6 +104,20 @@ export class RoadEventListener {
 		this.roadLinkService.addLinks( event.road );
 
 		this.roadElevationService.createDefaultNodes( event.road );
+
+	}
+
+	updateJunction ( road: TvRoad ) {
+
+		if ( !road.isJunction ) return;
+
+		road.junctionInstance.boundingBox = this.junctionService.computeBoundingBox( road.junctionInstance );
+
+	}
+
+	updateRoadBoundingBox ( road: TvRoad ) {
+
+		road.computeBoundingBox();
 
 	}
 
@@ -173,6 +173,7 @@ export class RoadEventListener {
 		}
 
 	}
+
 
 	private rebuildNeighbours ( road: TvRoad ): void {
 

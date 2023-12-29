@@ -230,7 +230,7 @@ export class LaneRoadMarkFactory {
 		return width;
 	}
 
-	private static getLaneBorder ( lane, laneSectionS, laneSection, posTheta ) {
+	private static getLaneBorder ( lane: TvLane, laneSectionS, laneSection: TvLaneSection, posTheta: TvPosTheta ) {
 
 		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, posTheta.hdg );
 		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, posTheta.hdg );
@@ -249,7 +249,7 @@ export class LaneRoadMarkFactory {
 
 		roadMark.clearMesh();
 
-		const index = roadMarks.indexOf( roadMark );
+		const nextRoadMark = roadMarks.find( i => i.s > roadMark.s );
 
 		const mesh = new MeshGeometryData();
 
@@ -258,9 +258,15 @@ export class LaneRoadMarkFactory {
 		// setting the next coordinate
 		// if the next road mark is not available,
 		// then the next coordinate is the end of the lane section
-		roadMark.lastSCoordinate = ( index < roadMarks.length - 1 )
-			? roadMarks[ index + 1 ].sOffset
-			: roadMark.lane.laneSection.length;
+		if ( nextRoadMark ) {
+
+			roadMark.lastSCoordinate = nextRoadMark.sOffset;
+
+		} else {
+
+			roadMark.lastSCoordinate = roadMark.lane.laneSection.length;
+
+		}
 
 		if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
 

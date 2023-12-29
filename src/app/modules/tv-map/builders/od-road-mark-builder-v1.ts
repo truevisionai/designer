@@ -95,12 +95,20 @@ export class OdRoadMarkBuilderV1 {
 
 			const start = laneSection.s + roadMark.s;
 
+			const nextRoadMark = roadMarks.find( i => i.s > roadMark.s );
+
 			// setting the next coordinate
 			// if the next road mark is not available,
 			// then the next coordinate is the end of the lane section
-			roadMark.lastSCoordinate = ( index < roadMarks.length - 1 )
-				? roadMarks[ index + 1 ].sOffset
-				: laneSection.length;
+			if ( nextRoadMark ) {
+
+				roadMark.lastSCoordinate = nextRoadMark.sOffset;
+
+			} else {
+
+				roadMark.lastSCoordinate = laneSection.length;
+
+			}
 
 			for ( let step = 0; step < roadMark.s2; step += OdBuilderConfig.ROAD_STEP ) {
 

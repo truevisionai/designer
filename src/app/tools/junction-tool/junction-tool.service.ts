@@ -83,26 +83,6 @@ export class JunctionToolService {
 
 	}
 
-
-	createJunctionFromContact (
-		roadA: TvRoad,
-		contactA: TvContactPoint,
-		roadB: TvRoad,
-		contactB: TvContactPoint
-	): TvJunction {
-
-		const coordA = roadA.getRoadCoordByContact( contactA );
-		const coordB = roadB.getRoadCoordByContact( contactB );
-
-		return this.intersection.createIntersectionByContact(
-			coordA,
-			contactA,
-			coordB,
-			contactB
-		);
-
-	}
-
 	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
 
 		let junction: TvJunction;

@@ -81,9 +81,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	private _laneSection: TvLaneSection;
 
-	constructor ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
+	constructor ( side: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
 
-		this._side = laneSide;
+		this._side = side;
 
 		this.uuid = MathUtils.generateUUID();
 		this.attr_id = id;
@@ -166,20 +166,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	get side (): TvLaneSide {
 		return this._side;
-	}
-
-	set side ( value ) {
-
-		const som = '' + value;
-		const val = parseFloat( som );
-
-		if ( val === 0 ) {
-			this._side = TvLaneSide.LEFT;
-		} else if ( val === 1 ) {
-			this._side = TvLaneSide.CENTER;
-		} else if ( val === 2 ) {
-			this._side = TvLaneSide.RIGHT;
-		}
 	}
 
 	get isLeft (): boolean {
@@ -386,8 +372,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: string, height: number ) {
 
-		return this.addRoadMarkInstance( new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this ) );
+		const roadMark = new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this );
 
+		this.addRoadMarkInstance( roadMark );
+
+		return roadMark;
 	}
 
 	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ) {
@@ -857,10 +846,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		if ( this.roadMark.length === 0 ) {
-			this.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-		}
-
 		return TvUtils.checkIntervalArray( this.roadMark, s );
 
 	}
@@ -873,7 +858,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addDefaultRoadMark () {
 
-		this.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, 'none', 0 );
+		return this.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, 'none', 0 );
 
 	}
 
@@ -901,7 +886,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties? (): Object {
+	copyProperties?(): Object {
 
 		return {
 			travelDirection: this.travelDirection,

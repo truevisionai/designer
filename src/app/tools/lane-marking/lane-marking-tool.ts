@@ -136,7 +136,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		const s = roadCoord.s - this.selectedLane.laneSection.s;
 
-		const marking = this.selectedLane.getRoadMarkAt( s ).clone( s );
+		let currentMarking = this.selectedLane.getRoadMarkAt( s );
+
+		if ( !currentMarking ) {
+			currentMarking = this.selectedLane.addDefaultRoadMark()
+		}
+
+		const marking = currentMarking.clone( s );
 
 		const node = new LaneMarkingNode( this.selectedLane, marking );
 

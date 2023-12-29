@@ -25,6 +25,10 @@ export class TvLaneRoadMark {
 	public attr_height: number = 0;
 	public attr_length: number = 3.0;
 	public attr_space: number = 4.5;
+
+	/**
+	 * @deprecated
+	 */
 	public lastSCoordinate: number;
 	public readonly lane: TvLane;
 	public node: LaneMarkingNode;
