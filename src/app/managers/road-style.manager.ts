@@ -2,13 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import {
-	TvColors,
-	TvLaneSide,
-	TvLaneType,
-	TvRoadMarkTypes,
-	TvRoadMarkWeights
-} from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSide, TvLaneType, TvRoadMarkTypes } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
@@ -66,9 +60,9 @@ export class RoadStyleManager {
 		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 		const rightLane3 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
 
-		leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-		centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.BROKEN, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
-		rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, 'none', 0 );
+		leftLane1.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
+		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.BROKEN );
+		rightLane1.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 
 		roadStyle.laneSection.getLaneArray().forEach( lane => {
 
@@ -103,11 +97,11 @@ export class RoadStyleManager {
 		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.parking, true, true );
 
-		leftLane2.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
-		leftLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
-		centerLane.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
-		rightLane1.addRoadMarkRecord( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
-		rightLane2.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0, 'none', 0 );
+		leftLane2.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID )
+		leftLane1.addNoneRoadMark();
+		centerLane.addNoneRoadMark();
+		rightLane1.addNoneRoadMark();
+		rightLane2.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 
 		roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
 

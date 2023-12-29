@@ -43,6 +43,7 @@ import { TvObjectOutline } from "../../modules/tv-map/models/objects/tv-object-o
 import { XmlElement } from "../xml.element";
 import { IOpenDriveParser } from "./i-open-drive.parser";
 import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
+import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
 
 @Injectable( {
 	providedIn: 'root'
@@ -1030,7 +1031,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const weight = xmlElement.attr_weight;
 		const color = xmlElement.attr_color;
 		const width = parseFloat( xmlElement.attr_width );
-		const laneChange = xmlElement.attr_laneChange;
+		const laneChange = TvLaneRoadMark.laneChangeFromString( xmlElement.attr_laneChange );
 		const height = xmlElement.attr_height;
 
 		lane.addRoadMarkRecord( sOffset, type, weight, color, width, laneChange, height );

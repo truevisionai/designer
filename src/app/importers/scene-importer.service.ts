@@ -1483,7 +1483,7 @@ export class SceneImporterService extends AbstractReader {
 		const weight = xmlElement.attr_weight || TvRoadMarkWeights.STANDARD;
 		const color = xmlElement.attr_color || TvColors.STANDARD;
 		const width = parseFloat( xmlElement.attr_width ) || 0.3;
-		const laneChange = xmlElement.attr_laneChange;
+		const laneChange = TvLaneRoadMark.laneChangeFromString( xmlElement.attr_laneChange );
 		const height = parseFloat( xmlElement.attr_height ) || 0;
 		const length = parseFloat( xmlElement.attr_length ) || 3.0;
 		const space = parseFloat( xmlElement.attr_space ) || 0;

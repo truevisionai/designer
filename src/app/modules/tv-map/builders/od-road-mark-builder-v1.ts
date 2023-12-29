@@ -16,6 +16,8 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 
+const ROADMARK_BROKEN_TILING = 3.0;
+
 export class OdRoadMarkBuilderV1 {
 
 	private _texture: any;
@@ -228,7 +230,7 @@ export class OdRoadMarkBuilderV1 {
 		// Add Vertices
 		// ===============================
 		let texX;
-		const texY = s / TvLaneRoadMark.ROADMARK_BROKEN_TILING;
+		const texY = s / ROADMARK_BROKEN_TILING;
 
 		// // shift the x,y in case it is a 2 line mark
 		// if ( type > 0 ) {

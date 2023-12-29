@@ -10,9 +10,15 @@ import { LaneMarkingNode } from '../../three-js/objects/lane-road-mark-node';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
 
+export enum TvRoadMarkLaneChange {
+	NONE = 'none',
+	DECREASE = 'decrease',
+	INCREASE = 'increase',
+	BOTH = 'both',
+}
+
 export class TvLaneRoadMark {
 
-	public static ROADMARK_BROKEN_TILING = 3.0;
 	public readonly uuid: string;
 	public gameObject: GameObject;
 	public attr_sOffset: number;
@@ -21,7 +27,7 @@ export class TvLaneRoadMark {
 	public attr_color: TvColors;
 
 	public attr_width: number;
-	public attr_laneChange: string;
+	public attr_laneChange: TvRoadMarkLaneChange;
 	public attr_height: number = 0;
 	public attr_length: number = 3.0;
 	public attr_space: number = 4.5;
@@ -37,14 +43,30 @@ export class TvLaneRoadMark {
 	private _materialGuid: string;
 	private _material: MeshStandardMaterial;
 
+	/**
+	 *
+	 * @param sOffset
+	 * @param type
+	 * @param weight
+	 * @param color
+	 * @param width
+	 * @param laneChange | Allows a lane change in the indicated direction,
+	 * taking into account that lanes are numbered in ascending order
+	 * from right to left. If the attribute is missing, “both” is used as default.
+	 * @param height
+	 * @param lane
+	 * @param length
+	 * @param space
+	 * @param materialGuid
+	 */
 	constructor (
 		sOffset: number,
 		type: TvRoadMarkTypes = TvRoadMarkTypes.SOLID,
 		weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
 		color: TvColors = TvColors.STANDARD,
-		width: number = null,
-		laneChange: string,
-		height: number = 0.05,
+		width: number = 0.0,
+		laneChange: TvRoadMarkLaneChange = TvRoadMarkLaneChange.NONE,
+		height: number = 0.00,
 		lane: TvLane,
 		length: number = 3.0,
 		space: number = null,
@@ -58,7 +80,7 @@ export class TvLaneRoadMark {
 		this.attr_weight = weight || TvRoadMarkWeights.STANDARD;
 		this.attr_color = color || TvColors.STANDARD;
 		this.attr_width = width || this.getWidthByWeight( weight );
-		this.attr_laneChange = laneChange;
+		this.attr_laneChange = laneChange || TvRoadMarkLaneChange.NONE;
 		this.attr_height = height;
 		this.attr_length = length;
 		this.attr_space = space || this.getSpaceByType( type );
@@ -241,4 +263,26 @@ export class TvLaneRoadMark {
 			this.materialGuid,
 		);
 	}
+
+	static laneChangeFromString ( value: string ) {
+
+		switch ( value ) {
+
+			case 'none':
+				return TvRoadMarkLaneChange.NONE;
+
+			case 'decrease':
+				return TvRoadMarkLaneChange.DECREASE;
+
+			case 'increase':
+				return TvRoadMarkLaneChange.INCREASE;
+
+			case 'both':
+				return TvRoadMarkLaneChange.BOTH;
+
+			default:
+				return TvRoadMarkLaneChange.NONE;
+		}
+	}
+
 }

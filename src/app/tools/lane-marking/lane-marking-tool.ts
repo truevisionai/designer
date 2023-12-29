@@ -139,7 +139,7 @@ export class LaneMarkingTool extends BaseTool {
 		let currentMarking = this.selectedLane.getRoadMarkAt( s );
 
 		if ( !currentMarking ) {
-			currentMarking = this.selectedLane.addDefaultRoadMark()
+			currentMarking = this.selectedLane.addNoneRoadMark()
 		}
 
 		const marking = currentMarking.clone( s );

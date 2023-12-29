@@ -13,7 +13,7 @@ import { TvLaneAccess } from './tv-lane-access';
 import { TvLaneBorder } from './tv-lane-border';
 import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneMaterial } from './tv-lane-material';
-import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneRoadMark, TvRoadMarkLaneChange } from './tv-lane-road-mark';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
@@ -370,13 +370,25 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: string, height: number ) {
+	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: TvRoadMarkLaneChange, height: number ) {
 
 		const roadMark = new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this );
 
 		this.addRoadMarkInstance( roadMark );
 
 		return roadMark;
+	}
+
+	addNoneRoadMark ( s = 0 ) {
+
+		return this.addRoadMarkRecord( s, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.0, TvRoadMarkLaneChange.NONE, 0.0 );
+
+	}
+
+	addRoadMarkOfType ( s = 0, type: TvRoadMarkTypes ) {
+
+		return this.addRoadMarkRecord( s, type, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, TvRoadMarkLaneChange.NONE, 0.0 );
+
 	}
 
 	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ) {
@@ -750,17 +762,17 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 */
 	getRoadMark ( sCheck ): TvLaneRoadMark {
 
-		let result = TvUtils.checkIntervalArray( this.roadMark, sCheck );
+		return TvUtils.checkIntervalArray( this.roadMark, sCheck );
 
-		if ( result == null ) {
+		// if ( result == null ) {
 
-			console.warn( 'roadmark not found using default' );
+		// 	console.warn( 'roadmark not found using default' );
 
-			result = new TvLaneRoadMark( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, '', 0, this );
+		// 	result = new TvLaneRoadMark( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, TvRoadMarkLaneChange.NONE, 0, this );
 
-		}
+		// }
 
-		return result;
+		// return result;
 
 		// const laneRoadMark = new OdLaneRoadMark( 0, OdRoadMarkTypes.SOLID, OdRoadMarkWeights.STANDARD, OdColors.WHITE, 0, '', 0 );
 		//
@@ -853,12 +865,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	getRoadMarks () {
 
 		return this.roadMark;
-
-	}
-
-	addDefaultRoadMark () {
-
-		return this.addRoadMarkRecord( 0, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, 'none', 0 );
 
 	}
 
