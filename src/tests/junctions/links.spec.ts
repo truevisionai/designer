@@ -163,7 +163,7 @@ describe( 'LaneLinkService', () => {
 
 	} );
 
-	it( 'should make links between 4 lane road and 2 lane road opposite sides', () => {
+	it( 'should make links between 4 lane road and 2 lane road opposite contacts', () => {
 
 		const left = createRoad( roadService, [
 			new Vector2( -50, 0 ),
@@ -180,10 +180,21 @@ describe( 'LaneLinkService', () => {
 		const incoming = left.getEndPosTheta().toRoadCoord( left );
 		const outgoing = right.getStartPosTheta().toRoadCoord( right );
 
-		const connection = connectionService.createConnection( junction, incoming, outgoing );
+		const leftToRight = connectionService.createConnection( junction, incoming, outgoing );
+		expect( leftToRight ).toBeDefined();
+		expect( leftToRight.laneLink.length ).toBe( 1 );
+		expect( leftToRight.laneLink[ 0 ].incomingLane.id ).toBe( -1 );
+		expect( leftToRight.laneLink[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( leftToRight.laneLink[ 0 ].connectingLane.predecessor ).toBe( -1 );
+		expect( leftToRight.laneLink[ 0 ].connectingLane.succcessor ).toBe( -1 );
 
-		expect( connection ).toBeDefined();
-		expect( connection.laneLink.length ).toBe( 1 );
+		const rightToLeft = connectionService.createConnection( junction, outgoing, incoming );
+		expect( rightToLeft ).toBeDefined();
+		expect( rightToLeft.laneLink.length ).toBe( 1 );
+		expect( rightToLeft.laneLink[ 0 ].incomingLane.id ).toBe( 1 );
+		expect( rightToLeft.laneLink[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( rightToLeft.laneLink[ 0 ].connectingLane.predecessor ).toBe( 1 );
+		expect( rightToLeft.laneLink[ 0 ].connectingLane.succcessor ).toBe( 1 );
 
 	} );
 
