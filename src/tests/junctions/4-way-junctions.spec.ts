@@ -367,7 +367,7 @@ describe( '4-way-junction tests', () => {
 
 		expect( roadA.getRoadLength() ).toBe( 200 );
 		expect( roadA.successor ).toBeNull();
-		expect( roadA.predecessor ).toBeUndefined();
+		expect( roadA.predecessor ).toBeNull();
 
 		expect( roadB.spline.getLength() ).toBe( 200 );
 		expect( roadB.spline.getSplineSegments().length ).toBe( 0 );
@@ -391,11 +391,11 @@ describe( '4-way-junction tests', () => {
 
 		expect( horizontal.getRoadLength() ).toBe( 200 );
 		expect( horizontal.successor ).toBeNull();
-		expect( horizontal.predecessor ).toBeUndefined();
+		expect( horizontal.predecessor ).toBeNull();
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.successor ).toBeNull();
-		expect( vertical.predecessor ).toBeUndefined();
+		expect( vertical.predecessor ).toBeNull();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
 
 		// expect( true ).toBe( false );
