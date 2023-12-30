@@ -1,4 +1,4 @@
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from "../events/map-events";
+import { MapEvents } from "../events/map-events";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
 import { Injectable } from "@angular/core";
@@ -12,6 +12,9 @@ import { MapService } from "app/services/map.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
+import { RoadCreatedEvent } from "../events/road/road-created-event";
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { RoadRemovedEvent } from "../events/road/road-removed-event";
 
 @Injectable( {
 	providedIn: 'root'

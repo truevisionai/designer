@@ -2,8 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { Manager } from './manager';
+import { RoadCreatedEvent } from "../events/road/road-created-event";
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { RoadRemovedEvent } from "../events/road/road-removed-event";
 // import { RoadElevationService } from 'app/services/road/road-elevation.service';
 
 export class ElevationManager extends Manager {

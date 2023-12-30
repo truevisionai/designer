@@ -1,4 +1,4 @@
-import { MapEvents, RoadUpdatedEvent } from "app/events/map-events";
+import { MapEvents } from "app/events/map-events";
 import { TvMapBuilder } from "app/modules/tv-map/builders/tv-map-builder";
 import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
@@ -10,6 +10,7 @@ import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
 import { Manager } from "./manager";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 
 interface TempIntersection {
 	x: number,

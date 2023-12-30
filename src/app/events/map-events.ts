@@ -1,81 +1,22 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
-import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvMap } from "app/modules/tv-map/models/tv-map.model";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
 import { AssetNode } from "app/views/editor/project-browser/file-node.model";
-import { SplineControlPoint } from "app/modules/three-js/objects/spline-control-point";
-
-export class RoadCreatedEvent {
-	constructor ( public road: TvRoad, public showHelpers = false ) { }
-}
-
-export class RoadUpdatedEvent {
-	constructor ( public road: TvRoad, public showHelpers = false ) { }
-}
-
-export class RoadRemovedEvent {
-	constructor ( public road: TvRoad, public hideHelpers = true ) { }
-}
-
-export class RoadSelectedEvent {
-	constructor ( public road: TvRoad ) { }
-}
-
-export class RoadUnselectedEvent {
-	constructor ( public road: TvRoad ) { }
-}
-
-export class ControlPointCreatedEvent {
-	constructor ( public controlPoint: SplineControlPoint ) { }
-}
-
-export class ControlPointUpdatedEvent {
-	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
-}
-
-export class ControlPointRemovedEvent {
-	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
-}
-
-export class SplineCreatedEvent {
-	constructor ( public spline: AbstractSpline ) { }
-}
-
-export class SplineUpdatedEvent {
-	constructor ( public spline: AbstractSpline ) { }
-}
-
-export class SplineRemovedEvent {
-	constructor ( public spline: AbstractSpline ) { }
-}
-
-export interface LaneCreatedEvent {
-	lane: TvLane;
-}
-
-export interface LaneUpdatedEvent {
-	lane: TvLane;
-}
-
-export interface LaneRemovedEvent {
-	lane: TvLane;
-}
-
-
-export class JunctionCreatedEvent {
-	constructor ( public junction: TvJunction ) { }
-}
-
-export class JunctionUpdatedEvent {
-	constructor ( public junction: TvJunction ) { }
-}
-
-export class JunctionRemovedEvent {
-	constructor ( public junction: TvJunction ) { }
-}
+import { RoadCreatedEvent } from "./road/road-created-event";
+import { RoadUpdatedEvent } from "./road/road-updated-event";
+import { RoadRemovedEvent } from "./road/road-removed-event";
+import { RoadSelectedEvent } from "./road/road-selected-event";
+import { RoadUnselectedEvent } from "./road/road-unselected-event";
+import { ControlPointCreatedEvent } from "./control-point-created-event";
+import { ControlPointUpdatedEvent } from "./control-point-updated-event";
+import { ControlPointRemovedEvent } from "./control-point-removed-event";
+import { SplineCreatedEvent } from "./spline/spline-created-event";
+import { SplineUpdatedEvent } from "./spline/spline-updated-event";
+import { SplineRemovedEvent } from "./spline/spline-removed-event";
+import { JunctionCreatedEvent } from "./junction/junction-created-event";
+import { JunctionUpdatedEvent } from "./junction/junction-updated-event";
+import { JunctionRemovedEvent } from "./junction/junction-removed-event";
 
 @Injectable( {
 	providedIn: 'root'

@@ -12,8 +12,9 @@ import { TvJunction } from './junctions/tv-junction';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
-import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { RoadRemovedEvent } from "../../../events/road/road-removed-event";
 
 export class TvMap {
 

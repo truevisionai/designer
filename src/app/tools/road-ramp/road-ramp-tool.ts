@@ -16,7 +16,9 @@ import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from "../../events/road/road-created-event";
+import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
 export class RoadRampTool extends BaseTool {
 

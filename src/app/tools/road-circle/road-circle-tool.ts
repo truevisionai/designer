@@ -9,7 +9,9 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleService } from "../../services/road/road-circle.service";
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from "../../events/road/road-created-event";
+import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
 export class RoadCircleTool extends BaseTool {
 

@@ -1,10 +1,14 @@
 import {
-	MapEvents, JunctionRemovedEvent, JunctionCreatedEvent, JunctionUpdatedEvent, RoadRemovedEvent
+	MapEvents
 } from "../events/map-events";
 import { Injectable } from "@angular/core";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { JunctionService } from "app/services/junction/junction.service";
 import { RoadService } from "app/services/road/road.service";
+import { RoadRemovedEvent } from "../events/road/road-removed-event";
+import { JunctionCreatedEvent } from "../events/junction/junction-created-event";
+import { JunctionUpdatedEvent } from "../events/junction/junction-updated-event";
+import { JunctionRemovedEvent } from "../events/junction/junction-removed-event";
 
 @Injectable( {
 	providedIn: 'root'

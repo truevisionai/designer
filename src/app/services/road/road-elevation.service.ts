@@ -4,12 +4,13 @@ import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-ele
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { Vector3 } from 'three';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { RoadDebugService } from '../debug/road-debug.service';
 import { DebugLine } from '../debug/debug-line';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
 
 @Injectable( {
 	providedIn: 'root'

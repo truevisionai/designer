@@ -9,8 +9,9 @@ import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
 import { INode, ISelectable } from './i-selectable';
 import { AnyControlPoint } from "./any-control-point";
 import { SerializedField } from 'app/core/components/serialization';
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { IHasCopyUpdate } from 'app/commands/copy-position-command';
+import { RoadUpdatedEvent } from "../../../events/road/road-updated-event";
 
 export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 

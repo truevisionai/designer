@@ -1,5 +1,5 @@
 import { SceneService } from "app/services/scene.service";
-import { JunctionRemovedEvent, MapEvents, RoadCreatedEvent, RoadRemovedEvent, RoadUpdatedEvent, SplineCreatedEvent, SplineRemovedEvent, SplineUpdatedEvent } from "../events/map-events";
+import { MapEvents } from "../events/map-events";
 import { Injectable } from "@angular/core";
 import { RoadService } from "app/services/road/road.service";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
@@ -8,6 +8,13 @@ import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { Box3 } from "three";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
+import { RoadCreatedEvent } from "../events/road/road-created-event";
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { RoadRemovedEvent } from "../events/road/road-removed-event";
+import { SplineCreatedEvent } from "../events/spline/spline-created-event";
+import { SplineUpdatedEvent } from "../events/spline/spline-updated-event";
+import { SplineRemovedEvent } from "../events/spline/spline-removed-event";
+import { JunctionRemovedEvent } from "../events/junction/junction-removed-event";
 
 
 @Injectable( {

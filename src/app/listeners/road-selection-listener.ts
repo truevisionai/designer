@@ -1,7 +1,9 @@
-import { MapEvents, RoadSelectedEvent, RoadUnselectedEvent } from "app/events/map-events";
+import { MapEvents } from "app/events/map-events";
 import { Manager } from "app/managers/manager";
 import { RoadService } from "app/services/road/road.service";
 import { ToolManager } from "app/tools/tool-manager";
+import { RoadSelectedEvent } from "../events/road/road-selected-event";
+import { RoadUnselectedEvent } from "../events/road/road-unselected-event";
 
 export class RoadSelectionListener extends Manager {
 	debug: any;

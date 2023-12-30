@@ -1,7 +1,8 @@
 import { AbstractSpline } from "../../../core/shapes/abstract-spline";
 import { Vector3 } from "three";
-import { MapEvents, ControlPointUpdatedEvent } from "../../../events/map-events";
+import { MapEvents } from "../../../events/map-events";
 import { DynamicControlPoint } from "./dynamic-control-point";
+import { ControlPointUpdatedEvent } from "../../../events/control-point-updated-event";
 
 export class SplineControlPoint extends DynamicControlPoint<AbstractSpline> {
 

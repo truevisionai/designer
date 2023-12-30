@@ -20,7 +20,9 @@ import { Injectable } from '@angular/core';
 import { RoadService } from './road.service';
 import { RoadLinkService } from './road-link.service';
 import { MapService } from '../map.service';
-import { MapEvents, RoadCreatedEvent, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from "../../events/road/road-created-event";
+import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
 @Injectable( {
 	providedIn: 'root'

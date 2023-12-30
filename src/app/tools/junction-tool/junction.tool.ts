@@ -14,9 +14,10 @@ import { CommandHistory } from 'app/services/command-history';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { MapEvents, RoadRemovedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { JunctionToolService } from './junction-tool.service';
+import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
 
 export class JunctionTool extends BaseTool {

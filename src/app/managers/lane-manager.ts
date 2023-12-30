@@ -1,7 +1,8 @@
-import { MapEvents, RoadUpdatedEvent } from "app/events/map-events";
+import { MapEvents } from "app/events/map-events";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { Manager } from "./manager";
 import { LaneService } from "app/tools/lane/lane.service";
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 
 export class LaneManager extends Manager {
 

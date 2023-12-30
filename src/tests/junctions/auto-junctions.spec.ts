@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { RoadRemovedEvent } from 'app/events/map-events';
 import { RoadEventListener } from 'app/listeners/road-event-listener';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
@@ -12,6 +11,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { Vector3 } from 'three';
+import { RoadRemovedEvent } from "../../app/events/road/road-removed-event";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 

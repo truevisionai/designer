@@ -6,11 +6,11 @@ import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { SplineEventListener } from "../../app/listeners/spline-event-listener";
-import { SplineRemovedEvent } from 'app/events/map-events';
 import { RoadEventListener } from 'app/listeners/road-event-listener';
 import { BaseTest } from "tests/base-test.spec";
 import { JunctionEventListener } from 'app/listeners/junction-event.listener';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
+import { SplineRemovedEvent } from "../../app/events/spline/spline-removed-event";
 
 describe( 'AutoSpline Tests', () => {
 

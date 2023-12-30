@@ -1,7 +1,9 @@
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { BaseCommand } from "./base-command";
 import { BaseTool } from "app/tools/base-tool";
-import { MapEvents, RoadSelectedEvent, RoadUnselectedEvent } from "app/events/map-events";
+import { MapEvents } from "app/events/map-events";
+import { RoadSelectedEvent } from "../events/road/road-selected-event";
+import { RoadUnselectedEvent } from "../events/road/road-unselected-event";
 
 export class SelectRoadCommand extends BaseCommand {
 

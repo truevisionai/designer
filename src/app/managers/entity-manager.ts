@@ -2,12 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MapEvents, RoadUpdatedEvent } from 'app/events/map-events';
+import { MapEvents } from 'app/events/map-events';
 import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
 import { ActionType } from 'app/modules/scenario/models/tv-enums';
 // import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Manager } from './manager';
+import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 
 export class EntityManager extends Manager {
 
