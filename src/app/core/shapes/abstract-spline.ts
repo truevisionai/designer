@@ -358,6 +358,46 @@ export abstract class AbstractSpline {
 
 	}
 
+	getFirstRoadSegment () {
+
+		const segments = this.getSplineSegments();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( segment.isRoad ) {
+
+				return segment;
+
+			}
+
+		}
+
+	}
+
+	getPreviousSegment ( segment: TvRoad | TvJunction ): SplineSegment {
+
+		const index = this.splineSegments.findIndex( i => i.segment == segment );
+
+		if ( index == -1 ) return null;
+
+		return this.splineSegments[ index - 1 ];
+
+	}
+
+	getNextSegment ( segment: TvRoad | TvJunction ): SplineSegment {
+
+		const index = this.splineSegments.findIndex( i => i.segment == segment );
+
+		if ( index == -1 ) return null;
+
+		if ( index == this.splineSegments.length - 1 ) return null;
+
+		return this.splineSegments[ index + 1 ];
+
+	}
+
 	getSegmentAt ( s: number ): SplineSegment {
 
 		const segments = this.getSplineSegments();
@@ -393,13 +433,15 @@ export abstract class AbstractSpline {
 
 	removeSegment ( segment: TvRoad | TvJunction ): void {
 
-		if ( segment instanceof TvRoad ) {
+		const index = this.splineSegments.findIndex( i => i.segment == segment );
 
-			this.splineSegments = this.splineSegments.filter( i => i.id != segment.id && i.type != SplineSegmentType.ROAD );
+		if ( index != -1 ) {
 
-		} else if ( segment instanceof TvJunction ) {
+			this.splineSegments.splice( index, 1 );
 
-			this.splineSegments = this.splineSegments.filter( i => i.id != segment.id && i.type != SplineSegmentType.JUNCTION );
+		} else {
+
+			throw new Error( 'segment not found' );
 
 		}
 

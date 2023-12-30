@@ -9,6 +9,7 @@ import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
 import { LaneLinkService } from './lane-link.service';
 import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
+import { MapService } from '../map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +20,14 @@ export class JunctionConnectionService {
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
 		private linkService: LaneLinkService,
+		private mapService: MapService
 	) {
+	}
+
+	get connections () {
+
+		return this.mapService.map.getJunctions().flatMap( junction => junction.getConnections() );
+
 	}
 
 	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {

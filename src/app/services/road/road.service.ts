@@ -50,6 +50,18 @@ export class RoadService {
 
 	}
 
+	get junctionRoads (): TvRoad[] {
+
+		return this.roads.filter( road => road.isJunction );
+
+	}
+
+	get nonJunctionRoads (): TvRoad[] {
+
+		return this.roads.filter( road => !road.isJunction );
+
+	}
+
 	getRoadCount (): number {
 
 		return this.roads.length;

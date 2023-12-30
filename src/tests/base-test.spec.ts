@@ -1,0 +1,77 @@
+import { TvLaneSection } from "../app/modules/tv-map/models/tv-lane-section";
+import { Vector2, Vector3 } from "three";
+import { RoadFactory } from "../app/factories/road-factory.service";
+import { RoadService } from "../app/services/road/road.service";
+import { IntersectionService } from "app/services/junction/intersection.service";
+
+
+export class BaseTest {
+
+	constructor () {
+	}
+
+	expectCorrectLaneOrder ( laneSection: TvLaneSection ) {
+
+		// 3 2 1
+		laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
+			expect( lane.id ).toBe( array.length - index );
+		} );
+
+		// -1, -2, -3
+		laneSection.getRightLanes().forEach( ( lane, index ) => {
+			expect( lane.id ).toBe( -1 - index );
+		} );
+
+	}
+
+	makeRoad ( points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+
+		const road = RoadFactory.instance.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+
+		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+
+		return road;
+
+	}
+
+	createRoad ( roadService: RoadService, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+
+		const road = this.makeRoad( points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+
+		roadService.addRoad( road );
+
+		return road;
+
+	}
+
+	createFourWayJunction (
+		roadService: RoadService,
+		intersectionService: IntersectionService,
+		leftLaneCount = 1,
+		rightLaneCount = 1,
+		leftWidth = 3.6,
+		rightWidth = 3.6
+	) {
+
+		const roadA = this.makeRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
+			leftLaneCount,
+			rightLaneCount,
+			leftWidth,
+			rightWidth
+		);
+
+		const roadB = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
+			leftLaneCount,
+			rightLaneCount,
+			leftWidth,
+			rightWidth
+		);
+
+		roadService.addRoad( roadA );
+
+		roadService.addRoad( roadB );
+
+		intersectionService.checkSplineIntersections( roadB.spline );
+
+	}
+}

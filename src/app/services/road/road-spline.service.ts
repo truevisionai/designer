@@ -123,34 +123,38 @@ export class RoadSplineService {
 
 	removeRoadSegment ( road: TvRoad ) {
 
-		const spline = road.spline;
+		road.spline?.removeSegment( road );
 
-		if ( spline == null ) return;
+		if ( road.spline?.getSplineSegments().length == 0 ) {
 
-		// get road segment and update if next road segment exists
-		// this is to make sure we maintains gaps if intended
-		const currentSegment = spline.findSegment( road );
-
-		if ( currentSegment == null ) return;
-
-		const nextSegment = spline.getSplineSegments().find( i => i.start > currentSegment.start );
-
-		if ( nextSegment ) {
-
-			// if next segment exists,
-			currentSegment.makeEmpty();
-
-		} else {
-
-			spline.removeSegment( road );
+			this.mapService.map.removeSpline( road.spline );
 
 		}
 
-		if ( spline.getSplineSegments().length == 0 ) {
+		// // get road segment and update if next road segment exists
+		// // this is to make sure we maintains gaps if intended
+		// const currentSegment = spline.findSegment( road );
 
-			this.mapService.map.removeSpline( spline );
+		// if ( currentSegment == null ) return;
 
-		}
+		// const nextSegment = spline.getSplineSegments().find( i => i.start > currentSegment.start );
+
+		// if ( nextSegment ) {
+
+		// 	// if next segment exists,
+		// 	currentSegment.makeEmpty();
+
+		// } else {
+
+		// 	spline.removeSegment( road );
+
+		// }
+
+		// if ( spline.getSplineSegments().length == 0 ) {
+
+		// 	this.mapService.map.removeSpline( spline );
+
+		// }
 	}
 
 	createConnectingRoadSpline ( road: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
@@ -392,4 +396,22 @@ export class RoadSplineService {
 	//		b2: b2,
 	//	};
 	//}
+
+	getNewSpline () {
+
+		return new AutoSplineV2();
+
+	}
+
+	addSpline ( spline: AbstractSpline ) {
+
+		this.mapService.map.addSpline( spline );
+
+	}
+
+	removeSpline ( spline: AbstractSpline ) {
+
+		this.mapService.map.removeSpline( spline );
+
+	}
 }

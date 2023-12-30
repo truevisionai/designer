@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RoadEventListener } from './road-event-listener';
 import { TrafficManager } from './traffic.manager';
-import { RoadControlPointListener } from './road-control-point-listener';
+import { SplinePointListener } from './spline-point.listener';
+import { SplineEventListener } from './spline-event-listener';
+import { JunctionEventListener } from './junction-event.listener';
 
 @Injectable( {
 	providedIn: 'root'
@@ -11,7 +13,9 @@ export class EventServiceProvider {
 	constructor (
 		private roadEventListener: RoadEventListener,
 		private trafficManager: TrafficManager,
-		private roadControlPointListener: RoadControlPointListener,
+		private spineEventListener: SplineEventListener,
+		private splineControlPointListener: SplinePointListener,
+		private junctionEventListener: JunctionEventListener
 	) {
 	}
 
@@ -19,7 +23,9 @@ export class EventServiceProvider {
 
 		this.roadEventListener.init();
 		this.trafficManager.init();
-		this.roadControlPointListener.init();
+		this.spineEventListener.init();
+		this.splineControlPointListener.init();
+		this.junctionEventListener.init();
 
 	}
 

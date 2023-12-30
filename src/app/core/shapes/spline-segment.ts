@@ -13,20 +13,20 @@ export class SplineSegment {
 	public geometries: TvAbstractRoadGeometry[] = [];
 
 	get isRoad () {
-		return this._type == SplineSegmentType.ROAD && this.id != -1;
+		return this.type == SplineSegmentType.ROAD && this.id != -1;
+	}
+
+	get isJunction () {
+		return this.type == SplineSegmentType.JUNCTION && this.id != -1;
 	}
 
 	get id () {
 		return this.segment?.id || -1;
 	}
 
-	get type () {
-		return this._type;
-	}
-
 	constructor (
 		public start: number,
-		private _type: SplineSegmentType,
+		public type: SplineSegmentType,
 		public segment: TvRoad | TvJunction | null
 	) {
 	}
@@ -40,7 +40,7 @@ export class SplineSegment {
 	}
 
 	makeEmpty () {
-		this._type = SplineSegmentType.NONE;
+		this.type = SplineSegmentType.NONE;
 		this.segment = null;
 	}
 

@@ -12,6 +12,8 @@ import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-cont
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { SplineService } from 'app/services/spline.service';
+import { SplineDebugService } from 'app/services/debug/spline-debug.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,8 +27,10 @@ export class RoadToolService {
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory,
 		private roadLinkService: RoadLinkService,
-		private debug: RoadDebugService,
+		private roadDebug: RoadDebugService,
 		public roadService: RoadService,
+		private splineService: SplineService,
+		private splineDebug: SplineDebugService,
 	) {
 	}
 
@@ -52,7 +56,7 @@ export class RoadToolService {
 
 		this.roadService.hideAllRoadNodes();
 
-		this.debug.clear();
+		this.roadDebug.clear();
 
 	}
 
@@ -60,7 +64,7 @@ export class RoadToolService {
 
 		this.roadService.showAllRoadNodes();
 
-		this.roadService.roads.forEach( road => this.debug.showRoadBorderLine( road ) );
+		this.roadService.roads.forEach( road => this.roadDebug.showRoadBorderLine( road ) );
 
 	}
 
@@ -86,13 +90,13 @@ export class RoadToolService {
 
 		this.roadService.updateRoadNodes( road );
 
-		this.debug.clear();
+		this.roadDebug.clear();
 
-		this.debug.removeHighlight();
+		this.roadDebug.removeHighlight();
 
-		this.debug.showRoadBorderLine( road );
+		this.roadDebug.showRoadBorderLine( road );
 
-		this.debug.selectRoad( road );
+		this.roadDebug.selectRoad( road );
 
 	}
 
@@ -117,7 +121,7 @@ export class RoadToolService {
 		this.roadService.hideControlPoints( road );
 		this.roadService.hideSpline( road );
 
-		this.debug.unselectRoad( road );
+		this.roadDebug.unselectRoad( road );
 
 	}
 
@@ -126,7 +130,25 @@ export class RoadToolService {
 		this.roadService.showControlPoints( road );
 		this.roadService.showSpline( road );
 
-		if ( road.spline.controlPoints.length >= 2 ) this.debug.selectRoad( road );
+		if ( road.spline.controlPoints.length >= 2 ) this.roadDebug.selectRoad( road );
+
+	}
+
+	unselectSpline ( spline: AbstractSpline ) {
+
+		this.splineService.hideControlPoints( spline );
+		this.splineService.hide( spline );
+
+		this.splineDebug.unselect( spline );
+
+	}
+
+	selectSpline ( spline: AbstractSpline ) {
+
+		this.splineService.showControlPoints( spline );
+		this.splineService.show( spline );
+
+		this.splineDebug.select( spline );
 
 	}
 
@@ -191,15 +213,29 @@ export class RoadToolService {
 
 	}
 
-	highlightRoad ( road: TvRoad ) {
-
-		this.debug.highlightRoad( road );
-
-	}
-
 	removeHighlight () {
 
-		this.debug.removeHighlight();
+		this.roadDebug.removeHighlight();
+		this.splineDebug.removeHighlight();
 
 	}
+
+	highlightSpline ( spline: AbstractSpline ) {
+
+		this.splineDebug.highlight( spline );
+
+	}
+
+	addSpline ( spline: AbstractSpline ) {
+
+		this.roadSplineService.addSpline( spline );
+
+	}
+
+	removeSpline ( spline: AbstractSpline ) {
+
+		return this.roadSplineService.removeSpline( spline );
+
+	}
+
 }

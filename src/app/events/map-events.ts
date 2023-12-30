@@ -28,15 +28,15 @@ export class RoadUnselectedEvent {
 	constructor ( public road: TvRoad ) { }
 }
 
-export class RoadControlPointCreatedEvent {
+export class ControlPointCreatedEvent {
 	constructor ( public controlPoint: SplineControlPoint ) { }
 }
 
-export class RoadControlPointUpdatedEvent {
+export class ControlPointUpdatedEvent {
 	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
 }
 
-export class RoadControlPointRemovedEvent {
+export class ControlPointRemovedEvent {
 	constructor ( public controlPoint: SplineControlPoint, public spline: AbstractSpline ) { }
 }
 
@@ -93,6 +93,10 @@ export class MapEvents {
 	@Output() static objectUpdated = new EventEmitter<Object>();
 	@Output() static objectRemoved = new EventEmitter<Object>();
 
+	@Output() static splineCreated = new EventEmitter<SplineCreatedEvent>();
+	@Output() static splineUpdated = new EventEmitter<SplineUpdatedEvent>();
+	@Output() static splineRemoved = new EventEmitter<SplineRemovedEvent>();
+
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
 	@Output() static roadRemoved = new EventEmitter<RoadRemovedEvent>();
@@ -101,9 +105,10 @@ export class MapEvents {
 
 	@Output() static controlPointSelected = new EventEmitter<AbstractControlPoint>();
 	@Output() static controlPointUnselected = new EventEmitter<AbstractControlPoint>();
-	@Output() static roadControlPointCreated = new EventEmitter<RoadControlPointCreatedEvent>();
-	@Output() static roadControlPointUpdated = new EventEmitter<RoadControlPointUpdatedEvent>();
-	@Output() static roadControlPointRemoved = new EventEmitter<RoadControlPointRemovedEvent>();
+
+	@Output() static controlPointCreated = new EventEmitter<ControlPointCreatedEvent>();
+	@Output() static controlPointUpdated = new EventEmitter<ControlPointUpdatedEvent>();
+	@Output() static controlPointRemoved = new EventEmitter<ControlPointRemovedEvent>();
 
 	@Output() static laneCreated = new EventEmitter<TvLane>();
 	@Output() static laneUpdated = new EventEmitter<TvLane>();

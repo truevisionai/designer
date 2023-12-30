@@ -10,41 +10,8 @@ import { LaneLinkService } from 'app/services/junction/lane-link.service';
 import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
+import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from 'three';
-
-export function expectCorrectLaneOrder ( laneSection: TvLaneSection ) {
-
-	// 3 2 1
-	laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
-		expect( lane.id ).toBe( array.length - index );
-	} );
-
-	// -1, -2, -3
-	laneSection.getRightLanes().forEach( ( lane, index ) => {
-		expect( lane.id ).toBe( -1 - index );
-	} );
-
-}
-
-export function makeRoad ( points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
-
-	const road = RoadFactory.instance.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
-
-	points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
-
-	return road;
-
-}
-
-export function createRoad ( roadService: RoadService, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
-
-	const road = makeRoad( points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
-
-	roadService.addRoad( road );
-
-	return road;
-
-}
 
 describe( 'LaneLinkService', () => {
 
@@ -55,6 +22,7 @@ describe( 'LaneLinkService', () => {
 	let laneLinkService: LaneLinkService;
 	let connectionService: JunctionConnectionService;
 	let roadFactory = new RoadFactory();
+	let baseTest = new BaseTest();
 
 	beforeEach( () => {
 
@@ -120,7 +88,7 @@ describe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( leftToRight.laneSections[ 0 ].lanes.size ).toBe( 4 );
-		expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
+		baseTest.expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
 
 		expect( junction.connections.get( 1 ) ).toBeDefined()
 		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB )
@@ -129,7 +97,7 @@ describe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
 		expect( rightToLeft.laneSections[ 0 ].lanes.size ).toBe( 4 );
-		expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );
+		baseTest.expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );
 
 	} )
 
@@ -165,12 +133,12 @@ describe( 'LaneLinkService', () => {
 
 	it( 'should make links between 4 lane road and 2 lane road opposite contacts', () => {
 
-		const left = createRoad( roadService, [
+		const left = baseTest.createRoad( roadService, [
 			new Vector2( -50, 0 ),
 			new Vector2( 0, 0 )
 		], 2, 2 );
 
-		const right = createRoad( roadService, [
+		const right = baseTest.createRoad( roadService, [
 			new Vector2( 10, 0 ),
 			new Vector2( 50, 0 )
 		], 1, 1 );
@@ -200,12 +168,12 @@ describe( 'LaneLinkService', () => {
 
 	it( 'should make links with correct lane width 1', () => {
 
-		const left = createRoad( roadService, [
+		const left = baseTest.createRoad( roadService, [
 			new Vector2( -50, 0 ),
 			new Vector2( 0, 0 )
 		], 1, 1, 1, 1 );
 
-		const right = createRoad( roadService, [
+		const right = baseTest.createRoad( roadService, [
 			new Vector2( 10, 0 ),
 			new Vector2( 50, 0 )
 		], 1, 1, 1, 1 );
@@ -236,12 +204,12 @@ describe( 'LaneLinkService', () => {
 
 	it( 'should make links with correct lane width 2', () => {
 
-		const left = createRoad( roadService, [
+		const left = baseTest.createRoad( roadService, [
 			new Vector2( -50, 0 ),
 			new Vector2( 0, 0 )
 		], 1, 1, 1, 1 );
 
-		const right = createRoad( roadService, [
+		const right = baseTest.createRoad( roadService, [
 			new Vector2( 10, 0 ),
 			new Vector2( 50, 0 )
 		], 1, 1, 1, 2 );

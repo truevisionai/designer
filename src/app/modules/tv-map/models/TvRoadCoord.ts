@@ -1,7 +1,7 @@
 import { Orientation } from 'app/modules/scenario/models/tv-orientation';
 import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
-import { TvContactPoint } from './tv-common';
+import { TravelDirection, TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
@@ -115,6 +115,18 @@ export class TvRoadCoord {
 	distanceTo ( coordB: TvRoadCoord ): number {
 
 		return this.position.distanceTo( coordB.position );
+
+	}
+
+	get travelDirection () {
+
+		if ( this.contact == TvContactPoint.END ) {
+			return TravelDirection.forward;
+		}
+
+		if ( this.contact == TvContactPoint.START ) {
+			return TravelDirection.backward;
+		}
 
 	}
 
