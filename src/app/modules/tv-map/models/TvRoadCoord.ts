@@ -13,9 +13,9 @@ export class TvRoadCoord {
 
 	get contact (): TvContactPoint {
 
-		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+		if ( Maths.approxEquals( this.s, 0, 1 ) ) return TvContactPoint.START;
 
-		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+		if ( Maths.approxEquals( this.s, this.road.length, 1 ) ) return TvContactPoint.END;
 
 		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}

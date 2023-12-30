@@ -150,8 +150,8 @@ export class RoundLine {
 
 		if ( this.points.length <= 1 ) return;
 
-		this.calcRadiusOld();
-		// this.calcRadiusNew();
+		// this.calcRadiusOld();
+		this.calcRadiusNew();
 
 		const position = this.mesh.geometry.attributes.position as BufferAttribute;
 
