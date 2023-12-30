@@ -22,6 +22,8 @@ import { JunctionRemovedEvent } from "../events/junction/junction-removed-event"
 } )
 export class SplineEventListener {
 
+	private debug: boolean = false;
+
 	constructor (
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
@@ -39,7 +41,7 @@ export class SplineEventListener {
 
 	onSplineCreated ( event: SplineCreatedEvent ) {
 
-		console.debug( 'onSplineCreated', event );
+		if ( this.debug ) console.debug( 'onSplineCreated', event );
 
 		event.spline.controlPoints.forEach( point => {
 
@@ -49,11 +51,19 @@ export class SplineEventListener {
 
 		this.buildSpline( event.spline );
 
+		if ( event.spline.controlPoints.length < 2 ) return;
+
+		this.updateSegments( event.spline );
+
+		this.updateSplineBoundingBox( event.spline );
+
+		this.checkIntersections( event.spline );
+
 	}
 
 	onSplineRemoved ( event: SplineRemovedEvent ) {
 
-		console.debug( 'onSplineRemoved', event );
+		if ( this.debug ) console.debug( 'onSplineRemoved', event );
 
 		event.spline.controlPoints.forEach( point => {
 
@@ -65,9 +75,28 @@ export class SplineEventListener {
 
 		this.removeSplineJunctions( event.spline );
 
+		this.removeSegments( event.spline );
 	}
 
-	removeSplineRoads ( spline: AbstractSpline ) {
+	onSplineUpdated ( event: SplineUpdatedEvent ) {
+
+		if ( this.debug ) console.debug( 'onSplineUpdated', event );
+
+		// this.removeSegments( event.spline );
+
+		this.buildSpline( event.spline );
+
+		if ( event.spline.controlPoints.length < 2 ) return;
+
+		this.updateSegments( event.spline );
+
+		this.updateSplineBoundingBox( event.spline );
+
+		this.checkIntersections( event.spline );
+
+	}
+
+	private removeSplineRoads ( spline: AbstractSpline ) {
 
 		const segments = spline.getSplineSegments();
 
@@ -81,7 +110,7 @@ export class SplineEventListener {
 
 	}
 
-	removeSplineJunctions ( spline: AbstractSpline ) {
+	private removeSplineJunctions ( spline: AbstractSpline ) {
 
 		const segments = spline.getSplineSegments();
 
@@ -115,24 +144,6 @@ export class SplineEventListener {
 			this.onSplineUpdated( new SplineUpdatedEvent( otherSpline ) );
 
 		}
-
-	}
-
-	onSplineUpdated ( event: SplineUpdatedEvent ) {
-
-		console.debug( 'onSplineUpdated', event );
-
-		// this.removeSegments( event.spline );
-
-		this.buildSpline( event.spline );
-
-		if ( event.spline.controlPoints.length < 2 ) return;
-
-		this.updateSegments( event.spline );
-
-		this.updateSplineBoundingBox( event.spline );
-
-		this.checkIntersections( event.spline );
 
 	}
 

@@ -70,6 +70,9 @@ describe( 'AutoSpline Tests', () => {
 		expect( roadA.successor ).toBeNull();
 		expect( roadA.predecessor ).toBeUndefined();
 
+		expect( roadB.spline.getLength() ).toBe( 200 );
+		expect( roadB.spline.getSplineSegments().length ).toBe( 0 );
+
 	} );
 
 
