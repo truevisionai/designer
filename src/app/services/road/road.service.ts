@@ -431,6 +431,7 @@ export class RoadService {
 
 		this.mapService.map.gameObject.remove( road.gameObject );
 
+		this.roadFactory.idRemoved( road.id );
 	}
 
 	duplicateRoad ( road: TvRoad ) {

@@ -17,32 +17,56 @@ export class IDService {
 
 	}
 
-	getUniqueID ( importedID?: number ): number {
+	getNextId ( importedID?: number ): number {
 
-		if ( importedID !== undefined && importedID !== null ) {
-
-			this.usedIDs.add( importedID );
-
-			if ( importedID > this.highestID ) {
-				this.highestID = importedID;
-			}
-
-			return importedID;
+		if ( this.usedIDs.has( importedID ) ) {
+			throw new Error( `IDService: ID ${ importedID } already in use!` );
 		}
 
-		// Ensuring the new ID is unique
-		do {
-			this.highestID++;
-		} while ( this.usedIDs.has( this.highestID ) );
+		let nextId = null;
 
-		this.usedIDs.add( this.highestID );
+		if ( importedID !== undefined && importedID !== null && typeof importedID === 'number' ) {
 
-		return this.highestID;
+			nextId = importedID;
+
+		} else {
+
+			nextId = this.highestID + 1;
+
+		}
+
+		this.usedIDs.add( nextId );
+
+		this.updateHighestID();
+
+		return nextId;
 	}
 
-	getUniqueName ( prefix: string, importedID?: number ): string {
+	getName ( prefix: string, importedID?: number ): string {
 
-		return `${ prefix }_${ this.getUniqueID( importedID ) }`;
+		return `${ prefix }_${ this.getNextId( importedID ) }`;
+
+	}
+
+	remove ( id: number ) {
+
+		this.usedIDs.delete( id );
+
+		this.updateHighestID();
+
+	}
+
+	private updateHighestID () {
+
+		for ( const id of this.usedIDs ) {
+
+			if ( id > this.highestID ) {
+
+				this.highestID = id;
+
+			}
+
+		}
 
 	}
 

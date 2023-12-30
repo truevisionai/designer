@@ -24,7 +24,7 @@ export class JunctionFactory {
 
 	createJunction ( junctionName?: string, junctionId?: number ): TvJunction {
 
-		const id = this.IDService.getUniqueID( junctionId );
+		const id = this.IDService.getNextId( junctionId );
 
 		const name = junctionName || `Junction${ id }`;
 
@@ -34,7 +34,7 @@ export class JunctionFactory {
 
 	createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
-		const id = this.IDService.getUniqueID();
+		const id = this.IDService.getNextId();
 
 		const name = `VirtualJunction${ id }`;
 

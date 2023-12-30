@@ -53,25 +53,27 @@ export class BaseTest {
 		rightWidth = 3.6
 	) {
 
-		const roadA = this.makeRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
+		// x-axis
+		const horizontalRoad = this.makeRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,
 			rightWidth
 		);
 
-		const roadB = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
+		// y-axis
+		const verticalRoad = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,
 			rightWidth
 		);
 
-		roadService.addRoad( roadA );
+		roadService.addRoad( horizontalRoad );
 
-		roadService.addRoad( roadB );
+		roadService.addRoad( verticalRoad );
 
-		intersectionService.checkSplineIntersections( roadB.spline );
+		intersectionService.checkSplineIntersections( verticalRoad.spline );
 
 	}
 }

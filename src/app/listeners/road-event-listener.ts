@@ -15,6 +15,7 @@ import { JunctionService } from "app/services/junction/junction.service";
 import { RoadCreatedEvent } from "../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +31,7 @@ export class RoadEventListener {
 		private roadElevationService: RoadElevationService,
 		private intersectionService: IntersectionService,
 		private junctionService: JunctionService,
+		private roadFactory: RoadFactory
 	) {
 	}
 
@@ -78,6 +80,7 @@ export class RoadEventListener {
 
 		this.mapService.map.removeRoad( event.road );
 
+		this.roadFactory.idRemoved( event.road.id );
 	}
 
 	updateLinks ( road: TvRoad ) {

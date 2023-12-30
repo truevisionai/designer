@@ -58,7 +58,7 @@ export class ScenarioElementFactory {
 
 	static createStory ( entity: ScenarioEntity ) {
 
-		const id = this.storyId.getUniqueID();
+		const id = this.storyId.getNextId();
 
 		const storyName = `Story${ id }`;
 
@@ -67,7 +67,7 @@ export class ScenarioElementFactory {
 
 	static createAct () {
 
-		const id = this.actId.getUniqueID();
+		const id = this.actId.getNextId();
 
 		return new Act( `Act${ id }` );
 
@@ -75,7 +75,7 @@ export class ScenarioElementFactory {
 
 	static createManeuverGroup ( entity: ScenarioEntity ) {
 
-		const id = this.maneuverGroupId.getUniqueID();
+		const id = this.maneuverGroupId.getNextId();
 
 		const actors = [ entity.name ];
 
@@ -85,7 +85,7 @@ export class ScenarioElementFactory {
 
 	static createManeuver () {
 
-		const id = this.maneuverId.getUniqueID();
+		const id = this.maneuverId.getNextId();
 
 		const maneuver = new Maneuver( `Maneuver${ id }` );
 
@@ -95,11 +95,11 @@ export class ScenarioElementFactory {
 
 	static createEvent ( action: PrivateAction ) {
 
-		const id = this.eventId.getUniqueID();
+		const id = this.eventId.getNextId();
 
 		const event = new TvEvent( `Event${ id }` );
 
-		const actionID = this.actionId.getUniqueID();
+		const actionID = this.actionId.getNextId();
 
 		event.addNewAction( `Action${ actionID }`, action );
 
@@ -112,7 +112,7 @@ export class ScenarioElementFactory {
 
 	static createEventAction ( $actionType: ActionType, entity: ScenarioEntity ) {
 
-		const actionID = this.actionId.getUniqueID();
+		const actionID = this.actionId.getNextId();
 
 		const name = `Action${ actionID }`;
 
@@ -122,7 +122,7 @@ export class ScenarioElementFactory {
 
 	static createEmptyEvent () {
 
-		const id = this.eventId.getUniqueID();
+		const id = this.eventId.getNextId();
 
 		const event = new TvEvent( `Event${ id }` );
 

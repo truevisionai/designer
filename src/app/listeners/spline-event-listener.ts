@@ -15,6 +15,7 @@ import { SplineCreatedEvent } from "../events/spline/spline-created-event";
 import { SplineUpdatedEvent } from "../events/spline/spline-updated-event";
 import { SplineRemovedEvent } from "../events/spline/spline-removed-event";
 import { JunctionRemovedEvent } from "../events/junction/junction-removed-event";
+import { SplineSegment } from "app/core/shapes/spline-segment";
 
 
 @Injectable( {
@@ -65,15 +66,11 @@ export class SplineEventListener {
 
 		if ( this.debug ) console.debug( 'onSplineRemoved', event );
 
-		event.spline.controlPoints.forEach( point => {
+		event.spline.controlPoints.forEach( point => SceneService.removeFromTool( point ) );
 
-			SceneService.removeFromTool( point );
+		this.removeRoads( event.spline );
 
-		} )
-
-		this.removeSplineRoads( event.spline );
-
-		this.removeSplineJunctions( event.spline );
+		this.removeJunctions( event.spline );
 
 		this.removeSegments( event.spline );
 	}
@@ -82,9 +79,15 @@ export class SplineEventListener {
 
 		if ( this.debug ) console.debug( 'onSplineUpdated', event );
 
-		// this.removeSegments( event.spline );
+		const firstSegment = event.spline.getFirstRoadSegment();
 
-		this.buildSpline( event.spline );
+		this.removeRoads( event.spline );
+
+		this.removeJunctions( event.spline );
+
+		this.removeSegments( event.spline );
+
+		this.buildSpline( event.spline, firstSegment );
 
 		if ( event.spline.controlPoints.length < 2 ) return;
 
@@ -96,7 +99,7 @@ export class SplineEventListener {
 
 	}
 
-	private removeSplineRoads ( spline: AbstractSpline ) {
+	private removeRoads ( spline: AbstractSpline ) {
 
 		const segments = spline.getSplineSegments();
 
@@ -110,7 +113,7 @@ export class SplineEventListener {
 
 	}
 
-	private removeSplineJunctions ( spline: AbstractSpline ) {
+	private removeJunctions ( spline: AbstractSpline ) {
 
 		const segments = spline.getSplineSegments();
 
@@ -147,21 +150,34 @@ export class SplineEventListener {
 
 	}
 
-	private buildSpline ( spline: AbstractSpline ): void {
+	private buildSpline ( spline: AbstractSpline, firstSegment?: SplineSegment ): void {
 
-		this.addDefaulSegment( spline );
+		this.addDefaulSegment( spline, firstSegment );
 
 		this.roadSplineService.rebuildSplineRoads( spline );
 
 	}
 
-	private addDefaulSegment ( spline: AbstractSpline ) {
+	private addDefaulSegment ( spline: AbstractSpline, firstSegment?: SplineSegment ) {
 
 		const segments = spline.getSplineSegments();
 
 		if ( segments.length == 0 && spline.controlPoints.length >= 2 ) {
 
-			const road = this.roadService.createDefaultRoad();
+			let road: TvRoad
+
+			if ( firstSegment && firstSegment.isRoad ) {
+
+				road = firstSegment.getInstance<TvRoad>();
+
+				road.successor = null;
+				road.predecessor = null;
+
+			} else {
+
+				road = this.roadService.createDefaultRoad();
+
+			}
 
 			road.spline = spline;
 

@@ -33,7 +33,13 @@ export class RoadFactory {
 
 	getNextRoadId ( id?: number ) {
 
-		return this.IDService.getUniqueID( id );
+		return this.IDService.getNextId( id );
+
+	}
+
+	idRemoved ( id: number ) {
+
+		this.IDService.remove( id );
 
 	}
 
@@ -239,7 +245,7 @@ export class RoadFactory {
 
 	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
 
-		const roadId = this.IDService.getUniqueID( id );
+		const roadId = this.IDService.getNextId( id );
 
 		const roadName = name || `Road${ roadId }`;
 

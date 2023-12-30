@@ -75,13 +75,13 @@ export class RoadObjectService {
 
 			road.objects.object.forEach( object => {
 
-				this.ids.get( road ).getUniqueID( object.attr_id );
+				this.ids.get( road ).getNextId( object.attr_id );
 
 			} )
 
 		}
 
-		return this.ids.get( road ).getUniqueID();
+		return this.ids.get( road ).getNextId();
 	}
 
 	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
