@@ -23,6 +23,8 @@ import { MapService } from '../map.service';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
+import { RoadDebugService } from '../debug/road-debug.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -38,48 +40,43 @@ export class RoadCircleService {
 	private radius: number;
 
 	constructor (
-		private roadService: RoadService,
 		private roadLinkService: RoadLinkService,
 		private mapService: MapService,
+		private roadDebug: RoadDebugService,
+		private roadFactory: RoadFactory,
 	) { }
 
 	onToolDisabled () {
 
-		this.roadService.roads.forEach( road => {
-
-			this.hideRoadNodes( road );
-
-		} );
+		this.roadDebug.clear();
 
 	}
 
 	addRoad ( road: TvRoad ) {
 
-		this.roadService.addRoad( road );
-
 		this.showRoadNodes( road );
 
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+
 	}
 
 	removeRoad ( road: TvRoad ) {
 
-		this.roadService.removeRoad( road );
-
 		this.hideRoadNodes( road );
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+
 	}
 
 	showRoadNodes ( road: TvRoad ) {
 
-		this.roadService.showRoadNodes( road );
+		this.roadDebug.showRoadNodes( road );
 
 	}
 
 	hideRoadNodes ( road: TvRoad ) {
 
-		this.roadService.hideRoadNodes( road );
+		this.roadDebug.hideRoadNodes( road );
 
 	}
 
@@ -171,7 +168,7 @@ export class RoadCircleService {
 
 		for ( let i = 0; i < 4; i++ ) {
 
-			const road = roads[ i ] = this.roadService.createDefaultRoad();
+			const road = roads[ i ] = this.roadFactory.createDefaultRoad();
 
 			this.mapService.map.addRoad( road );
 

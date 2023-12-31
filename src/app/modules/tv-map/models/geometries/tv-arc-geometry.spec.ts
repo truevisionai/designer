@@ -10,17 +10,14 @@ import { TvRoad } from '../tv-road.model';
 
 describe( 'OdArcGeometry', () => {
 
-	let map: TvMap;
+	let map: TvMap = TvMapInstance.map;
 	let road: TvRoad;
 	let pose = new TvPosTheta();
 
 	beforeEach( () => {
 
-		map = new TvMap();
-
 		road = new TvRoad( '', 0, 1 );
 
-		TvMapInstance.map = map;
 
 	} );
 

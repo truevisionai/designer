@@ -27,9 +27,7 @@ describe( 'OpenDrive Model', () => {
 
 	beforeEach( () => {
 
-		map = new TvMap();
-
-		TvMapInstance.map = map;
+		map = TvMapInstance.map;
 
 		road = map.addNewRoad( '', 10, 1 );
 

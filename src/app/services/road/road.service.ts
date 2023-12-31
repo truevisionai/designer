@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint, TvRoadType } from 'app/modules/tv-map/models/tv-common';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { SceneService } from '../scene.service';
 import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
-import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
-import { TvPosTheta } from "../../modules/tv-map/models/tv-pos-theta";
 import { MapService } from '../map.service';
 import { SplineService } from '../spline.service';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
@@ -21,18 +17,13 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadService {
 
-	private static nodes: RoadNode[] = [];
-
 	private opacityObjects = new Map<Mesh, Material>();
-
-	private static cornerPoints: DynamicControlPoint<TvRoad>[] = [];
 
 	constructor (
 		private roadSplineService: RoadSplineService,
@@ -128,18 +119,6 @@ export class RoadService {
 
 	}
 
-	hideAllRoadNodes () {
-
-		this.roads.forEach( road => this.hideRoadNodes( road ) );
-
-	}
-
-	showAllRoadNodes () {
-
-		this.roads.filter( road => !road.isJunction ).forEach( road => this.showRoadNodes( road ) );
-
-	}
-
 	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
 		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
@@ -151,25 +130,6 @@ export class RoadService {
 		joiningRoad.spline = spline;
 
 		return joiningRoad;
-
-	}
-
-	showRoadNodes ( road: TvRoad ) {
-
-		this.hideRoadNodes( road );
-
-		this.createRoadNode( road, TvContactPoint.START );
-		this.createRoadNode( road, TvContactPoint.END );
-
-	}
-
-	hideRoadNodes ( road: TvRoad ) {
-
-		RoadService.nodes.filter( node => node.roadId == road.id ).forEach( node => {
-
-			SceneService.removeFromTool( node );
-
-		} );
 
 	}
 
@@ -196,36 +156,6 @@ export class RoadService {
 		this.splineService.hideControlPoints( road.spline );
 
 	}
-
-	updateRoadNodes ( road: TvRoad, show = true ) {
-
-		this.hideRoadNodes( road );
-
-		if ( show ) this.showRoadNodes( road );
-
-	}
-
-	// updateSplineRoads ( spline: AbstractSpline ) {
-
-	// 	spline.updateRoadSegments();
-
-	// 	spline.getRoadSegments().forEach( segment => {
-
-	// 		if ( segment.roadId == -1 ) return;
-
-	// 		const road = this.mapService.map.getRoadById( segment.roadId );
-
-	// 		if ( road ) {
-
-	// 			road.clearGeometries();
-
-	// 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-	// 		}
-
-	// 	} );
-
-	// }
 
 	updateSplineGeometries ( road: TvRoad ) {
 
@@ -263,7 +193,7 @@ export class RoadService {
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			this.updateRoadNodes( road, showNodes );
+			// this.updateRoadNodes( road, showNodes );
 
 			const gameObject = this.baseService.rebuildRoad( road );
 
@@ -272,76 +202,6 @@ export class RoadService {
 		} );
 
 		return gameObjects;
-	}
-
-	private createRoadNode ( road: TvRoad, contact: TvContactPoint ): RoadNode {
-
-		const node = new RoadNode( road, contact );
-
-		SceneService.addToolObject( node );
-
-		RoadService.nodes.push( node );
-
-		return node;
-
-	}
-
-	showCornerPoints ( road: TvRoad, ) {
-
-		this.createCornerPoint( road, road.getStartPosTheta() );
-		this.createCornerPoint( road, road.getEndPosTheta() );
-
-	}
-
-	hideCornerPoints ( road: TvRoad ) {
-
-		RoadService.cornerPoints
-			.filter( point => point.mainObject.id == road.id )
-			.forEach( point => {
-
-				SceneService.removeFromTool( point );
-
-			} );
-
-	}
-
-	createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
-
-		const rightT = road.getRightsideWidth( coord.s );
-		const leftT = road.getLeftSideWidth( coord.s );
-
-		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
-
-		const leftPoint = new DynamicControlPoint( road, leftPosition );
-		const rightPoint = new DynamicControlPoint( road, rightPosition );
-
-		RoadService.cornerPoints.push( leftPoint );
-		RoadService.cornerPoints.push( rightPoint );
-
-		SceneService.addToolObject( leftPoint );
-		SceneService.addToolObject( rightPoint );
-
-	}
-
-	showAllCornerPoints () {
-
-		this.mapService.map.getRoads().forEach( road => {
-
-			this.showCornerPoints( road );
-
-		} );
-
-	}
-
-	hideAllCornerPoints () {
-
-		this.mapService.map.getRoads().forEach( road => {
-
-			this.hideCornerPoints( road );
-
-		} );
-
 	}
 
 	rebuildLink ( link: TvRoadLinkChild ) {
@@ -398,9 +258,8 @@ export class RoadService {
 
 		this.roadSplineService.rebuildSplineRoads( road.spline );
 
-		// this.updateRoadNodes( road );
-
 		this.mapService.map.gameObject.add( road.gameObject );
+
 	}
 
 	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {
@@ -423,7 +282,7 @@ export class RoadService {
 
 		} );
 
-		this.hideRoadNodes( road );
+		// this.hideRoadNodes( road );
 
 		this.roadSplineService.removeRoadSegment( road );
 

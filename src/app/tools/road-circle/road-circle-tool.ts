@@ -96,13 +96,9 @@ export class RoadCircleTool extends BaseTool {
 
 		this.circleRoadService.addRoad( road );
 
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( road, false ) );
-
 	}
 
 	onRoadRemoved ( road: TvRoad ) {
-
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
 		this.circleRoadService.removeRoad( road );
 

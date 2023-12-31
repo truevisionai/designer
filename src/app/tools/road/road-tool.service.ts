@@ -54,7 +54,7 @@ export class RoadToolService {
 
 	onToolDisabled () {
 
-		this.roadService.hideAllRoadNodes();
+		this.roadDebug.hideNodes();
 
 		this.roadDebug.clear();
 
@@ -62,7 +62,7 @@ export class RoadToolService {
 
 	onToolEnabled () {
 
-		this.roadService.showAllRoadNodes();
+		this.roadDebug.showNodes();
 
 		this.roadService.roads.forEach( road => this.roadDebug.showRoadBorderLine( road ) );
 
@@ -88,15 +88,17 @@ export class RoadToolService {
 
 	updateRoadNodes ( road: TvRoad ) {
 
-		this.roadService.updateRoadNodes( road );
+		this.roadDebug.upateRoadNodes( road );
 
-		this.roadDebug.clear();
+		// this.roadService.updateRoadNodes( road );
 
-		this.roadDebug.removeHighlight();
+		// this.roadDebug.clear();
 
-		this.roadDebug.showRoadBorderLine( road );
+		// this.roadDebug.removeHighlight();
 
-		this.roadDebug.selectRoad( road );
+		// this.roadDebug.showRoadBorderLine( road );
+
+		// this.roadDebug.selectRoad( road );
 
 	}
 

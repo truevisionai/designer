@@ -43,7 +43,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 		if ( this.data.connectingRoad ) {
 
-			this.roadService.showRoadNodes( this.data.connectingRoad );
+			// this.roadService.showRoadNodes( this.data.connectingRoad );
 
 			this.roadService.showSpline( this.data.connectingRoad )
 
@@ -62,7 +62,7 @@ export class LaneLinkInspector extends BaseInspector implements OnInit, OnDestro
 
 		if ( this.data.connectingRoad ) {
 
-			this.roadService.hideRoadNodes( this.data.connectingRoad );
+			// this.roadService.hideRoadNodes( this.data.connectingRoad );
 
 			this.roadService.hideSpline( this.data.connectingRoad )
 

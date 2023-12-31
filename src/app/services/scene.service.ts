@@ -6,6 +6,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Group, Material, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { GameObject } from '../core/game-object';
+import { XmlElement } from "../importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'
@@ -171,7 +172,7 @@ export class SceneService {
 
 			}
 
-			function disposeMaterial ( material: any ) {
+			function disposeMaterial ( material: XmlElement ) {
 
 				if ( material.map != null || material.map != undefined ) {
 					material.map.dispose();

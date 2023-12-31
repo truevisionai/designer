@@ -53,7 +53,7 @@ export class RoadDividerTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.roadService.showAllRoadNodes();
+		this.tool.roadDebug.showNodes();
 
 	}
 
@@ -63,7 +63,7 @@ export class RoadDividerTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.roadService.hideAllRoadNodes();
+		this.tool.roadDebug.hideNodes();
 
 		this.removeLine();
 	}
@@ -120,30 +120,26 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.addRoad( object );
-
 			MapEvents.roadCreated.emit( new RoadCreatedEvent( object, false ) );
 
 		}
 
-		this.tool.roadService.hideAllRoadNodes();
+		this.tool.roadDebug.hideNodes();
 
-		this.tool.roadService.showAllRoadNodes();
+		this.tool.roadDebug.showNodes();
 	}
 
 	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.mapService.map.removeRoad( object );
-
 			MapEvents.roadRemoved.emit( new RoadRemovedEvent( object ) );
 
 		}
 
-		this.tool.roadService.hideAllRoadNodes();
+		this.tool.roadDebug.hideNodes();
 
-		this.tool.roadService.showAllRoadNodes();
+		this.tool.roadDebug.showNodes();
 
 	}
 

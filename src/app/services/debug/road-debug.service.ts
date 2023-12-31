@@ -8,8 +8,8 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { DebugLine } from './debug-line';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { MapService } from '../map.service';
+import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -26,6 +26,10 @@ export class RoadDebugService {
 
 	private lines = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
 
+	private nodes = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
+
+	private cornerPoints = new Object3DArrayMap<TvRoad, Object3D[]>();
+
 	private arrows = new Object3DArrayMap<TvRoad, Object3D[]>();
 
 	private highlightedRoads = new Set<TvRoad>();
@@ -37,6 +41,44 @@ export class RoadDebugService {
 		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
 	) {
+	}
+
+	showNodes () {
+
+		this.mapService.map.getRoads().forEach( road => {
+
+			this.showRoadNodes( road );
+
+		} );
+
+	}
+
+	hideNodes () {
+
+		this.nodes.clear();
+
+	}
+
+	showRoadNodes ( road: TvRoad ) {
+
+		const startNode = this.createRoadNode( road, road, 0, 6, COLOR.MAGENTA );
+		const endNode = this.createRoadNode( road, road, road.length, 6, COLOR.MAGENTA );
+
+		this.nodes.addItem( road, startNode );
+		this.nodes.addItem( road, endNode );
+	}
+
+	upateRoadNodes ( road: TvRoad ) {
+
+		this.hideRoadNodes( road );
+		this.showRoadNodes( road );
+
+	}
+
+	hideRoadNodes ( road: TvRoad ) {
+
+		this.nodes.removeKey( road );
+
 	}
 
 	showRoadReferenceLine ( road: TvRoad ) {
@@ -231,16 +273,67 @@ export class RoadDebugService {
 
 		this.selectedRoads.clear();
 
+		this.nodes.clear();
+
 	}
 
-	createRoadNode<T> ( road: TvRoad, target: T, s: number ): DebugLine<T> {
+	createRoadNode<T> ( road: TvRoad, target: T, s: number, width = 2, color = COLOR.CYAN ): DebugLine<T> {
 
 		const result = road.getRoadWidthAt( s );
 
 		const start = road.getPosThetaAt( s, result.leftSideWidth );
 		const end = road.getPosThetaAt( s, -result.rightSideWidth );
 
-		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ] );
+		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ], width, color );
+
+	}
+
+	showCornerPoints ( road: TvRoad, ) {
+
+		this.createCornerPoint( road, road.getStartPosTheta() );
+		this.createCornerPoint( road, road.getEndPosTheta() );
+
+	}
+
+	hideCornerPoints ( road: TvRoad ) {
+
+		this.cornerPoints.removeKey( road );
+
+	}
+
+	createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
+
+		const rightT = road.getRightsideWidth( coord.s );
+		const leftT = road.getLeftSideWidth( coord.s );
+
+		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+
+		const leftPoint = new DynamicControlPoint( road, leftPosition );
+		const rightPoint = new DynamicControlPoint( road, rightPosition );
+
+		this.cornerPoints.addItem( road, leftPoint );
+		this.cornerPoints.addItem( road, rightPoint );
+
+	}
+
+	showAllCornerPoints () {
+
+		this.mapService.map.getRoads().forEach( road => {
+
+			this.showCornerPoints( road );
+
+		} );
+
+	}
+
+	hideAllCornerPoints () {
+
+		this.mapService.map.getRoads().forEach( road => {
+
+			this.hideCornerPoints( road );
+
+		} );
 
 	}
 

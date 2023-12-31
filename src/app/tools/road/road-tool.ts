@@ -459,8 +459,6 @@ export class RoadTool extends BaseTool {
 
 	onRoadAdded ( road: TvRoad ): void {
 
-		this.tool.roadService.addRoad( road );
-
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 
 	}

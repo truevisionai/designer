@@ -16,9 +16,7 @@ describe( 'TvLineGeometry', () => {
 
 	beforeEach( () => {
 
-		map = new TvMap();
-
-		TvMapInstance.map = map;
+		map = TvMapInstance.map;
 
 		road = new TvRoad( '', 10, 1 );
 

@@ -3,9 +3,12 @@ import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector3 } from 'three';
+import { BaseTest } from 'tests/base-test.spec';
+import { Vector2, Vector3 } from 'three';
 
 describe( 'Service: RoadDivider', () => {
+
+	let base: BaseTest = new BaseTest;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -22,12 +25,15 @@ describe( 'Service: RoadDivider', () => {
 
 	it( 'should divide straight road in middle', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
 
-		const road = roadService.createDefaultRoad();
+		// const road = roadService.createDefaultRoad();
+		// road.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
+		// road.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
+		// roadService.addRoad( road );
 
-		road.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		road.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
-
-		roadService.addRoad( road );
+		const road = base.createDefaultRoad( roadService, [
+			new Vector2( -50, 0 ),
+			new Vector2( 50, 0 ),
+		] );
 
 		expect( road.length ).toBe( 100 );
 

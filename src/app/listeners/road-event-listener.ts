@@ -43,6 +43,16 @@ export class RoadEventListener {
 
 	}
 
+	onRoadCreated ( event: RoadCreatedEvent ) {
+
+		this.roadService.addRoad( event.road );
+
+		this.roadLinkService.addLinks( event.road );
+
+		this.roadElevationService.createDefaultNodes( event.road );
+
+	}
+
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
@@ -102,14 +112,6 @@ export class RoadEventListener {
 
 			this.junctionService.buildJunction( junction );
 		}
-
-	}
-
-	onRoadCreated ( event: RoadCreatedEvent ) {
-
-		this.roadLinkService.addLinks( event.road );
-
-		this.roadElevationService.createDefaultNodes( event.road );
 
 	}
 

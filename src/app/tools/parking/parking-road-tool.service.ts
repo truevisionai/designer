@@ -9,6 +9,8 @@ import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 
 const PARKING_WIDTH = 2.5;
 const PARKING_HEIGHT = 4.0;
@@ -115,7 +117,7 @@ export class ParkingRoadToolService {
 
 	addRoad ( road: TvRoad ) {
 
-		this.roadService.addRoad( road );
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 
 		road.getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 

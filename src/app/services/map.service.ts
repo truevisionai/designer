@@ -8,6 +8,7 @@ import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
 export class MapService {
 
 	constructor () {
+		this.map = new TvMap();
 	}
 
 	get map () {

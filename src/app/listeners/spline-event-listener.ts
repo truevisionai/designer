@@ -183,8 +183,6 @@ export class SplineEventListener {
 
 			spline.addRoadSegment( 0, road );
 
-			this.roadService.addRoad( road );
-
 			MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 		}
 	}

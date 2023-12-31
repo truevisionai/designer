@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Box3, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Box3, Mesh, Object3D } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { JunctionMeshService } from './junction-mesh.service';
@@ -17,6 +17,8 @@ import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-comm
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { RoadService } from '../road/road.service';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 
 @Injectable( {
 	providedIn: 'root'
@@ -75,7 +77,7 @@ export class JunctionService {
 
 			const connection = connections[ i ];
 
-			this.roadService.addRoad( connection.connectingRoad );;
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( connection.connectingRoad ) );
 
 		}
 

@@ -18,7 +18,7 @@ describe( 'ManeuverTool Test', () => {
 
 		// tool.init();
 
-		map = TvMapInstance.map = new TvMap();
+		map = TvMapInstance.map;
 
 	} );
 

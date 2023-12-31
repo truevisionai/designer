@@ -9,7 +9,7 @@ export class TvMapInstance {
 
 	static currentFile: IFile;
 
-	private static _map: TvMap = new TvMap;
+	private static _map: TvMap;
 
 	static get map (): TvMap {
 		return this._map;

@@ -4,6 +4,7 @@ import { BaseToolService } from '../base-tool.service';
 import { RoadService } from 'app/services/road/road.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { MapService } from 'app/services/map.service';
+import { RoadDebugService } from 'app/services/debug/road-debug.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,9 +14,8 @@ export class RoadDividerToolService {
 	constructor (
 		public dividerService: RoadDividerService,
 		public base: BaseToolService,
-		public roadService: RoadService,
 		public debugService: DebugDrawService,
-		public mapService: MapService,
+		public roadDebug: RoadDebugService,
 	) { }
 
 }

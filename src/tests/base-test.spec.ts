@@ -34,9 +34,29 @@ export class BaseTest {
 
 	}
 
+	makeDefaultRoad ( points: Vector2[] ) {
+
+		const road = RoadFactory.instance.createDefaultRoad();
+
+		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+
+		return road;
+
+	}
+
 	createRoad ( roadService: RoadService, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
 
 		const road = this.makeRoad( points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+
+		roadService.addRoad( road );
+
+		return road;
+
+	}
+
+	createDefaultRoad ( roadService: RoadService, points: Vector2[] ) {
+
+		const road = this.makeDefaultRoad( points );
 
 		roadService.addRoad( road );
 

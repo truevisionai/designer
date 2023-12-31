@@ -2,9 +2,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector3 } from 'three';
+import { BaseTest } from 'tests/base-test.spec';
+import { Vector2 } from 'three';
 
 describe( 'Service: RoadSpline', () => {
+
+	let base: BaseTest = new BaseTest;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -21,14 +24,12 @@ describe( 'Service: RoadSpline', () => {
 
 	it( 'should make line geometry with 4 straight points', inject( [ RoadService ], ( roadService: RoadService ) => {
 
-		const road = roadService.createDefaultRoad();
-
-		road.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		road.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
-		road.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
-		road.spline.addControlPointAt( new Vector3( 150, 0, 0 ) );
-
-		roadService.addRoad( road );
+		const road = base.createDefaultRoad( roadService, [
+			new Vector2( 0, 0 ),
+			new Vector2( 50, 0 ),
+			new Vector2( 100, 0 ),
+			new Vector2( 150, 0 ),
+		] )
 
 		expect( road.geometries.length ).toBe( 3 );
 
