@@ -5,7 +5,7 @@ import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSplineService } from './road-spline.service';
 import { MapService } from '../map.service';
-import { SplineService } from '../spline.service';
+import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { CommandHistory } from '../command-history';
@@ -28,7 +28,7 @@ export class RoadService {
 	constructor (
 		private roadSplineService: RoadSplineService,
 		private mapService: MapService,
-		private splineService: SplineService,
+		private splineService: AbstractSplineDebugService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
 		private roadObjectService: RoadObjectService

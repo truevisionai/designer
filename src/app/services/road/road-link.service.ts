@@ -5,7 +5,7 @@ import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-co
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { MapService } from '../map.service';
-import { SplineService } from '../spline.service';
+import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
@@ -18,7 +18,7 @@ export class RoadLinkService {
 
 	constructor (
 		private mapService: MapService,
-		private splineService: SplineService,
+		private splineService: AbstractSplineDebugService,
 		private connectionService: JunctionConnectionService,
 	) { }
 

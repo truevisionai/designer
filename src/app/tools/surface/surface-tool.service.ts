@@ -9,7 +9,7 @@ import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { MapService } from 'app/services/map.service';
 import { SceneService } from 'app/services/scene.service';
-import { SplineService } from 'app/services/spline.service';
+import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { Mesh, MeshLambertMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { SelectionService } from '../selection.service';
@@ -29,7 +29,7 @@ export class SurfaceToolService {
 		public selection: SelectionService,
 		public base: BaseToolService,
 		private mapService: MapService,
-		private splineService: SplineService,
+		private splineService: AbstractSplineDebugService,
 		private controlPointFactory: ControlPointFactory,
 		private surfaceBuilder: TvSurfaceBuilder,
 		private roadService: RoadService,

@@ -10,7 +10,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { SplineService } from '../spline.service';
+import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { BaseService } from '../base.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
@@ -24,7 +24,7 @@ export class RoadSplineService {
 
 	constructor (
 		private mapService: MapService,
-		public spline: SplineService,
+		public spline: AbstractSplineDebugService,
 		private baseService: BaseService,
 	) {
 

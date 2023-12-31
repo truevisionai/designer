@@ -12,7 +12,7 @@ import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-cont
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { SplineService } from 'app/services/spline.service';
+import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { SplineDebugService } from 'app/services/debug/spline-debug.service';
 
 @Injectable( {
@@ -29,7 +29,7 @@ export class RoadToolService {
 		private roadLinkService: RoadLinkService,
 		private roadDebug: RoadDebugService,
 		public roadService: RoadService,
-		private splineService: SplineService,
+		private splineService: AbstractSplineDebugService,
 		private splineDebug: SplineDebugService,
 	) {
 	}

@@ -7,7 +7,7 @@ import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-poin
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineService {
+export class AbstractSplineDebugService {
 
 	private pointMap = new Object3DArrayMap<AbstractSpline, AbstractControlPoint[]>();
 

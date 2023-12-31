@@ -6,7 +6,7 @@ import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { Object3D, Vector3 } from 'three';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { SplineService } from 'app/services/spline.service';
+import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { SceneService } from 'app/services/scene.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
@@ -22,7 +22,7 @@ export class PropCurveService {
 	constructor (
 		public base: BaseToolService,
 		private mapService: MapService,
-		private splineService: SplineService,
+		private splineService: AbstractSplineDebugService,
 		private controlPointFactory: ControlPointFactory,
 		public selection: SelectionService
 	) {
