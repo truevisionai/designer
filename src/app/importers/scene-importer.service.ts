@@ -27,9 +27,8 @@ import {
 	TvRoadMarkTypes,
 	TvRoadMarkWeights,
 	TvRoadType,
-	TvUnit,
-	TvUserData
-} from 'app/modules/tv-map/models/tv-common';
+	TvUnit} from 'app/modules/tv-map/models/tv-common';
+import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
 import { TvControllerControl } from 'app/modules/tv-map/models/tv-controller';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';

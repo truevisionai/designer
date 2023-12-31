@@ -8,6 +8,39 @@ import { MeshBasicMaterial } from 'three';
 
 export class TvObjectMarking {
 
+	private _material: THREE.MeshBasicMaterial;
+	private _materialGuid: string;
+
+	/**
+	 * Specifies a marking that is either attached to one side of the
+	 * object’s bounding box or referencing outline points.
+	 *
+	 * @param _color color of the marking
+	 * @param spaceLength Length of the gap between the visible parts
+	 * @param lineLength length of a line segment between two spaces
+	 * @param side Side of the bounding box described in <object> element in the local coordinate system u/v
+	 * @param weight optical "weight" of the marking
+	 * @param startOffset Lateral offset in u-direction from start of bounding box side where the first marking starts
+	 * @param stopOffset Lateral offset in u-direction from end of bounding box side where the marking ends
+	 * @param zOffset Height of road mark above the road, i.e. thickness of the road mark
+	 * @param width width of the marking (attribute is optional if detailed definition is given below)
+	 * @param cornerReferences
+	 */
+	constructor (
+		private _color: TvColors = TvColors.WHITE,
+		private _spaceLength: number = 0.3,
+		private _lineLength: number = 0.3,
+		private _side: TvSide = TvSide.NONE,
+		private _weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
+		private _startOffset: number = 0,
+		private _stopOffset: number = 0,
+		private _zOffset: number = 0.005,
+		private _width: number = 1.83,
+		public cornerReferences: number[] = [] // 2 or more corners,
+	) {
+		this._material = new MeshBasicMaterial( { color: _color } );
+	}
+
 	get width (): number {
 		return this._width;
 	}
@@ -96,43 +129,8 @@ export class TvObjectMarking {
 		this._materialGuid = value;
 	}
 
-	private _material: THREE.MeshBasicMaterial;
-	private _materialGuid: string;
-
-	/**
-	 * Specifies a marking that is either attached to one side of the
-	 * object’s bounding box or referencing outline points.
-	 *
-	 * @param _color color of the marking
-	 * @param side Side of the bounding box described in <object> element in the local coordinate system u/v
-	 * @param weight optical "weight" of the marking
-	 * @param spaceLength Length of the gap between the visible parts
-	 * @param lineLength length of a line segment between two spaces
-	 * @param startOffset Lateral offset in u-direction from start of bounding box side where the first marking starts
-	 * @param stopOffset Lateral offset in u-direction from end of bounding box side where the marking ends
-	 * @param zOffset Height of road mark above the road, i.e. thickness of the road mark
-	 * @param width width of the marking (attribute is optional if detailed definition is given below)
-	 * @param cornerReferences
-	 */
-	constructor (
-		private _color: TvColors = TvColors.WHITE,
-		private _spaceLength: number = 0.3,
-		private _lineLength: number = 0.3,
-		private _side: TvSide = TvSide.NONE,
-		private _weight: TvRoadMarkWeights = TvRoadMarkWeights.STANDARD,
-		private _startOffset: number = 0,
-		private _stopOffset: number = 0,
-		private _zOffset: number = 0.005,
-		private _width: number = 1.83,
-		public cornerReferences: number[] = [] // 2 or more corners,
-	) {
-		this._material = new MeshBasicMaterial( { color: _color } );
-	}
-
 	addCornerRoad ( corner: TvCornerRoad ) {
-
 		this.cornerReferences.push( corner.attr_id );
-
 	}
 
 	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
@@ -142,6 +140,27 @@ export class TvObjectMarking {
 		if ( index > -1 ) {
 			this.cornerReferences.splice( index, 1 );
 		}
+
+	}
+
+	clone (): any {
+
+		const clone = new TvObjectMarking(
+			this._color,
+			this._spaceLength,
+			this._lineLength,
+			this._side,
+			this._weight,
+			this._startOffset,
+			this._stopOffset,
+			this._zOffset,
+			this._width,
+			this.cornerReferences.map( i => i )
+		);
+
+		clone.materialGuid = this.materialGuid;
+
+		return clone;
 
 	}
 

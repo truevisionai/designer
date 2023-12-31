@@ -31,4 +31,14 @@ export class TvCornerRoad extends DynamicControlPoint<any> {
 		this.mainObject?.update();
 
 	}
+
+	clone ( recursive?: boolean ): this {
+
+		const clone = new ( this.constructor as any )( this.attr_id, this.road, this.s, this.t, this.dz, this.height );
+
+		clone.copy( this );
+
+		return clone;
+
+	}
 }

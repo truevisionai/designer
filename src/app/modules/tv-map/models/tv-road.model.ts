@@ -1264,6 +1264,8 @@ export class TvRoad {
 
 		road.addLaneSectionInstance( this.getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
+		road.objects.object = this.objects.object.map( obj => obj.clone() );
+
 		return road;
 
 	}

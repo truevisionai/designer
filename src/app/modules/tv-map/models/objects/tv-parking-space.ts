@@ -2,6 +2,7 @@ import { TvParkingSpaceAccess } from "../tv-common";
 import { TvParkingSpaceMarking } from "./tv-parking-space-marking";
 
 export class TvParkingSpace {
+
 	public attr_access: TvParkingSpaceAccess;
 	public attr_restriction: string;
 
@@ -19,4 +20,23 @@ export class TvParkingSpace {
 	getMarking ( i: number ): TvParkingSpaceMarking {
 		return this.marking[ i ];
 	}
+
+	clone (): TvParkingSpace {
+
+		const clone = new TvParkingSpace();
+
+		clone.attr_access = this.attr_access;
+
+		clone.attr_restriction = this.attr_restriction;
+
+		this.marking.forEach( marking => {
+
+			clone.marking.push( marking.clone() );
+
+		} );
+
+		return clone;
+
+	}
+
 }

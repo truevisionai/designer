@@ -85,6 +85,8 @@ export class RoadService {
 
 		clone.name = `Road ${ clone.id }`;
 
+		clone.objects.object.forEach( object => object.road = clone );
+
 		return clone;
 
 	}

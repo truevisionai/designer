@@ -5,7 +5,8 @@
 import { Vector3 } from 'three';
 import { IMovable } from '../../../core/snapping/snap-strategies/snapping';
 import { SignShapeType } from '../services/tv-sign.service';
-import { TvDynamicTypes, TvOrientation, TvUnit, TvUserData } from './tv-common';
+import { TvDynamicTypes, TvOrientation, TvUnit } from './tv-common';
+import { TvUserData } from './tv-user-data';
 import { TvRoad } from './tv-road.model';
 import { TvLaneValidity } from "./objects/tv-lane-validity";
 

@@ -5,11 +5,6 @@
 import { TvConsole } from '../../../core/utils/console';
 import { DynamicsDimension, DynamicsShape } from '../../scenario/models/tv-enums';
 
-export class TvUserData {
-	constructor ( public attr_code: string, public attr_value ) {
-	}
-}
-
 export enum TvElementType {
 	road = 'road',
 	junction = 'junction'

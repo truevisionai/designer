@@ -17,9 +17,8 @@ import {
 	TvLaneSide,
 	TvOrientation,
 	TvRoadType,
-	TvUnit,
-	TvUserData
-} from '../../modules/tv-map/models/tv-common';
+	TvUnit} from '../../modules/tv-map/models/tv-common';
+import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
 import { TvController, TvControllerControl } from '../../modules/tv-map/models/tv-controller';
 import { TvJunction } from '../../modules/tv-map/models/junctions/tv-junction';
 import { TvJunctionConnection } from '../../modules/tv-map/models/junctions/tv-junction-connection';

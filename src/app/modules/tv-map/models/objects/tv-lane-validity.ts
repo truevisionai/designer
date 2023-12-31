@@ -12,4 +12,12 @@ export class TvLaneValidity {
 		this.attr_fromLane = from;
 		this.attr_toLane = to;
 	}
+
+	clone (): TvLaneValidity {
+		return new TvLaneValidity(
+			this.attr_fromLane,
+			this.attr_toLane
+		);
+	}
+
 }

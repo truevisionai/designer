@@ -161,4 +161,22 @@ export class TvObjectRepeat {
 	set lengthEnd ( value: number ) {
 		this.attr_lengthEnd = value;
 	}
+
+	clone (): TvObjectRepeat {
+
+		return new TvObjectRepeat(
+			this.s,
+			this.length,
+			this.distance,
+			this.tStart,
+			this.tEnd,
+			this.widthStart,
+			this.widthEnd,
+			this.heightStart,
+			this.heightEnd,
+			this.zOffsetStart,
+			this.zOffsetEnd
+		);
+	}
+
 }

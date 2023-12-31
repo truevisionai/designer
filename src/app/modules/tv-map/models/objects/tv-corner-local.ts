@@ -21,4 +21,15 @@ export class TvCornerLocal {
 		public attr_height: number = 0,
 	) {
 	}
+
+	clone () {
+		return new TvCornerLocal(
+			this.attr_id,
+			this.attr_u,
+			this.attr_v,
+			this.attr_z,
+			this.attr_height
+		);
+	}
+
 }

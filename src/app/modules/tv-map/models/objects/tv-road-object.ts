@@ -2,7 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ObjectTypes, TvOrientation, TvUserData } from '../tv-common';
+import { ObjectTypes, TvOrientation } from '../tv-common';
+import { TvUserData } from '../tv-user-data';
 import { TvObjectMarking } from '../tv-object-marking';
 import { TvRoad } from '../tv-road.model';
 import { TvObjectRepeat } from "./tv-object-repeat";
@@ -327,7 +328,7 @@ export class TvRoadObject {
 	}
 
 
-	clone ( id: number ): TvRoadObject {
+	clone ( id?: number ): TvRoadObject {
 
 		const object = new TvRoadObject(
 			this.attr_type,
@@ -350,13 +351,14 @@ export class TvRoadObject {
 		object.road = this.road;
 		object.assetGuid = this.assetGuid;
 		object.subType = this.subType;
-		// object.material = this.material?.clone();
-		// object.parkingSpace = this.parkingSpace?.clone();
-		// object.repeat = this.repeat.map( repeat => repeat.clone() );
-		// object.validity = this.validity.map( validity => validity.clone() );
-		// object.outlines = this.outlines.map( outline => outline.clone() );
-		// object.userData = this.userData.map( userData => userData.clone() );
+		object.material = this.material?.clone();
+		object.parkingSpace = this.parkingSpace?.clone();
+		object.repeat = this.repeat.map( repeat => repeat.clone() );
+		object.validity = this.validity.map( validity => validity.clone() );
+		object.outlines = this.outlines.map( outline => outline.clone() );
+		object.userData = this.userData.map( userData => userData.clone() );
 		object.skeleton = this.skeleton?.clone();
+		object._markings = this.markings.map( marking => marking.clone() );
 
 		return object;
 

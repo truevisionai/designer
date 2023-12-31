@@ -49,4 +49,24 @@ export class TvObjectOutline {
 		}
 	}
 
+	clone (): TvObjectOutline {
+
+		const clone = new TvObjectOutline( this.fillType, this.outer, this.closed, this.laneType );
+
+		this.cornerRoad.forEach( cornerRoad => {
+
+			clone.cornerRoad.push( cornerRoad.clone() );
+
+		} );
+
+		this.cornerLocal.forEach( cornerLocal => {
+
+			clone.cornerLocal.push( cornerLocal.clone() );
+
+		} );
+
+		return clone;
+
+	}
+
 }
