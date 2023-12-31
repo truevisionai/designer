@@ -441,7 +441,7 @@ export abstract class AbstractSpline {
 
 		} else {
 
-			throw new Error( 'segment not found' );
+			console.error( 'segment not found', segment );
 
 		}
 

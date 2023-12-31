@@ -21,15 +21,7 @@ export class MapService {
 
 	reset () {
 
-		this.map.getSplines().forEach( spline => {
-
-			this.map.removeSpline( spline );
-
-		} );
-
-		this.map.roads.clear();
-
-		this.map.junctions.clear();
+		this.map.clear();
 
 	}
 

@@ -1,5 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
+import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
@@ -15,6 +16,7 @@ describe( 't-junction tests', () => {
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -27,6 +29,9 @@ describe( 't-junction tests', () => {
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+
+		eventServiceProvider.init();
 
 	} );
 

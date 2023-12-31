@@ -2,13 +2,13 @@ import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { RoadEventListener } from "app/listeners/road-event-listener";
 import { JunctionConnectionService } from "app/services/junction/junction-connection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
 import { RoadTool } from "app/tools/road/road-tool";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "./base-test.spec";
+import { EventServiceProvider } from "app/listeners/event-service-provider";
 
 describe( 'BaseTest: tests', () => {
 
@@ -19,8 +19,8 @@ describe( 'BaseTest: tests', () => {
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
 	let junctionConnectionService: JunctionConnectionService;
-	let roadEventListener: RoadEventListener
 	let baseTest = new BaseTest();
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -35,8 +35,10 @@ describe( 'BaseTest: tests', () => {
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
-		roadEventListener = TestBed.inject( RoadEventListener );
 		junctionConnectionService = TestBed.inject( JunctionConnectionService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+
+		eventServiceProvider.init();
 
 	} );
 

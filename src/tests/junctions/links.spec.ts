@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { RoadFactory } from 'app/factories/road-factory.service';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { IntersectionService } from 'app/services/junction/intersection.service';
@@ -23,6 +24,7 @@ describe( 'LaneLinkService', () => {
 	let connectionService: JunctionConnectionService;
 	let roadFactory = new RoadFactory();
 	let baseTest = new BaseTest();
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -37,6 +39,9 @@ describe( 'LaneLinkService', () => {
 		junctionService = TestBed.inject( JunctionService );
 		laneLinkService = TestBed.inject( LaneLinkService );
 		connectionService = TestBed.inject( JunctionConnectionService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+
+		eventServiceProvider.init();
 
 	} );
 
@@ -55,11 +60,10 @@ describe( 'LaneLinkService', () => {
 	it( 'should create simple junction between same roads', () => {
 
 		// left to right
-		const roadA = roadService.createDefaultRoad();
-		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		roadA.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
-
-		roadService.addRoad( roadA );
+		const roadA = baseTest.createDefaultRoad( roadService, [
+			new Vector2( -50, 0 ),
+			new Vector2( 100, 0 ),
+		] );
 
 		const coordA = roadA.getPosThetaAt( 50 ).toRoadCoord( roadA );
 		const coordB = roadA.getPosThetaAt( 100 ).toRoadCoord( roadA );
@@ -73,18 +77,19 @@ describe( 'LaneLinkService', () => {
 
 		junctionService.addJunction( junction );
 
+		expect( roadService.getRoadCount() ).toBe( 4 );
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 2 );
+
 		const roadB = roadService.getRoad( 2 );
 		const leftToRight = roadService.getRoad( 3 );
 		const rightToLeft = roadService.getRoad( 4 );
 
-		expect( roadService.roads.length ).toBe( 4 );
-		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 2 );
 
 		expect( junction.connections.get( 0 ) ).toBeDefined()
-		expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA )
-		expect( junction.connections.get( 0 ).connectingRoad ).toBe( leftToRight )
-		expect( junction.connections.get( 0 ).outgoingRoad ).toBe( roadB )
+		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( roadA.id )
+		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( leftToRight.id )
+		expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( roadB.id )
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( leftToRight.laneSections[ 0 ].lanes.size ).toBe( 4 );

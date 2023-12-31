@@ -2,17 +2,47 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MapService } from 'app/services/map.service';
 import { TvMapQueries } from '../../queries/tv-map-queries';
 import { TvMapInstance } from '../../services/tv-map-instance';
 import { TvMap } from '../tv-map.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
+import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 
 describe( 'OdArcGeometry', () => {
 
-	let map: TvMap = TvMapInstance.map;
+	let map: TvMap;
 	let road: TvRoad;
 	let pose = new TvPosTheta();
+
+	let mapService: MapService;
+
+	beforeEach( () => {
+
+		TestBed.configureTestingModule( {
+			imports: [ HttpClientModule ],
+			providers: [ MapService ]
+		} );
+
+		mapService = TestBed.inject( MapService );
+
+		map = mapService.map;
+
+	} );
+
+	beforeEach( () => {
+
+		mapService.reset();
+
+	} );
+
+	afterEach( () => {
+
+		mapService.reset();
+
+	} );
 
 	beforeEach( () => {
 

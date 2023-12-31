@@ -2,8 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { MapService } from 'app/services/map.service';
 import { TvMapQueries } from '../queries/tv-map-queries';
-import { TvMapInstance } from '../services/tv-map-instance';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvLaneSection } from './tv-lane-section';
@@ -25,9 +27,34 @@ describe( 'OpenDrive Model', () => {
 	let rightThree: TvLane;
 	let rightFour: TvLane;
 
+	let mapService: MapService;
+
 	beforeEach( () => {
 
-		map = TvMapInstance.map;
+		TestBed.configureTestingModule( {
+			imports: [ HttpClientModule ],
+			providers: [ MapService ]
+		} );
+
+		mapService = TestBed.inject( MapService );
+
+	} );
+
+	beforeEach( () => {
+
+		mapService.reset();
+
+	} );
+
+	afterEach( () => {
+
+		mapService.reset();
+
+	} );
+
+	beforeEach( () => {
+
+		map = mapService.map;
 
 		road = map.addNewRoad( '', 10, 1 );
 

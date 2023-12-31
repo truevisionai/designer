@@ -222,6 +222,8 @@ export class TvMap {
 		this.propPolygons.splice( 0, this.propPolygons.length );
 
 		this.surfaces.splice( 0, this.surfaces.length );
+
+		this.splines.splice( 0, this.splines.length );
 	}
 
 	public setHeader (
