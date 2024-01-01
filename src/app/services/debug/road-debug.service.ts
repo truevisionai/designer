@@ -45,7 +45,7 @@ export class RoadDebugService {
 
 	showNodes () {
 
-		this.mapService.map.getRoads().forEach( road => {
+		this.mapService.nonJunctionRoads.forEach( road => {
 
 			this.showRoadNodes( road );
 

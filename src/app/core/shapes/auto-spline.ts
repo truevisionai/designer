@@ -13,6 +13,7 @@ import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 
 export class AutoSpline extends AbstractSpline {
@@ -249,7 +250,7 @@ export class AutoSpline extends AbstractSpline {
 		return point;
 	}
 
-	getPoint ( t: number, offset = 0 ): Vector3 {
+	getPoint ( t: number, offset = 0 ): TvPosTheta {
 
 		const geometries = this.exportGeometries();
 
@@ -263,7 +264,7 @@ export class AutoSpline extends AbstractSpline {
 
 		posTheta.addLateralOffset( offset );
 
-		return posTheta.toVector3();
+		return posTheta;
 	}
 
 	getLength () {

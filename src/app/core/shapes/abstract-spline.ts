@@ -63,7 +63,7 @@ export abstract class AbstractSpline {
 
 	abstract exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[];
 
-	abstract getPoint ( t: number, offset: number ): Vector3;
+	abstract getPoint ( t: number, offset: number ): TvPosTheta;
 
 	abstract getLength (): number;
 
@@ -261,6 +261,25 @@ export abstract class AbstractSpline {
 
 		for ( let i = 0; i <= 1; i += d ) {
 
+			points.push( this.getPoint( i, 0 ).toVector3() );
+
+		}
+
+		return points;
+	}
+
+	getDirectedPoints ( step: number ) {
+
+		const points: TvPosTheta[] = [];
+
+		const length = this.getLength();
+
+		if ( length == 0 ) return [];
+
+		const d = step / length;
+
+		for ( let i = 0; i <= 1; i += d ) {
+
 			points.push( this.getPoint( i, 0 ) );
 
 		}
@@ -373,6 +392,24 @@ export abstract class AbstractSpline {
 			}
 
 		}
+
+	}
+
+	getRoads (): TvRoad[] {
+
+		return this.getSplineSegments().filter( i => i.isRoad ).map( i => i.getInstance<TvRoad>() );
+
+	}
+
+	getJunctionSegments (): SplineSegment[] {
+
+		return this.getSplineSegments().filter( i => i.isJunction );
+
+	}
+
+	getJunctions (): TvJunction[] {
+
+		return this.getJunctionSegments().map( i => i.getInstance<TvJunction>() );
 
 	}
 

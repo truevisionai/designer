@@ -40,6 +40,28 @@ export class SplineDebugService {
 	) {
 	}
 
+	get splines () {
+		return this.mapService.splines;
+	}
+
+	showBorders () {
+
+		for ( let i = 0; i < this.splines.length; i++ ) {
+
+			const spline = this.splines[ i ];
+
+			this.showBorder( spline );
+
+		}
+
+	}
+
+	updateSpline ( spline: AbstractSpline ) {
+
+		this.updateArrows( spline );
+
+	}
+
 	showReferenceLine ( spline: AbstractSpline ) {
 
 		const points = spline.getPoints( LINE_STEP ).map( point => point );
@@ -52,24 +74,36 @@ export class SplineDebugService {
 
 	}
 
-	showBorderLine ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
+	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
-		// const add = ( lane: TvLane ) => {
+		const leftPoints = [];
+		const rightPoints = [];
 
-		// 	const points = this.laneDebugService.getPoints( lane, 0, lane.laneSection.length, LINE_STEP );
+		const roads = spline.getRoads();
 
-		// 	const line = this.debugService.createDebugLine( spline, points, lineWidth, color );
+		for ( let i = 0; i < roads.length; i++ ) {
 
-		// 	this.lines.addItem( spline, line );
-		// }
+			const road = roads[ i ];
 
-		// road.laneSections?.forEach( laneSection => {
+			if ( road.isJunction ) continue;
 
-		// 	add( laneSection.getRightMostLane() );
+			road.laneSections?.forEach( laneSection => {
 
-		// 	add( laneSection.getLeftMostLane() );
+				const leftLane = laneSection.getLeftMostLane();
+				const left = this.laneDebugService.getPoints( leftLane, 0, laneSection.length, LINE_STEP );
 
-		// } )
+				const rightLane = laneSection.getRightMostLane();
+				const right = this.laneDebugService.getPoints( rightLane, 0, laneSection.length, LINE_STEP );
+
+				leftPoints.push( ...left );
+				rightPoints.push( ...right );
+
+			} );
+
+			this.lines.addItem( spline, this.debugService.createDebugLine( spline, leftPoints, lineWidth, color ) );
+			this.lines.addItem( spline, this.debugService.createDebugLine( spline, rightPoints, lineWidth, color ) );
+
+		}
 
 	}
 
@@ -81,9 +115,9 @@ export class SplineDebugService {
 
 		this.lines.removeKey( spline );
 
-		this.showBorderLine( spline, LINE_WIDTH * 2 );
+		this.showBorder( spline, LINE_WIDTH * 2 );
 
-		this.showRoadDirectionArrows( spline );
+		this.showArrows( spline );
 
 		this.highlighted.add( spline );
 
@@ -95,9 +129,9 @@ export class SplineDebugService {
 
 		this.lines.removeKey( spline );
 
-		this.showBorderLine( spline, LINE_WIDTH * 3, COLOR.RED );
+		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
 
-		this.showRoadDirectionArrows( spline );
+		this.showArrows( spline );
 
 		this.selected.add( spline );
 
@@ -113,7 +147,7 @@ export class SplineDebugService {
 
 			this.arrows.removeKey( road );
 
-			this.showBorderLine( road );
+			this.showBorder( road );
 
 		} )
 
@@ -143,69 +177,37 @@ export class SplineDebugService {
 
 		this.arrows.removeKey( spline );
 
-		this.showBorderLine( spline );
+		this.showBorder( spline );
 
 		this.selected.delete( spline );
 
 	}
 
-	upateRoadBorderLine ( spline: AbstractSpline, lineWidth = LINE_WIDTH ) {
+	upateBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH ) {
 
-		// this.lines.removeKey( road );
+		this.lines.removeKey( spline );
 
-		// this.showBorderLine( road, lineWidth );
-
-		// this.updatePredecessor( road, predecessor => {
-
-		// 	this.lines.removeKey( predecessor );
-
-		// 	this.showBorderLine( predecessor );
-
-		// } );
-
-		// this.updateSuccessor( road, successor => {
-
-		// 	this.lines.removeKey( successor );
-
-		// 	this.showBorderLine( successor );
-
-		// } );
+		this.showBorder( spline, lineWidth );
 
 	}
 
-	showRoadDirectionArrows ( spline: AbstractSpline ) {
+	showArrows ( spline: AbstractSpline ) {
 
-		// this.getReferenceLinePoints( road, ARROW_STEP ).forEach( point => {
+		spline.getDirectedPoints( ARROW_STEP ).forEach( point => {
 
-		// 	const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
+			const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
 
-		// 	this.arrows.addItem( road, arrow );
+			this.arrows.addItem( spline, arrow );
 
-		// } );
+		} )
 
 	}
 
-	updateRoadDirectionArrows ( spline: AbstractSpline ) {
+	updateArrows ( spline: AbstractSpline ) {
 
-		// this.arrows.removeKey( road );
+		this.arrows.removeKey( spline );
 
-		// this.showRoadDirectionArrows( road );
-
-		// this.updatePredecessor( road, predecessor => {
-
-		// 	this.arrows.removeKey( predecessor );
-
-		// 	this.showRoadDirectionArrows( predecessor );
-
-		// } );
-
-		// this.updateSuccessor( road, successor => {
-
-		// 	this.arrows.removeKey( successor );
-
-		// 	this.showRoadDirectionArrows( successor );
-
-		// } );
+		this.showArrows( spline );
 
 	}
 

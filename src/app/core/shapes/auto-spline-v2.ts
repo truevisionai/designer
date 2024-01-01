@@ -9,6 +9,7 @@ import { SceneService } from '../../services/scene.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 import { SplineSegment } from './spline-segment';
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class AutoSplineV2 extends AbstractSpline {
 
@@ -460,7 +461,7 @@ export class AutoSplineV2 extends AbstractSpline {
 		return point;
 	}
 
-	getPoint ( t: number, offset = 0 ): Vector3 {
+	getPoint ( t: number, offset = 0 ): TvPosTheta {
 
 		const geometries = this.getSplineGeometries();
 
@@ -474,7 +475,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		posTheta.addLateralOffset( offset );
 
-		return posTheta.toVector3();
+		return posTheta;
 	}
 
 	getLength () {

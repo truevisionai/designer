@@ -18,6 +18,7 @@ import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
 import { HermiteSpline, Length } from './SplineData';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -542,7 +543,7 @@ export class ExplicitSpline extends AbstractSpline {
 	 * returns position on the curve
 	 * @param t A position on the curve. Must be in the range [ 0, 1 ].
 	 */
-	getPoint ( t: number, offset = 0 ): Vector3 {
+	getPoint ( t: number, offset = 0 ): TvPosTheta {
 
 		const geometries = this.exportGeometries();
 
@@ -556,7 +557,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 		posTheta.addLateralOffset( offset );
 
-		return posTheta.toVector3();
+		return posTheta;
 	}
 
 	getLength () {

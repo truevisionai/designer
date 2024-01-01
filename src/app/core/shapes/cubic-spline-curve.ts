@@ -322,7 +322,7 @@ export class ExplicitSplinePath extends CurvePath<Vector3> {
 
 	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
 
-		return this.spline.getPoint( t, this.offset );
+		return this.spline.getPoint( t, this.offset ).toVector3();
 
 	}
 
@@ -345,7 +345,7 @@ export class AutoSplinePath extends CurvePath<Vector3> {
 
 	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
 
-		return this.spline.getPoint( t, this.offset );
+		return this.spline.getPoint( t, this.offset ).toVector3();
 
 	}
 

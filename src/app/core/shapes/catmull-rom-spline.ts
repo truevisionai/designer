@@ -8,6 +8,7 @@ import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, L
 import { AbstractSpline } from './abstract-spline';
 import { SceneService } from '../../services/scene.service';
 import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -158,7 +159,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	getPoint ( t: number, offset: number ): Vector3 {
+	getPoint ( t: number, offset: number ): TvPosTheta {
 
 		throw new Error( 'Method not implemented.' );
 
