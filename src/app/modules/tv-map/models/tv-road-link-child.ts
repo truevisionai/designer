@@ -3,9 +3,9 @@
  */
 
 import { TvConsole } from 'app/core/utils/console';
-// import { TvMapInstance } from '../services/tv-map-instance';
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
+import { TvJunction } from './junctions/tv-junction';
 
 export enum TvRoadLinkChildType {
 	road = 'road',
@@ -45,9 +45,13 @@ For a virtual junction as successor or predecessor the
  */
 export class TvRoadLinkChild {
 
-	public attr_elementType: TvRoadLinkChildType;
-	public attr_elementId: number;
-	public attr_contactPoint: TvContactPoint;
+	private _element: TvRoad|TvJunction;
+
+	private _elementType: TvRoadLinkChildType;
+
+	private _elementId: number;
+
+	private _contactPoint: TvContactPoint;
 
 	/**
 	 * TODO:
@@ -80,232 +84,176 @@ export class TvRoadLinkChild {
 	 * @param elementId ID of the linked element
 	 * @param contactPoint Contact point of link on the linked element
 	 */
-	constructor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint: TvContactPoint ) {
-		this.attr_elementType = elementType;
-		this.attr_elementId = elementId;
-		this.attr_contactPoint = contactPoint;
+	constructor ( elementType: TvRoadLinkChildType, element: TvRoad|TvJunction, contactPoint: TvContactPoint ) {
+		this._element = element;
+		this._elementType = elementType;
+		this._elementId = element?.id;
+		this._contactPoint = contactPoint;
+	}
+
+	get element () {
+		return this._element;
 	}
 
 	get isRoad () {
-		return this.attr_elementType === TvRoadLinkChildType.road;
+		return this._elementType === TvRoadLinkChildType.road;
 	}
 
 	get isJunction () {
-		return this.attr_elementType === TvRoadLinkChildType.junction;
+		return this._elementType === TvRoadLinkChildType.junction;
 	}
 
 	get elementType () {
-		return this.attr_elementType;
+		return this._elementType;
 	}
 
 	set elementType ( value ) {
-		this.attr_elementType = value;
+		this._elementType = value;
 	}
 
 	get elementId () {
-		return this.attr_elementId;
+		return this._elementId;
 	}
 
 	set elementId ( value ) {
-		this.attr_elementId = value;
+		this._elementId = value;
 	}
 
 	get contactPoint () {
-		return this.attr_contactPoint;
+		return this._contactPoint;
 	}
 
 	set contactPoint ( value ) {
-		this.attr_contactPoint = value;
-	}
-
-	// /**
-	//  * @deprecated
-	//  */
-	// get end () {
-	// 	if ( this.contactPoint == TvContactPoint.START ) {
-	// 		return this.road.spline.getSecondPoint();
-	// 	} else {
-	// 		return this.road.spline.getSecondLastPoint();
-	// 	}
-	// }
-
-	// /**
-	//  * @deprecated
-	//  */
-	// get mid2 () {
-	// 	if ( this.contactPoint == TvContactPoint.START ) {
-	// 		return this.road.spline.getFirstPoint();
-	// 	} else {
-	// 		return this.road.spline.getLastPoint();
-	// 	}
-	// }
-
-	// /**
-	//  * @deprecated
-	//  */
-	// get road () {
-
-	// 	return this.getElement<TvRoad>() as TvRoad;
-
-	// }
-
-	// /**
-	//  * @deprecated
-	//  */
-	// get laneSection () {
-
-	// 	if ( this.contactPoint == TvContactPoint.START ) {
-
-	// 		return this.road.getFirstLaneSection();
-
-	// 	} else {
-
-	// 		return this.road.getLastLaneSection();
-	// 	}
-	// }
-
-	// setSuccessor ( element: TvRoadLinkChild ) {
-	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
-	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
-	// 	// 	road.successor = element;
-	// 	// }
-	// }
-
-	// setPredecessor ( element: TvRoadLinkChild ) {
-	// 	// if ( this.elementType === TvRoadLinkChildType.road ) {
-	// 	// 	const road = TvMapInstance.map.getRoadById( this.elementId );
-	// 	// 	road.predecessor = element;
-	// 	// }
-	// }
-
-	/**
-	 * @deprecated
-	 */
-	getElement<T> (): T {
-
-		throw new Error( 'Method not implemented.' );
-
-		// if ( this.elementType == TvRoadLinkChildType.road ) {
-
-		// 	return TvMapInstance.map.getRoadById( this.elementId ) as any;
-
-		// } else if ( this.elementType == TvRoadLinkChildType.junction ) {
-
-		// 	return TvMapInstance.map.getJunctionById( this.elementId ) as any;
-
-		// }
-	}
-
-	update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
-
-		if ( this.isRoad ) {
-
-			this.updateRoad( parentRoad, parentContact, rebuild );
-
-		} else if ( this.isJunction ) {
-
-			TvConsole.error( 'Junctions not supported yet' );
-
-		}
-
-	}
-
-	updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
-
-		if ( parentRoad.spline.type == 'explicit' ) return;
-
-		const elementRoad = this.getElement<TvRoad>();
-
-		if ( parentContact == TvContactPoint.END ) {
-
-			this.updateSuccessor( parentRoad, elementRoad );
-
-		} else {
-
-			this.updatePredecessor( parentRoad, elementRoad );
-
-		}
-
-		// if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
-	}
-
-	rebuild () {
-
-		if ( this.isRoad ) {
-
-			const road = this.getElement<TvRoad>();
-
-			road.updateGeometryFromSpline();
-
-			// RoadFactory.rebuildRoad( road );
-
-		} else {
-
-		}
-
+		this._contactPoint = value;
 	}
 
 	clone (): TvRoadLinkChild {
 
 		return new TvRoadLinkChild(
 			this.elementType,
-			this.elementId,
+			this.element,
 			this.contactPoint
 		);
 
 	}
 
+	/**
+	 * @deprecated
+	 */
+	//getElement<T> (): T {
+	//
+	//	throw new Error( 'Method not implemented.' );
+	//
+	//	// if ( this.elementType == TvRoadLinkChildType.road ) {
+	//
+	//	// 	return TvMapInstance.map.getRoadById( this.elementId ) as any;
+	//
+	//	// } else if ( this.elementType == TvRoadLinkChildType.junction ) {
+	//
+	//	// 	return TvMapInstance.map.getJunctionById( this.elementId ) as any;
+	//
+	//	// }
+	//}
 
-	private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
+	//update ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
+	//
+	//	if ( this.isRoad ) {
+	//
+	//		this.updateRoad( parentRoad, parentContact, rebuild );
+	//
+	//	} else if ( this.isJunction ) {
+	//
+	//		TvConsole.error( 'Junctions not supported yet' );
+	//
+	//	}
+	//
+	//}
 
-		// if ( !successor ) return;
+	//updateRoad ( parentRoad: TvRoad, parentContact: TvContactPoint, rebuild = true ) {
+	//
+	//	if ( parentRoad.spline.type == 'explicit' ) return;
+	//
+	//	const elementRoad = this.getElement<TvRoad>();
+	//
+	//	if ( parentContact == TvContactPoint.END ) {
+	//
+	//		this.updateSuccessor( parentRoad, elementRoad );
+	//
+	//	} else {
+	//
+	//		this.updatePredecessor( parentRoad, elementRoad );
+	//
+	//	}
+	//
+	//	// if ( rebuild ) RoadFactory.rebuildRoad( elementRoad );
+	//}
 
-		// successor.showSpline();
+	//rebuild () {
+	//
+	//	if ( this.isRoad ) {
+	//
+	//		const road = this.getElement<TvRoad>();
+	//
+	//		road.updateGeometryFromSpline();
+	//
+	//		// RoadFactory.rebuildRoad( road );
+	//
+	//	} else {
+	//
+	//	}
+	//
+	//}
 
-		// const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
-		// const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
-		// const mid2 = this.mid2;
-		// const end = this.end;
-
-		// let distance: number = mid2.position.distanceTo( end.position );
-
-		// mid2.position.copy( mid1.position.clone() );
-
-		// mid1.hdg = start.hdg;
-
-		// mid2.hdg = mid1.hdg + Math.PI;
-
-		// const newP4 = mid1.moveForward( distance );
-
-		// end.position.copy( newP4.position );
-
-		// successor.updateGeometryFromSpline();
-	}
+	//private updateSuccessor ( parentRoad: TvRoad, successor: TvRoad ) {
+	//
+	//	// if ( !successor ) return;
+	//
+	//	// successor.showSpline();
+	//
+	//	// const start = parentRoad.spline.getSecondLastPoint() as RoadControlPoint;
+	//	// const mid1 = parentRoad.spline.getLastPoint() as RoadControlPoint;
+	//	// const mid2 = this.mid2;
+	//	// const end = this.end;
+	//
+	//	// let distance: number = mid2.position.distanceTo( end.position );
+	//
+	//	// mid2.position.copy( mid1.position.clone() );
+	//
+	//	// mid1.hdg = start.hdg;
+	//
+	//	// mid2.hdg = mid1.hdg + Math.PI;
+	//
+	//	// const newP4 = mid1.moveForward( distance );
+	//
+	//	// end.position.copy( newP4.position );
+	//
+	//	// successor.updateGeometryFromSpline();
+	//}
 
 	// this update successor points with line logic
-	private updatePredecessor ( parentRoad: TvRoad, predecessor: TvRoad ) {
-
-		// if ( !predecessor ) return;
-
-		// predecessor.showSpline();
-
-		// const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
-		// const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
-		// const mid2 = this.mid2;
-		// const end = this.end;
-
-		// const distance = mid2.position.distanceTo( end.position );
-
-		// mid2.position.copy( mid1.position.clone() );
-
-		// // mid2.hdg = end.hdg = mid1.hdg + Math.PI;
-
-		// // const newP4 = mid2.moveForward( distance );
-
-		// end.position.copy( newP4.position );
-
-		// predecessor.updateGeometryFromSpline();
-
-	}
+	//private updatePredecessor ( parentRoad: TvRoad, predecessor: TvRoad ) {
+	//
+	//	// if ( !predecessor ) return;
+	//
+	//	// predecessor.showSpline();
+	//
+	//	// const start = parentRoad.spline.getSecondPoint() as RoadControlPoint;
+	//	// const mid1 = parentRoad.spline.getFirstPoint() as RoadControlPoint;
+	//	// const mid2 = this.mid2;
+	//	// const end = this.end;
+	//
+	//	// const distance = mid2.position.distanceTo( end.position );
+	//
+	//	// mid2.position.copy( mid1.position.clone() );
+	//
+	//	// // mid2.hdg = end.hdg = mid1.hdg + Math.PI;
+	//
+	//	// // const newP4 = mid2.moveForward( distance );
+	//
+	//	// end.position.copy( newP4.position );
+	//
+	//	// predecessor.updateGeometryFromSpline();
+	//
+	//}
 
 }

@@ -264,11 +264,11 @@ export class JunctionService {
 
 		if ( contact == TvContactPoint.START ) {
 
-			road.setPredecessor( TvRoadLinkChildType.junction, junction.id );
+			road.setPredecessor( TvRoadLinkChildType.junction, junction );
 
 		} else if ( contact == TvContactPoint.END ) {
 
-			road.setSuccessor( TvRoadLinkChildType.junction, junction.id );
+			road.setSuccessor( TvRoadLinkChildType.junction, junction );
 
 		}
 

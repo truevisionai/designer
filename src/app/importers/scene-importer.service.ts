@@ -27,7 +27,8 @@ import {
 	TvRoadMarkTypes,
 	TvRoadMarkWeights,
 	TvRoadType,
-	TvUnit} from 'app/modules/tv-map/models/tv-common';
+	TvUnit
+} from 'app/modules/tv-map/models/tv-common';
 import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
 import { TvControllerControl } from 'app/modules/tv-map/models/tv-controller';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
@@ -151,6 +152,26 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
+		readXmlArray( xml.road, xml => {
+
+			const road = this.map.getRoadById( parseInt( xml.attr_id ) );
+
+			if ( xml.link != null ) {
+
+				if ( road ) {
+
+					this.parseRoadLinks( road, xml.link );
+
+				} else {
+
+					console.error( 'road not found', xml );
+
+				}
+
+			}
+
+		} )
+
 		this.readAsOptionalArray( xml.spline, xml => {
 
 			const spline = this.importSpline( xml );
@@ -255,8 +276,6 @@ export class SceneImporterService extends AbstractReader {
 		this.importRoadSpline( xml.spline, road );
 
 		this.parseRoadTypes( road, xml );
-
-		if ( xml.link != null ) this.parseRoadLinks( road, xml.link );
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
@@ -658,23 +677,37 @@ export class SceneImporterService extends AbstractReader {
 		}
 	}
 
-	private parseRoadLink ( road: TvRoad, xmlElement: XmlElement, type: number ) {
+	private parseRoadLink ( road: TvRoad, xml: XmlElement, type: number ) {
+
+		const elementType = this.parseElementType( xml.attr_elementType );
+		const elementId = parseFloat( xml.attr_elementId );
+		const contactPoint = this.parseContactPoint( xml.attr_contactPoint );
+
+		let element: TvRoad | TvJunction;
+
+		if ( elementType == TvRoadLinkChildType.road ) {
+
+			element = this.map.getRoadById( elementId );
+
+		} else if ( elementType == TvRoadLinkChildType.junction ) {
+
+			element = this.map.getJunctionById( elementId );
+
+		} else {
+
+			console.error( 'unknown element type', elementType );
+
+			return;
+
+		}
 
 		if ( type === 0 ) {
 
-			const elementType = this.parseElementType( xmlElement.attr_elementType );
-			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
-
-			road.setPredecessor( elementType, elementId, contactPoint );
+			road.setPredecessor( elementType, element, contactPoint );
 
 		} else if ( type === 1 ) {
 
-			const elementType = this.parseElementType( xmlElement.attr_elementType );
-			const elementId = parseFloat( xmlElement.attr_elementId );
-			const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
-
-			road.setSuccessor( elementType, elementId, contactPoint );
+			road.setSuccessor( elementType, element, contactPoint );
 
 		} else if ( type === 2 ) {
 

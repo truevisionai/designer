@@ -386,9 +386,9 @@ export class RoadService {
 
 		road.setJunction( junction );
 
-		road.setPredecessor( TvRoadLinkChildType.road, incoming.road.id, incoming.contact );
+		road.setPredecessor( TvRoadLinkChildType.road, incoming.road, incoming.contact );
 
-		road.setSuccessor( TvRoadLinkChildType.road, outgoing.road.id, outgoing.contact );
+		road.setSuccessor( TvRoadLinkChildType.road, outgoing.road, outgoing.contact );
 
 		return road;
 

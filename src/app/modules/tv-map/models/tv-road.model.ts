@@ -253,21 +253,6 @@ export class TvRoad {
 
 	}
 
-	setPredecessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
-
-		if ( this.predecessor == null ) {
-
-			this.predecessor = new TvRoadLinkChild( elementType, elementId, contactPoint );
-
-		} else {
-
-			this.predecessor.elementType = elementType;
-			this.predecessor.elementId = elementId;
-			this.predecessor.contactPoint = contactPoint;
-
-		}
-	}
-
 	getEndPosTheta () {
 
 		return this.getPosThetaAt( this.length - Maths.Epsilon );
@@ -291,42 +276,27 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: TvRoadLinkChildType, elementId: number, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-		if ( this.successor == null ) {
+		this.successor = new TvRoadLinkChild( elementType, element, contactPoint );
 
-			this.successor = new TvRoadLinkChild( elementType, elementId, contactPoint );
+	}
 
-		} else {
+	setPredecessor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-			this.successor.elementType = elementType;
-			this.successor.elementId = elementId;
-			this.successor.contactPoint = contactPoint;
+		this.predecessor = new TvRoadLinkChild( elementType, element, contactPoint );
 
-		}
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		if ( this.successor == null ) {
-			this.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
-		}
-
-		this.successor.elementType = TvRoadLinkChildType.road;
-		this.successor.elementId = road.id;
-		this.successor.contactPoint = contactPoint;
+		this.setSuccessor( TvRoadLinkChildType.road, road, contactPoint );
 
 	}
 
 	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		if ( this.predecessor == null ) {
-			this.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, contactPoint );
-		}
-
-		this.predecessor.elementType = TvRoadLinkChildType.road;
-		this.predecessor.elementId = road.id;
-		this.predecessor.contactPoint = contactPoint;
+		this.setPredecessor( TvRoadLinkChildType.road, road, contactPoint );
 
 	}
 

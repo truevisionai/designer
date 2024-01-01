@@ -160,7 +160,7 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 		if ( !this.shouldUpdatePredecessor ) return;
 
-		this.road.predecessor?.update( this.road, TvContactPoint.START );
+		//this.road.predecessor?.update( this.road, TvContactPoint.START );
 
 	}
 
@@ -170,7 +170,7 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 		if ( !this.shouldUpdateSuccessor ) return;
 
-		this.road.successor?.update( this.road, TvContactPoint.END );
+		//this.road.successor?.update( this.road, TvContactPoint.END );
 	}
 
 }

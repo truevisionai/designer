@@ -17,7 +17,6 @@ import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
-import { RoadService } from './road.service';
 import { RoadLinkService } from './road-link.service';
 import { MapService } from '../map.service';
 import { MapEvents } from 'app/events/map-events';
@@ -36,7 +35,9 @@ export class RoadCircleService {
 	private text: TextObject;
 
 	private centre: Vector3;
+
 	private end: Vector3;
+
 	private radius: number;
 
 	constructor (
@@ -44,7 +45,8 @@ export class RoadCircleService {
 		private mapService: MapService,
 		private roadDebug: RoadDebugService,
 		private roadFactory: RoadFactory,
-	) { }
+	) {
+	}
 
 	onToolDisabled () {
 
@@ -219,8 +221,8 @@ export class RoadCircleService {
 
 				const nextRoad = roads[ j + 1 ];
 
-				road.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, nextRoad.id, TvContactPoint.START );
-				road.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				road.setSuccessorRoad( nextRoad, TvContactPoint.START );
+				nextRoad.setPredecessorRoad( road, TvContactPoint.END );
 
 				this.roadLinkService.linkSuccessor( road, road.successor );
 				this.roadLinkService.linkPredecessor( nextRoad, road.predecessor );
@@ -230,8 +232,8 @@ export class RoadCircleService {
 				// its last road, so make connection with the first one
 				const firstRoad = roads[ 0 ];
 
-				road.successor = new TvRoadLinkChild( TvRoadLinkChildType.road, firstRoad.id, TvContactPoint.START );
-				road.predecessor = new TvRoadLinkChild( TvRoadLinkChildType.road, road.id, TvContactPoint.END );
+				road.setSuccessorRoad( firstRoad, TvContactPoint.START );
+				firstRoad.setPredecessorRoad( road, TvContactPoint.END );
 
 				this.roadLinkService.linkSuccessor( road, road.successor );
 				this.roadLinkService.linkPredecessor( firstRoad, road.predecessor );

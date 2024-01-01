@@ -466,8 +466,8 @@ export class SceneExporterService {
 			if ( road.predecessor.elementType === 'junction' ) {
 
 				xmlNode.link.predecessor = {
-					attr_elementType: road.predecessor.attr_elementType,
-					attr_elementId: road.predecessor.attr_elementId,
+					attr_elementType: road.predecessor.elementType,
+					attr_elementId: road.predecessor.elementId,
 				};
 
 			} else {
@@ -486,8 +486,8 @@ export class SceneExporterService {
 			if ( road.successor.elementType === 'junction' ) {
 
 				xmlNode.link.successor = {
-					attr_elementType: road.successor.attr_elementType,
-					attr_elementId: road.successor.attr_elementId,
+					attr_elementType: road.successor.elementType,
+					attr_elementId: road.successor.elementId,
 				};
 
 			} else {

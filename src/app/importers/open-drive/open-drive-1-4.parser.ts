@@ -17,7 +17,8 @@ import {
 	TvLaneSide,
 	TvOrientation,
 	TvRoadType,
-	TvUnit} from '../../modules/tv-map/models/tv-common';
+	TvUnit
+} from '../../modules/tv-map/models/tv-common';
 import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
 import { TvController, TvControllerControl } from '../../modules/tv-map/models/tv-controller';
 import { TvJunction } from '../../modules/tv-map/models/junctions/tv-junction';
@@ -102,6 +103,26 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		} );
 
+		readXmlArray( openDRIVE.road, ( xml ) => {
+
+			const road = this.map.getRoadById( parseInt( xml.attr_id ) );
+
+			if ( road ) {
+
+				this.parseRoadLinks( road, xml.link );
+
+			} else {
+
+				console.error( 'road not found', xml );
+
+			}
+
+		} );
+
+		// if ( xml.link != null ) {
+		// this.parseRoadLinks( road, xml.link );
+		// }
+
 		return this.map;
 	}
 
@@ -135,12 +156,6 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const junction = this.map.getJunctionById( junctionId );
 
 		const road = new TvRoad( name, length, id, junction );
-
-		if ( xml.link != null ) {
-
-			this.parseRoadLinks( road, xml.link );
-
-		}
 
 		// Get type
 		this.parseRoadTypes( road, xml );
@@ -260,7 +275,24 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const elementS = parseFloat( xmlElement.attr_elementS );
 		const elementDir = this.parseOrientation( xmlElement.attr_elementDir );
 
-		const roadLink = new TvRoadLinkChild( elementType, elementId, contactPoint );
+		let element = null;
+
+		if ( elementType == TvRoadLinkChildType.road ) {
+
+			element = this.map.getRoadById( elementId );
+
+		} else if ( elementType == TvRoadLinkChildType.junction ) {
+
+			element = this.map.getJunctionById( elementId );
+
+		} else {
+
+			TvConsole.error( 'unknown elementType' );
+			return;
+
+		}
+
+		const roadLink = new TvRoadLinkChild( elementType, element, contactPoint );
 
 		if ( elementS != null ) {
 			roadLink.elementS = elementS;
@@ -339,7 +371,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 			const roadType = TvRoadTypeClass.stringToTypes( xml.attr_type );
 
-			let maxSpeed = 0;
+			let maxSpeed = 40;
 
 			let unit = TvUnit.MILES_PER_HOUR;
 
