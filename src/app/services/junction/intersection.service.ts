@@ -10,6 +10,9 @@ import { RoadService } from '../road/road.service';
 import { RoadSplineService } from '../road/road-spline.service';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from 'app/events/road/road-created-event';
+import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 
 @Injectable( {
 	providedIn: 'root'
@@ -392,7 +395,8 @@ export class IntersectionService {
 
 		if ( newRoad ) {
 
-			this.roadService.addRoad( newRoad );
+			MapEvents.roadCreated.emit( new RoadCreatedEvent( newRoad ) );
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
 
 			return newRoad;
 

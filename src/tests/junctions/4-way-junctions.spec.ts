@@ -407,4 +407,39 @@ describe( '4-way-junction tests', () => {
 
 	} );
 
+	it( 'should re-update junction when spline is slightly shifted', () => {
+
+		baseTest.createFourWayJunction( roadService, intersectionService );
+
+		expect( mapService.map.getJunctionCount() ).toBe( 1 );
+
+		const horizontal = roadService.getRoad( 1 );
+		const vertical = roadService.getRoad( 2 );
+
+		vertical.spline.controlPoints.forEach( point => point.position.x += 50 );
+
+		tool.onSplineUpdated( vertical.spline );
+
+		const splines = mapService.map.getSplines();
+
+		expect( splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
+		expect( splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
+
+		expect( mapService.map.getJunctionCount() ).toBe( 1 );
+		expect( mapService.map.getRoadCount() ).toBe( 16 );
+
+		expect( mapService.map.getSplineCount() ).toBe( 14 );
+
+		expect( horizontal.spline.getLength() ).toBe( 200 );
+		expect( horizontal.successor ).toBeDefined();
+		expect( horizontal.predecessor ).toBeNull();
+		expect( horizontal.spline.getSplineSegments().length ).toBe( 3 );
+
+		expect( vertical.spline.getLength() ).toBe( 200 );
+		expect( vertical.successor ).toBeDefined();
+		expect( vertical.predecessor ).toBeNull();
+		expect( vertical.spline.getSplineSegments().length ).toBe( 3 );
+
+	} );
+
 } );

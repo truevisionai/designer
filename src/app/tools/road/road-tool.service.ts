@@ -34,6 +34,28 @@ export class RoadToolService {
 	) {
 	}
 
+	updateSplineVisuals ( spline: AbstractSpline ) {
+
+		const segments = spline.getSplineSegments();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
+
+			const road = segment.getInstance<TvRoad>();
+
+			this.roadDebug.upateRoadBorderLine( road );
+
+			this.roadDebug.upateRoadNodes( road );
+
+		}
+
+		this.splineDebug.updateSpline( spline );
+
+	}
+
 	showLinks ( road: TvRoad, point: AbstractControlPoint ) {
 
 		this.roadLinkService.showLinks( road, point );
@@ -58,13 +80,15 @@ export class RoadToolService {
 
 		this.roadDebug.clear();
 
+		this.splineDebug.clear();
+
 	}
 
 	onToolEnabled () {
 
-		this.roadDebug.showNodes();
+		this.splineDebug.showBorders();
 
-		this.roadService.roads.forEach( road => this.roadDebug.showRoadBorderLine( road ) );
+		this.roadDebug.showNodes();
 
 	}
 
@@ -118,23 +142,6 @@ export class RoadToolService {
 
 	}
 
-	unselectRoad ( road: TvRoad ) {
-
-		this.roadService.hideControlPoints( road );
-		this.roadService.hideSpline( road );
-
-		this.roadDebug.unselectRoad( road );
-
-	}
-
-	selectRoad ( road: TvRoad ) {
-
-		this.roadService.showControlPoints( road );
-		this.roadService.showSpline( road );
-
-		if ( road.spline.controlPoints.length >= 2 ) this.roadDebug.selectRoad( road );
-
-	}
 
 	unselectSpline ( spline: AbstractSpline ) {
 

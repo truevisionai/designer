@@ -81,6 +81,31 @@ export class SplineEventListener {
 
 		const firstSegment = event.spline.getFirstRoadSegment();
 
+		// // when a spline is updated
+		// // we first check if it has junctions or not
+		// const junctions = event.spline.getJunctions();
+
+		// if ( junctions.length == 0 ) {
+
+		// 	// we're looking at possibly creating new junctions
+		// 	const firstSegment = event.spline.getFirstRoadSegment();
+
+		// 	this.buildSpline( event.spline, firstSegment );
+
+		// 	if ( event.spline.controlPoints.length < 2 ) return;
+
+		// 	this.updateSegments( event.spline );
+
+		// 	this.updateSplineBoundingBox( event.spline );
+
+		// 	this.checkIntersections( event.spline );
+
+		// } else {
+
+		// 	// we're looking at updating existing junctions
+
+		// }
+
 		this.removeRoads( event.spline );
 
 		this.removeJunctions( event.spline );

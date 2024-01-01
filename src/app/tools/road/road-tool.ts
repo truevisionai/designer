@@ -37,6 +37,7 @@ import { ControlPointUpdatedEvent } from "../../events/control-point-updated-eve
 import { ControlPointRemovedEvent } from "../../events/control-point-removed-event";
 import { SplineCreatedEvent } from "../../events/spline/spline-created-event";
 import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
+import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 
 export class RoadTool extends BaseTool {
 
@@ -415,16 +416,20 @@ export class RoadTool extends BaseTool {
 
 	}
 
+	onSplineUpdated ( spline: AbstractSpline ) {
+
+		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( spline ) );
+
+		this.tool.updateSplineVisuals( spline );
+
+	}
+
 	onControlPointUpdated ( controlPoint: AbstractControlPoint ) {
 
 		if ( controlPoint instanceof SplineControlPoint ) {
 
-			this.tool.unselectSpline( controlPoint.spline );
-			this.tool.selectSpline( controlPoint.spline );
+			this.onSplineUpdated( controlPoint.spline );
 
-			const event = new ControlPointUpdatedEvent( controlPoint, controlPoint.spline );
-
-			MapEvents.controlPointUpdated.emit( event );
 		}
 
 	}
@@ -550,9 +555,6 @@ export class RoadTool extends BaseTool {
 			AppInspector.setInspector( RoadInspector, { road: segment.getInstance<TvRoad>(), controlPoint } );
 
 		}
-
-
-		// this.tool.base.setHint( 'Drag and move the control point to change the road' );
 
 	}
 
