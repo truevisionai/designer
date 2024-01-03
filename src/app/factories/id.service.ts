@@ -2,11 +2,11 @@ export class IDService {
 
 	private highestID: number;
 	private usedIDs: Set<number>;
+	private removedIDs: Set<number>;
 
 	constructor () {
 
-		this.highestID = 0;
-		this.usedIDs = new Set<number>();
+		this.reset();
 
 	}
 
@@ -14,6 +14,7 @@ export class IDService {
 
 		this.highestID = 0;
 		this.usedIDs = new Set<number>();
+		this.removedIDs = new Set<number>();
 
 	}
 
@@ -28,6 +29,12 @@ export class IDService {
 		if ( importedID !== undefined && importedID !== null && typeof importedID === 'number' ) {
 
 			nextId = importedID;
+
+		} else if ( this.removedIDs.size > 0 ) {
+
+			nextId = this.removedIDs.values().next().value;
+
+			this.removedIDs.delete( nextId );
 
 		} else {
 
@@ -51,6 +58,8 @@ export class IDService {
 	remove ( id: number ) {
 
 		this.usedIDs.delete( id );
+
+		this.removedIDs.add( id );
 
 		this.updateHighestID();
 

@@ -45,7 +45,7 @@ For a virtual junction as successor or predecessor the
  */
 export class TvRoadLinkChild {
 
-	private _element: TvRoad|TvJunction;
+	private _element: TvRoad | TvJunction;
 
 	private _elementType: TvRoadLinkChildType;
 
@@ -84,7 +84,7 @@ export class TvRoadLinkChild {
 	 * @param elementId ID of the linked element
 	 * @param contactPoint Contact point of link on the linked element
 	 */
-	constructor ( elementType: TvRoadLinkChildType, element: TvRoad|TvJunction, contactPoint: TvContactPoint ) {
+	constructor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint: TvContactPoint ) {
 		this._element = element;
 		this._elementType = elementType;
 		this._elementId = element?.id;
@@ -125,6 +125,10 @@ export class TvRoadLinkChild {
 
 	set contactPoint ( value ) {
 		this._contactPoint = value;
+	}
+
+	getElement<T> (): T {
+		return this.element as any;
 	}
 
 	clone (): TvRoadLinkChild {

@@ -4,12 +4,12 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { MapService } from '../map.service';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,7 +17,6 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 export class RoadLinkService {
 
 	constructor (
-		private mapService: MapService,
 		private splineService: AbstractSplineDebugService,
 		private connectionService: JunctionConnectionService,
 	) { }
@@ -48,7 +47,7 @@ export class RoadLinkService {
 
 		} );
 
-		const linkedRoad = this.mapService.map.getRoadById( link.elementId );
+		const linkedRoad = link.getElement<TvRoad>();
 
 		const linkedLaneSection = this.getLaneSection( linkedRoad, link.contactPoint );
 
@@ -130,7 +129,7 @@ export class RoadLinkService {
 
 		} );
 
-		const linkedRoad = this.mapService.map.getRoadById( link.elementId );
+		const linkedRoad = link.getElement<TvRoad>();
 
 		const linkedLaneSection = this.getLaneSection( linkedRoad, link.contactPoint );
 
@@ -199,7 +198,8 @@ export class RoadLinkService {
 
 		if ( road.isJunction ) {
 
-			road.junctionInstance?.removeConnectingRoad( road );
+			// TODO: need to check if this is needed or not
+			// road.junctionInstance?.removeConnectingRoad( road );
 
 		} else {
 
@@ -224,79 +224,6 @@ export class RoadLinkService {
 
 		}
 
-	}
-
-
-	private removeSuccessor ( road: TvRoad ) {
-
-		if ( !road.successor ) return;
-
-		if ( road.successor.isJunction ) {
-
-			const junction = this.getElement<TvJunction>( road.successor );
-
-			const connections = junction.getConnectionsForRoad( road );
-
-			connections.forEach( connection => {
-
-				this.connectionService.removeConnection( junction, connection );
-
-			} );
-
-			return;
-		}
-
-		const linkedRoad = this.getElement<TvRoad>( road.successor );
-
-		if ( !linkedRoad ) return;
-
-		if ( road.successor.contactPoint === TvContactPoint.START ) {
-
-			linkedRoad.predecessor = null;
-
-		} else {
-
-			linkedRoad.successor = null;
-
-		}
-
-		// road.successor = null;
-	}
-
-	private removePredecessor ( road: TvRoad ) {
-
-		if ( !road.predecessor ) return;
-
-		if ( road.predecessor.isJunction ) {
-
-			const junction = this.getElement<TvJunction>( road.predecessor );
-
-			const connections = junction.getConnectionsForRoad( road );
-
-			connections.forEach( connection => {
-
-				this.connectionService.removeConnection( junction, connection );
-
-			} );
-
-			return;
-		}
-
-		const linkedRoad = this.getElement<TvRoad>( road.predecessor );
-
-		if ( !linkedRoad ) return;
-
-		if ( road.predecessor.contactPoint === TvContactPoint.START ) {
-
-			linkedRoad.predecessor = null;
-
-		} else {
-
-			linkedRoad.successor = null;
-
-		}
-
-		// road.predecessor = null;
 	}
 
 	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
@@ -358,6 +285,42 @@ export class RoadLinkService {
 			this.splineService.hideControlPoints( predecessor.spline );
 
 		}
+
+	}
+
+	showSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		const roads = spline.getRoads();
+
+		const firstRoad = roads[ 0 ];
+		const lastRoad = roads[ roads.length - 1 ];
+
+		if ( firstRoad ) this.showLinks( firstRoad, controlPoint );
+		if ( lastRoad ) this.showLinks( lastRoad, controlPoint );
+
+	}
+
+	updateSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		// const roads = spline.getRoads();
+
+		// const firstRoad = roads[ 0 ];
+		// const lastRoad = roads[ roads.length - 1 ];
+
+		// this.updateLinks( firstRoad, controlPoint );
+		// this.updateLinks( lastRoad, controlPoint );
+
+	}
+
+	hideSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		const roads = spline.getRoads();
+
+		const firstRoad = roads[ 0 ];
+		const lastRoad = roads[ roads.length - 1 ];
+
+		this.hideLinks( firstRoad );
+		this.hideLinks( lastRoad );
 
 	}
 
@@ -518,19 +481,7 @@ export class RoadLinkService {
 
 	getElement<T> ( link: TvRoadLinkChild ): T {
 
-		if ( link.isRoad ) {
-
-			return this.mapService.map.getRoadById( link.elementId ) as any;
-
-		} else if ( link.isJunction ) {
-
-			return this.mapService.map.getJunctionById( link.elementId ) as any;
-
-		} else {
-
-			throw new Error( 'RoadLinkService.getElement: unknown elementType: ' + link.elementType );
-
-		}
+		return link.getElement<T>();
 
 	}
 
@@ -633,6 +584,78 @@ export class RoadLinkService {
 
 
 
+	}
+
+	private removeSuccessor ( road: TvRoad ) {
+
+		if ( !road.successor ) return;
+
+		if ( road.successor.isJunction ) {
+
+			const junction = this.getElement<TvJunction>( road.successor );
+
+			const connections = junction.getConnectionsForRoad( road );
+
+			connections.forEach( connection => {
+
+				this.connectionService.removeConnection( junction, connection );
+
+			} );
+
+			return;
+		}
+
+		const linkedRoad = this.getElement<TvRoad>( road.successor );
+
+		if ( !linkedRoad ) return;
+
+		if ( road.successor.contactPoint === TvContactPoint.START ) {
+
+			linkedRoad.predecessor = null;
+
+		} else {
+
+			linkedRoad.successor = null;
+
+		}
+
+		// road.successor = null;
+	}
+
+	private removePredecessor ( road: TvRoad ) {
+
+		if ( !road.predecessor ) return;
+
+		if ( road.predecessor.isJunction ) {
+
+			const junction = this.getElement<TvJunction>( road.predecessor );
+
+			const connections = junction.getConnectionsForRoad( road );
+
+			connections.forEach( connection => {
+
+				this.connectionService.removeConnection( junction, connection );
+
+			} );
+
+			return;
+		}
+
+		const linkedRoad = this.getElement<TvRoad>( road.predecessor );
+
+		if ( !linkedRoad ) return;
+
+		if ( road.predecessor.contactPoint === TvContactPoint.START ) {
+
+			linkedRoad.predecessor = null;
+
+		} else {
+
+			linkedRoad.successor = null;
+
+		}
+
+		// road.predecessor = null;
 	}
 
 }

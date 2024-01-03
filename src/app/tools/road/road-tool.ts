@@ -304,9 +304,9 @@ export class RoadTool extends BaseTool {
 
 		spline.update();
 
-		// this.tool.updateLinks( road, point );
+		this.tool.updateLinks( spline, point );
 
-		// this.tool.showLinks( road, point );
+		this.tool.showLinks( spline, point );
 
 		this.controlPointMoved = true;
 

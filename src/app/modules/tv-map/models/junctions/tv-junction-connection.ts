@@ -11,6 +11,7 @@ import { TvJunction } from './tv-junction';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
+import { TvPosTheta } from '../tv-pos-theta';
 
 /**
 
@@ -38,6 +39,7 @@ export class TvJunctionConnection {
 	public readonly uuid: string;
 	public laneLink: TvJunctionLaneLink[] = [];
 	private lastAddedJunctionLaneLinkIndex: number;
+
 
 	/**
 	 *
@@ -103,6 +105,54 @@ export class TvJunctionConnection {
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
 			return this.connectingRoad.getLastLaneSection();
+
+		}
+
+	}
+
+	getIncomingContactPoint (): TvContactPoint {
+
+		const incomingPosition = this.getIncomingPosition();
+
+		const contact = this.incomingRoad.getContactByPosition( incomingPosition.position );
+
+		return contact;
+
+	}
+
+	getOutgoingContactPoint (): TvContactPoint {
+
+		const outgoingPosition = this.getOutgoingPosition();
+
+		const contact = this.outgoingRoad.getContactByPosition( outgoingPosition.position );
+
+		return contact;
+
+	}
+
+	getIncomingPosition (): TvPosTheta {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.connectingRoad.getStartPosTheta();
+
+		} else if ( this.contactPoint == TvContactPoint.END ) {
+
+			return this.connectingRoad.getEndPosTheta();
+
+		}
+
+	}
+
+	getOutgoingPosition (): TvPosTheta {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.connectingRoad.getEndPosTheta();
+
+		} else if ( this.contactPoint == TvContactPoint.END ) {
+
+			return this.connectingRoad.getStartPosTheta();
 
 		}
 

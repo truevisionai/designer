@@ -56,15 +56,15 @@ export class RoadToolService {
 
 	}
 
-	showLinks ( road: TvRoad, point: AbstractControlPoint ) {
+	showLinks ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
-		this.roadLinkService.showLinks( road, point );
+		this.roadLinkService.showSplineLinks( spline, point );
 
 	}
 
-	updateLinks ( road: TvRoad, point: AbstractControlPoint ) {
+	updateLinks ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
-		this.roadLinkService.updateLinks( road, point );
+		this.roadLinkService.updateSplineLinks( spline, point );
 
 	}
 

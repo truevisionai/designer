@@ -1362,6 +1362,23 @@ export class TvRoad {
 
 	}
 
+	getContactByPosition ( position: Vector3 ): TvContactPoint {
+
+		const startDistance = this.getPosThetaAt( 0 ).position.distanceTo( position );
+		const endDistance = this.getPosThetaAt( this.length ).position.distanceTo( position );
+
+		if ( startDistance < endDistance ) {
+
+			return TvContactPoint.START;
+
+		} else {
+
+			return TvContactPoint.END;
+
+		}
+
+	}
+
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );

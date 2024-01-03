@@ -56,7 +56,7 @@ export class JunctionNodeService {
 
 	showAllJunctionNodes () {
 
-		this.mapService.map.getRoads().forEach( road => this.showJunctionNode( road ) );
+		this.mapService.nonJunctionRoads.forEach( road => this.showJunctionNode( road ) );
 
 	}
 
@@ -72,7 +72,7 @@ export class JunctionNodeService {
 
 		if ( road.isJunction ) return;
 
-		if ( !road.predecessor || road.predecessor.elementType == 'junction' ) {
+		if ( !road.predecessor || road.predecessor.isJunction ) {
 
 			const startCoord = road.getStartPosTheta().toRoadCoord( road );
 
@@ -84,7 +84,7 @@ export class JunctionNodeService {
 
 		}
 
-		if ( !road.successor || road.successor.elementType == 'junction' ) {
+		if ( !road.successor || road.successor.isJunction ) {
 
 			const endCoord = road.getEndPosTheta().toRoadCoord( road );
 

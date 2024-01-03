@@ -110,6 +110,31 @@ export class IntersectionService {
 
 	}
 
+	getSplineIntersections ( spline: AbstractSpline ) {
+
+		const splineCount = this.mapService.map.getSplineCount();
+		const splines = this.mapService.map.getSplines();
+
+		const intersections = [];
+
+		for ( let i = 0; i < splineCount; i++ ) {
+
+			const otherSpline = splines[ i ];
+
+			const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
+
+			if ( !intersection ) continue;
+
+			intersections.push( {
+				spline: spline,
+				otherSpline: otherSpline,
+				intersection: intersection
+			} );
+		}
+
+		return intersections;
+	}
+
 	createSplineIntersection ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
 
 		if ( splineA == splineB ) return;

@@ -1,12 +1,18 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
+import { BaseTest } from 'tests/base-test.spec';
 import { Vector3 } from 'three';
 
 describe( 'ConnectionService', () => {
+
+	let base: BaseTest = new BaseTest();
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -14,6 +20,9 @@ describe( 'ConnectionService', () => {
 			providers: [ RoadService ],
 			imports: [ HttpClientModule ]
 		} );
+
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		eventServiceProvider.init();
 
 	} );
 
@@ -140,6 +149,54 @@ describe( 'ConnectionService', () => {
 		// expect( connection.laneLink[ 1 ].to ).toBe( -2 );
 		// expect( connection.laneLink[ 2 ].from ).toBe( -3 );
 		// expect( connection.laneLink[ 2 ].to ).toBe( -3 );
+
+	} ) );
+
+	it( 'should give correct contact side', inject( [ RoadService, IntersectionService, JunctionService ], (
+		roadService: RoadService,
+		intersectionService: IntersectionService,
+		junctionService: JunctionService,
+	) => {
+
+		base.createFourWayJunction( roadService, intersectionService );
+
+		const junction = junctionService.getJunctionById( 1 );
+
+		const left = roadService.getRoad( 1 );
+		const bottom = roadService.getRoad( 2 );
+		const top = roadService.getRoad( 3 );
+		const right = roadService.getRoad( 4 );
+
+		expect( roadService.roads.length ).toBe( 4 + 12 );
+
+		expect( junction.connections.size ).toBe( 12 );
+
+		expect( junction.connections.get( 0 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( bottom.id );
+		expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( left.id );
+		expect( junction.connections.get( 0 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.connections.get( 0 ).getOutgoingContactPoint() ).toBe( TvContactPoint.END );
+
+		expect( junction.connections.get( 1 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( left.id );
+		expect( junction.connections.get( 1 ).outgoingRoad.id ).toBe( bottom.id );
+		expect( junction.connections.get( 1 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.connections.get( 1 ).getOutgoingContactPoint() ).toBe( TvContactPoint.END );
+
+		expect( junction.connections.get( 2 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.connections.get( 2 ).incomingRoad.id ).toBe( bottom.id );
+		expect( junction.connections.get( 2 ).outgoingRoad.id ).toBe( top.id );
+		expect( junction.connections.get( 2 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.connections.get( 2 ).getOutgoingContactPoint() ).toBe( TvContactPoint.START );
+
+		expect( junction.connections.get( 3 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.connections.get( 3 ).incomingRoad.id ).toBe( top.id );
+		expect( junction.connections.get( 3 ).outgoingRoad.id ).toBe( bottom.id );
+		expect( junction.connections.get( 3 ).getIncomingContactPoint() ).toBe( TvContactPoint.START );
+		expect( junction.connections.get( 3 ).getOutgoingContactPoint() ).toBe( TvContactPoint.END );
+
+		// TODO: add more tests for rest of the connections
+
 
 	} ) );
 

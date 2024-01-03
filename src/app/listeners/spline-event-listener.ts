@@ -5,7 +5,7 @@ import { RoadService } from "app/services/road/road.service";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { RoadSplineService } from "app/services/road/road-spline.service";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { Box3 } from "three";
+import { Box3, Vector3 } from "three";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { RoadCreatedEvent } from "../events/road/road-created-event";
@@ -16,6 +16,7 @@ import { SplineUpdatedEvent } from "../events/spline/spline-updated-event";
 import { SplineRemovedEvent } from "../events/spline/spline-removed-event";
 import { JunctionRemovedEvent } from "../events/junction/junction-removed-event";
 import { SplineSegment } from "app/core/shapes/spline-segment";
+import { JunctionUpdatedEvent } from "app/events/junction/junction-updated-event";
 
 
 @Injectable( {
@@ -73,55 +74,152 @@ export class SplineEventListener {
 		this.removeJunctions( event.spline );
 
 		this.removeSegments( event.spline );
+
+		// const junctions = event.spline.getJunctions();
+
+		// this.removeJunctionsFromSpline( junctions );
+
 	}
 
 	onSplineUpdated ( event: SplineUpdatedEvent ) {
 
 		if ( this.debug ) console.debug( 'onSplineUpdated', event );
 
-		const firstSegment = event.spline.getFirstRoadSegment();
+		// when a spline is updated
+		// we first check if it has junctions or not
+		const junctions = event.spline.getJunctions();
 
-		// // when a spline is updated
-		// // we first check if it has junctions or not
-		// const junctions = event.spline.getJunctions();
+		const intersections = this.intersectionService.getSplineIntersections( event.spline );
 
-		// if ( junctions.length == 0 ) {
+		if ( junctions.length == 0 ) {
 
-		// 	// we're looking at possibly creating new junctions
-		// 	const firstSegment = event.spline.getFirstRoadSegment();
+			// we're looking at possibly creating new junctions
+			const firstSegment = event.spline.getFirstRoadSegment();
 
-		// 	this.buildSpline( event.spline, firstSegment );
+			this.buildSpline( event.spline, firstSegment );
 
-		// 	if ( event.spline.controlPoints.length < 2 ) return;
+			if ( event.spline.controlPoints.length < 2 ) return;
 
-		// 	this.updateSegments( event.spline );
+			this.updateSegments( event.spline );
 
-		// 	this.updateSplineBoundingBox( event.spline );
+			this.updateSplineBoundingBox( event.spline );
 
-		// 	this.checkIntersections( event.spline );
+			this.checkIntersections( event.spline );
 
-		// } else {
+		} else {
 
-		// 	// we're looking at updating existing junctions
+			if ( intersections.length == 0 ) {
 
-		// }
+				this.removeJunctionsFromSpline( junctions );
 
-		this.removeRoads( event.spline );
+			} else {
 
-		this.removeJunctions( event.spline );
+				// update junctions
+				if ( junctions.length == intersections.length ) {
 
-		this.removeSegments( event.spline );
+					this.removeJunctionsFromSpline( junctions );
 
-		this.buildSpline( event.spline, firstSegment );
+					this.checkIntersections( event.spline );
 
-		if ( event.spline.controlPoints.length < 2 ) return;
+				} else {
 
-		this.updateSegments( event.spline );
+				}
 
-		this.updateSplineBoundingBox( event.spline );
+			}
 
-		this.checkIntersections( event.spline );
+		}
 
+		// const firstSegment = event.spline.getFirstRoadSegment();
+
+		// this.removeRoads( event.spline );
+
+		// this.removeJunctions( event.spline );
+
+		// this.removeSegments( event.spline );
+
+		// this.buildSpline( event.spline, firstSegment );
+
+		// if ( event.spline.controlPoints.length < 2 ) return;
+
+		// this.updateSegments( event.spline );
+
+		// this.updateSplineBoundingBox( event.spline );
+
+		// this.checkIntersections( event.spline );
+
+	}
+
+	updateSplineJunction ( spline: AbstractSpline, junctions: TvJunction[], intersections: any[] ) {
+
+		for ( let i = 0; i < junctions.length; i++ ) {
+
+			const junction = junctions[ i ];
+
+			const splines = junction.getIncomingSplines();
+
+			for ( let i = 0; i < splines.length; i++ ) {
+
+				const spline = splines[ i ];
+
+				const junctionSegment = spline.findSegment( junction );
+
+				if ( !junctionSegment ) continue;
+
+				const intersection: Vector3 = intersections.find( intersection => intersection.spline == spline );
+
+				if ( !intersection ) continue;
+
+				const coord = spline.getCoordAt( intersection );
+
+				const nextSegment = spline.getNextSegment( junction );
+
+				if ( nextSegment && nextSegment.isRoad ) {
+
+					nextSegment.setStart( coord.s + 12 );
+
+				}
+
+				junctionSegment.setStart( coord.s - 12 );
+
+				this.roadSplineService.rebuildSplineRoads( spline );
+
+				MapEvents.junctionUpdated.emit( new JunctionUpdatedEvent( junction ) );
+
+			}
+
+		}
+
+	}
+
+	removeJunctionsFromSpline ( junctions: TvJunction[] ) {
+
+		for ( let i = 0; i < junctions.length; i++ ) {
+
+			const junction = junctions[ i ];
+
+			const splines = junction.getIncomingSplines();
+
+			for ( let i = 0; i < splines.length; i++ ) {
+
+				const spline = splines[ i ];
+
+				const nextSegment = spline.getNextSegment( junction );
+
+				if ( nextSegment && nextSegment.isRoad ) {
+
+					this.roadService.removeRoad( nextSegment.getInstance<TvRoad>() );
+
+				}
+
+				spline.removeSegment( junction );
+
+				MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction, spline ) );
+
+				this.roadSplineService.rebuildSplineRoads( spline );
+
+			}
+
+		}
 	}
 
 	private removeRoads ( spline: AbstractSpline ) {
@@ -167,7 +265,7 @@ export class SplineEventListener {
 
 			otherSpline.removeSegment( junction );
 
-			MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
+			MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction, otherSpline ) );
 
 			this.onSplineUpdated( new SplineUpdatedEvent( otherSpline ) );
 

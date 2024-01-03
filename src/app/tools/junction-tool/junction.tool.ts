@@ -18,6 +18,8 @@ import { MapEvents } from 'app/events/map-events';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { JunctionToolService } from './junction-tool.service';
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
+import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
+import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 
 
 export class JunctionTool extends BaseTool {
@@ -182,7 +184,7 @@ export class JunctionTool extends BaseTool {
 
 		if ( object instanceof TvJunction ) {
 
-			this.tool.addJunction( object );
+			MapEvents.junctionCreated.emit( new JunctionCreatedEvent( object ) );
 
 		}
 
@@ -192,19 +194,8 @@ export class JunctionTool extends BaseTool {
 
 		if ( object instanceof TvJunction ) {
 
-			object.connections.forEach( connection => {
+			MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( object ) );
 
-				connection.incomingRoad.successor = null;
-
-				connection.outgoingRoad.predecessor = null;
-
-				MapEvents.roadRemoved.emit( new RoadRemovedEvent( connection.connectingRoad ) );
-
-				this.tool.mapService.map.removeRoad( connection.connectingRoad );
-
-			} );
-
-			this.tool.removeJunction( object );
 		}
 
 	}

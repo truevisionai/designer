@@ -66,6 +66,8 @@ describe( 'BaseTest: tests', () => {
 		const roadC = roadService.getRoad( 3 );
 		const roadD = roadService.getRoad( 4 );
 
+		const junction = junctionService.getJunctionById( 1 );
+
 		expect( roadService.roads.length ).toBe( 4 + 12 );
 
 		expect( roadService.junctionRoads.length ).toBe( 12 );
@@ -82,6 +84,9 @@ describe( 'BaseTest: tests', () => {
 
 		expect( roadA.spline.getLength() ).toBe( 200 );
 		expect( roadB.spline.getLength() ).toBe( 200 );
+
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 12 );
 
 	} );
 

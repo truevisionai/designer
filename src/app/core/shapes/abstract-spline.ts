@@ -476,6 +476,8 @@ export abstract class AbstractSpline {
 
 			this.splineSegments.splice( index, 1 );
 
+			this.update();
+
 		} else {
 
 			console.error( 'segment not found', segment );

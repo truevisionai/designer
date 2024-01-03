@@ -1,14 +1,16 @@
-import {
-	MapEvents
-} from "../events/map-events";
+import { MapEvents } from "../events/map-events";
 import { Injectable } from "@angular/core";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { JunctionService } from "app/services/junction/junction.service";
-import { RoadService } from "app/services/road/road.service";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
 import { JunctionCreatedEvent } from "../events/junction/junction-created-event";
 import { JunctionUpdatedEvent } from "../events/junction/junction-updated-event";
 import { JunctionRemovedEvent } from "../events/junction/junction-removed-event";
+import { MapService } from "app/services/map.service";
+import { JunctionConnectionService } from "app/services/junction/junction-connection.service";
+import { RoadService } from "app/services/road/road.service";
+import { RoadSplineService } from "app/services/road/road-spline.service";
+import { RoadUpdatedEvent } from "app/events/road/road-updated-event";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +21,10 @@ export class JunctionEventListener {
 
 	constructor (
 		private junctionService: JunctionService,
+		private mapService: MapService,
+		private connectionService: JunctionConnectionService,
 		private roadService: RoadService,
+		private roadSplineService: RoadSplineService,
 	) {
 
 	}
@@ -36,31 +41,61 @@ export class JunctionEventListener {
 
 		if ( this.debug ) console.debug( e );
 
+		this.junctionService.addJunction( e.junction );
+
 	}
 
-	onJunctionRemoved ( e: JunctionRemovedEvent ): void {
+	onJunctionRemoved ( event: JunctionRemovedEvent ): void {
 
-		if ( this.debug ) console.debug( e );
+		if ( this.debug ) console.debug( event );
 
-		this.removeJunctionLinks( e.junction );
+		this.removeJunctionLinks( event.junction );
 
-		this.junctionService.removeJunction( e.junction );
+		const connections = event.junction.getConnections();
 
-		e.junction.connections.forEach( connection => {
+		for ( let i = 0; i < connections.length; i++ ) {
 
-			MapEvents.roadRemoved.emit( new RoadRemovedEvent( connection.connectingRoad ) );
+			const connection = connections[ i ];
 
-		} );
+			connection.incomingRoad.successor = null;
+
+			connection.outgoingRoad.predecessor = null;
+
+			// const event = new RoadRemovedEvent( connection.connectingRoad )
+
+			this.mapService.map.removeRoad( connection.connectingRoad );
+
+			this.mapService.map.gameObject.remove( connection.connectingRoad.gameObject );
+
+			// MapEvents.roadRemoved.emit( event );
+
+		}
+
+		this.junctionService.removeJunction( event.junction );
+
 	}
 
 	onJunctionUpdated ( e: JunctionUpdatedEvent ): void {
 
 		if ( this.debug ) console.debug( e );
+
+		const connections = e.junction.getConnections();
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			this.roadSplineService.updateConnectingRoadSpline( connection );
+
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( connection.connectingRoad ) );
+
+		}
+
 	}
 
 	private removeJunctionLinks ( junction: TvJunction ) {
 
-		const incomingRoads = this.roadService.nonJunctionRoads;
+		const incomingRoads = this.mapService.nonJunctionRoads;
 
 		for ( let i = 0; i < incomingRoads.length; i++ ) {
 

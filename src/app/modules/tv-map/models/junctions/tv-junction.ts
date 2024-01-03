@@ -9,6 +9,7 @@ import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 export class TvJunction {
 
@@ -143,6 +144,27 @@ export class TvJunction {
 
 		return incomingRoads;
 
+	}
+
+	getIncomingSplines (): AbstractSpline[] {
+
+		const splines = [];
+
+		const incomingRoads = this.getIncomingRoads();
+
+		for ( let i = 0; i < incomingRoads.length; i++ ) {
+
+			const incomingRoad = incomingRoads[ i ];
+
+			if ( !splines.includes( incomingRoad.spline ) ) {
+
+				splines.push( incomingRoad.spline );
+
+			}
+
+		}
+
+		return splines;
 	}
 
 	getOutgoingRoads (): TvRoad[] {
