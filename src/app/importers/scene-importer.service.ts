@@ -249,8 +249,6 @@ export class SceneImporterService extends AbstractReader {
 
 		this.map.props.push( propInstance );
 
-		SceneService.addToMain( propInstance );
-
 	}
 
 	private importRoad ( xml: XmlElement ): TvRoad {

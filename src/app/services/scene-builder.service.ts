@@ -7,6 +7,7 @@ import { SceneService } from './scene.service';
 import { GameObject } from 'app/core/game-object';
 import { TvConsole } from 'app/core/utils/console';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
+import { PropInstance } from 'app/core/models/prop-instance.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,6 +30,8 @@ export class SceneBuilderService {
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
 		map.getSurfaces().forEach( surface => this.surfaceService.buildSurface( surface ) );
+
+		map.props.forEach( prop => this.buildProp( map, prop ) );
 
 		SceneService.addToMain( map.gameObject );
 
@@ -61,10 +64,16 @@ export class SceneBuilderService {
 		} else {
 
 			map.removeRoad( road );
-			console.error( 'Road spline not found', road );
+			TvConsole.error( 'Road spline not found for road id ' + road.id );
 			return;
 		}
 
+
+	}
+
+	buildProp ( map: TvMap, prop: PropInstance ) {
+
+		SceneService.addToMain( prop.object );
 
 	}
 
