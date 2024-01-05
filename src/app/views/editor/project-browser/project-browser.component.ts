@@ -188,8 +188,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			MetadataFactory.createMetadata( file.name, extension, destinationPath );
 
-			this.onFolderChanged( this.currentFolder );
-
+			this.refreshFolder();
 		}
 
 	}
@@ -264,7 +263,9 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 
-	refershFolder () {
+	refreshFolder () {
+
+		this.projectBrowser.folderChanged.emit( this.currentFolder );
 
 		this.appRef.tick();
 
