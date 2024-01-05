@@ -2,12 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
-import { TextObject } from 'app/modules/three-js/objects/text-object';
-import * as THREE from 'three';
+import { PointerEventData, } from 'app/events/pointer-event-data';
+import { TextObject3d } from 'app/modules/three-js/objects/text-object';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SceneService } from 'app/services/scene.service';
+import { MeasurementToolService } from './measurement-tool.service';
+import { BufferGeometry, Line, LineBasicMaterial } from 'three';
 
 export class MeasurementTool extends BaseTool {
 
@@ -17,11 +18,11 @@ export class MeasurementTool extends BaseTool {
 
 	private line: THREE.Line;
 
-	private text: TextObject;
+	private text: TextObject3d;
 
 	private start: THREE.Vector3;
 
-	constructor () {
+	constructor ( private tool: MeasurementToolService ) {
 
 		super();
 
@@ -53,39 +54,15 @@ export class MeasurementTool extends BaseTool {
 
 			this.start = pointerEventData.point;
 
-			const geometry = new THREE.BufferGeometry().setFromPoints( [ this.start, this.start ] );
+			const geometry = new BufferGeometry().setFromPoints( [ this.start, this.start ] );
 
-			const material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 5, } );
+			const material = new LineBasicMaterial( { color: 0xffffff, linewidth: 5, } );
 
-			this.line = new THREE.Line( geometry, material );
+			this.line = new Line( geometry, material );
 
-			const minTextSize = 1; // minimum text size
-			const maxTextSize = 30; // maximum text size
-			const minCameraDistance = 10; // minimum expected camera distance
-			const maxCameraDistance = 1000; // maximum expected camera distance
+			const textSize = this.calculateTextSize( pointerEventData );
 
-			let textSize: number;
-
-			if ( pointerEventData.approxCameraDistance <= minCameraDistance ) {
-
-				textSize = minTextSize;
-
-			} else if ( pointerEventData.approxCameraDistance >= maxCameraDistance ) {
-
-				textSize = maxTextSize;
-
-			} else {
-
-				// Linear interpolation between minTextSize and maxTextSize
-				const fraction = ( pointerEventData.approxCameraDistance - minCameraDistance ) / ( maxCameraDistance - minCameraDistance );
-
-				textSize = minTextSize + fraction * ( maxTextSize - minTextSize );
-
-			}
-
-			textSize = Math.min( Math.max( textSize, minTextSize ), maxTextSize ); // Clamping the value
-
-			this.text = new TextObject( 'Distance', this.pointerDownAt, textSize );
+			this.text = this.tool.showTextAt( 'Distance', this.start, textSize );
 
 			SceneService.addToolObject( this.line );
 
@@ -112,12 +89,43 @@ export class MeasurementTool extends BaseTool {
 
 		this.line.geometry.dispose();
 
-		this.line.geometry = new THREE.BufferGeometry().setFromPoints( [ this.start, pointerEventData.point ] );
+		this.line.geometry = new BufferGeometry().setFromPoints( [ this.start, pointerEventData.point ] );
 
 		const distance = this.start?.distanceTo( pointerEventData.point ).toFixed( 2 );
 
-		this.text?.updateText( distance + 'm' );
+		this.tool.updateText( this.text, distance + 'm' );
 
 	}
 
+	private calculateTextSize ( pointerEventData: PointerEventData ): number {
+
+		const minTextSize = 1; // minimum text size
+		const maxTextSize = 30; // maximum text size
+		const minCameraDistance = 10; // minimum expected camera distance
+		const maxCameraDistance = 1000; // maximum expected camera distance
+
+		let textSize: number;
+
+		if ( pointerEventData.approxCameraDistance <= minCameraDistance ) {
+
+			textSize = minTextSize;
+
+		} else if ( pointerEventData.approxCameraDistance >= maxCameraDistance ) {
+
+			textSize = maxTextSize;
+
+		} else {
+
+			// Linear interpolation between minTextSize and maxTextSize
+			const fraction = ( pointerEventData.approxCameraDistance - minCameraDistance ) / ( maxCameraDistance - minCameraDistance );
+
+			textSize = minTextSize + fraction * ( maxTextSize - minTextSize );
+
+		}
+
+		textSize = Math.min( Math.max( textSize, minTextSize ), maxTextSize ); // Clamping the value
+
+		return textSize;
+
+	}
 }

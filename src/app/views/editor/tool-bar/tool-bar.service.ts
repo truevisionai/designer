@@ -51,6 +51,7 @@ import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.servi
 import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-tool.service';
 import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.service';
 import { LaneToolService } from 'app/tools/lane/lane-tool.service';
+import { MeasurementToolService } from 'app/tools/pointer/measurement-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -82,6 +83,7 @@ export class ToolBarService {
 		private propSpanToolService: PropSpanToolService,
 		private propBarrierToolService: PolePropToolService,
 		private pointMarkingToolService: PointMarkingToolService,
+		private measurementToolService: MeasurementToolService,
 	) {
 	}
 
@@ -133,7 +135,7 @@ export class ToolBarService {
 			case ToolType.Pointer:
 				return new PointerTool();
 			case ToolType.MeasurementTool:
-				return new MeasurementTool();
+				return new MeasurementTool( this.measurementToolService );
 			case ToolType.Vehicle:
 				return new VehicleTool();
 			case ToolType.RoadSignalTool:
