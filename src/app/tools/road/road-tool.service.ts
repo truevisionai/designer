@@ -142,13 +142,13 @@ export class RoadToolService {
 
 	}
 
-
 	unselectSpline ( spline: AbstractSpline ) {
 
 		this.splineService.hideControlPoints( spline );
 		this.splineService.hide( spline );
 
 		this.splineDebug.unselect( spline );
+		this.splineDebug.showBorder( spline );
 
 	}
 
@@ -174,7 +174,7 @@ export class RoadToolService {
 		let minDistance = Infinity;
 		let index = spline.controlPoints.length; // insert at the end by default
 
-		for ( let i = 0; i < spline.controlPoints.length - 2; i++ ) {
+		for ( let i = 0; i < spline.controlPoints.length - 1; i++ ) {
 
 			const segmentStart = spline.controlPoints[ i ];
 			const segmentEnd = spline.controlPoints[ i + 1 ];
@@ -243,7 +243,12 @@ export class RoadToolService {
 
 	removeSpline ( spline: AbstractSpline ) {
 
-		return this.roadSplineService.removeSpline( spline );
+		this.splineDebug.remove( spline );
+
+		this.splineService.hideControlPoints( spline );
+		this.splineService.hide( spline );
+
+		this.roadSplineService.removeSpline( spline );
 
 	}
 

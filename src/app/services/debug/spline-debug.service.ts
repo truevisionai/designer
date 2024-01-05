@@ -44,6 +44,18 @@ export class SplineDebugService {
 		return this.mapService.splines;
 	}
 
+	remove ( spline: AbstractSpline ) {
+
+		this.lines.removeKey( spline );
+
+		this.arrows.removeKey( spline );
+
+		this.highlighted.delete( spline );
+
+		this.selected.delete( spline );
+
+	}
+
 	showBorders () {
 
 		for ( let i = 0; i < this.splines.length; i++ ) {
@@ -59,6 +71,16 @@ export class SplineDebugService {
 	updateSpline ( spline: AbstractSpline ) {
 
 		this.updateArrows( spline );
+
+		if ( this.selected.has( spline ) ) {
+			this.unselect( spline );
+			this.select( spline );
+		}
+
+		if ( this.highlighted.has( spline ) ) {
+			this.unhighlight( spline );
+			this.highlight( spline );
+		}
 
 	}
 
@@ -107,6 +129,30 @@ export class SplineDebugService {
 
 	}
 
+	select ( spline: AbstractSpline ) {
+
+		if ( this.selected.has( spline ) ) return;
+
+		this.lines.removeKey( spline );
+
+		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
+
+		this.showArrows( spline );
+
+		this.selected.add( spline );
+
+	}
+
+	unselect ( spline: AbstractSpline ) {
+
+		this.lines.removeKey( spline );
+
+		this.arrows.removeKey( spline );
+
+		this.selected.delete( spline );
+
+	}
+
 	highlight ( spline: AbstractSpline ) {
 
 		if ( this.selected.has( spline ) ) return;
@@ -123,17 +169,15 @@ export class SplineDebugService {
 
 	}
 
-	select ( spline: AbstractSpline ) {
+	unhighlight ( spline: AbstractSpline ) {
 
-		if ( this.selected.has( spline ) ) return;
+		if ( !this.highlighted.has( spline ) ) return;
 
 		this.lines.removeKey( spline );
 
-		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
+		this.arrows.removeKey( spline );
 
-		this.showArrows( spline );
-
-		this.selected.add( spline );
+		this.highlighted.delete( spline );
 
 	}
 
@@ -168,18 +212,6 @@ export class SplineDebugService {
 		} )
 
 		this.highlighted.clear();
-
-	}
-
-	unselect ( spline: AbstractSpline ) {
-
-		this.lines.removeKey( spline );
-
-		this.arrows.removeKey( spline );
-
-		this.showBorder( spline );
-
-		this.selected.delete( spline );
 
 	}
 

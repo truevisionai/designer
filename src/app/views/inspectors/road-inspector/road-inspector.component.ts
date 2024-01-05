@@ -18,7 +18,6 @@ import { DialogService } from 'app/services/dialog/dialog.service';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
-import { AddObjectCommand } from 'app/commands/add-object-command';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -155,7 +154,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	onDelete (): void {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.road ) );
+		this.onDeleteSpline();
 
 	}
 

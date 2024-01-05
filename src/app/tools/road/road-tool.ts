@@ -136,31 +136,25 @@ export class RoadTool extends BaseTool {
 
 		} else {
 
-			const spline = this.tool.roadSplineService.getNewSpline();
-
-			const point = this.tool.controlPointService.createSplineControlPoint( spline, e.point );
-
-			spline.controlPoints.push( point );
-
-			const addCommand = new AddObjectCommand( spline );
-
-			const selectCommand = new SelectObjectCommand( point, this.selectedControlPoint );
-
-			CommandHistory.executeMany( addCommand, selectCommand );
-
-			//const road = this.tool.createDefaultRoad();
-			//
-			//const point = this.tool.controlPointService.createSplineControlPoint( road.spline, e.point );
-			//
-			//const addRoadCommand = new AddObjectCommand( road );
-			//
-			//const selectRoadCommand = new SelectObjectCommand( road, this.selectedRoad );
-			//
-			//road.addControlPoint( point );
-			//
-			//CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
+			this.createSpline( e.point );
 
 		}
+
+	}
+
+	createSpline ( position: Vector3 ) {
+
+		const spline = this.tool.roadSplineService.getNewSpline();
+
+		const point = this.tool.controlPointService.createSplineControlPoint( spline, position );
+
+		spline.controlPoints.push( point );
+
+		const addCommand = new AddObjectCommand( spline );
+
+		const selectCommand = new SelectObjectCommand( point, this.selectedControlPoint );
+
+		CommandHistory.executeMany( addCommand, selectCommand );
 
 	}
 
@@ -184,10 +178,10 @@ export class RoadTool extends BaseTool {
 
 			if ( object instanceof TvRoad ) {
 
-				if ( object.id === selectedRoad?.id ) {
+				if ( object?.spline?.uuid === selectedSpline?.uuid ) {
 
 					// add point on same road
-					createPoint( selectedRoad.spline, e.point, this.selectedControlPoint, true );
+					createPoint( selectedSpline, e.point, this.selectedControlPoint, true );
 
 				} else {
 
@@ -480,7 +474,7 @@ export class RoadTool extends BaseTool {
 
 		}
 
-		MapEvents.controlPointCreated.emit( new ControlPointCreatedEvent( controlPoint ) );
+		this.onSplineUpdated( controlPoint.spline );
 
 	}
 
@@ -560,9 +554,13 @@ export class RoadTool extends BaseTool {
 
 	onControlPointUnselected ( controlPoint: AbstractControlPoint ): void {
 
-		controlPoint?.unselect();
+		if ( controlPoint instanceof SplineControlPoint ) {
 
-		AppInspector.clear();
+			controlPoint?.unselect();
+
+			AppInspector.clear();
+
+		}
 
 	}
 
