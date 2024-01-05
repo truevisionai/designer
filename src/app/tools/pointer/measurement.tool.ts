@@ -44,7 +44,7 @@ export class MeasurementTool extends BaseTool {
 
 		}
 
-		this.text?.remove();
+		SceneService.removeFromTool( this.text );
 
 	}
 
@@ -76,7 +76,7 @@ export class MeasurementTool extends BaseTool {
 
 			this.line = null;
 
-			this.text?.remove();
+			SceneService.removeFromTool( this.text );
 		}
 
 	}
